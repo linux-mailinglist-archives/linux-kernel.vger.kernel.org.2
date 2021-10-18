@@ -2,111 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C714312F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364B54312FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhJRJPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhJRJOn (ORCPT
+        id S231534AbhJRJPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:15:23 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:50712 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231372AbhJRJPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:14:43 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515DEC061765;
-        Mon, 18 Oct 2021 02:12:32 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d5so1400801pfu.1;
-        Mon, 18 Oct 2021 02:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TL8MKdaHHltkSLJJhEgpOYC4/+7FPpkVJIhEqgGDpIo=;
-        b=O52pp1i619tV72LxRafKcU/l6BgSPZD2vdSaBkMYV4kBLQ1gbywFeo5JzDXly3E4aW
-         Ij3dMvqaUHZBNdZ6PwtJWzGwdVRqwHdhMVPLYdSfvkfuI+4Rta6oTk4d85G2rJf6fgQ/
-         8P8FzY2Fhfr583u05f2VZ1FkScMO0DOJCBZwk7rBNL7O8GGysjbRzBYhCeTCYoaP8aQO
-         Hqvs8hPN04AUHLVJqu/Uzx8oHOaHM4auwsCtnyIEbkRwex6R9phVZGMxcUnsoYSvE3QN
-         0kRlqtt/Q5zr7pJpym99kZVbIdwtqruTKARcbexhjoVGBy+xlOh1FSk1vWgd7u98C+gT
-         LQbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TL8MKdaHHltkSLJJhEgpOYC4/+7FPpkVJIhEqgGDpIo=;
-        b=SOQeLu6L8tlsu93EA6uWOLZox5/xEAzPh2QusUKQzsB3Tt61H2VmstNQFMBCj7JsSt
-         UMnlYlo/nDOlvFL9J1MZFB2fiADxdIPaKH1m3dSEqt0mR24aoaWmT/cgAZLWstFnN75w
-         qwb05zbcpiFK9HWRx0eox5Z2NvaTdouvqz22GR3L+Obc5L94QSGbBditScVokMd7+PyZ
-         hnMC/pAx5cB+3laBycC5Aci/LYa0kqhtE20Z4Go3vELlB2UFrc7LL4mGI+iifk1A1ENd
-         paVSZ5ps2GeqynhoxjFWvbZXkPwNKit1Lkr2gNfg2EF61h7j90rFZcVXnRty4vycbMF/
-         H4+Q==
-X-Gm-Message-State: AOAM533v34fuRIoYBSQSj9apPECHLZ8HUHFi1i99HsgkGOdfhgGOgIOJ
-        4lOFrV755bb+oY/xL2dycV+VAdsFUMc=
-X-Google-Smtp-Source: ABdhPJwvpkJj2xN8gB9RP+uNESZGw+3UVY7Ctg4j9k+Q0ZHpTwztfBTl4ymMBWEDjh+/ObEJ4WfWBw==
-X-Received: by 2002:a62:31c5:0:b0:447:b30c:9a79 with SMTP id x188-20020a6231c5000000b00447b30c9a79mr27633142pfx.67.1634548351932;
-        Mon, 18 Oct 2021 02:12:31 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id q73sm13055021pfc.179.2021.10.18.02.12.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 02:12:31 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, penghao luo <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] xfrm: Remove redundant fields
-Date:   Mon, 18 Oct 2021 09:12:27 +0000
-Message-Id: <20211018091227.857733-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 18 Oct 2021 05:15:20 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19I866p3017986;
+        Mon, 18 Oct 2021 11:13:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=Q05oiVZenwvMaTTs9dcXkuW+qIz1ZGdBjDkzxjUaWFs=;
+ b=As7Y4FHjuqy2kZU2fG019L7ghM6kt5QA1P+myJtlL5jxqV+e+5BhEd7tv+5n6vwO3AIQ
+ j9d183SjS3XEULfdd20sato6QaC69FBFWOF9POgz9rzb1cjmpiWlygB1TAq4+HrcUB8W
+ cEt/c/1/j5xMvYcBmBy1Srh9OAYpmNYU1NmkyZWIkA4BegbBlRnC7X7E/XVzL5sO4JBv
+ 3ULZSs7EPm5b+I2hyMN9vLYCW/wwUip6V5WvR0wiMXsWzhgs0GW0pMkUfFdEGc+GPBLY
+ kSonsIGYcs6xvdk8S49hG+9Iu9Xjbm1x5bUZbfgC+YKhBpZd6e3+b5iAIVM6m1iHyHyV cQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3brxbm2k4b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Oct 2021 11:13:06 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 290B910002A;
+        Mon, 18 Oct 2021 11:13:06 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 20A8F216EF1;
+        Mon, 18 Oct 2021 11:13:06 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.45) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 18 Oct
+ 2021 11:13:05 +0200
+Subject: Re: [PATCH v5 3/4] rpmsg: Move the rpmsg control device from
+ rpmsg_char to rpmsg_ctrl
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
+ <20210712123752.10449-4-arnaud.pouliquen@foss.st.com>
+ <YWDVwArEz5Yub3GJ@ripper> <f0696b4d-c0b6-5283-2eda-e5791462cbba@foss.st.com>
+ <YWpZMwgWqcPMvL5q@yoga>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <ffb110dc-bc3b-dbc2-679f-de2416f7b90f@foss.st.com>
+Date:   Mon, 18 Oct 2021 11:13:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWpZMwgWqcPMvL5q@yoga>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_02,2021-10-14_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: penghao luo <luo.penghao@zte.com.cn>
-
-the variable err is not necessary in such places. It should be revmoved
-for the simplicity of the code.
-
-The clang_analyzer complains as follows:
-
-net/xfrm/xfrm_input.c:530: warning:
-
-Although the value stored to 'err' is used in the enclosing expression,
-the value is never actually read from 'err'.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: penghao luo <luo.penghao@zte.com.cn>
----
- net/xfrm/xfrm_input.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/xfrm/xfrm_input.c b/net/xfrm/xfrm_input.c
-index 3df0861..ff34667 100644
---- a/net/xfrm/xfrm_input.c
-+++ b/net/xfrm/xfrm_input.c
-@@ -530,7 +530,7 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
- 				goto drop;
- 			}
- 
--			if ((err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
-+			if ((xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
- 				XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
- 				goto drop;
- 			}
-@@ -560,7 +560,7 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
- 	}
- 
- 	seq = 0;
--	if (!spi && (err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
-+	if (!spi && (xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
- 		secpath_reset(skb);
- 		XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
- 		goto drop;
--- 
-2.15.2
 
 
+On 10/16/21 6:46 AM, Bjorn Andersson wrote:
+> On Mon 11 Oct 05:46 CDT 2021, Arnaud POULIQUEN wrote:
+> 
+>>
+>>
+>> On 10/9/21 1:35 AM, Bjorn Andersson wrote:
+>>> On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
+>>>
+>>>> Create the rpmsg_ctrl.c module and move the code related to the
+>>>> rpmsg_ctrldev device in this new module.
+>>>>
+>>>> Add the dependency between rpmsg_char and rpmsg_ctrl in the
+>>>> kconfig file.
+>>>>
+>>>
+>>> As I said in the cover letter, the only reason I can see for doing this
+>>> refactoring is in relation to the introduction of
+>>> RPMSG_CREATE_DEV_IOCTL. So I would like this patch to go together with
+>>> that patch, together with a good motivation why there's merit to
+>>> creating yet another kernel module (and by bind/unbind can't be used).
+>>>
+>>> Perhaps I'm just missing some good usecase related to this?
+>>
+>>
+>>>
+>>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>>>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>>> ---
+>>>>  drivers/rpmsg/Kconfig      |   9 ++
+>>>>  drivers/rpmsg/Makefile     |   1 +
+>>>>  drivers/rpmsg/rpmsg_char.c | 170 +----------------------------
+>>>>  drivers/rpmsg/rpmsg_char.h |   2 +
+>>>>  drivers/rpmsg/rpmsg_ctrl.c | 215 +++++++++++++++++++++++++++++++++++++
+>>>>  5 files changed, 229 insertions(+), 168 deletions(-)
+>>>>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+>>>>
+>>> [..]
+>>>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+>>> [..]
+>>>> -static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>>>> -{
+>>> [..]
+>>>> -	dev = &ctrldev->dev;
+>>>> -	device_initialize(dev);
+>>>> -	dev->parent = &rpdev->dev;
+>>>> -	dev->class = rpmsg_class;
+>>> [..]
+>>>> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+>>> [..]
+>>>> +static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+>>>> +{
+>>> [..]
+>>>> +	dev = &ctrldev->dev;
+>>>> +	device_initialize(dev);
+>>>> +	dev->parent = &rpdev->dev;
+>>>
+>>> You lost the assignment of dev->class here, which breaks the udev rules
+>>> we use to invoke rpmsgexport to create endpoints and it causes udevadm
+>>> to complain that rpmsg_ctrlN doesn't have a "subsystem".
+>>
+>> We discussed this point with Mathieu, as a first step i kept the class, but that
+>> generated another dependency with the rpmsg_char device while information was
+>> available on the rpmsg bus. The char device and ctrl device should share the
+>> same class. As rpmsg_ctrl is created first it would have to create the class,and
+>> provide an API to rpmsg char
+>>
+> 
+> Perhaps if this is considered a common piece shared between multiple
+> rpmsg modules we can create such class in the rpmsg "core" itself?
+
+Yes that seems a good alternative
+
+> 
+>> Please could you details what does means "rpmsg_ctrlN doesn't have a
+>> "subsystem"." What exactly the udev is looking for? could it base it check on
+>> the /dev/rpmsg_ctrl0 or /sys/bus/rpmsg/devices/...?
+>>
+> 
+> If I read the uevent messages correctly they seem to contain a SUBSYTEM=
+> property when the class is provided. But I'm not sure about the reasons
+> for that.
+
+If it part of the udev requirement, i suppose that it is mandatory, and in this
+case, declare the class in the core make sense.
+
+I will send a new patchset that will squash all the remaining patches, taking
+into account your comment.
+
+Thanks,
+Arnaud
+
+> 
+> Regards,
+> Bjorn
+> 
+>> Thanks,
+>> Arnaud
+>>
+>>>
+>>> Regards,
+>>> Bjorn
+>>>
