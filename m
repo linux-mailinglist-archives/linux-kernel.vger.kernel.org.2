@@ -2,153 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F699431102
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367F2431106
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhJRHJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:09:27 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58514 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhJRHJ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:09:26 -0400
-Received: from [IPv6:2a02:810a:880:f54:88bb:da86:4533:43d6] (unknown [IPv6:2a02:810a:880:f54:88bb:da86:4533:43d6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 06E181F42612;
-        Mon, 18 Oct 2021 08:07:13 +0100 (BST)
-Subject: Re: [PATCH v4] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Dafna Hirschfeld <dafna3@gmail.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        minghsiu.tsai@mediatek.com, houlong.wei@mediatek.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-References: <20210920170408.1561-1-dafna.hirschfeld@collabora.com>
- <c59b7f40-d99e-370a-b797-5dc72979df46@xs4all.nl>
- <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <9475ac5b-79fe-da0e-ed1c-a91275cad46e@collabora.com>
-Date:   Mon, 18 Oct 2021 09:07:11 +0200
+        id S229533AbhJRHJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:09:35 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:60449 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230346AbhJRHJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 03:09:34 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HXnxj6V6bz9sSY;
+        Mon, 18 Oct 2021 09:07:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ufy2FvxmcmR8; Mon, 18 Oct 2021 09:07:21 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HXnxj5chVz9sSD;
+        Mon, 18 Oct 2021 09:07:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A85088B76C;
+        Mon, 18 Oct 2021 09:07:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 67lhJDwjeAym; Mon, 18 Oct 2021 09:07:21 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4BB678B763;
+        Mon, 18 Oct 2021 09:07:21 +0200 (CEST)
+Subject: Re: [PATCH v3 07/12] asm-generic: Define 'func_desc_t' to commonly
+ describe function descriptors
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1634457599.git.christophe.leroy@csgroup.eu>
+ <a33107c5b82580862510cc20af0d61e33a2b841d.1634457599.git.christophe.leroy@csgroup.eu>
+ <1634538449.eah9b31bbz.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <802b3ff9-8ada-b45b-2b69-b6a23f0c3664@csgroup.eu>
+Date:   Mon, 18 Oct 2021 09:07:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
+In-Reply-To: <1634538449.eah9b31bbz.astroid@bobo.none>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 18.10.21 03:16, Alexandre Courbot wrote:
-> Hi Hans!
+Le 18/10/2021 à 08:29, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of October 17, 2021 10:38 pm:
+>> We have three architectures using function descriptors, each with its
+>> own type and name.
+>>
+>> Add a common typedef that can be used in generic code.
+>>
+>> Also add a stub typedef for architecture without function descriptors,
+>> to avoid a forest of #ifdefs.
+>>
+>> It replaces the similar 'func_desc_t' previously defined in
+>> arch/powerpc/kernel/module_64.c
+>>
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
 > 
-> On Mon, Oct 4, 2021 at 6:37 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>
->> On 20/09/2021 19:04, Dafna Hirschfeld wrote:
->>> From: Alexandre Courbot <acourbot@chromium.org>
->>>
->>> When running memcpy_toio:
->>> memcpy_toio(send_obj->share_buf, buf, len);
->>> it was found that errors appear if len is not a multiple of 8:
->>>
->>> [58.350841] mtk-mdp 14001000.rdma: processing failed: -22
->>
->> Why do errors appear? Is that due to a HW bug? Some other reason?
+> [...]
 > 
-> MTK folks would be the best placed to answer this, but since the
-> failure is reported by the firmware I'd suspect either a firmware or
-> hardware limitation.
+>> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+>> index a918388d9bf6..33b51efe3a24 100644
+>> --- a/include/asm-generic/sections.h
+>> +++ b/include/asm-generic/sections.h
+>> @@ -63,6 +63,9 @@ extern __visible const void __nosave_begin, __nosave_end;
+>>   #else
+>>   #define dereference_function_descriptor(p) ((void *)(p))
+>>   #define dereference_kernel_function_descriptor(p) ((void *)(p))
+>> +typedef struct {
+>> +	unsigned long addr;
+>> +} func_desc_t;
+>>   #endif
+>>   
 > 
->>
->>>
->>> This patch ensures the copy of a multiple of 8 size by calling
->>> round_up(len, 8) when copying
->>>
->>> Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
->>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
->>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
->>> Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
->>> ---
->>> changes since v3:
->>> 1. multile -> multiple
->>> 2. add inline doc
->>>
->>> changes since v2:
->>> 1. do the extra copy only if len is not multiple of 8
->>>
->>> changes since v1:
->>> 1. change sign-off-by tags
->>> 2. change values to memset
->>>
->>>   drivers/media/platform/mtk-vpu/mtk_vpu.c | 15 ++++++++++++++-
->>>   1 file changed, 14 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
->>> index ec290dde59cf..1df031716c8f 100644
->>> --- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
->>> +++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
->>> @@ -349,7 +349,20 @@ int vpu_ipi_send(struct platform_device *pdev,
->>>                }
->>>        } while (vpu_cfg_readl(vpu, HOST_TO_VPU));
->>>
->>> -     memcpy_toio(send_obj->share_buf, buf, len);
->>> +     /*
->>> +      * when copying data to the vpu hardware, the memcpy_toio operation must copy
->>> +      * a multiple of 8. Otherwise the processing fails
->>
->> Same here: it needs to explain why the processing fails.
-
-Is writing 'due to hardware or firmware limitation' enough?
-If not, then we should wait for mediatek people's response to explain if they know more
-
->>
->>> +      */
->>> +     if (len % 8 != 0) {
->>> +             unsigned char data[SHARE_BUF_SIZE];
->>
->> Wouldn't it be more robust if you say:
->>
->>                  unsigned char data[sizeof(send_obj->share_buf)];
-> 
-> Definitely yes.
-
-I'll send v5 fixing this
-
-> 
->>
->> I also think that the SHARE_BUF_SIZE define needs a comment stating that it must be a
->> multiple of 8, otherwise unexpected things can happen.
->>
->> You also noticed that the current SHARE_BUF_SIZE define is too low, but I saw
->> no patch correcting this. Shouldn't that be fixed as well?
-> 
-> AFAICT the firmware expects this exact size on its end, so I don't
-> believe it can be changed that easily. But maybe someone from MTK can
-> prove me wrong.
+> I think that deserves a comment. If it's just to allow ifdef to be
+> avoided, I guess that's okay with a comment. Would be nice if you could
+> cause it to generate a link time error if it was ever used like
+> undefined functions, but I guess you can't. It's not a necessity though.
 > 
 
-I looked further and noted that the structs that are larger than 'SHARE_BUF_SIZE'
-(venc_ap_ipi_msg_enc_ext venc_ap_ipi_msg_set_param_ext)
-are used by drivers that don't use this vpu api, so actually SHARE_BUF_SIZE is
-not too low and as Corurbot worte probably not changeable.
+I tried to explain it in the commit message, but I can add a comment 
+here in addition for sure.
 
+By the way, it IS used in powerpc's module_64.c:
 
-Thanks,
-Dafna
+static func_desc_t func_desc(unsigned long addr)
+{
+	return (func_desc_t){addr};
+}
 
-> Cheers,
-> Alex.
-> 
+static unsigned long func_addr(unsigned long addr)
+{
+	return func_desc(addr).addr;
+}
