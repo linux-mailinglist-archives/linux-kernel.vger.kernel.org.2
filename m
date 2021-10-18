@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0B2431DD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA06431CC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234225AbhJRNzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57654 "EHLO mail.kernel.org"
+        id S233242AbhJRNoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:44:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234163AbhJRNxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:53:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F9161994;
-        Mon, 18 Oct 2021 13:38:57 +0000 (UTC)
+        id S233363AbhJRNmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:42:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D2F861439;
+        Mon, 18 Oct 2021 13:34:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564337;
-        bh=90kXehvpQUPWrT0A1olxvxENgHo8g6UIskVWuso48Bo=;
+        s=korg; t=1634564056;
+        bh=tKdSaJ4ky4rkcucRDq96qoY0E2exYgCClISb3PmPDUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GcUoPBVLStNZ+0Va/OeHMyZfiSte/7NshlNcenZAmCWtzP3RDTnftdJwmqZOCxeP7
-         PlGQkY0CKyJ30myqWJJQ2AYpNnLimu8WqKVSdAvlWAraUsIo0DvcViGB+cowIEa2uN
-         WgG9JGxBoeNsUI5Ir28PXkW+qCmR/P6LBnbgmNa8=
+        b=L7biSQsIXLf2t8nmBx1dD3GDvFFGcxKdjgRKsks1SzPGZj47WCZfF1NCiudXUiCJb
+         wndu0J4MKBITHEGjS+sflkCEMh13CCH7GC+KosbacfrecipjKFhkq3liXAaCjJdm5V
+         EMRqhcMN/KVPwBI7cvwOwqjkiAAw+uqORXCuERtY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu-Tung Chang <mtwget@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.14 051/151] USB: serial: option: add Quectel EC200S-CN module support
-Date:   Mon, 18 Oct 2021 15:23:50 +0200
-Message-Id: <20211018132342.349113835@linuxfoundation.org>
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Guo Ren <guoren@kernel.org>
+Subject: [PATCH 5.10 015/103] csky: dont let sigreturn play with priveleged bits of status register
+Date:   Mon, 18 Oct 2021 15:23:51 +0200
+Message-Id: <20211018132335.209394743@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu-Tung Chang <mtwget@gmail.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit 2263eb7370060bdb0013bc14e1a7c9bf33617a55 upstream.
+commit fbd63c08cdcca5fb1315aca3172b3c9c272cfb4f upstream.
 
-Add usb product id of the Quectel EC200S-CN module.
+csky restore_sigcontext() blindly overwrites regs->sr with the value
+it finds in sigcontext.  Attacker can store whatever they want in there,
+which includes things like S-bit.  Userland shouldn't be able to set
+that, or anything other than C flag (bit 0).
 
-usb-devices output for 0x6002:
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=480 MxCh= 0
-D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=2c7c ProdID=6002 Rev=03.18
-S:  Manufacturer=Android
-S:  Product=Android
-S:  SerialNumber=0000
-C:  #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
-I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
-I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+Do the same thing other architectures with protected bits in flags
+register do - preserve everything that shouldn't be settable in
+user mode, picking the rest from the value saved is sigcontext.
 
-Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
-Link: https://lore.kernel.org/r/20210930021112.330396-1-mtwget@gmail.com
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Guo Ren <guoren@kernel.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/csky/kernel/signal.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -251,6 +251,7 @@ static void option_instat_callback(struc
- #define QUECTEL_PRODUCT_EP06			0x0306
- #define QUECTEL_PRODUCT_EM12			0x0512
- #define QUECTEL_PRODUCT_RM500Q			0x0800
-+#define QUECTEL_PRODUCT_EC200S_CN		0x6002
- #define QUECTEL_PRODUCT_EC200T			0x6026
+--- a/arch/csky/kernel/signal.c
++++ b/arch/csky/kernel/signal.c
+@@ -52,10 +52,14 @@ static long restore_sigcontext(struct pt
+ 	struct sigcontext __user *sc)
+ {
+ 	int err = 0;
++	unsigned long sr = regs->sr;
  
- #define CMOTECH_VENDOR_ID			0x16d8
-@@ -1128,6 +1129,7 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
- 	  .driver_info = ZLP },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200S_CN, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
+ 	/* sc_pt_regs is structured the same as the start of pt_regs */
+ 	err |= __copy_from_user(regs, &sc->sc_pt_regs, sizeof(struct pt_regs));
  
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
++	/* BIT(0) of regs->sr is Condition Code/Carry bit */
++	regs->sr = (sr & ~1) | (regs->sr & 1);
++
+ 	/* Restore the floating-point state. */
+ 	err |= restore_fpu_state(sc);
+ 
 
 
