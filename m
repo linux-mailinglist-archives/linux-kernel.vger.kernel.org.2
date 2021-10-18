@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FC54322E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2684322DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhJRPeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232831AbhJRPeA (ORCPT
+        id S232480AbhJRPdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:33:35 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:42960 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230154AbhJRPde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:34:00 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5FDC06161C;
-        Mon, 18 Oct 2021 08:31:48 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id d3so718975edp.3;
-        Mon, 18 Oct 2021 08:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dILHIBmr21sQ4w3qJYjy8QJvw3XypAA/G1BpXMjCiGk=;
-        b=NnTcuzby6V9daRcEeACP+hW3w2rdUBmy8VS4d4KGkU0rHMLzVcygEk6g6uHvI2aDJf
-         TSPoh2VmAzxb+IhfQoKUcDPsjgDU9qW/DEF/aNgHvW3Kfg3LQhAI76Wuh4JQrzCGYQr7
-         Rr63i5PGNFfVJWNdX59Wb9DqB/TbSxcZ2RAOT1Obu6R4CmmNieWYJXhEVjikxqY5URe/
-         rX7s7+vVfNZLEvq0Q/FamiEay7Sz9TOrsNvcUJYc4Z4JVbW2pmCUa9fkbg7bH+H4FroE
-         4A8WC/6EVzuWYixsLfnSb8zbDkm+sMHjJsmVCteNaFahbcS8uepyc0TAlDXi30de+RJp
-         FaEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dILHIBmr21sQ4w3qJYjy8QJvw3XypAA/G1BpXMjCiGk=;
-        b=Nfgh5m4y6mcvimwWJybU2+ULgTIMCluL6zA/usI0bSCu3h2ZJvjwzarUre9iWBJX51
-         hjz7g0LHa+kseHE4RA8Xf8xil1g0M2PhMQiT3f+44/0h3n0k0Z84iE+QwzErpnXyGpU/
-         cnMRZMaEWfRjH8e5Uh6Zrxbzw1Ox5f/lNOrkvm2tKnPW48IqMxlyJgy8dmNuirF8nSxn
-         tlbIf1jsUE7aRCDCuLM0eOv6IQv5lY5VRq03AxzjWa8TNz84BTBQqJXXziznYEi1sr/i
-         DFMaIGPLtFo2Co+AMD0FCRmNjyuaH6MSQO94Rg8mPPYbnUCxJ1TfE2f2bj6vw54Fflsp
-         CLiA==
-X-Gm-Message-State: AOAM532baVfuuEc2IiSjAylj/xSw87M7XROOMAB1ympwCN+J+KrEZvGG
-        e6lrLLShe6B4P/PziEWFyylb0ZECHMCp+Bv61I3cN9RPHYAluUKOSSM=
-X-Google-Smtp-Source: ABdhPJyqpQmrRNKNrn6FiH91HVM3jRb/hLnwin4zzm5Il/zLs8CixRpuU8QIeCzPI3HOG9AhGv2CjmXJ2bRBtwCzQs4=
-X-Received: by 2002:a50:e188:: with SMTP id k8mr47022398edl.119.1634571084718;
- Mon, 18 Oct 2021 08:31:24 -0700 (PDT)
+        Mon, 18 Oct 2021 11:33:34 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19ICZjli024862;
+        Mon, 18 Oct 2021 08:31:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=dU2vCIi5WKPb7AFGaKXXQnjtepfMevDauHgbDEzDwrw=;
+ b=Go2/eztflQ7vf1M3NDoKpy63E7BgUeHyJP46YFhUVgAzcQfbRrWbnKbxr7WzfqDic5jU
+ 7pxH306/yAMhLH/m7LJMAsQFBFQJ46GnrFx534ylWimO7qZGt/q6Yymo9fI/zJ1rR8IX
+ FUnlmLD7Q9lnqSO1y4Y2eM3PpShk/+40Y0IPdkeWuXA/0BswFUKgF6a14/61GDD5vxKK
+ 4Y+cD9qA8q2AgyC5wHJGZhxX6MKR/kcUJPyFPOWzrg+ndTgLjhcJSJyu+En5forACnZ7
+ 1W8cY528zI+PPc0gh/54RVBM5GhwowTHevn5IN12wJBjyx2nib/4DRyfFVB/EgpL1K/r 0A== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3bs1bujjke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 18 Oct 2021 08:31:14 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 18 Oct
+ 2021 08:31:13 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 18 Oct 2021 08:31:13 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 7DEE15E6862;
+        Mon, 18 Oct 2021 08:31:10 -0700 (PDT)
+From:   Bhaskara Budiredla <bbudiredla@marvell.com>
+To:     <will@kernel.org>, <mark.rutland@arm.com>, <robh+dt@kernel.org>,
+        <bbhushan2@marvell.com>, <sgoutham@marvell.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Bhaskara Budiredla <bbudiredla@marvell.com>
+Subject: [PATCH v6 0/2] drivers: perf: Add Marvell CN10K LLC-TAD pmu driver
+Date:   Mon, 18 Oct 2021 21:00:55 +0530
+Message-ID: <20211018153057.23217-1-bbudiredla@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
- <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
-In-Reply-To: <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 18 Oct 2021 18:30:32 +0300
-Message-ID: <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
-Subject: Re: BMI160 accelerometer on AyaNeo tablet
-To:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-realtek-soc@lists.infradead.org,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Ping-Ke Shih <pkshih@realtek.com>, nic_swsd@realtek.com,
-        Derek Fang <derek.fang@realtek.com>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Kailang Yang <kailang@realtek.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-GUID: N-5QNF2_xhJzFgjxJK5kM1P8ezzqTWOk
+X-Proofpoint-ORIG-GUID: N-5QNF2_xhJzFgjxJK5kM1P8ezzqTWOk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_07,2021-10-18_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Realtek people whom I found in MAINTAINERS or so. Please
-waterfall to the people inside Realtek who can answer the question.
-(Note, you may access this discussion in full via:
-https://lore.kernel.org/linux-iio/CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com/T/#u)
+This series introduces performance monitor driver to Last-level-cache
+tag-and-data (LLC-TAD) PMU which is an intergral part of Marvell CN10K SoCs.
+The configuration and functionality of the TAD PMU is covered in patch 1.
+The device tree bindings are dealt in patch 2.
 
-The problem here is to have an official confirmation of what 10ec:5280
-ID is from Realtek's point of view. Context: the current discussion
-and a patch state that it's related to gyro sensor. Is it so?
+v6:
+ - add COMPILE_TEST dependency (Bharat Bhushan)
+ - replace sprintf with sysfs_emit (Bharat Bhushan)
 
-On Mon, Oct 18, 2021 at 6:36 AM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
->
-> On Sat, Oct 16, 2021 at 7:19 PM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
-> >
-> > I recently bought this device, and it has this accelerometer/gyroscope.
-> >
-> > Unfortunately, the device is advertised in ACPI as 10EC5280, instead of BMI0160
-> >
-> > I attached a patch that does add this 10EC5280 to the list of ACPI ids of this driver, and the device seems to work fine, showing both acceleration and angular velocity in /sys IIO attributes with reasonable values.
-> >
->
-> ( resend using plain text - reminds me to never use Gmail's web
-> interface, even on weekends .)
+v5:
+ - add prefix, type, description for vendor specific properties
+   in DT bindings (Rob Herring)
 
+v4:
+ - rebased on kernel v5.14-rc7
+ - eliminate yamllint errors (Rob Herring) 
+
+v3:
+ - rebased on kernel v5.14-rc5
+ - disable sampling events via PERF_PMU_CAP_NO_INTERRUPT (Will Deacon)
+ - convert tad pmu bindings to schema (Will Deacon)
+ - replace tighter semantics with *_relaxed() accesses (Will Deacon)
+ - use PMU_EVENT_ATTR_ID generic macro (Will Deacon)
+ - allow cleanup of allocations through devm_kcalloc() (Will Deacon)
+
+v2:
+ - rebased on kernel v5.13-rc3
+
+Bhaskara Budiredla (2):
+  drivers: perf: Add LLC-TAD perf counter support
+  dt-bindings: perf: Add YAML schemas for Marvell CN10K LLC-TAD pmu
+    bindings
+
+ .../bindings/perf/marvell-cn10k-tad.yaml      |  63 +++
+ drivers/perf/Kconfig                          |   7 +
+ drivers/perf/Makefile                         |   1 +
+ drivers/perf/marvell_cn10k_tad_pmu.c          | 429 ++++++++++++++++++
+ 4 files changed, 500 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
+ create mode 100644 drivers/perf/marvell_cn10k_tad_pmu.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
