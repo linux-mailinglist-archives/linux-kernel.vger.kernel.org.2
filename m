@@ -2,60 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD9443165D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1FD431664
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhJRKqP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 06:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhJRKqO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:46:14 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8611C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:44:03 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mcQ7X-0002lf-Pv; Mon, 18 Oct 2021 12:43:55 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mcQ7X-0006Dj-Cx; Mon, 18 Oct 2021 12:43:55 +0200
-Message-ID: <46235d88ea5d3621eb8ab6fe150e9fcb3f9ebe1f.camel@pengutronix.de>
-Subject: Re: [PATCH v4 2/2] reset: mchp: sparx5: Extend support for lan966x
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>, robh+dt@kernel.org,
-        lars.povlsen@microchip.com, Steen.Hegelund@microchip.com,
-        UNGLinuxDriver@microchip.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Andrew Lunn <andrew@lunn.ch>
-Date:   Mon, 18 Oct 2021 12:43:55 +0200
-In-Reply-To: <20211018091522.1113510-3-horatiu.vultur@microchip.com>
-References: <20211018091522.1113510-1-horatiu.vultur@microchip.com>
-         <20211018091522.1113510-3-horatiu.vultur@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S230397AbhJRKs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:48:29 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:57413 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229603AbhJRKs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:48:27 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HXtpH2mnzz9sSY;
+        Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ANnJZly2ob87; Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HXtpH1wwVz9sSD;
+        Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 29DC68B76C;
+        Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id qhZjXg78Wf90; Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA6688B763;
+        Mon, 18 Oct 2021 12:46:14 +0200 (CEST)
+Subject: Re: [PATCH net-next] phy: micrel: ksz8041nl: do not use power down
+ mode
+To:     Francesco Dolcini <francesco.dolcini@toradex.com>
+Cc:     f.fainelli@gmail.com, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211018094256.70096-1-francesco.dolcini@toradex.com>
+ <180289ac-4480-1e4c-d679-df4f0478ec65@csgroup.eu>
+ <20211018101802.GA7669@francesco-nb.int.toradex.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <a06104cf-d634-a25a-cf54-975689ad3e91@csgroup.eu>
+Date:   Mon, 18 Oct 2021 12:46:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211018101802.GA7669@francesco-nb.int.toradex.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-18 at 11:15 +0200, Horatiu Vultur wrote:
-> This patch extends sparx5 driver to support also the lan966x. The
-> process to reset the switch is the same only it has different offsets.
-> Therefore make the driver more generic and add support for lan966x.
+
+
+Le 18/10/2021 à 12:18, Francesco Dolcini a écrit :
+> Hello Christophe,
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> On Mon, Oct 18, 2021 at 11:53:03AM +0200, Christophe Leroy wrote:
+>>
+>>
+>> Le 18/10/2021 à 11:42, Francesco Dolcini a écrit :
+>>> From: Stefan Agner <stefan@agner.ch>
+>>>
+>>> Some Micrel KSZ8041NL PHY chips exhibit continous RX errors after using
+>>> the power down mode bit (0.11). If the PHY is taken out of power down
+>>> mode in a certain temperature range, the PHY enters a weird state which
+>>> leads to continously reporting RX errors. In that state, the MAC is not
+>>> able to receive or send any Ethernet frames and the activity LED is
+>>> constantly blinking. Since Linux is using the suspend callback when the
+>>> interface is taken down, ending up in that state can easily happen
+>>> during a normal startup.
+>>>
+>>> Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
+>>> clock recovery when using power down mode. Even the latest revision (A4,
+>>> Revision ID 0x1513) seems to suffer that problem, and according to the
+>>> errata is not going to be fixed.
+>>>
+>>> Remove the suspend/resume callback to avoid using the power down mode
+>>> completely.
+>>
+>> As far as I can see in the ERRATA, KSZ8041 RNLI also has the bug.
+>> Shoudn't you also remove the suspend/resume on that one (which follows in
+>> ksphy_driver[])
+> 
+> Yes, I could, however this patch is coming out of a real issue we had with
+> KSZ8041NL with this specific phy id (and we have such a patch in our linux
+> branch since years).
+> 
+> On the other hand the entry for KSZ8041RNLI in the driver is somehow weird,
+> since the phy id according to the original commit does not even exists on
+> the datasheet. Would you be confident applying such errata for that phyid
+> without having a way of testing it?
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-regards
-Philipp
+If your patch was to add the suspend/resume capability I would agree 
+with you, but here we are talking about removing it, so what risk are we 
+taking ?
+
+In addition, commit 4bd7b5127bd0 ("micrel: add support for KSZ8041RNLI") 
+clearly tells that the only thing it did was to copy KSZ8041NL entry, so 
+for me updating both entries would really make sense.
+
+It looks odd to me that you refer in your commit log to an ERRATA that 
+tells you that the bug also exists on the KSZ8041RNLI and you apply it 
+only partly.
+
+Christophe
