@@ -2,99 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B38A4325E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B0F4325E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhJRSFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:05:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52353 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231318AbhJRSFp (ORCPT
+        id S231944AbhJRSIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230057AbhJRSIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:05:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634580214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Thk5OLmfXHPG36uriH+bJ4mfoOC1g+fEVpm4vF4ZgqU=;
-        b=eV0Ksfht2vhqqpw6RGiRK8KXMASPn9mnU5tyYRlTfYVUxk95F62qy7INBZXH/Vi64S2X3T
-        M4ZU73kg9Iw3a/9yKmy2YxjB4xXtwoCSc4Wvr2+1z/rlvU/O9DRoyM27T8gwbaA0U8oJ7E
-        szGslAbriJxyxGrvOb9OKQYQt08hCEg=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-dxmKoaUeNt61Wg8nCeK9lA-1; Mon, 18 Oct 2021 14:03:30 -0400
-X-MC-Unique: dxmKoaUeNt61Wg8nCeK9lA-1
-Received: by mail-wm1-f72.google.com with SMTP id s10-20020a1cf20a000000b0030d66991388so3449425wmc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:03:30 -0700 (PDT)
+        Mon, 18 Oct 2021 14:08:12 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A89C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:06:00 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id x207so9062919vke.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7rsgdN3VduQajPPoeQmc0fDRx+p/oE/XICMQOKXr/tk=;
+        b=TC888OHBgaGtnkb+WMRqmEZYH8SnoLHnLVWZykP9DKGJt9+KJWGRShlbdPfslJ104W
+         IQnalU6wgKqRyicT/KsU/i7y5wa+TOckEzEmyipZl6YG7ebAox8strzC208B7/jZEWw9
+         gjGBDZQrOrAHLVeL8yvGkw5+BiPKjHVYDgtoVl/mtcJGjE7hsrCdt57RqVRZ6SRo+4dS
+         tuFM0hg/cNBhFvCG55zjb5XyayzDYhl0RqlhwTyrko6X+I9h293F7TCqd9zWSEZNY/Re
+         u6WZ1YzNOqZoNcMTeElvDMYm0KXMRKVmKeWkfAu2gWSE4BXjskwoBiT8+5FEsu8uQrWm
+         w+mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Thk5OLmfXHPG36uriH+bJ4mfoOC1g+fEVpm4vF4ZgqU=;
-        b=SVKCh5jhcp4hobhgCj1eDgVVhYEVRMI/X3lzBRTHti5k9xMMrLtsjwBD6cSHiD0Gb1
-         vzGBU3sRqyLzDLTw79PDVWnvbXM9WiRCY52l+lbOBE6VLgl055zuUTPmIOO6L8gBWgAL
-         ettM5MpoIO/EVzUlVVGiMcYUw1JAHPdcJ+V7NdVWhoThmwwZ4+UpzZSNEzdg2YohTS6/
-         Rj9EkmzWe7UuiV0ruASqrC0dMGc9LQG9YXGRlAKFlWEqmDASBFAApg/lKf+XDj2FAI04
-         Khmi1d2HtDB3XXbmk9QbEGoADkkd5lX9ZtCi8wHlgqgcFcpDTmTh8GbkmSLhxl8qMysO
-         aGHw==
-X-Gm-Message-State: AOAM532O/2VM0giRVDn6tbAXbVQD7/ina4oe0KxYZW+byE/e/J145vnn
-        hN4hGDbTMSzA/4cGtyEKwiqBLoasalN+FrXfiCaq1cOUwGYclY9rST2Gh7QxdPgIqUuWzW1lbuf
-        P7kBeuJS0zzh6OBBOHQGRhATg
-X-Received: by 2002:a7b:c938:: with SMTP id h24mr448804wml.126.1634580209486;
-        Mon, 18 Oct 2021 11:03:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxt8pjbMny9KaboDlf2A1tikNoWTJAds3ojSlzH86ZUnKOetCEzouUbLBa+VQi7kCuubJGBaQ==
-X-Received: by 2002:a7b:c938:: with SMTP id h24mr448766wml.126.1634580209232;
-        Mon, 18 Oct 2021 11:03:29 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b3sm13341298wrp.52.2021.10.18.11.03.27
+        bh=7rsgdN3VduQajPPoeQmc0fDRx+p/oE/XICMQOKXr/tk=;
+        b=f6jVcjOUZ/4cNGsd+5+L4lgmPcZnEippwuBt+OMKEaM3va62w0q6ir/Zb1/sOJLMnC
+         xNNCOL2ooOfI6ts6UXOqoVXBDmyn05SNhT21/LYnpWF7EtJo7wR5ru54il5Rcr+vzrGF
+         vciSrmpTdXdgf8qbY6dd9DaxMN0KHOhSA2OTCk8gxqib9LYEuCt/Q8KnMKAaDiIw95b5
+         1BTXvPlAlGptTBzfq8OjnMtMxLxBJb803hvPKtJfz5omHrgOfABVuPq3xtD6Z0JwF3+K
+         a2KGK2dkMC++lnZ8s1PXcHDsZnKi1tfqJ3YdjuDAQSVXQ7q25BQvddp0vcXaK5/uF5s0
+         E8Cw==
+X-Gm-Message-State: AOAM533QLGe8rt2lv837eD6IfqxxmL3/1L2ouQW87vRZixRv64btHZ9G
+        ENYoHbAzDO0N64nM2OkvD9GrrWESYY0=
+X-Google-Smtp-Source: ABdhPJzGyA1a9icdmXkB74CZWuefdbd1BYiEk0TU+WkXTbIOknhJJ7uR3ZtWg0URRVcgXrkrq+yZXw==
+X-Received: by 2002:a1f:b417:: with SMTP id d23mr26227711vkf.8.1634580359679;
+        Mon, 18 Oct 2021 11:05:59 -0700 (PDT)
+Received: from ?IPv6:2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc? ([2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc])
+        by smtp.gmail.com with ESMTPSA id 71sm9154484uao.13.2021.10.18.11.05.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 11:03:28 -0700 (PDT)
-Message-ID: <daba6b06-66cb-6564-b7b0-26cb994a07cd@redhat.com>
-Date:   Mon, 18 Oct 2021 20:03:24 +0200
+        Mon, 18 Oct 2021 11:05:59 -0700 (PDT)
+Subject: Re: [PATCH 0/6] Refactor the vkms to accept new formats
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+ <20211018105333.5f1bf9fe@eldfell>
+From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Message-ID: <2202889c-b865-124f-1035-35fd66d10a0c@gmail.com>
+Date:   Mon, 18 Oct 2021 15:05:56 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [GIT PULL] KVM fixes for Linux 5.15-rc7
+In-Reply-To: <20211018105333.5f1bf9fe@eldfell>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jim Mattson <jmattson@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>
-References: <20211018174137.579907-1-pbonzini@redhat.com>
- <CAHk-=wg0+bWDKfApDHVR70hsaRA_7bEZfG1XtN2DxZGo+np9Ug@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <CAHk-=wg0+bWDKfApDHVR70hsaRA_7bEZfG1XtN2DxZGo+np9Ug@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/21 19:57, Linus Torvalds wrote:
-> The way to do a logical "or" (instead of a bitwise one on two boolean
-> expressions) is to use "||".
-> 
-> Instead, the code was changed to completely insane
-> 
->     (int) boolexpr1 | (int) boolexpr2
-> 
-> thing, which is entirely illegible and pointless, and no sane person
-> should ever write code like that.
-> 
-> In other words, the*proper*  fix to a warning is to look at the code,
-> and*unsderstand*  the code and the warning, instead of some mindless
-> conversion to just avoid a warning.
+Hi pq,
 
-The code is not wrong, there is a comment explaining it:
+On 10/18/21 4:53 AM, Pekka Paalanen wrote:
+> On Tue,  5 Oct 2021 17:16:31 -0300
+> Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
+> 
+>> XRGB to ARGB behavior
+>> =================
+>> During the development, I decided to always fill the alpha channel of
+>> the output pixel whenever the conversion from a format without an alpha
+>> channel to ARGB16161616 is necessary. Therefore, I ignore the value
+>> received from the XRGB and overwrite the value with 0xFFFF.
+>>
+>> My question is, is this behavior acceptable?
+> 
+> Hi,
+> 
+> that is the expected behaviour. X channel values must never affect
+> anything on screen, hence they must never affect other channels'
+> values. You are free to completely ignore X channel values, and if your
+> output buffer has X channel, then you are free to write (or not write,
+> unless for security reasons) whatever into it.
+> 
 
-  	 * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
-  	 * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
-  	 * (this is extremely unlikely to be short-circuited as true).
+Great!! And thanks!!!
 
-Paolo
-
+> 
+> Thanks,
+> pq
+> 
+>>
+>> [1] https://lists.freedesktop.org/archives/igt-dev/2021-October/036125.html
+>>
+>> Igor Matheus Andrade Torrente (6):
+>>    drm: vkms: Replace the deprecated drm_mode_config_init
+>>    drm: vkms: Alloc the compose frame using vzalloc
+>>    drm: vkms: Replace hardcoded value of `vkms_composer.map` to
+>>      DRM_FORMAT_MAX_PLANES
+>>    drm: vkms: Add fb information to `vkms_writeback_job`
+>>    drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to accept multiple
+>>      formats
+>>    drm: vkms: Refactor the plane composer to accept new formats
+>>
+>>   drivers/gpu/drm/vkms/vkms_composer.c  | 275 ++++++++++++++------------
+>>   drivers/gpu/drm/vkms/vkms_drv.c       |   5 +-
+>>   drivers/gpu/drm/vkms/vkms_drv.h       |  12 +-
+>>   drivers/gpu/drm/vkms/vkms_formats.h   | 125 ++++++++++++
+>>   drivers/gpu/drm/vkms/vkms_writeback.c |  27 ++-
+>>   5 files changed, 304 insertions(+), 140 deletions(-)
+>>   create mode 100644 drivers/gpu/drm/vkms/vkms_formats.h
+>>
+> 
