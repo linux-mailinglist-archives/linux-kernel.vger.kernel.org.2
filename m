@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A1F431082
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D438431086
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhJRG2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
+        id S230235AbhJRG3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhJRG2Q (ORCPT
+        with ESMTP id S229848AbhJRG3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:28:16 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBDDC06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 23:26:06 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id f4so3783396uad.4
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 23:26:06 -0700 (PDT)
+        Mon, 18 Oct 2021 02:29:35 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1DEC06161C;
+        Sun, 17 Oct 2021 23:27:24 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id f21so10510022plb.3;
+        Sun, 17 Oct 2021 23:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5hyNbtoXj6gpz4GVzyiBy/BcrMKlU7PR5ScmW7Ah/0c=;
-        b=fUoWDbarHptRaSJPZZmT2Ezo0RZISM9rh5s8evrCkVqnsmUDqct9pNJCt6UgP34gsu
-         //k3IqFxT6I1pFaSnTEdzarl4ScQw4UqJSZb7AZp2uB4i9PWTHRi7dddDE8Bm5U2/y6X
-         TrWAoVlheTVniBRFlgV5OPQuyXUzo03PX27Frzoqm9RPPlLSaKwAt3AUi8mYHf0cbpac
-         ItwK1PtmtJpg/6gkYvNKt6Zpg8sU+1xsFRQWxdH8M/7MJBnqVA/+Hh6pXv9O2tJoUnXO
-         HyTJ0FdgHfp2aGnq+CsMhhFoHWlBVuEGH77ze9DERaTmv/Gfj4QN8CK3FDDCwClcnuY2
-         D4mw==
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=xax6w8vdDeorgOHfukYruV4crW1zSmA0Yn4dKXojVlM=;
+        b=Yk6LSNqkisKS10pGs8UquN9x1ScpNWbbgjoL8+BGGKLSgbjdOJ3dp2g4efx3BdfCeO
+         cpsPii0dvmpI5i4at1AfbwppVJhgOZ26idOW0GLdOQeVwmefcEItygifPo86mrnha+x4
+         NIWZpYpHR6kFun2FQLxF27U9o+qV07b0vK5G5WgPn0ZpzX17VLkkiSKRVCgpZqXAf1zx
+         dde5W/U0tdvOvf4D4gu07I1Mu1xeQafVvUZkcLv7n3kFF4kmbn3gONaEYyunqyFktKGo
+         6DMc6sMtkN+zto4NUMtwLpDv/oq52HG/WZSSVvcUNKEUfVlsnVRXiyWwOzDYjZsSlcBw
+         1jHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5hyNbtoXj6gpz4GVzyiBy/BcrMKlU7PR5ScmW7Ah/0c=;
-        b=65vC5EPcraSWPJgcQ7AC92dmxi+utwwquV76sVSWRwlAfvwPqABbpyOTOcxpqRp69p
-         DgL+C1kI6ze3zPik1CZnkPXQQ3hn14Yy9fTqYpfSzSebYJZOEU26zk1YNJ4HIdV+uN+t
-         0WBJlie8Qe3bniyEOofL7/fAAuYJsGn5rIlHnIiQtftWPH/19mSYibCRmU0FHsWH6FN7
-         jmSa8RH69naDQQtWT+/+ln9fI38s7optVSf1mLy5pUy5msbhUguNYNPYLTS/BfMT7rJv
-         H2ag6jkI+ztBurUK/1L28QHx3g/COXwqg0AmO1cpLhkTx5YttWFsUtwwI1xNPOYPsa5w
-         A1Lg==
-X-Gm-Message-State: AOAM533fmoF06g33deNnB4TxTQujgD4FoRkRmXIsJ3ezIgopPoOWdmKZ
-        /RjaGttdzp7n3GZnVBQR0OQsfBCVyP0o/aMGOkgu0Q==
-X-Google-Smtp-Source: ABdhPJwLVSsvksTT5AZxm0evVbJT73BF/2Vlm124e/F9zu//3HXW69tjV+llW2vhLcKMEXT5XQWM34JmpeIdNDgHo80=
-X-Received: by 2002:ab0:49ca:: with SMTP id f10mr23313822uad.61.1634538365121;
- Sun, 17 Oct 2021 23:26:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=xax6w8vdDeorgOHfukYruV4crW1zSmA0Yn4dKXojVlM=;
+        b=rZElkmZOz302i+uWOBrMOT0cOUfVn7Eh2a+A26IPRRfExVUe3EBiI4i2imAtil7Gia
+         srPVwxKGGJqDy/H6odbPXBT62ii1yrPdTu2Swz18MNlUXlY82LYJjy64lCuQK7cTVrTx
+         4LXsGUiHoSf1pBiRsD1i/+HYdIqhXEZ4hiI94levK4SGy0JY5yfC/46xrlWgRKNXwBWv
+         fCJ/9yjYPq+7DVqt5wtnmohiPC49lcDmg5reK5XqComPV6/251mRRbfj3Cs2WeZTdEaR
+         dRtfGoHLUVRM1gVtVh4rL4JTraN7oytm42A7/Fbd3BYUbOXIsya4+9kWopDc9ZvkMm7S
+         FPJw==
+X-Gm-Message-State: AOAM532Cfp4TWuCzjMBbupIGyYvrdV+k3FEBsni0cGc9U/F0DNrtyQDw
+        h2K6HcNcCYswzmt7KbwYaFI=
+X-Google-Smtp-Source: ABdhPJw0GP7RprUuWC+8YWTOwY32i9+w+LmnM+jhtULZlF66OhLA6thzoj0Ge0GcMhEsc7ZGu2Pfgw==
+X-Received: by 2002:a17:90a:1a43:: with SMTP id 3mr46829314pjl.242.1634538444308;
+        Sun, 17 Oct 2021 23:27:24 -0700 (PDT)
+Received: from localhost ([1.128.241.185])
+        by smtp.gmail.com with ESMTPSA id t125sm11910863pfc.119.2021.10.17.23.27.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 23:27:24 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 16:27:17 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v3 04/12] powerpc: Prepare func_desc_t for refactorisation
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1634457599.git.christophe.leroy@csgroup.eu>
+        <86c393ce0a6f603f94e6d2ceca08d535f654bb23.1634457599.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <86c393ce0a6f603f94e6d2ceca08d535f654bb23.1634457599.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
- <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
- <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch>
- <878rzw77i3.fsf@disp2133> <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
- <20210929173611.fo5traia77o63gpw@example.org> <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
- <20210930130640.wudkpmn3cmah2cjz@example.org> <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
- <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133> <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
- <87mtnavszx.fsf_-_@disp2133> <24192747-7f69-ef22-7bf1-96b2e7c2bca1@infomedia.dk>
-In-Reply-To: <24192747-7f69-ef22-7bf1-96b2e7c2bca1@infomedia.dk>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 18 Oct 2021 00:25:54 -0600
-Message-ID: <CAOUHufZJFAK3uBma0kgEjb7YK6Fq4vQqdGNFz6_=QkFBbqGBCw@mail.gmail.com>
-Subject: Re: [CFT][PATCH] ucounts: Fix signal ucount refcounting
-To:     Rune Kleveland <rune.kleveland@infomedia.dk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "containers\\@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1634536863.oq0s171f8c.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 10:47 AM Rune Kleveland
-<rune.kleveland@infomedia.dk> wrote:
->
-> Hi!
->
-> After applying the below patch, the 5 most problematic servers have run
-> without any issues for 23 hours. That never happened before the patch on
-> 5.14, so the patch seems to have fixed the issue for me.
+Excerpts from Christophe Leroy's message of October 17, 2021 10:38 pm:
+> In preparation of making func_desc_t generic, change the ELFv2
+> version to a struct containing 'addr' element.
+>=20
+> This allows using single helpers common to ELFv1 and ELFv2.
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Confirm. I couldn't reproduce the problem on 5.14 either.
+> ---
+>  arch/powerpc/kernel/module_64.c | 32 ++++++++++++++------------------
+>  1 file changed, 14 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module=
+_64.c
+> index a89da0ee25e2..b687ef88c4c4 100644
+> --- a/arch/powerpc/kernel/module_64.c
+> +++ b/arch/powerpc/kernel/module_64.c
+> @@ -33,19 +33,13 @@
+>  #ifdef PPC64_ELF_ABI_v2
+> =20
+>  /* An address is simply the address of the function. */
+> -typedef unsigned long func_desc_t;
+> +typedef struct {
+> +	unsigned long addr;
+> +} func_desc_t;
 
-> On Monday there will be more load on the servers, which caused them to
-> crash faster without the patch. I will let you know if it happens again.
->
-> Best regards,
-> Rune
->
-> On 16/10/2021 00:10, Eric W. Biederman wrote:
-> >
-> > In commit fda31c50292a ("signal: avoid double atomic counter
-> > increments for user accounting") Linus made a clever optimization to
-> > how rlimits and the struct user_struct.  Unfortunately that
-> > optimization does not work in the obvious way when moved to nested
-> > rlimits.  The problem is that the last decrement of the per user
-> > namespace per user sigpending counter might also be the last decrement
-> > of the sigpending counter in the parent user namespace as well.  Which
-> > means that simply freeing the leaf ucount in __free_sigqueue is not
-> > enough.
-> >
-> > Maintain the optimization and handle the tricky cases by introducing
-> > inc_rlimit_get_ucounts and dec_rlimit_put_ucounts.
-> >
-> > By moving the entire optimization into functions that perform all of
-> > the work it becomes possible to ensure that every level is handled
-> > properly.
-> >
-> > I wish we had a single user across all of the threads whose rlimit
-> > could be charged so we did not need this complexity.
+I'm not quite following why this change is done. I guess it is so you=20
+can move this func_desc_t type into core code, but why do that? Is it
+just to avoid using the preprocessor?
+
+On its own this patch looks okay.
+
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
