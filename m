@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A88431841
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB2A431846
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhJRL6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:58:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48528 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231623AbhJRL6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:58:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634558157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fCM/GUGbXTstduw5A7ZtGYQzITbTV7AQFdkBboCynIE=;
-        b=fatAZExHlkYvjov0gS602mfrLcbtAWjSCRMszS/Y814ERwhnT9Yt4LdLP85Lh4PVChBkJZ
-        XcZbMu5UZhqYK3zl/JJY3k1SgcbYYwGz6YoQboekVBLlDxA5KebRhUcec46gck5Q41aYDn
-        zoI/Dr0RJGnGCFNTxsWdIuYWTG85HIA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-W4gMF3P6NvCD9oNC0c803A-1; Mon, 18 Oct 2021 07:55:56 -0400
-X-MC-Unique: W4gMF3P6NvCD9oNC0c803A-1
-Received: by mail-wr1-f70.google.com with SMTP id l8-20020a5d6d88000000b001611b5de796so8757246wrs.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:55:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=fCM/GUGbXTstduw5A7ZtGYQzITbTV7AQFdkBboCynIE=;
-        b=HtDz3fzTpqFBB+QgL+8+LaJFeK5bnbDrCnoS3nc6z8mU/EPwAydDZf17D5TA9slgq2
-         rby7et3+7TsjIRUgWssV4/0eNNyQb5utoRfjvrD6BoJrG+T67Ql6pOs3ZYtwtj2PUqoT
-         lc3JDja5SymXHgFkR+AoZl/60j4cOoBCxOVLM895eGE2obNvfPk0cJrllu4/CuT42CUL
-         1B44ISaC5Vdtt9nxbze0jPnGobBSEeU3bBFsk13mLSmXpXa5MFjgPnBtqRjbBMGROzMb
-         lWSpmEbGe0mKmnWn2wFTfH6aAkgqdiQJoXHCD0QcTmHKV22xQ0tAoy/YcNVhTJCqDlXm
-         ZzXA==
-X-Gm-Message-State: AOAM533Zo3bn66nDNbcN48DTst4d+T/vLgbcvJHh81KwfEkMng+nNw8I
-        WP2RIpMemPjEpWlQIre/q7DyLFGh8XmK5ZxRHWeFwhwjM6YzcE0ykjZ8NcW123KLgiAm3KuJ6GI
-        j8FcCVPmWvq/QycDBbyBbz/LW
-X-Received: by 2002:a5d:598a:: with SMTP id n10mr34535608wri.93.1634558155065;
-        Mon, 18 Oct 2021 04:55:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxiVA0bTdZn/OFUfGqxOypsZ4ysp85b1Jd23TcQIsqU26rnc4Y3pUGQXL9xTCEja8xMGZgAYg==
-X-Received: by 2002:a5d:598a:: with SMTP id n10mr34535587wri.93.1634558154877;
-        Mon, 18 Oct 2021 04:55:54 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x7sm12108195wrq.69.2021.10.18.04.55.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 04:55:54 -0700 (PDT)
-Message-ID: <b1c49069-437c-7aa6-531d-6651dad72015@redhat.com>
-Date:   Mon, 18 Oct 2021 13:55:53 +0200
+        id S231337AbhJRL7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:59:40 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:46085 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhJRL7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 07:59:39 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HXwNQ3pXVz9sSg;
+        Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RL3x8vznDKhL; Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HXwNQ2lbsz9sSY;
+        Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 466508B76C;
+        Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id MRjVM3w8MEjt; Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 102D18B763;
+        Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
+Subject: Re: [PATCH net-next] phy: micrel: ksz8041nl: do not use power down
+ mode
+To:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        f.fainelli@gmail.com, Andrew Lunn <andrew@lunn.ch>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211018094256.70096-1-francesco.dolcini@toradex.com>
+ <180289ac-4480-1e4c-d679-df4f0478ec65@csgroup.eu>
+ <20211018101802.GA7669@francesco-nb.int.toradex.com>
+ <a06104cf-d634-a25a-cf54-975689ad3e91@csgroup.eu>
+ <20211018112735.GB7669@francesco-nb.int.toradex.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <efb25ac0-a5f6-fc88-ce6d-f93a174c65f1@csgroup.eu>
+Date:   Mon, 18 Oct 2021 13:57:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 3/4] x86/kvm: Convert FPU handling to a single swap buffer
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Liu, Jing2" <jing2.liu@intel.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org, "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-References: <20211017151447.829495362@linutronix.de>
- <20211017152048.666354328@linutronix.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211017152048.666354328@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20211018112735.GB7669@francesco-nb.int.toradex.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/21 19:03, Thomas Gleixner wrote:
->   	 */
-> -	fpu_swap_kvm_fpu(vcpu->arch.user_fpu, vcpu->arch.guest_fpu,
-> -			 ~XFEATURE_MASK_PKRU);
-> +	fpu_swap_kvm_fpstate(&vcpu->arch.guest_fpu, true, ~XFEATURE_MASK_PKRU);
->   	trace_kvm_fpu(1);
->   }
->   
->   /* When vcpu_run ends, restore user space FPU context. */
->   static void kvm_put_guest_fpu(struct kvm_vcpu *vcpu)
->   {
-> -	/*
-> -	 * Guests with protected state have guest_fpu == NULL which makes
-> -	 * swap only restore the host state.
-> -	 */
-> -	fpu_swap_kvm_fpu(vcpu->arch.guest_fpu, vcpu->arch.user_fpu, ~0ULL);
-> +	fpu_swap_kvm_fpstate(&vcpu->arch.guest_fpu, false, ~0ULL);
++Sergei Shtylyov
 
-The restore mask can be ~XFEATURE_MASK_PKRU in this case tool this way 
-it's constant and you can drop the third argument to the function.
+Adding Sergei Shtylyov in the discussion, as he submitted the patch for 
+the support of KSZ8041RNLI.
 
-Also perhaps it could be useful to add an
 
-if (WARN_ON_ONCE(cur_fps->is_guest == enter_guest))
-	return;
-
-at the top of fpu_swap_kvm_fpstate, since the is_guest member (at least 
-for now?) is only used for such kind of assertion.
-
-Paolo
-
+Le 18/10/2021 à 13:27, Francesco Dolcini a écrit :
+> On Mon, Oct 18, 2021 at 12:46:14PM +0200, Christophe Leroy wrote:
+>>
+>>
+>> Le 18/10/2021 à 12:18, Francesco Dolcini a écrit :
+>>> Hello Christophe,
+>>>
+>>> On Mon, Oct 18, 2021 at 11:53:03AM +0200, Christophe Leroy wrote:
+>>>>
+>>>>
+>>>> Le 18/10/2021 à 11:42, Francesco Dolcini a écrit :
+>>>>> From: Stefan Agner <stefan@agner.ch>
+>>>>>
+>>>>> Some Micrel KSZ8041NL PHY chips exhibit continous RX errors after using
+>>>>> the power down mode bit (0.11). If the PHY is taken out of power down
+>>>>> mode in a certain temperature range, the PHY enters a weird state which
+>>>>> leads to continously reporting RX errors. In that state, the MAC is not
+>>>>> able to receive or send any Ethernet frames and the activity LED is
+>>>>> constantly blinking. Since Linux is using the suspend callback when the
+>>>>> interface is taken down, ending up in that state can easily happen
+>>>>> during a normal startup.
+>>>>>
+>>>>> Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
+>>>>> clock recovery when using power down mode. Even the latest revision (A4,
+>>>>> Revision ID 0x1513) seems to suffer that problem, and according to the
+>>>>> errata is not going to be fixed.
+>>>>>
+>>>>> Remove the suspend/resume callback to avoid using the power down mode
+>>>>> completely.
+>>>>
+>>>> As far as I can see in the ERRATA, KSZ8041 RNLI also has the bug.
+>>>> Shoudn't you also remove the suspend/resume on that one (which follows in
+>>>> ksphy_driver[])
+>>>
+>>> Yes, I could, however this patch is coming out of a real issue we had with
+>>> KSZ8041NL with this specific phy id (and we have such a patch in our linux
+>>> branch since years).
+>>>
+>>> On the other hand the entry for KSZ8041RNLI in the driver is somehow weird,
+>>> since the phy id according to the original commit does not even exists on
+>>> the datasheet. Would you be confident applying such errata for that phyid
+>>> without having a way of testing it?
+>>
+>>
+>> If your patch was to add the suspend/resume capability I would agree with
+>> you, but here we are talking about removing it, so what risk are we taking ?
+> yes, you are right.
+> 
+>> In addition, commit 4bd7b5127bd0 ("micrel: add support for KSZ8041RNLI")
+>> clearly tells that the only thing it did was to copy KSZ8041NL entry, so for
+>> me updating both entries would really make sense.
+>>
+>> It looks odd to me that you refer in your commit log to an ERRATA that tells
+>> you that the bug also exists on the KSZ8041RNLI and you apply it only
+>> partly.
+> 
+> I think I was not clear enough, the entry I changed should already cover
+> KSZ8041RNLI, the phyid is supposed to be just the same according to the
+> datasheet. This entry for KSZ8041RNLI seems really special with this
+> un-documented phyid.
+> But I'm just speculating, I do not have access to these hardware.
+> 
+> Said that if there are no concern from anybody else, to be on the safe/cautious
+> side, I can just update also this entry.
+> 
+> Francesco
+> 
