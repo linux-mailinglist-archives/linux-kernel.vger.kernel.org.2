@@ -2,125 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E9C431793
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5482F431796
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhJRLkh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 07:40:37 -0400
-Received: from mail-vk1-f174.google.com ([209.85.221.174]:42898 "EHLO
-        mail-vk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhJRLkf (ORCPT
+        id S231241AbhJRLlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhJRLlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:40:35 -0400
-Received: by mail-vk1-f174.google.com with SMTP id o42so8390342vkf.9;
-        Mon, 18 Oct 2021 04:38:24 -0700 (PDT)
+        Mon, 18 Oct 2021 07:41:02 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4017CC061714
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:38:51 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id r7so40845188wrc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=izAChMKfU4M1JtEGtK63C3jheOqpGSqPDw4xf2Pzy7E=;
+        b=fewHGW7vIwSWex8bkszpvWTo47fUznS598hQauS06eYBYCGz6vUuZ5k1Nz4huioQtM
+         RSIaWO3S7nEMSl9piHQ/NJ/ZFpx/yQQ9efLjxR9IsQFN8M3tOGdynTFOPZ4Fw5tm4ww5
+         J8Z6RgYKi6peEYkQl5F4svOc6TWnjN5NTSGeM8Gvn9wYNLSCFW8wEBfjDI+bZYo2kfVP
+         Fdg2Msr3zcLY1R5QByOkNWBxpcI48K9FSxEOULQWzq/FmBxbVhNwYB+ePNDD+M2IdzH/
+         6IO4KxJ2iOBuvmDQ7hS2KkAiyNR/p9eTKvLje6+k/6IZamD1UiRXz8Ukz5edAp+3jrLn
+         AZ+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MmeKk08TSs7bRjJ5MxCz8dFyhSFfnwP05dCVlXuAOs4=;
-        b=rGJ19l4ep+FCrF2i6ZFriMYoWZUTxFLwCdpyZetabcNvtIt7x8ieOi4KCBmtMN344/
-         //a3/ViUAoesZhOAJ4qH1RkkjNg8Mn1ZczWNQXUJoefM9e1DbZmZ5CYmeE17sCuFwaO5
-         i8bcjYtAlW3NV/NaREoKXRGqDpCwK9gTLjD3dt5ZIRkLK2PnB0wOfUpJNRnx95h8Z/Ca
-         Pcxyyv4nT48CHVCA0frisNQvXJCHRkxm+cGJ1UlFJRTnNxC2mW1EdY4kBBzeBfAQtgcZ
-         G5cPgwI49PaXOPaky0yZxK6jSDJed2pFP5xTItjW4X3MuKW4pyooORFvKds5/zv9s5pg
-         DEKw==
-X-Gm-Message-State: AOAM532FEIz7Hr1qlf05V9VlB6bpbLV5tno7SsFX6wbevdXp0FiYBg9o
-        9U8rCZSAVTqpyN00sLvvqke4FP29dTJk1A==
-X-Google-Smtp-Source: ABdhPJwAQE2i81QclXtGa9rFQpHYXaAm4dJIUzoQW46+F+SGZm0PSWq5hwrp2KwDcv+KVLyHJwz+ug==
-X-Received: by 2002:a1f:bf86:: with SMTP id p128mr23532712vkf.23.1634557104233;
-        Mon, 18 Oct 2021 04:38:24 -0700 (PDT)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id k1sm8483749uaq.0.2021.10.18.04.38.23
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=izAChMKfU4M1JtEGtK63C3jheOqpGSqPDw4xf2Pzy7E=;
+        b=dJwwTkxbYyaZ3jAFWdWgswLNmGdGV+irCO6r2fp7NpGQCtWyY7bf8cMDy+gVYmzoPs
+         tfDuLfvMEOvH6a+CIjs/FE2ae0eI+D/6Qhl1bupkpmF6nJYd/WYmJXGi5g4bEjQ4pYCQ
+         PKxAoW3TiW0YDqWTHAXPkoBtKuuWnwJVhGAzRHdtEKYWs6sLBC+1LUeX8JIwSGoFy/uu
+         cTCvDQ8L/fB8Qh4pLmlH5TRWxkjiCcbZVhkt4hCL1qiiydGQ3r2PxI8EhrKVXCmP+iFx
+         S2p7C66de65jyP7Y3UQciUMVDU0R0QWIV146lx6WZ6rKrASJYqkCU29RjqDDnJG3fs1z
+         8y4g==
+X-Gm-Message-State: AOAM530cVu72kcD8MiscrwaJhEKfr63zveDh4JeVtnIuo56hCw+H95RD
+        ZDAcFjGpP9F6oN90ySP+bdnyfA==
+X-Google-Smtp-Source: ABdhPJxauBtLw8WWbhOtAf35iDo3MhCEFh3QfeIBCE6PrLfoWQRRcRu3dNH4TYeyLp2sRkClnLSa+A==
+X-Received: by 2002:adf:bb0a:: with SMTP id r10mr34381292wrg.23.1634557129700;
+        Mon, 18 Oct 2021 04:38:49 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:b2b3:1133:5bdb:b2f2? ([2a01:e34:ed2f:f020:b2b3:1133:5bdb:b2f2])
+        by smtp.googlemail.com with ESMTPSA id b3sm12549662wrp.52.2021.10.18.04.38.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 04:38:23 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id e10so5137111uab.3;
-        Mon, 18 Oct 2021 04:38:23 -0700 (PDT)
-X-Received: by 2002:a9f:29a5:: with SMTP id s34mr19126482uas.122.1634557103412;
- Mon, 18 Oct 2021 04:38:23 -0700 (PDT)
+        Mon, 18 Oct 2021 04:38:49 -0700 (PDT)
+Subject: Re: [PATCH] thermal: imx: Fix temperature measurements on i.MX6 after
+ alarm
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
+Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-pm@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Petr_Bene=c5=a1?= <petr.benes@ysoft.com>,
+        petrben@gmail.com, stable@vger.kernel.org
+References: <20211008081137.1948848-1-michal.vokac@ysoft.com>
+ <20211018112820.qkebjt2gk2w53lp5@pengutronix.de>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <37bc3702-bc98-dc54-e9c7-bf9bc92432f0@linaro.org>
+Date:   Mon, 18 Oct 2021 13:38:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211013144308.2248978-1-arnd@kernel.org> <25ccdc75-67da-a955-b8ef-641a2f007d13@amd.com>
-In-Reply-To: <25ccdc75-67da-a955-b8ef-641a2f007d13@amd.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 Oct 2021 13:38:12 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWKp-v=df0JA_tr-YgNnyfu7NS9dA3Zr+bqwZX9JuBAGQ@mail.gmail.com>
-Message-ID: <CAMuHMdWKp-v=df0JA_tr-YgNnyfu7NS9dA3Zr+bqwZX9JuBAGQ@mail.gmail.com>
-Subject: Re: [PATCH] drm: msm: fix building without CONFIG_COMMON_CLK
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Alex Elder <elder@linaro.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rajeev Nandan <rajeevny@codeaurora.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        freedreno@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20211018112820.qkebjt2gk2w53lp5@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On 18/10/2021 13:28, Oleksij Rempel wrote:
+> Hi Michal,
+> 
+> I hope you have seen this patch:
+> https://lore.kernel.org/all/20210924115032.29684-1-o.rempel@pengutronix.de/
+> 
+> Are there any reason why this was ignored?
 
-On Mon, Oct 18, 2021 at 1:37 PM Christian König
-<christian.koenig@amd.com> wrote:
-> Am 13.10.21 um 16:42 schrieb Arnd Bergmann:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > When CONFIG_COMMON_CLOCK is disabled, the 8996 specific
-> > phy code is left out, which results in a link failure:
-> >
-> > ld: drivers/gpu/drm/msm/hdmi/hdmi_phy.o:(.rodata+0x3f0): undefined reference to `msm_hdmi_phy_8996_cfg'
-> >
-> > This was only exposed after it became possible to build
-> > test the driver without the clock interfaces.
-> >
-> > Make COMMON_CLK a hard dependency for compile testing,
-> > and simplify it a little based on that.
-> >
-> > Fixes: b3ed524f84f5 ("drm/msm: allow compile_test on !ARM")
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >   drivers/gpu/drm/msm/Kconfig  | 2 +-
-> >   drivers/gpu/drm/msm/Makefile | 6 +++---
-> >   2 files changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-> > index f5107b6ded7b..cb204912e0f4 100644
-> > --- a/drivers/gpu/drm/msm/Kconfig
-> > +++ b/drivers/gpu/drm/msm/Kconfig
-> > @@ -4,8 +4,8 @@ config DRM_MSM
-> >       tristate "MSM DRM"
-> >       depends on DRM
-> >       depends on ARCH_QCOM || SOC_IMX5 || COMPILE_TEST
-> > +     depends on COMMON_CLK
-> >       depends on IOMMU_SUPPORT
->
-> We also need a "depends on MMU" here because some automated test is now
-> trying to compile the driver on parisc as well.
->
-> I have absolutely no idea how a platform can have IOMMU but no MMU
-> support but it indeed seems to be the case here.
+No reasons, I was waiting for some tags before merging it. But I forget
+about it when reviewing the current patch.
 
-Huh?
 
-Parisc has config MMU def_bool y?
 
-Gr{oetje,eeting}s,
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
