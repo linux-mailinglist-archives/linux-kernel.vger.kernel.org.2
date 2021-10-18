@@ -2,194 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0260D430D4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4C7430D53
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344924AbhJRBMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 21:12:35 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35054 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344912AbhJRBMe (ORCPT
+        id S1344932AbhJRBO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 21:14:27 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:41823 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344912AbhJRBO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 21:12:34 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634519422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2renu8ZE8ozzoUn8doITIHK/p2oy+zqiubPlxkzvjKI=;
-        b=NeYfFMecTWNziQtQWeHQRI+pSG8mlPx6rXnTY+tqAmJzCsEnkfJdfxBPRvyYIRvcAU8kWP
-        JXOl8vAwoKGZixe/fWcIkEVur6LcilfP2x0Ax+WPMpFO3NFr9bARL3HGLg5zIGHjKA1y9c
-        q3rYu+QwEgDYmExjuGiOFYCLkBA4EzIpDVo6HZbDQqKEnzRgAYO7b3zRFgn8jpP+A800Jj
-        2UmK35n0lwcDd6gSXItNrWDs8YtI0n7t5587yj/LuVrrNu61iqhJw5dBbpEd3Rf2pdoDV6
-        Jc98JYhX0b1wja0EWFZO/gKnYKM45illilYEq4oiOkJMu8T1dEdMpLcTGJ5lLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634519422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2renu8ZE8ozzoUn8doITIHK/p2oy+zqiubPlxkzvjKI=;
-        b=yTgU4qMQsJ0Prrb5VgmZPnJugZRYb/9AQNBOmEJMAHu2NeRNJyDX9XIv0KSMJ7cnVvjbMs
-        5ijmDWqMRiGSdHAA==
-To:     Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "Schlobohm, Bruce" <bruce.schlobohm@intel.com>,
-        "Kovatch, Kathleen" <kathleen.kovatch@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-In-Reply-To: <875ytv2lu8.ffs@tglx>
-References: <875ytv2lu8.ffs@tglx>
-Date:   Mon, 18 Oct 2021 03:10:21 +0200
-Message-ID: <871r4j2l4y.ffs@tglx>
+        Sun, 17 Oct 2021 21:14:26 -0400
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 29B2A8365B;
+        Mon, 18 Oct 2021 14:12:14 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1634519534;
+        bh=WN3zjox2svwGoKWGCD6Z0a+gH5Ir3xcNl02i0rJdcgg=;
+        h=From:To:Cc:Subject:Date;
+        b=ndZ/xcuDC+WQqwbohdNC6O7qUN6ZKnfHtuAIqMIdCSKqw81+13THri5HJMjDJzeqZ
+         ohubwmpkYXY0a9GnH/sXq8obCg/1P2Z2lnMPiJ9a9I6TX12R3TzU1BR5NgibfsrNYH
+         a1pPqdYDTs9dTvaTLPE7WRfGyJLTASxL762qoPLaYL3TPYYFW42LwgEytB5RfUVyN4
+         HPh1wWXxxuIj1HokcK2HaV9XGjbAm0h5DlT3PDKU/4ykZoqZy/o6aTJu9iyfDig4dt
+         tcle5Ij3iojvXLp+8sjBKN2latZSNJxcGXkCb0QOleCrFx4cQIpwO0SKcOdRTUkm7z
+         pIUpdl/GNzSfg==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B616cc9ee0000>; Mon, 18 Oct 2021 14:12:14 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.26])
+        by pat.atlnz.lc (Postfix) with ESMTP id F33DE13ED1E;
+        Mon, 18 Oct 2021 14:12:13 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id F03DB2A0B00; Mon, 18 Oct 2021 14:12:13 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2 0/2] arm/arm64: dts: Enable more network hardware
+Date:   Mon, 18 Oct 2021 14:12:09 +1300
+Message-Id: <20211018011211.3836590-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=eIJtc0h1 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=8gfv0ekSlNoA:10 a=P1OfKbyUusFMxSjCSHQA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18 2021 at 02:55, Thomas Gleixner wrote:
-> On Sun, Oct 10 2021 at 15:11, Andi Kleen wrote:
->> The 5.15 tree has something like ~2.4k IO accesses (including MMIO and 
->> others) in init functions that also register drivers (thanks Elena for 
->> the number)
->
-> These numbers are completely useless simply because they are based on
-> nonsensical criteria. See:
->
->   https://lore.kernel.org/r/87r1cj2uad.ffs@tglx
->
->> My point is just that the ecosystem of devices that Linux supports is 
->> messy enough that there are legitimate exceptions from the "First IO 
->> only in probe call only" rule.
->
-> Your point is based on your outright refusal to actualy do a proper
-> analysis and your outright refusal to help fixing the real problems.
->
-> All you have provided so far is handwaving based on a completely useless
-> analysis.
->
-> Sure, your goal is to get this TDX problem solved, but it's not going to
-> be solved by:
->
->   1) Providing a nonsensical analysis
->
->   2) Using #1 as an argument to hack some half baken interfaces into the
->      kernel which allow you to tick off your checkbox and then leave the
->      resulting mess for others to clean up.
->  
-> Try again when you have factual data to back up your claims and factual
-> arguments which prove that the problem can't be fixed otherwise.
->
-> I might be repeating myself, but kernel development works this way:
->
->   1) Hack your private POC - Yay!
->
->   2) Sit down and think hard about the problems you identified in step
->      #1. Do a thorough analysis.
->   
->   3) Come up with a sensible integration plan.
->
->   4) Do the necessary grump work of cleanups all over the place
->
->   5) Add sensible infrastructure which is understandable for the bulk
->      of kernel/driver developers
->
->   6) Let your feature fall in place
->
-> and not in the way you are insisting on:
->
->   1) Hack your private POC - Yay!
->
->   2) Define that this is the only way to do it and try to shove it down
->      the throat of everyone.
->
->   3) Getting told that this is not the way it works
->
->   4) Insist on it forever and blame the grumpy maintainers who are just
->      not understanding the great value of your approach.
->
->   5) Go back to #2
->
-> You should know that already, but I have no problem to give that lecture
-> to you over and over again. I probably should create a form letter.
->
-> And no, you can bitch about me as much as you want. These are not my
-> personal rules and personal pet pieves. These are rules Linus cares
-> about very much and aside of that they just reflect common sense.
->
->   The kernel is a common good and not the dump ground for your personal
->   brain waste.
->
->   The kernel does not serve Intel. Quite the contrary Intel depends on
->   the kernel to work nicely with it's hardware. Ergo, Intel should have
->   a vested interest to serve the kernel and take responsibility for it
->   as a whole. And so should you as an Intel employee.
->
-> Just dumping your next half baken workaround does not cut it especially
-> not when it is not backed up by sensible arguments.
->
-> Please try again, but not before you have something substantial to back
-> up your claims.
+This series enables the Switch and 2.5G Ethernet port on the CN9130-CRB. =
+The
+changes are based on the Marvell SDK.
 
-That said, I can't resist the urge to say a few words to the responsible
-senior and management people at Intel in this context:
+Note Gregory has already picked up the 2.5G Ethernet patch from v1 so I'v=
+e not
+included it in v2 of this series.
 
-I surely know that a lot of Intel people claim that their lack of
-progress is _only_ because Thomas is hard to work with and Thomas wants
-unreasonable changes to their code, which I could perceive as an abuse of
-myself for the purpose of self-deception. TBH, I don't give a damn.
+Also note that if anyone tries out the SFP+ port on a complete CRB shippe=
+d from
+Marvell the chassis prevents the ejector from working so the SFP will get
+stuck. Taking the board out of the chassis allows the SFP to be
+insterted/removed.
 
-Let me ask a few questions instead:
+Chris Packham (2):
+  arm/arm64: dts: Enable CP0 GPIOs for CN9130-CRB
+  arm/arm64: dts: Add MV88E6393X to CN9130-CRB device tree
 
-  - Is it unreasonable to expect that argumentations are based on facts
-    and proper analysis?
+ arch/arm64/boot/dts/marvell/cn9130-crb.dtsi | 139 ++++++++++++++++++++
+ 1 file changed, 139 insertions(+)
 
-  - Is it unreasonable to expect a proper integration of a new feature?
+--=20
+2.33.0
 
-  - Does it take unreasonable effort to do a proper design?
-
-  - Is it unreasonable to ask that he necessary cleanups are done
-    upfront?
-
-If anyone of the responsible people at Intel thinks so, then they should
-speak up now and tell me in public and into my face what's so
-unreasonable about that.
-
-Thanks,
-
-	Thomas
