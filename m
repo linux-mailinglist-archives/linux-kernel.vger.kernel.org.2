@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D388431B66
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE4C431CFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhJRNc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:32:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
+        id S232942AbhJRNqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232338AbhJRNa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:30:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2F396126A;
-        Mon, 18 Oct 2021 13:28:36 +0000 (UTC)
+        id S232814AbhJRNoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:44:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8132613A4;
+        Mon, 18 Oct 2021 13:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563717;
-        bh=FrulWWV95bOgHvwQq5mfjUQD/xgKkNZrPDp8n4SED4M=;
+        s=korg; t=1634564109;
+        bh=pax5PZkCldFZG078Cb1+J/jZRP5k6V3ZxRuLedgHGzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kmORUwkpDqjuIQ7nlIE5c4UEzouSVkAPhonTYKwK+jXQgcUe2RyhHBTh3CU7Yxkd9
-         2XujjvN+c15f+FMLJcJmpjOgAydHmn6p6PW8U8/jkpiIZtWSXiFabQks/SZG6Zq1lR
-         BoaAPQ9CM7Fhp1VF1YtfyN9MPJgEPki2PJ/rm9ac=
+        b=f/WQIhm8aOLCffsqiMGuYOg1KHBJsxFmh2WZpYZUfqYbnOz+gZ0zQmpdRCZLp/uvL
+         avWtHilxMnSSlyjGsMEYn7DuY/Vg86tNzfOz+kRjAA8N2twiKuMg6ADIT68g1lFBr8
+         uXbL9cGLh3y7qzdhIipyle6kYytCoG/9vkukE+dE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 37/50] ethernet: s2io: fix setting mac address during resume
+Subject: [PATCH 5.10 068/103] sctp: account stream padding length for reconf chunk
 Date:   Mon, 18 Oct 2021 15:24:44 +0200
-Message-Id: <20211018132327.754586968@linuxfoundation.org>
+Message-Id: <20211018132337.025412465@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
 
-commit 40507e7aada8422c38aafa0c8a1a09e4623c712a upstream.
+commit a2d859e3fc97e79d907761550dbc03ff1b36479c upstream.
 
-After recent cleanups, gcc started warning about a suspicious
-memcpy() call during the s2io_io_resume() function:
+sctp_make_strreset_req() makes repeated calls to sctp_addto_chunk()
+which will automatically account for padding on each call. inreq and
+outreq are already 4 bytes aligned, but the payload is not and doing
+SCTP_PAD4(a + b) (which _sctp_make_chunk() did implicitly here) is
+different from SCTP_PAD4(a) + SCTP_PAD4(b) and not enough. It led to
+possible attempt to use more buffer than it was allocated and triggered
+a BUG_ON.
 
-In function '__dev_addr_set',
-    inlined from 'eth_hw_addr_set' at include/linux/etherdevice.h:318:2,
-    inlined from 's2io_set_mac_addr' at drivers/net/ethernet/neterion/s2io.c:5205:2,
-    inlined from 's2io_io_resume' at drivers/net/ethernet/neterion/s2io.c:8569:7:
-arch/x86/include/asm/string_32.h:182:25: error: '__builtin_memcpy' accessing 6 bytes at offsets 0 and 2 overlaps 4 bytes at offset 2 [-Werror=restrict]
-  182 | #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
-include/linux/netdevice.h:4648:9: note: in expansion of macro 'memcpy'
- 4648 |         memcpy(dev->dev_addr, addr, len);
-      |         ^~~~~~
-
-What apparently happened is that an old cleanup changed the calling
-conventions for s2io_set_mac_addr() from taking an ethernet address
-as a character array to taking a struct sockaddr, but one of the
-callers was not changed at the same time.
-
-Change it to instead call the low-level do_s2io_prog_unicast() function
-that still takes the old argument type.
-
-Fixes: 2fd376884558 ("S2io: Added support set_mac_address driver entry point")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211013143613.2049096-1-arnd@kernel.org
+Cc: Vlad Yasevich <vyasevich@gmail.com>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Fixes: cc16f00f6529 ("sctp: add support for generating stream reconf ssn reset request chunk")
+Reported-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Marcelo Ricardo Leitner <mleitner@redhat.com>
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
+Link: https://lore.kernel.org/r/b97c1f8b0c7ff79ac4ed206fc2c49d3612e0850c.1634156849.git.mleitner@redhat.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/neterion/s2io.c |    2 +-
+ net/sctp/sm_make_chunk.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/neterion/s2io.c
-+++ b/drivers/net/ethernet/neterion/s2io.c
-@@ -8569,7 +8569,7 @@ static void s2io_io_resume(struct pci_de
- 			return;
- 		}
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -3651,7 +3651,7 @@ struct sctp_chunk *sctp_make_strreset_re
+ 	outlen = (sizeof(outreq) + stream_len) * out;
+ 	inlen = (sizeof(inreq) + stream_len) * in;
  
--		if (s2io_set_mac_addr(netdev, netdev->dev_addr) == FAILURE) {
-+		if (do_s2io_prog_unicast(netdev, netdev->dev_addr) == FAILURE) {
- 			s2io_card_down(sp);
- 			pr_err("Can't restore mac addr after reset.\n");
- 			return;
+-	retval = sctp_make_reconf(asoc, outlen + inlen);
++	retval = sctp_make_reconf(asoc, SCTP_PAD4(outlen) + SCTP_PAD4(inlen));
+ 	if (!retval)
+ 		return NULL;
+ 
 
 
