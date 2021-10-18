@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607FE431C15
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3661F431CE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhJRNiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:38:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54280 "EHLO mail.kernel.org"
+        id S233745AbhJRNpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233189AbhJRNfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:35:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18EB1613AC;
-        Mon, 18 Oct 2021 13:30:48 +0000 (UTC)
+        id S234049AbhJRNno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:43:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 581C261529;
+        Mon, 18 Oct 2021 13:34:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563849;
-        bh=sLaf6NbJ5YMqr38GrMe4lz5avGf1o6298sUlcl840DY=;
+        s=korg; t=1634564087;
+        bh=fwWc1vHc++P7U8++KRpjhEkjrQAy4ulOHvPESQ1xhfw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NDDpfk4QgSmKGt/Zrewe0UdC6I8tWB1CQJwkw7yIUPQXURX2LtX3WZ59VLG5oqtrS
-         jd+9BKPLbajHMTqxp2U7deep4t2ljvGGnDlAkFoyeMcgtUp1/oNcDmvlO3mlTngnHz
-         XUl7AalNj9MN8RViwwllvC3SRiRhzO4P+w+5zDmo=
+        b=Nymb+jIb7Os/ZOZlOnkIJBdOuGJvLQ0BxVjaDcmsPUa59j02hReRELzHPUhK/80fo
+         SuhXbDTJE1II8olmB8cXcozlQzjMU4btqFzqJsnLFBQSwMeyshlEwNUbiyO+WcOUYb
+         2nf9k8yc09bA8x5l7+QW/XeWP4MeJFrqDQBe8EIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
-        Stable@vger.kernel.org,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 38/69] iio: adc: aspeed: set driver data when adc probe.
-Date:   Mon, 18 Oct 2021 15:24:36 +0200
-Message-Id: <20211018132330.739621517@linuxfoundation.org>
+Subject: [PATCH 5.10 061/103] iio: dac: ti-dac5571: fix an error code in probe()
+Date:   Mon, 18 Oct 2021 15:24:37 +0200
+Message-Id: <20211018132336.808281921@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,31 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Billy Tsai <billy_tsai@aspeedtech.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit eb795cd97365a3d3d9da3926d234a7bc32a3bb15 upstream.
+commit f7a28df7db84eb3410e9eca37832efa5aed93338 upstream.
 
-Fix the issue when adc remove will get the null driver data.
+If we have an unexpected number of channels then return -EINVAL instead
+of returning success.
 
-Fixed: commit 573803234e72 ("iio: Aspeed ADC")
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-Link: https://lore.kernel.org/r/20210831071458.2334-2-billy_tsai@aspeedtech.com
-Cc: <Stable@vger.kernel.org>
+Fixes: df38a4a72a3b ("iio: dac: add TI DAC5571 family support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20210816183954.GB2068@kili
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/aspeed_adc.c |    1 +
+ drivers/iio/dac/ti-dac5571.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -184,6 +184,7 @@ static int aspeed_adc_probe(struct platf
+--- a/drivers/iio/dac/ti-dac5571.c
++++ b/drivers/iio/dac/ti-dac5571.c
+@@ -350,6 +350,7 @@ static int dac5571_probe(struct i2c_clie
+ 		data->dac5571_pwrdwn = dac5571_pwrdwn_quad;
+ 		break;
+ 	default:
++		ret = -EINVAL;
+ 		goto err;
+ 	}
  
- 	data = iio_priv(indio_dev);
- 	data->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, indio_dev);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	data->base = devm_ioremap_resource(&pdev->dev, res);
 
 
