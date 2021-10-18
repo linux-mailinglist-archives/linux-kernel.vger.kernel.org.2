@@ -2,131 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CB04323D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709344323DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbhJRQbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
+        id S233716AbhJRQbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhJRQbC (ORCPT
+        with ESMTP id S232986AbhJRQbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:31:02 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7CFC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:28:51 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id g10so1322038edj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:28:51 -0700 (PDT)
+        Mon, 18 Oct 2021 12:31:50 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41DAC06161C;
+        Mon, 18 Oct 2021 09:29:38 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id e10so6731113plh.8;
+        Mon, 18 Oct 2021 09:29:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m6QZSMKoKsWpgmNXk4KkFREjG4V6YJq4oDohc3s6X4w=;
-        b=cWMxKm5wkNY9gqpYEuN3n6dOF60JnOX/VtrvHQSW9l/JuLwr/TJy2FkFJQ0RANo3Py
-         cxNGRoumeNBzNcweC0ZdU/mgQvYfY0aYEQxeGVOvPquE7EDal147QYovR8HgNA6v16Rm
-         aGO5qOkGaIAbdnoSWQ1ZOy591s4sii1NEF3hFTwPayFxcY19iAxS2VkwUbNzpyzjgEwt
-         1OERlU4naKcXkumWlKn7fCF37PyDEWwrbpw4sOQoteAf6RhXD2LehitYI1gkYhjj5xL2
-         huZeQaZEW0oEQxHukaVEQoNXciw12/dzfNdSE9GpKzG0dhJSfug58fFihZetJbbePYKw
-         VX7g==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5ksCt7zlpqrgcGMQiZq5clTFgO8/Puuoq2CENUP37k8=;
+        b=DmOUcq0lEd+ohmYNEdGCsIeyfkZu+zMJputCe+mbgUr4lL/O3/Lv3NzZXOaVnWs1w7
+         89jQ7lYm78iJUilok+uPRQkz53LGGz1tZiWBra06o41yVN8ovkogmovPiudpPWtiCrYI
+         AnVej3DkKmHOh5GG6zAzYjrQS8DQ4s5ltLEi9iMaXMMIpY2+1hvTT98IMFn7CP2AgUPH
+         fPv5DB8TlTHDAXB6/NrMLDKUad0/oELNy5jW5Mld2+IOzxzVnr3HahtJKF+hwziL15Kr
+         +p7hk+sdZSdYYX5Qtcp4oEfQA8Pa+lQoahSC+Jzx+coY8YpMdc2KBNOqiTEQ/mYdpb6Q
+         ypaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=m6QZSMKoKsWpgmNXk4KkFREjG4V6YJq4oDohc3s6X4w=;
-        b=QRgPHgiGnFMygp3HG7cecZ+EJSXujepT1ks5hbyff7d5kMNw/zdSnd1540EtH23VfH
-         R4Yr+hAXJ1dca3sa6gGwCy6GNSXe2pG3JArbm0pGd8rD3YWgSLULEVZwMj+duM5MeXjQ
-         jVwhF2mV0/QuDQ7wkZJeVla0dSYFKUgaLzJz+oa3soODsjfrZGiRE4vACoyq8Tvkl4Kt
-         1HETXujm/LKtOk/N6awVdD2BsFOFk6FOVyrkrWdQPmg523QYEczDkz5CdY7++wQuRMAZ
-         B33zkrEcuSush+USafgby8K/GspszRiMNcrVW0oQxoYOYZ1es7DqSRShO24XX16E2eCZ
-         AziQ==
-X-Gm-Message-State: AOAM530Q/mjS/U2j2Vljle66kAVBdZyK2Hbs5RzFXwkzNLV19o3p7lEB
-        1OMsPA6oztPWErzawgQK4RU=
-X-Google-Smtp-Source: ABdhPJxHvpqk4QP5TnrUda93FNK1XRS/AfXf1iG6QvZ4YKxGPm5MIQ7vJJeWkPvfiwdeA7ED/M81Nw==
-X-Received: by 2002:a05:6402:1778:: with SMTP id da24mr44822850edb.318.1634574528943;
-        Mon, 18 Oct 2021 09:28:48 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id f12sm10665948edx.90.2021.10.18.09.28.47
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5ksCt7zlpqrgcGMQiZq5clTFgO8/Puuoq2CENUP37k8=;
+        b=Ud5p22LClwAX69JdkURBBlwsbtTzkmK9TAqU54cciGDVoTPLFSYRqmRk7+Im7Ildtr
+         rpzxl/XEL7yBpUtO/vPajPOkHTUpfKg/LT9dWPEByzwWe1sIyvtgZnfB86R5xZ7tXqFi
+         ra7KdYtwqg+XY4j1Ii8nTG9tdtqZFPh2A29aDT90U1guEDvDBu/21ru7+Td6Zm1ST+jO
+         mXNC2UznChpiK1pIvZ0lLHjBAxptHmSgYdiod5WcbM9c+OcpCAmiy3k0UKhasG8DUs96
+         sKWgfx5YCzDWrc4Lw+TLAtydjS9TuOxTVD79/BzLyTKFvgCQenl4JJQjMakavuX9wwml
+         W05A==
+X-Gm-Message-State: AOAM5325wD3z06rlNBHmj1I3PlfnJijsyLnjVNh6a40o3YYM63rvRUgh
+        qh1udkrbYaw0lt2WLTRT530=
+X-Google-Smtp-Source: ABdhPJwgLbDX0lF8CC8i7zeZQ6J9fipKJQAPJm0t5aamO0ZHCd1yDSdtxIWyRhPyR0S7DMSdiyy2LA==
+X-Received: by 2002:a17:90a:f0c9:: with SMTP id fa9mr48903828pjb.107.1634574578148;
+        Mon, 18 Oct 2021 09:29:38 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id s8sm19677727pjm.32.2021.10.18.09.29.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 09:28:48 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] staging: r8188eu: Remove redundant 'if' statement
-Date:   Mon, 18 Oct 2021 18:28:46 +0200
-Message-ID: <2162009.ybMk9oByy7@localhost.localdomain>
-In-Reply-To: <YW2H63JAWKcM6+hL@kroah.com>
-References: <20211017142812.4656-1-fmdefrancesco@gmail.com> <20211017142812.4656-4-fmdefrancesco@gmail.com> <YW2H63JAWKcM6+hL@kroah.com>
+        Mon, 18 Oct 2021 09:29:37 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 18 Oct 2021 06:29:35 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Pratik Sampat <psampat@linux.ibm.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@kernel.org,
+        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        containers@lists.linux.dev, containers@lists.linux-foundation.org,
+        pratik.r.sampat@gmail.com
+Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
+Message-ID: <YW2g73Lwmrhjg/sv@slm.duckdns.org>
+References: <20211009151243.8825-1-psampat@linux.ibm.com>
+ <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
+ <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
+ <YWirxCjschoRJQ14@slm.duckdns.org>
+ <b5f8505c-38d5-af6f-0de7-4f9df7ae9b9b@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5f8505c-38d5-af6f-0de7-4f9df7ae9b9b@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, October 18, 2021 4:42:51 PM CEST Greg Kroah-Hartman wrote:
-> On Sun, Oct 17, 2021 at 04:28:12PM +0200, Fabio M. De Francesco wrote:
-> > Remove a redundant 'if' statement.
-> > 
-> > Acked-by: Martin Kaiser <martin@kaiser.cx>
-> > Acked-by: Phillip Potter <phil@philpotter.co.uk>
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> >  drivers/staging/r8188eu/core/rtw_cmd.c | 6 ------
-> >  1 file changed, 6 deletions(-)
-> 
-> Why is there not a "v2" in the subject line like the other patches in
-> this series?
+(cc'ing Johannes for memory sizing part)
 
-Simply because I edited manually the "Subject" and overlooked to write "v2".
+Hello,
 
-> 
-> > 
-> > diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/
-r8188eu/core/rtw_cmd.c
-> > index 6fb79d711692..42084b029473 100644
-> > --- a/drivers/staging/r8188eu/core/rtw_cmd.c
-> > +++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-> > @@ -254,12 +254,6 @@ int rtw_cmd_thread(void *context)
-> >  	while (1) {
-> >  		wait_for_completion(&pcmdpriv->enqueue_cmd);
-> >  
-> > -		if (padapter->bDriverStopped ||
-> > -		    padapter->bSurpriseRemoved) {
-> > -			DBG_88E("%s: DriverStopped(%d) 
-SurpriseRemoved(%d) break at line %d\n",
-> > -				__func__, padapter-
->bDriverStopped, padapter->bSurpriseRemoved, __LINE__);
-> > -			break;
-> > -		}
-> 
-> 
-> Why is this redundant?
-> 
-> It is not obvious from the diff what is going on so you should say a bit
-> more in the changelog text please.
+On Mon, Oct 18, 2021 at 08:59:16PM +0530, Pratik Sampat wrote:
+...
+> Also, I agree with your point about variability of requirements. If the
+> interface we give even though it is in conjunction with the limits set,
+> if the applications have to derive metrics from this or from other
+> kernel information regardless; then the interface would not be useful.
+> If the solution to this problem lies in userspace, then I'm all for it
+> as well. However, the intention is to probe if this could potentially be
+> solved in cleanly in the kernel.
 
-Yes you are right. I wrongly thought that is was "obvious", but re-reading my 
-own text I noticed that it is not. 
+Just to be clear, avoiding application changes would have to involve
+userspace (at least parameterization from it), and I think to set that as a
+goal for kernel would be more of a distraction. Please note that we should
+definitely provide metrics which actually capture what's going on in terms
+of resource availability in a way which can be used to size workloads
+automatically.
 
-In 1/3 and 2/3 I was particularly careful in writing changelogs. Instead in 
-3/3 I forgot that commit messages _must_ explain "what" and "why" :(
+> Yes, these shortcomings exist even without containerization, on a
+> dynamically loaded multi-tenant system it becomes very difficult to
+> determine what is the maximum amount resource that can be requested
+> before we hurt our own performance.
 
-I've just sent version 3 of the series.
+As I mentioned before, feedback loop on PSI can work really well in finding
+the saturation points for cpu/mem/io and regulating workload size
+automatically and dynamically. While such dynamic sizing can work without
+any other inputs, it sucks to have to probe the entire range each time and
+it'd be really useful if the kernel can provide ballpark numbers that are
+needed to estimate the saturation points.
 
-Thanks for reviewing my work,
+What gets challenging is that there doesn't seem to be a good way to
+consistently describe availability for each of the three resources and the
+different distribution rules they may be under.
 
-Fabio
+e.g. For CPU, the affinity restrictions from cpuset determines the maximum
+number of threads that a workload would need to saturate the available CPUs.
+However, conveying the results of cpu.max and cpu.weight controls isn't as
+straight-fowrads.
 
-> 
-> thanks,
-> 
-> greg k-h
-> 
+For memory, it's even trickier because in a lot of cases it's impossible to
+tell how much memory is actually available without trying to use them as
+active workingset can only be learned by trying to reclaim memory.
 
+IO is in somewhat similar boat as CPU in that there are both io.max and
+io.weight. However, if io.cost is in use and configured according to the
+hardware, we can map those two in terms iocost.
 
+Another thing is that the dynamic nature of these control mechanisms means
+that the numbers can keep changing moment to moment and we'd need to provide
+some time averaged numbers. We can probably take the same approach as PSI
+and load-avgs and provide running avgs of a few time intervals.
 
+> The question that I have essentially tries to understand the
+> implications of overloading existing interface's definitions to be
+> context sensitive.
+> The way that the prototype works today is that it does not interfere
+> with the information when the system boots or even when it is run in a
+> new namespace.
+> The effects are only observed when restrictions are applied to it.
+> Therefore, what would potentially break if interfaces like these are
+> made to divulge information based on restrictions rather than the whole
+> system view?
 
+I don't think the problem is that something would necessarily break by doing
+that. It's more that it's a dead-end approach which won't get us far for all
+the reasons that have been discussed so far. It'd be more productive to
+focus on long term solutions and leave backward compatibility to the domains
+where they can actually be solved by applying the necessary local knoweldge
+to emulate and fake whatever necessary numbers.
+
+Thanks.
+
+-- 
+tejun
