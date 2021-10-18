@@ -2,249 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADB4432434
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECC6432421
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234107AbhJRQxh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 12:53:37 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:47860 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234160AbhJRQxJ (ORCPT
+        id S233898AbhJRQvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233731AbhJRQvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:53:09 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-aJ1T7MqGNcmWQolwtWDlTg-1; Mon, 18 Oct 2021 12:50:54 -0400
-X-MC-Unique: aJ1T7MqGNcmWQolwtWDlTg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CF961006AA6;
-        Mon, 18 Oct 2021 16:50:52 +0000 (UTC)
-Received: from x1.com (unknown [10.22.18.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9106F10016F4;
-        Mon, 18 Oct 2021 16:50:49 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 19/19] rtla: Add rtla timerlat hist documentation
-Date:   Mon, 18 Oct 2021 18:48:32 +0200
-Message-Id: <79f9f1d1e6979f296edad78b59470310bbebba3b.1634574261.git.bristot@kernel.org>
-In-Reply-To: <cover.1634574261.git.bristot@kernel.org>
-References: <cover.1634574261.git.bristot@kernel.org>
+        Mon, 18 Oct 2021 12:51:25 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42C7C06176A;
+        Mon, 18 Oct 2021 09:49:13 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x27so1073920lfu.5;
+        Mon, 18 Oct 2021 09:49:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SH0kHI8q3C1h2KdyVaYHMPS3/G5O58tP5UqzMH9EraU=;
+        b=Eo1YvWYvah4YBUTfa9fZS9I5YsX6WULFGARs9Szh/UiAoIktedhxl07McLaAjTp93h
+         QGSSMJhNPl70xrmINq9T1rO+IvppGW+XWLFVhJaYc7wZhD3dGXYo8jvuJ4GH2NFD+LlK
+         TAxj45c3VHqomjxZggSgM1fvjFMBUyAXqUeoEFVBnrBvUobeeNdqnIlUFUPoIq7AJPb/
+         r7m74Za5dNMs3B/EiIkK2un9BdsbDec5EMhu9dc5EoZvibN6Oiquc4CyII24ZVFu1j6a
+         zAqesXip+V+4F6lq06aSipK9/XfRZat1IFMQGBFuSLWSOWQ50qyHGYMLpyiiIYT2XiB2
+         vCJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SH0kHI8q3C1h2KdyVaYHMPS3/G5O58tP5UqzMH9EraU=;
+        b=67F43igg8qMOi0wizUf7VNYNu9kHaAEa2Cnc6NPX1E41S/KWigg/d+Xr/4p/iizVjO
+         BRgErfPzoDGBVLIUYyF1fgLDXQzZuEXNHN46pjVxn2O2AreFBJX/J0WAuoSZ5/HYC8WB
+         sv6gR4zd4WEXbRkhjFxf7j41+jG1Y0rWaTCjoT5HhNHvcBgDzulriI/J++flAjFCLxgU
+         vwTiBkYoWGFKvtVi03oqqdKDzTXgYXT8W++CO8qSKQxe9GOz7FfUswaypko8z70Yo4LC
+         Auc73fHURUe7HrVuke9BiAQl/uSsJkVxWsw98hXV214YuWfaqfMsYaHoO8fK0jBzzciq
+         shzw==
+X-Gm-Message-State: AOAM533raQ1hupWl9Vg0Crw22w3K0MdtpJm3gGZwcekbqu/0o+3Z+xeJ
+        WunRyy5mHYEMnw3tvfD0swTXdqH1lqs=
+X-Google-Smtp-Source: ABdhPJw4/WfZL1h2TWZmw+Hog8tO0U9Q77OHUMcEIva5sYFlT867+XKGpU1XH6ZIr+kTks78S378gQ==
+X-Received: by 2002:ac2:4f02:: with SMTP id k2mr778622lfr.455.1634575752192;
+        Mon, 18 Oct 2021 09:49:12 -0700 (PDT)
+Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id r17sm1444035lfe.107.2021.10.18.09.49.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 09:49:11 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Johan Jonker <jbx6244@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+        David Wu <david.wu@rock-chips.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Cameron Nemo <cnemo@tutanota.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Rockchip SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        Trevor Woerner <twoerner@gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: rk3328: add gpu opp table
+Date:   Mon, 18 Oct 2021 18:49:09 +0200
+Message-ID: <3352474.ljgn2FL0hr@archbook>
+In-Reply-To: <20211016154548.29555-1-twoerner@gmail.com>
+References: <20211016154548.29555-1-twoerner@gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Man page for rtla timerlat hist mode.
+On Samstag, 16. Oktober 2021 17:45:44 CEST Trevor Woerner wrote:
+> Add an operating-points table and cooling entry to the GPU on the
+> RK3328 SoC to improve its performance. According to its datasheet[1]
+> the maximum frequency of the Mali-450 MP2 GPU found on the RK3328 SoC
+> is 500MHz.
+> 
+> On my rock64 device, under x11, glmark2-es2 performance increased from
+> around 60 to just over 100. Same device running glmark2-es2 under
+> wayland/weston improved from just over 100 to just over 200.
+> 
+> [1] https://rockchip.fr/RK3328%20datasheet%20V1.2.pdf
+> 
+> Signed-off-by: Trevor Woerner <twoerner@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3328.dtsi | 26 +++++++++++++++++++++++-
+>  1 file changed, 25 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> b/arch/arm64/boot/dts/rockchip/rk3328.dtsi index 8c821acb21ff..5e1dcf71e414
+> 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> @@ -532,7 +532,8 @@ map0 {
+>  					cooling-device = <&cpu0 
+THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+>  							 <&cpu1 
+THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+>  							 <&cpu2 
+THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> -							 <&cpu3 
+THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +							 <&cpu3 
+THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +							 <&gpu 
+THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+>  					contribution = <4096>;
+>  				};
+>  			};
+> @@ -617,6 +618,29 @@ gpu: gpu@ff300000 {
+>  		clocks = <&cru ACLK_GPU>, <&cru ACLK_GPU>;
+>  		clock-names = "bus", "core";
+>  		resets = <&cru SRST_GPU_A>;
+> +		operating-points-v2 = <&gpu_opp_table>;
+> +		#cooling-cells = <2>;
+> +	};
+> +
+> +	gpu_opp_table: gpu-opp-table {
+> +		compatible = "operating-points-v2";
+> +
+> +		opp-200000000 {
+> +			opp-hz = /bits/ 64 <200000000>;
+> +			opp-microvolt = <1100000>;
+> +		};
+> +		opp-300000000 {
+> +			opp-hz = /bits/ 64 <300000000>;
+> +			opp-microvolt = <1100000>;
+> +		};
+> +		opp-400000000 {
+> +			opp-hz = /bits/ 64 <400000000>;
+> +			opp-microvolt = <1100000>;
+> +		};
+> +		opp-500000000 {
+> +			opp-hz = /bits/ 64 <500000000>;
+> +			opp-microvolt = <1100000>;
+> +		};
+>  	};
+> 
+>  	h265e_mmu: iommu@ff330200 {
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- .../rtla/Documentation/rtla-timerlat-hist.txt | 162 ++++++++++++++++++
- 1 file changed, 162 insertions(+)
- create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
+As for whether this works as described on a ROCK64 for glmark2-es2-wayland:
 
-diff --git a/tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt b/tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
-new file mode 100644
-index 000000000000..6cc1e8d9abd4
---- /dev/null
-+++ b/tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
-@@ -0,0 +1,162 @@
-+rtla-timerlat-hist(1)
-+=====================
-+
-+NAME
-+----
-+rtla-timerlat-hist - Histograms of the operating system timer latency
-+
-+SYNOPSIS
-+--------
-+*rtla timerlat hist* ['OPTIONS'] ...
-+
-+DESCRIPTION
-+-----------
-+The rtla-hist-hist(1) mode displays a histogram of each tracer event occurrence.
-+
-+The rtla-timerlat(1) tool is an interface for the timerlat tracer. The
-+timerlat tracer dispatches a kernel thread per-cpu. These threads set a
-+periodic timer to wake themselves up and go back to sleep. After the wakeup,
-+they collect and generate useful information for the debugging of operating
-+system timer latency.
-+
-+The timerlat tracer outputs information in two ways. It periodically prints
-+the timer latency at the timer 'IRQ' handler and the 'Thread' handler. It
-+also provides information for each noise via the osnoise tracepoints. This
-+tool uses the periodic information, and the osnoise tracepoints are enabled
-+when using the -T option.
-+
-+OPTIONS
-+-------
-+*-h*, *--help*::
-+Print help menu.
-+*-p*, *--period* 'us'::
-+Set the timerlat tracer period in microseconds.
-+*-i*, *--irq* 'us'::
-+Stop trace if the irq latency is higher than the argument in us.
-+*-T*, *--thread* 'us'::
-+Stop trace if the thread latency is higher than the argument in us.
-+*-s*, *--stack* 'us'::
-+Save the stack trace at the IRQ if a thread latency is higher than the
-+argument in us.
-+*-c*, *--cpus* 'cpu-list'::
-+Set the timerlat tracer to run the sample threads in the cpu-list.
-+*-d*, *--duration* 'time[s|m|h|d]'::
-+Set the duration of the session.
-+*-T*, *--trace*['=file']::
-+Save the stopped trace to ['file|timerlat_trace.txt'].
-+*-P*, *--priority* 'o:prio|r:prio|f:prio|d:runtime:period'::
-+Set scheduling parameters to the timerlat tracer threads, the format to
-+set the priority are:
-+  - 'o:prio' - use SCHED_OTHER with 'prio';
-+  - 'r:prio' - use SCHED_RR with 'prio';
-+  - 'f:prio' - use SCHED_FIFO with 'prio';
-+  - 'd:runtime[us|ms|s]:period[us|ms|s]' - use SCHED_DEADLINE with 'runtime' and
-+'period' in nanoseconds.
-+
-+*-b*, *--bucket-size* 'N'::
-+Set the histogram bucket size (default 1).
-+*-e*, *--entries* 'N'::
-+Set the number of entries of the histogram (default 256).
-+*--no-irq*::
-+Ignore IRQ latencies.
-+*--no-thread*::
-+Ignore thread latencies.
-+*--no-header*::
-+So not print header.
-+*--no-summary*::
-+Do not print summary.
-+*--no-index*::
-+So not print index.
-+*--with-zeros*::
-+Print zero only entries.
-+
-+EXAMPLE
-+-------
-+In the example below, *rtla timerlat hist* is set to run for '10' minutes,
-+in the cpus '0-4', 'skipping zero' only lines. Moreover, *rtla timerlat
-+hist* will change the priority of the timelat threads to run under
-+'SCHED_DEADLINE' priority, with a '10 us' runtime every '1 ms' period. The
-+'1ms' period is also passed to the timerlat tracer.
-+
-+------------------------------------------
-+[root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
-+# RTLA timerlat histogram
-+# Time unit is microseconds (us)
-+# Duration:   0 00:10:00
-+Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003   IRQ-004   Thr-004
-+0        276489         0    206089         0    466018         0    481102         0    205546         0
-+1        318327     35487    388149     30024     94531     48382     83082     71078    388026     55730
-+2          3282    122584      4019    126527     28231    109012     23311     89309      4568     98739
-+3           940     11815       837      9863      6209     16227      6895     17196       910      9780
-+4           444     17287       424     11574      2097     38443      2169     36736       462     13476
-+5           206     43291       255     25581      1223    101908      1304    101137       236     28913
-+6           132    101501        96     64584       635    213774       757    215471        99     73453
-+7            74    169347        65    124758       350     57466       441     53639        69    148573
-+8            53     85183        31    156751       229      9052       306      9026        39    139907
-+9            22     10387        12     42762       161      2554       225      2689        19     26192
-+10           13      1898         8      5770       114      1247       128      1405        13      3772
-+11            9       560         9       924        71       686        76       765         8       713
-+12            4       256         2       360        50       411        64       474         3       278
-+13            2       167         2       172        43       256        53       350         4       180
-+14            1        88         1       116        15       198        42       223         0       115
-+15            2        63         3        94        11       139        20       150         0        58
-+16            2        37         0        56         5        78        10       102         0        39
-+17            0        18         0        28         4        57         8        80         0        15
-+18            0         8         0        17         2        50         6        56         0        12
-+19            0         9         0         5         0        19         0        48         0        18
-+20            0         4         0         8         0        11         2        27         0         4
-+21            0         2         0         3         1         9         1        18         0         6
-+22            0         1         0         3         1         7         0         3         0         5
-+23            0         2         0         4         0         2         0         7         0         2
-+24            0         2         0         2         1         3         0         3         0         5
-+25            0         0         0         1         0         1         0         1         0         3
-+26            0         1         0         0         0         2         0         2         0         0
-+27            0         0         0         3         0         1         0         0         0         1
-+28            0         0         0         3         0         0         0         1         0         0
-+29            0         0         0         2         0         2         0         1         0         3
-+30            0         1         0         0         0         0         0         0         0         0
-+31            0         1         0         0         0         0         0         2         0         2
-+32            0         0         0         1         0         2         0         0         0         0
-+33            0         0         0         2         0         0         0         0         0         1
-+34            0         0         0         0         0         0         0         0         0         2
-+35            0         1         0         1         0         0         0         0         0         1
-+36            0         1         0         0         0         1         0         1         0         0
-+37            0         0         0         1         0         0         0         0         0         0
-+40            0         0         0         0         0         1         0         1         0         0
-+41            0         0         0         0         0         0         0         0         0         1
-+42            0         0         0         0         0         0         0         0         0         1
-+44            0         0         0         0         0         1         0         0         0         0
-+46            0         0         0         0         0         0         0         1         0         0
-+47            0         0         0         0         0         0         0         0         0         1
-+50            0         0         0         0         0         0         0         0         0         1
-+54            0         0         0         1         0         0         0         0         0         0
-+58            0         0         0         1         0         0         0         0         0         0
-+over:         0         0         0         0         0         0         0         0         0         0
-+count:   600002    600002    600002    600002    600002    600002    600002    600002    600002    600002
-+min:          0         1         0         1         0         1         0         1         0         1
-+avg:          0         5         0         5         0         4         0         4         0         5
-+max:         16        36        15        58        24        44        21        46        13        50
-+------------------------------------------
-+
-+SEE ALSO
-+--------
-+_rtla-timerlat(1)_, _rtla-timerlat-top(1)_
-+
-+Timerlat tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
-+
-+AUTHOR
-+------
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
-+
-+REPORTING BUGS
-+--------------
-+Report bugs to <lkml@vger.kernel.org>
-+
-+LICENSE
-+-------
-+rtla is Free Software licensed under the GNU GPLv2
-+
-+COPYING
-+-------
-+Copyright \(C) 2021 Red Hat, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
--- 
-2.31.1
+Tested-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+
+There is some stuff worth noting that LibreELEC does on this SoC[1]:
+
+1. they use 1.05V for all OPPs up to and including 400 MHz
+2. they run 500 MHz at 1.15V instead (though 1.10V seemed to work for both of 
+us)
+3. they disable 500 MHz because 1.15V was apparently too high for rkvdec.
+
+3 is currently not very relevant because mainline Linux has no rkvdec node in 
+the rk3328 dtsi, and we're not running at 1.15V.
+
+I've decided to add their rkvdec dtsi patch[2] on top anyway, and saw no 
+complaints from the rkvdec module while glmark2-es2-drm was running. However, 
+it's not like I tried to actually hardware decode video while it was running 
+because the userspace situation still won't let me without compiling entirely 
+too much stuff from git. Though the rkvdec module was loaded and present.
+
+[1]: https://github.com/LibreELEC/LibreELEC.tv/commit/
+9a6be0d36ba7ff3c3d5df798682d47a1de594ac0
+[2]: https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockchip/
+patches/linux/default/linux-1001-v4l2-rockchip.patch#L860-L935
+
+
 
