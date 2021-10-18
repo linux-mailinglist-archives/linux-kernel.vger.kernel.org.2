@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA14430FAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 07:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767B3430FB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 07:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhJRFQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 01:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        id S230043AbhJRFTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 01:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhJRFQW (ORCPT
+        with ESMTP id S229952AbhJRFTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 01:16:22 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11226C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 22:14:12 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id l24-20020a9d1c98000000b00552a5c6b23cso990159ota.9
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 22:14:11 -0700 (PDT)
+        Mon, 18 Oct 2021 01:19:47 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396FFC06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 22:17:36 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id e63so22773553oif.8
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 22:17:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=itxP+MITBQYLv6IpaiEtXRD3Z1f5f4njE+wwLqkCTAY=;
-        b=xF/Lpd9eUk7JR44iFuKVSHz48WCRWecyaF/koTl7TNt2g3+g7uRGnYNJwtu8Lxpzl/
-         Eftn4pMsE45y5AduBDJNiYIwBqMbD17CTV/RtQLK4ZRzavmIkL6eKBHRiqLSYEbYmkLJ
-         VnZ74VZXQdx7/UsK8Hgfp9jezp0hIVe+gG87WXV20Brg+0SWMYWKU57zZ8eBJweo5qNE
-         XBWU4W53Xfz2Dsve2QS47JjCtH5WPTXadLWDDTQHEol+8Kn+eA+LdHN6iHAwzCga59g4
-         2u0idzRXC0N7/U1SifyUC1gG0E+sHOTU/XMpYdageWWpjrBwjiLDHSLYu0h68Uid391S
-         4+NQ==
+        bh=zO0FQZnNe26RTnkKcZCv04+XN4JQxCO7Vr6g1O65ABs=;
+        b=Gd3BMbCKQNx8NvxZh8Jyhy6tnwmm0mD8ZnvKaNCkKhWLAEsSPvMoNv8o/nBjxeh2GR
+         mGSzAX4Yg/ZLqw01f1e3MUPdvSa8aeZe1TyOv46qNXDtxNuGFpjrtQil5/TOFDv9EXkF
+         ZCO1qeibVrby2YX/U/5NDvEJPWGMRHJ9klqhVHdZeIG1KE/KHSH7owRenDUJ4p/0XX1L
+         SDTklNASabV4ai3ohVMAuWFGX3RBZuG95Zw7ns0KCFNejrpyhVaiCsHVZvQf+YkAxH1d
+         jgXvw0xMofbY4RY7Jf527IRCqADs7G0J7gCy2FxnvvFvT4RaUjk43HZMDyYEUDPRpGPW
+         NCXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=itxP+MITBQYLv6IpaiEtXRD3Z1f5f4njE+wwLqkCTAY=;
-        b=zut33GJ8pjImD2/FevNEkgfX37gmodwZT/aGwZB2gfkUdOGQrleos9T9oioZ1b7zWc
-         cEMY44xTzHqWC5PMYbI++yhs5+1orQioZ+umI7r2SJb0IRqtXCB1LGRNAmCq6f+EcODK
-         +ddNGjXkxIk2SoMX5y+Rt0oZgvEqZvpTaKLXQIvE5tGNZWIQrPGrf6j9sbivf9x3Fh7L
-         AwjIQmyYWdlq7ltrsyyTuIGVVKUyrEMCKNlaaq+3pXk7K2TaEXZQOn5edIYLb33J+9+S
-         NZXlrnhk1HSsnmPXL49xTQrN8WAwgatIYGEwFH69Fs6QgKQ8h7wVG5u7lgpJHCsvtwiX
-         21gA==
-X-Gm-Message-State: AOAM531UUBdH6IRUyRxd2iyC6nEj5sv/5TczCt4Aqk6FF8X8YuMnFjls
-        X9y+yyUD47jTlhK02kTC2fyM/xy8L082h1YcBG8+wbZSiOY=
-X-Google-Smtp-Source: ABdhPJwRa1Ny5xG04rVXxLa5jSQc+H/uM1FxpilcDlfsieb4KLEKd+5SWCvqtao0fRu0+t+ItEc7f23kucCRxU0yc3I=
-X-Received: by 2002:a05:6830:2b28:: with SMTP id l40mr9876399otv.162.1634534051227;
- Sun, 17 Oct 2021 22:14:11 -0700 (PDT)
+        bh=zO0FQZnNe26RTnkKcZCv04+XN4JQxCO7Vr6g1O65ABs=;
+        b=R+ewYmle2w942F59Q1lfOOWE0GjwW2xPJlIg9t3eC4T7NezTMgrkLsuo/tura9o9YH
+         t3HWP9TUEyAd4lbnHqmm2jo4i6x4aXI/lEipCHhlDh9LyQalFZJ1y2QEcoppJRxvemqG
+         ijvnBU37ZTRaX8bpNiz2zqMqB0wse0nZsActyGZ+QioqMcnL3PTaueVGe8rKyax6Hg/m
+         AX5+e67ae8crLfi+ZfPZj8C758cL3JyGAUpxxVULZgyk0iaH6Pi8Fq+x3W9tLTmveDxM
+         z3zz8OM/T9vJQInngpqeadRlWSkv4ntLkauLP0T1jTP3cD2enWPMUypnDsd4gaelTB3+
+         G8EQ==
+X-Gm-Message-State: AOAM531e8I5I1rl10VLnUcZSopFFe9LdNL5nSbFGgfJJnHM/Ykpf++Ul
+        icHhyPgK/h1LeyggV6o90uv8FY4qKPC4wFym17SLBA==
+X-Google-Smtp-Source: ABdhPJzHtNzQcA9lrjnzKAQncgTv/9QbWxpryHLtoBwT37Ulymvgti95g3cNbHtZ9F7ImCW4BPCgq5crZKFPJ8m6T2c=
+X-Received: by 2002:a05:6808:1686:: with SMTP id bb6mr18292228oib.40.1634534255507;
+ Sun, 17 Oct 2021 22:17:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211005024025.2037810-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20211005024025.2037810-1-bjorn.andersson@linaro.org>
+References: <20211017204036.2761122-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20211017204036.2761122-1-bjorn.andersson@linaro.org>
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Mon, 18 Oct 2021 10:44:00 +0530
-Message-ID: <CAH=2NtxnX0eAFSRseviTm8G3=VQiYWRDsA5ZuY-_h77R9Kk7-w@mail.gmail.com>
-Subject: Re: [PATCH] soc: qcom: socinfo: Add PM8150C and SMB2351 models
+Date:   Mon, 18 Oct 2021 10:47:24 +0530
+Message-ID: <CAH=2Nty2yyVa1ow_zEOv3nsjjWg9Cb0CpTyDXAenMPMiBs4NQg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: defconfig: Enable Qualcomm LMH driver
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -62,29 +65,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Tue, 5 Oct 2021 at 08:08, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+On Mon, 18 Oct 2021 at 02:08, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
 >
-> Add PM8150C and SMB2351 to the list of known PMIC models.
+> With the introduction of LMH in '36c6581214c4 ("arm64: dts: qcom:
+> sdm845: Add support for LMh node")' the CPUfreq gained a reference for
+> the two interrupts from the LMh. This means that if the LMh driver isn't
+> enabled CPUfreq will not probe and there's no frequency scaling.
+>
+> Enable LMh to make CPUfreq functional again on SDM845.
 >
 > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  drivers/soc/qcom/socinfo.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-> index 47e9ed03882a..bd80db3181df 100644
-> --- a/drivers/soc/qcom/socinfo.c
-> +++ b/drivers/soc/qcom/socinfo.c
-> @@ -102,6 +102,8 @@ static const char *const pmic_models[] = {
->         [32] = "PM8150B",
->         [33] = "PMK8002",
->         [36] = "PM8009",
-> +       [38] = "PM8150C",
-> +       [41] = "SMB2351",
->  };
->  #endif /* CONFIG_DEBUG_FS */
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 86224aa3a74b..0ae6cd2748d2 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -577,6 +577,7 @@ CONFIG_TEGRA_BPMP_THERMAL=m
+>  CONFIG_TEGRA_SOCTHERM=m
+>  CONFIG_QCOM_TSENS=y
+>  CONFIG_QCOM_SPMI_TEMP_ALARM=m
+> +CONFIG_QCOM_LMH=m
+>  CONFIG_UNIPHIER_THERMAL=y
+>  CONFIG_WATCHDOG=y
+>  CONFIG_SL28CPLD_WATCHDOG=m
+> --
 
-LGTM, so:
-Reviewed-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Tested on SA8155p-ADP board, so:
+Reviewed-and-Tested-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 
-Regards
+Regards.
