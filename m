@@ -2,108 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E45E43129C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899D04312A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhJRI7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:59:06 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:64214 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbhJRI6z (ORCPT
+        id S231350AbhJRJBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231149AbhJRJA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:58:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634547404; x=1666083404;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dmu56FePmkD9SY8hzYkN3QZ2I6g48iWva5nUKCFMZ7o=;
-  b=P+Eg/gReZJnVVgtD+jhSzLmRB2zqVWn7A0mgR4qvt9qxAfMN7ooDCycy
-   I1afDJNVIBcCr7Z1C/fC2FiriJP1LbhuVSnq5x4Nn6q+eboyx/p5hDFbL
-   SkOb5PnXZ7bNCPa1Ug/F29PdVZg57JZaOYMWkZr1MBjZXAGH6z9C++eiC
-   DG+rz/QGjQI6D1XeM/nmbBOf8egfA6Kpx+B7rlAQIvtiKwS3L2ERQRjee
-   ZuVoNmW6dCaKpUXZ/xnOLqlVd+ABhWwGCfHg/nRqVRjkGQXYb6yubNhMx
-   +qVAYFDL2o0MUO7kYlj9jIAxdbNCk3qMtp6EB+dYDJBAE2UcJYnRH0AIj
-   w==;
-IronPort-SDR: ma6XuNJHNk0zBhi/s3TCpI6P3ozcJWelL9tvnJSOdsbxuS3NoFDUPOZHwMiuONyNI5BFQs7gjg
- RED/xQTkDp5GpiR3lClag3Attx5Ct4/7AbKon3jfrMmg9aJoVbsh1uRV3y3ga5/sdaZt2ZBC5U
- tnNwLNkvTQ7e+bKIh+zlHowXUtM2MVg+QXkPzIQUV1ElmWvCqjAG2Y6g6Og0n+Q+2S84NE1wOu
- R8bvUPgJD7SjUmD3jDqPA9f6bNpLSWYRJP1ZSO8Sr0BNw4pKDbRf7AxPjurevw7pMcTlwMdznC
- IcytAtXeQHpntk/T4NPRLn+7
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="148516571"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Oct 2021 01:56:34 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 18 Oct 2021 01:56:34 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 18 Oct 2021 01:56:32 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH v6 2/2] pinctrl: microchip sgpio: use reset driver
-Date:   Mon, 18 Oct 2021 10:57:54 +0200
-Message-ID: <20211018085754.1066056-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211018085754.1066056-1-horatiu.vultur@microchip.com>
-References: <20211018085754.1066056-1-horatiu.vultur@microchip.com>
+        Mon, 18 Oct 2021 05:00:59 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F203C06161C;
+        Mon, 18 Oct 2021 01:58:48 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id y1so10733156plk.10;
+        Mon, 18 Oct 2021 01:58:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zJdBl2v/UZ98xFp4khbE/HvsuDRBwxaaXrlQoB5bGPg=;
+        b=jsDEQjUaKvrRX/d6+Um76EoNfKi+RXm44ybGOzrXkxb91CZHLGx8mXHdm46gRfFAs0
+         7j1pnQ/ZcAt1FFahd227FagRYRsWMsUwIv3h1NB/tGaALT2B5Yh2nWS7ame4eyjz3QX0
+         cORtEWKxFrRooYyDFgg2BGN2UtaSdx59s6ao9KairgGRfz8NQSO3czUl5AS//OBVlWFh
+         D6AsUeqEzpVuUULIPUObOQRPAKLDzlcg2pTC/b3MJECh0QmxCISE+lodCMVviDXyNZMX
+         JYISwaI1XOkwm9IrHvvwHL6zqHbLIOLZdBdG2nj/cTyu13PQORh1izo5MIeGUvnlopHS
+         tCaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zJdBl2v/UZ98xFp4khbE/HvsuDRBwxaaXrlQoB5bGPg=;
+        b=WorLCVXOnvgQntExOhIfymaaQHlQt94wEz2jAf3Pq3oBHL2/loRDVGq++1JPrCLOp/
+         texPzIEui9tl4lX3eDE83bwDWtYunv/yih78SCEQhF3nwLnu+Q/An8VPkIDHckItfJmY
+         sXvgOecpNbFJ19IBjnwev3ZMn2Zj6xGzZiT5eTwi/BeuR8L2LK3T0DitG+TWcnr6lyC4
+         MibdK60GK71s/bTyLJhpMs9cxMG7ygUViAEBvE7mhPMfHtrrrIhzX+xtkJdj7SeD6qqC
+         WQbrNJUEzFSOxY9EMty8k8Nh4xiTBBCT/cGN5UMkpSAe017BHaikY1DH/DF2FwN9Sqs+
+         ei3w==
+X-Gm-Message-State: AOAM533y6QU1tDj2HkoHQxwC9zXt45BHCH0UoQM5YTk2vqr+prcunFXp
+        doSxHZFh9l8M8Y/ROZ/K0ds=
+X-Google-Smtp-Source: ABdhPJwAakzZ65vXbSJkS68z+nCqPuZXbOzqNNvlthoir8124Oug8D12HAqTBTHXYWJ/2C1ehmoVjg==
+X-Received: by 2002:a17:90b:3901:: with SMTP id ob1mr31604780pjb.24.1634547528147;
+        Mon, 18 Oct 2021 01:58:48 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id t1sm12284487pfe.51.2021.10.18.01.58.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 01:58:47 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 17:58:37 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     David Lechner <david@lechnology.com>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter: drop chrdev_lock
+Message-ID: <YW03PSmpMkMVnHdp@shinobu>
+References: <20211017185521.3468640-1-david@lechnology.com>
+ <YW0PVYT/GCKAnjN9@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9GLfjPH7N7YSaLAV"
+Content-Disposition: inline
+In-Reply-To: <YW0PVYT/GCKAnjN9@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On lan966x platform when the switch gets reseted then also the sgpio
-gets reseted. The fix for this is to extend also the sgpio driver to
-call the reset driver which will be reseted only once by the first
-driver that is probed.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/pinctrl/pinctrl-microchip-sgpio.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+--9GLfjPH7N7YSaLAV
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-index 072bccdea2a5..78765faa245a 100644
---- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
-+++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-@@ -17,6 +17,7 @@
- #include <linux/pinctrl/pinmux.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-+#include <linux/reset.h>
- 
- #include "core.h"
- #include "pinconf.h"
-@@ -803,6 +804,7 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 	int div_clock = 0, ret, port, i, nbanks;
- 	struct device *dev = &pdev->dev;
- 	struct fwnode_handle *fwnode;
-+	struct reset_control *reset;
- 	struct sgpio_priv *priv;
- 	struct clk *clk;
- 	u32 val;
-@@ -813,6 +815,11 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 
- 	priv->dev = dev;
- 
-+	reset = devm_reset_control_get_optional_shared(&pdev->dev, "switch");
-+	if (IS_ERR(reset))
-+		return dev_err_probe(dev, PTR_ERR(reset), "Failed to get reset\n");
-+	reset_control_reset(reset);
-+
- 	clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(clk))
- 		return dev_err_probe(dev, PTR_ERR(clk), "Failed to get clock\n");
--- 
-2.33.0
+On Mon, Oct 18, 2021 at 08:08:21AM +0200, Greg KH wrote:
+> On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
+> > This removes the chrdev_lock from the counter subsystem. This was
+> > intended to prevent opening the chrdev more than once. However, this
+> > doesn't work in practice since userspace can duplicate file descriptors
+> > and pass file descriptors to other processes. Since this protection
+> > can't be relied on, it is best to just remove it.
+>=20
+> Much better, thanks!
+>=20
+> One remaining question:
+>=20
+> > --- a/include/linux/counter.h
+> > +++ b/include/linux/counter.h
+> > @@ -297,7 +297,6 @@ struct counter_ops {
+> >   * @events:		queue of detected Counter events
+> >   * @events_wait:	wait queue to allow blocking reads of Counter events
+> >   * @events_lock:	lock to protect Counter events queue read operations
+> > - * @chrdev_lock:	lock to limit chrdev to a single open at a time
+> >   * @ops_exist_lock:	lock to prevent use during removal
+>=20
+> Why do you still need 2 locks for the same structure?
+>=20
+> thanks,
+>=20
+> greg k-h
 
+Originally there was only the events_lock mutex. Initially I tried using
+it to also limit the chrdev to a single open, but then came across a
+"lock held when returning to user space" warning:
+https://lore.kernel.org/linux-arm-kernel/YOq19zTsOzKA8v7c@shinobu/T/#m60721=
+33d418d598a5f368bb942c945e46cfab9a5
+
+Instead of losing the benefits of a mutex lock for protecting the
+events, I ultimately implemented the chrdev_lock separately as an
+atomic_t. If the chrdev_lock is removed, then we'll use events_lock
+solely from now on for this structure.
+
+William Breathitt Gray
+
+--9GLfjPH7N7YSaLAV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFtNzMACgkQhvpINdm7
+VJJv+A//Y95/e0GrnVcicFqPFkUrWG98rzwge+SdEv4fTwGtyVsbHHlLaZbGOZxU
+hnBMDp6d+eo3VkcgMnbrVf+wUu2RXJ9BIFrVLtK8nQhmDVrqwuxMb0RgPAOQoKpy
+xQCQHODS5IS9b4PcVS5ic5vBlrDeKlE5ZC6miql+/VecD2V6B21nK83qFV32ZSru
+TUcQ2eFUThFLcsu1NzLrisg5Te8LlmGASG03NoZs9YndA/M0Jh7ZivEeSFsCxJPF
+8F+dbFVv0vjkclVMkvQE2qzdC9GYpuh698rkqqCAMh0qRmNU6p9RjlxSNvvkGdgd
+kQzJZt0RgjtYPCL5ozW8vw8PxjJAH3kWp4lqN11pBgRtWVyecdUX+QZywQDT2pMM
+0nrAA07IUR6jOorkDrSDJtVj8nS/hJegBTwXrFKpQSyqtGGNJN7+XxAiM3aaNoPF
+xI4cI7B2IYWXEmfUcLsWcFhQQ5VhWqx+HEOSBuUpEVkP2pdjm4G0zm2DDYtoDlax
+VmD6LNlXxvJONI7PmCisQNuVnnbbunPG9xQiFPvl4htiwThAdTCBoHK9IhSboST1
+fHZop3iMSPz5wQVa5dqJHdb/o97wyM8NuQG3rUZjPncMvnHnVMMXJrH2jwQ/TSqV
+z8OZ3wjLAfqTrylq6pveAJvIGJ6kMtp/xB17xtQA16CFwAtxhFo=
+=O/WE
+-----END PGP SIGNATURE-----
+
+--9GLfjPH7N7YSaLAV--
