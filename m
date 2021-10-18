@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3661F431CE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04623431E4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhJRNpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:45:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
+        id S234198AbhJRN75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:59:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234049AbhJRNno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:43:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 581C261529;
-        Mon, 18 Oct 2021 13:34:47 +0000 (UTC)
+        id S234281AbhJRN5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:57:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D33161A10;
+        Mon, 18 Oct 2021 13:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564087;
-        bh=fwWc1vHc++P7U8++KRpjhEkjrQAy4ulOHvPESQ1xhfw=;
+        s=korg; t=1634564465;
+        bh=LRP1vHEPOxp/oJ9HHffPTa8Qfw/xtFrf5LnyU+x4GwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nymb+jIb7Os/ZOZlOnkIJBdOuGJvLQ0BxVjaDcmsPUa59j02hReRELzHPUhK/80fo
-         SuhXbDTJE1II8olmB8cXcozlQzjMU4btqFzqJsnLFBQSwMeyshlEwNUbiyO+WcOUYb
-         2nf9k8yc09bA8x5l7+QW/XeWP4MeJFrqDQBe8EIw=
+        b=ctVe21xTND1YqVRTMd8MmcH5sqfWI/ATRrI567fynb4HDki0weO44fl/yfQPpqZ3j
+         ixajHZG+46Lvx6pckeVXStSrp9q0DIBEV7I/EJmRUhlBKt+Xmavq8AxY2bTXuV7yCX
+         6NM87JZBncBMhTCdgTwsURLDdgNdlJkZA+ej/6KU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 061/103] iio: dac: ti-dac5571: fix an error code in probe()
+        stable@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.14 098/151] sctp: account stream padding length for reconf chunk
 Date:   Mon, 18 Oct 2021 15:24:37 +0200
-Message-Id: <20211018132336.808281921@linuxfoundation.org>
+Message-Id: <20211018132343.855413392@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
 
-commit f7a28df7db84eb3410e9eca37832efa5aed93338 upstream.
+commit a2d859e3fc97e79d907761550dbc03ff1b36479c upstream.
 
-If we have an unexpected number of channels then return -EINVAL instead
-of returning success.
+sctp_make_strreset_req() makes repeated calls to sctp_addto_chunk()
+which will automatically account for padding on each call. inreq and
+outreq are already 4 bytes aligned, but the payload is not and doing
+SCTP_PAD4(a + b) (which _sctp_make_chunk() did implicitly here) is
+different from SCTP_PAD4(a) + SCTP_PAD4(b) and not enough. It led to
+possible attempt to use more buffer than it was allocated and triggered
+a BUG_ON.
 
-Fixes: df38a4a72a3b ("iio: dac: add TI DAC5571 family support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20210816183954.GB2068@kili
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Vlad Yasevich <vyasevich@gmail.com>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Fixes: cc16f00f6529 ("sctp: add support for generating stream reconf ssn reset request chunk")
+Reported-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Marcelo Ricardo Leitner <mleitner@redhat.com>
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
+Link: https://lore.kernel.org/r/b97c1f8b0c7ff79ac4ed206fc2c49d3612e0850c.1634156849.git.mleitner@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/dac/ti-dac5571.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/sctp/sm_make_chunk.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/dac/ti-dac5571.c
-+++ b/drivers/iio/dac/ti-dac5571.c
-@@ -350,6 +350,7 @@ static int dac5571_probe(struct i2c_clie
- 		data->dac5571_pwrdwn = dac5571_pwrdwn_quad;
- 		break;
- 	default:
-+		ret = -EINVAL;
- 		goto err;
- 	}
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -3697,7 +3697,7 @@ struct sctp_chunk *sctp_make_strreset_re
+ 	outlen = (sizeof(outreq) + stream_len) * out;
+ 	inlen = (sizeof(inreq) + stream_len) * in;
+ 
+-	retval = sctp_make_reconf(asoc, outlen + inlen);
++	retval = sctp_make_reconf(asoc, SCTP_PAD4(outlen) + SCTP_PAD4(inlen));
+ 	if (!retval)
+ 		return NULL;
  
 
 
