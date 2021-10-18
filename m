@@ -2,136 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D861F432548
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A58143254B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhJRRoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234182AbhJRRnv (ORCPT
+        id S234201AbhJRRog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:44:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56413 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234035AbhJRRod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:43:51 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98941C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:41:39 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id q13so5365884uaq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ym5/eMT1XXXvSklsHO74skF3/hJuEqIN4dprBSaCf9E=;
-        b=S4LHb3XCWbgzPV1akDqvFcodPhbfy611oLMG82tVycdZo0BmqWwRxucM9O6PCwk2Xg
-         CgaUvFH6nqqWPbEE8C4YvmRp1gQx9baSyVj5SYtwL6L2R6tdxI0Z5MEVhaef5pU3XgSS
-         Au2O0MMMc6EbTHVozrr9dlMkbSSPhP4aAYSZUqahaBjBhoJGVXFiLo+r8VdIYXSmpTy3
-         Sbk05KX4tcskHXTeVZk8bqpd5/JsFEIqzEcsIlgGO0rxPdgFbCCoaqSEAyiy+so1aeai
-         +Q5Ezc37uIg3hU0wb5skrAVTk4joDWHcLnMLUt2yti1kqeFqK9U+a5Mqri/DvzWSIU6Y
-         w2yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ym5/eMT1XXXvSklsHO74skF3/hJuEqIN4dprBSaCf9E=;
-        b=MlLFAyWx7XYiC5A7GZ959kwSH9rehUs3c2qA+ju2Eke6GgC+rKy5R3uFBOxmv+R8RM
-         cbHVADrMM9dADMN0kw9n07WmyZPnAdVhvv2F2FvsHqTsbLsO/IipuM1gjgWqXtRxK9Fu
-         y5/Eumbt44d0IF3vFleSljNuWLbpR2/Vqn2DJ6nZ2Um0lLD52RHB/GqZg53NLJMocyNJ
-         XKNcJ3N4FDFVZszCseT+XRiJFjMpNyuz/frAQf8WeRAFhjOkMEZGGD5qzVGfRkg7MuQn
-         rKqrqRIwuTlPCrKOLS/nOmuH7UHescUgnFUESP/GqrzPhg01VOMZ2kIhqsTY+ncnDRzQ
-         C+zA==
-X-Gm-Message-State: AOAM533zqVCkZ0TUgHu0AhTK+cKtqGxVR2rYsHo3E5gmSiUFcTfO2Sxq
-        3CJfFu+5IaSTZWKUDztQBIs=
-X-Google-Smtp-Source: ABdhPJwVkrreUNrGZzlSHYfbkvZbdSX0JaYjnA2yIhwcsIUKdKY5FMZ3Kghll63h1r/k2LwK5KlAWQ==
-X-Received: by 2002:a9f:36f0:: with SMTP id p103mr27833626uap.42.1634578898653;
-        Mon, 18 Oct 2021 10:41:38 -0700 (PDT)
-Received: from ?IPv6:2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc? ([2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc])
-        by smtp.gmail.com with ESMTPSA id 45sm9295409uaq.8.2021.10.18.10.41.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 10:41:38 -0700 (PDT)
-Subject: Re: [PATCH 5/6] drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to
- accept multiple formats
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
-Cc:     hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        contact@emersion.fr, leandro.ribeiro@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org
-References: <20211005201637.58563-1-igormtorrente@gmail.com>
- <20211005201637.58563-6-igormtorrente@gmail.com>
- <5507450a-eb69-b24c-9f43-a1780dafbfa9@suse.de>
-From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Message-ID: <e9cbdad7-416a-65fe-eb50-1cbb42a01e7b@gmail.com>
-Date:   Mon, 18 Oct 2021 14:41:33 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 18 Oct 2021 13:44:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634578941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Em+oRTdA4GVZjC/ULW7URfKqvr1mlrjM4r4OrqSpy/Q=;
+        b=CHLToz6yzQ4prkqRdlsUbG6/IRZVF5E/4K7MR+XltUxrFJhv4+Is1DhwmUvpMdSz1AAuFg
+        aolmjq2mL6mcUDVeR317q8GwbpVtcvYlq5Qb8w6BDSjq24InzaBCEbV9GEBq+dxtWoTPQJ
+        JMpMVdXJelBYDDkMEs7Q6hQuOsFryFE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-H8Co_SEhNBucqCJn2FTgdA-1; Mon, 18 Oct 2021 13:41:39 -0400
+X-MC-Unique: H8Co_SEhNBucqCJn2FTgdA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D1FB9F92C;
+        Mon, 18 Oct 2021 17:41:38 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C13A96A8E5;
+        Mon, 18 Oct 2021 17:41:37 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes for Linux 5.15-rc7
+Date:   Mon, 18 Oct 2021 13:41:37 -0400
+Message-Id: <20211018174137.579907-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <5507450a-eb69-b24c-9f43-a1780dafbfa9@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Linus,
 
-On 10/18/21 7:14 AM, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 05.10.21 um 22:16 schrieb Igor Matheus Andrade Torrente:
->> Currently, the vkms atomic check only goes through the first position of
->> the `vkms_wb_formats` vector.
->>
->> This change prepares the atomic_check to check the entire vector.
->>
->> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
->> ---
->>   drivers/gpu/drm/vkms/vkms_writeback.c | 11 ++++++++++-
->>   1 file changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c 
->> b/drivers/gpu/drm/vkms/vkms_writeback.c
->> index 5a3e12f105dc..56978f499203 100644
->> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
->> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
->> @@ -30,6 +30,8 @@ static int vkms_wb_encoder_atomic_check(struct 
->> drm_encoder *encoder,
->>   {
->>       struct drm_framebuffer *fb;
->>       const struct drm_display_mode *mode = &crtc_state->mode;
->> +    bool format_supported = false;
->> +    int i;
->>       if (!conn_state->writeback_job || !conn_state->writeback_job->fb)
->>           return 0;
->> @@ -41,7 +43,14 @@ static int vkms_wb_encoder_atomic_check(struct 
->> drm_encoder *encoder,
->>           return -EINVAL;
->>       }
->> -    if (fb->format->format != vkms_wb_formats[0]) {
->> +    for (i = 0; i < ARRAY_SIZE(vkms_wb_formats); i++) {
->> +        if (fb->format->format == vkms_wb_formats[i]) {
->> +            format_supported = true;
->> +            break;
->> +        }
->> +    }
-> 
-> At a minimum, this loop should be in a helper function. But more 
-> generally, I'm surprised that this isn't already covered by the DRM's 
-> atomic helpers.
+The following changes since commit 7b0035eaa7dab9fd33d6658ad6a755024bdce26c:
 
-Ok, I can wrap it in a new function.
+  KVM: selftests: Ensure all migrations are performed when test is affined (2021-09-30 04:25:57 -0400)
 
-AFAIK the DRM doesn't cover it. But I may be wrong...
+are available in the Git repository at:
 
-> 
-> Best regards
-> Thomas
-> 
->> +
->> +    if (!format_supported) {
->>           DRM_DEBUG_KMS("Invalid pixel format %p4cc\n",
->>                     &fb->format->format);
->>           return -EINVAL;
->>
-> 
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 4934c52be82cb235d756c27c1cc769a0498607fb:
+
+  KVM: SEV-ES: reduce ghcb_sa_len to 32 bits (2021-10-18 06:49:26 -0400)
+
+----------------------------------------------------------------
+Tools:
+* kvm_stat: do not show halt_wait_ns since it is not a cumulative statistic
+
+x86:
+* clean ups and fixes for bus lock vmexit and lazy allocation of rmaps
+* avoid warning with -Wbitwise-instead-of-logical
+* avoid warning due to huge kvmalloc.  Temporarily disables accounting,
+  will be fixed in 5.16 and backported to stable 5.15
+* two fixes for SEV-ES (one more coming as soon as I get reviews)
+* fix for static_key underflow
+
+ARM:
+* Properly refcount pages used as a concatenated stage-2 PGD
+* Fix missing unlock when detecting the use of MTE+VM_SHARED
+
+----------------------------------------------------------------
+Christian Borntraeger (1):
+      KVM: kvm_stat: do not show halt_wait_ns
+
+Hao Xiang (1):
+      KVM: VMX: Remove redundant handling of bus lock vmexit
+
+Janosch Frank (1):
+      KVM: s390: Function documentation fixes
+
+Paolo Bonzini (7):
+      Merge tag 'kvm-s390-master-5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux into kvm-master
+      KVM: SEV-ES: fix length of string I/O
+      Merge tag 'kvmarm-fixes-5.15-2' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
+      KVM: replace large kvmalloc allocation with vmalloc
+      KVM: X86: fix lazy allocation of rmaps
+      KVM: x86: avoid warning with -Wbitwise-instead-of-logical
+      KVM: SEV-ES: reduce ghcb_sa_len to 32 bits
+
+Peter Gonda (1):
+      KVM: SEV-ES: Set guest_state_protected after VMSA update
+
+Quentin Perret (3):
+      KVM: arm64: Fix host stage-2 PGD refcount
+      KVM: arm64: Report corrupted refcount at EL2
+      KVM: arm64: Release mmap_lock when using VM_SHARED with MTE
+
+Sean Christopherson (2):
+      Revert "KVM: x86: Open code necessary bits of kvm_lapic_set_base() at vCPU RESET"
+      KVM: x86: WARN if APIC HW/SW disable static keys are non-zero on unload
+
+ arch/arm64/kvm/hyp/include/nvhe/gfp.h |  1 +
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c | 13 ++++++++++++-
+ arch/arm64/kvm/hyp/nvhe/page_alloc.c  | 15 +++++++++++++++
+ arch/arm64/kvm/mmu.c                  |  6 ++++--
+ arch/s390/kvm/gaccess.c               | 12 ++++++++++++
+ arch/s390/kvm/intercept.c             |  4 +++-
+ arch/x86/kvm/lapic.c                  | 20 +++++++++++++-------
+ arch/x86/kvm/mmu/page_track.c         |  3 +--
+ arch/x86/kvm/mmu/spte.h               |  7 +++++--
+ arch/x86/kvm/svm/sev.c                |  9 +++++++--
+ arch/x86/kvm/svm/svm.h                |  2 +-
+ arch/x86/kvm/vmx/vmx.c                | 15 +++++++++------
+ arch/x86/kvm/x86.c                    |  7 ++++---
+ include/linux/vmalloc.h               | 10 ++++++++++
+ tools/kvm/kvm_stat/kvm_stat           |  2 +-
+ virt/kvm/kvm_main.c                   |  4 ++--
+ 16 files changed, 100 insertions(+), 30 deletions(-)
+
