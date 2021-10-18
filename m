@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1D6431672
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2516431675
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhJRKuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhJRKuT (ORCPT
+        id S230385AbhJRKut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:50:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58784 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229569AbhJRKus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:50:19 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9707EC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:48:08 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mcQBV-0003Jz-Qd; Mon, 18 Oct 2021 12:48:01 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-c2ef-28ab-e0cd-e8fd.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:c2ef:28ab:e0cd:e8fd])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id ED5856965B1;
-        Mon, 18 Oct 2021 10:47:59 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 12:47:59 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] can: xilinx_can: remove redundent netif_napi_del from
- xcan_remove
-Message-ID: <20211018104759.t5ib62kqjenjepkv@pengutronix.de>
-References: <20211017125022.3100329-1-mudongliangabcd@gmail.com>
+        Mon, 18 Oct 2021 06:50:48 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19IAFlRB014610;
+        Mon, 18 Oct 2021 06:48:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=s6D1fOlgYRHPYWdvtp17gLzTb+jDyzyFm28TSrL/N+c=;
+ b=QEsOvjaa0AAdR7nKfRbYA8wt0+jBsE3a7bGDZ4deppUF3cSQcdoJOV9E/2radrolbZNz
+ Sw+AyVuM3d3wJmdn6Lkhgp1pddlw8AIJS5Ezd+GWIdkN1iEFMfrm2e1bwPUV6sq97tk5
+ hi+kXjyQ3fTyAJIe4bUZAfLtpR23X8znk6Yu3DGb1NFeuXp4bNoU7Lycn8frm+ed56Ja
+ l5K1x1YI5hOENcsbYsOe+DE68a07GPxHOHDsvGYuN6PAyior88zIVUr3jW5Yzrnh26pH
+ dvIKdX7CGEc6OV2GMvdKbw1BTVpl30fo2fufOLzMDdp1cx9tRNBMR0xHOgSU+7DmRI2w sw== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bs7148mts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Oct 2021 06:48:37 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19IAmLfr007223;
+        Mon, 18 Oct 2021 10:48:35 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 3bqpc9c01v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Oct 2021 10:48:35 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19IAmPVH41484594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Oct 2021 10:48:25 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6E1695207A;
+        Mon, 18 Oct 2021 10:48:25 +0000 (GMT)
+Received: from osiris (unknown [9.145.168.130])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 15AE552078;
+        Mon, 18 Oct 2021 10:48:25 +0000 (GMT)
+Date:   Mon, 18 Oct 2021 12:48:23 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Qing Wang <wangqing@vivo.com>
+Cc:     Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] s390: replace snprintf in show functions with sysfs_emit
+Message-ID: <YW1Q93cGfKxbS6Iy@osiris>
+References: <1634280655-4908-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="laxzct2z5txsqxzw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211017125022.3100329-1-mudongliangabcd@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1634280655-4908-1-git-send-email-wangqing@vivo.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: dPV0rssMXLjrRzbGK-imLHA5OyCjcDp8
+X-Proofpoint-ORIG-GUID: dPV0rssMXLjrRzbGK-imLHA5OyCjcDp8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_03,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=507 lowpriorityscore=0 impostorscore=0 suspectscore=0
+ clxscore=1011 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110180065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---laxzct2z5txsqxzw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 17.10.2021 20:50:21, Dongliang Mu wrote:
-> Since netif_napi_del is already done in the free_candev, so we remove
-> this redundent netif_napi_del invocation. In addition, this patch can
-> match the operations in the xcan_probe and xcan_remove functions.
->=20
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+On Thu, Oct 14, 2021 at 11:50:54PM -0700, Qing Wang wrote:
+> show() must not use snprintf() when formatting the value to be
+> returned to user space.
+> 
+> Fix the coccicheck warnings:
+> WARNING: use scnprintf or sprintf.
+> 
+> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+> 
+> Signed-off-by: Qing Wang <wangqing@vivo.com>
 > ---
->  drivers/net/can/xilinx_can.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-> index 3b883e607d8b..60a3fb369058 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -1848,7 +1848,6 @@ static int xcan_remove(struct platform_device *pdev)
-> =20
->  	unregister_candev(ndev);
->  	pm_runtime_disable(&pdev->dev);
-> -	netif_napi_del(&priv->napi);
->  	free_candev(ndev);
-> =20
->  	return 0;
+>  drivers/s390/block/dasd_devmap.c | 74 ++++++++++++++++++++--------------------
+>  drivers/s390/char/raw3270.c      |  6 ++--
+>  drivers/s390/cio/chp.c           |  2 +-
+>  3 files changed, 41 insertions(+), 41 deletions(-)
 
-Fixed the following error:
-
-| drivers/net/can/xilinx_can.c: In function =E2=80=98xcan_remove=E2=80=99:
-| drivers/net/can/xilinx_can.c:1847:20: error: unused variable =E2=80=98pri=
-v=E2=80=99 [-Werror=3Dunused-variable]
-|  1847 |  struct xcan_priv *priv =3D netdev_priv(ndev);
-|       |                    ^~~~
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---laxzct2z5txsqxzw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFtUNwACgkQqclaivrt
-76lG4Af/egULUDAzVZK2yX285A7T6hDs6mdkip8Z7JDRg+Jdhjix258HzSYS7Qdd
-Sxp1DUGn16KE+9HlJn4BQ/5LosSc3RixQxegHKLDa09BmlKD7qSKakSySMinQk6c
-M9GoO1wRFH7VcXfou4p3TtdcOkocsk/AxRac12J5cufxzi4yDskRj0+NzW+tP1RJ
-8pL7Q8eXZezsD04FEX2PyJHOyn8VDnkfxILcwdtpTIzhwDakYzI0PmSWRekya5jK
-gk6lkVWPVdo2ZH6JwsGfNNAx+yi8A/4h1o1KeK7C5D416PLcU+HPWCTNMEoee7bK
-uSHXM95bWxiWLJDpB1AqDx8FHrGkLQ==
-=sQuT
------END PGP SIGNATURE-----
-
---laxzct2z5txsqxzw--
+This requires either Reviewed-by or Acked-by from dasd and cio
+maintainers, which you already cc'ed.
