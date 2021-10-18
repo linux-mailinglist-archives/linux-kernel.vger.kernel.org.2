@@ -2,127 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DECB43138A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48156431391
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhJRJds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:33:48 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3997 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbhJRJdO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:33:14 -0400
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HXs2k4gW6z687SH;
-        Mon, 18 Oct 2021 17:26:54 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 18 Oct 2021 11:30:56 +0200
-Received: from [10.47.85.98] (10.47.85.98) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 18 Oct
- 2021 10:30:55 +0100
-Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
-        "hare@suse.de" <hare@suse.de>
-References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
- <YWalYoOZmpkmAZNK@T590> <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
- <YWay/n+BJTLm1Alb@T590> <9f3c4d57-6b77-5345-0d4c-275962214b2a@huawei.com>
- <YWbtRm22vohvY0Ca@T590> <7e142559-1c96-8d84-081a-378c1f6d1306@huawei.com>
- <1065f517-c94b-5a47-34f6-52015b3ef907@huawei.com> <YW05XGjO8KfYp9xp@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <0e5edb01-08a3-3c97-35e4-97587c864657@huawei.com>
-Date:   Mon, 18 Oct 2021 10:33:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S231461AbhJRJgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:36:22 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:34619 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231305AbhJRJgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 05:36:20 -0400
+Received: from [192.168.0.2] (ip5f5aef76.dynamic.kabel-deutschland.de [95.90.239.118])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id DC0C361E5FE33;
+        Mon, 18 Oct 2021 11:34:06 +0200 (CEST)
+Subject: Re: [PATCH 4/6] media: aspeed: Support aspeed mode to reduce
+ compressed data
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        joel@jms.id.au, andrew@aj.id.au, linux-media@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        linux-kernel@vger.kernel.org
+References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
+ <20211014034819.2283-5-jammy_huang@aspeedtech.com>
+ <ddb1e6dc-6b4f-4f67-9122-dae3dab1ae65@molgen.mpg.de>
+ <5675befe-48df-9f09-f30f-d407538ad070@aspeedtech.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <5466798e-32c1-81f5-3428-7bbfe31cdea7@molgen.mpg.de>
+Date:   Mon, 18 Oct 2021 11:34:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <YW05XGjO8KfYp9xp@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <5675befe-48df-9f09-f30f-d407538ad070@aspeedtech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.85.98]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2021 10:07, Ming Lei wrote:
-> On Mon, Oct 18, 2021 at 09:08:57AM +0100, John Garry wrote:
->> On 13/10/2021 16:13, John Garry wrote:
->>>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
->>>> index 72a2724a4eee..2a2ad6dfcc33 100644
->>>> --- a/block/blk-mq-tag.c
->>>> +++ b/block/blk-mq-tag.c
->>>> @@ -232,8 +232,9 @@ static bool bt_iter(struct sbitmap *bitmap,
->>>> unsigned int bitnr, void *data)
->>>>        if (!rq)
->>>>            return true;
->>>> -    if (rq->q == hctx->queue && rq->mq_hctx == hctx)
->>>> -        ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
->>>> +    if (rq->q == hctx->queue && (rq->mq_hctx == hctx ||
->>>> +                blk_mq_is_shared_tags(hctx->flags)))
->>>> +        ret = iter_data->fn(rq->mq_hctx, rq, iter_data->data, reserved);
->>>>        blk_mq_put_rq_ref(rq);
->>>>        return ret;
->>>>    }
->>>> @@ -460,6 +461,9 @@ void blk_mq_queue_tag_busy_iter(struct
->>>> request_queue *q, busy_iter_fn *fn,
->>>>            if (tags->nr_reserved_tags)
->>>>                bt_for_each(hctx, &tags->breserved_tags, fn, priv, true);
->>>>            bt_for_each(hctx, &tags->bitmap_tags, fn, priv, false);
->>>> +
->>>> +        if (blk_mq_is_shared_tags(hctx->flags))
->>>> +            break;
->>>>        }
->>>>        blk_queue_exit(q);
->>>>    }
->>>>
->>> I suppose that is ok, and means that we iter once.
+
+Dear Jammy,
+
+
+Am 18.10.21 um 10:51 schrieb Jammy Huang:
+
+> On 2021/10/14 下午 02:47, Paul Menzel wrote:
+
+>> Am 14.10.21 um 05:48 schrieb Jammy Huang:
+>>> aspeed support differential jpeg format which only compress the parts
+>> support*s*
+>>
+>>> which are changed. In this way, it reduces both the amount of data to be
+>>> transferred by network and those to be decoded on the client side.
+>> Please mention the datasheet name and revision and section, where this
+>> functionality is described.
+> 
+> Sorry but our datasheet is confidential. The basic idea of this
+> feature is that we can just compress the blocks which is different
+> with previous frame rather than full frame. This idea is similar to
+> the I & P frame in multimedia.
+It’s still good to have the name and revision of the datasheet, the code 
+was developed against documented. (Public datasheets would be even 
+better, also for review.)
+
+>> Which chips support it?
+> AST2400/2500/2600 all support it.
+>>
+>>> 4 new ctrls are added:
+>>> *Aspeed JPEG Format: to control aspeed's partial jpeg on/off
+>>> *Aspeed Compression Mode: to control aspeed's compression mode
+>>> *Aspeed HQ Mode: to control aspeed's HQ mode on/off
+>>> *Aspeed HQ Quality: to control the quality of aspeed's HQ mode
+>> Please add a space after the bullet points.
+>>
+>> Excuse my ignorance, how can these options be controlled?
+> 
+> * Aspeed JPEG Format: to control jpeg format
+>    0: standard jpeg, 1: aspeed jpeg
+> * Aspeed Compression Mode: to control aspeed's compression mode
+>    0: DCT Only, 1: DCT VQ mix 2-color, 2: DCT VQ mix 4-color
+>    This is AST2400 only. It will adapt JPEG or VQ encoding method according
+>    to the context automatically.
+> * Aspeed HQ Mode: to control aspeed's HQ mode on/off
+>    0: disabled, 1: enabled
+> * Aspeed HQ Quality: to control the quality(0~11) of aspeed's HQ mode,
+>    only usefull if Aspeed HQ mode is enabled
+
+Thank you. So some sysfs file?
+
+>>> Aspeed JPEG Format requires an additional buffer, called bcd, to store
+>>> the information that which macro block in the new frame is different
+>> s/that which/which/
+>>
+>>> from the old one.
 >>>
->>> However, I have to ask, where is the big user of
->>> blk_mq_queue_tag_busy_iter() coming from? I saw this from Kashyap's
->>> mail:
->>>
->>>   > 1.31%     1.31%  kworker/57:1H-k  [kernel.vmlinux]
->>>   >       native_queued_spin_lock_slowpath
->>>   >       ret_from_fork
->>>   >       kthread
->>>   >       worker_thread
->>>   >       process_one_work
->>>   >       blk_mq_timeout_work
->>>   >       blk_mq_queue_tag_busy_iter
->>>   >       bt_iter
->>>   >       blk_mq_find_and_get_req
->>>   >       _raw_spin_lock_irqsave
->>>   >       native_queued_spin_lock_slowpath
->>>
->>> How or why blk_mq_timeout_work()?
->> Just some update: I tried hisi_sas with 10x SAS SSDs, megaraid sas with 1x
->> SATA HDD (that's all I have), and null blk with lots of devices, and I still
->> can't see high usage of blk_mq_queue_tag_busy_iter().
-> It should be triggered easily in case of heavy io accounting:
-> 
-> while true; do cat /proc/diskstats; done
-> 
+>>> To have bcd correctly working, we need to swap the buffers for src0/1 to
+>>> make src1 refer to previous frame and src0 to the coming new frame.
+>> How did you test it? What do the clients need to support?
+>>
+>> Did you test, how much bandwidth is saved? Some numbers would be nice.
+> I tested it by aspeed's kvm client which support decoding the aspeed
+> format. Currently, I am porting this feature to novnc to have openbmc
+> support it.
+Nice.
+> The bandwidth saved is variant. It depends on how many blocks is
+> different between new and old frame.If the new frame is identical
+> with the previous one, the compressed frame only needs 12 Bytes.
 
-Let me check that.
+Thank you for the explanation.
 
-> 
->> So how about we get this patch processed (to fix blk_mq_tagset_busy_iter()),
->> as it is independent of blk_mq_queue_tag_busy_iter()? And then wait for some
->> update or some more info from Kashyap regarding blk_mq_queue_tag_busy_iter()
-> Looks fine:
-> 
-> Reviewed-by: Ming Lei<ming.lei@redhat.com>
 
-Thanks, I'll just send a v2 with your tag for clarity, as there has been 
-much discussion here.
+Kind regards,
 
-John
+Paul
