@@ -2,251 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EA34317A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805344317AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbhJRLoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhJRLoK (ORCPT
+        id S231220AbhJRLpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:45:30 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33046 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhJRLp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:44:10 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1444C061714;
-        Mon, 18 Oct 2021 04:41:59 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id f11so10620776pfc.12;
-        Mon, 18 Oct 2021 04:41:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oxtTocfZDe8NeogbuLWnnR+icWeZEV7xYOyxnqTH3SM=;
-        b=DHV9wmyFndQgoNutJNXy8Mn3Thc4M+NvSKgdROTSPktZby8DuA8Y/PgUj17WwZCl0Q
-         ASLHqB3NJ4+o+F0MgYOJ0QRk3/spslLQsQXE7aR7sVX/vlkv2W9/8kSfYj7WhdY2/1Bj
-         fydbaP5X9fdMUOxtm21srDGnHY85VKX1zaQdBxghbl0fHgwYVRBY6NhZgJjHCkxYqLRZ
-         Fk36NNHbBHjrxVNuPnahG6lVlUyhTT+nuUJ05Tom5hUUf36zS9CEUEhEKD7kBAKz9cjV
-         Th+7pp1A4FpmsxqF3NPH9slvb3TSi6jXRq+XWXD+o+FHV+0lYE25pynVyEoTvdo4aHe2
-         jkWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oxtTocfZDe8NeogbuLWnnR+icWeZEV7xYOyxnqTH3SM=;
-        b=0VswrrphndwZu3kqumvZiC85jkaOjiJq/xLqlraj+y8KYB5ERxNsr9GbXiBrykz4wV
-         38H8V5kz5XB/B2uFXP5lDbcxRkkkhWyL6Rm8QKoTWHt6oOwdyQ1WPsezwpEcgX0x4mxn
-         fggxigcDLSkZGkvQcFLnzz88lKMFdIxlVxLuyHxaYpXwVmSmP4QQH8biuHAbPQn3MI5j
-         MabExs761LQBKZu6+Tv+b/6bbG5mwJ5T2ewifRGX/iX7i7QYKqlcUFZuqagnqnVoL8/G
-         2Han0OWtP/e4DyDC6C1lS5sO2RVmEDbg88QcJJqloaNP4XRpY7vzG/mtgsgV9QfshH7/
-         w2MQ==
-X-Gm-Message-State: AOAM531IbPIP1hJ1SlJhvCwhPBiKPvXkJ/BBh5SoCfjVQyRdJjMuIttw
-        vH6ao1Y0wN/UK4PjpqQXTgUPiSkHYR7StddTGBk=
-X-Google-Smtp-Source: ABdhPJxX1kTRuEYsnSqJEtQqx3+Nw06ckCygthr62u1HSIiaRQXy1kjO8K75emjTpvAbpZ/9geg4JjkdzfxIE/zSDV0=
-X-Received: by 2002:a63:4754:: with SMTP id w20mr23146985pgk.98.1634557319344;
- Mon, 18 Oct 2021 04:41:59 -0700 (PDT)
+        Mon, 18 Oct 2021 07:45:29 -0400
+Received: from [IPv6:2a02:810a:880:f54:88bb:da86:4533:43d6] (unknown [IPv6:2a02:810a:880:f54:88bb:da86:4533:43d6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A08951F42CB8;
+        Mon, 18 Oct 2021 12:43:16 +0100 (BST)
+Subject: Re: [PATCH 5/5] media: mtk-vcodec: venc: Fail if a msg sent to VPU
+ was not signaled
+To:     =?UTF-8?B?SXJ1aSBXYW5nICjnjovnkZ4p?= <Irui.Wang@mediatek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>
+Cc:     "dafna3@gmail.com" <dafna3@gmail.com>,
+        "tfiga@chromium.org" <tfiga@chromium.org>,
+        =?UTF-8?B?VGlmZmFueSBMaW4gKOael+aFp+ePiik=?= 
+        <tiffany.lin@mediatek.com>,
+        "eizan@chromium.org" <eizan@chromium.org>,
+        =?UTF-8?B?TWFvZ3VhbmcgTWVuZyAo5a2f5q+b5bm/KQ==?= 
+        <Maoguang.Meng@mediatek.com>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "hverkuil@xs4all.nl" <hverkuil@xs4all.nl>,
+        =?UTF-8?B?WXVuZmVpIERvbmcgKOiRo+S6kemjnik=?= 
+        <Yunfei.Dong@mediatek.com>,
+        =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
+        "hsinyi@chromium.org" <hsinyi@chromium.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        =?UTF-8?B?QW5kcmV3LUNUIENoZW4gKOmZs+aZuui/qik=?= 
+        <Andrew-CT.Chen@mediatek.com>,
+        "acourbot@chromium.org" <acourbot@chromium.org>
+References: <20210804142729.7231-1-dafna.hirschfeld@collabora.com>
+ <20210804142729.7231-6-dafna.hirschfeld@collabora.com>
+ <6c56de481d7060b759d67417e9fa6383f6e2f418.camel@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <8973bfb4-8708-e739-02cb-f9ee670f401a@collabora.com>
+Date:   Mon, 18 Oct 2021 13:43:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211008081137.1948848-1-michal.vokac@ysoft.com> <20211018112820.qkebjt2gk2w53lp5@pengutronix.de>
-In-Reply-To: <20211018112820.qkebjt2gk2w53lp5@pengutronix.de>
-From:   Petr Benes <petrben@gmail.com>
-Date:   Mon, 18 Oct 2021 13:41:48 +0200
-Message-ID: <CAPwXO5Y8e8zpo_8zrfM=JFNkhKehE0mnpe8wzUzOQiifEZnx9Q@mail.gmail.com>
-Subject: Re: [PATCH] thermal: imx: Fix temperature measurements on i.MX6 after alarm
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-pm@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Petr_Bene=C5=A1?= <petr.benes@ysoft.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <6c56de481d7060b759d67417e9fa6383f6e2f418.camel@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 at 13:28, Oleksij Rempel <o.rempel@pengutronix.de> wrot=
-e:
->
-> Hi Michal,
->
-> I hope you have seen this patch:
-> https://lore.kernel.org/all/20210924115032.29684-1-o.rempel@pengutronix.d=
-e/
->
-> Are there any reason why this was ignored?
 
-Missed completely. It looks it addresses the problem more systematically.
 
->
-> On Fri, Oct 08, 2021 at 10:11:37AM +0200, Michal Vok=C3=A1=C4=8D wrote:
-> > From: Petr Bene=C5=A1 <petr.benes@ysoft.com>
-> >
-> > SoC temperature readout may not work after thermal alarm fires interrup=
-t.
-> > This harms userspace as well as CPU cooling device.
-> >
-> > Two issues with the logic involved. First, there is no protection again=
-st
-> > concurent measurements, hence one can switch the sensor off while
-> > the other one tries to read temperature later. Second, the interrupt pa=
-th
-> > usually fails. At the end the sensor is powered off and thermal IRQ is
-> > disabled. One has to reenable the thermal zone by the sysfs interface.
-> >
-> > Most of troubles come from commit d92ed2c9d3ff ("thermal: imx: Use
-> > driver's local data to decide whether to run a measurement")
-> >
-> > It uses data->irq_enabled as the "local data". Indeed, its value is
-> > related to the state of the sensor loosely under normal operation and,
-> > frankly, gets unleashed when the thermal interrupt arrives.
-> >
-> > Current patch adds the "local data" (new member sensor_on in
-> > imx_thermal_data) and sets its value in controlled manner.
-> >
-> > Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide w=
-hether to run a measurement")
-> > Cc: petrben@gmail.com
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Petr Bene=C5=A1 <petr.benes@ysoft.com>
-> > Signed-off-by: Michal Vok=C3=A1=C4=8D <michal.vokac@ysoft.com>
-> > ---
-> >  drivers/thermal/imx_thermal.c | 30 ++++++++++++++++++++++++++----
-> >  1 file changed, 26 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_therma=
-l.c
-> > index 2c7473d86a59..df5658e21828 100644
-> > --- a/drivers/thermal/imx_thermal.c
-> > +++ b/drivers/thermal/imx_thermal.c
-> > @@ -209,6 +209,8 @@ struct imx_thermal_data {
-> >       struct clk *thermal_clk;
-> >       const struct thermal_soc_data *socdata;
-> >       const char *temp_grade;
-> > +     struct mutex sensor_lock;
-> > +     bool sensor_on;
-> >  };
-> >
-> >  static void imx_set_panic_temp(struct imx_thermal_data *data,
-> > @@ -252,11 +254,12 @@ static int imx_get_temp(struct thermal_zone_devic=
-e *tz, int *temp)
-> >       const struct thermal_soc_data *soc_data =3D data->socdata;
-> >       struct regmap *map =3D data->tempmon;
-> >       unsigned int n_meas;
-> > -     bool wait, run_measurement;
-> > +     bool wait;
-> >       u32 val;
-> >
-> > -     run_measurement =3D !data->irq_enabled;
-> > -     if (!run_measurement) {
-> > +     mutex_lock(&data->sensor_lock);
-> > +
-> > +     if (data->sensor_on) {
-> >               /* Check if a measurement is currently in progress */
-> >               regmap_read(map, soc_data->temp_data, &val);
-> >               wait =3D !(val & soc_data->temp_valid_mask);
-> > @@ -283,13 +286,15 @@ static int imx_get_temp(struct thermal_zone_devic=
-e *tz, int *temp)
-> >
-> >       regmap_read(map, soc_data->temp_data, &val);
-> >
-> > -     if (run_measurement) {
-> > +     if (!data->sensor_on) {
-> >               regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> >                            soc_data->measure_temp_mask);
-> >               regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> >                            soc_data->power_down_mask);
-> >       }
-> >
-> > +     mutex_unlock(&data->sensor_lock);
-> > +
-> >       if ((val & soc_data->temp_valid_mask) =3D=3D 0) {
-> >               dev_dbg(&tz->device, "temp measurement never finished\n")=
-;
-> >               return -EAGAIN;
-> > @@ -339,20 +344,26 @@ static int imx_change_mode(struct thermal_zone_de=
-vice *tz,
-> >       const struct thermal_soc_data *soc_data =3D data->socdata;
-> >
-> >       if (mode =3D=3D THERMAL_DEVICE_ENABLED) {
-> > +             mutex_lock(&data->sensor_lock);
-> >               regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> >                            soc_data->power_down_mask);
-> >               regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> >                            soc_data->measure_temp_mask);
-> > +             data->sensor_on =3D true;
-> > +             mutex_unlock(&data->sensor_lock);
-> >
-> >               if (!data->irq_enabled) {
-> >                       data->irq_enabled =3D true;
-> >                       enable_irq(data->irq);
-> >               }
-> >       } else {
-> > +             mutex_lock(&data->sensor_lock);
-> >               regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> >                            soc_data->measure_temp_mask);
-> >               regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> >                            soc_data->power_down_mask);
-> > +             data->sensor_on =3D false;
-> > +             mutex_unlock(&data->sensor_lock);
-> >
-> >               if (data->irq_enabled) {
-> >                       disable_irq(data->irq);
-> > @@ -728,6 +739,8 @@ static int imx_thermal_probe(struct platform_device=
- *pdev)
-> >       }
-> >
-> >       /* Make sure sensor is in known good state for measurements */
-> > +     mutex_init(&data->sensor_lock);
-> > +     mutex_lock(&data->sensor_lock);
-> >       regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
-> >                    data->socdata->power_down_mask);
-> >       regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
-> > @@ -739,6 +752,8 @@ static int imx_thermal_probe(struct platform_device=
- *pdev)
-> >                       IMX6_MISC0_REFTOP_SELBIASOFF);
-> >       regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
-> >                    data->socdata->power_down_mask);
-> > +     data->sensor_on =3D false;
-> > +     mutex_unlock(&data->sensor_lock);
-> >
-> >       ret =3D imx_thermal_register_legacy_cooling(data);
-> >       if (ret)
-> > @@ -796,10 +811,13 @@ static int imx_thermal_probe(struct platform_devi=
-ce *pdev)
-> >       if (data->socdata->version =3D=3D TEMPMON_IMX6SX)
-> >               imx_set_panic_temp(data, data->temp_critical);
-> >
-> > +     mutex_lock(&data->sensor_lock);
-> >       regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
-> >                    data->socdata->power_down_mask);
-> >       regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
-> >                    data->socdata->measure_temp_mask);
-> > +     data->sensor_on =3D true;
-> > +     mutex_unlock(&data->sensor_lock);
-> >
-> >       data->irq_enabled =3D true;
-> >       ret =3D thermal_zone_device_enable(data->tz);
-> > @@ -832,8 +850,12 @@ static int imx_thermal_remove(struct platform_devi=
-ce *pdev)
-> >       struct regmap *map =3D data->tempmon;
-> >
-> >       /* Disable measurements */
-> > +     mutex_lock(&data->sensor_lock);
-> >       regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
-> >                    data->socdata->power_down_mask);
-> > +     data->sensor_on =3D false;
-> > +     mutex_unlock(&data->sensor_lock);
-> > +
-> >       if (!IS_ERR(data->thermal_clk))
-> >               clk_disable_unprepare(data->thermal_clk);
-> >
-> > --
-> > 2.25.1
-> >
+On 06.08.21 08:50, Irui Wang (王瑞) wrote:
+> On Wed, 2021-08-04 at 16:27 +0200, Dafna Hirschfeld wrote:
+>> Each message sent to the VPU should raise a signal. The signal
+>> handler sets vpu->signaled. Test the field and fail
+>> if it is 0.
+> 
+> I suppose you want to handle the message execution result, if ipi
+> message can't send or acked successfully, the returned "status" of
+> "mtk_vcodec_fw_ipi_send" will return, so I think you don't need to
+> check "signaled" again.
+
+in that case, the field 'signaled' is not needed and can be removed
+So I can send a patch to remove it.
+
+Thanks,
+Dafna
+
+> 
+>>
+>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>> ---
+>>   drivers/media/platform/mtk-vcodec/venc_vpu_if.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
+>> b/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
+>> index 234705ba7cd6..8331b1bd1971 100644
+>> --- a/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
+>> +++ b/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
+>> @@ -92,6 +92,7 @@ static int vpu_enc_send_msg(struct venc_vpu_inst
+>> *vpu, void *msg,
+>>   {
+>>   	int status;
+>>   
+>> +	vpu->signaled = 0;
+>>   	mtk_vcodec_debug_enter(vpu);
+>>   
+>>   	if (!vpu->ctx->dev->fw_handler) {
+>> @@ -106,6 +107,8 @@ static int vpu_enc_send_msg(struct venc_vpu_inst
+>> *vpu, void *msg,
+>>   			       *(uint32_t *)msg, len, status);
+>>   		return -EINVAL;
+>>   	}
+>> +	if (!vpu->signaled)
+>> +		return -EINVAL;
+>>   	if (vpu->failure)
+>>   		return -EINVAL;
+>>   
+>> @@ -122,7 +125,6 @@ int vpu_enc_init(struct venc_vpu_inst *vpu)
+>>   	mtk_vcodec_debug_enter(vpu);
+>>   
+>>   	init_waitqueue_head(&vpu->wq_hd);
+>> -	vpu->signaled = 0;
+>>   	vpu->failure = 0;
+>>   
+>>   	status = mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler,
+>> vpu->id,
