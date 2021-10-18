@@ -2,119 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAF0431118
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F699431102
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbhJRHKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:10:09 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50584 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230416AbhJRHJw (ORCPT
+        id S230334AbhJRHJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:09:27 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58514 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhJRHJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:09:52 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19I4pE9d014606;
-        Mon, 18 Oct 2021 03:07:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=vbrSzoBt7X4TL99HrXT0Mtl3aZl0ABB0RSF7M+qQSl8=;
- b=MnNlhCJy33wIAyc/XjCsTkALtUOBz9rQ7S3l38ftwFqXIVNVMZwGQpsqr7tmlDmHBNIJ
- iWy/MhQS83u2wHCaEquxE7nfxGX2BeHPf1/VmjTsD96QWIr82LnuAOlW7v6qlKFIHYsQ
- kGww69Mnmvgn7CXQcSVlaXC9p9UZ3DmtGG6nu1cZ+eJvL9Ogg98DQBtKPdL9MLQEc5JO
- IzM6SfAcKojvakJLA1tdWSE4Xeb0r9W+IF6lhMqFXDSu91In0OdDWZuZtnCKOjuE5rUM
- CmU96UVxo4n4uVslABT0YN3C2yF9XNE9T2Rkz3iH4h5Uat58bpXqx61LwQwdtJ3CsZLm aQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bs28xj72f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Oct 2021 03:07:17 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19I71joI023363;
-        Mon, 18 Oct 2021 07:07:15 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bqpc9b6pd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Oct 2021 07:07:15 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19I77C2w51380588
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Oct 2021 07:07:12 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4063BAE04D;
-        Mon, 18 Oct 2021 07:07:12 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE62EAE045;
-        Mon, 18 Oct 2021 07:07:07 +0000 (GMT)
-Received: from [9.43.101.92] (unknown [9.43.101.92])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 18 Oct 2021 07:07:07 +0000 (GMT)
-Message-ID: <cb0dba37-f3e4-acd7-444f-01a6dc737919@linux.ibm.com>
-Date:   Mon, 18 Oct 2021 12:37:06 +0530
+        Mon, 18 Oct 2021 03:09:26 -0400
+Received: from [IPv6:2a02:810a:880:f54:88bb:da86:4533:43d6] (unknown [IPv6:2a02:810a:880:f54:88bb:da86:4533:43d6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 06E181F42612;
+        Mon, 18 Oct 2021 08:07:13 +0100 (BST)
+Subject: Re: [PATCH v4] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Dafna Hirschfeld <dafna3@gmail.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        minghsiu.tsai@mediatek.com, houlong.wei@mediatek.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+References: <20210920170408.1561-1-dafna.hirschfeld@collabora.com>
+ <c59b7f40-d99e-370a-b797-5dc72979df46@xs4all.nl>
+ <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <9475ac5b-79fe-da0e-ed1c-a91275cad46e@collabora.com>
+Date:   Mon, 18 Oct 2021 09:07:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] powerpc/kexec_file: Add of_node_put() before goto
+In-Reply-To: <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rob Herring <robh@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-References: <20211018015418.10182-1-wanjiabing@vivo.com>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <20211018015418.10182-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: bJ4ZEjuBgK1SpSvn5A6XlfYvhsN2CbRR
-X-Proofpoint-GUID: bJ4ZEjuBgK1SpSvn5A6XlfYvhsN2CbRR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-18_02,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 impostorscore=0 lowpriorityscore=0 spamscore=0
- clxscore=1011 mlxscore=0 phishscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110180043
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 18/10/21 7:24 am, Wan Jiabing wrote:
-> Fix following coccicheck warning:
-> ./arch/powerpc/kexec/file_load_64.c:698:1-22: WARNING: Function
-> for_each_node_by_type should have of_node_put() before goto
+On 18.10.21 03:16, Alexandre Courbot wrote:
+> Hi Hans!
 > 
-> Early exits from for_each_node_by_type should decrement the
-> node reference counter.
+> On Mon, Oct 4, 2021 at 6:37 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>>
+>> On 20/09/2021 19:04, Dafna Hirschfeld wrote:
+>>> From: Alexandre Courbot <acourbot@chromium.org>
+>>>
+>>> When running memcpy_toio:
+>>> memcpy_toio(send_obj->share_buf, buf, len);
+>>> it was found that errors appear if len is not a multiple of 8:
+>>>
+>>> [58.350841] mtk-mdp 14001000.rdma: processing failed: -22
+>>
+>> Why do errors appear? Is that due to a HW bug? Some other reason?
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-
-Thanks for fixing this!
-
-Acked-by: Hari Bathini <hbathini@linux.ibm.com>
-
-> ---
->   arch/powerpc/kexec/file_load_64.c | 1 +
->   1 file changed, 1 insertion(+)
+> MTK folks would be the best placed to answer this, but since the
+> failure is reported by the firmware I'd suspect either a firmware or
+> hardware limitation.
 > 
-> diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
-> index 5056e175ca2c..b4981b651d9a 100644
-> --- a/arch/powerpc/kexec/file_load_64.c
-> +++ b/arch/powerpc/kexec/file_load_64.c
-> @@ -700,6 +700,7 @@ static int update_usable_mem_fdt(void *fdt, struct crash_mem *usable_mem)
->   		if (ret) {
->   			pr_err("Failed to set linux,usable-memory property for %s node",
->   			       dn->full_name);
-> +			of_node_put(dn);
->   			goto out;
->   		}
->   	}
+>>
+>>>
+>>> This patch ensures the copy of a multiple of 8 size by calling
+>>> round_up(len, 8) when copying
+>>>
+>>> Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
+>>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>>> Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
+>>> ---
+>>> changes since v3:
+>>> 1. multile -> multiple
+>>> 2. add inline doc
+>>>
+>>> changes since v2:
+>>> 1. do the extra copy only if len is not multiple of 8
+>>>
+>>> changes since v1:
+>>> 1. change sign-off-by tags
+>>> 2. change values to memset
+>>>
+>>>   drivers/media/platform/mtk-vpu/mtk_vpu.c | 15 ++++++++++++++-
+>>>   1 file changed, 14 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+>>> index ec290dde59cf..1df031716c8f 100644
+>>> --- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
+>>> +++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+>>> @@ -349,7 +349,20 @@ int vpu_ipi_send(struct platform_device *pdev,
+>>>                }
+>>>        } while (vpu_cfg_readl(vpu, HOST_TO_VPU));
+>>>
+>>> -     memcpy_toio(send_obj->share_buf, buf, len);
+>>> +     /*
+>>> +      * when copying data to the vpu hardware, the memcpy_toio operation must copy
+>>> +      * a multiple of 8. Otherwise the processing fails
+>>
+>> Same here: it needs to explain why the processing fails.
+
+Is writing 'due to hardware or firmware limitation' enough?
+If not, then we should wait for mediatek people's response to explain if they know more
+
+>>
+>>> +      */
+>>> +     if (len % 8 != 0) {
+>>> +             unsigned char data[SHARE_BUF_SIZE];
+>>
+>> Wouldn't it be more robust if you say:
+>>
+>>                  unsigned char data[sizeof(send_obj->share_buf)];
+> 
+> Definitely yes.
+
+I'll send v5 fixing this
+
+> 
+>>
+>> I also think that the SHARE_BUF_SIZE define needs a comment stating that it must be a
+>> multiple of 8, otherwise unexpected things can happen.
+>>
+>> You also noticed that the current SHARE_BUF_SIZE define is too low, but I saw
+>> no patch correcting this. Shouldn't that be fixed as well?
+> 
+> AFAICT the firmware expects this exact size on its end, so I don't
+> believe it can be changed that easily. But maybe someone from MTK can
+> prove me wrong.
+> 
+
+I looked further and noted that the structs that are larger than 'SHARE_BUF_SIZE'
+(venc_ap_ipi_msg_enc_ext venc_ap_ipi_msg_set_param_ext)
+are used by drivers that don't use this vpu api, so actually SHARE_BUF_SIZE is
+not too low and as Corurbot worte probably not changeable.
+
+
+Thanks,
+Dafna
+
+> Cheers,
+> Alex.
 > 
