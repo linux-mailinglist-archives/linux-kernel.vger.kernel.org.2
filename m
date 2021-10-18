@@ -2,223 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA984323A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566154323B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbhJRQU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231768AbhJRQUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:20:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DC0761027;
-        Mon, 18 Oct 2021 16:18:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634573894;
-        bh=z3A3haCb9by8FXG/d1F0kBL8jDwVXD7cBgpbqlP4+7Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XeQUN3Om8emJiiGBfzkwGX5ayAfEplJBuf7a9SZ1qEohO7DvUq0+LqeHongFcLK2J
-         kPRYmce6UFfUwbiVlbyJkfHRAfC8JumM7K19U6Oxxiyob91bhtycIw4VPKryf1jd66
-         HNknN8ViUb2mBwFWXaYvhznaVR41X9aiyCKg14HAF3GYk1QZ+XiQP+rpL+UTaH1gIf
-         NPNabJyhr5wrskcvUg2R7QBufNG+WAmVXVuaTIidYLmU7RsDJLt++b7pZ4PMJ+yAEZ
-         qExzKtXNDxn3K+TYFZXoTk4u1PlGOLkARiq/ssrPQKYSfAtwKnVSy4ZiKk1ztLHMHa
-         mJs+lAQOHC9jg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5120E5C0DF2; Mon, 18 Oct 2021 09:18:14 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 09:18:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu/nocb: Fix misordered rcu_barrier() while
- (de-)offloading
-Message-ID: <20211018161814.GS880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211018113259.450292-1-frederic@kernel.org>
+        id S233606AbhJRQWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232556AbhJRQW2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 12:22:28 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C18C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:20:16 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id i20so1216716edj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1a1lZasOkjsVLxfEpqTRh9pWlKYrLyxR2OKNtm8b7Fs=;
+        b=Us82Pzpe+3m6oR50xgihLqygKNRpNOSPw7IvpLcNGvtbXm0SP40NLABqu+mwj+tvPu
+         UABGBqx7KwmerklKb6Lc9HHz3nEJSWli7DTeqSIEYxZfvWuv5WbCQ08qJDVWI9K31kLR
+         4Oja2GYz0UXjGaN3WJlXCGvbGXIn0WQQuRmr2L++vWxLwuLEMsJ7fIuit3EzmRUPj++R
+         K1nAhMIxDQ3xBP2kYGPj5KkFXPAOe9d8tXcBLEaTxF7gnfKawqEWKTCt2sQBRUDCojV5
+         FnlH99DimX7Inp54r+apIIdUwHsU64r2LX6s7JPHUr4C2bCBvoR+6a18Ey1B7GDLvIbs
+         R3mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1a1lZasOkjsVLxfEpqTRh9pWlKYrLyxR2OKNtm8b7Fs=;
+        b=a1Tjc8TG8We5REoxEhYa3KSjxKnwvgfVzatpYXDY6YznZMPaMIewzw6gkGs/iS8jIL
+         /EYHBe5oANHn3fiJ3RYeoWau2/CPwmozzLJmpsrXk7Br17M80VZRlv8azd9zy8M+hTiM
+         si35VKe/hkkE0bLqFlT4cK4Jl/UAzdRHUXnJkZ9YIQiTT8lnvZbxtDSF41mUi1df5eC4
+         dP7UgVaP0PbG0K2Oa7cGi4MjAejQFvNOmQ3GJjIpJunwp23FBuIB9ZUcWD+z9GVK0aE7
+         Cdl9vHWKcuZegIpQgIiUTTv0Da+oFGRLwpQuoe868FBxcs8U0evPPY4OPxmxrBzZE37C
+         RCpA==
+X-Gm-Message-State: AOAM530A1B5xHrsZR/gtOLNzfLO0D8Co3zO2zcyFM6U6C9x4HRIUXfgd
+        01hU9+FvTz8KCOEeFUVwSLc=
+X-Google-Smtp-Source: ABdhPJw21c2ayrDkQVBjS5Sqyoc1IQMcDs1mlQMHYciYGzmRmoEseEDu0ubOVWjadPFsr77DnIEW+g==
+X-Received: by 2002:a17:906:5a8d:: with SMTP id l13mr32442600ejq.95.1634574010476;
+        Mon, 18 Oct 2021 09:20:10 -0700 (PDT)
+Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
+        by smtp.gmail.com with ESMTPSA id p7sm10045791edr.6.2021.10.18.09.20.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 09:20:10 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Martin Kaiser <martin@kaiser.cx>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v3 0/3] staging: r8188eu: use completions and clean rtw_cmd_thread()
+Date:   Mon, 18 Oct 2021 18:20:03 +0200
+Message-Id: <20211018162006.5527-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018113259.450292-1-frederic@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 01:32:59PM +0200, Frederic Weisbecker wrote:
-> When an rdp is in the process of (de-)offloading, rcu_core() and the
-> nocb kthreads can process callbacks at the same time. This leaves many
-> possible scenarios leading to an rcu barrier to execute before
-> the preceding callbacks. Here is one such example:
-> 
->             CPU 0                                  CPU 1
->        --------------                         ---------------
->      call_rcu(callbacks1)
->      call_rcu(callbacks2)
->      // move callbacks1 and callbacks2 on the done list
->      rcu_advance_callbacks()
->      call_rcu(callbacks3)
->      rcu_barrier_func()
->          rcu_segcblist_entrain(...)
->                                             nocb_cb_wait()
->                                                 rcu_do_batch()
->                                                     callbacks1()
->                                                     cond_resched_tasks_rcu_qs()
->      // move callbacks3 and rcu_barrier_callback()
->      // on the done list
->      rcu_advance_callbacks()
->      rcu_core()
->          rcu_do_batch()
->              callbacks3()
->              rcu_barrier_callback()
->                                                     //MISORDERING
->                                                     callbacks2()
-> 
-> Fix this with preventing two concurrent rcu_do_batch() on a  same rdp
-> as long as an rcu barrier callback is pending somewhere.
-> 
-> Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
+This series replaces two semaphores with three completion variables
+in rtw_cmd_thread(). Completions variables are better suited for the
+purposes that are explained in detail in the commit messages of patches
+1/3 and 2/3. Furthermore, patch 3/3 removes a redundant 'if' statement
+from that same rtw_cmd_thread().
 
-Yow!
+Tested with ASUSTek Computer, Inc. Realtek 8188EUS [USB-N10 Nano]
 
-But how does the (de-)offloading procedure's acquisition of
-rcu_state.barrier_mutex play into this?  In theory, that mutex was
-supposed to prevent these sorts of scenarios.  In practice, it sounds
-like the shortcomings in this theory should be fully explained so that
-we don't get similar bugs in the future.  ;-)
+Many thanks to Dan Carpenter <dan.carpenter@oracle.com> who helped with
+his review of the RFC Patch.
 
-							Thanx, Paul
+v2 => v3:
+	Patch 1/3:
+		No changes;
+	Patch 2/3:
+		No changes;
+	Patch 3/3:
+		Furher process the commit message according to a review
+		by Greg Kroah-Hartman <gregkh@linuxfoundation.org>>.
 
-> ---
->  kernel/rcu/tree.c      | 27 +++++++++++++++++++++++++--
->  kernel/rcu/tree.h      |  1 +
->  kernel/rcu/tree_nocb.h | 10 +++++++++-
->  3 files changed, 35 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 7a655d93a28a..e5b28e05c9f2 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2465,11 +2465,12 @@ int rcutree_dead_cpu(unsigned int cpu)
->   * Invoke any RCU callbacks that have made it to the end of their grace
->   * period.  Throttle as specified by rdp->blimit.
->   */
-> -static void rcu_do_batch(struct rcu_data *rdp)
-> +static bool rcu_do_batch(struct rcu_data *rdp)
->  {
->  	int div;
->  	bool __maybe_unused empty;
->  	unsigned long flags;
-> +	int doing_batch;
->  	const bool offloaded = rcu_rdp_is_offloaded(rdp);
->  	struct rcu_head *rhp;
->  	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
-> @@ -2484,7 +2485,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  				    !rcu_segcblist_empty(&rdp->cblist),
->  				    need_resched(), is_idle_task(current),
->  				    rcu_is_callbacks_kthread());
-> -		return;
-> +		return true;
->  	}
->  
->  	/*
-> @@ -2494,6 +2495,23 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  	 */
->  	rcu_nocb_lock_irqsave(rdp, flags);
->  	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
-> +
-> +	doing_batch = READ_ONCE(rdp->doing_batch);
-> +
-> +	/*
-> +	 * If this rdp is already running callbacks somewhere and an RCU
-> +	 * barrier is pending, we might run it before its preceding callbacks.
-> +	 * Prevent that from happening. In the worst case we can have false
-> +	 * positive on barrier_cpu_count (pending on another rdp or recently
-> +	 * decremented by a concurrent batch processing) but not false negative.
-> +	 */
-> +	if (doing_batch && atomic_read(&rcu_state.barrier_cpu_count)) {
-> +		rcu_nocb_unlock_irqrestore(rdp, flags);
-> +		return false;
-> +	}
-> +
-> +	WRITE_ONCE(rdp->doing_batch, doing_batch + 1);
-> +
->  	pending = rcu_segcblist_n_cbs(&rdp->cblist);
->  	div = READ_ONCE(rcu_divisor);
->  	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
-> @@ -2591,12 +2609,17 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
->  	WARN_ON_ONCE(!empty && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
->  
-> +	doing_batch = READ_ONCE(rdp->doing_batch);
-> +	WRITE_ONCE(rdp->doing_batch, doing_batch - 1);
-> +
->  	rcu_nocb_unlock_irqrestore(rdp, flags);
->  
->  	/* Re-invoke RCU core processing if there are callbacks remaining. */
->  	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
->  		invoke_rcu_core();
->  	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
-> +
-> +	return true;
->  }
->  
->  /*
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index deeaf2fee714..4cea596103a5 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -191,6 +191,7 @@ struct rcu_data {
->  
->  	/* 4) rcu_barrier(), OOM callbacks, and expediting. */
->  	struct rcu_head barrier_head;
-> +	int doing_batch;
->  	int exp_dynticks_snap;		/* Double-check need for IPI. */
->  
->  	/* 5) Callback offloading. */
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 3b470113ae38..bf052251c7ab 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -787,6 +787,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  	bool needwake_state = false;
->  	bool needwake_gp = false;
->  	bool can_sleep = true;
-> +	bool did_batch;
->  	struct rcu_node *rnp = rdp->mynode;
->  
->  	local_irq_save(flags);
-> @@ -799,7 +800,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  	 * instances of this callback would execute concurrently.
->  	 */
->  	local_bh_disable();
-> -	rcu_do_batch(rdp);
-> +	did_batch = rcu_do_batch(rdp);
->  	local_bh_enable();
->  	lockdep_assert_irqs_enabled();
->  	rcu_nocb_lock_irqsave(rdp, flags);
-> @@ -842,6 +843,13 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  	if (needwake_state)
->  		swake_up_one(&rdp->nocb_state_wq);
->  
-> +	/*
-> +	 * If rcu_core() is running concurrently and an rcu barrier
-> +	 * callback is pending, leave it some time to process because
-> +	 * we can't run concurrently and guarantee callbacks ordering.
-> +	 */
-> +	if (!did_batch && !can_sleep && nocb_cb_can_run(rdp))
-> +		schedule_timeout_idle(1);
->  	do {
->  		swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
->  						    nocb_cb_wait_cond(rdp));
-> -- 
-> 2.25.1
-> 
+v1 => v2:
+        Patch 1/3: 
+		No changes;
+        Patch 2/3: 
+		Replace wait_for_completion_killable() with
+		wait_for_completion() because killing the kthread is
+                not allowed and so there is no need for killable
+                wait;
+        Patch 3/3: 
+		No changes.
+
+Fabio M. De Francesco (3):
+  staging: r8188eu: Use completions for signaling start / end kthread
+  staging: r8188eu: Use completions for signaling enqueueing
+  staging: r8188eu: Remove redundant 'if' statement
+
+ drivers/staging/r8188eu/core/rtw_cmd.c    | 20 +++++++-------------
+ drivers/staging/r8188eu/include/rtw_cmd.h |  5 +++--
+ drivers/staging/r8188eu/os_dep/os_intfs.c |  8 +++++---
+ 3 files changed, 15 insertions(+), 18 deletions(-)
+
+-- 
+2.33.0
+
