@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6B343168A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6638431694
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhJRKzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:55:55 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:43220 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhJRKzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:55:54 -0400
-Received: from zn.tnic (p200300ec2f085700846cd5acb237d67e.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:846c:d5ac:b237:d67e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0A0601EC01DF;
-        Mon, 18 Oct 2021 12:53:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634554422;
+        id S230501AbhJRK4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:56:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45038 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229473AbhJRK4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:56:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634554446;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4nuTuWqK/08nFLEj5f2FRFTNFNDe0ksMTiDCZVgq+Gc=;
-        b=Iqq5tQFZlbXKgm5HkArnT4BHUPe+d0ENpAgjLLszm9vx5V2W7Dw/763al/WYgAnKcT9L3q
-        3KdzL8n1fWr6xta49tO9XyzjrPf7plrCtZCorYUmcco6dy2ePOElCslVbuXHaQHIDFAoOr
-        eLEAb2UgmI81tz1VncC31/TPJfQaDSI=
-Date:   Mon, 18 Oct 2021 12:53:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 06/11] x86/traps: Add #VE support for TDX guest
-Message-ID: <YW1SNMqBcsdqOCsF@zn.tnic>
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YV8pE+QYcS/fUe98@zn.tnic>
- <5b7f13b9-6d32-c97c-aaea-4e256a59f90b@intel.com>
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0UGHEy0KSirReAesLAC81k90uijHa8m3tA+7RLpvJyE=;
+        b=cE0Xt1kVHlmDMIKUmLQ97Ifn/F9tNi76Hl/HO4D25UQgRUEewHZfA/ngA6BGNO8ec3g6Hv
+        Udbr5l1Ky1tuQhvrHqnOv/g9wgixPs8pr5/or5zprknkuonrgOGqjVfdtq7KTYRJxjR1v6
+        qBwAh4sr88rWU7IKrcmu/pSGrdIVIv0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-brxOuAIwMZam_K6JL4lLoA-1; Mon, 18 Oct 2021 06:54:05 -0400
+X-MC-Unique: brxOuAIwMZam_K6JL4lLoA-1
+Received: by mail-ed1-f69.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso13978929edf.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:54:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=0UGHEy0KSirReAesLAC81k90uijHa8m3tA+7RLpvJyE=;
+        b=f418OQXZMP93MErNBokkynKjyoQiNU7igPuwu7Cca403XWYWOJwyf6QrSFLY/qzYNl
+         Ijn2Qip/dSn+lollbSEATGzwJF/OwkS0V4/TBpByjD4UyNkK6I8XCj+K7oOPO+xrLv8z
+         9sM7JJsT9bv+QIHQQ1imxk9S1k+p13MKQBRGh0nb3D57zSq+nkqcCJNPUcegoOfqVVVp
+         LPTnl83m+HzysfQJZ44Nv/m7DInWAyO5jHh+i+kqKbeZ1ywP5Sl33bvKo9bUDpVCrFkL
+         hBoiyySAUWzM6Odr9i5vd/QI6D9h0nv+G/I6spImKM3Zcy9JgiSMQ27Bsrbx+FOnFOyk
+         ZJ2Q==
+X-Gm-Message-State: AOAM531cJdqGRPIN+V0ODK1BzAXNW3TFOrDp9jQxSmvcuvnsUO/91xPv
+        dx/GbB0cRL63GT0jeUXoYrRb3Inl6MCfaFM2G+Kuo73pER/XDJJdAcfF51Ni/rnmBUZhe2RTr7I
+        jhIsmLvSd8Mh9M0KoSIgLpcfw
+X-Received: by 2002:a05:6402:5c2:: with SMTP id n2mr43155540edx.239.1634554444231;
+        Mon, 18 Oct 2021 03:54:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbl37EsBUhONWzuO27hrT5ZHC1cXxi9YO8Bwu86QC8GVaSRChD1xgLAyG+l/wNJUb3pkjEiA==
+X-Received: by 2002:a05:6402:5c2:: with SMTP id n2mr43155511edx.239.1634554444025;
+        Mon, 18 Oct 2021 03:54:04 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t19sm8824456ejb.115.2021.10.18.03.54.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 03:54:03 -0700 (PDT)
+Message-ID: <3da8fd50-bdb3-93bd-3d27-0b3f961bd531@redhat.com>
+Date:   Mon, 18 Oct 2021 12:54:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5b7f13b9-6d32-c97c-aaea-4e256a59f90b@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 1/8] KVM: SEV-ES: fix length of string I/O
+Content-Language: en-US
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        thomas.lendacky@amd.com, fwilhelm@google.com,
+        kvm list <kvm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, oupton@google.com,
+        Sean Christopherson <seanjc@google.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <CA+G9fYt7FMXbp47ObVZ4B7X917186Fu39+LM04PcbqZ2-f7-qg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CA+G9fYt7FMXbp47ObVZ4B7X917186Fu39+LM04PcbqZ2-f7-qg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 10:15:22AM -0700, Dave Hansen wrote:
-> I think it's equivalent to something like a 'pt_regs' or 'stack_info'
-> that we pass around in other exception handlers.  It's always stack
-> allocated.  It's never dynamically allocated and NULL is never passed
-> for some other semantic reason.
+On 18/10/21 12:21, Naresh Kamboju wrote:
+> [Please ignore this email if it already reported ]
+> 
+> Following build errors noticed while building Linux next 20211018
+> with gcc-11 for i386 architecture.
+> 
+> i686-linux-gnu-ld: arch/x86/kvm/svm/sev.o: in function `sev_es_string_io':
+> sev.c:(.text+0x110f): undefined reference to `__udivdi3'
+> make[1]: *** [/builds/linux/Makefile:1247: vmlinux] Error 1
+> make[1]: Target '__all' not remade because of errors.
+> make: *** [Makefile:226: __sub-make] Error 2
 
-Ok, but why is adding that check such a big deal?
+Thank you very much, I have sent a simple fix of changing the variable 
+to u32.
 
-Are you saying that nothing else will call tdx_get_ve_info() in the
-future so we should trust the passed in *ve pointer blindly or should we
-simply add that cheap check just in case.
+Paolo
 
-I don't mind having it without it but wondering why a little defensive
-programming is a problem, at all.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
