@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4212432517
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B04043251A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhJRReu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:34:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:40978 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233591AbhJRReq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:34:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DCF42F;
-        Mon, 18 Oct 2021 10:32:34 -0700 (PDT)
-Received: from [10.1.196.28] (eglon.cambridge.arm.com [10.1.196.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0DCE93F694;
-        Mon, 18 Oct 2021 10:32:33 -0700 (PDT)
-Subject: Re: [PATCH] firmware: arm_sdei: pass sdei_api_event_register right
- parameters
-To:     =?UTF-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210910040117.98736-1-zhangliguang@linux.alibaba.com>
- <3fb354d1-bdc1-8aa2-aa90-4fd92e9a2e9a@arm.com>
- <b93cf74a-ec1a-dcfc-990b-d3dbc4b55c3d@linux.alibaba.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <f983a17a-27d4-d43b-e6e6-9f03aa5508b0@arm.com>
-Date:   Mon, 18 Oct 2021 18:32:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <b93cf74a-ec1a-dcfc-990b-d3dbc4b55c3d@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+        id S234139AbhJRRey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:34:54 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:41482 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233591AbhJRRev (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 13:34:51 -0400
+Received: by mail-ot1-f43.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so737494ote.8;
+        Mon, 18 Oct 2021 10:32:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=2U8hBROJcAqw7cvJsslFtgA/mHZAvox2fIGmr8/9UKc=;
+        b=gWXWqH+BO+vEiSsONPvHYwL1SSld5R0tfQxgvsztcb+WHD5fhxBfvjrmpz228dii55
+         SlO82qLKvzsUrUuMgRFnEA945LkD+aY6Vuu+aoD0DuWyZz0o3KOgEqno2olNbVeDPlmx
+         0qnwqAbfFbVlL/UGxp8Tg3/HlztBEeAZBYaimVboHNZHgL3Rvoc8na/leU6jQg+3GHI3
+         UIG9r18d3LxjZZrvnyabqLQMg1BYTg7l3xPHjmjnNF1sJ+irAlctUud90sdkvNfdYcW7
+         BoHa5MQKn85vSFz1Ibax/zyMfrWqlcb926Sx8jyUYJDbqZpQiBnYVQ6mFtVn/T/ICy/F
+         D2mg==
+X-Gm-Message-State: AOAM531L3OyoO8Lr15csq+8sQjJowmPi9rY+u604t3OyaBv+dGPRb4ak
+        QOzu7F8T07klpS4ypMu1mQ==
+X-Google-Smtp-Source: ABdhPJyRN4OujdXL5CfZdoqzic+ABwBDXCL5MO8pWWd5f8xybeyhVcEjN/oNd+bSkL/32ctN/iwwiw==
+X-Received: by 2002:a9d:4113:: with SMTP id o19mr1013451ote.228.1634578360032;
+        Mon, 18 Oct 2021 10:32:40 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r4sm3129771oti.27.2021.10.18.10.32.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 10:32:39 -0700 (PDT)
+Received: (nullmailer pid 2612840 invoked by uid 1000);
+        Mon, 18 Oct 2021 17:32:38 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Etienne Carriere <etienne.carriere@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, devicetree@vger.kernel.org
+In-Reply-To: <20211018114046.25571-1-etienne.carriere@linaro.org>
+References: <20211018114046.25571-1-etienne.carriere@linaro.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: arm: Add OP-TEE transport for SCMI
+Date:   Mon, 18 Oct 2021 12:32:38 -0500
+Message-Id: <1634578358.516648.2612839.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liguang,
-
-On 11/10/2021 06:40, 乱石 wrote:
-> 在 2021/10/9 1:39, James Morse 写道:
->> On 10/09/2021 05:01, Liguang Zhang wrote:
->>> Function _local_event_enable is used for private sdei event
->>> registeration called by sdei_event_register. We should pass
->> (registration)
-
->>> sdei_api_event_register right flag and mpidr parameters, otherwise atf
->>> may trigger assert errors.
->>> diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
->>> index a7e762c352f9..0736752dadde 100644
->>> --- a/drivers/firmware/arm_sdei.c
->>> +++ b/drivers/firmware/arm_sdei.c
->>> @@ -558,14 +558,16 @@ static int sdei_api_event_register(u32 event_num, unsigned long
->>> entry_point,
->>>   static void _local_event_register(void *data)
->>>   {
->>>       int err;
->>> +    u64 mpidr;
->>>       struct sdei_registered_event *reg;
->>>       struct sdei_crosscall_args *arg = data;
->>>         WARN_ON(preemptible());
->>>   +    mpidr = read_cpuid_mpidr();
->>>       reg = per_cpu_ptr(arg->event->private_registered, smp_processor_id());
->>>       err = sdei_api_event_register(arg->event->event_num, sdei_entry_point,
->>> -                      reg, 0, 0);
->>> +                      reg, SDEI_EVENT_REGISTER_RM_PE, mpidr);
-
->> Hmmm, this looks like a bug in TFA.
->>
->> 5.1.2.2 "Parameters" of DEN 0054B has:
->> | Routing mode is valid only for a shared event. For a private event, the routing mode is
->> | ignored.
->>
->> Worse, the mpidr field has:
->> | Currently the format is defined only when the selected routing mode is RM_PE.
-
-
-> For a private event, we route SDEI_EVENT_REGISTER_RM_PE and mpidr parameters may be more
-> rationable.
-
-You are making this call from Linux?
-
-This isn't valid for private events. Private events are private to the CPU - they can only
-be reset, register and taken on that CPU. The specification for SDEI_EVENT_ROUTING_SET has
-this:
-| This call is used to change the routing information of a shared event.
-
-To borrow the GIC's terms: Private events are like PPI, Shared events are like SPI.
-
-
->> Over in trusted firmware land:
->>
->> https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/tree/services/std_svc/sdei/sdei_main.c?h=v2.5#n361
->>
->>
->> | static int64_t sdei_event_register(int ev_num,
->> |                 uint64_t ep,
->> |                 uint64_t arg,
->> |                 uint64_t flags,
->> |                uint64_t mpidr)
->> | {
->>
->> |    /* Private events always target the PE */
->> |    if (is_event_private(map))
->> |        flags = SDEI_REGF_RM_PE;
->>
->> It looks like this re-uses the 'caller specified the routing' code, but didn't update the
->> mpidr.
->>
->>
->> You mention TFA takes an assert failure, I assume that brings the machine down.
->> (Presumably you don't have a CPU with an affinity of zero.)
-
-> Yes, that brings the machine down. In opensource ATF, CPU with an affinity of zero.
+On Mon, 18 Oct 2021 13:40:45 +0200, Etienne Carriere wrote:
+> Introduce compatible "linaro,scmi-optee" for SCMI transport channel
+> based on an OP-TEE service invocation. The compatible mandates a
+> channel ID defined with property "linaro,optee-channel-id".
 > 
-> The problem backaround:
+> Cc: devicetree@vger.kernel.org
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+> ---
+> Changes since v2:
+>  - Define mandatory property linaro,optee-channel-id
+>  - Rebased on yaml description file
 > 
-> we use local secure arch timer as sdei watchdog timer 
+> Changes since v1:
+>  - Removed modification regarding mboxes property description.
+> ---
+>  .../bindings/firmware/arm,scmi.yaml           | 44 +++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+> 
 
-Is that an SPI? If so, you should really be generating a shared event.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
+yamllint warnings/errors:
 
-> for hardlockup detection, in  os
-> panic ,we mask sdei event, then trigger the assert
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'description' is a required property
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+		hint: A vendor boolean property can use "type: boolean"
+	Additional properties are not allowed ('maxItems' was unexpected)
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+		hint: A vendor string property with exact values has an implicit type
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: ignoring, error in schema: patternProperties: ^protocol@[0-9a-f]+$: properties: linaro,optee-channel-id
+warning: no schema found in file: ./Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+Documentation/devicetree/bindings/mailbox/arm,mhu.example.dt.yaml:0:0: /example-1/firmware/scmi: failed to match any schema with compatible: ['arm,scmi']
+Documentation/devicetree/bindings/firmware/arm,scmi.example.dts:175.39-178.19: ERROR (duplicate_label): /example-2/firmware/scmi/protocol@14: Duplicate label 'scmi_clk' on /example-2/firmware/scmi/protocol@14 and /example-0/firmware/scmi/protocol@14
+Documentation/devicetree/bindings/firmware/arm,scmi.example.dts:180.40-186.19: ERROR (duplicate_label): /example-2/firmware/scmi/protocol@13: Duplicate label 'scmi_dvfs' on /example-2/firmware/scmi/protocol@13 and /example-0/firmware/scmi/protocol@13
+ERROR: Input tree has errors, aborting (use -f to force output)
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/firmware/arm,scmi.example.dt.yaml] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
-> if (se->reg_flags == SDEI_REGF_RM_PE)
->
->     assert(se->affinity == my_mpidr);
+doc reference errors (make refcheckdocs):
 
+See https://patchwork.ozlabs.org/patch/1542547
 
-I'm not sure where this code in TFA is, but RM_PE for a private event is going to hit this
-on all but one CPU. You shouldn't be able to set RM_PE for a private event.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-I assume this is the TFA side of the problem from your colleague:
-https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/11393
+pip3 install dtschema --upgrade
 
+Please check and re-submit.
 
-Does the problem occur with this TFA patch applied, and without any attempt to mess with
-the routing of per-cpu/private events?
-
-
-Thanks,
-
-James
