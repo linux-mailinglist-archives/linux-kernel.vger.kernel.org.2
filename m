@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78A9431B56
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E2C431C3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhJRNc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42612 "EHLO mail.kernel.org"
+        id S231924AbhJRNj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:39:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232190AbhJRNaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:30:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 952BF61374;
-        Mon, 18 Oct 2021 13:28:14 +0000 (UTC)
+        id S231836AbhJRNg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:36:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC2F6136A;
+        Mon, 18 Oct 2021 13:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563695;
-        bh=PL84pX1c/SYmOTMDdk2tNqwEo98/KqHlko0wlc0Nmoo=;
+        s=korg; t=1634563879;
+        bh=OM20+lB+gffL8rLecoYgxGmfeLWLanpiKC2P8wWeRe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1TY9KxkDldjIOxbAh3SYFkAYcDAUjTb1DDmDaBTGApnGhEPMaMIWb5k/JsOa4RIlK
-         rCjMwQZfvWNPfk1aZ5NKqbLJ7O3XRsrIxuXaluM6STSnAVOPPXGGQBOQ8xl2P4uZSD
-         SZlVBQHfpP4Q/5oLEVGMPy2qSKLDOGZyILA4DOGM=
+        b=lQh1zyiIqklc7eI7r5MIU4e6ZTfMWImql/qSsnq9BrITQS5RAdjUKqWhPwNm9JYkq
+         xIKy5I3cQpfouyHpH0VY+o6qKuWL7dCaqAP91hOazK44FTppcAIkwnfWYYcu554oUH
+         7wuRTwcYmMCCWXVf+X/43EyNG/IexwpEPHF7uNvU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 08/50] btrfs: deal with errors when adding inode reference during log replay
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>
+Subject: [PATCH 5.4 17/69] x86/resctrl: Free the ctrlval arrays when domain_setup_mon_state() fails
 Date:   Mon, 18 Oct 2021 15:24:15 +0200
-Message-Id: <20211018132326.808243379@linuxfoundation.org>
+Message-Id: <20211018132330.040445279@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: James Morse <james.morse@arm.com>
 
-commit 52db77791fe24538c8aa2a183248399715f6b380 upstream.
+commit 64e87d4bd3201bf8a4685083ee4daf5c0d001452 upstream.
 
-At __inode_add_ref(), we treating any error returned from
-btrfs_lookup_dir_item() or from btrfs_lookup_dir_index_item() as meaning
-that there is no existing directory entry in the fs/subvolume tree.
-This is not correct since we can get errors such as, for example, -EIO
-when reading extent buffers while searching the fs/subvolume's btree.
+domain_add_cpu() is called whenever a CPU is brought online. The
+earlier call to domain_setup_ctrlval() allocates the control value
+arrays.
 
-So fix that and return the error to the caller when it is not -ENOENT.
+If domain_setup_mon_state() fails, the control value arrays are not
+freed.
 
-CC: stable@vger.kernel.org # 4.14+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Add the missing kfree() calls.
+
+Fixes: 1bd2a63b4f0de ("x86/intel_rdt/mba_sc: Add initialization support")
+Fixes: edf6fa1c4a951 ("x86/intel_rdt/cqm: Add RMID (Resource monitoring ID) management")
+Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20210917165958.28313-1-james.morse@arm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/tree-log.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/resctrl/core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -1141,7 +1141,10 @@ next:
- 	/* look for a conflicting sequence number */
- 	di = btrfs_lookup_dir_index_item(trans, root, path, btrfs_ino(dir),
- 					 ref_index, name, namelen, 0);
--	if (di && !IS_ERR(di)) {
-+	if (IS_ERR(di)) {
-+		if (PTR_ERR(di) != -ENOENT)
-+			return PTR_ERR(di);
-+	} else if (di) {
- 		ret = drop_one_dir_item(trans, root, path, dir, di);
- 		if (ret)
- 			return ret;
-@@ -1151,7 +1154,9 @@ next:
- 	/* look for a conflicing name */
- 	di = btrfs_lookup_dir_item(trans, root, path, btrfs_ino(dir),
- 				   name, namelen, 0);
--	if (di && !IS_ERR(di)) {
-+	if (IS_ERR(di)) {
-+		return PTR_ERR(di);
-+	} else if (di) {
- 		ret = drop_one_dir_item(trans, root, path, dir, di);
- 		if (ret)
- 			return ret;
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -588,6 +588,8 @@ static void domain_add_cpu(int cpu, stru
+ 	}
+ 
+ 	if (r->mon_capable && domain_setup_mon_state(r, d)) {
++		kfree(d->ctrl_val);
++		kfree(d->mbps_val);
+ 		kfree(d);
+ 		return;
+ 	}
 
 
