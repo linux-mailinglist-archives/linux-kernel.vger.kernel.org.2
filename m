@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105A3431E43
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7B2431BB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233314AbhJRN7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57730 "EHLO mail.kernel.org"
+        id S233032AbhJRNec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:34:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234098AbhJRN5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:57:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9EB61452;
-        Mon, 18 Oct 2021 13:40:56 +0000 (UTC)
+        id S232645AbhJRNc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:32:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B8AC6137C;
+        Mon, 18 Oct 2021 13:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564457;
-        bh=exjujlaf+hgjlrlzagkNQVvgh741fEx2KVV2ikdGtvU=;
+        s=korg; t=1634563761;
+        bh=FtHYWU8uoNMGOPVzqaJt1WELjfnqZATizaoH4Hwrzac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PGeo0uiTWr5Mke7CvgzgliEvbqKHD3EZYhpbeV6CqCR/DS7a0XC98vIT0zE4tiLya
-         0ToTD5VbR7DuyhSsjfoWR2trK6GF1Exf/1dgQYJcpyJi9ecbIGMfYOqebyjPnSw3Rj
-         9fA/W0iyB2YUTW9jOTLbInQ+WMTE1ojcRjjqraso=
+        b=GBfqpaoNFA6Hp4majXyLsOyDO7AdR0CCHLkkm5xKx6Sr4dvW0/zbmYlJy+zbCC+dP
+         9eNiiHUVyaLoMmsgLi72YDTfwHO41HDwK+12aVJbm287JBTYPbpCde9NRKlKMzyJik
+         etC7+A3nhBnkVC90HtAhSHaSKtEUs8PnVKaaXlpo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 5.14 096/151] clk: renesas: rzg2l: Fix clk status function
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 28/50] iio: adc128s052: Fix the error handling path of adc128_probe()
 Date:   Mon, 18 Oct 2021 15:24:35 +0200
-Message-Id: <20211018132343.796105871@linuxfoundation.org>
+Message-Id: <20211018132327.472943996@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biju Das <biju.das.jz@bp.renesas.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit fa2a30f8e0aa9304919750b116a9e9e322465299 upstream.
+commit bbcf40816b547b3c37af49168950491d20d81ce1 upstream.
 
-As per RZ/G2L HW(Rev.0.50) manual, clock monitor register value
-0 means clock is not supplied and 1 means clock is supplied.
-This patch fixes the issue by removing the inverted logic.
+A successful 'regulator_enable()' call should be balanced by a
+corresponding 'regulator_disable()' call in the error handling path of the
+probe, as already done in the remove function.
 
-Fixing the above, triggered following 2 issues
+Update the error handling path accordingly.
 
-1) GIC interrupts don't work if we disable IA55_CLK and DMAC_ACLK.
-   Fixed this issue by adding these clocks as critical clocks.
-
-2) DMA is not working, since the DMA driver is not turning on DMAC_PCLK.
-   So will provide a fix in the DMA driver to turn on DMA_PCLK.
-
-Fixes: ef3c613ccd68 ("clk: renesas: Add CPG core wrapper for RZ/G2L SoC")
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-Link: https://lore.kernel.org/r/20210922112405.26413-2-biju.das.jz@bp.renesas.com
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 913b86468674 ("iio: adc: Add TI ADC128S052")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Link: https://lore.kernel.org/r/85189f1cfcf6f5f7b42d8730966f2a074b07b5f5.1629542160.git.christophe.jaillet@wanadoo.fr
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/clk/renesas/renesas-rzg2l-cpg.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/ti-adc128s052.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/clk/renesas/renesas-rzg2l-cpg.c
-+++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
-@@ -398,7 +398,7 @@ static int rzg2l_mod_clock_is_enabled(st
+--- a/drivers/iio/adc/ti-adc128s052.c
++++ b/drivers/iio/adc/ti-adc128s052.c
+@@ -168,7 +168,13 @@ static int adc128_probe(struct spi_devic
+ 	mutex_init(&adc->lock);
  
- 	value = readl(priv->base + CLK_MON_R(clock->off));
+ 	ret = iio_device_register(indio_dev);
++	if (ret)
++		goto err_disable_regulator;
  
--	return !(value & bitmask);
-+	return value & bitmask;
++	return 0;
++
++err_disable_regulator:
++	regulator_disable(adc->reg);
+ 	return ret;
  }
  
- static const struct clk_ops rzg2l_mod_clock_ops = {
 
 
