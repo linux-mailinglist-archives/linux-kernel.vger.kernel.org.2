@@ -2,96 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A464D431179
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2B143117D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhJRHiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:38:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59874 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhJRHiH (ORCPT
+        id S230407AbhJRHl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:41:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46934 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230173AbhJRHlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:38:07 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 164FF219B5;
-        Mon, 18 Oct 2021 07:35:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634542556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Mon, 18 Oct 2021 03:41:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634542784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=g8AdCq04FqHxZQpu0wW2BfZ1BcVn5cU9ZAer2RqlbyU=;
-        b=u2TIUP/Mdjy3STk91DJsStl8q1CoRWwSY5eeKZK0tecdBKiQyPyma/s10xulK7M6uUKb+y
-        OmDL9rjJdlzrobGy2RAQPND1u/jt8l4joj0osg+uvA2JQ7F+cDXueIAjSJv+93cEnpBqUS
-        kIwq3GJVc/g9hZrwUyvRQNvLcEUMWKI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634542556;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g8AdCq04FqHxZQpu0wW2BfZ1BcVn5cU9ZAer2RqlbyU=;
-        b=rfrbtomo9lq+oBn53trNDIVT6TJn1ZYkDmgs94WkvTb5FZPdBhzYkDi8HbtURx/iUzfoAl
-        3VzD429p2IwDnMAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EF3B213B44;
-        Mon, 18 Oct 2021 07:35:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id aEvpNtojbWFCEgAAMHmgww
-        (envelope-from <osalvador@suse.de>); Mon, 18 Oct 2021 07:35:54 +0000
-Date:   Mon, 18 Oct 2021 09:35:53 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Nghia Le <nghialm78@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 1/5] hugetlb: add demote hugetlb page sysfs interfaces
-Message-ID: <20211018073552.GA11960@linux>
-References: <20211007181918.136982-1-mike.kravetz@oracle.com>
- <20211007181918.136982-2-mike.kravetz@oracle.com>
- <YV/4ZFCvoGRn2rtr@localhost.localdomain>
- <47e53389-638a-1af1-e94f-b3c7e5e7459e@oracle.com>
+        bh=gq/e4iQK0pmS4v2ScRZGktMJTRyYytBPyL7+HOq1baE=;
+        b=Ur5tbP2ICjep6tk3li1xdoByxtgGgKYSovE6zgwRjM3BlJ2cUDOal8VT8bdrpxfADQb+14
+        awMfqaedtRcb6aPy+FbI/B895yuclhvqPRzwrF+nAzA9UTegVpsy5Znfql049ZkYxjUi6D
+        DZrGJA+fGsGFvzanp917aNAcoY0U0EA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-Sr1fLNyUO0i_pyM0IcoR9A-1; Mon, 18 Oct 2021 03:39:43 -0400
+X-MC-Unique: Sr1fLNyUO0i_pyM0IcoR9A-1
+Received: by mail-wr1-f69.google.com with SMTP id s18-20020adfbc12000000b00160b2d4d5ebso8552388wrg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:39:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=gq/e4iQK0pmS4v2ScRZGktMJTRyYytBPyL7+HOq1baE=;
+        b=A46/Q9zFz6L0eKOVpPcYIq6ub7N54lJ4NmALqmax0ozgk/h97srTAcl30BHcBK3ofj
+         zXfywi19hF4xaxed2M5DPMXNhCWTMTG1HryyT0N9xENCsa7oaUElg55vgv5ioFHueWJV
+         lZXEh7aV/H6gg3rVE5LJgnODTvw9AOhVZNMWvB2mvBIeYtBq4UahD/Kc/SHXCzZGkFQr
+         UyzvWODl6uYE9D1CxeEUlodckx+sVe9G9McnvQezUIqvPdqETDw3dDwEgKnbJJVx7slr
+         9ePCcCh4/Lx8exnMbWozdeSl4Q0hZxKAU+IrcmVWe/gD+nZ9FTpRzbEY1MQ+83B0O9yN
+         nXzA==
+X-Gm-Message-State: AOAM533Nz/xnyIK6BOncktrun+rpGVeK+BknTZIVDH1M5K41fNVIf+1F
+        TlryHOutlHd7QPZCcLPH7IinwXWfAmJXQCUX1Zv+WDNweMd077QDB7TFfXzE9XgwpWiaXKBLE9v
+        PXGiQu8YQSm9WzdwgPc8RvhyblJyJEFnEPS1P1Z5pSy3lCjLBS476i5awuD35tlY0fG745EtV1J
+        +f
+X-Received: by 2002:a1c:a747:: with SMTP id q68mr43206719wme.139.1634542781907;
+        Mon, 18 Oct 2021 00:39:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxxJjxnbbGnpuWkMwlvtfPm90td1oFICeVZPmZtTAXd6JBKYmrWg3hLPkpjoNqm2TmnRvAOAA==
+X-Received: by 2002:a1c:a747:: with SMTP id q68mr43206694wme.139.1634542781666;
+        Mon, 18 Oct 2021 00:39:41 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id z6sm12059165wro.25.2021.10.18.00.39.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 00:39:41 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] KVM: SVM: reduce guest MAXPHYADDR by one in case
+ C-bit is a physical bit
+In-Reply-To: <YWmdLPsa6qccxtEa@google.com>
+References: <20211015150524.2030966-1-vkuznets@redhat.com>
+ <YWmdLPsa6qccxtEa@google.com>
+Date:   Mon, 18 Oct 2021 09:39:40 +0200
+Message-ID: <87ee8iye6b.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47e53389-638a-1af1-e94f-b3c7e5e7459e@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 01:24:28PM -0700, Mike Kravetz wrote:
-> In general, the resize_lock prevents unexpected consequences when
-> multiple users are modifying the number of pages in a pool concurrently
-> from the proc/sysfs interfaces.  The mutex is acquired here because we
-> are modifying (decreasing) the pool size.
+Sean Christopherson <seanjc@google.com> writes:
 
-Yes, I got that. My question was wrt. n_mask initialization:
+> On Fri, Oct 15, 2021, Vitaly Kuznetsov wrote:
+>> Several selftests (memslot_modification_stress_test, kvm_page_table_test,
+>> dirty_log_perf_test,.. ) which rely on vm_get_max_gfn() started to fail
+>> since commit ef4c9f4f65462 ("KVM: selftests: Fix 32-bit truncation of
+>> vm_get_max_gfn()") on AMD EPYC 7401P:
+>> 
+>>  ./tools/testing/selftests/kvm/demand_paging_test
+>>  Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
+>>  guest physical test memory offset: 0xffffbffff000
+>
+> This look a lot like the signature I remember from the original bug[1].  I assume
+> you're hitting the magic HyperTransport region[2].  I thought that was fixed, but
+> the hack-a-fix for selftests never got applied[3].
+>
+> [1] https://lore.kernel.org/lkml/20210623230552.4027702-4-seanjc@google.com/
 
- +	if (nid != NUMA_NO_NODE) {
- +		init_nodemask_of_node(&nodes_allowed, nid);
- +		n_mask = &nodes_allowed;
- +	} else {
- +		n_mask = &node_states[N_MEMORY];
- +	}
+Hey,
 
-AFAICS, this does not need to be protected.
+it seems I'm only three months late to the party!
 
-with that addressed:
+> [2] https://lkml.kernel.org/r/7e3a90c0-75a1-b8fe-dbcf-bda16502ace9@amd.com
+> [3] https://lkml.kernel.org/r/20210805105423.412878-1-pbonzini@redhat.com
+>
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+This patch helps indeed, thanks! Paolo, any particular reason you
+haven't queued it yet?
+
+>>  Finished creating vCPUs and starting uffd threads
+>>  Started all vCPUs
+>>  ==== Test Assertion Failure ====
+>>    demand_paging_test.c:63: false
+>>    pid=47131 tid=47134 errno=0 - Success
+>>       1	0x000000000040281b: vcpu_worker at demand_paging_test.c:63
+>>       2	0x00007fb36716e431: ?? ??:0
+>>       3	0x00007fb36709c912: ?? ??:0
+>>    Invalid guest sync status: exit_reason=SHUTDOWN
+>> 
+>> The commit, however, seems to be correct, it just revealed an already
+>> present issue. AMD CPUs which support SEV may have a reduced physical
+>> address space, e.g. on AMD EPYC 7401P I see:
+>> 
+>>  Address sizes:  43 bits physical, 48 bits virtual
+>> 
+>> The guest physical address space, however, is not reduced as stated in
+>> commit e39f00f60ebd ("KVM: x86: Use kernel's x86_phys_bits to handle
+>> reduced MAXPHYADDR"). This seems to be almost correct, however, APM has one
+>> more clause (15.34.6):
+>> 
+>>   Note that because guest physical addresses are always translated through
+>>   the nested page tables, the size of the guest physical address space is
+>>   not impacted by any physical address space reduction indicated in CPUID
+>>   8000_001F[EBX]. If the C-bit is a physical address bit however, the guest
+>>   physical address space is effectively reduced by 1 bit.
+>> 
+>> Implement the reduction.
+>> 
+>> Fixes: e39f00f60ebd (KVM: x86: Use kernel's x86_phys_bits to handle reduced MAXPHYADDR)
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>> - RFC: I may have misdiagnosed the problem as I didn't dig to where exactly
+>>  the guest crashes.
+>> ---
+>>  arch/x86/kvm/cpuid.c | 13 ++++++++++---
+>>  1 file changed, 10 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>> index 751aa85a3001..04ae280a0b66 100644
+>> --- a/arch/x86/kvm/cpuid.c
+>> +++ b/arch/x86/kvm/cpuid.c
+>> @@ -923,13 +923,20 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+>>  		 *
+>>  		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
+>>  		 * provided, use the raw bare metal MAXPHYADDR as reductions to
+>> -		 * the HPAs do not affect GPAs.
+>> +		 * the HPAs do not affect GPAs. The value, however, has to be
+>> +		 * reduced by 1 in case C-bit is a physical bit (APM section
+>> +		 * 15.34.6).
+>>  		 */
+>> -		if (!tdp_enabled)
+>> +		if (!tdp_enabled) {
+>>  			g_phys_as = boot_cpu_data.x86_phys_bits;
+>> -		else if (!g_phys_as)
+>> +		} else if (!g_phys_as) {
+>>  			g_phys_as = phys_as;
+>>  
+>> +			if (kvm_cpu_cap_has(X86_FEATURE_SEV) &&
+>> +			    (cpuid_ebx(0x8000001f) & 0x3f) < g_phys_as)
+>> +				g_phys_as -= 1;
+>
+> This is incorrect, non-SEV guests do not see a reduced address space.  See Tom's
+> explanation[*]
+>
+> [*] https://lkml.kernel.org/r/324a95ee-b962-acdf-9bd7-b8b23b9fb991@amd.com
+>
+
+I see, thanks for the pointer.
+
+>> +		}
+>> +
+>>  		entry->eax = g_phys_as | (virt_as << 8);
+>>  		entry->edx = 0;
+>>  		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+>> -- 
+>> 2.31.1
+>> 
+>
 
 -- 
-Oscar Salvador
-SUSE Labs
+Vitaly
+
