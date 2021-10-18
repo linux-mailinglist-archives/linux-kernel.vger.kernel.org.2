@@ -2,113 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C7F431005
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 07:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239B043100E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 07:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhJRF7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 01:59:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhJRF7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 01:59:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 088BE60F59;
-        Mon, 18 Oct 2021 05:57:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634536628;
-        bh=IhMtnbDqfgygGY4YMMBIa1mbNQ1ngzQqBJHZJTAju04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wrw97HNtcyDDr8TsCCYybeLnLcHtJCeujBEXXdqvV3KOAolKrvdMDXC0MQdHk2dtk
-         gLUvCov1ljK7451XhPp8uIDWd6Uhwb/l0cjzgD8S7OGOl6bBZzd48oKjOcIbZX0x14
-         ym/Ytc7lBd0GK5oZg5A1TrwLEOThd81Q2I+7VJWc=
-Date:   Mon, 18 Oct 2021 07:57:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     changlianzhi <changlianzhi@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        linux-input@vger.kernel.org, 282827961@qq.com
-Subject: Re: [PATCH v2 10/18] input&tty: Fix the keyboard led light display
- problem
-Message-ID: <YW0MrF2L6rPhC7/Q@kroah.com>
-References: <616cd589.1c69fb81.e7b01.b706SMTPIN_ADDED_BROKEN@mx.google.com>
+        id S230167AbhJRGAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhJRGAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 02:00:39 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F0FC06161C;
+        Sun, 17 Oct 2021 22:58:28 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id f5so14947296pgc.12;
+        Sun, 17 Oct 2021 22:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=X4ObKuSSQv+G50bHKT8TIyKSkdwsT91S+K4zGdNUDYc=;
+        b=Lx6Kua8eCdB6ynkVlMcdhmK5TPoD66KEfA5sFkjG/jTtVfqyJExe3fuC0Puxhk8YDW
+         oMbdqYvv8LDN5Fl7oeWI1jsOaMhDpBXR56LaquS2aHLuOG+chQvabNZZiYOgQw2jCRXx
+         GjqHc3TmuiHshjuXyEvHVNkjO+/pj9Nt+n8rlscssMhmARCGM0bkwW3hBJxfoW2Ns9lI
+         9+lZARUtvknB91k784nVDrt8t1ZL45iOFMhOZ8uIXyEdX+qkq8QlZCtWuGvFsRsuieHm
+         i9hlkomX8vHYTO13Yqzs+HvKtBJi/31h/KAhjzJ06LpbBnHy8UWyCoDLACtjvJnquGex
+         3DsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=X4ObKuSSQv+G50bHKT8TIyKSkdwsT91S+K4zGdNUDYc=;
+        b=NHUXoumfdbosONMB/vmAWf9LW247kkkxAMn0qgWgKCN4JgdM9/5kzU8NI7u8u/5ctL
+         ewf/OyJultbFkcxf74pE/fJfJYzDzmCWT3NIqtCstwpq2IVRcLVqaI9a3bpwrxkDtroa
+         RhdBjg86ylG1YRbsTG3AKycMcWbwJfhz6SRf4Ek2BBVcY+dHHeSr0NLs2/csD1qJMlPX
+         mNMgv+vPcNXd+Pj7th9FD+0xv/07TWK/14QuRX6ttJkyYbqsZLL4Rxa2J3KL742tc9LR
+         Wq5dJzr6I4908w7uE28erIE5YKR5FkSCnhr7KrZn2AwziEG34GPXIXoFliosVgx375ir
+         b+6w==
+X-Gm-Message-State: AOAM531AJxzNMh5SITbdGrz4CVh2eqHjJqgn1hFCU2moT/FnpZ/UnD/h
+        niruDF0iU/l+i6D1se4H3Y0=
+X-Google-Smtp-Source: ABdhPJwB4aZOEF4c4x+POdQ74CsyuEUoXurySgutsGWF+Sp9p2tOiLlNP0zuxpWool6b+cUy0ckW/Q==
+X-Received: by 2002:a63:340c:: with SMTP id b12mr21911013pga.241.1634536707973;
+        Sun, 17 Oct 2021 22:58:27 -0700 (PDT)
+Received: from localhost ([1.128.241.174])
+        by smtp.gmail.com with ESMTPSA id c12sm11569352pfc.161.2021.10.17.22.58.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 22:58:27 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 15:58:21 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v3 01/12] powerpc: Move and rename func_descr_t
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1634457599.git.christophe.leroy@csgroup.eu>
+        <637a9a11263afa216fdfa7fb470a54479c67c61c.1634457599.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <637a9a11263afa216fdfa7fb470a54479c67c61c.1634457599.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <616cd589.1c69fb81.e7b01.b706SMTPIN_ADDED_BROKEN@mx.google.com>
+Message-Id: <1634536669.2nedzrtfjt.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 10:01:34AM +0800, changlianzhi wrote:
-> Switching from the desktop environment to the tty environment,
-> the state of the keyboard led lights and the state of the keyboard
-> lock are inconsistent. This is because the attribute kb->kbdmode
-> of the tty bound in the desktop environment (xorg) is set to
-> VC_OFF, which causes the ledstate and kb->ledflagstate
-> values of the bound tty to always be 0, which causes the switch
-> from the desktop When to the tty environment, the LED light
-> status is inconsistent with the keyboard lock status.
-> 
-> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+Excerpts from Christophe Leroy's message of October 17, 2021 10:38 pm:
+> There are three architectures with function descriptors, try to
+> have common names for the address they contain in order to
+> refactor some functions into generic functions later.
+>=20
+> powerpc has 'entry'
+> ia64 has 'ip'
+> parisc has 'addr'
+>=20
+> Vote for 'addr' and update 'func_descr_t' accordingly.
+>=20
+> Move it in asm/elf.h to have it at the same place on all
+> three architectures, remove the typedef which hides its real
+> type, and change it to a smoother name 'struct func_desc'.
+>=20
+
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > ---
-> v2 10/18:
-> (1) Move the definition of ledstate to the input module
-> (/drivers/input/input.c),
-> and set or get its value through the input_update_ledstate(Replace the
-> update_value_ledstate function defined in the last patch, and optimize
-> the code according to the proposal) and input_get_ledstate functions.
-> (2) To update the ledstate reference in keyboard.c, you must first get
-> the value through input_get_ledstate.
-> (3)Some macro definitions have been added to input.c.
-> 
-> drivers/input/input.c | 46 ++++++++++++++++++++++++++++++++++++++-
-> drivers/tty/vt/keyboard.c | 19 ++++++++++++++--
-> include/linux/input.h | 3 +++
-> 3 files changed, 65 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/input/input.c b/drivers/input/input.c
-> index ccaeb2426385..8c0ef947ac34 100644
-> --- a/drivers/input/input.c
-> +++ b/drivers/input/input.c
-> @@ -37,6 +37,11 @@ static DEFINE_IDA(input_ida);
-> static LIST_HEAD(input_dev_list);
-> static LIST_HEAD(input_handler_list);
-> +#define VC_SCROLLOCK 0 /* scroll-lock mode */
-> +#define VC_NUMLOCK 1 /* numeric lock mode */
-> +#define VC_CAPSLOCK 2 /* capslock mode */
-> +static unsigned int ledstate = -1U; /* undefined */
+>  arch/powerpc/include/asm/code-patching.h | 2 +-
+>  arch/powerpc/include/asm/elf.h           | 6 ++++++
+>  arch/powerpc/include/asm/types.h         | 6 ------
+>  arch/powerpc/kernel/signal_64.c          | 8 ++++----
+>  4 files changed, 11 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/arch/powerpc/include/asm/code-patching.h b/arch/powerpc/incl=
+ude/asm/code-patching.h
+> index 4ba834599c4d..c6e805976e6f 100644
+> --- a/arch/powerpc/include/asm/code-patching.h
+> +++ b/arch/powerpc/include/asm/code-patching.h
+> @@ -110,7 +110,7 @@ static inline unsigned long ppc_function_entry(void *=
+func)
+>  	 * function's descriptor. The first entry in the descriptor is the
+>  	 * address of the function text.
+>  	 */
+> -	return ((func_descr_t *)func)->entry;
+> +	return ((struct func_desc *)func)->addr;
+>  #else
+>  	return (unsigned long)func;
+>  #endif
+> diff --git a/arch/powerpc/include/asm/elf.h b/arch/powerpc/include/asm/el=
+f.h
+> index b8425e3cfd81..971589a21bc0 100644
+> --- a/arch/powerpc/include/asm/elf.h
+> +++ b/arch/powerpc/include/asm/elf.h
+> @@ -176,4 +176,10 @@ do {									\
+>  /* Relocate the kernel image to @final_address */
+>  void relocate(unsigned long final_address);
+> =20
+> +struct func_desc {
+> +	unsigned long addr;
+> +	unsigned long toc;
+> +	unsigned long env;
+> +};
 > +
-> /*
-> * input_mutex protects access to both input_dev_list and input_handler_list.
-> * This also causes input_[un]register_device and input_[un]register_handler
-> @@ -472,8 +477,12 @@ void input_inject_event(struct input_handle *handle,
-> rcu_read_lock();
-> grab = rcu_dereference(dev->grab);
-> - if (!grab || grab == handle)
-> + if (!grab || grab == handle) {
-> input_handle_event(dev, type, code, value);
-> +
-> + if (type == EV_LED && code <= LED_SCROLLL)
-> + input_update_ledstate(code, value);
-> + }
-> rcu_read_unlock();
-> spin_unlock_irqrestore(&dev->event_lock, flags);
-> @@ -481,6 +490,41 @@ void input_inject_event(struct input_handle *handle,
-> }
-> EXPORT_SYMBOL(input_inject_event);
-> +void input_update_ledstate(unsigned int flag, unsigned int value)
-> +{
-> + unsigned int bit;
-> +
-> + switch (flag) {
-> + case LED_NUML:
-
-<snip>
-
-Again, your email client corrupted the patch and made it so that it can
-not be applied :(
-
-Please just use git send-email.
-
-thanks,
-
-greg k-h
+>  #endif /* _ASM_POWERPC_ELF_H */
+> diff --git a/arch/powerpc/include/asm/types.h b/arch/powerpc/include/asm/=
+types.h
+> index f1630c553efe..97da77bc48c9 100644
+> --- a/arch/powerpc/include/asm/types.h
+> +++ b/arch/powerpc/include/asm/types.h
+> @@ -23,12 +23,6 @@
+> =20
+>  typedef __vector128 vector128;
+> =20
+> -typedef struct {
+> -	unsigned long entry;
+> -	unsigned long toc;
+> -	unsigned long env;
+> -} func_descr_t;
+> -
+>  #endif /* __ASSEMBLY__ */
+> =20
+>  #endif /* _ASM_POWERPC_TYPES_H */
+> diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal=
+_64.c
+> index 1831bba0582e..36537d7d5191 100644
+> --- a/arch/powerpc/kernel/signal_64.c
+> +++ b/arch/powerpc/kernel/signal_64.c
+> @@ -933,11 +933,11 @@ int handle_rt_signal64(struct ksignal *ksig, sigset=
+_t *set,
+>  		 * descriptor is the entry address of signal and the second
+>  		 * entry is the TOC value we need to use.
+>  		 */
+> -		func_descr_t __user *funct_desc_ptr =3D
+> -			(func_descr_t __user *) ksig->ka.sa.sa_handler;
+> +		struct func_desc __user *ptr =3D
+> +			(struct func_desc __user *)ksig->ka.sa.sa_handler;
+> =20
+> -		err |=3D get_user(regs->ctr, &funct_desc_ptr->entry);
+> -		err |=3D get_user(regs->gpr[2], &funct_desc_ptr->toc);
+> +		err |=3D get_user(regs->ctr, &ptr->addr);
+> +		err |=3D get_user(regs->gpr[2], &ptr->toc);
+>  	}
+> =20
+>  	/* enter the signal handler in native-endian mode */
+> --=20
+> 2.31.1
+>=20
+>=20
+>=20
