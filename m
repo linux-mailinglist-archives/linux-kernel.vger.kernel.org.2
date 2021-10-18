@@ -2,324 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC23A43120C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54EC431210
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbhJRIV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:21:57 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:59650 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbhJRIV4 (ORCPT
+        id S231324AbhJRIXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhJRIXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:21:56 -0400
-Received: from [192.168.224.11] (ert768.prtnl [192.168.224.11])
-        by sparta.prtnl (Postfix) with ESMTP id 0B9BA44A024E;
-        Mon, 18 Oct 2021 10:19:43 +0200 (CEST)
-Subject: Re: [PATCH v5 0/4] iio: chemical: Add support for Sensirion SCD4x CO2
- sensor
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>
-References: <20211008101706.755942-1-roan@protonic.nl>
- <20211010165919.51f06938@jic23-huawei> <20211013183828.521f043f@jic23-huawei>
- <3ecfe246-b942-0c1e-08e6-17eff4c5cc16@protonic.nl>
- <20211014181932.5f70d2e4@jic23-huawei>
-From:   Roan van Dijk <roan@protonic.nl>
-Message-ID: <2c7f8b7c-3070-5763-7b74-3811cdbfcabc@protonic.nl>
-Date:   Mon, 18 Oct 2021 10:19:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 18 Oct 2021 04:23:07 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17555C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:20:56 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id a25so67739442edx.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SoA1Yn8aH9TCjRrBoEN0Rv/9mSQgefs3J4mUTn03mx8=;
+        b=XN5jcUuOsK2t3ZiIgA+J6ntqeRK9k7zU487nY3lPfZfpZ4EWvGw9Y/rqgqaTxsguPR
+         B16tK0SeXYHkULuO5lriJVae4YrJqF/lRjWVFBwaOD2RGKilHNO96TxWg8Bb5Ii5Z67B
+         tHZy7gHZ6hBRWmflTDf9acfyPg/7M3StxHA7Ndj9G3xGTSjZY4d1mTVXUAf0eRAmZIgh
+         tpLoysSpxj5P5FLwKbD6LO7o1E9kWVTNUyEfwDpYSB0tbeuffOL2g4z+VfrfmEHdZ1ri
+         PJOSLeurdLoePdfd/Np0Tv/pKt4m7equkFDk6iuBRd62gH3R1wfH+UyQHVKaMC10RzEH
+         1NkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SoA1Yn8aH9TCjRrBoEN0Rv/9mSQgefs3J4mUTn03mx8=;
+        b=2kIv31GCNvRs32Ng7HMlxRo7yMzeyq9KkCxLcbil0g2eBzsrN6NmkocQJ/A3TtQcKK
+         /AQb8AKVlU1XGa7qdK473foblo8Aalqg2De93cRCKGZtvwBalI+WHM3UWAxbKYDsUkxU
+         DJWO5c246IL4APEw4XgzosxbtwQuDwKfeMMEJG4YbhWpAgvnJ5Y1AsIoNeR9VZj83P99
+         D6exRdeYTuCtPrYXLR7F/orGJDT7xhy0GXzmY6+sjuD96Lqwu70ZRkIJq+gaWvamVtsu
+         ikYO0XgnAgwTJ4TAT/r++YP/0iSWHxvRrspb7PCG0HeAboSSMLlik3vSGBneCthw5kyT
+         Renw==
+X-Gm-Message-State: AOAM530U725p8/IYMvPaLViKrfxupTeAsjxX9q0DgJ3OW+lCxHy/Q0i3
+        pnHRc5bPbCmsSPTVBW6ajrQ=
+X-Google-Smtp-Source: ABdhPJyNsVxXVstuxbVwkGRmTFbLj38JGAhNYRuOZ0hLeghkMx3ZeP0v03ggiLjSGrOJn4EqsJOu7A==
+X-Received: by 2002:aa7:cd13:: with SMTP id b19mr1642125edw.219.1634545254126;
+        Mon, 18 Oct 2021 01:20:54 -0700 (PDT)
+Received: from tom-ThinkBook-14-G2-ARE.seco.it ([89.42.6.254])
+        by smtp.gmail.com with ESMTPSA id h7sm10803457ede.19.2021.10.18.01.20.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 01:20:53 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: vt6655: fix camelcase byData in card.c
+Date:   Mon, 18 Oct 2021 10:20:40 +0200
+Message-Id: <20211018082042.15814-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <20211014181932.5f70d2e4@jic23-huawei>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: nl
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace camelcase variable byData in card.c
 
+Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+---
+ drivers/staging/vt6655/card.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-On 14-10-2021 19:19, Jonathan Cameron wrote:
-> On Thu, 14 Oct 2021 10:24:54 +0200
-> Roan van Dijk <roan@protonic.nl> wrote:
-> 
->> On 13-10-2021 19:38, Jonathan Cameron wrote:
->>> On Sun, 10 Oct 2021 16:59:19 +0100
->>> Jonathan Cameron <jic23@kernel.org> wrote:
->>>    
->>>> On Fri,  8 Oct 2021 12:17:02 +0200
->>>> Roan van Dijk <roan@protonic.nl> wrote:
->>>>   
->>>>> This series adds support for the Sensirion SCD4x sensor.
->>>>>
->>>>> The driver supports continuous reads of temperature, relative humdity and CO2
->>>>> concentration. There is an interval of 5 seconds between readings. During
->>>>> this interval the drivers checks if the sensor has new data available.
->>>>>
->>>>> The driver is based on the scd30 driver. However, The scd4x has become too
->>>>> different to just expand the scd30 driver. I made a new driver instead of
->>>>> expanding the scd30 driver. I hope I made the right choice by doing so?
->>>>
->>>> Applied to the togreg branch of iio.git with the issues Randy mentioned tidied
->>>> up. Pushed out as testing for 0-day to see if it can find anything we missed
->>>
->>> And indeed - I missed a bunch of places where explicit __be16 types should have
->>> been used.
->>>
->>> I've applied the following fixup, shout if it's wrong.
->>>   
->> Thank you Jonathan for applying this fixup. No need to shout :) Your
->> changes should fix the issue.
->>
->> However, I have a question about something else. The co2 concentration
->> is an IIO_CHAN_INFO_RAW, but doesn't have a scale or offset at this
->> moment. Is an _scale always required for an _raw in the ABI? I could not
->> find anything in the documentation if there is a rule for this. Someone
->> mentioned this to me, so I want to check if I did this right.
->>
->> The sensor returns the actual co2 value upon reading, like 450 ppm. We
->> can set an offset of this co2 value with the calibration_forced_value
->> through the ABI, but this offset is handled internally by the sensor. So
->> there isn't anything with scaling or an offset needed at the driver side.
-> 
-> Ah. We could have mapped this to calibbias, though here it's made more
-> complex by other calibrations existing that don't use the value so let's
-> leave it as it is.
-> 
->>
->> Was I right by making it of type RAW? If needed we could make it more
->> like the scd30 driver, keeping it of type RAW but with scale = 1. What
->> should I do or is it fine as it is?
-> 
-> Hmm. Interesting corner case in the ABI.  A _raw value without a scale
-> normally means we don't know it for some reason.  The most common case
-> of this is light sensors where several _raw intensity values are combined
-> in some (typically non linear) transform to form a single measure of illuminance.
-> Those intensity_raw channels don't have an meaningful units, but devices
-> often have threshold events on them so we have to expose them.
-> 
-> I would say make it a processed value, but there is a quirk.
-> concentrations in IIO are expressed in percent not per million, so you need
-> a scale anyway, I guess 10000?  See Documentation/ABI/testing/sysfs-bus-iio
-> 
-> 
-> No need to do a new driver version, just send a patch tidying up this corner.
-> 
+diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
+index 26e08fec6e6a..fac2d0566d2e 100644
+--- a/drivers/staging/vt6655/card.c
++++ b/drivers/staging/vt6655/card.c
+@@ -183,7 +183,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
+ 	unsigned char bySlot = 0;
+ 	unsigned char bySIFS = 0;
+ 	unsigned char byDIFS = 0;
+-	unsigned char byData;
++	unsigned char data;
+ 	int i;
+ 
+ 	/* Set SIFS, DIFS, EIFS, SlotTime, CwMin */
+@@ -194,15 +194,15 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
+ 			priv->abyBBVGA[0] = 0x20;
+ 			priv->abyBBVGA[2] = 0x10;
+ 			priv->abyBBVGA[3] = 0x10;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x1C)
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x1C)
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 
+ 		} else if (priv->byRFType == RF_UW2452) {
+ 			MACvSetBBType(priv->port_offset, BB_TYPE_11A);
+ 			priv->abyBBVGA[0] = 0x18;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x14) {
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x14) {
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 				bb_write_embedded(priv, 0xE1, 0x57);
+ 			}
+@@ -220,14 +220,14 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
+ 			priv->abyBBVGA[0] = 0x1C;
+ 			priv->abyBBVGA[2] = 0x00;
+ 			priv->abyBBVGA[3] = 0x00;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x20)
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x20)
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 
+ 		} else if (priv->byRFType == RF_UW2452) {
+ 			priv->abyBBVGA[0] = 0x14;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x18) {
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x18) {
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 				bb_write_embedded(priv, 0xE1, 0xD3);
+ 			}
+@@ -243,14 +243,14 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
+ 			priv->abyBBVGA[0] = 0x1C;
+ 			priv->abyBBVGA[2] = 0x00;
+ 			priv->abyBBVGA[3] = 0x00;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x20)
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x20)
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 
+ 		} else if (priv->byRFType == RF_UW2452) {
+ 			priv->abyBBVGA[0] = 0x14;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x18) {
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x18) {
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 				bb_write_embedded(priv, 0xE1, 0xD3);
+ 			}
+@@ -798,12 +798,12 @@ bool CARDbGetCurrentTSF(struct vnt_private *priv, u64 *pqwCurrTSF)
+ {
+ 	void __iomem *iobase = priv->port_offset;
+ 	unsigned short ww;
+-	unsigned char byData;
++	unsigned char data;
+ 
+ 	MACvRegBitsOn(iobase, MAC_REG_TFTCTL, TFTCTL_TSFCNTRRD);
+ 	for (ww = 0; ww < W_MAX_TIMEOUT; ww++) {
+-		VNSvInPortB(iobase + MAC_REG_TFTCTL, &byData);
+-		if (!(byData & TFTCTL_TSFCNTRRD))
++		VNSvInPortB(iobase + MAC_REG_TFTCTL, &data);
++		if (!(data & TFTCTL_TSFCNTRRD))
+ 			break;
+ 	}
+ 	if (ww == W_MAX_TIMEOUT)
+-- 
+2.33.1
 
-Hi Jonathan,
-
-As you suggested, these are my fixes for the concentration reading.
-
-The co2 reading is now a processed value and has a scale. I also added 
-the information in sysfs-bus-iio documentation, because this type of 
-processed value is new in the ABI.
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio 
-b/Documentation/ABI/testing/sysfs-bus-iio
-index c27347d3608e..66a17f4c831e 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -1716,6 +1716,7 @@ Description:
-
-  What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_raw
-  What:          /sys/bus/iio/devices/iio:deviceX/in_concentrationX_raw
-+What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_co2_input
-  What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_co2_raw
-  What:          /sys/bus/iio/devices/iio:deviceX/in_concentrationX_co2_raw
-  What: 
-/sys/bus/iio/devices/iio:deviceX/in_concentration_ethanol_raw
-diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
-index 09b34201c42b..bc1c6676029d 100644
---- a/drivers/iio/chemical/scd4x.c
-+++ b/drivers/iio/chemical/scd4x.c
-@@ -337,6 +337,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
-
-         switch (mask) {
-         case IIO_CHAN_INFO_RAW:
-+       case IIO_CHAN_INFO_PROCESSED:
-                 ret = iio_device_claim_direct_mode(indio_dev);
-                 if (ret)
-                         return ret;
-@@ -352,7 +353,11 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
-                 *val = ret;
-                 return IIO_VAL_INT;
-         case IIO_CHAN_INFO_SCALE:
--               if (chan->type == IIO_TEMP) {
-+               if (chan->type == IIO_CONCENTRATION) {
-+                       *val = 0;
-+                       *val2 = 100;
-+                       return IIO_VAL_INT_PLUS_MICRO;
-+               } else if (chan->type == IIO_TEMP) {
-                         *val = 175000;
-                         *val2 = 65536;
-                         return IIO_VAL_FRACTIONAL;
-@@ -501,7 +506,8 @@ static const struct iio_chan_spec scd4x_channels[] = {
-                 .type = IIO_CONCENTRATION,
-                 .channel2 = IIO_MOD_CO2,
-                 .modified = 1,
--               .info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-+               .info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
-+                                       BIT(IIO_CHAN_INFO_SCALE),
-                 .address = SCD4X_CO2,
-                 .scan_index = SCD4X_CO2,
-                 .scan_type = {
-
-Thanks,
-
-Roan
-
-> Thanks,
-> 
-> Jonathan
-> 
-> 
->> Sorry for not asking this earlier.
->>
->> Thanks,
->>
->> Roan
->>
->>> diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
->>> index 09b34201c42b..ebebcb117ba2 100644
->>> --- a/drivers/iio/chemical/scd4x.c
->>> +++ b/drivers/iio/chemical/scd4x.c
->>> @@ -263,7 +263,7 @@ static int scd4x_write_and_fetch(struct scd4x_state *state, enum scd4x_cmd cmd,
->>>    static int scd4x_read_meas(struct scd4x_state *state, uint16_t *meas)
->>>    {
->>>    	int i, ret;
->>> -	uint16_t buf[3];
->>> +	__be16 buf[3];
->>>    
->>>    	ret = scd4x_read(state, CMD_READ_MEAS, buf, sizeof(buf));
->>>    	if (ret)
->>> @@ -282,12 +282,13 @@ static int scd4x_wait_meas_poll(struct scd4x_state *state)
->>>    	int ret;
->>>    
->>>    	do {
->>> +		__be16 bval;
->>>    		uint16_t val;
->>>    
->>> -		ret = scd4x_read(state, CMD_GET_DATA_READY, &val, sizeof(val));
->>> +		ret = scd4x_read(state, CMD_GET_DATA_READY, &bval, sizeof(bval));
->>>    		if (ret)
->>>    			return -EIO;
->>> -		val = be16_to_cpu(val);
->>> +		val = be16_to_cpu(bval);
->>>    
->>>    		/* new measurement available */
->>>    		if (val & 0x7FF)
->>> @@ -333,7 +334,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
->>>    {
->>>    	struct scd4x_state *state = iio_priv(indio_dev);
->>>    	int ret;
->>> -	uint16_t tmp;
->>> +	__be16 tmp;
->>>    
->>>    	switch (mask) {
->>>    	case IIO_CHAN_INFO_RAW:
->>> @@ -405,17 +406,18 @@ static ssize_t calibration_auto_enable_show(struct device *dev,
->>>    	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->>>    	struct scd4x_state *state = iio_priv(indio_dev);
->>>    	int ret;
->>> -	uint16_t val;
->>> +	__be16 bval;
->>> +	u16 val;
->>>    
->>>    	mutex_lock(&state->lock);
->>> -	ret = scd4x_read(state, CMD_GET_ASC, &val, sizeof(val));
->>> +	ret = scd4x_read(state, CMD_GET_ASC, &bval, sizeof(bval));
->>>    	mutex_unlock(&state->lock);
->>>    	if (ret) {
->>>    		dev_err(dev, "failed to read automatic calibration");
->>>    		return ret;
->>>    	}
->>>    
->>> -	val = (be16_to_cpu(val) & SCD4X_READY_MASK) ? 1 : 0;
->>> +	val = (be16_to_cpu(bval) & SCD4X_READY_MASK) ? 1 : 0;
->>>    
->>>    	return sprintf(buf, "%d\n", val);
->>>    }
->>>
->>>    
->>>>
->>>> Thanks,
->>>>
->>>> Jonathan
->>>>   
->>>>>
->>>>> Changes since v5:
->>>>> scd4x.c:
->>>>>     - Fix bug in trigger_handler
->>>>>
->>>>> Changes since v4:
->>>>> scd4x.c:
->>>>>     - Minor fixes in documentation
->>>>>     - Reorder trigger_handler so memcpy is not needed anymore
->>>>> Documentation:
->>>>>     - Change information about the KernelVersion for the
->>>>>       calibration_forced_value_available
->>>>>
->>>>> Changes since v3:
->>>>> scd4x.c
->>>>>     - Change read and write_and_fetch function parameter. CRC byte is now
->>>>>       hidden inside the function.
->>>>>     - Fix minor style issues
->>>>>     - Add calibration_forced_value_available attribute to the driver
->>>>>     - Remove including BUFFER_TRIGGERED
->>>>>     - Change calibbias to raw ADC readings rather than converting it to
->>>>>       milli degrees C.
->>>>> Documentation:
->>>>>     - Change description of driver attributes
->>>>>     - Add calibration_forced_value_available documentation
->>>>>
->>>>> Changes since v2:
->>>>> scd4x.c:
->>>>>     - Change boolean operations
->>>>>     - Document scope of lock
->>>>>     - Remove device *dev from struct
->>>>>     - Add goto block for errror handling
->>>>>     - Add function to read value per channel in read_raw
->>>>>     - Fix bug with lock in error paths
->>>>>     - Remove conversion of humidity and temperature values
->>>>>     - Add scale and offset to temperature channel
->>>>>     - Add scale to humidity channel
->>>>>     - Move memset out of locked section
->>>>>     - Remove unused irq functions
->>>>>     - Move device register at end of probe function
->>>>> Documentation:
->>>>>     - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
->>>>>     - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
->>>>>
->>>>> Changes since v1:
->>>>> dt-bindings:
->>>>>     - Separated compatible string for each sensor type
->>>>> scd4x.c:
->>>>>     - Changed probe, resume and suspend functions to static
->>>>>     - Added SIMPLE_DEV_PM_OPS function call for power management
->>>>>       operations.
->>>>>
->>>>> Roan van Dijk (4):
->>>>>     dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
->>>>>     MAINTAINERS: Add myself as maintainer of the scd4x driver
->>>>>     drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
->>>>>     iio: documentation: Document scd4x calibration use
->>>>>
->>>>>    Documentation/ABI/testing/sysfs-bus-iio       |  41 ++
->>>>>    Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
->>>>>    .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
->>>>>    MAINTAINERS                                   |   6 +
->>>>>    drivers/iio/chemical/Kconfig                  |  13 +
->>>>>    drivers/iio/chemical/Makefile                 |   1 +
->>>>>    drivers/iio/chemical/scd4x.c                  | 689 ++++++++++++++++++
->>>>>    7 files changed, 796 insertions(+), 34 deletions(-)
->>>>>    delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
->>>>>    create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
->>>>>    create mode 100644 drivers/iio/chemical/scd4x.c
->>>>>       
->>>>   
->>>    
-> 
