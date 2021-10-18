@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F3E431C14
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9743431AEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbhJRNiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:38:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
+        id S232168AbhJRN3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:29:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233181AbhJRNfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:35:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F6786135A;
-        Mon, 18 Oct 2021 13:30:46 +0000 (UTC)
+        id S231905AbhJRN3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C383961360;
+        Mon, 18 Oct 2021 13:26:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563846;
-        bh=ZxcjFqWZXvFV9igIuOLE3hl8vv0O9cCZ+0IFLBuu5F4=;
+        s=korg; t=1634563592;
+        bh=yTXYksWALTOicAmW7Xp/4CmMRNVSYyCtVd2SaLSzTN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fdDToULNl9Uon/egTa19xph5wtXxuE7nLUxTNcWIqtLi9YqmnJDmGUYmRSeGyNn87
-         lzwyBrQ8YJM4JvGfXlQ/cSCjFQ3/YYAgNALG7S96IDdXH+RTYwK+6bJyIqU3Jvg2VD
-         9UtTuGYDZFRbVxhJVLNCKh3VlEbc9YdNbFdmXV34=
+        b=y+m4En9qjqr7SVdw+gKQauWwYb+wg9UMgSe+I8HIBsl8lhM8qBLAdkzoWiv6HWTP0
+         WaM2TyzecaBfQj8+t/lzLlh3H2F1vD7+RQT4HyTs9byCQ2MEgXPtnjd2IFj9MPIXYe
+         ckcVlqHXjhOh8069hz1aesP5FhjWrOf4sLD2SaAg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        seeteena <s1seetee@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 37/69] powerpc/xive: Discard disabled interrupts in get_irqchip_state()
+        stable@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 26/39] sctp: account stream padding length for reconf chunk
 Date:   Mon, 18 Oct 2021 15:24:35 +0200
-Message-Id: <20211018132330.707750916@linuxfoundation.org>
+Message-Id: <20211018132326.282921923@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
 
-commit 6f779e1d359b8d5801f677c1d49dcfa10bf95674 upstream.
+commit a2d859e3fc97e79d907761550dbc03ff1b36479c upstream.
 
-When an interrupt is passed through, the KVM XIVE device calls the
-set_vcpu_affinity() handler which raises the P bit to mask the
-interrupt and to catch any in-flight interrupts while routing the
-interrupt to the guest.
+sctp_make_strreset_req() makes repeated calls to sctp_addto_chunk()
+which will automatically account for padding on each call. inreq and
+outreq are already 4 bytes aligned, but the payload is not and doing
+SCTP_PAD4(a + b) (which _sctp_make_chunk() did implicitly here) is
+different from SCTP_PAD4(a) + SCTP_PAD4(b) and not enough. It led to
+possible attempt to use more buffer than it was allocated and triggered
+a BUG_ON.
 
-On the guest side, drivers (like some Intels) can request at probe
-time some MSIs and call synchronize_irq() to check that there are no
-in flight interrupts. This will call the XIVE get_irqchip_state()
-handler which will always return true as the interrupt P bit has been
-set on the host side and lock the CPU in an infinite loop.
-
-Fix that by discarding disabled interrupts in get_irqchip_state().
-
-Fixes: da15c03b047d ("powerpc/xive: Implement get_irqchip_state method for XIVE to fix shutdown race")
-Cc: stable@vger.kernel.org #v5.4+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Tested-by: seeteena <s1seetee@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211011070203.99726-1-clg@kaod.org
+Cc: Vlad Yasevich <vyasevich@gmail.com>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Fixes: cc16f00f6529 ("sctp: add support for generating stream reconf ssn reset request chunk")
+Reported-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Marcelo Ricardo Leitner <mleitner@redhat.com>
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
+Link: https://lore.kernel.org/r/b97c1f8b0c7ff79ac4ed206fc2c49d3612e0850c.1634156849.git.mleitner@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/sysdev/xive/common.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/sctp/sm_make_chunk.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -990,7 +990,8 @@ static int xive_get_irqchip_state(struct
- 		 * interrupt to be inactive in that case.
- 		 */
- 		*state = (pq != XIVE_ESB_INVALID) && !xd->stale_p &&
--			(xd->saved_p || !!(pq & XIVE_ESB_VAL_P));
-+			(xd->saved_p || (!!(pq & XIVE_ESB_VAL_P) &&
-+			 !irqd_irq_disabled(data)));
- 		return 0;
- 	default:
- 		return -EINVAL;
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -3623,7 +3623,7 @@ struct sctp_chunk *sctp_make_strreset_re
+ 	outlen = (sizeof(outreq) + stream_len) * out;
+ 	inlen = (sizeof(inreq) + stream_len) * in;
+ 
+-	retval = sctp_make_reconf(asoc, outlen + inlen);
++	retval = sctp_make_reconf(asoc, SCTP_PAD4(outlen) + SCTP_PAD4(inlen));
+ 	if (!retval)
+ 		return NULL;
+ 
 
 
