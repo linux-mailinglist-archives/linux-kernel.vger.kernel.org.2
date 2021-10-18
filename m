@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDB2431610
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910BC43161B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhJRK25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:28:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59076 "EHLO mail.kernel.org"
+        id S229743AbhJRKbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:31:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231609AbhJRK2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:28:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1110E6103D;
-        Mon, 18 Oct 2021 10:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634552791;
-        bh=ay2dJkSWk8dvggCwDM2rFTldFfZHxJ1l8l8yY5Ebeqk=;
+        id S229473AbhJRKbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:31:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 835AA6103B;
+        Mon, 18 Oct 2021 10:29:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634552981;
+        bh=Jcbd/etLUj/HfkH8N0e/t0Az9xZmyi7KDPMq9txQmdQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lySFvHpQ4quAbHwn3m0kiK+OCNz9N6Rk0AMNZFjmT+1UfkGCvXlaoQt3vvl8V+0B4
-         PLO4j+DLFHRYMFCJI/b76JfdbQPw6zq+H2UiskimnNn4rOjUG92O6DSQvu5KPeDXKW
-         +kMg9XejnQfMKSd6+J52IvPGSv5ubDN+AEUiccSC9SlivZh23PgN8sycQb/lNFlfnk
-         O3ji/LAsTvuu0w0mKDY1k8F7yKGaPx0Vj/Xazg5gd1SpmjMmyoNLzzeWIi64NuTgs5
-         2pG2dtUnOceXB9asJTb1dPuFSjiUIt00wjeYp2InDl72BJl1H2+CwZ90+TgE3IraTX
-         ezmiA/DephvDQ==
-Date:   Mon, 18 Oct 2021 13:26:25 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <YW1L0fs84tn0pIR2@kernel.org>
-References: <20211018192940.3d1d532f@canb.auug.org.au>
+        b=CePeyJnzwLvCgD5QZ+i5f9z05hRqHI6cxEW4cAwCrO7qF3m/0SEk9fF959Jb0KS4K
+         /BmqY9yR84VjPXWaI+9B9fhnzWgIHSOIvKzo6crbdRxq/0/k6UDSoLjfnv+UJdkcWW
+         iH0TI2MiZ3WKWq7qS2MPc/TnrH8igaptyCMwaypk=
+Date:   Mon, 18 Oct 2021 12:29:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Karolina Drobnik <karolinadrobnik@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: vt6655: Rename byPreambleType field
+Message-ID: <YW1Mkse3AgUsyvWx@kroah.com>
+References: <20211018101713.3599-1-karolinadrobnik@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018192940.3d1d532f@canb.auug.org.au>
+In-Reply-To: <20211018101713.3599-1-karolinadrobnik@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 07:29:40PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Oct 18, 2021 at 11:17:13AM +0100, Karolina Drobnik wrote:
+> Drop Hungarian notation prefix in `byPreambleType` member of
+> struct vnt_private. Change it to use snake case.
 > 
-> After merging the akpm-current tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
+> Fix issue detected by checkpatch.pl:
+>   CHECK: Avoid CamelCase: <byPreambleType>
 > 
-> init/main.c: In function 'xbc_make_cmdline':
-> init/main.c:384:3: error: implicit declaration of function 'memblock_free_ptr'; did you mean 'memblock_free_late'? [-Werror=implicit-function-declaration]
->   384 |   memblock_free_ptr(new_cmdline, len + 1);
->       |   ^~~~~~~~~~~~~~~~~
->       |   memblock_free_late
-> cc1: all warnings being treated as errors
-> 
-> Caused by commit
-> 
->   d6e96e5e2e23 ("memblock: use memblock_free for freeing virtual pointers")
-> 
-> interacting with commit
-> 
->   1ae43851b18a ("bootconfig: init: Fix memblock leak in xbc_make_cmdline()")
-> 
-> from Linus' tree.
-> 
-> I have applied the following merge fix patch.
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 18 Oct 2021 19:25:44 +1100
-> Subject: [PATCH] fixup for "memblock: use memblock_free for freeing virtual
->  pointers"
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-
-Thanks!
-
-Andrew, can you please add this as a fixup to "memblock: use memblock_free
-for freeing virtual pointers"?
-
+> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
 > ---
->  init/main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/staging/vt6655/baseband.c    |  2 +-
+>  drivers/staging/vt6655/device.h      |  2 +-
+>  drivers/staging/vt6655/device_main.c |  8 ++---
+>  drivers/staging/vt6655/rxtx.c        | 50 ++++++++++++++--------------
+>  4 files changed, 31 insertions(+), 31 deletions(-)
 > 
-> diff --git a/init/main.c b/init/main.c
-> index 9b7fdd04e8cb..2851ebbe1985 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -381,7 +381,7 @@ static char * __init xbc_make_cmdline(const char *key)
->  	ret = xbc_snprint_cmdline(new_cmdline, len + 1, root);
->  	if (ret < 0 || ret > len) {
->  		pr_err("Failed to print extra kernel cmdline.\n");
-> -		memblock_free_ptr(new_cmdline, len + 1);
-> +		memblock_free(new_cmdline, len + 1);
->  		return NULL;
->  	}
->  
-> -- 
-> 2.33.0
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
 
+Hi,
 
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
--- 
-Sincerely yours,
-Mike.
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
