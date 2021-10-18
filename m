@@ -2,187 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804084323F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91DF4323F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbhJRQhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+        id S233679AbhJRQjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233478AbhJRQhh (ORCPT
+        with ESMTP id S231896AbhJRQjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:37:37 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76FBC061745;
-        Mon, 18 Oct 2021 09:35:25 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id C21B31F41B9D
-Received: by earth.universe (Postfix, from userid 1000)
-        id 353043C0CA8; Mon, 18 Oct 2021 18:35:22 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 18:35:22 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     linux-pm@vger.kernel.org, kernel@puri.sm,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: bq25890: add return values to error messages
-Message-ID: <20211018163522.rbvv35ddilumc3uu@earth.universe>
-References: <20211014094533.4169157-1-martin.kepplinger@puri.sm>
+        Mon, 18 Oct 2021 12:39:20 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A925C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:37:09 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id r6so604491oiw.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=L6u+YNaDZtPRetTG0ljC8h1IN8hHY7pl5qB7PDsL30o=;
+        b=ed337YS85d0zgIbx8R3ZOudNI2q2vZe5ZEi+nXjRB//GpH140g62ZCxH3yA+gYQDcu
+         +3HW503yW/iIs3XeM0BgozYPExQCXg40WY7IlzVACTQy1NU1V1JXUtSQoyjFXjcigaO/
+         fF7TPkeoaK9AeLVwip1GG04X0Jruvsus+vzfEHJOSVPr+sB3Qme/ESARF1j7v8LEmUct
+         XdZnjHmohmB+/bR7A9BBeo0bvdriNiXlTw2d6KshIwaZORiOvEX8WsAHXi+HKvSneFlQ
+         uYBNSlnH/ZqJHM+GomxPjXxq7LU3JaOz8sJI9+VPw4z5pdeDAyUOK98stuasOYtQvuHi
+         Zy+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=L6u+YNaDZtPRetTG0ljC8h1IN8hHY7pl5qB7PDsL30o=;
+        b=zOPIw8et9NNRDuownqwGkzYpqUK/N/lKN6kDZfCLkiMRaSXwZaOPgHElnuveJlmHRC
+         BaXI5y70Wd+2gRyX9oaSlb9hyn6E5qYAawDLlObb8COYq/OsqIBitYzEH+vpvpXybWOu
+         +39pdgPU28U80eEii5Td6bF8B2fD0s/AkXkC81or1pP/P5GT1yMJt/mMpDmCJjqgWtev
+         nQtILcgpAHvfifMbQTiUZfOXt837qudQaA/7uKz0U0zINiHDS0mLMrg/MAPj10Cp5Gt4
+         YnUjLDdf3P7vti4PJM8irkRq9iQ5CimHAGqDvNu6cIKAu3bFL5y9Ce+Du4dTJpQHmLYL
+         KWEg==
+X-Gm-Message-State: AOAM530NVdgIP6v+lTI6WkLjLM2XEQ6XN3WPeQCaL2XyH2rQBuzNqor9
+        kz/C5fIZPziububdjQBMnRfqtw==
+X-Google-Smtp-Source: ABdhPJwKfsWSEtFUWuIBaOew7U6qb4+Pq5Sd13Sc0ld3Y5jH0TCFVDmEweLRBsfnmOmMmQfbASSzvA==
+X-Received: by 2002:aca:5b07:: with SMTP id p7mr692644oib.14.1634575028496;
+        Mon, 18 Oct 2021 09:37:08 -0700 (PDT)
+Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id h2sm3113551otr.37.2021.10.18.09.37.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 09:37:08 -0700 (PDT)
+Message-ID: <5181cbf2-21bf-623b-9b63-6ecd25fdbcbe@kali.org>
+Date:   Mon, 18 Oct 2021 11:37:06 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7fszvvmprm57xvod"
-Content-Disposition: inline
-In-Reply-To: <20211014094533.4169157-1-martin.kepplinger@puri.sm>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH] arm64: defconfig: Enable Qualcomm LMH driver
+Content-Language: en-US
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20211017204036.2761122-1-bjorn.andersson@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+In-Reply-To: <20211017204036.2761122-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7fszvvmprm57xvod
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Thu, Oct 14, 2021 at 11:45:33AM +0200, Martin Kepplinger wrote:
-> Add more details to the error messages that indicate what went wrong
-> and use dev_err_probe() at a few places in the probe() path in order
-> to avoid error messages for deferred probe after which the driver probes
-> correctly.
->=20
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+On 10/17/21 3:40 PM, Bjorn Andersson wrote:
+> With the introduction of LMH in '36c6581214c4 ("arm64: dts: qcom:
+> sdm845: Add support for LMh node")' the CPUfreq gained a reference for
+> the two interrupts from the LMh. This means that if the LMh driver isn't
+> enabled CPUfreq will not probe and there's no frequency scaling.
+>
+> Enable LMh to make CPUfreq functional again on SDM845.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
+>   arch/arm64/configs/defconfig | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 86224aa3a74b..0ae6cd2748d2 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -577,6 +577,7 @@ CONFIG_TEGRA_BPMP_THERMAL=m
+>   CONFIG_TEGRA_SOCTHERM=m
+>   CONFIG_QCOM_TSENS=y
+>   CONFIG_QCOM_SPMI_TEMP_ALARM=m
+> +CONFIG_QCOM_LMH=m
+>   CONFIG_UNIPHIER_THERMAL=y
+>   CONFIG_WATCHDOG=y
+>   CONFIG_SL28CPLD_WATCHDOG=m
 
-Thanks, queued.
+Tested on the Lenovo Yoga C630
 
--- Sebastian
+Tested-By: Steev Klimaszewski <steev@kali.org>
 
->  drivers/power/supply/bq25890_charger.c | 34 ++++++++++++--------------
->  1 file changed, 16 insertions(+), 18 deletions(-)
->=20
-> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/suppl=
-y/bq25890_charger.c
-> index 0e23d2db0fc4..ec81653e58c0 100644
-> --- a/drivers/power/supply/bq25890_charger.c
-> +++ b/drivers/power/supply/bq25890_charger.c
-> @@ -979,13 +979,13 @@ static int bq25890_get_chip_version(struct bq25890_=
-device *bq)
-> =20
->  	id =3D bq25890_field_read(bq, F_PN);
->  	if (id < 0) {
-> -		dev_err(bq->dev, "Cannot read chip ID.\n");
-> +		dev_err(bq->dev, "Cannot read chip ID: %d\n", id);
->  		return id;
->  	}
-> =20
->  	rev =3D bq25890_field_read(bq, F_DEV_REV);
->  	if (rev < 0) {
-> -		dev_err(bq->dev, "Cannot read chip revision.\n");
-> +		dev_err(bq->dev, "Cannot read chip revision: %d\n", rev);
->  		return rev;
->  	}
-> =20
-> @@ -1028,10 +1028,9 @@ static int bq25890_irq_probe(struct bq25890_device=
- *bq)
->  	struct gpio_desc *irq;
-> =20
->  	irq =3D devm_gpiod_get(bq->dev, BQ25890_IRQ_PIN, GPIOD_IN);
-> -	if (IS_ERR(irq)) {
-> -		dev_err(bq->dev, "Could not probe irq pin.\n");
-> -		return PTR_ERR(irq);
-> -	}
-> +	if (IS_ERR(irq))
-> +		return dev_err_probe(bq->dev, PTR_ERR(irq),
-> +				     "Could not probe irq pin.\n");
-> =20
->  	return gpiod_to_irq(irq);
->  }
-> @@ -1153,34 +1152,33 @@ static int bq25890_probe(struct i2c_client *clien=
-t,
->  	mutex_init(&bq->lock);
-> =20
->  	bq->rmap =3D devm_regmap_init_i2c(client, &bq25890_regmap_config);
-> -	if (IS_ERR(bq->rmap)) {
-> -		dev_err(dev, "failed to allocate register map\n");
-> -		return PTR_ERR(bq->rmap);
-> -	}
-> +	if (IS_ERR(bq->rmap))
-> +		return dev_err_probe(dev, PTR_ERR(bq->rmap),
-> +				     "failed to allocate register map\n");
-> =20
->  	for (i =3D 0; i < ARRAY_SIZE(bq25890_reg_fields); i++) {
->  		const struct reg_field *reg_fields =3D bq25890_reg_fields;
-> =20
->  		bq->rmap_fields[i] =3D devm_regmap_field_alloc(dev, bq->rmap,
->  							     reg_fields[i]);
-> -		if (IS_ERR(bq->rmap_fields[i])) {
-> -			dev_err(dev, "cannot allocate regmap field\n");
-> -			return PTR_ERR(bq->rmap_fields[i]);
-> -		}
-> +		if (IS_ERR(bq->rmap_fields[i]))
-> +			return dev_err_probe(dev, PTR_ERR(bq->rmap_fields[i]),
-> +					     "cannot allocate regmap field\n");
->  	}
-> =20
->  	i2c_set_clientdata(client, bq);
-> =20
->  	ret =3D bq25890_get_chip_version(bq);
->  	if (ret) {
-> -		dev_err(dev, "Cannot read chip ID or unknown chip.\n");
-> +		dev_err(dev, "Cannot read chip ID or unknown chip: %d\n", ret);
->  		return ret;
->  	}
-> =20
->  	if (!dev->platform_data) {
->  		ret =3D bq25890_fw_probe(bq);
->  		if (ret < 0) {
-> -			dev_err(dev, "Cannot read device properties.\n");
-> +			dev_err(dev, "Cannot read device properties: %d\n",
-> +				ret);
->  			return ret;
->  		}
->  	} else {
-> @@ -1189,7 +1187,7 @@ static int bq25890_probe(struct i2c_client *client,
-> =20
->  	ret =3D bq25890_hw_init(bq);
->  	if (ret < 0) {
-> -		dev_err(dev, "Cannot initialize the chip.\n");
-> +		dev_err(dev, "Cannot initialize the chip: %d\n", ret);
->  		return ret;
->  	}
-> =20
-> @@ -1225,7 +1223,7 @@ static int bq25890_probe(struct i2c_client *client,
-> =20
->  	ret =3D bq25890_power_supply_init(bq);
->  	if (ret < 0) {
-> -		dev_err(dev, "Failed to register power supply\n");
-> +		dev_err_probe(dev, ret, "Failed to register power supply.\n");
->  		goto irq_fail;
->  	}
-> =20
-> --=20
-> 2.30.2
->=20
-
---7fszvvmprm57xvod
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFtokoACgkQ2O7X88g7
-+prOFQ/+MZvD8b0bUexF2b7y/t508/n0ler/vgjTsly7Z1voSREo/3sNjg29gXdC
-hcMzlaomuLvdrfNvoeXDqvGWasIzX/HrFybKhbi0aQLs5K3llYp8VABnr0mFyGc2
-iAZnd2HFMuR/PdXvCeeIs4LYBOq2aTf3KyjPjlJ0WMFrk9GHZ/upNQR2ilahISuT
-mSFyFcYvp6ZtDcuq99uY6umKD03LKt5X/5HaDcu7EFQyCZXJ184fX8cTkXSRU/CF
-iD6ICQYV7ReuJ0J+XyCkaw26rZX+86JcHJFLwLLFpyxhHxBxpAxYrwwq5RNXWWXX
-R00T/3I97EDQuhXyZwHlSCmPlbfArPLQoKQoz4B4SF8Cgrn7I1ps7nemauxCYWn3
-DWWdmfkbK+29K+MrRiFVeWd6XX7d73v9bij3uItynnnMdgdUaLMYUJ8CvA+6TM96
-sEh4OTdTAmOj5D/+jqaRpv4V+XigzB8Pz3/KEZ7jvBZ6zKM2ocypoHxP6+Jdaad9
-icqymXTPzix3jClOudodFEPDWbX7Vn0p5mwMuvQALVivpJcK14pfteSpc0mza2mC
-IvSg/NaqwLuJsrD7KsKioMUeg4I9YrhXbCp8KLpxGqprd4BMlo/UaRGJuD2Gte1+
-KpiUApLWdscjgzCDkoeZTah9EWEjS34SS3NmzxPYmcsUSAKT/Wg=
-=HBZp
------END PGP SIGNATURE-----
-
---7fszvvmprm57xvod--
