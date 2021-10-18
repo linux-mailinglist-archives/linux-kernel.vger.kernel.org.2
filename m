@@ -2,216 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94AE43174C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A5043174F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhJRLao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
+        id S230436AbhJRLbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhJRLan (ORCPT
+        with ESMTP id S229581AbhJRLbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:30:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8DCC061714
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:28:32 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mcQoX-00007x-Fr; Mon, 18 Oct 2021 13:28:21 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mcQoW-0000Cm-4w; Mon, 18 Oct 2021 13:28:20 +0200
-Date:   Mon, 18 Oct 2021 13:28:20 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-pm@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Petr =?utf-8?B?QmVuZcWh?= <petr.benes@ysoft.com>,
-        petrben@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH] thermal: imx: Fix temperature measurements on i.MX6
- after alarm
-Message-ID: <20211018112820.qkebjt2gk2w53lp5@pengutronix.de>
-References: <20211008081137.1948848-1-michal.vokac@ysoft.com>
+        Mon, 18 Oct 2021 07:31:34 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7DBC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:29:23 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id o184so3794108iof.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1fgJvh7+bSF88TXWBTb/Xbqee/xjp/eoCpakVfL7f8k=;
+        b=pWR+cmdqQ1S+sZU5CD0esrs+zcURncs679mesQuijLeN5ded7WKFnBdG6+Zg0WRwWH
+         ND5pVMDMpWqUmmY7di1XpHqH5GYUsEBIoRAiH1NMma73ilsx+FCbZdHGcCiyRbwQloKr
+         paVmuDod1wt3S/koS4qg5EOE5n1YxbIGSjpEaZc7+VWGk4sPlk4hL0uKXdl8y31mZs49
+         lcfQcmsgPagPDiNsjXCtnN8CS+Vul4hjVYSLxCwgTmBjkQ8BRv+l2UsN7tm0cLO16LRg
+         Ap2wS5iZ/LZcE2a14sFwD5tR0IgWMTX41D4JoNec53D7pHb6F3dceerygigbOfT8juNz
+         aGGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1fgJvh7+bSF88TXWBTb/Xbqee/xjp/eoCpakVfL7f8k=;
+        b=MmXSqasVo+6mjq4PYKagIIwmhwekLhWNcz2SPr10lKz/WsiPoz9R4Ytdu2g/c5JcT+
+         cb3gItZfWqbBTuA31AXrIxedIXufaZPzPxLIwhDN15Wpf7yeSM8Uhbmz76VyEzcNjpuD
+         kQW9f+FQj7/x/4pfN6VwnKYFGtzyCHcrufpYDTR4MZ99V8wwnG9NxB9PzFUnF4EMBqFP
+         jf6vuy8H3kh/VeqyuheaqssH1aN5CZ74UbKhTb27pGeow3nkmCihyzzDsR6hRm3JF0fP
+         GnOEdrx3p5jAMbod9C2i22Js4hzF7HyxfG5xFtcaLWDlPHXHj+yKBC28Yf20ML7Ho8dN
+         ptGw==
+X-Gm-Message-State: AOAM532GETO8QLp+iOeMEBTdZmOEJRuX7t0Q8UVBA+1IP3R1OtllsFPA
+        3/77GLEcDmxFZHj0NDYtqMDfqu7rRQomGxGb91o=
+X-Google-Smtp-Source: ABdhPJyKHIqYxcEDOJxIFDZU83YefWRmmA+KsfpFKY2bNjgfLFOxQC2TZSNcX1Hug3OgkqMQa0rCxachvW80MfZnTWE=
+X-Received: by 2002:a02:9149:: with SMTP id b9mr17887225jag.46.1634556562990;
+ Mon, 18 Oct 2021 04:29:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211008081137.1948848-1-michal.vokac@ysoft.com>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211014031413.14471-1-jiangshanlai@gmail.com>
+ <20211014033414.16321-1-jiangshanlai@gmail.com> <CAKwvOd=znqwGT_FmUPbWPodjrnFHf+FtHMaYCTfvUeukBCM3xw@mail.gmail.com>
+ <CANiq72k7E2ahWoFQWSUo6CWNd7iWVh-5sdqtTQ=5JPTHN_tzyw@mail.gmail.com> <8d2f0a4f-80e0-36c1-9421-d2c1af282a12@linux.alibaba.com>
+In-Reply-To: <8d2f0a4f-80e0-36c1-9421-d2c1af282a12@linux.alibaba.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 18 Oct 2021 13:29:11 +0200
+Message-ID: <CANiq72kkk6-eN3hN7OfSA5r03df42j7pAueMZurY_rTvq518Dw@mail.gmail.com>
+Subject: Re: [PATCH V3 06/49] compiler_types.h: Add __noinstr_section() for noinstr
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+On Mon, Oct 18, 2021 at 11:16 AM Lai Jiangshan <laijs@linux.alibaba.com> wrote:
+>
+> I will use __section(section) in the updated patch.
+>
+> I don't know whether it is worth for a new version for a relatively large patchset
+> with almost 50 patches since the feedback becomes less or I should wait for more
+> reviews from the x86 maintainers.  Especially the second half of the patchset which
+> is all about IST exceptions has no feedback since V2.
 
-I hope you have seen this patch:
-https://lore.kernel.org/all/20210924115032.29684-1-o.rempel@pengutronix.de/
+Yeah, what I meant by independent patch is that you may avoid worrying
+about that fix within the series, and send it as a completely
+different patch (we can also do it for you, if you prefer). It is,
+after all, not really related to either this commit nor the series.
 
-Are there any reason why this was ignored?
-
-On Fri, Oct 08, 2021 at 10:11:37AM +0200, Michal Vokáč wrote:
-> From: Petr Beneš <petr.benes@ysoft.com>
-> 
-> SoC temperature readout may not work after thermal alarm fires interrupt.
-> This harms userspace as well as CPU cooling device.
-> 
-> Two issues with the logic involved. First, there is no protection against
-> concurent measurements, hence one can switch the sensor off while
-> the other one tries to read temperature later. Second, the interrupt path
-> usually fails. At the end the sensor is powered off and thermal IRQ is
-> disabled. One has to reenable the thermal zone by the sysfs interface.
-> 
-> Most of troubles come from commit d92ed2c9d3ff ("thermal: imx: Use
-> driver's local data to decide whether to run a measurement")
-> 
-> It uses data->irq_enabled as the "local data". Indeed, its value is
-> related to the state of the sensor loosely under normal operation and,
-> frankly, gets unleashed when the thermal interrupt arrives.
-> 
-> Current patch adds the "local data" (new member sensor_on in
-> imx_thermal_data) and sets its value in controlled manner.
-> 
-> Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
-> Cc: petrben@gmail.com
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Petr Beneš <petr.benes@ysoft.com>
-> Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
-> ---
->  drivers/thermal/imx_thermal.c | 30 ++++++++++++++++++++++++++----
->  1 file changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
-> index 2c7473d86a59..df5658e21828 100644
-> --- a/drivers/thermal/imx_thermal.c
-> +++ b/drivers/thermal/imx_thermal.c
-> @@ -209,6 +209,8 @@ struct imx_thermal_data {
->  	struct clk *thermal_clk;
->  	const struct thermal_soc_data *socdata;
->  	const char *temp_grade;
-> +	struct mutex sensor_lock;
-> +	bool sensor_on;
->  };
->  
->  static void imx_set_panic_temp(struct imx_thermal_data *data,
-> @@ -252,11 +254,12 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
->  	const struct thermal_soc_data *soc_data = data->socdata;
->  	struct regmap *map = data->tempmon;
->  	unsigned int n_meas;
-> -	bool wait, run_measurement;
-> +	bool wait;
->  	u32 val;
->  
-> -	run_measurement = !data->irq_enabled;
-> -	if (!run_measurement) {
-> +	mutex_lock(&data->sensor_lock);
-> +
-> +	if (data->sensor_on) {
->  		/* Check if a measurement is currently in progress */
->  		regmap_read(map, soc_data->temp_data, &val);
->  		wait = !(val & soc_data->temp_valid_mask);
-> @@ -283,13 +286,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
->  
->  	regmap_read(map, soc_data->temp_data, &val);
->  
-> -	if (run_measurement) {
-> +	if (!data->sensor_on) {
->  		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
->  			     soc_data->measure_temp_mask);
->  		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
->  			     soc_data->power_down_mask);
->  	}
->  
-> +	mutex_unlock(&data->sensor_lock);
-> +
->  	if ((val & soc_data->temp_valid_mask) == 0) {
->  		dev_dbg(&tz->device, "temp measurement never finished\n");
->  		return -EAGAIN;
-> @@ -339,20 +344,26 @@ static int imx_change_mode(struct thermal_zone_device *tz,
->  	const struct thermal_soc_data *soc_data = data->socdata;
->  
->  	if (mode == THERMAL_DEVICE_ENABLED) {
-> +		mutex_lock(&data->sensor_lock);
->  		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
->  			     soc_data->power_down_mask);
->  		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
->  			     soc_data->measure_temp_mask);
-> +		data->sensor_on = true;
-> +		mutex_unlock(&data->sensor_lock);
->  
->  		if (!data->irq_enabled) {
->  			data->irq_enabled = true;
->  			enable_irq(data->irq);
->  		}
->  	} else {
-> +		mutex_lock(&data->sensor_lock);
->  		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
->  			     soc_data->measure_temp_mask);
->  		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
->  			     soc_data->power_down_mask);
-> +		data->sensor_on = false;
-> +		mutex_unlock(&data->sensor_lock);
->  
->  		if (data->irq_enabled) {
->  			disable_irq(data->irq);
-> @@ -728,6 +739,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  	}
->  
->  	/* Make sure sensor is in known good state for measurements */
-> +	mutex_init(&data->sensor_lock);
-> +	mutex_lock(&data->sensor_lock);
->  	regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
->  		     data->socdata->power_down_mask);
->  	regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
-> @@ -739,6 +752,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  			IMX6_MISC0_REFTOP_SELBIASOFF);
->  	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
->  		     data->socdata->power_down_mask);
-> +	data->sensor_on = false;
-> +	mutex_unlock(&data->sensor_lock);
->  
->  	ret = imx_thermal_register_legacy_cooling(data);
->  	if (ret)
-> @@ -796,10 +811,13 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  	if (data->socdata->version == TEMPMON_IMX6SX)
->  		imx_set_panic_temp(data, data->temp_critical);
->  
-> +	mutex_lock(&data->sensor_lock);
->  	regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
->  		     data->socdata->power_down_mask);
->  	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
->  		     data->socdata->measure_temp_mask);
-> +	data->sensor_on = true;
-> +	mutex_unlock(&data->sensor_lock);
->  
->  	data->irq_enabled = true;
->  	ret = thermal_zone_device_enable(data->tz);
-> @@ -832,8 +850,12 @@ static int imx_thermal_remove(struct platform_device *pdev)
->  	struct regmap *map = data->tempmon;
->  
->  	/* Disable measurements */
-> +	mutex_lock(&data->sensor_lock);
->  	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
->  		     data->socdata->power_down_mask);
-> +	data->sensor_on = false;
-> +	mutex_unlock(&data->sensor_lock);
-> +
->  	if (!IS_ERR(data->thermal_clk))
->  		clk_disable_unprepare(data->thermal_clk);
->  
-> -- 
-> 2.25.1
-> 
+Cheers,
+Miguel
