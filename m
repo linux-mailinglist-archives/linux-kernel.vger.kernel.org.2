@@ -2,75 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BCB431D03
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0C8431D78
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhJRNrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:47:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
+        id S232656AbhJRNvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:51:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232544AbhJRNo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:44:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB3BC61506;
-        Mon, 18 Oct 2021 13:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634564115;
-        bh=tLlmrcpE9T19JG8z6ljxodSS/pQwrpYkvqtifvX+ESw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=XwUBZ4fcIJWQ+LqXzKYopTgVUjBKY6/fcl5B00avg6Y6dtGGNPfViRvIxZVWiLhhy
-         8eRkFFMviLGgvaCX1mGEwbMsimnxcgo6qhQ5dDhpuVjiVQEOU29brFitSQcQ74W0Xc
-         J18PpThfxQ9N1/hg6wAfQvCGZRR05a6nRBm+gfno6ujb8qlGdCNimY1L+nJ1GhZdbH
-         DW+AsR+eL9ldADG8XHHGJ9XrAz479y+nJCP3JZ4lfuU+JCse/+vkX89Fkds/IGzY9H
-         ft6Ya9Vk42HmY7nEceEoQk+NGWRCR8PBo2IzBHt+1inC3sj+2QIobcVRACb2f9C1wm
-         9G4vX0LA93IXQ==
-Message-ID: <eee87b139519684c1b2eb7d5f259580b29fc6841.camel@kernel.org>
-Subject: Re: [PATCH v7 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Date:   Mon, 18 Oct 2021 16:35:12 +0300
-In-Reply-To: <20211008203308.20963-2-jarkko@kernel.org>
-References: <20211008203308.20963-1-jarkko@kernel.org>
-         <20211008203308.20963-2-jarkko@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.40.0-1 
+        id S232892AbhJRNtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:49:36 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05B7E61882;
+        Mon, 18 Oct 2021 13:37:32 +0000 (UTC)
+Date:   Mon, 18 Oct 2021 09:37:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     <tom.zanussi@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [QUESTION] Performance deterioration caused by commit
+ 85f726a35e504418
+Message-ID: <20211018093731.2dd5917f@gandalf.local.home>
+In-Reply-To: <992d3b1c-70db-5cc7-8400-39caa5d502d5@huawei.com>
+References: <992d3b1c-70db-5cc7-8400-39caa5d502d5@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTEwLTA4IGF0IDIzOjMzICswMzAwLCBKYXJra28gU2Fra2luZW4gd3JvdGU6
-Cj4gK3N0YXRpYyB2b2lkIHNneF9udW1hX2V4aXQodm9pZCkKPiArewo+ICvCoMKgwqDCoMKgwqDC
-oHN0cnVjdCBkZXZpY2UgKmRldjsKPiArwqDCoMKgwqDCoMKgwqBpbnQgbmlkOwo+ICsKPiArwqDC
-oMKgwqDCoMKgwqBmb3IgKG5pZCA9IDA7IG5pZCA8IG51bV9wb3NzaWJsZV9ub2RlcygpOyBuaWQr
-Kykgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXYgPSAmbm9kZV9kZXZpY2Vz
-W25pZF0tPmRldjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKGRldikKPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN5c2ZzX3JlbW92
-ZV9ncm91cCgmZGV2LT5rb2JqLCAmc2d4X25vZGVfYXR0cl9ncm91cCk7Cj4gK8KgwqDCoMKgwqDC
-oMKgfQo+ICt9Cj4gKwo+ICtzdGF0aWMgYm9vbCBzZ3hfbnVtYV9pbml0KHZvaWQpCj4gK3sKPiAr
-wqDCoMKgwqDCoMKgwqBzdHJ1Y3Qgc2d4X251bWFfbm9kZSAqbm9kZTsKPiArwqDCoMKgwqDCoMKg
-wqBpbnQgbmlkOwo+ICvCoMKgwqDCoMKgwqDCoGludCByZXQ7Cj4gKwo+ICvCoMKgwqDCoMKgwqDC
-oGZvciAobmlkID0gMDsgbmlkIDwgbnVtX3Bvc3NpYmxlX25vZGVzKCk7IG5pZCsrKSB7Cj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICghc2d4X251bWFfbm9kZXNbbmlkXS5zaXpl
-KQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY29udGlu
-dWU7Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBub2RlID0gJnNneF9udW1h
-X25vZGVzW25pZF07Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG5vZGUtPmRldiA9
-ICZub2RlX2RldmljZXNbbmlkXS0+ZGV2Owo+ICsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgcmV0ID0gc3lzZnNfY3JlYXRlX2dyb3VwKCZub2RlLT5kZXYtPmtvYmosICZzZ3hfbm9k
-ZV9hdHRyX2dyb3VwKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCkg
-ewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2d4X251
-bWFfZXhpdCgpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgcmV0dXJuIGZhbHNlOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gK8Kg
-wqDCoMKgwqDCoMKgfQoKSGVyZSdzIGEgbWlzdGFrZTogbm9kZS0+ZGV2IHNob3VsZCBiZSBvbmx5
-IHNldCBhZnRlciBzeXNmZV9jcmVhdGVfZ3JvdXAoKS4KT3RoZXJ3aXNlLCBzeXNmc19yZW1vdmVf
-Z3JvdXAoKSB3aWxsIGlzc3VlIGEgd2FybmluZyBpbiBzZ3hfbnVtYV9leGl0KCksIHdoZW4Kc2d4
-X2NyZWF0ZV9ncm91cCgpIGlzIHVuc3VjY2Vzc2Z1bCwgYmVjYXVzZSB0aGUgZ3JvdXAgZG9lcyBu
-b3QgZXhpc3QuCgpJJ2xsIGZpeCB0aGlzLCBhbmQgc2VuZCBhIG5ldyB2ZXJzaW9uLgoKL0phcmtr
-bwoK
+On Mon, 18 Oct 2021 11:23:14 +0800
+Yang Jihong <yangjihong1@huawei.com> wrote:
 
+> Hi Tom and Steven,
+> 
+> commit 85f726a35e504418 use strncpy instead of memcpy when copying comm,
+> on ARM64 machine, this commit causes performance degradation.
+> 
+> I test the number of instructions executed by invoking the 
+> trace_sched_switch function once on an arm64 machine:
+> 1. Use memcpy, the number of instructions executed is 850.
+> 2. Use strncpy, the number of instructions executed 1100.
+> That is, use strncpy is almost 250 more instructions than memcpy.
+> 
+> Has the impact on performance been considered in this commit? :)
+> What is the impact of revert the patch?
+>
+
+It's a security issue. And like everything security, there's always going
+to be a performance impact. Look at the performance impact due to spectre
+and meltdown!
+
+That said, although memcpy() may not be used, we don't need strncpy.
+strncpy() will pad the rest of the string with nul bytes. But since the
+memory the string is being recorded into is already initialized (or can be
+if it isn't), we could use the faster strlcpy().
+
+Have you tried testing it by switching strncpy() with strlcpy()?
+
+-- Steve
