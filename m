@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D9A4327C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9582B4327CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbhJRTjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
+        id S232957AbhJRTl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbhJRTjQ (ORCPT
+        with ESMTP id S231542AbhJRTlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:39:16 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A80BC06161C;
-        Mon, 18 Oct 2021 12:37:05 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f085700af6a7a3215758573.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:af6a:7a32:1575:8573])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 98A2F1EC04A9;
-        Mon, 18 Oct 2021 21:37:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634585823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=E/uKBTWke5UW0bUBb2EBl2Aml26+VGEAZuawTlCp+4Q=;
-        b=aWzc8Jik5Gn0fKiVZtRMmEqBXF1zDeih6+2kRwwDVvBmf5zj75XXu9dsb9yZDZNFRzIvKa
-        aR3cgh7pwxtPgSdTNfjG/cVj7v9Jx+/AQUQb3nY3/MnOBKaquplZg2Y+oUtOOinU+xs2Y4
-        IN9pbxm60qqOWYhwlBg7c1ddlz8QJ9o=
-Date:   Mon, 18 Oct 2021 21:37:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Jane Malalane <jane.malalane@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
-Message-ID: <YW3M40tOILjI3DiD@zn.tnic>
-References: <20211013142230.10129-1-jane.malalane@citrix.com>
- <YW25x7AYiM1f1HQA@zn.tnic>
- <YW3LJdztZom+xQHv@google.com>
+        Mon, 18 Oct 2021 15:41:55 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854A1C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:39:43 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id n8so2103530lfk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=53dTe2rF7ypEQLChTk9UR9zffJoI+xjwRznuUDxg9PM=;
+        b=oVrqw7nqbDKKNXj7FkG1nDp39AZj/ihwpo3ccpusr9W8YDBTrboX6zOJlo8qgQf8uj
+         2mXCiBLRyP4NJSYxE06t12oq4yRsQ4P94PyjB0Pv4nEz9kGTyDR7HzobD1BYVquOJyP1
+         KeTx/Zy8xpw/OnxZcK2J6E0hd9qYvxYljd1P7+1V5hCcWlapXPWtt5eCBQHDdh4lPLKA
+         6uwdTY7aT2oT9GKoNwD4WRfoHppsPW01qLui37UHjMj3Hz97gYNnqq6mQrpJSxu+qhma
+         8J0pxsEQEQZ6EgAqKqXVpU3vjWBoK+9nX8iJiyvXxcpr56s0ojiCwtL3zvjlk9INtmnw
+         9iww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=53dTe2rF7ypEQLChTk9UR9zffJoI+xjwRznuUDxg9PM=;
+        b=1vfHBrIazRg2srvZIA8M/0C4LhWjKpjbUVfSO0vQlRTQ4YolhOQvBE3WE+un6AscTf
+         hXxWhWrGoS+uV7JcnsLZKS63a/REanA1pXuFC41+NEpDBYNSpLAooiSWuNtSOhYimqc1
+         dBQCcNoCnwbBIeyZaHXjOEMiTruEc+lHVL5q8GMwsHada3gOM5jCi48xxk1LHq68QjNV
+         Ekfvn1kj3J9rU4j0kDmKmOTQ+Xf3LRZ9Uh72NR6uZmxKmK+Q5PyFOBjUCKFSg7hs4azL
+         M8zet9EVy+xFvhXA08JacSTquVUf5AvvyoP+Kd2RaJdSNoH3dK3NzFuRMKekaNtV7RtB
+         330A==
+X-Gm-Message-State: AOAM530jUyASv+L/o6SzJ3fLXhdoFIzAhlizGMHpzil8x9585BNXfgrN
+        ImFUzCwe+/oNZuFU40b2tsNyOQH7obLIxkxUtOXaKv5fvD8=
+X-Google-Smtp-Source: ABdhPJywfzfahbWybgKUSAkYKfnjsNWg72Q0n+McXtUeVUF8bB7FuuTdWj1UT27UKWSLFR8V6Gf7E6SLmYOtw1Z2WuQ=
+X-Received: by 2002:ac2:434c:: with SMTP id o12mr1646836lfl.82.1634585981601;
+ Mon, 18 Oct 2021 12:39:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YW3LJdztZom+xQHv@google.com>
+References: <20211018193101.2340261-1-nathan@kernel.org>
+In-Reply-To: <20211018193101.2340261-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 18 Oct 2021 12:39:30 -0700
+Message-ID: <CAKwvOdnPotXBRWW4JEEhEYrL1oRv++bQOge8wQCBNbGuA9HYAw@mail.gmail.com>
+Subject: Re: [PATCH] nfp: bpf: Fix bitwise vs. logical OR warning
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Simon Horman <simon.horman@corigine.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, oss-drivers@corigine.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 07:29:41PM +0000, Sean Christopherson wrote:
-> This isn't correct.  When running as a guest, the intended behavior is to fully
-> trust the CPUID.0x80000021 bit.
+On Mon, Oct 18, 2021 at 12:31 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> A new warning in clang points out two places in this driver where
+> boolean expressions are being used with a bitwise OR instead of a
+> logical one:
+>
+> drivers/net/ethernet/netronome/nfp/nfp_asm.c:199:20: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+>         reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
+>                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>                                              ||
+> drivers/net/ethernet/netronome/nfp/nfp_asm.c:199:20: note: cast one or both operands to int to silence this warning
+> drivers/net/ethernet/netronome/nfp/nfp_asm.c:280:20: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+>         reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
+>                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>                                              ||
+> drivers/net/ethernet/netronome/nfp/nfp_asm.c:280:20: note: cast one or both operands to int to silence this warning
+> 2 errors generated.
+>
+> The motivation for the warning is that logical operations short circuit
+> while bitwise operations do not. In this case, it does not seem like
+> short circuiting is harmful so implement the suggested fix of changing
+> to a logical operation to fix the warning.
 
-Really? Because I'm coming from an SEV-SNP mail thread where we don't
-trust the HV at all and we even hand in a CPUID page into the guest...
+I agree. Thanks for the patch.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-:-P
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1479
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  drivers/net/ethernet/netronome/nfp/nfp_asm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_asm.c b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
+> index 2643ea5948f4..154399c5453f 100644
+> --- a/drivers/net/ethernet/netronome/nfp/nfp_asm.c
+> +++ b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
+> @@ -196,7 +196,7 @@ int swreg_to_unrestricted(swreg dst, swreg lreg, swreg rreg,
+>         }
+>
+>         reg->dst_lmextn = swreg_lmextn(dst);
+> -       reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
+> +       reg->src_lmextn = swreg_lmextn(lreg) || swreg_lmextn(rreg);
+>
+>         return 0;
+>  }
+> @@ -277,7 +277,7 @@ int swreg_to_restricted(swreg dst, swreg lreg, swreg rreg,
+>         }
+>
+>         reg->dst_lmextn = swreg_lmextn(dst);
+> -       reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
+> +       reg->src_lmextn = swreg_lmextn(lreg) || swreg_lmextn(rreg);
+>
+>         return 0;
+>  }
+>
+> base-commit: 041c61488236a5a84789083e3d9f0a51139b6edf
+> --
+> 2.33.1.637.gf443b226ca
+>
+>
 
-> If bit 6 is set, yay, the hypervisor has told the kernel that it
-> will only ever run on hardware without the bug. If bit 6 is clear
-> and HYPERVISOR is true, then the FMS crud can't be trusted because
-> the kernel _may_ run on affected hardware in the future even if the
-> current underlying hardware is not affected.
-
-Ok, I see, then the CPUID check needs to go first, makes sense.
-
-> I agree.  If the argument for this patch is that the kernel can be migrated to
-> older hardware, then it stands to reason that the kernel could also be migrated
-> to a different CPU vendor entirely.  E.g. start on Intel, migrate to Zen1, kaboom.
-
-Migration across vendors? Really, that works?
-
-I'll believe it only when I see it with my own eyes.
-
-:-)
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+~Nick Desaulniers
