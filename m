@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46720432053
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CB44320EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbhJROyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:54:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232517AbhJROyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:54:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CC0560F57;
-        Mon, 18 Oct 2021 14:52:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634568732;
-        bh=Uu2xD4xBBeduHjiG1sJuamGYPkQaDrVSpnSNLYkmafg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NB12N1xiso6lDaOdPqAAUDzhaj8NrEn0cQN2x1m0tEt60u3Y/43IvmFysafxJgHde
-         5OSNPOzGKQ3Fs0meTdxvWEzHw1vLPo+2pOLeBRgSkW0V37vcrJihzPy1UlEOu35dGT
-         aJrpKdEykMjbPNKDTFyOVv0Ez6w9ArsxwG9H3cPg=
-Date:   Mon, 18 Oct 2021 16:52:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Martin Kaiser <martin@kaiser.cx>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] staging: r8188eu: Makefile: don't overwrite global
- settings
-Message-ID: <YW2KGZ6+ZdQzwQu4@kroah.com>
-References: <20211016173544.25376-1-martin@kaiser.cx>
- <20211016173544.25376-3-martin@kaiser.cx>
- <c66442a2-51fd-70bf-d9cf-5991c0d88a76@gmail.com>
- <20211017174621.dkunl2xhjg4yn2at@viti.kaiser.cx>
- <54987f44-cabf-c12c-ae3b-341ff6b1ed98@gmail.com>
+        id S232948AbhJRO7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232741AbhJRO7X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:59:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2314CC061765;
+        Mon, 18 Oct 2021 07:57:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=q3tqu0X1DeuLrXkMZoYuQE+PQsnVWsjiw6yYOnZvWyI=; b=uCTtcUSga9l1BkLhecMIHfcMBO
+        roGCM5IXQkWo1b4YrY6KlUrc4Y0gEXtijl4lhqK72+0VZZwnPq8WadnSo9jC/fxTmZHthYm2NvG1D
+        2J4W8lMdvR5JVSftB3tv8gM/DK9a6vE0BNcy6TjSx6TuXQ0V1bYr7sOGdM9bh51Ee8H3knfBV8hQc
+        MhMpEQPZNkO150SiyR4G2lH632lMT3t+3Uz8MMnQEFN7dYYwRrV6Tk5FIs+r1p3OE9vt4DrcIgjgA
+        54TZMoxAlOiLtFz48JiyaB8L4tgiBNw13fljKCg56KiCFIgbnmTIE9gLJdYVVBin13OczvVsJoXMY
+        aJ2hMkXg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcTzn-00B2Hj-C8; Mon, 18 Oct 2021 14:52:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36260300242;
+        Mon, 18 Oct 2021 16:52:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 224C92C21989B; Mon, 18 Oct 2021 16:52:10 +0200 (CEST)
+Date:   Mon, 18 Oct 2021 16:52:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, rafael@kernel.org,
+        len.brown@intel.com, linux-pm@vger.kernel.org,
+        sfr@canb.auug.org.au, gor@linux.ibm.com
+Subject: Re: next-20211015: suspend to ram on x86-32 broken
+Message-ID: <YW2KGrvvv/vSA+97@hirez.programming.kicks-ass.net>
+References: <20211017093905.GA3069@amd>
+ <20211017102547.GA3818@amd>
+ <20211018071349.GA16631@duo.ucw.cz>
+ <20211018081300.GA18193@duo.ucw.cz>
+ <YW07O8ZPLVnbGLR7@hirez.programming.kicks-ass.net>
+ <20211018114429.GA13693@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <54987f44-cabf-c12c-ae3b-341ff6b1ed98@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211018114429.GA13693@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 10:46:11PM +0200, Michael Straube wrote:
-> On 10/17/21 19:46, Martin Kaiser wrote:
-> > Thus wrote Michael Straube (straube.linux@gmail.com):
-> > 
-> > > On 10/16/21 19:35, Martin Kaiser wrote:
-> > > > Remove settings from the Makefile that are set by higher-level Makefiles.
-> > 
-> > > > Some of those settings might have been useful when the driver was
-> > > > maintained out of tree.
-> > 
-> > > > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> > > > ---
-> > > >    drivers/staging/r8188eu/Makefile | 14 --------------
-> > > >    1 file changed, 14 deletions(-)
-> > 
-> > > > diff --git a/drivers/staging/r8188eu/Makefile b/drivers/staging/r8188eu/Makefile
-> > > > index fccf7e6d1520..8294fb69ecf9 100644
-> > > > --- a/drivers/staging/r8188eu/Makefile
-> > > > +++ b/drivers/staging/r8188eu/Makefile
-> > > > @@ -1,8 +1,3 @@
-> > > > -SHELL := /bin/bash
-> > > > -EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
-> > > > -EXTRA_CFLAGS += -O1
-> > > > -
-> > > > -ccflags-y += -D__CHECK_ENDIAN__
-> > > >    OUTSRC_FILES :=				\
-> > > >    		hal/HalHWImg8188E_MAC.o	\
-> > > > @@ -46,15 +41,6 @@ _OS_INTFS_FILES :=				\
-> > > >    _HAL_INTFS_FILES += $(OUTSRC_FILES)
-> > > > -SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc.*/powerpc/; s/armv.l/arm/; s/aarch64/arm64/;")
-> > > > -
-> > > > -ARCH ?= $(SUBARCH)
-> > > > -CROSS_COMPILE ?=
-> > > > -KVER  ?= $(if $(KERNELRELEASE),$(KERNELRELEASE),$(shell uname -r))
-> > > > -KSRC ?= $(if $(KERNEL_SRC),$(KERNEL_SRC),/lib/modules/$(KVER)/build)
-> > > > -MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless
-> > > > -INSTALL_PREFIX :=
-> > > > -
-> > > >    rtk_core :=				\
-> > > >    		core/rtw_ap.o		\
-> > > >    		core/rtw_br_ext.o	\
-> > 
-> > 
-> > > Hi Martin, this patch introduces a GCC warning on my system.
-> > 
-> > > drivers/staging/r8188eu/os_dep/ioctl_linux.c: In function
-> > > 'rtw_wx_set_enc_ext':
-> > > drivers/staging/r8188eu/os_dep/ioctl_linux.c:1929:9: warning: 'strncpy'
-> > > specified bound 16 equals destination size [-Wstringop-truncation]
-> > >   1929 |         strncpy((char *)param->u.crypt.alg, alg_name,
-> > > IEEE_CRYPT_ALG_NAME_LEN);
-> > >        |
-> > 
-> > 
-> > Hi Michael,
-> > 
-> > thanks for reporting this. So far, I can't reproduce the warning, even
-> > if I enable -Wstringop-truncation explicitly. I tried this with gcc
-> > 8.3.0 (Debian buster) on x86_64.
-> 
-> Hi Martin,
-> 
-> probably only newer gcc versions produce this warning. On my system
-> the gcc version is 11.2.1 (openSUSE Tumbleweed).
+On Mon, Oct 18, 2021 at 01:44:29PM +0200, Pavel Machek wrote:
 
-I have gcc 11.1.0 here and I can not duplicate this warning.  And it
-looks like the code matches other places in the kernel where this
-happens, so I'll just take this for now and see if someone wants to send
-me a real fix for it, as it is independent of this Makefile change.
+> Reverting smp.c hunk is enough to get suspend/resume to work.
 
-thanks,
+Thanks! Queued the below.
 
-greg k-h
+---
+Subject: sched: Partial revert: "sched: Simplify wake_up_*idle*()"
+=46rom: Peter Zijlstra <peterz@infradead.org>
+Date: Mon Oct 18 16:41:05 CEST 2021
+
+As reported by syzbot and experienced by Pavel, using cpus_read_lock()
+in wake_up_all_idle_cpus() generates lock inversion (against mmap_sem
+and possibly others).
+
+Therefore, undo this change and put in a comment :/
+
+Fixes: 8850cb663b5c ("sched: Simplify wake_up_*idle*()")
+Reported-by: syzbot+d5b23b18d2f4feae8a67@syzkaller.appspotmail.com
+Reported-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Pavel Machek <pavel@ucw.cz>
+---
+ kernel/smp.c |   15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -1170,14 +1170,23 @@ void wake_up_all_idle_cpus(void)
+ {
+ 	int cpu;
+=20
+-	cpus_read_lock();
++	/*
++	 * This really should be cpus_read_lock(), because disabling preemption
++	 * over iterating all CPUs is really bad when you have large numbers of
++	 * CPUs, giving rise to large latencies.
++	 *
++	 * Sadly this cannot be, since (ironically) this function is used from
++	 * the cpu_latency_qos stuff which in turn is used under all sorts of
++	 * locks yielding a hotplug lock inversion :/
++	 */
++	preempt_disable();
+ 	for_each_online_cpu(cpu) {
+-		if (cpu =3D=3D raw_smp_processor_id())
++		if (cpu =3D=3D smp_processor_id())
+ 			continue;
+=20
+ 		wake_up_if_idle(cpu);
+ 	}
+-	cpus_read_unlock();
++	preempt_enable();
+ }
+ EXPORT_SYMBOL_GPL(wake_up_all_idle_cpus);
+=20
