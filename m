@@ -2,137 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0976B431247
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C521043124A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhJRIn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
+        id S231163AbhJRIn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbhJRInx (ORCPT
+        with ESMTP id S231131AbhJRIn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:43:53 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A863DC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:41:41 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id ec8so68032543edb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:41:41 -0700 (PDT)
+        Mon, 18 Oct 2021 04:43:57 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC16C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:41:46 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so11978466pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gAi3Zs8thaof3uAcf89FhN073t2oSWqd66UNX6kkSEQ=;
-        b=eQMeLMaZT/f5oneG34ePiKf4TPlZQW5mFiBhMDQUvgCKSk1SBJ58Id6yid9clHBjoZ
-         krlEAp0Xf60/RGkLlxrYwmcoXlbobVd1f0la8leydK9QVhQBDFgxF62wM9cGMH2P9ISi
-         Y3gM/x0lwG+EKRvTRik6m5ntzD9OQYjnSPxfnIODvus1+D5RsqCjajFO+FgRdPIuEhPf
-         gW/gxnxNthZ/NFt3NYlAWBA2cCZtmLE2iGgq6qle+jZ673sFbgMkFLjQvyxe+AhZXXQ1
-         uxxGqSEnbNHU1Sbon3gQwzRbKL1rhbpC3UhAGYAlUXqeiPqfda4uhhhr/UdgL9oVgJxU
-         CIBg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wk6+rEeyV7eHbPWMKJo+Qpq+GwDxADSGhPjQYfKUne4=;
+        b=jNiTi0cZOC9M6uQg94kZkSGn3OrAQrSu6r8SRssg//sn5P432teZU28/v9RIqdlD5O
+         FDWwyESEa70tNVGhVeOGe1F5ZAIPJMKiX3P8jEiAbSyNM54IpSQyb9dk/vAcEJfMnrXj
+         zNBHvhXgy/rMAPIBLXv/ABA4B+bVuAeA++cRSW1P7RugxMH24Vge6lJz1VOLhc25s/ls
+         VIhydhuQ9C6tIKMxlUDIXZlJS9KBy1EfKYZ4K+ty6vz1zM3zC2/vlB6YVxPLlFVR9BvY
+         h9NoAYponSEiN1Y8aUWWDEsWN+dvWZ48Asm2fHwd/sSG6AwymDCbgiQEDz9h6JfhgJtQ
+         irfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gAi3Zs8thaof3uAcf89FhN073t2oSWqd66UNX6kkSEQ=;
-        b=SZV8xzOE4Ew6GD2NYsL1/fODs0bqTYaifkTraaEAp3tw7oeisgH2F61rX7PtAXdofL
-         PQp3pKe0ANoxwpUGneXQqtMS6AIxFA0aIEiL80l3LY7xw3bS2iScM9KZQ+f5lq8XMDOH
-         8TocIe/q11OSqzP9LaoGpRuA7L9FLHvZ73kbVEdZCRZv8nQkQTNzMEGhhg0FtN/V/8m4
-         ejhBd2sXXeQNe+HWQuCtUi2F2ilWsnNm7BrLpjpxAYLQVu+HdX3ZCj//h7JMcbHGwuGE
-         QV29tQSYRMhMw8XFS2qBnFOFGgUnBLFZcLS/lRK40GPwUsOxFj87UOBaRx2dbtIGOg1/
-         7VHw==
-X-Gm-Message-State: AOAM532Ig4Nfvpt/EExqo38VLg7Bf6hOmOh+yjrAiB264dC6RJuO4Ilf
-        1KRm5UVH2s3akUqMBv5Pw1El3oyOgd6hxWh3DYw=
-X-Google-Smtp-Source: ABdhPJx7bjcZm/6mA5+p1zXpotls2nfG4/ZgUljSzH9VEOu8q+vMudKgrIv7w8BmhHq2e2ignUnkVXQGV6j71jE4r3s=
-X-Received: by 2002:a05:6402:2793:: with SMTP id b19mr42986730ede.80.1634546500090;
- Mon, 18 Oct 2021 01:41:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wk6+rEeyV7eHbPWMKJo+Qpq+GwDxADSGhPjQYfKUne4=;
+        b=2xF8ktGO4+O/Wy3d7C8Bh0d0pOu7IHwCdku7cHXEOIDPAvnFncS06eU4gZQLmRGyTS
+         P8S6GGM3pv+ltBFsYmIWB84dOBbVHDQfgL9B5f6d7C2k5EOmYDenCWLaP/zvEsTyXBX3
+         bS9q+wP8A1rYcNZOSrCVtRjqtKsk9T3ZYCSkJp6ORdaFu+FiuCCJlli5tyS89c3kW9qc
+         nJfNmcsN0RDwoSOm/IXuoacN5M8B7a/rQADcYQwSoeUKLUh3s1dLsD9cxBnXMDWAJzFW
+         WQyq7p0pOCIIRy9gfK1P/WRyp0rYZRH646bqco2pTUwioCjbx/wv5SIY56JzHp38XU38
+         LBBw==
+X-Gm-Message-State: AOAM530tchcxuoGiFRffZcbPnOR1TpraeX88M/GDeFFup+j5EjclT5Gq
+        xOkiLsJpU2Aauruh7sqPFdQ=
+X-Google-Smtp-Source: ABdhPJxXMPda9FOWVgG87Ibowe+I2Ff21yuG8uqATHh+NbcQaB8zGsEBOfKggffCbibaCL4IiPlIdQ==
+X-Received: by 2002:a17:90a:b117:: with SMTP id z23mr46490695pjq.74.1634546506085;
+        Mon, 18 Oct 2021 01:41:46 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id il17sm12642508pjb.52.2021.10.18.01.41.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 01:41:45 -0700 (PDT)
+From:   luo penghao <cgel.zte@gmail.com>
+X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] drm/i915/display: Remove unused variable and corresponding assignment
+Date:   Mon, 18 Oct 2021 08:41:40 +0000
+Message-Id: <20211018084140.851583-1-luo.penghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAD-N9QWd6Orm8d9AMk7mybByAKZod=GJ-HSNPOfhFDStSPwSUA@mail.gmail.com>
- <CAPj211vRdmJZBQvM-DE+saiY=LwoQdOu0hV-YFcny6worQ46rg@mail.gmail.com>
-In-Reply-To: <CAPj211vRdmJZBQvM-DE+saiY=LwoQdOu0hV-YFcny6worQ46rg@mail.gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 18 Oct 2021 16:41:14 +0800
-Message-ID: <CAD-N9QW0NEi6Jzh-bu0Bb=RFB6405G28t_jtctk_t8Kw+HUpVQ@mail.gmail.com>
-Subject: Re: Any tracing mechanism can track the executed instructions of a
- user process in the kernel?
-To:     FMDF <fmdefrancesco@gmail.com>
-Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 4:07 PM FMDF <fmdefrancesco@gmail.com> wrote:
->
-> On Mon, 18 Oct 2021, 04:46 Dongliang Mu, <mudongliangabcd@gmail.com> wrot=
-e:
->>
->> Hi all,
->>
->> I am writing to kindly ask one question: is there any tracing
->> mechanism in Linux kernel that can trace all the executed instructions
->> of a user process? If this user process is run on different
->> processors, traces of this process on different processors should be
->> also recorded.
->
->
-> You've not explained in detail what is the purpose of the tracing that yo=
-u want to do. Missing this information I can only provide you a list of lin=
-ks to various tools and methods. Take a look by yourself and try to figure =
-out what is better suited for your needs...
+Variable is not used in functions, and its assignment is redundant too.
+So it should be deleted.
 
-I want to log all the executed instructions of a user process (e.g.,
-poc.c in syzkaller) in the kernel mode and then would like to leverage
-backward analysis to capture the root cause of kernel panic/crash.
+The clang_analyzer complains as follows:
 
-Therefore, I need the instruction-level tracing mechanisms or tools.
+drivers/gpu/drm/i915/display/vlv_dsi.c:143:2 warning:
 
->
-> https://lwn.net/Kernel/Index/#Development_tools-Kernel_tracing
-> trace-cmd: https://trace-cmd.org
+Value stored to 'data' is never read.
 
-Ftrace is working at the function level. Therefore, ftrace and tracers
-based on ftrace are not suitable for my scenario.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+---
+ drivers/gpu/drm/i915/display/vlv_dsi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> perf ftrace: <Linux source>/tools/perf/Documentation/perf-trace.txt
-> perf-tools: https://github.com/brendangregg/perf-tools
-
-I am not familiar with the perf tool and cannot verify if it works for
-my scenario.
-
->
-> In particular, the "function_graph" tracer of ftrace seems to be suited f=
-or your purposes:
->
-> https://man7.org/linux/man-pages/man1/trace-cmd.1.html
-> https://man7.org/linux/man-pages/man1/trace-cmd-record.1.html
-> https://man7.org/linux/man-pages/man1/trace-cmd-report.1.html
->
-> Obviously, gdb (and friends) is still invaluable (but it may be difficult=
- to use, depending on your knowledge and experience, so use it if you reall=
-y know that  you need it):
->
-> https://www.kernel.org/doc/html/latest/dev-tools/gdb-kernel-debugging.htm=
-l
-> https://www.kernel.org/doc/html/latest/dev-tools/kgdb.html
->
-> Regards,
->
-> Fabio M. De Francesco
->
->>
->> Any comment is welcome.
->>
->> --
->> My best regards to you.
->>
->>      No System Is Safe!
->>      Dongliang Mu
->>
->> _______________________________________________
->> Kernelnewbies mailing list
->> Kernelnewbies@kernelnewbies.org
->> https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies
+diff --git a/drivers/gpu/drm/i915/display/vlv_dsi.c b/drivers/gpu/drm/i915/display/vlv_dsi.c
+index 081b772..634de91 100644
+--- a/drivers/gpu/drm/i915/display/vlv_dsi.c
++++ b/drivers/gpu/drm/i915/display/vlv_dsi.c
+@@ -131,7 +131,7 @@ static ssize_t intel_dsi_host_transfer(struct mipi_dsi_host *host,
+ 	enum port port = intel_dsi_host->port;
+ 	struct mipi_dsi_packet packet;
+ 	ssize_t ret;
+-	const u8 *header, *data;
++	const u8 *header;
+ 	i915_reg_t data_reg, ctrl_reg;
+ 	u32 data_mask, ctrl_mask;
+ 
+@@ -140,7 +140,6 @@ static ssize_t intel_dsi_host_transfer(struct mipi_dsi_host *host,
+ 		return ret;
+ 
+ 	header = packet.header;
+-	data = packet.payload;
+ 
+ 	if (msg->flags & MIPI_DSI_MSG_USE_LPM) {
+ 		data_reg = MIPI_LP_GEN_DATA(port);
+-- 
+2.15.2
