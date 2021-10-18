@@ -2,93 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB1E43289E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 22:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFDF4328A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 22:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhJRUvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 16:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
+        id S229756AbhJRUyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 16:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhJRUvv (ORCPT
+        with ESMTP id S229529AbhJRUyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 16:51:51 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA49C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 13:49:39 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id h10so16280820ilq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 13:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1pihYDCvEf2Z6K75YfFMFw+JWLtxAp6wuhd4PjGIMrU=;
-        b=BMRykRu36bs1qv/KCS8lrwYwsUfnO3cug9H4h8u+d6zOxEssNWKUulzXsjRVKiZw3A
-         GNqilha1zktsMsji10IxAgDVLDJ3WN7gY3gbR0oT7dWjwQ2O8PDXuOYxx/TXZ0ADhxBG
-         1UD1G+RIzg7vmzqrvg1YNlpu3Wqt/JJv2eCMsOQtexgSFvJLX0oZMr247w9+gX3e1Wy7
-         0ZytYaq9v920NMkBnxY/Lw9Ci72YIqglCqMK6eKRrbkIPzuopqM+GJPIlF8wSldQHbfE
-         N4zu4uJ/KuVw8o4Mp+T3DPasKn6+OF8Yv4MHf/A8r7LbSvtlxusjeOThS5SQ2ysYk7jC
-         zdhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1pihYDCvEf2Z6K75YfFMFw+JWLtxAp6wuhd4PjGIMrU=;
-        b=J53+LbnXDbKDRkAfNk/6qGXTVOrkFOcNLDYI0XUyvh0rheCeEMRFQfbx/GFf00iQDB
-         xqxgekZich/ykLKJGct1OmGR9yXqUNlPbAA01DPG/kY8T07UJlexDBVORuclh4B79A24
-         oOj+w2OsJTQCLx76GF42hQ0iZLBMPP0MffKFicaVl2BPJz0IeLBYFDSbktOakOHc0CqF
-         yRkAiIEmAvasWlRjYgzBnnpWqWgWg0mhLJ7dYJJCwjRndnszY6oAJIiawzEDtsP0OWQ2
-         Sz1gGw/yS4Vt4VlZ3vSFJgfJkZOg6P1BU34e5p6HsM00WkyXppGqe1s1aYT1ttc73Kj9
-         /EJA==
-X-Gm-Message-State: AOAM531U1xUMz2Cdb5pj77aWad0G45BHjcx4fyJKDmOVp1pejXv0QINr
-        2zmAbGCo6uHwBg2/bRR4DUI0TDyN2S6hCw==
-X-Google-Smtp-Source: ABdhPJze41+5g4GW1QdvVLA/JYU8X5q2KYJtJOdGuLvK8N2YMOXJI4wc13EzCed/P5LoYAnbvy+ATA==
-X-Received: by 2002:a05:6e02:144e:: with SMTP id p14mr15615072ilo.286.1634590179185;
-        Mon, 18 Oct 2021 13:49:39 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id g8sm4647626iow.36.2021.10.18.13.49.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 13:49:38 -0700 (PDT)
-Subject: Re: linux-next: Signed-off-by missing for commits in the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20211019074806.4bb0cbcc@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <de927d6e-15fa-9937-18a5-97ae3020c34d@kernel.dk>
-Date:   Mon, 18 Oct 2021 14:49:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 18 Oct 2021 16:54:32 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D2FC06161C;
+        Mon, 18 Oct 2021 13:52:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZV5+WcCEKk90ojpXM/Oql5rLKslHw/tmipq6bTY9rn8=; b=ycMUFEsjkqUPB4ncHsCJB+IHFK
+        XRKYg4ag3GWc/xw/zHMblCYs/27Wrp9RnHIgrYEFznE2ZSdqefZE/WhclnstlUtoeRfKxhLdW0d2P
+        RmS/8MFTaPaw111dlZ/EMWkgFjG3T0uOAbcSMyN1ZeFPvjmayoUHuJX3wghntVmzPUVvuudXfG06h
+        9ghxu/n7+rR+wAQHD/zyUCjrx+uqdLmzGHJ8aSAzqPHRnPTI1XmQNcw6Tgmh3FoD/yToM81aKpj95
+        j7Wgl6fmEh/WaxLmuT3ntpnO9uBrt2qM5RtJY7V6KZ3qn1UO/yR1cve1J229lVf98Uznj0PlzVy/N
+        XxKy7dFg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcZcH-00HFWp-Lo; Mon, 18 Oct 2021 20:52:17 +0000
+Date:   Mon, 18 Oct 2021 13:52:17 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: Kconfig issue with LOG_CPU_MAX_BUF_SHIFT + BASE_SMALL
+Message-ID: <YW3egZRCwQPsnuMM@bombadil.infradead.org>
+References: <f6856be8-54b7-0fa0-1d17-39632bf29ada@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20211019074806.4bb0cbcc@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f6856be8-54b7-0fa0-1d17-39632bf29ada@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/21 2:48 PM, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Oct 18, 2021 at 11:21:22AM +0200, Vegard Nossum wrote:
+> The most straightforward fix seems to be change init/Kconfig and
+> LOG_CPU_MAX_BUF_SHIFT to say:
 > 
-> Commits
-> 
->   e036488d8a4a ("md: update superblock after changing rdev flags in state_store")
->   3a79dfe0318e ("md: remove unused argument from md_new_event")
->   b6f5737bc4f2 ("md/raid5: call roundup_pow_of_two in raid5_run")
->   57644bef4efb ("md/raid1: use rdev in raid1_write_request directly")
->   7d5f9b337c20 ("md/raid1: only allocate write behind bio for WriteMostly device")
->   78eef929e8a5 ("md: properly unwind when failing to add the kobject in md_alloc")
->   c57a1efbeadb ("md: extend disks_mutex coverage")
->   a1094e65cde0 ("md: add the bitmap group to the default groups for the md kobject")
->   96c85588b9b6 ("md: add error handling support for add_disk()")
-> 
-> are missing a Signed-off-by from their committer.
-> 
-> Rebased?
+>   default 12 if BASE_SMALL=0
+>   default 0 if BASE_SMALL!=0
 
-I'll fix it up - yes had to rebase this morning.
+Thanks for reporting! Please feel free to send a patch with a Fixes
+annotation.
 
--- 
-Jens Axboe
+> In fact, I'm not sure what the point of BASE_SMALL is in the first
+> place. Should we get rid of it altogether? (git blame says it's been
+> there since the initial commit.)
 
+That's just the inverse of BASE_FULL, if you'd like to remove BASE_SMALL
+take it up with the folks with added BASE_FULL, but I have a feeling
+that may not be something they are up for.
+
+  Luis
