@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0E8431CDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6B7431BB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhJRNpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:45:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        id S233019AbhJRNea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:34:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233982AbhJRNnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:43:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C10DD610A6;
-        Mon, 18 Oct 2021 13:34:39 +0000 (UTC)
+        id S232592AbhJRNc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:32:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C887C613A3;
+        Mon, 18 Oct 2021 13:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564080;
-        bh=RUSYGcUE9avAjSDc7pZPpcq1IGDFoer+waIvRGTiRgQ=;
+        s=korg; t=1634563759;
+        bh=ua89X3wkJH7YUfLcL3sxpZ8BGsUVN7KsUotGZZ66I9M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IohCQsT4WF8xkkMwqA2xhjI0j4xUj0heowN4G/5EBD+PbnMaeR6BhhAmTyzUNpZXa
-         CCNfHd0aSV9e3Yk7emgCx8WNRKBHeiYY9jM/jjsjl67Hj7gn+WtwDwMz4Q/mfYjQoE
-         vn4Vyyy5Y/0YLvJkY8WB0qwpy+/ZZAVkGIjzb/qI=
+        b=uEVsfMAyRaeS4SduEzIiSkV6Vm+Jxyat0Sgy1TCzQeoAB2my8h+HJmldMATloSSoy
+         N5RfxdhwlFqUz4o3gAjKW4I//SGwdbtOonvA+e89XVpGoJo/UUCGioXupzacZseVTG
+         5ZfhBf1g0S4/sOUuDB0E/ps3G5E9AZOWvfPA+dDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
+        Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 058/103] iio: adc: max1027: Fix the number of max1X31 channels
+Subject: [PATCH 4.19 27/50] iio: adc: aspeed: set driver data when adc probe.
 Date:   Mon, 18 Oct 2021 15:24:34 +0200
-Message-Id: <20211018132336.706593142@linuxfoundation.org>
+Message-Id: <20211018132327.442140159@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Billy Tsai <billy_tsai@aspeedtech.com>
 
-commit f0cb5fed37ab37f6a6c5463c5fd39b58a45670c8 upstream.
+commit eb795cd97365a3d3d9da3926d234a7bc32a3bb15 upstream.
 
-The macro MAX1X29_CHANNELS() already calls MAX1X27_CHANNELS().
-Calling MAX1X27_CHANNELS() before MAX1X29_CHANNELS() in the definition
-of MAX1X31_CHANNELS() declares the first 8 channels twice. So drop this
-extra call from the MAX1X31 channels list definition.
+Fix the issue when adc remove will get the null driver data.
 
-Fixes: 7af5257d8427 ("iio: adc: max1027: Prepare the introduction of different resolutions")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210818111139.330636-3-miquel.raynal@bootlin.com
+Fixed: commit 573803234e72 ("iio: Aspeed ADC")
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Link: https://lore.kernel.org/r/20210831071458.2334-2-billy_tsai@aspeedtech.com
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/max1027.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/iio/adc/aspeed_adc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/iio/adc/max1027.c
-+++ b/drivers/iio/adc/max1027.c
-@@ -142,7 +142,6 @@ MODULE_DEVICE_TABLE(of, max1027_adc_dt_i
- 	MAX1027_V_CHAN(11, depth)
+--- a/drivers/iio/adc/aspeed_adc.c
++++ b/drivers/iio/adc/aspeed_adc.c
+@@ -188,6 +188,7 @@ static int aspeed_adc_probe(struct platf
  
- #define MAX1X31_CHANNELS(depth)			\
--	MAX1X27_CHANNELS(depth),		\
- 	MAX1X29_CHANNELS(depth),		\
- 	MAX1027_V_CHAN(12, depth),		\
- 	MAX1027_V_CHAN(13, depth),		\
+ 	data = iio_priv(indio_dev);
+ 	data->dev = &pdev->dev;
++	platform_set_drvdata(pdev, indio_dev);
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	data->base = devm_ioremap_resource(&pdev->dev, res);
 
 
