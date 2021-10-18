@@ -2,227 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A071430D57
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835B4430D61
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344941AbhJRBOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 21:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
+        id S242936AbhJRBTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 21:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344947AbhJRBOd (ORCPT
+        with ESMTP id S231983AbhJRBTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 21:14:33 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249FBC061769
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 18:12:18 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 4725A891B0;
-        Mon, 18 Oct 2021 14:12:14 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1634519534;
-        bh=O2UYL2vwwrFX+xVYrMAyYBcqHgKcOdHT45FDP++g4Tw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=SCHxk1QCDgiN3ArAQF0bVGLskU52pq/Fl8wt4sel5e09N+czgx0uac1zllfbbWvvf
-         uhfsHwuxfErTO0ho473pYki1BVcgsL0SfO/EaG5xpwcbwggmPgleZqa73a5aOyRp+6
-         +Ssdtq8mM9+NxVeyTfr8QAfIAOQdDkKgCRGE6UrgEC4a9Y+1X7SBjzTMg0RdKwThhj
-         T6p4RE3qggZeag06kqWxvWMnMaA7RN99qpAsz3Vem0aMsuugBWBabj2yUKph0M8AvP
-         5z5p98KJ9UfRLf/R20kODzKF+7QtVV+kof0tAGXB7aXLyQYSFgFOXG3saJ1uoQx6jl
-         ibBthkcGHWRow==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B616cc9ee0002>; Mon, 18 Oct 2021 14:12:14 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.26])
-        by pat.atlnz.lc (Postfix) with ESMTP id 2F49013ED1E;
-        Mon, 18 Oct 2021 14:12:14 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 2D8E82A0B00; Mon, 18 Oct 2021 14:12:14 +1300 (NZDT)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v2 2/2] arm/arm64: dts: Add MV88E6393X to CN9130-CRB device tree
-Date:   Mon, 18 Oct 2021 14:12:11 +1300
-Message-Id: <20211018011211.3836590-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211018011211.3836590-1-chris.packham@alliedtelesis.co.nz>
-References: <20211018011211.3836590-1-chris.packham@alliedtelesis.co.nz>
+        Sun, 17 Oct 2021 21:19:19 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1702C06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 18:17:08 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 5so33930119edw.7
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 18:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hnqEn1CtLr/NiyhAgmO/8MRbeaoY3H6FysR0WE07eMI=;
+        b=CAzzpQc8d6pvPmR8WujIwnG/8mp9OOfW/GJEz0cHJFQGuE8vZAdGMpq7oD2rT8f2jD
+         el8GQzh6RWyx9yp8C3agLrBlGNRm/6mrCWeM085GlIU6LOuzzZIXL67R2Ocri5EBx/kW
+         jaf4Qk9+6r5KuIqpO7H/L3MXKgoxk+ZJQs65w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hnqEn1CtLr/NiyhAgmO/8MRbeaoY3H6FysR0WE07eMI=;
+        b=BI1q43T+udrfFJ+EZZHuQ37f50vdLuuC55np6+a3BsHkyvcXP0Azs4AZlW5vILIHra
+         CwJu7xBYqGE7Ysc/kvqsHLoN/XaVekmeC+VVr6ncpIZKi6DHwt9GRsUAbQPlISczhDZ0
+         HvSJJZoneK30jdVgTofcGUBHrbbiM1jOV92ZCXmQfDID/IzCZIHTrUjTf8KzhQSAk4zY
+         +y2lYhdCmkU+Cd7AIaBDoCjtsirWqDWUXB+RKUdcxKDdJKqj3MkO98U0dPLInNf9gIOk
+         z5fpsbhQ8XQmLZd7PDakU7o9+MJINCFktp9c6++y/atiD0Zw69LLlfPHOQ1UvwyQMuWL
+         uGcg==
+X-Gm-Message-State: AOAM532C2XvkUWgoClInizy6xQGcU45tESVgWT3hdT56dX7R90+/WwkY
+        Q3X/Ih5L4mN801QErynqsgghfMgx6dhkcQ==
+X-Google-Smtp-Source: ABdhPJxQQG/83bjVUNuSXk808uHcrw/RSPGWmrhwly6ew66OLux+NySXk1fbxFND/ORjPOvMTUAdYQ==
+X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr39932336edd.60.1634519827299;
+        Sun, 17 Oct 2021 18:17:07 -0700 (PDT)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
+        by smtp.gmail.com with ESMTPSA id jy25sm8035826ejc.100.2021.10.17.18.17.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Oct 2021 18:17:06 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id y30so46530631edi.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 18:17:05 -0700 (PDT)
+X-Received: by 2002:a17:906:912:: with SMTP id i18mr25269308ejd.131.1634519824911;
+ Sun, 17 Oct 2021 18:17:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=eIJtc0h1 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=8gfv0ekSlNoA:10 a=RPquEeSGPLc92inKvdoA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+References: <20210920170408.1561-1-dafna.hirschfeld@collabora.com> <c59b7f40-d99e-370a-b797-5dc72979df46@xs4all.nl>
+In-Reply-To: <c59b7f40-d99e-370a-b797-5dc72979df46@xs4all.nl>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Mon, 18 Oct 2021 10:16:54 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
+Message-ID: <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
+Subject: Re: [PATCH v4] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Dafna Hirschfeld <dafna3@gmail.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        minghsiu.tsai@mediatek.com, houlong.wei@mediatek.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CN9130-CRB boards have a MV88E6393X switch connected to eth0. Add
-the necessary dts nodes and properties for this.
+Hi Hans!
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-This is based on the Marvell SDK. I've re-ordered the port entries to
-be in ascending order renamed the wan ports and connected the SFP+.
+On Mon, Oct 4, 2021 at 6:37 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> On 20/09/2021 19:04, Dafna Hirschfeld wrote:
+> > From: Alexandre Courbot <acourbot@chromium.org>
+> >
+> > When running memcpy_toio:
+> > memcpy_toio(send_obj->share_buf, buf, len);
+> > it was found that errors appear if len is not a multiple of 8:
+> >
+> > [58.350841] mtk-mdp 14001000.rdma: processing failed: -22
+>
+> Why do errors appear? Is that due to a HW bug? Some other reason?
 
-Changes in v2:
-- Remove unused port0
-- Label all ports "pN"
-- Add interrupt connections
-- Add SFP
+MTK folks would be the best placed to answer this, but since the
+failure is reported by the firmware I'd suspect either a firmware or
+hardware limitation.
 
- arch/arm64/boot/dts/marvell/cn9130-crb.dtsi | 129 ++++++++++++++++++++
- 1 file changed, 129 insertions(+)
+>
+> >
+> > This patch ensures the copy of a multiple of 8 size by calling
+> > round_up(len, 8) when copying
+> >
+> > Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
+> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> > Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> > Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
+> > ---
+> > changes since v3:
+> > 1. multile -> multiple
+> > 2. add inline doc
+> >
+> > changes since v2:
+> > 1. do the extra copy only if len is not multiple of 8
+> >
+> > changes since v1:
+> > 1. change sign-off-by tags
+> > 2. change values to memset
+> >
+> >  drivers/media/platform/mtk-vpu/mtk_vpu.c | 15 ++++++++++++++-
+> >  1 file changed, 14 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+> > index ec290dde59cf..1df031716c8f 100644
+> > --- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
+> > +++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+> > @@ -349,7 +349,20 @@ int vpu_ipi_send(struct platform_device *pdev,
+> >               }
+> >       } while (vpu_cfg_readl(vpu, HOST_TO_VPU));
+> >
+> > -     memcpy_toio(send_obj->share_buf, buf, len);
+> > +     /*
+> > +      * when copying data to the vpu hardware, the memcpy_toio operation must copy
+> > +      * a multiple of 8. Otherwise the processing fails
+>
+> Same here: it needs to explain why the processing fails.
+>
+> > +      */
+> > +     if (len % 8 != 0) {
+> > +             unsigned char data[SHARE_BUF_SIZE];
+>
+> Wouldn't it be more robust if you say:
+>
+>                 unsigned char data[sizeof(send_obj->share_buf)];
 
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi b/arch/arm64/boo=
-t/dts/marvell/cn9130-crb.dtsi
-index 0885c6339d1b..d600422afd6c 100644
---- a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-+++ b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-@@ -73,6 +73,16 @@ cp0_reg_sd_vcc: cp0_sd_vcc@0 {
- 		enable-active-high;
- 		regulator-always-on;
- 	};
-+
-+	sfp: sfp {
-+		compatible =3D "sff,sfp";
-+		i2c-bus =3D <&cp0_i2c1>;
-+		mod-def0-gpios =3D <&expander0 3 GPIO_ACTIVE_LOW>;
-+		los-gpio =3D <&expander0 15 GPIO_ACTIVE_HIGH>;
-+		tx-disable-gpio =3D <&expander0 2 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio =3D <&cp0_gpio1 24 GPIO_ACTIVE_HIGH>;
-+		status =3D "okay";
-+	};
- };
-=20
- &uart0 {
-@@ -195,6 +205,125 @@ &cp0_mdio {
- 	phy0: ethernet-phy@0 {
- 		reg =3D <0>;
- 	};
-+
-+	switch6: switch0@6 {
-+		/* Actual device is MV88E6393X */
-+		compatible =3D "marvell,mv88e6190";
-+		#address-cells =3D <1>;
-+		#size-cells =3D <0>;
-+		reg =3D <6>;
-+		interrupt-parent =3D <&cp0_gpio1>;
-+		interrupts =3D <28 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-controller;
-+		#interrupt-cells =3D <2>;
-+
-+		dsa,member =3D <0 0>;
-+
-+		ports {
-+			#address-cells =3D <1>;
-+			#size-cells =3D <0>;
-+
-+			port@1 {
-+				reg =3D <1>;
-+				label =3D "p1";
-+				phy-handle =3D <&switch0phy1>;
-+			};
-+
-+			port@2 {
-+				reg =3D <2>;
-+				label =3D "p2";
-+				phy-handle =3D <&switch0phy2>;
-+			};
-+
-+			port@3 {
-+				reg =3D <3>;
-+				label =3D "p3";
-+				phy-handle =3D <&switch0phy3>;
-+			};
-+
-+			port@4 {
-+				reg =3D <4>;
-+				label =3D "p4";
-+				phy-handle =3D <&switch0phy4>;
-+			};
-+
-+			port@5 {
-+				reg =3D <5>;
-+				label =3D "p5";
-+				phy-handle =3D <&switch0phy5>;
-+			};
-+
-+			port@6 {
-+				reg =3D <6>;
-+				label =3D "p6";
-+				phy-handle =3D <&switch0phy6>;
-+			};
-+
-+			port@7 {
-+				reg =3D <7>;
-+				label =3D "p7";
-+				phy-handle =3D <&switch0phy7>;
-+			};
-+
-+			port@8 {
-+				reg =3D <8>;
-+				label =3D "p8";
-+				phy-handle =3D <&switch0phy8>;
-+			};
-+
-+			port@9 {
-+				reg =3D <9>;
-+				label =3D "p9";
-+				phy-mode =3D "10gbase-r";
-+				sfp =3D <&sfp>;
-+				managed =3D "in-band-status";
-+			};
-+
-+			port@10 {
-+				reg =3D <10>;
-+				label =3D "cpu";
-+				ethernet =3D <&cp0_eth0>;
-+			};
-+
-+		};
-+
-+		mdio {
-+			#address-cells =3D <1>;
-+			#size-cells =3D <0>;
-+
-+			switch0phy1: switch0phy1@1 {
-+				reg =3D <0x1>;
-+			};
-+
-+			switch0phy2: switch0phy2@2 {
-+				reg =3D <0x2>;
-+			};
-+
-+			switch0phy3: switch0phy3@3 {
-+				reg =3D <0x3>;
-+			};
-+
-+			switch0phy4: switch0phy4@4 {
-+				reg =3D <0x4>;
-+			};
-+
-+			switch0phy5: switch0phy5@5 {
-+				reg =3D <0x5>;
-+			};
-+
-+			switch0phy6: switch0phy6@6 {
-+				reg =3D <0x6>;
-+			};
-+
-+			switch0phy7: switch0phy7@7 {
-+				reg =3D <0x7>;
-+			};
-+
-+			switch0phy8: switch0phy8@8 {
-+				reg =3D <0x8>;
-+			};
-+		};
-+	};
- };
-=20
- &cp0_xmdio {
---=20
-2.33.0
+Definitely yes.
 
+>
+> I also think that the SHARE_BUF_SIZE define needs a comment stating that it must be a
+> multiple of 8, otherwise unexpected things can happen.
+>
+> You also noticed that the current SHARE_BUF_SIZE define is too low, but I saw
+> no patch correcting this. Shouldn't that be fixed as well?
+
+AFAICT the firmware expects this exact size on its end, so I don't
+believe it can be changed that easily. But maybe someone from MTK can
+prove me wrong.
+
+Cheers,
+Alex.
