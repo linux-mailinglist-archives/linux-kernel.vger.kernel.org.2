@@ -2,83 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA3E43292B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154B943291E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbhJRVkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 17:40:23 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45292 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233899AbhJRVkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 17:40:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=WgZVH2o58S2b3z+JLYDkc0nTLqWy8/84Xlffw5Y2nuQ=; b=TEKI4v8zBXvSqIsZ0q6cWiLB1H
-        ci08Ty4rj4zxQ29sKpqLyv/lIe2V5NZpJZMLiqJGy+nuMu3dUm3GU0jGeL5SuRqMbWVTaSxbDnkMw
-        1mHkEiYJIsnGZu4SVfJ+T/wZ986bl0Y0X/T/9DAQCViWH+JVTeJgoEXD+MitjWQycmQE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mcaKO-00B0ml-NW; Mon, 18 Oct 2021 23:37:52 +0200
-Date:   Mon, 18 Oct 2021 23:37:52 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v3 08/13] net: phy: add qca8081 config_aneg
-Message-ID: <YW3pMD7PD2M3lD3o@lunn.ch>
-References: <20211018033333.17677-1-luoj@codeaurora.org>
- <20211018033333.17677-9-luoj@codeaurora.org>
+        id S232469AbhJRVhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 17:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhJRVhV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 17:37:21 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C584EC06161C;
+        Mon, 18 Oct 2021 14:35:09 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id y74-20020a1c7d4d000000b00322f53b9bbfso516966wmc.3;
+        Mon, 18 Oct 2021 14:35:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4XnmvNvPxfEVQWVq8EDgUudNaRlsqBTECY97KmH3+qU=;
+        b=O0zLSgwbv/mkY4bc4Kww3dE+SdAgue0GUdt7Qe7jFGrv9/CqH/cNqfg6OqtVT/iq8W
+         06tWL8aeII2Qtp82LRpcTg+VWuaJ9vTe9169Q65ifvVFpRGyJ5j9T9i+85aQ608x2eSa
+         kTH+WXzreNwNVkxswqH/U43e5XlaySzrug5pAbn1uXPUkcCSowgjvIPZmcqLk7+AbnMh
+         OOHr9INXUktXDJMe233LClz/YafxvJtpDz51b7bOYuG2TyMdSBDp1gjqnMky0jNEXnNz
+         61vwJswFQPPdTiEkxvMIYQzKt8BusLS26DQRkeGiIJwIx8l3/iPpUQ8E+J8lr3U3cqCF
+         fe9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4XnmvNvPxfEVQWVq8EDgUudNaRlsqBTECY97KmH3+qU=;
+        b=GegwOMaaSupyNsoDvSfhYbD9BhbPnTVuJk5vXu/gVfGHvaeo7QNU+NjVwMqvTmrlVX
+         t95ez63+VAdN4qQsSdGXKZymZcUzFf+c++UcahWfr6j/iWFNWrubRqiJGxZfa9OLSGiw
+         3EA2HBtqRwgQzKszxPWlIWyC8CwGIypkygrb1FHCqS2vnh3lIx/TTKgC5kKOanG4YahB
+         f5iRdud6BXgxVT8cLBAOqS0unwpsZCOcETIr8dksMktu9gdudTEjQULobj4PmTD519yc
+         Gq+iVTstnx2od6K0SWBjPmbA9QKXiXeTYpdjNzJD8/1b1ZeSw7aZYxSMT11g8eMdPj+X
+         YT0g==
+X-Gm-Message-State: AOAM530BBeJJeeJ6hsEhZuRenKTg/+PYJuuo7DIO6pIknpwhy9MQh1p5
+        SNOHlbL/JTd7A18bRhvszzanFi37GLycNFW09Rs=
+X-Google-Smtp-Source: ABdhPJzhkbwDthvcSIEV0Hy1PC5sK3geesT4m3ojkKN7yJzHPDU3Yix216y4pCnSidZYgZUwO7yn99zm1abKlrnJpco=
+X-Received: by 2002:a05:600c:4f43:: with SMTP id m3mr1484775wmq.151.1634592908342;
+ Mon, 18 Oct 2021 14:35:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018033333.17677-9-luoj@codeaurora.org>
+References: <20211018153627.2787882-1-robdclark@gmail.com> <CALAqxLU=O2yaJ=ZOtg0S-zX4KyirbXNx+0iF3EJ9d4=rVL6Z=Q@mail.gmail.com>
+ <5c460ee3-9079-02a7-e674-a4dde5815f0d@linaro.org>
+In-Reply-To: <5c460ee3-9079-02a7-e674-a4dde5815f0d@linaro.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 18 Oct 2021 14:39:46 -0700
+Message-ID: <CAF6AEGusfFofWh6eE1fPd_6PQ2KQpZ2sU9GSxnvbqaTi5_nwtw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/devfreq: Restrict idle clamping to a618 for now
+To:     Caleb Connolly <caleb.connolly@linaro.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 11:33:28AM +0800, Luo Jie wrote:
-> Reuse at803x phy driver config_aneg excepting
-> adding 2500M auto-negotiation.
-> 
-> Signed-off-by: Luo Jie <luoj@codeaurora.org>
-> ---
->  drivers/net/phy/at803x.c | 26 +++++++++++++++++++++++++-
->  1 file changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index 0c22ef735230..c124d3fe40fb 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -1084,7 +1084,30 @@ static int at803x_config_aneg(struct phy_device *phydev)
->  			return ret;
->  	}
->  
-> -	return genphy_config_aneg(phydev);
-> +	/* Do not restart auto-negotiation by setting ret to 0 defautly,
-> +	 * when calling __genphy_config_aneg later.
-> +	 */
-> +	ret = 0;
-> +
-> +	if (phydev->drv->phy_id == QCA8081_PHY_ID) {
-> +		int phy_ctrl = 0;
-> +
-> +		/* The reg MII_BMCR also needs to be configured for force mode, the
-> +		 * genphy_config_aneg is also needed.
-> +		 */
-> +		if (phydev->autoneg == AUTONEG_DISABLE)
-> +			genphy_c45_pma_setup_forced(phydev);
-> +
-> +		if (linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->advertising))
-> +			phy_ctrl = MDIO_AN_10GBT_CTRL_ADV2_5G;
-> +
-> +		ret = phy_modify_mmd_changed(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_CTRL,
-> +				MDIO_AN_10GBT_CTRL_ADV2_5G, phy_ctrl);
+On Mon, Oct 18, 2021 at 10:33 AM Caleb Connolly
+<caleb.connolly@linaro.org> wrote:
+>
+> Hi all,
+>
+> On 18/10/2021 17:42, John Stultz wrote:
+> > On Mon, Oct 18, 2021 at 8:31 AM Rob Clark <robdclark@gmail.com> wrote:
+> >>
+> >> From: Rob Clark <robdclark@chromium.org>
+> >>
+> >> Until we better understand the stability issues caused by frequent
+> >> frequency changes, lets limit them to a618.
+> >>
+> >> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> >> ---
+> >> Caleb/John, I think this should help as a workaround for the power
+> >> instability issues on a630.. could you give it a try?
+> >
+> > While I hit it fairly often, I can't reliably reproduce the crash, but
+> > in limited testing this seems ok to me.
+> > I've not hit the crash so far, nor seen any other negative side
+> > effects over 5.14.
+> >
+> > So for what that's worth:
+> > Tested-by: John Stultz <john.stultz@linaro.org>
+> >
+> > Caleb has better luck tripping this issue right away, so they can
+> > hopefully provide a more assured response.
+> This prevents the crash on the OnePlus 6 as the frequency can no longer go to zero.
+>
+> I would like to find a better solution that still allows proper idling on a630, but that can wait for 5.16.
+>
+> Tested-by: Caleb Connolly <caleb.connolly@linaro.org>
 
-Does the PHY also have MDIO_MMD_AN, MDIO_AN_ADVERTISE ? I'm wondering
-if you can use genphy_c45_an_config_aneg()
+Thanks for testing, I've sent one last -fixes pull request with this patch
 
-   Andrew
+BR,
+-R
+
+> >
+> > thanks
+> > -john
+> >
+>
+> --
+> Kind Regards,
+> Caleb (they/them)
