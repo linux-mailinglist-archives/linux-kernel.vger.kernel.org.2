@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A128432A33
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 01:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDE3432A59
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 01:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233727AbhJRXSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 19:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
+        id S231174AbhJRXcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 19:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhJRXSi (ORCPT
+        with ESMTP id S229524AbhJRXcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 19:18:38 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FB0C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 16:16:26 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x27so3190538lfu.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 16:16:25 -0700 (PDT)
+        Mon, 18 Oct 2021 19:32:02 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CF9C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 16:29:50 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id y3so44388875wrl.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 16:29:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g8NcdhqdVTYivLPB/4AQ/n+hK6qI5Cqzz6EhWUcLIk4=;
-        b=aAgTInrSiwhLMEvXKlaIEPoHz91AKhYnFSh6ZeY+8aJ0m70YuCN1AEZZBWoZtmDnc0
-         UH93kBEjtd+TYhT62QAI7CBjo2v93qAopTUcR6TmRLkNao76XsyoKi86VcVcxx/zguwH
-         YPSt1VisZ9TPpfyBoJ0BFEUQoZwBYLZlh8ek71OfJvcTUwYscpaWaHuOczDDY8vjvrVI
-         oPALskxKO+CCRY875mfkvHPAEGgkTPYrcshxB4Wqp6jjgSQe1FMFORpDo0LPNMrsgJ+0
-         g71o7VwLfcRnj3CRv/EWq/3SGww9AETo058msEGtDQx5bjW6V8HaEvMKTQED22hcxCCs
-         NBDA==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=q2HqoAznjZz6Gt/PPPdORC0kvm0GuUIVTKfy6U+h6fw=;
+        b=OiaeXwwgRkPHwFwf3hurVsuxhC+WgdaX4nGx9JjkPPFKlxGo/WB/A9lwrfd6yELoMa
+         gFQyKaigAKjQYDTG6mMGD4hq0hqKswisLev1zvXqxA7R36ktSlK9MD5KGpt/cJAzRAMa
+         b6RotCkjz7injUtTDKznVxT+vVln2C9YLJXLKDWIi+De2nyjMFP4r6xyax8Ehv+fG+hb
+         iCAqvy9n/nE9sXxSI4YGtL56E76+iefkX4VytwHSxCTLc6Cda77pe6FWUw3rnnqqJTeH
+         6240gKKXkvA9Y8GR0KHoVNzn+r0AgVurneW6e8mUhD498CE6wIUztVtnZ6z8xkAYD2zS
+         OCig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g8NcdhqdVTYivLPB/4AQ/n+hK6qI5Cqzz6EhWUcLIk4=;
-        b=eKbpcGxceBbA9S+ORlVWXdv5mV+qTqxtCWS3Kdx/d7i4Do0zy+WeU4BAIp6Oj0CgxF
-         3CtPSVLgfXCRxqaUVznge9QOmjMID3lU9CoIoBKzf7fD5CAjPk0oHzHn1unk8zxzZDtl
-         rH90mcuN8K20yEegkzmw3D3Rb0drB/p9wMpQZXmGLzfBB0bQpUltkpdvC8VNMrH8zw7P
-         CH/5PHB00dGIqte+E73tz/FYK6S5xdLcA53vgXWLZKiOUeqSVyhe9ZRSj/+52vi2TEKY
-         kGRNouad/U9Fhv6JN0DSGPfRjpHBO3PkqxNHrqB5B324zGPpNOfD+/BT9UExgI60woFU
-         C/jw==
-X-Gm-Message-State: AOAM533R11gGipi9APypEuJgCBS3MWqSCjicU3PCvGzH8tmm447DF8LL
-        W+QvMafsHcDg40Py8Q5TdLmw2w==
-X-Google-Smtp-Source: ABdhPJzYZsc9DzluDfFcQYm/U5oV2+pFcKeBboxjUKEhxR81JlpIWnF73PROY1HoFW3gBKesKVPj9w==
-X-Received: by 2002:a19:48d1:: with SMTP id v200mr2600433lfa.47.1634598984410;
-        Mon, 18 Oct 2021 16:16:24 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id o21sm1765814ljg.93.2021.10.18.16.16.23
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=q2HqoAznjZz6Gt/PPPdORC0kvm0GuUIVTKfy6U+h6fw=;
+        b=rfwY8VX9GArjiaWCYxappvore5wqurQ+pQCbwfYs+MKvJXsNUw6soHoJdWgUcGzq8r
+         22z35qTsD/G14qlnPWS9CMVNBlIB3Zg9Q7DY1y8cndYONaBMaB36uXuWAvLFY0kIV8uU
+         6gbepcy9tCW02R3VpW0SKcoh3b5OSJWZOfUnUQpdHYLnEPW8Qhsqoe4fpj1tG3ca5n/E
+         FVfE0/8CWpx7vCp3/0eGshp+1EKmubEhmJoaHP/CnEXohqecs8bCTnInhFvTyy0A6ScM
+         V0rIUDTqZKgQr2efDeeJer8U0Peg7/zwQv08Ojeju7fz+HaDIZPaMF5+mX1uSNQO+dk9
+         dMWw==
+X-Gm-Message-State: AOAM532nEpif+midpzCuroQzTIOQnbSgl6OTfHcrIAKi8vKd/F88XfZl
+        gPM1Rv1vI8fOKgYx2zdll0T1Ew==
+X-Google-Smtp-Source: ABdhPJykyuN14JObwI2jP0AhXr3otAMVC8QKNGsov1lkfYScg+E0miAz4pkPnlEZ/2rCvQ8u04Jh3g==
+X-Received: by 2002:adf:a415:: with SMTP id d21mr41045431wra.236.1634599789549;
+        Mon, 18 Oct 2021 16:29:49 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id f10sm253306wri.84.2021.10.18.16.29.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 16:16:23 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id A5E6610309A; Tue, 19 Oct 2021 02:16:27 +0300 (+03)
-Date:   Tue, 19 Oct 2021 02:16:27 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
-References: <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW28vaoW7qNeX3GP@casper.infradead.org>
- <YW3tkuCUPVICvMBX@cmpxchg.org>
+        Mon, 18 Oct 2021 16:29:48 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 00:29:46 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     luo penghao <cgel.zte@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, penghao luo <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>, linux-block@vger.kernel.org
+Subject: Re: [PATCH linux-next] cdrom: Remove redundant variable and its
+ assignment.
+Message-ID: <YW4C4A5S+mjHzKN2@KernelVM>
+References: <20211018090834.856992-1-luo.penghao@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YW3tkuCUPVICvMBX@cmpxchg.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211018090834.856992-1-luo.penghao@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 05:56:34PM -0400, Johannes Weiner wrote:
-> > I don't think there will ever be consensus as long as you don't take
-> > the concerns of other MM developers seriously.  On Friday's call, several
-> > people working on using large pages for anon memory told you that using
-> > folios for anon memory would make their lives easier, and you didn't care.
+On Mon, Oct 18, 2021 at 09:08:34AM +0000, luo penghao wrote:
+> From: penghao luo <luo.penghao@zte.com.cn>
 > 
-> Nope, one person claimed that it would help, and I asked how. Not
-> because I'm against typesafety, but because I wanted to know if there
-> is an aspect in there that would specifically benefit from a shared
-> folio type. I don't remember there being one, and I'm not against type
-> safety for anon pages.
+> Variable is not used in functions, and its assignment is redundant too.
+> So it should be deleted.
 > 
-> What several people *did* say at this meeting was whether you could
-> drop the anon stuff for now until we have consensus.
+> The clang_analyzer complains as follows:
+> 
+> drivers/cdrom/cdrom.c:877: warning:
+> 
+> Although the value stored to 'ret' is used in the enclosing expression,
+> the value is never actually read from 'retâ€™.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: penghao luo <luo.penghao@zte.com.cn>
+> ---
 
-My read on the meeting was that most of people had nothing against anon
-stuff, but asked if Willy could drop anon parts to get past your
-objections to move forward.
+Dear Penghao,
 
-You was the only person who was vocal against including anon pars. (Hugh
-nodded to some of your points, but I don't really know his position on
-folios in general and anon stuff in particular).
+Thank you for the patch, looks good, but please could I ask for a small
+tweak:
 
-For record: I think folios has to be applied, including anon bits. They
-are useful and address long standing issues with compound pages. Any
-future type-safety work can be done on top of it.
+>  drivers/cdrom/cdrom.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
+> index 89a6845..393acf4 100644
+> --- a/drivers/cdrom/cdrom.c
+> +++ b/drivers/cdrom/cdrom.c
+> @@ -871,7 +871,7 @@ static void cdrom_mmc3_profile(struct cdrom_device_info *cdi)
+>  {
+>  	struct packet_command cgc;
+>  	char buffer[32];
+> -	int ret, mmc3_profile;
+> +	int mmc3_profile;
+>  
+>  	init_cdrom_command(&cgc, buffer, sizeof(buffer), CGC_DATA_READ);
+>  
+> @@ -881,7 +881,7 @@ static void cdrom_mmc3_profile(struct cdrom_device_info *cdi)
+>  	cgc.cmd[8] = sizeof(buffer);		/* Allocation Length */
+>  	cgc.quiet = 1;
+>  
+> -	if ((ret = cdi->ops->generic_packet(cdi, &cgc)))
+> +	if ((cdi->ops->generic_packet(cdi, &cgc)))
 
-I know it's not democracy and we don't count votes here, but we are
-dragging it for months and don't get closer to consensus. At some point
-"disagree and commit" has to be considered.
+We no longer need the inner-most set of parentheses now, as we are
+checking the result of the expression:
+cdi->ops->generic_packet(cdi, &cgc)
 
--- 
- Kirill A. Shutemov
+rather than the result of the assignment expression:
+(ret = cdi->ops->generic_packet(cdi, &cgc))
+
+Please resubmit with this change and I'd be happy to approve the patch.
+Many thanks.
+
+Regards,
+Phil
