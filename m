@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F66431DFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F17431BD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbhJRN4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:56:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59060 "EHLO mail.kernel.org"
+        id S232823AbhJRNfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:35:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233225AbhJRNyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:54:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78501619F7;
-        Mon, 18 Oct 2021 13:39:34 +0000 (UTC)
+        id S232153AbhJRNdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:33:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41BEF613A6;
+        Mon, 18 Oct 2021 13:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564374;
-        bh=WUToi0B3sSaWILZhtHmLE1G57ibSBLBDzki7Sb5bdRk=;
+        s=korg; t=1634563791;
+        bh=GLRdsquCCr8X1QxdvC5P0DDtu7IxKrAlwic1VxZPw5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qMKfN2BJZO8aPEPPYNBDuVIcNzXV376g7Ytz9NL+4vDGVD/hwUw19RzphqWnozajU
-         Iv996lltqtI1dnSUlYtsmJZJk7Q0GVCjP//urkG/FpVxmHxsZcclKcS/yLWejb8+3R
-         CRWn1tMY6RtHl85LdKPGL4tfxv9OhHWE6/u4jFXo=
+        b=XcyAnAbF273ITy1IRyqsTo9m982Y0mwSfunANSsA0BQdyukm33DtHlLQGTIiPN3so
+         aU4ehjcnIUmLe45AspCkp5mp3qw27q7Ih67dALPI70QnU1N4I82jWsGF90nFe1lsvd
+         mJuiPxunD0CcZ+3n6Wv7AHVgdM5144dM9CcK3Uwk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        seeteena <s1seetee@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.14 064/151] powerpc/xive: Discard disabled interrupts in get_irqchip_state()
+        stable@vger.kernel.org, Werner Sembach <wse@tuxedocomputers.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 05/69] ALSA: hda/realtek: Add quirk for Clevo X170KM-G
 Date:   Mon, 18 Oct 2021 15:24:03 +0200
-Message-Id: <20211018132342.776100582@linuxfoundation.org>
+Message-Id: <20211018132329.628523694@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Werner Sembach <wse@tuxedocomputers.com>
 
-commit 6f779e1d359b8d5801f677c1d49dcfa10bf95674 upstream.
+commit cc03069a397005da24f6783835c274d5aedf6043 upstream.
 
-When an interrupt is passed through, the KVM XIVE device calls the
-set_vcpu_affinity() handler which raises the P bit to mask the
-interrupt and to catch any in-flight interrupts while routing the
-interrupt to the guest.
+This applies a SND_PCI_QUIRK(...) to the Clevo X170KM-G barebone. This
+fixes the issue of the devices internal Speaker not working.
 
-On the guest side, drivers (like some Intels) can request at probe
-time some MSIs and call synchronize_irq() to check that there are no
-in flight interrupts. This will call the XIVE get_irqchip_state()
-handler which will always return true as the interrupt P bit has been
-set on the host side and lock the CPU in an infinite loop.
-
-Fix that by discarding disabled interrupts in get_irqchip_state().
-
-Fixes: da15c03b047d ("powerpc/xive: Implement get_irqchip_state method for XIVE to fix shutdown race")
-Cc: stable@vger.kernel.org #v5.4+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Tested-by: seeteena <s1seetee@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211011070203.99726-1-clg@kaod.org
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211001133111.428249-3-wse@tuxedocomputers.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/sysdev/xive/common.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -961,7 +961,8 @@ static int xive_get_irqchip_state(struct
- 		 * interrupt to be inactive in that case.
- 		 */
- 		*state = (pq != XIVE_ESB_INVALID) && !xd->stale_p &&
--			(xd->saved_p || !!(pq & XIVE_ESB_VAL_P));
-+			(xd->saved_p || (!!(pq & XIVE_ESB_VAL_P) &&
-+			 !irqd_irq_disabled(data)));
- 		return 0;
- 	default:
- 		return -EINVAL;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2540,6 +2540,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170SM", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x7715, "Clevo X170KM-G", ALC1220_FIXUP_CLEVO_PB51ED),
+ 	SND_PCI_QUIRK(0x1558, 0x9501, "Clevo P950HR", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1558, 0x9506, "Clevo P955HQ", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1558, 0x950a, "Clevo P955H[PR]", ALC1220_FIXUP_CLEVO_P950),
 
 
