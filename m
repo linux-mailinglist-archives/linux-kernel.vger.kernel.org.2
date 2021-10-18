@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E99431E16
+	by mail.lfdr.de (Postfix) with ESMTP id 8E629431E17
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233955AbhJRN5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57730 "EHLO mail.kernel.org"
+        id S234211AbhJRN5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234183AbhJRNzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:55:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6829A6137F;
-        Mon, 18 Oct 2021 13:40:03 +0000 (UTC)
+        id S234257AbhJRNzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:55:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06F616138D;
+        Mon, 18 Oct 2021 13:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564403;
-        bh=IEVXBQ/6xZ+vbYCVhttAvoLjwdG6FbycEd4remA6ftM=;
+        s=korg; t=1634564406;
+        bh=RUSYGcUE9avAjSDc7pZPpcq1IGDFoer+waIvRGTiRgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e/nyoIpLGZmyO4atlS1zxf6ZPcpq9p8w0tIEAFvyN4JcaMx67k/aG3oDQ8BWwnYXP
-         sNyQBdx9+5U/RISrltn+iPQisXmqCAJl+z4cZmE6CAsigQQAisHkwJxTHwYJGVw6ho
-         8zbFYqBevIC90RIyncwGJxjDI1zaksCj6T7bIBrs=
+        b=00iMZdEhhc+wUYUyyLg+PYHlaDo4/4vdTrCTUee50d74pLndWJPUioTHQQ4ad6yW6
+         hUD3c5MHNz9Lkk6Yi/6goLKuJ8RZY3Hgq8kD8I5hft8nGU5DvmDF+pk5wVM/KZ/T4F
+         CrRb6umk3c/yDntYn41zARNwxI+/sWeGorvn4VSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
-        Stable@vger.kernel.org,
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.14 077/151] iio: accel: fxls8962af: return IRQ_HANDLED when fifo is flushed
-Date:   Mon, 18 Oct 2021 15:24:16 +0200
-Message-Id: <20211018132343.186253685@linuxfoundation.org>
+Subject: [PATCH 5.14 078/151] iio: adc: max1027: Fix the number of max1X31 channels
+Date:   Mon, 18 Oct 2021 15:24:17 +0200
+Message-Id: <20211018132343.224884198@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
 References: <20211018132340.682786018@linuxfoundation.org>
@@ -40,33 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 9033c7a357481fb5bcc1737bafa4aec572dca5c6 upstream.
+commit f0cb5fed37ab37f6a6c5463c5fd39b58a45670c8 upstream.
 
-fxls8962af_fifo_flush() will return the samples flushed.
-So return IRQ_NONE only if an error is returned.
+The macro MAX1X29_CHANNELS() already calls MAX1X27_CHANNELS().
+Calling MAX1X27_CHANNELS() before MAX1X29_CHANNELS() in the definition
+of MAX1X31_CHANNELS() declares the first 8 channels twice. So drop this
+extra call from the MAX1X31 channels list definition.
 
-Fixes: 79e3a5bdd9ef ("iio: accel: fxls8962af: add hw buffered sampling")
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20210817124336.1672169-1-sean@geanix.com
-Cc: <Stable@vger.kernel.org>
+Fixes: 7af5257d8427 ("iio: adc: max1027: Prepare the introduction of different resolutions")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210818111139.330636-3-miquel.raynal@bootlin.com
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/accel/fxls8962af-core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/max1027.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/iio/accel/fxls8962af-core.c
-+++ b/drivers/iio/accel/fxls8962af-core.c
-@@ -738,7 +738,7 @@ static irqreturn_t fxls8962af_interrupt(
+--- a/drivers/iio/adc/max1027.c
++++ b/drivers/iio/adc/max1027.c
+@@ -142,7 +142,6 @@ MODULE_DEVICE_TABLE(of, max1027_adc_dt_i
+ 	MAX1027_V_CHAN(11, depth)
  
- 	if (reg & FXLS8962AF_INT_STATUS_SRC_BUF) {
- 		ret = fxls8962af_fifo_flush(indio_dev);
--		if (ret)
-+		if (ret < 0)
- 			return IRQ_NONE;
- 
- 		return IRQ_HANDLED;
+ #define MAX1X31_CHANNELS(depth)			\
+-	MAX1X27_CHANNELS(depth),		\
+ 	MAX1X29_CHANNELS(depth),		\
+ 	MAX1027_V_CHAN(12, depth),		\
+ 	MAX1027_V_CHAN(13, depth),		\
 
 
