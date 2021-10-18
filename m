@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7D543276B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD2F432772
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232915AbhJRTUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:20:30 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:36509 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232424AbhJRTU1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:20:27 -0400
-Received: by mail-oi1-f179.google.com with SMTP id u69so1227653oie.3;
-        Mon, 18 Oct 2021 12:18:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bt90VyLc6tV9HrByFLUwNOwZWxF8o3tcqxJtoTeeT4c=;
-        b=KHhbshhIuHQHJo7kuF2ZWpUB5NcyNdh07W/tk8Y8Xbs6GvyO4wPDQ22B4Qth2hYKY7
-         YSIu3sWBSWgT85dd/VlIB1EieB6AoRtjGK96j8Yy3zrKPyKWqV7LGjKUXP/bbXab7tBa
-         VCQ5XMMYqb1901lRYQTOxMq6grKIGc3IH4eFJHYWqNNK+iiE/IydNp27QEOPuENTpsqs
-         fYv/ttnt5wb5NelGbhRpgKWgz+Ko1gdk/EkuP5uDJRKKBpsiCSwKqQLcTwdMP2FtOnc9
-         I1/vJSyriFnEf4jBlfjJkYbvaH1D/aYnm3xiLHkCsKtOurjXhL7nZ1YPkyvzn7/wB914
-         oOfg==
-X-Gm-Message-State: AOAM533HcHJdFctIk1wWncC6G55SOL2SIiOotvDRD8IG4+5YGE6qIdiy
-        aRMXgIxWsDocJom4M4OMTg==
-X-Google-Smtp-Source: ABdhPJyZEqV1avqCfkUrHC67E7MCfPVFDi4bd9rsxQN5tV/OzzjLhlX1HsHCIW605xDgj3sEaXrbyQ==
-X-Received: by 2002:aca:5b56:: with SMTP id p83mr605204oib.119.1634584696145;
-        Mon, 18 Oct 2021 12:18:16 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id h91sm3137144otb.38.2021.10.18.12.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 12:18:15 -0700 (PDT)
-Received: (nullmailer pid 2787169 invoked by uid 1000);
-        Mon, 18 Oct 2021 19:18:14 -0000
-Date:   Mon, 18 Oct 2021 14:18:14 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     l.stach@pengutronix.de, tharvey@gateworks.com, kishon@ti.com,
-        vkoul@kernel.org, galak@kernel.crashing.org, shawnguo@kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com
-Subject: Re: [PATCH v3 6/9] dt-bindings: imx6q-pcie: Add PHY phandles and
- name properties
-Message-ID: <YW3IdoS+zHa4x70Z@robh.at.kernel.org>
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
- <1634028078-2387-7-git-send-email-hongxing.zhu@nxp.com>
+        id S233238AbhJRTVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:21:31 -0400
+Received: from relay.sw.ru ([185.231.240.75]:54414 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229836AbhJRTV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:21:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=4jQhvYjT9e4GBOeEOpVGTS9SaUVXdZehoAqLumPkuB4=; b=BJk6ixEhC6GggosfS
+        drD0XYECS0NtOWJdkYysnHFAK3NUBY+8RheLTcA44GdguZbNpj3BRm189Gyzn1Px/cF3Y/O/nx2El
+        BkFfXhQpsHXlqPQeOunogHD6a/FRsulQdWnndAg0XUNt5LOBKuKiAefJ3xBLBOy6yqbngYxkO41TM
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mcYAE-006OiF-Uy; Mon, 18 Oct 2021 22:19:15 +0300
+Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
+ task
+From:   Vasily Averin <vvs@virtuozzo.com>
+To:     Shakeel Butt <shakeelb@google.com>, Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
+References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
+ <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+ <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
+ <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
+ <27dc0c49-a0d6-875b-49c6-0ef5c0cc3ac8@virtuozzo.com>
+ <YW1oMxNkUCaAimmg@dhcp22.suse.cz>
+ <CALvZod42uwgrg83CCKn6JgYqAQtR1RLJSuybNYjtkFo4wVgT1w@mail.gmail.com>
+ <153f7aa6-39ef-f064-8745-a9489e088239@virtuozzo.com>
+Message-ID: <4a30aa18-e2a2-693c-8237-b75fffac9838@virtuozzo.com>
+Date:   Mon, 18 Oct 2021 22:18:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634028078-2387-7-git-send-email-hongxing.zhu@nxp.com>
+In-Reply-To: <153f7aa6-39ef-f064-8745-a9489e088239@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 04:41:15PM +0800, Richard Zhu wrote:
-> i.MX8MM PCIe has the PHY. Add a PHY phandle and name properties
-> in the binding document.
+On 18.10.2021 21:52, Vasily Averin wrote:
+> On 18.10.2021 18:07, Shakeel Butt wrote:
+>> On Mon, Oct 18, 2021 at 5:27 AM Michal Hocko <mhocko@suse.com> wrote:
+>>>
+>>> [restore the cc list]
+>>>
+>>> On Mon 18-10-21 15:14:26, Vasily Averin wrote:
+>>>> On 18.10.2021 14:53, Michal Hocko wrote:
+>>>>> On Mon 18-10-21 13:05:35, Vasily Averin wrote:
+>>>>>> On 18.10.2021 12:04, Michal Hocko wrote:
+>>>>>> Here we call try_charge_memcg() that return success and approve the allocation,
+>>>>>> however then we hit into kmem limit and fail the allocation.
+>>>>>
+>>>>> Just to make sure I understand this would be for the v1 kmem explicit
+>>>>> limit, correct?
+>>>>
+>>>> yes, I mean this limit.
+>>>
+>>> OK, thanks for the clarification. This is a known problem. Have a look
+>>> at I think we consider that one to 0158115f702b ("memcg, kmem: deprecate
+>>> kmem.limit_in_bytes"). We are reporting the deprecated and to-be removed
+>>> status since 2019 without any actual report sugested by the kernel
+>>> message. Maybe we should try and remove it and see whether that prompts
+>>> some pushback.
+>>>
+>>
+>> Yes, I think now should be the right time to take the next step for
+>> deprecation of kmem limits:
+>> https://lore.kernel.org/all/20201118175726.2453120-1-shakeelb@google.com/
 > 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> index 2911e565b260..99d9863a69cd 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> @@ -128,6 +128,12 @@ properties:
->      enum: [1, 2, 3, 4]
->      default: 1
->  
-> +  phys:
-> +    description: Phandle of the Generic PHY to the PCIe PHY.
+> Are you going to push it to stable kernels too?
 
-maxItems: 1
+Btw CONFIG_MEMCG_KMEM=y is set both in RHEL8 kernels and in ubuntu 20.04 LTS kernel 5.11.0-37.
 
-And drop 'description'
 
-> +
-> +  phy-names:
-> +    const: pcie-phy
-> +
->    reset-gpio:
->      description: Should specify the GPIO for controlling the PCI bus device
->        reset signal. It's not polarity aware and defaults to active-low reset
-> -- 
-> 2.25.1
-> 
-> 
