@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A70431D2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4F3431E78
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232893AbhJRNs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:48:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40198 "EHLO mail.kernel.org"
+        id S232108AbhJROB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:01:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233868AbhJRNqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:46:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 820CD6162E;
-        Mon, 18 Oct 2021 13:35:56 +0000 (UTC)
+        id S233993AbhJRN7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:59:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1872761A3D;
+        Mon, 18 Oct 2021 13:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564157;
-        bh=czaI13gQk7wRy9J0Hi5zKCZKM6yOkAkNqxw0VBmSeSw=;
+        s=korg; t=1634564507;
+        bh=F6/j8CSR2cmasNkSLypwl3nDj6yUpxbHCMsipKhXnyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KnbZWOZCO1ZfrRga1MMB2yWfoHIGPbd+UTIJ9GcALUT0G3+d9NbX74Z5oxR74SpDJ
-         +QEdQYCeTKmo3Dyk57SCxJYjHc/kEnLF/n7CJeA4vCyURTmkTUuxwp1s/EBjLJGLLj
-         bQxin8D39ooNH5InhEMho4hSnPMLNZDXtUgJhgW4=
+        b=Hh9BBjM8MWs1nm8iwhqj0pEUVfbWEViZKmPD5tFZk4A/QArO2kSZH+oDYla5elvB/
+         d8A4hmb/BXomkQgElfZ3oto4n9UYvQLQ3H97faP637BVdv1dbaC8NviQEnMkFnrEqN
+         YbmPv6mABnWmXpcba9CnWCqpl0sCCjtW6HyFZrLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ziyang Xuan <william.xuanziyang@huawei.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 079/103] nfc: fix error handling of nfc_proto_register()
+Subject: [PATCH 5.14 116/151] NFC: digital: fix possible memory leak in digital_tg_listen_mdaa()
 Date:   Mon, 18 Oct 2021 15:24:55 +0200
-Message-Id: <20211018132337.410206165@linuxfoundation.org>
+Message-Id: <20211018132344.445992371@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +43,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit 0911ab31896f0e908540746414a77dd63912748d upstream.
+commit 58e7dcc9ca29c14e44267a4d0ea61e3229124907 upstream.
 
-When nfc proto id is using, nfc_proto_register() return -EBUSY error
-code, but forgot to unregister proto. Fix it by adding proto_unregister()
-in the error handling case.
+'params' is allocated in digital_tg_listen_mdaa(), but not free when
+digital_send_cmd() failed, which will cause memory leak. Fix it by
+freeing 'params' if digital_send_cmd() return failed.
 
-Fixes: c7fe3b52c128 ("NFC: add NFC socket family")
+Fixes: 1c7a4c24fbfd ("NFC Digital: Add target NFC-DEP support")
 Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211013034932.2833737-1-william.xuanziyang@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/af_nfc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/nfc/digital_core.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/net/nfc/af_nfc.c
-+++ b/net/nfc/af_nfc.c
-@@ -60,6 +60,9 @@ int nfc_proto_register(const struct nfc_
- 		proto_tab[nfc_proto->id] = nfc_proto;
- 	write_unlock(&proto_tab_lock);
+--- a/net/nfc/digital_core.c
++++ b/net/nfc/digital_core.c
+@@ -277,6 +277,7 @@ int digital_tg_configure_hw(struct nfc_d
+ static int digital_tg_listen_mdaa(struct nfc_digital_dev *ddev, u8 rf_tech)
+ {
+ 	struct digital_tg_mdaa_params *params;
++	int rc;
  
+ 	params = kzalloc(sizeof(*params), GFP_KERNEL);
+ 	if (!params)
+@@ -291,8 +292,12 @@ static int digital_tg_listen_mdaa(struct
+ 	get_random_bytes(params->nfcid2 + 2, NFC_NFCID2_MAXSIZE - 2);
+ 	params->sc = DIGITAL_SENSF_FELICA_SC;
+ 
+-	return digital_send_cmd(ddev, DIGITAL_CMD_TG_LISTEN_MDAA, NULL, params,
+-				500, digital_tg_recv_atr_req, NULL);
++	rc = digital_send_cmd(ddev, DIGITAL_CMD_TG_LISTEN_MDAA, NULL, params,
++			      500, digital_tg_recv_atr_req, NULL);
 +	if (rc)
-+		proto_unregister(nfc_proto->proto);
++		kfree(params);
 +
- 	return rc;
++	return rc;
  }
- EXPORT_SYMBOL(nfc_proto_register);
+ 
+ static int digital_tg_listen_md(struct nfc_digital_dev *ddev, u8 rf_tech)
 
 
