@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C1443279B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CCF4327A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbhJRTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:32:10 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46826 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhJRTcI (ORCPT
+        id S233788AbhJRTcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhJRTcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:32:08 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 874961C0B76; Mon, 18 Oct 2021 21:29:56 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 21:29:55 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/103] 5.10.75-rc1 review
-Message-ID: <20211018192955.GB26598@duo.ucw.cz>
-References: <20211018132334.702559133@linuxfoundation.org>
+        Mon, 18 Oct 2021 15:32:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264A1C06161C;
+        Mon, 18 Oct 2021 12:30:30 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 21:30:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634585428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gVf1lnK84f1nGo5oiwSWEEPmMlFfpTTxKa0gpOyBnJM=;
+        b=F90/JWvakT4piDdfpKHS9wWIp0/mwpDQCxJbXipB2tyrdDFh2RGb26pvpvlcyIfXFT6FRB
+        pUChGekqWLGAh7E5exAQqz6Bq0WKBY3RWVchukpCeNt8dvij1ZdYAQ8gL3OVTuinfZSGzw
+        sPO/rRTDroKcDhTGi+9gI2oB9tpjMrxEUUMqdR1oPygCLUXFliW76knQxN/ihxtCPC7i1Q
+        OUI5DR8T7GVcbS0MfYK0Y5TM1QT6hpgrsSOwCVi+LE5x/2fvBGgZl0D7luqxQH7B31bXlh
+        87dnVrJYwO6oMmLkbuV7tgsAXh82tzt3c4xWGzjhKwuD3fUEir5YnsrazvyCkQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634585428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gVf1lnK84f1nGo5oiwSWEEPmMlFfpTTxKa0gpOyBnJM=;
+        b=M+CeOvAE6H5BcQhB25mx7vXwRTLuN0bRFDM9c+MwCRi5QTFwGCoySkA3Tc2P30R77A1IRr
+        zn9kTrcBVa61MVAw==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 06/19] rtla: Real-Time Linux Analysis tool
+Message-ID: <YW3LUhMOVWTvQlKh@lx-t490>
+References: <cover.1634574261.git.bristot@kernel.org>
+ <65fbb9b508a2c1803bacfe255c1d568eb8f4ba4f.1634574261.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="KFztAG8eRSV9hGtP"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <65fbb9b508a2c1803bacfe255c1d568eb8f4ba4f.1634574261.git.bristot@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 18, 2021, Daniel Bristot de Oliveira wrote:
+> --- /dev/null
+> +++ b/tools/tracing/rtla/Makefile
+> @@ -0,0 +1,59 @@
+> +CC	:=	gcc
 
---KFztAG8eRSV9hGtP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Some $(CROSS_COMPILE) for the poor souls who will integrate this into
+embedded distributions?
 
-Hi!
+> +
+> +TRACEFS_HEADERS		:= $$(pkg-config --cflags libtracefs)
+> +
 
-> This is the start of the stable review cycle for the 5.10.75 release.
-> There are 103 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+ditto. This uses the host's pkg-config unconditionally.
 
-CIP testing did not find any problems here:
+Thanks,
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---KFztAG8eRSV9hGtP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYW3LMwAKCRAw5/Bqldv6
-8lPsAKC5s2Apdrf9zYJevI8o7kKoZGPwrACeMe8cn4XaHWl6uZ0lltb1Abj72ag=
-=OKFv
------END PGP SIGNATURE-----
-
---KFztAG8eRSV9hGtP--
+--
+Ahmed S. Darwish
+Linutronix GmbH
