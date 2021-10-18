@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814B74310D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B0D4310DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhJRGwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        id S230342AbhJRGxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhJRGwY (ORCPT
+        with ESMTP id S230222AbhJRGxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:52:24 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84439C061745;
-        Sun, 17 Oct 2021 23:50:13 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id y67so14947413iof.10;
-        Sun, 17 Oct 2021 23:50:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=35HhG4S5DxehocgaGfcU5e8SCuyXdTPRj7tXaFVxy8A=;
-        b=pQ9MFH2vpyPbYCzn4S3YaUS2XwHiePprThsWHioOIUgi4H7Wd36cFvXr7gz8Jhbxxt
-         id61l5nhCTGWfK3Xxl2/wcckl8i2aTdm/aFRHwhMSVRFolVITn4HWHQ/GjEzHUffr9i4
-         othUA6W7ApCW5Jm8CGJMB3WhT1W0Ib23tLh4b6BTFe3CYnGBKuJO4Utv89kpiGbYjHH6
-         FDg9qyXqPbkNaGBdzeVZZKc4XV8hd8pkWldMdX26io8TDvPkmowf9mfp1/LzodUhy1EO
-         Hg/xsDaizyje9hw51tJ3qvhyJaI+PyW/tJwxogWVWhz1LepSlPaLmYpQ0NRXov5V19Ny
-         emiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=35HhG4S5DxehocgaGfcU5e8SCuyXdTPRj7tXaFVxy8A=;
-        b=rayq3odOLOfc0pLTInjrO8fpoI5Z1RbDl5QbuRPuxR7Xu7SQw2jgOz1ZL8Le2yBBrA
-         Ca+EYE+aGOVu1WQVFAYG4p3zkNZNf+tnfMqoeLf2fjdYDfRdcVVFK3ZmNi9FPKUy6a/o
-         hcxoRjo+4h2ZNEwI1NPztr+HCeQnh7GyoxcmrzgRYmPCx9CfTnTzzB+Z0SeKauiwECI+
-         a2BxYsIVirr3EqRc5R43zZfsAoinyXneN/+j0ZI0VB5qRczoOi1hLhXMLRxPyeV2W1Qm
-         dyFqqv2yIVLqdw773phx+5tjRkyzdMwu2kDkvKWOx5Q7ILcgEJEErmD7hpteyjeYqkSq
-         FMCA==
-X-Gm-Message-State: AOAM530oTnwLWqPuZbTr+oWEZMHWV1VfKqqLEBG0kJev6kHXOfP4ep9X
-        t+QgyvMz0cRJwySI33zQLx7hl6RR394=
-X-Google-Smtp-Source: ABdhPJwjg5QkbYfwgxgApvC1BHjgcyuh1pvHfgX35XypK7KNLn0XwfHZ3V2aQJ2y/g5urABBisqZVQ==
-X-Received: by 2002:a05:6602:140d:: with SMTP id t13mr13042402iov.120.1634539812998;
-        Sun, 17 Oct 2021 23:50:12 -0700 (PDT)
-Received: from localhost.localdomain (node-17-161.flex.volo.net. [76.191.17.161])
-        by smtp.googlemail.com with ESMTPSA id h2sm6090868ioh.14.2021.10.17.23.50.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 23:50:12 -0700 (PDT)
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     goldstein.w.n@gmail.com, axboe@kernel.dk, asml.silence@gmail.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] fs/io_uring: Remove unnecessary condition in io_write
-Date:   Mon, 18 Oct 2021 02:49:59 -0400
-Message-Id: <20211018064958.19157-1-goldstein.w.n@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 18 Oct 2021 02:53:08 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B730EC06161C;
+        Sun, 17 Oct 2021 23:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=uXEB/JS8NCDVfNV3a8g8vQ/HIHrJoEIRIzXIpC6nNvA=; b=JWCo8NmIaP43uv+GJWcAeZz7MP
+        kkh//kMf7JLNz0rcfbue5t65WurWmMxqc4+omq0UdwLq2L18LLgjAJroqORYbsUI8XWV5SuLZ7eCQ
+        fFdm4F41OGfyG2ofW8d1B74Ut4DvpOptvs/AZ4p7TYtADjk4JcfCqR9nodnZ+MVSY95by/dWaLeB8
+        XGXZDacunhDVeFdSFxiC0ilQF3IU2bZNPS4cv/31MkwdfurPS9C0hdBxRKyse3mLe7DDRMfVBUGUY
+        nyDX8peOn4cpJ5gKrBmaHcUWeazQKOHUEv2QdCbDwResVgqmzF30Gkq8ELaFa8WLRQAsdD3zTCtc/
+        YAEaSM4w==;
+Received: from [2001:4bb8:199:73c5:3de2:2f89:c99b:8fe2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcMU4-00ENxT-K6; Mon, 18 Oct 2021 06:50:57 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] target: stop using bdevname
+Date:   Mon, 18 Oct 2021 08:50:52 +0200
+Message-Id: <20211018065052.1822500-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit removes the unnecessary 'force_nonblock' condition from
-the if statement. The if statement is already inside of an if whose
-condition is 'if (force_nonblock)' so including it here is gratuitous.
+Just use the %pg format specifier instead.
 
-Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/target/target_core_iblock.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 0d7613c7355c..d1e672e7a2d1 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -3602,7 +3602,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 			goto copy_iov;
+diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+index 4069a1edcfa34..3113c4440735a 100644
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -634,12 +634,10 @@ static ssize_t iblock_show_configfs_dev_params(struct se_device *dev, char *b)
+ {
+ 	struct iblock_dev *ib_dev = IBLOCK_DEV(dev);
+ 	struct block_device *bd = ib_dev->ibd_bd;
+-	char buf[BDEVNAME_SIZE];
+ 	ssize_t bl = 0;
  
- 		/* file path doesn't support NOWAIT for non-direct_IO */
--		if (force_nonblock && !(kiocb->ki_flags & IOCB_DIRECT) &&
-+		if (!(kiocb->ki_flags & IOCB_DIRECT) &&
- 		    (req->flags & REQ_F_ISREG))
- 			goto copy_iov;
- 
+ 	if (bd)
+-		bl += sprintf(b + bl, "iBlock device: %s",
+-				bdevname(bd, buf));
++		bl += sprintf(b + bl, "iBlock device: %pg", bd);
+ 	if (ib_dev->ibd_flags & IBDF_HAS_UDEV_PATH)
+ 		bl += sprintf(b + bl, "  UDEV PATH: %s",
+ 				ib_dev->ibd_udev_path);
 -- 
-2.29.2
+2.30.2
 
