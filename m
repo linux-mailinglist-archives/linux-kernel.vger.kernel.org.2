@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1EB4316C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CA94316CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhJRLGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhJRLGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:06:35 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4668C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:04:24 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id q5so15761858pgr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=O2jTXCYu3fJTg0TcbaUyLHaYVCng3xUm4Rcb2HsmB3M=;
-        b=QKJyEaMI/lQqXSBs/bKwBVuWsrOI8Hk1p9yhqNmNfNPIkQ2fdTJ6ifLvPhawE6BkN1
-         wnUmHaM2q8IPXpDvuQjITCjiv7qkzqhHtLf4/5bKsXGGRJVA+YtCNMmI979VJKvmNs3y
-         Ahp+zhSsndJBr97TEHE1ouQjOrs6oaaJXekNofcjSWJr+QYkcf44y4LvpyYt6Gindc43
-         ld3HU0LPBvh1myo6NVBmxCCkMYS5zCEvSMJcDk3IQXJ5WEcR28AzOOAy4tf6AD006CJW
-         4BoJ0KxpoH0WceD79sg+B1J2BuKR3d32dshQYHDTFpTeGJ2Ouvm0otzrODZ0VcPY67DL
-         nWUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=O2jTXCYu3fJTg0TcbaUyLHaYVCng3xUm4Rcb2HsmB3M=;
-        b=7iAr71DUOuPGeaVBIdoyHHxa2Yzdc+TTsOGDfZ1ju3cKPpMLK4xXC/YTilxB0nF4c7
-         Gd4SmI6eQF/UVZvwimf8uY2cBKdfUGQ6UwF5O6/VSuxniDI8g2lUs/mX1ipEKekAqJLE
-         kGqeyKL4Ygb17VSR/0yyLKLJiBTnVt8M3pH+06B84aOLZsXK3/2S318gbGkC6AY7LVgB
-         Jb5sO5JuXwCyvSZZ05DwrquUdgHvAYRjpsilWdgp+kiQsPgAz8b7XTYBeE4e84ouyw3j
-         WQZVNSGLakXTo/eHOOBdD010MIy/sfZNmi/nWJG4tGgCoV8pQ3wi8ecW6zM42+WZ7saF
-         epaA==
-X-Gm-Message-State: AOAM533+BJL44PwLW/xYLELQU4hVUCnP5gVEWJ4GXmnonulyQnnCSh6O
-        bN0ehynKJm6FULMDMknZH1vRqQFMkT/uXB7qdqg=
-X-Google-Smtp-Source: ABdhPJw0XibVeU7ld44hIcjQpfJWJGlBvqPCDcLojJof5ld7/zEeO42408gkJzWkDoOY2LElCzko7Me6nh+RgSDpT3Y=
-X-Received: by 2002:a63:be01:: with SMTP id l1mr4009927pgf.445.1634555064280;
- Mon, 18 Oct 2021 04:04:24 -0700 (PDT)
+        id S230176AbhJRLHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:07:22 -0400
+Received: from mga02.intel.com ([134.134.136.20]:43930 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhJRLHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 07:07:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="215389459"
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="215389459"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 04:05:10 -0700
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="462289320"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 04:05:07 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mcQRl-00025D-6H;
+        Mon, 18 Oct 2021 14:04:49 +0300
+Date:   Mon, 18 Oct 2021 14:04:49 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Alan <alan@linux.intel.com>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/17] various fixes for atomisp to make it work
+Message-ID: <YW1U0UtNpA9DYZ56@smile.fi.intel.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:6709:0:0:0:0 with HTTP; Mon, 18 Oct 2021 04:04:23
- -0700 (PDT)
-Reply-To: mr.wilson.s.chantal@gmail.com
-From:   MR WILSON S CHANTEL <g12335567f@gmail.com>
-Date:   Mon, 18 Oct 2021 11:04:23 +0000
-Message-ID: <CAJg==rq4Rfu_W_A8MwMEQxWW+S5wXPuTYnsSZ91cd3qmC1YY9w@mail.gmail.com>
-Subject: hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211017161958.44351-1-kitakar@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello
+On Mon, Oct 18, 2021 at 01:19:40AM +0900, Tsuchiya Yuto wrote:
+
+Just a remark, your To is not filled. At some point I had written a script [1]
+to help me with patch series sending, It also tries to be smart to include
+necessary people and mailing lists (you can always alter it by adding more).
+[1]: https://github.com/andy-shev/home-bin-tools/blob/master/ge2maintainer.sh
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-
-You have been compensated with the sum of 5.2 million dollars in this
-
-united nation the payment will be issue into atm visa  card and send
-
- to you from the santander bank we need your address and your
-
-Whatsapp number contact  email .ID  (mr.wilson.s.chantal@gmail.com)
-
- my name is mr.wilson s chantal  Whatsapp contact (+16314595205)
-
-thanks
