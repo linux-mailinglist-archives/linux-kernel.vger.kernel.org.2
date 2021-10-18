@@ -2,102 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6ACF431EDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16982431EE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhJROGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:06:22 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49098
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233152AbhJRODD (ORCPT
+        id S234975AbhJROG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:06:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23902 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234962AbhJRODj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:03:03 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 832C23FFFE
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634565646;
-        bh=hOmDJ63rwjyLjUsGk3cIxatC7VRnjyU/42JZ0Lta5uc=;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=HbO9LcBJTuNwrv8yrh7idxR1sNlM8wbU/8ucNuiJ7bg/kdUJl2QeoufD15u8ypcuR
-         LAvDA6BZBP1Ncz6rWrrnCUuAGXx49JH3JhY8IC3afc094eT1FMjDAvJfODCtFBTk2Y
-         cSzPPYd0BtwKeOYng1/1QzpEgcCi+fsp2E9mKuzpSgMPrviEC6eGN3Nt9BZvNWRQMP
-         7GkfPn65u85a+AeDgdS6KyFRjmTTSafFGyuQ1kb4La5/UgYjcqAurnE3bGdb/AcpRT
-         GwoTSd2jTQ9WZidWZnYGD6R9NDDuGlIVWWJL0trAbPIpmxUd946/buXYoD0S/vyWdD
-         VNTNgSc9pl3zQ==
-Received: by mail-lj1-f198.google.com with SMTP id t7-20020a2e7807000000b00210dad8b167so1624766ljc.22
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:00:46 -0700 (PDT)
+        Mon, 18 Oct 2021 10:03:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634565688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=alu9+x3UukSgjt1oLDg8yRXsnhUeDxbETePjaj5q6hc=;
+        b=W6ANexp+cZ7mUuil+y/nTeE7/K+iexuBiYvb8voweh3Kvr1w0XC4VOYmA1SE5ypeJw0OvU
+        XCjRvQX/hp1JGp46Mx7D06HQ6dNi8nspi6mdxfRTQP7CT5WO5Jx8dB3pSpgFA0h/X+IgYI
+        CyeQTnHAQ0HNX+moEiQeefhOKBL+W9M=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-YJ-wEXgBNHmghJn34bToAw-1; Mon, 18 Oct 2021 10:01:27 -0400
+X-MC-Unique: YJ-wEXgBNHmghJn34bToAw-1
+Received: by mail-ed1-f71.google.com with SMTP id p20-20020a50cd94000000b003db23619472so14494346edi.19
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:01:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=hOmDJ63rwjyLjUsGk3cIxatC7VRnjyU/42JZ0Lta5uc=;
-        b=rt1fUfuiEP33qjq+NwWib8HQ9+2xl+oWE1FpltNxTZBp2MrCiFzk9TwgptiYFKdCeu
-         JKF3upSs+eHswgKDoKPhHwPl7KaUDheC+S16GLBaxXOEeDu1W8FKRqTdWpKWzwboMQcD
-         GuHC2T2G8ienjHW29J7HioMFimeWw9+1IMFA/C7EM4n7496yu6rCBUf4mPVMU6+3yuKm
-         H3kcJKtizkq8BlDhZ2JrqN8csjd4PHECHvS9NdVZywaEWKeoUIbIE+e6Cry981oT6Lnq
-         CUpAV0ASNO/Mh/85qBueFVDfkaUr7Gvb4iuHCu01A9gRbi3EiTlRD+u6zE1xbx5/Na92
-         s/8g==
-X-Gm-Message-State: AOAM532tvJBELjqqO9OlTg0VK3t4aRsAnf1rXACF6DXiSWpEAOvKcD4b
-        7GUhqmS8gHvdYnR04H3viZ/dV2luGgHbIeXcTCeu6yuPlBG1Kp0huPMlzZtL4va8ZVKlKuw98Lw
-        SloMHw0X6crgQISGoFxkQ+qCIAR++WCK4znK52u0R5w==
-X-Received: by 2002:a05:651c:1589:: with SMTP id h9mr34118284ljq.151.1634565645350;
-        Mon, 18 Oct 2021 07:00:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGdsMC2+F7dPtQ5pAWFxgiy/MsdPyqcyjp+s7nAs9s60aNFddvh5hV8IScSftVcxS6IHnyDg==
-X-Received: by 2002:a05:651c:1589:: with SMTP id h9mr34118264ljq.151.1634565645191;
-        Mon, 18 Oct 2021 07:00:45 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id h6sm232919ljh.67.2021.10.18.07.00.44
+        bh=alu9+x3UukSgjt1oLDg8yRXsnhUeDxbETePjaj5q6hc=;
+        b=FPTdUqOF/LTHptiUcD7Ve0KMTWoCYHPHs57kJ432sfmNk7T8MK7iO38Np3xbE4/5/a
+         BLKcqurDT0Obm5hV8ZKQjrJf3ZP01CHRtmGGvXvBsAYoRDzb+au3RXrSGJFwIVg2NZLK
+         tRrPmMsCHwpW4ONVbs7Mm8GFX9HZAQeaeFzTVVUPyhSWfVfqBP+p0pRu1ncCelWfWL7+
+         Ka9azxBZnd5P9ljfHN7jneN4YwmhiGeZvyKiSbVZfojLRuBhLhF/vwmP9llAQZflMIJ2
+         WUTSRa8yyiPklkbfiBHoo9sJT8ESdihe4kYMeLEolTx+vYPhDXe74ClJDIItb2chDpxA
+         PV4g==
+X-Gm-Message-State: AOAM532C+nF3ZPwl9D7uMSayFXFkr01lA+vabZqRxVZ2q+CDVgGI/0Rt
+        ZU/0eqFp5lxPUYkWzB2i79NU6jGyC7pRq/uaTX18mwlUPaEhBaoWtOIacfrY28rOKbvwUCUIrNV
+        IuyRMeMHtCQ64q/LZRklVQ6oe
+X-Received: by 2002:a17:906:16d0:: with SMTP id t16mr30142966ejd.199.1634565684861;
+        Mon, 18 Oct 2021 07:01:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0pLdIdl2/mSdWIYw55gpZhSC1/jBwkJN0yv+ochanXR2UNh43fcyd5rcN6GDwg9bboL83ow==
+X-Received: by 2002:a17:906:16d0:: with SMTP id t16mr30142841ejd.199.1634565683551;
+        Mon, 18 Oct 2021 07:01:23 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id q2sm9144921eje.118.2021.10.18.07.01.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 07:00:44 -0700 (PDT)
-Subject: Re: [RESEND PATCH v2 1/5] riscv: dts: sifive: use only generic JEDEC
- SPI NOR flash compatible
-To:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <2b5cacd3-811e-fc4a-2257-19d968331825@canonical.com>
-Date:   Mon, 18 Oct 2021 16:00:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 18 Oct 2021 07:01:23 -0700 (PDT)
+Message-ID: <97b8914e-e78d-8e3b-290a-6ad10170635b@redhat.com>
+Date:   Mon, 18 Oct 2021 16:01:22 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to intel_pmic_bytcrc
+ driver
 Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211017161523.43801-1-kitakar@gmail.com>
+ <20211017161523.43801-2-kitakar@gmail.com>
+ <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
+ <CAHp75VcA+=OsmX7o2WTvYgf8TNpE64qEHq=MVm5vVP-4RBk+ng@mail.gmail.com>
+ <3c9d4f9b-26c2-a135-eb2e-67963aa0bc0b@redhat.com>
+ <YW1QkidNKa79MCBb@smile.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <YW1QkidNKa79MCBb@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2021 15:02, Krzysztof Kozlowski wrote:
-> The compatible "issi,is25wp256" is undocumented and instead only a
-> generic jedec,spi-nor should be used (if appropriate).
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. New patch
-> ---
->  arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 2 +-
->  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
+Hi,
 
-Hi Paul and Palmer,
+On 10/18/21 12:46, Andy Shevchenko wrote:
+> On Mon, Oct 18, 2021 at 12:38:51PM +0200, Hans de Goede wrote:
+>> On 10/18/21 12:31, Andy Shevchenko wrote:
+>>> On Mon, Oct 18, 2021 at 12:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> 
+> ...
+> 
+>>> Btw, IIRC similar code (i.e. BYT vs CHT by CPU
+>>> ID) is being used elsewhere. Perhaps we might have some common
+>>> (library) under arc/x86, PDx86 or so (headers?)?
+>>
+>> We already have helpers for this defined in:
+>>
+>> sound/soc/intel/common/soc-intel-quirks.h
+>>
+>> We could move those to some header under include, maybe:
+>>
+>> include/linux/platform_data/x86/atom.h
+>>
+>> And add #ifdef-ery there so that things will also build on
+>> non x86 ?
+>>
+>> Then we could do a 2 patch series adding the
+>> include/linux/platform_data/x86/atom.h
+>> file + the drivers/mfd/intel_soc_pmic_core.c
+>> change and Lee can merge both through the MFD tree.
+>>
+>> And then we can do further clean-ups of e.g. sound/soc
+>> on top (we can ask Lee to provide an immutable branch).
+>>
+>> How does that sound ?
+> 
+> Sounds like a good plan to me!
 
-This set is waiting for quite a long. Do you pick DTS patches for Risc-v
-or shall I send it to Arnd/Olof directly? I can do it, but it would be
-great to have a confirmation of such merging path.
+So I've been thinking about this a bit more.
 
-Best regards,
-Krzysztof
+Since sound/soc/intel/common/soc-intel-quirks.h already
+has stubs for non X86 too, I think it is best to just
+move that to include/linux/platform_data/x86/soc.h .
+
+Since the drivers/mfd/intel_soc_pmic_core.c thing is
+a bugfix of sorts, it is probably best to open-code
+the check there and then replace it with the helper
+from include/linux/platform_data/x86/soc.h later.
+
+I'll start prepping a patch series doing things
+this way now.
+
+Regards,
+
+Hans
+
