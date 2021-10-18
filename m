@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C7C43128F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEDA43129A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhJRI6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        id S231432AbhJRI7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhJRI6Q (ORCPT
+        with ESMTP id S231398AbhJRI6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:58:16 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D118C06176E
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:56:05 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so12013254pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:56:05 -0700 (PDT)
+        Mon, 18 Oct 2021 04:58:52 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D1BC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:56:33 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id o133so14192426pfg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:56:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=U+wvXPwvhucTVlxnfZp7fdTxV1dqI6RrlYLlpej7n+A=;
-        b=MNdN7D3A6IJ9IpEnrZK0wQ5+brpRm9T0KBJNjcU9HcD4RFx1rlQtjBDRO+0VA0uqa2
-         y6c36Ke5B+OaHyVH0gymIikifvVrbl2oJkQkkkXyXUsrcKBNaebBUadVPLVXNw/Y1JOi
-         4IkP56jiDHwMkn3gzmLobAyRxVS18cPcWVN8X70gamUpX9M3qMkP5AHwyutNXPnYfz/i
-         YEaE1srzdpeXm6qciQyraHqD5fUVzvBU4ssLQyOJ+YSGngFNYLEuxnX8G9PDV2CrFEHa
-         Blv1EYWBSbZDnLd0T45uvnjApCiBZYPsKKPEq5sFNTPvn7J37oWxGDoPEgTxZAYGF8l4
-         sVlg==
+        bh=knBzRmQ82wPdv3CuzyNBZ63kKmOlweb7N5lkXGqcdto=;
+        b=ThV8u8nE6/op0as+vpJv6SCHnqUa3k0SQHjDCmgu5hJVhhnBaOM6pZ3uqnLp7ZXzKr
+         5sprIwzqFdi18LEZY/kj43TvPe1aAs7vfUuL78UopxPGdUg/QZ661hpJiwvFBC1GHwYM
+         zvPbfSSmSbpspxZziZspBupYJaz36C8wesdXlY4ecDIRXdD7MVUHfWHohrtUenl+J5mU
+         /oyKaqr8qeGhPBwhsOdtoTKkhppvuN6Lynhh0Y3amxgS44nmwQ+gVTbDTJ4IKWe0Vmmh
+         JofGCd1CHIGgXq8sE3WldpJTEDB5QFqT2lakAYu9AnP/sdDwD0VWDsMI4X40SfvaP91E
+         R9YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=U+wvXPwvhucTVlxnfZp7fdTxV1dqI6RrlYLlpej7n+A=;
-        b=iScn6YU7nRtLRIUQCQMZoR0uJPMyFqbkegtfzukh33yovO+0nBwFRhJxZaadrzv5Cv
-         HB71Rj5kywnrbMHvsaeuKz29HZJ30IrFobrmtr7eGt5hoSQzazaLNllYLopmfsenMqNK
-         P6Hi74VXxSECzqWmjiVKZ4ovwMfZRYO8YuuPvJirQLDK/nXOJkQ9I6bpyFI/7RyAPtZH
-         oJNpDUQJ8iwnllYbKeHrShTGAxS4qghpAHWPxIGCW89yPLn5OT0FECdnXIXib8riMb8/
-         j5aHvRUkrYjNzRuM0IFhbBOs9Uu8Vuhyf1MEOJzE/SBPf4VT1ae3KJJgKaArTmBmMFhh
-         hOgA==
-X-Gm-Message-State: AOAM533mLo+Tca7Xv8ZoSMg0/5qSv9rRNcdU4ZuF6zlLKItrk1QsoL7D
-        3If5Uou5SYWALETTTB1DBWWSPGI/I84Q1qkV0VA=
-X-Google-Smtp-Source: ABdhPJy5ftVhB3OwVsAEkfW2zBOikKz5dUqtHYB9CFBNXF7TdJ2h5I9fw9KuqI30/l3rGsJTUWN/AmHIMciTnLSQs60=
-X-Received: by 2002:a17:902:d4d1:b0:13f:af7:9068 with SMTP id
- o17-20020a170902d4d100b0013f0af79068mr26001887plg.20.1634547364677; Mon, 18
- Oct 2021 01:56:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=knBzRmQ82wPdv3CuzyNBZ63kKmOlweb7N5lkXGqcdto=;
+        b=b1h/sUCtolQlQtdT1tZ2Pzie2J97LxERmTomXuG4nbIfof4GLkw1m3azeUf3vn+f9n
+         XBfwKCaKM5e0iwJJiW36AUUYi7JUTqKXfFu7iAufK5H/byLoi3tH6mmH5Ns/kYi8eLYt
+         GNpRktgKq/zzrV9Tl85iWdDS1oKDOWta+dGN1GuDyT60DzRUQrLe1+ofC3hxGtGT0Vhf
+         rK2Y/vw0WoZJxPNaYmTURP8hSupUB4uehuI9Kc68zwVDjMKjPvGMjOEZcoEfNF2YgXpu
+         QhthKvhCgVSUKZEEfGrmbIk9Q0sdk8m8+BxemlYKt0Fk6tIWMSaPzFuGqOyWMYc8Cmv3
+         z6iA==
+X-Gm-Message-State: AOAM533FUIrMToFLwO739y+YFihoKJw+FNduEFKJd248ECwoWxy/ihYY
+        soxGxCEZth9voCENzRiwXxU=
+X-Google-Smtp-Source: ABdhPJyZ2yMKEB34DEqhQtO2hw2tMAo/GopxrqYeicStZZA8cpUanjNJ9fy2g3WQJjJ4XQHjVP4thw==
+X-Received: by 2002:a65:6288:: with SMTP id f8mr22308343pgv.81.1634547392672;
+        Mon, 18 Oct 2021 01:56:32 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id d60sm18323659pjk.49.2021.10.18.01.56.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 01:56:32 -0700 (PDT)
+From:   luo penghao <cgel.zte@gmail.com>
+X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] lib: Remove redundant statement
+Date:   Mon, 18 Oct 2021 08:56:27 +0000
+Message-Id: <20211018085627.854672-1-luo.penghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:178f:0:0:0:0 with HTTP; Mon, 18 Oct 2021 01:56:04
- -0700 (PDT)
-Reply-To: mauhin11@gmail.com
-From:   Maureen Hinckley <addialexy@gmail.com>
-Date:   Mon, 18 Oct 2021 11:56:04 +0300
-Message-ID: <CAHUzaZ1onNBXAddKYj94cVaP_pisc=xZ8a7woJJr9vnTBGE_aQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Hello,
+Regardless of whether the next if condition causes the function to return,
+the assignment operation is meaningless.
 
-I am Maureen Hinckley and my foundation is donating ($2.2 Million.
-Dollars) to you. Contact us via my email at (mauhin13@gmail.com) for
-further details.
+The clang_analyzer complains as follows:
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92021 The Maureen Hinckley Foundation All Rights Reserved.
+lib/assoc_array.c:97:3 warning:
+lib/assoc_array.c:409:3 warning:
+
+Value stored to 'cursor' is never read.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+---
+ lib/assoc_array.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/lib/assoc_array.c b/lib/assoc_array.c
+index 079c72e..2743bca 100644
+--- a/lib/assoc_array.c
++++ b/lib/assoc_array.c
+@@ -94,7 +94,6 @@ static int assoc_array_subtree_iterate(const struct assoc_array_ptr *root,
+ 
+ 	if (assoc_array_ptr_is_shortcut(parent)) {
+ 		shortcut = assoc_array_ptr_to_shortcut(parent);
+-		cursor = parent;
+ 		parent = READ_ONCE(shortcut->back_pointer); /* Address dependency. */
+ 		slot = shortcut->parent_slot;
+ 		if (parent == stop)
+@@ -406,7 +405,6 @@ static void assoc_array_destroy_subtree(struct assoc_array_ptr *root,
+ 	if (assoc_array_ptr_is_shortcut(parent)) {
+ 		shortcut = assoc_array_ptr_to_shortcut(parent);
+ 		BUG_ON(shortcut->next_node != cursor);
+-		cursor = parent;
+ 		parent = shortcut->back_pointer;
+ 		slot = shortcut->parent_slot;
+ 		pr_devel("free shortcut\n");
+-- 
+2.15.2
+
+
