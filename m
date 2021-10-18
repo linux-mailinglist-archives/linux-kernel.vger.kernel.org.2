@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4D643137E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785B2431380
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhJRJcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbhJRJcH (ORCPT
+        id S231470AbhJRJcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:32:23 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3995 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231448AbhJRJcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:32:07 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F570C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:29:56 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id ec8so68551567edb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Z2QFxhnMVf7FEPNX3m8xIEngD1aFcxlGRegneEKY+fU=;
-        b=QthDzjD7JpjODuaCEl99NdcLs8efTMW55CMB4nMM2t8T+4K8MqUCwahggG4q/GdJbV
-         T36hdSFTNu1jd6dOylO38wJ8fDTblAFrRgeYQ46abbzYGLfJcK321S55cscnSh4cc7ot
-         CKXfg9llwgiJSvnwF+Q7S7wiBG+hWa0d2ri+tPDQfbghGLxVgVPsdf704JX42OGkjFzQ
-         AdxTyOrRE/4WEb6TIQKr4QpaIu1XKN2sxaHAGTAcomc7fg1nGODfRGkTkT2pwQiNKZnj
-         paqrQ7i6B5UVcL1Bkc8FcTyaPXGPYX39l7elREUvJTxO3IpJjhOBGaKP8UEZY7RR42W/
-         Btzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Z2QFxhnMVf7FEPNX3m8xIEngD1aFcxlGRegneEKY+fU=;
-        b=iyjE0ooyUAlzIxmDSV6KmpUuRd9ADcuZBdyH55F6BWP7UizImXf7soL/70c6+WX49G
-         25QbsUHciAtOuzu0BLE96d5RoF5gJDz4CnlpEl5F2OvBVx9ZUPx3g7Uml+aF3y1AasQ5
-         qnaIjLEplPmT95DYjzIE3kBJ0i6pGl+Tt029ZrogKKtMD33k+H5jNUMy5qlH2i9sS9pu
-         ks+dcuv9RjLgxpakRC9CXc8tu6trkryXty5PrFD2Ya+O8fG5172cpCz5a1FHBSJuQfGp
-         6EqMnttpBYunAzUjPxZ5iiH3Hw9xGsz0gfGPsg6WOrBbINhAFFTKVQaISHam9MWxrSFv
-         Zvqw==
-X-Gm-Message-State: AOAM531vdq03RxZ4ChRtJnf+BgdoPmwraoZ7VzTMd686vMLwbTJ7cCik
-        70GLlQW5iRBRe3MTTduKQrBpXcq0njAGXpgFINE=
-X-Google-Smtp-Source: ABdhPJyHqDf2ZvyflwyhSw3waoFlj8mchwDkgUNsohs/OCuAFOxhQb/8nHEVlQouDbIfQqTe6CIhlkm+sIGwtKTM7iY=
-X-Received: by 2002:a17:906:9a07:: with SMTP id ai7mr28870218ejc.55.1634549394838;
- Mon, 18 Oct 2021 02:29:54 -0700 (PDT)
+        Mon, 18 Oct 2021 05:32:20 -0400
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HXs2766kRz67yDH;
+        Mon, 18 Oct 2021 17:26:23 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 11:30:04 +0200
+Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 18 Oct
+ 2021 10:30:04 +0100
+Date:   Mon, 18 Oct 2021 10:30:02 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, Linux PCI <linux-pci@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 06/10] cxl/pci: Add @base to cxl_register_map
+Message-ID: <20211018103002.00007199@Huawei.com>
+In-Reply-To: <CAPcyv4j9W4NJFTPk8c5_nG_fAUpecnY886jKmhYzZONW4RCf5Q@mail.gmail.com>
+References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <20211015172732.000012fc@Huawei.com>
+        <CAPcyv4j9W4NJFTPk8c5_nG_fAUpecnY886jKmhYzZONW4RCf5Q@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Received: by 2002:a55:e41a:0:b0:125:62ec:a5c4 with HTTP; Mon, 18 Oct 2021
- 02:29:54 -0700 (PDT)
-Reply-To: tapsobaahmed100@gmail.com
-From:   "Mr. Tapsoba Ahmed" <johnson.adams184@gmail.com>
-Date:   Mon, 18 Oct 2021 04:29:54 -0500
-Message-ID: <CA+Yfamjr3xHXsH13xjU4OGg_BDbH6uiRvNM9CN0mbxSJosJmpQ@mail.gmail.com>
-Subject: URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.226.41]
+X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Fri, 15 Oct 2021 09:55:57 -0700
+Dan Williams <dan.j.williams@intel.com> wrote:
 
-My name is Mr.Tapsoba Ahmed. I have decided to seek a confidential
-co-operation  with you in the execution of the deal described
-here-under for our both  mutual benefit and I hope you will keep it a
-top secret because of the nature  of the transaction, During the
-course of our bank year auditing, I discovered  an unclaimed/abandoned
-fund, sum total of {US$19.3 Million United State  Dollars} in the bank
-account that belongs to a Saudi Arabia businessman Who unfortunately
-lost his life and entire family in a Motor Accident.
-I want to present you to the bank as the next of kin to the dead
-business man after that the money will be sent to you by the bank, we
-then share 60percent to me and 40percent to you.
-All necessary arrangements to secure the fund have been made by
-me,upon consideration of this offer.
+> On Fri, Oct 15, 2021 at 9:27 AM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Sat, 9 Oct 2021 09:44:29 -0700
+> > Dan Williams <dan.j.williams@intel.com> wrote:
+> >  
+> > > In addition to carrying @barno, @block_offset, and @reg_type, add @base
+> > > to keep all map/unmap parameters in one object. The helpers
+> > > cxl_{map,unmap}_regblock() handle adjusting @base to the @block_offset
+> > > at map and unmap time.
+> > >
+> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>  
+> >
+> > I don't really mind them, but why the renames
+> > from cxl_pci_* to cxl_* ?  
+> 
+> Primarily because we had a mix of some functions including the _pci
+> and some not, and I steered towards just dropping it. I think the
+> "PCI" aspect of the function is clear by its function signature, and
+> that was being muddied by passing @cxlm unnecessarily. So instead of:
+> 
+> cxl_pci_$foo(struct cxl_mem *cxlm...)
+> 
+> ...I went with:
+> 
+> cxl_$foo(struct pci_dev *pdev...)
+> 
+> ...concerns?
 
-send me the below information
+That's fine,
 
+J
 
--Your Full Name:
--Your Contact Address:
--Your direct Mobile telephone Number:
--Your Date of Birth:
--Your occupation:
-
-
-I await your swift response and re-assurance.
-
-
-Best regards,
-Mr.Tapsoba Ahmed.
