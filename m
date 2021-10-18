@@ -2,136 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16982431EE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BDB431F47
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234975AbhJROG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:06:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23902 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234962AbhJRODj (ORCPT
+        id S232676AbhJROSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232507AbhJROSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:03:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634565688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=alu9+x3UukSgjt1oLDg8yRXsnhUeDxbETePjaj5q6hc=;
-        b=W6ANexp+cZ7mUuil+y/nTeE7/K+iexuBiYvb8voweh3Kvr1w0XC4VOYmA1SE5ypeJw0OvU
-        XCjRvQX/hp1JGp46Mx7D06HQ6dNi8nspi6mdxfRTQP7CT5WO5Jx8dB3pSpgFA0h/X+IgYI
-        CyeQTnHAQ0HNX+moEiQeefhOKBL+W9M=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-YJ-wEXgBNHmghJn34bToAw-1; Mon, 18 Oct 2021 10:01:27 -0400
-X-MC-Unique: YJ-wEXgBNHmghJn34bToAw-1
-Received: by mail-ed1-f71.google.com with SMTP id p20-20020a50cd94000000b003db23619472so14494346edi.19
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:01:27 -0700 (PDT)
+        Mon, 18 Oct 2021 10:18:41 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91907C08EBB4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:02:39 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 63-20020a1c0042000000b0030d60716239so10492876wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:02:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=xu0wFpMnPTWg2SgsHyUSQQQ2dykx7iBeuhvTdw0+bPo=;
+        b=t/0sng+l7qoH421kLSngqcTkeSOzBBBbnACXXIPA5Z6nT1d4ZWQozmAPjq0iwdttZP
+         XOGwm57RDENxODAcRQIdJEZt/m95DpFS2cWnIOSQnOP5enZT6ZUEPSIrCUIorahfoSQH
+         AV/SmpIbdya/7JKFhP5zBDHS4vNP3PvjW86wCZELjop6s1t/Oq7NDXX7z4q3PU5WIRmY
+         Mjngrm24M7FUDMq9nHRl5CfNv0RcUoHDfy1DBI+7VjT5GpoFUn47Dg3vBaaFvdhoyajk
+         jEYrtS7LKFu7LeZTNN5T+j9EQsI2t5rp/0rNxEFxVq85IKukvasEl4OIPkrL+L7QLzyP
+         QdvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=alu9+x3UukSgjt1oLDg8yRXsnhUeDxbETePjaj5q6hc=;
-        b=FPTdUqOF/LTHptiUcD7Ve0KMTWoCYHPHs57kJ432sfmNk7T8MK7iO38Np3xbE4/5/a
-         BLKcqurDT0Obm5hV8ZKQjrJf3ZP01CHRtmGGvXvBsAYoRDzb+au3RXrSGJFwIVg2NZLK
-         tRrPmMsCHwpW4ONVbs7Mm8GFX9HZAQeaeFzTVVUPyhSWfVfqBP+p0pRu1ncCelWfWL7+
-         Ka9azxBZnd5P9ljfHN7jneN4YwmhiGeZvyKiSbVZfojLRuBhLhF/vwmP9llAQZflMIJ2
-         WUTSRa8yyiPklkbfiBHoo9sJT8ESdihe4kYMeLEolTx+vYPhDXe74ClJDIItb2chDpxA
-         PV4g==
-X-Gm-Message-State: AOAM532C+nF3ZPwl9D7uMSayFXFkr01lA+vabZqRxVZ2q+CDVgGI/0Rt
-        ZU/0eqFp5lxPUYkWzB2i79NU6jGyC7pRq/uaTX18mwlUPaEhBaoWtOIacfrY28rOKbvwUCUIrNV
-        IuyRMeMHtCQ64q/LZRklVQ6oe
-X-Received: by 2002:a17:906:16d0:: with SMTP id t16mr30142966ejd.199.1634565684861;
-        Mon, 18 Oct 2021 07:01:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx0pLdIdl2/mSdWIYw55gpZhSC1/jBwkJN0yv+ochanXR2UNh43fcyd5rcN6GDwg9bboL83ow==
-X-Received: by 2002:a17:906:16d0:: with SMTP id t16mr30142841ejd.199.1634565683551;
-        Mon, 18 Oct 2021 07:01:23 -0700 (PDT)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id q2sm9144921eje.118.2021.10.18.07.01.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 07:01:23 -0700 (PDT)
-Message-ID: <97b8914e-e78d-8e3b-290a-6ad10170635b@redhat.com>
-Date:   Mon, 18 Oct 2021 16:01:22 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=xu0wFpMnPTWg2SgsHyUSQQQ2dykx7iBeuhvTdw0+bPo=;
+        b=m6WocGcOyO3oA7q3429rtXROIgCnETqY88Fs2xZG7KglFAToiZVhWgUxlc+4izsfx4
+         LVnJnhydfX3HgHsm+p01o1KRBZ+q3+QFSOjXlBGWrQ94Ik/v7Yol/ETzcwGTJbN3MsOz
+         L1g2CfQ0cqWpbuZYybvBYG66hhnD5gtpF8Xq2urjh5id82LqUtIxRpqagU0UfRZGpehs
+         eQsJ1ZIlZYg+FUeOR/yiSeAyDGjbhOkYBujsvmG1Tl27zksZdW599iF5rh285bz1kSr9
+         Ft39Dz1qdEQ8nc55yl/2DQEErPrseXzPuZBj0qz50LWrJB5uqlaUy8rRcLelHkONCXFc
+         Rc2g==
+X-Gm-Message-State: AOAM5324pn8usCt+saxPPu9YdJn5uKqiRUCwR4X50b1/Xkwx2fGtXJ4w
+        IHO6FQlsuHdKc0FbqHyJ+1D+aw==
+X-Google-Smtp-Source: ABdhPJy+DNjWEsIk9DPKxeraLdCuiMO0FGqV387zfb6YutR2yGNBgTNIzmn5PPAv2wFmoTUEHVFqwA==
+X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr30496641wml.68.1634565758047;
+        Mon, 18 Oct 2021 07:02:38 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id y5sm12210314wrq.85.2021.10.18.07.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 07:02:37 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 15:02:34 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Kai Song <songkai01@inspur.com>
+Cc:     thor.thayer@linux.intel.com, zou_wei@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: altera-sysmgr: Fix a mistake caused by
+ resource_size function
+Message-ID: <YW1+eiaWZDRTet21@google.com>
+References: <20211006141926.6120-1-songkai01@inspur.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to intel_pmic_bytcrc
- driver
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20211017161523.43801-1-kitakar@gmail.com>
- <20211017161523.43801-2-kitakar@gmail.com>
- <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
- <CAHp75VcA+=OsmX7o2WTvYgf8TNpE64qEHq=MVm5vVP-4RBk+ng@mail.gmail.com>
- <3c9d4f9b-26c2-a135-eb2e-67963aa0bc0b@redhat.com>
- <YW1QkidNKa79MCBb@smile.fi.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YW1QkidNKa79MCBb@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211006141926.6120-1-songkai01@inspur.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 06 Oct 2021, Kai Song wrote:
 
-On 10/18/21 12:46, Andy Shevchenko wrote:
-> On Mon, Oct 18, 2021 at 12:38:51PM +0200, Hans de Goede wrote:
->> On 10/18/21 12:31, Andy Shevchenko wrote:
->>> On Mon, Oct 18, 2021 at 12:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> Fixes: d12edf9661a4 ("mfd: altera-sysmgr: Use resource_size function on resource object")
 > 
-> ...
+> The resource_size defines that:
+> 	res->end - res->start + 1;
+> The origin original code is:
+> 	sysmgr_config.max_register = res->end - res->start - 3;
 > 
->>> Btw, IIRC similar code (i.e. BYT vs CHT by CPU
->>> ID) is being used elsewhere. Perhaps we might have some common
->>> (library) under arc/x86, PDx86 or so (headers?)?
->>
->> We already have helpers for this defined in:
->>
->> sound/soc/intel/common/soc-intel-quirks.h
->>
->> We could move those to some header under include, maybe:
->>
->> include/linux/platform_data/x86/atom.h
->>
->> And add #ifdef-ery there so that things will also build on
->> non x86 ?
->>
->> Then we could do a 2 patch series adding the
->> include/linux/platform_data/x86/atom.h
->> file + the drivers/mfd/intel_soc_pmic_core.c
->> change and Lee can merge both through the MFD tree.
->>
->> And then we can do further clean-ups of e.g. sound/soc
->> on top (we can ask Lee to provide an immutable branch).
->>
->> How does that sound ?
+> So, the correct fix is that:
+> 	sysmgr_config.max_register = resource_size(res) - 4;
 > 
-> Sounds like a good plan to me!
+> Signed-off-by: Kai Song <songkai01@inspur.com>
+> ---
+>  drivers/mfd/altera-sysmgr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-So I've been thinking about this a bit more.
+Applied, thanks.
 
-Since sound/soc/intel/common/soc-intel-quirks.h already
-has stubs for non X86 too, I think it is best to just
-move that to include/linux/platform_data/x86/soc.h .
-
-Since the drivers/mfd/intel_soc_pmic_core.c thing is
-a bugfix of sorts, it is probably best to open-code
-the check there and then replace it with the helper
-from include/linux/platform_data/x86/soc.h later.
-
-I'll start prepping a patch series doing things
-this way now.
-
-Regards,
-
-Hans
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
