@@ -2,149 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4FA43164F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C5F431652
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhJRKm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:42:56 -0400
-Received: from mga12.intel.com ([192.55.52.136]:2882 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229590AbhJRKmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:42:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="208324571"
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="208324571"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 03:40:41 -0700
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="489364092"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 03:40:37 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mcQ42-0001m6-75;
-        Mon, 18 Oct 2021 13:40:18 +0300
-Date:   Mon, 18 Oct 2021 13:40:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jack Winch <sunt.un.morcov@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>
-Subject: Re: [PATCH v7 5/8] gpio: sim: new testing module
-Message-ID: <YW1PEvTyqdhiRYR6@smile.fi.intel.com>
-References: <20211008081739.26807-1-brgl@bgdev.pl>
- <20211008081739.26807-6-brgl@bgdev.pl>
+        id S230411AbhJRKnK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 06:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhJRKnH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:43:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E48C061768
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:40:55 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mcQ4U-0002SF-9S; Mon, 18 Oct 2021 12:40:46 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mcQ4T-0006AV-MT; Mon, 18 Oct 2021 12:40:45 +0200
+Message-ID: <26612614156b53a3c1798f86177a69f613f210b7.camel@pengutronix.de>
+Subject: Re: [PATCH v3 1/2] dt-bindings: reset: Add lan966x support
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     robh+dt@kernel.org, andrew@lunn.ch, lars.povlsen@microchip.com,
+        Steen.Hegelund@microchip.com, UNGLinuxDriver@microchip.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Mon, 18 Oct 2021 12:40:45 +0200
+In-Reply-To: <20211015141404.5eiylskcfy2fxi42@soft-dev3-1.localhost>
+References: <20211013073807.2282230-1-horatiu.vultur@microchip.com>
+         <20211013073807.2282230-2-horatiu.vultur@microchip.com>
+         <838af7b574968fc55d517a3becede5fa106ed896.camel@pengutronix.de>
+         <20211014152016.wuwaesswc5iiil42@soft-dev3-1.localhost>
+         <20211015141404.5eiylskcfy2fxi42@soft-dev3-1.localhost>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008081739.26807-6-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 10:17:36AM +0200, Bartosz Golaszewski wrote:
-> Implement a new, modern GPIO testing module controlled by configfs
-> attributes instead of module parameters. The goal of this driver is
-> to provide a replacement for gpio-mockup that will be easily extensible
-> with new features and doesn't require reloading the module to change
-> the setup.
-> 
-> Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
-> [Andy: Initialize attribute allocated on the heap]
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> [Colin: Fix dereference of free'd pointer config]
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On Fri, 2021-10-15 at 16:14 +0200, Horatiu Vultur wrote:
+[...]
+> Were you thinking to have just another reset driver('phy-reset') and then
+> the switch to refer to both of them?
+> I like this idea because then is more clear what is doing each driver.
 
-Some nit-picks below, up to you to address.
+Yes, especially if there is no requirement to handle switch and PHY
+resets at the same time: this would allow the sgpio driver to trigger
+the required switch reset without already releasing the PHYs from reset.
 
-...
-
-> +	ret = gpio_sim_setup_sysfs(chip);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-
-return gpio_sim_...(chip); ?
-
-...
-
-> +
-
-Redundant empty line.
-
-> +CONFIGFS_ATTR_RO(gpio_sim_config_, dev_name);
-
-...
-
-> +
-
-Ditto.
-
-> +CONFIGFS_ATTR_RO(gpio_sim_config_, chip_name);
-
-...
-
-> +
-
-Ditto.
-
-> +CONFIGFS_ATTR(gpio_sim_config_, label);
-
-...
-
-> +
-
-Ditto.
-
-> +CONFIGFS_ATTR(gpio_sim_config_, num_lines);
-
-...
-
-> +
-
-Ditto.
-
-> +CONFIGFS_ATTR(gpio_sim_config_, line_names);
-
-...
-
-> +	fwnode = fwnode_create_software_node(properties, NULL);
-> +	if (IS_ERR(fwnode))
-> +		return PTR_ERR(fwnode);
-
-
-> +	fwnode = dev_fwnode(&config->pdev->dev);
-> +	platform_device_unregister(config->pdev);
-> +	fwnode_remove_software_node(fwnode);
-
-This seems correct, thank you for modifying the code.
-
-...
-
-> +	config->pdev = NULL;
-> +	mutex_unlock(&config->lock);
-
-mutex_destroy() ?
-Or is it done in the upper level?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+regards
+Philipp
