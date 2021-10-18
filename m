@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3ACB431C36
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83A6431B67
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhJRNjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:39:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55956 "EHLO mail.kernel.org"
+        id S231861AbhJRNc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:32:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231775AbhJRNgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:36:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE9D2613DA;
-        Mon, 18 Oct 2021 13:31:11 +0000 (UTC)
+        id S232361AbhJRNbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:31:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23D496136A;
+        Mon, 18 Oct 2021 13:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563872;
-        bh=p0lay8XH4+8x+Vzh4zc8p837cdO7Qn1/dacKp/icL0E=;
+        s=korg; t=1634563719;
+        bh=mIfWHTo6F5vNmIUpGiI4Mgv2twSJ0V9JjEE+iJXG1q8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nJBQ0Q83ur2mEYoIaPu0ypuEhLKODQPt1dqffS7+z2WI7gxzzXbTVJ7LSHrajBbjh
-         7zHk3fpKU9PzdPp2Jrk1WrT8K/LNxK8IcTyjwRAGoJOLu0iS1XETcf9urB1Hxsvvic
-         Z5glcDhvefmWdor1QfTcEGm3/y1Ga2/WRs2e+luA=
+        b=mYNf+4T+IFKRaizpfv9QLNLuLNgl+pnPlTBUEO3/3Xl2VmmtqoN3anM6dBAlF88or
+         EuEzUkgZ1I4FES2wOb2CmYZj6R1K4lwmfebqt0s6qMb0sGRktgwSucxGykBCVzwabb
+         lZMNrOBfE3fGrFxVRWMYNhaYCpKIKAcTz0qHtF5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PATCH 5.4 46/69] gpio: pca953x: Improve bias setting
-Date:   Mon, 18 Oct 2021 15:24:44 +0200
-Message-Id: <20211018132331.005101750@linuxfoundation.org>
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 38/50] nfc: fix error handling of nfc_proto_register()
+Date:   Mon, 18 Oct 2021 15:24:45 +0200
+Message-Id: <20211018132327.785476316@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,70 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit 55a9968c7e139209a9e93d4ca4321731bea5fc95 upstream.
+commit 0911ab31896f0e908540746414a77dd63912748d upstream.
 
-The commit 15add06841a3 ("gpio: pca953x: add ->set_config implementation")
-introduced support for bias setting. However this, due to being half-baked,
-brought potential issues:
- - the turning bias via disabling makes the pin floating for a while;
- - once enabled, bias can't be disabled.
+When nfc proto id is using, nfc_proto_register() return -EBUSY error
+code, but forgot to unregister proto. Fix it by adding proto_unregister()
+in the error handling case.
 
-Fix all these by adding support for bias disabling and move the disabling
-part under the corresponding conditional.
-
-While at it, add support for default setting, since it's cheap to add.
-
-Fixes: 15add06841a3 ("gpio: pca953x: add ->set_config implementation")
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+Fixes: c7fe3b52c128 ("NFC: add NFC socket family")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20211013034932.2833737-1-william.xuanziyang@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpio-pca953x.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ net/nfc/af_nfc.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -583,21 +583,21 @@ static int pca953x_gpio_set_pull_up_down
+--- a/net/nfc/af_nfc.c
++++ b/net/nfc/af_nfc.c
+@@ -72,6 +72,9 @@ int nfc_proto_register(const struct nfc_
+ 		proto_tab[nfc_proto->id] = nfc_proto;
+ 	write_unlock(&proto_tab_lock);
  
- 	mutex_lock(&chip->i2c_lock);
- 
--	/* Disable pull-up/pull-down */
--	ret = regmap_write_bits(chip->regmap, pull_en_reg, bit, 0);
--	if (ret)
--		goto exit;
--
- 	/* Configure pull-up/pull-down */
- 	if (config == PIN_CONFIG_BIAS_PULL_UP)
- 		ret = regmap_write_bits(chip->regmap, pull_sel_reg, bit, bit);
- 	else if (config == PIN_CONFIG_BIAS_PULL_DOWN)
- 		ret = regmap_write_bits(chip->regmap, pull_sel_reg, bit, 0);
-+	else
-+		ret = 0;
- 	if (ret)
- 		goto exit;
- 
--	/* Enable pull-up/pull-down */
--	ret = regmap_write_bits(chip->regmap, pull_en_reg, bit, bit);
-+	/* Disable/Enable pull-up/pull-down */
-+	if (config == PIN_CONFIG_BIAS_DISABLE)
-+		ret = regmap_write_bits(chip->regmap, pull_en_reg, bit, 0);
-+	else
-+		ret = regmap_write_bits(chip->regmap, pull_en_reg, bit, bit);
- 
- exit:
- 	mutex_unlock(&chip->i2c_lock);
-@@ -611,7 +611,9 @@ static int pca953x_gpio_set_config(struc
- 
- 	switch (pinconf_to_config_param(config)) {
- 	case PIN_CONFIG_BIAS_PULL_UP:
-+	case PIN_CONFIG_BIAS_PULL_PIN_DEFAULT:
- 	case PIN_CONFIG_BIAS_PULL_DOWN:
-+	case PIN_CONFIG_BIAS_DISABLE:
- 		return pca953x_gpio_set_pull_up_down(chip, offset, config);
- 	default:
- 		return -ENOTSUPP;
++	if (rc)
++		proto_unregister(nfc_proto->proto);
++
+ 	return rc;
+ }
+ EXPORT_SYMBOL(nfc_proto_register);
 
 
