@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E50843232B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF35D4322FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233296AbhJRPo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:44:28 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:37076 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233233AbhJRPo1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:44:27 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:46662)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mcUmD-008WoB-Kb; Mon, 18 Oct 2021 09:42:13 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:40538 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mcUmC-00D1TG-KO; Mon, 18 Oct 2021 09:42:13 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Rune Kleveland <rune.kleveland@infomedia.dk>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "containers\@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>
-References: <878rzw77i3.fsf@disp2133>
-        <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
-        <20210929173611.fo5traia77o63gpw@example.org>
-        <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
-        <20210930130640.wudkpmn3cmah2cjz@example.org>
-        <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
-        <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133>
-        <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
-        <87mtnavszx.fsf_-_@disp2133>
-        <20211015230922.7s7ab37k2sioa5vg@example.org>
-        <87zgr8vpop.fsf@disp2133>
-        <CAOUHufbbPMzMLaPH8o+PKG64RQaO7=09nv1hBnQY8SRAW+Jd-g@mail.gmail.com>
-Date:   Mon, 18 Oct 2021 10:35:12 -0500
-In-Reply-To: <CAOUHufbbPMzMLaPH8o+PKG64RQaO7=09nv1hBnQY8SRAW+Jd-g@mail.gmail.com>
-        (Yu Zhao's message of "Sun, 17 Oct 2021 13:35:37 -0600")
-Message-ID: <8735oyuz0v.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232634AbhJRPhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:37:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231893AbhJRPhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:37:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C720B6103D;
+        Mon, 18 Oct 2021 15:35:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634571331;
+        bh=q7lcmruj3DqRwUoAeERdWNwhIR2lW91g6h7Kdo5lQp8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Pvv8j5rrguCLZzOjZEgHhY0Txc2BPVnAj4d0dfiw6bV43dEU76xoOTxKNCA5XOFeZ
+         yHlL0Mqgywrqr5T8fNQq12o5APx8Zl2HGncM/4pFYOrRxVLbZM+lP03XqA0rpoRVso
+         l3BukXmaCXnliqfxezF07+nUVHExtbCmVbG7VpKL2wHlfQYE5Ogl6m/6IZNNhpGETb
+         d1Rv6QvwRmX7MtJ6/6GyKNAIAMq+5Towrzub7S7LaNAumjCmZ90nw394bZ970/cTZP
+         6JZryrPojvE8chSkiXvJjHZiLyz3zMr+wb0lylbqUIIZm+1Zs8UA1JWIsntfqRRgzI
+         zS91iUQ2HG0wA==
+Date:   Mon, 18 Oct 2021 10:35:29 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Victor Ding <victording@google.com>
+Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS
+ Surface devices
+Message-ID: <20211018153529.GA2235731@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mcUmC-00D1TG-KO;;;mid=<8735oyuz0v.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19IRU+fje8+4Jcix4fh8vbtCkuc+2VVzC0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1530]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Yu Zhao <yuzhao@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 470 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 10 (2.2%), b_tie_ro: 9 (2.0%), parse: 0.82 (0.2%),
-         extract_message_metadata: 11 (2.3%), get_uri_detail_list: 0.90 (0.2%),
-         tests_pri_-1000: 13 (2.8%), tests_pri_-950: 1.26 (0.3%),
-        tests_pri_-900: 1.03 (0.2%), tests_pri_-90: 188 (40.0%), check_bayes:
-        187 (39.7%), b_tokenize: 5 (1.1%), b_tok_get_all: 5.0 (1.1%),
-        b_comp_prob: 1.57 (0.3%), b_tok_touch_all: 172 (36.6%), b_finish: 0.80
-        (0.2%), tests_pri_0: 231 (49.1%), check_dkim_signature: 0.48 (0.1%),
-        check_dkim_adsp: 2.7 (0.6%), poll_dns_idle: 0.83 (0.2%), tests_pri_10:
-        2.8 (0.6%), tests_pri_500: 8 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [CFT][PATCH] ucounts: Fix signal ucount refcounting
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e7983fec-f4f1-6d31-5e46-f5a427fe55cc@v0yd.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> writes:
+On Thu, Oct 14, 2021 at 12:08:31AM +0200, Jonas Dreßler wrote:
+> On 10/12/21 17:39, Bjorn Helgaas wrote:
+> > [+cc Vidya, Victor, ASPM L1.2 config issue; beginning of thread:
+> > https://lore.kernel.org/all/20211011134238.16551-1-verdre@v0yd.nl/]
 
-> On Sat, Oct 16, 2021 at 11:35 AM Eric W. Biederman
-> <ebiederm@xmission.com> wrote:
->>
->> Alexey Gladkov <legion@kernel.org> writes:
->>
->> > On Fri, Oct 15, 2021 at 05:10:58PM -0500, Eric W. Biederman wrote:
->> >> +                    goto dec_unwind;
->> >> +    }
->> >> +    return ret;
->> >> +dec_unwind:
->> >> +    dec = atomic_long_add_return(1, &iter->ucount[type]);
->> >
->> > Should be -1 ?
->>
->> Yes it should.  I will fix and resend.
->
-> Or just atomic_long_dec_return().
+> > I wonder if this reset quirk works because pci_reset_function() saves
+> > and restores much of config space, but it currently does *not* restore
+> > the L1 PM Substates capability, so those T_POWER_ON,
+> > Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD values probably get
+> > cleared out by the reset.  We did briefly save/restore it [1], but we
+> > had to revert that because of a regression that AFAIK was never
+> > resolved [2].  I expect we will eventually save/restore this, so if
+> > the quirk depends on it *not* being restored, that would be a problem.
+> > 
+> > You should be able to test whether this is the critical thing by
+> > clearing those registers with setpci instead of doing the reset.  Per
+> > spec, they can only be modified when L1.2 is disabled, so you would
+> > have to disable it via sysfs (for the endpoint, I think)
+> > /sys/.../l1_2_aspm and /sys/.../l1_2_pcipm, do the setpci on the root
+> > port, then re-enable L1.2.
+> > 
+> > [1] https://git.kernel.org/linus/4257f7e008ea
+> > [2] https://lore.kernel.org/all/20210127160449.2990506-1-helgaas@kernel.org/
+> 
+> Hmm, interesting, thanks for those links.
+> 
+> Are you sure the config values will get lost on the reset? If we only reset
+> the port by going into D3hot and back into D0, the device will remain powered
+> and won't lose the config space, will it?
 
-It would have to be atomic_long_sub_return().
-
-Even then I would want to change all of kernel/ucount.c to use
-the same helper function so discrepancies can easily be spotted.
-
-It is a good idea, just not I think for this particular patch.
-
-Eric
+I think you're doing a PM reset (transition to D3hot and back to D0).
+Linux only does this when PCI_PM_CTRL_NO_SOFT_RESET == 0.  The spec
+doesn't actually *require* the device to be reset; it only says the
+internal state of the device is undefined after these transitions.
