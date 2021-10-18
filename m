@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137FC431E68
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED252431B4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhJROAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:00:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38300 "EHLO mail.kernel.org"
+        id S232681AbhJRNcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234695AbhJRN6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:58:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1939B61414;
-        Mon, 18 Oct 2021 13:41:28 +0000 (UTC)
+        id S232532AbhJRNaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1022D6136F;
+        Mon, 18 Oct 2021 13:28:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564489;
-        bh=lZ6e+SSnM1TUAUTuKQCwy6hZ3pcXZx5MHel341hCe4Y=;
+        s=korg; t=1634563692;
+        bh=2Wp1Zy23ncLg73L2WZLf5Lzwqc7HJa2GFdpduRGAWU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bFMp8YWsiOYgq1VDsQPywMc5SesigWCT034cL6qa8uXbmbUOaE2cqiViRIZGoNlPl
-         KBU3Z8Ux2/bQlf7g0NUyDE0iXQfMUV+3tO1prPo7xGfdgRbXYwamYcq5rj3Iz2NUeA
-         CPkzwXDjULGNZmI95Bw4yAm2GM51loZuGkCVX90k=
+        b=ZVpoB8mVeJjxkD0y2fFzqxi/kiiAVKf1ZD9M7F/+pecsD6aMDPwur2oytai9lwivm
+         v0PGWCE7UoE09uJ7zpZWhK4+gtj9pOD7fkCO12Q6EC4wgD1Mh6yV2c3RmKZAN63xfh
+         s6CdtjygRrxy/7m0lC+pkitKX890zUjP3gxGTj5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Liu <hui.liu@mediatek.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.14 075/151] iio: mtk-auxadc: fix case IIO_CHAN_INFO_PROCESSED
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 07/50] btrfs: deal with errors when replaying dir entry during log replay
 Date:   Mon, 18 Oct 2021 15:24:14 +0200
-Message-Id: <20211018132343.126141539@linuxfoundation.org>
+Message-Id: <20211018132326.766656666@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Liu <hui.liu@mediatek.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit c2980c64c7fd4585d684574c92d1624d44961edd upstream.
+commit e15ac6413745e3def00e663de00aea5a717311c1 upstream.
 
-The previous driver does't apply the necessary scaling to take the
-voltage range into account.
-We change readback value from raw data to input voltage to fix case
-IIO_CHAN_INFO_PROCESSED.
+At replay_one_one(), we are treating any error returned from
+btrfs_lookup_dir_item() or from btrfs_lookup_dir_index_item() as meaning
+that there is no existing directory entry in the fs/subvolume tree.
+This is not correct since we can get errors such as, for example, -EIO
+when reading extent buffers while searching the fs/subvolume's btree.
 
-Fixes: ace4cdfe67be ("iio: adc: mt2701: Add Mediatek auxadc driver for mt2701.")
-Signed-off-by: Hui Liu <hui.liu@mediatek.com>
-Link: https://lore.kernel.org/r/20210926073028.11045-2-hui.liu@mediatek.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+So fix that and return the error to the caller when it is not -ENOENT.
+
+CC: stable@vger.kernel.org # 4.14+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/mt6577_auxadc.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/btrfs/tree-log.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/adc/mt6577_auxadc.c
-+++ b/drivers/iio/adc/mt6577_auxadc.c
-@@ -82,6 +82,10 @@ static const struct iio_chan_spec mt6577
- 	MT6577_AUXADC_CHANNEL(15),
- };
- 
-+/* For Voltage calculation */
-+#define VOLTAGE_FULL_RANGE  1500	/* VA voltage */
-+#define AUXADC_PRECISE      4096	/* 12 bits */
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1907,7 +1907,14 @@ static noinline int replay_one_name(stru
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+-	if (IS_ERR_OR_NULL(dst_di)) {
 +
- static int mt_auxadc_get_cali_data(int rawdata, bool enable_cali)
- {
- 	return rawdata;
-@@ -191,6 +195,10 @@ static int mt6577_auxadc_read_raw(struct
- 		}
- 		if (adc_dev->dev_comp->sample_data_cali)
- 			*val = mt_auxadc_get_cali_data(*val, true);
++	if (dst_di == ERR_PTR(-ENOENT))
++		dst_di = NULL;
 +
-+		/* Convert adc raw data to voltage: 0 - 1500 mV */
-+		*val = *val * VOLTAGE_FULL_RANGE / AUXADC_PRECISE;
-+
- 		return IIO_VAL_INT;
- 
- 	default:
++	if (IS_ERR(dst_di)) {
++		ret = PTR_ERR(dst_di);
++		goto out;
++	} else if (!dst_di) {
+ 		/* we need a sequence number to insert, so we only
+ 		 * do inserts for the BTRFS_DIR_INDEX_KEY types
+ 		 */
 
 
