@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B9D432025
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7BC432026
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhJROt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhJROt1 (ORCPT
+        id S229519AbhJROtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:49:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24973 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232321AbhJROtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:49:27 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10EBC06161C;
-        Mon, 18 Oct 2021 07:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9iC152e1aDmgWA+aHHRHXqgiWkTrwFJBqqglF+YsoV0=; b=gHJxFdZpxImjujKrk8tlaAj20d
-        +e4fdO08JlC1eoHubobQNZoIiy9k74GpWWZqPwl5EFYMOe0BRyKcvhPU07Qf6FcHPw0UywbkV22h2
-        KFOxoDiFV9S/kqqzqOT2rf1vLwUZ6ZR96INicUDuJwX3fHpwhIyY09V0NJcB/bH0Vtycfh72zdvhT
-        XC+ySVb0bFWlsSgP4aLKlvFXe0Y3ut+RJ63Iz2rVfCUBhWTCd/w+NdatUPLznRaYtGmkp8A29xPUj
-        7Ei5IGK9t8xwqnVZn5qSrBstwfgMY8lUxbLe1u0W+TV7mFRYJ/03uJ234cIRimTrvacbGgRCSOMXh
-        3wLNIChQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55174)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mcTur-00059X-Hd; Mon, 18 Oct 2021 15:47:05 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mcTuo-0005yw-PY; Mon, 18 Oct 2021 15:47:02 +0100
-Date:   Mon, 18 Oct 2021 15:47:02 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: sfp: add quirk for Finisar FTLF8536P4BCL
-Message-ID: <YW2I5qP0O4Pviia3@shell.armlinux.org.uk>
-References: <20211013104542.14146-1-pmenzel@molgen.mpg.de>
+        Mon, 18 Oct 2021 10:49:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634568451;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WmxZEp4yqdNNLlvT7rzDrMmyXp0y31eMUrmrU80g9MI=;
+        b=Y+5tjKccC3Al2W5hBQ/efH5An7RBWt1pn7CdlIDlTHEFD+GgbdFP00m+8n87IGX4g7g8tI
+        L1/1cbFpRl0AL1MNXrH1qKKH/IDueM38Y8YqhocQgdQe0NkyptP6n9KCI2mD5biBDuGWSu
+        kEx57L56KFqDAZ/bVAbKojHdewl3r/4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-WVuqVEODNNubUnDzC4b6Ig-1; Mon, 18 Oct 2021 10:47:30 -0400
+X-MC-Unique: WVuqVEODNNubUnDzC4b6Ig-1
+Received: by mail-wr1-f72.google.com with SMTP id 10-20020a5d47aa000000b001610cbda93dso8879512wrb.23
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:47:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WmxZEp4yqdNNLlvT7rzDrMmyXp0y31eMUrmrU80g9MI=;
+        b=TnPHBKt9lbA//L1U/hnPD6zyAsuuKCgp3hGMxtXmvaZmMYsu0/X1lyK8WjkvwSL4sx
+         BM31QkiU4FE2Zj9n95Mp1VpmQbQ2tEt6y09dkerO1DrndqNgmsbRGF9xPR/vVuyxFCgA
+         AaSjq5zeEPUZ5ssPOjfBdF2qxg8CN5pxM7UeDR+f4jglvJxD/ZhLud0tT1DoxhQZhenO
+         jLULCa4UJhE6vouLZmrv2xSNZXvCxrBgCBiQL3RWjDQ0TfkknXFYYGyCR+6ePynS/qNr
+         dshHi8pRogwSgE2p4UTu5DV0ZbkQaTc/g55h1RWILxszojEqQGUQ7pfTMa2Se0RdTKxe
+         LlqQ==
+X-Gm-Message-State: AOAM531KcPgMzGzwlnkFWFUSyJovPNAXU3nkm03+KKSz48HoOjdaDe+3
+        7CJvkOu+ZI/R+HOpxcaV53/oOwUqDQeQZWNxFODGd/PHHJwYBSaaSLFfWXf7JWKgHqpERkESPpJ
+        PkNQA4V1pAOXoedXc0JOFwQ7G
+X-Received: by 2002:a1c:21c3:: with SMTP id h186mr43695348wmh.107.1634568449261;
+        Mon, 18 Oct 2021 07:47:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy+AfcvS7b8/Ma7cBY7/u+xL2JNBiFSC9ZhyQJEBt99kwlDxDLXwW9fQYNJd2gPRma42OiViA==
+X-Received: by 2002:a1c:21c3:: with SMTP id h186mr43695325wmh.107.1634568449085;
+        Mon, 18 Oct 2021 07:47:29 -0700 (PDT)
+Received: from vian.redhat.com ([2a0c:5a80:1d03:b900:220f:ce79:c9ab:4686])
+        by smtp.gmail.com with ESMTPSA id f3sm17909155wmb.12.2021.10.18.07.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 07:47:28 -0700 (PDT)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Subject: [PATCH] arm64: Select POSIX_CPU_TIMERS_TASK_WORK
+Date:   Mon, 18 Oct 2021 16:47:13 +0200
+Message-Id: <20211018144713.873464-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013104542.14146-1-pmenzel@molgen.mpg.de>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 12:45:42PM +0200, Paul Menzel wrote:
-> From: Taras Chornyi <taras.chornyi@plvision.eu>
-> 
-> Finisar FTLF8536P4BCL can operate at 1000base-X and 10000base-SR, but
-> reports 25G & 100GBd SR in it's EEPROM.
-> 
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
-> 
-> [Upstream from https://github.com/dentproject/dentOS/pull/133/commits/b87b10ef72ea4638e80588facf3c9c2c1be67b40]
-> 
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+With 6caa5812e2d1 ("KVM: arm64: Use generic KVM xfer to guest work
+function") all arm64 exit paths are properly equipped to handle the
+POSIX timers' task work.
 
-Thanks Vadym for the eeprom dump.
+Deferring timer callbacks to thread context, not only limits the amount
+of time spent in hard interrupt context, but is a safer
+implementation[1], and will allow PREEMPT_RT setups to use KVM[2].
 
-> diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-> index 7362f8c3271c..162b4030a863 100644
-> --- a/drivers/net/phy/sfp-bus.c
-> +++ b/drivers/net/phy/sfp-bus.c
-> @@ -55,6 +55,13 @@ static void sfp_quirk_ubnt_uf_instant(const struct sfp_eeprom_id *id,
->  	phylink_set(modes, 1000baseX_Full);
->  }
->  
-> +static void sfp_quirk_finisar_25g(const struct sfp_eeprom_id *id,
-> +				  unsigned long *modes)
-> +{
-> +	phylink_set(modes, 1000baseX_Full);
-> +	phylink_set(modes, 10000baseSR_Full);
-> +}
+So let's enable POSIX_CPU_TIMERS_TASK_WORK on arm64.
 
-I'd ask that this is named "sfp_quirk_1g10g()" please - it isn't
-doing anything that is specific to Finisar, it is merely stating
-that 1000base-X and 10000base-SR are supported.
+[1] https://lore.kernel.org/all/20200716201923.228696399@linutronix.de/
+[2] https://www.spinics.net/lists/linux-rt-users/msg24860.html
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 
-> +	}, {
-> +		// Finisar FTLF8536P4BCL can operate at 1000base-X and 10000base-SR,
-> +		// but reports 25G & 100GBd SR in it's EEPROM
+---
 
-This file doesn't wrap over column 80, so please continue to keeping
-it that way.
+This was tested by running all relevant kernel timer self-tests and
+making sure KVM still works as expected.
 
-		// Finisar FTLF8536P4BCL can operate at 1000base-X and
-		// 10000base-SR, but reports 25G & 100GBd SR in it's EEPROM
+ arch/arm64/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks.
-
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 789036cf74f5..ce0d0d254542 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -191,6 +191,7 @@ config ARM64
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
++	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
+ 	select HAVE_FUNCTION_ARG_ACCESS_API
+ 	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select MMU_GATHER_RCU_TABLE_FREE
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.32.0
+
