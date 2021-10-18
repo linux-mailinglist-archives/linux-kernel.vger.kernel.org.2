@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF786431C3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1FF431E19
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhJRNjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:39:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53502 "EHLO mail.kernel.org"
+        id S234264AbhJRN5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:57:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232582AbhJRNhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:37:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0EEB6128A;
-        Mon, 18 Oct 2021 13:31:26 +0000 (UTC)
+        id S234336AbhJRNzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:55:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8686161A04;
+        Mon, 18 Oct 2021 13:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563887;
-        bh=5fkEOeRKMpAv1rt8DKebXAXjaN3huRnJpE8l2uHkoJ4=;
+        s=korg; t=1634564409;
+        bh=sH1yKxxos5/co1fIbgisEwbOaF8zHZ/40AoBPTdz9SU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fyWW+t+HgNgf/hO0NOauXJU3d1lKHgMLutZe0gL7G2dlIiN+0cGv8cCKDEtw3exST
-         snd+YeLQIA0bbXVnp4X5vXn8IdJxA768XgJyl2G3+/KfNeZ6beMSjWNcFqOcVlOu6h
-         w/Se2EfdTbfLutqu3Gpj03kg7cW+qnj0oB+KEr14=
+        b=NgTtK0VrjkGEPDWadhZYcQaYAc7P5giDMzRjR+iGX8nMwjmcEjS03giuZkFmR7pf+
+         RKFdnCKvNwK1k2U0nZz2OoUwnbwOxzMzYk42uENHLAovnVpUiENocD8zl6qYMFmplr
+         K8nNMTx6CiF1jvJcabQyktrFXQmcuRUwJM7P6K9U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pavankumar Kondeti <pkondeti@codeaurora.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.4 20/69] xhci: Fix command ring pointer corruption while aborting a command
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.14 079/151] iio: ssp_sensors: add more range checking in ssp_parse_dataframe()
 Date:   Mon, 18 Oct 2021 15:24:18 +0200
-Message-Id: <20211018132330.137108183@linuxfoundation.org>
+Message-Id: <20211018132343.257069037@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavankumar Kondeti <pkondeti@codeaurora.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit ff0e50d3564f33b7f4b35cadeabd951d66cfc570 upstream.
+commit 8167c9a375ccceed19048ad9d68cb2d02ed276e0 upstream.
 
-The command ring pointer is located at [6:63] bits of the command
-ring control register (CRCR). All the control bits like command stop,
-abort are located at [0:3] bits. While aborting a command, we read the
-CRCR and set the abort bit and write to the CRCR. The read will always
-give command ring pointer as all zeros. So we essentially write only
-the control bits. Since we split the 64 bit write into two 32 bit writes,
-there is a possibility of xHC command ring stopped before the upper
-dword (all zeros) is written. If that happens, xHC updates the upper
-dword of its internal command ring pointer with all zeros. Next time,
-when the command ring is restarted, we see xHC memory access failures.
-Fix this issue by only writing to the lower dword of CRCR where all
-control bits are located.
+The "idx" is validated at the start of the loop but it gets incremented
+during the iteration so it needs to be checked again.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20211008092547.3996295-5-mathias.nyman@linux.intel.com
+Fixes: 50dd64d57eee ("iio: common: ssp_sensors: Add sensorhub driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20210909091336.GA26312@kili
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-ring.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/iio/common/ssp_sensors/ssp_spi.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -339,16 +339,22 @@ static void xhci_handle_stopped_cmd_ring
- /* Must be called with xhci->lock held, releases and aquires lock back */
- static int xhci_abort_cmd_ring(struct xhci_hcd *xhci, unsigned long flags)
- {
--	u64 temp_64;
-+	u32 temp_32;
- 	int ret;
+--- a/drivers/iio/common/ssp_sensors/ssp_spi.c
++++ b/drivers/iio/common/ssp_sensors/ssp_spi.c
+@@ -273,6 +273,8 @@ static int ssp_parse_dataframe(struct ss
+ 	for (idx = 0; idx < len;) {
+ 		switch (dataframe[idx++]) {
+ 		case SSP_MSG2AP_INST_BYPASS_DATA:
++			if (idx >= len)
++				return -EPROTO;
+ 			sd = dataframe[idx++];
+ 			if (sd < 0 || sd >= SSP_SENSOR_MAX) {
+ 				dev_err(SSP_DEV,
+@@ -282,10 +284,13 @@ static int ssp_parse_dataframe(struct ss
  
- 	xhci_dbg(xhci, "Abort command ring\n");
- 
- 	reinit_completion(&xhci->cmd_ring_stop_completion);
- 
--	temp_64 = xhci_read_64(xhci, &xhci->op_regs->cmd_ring);
--	xhci_write_64(xhci, temp_64 | CMD_RING_ABORT,
--			&xhci->op_regs->cmd_ring);
-+	/*
-+	 * The control bits like command stop, abort are located in lower
-+	 * dword of the command ring control register. Limit the write
-+	 * to the lower dword to avoid corrupting the command ring pointer
-+	 * in case if the command ring is stopped by the time upper dword
-+	 * is written.
-+	 */
-+	temp_32 = readl(&xhci->op_regs->cmd_ring);
-+	writel(temp_32 | CMD_RING_ABORT, &xhci->op_regs->cmd_ring);
- 
- 	/* Section 4.6.1.2 of xHCI 1.0 spec says software should also time the
- 	 * completion of the Command Abort operation. If CRR is not negated in 5
+ 			if (indio_devs[sd]) {
+ 				spd = iio_priv(indio_devs[sd]);
+-				if (spd->process_data)
++				if (spd->process_data) {
++					if (idx >= len)
++						return -EPROTO;
+ 					spd->process_data(indio_devs[sd],
+ 							  &dataframe[idx],
+ 							  data->timestamp);
++				}
+ 			} else {
+ 				dev_err(SSP_DEV, "no client for frame\n");
+ 			}
+@@ -293,6 +298,8 @@ static int ssp_parse_dataframe(struct ss
+ 			idx += ssp_offset_map[sd];
+ 			break;
+ 		case SSP_MSG2AP_INST_DEBUG_DATA:
++			if (idx >= len)
++				return -EPROTO;
+ 			sd = ssp_print_mcu_debug(dataframe, &idx, len);
+ 			if (sd) {
+ 				dev_err(SSP_DEV,
 
 
