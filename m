@@ -2,286 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817EB432418
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02FE43241C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233310AbhJRQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232180AbhJRQtv (ORCPT
+        id S233645AbhJRQvP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 12:51:15 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:39446 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233731AbhJRQvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:49:51 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF24C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:47:40 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id z24so15800212qtv.9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vVoEj4FpzWuRYVTtT2kVLQ0v62okoy92JquXkv+faYA=;
-        b=Qip6++a3Re69KqbZR+/U+8NTkmjdaQ4owDan2ygPuQ78S81aLt50MNyqVcYGXno1yF
-         asDVCdQiA/CQJyvH2Mu8a2CwOjtuZZcVWK5UotuqSfTzhXpPNlRSYL9qAwXE/Lna9As0
-         T4l7vgk4qqlhYOj0a/28ygNkHtOOjZv3bfQe46KlKO3twnb4viaNHoKn680d+xqoPk3g
-         CSG4S+8nqc57m7yGbSFissjZGZDz5Vh0MWB77jU/OtKIdrAWahdPDLP89XtAWVc1qBQf
-         8DQkh7kmDNiGyTrjVyLmZ9hHvt9aqU3x778soevA+k+CsZx7I2CdG1aeKOlHyG2sDu55
-         ZXmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vVoEj4FpzWuRYVTtT2kVLQ0v62okoy92JquXkv+faYA=;
-        b=QgL2/dNMPDxXeixo9gaHL15TmtJbG1phVqd/T1o9b1L9aoIWpXuN1CX+RArgvXcT3S
-         Zn0m37a3N+sQmdNn5Fhh9usK83r4sj8MPD8jRPuMKdnSw9hiJ+TLAsv9LUkMYpb1ddpM
-         wqHObYCgAEUPKZkqlVg/aDCu3subHO+93pl+Ara1uxsY3RRgl7nZ1sn9B8xRjxE/a6Ru
-         14/oDK5q6/6PCTza1oLbb6jPK1HTs6CQSky8Dbaef9xmPmfS8T/KgLVRlqoWy9qumZOY
-         oxuhZmRAQiQ7nbD6Wo1AXFohxl4MfhkoWsQLSXetKEt7E1ehnct0f+RF5fad8HgyhKg7
-         Pavw==
-X-Gm-Message-State: AOAM533HAU3oYAtB8PZkcKXQzHijQapn6Ly5VhF1Ci5ohcog/y6PcEn2
-        ZUbkyM/iX9HOyVPMXEhw02PQqg==
-X-Google-Smtp-Source: ABdhPJxbJdXmCDvREwaQZoi0yXv1ItXbWsTxGWayc1K8F2bwirxfOIzTRON/xIYaquHbtTTdv84Odg==
-X-Received: by 2002:ac8:7dc6:: with SMTP id c6mr24806897qte.333.1634575659455;
-        Mon, 18 Oct 2021 09:47:39 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id f15sm6467222qtm.37.2021.10.18.09.47.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 09:47:38 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 12:47:37 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YW2lKcqwBZGDCz6T@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+        Mon, 18 Oct 2021 12:51:07 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-2Um2OBN8MWuvEyqwS2EjlQ-1; Mon, 18 Oct 2021 12:48:48 -0400
+X-MC-Unique: 2Um2OBN8MWuvEyqwS2EjlQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AD2410A8E0F;
+        Mon, 18 Oct 2021 16:48:47 +0000 (UTC)
+Received: from x1.com (unknown [10.22.18.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E366A10016F4;
+        Mon, 18 Oct 2021 16:48:35 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3 00/19] RTLA: An interface for osnoise/timerlat tracers
+Date:   Mon, 18 Oct 2021 18:48:13 +0200
+Message-Id: <cover.1634574261.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 04:28:23AM +0100, Matthew Wilcox wrote:
-> On Wed, Sep 22, 2021 at 11:08:58AM -0400, Johannes Weiner wrote:
-> >       mm/memcg: Add folio_memcg() and related functions
-> >       mm/memcg: Convert commit_charge() to take a folio
-> >       mm/memcg: Convert mem_cgroup_charge() to take a folio
-> >       mm/memcg: Convert uncharge_page() to uncharge_folio()
-> >       mm/memcg: Convert mem_cgroup_uncharge() to take a folio
-> >       mm/memcg: Convert mem_cgroup_migrate() to take folios
-> >       mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath() to folio
-> >       mm/memcg: Add folio_memcg_lock() and folio_memcg_unlock()
-> >       mm/memcg: Convert mem_cgroup_move_account() to use a folio
-> >       mm/memcg: Add folio_lruvec()
-> >       mm/memcg: Add folio_lruvec_lock() and similar functions
-> >       mm/memcg: Add folio_lruvec_relock_irq() and folio_lruvec_relock_irqsave()
-> >       mm/workingset: Convert workingset_activation to take a folio	
-> > 
-> > 		This is all anon+file stuff, not needed for filesystem
-> > 		folios.
-> 
-> No, that's not true.  A number of these functions are called from
-> filesystem code. mem_cgroup_track_foreign_dirty() is only called
-> from filesystem code. We at the very least need wrappers like
-> folio_cgroup_charge(), and folio_memcg_lock().
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-Well, a handful of exceptions don't refute the broader point.
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
 
-No objection from me to convert mem_cgroup_track_foreign_dirty().
+The first five patches are a re-send of [2] that enable multiple
+instances for osnoise/timerlat tracers. They are required to run the -T
+option - to save a trace with osnoise: events for debugging.
 
-No objection to add a mem_cgroup_charge_folio(). But I insist on the
-subsystem prefix, because that's in line with how we're charging a
-whole bunch of other different things (swap, skmem, etc.). It'll also
-match a mem_cgroup_charge_anon() if we agree to an anon type.
+The next seven patches are rtla, rtla osnoise, and rtla timerlat.
 
-folio_memcg_lock() sounds good to me.
+The following patches are the man pages for the tools.
 
-> > 		As per the other email, no conceptual entry point for
-> > 		tail pages into either subsystem, so no ambiguity
-> > 		around the necessity of any compound_head() calls,
-> > 		directly or indirectly. It's easy to rule out
-> > 		wholesale, so there is no justification for
-> > 		incrementally annotating every single use of the page.
-> 
-> The justification is that we can remove all those hidden calls to
-> compound_head().  Hundreds of bytes of text spread throughout this file.
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install asciidoc xmlto procps-devel
+  $ cd $linux/tools/tracing/rtla/
+  $ make
+  $ sudo make install
 
-I find this line of argument highly disingenuous.
+This tool was be discussed at the RT-MC during LPC2021.
 
-No new type is necessary to remove these calls inside MM code. Migrate
-them into the callsites and remove the 99.9% very obviously bogus
-ones. The process is the same whether you switch to a new type or not.
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1628775552.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
 
-(I'll send more patches like the PageSlab() ones to that effect. It's
-easy. The only reason nobody has bothered removing those until now is
-that nobody reported regressions when they were added.)
+Changes from v2:
+  - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
+  - Change the --skip-zeros to --with-zeros option as the former is better
+    for humans (and the latter for computers to plot charts).
+  - A lot of checkpatch fixes for the user-space part.
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
 
-But typesafety is an entirely different argument. And to reiterate the
-main point of contention on these patches: there is no concensus among
-MM people how (or whether) we want MM-internal typesafety for pages.
+Daniel Bristot de Oliveira (19):
+  trace/osnoise: Do not follow tracing_cpumask
+  trace/osnoise: Split workload start from the tracer start
+  trace/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  trace/osnoise: Support a list of trace_array *tr
+  trace/osnoise: Allow multiple instances of the same tracer
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
 
-Personally, I think we do, but I don't think head vs tail is the most
-important or the most error-prone aspect of the many identities struct
-page can have. In most cases it's not even in the top 5 of questions I
-have about the page when I see it in a random MM context (outside of
-the very few places that do virt_to_page or pfn_to_page). Therefor
-"folio" is not a very poignant way to name the object that is passed
-around in most MM code. struct anon_page and struct file_page would be
-way more descriptive and would imply the head/tail aspect.
+ kernel/trace/trace_osnoise.c                  | 410 ++++++---
+ tools/tracing/rtla/Documentation/Makefile     | 223 +++++
+ .../tracing/rtla/Documentation/asciidoc.conf  | 118 +++
+ .../rtla/Documentation/manpage-base.xsl       |  35 +
+ .../rtla/Documentation/manpage-normal.xsl     |  13 +
+ .../rtla/Documentation/rtla-osnoise-hist.txt  | 117 +++
+ .../rtla/Documentation/rtla-osnoise-top.txt   |  98 ++
+ .../rtla/Documentation/rtla-osnoise.txt       |  68 ++
+ .../rtla/Documentation/rtla-timerlat-hist.txt | 162 ++++
+ .../rtla/Documentation/rtla-timerlat-top.txt  | 181 ++++
+ .../rtla/Documentation/rtla-timerlat.txt      |  65 ++
+ tools/tracing/rtla/Documentation/rtla.txt     |  56 ++
+ tools/tracing/rtla/Documentation/utils.mk     | 144 +++
+ tools/tracing/rtla/Makefile                   |  71 ++
+ tools/tracing/rtla/src/osnoise.c              | 837 ++++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |  87 ++
+ tools/tracing/rtla/src/osnoise_hist.c         | 783 ++++++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          | 567 ++++++++++++
+ tools/tracing/rtla/src/rtla.c                 |  87 ++
+ tools/tracing/rtla/src/timerlat.c             |  72 ++
+ tools/tracing/rtla/src/timerlat.h             |   4 +
+ tools/tracing/rtla/src/timerlat_hist.c        | 780 ++++++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         | 581 ++++++++++++
+ tools/tracing/rtla/src/trace.c                | 219 +++++
+ tools/tracing/rtla/src/trace.h                |  27 +
+ tools/tracing/rtla/src/utils.c                | 433 +++++++++
+ tools/tracing/rtla/src/utils.h                |  56 ++
+ 27 files changed, 6173 insertions(+), 121 deletions(-)
+ create mode 100644 tools/tracing/rtla/Documentation/Makefile
+ create mode 100644 tools/tracing/rtla/Documentation/asciidoc.conf
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-base.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-normal.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla.txt
+ create mode 100644 tools/tracing/rtla/Documentation/utils.mk
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
 
-Anyway, the email you are responding to was an offer to split the
-uncontroversial "large pages backing filesystems" part from the
-controversial "MM-internal typesafety" discussion. Several people in
-both the fs space and the mm space have now asked to do this to move
-ahead. Since you have stated in another subthread that you "want to
-get back to working on large pages in the page cache," and you never
-wanted to get involved that deeply in the struct page subtyping
-efforts, it's not clear to me why you are not taking this offer.
+-- 
+2.31.1
 
-> >       mm: Add folio_young and folio_idle
-> >       mm/swap: Add folio_activate()
-> >       mm/swap: Add folio_mark_accessed()
-> > 
-> > 		This is anon+file aging stuff, not needed.
-> 
-> Again, very much needed.  Take a look at pagecache_get_page().  In Linus'
-> tree today, it calls if (page_is_idle(page)) clear_page_idle(page);
-> So either we need wrappers (which are needlessly complicated thanks to
-> how page_is_idle() is defined) or we just convert it.
-
-I'm not sure I understand the complication. That you'd have to do
-
-	if (page_is_idle(folio->page))
-		clear_page_idle(folio->page)
-
-inside code in mm/?
-
-It's either that, or
-
-a) generic code shared with anon pages has to do:
-
-	if (folio_is_idle(page->folio))
-		clear_folio_idle(page->folio)
-
-which is a weird, or
-
-b) both types work with their own wrappers:
-
-	if (page_is_idle(page))
-		clear_page_idle(page)
-
-	if (folio_is_idle(folio))
-		clear_folio_idle(folio)
-
-and it's not obvious at all that they are in fact tracking the same
-state.
-
-State which is exported to userspace through the "page_idle" feature.
-
-Doing the folio->page translation in mm/-private code, and keeping
-this a page interface, is by far the most preferable solution.
-
-> >       mm/rmap: Add folio_mkclean()
-> > 
-> >       mm/migrate: Add folio_migrate_mapping()
-> >       mm/migrate: Add folio_migrate_flags()
-> >       mm/migrate: Add folio_migrate_copy()
-> > 
-> > 		More anon+file conversion, not needed.
-> 
-> As far as I can tell, anon never calls any of these three functions.
-> anon calls migrate_page(), which calls migrate_page_move_mapping(),
-> but several filesystems do call these individual functions.
-
-In the current series, migrate_page_move_mapping() has been replaced,
-and anon pages go through them:
-
-int folio_migrate_mapping(struct address_space *mapping,
-                struct folio *newfolio, struct folio *folio, int extra_count)
-{
-	[...]
-        if (!mapping) {
-                /* Anonymous page without mapping */
-                if (folio_ref_count(folio) != expected_count)
-                        return -EAGAIN;
-
-                /* No turning back from here */
-                newfolio->index = folio->index;
-                newfolio->mapping = folio->mapping;
-                if (folio_test_swapbacked(folio))
-                        __folio_set_swapbacked(newfolio);
-
-That's what I'm objecting to.
-
-I'm not objecting to adding these to the filesystem interface as thin
-folio->page wrappers that call the page implementation.
-
-> >       mm/lru: Add folio_add_lru()
-> > 
-> > 		LRU code, not needed.
-> 
-> Again, we need folio_add_lru() for filemap.  This one's more
-> tractable as a wrapper function.
-
-Please don't quote selectively to the point of it being misleading.
-
-The original block my statement applied to was this:
-
-      mm: Add folio_evictable()
-      mm/lru: Convert __pagevec_lru_add_fn to take a folio
-      mm/lru: Add folio_add_lru()
-
-which goes way behond just being filesystem-interfacing.
-
-I have no objection to a cache interface function for adding a folio
-to the LRU (a wrapper to encapsulate the folio->page transition).
-
-However, like with the memcg code above, the API is called lru_cache:
-we have had lru_cache_add_file() and lru_cache_add_anon() in the past,
-so lru_cache_add_folio() seems more appropriate - especially as long
-as we still have one for pages (and maybe later one for anon pages).
-
----
-
-All that to say, adding folio as a new type for file headpages with
-API functions like this:
-
-	mem_cgroup_charge_folio()
-	lru_cache_add_folio()
-
-now THAT would be an incremental change to the kernel code.
-
-And if that new type proves like a great idea, we can do the same for
-anon - whether with a shared type or with separate types.
-
-And if it does end up the same type, in the interfaces and in the
-implementation, we can merge
-
-	mem_cgroup_charge_page()	# generic bits
-	mem_cgroup_charge_folio()	# file bits
-	mem_cgroup_charge_anon()	# anon bits
-
-back into a single function, just like we've done it already for the
-anon and file variants of those functions that we have had before.
-
-And if we then want to rename that function to something we agree is
-more appropriate, we can do that as yet another step.
-
-That would actually be incremental refactoring.
