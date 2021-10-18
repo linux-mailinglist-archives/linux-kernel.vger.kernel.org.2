@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612A5431989
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9353643198C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhJRMon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhJRMom (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:44:42 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3883AC06161C;
-        Mon, 18 Oct 2021 05:42:31 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id r18so70777877edv.12;
-        Mon, 18 Oct 2021 05:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0iYdyokYod4LZcTae4ruCEjJ8TW63KspCJvOc18aEGY=;
-        b=DJ+DZZJWvqJ+4q6RDg1mfZwz48wraW0kyXocBAP5Nx8CsQ6SvSlzie5M0ATmxYMYSr
-         5ddXvb9oQ7nJ+07DAT9qVQYyvaO7dgKLdAVx4fy7ppmamL1CgoVOaOZc0ti4yMouxrAJ
-         JQGs3E/mH8IcXzjdPUDpLhBvHkhfC176YCvJC1m8rzQ4RBGQZ4iFPZOt+51iqBw92O3s
-         JUmlIijDEXLVS0HeA7vwNO/OW0QbFfJFYcRra9wpNb/3TcCNeHd8NCYn6gW1VlsG9OQ+
-         AmdYOWtDf9F7R5SV1V1BDTPXZ7Ftl3T195Gi5x4aCm+mz/4TDMThJ5D7xB++j582xUoy
-         KHPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0iYdyokYod4LZcTae4ruCEjJ8TW63KspCJvOc18aEGY=;
-        b=A/60TjxoqbB4tMedphHrVJkEXXYhgP0CxEb5Kyk2aP1pEmY7kNUqNRthW2pgzQ1Jce
-         bo4FlZeKVDOWxmCNMmmuCaUC6K/6Hv9DiWERohY040ek+cyBQr+Rd/dxPPURx981RMdY
-         x668YVyUPcgaLvvusW7xEh3BawbzrexZ7cDBGMpIJT9esSHB4gzDzLim9t4c20hBtyYB
-         RGOm4fTW63743hw6MOcy9+26GwbUNDgx0oM8Tx+leGmYjGdsu4Lny/uxyLOTAtTEeQrO
-         aCFxQyDtZKFUhYGhHhPYWHkf9kWBMa8n7Lq5cAFDcNL7LI9YS4NcG9hyk/6b9TIU4Z3A
-         14Ug==
-X-Gm-Message-State: AOAM533nQiuM+dnujrP+Ytdpx3qEBH7yuShjuEwv8Oel+PYGp0ec/c1D
-        2Z08NnluWkCiLQY1HIKqp9lYIpU5J0zgWGbKf6I=
-X-Google-Smtp-Source: ABdhPJx1Yr8Ty0BkPpsKqK9TDNUWSEsCZ86NgCSskCbZwziCccTqEDcX8aJvx4og7kLumF6keMezyg1srwlsiXGmd8U=
-X-Received: by 2002:a17:906:9888:: with SMTP id zc8mr30340887ejb.504.1634560946664;
- Mon, 18 Oct 2021 05:42:26 -0700 (PDT)
+        id S230515AbhJRMqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:46:05 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:60732 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhJRMqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:46:04 -0400
+Received: from zn.tnic (p200300ec2f0857009e2a46238f1e0c2c.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:9e2a:4623:8f1e:c2c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B68FA1EC01DF;
+        Mon, 18 Oct 2021 14:43:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634561031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=66LoAyEmq4McZJ8nnAu/1jkmuEQpLnHOiHL/1PZ5rBs=;
+        b=dM3MuMjJxvSlptImN6DDpo3wQrrj8vHzMW9uxb5DBeJb734OW5PqfSnKpJ9yK68DlKRnW4
+        KHkuFPZQUH+qBxfw4T4w1IXNZr5xN1BBqZHMSVtAdYVAm125i3579eq60ORUZDmi9Ur+7C
+        aUw4wFWZRcRfTWCcGdbliWZcSQWV5W4=
+Date:   Mon, 18 Oct 2021 14:43:55 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     JY Ni <jiayu.ni@linux.alibaba.com>
+Cc:     Luming Yu <luming.yu@gmail.com>,
+        wujinhua <wujinhua@linux.alibaba.com>, x86 <x86@kernel.org>,
+        "zelin.deng" <zelin.deng@linux.alibaba.com>,
+        ak <ak@linux.intel.com>, "luming.yu" <luming.yu@intel.com>,
+        "fan.du" <fan.du@intel.com>,
+        "artie.ding" <artie.ding@linux.alibaba.com>,
+        "tony.luck" <tony.luck@intel.com>, tglx <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "pawan.kumar.gupta" <pawan.kumar.gupta@linux.intel.com>,
+        "fenghua.yu" <fenghua.yu@intel.com>, hpa <hpa@zytor.com>,
+        "ricardo.neri-calderon" <ricardo.neri-calderon@linux.intel.com>,
+        peterz <peterz@infradead.org>
+Subject: Re: =?utf-8?B?5Zue5aSN77yaW1BBVENIXSBwZXJm?= =?utf-8?Q?=3A_optimiz?=
+ =?utf-8?Q?e?= clear page in Intel specified model with movq instruction
+Message-ID: <YW1sCxRUZBX8iL6w@zn.tnic>
+References: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com>
+ <YTnWXIB42sCLbM2k@zn.tnic>
+ <bf6fe59d-c760-40d4-8201-4170cd90ffc3.wujinhua@linux.alibaba.com>
+ <YTnq/3rzmD6ADyZm@zn.tnic>
+ <CAJRGBZxHQ3tPrvWWoz9xb0pf=tZ0vrrQYX-Tjr5c=UbxntPtew@mail.gmail.com>
+ <1cac1499-6b00-3c18-b64c-a22f269a2706@linux.alibaba.com>
+ <YWrSKeT+R2S/+udL@zn.tnic>
+ <7b07f141-12f5-397d-9e45-1d507cacae84@linux.alibaba.com>
 MIME-Version: 1.0
-References: <75e8ba40076ad707d47e3a3670e6b23c1b8b11bc.1633874223.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <75e8ba40076ad707d47e3a3670e6b23c1b8b11bc.1633874223.git.christophe.jaillet@wanadoo.fr>
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-Date:   Mon, 18 Oct 2021 14:42:15 +0200
-Message-ID: <CAH9NwWdC1pV6Uwe_2NkBZGeUb_ejFH-YVYdhx0wpmZbL8CnRoA@mail.gmail.com>
-Subject: Re: [PATCH] drm: Remove redundant 'flush_workqueue()' calls
-To:     christophe.jaillet@wanadoo.fr
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        jyri.sarha@iki.fi, tomba@kernel.org,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7b07f141-12f5-397d-9e45-1d507cacae84@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am So., 10. Okt. 2021 um 16:08 Uhr schrieb Christophe JAILLET
-<christophe.jaillet@wanadoo.fr>:
->
-> 'destroy_workqueue()' already drains the queue before destroying it, so
-> there is no need to flush it explicitly.
->
-> Remove the redundant 'flush_workqueue()' calls.
->
-> This was generated with coccinelle:
->
-> @@
-> expression E;
-> @@
-> -       flush_workqueue(E);
->         destroy_workqueue(E);
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On Mon, Oct 18, 2021 at 03:43:46PM +0800, JY Ni wrote:
+> _*Precondition:*__*do tests on a Intel CPX server.*_ CPU information of my
+> test machine is in backup part._*
 
-For drm/etnaviv:
-Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+My machine:
+
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 106
+stepping        : 4
+
+That's a SKYLAKE_X.
+
+I ran
+
+./tools/perf/perf stat --repeat 5 --sync --pre=/root/bin/pre-build-kernel.sh -- make -s -j96 bzImage
+
+on -rc6, building allmodconfig each of the 10 times.
+
+pre-build-kernel.sh is
+
+---
+#!/bin/bash
+
+make -s clean
+echo 3 > /proc/sys/vm/drop_caches
+---
+
+Results are below but to me that's all "in the noise" with around one
+percent if I can trust the stddev. Which is not even close to 40%.
+
+So basically you're wasting your time.
+
+5.15-rc6
+--------
+
+# ./tools/perf/perf stat --repeat 5 --sync --pre=/root/bin/pre-build-kernel.sh -- make -s -j96 bzImage
+
+ Performance counter stats for 'make -s -j96 bzImage' (5 runs):
+
+      3,072,392.92 msec task-clock                #   51.109 CPUs utilized            ( +-  0.05% )
+         1,351,534      context-switches          #  440.257 /sec                     ( +-  0.99% )
+           224,862      cpu-migrations            #   73.248 /sec                     ( +-  1.39% )
+        85,073,723      page-faults               #   27.712 K/sec                    ( +-  0.01% )
+ 8,743,357,421,495      cycles                    #    2.848 GHz                      ( +-  0.06% )
+ 7,643,946,991,468      instructions              #    0.88  insn per cycle           ( +-  0.00% )
+ 1,705,128,638,240      branches                  #  555.440 M/sec                    ( +-  0.00% )
+    37,637,576,027      branch-misses             #    2.21% of all branches          ( +-  0.03% )
+22,511,903,971,150      slots                     #    7.333 G/sec                    ( +-  0.03% )
+ 7,377,211,958,188      topdown-retiring          #     32.5% retiring                ( +-  0.02% )
+ 3,145,247,374,138      topdown-bad-spec          #     13.9% bad speculation         ( +-  0.27% )
+ 8,018,664,899,041      topdown-fe-bound          #     35.2% frontend bound          ( +-  0.07% )
+ 4,167,103,609,622      topdown-be-bound          #     18.3% backend bound           ( +-  0.09% )
+
+            60.114 +- 0.112 seconds time elapsed  ( +-  0.19% )
+
+
+
+5.15-rc6 + patch
+----------------
+
+ Performance counter stats for 'make -s -j96 bzImage' (5 runs):
+
+      3,033,250.65 msec task-clock                #   51.243 CPUs utilized            ( +-  0.05% )
+         1,329,033      context-switches          #  438.210 /sec                     ( +-  0.64% )
+           225,550      cpu-migrations            #   74.369 /sec                     ( +-  1.36% )
+        85,080,938      page-faults               #   28.053 K/sec                    ( +-  0.00% )
+ 8,629,663,367,477      cycles                    #    2.845 GHz                      ( +-  0.05% )
+ 7,696,237,813,803      instructions              #    0.89  insn per cycle           ( +-  0.00% )
+ 1,709,909,494,107      branches                  #  563.793 M/sec                    ( +-  0.00% )
+    37,719,552,337      branch-misses             #    2.21% of all branches          ( +-  0.02% )
+22,214,249,023,820      slots                     #    7.325 G/sec                    ( +-  0.06% )
+ 7,412,342,725,008      topdown-retiring          #     33.0% retiring                ( +-  0.01% )
+ 3,141,090,408,028      topdown-bad-spec          #     14.1% bad speculation         ( +-  0.17% )
+ 7,996,077,873,517      topdown-fe-bound          #     35.6% frontend bound          ( +-  0.03% )
+ 3,862,154,886,962      topdown-be-bound          #     17.3% backend bound           ( +-  0.28% )
+
+            59.193 +- 0.302 seconds time elapsed  ( +-  0.51% )
 
 -- 
-greets
---
-Christian Gmeiner, MSc
+Regards/Gruss,
+    Boris.
 
-https://christian-gmeiner.info/privacypolicy
+https://people.kernel.org/tglx/notes-about-netiquette
