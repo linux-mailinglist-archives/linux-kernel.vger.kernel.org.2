@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C521043124A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A75E431251
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhJRIn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
+        id S231200AbhJRIo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhJRIn5 (ORCPT
+        with ESMTP id S230006AbhJRIou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:43:57 -0400
+        Mon, 18 Oct 2021 04:44:50 -0400
 Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC16C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:41:46 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so11978466pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:41:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6A0C06161C;
+        Mon, 18 Oct 2021 01:42:39 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ez7-20020a17090ae14700b001a132a1679bso4113466pjb.0;
+        Mon, 18 Oct 2021 01:42:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wk6+rEeyV7eHbPWMKJo+Qpq+GwDxADSGhPjQYfKUne4=;
-        b=jNiTi0cZOC9M6uQg94kZkSGn3OrAQrSu6r8SRssg//sn5P432teZU28/v9RIqdlD5O
-         FDWwyESEa70tNVGhVeOGe1F5ZAIPJMKiX3P8jEiAbSyNM54IpSQyb9dk/vAcEJfMnrXj
-         zNBHvhXgy/rMAPIBLXv/ABA4B+bVuAeA++cRSW1P7RugxMH24Vge6lJz1VOLhc25s/ls
-         VIhydhuQ9C6tIKMxlUDIXZlJS9KBy1EfKYZ4K+ty6vz1zM3zC2/vlB6YVxPLlFVR9BvY
-         h9NoAYponSEiN1Y8aUWWDEsWN+dvWZ48Asm2fHwd/sSG6AwymDCbgiQEDz9h6JfhgJtQ
-         irfA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=DAyRWJeM7WcXBmJfC8EYVSatAo1tUAa025hjrvqygj4=;
+        b=pjkO0MkdRmY5FkfWW+EfXlo7coSyNA0UvLvaremgQ0bVxp1yk8zUfFBuLWo3vptr6g
+         a8MwQHjz+iMGgp1Leq6G2BYTatimamqvnfcfKKxI1+WbcOLJAB8UBAp+r9iZ5Xg+mHSa
+         1NuHjrmSUkaD9IKUixkCzMpvwe/0C+iOgTBN3CjWMmQzjMuVnXenqGHQfdlxzDe6CKWv
+         z1SeLPMNTGiSepavXDsSHZoDc5NkxoPsQZ9/3ffhRep3fA8UPncN+0RfiGU+6TD4TOHb
+         rscUJw5JZ8NQZ6ea+J42gVaBQREDiL/TFnYprSWPeYQ0fzOXDc22Z++8CoKi5p6kNNG5
+         JLwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
          :content-transfer-encoding;
-        bh=Wk6+rEeyV7eHbPWMKJo+Qpq+GwDxADSGhPjQYfKUne4=;
-        b=2xF8ktGO4+O/Wy3d7C8Bh0d0pOu7IHwCdku7cHXEOIDPAvnFncS06eU4gZQLmRGyTS
-         P8S6GGM3pv+ltBFsYmIWB84dOBbVHDQfgL9B5f6d7C2k5EOmYDenCWLaP/zvEsTyXBX3
-         bS9q+wP8A1rYcNZOSrCVtRjqtKsk9T3ZYCSkJp6ORdaFu+FiuCCJlli5tyS89c3kW9qc
-         nJfNmcsN0RDwoSOm/IXuoacN5M8B7a/rQADcYQwSoeUKLUh3s1dLsD9cxBnXMDWAJzFW
-         WQyq7p0pOCIIRy9gfK1P/WRyp0rYZRH646bqco2pTUwioCjbx/wv5SIY56JzHp38XU38
-         LBBw==
-X-Gm-Message-State: AOAM530tchcxuoGiFRffZcbPnOR1TpraeX88M/GDeFFup+j5EjclT5Gq
-        xOkiLsJpU2Aauruh7sqPFdQ=
-X-Google-Smtp-Source: ABdhPJxXMPda9FOWVgG87Ibowe+I2Ff21yuG8uqATHh+NbcQaB8zGsEBOfKggffCbibaCL4IiPlIdQ==
-X-Received: by 2002:a17:90a:b117:: with SMTP id z23mr46490695pjq.74.1634546506085;
-        Mon, 18 Oct 2021 01:41:46 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id il17sm12642508pjb.52.2021.10.18.01.41.43
+        bh=DAyRWJeM7WcXBmJfC8EYVSatAo1tUAa025hjrvqygj4=;
+        b=ox0S+115MIIDF4VCRnN896peLxd1sLMtWqknl/gyqJ+2MAE5SQq+keSpgkizi0lwI7
+         GihMIh8sggYtsb9SZmyEhlnRcZfYcWoY6toa57fjmpLmnLoP7GAvRFcdpgdUlV/EKc0O
+         1cQyUmxec+I8WvyWzvlw3gWxsq2tLZAcHEG8qu8lOfeBUR3oeimPXqG8bF/LhP9AWH0y
+         m7+AMGNo6rXhn7naFPquJL4meVA4kBzMFGuRj6t6HSQ5riTH5wxkpuwc1mpK4NWhsNTA
+         lGv83b+t0fget060G2iSu7+ZoHHd//s+GcBNseOdnJWofXiwdQJtW0YCNk68usmLhae7
+         fGxA==
+X-Gm-Message-State: AOAM531CbJ+G0NZFYQZ2AG9WYc04IbyigrList1WWBlhJTtsWs0aqmWr
+        gJPsoXj6SsRqWgY/VdCpz6o=
+X-Google-Smtp-Source: ABdhPJyYoLQM1iIllEwgPR6qgb4iSpGJ2GuiYzUTfZIXXF0pt3/TERwOOPTiYDZi2i8s2Qh/vmQT+Q==
+X-Received: by 2002:a17:90b:1b49:: with SMTP id nv9mr31231964pjb.134.1634546558838;
+        Mon, 18 Oct 2021 01:42:38 -0700 (PDT)
+Received: from localhost.localdomain ([171.211.28.7])
+        by smtp.gmail.com with ESMTPSA id x13sm11727906pge.37.2021.10.18.01.42.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 01:41:45 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] drm/i915/display: Remove unused variable and corresponding assignment
-Date:   Mon, 18 Oct 2021 08:41:40 +0000
-Message-Id: <20211018084140.851583-1-luo.penghao@zte.com.cn>
+        Mon, 18 Oct 2021 01:42:38 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH net] net: dsa: mt7530: correct ds->num_ports
+Date:   Mon, 18 Oct 2021 16:42:30 +0800
+Message-Id: <20211018084230.6710-1-dqfext@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cd6a03b9-af49-97b4-6869-d51b461bf50a@gmail.com>
+References: <20211016062414.783863-1-dqfext@gmail.com> <cd6a03b9-af49-97b4-6869-d51b461bf50a@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable is not used in functions, and its assignment is redundant too.
-So it should be deleted.
+On Sat, Oct 16, 2021 at 07:36:14PM -0700, Florian Fainelli wrote:
+> On 10/15/2021 11:24 PM, DENG Qingfang wrote:
+> > Setting ds->num_ports to DSA_MAX_PORTS made DSA core allocate unnecessary
+> > dsa_port's and call mt7530_port_disable for non-existent ports.
+> > 
+> > Set it to MT7530_NUM_PORTS to fix that, and dsa_is_user_port check in
+> > port_enable/disable is no longer required.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> 
+> Do you really want to target the net tree for this change?
 
-The clang_analyzer complains as follows:
-
-drivers/gpu/drm/i915/display/vlv_dsi.c:143:2 warning:
-
-Value stored to 'data' is never read.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- drivers/gpu/drm/i915/display/vlv_dsi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/vlv_dsi.c b/drivers/gpu/drm/i915/display/vlv_dsi.c
-index 081b772..634de91 100644
---- a/drivers/gpu/drm/i915/display/vlv_dsi.c
-+++ b/drivers/gpu/drm/i915/display/vlv_dsi.c
-@@ -131,7 +131,7 @@ static ssize_t intel_dsi_host_transfer(struct mipi_dsi_host *host,
- 	enum port port = intel_dsi_host->port;
- 	struct mipi_dsi_packet packet;
- 	ssize_t ret;
--	const u8 *header, *data;
-+	const u8 *header;
- 	i915_reg_t data_reg, ctrl_reg;
- 	u32 data_mask, ctrl_mask;
- 
-@@ -140,7 +140,6 @@ static ssize_t intel_dsi_host_transfer(struct mipi_dsi_host *host,
- 		return ret;
- 
- 	header = packet.header;
--	data = packet.payload;
- 
- 	if (msg->flags & MIPI_DSI_MSG_USE_LPM) {
- 		data_reg = MIPI_LP_GEN_DATA(port);
--- 
-2.15.2
+Yes because I consider this a bug fix.
