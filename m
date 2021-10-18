@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171D7431B00
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B76431BEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbhJRNaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41284 "EHLO mail.kernel.org"
+        id S232829AbhJRNga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:36:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhJRN3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 638726128B;
-        Mon, 18 Oct 2021 13:26:02 +0000 (UTC)
+        id S232871AbhJRNep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:34:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E28A61283;
+        Mon, 18 Oct 2021 13:30:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563562;
-        bh=chcz+leP09AY6DyBZT7N+ipg9Q/8nU/lqMOIKZhmkgY=;
+        s=korg; t=1634563816;
+        bh=jJltLhp5mJZj8yQLF7BwJtVR9D59D3oA5UWecugMx8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jtc8RUJgLfOR9xhQwdzl3ESF06o+/vitXnpkReS2qjgyxmmdvL57QaP1fFVijXmxh
-         81y8Bz6wWBemkfVwdzcLT3UeANd/dv1wvs9Jxmw7DNEYgXnqxbC6N7HvSwfVyvSihv
-         9LS4JKBpvidQGsBgYEIOr/WZKI2UR93WfUHGGJ/k=
+        b=tCeWEscQ6w7B4SevRVqs68BeJP7vB6IxCM82kfQ/gMaWYxFigKjCOEmBTX1PUCQNG
+         39e/dyODHu3fj0aku8eBiemoYu3OrNKh+QX7miR7NwB8xxk2Z778Z9YUBi1wWP/zs2
+         yAJwLB9DZLuwy5E0n9fkTm5cgCBWwaD6uykII73U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu-Tung Chang <mtwget@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 15/39] USB: serial: option: add Quectel EC200S-CN module support
+        stable@vger.kernel.org,
+        Michael Cullen <michael@michaelcullen.name>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 5.4 26/69] Input: xpad - add support for another USB ID of Nacon GC-100
 Date:   Mon, 18 Oct 2021 15:24:24 +0200
-Message-Id: <20211018132325.945019508@linuxfoundation.org>
+Message-Id: <20211018132330.333997939@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu-Tung Chang <mtwget@gmail.com>
+From: Michael Cullen <michael@michaelcullen.name>
 
-commit 2263eb7370060bdb0013bc14e1a7c9bf33617a55 upstream.
+commit 3378a07daa6cdd11e042797454c706d1c69f9ca6 upstream.
 
-Add usb product id of the Quectel EC200S-CN module.
+The Nacon GX100XF is already mapped, but it seems there is a Nacon
+GC-100 (identified as NC5136Wht PCGC-100WHITE though I believe other
+colours exist) with a different USB ID when in XInput mode.
 
-usb-devices output for 0x6002:
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=480 MxCh= 0
-D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=2c7c ProdID=6002 Rev=03.18
-S:  Manufacturer=Android
-S:  Product=Android
-S:  SerialNumber=0000
-C:  #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
-I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
-I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-
-Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
-Link: https://lore.kernel.org/r/20210930021112.330396-1-mtwget@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Michael Cullen <michael@michaelcullen.name>
+Link: https://lore.kernel.org/r/20211015192051.5196-1-michael@michaelcullen.name
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    2 ++
+ drivers/input/joystick/xpad.c |    2 ++
  1 file changed, 2 insertions(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -254,6 +254,7 @@ static void option_instat_callback(struc
- #define QUECTEL_PRODUCT_EP06			0x0306
- #define QUECTEL_PRODUCT_EM12			0x0512
- #define QUECTEL_PRODUCT_RM500Q			0x0800
-+#define QUECTEL_PRODUCT_EC200S_CN		0x6002
- #define QUECTEL_PRODUCT_EC200T			0x6026
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -331,6 +331,7 @@ static const struct xpad_device {
+ 	{ 0x24c6, 0x5b03, "Thrustmaster Ferrari 458 Racing Wheel", 0, XTYPE_XBOX360 },
+ 	{ 0x24c6, 0x5d04, "Razer Sabertooth", 0, XTYPE_XBOX360 },
+ 	{ 0x24c6, 0xfafe, "Rock Candy Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
++	{ 0x3285, 0x0607, "Nacon GC-100", 0, XTYPE_XBOX360 },
+ 	{ 0x3767, 0x0101, "Fanatec Speedster 3 Forceshock Wheel", 0, XTYPE_XBOX },
+ 	{ 0xffff, 0xffff, "Chinese-made Xbox Controller", 0, XTYPE_XBOX },
+ 	{ 0x0000, 0x0000, "Generic X-Box pad", 0, XTYPE_UNKNOWN }
+@@ -447,6 +448,7 @@ static const struct usb_device_id xpad_t
+ 	XPAD_XBOXONE_VENDOR(0x24c6),		/* PowerA Controllers */
+ 	XPAD_XBOXONE_VENDOR(0x2e24),		/* Hyperkin Duke X-Box One pad */
+ 	XPAD_XBOX360_VENDOR(0x2f24),		/* GameSir Controllers */
++	XPAD_XBOX360_VENDOR(0x3285),		/* Nacon GC-100 */
+ 	{ }
+ };
  
- #define CMOTECH_VENDOR_ID			0x16d8
-@@ -1131,6 +1132,7 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
- 	  .driver_info = ZLP },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200S_CN, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
- 
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
 
 
