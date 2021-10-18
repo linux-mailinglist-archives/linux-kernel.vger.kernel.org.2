@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9AD431AF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428B2431B4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhJRN3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:29:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41306 "EHLO mail.kernel.org"
+        id S232577AbhJRNcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:32:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231811AbhJRN3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 724E36134F;
-        Mon, 18 Oct 2021 13:26:14 +0000 (UTC)
+        id S232494AbhJRNaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D60461357;
+        Mon, 18 Oct 2021 13:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563574;
-        bh=XUV2F7QPq6I0CrJayOW5sCUAAwA4qldj1kvMCO92C68=;
+        s=korg; t=1634563685;
+        bh=nozjkYXJCfMYgzwdNwfe2GgYqpXwO652cd2SS5AzE0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UFGeuVCM9g2hyPMl1grV6xtxs77a5Bb4VxtK88c6qsPGVtSyLjyFZfKLXeoi4Rt8A
-         q1rLE6PG8G0YaILCr3uz03pTzhIY17NWFELEAxtPIrQ6AnNrzHX8y9683je8Jd7sAf
-         pXBgzZZGqYpSepB771YgWzCdDhvOLET7OYg49JEs=
+        b=BQ+PoEcIitQtfOIhar33sfSbO6GmXK+N3Tl20YPYbrg/CG6gLQveylzklcBc/C9ip
+         8XYrNpMuOaKdWmnnOr1Qp6ml78+ztWxmntJTbJzQP61+IqyohWpEfhMpdfuBuFWcex
+         PBxDbPH7eI2Mz1blXKQEqF/NoPyaJTlaJ60FAdWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        John Keeping <john@metanate.com>
-Subject: [PATCH 4.14 02/39] ALSA: seq: Fix a potential UAF by wrong private_free call order
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 04/50] ALSA: hda/realtek - ALC236 headset MIC recording issue
 Date:   Mon, 18 Oct 2021 15:24:11 +0200
-Message-Id: <20211018132325.507403908@linuxfoundation.org>
+Message-Id: <20211018132326.674985606@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Kailang Yang <kailang@realtek.com>
 
-commit 1f8763c59c4ec6254d629fe77c0a52220bd907aa upstream.
+commit 5aec98913095ed3b4424ed6c5fdeb6964e9734da upstream.
 
-John Keeping reported and posted a patch for a potential UAF in
-rawmidi sequencer destruction: the snd_rawmidi_dev_seq_free() may be
-called after the associated rawmidi object got already freed.
-After a deeper look, it turned out that the bug is rather the
-incorrect private_free call order for a snd_seq_device.  The
-snd_seq_device private_free gets called at the release callback of the
-sequencer device object, while this was rather expected to be executed
-at the snd_device call chains that runs at the beginning of the whole
-card-free procedure.  It's been broken since the rewrite of
-sequencer-device binding (although it hasn't surfaced because the
-sequencer device release happens usually right along with the card
-device release).
+In power save mode, the recording voice from headset mic will 2s more delay.
+Add this patch will solve this issue.
 
-This patch corrects the private_free call to be done in the right
-place, at snd_seq_device_dev_free().
+[ minor coding style fix by tiwai ]
 
-Fixes: 7c37ae5c625a ("ALSA: seq: Rewrite sequencer device binding with standard bus")
-Reported-and-tested-by: John Keeping <john@metanate.com>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210930114114.8645-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/ccb0cdd5bbd7486eabbd8d987d384cb0@realtek.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/seq_device.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/pci/hda/patch_realtek.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/sound/core/seq_device.c
-+++ b/sound/core/seq_device.c
-@@ -162,6 +162,8 @@ static int snd_seq_device_dev_free(struc
- 	struct snd_seq_device *dev = device->device_data;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -519,6 +519,8 @@ static void alc_shutup_pins(struct hda_c
+ 	struct alc_spec *spec = codec->spec;
  
- 	cancel_autoload_drivers();
-+	if (dev->private_free)
-+		dev->private_free(dev);
- 	put_device(&dev->dev);
- 	return 0;
- }
-@@ -189,11 +191,7 @@ static int snd_seq_device_dev_disconnect
+ 	switch (codec->core.vendor_id) {
++	case 0x10ec0236:
++	case 0x10ec0256:
+ 	case 0x10ec0283:
+ 	case 0x10ec0286:
+ 	case 0x10ec0288:
+@@ -3365,7 +3367,8 @@ static void alc256_shutup(struct hda_cod
+ 	/* If disable 3k pulldown control for alc257, the Mic detection will not work correctly
+ 	 * when booting with headset plugged. So skip setting it for the codec alc257
+ 	 */
+-	if (codec->core.vendor_id != 0x10ec0257)
++	if (spec->codec_variant != ALC269_TYPE_ALC257 &&
++	    spec->codec_variant != ALC269_TYPE_ALC256)
+ 		alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
  
- static void snd_seq_dev_release(struct device *dev)
- {
--	struct snd_seq_device *sdev = to_seq_dev(dev);
--
--	if (sdev->private_free)
--		sdev->private_free(sdev);
--	kfree(sdev);
-+	kfree(to_seq_dev(dev));
- }
- 
- /*
+ 	if (!spec->no_shutup_pins)
 
 
