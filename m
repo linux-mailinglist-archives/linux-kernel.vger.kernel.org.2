@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87919431B30
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D85431BC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhJRNb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:31:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42612 "EHLO mail.kernel.org"
+        id S233105AbhJRNfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:35:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232191AbhJRN3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC52E6135E;
-        Mon, 18 Oct 2021 13:27:26 +0000 (UTC)
+        id S232134AbhJRNdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:33:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C87B7613A0;
+        Mon, 18 Oct 2021 13:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563647;
-        bh=XUV2F7QPq6I0CrJayOW5sCUAAwA4qldj1kvMCO92C68=;
+        s=korg; t=1634563777;
+        bh=tKdSaJ4ky4rkcucRDq96qoY0E2exYgCClISb3PmPDUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MsBiPbHuEI/BT3cDsJAzWDGkA9CcVs7y+vopf0FHgkVW9Jsc3jRmK0aTF4nhWPrzd
-         V1rqnI3NNmXQ/o1sgdwRRkpkvlm8UG2N1Wgnvw7D0mVz9/fdauiXSdM+QBZClUhMMe
-         grj+uSGmyGEU6IkfZaDiN4VoV0jDfzph9E2m5KRo=
+        b=dLUjN0CjNcNQhrAOieAhy4CD3QHGwquSRQhXnGof4ntqqyy9ZLMN0UGUzF0knGt3z
+         3C1608DVbuanBiOZIN5HCI3ACXCWvP22DNeEdCdxP5KSizcGZv0LDVKn6h4ggj/ZQW
+         YAyEgaEIlKcSdfW9b503NQ/QxOZEScnpAxrxk5wM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        John Keeping <john@metanate.com>
-Subject: [PATCH 4.19 01/50] ALSA: seq: Fix a potential UAF by wrong private_free call order
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Guo Ren <guoren@kernel.org>
+Subject: [PATCH 5.4 10/69] csky: dont let sigreturn play with priveleged bits of status register
 Date:   Mon, 18 Oct 2021 15:24:08 +0200
-Message-Id: <20211018132326.576347595@linuxfoundation.org>
+Message-Id: <20211018132329.795936051@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,59 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit 1f8763c59c4ec6254d629fe77c0a52220bd907aa upstream.
+commit fbd63c08cdcca5fb1315aca3172b3c9c272cfb4f upstream.
 
-John Keeping reported and posted a patch for a potential UAF in
-rawmidi sequencer destruction: the snd_rawmidi_dev_seq_free() may be
-called after the associated rawmidi object got already freed.
-After a deeper look, it turned out that the bug is rather the
-incorrect private_free call order for a snd_seq_device.  The
-snd_seq_device private_free gets called at the release callback of the
-sequencer device object, while this was rather expected to be executed
-at the snd_device call chains that runs at the beginning of the whole
-card-free procedure.  It's been broken since the rewrite of
-sequencer-device binding (although it hasn't surfaced because the
-sequencer device release happens usually right along with the card
-device release).
+csky restore_sigcontext() blindly overwrites regs->sr with the value
+it finds in sigcontext.  Attacker can store whatever they want in there,
+which includes things like S-bit.  Userland shouldn't be able to set
+that, or anything other than C flag (bit 0).
 
-This patch corrects the private_free call to be done in the right
-place, at snd_seq_device_dev_free().
+Do the same thing other architectures with protected bits in flags
+register do - preserve everything that shouldn't be settable in
+user mode, picking the rest from the value saved is sigcontext.
 
-Fixes: 7c37ae5c625a ("ALSA: seq: Rewrite sequencer device binding with standard bus")
-Reported-and-tested-by: John Keeping <john@metanate.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210930114114.8645-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Guo Ren <guoren@kernel.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/seq_device.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/csky/kernel/signal.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/sound/core/seq_device.c
-+++ b/sound/core/seq_device.c
-@@ -162,6 +162,8 @@ static int snd_seq_device_dev_free(struc
- 	struct snd_seq_device *dev = device->device_data;
- 
- 	cancel_autoload_drivers();
-+	if (dev->private_free)
-+		dev->private_free(dev);
- 	put_device(&dev->dev);
- 	return 0;
- }
-@@ -189,11 +191,7 @@ static int snd_seq_device_dev_disconnect
- 
- static void snd_seq_dev_release(struct device *dev)
+--- a/arch/csky/kernel/signal.c
++++ b/arch/csky/kernel/signal.c
+@@ -52,10 +52,14 @@ static long restore_sigcontext(struct pt
+ 	struct sigcontext __user *sc)
  {
--	struct snd_seq_device *sdev = to_seq_dev(dev);
--
--	if (sdev->private_free)
--		sdev->private_free(sdev);
--	kfree(sdev);
-+	kfree(to_seq_dev(dev));
- }
+ 	int err = 0;
++	unsigned long sr = regs->sr;
  
- /*
+ 	/* sc_pt_regs is structured the same as the start of pt_regs */
+ 	err |= __copy_from_user(regs, &sc->sc_pt_regs, sizeof(struct pt_regs));
+ 
++	/* BIT(0) of regs->sr is Condition Code/Carry bit */
++	regs->sr = (sr & ~1) | (regs->sr & 1);
++
+ 	/* Restore the floating-point state. */
+ 	err |= restore_fpu_state(sc);
+ 
 
 
