@@ -2,156 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA57431804
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1839D431808
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhJRLvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:51:04 -0400
-Received: from mail-bn8nam11on2078.outbound.protection.outlook.com ([40.107.236.78]:36768
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229491AbhJRLvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:51:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AG5gDSC7cT7oO8S4fCo+QUq7xNQr+uvvHnA2Tsl1wvetAzeGNwz3mXp7XeziSP5avZv+mzSiw/gsJBgL2osHQR4axUc+6l+pb0Q/vHec/hKUfDWw+JvSw0NssNK3lOXxIbOPKgjYeELBCZUGB1AFlLCzMm5BLkiJFscsMu8ySACSDToq9olgtBHzV4gRDZ2zMHQG/mDE79PyQd3rAAqzMJaIfZIAKubeq+7ouJjzJOYu8YShJx7+BhUV4MW34q55sg2Wrrxi3698GcBUoGXexFcP0zobKj80j2rZTJbUQgpercKqhlv1kIMD24fsWkByxLd+KucRTVLn7x+cQ7E+tQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dJixteyMRD8wOgf717Dy6yn5GxhShDsyETjFxvczsfE=;
- b=fb6aRwZQFtqwU9MoGUKqQ2a9JX27nTUpeUJnq5lXlWD7QZWvbMc/zmx4Lnml5eCSPOjAj9j2LB5hyF0AguqvlIvlM66b4bD5dsf0MkoWod1pDg3U+TWvCKYIRhV2mIwevs234wf+yDxev5Wc4yXEN/72m1U2uJijKGvssYsaSkiPWSwx7RRmljrULM03jUn7p6x0nlg9QAXoxM5oY1S8YE5eNITg/fe/soHccKb3Sfqpqj3pirSAvmePq6v2ok2KdeQNVNIZyMVJJzByor4YRChsjVmy91QeKcN0xRiedwxNjCQSWM4Cux9QALWKhX/M6EbzBHMEomcU4jEd0Auabw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dJixteyMRD8wOgf717Dy6yn5GxhShDsyETjFxvczsfE=;
- b=PMo/Cj5OykF9zb4nBkE1tH078Yru9iKOwyIStWsZImO4BX89VumD40w/KvQ1J5SSHknxsnI4U4x9rSAjFQU959Ytfguo+QscfIu9dRh3VjSMpHkh2zXfST0z2E6bM9eb8i9ZAhD+8X1l2ikqxdl9U2C+QZMo932XXY2Wz+L7MHo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
- (2603:10b6:301:5a::14) by MW3PR12MB4410.namprd12.prod.outlook.com
- (2603:10b6:303:5b::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Mon, 18 Oct
- 2021 11:48:47 +0000
-Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
- ([fe80::55c7:6fc9:b2b1:1e6a]) by MWHPR1201MB0192.namprd12.prod.outlook.com
- ([fe80::55c7:6fc9:b2b1:1e6a%10]) with mapi id 15.20.4608.018; Mon, 18 Oct
- 2021 11:48:47 +0000
-Subject: Re: [PATCH] drm: msm: fix building without CONFIG_COMMON_CLK
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Alex Elder <elder@linaro.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rajeev Nandan <rajeevny@codeaurora.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20211013144308.2248978-1-arnd@kernel.org>
- <25ccdc75-67da-a955-b8ef-641a2f007d13@amd.com>
- <CAMuHMdWKp-v=df0JA_tr-YgNnyfu7NS9dA3Zr+bqwZX9JuBAGQ@mail.gmail.com>
- <ad5d95ab-7cb5-aef7-9904-eda0befe8519@amd.com>
- <CAK8P3a0E4F8eE0Py83Am-huirrvgomUqrwSSr9+vD8RuMZfSGQ@mail.gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <9a4efe0d-d35d-0d12-8b15-4ac8e54718e0@amd.com>
-Date:   Mon, 18 Oct 2021 13:48:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <CAK8P3a0E4F8eE0Py83Am-huirrvgomUqrwSSr9+vD8RuMZfSGQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AS9PR06CA0221.eurprd06.prod.outlook.com
- (2603:10a6:20b:45e::6) To MWHPR1201MB0192.namprd12.prod.outlook.com
- (2603:10b6:301:5a::14)
+        id S231524AbhJRLvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231337AbhJRLvU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 07:51:20 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1FCC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
+        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
+        In-Reply-To:References; bh=qTMOt1xxazooyWbCT+RA8dOGYeZGTywpcqg5cvW8F3A=; b=Me
+        51qKc5LvClqVGh5xw13a/9DF6KF2C8XilXthp2oag5DGBkvU7uGJgAtyEAHbKTbWP7VOCql2Gx6AG
+        Wq/dLlD3D5sNLnbzeOxPBcs2DBLPvhUi3tjf8zf2DKk77823QEytPGPZw2MBwsQQ0wOV7bOgwnlfJ
+        qA093lIdovyNcy69qdyMZF6m1LdIBWCs29P7RSwVhelPRPVfiy3znLAhO/fe4IjCFQPt+E3CelWHw
+        rF3hlrzIADicmKqRik93SEw/jxWGuAiPZXNVYDcVsYIM6nedaYOQB2Mpb66PSzJsMskq4azoF9oyr
+        cTMpJlWLYVblcLkWAci8c62iPq3oUi2A==;
+Received: from [81.174.171.191] (helo=donbot.metanate.com)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mcR8T-00081L-BK; Mon, 18 Oct 2021 12:48:57 +0100
+From:   John Keeping <john@metanate.com>
+To:     alsa-devel@alsa-project.org
+Cc:     John Keeping <john@metanate.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH] ASoC: rockchip: use generic DMA engine configuration
+Date:   Mon, 18 Oct 2021 12:48:44 +0100
+Message-Id: <20211018114844.1746351-1-john@metanate.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Received: from [IPv6:2a02:908:1252:fb60:c473:1c84:fac2:c272] (2a02:908:1252:fb60:c473:1c84:fac2:c272) by AS9PR06CA0221.eurprd06.prod.outlook.com (2603:10a6:20b:45e::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend Transport; Mon, 18 Oct 2021 11:48:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ba98f452-3beb-4f78-adc6-08d9922d3e72
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4410:
-X-Microsoft-Antispam-PRVS: <MW3PR12MB44103A00802498AFD43438CB83BC9@MW3PR12MB4410.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fM1jp2maAnU08GGTr4i9ZRqETr4E0YJtVILwGddKnV8bZtqDlDE7pnqKYbN2zpCtXTZOTAg5y3u1UQOc3ReYZTr5RPV4/rWNAYJ4Z9NKMGjxShXCrYdTlmP/cxb5Uob5aYctwCEgzBwb5JLDIItGwfFNgradzCiOMIIDSRUSenYQjExP8EGXcCfReDA/bntD6ipujL/xYEr5yPnjAnQ2sx6Z6ukMOkzPAwgA72ErnVAqtFWvOtyQiWknL7D1xijJAjRVJnXzU53IRy2Cc+CJhQxNFcMTOfBlWFLk5j30bN8PsXjl7MT2wjvRfWLP9aAGZbUaAJFVFG2Z08VFTFWMUhBfA9Rc9+HsQQbJ5942y7UCCVcFx5wjAkrUuwo+MK2a0iT4lKDEyISoIte3C4k9CtJGuQubp1aJ9ydW/U3sC5iCarxf/h2nFwdJPh480Uu3/2mio+s2yGY3XEKj0HDd93qvGiscmO22jH35R2ERdNLB7voGqeisOziokxk9qgcJydEwd1nb+Yp+z+nIuYTLKyDTHWe0aenPiSzShQVXXK2EGmKjnBsj4Byu11mIgLyZD9IKSg5u5VrGHEMGZ0Diw+qzoPro9YT2hfuxvFUji7/IlKhxJLOtKWjrvFIEj842bEAcHaehFRc8JeaWeox+YxQlarybd7oGQyCeH44xK6qL8SFny0/bCbHRER0px0BAHoo08Wc6TQ/2LduiT8nVEUiiUR8jRVJICDH0GUNk4tAiguusMD5NWyCP+E090WDH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(6666004)(2616005)(86362001)(53546011)(2906002)(38100700002)(54906003)(66946007)(8676002)(36756003)(5660300002)(31686004)(6486002)(508600001)(4326008)(316002)(66476007)(7416002)(8936002)(31696002)(6916009)(66574015)(66556008)(4744005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czJBRWJjT0FOcHlJa1BGOCtwTWVPeDZlNGx1RUM5TE1FSkdYTWovUkN6QkQr?=
- =?utf-8?B?akU1SHdZS3dDMVdadWdZdWIwYnd6cHVKQVJlcEdGUnUrQUNTOGQ0ZjJ3ak5k?=
- =?utf-8?B?Y0JzNmt1M283NVJkWHZCRzJISk5DcE5ucllQUVhVODIyd1JWcmtQMG01Sk9T?=
- =?utf-8?B?QlBVeUlDbFBrWUl0eStkZjhhb1VrVEF5QjA3d3F3UmlrQVhzSDc3Wk5jNzdB?=
- =?utf-8?B?N0pUSWZCZElpSDErZDFmYm9Fa2g1OUk3cU9Wbk1LNnNJdEZaUWpWLzVSZzhx?=
- =?utf-8?B?RXNYYXZJSk4yZ0lLK3J0bDk4UW5JVE5STnRnSlgxc2QzMS92Z3pNL3dBTFhM?=
- =?utf-8?B?WUtBS1g2ZENJejVZYWFYNCszYWJNTTdVaWJEZ2thOE5wM0ZqWDljdEp2ekll?=
- =?utf-8?B?bGhsUnpCU0ZkcFFOUjZBUkhvWmQ3NGlGRmZNaGRlaEF1dE1sQzNyMUx2bzlz?=
- =?utf-8?B?T1dQQmlTM3BCUFhqemtMaE0yeS9ucjV6bU5FcnNIemVIS3ZzRmJoSUZmK09y?=
- =?utf-8?B?SEd1Mjg5SGk5bVA2WDlQRjR3eWs4TU0ySUJHckpDTVZiUjU1ZkJWaHcyQ2JH?=
- =?utf-8?B?TVJBS0ZFVzZNUXdOakJ1bzFLaFpRcWZMSDZCdHV4clZCOGo1RDdrRGtCRUxQ?=
- =?utf-8?B?NUQ0RVg4MDdRdFVBcnEwNVR3VHRBUm9TcFk4NVZlZ2J4ZXVtdjFxa28vb0FL?=
- =?utf-8?B?UGt6dDlTRkNZc3lhcnNHNFpRSHFQNm9wbFRLQytBaWRkbkRCM25YVHBWemZB?=
- =?utf-8?B?MEVDcjl6ZllZVFJVZzJ2OEo4cStyOE83bWwrNXNxNElmZVZtNGhqSnU3anZB?=
- =?utf-8?B?S2NjeHpNa3FzK1l4Vi9XZjVHNk5MMnk3c1BMZERHNFYrK3N4ZG9qN3VESUE4?=
- =?utf-8?B?SHZuVS9BUXBZeExzOUk3VlpIOElZb3NlWkZSbjdEM0NsUEQ5eGxyOWtqWW5G?=
- =?utf-8?B?R091eHFiL2ZPT3ZPQVQwUW9WeWZHbUdNL1lUc1R5REoveW5ZMWIvcGpuSG5Q?=
- =?utf-8?B?TStxOFRVaHRGUmlkcU1MTTRGcFJZNVhkVUk2dEdYVExGb2ovZEkza29HWDJB?=
- =?utf-8?B?dTluUGM2WWNWenlIbzBMd2ZIbDRaTExIdFVpVkpLSE8xWEIzbHZzTGV6V3My?=
- =?utf-8?B?clAxWWlPOUZRT3FNYkRtZWR4RFhoVk90RFl6Njc2eXMvTVgycStDS0U1MW9X?=
- =?utf-8?B?U2wvMW1pelJwMk9oUUV3YTBwdVJoZXFFc3RRSmNHUGRLQ1lNRWNjcDJvZk9l?=
- =?utf-8?B?R1RVYmNaSjJmeUgwWEF4R1pWZlVNL0FsZ3hKOGo2NVNiUndQb2tOOEsyaDgw?=
- =?utf-8?B?T2E4RUVZK2o0TFR2d1JIS3g4a2lmamVNdDRib284Uy9wbFZIc3pHRnk4dmcy?=
- =?utf-8?B?WmpVell1QkNCUW0ybkNPOXhiVmlOQVJPb2JDSmZrbXVXbzRvS3dPSHMwRUFw?=
- =?utf-8?B?TGlScTJBaENEMmkxZ2hTengrSkMzd3pMelpLcnBKUVJrMkR6YnY3ZFdFMzMy?=
- =?utf-8?B?U3pnMWtQTXhaa3JFTkhYc2xDdjBwUEZYazIrWVV4RkZOV3VlNHFtc29yWjF1?=
- =?utf-8?B?dXVtR3Y3WkY3dzF0OFlWNXBhdFd1a2dMWXJIa1h6MHFWSkg4R1ZWMy9aSG9D?=
- =?utf-8?B?V0RGYW5mcDRNa0dYdzZkbURJY2NFU2xFejJrVmV2T3ZEQ0Jsc0VhYlp1cTQr?=
- =?utf-8?B?ZTFSWURrcVlQTkJjTjhXcURMdnFaT3RIdXAvSUNuZTUwNTN6a3ZOL3VaWXFq?=
- =?utf-8?B?b3RiQ1JVYXh4aCthNzJOZGJQK0t4eUl0UEhwTml3NURMNjAyZ3piQmZjT1My?=
- =?utf-8?B?Q056eXl4Mko0SnBVU0NMZy9Ic2RLRHNqdzNQakM4M3BnT2dlekl4RmZnWGZX?=
- =?utf-8?Q?KJ//2uCyZhuMI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba98f452-3beb-4f78-adc6-08d9922d3e72
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 11:48:47.1960
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0VCU+ir2RIMz679lqpmaKlOIcHXhnyYcTBf23kydfrljBZM76qJOTs/16pPRO4xb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4410
+Content-Transfer-Encoding: 8bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 18.10.21 um 13:46 schrieb Arnd Bergmann:
-> On Mon, Oct 18, 2021 at 1:40 PM Christian König
-> <christian.koenig@amd.com> wrote:
->>>> I have absolutely no idea how a platform can have IOMMU but no MMU
->>>> support but it indeed seems to be the case here.
->>> Huh?
->>>
->>> Parisc has config MMU def_bool y?
->> Then why vmap isn't available?
->>
->> See the mail thread: [linux-next:master 3576/7806]
->> drivers/gpu/drm/msm/msm_gem.c:624:20: error: implicit declaration of
->> function 'vmap'
-> This is just a missing "#include <linux/vmalloc.h>". It must be
-> included indirectly
-> on some architectures but not other.
+This effectively reverts commit 75b31192fe6a ("ASoC: rockchip: add
+config for rockchip dmaengine pcm register").
 
-Ah! Should I send a patch or you take care of that as well?
+There doesn't seem to be any rationale given for why these specific
+values are helpful.  The generic DMA engine provides sensible defaults
+here and works well with Rockchip I2S.
 
-Thanks,
-Christian.
+In fact the period size here is really quite restrictive when dealing
+with 8 channels of 32-bit data as the effective period size is just 256
+frames.
 
->
->         Arnd
+Signed-off-by: John Keeping <john@metanate.com>
+---
+ sound/soc/rockchip/Makefile       |  3 +--
+ sound/soc/rockchip/rockchip_i2s.c |  3 +--
+ sound/soc/rockchip/rockchip_pcm.c | 44 -------------------------------
+ sound/soc/rockchip/rockchip_pcm.h | 11 --------
+ 4 files changed, 2 insertions(+), 59 deletions(-)
+ delete mode 100644 sound/soc/rockchip/rockchip_pcm.c
+ delete mode 100644 sound/soc/rockchip/rockchip_pcm.h
+
+diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+index b10f5e7b136d..6a3e61178152 100644
+--- a/sound/soc/rockchip/Makefile
++++ b/sound/soc/rockchip/Makefile
+@@ -2,11 +2,10 @@
+ # ROCKCHIP Platform Support
+ snd-soc-rockchip-i2s-objs := rockchip_i2s.o
+ snd-soc-rockchip-i2s-tdm-objs := rockchip_i2s_tdm.o
+-snd-soc-rockchip-pcm-objs := rockchip_pcm.o
+ snd-soc-rockchip-pdm-objs := rockchip_pdm.o
+ snd-soc-rockchip-spdif-objs := rockchip_spdif.o
+ 
+-obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-rockchip-i2s.o snd-soc-rockchip-pcm.o
++obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-rockchip-i2s.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S_TDM) += snd-soc-rockchip-i2s-tdm.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_PDM) += snd-soc-rockchip-pdm.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) += snd-soc-rockchip-spdif.o
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 7e89f5b0c237..a6d7656c206e 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -20,7 +20,6 @@
+ #include <sound/dmaengine_pcm.h>
+ 
+ #include "rockchip_i2s.h"
+-#include "rockchip_pcm.h"
+ 
+ #define DRV_NAME "rockchip-i2s"
+ 
+@@ -756,7 +755,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 		goto err_suspend;
+ 	}
+ 
+-	ret = rockchip_pcm_platform_register(&pdev->dev);
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM\n");
+ 		goto err_suspend;
+diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockchip_pcm.c
+deleted file mode 100644
+index 02254e42135e..000000000000
+--- a/sound/soc/rockchip/rockchip_pcm.c
++++ /dev/null
+@@ -1,44 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
+- */
+-
+-#include <linux/device.h>
+-#include <linux/init.h>
+-#include <linux/module.h>
+-
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/soc.h>
+-#include <sound/dmaengine_pcm.h>
+-
+-#include "rockchip_pcm.h"
+-
+-static const struct snd_pcm_hardware snd_rockchip_hardware = {
+-	.info			= SNDRV_PCM_INFO_MMAP |
+-				  SNDRV_PCM_INFO_MMAP_VALID |
+-				  SNDRV_PCM_INFO_PAUSE |
+-				  SNDRV_PCM_INFO_RESUME |
+-				  SNDRV_PCM_INFO_INTERLEAVED,
+-	.period_bytes_min	= 32,
+-	.period_bytes_max	= 8192,
+-	.periods_min		= 1,
+-	.periods_max		= 52,
+-	.buffer_bytes_max	= 64 * 1024,
+-	.fifo_size		= 32,
+-};
+-
+-static const struct snd_dmaengine_pcm_config rk_dmaengine_pcm_config = {
+-	.pcm_hardware = &snd_rockchip_hardware,
+-	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
+-	.prealloc_buffer_size = 32 * 1024,
+-};
+-
+-int rockchip_pcm_platform_register(struct device *dev)
+-{
+-	return devm_snd_dmaengine_pcm_register(dev, &rk_dmaengine_pcm_config,
+-		SND_DMAENGINE_PCM_FLAG_COMPAT);
+-}
+-EXPORT_SYMBOL_GPL(rockchip_pcm_platform_register);
+-
+-MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/rockchip/rockchip_pcm.h b/sound/soc/rockchip/rockchip_pcm.h
+deleted file mode 100644
+index 7f00e2ce3603..000000000000
+--- a/sound/soc/rockchip/rockchip_pcm.h
++++ /dev/null
+@@ -1,11 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
+- */
+-
+-#ifndef _ROCKCHIP_PCM_H
+-#define _ROCKCHIP_PCM_H
+-
+-int rockchip_pcm_platform_register(struct device *dev);
+-
+-#endif
+-- 
+2.33.1
 
