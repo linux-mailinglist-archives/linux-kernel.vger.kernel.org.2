@@ -2,120 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA06743166E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CF2431653
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhJRKuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:50:09 -0400
-Received: from mx1.uni-regensburg.de ([194.94.157.146]:57750 "EHLO
-        mx1.uni-regensburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhJRKuI (ORCPT
+        id S230460AbhJRKoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhJRKn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:50:08 -0400
-X-Greylist: delayed 419 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 Oct 2021 06:50:07 EDT
-Received: from mx1.uni-regensburg.de (localhost [127.0.0.1])
-        by localhost (Postfix) with SMTP id 9070D600004E;
-        Mon, 18 Oct 2021 12:40:51 +0200 (CEST)
-Received: from smtp1.uni-regensburg.de (smtp1.uni-regensburg.de [194.94.157.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "smtp.uni-regensburg.de", Issuer "DFN-Verein Global Issuing CA" (not verified))
-        by mx1.uni-regensburg.de (Postfix) with ESMTPS id 71B1D600004D;
-        Mon, 18 Oct 2021 12:40:51 +0200 (CEST)
-From:   "Andreas K. Huettel" <andreas.huettel@ur.de>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [EXT] [PATCH v1 2/2][RFT] ACPI: PM: Check states of power resources during initialization
-Date:   Mon, 18 Oct 2021 12:40:47 +0200
-Message-ID: <5521425.DvuYhMxLoT@kailua>
-Organization: Universitaet Regensburg
-In-Reply-To: <8835496.CDJkKcVGEf@kreacher>
-References: <21226252.EfDdHjke4D@kreacher> <8835496.CDJkKcVGEf@kreacher>
+        Mon, 18 Oct 2021 06:43:58 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2434DC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:41:48 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c29so14419603pfp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=WbO711lZDlz/pOfI6lj/LIxiV3S8JdUOtW5IRCJxTWA=;
+        b=FfIfoAubRRROU5D/gCrXhUONlV37jQSp6ioa4wYlZYDLcqkfxdtZccu7UECtuN0d8r
+         IMZe1X1CwDrmCmKWkLccr6ZrG66gGW/91QaFrPv5SV51nLFiVM1BrQJHC0iopRjpc088
+         3C1NxDG1+lC3Kmlpwrpl5RNsbKkHow9rSaX6wYGUxGW3sKSr6watQoQIrzwjduTN9LGK
+         8cDN6F2q/EuLHerkXT47kbIFO4GHqZgfmxDhUk9mPmq9gCpBVvqLG8R1Ir1YfreCucr/
+         D3Ojye+ae0c0YNbolFwuv8Xiskw2pUgeMZtROA46AdZ6e/RnO1f/LJ80hKtyxN2vrAXB
+         IkGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=WbO711lZDlz/pOfI6lj/LIxiV3S8JdUOtW5IRCJxTWA=;
+        b=i7vzXPCvIpsoDcJgXHwbS1XNU9TOeKQjR2oC1HP9y+dKaet650vdbBLZUtK4BEMvdT
+         nyVM6kJDlkUTbiLN99AyktpnTsd9dCvOb3FtPVgzeqly3rJl6/KtdaBhdAF8KQjZZNMX
+         Qosi79WPaG3OvA9LdQSor/3YELkGJxvjTmBmwTd+vxHxFsDPIq1Ymi9UT9CWdXqRPehS
+         Zcni2RM4beycCwK12AqH5SaDGiPiOFF7ls8MBvXK649V5R0WRZp0EgSQCqPOI168u7WU
+         9dSu8DF5jTqBX+QKpdK8KZQ+pWbTaWJnzuBxxfK7qAjhmqBZTXUv4kjNSxK5vMxGSeG6
+         XE8g==
+X-Gm-Message-State: AOAM5313J4E6OK7JTTss/AWAZHYpaC2pdVLsjkAKoALGwFF3Lo4cIQor
+        KcZjF/2kdfoVkL88+IhhBHdZOA==
+X-Google-Smtp-Source: ABdhPJzRL28jvo0X6pJhTmOH7G/xmhlU3qaUqk8F9V6qb4VGTDPjG8NkYvu7fRDz011tHVNOAM8TvA==
+X-Received: by 2002:a63:4a18:: with SMTP id x24mr22758908pga.209.1634553707569;
+        Mon, 18 Oct 2021 03:41:47 -0700 (PDT)
+Received: from [10.76.34.190] ([61.120.150.74])
+        by smtp.gmail.com with ESMTPSA id 17sm12948412pgr.10.2021.10.18.03.41.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 03:41:47 -0700 (PDT)
+Message-ID: <d5ed22b4-cb3a-1c69-b173-90598c5b8204@bytedance.com>
+Date:   Mon, 18 Oct 2021 18:41:42 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart5773348.lOV4Wx5bFT"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: [PATCH] Clocksource: Avoid misjudgment of clocksource
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, shli@fb.com
+References: <20211008080305.13401-1-yanghui.def@bytedance.com>
+ <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
+ <665f749e-b71e-a793-d759-87f7cf89677c@bytedance.com>
+ <CALAqxLXWVpxTwEssBBUnS2ZYTpaCr3cue_dw5ZmEm5ZQ8Wf=wg@mail.gmail.com>
+ <ad3d7e5d-cac1-5773-95f9-cc8f3cfd63a4@bytedance.com>
+ <CALAqxLVn3U=Kj8BOcavQvF86ZZ2HgR_8iLb-zt4z_Fc=-=PSbQ@mail.gmail.com>
+From:   yanghui <yanghui.def@bytedance.com>
+In-Reply-To: <CALAqxLVn3U=Kj8BOcavQvF86ZZ2HgR_8iLb-zt4z_Fc=-=PSbQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart5773348.lOV4Wx5bFT
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: "Andreas K. Huettel" <andreas.huettel@ur.de>
-To: Linux ACPI <linux-acpi@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PCI <linux-pci@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [EXT] [PATCH v1 2/2][RFT] ACPI: PM: Check states of power resources during initialization
-Date: Mon, 18 Oct 2021 12:40:47 +0200
-Message-ID: <5521425.DvuYhMxLoT@kailua>
-Organization: Universitaet Regensburg
-In-Reply-To: <8835496.CDJkKcVGEf@kreacher>
-References: <21226252.EfDdHjke4D@kreacher> <8835496.CDJkKcVGEf@kreacher>
 
-Am Freitag, 15. Oktober 2021, 19:14:10 CEST schrieb Rafael J. Wysocki:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+在 2021/10/12 下午1:02, John Stultz 写道:
+> On Sat, Oct 9, 2021 at 2:02 AM yanghui <yanghui.def@bytedance.com> wrote:
+>>
+>>
+>>
+>> 在 2021/10/9 上午11:38, John Stultz 写道:
+>>> On Fri, Oct 8, 2021 at 8:22 PM yanghui <yanghui.def@bytedance.com> wrote:
+>>>> 在 2021/10/9 上午7:45, John Stultz 写道:
+>>>>> On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrote:
+>>>>>>
+>>>>>> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
+>>>>>> Timer. But sometimes system is very busy and the Timer cannot be
+>>>>>> executed in 0.5sec. For example,if clocksource_watchdog be executed
+>>>>>> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
+>>>>>> be enlarged. Then the current clocksource will be misjudged as
+>>>>>> unstable. So we add conditions to prevent the clocksource from
+>>>>>> being misjudged.
+>>>>>>
+>>>>>> Signed-off-by: yanghui <yanghui.def@bytedance.com>
+>>>>>> ---
+>>>>>>     kernel/time/clocksource.c | 6 +++++-
+>>>>>>     1 file changed, 5 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+>>>>>> index b8a14d2fb5ba..d535beadcbc8 100644
+>>>>>> --- a/kernel/time/clocksource.c
+>>>>>> +++ b/kernel/time/clocksource.c
+>>>>>> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
+>>>>>>
+>>>>>>     /*
+>>>>>>      * Interval: 0.5sec.
+>>>>>> + * MaxInterval: 1s.
+>>>>>>      */
+>>>>>>     #define WATCHDOG_INTERVAL (HZ >> 1)
+>>>>>> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
+>>>>>>
+>>>>>>     static void clocksource_watchdog_work(struct work_struct *work)
+>>>>>>     {
+>>>>>> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list *unused)
+>>>>>>
+>>>>>>                    /* Check the deviation from the watchdog clocksource. */
+>>>>>>                    md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+>>>>>> -               if (abs(cs_nsec - wd_nsec) > md) {
+>>>>>> +               if ((abs(cs_nsec - wd_nsec) > md) &&
+>>>>>> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
+>>>>>
+>>>>> Sorry, it's been awhile since I looked at this code, but why are you
+>>>>> bounding the clocksource delta here?
+>>>>> It seems like if the clocksource being watched was very wrong (with a
+>>>>> delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
+>>>>>
+>>>>>> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
+>>>>>
+>>>>> Bounding the watchdog interval on the check does seem reasonable.
+>>>>> Though one may want to keep track that if we are seeing too many of
+>>>>> these delayed watchdog checks we provide some feedback via dmesg.
+>>>>
+>>>>      Yes, only to check watchdog delta is more reasonable.
+>>>>      I think Only have dmesg is not enough, because if tsc was be misjudged
+>>>>      as unstable then switch to hpet. And hpet is very expensive for
+>>>>      performance, so if we want to switch to tsc the only way is to reboot
+>>>>      the server. We need to prevent the switching of the clock source in
+>>>>      case of misjudgment.
+>>>>      Circumstances of misjudgment:
+>>>>      if clocksource_watchdog is executed after 10sec, the value of wd_delta
+>>>>      and cs_delta also be about 10sec, also the value of (cs_nsec- wd_nsec)
+>>>>      will be magnified 20 times(10sec/0.5sec).The delta value is magnified.
+>>>
+>>> Yea, it might be worth calculating an error rate instead of assuming
+>>> the interval is fixed, but also just skipping the check may be
+>>> reasonable assuming timers aren't constantly being delayed (and it's
+>>> more of a transient state).
+>>>
+>>> At some point if the watchdog timer is delayed too much, the watchdog
+>> I mean the execution cycle of this function(static void
+>> clocksource_watchdog(struct timer_list *unused)) has been delayed.
+>>
+>>> hardware will fully wrap and one can no longer properly compare
+>>> intervals. That's why the timer length is chosen as such, so having
+>>> that timer delayed is really pushing the system into a potentially bad
+>>> state where other subtle problems are likely to crop up.
+>>>
+>>> So I do worry these watchdog robustness fixes are papering over a
+>>> problem, pushing expectations closer to the edge of how far the system
+>>> should tolerate bad behavior. Because at some point we'll fall off. :)
+>>
+>> Sorry,I don't seem to understand what you mean. Should I send your Patch
+>> v2 ?
 > 
-> To avoid situations in which the actual states of certain ACPI power
-> resources are not known just because they have never been referenced
-> by any device configuration objects, check the initial states of all
-> power resources as soon as they are found in the ACPI namespace (and
-> fall back to turning them on if the state check fails).
+> Sending a v2 is usually a good step (persistence is key! :)
 > 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+> I'm sorry for being unclear in the above. I'm mostly just fretting
+> that the watchdog logic has inherent assumptions that the timers won't
+> be greatly delayed. Unfortunately the reality is that the timers may
+> be delayed. So we can try to add some robustness (as your patch does),
+> but at a certain point, the delays may exceed what the logic can
+> tolerate and produce correct behavior. I worry that by pushing the
+> robustness up to that limit, folks may not recognize the problematic
+> behavior (greatly delayed timers - possibly caused by drivers
+> disabling irqs for too long, or bad SMI logic, or long virtualization
+> pauses), and think the system is still working as designed, even
+
+I think we can increase the value of WATCHDOG_MAX_INTERVAL_NS up to
+20sec(soft lockup time) or more longer. So we can filter those timer 
+delays caused by non-softlockup as your said(drivers disabling irq, bad
+SMI logic ...).
+I think this method can solve the problem that the softlock is
+too long and the clocksource is incorrectly switched, resulting
+in performance degradation.
+> though its regularly exceeding the bounds of the assumptions in the
+> code. So without any feedback that something is wrong, those bounds
+> will continue to be pushed until things really break in a way we
+> cannot be robust about.
 > 
-> Andreas, please test this patch (on top of the [1/2]) and let me know
-> if it works for you.
+> That's why I was suggesting adding some sort of printk warning when we
+> do see a number of delayed timers so that folks have some signal that
+> things are not as they are expected to be.
 > 
-
-I see no negative impact (actually, no impact at all) of the second
-additional patch. The network card is again working fine now.
-
-Boot logs (unpatched, with one patch, with both patches) at
-https://dev.gentoo.org/~dilfridge/igb/  (the 5.14.12* files).
-
-Best,
-Andreas
-
--- 
-PD Dr. Andreas K. Huettel
-Institute for Experimental and Applied Physics
-University of Regensburg
-93040 Regensburg
-Germany
-
-tel. +49 151 241 67748 (mobile)
-tel. +49 941 943 1618 (office)
-e-mail andreas.huettel@ur.de
-http://www.akhuettel.de/
-http://www.physik.uni-r.de/forschung/huettel/
---nextPart5773348.lOV4Wx5bFT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQKTBAABCgB9FiEE6W4INB9YeKX6Qpi1TEn3nlTQogYFAmFtTy9fFIAAAAAALgAo
-aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldEU5
-NkUwODM0MUY1ODc4QTVGQTQyOThCNTRDNDlGNzlFNTREMEEyMDYACgkQTEn3nlTQ
-ogYfKw//S5bt6q9nYvhToeuPtf23hVN0zT0fxyKHkKyaXRBSm7dBNbOd5ohEMNc7
-FQ7c2cOSgimJcQDBGzWn63X6T5XhzV8A7O9ITfq+UUfWxn7Xi0v4gCI3jubWjkep
-eFc2McLw67yngcnaDPFKaS0nejuWnoiRHA/4jUr36aoIDaGTYPq7IIxnEuhIGuzK
-Fu4m5NPOKcbhPtT5Bzut+fklzllD/ClKaNVZHToQmQkdkzaltTkFCwcGQTu05Q9j
-s4oxtPfwISCugoMQOJOVcJfqD2JRhw7yt2/c871G0ALhd3Yr6ZQMCZmw5IaP+p4E
-6NQL/9qU9a68Qrq+/XZ+AwGkIVKxBQuYMoazb5yw2rxhqBm9PDqriFZKmmxNZGZw
-OvmldGYFUc+5xMZ5OL1pTikS5OcIv6hHLsT5rUJJ+lN7izaQuWngrWHcdB/P5Bds
-RAf5wV3bWCKGBzfDF6c9IA3YCmUGlumfx0Sr4TigYDBOlpFL7H0aEsQ4PLsCB8WL
-drkAI5SZ3PUJf6ZyTfPP3SLEkKvgJFfn/0ujOzKlDZqjU9iQYAtho45BAOWiWC43
-g81MZrFbOTtw5BFZbv79cZj8abDKcdcZP6cKyIzbEXH0z/qOH2wmE9Yp9iFRJBjG
-HFRyCoP8iKL1m1wWk63uFlnP4FpEFkgwAghyCRRynuVxd5r8CBg=
-=O5sO
------END PGP SIGNATURE-----
-
---nextPart5773348.lOV4Wx5bFT--
-
-
-
+> thanks
+> -john
+> 
