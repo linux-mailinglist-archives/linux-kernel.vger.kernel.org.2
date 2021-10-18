@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978C9432338
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD7E43234E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhJRPsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:48:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231986AbhJRPsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:48:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C965460F9F;
-        Mon, 18 Oct 2021 15:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634571986;
-        bh=rvQv9P/Tr9IQeyrtF20/KMfdi6OiCCGfgGnZYK4YN7w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vBnzxFy5t0zvqVPxZXTKskPiutZBBlnQimjDagHpTlReeAogosu+geXtpqkY6C+rL
-         rLEs5hWnW4Pr/T4o7uQgwQnnPyCt5Ru9uWRYy3GORGIHHqfMHUP5zSsxXeQEr+C7r8
-         w1HTNthbN5pS4YmGDpCPAeNz13A08NMxyyJpLUsySmqlRG7BI86v85pChl46Jr7Pkn
-         Uycjq2nnNLSgfmsRzOt/etBdITSmXdIUYERxM1ltJKzEIpQrjsTCn48CBpjToSkjnl
-         U8xUNcWGHdH52n2kSxvWbwxybx3ADwd3qCgEXOiJ5VfKgUxxnFS63rDJC3qOTIdbcE
-         WK866GkeR87OQ==
-Received: by mail-wr1-f45.google.com with SMTP id k7so42051407wrd.13;
-        Mon, 18 Oct 2021 08:46:26 -0700 (PDT)
-X-Gm-Message-State: AOAM533xVvJc3jBLCYHx1Naj9ikSxpljc6YUVImOjb72xRv5wcRIiSIE
-        gociNgHTYoxqIWewZObilWMt7kBVUhWeKE1apMU=
-X-Google-Smtp-Source: ABdhPJyVSTym0arEJ6ZwtHU4fs5OSXOHeSmEtNbviOiBmtgXR11Ca2zcAFNb/orCjHKR3vegA/Xk2elZ8RZ8MhXF1+w=
-X-Received: by 2002:adf:b1c4:: with SMTP id r4mr36465681wra.428.1634571985240;
- Mon, 18 Oct 2021 08:46:25 -0700 (PDT)
+        id S232636AbhJRPwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231938AbhJRPwC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:52:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F43EC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OXhW+5RnrFYOlyPfWgjjNoff+OyuMBiPHUuJ9caaB2o=; b=JlzvxbjZX5PB4AYfSSF8zuXERS
+        EPhy4Jqz/R1TO4sKVefjZIa5RczzVLEJd7HiDUByWXJ8y/sKbQsKVT+Q8uwt5hFG+Tpl2Us7MkQmr
+        a9cLQoU8NKsZ1NZxl+FytkHqUmzPnnVJABRPgrKE+pvvgFQzfJYq8rjH4Cu4szpouhmRM1OwvfFLq
+        FsUwLjO7lXtmTCYjeNrqpQ2IR2+43TqOOmnyVYgEEMyKNJ/Hi5VmykkD4nBq4/s9FUt5aMnV1aTZY
+        BxDSNF1OP4e/6lZ486lVDzP9yLvtu53nnHyfaTi+17oPoCSNUzJa+LhJxPxam2dAoK0TW+FwRivZq
+        46Q3Hc/g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcUr8-00B5Bp-PT; Mon, 18 Oct 2021 15:47:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 140C2300242;
+        Mon, 18 Oct 2021 17:47:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F4040286E09E9; Mon, 18 Oct 2021 17:47:17 +0200 (CEST)
+Date:   Mon, 18 Oct 2021 17:47:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH 1/3] x86/insn-eval: Introduce insn_get_modrm_reg_ptr()
+Message-ID: <YW2XBV2uHHDI2vq0@hirez.programming.kicks-ass.net>
+References: <20211018153333.8261-1-kirill.shutemov@linux.intel.com>
+ <20211018153333.8261-2-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-References: <20210822075122.864511-1-keescook@chromium.org> <20210822075122.864511-22-keescook@chromium.org>
-In-Reply-To: <20210822075122.864511-22-keescook@chromium.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 18 Oct 2021 17:46:09 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1o58qeUsn9_+o1v1POZ9=3p17TCEba4-TRQ7Hf5mRg1A@mail.gmail.com>
-Message-ID: <CAK8P3a1o58qeUsn9_+o1v1POZ9=3p17TCEba4-TRQ7Hf5mRg1A@mail.gmail.com>
-Subject: Re: [PATCH for-next 21/25] lib: Introduce CONFIG_TEST_MEMCPY
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        David Gow <davidgow@google.com>, Linux-MM <linux-mm@kvack.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018153333.8261-2-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 9:56 AM Kees Cook <keescook@chromium.org> wrote:
-> +FORTIFY_SOURCE
-> +M:     Kees Cook <keescook@chomium.org>
-> +L:     linux-hardening@vger.kernel.org
-> +S:     Supported
+On Mon, Oct 18, 2021 at 06:33:31PM +0300, Kirill A. Shutemov wrote:
+> +/**
+> + * insn_get_modrm_reg_ptr() - Obtain register pointer based on ModRM byte
+> + * @insn:	Instruction containing the ModRM byte
+> + * @regs:	Register values as seen when entering kernel mode
+> + *
+> + * Returns:
+> + *
+> + * The register indicated by the reg part of the ModRM byte.
+> + * The register is obtained as a pointer within pt_regs.
+> + */
+> +void *insn_get_modrm_reg_ptr(struct insn *insn, struct pt_regs *regs)
 
-I had added you to Cc on a patch because of this entry, and the email
-bounced. It looks like you need an extra 'r' in the address.
+Doesn't that return type want to be 'unsigned long *'?
 
-         Arnd
+> +{
+> +	int offset;
+> +
+> +	offset = insn_get_modrm_reg_off(insn, regs);
+> +	if (offset < 0)
+> +		return NULL;
+> +	return (void *)regs + offset;
+> +}
+> +
+>  /**
+>   * get_seg_base_limit() - obtain base address and limit of a segment
+>   * @insn:	Instruction. Must be valid.
+> -- 
+> 2.32.0
+> 
