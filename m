@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84425431D1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FC1431B40
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhJRNsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:48:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39668 "EHLO mail.kernel.org"
+        id S231788AbhJRNbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233802AbhJRNpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:45:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD1A615A7;
-        Mon, 18 Oct 2021 13:35:48 +0000 (UTC)
+        id S232367AbhJRNaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F006135F;
+        Mon, 18 Oct 2021 13:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564149;
-        bh=UKDdUxN31Y2tH8koy/hpWWmQl4c59XphxhJdnBYZU/U=;
+        s=korg; t=1634563672;
+        bh=ubAvB6JX1biGxOpVIDUf3L0WDpzSuu59LjTKcCdn4kU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cW+jqD0kv9YG78cuViZYpjEiJdJg4DeH1NWt6LrIaRaNzf9NWbatELFXVZWSdk6Ff
-         IyC32ovY2X5+lPqsYOVpJcxohqIthTPXtAh7CiZgnDhaEVibnAf1EdjU0lMPYmMrzg
-         9F/0cn+bbgIZnhdPAiSAXD6o4mDPkUOjA3h00dFY=
+        b=v9SkpkElx7oOGvFWL18hFnfaYNtH0PvnQh1h9Sqi8EK/9XfPjcrdjeoLvDxwpyEda
+         VnP2hQ3RsykQatgU+70wJ4yeODH+YL9q76ZG0G/xkL9W245PGfsVYqCP8DXNiTGLob
+         wWNjbCvSE9f0r6gNPdSHMSRFerxvX0sAIQDWKekU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Saravana Kannan <saravanak@google.com>
-Subject: [PATCH 5.10 050/103] driver core: Reject pointless SYNC_STATE_ONLY device links
+        stable@vger.kernel.org,
+        Michael Cullen <michael@michaelcullen.name>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.19 19/50] Input: xpad - add support for another USB ID of Nacon GC-100
 Date:   Mon, 18 Oct 2021 15:24:26 +0200
-Message-Id: <20211018132336.434618524@linuxfoundation.org>
+Message-Id: <20211018132327.177160741@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saravana Kannan <saravanak@google.com>
+From: Michael Cullen <michael@michaelcullen.name>
 
-commit f729a592adb6760013c3e48622a5bf256b992452 upstream.
+commit 3378a07daa6cdd11e042797454c706d1c69f9ca6 upstream.
 
-SYNC_STATE_ONLY device links intentionally allow cycles because cyclic
-sync_state() dependencies are valid and necessary.
+The Nacon GX100XF is already mapped, but it seems there is a Nacon
+GC-100 (identified as NC5136Wht PCGC-100WHITE though I believe other
+colours exist) with a different USB ID when in XInput mode.
 
-However a SYNC_STATE_ONLY device link where the consumer and the supplier
-are the same device is pointless because the device link would be deleted
-as soon as the device probes (because it's also the consumer) and won't
-affect when the sync_state() callback is called. It's a waste of CPU cycles
-and memory to create this device link. So reject any attempts to create
-such a device link.
-
-Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
-Cc: stable <stable@vger.kernel.org>
-Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Link: https://lore.kernel.org/r/20210929190549.860541-1-saravanak@google.com
+Signed-off-by: Michael Cullen <michael@michaelcullen.name>
+Link: https://lore.kernel.org/r/20211015192051.5196-1-michael@michaelcullen.name
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/input/joystick/xpad.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -549,7 +549,8 @@ struct device_link *device_link_add(stru
- {
- 	struct device_link *link;
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -345,6 +345,7 @@ static const struct xpad_device {
+ 	{ 0x24c6, 0x5b03, "Thrustmaster Ferrari 458 Racing Wheel", 0, XTYPE_XBOX360 },
+ 	{ 0x24c6, 0x5d04, "Razer Sabertooth", 0, XTYPE_XBOX360 },
+ 	{ 0x24c6, 0xfafe, "Rock Candy Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
++	{ 0x3285, 0x0607, "Nacon GC-100", 0, XTYPE_XBOX360 },
+ 	{ 0x3767, 0x0101, "Fanatec Speedster 3 Forceshock Wheel", 0, XTYPE_XBOX },
+ 	{ 0xffff, 0xffff, "Chinese-made Xbox Controller", 0, XTYPE_XBOX },
+ 	{ 0x0000, 0x0000, "Generic X-Box pad", 0, XTYPE_UNKNOWN }
+@@ -461,6 +462,7 @@ static const struct usb_device_id xpad_t
+ 	XPAD_XBOXONE_VENDOR(0x24c6),		/* PowerA Controllers */
+ 	XPAD_XBOXONE_VENDOR(0x2e24),		/* Hyperkin Duke X-Box One pad */
+ 	XPAD_XBOX360_VENDOR(0x2f24),		/* GameSir Controllers */
++	XPAD_XBOX360_VENDOR(0x3285),		/* Nacon GC-100 */
+ 	{ }
+ };
  
--	if (!consumer || !supplier || flags & ~DL_ADD_VALID_FLAGS ||
-+	if (!consumer || !supplier || consumer == supplier ||
-+	    flags & ~DL_ADD_VALID_FLAGS ||
- 	    (flags & DL_FLAG_STATELESS && flags & DL_MANAGED_LINK_FLAGS) ||
- 	    (flags & DL_FLAG_SYNC_STATE_ONLY &&
- 	     flags != DL_FLAG_SYNC_STATE_ONLY) ||
 
 
