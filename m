@@ -2,322 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5EC4322F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E50843232B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhJRPfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbhJRPfq (ORCPT
+        id S233296AbhJRPo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:44:28 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:37076 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233233AbhJRPo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:35:46 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABBFC061765
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:33:35 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id s19so437042ljj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:33:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Av2yU1eH/+KVUhWiYq4bjMFQGpgX8uwkDZTA6ABYzWY=;
-        b=NKIm+cWGj5a+XEDMCjOVrwiz9aF+Cp1ma9+AokJDmqe6fhoXPGOFBE0XGEobILcYSB
-         mo/1eYqtlQRvv324mXRyCOwweyXGFvo3hl4jYK+EUtGP0sS5ES/ywAyz/tlSmB5B4b30
-         k+HMd1XvxyIrYfBLBEQrZS9+S0vbuwp511wpMw/3zFECqEIq/VZstddDJIhBWNjW6HDh
-         NsFVVOI5f5U3crG6D+eJ9O6zIB5p8+sZ5xP6CbF7W+r3Zk9QxncyB5BKFugIu9oNs8Yg
-         eJ7LRZ68O5RwCkwiDV7hfogCzbPSI9/E8h7r08/+x8CIfjhBuMibhebMUl8GGq2Pgzi0
-         b3CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Av2yU1eH/+KVUhWiYq4bjMFQGpgX8uwkDZTA6ABYzWY=;
-        b=hgzSiLwhJu5y7B8uGVUoeJT56TPLn64W/u9Zt5j7S1fk7vvH0/zBZ5vt/btUm3+0Fx
-         8ZEU3WkMvvc14rQfFnH7yFhdEr0+K2/GIb6sJBf+QjWJHDhAxUE0RcwL+/axif0S8mvU
-         yBjgf1pL2zvPy6iBzG2NlS/yHir/XxNOLt2o5qMnAmYfbY+d8P1S+aqpIJsRMFaATbyB
-         l6fUG31vV7KzdXgTKPppjqVjaGVKy5Hin7MFhknLQGohgV4Vi8LF9JR82P46vnYdr5l3
-         zwrVg9ai6us9TyzgF6SArZwdD5xJub2v1HB+HUKYoQGz8YtxwJ8sBVeHO9M5zyUiAjlc
-         IJFQ==
-X-Gm-Message-State: AOAM5312wVkFdzzNzVnc+qYyx/xl4qmpYAcul8qaG8OYac3IcvjZvS0b
-        gV1LZKmYxY+D1+3EbXRPjSME+A==
-X-Google-Smtp-Source: ABdhPJx9tvpFsienGK6SSLxf241aVzKI5xD+sVhGZwr5cWtfqQ1k4oIHOweVghqdNnZCq2jqr1TeuQ==
-X-Received: by 2002:a2e:2f19:: with SMTP id v25mr448390ljv.281.1634571213301;
-        Mon, 18 Oct 2021 08:33:33 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id o19sm797614ljp.16.2021.10.18.08.33.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 08:33:31 -0700 (PDT)
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 20F9E10309D; Mon, 18 Oct 2021 18:33:35 +0300 (+03)
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 3/3] x86/sev-es: Use insn_decode_mmio() for MMIO implementation
-Date:   Mon, 18 Oct 2021 18:33:33 +0300
-Message-Id: <20211018153333.8261-4-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211018153333.8261-1-kirill.shutemov@linux.intel.com>
-References: <20211018153333.8261-1-kirill.shutemov@linux.intel.com>
+        Mon, 18 Oct 2021 11:44:27 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:46662)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mcUmD-008WoB-Kb; Mon, 18 Oct 2021 09:42:13 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:40538 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mcUmC-00D1TG-KO; Mon, 18 Oct 2021 09:42:13 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Rune Kleveland <rune.kleveland@infomedia.dk>,
+        Jordan Glover <Golden_Miller83@protonmail.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "containers\@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>
+References: <878rzw77i3.fsf@disp2133>
+        <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
+        <20210929173611.fo5traia77o63gpw@example.org>
+        <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
+        <20210930130640.wudkpmn3cmah2cjz@example.org>
+        <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
+        <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133>
+        <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
+        <87mtnavszx.fsf_-_@disp2133>
+        <20211015230922.7s7ab37k2sioa5vg@example.org>
+        <87zgr8vpop.fsf@disp2133>
+        <CAOUHufbbPMzMLaPH8o+PKG64RQaO7=09nv1hBnQY8SRAW+Jd-g@mail.gmail.com>
+Date:   Mon, 18 Oct 2021 10:35:12 -0500
+In-Reply-To: <CAOUHufbbPMzMLaPH8o+PKG64RQaO7=09nv1hBnQY8SRAW+Jd-g@mail.gmail.com>
+        (Yu Zhao's message of "Sun, 17 Oct 2021 13:35:37 -0600")
+Message-ID: <8735oyuz0v.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1mcUmC-00D1TG-KO;;;mid=<8735oyuz0v.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19IRU+fje8+4Jcix4fh8vbtCkuc+2VVzC0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_20,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
+        *      [score: 0.1530]
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Yu Zhao <yuzhao@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 470 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 10 (2.2%), b_tie_ro: 9 (2.0%), parse: 0.82 (0.2%),
+         extract_message_metadata: 11 (2.3%), get_uri_detail_list: 0.90 (0.2%),
+         tests_pri_-1000: 13 (2.8%), tests_pri_-950: 1.26 (0.3%),
+        tests_pri_-900: 1.03 (0.2%), tests_pri_-90: 188 (40.0%), check_bayes:
+        187 (39.7%), b_tokenize: 5 (1.1%), b_tok_get_all: 5.0 (1.1%),
+        b_comp_prob: 1.57 (0.3%), b_tok_touch_all: 172 (36.6%), b_finish: 0.80
+        (0.2%), tests_pri_0: 231 (49.1%), check_dkim_signature: 0.48 (0.1%),
+        check_dkim_adsp: 2.7 (0.6%), poll_dns_idle: 0.83 (0.2%), tests_pri_10:
+        2.8 (0.6%), tests_pri_500: 8 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [CFT][PATCH] ucounts: Fix signal ucount refcounting
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch SEV implementation to insn_decode_mmio(). The helper is going
-to be used by TDX too.
+Yu Zhao <yuzhao@google.com> writes:
 
-No functional changes. It is only build-tested.
+> On Sat, Oct 16, 2021 at 11:35 AM Eric W. Biederman
+> <ebiederm@xmission.com> wrote:
+>>
+>> Alexey Gladkov <legion@kernel.org> writes:
+>>
+>> > On Fri, Oct 15, 2021 at 05:10:58PM -0500, Eric W. Biederman wrote:
+>> >> +                    goto dec_unwind;
+>> >> +    }
+>> >> +    return ret;
+>> >> +dec_unwind:
+>> >> +    dec = atomic_long_add_return(1, &iter->ucount[type]);
+>> >
+>> > Should be -1 ?
+>>
+>> Yes it should.  I will fix and resend.
+>
+> Or just atomic_long_dec_return().
 
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/sev.c | 171 ++++++++++--------------------------------
- 1 file changed, 40 insertions(+), 131 deletions(-)
+It would have to be atomic_long_sub_return().
 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index a6895e440bc3..8fea7ea67c67 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -807,22 +807,6 @@ static void __init vc_early_forward_exception(struct es_em_ctxt *ctxt)
- 	do_early_exception(ctxt->regs, trapnr);
- }
- 
--static long *vc_insn_get_reg(struct es_em_ctxt *ctxt)
--{
--	long *reg_array;
--	int offset;
--
--	reg_array = (long *)ctxt->regs;
--	offset    = insn_get_modrm_reg_off(&ctxt->insn, ctxt->regs);
--
--	if (offset < 0)
--		return NULL;
--
--	offset /= sizeof(long);
--
--	return reg_array + offset;
--}
--
- static long *vc_insn_get_rm(struct es_em_ctxt *ctxt)
- {
- 	long *reg_array;
-@@ -870,76 +854,6 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 	return sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, exit_info_1, exit_info_2);
- }
- 
--static enum es_result vc_handle_mmio_twobyte_ops(struct ghcb *ghcb,
--						 struct es_em_ctxt *ctxt)
--{
--	struct insn *insn = &ctxt->insn;
--	unsigned int bytes = 0;
--	enum es_result ret;
--	int sign_byte;
--	long *reg_data;
--
--	switch (insn->opcode.bytes[1]) {
--		/* MMIO Read w/ zero-extension */
--	case 0xb6:
--		bytes = 1;
--		fallthrough;
--	case 0xb7:
--		if (!bytes)
--			bytes = 2;
--
--		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
--		if (ret)
--			break;
--
--		/* Zero extend based on operand size */
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
--		memset(reg_data, 0, insn->opnd_bytes);
--
--		memcpy(reg_data, ghcb->shared_buffer, bytes);
--		break;
--
--		/* MMIO Read w/ sign-extension */
--	case 0xbe:
--		bytes = 1;
--		fallthrough;
--	case 0xbf:
--		if (!bytes)
--			bytes = 2;
--
--		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
--		if (ret)
--			break;
--
--		/* Sign extend based on operand size */
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
--		if (bytes == 1) {
--			u8 *val = (u8 *)ghcb->shared_buffer;
--
--			sign_byte = (*val & 0x80) ? 0xff : 0x00;
--		} else {
--			u16 *val = (u16 *)ghcb->shared_buffer;
--
--			sign_byte = (*val & 0x8000) ? 0xff : 0x00;
--		}
--		memset(reg_data, sign_byte, insn->opnd_bytes);
--
--		memcpy(reg_data, ghcb->shared_buffer, bytes);
--		break;
--
--	default:
--		ret = ES_UNSUPPORTED;
--	}
--
--	return ret;
--}
--
- /*
-  * The MOVS instruction has two memory operands, which raises the
-  * problem that it is not known whether the access to the source or the
-@@ -1007,83 +921,78 @@ static enum es_result vc_handle_mmio_movs(struct es_em_ctxt *ctxt,
- 		return ES_RETRY;
- }
- 
--static enum es_result vc_handle_mmio(struct ghcb *ghcb,
--				     struct es_em_ctxt *ctxt)
-+static enum es_result vc_handle_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
- {
- 	struct insn *insn = &ctxt->insn;
- 	unsigned int bytes = 0;
-+	enum mmio_type mmio;
- 	enum es_result ret;
-+	u8 sign_byte;
- 	long *reg_data;
- 
--	switch (insn->opcode.bytes[0]) {
--	/* MMIO Write */
--	case 0x88:
--		bytes = 1;
--		fallthrough;
--	case 0x89:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
-+	mmio = insn_decode_mmio(insn, &bytes);
-+	if (mmio == MMIO_DECODE_FAILED)
-+		return ES_DECODE_FAILED;
- 
--		reg_data = vc_insn_get_reg(ctxt);
-+	if (mmio != MMIO_WRITE_IMM && mmio != MMIO_MOVS) {
-+		reg_data = insn_get_modrm_reg_ptr(insn, ctxt->regs);
- 		if (!reg_data)
- 			return ES_DECODE_FAILED;
-+	}
- 
-+	switch (mmio) {
-+	case MMIO_WRITE:
- 		memcpy(ghcb->shared_buffer, reg_data, bytes);
--
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, false);
- 		break;
--
--	case 0xc6:
--		bytes = 1;
--		fallthrough;
--	case 0xc7:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
--
-+	case MMIO_WRITE_IMM:
- 		memcpy(ghcb->shared_buffer, insn->immediate1.bytes, bytes);
--
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, false);
- 		break;
--
--		/* MMIO Read */
--	case 0x8a:
--		bytes = 1;
--		fallthrough;
--	case 0x8b:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
--
-+	case MMIO_READ:
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
- 		if (ret)
- 			break;
- 
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
- 		/* Zero-extend for 32-bit operation */
- 		if (bytes == 4)
- 			*reg_data = 0;
- 
- 		memcpy(reg_data, ghcb->shared_buffer, bytes);
- 		break;
-+	case MMIO_READ_ZERO_EXTEND:
-+		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
-+		if (ret)
-+			break;
-+
-+		memset(reg_data, 0, insn->opnd_bytes);
-+		memcpy(reg_data, ghcb->shared_buffer, bytes);
-+		break;
-+	case MMIO_READ_SIGN_EXTEND:
-+		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
-+		if (ret)
-+			break;
- 
--		/* MOVS instruction */
--	case 0xa4:
--		bytes = 1;
--		fallthrough;
--	case 0xa5:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
-+		if (bytes == 1) {
-+			u8 *val = (u8 *)ghcb->shared_buffer;
- 
--		ret = vc_handle_mmio_movs(ctxt, bytes);
-+			sign_byte = (*val & 0x80) ? 0xff : 0x00;
-+		} else {
-+			u16 *val = (u16 *)ghcb->shared_buffer;
-+
-+			sign_byte = (*val & 0x8000) ? 0xff : 0x00;
-+		}
-+
-+		/* Sign extend based on operand size */
-+		memset(reg_data, sign_byte, insn->opnd_bytes);
-+		memcpy(reg_data, ghcb->shared_buffer, bytes);
- 		break;
--		/* Two-Byte Opcodes */
--	case 0x0f:
--		ret = vc_handle_mmio_twobyte_ops(ghcb, ctxt);
-+	case MMIO_MOVS:
-+		ret = vc_handle_mmio_movs(ctxt, bytes);
- 		break;
- 	default:
- 		ret = ES_UNSUPPORTED;
-+		break;
- 	}
- 
- 	return ret;
--- 
-2.32.0
+Even then I would want to change all of kernel/ucount.c to use
+the same helper function so discrepancies can easily be spotted.
 
+It is a good idea, just not I think for this particular patch.
+
+Eric
