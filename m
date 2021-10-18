@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60442431D09
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36446431C40
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbhJRNrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40940 "EHLO mail.kernel.org"
+        id S233298AbhJRNjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233469AbhJRNo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:44:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74DB16152B;
-        Mon, 18 Oct 2021 13:35:22 +0000 (UTC)
+        id S233168AbhJRNho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:37:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFA7461350;
+        Mon, 18 Oct 2021 13:31:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564123;
-        bh=u9El7f3gdKdEjCXKeoYIWKP8przCpQMoxZYG1deZ2Xg=;
+        s=korg; t=1634563897;
+        bh=U5EPDvDxRwuwGLAyLFC9t8K9bDCR/g4m+1dzIVed0L8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mPDQC+Imf3FpBo/LnV8EErFfqT0uprtgRYLfRyHnwe3s35sFNZdcNGkE7sY22/nQO
-         MspCT9P7DkMfz74hXJL/JU7Qp8B0yUiEXQEhruuVW8REz+OZmJy/0mulj7WcpjowZ3
-         otTFXgCgDI94mkcutugAzuzuCXWldU6EwFySDzo4=
+        b=Ski7QIoyWrnXSZSv9EeNCI2GchnQkHSn3dGn7TZ1eHfhF5AcK4MUOD1qwmKAxUAX5
+         chyWawq/BhgKwH4qufbqvpyktom8nvTG3Qot37Od8VaveS1INnNERQu6NmY+v7fM9J
+         86jn7zy74ToRCDeDSR2VZOhJEUMrjbccMH+J0CKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Valentine Fatiev <valentinef@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH 5.10 072/103] net/mlx5e: Fix memory leak in mlx5_core_destroy_cq() error path
+        stable@vger.kernel.org, Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 50/69] net: stmmac: fix get_hw_feature() on old hardware
 Date:   Mon, 18 Oct 2021 15:24:48 +0200
-Message-Id: <20211018132337.164155749@linuxfoundation.org>
+Message-Id: <20211018132331.145499722@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +39,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentine Fatiev <valentinef@nvidia.com>
+From: Herve Codina <herve.codina@bootlin.com>
 
-commit 94b960b9deffc02fc0747afc01f72cc62ab099e3 upstream.
+commit 075da584bae2da6a37428d59a477b6bdad430ac3 upstream.
 
-Prior to this patch in case mlx5_core_destroy_cq() failed it returns
-without completing all destroy operations and that leads to memory leak.
-Instead, complete the destroy flow before return error.
+Some old IPs do not provide the hardware feature register.
+On these IPs, this register is read 0x00000000.
 
-Also move mlx5_debug_cq_remove() to the beginning of mlx5_core_destroy_cq()
-to be symmetrical with mlx5_core_create_cq().
+In old driver version, this feature was handled but a regression came
+with the commit f10a6a3541b4 ("stmmac: rework get_hw_feature function").
+Indeed, this commit removes the return value in dma->get_hw_feature().
+This return value was used to indicate the validity of retrieved
+information and used later on in stmmac_hw_init() to override
+priv->plat data if this hardware feature were valid.
 
-kmemleak complains on:
+This patch restores the return code in ->get_hw_feature() in order
+to indicate the hardware feature validity and override priv->plat
+data only if this hardware feature is valid.
 
-unreferenced object 0xc000000038625100 (size 64):
-  comm "ethtool", pid 28301, jiffies 4298062946 (age 785.380s)
-  hex dump (first 32 bytes):
-    60 01 48 94 00 00 00 c0 b8 05 34 c3 00 00 00 c0  `.H.......4.....
-    02 00 00 00 00 00 00 00 00 db 7d c1 00 00 00 c0  ..........}.....
-  backtrace:
-    [<000000009e8643cb>] add_res_tree+0xd0/0x270 [mlx5_core]
-    [<00000000e7cb8e6c>] mlx5_debug_cq_add+0x5c/0xc0 [mlx5_core]
-    [<000000002a12918f>] mlx5_core_create_cq+0x1d0/0x2d0 [mlx5_core]
-    [<00000000cef0a696>] mlx5e_create_cq+0x210/0x3f0 [mlx5_core]
-    [<000000009c642c26>] mlx5e_open_cq+0xb4/0x130 [mlx5_core]
-    [<0000000058dfa578>] mlx5e_ptp_open+0x7f4/0xe10 [mlx5_core]
-    [<0000000081839561>] mlx5e_open_channels+0x9cc/0x13e0 [mlx5_core]
-    [<0000000009cf05d4>] mlx5e_switch_priv_channels+0xa4/0x230
-[mlx5_core]
-    [<0000000042bbedd8>] mlx5e_safe_switch_params+0x14c/0x300
-[mlx5_core]
-    [<0000000004bc9db8>] set_pflag_tx_port_ts+0x9c/0x160 [mlx5_core]
-    [<00000000a0553443>] mlx5e_set_priv_flags+0xd0/0x1b0 [mlx5_core]
-    [<00000000a8f3d84b>] ethnl_set_privflags+0x234/0x2d0
-    [<00000000fd27f27c>] genl_family_rcv_msg_doit+0x108/0x1d0
-    [<00000000f495e2bb>] genl_family_rcv_msg+0xe4/0x1f0
-    [<00000000646c5c2c>] genl_rcv_msg+0x78/0x120
-    [<00000000d53e384e>] netlink_rcv_skb+0x74/0x1a0
-
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Signed-off-by: Valentine Fatiev <valentinef@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: f10a6a3541b4 ("stmmac: rework get_hw_feature function")
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/cq.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c |   13 +++++++++++--
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c    |    6 ++++--
+ drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c  |    6 ++++--
+ drivers/net/ethernet/stmicro/stmmac/hwif.h          |    6 +++---
+ 4 files changed, 22 insertions(+), 9 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-@@ -154,6 +154,8 @@ int mlx5_core_destroy_cq(struct mlx5_cor
- 	u32 in[MLX5_ST_SZ_DW(destroy_cq_in)] = {};
- 	int err;
- 
-+	mlx5_debug_cq_remove(dev, cq);
-+
- 	mlx5_eq_del_cq(mlx5_get_async_eq(dev), cq);
- 	mlx5_eq_del_cq(&cq->eq->core, cq);
- 
-@@ -161,16 +163,13 @@ int mlx5_core_destroy_cq(struct mlx5_cor
- 	MLX5_SET(destroy_cq_in, in, cqn, cq->cqn);
- 	MLX5_SET(destroy_cq_in, in, uid, cq->uid);
- 	err = mlx5_cmd_exec_in(dev, destroy_cq, in);
--	if (err)
--		return err;
- 
- 	synchronize_irq(cq->irqn);
- 
--	mlx5_debug_cq_remove(dev, cq);
- 	mlx5_cq_put(cq);
- 	wait_for_completion(&cq->free);
- 
--	return 0;
-+	return err;
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
+@@ -218,11 +218,18 @@ static void dwmac1000_dump_dma_regs(void
+ 				readl(ioaddr + DMA_BUS_MODE + i * 4);
  }
- EXPORT_SYMBOL(mlx5_core_destroy_cq);
  
+-static void dwmac1000_get_hw_feature(void __iomem *ioaddr,
+-				     struct dma_features *dma_cap)
++static int dwmac1000_get_hw_feature(void __iomem *ioaddr,
++				    struct dma_features *dma_cap)
+ {
+ 	u32 hw_cap = readl(ioaddr + DMA_HW_FEATURE);
+ 
++	if (!hw_cap) {
++		/* 0x00000000 is the value read on old hardware that does not
++		 * implement this register
++		 */
++		return -EOPNOTSUPP;
++	}
++
+ 	dma_cap->mbps_10_100 = (hw_cap & DMA_HW_FEAT_MIISEL);
+ 	dma_cap->mbps_1000 = (hw_cap & DMA_HW_FEAT_GMIISEL) >> 1;
+ 	dma_cap->half_duplex = (hw_cap & DMA_HW_FEAT_HDSEL) >> 2;
+@@ -252,6 +259,8 @@ static void dwmac1000_get_hw_feature(voi
+ 	dma_cap->number_tx_channel = (hw_cap & DMA_HW_FEAT_TXCHCNT) >> 22;
+ 	/* Alternate (enhanced) DESC mode */
+ 	dma_cap->enh_desc = (hw_cap & DMA_HW_FEAT_ENHDESSEL) >> 24;
++
++	return 0;
+ }
+ 
+ static void dwmac1000_rx_watchdog(void __iomem *ioaddr, u32 riwt,
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+@@ -336,8 +336,8 @@ static void dwmac4_dma_tx_chan_op_mode(v
+ 	writel(mtl_tx_op, ioaddr +  MTL_CHAN_TX_OP_MODE(channel));
+ }
+ 
+-static void dwmac4_get_hw_feature(void __iomem *ioaddr,
+-				  struct dma_features *dma_cap)
++static int dwmac4_get_hw_feature(void __iomem *ioaddr,
++				 struct dma_features *dma_cap)
+ {
+ 	u32 hw_cap = readl(ioaddr + GMAC_HW_FEATURE0);
+ 
+@@ -400,6 +400,8 @@ static void dwmac4_get_hw_feature(void _
+ 	dma_cap->frpbs = (hw_cap & GMAC_HW_FEAT_FRPBS) >> 11;
+ 	dma_cap->frpsel = (hw_cap & GMAC_HW_FEAT_FRPSEL) >> 10;
+ 	dma_cap->dvlan = (hw_cap & GMAC_HW_FEAT_DVLAN) >> 5;
++
++	return 0;
+ }
+ 
+ /* Enable/disable TSO feature and set MSS */
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
+@@ -356,8 +356,8 @@ static int dwxgmac2_dma_interrupt(void _
+ 	return ret;
+ }
+ 
+-static void dwxgmac2_get_hw_feature(void __iomem *ioaddr,
+-				    struct dma_features *dma_cap)
++static int dwxgmac2_get_hw_feature(void __iomem *ioaddr,
++				   struct dma_features *dma_cap)
+ {
+ 	u32 hw_cap;
+ 
+@@ -425,6 +425,8 @@ static void dwxgmac2_get_hw_feature(void
+ 	dma_cap->frpes = (hw_cap & XGMAC_HWFEAT_FRPES) >> 11;
+ 	dma_cap->frpbs = (hw_cap & XGMAC_HWFEAT_FRPPB) >> 9;
+ 	dma_cap->frpsel = (hw_cap & XGMAC_HWFEAT_FRPSEL) >> 3;
++
++	return 0;
+ }
+ 
+ static void dwxgmac2_rx_watchdog(void __iomem *ioaddr, u32 riwt, u32 nchan)
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -196,8 +196,8 @@ struct stmmac_dma_ops {
+ 	int (*dma_interrupt) (void __iomem *ioaddr,
+ 			      struct stmmac_extra_stats *x, u32 chan);
+ 	/* If supported then get the optional core features */
+-	void (*get_hw_feature)(void __iomem *ioaddr,
+-			       struct dma_features *dma_cap);
++	int (*get_hw_feature)(void __iomem *ioaddr,
++			      struct dma_features *dma_cap);
+ 	/* Program the HW RX Watchdog */
+ 	void (*rx_watchdog)(void __iomem *ioaddr, u32 riwt, u32 number_chan);
+ 	void (*set_tx_ring_len)(void __iomem *ioaddr, u32 len, u32 chan);
+@@ -247,7 +247,7 @@ struct stmmac_dma_ops {
+ #define stmmac_dma_interrupt_status(__priv, __args...) \
+ 	stmmac_do_callback(__priv, dma, dma_interrupt, __args)
+ #define stmmac_get_hw_feature(__priv, __args...) \
+-	stmmac_do_void_callback(__priv, dma, get_hw_feature, __args)
++	stmmac_do_callback(__priv, dma, get_hw_feature, __args)
+ #define stmmac_rx_watchdog(__priv, __args...) \
+ 	stmmac_do_void_callback(__priv, dma, rx_watchdog, __args)
+ #define stmmac_set_tx_ring_len(__priv, __args...) \
 
 
