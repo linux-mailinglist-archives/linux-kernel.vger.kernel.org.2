@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51161431891
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2561431899
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhJRMPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhJRMPi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:15:38 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A534C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 05:13:27 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id o11so8634778ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 05:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=TX6EfNcesD6AFpSmkWfASRr7QWijxOVxr8diDKAguug=;
-        b=RVOxDu4FFforRKFoxAvoyorF7CocY7yNyOu9VgebzdNR175rwXxap9U60Dy1SB2gH0
-         YTphR1K0AjvthzuBNETIAFNRVzfGt1SY40flk27eUlyhnLb/+LH0RUYuOjMfRR5nf/vd
-         Rb/WqhTr+qfrC+qzK8QF1eiQRRVPl4CYeV4mg5ey7magmJBG0Xx1qiCQPcAHKvelUVEy
-         3xiwLj4iGSD2gDIwHjjZNbNTzzJ851jhkNctpXjVHQXK8y975CPJzV2TZlS6nfDaZG1K
-         Z7BDVIUUoHeFpQjgU381WRZSJJXb5okuXKIZPoMH3vn9xHax+7SBnsVMw9GmVzl0GtA6
-         J8Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=TX6EfNcesD6AFpSmkWfASRr7QWijxOVxr8diDKAguug=;
-        b=RJptjOGWAeySWOuYJdcPf8TuyifjzykvByF0mgKFtdKntSP6upGGgQqZ9G7a8XP9Fc
-         iTusCL9GjrHfiJldxUwgvHmwIjGtMWkh3Es/8gCqT6FpR/Bp4QSIAEZrSa5QBWw645WP
-         l2vCZ5HFDthDNo1+cIVesXsrABqaanh/QpOPT9xgS7ZROFwHs2ajNjSt5XLw0OiZWFUS
-         oM5lvBf6SUDaNVEHvlLlEAnvkXL5TaeaWfrP8lA3ub1h/jhDfU+GXTrbt7+ybsYi0IOL
-         FDcnV2+zWMufkQfzk6FwWmn933Hy2gblZsUi7Oe7EF08h4EUdh02lAKak/pj2zMI4hhI
-         3bKw==
-X-Gm-Message-State: AOAM530a8Q059EjJTc5edmca1mhrhWCX8CDFBX8VQ/Zs/UIXFtYdJEJJ
-        xvNMe9dlYWuPxoQcogNrtxUwjEL4NQ35lw==
-X-Google-Smtp-Source: ABdhPJzafrLvKuJfjaxiKL3PSkm6Ol58iIp2P65rhl5bie+NUIUVQ727/8PYB0vomwuVW6OpoPg8bg==
-X-Received: by 2002:a2e:6e06:: with SMTP id j6mr32115032ljc.120.1634559205764;
-        Mon, 18 Oct 2021 05:13:25 -0700 (PDT)
-Received: from jade (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
-        by smtp.gmail.com with ESMTPSA id c19sm1614982ljj.130.2021.10.18.05.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 05:13:25 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 14:13:24 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] OP-TEE FF-A for V5.16
-Message-ID: <20211018121324.GA2943530@jade>
+        id S231535AbhJRMPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:15:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231310AbhJRMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:15:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F24B60FC3;
+        Mon, 18 Oct 2021 12:13:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634559214;
+        bh=JZE/18szAvUy5mVaCGRgXJrrABVRJ4b0rsi8noFT/gc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IkZ3b0MSfLm82OzxCOU7adYJFi02YagmoJazhg7LEntEzfOQdqHwsXijFZPe4QPtw
+         xwtKn2ZJjvqdKSJbh+62rRNRcDQXH+5QrQDVWusQU+/IlmLPXzykFgeISq0R7Wk3Gh
+         hblMyMVpPBCIxh/4VYKjOCHOCmFjBQ3qVCvJK2UA=
+Date:   Mon, 18 Oct 2021 14:13:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Message-ID: <YW1k69vzJr5kbViv@kroah.com>
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+ <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
+ <9302f1c2-b3f8-2c9e-52c5-d5a4a2987409@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <9302f1c2-b3f8-2c9e-52c5-d5a4a2987409@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+On Tue, Oct 12, 2021 at 11:35:04AM -0700, Andi Kleen wrote:
+> > I'd rather see more concerted efforts focused/limited core changes
+> > rather than leaf driver changes until there is a clearer definition of
+> > hardened.
+> 
+> A hardened driver is a driver that
 
-Please pull these patches which adds support for FF-A [1] in the OP-TEE
-driver. There's a bit of shuffling in the code where everyhting related to
-the old SMC based ABI is moved to drivers/tee/optee/smc_abi.c, but there
-should not be any changed in behavior for with the old ABI.
+Ah, you do define this, thank you!
 
-Note that this is based on top of the recent fix 7f565d0ead26 ("tee: optee:
-Fix missing devices unregister during optee_remove") which has already been
-requested to be pulled.
+> - Had similar security (not API) oriented review of its IO operations
+> (mainly MMIO access, but also PCI config space) as a non privileged user
+> interface (like a ioctl). That review should be focused on memory safety.
 
-Thanks,
-Jens
+Where is this review done?  Where is is documented?  Who is responsible
+for keeping it up to date with every code change to the driver, and to
+the code that the driver calls and the code that calls the driver?
 
-The following changes since commit 7f565d0ead264329749c0da488de9c8dfa2f18ce:
+> - Had some fuzzing on these IO interfaces using to be released tools.
 
-  tee: optee: Fix missing devices unregister during optee_remove (2021-10-12 13:24:39 +0200)
+"some"?  What tools?  What is the input, and where is that defined?  How
+much fuzzing do you claim is "good enough"?
 
-are available in the Git repository at:
+> Right now it's only three virtio drivers (console, net, block)
 
-  git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-ffa-for-v5.16
+Where was this work done and published?  And why only 3?
 
-for you to fetch changes up to 4615e5a34b95e0d81467f6d2176f19a5d184cb5d:
+> Really it's no different than what we do for every new unprivileged user
+> interface.
 
-  optee: add FF-A support (2021-10-18 11:44:23 +0200)
+Really?  I have seen loads of new drivers from Intel submitted in the
+past months that would fail any of the above things just based on
+obvious code reviews that I end up having to do...
 
-----------------------------------------------------------------
-Add FF-A support in OP-TEE driver
+If you want to start a "hardened driver" effort, there's a lot of real
+work that needs to be done here and documented, and explained why it can
+not just be done for the whole kernel...
 
-Adds supports for the OP-TEE driver to communicate with secure world
-using FF-A [1] as transport.
-
-[1] https://developer.arm.com/documentation/den0077/latest
-
-----------------------------------------------------------------
-Jens Wiklander (5):
-      tee: add sec_world_id to struct tee_shm
-      optee: simplify optee_release()
-      optee: refactor driver with internal callbacks
-      optee: isolate smc abi
-      optee: add FF-A support
-
- drivers/tee/optee/Makefile        |    5 +-
- drivers/tee/optee/call.c          |  445 ++----------
- drivers/tee/optee/core.c          |  719 ++------------------
- drivers/tee/optee/ffa_abi.c       |  911 +++++++++++++++++++++++++
- drivers/tee/optee/optee_ffa.h     |  153 +++++
- drivers/tee/optee/optee_msg.h     |   27 +-
- drivers/tee/optee/optee_private.h |  157 ++++-
- drivers/tee/optee/rpc.c           |  237 +------
- drivers/tee/optee/shm_pool.c      |  101 ---
- drivers/tee/optee/shm_pool.h      |   14 -
- drivers/tee/optee/smc_abi.c       | 1361 +++++++++++++++++++++++++++++++++++++
- include/linux/tee_drv.h           |    7 +-
- 12 files changed, 2728 insertions(+), 1409 deletions(-)
- create mode 100644 drivers/tee/optee/ffa_abi.c
- create mode 100644 drivers/tee/optee/optee_ffa.h
- delete mode 100644 drivers/tee/optee/shm_pool.c
- delete mode 100644 drivers/tee/optee/shm_pool.h
- create mode 100644 drivers/tee/optee/smc_abi.c
+greg k-h
