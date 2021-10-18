@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFA7431BA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668E9431C6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbhJRNeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:34:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42664 "EHLO mail.kernel.org"
+        id S233743AbhJRNk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232059AbhJRNcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:32:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89DBD60EFE;
-        Mon, 18 Oct 2021 13:29:06 +0000 (UTC)
+        id S233835AbhJRNix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:38:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAADB613A3;
+        Mon, 18 Oct 2021 13:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563747;
-        bh=QO8j95tTJerGA5WGZ1MrkB6rA66a4Ts7HXGfMmC/R8s=;
+        s=korg; t=1634563943;
+        bh=hdVSouO5q40i5sExSswgZBr9F2tSWw0r0jMFgRHJJXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TXcdbY6M2uHnHYX6n0kTCpkwN0hLD+zscNMVFZlyPBe+uegM/rTdgCEOrZrJLkDbG
-         Tl3T0Tn+i8HUc3vnaIBrwSd0sunlbKCGlmB+aK0oONqLxgubyMjaWFEIsy3JNSrY5A
-         oh0dkAvRirzyECniphRoSru30Hu4zSOsPGluTpec=
+        b=mJlB/Vpm0mcBo4NymixLL4TOUo29keBk7P2v13bjdT7dw4y3ntU1o8UicrYXGhk8k
+         WbEIV+R8xOUM/UBAR9v1+ObiTjy60Nwc+UkQ/xn0AdBIby+r6zuI5jnm1tZASbnits
+         1YQxGoAIGgdyaK3xfBf1Yxj/AC4lOc4Xq2cfqDV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 48/50] mqprio: Correct stats in mqprio_dump_class_stats().
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Subject: [PATCH 5.4 57/69] ata: ahci_platform: fix null-ptr-deref in ahci_platform_enable_regulators()
 Date:   Mon, 18 Oct 2021 15:24:55 +0200
-Message-Id: <20211018132328.110231802@linuxfoundation.org>
+Message-Id: <20211018132331.363394702@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,80 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit 14132690860e4d06aa3e1c4d7d8e9866ba7756dd upstream.
+commit 776c75010803849c1cc4f11031a2b3960ab05202 upstream.
 
-Introduction of lockless subqueues broke the class statistics.
-Before the change stats were accumulated in `bstats' and `qstats'
-on the stack which was then copied to struct gnet_dump.
+I got a null-ptr-deref report:
 
-After the change the `bstats' and `qstats' are initialized to 0
-and never updated, yet still fed to gnet_dump. The code updates
-the global qdisc->cpu_bstats and qdisc->cpu_qstats instead,
-clobbering them. Most likely a copy-paste error from the code in
-mqprio_dump().
+KASAN: null-ptr-deref in range [0x0000000000000090-0x0000000000000097]
+...
+RIP: 0010:regulator_enable+0x84/0x260
+...
+Call Trace:
+ ahci_platform_enable_regulators+0xae/0x320
+ ahci_platform_enable_resources+0x1a/0x120
+ ahci_probe+0x4f/0x1b9
+ platform_probe+0x10b/0x280
+...
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-__gnet_stats_copy_basic() and __gnet_stats_copy_queue() accumulate
-the values for per-CPU case but for global stats they overwrite
-the value, so only stats from the last loop iteration / tc end up
-in sch->[bq]stats.
+If devm_regulator_get() in ahci_platform_get_resources() fails,
+hpriv->phy_regulator will point to NULL, when enabling or disabling it,
+null-ptr-deref will occur.
 
-Use the on-stack [bq]stats variables again and add the stats manually
-in the global case.
+ahci_probe()
+	ahci_platform_get_resources()
+		devm_regulator_get(, "phy") // failed, let phy_regulator = NULL
+	ahci_platform_enable_resources()
+		ahci_platform_enable_regulators()
+			regulator_enable(hpriv->phy_regulator) // null-ptr-deref
 
-Fixes: ce679e8df7ed2 ("net: sched: add support for TCQ_F_NOLOCK subqueues to sch_mqprio")
-Cc: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-https://lore.kernel.org/all/20211007175000.2334713-2-bigeasy@linutronix.de/
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+commit 962399bb7fbf ("ata: libahci_platform: Fix regulator_get_optional()
+misuse") replaces devm_regulator_get_optional() with devm_regulator_get(),
+but PHY regulator omits to delete "hpriv->phy_regulator = NULL;" like AHCI.
+Delete it like AHCI regulator to fix this bug.
+
+Fixes: commit 962399bb7fbf ("ata: libahci_platform: Fix regulator_get_optional() misuse")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/sch_mqprio.c |   30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ drivers/ata/libahci_platform.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/net/sched/sch_mqprio.c
-+++ b/net/sched/sch_mqprio.c
-@@ -531,22 +531,28 @@ static int mqprio_dump_class_stats(struc
- 		for (i = tc.offset; i < tc.offset + tc.count; i++) {
- 			struct netdev_queue *q = netdev_get_tx_queue(dev, i);
- 			struct Qdisc *qdisc = rtnl_dereference(q->qdisc);
--			struct gnet_stats_basic_cpu __percpu *cpu_bstats = NULL;
--			struct gnet_stats_queue __percpu *cpu_qstats = NULL;
+--- a/drivers/ata/libahci_platform.c
++++ b/drivers/ata/libahci_platform.c
+@@ -440,10 +440,7 @@ struct ahci_host_priv *ahci_platform_get
+ 	hpriv->phy_regulator = devm_regulator_get(dev, "phy");
+ 	if (IS_ERR(hpriv->phy_regulator)) {
+ 		rc = PTR_ERR(hpriv->phy_regulator);
+-		if (rc == -EPROBE_DEFER)
+-			goto err_out;
+-		rc = 0;
+-		hpriv->phy_regulator = NULL;
++		goto err_out;
+ 	}
  
- 			spin_lock_bh(qdisc_lock(qdisc));
-+
- 			if (qdisc_is_percpu_stats(qdisc)) {
--				cpu_bstats = qdisc->cpu_bstats;
--				cpu_qstats = qdisc->cpu_qstats;
--			}
-+				qlen = qdisc_qlen_sum(qdisc);
- 
--			qlen = qdisc_qlen_sum(qdisc);
--			__gnet_stats_copy_basic(NULL, &sch->bstats,
--						cpu_bstats, &qdisc->bstats);
--			__gnet_stats_copy_queue(&sch->qstats,
--						cpu_qstats,
--						&qdisc->qstats,
--						qlen);
-+				__gnet_stats_copy_basic(NULL, &bstats,
-+							qdisc->cpu_bstats,
-+							&qdisc->bstats);
-+				__gnet_stats_copy_queue(&qstats,
-+							qdisc->cpu_qstats,
-+							&qdisc->qstats,
-+							qlen);
-+			} else {
-+				qlen		+= qdisc->q.qlen;
-+				bstats.bytes	+= qdisc->bstats.bytes;
-+				bstats.packets	+= qdisc->bstats.packets;
-+				qstats.backlog	+= qdisc->qstats.backlog;
-+				qstats.drops	+= qdisc->qstats.drops;
-+				qstats.requeues	+= qdisc->qstats.requeues;
-+				qstats.overlimits += qdisc->qstats.overlimits;
-+			}
- 			spin_unlock_bh(qdisc_lock(qdisc));
- 		}
- 
+ 	if (flags & AHCI_PLATFORM_GET_RESETS) {
 
 
