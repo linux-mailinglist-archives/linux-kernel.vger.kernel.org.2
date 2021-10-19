@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8989C433AD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A35433AD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbhJSPlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:41:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229789AbhJSPlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:41:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68CF1610A1;
-        Tue, 19 Oct 2021 15:38:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634657935;
-        bh=o5ezVg7Hp4npuopz5xMP0kwyU75vnc6iAMnB1+AOcx8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VZKQHSgjp5ceouIKTCzmunpW9pLq0U3OssQa6PEEVopkEQHUN9RewTEiDMK9dGYYw
-         wWaKOgypCV9ndYGEFrSLqiHV2YDAiYFIcDBDLgLwaMhNYK2l4oL8zoa9YHIzNOetBz
-         QBdWOFMW5tJaPHXcN7Lj8ES9mLGRIcFAWu+H7qKd9ksERXZRbBe1SpRdWFai4ylgH5
-         LHrY+Fw3UYyrqPj2YUjTxF4m5tXlWRqKeNXaNsvVbiDmV2Z+dc3Cu/7DbJiypMVVZa
-         K4Ttv/2ObuURdsu1DseF9ZfOxg1uVK8ZL30pO3Dx+Jai56pe3UJc5uGe548jaiufuW
-         sbB2K3uFI8EKA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?UTF-8?q?Ma=C3=ADra=20Canal?= <maira.canal@usp.br>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] regulator: lp872x: fix enum conversion warning
-Date:   Tue, 19 Oct 2021 17:38:43 +0200
-Message-Id: <20211019153851.509626-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231236AbhJSPm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:42:27 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:44003 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhJSPmZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:42:25 -0400
+Received: by mail-ot1-f50.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so3507497otb.10;
+        Tue, 19 Oct 2021 08:40:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1GW53ULgIVo+eA02uouA/6vfgssXmkywyaW+hiJaZjo=;
+        b=uNX7Z30gJdXlK6ZZF22Q8XJa07PBHGH4UjQnAcJMCVW7A8L5ztKG87AaivI9MSrn7F
+         6m84HNOQYVllz51AZ5GaeuubF1w6UT7HGxEL6qn2x/m9wzAjTW3sGIbKp/LUc7vJTnv9
+         23b18AjaxXC38FqPicyQnXdiuDX1w3SWIzpv2KhpkmFF1OM1xGkLTDC3gHovcI0Cg2+O
+         KXk9nMwLnW8lGverjUNkzSZyygUtyRaBqIL0rTdW5H8iJpIhGATksDCiyfYdcxseuc6q
+         NcVlK58P98UYSYOAGThycKtXEUhJeIjnZXQ97d12LsArDI4TAZlx7xDKxjWu8DVXrHcc
+         Nc3w==
+X-Gm-Message-State: AOAM532tkqYEkL1Rf+C68YIQZrhkdN9/3sQ7jgSVpLUNi0/ZaEqKjYKu
+        9940ErY56yxMFLq5qeqhHUsU/SLzw5t+eBXrzNc=
+X-Google-Smtp-Source: ABdhPJzQ3xKCus2gtYjTCdvxMA5NMHFXLLXfxfx4CaaGTuLGCFu7eW8RuF2oUwhwVswCtH4Hy+jWbOZlGr0zA8HXEPo=
+X-Received: by 2002:a9d:65c1:: with SMTP id z1mr5844673oth.198.1634658012684;
+ Tue, 19 Oct 2021 08:40:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211019150203.2805738-1-daniel.lezcano@linaro.org> <20211019150203.2805738-2-daniel.lezcano@linaro.org>
+In-Reply-To: <20211019150203.2805738-2-daniel.lezcano@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 19 Oct 2021 17:40:01 +0200
+Message-ID: <CAJZ5v0i1RCKs8nMCc0ROsM03beOPL941r+=NPbQpidiZJ2OA8A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] thermal/core: Make deprecated cooling device state
+ change from userspace
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Oct 19, 2021 at 5:02 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> The cooling devices have their cooling device set_cur_state
+> read-writable all the time in the sysfs directory, thus allowing the
+> userspace to act on it.
+>
+> The thermal framework is wrongly used by userspace as a power capping
+> framework by acting on the cooling device opaque state. This one then
+> competes with the in-kernel governor decision.
+>
+> We have seen in out-of-tree kernels, a big number of devices which are
+> abusely declaring themselves as cooling device just to act on their
+> power.
+>
+> The role of the thermal framework is to protect the junction
+> temperature of the silicon. Letting the userspace to play with a
+> cooling device is invalid and potentially dangerous.
+>
+> The powercap framework is the right framework to do power capping and
+> moreover it deals with the aggregation via the dev pm qos.
+>
+> As the userspace governor is marked deprecated and about to be
+> removed, there is no point to keep this file writable also in the
+> future.
+>
+> Emit a warning and deprecate the interface.
+>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>  drivers/thermal/thermal_sysfs.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+> index 1c4aac8464a7..730f1361dbef 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -610,6 +610,8 @@ cur_state_store(struct device *dev, struct device_attribute *attr,
+>         unsigned long state;
+>         int result;
+>
+> +       pr_warn_once("Setting cooling device state is deprecated\n");
 
-clang warns that the argument to devm_gpiod_get_optional()
-is the wrong type:
+Maybe dev_warn_once() even?  I guess it won\t hurt to print it once
+per the affected device?
 
-drivers/regulator/lp872x.c:689:57: error: implicit conversion from enumeration type 'enum lp872x_dvs_state' to different enumeration type 'enum gpiod_flags' [-Werror,-Wenum-conversion]
-        dvs->gpio = devm_gpiod_get_optional(lp->dev, "ti,dvs", pinstate);
-                    ~~~~~~~~~~~~~~~~~~~~~~~                    ^~~~~~~~
-
-The enum value is specifcally chosen to be the same here, but
-the compiler only sees the mismatched types. This could be
-worked around using another ?: expression, but it seems easiest
-to replace the assignment with a macro.
-
-Fixes: 72bf80cf09c4 ("regulator: lp872x: replacing legacy gpio interface for gpiod")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/regulator/lp872x.c       | 6 +++---
- include/linux/regulator/lp872x.h | 8 +++-----
- 2 files changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/regulator/lp872x.c b/drivers/regulator/lp872x.c
-index 1dba5dbcd461..61412ebc8d8d 100644
---- a/drivers/regulator/lp872x.c
-+++ b/drivers/regulator/lp872x.c
-@@ -103,7 +103,7 @@ struct lp872x {
- 	enum lp872x_id chipid;
- 	struct lp872x_platform_data *pdata;
- 	int num_regulators;
--	enum lp872x_dvs_state dvs_pin;
-+	enum gpiod_flags dvs_pin;
- };
- 
- /* LP8720/LP8725 shared voltage table for LDOs */
-@@ -251,7 +251,7 @@ static int lp872x_regulator_enable_time(struct regulator_dev *rdev)
- static void lp872x_set_dvs(struct lp872x *lp, enum lp872x_dvs_sel dvs_sel,
- 			struct gpio_desc *gpio)
- {
--	enum lp872x_dvs_state state;
-+	enum gpiod_flags state;
- 
- 	state = dvs_sel == SEL_V1 ? DVS_HIGH : DVS_LOW;
- 	gpiod_set_value(gpio, state);
-@@ -675,7 +675,7 @@ static const struct regulator_desc lp8725_regulator_desc[] = {
- static int lp872x_init_dvs(struct lp872x *lp)
- {
- 	struct lp872x_dvs *dvs = lp->pdata ? lp->pdata->dvs : NULL;
--	enum lp872x_dvs_state pinstate;
-+	enum gpiod_flags pinstate;
- 	u8 mask[] = { LP8720_EXT_DVS_M, LP8725_DVS1_M | LP8725_DVS2_M };
- 	u8 default_dvs_mode[] = { LP8720_DEFAULT_DVS, LP8725_DEFAULT_DVS };
- 
-diff --git a/include/linux/regulator/lp872x.h b/include/linux/regulator/lp872x.h
-index 8e7e0343c6e1..5b94fe38fc78 100644
---- a/include/linux/regulator/lp872x.h
-+++ b/include/linux/regulator/lp872x.h
-@@ -40,10 +40,8 @@ enum lp872x_regulator_id {
- 	LP872X_ID_MAX,
- };
- 
--enum lp872x_dvs_state {
--	DVS_LOW  = GPIOD_OUT_LOW,
--	DVS_HIGH = GPIOD_OUT_HIGH,
--};
-+#define	DVS_LOW				GPIOD_OUT_LOW
-+#define	DVS_HIGH			GPIOD_OUT_HIGH
- 
- enum lp872x_dvs_sel {
- 	SEL_V1,
-@@ -59,7 +57,7 @@ enum lp872x_dvs_sel {
- struct lp872x_dvs {
- 	struct gpio_desc *gpio;
- 	enum lp872x_dvs_sel vsel;
--	enum lp872x_dvs_state init_state;
-+	enum gpiod_flags init_state;
- };
- 
- /**
--- 
-2.29.2
-
+> +
+>         if (sscanf(buf, "%ld\n", &state) != 1)
+>                 return -EINVAL;
+>
+> --
