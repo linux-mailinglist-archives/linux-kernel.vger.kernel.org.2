@@ -2,157 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28ED433730
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A455843373E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235895AbhJSNio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:38:44 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45840 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231564AbhJSNik (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:38:40 -0400
-Date:   Tue, 19 Oct 2021 13:36:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634650585;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ddMplWsx5Jnv3cNbAH/TPxYeco5WlIjAVBoZfAiLe7s=;
-        b=DMk3Nz83OnUtWembeKAdGitVg478FyURRez2Kpku0ODa9dtLP+/Isi9/LeHw6LHbrIZwb5
-        5UYdEYxMa8Rxid/Zr0FM4TmJiTcKFNKJ+wG1jrbsR2c5XRICFOw9nF7kMaXeUggeu2KYo6
-        knnNE48k+VsnGrbJq+T2cG0Kn96wA1CZtaX7nSzG3qulu0wIif/hU9BdeiffC+mKEerzY5
-        HVCURmU0aD8+U/I61e42qN4fKchnOK4QfebRjet1Xy5mv3ED6yB4WJzWDK9HdZmhEBChMT
-        N8Ik050bHmrOph3C65EUeSo7oNKCe0429QLmK5jlTn/eB3nhAHHW2VEOqBvbMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634650585;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ddMplWsx5Jnv3cNbAH/TPxYeco5WlIjAVBoZfAiLe7s=;
-        b=SUXncjcu03fipAPS/n+zK+qz4tZOvOA+4oPKuG4/cM5FCQQ/4/Y/ZGfxw2clLI+5yDd91p
-        cdAmvrlfSdlCRwCQ==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sev] x86/sev: Carve out HV call's return value verification
-Cc:     Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <YVbYWz%2B8J7iMTJjc@zn.tnic>
-References: <YVbYWz%2B8J7iMTJjc@zn.tnic>
+        id S235743AbhJSNmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:42:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235739AbhJSNmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 09:42:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AA8D60FDA;
+        Tue, 19 Oct 2021 13:39:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634650792;
+        bh=nt2mCYefXWMIaMeljO6B+JG+TGSzgNhhr44Juy9MjH0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pK7YqmUL0a3iT4HpsQCx5Ot8rkA9Yqhbrnwv6jo6ZElrRKYhQv9j4fPWpW1r8FMli
+         5Lsz8CjwuVHiiiycxNhLQpl8GvJMI8RwgE/wUIMSc0wLxAnpdUQEo1jjznHaJ+fQQt
+         JIj7yE5yeya9A1mOOe0gT1KvBEDPa8FmgnY0dTfoAmeIsedH/kWzwxjtvxC8crPo5z
+         nJgW6slFeIQJhlqXo25qOsp0es4mmwMxcTEPq84O0EsgZ2NU4+sDyAbPGnRJqOIZZd
+         r1gz9l8PfC3oh/e3mkrURmoV8TD+u34ZNgYynrINyntYBB5Bthm+dTop1ouzWsjFGj
+         zmv9xK4EXC6oA==
+Received: by mail-ed1-f50.google.com with SMTP id i20so12933501edj.10;
+        Tue, 19 Oct 2021 06:39:52 -0700 (PDT)
+X-Gm-Message-State: AOAM533lghX/ODQ05U1chP5xTsuhbPrWFnQhBuXR2/EUTnzgQE+wKcbE
+        8y3OBAEEUx0eqAAw2aXDnD+Vcj6Nc5j6J4ALnA==
+X-Google-Smtp-Source: ABdhPJw785YAft9kOCJXRejGGvZ/JDL+mkBm+lWkw83KlfrIebtxU9BzrRRTN4EOU5p2crXDoSahLOKz0M3l0GoGLxg=
+X-Received: by 2002:aa7:c357:: with SMTP id j23mr56462688edr.145.1634650742754;
+ Tue, 19 Oct 2021 06:39:02 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <163465058466.25758.6018389976856003730.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20211015123920.176782-1-horatiu.vultur@microchip.com>
+ <20211015123920.176782-3-horatiu.vultur@microchip.com> <YW3K2GX+hmkwt3EE@robh.at.kernel.org>
+ <20211019091258.3uet6lp3mxaoliqt@soft-dev3-1.localhost>
+In-Reply-To: <20211019091258.3uet6lp3mxaoliqt@soft-dev3-1.localhost>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 19 Oct 2021 08:38:49 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLemN4jU32-5UvPBGUb7G6jxxKwD5oetJWkoBLANuyTsw@mail.gmail.com>
+Message-ID: <CAL_JsqLemN4jU32-5UvPBGUb7G6jxxKwD5oetJWkoBLANuyTsw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: phy: Add constants for lan966x serdes
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>, Vinod <vkoul@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sev branch of tip:
+On Tue, Oct 19, 2021 at 4:11 AM Horatiu Vultur
+<horatiu.vultur@microchip.com> wrote:
+>
+> The 10/18/2021 14:28, Rob Herring wrote:
+> >
+> > On Fri, Oct 15, 2021 at 02:39:19PM +0200, Horatiu Vultur wrote:
+> > > Lan966x has: 2 integrated PHYs, 3 SerDes and 2 RGMII interfaces. Which
+> > > requires to be muxed based on the HW representation.
+> > >
+> > > So add constants for each interface to be able to distinguish them.
+> > >
+> > > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > > ---
+> > >  include/dt-bindings/phy/phy-lan966x-serdes.h | 14 ++++++++++++++
+> > >  1 file changed, 14 insertions(+)
+> > >  create mode 100644 include/dt-bindings/phy/phy-lan966x-serdes.h
+> > >
+> > > diff --git a/include/dt-bindings/phy/phy-lan966x-serdes.h b/include/dt-bindings/phy/phy-lan966x-serdes.h
+> > > new file mode 100644
+> > > index 000000000000..8a05f93ecf41
+> > > --- /dev/null
+> > > +++ b/include/dt-bindings/phy/phy-lan966x-serdes.h
+> > > @@ -0,0 +1,14 @@
+> > > +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+> > > +
+> > > +#ifndef __PHY_LAN966X_SERDES_H__
+> > > +#define __PHY_LAN966X_SERDES_H__
+> > > +
+> > > +#define PHY(x)               (x)
+> > > +#define PHY_MAX              PHY(2)
+> > > +#define SERDES6G(x)  (PHY_MAX + 1 + (x))
+> > > +#define SERDES6G_MAX SERDES6G(3)
+> > > +#define RGMII(x)     (SERDES6G_MAX + 1 + (x))
+> > > +#define RGMII_MAX    RGMII(2)
+> > > +#define SERDES_MAX   (RGMII_MAX + 1)
+> >
+> > I still don't understand. #phy-cells description says we have:
+> >
+> > <port idx> <serdes idx>
+> >
+> > But here it's 3 numbers. How are these defines used to fill in the 2
+> > cells?
+>
+> Actually they are still only a number. Or maybe I am missing something.
 
-Commit-ID:     c688bd5dc94ee2677f820e4a566fbe98018847ff
-Gitweb:        https://git.kernel.org/tip/c688bd5dc94ee2677f820e4a566fbe98018847ff
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Fri, 01 Oct 2021 11:41:05 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 19 Oct 2021 13:54:47 +02:00
+So all the defines apply to the 2nd cell? That's what's missing. The
+cell description needs to spell all this out. 3 different modes or
+whatever. Explain what the h/w is comprised of in the top level
+'description'.
 
-x86/sev: Carve out HV call's return value verification
+>
+> Maybe an example will help:
+>
+> ---
+> serdes: serdes@e2004010 {
+>     compatible = "microchip,lan966x-serdes";
+>     reg = <0xe202c000 0x9c>, <0xe2004010 0x4>;
+>     #phy-cells = <2>;
+> };
+>
+> &port0 {
+>     ...
+>     phys = <&serdes 0 SERDES6G(1)>;
+>     ...
+> };
+>
+> &port1 {
+>     ...
+>     phys = <&serdes 1 PHY(0)>;
 
-Carve out the verification of the HV call return value into a separate
-helper and make it more readable.
+I think CU was better, just needed some comments. PHY is pretty vague.
 
-No functional changes.
+>     ...
+> }
+>
+> ...
+> ---
+>
+> Here are some existing examples based on which I have created this patch
+> series:
+> https://elixir.bootlin.com/linux/v5.15-rc6/source/arch/mips/boot/dts/mscc/ocelot_pcb120.dts#L99
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lore.kernel.org/r/YVbYWz%2B8J7iMTJjc@zn.tnic
----
- arch/x86/kernel/sev-shared.c | 53 +++++++++++++++++++----------------
- 1 file changed, 29 insertions(+), 24 deletions(-)
+None of which use PHY() or RGMII()...
 
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index bf1033a..4579c38 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -94,25 +94,15 @@ static void vc_finish_insn(struct es_em_ctxt *ctxt)
- 	ctxt->regs->ip += ctxt->insn.length;
- }
- 
--static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
--					  struct es_em_ctxt *ctxt,
--					  u64 exit_code, u64 exit_info_1,
--					  u64 exit_info_2)
-+static enum es_result verify_exception_info(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
- {
--	enum es_result ret;
-+	u32 ret;
- 
--	/* Fill in protocol and format specifiers */
--	ghcb->protocol_version = GHCB_PROTOCOL_MAX;
--	ghcb->ghcb_usage       = GHCB_DEFAULT_USAGE;
-+	ret = ghcb->save.sw_exit_info_1 & GENMASK_ULL(31, 0);
-+	if (!ret)
-+		return ES_OK;
- 
--	ghcb_set_sw_exit_code(ghcb, exit_code);
--	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
--	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
--
--	sev_es_wr_ghcb_msr(__pa(ghcb));
--	VMGEXIT();
--
--	if ((ghcb->save.sw_exit_info_1 & 0xffffffff) == 1) {
-+	if (ret == 1) {
- 		u64 info = ghcb->save.sw_exit_info_2;
- 		unsigned long v;
- 
-@@ -124,19 +114,34 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
- 		    ((v == X86_TRAP_GP) || (v == X86_TRAP_UD)) &&
- 		    ((info & SVM_EVTINJ_TYPE_MASK) == SVM_EVTINJ_TYPE_EXEPT)) {
- 			ctxt->fi.vector = v;
-+
- 			if (info & SVM_EVTINJ_VALID_ERR)
- 				ctxt->fi.error_code = info >> 32;
--			ret = ES_EXCEPTION;
--		} else {
--			ret = ES_VMM_ERROR;
-+
-+			return ES_EXCEPTION;
- 		}
--	} else if (ghcb->save.sw_exit_info_1 & 0xffffffff) {
--		ret = ES_VMM_ERROR;
--	} else {
--		ret = ES_OK;
- 	}
- 
--	return ret;
-+	return ES_VMM_ERROR;
-+}
-+
-+static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
-+					  struct es_em_ctxt *ctxt,
-+					  u64 exit_code, u64 exit_info_1,
-+					  u64 exit_info_2)
-+{
-+	/* Fill in protocol and format specifiers */
-+	ghcb->protocol_version = GHCB_PROTOCOL_MAX;
-+	ghcb->ghcb_usage       = GHCB_DEFAULT_USAGE;
-+
-+	ghcb_set_sw_exit_code(ghcb, exit_code);
-+	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
-+	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
-+
-+	sev_es_wr_ghcb_msr(__pa(ghcb));
-+	VMGEXIT();
-+
-+	return verify_exception_info(ghcb, ctxt);
- }
- 
- /*
+
+> https://elixir.bootlin.com/linux/v5.15-rc6/source/arch/mips/boot/dts/mscc/ocelot.dtsi#L274
+>
+> >
+> > Rob
+>
+> --
+> /Horatiu
