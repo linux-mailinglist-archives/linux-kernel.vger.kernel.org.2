@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C806D43406A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D95043406E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhJSVXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhJSVX3 (ORCPT
+        id S229771AbhJSVXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:23:54 -0400
+Received: from mail-oo1-f54.google.com ([209.85.161.54]:42551 "EHLO
+        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhJSVXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:23:29 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62B1C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:21:15 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id w17so2774550plg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:21:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J2jhZlXrpk36rWXoQ81LZZvnNqC+n5/mdi3guRUAkO0=;
-        b=LYi4+NnnfP0J6789EEebKcu0dApyAjclojXAdKGfIBZY+gpjAy9yZ1/cwG5vc+9FEI
-         gi/Co6xxDkkvTlbOgEmMuyARACCagckvkPyYt/BIvmV6O6XZBu1XgPl0PscxBVXkA594
-         o1X8qHYYsaBk/GmlBsxNhtKxr7qsMe+aTvmVJzIy5MCSqi8B608gp9frwfyzmlaMrxVL
-         9qwpBgYY9EoKeOt+d3JNuQ2YbkqIT9QAZznAxXglyE3fOusihHg+m4h5ceUVWhBWRzrv
-         6bUD7gUhsp50oLl262iLa4vgkQEml9CTBwc4iIKT4q7rKwUFST+WUex8s07PV63QYKsj
-         qhkQ==
+        Tue, 19 Oct 2021 17:23:53 -0400
+Received: by mail-oo1-f54.google.com with SMTP id a17-20020a4a6851000000b002b59bfbf669so1176529oof.9;
+        Tue, 19 Oct 2021 14:21:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J2jhZlXrpk36rWXoQ81LZZvnNqC+n5/mdi3guRUAkO0=;
-        b=Muu2+LEn7roVw4sqQedktBwyJs8msC06HEheH668MEjOz+rOGYRe5o/XLGDpeFfXt8
-         zp6n0WZ4lRl1zFEAUJcC57UvAfNdXveVI7yR6LGWNJkHmMByJfVLRyIB6fIEsoEhH9r3
-         OyVZy0fTDCmRyAJONRf1Gi0Pgr6E/TB1VTfwJC+IL8/0+cbJL0wPPGtKJhzkeOTSNmPe
-         vyUJCfKqZvHIw+HeyxJ67MSDqvdLwvU/cQtMkXKKysWtuQxyiswE+BrKrpFWft0dHGJS
-         H+PAE8ZOUagZ5TVxp7qSd8UKIoWkGO2xODVlrdsmjcNCcaQbdaQpOZmEh/LSTKgpXRGW
-         kxZQ==
-X-Gm-Message-State: AOAM531O/zTi6MUZTLg/q9+qOxLBa2zJ2Viy5Q5wJhYqUHCihInbze7s
-        us70Sn1uSH/hN+qdlYvjvzzHz4NVuRC3HyH95v5uww==
-X-Google-Smtp-Source: ABdhPJyivSREcZuKv29sI/+MMH86C8+W8Oqv2bEXBGZ8Niv3bwWkKi+GwQDZJSNnRnxHFl4ELw3HtwM9L+4LHR0bN9U=
-X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr2553281pjb.124.1634678475225;
- Tue, 19 Oct 2021 14:21:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2UUC/3x7ofeAneQJCy/LNm1w85QsLZXDRkpQ+xWwBmU=;
+        b=IjmW0cb1qc53Men9AXB+e1X0/njoUqr5FuRCOXxJllad5BdKxFX/nn3pq0cQ5aCksv
+         K5mQdzt5PpK4WzgWopZAuUuoGuM/UpiCbS9N1Chj+L9VvsLtwkoMWyHo8/hDqgnn+bsg
+         zokiY2UByTRviN5hrgr0NalgHdUJqPdO9CR+wFUSbGwATL9+oTOnz4gxdsSEAbReYluQ
+         1TXup0QDRIIKIn+CAMq53WBLqBhaP4QlPKZsU+V6NYRSV7/WanJ1P3QQzsRh/vYvmx9n
+         KM/u2mLji2sKAuXMe6SkN2iu23BcS5seHDwWdRWML4tjz+lBDwtsTAfyMRGGeTVuVDeo
+         2Ugg==
+X-Gm-Message-State: AOAM530cwkS68qLrVusb0Ttg+hfDzlEGK8C1JiksZr7N7ZcIO3CyIpsU
+        s1Pzohko2Nh/k3gibzXpSQ==
+X-Google-Smtp-Source: ABdhPJwNrg/XuTyux0NXtK5tyTRR3bwuEqv0kh/QBZ8M5QK6Ecru3wRZ84BT6IFRxkHlUE3sAMbgiQ==
+X-Received: by 2002:a4a:430c:: with SMTP id k12mr6628026ooj.43.1634678499397;
+        Tue, 19 Oct 2021 14:21:39 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-67-78-118-34.sw.biz.rr.com. [67.78.118.34])
+        by smtp.gmail.com with ESMTPSA id c17sm65695ots.35.2021.10.19.14.21.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 14:21:38 -0700 (PDT)
+Received: (nullmailer pid 862188 invoked by uid 1000);
+        Tue, 19 Oct 2021 21:21:36 -0000
+Date:   Tue, 19 Oct 2021 16:21:36 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     mchehab@kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, martin.botka@somainline.org,
+        robh+dt@kernel.org, phone-devel@vger.kernel.org,
+        linux-media@vger.kernel.org, agross@kernel.org,
+        stanimir.varbanov@linaro.org, bjorn.andersson@linaro.org
+Subject: Re: [PATCH 1/3] dt-bindings: media: venus: Add sdm660 dt schema
+Message-ID: <YW824G+mII83pjU5@robh.at.kernel.org>
+References: <20211008102119.268869-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
-References: <20210915195306.612966-1-kaleshsingh@google.com>
- <20210915195306.612966-2-kaleshsingh@google.com> <20211019164834.465b2a53@gandalf.local.home>
-In-Reply-To: <20211019164834.465b2a53@gandalf.local.home>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Tue, 19 Oct 2021 14:21:04 -0700
-Message-ID: <CAC_TJvfT-1SeEhDnVjRfcv1SjKmZbcdy=cBVXYeB1GLTv+=e+w@mail.gmail.com>
-Subject: Re: [PATCH 1/5] tracing: Add support for creating hist trigger
- variables from literal
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008102119.268869-1-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 1:48 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 15 Sep 2021 19:52:45 +0000
-> Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> > Currently hist trigger expressions don't support the use of numeric
-> > literals:
-> >       e.g. echo 'hist:keys=common_pid:x=$y-1234'
-> >               --> is not valid expression syntax
-> >
-> > Having the ability to use numeric constants in hist triggers supports
-> > a wider range of expressions for creating variables.
->
-> I'm not against the patch, but I'm curious to what use case this would be
-> useful for. In the cover letter it mentions the division and multiplication
-> for finding associated buckets, but what is the addition / subtraction used
-> for?
+On Fri, 08 Oct 2021 12:21:17 +0200, AngeloGioacchino Del Regno wrote:
+> Add a schema description for the Venus video decoder/encoder IP
+> in SDM660.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  .../bindings/media/qcom,sdm660-venus.yaml     | 186 ++++++++++++++++++
+>  1 file changed, 186 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sdm660-venus.yaml
+> 
 
-Addition and subtraction are already supported operations. The use
-case given in Documentation/trace/histogram.rst is for calculating
-latencies. I don't have a use case where the constants may be needed
-in the addition/subtraction, but for simplicity and completeness we
-support them for all operations.
-
-- Kalesh
-
->
-> -- Steve
->
->
-> >
-> > Add support for creating trace event histogram variables from numeric
-> > literals.
-> >
-> >       e.g. echo 'hist:keys=common_pid:x=1234,y=size-1024' >> event/trigger
-> >
-> > A negative numeric constant is created, using unary minus operator
-> > (parentheses are required).
-> >
-> >       e.g. echo 'hist:keys=common_pid:z=-(2)' >> event/trigger
-> >
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> >
+Reviewed-by: Rob Herring <robh@kernel.org>
