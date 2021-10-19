@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03416434067
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C806D43406A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhJSVXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46148 "EHLO
+        id S229706AbhJSVXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhJSVXS (ORCPT
+        with ESMTP id S229677AbhJSVX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:23:18 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD12EC06161C;
-        Tue, 19 Oct 2021 14:21:05 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 7134D738;
-        Tue, 19 Oct 2021 21:21:05 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 7134D738
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1634678465; bh=ji7v3dUTgSj5LMhc6Ojf0I7as0hF4hA8KlhK6GQkbLo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=UG4/lw7bGE/Imt5VVml9JCMFMu2zJwoVi2B+US7A2KRVnw/pTZ5rmh1TPaFMwiVkp
-         FCzJfL7tBCLKfPpTeofQicg/n6siQb0HwuaeTL95h4L7ltU7M1xM2QcKQz3qTiyhuT
-         SbjvjW5Hbkjy0klFlL2hdMipcAtkiKbJhSeC6EWup5niL8P7C4mXMjvpkFlXA/Clcf
-         Xn420Hpe/hf8quEQSAtbNLuBkhh4rQNv8+eGhjFulNxMI6NBiYRXmvWROvs2Y0fkVO
-         t7mHM64EKkIyzlR5UI3JaA06Xixoa6yhtI/UE7CagZo5GftPxj49DnhEmoB5wwwLLo
-         3vnmP7mH/usLA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alex Shi <alexs@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Wu XiangCheng <bobwxc@email.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 16/23] docs: translations: zh_CN: memory-hotplug.rst:
- fix a typo
-In-Reply-To: <b22b772c23f531708a9bc025d56c0312a53bd6c9.1634630486.git.mchehab+huawei@kernel.org>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
- <b22b772c23f531708a9bc025d56c0312a53bd6c9.1634630486.git.mchehab+huawei@kernel.org>
-Date:   Tue, 19 Oct 2021 15:21:04 -0600
-Message-ID: <878ryosocf.fsf@meer.lwn.net>
+        Tue, 19 Oct 2021 17:23:29 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62B1C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:21:15 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id w17so2774550plg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J2jhZlXrpk36rWXoQ81LZZvnNqC+n5/mdi3guRUAkO0=;
+        b=LYi4+NnnfP0J6789EEebKcu0dApyAjclojXAdKGfIBZY+gpjAy9yZ1/cwG5vc+9FEI
+         gi/Co6xxDkkvTlbOgEmMuyARACCagckvkPyYt/BIvmV6O6XZBu1XgPl0PscxBVXkA594
+         o1X8qHYYsaBk/GmlBsxNhtKxr7qsMe+aTvmVJzIy5MCSqi8B608gp9frwfyzmlaMrxVL
+         9qwpBgYY9EoKeOt+d3JNuQ2YbkqIT9QAZznAxXglyE3fOusihHg+m4h5ceUVWhBWRzrv
+         6bUD7gUhsp50oLl262iLa4vgkQEml9CTBwc4iIKT4q7rKwUFST+WUex8s07PV63QYKsj
+         qhkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J2jhZlXrpk36rWXoQ81LZZvnNqC+n5/mdi3guRUAkO0=;
+        b=Muu2+LEn7roVw4sqQedktBwyJs8msC06HEheH668MEjOz+rOGYRe5o/XLGDpeFfXt8
+         zp6n0WZ4lRl1zFEAUJcC57UvAfNdXveVI7yR6LGWNJkHmMByJfVLRyIB6fIEsoEhH9r3
+         OyVZy0fTDCmRyAJONRf1Gi0Pgr6E/TB1VTfwJC+IL8/0+cbJL0wPPGtKJhzkeOTSNmPe
+         vyUJCfKqZvHIw+HeyxJ67MSDqvdLwvU/cQtMkXKKysWtuQxyiswE+BrKrpFWft0dHGJS
+         H+PAE8ZOUagZ5TVxp7qSd8UKIoWkGO2xODVlrdsmjcNCcaQbdaQpOZmEh/LSTKgpXRGW
+         kxZQ==
+X-Gm-Message-State: AOAM531O/zTi6MUZTLg/q9+qOxLBa2zJ2Viy5Q5wJhYqUHCihInbze7s
+        us70Sn1uSH/hN+qdlYvjvzzHz4NVuRC3HyH95v5uww==
+X-Google-Smtp-Source: ABdhPJyivSREcZuKv29sI/+MMH86C8+W8Oqv2bEXBGZ8Niv3bwWkKi+GwQDZJSNnRnxHFl4ELw3HtwM9L+4LHR0bN9U=
+X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr2553281pjb.124.1634678475225;
+ Tue, 19 Oct 2021 14:21:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210915195306.612966-1-kaleshsingh@google.com>
+ <20210915195306.612966-2-kaleshsingh@google.com> <20211019164834.465b2a53@gandalf.local.home>
+In-Reply-To: <20211019164834.465b2a53@gandalf.local.home>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Tue, 19 Oct 2021 14:21:04 -0700
+Message-ID: <CAC_TJvfT-1SeEhDnVjRfcv1SjKmZbcdy=cBVXYeB1GLTv+=e+w@mail.gmail.com>
+Subject: Re: [PATCH 1/5] tracing: Add support for creating hist trigger
+ variables from literal
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
-
-> memory_hotplug.rst -> memory-hotplug.rst
-
-Why do I feel we've been switching this around forever...?
-
-> Fixes: 620127548a69 ("docs/zh_CN: add core api memory_hotplug translation=
-")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
+On Tue, Oct 19, 2021 at 1:48 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> To mailbombing on a large number of people, only mailing lists were C/C o=
-n the cover.
-> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git=
-.mchehab+huawei@kernel.org/
+> On Wed, 15 Sep 2021 19:52:45 +0000
+> Kalesh Singh <kaleshsingh@google.com> wrote:
 >
->  Documentation/translations/zh_CN/core-api/memory-hotplug.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > Currently hist trigger expressions don't support the use of numeric
+> > literals:
+> >       e.g. echo 'hist:keys=common_pid:x=$y-1234'
+> >               --> is not valid expression syntax
+> >
+> > Having the ability to use numeric constants in hist triggers supports
+> > a wider range of expressions for creating variables.
 >
-> diff --git a/Documentation/translations/zh_CN/core-api/memory-hotplug.rst=
- b/Documentation/translations/zh_CN/core-api/memory-hotplug.rst
-> index 9a204eb196f2..9b2841fb9a5f 100644
-> --- a/Documentation/translations/zh_CN/core-api/memory-hotplug.rst
-> +++ b/Documentation/translations/zh_CN/core-api/memory-hotplug.rst
-> @@ -1,6 +1,6 @@
->  .. include:: ../disclaimer-zh_CN.rst
->=20=20
-> -:Original: Documentation/core-api/memory_hotplug.rst
-> +:Original: Documentation/core-api/memory-hotplug.rst
->=20=20
->  :=E7=BF=BB=E8=AF=91:
+> I'm not against the patch, but I'm curious to what use case this would be
+> useful for. In the cover letter it mentions the division and multiplication
+> for finding associated buckets, but what is the addition / subtraction used
+> for?
 
-Applied, thanks.
+Addition and subtraction are already supported operations. The use
+case given in Documentation/trace/histogram.rst is for calculating
+latencies. I don't have a use case where the constants may be needed
+in the addition/subtraction, but for simplicity and completeness we
+support them for all operations.
 
-jon
+- Kalesh
+
+>
+> -- Steve
+>
+>
+> >
+> > Add support for creating trace event histogram variables from numeric
+> > literals.
+> >
+> >       e.g. echo 'hist:keys=common_pid:x=1234,y=size-1024' >> event/trigger
+> >
+> > A negative numeric constant is created, using unary minus operator
+> > (parentheses are required).
+> >
+> >       e.g. echo 'hist:keys=common_pid:z=-(2)' >> event/trigger
+> >
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> >
