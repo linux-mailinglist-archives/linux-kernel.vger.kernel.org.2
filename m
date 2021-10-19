@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA09843412A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0DA43412C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhJSWJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhJSWJ6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:09:58 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE31C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:07:44 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 75so20678463pga.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:07:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xs93ahHI/d8ZRpuxQaPtQL8havAooE98Ej9mp7tGATA=;
-        b=DOVfWKsxwicFbklec3Xgd2QezWxbMBHVzzS1bB1A9trX1xLQdQTQc1z914huwxbqbf
-         pSNypVrjkVpHQfCXIj83E5dhHIl705qwz3WcTL0G3qC5aUDZQSJM6tC19jKGn0ORxu4W
-         vjS/1HlafvxmP/41Qw+s/oz6XxkFvX/FW47rUB4Bdeuk2jJ1BMDgsEEp4nEozhUcOgvl
-         oqZOkdOmXSXe1a8ExqzwWKLBy0eCXtWAUJKv9FPsI1af2eVj3m1FtmsFOw/wWl8rt7hM
-         p5yeSOr+uGA8qKMSxNQvUD6OTC0G496nCf8RDtZNf3TXkqnD+MnT/+GBD4hyv+IW2hqe
-         xkHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xs93ahHI/d8ZRpuxQaPtQL8havAooE98Ej9mp7tGATA=;
-        b=CQT91qGjc9rYn3CvvTLEIq5rkDUoNneCnXLlO6WR95kgWzjJ494N8n/3oCeGKxd6e3
-         I5mtxCsB8Pwok3JTFVLfckQXvdblfFZn0Fd82oaAYAuRMI4vbm9339eTxWKqGwsQV6yd
-         aNqD3bjXP73E1qfvdQuzFeY2iwMHWNCQ0/2Z9z506t3C4OB9wNcD7TiG6HKW1VlHdwvO
-         QGkSA4ybJ9Pno8ZGxHcU8d4c48zhTfZw759bWobks7dzpFY8fzXl5HiNjv9KsW6NC8qs
-         v1uWC1e2Wm/U13biqkES8lsolF9hLjcsIk5JPDhNZz+vCn1461K0BO7AcqUSbM+myAZh
-         Ko1g==
-X-Gm-Message-State: AOAM530J+nEL59Mx1Cg6exR5TBK15Wb5y5frSLkc+P6wDx9enyKCEwWF
-        pTCBOPWNQBztvl9Vt3SujMMH9g==
-X-Google-Smtp-Source: ABdhPJzeJ3k1toXEz+8wGgxrNpVOwRBGC04doEtFVO4un3Dnn4otKFpZ5GK0VnxcLkVW/nZBfCWYUg==
-X-Received: by 2002:a05:6a00:1946:b0:44d:8136:a4a4 with SMTP id s6-20020a056a00194600b0044d8136a4a4mr2367787pfk.46.1634681264151;
-        Tue, 19 Oct 2021 15:07:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b18sm220824pfl.24.2021.10.19.15.07.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 15:07:43 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 22:07:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        id S229790AbhJSWLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:11:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229533AbhJSWLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 18:11:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 103566128B;
+        Tue, 19 Oct 2021 22:08:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634681335;
+        bh=akfUjC354D7+HPcocLL3jvKnQlkQnZNxiCCtLPxRtyE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aVSewfe6ARuaEHL/S/AIf+GAII6a0HVxtbOAPX0bbsIGC4adJWDjRKy9exT4EPAuU
+         TVdsRKfPZoHWoR/VjhG5FEErWRDWoQTMqK9yXfjAkhi9+0FB/G+EZALclZaui2ANR7
+         b8uHsw6Da73lQkhC1FtNFhqLvTcHv1X/euXIj4bSgvo7Le+An5pCLlXo/ux4xjX5Za
+         WTbUxNtbJKK/LU9DGRKoWWQFTFUPInIqPY+9oT1Ue6tXAiY8E/NB9AcY1Oa8K8s/5Q
+         gK3FX1eYOFuiG8Gh6SNWKtvxF8e1pHXluTY/vQ/V6iZXu3HzhpM+3itDGWQlIWtEgD
+         Zp05BpcgWkACg==
+Date:   Tue, 19 Oct 2021 15:08:54 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 00/13] KVM: Scalable memslots implementation
-Message-ID: <YW9Bq1FzlZHCzIS2@google.com>
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+Subject: Re: [PATCH] [v2] net: sched: gred: dynamically allocate
+ tc_gred_qopt_offload
+Message-ID: <20211019150854.2e2de09b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211019191544.3063872-1-arnd@kernel.org>
+References: <20211019191544.3063872-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
-
-For future revisions, feel free to omit the lengthy intro and just provide links
-to previous versions.
- 
-> On x86-64 the code was well tested, passed KVM unit tests and KVM
-> selftests with KASAN on.
-> And, of course, booted various guests successfully (including nested
-> ones with TDP MMU enabled).
-> On other KVM platforms the code was compile-tested only.
+On Tue, 19 Oct 2021 21:15:29 +0200 Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Changes since v1:
-
-...
-
-> Changes since v2:
-
-...
-
-> Changes since v3:
-
-...
-
-> Changes since v4:
-> * Rebase onto v5.15-rc2 (torvalds/master),
+> The tc_gred_qopt_offload structure has grown too big to be on the
+> stack for 32-bit architectures after recent changes.
 > 
-> * Fix 64-bit division of n_memslots_pages for 32-bit KVM,
+> net/sched/sch_gred.c:903:13: error: stack frame size (1180) exceeds limit (1024) in 'gred_destroy' [-Werror,-Wframe-larger-than]
+> net/sched/sch_gred.c:310:13: error: stack frame size (1212) exceeds limit (1024) in 'gred_offload' [-Werror,-Wframe-larger-than]
 > 
-> * Collect Claudio's Reviewed-by tags for some of the patches.
+> Use dynamic allocation per qdisc to avoid this.
+> 
+> Fixes: 50dc9a8572aa ("net: sched: Merge Qdisc::bstats and Qdisc::cpu_bstats data types")
+> Fixes: 67c9e6270f30 ("net: sched: Protect Qdisc::bstats with u64_stats")
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Hi Jakub,
+> 
+> Not sure if this is what you had in mind, if not it might be easier
+> if you do it yourself. In particular, adding tc_gred_qopt_offload
+> to gred_sched directly rather than as a pointer may be easier here,
+> but that may have other downsides.
 
-Heh, this threw me for a loop.  The standard pattern is to start with the most
-recent version and work backwards, that way reviewers can quickly see the delta
-for _this_ version.  I.e.
+This is exactly what I had in mind, thanks!
 
- Changes since v4:
- ...
+Two minor nits if you're willing to respin, if you feel like you've
+spent enough time on this already we can marge as is :)
 
- Changes since v3:
- ...
+> -		opt.set.qstats = &sch->qstats;
+> +		opt->set.qstats = &sch->qstats;
+>  	}
+>  
+> -	dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_QDISC_GRED, &opt);
+> +	dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_QDISC_GRED, opt);
+> +
+> +	return;
+
+return no longer needed
+
+>  }
+>  
+>  static int gred_offload_dump_stats(struct Qdisc *sch)
+
+> @@ -754,6 +759,10 @@ static int gred_init(struct Qdisc *sch, struct nlattr *opt,
+>  		sch->limit = qdisc_dev(sch)->tx_queue_len
+>  		             * psched_mtu(qdisc_dev(sch));
+
+The ops should not change, so I think we can do
+
+	if (qdisc_dev(sch)->netdev_ops->ndo_setup_tc) {
+
+> +	table->opt = kzalloc(sizeof(table->opt), GFP_KERNEL);
+> +	if (!table->opt)
+> +		return -ENOMEM;
+> +
+>  	return gred_change_table_def(sch, tb[TCA_GRED_DPS], extack);
+>  }
+>  
