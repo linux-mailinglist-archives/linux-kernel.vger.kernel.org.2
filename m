@@ -2,195 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77FF433C50
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A363433C66
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234431AbhJSQfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:35:34 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:34482 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234304AbhJSQfc (ORCPT
+        id S234142AbhJSQhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231495AbhJSQhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:35:32 -0400
-Received: by mail-oi1-f169.google.com with SMTP id v77so5824862oie.1;
-        Tue, 19 Oct 2021 09:33:19 -0700 (PDT)
+        Tue, 19 Oct 2021 12:37:34 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B12EC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:35:21 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id l38-20020a05600c1d2600b0030d80c3667aso3995745wms.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:35:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=goeAxY6VmGCgCRvdus1WGmsm0JBbAmio3aubFOTGKbw=;
+        b=qeHGvpSDyNQqJdm2AmtQXasO76AGIjS87PPJJuVJGWuq92jcPARXqp7MLjME+fspWs
+         jtDBUdZ8XOXED3ASVkoGhcqZ7u2SbBphpDCS5SJWMiNvL1GS0/fW7IX3f97ssMxRC6Qp
+         s29EHvyFExobD5R2vUdIsYHx9/o9blxVf3L3YiK1HtjqvCsjOBZt9dCl3Y/QxQ8kuX7Y
+         gEuhpF/10DUIQvXAL+RjzC8OHdObNB+HAKTuhEAfEmZOWlQdF7M4XH14bt2p/G5mf5UR
+         olJPQ6jFyIP2y7LuEyMNi73scpLAHVlTPrMCkldd5eeNXqBcKibkxWcpOCd/X+jNL7VX
+         lLyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=calD69s3n0A0Akzhy4zGGZahx+TFdeC7vroqt57K+Uk=;
-        b=uVrXah/yFODlQZODBxTGjhvxytSdlGJeDyGr5E7OP6qPWcBKIZQ9w3PzY3LwIlUStE
-         quAeJY3kwi/BHd5vzjJpSddwuCx1PquM89eq+mfNLja9UCLkTOBxro60HkcxH2+FIkPV
-         PlE34HdRUsUfUXs5atMCk3uDWwabOWrzZre2yE93MX6RV+EJ9rR9tVQLDg4k508ISWm+
-         eCR0vCL2mv751F1ow48DHPHQTabuGp0pTVFU1EzdIgfZb6f+aK6qQqBCLldErKwrp/Vc
-         dwxl/76ET4ly2izWuFMVQYeNoeXT/wuzOMYOg4zHT6gHskR++NqtIQkxPfASJE/kb43c
-         ZZ/w==
-X-Gm-Message-State: AOAM533YLf8TWQsMBNWrF6wS+SxEYxy1uE1tkOYmsXI7rGQuelUP3wO9
-        kNsWEUdtYiuSB1svegWatlUXKFDByMSql6ezE0YYuWL7pWA=
-X-Google-Smtp-Source: ABdhPJx/X1qAjNMigq3LftdhwEBF4GtlfTe9w1Y0I97dKV4ORu9LJ/tqE4/sV8qfTLMyiFQbPWHTyDxhABztk5lnTJg=
-X-Received: by 2002:aca:b5c3:: with SMTP id e186mr5212314oif.51.1634661199210;
- Tue, 19 Oct 2021 09:33:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=goeAxY6VmGCgCRvdus1WGmsm0JBbAmio3aubFOTGKbw=;
+        b=Azpq0EUJx4UK8xp+OOcSz/HCJFGU5UCxSVHAICP/LfHEjCxkfB7dcx9bTnybM/vEah
+         CG9y6iAVrLJGDOfGWu8UKLr/q5Z/FRKDtUltakq67CMO1P5WNUctb9sJaILGHipbiiWP
+         NkixEx5WwAAIKEdjU7OfzPunpY3wNUKiAKrqXkvReziupTfgz7eiiTzw4k9c+j/TR0/2
+         qyV4D6oP4M2Vy47sWdsdPQXf58Ls43gnTwUcYQAFzq0JV+rc9fU4dCvwt/Vsp+9OyR/E
+         xzSSf2n4ukEfvDRLk7rTY96DZpmLkACJS10KO/Cx5sdGxkg+R9AO26Pd7u/cEhJyXD+l
+         za3A==
+X-Gm-Message-State: AOAM530Ys+G+bOxM/BctFJksrCc9fW/C4FdLXMCHo3Qqic8EhnZA+7Gj
+        SKaPWkf0Ve3V420CKZdOHPvdRg==
+X-Google-Smtp-Source: ABdhPJwXcBW9oqMddFNVyWlNt00vWahXExfjGsBr5Zmtccj3G9KGWojwfLxYbfxBsqVOkvfdVWe4xA==
+X-Received: by 2002:a7b:c149:: with SMTP id z9mr7210087wmi.177.1634661319624;
+        Tue, 19 Oct 2021 09:35:19 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e34:ed2f:f020:4799:198d:b6ef:8da7])
+        by smtp.gmail.com with ESMTPSA id n7sm15377389wra.37.2021.10.19.09.35.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 09:35:19 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org, rjw@rjwysocki.net
+Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Subject: [PATCH v3 1/2] thermal/core: Make the userspace governor deprecated
+Date:   Tue, 19 Oct 2021 18:35:05 +0200
+Message-Id: <20211019163506.2831454-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1634310710.git.yu.c.chen@intel.com> <eadc25933400c71a52e7d176880df09a147a39b9.1634310710.git.yu.c.chen@intel.com>
- <YWrswQ+ETMthZZVk@kroah.com>
-In-Reply-To: <YWrswQ+ETMthZZVk@kroah.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 19 Oct 2021 18:33:08 +0200
-Message-ID: <CAJZ5v0gvLDu8xGUVR0kATko8M37RiYg63t+1BWFox499QJxSpg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] drivers/acpi: Introduce Platform Firmware Runtime
- Update device driver
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 5:16 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Sat, Oct 16, 2021 at 06:40:51PM +0800, Chen Yu wrote:
-> > Introduce the pfru_update driver which can be used for Platform Firmware
-> > Runtime code injection and driver update[1]. The user is expected to
-> > provide the update firmware in the form of capsule file, and pass it to
-> > the driver via ioctl. Then the driver would hand this capsule file to the
-> > Platform Firmware Runtime Update via the ACPI device _DSM method. At last
-> > the low level Management Mode would do the firmware update.
-> >
-> > [1] https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf
-> >
-> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > ---
-> > v4: Add Documentation/ABI/testing/pfru (Rafael J. Wysocki)
-> >     Change all pr_debug() to dev_dbg() (Greg Kroah-Hartman,
-> >     Rafael J. Wysocki)
-> >     Change the error code ENOIOCTLCMD to ENOTTY in ioctl.
-> >     (Greg Kroah-Hartman)
-> >     Remove compat ioctl. (Greg Kroah-Hartman)
-> >     Change /dev/pfru/update to /dev/acpi_pfru (Greg Kroah-Hartman)
-> >     Remove valid_cap_type() and do sanity check in query_capability().
-> >     (Rafael J. Wysocki)
-> >     Remove the loop in query_capability().
-> >     (Rafael J. Wysocki)
-> >     Do not fail if the package has more elements than expected,
-> >     and return error if the number of package elements is too
-> >     small. (Rafael J. Wysocki)
-> >     Return the type or a negative error code in get_image_type()
-> >     (Rafael J. Wysocki)
-> >     Put the comment inside the function rather than outside.
-> >     (Rafael J. Wysocki)
-> >     Return the size or a negative error code adjust_efi_size()
-> >     (Rafael J. Wysocki)
-> >     Return -EINVAL rather than -EFAULT if revison id is incorrect.
-> >     (Rafael J. Wysocki)
-> >     Move the an read() of pfru into ioctl(), and using read() for
-> >     the telemetry retrieval. So as to avoid the telemetry device
-> >     file, the write() will be the code injection/update, the read()
-> >     will be telemetry retrieval and all of the rest can be ioctl()s
-> >     under one special device file.
-> >     (Rafael J. Wysocki)
-> > v3: Use __u32 instead of int and __64 instead of unsigned long
-> >     in include/uapi/linux/pfru.h (Greg Kroah-Hartman)
-> >     Rename the structure in uapi to start with a prefix pfru so as
-> >     to avoid confusing in the global namespace. (Greg Kroah-Hartman)
-> > v2: Add sanity check for duplicated instance of ACPI device.
-> >     Update the driver to work with allocated pfru_device objects.
-> >     (Mike Rapoport)
-> >     For each switch case pair, get rid of the magic case numbers
-> >     and add a default clause with the error handling.
-> >     (Mike Rapoport)
-> >     Move the obj->type checks outside the switch to reduce redundancy.
-> >     (Mike Rapoport)
-> >     Parse the code_inj_id and drv_update_id at driver initialization time
-> >     to reduce the re-parsing at runtime.(Mike Rapoport)
-> >     Explain in detail how the size needs to be adjusted when doing
-> >     version check.(Mike Rapoport)
-> >     Rename parse_update_result() to dump_update_result()(Mike Rapoport)
-> >     Remove redundant return.(Mike Rapoport)
-> >     Do not expose struct capsulate_buf_info to uapi, since it is
-> >     not needed in userspace.(Mike Rapoport)
-> > ---
-> >  Documentation/ABI/testing/pfru                |  41 ++
-> >  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
-> >  drivers/acpi/Kconfig                          |   1 +
-> >  drivers/acpi/Makefile                         |   1 +
-> >  drivers/acpi/pfru/Kconfig                     |  16 +
-> >  drivers/acpi/pfru/Makefile                    |   2 +
-> >  drivers/acpi/pfru/pfru_update.c               | 567 ++++++++++++++++++
-> >  include/uapi/linux/pfru.h                     | 102 ++++
-> >  8 files changed, 731 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/pfru
-> >  create mode 100644 drivers/acpi/pfru/Kconfig
-> >  create mode 100644 drivers/acpi/pfru/Makefile
-> >  create mode 100644 drivers/acpi/pfru/pfru_update.c
-> >  create mode 100644 include/uapi/linux/pfru.h
-> >
-> > diff --git a/Documentation/ABI/testing/pfru b/Documentation/ABI/testing/pfru
-> > new file mode 100644
-> > index 000000000000..b8bc81703f46
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/pfru
-> > @@ -0,0 +1,41 @@
-> > +What:                /dev/acpi_pfru
-> > +Date:                October 2021
-> > +KernelVersion:       5.15
-> > +Contact:     Chen Yu <yu.c.chen@intel.com>
-> > +Description:
-> > +             The ioctl interface to drivers for platform firmware runtime
-> > +             update(PFRU). Following actions are supported:
-> > +
-> > +             * PFRU_IOC_QUERY_CAP: Read the PFRU Runtime Update capability.
-> > +               The value is a structure of pfru_update_cap_info.
-> > +               See include/uapi/linux/pfru.h for definition.
-> > +
-> > +             * PFRU_SET_REV: Set the Revision ID for PFRU Runtime Update.
-> > +               It could be either 1 or 2.
-> > +
-> > +             * PFRU_IOC_STAGE: Stage a capsule image from communication
-> > +               buffer and perform authentication.
-> > +
-> > +             * PFRU_IOC_ACTIVATE: Activate a previous staged capsule image.
-> > +
-> > +             * PFRU_IOC_STAGE_ACTIVATE: Perform both stage and activation
-> > +               actions.
-> > +
-> > +             * PFRU_LOG_IOC_SET_INFO: set log information in Telemetry
-> > +               Service. The input is a structure of pfru_log_info.
-> > +               This structure includes log revision id(1 or 2),
-> > +               log level(0 : Error Message, 1 : Warning Message,
-> > +               2 : Informational Message, 4 : Verbose), log data type
-> > +               (0 : Execution Log, 1 : History Information).
-> > +               See include/uapi/linux/pfru.h for definition.
-> > +
-> > +             * PFRU_LOG_IOC_GET_INFO: get log information in Telemetry.
-> > +               The output is a structure of pfru_log_info.
-> > +
-> > +             * PFRU_LOG_IOC_GET_DATA_INFO: get log data information in
-> > +               Telemetry. The output is a structure of pfru_log_data_info.
-> > +               See include/uapi/linux/pfru.h for definition.
-> > +
-> > +             Besides ioctl interface, write() and read() are supported on
-> > +             /dev/acpi_pfru. The write() will be the code injection/update,
-> > +             and the read() will be telemetry retrieval.
->
-> Do we normally describe ioctl interfaces in Documentation/ABI/?  Why not
-> just add this to the kernel doc with the structures you are creating?
-> Wouldn't that be easier?
+The userspace governor is sending temperature when polling is active
+and trip point crossed events. Nothing else.
 
-It would work I suppose.
+AFAICT, this governor is used with custom kernels making the userspace
+governor co-existing with another governor on the same thermal zone
+because there was no notification mechanism, implying a hack in the
+framework to support this configuration.
 
-> Or are other acpi ioctl interfaces documented here already?
+The new netlink thermal notification is able to provide more
+information than the userspace governor and give the opportunity to
+the users of this governor to replace it by a dedicated notification
+framework.
 
-No, they aren't, but there is Documentation/ABI/testing/gpio-cdev, for
-example, so there is some practice there.  Whether it is good or bad
-is a separate topic though.
+The userspace governor will be removed as its usage is no longer
+needed.
+
+Add a warning message to tell the userspace governor is deprecated.
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/gov_user_space.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/thermal/gov_user_space.c b/drivers/thermal/gov_user_space.c
+index 82a7198bbe71..f4fe050e1cbc 100644
+--- a/drivers/thermal/gov_user_space.c
++++ b/drivers/thermal/gov_user_space.c
+@@ -15,6 +15,14 @@
+ 
+ #include "thermal_core.h"
+ 
++static int user_space_bind(struct thermal_zone_device *tz)
++{
++	pr_warn("Userspace governor deprecated: use thermal netlink "	\
++		"notification instead\n");
++
++	return 0;
++}
++
+ /**
+  * notify_user_space - Notifies user space about thermal events
+  * @tz: thermal_zone_device
+@@ -43,5 +51,6 @@ static int notify_user_space(struct thermal_zone_device *tz, int trip)
+ static struct thermal_governor thermal_gov_user_space = {
+ 	.name		= "user_space",
+ 	.throttle	= notify_user_space,
++	.bind_to_tz	= user_space_bind,
+ };
+ THERMAL_GOVERNOR_DECLARE(thermal_gov_user_space);
+-- 
+2.25.1
+
