@@ -2,79 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7D9433D7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83148433D7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234591AbhJSRaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:30:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231226AbhJSRau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:30:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BE4F61355;
-        Tue, 19 Oct 2021 17:28:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634664517;
-        bh=59LlQsuP3ZW+Cqkg0bmKDDTdZJ6xYatNGwXXx+Ql12c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YWZi9VFvsWHjYkDIPd8f49GxBVmj/S9NVGgH7d94tK3kKeCF+lF3syMiKzMmqfuyg
-         JEHxrMIxVUmTbr2P3UxsxW/NFBzES4GLdSmR5jSm9QRoc0t7a8kiYYJnuP8TXiAFgt
-         ifpV2BfQaooqVVlB4sG6JiSoyYkjtUSC8FI4Ss/k=
-Date:   Tue, 19 Oct 2021 19:28:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
-        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YW8AQ4fMNV8MT1vX@kroah.com>
-References: <YWjCpLUNPF3s4P2U@T590>
- <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
- <YWk9e957Hb+I7HvR@T590>
- <YWm68xUnAofop3PZ@bombadil.infradead.org>
- <YWq3Z++uoJ/kcp+3@T590>
- <YW3LuzaPhW96jSBK@bombadil.infradead.org>
- <YW4uwep3BCe9Vxq8@T590>
- <YW7pQKi8AlV+ZemU@bombadil.infradead.org>
- <YW7xbnrqfzifa9OC@kroah.com>
- <YW7yjQVC4NRfrWxD@bombadil.infradead.org>
+        id S234628AbhJSRbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhJSRbS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:31:18 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6C8C06161C;
+        Tue, 19 Oct 2021 10:29:05 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so429203pjb.3;
+        Tue, 19 Oct 2021 10:29:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=W2X1FQaCbytH6Y85/dT0+c3wJsK9OsRJpL7ENlvvTJs=;
+        b=AeB+pOTf5kJs/Z0r3aBXdKqT6wEplbvKH+tXHvBYW/4r9+YpsZZFJokIKTVWvnPL9A
+         f2f7uAgd4x2L2hHZa7cFwOn3ulSBTfKCXgvAOJ2oqJDAcrbrQuZNXE1Eu6cxcRtqLmmc
+         8FkBfQH/+5/LCgdQiUTQt/GUPLLjvLQR2Pkq0dVE+FSahdSiC+env5vJNWN7vTVsvE9f
+         2O+G8h9nOlgcoORnzmjzSLusNjEhOwmBdat0jbNKkjdGJMrJA89C1vmyYkwi2tcV1RGY
+         DdtFLoQX/Mm3lTU2eW2nx8dYVhgLZsSUuy3Yg+ny37MFuFv+WPszlvM8AK2L6XQgdlNo
+         zE/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=W2X1FQaCbytH6Y85/dT0+c3wJsK9OsRJpL7ENlvvTJs=;
+        b=x/3Q083fYndIUBW/fu4pJRplJKOsQiMgH56jcVjdaJQkyctcXhSoEr43qkkSmTNHjd
+         j1W8QTxAMzGtJWmeXDE9g7O5WHOLS95Au1gdXmtPpbdRU41o2IihmrrvzVUg6O2I/0H/
+         W0261vanEtj41QO6u3KAL1jGcotOoXuYPuvIsRIbDdbIxGQBxheraVIp49C88lPHeDso
+         pVywAUULLtyojy9uoViF7KqQYJJvP788VdFdS6ug23Xz+oIhZn/R+WypkzMHXRIqeRfF
+         6ydrPAGSHfjglN+uh9v4ex70KsWXVyyzjISjI6GLjqdxPic9Lovxx58rxgMo3ntvO+Ds
+         O+Og==
+X-Gm-Message-State: AOAM531xE5c/1bsNsEtNiidXCAhEKIJ40oxMtvonnttNOPpDcAJeT0uY
+        2WKLxRf4sEcveUmfsnEVKF0pBik96E0CzcmaFxc=
+X-Google-Smtp-Source: ABdhPJxlZkFuoAjdUJS8GFXiwpiKnmbV7aKH1yCtEw9KDPHGOTMeTZIWT/+sCYUojN4mkkY26vQHTsYRx94VC8yzyQc=
+X-Received: by 2002:a17:902:a9c3:b0:13f:c765:148d with SMTP id
+ b3-20020a170902a9c300b0013fc765148dmr9256619plr.28.1634664544821; Tue, 19 Oct
+ 2021 10:29:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW7yjQVC4NRfrWxD@bombadil.infradead.org>
+References: <20210924115032.29684-1-o.rempel@pengutronix.de>
+ <19b2ab33-aa56-75fb-f6ef-3c928be9c50c@linaro.org> <20211019115151.GC16320@pengutronix.de>
+ <df3f527d-22f3-b58d-a546-bdd8d312505c@linaro.org> <20211019125929.GD16320@pengutronix.de>
+In-Reply-To: <20211019125929.GD16320@pengutronix.de>
+From:   Petr Benes <petrben@gmail.com>
+Date:   Tue, 19 Oct 2021 19:28:53 +0200
+Message-ID: <CAPwXO5Z8k9TZ4y6ZTFrv-2TK7Lv8Y28LDSTXpT8s4oPPDxupYw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] thermal: imx: implement runtime PM support
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-pm@vger.kernel.org, Amit Kucheria <amitk@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 09:30:05AM -0700, Luis Chamberlain wrote:
-> On Tue, Oct 19, 2021 at 06:25:18PM +0200, Greg KH wrote:
-> > On Tue, Oct 19, 2021 at 08:50:24AM -0700, Luis Chamberlain wrote:
-> > > So do you want to take the position:
-> > > 
-> > > Hey driver authors: you cannot use any shared lock on module removal and
-> > > on sysfs ops?
-> > 
-> > Yes, I would not recommend using such a lock at all.  sysfs operations
-> > happen on a per-device basis, so you can lock the device structure.
-> 
-> All devices are going to be removed on module removal and so cannot be locked.
+We dropped Michal from the loop. Adding him back.
 
-devices are not normally created by a driver, that is up to the bus
-controller logic.  A module will just disconnect itself from the device,
-the device does not go away.
-
-But yes, there are exceptions, and if you are doing something odd like
-that, then you need to be aware of crazy things like this, so be
-careful.  But for all normal drivers, they do not have to worry about
-this.
-
-thanks,
-
-greg k-h
+On Tue, 19 Oct 2021 at 14:59, Oleksij Rempel <o.rempel@pengutronix.de> wrot=
+e:
+>
+> On Tue, Oct 19, 2021 at 01:55:32PM +0200, Daniel Lezcano wrote:
+> > On 19/10/2021 13:51, Oleksij Rempel wrote:
+> > > Hi Daniel,
+> > >
+> > > On Tue, Oct 19, 2021 at 01:04:46PM +0200, Daniel Lezcano wrote:
+> > >> On 24/09/2021 13:50, Oleksij Rempel wrote:
+> > >>> Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's loca=
+l
+> > >>> data to decide whether to run a measurement") this driver stared us=
+ing
+> > >>> irq_enabled flag to make decision to power on/off the thermal core.=
+ This
+> > >>> triggered a regression, where after reaching critical temperature, =
+alarm
+> > >>> IRQ handler set irq_enabled to false,  disabled thermal core and wa=
+s not
+> > >>> able read temperature and disable cooling sequence.
+> > >>>
+> > >>> In case the cooling device is "CPU/GPU freq", the system will run w=
+ith
+> > >>> reduce performance until next reboot.
+> > >>>
+> > >>> To solve this issue, we need to move all parts implementing hand ma=
+de
+> > >>> runtime power management and let it handle actual runtime PM framew=
+ork.
+> > >>>
+> > >>> Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to deci=
+de whether to run a measurement")
+> > >>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > >>
+> > >> Thanks for this fix.
+> > >>
+> > >> Petr or Oleksij,
+> > >>
+> > >> could you confirm it is tested and working without CONFIG_PM ?
+> > >
+> > > Petr was right, no it is not working without PM.
+> > Ok, thanks.
+> >
+> > I suppose the fix is related to the initialization of the sensor which
+> > should be enabled with/out pm_runtime, right ?
+>
+> No, i did sanity check on pm_runtime_put() within the probe. Without PM
+> it will properly return ENOSYS, so I aborted the probe. Looks like I
+> should ignore return value on this function like every driver is doing
+> it.
+>
+> >
+> >
+> > --
+> > <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for =
+ARM SoCs
+> >
+> > Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> > <http://twitter.com/#!/linaroorg> Twitter |
+> > <http://www.linaro.org/linaro-blog/> Blog
+> >
+>
+> --
+> Pengutronix e.K.                           |                             =
+|
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
+|
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
+|
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
+|
