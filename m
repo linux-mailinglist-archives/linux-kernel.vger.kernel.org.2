@@ -2,59 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDF5432EB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3309432EC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbhJSG6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhJSG6s (ORCPT
+        id S234321AbhJSHBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:01:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52374 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhJSHBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:58:48 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBD5C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 23:56:36 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d9so9595582pfl.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 23:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=agI+boHqj0RqO8k0ZoHMLLCV4tv51l4sc6pGSVVpoSYpjMbr25VmNB8kaiLMjtGpsR
-         QQDarZoCpzAIEpK4htvnoz6IAbkaHJrDVdnJR70vz8/TQ2z1KkkPHDGJeM0EJDQOkmq4
-         IYySDpWPJHBax6/LGApL8zb4D+BQWOiQ1W7zFjZHFy4jOaBG14NYVzCa93ZldOpbyQ+W
-         upUh/eM7psnsII0ehQ+bneqOEEvgLxh+9RpgfUd65ux5DBTCHcjv6HpMAO0afSatkybX
-         U6TwT23Mf5fvtLhriW51Npqt+LDaAQL3ovbnnA6uCeFUkl3ajhaLmg0ViqzYc40oeMzX
-         P5hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=ee3KpZ7CK7Spy/KxQ2QgDP/sVWJSKxXwYdJ0cumvGsV070PPzowtDrbh25F/GAtAIt
-         YMOT5I/hE4AW8YGG+UWLjlGC3VISFrij+WdUKy+uQhpUWTfCwDoHPnuVeJZP65yp/BqH
-         ucZVeL71BBDFUyE3LCZzZ169FO1p4GB3CSjEGozLpuJZGIvZIZrGvf+qSBI5YPzJHw5u
-         vINIH5GpNOySwMjdgNK/BNMrHDDws1V5IFD6VpIC7nLZAnpr+z5ggJjHXy7JFnLJypqX
-         K7ygzuFpOtVHZ3zzEbMh9OD999S2tw20TTBjm25PkE862TEnIIJzQc6l/ET7UZmJfpJ2
-         jeYw==
-X-Gm-Message-State: AOAM532oB7mNpDFfWb/qJtpcNiqZTZ11Y26KarNZMQ5e8Fg6tPclWVOu
-        3vwQFSqRYM4o1sHM6F+RiCk5u63lLSNx5Q/nwa8=
-X-Google-Smtp-Source: ABdhPJwDdYghBlwdLPFTJZnDB76W0QHMty5tfsMaucNUu3UMKeHHCD51K8qL2DZ0U8+E2ikdQ2+/iIMNgjgE+Cl7XE0=
-X-Received: by 2002:a63:be4e:: with SMTP id g14mr27859727pgo.194.1634626596424;
- Mon, 18 Oct 2021 23:56:36 -0700 (PDT)
+        Tue, 19 Oct 2021 03:01:46 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8524B2197E;
+        Tue, 19 Oct 2021 06:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634626772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tWUYrvYFsmqj0rtE1yYDBB9n74JxtnDP+Db2R7/QIZk=;
+        b=aOKILhuQ3bfvUS+uulyoyUwQPgpO7HbSEhf/Qg6dySM8FGEpcm+k1lR28mAXp0HBTon9vL
+        8PkJYte5qeY7ri2k3Wvd1FWSq26EnbEBoc/DjuHwYSl5NRnjE3+RmqAybogg6PvMoZGXPb
+        AGUfeDziG1cpHLYVPK7hNtwMMjRq3HA=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 53C49A3B81;
+        Tue, 19 Oct 2021 06:59:32 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 08:59:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [RFC 1/3] mm/vmalloc: alloc GFP_NO{FS,IO} for vmalloc
+Message-ID: <YW5s0qo64mFaQMQj@dhcp22.suse.cz>
+References: <20211018114712.9802-1-mhocko@kernel.org>
+ <20211018114712.9802-2-mhocko@kernel.org>
+ <163460424165.17149.585825289709126969@noble.neil.brown.name>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:e2cb:0:0:0:0 with HTTP; Mon, 18 Oct 2021 23:56:36
- -0700 (PDT)
-Reply-To: michellebrow93@gmail.com
-From:   Michelle Brown <ambrosegnona@gmail.com>
-Date:   Mon, 18 Oct 2021 23:56:36 -0700
-Message-ID: <CAApYH-qEsA-9a7C4-mMid3KbC97pi3YnWipiwTDUGh3zr+nZEQ@mail.gmail.com>
-Subject: Hi, I have something to discuss with you, please reply me
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163460424165.17149.585825289709126969@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 19-10-21 11:44:01, Neil Brown wrote:
+> On Mon, 18 Oct 2021, Michal Hocko wrote:
+[...]
+> > @@ -2930,8 +2932,24 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+> >  		goto fail;
+> >  	}
+> >  
+> > -	if (vmap_pages_range(addr, addr + size, prot, area->pages,
+> > -			page_shift) < 0) {
+> > +	/*
+> > +	 * page tables allocations ignore external gfp mask, enforce it
+> > +	 * by the scope API
+> > +	 */
+> > +	if ((gfp_mask & (__GFP_FS | __GFP_IO)) == __GFP_IO)
+> > +		flags = memalloc_nofs_save();
+> > +	else if (!(gfp_mask & (__GFP_FS | __GFP_IO)))
+> 
+> I would *much* rather this were written
+> 
+>         else if ((gfp_mask & (__GFP_FS | __GFP_IO)) == 0)
 
+Sure, this looks better indeed.
+
+> so that the comparison with the previous test is more obvious.  Ditto
+> for similar code below.
+> It could even be
+> 
+>    switch (gfp_mask & (__GFP_FS | __GFP_IO)) {
+>    case __GFP__IO: flags = memalloc_nofs_save(); break;
+>    case 0:         flags = memalloc_noio_save(); break;
+>    }
+> 
+> But I'm not completely convinced that is an improvement.
+
+I am not a great fan of this though.
+
+> In terms of functionality this looks good.
+
+Thanks for the review!
+
+-- 
+Michal Hocko
+SUSE Labs
