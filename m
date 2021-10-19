@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5448E43370B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619EF433709
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235897AbhJSN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:29:32 -0400
-Received: from relay.sw.ru ([185.231.240.75]:40462 "EHLO relay.sw.ru"
+        id S235875AbhJSN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:29:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235557AbhJSN3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:29:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=/PQsb2dM0oFSPlxvAAc6dyIPl0/QcXaCgaYTwTTHcCo=; b=cZpZJ2mRO3f3GNSKw
-        XLAO8S6kyieJLawIdS/gJRQz8yix6idY6Hc/p++bKMFw7d+AijUA1Nc5XPrZqKDIbrtVGT2CGVZZH
-        xQEGfdidIGKULnHpY+TzuVwSuLIcwPK4lXaqzVZ4uk5eZL+Dj3zFeCWCM9kABRKqdSOqpGLexHD98
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mcp95-006UEO-Q1; Tue, 19 Oct 2021 16:27:11 +0300
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
- <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
- <YW6GoZhFUJc1uLYr@dhcp22.suse.cz>
- <687bf489-f7a7-5604-25c5-0c1a09e0905b@virtuozzo.com>
- <YW6yAeAO+TeS3OdB@dhcp22.suse.cz> <YW60Rs1mi24sJmp4@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <6c422150-593f-f601-8f91-914c6c5e82f4@virtuozzo.com>
-Date:   Tue, 19 Oct 2021 16:26:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235557AbhJSN30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 09:29:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F51761038
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 13:27:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634650034;
+        bh=XwT+O/puqIO9BVfJ+yLseMkazHGtskDQhP43nI3oppI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CEfX81BfCRk2mEwUgwZbVCdkLh9u7Ef0w0Pc8fcOmUzsWgiaUWT16G26XXz2JoFeS
+         GY0my/BtI2nl/OeTlf/yC82pAfK5m/OvihOcjxc44jhYsyY/OoUQldMSg0ygo/1DGu
+         AUViooEqtFueY88yOpVH4r/dBhQatnV45M7TagJsmzIM3H1z7Gr1XvWc+OtyTpo81O
+         wRu9D4YN6yfsC6jgSkP9zu9MIVjN44UooFwYSpia0nJIr6L0ND/V85P7R/0oMmW3hk
+         2DseVbsVxLL3fEq+HMoh2tiEY8L0R01aw6Xobmo8tVEU1yAY8ozP9pbNtwVpEo9O2p
+         BxkSCmXVVI76w==
+Received: by mail-ua1-f50.google.com with SMTP id h4so11174919uaw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:27:14 -0700 (PDT)
+X-Gm-Message-State: AOAM533C1iMlrQruLVAyOPmKAR6cdPstpxhWHhd0RpTmzP7WWeVK9Yix
+        TmuVnpT2MZRelufJCkFTeQzDYkx7NH2/y2zrM78=
+X-Google-Smtp-Source: ABdhPJxZ8MT65UmaNvlpDO/eGxDHT6mlb1Hzhjau2Hlwa4n/GLInYBXxt7YnLmtajfjpmoL7vYq4xsEJzzSBRPB8hKY=
+X-Received: by 2002:a05:6102:537:: with SMTP id m23mr34557525vsa.43.1634650033178;
+ Tue, 19 Oct 2021 06:27:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YW60Rs1mi24sJmp4@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-2-guoren@kernel.org>
+ <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org> <f850af365f2ac77af79ec59f92e6434a@kernel.org>
+ <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com> <8735oxuxlq.wl-maz@kernel.org>
+In-Reply-To: <8735oxuxlq.wl-maz@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 19 Oct 2021 21:27:02 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
+Message-ID: <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
+Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.2021 15:04, Michal Hocko wrote:
-> On Tue 19-10-21 13:54:42, Michal Hocko wrote:
->> On Tue 19-10-21 13:30:06, Vasily Averin wrote:
->>> On 19.10.2021 11:49, Michal Hocko wrote:
->>>> On Tue 19-10-21 09:30:18, Vasily Averin wrote:
->>>> [...]
->>>>> With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
->>>>> a) due to fatal signal
->>>>> b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
->>>>>
->>>>> To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
->>>>> To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
->>>
->>>> How is b) possible without current being killed? Do we allow remote
->>>> charging?
->>>
->>> out_of_memory for memcg_oom
->>>  select_bad_process
->>>   mem_cgroup_scan_tasks
->>>    oom_evaluate_task
->>>     oom_badness
->>>
->>>         /*
->>>          * Do not even consider tasks which are explicitly marked oom
->>>          * unkillable or have been already oom reaped or the are in
->>>          * the middle of vfork
->>>          */
->>>         adj = (long)p->signal->oom_score_adj;
->>>         if (adj == OOM_SCORE_ADJ_MIN ||
->>>                         test_bit(MMF_OOM_SKIP, &p->mm->flags) ||
->>>                         in_vfork(p)) {
->>>                 task_unlock(p);
->>>                 return LONG_MIN;
->>>         }
->>>
->>> This time we handle userspace page fault, so we cannot be kenrel thread,
->>> and cannot be in_vfork().
->>> However task can be marked as oom unkillable, 
->>> i.e. have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
->>
->> You are right. I am not sure there is a way out of this though. The task
->> can only retry for ever in this case. There is nothing actionable here.
->> We cannot kill the task and there is no other way to release the memory.
-> 
-> Btw. don't we force the charge in that case?
+On Tue, Oct 19, 2021 at 6:18 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Tue, 19 Oct 2021 10:33:49 +0100,
+> Guo Ren <guoren@kernel.org> wrote:
+>
+> > > If you have an 'automask' behavior and yet the HW doesn't record this
+> > > in a separate bit, then you need to track this by yourself in the
+> > > irq_eoi() callback instead. I guess that you would skip the write to
+> > > the CLAIM register in this case, though I have no idea whether this
+> > > breaks
+> > > the HW interrupt state or not.
+> > The problem is when enable bit is 0 for that irq_number,
+> > "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
+> > the hw state machine. Then this irq would enter in ack state and no
+> > continues irqs could come in.
+>
+> Really? This means that you cannot mask an interrupt while it is being
+> handled? How great...
+If the completion ID does not match an interrupt source that is
+currently enabled for the target, the completion is silently ignored.
+So, C9xx completion depends on enable-bit.
 
-We should force charge for allocation from inside page fault handler,
-to prevent endless cycle in retried page faults.
-However we should not do it for allocations from task context,
-to prevent memcg-limited vmalloc-eaters from to consume all host memory.
+>
+> > >
+> > > There is an example of this in the Apple AIC driver.
+> > Thx for the tip, I think your suggestion is:
+> > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > @@ -163,7 +163,12 @@ static void plic_irq_eoi(struct irq_data *d)
+> >  {
+> >         struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
+> >
+> > -       writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> > +       if (irqd_irq_masked(d)) {
+> > +               plic_irq_unmask(d);
+> > +               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> > +               plic_irq_mask(d);
+>
+> This looks pretty dodgy. You are relying on interrupts being globally
+> masked on the CPU, I guess. It probably works today, but man, what a
+> terrible HW implementation.
 
-Also I would like to return to the following hunk.
-@@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 * A few threads which were not waiting at mutex_lock_killable() can
- 	 * fail to bail out. Therefore, check again after holding oom_lock.
- 	 */
--	ret = should_force_charge() || out_of_memory(&oc);
-+	ret = task_is_dying() || out_of_memory(&oc);
- 
- unlock:
- 	mutex_unlock(&oom_lock);
 
-Now I think it's better to keep task_is_dying() check here.
-if task is dying, it is not necessary to push other task to free the memory.
-We broke vmalloc cycle already, so it looks like nothing should prevent us
-from returning to userspace, handle fatal signal, exit and free the memory.
 
-Thank you,
-	Vasily Averin
+>
+> You'll definitely have to move this into a c900-specific callback.
+Yes, it's an errata.
+
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
+
+--
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
