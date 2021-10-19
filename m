@@ -2,146 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A8C432DA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2422F432DA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhJSGE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:04:57 -0400
-Received: from mail-dm6nam11on2090.outbound.protection.outlook.com ([40.107.223.90]:7744
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233986AbhJSGEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:04:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h/d7nBWtC6zkYZ730TtIHCaOZdcQYsc3UeMdbFi5XCO6T3oELP9havpouwrrrew+vfgGcZjs0KR28ECbt/guR4dOq0ZPRBQXvWNr48Fypn08iljbzuznA1WCiYqdkHAs+ZNi3VZ00g3G+t5GPLZdKk9pmqYl5NPM/U5MFHjN8e/22hZa4Zzzfs9Dx1mdJXB9LQpOG9Q2G2k5IJHx4OMa20E4DbFO/5oTSr9ADTgRHfhY3DWQn9Aw4ml+jur4c7Cvm9r/bj9jND60gv1EHBYRN+YbFvouYN7oGSa7bVahJcp7zyWayGaCEK9IHOFEVOShSyHi+kKu10uJZqfH1BQfzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hDtbPCDHO0b7VTSOjTvs0tCslLIwqtqh0EI7JIMAG3g=;
- b=Gg2ONJWd19Zq+LA14D7JeoUejcxyWuQNn+FdjnRqrMuoAzl0XGxQfpaV4wV0KMTLtr9HwJMHOqnnfPYe3ASswlMT4oBTTBXtcod26Obi3IY6zIf9qXA3b4NOb6KJEBahZMq88/5VGeRdS1UGqkUXPpm185rRrcWS9Iql8cj/tR5KCbAJUi8rn3zy+35vlRk1ap7dJoxC+NRjXQb/Ab7LVxcwzdiGgLlHcXwWaNpimZGBhWk5Apaio8ulpinErikXoHAH6n35BrxK7BvUZexEHKzvcPoFbgrnu9MUpcmQtmjy1JdyAYWQvWvkd6cJ+1EFOAmXKnt6/9qinaMedIKAcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hDtbPCDHO0b7VTSOjTvs0tCslLIwqtqh0EI7JIMAG3g=;
- b=AWUFF8NuFN0e7pJsl4stuYk+uPxpzi0LqeWYqz8SnAe/4kSRUrzfoZUT73Ui+2u8HMG0a5zS98c3IxzjtboWLFydUTJd3f4uDvL/IweN89VtcBxMNFCF9BBOhi5izWmefX8yI7UCHpfx2ziueAP9wJjdTfZmaFJUuixg6fF/ITY=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from SJ0PR01MB7282.prod.exchangelabs.com (2603:10b6:a03:3f2::24) by
- BYAPR01MB5062.prod.exchangelabs.com (2603:10b6:a03:7f::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.17; Tue, 19 Oct 2021 06:02:24 +0000
-Received: from SJ0PR01MB7282.prod.exchangelabs.com
- ([fe80::f14d:21a9:9ebf:2924]) by SJ0PR01MB7282.prod.exchangelabs.com
- ([fe80::f14d:21a9:9ebf:2924%9]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 06:02:24 +0000
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>
-Cc:     Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: [PATCH v2 3/3] ARM: dts: aspeed: mtjade: Add uefi partition
-Date:   Tue, 19 Oct 2021 13:01:55 +0700
-Message-Id: <20211019060155.945-4-quan@os.amperecomputing.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20211019060155.945-1-quan@os.amperecomputing.com>
-References: <20211019060155.945-1-quan@os.amperecomputing.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK0PR01CA0059.apcprd01.prod.exchangelabs.com
- (2603:1096:203:a6::23) To SJ0PR01MB7282.prod.exchangelabs.com
- (2603:10b6:a03:3f2::24)
+        id S233959AbhJSGEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhJSGEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:04:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B4E860EBB;
+        Tue, 19 Oct 2021 06:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634623329;
+        bh=s/JBgwE7ICAcIzIuVBf7nWx+Nokb08B4f6Yr/Z68D/4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q1MvsQbdtSZudoOehmxVfSx6KJMkG6tE3iwWyCBWkBdr3IKgJbtyq+41KA1pDwse/
+         iQkJWfAUJU/WSxobrc9JpUMmHpBsQNWaJYIDjU6anhhhicEoVvBvwXnWmcy8fuukEt
+         SHaJ9huG6noD0QXfNHEjhqHnoeyYbQeiBJZXEh5IcYLyyjB3ECft+jgXh7euW6khWi
+         ELrkzyDsxwvpsqq8Hn+5QcbMqtIWFZ1epuE/iFWNQ8eouPyyHRrlsA08OsQpowjFFG
+         S2c+/Udi1PvO7H8C+f+3Q3fGvHBZ4OPD9s0SpAzE2DsKN7a+tMeIvWa2lFjEQAprvQ
+         SQkTzoe1XVsNg==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] i2c: qcom-geni: Add support for GPI DMA
+Date:   Tue, 19 Oct 2021 11:31:58 +0530
+Message-Id: <20211019060158.1482722-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: from hcm-sw-17.amperecomputing.com (118.69.219.201) by HK0PR01CA0059.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend Transport; Tue, 19 Oct 2021 06:02:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4a1c02a3-da44-4b4b-262c-08d992c60566
-X-MS-TrafficTypeDiagnostic: BYAPR01MB5062:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR01MB50620844B1E457751911F61FF2BD9@BYAPR01MB5062.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FSkTQxg8haEGJoiHX79XguMrtC5lhNiUoDPFgPi9mnqfzqG0B5k2T/jSvkw/V+jzbRxoPTZtiOhX+xXyv4nmmGkk+up59XD6rLNGQ3+uqoyKVmp469y3SYwBpFfzVDiIMq+xliZQ7lRlBKvS/9deSXWfZ8RIHUsVst6wADqoZjIYq42JQ5c4dIHL0ynlCyH9CVCNmsnF2BU0hH6GzQ/502DQ88wlwGyEDtWu3FC0/HoEYN9qe+CxQ5GyBxGnhPbv+3y70w1CC8MIqLGQnm72tuzJhf7qWBp8j8L/A0n5T36ylyZSM+ivrNi0G9jEaUHKmeRVdno0lsltEsDpGpEQj1/s0pJUo35EyL348cPEFRCeiC4cgX5hkIO+GSPjUSpzAoyWl4Ce3K8O6n2X02ByT47f9dYe1BQrwiQ7B3BQYA02k1ttqy3tW8iRXbxGMEBReka0DnedVLzWcGxKTu9yBBHGwXpN0Gobq/6YA1EFCKs4UB2gTr1LGlVXb1NKuyprvRHJiPihePhxGMW4DtZvVWVdl81Yjl5X8PUGlpo4Sh+vy0YvWByivtBL0eqIsAW9XN7GF80PqpaA+rhfmSBy2TINnpTYmzAsR71YXCr6cs4TAg0kD94bzadynaGnCc6tXYS6o5xA7vyDbgMmha88xt5lz21HbG0q/08FolDNEdZTaR60QsLb5STc/T1nr8mXE3cAcyD500/mJN1r9UoMfQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB7282.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(6512007)(110136005)(956004)(2616005)(508600001)(66946007)(5660300002)(107886003)(66556008)(6666004)(316002)(8936002)(2906002)(52116002)(38350700002)(6506007)(38100700002)(4744005)(86362001)(6486002)(8676002)(186003)(66476007)(4326008)(1076003)(26005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Yd0rJsGLJa/u3DAKbrErJxI3B5G4A4VINACpWpc5nyPs3e8eUaIJu2OdPARJ?=
- =?us-ascii?Q?IP6pyWkcK/yBB0yBtXwNXUYigM+oZIpzWdWkIFXGrkatZl2HF1s00BJS9U6f?=
- =?us-ascii?Q?ZuM2SzAEzFo/4HQjW2Y2XRe//BUcLZpfk0D6cFgfX0589Uyu7carRnBzvn44?=
- =?us-ascii?Q?uRsZtgL8q2QKMR0rB7fdSFOlGFxEn4NZCMgNAxAL7Zki6iNrMQuOnsWk72rQ?=
- =?us-ascii?Q?cv8LqOVgi4hg79Ljv/pCh6Q45fZQC8Krn8U9Vf5zn4kQPP+WsOJMMUC+NRZV?=
- =?us-ascii?Q?XKhBC5Sll//9hgC74dBFGbUvSYEa6J2tS8Ao5WajvUo8NbvHEl4L4LfkRl1T?=
- =?us-ascii?Q?87Wjvanyv+dBFK7pbYsVb9LH1x4kPXjh7xDSkI3SuujKVFKBROWI92UClKlT?=
- =?us-ascii?Q?iu5Kwbk7ZGAB0fgicPSQy8NfrCS4z0iWzYbALStMWBB/wTusLdR7WAWLoC11?=
- =?us-ascii?Q?+ISFrXJi/tNQmZXnNv1hIouyEEhrVLFu5Zxfaf8eDK7Qj+VaNnHZtfr2nudh?=
- =?us-ascii?Q?4YAf+zV9hD+56opfDa9DeBDvyJ5NDEi/lhVcyFgMwHjH5fzjSJKbYBEHIeHj?=
- =?us-ascii?Q?WybtkCJ83GYjkA+QJMd4VqnJGW5ysQhw+MytLi5vwFfW88tiYyWfuNcuFGhl?=
- =?us-ascii?Q?fepf0/aqSAHr80Mug3MxcNu8UfPYYMYnZ9KW3/QcfbQLvYtRqXb32wfTKqXa?=
- =?us-ascii?Q?7XVxRy8sq8Xw3mAcK+fvv1DiHdrhWWIg4ocJ8oL8lKfJ88vzd/SBXZWzXUbu?=
- =?us-ascii?Q?iJI10LwEVLqDBdLXsZsPW2azlMyyFP4+nZHTUR6Qkh0l972/qZMAlvt+BcaR?=
- =?us-ascii?Q?6j09rkGnhAvuovcGrUxjBz6IMP6iqE3+Po99ORMXP94HjDBSlIj7BACEQg4o?=
- =?us-ascii?Q?V/sSV25l7PiQn3gj6doeuT3vnSFCBesynXs32qhZy3xDGgLDk6AHJjfcdm9w?=
- =?us-ascii?Q?shW/Zm4pTbftt4mr6/vZXtlZbkmvNVBqFoXFMgRCtubKbBzDrgKHCnZ++zfh?=
- =?us-ascii?Q?j9g7lJWXBOrU+wpHXgKbTgyPMxTngp9EQJSAeDg1DaBjRzz/8NqsxmFKJqmo?=
- =?us-ascii?Q?1m6wIQ0Wkq/ZIm1Zlj8sFxQ8IfONB0IoIVRa8gJlyX28kUtTwIGICpDVeXMH?=
- =?us-ascii?Q?a0fnLaim/K5aw1iwGoCQGhqFxld5BsQrKVFHY8BDBwsGP9vtn8q8LHciKlTX?=
- =?us-ascii?Q?PuabSuchKxfdMAgVXbg6ru8ZGfP9BodgaVQJziur4+o6HGQRNExmhvvqN8DK?=
- =?us-ascii?Q?BPvrPu23N+Zw9moGqjae1RexNfrqDGxncNriDewp6vOmTDFYK+YKp/HQiNVB?=
- =?us-ascii?Q?eBtsXBpSPX49ftAhuCm3zinn?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a1c02a3-da44-4b4b-262c-08d992c60566
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB7282.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 06:02:24.5259
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: llPh7biSL41yEwdxLbQ8I6nZOBlI17ffcigarhlgJu1E77ElhSFmjRUjeNX7n9z6ox75TkgfY7+iY3MpsuKlHZMHi+xkwoiXSFWCIXqYrzE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB5062
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SPI NOR partition for uefi.
+This adds capability to use GSI DMA for I2C transfers
 
-Signed-off-by: Thang Q. Nguyen <thang@os.amperecomputing.com>
-Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
-v2:
-  + Introdued in v2
+Changes since v3:
+ - remove separate tx and rx function for gsi dma and make a common one
+ - remove global structs and use local variables instead
 
- arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
-index 723c7063c223..4c3c3f1a12ea 100644
---- a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
-@@ -374,6 +374,15 @@ flash@0 {
- 		m25p,fast-read;
- 		label = "pnor";
- 		/* spi-max-frequency = <100000000>; */
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			uefi@400000 {
-+				reg = <0x400000 0x1C00000>;
-+				label = "pnor-uefi";
-+			};
-+		};
- 	};
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+index 6d635a7c104c..b783d85559f5 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -3,7 +3,9 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/clk.h>
++#include <linux/dmaengine.h>
+ #include <linux/dma-mapping.h>
++#include <linux/dma/qcom-gpi-dma.h>
+ #include <linux/err.h>
+ #include <linux/i2c.h>
+ #include <linux/interrupt.h>
+@@ -48,6 +50,8 @@
+ #define LOW_COUNTER_SHFT	10
+ #define CYCLE_COUNTER_MSK	GENMASK(9, 0)
+ 
++#define I2C_PACK_EN		(BIT(0) | BIT(1))
++
+ enum geni_i2c_err_code {
+ 	GP_IRQ0,
+ 	NACK,
+@@ -72,6 +76,11 @@ enum geni_i2c_err_code {
+ #define XFER_TIMEOUT		HZ
+ #define RST_TIMEOUT		HZ
+ 
++enum i2c_se_mode {
++	I2C_FIFO_SE_DMA,
++	I2C_GPI_DMA,
++};
++
+ struct geni_i2c_dev {
+ 	struct geni_se se;
+ 	u32 tx_wm;
+@@ -89,6 +98,10 @@ struct geni_i2c_dev {
+ 	void *dma_buf;
+ 	size_t xfer_len;
+ 	dma_addr_t dma_addr;
++	struct dma_chan *tx_c;
++	struct dma_chan *rx_c;
++	bool cfg_sent;
++	enum i2c_se_mode se_mode;
  };
  
+ struct geni_i2c_err_log {
+@@ -456,6 +469,171 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ 	return gi2c->err;
+ }
+ 
++static void i2c_gsi_cb_result(void *cb, const struct dmaengine_result *result)
++{
++	struct geni_i2c_dev *gi2c = cb;
++
++	if (result->result != DMA_TRANS_NOERROR) {
++		dev_err(gi2c->se.dev, "DMA txn failed:%d\n", result->result);
++		return;
++	}
++
++	if (result->residue)
++		dev_dbg(gi2c->se.dev, "DMA xfer has pending: %d\n", result->residue);
++
++	complete(&gi2c->done);
++}
++
++static void geni_i2c_gpi_unmap(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
++			       void *tx_buf, dma_addr_t tx_addr,
++			       void *rx_buf, dma_addr_t rx_addr)
++{
++	if (tx_buf) {
++		dma_unmap_single(gi2c->se.dev->parent, tx_addr, msg->len, DMA_TO_DEVICE);
++		i2c_put_dma_safe_msg_buf(tx_buf, msg, false);
++	}
++
++	if (rx_buf) {
++		dma_unmap_single(gi2c->se.dev->parent, rx_addr, msg->len, DMA_FROM_DEVICE);
++		i2c_put_dma_safe_msg_buf(rx_buf, msg, false);
++	}
++}
++
++static int geni_i2c_gpi(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
++			   struct dma_slave_config *config, dma_addr_t *dma_addr_p,
++			   void **buf, unsigned int op, struct dma_chan *dma_chan)
++{
++	struct gpi_i2c_config *peripheral;
++	unsigned int flags;
++	void *dma_buf = &buf;
++	dma_addr_t addr;
++	enum dma_data_direction map_dirn;
++	enum dma_transfer_direction dma_dirn;
++	struct dma_async_tx_descriptor *desc;
++	int ret;
++
++	peripheral = config->peripheral_config;
++
++	dma_buf = i2c_get_dma_safe_msg_buf(msg, 1);
++	if (!dma_buf)
++		return -ENOMEM;
++
++	if (op == I2C_WRITE)
++		map_dirn = DMA_TO_DEVICE;
++	else
++		map_dirn = DMA_FROM_DEVICE;
++
++	addr = dma_map_single(gi2c->se.dev->parent, dma_buf, msg->len, map_dirn);
++	if (dma_mapping_error(gi2c->se.dev->parent, addr)) {
++		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
++		return -ENOMEM;
++	}
++
++	peripheral->rx_len = msg->len;
++	peripheral->op = op;
++
++	ret = dmaengine_slave_config(dma_chan, config);
++	if (ret) {
++		dev_err(gi2c->se.dev, "dma config error: %d for op:%d\n", ret, op);
++		goto err_config;
++	}
++
++	peripheral->set_config =  false;
++	peripheral->multi_msg = true;
++	flags = DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
++
++	if (op == I2C_WRITE)
++		dma_dirn = DMA_MEM_TO_DEV;
++	else
++		dma_dirn = DMA_DEV_TO_MEM;
++
++	desc = dmaengine_prep_slave_single(dma_chan, addr, msg->len, dma_dirn, flags);
++	if (!desc) {
++		dev_err(gi2c->se.dev, "prep_slave_sg failed\n");
++		ret = -EIO;
++		goto err_config;
++	}
++
++	desc->callback_result = i2c_gsi_cb_result;
++	desc->callback_param = gi2c;
++
++	dmaengine_submit(desc);
++	*dma_addr_p = addr;
++
++	return 0;
++
++err_config:
++	dma_unmap_single(gi2c->se.dev->parent, addr, msg->len, map_dirn);
++	i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
++	return ret;
++}
++
++static int geni_i2c_gsi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], int num)
++{
++	struct dma_slave_config config = {};
++	struct gpi_i2c_config peripheral = {};
++	int i, ret = 0, timeout, stretch;
++	dma_addr_t tx_addr, rx_addr;
++	void *tx_buf = NULL, *rx_buf = NULL;
++
++	config.peripheral_config = &peripheral;
++	config.peripheral_size = sizeof(peripheral);
++
++	if (!gi2c->cfg_sent) {
++		const struct geni_i2c_clk_fld *itr = gi2c->clk_fld;
++
++		gi2c->cfg_sent = true;
++		peripheral.pack_enable = I2C_PACK_EN;
++		peripheral.cycle_count = itr->t_cycle_cnt;
++		peripheral.high_count = itr->t_high_cnt;
++		peripheral.low_count = itr->t_low_cnt;
++		peripheral.clk_div = itr->clk_div;
++		peripheral.set_config =  true;
++	}
++	peripheral.multi_msg = false;
++
++	for (i = 0; i < num; i++) {
++		gi2c->cur = &msgs[i];
++		dev_dbg(gi2c->se.dev, "msg[%d].len:%d\n", i, gi2c->cur->len);
++
++		stretch = (i < (num - 1));
++		peripheral.addr = msgs[i].addr;
++		peripheral.stretch = stretch;
++
++		if (msgs[i].flags & I2C_M_RD) {
++			ret =  geni_i2c_gpi(gi2c, &msgs[i], &config, &rx_addr, &rx_buf, I2C_READ, gi2c->rx_c);
++			if (ret)
++				goto err;
++		}
++
++		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config, &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
++		if (ret)
++			goto err;
++
++		if (msgs[i].flags & I2C_M_RD)
++			dma_async_issue_pending(gi2c->rx_c);
++		dma_async_issue_pending(gi2c->tx_c);
++
++		timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
++		if (!timeout) {
++			dev_err(gi2c->se.dev, "I2C timeout gsi flags:%d addr:0x%x\n",
++				gi2c->cur->flags, gi2c->cur->addr);
++			gi2c->err = -ETIMEDOUT;
++			goto err;
++		}
++
++		geni_i2c_gpi_unmap(gi2c, &msgs[i], tx_buf, tx_addr, rx_buf, rx_addr);
++	}
++
++	return 0;
++
++err:
++	dmaengine_terminate_sync(gi2c->rx_c);
++	dmaengine_terminate_sync(gi2c->tx_c);
++	geni_i2c_gpi_unmap(gi2c, &msgs[i], tx_buf, tx_addr, rx_buf, rx_addr);
++	return ret;
++}
++
+ static int geni_i2c_xfer(struct i2c_adapter *adap,
+ 			 struct i2c_msg msgs[],
+ 			 int num)
+@@ -475,6 +653,12 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
+ 	}
+ 
+ 	qcom_geni_i2c_conf(gi2c);
++
++	if (gi2c->se_mode == I2C_GPI_DMA) {
++		ret = geni_i2c_gsi_xfer(gi2c, msgs, num);
++		goto geni_i2c_txn_ret;
++	}
++
+ 	for (i = 0; i < num; i++) {
+ 		u32 m_param = i < (num - 1) ? STOP_STRETCH : 0;
+ 
+@@ -489,6 +673,7 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
+ 		if (ret)
+ 			break;
+ 	}
++geni_i2c_txn_ret:
+ 	if (ret == 0)
+ 		ret = num;
+ 
+@@ -517,11 +702,49 @@ static const struct acpi_device_id geni_i2c_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, geni_i2c_acpi_match);
+ #endif
+ 
++static void release_gpi_dma(struct geni_i2c_dev *gi2c)
++{
++	if (gi2c->rx_c) {
++		dma_release_channel(gi2c->rx_c);
++		gi2c->rx_c = NULL;
++	}
++	if (gi2c->tx_c) {
++		dma_release_channel(gi2c->tx_c);
++		gi2c->tx_c = NULL;
++	}
++}
++
++static int setup_gpi_dma(struct geni_i2c_dev *gi2c)
++{
++	int ret;
++
++	geni_se_select_mode(&gi2c->se, GENI_GPI_DMA);
++	gi2c->tx_c = dma_request_chan(gi2c->se.dev, "tx");
++	ret = dev_err_probe(gi2c->se.dev, IS_ERR(gi2c->tx_c), "Failed to get tx DMA ch\n");
++	if (ret < 0)
++		goto err_tx;
++
++	gi2c->rx_c = dma_request_chan(gi2c->se.dev, "rx");
++	ret = dev_err_probe(gi2c->se.dev, IS_ERR(gi2c->rx_c), "Failed to get rx DMA ch\n");
++	if (ret < 0)
++		goto err_rx;
++
++	dev_dbg(gi2c->se.dev, "Grabbed GPI dma channels\n");
++	return 0;
++
++err_rx:
++	dma_release_channel(gi2c->tx_c);
++	gi2c->tx_c = NULL;
++err_tx:
++	gi2c->rx_c = NULL;
++	return ret;
++}
++
+ static int geni_i2c_probe(struct platform_device *pdev)
+ {
+ 	struct geni_i2c_dev *gi2c;
+ 	struct resource *res;
+-	u32 proto, tx_depth;
++	u32 proto, tx_depth, fifo_disable;
+ 	int ret;
+ 	struct device *dev = &pdev->dev;
+ 
+@@ -601,27 +824,52 @@ static int geni_i2c_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 	proto = geni_se_read_proto(&gi2c->se);
+-	tx_depth = geni_se_get_tx_fifo_depth(&gi2c->se);
+ 	if (proto != GENI_SE_I2C) {
+ 		dev_err(dev, "Invalid proto %d\n", proto);
+ 		geni_se_resources_off(&gi2c->se);
+ 		return -ENXIO;
+ 	}
+-	gi2c->tx_wm = tx_depth - 1;
+-	geni_se_init(&gi2c->se, gi2c->tx_wm, tx_depth);
+-	geni_se_config_packing(&gi2c->se, BITS_PER_BYTE, PACKING_BYTES_PW,
+-							true, true, true);
++
++	fifo_disable = readl_relaxed(gi2c->se.base + GENI_IF_DISABLE_RO) & FIFO_IF_DISABLE;
++
++	switch (fifo_disable) {
++	case 1:
++		ret = setup_gpi_dma(gi2c);
++		if (!ret) { /* success case */
++			gi2c->se_mode = I2C_GPI_DMA;
++			geni_se_select_mode(&gi2c->se, GENI_GPI_DMA);
++			dev_dbg(dev, "Using GPI DMA mode for I2C\n");
++			break;
++		}
++		/*
++		 * in case of failure to get dma channel, we can till do the
++		 * FIFO mode, so fallthrough
++		 */
++		dev_warn(dev, "FIFO mode disabled, but couldn't get DMA, fall back to FIFO mode\n");
++		fallthrough;
++
++	case 0:
++		gi2c->se_mode = I2C_FIFO_SE_DMA;
++		tx_depth = geni_se_get_tx_fifo_depth(&gi2c->se);
++		gi2c->tx_wm = tx_depth - 1;
++		geni_se_init(&gi2c->se, gi2c->tx_wm, tx_depth);
++		geni_se_config_packing(&gi2c->se, BITS_PER_BYTE,
++				       PACKING_BYTES_PW, true, true, true);
++
++		dev_dbg(dev, "i2c fifo/se-dma mode. fifo depth:%d\n", tx_depth);
++
++		break;
++	}
++
+ 	ret = geni_se_resources_off(&gi2c->se);
+ 	if (ret) {
+ 		dev_err(dev, "Error turning off resources %d\n", ret);
+-		return ret;
++		goto err_dma;
+ 	}
+ 
+ 	ret = geni_icc_disable(&gi2c->se);
+ 	if (ret)
+-		return ret;
+-
+-	dev_dbg(dev, "i2c fifo/se-dma mode. fifo depth:%d\n", tx_depth);
++		goto err_dma;
+ 
+ 	gi2c->suspended = 1;
+ 	pm_runtime_set_suspended(gi2c->se.dev);
+@@ -633,18 +881,23 @@ static int geni_i2c_probe(struct platform_device *pdev)
+ 	if (ret) {
+ 		dev_err(dev, "Error adding i2c adapter %d\n", ret);
+ 		pm_runtime_disable(gi2c->se.dev);
+-		return ret;
++		goto err_dma;
+ 	}
+ 
+ 	dev_dbg(dev, "Geni-I2C adaptor successfully added\n");
+ 
+ 	return 0;
++
++err_dma:
++	release_gpi_dma(gi2c);
++	return ret;
+ }
+ 
+ static int geni_i2c_remove(struct platform_device *pdev)
+ {
+ 	struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
+ 
++	release_gpi_dma(gi2c);
+ 	i2c_del_adapter(&gi2c->adap);
+ 	pm_runtime_disable(gi2c->se.dev);
+ 	return 0;
 -- 
-2.28.0
+2.31.1
 
