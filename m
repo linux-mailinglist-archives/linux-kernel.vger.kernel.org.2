@@ -2,136 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD8943422E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEB2434236
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhJSXju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:39:50 -0400
-Received: from mail-dm6nam10on2063.outbound.protection.outlook.com ([40.107.93.63]:63072
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229987AbhJSXj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:39:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d0e1UkiA5fmc4N1Vvr+Ia5f+uVi19AYglR03LrlxgkRuoR2OyEsAp99PcPNbLFb0hF2p28NlPuHy3zqMvje56FV8a9N5D2l3kORFzADBWgmo1pbe8iNmWn7Jw1fhLb4SLM0IxCaAni1Gl+pbVWGRua9WbkzyD/3kuEWQlk8samgfp8ByxMpMEPCuerdUQ/q7FhsTMBXmv1naEXi5q+d2TAWIWdKP7TXuv9bOGKFgyYZXRdTvvj/7wmJq1JmfqrkKeAVoOYH55zohSFvmenyfHs6/gtkYpuzlCuAJJ/0DzlSkghS4lc2CZ4kXLiMCy8oIEWSYPX+02Nn3GP9KXWSqpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=573rEltmh+XVPiNULiPpaeAm3mWPH5l8jGUtKzx4bLg=;
- b=Gw7vk3CrBP+hee9AEDlZ+NQTvwL+nxmxu0a6fyDXXEHajLkW7IDjbMZK8ZwGrAK6NT72se3YzKt4o34rfPm+BqoU/HFG74eTuiMtZLVjw/l0DT6J1latzeg0AGbm3KGapg5J1ijGJT0l9AL7zul6Y4YLdT11P0Ui5PVyHSe+gSSoccnIe6+l9uEdJd2OgKwBq6da5J83tCFzUZJSbff3j/bOZOeI4Khj3ZxcVvG6WTmunAnSPdKS1nP9UFlnZwVozkh7dGEOEZ2WatWgr6+05LyVuXkzhUmQdEVkIOfoqqwy7F7LS3V5vYctvMgsmT0TJoLWWeSmezODUsbFgUleig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=573rEltmh+XVPiNULiPpaeAm3mWPH5l8jGUtKzx4bLg=;
- b=mhjU6YivkMGUBYLnDQ99LNMmCOe66WLamDWotiikxH4cSAHZCfeIHIQ3DcvGjpRN3NeKRqaSoz+dNNNHZ3BPxZmAnsDU7sEFudwLzm7SwuZXPdAO8piGYyW5OiLswT9zpvovx2g8DAT+sgzs6V7/AUg4sEn8Jv0hSWZHrN+9LtU=
-Received: from DM5PR16CA0012.namprd16.prod.outlook.com (2603:10b6:3:c0::22) by
- MN2PR12MB2928.namprd12.prod.outlook.com (2603:10b6:208:105::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
- 2021 23:37:12 +0000
-Received: from DM6NAM11FT059.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:c0:cafe::42) by DM5PR16CA0012.outlook.office365.com
- (2603:10b6:3:c0::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend
- Transport; Tue, 19 Oct 2021 23:37:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT059.mail.protection.outlook.com (10.13.172.92) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4608.15 via Frontend Transport; Tue, 19 Oct 2021 23:37:12 +0000
-Received: from ethanolx50f7host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 19 Oct
- 2021 18:37:10 -0500
-From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-To:     <x86@kernel.org>, <linux-edac@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Tony Luck <tony.luck@intel.com>, "H . Peter Anvin" <hpa@zytor.com>,
-        <yazen.ghannam@amd.com>, <Smita.KoralahalliChannabasappa@amd.com>
-Subject: [PATCH v2 5/5] x86/mce/mce-inject: Return error code to userspace from mce-inject module
-Date:   Tue, 19 Oct 2021 18:36:41 -0500
-Message-ID: <20211019233641.140275-6-Smita.KoralahalliChannabasappa@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
-References: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
+        id S230102AbhJSXlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 19:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhJSXlJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 19:41:09 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86BDC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:38:55 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id s136so17612170pgs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2QsW5fKhp22EmYwLesRxP1OLU4KgoBD8JpSEUKHaa7U=;
+        b=FF+oKNuXuU00ds8QRcbr8sqquKLJ4lADTJLozGgltzxK1vJNNa3JX+ICrkY1N3x5fH
+         xb5TH5P7t7MeFi7+vruSFecBpwDZaBGidgcRbLz4uj4FlWxXFvErHYc6Tq9HNwHjfcL/
+         2RlxSyk1TwEXi0zIB38Cqo/cvaeezCyd6SPhN3bCWZY17CN5WJZ2vfBY3+8Wa8OGSVtI
+         WGasOZtksSYbDGJjHF5nUU2M5Gop3ebb57GX87eEuJsytHpw9607G+3Sm/TMVOPJsgzw
+         /nPXMCdvr1WQ7JT6mFFCIA7gGJFX9fnYTujCkLs1TOYj0Ex4kvZP70hoBSpmMEiDDKoP
+         5a7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2QsW5fKhp22EmYwLesRxP1OLU4KgoBD8JpSEUKHaa7U=;
+        b=OwOX/qTokBIOILwwZXSYtUSTwoyY180D9KmivyfwoDhoegjpLCtfROu4F/rS4qL3Lt
+         Osh+r8Mcvs+JZF3KlQz+GxvRVsX++Mf25obE+/xXM5mFuPVgcCbIrJAsOFai4/cwoCRG
+         PCslj69fLN8goNKsUglPG7ahL0+IVpNLkiRM6Yk4sy1hHxSJpuMBMxY7Fp64YGaIZuVi
+         4ec+tcLEhUmjLQVrtfPXQpKG36WJowCcFyX8boXT55fsd+ewY9npQMtFUO86B/OudPIY
+         NLyh+MCjzCrP5aqtzMWDXaT8v7eqJ3PQAPsxHm25E8Ope1a+IBqHY0slvuRhu+hgbFtZ
+         e6+w==
+X-Gm-Message-State: AOAM532VB7KCYMMBB7Jjhlmc2/aaVYlHJ+bv9ix8Pd8Xg1eembSibU3A
+        lhiohlv1IuMEid0xaw4my/8kvg==
+X-Google-Smtp-Source: ABdhPJx+NMf/4ZfMDchDW6N8cMJnMUiaMZv4+dmhnJZoV4qJJH2iE4M9g2JQOk/S53ObxAEo0exQ/w==
+X-Received: by 2002:a05:6a00:2343:b0:44d:2e13:3edf with SMTP id j3-20020a056a00234300b0044d2e133edfmr2744482pfj.72.1634686734917;
+        Tue, 19 Oct 2021 16:38:54 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p17sm3752720pju.34.2021.10.19.16.38.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 16:38:54 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 23:38:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 05/13] KVM: Integrate gfn_to_memslot_approx() into
+ search_memslots()
+Message-ID: <YW9XCp3B+ogPIl7i@google.com>
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <d0d2c6fda0a21962eefcf28b37a603caa4be1819.1632171479.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e2546310-daf5-4c13-6fdd-08d99359600d
-X-MS-TrafficTypeDiagnostic: MN2PR12MB2928:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB29288F609C504C0ECA53C63B90BD9@MN2PR12MB2928.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NTArHuiI0X6kSfPqaN9IebuAI6zIJRM+tFtf7YkcaCcmxX0UZwmeUh7ApOluWk663WWNOKmTP3PxH/+NjtK/tLtS2X/UUEXIWImxEqzCaRQbXKYIZXmu0fPaY6lslxtho+QTjwsIguvItQGrFwHP6bzfROEhP+W/S4qdm+kO/TY6cYL5hMmkrOdLx6vafWjB2uGDtNy4L/UE3sMSWk2FfL9VJQaixztqRlzA6oEj8ShAbH4S7TWgI0as19a/RDNCzz647QbE6t3zIqFgifQPAdh1FKLclR/CONgLzaiDDkBCSMAWL9G5JQH7aQDKxe2T/UI8TUzmCg1cZQRHY5RfIdZOWix6Qqlrz+LPb37GhlZHOXSmVWhcP0cxPdPvme999Ei7/C/N+wSpV3hViCiKQ01MZRIYmo1OR9FcTnJTNDCfWkWBeF2k8CS9d7HdM1o1fKwGvw+ZuzCRbr9OUAnQR64rFefW7DY8C/eOpECy2FtQ1E9L1Oap8f0lz6uzgnqTHWmGt8FhRa2KQy8nDktMyk75ScfeWKEWJmJ1kqRp9lswL1r6geQ70BQb/7qpJAA/wSyShmFH0OxYp02G/DEp0p0JMXIwfHGn1tencLMLJqslN8SPCKoddnm3SgMEKzGAB/e0vM5dgL3+PlvcWPnLNFpKdfW4gY2/dfBu/bSRQbiX+Wk01MQn5VLlevsZ6tzKh3CGkMGoqMlxqxIUtFru+P/kJFaY/1ORfm7uORmMXsQ=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(36756003)(316002)(8936002)(2906002)(426003)(7696005)(5660300002)(1076003)(81166007)(47076005)(508600001)(70586007)(83380400001)(4326008)(2616005)(26005)(8676002)(86362001)(54906003)(110136005)(336012)(82310400003)(356005)(36860700001)(16526019)(70206006)(6666004)(186003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 23:37:12.0722
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2546310-daf5-4c13-6fdd-08d99359600d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT059.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB2928
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0d2c6fda0a21962eefcf28b37a603caa4be1819.1632171479.git.maciej.szmigiero@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the mce-inject module fails silently and user must look for
-kernel logs to determine if the injection has succeeded.
+On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
+> @@ -1267,7 +1280,7 @@ search_memslots(struct kvm_memslots *slots, gfn_t gfn, int *index)
+>   * itself isn't here as an inline because that would bloat other code too much.
+>   */
+>  static inline struct kvm_memory_slot *
+> -__gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+> +__gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn, bool approx)
 
-Save time for the user and return error code from the module with
-appropriate error statements if error injection fails.
+This function name is a misnomer.  The helper is not an "approx" version, it's an
+inner helper that takes an @approx param.  Unless someone has a more clever name,
+the dreaded four underscores seems like the way to go.  Warning away users is a
+good thing in this case...
 
-Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
----
-v2:
-	Added pr_err() along with error code.
----
- arch/x86/kernel/cpu/mce/inject.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+>  {
+>  	struct kvm_memory_slot *slot;
+>  	int slot_index = atomic_read(&slots->last_used_slot);
+> @@ -1276,7 +1289,7 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+>  	if (slot)
+>  		return slot;
+>  
+> -	slot = search_memslots(slots, gfn, &slot_index);
+> +	slot = search_memslots(slots, gfn, &slot_index, approx);
+>  	if (slot) {
+>  		atomic_set(&slots->last_used_slot, slot_index);
+>  		return slot;
+> @@ -1285,6 +1298,12 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+>  	return NULL;
+>  }
+>  
 
-diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
-index 72d29d26e033..a1c3c1e0425f 100644
---- a/arch/x86/kernel/cpu/mce/inject.c
-+++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -547,8 +547,11 @@ static void do_inject(void)
- 	}
- 
- 	cpus_read_lock();
--	if (!cpu_online(cpu))
-+	if (!cpu_online(cpu)) {
-+		pr_err("No online CPUs available for error injection\n");
-+		mce_err.err = -ENODEV;
- 		goto err;
-+	}
- 
- 	toggle_hw_mce_inject(cpu, true);
- 
-@@ -621,7 +624,7 @@ static int inj_bank_set(void *data, u64 val)
- 	/* Reset injection struct */
- 	setup_inj_struct(&i_mce);
- 
--	return 0;
-+	return mce_err.err;
+There's a comment that doesn't show up in this diff that should also be moved,
+and opportunistically updated.
+
+> +static inline struct kvm_memory_slot *
+> +__gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+> +{
+> +	return __gfn_to_memslot_approx(slots, gfn, false);
+> +}
+> +
+>  static inline unsigned long
+>  __gfn_to_hva_memslot(const struct kvm_memory_slot *slot, gfn_t gfn)
+>  {
+
+E.g. this as fixup?
+
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 540fa948baa5..2964c773b36c 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -1964,10 +1964,15 @@ static int kvm_s390_peek_cmma(struct kvm *kvm, struct kvm_s390_cmma_log *args,
+        return 0;
  }
- 
- MCE_INJECT_GET(bank);
--- 
-2.17.1
 
++static int gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn)
++{
++       return ____gfn_to_memslot(slots, cur_gfn, true);
++}
++
+ static unsigned long kvm_s390_next_dirty_cmma(struct kvm_memslots *slots,
+                                              unsigned long cur_gfn)
+ {
+-       struct kvm_memory_slot *ms = __gfn_to_memslot_approx(slots, cur_gfn, true);
++       struct kvm_memory_slot *ms = gfn_to_memslot_approx(slots, cur_gfn);
+        int slotidx = ms - slots->memslots;
+        unsigned long ofs = cur_gfn - ms->base_gfn;
+
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 8fd9644f40b2..ec1a074c2f6e 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1274,13 +1274,8 @@ search_memslots(struct kvm_memslots *slots, gfn_t gfn, int *index, bool approx)
+        return NULL;
+ }
+
+-/*
+- * __gfn_to_memslot() and its descendants are here because it is called from
+- * non-modular code in arch/powerpc/kvm/book3s_64_vio{,_hv}.c. gfn_to_memslot()
+- * itself isn't here as an inline because that would bloat other code too much.
+- */
+ static inline struct kvm_memory_slot *
+-__gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn, bool approx)
++____gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn, bool approx)
+ {
+        struct kvm_memory_slot *slot;
+        int slot_index = atomic_read(&slots->last_used_slot);
+@@ -1298,10 +1293,15 @@ __gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn, bool approx)
+        return NULL;
+ }
+
++/*
++ * __gfn_to_memslot() and its descendants are here to allow arch code to inline
++ * the lookups in hot paths.  gfn_to_memslot() itself isn't here as an inline
++ * because that would bloat other code too much.
++ */
+ static inline struct kvm_memory_slot *
+ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+ {
+-       return __gfn_to_memslot_approx(slots, gfn, false);
++       return ____gfn_to_memslot(slots, gfn, false);
+ }
+
+ static inline unsigned long
