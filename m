@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C02433DB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C621433DBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhJSRtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:49:16 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:63250 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232526AbhJSRtL (ORCPT
+        id S234744AbhJSRuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233460AbhJSRuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:49:11 -0400
-Received: from [192.168.1.18] ([92.140.161.106])
-        by smtp.orange.fr with ESMTPA
-        id ctCRmJ9pTPNphctCSm4oEL; Tue, 19 Oct 2021 19:46:57 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Tue, 19 Oct 2021 19:46:57 +0200
-X-ME-IP: 92.140.161.106
-Subject: Re: [PATCH] media: tw5864: Simplify 'tw5864_finidev()'
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        andrey.utkin@corp.bluecherry.net, anton@corp.bluecherry.net,
-        maintainers@bluecherrydvr.com, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <189d4fd72db8707cb495e3a29ab7a276e07f62a0.1634373552.git.christophe.jaillet@wanadoo.fr>
- <163463974453.1853916.7698473612617245785@Monstersaurus>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <36d2d114-00be-f509-d6e0-424ef65af9b9@wanadoo.fr>
-Date:   Tue, 19 Oct 2021 19:46:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 19 Oct 2021 13:50:11 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E2AC06161C;
+        Tue, 19 Oct 2021 10:47:58 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id ez7-20020a17090ae14700b001a132a1679bso498656pjb.0;
+        Tue, 19 Oct 2021 10:47:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TUAEa4/k2XTg8hxpFffV2Im7arkCW9oaw1zsRiqU/HM=;
+        b=YEWQd42hgaM/SNOn6WGoTdoEzWfQYEoJsZZJLSO8rxwobhWrDK+pdO4T4vo2y3EP+s
+         K2VS/NlgBtIy3LP7fHlEidcOgg2p45dDIxkhywIJKufDhbJpa73eZru1q6v2MUnIxLRt
+         PVPDISBLiEwZr2xmlH5GMrEvZ/OIkWTmi5BqGui3oB0uKee2UIhV3Iv8xfRlRpvLPWf9
+         itl4InhelBr+nZIvp35cU/y95+tAAbF+VoXSmg/RM7q3xApeuHutKOl6AU09cEpxN+fw
+         kbuLrPzs+eqK42K1A8TSs5rKJ5ndrlc8sMV6vppOrY63/EPYlHwfu5tFbA0h4JcTXQGt
+         wZvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=TUAEa4/k2XTg8hxpFffV2Im7arkCW9oaw1zsRiqU/HM=;
+        b=Gl7wBFuU+uzh7uTNpG6aSYdr3ydDdJTXVclEED+soqPnpMn7Gnv8x9ewAxhKMZUB8w
+         Wx4FShE5I1Z4ODM41f51pEBwdG1Kh3MUKTlkPuPbZaRNDJ8aJh3/YIQGdAd6V6QO/OvS
+         oKsTrNZia2wRh1OdwEEynrnKlSoHVLmziMP+FYSDKw0RpoPGQ03CMwoRjm4Hknu5OfIT
+         Q1r6h4ITctns2alzQMn3wpXd/MAj0PG0le0wP52tW3CS/dC10f/Aj+MM/igkPFIxT3Gs
+         Eu6sWFFpXhumRQzdJFSJqWRo6u2k5xwyzlCv9q/IHn9efc5iZ2crAM2Y0p6T1FxpGqru
+         Pytg==
+X-Gm-Message-State: AOAM532QxRjmrTFJ66zrad+JTFMKMphMd6f4cFgzzXSiqoKgK28RsVrk
+        U7TNdGORrvj16wGA1KUQTkO7uYfi3XRISw==
+X-Google-Smtp-Source: ABdhPJwPtTOPyeENj1PlTq0kDGdbySJItkafJ6TlG/XXgrakS0KbPoprirPyA+hdibabxCPhFttlMQ==
+X-Received: by 2002:a17:902:e144:b0:13f:4b7:68c0 with SMTP id d4-20020a170902e14400b0013f04b768c0mr33965064pla.77.1634665677888;
+        Tue, 19 Oct 2021 10:47:57 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id oa4sm3623784pjb.13.2021.10.19.10.47.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 10:47:57 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 19 Oct 2021 07:47:56 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] workqueue: doc: Call out the non-reentrance conditions
+Message-ID: <YW8EzNmq/bde5VTa@slm.duckdns.org>
+References: <20211018013117.256284-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <163463974453.1853916.7698473612617245785@Monstersaurus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018013117.256284-1-boqun.feng@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 19/10/2021 à 12:35, Kieran Bingham a écrit :
-> Quoting Christophe JAILLET (2021-10-16 09:40:29)
->> Some resources are allocated with 'pci_request_regions()', so use
->> 'pci_release_regions()' to free them, instead of a verbose
->> 'release_mem_region()'.
-> 
-> And the driver was even already using pci_release_regions() in
-> tw5864_initdev(), so indeed this makes it more consistent too.
-> 
-> I'm curious that tw5864_initdev() calls pci_enable_device() (and
-> pci_disable_device in it's error path), while tw5864_finidev() doesn't.
+On Mon, Oct 18, 2021 at 09:31:17AM +0800, Boqun Feng wrote:
+> +Workqueue guarantees that a work item cannot be re-entrant if the following
+> +conditions hold after a work item gets queued:
+> +
+> +        1. The work function hasn't been changed.
+> +        2. No one queues the work item to another workqueue.
+> +        3. The work item hasn't been reinitiated.
 
-I agree with you. I should have spotted it when I've looked at the probe 
-and remove functions :(
+Maybe phrasing it so that the above are the conditions defining a work item
+to be the same instance would be clearer?
 
-> 
-> Would you like to submit a patch to fix that on top of this one? or should I?
+Thanks.
 
-Either way is fine for me.
-If it's fine for you to fix it, I leave it to you.
-
-A more invasive fix could be to switch to 'pcim_enable_device()' and 
-remove both 'pci_release_regions()' and 'pci_disable_device()' calls.
-
-CJ
-
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
->> There is no point in calling 'devm_kfree()'. The corresponding resource is
->> managed, so it will be fried automatically.
-> 
-> Indeed.
-> 
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/media/pci/tw5864/tw5864-core.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/media/pci/tw5864/tw5864-core.c b/drivers/media/pci/tw5864/tw5864-core.c
->> index 23d3cae54a5d..fee3b7711901 100644
->> --- a/drivers/media/pci/tw5864/tw5864-core.c
->> +++ b/drivers/media/pci/tw5864/tw5864-core.c
->> @@ -333,11 +333,9 @@ static void tw5864_finidev(struct pci_dev *pci_dev)
->>   
->>          /* release resources */
->>          iounmap(dev->mmio);
->> -       release_mem_region(pci_resource_start(pci_dev, 0),
->> -                          pci_resource_len(pci_dev, 0));
->> +       pci_release_regions(pci_dev);
->>   
->>          v4l2_device_unregister(&dev->v4l2_dev);
->> -       devm_kfree(&pci_dev->dev, dev);
->>   }
->>   
->>   static struct pci_driver tw5864_pci_driver = {
->> -- 
->> 2.30.2
->>
-> 
-
+-- 
+tejun
