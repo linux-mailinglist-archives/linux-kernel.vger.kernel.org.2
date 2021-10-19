@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2D4432D97
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C747432D99
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234037AbhJSGB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:01:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44154 "EHLO mail.kernel.org"
+        id S234062AbhJSGCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:02:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:44754 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhJSGB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:01:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A9FA6115B;
-        Tue, 19 Oct 2021 05:59:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634623185;
-        bh=FRG4beuFMc1+FdpIgLOkG3rFrbUvdGSYdFRG5EBVUp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t5cPxWcbk5thS6ojbahUasVg3cpLKhCx8hgqiHEHBcHCFhYZGDz3PzTkyV56PThx8
-         C3gRfb/7GiSnBsCQ4+thbCL6jeTWi4Td8oTrT13oEoJE+gNhshpz5odbSJ+vtUo1zC
-         8x+r/FO7nNsSeNyYjEDbeWzYrpmc2Jidcs+Yajmo=
-Date:   Tue, 19 Oct 2021 07:59:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: mt7530: correct ds->num_ports
-Message-ID: <YW5ez/PySlH8WsGk@kroah.com>
-References: <20211016062414.783863-1-dqfext@gmail.com>
- <cd6a03b9-af49-97b4-6869-d51b461bf50a@gmail.com>
- <20211018084230.6710-1-dqfext@gmail.com>
- <7b5e5fcf-8e7f-45ec-de3f-57b3da77b479@gmail.com>
+        id S229755AbhJSGCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:02:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A99E12F;
+        Mon, 18 Oct 2021 22:59:51 -0700 (PDT)
+Received: from [10.163.74.241] (unknown [10.163.74.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C3DB3F73D;
+        Mon, 18 Oct 2021 22:59:48 -0700 (PDT)
+Subject: Re: [PATCH v5 14/15] arm64: errata: Enable workaround for TRBE
+ overwrite in FILL mode
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>, will@kernel.org,
+        mathieu.poirier@linaro.org
+Cc:     catalin.marinas@arm.com, mike.leach@linaro.org, leo.yan@linaro.org,
+        maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
+ <20211014223125.2605031-15-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <efc9d532-e25c-91fb-a987-323b228fdf90@arm.com>
+Date:   Tue, 19 Oct 2021 11:29:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7b5e5fcf-8e7f-45ec-de3f-57b3da77b479@gmail.com>
+In-Reply-To: <20211014223125.2605031-15-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 09:22:49AM -0700, Florian Fainelli wrote:
-> On 10/18/21 1:42 AM, DENG Qingfang wrote:
-> > On Sat, Oct 16, 2021 at 07:36:14PM -0700, Florian Fainelli wrote:
-> >> On 10/15/2021 11:24 PM, DENG Qingfang wrote:
-> >>> Setting ds->num_ports to DSA_MAX_PORTS made DSA core allocate unnecessary
-> >>> dsa_port's and call mt7530_port_disable for non-existent ports.
-> >>>
-> >>> Set it to MT7530_NUM_PORTS to fix that, and dsa_is_user_port check in
-> >>> port_enable/disable is no longer required.
-> >>>
-> >>> Cc: stable@vger.kernel.org
-> >>> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> >>
-> >> Do you really want to target the net tree for this change?
-> > 
-> > Yes because I consider this a bug fix.
+
+
+On 10/15/21 4:01 AM, Suzuki K Poulose wrote:
+> With the workaround enabled in TRBE, enable the config entries
+> to be built without COMPILE_TEST
 > 
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+
+> ---
+>  arch/arm64/Kconfig | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> OK, why not provide a Fixes tag to help with targeting the back port
-> then? This has been applied anyway, so hopefully the auto selection will
-> do its job and tell you where it stops applying cleanly.
-
-Without a "Fixes:" tag, I just backport things as far are they are easy
-to go and then stop without an email saying anything fails on older
-kernels.
-
-thanks,
-
-greg k-h
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index f30029f4a9f9..f72fa44d6182 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -672,7 +672,6 @@ config ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>  config ARM64_ERRATUM_2119858
+>  	bool "Cortex-A710: 2119858: workaround TRBE overwriting trace data in FILL mode"
+>  	default y
+> -	depends on COMPILE_TEST # Until the CoreSight TRBE driver changes are in
+>  	depends on CORESIGHT_TRBE
+>  	select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>  	help
+> @@ -691,7 +690,6 @@ config ARM64_ERRATUM_2119858
+>  config ARM64_ERRATUM_2139208
+>  	bool "Neoverse-N2: 2139208: workaround TRBE overwriting trace data in FILL mode"
+>  	default y
+> -	depends on COMPILE_TEST # Until the CoreSight TRBE driver changes are in
+>  	depends on CORESIGHT_TRBE
+>  	select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>  	help
+> 
