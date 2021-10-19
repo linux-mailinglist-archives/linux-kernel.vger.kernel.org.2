@@ -2,135 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981094332D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5D04332D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235129AbhJSJtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:49:49 -0400
-Received: from mail-4322.protonmail.ch ([185.70.43.22]:46249 "EHLO
-        mail-4322.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235096AbhJSJtr (ORCPT
+        id S235096AbhJSJu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:50:29 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:56116 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhJSJu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:49:47 -0400
-Date:   Tue, 19 Oct 2021 09:47:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1634636852; bh=iTes/LS2at5n4b3JbFfDhTVYmIXqtWhyKtjvRl5h1lk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=epp2TtqpMqsLGYPPx9w/sOx6AAYZdDsmJKSvQ2p7TQhojEJA+9t2RJF3Pm4LlIpwN
-         zticrAFZfiOokSeDz9zm6ZRZBye+91Q267sm5FEvU+PLu8M/lkxfHSZjXlm8fpOrxR
-         wpagntqEY+CLq4TRaf0Q6NpqZxckkdWIdj/x6JicNkZw+Jf8YVfwqevEcI0QooHrVI
-         EVjvTNaKhKW95ux6MFhfBqNa5ikRgps8L050ouXo1R6q/0Ke1+2O+mpjWNden/Chfe
-         mof9bWorqAarlexlKPySQ6EJc9aTymvtxiVNvVZWhC9G4Lq/dcs4rKpGwznOsDJ4BU
-         KB529DmhP8vDA==
-To:     Peter Zijlstra <peterz@infradead.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
-Message-ID: <20211019094038.80569-1-alobakin@pm.me>
-In-Reply-To: <20211019001845.85256-1-alobakin@pm.me>
-References: <20211013122217.304265366@infradead.org> <20211013123645.002402102@infradead.org> <YWmPCF+g+sF4+ieh@zn.tnic> <20211015165635.GH174703@worktop.programming.kicks-ass.net> <20211018225905.86034-1-alobakin@pm.me> <20211019001845.85256-1-alobakin@pm.me>
+        Tue, 19 Oct 2021 05:50:27 -0400
+Received: by mail-il1-f198.google.com with SMTP id o8-20020a056e02068800b0025999dab84fso3582435ils.22
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:48:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=HkppKwxJSrwxL7dC9UV89aph7+9yntblLWJOhC1mcHE=;
+        b=mCM9r2SShDjww+BaI0AulXGUB1yOPgHRVIamlTANLydT/bs3Vj+8sykWmL4Ciyh5JY
+         2k52dXH+1XepjckNO7Ac3DsIwYrWfbrP3e08o3N+0YtX2IPNMbtHqVEwLgfFwLk+7T0w
+         8EB2OJQvQlCLv5BALOKjFZlpRfpFwU6ypZctVwu5MSJu9EsDfKlXtFHh8iX5EdFVudHl
+         1W2k/9KI7zGCPt88rfjjrWs4y/sKqKQusyt5W2dqpua+cgJljxKj1EtJ/JYYSGU5TdcR
+         DnsAbZkfL1kmjmiJ/je9//+jBF2eRaUamlX/z8Vp7ZVdo2DWHHZeTqXDmUV05Eo8gHRJ
+         bhog==
+X-Gm-Message-State: AOAM531pFfZnmNVU3HGTMoRfjixX6q3QyCDulxZqAcBA/+TphUlN+5at
+        ktFopFf8tRHk4KfvEiEFlPKGeeGwGc9nooiPUgFE4+qbhvRR
+X-Google-Smtp-Source: ABdhPJyb8p3gPAxw/6FfoTBFhII+XiWGMzkh14vkr61G0rGK1ckzMLcK93Jd+koQdBXdoVfetU5dm6E+S+J/mN81JU2MLpgzl/ik
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+X-Received: by 2002:a05:6e02:1e0c:: with SMTP id g12mr17531265ila.260.1634636895325;
+ Tue, 19 Oct 2021 02:48:15 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 02:48:15 -0700
+In-Reply-To: <20211019091639.GE3255@quack2.suse.cz>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007b948805ceb18f83@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in __isofs_iget
+From:   syzbot <syzbot+6fc7fb214625d82af7d1@syzkaller.appspotmail.com>
+To:     bingjingc@synology.com, cccheng@synology.com, jack@suse.cz,
+        linux-kernel@vger.kernel.org, pali@kernel.org,
+        robbieko@synology.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
-Date: Tue, 19 Oct 2021 00:25:30 +0000
+Hello,
 
-> From: Alexander Lobakin <alobakin@pm.me>
-> Date: Mon, 18 Oct 2021 23:06:35 +0000
->
-> Sorry for double posting, should've include this from the start.
->
-> > Hi,
-> >
-> > Gave it a spin with Clang/LLVM, and
-> >
-> > > On Fri, Oct 15, 2021 at 04:24:08PM +0200, Borislav Petkov wrote:
-> > > > On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
-> > > > > +static int patch_retpoline(void *addr, struct insn *insn, u8 *by=
-tes)
-> > > > > +{
-> > > > > +=09void (*target)(void);
-> > > > > +=09int reg, i =3D 0;
-> > > > > +
-> > > > > +=09if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
-> > > > > +=09=09return -1;
-> > > > > +
-> > > > > +=09target =3D addr + insn->length + insn->immediate.value;
-> > > > > +=09reg =3D (target - &__x86_indirect_thunk_rax) /
-> > > > > +=09      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax)=
-;
-> >
-> > this triggers
-> >
-> > > > I guess you should compute those values once so that it doesn't hav=
-e to
-> > > > do them for each function invocation. And it does them here when I =
-look
-> > > > at the asm it generates.
-> > >
-> > > Takes away the simplicity of the thing. It can't know these values at
-> > > compile time (due to external symbols etc..) although I suppose LTO
-> > > might be able to fix that.
-> > >
-> > > Other than that, the above is the trivial form of reverse indexing an
-> > > array.
-> > >
-> > > > > +
-> > > > > +=09if (WARN_ON_ONCE(reg & ~0xf))
-> > > > > +=09=09return -1;
-> >
-> > this:
-> >
-> > WARN in patch_retpoline:408: addr pcibios_scan_specific_bus+0x196/0x200=
-, op 0xe8, reg 0xb88ca
-> > WARN in patch_retpoline:408: addr xen_pv_teardown_msi_irqs+0x8d/0x120, =
-op 0xe8, reg 0xb88ca
-> > WARN in patch_retpoline:408: addr __mptcp_sockopt_sync+0x7e/0x200, op 0=
-xe8, reg 0xb88ca
-> > [...]
-> > (thousands of them, but op =3D=3D 0xe8 && reg =3D=3D 0xb88ca are always=
- the same)
->
-> SMP alternatives: WARN in patch_retpoline:408: addr __strp_unpause+0x62/0=
-x1b0/0xffffffff92d20a12, op 0xe8, reg 0xb88ca
-> SMP alternatives: insn->length: 5, insn->immediate.value: 0xffae0989
-> SMP alternatives: target: 0xffffffff928013a0/__x86_indirect_thunk_r11+0x0=
-/0x20
-> SMP alternatives: rax: 0xffffffff9223cd50, target - rax: 0x5c4650
-> SMP alternatives: rcx - rax: 0x8
->
-> Imm value and addr are different each time, the rest are the same.
-> target is correct and even %pS works on it, but this distance
-> between r11 and rax thunks (0x5c4650) doesn't look fine, as well as
-> rcx - rax being 0x8. Thunks are 0x11 sized + alignment, should be
-> 0x20, and it is, according to vmlinux.map. Weird. Amps/&s?
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Oh okay, it's because of ClangCFI:
+Reported-and-tested-by: syzbot+6fc7fb214625d82af7d1@syzkaller.appspotmail.com
 
-SMP alternatives: You were looking for __typeid__ZTSFvvE_global_addr+0x370/=
-0x1410 at 0xffffffffa523cd60,>
-SMP alternatives: rax is __typeid__ZTSFvvE_global_addr+0x360/0x1410 at 0xff=
-ffffffa523cd50
+Tested on:
 
-Sorry for confusing, seems like it's a side effect of using it on
-Clang 12 while the original series supports only 13+. I'll double
-check and let know if find something.
+commit:         519d8195 Linux 5.15-rc6
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fd205ca848a57406
+dashboard link: https://syzkaller.appspot.com/bug?extid=6fc7fb214625d82af7d1
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=101927c8b00000
 
-[ snip ]
-
-Thanks,
-Al
-
+Note: testing is done by a robot and is best-effort only.
