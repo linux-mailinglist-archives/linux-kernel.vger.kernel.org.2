@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D5343346E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30E943346F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235327AbhJSLL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
+        id S235358AbhJSLM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235211AbhJSLL4 (ORCPT
+        with ESMTP id S235211AbhJSLM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:11:56 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15CCC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:09:43 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id 187so17280995pfc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:09:43 -0700 (PDT)
+        Tue, 19 Oct 2021 07:12:26 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C467C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:10:14 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id k7so46848573wrd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:10:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=sLvuXUIVq1jKnhOw/i/BcOZ+oL9amgYiHpm3EvpEBDk=;
-        b=KNVqWymYbP/YgK7WJRGKJMnRa5bMTJmCwL3DbBQS8JPWzBuSgM3FSaDEwCL3zUs42P
-         qUDox6nTqYpl+4HsHp+qem7olc5vkmeM/BUctxNtq2AF3fkp4MN8I1vquS6qHcyMBWFV
-         KR2pZ4H52lEjLYF/Ved5T34PcnDvb2c0sTH/P6kG9K2SnTiIEA0n9qaxUsdn8byIOkP9
-         0vm11pc7witUV5zpMRQJe17j0ew381sgQ9Fx/7LoxwNbvc+K0YF1eJCwhgRe9TPISyZa
-         0e2YuJPtYqbrzQ0/W+319mf7uJw9+6xURto8aAw5U07CxWgAaYXXVn+tbbiFLMmScrXU
-         cR5Q==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=S0H3mAMadsGTXDygzsfO5yJNWGRhuy7yoGGr65U8IrU=;
+        b=D2eK5Vu+R9WcvpsaOdKxtlnnHGI725lbjLRYKl7wEmaNfkWNHM3wFGvsjZ/08es/rQ
+         l6tXr6iuETVixkLmWA/OOjxhcheRQf7qh7PxMgIcNNYuJKQDAHigP+CtMC9OxrxGIkdK
+         IkqwZX/j9BpsTFVqFc2gxYBBbRJAF6kU14HCfhL9FGKj1flX9R09Hb+I/uilsyvqL+Yk
+         OYEcDDH2DNx3fSmbMfX97Z/hGhJ5e6INpqi18BnwQnHxf/Jia69nRneqeSOEmVsK8AOL
+         H1M7AnWbaJbWUbUr8ovkJYOGnOSrCig2pt/BhN7FGwmEBGFPLnpaS0BHV/qgcvCh9r5N
+         3LcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=sLvuXUIVq1jKnhOw/i/BcOZ+oL9amgYiHpm3EvpEBDk=;
-        b=M0cwJaMAWLOZBk3KIKI0VYb32rEWH1bKhFqP7213ruDwZ4uBES5HiaVJ+2n8g6mYVT
-         4M0vA8Z4yeqVPOifJ+fYCburju+lzKsUbYilRceUYYp+mWWRlisDcja+EnN7zHhNHnft
-         XOWE1SfMqHWBFbEPxDz2J5oDTxkaCKdNvp/Ri++cigfAChMWPetu9TR1b0ut4b+bIJ5O
-         eh2kq7f+vJFP4836UqV113UkVLZSfsB344GI2HYAteYsWos/bTwoxNkYPsderHR2kp3h
-         or3Zjxq9uWpfrfEThNUwtqK04SHisilLXWItnRkBHj2HLmwtjLX/SC1wsIJOS6lktEnr
-         GWtQ==
-X-Gm-Message-State: AOAM533/+qQXPvdq/gk8flroKmncCoFSF8Rwp47SeZidQpt3dXwuKkyG
-        FDZO7Bo4QwImZucJ5QqADLLcX0gK8ifeXp2w984=
-X-Google-Smtp-Source: ABdhPJxldu5bde29uR7oKFw8e1mIeFblKradyDshqOsFRJgqIyTPqOEfm552T0fkltaNvUJPfHd6xmWT/sVppN3hDBo=
-X-Received: by 2002:a05:6a00:2b1:b0:44d:b18:8192 with SMTP id
- q17-20020a056a0002b100b0044d0b188192mr34606546pfs.35.1634641782991; Tue, 19
- Oct 2021 04:09:42 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S0H3mAMadsGTXDygzsfO5yJNWGRhuy7yoGGr65U8IrU=;
+        b=QqaXyLRs44ubbDDgbFC7TR1m/0CltNR/jiz07Jbk9shnjtdngCZFQMRKtbHxK1uXpe
+         43f4rEN/b2b+ne2IgZIDUlMratPv9+bX7FaKrkM81hfjfyKAQZrvItbgNX9nGuCIWJnO
+         OfQU5jObw/9yPDL2eB6i12lwG9m1sdzbrHG+bBy4zskDVpaBlVbtyf8Nm3X2BOzPkiSF
+         5EtV1Qhbn6cBkEt0nWKkXDRWmrPy6CfrjMxt9V8Ov7sY67e2TgkYmiUJra2NUpIBTEA0
+         pNYpyarPDvRziGOJud6wxx35ODRU9qvwHfzXRGeXR4envn9YlXZ0KE0KL6eJNdRNphAs
+         jcag==
+X-Gm-Message-State: AOAM531lxWCRUvHrM5hL+rIgf5jfqFKmCRVgO/M+QawASdKx9sGsQqEG
+        jkOkosqtEK8rREPmEvxV+3RX/A==
+X-Google-Smtp-Source: ABdhPJwreKt6Ikbh4cV5zeQTHxQeFcev/wc/pe38SAolbF5C0cw32H+TNx58vXwFSKTqzP5jTkp7Iw==
+X-Received: by 2002:adf:f10c:: with SMTP id r12mr31565245wro.298.1634641812517;
+        Tue, 19 Oct 2021 04:10:12 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:c590:9206:d20a:23bd? ([2a01:e34:ed2f:f020:c590:9206:d20a:23bd])
+        by smtp.googlemail.com with ESMTPSA id g10sm1474475wmq.13.2021.10.19.04.10.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 04:10:12 -0700 (PDT)
+Subject: Re: [PATCH v3 00/17] clocksource/arm_arch_timer: Add basic ARMv8.6
+ support
+To:     Will Deacon <will@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+References: <20211010114306.2910453-1-maz@kernel.org>
+ <20211011110243.GB4068@willie-the-truck> <87mtnfptni.wl-maz@kernel.org>
+ <2cf7b564-63c2-ac6c-a083-f7ac2caab6fc@linaro.org>
+ <877decotwi.wl-maz@kernel.org>
+ <d0c55386-2f7f-a940-45bb-d80ae5e0f378@linaro.org>
+ <20211019110912.GF13251@willie-the-truck>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <51dd3a7d-5f85-6935-39e8-10d66e5aacb2@linaro.org>
+Date:   Tue, 19 Oct 2021 13:10:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a17:90b:1c05:0:0:0:0 with HTTP; Tue, 19 Oct 2021 04:09:42
- -0700 (PDT)
-Reply-To: mr.luisfernando5050@gmail.com
-From:   "Mr. Luis Fernando " <mr.alinmusah03@gmail.com>
-Date:   Tue, 19 Oct 2021 04:09:42 -0700
-Message-ID: <CAK9pk2Ge5VYDxAsV13PDT9XNKA+D0Zddy1VCCSGhz2VvD-f4ow@mail.gmail.com>
-Subject: GOOD DAY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+In-Reply-To: <20211019110912.GF13251@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LS0gDQpEZWFyIEZyaWVuZCwNCg0KR3JlZXRpbmdzLg0KDQpIb3cgYXJlIHlvdSBkb2luZyB0b2Rh
-eSBpIGhvcGUgZmluZT8NCg0KSSBjYW1lIGFjcm9zcyB5b3VyIGUtbWFpbCBjb250YWN0IHByaW9y
-IGEgcHJpdmF0ZSBzZWFyY2ggd2hpbGUgaW4gbmVlZA0Kb2YgeW91ciBhc3Npc3RhbmNlLiBNeSBu
-YW1lIE1yLkthc2ltIE1vaGFtZWQg4oCZIEkgd29yayB3aXRoIHRoZQ0KZGVwYXJ0bWVudCBvZiBB
-dWRpdCBhbmQgYWNjb3VudGluZyBtYW5hZ2VyIGhlcmUgaW4gVUJBIEJhbmsgb2YgQWZyaWNhLA0K
-VGhlcmUgaXMgdGhpcyBmdW5kIHRoYXQgd2FzIGtlZXAgaW4gbXkgY3VzdG9keSB5ZWFycyBhZ28g
-YW5kIEkgbmVlZA0KeW91ciBhc3Npc3RhbmNlIGZvciB0aGUgdHJhbnNmZXJyaW5nIG9mIHRoaXMg
-ZnVuZCB0byB5b3VyIGJhbmsgYWNjb3VudA0KZm9yIGJvdGggb2YgdXMgYmVuZWZpdCBmb3IgbGlm
-ZSB0aW1lIGludmVzdG1lbnQgYW5kIHRoZSBhbW91bnQgaXMgKFVTDQokMjcsNTAwLiBNaWxsaW9u
-IERvbGxhcnMpLg0KDQpJIGhhdmUgZXZlcnkgaW5xdWlyeSBkZXRhaWxzIHRvIG1ha2UgdGhlIGJh
-bmsgYmVsaWV2ZSB5b3UgYW5kIHJlbGVhc2UNCnRoZSBmdW5kIHRvIHlvdXIgYmFuayBhY2NvdW50
-IGluIHdpdGhpbiA3IGJhbmtpbmcgd29ya2luZyBkYXlzIHdpdGgNCnlvdXIgZnVsbCBjby1vcGVy
-YXRpb24gd2l0aCBtZSBhZnRlciBzdWNjZXNzIE5vdGUgNTAlIGZvciB5b3Ugd2hpbGUNCjUwJSBm
-b3IgbWUgYWZ0ZXIgc3VjY2VzcyBvZiB0aGUgdHJhbnNmZXIgb2YgdGhlIGZ1bmRzIHRvIHlvdXIg
-YmFuaw0KYWNjb3VudCBva2F5Lg0KDQpXQUlUSU5HIFRPIEhFQVIgRlJPTSBZT1UuDQpUSEFOS1Mu
-DQoNCk1yLmx1aXMgZmVybmFuZG8NCg0KDQoNCg0KDQoNCg0KDQoNCg0K2LXYr9mK2YLZiiDYp9mE
-2LnYstmK2LLYjA0KDQrYqtit2YrYp9iqLg0KDQrZg9mK2YEg2K3Yp9mE2YMg2KfZhNmK2YjZhSDY
-o9iq2YXZhtmJINij2YYg2KrZg9mI2YYg2KjYrtmK2LHYnw0KDQrZhNmC2K8g2LXYp9iv2YHYqiDY
-rNmH2Kkg2KfYqti12KfZhCDYp9mE2KjYsdmK2K8g2KfZhNil2YTZg9iq2LHZiNmG2Yog2KfZhNiu
-2KfYtdipINio2YMg2YLYqNmEINil2KzYsdin2KEg2KjYrdirINiu2KfYtSDYo9ir2YbYp9ihINin
-2YTYrdin2KzYqQ0K2YXZhiDZhdiz2KfYudiv2KrZgy4g2KfYs9mF2Yog2KfZhNiz2YrYryDZgtin
-2LPZhSDZhdit2YXYryDYo9i52YXZhCDZhdi5DQrZhdiv2YrYsSDZgtiz2YUg2KfZhNiq2K/ZgtmK
-2YIg2YjYp9mE2YXYrdin2LPYqNipINmH2YbYpyDZgdmKIFVCQSBCYW5rIG9mIEFmcmljYSDYjA0K
-2YfZhtin2YMg2YfYsNinINin2YTYtdmG2K/ZiNmCINin2YTYsNmKINin2K3YqtmB2Lgg2KjZhyDZ
-gdmKINi52YfYr9mKINmF2YbYsCDYs9mG2YjYp9iqINmI2KPZhtinINio2K3Yp9is2Kkg2KXZhNmK
-2YcNCtmF2LPYp9i52K/YqtmDINmB2Yog2KrYrdmI2YrZhCDZh9iw2Kcg2KfZhNmF2KjZhNi6INil
-2YTZiSDYrdiz2KfYqNmDINin2YTZhdi12LHZgdmKDQrZhNmD2YTYpyDZhdmG2Kcg2KfZhNin2LPY
-qtmB2KfYr9ipINmF2YYg2KfZhNin2LPYqtir2YXYp9ixINmF2K/ZiSDYp9mE2K3Zitin2Kkg2YjY
-p9mE2YXYqNmE2LogKNin2YTZiNmE2KfZitin2Kog2KfZhNmF2KrYrdiv2KkNCjI3NTAwINiv2YjZ
-hNin2LEuINmF2YTZitmI2YYg2K/ZiNmE2KfYsSkuDQoNCtmE2K/ZiiDZg9mEINiq2YHYp9i12YrZ
-hCDYp9mE2KfYs9iq2YHYs9in2LEg2YTYrNi52YQg2KfZhNio2YbZgyDZiti12K/ZgtmDINmI2YrY
-t9mE2YIg2LPYsdin2K3Zgw0K2KrYrdmI2YrZhCDYp9mE2KPZhdmI2KfZhCDYpdmE2Ykg2K3Ys9in
-2KjZgyDYp9mE2YXYtdix2YHZiiDZgdmKINi62LbZiNmGIDcg2KPZitin2YUg2LnZhdmEINmF2LXY
-sdmB2YrYqSDZhdi5DQrYqti52KfZiNmG2YMg2KfZhNmD2KfZhdmEINmF2LnZiiDYqNi52K8g2KfZ
-hNmG2KzYp9itINmE2KfYrdi4IDUw2aog2YXZhiDYo9is2YTZgyDYo9ir2YbYp9ihDQo1MNmqINio
-2KfZhNmG2LPYqNipINmE2Yog2KjYudivINmG2KzYp9itINiq2K3ZiNmK2YQg2KfZhNij2YXZiNin
-2YQg2KXZhNmJINin2YTYqNmG2YMg2KfZhNiw2Yog2KrYqti52KfZhdmEINmF2LnZhw0K2KfZhNit
-2LPYp9ioINio2K7ZitixLg0KDQrZgdmKINin2YbYqti42KfYsSDYo9mGINmG2LPZhdi5INmF2YbZ
-gy4NCti02YPYsdinLg0KDQrYp9mE2LPZitivINmE2YjZitizINmB2LHZhtin2YbYr9mIDQo=
+On 19/10/2021 13:09, Will Deacon wrote:
+
+[ ... ]
+
+>> Ok, thanks. I've updated the branch accordingly.
+>>
+>> Let me know if everything is fine, so I can prepare a PR for the 'tip' tree.
+> 
+> Thanks, I've pulled that branch into the arm64 tree so please don't rebase
+> it now.
+
+Noted, thanks
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
