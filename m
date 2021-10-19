@@ -2,93 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A76D433A6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF48433A75
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhJSPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231574AbhJSPc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:32:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F6360FED;
-        Tue, 19 Oct 2021 15:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634657445;
-        bh=CDJwRfp4lbsW4khYSdoqXRDI59oiFc/31cccykvgx9o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m3JYVas4tU9n5rzLCTrVyETOgE83I/9WfvnhWn41/NhigsgQIkenjqNTPRmpNjOTE
-         O3nIp+hOzq/g6Vq/no3YHnzW18hA0MPrY6/5rWJwbjeexlwAkIWZqKuLqiB7XesQhT
-         SOpJUVpBzOIxwJNCj7T+Ase1+ElhwuYJjFNlKFSnaNclfoqOtlrV3Sqn6AfmiBm6Et
-         A/t7YXIG4r4AcVUFnqSzWE08gW+xm9KF8Lr8JZx4AX+0zRwHyN8DtN1K2lQh0aio6I
-         grU0epgJxwRti3xS9ZM/x5GFL8ksLZ0sHXfke76SnEZlKKXrBX3JwHVQn3xpA0FpKy
-         y/96wVWPJYY5Q==
-Date:   Tue, 19 Oct 2021 21:00:40 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v2 04/11] drm/msm/disp/dpu1: Add DSC support in RM
-Message-ID: <YW7koEt85EVMcUDs@matsya>
-References: <20211007070900.456044-1-vkoul@kernel.org>
- <20211007070900.456044-5-vkoul@kernel.org>
- <d249d880-1137-d5cc-6d96-83a730f7de29@linaro.org>
+        id S232562AbhJSPds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhJSPdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:33:46 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEB6C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:31:33 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id o24so5039007wms.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hWPE/Y/ECpv7Nj8NIi2n9F0tYkWU75xKYRtFUZ6yu9s=;
+        b=cXlmp7HR3xEDoFJWVos0V9Jwf9q4NPIIzfiDylFcxk4jSANGoVNmWY8OhtlMtn1ZRf
+         jmcULs5B+rgkm9KmyKpFc+KQh+uTCu/G6xym7RP+EyjChNKrOYOTo2pQs8bpPryXSA49
+         PhkQe3WiON7NbBNPvpiWYUGHQr2H8TBe1OEBPXHsjLgQv+VW4LEwVBHpPqm97NT3RMKT
+         rXw1IHaPrxdibHGpIzN24IZxVYQZDTmKeNI5Uercj1qtVscydAgF+uz5RFiu0eLB8CJr
+         m7FsjmdImme4i7w0zj1VePOBGg9DogBOQWQSkx4XuNcJ0MrJC0wgR4AgxbUQfTdPe27i
+         GZwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hWPE/Y/ECpv7Nj8NIi2n9F0tYkWU75xKYRtFUZ6yu9s=;
+        b=SRPAWbFLo/EBsSJddnBp0N9JfBeEAZYa/s+F9zQUZkOrMVtC/UYnXIDnzzY0byXFzK
+         JQ9Ugt2WJQ58TBUyk1xilKds9LiiwU375QyKwl1dmXLksYbORVZgrjHGFsTux5x/E4Rw
+         9VhYgRJnjIxDB3BrJ9ZiTJ5NWM6A1JG+cYnX8Fvm6uICUNdlf/BKAWvLXlwPnAUvxtEQ
+         HYmzcRGx0YjqX1b6I7NgjoDK7INB79qZQm1pf6/DnU4UcgK6r4Vmd3iz7GqFujRIUXC0
+         B4v5YodZAvCGSHdQzq/VOWDmxitjLuwpIfSq6qqXV4L7LyjHynyIYNZOYEgTnYDkZmkA
+         AyLg==
+X-Gm-Message-State: AOAM532mnWnPMfPpuN+mIR6CI36gwnl8r6Idxu+9Eqlkh/sskxjyBDH3
+        7+YFuOLXyQubc0OF2olDPIvrXQ==
+X-Google-Smtp-Source: ABdhPJwE++nuRUOafKF1FDx4c8fEJkumkcgktNXraYcUxFliyvGucR0udxGE/SIQDOsvk3Ceiioy2Q==
+X-Received: by 2002:a7b:cf03:: with SMTP id l3mr6819075wmg.25.1634657491936;
+        Tue, 19 Oct 2021 08:31:31 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id n9sm2650947wmq.6.2021.10.19.08.31.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 08:31:31 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 16:31:29 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 4/6] mfd: max77620: Use power off call chain API
+Message-ID: <YW7k0SW73kcvyo2W@google.com>
+References: <20211007060253.17049-1-digetx@gmail.com>
+ <20211007060253.17049-5-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d249d880-1137-d5cc-6d96-83a730f7de29@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211007060253.17049-5-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-10-21, 17:11, Dmitry Baryshkov wrote:
-> On 07/10/2021 10:08, Vinod Koul wrote:
+On Thu, 07 Oct 2021, Dmitry Osipenko wrote:
 
-> > +static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
-> > +			       struct dpu_global_state *global_state,
-> > +			       struct drm_encoder *enc)
-> > +{
-> > +	struct msm_drm_private *priv;
-> > +
-> > +	priv = enc->dev->dev_private;
-> > +
-> > +	if (!priv)
-> > +		return -EIO;
-> > +
-> > +	/* check if DSC is supported */
-> > +	if (!priv->dsc)
-> > +		return 0;
-> > +
-> > +	/* check if DSC 0 & 1 and allocated or not */
-> > +	if (global_state->dsc_to_enc_id[0] || global_state->dsc_to_enc_id[1]) {
-> > +		DPU_ERROR("DSC 0|1 is already allocated\n");
-> > +		return -EIO;
-> > +	}
-> > +
-> > +	global_state->dsc_to_enc_id[0] = enc->base.id;
-> > +	global_state->dsc_to_enc_id[1] = enc->base.id;
+> Use new power off call chain API which allows multiple power off handlers
+> to coexist. Nexus 7 Android tablet can be powered off using MAX77663 PMIC
+> and using a special bootloader command. At first the bootloader option
+> should be tried, it will have a higher priority than the PMIC.
 > 
-> Still hardcoding DSC_0 and DSC_1.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/mfd/max77620.c       | 22 +++++++++++++++-------
+>  include/linux/mfd/max77620.h |  2 ++
+>  2 files changed, 17 insertions(+), 7 deletions(-)
 
-Yes!
+I don't have a problem with the approach in general.
 
-> Could you please add num_dsc to the topology and allocate the requested
-> amount of DSC blocks? Otherwise this would break for the DSI + DP case.
+I guess it's up to the relevant maintainers to decide.
 
-It wont as we check for dsc and dont proceed, so it cant make an impact
-in non dsc case.
-
-Nevertheless I agree with you, so I am making it based on dsc defined in
-topology. Do we need additional field for num_dsc in topology, num_enc
-should be it, right?
+> diff --git a/drivers/mfd/max77620.c b/drivers/mfd/max77620.c
+> index fec2096474ad..ad40eed1f0c6 100644
+> --- a/drivers/mfd/max77620.c
+> +++ b/drivers/mfd/max77620.c
+> @@ -31,11 +31,10 @@
+>  #include <linux/init.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/reboot.h>
+>  #include <linux/regmap.h>
+>  #include <linux/slab.h>
+>  
+> -static struct max77620_chip *max77620_scratch;
+> -
+>  static const struct resource gpio_resources[] = {
+>  	DEFINE_RES_IRQ(MAX77620_IRQ_TOP_GPIO),
+>  };
+> @@ -483,13 +482,17 @@ static int max77620_read_es_version(struct max77620_chip *chip)
+>  	return ret;
+>  }
+>  
+> -static void max77620_pm_power_off(void)
+> +static int max77620_pm_power_off(struct notifier_block *nb,
+> +				 unsigned long reboot_mode, void *data)
+>  {
+> -	struct max77620_chip *chip = max77620_scratch;
+> +	struct max77620_chip *chip = container_of(nb, struct max77620_chip,
+> +						  pm_off_nb);
+>  
+>  	regmap_update_bits(chip->rmap, MAX77620_REG_ONOFFCNFG1,
+>  			   MAX77620_ONOFFCNFG1_SFT_RST,
+>  			   MAX77620_ONOFFCNFG1_SFT_RST);
+> +
+> +	return NOTIFY_DONE;
+>  }
+>  
+>  static int max77620_probe(struct i2c_client *client,
+> @@ -566,9 +569,14 @@ static int max77620_probe(struct i2c_client *client,
+>  	}
+>  
+>  	pm_off = of_device_is_system_power_controller(client->dev.of_node);
+> -	if (pm_off && !pm_power_off) {
+> -		max77620_scratch = chip;
+> -		pm_power_off = max77620_pm_power_off;
+> +	if (pm_off) {
+> +		chip->pm_off_nb.notifier_call = max77620_pm_power_off;
+> +		chip->pm_off_nb.priority = 128;
+> +
+> +		ret = devm_register_poweroff_handler(chip->dev, &chip->pm_off_nb);
+> +		if (ret < 0)
+> +			dev_err(chip->dev,
+> +				"Failed to register poweroff handler: %d\n", ret);
+>  	}
+>  
+>  	return 0;
+> diff --git a/include/linux/mfd/max77620.h b/include/linux/mfd/max77620.h
+> index f552ef5b1100..99de4f8c9cbf 100644
+> --- a/include/linux/mfd/max77620.h
+> +++ b/include/linux/mfd/max77620.h
+> @@ -8,6 +8,7 @@
+>  #ifndef _MFD_MAX77620_H_
+>  #define _MFD_MAX77620_H_
+>  
+> +#include <linux/notifier.h>
+>  #include <linux/types.h>
+>  
+>  /* GLOBAL, PMIC, GPIO, FPS, ONOFFC, CID Registers */
+> @@ -327,6 +328,7 @@ enum max77620_chip_id {
+>  struct max77620_chip {
+>  	struct device *dev;
+>  	struct regmap *rmap;
+> +	struct notifier_block pm_off_nb;
+>  
+>  	int chip_irq;
+>  
 
 -- 
-~Vinod
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
