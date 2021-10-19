@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEED433557
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63245433558
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbhJSMGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:06:38 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58708 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230129AbhJSMGe (ORCPT
+        id S235526AbhJSMGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:06:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45836 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230527AbhJSMGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:06:34 -0400
-X-UUID: ad45a0871a10492ca17d80620b9e8e06-20211019
-X-UUID: ad45a0871a10492ca17d80620b9e8e06-20211019
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 428895041; Tue, 19 Oct 2021 20:04:18 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 19 Oct 2021 20:04:17 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 19 Oct 2021 20:04:17 +0800
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Tue, 19 Oct 2021 08:06:36 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 541161FCA1;
+        Tue, 19 Oct 2021 12:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634645063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NdT24LAUAutNm+Pih0uGiiR7uabskUxPSt601z67+SE=;
+        b=dOWfISbmKqjKcIIWPDiDT/HKyHQEifgRyk1Fo0q4HIN1Q60TmDn9RjjuHm+hx2KmjFLGUn
+        F3pwhkqN1F8GCRcdeHtMHHE3mJIetVtGbDa69TURkNHoOtBvhk6XoygNxZv7XJfeROztmA
+        qSbPaVR/8FaqXfFtNtuzcnh40mnrmc4=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 21E34A3B83;
+        Tue, 19 Oct 2021 12:04:23 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 14:04:22 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>
-CC:     <chinwen.chang@mediatek.com>, <yee.lee@mediatek.com>,
-        <nicholas.tang@mediatek.com>, <kasan-dev@googlegroups.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Subject: [PATCH] kasan: add kasan mode messages when kasan init
-Date:   Tue, 19 Oct 2021 20:04:13 +0800
-Message-ID: <20211019120413.20807-1-Kuan-Ying.Lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
+ task
+Message-ID: <YW60Rs1mi24sJmp4@dhcp22.suse.cz>
+References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
+ <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+ <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
+ <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
+ <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
+ <YW6GoZhFUJc1uLYr@dhcp22.suse.cz>
+ <687bf489-f7a7-5604-25c5-0c1a09e0905b@virtuozzo.com>
+ <YW6yAeAO+TeS3OdB@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW6yAeAO+TeS3OdB@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are multiple kasan modes. It make sense that we add some messages
-to know which kasan mode is when booting up. see [1].
+On Tue 19-10-21 13:54:42, Michal Hocko wrote:
+> On Tue 19-10-21 13:30:06, Vasily Averin wrote:
+> > On 19.10.2021 11:49, Michal Hocko wrote:
+> > > On Tue 19-10-21 09:30:18, Vasily Averin wrote:
+> > > [...]
+> > >> With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
+> > >> a) due to fatal signal
+> > >> b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
+> > >>
+> > >> To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
+> > >> To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
+> > 
+> > > How is b) possible without current being killed? Do we allow remote
+> > > charging?
+> > 
+> > out_of_memory for memcg_oom
+> >  select_bad_process
+> >   mem_cgroup_scan_tasks
+> >    oom_evaluate_task
+> >     oom_badness
+> > 
+> >         /*
+> >          * Do not even consider tasks which are explicitly marked oom
+> >          * unkillable or have been already oom reaped or the are in
+> >          * the middle of vfork
+> >          */
+> >         adj = (long)p->signal->oom_score_adj;
+> >         if (adj == OOM_SCORE_ADJ_MIN ||
+> >                         test_bit(MMF_OOM_SKIP, &p->mm->flags) ||
+> >                         in_vfork(p)) {
+> >                 task_unlock(p);
+> >                 return LONG_MIN;
+> >         }
+> > 
+> > This time we handle userspace page fault, so we cannot be kenrel thread,
+> > and cannot be in_vfork().
+> > However task can be marked as oom unkillable, 
+> > i.e. have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
+> 
+> You are right. I am not sure there is a way out of this though. The task
+> can only retry for ever in this case. There is nothing actionable here.
+> We cannot kill the task and there is no other way to release the memory.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=212195 [1]
-Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
----
- arch/arm64/mm/kasan_init.c | 2 +-
- mm/kasan/hw_tags.c         | 4 +++-
- mm/kasan/sw_tags.c         | 2 +-
- 3 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-index 61b52a92b8b6..b4e78beac285 100644
---- a/arch/arm64/mm/kasan_init.c
-+++ b/arch/arm64/mm/kasan_init.c
-@@ -293,7 +293,7 @@ void __init kasan_init(void)
- 	kasan_init_depth();
- #if defined(CONFIG_KASAN_GENERIC)
- 	/* CONFIG_KASAN_SW_TAGS also requires kasan_init_sw_tags(). */
--	pr_info("KernelAddressSanitizer initialized\n");
-+	pr_info("KernelAddressSanitizer initialized (generic)\n");
- #endif
- }
- 
-diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index 05d1e9460e2e..3e28ecbe1d8f 100644
---- a/mm/kasan/hw_tags.c
-+++ b/mm/kasan/hw_tags.c
-@@ -168,7 +168,9 @@ void __init kasan_init_hw_tags(void)
- 		break;
- 	}
- 
--	pr_info("KernelAddressSanitizer initialized\n");
-+	pr_info("KernelAddressSanitizer initialized (hw-tags, mode=%s, stacktrace=%s)\n",
-+		kasan_flag_async ? "async" : "sync",
-+		kasan_stack_collection_enabled() ? "on" : "off");
- }
- 
- void kasan_alloc_pages(struct page *page, unsigned int order, gfp_t flags)
-diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-index bd3f540feb47..77f13f391b57 100644
---- a/mm/kasan/sw_tags.c
-+++ b/mm/kasan/sw_tags.c
-@@ -42,7 +42,7 @@ void __init kasan_init_sw_tags(void)
- 	for_each_possible_cpu(cpu)
- 		per_cpu(prng_state, cpu) = (u32)get_cycles();
- 
--	pr_info("KernelAddressSanitizer initialized\n");
-+	pr_info("KernelAddressSanitizer initialized (sw-tags)\n");
- }
- 
- /*
+Btw. don't we force the charge in that case?
 -- 
-2.18.0
-
+Michal Hocko
+SUSE Labs
