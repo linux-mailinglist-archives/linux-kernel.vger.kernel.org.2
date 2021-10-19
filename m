@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36657432C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8BE432C77
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhJSDxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:53:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhJSDxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:53:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B115960EB9;
-        Tue, 19 Oct 2021 03:50:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634615455;
-        bh=Ew2qGYiAMBHLUYHFn/Jbz8O+vuSpe6FXz9yJJ3UH6d8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qAUs3+JMqWpNwaHjMuK35ClpgHXmz8KLtGfQihek4oKqXuubpEBybknU5lxVlOxmd
-         kT9KUVFYFxwr3/6d8eajByUrOg/Ks+mSRNe3p4Ky2JMb6B7xEgIxTElCBnkCrB71Tq
-         VyXkBxciUTwaA/6Q2ZE/bk6YjSsEZsaB1R5zwIWIJxPbDmAOk24TEehvW97CbFgSkc
-         yqUCmBjHx72Bkf8Ye0I1KmTzsttWCFF9dC8PwwwR2wEWaJUIRRdl6HtfV8ebPI34Ro
-         FJ7IlCT4A5CdH86A6Ulotw8WTFqBy7LgvxFlzWwIt+hsYni8KI8Hd5QkrlEAaE9Yd0
-         IWe9QOjqCWiCw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 725975C0DF2; Mon, 18 Oct 2021 20:50:55 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 20:50:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: Another possible use for LKMM, or a subset (strengthening)
- thereof
-Message-ID: <20211019035055.GC880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211007205621.GA584182@paulmck-ThinkPad-P17-Gen-1>
- <20211018225313.GA855976@paulmck-ThinkPad-P17-Gen-1>
- <YW4Jsw2y4BWTH5YS@boqun-archlinux>
- <20211019000729.GY880162@paulmck-ThinkPad-P17-Gen-1>
- <YW4tNHz42/EbAdHM@boqun-archlinux>
+        id S232524AbhJSDzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJSDza (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 23:55:30 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41ADC06161C;
+        Mon, 18 Oct 2021 20:53:18 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id r2so18114244pgl.10;
+        Mon, 18 Oct 2021 20:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nLKHdxjenXc/vGWlsDwIHfarXTTE576FfBwh4suJRZ8=;
+        b=ggYvlu/6JUj+j7zTeBcacchHSZY/gHE2bBfq7PcnUs9jrgdnfHlr58paOcz0XsiE0P
+         bZRRGNEkH9RBoA+rAnEAHAmQsnhBQyRshAFhm5DlOBulb+dHqa/wXPBrxzv/CRs96W9k
+         cAljblOrK5wtgL6rvwHJdw5D5LC7LRJcSQM+WRevMf9rrfVpUjHNLHwjSJdTcsfjhkkX
+         qIs8wFfBVM88DCWCgriF43shAU+5AwAS66q/ldXWFB+PulwvmDptAHN+dtp+yykk50Oy
+         jl3IMu84BdxXiheHr98KYMFbyNCHBWlUyRNtMReiv86YQfp/CKwBjKiU0OG66kxeDNlC
+         rnmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nLKHdxjenXc/vGWlsDwIHfarXTTE576FfBwh4suJRZ8=;
+        b=7dgpkYXXQ7VpdpRWY9cyV5F1KpUhhvhj7oR8WHuZ/qq6603+shqRpPljyTw4PLWXU4
+         tiOXpnBmaMp/U5Dtwk4GoTPFY/4B5brFCqFDYuk16HzOocYhm2Lh1ulgl/5x9R2RirsY
+         mATkVk7p5coM6TQN0BQPYo2xuW8g4Y38odYaF1KA0yntrFVOFoUHqSesRgD2IStUQsA3
+         KJLpdMH2I6PNay7UgzPMabPONYOX5/7A3CvfxXO3GLjQOal5j7dRNgqecTlu/9VxWaiw
+         9m/zvEb0Aam7E4e807hmwot+AeqJa8k32orl1/A7wcAG1voyIj0aED34U/rJALZqVw24
+         wUrQ==
+X-Gm-Message-State: AOAM533OGcEgb9KXl/UfJCL2EQo7Yar4DAzXRSDaa4f9wOzUCM4xCW5l
+        pnUACrDw61py0qYIpYIuo+o=
+X-Google-Smtp-Source: ABdhPJy7ZqqFzjB9xqwYofAac7Cr+3E5PxDcvrZNb7aopwMIbp12o7NYLuRc/JSQ/aviAGMSfFdunQ==
+X-Received: by 2002:a63:3548:: with SMTP id c69mr26931312pga.111.1634615598325;
+        Mon, 18 Oct 2021 20:53:18 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id x31sm14486186pfu.40.2021.10.18.20.53.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 20:53:17 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: lv.ruyi@zte.com.cn
+To:     kvalo@codeaurora.org
+Cc:     davem@davemloft.net, kuba@kernel.org, pkshih@realtek.com,
+        lv.ruyi@zte.com.cn, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] rtw89: fix error function parameter
+Date:   Tue, 19 Oct 2021 03:53:11 +0000
+Message-Id: <20211019035311.974706-1-lv.ruyi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW4tNHz42/EbAdHM@boqun-archlinux>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 10:28:04AM +0800, Boqun Feng wrote:
-> On Mon, Oct 18, 2021 at 05:07:29PM -0700, Paul E. McKenney wrote:
-> > On Tue, Oct 19, 2021 at 07:56:35AM +0800, Boqun Feng wrote:
-> > > Hi Paul,
-> > > 
-> > > On Mon, Oct 18, 2021 at 03:53:13PM -0700, Paul E. McKenney wrote:
-> > > > On Thu, Oct 07, 2021 at 01:56:21PM -0700, Paul E. McKenney wrote:
-> > > > > Hello!
-> > > > > 
-> > > > > On the perhaps unlikely chance that this is new news of interest...
-> > > > > 
-> > > > > I have finally prototyped the full "So You Want to Rust the Linux
-> > > > > Kernel?" series (as in marked "under construction").
-> > > > > 
-> > > > > https://paulmck.livejournal.com/62436.html
-> > > > 
-> > > > And this blog series is now proclaimed to be feature complete.
-> > > > 
-> > > > Recommendations (both short- and long-term) may be found in the last post,
-> > > > "TL;DR: Memory-Model Recommendations for Rusting the Linux Kernel",
-> > > > at https://paulmck.livejournal.com/65341.html.
-> > > 
-> > > Thanks for putting this together! For the short-term recommendations, I
-> > > think one practical goal would be having the equivalent (or stronger)
-> > > litmus tests in Rust for the ones in tools/memory-model/litmus-tests.
-> > > The translation of litmus tests may be trivial, but it at least ensure
-> > > us that Rust can support the existing patterns widely used in Linux
-> > > kernel. Of course, the Rust litmus tests don't have to be able to run
-> > > with herd, we just need some code snippest to check our understanding of
-> > > Rust memory model. ;-)
-> > 
-> > It would be very helpful for klitmus to be able to check Rust-code memory
-> > ordering, now that you mention it!  This would be useful (for example)
-> > to test the Rust wrappers on weakly ordered systems, such as ARM's.
-> > 
-> 
-> Right.
-> 
-> > > Besides, it's interesting to how things react with each if one function
-> > > in the litmus test is in Rust and the other is in C ;-) Maybe this is a
-> > > long-term goal.
-> > > 
-> > > Thoughts?
-> > 
-> > These issues are quite important.  How do you feel that they should be
-> > tracked?
-> > 
-> 
-> Yep, it's already in my list. I created a small repo to track all issues
-> I know about LKMM for Rust:
-> 
-> 	https://github.com/fbq/lkmm-for-rust
-> 
-> It's still under construction, but I put the litmus test thing in that
-> list.
+From: Lv Ruyi <lv.ruyi@zte.com.cn>
 
-Very good, thank you!
+This patch fixes the following Coccinelle warning:
+drivers/net/wireless/realtek/rtw89/rtw8852a.c:753:
+WARNING  possible condition with no effect (if == else)
 
-							Thanx, Paul
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+---
+ drivers/net/wireless/realtek/rtw89/rtw8852a.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/realtek/rtw89/rtw8852a.c b/drivers/net/wireless/realtek/rtw89/rtw8852a.c
+index b1b87f0aadbb..5c6ffca3a324 100644
+--- a/drivers/net/wireless/realtek/rtw89/rtw8852a.c
++++ b/drivers/net/wireless/realtek/rtw89/rtw8852a.c
+@@ -753,11 +753,11 @@ static void rtw8852a_ctrl_ch(struct rtw89_dev *rtwdev, u8 central_ch,
+                if (is_2g)
+                        rtw89_phy_write32_idx(rtwdev, R_P1_MODE,
+                                              B_P1_MODE_SEL,
+                                              1, phy_idx);
+ 		else
+ 			rtw89_phy_write32_idx(rtwdev, R_P1_MODE,
+ 					      B_P1_MODE_SEL,
+-					      1, phy_idx);
++					      0, phy_idx);
+ 		/* SCO compensate FC setting */
+ 		sco_comp = rtw8852a_sco_mapping(central_ch);
+ 		rtw89_phy_write32_idx(rtwdev, R_FC0_BW, B_FC0_BW_INV,
+-- 
+2.25.1
+
