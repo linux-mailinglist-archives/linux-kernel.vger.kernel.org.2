@@ -2,194 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45CE43367C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B5C433681
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235784AbhJSNB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:01:29 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:29909 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235763AbhJSNB1 (ORCPT
+        id S235798AbhJSNBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235689AbhJSNBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:01:27 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HYYbz40RQzbnFn;
-        Tue, 19 Oct 2021 20:54:39 +0800 (CST)
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 19 Oct 2021 20:59:12 +0800
-Received: from localhost.localdomain (10.175.101.6) by
- dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 19 Oct 2021 20:59:11 +0800
-From:   Di Zhu <zhudi2@huawei.com>
-To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kafai@fb.com>
-CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhudi2@huawei.com>
-Subject: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to sockmap
-Date:   Tue, 19 Oct 2021 20:58:56 +0800
-Message-ID: <20211019125856.2566882-1-zhudi2@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 19 Oct 2021 09:01:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74FEC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:59:35 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mcoiI-0006Gy-V5; Tue, 19 Oct 2021 14:59:30 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mcoiH-0008NO-5k; Tue, 19 Oct 2021 14:59:29 +0200
+Date:   Tue, 19 Oct 2021 14:59:29 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-pm@vger.kernel.org, Petr Benes <petrben@gmail.com>,
+        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 1/1] thermal: imx: implement runtime PM support
+Message-ID: <20211019125929.GD16320@pengutronix.de>
+References: <20210924115032.29684-1-o.rempel@pengutronix.de>
+ <19b2ab33-aa56-75fb-f6ef-3c928be9c50c@linaro.org>
+ <20211019115151.GC16320@pengutronix.de>
+ <df3f527d-22f3-b58d-a546-bdd8d312505c@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500011.china.huawei.com (7.185.36.84)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <df3f527d-22f3-b58d-a546-bdd8d312505c@linaro.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:55:40 up 243 days, 16:19, 139 users,  load average: 0.15, 0.13,
+ 0.16
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now there is no way to query whether BPF programs are
-attached to a sockmap or not.
+On Tue, Oct 19, 2021 at 01:55:32PM +0200, Daniel Lezcano wrote:
+> On 19/10/2021 13:51, Oleksij Rempel wrote:
+> > Hi Daniel,
+> > 
+> > On Tue, Oct 19, 2021 at 01:04:46PM +0200, Daniel Lezcano wrote:
+> >> On 24/09/2021 13:50, Oleksij Rempel wrote:
+> >>> Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's local
+> >>> data to decide whether to run a measurement") this driver stared using
+> >>> irq_enabled flag to make decision to power on/off the thermal core. This
+> >>> triggered a regression, where after reaching critical temperature, alarm
+> >>> IRQ handler set irq_enabled to false,  disabled thermal core and was not
+> >>> able read temperature and disable cooling sequence.
+> >>>
+> >>> In case the cooling device is "CPU/GPU freq", the system will run with
+> >>> reduce performance until next reboot.
+> >>>
+> >>> To solve this issue, we need to move all parts implementing hand made
+> >>> runtime power management and let it handle actual runtime PM framework.
+> >>>
+> >>> Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
+> >>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> >>
+> >> Thanks for this fix.
+> >>
+> >> Petr or Oleksij,
+> >>
+> >> could you confirm it is tested and working without CONFIG_PM ?
+> > 
+> > Petr was right, no it is not working without PM.
+> Ok, thanks.
+> 
+> I suppose the fix is related to the initialization of the sensor which
+> should be enabled with/out pm_runtime, right ?
 
-we can use the standard interface in libbpf to query, such as:
-bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
-the mapFd is the fd of sockmap.
+No, i did sanity check on pm_runtime_put() within the probe. Without PM
+it will properly return ENOSYS, so I aborted the probe. Looks like I
+should ignore return value on this function like every driver is doing
+it.
 
-Signed-off-by: Di Zhu <zhudi2@huawei.com>
----
- include/linux/bpf.h  |  8 +++++
- kernel/bpf/syscall.c |  4 +++
- net/core/sock_map.c  | 81 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 93 insertions(+)
+> 
+> 
+> -- 
+> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> 
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
+> 
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 1c7fd7c4c6d3..69cf70b077d5 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1959,6 +1959,8 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
- int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
- int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
-+int sockmap_bpf_prog_query(const union bpf_attr *attr,
-+			   union bpf_attr __user *uattr);
- void sock_map_unhash(struct sock *sk);
- void sock_map_close(struct sock *sk, long timeout);
- #else
-@@ -2012,6 +2014,12 @@ static inline int sock_map_update_elem_sys(struct bpf_map *map, void *key, void
- {
- 	return -EOPNOTSUPP;
- }
-+
-+static inline int sockmap_bpf_prog_query(const union bpf_attr *attr,
-+					 union bpf_attr __user *uattr)
-+{
-+	return -EINVAL;
-+}
- #endif /* CONFIG_BPF_SYSCALL */
- #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 4e50c0bfdb7d..3049b9506583 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3275,6 +3275,10 @@ static int bpf_prog_query(const union bpf_attr *attr,
- 	case BPF_FLOW_DISSECTOR:
- 	case BPF_SK_LOOKUP:
- 		return netns_bpf_prog_query(attr, uattr);
-+	case BPF_SK_SKB_STREAM_PARSER:
-+	case BPF_SK_SKB_STREAM_VERDICT:
-+	case BPF_SK_MSG_VERDICT:
-+		return sockmap_bpf_prog_query(attr, uattr);
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index e252b8ec2b85..32688a1b78c6 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1451,6 +1451,87 @@ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
- 	return 0;
- }
- 
-+static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog **prog,
-+				u32 which)
-+{
-+	struct sk_psock_progs *progs = sock_map_progs(map);
-+
-+	if (!progs)
-+		return -EOPNOTSUPP;
-+
-+	switch (which) {
-+	case BPF_SK_MSG_VERDICT:
-+		*prog = READ_ONCE(progs->msg_parser);
-+		break;
-+#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-+	case BPF_SK_SKB_STREAM_PARSER:
-+		*prog = READ_ONCE(progs->skb_parser);
-+		break;
-+#endif
-+	case BPF_SK_SKB_STREAM_VERDICT:
-+		*prog = READ_ONCE(progs->skb_verdict);
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+int sockmap_bpf_prog_query(const union bpf_attr *attr,
-+			   union bpf_attr __user *uattr)
-+{
-+	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
-+	u32 prog_cnt = 0, flags = 0;
-+	u32 ufd = attr->target_fd;
-+	struct bpf_map *map;
-+	struct bpf_prog *prog;
-+	struct fd f;
-+	int ret;
-+
-+	if (attr->query.query_flags)
-+		return -EINVAL;
-+
-+	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
-+		return -EFAULT;
-+
-+	f = fdget(ufd);
-+	map = __bpf_map_get(f);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	rcu_read_lock();
-+
-+	ret = sock_map_prog_lookup(map, &prog, attr->query.attach_type);
-+	if (ret)
-+		goto end;
-+
-+	prog_cnt = (!prog) ? 0 : 1;
-+	if (copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt))) {
-+		ret = -EFAULT;
-+		goto end;
-+	}
-+
-+	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
-+		goto end;
-+
-+	prog = bpf_prog_inc_not_zero(prog);
-+	if (IS_ERR(prog)) {
-+		ret = PTR_ERR(prog);
-+		goto end;
-+	}
-+
-+	if (copy_to_user(prog_ids, &prog->aux->id, sizeof(u32)))
-+		ret = -EFAULT;
-+
-+	bpf_prog_put(prog);
-+
-+end:
-+	rcu_read_unlock();
-+	fdput(f);
-+	return ret;
-+}
-+
- static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
- {
- 	switch (link->map->map_type) {
 -- 
-2.23.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
