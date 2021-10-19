@@ -2,195 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B0C4331D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E274331D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbhJSJLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:11:30 -0400
-Received: from mail-eopbgr70041.outbound.protection.outlook.com ([40.107.7.41]:20130
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229930AbhJSJL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:11:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JpO2t4ezZANCWYCrscvCv57rmbYZ2ngY4xWOQQxoI32NDa/ai3RueL5GhLsCNeT1VlALf4QPsJ1fyMY/MS44Me7KYCPqi4BfqQavdpvABcN5GchFNYzTW7uN212TFW4nS519PYDCqmuJPWehvp0jK040pavLDU9BKyZuISaTd67/MWNjF9mAHmfPdEsrRrUuEdo23nkswGaEvQHa+ZagwjXoKq8IniPuiMgTx6USavLFVM35acLFPxoqrLT2tweNUfV/rv3gWiItMXuAw+OvzEPMeR7lBicbDLiLeGi89GNtIG+G328wE/DmJXEXk6kdJjhaFpOVdjVkfU8OdQOrQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jhxbw6Pt3z+5vWZPxHSP5RhDz+PF10LIbYwsyvR4YKI=;
- b=ABdN2zKBOSsSlhpfccKwS9s8snQNUgqkSOBQ46ahj+pUT+vEBnvWMvb1WkhbYuIqN1eTI+3aTR6YsY81kZwFrKrPQrTVdXFqI+WpQDmq4xvjlxEjTNz2HfaYgTHELXZlo6eymoW6dkuL18DZqAmHkForsCN1h4uL+XWonetL/f3M4w6G2Yqbf2QyOU7Vc0S8FTKtfLGJKk63QRn2t4FM+9edzNkS7by/D6juX1NNMaAu3fyiNvC4CX1TZgLeFNSjf+xiENfaVRLJkNSxDnbkbXaH4GJxFlIe80z7iNGVJy+XWW5WpiYJNnSh4IxLff9ji+q8XICnne04/LXBUQZstQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jhxbw6Pt3z+5vWZPxHSP5RhDz+PF10LIbYwsyvR4YKI=;
- b=cHOCmyDn73eaAYs2LSHqFgUyeYraOK3U44BCGPk+Jt2HWMCL4uYM3W3Qp8cvkjhnDBgdmzEAPpj8F4hVSxA/e9D7dwMq97dKtIyErT1jdWumciKUnLMZmfg2Fle+lOkOqNyN/I1A6KO5fnjfKV5kbpgzqVMNjPTy/wp34A/GDN0=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=nxp.com;
-Received: from AM4PR0401MB2308.eurprd04.prod.outlook.com
- (2603:10a6:200:4f::13) by AM8PR04MB7266.eurprd04.prod.outlook.com
- (2603:10a6:20b:1d6::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
- 2021 09:09:12 +0000
-Received: from AM4PR0401MB2308.eurprd04.prod.outlook.com
- ([fe80::6476:5ddb:7bf2:e726]) by AM4PR0401MB2308.eurprd04.prod.outlook.com
- ([fe80::6476:5ddb:7bf2:e726%8]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 09:09:12 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     tim.gardner@canonical.com
-Cc:     linux-arm-kernel@lists.infradead.org, leoyang.li@nxp.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH][linux-next] soc: fsl: dpio: Unsigned compared against 0 in
-Date:   Tue, 19 Oct 2021 12:08:55 +0300
-Message-Id: <20211019090855.246625-1-ioana.ciornei@nxp.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018160541.13512-1-tim.gardner@canonical.com>
-References: <20211018160541.13512-1-tim.gardner@canonical.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM4PR0902CA0023.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::33) To AM4PR0401MB2308.eurprd04.prod.outlook.com
- (2603:10a6:200:4f::13)
+        id S234862AbhJSJLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:11:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38150 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhJSJLo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:11:44 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C42F121976;
+        Tue, 19 Oct 2021 09:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634634571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v2mK8OZ+yRM2OEpf1l9qS6p8OCmAj7Hw+mSVREea+Dw=;
+        b=JEjc4ZuvnGKdCs8jk9yK7uw23KKRKf7ZoMgjPB0VDUy+O/7rrywj4nWR+VeQoyzag8bKuC
+        M7VHsak/qrBeZnIBid92M2zJl2ob1Hk2OOBv1Ie2EI/Tv569m2Gm05I8znHmW9wsv/ZHG6
+        iRfDfgG4CCvUOaIJYNkxJXJaRxfaAV8=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 5D487A3B87;
+        Tue, 19 Oct 2021 09:09:31 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 11:09:29 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: skip current when memcg reclaim
+Message-ID: <YW6LSVK+NTiZ05+X@dhcp22.suse.cz>
+References: <1634278529-16983-1-git-send-email-huangzhaoyang@gmail.com>
+ <YW0u67o8wl3CGikP@dhcp22.suse.cz>
+ <CAGWkznEO9SyNFEBqL8=JxewVTvaUhwFLPow69mi=R1MJ=XCpow@mail.gmail.com>
+ <YW1rcv4bN1WWhzLD@dhcp22.suse.cz>
+ <CAGWkznG65_FGx9jU7rjj5biEdyHZ=kcPwmXj6cGxxVmPy2rdKQ@mail.gmail.com>
 MIME-Version: 1.0
-Received: from yoga-910.localhost (188.25.174.251) by AM4PR0902CA0023.eurprd09.prod.outlook.com (2603:10a6:200:9b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Tue, 19 Oct 2021 09:09:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1341da8a-4728-4144-3ca0-08d992e01db5
-X-MS-TrafficTypeDiagnostic: AM8PR04MB7266:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM8PR04MB7266D6D8B7196FF352E61178E0BD9@AM8PR04MB7266.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GcY4nMPqJleA99mnqQ9GAKCaZn8aFWkfYC33KgNNcrS/8owE98otv4H5YAZarNQTGICz0mxts/0e1ZxSJJkLoiGLjEYvgtcxBRQfyCwN2Ipm15Pk29PQd7TJMeN96I+QlPPS9qeiYYL8qbxYb/al6UQ/sYJ02wwqUU0NqqVL1Jf0Bz0yW7tabJC0KQ9dnvUQtqochYNPrpd1Lb/XtrGe3XUw2Z4OqQ8a+zoyKRS0veu5UNgkXO9D31O45TlhwbhEgYzGRqeHZNk9fJOMrujYzu48Wf4aexw8wEaUoDt/g9MUjWaWgh373QRE3jDORgfy3KW6PaxDGsUmtoBmzkMJUOTjTtxFwtkkFIdRoQ7M6SQBUkXEzLWuhfZ7wHzZGihSQScQChC/HemPi/i5wvarVUuVl4j8ZPz8C1nXMN/e3RB6KtyshsXfQUhMKdK5MOQtiuqhoEufJZBQtxBtITnz2Ob9F3EyJLzzCBo9LYo+z87jUFNGJrkRhcu9SHdPmo5BFfcFTTEdL2H5ujA9ugv7TvZQHAr2VFB+uNjmph2Tcb/gFmd+zFQP82hDI6Cj0jYXcRXt5ovcQPWpnxVfGhz8/lyGRbMl2+9fXHD3LcyZn+sSOREQkMfH7Qm59x20WUc+J43DasHo+bB8MbY3lTph+zNGiaxELmbguSuI6JWHwz64bxDWfu/KARsYAjiVKw6YnN3IpMYfBz4QfeZcccY5gw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0401MB2308.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(44832011)(6666004)(38100700002)(508600001)(8676002)(2616005)(66946007)(83380400001)(52116002)(956004)(38350700002)(26005)(4326008)(36756003)(6486002)(6506007)(316002)(66556008)(8936002)(5660300002)(66476007)(6916009)(186003)(6512007)(86362001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JCg3tNHaRltfhgtiI3Aq9u8xbzJjunQX3bb9a8jzRsGprbmVOJBJx8C9A+vp?=
- =?us-ascii?Q?5twjeClsW9j4Cdeu4F0FugTeEioHewDdIcERpOOkf6Ja/4vZyeYauO89YYBY?=
- =?us-ascii?Q?FgD7Xj/a4OmhvtcCY23eCrml1I/kz5UzdAjUvMkWeEpFVqdn38CWLYaSALGL?=
- =?us-ascii?Q?1jVlopbShUvkQHHE9Jn6t7457BlViRxsgcggX3g+invXpUb4wAjI0TXmkqS9?=
- =?us-ascii?Q?fcyUMaEMzgDpOMmtVqpiwpnG8ghNDg+4WfW5AOgUiAVIUmpNSQduvZi2U2AV?=
- =?us-ascii?Q?xFHqrSxa3wh6P86UWeuSBlCQYOLUi4iu7u+owElgPDgk2qq4Z8iSp7B8i4q/?=
- =?us-ascii?Q?CP2Lk0AeAlLjYvh4vtgbnM6rgN+a1XBRtBmSQ5lLP8rk4DpXWHT7n4738ABs?=
- =?us-ascii?Q?sB2Vg3Gx9fY7IfnrhdIDByjtplAKw0v0oj3NmspGeq77z3zCLSH330/ll6VP?=
- =?us-ascii?Q?pACfT7xEpPW56noWbrljxtodCSv6g0p6zpXCq9n+iWMNfvSwj+cvHq6oLWU+?=
- =?us-ascii?Q?Fy6xVyi/5yfwxUhzDb1R4k4EZQbqrC4F3/CJYCy1//ha1cEtpQ2eOSAPB942?=
- =?us-ascii?Q?SZrwWYEzzGbe9Ex5lxVmnm/e4oCIZEW4Lz6KVr61e6iX593hg5XCZ2JPxE/S?=
- =?us-ascii?Q?ii5VhiKMpvaZd9mVRmP7cg9smi6/zdJmVADfziuwyNaOWEeNw3fdD1T6Yqvj?=
- =?us-ascii?Q?14gn1SMHz7pDNx9h7osQd/59eTsZ1tDXuDzoHyvODlHIJ+XgPr9FKB+ubh3j?=
- =?us-ascii?Q?odfOAuIbuPSrfzvKl1Zio+atgcpJvgH/qVk05J9q/DxTcuI6M7YpxPo38Cz1?=
- =?us-ascii?Q?WOgKkq2yRsO7qTUXdr747PTmEnrmwrp8RYLvj5dw7gDLJsryAe4iidHh4BbR?=
- =?us-ascii?Q?X44Mfp2SMaY7AZrBNQcoB9UGNLjbcr33TAzVTts6qK8bGHkUCTWrMj7tNYR0?=
- =?us-ascii?Q?78DJyihlYt2axwgJGhgo5Yn4BQRqtfBl8r+wQXWAJe/3VKq46flCL4dKSVQb?=
- =?us-ascii?Q?OZGPuGGj0T4WGy0hzbPO9mSOirOdU2B55E9Akeh1GK2kSubTuk4W0kmpVGzA?=
- =?us-ascii?Q?aENS6Yy+o/Xzq22LcG2WyBhkK20kVPEfLkXsP/niWfQcaBFTuW9hmrCciMws?=
- =?us-ascii?Q?b1SOf4nAYvrKXx2YUfv9wZ4DqfDKUmNdl0QT38IEe+nh3gm7ri7al+r/m92X?=
- =?us-ascii?Q?Qk5J6aAtljnnyBq3STZnux6vFBTi79GvhqNSR/B/HGaQShM7CI9ShFhj1W6o?=
- =?us-ascii?Q?aJqlOoHvlUlav9o5W+C3riHYdpqvzOk/5NIxElQFWFEeJ1c1/2tqWvJ74bFe?=
- =?us-ascii?Q?f3QHKCeQPJgkLdOaQydbfDsp?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1341da8a-4728-4144-3ca0-08d992e01db5
-X-MS-Exchange-CrossTenant-AuthSource: AM4PR0401MB2308.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 09:09:12.1580
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TZ0YMOGvKSgVxduENi6mgbij0kAHrx4m/7lF6Dqs61RMW9cD2Y+3gnbE7/1945zsAKW4Tbu3aH7URSGzacv9ZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7266
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznG65_FGx9jU7rjj5biEdyHZ=kcPwmXj6cGxxVmPy2rdKQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
-> Subject: [PATCH][linux-next] soc: fsl: dpio: Unsigned compared against 0 in
-> 
-> Coverity complains of unsigned compare against 0. There are 2 cases in
-> this function:
-> 
-> 1821        itp = (irq_holdoff * 1000) / p->desc->qman_256_cycles_per_ns;
-> 
-> CID 121131 (#1 of 1): Unsigned compared against 0 (NO_EFFECT)
-> unsigned_compare: This less-than-zero comparison of an unsigned value is never true. itp < 0U.
-> 1822        if (itp < 0 || itp > 4096) {
-> 1823                max_holdoff = (p->desc->qman_256_cycles_per_ns * 4096) / 1000;
-> 1824                pr_err("irq_holdoff must be between 0..%dus\n", max_holdoff);
-> 1825                return -EINVAL;
-> 1826        }
-> 1827
->     	unsigned_compare: This less-than-zero comparison of an unsigned value is never true. irq_threshold < 0U.
-> 1828        if (irq_threshold >= p->dqrr.dqrr_size || irq_threshold < 0) {
-> 1829                pr_err("irq_threshold must be between 0..%d\n",
-> 1830                       p->dqrr.dqrr_size - 1);
-> 1831                return -EINVAL;
-> 1832        }
-> 
-> Fix this by checking for 0. Also fix a minor comment typo.
-> 
-> Fixes ed1d2143fee53755ec601eb4d48a337a93933f71 ("soc: fsl: dpio: add support for
-> irq coalescing per software portal")
+On Tue 19-10-21 15:11:30, Zhaoyang Huang wrote:
+> On Mon, Oct 18, 2021 at 8:41 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 18-10-21 17:25:23, Zhaoyang Huang wrote:
+> > > On Mon, Oct 18, 2021 at 4:23 PM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > > > I would be really curious about more specifics of the used hierarchy.
+> > > What I am facing is a typical scenario on Android, that is a big
+> > > memory consuming APP(camera etc) launched while background filled by
+> > > other processes. The hierarchy is like what you describe above where B
+> > > represents the APP and memory.low is set to help warm restart. Both of
+> > > kswapd and direct reclaim work together to reclaim pages under this
+> > > scenario, which can cause 20MB file page delete from LRU in several
+> > > second. This change could help to have current process's page escape
+> > > from being reclaimed and cause page thrashing. We observed the result
+> > > via systrace which shows that the Uninterruptible sleep(block on page
+> > > bit) and iowait get smaller than usual.
+> >
+> > I still have hard time to understand the exact setup and why the patch
+> > helps you. If you want to protect B more than the low limit would allow
+> > for by stealiong from C then the same thing can happen from anybody
+> > reclaiming from C so in the end there is no protection. The same would
+> > apply for any global direct memory reclaim done by a 3rd party. So I
+> > suspect that your patch just happens to work by a luck.
+> B and C compete fairly and superior than others. The idea based on
+> assuming NOT all groups will trap into direct reclaim concurrently, so
+> we want to have the groups steal pages from the processes under
+> root(Non-memory sensitive) or other groups with lower thresholds(high
+> memory tolerance) or the one totally sleeping(not busy for the time
+> being, borrow some pages).
 
-I think this should be formatted as following:
+I am really confused now. The memcg reclaim cannot really reclaim
+anything from outside of the reclaimed hierarchy. Protected memcgs are
+only considered if the reclaim was not able to reclaim anything during
+the first hierarchy walk. That would imply that the reclaimed hierarchy
+has either all memcgs with memory protected or non-protected memcgs do
+not have any memory to reclaim.
 
-Fixes: ed1d2143fee5 ("soc: fsl: dpio: add support for irq coalescing per software portal")
+I think it would really help to provide much details about what is going
+on here before we can move forward.
 
-> 
-> Cc: Roy Pledge <Roy.Pledge@nxp.com>
-> Cc: Li Yang <leoyang.li@nxp.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
-> ---
-> 
-> I'm not 100% sure this is the right way to fix the warning, but according to the
-> pr_err() comments these values should never be 0.
+> > Why both B and C have low limit setup and they both cannot be reclaimed?
+> > Isn't that a weird setup where A hard limit is too close to sum of low
+> > limits of B and C?
+> >
+> > In other words could you share a more detailed configuration you are
+> > using and some more details why both B and C have been skipped during
+> > the first pass of the reclaim?
+> My practical scenario is that important processes(vip APP etc) are
+> placed into protected memcg and keep other processes just under root.
+> Current introduces direct reclaim because of alloc_pages(DMA_ALLOC
+> etc), in which the number of allocation would be much larger than low
+> but would NOT be charged to LRU. Whereas, current also wants to keep
+> the pages(.so files to exec) on LRU.
 
-These threshold values can be 0, the pr_err comment tries to say that those are
-the ranges, 0 and the maximum included.
+I am sorry but this description makes even less sense to me. If your
+important process runs under a protected memcg and everything else is
+running under root memcg then your memcg will get protected as long as
+there is a reclaimable memory. There should ever be only global memory
+reclaim happening, unless you specify a hard/high limit on your
+important memcg. If you do so then there is no way to reclaim from
+outside of that specific memcg.
 
-> 
-> ---
->  drivers/soc/fsl/dpio/qbman-portal.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/soc/fsl/dpio/qbman-portal.c b/drivers/soc/fsl/dpio/qbman-portal.c
-> index d3c58df6240d..b768a14bb271 100644
-> --- a/drivers/soc/fsl/dpio/qbman-portal.c
-> +++ b/drivers/soc/fsl/dpio/qbman-portal.c
-> @@ -1816,16 +1816,16 @@ int qbman_swp_set_irq_coalescing(struct qbman_swp *p, u32 irq_threshold,
->  	u32 itp, max_holdoff;
->  
->  	/* Convert irq_holdoff value from usecs to 256 QBMAN clock cycles
-> -	 * increments. This depends to the QBMAN internal frequency.
-> +	 * increments. This depends on the QBMAN internal frequency.
->  	 */
->  	itp = (irq_holdoff * 1000) / p->desc->qman_256_cycles_per_ns;
-> -	if (itp < 0 || itp > 4096) {
-> +	if (!itp || itp > 4096) {
->  		max_holdoff = (p->desc->qman_256_cycles_per_ns * 4096) / 1000;
->  		pr_err("irq_holdoff must be between 0..%dus\n", max_holdoff);
->  		return -EINVAL;
->  	}
->  
-> -	if (irq_threshold >= p->dqrr.dqrr_size || irq_threshold < 0) {
-> +	if (irq_threshold >= p->dqrr.dqrr_size || !irq_threshold) {
->  		pr_err("irq_threshold must be between 0..%d\n",
->  		       p->dqrr.dqrr_size - 1);
->  		return -EINVAL;
-> 
-
-These 'value < 0' checks should be removed all together. Somehow I missed that
-those are unsigned values.
-
-Anyhow, thanks a lot that you spotted this.
-
-Could you please sent the v2 towards the net-next tree since that's the tree
-that adds the fixed patch?
-
-Thanks.
-
--Ioana
-
+I really fail how your patch can help with either of those situations.
+-- 
+Michal Hocko
+SUSE Labs
