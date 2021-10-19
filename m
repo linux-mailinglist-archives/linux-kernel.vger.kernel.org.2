@@ -2,230 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1254332D0
+	by mail.lfdr.de (Postfix) with ESMTP id 981094332D1
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235125AbhJSJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235104AbhJSJtn (ORCPT
+        id S235129AbhJSJtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:49:49 -0400
+Received: from mail-4322.protonmail.ch ([185.70.43.22]:46249 "EHLO
+        mail-4322.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235096AbhJSJtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:49:43 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18A4C061769
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:47:30 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id i5so7059679pla.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:47:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rb8ExGG2m6SToBzEBDnEJVncQUD0CuENj6IXXVw/aPM=;
-        b=q12/aHJIbvh4jCgzlU0YpjBa724C+4452crxCrhVOHnvH7LUzsW0H3nEWB9Y0/mVSn
-         nF/PDPZ1dvcbuSiIs1PKqz8eZFk0up71EkAk4ewJVvblI6S7jnUG+Lj+v2VPZM9TI/tz
-         f/RNNLy9poVSvWi0WRw7AgR8xL9Y9df/v1fmf2NZRUbBuosMZgv8Q3iJDlHpCoRz63JG
-         ghq2877rXcPLS/Md6qNM6K/Wor84a6hi6a1JpdAjTxDbIWbzVul0XO491giT5Y7T5NSh
-         LbuM7zA4R+krhr7LSPKfg4g1O4Buszhj6AoeWu7jdoRvPrBxTlJtbyIwORI6W6UYOdya
-         +XWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rb8ExGG2m6SToBzEBDnEJVncQUD0CuENj6IXXVw/aPM=;
-        b=vmPNfVJ8kR9KsldnGoZzPNeMPnNwIQb+2XVqw0wpiS5VhsBwP1I9Kek9WgEDTukV61
-         NtlXXe6Ut/cBx/AKWGxy/E32IUg6h9JHYn335ZUPs8ZRbg1c9wG7pGgGCSzAtsfNuukm
-         GTeG3zMoBjKQYZOt4FHVn7hpFFe9DSyHCKVfaclGyS/gjlLgHp3BhjSNpQIEHUWBCyZY
-         f4gR9DbXZVw5brk3vYnNWQqd4HnRrjum8XcArbQV217xTyt/u260LoupYI3kumopD10L
-         IgRL9jcebVRXC0usv350yczzcDGLeC4cHXbySWF+4QPqMmaCU1OgvlBuSSqY3XbEMqs8
-         HmLw==
-X-Gm-Message-State: AOAM533TtFeWsR7wxnS5QAbSPeP0/HMHD39KvqFxD0z6CVo7Gib7JwoA
-        8MszYn6oCnEVnv+cdAXTBFZC5A==
-X-Google-Smtp-Source: ABdhPJyIBnnZqluV3NjfjUtyBpQBjEurCCCZ/4HqDgEPEknf2y4RPBYdBg7T4hopVIKhIOJYriHoMQ==
-X-Received: by 2002:a17:90b:18f:: with SMTP id t15mr5398140pjs.19.1634636850019;
-        Tue, 19 Oct 2021 02:47:30 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id nu16sm2328393pjb.56.2021.10.19.02.47.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 Oct 2021 02:47:29 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 17:47:21 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
-        lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>
-Subject: Re: [PATCH v12 2/5] soc: qcom: Add Sleep stats driver
-Message-ID: <20211019094720.GD7231@dragon>
-References: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
- <1634107104-22197-3-git-send-email-mkshah@codeaurora.org>
- <20211015135809.GB7231@dragon>
- <0802823a-4be2-6d55-b259-5084a809c7bb@codeaurora.org>
+        Tue, 19 Oct 2021 05:49:47 -0400
+Date:   Tue, 19 Oct 2021 09:47:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1634636852; bh=iTes/LS2at5n4b3JbFfDhTVYmIXqtWhyKtjvRl5h1lk=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=epp2TtqpMqsLGYPPx9w/sOx6AAYZdDsmJKSvQ2p7TQhojEJA+9t2RJF3Pm4LlIpwN
+         zticrAFZfiOokSeDz9zm6ZRZBye+91Q267sm5FEvU+PLu8M/lkxfHSZjXlm8fpOrxR
+         wpagntqEY+CLq4TRaf0Q6NpqZxckkdWIdj/x6JicNkZw+Jf8YVfwqevEcI0QooHrVI
+         EVjvTNaKhKW95ux6MFhfBqNa5ikRgps8L050ouXo1R6q/0Ke1+2O+mpjWNden/Chfe
+         mof9bWorqAarlexlKPySQ6EJc9aTymvtxiVNvVZWhC9G4Lq/dcs4rKpGwznOsDJ4BU
+         KB529DmhP8vDA==
+To:     Peter Zijlstra <peterz@infradead.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <20211019094038.80569-1-alobakin@pm.me>
+In-Reply-To: <20211019001845.85256-1-alobakin@pm.me>
+References: <20211013122217.304265366@infradead.org> <20211013123645.002402102@infradead.org> <YWmPCF+g+sF4+ieh@zn.tnic> <20211015165635.GH174703@worktop.programming.kicks-ass.net> <20211018225905.86034-1-alobakin@pm.me> <20211019001845.85256-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0802823a-4be2-6d55-b259-5084a809c7bb@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 07:45:30PM +0530, Maulik Shah wrote:
-> > > +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
-> > > +					     struct stats_data *d,
-> > > +					     const struct stats_config *config)
-> > > +{
-> > > +	char stat_type[sizeof(u32) + 1] = {0};
-> > > +	size_t stats_offset = config->stats_offset;
-> > > +	u32 offset = 0, type;
-> > > +	int i, j;
-> > > +
-> > > +	/*
-> > > +	 * On RPM targets, stats offset location is dynamic and changes from target
-> > > +	 * to target and sometimes from build to build for same target.
-> > > +	 *
-> > > +	 * In such cases the dynamic address is present at 0x14 offset from base
-> > > +	 * address in devicetree. The last 16bits indicates the stats_offset.
-> > > +	 */
-> > > +	if (config->dynamic_offset) {
-> > > +		stats_offset = readl(reg + RPM_DYNAMIC_ADDR);
-> > > +		stats_offset &= RPM_DYNAMIC_ADDR_MASK;
-> > > +	}
-> > > +
-> > > +	for (i = 0; i < config->num_records; i++) {
-> > > +		d[i].base = reg + offset + stats_offset;
-> > > +
-> > > +		/*
-> > > +		 * Read the low power mode name and create debugfs file for it.
-> > > +		 * The names read could be of below,
-> > > +		 * (may change depending on low power mode supported).
-> > > +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
-> > > +		 * For rpm-sleep-stats: "vmin" and "vlow".
-> > 
-> > It reports 'vmin' and 'xosd' on MSM8939, 'vmin' and 'vlow' on SDM660.
-> > I know that 'vmin' is VDD Minimization mode, and 'xosd' is XO Shutdown
-> > mode.  But I'm not sure about 'vlow' mode.  Could you share some
-> > information regarding what this low power mode is, and how it differs
-> > from 'vmin' and 'xosd'?
-> 
-> vlow and xosd are same.
-> vmin is xosd plus voltage minimization of chip, memory rails.
+From: Alexander Lobakin <alobakin@pm.me>
+Date: Tue, 19 Oct 2021 00:25:30 +0000
 
-Thanks much for the info, Maulik!
+> From: Alexander Lobakin <alobakin@pm.me>
+> Date: Mon, 18 Oct 2021 23:06:35 +0000
+>
+> Sorry for double posting, should've include this from the start.
+>
+> > Hi,
+> >
+> > Gave it a spin with Clang/LLVM, and
+> >
+> > > On Fri, Oct 15, 2021 at 04:24:08PM +0200, Borislav Petkov wrote:
+> > > > On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
+> > > > > +static int patch_retpoline(void *addr, struct insn *insn, u8 *by=
+tes)
+> > > > > +{
+> > > > > +=09void (*target)(void);
+> > > > > +=09int reg, i =3D 0;
+> > > > > +
+> > > > > +=09if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
+> > > > > +=09=09return -1;
+> > > > > +
+> > > > > +=09target =3D addr + insn->length + insn->immediate.value;
+> > > > > +=09reg =3D (target - &__x86_indirect_thunk_rax) /
+> > > > > +=09      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax)=
+;
+> >
+> > this triggers
+> >
+> > > > I guess you should compute those values once so that it doesn't hav=
+e to
+> > > > do them for each function invocation. And it does them here when I =
+look
+> > > > at the asm it generates.
+> > >
+> > > Takes away the simplicity of the thing. It can't know these values at
+> > > compile time (due to external symbols etc..) although I suppose LTO
+> > > might be able to fix that.
+> > >
+> > > Other than that, the above is the trivial form of reverse indexing an
+> > > array.
+> > >
+> > > > > +
+> > > > > +=09if (WARN_ON_ONCE(reg & ~0xf))
+> > > > > +=09=09return -1;
+> >
+> > this:
+> >
+> > WARN in patch_retpoline:408: addr pcibios_scan_specific_bus+0x196/0x200=
+, op 0xe8, reg 0xb88ca
+> > WARN in patch_retpoline:408: addr xen_pv_teardown_msi_irqs+0x8d/0x120, =
+op 0xe8, reg 0xb88ca
+> > WARN in patch_retpoline:408: addr __mptcp_sockopt_sync+0x7e/0x200, op 0=
+xe8, reg 0xb88ca
+> > [...]
+> > (thousands of them, but op =3D=3D 0xe8 && reg =3D=3D 0xb88ca are always=
+ the same)
+>
+> SMP alternatives: WARN in patch_retpoline:408: addr __strp_unpause+0x62/0=
+x1b0/0xffffffff92d20a12, op 0xe8, reg 0xb88ca
+> SMP alternatives: insn->length: 5, insn->immediate.value: 0xffae0989
+> SMP alternatives: target: 0xffffffff928013a0/__x86_indirect_thunk_r11+0x0=
+/0x20
+> SMP alternatives: rax: 0xffffffff9223cd50, target - rax: 0x5c4650
+> SMP alternatives: rcx - rax: 0x8
+>
+> Imm value and addr are different each time, the rest are the same.
+> target is correct and even %pS works on it, but this distance
+> between r11 and rax thunks (0x5c4650) doesn't look fine, as well as
+> rcx - rax being 0x8. Thunks are 0x11 sized + alignment, should be
+> 0x20, and it is, according to vmlinux.map. Weird. Amps/&s?
 
-I'm running your driver on qcm2290 and trying to reach vlow mode.
+Oh okay, it's because of ClangCFI:
 
-# cat /sys/kernel/debug/qcom_sleep_stats/vlow
-Count: 0
-Last Entered At: 0
-Last Exited At: 0
-Accumulated Duration: 0
-Client Votes: 0x81
-# echo mem > /sys/power/state 
-[  551.446603] PM: suspend entry (s2idle)
-[  551.450948] Filesystems sync: 0.000 seconds
-[  551.462828] Freezing user space processes ... (elapsed 0.002 seconds) done.
-[  551.472276] OOM killer disabled.
-[  551.475556] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-[  551.484461] printk: Suspending console(s) (use no_console_suspend to debug)
-[  551.561280] OOM killer enabled.
-[  551.564461] Restarting tasks ... done.
-[  551.569652] PM: suspend exit
-# cat /sys/kernel/debug/qcom_sleep_stats/vlow
-Count: 0
-Last Entered At: 0
-Last Exited At: 0
-Accumulated Duration: 0
-Client Votes: 0x818081
+SMP alternatives: You were looking for __typeid__ZTSFvvE_global_addr+0x370/=
+0x1410 at 0xffffffffa523cd60,>
+SMP alternatives: rax is __typeid__ZTSFvvE_global_addr+0x360/0x1410 at 0xff=
+ffffffa523cd50
 
-The count doesn't increases along with suspend/resume cycle at the
-moment.  But as you can see, 'Client Votes' field changes.  If possible,
-could you shed some light on what this means?
+Sorry for confusing, seems like it's a side effect of using it on
+Clang 12 while the original series supports only 13+. I'll double
+check and let know if find something.
 
-As the comparison, I'm also running the downstream 'rpm_master_stats'
-driver in the same kernel, and the 'xo_count' field of APSS does
-increase along with suspend/resume cycle.  May I ask some advices what
-I'm possibly missing and thus getting different result between 'vlow'
-and 'rpm_master_stats' report?
+[ snip ]
 
-# cat /sys/kernel/debug/rpm_master_stats 
-APSS
-        shutdown_req:0x37EA3CC74
-        wakeup_ind:0x0
-        bringup_req:0x37F041958
-        bringup_ack:0x37F042D54
-        xo_last_entered_at:0x286FF36AC
-        xo_last_exited_at:0x28AF94178
-        xo_accumulated_duration:0x3EDD55B
-        last_sleep_transition_duration:0x122f
-        last_wake_transition_duration:0x11f8
-        xo_count:0x1
-        wakeup_reason:0x0
-        numshutdowns:0x641
-        active_cores:0x1
-                core0
-MPSS
-        shutdown_req:0x0
-        wakeup_ind:0x0
-        bringup_req:0x0
-        bringup_ack:0x0
-        xo_last_entered_at:0x0
-        xo_last_exited_at:0x0
-        xo_accumulated_duration:0x0
-        last_sleep_transition_duration:0x0
-        last_wake_transition_duration:0x0
-        xo_count:0x0
-        wakeup_reason:0x0
-        numshutdowns:0x0
-        active_cores:0x1
-                core0
-ADSP
-        shutdown_req:0x0
-        wakeup_ind:0x0
-        bringup_req:0x0
-        bringup_ack:0x0
-        xo_last_entered_at:0x0
-        xo_last_exited_at:0x0
-        xo_accumulated_duration:0x0
-        last_sleep_transition_duration:0x0
-        last_wake_transition_duration:0x0
-        xo_count:0x0
-        wakeup_reason:0x0
-        numshutdowns:0x0
-        active_cores:0x1
-                core0
-CDSP
-        shutdown_req:0x0
-        wakeup_ind:0x0
-        bringup_req:0x0
-        bringup_ack:0x0
-        xo_last_entered_at:0x0
-        xo_last_exited_at:0x0
-        xo_accumulated_duration:0x0
-        last_sleep_transition_duration:0x0
-        last_wake_transition_duration:0x0
-        xo_count:0x0
-        wakeup_reason:0x0
-        numshutdowns:0x0
-        active_cores:0x0
-TZ
-        shutdown_req:0x0
-        wakeup_ind:0x0
-        bringup_req:0x0
-        bringup_ack:0x0
-        xo_last_entered_at:0x0
-        xo_last_exited_at:0x0
-        xo_accumulated_duration:0x0
-        last_sleep_transition_duration:0x0
-        last_wake_transition_duration:0x0
-        xo_count:0x0
-        wakeup_reason:0x0
-        numshutdowns:0x0
-        active_cores:0x0
+Thanks,
+Al
 
-Any comment or suggestion would be much appreciated!
-
-Shawn
