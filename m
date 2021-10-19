@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A4F433945
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DC1433953
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhJSOxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
+        id S231771AbhJSO44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhJSOxb (ORCPT
+        with ESMTP id S230464AbhJSO4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:53:31 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E39C06161C;
-        Tue, 19 Oct 2021 07:51:17 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A040B12A;
-        Tue, 19 Oct 2021 16:51:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1634655075;
-        bh=iqr2dLNHFhosre1aYzI61wcJM13iboH8sIoEJKyps30=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=bLuNS/ZpJW8GN1xKYnIsnR2JRunVKqoTyZs68JuNR1nd5VsuKeHmvXRTFfqv9ZO1z
-         h3oVNKV0cZ3i5+XNeTxtODMTOC1snvGgu3Ty9ZdzH+K/m0Vbq+iU5dc1uu1hzAFp5N
-         6BaeuJwtZmc7rbUHLKRnKSXnt77MA02hDKS1EwoI=
-Content-Type: text/plain; charset="utf-8"
+        Tue, 19 Oct 2021 10:56:55 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64275C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:54:41 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id y12so15020694eda.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p8WCCnGWa29x2/KunWHwcjm82Vw3dcAhuVE+3OJhddw=;
+        b=rU5vioG1bMFpSpuNxlfrRNAmnyB/zWyFYgYnrVbDtevPy/kYno3fOlryVFFCm17/ah
+         ctHSyOqJg4vN14m3j0VjK+xfznSAc6PFHb66PthDVifzsJ7m3gH16wZOj/2OAx2V9Adg
+         UAiK0PSV3AL/IBDlh1I0vMStcfLxnKW2TJXNI/DPVmMvkVcMFSK8q9gTOuxlabGVESFK
+         ScrSNYsKA9fpN4RfTB/7PsDUtiMJ6kTz2Gm85mH3CjFXTTUD9edEhRJFq6QZGvEbV21x
+         wpWQN1CavsjWqK9GP4aMwcpuxggAOa1SetoXyu1qMBvStvdZm1DmeO+kot7xoxPDKZmD
+         HqwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p8WCCnGWa29x2/KunWHwcjm82Vw3dcAhuVE+3OJhddw=;
+        b=6zopLpWcFXmD9H35rn+j4GTfNBSoZbrm/MERwKMw1WLovXoI5vlUQJqM8a5kSxkwBB
+         rWmTu1h0NTc3Ih8C+ZEmOkT7Hv4R8yrL4oYvKQ+O9GMHvEd4+Eg0rKjPIsxnT7XjU5uI
+         +dFJC/MTwxdvH/f7OrFpSmOxF5lEh7eQ21w48ANMpEk8Q2T+h8H2hsoSnscuaSgs6p7g
+         LKab0ZlBZil8100uP8eZH9tT8dfO2bGcucF+5WQfi2GIzVZohUAi4k+H7SbMamaE6Yxy
+         SItASwGyQ1wFs2tR9HDO+VV/aT0DgIzMvx9VBM66d+de6hmU4YWudcNKseSd5dlqMhDE
+         Ca8A==
+X-Gm-Message-State: AOAM530kqzBfLypqpaLU1fNw1XSqYaRK2BWJKOosBuerN+aMSVYf95b0
+        SobDZETzK7LvxAcAmuhBzxC6fAZ/ui5Q31/j2Gk6
+X-Google-Smtp-Source: ABdhPJwAbxoeGs0mbCBHBjXTOn1yFExp0cgb99yx3IdluFYlp9BKuUWx279YFfFYR0f5mulARyCVEG4/C/IK9Cz3ldw=
+X-Received: by 2002:a17:907:629b:: with SMTP id nd27mr37148924ejc.24.1634655210383;
+ Tue, 19 Oct 2021 07:53:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1634544036-36868-1-git-send-email-wangqing@vivo.com>
-References: <1634544036-36868-1-git-send-email-wangqing@vivo.com>
-Subject: Re: [PATCH V2] media: i2c: ccs: replace snprintf in show functions with sysfs_emit
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Qing Wang <wangqing@vivo.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Qing Wang <wangqing@vivo.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Date:   Tue, 19 Oct 2021 15:51:13 +0100
-Message-ID: <163465507325.2083150.9943480540280019199@Monstersaurus>
-User-Agent: alot/0.9.2
+References: <20211016072351.237745-1-cuigaosheng1@huawei.com>
+ <20211016072351.237745-3-cuigaosheng1@huawei.com> <5543735.DvuYhMxLoT@x2>
+In-Reply-To: <5543735.DvuYhMxLoT@x2>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 19 Oct 2021 10:53:19 -0400
+Message-ID: <CAHC9VhTtyQKVkWbBy9DTYiZzZCcMspfruPzx3Kf5ZgD4UzsX0g@mail.gmail.com>
+Subject: Re: [PATCH -next, v3 2/2] audit: return early if the rule has a lower priority
+To:     Steve Grubb <sgrubb@redhat.com>
+Cc:     Eric Paris <eparis@redhat.com>, rgb@redhat.com,
+        linux-audit@redhat.com, wangweiyang2@huawei.com,
+        linux-kernel@vger.kernel.org,
+        Gaosheng Cui <cuigaosheng1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 19, 2021 at 10:51 AM Steve Grubb <sgrubb@redhat.com> wrote:
+> Just wondering something... If the first thing we do is to decide to return,
+> should we have called the function in the first place? I wonder if this test
+> should be used to break out of the rule iteration loops so that we don't keep
+> calling only to return ?
 
-Quoting Qing Wang (2021-10-18 09:00:36)
-> show() should not use snprintf() when formatting the value to be
-> returned to user space.
->=20
-> Fix the following coccicheck warning:
-> drivers/media/i2c/ccs/ccs-core.c:3761: WARNING: use scnprintf or sprintf.
->=20
+Patches are welcome ... ;)
 
-Thank you for posting a v2 with the lines adjusted ...
-
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
-> ---
->  drivers/media/i2c/ccs/ccs-core.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs=
--core.c
-> index 5363f3b..9158d3c
-> --- a/drivers/media/i2c/ccs/ccs-core.c
-> +++ b/drivers/media/i2c/ccs/ccs-core.c
-> @@ -2758,13 +2758,13 @@ ident_show(struct device *dev, struct device_attr=
-ibute *attr, char *buf)
->         struct ccs_module_info *minfo =3D &sensor->minfo;
-> =20
->         if (minfo->mipi_manufacturer_id)
-> -               return snprintf(buf, PAGE_SIZE, "%4.4x%4.4x%2.2x\n",
-> -                               minfo->mipi_manufacturer_id, minfo->model=
-_id,
-> -                               minfo->revision_number) + 1;
-> +               return sysfs_emit(buf, "%4.4x%4.4x%2.2x\n",
-> +                                   minfo->mipi_manufacturer_id, minfo->m=
-odel_id,
-> +                                   minfo->revision_number) + 1;
-
-However they are still not lined up correctly.
-It should look like:
-
-
-return sysfs_emit(buf, "%4.4x%4.4x%2.2x\n",
-                  minfo->mipi_manufacturer_id, minfo->model_id,
-                  minfo->revision_number) + 1;
-
-With the m from 'minfo' aligned directly below the b from 'buf' to match
-the indention.
-
---
-Regards
-
-Kieran
-
-
-
->         else
-> -               return snprintf(buf, PAGE_SIZE, "%2.2x%4.4x%2.2x\n",
-> -                               minfo->smia_manufacturer_id, minfo->model=
-_id,
-> -                               minfo->revision_number) + 1;
-> +               return sysfs_emit(buf, "%2.2x%4.4x%2.2x\n",
-> +                                   minfo->smia_manufacturer_id, minfo->m=
-odel_id,
-> +                                   minfo->revision_number) + 1;
->  }
->  static DEVICE_ATTR_RO(ident);
-> =20
-> --=20
-> 2.7.4
->
+-- 
+paul moore
+www.paul-moore.com
