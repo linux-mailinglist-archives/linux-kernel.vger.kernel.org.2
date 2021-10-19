@@ -2,96 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A51432C8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20261432C92
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbhJSEQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 00:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        id S231313AbhJSETW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 00:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhJSEQs (ORCPT
+        with ESMTP id S229784AbhJSETP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 00:16:48 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1F7C06161C;
-        Mon, 18 Oct 2021 21:14:36 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so1017674pjb.1;
-        Mon, 18 Oct 2021 21:14:36 -0700 (PDT)
+        Tue, 19 Oct 2021 00:19:15 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BEAC061768;
+        Mon, 18 Oct 2021 21:17:03 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id a140-20020a1c7f92000000b0030d8315b593so1229099wmd.5;
+        Mon, 18 Oct 2021 21:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QpVkOmngH9zQ5sIApO6THW6g2rtNPhXwXh2hMQVxPVA=;
-        b=IQqKCEYMB1d2Z5b6yn9n+7+/EykEnvuKs7bPKJhAJuhOM5oGxklV+yDJm9fatTBZGl
-         l4tLDTQb6PGqKFJHdxYcmPB7rmUTVLQUmURFIMsVFYsobv6sAkucEqFoIJEhM8lp7r+B
-         G3ALq1YD2C1cQgEwZ2UDWx7VeXLkWN9Ha+MMMjfkH9h4fscCW6qFITDu6FSJuuUdfeDw
-         JwP25KpPijt/9ePE1PvHxCJ3+Gr7X/dGrzt3uR5eI5xtA6Gy3CnB7YYz9BHBagJd0+d/
-         s5oDkT2ZGmp6DoSkzMULv8kg6aFx/ulowa/VlGE9qbDiyP3bYUjK+54DvzipRuJSemm6
-         Dg/g==
+        bh=Ad8rUiMWfEqGOMVtLxzAbxKW1DNAfkjWTH/ERwCOuek=;
+        b=BtCuT653GJRoiO9Z1cWc/0pGqqJKf9MB4G2IE9LNrze0sD86SJi0YFifEgEehlwo7G
+         XnkzpM4dJDmLxeBFCdk6vx8OTSv8LvHliumIbNlhPiJSSdtV50oVi1Qn31hXVesACGVa
+         T1PY6sSQisf2zJIPKzme33UooLaWL2N87uf9wKcXt09rm5qcWR4mob0MidgKdARQOXD0
+         Z4qR7FJGDI+/LRJ2kedWUa17B5OsSaQq1ONtIlZbnjfgs/c1IUW1/mdwHRcPpnUE7Ll5
+         5ADGAL8sSvmX7sRWZlDvvfcR2L0QMuGY+gU75xsWdO/IqxzwhdbG4U/ORDRuR7eepnlu
+         YHZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QpVkOmngH9zQ5sIApO6THW6g2rtNPhXwXh2hMQVxPVA=;
-        b=ZuoYYg29ghUCF+E2CwFETnYs3UG/riVFGXKSz4CfnXVG/tp0s503e7SXkgXFPsiwri
-         4RxikVTCWlO8BjbdxV4chRRQN1AgVWhNsPze2l/Y+mh15HoUaL0FUqQw8xT/XZ6CzDA9
-         P6UJZns8UqB5yEybMT8kIqDUQs/0aNd3Upb45rrjhIkg4T/09/4jJMaIbX23nFywG8Ka
-         Qw4jauWdmqkklGs5TKwcRo66dMemqt8Ozzy1sv0Qu9CvYxb7miwdKrMhrNLH0FsxZt65
-         y/F/30iR/atEHN9v8WUXUn/r89XElN6LFJMxknYq56qqV3TND5paQVlcdbFzU9whG1Ae
-         mPcg==
-X-Gm-Message-State: AOAM533NKPlxBZFr6hRL7QWx9MzjURWKFLgK7iZR1qS7xf1BHtyDWQK2
-        ZXd53Jo6bGsQu/yvDKXwIBLh//jZcQw=
-X-Google-Smtp-Source: ABdhPJxnN5pqDvtUEkFlaya4/INU7QDaUk/WYz54UH37eagp3IVX3DHFaLBya9wN/Ttfc4y+bmvtXA==
-X-Received: by 2002:a17:90b:4c86:: with SMTP id my6mr3775841pjb.77.1634616875630;
-        Mon, 18 Oct 2021 21:14:35 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id i127sm10347438pgc.40.2021.10.18.21.14.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 21:14:35 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     bfields@fieldses.org
-Cc:     chuck.lever@oracle.com, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] NFSD:fix boolreturn.cocci warning
-Date:   Tue, 19 Oct 2021 04:14:22 +0000
-Message-Id: <20211019041422.975072-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        bh=Ad8rUiMWfEqGOMVtLxzAbxKW1DNAfkjWTH/ERwCOuek=;
+        b=2mb+DcfImyiNCR8txYIL/WsfgJ3CzkHAibovXMSqZFXTeJeHJMOSarFhzxpv+/lSgA
+         MVra0CKUla1roBcVu1mfXk64Ekc0ly8fOO6u1Y3eSNuY8AqmG+x6Rxhq8DicAKLuxvEE
+         8386ef9IZVUo1y99mXQvSmzjJqQkEy5Hbudg6UnuWSoQ93u8trvapxwE0xpoaWjO4HaA
+         D3aSvbSXsSFc+IhFfGlVYO96ehNruBy0WmGEOHbWXvoQoaX4kCbq/bd9UTQU2s8gFEZi
+         iQB+n/XECVtd3qBCsc/fGR9EgPyEk5VoU4PHlO7A5BHm7kHxnljLhHpm21buaTKRuZWn
+         UbkQ==
+X-Gm-Message-State: AOAM533HsDZc7g76j7mCRAAzVI4U/+YX6gTAeKToZhwbtWWKQx73fYXS
+        Xw2njllnmPYNnRZ47bGCmBquwLHPm9o=
+X-Google-Smtp-Source: ABdhPJzksrRbcm25IOpAiXTmY27POdYAt5WGNN63MlffTA+Oz3sqnS43tJmh+rxbsTBr3kUcpXs91g==
+X-Received: by 2002:a1c:f601:: with SMTP id w1mr3390187wmc.112.1634617021608;
+        Mon, 18 Oct 2021 21:17:01 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id b3sm14332489wrp.52.2021.10.18.21.17.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Oct 2021 21:17:01 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     robh@kernel.org, john@phrozen.org, neil@brown.name,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: mips: convert Ralink SoCs and boards to schema
+Date:   Tue, 19 Oct 2021 06:16:59 +0200
+Message-Id: <20211019041659.15761-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+Convert Ralink SoCs and boards bindings to YAML schema.
 
-./fs/nfsd/nfssvc.c: 1072: 8-9: :WARNING return of 0/1 in function
-'nfssvc_decode_voidarg' with return type bool
-
-Return statements in functions returning bool should use true/false
-instead of 1/0.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- fs/nfsd/nfssvc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/mips/ralink.txt       | 32 -------
+ .../devicetree/bindings/mips/ralink.yaml      | 87 +++++++++++++++++++
+ 2 files changed, 87 insertions(+), 32 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mips/ralink.txt
+ create mode 100644 Documentation/devicetree/bindings/mips/ralink.yaml
 
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index 362e819ff06a..80431921e5d7 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -1069,7 +1069,7 @@ int nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
-  */
- bool nfssvc_decode_voidarg(struct svc_rqst *rqstp, struct xdr_stream *xdr)
- {
--	return 1;
-+	return true;
- }
- 
- /**
+diff --git a/Documentation/devicetree/bindings/mips/ralink.txt b/Documentation/devicetree/bindings/mips/ralink.txt
+deleted file mode 100644
+index 8cc0ab41578c..000000000000
+--- a/Documentation/devicetree/bindings/mips/ralink.txt
++++ /dev/null
+@@ -1,32 +0,0 @@
+-Ralink MIPS SoC device tree bindings
+-
+-1. SoCs
+-
+-Each device tree must specify a compatible value for the Ralink SoC
+-it uses in the compatible property of the root node. The compatible
+-value must be one of the following values:
+-
+-  ralink,rt2880-soc
+-  ralink,rt3050-soc
+-  ralink,rt3052-soc
+-  ralink,rt3350-soc
+-  ralink,rt3352-soc
+-  ralink,rt3883-soc
+-  ralink,rt5350-soc
+-  ralink,mt7620a-soc
+-  ralink,mt7620n-soc
+-  ralink,mt7628a-soc
+-  ralink,mt7688a-soc
+-
+-2. Boards
+-
+-GARDENA smart Gateway (MT7688)
+-
+-This board is based on the MediaTek MT7688 and equipped with 128 MiB
+-of DDR and 8 MiB of flash (SPI NOR) and additional 128MiB SPI NAND
+-storage.
+-
+-------------------------------
+-Required root node properties:
+-- compatible = "gardena,smart-gateway-mt7688", "ralink,mt7688a-soc",
+-		"ralink,mt7628a-soc";
+diff --git a/Documentation/devicetree/bindings/mips/ralink.yaml b/Documentation/devicetree/bindings/mips/ralink.yaml
+new file mode 100644
+index 000000000000..0588cee25ae9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mips/ralink.yaml
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mips/ralink.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Ralink SoC based Platforms Device Tree Bindings
++
++maintainers:
++  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
++
++description: |
++    Boards with a Ralink SoC shall have the following properties.
++
++properties:
++  $nodename:
++    const: '/'
++  compatible:
++    oneOf:
++      - description: Boards with Ralink RT2880 SoC
++        items:
++          - enum:
++              - ralink,rt2880-eval-board
++          - const: ralink,rt2880-soc
++
++      - description: Boards with Ralink RT3050 SoC
++        items:
++          - const: ralink,rt3050-soc
++
++      - description: Boards with Ralink RT3052 SoC
++        items:
++          - enum:
++              - ralink,rt3052-eval-board
++          - const: ralink,rt3052-soc
++
++      - description: Boards with Ralink RT3350 SoC
++        items:
++          - const: ralink,rt3350-soc
++
++      - description: Boards with Ralink RT3352 SoC
++        items:
++          - const: ralink,rt3352-soc
++
++      - description: Boards with Ralink RT3383 SoC
++        items:
++          - enum:
++              - ralink,rt3883-eval-board
++          - const: ralink,rt3383-soc
++
++      - description: Boards with Ralink RT5350 SoC
++        items:
++          - const: ralink,rt5350-soc
++
++      - description: Boards with Mediatek/Ralink MT7620A SoC
++        items:
++          - enum:
++              - ralink,mt7620a-eval-board
++          - const: ralink,mt7620a-soc
++
++      - description: Boards with Mediatek/Ralink MT7620N SoC
++        items:
++          - const: ralink,mt7620n-soc
++
++      - description: Boards with Mediatek/Ralink MT7628A SoC
++        items:
++          - enum:
++              - onion,omega2+
++              - vocore,vocore2
++          - const: ralink,mt7628a-soc
++
++      - description: Boards with Mediatek/Ralink MT7688A SoC
++        items:
++          - enum:
++              - gardena,smart-gateway-mt7688
++              - onion,omega2+
++          - const: ralink,mt7628a-soc
++
++      - description: Boards with Mediatek/Ralink MT7621 SoC
++        items:
++          - enum:
++              - gnubee,gb-pc1
++              - gnubee,gb-pc2
++          - const: mediatek,mt7621-soc
++
++additionalProperties: true
++
++...
 -- 
-2.25.1
+2.33.0
 
