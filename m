@@ -2,127 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AED743403C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E08643403F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhJSVOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
+        id S229668AbhJSVQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhJSVOR (ORCPT
+        with ESMTP id S229519AbhJSVQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:14:17 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEEAC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:12:04 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id r134so22024601iod.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:12:04 -0700 (PDT)
+        Tue, 19 Oct 2021 17:16:06 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D577C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:13:53 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id m42so14454383wms.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=30BnP4r6CE0OkZvT19kcbgPK/6Ckj3KjznbN6qKawuk=;
-        b=fpA7N/KYD+Fh+EqegyotiKveYMCDZtJ4zi3/phXmtjRDphoY5PgXliB8+bY62n45i3
-         JVOV/VITICl2sudKvC91/HihnhlM9h8FXhI0rMD4Qmh3tsLTyLPBNsuAf+vNtdsiQ/vd
-         X8ZS+4C8t61x+oCuOd4J4MlzH+H1psJwjmzHE=
+        d=kryo-se.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l6gE86fggrp1Bnsb8sfug4v8+vo2kGXRhPZjmGdtdj8=;
+        b=443ImPeqZVoO+mnnRDQWXv2tldarNEL3aBGVlnJu5/7F0YPVsWcHIkVJE9/+lTH4sX
+         HKsMRVssZ7FkJrSQlL+NoihR4roGZeSmSb8xTZoB7ffcyWvI9pWFzSOUt4qE9aWKR7D8
+         69Gmhmf6/7umXY/DL7PWu7ololEsJF49aLOWDWRe87t4/k2tcn7j8jo1TQ2asZ5Akdda
+         UtX+g4RZ9RAYOAZQGbGvZA0VMfZG+wt8tKQPO08dSMh2QR4Tdf7bBFh+UkmKbLhNtC86
+         OcRx0SlgjhVf/powEczo+KOVCvuuKDFPiBXMNUj+6TVyMPXwRTQmeDDlyYRAHG1VBAFA
+         H/8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=30BnP4r6CE0OkZvT19kcbgPK/6Ckj3KjznbN6qKawuk=;
-        b=o8ciEJXDEt/lh9Z6fbxKdYbi4o+tOF0EKwqantVYqchfUJNS3ry+Okh/lZa2C7tAul
-         2qDy9cwrkPDbH9GOtqbWO7IsmOvW6Q/uZmRMMT+Ur/zUqAtysnUZDfka/wsl0cbNfVw6
-         EC1OP0B4kHyplMC1kdXcFZ87Smq2HFZa7+zuKhzBEYo8+0a44iPLhXm+zQhkQbu2+hlt
-         PtiWeP/6JVKQhTVvu39twnk1QiM3QvJqO629sBKMn/f3vBpMouSLj0VPXEwkkNmbbV4q
-         ySzPxddf4fP2MCj9Ps/4hBzoaURQPmLDdedO6581pPMl12zfMFvFty5iy46eI6zuCWq9
-         jgeA==
-X-Gm-Message-State: AOAM531Qe8lwjqYVxbVcCnacJYpHNXYVESZuKhh2PkUEU84CguPQ6PGP
-        Kmq5DUE+9MsKz7VzlyTtGt96nW9rn+VLhw==
-X-Google-Smtp-Source: ABdhPJyHBq2S5sGwKYY1uslPk3Qk/BfdJAijWTvy5K2CC1VVnw8VGcFr38RQeiVgti/SYfQ/FAa0Gw==
-X-Received: by 2002:a02:9469:: with SMTP id a96mr5994213jai.5.1634677923372;
-        Tue, 19 Oct 2021 14:12:03 -0700 (PDT)
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com. [209.85.166.42])
-        by smtp.gmail.com with ESMTPSA id b6sm94396ilj.39.2021.10.19.14.12.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 14:12:02 -0700 (PDT)
-Received: by mail-io1-f42.google.com with SMTP id z69so18906984iof.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:12:02 -0700 (PDT)
-X-Received: by 2002:a05:6638:258e:: with SMTP id s14mr5926528jat.54.1634677921595;
- Tue, 19 Oct 2021 14:12:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l6gE86fggrp1Bnsb8sfug4v8+vo2kGXRhPZjmGdtdj8=;
+        b=yIbnGLS2XfpwyrB4R+/Nw/uGDmlvTp9DJgf+J88utoiSOwEXeyJAl2wJtwo07Qfpkl
+         yR86+FfDCfXX+C145GxuO6GDUR+CSAAAkwfkTBStudQP/prJZlZLIrw8UeGeidJ6OZ7+
+         Wqzhswc3YqRJMu4pr+AnJH5OVcj+j9obNei2O9qmluKidVU/Id0AcZ3MSDX6EdU6c9gn
+         3wY+aN9VU0jpd6aU5+CDWRLWer8RrkC9Gfv5oUYimA/rWwFGoPwKqQ9R+g5FcOmQaSFp
+         5BVhkyrQxBodJTxcCRrrRX8RQo8HeAp0hvb+K2huT0arbf5nJXn5odkIRYMVn55YfH8n
+         rhKA==
+X-Gm-Message-State: AOAM531Cgf2IephBtS/mT6hIoQZCJ1+Wr2TNe7aPQEScEgFrYz6rvdAv
+        6d2KblAOnw04FvEcsRjyT96jtg==
+X-Google-Smtp-Source: ABdhPJzTAOhGml9ZLIhKYSNUfQC7ft8zX+Im9HeR0z90hZbniLjpxkYn9q+5OM1EmSBmNYv1iHD98A==
+X-Received: by 2002:adf:a34b:: with SMTP id d11mr46398025wrb.107.1634678031406;
+        Tue, 19 Oct 2021 14:13:51 -0700 (PDT)
+Received: from kerfuffle.. ([2a02:168:9619:0:e47f:e8d:2259:ad13])
+        by smtp.gmail.com with ESMTPSA id v13sm100929wrs.53.2021.10.19.14.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 14:13:50 -0700 (PDT)
+From:   Erik Ekman <erik@kryo.se>
+To:     Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Erik Ekman <erik@kryo.se>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] sfc: Export fibre-specific supported link modes
+Date:   Tue, 19 Oct 2021 23:13:32 +0200
+Message-Id: <20211019211333.19494-1-erik@kryo.se>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
- <1632399378-12229-9-git-send-email-rajpat@codeaurora.org> <CAK8P3a3KuTEAXbSTU+n3D_fryquo8B-eXSF2+HrikiNVn6kSSg@mail.gmail.com>
- <YW8xl0fLnQE5o3AQ@ripper>
-In-Reply-To: <YW8xl0fLnQE5o3AQ@ripper>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 19 Oct 2021 14:11:49 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XsiMp5jSpX5ong27KYW=G-XYhCfjo48E5cC6Cm+oU-mA@mail.gmail.com>
-Message-ID: <CAD=FV=XsiMp5jSpX5ong27KYW=G-XYhCfjo48E5cC6Cm+oU-mA@mail.gmail.com>
-Subject: Re: [PATCH V10 8/8] arm64: dts: sc7280: Add aliases for I2C and SPI
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Rajesh Patil <rajpat@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        msavaliy@qti.qualcomm.com, satya priya <skakit@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The 1/10GbaseT modes were set up for cards with SFP+ cages in
+3497ed8c852a5 ("sfc: report supported link speeds on SFP connections").
+10GbaseT was likely used since no 10G fibre mode existed.
 
-On Tue, Oct 19, 2021 at 1:57 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Tue 19 Oct 13:43 PDT 2021, Arnd Bergmann wrote:
->
-> > On Thu, Sep 23, 2021 at 2:18 PM Rajesh Patil <rajpat@codeaurora.org> wrote:
-> > >
-> > > Add aliases for i2c and spi for sc7280 soc.
-> > >
-> > > Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
-> > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> >
-> > I saw this in the pull request, can this please be reverted?
-> >
->
-> Yes, this can certainly be corrected.
->
-> > Putting the aliases into the .dtsi file is really silly, as there are
-> > likely boards that
-> > don't connect every single one of those, and then will have to
-> > override and renumber
-> > them.
-> >
-> > Please only list the aliases that are actually connected on a particular
-> > board.
+The missing fibre modes for 1/10G were added to ethtool.h in 5711a9822144
+("net: ethtool: add support for 1000BaseX and missing 10G link modes")
+shortly thereafter.
 
-Hrm. I know this gets into slightly controversial topics, but I'm a
-little curious what the downside of having these in the dtsi is. In
-the case where these i2c/spi/mmc devices _don't_ have "well defined"
-numbers in the hardware manual of the SoC then I can agree that it
-doesn't make sense to list these in the dtsi file. However, in the
-case of sc7280 these numbers are well defined at the SoC level for i2c
-and SPI.
+The user guide available at https://support-nic.xilinx.com/wp/drivers
+lists support for the following cable and transceiver types in section 2.9:
+- QSFP28 100G Direct Attach Cables
+- QSFP28 100G SR Optical Transceivers (with SR4 modules listed)
+- SFP28 25G Direct Attach Cables
+- SFP28 25G SR Optical Transceivers
+- QSFP+ 40G Direct Attach Cables
+- QSFP+ 40G Active Optical Cables
+- QSFP+ 40G SR4 Optical Transceivers
+- QSFP+ to SFP+ Breakout Direct Attach Cables
+- QSFP+ to SFP+ Breakout Active Optical Cables
+- SFP+ 10G Direct Attach Cables
+- SFP+ 10G SR Optical Transceivers
+- SFP+ 10G LR Optical Transceivers
+- SFP 1000BASE‐T Transceivers
+- 1G Optical Transceivers
+(From user guide issue 28. Issue 16 which also includes older cards like
+SFN5xxx/SFN6xxx has matching lists for 1/10/40G transceiver types.)
 
-Said another way: if you have a board that's got peripherals connected
-on the pins labelled "i2c2" and "i2c6" on the SoC then it's a really
-nice thing if these show up on /dev/i2c-2 and /dev/i2c-6.
+Regarding SFP+ 10GBASE‐T transceivers the latest guide says:
+"Solarflare adapters do not support 10GBASE‐T transceiver modules."
 
-...so I'm not sure what board exactly would be overriding and
-re-numbering? Unless a board really has a strong use case where they
-need the device connected to the pins for "i2c2" to show up on
-"/dev/i2c-0"?
+Tested using SFN5122F-R7 (with 2 SFP+ ports). Supported link modes do not change
+depending on module used (tested with 1000BASE-T, 1000BASE-BX10, 10GBASE-LR).
+Before:
 
+$ ethtool ext
+Settings for ext:
+	Supported ports: [ FIBRE ]
+	Supported link modes:   1000baseT/Full
+	                        10000baseT/Full
+	Supported pause frame use: Symmetric Receive-only
+	Supports auto-negotiation: No
+	Supported FEC modes: Not reported
+	Advertised link modes:  Not reported
+	Advertised pause frame use: No
+	Advertised auto-negotiation: No
+	Advertised FEC modes: Not reported
+	Link partner advertised link modes:  Not reported
+	Link partner advertised pause frame use: No
+	Link partner advertised auto-negotiation: No
+	Link partner advertised FEC modes: Not reported
+	Speed: 1000Mb/s
+	Duplex: Full
+	Auto-negotiation: off
+	Port: FIBRE
+	PHYAD: 255
+	Transceiver: internal
+        Current message level: 0x000020f7 (8439)
+                               drv probe link ifdown ifup rx_err tx_err hw
+	Link detected: yes
 
+After:
 
--Doug
+$ ethtool ext
+Settings for ext:
+	Supported ports: [ FIBRE ]
+	Supported link modes:   1000baseT/Full
+	                        1000baseX/Full
+	                        10000baseCR/Full
+	                        10000baseSR/Full
+	                        10000baseLR/Full
+	Supported pause frame use: Symmetric Receive-only
+	Supports auto-negotiation: No
+	Supported FEC modes: Not reported
+	Advertised link modes:  Not reported
+	Advertised pause frame use: No
+	Advertised auto-negotiation: No
+	Advertised FEC modes: Not reported
+	Link partner advertised link modes:  Not reported
+	Link partner advertised pause frame use: No
+	Link partner advertised auto-negotiation: No
+	Link partner advertised FEC modes: Not reported
+	Speed: 1000Mb/s
+	Duplex: Full
+	Auto-negotiation: off
+	Port: FIBRE
+	PHYAD: 255
+	Transceiver: internal
+	Supports Wake-on: g
+	Wake-on: d
+        Current message level: 0x000020f7 (8439)
+                               drv probe link ifdown ifup rx_err tx_err hw
+	Link detected: yes
+
+Signed-off-by: Erik Ekman <erik@kryo.se>
+---
+ drivers/net/ethernet/sfc/mcdi_port_common.c | 37 +++++++++++++++------
+ 1 file changed, 26 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/ethernet/sfc/mcdi_port_common.c b/drivers/net/ethernet/sfc/mcdi_port_common.c
+index 4bd3ef8f3384..c4fe3c48ac46 100644
+--- a/drivers/net/ethernet/sfc/mcdi_port_common.c
++++ b/drivers/net/ethernet/sfc/mcdi_port_common.c
+@@ -132,16 +132,27 @@ void mcdi_to_ethtool_linkset(u32 media, u32 cap, unsigned long *linkset)
+ 	case MC_CMD_MEDIA_SFP_PLUS:
+ 	case MC_CMD_MEDIA_QSFP_PLUS:
+ 		SET_BIT(FIBRE);
+-		if (cap & (1 << MC_CMD_PHY_CAP_1000FDX_LBN))
++		if (cap & (1 << MC_CMD_PHY_CAP_1000FDX_LBN)) {
+ 			SET_BIT(1000baseT_Full);
+-		if (cap & (1 << MC_CMD_PHY_CAP_10000FDX_LBN))
+-			SET_BIT(10000baseT_Full);
+-		if (cap & (1 << MC_CMD_PHY_CAP_40000FDX_LBN))
++			SET_BIT(1000baseX_Full);
++		}
++		if (cap & (1 << MC_CMD_PHY_CAP_10000FDX_LBN)) {
++			SET_BIT(10000baseCR_Full);
++			SET_BIT(10000baseLR_Full);
++			SET_BIT(10000baseSR_Full);
++		}
++		if (cap & (1 << MC_CMD_PHY_CAP_40000FDX_LBN)) {
+ 			SET_BIT(40000baseCR4_Full);
+-		if (cap & (1 << MC_CMD_PHY_CAP_100000FDX_LBN))
++			SET_BIT(40000baseSR4_Full);
++		}
++		if (cap & (1 << MC_CMD_PHY_CAP_100000FDX_LBN)) {
+ 			SET_BIT(100000baseCR4_Full);
+-		if (cap & (1 << MC_CMD_PHY_CAP_25000FDX_LBN))
++			SET_BIT(100000baseSR4_Full);
++		}
++		if (cap & (1 << MC_CMD_PHY_CAP_25000FDX_LBN)) {
+ 			SET_BIT(25000baseCR_Full);
++			SET_BIT(25000baseSR_Full);
++		}
+ 		if (cap & (1 << MC_CMD_PHY_CAP_50000FDX_LBN))
+ 			SET_BIT(50000baseCR2_Full);
+ 		break;
+@@ -192,15 +203,19 @@ u32 ethtool_linkset_to_mcdi_cap(const unsigned long *linkset)
+ 		result |= (1 << MC_CMD_PHY_CAP_100FDX_LBN);
+ 	if (TEST_BIT(1000baseT_Half))
+ 		result |= (1 << MC_CMD_PHY_CAP_1000HDX_LBN);
+-	if (TEST_BIT(1000baseT_Full) || TEST_BIT(1000baseKX_Full))
++	if (TEST_BIT(1000baseT_Full) || TEST_BIT(1000baseKX_Full) ||
++			TEST_BIT(1000baseX_Full))
+ 		result |= (1 << MC_CMD_PHY_CAP_1000FDX_LBN);
+-	if (TEST_BIT(10000baseT_Full) || TEST_BIT(10000baseKX4_Full))
++	if (TEST_BIT(10000baseT_Full) || TEST_BIT(10000baseKX4_Full) ||
++			TEST_BIT(10000baseCR_Full) || TEST_BIT(10000baseLR_Full) ||
++			TEST_BIT(10000baseSR_Full))
+ 		result |= (1 << MC_CMD_PHY_CAP_10000FDX_LBN);
+-	if (TEST_BIT(40000baseCR4_Full) || TEST_BIT(40000baseKR4_Full))
++	if (TEST_BIT(40000baseCR4_Full) || TEST_BIT(40000baseKR4_Full) ||
++			TEST_BIT(40000baseSR4_Full))
+ 		result |= (1 << MC_CMD_PHY_CAP_40000FDX_LBN);
+-	if (TEST_BIT(100000baseCR4_Full))
++	if (TEST_BIT(100000baseCR4_Full) || TEST_BIT(100000baseSR4_Full))
+ 		result |= (1 << MC_CMD_PHY_CAP_100000FDX_LBN);
+-	if (TEST_BIT(25000baseCR_Full))
++	if (TEST_BIT(25000baseCR_Full) || TEST_BIT(25000baseSR_Full))
+ 		result |= (1 << MC_CMD_PHY_CAP_25000FDX_LBN);
+ 	if (TEST_BIT(50000baseCR2_Full))
+ 		result |= (1 << MC_CMD_PHY_CAP_50000FDX_LBN);
+-- 
+2.31.1
+
