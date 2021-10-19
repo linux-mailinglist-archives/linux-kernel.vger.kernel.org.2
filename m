@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31624332C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3C54332CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235040AbhJSJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:48:56 -0400
-Received: from ixit.cz ([94.230.151.217]:50542 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234764AbhJSJsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:48:54 -0400
-Received: from [10.30.101.69] (unknown [213.151.89.154])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id E7BC120064;
-        Tue, 19 Oct 2021 11:46:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1634636799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dyqa41bKY0fVZZuGka4A1rVzoocTJ2PWZP1VFWd09wo=;
-        b=U1deCH0nMNIpv9q/xPxT+EZ+KnZxGnIiR/cBRd6+7aXD66ndQyMludawYSgbQUyZBBmMti
-        9tTZWVxNu2r6offw5iF3R1d5wUtC6eGyM89V2LGBdCFc/KaQUGabJxqtoFmGypYcK5gLMp
-        rdIBpgxIGF8wDEK6XwKpVqOg/2wV6Vs=
-Date:   Tue, 19 Oct 2021 11:45:05 +0200
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH v3 23/23] dt-bindings: reserved-memory: ramoops: update
- ramoops.yaml references
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Kees Cook <keescook@chromium.org>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        linux-kernel@vger.kernel.org
-Message-Id: <5RX71R.7VC8VUYI0TBC1@ixit.cz>
-In-Reply-To: <bccd9c181b68a1ebbaefd5dcce63e1b8a4b1596c.1634630486.git.mchehab+huawei@kernel.org>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
-        <bccd9c181b68a1ebbaefd5dcce63e1b8a4b1596c.1634630486.git.mchehab+huawei@kernel.org>
-X-Mailer: geary/40.0
+        id S235094AbhJSJtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:49:40 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54070 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234764AbhJSJti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:49:38 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 163D512A;
+        Tue, 19 Oct 2021 11:47:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634636843;
+        bh=9WpIKSjpHCw/alwPbMvvbFk/40a6krbHuMfWKlR1GB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SmesInog4R8l0uM1cVLwfoG/7ocuW2JwahC8DYBA7HH60IdBVEtNvkq/kuazDMg4L
+         hS3w2xlaBDCwaOJi5dMyu70ZM3SIxH2EaSCOzuHB616tNKejlKDBNCUtpdrb9U7uxS
+         BJK/rJwy+JRKA0xMMuYyH8n42vN8Q40VTViflhA4=
+Date:   Tue, 19 Oct 2021 12:47:04 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Tim Bird <tbird20d@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        linux-embedded@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        Matt Porter <mporter@konsulko.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        thomas.petazzoni@bootlin.com, Tim Bird <tim.bird@sony.com>
+Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is
+ obsolete
+Message-ID: <YW6UGP10hfGJ2kYy@pendragon.ideasonboard.com>
+References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
+ <CA+bK7J741D=DgZMNeEC5xg9kDDSaJu19QsRunVvXkBGx1mKGnQ@mail.gmail.com>
+ <YW5r61ZQx+E9xfuH@pendragon.ideasonboard.com>
+ <57122a67509bebdf0d1b9f5bc15db116e0124e5d.camel@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <57122a67509bebdf0d1b9f5bc15db116e0124e5d.camel@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Than you for catching this.
+On Tue, Oct 19, 2021 at 10:33:10AM +0100, David Woodhouse wrote:
+> On Tue, 2021-10-19 at 09:55 +0300, Laurent Pinchart wrote:
+> > Hi Tim,
+> > 
+> > On Mon, Oct 18, 2021 at 03:17:22PM -0600, Tim Bird wrote:
+> > > I think an overhaul of the "EMBEDDED LINUX" MAINTAINERS entry
+> > > is long-overdue.
+> > > 
+> > > No offense to any of the 3 persons listed, but I think the kernel developer
+> > > community would be better served by a group of individuals with a more
+> > > current active role in embedded linux.  I have a few names I'll
+> > > toss out for
+> > > candidates: Matt Porter, Kevin Hilman, Thomas Gleixner,  Thomas
+> > > Petazonni, Laurent Pinchart, and Uwe Kleine-König (and maybe even
+> > > myself).
+> > > 
+> > > This entry in the MAINTAINERS file is somewhat special, in that it
+> > > covers a "field of endeavor" rather than a specific set of files or
+> > > directories.
+> > > 
+> > > Thoughts?
+> > 
+> > Thank you for volunteering me :-)
+> > 
+> > I was indeed wondering about this particular MAINTAINERS entry. As it
+> > doesn't cover any particular set of files, directories, drivers,
+> > subsystems or architectures, what does being listed here endeavour ?
+> 
+> Basically nothing; I was going to suggest removing it entirely. There's
+> certainly no point listing me there any more.
+> 
+> Once upon a time it involved a certain amount of heckling about memory
+> usage and "your hash table doesn't need to be that large" but that ship
+> sailed a long time ago :)
 
-Reviewed-by: David Heidelberg <david@ixit.cz>
+Heckling is still an option without a MAINTAINERS entry I suppose :-)
 
+I wouldn't object if we were to remove it.
 
-Best regards
-David Heidelberg
+-- 
+Regards,
 
-On Tue, Oct 19 2021 at 09:04:22 +0100, Mauro Carvalho Chehab 
-<mchehab+huawei@kernel.org> wrote:
-> Changeset 89a5bf0f22fd ("dt-bindings: reserved-memory: ramoops: 
-> Convert txt bindings to yaml")
-> renamed: Documentation/devicetree/bindings/reserved-memory/ramoops.txt
-> to: Documentation/devicetree/bindings/reserved-memory/ramoops.yaml.
-> 
-> Update the cross-references accordingly.
-> 
-> Fixes: 89a5bf0f22fd ("dt-bindings: reserved-memory: ramoops: Convert 
-> txt bindings to yaml")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-> 
-> To mailbombing on a large number of people, only mailing lists were 
-> C/C on the cover.
-> See [PATCH v3 00/23] at: 
-> https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
-> 
->  Documentation/admin-guide/ramoops.rst | 2 +-
->  MAINTAINERS                           | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/ramoops.rst 
-> b/Documentation/admin-guide/ramoops.rst
-> index 8f107d8c9261..e9f85142182d 100644
-> --- a/Documentation/admin-guide/ramoops.rst
-> +++ b/Documentation/admin-guide/ramoops.rst
-> @@ -69,7 +69,7 @@ Setting the ramoops parameters can be done in 
-> several different manners:
->  	mem=128M ramoops.mem_address=0x8000000 ramoops.ecc=1
-> 
->   B. Use Device Tree bindings, as described in
-> - ``Documentation/devicetree/bindings/reserved-memory/ramoops.txt``.
-> + ``Documentation/devicetree/bindings/reserved-memory/ramoops.yaml``.
->   For example::
-> 
->  	reserved-memory {
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d74b08c4fb1f..1dc758a0db58 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15336,7 +15336,7 @@ S:	Maintained
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git 
-> for-next/pstore
->  F:	Documentation/admin-guide/ramoops.rst
->  F:	Documentation/admin-guide/pstore-blk.rst
-> -F:	Documentation/devicetree/bindings/reserved-memory/ramoops.txt
-> +F:	Documentation/devicetree/bindings/reserved-memory/ramoops.yaml
->  F:	drivers/acpi/apei/erst.c
->  F:	drivers/firmware/efi/efi-pstore.c
->  F:	fs/pstore/
-> --
-> 2.31.1
-> 
-
-
+Laurent Pinchart
