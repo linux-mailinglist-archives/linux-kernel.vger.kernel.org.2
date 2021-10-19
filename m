@@ -2,170 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B28432CDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66347432CE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbhJSEpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 00:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhJSEpv (ORCPT
+        id S232635AbhJSEsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 00:48:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24794 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229649AbhJSEsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 00:45:51 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED93C06161C;
-        Mon, 18 Oct 2021 21:43:39 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id v8so12396858pfu.11;
-        Mon, 18 Oct 2021 21:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LFH55MUDTWph2zfWxBLDmD2A2hWHaeINGUWcGNTepAw=;
-        b=g7dBDr7PfFckDM+mqmoSLH10uPl32t/Pgwdm7hBYp0UqdbULKTF68hrJqv9JsgkFBI
-         DXn2cdfx1ux2RtizwPzP+EFEkHWN5U7VZB3oZ9tXsGTbX0BxGdNyLar811zgbubeBX7T
-         yeO42LRs+UGQ1Po+r8zks8z0CpKLrPU3FBGJb8gCjXMig3Vb1D5+nCAe5U7gl7jM+9di
-         uC4yGOQ6exwGOA2kHxTSFEuekXwjCeKcjCSglBzYTwF+rd1PD4WhZOxyWmgqWode8Jkk
-         7+nT2XkCkasa/Mg3okDoKsqjS/RdIF60p2h1KdcD78/mce5BY+/lTPn4E/pXw0R7VxiD
-         oA3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LFH55MUDTWph2zfWxBLDmD2A2hWHaeINGUWcGNTepAw=;
-        b=2ZxXChTiI0deGWMBdj4rrnmgEcyeqb6kAh1K9SSTIEHYwq27mDhYupnHM9m37Eum7/
-         uCBLz1/K6jipd7gHBKxGHTdDbB3qQVcZgQy/odACfp48aNIsdKZwbKVEpJUnNwr3Lv5I
-         YkSMAKNsUEaSC1E7a5zZhfCBL8FOHAkZB9Yub9hNKpuZNJbmGBprAm0FwYIQv96YpO8f
-         UNSMPxHT03w4s1+AXSyeP/Q0FhNXMOJqjgchjvLR+yhI2ICfQV9EXUvFiPxU+o9xcYgk
-         GgjYVG/tQomBN8dfocpg5d1Xr7TQIpW2UOVD4M772JlHJh3LECz5UAWcXK1nY/4JMbRA
-         tz4Q==
-X-Gm-Message-State: AOAM531zoSMSTg2mC1Z570DIpZBtbm+5byzsTUjVw+eYJhyHYA9aLyT8
-        cbDN9cMVakyNR3AlbdKlCwTgDXsQYrkBNt7i30A=
-X-Google-Smtp-Source: ABdhPJyoTtgAxuyN2+TeP7YU5nBJUGFw28pm3HxWILjaCZ07rIB9BWLlUHelBpPgTqUa0OfJCkpV2/EFzU5AqiAN91A=
-X-Received: by 2002:a05:6a00:17a6:b0:44d:df1f:5626 with SMTP id
- s38-20020a056a0017a600b0044ddf1f5626mr7138670pfg.59.1634618618954; Mon, 18
- Oct 2021 21:43:38 -0700 (PDT)
+        Tue, 19 Oct 2021 00:48:38 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19J0lkBd030356;
+        Tue, 19 Oct 2021 00:46:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=F3NvIPovc58gvUpLCRwP+4Md0M1oXII9/E8QXzN7mWs=;
+ b=LZbidHJ+StCsuocwR0KDtqy1lUQt/+ZKv8a1lnZmkccWPjtNmDbDzBwkEzlQt4eY7fnm
+ 1yidhqQZgAAnEgDR45o6FE2wLkSHVZQOWIB6btsqR3jXpZir/713WRgTWtWgX7MrGVnr
+ v4SHavS/arMwVvOZTLwSM8PpeasQCpbFknfQUiAX9xruwmd8LRoPUzbEaf0D/XAyVOPW
+ dhRGpOv5vB5WJbNHEc2vnxzW57KMjC0PapqrZloWQSoo7YRC7dfDVxGL74+kUocaoQiO
+ pSctcxCl+xmFZCiTUX2OX/LCjfC9oEB9Dsbp/mJIcOo0PWxlS2JutQnB4B6Tes416T+/ /A== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bsksruab7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 00:46:05 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19J4hrO1030769;
+        Tue, 19 Oct 2021 04:46:03 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bqpc9mxga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 04:46:03 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19J4k0v263766790
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 04:46:01 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B3369A405B;
+        Tue, 19 Oct 2021 04:46:00 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD3F0A405C;
+        Tue, 19 Oct 2021 04:45:58 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 19 Oct 2021 04:45:58 +0000 (GMT)
+Date:   Tue, 19 Oct 2021 10:15:57 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Nathan Lynch <nathanl@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+        valentin.schneider@arm.com, peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, clg@kaod.org
+Subject: Re: [PATCH v2] powerpc/smp: do not decrement idle task preempt count
+ in CPU offline
+Message-ID: <20211019044557.GK2004@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20211015173902.2278118-1-nathanl@linux.ibm.com>
 MIME-Version: 1.0
-References: <20211015090353.31248-1-zhouchengming@bytedance.com>
- <CAADnVQ+A5LdWQTXFugNTceGcz_biV-uEJma4oT5UJKeHQBHQPw@mail.gmail.com>
- <6d7246b6-195e-ee08-06b1-2d1ec722e7b2@bytedance.com> <CAADnVQKG5=qVSjZGzHEc0ijwiYABVCU1uc8vOQ-ZLibhpW--Hg@mail.gmail.com>
- <b8f6c2f6-1b07-9306-46da-5ab170a125f9@bytedance.com> <CAADnVQJpcFXVE1j5aEdeyCoBZytzytiYP+3AwQxtWmNj6q-kNQ@mail.gmail.com>
- <36b27bba-e20b-8fd4-1436-d2d4c0e86896@bytedance.com>
-In-Reply-To: <36b27bba-e20b-8fd4-1436-d2d4c0e86896@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 18 Oct 2021 21:43:27 -0700
-Message-ID: <CAADnVQ+ijmng_s1EP_qTG3Xsvg6v5EWLvP9PTFEH0vLnyJUtRg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] bpf: use count for prealloc hashtab too
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20211015173902.2278118-1-nathanl@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: QyzmVIuTEKulrvgkkm_j2sQprhgxj-6Z
+X-Proofpoint-ORIG-GUID: QyzmVIuTEKulrvgkkm_j2sQprhgxj-6Z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_07,2021-10-18_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ spamscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0
+ priorityscore=1501 mlxlogscore=999 suspectscore=0 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110190026
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 9:31 PM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> =E5=9C=A8 2021/10/19 =E4=B8=8A=E5=8D=8811:45, Alexei Starovoitov =E5=86=
-=99=E9=81=93:
-> > On Mon, Oct 18, 2021 at 8:14 PM Chengming Zhou
-> > <zhouchengming@bytedance.com> wrote:
-> >>
-> >> =E5=9C=A8 2021/10/19 =E4=B8=8A=E5=8D=889:57, Alexei Starovoitov =E5=86=
-=99=E9=81=93:
-> >>> On Sun, Oct 17, 2021 at 10:49 PM Chengming Zhou
-> >>> <zhouchengming@bytedance.com> wrote:
-> >>>>
-> >>>> =E5=9C=A8 2021/10/16 =E4=B8=8A=E5=8D=883:58, Alexei Starovoitov =E5=
-=86=99=E9=81=93:
-> >>>>> On Fri, Oct 15, 2021 at 11:04 AM Chengming Zhou
-> >>>>> <zhouchengming@bytedance.com> wrote:
-> >>>>>>
-> >>>>>> We only use count for kmalloc hashtab not for prealloc hashtab, be=
-cause
-> >>>>>> __pcpu_freelist_pop() return NULL when no more elem in pcpu freeli=
-st.
-> >>>>>>
-> >>>>>> But the problem is that __pcpu_freelist_pop() will traverse all CP=
-Us and
-> >>>>>> spin_lock for all CPUs to find there is no more elem at last.
-> >>>>>>
-> >>>>>> We encountered bad case on big system with 96 CPUs that alloc_htab=
-_elem()
-> >>>>>> would last for 1ms. This patch use count for prealloc hashtab too,
-> >>>>>> avoid traverse and spin_lock for all CPUs in this case.
-> >>>>>>
-> >>>>>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> >>>>>
-> >>>>> It's not clear from the commit log what you're solving.
-> >>>>> The atomic inc/dec in critical path of prealloc maps hurts performa=
-nce.
-> >>>>> That's why it's not used.
-> >>>>>
-> >>>> Thanks for the explanation, what I'm solving is when hash table hasn=
-'t free
-> >>>> elements, we don't need to call __pcpu_freelist_pop() to traverse an=
-d
-> >>>> spin_lock all CPUs. The ftrace output of this bad case is below:
-> >>>>
-> >>>>  50)               |  htab_map_update_elem() {
-> >>>>  50)   0.329 us    |    _raw_spin_lock_irqsave();
-> >>>>  50)   0.063 us    |    lookup_elem_raw();
-> >>>>  50)               |    alloc_htab_elem() {
-> >>>>  50)               |      pcpu_freelist_pop() {
-> >>>>  50)   0.209 us    |        _raw_spin_lock();
-> >>>>  50)   0.264 us    |        _raw_spin_lock();
-> >>>
-> >>> This is LRU map. Not hash map.
-> >>> It will grab spin_locks of other cpus
-> >>> only if all previous cpus don't have free elements.
-> >>> Most likely your map is actually full and doesn't have any free elems=
-.
-> >>> Since it's an lru it will force free an elem eventually.
-> >>>
-> >>
-> >> Maybe I missed something, the map_update_elem function of LRU map is
-> >> htab_lru_map_update_elem() and the htab_map_update_elem() above is the
-> >> map_update_elem function of hash map.
-> >> Because of the implementation of percpu freelist used in hash map, it
-> >> will spin_lock all other CPUs when there is no free elements.
-> >
-> > Ahh. Right. Then what's the point of optimizing the error case
-> > at the expense of the fast path?
-> >
->
-> Yes, this patch only optimized the very bad case that no free elements le=
-ft,
-> and add atomic operation in the fast path. Maybe the better workaround is=
- not
-> allowing full hash map in our case or using LRU map?
+* Nathan Lynch <nathanl@linux.ibm.com> [2021-10-15 12:39:02]:
 
-No idea, since you haven't explained your use case.
+> With PREEMPT_COUNT=y, when a CPU is offlined and then onlined again, we
+> get:
+> 
+> BUG: scheduling while atomic: swapper/1/0/0x00000000
+> no locks held by swapper/1/0.
+> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.15.0-rc2+ #100
+> Call Trace:
+>  dump_stack_lvl+0xac/0x108
+>  __schedule_bug+0xac/0xe0
+>  __schedule+0xcf8/0x10d0
+>  schedule_idle+0x3c/0x70
+>  do_idle+0x2d8/0x4a0
+>  cpu_startup_entry+0x38/0x40
+>  start_secondary+0x2ec/0x3a0
+>  start_secondary_prolog+0x10/0x14
+> 
+> This is because powerpc's arch_cpu_idle_dead() decrements the idle task's
+> preempt count, for reasons explained in commit a7c2bb8279d2 ("powerpc:
+> Re-enable preemption before cpu_die()"), specifically "start_secondary()
+> expects a preempt_count() of 0."
+> 
+> However, since commit 2c669ef6979c ("powerpc/preempt: Don't touch the idle
+> task's preempt_count during hotplug") and commit f1a0a376ca0c ("sched/core:
+> Initialize the idle task with preemption disabled"), that justification no
+> longer holds.
+> 
+> The idle task isn't supposed to re-enable preemption, so remove the
+> vestigial preempt_enable() from the CPU offline path.
+> 
+> Tested with pseries and powernv in qemu, and pseries on PowerVM.
+> 
+> Fixes: 2c669ef6979c ("powerpc/preempt: Don't touch the idle task's preempt_count during hotplug")
+> Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
 
-> But the problem of spinlock contention also exist even when the map is no=
-t full,
-> like some CPUs run out of its freelist but other CPUs seldom used, then h=
-ave to
-> grab those CPUs' spinlock to get free element.
+Looks good to me.
 
-In theory that would be correct. Do you see it in practice?
-Please describe the use case.
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-> Should we change the current implementation of percpu freelist to percpu =
-lockless freelist?
+> ---
+> 
+> Notes:
+>     Changes since v1:
+>     
+>     - remove incorrect Fixes: tag, add Valentin's r-b.
+> 
+>  arch/powerpc/kernel/smp.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> index 9cc7d3dbf439..605bab448f84 100644
+> --- a/arch/powerpc/kernel/smp.c
+> +++ b/arch/powerpc/kernel/smp.c
+> @@ -1730,8 +1730,6 @@ void __cpu_die(unsigned int cpu)
+> 
+>  void arch_cpu_idle_dead(void)
+>  {
+> -	sched_preempt_enable_no_resched();
+> -
+>  	/*
+>  	 * Disable on the down path. This will be re-enabled by
+>  	 * start_secondary() via start_secondary_resume() below
+> -- 
+> 2.31.1
+> 
 
-Like llist.h ? That was tried already and for typical hash map usage
-it's slower than percpu free list.
-Many progs still do a lot of hash map update/delete on all cpus at once.
-That is the use case hashmap optimized for.
-Please see commit 6c9059817432 ("bpf: pre-allocate hash map elements")
-that also lists different alternative algorithms that were benchmarked.
+-- 
+Thanks and Regards
+Srikar Dronamraju
