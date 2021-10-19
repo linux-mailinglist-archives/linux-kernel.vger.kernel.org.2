@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D793433611
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244D1433612
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235688AbhJSMiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
+        id S235693AbhJSMiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhJSMh6 (ORCPT
+        with ESMTP id S235675AbhJSMiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:37:58 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EDCC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:45 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id o24-20020a05600c511800b0030d9da600aeso2871488wms.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:45 -0700 (PDT)
+        Tue, 19 Oct 2021 08:38:00 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC76C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:47 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r10so47429958wra.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VbpSYYhmqSApsIZymBiS9kQ5AGKVcFL0cEBHXXx/c/g=;
-        b=al+tSTDHoXlry3+FtxyhMGAW3vvkEHur8y0NBhQ5vvE7J8+D3fekzzada/dvZSqVyY
-         prFm/zyno2djtaUN+SIW0d3f1aowuExTreRAyN1I5xruIVC40q5KScp8Ryn9EvrasN/m
-         mruE1JnI3Nwt+vf6eKzb/NqH1R33WssipYNOBd9lS1taNxhgUTQw+7o0Tq0ztTvu4urn
-         6hAsoJYLsTkgiUmbGcH3Mvc0AWbYxMo97hfGDdNXiWHzNSnivbvQ8cQLhYDWgmaKlglz
-         tRNbgoIcHDqXVB/ZOR5wYih9phWxWRLdYXaHCFdscJr1BHZXFKDmghe2OYAvBthvTQ87
-         zTeA==
+        bh=vPYYr4pBVMPRz0sH/CFJMsTMh+sCd0pG6JGHIgm2CnE=;
+        b=BU6jS2CFgNe2tVS9DHn4hURdraVplVhTF5ENa+SNzZGYCi9hnduO37uDV0vxwiHLvy
+         Z5nJvvw8rZPokd7J4/m91Cd59CnM4ruzB09N2+vcif4ksWrG4CjwQY8H2EOy2bwOZG+S
+         AY6DkNa6p/SIKPW2GRYorAot0hrwzj+T96T2xuFuW3RdWxgLgSpdAAB7vkZyPz2enT/C
+         VcNEYMns7uCOQvVxhQFJEtxGheP/omEJ8eYUySVhDeAFL86fncNhFKi41EgeMc5t+0Jd
+         S+9AAHrumTWftgy7KU0CEyqhjT7/cMTkgpMKUNvOyARCZKRd1X5qSsB3FWINRwoqt96j
+         9jdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=VbpSYYhmqSApsIZymBiS9kQ5AGKVcFL0cEBHXXx/c/g=;
-        b=k3b2SYplWnu2AAYcRF/rpxZwGxH5pJII1bupoeZizvUkemxkj2eTOGyd14hB6gRv6V
-         jTIJQU0KIF0StoRx1kSV2n2Qm8v8oOiVJsKAi1cUxJm8ibYYHeIvFVMjyyBG8aEinKeA
-         eQCQl3h2jA4zNPEew6vsBKEPL/ilcVZe45jkKpgWGimuGAUYnAzzqqrfJHXMFxdUHzEt
-         HRMj5lxMFkck0XEczMYUJ+njBcWLXp/n22hOZjljkUDnNx4X8mL+8+sV3rBwkqp/9boA
-         CaWQs+NQ5lvHVh6FF8ZGkYN0bpEQG/u0y1VZdFGXe3o/gw1sPwijwT1E6uKebNbN9pMf
-         idJw==
-X-Gm-Message-State: AOAM531ns53AXar+CGPHC1tH43boE6OWJvYbCG2Fiq1JlTFI4D/CCT04
-        ye4Nm9RrAiZP3ITHNP/HiPjCu5Ql/1+rHg==
-X-Google-Smtp-Source: ABdhPJxaSVhRJ9gd1EcYJ76L8tpP0hrqEmOMWyioEik9uwiv+MGHA+f+LDyNji+Oi7wTb70/DVBZGw==
-X-Received: by 2002:a1c:751a:: with SMTP id o26mr5915739wmc.94.1634646944360;
-        Tue, 19 Oct 2021 05:35:44 -0700 (PDT)
+        bh=vPYYr4pBVMPRz0sH/CFJMsTMh+sCd0pG6JGHIgm2CnE=;
+        b=TjPVgAcX6ez1TDjEDK8N2XMM8yDPBU2l6pFI6b+o6Xk2MRY88ld48ws43KC4qQ0gTO
+         TNnhW3zJCRq4nQc+PU2VwiLeKwVNZzYrLLn/mlZnv9eIaQQl+f/jVvX9X5Lu0VVAhJfs
+         +qAsFOkoQDvUOIJTLQqmbfQm4drIZEfiHIsvU1ByPegNlOle0N1M1BM5zmrbNcmrxqun
+         KahKlYyZEEtfd7OJ2+tBK+M0tbHlyjVtb2ySdmCqLCLU138p3QLSQLgspHHO+SfXVA7Y
+         cAVZ6gec9maDOCnVQxSTgAfnUtsptt1Bb7oAgXdxqr8DdE1744wQRDHweotZdQFB+v4/
+         ZPoA==
+X-Gm-Message-State: AOAM533CAoQtuJ3klQU4DvfhJQ+4sG4IjWZuzZ18KS5XGDiX+4K7SO7W
+        VbR8TbR4htgg1g9bfrFFru5Xupg9x6pT+A==
+X-Google-Smtp-Source: ABdhPJzfju6T2SJlhhj6AC1MjA8qgin7H2pL7AP7YSXjCF7hTmEMIbOu3lssecNLmVTHUnOQ++NsSA==
+X-Received: by 2002:a5d:6d51:: with SMTP id k17mr43102683wri.233.1634646946042;
+        Tue, 19 Oct 2021 05:35:46 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:f:6020:6dc7:9883:a79c:5be9])
-        by smtp.gmail.com with ESMTPSA id p18sm15263683wrn.41.2021.10.19.05.35.42
+        by smtp.gmail.com with ESMTPSA id p18sm15263683wrn.41.2021.10.19.05.35.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 05:35:43 -0700 (PDT)
+        Tue, 19 Oct 2021 05:35:45 -0700 (PDT)
 From:   Vincent Guittot <vincent.guittot@linaro.org>
 To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
         mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
         tim.c.chen@linux.intel.com
 Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v3 1/5] sched/fair: Account update_blocked_averages in newidle_balance cost
-Date:   Tue, 19 Oct 2021 14:35:33 +0200
-Message-Id: <20211019123537.17146-2-vincent.guittot@linaro.org>
+Subject: [PATCH v3 2/5] sched/fair: Skip update_blocked_averages if we are defering load balance
+Date:   Tue, 19 Oct 2021 14:35:34 +0200
+Message-Id: <20211019123537.17146-3-vincent.guittot@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211019123537.17146-1-vincent.guittot@linaro.org>
 References: <20211019123537.17146-1-vincent.guittot@linaro.org>
@@ -63,69 +63,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The time spent to update the blocked load can be significant depending of
-the complexity fo the cgroup hierarchy. Take this time into account in
-the cost of the 1st load balance of a newly idle cpu.
+In newidle_balance(), the scheduler skips load balance to the new idle cpu
+when the 1st sd of this_rq is:
 
-Also reduce the number of call to sched_clock_cpu() and track more actual
-work.
+   this_rq->avg_idle < sd->max_newidle_lb_cost
+
+Doing a costly call to update_blocked_averages() will not be useful and
+simply adds overhead when this condition is true.
+
+Check the condition early in newidle_balance() to skip
+update_blocked_averages() when possible.
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
 ---
- kernel/sched/fair.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ kernel/sched/fair.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 87db481e8a56..c0145677ee99 100644
+index c0145677ee99..c4c36865321b 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10840,9 +10840,9 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- {
- 	unsigned long next_balance = jiffies + HZ;
- 	int this_cpu = this_rq->cpu;
-+	u64 t0, t1, curr_cost = 0;
- 	struct sched_domain *sd;
- 	int pulled_task = 0;
--	u64 curr_cost = 0;
+@@ -10873,17 +10873,20 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	 */
+ 	rq_unpin_lock(this_rq, rf);
  
- 	update_misfit_status(NULL, this_rq);
++	rcu_read_lock();
++	sd = rcu_dereference_check_sched_domain(this_rq->sd);
++
+ 	if (this_rq->avg_idle < sysctl_sched_migration_cost ||
+-	    !READ_ONCE(this_rq->rd->overload)) {
++	    !READ_ONCE(this_rq->rd->overload) ||
++	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
  
-@@ -10887,11 +10887,13 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+-		rcu_read_lock();
+-		sd = rcu_dereference_check_sched_domain(this_rq->sd);
+ 		if (sd)
+ 			update_next_balance(sd, &next_balance);
+ 		rcu_read_unlock();
+ 
+ 		goto out;
+ 	}
++	rcu_read_unlock();
  
  	raw_spin_rq_unlock(this_rq);
  
-+	t0 = sched_clock_cpu(this_cpu);
- 	update_blocked_averages(this_cpu);
-+
- 	rcu_read_lock();
- 	for_each_domain(this_cpu, sd) {
- 		int continue_balancing = 1;
--		u64 t0, domain_cost;
-+		u64 domain_cost;
- 
- 		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
- 			update_next_balance(sd, &next_balance);
-@@ -10899,17 +10901,18 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 		}
- 
- 		if (sd->flags & SD_BALANCE_NEWIDLE) {
--			t0 = sched_clock_cpu(this_cpu);
- 
- 			pulled_task = load_balance(this_cpu, this_rq,
- 						   sd, CPU_NEWLY_IDLE,
- 						   &continue_balancing);
- 
--			domain_cost = sched_clock_cpu(this_cpu) - t0;
-+			t1 = sched_clock_cpu(this_cpu);
-+			domain_cost = t1 - t0;
- 			if (domain_cost > sd->max_newidle_lb_cost)
- 				sd->max_newidle_lb_cost = domain_cost;
- 
- 			curr_cost += domain_cost;
-+			t0 = t1;
- 		}
- 
- 		update_next_balance(sd, &next_balance);
 -- 
 2.17.1
 
