@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A37433C16
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DE9433C19
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234223AbhJSQ1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:27:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50752 "EHLO mail.kernel.org"
+        id S233497AbhJSQ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:28:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229991AbhJSQ1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:27:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B95DC61052;
-        Tue, 19 Oct 2021 16:25:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634660721;
-        bh=95zfq3H7AzOVXaStxwjek0lilnUiI4UGTpiGsI5GA68=;
+        id S229774AbhJSQ2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:28:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C08C61052;
+        Tue, 19 Oct 2021 16:26:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634660764;
+        bh=JTD0yxhNiwoaimOyKxDh67eqXCwBhnj/uYevNf6Vv3Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V81ZepDcu2b0xZatBmX5hpojvnURXk3S52VuM9dZX+hCyIf6oTvg/NKQ2N8K7TsVe
-         Blia5F0gDY7c9dwHnwoGCGDCqKKWHu2vW3miaJSRtrq6VW5y/5c6iRQ46rRXCqY+TH
-         axCjMSE6G9g9IXCXcrFJPHOX3WSFWsc7pm4maxMQ=
-Date:   Tue, 19 Oct 2021 18:25:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
-        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YW7xbnrqfzifa9OC@kroah.com>
-References: <YWeR4moCRh+ZHOmH@T590>
- <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
- <YWjCpLUNPF3s4P2U@T590>
- <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
- <YWk9e957Hb+I7HvR@T590>
- <YWm68xUnAofop3PZ@bombadil.infradead.org>
- <YWq3Z++uoJ/kcp+3@T590>
- <YW3LuzaPhW96jSBK@bombadil.infradead.org>
- <YW4uwep3BCe9Vxq8@T590>
- <YW7pQKi8AlV+ZemU@bombadil.infradead.org>
+        b=rfqMZQs6S02wfD8Lpp8XLsn1KTOo22eHxr2zRCkJ5Rx0usL24hdRRybMsoG+uo35G
+         ACfcoy2t3M3NjUr35CHgJ2dhLnDVvI8KJW3Ew2w0ykiySlRrcjRcGwAdxAsO1HEN7Y
+         7/ufr5N2LivOQxB3UnL0WBKVuSLT+++WBLT62149x183uP05AXTO71mZ3mmina9P0N
+         23Vh8IX9t3poHfgli5j8e41bzbF5AHqHrd8W7hP8MCPyjbHWyBQAyLjT2i4yL4aCJD
+         s22FNKlQ7QKgoM/YvdzwS8Zpw7uS8luNYqVf3YrScnBKWg8/d8ccVx72fdnoSP7kTG
+         EZ6vGSIJjBzdA==
+Date:   Tue, 19 Oct 2021 21:55:59 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>
+Subject: Re: [PATCH v2 04/11] drm/msm/disp/dpu1: Add DSC support in RM
+Message-ID: <YW7xlyuIq1vh4Fg2@matsya>
+References: <20211007070900.456044-1-vkoul@kernel.org>
+ <20211007070900.456044-5-vkoul@kernel.org>
+ <d249d880-1137-d5cc-6d96-83a730f7de29@linaro.org>
+ <YW7koEt85EVMcUDs@matsya>
+ <CAA8EJprNTUrh66yqaOCoReWdwLcBc9LfMm=WNDi54o9nzd8RRA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YW7pQKi8AlV+ZemU@bombadil.infradead.org>
+In-Reply-To: <CAA8EJprNTUrh66yqaOCoReWdwLcBc9LfMm=WNDi54o9nzd8RRA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 08:50:24AM -0700, Luis Chamberlain wrote:
-> So do you want to take the position:
+On 19-10-21, 18:52, Dmitry Baryshkov wrote:
+> On Tue, 19 Oct 2021 at 18:30, Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > On 14-10-21, 17:11, Dmitry Baryshkov wrote:
+> > > On 07/10/2021 10:08, Vinod Koul wrote:
+> >
+> > > > +static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+> > > > +                          struct dpu_global_state *global_state,
+> > > > +                          struct drm_encoder *enc)
+> > > > +{
+> > > > +   struct msm_drm_private *priv;
+> > > > +
+> > > > +   priv = enc->dev->dev_private;
+> > > > +
+> > > > +   if (!priv)
+> > > > +           return -EIO;
+> > > > +
+> > > > +   /* check if DSC is supported */
+> > > > +   if (!priv->dsc)
+> > > > +           return 0;
+> > > > +
+> > > > +   /* check if DSC 0 & 1 and allocated or not */
+> > > > +   if (global_state->dsc_to_enc_id[0] || global_state->dsc_to_enc_id[1]) {
+> > > > +           DPU_ERROR("DSC 0|1 is already allocated\n");
+> > > > +           return -EIO;
+> > > > +   }
+> > > > +
+> > > > +   global_state->dsc_to_enc_id[0] = enc->base.id;
+> > > > +   global_state->dsc_to_enc_id[1] = enc->base.id;
+> > >
+> > > Still hardcoding DSC_0 and DSC_1.
+> >
+> > Yes!
+> >
+> > > Could you please add num_dsc to the topology and allocate the requested
+> > > amount of DSC blocks? Otherwise this would break for the DSI + DP case.
+> >
+> > It wont as we check for dsc and dont proceed, so it cant make an impact
+> > in non dsc case.
+> >
+> > Nevertheless I agree with you, so I am making it based on dsc defined in
+> > topology. Do we need additional field for num_dsc in topology, num_enc
+> > should be it, right?
 > 
-> Hey driver authors: you cannot use any shared lock on module removal and
-> on sysfs ops?
+> I'd vote for the separate num_dsc.
 
-Yes, I would not recommend using such a lock at all.  sysfs operations
-happen on a per-device basis, so you can lock the device structure.
-Module removal happens on a driver basis, and I have no idea what you
-want to lock there, but odds are it is NOT shared with your per-device
-structures either, right?
+Okay will update... will move up topology patch up in the order for that
+as well
 
-If so, then yes, that is a bug, but a very rare one as drivers should do
-almost nothing except register/unregister_driver() in their module
-init/exit calls.
-
-zram is not a "normal" driver at all here, so fixing this type of
-problem up should be done in the zram code, it is not a generic
-module/sysfs issue at all.
-
-thanks,
-
-greg k-h
+-- 
+~Vinod
