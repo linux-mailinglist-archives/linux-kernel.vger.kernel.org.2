@@ -2,200 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9368432B6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 03:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDAB432B74
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 03:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233688AbhJSBN7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 21:13:59 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:55485 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhJSBN6 (ORCPT
+        id S230110AbhJSBX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 21:23:29 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:29777 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhJSBX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 21:13:58 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 19J1BQSc8013000, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 19J1BQSc8013000
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 19 Oct 2021 09:11:26 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 19 Oct 2021 09:11:26 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 18 Oct 2021 21:11:26 -0400
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Tue, 19 Oct 2021 09:11:26 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-CC:     Colin King <colin.king@canonical.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
-Thread-Topic: [PATCH][next] rtw89: Fix potential dereference of the null
- pointer sta
-Thread-Index: AQHXwduziBNegQ3KtE6tzEeaYjpkJqvX/pCwgACwb0mAANdosA==
-Date:   Tue, 19 Oct 2021 01:11:25 +0000
-Message-ID: <abc2e3a274694d48aa468491df334349@realtek.com>
-References: <20211015154530.34356-1-colin.king@canonical.com>
-        <9cc681c217a449519aee524b35e6b6bc@realtek.com>
- <87pms2ttvi.fsf@codeaurora.org>
-In-Reply-To: <87pms2ttvi.fsf@codeaurora.org>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.188]
-x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/10/18_=3F=3F_11:09:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 18 Oct 2021 21:23:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634606477; x=1666142477;
+  h=subject:from:to:cc:references:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Zx89XVWdlmsCKxuiWsRLKdDqOfRlsYCYIwY3y4DKaYE=;
+  b=dZfohoTi/OLt/ASIv1zK8ExaFZeSl8pm+vhWZ+NrdcwOyS+QfZf5zKq+
+   s7tgCfRBSvnijEToXorJ+Mi7ECT4+ImSCk/7i8A9bAkBvgwFArtLxMoeH
+   DV1bzlue6TKDOLOsiiZ/2ajUbwEQlUzMEK0BB7SwAxzUWIKXHDuBaCqDx
+   s=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 18 Oct 2021 18:21:16 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 18:21:15 -0700
+Received: from [10.47.233.232] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Mon, 18 Oct 2021
+ 18:21:15 -0700
+Subject: Re: [PATCH v2] thermal: Fix a NULL pointer dereference
+From:   Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        David Collins <quic_collinsd@quicinc.com>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        <stable@vger.kernel.org>
+References: <1631041289-11804-1-git-send-email-quic_subbaram@quicinc.com>
+ <003252f2-510f-e9ea-0032-6034f26aad11@linaro.org>
+ <16af9946-b662-0bbf-206f-278b7ef98123@quicinc.com>
+Message-ID: <8cda69a6-907b-e09e-ba64-011b0216a4df@quicinc.com>
+Date:   Mon, 18 Oct 2021 18:21:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 10/19/2021 00:52:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 166808 [Oct 18 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/19/2021 00:54:00
+In-Reply-To: <16af9946-b662-0bbf-206f-278b7ef98123@quicinc.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/8/21 12:50 PM, Subbaraman Narayanamurthy wrote:
+> On 10/6/21 4:08 AM, Daniel Lezcano wrote:
+>> On 07/09/2021 21:01, Subbaraman Narayanamurthy wrote:
+>>> of_parse_thermal_zones() parses the thermal-zones node and registers a
+>>> thermal_zone device for each subnode. However, if a thermal zone is
+>>> consuming a thermal sensor and that thermal sensor device hasn't probed
+>>> yet, an attempt to set trip_point_*_temp for that thermal zone device
+>>> can cause a NULL pointer dereference. Fix it.
+>>>
+>>>  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
+>>>  ...
+>>>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+>> I'm still not convinced by the changes.
+>>
+>> Could please tell the commit-id where this is happening and give the
+>> procedure to reproduce the bug ?
+>>
+> Here is the commit id where this problem was reported.
+> https://android.googlesource.com/kernel/common/+/997d24a932a9b6e2040f39a8dd76e873e6519a1c
+>
+> BTW, this problem was not 100% reproducible but seems to be a race condition when vendor modules are loaded and thermal HAL or userspace thermal SW is attempting to set trip points on one of the thermal zones and that sensor driver supplying that thermal zone have not completed probing.
+>
+> I was able to reproduce the problem manually by disabling the pmk8350_adc_tm device in device tree which supplies to some thermal zone devices (e.g. xo-therm below).
+>
+> pmk8350_adc_tm: adc_tm@3400 {                                  
+>     compatible = "qcom,adc-tm7";                           
+>     reg = <0x3400>;                                        
+>     interrupts = <0x0 0x34 0x0 IRQ_TYPE_EDGE_RISING>;         
+>     interrupt-names = "threshold";                         
+>     #address-cells = <1>;                                  
+>     #size-cells = <0>;                                     
+>     #thermal-sensor-cells = <1>;                           
+>     status = "disabled"; /* This is what I've added to simulate the problem */                                  
+> };
+>
+> &thermal_zones {
+> ...
+>         xo-therm {                                                             
+>                 polling-delay-passive = <0>;                                   
+>                 polling-delay = <0>;                                           
+>                 thermal-sensors = <&pmk8350_adc_tm PMK8350_ADC7_AMUX_THM1_100K_PU>;
+>                 trips {
+>                     ...
+>                 };
+> };
+>
+> With this and reverting my change (which got picked up in internal tree), I can see this.
+>
+> /sys/class/thermal # cat thermal_zone87/type                                   
+> xo-therm
+>                                                                        
+> /sys/class/thermal # cd thermal_zone87                                         
+> /sys/devices/virtual/thermal/thermal_zone87 # ls                               
+> available_policies  cdev5_trip_point  mode               trip_point_4_hyst        
+> cdev0               cdev5_weight      offset             trip_point_4_temp        
+> cdev0_trip_point    cdev6             policy             trip_point_4_type        
+> cdev0_weight        cdev6_trip_point  power              trip_point_5_hyst        
+> cdev1               cdev6_weight      slope              trip_point_5_temp        
+> cdev10              cdev7             subsystem          trip_point_5_type        
+> cdev10_trip_point   cdev7_trip_point  sustainable_power  trip_point_6_hyst        
+> cdev10_weight       cdev7_weight      temp               trip_point_6_temp        
+> cdev1_trip_point    cdev8             trip_point_0_hyst  trip_point_6_type        
+> cdev1_weight        cdev8_trip_point  trip_point_0_temp  trip_point_7_hyst        
+> cdev2               cdev8_weight      trip_point_0_type  trip_point_7_temp        
+> cdev2_trip_point    cdev9             trip_point_1_hyst  trip_point_7_type        
+> cdev2_weight        cdev9_trip_point  trip_point_1_temp  trip_point_8_hyst        
+> cdev3               cdev9_weight      trip_point_1_type  trip_point_8_temp        
+> cdev3_trip_point    emul_temp         trip_point_2_hyst  trip_point_8_type        
+> cdev3_weight        integral_cutoff   trip_point_2_temp  type                  
+> cdev4               k_d               trip_point_2_type  uevent                
+> cdev4_trip_point    k_i               trip_point_3_hyst                        
+> cdev4_weight        k_po              trip_point_3_temp                        
+> cdev5               k_pu              trip_point_3_type
+>                         
+> /sys/devices/virtual/thermal/thermal_zone87 # cat trip_point_0_temp            
+> 125000                                                                         
+>
+> /sys/devices/virtual/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp  
+> [  184.290964][  T211] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+> [  184.300896][  T211] Mem abort info:                                         
+> [  184.304486][  T211]   ESR = 0x96000006                                      
+> [  184.308348][  T211]   EC = 0x25: DABT (current EL), IL = 32 bits            
+> [  184.314531][  T211]   SET = 0, FnV = 0                                      
+> [  184.318384][  T211]   EA = 0, S1PTW = 0                                     
+> [  184.322323][  T211] Data abort info:                                        
+> [  184.325993][  T211]   ISV = 0, ISS = 0x00000006                             
+> [  184.330655][  T211]   CM = 0, WnR = 0                                       
+> [  184.334425][  T211] user pgtable: 4k pages, 39-bit VAs, pgdp=000000081a7a2000
+> [  184.341750][  T211] [0000000000000020] pgd=000000081a7a7003, p4d=000000081a7a7003, pud=000000081a7a7003, pmd=0000000000000000
+> [  184.353359][  T211] Internal error: Oops: 96000006 [#1] PREEMPT SMP         
+> [  184.359797][  T211] Dumping ftrace buffer:                                  
+> [  184.364001][  T211]    (ftrace buffer empty)
+>
+> Hope this helps.
 
-> -----Original Message-----
-> From: kvalo=codeaurora.org@mg.codeaurora.org <kvalo=codeaurora.org@mg.codeaurora.org> On
-> Behalf Of Kalle Valo
-> Sent: Monday, October 18, 2021 8:12 PM
-> To: Pkshih <pkshih@realtek.com>
-> Cc: Colin King <colin.king@canonical.com>; David S . Miller <davem@davemloft.net>; Jakub
-> Kicinski <kuba@kernel.org>; linux-wireless@vger.kernel.org; netdev@vger.kernel.org;
-> kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
-> 
-> Pkshih <pkshih@realtek.com> writes:
-> 
-> >> -----Original Message-----
-> >> From: Colin King <colin.king@canonical.com>
-> >> Sent: Friday, October 15, 2021 11:46 PM
-> >> To: Kalle Valo <kvalo@codeaurora.org>; David S . Miller <davem@davemloft.net>; Jakub Kicinski
-> >> <kuba@kernel.org>; Pkshih <pkshih@realtek.com>; linux-wireless@vger.kernel.org;
-> >> netdev@vger.kernel.org
-> >> Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-> >> Subject: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
-> >>
-> >> From: Colin Ian King <colin.king@canonical.com>
-> >>
-> >> The pointer rtwsta is dereferencing pointer sta before sta is
-> >> being null checked, so there is a potential null pointer deference
-> >> issue that may occur. Fix this by only assigning rtwsta after sta
-> >> has been null checked. Add in a null pointer check on rtwsta before
-> >> dereferencing it too.
-> >>
-> >> Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
-> >> Addresses-Coverity: ("Dereference before null check")
-> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >> ---
-> >>  drivers/net/wireless/realtek/rtw89/core.c | 9 +++++++--
-> >>  1 file changed, 7 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/net/wireless/realtek/rtw89/core.c
-> >> b/drivers/net/wireless/realtek/rtw89/core.c
-> >> index 06fb6e5b1b37..26f52a25f545 100644
-> >> --- a/drivers/net/wireless/realtek/rtw89/core.c
-> >> +++ b/drivers/net/wireless/realtek/rtw89/core.c
-> >> @@ -1534,9 +1534,14 @@ static bool rtw89_core_txq_agg_wait(struct rtw89_dev *rtwdev,
-> >>  {
-> >>  	struct rtw89_txq *rtwtxq = (struct rtw89_txq *)txq->drv_priv;
-> >>  	struct ieee80211_sta *sta = txq->sta;
-> >> -	struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
-> >
-> > 'sta->drv_priv' is only a pointer, we don't really dereference the
-> > data right here, so I think this is safe. More, compiler can optimize
-> > this instruction that reorder it to the place just right before using.
-> > So, it seems like a false alarm.
-> >
-> >> +	struct rtw89_sta *rtwsta;
-> >>
-> >> -	if (!sta || rtwsta->max_agg_wait <= 0)
-> >> +	if (!sta)
-> >> +		return false;
-> >> +	rtwsta = (struct rtw89_sta *)sta->drv_priv;
-> >> +	if (!rtwsta)
-> >> +		return false;
-> >> +	if (rtwsta->max_agg_wait <= 0)
-> >>  		return false;
-> >>
-> >>  	if (rtwdev->stats.tx_tfc_lv <= RTW89_TFC_MID)
-> >
-> > I check the size of object files before/after this patch, and
-> > the original one is smaller.
-> >
-> >    text    data     bss     dec     hex filename
-> >   16781    3392       1   20174    4ece core-0.o  // original
-> >   16819    3392       1   20212    4ef4 core-1.o  // after this patch
-> >
-> > Do you think it is worth to apply this patch?
-> 
-> I think that we should apply the patch. Even though the compiler _may_
-> reorder the code, it might choose not to do that.
+Hi Daniel,
+Have you got a chance to look at this?
 
-Understand.
+Thanks,
+Subbaraman
 
-I have another way to fix this coverity warning, like:
-
-@@ -1617,7 +1617,7 @@ static bool rtw89_core_txq_agg_wait(struct rtw89_dev *rtwdev,
- {
-        struct rtw89_txq *rtwtxq = (struct rtw89_txq *)txq->drv_priv;
-        struct ieee80211_sta *sta = txq->sta;
--       struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
-+       struct rtw89_sta *rtwsta = sta ? (struct rtw89_sta *)sta->drv_priv : NULL;
-
-        if (!sta || rtwsta->max_agg_wait <= 0)
-                return false;
-
-Is this acceptable?
-It has a little redundant checking of 'sta', but the code looks clean.
-
-> 
-> Another question is that can txq->sta really be null? I didn't check the
-> code, but if it should be always set when the null check is not needed.
-> 
-
-It says
-
-* struct ieee80211_txq - Software intermediate tx queue
-* @sta: station table entry, %NULL for per-vif queue
-
-So, we need to check if 'sta' is NULL.
-
---
-Ping-Ke
+>
+>>>  ...
+>>>  Call trace:
+>>>   of_thermal_set_trip_temp+0x40/0xc4
+>>>   trip_point_temp_store+0xc0/0x1dc
+>>>   dev_attr_store+0x38/0x88
+>>>   sysfs_kf_write+0x64/0xc0
+>>>   kernfs_fop_write_iter+0x108/0x1d0
+>>>   vfs_write+0x2f4/0x368
+>>>   ksys_write+0x7c/0xec
+>>>   __arm64_sys_write+0x20/0x30
+>>>   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
+>>>   do_el0_svc+0x28/0xa0
+>>>   el0_svc+0x14/0x24
+>>>   el0_sync_handler+0x88/0xec
+>>>   el0_sync+0x1c0/0x200
+>>>
+>>> While at it, fix the possible NULL pointer dereference in other
+>>> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
+>>> of_thermal_get_trend().
+>>>
+>>> Cc: stable@vger.kernel.org
+>>> Suggested-by: David Collins <quic_collinsd@quicinc.com>
+>>> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+>>> ---
+>>> Changes for v2:
+>>> - Added checks in of_thermal_get_temp(), of_thermal_set_emul_temp(), of_thermal_get_trend().
+>>>
+>>>  drivers/thermal/thermal_of.c | 9 ++++++---
+>>>  1 file changed, 6 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+>>> index 6379f26..9233f7e 100644
+>>> --- a/drivers/thermal/thermal_of.c
+>>> +++ b/drivers/thermal/thermal_of.c
+>>> @@ -89,7 +89,7 @@ static int of_thermal_get_temp(struct thermal_zone_device *tz,
+>>>  {
+>>>  	struct __thermal_zone *data = tz->devdata;
+>>>  
+>>> -	if (!data->ops->get_temp)
+>>> +	if (!data->ops || !data->ops->get_temp)
+>>>  		return -EINVAL;
+>>>  
+>>>  	return data->ops->get_temp(data->sensor_data, temp);
+>>> @@ -186,6 +186,9 @@ static int of_thermal_set_emul_temp(struct thermal_zone_device *tz,
+>>>  {
+>>>  	struct __thermal_zone *data = tz->devdata;
+>>>  
+>>> +	if (!data->ops || !data->ops->set_emul_temp)
+>>> +		return -EINVAL;
+>>> +
+>>>  	return data->ops->set_emul_temp(data->sensor_data, temp);
+>>>  }
+>>>  
+>>> @@ -194,7 +197,7 @@ static int of_thermal_get_trend(struct thermal_zone_device *tz, int trip,
+>>>  {
+>>>  	struct __thermal_zone *data = tz->devdata;
+>>>  
+>>> -	if (!data->ops->get_trend)
+>>> +	if (!data->ops || !data->ops->get_trend)
+>>>  		return -EINVAL;
+>>>  
+>>>  	return data->ops->get_trend(data->sensor_data, trip, trend);
+>>> @@ -301,7 +304,7 @@ static int of_thermal_set_trip_temp(struct thermal_zone_device *tz, int trip,
+>>>  	if (trip >= data->ntrips || trip < 0)
+>>>  		return -EDOM;
+>>>  
+>>> -	if (data->ops->set_trip_temp) {
+>>> +	if (data->ops && data->ops->set_trip_temp) {
+>>>  		int ret;
+>>>  
+>>>  		ret = data->ops->set_trip_temp(data->sensor_data, trip, temp);
+>>>
 
