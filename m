@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D5B433450
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5623E433466
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbhJSLGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:06:03 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4004 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhJSLGB (ORCPT
+        id S235328AbhJSLJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235211AbhJSLJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:06:01 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HYW3g0d3Zz67yLV;
-        Tue, 19 Oct 2021 18:59:59 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 19 Oct 2021 13:03:45 +0200
-Received: from [10.47.85.98] (10.47.85.98) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 19 Oct
- 2021 12:03:43 +0100
-Subject: Re: [PATCH v2 03/21] perf pmu: Make pmu_sys_event_tables const.
-To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
-        "Jiri Olsa" <jolsa@redhat.com>, Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Sami Tolvanen" <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        Tue, 19 Oct 2021 07:09:05 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B54FC06161C;
+        Tue, 19 Oct 2021 04:06:53 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id e19so5353954ljk.12;
+        Tue, 19 Oct 2021 04:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tAD7zB8LM4f7YToBrIIqjU4Z5P1aP+J+3akIYooYFgI=;
+        b=iMsktpTc9SPawOT2NakNmiXvq50ESMo7mzuI1jCaBysrlgBv00bjDX4DC74IDX0p/B
+         IglEQEjsnbiXtKEm6Zf0FwxEH5OJmij/GKTFPdejO32sUW61IEVFjegxmb4BWA3tYzb4
+         ALLA/mo0JWxOme4cySkma44ncYG5SPScsVbS9me4eSvF008gRa5nUBwnYI61GZwzVUGA
+         CGdver6Za5JVZPGYjC6cEK/bL3kiGBW3ZMUZffBskeKLZBWthXF6ggAg+ZC5ruGpinpT
+         WA0A2yf/luRwP6PJOKyXLU73pYzH4BF7j/sn2sruVrcnEPGE56t8pxlGTLdWHUAp9ckI
+         sTrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tAD7zB8LM4f7YToBrIIqjU4Z5P1aP+J+3akIYooYFgI=;
+        b=x6wU+KGlCfrGj4ON2IgjbdfGBU0pG3YPu3rbl8QvJsU7yj9Nb90bWzGEVH2d6jVmk7
+         swHRsOCoBpZsgTmYLyx+D8OS4YThufzQypD/4i7wQuUgdo+6po735K6Uczf+kbnuCs25
+         StozQqgHnOaACFnWfK/o6hcA/1+DS3pHYVOutnNK7WoiHS1JN+d3LnRuJM0/jYEexFVh
+         CIVi+ru15yH5NJOqnW6ACjpddHffUZ/vx+xoCDTJhs2KbxuN8kLbuQ2zGq4D6saAqmGn
+         4uPWwk2blJLBL0bX1VDARfSGTilseVrQsSMs86ZWrtFfWjungv9uZsEgToyduDNnPgOq
+         /heQ==
+X-Gm-Message-State: AOAM530svpEps8APdjzG6LpyecqY+zctq2+u0GzKg1lBG+UmP7/keTor
+        ZzXPlcamrCDwAn6cdZyk/48=
+X-Google-Smtp-Source: ABdhPJyDg8JhJM+ACrmcGUWrMbttXSWDvW0F5ZT/zkT5/NpawPSvYfQ/Cb9JGS7Jdj2l9jPhGN8lhg==
+X-Received: by 2002:a05:651c:1589:: with SMTP id h9mr6215602ljq.151.1634641611570;
+        Tue, 19 Oct 2021 04:06:51 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id h25sm1911356ljg.24.2021.10.19.04.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 04:06:51 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 19 Oct 2021 13:06:49 +0200
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
+        Neil Brown <neilb@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Jacob Keller" <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        ToastC <mrtoastcheng@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Fabian Hemmer" <copy@copy.sh>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Denys Zagorui <dzagorui@cisco.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        "Sumanth Korikkar" <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Changbin Du <changbin.du@intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        Andrew Kilroy <andrew.kilroy@arm.com>
-CC:     Stephane Eranian <eranian@google.com>
-References: <20211015172132.1162559-1-irogers@google.com>
- <20211015172132.1162559-4-irogers@google.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <b6c28f0a-04fe-c00a-ea8d-b832bea304f0@huawei.com>
-Date:   Tue, 19 Oct 2021 12:06:32 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Christoph Hellwig <hch@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <20211019110649.GA1933@pc638.lan>
+References: <20211018114712.9802-1-mhocko@kernel.org>
+ <20211018114712.9802-3-mhocko@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20211015172132.1162559-4-irogers@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.98]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018114712.9802-3-mhocko@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/2021 18:21, Ian Rogers wrote:
-> Make lookup nature of data structures clearer through their type.
+> From: Michal Hocko <mhocko@suse.com>
 > 
-> Acked-by: Andi Kleen<ak@linux.intel.com>
-> Signed-off-by: Ian Rogers<irogers@google.com>
+> Dave Chinner has mentioned that some of the xfs code would benefit from
+> kvmalloc support for __GFP_NOFAIL because they have allocations that
+> cannot fail and they do not fit into a single page.
+> 
+> The larg part of the vmalloc implementation already complies with the
+> given gfp flags so there is no work for those to be done. The area
+> and page table allocations are an exception to that. Implement a retry
+> loop for those.
+> 
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
+> ---
+>  mm/vmalloc.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 7455c89598d3..3a5a178295d1 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2941,8 +2941,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  	else if (!(gfp_mask & (__GFP_FS | __GFP_IO)))
+>  		flags = memalloc_noio_save();
+>  
+> -	ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+> +	do {
+> +		ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+>  			page_shift);
+> +	} while ((gfp_mask & __GFP_NOFAIL) && (ret < 0));
+>  
+>  	if ((gfp_mask & (__GFP_FS | __GFP_IO)) == __GFP_IO)
+>  		memalloc_nofs_restore(flags);
+> @@ -3032,6 +3034,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+>  		warn_alloc(gfp_mask, NULL,
+>  			"vmalloc error: size %lu, vm_struct allocation failed",
+>  			real_size);
+> +		if (gfp_mask && __GFP_NOFAIL)
+> +			goto again;
+>  		goto fail;
+>  	}
+>  
+> -- 
+> 2.30.2
+> 
+I have checked the vmap code how it aligns with the __GFP_NOFAIL flag.
+To me it looks correct from functional point of view.
 
-Reviewed-by: John Garry <john.garry@huawei.com>
+There is one place though it is kasan_populate_vmalloc_pte(). It does
+not use gfp_mask, instead it directly deals with GFP_KERNEL for its
+internal purpose. If it fails the code will end up in loping in the
+__vmalloc_node_range().
+
+I am not sure how it is important to pass __GFP_NOFAIL into KASAN code.
+
+Any thoughts about it?
+
+--
+Vlad Rezki
