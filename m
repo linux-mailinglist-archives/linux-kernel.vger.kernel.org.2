@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DB34334F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B33F4334F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235374AbhJSLqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:46:32 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46464 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230097AbhJSLqb (ORCPT
+        id S230361AbhJSLrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230129AbhJSLrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:46:31 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JALNpp031874;
-        Tue, 19 Oct 2021 07:44:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=13eh0d8iyhPRVBSdniiQNSJ570kWDdMu7sqd7IfWCXM=;
- b=UXViKJZ3+6ydZTcj7i5s9v5CNjlnahVN929WjSmI9K56Ac38w90OrTcve9Nm7D78/vGB
- SLPSYksuU3MBOaKqEC79J6F/mpNnyVHuMT/oKNrIHXEdIrqRYs0Qqta9eCWne6vrD+br
- kZMdJUKJl0GDrtcvBOpEmIz1FvBfCB3C7MBxqZ8v4UJwB8KnhGYvZJGGE6+y8/gnAAhP
- lt+1FdaHpMkxiQOwn0nLXjEp+mA7GN9AZBg73d9hIhfnK+Yr95iNxaxTy8vNSbG4Agpt
- IXXXekV9JFbGBu3gSXIvBUSCCGR3K07woittnTn5dqpeqmKeWuQkpx95sKG5/cbV51ps hA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bsupgsxqm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 07:44:13 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19JBiDI6021732;
-        Tue, 19 Oct 2021 07:44:13 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bsupgsxqd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 07:44:13 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19JBhRTU019391;
-        Tue, 19 Oct 2021 11:44:12 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma04dal.us.ibm.com with ESMTP id 3bqpcbqqv2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 11:44:12 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19JBiBlm26935794
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 11:44:11 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 08A9B78067;
-        Tue, 19 Oct 2021 11:44:11 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA9767805F;
-        Tue, 19 Oct 2021 11:44:09 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.211.92.132])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Oct 2021 11:44:09 +0000 (GMT)
-Message-ID: <2482854e18365087266c2f0907c1bbfd42bd2731.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: megaraid_mbox: return -ENOMEM on
- megaraid_init_mbox() allocation failure
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        kashyap.desai@broadcom.com
-Cc:     sumit.saxena@broadcom.com, shivasharan.srikanteshwara@broadcom.com,
-        martin.petersen@oracle.com, megaraidlinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 19 Oct 2021 07:44:08 -0400
-In-Reply-To: <1634640800-22502-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1634640800-22502-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        Tue, 19 Oct 2021 07:47:23 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C30C06161C;
+        Tue, 19 Oct 2021 04:45:10 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso2442723pjw.2;
+        Tue, 19 Oct 2021 04:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=MglkHL3I8pOQyT8id8QRZWPVa8Wa8unBVBsZ/PvSniQ=;
+        b=Lxs0zOW48ZOq5Jak2/0u6Z0F2sxlznq6YMiO+bNC7OmfMgDh4IPXX7HSRGO4BrW/al
+         IPQ91uGDO2Hui2GK+dqIB/PIylvk4dWl41qHDPZYy1OhPJILlWfu4zvkptZkaL6/fGv4
+         pqiJitP51Ibr2Pl/QT6rLA0xY/zV2a6ixd7IPYl2k59/HSZgQTVTu9DbQM2PGt/6gfB4
+         RpWpkkcNJiE6jH79yX8+o2XsglAOwKWn2J+tuuDI4hVHD3SzvETEFwG5X/xgm4EDpIek
+         cOd3AIyj+TzZDJwGrz8cu92ZlTeXLgbEyNHol+y3SMyV1Mfl3s5MlF2MW/g6V2jPgJx0
+         AoEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=MglkHL3I8pOQyT8id8QRZWPVa8Wa8unBVBsZ/PvSniQ=;
+        b=cYTzBKV3fZhChjWWfOu1wofienj9JkC72g/Ft9hQq4PHZbXPhdHpSWHPjj4NfIG8fV
+         maQj9OqjRcO11f3K/0XapUCwzXvQoCfEwbbBioAYvkmz/q68R/acqRPDvvi3oBpGHTOH
+         MDNYU9m8rXH2L4W/WVtOo0ovfqeroCWgIKgXX3sCp4Nevfn2JAY+3uQV85d5m4yFpSYB
+         EwUpAPl6tIxtsP3pbJ70MTFGWdxkgnvg8Sdec/lhW3Xj9pOLiYrXqzjXmcNTzu8J5nIo
+         IjDP9Iqum9SI3EdaD6/qFGV5Dspwc+/qTkUSocYi1kA/gtPzFq2GAtkmD3EKoMPQ4cel
+         gxxA==
+X-Gm-Message-State: AOAM533q8HBQ3dhXY6pwPn6omB9NofOYEef1md5eGP/s6eizf+VbaEC1
+        89yRv2ziryGCAOvqQ1xGb8KvWQ0CwDMjjg==
+X-Google-Smtp-Source: ABdhPJxiatKS1Wr8/i/0jQI+M1WXBeOJRq4Rqoss6RqnaANTRhTQz4oI/AX2PYn9FER38GjjG6N4PA==
+X-Received: by 2002:a17:902:d2c2:b0:13e:f4d2:ed3f with SMTP id n2-20020a170902d2c200b0013ef4d2ed3fmr32348919plc.87.1634643910184;
+        Tue, 19 Oct 2021 04:45:10 -0700 (PDT)
+Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id o26sm16781587pfp.177.2021.10.19.04.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 04:45:09 -0700 (PDT)
+Message-ID: <6881c1e592200b10be0b732cd038730c6bfbbb09.camel@gmail.com>
+Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to
+ intel_pmic_bytcrc driver
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 19 Oct 2021 20:45:06 +0900
+In-Reply-To: <CAHp75VfZyk_Ar23grNk2PvzRqaSO++CdkU4NWe2guNkwdGivzg@mail.gmail.com>
+References: <20211017161523.43801-1-kitakar@gmail.com>
+         <20211017161523.43801-2-kitakar@gmail.com>
+         <CAHp75VfZyk_Ar23grNk2PvzRqaSO++CdkU4NWe2guNkwdGivzg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ccfVMvsJQkqStX70w5kZlKzQUrrBKeiN
-X-Proofpoint-ORIG-GUID: ubei3YpkeUEF2_SOHBD_goBtajz7gL4y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-19_01,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1011 suspectscore=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110190070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-19 at 18:53 +0800, Jiapeng Chong wrote:
-> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+On Sun, 2021-10-17 at 22:08 +0300, Andy Shevchenko wrote:
+> On Sun, Oct 17, 2021 at 7:16 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
+> > On Microsoft Surface 3 (uses Intel's Atom Cherry Trail SoC), executing
+> > intel_soc_pmic_exec_mipi_pmic_seq_element() results in the following
+> > error message:
+> > 
+> >         [ 7196.356682] intel_soc_pmic_exec_mipi_pmic_seq_element: Not implemented
+> >         [ 7196.356686] intel_soc_pmic_exec_mipi_pmic_seq_element: i2c-addr: 0x6e reg-addr 0x57 value 0x63 mask 0xff
+> > 
+> > Surface 3 uses the PMIC device INT33FD, and the DSDT describes its _HRV
+> > value is 0x02 [1]:
+> > 
+> >         Scope (PCI0.I2C7)
+> >         {
+> >             Device (PMIC)
+> >             {
+> >                 Name (_ADR, Zero)  // _ADR: Address
+> >                 Name (_HID, "INT33FD" /* Intel Baytrail Power Management IC */)  // _HID: Hardware ID
+> >                 Name (_CID, "INT33FD" /* Intel Baytrail Power Management IC */)  // _CID: Compatible ID
+> >                 Name (_DDN, "CRYSTAL COVE+ AIC")  // _DDN: DOS Device Name
+> >                 Name (_HRV, 0x02)  // _HRV: Hardware Revision
+> >                 Name (_UID, One)  // _UID: Unique ID
+> >                 Name (_DEP, Package (0x01)  // _DEP: Dependencies
+> >                 {
+> >                     I2C7
+> >                 })
+> >         [...]
+> > 
+> > Due to this _HRV value, intel_pmic_bytcrc is used as the PMIC driver.
+> > However, the i2c address is currently not defined in this driver.
+> > This commit adds the missing i2c address 0x6e to the intel_pmic_bytcrc
+> > driver.
+> > 
+> > [1] https://github.com/linux-surface/acpidumps/blob/f8db3d150815aa21530635b7e646eee271e3b8fe/surface_3/dsdt.dsl#L10868
 > 
-> Fixes the following smatch warning:
+> > References: cc0594c4b0ef ("ACPI / PMIC: Add i2c address for thermal control")
 > 
-> drivers/scsi/megaraid/megaraid_mbox.c:715 megaraid_init_mbox() warn:
-> returning -1 instead of -ENOMEM is sloppy.
+> Not sure what this tag means.
 
-Why is this a problem?  megaraid_init_mbox() is called using this
-pattern:
+Thanks!
 
-	// Start the mailbox based controller
-	if (megaraid_init_mbox(adapter) != 0) {
-		con_log(CL_ANN, (KERN_WARNING
-			"megaraid: mailbox adapter did not initialize\n"));
+I thought I could use this tag to mean "I made this patch with this
+commit as a reference". If I used this tag incorrectly, I'll avoid using
+it in the future and instead write with my words.
 
-		goto out_free_adapter;
-	}
+Regards,
+Tsuchiya Yuto
 
-So the only meaningful returns are 0 on success and anything else
-(although megaraid uses -1 for this) on failure.   Since -1 is the
-conventional failure return, why alter that to something different that
-still won't be printed or acted on?  And worse still, if we make this
-change, it will likely excite other static checkers to complain we're
-losing error information ...
-
-James
 
 
