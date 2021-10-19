@@ -2,121 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE033433A53
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D37433A4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbhJSPay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:30:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:50456 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233472AbhJSPat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233772AbhJSPat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 19 Oct 2021 11:30:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 44BC32F;
-        Tue, 19 Oct 2021 08:28:36 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE80B3F694;
-        Tue, 19 Oct 2021 08:28:33 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 16:28:31 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231189AbhJSPas (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:30:48 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514A9C06161C;
+        Tue, 19 Oct 2021 08:28:35 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 7C1A097D;
+        Tue, 19 Oct 2021 15:28:34 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 7C1A097D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1634657314; bh=ob6CUlBFyN+fzij40nmL/LuQFz6yWVFN1ovtE7pr174=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=pNTqLoMnrRE/WYhQomSXzypqMiz2oE5Fj0Ws2SIdtvr9qd/YoDycUPANxggDaZUfx
+         TWMgZzXtd5zWOuIy3+O4uCtICv/4TWONPIpfqPPhaPBbZ6H942A2CPvcQ10m7EKGi2
+         Zv88n2795z7rYZEFMY6wLf3oFtHqXSZeJyAE8cOwZ8iEqE+Q8hDx0yCnhqDVnK2IJs
+         yvXbRy3OLQ29JJLHg5AsvIPv8HWHmJPptozLAX0cxhCkYDNZtUAr0dkN5aPorJ91vV
+         g8GeWFs6/Y02aOawFrGlVi901Q5N+CpQLgxrt0lKM+yMjnLQgxq3Eki+7cjO9FyjpG
+         ezuGwz/GRPKJA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v10 4/5] arm64: perf: Enable PMU counter userspace access
- for perf event
-Message-ID: <20211019152831.GB4938@lakrids.cambridge.arm.com>
-References: <20210914204800.3945732-1-robh@kernel.org>
- <20210914204800.3945732-5-robh@kernel.org>
- <20211014165810.GA39276@lakrids.cambridge.arm.com>
- <CAL_Jsq+OO3cbnsX6OdgKSL+3c8mn=KzanTJBePk-eA1J304uFA@mail.gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 13/19] rtla: Add Documentation
+In-Reply-To: <ecf3bfee-8a7a-e3bf-4fba-af9bc479526e@kernel.org>
+References: <cover.1634574261.git.bristot@kernel.org>
+ <7e205854656f41afe9a35e6390d3e3cbd724706f.1634574261.git.bristot@kernel.org>
+ <877deaut3b.fsf@meer.lwn.net>
+ <f0c50222-a9a8-d0e5-d705-d9d670467142@kernel.org>
+ <20211019092124.6b403ca4@gandalf.local.home>
+ <ecf3bfee-8a7a-e3bf-4fba-af9bc479526e@kernel.org>
+Date:   Tue, 19 Oct 2021 09:28:33 -0600
+Message-ID: <8735oxt4ny.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+OO3cbnsX6OdgKSL+3c8mn=KzanTJBePk-eA1J304uFA@mail.gmail.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Daniel Bristot de Oliveira <bristot@kernel.org> writes:
 
-On Thu, Oct 14, 2021 at 02:24:46PM -0500, Rob Herring wrote:
-> On Thu, Oct 14, 2021 at 11:58 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > On Tue, Sep 14, 2021 at 03:47:59PM -0500, Rob Herring wrote:
-> > For the `config1 = 3` case (potentially) overriding the usual long
-> > semantic, I'm struggling to understand why we need that rather than
-> > forcing the use of a 64-bit counter, because in that case:
-> >
-> > * For a CPU_CYCLES event:
-> >   __armv8_pmuv3_map_event() will always pick 64-bits
-> >   get_event_idx() may fail to allocate a 64-bit counter.
-> >
-> > * For other events:
-> >   __armv8_pmuv3_map_event() will pick 32/64 based on long counter
-> >   support
-> >   get_event_idx() will only fail if there are no counters free.
-> >
-> > Whereas if __armv8_pmuv3_map_event() returned an error for the latter
-> > when long counter support is not implemented, we'd have consistent
-> > `long` semantics, and the CPU_CYCLES behaviour would be identical.
-> >
-> > What's the rationale for `3` leaving the choice to the kernel?
-> 
-> It's the give me the maximum sized counter the h/w can support choice.
-> That's easier for userspace to implement. Bit 1 is more of a hint that
-> the user wants userspace access rather than a requirement.
-> 
-> > If the problem is discoverability, I'd be happy to add something to
-> > sysfs to describe whether the PMU has long event support.
-> 
-> Checking sysfs or a try for 64-bit support then fall back to 32-bit
-> support isn't much difference.
-> 
-> Keep in mind that x86 always succeeds here. Every userspace user will
-> have to add whatever dance we create here. For example, each libperf
-> test with user access (there's only 2 in my tree, but there's a series
-> adding more) has to have an '#ifdef __aarch64__' for whatever we do
-> here. I was seeking to minimize that. Right now, that's just a set
-> config1 to 0x3. Also, note that libperf will opportunistically use a
-> userspace read instead of read(). The user just has to mmap the event
-> and libperf will use a userspace read when enabled which ultimately
-> depends on what the mmapped page says.
+> On 10/19/21 15:21, Steven Rostedt wrote:
+>> My suggestion came from not knowing that the man pages were going to live
+>> in the kernel Documentation tree ;-)
+>
+> That is true!
+>
+> Question, should we mode these files to Documentation/trace/ ?
 
-I think that x86 always succeeding here is more of a legacy thing that
-they're stuck with rather than a design to be copied.
+Hmm...we don't really have man pages for individual commands now, so
+haven't thought much about how to handle them.
 
-I'd prefer to keep the existing meaning of the `long` flag to mean "give
-me 64 bits of counter, somehow", with `rdpmc` meaning "give me a single
-counter I can access from userspace", even if that means the combination
-of the two can sometimes be rejected. As you say, we can probe for that
-as necessary by trying `long` then falling back to a plain event, and if
-that ends up being a bottleneck somehow we can figure out a way of
-advertising support to userspace. Regardless, we should 
-
-Importantly, I don't think libperf should override a user's request for
-`long`, since the user may want to optimize for minimal perturbation
-rather than faster access.
-
-If we want a "please give me the longest counter that's compatible with
-other constraints", I think that should be a new flag e.g. `trylong`,
-and shouldn't override the existing `long`. We can add that as a
-follow-up if we want it.
+My first reaction would be to make a new directory like
+Documentation/tools and put man pages there.  That can become a new
+"book" within the larger documentation collection.  Make sense?
 
 Thanks,
-Mark.
+
+jon
