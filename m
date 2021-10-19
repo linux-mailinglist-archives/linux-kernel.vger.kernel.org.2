@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9678E433A9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BFB433A9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhJSPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:37:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229991AbhJSPhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:37:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A46EE6115A;
-        Tue, 19 Oct 2021 15:35:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634657711;
-        bh=Hv4wPC5ThKLeEBzYo7qmbC7yxyXLVIfmn8ndn7O5YYE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YsAPLLqy9JzMiXP2q8AvNCj61eHKc8ZPo9taTw8m2jtkOSUDPekaLXcVkk5PLcTXV
-         Ijij6LBDAaneXeuUvBi7rk/jmRjIKT2WchxhJYohqvAfwsKneJ8+WwXAhYY0yNQdHf
-         c61wT2On2/eQsTgNezupmJ7CEh/rXmbJEDkHqUehOsARYHcTAi0LYByihOaOeHhww5
-         6sB2nUek7cUIAIsFG5lmWZdtfunnir4IOEARQbG0zXK7c4nkoN7bwAtCPtakQfRtYC
-         R9OMmK0mlQE+wM39MnJCOCGPlwoCionirwUhuwYifscnR+jjnRLEjrdTn9yJJQ/jxt
-         MDouptRQEugrQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] io_uring: warning about unused-but-set parameter
-Date:   Tue, 19 Oct 2021 17:34:53 +0200
-Message-Id: <20211019153507.348480-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231532AbhJSPhl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Oct 2021 11:37:41 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:50899 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230511AbhJSPhi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:37:38 -0400
+Received: (Authenticated sender: kory.maincent@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 4EE0E240010;
+        Tue, 19 Oct 2021 15:35:21 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 17:35:20 +0200
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Adam Ford <aford173@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH] net: renesas: Fix rgmii-id delays
+Message-ID: <20211019173520.0154a8cb@kmaincent-XPS-13-7390>
+In-Reply-To: <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
+References: <20211019145719.122751-1-kory.maincent@bootlin.com>
+        <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hello Geert,
 
-When enabling -Wunused warnings by building with W=1, I get an
-instance of the -Wunused-but-set-parameter warning in the io_uring code:
+Thanks for the review.
 
-fs/io_uring.c: In function 'io_queue_async_work':
-fs/io_uring.c:1445:61: error: parameter 'locked' set but not used [-Werror=unused-but-set-parameter]
- 1445 | static void io_queue_async_work(struct io_kiocb *req, bool *locked)
-      |                                                       ~~~~~~^~~~~~
+On Tue, 19 Oct 2021 17:13:52 +0200
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-There are very few warnings of this type, so it would be nice to enable
-this by default and fix all the existing instances. As the assignment
-serves no purpose by itself other than to prevent developers from using
-the variable, an easy workaround is to remove the assignment and just
-rename the argument to "dont_use".
+> > The ravb MAC is adding RX delay if RGMII_RXID is selected and TX delay
+> > if RGMII_TXID but that behavior is wrong.
+> > Indeed according to the ethernet.txt documentation the ravb configuration  
+> 
+> Do you mean ethernet-controller.yaml?
 
-Fixes: f237c30a5610 ("io_uring: batch task work locking")
-Link: https://lore.kernel.org/lkml/20210920121352.93063-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Changes in v2:
- - remove the assignment altogether
- - rename the parameter
----
- fs/io_uring.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Doh, yes, I paste the commit log from the older Kernel git and forget to
+change that.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index be307360d1b0..8d9e208957fd 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1521,15 +1521,12 @@ static inline void io_req_add_compl_list(struct io_kiocb *req)
- 	wq_list_add_tail(&req->comp_list, &state->compl_reqs);
- }
- 
--static void io_queue_async_work(struct io_kiocb *req, bool *locked)
-+static void io_queue_async_work(struct io_kiocb *req, bool *dont_use)
- {
- 	struct io_ring_ctx *ctx = req->ctx;
- 	struct io_kiocb *link = io_prep_linked_timeout(req);
- 	struct io_uring_task *tctx = req->task->io_uring;
- 
--	/* must not take the lock, NULL it as a precaution */
--	locked = NULL;
--
- 	BUG_ON(!tctx);
- 	BUG_ON(!tctx->io_wq);
- 
--- 
-2.29.2
+> 
+> > should be inverted:
+> >   * "rgmii-rxid" (RGMII with internal RX delay provided by the PHY, the MAC
+> >      should not add an RX delay in this case)
+> >   * "rgmii-txid" (RGMII with internal TX delay provided by the PHY, the MAC
+> >      should not add an TX delay in this case)
+> >
+> > This patch inverts the behavior, i.e adds TX delay when RGMII_RXID is
+> > selected and RX delay when RGMII_TXID is selected.
+> >
+> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>  
+> 
+> Does this fix an actual problem for you?
 
+In fact, this fix a problem for an older 4.14 Kernel on my current project.
+I wanted to push my fix in the mainline kernel also, but as you say below, now
+this code is legacy.
+Does it matter to fix legacy code?
+
+> Note that in accordance with the comment above, the code section
+> below is only present to support old DTBs.  Contemporary DTBs rely
+> on the now mandatory "rx-internal-delay-ps" and "tx-internal-delay-ps"
+> properties instead.
+> Hence changing this code has no effect on DTS files as supplied with
+> the kernel, but may have ill effects on DTB files in the field, which
+> rely on the current behavior.
+
+When people update the kernel version don't they update also the devicetree?
+
+Regards,
+Köry
