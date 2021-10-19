@@ -2,186 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4626E433184
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0732433186
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234796AbhJSItH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:49:07 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:40541 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234803AbhJSItE (ORCPT
+        id S234820AbhJSIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:49:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50906 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234785AbhJSItY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:49:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634633212; x=1666169212;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=842zeHy7sq6BLpUJD4Mcm6yBLnZn7s8Naug6BsCHM1k=;
-  b=D9uN6TdMcjrDLkrT0Zz2Hj11Ug01ZfWdgjlzy/G1NYmjnTYXrxRY+pOK
-   zEA2U/GRNgRR5ckCE1e8gSeu4OhQbO3xRIN2tPP9ggaJFTz58/h9cygbr
-   GLG7iAcF50G1pEnRQxoTnPgVi0FPSqvsx++qHqYLARjmB8OSK+R21wR/U
-   vfKOZDfnPrN3Fj8yc6H/AaBL1XMsH2umAFpbvYjK+oMjOjHu9dxg58Bbl
-   jCEeAImtA9sbWJBNnNRVKUCtck7bUXijL3wcHNpnaWnua9KnTH3j5zGhd
-   YckJ/CPYPEXbxbp9K/JO1hsCKcpastBX+yDWUFnFZTVX+uBvPScukPfxP
-   w==;
-IronPort-SDR: 0up2T+zjOmnYuGz53Q0N4AuU/1+G/xUcBLCwPotUBXBuaDVTk3b8jgwLl+91FBLGE/JfC9OwBj
- 8HfPZLDjLZC8EJtuGsCTvQWoDjWH3j8yUNlXmTJcJo86ZVrj1VFY22BmkWeGDgEG2CF3ChZWkg
- 1cEqefMfqL+LgvdOdDdQwmGuZ2vmvAs7CJVIs7IlgeC4E3/ivvOdh6YtXwEdcU88YIztGqEAyf
- dRs4shDQ6oMLDIyiBS4yCvBoraW926UNa/hs5lPEgTqgKdSYB/lALnEtYUUlAzoEVZJ6wMtPpS
- OXkOaxXE0g/vZYMfnca9PUpk
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; 
-   d="scan'208";a="140848602"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Oct 2021 01:46:51 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 19 Oct 2021 01:46:51 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 19 Oct 2021 01:46:49 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh+dt@kernel.org>
-CC:     <nicolas.ferre@microchip.com>, <kavyasree.kotagiri@microchip.com>,
-        <eugen.hristev@microchip.com>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [RFC PATCH 3/3] clk: lan966x: Extend lan966x clock driver for clock gating support
-Date:   Tue, 19 Oct 2021 10:44:49 +0200
-Message-ID: <20211019084449.1411060-4-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211019084449.1411060-1-horatiu.vultur@microchip.com>
-References: <20211019084449.1411060-1-horatiu.vultur@microchip.com>
+        Tue, 19 Oct 2021 04:49:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2D7F51FC9E;
+        Tue, 19 Oct 2021 08:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634633231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0QHVkjPX9VWQRCDOqIEsYscNDDX26IKKHuDWyHZH10w=;
+        b=obAil+Lvy/jiFKcRq+daqcHuy3BlO8iF3QBGc7EhSR8cyxH3Al4LqUe4xHFm073qBhTry1
+        nUBXAVFNa1/pxddYSY/AxT1ZnUX9i+lzvHm1IYcMGNka7Y+t5RUid2t95S0HGVjKREu3BF
+        dBkp2OQGxxF2IifpgqYPxxS2OyJ64iw=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id AC166A3B8D;
+        Tue, 19 Oct 2021 08:47:10 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 10:47:09 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
+Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
+ task
+Message-ID: <YW6GDYayGogxSq1v@dhcp22.suse.cz>
+References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
+ <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+ <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
+ <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
+ <27dc0c49-a0d6-875b-49c6-0ef5c0cc3ac8@virtuozzo.com>
+ <YW1oMxNkUCaAimmg@dhcp22.suse.cz>
+ <CALvZod42uwgrg83CCKn6JgYqAQtR1RLJSuybNYjtkFo4wVgT1w@mail.gmail.com>
+ <153f7aa6-39ef-f064-8745-a9489e088239@virtuozzo.com>
+ <CALvZod5Kut63MLVfCkEW5XemqN4Jnd1iEQD_Gk0w5=fPffL8Bg@mail.gmail.com>
+ <25120323-d222-cc5e-fe08-6471bce13bd6@virtuozzo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <25120323-d222-cc5e-fe08-6471bce13bd6@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the clock driver to add support also for clock gating. The
-following peripherals can be gated: UHPHS, UDPHS, MCRAMC, HMATRIX.
+On Tue 19-10-21 09:42:38, Vasily Averin wrote:
+> On 19.10.2021 08:33, Shakeel Butt wrote:
+> > On Mon, Oct 18, 2021 at 11:52 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+> >>
+> >> On 18.10.2021 18:07, Shakeel Butt wrote:
+> >>> On Mon, Oct 18, 2021 at 5:27 AM Michal Hocko <mhocko@suse.com> wrote:
+> >>>>
+> >>>> [restore the cc list]
+> >>>>
+> >>>> On Mon 18-10-21 15:14:26, Vasily Averin wrote:
+> >>>>> On 18.10.2021 14:53, Michal Hocko wrote:
+> >>>>>> On Mon 18-10-21 13:05:35, Vasily Averin wrote:
+> >>>>>>> On 18.10.2021 12:04, Michal Hocko wrote:
+> >>>>>>> Here we call try_charge_memcg() that return success and approve the allocation,
+> >>>>>>> however then we hit into kmem limit and fail the allocation.
+> >>>>>>
+> >>>>>> Just to make sure I understand this would be for the v1 kmem explicit
+> >>>>>> limit, correct?
+> >>>>>
+> >>>>> yes, I mean this limit.
+> >>>>
+> >>>> OK, thanks for the clarification. This is a known problem. Have a look
+> >>>> at I think we consider that one to 0158115f702b ("memcg, kmem: deprecate
+> >>>> kmem.limit_in_bytes"). We are reporting the deprecated and to-be removed
+> >>>> status since 2019 without any actual report sugested by the kernel
+> >>>> message. Maybe we should try and remove it and see whether that prompts
+> >>>> some pushback.
+> >>>
+> >>> Yes, I think now should be the right time to take the next step for
+> >>> deprecation of kmem limits:
+> >>> https://lore.kernel.org/all/20201118175726.2453120-1-shakeelb@google.com/
+> >>
+> >> Are you going to push it to stable kernels too?
+> > 
+> > Not really. Is there a reason I should? More exposure to catch breakage?
+> 
+> There is a problem: kmem limit can trigger fake global OOM.
+> To fix it in upstream you can remove kmem controller.
+> 
+> However how to handle this problem in stable and LTS kernels?
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/clk/clk-lan966x.c | 72 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 68 insertions(+), 4 deletions(-)
+I do not see any bug reports coming in and I strongly suspect this is
+because the functionality is simply not used wildly enough or in the
+mode where it would matter (U != 0, K < U from our documentation).
+If there are relevant usecases for this setup then we really want to
+hear about those because we do not want to break userspace. Handling
+that setup would far from trivial and the global oom killer is not the
+only one of those.
 
-diff --git a/drivers/clk/clk-lan966x.c b/drivers/clk/clk-lan966x.c
-index 19bec94e1551..40be47092a31 100644
---- a/drivers/clk/clk-lan966x.c
-+++ b/drivers/clk/clk-lan966x.c
-@@ -48,6 +48,20 @@ static struct clk_init_data init = {
- 	.num_parents = ARRAY_SIZE(lan966x_gck_pdata),
- };
- 
-+struct clk_gate_soc_desc {
-+	const char *name;
-+	int bit_idx;
-+};
-+
-+static const struct clk_gate_soc_desc clk_gate_desc[] = {
-+	{ "uhphs", 11 },
-+	{ "udphs", 10 },
-+	{ "mcramc", 9 },
-+	{ "hmatrix", 8 },
-+	{ }
-+};
-+
-+static DEFINE_SPINLOCK(clk_gate_lock);
- static void __iomem *base;
- 
- static int lan966x_gck_enable(struct clk_hw *hw)
-@@ -188,26 +202,64 @@ static struct clk_hw *lan966x_gck_clk_register(struct device *dev, int i)
- 	return &priv->hw;
- };
- 
-+static int lan966x_gate_clk_register(struct device *dev,
-+				     struct clk_hw_onecell_data *hw_data,
-+				     void __iomem *gate_base)
-+{
-+	int i;
-+
-+	for (i = GCK_GATE_UHPHS; i < N_CLOCKS; ++i) {
-+		int idx = i - GCK_GATE_UHPHS;
-+
-+		hw_data->hws[i] =
-+			clk_hw_register_gate(dev, clk_gate_desc[idx].name,
-+					     "lan966x", 0, base,
-+					     clk_gate_desc[idx].bit_idx,
-+					     0, &clk_gate_lock);
-+
-+		if (IS_ERR(hw_data->hws[i]))
-+			return dev_err_probe(dev, PTR_ERR(hw_data->hws[i]),
-+					     "failed to register %s clock\n",
-+					     clk_gate_desc[idx].name);
-+	}
-+
-+	return 0;
-+}
-+
-+static void lan966x_gate_clk_unregister(struct clk_hw_onecell_data *hw_data)
-+{
-+	int i;
-+
-+	for (i = GCK_GATE_UHPHS; i < N_CLOCKS; ++i)
-+		if (!IS_ERR(hw_data->hws[i]))
-+			clk_hw_unregister(hw_data->hws[i]);
-+}
-+
- static int lan966x_clk_probe(struct platform_device *pdev)
- {
- 	struct clk_hw_onecell_data *hw_data;
- 	struct device *dev = &pdev->dev;
--	int i;
-+	void __iomem *gate_base;
-+	int i, ret;
- 
- 	hw_data = devm_kzalloc(dev, struct_size(hw_data, hws, N_CLOCKS),
- 			       GFP_KERNEL);
- 	if (!hw_data)
- 		return -ENOMEM;
- 
--	base = devm_platform_ioremap_resource(pdev, 0);
-+	base = devm_platform_ioremap_resource_byname(pdev, "core");
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
- 
-+	gate_base = devm_platform_ioremap_resource_byname(pdev, "gate");
-+	if (IS_ERR(gate_base))
-+		return PTR_ERR(gate_base);
-+
- 	init.ops = &lan966x_gck_ops;
- 
- 	hw_data->num = N_CLOCKS;
- 
--	for (i = 0; i < N_CLOCKS; i++) {
-+	for (i = 0; i < GCK_ID_USB_REFCLK; i++) {
- 		init.name = clk_names[i];
- 		hw_data->hws[i] = lan966x_gck_clk_register(dev, i);
- 		if (IS_ERR(hw_data->hws[i])) {
-@@ -217,7 +269,19 @@ static int lan966x_clk_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, hw_data);
-+	ret = lan966x_gate_clk_register(dev, hw_data, gate_base);
-+	if (ret)
-+		goto unregister;
-+
-+	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, hw_data);
-+	if (ret)
-+		goto unregister;
-+
-+	return 0;
-+
-+unregister:
-+	lan966x_gate_clk_unregister(hw_data);
-+	return ret;
- }
- 
- static const struct of_device_id lan966x_clk_dt_ids[] = {
+> My current patch resolves the problem too, and it can be backported.
+> However I afraid nobody will do it if teh patch will not be approved in upsteam.
+
+I do not think your current approach is the right one. We do not really
+want yet another flag to tell we are in a memcg OOM. We already have
+one.
+
+A proper way is to deal with the pagefault oom killer trigger but that
+might be just too risky for stable kernels. 
 -- 
-2.33.0
-
+Michal Hocko
+SUSE Labs
