@@ -2,103 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF5E432E57
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC8C432E5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234187AbhJSGgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:36:13 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1034 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229649AbhJSGgL (ORCPT
+        id S234285AbhJSGgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234255AbhJSGgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:36:11 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19J6MtVR001554;
-        Tue, 19 Oct 2021 02:33:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=CvIWIWZegw5geXGYTY/N3EkVK5pJ1TTtd9V7IPsX/VU=;
- b=ozKL91ufBGwUOOy7EGQpD92GvCGBnYdTa5YY9NsHwsMwyvEf5E/5jheq2bJlQx65HVQE
- tUYlBgPatELJEsQtdrdNV0wA5/h/OOIt8vm3Je4UicA91xjfXt3GgZU+u4qZGWOyGFf3
- aPwQehV98rwk2GXSLZ2TfzX8U7NExDJ0bWd6U3X2/wrmns8mhgTschvY6hr6+tmqxgxK
- IjhZ4gnkOOHZZpOr6ISSrX9HbChu+UE9WUnetDuN1YJBsifSeIMXA+KqRlQ0pAy335Xd
- wiK0Rf4G5OH3/1BLBwGgRgonFNz2Vz/rTNzo4at4ddDnlJnli2D9CL3Kl0Z0gyZMN2fN QA== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bsnhhkev3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 02:33:55 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19J6DPba015996;
-        Tue, 19 Oct 2021 06:33:53 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3bqpc9bxgr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 06:33:53 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19J6XofS56492444
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 06:33:50 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C000F11C04A;
-        Tue, 19 Oct 2021 06:33:50 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5CF5511C058;
-        Tue, 19 Oct 2021 06:33:50 +0000 (GMT)
-Received: from [9.171.65.69] (unknown [9.171.65.69])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Oct 2021 06:33:50 +0000 (GMT)
-Message-ID: <ceb1a1ce-b4a4-7908-7d18-832cca1bfbe2@linux.ibm.com>
-Date:   Tue, 19 Oct 2021 08:33:51 +0200
+        Tue, 19 Oct 2021 02:36:38 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245C3C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 23:34:26 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id r18so8774292edv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 23:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w4bfGhHFx5oPk/Ib96uMGgu3xvRiI0n8bCnV0Igoo8Y=;
+        b=dJ4KSlVlIzZzpmKHaAHOv1JHGchBxymCPM8yOzkF+KNgnHgSZZIGhPWUlgrHdQiJhR
+         sGoZbPuqNLSopHBCAupkNBB2ucfB3yzOv3kO2j853mXSXkMrTJ1id9sXdFu4H9zmhk8H
+         w+IKFvuRIQTunzkQ41VW3YdWcNNZkhkllgVyTsSBYAG+xJH7Sm6mzgnI8BT0kulLi2Rp
+         Ncma57/eDNMj2aa7meO+NKbyNkYQwyeUVirRUlGi3dJMej7xxTuWef4uDZKlk1TbMcvA
+         Ho5hIxu7Cxw4i6YOQpbpM4GW7XENCnHJiYQi+6SHtNhB0MBDraZD6Ul8XwDCQb7uJamE
+         slyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w4bfGhHFx5oPk/Ib96uMGgu3xvRiI0n8bCnV0Igoo8Y=;
+        b=QZhvt7Lb1Kni8SY4mHH+hlwyAIZCWgGLFl99BCJymEq7xoBSY6TQKfSqXEneq9OoCI
+         Qp5aiK5/yGsKmfrsjxmqYqbt0wQFlMHgY3MeOQZEBgTGFyeEb5eadRjZ8LJPW0C5f0YD
+         YP+tYT3UKbpNwoN8KHQtOiDKzqiKaw/34LBLdrUyxj5LdPkdqRAllDu3DWDkSWKz8RzZ
+         6x2A42w4yKzLUhtVTCuULyiBWO4GhNivjI0PyMV7O7IDAsPZedTSuYXZWEJMFVgowskC
+         OQ/eKMAK48oKtd14k0rKZhiiXpCA5NCUVh/GgQHSrG2P4JR/+eXZuTJhR7bn2CvsHIy0
+         q5Cg==
+X-Gm-Message-State: AOAM532SW6ESMv89zZW4ez15eSgiaG5IqVeg6JNi+cxSNYtGkb8M1Lk5
+        X4DJwaWULFkDAE6t8umPglXnZ2pgYmo7sVo4NuTCOaJ3A9i8vg==
+X-Google-Smtp-Source: ABdhPJyum2jlPf2KUlHw1paQNmraw3uCjjctCPCZ/6VLAGY9eh63oLQFugg5gRwS4CAIp2LrvTLkgNVIyEB7OOLJBUI=
+X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr36810937ejb.6.1634625264554;
+ Mon, 18 Oct 2021 23:34:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH][linux-next] net/smc: prevent NULL dereference in
- smc_find_rdma_v2_device_serv()
-Content-Language: en-US
-To:     Tim Gardner <tim.gardner@canonical.com>, linux-s390@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211018183128.17743-1-tim.gardner@canonical.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20211018183128.17743-1-tim.gardner@canonical.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QGXdzv8rsRR0Q2JVRw8d6oCKuWvBrNo0
-X-Proofpoint-ORIG-GUID: QGXdzv8rsRR0Q2JVRw8d6oCKuWvBrNo0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-18_07,2021-10-18_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
- impostorscore=0 clxscore=1011 adultscore=0 mlxscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110190038
+References: <20211018132340.682786018@linuxfoundation.org> <CA+G9fYtLTmosatvO8VBe-RDjEHEvY01P=Fw5mvRvwbxL31ahOA@mail.gmail.com>
+ <YW5iBGg4VKP6ZL+O@kroah.com>
+In-Reply-To: <YW5iBGg4VKP6ZL+O@kroah.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 19 Oct 2021 12:04:13 +0530
+Message-ID: <CA+G9fYv3mpZMZjoarc6=WNNzrer+xFX_diqVKMy1VFV=xhKpTg@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2021 20:31, Tim Gardner wrote:
-> Coverity complains of a possible NULL dereference in smc_find_rdma_v2_device_serv().
-> 
-> 1782        smc_v2_ext = smc_get_clc_v2_ext(pclc);
-> CID 121151 (#1 of 1): Dereference null return value (NULL_RETURNS)
-> 5. dereference: Dereferencing a pointer that might be NULL smc_v2_ext when calling smc_clc_match_eid. [show details]
-> 1783        if (!smc_clc_match_eid(ini->negotiated_eid, smc_v2_ext, NULL, NULL))
-> 1784                goto not_found;
-> 
-> Fix this by checking for NULL.
+On Tue, 19 Oct 2021 at 11:43, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Oct 19, 2021 at 09:08:08AM +0530, Naresh Kamboju wrote:
+> > On Mon, 18 Oct 2021 at 19:08, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > This is the start of the stable review cycle for the 5.14.14 release.
+> > > There are 151 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > >
+> > > Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> >
+> > Following build errors noticed while building Linux stable rc 5.14
+> > with gcc-11 allmodconfig for arm64 architecture.
+> >
+> >   - 5.14.14 gcc-11 arm64 allmodconfig FAILED
+> >
+> > > Sudeep Holla <sudeep.holla@arm.com>
+> > >     firmware: arm_ffa: Add missing remove callback to ffa_bus_type
+> >
+> > drivers/firmware/arm_ffa/bus.c:96:27: error: initialization of 'int
+> > (*)(struct device *)' from incompatible pointer type 'void (*)(struct
+> > device *)' [-Werror=incompatible-pointer-types]
+> >    96 |         .remove         = ffa_device_remove,
+> >       |                           ^~~~~~~~~~~~~~~~~
+> > drivers/firmware/arm_ffa/bus.c:96:27: note: (near initialization for
+> > 'ffa_bus_type.remove')
+> > cc1: some warnings being treated as errors
+> >
+> > Build config:
+> > https://builds.tuxbuild.com/1zhYTWmjxG50Rb8sGtfneME9kLT/config
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> Thanks, will go fix this up now.
+>
+> > steps to reproduce:
+> > https://builds.tuxbuild.com/1zhYTWmjxG50Rb8sGtfneME9kLT/tuxmake_reproducer.sh
+>
+> Hm, no, those steps fail for me:
+>         $ tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11 --kconfig allmodconfig
+>         E: Unsupported architecture/toolchain combination: arm64/gcc-11
+>
+> What did I do wrong?
 
-Hmm that's a fundamental question for me: do we want to make the code checkers happy?
-While I understand that those warnings give an uneasy feeling I am not sure
-if the code should have additional (unneeded) checks only to avoid them.
+May i request to force install and try,
 
-In this case all NULL checks are initially done in smc_listen_v2_check(), 
-afterwards no more NULL checks are needed. When we would like to add them
-then a lot more checks are needed, e.g. 3 times in smc_find_ism_v2_device_serv()
-(not sure why coverity does not complain about them, too).
+$ pip install --force-reinstall tuxmake
+$ tuxmake --version              # this should get tuxmake 0.29.0
+$ tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11
+--kconfig allmodconfig
 
-Thoughts?
+- Naresh
