@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DB0433DAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412F9433DB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhJSRom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhJSRol (ORCPT
+        id S234608AbhJSRsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:48:52 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:49439 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhJSRsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:44:41 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE0EC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:42:27 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r18so16090442edv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kryo-se.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FBFB5TpvCM2ffvAvKnFSlCgvqyq0TJ9lHk49iX31/z4=;
-        b=wtDfIxAopPK3YdfWAUQxFYYuLqtBo5X09KwU4oRyNkF7nQ3w6UHKKBOR4Ss+YMbbz/
-         qxnISxkdk+5MlWe6Rqx/CLRN0StexKNEXbC8OfMGlA0jR7j6DjgVhoXuhav1jGTXfxiH
-         +9q1oyxgkI7HrI9WHfI54im6ovTg4kQWkndQvLF7xRz7MVe8YvInZsoKCU9wj88F8kDC
-         IWJ2Xp9sBk0dnKfPDznxlhHvOnpGEkiMEmuJEOS+DMBRlz7cGc45QJmay+soj5eah+sj
-         XHz3RJP7CvHhTDm8/kgY7a+KZVTbN1nNhYT+9s2XgnNk+3Mz2Yz7Qt7XzcahkKBdUznm
-         kE+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FBFB5TpvCM2ffvAvKnFSlCgvqyq0TJ9lHk49iX31/z4=;
-        b=ZOAiSKQpBONt4f9rO7Qdoe2CzUI8k6CCfDYhfnSxvtnUreVI674O0lzQofE170cACK
-         i5Q0sq1HMi9wQtX41qkK6uo/xfRvhDRFWzIjpfRP0udFlCCFGwiIQWnA1CK+XAZ/L0ap
-         B8IOcNDyDIQFMSuqjlFvoIVQT9tG5dbciqpEuNgDfvTGvst0B90V1EQFTy8+FfvkJeot
-         IM7DFsOkRMg3F7y+btszLPSDH+FwZ8OyVbvRuv316Qpa17l9Y6zssSIjySMXi6/Y5Gr1
-         /r3WlIfsHRqxegGgDCFMrnOM5a5TP7PiGSypD39EY5VS9wf3UEQRI2xoR6d2ZqOy+dQe
-         NsGg==
-X-Gm-Message-State: AOAM530kAr7b30RaryFwJfKxBU3kw9t6pbbiHMlctQ7OsqFs21wA2HIq
-        ZF49fvmPBO0hLHmhlUy5IXM6Vm7Ts0cLYAzkp0cuUw==
-X-Google-Smtp-Source: ABdhPJzfo2ze0heRi2KfK1PcOqBhINxGfn0+3IQEhHpQwsxkzsNldAQt0r8Dih8slmmDCBVknTt+nWf7OCHz68hJb8E=
-X-Received: by 2002:a17:907:168c:: with SMTP id hc12mr39661473ejc.570.1634665317380;
- Tue, 19 Oct 2021 10:41:57 -0700 (PDT)
+        Tue, 19 Oct 2021 13:48:51 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id E870B1BF206;
+        Tue, 19 Oct 2021 17:46:36 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 19:46:36 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-rtc@vger.kernel.org,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
+Message-ID: <YW8EfIFolQ2SmBHt@piout.net>
+References: <20211019131724.3109-1-semen.protsenko@linaro.org>
+ <20211019131724.3109-3-semen.protsenko@linaro.org>
+ <YW7wTY5VOsPMAT3v@piout.net>
+ <CAPLW+4=nO8oPRnGL5PhRJyRZ6gEhA0pe2SOjQ6hrwo=SV_z1zA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211017171657.85724-1-erik@kryo.se> <YW7idC0/+zq6dDNv@lunn.ch>
-In-Reply-To: <YW7idC0/+zq6dDNv@lunn.ch>
-From:   Erik Ekman <erik@kryo.se>
-Date:   Tue, 19 Oct 2021 19:41:46 +0200
-Message-ID: <CAGgu=sCBUU29tkjqOP9j7EZJL-T4O6NoTDNB+-PFNhUkOTdWuw@mail.gmail.com>
-Subject: Re: [PATCH] sfc: Fix reading non-legacy supported link modes
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPLW+4=nO8oPRnGL5PhRJyRZ6gEhA0pe2SOjQ6hrwo=SV_z1zA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 at 17:21, Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Sun, Oct 17, 2021 at 07:16:57PM +0200, Erik Ekman wrote:
-> > Everything except the first 32 bits was lost when the pause flags were
-> > added. This makes the 50000baseCR2 mode flag (bit 34) not appear.
+On 19/10/2021 19:31:55+0300, Sam Protsenko wrote:
+> On Tue, 19 Oct 2021 at 19:20, Alexandre Belloni
+> <alexandre.belloni@bootlin.com> wrote:
 > >
-> > I have tested this with a 10G card (SFN5122F-R7) by modifying it to
-> > return a non-legacy link mode (10000baseCR).
->
-> Does this need a Fixes: tag? Should it be added to stable?
->
+> > On 19/10/2021 16:17:22+0300, Sam Protsenko wrote:
+> > > This RTC driver only accepts dates from 2000 to 2099 year. It starts
+> > > counting from 2000 to avoid Y2K problem, and S3C RTC only supports 100
+> > > years range. Provide this info to RTC framework.
+> > >
+> > > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > > ---
+> > >  drivers/rtc/rtc-s3c.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/drivers/rtc/rtc-s3c.c b/drivers/rtc/rtc-s3c.c
+> > > index 10e591794276..d9994efd70ef 100644
+> > > --- a/drivers/rtc/rtc-s3c.c
+> > > +++ b/drivers/rtc/rtc-s3c.c
+> > > @@ -454,6 +454,8 @@ static int s3c_rtc_probe(struct platform_device *pdev)
+> > >       }
+> > >
+> > >       info->rtc->ops = &s3c_rtcops;
+> > > +     info->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
+> > > +     info->rtc->range_max = RTC_TIMESTAMP_END_2099;
+> > >
+> >
+> > This change is missing the if (year < 0 || year >= 100)  removal in
+> > s3c_rtc_settime()
+> >
+> 
+> It's not actually removed in [PATCH 3/4] (if I'm following you
+> correctly), it was replaced with this code:
+> 
+> <<<<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
+>     if (rtc_tm.tm_year < 0 || rtc_tm.tm_year >= 100) {
+>         dev_err(dev, "rtc only supports 100 years\n");
+>         return -EINVAL;
+>     }
+> <<<<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
+> 
 
-The speed flags in use that can be lost are for 50G and 100G.
-The affected devices are ones based on the Solarflare EF100 networking
-IP in Xilinx FPGAs supporting 10/25/40/100-gigabit.
-I don't know how widespread these are, and if there might be enough
-users for adding this to stable.
+After setting the range, the core will never pass values outside of this
+range so it is not necessary to check in the driver anymore.
 
-The gsettings api code for sfc was added in 7cafe8f82438ced6d ("net:
-sfc: use new api ethtool_{get|set}_link_ksettings")
-and the bug was introduced then, but bits would only be lost after
-support for 25/50/100G was added in
-5abb5e7f916ee8d2d ("sfc: add bits for 25/50/100G supported/advertised speeds").
-Not sure which of these should be used for a Fixes tag.
-
-I only noticed this because I was using newer flags for signaling
-1G/10G fibre support in my other patch.
-
-Thanks
-/Erik
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
