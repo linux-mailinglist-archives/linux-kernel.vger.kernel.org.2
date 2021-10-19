@@ -2,133 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5623E433466
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBCE433469
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbhJSLJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235211AbhJSLJF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:09:05 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B54FC06161C;
-        Tue, 19 Oct 2021 04:06:53 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id e19so5353954ljk.12;
-        Tue, 19 Oct 2021 04:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tAD7zB8LM4f7YToBrIIqjU4Z5P1aP+J+3akIYooYFgI=;
-        b=iMsktpTc9SPawOT2NakNmiXvq50ESMo7mzuI1jCaBysrlgBv00bjDX4DC74IDX0p/B
-         IglEQEjsnbiXtKEm6Zf0FwxEH5OJmij/GKTFPdejO32sUW61IEVFjegxmb4BWA3tYzb4
-         ALLA/mo0JWxOme4cySkma44ncYG5SPScsVbS9me4eSvF008gRa5nUBwnYI61GZwzVUGA
-         CGdver6Za5JVZPGYjC6cEK/bL3kiGBW3ZMUZffBskeKLZBWthXF6ggAg+ZC5ruGpinpT
-         WA0A2yf/luRwP6PJOKyXLU73pYzH4BF7j/sn2sruVrcnEPGE56t8pxlGTLdWHUAp9ckI
-         sTrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tAD7zB8LM4f7YToBrIIqjU4Z5P1aP+J+3akIYooYFgI=;
-        b=x6wU+KGlCfrGj4ON2IgjbdfGBU0pG3YPu3rbl8QvJsU7yj9Nb90bWzGEVH2d6jVmk7
-         swHRsOCoBpZsgTmYLyx+D8OS4YThufzQypD/4i7wQuUgdo+6po735K6Uczf+kbnuCs25
-         StozQqgHnOaACFnWfK/o6hcA/1+DS3pHYVOutnNK7WoiHS1JN+d3LnRuJM0/jYEexFVh
-         CIVi+ru15yH5NJOqnW6ACjpddHffUZ/vx+xoCDTJhs2KbxuN8kLbuQ2zGq4D6saAqmGn
-         4uPWwk2blJLBL0bX1VDARfSGTilseVrQsSMs86ZWrtFfWjungv9uZsEgToyduDNnPgOq
-         /heQ==
-X-Gm-Message-State: AOAM530svpEps8APdjzG6LpyecqY+zctq2+u0GzKg1lBG+UmP7/keTor
-        ZzXPlcamrCDwAn6cdZyk/48=
-X-Google-Smtp-Source: ABdhPJyDg8JhJM+ACrmcGUWrMbttXSWDvW0F5ZT/zkT5/NpawPSvYfQ/Cb9JGS7Jdj2l9jPhGN8lhg==
-X-Received: by 2002:a05:651c:1589:: with SMTP id h9mr6215602ljq.151.1634641611570;
-        Tue, 19 Oct 2021 04:06:51 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id h25sm1911356ljg.24.2021.10.19.04.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 04:06:51 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 19 Oct 2021 13:06:49 +0200
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
-        Neil Brown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <20211019110649.GA1933@pc638.lan>
-References: <20211018114712.9802-1-mhocko@kernel.org>
- <20211018114712.9802-3-mhocko@kernel.org>
+        id S230123AbhJSLLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:11:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhJSLLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:11:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ED1D61355;
+        Tue, 19 Oct 2021 11:09:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634641758;
+        bh=mn7WNbuKWsMjpIEdlUS0qd7qI41WfZ+Micdfq5umJQQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ej2ULvfO2ILqca28DRYu8cQ/dKKsfI+QdEGLiNZ4Jw27jUDRVD3wsDCMmVdWz6XWP
+         0wOGgLpKJvnQvQAFD7IgpNEmyrwksGVBeXBK+LDKL3NJqguurreT/hJto0OHPmsRo+
+         Bo2G/FRotZ4natJFZmQ3vT/5HiG//rqAgfYszJE63pnBsebiCyyXFNkuMZUfdyjnsJ
+         JvwJNojwYqO6vbCgDTWLihXKyKL71wib1mlI9cAVycQvW6QmrviwAEUACPEhzBgFN8
+         Gd7K0hnfGMHWQtCr8ZjmFZzepSc0ayLUpk7jXKT6p5S9vqVrUCc4QQVpg44aa5lDP/
+         BrQmHY0QRgDOg==
+Date:   Tue, 19 Oct 2021 12:09:12 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 00/17] clocksource/arm_arch_timer: Add basic ARMv8.6
+ support
+Message-ID: <20211019110912.GF13251@willie-the-truck>
+References: <20211010114306.2910453-1-maz@kernel.org>
+ <20211011110243.GB4068@willie-the-truck>
+ <87mtnfptni.wl-maz@kernel.org>
+ <2cf7b564-63c2-ac6c-a083-f7ac2caab6fc@linaro.org>
+ <877decotwi.wl-maz@kernel.org>
+ <d0c55386-2f7f-a940-45bb-d80ae5e0f378@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018114712.9802-3-mhocko@kernel.org>
+In-Reply-To: <d0c55386-2f7f-a940-45bb-d80ae5e0f378@linaro.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Michal Hocko <mhocko@suse.com>
+On Mon, Oct 18, 2021 at 09:51:19AM +0200, Daniel Lezcano wrote:
+> On 17/10/2021 11:57, Marc Zyngier wrote:
+> > Hi Daniel,
+> > 
+> > On Sat, 16 Oct 2021 22:59:33 +0100,
+> > Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >>
+> >>
+> >> Hi Marc,
+> >>
+> >>
+> >> On 11/10/2021 15:39, Marc Zyngier wrote:
+> >>
+> >> [ ... ]
+> >>
+> >>> Thanks for that. All addressed now. I'll repost the series once we've
+> >>> addressed the question below.
+> >>>
+> >>>> How do you want to merge this series? It would be nice to have the arch
+> >>>> bits in the arm64 tree, if possible, as we'll be tripping over the cpucaps
+> >>>> stuff otherwise.
+> >>>
+> >>> I think we should keep the series together, as asm/arch_timer.h gets a
+> >>> beating all over the place, and there is no chance the arm64 bits at
+> >>> the end can apply (let alone work) on their own.
+> >>>
+> >>> So either Daniel would ack the series for it to go via arm64, or
+> >>> create a stable branch with the first 13 patches that would go in both
+> >>> the clocksource and arm64 trees.
+> >>>
+> >>> Daniel, any preference?
+> >>
+> >> yes, I prefer a stable branch for this series.
+> >>
+> >> https://git.linaro.org/people/daniel.lezcano/linux.git/log/?h=timers/drivers/armv8.6_arch_timer
+> >>
+> > 
+> > OK, this branch is now slightly outdated, since I have reworked it at
+> > Will's request. -rc5 is also too recent a base for arm64, which is
+> > usually based on -rc3.
+> > 
+> > I'll repost a new series today or tomorrow and provide tags for both
+> > you and Will to pull from.
 > 
-> Dave Chinner has mentioned that some of the xfs code would benefit from
-> kvmalloc support for __GFP_NOFAIL because they have allocations that
-> cannot fail and they do not fit into a single page.
+> Ok, thanks. I've updated the branch accordingly.
 > 
-> The larg part of the vmalloc implementation already complies with the
-> given gfp flags so there is no work for those to be done. The area
-> and page table allocations are an exception to that. Implement a retry
-> loop for those.
-> 
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> ---
->  mm/vmalloc.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 7455c89598d3..3a5a178295d1 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2941,8 +2941,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
->  	else if (!(gfp_mask & (__GFP_FS | __GFP_IO)))
->  		flags = memalloc_noio_save();
->  
-> -	ret = vmap_pages_range(addr, addr + size, prot, area->pages,
-> +	do {
-> +		ret = vmap_pages_range(addr, addr + size, prot, area->pages,
->  			page_shift);
-> +	} while ((gfp_mask & __GFP_NOFAIL) && (ret < 0));
->  
->  	if ((gfp_mask & (__GFP_FS | __GFP_IO)) == __GFP_IO)
->  		memalloc_nofs_restore(flags);
-> @@ -3032,6 +3034,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
->  		warn_alloc(gfp_mask, NULL,
->  			"vmalloc error: size %lu, vm_struct allocation failed",
->  			real_size);
-> +		if (gfp_mask && __GFP_NOFAIL)
-> +			goto again;
->  		goto fail;
->  	}
->  
-> -- 
-> 2.30.2
-> 
-I have checked the vmap code how it aligns with the __GFP_NOFAIL flag.
-To me it looks correct from functional point of view.
+> Let me know if everything is fine, so I can prepare a PR for the 'tip' tree.
 
-There is one place though it is kasan_populate_vmalloc_pte(). It does
-not use gfp_mask, instead it directly deals with GFP_KERNEL for its
-internal purpose. If it fails the code will end up in loping in the
-__vmalloc_node_range().
+Thanks, I've pulled that branch into the arm64 tree so please don't rebase
+it now.
 
-I am not sure how it is important to pass __GFP_NOFAIL into KASAN code.
-
-Any thoughts about it?
-
---
-Vlad Rezki
+Will
