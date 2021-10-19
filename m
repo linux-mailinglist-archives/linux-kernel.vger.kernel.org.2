@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978BC433C44
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EDC433C48
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbhJSQeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234130AbhJSQeU (ORCPT
+        id S234369AbhJSQeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:34:31 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:37624 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234326AbhJSQea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:34:20 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C606DC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:32:07 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id f4so1075808uad.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hahfVOoHWaswWYG6AOdwobrg+9oFJjD78UWkQSP5iBo=;
-        b=E1IZ9VcAEyedR+jX7NNNMbreSe4uG0nyM9N7yuY3sk9PSqHBG4TwSPqkZTMjnEt4Mb
-         EYxjZN2QTZ1MlUgbzFPWyM63ihdr0CEVc7xdZkZJ6vh8NcfJrtuC6aGBEhplNvqcFAAS
-         3LBlZ1AMJkq8shq0fYFNBegn1EGMvj3bI6/LTjPKYvBZkQ3mDvSrOlcZLXJwKMrLK2JY
-         QyY6EbHFuD+ZcTZS8Ar5KFCAxrfVu471RU28npVrh8BOf2QDxUPKusE9N+Cw+qhXvqTM
-         jklyQCsP87Vnm6mZ/PnuaijjL8XqAD/lTxLZyODdRoznKt9LvAFAk4yBdijAFl/h5OxW
-         D70Q==
+        Tue, 19 Oct 2021 12:34:30 -0400
+Received: by mail-pl1-f169.google.com with SMTP id n11so14057567plf.4;
+        Tue, 19 Oct 2021 09:32:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hahfVOoHWaswWYG6AOdwobrg+9oFJjD78UWkQSP5iBo=;
-        b=b1m7NWmvhSOqso9i1gawl83VX2gGc6UAEbXjRQ2q6dyJiIaag+COgWmjub8mJsH0j5
-         B6obAQVmCQ366xH+fwoOr58Q3LXigjw+WhxttO9I+gI+pXP61/5cY+4stI0BDXPHB8S9
-         nhaIhx1SDF46NPbDZMPiftfWMxp89OfpoYzJJ3ux4WniMEb7wk3z2QQDMoR9gVJDItFb
-         Mf2Nt0Xues9PN+VjtMk6i1wktFXAaUKu8hIk1cA2i+tyXFAyPw+hBppeW84/xNwhgr3u
-         KsGw9rE90pd4PkC8aixGX09Omj/Jl4pIvHyrcRyTtb39aqmQLDaPI2y1sE0UWZfabjP1
-         Uvdw==
-X-Gm-Message-State: AOAM5339ml1KKROoiBaq/L7jwmlhNRjjV2jBSlSVSYSjfzbpnVHomost
-        rcdQbDrS/6T9bbX97VRRosIpaEksb49inAY6u8uwIA==
-X-Google-Smtp-Source: ABdhPJzMkEBEDghfVNd7ZH6s9/IUFdm8ZBbkizGDdXiUVgEEgcgXk5j22Ilzem9n/a/TGoR5j2zFABdQFwTUh62jCyE=
-X-Received: by 2002:ab0:3303:: with SMTP id r3mr1049741uao.17.1634661126908;
- Tue, 19 Oct 2021 09:32:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hYlVhocQ1aZk9B0/3J3FlQ4trBjPDzNEY9FbqZF5OJk=;
+        b=0SpfNYYBdU8Dfz4qZs3ocLpjuc3Zd02bUSHTJEMMoxAwdzWS+cBhpX80cOcvM8NNi+
+         PxHFEHSFfVgxxLzdDcb+JeuKhzxiIrqg+P+RS/8k+SPYOrdFbNx7SM4Ji5gTZo598Jpx
+         sToTZDKTif+e7LXL8Iehrixpp5ODd60kfnioeFkpdnoh+sNhiFroSQcvLPQv0TSzKBkV
+         j7xGTTL5GwVmy73fMVwmg5o83ZCGPJAey3RiI+oxV0Jdx1ZSyiKVPIZVZPmBG+tzsnMj
+         GzQ3ZpLc0BNKFQZCBbtEMKacvp5cuab22LvOyyOQfKw+5BerF5h2oWFRu+lA7vTo7jB/
+         gRfg==
+X-Gm-Message-State: AOAM533dtDtgozZmlstFspAkzpze380mrer8BoLrTVXKYPRovdlFcZi2
+        4ZCe5O50AtNp49O4F2Qt0mKF6dCtb9E=
+X-Google-Smtp-Source: ABdhPJzToXdhztfjY4CDJmSrMmms3cF1E+As4C9p0FQVj9eMKKePxSK7ds17xvQ0ps/OJhPerjpqYA==
+X-Received: by 2002:a17:90b:3ecb:: with SMTP id rm11mr1057190pjb.110.1634661136122;
+        Tue, 19 Oct 2021 09:32:16 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:3f60:dc0f:50d7:6a24])
+        by smtp.gmail.com with ESMTPSA id q13sm17626995pfj.26.2021.10.19.09.32.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 09:32:15 -0700 (PDT)
+Subject: Re: [PATCH] scsi: core: ufs-pci: hide unused ufshcd_pci_restore
+ function
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Avri Altman <avri.altman@wdc.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211019153600.380220-1-arnd@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <dedd8a18-c6e2-c60d-96a3-fb8a61e3b14e@acm.org>
+Date:   Tue, 19 Oct 2021 09:32:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211019131724.3109-1-semen.protsenko@linaro.org>
- <20211019131724.3109-3-semen.protsenko@linaro.org> <YW7wTY5VOsPMAT3v@piout.net>
-In-Reply-To: <YW7wTY5VOsPMAT3v@piout.net>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 19 Oct 2021 19:31:55 +0300
-Message-ID: <CAPLW+4=nO8oPRnGL5PhRJyRZ6gEhA0pe2SOjQ6hrwo=SV_z1zA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-rtc@vger.kernel.org,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211019153600.380220-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 at 19:20, Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
->
-> On 19/10/2021 16:17:22+0300, Sam Protsenko wrote:
-> > This RTC driver only accepts dates from 2000 to 2099 year. It starts
-> > counting from 2000 to avoid Y2K problem, and S3C RTC only supports 100
-> > years range. Provide this info to RTC framework.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  drivers/rtc/rtc-s3c.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/rtc/rtc-s3c.c b/drivers/rtc/rtc-s3c.c
-> > index 10e591794276..d9994efd70ef 100644
-> > --- a/drivers/rtc/rtc-s3c.c
-> > +++ b/drivers/rtc/rtc-s3c.c
-> > @@ -454,6 +454,8 @@ static int s3c_rtc_probe(struct platform_device *pdev)
-> >       }
-> >
-> >       info->rtc->ops = &s3c_rtcops;
-> > +     info->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
-> > +     info->rtc->range_max = RTC_TIMESTAMP_END_2099;
-> >
->
-> This change is missing the if (year < 0 || year >= 100)  removal in
-> s3c_rtc_settime()
->
+On 10/19/21 8:35 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When CONFIG_PM_SLEEP is disabled, ufshcd_pci_restore() fails
+> to compile but is also unused:
+> 
+> drivers/scsi/ufs/ufshcd-pci.c: In function 'ufshcd_pci_restore':
+> drivers/scsi/ufs/ufshcd-pci.c:459:16: error: implicit declaration of function 'ufshcd_system_resume'; did you mean 'ufshcd_runtime_resume'? [-Werror=implicit-function-declaration]
+>    459 |         return ufshcd_system_resume(dev);
+>        |                ^~~~~~~~~~~~~~~~~~~~
+>        |                ufshcd_runtime_resume
+> At top level:
+> drivers/scsi/ufs/ufshcd-pci.c:452:12: error: 'ufshcd_pci_restore' defined but not used [-Werror=unused-function]
+>    452 | static int ufshcd_pci_restore(struct device *dev)
+>        |            ^~~~~~~~~~~~~~~~~~
+> 
+> Enclose it within the same #ifdef as the related code.
+> 
+> Fixes: 21431d5bdf15 ("scsi: core: ufs-pci: Force a full restore after suspend-to-disk")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/scsi/ufs/ufshcd-pci.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+> index d65e6cd7a28d..51424557810d 100644
+> --- a/drivers/scsi/ufs/ufshcd-pci.c
+> +++ b/drivers/scsi/ufs/ufshcd-pci.c
+> @@ -449,6 +449,7 @@ static struct ufs_hba_variant_ops ufs_intel_lkf_hba_vops = {
+>   	.device_reset		= ufs_intel_device_reset,
+>   };
+>   
+> +#ifdef CONFIG_PM_SLEEP
+>   static int ufshcd_pci_restore(struct device *dev)
+>   {
+>   	struct ufs_hba *hba = dev_get_drvdata(dev);
+> @@ -458,6 +459,7 @@ static int ufshcd_pci_restore(struct device *dev)
+>   
+>   	return ufshcd_system_resume(dev);
+>   }
+> +#endif
+>   
+>   /**
+>    * ufshcd_pci_shutdown - main function to put the controller in reset state
+> 
 
-It's not actually removed in [PATCH 3/4] (if I'm following you
-correctly), it was replaced with this code:
-
-<<<<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
-    if (rtc_tm.tm_year < 0 || rtc_tm.tm_year >= 100) {
-        dev_err(dev, "rtc only supports 100 years\n");
-        return -EINVAL;
-    }
-<<<<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
-
-But [PATCH 3/4] is mostly needed for [PATCH 4/4], so you can drop it
-if you don't like it. Or it might be kept as a cleanup.
-
-+
-+    if (rtc_tm.tm_year < 0 || rtc_tm.tm_year >= 100) {
-+        dev_err(dev, "rtc only supports 100 years\n");
-+        return -EINVAL;
-+    }
-
-> >       ret = devm_rtc_register_device(info->rtc);
-> >       if (ret)
-> > --
-> > 2.30.2
-> >
->
-> --
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
