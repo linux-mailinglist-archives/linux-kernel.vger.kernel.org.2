@@ -2,157 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF41432B30
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 02:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F225432B34
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 02:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhJSA1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 20:27:53 -0400
-Received: from mail-4316.protonmail.ch ([185.70.43.16]:34215 "EHLO
-        mail-4316.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhJSA1w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 20:27:52 -0400
-X-Greylist: delayed 4739 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 Oct 2021 20:27:51 EDT
-Date:   Tue, 19 Oct 2021 00:25:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1634603138; bh=cU/f3CXO6Nbi2g/nt9ZeUr6pVfoFWg57QTXnP5pDW8o=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=aelsAMwFlhH/uW+mutyk6sR22qJLu2loJ82gLa30t9Krs7PQiw/9cQfhFHZTc2ug7
-         xdWbv1o/WTpDTNYI3tLaYGak6ZDLnpPohVeqPu6xe1R4U1DGrb1Tv1U9H+jj3bdYAV
-         wfV9jA9okpszsAvHo6NswnD9P/V5o8Lqly8VQtq6SwZ0MviEe1qJunqymSZp5NwpJ9
-         W30airNl5oYHDbf4F2tAyZL6PCzFc4tpCmFA0ebXbWtgYH4T2W9Jze4+HZgNKzPm9C
-         LuMCBVxgLV5IM+Dl0FCQSx/rxNK4+yyF034ha1Sh6v0F8hMbl2jMCjmCoIHU/RjHRx
-         X+z1o4PN6AFPA==
-To:     Peter Zijlstra <peterz@infradead.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
-Message-ID: <20211019001845.85256-1-alobakin@pm.me>
-In-Reply-To: <20211018225905.86034-1-alobakin@pm.me>
-References: <20211013122217.304265366@infradead.org> <20211013123645.002402102@infradead.org> <YWmPCF+g+sF4+ieh@zn.tnic> <20211015165635.GH174703@worktop.programming.kicks-ass.net> <20211018225905.86034-1-alobakin@pm.me>
-MIME-Version: 1.0
+        id S230136AbhJSAaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 20:30:05 -0400
+Received: from mga05.intel.com ([192.55.52.43]:36582 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229529AbhJSAaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 20:30:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="314594812"
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="314594812"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 17:27:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="531049094"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga008.fm.intel.com with ESMTP; 18 Oct 2021 17:27:46 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 18 Oct 2021 17:27:45 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Mon, 18 Oct 2021 17:27:45 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Mon, 18 Oct 2021 17:27:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F/n3g5xOk/ICPHAxzdHALshnayVi+wgwh1TlcBnfC+EwXDXX8UKiqRuuUk5tyLIKeIsXdQjKPBkPCcXuydJbBSQpa7LzzSYksg9D302q4Gf6M3pf+xrBmXqNVKDMNfpcrtZw+W5jhgPOxecp34xu5Dmn82K8TFZyFQXwpARZyPPVjO4H2sVcomOyp3LFyB7P3IuJ6QMS7f5VsRo8ide2GyqV7aPJf8Z1pBnv4OK2Id82Vb+pOzBaud5ClphYT+qo75HWTUCFZKQ2fCe4AKTE9SiwxgMb/kqDu/ZcXqAakP5OKRne1IFBa+Baa/7cEVGd/u8TY4iJrPA52JHpF5nbQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oaaxcliJylt2aWBMZ4vB+6rzQQGrmYTNQitTuKKGx7g=;
+ b=NXHUFnZsQDh6uPh0QYx/B0FBF7NNCkHqKx904Jg1GyvjTsqKn/rJWdZg2hSDMBvEQtwSuaV3EOOM36qDTy++1QFj3NRlb94/eRIllTy1Yjyi4SHo0Unv+Dts9INELXH3KqsQqu+6YNuza2U2iwXHY0p7SybToCUHbpgikDXZxdfGkTnn44IkHgjcwEr/geWVLrJ72btbvQTMxmDQGxM/ZsxJhW9wWfxW5ElpIoffa1UzDDGpxrGeYiJ9NfRjJ0mH9O6QjlvLBGSn9NEv6OvkdWmbAjq6lVoqWo+sOL2Ydc5EOInSc8Ui4YulA3Zm75+v2iJ7e+bi3D8vsH/Ae8GfKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oaaxcliJylt2aWBMZ4vB+6rzQQGrmYTNQitTuKKGx7g=;
+ b=Zkp5XFUbqYU5jnvN4BYp38iI6VRo2JZsZLh5qr1Nm0+ZFfMKtnJBCX7la8YMeU0Bc37v2IJ2cjWTeX622OgpfMQZ7vDphqVbuB0hmM10mAADtOUXMOVKdyKSUrEzninscBZ1BRYtI1dmwvdSRbav7o+Ph4sdTkyC7L+KzTfra0Q=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+Received: from SA2PR11MB5163.namprd11.prod.outlook.com (2603:10b6:806:113::20)
+ by SN6PR11MB2861.namprd11.prod.outlook.com (2603:10b6:805:61::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
+ 2021 00:27:43 +0000
+Received: from SA2PR11MB5163.namprd11.prod.outlook.com
+ ([fe80::a039:c121:4dce:5def]) by SA2PR11MB5163.namprd11.prod.outlook.com
+ ([fe80::a039:c121:4dce:5def%7]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 00:27:43 +0000
+Subject: Re: [PATCH 1/1] spi: altera: Change to dynamic allocation of spi id
+To:     <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <trix@redhat.com>, <lgoncalv@redhat.com>, <yilun.xu@intel.com>,
+        <hao.wu@intel.com>, <matthew.gerlach@intel.com>
+References: <20211019002401.24041-1-russell.h.weight@intel.com>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <278aa054-9710-440e-df6e-96c7b835e2ab@intel.com>
+Date:   Mon, 18 Oct 2021 17:27:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+In-Reply-To: <20211019002401.24041-1-russell.h.weight@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: BYAPR05CA0010.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::23) To SA2PR11MB5163.namprd11.prod.outlook.com
+ (2603:10b6:806:113::20)
+MIME-Version: 1.0
+Received: from [10.0.2.4] (50.43.42.212) by BYAPR05CA0010.namprd05.prod.outlook.com (2603:10b6:a03:c0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.13 via Frontend Transport; Tue, 19 Oct 2021 00:27:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2425d2a3-2407-49c9-054b-08d9929743e2
+X-MS-TrafficTypeDiagnostic: SN6PR11MB2861:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR11MB28614D3BB8577F327EF9C580C5BD9@SN6PR11MB2861.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8TDog5C+YZ7xOmb5coxhqnPtMT1ep3RuqtYuQVvmRxqx9LydlvaPaYUO1XP1LdSw9t8MPMcWFiCfvpXufzuz/h6r2el+4aXJii197ZOi1KU9MpVdQhN2lCIj6um/5xXgasSqbq9ulSDWAx27IxstrBHO/XKYu++AjnhaCz4O1LXAryD9yaEakkbMSKpW+6Sp0lh5OxoQgTiInnGTwahUt51JzggwTstS4FzFuyj7uzVOloWjJ//grg/SjPmmvQ+BCM630gzFqhZlNIhybJX161oDoQYagIDw+o3OFvKl0wYY/wrQ9o7ug9SSz3O51WvBobzQ+PyeyWj6kKg/lsKO1JbimnJ9K0TsJJHiNeemGoTEw5j0yOVM60ceh+ORPR8mXZdTDiGHZ50GFgpQY1kuwive8+fLNV6lvA6O1fkunIFR6tyZPA4QVUSHcKTAJNCzqxtP3jd9xmWY9Ad2VZg43inD1U80dg87LSMpuaNYpEMtY2asn2RZvFMniKL1Cnt2WvewO3NoOh8omDAlgPkySyImXMRqWTIpgNXMjK+4SFjgQ19zVyJMncbXdb8cd6bQm3u6ceIZZxyfoKTtk4SvanCcVZ+rtoUOj86uRDelLMkgMKyL+QuGkjZBwQVBfVrYWG8H7slT1uQ8tl8yfBtzvNSc2/B7hj2XkmaOcGnBtDYqSYriM8MZ7HrwrTWYMzJmq0mhvGlGNJc0AIJzn8Mr2HMH2Dg9iF5Wz0vCDvfusDugU9skOREKpXQQBpE+fJ4K
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB5163.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6486002)(31696002)(82960400001)(508600001)(83380400001)(5660300002)(956004)(66556008)(31686004)(66476007)(16576012)(86362001)(107886003)(36756003)(8936002)(2906002)(66946007)(4326008)(8676002)(6666004)(26005)(186003)(316002)(53546011)(2616005)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L0JwMFB3WDZSbFhaMkl3YnI2ZVMrczR3ME0vSlZOWGdnVUpuRmRJZlZpemJ0?=
+ =?utf-8?B?Z05icmlsM2ZnYkszMmIySzdOcjdVSitlSlNUdzhWd2gyTGdUUkJybGUxNWpv?=
+ =?utf-8?B?UURwUllCNXNjaHJhQmpOZjlVRDRWdmhEK3VnZnJucStJbVU5VTYvZVQ0RnY1?=
+ =?utf-8?B?QzhnUmlweDJtMEJjWWxvZEJiM1UrS1UzczdHYlQxclI1ejZXVEE4NjJ4ajJ6?=
+ =?utf-8?B?TnNrMGV2MHRmWjE1U3VvdnFDSUdOMjJkYTBRbkttYThPMEdpUkZFeTV5ZTZq?=
+ =?utf-8?B?SGRMU2ZOVVJVUDB6d3ZZcndZeUF1L0wxUlI5VDM2M0pNVWFYcFNZNXJFaFZF?=
+ =?utf-8?B?VWNqRnZRaHJSclhSMHdVODJLc00ydFFackRyN0RkNG4vcGZkcGNlYUxCZzZS?=
+ =?utf-8?B?c0NRRTBOUERXak8xY0xYTjR0dk8xTnp1SERuS0R5c3NOUTJEejBXblFtaE5u?=
+ =?utf-8?B?MDNwK1ZRdTlRd0REam1YQVBtQmNiUzZweWV6dGpRUnBFTStPeVAyRm4xYUZ6?=
+ =?utf-8?B?YkpiWjJxQlRVY0dHM0lsNFI1a2dwZWQ5b1RVNVAvOWY1dXU4aXYzNHlqRXZ3?=
+ =?utf-8?B?WXFCRGs3aWQxdjVUZTY1Wld3ZVFCZkQ2VG96em1rRUlaa0pSV0tQMW1vN2Zz?=
+ =?utf-8?B?d0NybHJYMjNaU2s2ejBBK3Jvc05pcktISHdtRnpMY3ZNRkFmQ3JPbkFDUGxu?=
+ =?utf-8?B?NmRqa25OTCsySklsYkFYTjZTc2M1NDZHcXhFTDZhSjdYS29RVzhOVVZpazJY?=
+ =?utf-8?B?L1ozQ1RMYlZjM1hXdmF1R00ya25BN09HTW9EWVRiVXM1NXFLRHpNRE95Vm5J?=
+ =?utf-8?B?dVhjbWRHeWE5VUZxbTlIUTAydWp5V1J1NjhXUjZQMCtGNWE3Unlzczl3OHFt?=
+ =?utf-8?B?MUx6VGh0eEF1YjhOcEJOMkdlajkrbkozT1FkRFBxb05MVEZkWUpiZnQ1T1da?=
+ =?utf-8?B?TStEYnFJb2wxYmtLK1o4NFJyTk1CWlNObEdYYjRsVVF6TjdpWWlRTEREcFpY?=
+ =?utf-8?B?dGNJVGR2WlR2TlhnWk1SY1F0L0VyemdGYjN1T1VrRGQ0bzVXSUJhRyt5R25U?=
+ =?utf-8?B?QjJYQlRxSDZ6Ui9WLzdweGRDMkhmVFlldFNIaVBRV2lMVnBwL1Uvcmw4UEpv?=
+ =?utf-8?B?Z290eFpVb21CU2h2N2hCWmxxVXJva1FUeGdLSStQb2ZNcTFHSnRPdHFsRUZh?=
+ =?utf-8?B?ajdpbDNiVU1ONzUrb2luVkF2YlhvWExyV1IwL2t1Uy92NCtCZWpJZ0x5clJr?=
+ =?utf-8?B?RERkdDVBempDUkJUdHVVNVA1dkR3Y1BPZXJWSVZmeG9MWExwZ3NxS1FpbVlR?=
+ =?utf-8?B?cjNYL29QN2p2ZmdnYitDUk9pTktCUTAzaUVMYkZnY015ZmRwWXVHMVN1SDJ5?=
+ =?utf-8?B?WThzRFJkL1VmNHNsd1ZtbDlzUndTM25tZVdad291ME11eG1Oc0Rpd2JxVnMx?=
+ =?utf-8?B?eXVXUFczKy9VVVBqMkZTSDcrSE1WT3ZRZ2pNNi9MdksxNnJBQ3M5MTdmSDlY?=
+ =?utf-8?B?bndQek1pOHVMNWhYOWtSbWJDNnUzUmtSYzJLcU5SU2tQa3E4UVdueHU5amQx?=
+ =?utf-8?B?ZmswTVA1WDNqMThBSTVTRHo4YVkxbHJYYjIvSHBvZEtiVEFHZ0tMMmxZakZL?=
+ =?utf-8?B?eFFaSTBseFBMMlU0T2EzaUh2UVpyQkp0bTFrNDdPMTRnLzRSbXVvQVhqUFRR?=
+ =?utf-8?B?RGw2NEhLNVBPNkFUWE9GUnFTcGdyYlh5ckh2WW5keVpxNDMyM1pxek8wVDNw?=
+ =?utf-8?Q?Yyd20+ryauPB9IqvP6+HQ9QCoviGUWSApuP8Qgk?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2425d2a3-2407-49c9-054b-08d9929743e2
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB5163.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 00:27:43.1575
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: A/AN0M1VgXTIeUGJCHO2gIknRgybDag1hyJ9nJY4aoSv3oxz3AWq96XYCYMLX3loxbqLrYV2Bam7bqx67wwSdIxsid6uY+aO7hd5sOksraI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2861
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
-Date: Mon, 18 Oct 2021 23:06:35 +0000
+If there are no concerns with this patch, it will need to have the "cc stable"
+tag added for earlier kernels.
 
-Sorry for double posting, should've include this from the start.
-
-> Hi,
->
-> Gave it a spin with Clang/LLVM, and
->
-> > On Fri, Oct 15, 2021 at 04:24:08PM +0200, Borislav Petkov wrote:
-> > > On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
-> > > > +static int patch_retpoline(void *addr, struct insn *insn, u8 *byte=
-s)
-> > > > +{
-> > > > +=09void (*target)(void);
-> > > > +=09int reg, i =3D 0;
-> > > > +
-> > > > +=09if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
-> > > > +=09=09return -1;
-> > > > +
-> > > > +=09target =3D addr + insn->length + insn->immediate.value;
-> > > > +=09reg =3D (target - &__x86_indirect_thunk_rax) /
-> > > > +=09      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
->
-> this triggers
->
-> > > I guess you should compute those values once so that it doesn't have =
-to
-> > > do them for each function invocation. And it does them here when I lo=
-ok
-> > > at the asm it generates.
-> >
-> > Takes away the simplicity of the thing. It can't know these values at
-> > compile time (due to external symbols etc..) although I suppose LTO
-> > might be able to fix that.
-> >
-> > Other than that, the above is the trivial form of reverse indexing an
-> > array.
-> >
-> > > > +
-> > > > +=09if (WARN_ON_ONCE(reg & ~0xf))
-> > > > +=09=09return -1;
->
-> this:
->
-> WARN in patch_retpoline:408: addr pcibios_scan_specific_bus+0x196/0x200, =
-op 0xe8, reg 0xb88ca
-> WARN in patch_retpoline:408: addr xen_pv_teardown_msi_irqs+0x8d/0x120, op=
- 0xe8, reg 0xb88ca
-> WARN in patch_retpoline:408: addr __mptcp_sockopt_sync+0x7e/0x200, op 0xe=
-8, reg 0xb88ca
-> [...]
-> (thousands of them, but op =3D=3D 0xe8 && reg =3D=3D 0xb88ca are always t=
-he same)
-
-SMP alternatives: WARN in patch_retpoline:408: addr __strp_unpause+0x62/0x1=
-b0/0xffffffff92d20a12, op 0xe8, reg 0xb88ca
-SMP alternatives: insn->length: 5, insn->immediate.value: 0xffae0989
-SMP alternatives: target: 0xffffffff928013a0/__x86_indirect_thunk_r11+0x0/0=
-x20
-SMP alternatives: rax: 0xffffffff9223cd50, target - rax: 0x5c4650
-SMP alternatives: rcx - rax: 0x8
-
-Imm value and addr are different each time, the rest are the same.
-target is correct and even %pS works on it, but this distance
-between r11 and rax thunks (0x5c4650) doesn't look fine, as well as
-rcx - rax being 0x8. Thunks are 0x11 sized + alignment, should be
-0x20, and it is, according to vmlinux.map. Weird. Amps/&s?
-
-> I know this reg calculation is about to be replaced, but anyway ;)
->
-> > > Sanity-checking the alignment of those thunks?
-> >
-> > Nah, the target address of the instruction; if that's not a retpoline
-> > thunk (for whatever raisin) then the computation will not result in a
-> > valid reg and we should bail.
-> >
-> > > > +
-> > > > +=09i =3D emit_indirect(insn->opcode.bytes[0], reg, bytes);
-> > > > +=09if (i < 0)
-> > > > +=09=09return i;
-> > > > +
-> > > > +=09for (; i < insn->length;)
-> > > > +=09=09bytes[i++] =3D BYTES_NOP1;
-> > >
-> > > Why not:
-> > >
-> > >         nop_len =3D insn->length - i;
-> > >         if (nop_len) {
-> > >                 memcpy(&bytes[i], x86_nops[nop_len], nop_len);
-> > >                 i +=3D nop_len;
-> > >         }
-> > >
-> > > and then you save yourself the optimize_nops() call because it'll tak=
-e
-> > > the right-sized NOP directly.
-> >
-> > That's not immediately safe; if for some reason or other the original
-> > instrucion is 15 bytes long, and we generated 2 bytes, then we need 13
-> > nop bytes, the above will then do an out-of-bound array access (due to
-> > the nops array only doing 8 byte nops at max).
-> >
-> > I wanted this code to be simple and obvious.
->
-> Thanks,
-> Al
+I don't think it needs a "Fixes" tag, as the problem has been there since the
+driver was introduced.
 
 Thanks,
-Al
+- Russ
+
+On 10/18/21 5:24 PM, Russ Weight wrote:
+> The spi-altera driver has two flavors: platform and dfl. I'm seeing
+> a case where I have both device types in the same machine, and they
+> are conflicting on the SPI ID:
+>
+> ... kernel: couldn't get idr
+> ... kernel: WARNING: CPU: 28 PID: 912 at drivers/spi/spi.c:2920 spi_register_controller.cold+0x84/0xc0a
+>
+> Both the platform and dfl drivers use the parent's driver ID as the SPI
+> ID. In the error case, the parent devices are dfl_dev.4 and
+> subdev_spi_altera.4.auto. When the second spi-master is created, the
+> failure occurs because the SPI ID of 4 has already been allocated.
+>
+> Change the ID allocation to dynamic (by initializing bus_num to -1) to
+> avoid duplicate SPI IDs.
+>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+>  drivers/spi/spi-altera-dfl.c      | 2 +-
+>  drivers/spi/spi-altera-platform.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/spi/spi-altera-dfl.c b/drivers/spi/spi-altera-dfl.c
+> index 44fc9ee13fc7..ca40923258af 100644
+> --- a/drivers/spi/spi-altera-dfl.c
+> +++ b/drivers/spi/spi-altera-dfl.c
+> @@ -134,7 +134,7 @@ static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
+>  	if (!master)
+>  		return -ENOMEM;
+>  
+> -	master->bus_num = dfl_dev->id;
+> +	master->bus_num = -1;
+>  
+>  	hw = spi_master_get_devdata(master);
+>  
+> diff --git a/drivers/spi/spi-altera-platform.c b/drivers/spi/spi-altera-platform.c
+> index f7a7c14e3679..65147aae82a1 100644
+> --- a/drivers/spi/spi-altera-platform.c
+> +++ b/drivers/spi/spi-altera-platform.c
+> @@ -48,7 +48,7 @@ static int altera_spi_probe(struct platform_device *pdev)
+>  		return err;
+>  
+>  	/* setup the master state. */
+> -	master->bus_num = pdev->id;
+> +	master->bus_num = -1;
+>  
+>  	if (pdata) {
+>  		if (pdata->num_chipselect > ALTERA_SPI_MAX_CS) {
 
