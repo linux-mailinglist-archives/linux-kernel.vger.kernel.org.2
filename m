@@ -2,149 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66347432CE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96EA432CE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbhJSEsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 00:48:39 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24794 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229649AbhJSEsi (ORCPT
+        id S232799AbhJSEts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 00:49:48 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:41476 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229649AbhJSEtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 00:48:38 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19J0lkBd030356;
-        Tue, 19 Oct 2021 00:46:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=F3NvIPovc58gvUpLCRwP+4Md0M1oXII9/E8QXzN7mWs=;
- b=LZbidHJ+StCsuocwR0KDtqy1lUQt/+ZKv8a1lnZmkccWPjtNmDbDzBwkEzlQt4eY7fnm
- 1yidhqQZgAAnEgDR45o6FE2wLkSHVZQOWIB6btsqR3jXpZir/713WRgTWtWgX7MrGVnr
- v4SHavS/arMwVvOZTLwSM8PpeasQCpbFknfQUiAX9xruwmd8LRoPUzbEaf0D/XAyVOPW
- dhRGpOv5vB5WJbNHEc2vnxzW57KMjC0PapqrZloWQSoo7YRC7dfDVxGL74+kUocaoQiO
- pSctcxCl+xmFZCiTUX2OX/LCjfC9oEB9Dsbp/mJIcOo0PWxlS2JutQnB4B6Tes416T+/ /A== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bsksruab7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 00:46:05 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19J4hrO1030769;
-        Tue, 19 Oct 2021 04:46:03 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bqpc9mxga-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 04:46:03 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19J4k0v263766790
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 04:46:01 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3369A405B;
-        Tue, 19 Oct 2021 04:46:00 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CD3F0A405C;
-        Tue, 19 Oct 2021 04:45:58 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 19 Oct 2021 04:45:58 +0000 (GMT)
-Date:   Tue, 19 Oct 2021 10:15:57 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Nathan Lynch <nathanl@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        valentin.schneider@arm.com, peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, clg@kaod.org
-Subject: Re: [PATCH v2] powerpc/smp: do not decrement idle task preempt count
- in CPU offline
-Message-ID: <20211019044557.GK2004@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20211015173902.2278118-1-nathanl@linux.ibm.com>
+        Tue, 19 Oct 2021 00:49:46 -0400
+X-UUID: 8ad71689af5a4caaa262c52bc2324fe4-20211019
+X-UUID: 8ad71689af5a4caaa262c52bc2324fe4-20211019
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1024412807; Tue, 19 Oct 2021 12:47:31 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 19 Oct 2021 12:47:30 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 19 Oct 2021 12:47:30 +0800
+Message-ID: <6c7879c2db62cad0f6de1452b5d3b39cc8c58a2a.camel@mediatek.com>
+Subject: Re: [PATCH v5 4/5] arm64: dts: mediatek: add clock support for
+ mt7986a
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Sam Shih <sam.shih@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Ikjoon Jang <ikjn@chromium.org>,
+        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>
+CC:     John Crispin <john@phrozen.org>, Ryder Lee <Ryder.Lee@mediatek.com>
+Date:   Tue, 19 Oct 2021 12:47:30 +0800
+In-Reply-To: <20211018114701.13984-5-sam.shih@mediatek.com>
+References: <20211018114701.13984-1-sam.shih@mediatek.com>
+         <20211018114701.13984-5-sam.shih@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20211015173902.2278118-1-nathanl@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QyzmVIuTEKulrvgkkm_j2sQprhgxj-6Z
-X-Proofpoint-ORIG-GUID: QyzmVIuTEKulrvgkkm_j2sQprhgxj-6Z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-18_07,2021-10-18_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- spamscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 suspectscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110190026
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Nathan Lynch <nathanl@linux.ibm.com> [2021-10-15 12:39:02]:
+Hi Sam,
 
-> With PREEMPT_COUNT=y, when a CPU is offlined and then onlined again, we
-> get:
-> 
-> BUG: scheduling while atomic: swapper/1/0/0x00000000
-> no locks held by swapper/1/0.
-> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.15.0-rc2+ #100
-> Call Trace:
->  dump_stack_lvl+0xac/0x108
->  __schedule_bug+0xac/0xe0
->  __schedule+0xcf8/0x10d0
->  schedule_idle+0x3c/0x70
->  do_idle+0x2d8/0x4a0
->  cpu_startup_entry+0x38/0x40
->  start_secondary+0x2ec/0x3a0
->  start_secondary_prolog+0x10/0x14
-> 
-> This is because powerpc's arch_cpu_idle_dead() decrements the idle task's
-> preempt count, for reasons explained in commit a7c2bb8279d2 ("powerpc:
-> Re-enable preemption before cpu_die()"), specifically "start_secondary()
-> expects a preempt_count() of 0."
-> 
-> However, since commit 2c669ef6979c ("powerpc/preempt: Don't touch the idle
-> task's preempt_count during hotplug") and commit f1a0a376ca0c ("sched/core:
-> Initialize the idle task with preemption disabled"), that justification no
-> longer holds.
-> 
-> The idle task isn't supposed to re-enable preemption, so remove the
-> vestigial preempt_enable() from the CPU offline path.
-> 
-> Tested with pseries and powernv in qemu, and pseries on PowerVM.
-> 
-> Fixes: 2c669ef6979c ("powerpc/preempt: Don't touch the idle task's preempt_count during hotplug")
-> Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> +		infracfg: infracfg@10001000 {
+> +			compatible = "mediatek,mt7986-infracfg",
+> "syscon";
+> +			reg = <0 0x10001000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		topckgen: topckgen@1001b000 {
+> +			compatible = "mediatek,mt7986-topckgen",
+> "syscon";
+> +			reg = <0 0x1001B000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
 
-Looks good to me.
+please use lowercase hex value.
+> +
+>  		watchdog: watchdog@1001c000 {
+>  			compatible = "mediatek,mt7986-wdt",
+>  				     "mediatek,mt6589-wdt";
+> @@ -108,11 +122,31 @@ watchdog: watchdog@1001c000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		apmixedsys: apmixedsys@1001e000 {
+> +			compatible = "mediatek,mt7986-apmixedsys";
+> +			reg = <0 0x1001E000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		sgmiisys0: syscon@10060000 {
+> +			compatible = "mediatek,mt7986-sgmiisys_0",
+> +				     "syscon";
+> +			reg = <0 0x10060000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		sgmiisys1: syscon@10070000 {
+> +			compatible = "mediatek,mt7986-sgmiisys_1",
+> +				     "syscon";
+> +			reg = <0 0x10070000 0 0x1000>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+>  		trng: trng@1020f000 {
+>  			compatible = "mediatek,mt7986-rng",
+>  				     "mediatek,mt7623-rng";
+>  			reg = <0 0x1020f000 0 0x100>;
+> -			clocks = <&system_clk>;
+> +			clocks = <&infracfg CLK_INFRA_TRNG_CK>;
+>  			clock-names = "rng";
+>  			status = "disabled";
+>  		};
+> @@ -122,7 +156,13 @@ uart0: serial@11002000 {
+>  				     "mediatek,mt6577-uart";
+>  			reg = <0 0x11002000 0 0x400>;
+>  			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks = <&system_clk>;
+> +			clocks = <&infracfg CLK_INFRA_UART0_SEL>,
+> +				 <&infracfg CLK_INFRA_UART0_CK>;
+> +			clock-names = "baud", "bus";
+> +			assigned-clocks = <&topckgen CLK_TOP_UART_SEL>,
+> +					  <&infracfg
+> CLK_INFRA_UART0_SEL>;
+> +			assigned-clock-parents = <&topckgen
+> CLK_TOP_XTAL>,
+> +						 <&topckgen
+> CLK_TOP_UART_SEL>;
+>  			status = "disabled";
+>  		};
+>  
+> @@ -131,7 +171,11 @@ uart1: serial@11003000 {
+>  				     "mediatek,mt6577-uart";
+>  			reg = <0 0x11003000 0 0x400>;
+>  			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks = <&system_clk>;
+> +			clocks = <&infracfg CLK_INFRA_UART1_SEL>,
+> +				 <&infracfg CLK_INFRA_UART1_CK>;
+> +			clock-names = "baud", "bus";
+> +			assigned-clocks = <&infracfg
+> CLK_INFRA_UART1_SEL>;
+> +			assigned-clock-parents = <&topckgen
+> CLK_TOP_F26M_SEL>;
+>  			status = "disabled";
+>  		};
+>  
+> @@ -140,10 +184,24 @@ uart2: serial@11004000 {
+>  				     "mediatek,mt6577-uart";
+>  			reg = <0 0x11004000 0 0x400>;
+>  			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks = <&system_clk>;
+> +			clocks = <&infracfg CLK_INFRA_UART2_SEL>,
+> +				 <&infracfg CLK_INFRA_UART2_CK>;
+> +			clock-names = "baud", "bus";
+> +			assigned-clocks = <&infracfg
+> CLK_INFRA_UART2_SEL>;
+> +			assigned-clock-parents = <&topckgen
+> CLK_TOP_F26M_SEL>;
+>  			status = "disabled";
+>  		};
+>  
+> +		ethsys: syscon@15000000 {
+> +			 #address-cells = <1>;
+> +			 #size-cells = <1>;
+> +			 compatible = "mediatek,mt7986-ethsys",
+> +				      "syscon";
+> +			 reg = <0 0x15000000 0 0x1000>;
+> +			 #clock-cells = <1>;
+> +			 #reset-cells = <1>;
+> +		};
+> +
+>  	};
+>  
+>  };
 
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-
-> ---
-> 
-> Notes:
->     Changes since v1:
->     
->     - remove incorrect Fixes: tag, add Valentin's r-b.
-> 
->  arch/powerpc/kernel/smp.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 9cc7d3dbf439..605bab448f84 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -1730,8 +1730,6 @@ void __cpu_die(unsigned int cpu)
-> 
->  void arch_cpu_idle_dead(void)
->  {
-> -	sched_preempt_enable_no_resched();
-> -
->  	/*
->  	 * Disable on the down path. This will be re-enabled by
->  	 * start_secondary() via start_secondary_resume() below
-> -- 
-> 2.31.1
-> 
-
--- 
-Thanks and Regards
-Srikar Dronamraju
