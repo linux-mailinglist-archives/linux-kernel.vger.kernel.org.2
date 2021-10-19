@@ -2,119 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC6B4334E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F5B4334EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbhJSLlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:41:47 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:45424
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235415AbhJSLlj (ORCPT
+        id S235385AbhJSLnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230231AbhJSLnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:41:39 -0400
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4E8053FFF6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 11:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634643566;
-        bh=nX+hgZuu9fE6BhknlkkEZCMXVcIn2J/gsqHaBdOU6g0=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=KegxTO01XyXg5ktc6Scv/x72tjEP9P1n5XL0+Q7AvS3G8wXjYAYecGUmYOscCdNs5
-         CjFzMXNg6NYoz+o/QcMkFXuaqYt8dwCIbYXqQK7OuE4G5vYapzNezod8zU3CbLaD0W
-         yqDtdwTheXtuheJhuti7dOmRY99lvKIXcnuYcJeVfAYGbS+C43S7cCkDwYee8vNA5+
-         xGVAfarmbm62pD0HhTJDWBHxrMx8vbCDzeytq2p0n9p8EnROsM91EgnlWMIcMvzeHb
-         5m2hV7sqo6SfZnHwhkqwE4ixMGCCci0kqrYmXBFMmvgMircmDw0+0oaq4cRaUJWiIX
-         u/P69PKR15Agg==
-Received: by mail-pg1-f200.google.com with SMTP id n22-20020a6563d6000000b0029261ffde9bso11473881pgv.22
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:39:26 -0700 (PDT)
+        Tue, 19 Oct 2021 07:43:07 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F165EC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:40:54 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x192so6699406lff.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:40:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=p/y6DgAZycykowwrleZpy70Yak++qIhNqJ9ImugcYMs=;
+        b=gbZb/rIEkq16uEpMdDfbn531uPXxDE2vXRTZ1At7zc8FyijjHf+TaWP9WSCNsx9CRl
+         Ax+uAwkmd3zCdbRdDaM3dpQ6QH2wtz6LdoMLA6+gjkzDI8FsGa3Gg4WLu7V9K5SrUrby
+         y6A+UktAxyprVLbdSpurxxaZ8mnWtv03QgVC25vrqwdz6F5CjpkyH0G67ZL5o2xSalbx
+         z2YLwvEkGXJDZVRENSUyiANgZXnd7Hl65An187cV1TSi/tcYxCoWRVEqIP0BwzqCyQr0
+         hoZBxk1g0lrSFu4sw+cYxe+pvM8G9j1I2iiX+c9B9ryltLhmQtiX2zDR77yR1QolGdKK
+         MOng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nX+hgZuu9fE6BhknlkkEZCMXVcIn2J/gsqHaBdOU6g0=;
-        b=6mfNOvU3sS0sVYLibjW6AhtrdBY9v9G9bFy1P8LQmM/XNLz2TAG2KoY/PxST18xk2S
-         rsd9b0fJA1PT/keqxWEyLLaS5IKtsEapKG0rOoV62lKWFKIyvJv3bXNfjQQt5zT8UAnB
-         /R228FC4ILYWa348HQgVke18/6OEqOX9w1yDrD7ebmD2SSeZ+hGUzvKilOm+7IotL/v3
-         +5XjbP4CcAkG8z9OcYpiP8gvdq1mv4t6RiEuFTNKm+GrbHzQ2UKJRltdT69BvKuGfLz/
-         LBqMow+WK73FiP8L4p6Nf/cvC69494YLmRR+8j5ohpzwzlc20XaM71skXPRXHGErC7cP
-         A65Q==
-X-Gm-Message-State: AOAM533OawKB5hasyMQ+EgwDZ8Vp/dl0lPR9r0BUWt9dYiEujp55aoJT
-        C9b/lCUh61WIVpjj2M+2gC1Nf8yKhz3IerySjVusmSb+OcK6I02H2deKZBnT7RvHyLVT79V717U
-        0uJgTQe+0QtxHrZ6B+WwNBGLg8pd6wlw49tfnApz5XA==
-X-Received: by 2002:a17:902:e282:b0:13f:62b1:9a06 with SMTP id o2-20020a170902e28200b0013f62b19a06mr32926772plc.1.1634643564635;
-        Tue, 19 Oct 2021 04:39:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzyXR2OsgUdzLBM3eT6ViBbK3B7Gx8dj2DyWABV4UYbeu2DDl1H4b7QR4zEJNVXlKGlLVsziw==
-X-Received: by 2002:a17:902:e282:b0:13f:62b1:9a06 with SMTP id o2-20020a170902e28200b0013f62b19a06mr32926746plc.1.1634643564357;
-        Tue, 19 Oct 2021 04:39:24 -0700 (PDT)
-Received: from [192.168.1.124] ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id y18sm15951322pff.184.2021.10.19.04.39.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 04:39:23 -0700 (PDT)
-Subject: Re: [PATCH][linux-next] net/smc: prevent NULL dereference in
- smc_find_rdma_v2_device_serv()
-To:     Karsten Graul <kgraul@linux.ibm.com>, linux-s390@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211018183128.17743-1-tim.gardner@canonical.com>
- <ceb1a1ce-b4a4-7908-7d18-832cca1bfbe2@linux.ibm.com>
-From:   Tim Gardner <tim.gardner@canonical.com>
-Message-ID: <00975c56-da9a-2583-ac42-ae6a83e40050@canonical.com>
-Date:   Tue, 19 Oct 2021 05:39:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=p/y6DgAZycykowwrleZpy70Yak++qIhNqJ9ImugcYMs=;
+        b=7qCQTJtCxGu5JPUYOCg6VuQfF0y+qBD7ZSz/jhXIcGTBY5LzVm0zIfte5NYJYdvFan
+         C+GbkbNvWJ1Ovm7g4OfD7LdvMvbKyYnikizrJOmArfVPTSTbbTib4Dl1OekMF0lnclhs
+         b4NLdeTM432Z53jkoZwYRQwqSlbbpZhylmF1kEgp4lTiF8f4ulTS4KPok++wU+PUy7mL
+         34CLR0MatXaXH5qlczZgy0n8xNfWv0iwCoUD6oTHmYp8y9aaJGnC87hJ2Gi3eCMuhnvc
+         dMJie7gl3JhAvu1P323h74kfutI9G1ldPjHO6RXwRyXM8vocYGHh8CTU3kKBxV4GAvyA
+         rc1Q==
+X-Gm-Message-State: AOAM530kNEnY9oYGEg2ryrloPzb+gXcK86YzNPtQhPn3+cIF/tyXUwwN
+        OGt4qbUnniw3/bgcqRGhl99KxWdPYWqSDJoweAJ7GA==
+X-Google-Smtp-Source: ABdhPJyiZ8hxPaWs5ZGwktR/58DXEHsnrg2iCZG7+dtLEFQZezq+DvEjCTIwbhL0fm341kLJAfk/05h60QX3kuXQ9G4=
+X-Received: by 2002:a05:6512:3084:: with SMTP id z4mr5314051lfd.167.1634643653278;
+ Tue, 19 Oct 2021 04:40:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ceb1a1ce-b4a4-7908-7d18-832cca1bfbe2@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-21-digetx@gmail.com>
+ <CAPDyKFoF2QxZss_h9B1NFqOqgeF=TQ6LajCedGiJ9_P8X5M0NA@mail.gmail.com>
+ <0bcbcd3d-2154-03d2-f572-dc9032125c26@gmail.com> <CAPDyKFohA9iu2UQfwoc0pCrCGupdwnUTWjKOtP09_C2KaFSo8w@mail.gmail.com>
+ <073114ea-490b-89a9-e82d-852b34cb11df@gmail.com>
+In-Reply-To: <073114ea-490b-89a9-e82d-852b34cb11df@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 19 Oct 2021 13:40:16 +0200
+Message-ID: <CAPDyKFoOMvEW0o6=-_bYKhwUcbfeTD4qu-K2tfkdXiR0bErHsw@mail.gmail.com>
+Subject: Re: [PATCH v13 20/35] mtd: rawnand: tegra: Add runtime PM and OPP support
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 17 Oct 2021 at 10:38, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 01.10.2021 18:01, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Fri, 1 Oct 2021 at 16:35, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>
+> >> 01.10.2021 17:24, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wro=
+te:
+> >>>>
+> >>>> The NAND on Tegra belongs to the core power domain and we're going t=
+o
+> >>>> enable GENPD support for the core domain. Now NAND must be resumed u=
+sing
+> >>>> runtime PM API in order to initialize the NAND power state. Add runt=
+ime PM
+> >>>> and OPP support to the NAND driver.
+> >>>>
+> >>>> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> >>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>>> ---
+> >>>>  drivers/mtd/nand/raw/tegra_nand.c | 55 ++++++++++++++++++++++++++--=
+---
+> >>>>  1 file changed, 47 insertions(+), 8 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/ra=
+w/tegra_nand.c
+> >>>> index 32431bbe69b8..098fcc9cb9df 100644
+> >>>> --- a/drivers/mtd/nand/raw/tegra_nand.c
+> >>>> +++ b/drivers/mtd/nand/raw/tegra_nand.c
+> >>>> @@ -17,8 +17,11 @@
+> >>>>  #include <linux/mtd/rawnand.h>
+> >>>>  #include <linux/of.h>
+> >>>>  #include <linux/platform_device.h>
+> >>>> +#include <linux/pm_runtime.h>
+> >>>>  #include <linux/reset.h>
+> >>>>
+> >>>> +#include <soc/tegra/common.h>
+> >>>> +
+> >>>>  #define COMMAND                                        0x00
+> >>>>  #define   COMMAND_GO                           BIT(31)
+> >>>>  #define   COMMAND_CLE                          BIT(30)
+> >>>> @@ -1151,6 +1154,7 @@ static int tegra_nand_probe(struct platform_de=
+vice *pdev)
+> >>>>                 return -ENOMEM;
+> >>>>
+> >>>>         ctrl->dev =3D &pdev->dev;
+> >>>> +       platform_set_drvdata(pdev, ctrl);
+> >>>>         nand_controller_init(&ctrl->controller);
+> >>>>         ctrl->controller.ops =3D &tegra_nand_controller_ops;
+> >>>>
+> >>>> @@ -1166,14 +1170,22 @@ static int tegra_nand_probe(struct platform_=
+device *pdev)
+> >>>>         if (IS_ERR(ctrl->clk))
+> >>>>                 return PTR_ERR(ctrl->clk);
+> >>>>
+> >>>> -       err =3D clk_prepare_enable(ctrl->clk);
+> >>>> +       err =3D devm_pm_runtime_enable(&pdev->dev);
+> >>>> +       if (err)
+> >>>> +               return err;
+> >>>> +
+> >>>> +       err =3D devm_tegra_core_dev_init_opp_table_common(&pdev->dev=
+);
+> >>>> +       if (err)
+> >>>> +               return err;
+> >>>> +
+> >>>> +       err =3D pm_runtime_resume_and_get(&pdev->dev);
+> >>>>         if (err)
+> >>>>                 return err;
+> >>>>
+> >>>>         err =3D reset_control_reset(rst);
+> >>>>         if (err) {
+> >>>>                 dev_err(ctrl->dev, "Failed to reset HW: %d\n", err);
+> >>>> -               goto err_disable_clk;
+> >>>> +               goto err_put_pm;
+> >>>>         }
+> >>>>
+> >>>>         writel_relaxed(HWSTATUS_CMD_DEFAULT, ctrl->regs + HWSTATUS_C=
+MD);
+> >>>> @@ -1188,21 +1200,19 @@ static int tegra_nand_probe(struct platform_=
+device *pdev)
+> >>>>                                dev_name(&pdev->dev), ctrl);
+> >>>>         if (err) {
+> >>>>                 dev_err(ctrl->dev, "Failed to get IRQ: %d\n", err);
+> >>>> -               goto err_disable_clk;
+> >>>> +               goto err_put_pm;
+> >>>>         }
+> >>>>
+> >>>>         writel_relaxed(DMA_MST_CTRL_IS_DONE, ctrl->regs + DMA_MST_CT=
+RL);
+> >>>>
+> >>>>         err =3D tegra_nand_chips_init(ctrl->dev, ctrl);
+> >>>>         if (err)
+> >>>> -               goto err_disable_clk;
+> >>>> -
+> >>>> -       platform_set_drvdata(pdev, ctrl);
+> >>>> +               goto err_put_pm;
+> >>>>
+> >>>
+> >>> There is no corresponding call pm_runtime_put() here. Is it
+> >>> intentional to always leave the device runtime resumed after ->probe(=
+)
+> >>> has succeeded?
+> >>>
+> >>> I noticed you included some comments about this for some other
+> >>> drivers, as those needed more tweaks. Is that also the case for this
+> >>> driver?
+> >>
+> >> Could you please clarify? There is pm_runtime_put() in both probe-erro=
+r
+> >> and remove() code paths here.
+> >
+> > I was not considering the error path of ->probe() (or ->remove()), but
+> > was rather thinking about when ->probe() completes successfully. Then
+> > you keep the device runtime resumed, because you have called
+> > pm_runtime_resume_and_get() for it.
+> >
+> > Shouldn't you have a corresponding pm_runtime_put() in ->probe(),
+> > allowing it to be runtime suspended, until the device is really needed
+> > later on. No?
+>
+> This driver doesn't support active power management. I don't have Tegra
+> hardware that uses NAND storage for testing, so it's up to somebody else
+> to implement dynamic power management. NAND doesn't require high
+> voltages, so it's fine to keep the old driver behaviour by keeping
+> hardware resumed since the probe time.
 
+Alright, fair enough and thanks for clarifying!
 
-On 10/19/21 12:33 AM, Karsten Graul wrote:
-> On 18/10/2021 20:31, Tim Gardner wrote:
->> Coverity complains of a possible NULL dereference in smc_find_rdma_v2_device_serv().
->>
->> 1782        smc_v2_ext = smc_get_clc_v2_ext(pclc);
->> CID 121151 (#1 of 1): Dereference null return value (NULL_RETURNS)
->> 5. dereference: Dereferencing a pointer that might be NULL smc_v2_ext when calling smc_clc_match_eid. [show details]
->> 1783        if (!smc_clc_match_eid(ini->negotiated_eid, smc_v2_ext, NULL, NULL))
->> 1784                goto not_found;
->>
->> Fix this by checking for NULL.
-> 
-> Hmm that's a fundamental question for me: do we want to make the code checkers happy?
-> While I understand that those warnings give an uneasy feeling I am not sure
-> if the code should have additional (unneeded) checks only to avoid them.
-> 
-
-Coverity produces a lot of false positives. I thought this one might be 
-legitimate, but if you're comfortable that its not an issue then I'm OK 
-with that.
-
-> In this case all NULL checks are initially done in smc_listen_v2_check(),
-> afterwards no more NULL checks are needed. When we would like to add them
-> then a lot more checks are needed, e.g. 3 times in smc_find_ism_v2_device_serv()
-> (not sure why coverity does not complain about them, too).
-> 
-> Thoughts?
-> 
-
-Coverity probably has produced a report from the other call sites if 
-you've used a similar pattern, I just hadn't gotten to them yet.
-
-I'll just mark them all as false positives.
-
-rtg
--- 
------------
-Tim Gardner
-Canonical, Inc
+Kind regards
+Uffe
