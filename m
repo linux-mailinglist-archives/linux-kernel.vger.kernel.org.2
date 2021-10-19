@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25092433DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DB0433DAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbhJSRmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:42:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231586AbhJSRmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:42:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C59E161355;
-        Tue, 19 Oct 2021 17:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634665238;
-        bh=CmkDVF4O9DMzn3vmYEeic/chg5gWAxEK0NpetX5xAgM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DBo0vktcw0U8GURxAuDOJliOjqa1JqTXkSp2AFYLzOzqq5aWyeBYAQWsXBUCMTTog
-         Rjq9ISOlFMfpojsmXmhCr3eT0lfjvDRksstB2U5F1ypuvPbYsVoH1O/88CERD5JNel
-         lw1VE0P+X1JgIBkXzp/4FhhUS/sOQ21mL5SpYP5HnSpLfjK6fswf6mpZ3mpFsBz08a
-         CqgqQlY/RD687qQySBFS5NSlqQOArudqL3fqxP7v98TDorukMUGGD53u7lmrl14ZzM
-         ifkbYKlmUKhAxJC0UTNlgVVVvtFNJ19Dm4qPqopFgGUOeo56Rt3HpnBlaHPOyZcdCj
-         jis2eLJr7WQOA==
-Date:   Tue, 19 Oct 2021 10:40:33 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] regulator: lp872x: fix enum conversion warning
-Message-ID: <YW8DEXD1bjW73coE@archlinux-ax161>
-References: <20211019153851.509626-1-arnd@kernel.org>
+        id S234712AbhJSRom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231586AbhJSRol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:44:41 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE0EC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:42:27 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id r18so16090442edv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kryo-se.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FBFB5TpvCM2ffvAvKnFSlCgvqyq0TJ9lHk49iX31/z4=;
+        b=wtDfIxAopPK3YdfWAUQxFYYuLqtBo5X09KwU4oRyNkF7nQ3w6UHKKBOR4Ss+YMbbz/
+         qxnISxkdk+5MlWe6Rqx/CLRN0StexKNEXbC8OfMGlA0jR7j6DjgVhoXuhav1jGTXfxiH
+         +9q1oyxgkI7HrI9WHfI54im6ovTg4kQWkndQvLF7xRz7MVe8YvInZsoKCU9wj88F8kDC
+         IWJ2Xp9sBk0dnKfPDznxlhHvOnpGEkiMEmuJEOS+DMBRlz7cGc45QJmay+soj5eah+sj
+         XHz3RJP7CvHhTDm8/kgY7a+KZVTbN1nNhYT+9s2XgnNk+3Mz2Yz7Qt7XzcahkKBdUznm
+         kE+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FBFB5TpvCM2ffvAvKnFSlCgvqyq0TJ9lHk49iX31/z4=;
+        b=ZOAiSKQpBONt4f9rO7Qdoe2CzUI8k6CCfDYhfnSxvtnUreVI674O0lzQofE170cACK
+         i5Q0sq1HMi9wQtX41qkK6uo/xfRvhDRFWzIjpfRP0udFlCCFGwiIQWnA1CK+XAZ/L0ap
+         B8IOcNDyDIQFMSuqjlFvoIVQT9tG5dbciqpEuNgDfvTGvst0B90V1EQFTy8+FfvkJeot
+         IM7DFsOkRMg3F7y+btszLPSDH+FwZ8OyVbvRuv316Qpa17l9Y6zssSIjySMXi6/Y5Gr1
+         /r3WlIfsHRqxegGgDCFMrnOM5a5TP7PiGSypD39EY5VS9wf3UEQRI2xoR6d2ZqOy+dQe
+         NsGg==
+X-Gm-Message-State: AOAM530kAr7b30RaryFwJfKxBU3kw9t6pbbiHMlctQ7OsqFs21wA2HIq
+        ZF49fvmPBO0hLHmhlUy5IXM6Vm7Ts0cLYAzkp0cuUw==
+X-Google-Smtp-Source: ABdhPJzfo2ze0heRi2KfK1PcOqBhINxGfn0+3IQEhHpQwsxkzsNldAQt0r8Dih8slmmDCBVknTt+nWf7OCHz68hJb8E=
+X-Received: by 2002:a17:907:168c:: with SMTP id hc12mr39661473ejc.570.1634665317380;
+ Tue, 19 Oct 2021 10:41:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019153851.509626-1-arnd@kernel.org>
+References: <20211017171657.85724-1-erik@kryo.se> <YW7idC0/+zq6dDNv@lunn.ch>
+In-Reply-To: <YW7idC0/+zq6dDNv@lunn.ch>
+From:   Erik Ekman <erik@kryo.se>
+Date:   Tue, 19 Oct 2021 19:41:46 +0200
+Message-ID: <CAGgu=sCBUU29tkjqOP9j7EZJL-T4O6NoTDNB+-PFNhUkOTdWuw@mail.gmail.com>
+Subject: Re: [PATCH] sfc: Fix reading non-legacy supported link modes
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 05:38:43PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang warns that the argument to devm_gpiod_get_optional()
-> is the wrong type:
-> 
-> drivers/regulator/lp872x.c:689:57: error: implicit conversion from enumeration type 'enum lp872x_dvs_state' to different enumeration type 'enum gpiod_flags' [-Werror,-Wenum-conversion]
->         dvs->gpio = devm_gpiod_get_optional(lp->dev, "ti,dvs", pinstate);
->                     ~~~~~~~~~~~~~~~~~~~~~~~                    ^~~~~~~~
-> 
-> The enum value is specifcally chosen to be the same here, but
-> the compiler only sees the mismatched types. This could be
-> worked around using another ?: expression, but it seems easiest
-> to replace the assignment with a macro.
-> 
-> Fixes: 72bf80cf09c4 ("regulator: lp872x: replacing legacy gpio interface for gpiod")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Tue, 19 Oct 2021 at 17:21, Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Sun, Oct 17, 2021 at 07:16:57PM +0200, Erik Ekman wrote:
+> > Everything except the first 32 bits was lost when the pause flags were
+> > added. This makes the 50000baseCR2 mode flag (bit 34) not appear.
+> >
+> > I have tested this with a 10G card (SFN5122F-R7) by modifying it to
+> > return a non-legacy link mode (10000baseCR).
+>
+> Does this need a Fixes: tag? Should it be added to stable?
+>
 
-I sent basically the same patch but I also eliminated DSV_{LOW,HIGH}
-in favor of the GPIOD flags outright:
+The speed flags in use that can be lost are for 50G and 100G.
+The affected devices are ones based on the Solarflare EF100 networking
+IP in Xilinx FPGAs supporting 10/25/40/100-gigabit.
+I don't know how widespread these are, and if there might be enough
+users for adding this to stable.
 
-https://lore.kernel.org/r/20211019004335.193492-1-nathan@kernel.org/
+The gsettings api code for sfc was added in 7cafe8f82438ced6d ("net:
+sfc: use new api ethtool_{get|set}_link_ksettings")
+and the bug was introduced then, but bits would only be lost after
+support for 25/50/100G was added in
+5abb5e7f916ee8d2d ("sfc: add bits for 25/50/100G supported/advertised speeds").
+Not sure which of these should be used for a Fixes tag.
 
-Either one works so I do not really care which one gets merged.
+I only noticed this because I was using newer flags for signaling
+1G/10G fibre support in my other patch.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->  drivers/regulator/lp872x.c       | 6 +++---
->  include/linux/regulator/lp872x.h | 8 +++-----
->  2 files changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/regulator/lp872x.c b/drivers/regulator/lp872x.c
-> index 1dba5dbcd461..61412ebc8d8d 100644
-> --- a/drivers/regulator/lp872x.c
-> +++ b/drivers/regulator/lp872x.c
-> @@ -103,7 +103,7 @@ struct lp872x {
->  	enum lp872x_id chipid;
->  	struct lp872x_platform_data *pdata;
->  	int num_regulators;
-> -	enum lp872x_dvs_state dvs_pin;
-> +	enum gpiod_flags dvs_pin;
->  };
->  
->  /* LP8720/LP8725 shared voltage table for LDOs */
-> @@ -251,7 +251,7 @@ static int lp872x_regulator_enable_time(struct regulator_dev *rdev)
->  static void lp872x_set_dvs(struct lp872x *lp, enum lp872x_dvs_sel dvs_sel,
->  			struct gpio_desc *gpio)
->  {
-> -	enum lp872x_dvs_state state;
-> +	enum gpiod_flags state;
->  
->  	state = dvs_sel == SEL_V1 ? DVS_HIGH : DVS_LOW;
->  	gpiod_set_value(gpio, state);
-> @@ -675,7 +675,7 @@ static const struct regulator_desc lp8725_regulator_desc[] = {
->  static int lp872x_init_dvs(struct lp872x *lp)
->  {
->  	struct lp872x_dvs *dvs = lp->pdata ? lp->pdata->dvs : NULL;
-> -	enum lp872x_dvs_state pinstate;
-> +	enum gpiod_flags pinstate;
->  	u8 mask[] = { LP8720_EXT_DVS_M, LP8725_DVS1_M | LP8725_DVS2_M };
->  	u8 default_dvs_mode[] = { LP8720_DEFAULT_DVS, LP8725_DEFAULT_DVS };
->  
-> diff --git a/include/linux/regulator/lp872x.h b/include/linux/regulator/lp872x.h
-> index 8e7e0343c6e1..5b94fe38fc78 100644
-> --- a/include/linux/regulator/lp872x.h
-> +++ b/include/linux/regulator/lp872x.h
-> @@ -40,10 +40,8 @@ enum lp872x_regulator_id {
->  	LP872X_ID_MAX,
->  };
->  
-> -enum lp872x_dvs_state {
-> -	DVS_LOW  = GPIOD_OUT_LOW,
-> -	DVS_HIGH = GPIOD_OUT_HIGH,
-> -};
-> +#define	DVS_LOW				GPIOD_OUT_LOW
-> +#define	DVS_HIGH			GPIOD_OUT_HIGH
->  
->  enum lp872x_dvs_sel {
->  	SEL_V1,
-> @@ -59,7 +57,7 @@ enum lp872x_dvs_sel {
->  struct lp872x_dvs {
->  	struct gpio_desc *gpio;
->  	enum lp872x_dvs_sel vsel;
-> -	enum lp872x_dvs_state init_state;
-> +	enum gpiod_flags init_state;
->  };
->  
->  /**
-> -- 
-> 2.29.2
-> 
+Thanks
+/Erik
