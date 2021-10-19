@@ -2,72 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14797433D96
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D6B433D98
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234632AbhJSRi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        id S234735AbhJSRj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234724AbhJSRi4 (ORCPT
+        with ESMTP id S231235AbhJSRjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:38:56 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE61FC061765
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:36:42 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id g36so9219922lfv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:36:42 -0700 (PDT)
+        Tue, 19 Oct 2021 13:39:25 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF93C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:37:12 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id v10so430140qvb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:37:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
-        b=NWFAs7pe7As/eRaXWZtWkXYRwK26DeNsMH4KlgqiGPUidqZJKWV2JarCnH+p8/3Ubg
-         0IIPjwcSZpkFgcb3wRSZcPcDsuGvN2U1I0uPZIKRub9voexb2QFRPMqXECtK9F8uiwHe
-         kI7EaOWW7l5avF4nvadUS2RwN4qPCqOykAVr1X3y0hkbS4OsMgwW91zjrFB4SfkwOuRw
-         LXtl6nTyj8H1D6vsXxzFdoLpYA7e+9x0ata1HwSVUcjUolowR/51pBytOZRUlPBoOr9l
-         UJGRj4hmlsA/U0A2acET8P/vdhaCG5GdEFO/2t0y6CCGwN/K1JF59Ujrxs/knCskhnoh
-         YbxA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DDNcSaWi4PeJUv65MFP/RIGeIRJgEuWKda7nGMDceGo=;
+        b=k6DqTzZMVb56PMbP6dhTEzv807yXtBKtSHK9voYdsh/iNyU+p6graFaSzdYI7M8qrV
+         vUb9prw7dddQ+FJS/PWGSXmQTWNP//pI6Gn+F+s118xKRmSgT8TWSJCyww49K6/6rh4k
+         4H8KeeCy0d/vl4WDKueyBIQyF8CbffACXmR2txHvBuhM9nhOhxnN2pB1XnsGUvZJqRWy
+         Wq30s1RgF9g77GoilJOAZOZiok4vS+qmQ/Hl0nat1UfB46ddipvi2uhtRXKsJc4YCySL
+         x0bYYzoWIYjQyCinEf5MI7/ujz6SBRWlt2yEujel/8jKqtlcszL1XUxIPh/OZUndZaTh
+         SrtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
-        b=tRB1tMFdfoAG9ybLV7dT+21tcLcJN2B7TDtYudOQwt2aj1uWdPfZlRd5z1RnbxybNp
-         uac7ruwqyi7KtszyI98HYABcwFwZV/Gdb1zT4iAK2K2j7v0lbKjBvFtHISzr3RTuokpn
-         Xn125vPM+Nf+TYrdvgsSBytmPMHtLC2K7yQL0ySAX4XRatZvg1+FzEHAZZANKGgfKCVQ
-         8Uu0ARa6q+C1oaNqTOJPnor9icFd8kFuMwRNd6UPzsamvAxO1OP1WIVcZdDhrKLsn0Ar
-         bthqVzCqjmzzQC+cLM4rNZcwbx6f03Q7hoV2XUrTW4pcRSVueaJD6dvwKJ1V0+lV0dhI
-         C64w==
-X-Gm-Message-State: AOAM530sdlycvcbQI2ERmkJEg5HOPPMOZZDH+JhGkS8z/Utssh6S+diF
-        nG2AZgpKCmGAOf3zmtq6fZhuBeP4UuHBr6zGxu8=
-X-Google-Smtp-Source: ABdhPJwirL3SMV1OcnmnfUobMTwU60a70TjVlmuyly2zUqLfn5TdvSTX29JZVl6ZAORNKZIW4QApgRMNKW3/d5RAcSE=
-X-Received: by 2002:ac2:57db:: with SMTP id k27mr7321807lfo.674.1634665001032;
- Tue, 19 Oct 2021 10:36:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DDNcSaWi4PeJUv65MFP/RIGeIRJgEuWKda7nGMDceGo=;
+        b=feNvvWKFCokVklo1P0vncNnvpeU/Wa/EcpnMiDvqGNjQImG/4O9iYuftTu+DIGwyuE
+         f/En35dSmtiews1od6uCIKU2hSI6Q8jAld5MpLhR4Efs4kxKxnncVhn9R6vzySy2udCK
+         z0pdIE1dQ5BWnstzzybDxiVFPfeRWvXaOaODGPIduLYIPxdht1HLk3lHXdYPB41Ds948
+         +lTNVCoR4YWg7LKFjqQsStIFBj34FRvgA9eJl8WYa8ZscRv4F4u/0p0o0PWUcWJVbjw3
+         /B0kTZxBG7Qfh2Vc56d1px7CEhvq+ba36K8tGJlEP0IH3SGRDkxDxXiz64e5FAMsnbYj
+         hpPw==
+X-Gm-Message-State: AOAM532fiDIbIjDEXaCvmmBz/wY0yjk4KWi5O/28aB/cojuEJApcND97
+        4OXAWcJZ5ZRQoQxze5w2O23OZQ==
+X-Google-Smtp-Source: ABdhPJyqJwDw6epqpXpG73lSY7+KwBLvn+msGtZ7q+PCo3+V0I8r/sjIIYZ4fJS6nEEZ+4BY3ExJQg==
+X-Received: by 2002:a0c:ffa9:: with SMTP id d9mr1231035qvv.53.1634665031269;
+        Tue, 19 Oct 2021 10:37:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id t26sm7975721qkg.40.2021.10.19.10.37.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 10:37:10 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mct30-00GtVo-A1; Tue, 19 Oct 2021 14:37:10 -0300
+Date:   Tue, 19 Oct 2021 14:37:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Splitting struct page into multiple types - Was: re: Folio
+ discussion recap -
+Message-ID: <20211019173710.GI3686969@ziepe.ca>
+References: <YUo20TzAlqz8Tceg@cmpxchg.org>
+ <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+ <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW25EDqynlKU14hx@moria.home.lan>
+ <YW3dByBWM0dSRw/X@cmpxchg.org>
+ <YW7uN2p8CihCDsln@moria.home.lan>
 MIME-Version: 1.0
-Received: by 2002:ac2:5386:0:0:0:0:0 with HTTP; Tue, 19 Oct 2021 10:36:40
- -0700 (PDT)
-Reply-To: mariehamidou0@gmail.com
-From:   MARIE Hamidou <mrselisabethjohanna2@gmail.com>
-Date:   Tue, 19 Oct 2021 19:36:40 +0200
-Message-ID: <CAOo6i7jWeuYoFDq7ZB86rJH1c9oDaUess5Dc6bVCqox7eAdVLQ@mail.gmail.com>
-Subject: Urgent,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW7uN2p8CihCDsln@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Urgent,
+On Tue, Oct 19, 2021 at 12:11:35PM -0400, Kent Overstreet wrote:
 
-I need your assistance to validate your name in our Bank System to
-enable the Bank transfer the sum of $ 3.5 million Dollars, into your
-nominated bank account to your account for onward investment,
+> I have no idea if this approach works for network pool pages or how those would
+> be used, I haven't gotten that far - if someone can chime in about those that
 
-or any profitable business in your country and you will take 50% of
-the total  fund , for your assistance.To commence this transaction,  I
-require you to immediately indicate your interest by a return mail for
-more details,
+Generally the driver goal is to create a shared memory buffer between
+kernel and user space.
 
-Thanks for your anticipated co-operation.
-Best regards.
-Ms.MARIE Hamidou
+The broadly two common patterns are to have userspace call mmap() and
+the kernel side returns the kernel pages from there - getting them
+from some kernel allocator.
+
+Or, userspace allocates the buffer and the kernel driver does
+pin_user_pages() to import them to its address space.
+
+I think it is quite feasible to provide some simple library API to
+manage the shared buffer through mmap approach, and if that library
+wants to allocate inodes, folios and what not it should be possible.
+
+It would help this idea to see Christoph's cleanup series go forward:
+
+https://lore.kernel.org/all/20200508153634.249933-1-hch@lst.de/
+
+As it makes it alot easier for drivers to get inodes in the first
+place.
+
+> would be great. But, the end goal I'm envisioning is a world where _only_ bog
+> standard file & anonymous pages are mapped to userspace - then _mapcount can be
+> deleted from struct page and only needs to live in struct folio.
+
+There is a lot of work in the past years on ZONE_DEVICE pages into
+userspace. Today FSDAX is kind of a mashup of a file and device page,
+but other stuff is less obvious, especially DEVICE_COHERENT.
+
+Jason
