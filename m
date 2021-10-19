@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F8A433B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02EE433B65
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbhJSP6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhJSP6w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:58:52 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9CFC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:56:39 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id g36so8571319lfv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l6UyNWiQ7BoMTL4xhxCJx0qmxiRi5S2D6EPQ7sUWYlk=;
-        b=l1QIf2HBZF5dgneEUJ+69UXIQWgsG1hl9tG/ALRoDN8uvKZfXJBoU7rsMJXh1lZNKI
-         YfWcky8Vb3G7jm+T9EvQyUTFJRJDfeVk9V1z9uPGotOg3dNqVH5Sms9muEkC+aB640o/
-         +zO0gBrkElrNwfCX9Wm8SRmCUtd02uzXxst0MLpyhq1tPMmR3eq9Lt5pDtrAONArYcfw
-         /+wKdCDEbw/h6gSy1jPKXHGRZW+ymnDaZ8hUuVR6ng5sgX0mldtc1Nrs7yeAFJFJ+9NA
-         6gpjJHnjAhj4qbVgNykcltsT2tasi1PyEyi307aIIyJsLAc06mFL3/Arxk8dIt8P7+bL
-         xtZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l6UyNWiQ7BoMTL4xhxCJx0qmxiRi5S2D6EPQ7sUWYlk=;
-        b=1W/KSeGYvHZH1KgbJa5rwwc0g18ibavUnH++2UqN/aTSC/dJpB+VqwgpODcAvPTVTV
-         cgI4TzkwOnkKE2agJVlkj8no3ZCOTsttWhLOEvaTHdxaY7THTcXoTxN6benuMrKQS6jZ
-         3P9r/33rN7hIPpEuqA0g9VWd8UoKTW5qfuv5+sV9Yy0ZXFAA6rJoPZEw/re4ZJBYK68P
-         kHH52YRK8Y1ag85uD6cqSPrQ48QWm+WLxBiqnXwPwGfQV959+/x2VA/bQYxPFodgF7Ct
-         xMG9lfQAfV1izy+23ovKq9RBdrj78UxMwK20W7SFSxdQVPz6/NPzLp8aG6xzyDuvbmVK
-         xliQ==
-X-Gm-Message-State: AOAM532tTrVw0bEZk45kUVCjK/PI+e0hD239pAWeJZM/BMj8B2eUF5ID
-        e9QO2d4ENYPKHNS7JqRH0V86/a8W0tFNcc0frftUAw==
-X-Google-Smtp-Source: ABdhPJwfXzNPMi50Z1j3h3lnLBVGHBeN9L+8DzOS23moli6FWtmF+LjZ7ijUdDpuzUZz5grrIJm7TkxrD+b1Q8WhkcQ=
-X-Received: by 2002:ac2:5e3c:: with SMTP id o28mr6663490lfg.184.1634658997345;
- Tue, 19 Oct 2021 08:56:37 -0700 (PDT)
+        id S232349AbhJSP7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:59:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229774AbhJSP7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:59:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6086560F9D;
+        Tue, 19 Oct 2021 15:57:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634659054;
+        bh=JDppQYUjK1xHVoUqWCmeSgMoYA4Hof87wS9p0i8dX58=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N95ZBVIBEinr1DlYUJP+0yqoKpIM4Sd04Z+sjuRqOdRNdCAg0bjddCDAx1O5pnO6O
+         bHAY2FE9zL9cno4s2SJZyWWoAcdcTptebWXnEWlffFOJ41TsntiR7Q8HEQSvP9rJzK
+         StcoCPt7BfrcOR3yRZvHkDoWts+Ca/cQfHs7y9RvghujNI+tbT4omF0vRqVivtYvkG
+         VLrkr77TiDWx3jpeqciOqMd48rM+V05J6cjmXSw5Ozt1nNIYU5sheUsV//Iyk3LP81
+         6zl9JiJRHxDgaLpcqfVYw0eNTTGg4HfHRMkGjW9yPCcvHocZAxutZYRtdOTfNt2nKI
+         QZIKlXvRxIrfg==
+Date:   Tue, 19 Oct 2021 08:57:33 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: sched: gred: dynamically allocate
+ tc_gred_qopt_offload
+Message-ID: <20211019085733.11149203@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211019153739.446190-1-arnd@kernel.org>
+References: <20211019153739.446190-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20211018123710.1540996-1-chenwandun@huawei.com> <20211018123710.1540996-2-chenwandun@huawei.com>
-In-Reply-To: <20211018123710.1540996-2-chenwandun@huawei.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 19 Oct 2021 08:56:26 -0700
-Message-ID: <CALvZod63A_RsKJKRmAtZFXHB=EzX0JhKXTcoUGg7zn2pgK-Kwg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mm/vmalloc: fix numa spreading for large hash tables
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, guohanjun@huawei.com,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 5:23 AM Chen Wandun <chenwandun@huawei.com> wrote:
->
-[...]
->
->         /* High-order pages or fallback path if "bulk" fails. */
-> -       while (nr_allocated < nr_pages) {
-> -               struct page *page;
-> -               int i;
->
-> -               page = alloc_pages_node(nid, gfp, order);
-> +       page = NULL;
+On Tue, 19 Oct 2021 17:37:27 +0200 Arnd Bergmann wrote:
+> @@ -470,8 +477,7 @@ static int gred_change_table_def(struct Qdisc *sch, struct nlattr *dps,
+>  		}
+>  	}
+>  
+> -	gred_offload(sch, TC_GRED_REPLACE);
+> -	return 0;
+> +	return gred_offload(sch, TC_GRED_REPLACE);
+>  }
+>  
+>  static inline int gred_change_vq(struct Qdisc *sch, int dp,
+> @@ -719,8 +725,7 @@ static int gred_change(struct Qdisc *sch, struct nlattr *opt,
+>  	sch_tree_unlock(sch);
+>  	kfree(prealloc);
+>  
+> -	gred_offload(sch, TC_GRED_REPLACE);
+> -	return 0;
+> +	return gred_offload(sch, TC_GRED_REPLACE);
 
-No need for the above NULL assignment.
+Now we can return an error even tho the SW path has changed.
+Qdisc offloads should not affect the SW changes AFAIR.
 
-After removing this, you can add:
-
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-
-> +       while (nr_allocated < nr_pages) {
-> +               if (nid == NUMA_NO_NODE)
-> +                       page = alloc_pages(gfp, order);
-> +               else
-> +                       page = alloc_pages_node(nid, gfp, order);
->                 if (unlikely(!page))
->                         break;
->
-> --
-> 2.25.1
->
+If we need to alloc dynamically let's allocate the buffer at init and
+keep it in struct gred_sched. The offload calls are all under RTNL lock
+so in fact we could even use static data, but let's do it right and
+have a buffer per qdisc.
