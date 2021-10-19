@@ -2,189 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175AC434038
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AED743403C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbhJSVNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
+        id S229711AbhJSVOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhJSVNy (ORCPT
+        with ESMTP id S229610AbhJSVOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:13:54 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B41EC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:11:41 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 5so17272356edw.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:11:40 -0700 (PDT)
+        Tue, 19 Oct 2021 17:14:17 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEEAC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:12:04 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id r134so22024601iod.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:12:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OwyRLUcszsyadBr824dsTniinvYZj7Tk0bJGgvItSRM=;
-        b=UuFOxeYnA6bmCHsx6C3eM8RhW7dy8MiborwVIsDzXcWw30k69JKWDiVtNm6tzfQYNS
-         jKiqu/iSWMz34Bs26vA6cuq5v9Mmweone0oANMssKmhBtWARTGXALWfHR+h8jbZ8pvcy
-         0krFAiUyPTdfBf/P4H/lPhWeu8aOt+4rtcYRs=
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=30BnP4r6CE0OkZvT19kcbgPK/6Ckj3KjznbN6qKawuk=;
+        b=fpA7N/KYD+Fh+EqegyotiKveYMCDZtJ4zi3/phXmtjRDphoY5PgXliB8+bY62n45i3
+         JVOV/VITICl2sudKvC91/HihnhlM9h8FXhI0rMD4Qmh3tsLTyLPBNsuAf+vNtdsiQ/vd
+         X8ZS+4C8t61x+oCuOd4J4MlzH+H1psJwjmzHE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=OwyRLUcszsyadBr824dsTniinvYZj7Tk0bJGgvItSRM=;
-        b=4qjg42mpZopTE4M3Moq3v11/rW2hNCrGBlVRaj7wg1+zSnTBSrYBOOQKncBSUhvPfu
-         p5jkaQsOXg5hQy7nISrMHwFAP1TteIlJIqFtp+sWNdJYAXn6i2hcugtxXaWDkEX3nJXE
-         fw4dpBdPOe2OdFznY/DgdRpktA9Mniul0FVL6TbFM8v4mUAGthE76y43b2BbTsCjclO4
-         sML2OS5UlAjLXB9YOTVbXmy2Yux1z/elotxRqmI62rytZstEcidhaw2/Aompnbzea+BM
-         i7URHSGcMwELMImjlN1B5HPtfJSd9JAGpG4z81asTK4AU+VnmhG0OKO60Ifyc8WOZawc
-         tqJw==
-X-Gm-Message-State: AOAM532D6LKlliiy9+pzNJy2wiIHYrq6TlsuZXk+ahI68G1WL4eV9JTK
-        8j4sgTDeYYIwcY42DFwVTTOIpg==
-X-Google-Smtp-Source: ABdhPJxVcAFeCcFJ0BV5iO1FeaZa+XJFmc7PEYU7imdaPNyCQNJYbrUDecQv4qxDFiRydF4XQvCUaw==
-X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr56873542ede.159.1634677899626;
-        Tue, 19 Oct 2021 14:11:39 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q14sm92905edj.42.2021.10.19.14.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 14:11:39 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 23:11:37 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     guangming.cao@mediatek.com, Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, wsd_upstream@mediatek.com
-Subject: Re: [Linaro-mm-sig] [PATCH] dma-buf: add attachments empty check for
- dma_buf_release
-Message-ID: <YW80iakRm5jWjIUp@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        guangming.cao@mediatek.com, Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
-        wsd_upstream@mediatek.com
-References: <20211019122345.160555-1-guangming.cao@mediatek.com>
- <YW686sIZie4xRUQO@phenom.ffwll.local>
- <8cca7188-6484-d3a5-2b87-400f6500e742@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=30BnP4r6CE0OkZvT19kcbgPK/6Ckj3KjznbN6qKawuk=;
+        b=o8ciEJXDEt/lh9Z6fbxKdYbi4o+tOF0EKwqantVYqchfUJNS3ry+Okh/lZa2C7tAul
+         2qDy9cwrkPDbH9GOtqbWO7IsmOvW6Q/uZmRMMT+Ur/zUqAtysnUZDfka/wsl0cbNfVw6
+         EC1OP0B4kHyplMC1kdXcFZ87Smq2HFZa7+zuKhzBEYo8+0a44iPLhXm+zQhkQbu2+hlt
+         PtiWeP/6JVKQhTVvu39twnk1QiM3QvJqO629sBKMn/f3vBpMouSLj0VPXEwkkNmbbV4q
+         ySzPxddf4fP2MCj9Ps/4hBzoaURQPmLDdedO6581pPMl12zfMFvFty5iy46eI6zuCWq9
+         jgeA==
+X-Gm-Message-State: AOAM531Qe8lwjqYVxbVcCnacJYpHNXYVESZuKhh2PkUEU84CguPQ6PGP
+        Kmq5DUE+9MsKz7VzlyTtGt96nW9rn+VLhw==
+X-Google-Smtp-Source: ABdhPJyHBq2S5sGwKYY1uslPk3Qk/BfdJAijWTvy5K2CC1VVnw8VGcFr38RQeiVgti/SYfQ/FAa0Gw==
+X-Received: by 2002:a02:9469:: with SMTP id a96mr5994213jai.5.1634677923372;
+        Tue, 19 Oct 2021 14:12:03 -0700 (PDT)
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com. [209.85.166.42])
+        by smtp.gmail.com with ESMTPSA id b6sm94396ilj.39.2021.10.19.14.12.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 14:12:02 -0700 (PDT)
+Received: by mail-io1-f42.google.com with SMTP id z69so18906984iof.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:12:02 -0700 (PDT)
+X-Received: by 2002:a05:6638:258e:: with SMTP id s14mr5926528jat.54.1634677921595;
+ Tue, 19 Oct 2021 14:12:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8cca7188-6484-d3a5-2b87-400f6500e742@gmail.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+References: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
+ <1632399378-12229-9-git-send-email-rajpat@codeaurora.org> <CAK8P3a3KuTEAXbSTU+n3D_fryquo8B-eXSF2+HrikiNVn6kSSg@mail.gmail.com>
+ <YW8xl0fLnQE5o3AQ@ripper>
+In-Reply-To: <YW8xl0fLnQE5o3AQ@ripper>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 19 Oct 2021 14:11:49 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XsiMp5jSpX5ong27KYW=G-XYhCfjo48E5cC6Cm+oU-mA@mail.gmail.com>
+Message-ID: <CAD=FV=XsiMp5jSpX5ong27KYW=G-XYhCfjo48E5cC6Cm+oU-mA@mail.gmail.com>
+Subject: Re: [PATCH V10 8/8] arm64: dts: sc7280: Add aliases for I2C and SPI
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Rajesh Patil <rajpat@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        msavaliy@qti.qualcomm.com, satya priya <skakit@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 05:37:27PM +0200, Christian König wrote:
-> 
-> 
-> Am 19.10.21 um 14:41 schrieb Daniel Vetter:
-> > On Tue, Oct 19, 2021 at 08:23:45PM +0800, guangming.cao@mediatek.com wrote:
-> > > From: Guangming Cao <Guangming.Cao@mediatek.com>
-> > > 
-> > > Since there is no mandatory inspection for attachments in dma_buf_release.
-> > > There will be a case that dma_buf already released but attachment is still
-> > > in use, which can points to the dmabuf, and it maybe cause
-> > > some unexpected issues.
-> > > 
-> > > With IOMMU, when this cases occurs, there will have IOMMU address
-> > > translation fault(s) followed by this warning,
-> > > I think it's useful for dma devices to debug issue.
-> > > 
-> > > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
-> > This feels a lot like hand-rolling kobject debugging. If you want to do
-> > this then I think adding kobject debug support to
-> > dma_buf/dma_buf_attachment would be better than hand-rolling something
-> > bespoke here.
-> 
-> Well I would call that overkill.
+Hi,
 
-I think if done right the object debug stuff should be able to give you a
-backtrace. Which might be useful if you have a dma-buf heaps design where
-you really have no clue why a buffer was allocated/attached without some
-hints.
+On Tue, Oct 19, 2021 at 1:57 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Tue 19 Oct 13:43 PDT 2021, Arnd Bergmann wrote:
+>
+> > On Thu, Sep 23, 2021 at 2:18 PM Rajesh Patil <rajpat@codeaurora.org> wrote:
+> > >
+> > > Add aliases for i2c and spi for sc7280 soc.
+> > >
+> > > Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> >
+> > I saw this in the pull request, can this please be reverted?
+> >
+>
+> Yes, this can certainly be corrected.
+>
+> > Putting the aliases into the .dtsi file is really silly, as there are
+> > likely boards that
+> > don't connect every single one of those, and then will have to
+> > override and renumber
+> > them.
+> >
+> > Please only list the aliases that are actually connected on a particular
+> > board.
 
-> > Also on the patch itself: You don't need the trylock. For correctly
-> > working code non one else can get at the dma-buf, so no locking needed to
-> > iterate through the attachment list. For incorrect code the kernel will be
-> > on fire pretty soon anyway, trying to do locking won't help :-) And
-> > without the trylock we can catch more bugs (e.g. if you also forgot to
-> > unlock and not just forgot to detach).
-> 
-> You also don't need the WARN(!list_empty...) because a few line below we
-> already have a "WARN_ON(!list_empty(&dmabuf->attachments));".
+Hrm. I know this gets into slightly controversial topics, but I'm a
+little curious what the downside of having these in the dtsi is. In
+the case where these i2c/spi/mmc devices _don't_ have "well defined"
+numbers in the hardware manual of the SoC then I can agree that it
+doesn't make sense to list these in the dtsi file. However, in the
+case of sc7280 these numbers are well defined at the SoC level for i2c
+and SPI.
 
-Yeah this patch here alone isn't really that useful I think. Maybe we
-could add the dmabuf->exp_name or so to that warning, but otherwise the
-info printed here isn't all that useful for debugging. Grabbing a
-backtrace of the allocator or attacher otoh should fairly immedialy point
-at the buggy code.
--Daniel
+Said another way: if you have a board that's got peripherals connected
+on the pins labelled "i2c2" and "i2c6" on the SoC then it's a really
+nice thing if these show up on /dev/i2c-2 and /dev/i2c-6.
 
-> 
-> Christian.
-> 
-> > -Daniel
-> > 
-> > > ---
-> > >   drivers/dma-buf/dma-buf.c | 23 +++++++++++++++++++++++
-> > >   1 file changed, 23 insertions(+)
-> > > 
-> > > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> > > index 511fe0d217a0..672404857d6a 100644
-> > > --- a/drivers/dma-buf/dma-buf.c
-> > > +++ b/drivers/dma-buf/dma-buf.c
-> > > @@ -74,6 +74,29 @@ static void dma_buf_release(struct dentry *dentry)
-> > >   	 */
-> > >   	BUG_ON(dmabuf->cb_shared.active || dmabuf->cb_excl.active);
-> > > +	/* attachment check */
-> > > +	if (dma_resv_trylock(dmabuf->resv) && WARN(!list_empty(&dmabuf->attachments),
-> > > +	    "%s err, inode:%08lu size:%08zu name:%s exp_name:%s flags:0x%08x mode:0x%08x, %s\n",
-> > > +	    __func__, file_inode(dmabuf->file)->i_ino, dmabuf->size,
-> > > +	    dmabuf->name, dmabuf->exp_name,
-> > > +	    dmabuf->file->f_flags, dmabuf->file->f_mode,
-> > > +	    "Release dmabuf before detach all attachments, dump attach:\n")) {
-> > > +		int attach_cnt = 0;
-> > > +		dma_addr_t dma_addr;
-> > > +		struct dma_buf_attachment *attach_obj;
-> > > +		/* dump all attachment info */
-> > > +		list_for_each_entry(attach_obj, &dmabuf->attachments, node) {
-> > > +			dma_addr = (dma_addr_t)0;
-> > > +			if (attach_obj->sgt)
-> > > +				dma_addr = sg_dma_address(attach_obj->sgt->sgl);
-> > > +			pr_err("attach[%d]: dev:%s dma_addr:0x%-12lx\n",
-> > > +			       attach_cnt, dev_name(attach_obj->dev), dma_addr);
-> > > +			attach_cnt++;
-> > > +		}
-> > > +		pr_err("Total %d devices attached\n\n", attach_cnt);
-> > > +		dma_resv_unlock(dmabuf->resv);
-> > > +	}
-> > > +
-> > >   	dmabuf->ops->release(dmabuf);
-> > >   	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
-> > > -- 
-> > > 2.17.1
-> > > 
-> 
+...so I'm not sure what board exactly would be overriding and
+re-numbering? Unless a board really has a strong use case where they
+need the device connected to the pins for "i2c2" to show up on
+"/dev/i2c-0"?
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+
+-Doug
