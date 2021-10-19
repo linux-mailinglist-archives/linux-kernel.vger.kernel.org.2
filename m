@@ -2,71 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC1943338F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4972F43339C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhJSKfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:35:04 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:38777
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S235162AbhJSKfB (ORCPT
+        id S235244AbhJSKhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:37:04 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:45497 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235235AbhJSKgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:35:01 -0400
-Received: from fedora33.wangsu.com (unknown [59.61.78.138])
-        by app2 (Coremail) with SMTP id 4zNnewD3HeTKnm5h5ogBAA--.3005S2;
-        Tue, 19 Oct 2021 18:32:47 +0800 (CST)
-From:   Lin Feng <linf@wangsu.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, linf@wangsu.com
-Subject: [PATCH] mm: vmstat.c: make extfrag_index show more pretty
-Date:   Tue, 19 Oct 2021 18:32:41 +0800
-Message-Id: <20211019103241.134797-1-linf@wangsu.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 19 Oct 2021 06:36:54 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HYVVS3SP1z4xd4;
+        Tue, 19 Oct 2021 21:34:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1634639680;
+        bh=IpcYl6X8FtmaNpPVMZUUfggRSLNdsvYUxbHeE0Kbz8k=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=S0wE63q5BhyQ4pY9u+YsaZoRIr8qSQooLpGUpDKN9UyYQ3T6hOXR5u61QrwOplfDd
+         WTLWU4ZXhhdDgHXnPXotymZYhqZqsa5+7LpGgEN49q2fO4jsfAsiWy2u/R/FD38L01
+         wcKJY1tFO27NmwWMH7KbpOFUgG6Jb6xuYclU4rP6YxiNAqsSDYLAHBrT9DrIQYyafR
+         UqhCaSK++qYQW83iMAxs38jj6j2cEvdqIXYOBshZU9BLQW+RluCGTUUqcmXh8ANtQI
+         SHA6lzra1uwXjONfqTYkTQ2x2uy0z6pCyRrXPAc2HOR+AwwqLHTFLbAamhQUzQxxRl
+         9qFZva75Vlhbg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 34/69] KVM: PPC: Book3S HV: Fix stack handling in
+ idle_kvm_start_guest()
+In-Reply-To: <20211018132330.615103813@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
+ <20211018132330.615103813@linuxfoundation.org>
+Date:   Tue, 19 Oct 2021 21:34:39 +1100
+Message-ID: <87k0i9cngg.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: 4zNnewD3HeTKnm5h5ogBAA--.3005S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw4rGrWrZw18CFyfGF15Arb_yoW8Gw4Upr
-        4YyF1UJw15GFy7Jw17t3W8Jw1Ut3WkGF18JrW5Xr18Zr1UAr1jyr17trW7tF1DJa4DJrW5
-        JF4xJw1Utr1xt37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_UUUUUUUUU==
-X-CM-SenderInfo: holqwq5zdqw23xof0z/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fragmentation_index may return -1000 and the corresponding formated value
-showed by seq_printf will take a negative signatrue, but other positive
-formated values don't take a positive signatrue, so the output becomes
-unaligned.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> From: Michael Ellerman <mpe@ellerman.id.au>
+>
+> commit 9b4416c5095c20e110c82ae602c254099b83b72f upstream.
+>
+> In commit 10d91611f426 ("powerpc/64s: Reimplement book3s idle code in
+> C") kvm_start_guest() became idle_kvm_start_guest(). The old code
+> allocated a stack frame on the emergency stack, but didn't use the
+> frame to store anything, and also didn't store anything in its caller's
+> frame.
 
-before:
-Node 0, zone      DMA -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000
-Node 0, zone    DMA32 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000
-Node 0, zone   Normal -1.000 -1.000 -1.000 -1.000 0.931 0.966 0.983 0.992 0.996 0.998 0.999
+Please drop this for now, it's exposed some other bugs.
 
-after this patch:
-Node 0, zone      DMA -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000
-Node 0, zone    DMA32 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000
-Node 0, zone   Normal -1.000 -1.000 -1.000 -1.000  0.931  0.966  0.983  0.992  0.996  0.998  0.999
-
-Signed-off-by: Lin Feng <linf@wangsu.com>
----
- mm/vmstat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 8ce2620344b2..263d367d193b 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -2179,7 +2179,7 @@ static void extfrag_show_print(struct seq_file *m,
- 	for (order = 0; order < MAX_ORDER; ++order) {
- 		fill_contig_page_info(zone, order, &info);
- 		index = __fragmentation_index(order, &info);
--		seq_printf(m, "%d.%03d ", index / 1000, index % 1000);
-+		seq_printf(m, "%2d.%03d ", index / 1000, index % 1000);
- 	}
- 
- 	seq_putc(m, '\n');
--- 
-2.31.1
-
+cheers
