@@ -2,67 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A2F432BFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 04:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC41A432C01
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhJSDBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:01:34 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:60582 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229663AbhJSDBd (ORCPT
+        id S229677AbhJSDC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJSDCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:01:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=rocking@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Usp.i22_1634612353;
-Received: from localhost(mailfrom:rocking@linux.alibaba.com fp:SMTPD_---0Usp.i22_1634612353)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 19 Oct 2021 10:59:19 +0800
-From:   Peng Wang <rocking@linux.alibaba.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] sched/core: Remove rq_relock()
-Date:   Tue, 19 Oct 2021 10:58:39 +0800
-Message-Id: <449948fdf9be4764b3929c52572917dd25eef758.1634611953.git.rocking@linux.alibaba.com>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <6ab667ed9704d7c880a1dbed8484e4f21191c56a.1634610709.git.rocking@linux.alibaba.com>
-References: <6ab667ed9704d7c880a1dbed8484e4f21191c56a.1634610709.git.rocking@linux.alibaba.com>
+        Mon, 18 Oct 2021 23:02:54 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D6CC06161C;
+        Mon, 18 Oct 2021 20:00:43 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id j190so11298202pgd.0;
+        Mon, 18 Oct 2021 20:00:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Du7hGfWofk5Y9PYxqwgL02UhVD5OoKwO5dVIpF7FLGw=;
+        b=FX3JBsryhWMJVTta9l1Jhc5PsA9+IwgdmpKy41or5UgMVS/1AOLR79tkwB6XWOVOs8
+         AfX+qaSscxl67HZUJe+BvJkYX3A0rbQX6dGtyhs9aHg6PYo9SOgrQgSOqN9AY11U/qHR
+         +Da8iJI7LuZeztUyQEtoEFY+EqZfp34qmjY88631WuzBMQ4lVPhjNsC2gviR2qz0EVhv
+         Bvwxo3ce1+r2zYQCNvNvErjoPxjeOtgZKM4Co8MY1mXqXW09e/o6n7PhMz5jLRjQPzBu
+         YTeYzOKI5hCu//NuD1JaSOVT47GhD/Sb8vA+YmEMLhdeRbKdPedGPEqTCqU9Oy+qSGPL
+         e52Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Du7hGfWofk5Y9PYxqwgL02UhVD5OoKwO5dVIpF7FLGw=;
+        b=Y0POp52WDaBDLqBMtR+DI+1uA20vwKJo7iOqnklpp257VbsInoElZhXs/S4I2KPYlX
+         SuBXd5YrfiDBbErQw+MqEVSlI13j1LarD3M9jbFFE11Xvm/qyfbXtyXjtBbzxiXsDpaz
+         7e344ojM+sR6tEsQn3jwrSjFwUzQAgwfyqIyh70ddx7U6dIItX8mqP3Y8UaqnvRtA1Fz
+         vwHkMoVsHygh37E8PFtuOc4P8tjoufFJeD+KvfE9ejUXM2KOFb9Y5hq9Mj84JTbE9gF4
+         p0mOxj50S1hu44kOXB0FArukPC1ieLssfVte46EfP8Wn4Yxpujsf4CJFyOHPlEijj/+q
+         VoKQ==
+X-Gm-Message-State: AOAM530MbxI+3xt9yRm6+7uixRV8G8y2rkO+CIdviN3zLK4jxMQFuFD0
+        5f9HyyePIsYjNFtXhEDg3Ns=
+X-Google-Smtp-Source: ABdhPJyFg858TcueogG6Qus2VVYUo5lmLkp1ZuiMzlw1Wt6+dmUfr5Y2So7INCraknWb9iOJQ12vAQ==
+X-Received: by 2002:a05:6a00:731:b0:44c:7c1b:fe6a with SMTP id 17-20020a056a00073100b0044c7c1bfe6amr32484334pfm.44.1634612442499;
+        Mon, 18 Oct 2021 20:00:42 -0700 (PDT)
+Received: from localhost.localdomain ([94.177.118.15])
+        by smtp.gmail.com with ESMTPSA id lp9sm801540pjb.35.2021.10.18.20.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 20:00:41 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] driver: hva: add pm_runtime_disable in the error handling code of hva_hw_probe
+Date:   Tue, 19 Oct 2021 11:00:29 +0800
+Message-Id: <20211019030030.3326236-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the removal of migrate_tasks(), there is no user of
-rq_relock() left, so remove it.
+In the error handling code of hva_hw_probe, it fails to invoke
+pm_runtime_disable in many error sites.
 
-Signed-off-by: Peng Wang <rocking@linux.alibaba.com>
+Fix this by adding a label err_disable with pm_runtime_disable and
+adjust one goto from label err_clk to err_disable.
+
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
+ drivers/media/platform/sti/hva/hva-hw.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Changes since v1:
-- fix typo in commit log: rq_lock() -> rq_relock()
-
- kernel/sched/sched.h | 8 --------
- 1 file changed, 8 deletions(-)
-
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 3d3e579..8470c9e 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1622,14 +1622,6 @@ rq_lock(struct rq *rq, struct rq_flags *rf)
- }
+diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+index 30fb1aa4a351..5dd5dbf59cfe 100644
+--- a/drivers/media/platform/sti/hva/hva-hw.c
++++ b/drivers/media/platform/sti/hva/hva-hw.c
+@@ -387,7 +387,7 @@ int hva_hw_probe(struct platform_device *pdev, struct hva_dev *hva)
+ 	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "%s     failed to set PM\n", HVA_PREFIX);
+-		goto err_clk;
++		goto err_disable;
+ 	}
  
- static inline void
--rq_relock(struct rq *rq, struct rq_flags *rf)
--	__acquires(rq->lock)
--{
--	raw_spin_rq_lock(rq);
--	rq_repin_lock(rq, rf);
--}
--
--static inline void
- rq_unlock_irqrestore(struct rq *rq, struct rq_flags *rf)
- 	__releases(rq->lock)
- {
+ 	/* check IP hardware version */
+@@ -405,6 +405,8 @@ int hva_hw_probe(struct platform_device *pdev, struct hva_dev *hva)
+ 
+ err_pm:
+ 	pm_runtime_put(dev);
++err_disable:
++	pm_runtime_disable(dev);
+ err_clk:
+ 	if (hva->clk)
+ 		clk_unprepare(hva->clk);
 -- 
-2.9.5
+2.25.1
 
