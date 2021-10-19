@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EF143399C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7594339DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbhJSPE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233225AbhJSPE0 (ORCPT
+        id S232862AbhJSPMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:12:38 -0400
+Received: from forward400p.mail.yandex.net ([77.88.28.105]:50318 "EHLO
+        forward400p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230097AbhJSPMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:04:26 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14468C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:02:13 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id y16-20020a05600c17d000b0030db7a51ee2so2202639wmo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Bn0QP19v6GrWQNVWduIFqQTakGnl0xz+jG6sCa2Po48=;
-        b=mB/yAFXyxSTwiEr4iyHntcbVdUZ3j0QBNO/WL4zFi+tH7hUBXgYR/XGTnhCTGgTpP7
-         rj6cVG7AWo+nQx/tBWIYhkELKuQF6wdtJNx58R41YijOK7i75YRMbjISXpFPaefuR6/H
-         jARNuJ4Tf/dtJXF71dvgWgoI86hFvVCnV6bywMz0dgd9NYRRd8Kw316JXc27dhNvGjES
-         ekuTcChatId1hAJC8dnXQutv4z0PRoBqD0hi18BKiULSsEcQDF+MouJFCK/smCDwjHOT
-         ERV6RUgl+2sSvCyueF7QRBEUOcZAeMJt2upBZ3a2Fk8yL4W9BTfVCVI1h5YLr7oTKPrb
-         PiBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Bn0QP19v6GrWQNVWduIFqQTakGnl0xz+jG6sCa2Po48=;
-        b=wc7BSCYWDJe5v4jTeuiNXjBzZPQ2IDIPX7yrozdE+hNxnwq7k1UxgdahVK5I5/U8MR
-         oUOkq2dTjl9PGgzjzSgq1FDNpk49O5RYAplbhG1HgklnZD9CllKYAvPRnTPoPGTGW3A1
-         +Woq1WO9gnLT2DEXAbSpQyFUrTkFddxGRJcVgTeFYVrAwIB0OAULS4BQa/tUzLOrA+bs
-         rz4FDlFYQAOblBBRFRlHcsZvP2Us13+MXkCvbmL0ktpu1ubHt2KvgIXinMJ+Xl+Ib/aR
-         FN6ob09jlQN99qHUby7xHXdmHVoIvvqTuWV3TmlUiqf3mZiFwy6CDnIII1uH9SHDJ2BB
-         V6lQ==
-X-Gm-Message-State: AOAM530TCdEMECDdROj0UtqxjMmuXLi+nU2XZ/dyFnIv96j/UDwlG55Z
-        ZvPWAqWqHBfuUFKr38BUKA7x2sl9TaHwP8mL
-X-Google-Smtp-Source: ABdhPJy1zzKocg8ct7gw/dUU5Kl9v3mb3dfz1+R1W+KbarJVUsy0a11484Ln+Qr+aziuIEQl3dfpDA==
-X-Received: by 2002:adf:a294:: with SMTP id s20mr45364959wra.34.1634655731514;
-        Tue, 19 Oct 2021 08:02:11 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e34:ed2f:f020:4799:198d:b6ef:8da7])
-        by smtp.gmail.com with ESMTPSA id h11sm14581468wrz.5.2021.10.19.08.02.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 08:02:10 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rjw@rjwysocki.net
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Subject: [PATCH v2 2/2] thermal/core: Make deprecated cooling device state change from userspace
-Date:   Tue, 19 Oct 2021 17:02:03 +0200
-Message-Id: <20211019150203.2805738-2-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019150203.2805738-1-daniel.lezcano@linaro.org>
-References: <20211019150203.2805738-1-daniel.lezcano@linaro.org>
+        Tue, 19 Oct 2021 11:12:37 -0400
+X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Oct 2021 11:12:36 EDT
+Received: from sas1-35b601a382d3.qloud-c.yandex.net (sas1-35b601a382d3.qloud-c.yandex.net [IPv6:2a02:6b8:c08:c505:0:640:35b6:1a3])
+        by forward400p.mail.yandex.net (Yandex) with ESMTP id B3FDE642286;
+        Tue, 19 Oct 2021 18:03:09 +0300 (MSK)
+Received: from 2a02:6b8:c08:ff10:0:640:4fe1:bb3c (2a02:6b8:c08:ff10:0:640:4fe1:bb3c [2a02:6b8:c08:ff10:0:640:4fe1:bb3c])
+        by sas1-35b601a382d3.qloud-c.yandex.net (mxback/Yandex) with HTTP id 73eMvu1D8uQ1-38DSiAdb;
+        Tue, 19 Oct 2021 18:03:08 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxt.ru; s=mail; t=1634655788;
+        bh=RySuvpUFF5Z2mnwc3pWWlYjRFA8psdGb79jKB96dvSo=;
+        h=Message-Id:Date:Cc:Subject:To:From;
+        b=LuYqnK6keNdYKAST6FSAFHNtkE91MS1PB7lj3MqEcXkvoNy6ClnCbKgYv1ioDICqU
+         vJECXjXXppNR75wJDFwcufKKOiUm3Od2aAUbM5z4/QApjhIPttIo8zYAUUHULa3l3i
+         PsrTqbm5gNTJLZpfRsEoLG6QpsCpvLyaA1Jlscrs=
+Authentication-Results: sas1-35b601a382d3.qloud-c.yandex.net; dkim=pass header.i=@nxt.ru
+Received: by sas2-4fe1bb3c0a49.qloud-c.yandex.net with HTTP;
+        Tue, 19 Oct 2021 18:03:08 +0300
+From:   sanekf@nxt.ru
+To:     Takashi Iwai <tiwai@suse.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: WC vs UC mappings in snd_dma_sg_alloc()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date:   Tue, 19 Oct 2021 18:03:08 +0300
+Message-Id: <493661634654791@mail.yandex.ru>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cooling devices have their cooling device set_cur_state
-read-writable all the time in the sysfs directory, thus allowing the
-userspace to act on it.
+Hi
 
-The thermal framework is wrongly used by userspace as a power capping
-framework by acting on the cooling device opaque state. This one then
-competes with the in-kernel governor decision.
+I've stumbled across this code in sound/core/sgbuf.c:
 
-We have seen in out-of-tree kernels, a big number of devices which are
-abusely declaring themselves as cooling device just to act on their
-power.
+66 static void *snd_dma_sg_alloc(struct snd_dma_buffer *dmab, size_t size)
+67 {
+< ... >
+80 	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG) {
+81 		type = SNDRV_DMA_TYPE_DEV_WC;
+82 #ifdef pgprot_noncached
+83 		prot = pgprot_noncached(PAGE_KERNEL);
+84 #endif
+85 	}
+< ... >
+131 	area = vmap(sgbuf->page_table, sgbuf->pages, VM_MAP, prot);
 
-The role of the thermal framework is to protect the junction
-temperature of the silicon. Letting the userspace to play with a
-cooling device is invalid and potentially dangerous.
+Does not this violate x86 rules about using the same memory mapping type for all mappings? It seems that the following patch should fix it (only compile tested - my x86 PCs are either without Linux or without sound, and probably in practice this might not trigger any problems since both WC and UC-minus are incoherent types):
 
-The powercap framework is the right framework to do power capping and
-moreover it deals with the aggregation via the dev pm qos.
+-----------------------------
 
-As the userspace governor is marked deprecated and about to be
-removed, there is no point to keep this file writable also in the
-future.
+ALSA: memalloc: duly use pgprot_writecombine() for WC mapping
 
-Emit a warning and deprecate the interface.
+x86 has strict rules about not having memory type aliasing (Documentation/x86/pat.rst). snd_dma_sg_alloc() violates them by mapping first as WC (with set_memory_wc()) and then as UC- (with pgprot_noncached() + vmap()). Switching to pgprot_writecombine() should fix this.
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/thermal/thermal_sysfs.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-index 1c4aac8464a7..730f1361dbef 100644
---- a/drivers/thermal/thermal_sysfs.c
-+++ b/drivers/thermal/thermal_sysfs.c
-@@ -610,6 +610,8 @@ cur_state_store(struct device *dev, struct device_attribute *attr,
- 	unsigned long state;
- 	int result;
- 
-+	pr_warn_once("Setting cooling device state is deprecated\n");
-+	
- 	if (sscanf(buf, "%ld\n", &state) != 1)
- 		return -EINVAL;
- 
--- 
-2.25.1
-
+Signed-off-by: Aleksandr Fedorov <halcien@gmail.com>
+diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
+index 8352a5cdb19f..670b30c3b6e5 100644
+--- a/sound/core/sgbuf.c
++++ b/sound/core/sgbuf.c
+@@ -79,9 +79,7 @@ static void *snd_dma_sg_alloc(struct snd_dma_buffer *dmab, size_t size)
+ 		return NULL;
+ 	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG) {
+ 		type = SNDRV_DMA_TYPE_DEV_WC;
+-#ifdef pgprot_noncached
+-		prot = pgprot_noncached(PAGE_KERNEL);
+-#endif
++		prot = pgprot_writecombine(PAGE_KERNEL);
+ 	}
+ 	sgbuf->dev = dmab->dev.dev;
+ 	pages = snd_sgbuf_aligned_pages(size);
