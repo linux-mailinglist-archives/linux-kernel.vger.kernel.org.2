@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE214331F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2594331E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234927AbhJSJRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234511AbhJSJRq (ORCPT
+        id S234928AbhJSJOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:14:34 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38420 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhJSJOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:17:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B1EC061768;
-        Tue, 19 Oct 2021 02:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M74+/if23OdvvyA6a/gJ9u3knPoaJ8QASoM6JWUmAfg=; b=vYHOQbqwa8BG777Qm7rqJzKO0w
-        vkvU8IjgOjvSIJwmaEWntGl+X0usNC6/NqijaY6z9GczT6VgIlVYE+mcs0I7wc+rf0i6jDU8Qifx/
-        Donz7RFxenTlsZVs2mXjt0UPmkvuQdMQ9Edn4Tumq/r78A7zXHO+BenWdvnS2nNybPE4eTv1G4UxR
-        dE5Hn3fQbDwVHrP1RGjH5SU8NbJKqoZwUKc1ku69PZBQiIJUxCw37eEq2NqRG2gtu+l3rsAB++AXL
-        AqV7zz/GG2plIOYjN19IuYFkEIBt/e0wPIp5RhTxoG/vbfiYcdDnHSbDVv5PVwy0vMzDp7R/uVTfR
-        XjrmaEqA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcl8a-00BeBf-Ny; Tue, 19 Oct 2021 09:11:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A78FD300221;
-        Tue, 19 Oct 2021 11:10:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8E7A52C6A7ABD; Tue, 19 Oct 2021 11:10:24 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 11:10:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [PATCH v2 04/11] sched: Simplify wake_up_*idle*()
-Message-ID: <YW6LgO4OK+YPy90S@hirez.programming.kicks-ass.net>
-References: <20210929151723.162004989@infradead.org>
- <20210929152428.769328779@infradead.org>
- <ba4ca17f-100e-bef7-6d7b-4de0f5a515b9@quicinc.com>
- <a354fadd-268f-8119-d37a-102e5efa1437@quicinc.com>
- <YW6IUIRZsBAZ+6hK@hirez.programming.kicks-ass.net>
+        Tue, 19 Oct 2021 05:14:30 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 59BA421976;
+        Tue, 19 Oct 2021 09:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634634737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PNviG73W5CXxu7k+Hr5pl6wFnyxtJHN8JrkqiiHK7LA=;
+        b=XrPg5jT+DCKoaG2k5ocQTEfHGkSppHT1XVgCQNLxJhXX+T9JbVG+nr0+BMbX5+Hlp4c2ic
+        nAlcRclPn7O2+VB/BCfj7dEl/XNA89DzSyzoDvwNccFk6hKGIUUvdhiuOICEnApyvz1LX1
+        f0PQXTnBp2zF/y+eFqFdiCiisycfQo8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634634737;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PNviG73W5CXxu7k+Hr5pl6wFnyxtJHN8JrkqiiHK7LA=;
+        b=jIx8pGNL+vHQm7rncO/9sNPXnIpk/ya0K95ryK6YnHjP/cwwDtHvsCfEJLySgzI4b8IPPi
+        /Cxj+PTxEGefy2DQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 3F203A3B8B;
+        Tue, 19 Oct 2021 09:12:17 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 001101E0BE5; Tue, 19 Oct 2021 11:12:16 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 11:12:16 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Subject: Re: [PATCH -next v3 3/5] ext4: get buffer head before read_mmp_block
+Message-ID: <20211019091216.GD3255@quack2.suse.cz>
+References: <20211019064959.625557-1-yebin10@huawei.com>
+ <20211019064959.625557-4-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YW6IUIRZsBAZ+6hK@hirez.programming.kicks-ass.net>
+In-Reply-To: <20211019064959.625557-4-yebin10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 10:56:48AM +0200, Peter Zijlstra wrote:
-> On Mon, Oct 18, 2021 at 11:47:32PM -0400, Qian Cai wrote:
-> > Peter, any thoughts? I did confirm that reverting the commit fixed the issue.
-> > 
-> > On 10/13/2021 10:32 AM, Qian Cai wrote:
-> > > 
-> > > 
-> > > On 9/29/2021 11:17 AM, Peter Zijlstra wrote:
-> > >> --- a/kernel/smp.c
-> > >> +++ b/kernel/smp.c
-> > >> @@ -1170,14 +1170,14 @@ void wake_up_all_idle_cpus(void)
-> > >>  {
-> > >>  	int cpu;
-> > >>  
-> > >> -	preempt_disable();
-> > >> +	cpus_read_lock();
-> > >>  	for_each_online_cpu(cpu) {
-> > >> -		if (cpu == smp_processor_id())
-> > >> +		if (cpu == raw_smp_processor_id())
-> > >>  			continue;
-> > >>  
-> > >>  		wake_up_if_idle(cpu);
-> > >>  	}
-> > >> -	preempt_enable();
-> > >> +	cpus_read_unlock();
+On Tue 19-10-21 14:49:57, Ye Bin wrote:
+> There is only pass NULL 'bh' in ext4_multi_mount_protect,
+> So just call sb_getblk get buffer head fisrt, and we will
+> simplify read_mmp_block function.
 > 
-> Right, so yesterday I thought: YW2KGrvvv/vSA+97@hirez.programming.kicks-ass.net
-> but today I might have another idea, lemme go prod at this a bit more.
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-Here, hows this then?
+I don't think there's a need to separate this into a special patch. Just
+fold this change into patch 4. With that feel free to add:
 
----
-diff --git a/kernel/smp.c b/kernel/smp.c
-index ad0b68a3a3d3..61ddc7a3bafa 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -1170,14 +1170,12 @@ void wake_up_all_idle_cpus(void)
- {
- 	int cpu;
- 
--	cpus_read_lock();
--	for_each_online_cpu(cpu) {
--		if (cpu == raw_smp_processor_id())
--			continue;
--
--		wake_up_if_idle(cpu);
-+	for_each_cpu(cpu) {
-+		preempt_disable();
-+		if (cpu != smp_processor_id() && cpu_online(cpu))
-+			wake_up_if_idle(cpu);
-+		preempt_enable();
- 	}
--	cpus_read_unlock();
- }
- EXPORT_SYMBOL_GPL(wake_up_all_idle_cpus);
- 
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+The combined change looks good to me.
+
+								Honza
+
+> ---
+>  fs/ext4/mmp.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+> index 4af8b99ade84..6ac6aacd8fa5 100644
+> --- a/fs/ext4/mmp.c
+> +++ b/fs/ext4/mmp.c
+> @@ -295,6 +295,10 @@ int ext4_multi_mount_protect(struct super_block *sb,
+>  		goto failed;
+>  	}
+>  
+> +	bh = sb_getblk(sb, mmp_block);
+> +	if (bh)
+> +		goto failed;
+> +
+>  	retval = read_mmp_block(sb, &bh, mmp_block);
+>  	if (retval)
+>  		goto failed;
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
