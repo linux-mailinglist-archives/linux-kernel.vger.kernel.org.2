@@ -2,171 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96EA432CE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4130F432CEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbhJSEts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 00:49:48 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41476 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229649AbhJSEtq (ORCPT
+        id S232733AbhJSEvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 00:51:36 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:47921 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229649AbhJSEvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 00:49:46 -0400
-X-UUID: 8ad71689af5a4caaa262c52bc2324fe4-20211019
-X-UUID: 8ad71689af5a4caaa262c52bc2324fe4-20211019
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1024412807; Tue, 19 Oct 2021 12:47:31 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 19 Oct 2021 12:47:30 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 19 Oct 2021 12:47:30 +0800
-Message-ID: <6c7879c2db62cad0f6de1452b5d3b39cc8c58a2a.camel@mediatek.com>
-Subject: Re: [PATCH v5 4/5] arm64: dts: mediatek: add clock support for
- mt7986a
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Sam Shih <sam.shih@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>
-CC:     John Crispin <john@phrozen.org>, Ryder Lee <Ryder.Lee@mediatek.com>
-Date:   Tue, 19 Oct 2021 12:47:30 +0800
-In-Reply-To: <20211018114701.13984-5-sam.shih@mediatek.com>
-References: <20211018114701.13984-1-sam.shih@mediatek.com>
-         <20211018114701.13984-5-sam.shih@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 19 Oct 2021 00:51:32 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Usprolt_1634618956;
+Received: from localhost(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Usprolt_1634618956)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 19 Oct 2021 12:49:17 +0800
+Date:   Tue, 19 Oct 2021 12:49:16 +0800
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+To:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xuesong.chen@linux.alibaba.com
+Subject: [PATCH v3 0/2] PCI MCFG consolidation and APEI resource filterin
+Message-ID: <YW5OTMz+x8zrsqkF@Dennis-MBP.local>
+Reply-To: Xuesong Chen <xuesong.chen@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
+Hello All,
 
-> +		infracfg: infracfg@10001000 {
-> +			compatible = "mediatek,mt7986-infracfg",
-> "syscon";
-> +			reg = <0 0x10001000 0 0x1000>;
-> +			#clock-cells = <1>;
-> +		};
-> +
-> +		topckgen: topckgen@1001b000 {
-> +			compatible = "mediatek,mt7986-topckgen",
-> "syscon";
-> +			reg = <0 0x1001B000 0 0x1000>;
-> +			#clock-cells = <1>;
-> +		};
+The idea of this patch set is very strainforward, it's somehow a refactor
+of the original codes to share some ones that they should do. Based on that,
+we can resolve the MCFG address access issue in APEI module on x86 in a 
+command way instead of the current arch-dependent one, while this issue also
+does happen on ARM64 platform.
 
-please use lowercase hex value.
-> +
->  		watchdog: watchdog@1001c000 {
->  			compatible = "mediatek,mt7986-wdt",
->  				     "mediatek,mt6589-wdt";
-> @@ -108,11 +122,31 @@ watchdog: watchdog@1001c000 {
->  			status = "disabled";
->  		};
->  
-> +		apmixedsys: apmixedsys@1001e000 {
-> +			compatible = "mediatek,mt7986-apmixedsys";
-> +			reg = <0 0x1001E000 0 0x1000>;
-> +			#clock-cells = <1>;
-> +		};
-> +
-> +		sgmiisys0: syscon@10060000 {
-> +			compatible = "mediatek,mt7986-sgmiisys_0",
-> +				     "syscon";
-> +			reg = <0 0x10060000 0 0x1000>;
-> +			#clock-cells = <1>;
-> +		};
-> +
-> +		sgmiisys1: syscon@10070000 {
-> +			compatible = "mediatek,mt7986-sgmiisys_1",
-> +				     "syscon";
-> +			reg = <0 0x10070000 0 0x1000>;
-> +			#clock-cells = <1>;
-> +		};
-> +
->  		trng: trng@1020f000 {
->  			compatible = "mediatek,mt7986-rng",
->  				     "mediatek,mt7623-rng";
->  			reg = <0 0x1020f000 0 0x100>;
-> -			clocks = <&system_clk>;
-> +			clocks = <&infracfg CLK_INFRA_TRNG_CK>;
->  			clock-names = "rng";
->  			status = "disabled";
->  		};
-> @@ -122,7 +156,13 @@ uart0: serial@11002000 {
->  				     "mediatek,mt6577-uart";
->  			reg = <0 0x11002000 0 0x400>;
->  			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
-> -			clocks = <&system_clk>;
-> +			clocks = <&infracfg CLK_INFRA_UART0_SEL>,
-> +				 <&infracfg CLK_INFRA_UART0_CK>;
-> +			clock-names = "baud", "bus";
-> +			assigned-clocks = <&topckgen CLK_TOP_UART_SEL>,
-> +					  <&infracfg
-> CLK_INFRA_UART0_SEL>;
-> +			assigned-clock-parents = <&topckgen
-> CLK_TOP_XTAL>,
-> +						 <&topckgen
-> CLK_TOP_UART_SEL>;
->  			status = "disabled";
->  		};
->  
-> @@ -131,7 +171,11 @@ uart1: serial@11003000 {
->  				     "mediatek,mt6577-uart";
->  			reg = <0 0x11003000 0 0x400>;
->  			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
-> -			clocks = <&system_clk>;
-> +			clocks = <&infracfg CLK_INFRA_UART1_SEL>,
-> +				 <&infracfg CLK_INFRA_UART1_CK>;
-> +			clock-names = "baud", "bus";
-> +			assigned-clocks = <&infracfg
-> CLK_INFRA_UART1_SEL>;
-> +			assigned-clock-parents = <&topckgen
-> CLK_TOP_F26M_SEL>;
->  			status = "disabled";
->  		};
->  
-> @@ -140,10 +184,24 @@ uart2: serial@11004000 {
->  				     "mediatek,mt6577-uart";
->  			reg = <0 0x11004000 0 0x400>;
->  			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
-> -			clocks = <&system_clk>;
-> +			clocks = <&infracfg CLK_INFRA_UART2_SEL>,
-> +				 <&infracfg CLK_INFRA_UART2_CK>;
-> +			clock-names = "baud", "bus";
-> +			assigned-clocks = <&infracfg
-> CLK_INFRA_UART2_SEL>;
-> +			assigned-clock-parents = <&topckgen
-> CLK_TOP_F26M_SEL>;
->  			status = "disabled";
->  		};
->  
-> +		ethsys: syscon@15000000 {
-> +			 #address-cells = <1>;
-> +			 #size-cells = <1>;
-> +			 compatible = "mediatek,mt7986-ethsys",
-> +				      "syscon";
-> +			 reg = <0 0x15000000 0 0x1000>;
-> +			 #clock-cells = <1>;
-> +			 #reset-cells = <1>;
-> +		};
-> +
->  	};
->  
->  };
+The logic of the series is very clear(IMO it's even time-wasting to explain that):
+
+Patch #1: Escalating the 'pci_mmcfg_list' and 'pci_mmcfg_region' to the
+pci.[c,h] which will shared by all the arches. A common sense, in some degree.
+
+Patch #2: Since the 'pci_mmcfg_list' now can be shared across all arches,
+the arch-specific fix method can be replaced by the new solution naturally.
+
+Now the v3 patch has been finalized, can we move forward to the next step? -
+either give the concerns/objections or pick it up.
+
+Xuesong Chen (2):
+  PCI: MCFG: Consolidate the separate PCI MCFG table entry list
+  ACPI: APEI: Filter the PCI MCFG address with an arch-agnostic method
+
+ arch/x86/include/asm/pci_x86.h | 17 +---------------
+ arch/x86/pci/mmconfig-shared.c | 30 ----------------------------
+ drivers/acpi/apei/apei-base.c  | 45 ++++++++++++++++++++++++++++--------------
+ drivers/acpi/pci_mcfg.c        | 34 ++++++++++++-------------------
+ drivers/pci/pci.c              |  2 ++
+ include/linux/pci.h            | 17 ++++++++++++++++
+ 6 files changed, 63 insertions(+), 82 deletions(-)
+
+-- 
+1.8.3.1
 
