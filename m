@@ -2,64 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE8D433670
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AC0433674
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbhJSM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:59:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44646 "EHLO mail.kernel.org"
+        id S235775AbhJSM7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:59:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235689AbhJSM7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:59:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ED4461360;
-        Tue, 19 Oct 2021 12:56:52 +0000 (UTC)
+        id S235517AbhJSM7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A883A60FC2;
+        Tue, 19 Oct 2021 12:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634648213;
-        bh=rpzdWCUEobf/IDekmzPNEYMxSWhS5XWJoeBbvCLEQ2U=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SkAI15oe3aJqLCpSAzrO1oNSzlppscoCUOiUzA7fi5zu5mUJQpLt+Sa3RWydsPguM
-         dsNBiEP7+oW61RI4tzrMR0HfkwfNwH86kvNPsO+0v4pgkPLrX4itZVmg05Usljt3CS
-         aTh0bKM+noFjYEpCyQEa9/GI6ANXD4XEXQ+JhJktuCUAJW8iNONdW7o4trS39Fnkc2
-         vI5I9/+PAnkXymgQYL0ovGmzFysbOBVTavIqa+3EwcKrMQ3ZINlXokDxm0mEv2klK6
-         xEpCCOLbDPkh3fonvx/HGEzuARRjoZIT5bPtjEbc+vyLnYBZNAmcx0/NJChmnE0zDp
-         WTjbJoHioE+3A==
-Message-ID: <bec868c6-02c3-5f6d-c5d4-84cb4e1c9cb1@kernel.org>
-Date:   Tue, 19 Oct 2021 20:56:48 +0800
+        s=k20201202; t=1634648245;
+        bh=qZvgX93/l3kaWVsSfl7RcjNNRArfXfWCDJWWqjKZDgw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QvqYnRsMnW+tTB3c48slfsbMV0X0MqFXObUDhqPezISPyHTrxB532y4nnLUQ/pMHX
+         VFFyu/eJdEYD3oltcnECnImVIzA7ejQm4g4xAbxXyAyI0UzQYa9y9chOZUXSYyAICt
+         AhT6PoUPfztFZjQvWWiVIvsV9X6S2pPAJazjhq9RtwkEtj73eY0+R063rPqW8S6St1
+         ItzRXf5va4leC4IXu/FuBayPQWx4wSldhXp01rjZuR/diDrDXCgeZLG2MIcTAi/8bu
+         PRqkNkrz14myCddpcJXoLhAM+o/V/brcqmrXAmu+bmeWBFCMcVjXP91he0ezahGD6n
+         nGhfWCa8qhW1w==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mcog8-0000jV-8j; Tue, 19 Oct 2021 14:57:17 +0200
+Date:   Tue, 19 Oct 2021 14:57:16 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Drew Fustini <dfustini@baylibre.com>
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Keerthy <j-keerthy@ti.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Benoit Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] ARM: dts: am335x: add rtc system-power-controller
+Message-ID: <YW7ArLpGwKz2Fc/b@hovoldconsulting.com>
+References: <20211018220018.1514652-1-dfustini@baylibre.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4 2/3] erofs: introduce the secondary compression head
-Content-Language: en-US
-To:     Gao Xiang <xiang@kernel.org>, linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Yue Hu <huyue2@yulong.com>
-References: <20211009181209.23041-1-xiang@kernel.org>
- <20211017165721.2442-1-xiang@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20211017165721.2442-1-xiang@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018220018.1514652-1-dfustini@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/18 0:57, Gao Xiang wrote:
-> From: Gao Xiang <hsiangkao@linux.alibaba.com>
+On Mon, Oct 18, 2021 at 03:00:18PM -0700, Drew Fustini wrote:
+> Johan pointed out when I submitted "ARM: dts: am335x: Add rtc node as
+> system-power-controller" [1] that mentioning am335x-evm and boneblack
+> in the commit message was incorrect. system-power-controller is already
+> present in am335x-boneblack-common.dtsi and am335x-evm would need the
+> property added directly to the dts file.
 > 
-> Previously, for each HEAD lcluster, it can be either HEAD or PLAIN
-> lcluster to indicate whether the whole pcluster is compressed or not.
+> These are the dts files that currently include either
+> am335x-bone-common.dtsi or am335x-boneblack-common.dtsi:
 > 
-> In this patch, a new HEAD2 head type is introduced to specify another
-> compression algorithm other than the primary algorithm for each
-> compressed file, which can be used for upcoming LZMA compression and
-> LZ4 range dictionary compression for various data patterns.
+>     am335x-bone.dts
+> 	am335x-bone-common.dtsi
 > 
-> It has been stayed in the EROFS roadmap for years. Complete it now!
+>     am335x-boneblack.dts
+>         am335x-bone-common.dtsi
+> 	am335x-boneblack-common.dtsi
 > 
-> Reviewed-by: Yue Hu <huyue2@yulong.com>
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+>     am335x-boneblack-wireless.dts
+> 	am335x-bone-common.dtsi
+> 	am335x-boneblack-common.dtsi
+> 
+>     am335x-bonegreen.dts
+> 	am335x-bone-common.dtsi
+> 
+>     am335x-bonegreen-wireless.dts
+> 	am335x-bone-common.dtsi
+> 
+>     am335x-sancloud-bbe.dts
+> 	am335x-bone-common.dtsi
+> 	am335x-boneblack-common.dtsi
+> 
+>     am335x-sancloud-bbe-lite.dts
+> 	am335x-bone-common.dtsi
+> 	am335x-boneblack-common.dtsi
+> 
+> am335x-boneblack, am335x-boneblack-wireless, am335x-sancloud-bbe and
+> am335x-sancloud-bbe-lite currently get the system-power-controller
+> property from am335x-boneblack-common.dtsi. Moving that property to
+> am335x-bone-common.dtsi would have no change for these boards as they
+> include that dtsi file too.
+> 
+> This change would result in the addition of system-power-controller
+> to bone, bonegreen and bonegreen-wireless. These boards all have
+> PMIC_POWR_EN (ZCZ ball C6) connected to PWR_EN on the TPS65217B PMIC.
+> Thus system-power-controller is a valid property for them too.
+> 
+> In addition to BeagleBone, I have reviewed the TI AM335x eval boards:
+> 
+> am335x-evm.dts should _not_ have the system-power-controller property as
+> the PMIC_POWER_EN is not connected on the TMDXEVM3358 board [2]. The
+> ball would be connected to SLEEP (pin 37) on the TPS65910A3 PMIC but R65
+> is marked as do not populate.
+> 
+> am335x-evmsk.dts should _not_ have system-power-controller property as
+> PMIC_POWER_EN is not connected on the TMDSSK3358 board [3].
+> 
+> am335x-icev2.dts should have the system-power-controller property as the
+> PMIC_POWER_EN (ZCZ ball C6) is connected to PWRHOLD (pin 1) of the
+> TPS65910A3 PMIC on the TMDSICE3359 board [4].
+>
+> Cc: Jason Kridner <jkridner@beagleboard.org>
+> Cc: Dave Gerlach <d-gerlach@ti.com>
+> Cc: Keerthy <j-keerthy@ti.com>
+> Cc: Johan Hovold <johan@kernel.org>
+> 
+> [1] https://lore.kernel.org/linux-omap/20211012191311.879838-1-dfustini@baylibre.com/
+> [2] https://www.ti.com/tool/TMDXEVM3358
+> [3] https://www.ti.com/tool/TMDSSK3358
+> [4] https://www.ti.com/tool/TMDSICE3359
+> 
+> 
+> Drew Fustini (2):
+>   ARM: dts: am335x-boneblack-common: move system-power-controller
+>   ARM: dts: am335x-icev2: Add system-power-controller to RTC node
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Nice work. I trust your review of the schematics, and only
+double-checked sancloud-bbe. The patches look good.
 
-Thanks,
+For the series:
+
+Reviewed-by: Johan Hovold <johan@kernel.org>
+
+Johan
