@@ -2,154 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FD1434257
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DDD43425E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhJSX7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhJSX7I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:59:08 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61173C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:56:54 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id j8so3292271uak.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=Psadu57ENx7zSGlF7FXcnUH65xKVT0cShGyA5O0uuR0=;
-        b=ODqOboJjNhOiXi81NalCiQ/twxF5ntHRKx/4pmyPa+DUDvNWPZnIUcbN3j7XTnTNQ2
-         yj8sIQ7h+Wy0If3tAzoMnSETtUqyQDtYV+NiZw3VBFkhIMRZtnwqraKDHWGM9tyPQYfY
-         K4BTFg3srrrjllX5xgEbhwnjuVlnZ2ZQqKxJmtYqbQr6a78vKNTJJa2dfwj5xyVOkpJQ
-         1tpPpuffgcDUkk2X5d3wsUtffRCIqsDoMDMQu/hFmYnzRwR9J/crf03ML7sZXXJBwu+d
-         E7RWh+E+eBA5wGaRkhjqjEiWmU030tL5K2mRunRpx2X7N8CGOS28ZNJl1fq+05Y3UYaZ
-         /+aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=Psadu57ENx7zSGlF7FXcnUH65xKVT0cShGyA5O0uuR0=;
-        b=eLjfD8Py5T3yfUn7l63ptDJIluxyMRe41Q3G8amKDfV8r0lwuFhU0xH1oxim1dYYuz
-         Dt0V2zd1dAZqlADBzdBCnnxoc7VIYVESBt4hzlbMjMsdLK0sw3UdO0VW5rDQl1tKeSdQ
-         pIWBL8B5AmZy0OxJB4za9Cvwx1ei1rSrATw5lxJrY7uqdFkrKoPavLcVGZ08yRmhXlCB
-         OVeGCGdz5fukZfpvHxkO3dmW+1avNTGOj9WXzf1St2wrJy7i6qnwAKoBUcsODX0VXfUH
-         0K5Pv3hIGOBnEmYXLpyj3oc39xkpXOUXQpRjZvn8cmenbuy7CfZbNWZbTqIQmep6gVQA
-         Y0wg==
-X-Gm-Message-State: AOAM532r3XotEomiVKoWL9nJ9T2SlFA+EcjkxufVnYsP+EeZfKL7JbK6
-        3G/v7urlbrqLkEr65Hv9DyzCzA==
-X-Google-Smtp-Source: ABdhPJwlLA0sh0zRvKRqiCuIt3kikTSJXJ6xr4LhbZE4d6LdVlxFRUNKwXjavMBLiItZWWAv24aMlw==
-X-Received: by 2002:a9f:29a5:: with SMTP id s34mr3998999uas.122.1634687813539;
-        Tue, 19 Oct 2021 16:56:53 -0700 (PDT)
-Received: from fedora ([187.64.134.142])
-        by smtp.gmail.com with ESMTPSA id j11sm405367uaa.6.2021.10.19.16.56.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 16:56:53 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 20:56:47 -0300
-From:   =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
-To:     hongxing.zhu@nxp.com, l.stach@pengutronix.de
-Cc:     lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com, helgaas@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] PCI: imx6: Replace legacy gpio interface for gpiod
- interface
-Message-ID: <YW9bPy5IHzuROhrl@fedora>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        id S229963AbhJTAAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 20:00:46 -0400
+Received: from mx.socionext.com ([202.248.49.38]:37520 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229547AbhJTAAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 20:00:45 -0400
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 20 Oct 2021 08:58:31 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 321E8206E701;
+        Wed, 20 Oct 2021 08:58:31 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Wed, 20 Oct 2021 08:58:31 +0900
+Received: from plum.e01.socionext.com (unknown [10.212.243.119])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id E6B3BB62AC;
+        Wed, 20 Oct 2021 08:58:30 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v2 0/8] phy: socionext: Introduce some features for UniPhier SoCs
+Date:   Wed, 20 Oct 2021 08:58:00 +0900
+Message-Id: <1634687888-23900-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Considering the current transition of the GPIO subsystem, remove all
-dependencies of the legacy GPIO interface (linux/gpio.h and linux
-/of_gpio.h) and replace it with the descriptor-based GPIO approach.
+This series includes the patches to add the following features:
+- Add basic support for new UniPhier NX1 SoC to USB3 and PCIe PHY.
+  NX1 SoC also has the same kinds of controls as the other UniPhier SoCs.
+- Add a PHY parameters to PCIe PHY
+- Add dual-phy support for the SoCs that has two phys to PCIe PHY
+- Add basic support for Pro4 SoC to ACHI PHY
 
-Signed-off-by: Maíra Canal <maira.canal@usp.br>
 ---
-V1 -> V2: Rewrite commit log and subject line to match PCI subsystem standard
----
- drivers/pci/controller/dwc/pci-imx6.c | 31 ++++++++++-----------------
- 1 file changed, 11 insertions(+), 20 deletions(-)
+Changes since v1:
+- Fix indentation of clocks and resets in AHCI PHY binding documentation
+- Fix insufficient argument issue when adding dual-phy to PCIe PHY
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 80fc98acf097..e5ee54e37d05 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -11,13 +11,12 @@
- #include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
- #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
- #include <linux/mfd/syscon/imx7-iomuxc-gpr.h>
- #include <linux/module.h>
--#include <linux/of_gpio.h>
- #include <linux/of_device.h>
- #include <linux/of_address.h>
- #include <linux/pci.h>
-@@ -63,7 +62,7 @@ struct imx6_pcie_drvdata {
- 
- struct imx6_pcie {
- 	struct dw_pcie		*pci;
--	int			reset_gpio;
-+	struct gpio_desc    *reset_gpio;
- 	bool			gpio_active_high;
- 	struct clk		*pcie_bus;
- 	struct clk		*pcie_phy;
-@@ -526,11 +525,11 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- 	usleep_range(200, 500);
- 
- 	/* Some boards don't have PCIe reset GPIO. */
--	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
--		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-+	if (imx6_pcie->reset_gpio) {
-+		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
- 					imx6_pcie->gpio_active_high);
- 		msleep(100);
--		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-+		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
- 					!imx6_pcie->gpio_active_high);
- 	}
- 
-@@ -1025,22 +1024,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 		return PTR_ERR(pci->dbi_base);
- 
- 	/* Fetch GPIOs */
--	imx6_pcie->reset_gpio = of_get_named_gpio(node, "reset-gpio", 0);
- 	imx6_pcie->gpio_active_high = of_property_read_bool(node,
- 						"reset-gpio-active-high");
--	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
--		ret = devm_gpio_request_one(dev, imx6_pcie->reset_gpio,
--				imx6_pcie->gpio_active_high ?
--					GPIOF_OUT_INIT_HIGH :
--					GPIOF_OUT_INIT_LOW,
--				"PCIe reset");
--		if (ret) {
--			dev_err(dev, "unable to get reset gpio\n");
--			return ret;
--		}
--	} else if (imx6_pcie->reset_gpio == -EPROBE_DEFER) {
--		return imx6_pcie->reset_gpio;
--	}
-+	imx6_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-+			imx6_pcie->gpio_active_high ?  GPIOD_OUT_HIGH :
-+				GPIOD_OUT_LOW);
-+	if (IS_ERR(imx6_pcie->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(imx6_pcie->reset_gpio),
-+					  "unable to get reset gpio\n");
- 
- 	/* Fetch clocks */
- 	imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
+Kunihiko Hayashi (8):
+  dt-bindings: phy: uniphier-usb3: Add bindings for NX1 SoC
+  phy: uniphier-usb3: Add compatible string for NX1 SoC
+  dt-bindings: phy: uniphier-pcie: Add bindings for NX1 SoC
+  phy: uniphier-pcie: Add compatible string and SoC-dependent data for
+    NX1 SoC
+  phy: uniphier-pcie: Set VCOPLL clamp mode in PHY register
+  phy: uniphier-pcie: Add dual-phy support for NX1 SoC
+  dt-bindings: phy: uniphier-ahci: Add bindings for Pro4 SoC
+  phy: uniphier-ahci: Add support for Pro4 SoC
+
+ .../bindings/phy/socionext,uniphier-ahci-phy.yaml  |  20 +-
+ .../bindings/phy/socionext,uniphier-pcie-phy.yaml  |   1 +
+ .../phy/socionext,uniphier-usb3hs-phy.yaml         |   1 +
+ .../phy/socionext,uniphier-usb3ss-phy.yaml         |   1 +
+ drivers/phy/socionext/Kconfig                      |   2 +-
+ drivers/phy/socionext/phy-uniphier-ahci.c          | 201 ++++++++++++++++++++-
+ drivers/phy/socionext/phy-uniphier-pcie.c          |  70 +++++--
+ drivers/phy/socionext/phy-uniphier-usb3hs.c        |   4 +
+ drivers/phy/socionext/phy-uniphier-usb3ss.c        |   4 +
+ 9 files changed, 282 insertions(+), 22 deletions(-)
+
 -- 
-2.31.1
+2.7.4
 
