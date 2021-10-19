@@ -2,50 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0572A432EDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721B5432EE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbhJSHFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:05:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59347 "EHLO
+        id S234460AbhJSHGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:06:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43223 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234411AbhJSHFu (ORCPT
+        by vger.kernel.org with ESMTP id S234458AbhJSHGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:05:50 -0400
+        Tue, 19 Oct 2021 03:06:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634627018;
+        s=mimecast20190719; t=1634627051;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=29Tl2XIWb4fkaZTXpgIA0U7aKxrMPir07JupUJnTbKw=;
-        b=b0YN/b5CITe1lYkZyGWGvXCNylJty660v/JNVlg6Zslor+3j5o8tJPNkESZ0DdljxkUaYv
-        pb43DqJssUnFARI+SO0YvICmo2yuSovCj+gtxAcFOnBEXd81xO+FC0QWMvQbEVD9W0Iqy7
-        OJni5JLAl21TD9MBGr25iVmcmC8vSCY=
+        bh=DayTXBwbvVaQx4LfEv0thvml5ih6YQzC9fEqMQRhHrI=;
+        b=EmbEFgmWCpLPhKQ3t25D81LT9oz8z9F4uyiISyXU2WWFsurL/NKwVQL0S5fI1tNzyEdQmh
+        pBXyCPwm4rtkUvPfl94CvLaKstaOqu7hoW2HVb2U1uRxrqs0FCp6dzxgZXRz6JDCqQXAqX
+        VctwAWzwl71gj+XD/FR35iHdGsPMIEY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-74-97pc6wwLPaKyflMK5mPTgA-1; Tue, 19 Oct 2021 03:03:34 -0400
-X-MC-Unique: 97pc6wwLPaKyflMK5mPTgA-1
+ us-mta-212-h87nX8GHPq28_CGD_xA8fg-1; Tue, 19 Oct 2021 03:04:08 -0400
+X-MC-Unique: h87nX8GHPq28_CGD_xA8fg-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EC7780A5C6;
-        Tue, 19 Oct 2021 07:03:32 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 406C89126B;
+        Tue, 19 Oct 2021 07:04:07 +0000 (UTC)
 Received: from localhost.localdomain (ovpn-12-155.pek2.redhat.com [10.72.12.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CF93D5BB0D;
-        Tue, 19 Oct 2021 07:03:24 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 98F06707B6;
+        Tue, 19 Oct 2021 07:03:32 +0000 (UTC)
 From:   Jason Wang <jasowang@redhat.com>
 To:     mst@redhat.com, jasowang@redhat.com
 Cc:     virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH V3 05/10] virtio-pci: harden INTX interrupts
-Date:   Tue, 19 Oct 2021 15:01:47 +0800
-Message-Id: <20211019070152.8236-6-jasowang@redhat.com>
+        david.kaplan@amd.com, konrad.wilk@oracle.com
+Subject: [PATCH V3 06/10] virtio_ring: fix typos in vring_desc_extra
+Date:   Tue, 19 Oct 2021 15:01:48 +0800
+Message-Id: <20211019070152.8236-7-jasowang@redhat.com>
 In-Reply-To: <20211019070152.8236-1-jasowang@redhat.com>
 References: <20211019070152.8236-1-jasowang@redhat.com>
 MIME-Version: 1.0
@@ -55,86 +51,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch tries to make sure the virtio interrupt handler for INTX
-won't be called after a reset and before virtio_device_ready(). We
-can't use IRQF_NO_AUTOEN since we're using shared interrupt
-(IRQF_SHARED). So this patch tracks the INTX enabling status in a new
-intx_soft_enabled variable and toggle it during in
-vp_disable/enable_vectors(). The INTX interrupt handler will check
-intx_soft_enabled before processing the actual interrupt.
+We're actually tracking descriptor address and length instead of the
+buffer.
 
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_pci_common.c | 23 +++++++++++++++++++++--
- drivers/virtio/virtio_pci_common.h |  1 +
- 2 files changed, 22 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index 8d8f83aca721..1bce254a462a 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -30,8 +30,16 @@ void vp_disable_cbs(struct virtio_device *vdev)
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	int i;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index dd95dfd85e98..d2ca0a7365f8 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -79,8 +79,8 @@ struct vring_desc_state_packed {
+ };
  
--	if (vp_dev->intx_enabled)
-+	if (vp_dev->intx_enabled) {
-+		/*
-+		 * The below synchronize() guarantees that any
-+		 * interrupt for this line arriving after
-+		 * synchronize_irq() has completed is guaranteed to see
-+		 * intx_soft_enabled == false.
-+		 */
-+		WRITE_ONCE(vp_dev->intx_soft_enabled, false);
- 		synchronize_irq(vp_dev->pci_dev->irq);
-+	}
- 
- 	for (i = 0; i < vp_dev->msix_vectors; ++i)
- 		disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-@@ -43,8 +51,16 @@ void vp_enable_cbs(struct virtio_device *vdev)
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	int i;
- 
--	if (vp_dev->intx_enabled)
-+	if (vp_dev->intx_enabled) {
-+		disable_irq(vp_dev->pci_dev->irq);
-+		/*
-+		 * The above disable_irq() provides TSO ordering and
-+		 * as such promotes the below store to store-release.
-+		 */
-+		WRITE_ONCE(vp_dev->intx_soft_enabled, true);
-+		enable_irq(vp_dev->pci_dev->irq);
- 		return;
-+	}
- 
- 	for (i = 0; i < vp_dev->msix_vectors; ++i)
- 		enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-@@ -97,6 +113,9 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
- 	struct virtio_pci_device *vp_dev = opaque;
- 	u8 isr;
- 
-+	if (!READ_ONCE(vp_dev->intx_soft_enabled))
-+		return IRQ_NONE;
-+
- 	/* reading the ISR has the effect of also clearing it so it's very
- 	 * important to save off the value. */
- 	isr = ioread8(vp_dev->isr);
-diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-index 52e924603075..7b59e10063c3 100644
---- a/drivers/virtio/virtio_pci_common.h
-+++ b/drivers/virtio/virtio_pci_common.h
-@@ -64,6 +64,7 @@ struct virtio_pci_device {
- 	/* MSI-X support */
- 	int msix_enabled;
- 	int intx_enabled;
-+	bool intx_soft_enabled;
- 	cpumask_var_t *msix_affinity_masks;
- 	/* Name strings for interrupts. This size should be enough,
- 	 * and I'm too lazy to allocate each name separately. */
+ struct vring_desc_extra {
+-	dma_addr_t addr;		/* Buffer DMA addr. */
+-	u32 len;			/* Buffer length. */
++	dma_addr_t addr;		/* Descriptor DMA addr. */
++	u32 len;			/* Descriptor length. */
+ 	u16 flags;			/* Descriptor flags. */
+ 	u16 next;			/* The next desc state in a list. */
+ };
 -- 
 2.25.1
 
