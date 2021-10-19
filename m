@@ -2,60 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE45433206
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6096E433209
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbhJSJTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60704 "EHLO mail.kernel.org"
+        id S234511AbhJSJUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:20:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:46492 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234519AbhJSJTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:19:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE6B86115A;
-        Tue, 19 Oct 2021 09:17:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634635060;
-        bh=9+ooGHjkwtByMB5Ja9m1czBL6YEiNK/4UYkm9XccbCg=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=Ud50Yy8Zy/2WW9+vZ6arLcvnnCfO8iQ6LkgxfBgsBSSe86J/SYkeFPOeWPpK0wvoY
-         4HvHzASNkLxoTVXtGixFYNXOHAGDfEUPW7EQpWgs6vIRHR7M5sY81AiooBv4BQkdvS
-         nt/6/BOoJYDTvpCt4PiVG4ZLIqRxMi13dMChGmdOt/XcJpND3au2hqumIMlcZUj3tv
-         JxEjd8s9fdR+7Hja8LDl4y5zZaiR+jsevGWguLs4IGvqjEZTHqVeVCHxzMF+boJ6Yk
-         voDL7HhxuYSb3xI/o8KykaF3m9s8RSWQdtzZog31Rt9pNdcwDyelVp8dhi8yrOkWFH
-         A2lnTkJUe8xdA==
-Date:   Tue, 19 Oct 2021 11:17:37 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Vin=EDcius_Angiolucci_Reis?= 
-        <itsme.vreis@gmail.com>
-cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        angiolucci@gmail.com
-Subject: Re: [PATCH] HID: hid-asus.c: Maps key 0x35 (display off) to
- KEY_SCREENLOCK
-In-Reply-To: <20211008222327.9324-1-angiolucci@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2110191117280.12554@cbobk.fhfr.pm>
-References: <20211008222327.9324-1-angiolucci@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S231652AbhJSJUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:20:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59E14D6E;
+        Tue, 19 Oct 2021 02:18:24 -0700 (PDT)
+Received: from bogus (unknown [10.57.25.56])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10F3B3F73D;
+        Tue, 19 Oct 2021 02:18:20 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 10:18:18 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc1 review
+Message-ID: <20211019091818.utbm254kec4uh6nw@bogus>
+References: <20211018132340.682786018@linuxfoundation.org>
+ <CA+G9fYtLTmosatvO8VBe-RDjEHEvY01P=Fw5mvRvwbxL31ahOA@mail.gmail.com>
+ <YW5iBGg4VKP6ZL+O@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW5iBGg4VKP6ZL+O@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021, Vinícius Angiolucci Reis wrote:
+Hi Greg,
 
-> On Windows systems, ASUS laptops uses the "turn display off" key
-> (usually fn+f6) to turn both display and keyboard backlit off. On Linux
-> systems, this key has no effect at all since most desktop enviroments
-> don't deal with KEY_DISPLAY_OFF. By mapping it to KEY_SCREENLOCK
-> instead, would enable desktop environments to handle this key as a
-> screen lock intent from the user, out of the box.
-> 
-> Signed-off-by: Vinícius Angiolucci Reis <angiolucci@gmail.com>
+On Tue, Oct 19, 2021 at 08:13:24AM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Oct 19, 2021 at 09:08:08AM +0530, Naresh Kamboju wrote:
+> > On Mon, 18 Oct 2021 at 19:08, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > This is the start of the stable review cycle for the 5.14.14 release.
+> > > There are 151 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > >
+> > > Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > 
+> > Following build errors noticed while building Linux stable rc 5.14
+> > with gcc-11 allmodconfig for arm64 architecture.
+> > 
+> >   - 5.14.14 gcc-11 arm64 allmodconfig FAILED
+> > 
+> > > Sudeep Holla <sudeep.holla@arm.com>
+> > >     firmware: arm_ffa: Add missing remove callback to ffa_bus_type
+> > 
+> > drivers/firmware/arm_ffa/bus.c:96:27: error: initialization of 'int
+> > (*)(struct device *)' from incompatible pointer type 'void (*)(struct
+> > device *)' [-Werror=incompatible-pointer-types]
+> >    96 |         .remove         = ffa_device_remove,
+> >       |                           ^~~~~~~~~~~~~~~~~
+> > drivers/firmware/arm_ffa/bus.c:96:27: note: (near initialization for
+> > 'ffa_bus_type.remove')
+> > cc1: some warnings being treated as errors
 
-Applied, thanks.
+Sorry for that.
 
--- 
-Jiri Kosina
-SUSE Labs
+Commit fc7a6209d571 ("bus: Make remove callback return void") was merged
+in v5.15 I think.
 
+Do you need me to send the patch for v5.14 or you have already fixed it ?
+
+--
+Regards,
+Sudeep
