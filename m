@@ -2,69 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE24433F67
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B581433F69
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbhJSTrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhJSTrF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:47:05 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39510C06161C;
-        Tue, 19 Oct 2021 12:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ikxZZf5qplCBT+zQNa/Q3/V1ehE/BtQKefk6PvgVhMI=; b=Xpz1VDBO13VAz0YldOrMMO+3C9
-        G3dnSCDwHIM98RYiz37ambGdNlG/vGfX8efOKBnMQzqXWktS3F9f2zNTePCuC/x7ZBofHbLyWWzII
-        4XWJwmEKaSbzxNtk6uwmTBjA0WgWUhpispL3FuvyBYf5vvCpDE34UZU7tKE9ZWHmrQ6X/OVcSQZda
-        P0cjI8Arj3PR+XBV47pDJVFdeKPGb7P8y3MLJ1mueVME0ArSY4+kVp6EyMO5vNQytMo7TauWCZwjl
-        txjZLIyE4rB/W98cknDsGr6TVqsU+uwdt0G/+9p0lpEXsUAAMP4VWQeu/OtgHwJqA3mAA8aK7Gnwi
-        8g793Wgw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcv2W-002XOP-Dm; Tue, 19 Oct 2021 19:44:48 +0000
-Subject: Re: [v4] ASoC: max98520: add max98520 audio amplifier driver
-To:     George Song <george.song@maximintegrated.com>, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, george.song@analog.com,
-        ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com
-References: <20211019084914.14622-1-george.song@maximintegrated.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6c6d2ea5-e138-960b-bb83-fadf5c2996f7@infradead.org>
-Date:   Tue, 19 Oct 2021 12:44:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234974AbhJSTsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:48:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230147AbhJSTsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 15:48:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F58960F02;
+        Tue, 19 Oct 2021 19:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634672747;
+        bh=Kt0AlgCnA2CCkwUWkmwrgijsbjnxUNTjrXExJc4067Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ZQ2ekrgapNYGiJEhyAne+AuIDwhvbAlMAdhgFNLyAcyHb4zqKBZ9TUWsGniOYrPMB
+         tqpeouJPddT5+T8S1zm2cOnM1snf4/Ij9wY/Y1QqZUJKuljJu4qNJlum5HNtml0Oiq
+         r5Z8hch+Ts8uGkRWL6hGdyys/9NtHtk9H9oioQWqOKPVeReHIMCVSKUv/IAzUO5xbC
+         DsJiN6+H0fLjgYEsVVEUFiDdoOJeLU0x4DDzm5yqDrXo1tLQl4cKYFrl+lkXJIaEsf
+         6lfLoQsD4NCvqZsS2Clyt0UzN9A3TTigGOjVQ0cA2NdthrmMOzubrqPAc0NWQomrAI
+         gyP0pRRBc5tFQ==
+Date:   Tue, 19 Oct 2021 14:45:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
+Cc:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pci-imx6: replacing legacy gpio interface for gpiod
+Message-ID: <20211019194545.GA2393463@bhelgaas>
 MIME-Version: 1.0
-In-Reply-To: <20211019084914.14622-1-george.song@maximintegrated.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YW7jvR/2jpAwSpvd@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/21 1:49 AM, George Song wrote:
-> +config SND_SOC_MAX98520
-> +	tristate "Maxim Integrated MAX98520 Speaker Amplifier"
-> +	depends on I2C
-> +	help
-> +	  Enable support for Maxim Integrated MAX98520 audio
-> +	  amplifier, which implements a tripler charge pump
+[fixed "linux-pci@vger.kernel.org" in cc]
 
-                                         ^^^^^^^ correct or typo?
+On Tue, Oct 19, 2021 at 12:26:53PM -0300, Maíra Canal wrote:
+> Removing all dependencies of linux/gpio.h and linux/of_gpio.h and replacing
+> it with linux/gpio/consumer.h
 
-> +	  based boost converter and support sample rates of
+Run "git log --oneline drivers/pci/controller/dwc/pci-imx6.c" and make
+your subject line match -- capitalization, sentence structure, etc.
 
-	                            supports
+Write commit log in imperative mood, i.e., "Remove" instead of
+"Removing": https://chris.beams.io/posts/git-commit/
 
-> +	  8KHz to 192KHz.
+The commit log mentions the trivial part but omits the important part
+(converting from gpio to gpiod model).
 
-
--- 
-~Randy
+> Signed-off-by: Maíra Canal <maira.canal@usp.br>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 31 ++++++++++-----------------
+>  1 file changed, 11 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 80fc98acf097..e5ee54e37d05 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -11,13 +11,12 @@
+>  #include <linux/bitfield.h>
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> -#include <linux/gpio.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/kernel.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+>  #include <linux/mfd/syscon/imx7-iomuxc-gpr.h>
+>  #include <linux/module.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/of_device.h>
+>  #include <linux/of_address.h>
+>  #include <linux/pci.h>
+> @@ -63,7 +62,7 @@ struct imx6_pcie_drvdata {
+>  
+>  struct imx6_pcie {
+>  	struct dw_pcie		*pci;
+> -	int			reset_gpio;
+> +	struct gpio_desc    *reset_gpio;
+>  	bool			gpio_active_high;
+>  	struct clk		*pcie_bus;
+>  	struct clk		*pcie_phy;
+> @@ -526,11 +525,11 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  	usleep_range(200, 500);
+>  
+>  	/* Some boards don't have PCIe reset GPIO. */
+> -	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+> -		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> +	if (imx6_pcie->reset_gpio) {
+> +		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+>  					imx6_pcie->gpio_active_high);
+>  		msleep(100);
+> -		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> +		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+>  					!imx6_pcie->gpio_active_high);
+>  	}
+>  
+> @@ -1025,22 +1024,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  		return PTR_ERR(pci->dbi_base);
+>  
+>  	/* Fetch GPIOs */
+> -	imx6_pcie->reset_gpio = of_get_named_gpio(node, "reset-gpio", 0);
+>  	imx6_pcie->gpio_active_high = of_property_read_bool(node,
+>  						"reset-gpio-active-high");
+> -	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+> -		ret = devm_gpio_request_one(dev, imx6_pcie->reset_gpio,
+> -				imx6_pcie->gpio_active_high ?
+> -					GPIOF_OUT_INIT_HIGH :
+> -					GPIOF_OUT_INIT_LOW,
+> -				"PCIe reset");
+> -		if (ret) {
+> -			dev_err(dev, "unable to get reset gpio\n");
+> -			return ret;
+> -		}
+> -	} else if (imx6_pcie->reset_gpio == -EPROBE_DEFER) {
+> -		return imx6_pcie->reset_gpio;
+> -	}
+> +	imx6_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+> +			imx6_pcie->gpio_active_high ?  GPIOD_OUT_HIGH :
+> +				GPIOD_OUT_LOW);
+> +	if (IS_ERR(imx6_pcie->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(imx6_pcie->reset_gpio),
+> +					  "unable to get reset gpio\n");
+>  
+>  	/* Fetch clocks */
+>  	imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
+> -- 
+> 2.31.1
+> 
