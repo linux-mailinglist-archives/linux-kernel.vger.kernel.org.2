@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDA9433563
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9C4433565
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbhJSMHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:07:44 -0400
-Received: from mga09.intel.com ([134.134.136.24]:56258 "EHLO mga09.intel.com"
+        id S235406AbhJSMIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:08:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235546AbhJSMHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:07:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="228367676"
-X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
-   d="scan'208";a="228367676"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 05:05:28 -0700
-X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
-   d="scan'208";a="462731000"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 05:05:26 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1mcnrf-000TJE-S8;
-        Tue, 19 Oct 2021 15:05:07 +0300
-Date:   Tue, 19 Oct 2021 15:05:07 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to
- intel_pmic_bytcrc driver
-Message-ID: <YW60cwMHNoTYgQL6@smile.fi.intel.com>
-References: <20211017161523.43801-1-kitakar@gmail.com>
- <20211017161523.43801-2-kitakar@gmail.com>
- <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
- <23d641620aebd1aa47fd73d040dec4ad8974d03d.camel@gmail.com>
+        id S230129AbhJSMIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:08:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFCD1610E7;
+        Tue, 19 Oct 2021 12:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634645170;
+        bh=cFUJmIuqaRcFKLfCT6FjSV4xppqcoq1e5ihmWzQnHF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SFK7N47xaGP7p7aL8QNCpwGR06qtWhy+hSeW45uG485jOtRZ095PQib/sQge43GIY
+         lAqapsUy2AQgEHIn/yFyMiemKhrGPOzc5Tn+F6sI/dZQk7p4U7jteAXr4ptXTjNFvU
+         H7Pb/vj1iF5pySDFOzLOd/qCwvzYnbGMohozhFKEWnA2oEKIksCjDCB1Tmnwiy/5FM
+         GLYqRW8LCdAQkp2mKUL4eY9e9aaLlCj7iEh6RDvaB0ZGDLIkP8uSGRUGFRcGYJLmA9
+         8844GgLdmyu/R2mGLrUaMCyo3wzP6DQInlu2dEMPJjniHvoSYDLJ+m0DPkppBh83QT
+         7zw7M+wpI/3ow==
+Date:   Tue, 19 Oct 2021 13:06:06 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     George Song <george.song@maximintegrated.com>
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, george.song@analog.com,
+        ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com
+Subject: Re: [v4] ASoC: max98520: add max98520 audio amplifier driver
+Message-ID: <YW60rmCStn2o7o31@sirena.org.uk>
+References: <20211019084914.14622-1-george.song@maximintegrated.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="S2KRfR5D7PbsK0GH"
 Content-Disposition: inline
-In-Reply-To: <23d641620aebd1aa47fd73d040dec4ad8974d03d.camel@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211019084914.14622-1-george.song@maximintegrated.com>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 08:56:04PM +0900, Tsuchiya Yuto wrote:
-> On Mon, 2021-10-18 at 11:16 +0200, Hans de Goede wrote:
-> > On 10/17/21 18:15, Tsuchiya Yuto wrote:
 
-...
+--S2KRfR5D7PbsK0GH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > Tsuchiya, can you give the attached patch a try.
-> 
-> Thanks!
-> 
-> I tried your attached patch, and I can confirm that it's working as
-> expected.
-> 
-> Now it's using cht one:
-> 
->         $ ls /sys/devices/pci0000:00/808622C1:05/i2c-5/i2c-INT33FD:00
->         cht_crystal_cove_pmic  crystal_cove_gpio  crystal_cove_pwm  driver  firmware_node  modalias  name  power  subsystem  uevent
-> 
-> and the function intel_soc_pmic_exec_mipi_pmic_seq_element() is also
-> working with atomisp driver.
+On Tue, Oct 19, 2021 at 05:49:14PM +0900, George Song wrote:
+> add max98520 audio amplifier driver
 
-To be formal you may give a dedicated tag here, i.e. Tested-by:.
-It will be easier for tools, such as `b4`, to catch it up
-and not forget.
+You seem to have dropped the binding document from this version?
 
--- 
-With Best Regards,
-Andy Shevchenko
+--S2KRfR5D7PbsK0GH
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFutK0ACgkQJNaLcl1U
+h9Aw1Af/TZm8rxRfgLCvDxIdIMvbXWPFtC3j2chVuegRb8xXWnL5jY5xiIv2JfFP
+BVCTyX/MfX/IpKQNlYpPrM+Zsdsu2I9vWBp808eJA/NMBAeSRPcKf+QHtPa5I1ol
++IxxvNuMYmLv1kKZuYXD4BonKU4wIQIb+vScjyfKEaVwmTNstd9FRslPjG0b/sxT
+29XiNWY5QvCnpSL6zgV1n4i63oydZ8yXk5u3K4QAMEYE9h9ZF+sXbEQR0xkTz16o
+MA6f8o1OMdPmM/U+YVC75tLN66dUbKg+W3NKg4E1P8qZhKGyqMP947YMHYaYzX/6
+ImtuVRBMY0NmkQc0s8A9TKavaMTcGg==
+=TXWk
+-----END PGP SIGNATURE-----
+
+--S2KRfR5D7PbsK0GH--
