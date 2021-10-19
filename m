@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CCA432EEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFDE432ED6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234489AbhJSHGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:06:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37225 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234479AbhJSHGu (ORCPT
+        id S234397AbhJSHFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:05:18 -0400
+Received: from www381.your-server.de ([78.46.137.84]:60602 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhJSHFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:06:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634627077;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u4ZEbvg7oEYYUD2ibjTD8FB3m/85lGGvSci9qwvJyJA=;
-        b=geNNtzX3eSw+njRwGNVBeuBL/0YscQ4RBn0Fk7WmKt5hE7cipnT2jK2qeXAHrC20p3b6Xg
-        iCWyEGqH1nAu44RSz4ef3JWphy3e/a868+SdQ5aRv/C/PNomI+BbHj3SDmbCWssNAt4GQ2
-        0XnzRkdUeJScPDiNH0SOHsQQIcKiJaI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-wFVDh-coPbaMyZbphPmAWA-1; Tue, 19 Oct 2021 03:04:34 -0400
-X-MC-Unique: wFVDh-coPbaMyZbphPmAWA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6A46C18414A7;
-        Tue, 19 Oct 2021 07:04:33 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-12-155.pek2.redhat.com [10.72.12.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE3A970886;
-        Tue, 19 Oct 2021 07:04:30 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com
-Subject: [PATCH V3 10/10] virtio-scsi: don't let virtio core to validate used buffer length
-Date:   Tue, 19 Oct 2021 15:01:52 +0800
-Message-Id: <20211019070152.8236-11-jasowang@redhat.com>
-In-Reply-To: <20211019070152.8236-1-jasowang@redhat.com>
-References: <20211019070152.8236-1-jasowang@redhat.com>
+        Tue, 19 Oct 2021 03:05:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=DUxZ43GFXlbbZoy7ccpVOYBfGN+ZNW6frDtcjc3QdyA=; b=G/94pETfu9F7Bl7wIy31EkIA8l
+        bbsBcohwZtcoEjpneuCuJDFOBlEWHMKKAPk6ZfOgpsA9DazpOJYKC6pfLctQ4dg2bgsk/1GKDMzDH
+        muHD7nGW21WsUT0etkhr4haNdgFsRnbC/5gW9+uYuVejrJF1k8B9/enIfcI/v3WcoFaX/cno7LXmt
+        B+q/lD5PuQKh6XwK+hRbHHTZQkAdhBBTvWDWPW7erZMSpECE1JTHDHJ8+5IKt8Pi+gveSarqQplrY
+        cP3lnKQChsqTJO6SBwmkm3p07DqIhwjA1NFv5ScurBhU0J8E0TXnSIfpmvO2F70vwzhMWm4x1YAIJ
+        cNvyV+eg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1mcj9J-0004Ee-1V; Tue, 19 Oct 2021 09:03:01 +0200
+Received: from [82.135.83.71] (helo=[192.168.178.20])
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1mcj9I-000QAj-OO; Tue, 19 Oct 2021 09:03:00 +0200
+Subject: Re: [PATCH v2 0/3] Add settle time support to iio-mux
+From:   Lars-Peter Clausen <lars@metafoo.de>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>, peda@axentia.se,
+        jic23@kernel.org, devicetree@vger.kernel.org
+Cc:     kernel@axis.com, linux-iio@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
+ <16fab3ba-5dd9-50b3-aeae-acd68b22dfae@metafoo.de>
+Message-ID: <c944fba5-9f69-e043-d4f6-3d30f1393190@metafoo.de>
+Date:   Tue, 19 Oct 2021 09:03:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <16fab3ba-5dd9-50b3-aeae-acd68b22dfae@metafoo.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26326/Mon Oct 18 10:19:08 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never tries to use used length, so the patch prevents the virtio
-core from validating used length.
+On 10/8/21 9:19 PM, Lars-Peter Clausen wrote:
+> On 10/7/21 3:46 PM, Vincent Whitchurch wrote:
+>> On one of our boards we use gpio-mux with iio-mux to read voltages 
+>> using an ADC
+>> from a few different channels, and on this board the input voltage 
+>> needs some
+>> time to stabilize after a switch of the mux.
+>>
+>> This series add devicetree and driver support for this kind of 
+>> hardware which
+>> requries a settle time after muxing.
+>
+> I have a board with the very same problem. And a similar solution, but 
+> you beat me with upstreaming. I've switched to your patchset.
+>
+> Whole series
+>
+> Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+>
+> Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Oh, I just realized I messed up. I meant to write
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/scsi/virtio_scsi.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
-index c25ce8f0e0af..be7870a092cf 100644
---- a/drivers/scsi/virtio_scsi.c
-+++ b/drivers/scsi/virtio_scsi.c
-@@ -977,6 +977,7 @@ static unsigned int features[] = {
- static struct virtio_driver virtio_scsi_driver = {
- 	.feature_table = features,
- 	.feature_table_size = ARRAY_SIZE(features),
-+	.suppress_used_validation = true,
- 	.driver.name = KBUILD_MODNAME,
- 	.driver.owner = THIS_MODULE,
- 	.id_table = id_table,
--- 
-2.25.1
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+Tested-by: Lars-Peter Clausen <lars@metafoo.de>
 
