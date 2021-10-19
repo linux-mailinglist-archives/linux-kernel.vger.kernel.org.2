@@ -2,201 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB01433D9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08054433DA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhJSRkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhJSRkt (ORCPT
+        id S234782AbhJSRlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:41:21 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:60295 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234526AbhJSRlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:40:49 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB22C06161C;
-        Tue, 19 Oct 2021 10:38:36 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 6EF386CD3; Tue, 19 Oct 2021 13:38:35 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 6EF386CD3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1634665115;
-        bh=+FBb9EyUnJEno6d/GgLHYgVjWawnJkXuaLIQfeFEFKQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aII2qGKehec3YBJhtu+my7VOyHq8xG1VxdLk4rHHIM1vtVMOvH2eoenI+JipkU0rf
-         oaLa/6Zs/ZxlIDtjQxnA5LuaZev7BOa5lQCn5cZfF01XU9nIhTy63GuzaCHYsHXImw
-         CJO05bpBDEo6EUYmPypI62ro91NxA81UvkSB81Qs=
-Date:   Tue, 19 Oct 2021 13:38:35 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] locks: remove changelog comments
-Message-ID: <20211019173835.GE15063@fieldses.org>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
- <887de3a1ecadda3dbfe0adf9df9070f0afa9406c.1634630486.git.mchehab+huawei@kernel.org>
- <f352a2e4b50a8678a8ddef5177702ecf9040490f.camel@kernel.org>
- <20211019141427.GA15063@fieldses.org>
- <e7bdcf0b279989e51c2c333e89acf3e1d476eff0.camel@kernel.org>
- <20211019161651.GD15063@fieldses.org>
- <c6d2e1a8691a49afbbc280bb74a05b9b110b7f27.camel@kernel.org>
+        Tue, 19 Oct 2021 13:41:20 -0400
+Received: from [192.168.1.18] ([92.140.161.106])
+        by smtp.orange.fr with ESMTPA
+        id ct4qmJ5v2PNphct4qm4mlQ; Tue, 19 Oct 2021 19:39:06 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Tue, 19 Oct 2021 19:39:06 +0200
+X-ME-IP: 92.140.161.106
+Subject: Re: [PATCH] ASoC: codecs: Fix WCD_MBHC_HPH_PA_EN usage
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, yang.lee@linux.alibaba.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <988948f7f266aa00698704687537335b7e6a67b2.1634455711.git.christophe.jaillet@wanadoo.fr>
+ <3ff34912-19e6-4d52-e9da-0e78ceb1d2ff@linaro.org>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <c01b6669-d0f7-aab5-3aca-02f19be8a319@wanadoo.fr>
+Date:   Tue, 19 Oct 2021 19:39:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c6d2e1a8691a49afbbc280bb74a05b9b110b7f27.camel@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <3ff34912-19e6-4d52-e9da-0e78ceb1d2ff@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "J. Bruce Fields" <bfields@redhat.com>
+Le 19/10/2021 à 15:47, Srinivas Kandagatla a écrit :
+> 
+> 
+> On 17/10/2021 08:31, Christophe JAILLET wrote:
+>> 'hphpa_on' is known to be false, so the if block at the end of the 
+>> function
+>> is dead code.
+> 
+> Yes, this is a dead code we should remove it.
 
-This is only of historical interest, and anyone interested in the
-history can dig out an old version of locks.c from from git.
+Ok, thanks for the clarification.
 
-Triggered by the observation that it references the now-removed
-Documentation/filesystems/mandatory-locking.rst.
+> 
+> This code was part of moisture detection logic which is not enabled in 
+> upstream code yet.
 
-Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
----
- fs/locks.c | 114 ++---------------------------------------------------
- 1 file changed, 4 insertions(+), 110 deletions(-)
+If 'yet' is the important word of the sentence, maybe the best is to 
+leave the code as-is.
+If you prefer it to be removed, I can send a patch if it helps.
 
-On Tue, Oct 19, 2021 at 12:27:55PM -0400, Jeff Layton wrote:
-> Yeah, I think that looks great. Send it with a changelog and I'll pull
-> it into the branch I have feeding into -next.
+> 
+> During Moisture detection if the PA is on then we switch it off and do 
+> moisture measurements and at the end of the function we restore the 
+> state of PA.
+> 
+>>
+>> Turn it into a meaningful code by having 'hphpa_on' be static. Use is 
+>> as a
+>> flip-flop variable.
+> 
+> No, It does not.
+> 
+> Have you even tested this patch in anyway?
 
-OK!--b.
+No, as said below the ---, the purpose of this patch was not to be 
+correct (or tested). It was only to draw attention on odd things.
 
-diff --git a/fs/locks.c b/fs/locks.c
-index 3d6fb4ae847b..b54813eae44f 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -2,117 +2,11 @@
- /*
-  *  linux/fs/locks.c
-  *
-- *  Provide support for fcntl()'s F_GETLK, F_SETLK, and F_SETLKW calls.
-- *  Doug Evans (dje@spiff.uucp), August 07, 1992
-+ * We implement four types of file locks: BSD locks, posix locks, open
-+ * file description locks, and leases.  For details about BSD locks,
-+ * see the flock(2) man page; for details about the other three, see
-+ * fcntl(2).
-  *
-- *  Deadlock detection added.
-- *  FIXME: one thing isn't handled yet:
-- *	- mandatory locks (requires lots of changes elsewhere)
-- *  Kelly Carmichael (kelly@[142.24.8.65]), September 17, 1994.
-- *
-- *  Miscellaneous edits, and a total rewrite of posix_lock_file() code.
-- *  Kai Petzke (wpp@marie.physik.tu-berlin.de), 1994
-- *
-- *  Converted file_lock_table to a linked list from an array, which eliminates
-- *  the limits on how many active file locks are open.
-- *  Chad Page (pageone@netcom.com), November 27, 1994
-- *
-- *  Removed dependency on file descriptors. dup()'ed file descriptors now
-- *  get the same locks as the original file descriptors, and a close() on
-- *  any file descriptor removes ALL the locks on the file for the current
-- *  process. Since locks still depend on the process id, locks are inherited
-- *  after an exec() but not after a fork(). This agrees with POSIX, and both
-- *  BSD and SVR4 practice.
-- *  Andy Walker (andy@lysaker.kvaerner.no), February 14, 1995
-- *
-- *  Scrapped free list which is redundant now that we allocate locks
-- *  dynamically with kmalloc()/kfree().
-- *  Andy Walker (andy@lysaker.kvaerner.no), February 21, 1995
-- *
-- *  Implemented two lock personalities - FL_FLOCK and FL_POSIX.
-- *
-- *  FL_POSIX locks are created with calls to fcntl() and lockf() through the
-- *  fcntl() system call. They have the semantics described above.
-- *
-- *  FL_FLOCK locks are created with calls to flock(), through the flock()
-- *  system call, which is new. Old C libraries implement flock() via fcntl()
-- *  and will continue to use the old, broken implementation.
-- *
-- *  FL_FLOCK locks follow the 4.4 BSD flock() semantics. They are associated
-- *  with a file pointer (filp). As a result they can be shared by a parent
-- *  process and its children after a fork(). They are removed when the last
-- *  file descriptor referring to the file pointer is closed (unless explicitly
-- *  unlocked).
-- *
-- *  FL_FLOCK locks never deadlock, an existing lock is always removed before
-- *  upgrading from shared to exclusive (or vice versa). When this happens
-- *  any processes blocked by the current lock are woken up and allowed to
-- *  run before the new lock is applied.
-- *  Andy Walker (andy@lysaker.kvaerner.no), June 09, 1995
-- *
-- *  Removed some race conditions in flock_lock_file(), marked other possible
-- *  races. Just grep for FIXME to see them.
-- *  Dmitry Gorodchanin (pgmdsg@ibi.com), February 09, 1996.
-- *
-- *  Addressed Dmitry's concerns. Deadlock checking no longer recursive.
-- *  Lock allocation changed to GFP_ATOMIC as we can't afford to sleep
-- *  once we've checked for blocking and deadlocking.
-- *  Andy Walker (andy@lysaker.kvaerner.no), April 03, 1996.
-- *
-- *  Initial implementation of mandatory locks. SunOS turned out to be
-- *  a rotten model, so I implemented the "obvious" semantics.
-- *  See 'Documentation/filesystems/mandatory-locking.rst' for details.
-- *  Andy Walker (andy@lysaker.kvaerner.no), April 06, 1996.
-- *
-- *  Don't allow mandatory locks on mmap()'ed files. Added simple functions to
-- *  check if a file has mandatory locks, used by mmap(), open() and creat() to
-- *  see if system call should be rejected. Ref. HP-UX/SunOS/Solaris Reference
-- *  Manual, Section 2.
-- *  Andy Walker (andy@lysaker.kvaerner.no), April 09, 1996.
-- *
-- *  Tidied up block list handling. Added '/proc/locks' interface.
-- *  Andy Walker (andy@lysaker.kvaerner.no), April 24, 1996.
-- *
-- *  Fixed deadlock condition for pathological code that mixes calls to
-- *  flock() and fcntl().
-- *  Andy Walker (andy@lysaker.kvaerner.no), April 29, 1996.
-- *
-- *  Allow only one type of locking scheme (FL_POSIX or FL_FLOCK) to be in use
-- *  for a given file at a time. Changed the CONFIG_LOCK_MANDATORY scheme to
-- *  guarantee sensible behaviour in the case where file system modules might
-- *  be compiled with different options than the kernel itself.
-- *  Andy Walker (andy@lysaker.kvaerner.no), May 15, 1996.
-- *
-- *  Added a couple of missing wake_up() calls. Thanks to Thomas Meckel
-- *  (Thomas.Meckel@mni.fh-giessen.de) for spotting this.
-- *  Andy Walker (andy@lysaker.kvaerner.no), May 15, 1996.
-- *
-- *  Changed FL_POSIX locks to use the block list in the same way as FL_FLOCK
-- *  locks. Changed process synchronisation to avoid dereferencing locks that
-- *  have already been freed.
-- *  Andy Walker (andy@lysaker.kvaerner.no), Sep 21, 1996.
-- *
-- *  Made the block list a circular list to minimise searching in the list.
-- *  Andy Walker (andy@lysaker.kvaerner.no), Sep 25, 1996.
-- *
-- *  Made mandatory locking a mount option. Default is not to allow mandatory
-- *  locking.
-- *  Andy Walker (andy@lysaker.kvaerner.no), Oct 04, 1996.
-- *
-- *  Some adaptations for NFS support.
-- *  Olaf Kirch (okir@monad.swb.de), Dec 1996,
-- *
-- *  Fixed /proc/locks interface so that we can't overrun the buffer we are handed.
-- *  Andy Walker (andy@lysaker.kvaerner.no), May 12, 1997.
-- *
-- *  Use slab allocator instead of kmalloc/kfree.
-- *  Use generic list implementation from <linux/list.h>.
-- *  Sped up posix_locks_deadlock by only considering blocked locks.
-- *  Matthew Wilcox <willy@debian.org>, March, 2000.
-- *
-- *  Leases and LOCK_MAND
-- *  Matthew Wilcox <willy@debian.org>, June, 2000.
-- *  Stephen Rothwell <sfr@canb.auug.org.au>, June, 2000.
-  *
-  * Locking conflicts and dependencies:
-  * If multiple threads attempt to lock the same byte (or flock the same file)
--- 
-2.31.1
+CJ
+
+
+
+> 
+>>
+>> Fixes: 0e5c9e7ff899 ("ASoC: codecs: wcd: add multi button Headset 
+>> detection support")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> The purpose of this patch is not to be correct (!) but to draw attention
+>> on several points:
+>>     - in 'wcd_mbhc_adc_hs_rem_irq()', the "if (hphpa_on)" path is dead 
+>> code
+>>       because 'hphpa_on' is known to be false
+>>     - What is this magic number '3'?
+>>       All 'wcd_mbhc_read_field()' look for 0 or non-0
+>>     - a 'mutex_[un]lock()' in an IRQ handler looks spurious to me
+>>
+>> Instead of this (likely broken) patch, it is likely that something is
+>> missing elsewhere. Maybe in 'wcd_mbhc_adc_hs_ins_irq()'.
+>> I also guess that 'hphpa_on' should be read for somewhere else.
+>> ---
+>>   sound/soc/codecs/wcd-mbhc-v2.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/codecs/wcd-mbhc-v2.c 
+>> b/sound/soc/codecs/wcd-mbhc-v2.c
+>> index 405128ccb4b0..783d8c35bc1b 100644
+>> --- a/sound/soc/codecs/wcd-mbhc-v2.c
+>> +++ b/sound/soc/codecs/wcd-mbhc-v2.c
+>> @@ -1176,7 +1176,7 @@ static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int 
+>> irq, void *data)
+>>       struct wcd_mbhc *mbhc = data;
+>>       unsigned long timeout;
+>>       int adc_threshold, output_mv, retry = 0;
+>> -    bool hphpa_on = false;
+>> +    static bool hphpa_on = false;
+>>       mutex_lock(&mbhc->lock);
+>>       timeout = jiffies + 
+>> msecs_to_jiffies(WCD_FAKE_REMOVAL_MIN_PERIOD_MS);
+>> @@ -1212,6 +1212,9 @@ static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int 
+>> irq, void *data)
+>>       if (hphpa_on) {
+>>           hphpa_on = false;
+>> +        wcd_mbhc_write_field(mbhc, WCD_MBHC_HPH_PA_EN, 0);
+>> +    } else {
+>> +        hphpa_on = true;
+>>           wcd_mbhc_write_field(mbhc, WCD_MBHC_HPH_PA_EN, 3);
+> 
+> Just remove this dead code.
+> 
+> --srini
+>>       }
+>>   exit:
+>>
+> 
 
