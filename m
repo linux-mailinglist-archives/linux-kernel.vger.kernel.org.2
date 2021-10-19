@@ -2,96 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D63433382
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD519433386
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235187AbhJSKcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:32:48 -0400
-Received: from relay.sw.ru ([185.231.240.75]:41566 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhJSKcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:32:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=foWliLIfpQWzapm4jJyfpBLdUGM8c6MljuN+v8bBOMc=; b=HdOLW0+VUbhUAxYyo
-        xFMPtfsWVBp7UcoRg/Zyv+rg7ln267R85lA7sDQe4R3blKbiQDbiviad9ir7keWF83BPjZ9eXkR5a
-        bfXlJDPi5jOXZ9Kh+XwmYPvarrYj3wU4HWh9bCk1K/JcHXJQiSdnyiJkUl6iPplUlxMovK5UQCd24
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mcmO3-006Sfx-3x; Tue, 19 Oct 2021 13:30:27 +0300
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
- <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
- <YW6GoZhFUJc1uLYr@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <687bf489-f7a7-5604-25c5-0c1a09e0905b@virtuozzo.com>
-Date:   Tue, 19 Oct 2021 13:30:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235229AbhJSKdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:33:20 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:49975 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235214AbhJSKdS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 06:33:18 -0400
+Received: by mail-il1-f198.google.com with SMTP id e10-20020a92194a000000b00258acd999afso9819012ilm.16
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 03:31:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=hXd5vu2HVp+c/936Z+UfrXr6vwZDrrnzOmy4lULgqWc=;
+        b=l7epv8JMqrNUvZ9B9iW5uQ28Jm6IbcXynkgSF28eCmuLY/oq0tnih/FnZ8Q6NHo5sv
+         Qu7npK3gj9VaTrYLmnWAMGzKANVLIUGo7R/7s7SPSO0pNQ5DLuVABxuJa43PXc0eN0zx
+         4z0VDsyrfJ2BQQAFb/T7MiUfBLQzPEHf2f5JMeKEDegANzharOf7wJBzFJKFqp6alfPf
+         lO0WXV91QB80zGuF47FRe7BQd5yrvIF4Vf015MsFRMK/YNHbvob4uUeucG/9f04WTcf2
+         O9NYsiKg7ltT8nFfVfjK5DCncBcgqUewymcMWFCpobC71vjE3a2jzXXsc5T1d72tBRXB
+         7sIg==
+X-Gm-Message-State: AOAM532dZyy0nWwtxvB0TWsEQDHW2CVryuKid4xCyo8j9CqQo/8GwXC9
+        MmBK6ivIy1yaCHy2VJ3ZiK9RM57jSL1CzuiVsint4G34Mge6
+X-Google-Smtp-Source: ABdhPJyFNinPrD+dC0GJvpY6bw/xoDh7KcP4ullLmIObAIatN5O9PX8AXOag91eqZ/lVKAJcOTn1fWXsLcc8pv2b121jymSzmI1v
 MIME-Version: 1.0
-In-Reply-To: <YW6GoZhFUJc1uLYr@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1583:: with SMTP id m3mr17715899ilu.304.1634639466240;
+ Tue, 19 Oct 2021 03:31:06 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 03:31:06 -0700
+In-Reply-To: <28d9989c-4a80-daf7-d0e0-ae8e56b6e4d9@suse.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b89ea805ceb228dd@google.com>
+Subject: Re: [syzbot] divide error in genelink_tx_fixup
+From:   syzbot <syzbot+a6ec4dd9d38cb9261a77@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        oneukum@suse.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.2021 11:49, Michal Hocko wrote:
-> On Tue 19-10-21 09:30:18, Vasily Averin wrote:
-> [...]
->> With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
->> a) due to fatal signal
->> b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
->>
->> To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
->> To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
+Hello,
 
-> How is b) possible without current being killed? Do we allow remote
-> charging?
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-out_of_memory for memcg_oom
- select_bad_process
-  mem_cgroup_scan_tasks
-   oom_evaluate_task
-    oom_badness
+Reported-and-tested-by: syzbot+a6ec4dd9d38cb9261a77@syzkaller.appspotmail.com
 
-        /*
-         * Do not even consider tasks which are explicitly marked oom
-         * unkillable or have been already oom reaped or the are in
-         * the middle of vfork
-         */
-        adj = (long)p->signal->oom_score_adj;
-        if (adj == OOM_SCORE_ADJ_MIN ||
-                        test_bit(MMF_OOM_SKIP, &p->mm->flags) ||
-                        in_vfork(p)) {
-                task_unlock(p);
-                return LONG_MIN;
-        }
+Tested on:
 
-This time we handle userspace page fault, so we cannot be kenrel thread,
-and cannot be in_vfork().
-However task can be marked as oom unkillable, 
-i.e. have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
+commit:         c03fb16b Merge 5.15-rc6 into usb-next
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c27d285bdb7457e2
+dashboard link: https://syzkaller.appspot.com/bug?extid=a6ec4dd9d38cb9261a77
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10d634e8b00000
 
-It can be set via oom_score_adj_write().
-
-Thank you,
-	Vasily Averin
+Note: testing is done by a robot and is best-effort only.
