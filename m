@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8ED432E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF5E432E57
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234247AbhJSGc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:32:59 -0400
-Received: from relay.sw.ru ([185.231.240.75]:36512 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhJSGc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:32:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=tI9gj9p8cg4CnX2QaPSuoyzqKweCoJS55yHjYE7xcKM=; b=is7WHUREKxBUK1eox
-        a3i8e7lEICkLoC40q5DdZ9O1639miZT0QpjLzmTbey1KH61kzqfqNE46f3xVo3z+vEfv84cDtb3BC
-        5uvyqf7GIL1gRY7JUEs8Zy0etcbnAGPB4cxnlKeeFvMMW0HehqKkIbzMNocCK8KtCM4Z+5ti9g7d8
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mcie0-006Qqh-4l; Tue, 19 Oct 2021 09:30:40 +0300
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
-Date:   Tue, 19 Oct 2021 09:30:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234187AbhJSGgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:36:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1034 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229649AbhJSGgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:36:11 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19J6MtVR001554;
+        Tue, 19 Oct 2021 02:33:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=CvIWIWZegw5geXGYTY/N3EkVK5pJ1TTtd9V7IPsX/VU=;
+ b=ozKL91ufBGwUOOy7EGQpD92GvCGBnYdTa5YY9NsHwsMwyvEf5E/5jheq2bJlQx65HVQE
+ tUYlBgPatELJEsQtdrdNV0wA5/h/OOIt8vm3Je4UicA91xjfXt3GgZU+u4qZGWOyGFf3
+ aPwQehV98rwk2GXSLZ2TfzX8U7NExDJ0bWd6U3X2/wrmns8mhgTschvY6hr6+tmqxgxK
+ IjhZ4gnkOOHZZpOr6ISSrX9HbChu+UE9WUnetDuN1YJBsifSeIMXA+KqRlQ0pAy335Xd
+ wiK0Rf4G5OH3/1BLBwGgRgonFNz2Vz/rTNzo4at4ddDnlJnli2D9CL3Kl0Z0gyZMN2fN QA== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bsnhhkev3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 02:33:55 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19J6DPba015996;
+        Tue, 19 Oct 2021 06:33:53 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3bqpc9bxgr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 06:33:53 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19J6XofS56492444
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 06:33:50 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C000F11C04A;
+        Tue, 19 Oct 2021 06:33:50 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5CF5511C058;
+        Tue, 19 Oct 2021 06:33:50 +0000 (GMT)
+Received: from [9.171.65.69] (unknown [9.171.65.69])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 19 Oct 2021 06:33:50 +0000 (GMT)
+Message-ID: <ceb1a1ce-b4a4-7908-7d18-832cca1bfbe2@linux.ibm.com>
+Date:   Tue, 19 Oct 2021 08:33:51 +0200
 MIME-Version: 1.0
-In-Reply-To: <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH][linux-next] net/smc: prevent NULL dereference in
+ smc_find_rdma_v2_device_serv()
 Content-Language: en-US
+To:     Tim Gardner <tim.gardner@canonical.com>, linux-s390@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211018183128.17743-1-tim.gardner@canonical.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20211018183128.17743-1-tim.gardner@canonical.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: QGXdzv8rsRR0Q2JVRw8d6oCKuWvBrNo0
+X-Proofpoint-ORIG-GUID: QGXdzv8rsRR0Q2JVRw8d6oCKuWvBrNo0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_07,2021-10-18_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 clxscore=1011 adultscore=0 mlxscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110190038
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.10.2021 14:53, Michal Hocko wrote:
-> On Mon 18-10-21 13:05:35, Vasily Averin wrote:
->> On 18.10.2021 12:04, Michal Hocko wrote:
->>> On Mon 18-10-21 11:13:52, Vasily Averin wrote:
->>> [...]
->>>> How could this happen?
->>>>
->>>> User-space task inside the memcg-limited container generated a page fault,
->>>> its handler do_user_addr_fault() called handle_mm_fault which could not
->>>> allocate the page due to exceeding the memcg limit and returned VM_FAULT_OOM.
->>>> Then do_user_addr_fault() called pagefault_out_of_memory() which executed
->>>> out_of_memory() without set of memcg.
->>>>
->>>> Partially this problem depends on one of my recent patches, disabled unlimited
->>>> memory allocation for dying tasks. However I think the problem can happen
->>>> on non-killed tasks too, for example because of kmem limit.
->>>
->>> Could you be more specific on how this can happen without your patch? I
->>> have to say I haven't realized this side effect when discussing it.
-
->> If required I can try to search how try_charge_memcg() can reject page allocation 
->> of non-dying task too.
+On 18/10/2021 20:31, Tim Gardner wrote:
+> Coverity complains of a possible NULL dereference in smc_find_rdma_v2_device_serv().
 > 
-> Yes.
+> 1782        smc_v2_ext = smc_get_clc_v2_ext(pclc);
+> CID 121151 (#1 of 1): Dereference null return value (NULL_RETURNS)
+> 5. dereference: Dereferencing a pointer that might be NULL smc_v2_ext when calling smc_clc_match_eid. [show details]
+> 1783        if (!smc_clc_match_eid(ini->negotiated_eid, smc_v2_ext, NULL, NULL))
+> 1784                goto not_found;
+> 
+> Fix this by checking for NULL.
 
-Now I think that such failure was very unlikely (w/o my patch and kmem limit).
-I cannot exclude it completely, because I did not finished this review and perhaps I missed something,
-but I checked most part of code and found nothing.
+Hmm that's a fundamental question for me: do we want to make the code checkers happy?
+While I understand that those warnings give an uneasy feeling I am not sure
+if the code should have additional (unneeded) checks only to avoid them.
 
-With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
-a) due to fatal signal
-b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
+In this case all NULL checks are initially done in smc_listen_v2_check(), 
+afterwards no more NULL checks are needed. When we would like to add them
+then a lot more checks are needed, e.g. 3 times in smc_find_ism_v2_device_serv()
+(not sure why coverity does not complain about them, too).
 
-To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
-To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
-
-However all these cases can be successfully handled by my new patch
-"memcg: prevent false global OOM triggered by memcg limited task"
-and I think it is better solution.
-
-Thank you,
-	Vasily Averin
+Thoughts?
