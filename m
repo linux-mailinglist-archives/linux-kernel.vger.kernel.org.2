@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D992D433614
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EAE433618
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235724AbhJSMiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235728AbhJSMiF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:38:05 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891F0C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:52 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id y3so47646013wrl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=BDhXeFZOEER6fzhifbvaPju9Ij73EweA3xek0ZW9GxM=;
-        b=O/3N4FBblQXfYumsJFu0xnxZUEiNNfCAcDn5FUIfZN/ZOMf2qzlRE2RGnp01DUT5DG
-         hsOmrTrA0EvNcuO6R7qDARn5Vegp7Qq0MKgQtrVy0y15ya7kTrml9OXt07T73O/NhFEB
-         fVZLGipffqJ3LEkkGsc36QHqS98wDTmf/7nEY0NR3eJfNMtiM91oq5PAVo7iHzjkR223
-         4Qtnc7dPHi0jQIj89c73f+uNmzV1tgaLozBXZsf5aslVckc0q4qlAENM2pUNHsqXGulh
-         VodH1RYZdZqBzVaR2cMHVAoqaVkBKoTr3b/T3UwoNdXyEXryq1sXTdi33ADhLZRj87lf
-         nHaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=BDhXeFZOEER6fzhifbvaPju9Ij73EweA3xek0ZW9GxM=;
-        b=LxGcKmvR9RKjVsFQsx3uhz5x3g8GySgS7nC59dTZ8aWVTXSohm81kcLI/g3bt6JDWH
-         W72Jo6sMeaHQQebpk6HVB51YuVky6xNHGmj/KEBmeUb2vgWuR6lGrPEOS7em4d+1SOf+
-         YjXjfbLQ0+NN2HUEs8u5RU0LeVc5yBxfKeYEDaKlC7zTD1+8w5UxiJdIl0enG5K4B3Pi
-         cNtIVknwz9BBSism8fxHhs7chna96jiWrsdueZl24q8b5QvNAlahxYgbge+celBKxPRP
-         UOl9FRL5a0OhiKqN2VWxSt7Ec+/XLPGwPoGmqT0spLmCTCnSKIxFjiQBQ1SvJWhhBqMF
-         ONxA==
-X-Gm-Message-State: AOAM531phUoG22fjqn+bCWgUut8i7F+XkUdBS6n9cBcUMrCwGId6WD3w
-        Nh0CWz+PI+9aH/X03xaLjGeQvw==
-X-Google-Smtp-Source: ABdhPJzyI+krcd8CVtMGy1wsY1GLwHlRQmTklHSHxZqdroSNUurxswgnd5isuVimQAojcHJtQ73ccA==
-X-Received: by 2002:adf:ffc1:: with SMTP id x1mr39889861wrs.97.1634646951154;
-        Tue, 19 Oct 2021 05:35:51 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:6dc7:9883:a79c:5be9])
-        by smtp.gmail.com with ESMTPSA id p18sm15263683wrn.41.2021.10.19.05.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 05:35:50 -0700 (PDT)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        tim.c.chen@linux.intel.com
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v3 5/5] sched/fair: cleanup newidle_balance
-Date:   Tue, 19 Oct 2021 14:35:37 +0200
-Message-Id: <20211019123537.17146-6-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211019123537.17146-1-vincent.guittot@linaro.org>
-References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+        id S235750AbhJSMi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:38:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235726AbhJSMiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:38:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CEA361260;
+        Tue, 19 Oct 2021 12:36:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634646971;
+        bh=u73RnjWbRxhH6CwTauke6NzU7tR5DI62J9FiY8yQVbs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TqrwQPwytMD1dfbq9Mtnro8tcleYatLeGtxlHL9aRTHzVTrMrqRCc5Q5qIXLoP1VL
+         y1gAC3s3q5RxgnG+mt1Mnd+MMkk20x3T442HHl9B7+jEiXygfHKeSDW1H5g96t6gMy
+         t5gEMN/JxlbDOfqjNgSWkdM9CSjmzW997iSiZs+h0wwKEN+QnwKo+/OKMaKZDgf24S
+         1GYnil1dhH0AcMlNL+G0oY5XDpSyLi83jl0XDBbmXuY2wvtFvZcg9nrO5Cj7etEUdw
+         TWFZEm6guT3uA6Y236lN1khW177KNWlDxeKN2w9Zx6wKZOGJenIpOvFpLZRoVUYwfo
+         KpON6gydXzB5w==
+Date:   Tue, 19 Oct 2021 13:36:06 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Meng Li <Meng.Li@windriver.com>
+Cc:     geert+renesas@glider.be, magnus.damm@gmail.com, robh+dt@kernel.org,
+        marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com,
+        lorenzo.pieralisi@arm.com, kw@linux.com, bhelgaas@google.com,
+        lgirdwood@gmail.com, linux-renesas-soc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH] pci: pcie-rcar: add regulators support
+Message-ID: <YW67tsigF89EkDWS@sirena.org.uk>
+References: <20211019095858.21316-1-Meng.Li@windriver.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ZkQuIMugRNgJ9HKi"
+Content-Disposition: inline
+In-Reply-To: <20211019095858.21316-1-Meng.Li@windriver.com>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update_next_balance() uses sd->last_balance which is not modified by
-load_balance() so we can merge the 2 calls in one place.
 
-No functional change
+--ZkQuIMugRNgJ9HKi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- kernel/sched/fair.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+On Tue, Oct 19, 2021 at 05:58:58PM +0800, Meng Li wrote:
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 57eae0ebc492..13950beb01a2 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10916,10 +10916,10 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 		int continue_balancing = 1;
- 		u64 domain_cost;
- 
--		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
--			update_next_balance(sd, &next_balance);
-+		update_next_balance(sd, &next_balance);
-+
-+		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
- 			break;
--		}
- 
- 		if (sd->flags & SD_BALANCE_NEWIDLE) {
- 
-@@ -10935,8 +10935,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 			t0 = t1;
- 		}
- 
--		update_next_balance(sd, &next_balance);
--
- 		/*
- 		 * Stop searching for tasks to pull if there are
- 		 * now runnable tasks on this rq.
--- 
-2.17.1
+> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+>=20
+> Add PCIe regulators for KingFisher board.
+>=20
+> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+> ---
 
+You've not provided a Signed-off-by for Andrey, please see
+Documentation/process/submitting-patches.rst for details on what this is
+and why it's important.
+
+> +	host->pcie3v3 =3D devm_regulator_get_optional(dev, "pcie3v3");
+
+> +	host->pcie1v8 =3D devm_regulator_get_optional(dev, "pcie1v8");
+
+Unless PCIe works without these supplies (which are in my understanding
+mandatory according to the spec) these should not be optional, this API
+is for supplies that may be physically absent.
+
+--ZkQuIMugRNgJ9HKi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFuu7YACgkQJNaLcl1U
+h9Arnwf+PlApDFGSrd0BxXmjAa5FJY9Vb9EbiuK19rDX3HvMtAKrjMfYkmMoO/6w
+7vZ1B/AjW3O8GV7mVJZbela5JVwm3FeDUyL2YDRYsIyRChgwvD7zlUjBoT5bEZVa
+kad7VwGSBXaWZfGsm5xlAsN/AAKSKxSkGu/85fYlVWNm/Cg+Mb/N+qp5O+U+jHa6
+4eIsau9/dnP2Hu0wjq8+qvfTZQ9gaSqDZdXC8o1y/j5+3cWSGwwQ9cOQMnKO/YlN
+w5E5pJ8UCjeA2i7PNp8bFfkGOjqft377c2jpNyrQY8uKeWW/pBCHAQB+DoqR7n2p
+npgiAcdcadDCCYkAt0FBJyMjIH5oMg==
+=0qYG
+-----END PGP SIGNATURE-----
+
+--ZkQuIMugRNgJ9HKi--
