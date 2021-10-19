@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E564331DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE214331F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhJSJMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:12:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38218 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234927AbhJSJMi (ORCPT
+        id S234927AbhJSJRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234511AbhJSJRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:12:38 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B4B04219CB;
-        Tue, 19 Oct 2021 09:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634634624; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gt6nuIzfE5vuSZe4ZA9CcRAzQz3OFqf/MbzOSu8nXv0=;
-        b=jrGdc/z/gp7YCYVnsCW8LLfsGXkRBSwXLscwgzo6H16xoXV+RaQcHOhZLOHexwm9jtcDRf
-        dXPj1/JD4xoJIbeE7saOkQJcJ1JVh0PUj72xiapSIT7WuJk4Mo+M2+ivn4xcGnoqcIaHLo
-        iGO2Qm+X2dhsfaway/ZRRzzQEOY/oEo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634634624;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gt6nuIzfE5vuSZe4ZA9CcRAzQz3OFqf/MbzOSu8nXv0=;
-        b=6ZxVnHZ7i/taV0GT5pIwEfjBw5Nrtiy57ej5KXxqZRXzO6WPZ+0vUgIgDSs90JTBPPmn/M
-        pQIvLkxaZP4cSxDw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 76F6CA3B81;
-        Tue, 19 Oct 2021 09:10:24 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 56D1A1E0BE5; Tue, 19 Oct 2021 11:10:24 +0200 (CEST)
+        Tue, 19 Oct 2021 05:17:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B1EC061768;
+        Tue, 19 Oct 2021 02:15:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M74+/if23OdvvyA6a/gJ9u3knPoaJ8QASoM6JWUmAfg=; b=vYHOQbqwa8BG777Qm7rqJzKO0w
+        vkvU8IjgOjvSIJwmaEWntGl+X0usNC6/NqijaY6z9GczT6VgIlVYE+mcs0I7wc+rf0i6jDU8Qifx/
+        Donz7RFxenTlsZVs2mXjt0UPmkvuQdMQ9Edn4Tumq/r78A7zXHO+BenWdvnS2nNybPE4eTv1G4UxR
+        dE5Hn3fQbDwVHrP1RGjH5SU8NbJKqoZwUKc1ku69PZBQiIJUxCw37eEq2NqRG2gtu+l3rsAB++AXL
+        AqV7zz/GG2plIOYjN19IuYFkEIBt/e0wPIp5RhTxoG/vbfiYcdDnHSbDVv5PVwy0vMzDp7R/uVTfR
+        XjrmaEqA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcl8a-00BeBf-Ny; Tue, 19 Oct 2021 09:11:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A78FD300221;
+        Tue, 19 Oct 2021 11:10:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8E7A52C6A7ABD; Tue, 19 Oct 2021 11:10:24 +0200 (CEST)
 Date:   Tue, 19 Oct 2021 11:10:24 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next v3 5/5] ext4: avoid to re-read mmp check data get
- from page cache
-Message-ID: <20211019091024.GC3255@quack2.suse.cz>
-References: <20211019064959.625557-1-yebin10@huawei.com>
- <20211019064959.625557-6-yebin10@huawei.com>
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [PATCH v2 04/11] sched: Simplify wake_up_*idle*()
+Message-ID: <YW6LgO4OK+YPy90S@hirez.programming.kicks-ass.net>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152428.769328779@infradead.org>
+ <ba4ca17f-100e-bef7-6d7b-4de0f5a515b9@quicinc.com>
+ <a354fadd-268f-8119-d37a-102e5efa1437@quicinc.com>
+ <YW6IUIRZsBAZ+6hK@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019064959.625557-6-yebin10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YW6IUIRZsBAZ+6hK@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 19-10-21 14:49:59, Ye Bin wrote:
-> As call read_mmp_block pass bh_check which value is NULL, then call
-> sb_getblk to get buffer_head. But mmp_block's buffer_head is already exist
->  which also is uptodate. Lead to compare the same data.
+On Tue, Oct 19, 2021 at 10:56:48AM +0200, Peter Zijlstra wrote:
+> On Mon, Oct 18, 2021 at 11:47:32PM -0400, Qian Cai wrote:
+> > Peter, any thoughts? I did confirm that reverting the commit fixed the issue.
+> > 
+> > On 10/13/2021 10:32 AM, Qian Cai wrote:
+> > > 
+> > > 
+> > > On 9/29/2021 11:17 AM, Peter Zijlstra wrote:
+> > >> --- a/kernel/smp.c
+> > >> +++ b/kernel/smp.c
+> > >> @@ -1170,14 +1170,14 @@ void wake_up_all_idle_cpus(void)
+> > >>  {
+> > >>  	int cpu;
+> > >>  
+> > >> -	preempt_disable();
+> > >> +	cpus_read_lock();
+> > >>  	for_each_online_cpu(cpu) {
+> > >> -		if (cpu == smp_processor_id())
+> > >> +		if (cpu == raw_smp_processor_id())
+> > >>  			continue;
+> > >>  
+> > >>  		wake_up_if_idle(cpu);
+> > >>  	}
+> > >> -	preempt_enable();
+> > >> +	cpus_read_unlock();
 > 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Right, so yesterday I thought: YW2KGrvvv/vSA+97@hirez.programming.kicks-ass.net
+> but today I might have another idea, lemme go prod at this a bit more.
 
-This patch needs to go earlier in the series - just after patch 2.
-Otherwise the read_mmp_block() cleanup is not correct. Otherwise it looks
-good, just some language corrections:
+Here, hows this then?
 
-ext4: remove useless bh_check variable
-
-Since we initialize 'bh_check' to NULL and pass it to read_mmp_block(), that
-function will just call sb_getblk() which will just return the buffer_head
-we have in 'bh'. So just remove the pointless 'bh_check' variable and use
-'bh' directly.
-
-With this fixed feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/mmp.c | 17 ++++++-----------
->  1 file changed, 6 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 61c765c249b9..8018f6fb6ac2 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -186,10 +186,7 @@ static int kmmpd(void *data)
->  		 */
->  		diff = jiffies - last_update_time;
->  		if (diff > mmp_check_interval * HZ) {
-> -			struct buffer_head *bh_check = NULL;
-> -			struct mmp_struct *mmp_check;
-> -
-> -			retval = read_mmp_block(sb, bh_check);
-> +			retval = read_mmp_block(sb, bh);
->  			if (retval) {
->  				ext4_error_err(sb, -retval,
->  					       "error reading MMP data: %d",
-> @@ -197,20 +194,18 @@ static int kmmpd(void *data)
->  				goto wait_to_exit;
->  			}
->  
-> -			mmp_check = (struct mmp_struct *)(bh_check->b_data);
-> -			if (seq != mmp_check->mmp_seq ||
-> -			    memcmp(nodename, mmp_check->mmp_nodename,
-> -				   sizeof(mmp->mmp_nodename))) {
-> -				dump_mmp_msg(sb, mmp_check,
-> +			mmp = (struct mmp_struct *)(bh->b_data);
-> +			if (seq != le32_to_cpu(mmp->mmp_seq) ||
-> +			    memcmp(nodename, mmp->mmp_nodename,
-> +				    sizeof(nodename))) {
-> +				dump_mmp_msg(sb, mmp,
->  					     "Error while updating MMP info. "
->  					     "The filesystem seems to have been"
->  					     " multiply mounted.");
->  				ext4_error_err(sb, EBUSY, "abort");
-> -				put_bh(bh_check);
->  				retval = -EBUSY;
->  				goto wait_to_exit;
->  			}
-> -			put_bh(bh_check);
->  		}
->  
->  		 /*
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+---
+diff --git a/kernel/smp.c b/kernel/smp.c
+index ad0b68a3a3d3..61ddc7a3bafa 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -1170,14 +1170,12 @@ void wake_up_all_idle_cpus(void)
+ {
+ 	int cpu;
+ 
+-	cpus_read_lock();
+-	for_each_online_cpu(cpu) {
+-		if (cpu == raw_smp_processor_id())
+-			continue;
+-
+-		wake_up_if_idle(cpu);
++	for_each_cpu(cpu) {
++		preempt_disable();
++		if (cpu != smp_processor_id() && cpu_online(cpu))
++			wake_up_if_idle(cpu);
++		preempt_enable();
+ 	}
+-	cpus_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(wake_up_all_idle_cpus);
+ 
