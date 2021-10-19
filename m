@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47F8432D11
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB294432D12
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhJSFTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 01:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        id S233219AbhJSFTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 01:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232856AbhJSFTs (ORCPT
+        with ESMTP id S233046AbhJSFTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 01:19:48 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651FFC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:36 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id i5so6618776pla.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:36 -0700 (PDT)
+        Tue, 19 Oct 2021 01:19:49 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E176EC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:37 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso1092502pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6r9uuaSaQZOZcWbXapdVBGjLI4WO4y0f9iAtrk3atGc=;
-        b=MPLfyt/v8S7RH7sSWL5jeNIK0PF5zQZI0s+K5bCajXyJt9/EiqTbo7UywNhzbWLNYg
-         yi1p0PbpgrhjCC45XBw2WFvkZFSYd5GE71FHy0TA/Lqi/tlvAiNMNlkL4lcMGYyh6K4e
-         q/h/LlGM6cTKBcmEjjVcul5yLeTvdoUUDdwjl5LO2jDZLZ6G6gT9LajxYxeo663W8+Qv
-         iw4wsFsR+flRgqnbQcDuxi/p/3YwSq1TGSTvdKuORbCOWtKVi0rb2PZ9RdMlTAuHKavM
-         B06tYzPv1mIEQAJMJZCrcUhweQMc2QSZ3qBzzb0WPZFrt22CQ2fWI4JN5x/LJhKk4i/L
-         jtcg==
+        bh=K0VZKS1ICUvF0VKDj/TjmFxxuKxVm9cw/F2xdtoToVE=;
+        b=lU+H3SC772Rez0KYcO5TqZkXHEslwzHNgDahx42NJVno3T1Tv5b8nNJ/lDahBg7wh4
+         Pre/Iql5BjLjDdcWddRLeOuUYh/vzzrxXVrURb5ZgmgcR+cNQ8TVIUELIk/El9HGujK3
+         QmVjBcnhJCCWVOqWQCOmpvTj/WRs9pWpYZcf4NaI8RhITux5ZQtGkhLkz7MNq/kQSIja
+         Ryxp9opJ/LtjnmnJnkVewFdojQO8NNA5h/leLq9eO0Sj0llOoQaZP3q+GfTQxVDoVJNI
+         elcOpA1ngvdSMbjOhr9lgAYOVSCBlZNihinljnTcB7UhzHO7+Jinp12CJMo3FV7eqNJL
+         w4rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6r9uuaSaQZOZcWbXapdVBGjLI4WO4y0f9iAtrk3atGc=;
-        b=GVa12yXTD7VFEDSK0EWSOYoXXVQPRbHYTlnW2JkTwTQWU5RtMasqNy//GcXf1rWT70
-         3JUeifodG/mgx0LfjFrZvLHOYc7cutg/8ivrQKjJV+H0iC3QtdjohkXM+Zkn/17UYi97
-         U1QZLOfB4+EiTars/q+yfUmjMXDfqmc8NBW+N/yahlERRe3PZshKRjSuTGFhZWvD6dJp
-         yKIRrQVKj7BQBMKXhdyLbIVLAMfXZJuhd2DUuvmb11CK0cRFrG7JK4wOK6v0WZRjB+4L
-         G7u57zGL0BUTQO9sP4cP7NsA3jol7c7kys21Pd9VASkNx4YTr71zUu01s5rm29OIzJbh
-         R5Zg==
-X-Gm-Message-State: AOAM533l8CsTdMeurCXzhsM8mZRDqsO7mIIE4ROAtXEeZveQboa1fb98
-        8SfQc7ngJtriPNGDFoPR+NDx1cI3TVM=
-X-Google-Smtp-Source: ABdhPJxaEdUpej54qai1ADPu3VIMJ2hHGgTa+GDAAwJ+/8i4W+Q/4RMdkRWNjsRhUTTUTr1vv2yIDA==
-X-Received: by 2002:a17:90b:4f88:: with SMTP id qe8mr3987153pjb.223.1634620655943;
-        Mon, 18 Oct 2021 22:17:35 -0700 (PDT)
+        bh=K0VZKS1ICUvF0VKDj/TjmFxxuKxVm9cw/F2xdtoToVE=;
+        b=1CKMBKibFakybRvHxdDB8Gs2b6Z9Tnkzh+QwQta/WXIk7jmarCQj57BiVv6/kaC0s+
+         R3KX0tEaMwU5HnvKxMTTmqPqvcYs74OP8ItbIuAu4GEy04f6GMEQN/y4Lrmep9Yp3MuO
+         wW82USn1BlMEIr++ZdfdTXZ+Ci3PfywYdNejYbqZAPbTO1oWDq6+ugpwswvL6SLHMulF
+         fdGn2+jrn6Un1njA4le4BYvrwHAOVcsM0ZD86vY0vZZ7mfycQHHPojkGEaIp2PCP5FpI
+         mvC29zHZpm13yGDZIRVwXQfqDY2xjyfvN5NMiyo7HbT+yvWRZPvT2FuU+n8rFd90wGDP
+         5RXw==
+X-Gm-Message-State: AOAM531T8Cx0MLzWxF0IAhjyZi9gIAgRVaUcWi7bMbsKqme8YtU/0/LH
+        lgUu6F2An0wXCtPV+24uC64=
+X-Google-Smtp-Source: ABdhPJysF1w2HhVm+eJuvIkYF7aCY8eB2ZO9h2K7+P+/TdOmNx9GuxvCTAX2634QVuf7PJbkGcivjg==
+X-Received: by 2002:a17:90a:1fcf:: with SMTP id z15mr4006725pjz.31.1634620657460;
+        Mon, 18 Oct 2021 22:17:37 -0700 (PDT)
 Received: from octofox.hsd1.ca.comcast.net ([2601:641:401:1d20:4171:83c2:8384:24c5])
-        by smtp.gmail.com with ESMTPSA id me12sm1168844pjb.27.2021.10.18.22.17.34
+        by smtp.gmail.com with ESMTPSA id me12sm1168844pjb.27.2021.10.18.22.17.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 22:17:35 -0700 (PDT)
+        Mon, 18 Oct 2021 22:17:36 -0700 (PDT)
 From:   Max Filippov <jcmvbkbc@gmail.com>
 To:     linux-xtensa@linux-xtensa.org
 Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
         Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH 01/10] xtensa: move _SimulateUserKernelVectorException out of WindowVectors
-Date:   Mon, 18 Oct 2021 22:17:07 -0700
-Message-Id: <20211019051716.4173-2-jcmvbkbc@gmail.com>
+Subject: [PATCH 02/10] xtensa: use a14 instead of a15 in inline assembly
+Date:   Mon, 18 Oct 2021 22:17:08 -0700
+Message-Id: <20211019051716.4173-3-jcmvbkbc@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211019051716.4173-1-jcmvbkbc@gmail.com>
 References: <20211019051716.4173-1-jcmvbkbc@gmail.com>
@@ -64,76 +64,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In configurations without window registers support the section
-.WindowVectors.text may never be linked.
-_SimulateUserKernelVectorException is a common handler for high priority
-interrupts, it does not belong in that section anyway. Move it out of
-that section and mark it as __XTENSA_HANDLER so it gets bundled with
-other vector helpers.
+a15 is a frame pointer in the call0 xtensa ABI, don't use it explicitly
+in the inline assembly. Use a14 instead, as it has the same properties
+as a15 w.r.t. window overflow.
 
 Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 ---
- arch/xtensa/kernel/vectors.S | 40 +++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 21 deletions(-)
+ arch/xtensa/include/asm/atomic.h  | 26 +++++++++++++-------------
+ arch/xtensa/include/asm/cmpxchg.h | 16 ++++++++--------
+ 2 files changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/arch/xtensa/kernel/vectors.S b/arch/xtensa/kernel/vectors.S
-index 1a7538ccfc5a..0eed5aa82914 100644
---- a/arch/xtensa/kernel/vectors.S
-+++ b/arch/xtensa/kernel/vectors.S
-@@ -650,6 +650,25 @@ ENTRY(_Level\level\()InterruptVector)
- 	irq_entry_level 5
- 	irq_entry_level 6
+diff --git a/arch/xtensa/include/asm/atomic.h b/arch/xtensa/include/asm/atomic.h
+index 4361fe4247e3..52da614f953c 100644
+--- a/arch/xtensa/include/asm/atomic.h
++++ b/arch/xtensa/include/asm/atomic.h
+@@ -25,15 +25,15 @@
+  *
+  * Locking interrupts looks like this:
+  *
+- *    rsil a15, TOPLEVEL
++ *    rsil a14, TOPLEVEL
+  *    <code>
+- *    wsr  a15, PS
++ *    wsr  a14, PS
+  *    rsync
+  *
+- * Note that a15 is used here because the register allocation
++ * Note that a14 is used here because the register allocation
+  * done by the compiler is not guaranteed and a window overflow
+  * may not occur between the rsil and wsr instructions. By using
+- * a15 in the rsil, the machine is guaranteed to be in a state
++ * a14 in the rsil, the machine is guaranteed to be in a state
+  * where no register reference will cause an overflow.
+  */
  
-+#if XCHAL_EXCM_LEVEL >= 2
-+	/*
-+	 *  Continuation of medium priority interrupt dispatch code.
-+	 *  On entry here, a0 contains PS, and EPC2 contains saved a0:
-+	 */
-+	__XTENSA_HANDLER
-+	.align 4
-+_SimulateUserKernelVectorException:
-+	addi	a0, a0, (1 << PS_EXCM_BIT)
-+#if !XTENSA_FAKE_NMI
-+	wsr	a0, ps
-+#endif
-+	bbsi.l	a0, PS_UM_BIT, 1f	# branch if user mode
-+	xsr	a0, excsave2		# restore a0
-+	j	_KernelExceptionVector	# simulate kernel vector exception
-+1:	xsr	a0, excsave2		# restore a0
-+	j	_UserExceptionVector	# simulate user vector exception
-+#endif
-+
+@@ -185,15 +185,15 @@ static inline void arch_atomic_##op(int i, atomic_t * v)		\
+ 	unsigned int vval;						\
+ 									\
+ 	__asm__ __volatile__(						\
+-			"       rsil    a15, "__stringify(TOPLEVEL)"\n"	\
++			"       rsil    a14, "__stringify(TOPLEVEL)"\n"	\
+ 			"       l32i    %[result], %[mem]\n"		\
+ 			"       " #op " %[result], %[result], %[i]\n"	\
+ 			"       s32i    %[result], %[mem]\n"		\
+-			"       wsr     a15, ps\n"			\
++			"       wsr     a14, ps\n"			\
+ 			"       rsync\n"				\
+ 			: [result] "=&a" (vval), [mem] "+m" (*v)	\
+ 			: [i] "a" (i)					\
+-			: "a15", "memory"				\
++			: "a14", "memory"				\
+ 			);						\
+ }									\
  
- /* Window overflow and underflow handlers.
-  * The handlers must be 64 bytes apart, first starting with the underflow
-@@ -680,27 +699,6 @@ ENTRY_ALIGN64(_WindowOverflow4)
+@@ -203,15 +203,15 @@ static inline int arch_atomic_##op##_return(int i, atomic_t * v)	\
+ 	unsigned int vval;						\
+ 									\
+ 	__asm__ __volatile__(						\
+-			"       rsil    a15,"__stringify(TOPLEVEL)"\n"	\
++			"       rsil    a14,"__stringify(TOPLEVEL)"\n"	\
+ 			"       l32i    %[result], %[mem]\n"		\
+ 			"       " #op " %[result], %[result], %[i]\n"	\
+ 			"       s32i    %[result], %[mem]\n"		\
+-			"       wsr     a15, ps\n"			\
++			"       wsr     a14, ps\n"			\
+ 			"       rsync\n"				\
+ 			: [result] "=&a" (vval), [mem] "+m" (*v)	\
+ 			: [i] "a" (i)					\
+-			: "a15", "memory"				\
++			: "a14", "memory"				\
+ 			);						\
+ 									\
+ 	return vval;							\
+@@ -223,16 +223,16 @@ static inline int arch_atomic_fetch_##op(int i, atomic_t * v)		\
+ 	unsigned int tmp, vval;						\
+ 									\
+ 	__asm__ __volatile__(						\
+-			"       rsil    a15,"__stringify(TOPLEVEL)"\n"	\
++			"       rsil    a14,"__stringify(TOPLEVEL)"\n"	\
+ 			"       l32i    %[result], %[mem]\n"		\
+ 			"       " #op " %[tmp], %[result], %[i]\n"	\
+ 			"       s32i    %[tmp], %[mem]\n"		\
+-			"       wsr     a15, ps\n"			\
++			"       wsr     a14, ps\n"			\
+ 			"       rsync\n"				\
+ 			: [result] "=&a" (vval), [tmp] "=&a" (tmp),	\
+ 			  [mem] "+m" (*v)				\
+ 			: [i] "a" (i)					\
+-			: "a15", "memory"				\
++			: "a14", "memory"				\
+ 			);						\
+ 									\
+ 	return vval;							\
+diff --git a/arch/xtensa/include/asm/cmpxchg.h b/arch/xtensa/include/asm/cmpxchg.h
+index 3699e2818efb..eb87810357ad 100644
+--- a/arch/xtensa/include/asm/cmpxchg.h
++++ b/arch/xtensa/include/asm/cmpxchg.h
+@@ -52,16 +52,16 @@ __cmpxchg_u32(volatile int *p, int old, int new)
+ 	return new;
+ #else
+ 	__asm__ __volatile__(
+-			"       rsil    a15, "__stringify(TOPLEVEL)"\n"
++			"       rsil    a14, "__stringify(TOPLEVEL)"\n"
+ 			"       l32i    %[old], %[mem]\n"
+ 			"       bne     %[old], %[cmp], 1f\n"
+ 			"       s32i    %[new], %[mem]\n"
+ 			"1:\n"
+-			"       wsr     a15, ps\n"
++			"       wsr     a14, ps\n"
+ 			"       rsync\n"
+ 			: [old] "=&a" (old), [mem] "+m" (*p)
+ 			: [cmp] "a" (old), [new] "r" (new)
+-			: "a15", "memory");
++			: "a14", "memory");
+ 	return old;
+ #endif
+ }
+@@ -116,10 +116,10 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+ /*
+  * xchg_u32
+  *
+- * Note that a15 is used here because the register allocation
++ * Note that a14 is used here because the register allocation
+  * done by the compiler is not guaranteed and a window overflow
+  * may not occur between the rsil and wsr instructions. By using
+- * a15 in the rsil, the machine is guaranteed to be in a state
++ * a14 in the rsil, the machine is guaranteed to be in a state
+  * where no register reference will cause an overflow.
+  */
  
- ENDPROC(_WindowOverflow4)
- 
--
--#if XCHAL_EXCM_LEVEL >= 2
--	/*  Not a window vector - but a convenient location
--	 *  (where we know there's space) for continuation of
--	 *  medium priority interrupt dispatch code.
--	 *  On entry here, a0 contains PS, and EPC2 contains saved a0:
--	 */
--	.align 4
--_SimulateUserKernelVectorException:
--	addi	a0, a0, (1 << PS_EXCM_BIT)
--#if !XTENSA_FAKE_NMI
--	wsr	a0, ps
--#endif
--	bbsi.l	a0, PS_UM_BIT, 1f	# branch if user mode
--	xsr	a0, excsave2		# restore a0
--	j	_KernelExceptionVector	# simulate kernel vector exception
--1:	xsr	a0, excsave2		# restore a0
--	j	_UserExceptionVector	# simulate user vector exception
--#endif
--
--
- /* 4-Register Window Underflow Vector (Handler) */
- 
- ENTRY_ALIGN64(_WindowUnderflow4)
+@@ -157,14 +157,14 @@ static inline unsigned long xchg_u32(volatile int * m, unsigned long val)
+ #else
+ 	unsigned long tmp;
+ 	__asm__ __volatile__(
+-			"       rsil    a15, "__stringify(TOPLEVEL)"\n"
++			"       rsil    a14, "__stringify(TOPLEVEL)"\n"
+ 			"       l32i    %[tmp], %[mem]\n"
+ 			"       s32i    %[val], %[mem]\n"
+-			"       wsr     a15, ps\n"
++			"       wsr     a14, ps\n"
+ 			"       rsync\n"
+ 			: [tmp] "=&a" (tmp), [mem] "+m" (*m)
+ 			: [val] "a" (val)
+-			: "a15", "memory");
++			: "a14", "memory");
+ 	return tmp;
+ #endif
+ }
 -- 
 2.20.1
 
