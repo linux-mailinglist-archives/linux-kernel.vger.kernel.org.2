@@ -2,160 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC7B4335EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703E5433629
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235681AbhJSM3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:29:20 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:24359 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231441AbhJSM3M (ORCPT
+        id S235551AbhJSMnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230514AbhJSMnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:29:12 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HYXtn3rXdzbhCr;
-        Tue, 19 Oct 2021 20:22:25 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
- (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Tue, 19
- Oct 2021 20:26:58 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v4 3/3] ext4: simplify read_mmp_block fucntion
-Date:   Tue, 19 Oct 2021 20:39:31 +0800
-Message-ID: <20211019123931.1545295-4-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211019123931.1545295-1-yebin10@huawei.com>
-References: <20211019123931.1545295-1-yebin10@huawei.com>
+        Tue, 19 Oct 2021 08:43:31 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD589C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:41:18 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id z20so12218624edc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EHf1d6jYC47N493Pv/6pFABfQdMKx4e8O3xhKroDPbE=;
+        b=NyuJgkOEqVr2HgSuFzucrmFl6uCC47sSvbC4sO8TJI5tKjSPUp2CuXuUVzlYed/0Wd
+         UuwdEFSyvQRiZn4dT7Vi6Yr2OGeienXD0cr3JRJIZxso6VZBlHhPqR4DRBDUcM22HpyY
+         aTuV8ClK37PNqKNrFn6vFa4AlhIToFy9MbcfY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=EHf1d6jYC47N493Pv/6pFABfQdMKx4e8O3xhKroDPbE=;
+        b=vhlIAYWBhP36HiZg7+RCU70GG+wWOzkJjYpytOaFUab8iVIFqdJAdxbtm9FS5yGKG6
+         9MINJzp/JzRkPvfNTM0wt8LfDSgiqgPP+m9cOwbmsa5TyG7uDUT8sijlhT9ibBF3qcyc
+         4ehLRfXIrnPHdKgBez6g721cHWmwZzmcDu9LG/qYmrdqKJH1xa28IeiKBPa6YWR7KGoa
+         I6FOYqR3SZafywIPCnMaGAHhgyIifvoVXrL/ycJUj5euPWCkuNPFc8dmujy0H9MtTHtF
+         +B6NRIBNNUPumhqwBbzJ56JBGp5LK8YX5Syc/mtOmOO6IkZHNII9LbTzaUKAOcYSI96W
+         +CRA==
+X-Gm-Message-State: AOAM530Y5BON5UK0w93rTFVD8NpbtwXJYurlJzh+yvC6WDnujiZz9h3L
+        ci+AJfdzR6bEM1KcDQ6aMf9yTA==
+X-Google-Smtp-Source: ABdhPJx6vSo6OufSaFH9rFLrzmjtgXdXhc8T6jVm1AlxqNyN88YtlQU+itfte1ctjSnqHOIrQwPvAg==
+X-Received: by 2002:a05:6402:84d:: with SMTP id b13mr54514480edz.110.1634647277354;
+        Tue, 19 Oct 2021 05:41:17 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id p23sm12148807edw.94.2021.10.19.05.41.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 05:41:16 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 14:41:14 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     guangming.cao@mediatek.com
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, wsd_upstream@mediatek.com
+Subject: Re: [PATCH] dma-buf: add attachments empty check for dma_buf_release
+Message-ID: <YW686sIZie4xRUQO@phenom.ffwll.local>
+Mail-Followup-To: guangming.cao@mediatek.com,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+        wsd_upstream@mediatek.com
+References: <20211019122345.160555-1-guangming.cao@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019122345.160555-1-guangming.cao@mediatek.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is according to Jan Kara's suggestion:
-I guess I would just get rid of sb_getblk() in read_mmp_block() and always
-expect valid bh passed. The only place that passes NULL bh after this
-patch is one case in ext4_multi_mount_protect() and that can call
-sb_getblk() on its own. That way we can also simplify read_mmp_block()
-prototype to:
+On Tue, Oct 19, 2021 at 08:23:45PM +0800, guangming.cao@mediatek.com wrote:
+> From: Guangming Cao <Guangming.Cao@mediatek.com>
+> 
+> Since there is no mandatory inspection for attachments in dma_buf_release.
+> There will be a case that dma_buf already released but attachment is still
+> in use, which can points to the dmabuf, and it maybe cause
+> some unexpected issues.
+> 
+> With IOMMU, when this cases occurs, there will have IOMMU address
+> translation fault(s) followed by this warning,
+> I think it's useful for dma devices to debug issue.
+> 
+> Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
 
-static int read_mmp_block(struct super_block *sb, struct buffer_head *bh);
+This feels a lot like hand-rolling kobject debugging. If you want to do
+this then I think adding kobject debug support to
+dma_buf/dma_buf_attachment would be better than hand-rolling something
+bespoke here.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/mmp.c | 44 +++++++++++++++++++-------------------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
+Also on the patch itself: You don't need the trylock. For correctly
+working code non one else can get at the dma-buf, so no locking needed to
+iterate through the attachment list. For incorrect code the kernel will be
+on fire pretty soon anyway, trying to do locking won't help :-) And
+without the trylock we can catch more bugs (e.g. if you also forgot to
+unlock and not just forgot to detach).
+-Daniel
 
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index 9788c617e593..3a7370c88934 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -64,33 +64,26 @@ static int write_mmp_block(struct super_block *sb, struct buffer_head *bh)
- /*
-  * Read the MMP block. It _must_ be read from disk and hence we clear the
-  * uptodate flag on the buffer.
-+ * Caller must ensure pass valid 'bh'.
-  */
--static int read_mmp_block(struct super_block *sb, struct buffer_head **bh,
--			  ext4_fsblk_t mmp_block)
-+static int read_mmp_block(struct super_block *sb, struct buffer_head *bh)
- {
- 	struct mmp_struct *mmp;
- 	int ret;
- 
--	if (*bh)
--		clear_buffer_uptodate(*bh);
--
--	/* This would be sb_bread(sb, mmp_block), except we need to be sure
--	 * that the MD RAID device cache has been bypassed, and that the read
--	 * is not blocked in the elevator. */
--	if (!*bh) {
--		*bh = sb_getblk(sb, mmp_block);
--		if (!*bh) {
--			ret = -ENOMEM;
--			goto warn_exit;
--		}
-+	if (!bh) {
-+		ret = -EINVAL;
-+		goto warn_exit;
- 	}
- 
--	lock_buffer(*bh);
--	ret = ext4_read_bh(*bh, REQ_META | REQ_PRIO, NULL);
-+	clear_buffer_uptodate(bh);
-+
-+	lock_buffer(bh);
-+	ret = ext4_read_bh(bh, REQ_META | REQ_PRIO, NULL);
- 	if (ret)
- 		goto warn_exit;
- 
--	mmp = (struct mmp_struct *)((*bh)->b_data);
-+	mmp = (struct mmp_struct *)((bh)->b_data);
- 	if (le32_to_cpu(mmp->mmp_magic) != EXT4_MMP_MAGIC) {
- 		ret = -EFSCORRUPTED;
- 		goto warn_exit;
-@@ -101,10 +94,7 @@ static int read_mmp_block(struct super_block *sb, struct buffer_head **bh,
- 	}
- 	return 0;
- warn_exit:
--	brelse(*bh);
--	*bh = NULL;
--	ext4_warning(sb, "Error %d while reading MMP block %llu",
--		     ret, mmp_block);
-+	ext4_warning(sb, "Error %d while reading MMP block", ret);
- 	return ret;
- }
- 
-@@ -195,7 +185,7 @@ static int kmmpd(void *data)
- 		 */
- 		diff = jiffies - last_update_time;
- 		if (diff > mmp_check_interval * HZ) {
--			retval = read_mmp_block(sb, &bh, mmp_block);
-+			retval = read_mmp_block(sb, bh);
- 			if (retval) {
- 				ext4_error_err(sb, -retval,
- 					       "error reading MMP data: %d",
-@@ -289,7 +279,11 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 		goto failed;
- 	}
- 
--	retval = read_mmp_block(sb, &bh, mmp_block);
-+	bh = sb_getblk(sb, mmp_block);
-+	if (bh)
-+		goto failed;
-+
-+	retval = read_mmp_block(sb, bh);
- 	if (retval)
- 		goto failed;
- 
-@@ -327,7 +321,7 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 		goto failed;
- 	}
- 
--	retval = read_mmp_block(sb, &bh, mmp_block);
-+	retval = read_mmp_block(sb, bh);
- 	if (retval)
- 		goto failed;
- 	mmp = (struct mmp_struct *)(bh->b_data);
-@@ -356,7 +350,7 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 		goto failed;
- 	}
- 
--	retval = read_mmp_block(sb, &bh, mmp_block);
-+	retval = read_mmp_block(sb, bh);
- 	if (retval)
- 		goto failed;
- 	mmp = (struct mmp_struct *)(bh->b_data);
+> ---
+>  drivers/dma-buf/dma-buf.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 511fe0d217a0..672404857d6a 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -74,6 +74,29 @@ static void dma_buf_release(struct dentry *dentry)
+>  	 */
+>  	BUG_ON(dmabuf->cb_shared.active || dmabuf->cb_excl.active);
+>  
+> +	/* attachment check */
+> +	if (dma_resv_trylock(dmabuf->resv) && WARN(!list_empty(&dmabuf->attachments),
+> +	    "%s err, inode:%08lu size:%08zu name:%s exp_name:%s flags:0x%08x mode:0x%08x, %s\n",
+> +	    __func__, file_inode(dmabuf->file)->i_ino, dmabuf->size,
+> +	    dmabuf->name, dmabuf->exp_name,
+> +	    dmabuf->file->f_flags, dmabuf->file->f_mode,
+> +	    "Release dmabuf before detach all attachments, dump attach:\n")) {
+> +		int attach_cnt = 0;
+> +		dma_addr_t dma_addr;
+> +		struct dma_buf_attachment *attach_obj;
+> +		/* dump all attachment info */
+> +		list_for_each_entry(attach_obj, &dmabuf->attachments, node) {
+> +			dma_addr = (dma_addr_t)0;
+> +			if (attach_obj->sgt)
+> +				dma_addr = sg_dma_address(attach_obj->sgt->sgl);
+> +			pr_err("attach[%d]: dev:%s dma_addr:0x%-12lx\n",
+> +			       attach_cnt, dev_name(attach_obj->dev), dma_addr);
+> +			attach_cnt++;
+> +		}
+> +		pr_err("Total %d devices attached\n\n", attach_cnt);
+> +		dma_resv_unlock(dmabuf->resv);
+> +	}
+> +
+>  	dmabuf->ops->release(dmabuf);
+>  
+>  	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.31.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
