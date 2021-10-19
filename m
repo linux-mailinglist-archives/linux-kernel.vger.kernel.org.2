@@ -2,97 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F6743335F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA22E433367
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235190AbhJSKU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhJSKU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:20:26 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF18B6137D;
-        Tue, 19 Oct 2021 10:18:13 +0000 (UTC)
-Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mcmCB-000AqP-Mb; Tue, 19 Oct 2021 11:18:11 +0100
-Date:   Tue, 19 Oct 2021 11:18:09 +0100
-Message-ID: <8735oxuxlq.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Samuel Holland <samuel@sholland.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>,
-        Rob Herring <robh@kernel.org>,
+        id S235200AbhJSKWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:22:12 -0400
+Received: from mail-ua1-f48.google.com ([209.85.222.48]:43634 "EHLO
+        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhJSKWL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 06:22:11 -0400
+Received: by mail-ua1-f48.google.com with SMTP id i22so2753367ual.10;
+        Tue, 19 Oct 2021 03:19:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p6OZFW3ezrlsvIWoQgzoCARmyBJqP61SO2gxRkAy/uo=;
+        b=CMv4MSCjHqRUSlfvIzI1QNel+7CTWtK7AByjbxm29PMGppkQIcIA14ayL/rooAj8Ha
+         m5EzkDAa5Ec1PjKqAihtn7DE4boAbVk+pCU3yDc7fAOP+VwmDCppjF1xoFz/2ELI1gI1
+         le+0JJMILhETO/xw9m277ba0BjXj/6laCvuryXJI90ryw+bV0aUHXpx/zH/LVB+AHcXC
+         KKOvBZ+xOO3yqogtmc589H5P6/CdOwGoVy7a/9JFD5c4qZeypO9016N5VJxCDcZ+OXJI
+         AxyWyyEJAiK/mw2dm+VGmqDbPXxlxCL82XCXyHBQp5LX8Ejkhs8jZG8md6Jm+9NnykSk
+         wDJQ==
+X-Gm-Message-State: AOAM5331/NSAKzZ4bmFqfxtTRtGkZK3Qo3Vnq5pcye7STWOnWLjcAoEt
+        WvDqODtsoeJgON1zrlRRr77JqtnJz1QWmA==
+X-Google-Smtp-Source: ABdhPJwyTbDbYL9Be2J58hjWet64L1WtCHnEOSZSgVQPRRIyaTSHNtGKzzzrqCBUjtacWppBQeRecg==
+X-Received: by 2002:a67:d51a:: with SMTP id l26mr33813660vsj.29.1634638797600;
+        Tue, 19 Oct 2021 03:19:57 -0700 (PDT)
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
+        by smtp.gmail.com with ESMTPSA id u75sm10778783vke.29.2021.10.19.03.19.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 03:19:57 -0700 (PDT)
+Received: by mail-ua1-f44.google.com with SMTP id i22so2753205ual.10;
+        Tue, 19 Oct 2021 03:19:56 -0700 (PDT)
+X-Received: by 2002:a9f:29a5:: with SMTP id s34mr26300307uas.122.1634638796170;
+ Tue, 19 Oct 2021 03:19:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211019095858.21316-1-Meng.Li@windriver.com>
+In-Reply-To: <20211019095858.21316-1-Meng.Li@windriver.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 Oct 2021 12:19:45 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUJ4nzz169=LG_q6rx7naKVdk-VUrxiQ9VzS=fxjCQ2WA@mail.gmail.com>
+Message-ID: <CAMuHMdUJ4nzz169=LG_q6rx7naKVdk-VUrxiQ9VzS=fxjCQ2WA@mail.gmail.com>
+Subject: Re: [PATCH] pci: pcie-rcar: add regulators support
+To:     Meng Li <Meng.Li@windriver.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
-In-Reply-To: <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
-References: <20211016032200.2869998-1-guoren@kernel.org>
-        <20211016032200.2869998-2-guoren@kernel.org>
-        <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org>
-        <f850af365f2ac77af79ec59f92e6434a@kernel.org>
-        <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.104.136.29
-X-SA-Exim-Rcpt-To: guoren@kernel.org, samuel@sholland.org, anup@brainfault.org, atish.patra@wdc.com, tglx@linutronix.de, palmer@dabbelt.com, heiko@sntech.de, robh@kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, guoren@linux.alibaba.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 10:33:49 +0100,
-Guo Ren <guoren@kernel.org> wrote:
+Hi Meng,
 
-> > If you have an 'automask' behavior and yet the HW doesn't record this
-> > in a separate bit, then you need to track this by yourself in the
-> > irq_eoi() callback instead. I guess that you would skip the write to
-> > the CLAIM register in this case, though I have no idea whether this
-> > breaks
-> > the HW interrupt state or not.
-> The problem is when enable bit is 0 for that irq_number,
-> "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
-> the hw state machine. Then this irq would enter in ack state and no
-> continues irqs could come in.
+On Tue, Oct 19, 2021 at 11:59 AM Meng Li <Meng.Li@windriver.com> wrote:
+> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+>
+> Add PCIe regulators for KingFisher board.
+>
+> Signed-off-by: Meng Li <Meng.Li@windriver.com>
 
-Really? This means that you cannot mask an interrupt while it is being
-handled? How great...
+Thanks for your patch!
 
-> >
-> > There is an example of this in the Apple AIC driver.
-> Thx for the tip, I think your suggestion is:
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -163,7 +163,12 @@ static void plic_irq_eoi(struct irq_data *d)
+>  arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 47 +++++++++++++++++
+>  drivers/pci/controller/pcie-rcar-host.c  | 64 ++++++++++++++++++++++++
+
+Please split patches touching both DT and driver sources.
+
+> --- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+
+> @@ -259,6 +303,9 @@
+>
+>  &pciec1 {
+>         status = "okay";
+> +
+> +       pcie3v3-supply = <&mpcie_3v3>;
+> +       pcie1v8-supply = <&mpcie_1v8>;
+
+This needs an update to the R-Car PCIe DT bindings first.
+
+> --- a/drivers/pci/controller/pcie-rcar-host.c
+> +++ b/drivers/pci/controller/pcie-rcar-host.c
+
+> @@ -893,6 +896,36 @@ static const struct of_device_id rcar_pcie_of_match[] = {
+>         {},
+>  };
+>
+> +static int rcar_pcie_set_vpcie(struct rcar_pcie_host *host)
+> +{
+> +       struct device *dev = host->pcie.dev;
+> +       int err;
+> +
+> +       if (!IS_ERR(host->pcie3v3)) {
+> +               err = regulator_enable(host->pcie3v3);
+
+This will crash if host->pcie3v3 is NULL (optional regulator not
+present).  Probably you just want to check for non-NULL (see below).
+
+> +               if (err) {
+> +                       dev_err(dev, "fail to enable vpcie3v3 regulator\n");
+> +                       goto err_out;
+> +               }
+> +       }
+> +
+> +       if (!IS_ERR(host->pcie1v8)) {
+> +               err = regulator_enable(host->pcie1v8);
+
+Likewise.
+
+> +               if (err) {
+> +                       dev_err(dev, "fail to enable vpcie1v8 regulator\n");
+> +                       goto err_disable_3v3;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +
+> +err_disable_3v3:
+> +       if (!IS_ERR(host->pcie3v3))
+
+Likewise.
+
+> +               regulator_disable(host->pcie3v3);
+> +err_out:
+> +       return err;
+> +}
+> +
+>  static int rcar_pcie_probe(struct platform_device *pdev)
 >  {
->         struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
-> 
-> -       writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +       if (irqd_irq_masked(d)) {
-> +               plic_irq_unmask(d);
-> +               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +               plic_irq_mask(d);
+>         struct device *dev = &pdev->dev;
+> @@ -911,6 +944,31 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+>         pcie->dev = dev;
+>         platform_set_drvdata(pdev, host);
+>
+> +       host->pcie3v3 = devm_regulator_get_optional(dev, "pcie3v3");
+> +       if (IS_ERR(host->pcie3v3)) {
+> +               if (PTR_ERR(host->pcie3v3) == -EPROBE_DEFER) {
+> +                       pci_free_host_bridge(bridge);
 
-This looks pretty dodgy. You are relying on interrupts being globally
-masked on the CPU, I guess. It probably works today, but man, what a
-terrible HW implementation.
+Please drop this.  As the bridge was allocated using
+devm_pci_alloc_host_bridge(), freeing it manually will cause a
+double free.
 
-You'll definitely have to move this into a c900-specific callback.
+> +                       return -EPROBE_DEFER;
+> +               }
+> +               dev_info(dev, "no pcie3v3 regulator found\n");
 
-	M.
+devm_regulator_get_optional() returns NULL if the regulator was not
+found.  Hence if IS_ERR() is true, this indicates a real error, which
+you should handle:
 
--- 
-Without deviation from the norm, progress is not possible.
+    if (IS_ERR(host->pcie3v3))
+            return PTR_ERR(host->pcie3v3);
+
+> +       }
+> +
+> +       host->pcie1v8 = devm_regulator_get_optional(dev, "pcie1v8");
+> +       if (IS_ERR(host->pcie1v8)) {
+> +               if (PTR_ERR(host->pcie1v8) == -EPROBE_DEFER) {
+> +                       pci_free_host_bridge(bridge);
+> +                       return -EPROBE_DEFER;
+> +               }
+> +               dev_info(dev, "no pcie1v8 regulator found\n");
+
+Likewise.
+
+> +       }
+> +
+> +       err = rcar_pcie_set_vpcie(host);
+> +       if (err) {
+> +               dev_err(dev, "failed to set pcie regulators\n");
+> +               pci_free_host_bridge(bridge);
+
+Please drop this to avoid double free.
+
+> +               return err;
+> +       }
+> +
+>         pm_runtime_enable(pcie->dev);
+>         err = pm_runtime_get_sync(pcie->dev);
+>         if (err < 0) {
+> @@ -985,6 +1043,12 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+>         irq_dispose_mapping(host->msi.irq1);
+>
+>  err_pm_put:
+> +       if(!IS_ERR(host->pcie3v3))
+
+if (host->pcie3v3)
+
+> +               if (regulator_is_enabled(host->pcie3v3))
+
+If you get here, the regulator should be enabled?
+
+> +                       regulator_disable(host->pcie3v3);
+> +       if(!IS_ERR(host->pcie1v8))
+
+if (host->pcie1v8)
+
+> +               if (regulator_is_enabled(host->pcie1v8))
+> +                       regulator_disable(host->pcie1v8);
+
+Please move this below the call to pm_runtime_disable(), to preserve
+symmetry.
+
+>         pm_runtime_put(dev);
+>         pm_runtime_disable(dev);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
