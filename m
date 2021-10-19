@@ -2,243 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9567D43345D
+	by mail.lfdr.de (Postfix) with ESMTP id E1D4A43345E
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235501AbhJSLHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:07:00 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:52294 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235396AbhJSLGm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:06:42 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id AAEBCF40C38; Tue, 19 Oct 2021 13:04:25 +0200 (CEST)
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        "Daniel J . Ogorchock" <djogorchock@gmail.com>
-Subject: [PATCH v4 5/5] HID: nintendo: drc: add battery reporting
-Date:   Tue, 19 Oct 2021 13:04:18 +0200
-Message-Id: <20211019110418.26874-6-linkmauve@linkmauve.fr>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211019110418.26874-1-linkmauve@linkmauve.fr>
-References: <20210519085924.1636-1-linkmauve@linkmauve.fr>
- <20211019110418.26874-1-linkmauve@linkmauve.fr>
+        id S235305AbhJSLHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:07:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235513AbhJSLHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:07:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E0F760C4C;
+        Tue, 19 Oct 2021 11:04:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634641492;
+        bh=tEZ51GfXQpwAyDguBNgyD6QxHphRkSWmZbEHqsLaEto=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l+J+ad581PmIK9B+MC2LwTg7ydgeXcOpOwUZHIzkC+svaS59i2algUd4l7vUzhSSa
+         XupH4Y/uvVNg7dKBYtfoEKd5YtOllmJ2EBIw503mEUmsY+j3lvbKCUryC7eSAwgOaI
+         TyZJmQVfUCyESAMNbqaX/L1qvfDr0bTGo8KrsG/5Wa9fjuxECgkeXMHSw1LriUCHrF
+         SLyRRJZ8DtVUZ1qi/Qw6+P0uFSQyEjuLUXElfAqQ3e2wDB/6x+YJ2h+m6Ck09ut2co
+         eZWPwL8p+s9bZjkBK2dWPHeKU5PFQQzM1tDoxM9i9BGa1x1ut/vGS4NhIeicfobUeg
+         JZu0NAWxDHgYw==
+Date:   Tue, 19 Oct 2021 12:04:43 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     mathieu.poirier@linaro.org, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v5 02/15] arm64: errata: Add detection for TRBE overwrite
+ in FILL mode
+Message-ID: <20211019110443.GE13251@willie-the-truck>
+References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
+ <20211014223125.2605031-3-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014223125.2605031-3-suzuki.poulose@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On my DRC the values only go between 142 (battery LED blinking red
-before shutdown) and 178 (charge LED stopping), it seems to be the same
-on other units according to other testers.  This might be the raw
-voltage value as reported by an ADC, so adding a linear interpolation
-between two common battery voltage values.
+On Thu, Oct 14, 2021 at 11:31:12PM +0100, Suzuki K Poulose wrote:
+> Arm Neoverse-N2 and the Cortex-A710 cores are affected
+> by a CPU erratum where the TRBE will overwrite the trace buffer
+> in FILL mode. The TRBE doesn't stop (as expected in FILL mode)
+> when it reaches the limit and wraps to the base to continue
+> writing upto 3 cache lines. This will overwrite any trace that
+> was written previously.
+> 
+> Add the Neoverse-N2 erratumi(#2139208) and Cortex-A710 erratum
+> (#2119858) to the  detection logic.
 
-A spinlock is used to avoid the battery level and status from being
-reported unsynchronised.
+Weird typo and double space in this sentence.
 
-Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
----
- drivers/hid/hid-nintendo-wiiu.c | 136 ++++++++++++++++++++++++++++++++
- 1 file changed, 136 insertions(+)
-
-diff --git a/drivers/hid/hid-nintendo-wiiu.c b/drivers/hid/hid-nintendo-wiiu.c
-index 813abb104275..b18fa403eb42 100644
---- a/drivers/hid/hid-nintendo-wiiu.c
-+++ b/drivers/hid/hid-nintendo-wiiu.c
-@@ -17,6 +17,11 @@
- #include <linux/input.h>
- #include <linux/minmax.h>
- #include <linux/module.h>
-+#ifdef CONFIG_HID_BATTERY_STRENGTH
-+#include <linux/fixp-arith.h>
-+#include <linux/power_supply.h>
-+#include <linux/spinlock.h>
-+#endif
- #include "hid-ids.h"
- #include "hid-nintendo.h"
- 
-@@ -72,6 +77,13 @@
- #define MAGNET_MIN	-(1 << 15)
- #define MAGNET_MAX	((1 << 15) - 1)
- 
-+/* ADC constants for the battery */
-+#define BATTERY_CHARGING_BIT	BIT(6)
-+#define BATTERY_MIN	142
-+#define BATTERY_MAX	178
-+#define VOLTAGE_MIN	3270000
-+#define VOLTAGE_MAX	4100000
-+
- /*
-  * The device is setup with multiple input devices:
-  * - A joypad with the buttons and sticks.
-@@ -85,6 +97,14 @@ struct drc {
- 	struct input_dev *joy_input_dev;
- 	struct input_dev *touch_input_dev;
- 	struct input_dev *accel_input_dev;
-+
-+#ifdef CONFIG_HID_BATTERY_STRENGTH
-+	struct power_supply *battery;
-+	struct power_supply_desc battery_desc;
-+	spinlock_t battery_lock;
-+	u8 battery_energy;
-+	int battery_status;
-+#endif
- };
- 
- /*
-@@ -101,6 +121,9 @@ int wiiu_hid_event(struct hid_device *hdev, struct hid_report *report,
- 	struct drc *drc = hid_get_drvdata(hdev);
- 	int i, x, y, z, pressure, base;
- 	u32 buttons;
-+#ifdef CONFIG_HID_BATTERY_STRENGTH
-+	unsigned long flags;
-+#endif
- 
- 	if (len != 128)
- 		return -EINVAL;
-@@ -219,6 +242,19 @@ int wiiu_hid_event(struct hid_device *hdev, struct hid_report *report,
- 	input_report_abs(drc->accel_input_dev, ABS_WHEEL, (int16_t)z);
- 	input_sync(drc->accel_input_dev);
- 
-+#ifdef CONFIG_HID_BATTERY_STRENGTH
-+	/* battery */
-+	spin_lock_irqsave(&drc->battery_lock, flags);
-+	drc->battery_energy = data[5];
-+	if (drc->battery_energy == BATTERY_MAX)
-+		drc->battery_status = POWER_SUPPLY_STATUS_FULL;
-+	else if (data[4] & BATTERY_CHARGING_BIT)
-+		drc->battery_status = POWER_SUPPLY_STATUS_CHARGING;
-+	else
-+		drc->battery_status = POWER_SUPPLY_STATUS_DISCHARGING;
-+	spin_unlock_irqrestore(&drc->battery_lock, flags);
-+#endif
-+
- 	/* let hidraw and hiddev handle the report */
- 	return 0;
- }
-@@ -368,6 +404,98 @@ static bool drc_setup_accel(struct drc *drc,
- 	return true;
- }
- 
-+#ifdef CONFIG_HID_BATTERY_STRENGTH
-+static enum power_supply_property drc_battery_props[] = {
-+	POWER_SUPPLY_PROP_STATUS,
-+	POWER_SUPPLY_PROP_PRESENT,
-+	POWER_SUPPLY_PROP_VOLTAGE_MAX,
-+	POWER_SUPPLY_PROP_VOLTAGE_MIN,
-+	POWER_SUPPLY_PROP_VOLTAGE_NOW,
-+	POWER_SUPPLY_PROP_CAPACITY,
-+	POWER_SUPPLY_PROP_SCOPE,
-+};
-+
-+static int drc_battery_get_property(struct power_supply *psy,
-+				    enum power_supply_property psp,
-+				    union power_supply_propval *val)
-+{
-+	struct drc *drc = power_supply_get_drvdata(psy);
-+	unsigned long flags;
-+	int ret = 0;
-+	u8 battery_energy;
-+	int battery_status;
-+
-+	spin_lock_irqsave(&drc->battery_lock, flags);
-+	battery_energy = drc->battery_energy;
-+	battery_status = drc->battery_status;
-+	spin_unlock_irqrestore(&drc->battery_lock, flags);
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_STATUS:
-+		val->intval = battery_status;
-+		break;
-+	case POWER_SUPPLY_PROP_PRESENT:
-+		val->intval = 1;
-+		break;
-+	case POWER_SUPPLY_PROP_VOLTAGE_MAX:
-+		val->intval = VOLTAGE_MAX;
-+		break;
-+	case POWER_SUPPLY_PROP_VOLTAGE_MIN:
-+		val->intval = VOLTAGE_MIN;
-+		break;
-+	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
-+		val->intval = fixp_linear_interpolate(BATTERY_MIN, VOLTAGE_MIN,
-+						      BATTERY_MAX, VOLTAGE_MAX,
-+						      battery_energy);
-+		break;
-+	case POWER_SUPPLY_PROP_CAPACITY:
-+		val->intval = fixp_linear_interpolate(BATTERY_MIN, 0,
-+						      BATTERY_MAX, 100,
-+						      battery_energy);
-+		break;
-+	case POWER_SUPPLY_PROP_SCOPE:
-+		val->intval = POWER_SUPPLY_SCOPE_DEVICE;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int drc_setup_battery(struct drc *drc,
-+			     struct hid_device *hdev)
-+{
-+	struct power_supply_config psy_cfg = { .drv_data = drc, };
-+	static atomic_t drc_num = ATOMIC_INIT(0);
-+	int ret;
-+
-+	spin_lock_init(&drc->battery_lock);
-+
-+	drc->battery_desc.properties = drc_battery_props;
-+	drc->battery_desc.num_properties = ARRAY_SIZE(drc_battery_props);
-+	drc->battery_desc.get_property = drc_battery_get_property;
-+	drc->battery_desc.type = POWER_SUPPLY_TYPE_BATTERY;
-+	drc->battery_desc.use_for_apm = 0;
-+
-+	drc->battery_desc.name = devm_kasprintf(&hdev->dev, GFP_KERNEL,
-+						"wiiu-drc-%i-battery", atomic_fetch_inc(&drc_num));
-+	if (!drc->battery_desc.name)
-+		return -ENOMEM;
-+
-+	drc->battery = devm_power_supply_register(&hdev->dev, &drc->battery_desc, &psy_cfg);
-+	if (IS_ERR(drc->battery)) {
-+		ret = PTR_ERR(drc->battery);
-+		hid_err(hdev, "Unable to register battery device\n");
-+		return ret;
-+	}
-+
-+	power_supply_powers(drc->battery, &hdev->dev);
-+
-+	return 0;
-+}
-+#endif
-+
- int wiiu_hid_probe(struct hid_device *hdev,
- 		   const struct hid_device_id *id)
- {
-@@ -396,6 +524,14 @@ int wiiu_hid_probe(struct hid_device *hdev,
- 		return -ENOMEM;
- 	}
- 
-+#ifdef CONFIG_HID_BATTERY_STRENGTH
-+	ret = drc_setup_battery(drc, hdev);
-+	if (ret) {
-+		hid_err(hdev, "could not allocate battery interface\n");
-+		return ret;
-+	}
-+#endif
-+
- 	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW | HID_CONNECT_DRIVER);
- 	if (ret) {
- 		hid_err(hdev, "hw start failed\n");
--- 
-2.33.1
-
+Will
