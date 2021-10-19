@@ -2,301 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6FD4337EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2730F4337F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235992AbhJSOBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:01:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44968 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhJSOBl (ORCPT
+        id S235426AbhJSOFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:05:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52036 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230487AbhJSOFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:01:41 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id BC05921A98;
-        Tue, 19 Oct 2021 13:59:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634651966; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 19 Oct 2021 10:05:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634652190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sfqlwk+VcUMh+bOLPZdkXDNbL+XuwCC01NkQcfvVDWg=;
-        b=t3ds4oRWdbI54awak280gkx0hi/8gcb+B5yOlBFsZCx6doySQBmUM6aeqSnovEQ8W8suI3
-        xLWwFO6HyamqFNUiCYMdUNEZorK8Mb37Lz2X27AXVF18fNU+SVq324IO4bqQyoe+dIyYbr
-        lBmaKv9ItwGDCFjmUTnPR1CeFfZMfYI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 74342A3B84;
-        Tue, 19 Oct 2021 13:59:26 +0000 (UTC)
-Date:   Tue, 19 Oct 2021 15:59:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
-Message-ID: <YW7PPViS0fEdTaKH@dhcp22.suse.cz>
-References: <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
- <20211006231452.GF54211@dread.disaster.area>
- <YV7G7gyfZkmw7/Ae@dhcp22.suse.cz>
- <163364854551.31063.4377741712039731672@noble.neil.brown.name>
- <YV/31+qXwqEgaxJL@dhcp22.suse.cz>
- <20211008223649.GJ54211@dread.disaster.area>
- <YWQmsESyyiea0zle@dhcp22.suse.cz>
- <163398898675.17149.16715168325131099480@noble.neil.brown.name>
- <YW1LLlwjbyv8dcmn@dhcp22.suse.cz>
- <163461794761.17149.1193247176490791274@noble.neil.brown.name>
+        bh=dxnmlxy+BaLSH+N4pHJPdEHRlGFL6UvTVG5CDeMc9oY=;
+        b=Zae1wk5rD2a+0om2V9HzTvX12VKLLK9ZwPnPDypBVI6E8SiEW6uqoYlefrcBuvZa5yXThi
+        JxFbi0Ld0xhbz4Esz4vxX0r0RVN5TcrQHWsgnV7EjgTS4IN3o0j1K/G4rAX2NGtps/0NFg
+        f2jDjI6KeF4YxWmWRcEQ77Bz3ByY5GY=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-EUk16eQCNWq-QXroxWQMyw-1; Tue, 19 Oct 2021 10:03:07 -0400
+X-MC-Unique: EUk16eQCNWq-QXroxWQMyw-1
+Received: by mail-ed1-f71.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso17718519edn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:03:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dxnmlxy+BaLSH+N4pHJPdEHRlGFL6UvTVG5CDeMc9oY=;
+        b=YUTdg26/PjlrAPvyVSDSiBKc6PkyUAMNanmIZtSU2QMaqORwWdN7E1G6kYSXJEahA/
+         uI5Q/YB8TJh1ynwje1X2+sMBSiFl7CQ67tuFQuXF4hb4V5Go/w1l4MtVMZlYVw+JGj0I
+         NB36vRu2KMacAkeyAGzZ4f/PJ33cY0NEnw7hA86lHTjwoqdG3AEEzQPN61X7ugeQZ76X
+         jJcxob7VD6AzdiUzVZzjyFE9IKLk4PQhCdYCEvHKzHlgKprPmQPJDZJcZMHghz4yApT3
+         vpezP6PgGHxJxW5TaP+dk5njbSHb095deTj4/S8tksXoxDAacIsFsSSowX401zRwyyGX
+         ZMzw==
+X-Gm-Message-State: AOAM533HtHve+mOPCM5/P3oiYOlL2fZhINr25Db9qtV5A4JSWLByZCri
+        NDjLPPqE1wX39Z+kXtJua9+PpSGqH6aIp4uCj+RPVZDByFopVDodhXyMzav6EcovmCpZHxLvyze
+        PefZxNZKzLFxBcsYr5oSSZV4A
+X-Received: by 2002:a05:6402:358d:: with SMTP id y13mr54934702edc.343.1634652186414;
+        Tue, 19 Oct 2021 07:03:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXHhs7gQpZDYN3Tc71banDnKgRQcWlAbGHbDXahYmDAeiA61WKUcTYbGx5d9Mv6Hb2H198DA==
+X-Received: by 2002:a05:6402:358d:: with SMTP id y13mr54934621edc.343.1634652185654;
+        Tue, 19 Oct 2021 07:03:05 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id j1sm604288edk.53.2021.10.19.07.03.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 07:03:05 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 16:03:03 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
+Message-ID: <YW7QFzXrJwoFHkct@krava>
+References: <20211008091336.33616-1-jolsa@kernel.org>
+ <20211008091336.33616-8-jolsa@kernel.org>
+ <20211014162819.5c85618b@gandalf.local.home>
+ <YWluhdDMfkNGwlhz@krava>
+ <20211015100509.78d4fb01@gandalf.local.home>
+ <YWq6C69rQhUcAGe+@krava>
+ <20211018221015.3f145843@gandalf.local.home>
+ <YW7F8kTc3Bl8AkVx@krava>
+ <YW7HfV9+UiuYxt7N@krava>
+ <20211019093216.058ec98b@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <163461794761.17149.1193247176490791274@noble.neil.brown.name>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211019093216.058ec98b@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 19-10-21 15:32:27, Neil Brown wrote:
-> On Mon, 18 Oct 2021, Michal Hocko wrote:
-> > On Tue 12-10-21 08:49:46, Neil Brown wrote:
-> > > On Mon, 11 Oct 2021, Michal Hocko wrote:
-> > > > On Sat 09-10-21 09:36:49, Dave Chinner wrote:
-> > > > > 
-> > > > > Put simply, we want "retry forever" semantics to match what
-> > > > > production kernels have been doing for the past couple of decades,
-> > > > > but all we've been given are "never fail" semantics that also do
-> > > > > something different and potentially much more problematic.
-> > > > > 
-> > > > > Do you see the difference here? __GFP_NOFAIL is not what we
-> > > > > need in the vast majority of cases where it is used. We don't want
-> > > > > the failing allocations to drive the machine hard into critical
-> > > > > reserves, we just want the allocation to -eventually succeed- and if
-> > > > > it doesn't, that's our problem to handle, not kmalloc()....
-> > > > 
-> > > > I can see your point. I do have a recollection that there were some
-> > > > instance involved where an emergency access to memory reserves helped
-> > > > in OOM situations.
-> > > 
-> > > It might have been better to annotate those particular calls with
-> > > __GFP_ATOMIC or similar rather then change GFP_NOFAIL for everyone.
+On Tue, Oct 19, 2021 at 09:32:16AM -0400, Steven Rostedt wrote:
+> On Tue, 19 Oct 2021 15:26:21 +0200
+> Jiri Olsa <jolsa@redhat.com> wrote:
+> 
+> > > when trying to apply on top of my changes  
 > > 
-> > For historical reasons __GFP_ATOMIC is reserved for non sleeping
-> > allocations. __GFP_HIGH would be an alternative.
+> > I updated my ftrace/direct branch, it actually still had the previous
+> > version.. sorry, perhaps this is the cause of fuzz
 > 
-> Historical reasons certainly shouldn't be ignored.  But they can be
-> questioned.
-
-Agreed. Changing them is a more challenging task though. For example I
-really dislike how access to memory reserves is bound to "no reclaim"
-requirement. Ideally those should be completely orthogonal.
-
-I also do not think we need as many ways to ask for memory reserves as
-we have. Can a "regular" kernel developer tell a difference between
-__GFP_ATOMIC and __GFP_HIGH?
-
-I do not think so, unless one is willing to do ...
-
-> __GFP_ATOMIC is documented as "the caller cannot reclaim or sleep and is
-> high priority".
-> This seems to over-lap with __GFP_DIRECT_RECLAIM (which permits reclaim
-> and is the only place where page_alloc sleeps ... I think).
+> I just pushed it (including your patches) here:
 > 
-> The effect of setting __GFP_ATOMIC is:
->   - triggers WARN_ON if  __GFP_DIRECT_RECLAIM is also set.
->   - bypass memcg limits
->   - ignore the watermark_boost_factor effect
->   - clears ALLOC_CPUSET
->   - sets ALLOC_HARDER which provides:
->    - access to nr_reserved_highatomic reserves
->    - access to 1/4 the low-watermark reserves (ALLOC_HIGH gives 1/2)
->      Combine them and you get access to 5/8 of the reserves.
-
-... exactly this. And these are bunch of hacks developed over time and
-the baggage which is hard to change as I've said. Somebody with a
-sufficient time budget should start questioning all those and eventually
-make __GFP_ATOMIC a story of the past.
-
-> It is also used by driver/iommu/tegra-smmu.c to decide if a spinlock
-> should remain held, or should be dropped over the alloc_page().  That's
-> .... not my favourite code.
-
-Exactly!
-
-> So apart from the tegra thing and the WARN_ON, there is nothing about
-> __GFP_ATOMIC which suggests it should only be used for non-sleeping
-> allocations.
-
-The warning was added when the original GFP_ATOMIC was untangled from the
-reclaim implications to keep the "backward compatibility" IIRC. Mostly
-for IRQ handlers where the GFP_ATOMIC was used the most. My memory might
-fail me though.
-
-> It *should* only be used for allocations with a high failure cost and
-> relatively short time before the memory will be returned and that likely
-> includes many non sleeping allocations.  It isn't clear to me why an
-> allocation that is willing to sleep (if absolutely necessary) shouldn't
-> be able to benefit from the priority boost of __GFP_ATOMIC.  Or at least
-> of ALLOC_HARDER...
-
-I completely agree! As mentioned above memory reserves should be
-completely orthogonal. I am not sure we want an API for many different
-levels of reserves access. Do we need more than __GFP_HIGH? Maybe with a
-more descriptive name.
-
-> Maybe __GFP_HIGH should get the memcg and watermark_boost benefits too? 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
 > 
-> Given that we have ALLOC_HARDER and ALLOC_HIGH, it would seem to be
-> sensible to export those two settings in GFP_foo, and not forbid one of
-> them to be used with __GFP_DIRECT_RECLAIM.
-
-I think ALLOC_HARDER should be kept internal implementation detail when
-the allocator needs to give somebody a boost on top of requests for
-internal balancing between requests.
-ALLOC_HIGH already matches __GFP_HIGH and that should be the way to
-ask for a boost explicitly IMO. We also have ALLOC_OOM as another level of
-internal memory reserves for OOM victims. Again something to be in hands
-of the allocator.
- 
-> > > Too late to fix that now though I think.  Maybe the best way forward is
-> > > to discourage new uses of GFP_NOFAIL.  We would need a well-documented
-> > > replacement.
-> > 
-> > I am not sure what that should be. Really if the memory reserves
-> > behavior of GFP_NOFAIL is really problematic then let's just reap it
-> > out. I do not see a new nofail like flag is due.
+>   ftrace/core
 > 
-> Presumably there is a real risk of deadlock if we just remove the
-> memory-reserves boosts of __GFP_NOFAIL.  Maybe it would be safe to
-> replace all current users of __GFP_NOFAIL with __GFP_NOFAIL|__GFP_HIGH,
-> and then remove the __GFP_HIGH where analysis suggests there is no risk
-> of deadlocks.
-
-I would much rather not bind those together and go other way around. If
-somebody can actually hit deadlocks (those are quite easy to spot as
-they do not go away) then we can talk about how to deal with them.
-Memory reserves can help only > < this much.
-
-> Or maybe rename the __GFP_NOFAIL flag and #define __GFP_NOFAIL to
-> include __GFP_HIGH?
-
-Wouldn't that lead to the __GFP_ATOMIC story again?
- 
-> This would certainly be a better result than adding a new flag.
 > 
-> > 
-> > > > Anway as I've tried to explain earlier that this all is an
-> > > > implementation detail users of the flag shouldn't really care about. If
-> > > > this heuristic is not doing any good then it should be removed.
-> > > 
-> > > Maybe users shouldn't care about implementation details, but they do
-> > > need to care about semantics and costs.
-> > > We need to know when it is appropriate to use GFP_NOFAIL, and when it is
-> > > not.  And what alternatives there are when it is not appropriate.
-> > > Just saying "try to avoid using it" and "requires careful analysis"
-> > > isn't acceptable.  Sometimes it is unavoidable and analysis can only be
-> > > done with a clear understanding of costs.  Possibly analysis can only be
-> > > done with a clear understanding of the internal implementation details.
-> > 
-> > What we document currently is this
-> >  * %__GFP_NOFAIL: The VM implementation _must_ retry infinitely: the caller
-> >  * cannot handle allocation failures. The allocation could block
-> >  * indefinitely but will never return with failure. Testing for
-> >  * failure is pointless.
+> This is where I keep my WIP code. It should not be used to base anything
+> off of, as I rebase it constantly. But it has the current version I plan on
+> testing.
 > 
-> This implies it is incompatible with __GFP_NORETRY and (probably)
-> requires __GFP_RECLAIM.  That is worth documenting, and possibly also a
-> WARN_ON.
+> You can make sure the patches in there have your latest version, as you can
+> review my patch. I'll update the tags if you give me one.
 
-Yes, I thought this would be obvious as those are reclaim modifiers so
-they require a reclaim. But I do see a point that being explicit here
-cannot hurt. Same with combining them together. It just doesn't make
-much sense to retry for ever and requesting noretry or retry and fail
-at the same time. Again a clarification cannot hurt though.
+I'm getting error when compiling:
 
-> >  * New users should be evaluated carefully (and the flag should be
-> >  * used only when there is no reasonable failure policy) but it is
-> >  * definitely preferable to use the flag rather than opencode endless
-> >  * loop around allocator.
-> 
-> How do we perform this evaluation? And why is it preferable to a loop?
-> There are times when a loop makes sense, if there might be some other
-> event that could provide the needed memory ...  or if a SIGKILL might
-> make it irrelevant.
-> slab allocators presumably shouldn't pass __GFP_NOFAIL to alloc_page(),
-> but should instead loop around
->   1/ check if any existing slabs have space
->   2/ if not, try to allocate a new page
-> Providing the latter blocks for a while but not indefinitely that should
-> be optimal.
-> Why is __GFP_NOFAIL better?
+  CC      kernel/trace/ftrace.o
+kernel/trace/ftrace.c: In function ‘modify_ftrace_direct_multi’:
+kernel/trace/ftrace.c:5608:2: error: label ‘out_unlock’ defined but not used [-Werror=unused-label]
+ 5608 |  out_unlock:
+      |  ^~~~~~~~~~
 
-Because the allocator can do something if it knows that the allocation
-cannot fail. E.g. give such an allocation a higher priority over those
-that are allowed to fail. This is not limited to memory reserves,
-although this is the only measure that is implemented currently IIRC.
-On the other hand if there is something interesting the caller can do
-directly - e.g. do internal object management like mempool does - then
-it is better to retry at that level.
+looks like out_unlock is nolonger needed, I removed it
 
-> >  * Using this flag for costly allocations is _highly_ discouraged.
-> 
-> This is unhelpful.  Saying something is "discouraged" carries an implied
-> threat.  This is open source and threats need to be open.
-> Why is it discouraged? IF it is not forbidden, then it is clearly
-> permitted.  Maybe there are costs  - so a clear statement of those costs
-> would be appropriate.
-> Also, what is a suitable alternative?
-> 
-> Current code will trigger a WARN_ON, so it is effectively forbidden.
-> Maybe we should document that __GFP_NOFAIL is forbidden for orders above
-> 1, and that vmalloc() should be used instead (thanks for proposing that
-> patch!).
+jirka
 
-I think we want to recommend kvmalloc as an alternative once vmalloc is
-NOFAIL aware.
-
-I will skip over some of the specific regarding SLAB and NOFS usage if
-you do not mind and focus on points that have direct documentation
-consequences. Also I do not feel qualified commenting on neither SLAB
-nor FS internals.
-
-[...]
-> There is a lot of stuff there.... the bits that are important to me are:
-> 
->  - why is __GFP_NOFAIL preferred? It is a valuable convenience, but I
->    don't see that it is necessary
-
-I think it is preferred for one and a half reasons. It tells allocator
-that this allocation cannot really fail and the caller doesn't have a
-very good/clever retry policy (e.g. like mempools mentioned above). The
-half reason would be for tracking purposes (git grep __GFP_NOFAIL) is
-easier than trying to catch all sorts of while loops over allocation
-which do not do anything really interesting.
-
->  - is it reasonable to use __GFP_HIGH when looping if there is a risk of
->    deadlock?
-
-As I've said above. Memory reserves are a finite resource and as such
-they cannot fundamentally solve deadlocks. They can help prioritize
-though.
-
->  - Will __GFP_DIRECT_RECLAIM always result in a delay before failure? In
->    that case it should be safe to loop around allocations using
->    __GFP_DIRECT_RECLAIM without needing congestion_wait() (so it can
->    just be removed.
-
-This is a good question and I do not think we have that documented
-anywhere. We do cond_resched() for sure. I do not think we guarantee a
-sleeping point in general. Maybe we should, I am not really sure.
-
-Thanks for good comments and tough questions
--- 
-Michal Hocko
-SUSE Labs
