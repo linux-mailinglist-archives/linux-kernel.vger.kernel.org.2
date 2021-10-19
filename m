@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63245433558
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A308E433560
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbhJSMGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:06:44 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45836 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhJSMGg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:06:36 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 541161FCA1;
-        Tue, 19 Oct 2021 12:04:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634645063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NdT24LAUAutNm+Pih0uGiiR7uabskUxPSt601z67+SE=;
-        b=dOWfISbmKqjKcIIWPDiDT/HKyHQEifgRyk1Fo0q4HIN1Q60TmDn9RjjuHm+hx2KmjFLGUn
-        F3pwhkqN1F8GCRcdeHtMHHE3mJIetVtGbDa69TURkNHoOtBvhk6XoygNxZv7XJfeROztmA
-        qSbPaVR/8FaqXfFtNtuzcnh40mnrmc4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 21E34A3B83;
-        Tue, 19 Oct 2021 12:04:23 +0000 (UTC)
-Date:   Tue, 19 Oct 2021 14:04:22 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-Message-ID: <YW60Rs1mi24sJmp4@dhcp22.suse.cz>
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
- <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
- <YW6GoZhFUJc1uLYr@dhcp22.suse.cz>
- <687bf489-f7a7-5604-25c5-0c1a09e0905b@virtuozzo.com>
- <YW6yAeAO+TeS3OdB@dhcp22.suse.cz>
+        id S235534AbhJSMHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:07:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230267AbhJSMHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:07:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 909486113D;
+        Tue, 19 Oct 2021 12:05:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634645121;
+        bh=Yfzv3JLOoikBX5r0f6NfD+xVedKpz1VXqAirmc35zTA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YSVCkvJ4gbqhy5ptebDPhXkK7TvFGUETIaHbESiXy62S/1kmp4B2Nacw3b+in1DuY
+         662rjmB+Oxuyr9FpGGzTVO8UPVPZitMZoBAHD5g15s068GRXaAZfw+RdPAx97VzvdH
+         XpN6QAWEZuHnhrwILQpU8lp2/DZTo9JWrzRNN94AXGiEWkYjgbU1XaHbodaI9s+/Pj
+         s2WIe/vz2huIkSUv9JQ7N0Ufk6P/SWAOwgrcY59C8t3zhoFmvkFJpFKoq7bkILXgpH
+         YWXVMwsZ1z112/xiYfx00GJ3K9HFEn+gT37FkhbnIm5gV+QlFtXulENj+diC/CxHOU
+         vvQ7FrQ6iOsDA==
+Date:   Tue, 19 Oct 2021 13:04:59 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v3 21/23] regulator: dt-bindings: update
+ samsung,s2mpa01.yaml reference
+Message-ID: <YW60a8z0JNDnTLV/@sirena.org.uk>
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+ <9acc235dc4af794d18e1267371944a3955e1fb21.1634630486.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EWoxm8P8Rct2LAPY"
 Content-Disposition: inline
-In-Reply-To: <YW6yAeAO+TeS3OdB@dhcp22.suse.cz>
+In-Reply-To: <9acc235dc4af794d18e1267371944a3955e1fb21.1634630486.git.mchehab+huawei@kernel.org>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 19-10-21 13:54:42, Michal Hocko wrote:
-> On Tue 19-10-21 13:30:06, Vasily Averin wrote:
-> > On 19.10.2021 11:49, Michal Hocko wrote:
-> > > On Tue 19-10-21 09:30:18, Vasily Averin wrote:
-> > > [...]
-> > >> With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
-> > >> a) due to fatal signal
-> > >> b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
-> > >>
-> > >> To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
-> > >> To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
-> > 
-> > > How is b) possible without current being killed? Do we allow remote
-> > > charging?
-> > 
-> > out_of_memory for memcg_oom
-> >  select_bad_process
-> >   mem_cgroup_scan_tasks
-> >    oom_evaluate_task
-> >     oom_badness
-> > 
-> >         /*
-> >          * Do not even consider tasks which are explicitly marked oom
-> >          * unkillable or have been already oom reaped or the are in
-> >          * the middle of vfork
-> >          */
-> >         adj = (long)p->signal->oom_score_adj;
-> >         if (adj == OOM_SCORE_ADJ_MIN ||
-> >                         test_bit(MMF_OOM_SKIP, &p->mm->flags) ||
-> >                         in_vfork(p)) {
-> >                 task_unlock(p);
-> >                 return LONG_MIN;
-> >         }
-> > 
-> > This time we handle userspace page fault, so we cannot be kenrel thread,
-> > and cannot be in_vfork().
-> > However task can be marked as oom unkillable, 
-> > i.e. have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
-> 
-> You are right. I am not sure there is a way out of this though. The task
-> can only retry for ever in this case. There is nothing actionable here.
-> We cannot kill the task and there is no other way to release the memory.
 
-Btw. don't we force the charge in that case?
--- 
-Michal Hocko
-SUSE Labs
+--EWoxm8P8Rct2LAPY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Oct 19, 2021 at 09:04:20AM +0100, Mauro Carvalho Chehab wrote:
+
+> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
+
+It'd be a bit easier to put a note in here about what the dependencies
+are rather than forcing people to go out to a link to figure out what's
+going on unless it's complicated.  For a case like this where there's no
+dependencies or real relationship between the patches it's probably
+better to just not thread everything and send the patches separately to
+everyone, the threading is just adding noise and confusion.
+
+--EWoxm8P8Rct2LAPY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFutGsACgkQJNaLcl1U
+h9CpcQf/eSHN/SxKNGSizt9rtPBAa8/G/yrOVJanFr1TpMgBqymW7cBkBbXTGEoz
+MlvVhYvaOC1OUl2Ov3V/R5vs4HmOXbFkm+uU3Hy0pdmuoR+xp2GXkRykwFp8VOo9
+u86bgJzCmE1vMGPs6CU5L/oLaZtgu2fOSkIddls4s2BzCEgj9RXCZVZZDuiwu1p5
+En59hCC7xvkrwl+DzR7ELgphtrGbhWP8udWOpispPKOra+L2fvck+d1CNHVWWx0T
+hHXnc2o0xvG2TVSXxxD14sYrgOOEPahJN1EFZSMqmo+1KDjK7lyXXsAkMNYAoTT5
+mdoz3TDNrINobQeldsheYs7AYnpjQQ==
+=OxCs
+-----END PGP SIGNATURE-----
+
+--EWoxm8P8Rct2LAPY--
