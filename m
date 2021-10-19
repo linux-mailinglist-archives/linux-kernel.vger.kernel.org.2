@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B16433C77
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C699433C79
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhJSQjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:39:11 -0400
-Received: from mail-pl1-f169.google.com ([209.85.214.169]:46023 "EHLO
-        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233499AbhJSQjJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:39:09 -0400
-Received: by mail-pl1-f169.google.com with SMTP id s1so12242284plg.12;
-        Tue, 19 Oct 2021 09:36:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kLdN4liOKdc+fP0eP65RqqF4TfZVXdiQZ9p/Tw3qQU8=;
-        b=HarQYOj26/zHVwCu3eisFNJvjup1KNFR5m7TIe5DpFK74770Q8wmW45mtSrAyAFY91
-         i7ivMaducnXirbiacEqqNZOAur+Ze/vb9cYH+fTiszlEyjqXY53SFxlcvKw1fabXGeH0
-         7/Sgd+15vsFuSTRg6FHOzGv2Wa26JiNnh4cYoZ+9nxJ2E/I0etWOPC82i5V9tP9NJsb6
-         nDLnb5h0RoTd6zjZs5wTF3c+MB2kujtsolO2F/ZlUUs+HKTvAd/sQRCXq5hD0YlicMkV
-         JrAvXUej0sASdx3Mc0wVbRDpa6L51m7hOI01PPrg0GYThpXI+hFM1NNeoDfcUh3W0stn
-         7qhw==
-X-Gm-Message-State: AOAM530FLh4U2CrBSIXQPcXLgG3ZMu9GEEmxjoFd4IFwO+PhIkxEm8eI
-        KyGaNg6iGWqZ5gg/LQpM/gBi1qSEXrM=
-X-Google-Smtp-Source: ABdhPJwCY35pOvxvGym85U/8cYQFG4xdT9I5H6WrOoEm+Ps5AaJUfhzoOFAbtov19JdMyFN9XhDJYw==
-X-Received: by 2002:a17:90b:fd0:: with SMTP id gd16mr858576pjb.157.1634661415526;
-        Tue, 19 Oct 2021 09:36:55 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:3f60:dc0f:50d7:6a24])
-        by smtp.gmail.com with ESMTPSA id t14sm16110248pga.62.2021.10.19.09.36.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 09:36:55 -0700 (PDT)
-Subject: Re: [PATCH] scsi: mpt3sas: make mpt3sas_dev_attrs static
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        sathya.prakash@broadcom.com
-Cc:     sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1634639239-2892-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <9cdf9d31-cb90-0792-29e8-52339c1e1043@acm.org>
-Date:   Tue, 19 Oct 2021 09:36:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S234341AbhJSQji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:39:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:34537 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233499AbhJSQjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:39:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="215489032"
+X-IronPort-AV: E=Sophos;i="5.87,164,1631602800"; 
+   d="scan'208";a="215489032"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 09:37:23 -0700
+X-IronPort-AV: E=Sophos;i="5.87,164,1631602800"; 
+   d="scan'208";a="444562961"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 09:37:19 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mcs6l-00025u-8z;
+        Tue, 19 Oct 2021 19:36:59 +0300
+Date:   Tue, 19 Oct 2021 19:36:59 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nable <nable.maininbox@googlemail.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>
+Subject: Re: [PATCH 00/17] various fixes for atomisp to make it work
+Message-ID: <YW70KzXJ8q1ksEx5@smile.fi.intel.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+ <bc7f699d-d77d-83ad-ce5b-6082f30881c1@redhat.com>
+ <7550e3359471726cf14572dd4860c238f166dde8.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1634639239-2892-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7550e3359471726cf14572dd4860c238f166dde8.camel@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/21 3:27 AM, Jiapeng Chong wrote:
-> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> 
-> This symbol is not used outside of mpt3sas_ctl.c, so marks it static.
-> 
-> Fixes the following sparse warning:
-> 
-> drivers/scsi/mpt3sas/mpt3sas_ctl.c:3988:18: warning: symbol
-> 'mpt3sas_dev_attrs' was not declared. Should it be static?
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: 1bb3ca27d2ca ("scsi: mpt3sas: Switch to attribute groups")
-> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> ---
->   drivers/scsi/mpt3sas/mpt3sas_ctl.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-> index 0aabc9761be1..05b6c6a073c3 100644
-> --- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-> +++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-> @@ -3985,7 +3985,7 @@ sas_ncq_prio_enable_store(struct device *dev,
->   }
->   static DEVICE_ATTR_RW(sas_ncq_prio_enable);
->   
-> -struct attribute *mpt3sas_dev_attrs[] = {
-> +static struct attribute *mpt3sas_dev_attrs[] = {
->   	&dev_attr_sas_address.attr,
->   	&dev_attr_sas_device_handle.attr,
->   	&dev_attr_sas_ncq_prio_supported.attr,
-> 
+On Tue, Oct 19, 2021 at 10:50:27PM +0900, Tsuchiya Yuto wrote:
+> On Mon, 2021-10-18 at 09:48 +0200, Hans de Goede wrote:
+> > On 10/17/21 18:19, Tsuchiya Yuto wrote:
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+...
+
+> > >   ## for mipad2 (and whiskey cove pmic based devices)
+> > > 
+> > > For devices which equip whiskey cove PMIC, you need to add non-upstream
+> > > regulator driver [1].
+> > > 
+> > > [1] work done by jekhor, which seems to be from intel-aero or old
+> > >     Android kernel
+> > >     https://github.com/jekhor/yogabook-linux-kernel/commit/11c05b365fb2eeb4fced5aa66b362c511be32a34
+> > >     ("intel_soc_pmic_chtwc: Add regulator driver and definition for VPROG1B")
+> > 
+> > Interesting I recently bought a 2nd hand mipad2 myself too. I still need
+> > to put Linux on there. I'm definitely motivated to do that now :)
+> 
+> I'm glad to hear that you also got a mipad2 :) It might be a interesting
+> device to look into. It even won't boot without nomodeset, no battery
+> charging/status on mainline kernel.
+> 
+> By the way, instead of adding whiskey cove regulator driver, we may also
+> add a "hack" like the other PMIC in atomisp_gmin_platform to control
+> regulators [1].
+
+I looked briefly into the code and if we indeed need to turn off or on
+the regulators it should be a driver.
+
+I don't like having hacks outside of driver/staging to satisfy the one from
+the staging.
+
+I.o.w. having a regulator driver is a right thing to do in my opinion.
+
+> It seems that to do so, it needs to "read" value from the PMIC before
+> writing. So, I'm not sure if this can be achieved easily with the current
+> mainline kernel though.
+> 
+> [1] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/commit/6204d4b7aeefc4db622f8ac57b87bf2c76c6c8aa
+>     ("atomisp_platform: add whiskey cove pmic support")
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
