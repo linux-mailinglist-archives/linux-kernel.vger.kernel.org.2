@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFFE43372E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A905343372F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhJSNil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:38:41 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:45901 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhJSNij (ORCPT
+        id S235885AbhJSNin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231616AbhJSNik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:38:39 -0400
-Received: by mail-oi1-f171.google.com with SMTP id z126so4890917oiz.12;
+        Tue, 19 Oct 2021 09:38:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283B5C06161C;
         Tue, 19 Oct 2021 06:36:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lnpf5eUhLXI8j2gElhp4/XH3DNWhAe73BljjrUh6kl8=;
-        b=Pbi6+9DMUxbit0oG3gzVRUD/GcvF2sgEnNrpkajuvHt0KH5RpZehhA8BKJkunj85TH
-         tmpKcS7Om4t45RHBqYmj8eHMpnjMucxJFosjGi/8RHeFmcqQgpnRrELFw0AsNAY1pmMd
-         N5iXe8ldVQXWttwdSZqfHScjLhnRc71lPQjgsHpx7VoLe6nAHk7nf23qORJ3kN3g04cq
-         qzx2v397AASQRTdO5Pj7QweDUz0UQH8m3STXLMsUqsgenQ4nq1i209hkCrWMxyaaCy07
-         RaY9486sT7fyxb+JCS0ZvtbSmW0V0bqGDggNFgKrjSpMRIk0x8Ut6j6Bx60vR7rxnyv4
-         jXRA==
-X-Gm-Message-State: AOAM530RfRgwCnJ8A179J/s1QLURim3eDmJ995G8yMBWLKAqNdVEkP7C
-        mn4koMXYJyqeEFcss/23aAgEwCBKKBSdYeZmVXs=
-X-Google-Smtp-Source: ABdhPJyLg69p7yFiPbQt3tlp9YiwCFJ/XYkoJTm1uPJm5yZpYQx4xx6EANj90TymnUjmY5/AQesSv8GqTSHHSArXNwQ=
-X-Received: by 2002:aca:b5c3:: with SMTP id e186mr4383173oif.51.1634650586176;
- Tue, 19 Oct 2021 06:36:26 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 13:36:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634650585;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H9vpxmc3uoQ8BzIH6Nuu1RVcNf73jIVZb5PSf9M3I+k=;
+        b=sXycVEHeQCfBmTUNG9uBHQULwgUIT6TzsDn3MdPw7ZeBe7gkKpVOPJxivGWQsc4YXoVlUM
+        9f5X6dB3/OBQRsnzKJJTkdURUJTTIwDfetxoY7E0z7uaoj2RgOTw4Nt4+ncaAw9AMfIzrp
+        ypJxnnT04TlnAEmqV9iDa9zwQjXCnkt4iSBuAR/nJo+kGEaZ9jiFdV9xbAYZUPZ9zlYzlf
+        zrXeH7ZUqpjjSoXLjYH4geMO/QDCCsL2YSdfPq62Qceke6AZwBZ5lzxmXjoIrVzLjSABHW
+        rtBUF2BJ5mKbJjb9QvDMFwO1vI7UabSJ6woJi5sJenu5C5iHwTquGjG9TvYUEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634650585;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H9vpxmc3uoQ8BzIH6Nuu1RVcNf73jIVZb5PSf9M3I+k=;
+        b=+dh2SRXsJDtKxX9us6obRvON0aD2CJ32gl4cQZ4weOkgN8WMeJMmzyvAdZV1VSvSEK3Urx
+        Jl4eJUEX7kF1ImCg==
+From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/sme: Use #define USE_EARLY_PGTABLE_L5 in
+ mem_encrypt_identity.c
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        <stable@vger.kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C2cb8329655f5c753905812d951e212022a480475=2E16343?=
+ =?utf-8?q?18656=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
+References: =?utf-8?q?=3C2cb8329655f5c753905812d951e212022a480475=2E163431?=
+ =?utf-8?q?8656=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
 MIME-Version: 1.0
-References: <20211019132211.2792475-1-daniel.lezcano@linaro.org> <20211019132211.2792475-2-daniel.lezcano@linaro.org>
-In-Reply-To: <20211019132211.2792475-2-daniel.lezcano@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 19 Oct 2021 15:36:15 +0200
-Message-ID: <CAJZ5v0hdhHiSEOrMp+pK0=MvNjT9sTRS8=o0M2bCfwC43GK=6g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] thermal/core: Make deprecated cooling device state
- change from userspace
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <163465058366.25758.3434027960137456326.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 3:22 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> The cooling devices have their cooling device set_cur_state
-> read-writable all the time in the sysfs directory, thus allowing the
-> userspace to act on it.
->
-> The thermal framework is wrongly used by userspace as a power capping
-> framework by acting on the cooling device opaque state. This one then
-> competes with the in-kernel governor decision.
->
-> We have seen in out-of-tree kernels, a big number of devices which are
-> abusely declaring themselves as cooling device just to act on their
-> power.
->
-> The role of the thermal framework is to protect the junction
-> temperature of the silicon.
+The following commit has been merged into the x86/sev branch of tip:
 
-It's more than that.  You also don't want to let the system's skin
-temperature get too high, for example.
+Commit-ID:     e7d445ab26db833d6640d4c9a08bee176777cc82
+Gitweb:        https://git.kernel.org/tip/e7d445ab26db833d6640d4c9a08bee176777cc82
+Author:        Tom Lendacky <thomas.lendacky@amd.com>
+AuthorDate:    Fri, 15 Oct 2021 12:24:16 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 19 Oct 2021 14:07:17 +02:00
 
-I would just say that the role of the thermal framework is thermal control.
+x86/sme: Use #define USE_EARLY_PGTABLE_L5 in mem_encrypt_identity.c
 
-> Letting the userspace to play with a
-> cooling device is wrong and potentially dangerous.
+When runtime support for converting between 4-level and 5-level pagetables
+was added to the kernel, the SME code that built pagetables was updated
+to use the pagetable functions, e.g. p4d_offset(), etc., in order to
+simplify the code. However, the use of the pagetable functions in early
+boot code requires the use of the USE_EARLY_PGTABLE_L5 #define in order to
+ensure that the proper definition of pgtable_l5_enabled() is used.
 
-Agreed, although I would say "invalid" instead of "wrong".
+Without the #define, pgtable_l5_enabled() is #defined as
+cpu_feature_enabled(X86_FEATURE_LA57). In early boot, the CPU features
+have not yet been discovered and populated, so pgtable_l5_enabled() will
+return false even when 5-level paging is enabled. This causes the SME code
+to always build 4-level pagetables to perform the in-place encryption.
+If 5-level paging is enabled, switching to the SME pagetables results in
+a page-fault that kills the boot.
 
-> The powercap framework is the right framework to do power capping and
-> moreover it deals with the aggregation via the dev pm qos.
->
-> As the userspace governor is marked deprecated and about to be
-> removed, there is no point to keep this file writable also in the
-> future.
->
-> Emit a warning and deprecate the interface.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/thermal/thermal_sysfs.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-> index 1c4aac8464a7..3f4ea3a283ae 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -610,6 +610,8 @@ cur_state_store(struct device *dev, struct device_attribute *attr,
->         unsigned long state;
->         int result;
->
-> +       WARN_ON_ONCE(1, "Setting cooling device state is deprecated\n");
-> +
+Adding the #define results in pgtable_l5_enabled() using the
+__pgtable_l5_enabled variable set in early boot and the SME code building
+pagetables for the proper paging level.
 
-I would use pr_warn_once() instead.
+Fixes: aad983913d77 ("x86/mm/encrypt: Simplify sme_populate_pgd() and sme_populate_pgd_large()")
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: <stable@vger.kernel.org> # 4.18.x
+Link: https://lkml.kernel.org/r/2cb8329655f5c753905812d951e212022a480475.1634318656.git.thomas.lendacky@amd.com
+---
+ arch/x86/mm/mem_encrypt_identity.c |  9 +++++++++
+ 1 file changed, 9 insertions(+)
 
->         if (sscanf(buf, "%ld\n", &state) != 1)
->                 return -EINVAL;
->
-> --
+diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+index 470b202..700ce8f 100644
+--- a/arch/x86/mm/mem_encrypt_identity.c
++++ b/arch/x86/mm/mem_encrypt_identity.c
+@@ -27,6 +27,15 @@
+ #undef CONFIG_PARAVIRT_XXL
+ #undef CONFIG_PARAVIRT_SPINLOCKS
+ 
++/*
++ * This code runs before CPU feature bits are set. By default, the
++ * pgtable_l5_enabled() function uses bit X86_FEATURE_LA57 to determine if
++ * 5-level paging is active, so that won't work here. USE_EARLY_PGTABLE_L5
++ * is provided to handle this situation and, instead, use a variable that
++ * has been set by the early boot code.
++ */
++#define USE_EARLY_PGTABLE_L5
++
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+ #include <linux/mem_encrypt.h>
