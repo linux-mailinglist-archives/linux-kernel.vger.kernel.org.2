@@ -2,119 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C31C4335E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4D74335E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235638AbhJSM2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:28:23 -0400
-Received: from smtprelay0090.hostedemail.com ([216.40.44.90]:45042 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235533AbhJSM2W (ORCPT
+        id S235655AbhJSM2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:28:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235533AbhJSM2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:28:22 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id B7607100CD86D;
-        Tue, 19 Oct 2021 12:26:07 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id C18ED315D74;
-        Tue, 19 Oct 2021 12:26:06 +0000 (UTC)
-Message-ID: <4c6a85a4934ef977eee07fb7e38b07b8061bfce4.camel@perches.com>
-Subject: Re: [PATCH] staging: vt6655: Fix line wrapping in rf.c file
-From:   Joe Perches <joe@perches.com>
-To:     Karolina Drobnik <karolinadrobnik@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     outreachy-kernel@googlegroups.com, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Tue, 19 Oct 2021 05:26:05 -0700
-In-Reply-To: <810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel@gmail.com>
-References: <20211018150526.9718-1-karolinadrobnik@gmail.com>
-         <YW2O3wC8wMEKS3Ub@kroah.com>
-         <84f3c940fedb961e6e7e88d47c3d15e598bc32c3.camel@perches.com>
-         <810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Tue, 19 Oct 2021 08:28:24 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C7AC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:26:11 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id e7so19219933pgk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=6e08QNwE5jYymfjyN3NSEluXEPmi58oUFCWnDodR7+0=;
+        b=lq6k6XVNA/05W21OsLJMcTcgI4pJOte9SvsuRyXvfQUM5EJ2uQWy5ByXjtNvwqMPWR
+         IdjM0PnmgjjbUUx4gtUJ2OPrAP18Uee35c23Vpiu1O5vJYpf5ib0CHIEARQDqW3a/u3i
+         ioMIZdkfYi3D/5tUvLWZoc0ZXUjZ6fgAVAFUeuKudi23Jo1PZWqM3+3OblB9URg8IXpS
+         I7L2tGtilkndrYGaWZtcatCzsOfnJImV3AdUF6uJAuMyP2hNHqCsLtkkk5WjfWlgxS4X
+         GopBdzyGHaqHyO2qr1FinVZr/rdqfzZSG1SjHj2dekJpyayTgZzpoGWCFuibJtpxtcPr
+         J2GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=6e08QNwE5jYymfjyN3NSEluXEPmi58oUFCWnDodR7+0=;
+        b=5+iu3GtEAlrhgp1KIjRrpEerNa9pGkFWLfykSP40byPZNr9Bsw5tMdgvjG1D3HTVdJ
+         YkeDP+VC/vWuoRWFmg9Jsv0lMTSFL9BQmt/qD5bA14LzXAvnkIiwBUchRts9GlENTil+
+         UXaO4TTJBWT67dEAZE9FS9F7NZEVyk0FcyuQ4aKOIClUIvlQ84FLVu0rhTExxmmoDly7
+         XWBBPU2AJGAoMoSF3c3IVnUCQK7mt1jTYtmMqJOa7K8Knhgkto21Du5P7Q8rDFFx7+55
+         cCM667k+qTHCR6qNLuvxs8MTSloCXD/f7LrYCTLtDoTN9I2K7kuTuouhJOA3EoZ9FIzu
+         gmHA==
+X-Gm-Message-State: AOAM533H+aTI1UNMQLc8mNqbvxOTF5r6AEkMx8Qd/YRcX5E/K3GDBCWU
+        gjR4zlnnRCJ1hkeCQySCVMIs3HJCybSQeqqsL4U=
+X-Google-Smtp-Source: ABdhPJxhJqmr3CbnZpg9YXC7DLa32o5342zJdGyb6UyLl7gE9EkX1E9S1VgZONvXkVrifImlG/UxN5X8MdGU6nCgcgQ=
+X-Received: by 2002:a62:8ccf:0:b0:44c:7db2:344e with SMTP id
+ m198-20020a628ccf000000b0044c7db2344emr34847064pfd.66.1634646371147; Tue, 19
+ Oct 2021 05:26:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C18ED315D74
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: 87uixfj7rnyqhe7tuq9g4m97zeze61wg
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1//BRstIUjWag0uUzgJvaEENDABgRIeRoI=
-X-HE-Tag: 1634646366-419216
+Received: by 2002:a05:6a10:1b8d:0:0:0:0 with HTTP; Tue, 19 Oct 2021 05:26:10
+ -0700 (PDT)
+From:   Rhoda Mohammed <rhodamohammed2019@gmail.com>
+Date:   Tue, 19 Oct 2021 14:26:10 +0200
+Message-ID: <CALRczm1Z+E3Xnh+_XtyUs8FyPKXEFsB1Y_+yP66wT0BROP+Oag@mail.gmail.com>
+Subject: Miss.Halima Musa Jammeh / Urgent Help
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-19 at 11:59 +0100, Karolina Drobnik wrote:
-> Hi,
-> 
-> Thank you very much for your comments.
-> 
-> On Mon, 2021-10-18 at 17:12 +0200, Greg KH wrote:
-> > Also, these are all just fine as-is for now.  A better way to make
-> > these lines smaller is to use better variable and function names 
-> > that are shorter and make sense :)
-> 
-> I have v2 ready but I'm not sure, given the Joe's patch, if my solution
-> is a satisfactory one. I didn't jump on such refactoring as I'm still
-> learning about the codebase/process and didn't want to muddle the
-> waters (...more than I do already).
-> 
-> Greg, what would you prefer? Should I back up with my patch, pick
-> something else and let Joe's patch be merged?
-
-What I suggested is not a patch it's just an example.
-
-There's quite a lot of code in that driver that _could_
-be updated/refined/refactored (none of which _I_ will
-submit), but it's up to you do whatever _you_ want.
-
-You could:
-
-o remove the Hungarian notation
-o convert the mixed case variables to snake case
-o remove unnecessary function definitions and make them static
-o refactor various functions
-
-Generally, I prefer refactoring code to make it simpler or
-more like the generally preferred kernel styles.
-
-Another option would be to submit a completely new driver for
-this device based on this existing driver as what's there isn't
-particularly great IMO, but read the vt6655 TODO file and see if
-there's something you actually want to do there.
-
-> Also, I have a question about the patch if that's ok :)
-
-It's OK to ask.
-
-> On Mon, 2021-10-18 at 22:56 -0700, Joe Perches wrote:
-> > Maybe some refactoring like:
-> > ---
-[]
-> > diff --git a/drivers/staging/vt6655/rf.c
-[]
-> > +       uChannel--;
-> 
-> I see that you introduced `uChannel--` to further tidy up the lines
-> with `[uChannel - 1]`. In general, is there anything wrong with
-> indexing like `i - 1`?
-
-Depends on how often it's used and if it's ever missed accidentally.
-
-> What's the preference here? DRY things up as much as possible?
-
-Up to you
-
-> I'm asking because when I was reading this line, at first, it wasn't
-> clear to me why we could decrement it (example though: "Was this
-> modified earlier? Do we need to "correct" it?").
-
-Generally, just try to make code clear for a reader.
-
-When you do that, the compiler will also do a better job
-at what it does.
-
-If you look at the callers of the function, see if it's better
-to decrement the argument instead.
-
+Miss.Halima Musa Jammeh / Urgent Help
+Please reply me to my private email: (  halimajammeh2021@gmail.com.)
+for full details ok, Dear Respected One,I am Miss Halima Musa Jammeh
+25 years old  from the Republic of Gambia, the Daughter of Latea Major
+Musa Jammeh. My late respected beloved  father was the Principal
+Protection Officer to President Alhaji Dr. Yahya  Abdul-Azziz.he died
+on the 19 Nov 2007 at the Royal Victoria Teaching Hospital following
+an illness at Sukuta Village, Kombo North Gambia,My late Father
+Depositeda big amount of money in one of the Global Finance Security
+Company on my name as the next of kin, I am looking for a serious
+Investor who is honest and trustworthy who will assist me Invest the
+money in your country, asyou know that I am small Girl and I don't
+know anything about investment, if you agree to help me I will
+introduce you to the Director of the Security Company as my late
+Father foreig Business partner, I will give you full details as soon
+as you get back to me to my  private
+email(  halimajammeh2021@gmail.com. )  Your Miss.Halima Jammeh
