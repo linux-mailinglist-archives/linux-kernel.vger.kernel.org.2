@@ -2,116 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C7C433236
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6E4433239
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234980AbhJSJ3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:29:55 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:51378 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbhJSJ3y (ORCPT
+        id S235019AbhJSJaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234680AbhJSJaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:29:54 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 5AB12F40C30; Tue, 19 Oct 2021 11:27:38 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 11:27:37 +0200
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        "Daniel J. Ogorchock" <djogorchock@gmail.com>
-Subject: Re: [PATCH v3 0/4] HID: wiiu-drc: Add a driver for the Wii U gamepad
-Message-ID: <20211019092737.kudgdeulghx2ig3m@luna>
-Jabber-ID: linkmauve@linkmauve.fr
-References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
- <20210519085924.1636-1-linkmauve@linkmauve.fr>
- <20210921150837.ingexwsauvxgluca@luna>
- <nycvar.YFH.7.76.2110191112490.12554@cbobk.fhfr.pm>
+        Tue, 19 Oct 2021 05:30:08 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1152CC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:27:56 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id w17so1421166plg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WqQuigPQkG7yIJnoURmwHOZ7CYWB7+IfTh42MrwnNsA=;
+        b=HgX0s/Pmlc/k5zz3N/9Rz1+xZgFix7E3aZtwr7ii6m5YGE6II1pdsylJDHgE3SYIFx
+         QsnmdcjwNrozuscdBbI9oIJEQPZ0U+ExW6GHDxOlF3sEzP3LXAMvCpun74Cd4v0BuLJu
+         JR/sJtnKHJXNeSfaCS0bTxYUo2rFEzwjVsU4WjOqtIkBQJIWE9wLdZG2yoo+IxEoXuOS
+         8fw3kHVoMQ5dzBAxlyQVeRYM796JtvP/ipqutDWZiJefoZ7GkGZvB/cfk5z+cWk4pH9Q
+         6Lh/0oCqrvq1xERjNJWQ378uDfdS2r2+X/CTWXCqT8+wn+Ie1IZSGbi/z0B47kefVM6w
+         nS5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WqQuigPQkG7yIJnoURmwHOZ7CYWB7+IfTh42MrwnNsA=;
+        b=v5jzGLge1K0kHQIDByYWkeKIq9SSgOV8erTsuYeqd807QFuCxP1LKG5HgoTwINWgTW
+         F+sWCbIrHK2m0texu0bBV9FBhi3slF5SXKrmsoVZRrfMXpkt5RQSW1MKR8YJaAnB8vVL
+         Ep4TyvN4wAEl2qsYcMRr2FhaVeGm5ZAmu6ufgbZZIFm18HRz+0+8q8zZ+bam1Fni91j0
+         ZBojCYZvjPEBaTB6xfafpZ0Q5pi37NEZoHfZ9jjq1dlh83Riz60Fl67EJ1aPEnVCNE72
+         j+SBqDOVbDYqQ4ZL+tzJaxcaU8aiXxg//yKnMPL0r4Iu1+yqlRc8E4ys4osgulvGN2BM
+         GS0Q==
+X-Gm-Message-State: AOAM533CjJ/cE4Eoji0SIKtVXNR29H10vjvv8IBhGG8HjsIaZVhUhy4m
+        YGenNiD6lItTfuMjG//nFNywAJVbYI00YbiSp1BvSg==
+X-Google-Smtp-Source: ABdhPJwrhmSxlRtYdBf+1xoIqYntrpTC3t1Cb9/54BAEeKiXHf4bI6D9JM/OrpP2k//fY9NFIe2XMN+J+V15C1C83K8=
+X-Received: by 2002:a17:90b:1644:: with SMTP id il4mr5260442pjb.179.1634635675569;
+ Tue, 19 Oct 2021 02:27:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ri2nmna5hervehrh"
-Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2110191112490.12554@cbobk.fhfr.pm>
+References: <20211002233447.1105-1-digetx@gmail.com> <20211002233447.1105-4-digetx@gmail.com>
+In-Reply-To: <20211002233447.1105-4-digetx@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 19 Oct 2021 11:27:44 +0200
+Message-ID: <CAG3jFytqbBqucgT2g76Us-8JV-d-RWo8ErHF0z28WCzhU9nTSw@mail.gmail.com>
+Subject: Re: [PATCH v1 3/5] drm/bridge: tc358768: Calculate video start delay
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-tegra@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 3 Oct 2021 at 01:35, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Calculate video start delay based on the display timing instead
+> of hardcoding it to a default value. This fixes "trembling" display
+> output on Asus Transformer TF700T which uses Panasonic VVX10F004B00
+> display panel.
+>
+> Tested-by: Andreas Westman Dorcsak <hedmoo@yahoo.com> # Asus TF700T
+> Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> #TF700T
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/gpu/drm/bridge/tc358768.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+> index 10ebd0621ad3..5b3f8723bd3d 100644
+> --- a/drivers/gpu/drm/bridge/tc358768.c
+> +++ b/drivers/gpu/drm/bridge/tc358768.c
+> @@ -634,7 +634,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>         u32 val, val2, lptxcnt, hact, data_type;
+>         const struct drm_display_mode *mode;
+>         u32 dsibclk_nsk, dsiclk_nsk, ui_nsk, phy_delay_nsk;
+> -       u32 dsiclk, dsibclk;
+> +       u32 dsiclk, dsibclk, video_start;
+> +       const u32 internal_delay = 40;
+>         int ret, i;
+>
+>         tc358768_hw_enable(priv);
+> @@ -663,23 +664,27 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>         case MIPI_DSI_FMT_RGB888:
+>                 val |= (0x3 << 4);
+>                 hact = mode->hdisplay * 3;
+> +               video_start = (mode->htotal - mode->hsync_start) * 3;
+>                 data_type = MIPI_DSI_PACKED_PIXEL_STREAM_24;
+>                 break;
+>         case MIPI_DSI_FMT_RGB666:
+>                 val |= (0x4 << 4);
+>                 hact = mode->hdisplay * 3;
+> +               video_start = (mode->htotal - mode->hsync_start) * 3;
+>                 data_type = MIPI_DSI_PACKED_PIXEL_STREAM_18;
+>                 break;
+>
+>         case MIPI_DSI_FMT_RGB666_PACKED:
+>                 val |= (0x4 << 4) | BIT(3);
+>                 hact = mode->hdisplay * 18 / 8;
+> +               video_start = (mode->htotal - mode->hsync_start) * 18 / 8;
+>                 data_type = MIPI_DSI_PIXEL_STREAM_3BYTE_18;
+>                 break;
+>
+>         case MIPI_DSI_FMT_RGB565:
+>                 val |= (0x5 << 4);
+>                 hact = mode->hdisplay * 2;
+> +               video_start = (mode->htotal - mode->hsync_start) * 2;
+>                 data_type = MIPI_DSI_PACKED_PIXEL_STREAM_16;
+>                 break;
+>         default:
+> @@ -690,7 +695,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>         }
+>
+>         /* VSDly[9:0] */
+> -       tc358768_write(priv, TC358768_VSDLY, 1);
+> +       video_start = max(video_start, internal_delay + 1) - internal_delay;
+> +       tc358768_write(priv, TC358768_VSDLY, video_start);
+>
+>         tc358768_write(priv, TC358768_DATAFMT, val);
+>         tc358768_write(priv, TC358768_DSITX_DT, data_type);
+> --
+> 2.32.0
+>
 
---ri2nmna5hervehrh
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 19, 2021 at 11:14:02AM +0200, Jiri Kosina wrote:
-> On Tue, 21 Sep 2021, Emmanuel Gil Peyrot wrote:
->=20
-> > > This driver is for the DRC (wireless gamepad) when plugged to the DRH=
- of
-> > > the Wii=C2=A0U, a chip exposing it as a USB device.
-> >=20
-> > Hi, I=E2=80=99d like to request a review on this series.  I=E2=80=99ve =
-been using it
-> > with success for quite some months, and from a self-review after not
-> > having touched it for as long it still looks correct. :)
-> >=20
-> > Thanks!
->=20
-> [ CCing Daniel ]
->=20
-> Thanks for the patch, and sorry for the delay in the review.
-
-No worries. :)
-
->=20
-> The code looks good to me, the only question/request I'd have is -- would=
-=20
-> it be possible to adhere to the driver naming standards, and actually=20
-> incorporate the support to existing hid-nintendo driver? Or is there any=
-=20
-> substantial reason which I don't see why this wouldn't be a good idea?
-
-I don=E2=80=99t see any existing driver named that way in mainline, would i=
-t be
-acceptable to simply rename the current patches to hid-nintendo?  What
-should be done about the existing hid-wiimote driver then, should it
-also be merged alongside?
-
-Another driver I=E2=80=99d like to submit eventually is the GameCube Contro=
-ller
-Adapter for Wii=C2=A0U, which does exactly what its name says, but being an
-external USB adapter it also works on any USB computer; would it make
-sense to develop it alongside the current driver, just because it is
-sold by the same company?
-
->=20
-> Thanks,
->=20
-> --=20
-> Jiri Kosina
-> SUSE Labs
-
-Thanks,
-
---=20
-Emmanuel Gil Peyrot
-
---ri2nmna5hervehrh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmFuj4YACgkQOWgfYkb2
-LpC3TwgAvRF0cMVbUFk32X/VNq7koN42sx9xKJUcfDw3gjmqQzV/kL/CtjN7KmAC
-aUyrCFxyUUyzCNPhHOan+I1N+DEToVyL7wzD9Y5TocyAEpPLauOLZREt0FQoiyZU
-LMEHLxiSyA+4VE/KsPcVkOJFSx8vIwLsatOUHx9oKbru3tqQ7rxk2I1N0on2Jhbm
-cpbiCfveIxQEU99Q14qK7+AzRa8AHTYMgT1FfE3pCuZUc3fCY70117CoQ6w7atfP
-Di060N9BDInC05LBSCA4wrAk3LRVc3MLoRQBi3rwuS3e5bjXaYPXp/87lXFLxVWf
-Epvn98wTEO/IMmlvglm+D8GzOgP70Q==
-=izqI
------END PGP SIGNATURE-----
-
---ri2nmna5hervehrh--
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
