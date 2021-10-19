@@ -2,167 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA08432F7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EA9432F73
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhJSHc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:32:56 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:59985 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234532AbhJSHcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:32:46 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HYQPQ23Prz9sSm;
-        Tue, 19 Oct 2021 09:30:02 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 10x_9KnyJlTZ; Tue, 19 Oct 2021 09:30:02 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HYQP758jKz9sSy;
-        Tue, 19 Oct 2021 09:29:47 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9B9128B786;
-        Tue, 19 Oct 2021 09:29:47 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ra3SWlL39iq0; Tue, 19 Oct 2021 09:29:47 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.71])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 41A308B780;
-        Tue, 19 Oct 2021 09:29:47 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19J7Tftk3188486
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 09:29:41 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19J7Tf3l3188485;
-        Tue, 19 Oct 2021 09:29:41 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v3 22/22] powerpc: Remove CONFIG_PPC_HAVE_KUAP and CONFIG_PPC_HAVE_KUEP
-Date:   Tue, 19 Oct 2021 09:29:33 +0200
-Message-Id: <a3c007ad0951965199e6ab2ef1035966bc66e771.1634627931.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1634627931.git.christophe.leroy@csgroup.eu>
-References: <cover.1634627931.git.christophe.leroy@csgroup.eu>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1634628571; l=2518; s=20211009; h=from:subject:message-id; bh=+Ag+EzR4jN80NF6HBsWjInBW4fd1lRK6plQvTBEObwc=; b=0L6eY0+OEIBUyOAvLtLb6mHjb6iQfFSGStHCP5vyNVn3284Plcny75wq7gqOOvNm5raSRfHaBKaS bBxbxjpsCmzFQIo6/terkNHlwuGaudHP+fW8ryCU570ZTsZ3sJLn
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+        id S234529AbhJSHcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhJSHcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 03:32:06 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7288AC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 00:29:54 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c29so16884991pfp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 00:29:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id;
+        bh=vfd7MBPWblBhEd3Hxz8uuyeSEGwRnXcHNr8PPXrICm0=;
+        b=hpagPFkUsa8FOypcLEmDs1wbh88Ft0/DruwIK09BQVN3bQ4noR0rXBxlOZW8DmHFZQ
+         b3MjkT60YMfKmzxim2vhqj0TdhGIo1wob4BDrcMyhbGWUi0GVD9iDCk7E6dT3zoSA7Ex
+         mDWmwGRnusmaa5XIAZRHKi5tTfXx/gAm0AK0kAu/eBakW5+pzqECVLu5NK7id0M12gNY
+         2PcGXjrOf/OgsqCovyF+k5dr+4Gl5FAcg7CG6ESzrleGt8jn9uFRV8Mu0QKuMzR95Llt
+         SDF3sR/hhnvnR8pCEZUcnVbasWenW5578jGEeNj1ow/t7mEfpwuD15xH+d4NGhGIl5nt
+         ya1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=vfd7MBPWblBhEd3Hxz8uuyeSEGwRnXcHNr8PPXrICm0=;
+        b=UQjMseBpab+pXxoLfE4lWWuXFqhCakEMxc2V2anCpy/3qCN/qChK0WuclhmyW9nz/q
+         yb7pWjF5+0lzQB2Zh9GC3nn5uyWM+0DmFaT3lwoEttnvyDiKKguw8LLgocD0ioaMfFB4
+         4L53xZgQ7s1CgY+C2BcHB01qv+c72PncVl+/WFA6fB6Z8CQqM1bVjMoZ6SGosmzcBNGr
+         Q/mrVK7FNUX9HUQBKWeglUIz0qw3DGSZnchvWrhKcyMqdNw8Z8nKZsKjbJjcHNmQbexN
+         0KrhpoQygPJOvrhjSD2Nkj7UNY5hyK0asNfWvhJGP/pFldObF5xQkFQzS8piHqj4gRyT
+         kB6A==
+X-Gm-Message-State: AOAM530rpB4u8wCAJHRWhtv5g7xVagPNYwJO3Sekz3pemXxBM0xuNrNs
+        G6rDGtGjTl5ZGpN2vJ7IlF4=
+X-Google-Smtp-Source: ABdhPJxC38FjB4+wdFAFEgy6+wIgbNqF69SDSFiEpOVNLV/BPBhJAohyBjKvZFE7KPC1UZbUljEzvA==
+X-Received: by 2002:aa7:8198:0:b0:44b:e191:7058 with SMTP id g24-20020aa78198000000b0044be1917058mr34323872pfi.39.1634628594029;
+        Tue, 19 Oct 2021 00:29:54 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id u3sm15146220pfl.155.2021.10.19.00.29.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Oct 2021 00:29:53 -0700 (PDT)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mm: skip current when memcg reclaim
+Date:   Tue, 19 Oct 2021 15:29:36 +0800
+Message-Id: <1634628576-27448-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All platforms now have KUAP and KUEP so remove CONFIG_PPC_HAVE_KUAP
-and CONFIG_PPC_HAVE_KUEP.
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reclaiming pages from current LRU will introduce page thrashing during direct
+reclaiming. Have all memory contraint groups steal pages from the processes
+under root(Non-memory sensitive) or other groups with lower thresholds(high
+memory tolerance) or the one totally sleeping(not busy for the time being,
+borrow some pages).With regard to all groups trapping into direct reclaim,
+retry if first round failed and all groups still compete fairly.
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 ---
- arch/powerpc/platforms/Kconfig.cputype | 21 ---------------------
- 1 file changed, 21 deletions(-)
+patch v2: grant current second chance if previous reclaiming failed
+---
+---
+ mm/vmscan.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index f3614bfd47ad..744cb201ae4d 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -30,22 +30,17 @@ config PPC_BOOK3S_32
- 	bool "512x/52xx/6xx/7xx/74xx/82xx/83xx/86xx"
- 	imply PPC_FPU
- 	select PPC_HAVE_PMU_SUPPORT
--	select PPC_HAVE_KUEP
--	select PPC_HAVE_KUAP
- 	select HAVE_ARCH_VMAP_STACK
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 5199b96..c17ef60 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2841,6 +2841,13 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+ 				sc->memcg_low_skipped = 1;
+ 				continue;
+ 			}
++			/*
++			 * Don't bother current when its memcg is below low
++			 */
++			if (get_mem_cgroup_from_mm(current->mm) == memcg) {
++				sc->memcg_low_skipped = 1;
++				continue;
++			}
+ 			memcg_memory_event(memcg, MEMCG_LOW);
+ 		}
  
- config PPC_85xx
- 	bool "Freescale 85xx"
- 	select E500
--	select PPC_HAVE_KUAP
- 
- config PPC_8xx
- 	bool "Freescale 8xx"
- 	select ARCH_SUPPORTS_HUGETLBFS
- 	select FSL_SOC
--	select PPC_HAVE_KUEP
- 	select PPC_KUEP
--	select PPC_HAVE_KUAP
- 	select HAVE_ARCH_VMAP_STACK
- 	select HUGETLBFS
- 
-@@ -55,8 +50,6 @@ config 40x
- 	select PPC_UDBG_16550
- 	select 4xx_SOC
- 	select HAVE_PCI
--	select PPC_HAVE_KUAP
--	select PPC_HAVE_KUEP
- 	select PPC_KUEP if PPC_KUAP
- 
- config 44x
-@@ -66,9 +59,7 @@ config 44x
- 	select 4xx_SOC
- 	select HAVE_PCI
- 	select PHYS_64BIT
--	select PPC_HAVE_KUEP
- 	select PPC_KUEP
--	select PPC_HAVE_KUAP
- 
- endchoice
- 
-@@ -113,8 +104,6 @@ config PPC_BOOK3S_64
- 	select HAVE_MOVE_PUD
- 	select IRQ_WORK
- 	select PPC_MM_SLICES
--	select PPC_HAVE_KUEP
--	select PPC_HAVE_KUAP
- 
- config PPC_BOOK3E_64
- 	bool "Embedded processors"
-@@ -122,7 +111,6 @@ config PPC_BOOK3E_64
- 	select PPC_SMP_MUXED_IPI
- 	select PPC_DOORBELL
- 	select ZONE_DMA
--	select PPC_HAVE_KUAP
- 
- endchoice
- 
-@@ -303,7 +291,6 @@ config PPC_FSL_BOOK3E
- 	select FSL_EMB_PERFMON
- 	select PPC_SMP_MUXED_IPI
- 	select PPC_DOORBELL
--	select PPC_HAVE_KUEP
- 	select PPC_KUEP
- 	default y if FSL_BOOKE
- 
-@@ -402,24 +389,16 @@ config PPC_RADIX_MMU_DEFAULT
- 
- 	  If you're unsure, say Y.
- 
--config PPC_HAVE_KUEP
--	bool
--
- config PPC_KUEP
- 	bool "Kernel Userspace Execution Prevention" if !40x
--	depends on PPC_HAVE_KUEP
- 	default y if !40x
- 	help
- 	  Enable support for Kernel Userspace Execution Prevention (KUEP)
- 
- 	  If you're unsure, say Y.
- 
--config PPC_HAVE_KUAP
--	bool
--
- config PPC_KUAP
- 	bool "Kernel Userspace Access Protection"
--	depends on PPC_HAVE_KUAP
- 	default y
- 	help
- 	  Enable support for Kernel Userspace Access Protection (KUAP)
 -- 
-2.31.1
+1.9.1
 
