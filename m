@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EAB433403
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CB1433415
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbhJSK51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:57:27 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:34981 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235305AbhJSK5S (ORCPT
+        id S230117AbhJSLBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:01:44 -0400
+Received: from mail-oo1-f47.google.com ([209.85.161.47]:40539 "EHLO
+        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235308AbhJSLBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:57:18 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HYVy06QWHz4xbb;
-        Tue, 19 Oct 2021 21:55:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1634640905;
-        bh=x2ytmbg7gwsAE45QXX+LTY1Rs6nJEpauqSbvOn/silc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=n7TTWWOBd6RX+p/IN+p268kU2u6ImzN06R5YXKjhPZBFCVaR2Ks6FdIxmAwcuyCio
-         bOXGp8dEpDYRQqSjdUnqKrPpS6v0+Dl7qtTq3Dhgf8kTm3UapvTGpCURinNTbEIl4X
-         4LRr4MdQsBZRPlIVOtg3KZWbB9jig0DIdXujL7V524VLdShFemNJLtKFZh1XGEgKn8
-         +StDoM1BkHq3l7AuAzflrxKtO5L1K3iVG8FoNMm4e4RcR+1ndug1Z+ehePaVwA32IZ
-         ZdD0MYcH4gnm6Q7iwg5aM2/hwg4YlTbj3mCa61a/oP7ZV9NIct/dqnvB18oGCChpzA
-         EYqh4NxBNv+Vg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 060/151] KVM: PPC: Book3S HV: Fix stack handling in
- idle_kvm_start_guest()
-In-Reply-To: <20211018132342.644684017@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
- <20211018132342.644684017@linuxfoundation.org>
-Date:   Tue, 19 Oct 2021 21:55:04 +1100
-Message-ID: <87a6j5cmif.fsf@mpe.ellerman.id.au>
+        Tue, 19 Oct 2021 07:01:40 -0400
+Received: by mail-oo1-f47.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so867017ooh.7;
+        Tue, 19 Oct 2021 03:59:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rB3WXW5Ly9nsEO4krnqGBalVpdpkoDadBf+vIxcOOSg=;
+        b=3HS9o0gDheSM49xhkC5i4bUBBMcqK2WN8hXq4/kAzKtwbvpSbXr9XSR2vqelW0olSL
+         SKWVuuCF8jg5KJCUtfC8u6fK367OcZSAntY+o86/ppJ8cn07bzYPOG8t7CdsV3qGGVdr
+         /IqdTS12+oeo6dBV0x+cDPkZ9Tq5aBHEwL8/kv2l7h2paTsyQueiPRBP0vBA8FJb4oIr
+         nQ9pyQyYDOm8lEWtiKsgIHgPwInSeRDYW6loVBORdvTExmdiqVrVGABsg9uOxJkAsktS
+         /MRz3JuVDKBc/TMI8uGF485m005Xxj0oE1tprCD6MobjIhod6o3pDJR2fNZQ3+VYw6yp
+         k4og==
+X-Gm-Message-State: AOAM531o9AIjgZpI5o9lhBc68XL5K6v+K9L+OyrkCSw+pCw8YDf2TNzO
+        n0sv2hvFcE1X6CxxOfHCpuLHD94Q7OOlXWSnxmu9MOap
+X-Google-Smtp-Source: ABdhPJw1l1Z/gDFkRNI+kJ8UJaIjgSPtqc6rUcoEaB8xL3gI57XMaDvB6i7leEP2YX4KcH9/KUSqG83cXyU7r8EOPOM=
+X-Received: by 2002:a4a:e1fd:: with SMTP id u29mr4251102ood.0.1634641167969;
+ Tue, 19 Oct 2021 03:59:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <21226252.EfDdHjke4D@kreacher> <8835496.CDJkKcVGEf@kreacher> <5521425.DvuYhMxLoT@kailua>
+In-Reply-To: <5521425.DvuYhMxLoT@kailua>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 19 Oct 2021 12:59:11 +0200
+Message-ID: <CAJZ5v0gt4wGOzRrV+4pT0vbpxwCgBh9x04h-dzTQgSEss6u=0g@mail.gmail.com>
+Subject: Re: [EXT] [PATCH v1 2/2][RFT] ACPI: PM: Check states of power
+ resources during initialization
+To:     "Andreas K. Huettel" <andreas.huettel@ur.de>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> From: Michael Ellerman <mpe@ellerman.id.au>
+On Mon, Oct 18, 2021 at 12:41 PM Andreas K. Huettel
+<andreas.huettel@ur.de> wrote:
 >
-> commit 9b4416c5095c20e110c82ae602c254099b83b72f upstream.
+> Am Freitag, 15. Oktober 2021, 19:14:10 CEST schrieb Rafael J. Wysocki:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > To avoid situations in which the actual states of certain ACPI power
+> > resources are not known just because they have never been referenced
+> > by any device configuration objects, check the initial states of all
+> > power resources as soon as they are found in the ACPI namespace (and
+> > fall back to turning them on if the state check fails).
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > Andreas, please test this patch (on top of the [1/2]) and let me know
+> > if it works for you.
+> >
 >
-> In commit 10d91611f426 ("powerpc/64s: Reimplement book3s idle code in
-> C") kvm_start_guest() became idle_kvm_start_guest(). The old code
-> allocated a stack frame on the emergency stack, but didn't use the
-> frame to store anything, and also didn't store anything in its caller's
-> frame.
+> I see no negative impact (actually, no impact at all) of the second
+> additional patch. The network card is again working fine now.
+>
+> Boot logs (unpatched, with one patch, with both patches) at
+> https://dev.gentoo.org/~dilfridge/igb/  (the 5.14.12* files).
 
-Please drop this and the next patch.
-
-cheers
+Thanks!
