@@ -2,305 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD0D4339D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8E14339D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234502AbhJSPLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:11:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234281AbhJSPK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:10:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 372A16103D;
-        Tue, 19 Oct 2021 15:08:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634656095;
-        bh=J4QyScO9a2R/URvbInxHpXWm3yyWpIQ3XVXMTk2ebPs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L/nfYTByTW2otHwU5mfkT5Y8VkSMM37jUK9d28/uDwcF+nyxy6WwEDtg4ErEtK79I
-         oidZ0630uffBCtiYnTjFauIS/NYWH7F/gJcTlEhajTLb8IN/zYdtCniXYnhx/iO3BC
-         tmH3/cbpL32vMC3fE8Hv0Kc5EFtgUyt4rYrPtHR4xvoJc2beqwgot65z5h8ib2+JbS
-         UMr/XrgwRsjSvmUi3pUZqjgN6NpjW8ah3A8sVFGHP4xpW0ybUwHPBx8xgCIa+njIh+
-         cz32BjpwEf66VdawtRyWUYKM2SPE5g3A7xbK4gCAYyRelS3LBn2BMUwjkzvdEGMhbP
-         IHjFxQGU7jvNQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     akpm@linux-foundation.org
-Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
-        amit@kernel.org, benh@kernel.crashing.org, corbet@lwn.net,
-        david@redhat.com, dwmw@amazon.com, elver@google.com,
-        foersleo@amazon.de, gthelen@google.com, markubo@amazon.de,
-        rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 15/15] Documentation/admin-guide/mm/damon: Add a document for DAMON_RECLAIM
-Date:   Tue, 19 Oct 2021 15:07:31 +0000
-Message-Id: <20211019150731.16699-16-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211019150731.16699-1-sj@kernel.org>
-References: <20211019150731.16699-1-sj@kernel.org>
+        id S232260AbhJSPLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234472AbhJSPKz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:10:55 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33796C061772
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:08:28 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id d198-20020a1c1dcf000000b00322f53b9b89so3482586wmd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=gcQrXOybNP4D8/Nco8U5T3IxRjktElzEEGrbggjgINQ=;
+        b=HRsuf+PktFjntEg75/IjEX1kOFv+6WgmeqVWzTJLm+FeZDiEz0Etm+WwvXDf/qri1q
+         /ad3Kcxl2Eh9U+pLG0F8i1O1zATGX3hXty9GndO9jK9w+5ya2J5iLkZSYQOa6EUJSrUZ
+         kEmfR5Jf20TvRd53OXajRY8RKwOiKVuVQ+8tgcHtvoJoFrAJLnJJozP2733OnDQP0YuT
+         ZrY4GuW9BUrY8VhVZbFdOraPJ3B6/o6cCuyaAltJWeeOajSA3TQ9ypfr/16f2stmL3tq
+         fiRlOPwieaVD85ICcKiQE9UnTriu40mYqewpgDkZRAA8DsyYVODCcurWdsIo28s0g8Xj
+         Oruw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=gcQrXOybNP4D8/Nco8U5T3IxRjktElzEEGrbggjgINQ=;
+        b=Z8xGhYh27o9jYsrjV0O5/zWKSI7bJiqVwKCQEc4riIyAFqzMZNme5PFPtGj43aDBSh
+         vCLSe0rHcRrUe9ya75TsXRnrg6wjMPrBLfjwRVzE2ym3AOA12E2fdpG6HQesUXYjcOCq
+         +fM9zqOdLZo7cBBq5qkyJoLcObv+iiCZhL523B+YOMutmSuT00qCkX5aoxDWMrAiRGBR
+         4A/vbHPOCkK5gJkjZxyxy8BXYeK6aGTHRHdD/0L9RCXvbnfkHBYDxSmV2DWo7QsErGsu
+         OBfE9JLsI0vEamgFmkFD+j7/+w9sE+NI3hdmwfo2ii06OEFK7wzCH9owFG4oYE5Z0xMb
+         1qOA==
+X-Gm-Message-State: AOAM533eDwAh2K6sOhBGSmUviWSiNhCtOO3yvS/ko1J0MCLKrnZAg789
+        FXOx0iKA2NTyY/vBNaM0m3aalSkEHASjOmq8
+X-Google-Smtp-Source: ABdhPJzCyaDf2Mgin+1KAcpcIB7A4XE5TNMNvzt8X8Xk5XdvxgQWirDLgrLQz21FDc7ii565QFF9nw==
+X-Received: by 2002:a05:6000:552:: with SMTP id b18mr7987543wrf.112.1634656106768;
+        Tue, 19 Oct 2021 08:08:26 -0700 (PDT)
+Received: from ?IPv6:2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62? ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id o8sm2577439wme.38.2021.10.19.08.08.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 08:08:26 -0700 (PDT)
+Message-ID: <a11249f8eaefb22896c7702ab6eb594fc40795e1.camel@gmail.com>
+Subject: Re: [Outreachy kernel] Re: [PATCH] staging: vt6655: Fix line
+ wrapping in rf.c file
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        outreachy-kernel@googlegroups.com
+Cc:     forest@alittletooquiet.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Date:   Tue, 19 Oct 2021 16:08:25 +0100
+In-Reply-To: <1647209.5AoB3rP6bQ@localhost.localdomain>
+References: <20211018150526.9718-1-karolinadrobnik@gmail.com>
+         <84f3c940fedb961e6e7e88d47c3d15e598bc32c3.camel@perches.com>
+         <810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel@gmail.com>
+         <1647209.5AoB3rP6bQ@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds an admin-guide document for DAMON-based Reclamation.
+On Tue, 2021-10-19 at 05:26 -0700, Joe Perches wrote:
+> What I suggested is not a patch it's just an example.
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- Documentation/admin-guide/mm/damon/index.rst  |   1 +
- .../admin-guide/mm/damon/reclaim.rst          | 235 ++++++++++++++++++
- 2 files changed, 236 insertions(+)
- create mode 100644 Documentation/admin-guide/mm/damon/reclaim.rst
+Sure, I understand. In this case, I'll take some inspiration from
+your example and break down the changes into smaller chunks, thank you.
 
-diff --git a/Documentation/admin-guide/mm/damon/index.rst b/Documentation/admin-guide/mm/damon/index.rst
-index 8c5dde3a5754..61aff88347f3 100644
---- a/Documentation/admin-guide/mm/damon/index.rst
-+++ b/Documentation/admin-guide/mm/damon/index.rst
-@@ -13,3 +13,4 @@ optimize those.
- 
-    start
-    usage
-+   reclaim
-diff --git a/Documentation/admin-guide/mm/damon/reclaim.rst b/Documentation/admin-guide/mm/damon/reclaim.rst
-new file mode 100644
-index 000000000000..fb9def3a7355
---- /dev/null
-+++ b/Documentation/admin-guide/mm/damon/reclaim.rst
-@@ -0,0 +1,235 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=======================
-+DAMON-based Reclamation
-+=======================
-+
-+DAMON-based Reclamation (DAMON_RECLAIM) is a static kernel module that aimed to
-+be used for proactive and lightweight reclamation under light memory pressure.
-+It doesn't aim to replace the LRU-list based page_granularity reclamation, but
-+to be selectively used for different level of memory pressure and requirements.
-+
-+Where Proactive Reclamation is Required?
-+========================================
-+
-+On general memory over-committed systems, proactively reclaiming cold pages
-+helps saving memory and reducing latency spikes that incurred by the direct
-+reclaim of the process or CPU consumption of kswapd, while incurring only
-+minimal performance degradation [1]_ [2]_ .
-+
-+Free Pages Reporting [3]_ based memory over-commit virtualization systems are
-+good example of the cases.  In such systems, the guest VMs reports their free
-+memory to host, and the host reallocates the reported memory to other guests.
-+As a result, the memory of the systems are fully utilized.  However, the
-+guests could be not so memory-frugal, mainly because some kernel subsystems and
-+user-space applications are designed to use as much memory as available.  Then,
-+guests could report only small amount of memory as free to host, results in
-+memory utilization drop of the systems.  Running the proactive reclamation in
-+guests could mitigate this problem.
-+
-+How It Works?
-+=============
-+
-+DAMON_RECLAIM finds memory regions that didn't accessed for specific time
-+duration and page out.  To avoid it consuming too much CPU for the paging out
-+operation, a speed limit can be configured.  Under the speed limit, it pages
-+out memory regions that didn't accessed longer time first.  System
-+administrators can also configure under what situation this scheme should
-+automatically activated and deactivated with three memory pressure watermarks.
-+
-+Interface: Module Parameters
-+============================
-+
-+To use this feature, you should first ensure your system is running on a kernel
-+that is built with ``CONFIG_DAMON_RECLAIM=y``.
-+
-+To let sysadmins enable or disable it and tune for the given system,
-+DAMON_RECLAIM utilizes module parameters.  That is, you can put
-+``damon_reclaim.<parameter>=<value>`` on the kernel boot command line or write
-+proper values to ``/sys/modules/damon_reclaim/parameters/<parameter>`` files.
-+
-+Note that the parameter values except ``enabled`` are applied only when
-+DAMON_RECLAIM starts.  Therefore, if you want to apply new parameter values in
-+runtime and DAMON_RECLAIM is already enabled, you should disable and re-enable
-+it via ``enabled`` parameter file.  Writing of the new values to proper
-+parameter values should be done before the re-enablement.
-+
-+Below are the description of each parameter.
-+
-+enabled
-+-------
-+
-+Enable or disable DAMON_RECLAIM.
-+
-+You can enable DAMON_RCLAIM by setting the value of this parameter as ``Y``.
-+Setting it as ``N`` disables DAMON_RECLAIM.  Note that DAMON_RECLAIM could do
-+no real monitoring and reclamation due to the watermarks-based activation
-+condition.  Refer to below descriptions for the watermarks parameter for this.
-+
-+min_age
-+-------
-+
-+Time threshold for cold memory regions identification in microseconds.
-+
-+If a memory region is not accessed for this or longer time, DAMON_RECLAIM
-+identifies the region as cold, and reclaims it.
-+
-+120 seconds by default.
-+
-+quota_ms
-+--------
-+
-+Limit of time for the reclamation in milliseconds.
-+
-+DAMON_RECLAIM tries to use only up to this time within a time window
-+(quota_reset_interval_ms) for trying reclamation of cold pages.  This can be
-+used for limiting CPU consumption of DAMON_RECLAIM.  If the value is zero, the
-+limit is disabled.
-+
-+10 ms by default.
-+
-+quota_sz
-+--------
-+
-+Limit of size of memory for the reclamation in bytes.
-+
-+DAMON_RECLAIM charges amount of memory which it tried to reclaim within a time
-+window (quota_reset_interval_ms) and makes no more than this limit is tried.
-+This can be used for limiting consumption of CPU and IO.  If this value is
-+zero, the limit is disabled.
-+
-+128 MiB by default.
-+
-+quota_reset_interval_ms
-+-----------------------
-+
-+The time/size quota charge reset interval in milliseconds.
-+
-+The charget reset interval for the quota of time (quota_ms) and size
-+(quota_sz).  That is, DAMON_RECLAIM does not try reclamation for more than
-+quota_ms milliseconds or quota_sz bytes within quota_reset_interval_ms
-+milliseconds.
-+
-+1 second by default.
-+
-+wmarks_interval
-+---------------
-+
-+Minimal time to wait before checking the watermarks, when DAMON_RECLAIM is
-+enabled but inactive due to its watermarks rule.
-+
-+wmarks_high
-+-----------
-+
-+Free memory rate (per thousand) for the high watermark.
-+
-+If free memory of the system in bytes per thousand bytes is higher than this,
-+DAMON_RECLAIM becomes inactive, so it does nothing but only periodically checks
-+the watermarks.
-+
-+wmarks_mid
-+----------
-+
-+Free memory rate (per thousand) for the middle watermark.
-+
-+If free memory of the system in bytes per thousand bytes is between this and
-+the low watermark, DAMON_RECLAIM becomes active, so starts the monitoring and
-+the reclaiming.
-+
-+wmarks_low
-+----------
-+
-+Free memory rate (per thousand) for the low watermark.
-+
-+If free memory of the system in bytes per thousand bytes is lower than this,
-+DAMON_RECLAIM becomes inactive, so it does nothing but periodically checks the
-+watermarks.  In the case, the system falls back to the LRU-list based page
-+granularity reclamation logic.
-+
-+sample_interval
-+---------------
-+
-+Sampling interval for the monitoring in microseconds.
-+
-+The sampling interval of DAMON for the cold memory monitoring.  Please refer to
-+the DAMON documentation (:doc:`usage`) for more detail.
-+
-+aggr_interval
-+-------------
-+
-+Aggregation interval for the monitoring in microseconds.
-+
-+The aggregation interval of DAMON for the cold memory monitoring.  Please
-+refer to the DAMON documentation (:doc:`usage`) for more detail.
-+
-+min_nr_regions
-+--------------
-+
-+Minimum number of monitoring regions.
-+
-+The minimal number of monitoring regions of DAMON for the cold memory
-+monitoring.  This can be used to set lower-bound of the monitoring quality.
-+But, setting this too high could result in increased monitoring overhead.
-+Please refer to the DAMON documentation (:doc:`usage`) for more detail.
-+
-+max_nr_regions
-+--------------
-+
-+Maximum number of monitoring regions.
-+
-+The maximum number of monitoring regions of DAMON for the cold memory
-+monitoring.  This can be used to set upper-bound of the monitoring overhead.
-+However, setting this too low could result in bad monitoring quality.  Please
-+refer to the DAMON documentation (:doc:`usage`) for more detail.
-+
-+monitor_region_start
-+--------------------
-+
-+Start of target memory region in physical address.
-+
-+The start physical address of memory region that DAMON_RECLAIM will do work
-+against.  That is, DAMON_RECLAIM will find cold memory regions in this region
-+and reclaims.  By default, biggest System RAM is used as the region.
-+
-+monitor_region_end
-+------------------
-+
-+End of target memory region in physical address.
-+
-+The end physical address of memory region that DAMON_RECLAIM will do work
-+against.  That is, DAMON_RECLAIM will find cold memory regions in this region
-+and reclaims.  By default, biggest System RAM is used as the region.
-+
-+kdamond_pid
-+-----------
-+
-+PID of the DAMON thread.
-+
-+If DAMON_RECLAIM is enabled, this becomes the PID of the worker thread.  Else,
-+-1.
-+
-+Example
-+=======
-+
-+Below runtime example commands make DAMON_RECLAIM to find memory regions that
-+not accessed for 30 seconds or more and pages out.  The reclamation is limited
-+to be done only up to 1 GiB per second to avoid DAMON_RECLAIM consuming too
-+much CPU time for the paging out operation.  It also asks DAMON_RECLAIM to do
-+nothing if the system's free memory rate is more than 50%, but start the real
-+works if it becomes lower than 40%.  If DAMON_RECLAIM doesn't make progress and
-+therefore the free memory rate becomes lower than 20%, it asks DAMON_RECLAIM to
-+do nothing again, so that we can fall back to the LRU-list based page
-+granularity reclamation. ::
-+
-+    # cd /sys/modules/damon_reclaim/parameters
-+    # echo 30000000 > min_age
-+    # echo $((1 * 1024 * 1024 * 1024)) > quota_sz
-+    # echo 1000 > quota_reset_interval_ms
-+    # echo 500 > wmarks_high
-+    # echo 400 > wmarks_mid
-+    # echo 200 > wmarks_low
-+    # echo Y > enabled
-+
-+.. [1] https://research.google/pubs/pub48551/
-+.. [2] https://lwn.net/Articles/787611/
-+.. [3] https://www.kernel.org/doc/html/latest/vm/free_page_reporting.html
--- 
-2.17.1
+> There's quite a lot of code in that driver that _could_
+> be updated/refined/refactored (none of which _I_ will submit),
+> but it's up to you do whatever _you_ want.
+
+Indeed there is, I'm trying to tackle one thing at a time. I thought
+I could fix a couple of line length warnings in an easy way but I was
+wrong.
+
+Ok, I'll come back to CamelCase squashing and removing the Hungarian
+notation before working on this refactor. I think this is a good
+candidate for a patchset.
+
+On Tue, 2021-10-19 at 15:07 +0200, Fabio M. De Francesco wrote:
+> Hi Karolina,
+
+Hi Fabio,
+Thank you for describing everything in such detail, really appreciate
+it.
+
+> No, there is no problem in using a[i - 1]. Personally I prefer the
+> former when 1 <= index <= ARRAY_SIZE(a). 
+
+I see, thanks for explaining this.
+
+> If you code "index = index -1;" or 
+> "index--;" (that is the same) and then you use 'index' many lines
+> below that decrement in "a[index]" it may be not immediately clear
+> that you are not indexing past the end of the array.
+
+That's what I thought as well.
+
+> I prefer to state it again: if you choose to do such kind of works,
+> be careful to split self-contained patches in a series and explain
+> each change you make and why you make it.
+> Each patch must do only one logical change.
+
+Will definitely do so, thank you.
+
+> Each patch of a series must be self-contained also in the sense that
+> it must build without introducing errors or warnings at any point:
+> for instance, five patches => five clean builds.
+
+Makes sense, will keep that in mind. Also, I think it would be good to
+mention it on the FPT page. I can suggest adding such comment in later
+on.
+
+
+Thanks,
+Karolina
 
