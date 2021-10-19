@@ -2,214 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AEA4336AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6392B4336B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhJSNJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
+        id S235755AbhJSNKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhJSNJ5 (ORCPT
+        with ESMTP id S235466AbhJSNKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:09:57 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B19C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:07:44 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id w19so12633272edd.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:07:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rM9NY4I7mI4nZ2MNkYcLXR3L+zVnN6b+7Y3yv0OyjZI=;
-        b=jU+9M9H/0g1ULVbJGdo2l/3xkFN0Nw3awGK7GVs69EmuvxucviVjlpbYfTZiPmhSjX
-         J8oEUeL2ECOGueqVQsPhvaHf0nGh7QwmEiCDax2o6KR2l4kuzBfoEHi9IJNGBOUhtY4j
-         eWeD5uA7rdqIhaI6aw5qCStyW8KBwHbzbfsaE+pUuTGSdc2DwprA34a3tPHu7F50w1hj
-         lewnCtupFvur2BnBBfJ6zjPI+4RH75XR5hNv0jBI6DrJ6sLnHPPCA4h6LQ2KfpfFljho
-         zWrLIuqATP1eyKOMjxKTzZvKO8i/VbWPBIBhmPXZWs6NzK2D7QS1jSeFnIJ8+Aznq8KR
-         px/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rM9NY4I7mI4nZ2MNkYcLXR3L+zVnN6b+7Y3yv0OyjZI=;
-        b=7hwjnVlA1Vzbu2UPyhHiUbqaJDTrrxbDZk6Pl3xBs57xbvWItSIE+E+c/48PYOVjv4
-         Qz3yg1CdaKGiQfEBH5oamyJnAE6vc3MPiqHxB/vyUQY3ygD+B0sbg+rNDdbbeOX+K/b6
-         +z6urA++mc+yj+BEOqSS7AA8ycOWheQGrbwhvFbw7XyHJ/0MThA7XW5tKAEsDPdLF+a+
-         mVVCJ5ryN6/AL/yDVP575wgFoHNJToOEoNCXycZho5CVp6RlqWBLzFoE1bIZfty3GBAY
-         XaLAXqmyJ1A2dDZ4gRNxIThkNBs5SFRiGabDtm7wXLvkN13OKjVyI36UmGYglFbIDs8F
-         PwkQ==
-X-Gm-Message-State: AOAM530+h3FZ/nbND7PG8K25lxqlwc9ZsISzBTWtuXs+Z4BAYTTg5Ras
-        8tlaa/Ec9CheOHSGopEIZeU=
-X-Google-Smtp-Source: ABdhPJwk+lr2KfJQUZgHtsXDlQEGdz7dfEZ7RgZ7lOzpho2+46UC08mJDjnjDD8+qJtqdln77PZGhw==
-X-Received: by 2002:a17:906:9414:: with SMTP id q20mr39051862ejx.241.1634648861058;
-        Tue, 19 Oct 2021 06:07:41 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id r26sm10050317ejd.85.2021.10.19.06.07.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 06:07:40 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Joe Perches <joe@perches.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com
-Cc:     outreachy-kernel@googlegroups.com, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Karolina Drobnik <karolinadrobnik@gmail.com>
-Subject: Re: [Outreachy kernel] Re: [PATCH] staging: vt6655: Fix line wrapping in rf.c file
-Date:   Tue, 19 Oct 2021 15:07:38 +0200
-Message-ID: <1647209.5AoB3rP6bQ@localhost.localdomain>
-In-Reply-To: <810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel@gmail.com>
-References: <20211018150526.9718-1-karolinadrobnik@gmail.com> <84f3c940fedb961e6e7e88d47c3d15e598bc32c3.camel@perches.com> <810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel@gmail.com>
+        Tue, 19 Oct 2021 09:10:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6357C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:08:21 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mcoqi-0007Od-HW; Tue, 19 Oct 2021 15:08:12 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mcoqg-0005YA-Tn; Tue, 19 Oct 2021 15:08:10 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, David Jander <david@protonic.nl>
+Subject: [PATCH v2] thermal: imx: implement runtime PM support
+Date:   Tue, 19 Oct 2021 15:08:09 +0200
+Message-Id: <20211019130809.21281-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, October 19, 2021 12:59:56 PM CEST Karolina Drobnik wrote:
-> Hi,
-> 
-> Thank you very much for your comments.
-> 
-> On Mon, 2021-10-18 at 17:12 +0200, Greg KH wrote:
-> > Also, these are all just fine as-is for now.  A better way to make
-> > these lines smaller is to use better variable and function names 
-> > that are shorter and make sense :)
-> 
-> I have v2 ready but I'm not sure, given the Joe's patch, if my solution
-> is a satisfactory one. I didn't jump on such refactoring as I'm still
-> learning about the codebase/process and didn't want to muddle the
-> waters (...more than I do already).
-> 
-> Greg, what would you prefer? Should I back up with my patch, pick
-> something else and let Joe's patch be merged?
-> 
-> 
-> Also, I have a question about the patch if that's ok :)
-> 
-> On Mon, 2021-10-18 at 22:56 -0700, Joe Perches wrote:
-> > Maybe some refactoring like:
-> > ---
-> >  drivers/staging/vt6655/rf.c | 38
-> > ++++++++++++++++++--------------------
-> >  1 file changed, 18 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/drivers/staging/vt6655/rf.c
-> > b/drivers/staging/vt6655/rf.c
-> > index 0dae593c6944f..7beb0cd5a62df 100644
-> > --- a/drivers/staging/vt6655/rf.c
-> > +++ b/drivers/staging/vt6655/rf.c
-> > @@ -680,16 +680,19 @@ bool RFvWriteWakeProgSyn(struct vnt_private
-> > *priv, unsigned char byRFType,
-> >                          u16 uChannel)
-> >  {
-> >         void __iomem *iobase = priv->PortOffset;
-> > -       int   ii;
-> > +       int i;
-> > +       unsigned short idx = MISCFIFO_SYNDATA_IDX;
-> >         unsigned char byInitCount = 0;
-> >         unsigned char bySleepCount = 0;
-> > +       const unsigned long *data;
-> >  
-> > +       uChannel--;
-> >         VNSvOutPortW(iobase + MAC_REG_MISCFFNDEX, 0);
-> 
-> I see that you introduced `uChannel--` to further tidy up the lines
-> with `[uChannel - 1]`. In general, is there anything wrong with
-> indexing like `i - 1`? What's the preference here? DRY things up as
-> much as possible?
+Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's local
+data to decide whether to run a measurement") this driver stared using
+irq_enabled flag to make decision to power on/off the thermal core. This
+triggered a regression, where after reaching critical temperature, alarm
+IRQ handler set irq_enabled to false,  disabled thermal core and was not
+able read temperature and disable cooling sequence.
 
-Hi Karolina,
+In case the cooling device is "CPU/GPU freq", the system will run with
+reduce performance until next reboot.
 
-No, there is no problem in using a[i - 1]. Personally I prefer the former 
-when 1 <= index <= ARRAY_SIZE(a). If you code "index = index -1;" or 
-"index--;" (that is the same) and then you use 'index' many lines below that 
-decrement in "a[index]" it may be not immediately clear that you are not 
-indexing past the end of the array.
+To solve this issue, we need to move all parts implementing hand made
+runtime power management and let it handle actual runtime PM framework.
 
-But this is not the point. You may still use Joe's style or leave it as 
-"index -1". The point is that Joe is just showing you some different way that 
-you can use to accomplish the task of "Fix line wrapping in rf.c file".
+Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/thermal/imx_thermal.c | 143 +++++++++++++++++++++-------------
+ 1 file changed, 89 insertions(+), 54 deletions(-)
 
-He put many different changes in one only single patch. Maybe that those kind 
-of patch are permitted to developers who have gained so much trust that Greg 
-doesn't need anymore to check "one {,logical} change at a time" (but still 
-I'm not sure about it). 
-
-I guess that if Linus T. or Greg K-H. want to put many different things in 
-one big "Clean up rf.c" patch they can. This (yours) is not the case. If you 
-decide to use one or more of the example Joe showed you you must be careful 
-to split changes in a series of patch, according to the instructions you read 
-in the Outreachy pages at kernelnewbies.org.
-
-Joe is showing that you can shorten lines with several techniques...
-
-1) renaming variables:
-	("ii" => "i") and getting rid of hungarian notation ("bySomething" 
-	=> "something");
-
-2) contracting instructions: 
-	"uChannel--" or "*data++" - for the latter take care of preceding
-	rules or, better, use redundant parenthesis like in "*(data++)" to 
-	facilitate readability and comprehensibility);
-
-3) using temporary variables:
-	"unsigned short idx = MISCFIFO_SYNDATA_IDX;" or "const unsigned
-	long *data = dwAL2230InitTable;");
-
-4) refactoring lines of code (e.g.,
-	-               if (uChannel <= CB_MAX_CHANNEL_24G) {
-	-                       for (ii = 0; ii < CB_AL7230_INIT_SEQ; ii+
-+)
-	-                               MACvSetMISCFifo(priv, (unsigned
-		short)(MISCFIFO_SYNDATA_IDX + ii),
-		dwAL7230InitTable[ii]);
-	-               } else {
-	-                       for (ii = 0; ii < CB_AL7230_INIT_SEQ; ii+
-+)
-	-                               MACvSetMISCFifo(priv, (unsigned
-		short)(MISCFIFO_SYNDATA_IDX + ii),
-		dwAL7230InitTableAMode[ii]);
-	-               }
-	+               data = (uChannel < CB_MAX_CHANNEL_24G) ?
-	+                       dwAL7230InitTable :
-		dwAL7230InitTableAMode;
-	+               for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
-	+                       MACvSetMISCFifo(priv, idx++, *data++);
-
-5) something else that I'm missing and that you may easily notice :)
-
-I prefer to state it again: if you choose to do such kind of works, be 
-careful to split self-contained patches in a series and explain each change 
-you make and why you make it. Each patch must do only one logical change.
-Each patch of a series must be self-contained also in the sense that it must 
-build without introducing errors or warnings at any point: for instance, five 
-patches => five clean builds.
-
-Thanks,
-
-Fabio M. De Francesco
-
-> 
-> I'm asking because when I was reading this line, at first, it wasn't
-> clear to me why we could decrement it (example though: "Was this
-> modified earlier? Do we need to "correct" it?").
-> 
-> 
-> Thanks,
-> Karolina
-> 
-> 
-> -- 
-> You received this message because you are subscribed to the Google Groups 
-"outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an 
-email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/
-outreachy-kernel/810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel%40gmail.com.
-> 
-
-
-
+diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+index 2c7473d86a59..cb5a4354fc75 100644
+--- a/drivers/thermal/imx_thermal.c
++++ b/drivers/thermal/imx_thermal.c
+@@ -15,6 +15,7 @@
+ #include <linux/regmap.h>
+ #include <linux/thermal.h>
+ #include <linux/nvmem-consumer.h>
++#include <linux/pm_runtime.h>
+ 
+ #define REG_SET		0x4
+ #define REG_CLR		0x8
+@@ -194,6 +195,7 @@ static struct thermal_soc_data thermal_imx7d_data = {
+ };
+ 
+ struct imx_thermal_data {
++	struct device *dev;
+ 	struct cpufreq_policy *policy;
+ 	struct thermal_zone_device *tz;
+ 	struct thermal_cooling_device *cdev;
+@@ -252,44 +254,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
+ 	const struct thermal_soc_data *soc_data = data->socdata;
+ 	struct regmap *map = data->tempmon;
+ 	unsigned int n_meas;
+-	bool wait, run_measurement;
+ 	u32 val;
++	int ret;
+ 
+-	run_measurement = !data->irq_enabled;
+-	if (!run_measurement) {
+-		/* Check if a measurement is currently in progress */
+-		regmap_read(map, soc_data->temp_data, &val);
+-		wait = !(val & soc_data->temp_valid_mask);
+-	} else {
+-		/*
+-		 * Every time we measure the temperature, we will power on the
+-		 * temperature sensor, enable measurements, take a reading,
+-		 * disable measurements, power off the temperature sensor.
+-		 */
+-		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+-			    soc_data->power_down_mask);
+-		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+-			    soc_data->measure_temp_mask);
+-
+-		wait = true;
+-	}
+-
+-	/*
+-	 * According to the temp sensor designers, it may require up to ~17us
+-	 * to complete a measurement.
+-	 */
+-	if (wait)
+-		usleep_range(20, 50);
++	ret = pm_runtime_resume_and_get(data->dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	regmap_read(map, soc_data->temp_data, &val);
+ 
+-	if (run_measurement) {
+-		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+-			     soc_data->measure_temp_mask);
+-		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+-			     soc_data->power_down_mask);
+-	}
+-
+ 	if ((val & soc_data->temp_valid_mask) == 0) {
+ 		dev_dbg(&tz->device, "temp measurement never finished\n");
+ 		return -EAGAIN;
+@@ -328,6 +301,8 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
+ 		enable_irq(data->irq);
+ 	}
+ 
++	pm_runtime_put(data->dev);
++
+ 	return 0;
+ }
+ 
+@@ -335,24 +310,16 @@ static int imx_change_mode(struct thermal_zone_device *tz,
+ 			   enum thermal_device_mode mode)
+ {
+ 	struct imx_thermal_data *data = tz->devdata;
+-	struct regmap *map = data->tempmon;
+-	const struct thermal_soc_data *soc_data = data->socdata;
+ 
+ 	if (mode == THERMAL_DEVICE_ENABLED) {
+-		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+-			     soc_data->power_down_mask);
+-		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+-			     soc_data->measure_temp_mask);
++		pm_runtime_get(data->dev);
+ 
+ 		if (!data->irq_enabled) {
+ 			data->irq_enabled = true;
+ 			enable_irq(data->irq);
+ 		}
+ 	} else {
+-		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+-			     soc_data->measure_temp_mask);
+-		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+-			     soc_data->power_down_mask);
++		pm_runtime_put(data->dev);
+ 
+ 		if (data->irq_enabled) {
+ 			disable_irq(data->irq);
+@@ -393,6 +360,11 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
+ 			     int temp)
+ {
+ 	struct imx_thermal_data *data = tz->devdata;
++	int ret;
++
++	ret = pm_runtime_resume_and_get(data->dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	/* do not allow changing critical threshold */
+ 	if (trip == IMX_TRIP_CRITICAL)
+@@ -406,6 +378,8 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
+ 
+ 	imx_set_alarm_temp(data, temp);
+ 
++	pm_runtime_put(data->dev);
++
+ 	return 0;
+ }
+ 
+@@ -681,6 +655,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ 	if (!data)
+ 		return -ENOMEM;
+ 
++	data->dev = &pdev->dev;
++
+ 	map = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "fsl,tempmon");
+ 	if (IS_ERR(map)) {
+ 		ret = PTR_ERR(map);
+@@ -801,6 +777,14 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ 	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
+ 		     data->socdata->measure_temp_mask);
+ 
++	/* the core was configured and enabled just before */
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(data->dev);
++
++	ret = pm_runtime_resume_and_get(data->dev);
++	if (ret < 0)
++		goto disable_runtime_pm;
++
+ 	data->irq_enabled = true;
+ 	ret = thermal_zone_device_enable(data->tz);
+ 	if (ret)
+@@ -814,10 +798,15 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ 		goto thermal_zone_unregister;
+ 	}
+ 
++	pm_runtime_put(data->dev);
++
+ 	return 0;
+ 
+ thermal_zone_unregister:
+ 	thermal_zone_device_unregister(data->tz);
++disable_runtime_pm:
++	pm_runtime_put_noidle(data->dev);
++	pm_runtime_disable(data->dev);
+ clk_disable:
+ 	clk_disable_unprepare(data->thermal_clk);
+ legacy_cleanup:
+@@ -829,13 +818,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ static int imx_thermal_remove(struct platform_device *pdev)
+ {
+ 	struct imx_thermal_data *data = platform_get_drvdata(pdev);
+-	struct regmap *map = data->tempmon;
+ 
+-	/* Disable measurements */
+-	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
+-		     data->socdata->power_down_mask);
+-	if (!IS_ERR(data->thermal_clk))
+-		clk_disable_unprepare(data->thermal_clk);
++	pm_runtime_put_noidle(data->dev);
++	pm_runtime_disable(data->dev);
+ 
+ 	thermal_zone_device_unregister(data->tz);
+ 	imx_thermal_unregister_legacy_cooling(data);
+@@ -858,29 +843,79 @@ static int __maybe_unused imx_thermal_suspend(struct device *dev)
+ 	ret = thermal_zone_device_disable(data->tz);
+ 	if (ret)
+ 		return ret;
++
++	return pm_runtime_force_suspend(data->dev);
++}
++
++static int __maybe_unused imx_thermal_resume(struct device *dev)
++{
++	struct imx_thermal_data *data = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pm_runtime_force_resume(data->dev);
++	if (ret)
++		return ret;
++	/* Enabled thermal sensor after resume */
++	return thermal_zone_device_enable(data->tz);
++}
++
++static int __maybe_unused imx_thermal_runtime_suspend(struct device *dev)
++{
++	struct imx_thermal_data *data = dev_get_drvdata(dev);
++	const struct thermal_soc_data *socdata = data->socdata;
++	struct regmap *map = data->tempmon;
++	int ret;
++
++	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
++			   socdata->measure_temp_mask);
++	if (ret)
++		return ret;
++
++	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
++			   socdata->power_down_mask);
++	if (ret)
++		return ret;
++
+ 	clk_disable_unprepare(data->thermal_clk);
+ 
+ 	return 0;
+ }
+ 
+-static int __maybe_unused imx_thermal_resume(struct device *dev)
++static int __maybe_unused imx_thermal_runtime_resume(struct device *dev)
+ {
+ 	struct imx_thermal_data *data = dev_get_drvdata(dev);
++	const struct thermal_soc_data *socdata = data->socdata;
++	struct regmap *map = data->tempmon;
+ 	int ret;
+ 
+ 	ret = clk_prepare_enable(data->thermal_clk);
+ 	if (ret)
+ 		return ret;
+-	/* Enabled thermal sensor after resume */
+-	ret = thermal_zone_device_enable(data->tz);
++
++	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
++			   socdata->power_down_mask);
++	if (ret)
++		return ret;
++
++	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
++			   socdata->measure_temp_mask);
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * According to the temp sensor designers, it may require up to ~17us
++	 * to complete a measurement.
++	 */
++	usleep_range(20, 50);
++
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(imx_thermal_pm_ops,
+-			 imx_thermal_suspend, imx_thermal_resume);
++static const struct dev_pm_ops imx_thermal_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(imx_thermal_suspend, imx_thermal_resume)
++	SET_RUNTIME_PM_OPS(imx_thermal_runtime_suspend,
++			   imx_thermal_runtime_resume, NULL)
++};
+ 
+ static struct platform_driver imx_thermal = {
+ 	.driver = {
+-- 
+2.30.2
 
