@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6474332E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48BB4332EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235041AbhJSJym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:54:42 -0400
-Received: from mga17.intel.com ([192.55.52.151]:65378 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231652AbhJSJyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:54:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="209266693"
-X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
-   d="scan'208";a="209266693"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 02:52:27 -0700
-X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
-   d="scan'208";a="531371974"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 02:52:21 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mclms-000SXr-2L;
-        Tue, 19 Oct 2021 12:52:02 +0300
-Date:   Tue, 19 Oct 2021 12:52:02 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
- StarFive SoCs
-Message-ID: <YW6VQutGMFOZPNlC@smile.fi.intel.com>
-References: <20211012134027.684712-1-kernel@esmil.dk>
- <20211012134027.684712-13-kernel@esmil.dk>
- <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
- <CANBLGcxHD2vy0+tXYo5Pkqri9mV7aD9jikvs3ygBJRxF4ApLMA@mail.gmail.com>
- <CAHp75Vc65deoHbks-aPmnjEJzm3GdqFMfBCUqw4vVLVr=71Ncg@mail.gmail.com>
- <CANBLGcxriKLZ+CKUsj5sviW8FdHnWTF2koROwmAb=G2tbmE6vQ@mail.gmail.com>
- <CAHp75VccSDLVbs1sF_-1zghWyLKtKKV1qtxOxZZ-cS0e6S-sBA@mail.gmail.com>
- <CAHp75VcgFRGpca-pSU9T5Oo1fT4aWQJd5EQfyZscGYx0mDMJ_Q@mail.gmail.com>
- <CANBLGcxHLQZygX9CHsXK4aYS9m4VE5OnLNROOmvP1ps5UP-xAw@mail.gmail.com>
+        id S235023AbhJSJ6x convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Oct 2021 05:58:53 -0400
+Received: from mail-vk1-f169.google.com ([209.85.221.169]:33720 "EHLO
+        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhJSJ6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:58:52 -0400
+Received: by mail-vk1-f169.google.com with SMTP id r26so656416vkq.0;
+        Tue, 19 Oct 2021 02:56:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Wa3+/NxbJXKxsVHmrMUZvmSmQSRoGR1Z/ThSOCypBgU=;
+        b=RLiuBPgyDuMALuG+PDoK+Ix7F0gDK9B0QI+rfwFL+0gA8Gibk1OretBZt/ejSX30Uc
+         y8ReFiGv2p8N3SShcWZGmGUqDLQEvMHJsC/aQ1P2lyMOH6cCM3+WW5Od+r/jNUuQJThH
+         YvNgQCL5FJmbIzPXuWw0hH8xXh8MBQyMmylTcQ9VeyO+f5nT8Vj8nNMiGdGxZWVdkoam
+         Gzz/xR5pQWg0xecxOFaJxgLs9Iy4WAB2hA1AB/rg5EgrA1z4Q4xzOOg3UIMwUXBn11W+
+         AutH3+Q4CbC1nXJJ9zZzMJDXCFAGUEAOn+EcTG0nYg8a2Ni/ZDts4+qLYTvXPB2XWU5t
+         CY7w==
+X-Gm-Message-State: AOAM532gqlKOYIKq6Jb1rpc2najyFP6rw75RpVEO3XR16L9AzN6/k/jV
+        ud06l5GsMVNHGbfJ6nIkhq1bfwnh6A0BqA==
+X-Google-Smtp-Source: ABdhPJzo4xjW1UUlCXp9Z2apl1bmANu5bFYEOnoA/kQsv80ihNO15arTt5W1FGrYR9o/ka+IpNH0/w==
+X-Received: by 2002:a1f:f241:: with SMTP id q62mr11152778vkh.12.1634637398714;
+        Tue, 19 Oct 2021 02:56:38 -0700 (PDT)
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
+        by smtp.gmail.com with ESMTPSA id 33sm3452622vkn.2.2021.10.19.02.56.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 02:56:38 -0700 (PDT)
+Received: by mail-ua1-f49.google.com with SMTP id u5so12529217uao.13;
+        Tue, 19 Oct 2021 02:56:37 -0700 (PDT)
+X-Received: by 2002:a05:6102:290c:: with SMTP id cz12mr33705536vsb.35.1634637397645;
+ Tue, 19 Oct 2021 02:56:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANBLGcxHLQZygX9CHsXK4aYS9m4VE5OnLNROOmvP1ps5UP-xAw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
+ <CA+bK7J741D=DgZMNeEC5xg9kDDSaJu19QsRunVvXkBGx1mKGnQ@mail.gmail.com>
+ <YW5r61ZQx+E9xfuH@pendragon.ideasonboard.com> <57122a67509bebdf0d1b9f5bc15db116e0124e5d.camel@infradead.org>
+ <YW6UGP10hfGJ2kYy@pendragon.ideasonboard.com>
+In-Reply-To: <YW6UGP10hfGJ2kYy@pendragon.ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 Oct 2021 11:56:26 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVCrC5_AjNDJN+nwrnn=EVTfD-8ddG=FaFBBh_0UY5acQ@mail.gmail.com>
+Message-ID: <CAMuHMdVCrC5_AjNDJN+nwrnn=EVTfD-8ddG=FaFBBh_0UY5acQ@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is obsolete
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Tim Bird <tbird20d@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Linux Embedded <linux-embedded@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Matt Porter <mporter@konsulko.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Tim Bird <tim.bird@sony.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 07:02:43PM +0200, Emil Renner Berthing wrote:
-> On Mon, 18 Oct 2021 at 18:29, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Mon, Oct 18, 2021 at 7:23 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
+On Tue, Oct 19, 2021 at 11:48 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Tue, Oct 19, 2021 at 10:33:10AM +0100, David Woodhouse wrote:
+> > On Tue, 2021-10-19 at 09:55 +0300, Laurent Pinchart wrote:
+> > > On Mon, Oct 18, 2021 at 03:17:22PM -0600, Tim Bird wrote:
+> > > > I think an overhaul of the "EMBEDDED LINUX" MAINTAINERS entry
+> > > > is long-overdue.
+> > > >
+> > > > No offense to any of the 3 persons listed, but I think the kernel developer
+> > > > community would be better served by a group of individuals with a more
+> > > > current active role in embedded linux.  I have a few names I'll
+> > > > toss out for
+> > > > candidates: Matt Porter, Kevin Hilman, Thomas Gleixner,  Thomas
+> > > > Petazonni, Laurent Pinchart, and Uwe Kleine-König (and maybe even
+> > > > myself).
+> > > >
+> > > > This entry in the MAINTAINERS file is somewhat special, in that it
+> > > > covers a "field of endeavor" rather than a specific set of files or
+> > > > directories.
+> > > >
+> > > > Thoughts?
+> > >
+> > > Thank you for volunteering me :-)
+> > >
+> > > I was indeed wondering about this particular MAINTAINERS entry. As it
+> > > doesn't cover any particular set of files, directories, drivers,
+> > > subsystems or architectures, what does being listed here endeavour ?
+> >
+> > Basically nothing; I was going to suggest removing it entirely. There's
+> > certainly no point listing me there any more.
+> >
+> > Once upon a time it involved a certain amount of heckling about memory
+> > usage and "your hash table doesn't need to be that large" but that ship
+> > sailed a long time ago :)
+>
+> Heckling is still an option without a MAINTAINERS entry I suppose :-)
 
-...
+Don't worry, I keep on sailing ;-)
 
-> > Having a second look I found even problematic error paths because of
-> > mixing devm_*() with non-devm_*() calls, which only assures me that
-> > your ->probe() error path is broken and should be revisited.
-> 
-> So do you want to expand on that now or should I send v2 first?
+> I wouldn't object if we were to remove it.
 
-Here is not enough context anymore to point out. I expect one to have done
-their homework anyway.
++1
 
--- 
-With Best Regards,
-Andy Shevchenko
+Gr{oetje,eeting}s,
 
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
