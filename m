@@ -2,220 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F5B4334EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC164334ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235385AbhJSLnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhJSLnH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:43:07 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F165EC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:40:54 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x192so6699406lff.12
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:40:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p/y6DgAZycykowwrleZpy70Yak++qIhNqJ9ImugcYMs=;
-        b=gbZb/rIEkq16uEpMdDfbn531uPXxDE2vXRTZ1At7zc8FyijjHf+TaWP9WSCNsx9CRl
-         Ax+uAwkmd3zCdbRdDaM3dpQ6QH2wtz6LdoMLA6+gjkzDI8FsGa3Gg4WLu7V9K5SrUrby
-         y6A+UktAxyprVLbdSpurxxaZ8mnWtv03QgVC25vrqwdz6F5CjpkyH0G67ZL5o2xSalbx
-         z2YLwvEkGXJDZVRENSUyiANgZXnd7Hl65An187cV1TSi/tcYxCoWRVEqIP0BwzqCyQr0
-         hoZBxk1g0lrSFu4sw+cYxe+pvM8G9j1I2iiX+c9B9ryltLhmQtiX2zDR77yR1QolGdKK
-         MOng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p/y6DgAZycykowwrleZpy70Yak++qIhNqJ9ImugcYMs=;
-        b=7qCQTJtCxGu5JPUYOCg6VuQfF0y+qBD7ZSz/jhXIcGTBY5LzVm0zIfte5NYJYdvFan
-         C+GbkbNvWJ1Ovm7g4OfD7LdvMvbKyYnikizrJOmArfVPTSTbbTib4Dl1OekMF0lnclhs
-         b4NLdeTM432Z53jkoZwYRQwqSlbbpZhylmF1kEgp4lTiF8f4ulTS4KPok++wU+PUy7mL
-         34CLR0MatXaXH5qlczZgy0n8xNfWv0iwCoUD6oTHmYp8y9aaJGnC87hJ2Gi3eCMuhnvc
-         dMJie7gl3JhAvu1P323h74kfutI9G1ldPjHO6RXwRyXM8vocYGHh8CTU3kKBxV4GAvyA
-         rc1Q==
-X-Gm-Message-State: AOAM530kNEnY9oYGEg2ryrloPzb+gXcK86YzNPtQhPn3+cIF/tyXUwwN
-        OGt4qbUnniw3/bgcqRGhl99KxWdPYWqSDJoweAJ7GA==
-X-Google-Smtp-Source: ABdhPJyiZ8hxPaWs5ZGwktR/58DXEHsnrg2iCZG7+dtLEFQZezq+DvEjCTIwbhL0fm341kLJAfk/05h60QX3kuXQ9G4=
-X-Received: by 2002:a05:6512:3084:: with SMTP id z4mr5314051lfd.167.1634643653278;
- Tue, 19 Oct 2021 04:40:53 -0700 (PDT)
+        id S235167AbhJSLoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:44:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhJSLow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:44:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3891F61359;
+        Tue, 19 Oct 2021 11:42:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634643760;
+        bh=yCv4VJtIrblP/kUogoAnKl6uE4BI+ilJPboUSNzpPIw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mdx52gdOou/WFb+jdXIXu+7YQghz6kW8Gt4ePQb6IPdEmn8AoAUnIUDQuhZX+rArw
+         oUACNuYHVA2T8Yop3YEQwsR3UX2azpMYkUZtX8w/Glb6Tf/2GoSVij/AYr+dbwfIez
+         CJoI/48ye1XagYWoLx5ibxbbqAqrY9vzwIOgWxWWlgbCXCKSWZYwU3OSzv5owjCcm2
+         Lr9LMonTTs34iD0ftmf0fGqc9Mml6YYDU1tc/0TKcL7GS7OVHl7g9ODo5OK3/Yk0I+
+         ovahl3QTs7r5GZz0Gzw75wQBKeWlckWGzUlNDd3mVR7/f6V2lZ3+Nr+3Emgl8SdPnJ
+         ZVweJWb0iGkcA==
+Date:   Tue, 19 Oct 2021 12:42:34 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     mathieu.poirier@linaro.org, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v5 03/15] arm64: errata: Add workaround for TSB flush
+ failures
+Message-ID: <20211019114234.GH13251@willie-the-truck>
+References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
+ <20211014223125.2605031-4-suzuki.poulose@arm.com>
+ <20211019110233.GD13251@willie-the-truck>
+ <850c67de-a656-7515-e575-d47d2af78200@arm.com>
 MIME-Version: 1.0
-References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-21-digetx@gmail.com>
- <CAPDyKFoF2QxZss_h9B1NFqOqgeF=TQ6LajCedGiJ9_P8X5M0NA@mail.gmail.com>
- <0bcbcd3d-2154-03d2-f572-dc9032125c26@gmail.com> <CAPDyKFohA9iu2UQfwoc0pCrCGupdwnUTWjKOtP09_C2KaFSo8w@mail.gmail.com>
- <073114ea-490b-89a9-e82d-852b34cb11df@gmail.com>
-In-Reply-To: <073114ea-490b-89a9-e82d-852b34cb11df@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Oct 2021 13:40:16 +0200
-Message-ID: <CAPDyKFoOMvEW0o6=-_bYKhwUcbfeTD4qu-K2tfkdXiR0bErHsw@mail.gmail.com>
-Subject: Re: [PATCH v13 20/35] mtd: rawnand: tegra: Add runtime PM and OPP support
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <850c67de-a656-7515-e575-d47d2af78200@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Oct 2021 at 10:38, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 01.10.2021 18:01, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Fri, 1 Oct 2021 at 16:35, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >>
-> >> 01.10.2021 17:24, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wro=
-te:
-> >>>>
-> >>>> The NAND on Tegra belongs to the core power domain and we're going t=
-o
-> >>>> enable GENPD support for the core domain. Now NAND must be resumed u=
-sing
-> >>>> runtime PM API in order to initialize the NAND power state. Add runt=
-ime PM
-> >>>> and OPP support to the NAND driver.
-> >>>>
-> >>>> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> >>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >>>> ---
-> >>>>  drivers/mtd/nand/raw/tegra_nand.c | 55 ++++++++++++++++++++++++++--=
----
-> >>>>  1 file changed, 47 insertions(+), 8 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/ra=
-w/tegra_nand.c
-> >>>> index 32431bbe69b8..098fcc9cb9df 100644
-> >>>> --- a/drivers/mtd/nand/raw/tegra_nand.c
-> >>>> +++ b/drivers/mtd/nand/raw/tegra_nand.c
-> >>>> @@ -17,8 +17,11 @@
-> >>>>  #include <linux/mtd/rawnand.h>
-> >>>>  #include <linux/of.h>
-> >>>>  #include <linux/platform_device.h>
-> >>>> +#include <linux/pm_runtime.h>
-> >>>>  #include <linux/reset.h>
-> >>>>
-> >>>> +#include <soc/tegra/common.h>
-> >>>> +
-> >>>>  #define COMMAND                                        0x00
-> >>>>  #define   COMMAND_GO                           BIT(31)
-> >>>>  #define   COMMAND_CLE                          BIT(30)
-> >>>> @@ -1151,6 +1154,7 @@ static int tegra_nand_probe(struct platform_de=
-vice *pdev)
-> >>>>                 return -ENOMEM;
-> >>>>
-> >>>>         ctrl->dev =3D &pdev->dev;
-> >>>> +       platform_set_drvdata(pdev, ctrl);
-> >>>>         nand_controller_init(&ctrl->controller);
-> >>>>         ctrl->controller.ops =3D &tegra_nand_controller_ops;
-> >>>>
-> >>>> @@ -1166,14 +1170,22 @@ static int tegra_nand_probe(struct platform_=
-device *pdev)
-> >>>>         if (IS_ERR(ctrl->clk))
-> >>>>                 return PTR_ERR(ctrl->clk);
-> >>>>
-> >>>> -       err =3D clk_prepare_enable(ctrl->clk);
-> >>>> +       err =3D devm_pm_runtime_enable(&pdev->dev);
-> >>>> +       if (err)
-> >>>> +               return err;
-> >>>> +
-> >>>> +       err =3D devm_tegra_core_dev_init_opp_table_common(&pdev->dev=
-);
-> >>>> +       if (err)
-> >>>> +               return err;
-> >>>> +
-> >>>> +       err =3D pm_runtime_resume_and_get(&pdev->dev);
-> >>>>         if (err)
-> >>>>                 return err;
-> >>>>
-> >>>>         err =3D reset_control_reset(rst);
-> >>>>         if (err) {
-> >>>>                 dev_err(ctrl->dev, "Failed to reset HW: %d\n", err);
-> >>>> -               goto err_disable_clk;
-> >>>> +               goto err_put_pm;
-> >>>>         }
-> >>>>
-> >>>>         writel_relaxed(HWSTATUS_CMD_DEFAULT, ctrl->regs + HWSTATUS_C=
-MD);
-> >>>> @@ -1188,21 +1200,19 @@ static int tegra_nand_probe(struct platform_=
-device *pdev)
-> >>>>                                dev_name(&pdev->dev), ctrl);
-> >>>>         if (err) {
-> >>>>                 dev_err(ctrl->dev, "Failed to get IRQ: %d\n", err);
-> >>>> -               goto err_disable_clk;
-> >>>> +               goto err_put_pm;
-> >>>>         }
-> >>>>
-> >>>>         writel_relaxed(DMA_MST_CTRL_IS_DONE, ctrl->regs + DMA_MST_CT=
-RL);
-> >>>>
-> >>>>         err =3D tegra_nand_chips_init(ctrl->dev, ctrl);
-> >>>>         if (err)
-> >>>> -               goto err_disable_clk;
-> >>>> -
-> >>>> -       platform_set_drvdata(pdev, ctrl);
-> >>>> +               goto err_put_pm;
-> >>>>
-> >>>
-> >>> There is no corresponding call pm_runtime_put() here. Is it
-> >>> intentional to always leave the device runtime resumed after ->probe(=
-)
-> >>> has succeeded?
-> >>>
-> >>> I noticed you included some comments about this for some other
-> >>> drivers, as those needed more tweaks. Is that also the case for this
-> >>> driver?
-> >>
-> >> Could you please clarify? There is pm_runtime_put() in both probe-erro=
-r
-> >> and remove() code paths here.
-> >
-> > I was not considering the error path of ->probe() (or ->remove()), but
-> > was rather thinking about when ->probe() completes successfully. Then
-> > you keep the device runtime resumed, because you have called
-> > pm_runtime_resume_and_get() for it.
-> >
-> > Shouldn't you have a corresponding pm_runtime_put() in ->probe(),
-> > allowing it to be runtime suspended, until the device is really needed
-> > later on. No?
->
-> This driver doesn't support active power management. I don't have Tegra
-> hardware that uses NAND storage for testing, so it's up to somebody else
-> to implement dynamic power management. NAND doesn't require high
-> voltages, so it's fine to keep the old driver behaviour by keeping
-> hardware resumed since the probe time.
+On Tue, Oct 19, 2021 at 12:36:48PM +0100, Suzuki K Poulose wrote:
+> On 19/10/2021 12:02, Will Deacon wrote:
+> > On Thu, Oct 14, 2021 at 11:31:13PM +0100, Suzuki K Poulose wrote:
+> > > @@ -558,6 +570,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
+> > >   		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
+> > >   		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
+> > >   	},
+> > > +#endif
+> > > +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
+> > 
+> > You still haven't fixed this typo...
+> > 
+> 
+> Sorry about that. I thought it was about selecting the
+> Kconfig entries, which was fixed. I will fix this.
 
-Alright, fair enough and thanks for clarifying!
+Sorry, I thought it was such a howler that it would've jumped out ;)
+That's what made me think we should make sure the series compiles without
+the coresight changes, so we can catch these problems early.
 
-Kind regards
-Uffe
+> > Seriously, I get compile warnings from this -- are you not seeing them?
+> 
+> No, I don't get any warnings. Is there something that I am missing ?
+
+Interesting. I see the warning below in my bisection testing, since the typo
+means that the midr lookup table isn't used. Maybe you're only compiling the
+end result?
+
+Will
+
+--->8
+
++arch/arm64/kernel/cpu_errata.c:356:32: warning: ‘tsb_flush_fail_cpus’ defined but not used [-Wunused-const-variable=]
++  356 | static const struct midr_range tsb_flush_fail_cpus[] = {
++      |                                ^~~~~~~~~~~~~~~~~~~
