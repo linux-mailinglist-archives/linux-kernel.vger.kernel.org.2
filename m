@@ -2,137 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4FE4331E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F6E4331FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhJSJNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:13:42 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:63783 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234511AbhJSJNk (ORCPT
+        id S234964AbhJSJRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234771AbhJSJRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:13:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634634687; x=1666170687;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SFnbRDPbh9Cnl0CjzDAQQBLnGioAW3IiP6jsl+JbKXg=;
-  b=jPym3YQhHt0CQfa0VB3P5O4H4n+lhvg6ET/x7Q515621bxQ6crZFzwaB
-   JnrgW6JcJH65dvr5I5AAxEhBrrgP3o0ZObNJBxfJSnHHBE6UjcWm6aXBl
-   lOBVjC/2AFwF/Q1BfkHHKmlCenXbRWCXfcV4dSENpof/Vc0qB3YgZBqp7
-   6ZFysEOnmz9cceScWWNTgtN5HmxVWlWHhMeh5JyiweOEhh7sNZ0f4i+/M
-   K19BwAW0EYz3iy/TrpwHWaFK4VRcXaOwjnd/+IML1kJm7ldbrMizUBd0r
-   RDiAlZgp6CEp7WfdoxyVIoVjSPQtcmImd1xZzMNxoYgFKgDfrtlvKlE5N
-   Q==;
-IronPort-SDR: aDBBwI1xiQi99aA95+ithxdVm7jIv/LL1zMQ24NUTEJ+nGIDBg93FpATujlCl7HSMccbVM6NZm
- 0K8LJdN+5aeFshYHkZIkW1ya9l5k+bpP2rvSl9k9tiCc+BmDqtJwkHLn20j7VXW8AFIXGpV8ak
- k0NdEpg2zIDlo2VFwrJN1l6j4tC0xN/sB3t4oCnLYcmJxYDdYUcmIpMJ/3ogQc4c3Eq4hcs+fG
- eBmCm/n5e8Ra4YVNuZkwrPYECeb6Y9gtLbRPuxqxPya04qmdUrHWARXt1zL5ne6G1ELLiejBaU
- XlOAqhh3OP4iO8bt+Oh2tSee
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; 
-   d="scan'208";a="73497729"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Oct 2021 02:11:26 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 19 Oct 2021 02:11:26 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Tue, 19 Oct 2021 02:11:26 -0700
-Date:   Tue, 19 Oct 2021 11:12:58 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <kishon@ti.com>, <vkoul@kernel.org>, <andrew@lunn.ch>,
-        <alexandre.belloni@bootlin.com>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] dt-bindings: phy: Add constants for lan966x serdes
-Message-ID: <20211019091258.3uet6lp3mxaoliqt@soft-dev3-1.localhost>
-References: <20211015123920.176782-1-horatiu.vultur@microchip.com>
- <20211015123920.176782-3-horatiu.vultur@microchip.com>
- <YW3K2GX+hmkwt3EE@robh.at.kernel.org>
+        Tue, 19 Oct 2021 05:17:49 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8984DC061749
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:15:36 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id v127so11197985wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u0f7VPukRkZIBsfRCvCvLe+2F66E/vPzHD9lqr8pAOk=;
+        b=A1fB9hSx5Q9cZwTnKvupCkEt9KB9SAEG6/bJ2s2BqmlU/PZoHjsRY4IvM5prCgSd4e
+         9Y+5iELwQcyOpx7Q58RXhqWlVF18uPBt/CR7nfoQ6TR7y8R1qy5vYB/oMK9FKeOedFe2
+         79Vy6TUyFwilSh/QC3rWQfZBXP7jcAgSGIEk8XAsWFFKwQzfEXKiMLqVaAVHn95jKYSM
+         aJawMzMwjciggxo5y+1ICYTww38sVG6c/lEUW/+B7wwxRgANU9skSAWH5+NhrQMQXaTZ
+         TOmWc/kMRFGS3qStCvZX5gViLOBKigCwU7fj+Q+FeJHsZoJEUmnjTs7RfFjMAIjhg7Ux
+         GCCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u0f7VPukRkZIBsfRCvCvLe+2F66E/vPzHD9lqr8pAOk=;
+        b=rsMdlGTJff+oepghWg9QaU9hyxPOMZjutDViIshaH3om/N76y6QOZH2a1CIltm26dN
+         qTInFL7DGrJ4XEZobNIiFBg39te1C38ZddTW1Y4r2TGwaAW51nzXQlODRDGWuHCK4ntG
+         MBReRuWCfCw+w/wtieuYcKHGZiTVQcaWV9D9W95DP64Hn2F41b7Nx5BtiUuS/C+2qpIz
+         Da1NYyfoOSI0ZqG4My86r6anWBFLLg3gdfUm31rJIYQxF0qq157EUMbYErxtb10IMtiT
+         VyNvUA0qC7a0dcbEMV/D+zE3LKcdUQuGiGQpCoh9LNPbppw2jMVcyHFC6Iup2bK8iGEL
+         cOJw==
+X-Gm-Message-State: AOAM531zzRXQve2j9qNRpbC2Pz3JvMXIPsX7flUqhhnyMvWC4UrFAgnn
+        bVEr0uBtaEf7W6YtflUYVq8=
+X-Google-Smtp-Source: ABdhPJx1LJ5NUIEUpmNsZPV4CNi0nXxaQpLbP1WOt7AYg3SuOTkXQcMm6c6EkhqN2zw2LQztd8LT6Q==
+X-Received: by 2002:a1c:a302:: with SMTP id m2mr4799673wme.111.1634634935112;
+        Tue, 19 Oct 2021 02:15:35 -0700 (PDT)
+Received: from precision.. (aftr-62-216-202-35.dynamic.mnet-online.de. [62.216.202.35])
+        by smtp.gmail.com with ESMTPSA id y191sm2029281wmc.36.2021.10.19.02.15.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 02:15:14 -0700 (PDT)
+From:   Mete Polat <metepolat2000@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Michel Lespinasse <michel@lespinasse.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Mete Polat <metepolat2000@gmail.com>
+Subject: [PATCH 0/2] rbtree: Test against a verified oracle
+Date:   Tue, 19 Oct 2021 11:13:47 +0200
+Message-Id: <20211019091349.39788-1-metepolat2000@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YW3K2GX+hmkwt3EE@robh.at.kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/18/2021 14:28, Rob Herring wrote:
-> 
-> On Fri, Oct 15, 2021 at 02:39:19PM +0200, Horatiu Vultur wrote:
-> > Lan966x has: 2 integrated PHYs, 3 SerDes and 2 RGMII interfaces. Which
-> > requires to be muxed based on the HW representation.
-> >
-> > So add constants for each interface to be able to distinguish them.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  include/dt-bindings/phy/phy-lan966x-serdes.h | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> >  create mode 100644 include/dt-bindings/phy/phy-lan966x-serdes.h
-> >
-> > diff --git a/include/dt-bindings/phy/phy-lan966x-serdes.h b/include/dt-bindings/phy/phy-lan966x-serdes.h
-> > new file mode 100644
-> > index 000000000000..8a05f93ecf41
-> > --- /dev/null
-> > +++ b/include/dt-bindings/phy/phy-lan966x-serdes.h
-> > @@ -0,0 +1,14 @@
-> > +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-> > +
-> > +#ifndef __PHY_LAN966X_SERDES_H__
-> > +#define __PHY_LAN966X_SERDES_H__
-> > +
-> > +#define PHY(x)               (x)
-> > +#define PHY_MAX              PHY(2)
-> > +#define SERDES6G(x)  (PHY_MAX + 1 + (x))
-> > +#define SERDES6G_MAX SERDES6G(3)
-> > +#define RGMII(x)     (SERDES6G_MAX + 1 + (x))
-> > +#define RGMII_MAX    RGMII(2)
-> > +#define SERDES_MAX   (RGMII_MAX + 1)
-> 
-> I still don't understand. #phy-cells description says we have:
-> 
-> <port idx> <serdes idx>
-> 
-> But here it's 3 numbers. How are these defines used to fill in the 2
-> cells?
+Hi,
 
-Actually they are still only a number. Or maybe I am missing something.
+This patch series provides a pipeline for testing the kernel Red-Black
+tree implementation against a verified oracle and is based on the work
+which we presented on the LPC [1]. A verified oracle is an equivalent
+algorithm that is proven to be mathematically correct. The testing
+pipeline consists of a kernel module that exposes the core rbtree
+functions to userspace using debugfs, and a testing harness that
+implements two strategies to generate test cases which are then applied
+on the kernel rbtree and the verified rbtree (the oracle). After
+executing an operation on both versions, the harness checks if the
+kernel rbtree is valid by partially comparing it to the verified oracle.
 
-Maybe an example will help:
+See the second patch for a description of how to use the harness.
 
----
-serdes: serdes@e2004010 {
-    compatible = "microchip,lan966x-serdes";
-    reg = <0xe202c000 0x9c>, <0xe2004010 0x4>;
-    #phy-cells = <2>;
-};
+Some notes:
 
-&port0 {
-    ...
-    phys = <&serdes 0 SERDES6G(1)>;
-    ...
-};
+The verified rbtree was verified in the proof assistant Isabelle [2] and
+is written in a functional programming language. That's why I also wrote
+the testing harness in the functional programming Haskell.
 
-&port1 {
-    ...
-    phys = <&serdes 1 PHY(0)>;
-    ...
-}
+I decided to not try to integrate this work into kselftests because
+(1) Haskell (obviously) has another build system
+(2) The tests can run several minutes and would just slow down the
+    execution of all kselftests
 
-...
----
+There already is a decent rbtree testing module in the kernel. This work
+tries to address the issue of functional correctness using a more formal
+method and can be seen as an baseline for future (more complex) testing
+against verified oracles.
 
-Here are some existing examples based on which I have created this patch
-series:
-https://elixir.bootlin.com/linux/v5.15-rc6/source/arch/mips/boot/dts/mscc/ocelot_pcb120.dts#L99
-https://elixir.bootlin.com/linux/v5.15-rc6/source/arch/mips/boot/dts/mscc/ocelot.dtsi#L274
+Regards,
 
-> 
-> Rob
+Mete
+
+[1] https://linuxplumbersconf.org/event/11/contributions/1036/
+[2] https://isabelle.in.tum.de/
+
+Mete Polat (2):
+  rbtree: Expose a test tree to userspace
+  rbtree: add verified oracle with testing harness
+
+ lib/Kconfig.debug                             |  19 ++
+ lib/Makefile                                  |   1 +
+ lib/test_rbtree_interface.c                   | 161 +++++++++++
+ tools/testing/rbtree_oracle/.gitignore        |   1 +
+ tools/testing/rbtree_oracle/Main.hs           | 128 +++++++++
+ tools/testing/rbtree_oracle/RBT/Kernel.hs     |  64 +++++
+ tools/testing/rbtree_oracle/RBT/Verified.hs   | 253 ++++++++++++++++++
+ tools/testing/rbtree_oracle/RBT_export.thy    |  41 +++
+ tools/testing/rbtree_oracle/Setup.hs          |   2 +
+ tools/testing/rbtree_oracle/Strategy.hs       |  72 +++++
+ .../rbtree_oracle/rbtTestHarness.cabal        |  15 ++
+ 11 files changed, 757 insertions(+)
+ create mode 100644 lib/test_rbtree_interface.c
+ create mode 100644 tools/testing/rbtree_oracle/.gitignore
+ create mode 100644 tools/testing/rbtree_oracle/Main.hs
+ create mode 100644 tools/testing/rbtree_oracle/RBT/Kernel.hs
+ create mode 100644 tools/testing/rbtree_oracle/RBT/Verified.hs
+ create mode 100644 tools/testing/rbtree_oracle/RBT_export.thy
+ create mode 100644 tools/testing/rbtree_oracle/Setup.hs
+ create mode 100644 tools/testing/rbtree_oracle/Strategy.hs
+ create mode 100644 tools/testing/rbtree_oracle/rbtTestHarness.cabal
 
 -- 
-/Horatiu
+2.33.1
+
