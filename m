@@ -2,88 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1B64334A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC20A4334BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235361AbhJSL3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:29:43 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4007 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhJSL3m (ORCPT
+        id S235360AbhJSLeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:34:02 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46866 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230281AbhJSLeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:29:42 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HYWbr6td4z67w09;
-        Tue, 19 Oct 2021 19:24:24 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 19 Oct 2021 13:27:27 +0200
-Received: from [10.47.85.98] (10.47.85.98) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 19 Oct
- 2021 12:27:26 +0100
-Subject: Re: [PATCH v2 07/21] perf metric: Add metric new and free
-To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
-        "Jiri Olsa" <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        "Zhen Lei" <thunder.leizhen@huawei.com>,
-        ToastC <mrtoastcheng@gmail.com>,
-        "Joakim Zhang" <qiangqing.zhang@nxp.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Fabian Hemmer" <copy@copy.sh>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Denys Zagorui <dzagorui@cisco.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        "Sumanth Korikkar" <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        Andrew Kilroy <andrew.kilroy@arm.com>
-CC:     Stephane Eranian <eranian@google.com>
-References: <20211015172132.1162559-1-irogers@google.com>
- <20211015172132.1162559-8-irogers@google.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <2a4e8994-ebe7-7623-7e72-e3abb2ae8d0f@huawei.com>
-Date:   Tue, 19 Oct 2021 12:30:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 19 Oct 2021 07:34:00 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 36B501F43268
+Received: by earth.universe (Postfix, from userid 1000)
+        id 571063C0CA8; Tue, 19 Oct 2021 13:31:44 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 13:31:44 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~okias/devicetree@lists.sr.ht
+Subject: Re: [PATCH] dt-bindings: power: reset: gpio-poweroff: Convert txt
+ bindings to yaml
+Message-ID: <20211019113144.77zhcagw6lvwmfjy@earth.universe>
+References: <20211009163226.45564-1-david@ixit.cz>
 MIME-Version: 1.0
-In-Reply-To: <20211015172132.1162559-8-irogers@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.98]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tyn6d3fmh7rrtjqg"
+Content-Disposition: inline
+In-Reply-To: <20211009163226.45564-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/2021 18:21, Ian Rogers wrote:
-> Metrics are complex enough that a new/free reduces the risk of memory
-> leaks. Move static functions used in new.
-> 
-> Acked-by: Andi Kleen<ak@linux.intel.com>
-> Signed-off-by: Ian Rogers<irogers@google.com>
 
-Reviewed-by: John Garry <john.garry@huawei.com>
+--tyn6d3fmh7rrtjqg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Sat, Oct 09, 2021 at 06:32:26PM +0200, David Heidelberg wrote:
+> Convert power-off action connected to the GPIO documentation to the YAML =
+syntax.
+>=20
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  .../bindings/power/reset/gpio-poweroff.txt    | 41 ------------
+>  .../bindings/power/reset/gpio-poweroff.yaml   | 64 +++++++++++++++++++
+>  2 files changed, 64 insertions(+), 41 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/power/reset/gpio-po=
+weroff.txt
+>  create mode 100644 Documentation/devicetree/bindings/power/reset/gpio-po=
+weroff.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.=
+txt b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
+> deleted file mode 100644
+> index 3e56c1b34a4c..000000000000
+> --- a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
+> +++ /dev/null
+> @@ -1,41 +0,0 @@
+> -Driver a GPIO line that can be used to turn the power off.
+> -
+> -The driver supports both level triggered and edge triggered power off.
+> -At driver load time, the driver will request the given gpio line and
+> -install a handler to power off the system. If the optional properties
+> -'input' is not found, the GPIO line will be driven in the inactive
+> -state. Otherwise its configured as an input.
+> -
+> -When the power-off handler is called, the gpio is configured as an
+> -output, and drive active, so triggering a level triggered power off
+> -condition. This will also cause an inactive->active edge condition, so
+> -triggering positive edge triggered power off. After a delay of 100ms,
+> -the GPIO is set to inactive, thus causing an active->inactive edge,
+> -triggering negative edge triggered power off. After another 100ms
+> -delay the GPIO is driver active again. If the power is still on and
+> -the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
+> -
+> -Required properties:
+> -- compatible : should be "gpio-poweroff".
+> -- gpios : The GPIO to set high/low, see "gpios property" in
+> -  Documentation/devicetree/bindings/gpio/gpio.txt. If the pin should be
+> -  low to power down the board set it to "Active Low", otherwise set
+> -  gpio to "Active High".
+> -
+> -Optional properties:
+> -- input : Initially configure the GPIO line as an input. Only reconfigure
+> -  it to an output when the power-off handler is called. If this optional
+> -  property is not specified, the GPIO is initialized as an output in its
+> -  inactive state.
+> -- active-delay-ms: Delay (default 100) to wait after driving gpio active
+> -- inactive-delay-ms: Delay (default 100) to wait after driving gpio inac=
+tive
+> -- timeout-ms: Time to wait before asserting a WARN_ON(1). If nothing is
+> -              specified, 3000 ms is used.
+> -
+> -Examples:
+> -
+> -gpio-poweroff {
+> -	compatible =3D "gpio-poweroff";
+> -	gpios =3D <&gpio 4 0>;
+> -	timeout-ms =3D <3000>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.=
+yaml b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+> new file mode 100644
+> index 000000000000..50ae0cec6493
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/power/reset/gpio-poweroff.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Driver a GPIO line that can be used to turn the power off
+
+This is a DT binding, not kernel driver documentation. Title should
+be something like
+
+title: GPIO controlled power off
+
+> +
+> +maintainers:
+> +  - Sebastian Reichel <sre@kernel.org>
+> +
+> +description:
+> +  The driver supports both level triggered and edge triggered power off.
+> +  At driver load time, the driver will request the given gpio line and
+> +  install a handler to power off the system. If the optional properties
+> +  'input' is not found, the GPIO line will be driven in the inactive
+> +  state. Otherwise its configured as an input.
+> +
+> +  When the power-off handler is called, the gpio is configured as an
+> +  output, and drive active, so triggering a level triggered power off
+> +  condition. This will also cause an inactive->active edge condition, so
+> +  triggering positive edge triggered power off. After a delay of 100ms,
+> +  the GPIO is set to inactive, thus causing an active->inactive edge,
+> +  triggering negative edge triggered power off. After another 100ms
+> +  delay the GPIO is driver active again. If the power is still on and
+> +  the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
+
+This description is quite Linux specific. I think it should be
+easily possible to fix that:
+
+System power off support via a GPIO line. When a shutdown is
+executed the operating system is expected to switch the GPIO
+=66rom inactive to active. After a delay (active-delay-ms) it
+is expected to be switched back to inactive. After another
+delay (inactive-delay-ms) it is configured as active again.
+Finally the operating system assumes the power off failed if
+the system is still running after waiting some time (timeout-ms).
+
+> +properties:
+> +  compatible:
+> +    const: gpio-poweroff
+> +
+> +  gpios: true
+
+maxItems: 1
+
+> +
+> +  input:
+> +    description: |
+> +      Initially configure the GPIO line as an input. Only reconfigure
+> +      it to an output when the power-off handler is called. If this opti=
+onal
+
+type: boolean
+
+s/handler is called/power off sequence is initiated/
+
+> +      property is not specified, the GPIO is initialized as an output in=
+ its inactive state.
+> +
+> +  active-delay-ms:
+> +    default: 100
+> +    description: Delay to wait after driving gpio active
+> +
+> +  inactive-delay-ms:
+> +    default: 100
+> +    description: Delay to wait after driving gpio inactive
+> +
+> +  timeout-ms:
+> +    default: 3000
+> +    description: Time to wait before asserting a WARN_ON(1).
+
+Time to wait before assuming the power off sequence failed.
+
+> +required:
+> +  - compatible
+> +  - gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    gpio-poweroff {
+> +        compatible =3D "gpio-poweroff";
+> +        gpios =3D <&gpio 4 0>;
+> +        timeout-ms =3D <3000>;
+> +    };
+
+Thanks,
+
+-- Sebastian
+
+--tyn6d3fmh7rrtjqg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFurJkACgkQ2O7X88g7
++ppsbA/+KkgU4fyrWct6l/7zcBjWYuWDAeOb/1WjcRN6RcDWaLlf1JMVo+NCTUhj
+v0brN6mzdNQnGKVnzWypjPL3BZCrxu/RYdaMoBYoCqvMjRDd4k+w9sC4XloA6ByL
+Dhmz3o21GyFGxerk4H1M04+lcJkZIfE+skWbImDHRoSgpugPJC5xCMMlthoeUAmO
+w1kHomDT3yl1ZJjM0VFOc963zm7sreHUDksCuI7/eZTw4d9VcNnnnNnpMtCP9L/r
+2roQJHdCXsAszIPpIL84HFCRfc9V2wV5WvXQX7Y8cRrnzVSLTRXefMU9uVEn3Ol2
+4OyWIcdWHYj8DgR7epN7EvHqHwbHNSh+U9/85JsSeYJDAfdyRdrW1afmenuf4Zzd
+1kfdrrra3ctQbyYYo+HHMskgVzB8I4guASHqGOlbLnC9V2nmyJ6Je5FDq1DbEJnA
+82H1pbgFZQ5AUxQ7MK/dTwLL5GkrQHHjddGoJyiDNSDuYYGefW/DCQvDosxbZAIr
+QEfEFtgPt/sTCn1TyU+fTMBdvrX/ybaTwkURDUxWDt95aWO+VsiZbcybKQ3QKPoU
+Oyzx0/PdA5cduzw9Ny3V9vbsdkiBRdYJh8Pfb4mXHPKdk6DONfI3aOwHLyxX9oz5
+mnl9z9ExNDPXPUnnIt2QZiBt232Bhxgvap6aUeO6d70DI2f5A8c=
+=mb4Y
+-----END PGP SIGNATURE-----
+
+--tyn6d3fmh7rrtjqg--
