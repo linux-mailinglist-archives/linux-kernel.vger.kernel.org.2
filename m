@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881174336B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4224336BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235744AbhJSNO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
+        id S235820AbhJSNPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhJSNOz (ORCPT
+        with ESMTP id S235795AbhJSNPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:14:55 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE04C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:12:42 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id g184so19298478pgc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:12:42 -0700 (PDT)
+        Tue, 19 Oct 2021 09:15:24 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37287C06161C;
+        Tue, 19 Oct 2021 06:13:11 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id w14so12678549edv.11;
+        Tue, 19 Oct 2021 06:13:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rg3Kgw5vrNE8ltWjJ/Ne3mXQemq6Bfc8CUmnwiMggRw=;
-        b=D6BSuqx0TWFkCEOBKE917Xo1JDqEEx9wA3q0Az+amnAPUVfuxM0vyEWVOsllwg3H2K
-         E6jvrPgzpFAdtBgQRzYpqgx24raI+8XbiKnFe0Z0VEmAdof1ew4kVWOFY4jwDSm++Wb/
-         Rc376WqNMDCvYmujsCRH4BMi2frzu6RATFIXo0kB0kbjTz/oWNcFKhxU3UkjoL0HDEXG
-         bjjUfifwQSlcEoi/dcodmv51hWSpXQoS0mxQ62qAzSwwByzAlPv+DGVtVw4uw4w0Q1Do
-         n7FxnE38TjXXUtQGp4VR3honnC3jiIqWHUoCEni9YlLDdVv+v6xSYy9i7mtiktFowRGs
-         hc9A==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iBrOklT6wRz3+4Sv0nSOix/uEw45k7IhgJcWd50H2V4=;
+        b=deOrvOSZJ7Ax/hHX/I0bj/ua6fjX1rP1DhOlu075couX1a3c1NVd1vCXiKTksJ8yXW
+         qp4uXHhYMHHGxeF0zRIXPw9gurIoJ3aRUNnKbOAe8ArOMSk57YGOgDvnqpZIjI5pEo4Z
+         cNOwb5tFsa/EZb+qlgBK9hUuhTQpDnP7tE1vX1OxMa5fUH/G9FCb1T2XFaA3XjPmvKVd
+         dPYjOPOJrqXvXlcYtNWa+RaDM/Y8Rn+1e9mqNRVeUb4kvgVK7Ntrb0cdAT9Ackzt55Vo
+         Nf7tiQol+2HlOzjTdRwPlexTUAyoCtbWQg81M4LN82vslZ3ear0azg0nfJ7vueyiZAuk
+         6H/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rg3Kgw5vrNE8ltWjJ/Ne3mXQemq6Bfc8CUmnwiMggRw=;
-        b=U+qcTgamFUCqc1AxPqLS1KmJY5V5AMbBvmL3Gb6vNNAzZ+ibmteBsClugVhK3+cCrt
-         r+8EIQ7J5/ecd/8oasC67GgknGMsT51Gv0heWPSQZ9YJmQEnp3DBQH6iw+Oo2OcJPS2b
-         CeZWXPDOOrjJL4RbLviV23ePsfVCiP/CuH97ay2o62b3Cl/4Qz6oVjzRlFeBqAVptvMb
-         yDByB2Jcw3CuWvo7okXTTGZiio1NlTYGEplhQJ5sGQh4f8OZcn2el5Y4JLq5r0nu6xp5
-         bgzIK64VahJ0ENxSD5TRnwomZjmWxtKxTBSR3ucExDjw5X3sjNk/Z7BEN7skna6BQmpY
-         IVZg==
-X-Gm-Message-State: AOAM533K8jkuEJBOFWZcr3+Dn9cFnOAQQuqag6Tgz5MY8wQ7Xpz1pRil
-        kcpAZ+6kspf7kRzXvs9ABAdBRw==
-X-Google-Smtp-Source: ABdhPJwcJIzKy4K/gAyjAYe2/KbWJInKZvxsFfmnIxMXkTdqq1VkXvuq6/T3HIw/Bokls8TqSs8O4Q==
-X-Received: by 2002:aa7:9ede:0:b0:44d:13c7:14a7 with SMTP id r30-20020aa79ede000000b0044d13c714a7mr35099523pfq.18.1634649162095;
-        Tue, 19 Oct 2021 06:12:42 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([148.163.172.147])
-        by smtp.gmail.com with ESMTPSA id 1sm5262347pfl.133.2021.10.19.06.12.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iBrOklT6wRz3+4Sv0nSOix/uEw45k7IhgJcWd50H2V4=;
+        b=z46AzwIuTv1NuFko8Y1Ujxdko7ZaghdKIJk2+YfCBAGi/zTd/MSCY8d8XJq2X6cHnC
+         Jema461/2mSMggsRdJ/VnEKIVrqlYwJcc5ZHDNAS7hzbhQwCj2TXsjQImfC4Llelb0U3
+         ORgk3hS41GByvKWcFQvMvhqyOzOuXcuTJK81sc7ox7T9VwaehdfDcCk0QZ/9+vuytr7a
+         CMrzoc5RXEH4tfZY6oJRzU1oIakQJ0k/WlJuPslK+MHyInK2m1dBO5tPUZD4fVc7bxaB
+         rBp7QYeOketbpAZG8yzVwWMa9dof73fRzk4gvh96igVp2hW/yhWKgWMYatpQ1UbzcuVN
+         hqJQ==
+X-Gm-Message-State: AOAM533uCeAwRDBvm9MJAVOS5yECWubObvSBhqUlz283bRX7231kC/44
+        uYGOzm4CE3l7P7SY/afx68M=
+X-Google-Smtp-Source: ABdhPJzP6RuvLFjU20H2PG1567GaG8/B+U9ZCxaQnE9gpZ3riwQ97C9SC3UHkFwm4W7diIY+IG7Xpg==
+X-Received: by 2002:a17:906:e104:: with SMTP id gj4mr36909389ejb.358.1634649169355;
+        Tue, 19 Oct 2021 06:12:49 -0700 (PDT)
+Received: from roman-Latitude-3400.. (178-133-75-113.mobile.vf-ua.net. [178.133.75.113])
+        by smtp.gmail.com with ESMTPSA id g2sm11334590edq.81.2021.10.19.06.12.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 06:12:41 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 21:12:34 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        James Clark <James.Clark@arm.com>
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-Message-ID: <20211019131234.GA221392@leoy-ThinkPad-X240s>
-References: <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
- <20211004122724.GC174271@leoy-ThinkPad-X240s>
- <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
- <20211006095124.GC14400@leoy-ThinkPad-X240s>
- <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
- <20211013003916.GA130842@leoy-ThinkPad-X240s>
- <20211013075125.GA6701@willie-the-truck>
- <35209d5c-6387-5248-ab61-a1e1cb0553de@arm.com>
- <20211017061305.GA130233@leoy-ThinkPad-X240s>
- <5e59784e-3f09-cfbc-1692-f3a5d85b0995@arm.com>
+        Tue, 19 Oct 2021 06:12:48 -0700 (PDT)
+From:   Roman Stratiienko <r.stratiienko@gmail.com>
+To:     linux-sunxi@lists.linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-usb@vger.kernel.org, jernej.skrabec@gmail.com, wens@csie.org,
+        mripard@kernel.org, b-liu@ti.com, megous@megous.com,
+        Roman Stratiienko <r.stratiienko@gmail.com>
+Subject: [PATCH] usb: musb: sunxi: Don't print error on MUSB_ULPI_BUSCONTROL access
+Date:   Tue, 19 Oct 2021 16:12:44 +0300
+Message-Id: <20211019131244.1568560-1-r.stratiienko@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e59784e-3f09-cfbc-1692-f3a5d85b0995@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi German,
+Error message appears during suspend, where musb driver is storing
+the register state in musb_save_context():
+```
+musb-sunxi 1c19000.usb: Error unknown readb offset 112
+```
 
-On Tue, Oct 19, 2021 at 10:23:01AM +0100, German Gomez wrote:
-> Hi Leo,
-> 
-> Yeah I agree the redundant AUX events are adding unnecessary bloat to
-> the perf.data file... We actually cam across this when doing one of the
-> test cases. Sorry for not reporting it!
+Print warning instead to avoid confusion.
 
-No worries.
+Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
+---
+ drivers/usb/musb/sunxi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-> Could we patch the driver in a separate patch set? Or do you think this
-> is critical for the purposes of this one?
+diff --git a/drivers/usb/musb/sunxi.c b/drivers/usb/musb/sunxi.c
+index f3f76f2ac63f9b..961c858fb349e1 100644
+--- a/drivers/usb/musb/sunxi.c
++++ b/drivers/usb/musb/sunxi.c
+@@ -440,6 +440,10 @@ static u8 sunxi_musb_readb(void __iomem *addr, u32 offset)
+ 				return 0xde;
+ 
+ 			return readb(addr + SUNXI_MUSB_CONFIGDATA);
++		case MUSB_ULPI_BUSCONTROL:
++			dev_warn(sunxi_musb->controller->parent,
++				"sunxi-musb does not have ULPI bus control register\n");
++			return 0;
+ 		/* Offset for these is fixed by sunxi_musb_busctl_offset() */
+ 		case SUNXI_MUSB_TXFUNCADDR:
+ 		case SUNXI_MUSB_TXHUBADDR:
+@@ -494,6 +498,10 @@ static void sunxi_musb_writeb(void __iomem *addr, unsigned offset, u8 data)
+ 			return writeb(data, addr + SUNXI_MUSB_TXFIFOSZ);
+ 		case MUSB_RXFIFOSZ:
+ 			return writeb(data, addr + SUNXI_MUSB_RXFIFOSZ);
++		case MUSB_ULPI_BUSCONTROL:
++			dev_warn(sunxi_musb->controller->parent,
++				"sunxi-musb does not have ULPI bus control register\n");
++			return;
+ 		/* Offset for these is fixed by sunxi_musb_busctl_offset() */
+ 		case SUNXI_MUSB_TXFUNCADDR:
+ 		case SUNXI_MUSB_TXHUBADDR:
+-- 
+2.30.2
 
-Yeah, we can take low priority for the redundant AUX events issue.
-
-Please take a look for the issue mentioned in another email for
-recording trace data with wrong size.  I think the issue for wrong
-snapshot trace size should have a fixing in Arm SPE driver, and the
-fixing need to be verified with the perf patches.  After that I am fine
-for merging the perf patches (and you could upstream kernel driver
-patches separately).  How about you think?
-
-Thanks,
-Leo
