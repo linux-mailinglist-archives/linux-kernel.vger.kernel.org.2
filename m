@@ -2,159 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6960D43344E
+	by mail.lfdr.de (Postfix) with ESMTP id B220643344F
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235473AbhJSLEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235444AbhJSLE3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:04:29 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9EEC061746;
-        Tue, 19 Oct 2021 04:02:16 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso1703205pjb.4;
-        Tue, 19 Oct 2021 04:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6+dHCDTEpaqypxNMT0rcakQRNLfKZkzPn3pC3wuFQcc=;
-        b=lZUef7uP6DnHKHtQNFD//yOobud2THUXMHhReFuEJQcYd+0HOhZZLour/WAmoEof9Y
-         fsPxT9VE0Hd9oClD0utwcrT8LjAl7Ogo1Qgl4Lwt9u72WEtLdKS5N7VabcihnFCOSQPo
-         gGJUoLBDVetehQOiOqxbCxlFmaU55cmMWL61rVTQWF6xrKUGJHD3IPHc7XD48tg8sPLE
-         bgOexpKOBSDE3hx+FRR/74+uRlWVhJNPVUae6AqiHvLbYNIPE1gQmLugGDFeZrS+gcAf
-         1eKIcOoIMMJJwABe2lI8uL6NQJYuIZtxdmkRbR9NcD+plP4FfIkQYrvtauC705aKUh6c
-         66Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6+dHCDTEpaqypxNMT0rcakQRNLfKZkzPn3pC3wuFQcc=;
-        b=TNlt3GXqIX+ttqGo3uDrksNr5GVkbG8Pb4G5n9zl0lYWfESR4V1QAdrHa7u/SyY+uL
-         3QUcElXzEBVfJDAcLa/DnZAaWfWOy89XYErO245THBy+byAfzl9eNM3IA7v5KnpanY1K
-         rp4JisRixoeGdhc6ykUoiotZtfvfhpxMj6hkGNRvVCJnkjwbiNv5wgSu7ViQMiLyR19d
-         3pCFG3Fan1V2mqO7JR7WxkF9ajTInyZ6u2WxJsE5cLzS6q4YqnnQ43o6Aa5ZpMORCyVd
-         MgTAZHUuuGVbz18KlmBexv9mVrx0PkrxGjmoSUFM3lW2m3e5Sah4uJ3tmb+SFcMy+D/z
-         NZVg==
-X-Gm-Message-State: AOAM533vUkCOYPC0iyT2lgoaK1vNxE5xgeOKT+1Dx8gNKkzwWpTDFj05
-        7cX0W0XvjNcYknsQcoOZ426UPL/nD1s=
-X-Google-Smtp-Source: ABdhPJwtN8VkQB3KsRA3kACXZEYdwRab04jxqJ8CX8CSk2Jg0mm/AyFNLVHgC0Hr0yY4VhKJLxcYBQ==
-X-Received: by 2002:a17:90b:1910:: with SMTP id mp16mr5702421pjb.30.1634641336151;
-        Tue, 19 Oct 2021 04:02:16 -0700 (PDT)
-Received: from localhost ([47.88.60.64])
-        by smtp.gmail.com with ESMTPSA id i124sm16462896pfc.153.2021.10.19.04.02.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Oct 2021 04:02:15 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 4/4] KVM: X86: Don't unload MMU in kvm_vcpu_flush_tlb_guest()
-Date:   Tue, 19 Oct 2021 19:01:54 +0800
-Message-Id: <20211019110154.4091-5-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20211019110154.4091-1-jiangshanlai@gmail.com>
-References: <20211019110154.4091-1-jiangshanlai@gmail.com>
+        id S235381AbhJSLFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:05:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235319AbhJSLFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:05:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DB8960241;
+        Tue, 19 Oct 2021 11:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634641382;
+        bh=ELLDNUa7AYT/pHZy7nOn4cGW1dErgUPv0UCQO5aCIRE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mVDjPEtJobNVi24Khf35bYrflQP4ZlKdNmrkOac9gYqktk0U3go0hIis7CrMLoAI0
+         bXqIaW6Serb7XymnaTHQmnVAevG+08HcxR3k53Jpx4cFZjxvJPXXExb8QYz9BIQu3b
+         dv5qIPc3nehTkkHMAEDE3YRKf5Po3XLS3i8MJD6biV3kEDaH1AF8xBzwNksW3q4pTm
+         9KsOjJAKgGqZlNUzHUQp5TSd0u25gcK0oWyg+4PIfjWGSqh4+JOhQc6Mi/5eXZJ0zu
+         pLF1jh0zHAA0Qt0VuOE7Lfq5rwfOxtQ49q6W+h3/M4MH5fGiCcyBhZapDAdfsrlZGg
+         7Phf7vcGmvbfQ==
+Date:   Tue, 19 Oct 2021 12:02:34 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     mathieu.poirier@linaro.org, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v5 03/15] arm64: errata: Add workaround for TSB flush
+ failures
+Message-ID: <20211019110233.GD13251@willie-the-truck>
+References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
+ <20211014223125.2605031-4-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014223125.2605031-4-suzuki.poulose@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Thu, Oct 14, 2021 at 11:31:13PM +0100, Suzuki K Poulose wrote:
+> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
+> index ccd757373f36..bdbeac75ead6 100644
+> --- a/arch/arm64/kernel/cpu_errata.c
+> +++ b/arch/arm64/kernel/cpu_errata.c
+> @@ -352,6 +352,18 @@ static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
+>  };
+>  #endif	/* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
+>  
+> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
+> +static const struct midr_range tsb_flush_fail_cpus[] = {
+> +#ifdef CONFIG_ARM64_ERRATUM_2067961
+> +	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
+> +#endif
+> +#ifdef CONFIG_ARM64_ERRATUM_2054223
+> +	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
+> +#endif
+> +	{},
+> +};
+> +#endif	/* CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
+> +
+>  const struct arm64_cpu_capabilities arm64_errata[] = {
+>  #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
+>  	{
+> @@ -558,6 +570,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
+>  		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
+>  		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
+>  	},
+> +#endif
+> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
 
-kvm_mmu_unload() destroys all the PGD caches.  Use the lighter
-kvm_mmu_sync_roots() and kvm_mmu_sync_prev_roots() instead.
+You still haven't fixed this typo...
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/kvm/mmu.h     |  1 +
- arch/x86/kvm/mmu/mmu.c | 16 ++++++++++++++++
- arch/x86/kvm/x86.c     | 11 +++++------
- 3 files changed, 22 insertions(+), 6 deletions(-)
+Seriously, I get compile warnings from this -- are you not seeing them?
 
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 1ae70efedcf4..8e9dd63b68a9 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -79,6 +79,7 @@ int kvm_handle_page_fault(struct kvm_vcpu *vcpu, u64 error_code,
- int kvm_mmu_load(struct kvm_vcpu *vcpu);
- void kvm_mmu_unload(struct kvm_vcpu *vcpu);
- void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu);
-+void kvm_mmu_sync_prev_roots(struct kvm_vcpu *vcpu);
- 
- static inline int kvm_mmu_reload(struct kvm_vcpu *vcpu)
- {
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 900c7a157c99..fb45eeb8dd22 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3634,6 +3634,9 @@ static bool is_unsync_root(hpa_t root)
- {
- 	struct kvm_mmu_page *sp;
- 
-+	if (!VALID_PAGE(root))
-+		return false;
-+
- 	/*
- 	 * Even if another CPU was marking the SP as unsync-ed simultaneously,
- 	 * any guest page table changes are not guaranteed to be visible anyway
-@@ -3706,6 +3709,19 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
- 	write_unlock(&vcpu->kvm->mmu_lock);
- }
- 
-+void kvm_mmu_sync_prev_roots(struct kvm_vcpu *vcpu)
-+{
-+	unsigned long roots_to_free = 0;
-+	int i;
-+
-+	for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
-+		if (is_unsync_root(vcpu->arch.mmu->prev_roots[i].hpa))
-+			roots_to_free |= KVM_MMU_ROOT_PREVIOUS(i);
-+
-+	/* sync prev_roots by simply freeing them */
-+	kvm_mmu_free_roots(vcpu, vcpu->arch.mmu, roots_to_free);
-+}
-+
- static gpa_t nonpaging_gva_to_gpa(struct kvm_vcpu *vcpu, gpa_t vaddr,
- 				  u32 access, struct x86_exception *exception)
- {
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 13df3ca88e09..1771cd4bb449 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3251,15 +3251,14 @@ static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
- 	++vcpu->stat.tlb_flush;
- 
- 	if (!tdp_enabled) {
--               /*
-+		/*
- 		 * A TLB flush on behalf of the guest is equivalent to
- 		 * INVPCID(all), toggling CR4.PGE, etc., which requires
--		 * a forced sync of the shadow page tables.  Unload the
--		 * entire MMU here and the subsequent load will sync the
--		 * shadow page tables, and also flush the TLB.
-+		 * a forced sync of the shadow page tables.  Ensure all the
-+		 * roots are synced and the guest TLB in hardware is clean.
- 		 */
--		kvm_mmu_unload(vcpu);
--		return;
-+		kvm_mmu_sync_roots(vcpu);
-+		kvm_mmu_sync_prev_roots(vcpu);
- 	}
- 
- 	static_call(kvm_x86_tlb_flush_guest)(vcpu);
--- 
-2.19.1.6.gb485710b
-
+Will
