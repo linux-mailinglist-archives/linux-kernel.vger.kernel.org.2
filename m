@@ -2,96 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC61F4336FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D2C4336FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235622AbhJSN2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhJSN2a (ORCPT
+        id S235842AbhJSN2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:28:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59936 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235754AbhJSN2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:28:30 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5E1C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:26:17 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id kk10so14746199pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:26:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=or8Ipmp1IuPITyJB/TiRcaMpJVnR5kcP60YFXBqqS1I=;
-        b=cu6g7VaBRgn01oP0CdKLJmYNPxNd3Kgi5L/EcqgU37OBmWA6eLNW6m+Hv2oFmpDtEI
-         QzJip+Zu7fpPjUg0tXw6yDHZR17UqSfXF/VjmfkKwnqSuTcxjk0RPYAAnR/6Hi+PR+7+
-         tQQhIBBQ2J361Hnz9a34IoNxzNymtOBG+reymAWl5Etqw9xkykMNIz4Pze26IiYw0XZJ
-         mhA+HLRXSBP3POw44j0ljWh1dTo1wZq++P1MxrOIj0m66pOvQxnb4g5JhYLqj7d17A2y
-         McT1ftuwiGB4jzdSxCkafEB4uR4d6KC5GOdarnP7MmgJg88hxgcRadJdHvwAM5NULrwt
-         TGng==
+        Tue, 19 Oct 2021 09:28:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634649985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bUbADiikNrKItOeyvl1XlM9vGXDNaqE+WJmF5wYrcJI=;
+        b=CYuXVRkmsVbk9lVVonDcwaJdK1mpvpjCwXNytbPFKqBtZWbQj6FJEPXJT3NcIyqTfD0pbZ
+        XXhDvzdnEAZIhkdGs5ms6KSekX4SKUyGI2TxTsba3HVZ6pCuo8TgYUD2F1wibtTpnOMXtn
+        aTW4/TK/7dOXhzWGA2SyDxotWhkraIs=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-xsvtD3TmMFWVuXj4sndsTA-1; Tue, 19 Oct 2021 09:26:24 -0400
+X-MC-Unique: xsvtD3TmMFWVuXj4sndsTA-1
+Received: by mail-ed1-f69.google.com with SMTP id d3-20020a056402516300b003db863a248eso17557151ede.16
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:26:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=or8Ipmp1IuPITyJB/TiRcaMpJVnR5kcP60YFXBqqS1I=;
-        b=CDwHK4L91iRWMA8qBfKaMvbnSwoQJG+qMEO1vPd6LSRtepOSxOHy6J1xOcxDDLUIOh
-         tJUOZnZjELRkQPAfw/D3IMSTt5FoCDbAoHELcrqOnQ5G/HaDF8hoCg1iMyQQ1RhMMUhB
-         aXjq6DY/5V3k+fqL4Pz0Vyc6VdHre3IuUaviComTgOGxLyX8XdozfSBZD+hK9fX6lbsj
-         kTvQzfKCCtP15516/oQH4sbOHY5++wEARwHDLXCtk8v8wIRC7R8xnEr181ZZ4cMH7tR7
-         5r6/32mKLgqTHySQXR8eUSnK/+orV/MaclMX4vhUF0KmxdROLBuRWIUrLx92UFv9cqdw
-         nSdw==
-X-Gm-Message-State: AOAM5333vZA2B2gC6tMbfN/LLv8IHqDS36MVqSLS201olet7kajnah4t
-        3P+wtVm8VxFyVGnfntO+2csz
-X-Google-Smtp-Source: ABdhPJyt+9QxKogVBYcrXpPsn8dfe3yEg3R/m+Q+od/qJUlqh62gci/1z6OjYVgpks85+cnyqHC6UQ==
-X-Received: by 2002:a17:90b:4c8d:: with SMTP id my13mr6687112pjb.101.1634649976785;
-        Tue, 19 Oct 2021 06:26:16 -0700 (PDT)
-Received: from workstation ([202.21.43.8])
-        by smtp.gmail.com with ESMTPSA id g11sm15993807pgn.41.2021.10.19.06.26.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 Oct 2021 06:26:16 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 18:56:12 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, wangqing@vivo.com, mhi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] MAINTAINERS: Update the entry for MHI bus
-Message-ID: <20211019132612.GA4851@workstation>
-References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
- <20211016065734.28802-2-manivannan.sadhasivam@linaro.org>
- <661c564c-e6cd-cbd4-0b17-a7c230d911b2@codeaurora.org>
- <YW64/hzKom7MiVDV@kroah.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=bUbADiikNrKItOeyvl1XlM9vGXDNaqE+WJmF5wYrcJI=;
+        b=huFWptDX1YOjrFJqaLCOsZ7TXXuArXOML5AhB+AJ12ApuqN1UVfDRpBSX0x4DhqyAe
+         rxq7xVFzx1agYyE9DskOdYA0nwRtQe+mLf1m0czshZMoGzxrlcEPyjr3NAXx86nQjma+
+         g7gProuyy46qEe1DcFWoU+1dsAJCvGo1pWRydU13D+11jE/6AejKylMcesWTVQnsUkmf
+         RNFor9QVy0FfdVZ7P2jkxJlbYDPtY2SuqbERf7S5u7VPpfNANONTMkkHvNxHjnUjp9WY
+         XNtkcEyiMQbBfsNH2kyDlHz9GJzYkBHfjb2TsFm5srq/X/iGrt38ayQRVkEnZsX9JHlD
+         JRCA==
+X-Gm-Message-State: AOAM532hdtY4QWh4YDnsRAfngEH50b5YU5/DSdCjyFHCM/14sGly98o2
+        EfYLE7FXnn53Fp1ko8N7rEYnetu+Zh1LaQ7Zvs71NNXHB3jC/N0zHYuALOFqxQhU1uYi5Azihn2
+        7mKIL9LRZNczRzz5O7DYmg7nA
+X-Received: by 2002:a50:9e43:: with SMTP id z61mr8607126ede.278.1634649983165;
+        Tue, 19 Oct 2021 06:26:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy62EfSYdgDeaHrlAb3736SelVSwBK7IJhVFYkdE/gexnUl7p1lCZQACzD7HUYMujU/YRH2Pg==
+X-Received: by 2002:a50:9e43:: with SMTP id z61mr8607094ede.278.1634649982960;
+        Tue, 19 Oct 2021 06:26:22 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id q14sm10102365eji.63.2021.10.19.06.26.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 06:26:22 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 15:26:21 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
+Message-ID: <YW7HfV9+UiuYxt7N@krava>
+References: <20211008091336.33616-1-jolsa@kernel.org>
+ <20211008091336.33616-8-jolsa@kernel.org>
+ <20211014162819.5c85618b@gandalf.local.home>
+ <YWluhdDMfkNGwlhz@krava>
+ <20211015100509.78d4fb01@gandalf.local.home>
+ <YWq6C69rQhUcAGe+@krava>
+ <20211018221015.3f145843@gandalf.local.home>
+ <YW7F8kTc3Bl8AkVx@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YW64/hzKom7MiVDV@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YW7F8kTc3Bl8AkVx@krava>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 02:24:30PM +0200, Greg KH wrote:
-> On Mon, Oct 18, 2021 at 09:19:16PM -0700, Hemant Kumar wrote:
+On Tue, Oct 19, 2021 at 03:19:48PM +0200, Jiri Olsa wrote:
+> On Mon, Oct 18, 2021 at 10:10:15PM -0400, Steven Rostedt wrote:
+> > On Sat, 16 Oct 2021 13:39:55 +0200
+> > Jiri Olsa <jolsa@redhat.com> wrote:
 > > 
-> > 
-> > On 10/15/2021 11:57 PM, Manivannan Sadhasivam wrote:
-> > > Since Hemant is not carrying out any maintainership duties let's make
-> > > him as a dedicated reviewer. Also add the new mailing lists dedicated
-> > > for MHI in subspace mailing list server.
+> > > On Fri, Oct 15, 2021 at 10:05:09AM -0400, Steven Rostedt wrote:
+> > > > On Fri, 15 Oct 2021 14:05:25 +0200
+> > > > Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >   
+> > > > > ATM I'm bit stuck on the bpf side of this whole change, I'll test
+> > > > > it with my other changes when I unstuck myself ;-)  
+> > > > 
+> > > > If you want, I'll apply this as a separate change on top of your patch set.
+> > > > As I don't see anything wrong with your current code.
+> > > > 
+> > > > And when you are satisfied with this, just give me a "tested-by" and I'll
+> > > > push it too.  
 > > > 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > sounds great, thanks
+> > > jirka
 > > 
-> > Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> > Would you want to ack/review this?
 > 
-> Great, Manivannan, can you resend just this patch with this reviewed-by
-> so that I can apply it?
+> hum, do you have it in some branch already? I'm getting:
 > 
+> patching file kernel/trace/ftrace.c
+> Hunk #1 succeeded at 5521 with fuzz 1 (offset -40 lines).
+> Hunk #2 FAILED at 5576.
+> Hunk #3 succeeded at 5557 (offset -44 lines).
+> 1 out of 3 hunks FAILED -- saving rejects to file kernel/trace/ftrace.c.rej
+> 
+> 
+> when trying to apply on top of my changes
 
-Sure, will do. I thought I could also send the modified version of patch 2 of
-this series but we ran out of time :/
+I updated my ftrace/direct branch, it actually still had the previous
+version.. sorry, perhaps this is the cause of fuzz
 
-Thanks,
-Mani
+jirka
 
+> 
 > thanks,
+> jirka
 > 
-> greg k-h
+> > 
+> > -- Steve
+> > 
+> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> > Subject: [PATCH] ftrace/direct: Do not disable when switching direct callers
+> > 
+> > Currently to switch a set of "multi" direct trampolines from one
+> > trampoline to another, a full shutdown of the current set needs to be
+> > done, followed by an update to what trampoline the direct callers would
+> > call, and then re-enabling the callers. This leaves a time when the
+> > functions will not be calling anything, and events may be missed.
+> > 
+> > Instead, use a trick to allow all the functions with direct trampolines
+> > attached will always call either the new or old trampoline while the
+> > switch is happening. To do this, first attach a "dummy" callback via
+> > ftrace to all the functions that the current direct trampoline is attached
+> > to. This will cause the functions to call the "list func" instead of the
+> > direct trampoline. The list function will call the direct trampoline
+> > "helper" that will set the function it should call as it returns back to
+> > the ftrace trampoline.
+> > 
+> > At this moment, the direct caller descriptor can safely update the direct
+> > call trampoline. The list function will pick either the new or old
+> > function (depending on the memory coherency model of the architecture).
+> > 
+> > Now removing the dummy function from each of the locations of the direct
+> > trampoline caller, will put back the direct call, but now to the new
+> > trampoline.
+> > 
+> > A better visual is:
+> > 
+> > [ Changing direct call from my_direct_1 to my_direct_2 ]
+> > 
+> >   <traced_func>:
+> >      call my_direct_1
+> > 
+> >  ||||||||||||||||||||
+> >  vvvvvvvvvvvvvvvvvvvv
+> > 
+> >   <traced_func>:
+> >      call ftrace_caller
+> > 
+> >   <ftrace_caller>:
+> >     [..]
+> >     call ftrace_ops_list_func
+> > 
+> > 	ftrace_ops_list_func()
+> > 	{
+> > 		ops->func() -> direct_helper -> set rax to my_direct_1 or my_direct_2
+> > 	}
+> > 
+> >    call rax (to either my_direct_1 or my_direct_2
+> > 
+> >  ||||||||||||||||||||
+> >  vvvvvvvvvvvvvvvvvvvv
+> > 
+> >   <traced_func>:
+> >      call my_direct_2
+> > 
+> > Link: https://lore.kernel.org/all/20211014162819.5c85618b@gandalf.local.home/
+> > 
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > ---
+> >  kernel/trace/ftrace.c | 33 ++++++++++++++++++++-------------
+> >  1 file changed, 20 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > index 30120342176e..7ad1e8ae5855 100644
+> > --- a/kernel/trace/ftrace.c
+> > +++ b/kernel/trace/ftrace.c
+> > @@ -5561,8 +5561,12 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
+> >   */
+> >  int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> >  {
+> > -	struct ftrace_hash *hash = ops->func_hash->filter_hash;
+> > +	struct ftrace_hash *hash;
+> >  	struct ftrace_func_entry *entry, *iter;
+> > +	static struct ftrace_ops tmp_ops = {
+> > +		.func		= ftrace_stub,
+> > +		.flags		= FTRACE_OPS_FL_STUB,
+> > +	};
+> >  	int i, size;
+> >  	int err;
+> >  
+> > @@ -5572,21 +5576,22 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> >  		return -EINVAL;
+> >  
+> >  	mutex_lock(&direct_mutex);
+> > -	mutex_lock(&ftrace_lock);
+> > +
+> > +	/* Enable the tmp_ops to have the same functions as the direct ops */
+> > +	ftrace_ops_init(&tmp_ops);
+> > +	tmp_ops.func_hash = ops->func_hash;
+> > +
+> > +	err = register_ftrace_function(&tmp_ops);
+> > +	if (err)
+> > +		goto out_direct;
+> >  
+> >  	/*
+> > -	 * Shutdown the ops, change 'direct' pointer for each
+> > -	 * ops entry in direct_functions hash and startup the
+> > -	 * ops back again.
+> > -	 *
+> > -	 * Note there is no callback called for @ops object after
+> > -	 * this ftrace_shutdown call until ftrace_startup is called
+> > -	 * later on.
+> > +	 * Now the ftrace_ops_list_func() is called to do the direct callers.
+> > +	 * We can safely change the direct functions attached to each entry.
+> >  	 */
+> > -	err = ftrace_shutdown(ops, 0);
+> > -	if (err)
+> > -		goto out_unlock;
+> > +	mutex_lock(&ftrace_lock);
+> >  
+> > +	hash = ops->func_hash->filter_hash;
+> >  	size = 1 << hash->size_bits;
+> >  	for (i = 0; i < size; i++) {
+> >  		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
+> > @@ -5597,10 +5602,12 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> >  		}
+> >  	}
+> >  
+> > -	err = ftrace_startup(ops, 0);
+> > +	/* Removing the tmp_ops will add the updated direct callers to the functions */
+> > +	unregister_ftrace_function(&tmp_ops);
+> >  
+> >   out_unlock:
+> >  	mutex_unlock(&ftrace_lock);
+> > + out_direct:
+> >  	mutex_unlock(&direct_mutex);
+> >  	return err;
+> >  }
+> > -- 
+> > 2.31.1
+> > 
+
