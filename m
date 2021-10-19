@@ -2,86 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651B1433894
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EDA433899
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbhJSOou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:44:50 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35988 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhJSOot (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:44:49 -0400
-Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8606012A;
-        Tue, 19 Oct 2021 16:42:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1634654555;
-        bh=rxp6PMBsDJjGA2wH/eGe+dqU2991TJOOwj2FEZEGGiU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=KCo5atH4zp/Z5y88JzcnrVAd8Gs2RAhpmhcgdx462FrtLgCxAFWPGI1rek2yxj0LG
-         XtL2l8nDkYucsGEJAhqyiZ4NgF1gezbU/Ie8LxTWKW8CqA5dot5WmR3qo8tXbmVJc6
-         EiJEeZOuaPuiMBab4231e7OtuIbizKtNsiEDUPyQ=
-Content-Type: text/plain; charset="utf-8"
+        id S231318AbhJSOqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:46:20 -0400
+Received: from vern.gendns.com ([98.142.107.122]:49254 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229584AbhJSOqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 10:46:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=L8VL5ArDykffnlkPO1OTtII+oPNsIDaz69+QNBhUbVs=; b=iJ1ubvRJ/ags9sMFu4AeSgHr/p
+        Y0u1OuvMpg0k/opyYilV4m683rxNedxHyL2HrCfYcKorNglnq/3ZRqsMnliSyYOUslHNgW4Ae5c/3
+        N6+RSjPSWsNSUJC/OwP+4bn6J4ZuEpLdhJi4nd7BFjwkSdN+7sKVtSHafi52Ez1ziaQ2RCg1tdMno
+        rCnN7KhzL+3tQa6CHPtulOhHVL4sofsqgyUirzYYS9ylwRWZjRMQjhJwWaGD8029BNzzXn+agaYC2
+        alEJX97pCkf5qsq1UOxh5Zo5QW56TPPlPyZP1OZV5vKONhsdteGMOGBT9WK1a+rzoUf1TfzMLdSJ1
+        4oWpmaHA==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:39122 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <david@lechnology.com>)
+        id 1mcqLP-0000Qo-SO; Tue, 19 Oct 2021 10:44:05 -0400
+Subject: Re: [PATCH] counter: drop chrdev_lock
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211017185521.3468640-1-david@lechnology.com>
+ <YW0673OckeCY6Qs/@shinobu>
+ <e8158cd7-fbde-5a9a-f4d9-a863745e3d58@lechnology.com>
+ <YW5rVLrbrVVJ75SY@shinobu> <YW5uxIQ1WuW66cf0@kroah.com>
+ <YW5xUtWdvW5zHFx5@shinobu>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <c0a4cd67-6046-b06d-c33c-c0f3374d0b52@lechnology.com>
+Date:   Tue, 19 Oct 2021 09:44:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20211019090020.11724-1-Meng.Li@windriver.com>
-References: <20211019090020.11724-1-Meng.Li@windriver.com>
-Subject: Re: [PATCH] arch: arm64: dts: Set gpio5-pin9 as input by default
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, meng.li@windriver.com
-To:     Meng Li <Meng.Li@windriver.com>, geert+renesas@glider.be,
-        magnus.damm@gmail.com, robh+dt@kernel.org
-Date:   Tue, 19 Oct 2021 15:42:33 +0100
-Message-ID: <163465455377.2083150.11106861856940757460@Monstersaurus>
-User-Agent: alot/0.9.2
+In-Reply-To: <YW5xUtWdvW5zHFx5@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Meng Li (2021-10-19 10:00:20)
-> The gpio5-pin9 is used as the interrupt pin of i2c external
-> gpio chip, so set this pin as input by default.
+On 10/19/21 2:18 AM, William Breathitt Gray wrote:
+> On Tue, Oct 19, 2021 at 09:07:48AM +0200, Greg KH wrote:
+>> On Tue, Oct 19, 2021 at 03:53:08PM +0900, William Breathitt Gray wrote:
+>>> On Mon, Oct 18, 2021 at 11:03:49AM -0500, David Lechner wrote:
+>>>> On 10/18/21 4:14 AM, William Breathitt Gray wrote:
+>>>>> On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
+>>>>>> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
+>>>>>> index 1ccd771da25f..7bf8882ff54d 100644
+>>>>>> --- a/drivers/counter/counter-sysfs.c
+>>>>>> +++ b/drivers/counter/counter-sysfs.c
+>>>>>> @@ -796,25 +796,18 @@ static int counter_events_queue_size_write(struct counter_device *counter,
+>>>>>>    					   u64 val)
+>>>>>>    {
+>>>>>>    	DECLARE_KFIFO_PTR(events, struct counter_event);
+>>>>>> -	int err = 0;
+>>>>>> -
+>>>>>> -	/* Ensure chrdev is not opened more than 1 at a time */
+>>>>>> -	if (!atomic_add_unless(&counter->chrdev_lock, 1, 1))
+>>>>>> -		return -EBUSY;
+>>>>>> +	int err;
+>>>>>>    
+>>>>>>    	/* Allocate new events queue */
+>>>>>>    	err = kfifo_alloc(&events, val, GFP_KERNEL);
+>>>>>>    	if (err)
+>>>>>> -		goto exit_early;
+>>>>>> +		return err;
+>>>>>>    
+>>>>>>    	/* Swap in new events queue */
+>>>>>>    	kfifo_free(&counter->events);
+>>>>>>    	counter->events.kfifo = events.kfifo;
+>>>>>
+>>>>> Do we need to hold the events_lock mutex here for this swap in case
+>>>>> counter_chrdev_read() is in the middle of reading the kfifo to
+>>>>> userspace, or do the kfifo macros already protect us from a race
+>>>>> condition here?
+>>>>>
+>>>> Another possibility might be to disallow changing the size while
+>>>> events are enabled. Otherwise, we also need to protect against
+>>>> write after free.
+>>>>
+>>>> I considered this:
+>>>>
+>>>> 	swap(counter->events.kfifo, events.kfifo);
+>>>> 	kfifo_free(&events);
+>>>>
+>>>> But I'm not sure that would be safe enough.
+>>>
+>>> I think it depends on whether it's safe to call kfifo_free() while other
+>>> kfifo_*() calls are executing. I suspect it is not safe because I don't
+>>> think kfifo_free() waits until all kfifo read/write operations are
+>>> finished before freeing -- but if I'm wrong here please let me know.
+>>>
+>>> Because of that, will need to hold the counter->events_lock afterall so
+>>> that we don't modify the events fifo while a kfifo read/write is going
+>>> on, lest we suffer an address fault. This can happen regardless of
+>>> whether you swap before or after the kfifo_free() because the old fifo
+>>> address could still be in use within those uncompleted kfifo_*() calls
+>>> if they were called before the swap but don't complete before the
+>>> kfifo_free().
+>>>
+>>> So we have a problem now that I think you have already noticed: the
+>>> kfifo_in() call in counter_push_events() also needs protection, but it's
+>>> executing within an interrupt context so we can't try to lock a mutex
+>>> lest we end up sleeping.
+>>>
+>>> One option we have is as you suggested: we disallow changing size while
+>>> events are enabled. However, that will require us to keep track of when
+>>> events are disabled and implement a spinlock to ensure that we don't
+>>> disable events in the middle of a kfifo_in().
+>>>
+>>> Alternatively, we could change events_lock to a spinlock and use it to
+>>> protect all these operations on the counter->events fifo. Would this
+>>> alternative be a better option so that we avoid creating another
+>>> separate lock?
+>>
+>> I would recommend just having a single lock here if at all possible,
+>> until you determine that there a performance problem that can be
+>> measured that would require it to be split up.
+>>
+>> thanks,
+>>
+>> greg k-h
+> 
+> All right let's go with a single events_lock spinlock then. David, if
+> you make those changes and submit a v2, I'll be okay with this patch and
+> can provide my ack for it.
+> 
 
-Is a GPIO hog the right way to do this?
-Shouldn't the other GPIO chip be modelled in DT and reference the gpio
-interrupt line from there in its interrupt property?
+We can't use a spin lock for everything since there are operations
+that can sleep that need to be in the critical sections. Likewise,
+we can't use a mutex for everything since some critical sections
+are in interrupt handlers. But, I suppose we can try combining
+the existing mutexes. Since the kfifo is accessed from both
+contexts, it seems like it still needs more consideration than
+just a mutex or a spin lock, e.g. if events are enabled, don't
+allow swapping out the kfifo buffer.
 
-I assume by 'external gpio chip' you mean one which is permanantly
-attached to the ULCB Kingfisher board, and not a custom addition?
-
---
-Regards
-Kieran
-
->=20
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
-> ---
->  arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 9 +++++++++
->  1 file changed, 9 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/d=
-ts/renesas/ulcb-kf.dtsi
-> index 202177706cde..8986a7e6e099 100644
-> --- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-> @@ -205,6 +205,15 @@
->         };
->  };
-> =20
-> +&gpio5 {
-> +       gpio_exp_77_int {
-> +               gpio-hog;
-> +               gpios =3D <9 0>;
-> +               input;
-> +               line-name =3D "gpio-exp-77-int";
-> +       };
-> +};
-> +
->  &i2c4 {
->         i2cswitch4: i2c-switch@71 {
->                 compatible =3D "nxp,pca9548";
-> --=20
-> 2.17.1
->
