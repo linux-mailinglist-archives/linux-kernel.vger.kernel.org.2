@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B209E43387F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4088433882
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhJSOkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
+        id S231234AbhJSOkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhJSOkE (ORCPT
+        with ESMTP id S229755AbhJSOkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:40:04 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A13C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:37:52 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id om14so77431pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:37:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CIecaATj4T4Z7qYQY+MZOASityIhhLivg5T3isTLezg=;
-        b=K+IX3Vwyw6PvNlEeKvoJECnjpAQ+tkGq8g2/R/3Z48+kM7c1VCYYreHnYbMVVFcOof
-         uXLGvd/NkaIadqfUYAMerkL7JOTWBdXxnwHN7h2Q5GQSyoNPRzoHwNqVWloSN3/255CH
-         SP+rJfm7Ec4Y32ZlfD/ieoW6c9JqcgMHE748Rudvu0cIPIwrwVPmY5kp6mDGOs7ZssjT
-         MHByEPF1i2tmet0mT3njVAbtQdJTuVPG0vVYKccX49R5xQcEDuUXQKy5OSyz3fMXSUfJ
-         iXsbXp/yXl77AovgvglF9qZ1jTiCaV71XNAaektdjAcWYR6d5TgCJbG8TnkAb7Onn7xJ
-         7JsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CIecaATj4T4Z7qYQY+MZOASityIhhLivg5T3isTLezg=;
-        b=XDnOh/6A9+Uz6H+0K0pL8o0cCeb1ipGCLQpnsxyB/5xrYQYAZY6up/WzRFyRjns+ot
-         jcotnr57YI8dLDdELDJvyKl7CMMYiD/L1eZ0PcQwyd1mJVZ6n9iijztb3+G6O9uFKzX5
-         FDuqXfLoPp3q8lFue+B+2TvZUZqpmUnLxHqBh4ADuthmvICTF5gXHQ3Lw8+10za044UR
-         XPHIVCvst2bb/mcYYava3AZIqH1WqhXKavPe+UUnGbrq+LGUfggdEdVkTgb2QCrJGeI2
-         nX4NrLGbQbjE+kkJnAvahlmW9zxR/ETL71unZTDF4hlVTveTpoOHeam1rN4spvxPecrg
-         whdA==
-X-Gm-Message-State: AOAM531GeQzcCYtJQPoexwv+WctEvOYoHXEk2pt8y0yHkmXwS7tQhw/3
-        Hr9qyRxiqgGpDCcPMO5PcSdDWg==
-X-Google-Smtp-Source: ABdhPJwi1zRSay/RiMuygWybe3OJlMn3edmEEKlLPd7Fpn5/Gz2ZpgAXfHwv4popfZhhKukTBL9uFg==
-X-Received: by 2002:a17:90a:f292:: with SMTP id fs18mr128645pjb.229.1634654271626;
-        Tue, 19 Oct 2021 07:37:51 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id s20sm2167476pfk.131.2021.10.19.07.37.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 07:37:51 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 20:07:48 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>, wsa@kernel.org,
-        jie.deng@intel.com, virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
-Message-ID: <20211019143748.wrpqopj2hmpvblh4@vireshk-i7>
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
- <20211019074647.19061-2-vincent.whitchurch@axis.com>
- <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
- <YW6Rj/T6dWfMf7lU@kroah.com>
- <20211019094203.3kjzch7ipbdv7peg@vireshk-i7>
- <YW6pHkXOPvtidtwS@kroah.com>
+        Tue, 19 Oct 2021 10:40:39 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F152EC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:38:26 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id CA94A1F43B5F
+Subject: Re: [PATCH] arm64: defconfig: enable regulator to fix mt8173
+ regression
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, "kernelci.org bot" <bot@kernelci.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>
+References: <20211011125301.3440033-1-adrian.ratiu@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <bd29b949-0ec1-704f-73de-c36b5120b445@collabora.com>
+Date:   Tue, 19 Oct 2021 16:38:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW6pHkXOPvtidtwS@kroah.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20211011125301.3440033-1-adrian.ratiu@collabora.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-10-21, 13:16, Greg KH wrote:
-> On Tue, Oct 19, 2021 at 03:12:03PM +0530, Viresh Kumar wrote:
-> > On 19-10-21, 11:36, Greg KH wrote:
-> > > What is the "other side" here?  Is it something that you trust or not?
-> > 
-> > Other side can be a remote processor (for remoteproc over virtio or
-> > something similar), or traditionally it can be host OS or host
-> > firmware providing virtualisation to a Guest running Linux (this
-> > driver). Or something else..
-> > 
-> > I would incline towards "we trust the other side" here.
+Il 11/10/21 14:53, Adrian Ratiu ha scritto:
+> A regression was introduced on some mediatek boards starting with
+> v5.15-rc1 in commit 109fd20601e2b ("arm64: dts: mediatek: mt8173:
+> Add domain supply for mfg_async") which effectively changed the
+> regulator from the always-on dummy to DA9211 without explicitely
+> enabling it, causing failures like the these caught by KernelCI
+> on Hana Chromebooks [1]:
 > 
-> That's in contradition with what other people seem to think the virtio
-> drivers are for, see this crazy thread for details about that:
-> 	https://lore.kernel.org/all/20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com/
+> mtk-power-controller 10006000.syscon:power-controller: supply domain not found, using dummy regulator
+> mtu3 11271000.usb: supply vbus not found, using dummy regulator
+> xhci-mtk 11270000.usb: supply vbus not found, using dummy regulator
 > 
-> You can "trust" the hardware, but also handle things when hardware is
-> broken, which is most often the case in the real world.
-
-That's what I was worried about when I got you in, broken or hacked :)
-
-> So why is having a timeout a problem here?  If you have an overloaded
-> system, you want things to time out so that you can start to recover.
+> There might be another bug linking these power domains in the
+> mediatek PM driver, but that is a separate issue wich needs
+> addressing, for now just fix the obvious regression due to the
+> new regulator requirement.
 > 
-> And if that hardware stops working?  Timeouts are good to have, why not
-> just bump it up a bit if you are running into it in a real-world
-> situation?
+> [1] https://github.com/kernelci/kernelci-project/issues/66
+> Reported-by: "kernelci.org bot" <bot@kernelci.org>
+> Cc: Guillaume Tucker <guillaume.tucker@collabora.com>
+> Suggested-by: Enric Balletbo Serra <eballetbo@gmail.com>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> ---
+>   arch/arm64/configs/defconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 156d96afbbfc..4901cc1213bb 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -616,6 +616,7 @@ CONFIG_REGULATOR_FIXED_VOLTAGE=y
+>   CONFIG_REGULATOR_AXP20X=y
+>   CONFIG_REGULATOR_BD718XX=y
+>   CONFIG_REGULATOR_BD9571MWV=y
+> +CONFIG_REGULATOR_DA9211=y
+>   CONFIG_REGULATOR_FAN53555=y
+>   CONFIG_REGULATOR_GPIO=y
+>   CONFIG_REGULATOR_HI6421V530=y
+> 
 
-I think it is set to HZ currently, though I haven't tried big
-transfers but I still get into some issues with Qemu based stuff.
-Maybe we can bump it up to few seconds :)
+Hello,
 
--- 
-viresh
+I've been able to get a working Hana boot, with USB probed as early as possible, as
+well solving that KernelCI failure (as now also the usb network works fine again).
+
+My proposal here, for which I have a patch that's almost ready, would be to enable
+this regulator driver as a module instead (since Hana is the only device that's
+using it), avoiding to increase the kernel image size for everyone.
+
+
+Before pointing out my solution, let's first point out what's going on:
+
+In mt8173.dtsi, we have a power-controller node (mediatek,mt8173-power-controller),
+under which all of the SoC's power domain nodes are defined. In this node, we have
+both SCPD_DOMAIN_SUPPLY domains and "regular" ones.
+
+The difference between SCPD domains and the others is that the first ones require a
+parent regulator, while the latter don't (power is supplied from some .. internal
+supply? - either way, no parent vreg necessary/declared).
+As a note, for now, the only two MediaTek SoCs that have a SCPD supply are MT8173
+and MT8183... and nothing else, as the others, including the newer ones seem to
+have no such supplies (the only newer one upstream is MT8192 and has none).
+
+
+My solution was to split the power-controller node in two:
+1. spm: power-controller@0 - contains all of the non-SCPD power domains
+2. spm_scpd: power-controller@1 - contains the SCPD power domains.
+
+This made me able to get a full boot without usb/usb-eth issues while enabling this
+regulator as a module; this also requires us to change the
+mediatek,power-controller.yaml binding to allow multiple instances of that driver,
+which is anyway already permitted by the mtk-pm-domains driver itself.
+
+
+Hence, this question comes up: how should we proceed? should we...
+a. enable this regulator driver as module and split the power-controller in two; or
+b. keep this commit enabling this driver built-in and still split the
+    power-controller nodes; or
+c. just enable this driver as built-in and not care about declaring two power
+    controller nodes?
+
+Can you please give us an advice?
+
+Thank you,
+- Angelo
