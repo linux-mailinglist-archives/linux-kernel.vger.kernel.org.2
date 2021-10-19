@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98890433EDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FAC433EE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234613AbhJSTAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:00:18 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:20857
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231355AbhJSTAO (ORCPT
+        id S234738AbhJSTDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:03:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52984 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231355AbhJSTDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:00:14 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AvLn2Aa395PT2t2q323qPGQqjBK0kLtp133Aq?=
- =?us-ascii?q?2lEZdPUnSKOlfqeV7ZYmPH7P+VUssR4b8+xoVJPgfZq+z/NICOsqVotKNTOO0F?=
- =?us-ascii?q?dAR7sD0WKN+VPd8mHFmtJg6Q=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
-   d="scan'208";a="396421478"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 20:57:59 +0200
-Date:   Tue, 19 Oct 2021 20:57:59 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Kushal Kothari <kushalkothari285@gmail.com>
-cc:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        marcocesati@gmail.com, dan.carpenter@oracle.com,
-        ross.schm.dev@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mike.rapoport@gmail.com
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: core:  Remove
- true and false comparison
-In-Reply-To: <20211019172359.63583-1-kushalkothari285@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2110192057200.4042@hadrien>
-References: <20211019172359.63583-1-kushalkothari285@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 19 Oct 2021 15:03:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634670081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=luTsdgmE900iDsk4r7Drx7azoYqgQwbXioWRwmTxsXU=;
+        b=Z/8hcUNmY3chnTqVZEp+xsaD/2h8dIELhPbcV6A3pLr/S/Sc3CdmSvwYPP2GwW5cofyMAQ
+        wLclC/JWmmvOZq02gqf8YQYT8tpoD3R6NP8tcCugjQQ9zik7e8bZJMnzE1PZRoeXmxTHMZ
+        APRN6dNdBNnInqV5WO27H81/U0hoC4I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-JCqP3r1lPumGoWAVNqfxIw-1; Tue, 19 Oct 2021 15:01:17 -0400
+X-MC-Unique: JCqP3r1lPumGoWAVNqfxIw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31D42800482;
+        Tue, 19 Oct 2021 19:01:12 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EB0645D6D7;
+        Tue, 19 Oct 2021 19:00:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <b2ea9fdf90939731c08329575c8843e8db5f3219.camel@kernel.org>
+References: <b2ea9fdf90939731c08329575c8843e8db5f3219.camel@kernel.org> <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     dhowells@redhat.com, linux-cachefs@redhat.com,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        v9fs-developer@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Steve French <sfrench@samba.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Omar Sandoval <osandov@osandov.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/67] fscache: Rewrite index API and management system
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2972093.1634670049.1@warthog.procyon.org.uk>
+Date:   Tue, 19 Oct 2021 20:00:49 +0100
+Message-ID: <2972094.1634670049@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jeff Layton <jlayton@kernel.org> wrote:
 
+> Given the indexing changes, what sort of behavior should we expect when
+> upgrading from old-style to new-style indexes? Do they just not match,
+> and we end up downloading new copies of all the data and the old stale
+> stuff eventually gets culled?
 
-On Tue, 19 Oct 2021, Kushal Kothari wrote:
+Correct: they don't match.  The names of the directories and files will be
+quite different - and so will the attached xattrs.  However, no filesystems
+currently store locally-modified data in the cache, so you shouldn't lose any
+data after upgrading.
 
-> Remove comparison to true and false in if statement.
-> Issue found with checkpatch.pl.
-> CHECK: Using comparison to true is error prone
-> CHECK: Using comparison to false is error prone
->
-> Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_cmd.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> index efc9b1974e38..b473f1d1ce08 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> @@ -309,8 +309,8 @@ int rtw_cmd_filter(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
->  	if (cmd_obj->cmdcode == GEN_CMD_CODE(_SetChannelPlan))
->  		bAllow = true;
->
-> -	if ((pcmdpriv->padapter->hw_init_completed == false && bAllow == false)
-> -		|| atomic_read(&(pcmdpriv->cmdthd_running)) == false	/* com_thread not running */
-> +	if ((!pcmdpriv->padapter->hw_init_completed && !bAllow)
-> +		|| !atomic_read(&(pcmdpriv->cmdthd_running))	/* com_thread not running */
->  	)
->  		return _FAIL;
->
-> @@ -407,7 +407,7 @@ int rtw_cmd_thread(void *context)
->  			break;
->  		}
->
-> -		if ((padapter->bDriverStopped == true) || (padapter->bSurpriseRemoved == true)) {
-> +		if ((padapter->bDriverStopped) || (padapter->bSurpriseRemoved)) {
+> Ditto for downgrades -- can we expect sane behavior if someone runs an
+> old kernel on top of an existing fscache that was populated by a new
+> kernel?
 
-The parentheses are pretty useless once you have removed the comparison.
+Correct.  With this branch, filesystems now store locally-modified data into
+the cache - but they also upload it to the server at the same time.  If
+there's a disagreement between what's in the cache and what's on the server
+with this branch, the cache is discarded, so simply discarding the cache on a
+download shouldn't be a problem.
 
-julia
+It's currently operating as a write-through cache, not a write-back cache.
+That will change if I get round to implementing disconnected operation, but
+it's not there yet.
 
->  			netdev_dbg(padapter->pnetdev,
->  				   "%s: DriverStopped(%d) SurpriseRemoved(%d) break at line %d\n",
->  				   __func__, padapter->bDriverStopped,
-> @@ -430,7 +430,7 @@ int rtw_cmd_thread(void *context)
->  			continue;
->
->  _next:
-> -		if ((padapter->bDriverStopped == true) || (padapter->bSurpriseRemoved == true)) {
-> +		if ((padapter->bDriverStopped) || (padapter->bSurpriseRemoved)) {
->  			netdev_dbg(padapter->pnetdev,
->  				   "%s: DriverStopped(%d) SurpriseRemoved(%d) break at line %d\n",
->  				   __func__, padapter->bDriverStopped,
-> @@ -927,7 +927,7 @@ u8 rtw_setstakey_cmd(struct adapter *padapter, struct sta_info *sta, u8 unicast_
->  	else
->  		GET_ENCRY_ALGO(psecuritypriv, sta, psetstakey_para->algorithm, false);
->
-> -	if (unicast_key == true)
-> +	if (unicast_key)
->  		memcpy(&psetstakey_para->key, &sta->dot118021x_UncstKey, 16);
->  	else
->  		memcpy(&psetstakey_para->key, &psecuritypriv->dot118021XGrpKey[psecuritypriv->dot118021XGrpKeyid].skey, 16);
-> @@ -1283,7 +1283,7 @@ u8 traffic_status_watchdog(struct adapter *padapter, u8 from_timer)
->  			(pmlmepriv->LinkDetectInfo.NumRxUnicastOkInPeriod > 2)) {
->  			bEnterPS = false;
->
-> -			if (bBusyTraffic == true) {
-> +			if (bBusyTraffic) {
->  				if (pmlmepriv->LinkDetectInfo.TrafficTransitionCount <= 4)
->  					pmlmepriv->LinkDetectInfo.TrafficTransitionCount = 4;
->
-> @@ -1619,7 +1619,7 @@ static void rtw_chk_hi_queue_hdl(struct adapter *padapter)
->
->  	rtw_hal_get_hwreg(padapter, HW_VAR_CHK_HI_QUEUE_EMPTY, &empty);
->
-> -	while (false == empty && jiffies_to_msecs(jiffies - start) < g_wait_hiq_empty) {
-> +	while (!empty && jiffies_to_msecs(jiffies - start) < g_wait_hiq_empty) {
->  		msleep(100);
->  		rtw_hal_get_hwreg(padapter, HW_VAR_CHK_HI_QUEUE_EMPTY, &empty);
->  	}
-> @@ -2054,7 +2054,7 @@ void rtw_setassocsta_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *
->
->  	spin_lock_bh(&pmlmepriv->lock);
->
-> -	if ((check_fwstate(pmlmepriv, WIFI_MP_STATE) == true) && (check_fwstate(pmlmepriv, _FW_UNDER_LINKING) == true))
-> +	if ((check_fwstate(pmlmepriv, WIFI_MP_STATE)) && (check_fwstate(pmlmepriv, _FW_UNDER_LINKING)))
->  		_clr_fwstate_(pmlmepriv, _FW_UNDER_LINKING);
->
->  	set_fwstate(pmlmepriv, _FW_LINKED);
-> --
-> 2.25.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20211019172359.63583-1-kushalkothari285%40gmail.com.
->
+David
+
