@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33D4433C0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A37433C16
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhJSQ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:27:00 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:45542
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230168AbhJSQ07 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:26:59 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8F20D40750
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634660685;
-        bh=498IUqh7qiqUKcZ9Q0qZOmmm/FH00+0dL2t8BJdk6fA=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=apnn2sB5st76EtsitHaukDhDJOObRvaO+OWhM/gtXGB6nbTm9zZMvpAER6CpOdxUO
-         Mqi5l5vrbipouLmP+RWop4ljgdceT+52lQUGdsemC2xFBSawiVS19hCmEsYrkqAwod
-         oD+IX/S30pRyI8y1id5Up1zELEoBpng9QWrAuryGR+yu/PzSkHYR9jO3HuiU49Z6l1
-         Fgv/ejqrxxoj00JxGli/azcfak1l8swCqCc6vBndOrvKTg246qBvuQRPbxud/TBWPE
-         plNOxHfkPABtb4QSeYELIxzUDKik7QsRBWtHB19DGkElsb1JcmwJbeq8svbQ34vlzr
-         guueitUlLcT/A==
-Received: by mail-lf1-f71.google.com with SMTP id m16-20020a056512115000b003fdb79f743fso1633616lfg.16
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:24:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=498IUqh7qiqUKcZ9Q0qZOmmm/FH00+0dL2t8BJdk6fA=;
-        b=sJl1poPQ0Q9HUIttVwF8f53WOtcwp+jIdP3DxTDpKnNu7KCkatRgOh1oZK12GH95bf
-         bcnsTh5u4+WJwFusoYxHBVxd4i0Bn742dEzCxeLT6CxSzuk5N6LgsdPBnmt/7G7sXOcb
-         ifbCkRtgu9UAJ+i/x5W/hFkMhgJPRHfNVZ3A23wTZ5vvLtGURIpqX/XRqpkPxk6ZiRWQ
-         X/zmBPpVSPTjc8HS22vPWyw5o+1AAxFvsjqPQGRXVv67mQlnr34odRcnIA/NJdFxPBVJ
-         MKHWSpir9j1Aju1e5njejThCgqhYRgp6X+VSVxGfgNkGAnjK6S+8HgOKeelGAAXotJp9
-         ZHWg==
-X-Gm-Message-State: AOAM533Gtk3zvILAHd2JMNXnVEhjYx69J/i9l160f9efU4oOrdssppaO
-        Nlo496x104vh9lfSciFoM+jHoTHUVLOdDsckRDkIWKB0Ev9uPdzNk155opfjN5hBBa7jgSdetjm
-        vwanlemMBbzpkEQGTIrqXReM7wRvXO0MocibXamyAUA==
-X-Received: by 2002:a2e:9d2:: with SMTP id 201mr7553969ljj.163.1634660684608;
-        Tue, 19 Oct 2021 09:24:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykGa5sogCFDqH8jTBbw0yAdFSWHwImCp941pYeQoMrhNAOHaCU1EWke4ktmA/lwSiGuenk1A==
-X-Received: by 2002:a2e:9d2:: with SMTP id 201mr7553945ljj.163.1634660684344;
-        Tue, 19 Oct 2021 09:24:44 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id f6sm2115939ljo.36.2021.10.19.09.24.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 09:24:43 -0700 (PDT)
-Subject: Re: [PATCH 3/4] rtc: s3c: Extract read/write IO into separate
- functions
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        id S234223AbhJSQ1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:27:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229991AbhJSQ1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:27:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B95DC61052;
+        Tue, 19 Oct 2021 16:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634660721;
+        bh=95zfq3H7AzOVXaStxwjek0lilnUiI4UGTpiGsI5GA68=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V81ZepDcu2b0xZatBmX5hpojvnURXk3S52VuM9dZX+hCyIf6oTvg/NKQ2N8K7TsVe
+         Blia5F0gDY7c9dwHnwoGCGDCqKKWHu2vW3miaJSRtrq6VW5y/5c6iRQ46rRXCqY+TH
+         axCjMSE6G9g9IXCXcrFJPHOX3WSFWsc7pm4maxMQ=
+Date:   Tue, 19 Oct 2021 18:25:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211019131724.3109-1-semen.protsenko@linaro.org>
- <20211019131724.3109-4-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <1a71e63d-0586-2208-bd84-6bc2d15147e4@canonical.com>
-Date:   Tue, 19 Oct 2021 18:24:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YW7xbnrqfzifa9OC@kroah.com>
+References: <YWeR4moCRh+ZHOmH@T590>
+ <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+ <YWjCpLUNPF3s4P2U@T590>
+ <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+ <YWk9e957Hb+I7HvR@T590>
+ <YWm68xUnAofop3PZ@bombadil.infradead.org>
+ <YWq3Z++uoJ/kcp+3@T590>
+ <YW3LuzaPhW96jSBK@bombadil.infradead.org>
+ <YW4uwep3BCe9Vxq8@T590>
+ <YW7pQKi8AlV+ZemU@bombadil.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20211019131724.3109-4-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW7pQKi8AlV+ZemU@bombadil.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2021 15:17, Sam Protsenko wrote:
-> Create dedicated functions for I/O operations and BCD conversion. It can
-> be useful to separete those from representation conversion and other
-> stuff found in RTC callbacks, e.g. for initializing RTC registers.
-> This patch does not introduce any functional changes, it's merely
-> refactoring change.
+On Tue, Oct 19, 2021 at 08:50:24AM -0700, Luis Chamberlain wrote:
+> So do you want to take the position:
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/rtc/rtc-s3c.c | 98 +++++++++++++++++++++++++++----------------
->  1 file changed, 61 insertions(+), 37 deletions(-)
-> 
+> Hey driver authors: you cannot use any shared lock on module removal and
+> on sysfs ops?
 
-Looks correct:
+Yes, I would not recommend using such a lock at all.  sysfs operations
+happen on a per-device basis, so you can lock the device structure.
+Module removal happens on a driver basis, and I have no idea what you
+want to lock there, but odds are it is NOT shared with your per-device
+structures either, right?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+If so, then yes, that is a bug, but a very rare one as drivers should do
+almost nothing except register/unregister_driver() in their module
+init/exit calls.
 
+zram is not a "normal" driver at all here, so fixing this type of
+problem up should be done in the zram code, it is not a generic
+module/sysfs issue at all.
 
-Best regards,
-Krzysztof
+thanks,
+
+greg k-h
