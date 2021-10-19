@@ -2,292 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86B6433CB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE362433CBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbhJSQve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:51:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34517 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232355AbhJSQvc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:51:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634662159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ugUw7NsAv0YfUcAT0Sk5/LXb2GdlYXRM+aaTlkyR4sM=;
-        b=h4kY83wQ2fqgHLT8BqU4G0thBmkB9KNqmHq09nJUtyvxXMMLQzUhhi4bXnre6d/WfWZnE7
-        fqc76hc7IjXwX/N8mhL2XwDJuYKxFqygXiMJEWZuVHrFVUYympDBOrScpT0l/0cOU2K5Eg
-        Ng00dy6JVI3GbD932TKO+Q41RyHMvgw=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-lhwwvq8VOwW0P839LDtEQQ-1; Tue, 19 Oct 2021 12:49:17 -0400
-X-MC-Unique: lhwwvq8VOwW0P839LDtEQQ-1
-Received: by mail-qk1-f197.google.com with SMTP id v14-20020a05620a0f0e00b0043355ed67d1so390702qkl.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:49:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ugUw7NsAv0YfUcAT0Sk5/LXb2GdlYXRM+aaTlkyR4sM=;
-        b=W3YEwwgZliZCoamdbY4BWUE6kKBQAHIPsxruHhE+l3saEwxzHKxvCi+dZVb8kWXoWR
-         +WyGxzHiRSWmEOiagd3cMyXXMp/oV0KB4JbxN5Y2umt4QyA7FoEGqj5HzgOWwue86/3g
-         UmAvJ7s8UR+AKQrC0/AQb+83fSI4J9JCF19xC01qAcG7h97OamcoWlrDzxf/KkWW7TKB
-         ig6sQosEyuL+2dUlegrDh9+abnGloYijzE78y4xEsK3WR705bzSC8CEikMewTogu3c1Q
-         AG/VpMRXte1tRFN8SBYcgcOau8BFWCUsvla3ZzgH7Lg3cc78LcjQ49yjVrMUwdqT1uPJ
-         adFA==
-X-Gm-Message-State: AOAM532/TDhTWQjielTLTKVOjVoPG3e1/J0Z/NVETVKD3zZ3+k/Z4YhP
-        n4Ld0sh9+CoFZpdV8oRIonFWJCIDwnpi8qW+fAL1tHCT2p90aB9IStcc5eQOlimF8gSlCQoelix
-        32/KsXQB967hz4cjRafdyltuz
-X-Received: by 2002:a05:622a:60d:: with SMTP id z13mr1159968qta.37.1634662157224;
-        Tue, 19 Oct 2021 09:49:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyjwcryOdnVEZWlyZQvaraaUsm0A6UmRp1D8DrlMtaafpYAxKmebRga+vlKlVHhIgp+10j8rw==
-X-Received: by 2002:a05:622a:60d:: with SMTP id z13mr1159946qta.37.1634662156952;
-        Tue, 19 Oct 2021 09:49:16 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id v7sm8104656qkd.41.2021.10.19.09.49.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 09:49:16 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 09:49:13 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
-Message-ID: <20211019164913.2dsyyethdeblqjlq@treble>
-References: <20211013122217.304265366@infradead.org>
- <20211013123645.002402102@infradead.org>
- <20211013205259.44cvvaxiexiff5w5@treble>
- <YW6t5catO1mx+eCZ@hirez.programming.kicks-ass.net>
- <20211019164659.dybir4wgfmdt4r47@treble>
+        id S232764AbhJSQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:53:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhJSQxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:53:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8D0161175;
+        Tue, 19 Oct 2021 16:51:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634662291;
+        bh=DfTQJs64LQ8BFMva0fsuPqpILcNUsBEcTHtydyZExOo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Va78o910x+zTOVrNzgaURxPgJkVqKi+sM2NXvpj6TvxZ9GuO2e8fQ4zc53qS9W0G4
+         sdKrjckd77aMgt40aDLPWO9T1960oAgwqboSaRTIpNzoXPs0rSs7I4XwYXjh76LYNs
+         zJaIjJqr6SyRF2XvQpyVsbFZXqdJgRA4GYPehxxbLTP0SWGTCwSt6eVCDUNWtEngcX
+         EZQvzoTGDXiGQIuW5to2O/dIh2ldzxnSYEmaPtaTpA4IjoWiKNmy3uLNJ+iLOe63Yc
+         yQYc1rLfq/KMj3jmaLYC6Gg0+SHqtrR11JRJberBAYyxdttKlTaqoQ0ZuUcq4d5pfp
+         FQf7k6fPP3ZCA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 91D54410A1; Tue, 19 Oct 2021 13:51:27 -0300 (-03)
+Date:   Tue, 19 Oct 2021 13:51:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, rostedt <rostedt@goodmis.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        lkp <lkp@lists.01.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark@chromium.org, christian@brauner.io,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        bristot <bristot@redhat.com>,
+        aubrey li <aubrey.li@linux.intel.com>,
+        yu c chen <yu.c.chen@intel.com>
+Subject: Re: [sched.h] 317419b91e:
+ perf-sanity-tests.Parse_sched_tracepoints_fields.fail
+Message-ID: <YW73j66QbG9i0MV+@kernel.org>
+References: <20211010102429.99577-4-laoar.shao@gmail.com>
+ <20211014072707.GA18719@xsang-OptiPlex-9020>
+ <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
+ <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019164659.dybir4wgfmdt4r47@treble>
+In-Reply-To: <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 09:47:02AM -0700, Josh Poimboeuf wrote:
-> On Tue, Oct 19, 2021 at 01:37:09PM +0200, Peter Zijlstra wrote:
-> > On Wed, Oct 13, 2021 at 01:52:59PM -0700, Josh Poimboeuf wrote:
-> > 
-> > > BTW, CALL_NOSPEC results in a retpoline site in .altinstr_replacement:
-> > > 
-> > > Relocation section [40] '.rela.retpoline_sites' for section [39] '.retpoline_sites' at offset 0x8d28 contains 1 entry:
-> > >   Offset              Type            Value               Addend Name
-> > >   000000000000000000  X86_64_PC32     000000000000000000     +10 .altinstr_replacement
-> > > 
-> > > Which I assume we don't want.
-> > 
-> > (I missed this initially, and just independently rediscovered it)
-> > 
-> > In principle this problem affects static_call_list, the __sanitizer_cov_
-> > and __fentry__ and now retpoline_sites.
-> > 
-> > Granted, it seems really unlikely to find __fentry__ or __sanitizer_cov_
-> > references in alternatives, but it should be trivial to manually create
-> > one.
-> > 
-> > I'm thinking we want to exclude all those when found in
-> > .altinstr_replacement, right? It just doesn't make sense to rewrite
-> > replacement text.
-> 
-> Right.
-> 
-> (Someday, if it made sense to do so, objtool could put the annotation at
-> the original replaced instruction.  Then the kernel self-patching code
-> could run after alternatives patching and could then decide whether the
-> annotation is relevant or not.  But right now I can't think of any
-> scenario where that would be remotely sane.)
-> 
-> > How is something like the below? (I'm not completely happy with it, but
-> > I couldn't think of something better either).
-> 
-> How about something like this?
+Em Thu, Oct 14, 2021 at 08:42:05AM -0400, Mathieu Desnoyers escreveu:
+> ----- On Oct 14, 2021, at 5:24 AM, Yafang Shao laoar.shao@gmail.com wrote:
+> > On Thu, Oct 14, 2021 at 3:08 PM kernel test robot <oliver.sang@intel.com> wrote:
+> > That issue is caused by another hardcode 16 ...
 
-Slightly improved version:
+> > Seems we should make some change as below,
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 7c865a10372a..e0892632ef4a 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -993,18 +993,28 @@ static void remove_insn_ops(struct instruction *insn)
- 	}
- }
+> > diff --git a/tools/perf/tests/evsel-tp-sched.c
+> > b/tools/perf/tests/evsel-tp-sched.c
+> > index f9e34bd26cf3..401a737b1d85 100644
+> > --- a/tools/perf/tests/evsel-tp-sched.c
+> > +++ b/tools/perf/tests/evsel-tp-sched.c
+> > @@ -42,7 +42,7 @@ int test__perf_evsel__tp_sched_test(struct test
+> > *test __maybe_unused, int subtes
+> >                return -1;
+> >        }
+
+> > -       if (evsel__test_field(evsel, "prev_comm", 16, false))
+> > +       if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN, false))
+> 
+> tools/perf/tests/* contains userspace test programs. This means it gets the
+> TASK_COMM_LEN from the uapi. The fix you propose won't do any good here.
+
+That specific test is just checking if the parsing is being done as
+expected, i.e. we know beforehand that COMMs have 16 bytes, so the test
+expects that.
+
+Now that it can have a different size, then the test should accept the
+two sizes as possible and pass if it is 16 or 24.
+
+Like in this patch:
+
+diff --git a/tools/perf/tests/evsel-tp-sched.c b/tools/perf/tests/evsel-tp-sched.c
+index f9e34bd26cf33536..182328f3f7f70e0e 100644
+--- a/tools/perf/tests/evsel-tp-sched.c
++++ b/tools/perf/tests/evsel-tp-sched.c
+@@ -5,7 +5,7 @@
+ #include "tests.h"
+ #include "debug.h"
  
--static void add_call_dest(struct objtool_file *file, struct instruction *insn,
--			  struct symbol *dest, bool sibling)
-+static void annotate_call_site(struct objtool_file *file,
-+			       struct instruction *insn, bool sibling)
+-static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
++static int evsel__test_field_alt(struct evsel *evsel, const char *name, int size, int alternate_size, bool should_be_signed)
  {
- 	struct reloc *reloc = insn_reloc(file, insn);
- 
--	insn->call_dest = dest;
--	if (!dest)
-+	/*
-+	 * Alternative replacement code is just template code which is
-+	 * sometimes copied to the original instruction.  For now, don't
-+	 * annotate it.  (In the future we might consider annotating the
-+	 * original instruction if/when it ever makes sense to do so.)
-+	 */
-+	if (!strcmp(insn->sec->name, ".altinstr_replacement"))
- 		return;
- 
-+	if (insn->call_dest->retpoline) {
-+		list_add_tail(&insn->call_node, &file->retpoline_call_list);
-+		return;
-+	}
-+
- 	if (insn->call_dest->static_call_tramp) {
--		list_add_tail(&insn->call_node,
--			      &file->static_call_list);
-+		list_add_tail(&insn->call_node, &file->static_call_list);
-+		return;
+ 	struct tep_format_field *field = evsel__field(evsel, name);
+ 	int is_signed;
+@@ -23,15 +23,23 @@ static int evsel__test_field(struct evsel *evsel, const char *name, int size, bo
+ 		ret = -1;
  	}
  
- 	/*
-@@ -1025,6 +1035,7 @@ static void add_call_dest(struct objtool_file *file, struct instruction *insn,
- 			               : arch_nop_insn(insn->len));
- 
- 		insn->type = sibling ? INSN_RETURN : INSN_NOP;
-+		return;
+-	if (field->size != size) {
+-		pr_debug("%s: \"%s\" size (%d) should be %d!\n",
++	if (field->size != size && field->size != alternate_size) {
++		pr_debug("%s: \"%s\" size (%d) should be %d",
+ 			 evsel->name, name, field->size, size);
++		if (alternate_size > 0)
++			pr_debug(" or %d", alternate_size);
++		pr_debug("!\n");
+ 		ret = -1;
  	}
  
- 	if (mcount && !strcmp(insn->call_dest->name, "__fentry__")) {
-@@ -1042,9 +1053,19 @@ static void add_call_dest(struct objtool_file *file, struct instruction *insn,
- 
- 		insn->type = INSN_NOP;
- 
--		list_add_tail(&insn->mcount_loc_node,
--			      &file->mcount_loc_list);
-+		list_add_tail(&insn->mcount_loc_node, &file->mcount_loc_list);
-+		return;
- 	}
-+}
-+
-+static void add_call_dest(struct objtool_file *file, struct instruction *insn,
-+			  struct symbol *dest, bool sibling)
-+{
-+	insn->call_dest = dest;
-+	if (!dest)
-+		return;
-+
-+	annotate_call_site(file, insn, sibling);
- 
- 	/*
- 	 * Whatever stack impact regular CALLs have, should be undone
-@@ -1054,6 +1075,7 @@ static void add_call_dest(struct objtool_file *file, struct instruction *insn,
- 	 * are converted to JUMP, see read_intra_function_calls().
- 	 */
- 	remove_insn_ops(insn);
-+
+ 	return ret;
  }
  
- /*
-@@ -1077,7 +1099,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 		} else if (reloc->sym->type == STT_SECTION) {
- 			dest_sec = reloc->sym->sec;
- 			dest_off = arch_dest_reloc_offset(reloc->addend);
--		} else if (arch_is_retpoline(reloc->sym)) {
-+		} else if (reloc->sym->retpoline) {
- 			/*
- 			 * Retpoline jumps are really dynamic jumps in
- 			 * disguise, so convert them accordingly.
-@@ -1087,9 +1109,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 			else
- 				insn->type = INSN_JUMP_DYNAMIC_CONDITIONAL;
- 
--			list_add_tail(&insn->call_node,
--				      &file->retpoline_call_list);
--
-+			add_call_dest(file, insn, reloc->sym, true);
- 			insn->retpoline_safe = true;
- 			continue;
- 		} else if (insn->func) {
-@@ -1218,20 +1238,14 @@ static int add_call_destinations(struct objtool_file *file)
- 
- 			add_call_dest(file, insn, dest, false);
- 
--		} else if (arch_is_retpoline(reloc->sym)) {
-+		} else if (reloc->sym->retpoline) {
- 			/*
- 			 * Retpoline calls are really dynamic calls in
- 			 * disguise, so convert them accordingly.
- 			 */
- 			insn->type = INSN_CALL_DYNAMIC;
-+			add_call_dest(file, insn, reloc->sym, false);
- 			insn->retpoline_safe = true;
--
--			list_add_tail(&insn->call_node,
--				      &file->retpoline_call_list);
--
--			remove_insn_ops(insn);
--			continue;
--
- 		} else
- 			add_call_dest(file, insn, reloc->sym, false);
- 	}
-@@ -1916,8 +1930,25 @@ static int read_static_call_tramps(struct objtool_file *file)
- 		list_for_each_entry(func, &sec->symbol_list, list) {
- 			if (func->bind == STB_GLOBAL &&
- 			    !strncmp(func->name, STATIC_CALL_TRAMP_PREFIX_STR,
--				     strlen(STATIC_CALL_TRAMP_PREFIX_STR)))
-+				     strlen(STATIC_CALL_TRAMP_PREFIX_STR))) {
- 				func->static_call_tramp = true;
-+			}
-+		}
-+	}
-+
-+	return 0;
++static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
++{
++	return evsel__test_field_alt(evsel, name, size, -1, should_be_signed);
 +}
 +
-+static int read_retpoline_thunks(struct objtool_file *file)
-+{
-+	struct section *sec;
-+	struct symbol *func;
-+
-+	for_each_sec(file, sec) {
-+		list_for_each_entry(func, &sec->symbol_list, list) {
-+			if (func->bind == STB_GLOBAL && arch_is_retpoline(func)) {
-+				func->retpoline = true;
-+			}
- 		}
+ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtest __maybe_unused)
+ {
+ 	struct evsel *evsel = evsel__newtp("sched", "sched_switch");
+@@ -42,7 +50,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+ 		return -1;
  	}
  
-@@ -1980,13 +2011,16 @@ static int decode_sections(struct objtool_file *file)
- 	if (ret)
- 		return ret;
+-	if (evsel__test_field(evsel, "prev_comm", 16, false))
++	if (evsel__test_field_alt(evsel, "prev_comm", 16, 24, false))
+ 		ret = -1;
  
--	/*
--	 * Must be before add_{jump_call}_destination.
--	 */
-+	/* Must be before add_{jump_call}_destination. */
- 	ret = read_static_call_tramps(file);
- 	if (ret)
- 		return ret;
+ 	if (evsel__test_field(evsel, "prev_pid", 4, true))
+@@ -54,7 +62,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+ 	if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
+ 		ret = -1;
  
-+	/* Must be before add_{jump_call}_destination. */
-+	ret = read_retpoline_thunks(file);
-+	if (ret)
-+		return ret;
-+
- 	/*
- 	 * Must be before add_special_section_alts() as that depends on
- 	 * jump_dest being set.
-diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
-index 9bdc7c757bf8..b773366dfb52 100644
---- a/tools/objtool/include/objtool/elf.h
-+++ b/tools/objtool/include/objtool/elf.h
-@@ -56,6 +56,7 @@ struct symbol {
- 	struct symbol *pfunc, *cfunc, *alias;
- 	bool uaccess_safe;
- 	bool static_call_tramp;
-+	bool retpoline;
- 	struct list_head pv_target;
- };
+-	if (evsel__test_field(evsel, "next_comm", 16, false))
++	if (evsel__test_field_alt(evsel, "next_comm", 16, 24, false))
+ 		ret = -1;
  
-
+ 	if (evsel__test_field(evsel, "next_pid", 4, true))
+@@ -72,7 +80,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+ 		return -1;
+ 	}
+ 
+-	if (evsel__test_field(evsel, "comm", 16, false))
++	if (evsel__test_field_alt(evsel, "comm", 16, 24, false))
+ 		ret = -1;
+ 
+ 	if (evsel__test_field(evsel, "pid", 4, true))
