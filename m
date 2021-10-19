@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BFB433A9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FC3433AA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhJSPhl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Oct 2021 11:37:41 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:50899 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbhJSPhi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:37:38 -0400
-Received: (Authenticated sender: kory.maincent@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 4EE0E240010;
-        Tue, 19 Oct 2021 15:35:21 +0000 (UTC)
-Date:   Tue, 19 Oct 2021 17:35:20 +0200
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Adam Ford <aford173@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: [PATCH] net: renesas: Fix rgmii-id delays
-Message-ID: <20211019173520.0154a8cb@kmaincent-XPS-13-7390>
-In-Reply-To: <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
-References: <20211019145719.122751-1-kory.maincent@bootlin.com>
-        <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231775AbhJSPhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:37:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231888AbhJSPht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:37:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84BEE61074;
+        Tue, 19 Oct 2021 15:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634657736;
+        bh=DxWRJWAj/zdrQswUAfCVlDVJpMFIF9IpXMFPLAXRYKM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GMsDOCQAJEt1Pl+XVrt0Iv8x1+PjbfYdPlx9J7nbNsAiudShRlGG9Dr3cDkSrF6bN
+         14GyBkn5FUfK98ABuA7gwqGb+nIWyFMebbtGStkFXt73MCDjAOx608vUXnFLIkAgHr
+         rWirUVzn9ynJxsdrp05ZZy3HGtcCavsgD4g4E02kDGG4PW6K6/FVOL26xJ74NV0UhR
+         69HvskM7S6jwMecRCS6K8SjQYKtw/Ck/uBW9+emraQTk5MuPfDZKjenF9WYhLg/GQy
+         xZNqZmdzfl2r8Ip4jjO01eRN9z9Xtpko7dQx+h0W9V4PBVbv5MHSQhT2zKfIZV7QCl
+         zl/O9vWN6eAgg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        dmaengine@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: stm32-dma: avoid 64-bit division in stm32_dma_get_max_width
+Date:   Tue, 19 Oct 2021 17:35:27 +0200
+Message-Id: <20211019153532.366429-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Geert,
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks for the review.
+Using the % operator on a 64-bit variable is expensive and can
+cause a link failure:
 
-On Tue, 19 Oct 2021 17:13:52 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_get_max_width':
+stm32-dma.c:(.text+0x170): undefined reference to `__aeabi_uldivmod'
+arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_set_xfer_param':
+stm32-dma.c:(.text+0x1cd4): undefined reference to `__aeabi_uldivmod'
 
-> > The ravb MAC is adding RX delay if RGMII_RXID is selected and TX delay
-> > if RGMII_TXID but that behavior is wrong.
-> > Indeed according to the ethernet.txt documentation the ravb configuration  
-> 
-> Do you mean ethernet-controller.yaml?
+As we know that we just want to check the alignment in
+stm32_dma_get_max_width(), there is no need for a full division, and
+using a simple mask is a faster replacement.
 
-Doh, yes, I paste the commit log from the older Kernel git and forget to
-change that.
+In stm32_dma_set_xfer_param(), it is possible to pass a non-power-of-two
+length, so this does not work. I assume this would in fact be a mistake,
+and the hardware does not work correctly with a burst of e.g. 5 bytes
+on a five-byte aligned address. Change this to only allow burst
+transfers if the address is a multiple of the length, and that length
+is a power-of-two number.
 
-> 
-> > should be inverted:
-> >   * "rgmii-rxid" (RGMII with internal RX delay provided by the PHY, the MAC
-> >      should not add an RX delay in this case)
-> >   * "rgmii-txid" (RGMII with internal TX delay provided by the PHY, the MAC
-> >      should not add an TX delay in this case)
-> >
-> > This patch inverts the behavior, i.e adds TX delay when RGMII_RXID is
-> > selected and RX delay when RGMII_TXID is selected.
-> >
-> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>  
-> 
-> Does this fix an actual problem for you?
+Fixes: b20fd5fa310c ("dmaengine: stm32-dma: fix stm32_dma_get_max_width")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/dma/stm32-dma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-In fact, this fix a problem for an older 4.14 Kernel on my current project.
-I wanted to push my fix in the mainline kernel also, but as you say below, now
-this code is legacy.
-Does it matter to fix legacy code?
+diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
+index 2283c500f4ce..102278f7d13e 100644
+--- a/drivers/dma/stm32-dma.c
++++ b/drivers/dma/stm32-dma.c
+@@ -280,7 +280,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
+ 	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
+ 		max_width = max_width >> 1;
+ 
+-	if (buf_addr % max_width)
++	if (buf_addr & (max_width - 1))
+ 		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
+ 
+ 	return max_width;
+@@ -757,7 +757,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+ 		 * Set memory burst size - burst not possible if address is not aligned on
+ 		 * the address boundary equal to the size of the transfer
+ 		 */
+-		if (buf_addr % buf_len)
++		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
+ 			src_maxburst = 1;
+ 		else
+ 			src_maxburst = STM32_DMA_MAX_BURST;
+@@ -813,7 +813,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+ 		 * Set memory burst size - burst not possible if address is not aligned on
+ 		 * the address boundary equal to the size of the transfer
+ 		 */
+-		if (buf_addr % buf_len)
++		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
+ 			dst_maxburst = 1;
+ 		else
+ 			dst_maxburst = STM32_DMA_MAX_BURST;
+-- 
+2.29.2
 
-> Note that in accordance with the comment above, the code section
-> below is only present to support old DTBs.  Contemporary DTBs rely
-> on the now mandatory "rx-internal-delay-ps" and "tx-internal-delay-ps"
-> properties instead.
-> Hence changing this code has no effect on DTS files as supplied with
-> the kernel, but may have ill effects on DTB files in the field, which
-> rely on the current behavior.
-
-When people update the kernel version don't they update also the devicetree?
-
-Regards,
-Köry
