@@ -2,139 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B581433F69
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6797F433F70
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234974AbhJSTsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230147AbhJSTsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:48:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F58960F02;
-        Tue, 19 Oct 2021 19:45:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634672747;
-        bh=Kt0AlgCnA2CCkwUWkmwrgijsbjnxUNTjrXExJc4067Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ZQ2ekrgapNYGiJEhyAne+AuIDwhvbAlMAdhgFNLyAcyHb4zqKBZ9TUWsGniOYrPMB
-         tqpeouJPddT5+T8S1zm2cOnM1snf4/Ij9wY/Y1QqZUJKuljJu4qNJlum5HNtml0Oiq
-         r5Z8hch+Ts8uGkRWL6hGdyys/9NtHtk9H9oioQWqOKPVeReHIMCVSKUv/IAzUO5xbC
-         DsJiN6+H0fLjgYEsVVEUFiDdoOJeLU0x4DDzm5yqDrXo1tLQl4cKYFrl+lkXJIaEsf
-         6lfLoQsD4NCvqZsS2Clyt0UzN9A3TTigGOjVQ0cA2NdthrmMOzubrqPAc0NWQomrAI
-         gyP0pRRBc5tFQ==
-Date:   Tue, 19 Oct 2021 14:45:45 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
-Cc:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S235017AbhJSTsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230147AbhJSTsw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 15:48:52 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E596C06161C;
+        Tue, 19 Oct 2021 12:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jCo7U915eFRqWzpvn4v1HPXwjv12FjYjhZ4kBCli1BA=; b=XQzRM95CX9ofAeF03oyBgo9tdr
+        tca/b6ddAmgUpGHrIOgKOl7J+MmMtICCtW9iI9X/pIp9MDdL8jhpdq1WUpyF+AqNyJJXM+xcXea+Y
+        A+/eXwEiUOwerfpiB9WrGkP+ywwG+ealnZuYQt1ByR+KUnhNAXDvKMFwufKpwEgRWHNiYPNEhnjoi
+        bTJNL3eWVoeD+EBPCVAiiRgFpwqUUIkHuRc7HNZ6R8Ax6kfd/8src6qtI8PSnjLsvdemXY2lQiN4s
+        fVHcuQayWAEmJ2qh+RFvpTD5WkbnMFHUROEQZMwM1v8B3T9/7bol/7RXJacyarkYcDITzTWqga2Vd
+        eQK52yWw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcv49-002XTn-Ah; Tue, 19 Oct 2021 19:46:29 +0000
+Date:   Tue, 19 Oct 2021 12:46:29 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pci-imx6: replacing legacy gpio interface for gpiod
-Message-ID: <20211019194545.GA2393463@bhelgaas>
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YW8glVdremhn1eF2@bombadil.infradead.org>
+References: <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+ <YWk9e957Hb+I7HvR@T590>
+ <YWm68xUnAofop3PZ@bombadil.infradead.org>
+ <YWq3Z++uoJ/kcp+3@T590>
+ <YW3LuzaPhW96jSBK@bombadil.infradead.org>
+ <YW4uwep3BCe9Vxq8@T590>
+ <YW7pQKi8AlV+ZemU@bombadil.infradead.org>
+ <YW7xbnrqfzifa9OC@kroah.com>
+ <YW7yjQVC4NRfrWxD@bombadil.infradead.org>
+ <YW8AQ4fMNV8MT1vX@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YW7jvR/2jpAwSpvd@fedora>
+In-Reply-To: <YW8AQ4fMNV8MT1vX@kroah.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[fixed "linux-pci@vger.kernel.org" in cc]
-
-On Tue, Oct 19, 2021 at 12:26:53PM -0300, Maíra Canal wrote:
-> Removing all dependencies of linux/gpio.h and linux/of_gpio.h and replacing
-> it with linux/gpio/consumer.h
-
-Run "git log --oneline drivers/pci/controller/dwc/pci-imx6.c" and make
-your subject line match -- capitalization, sentence structure, etc.
-
-Write commit log in imperative mood, i.e., "Remove" instead of
-"Removing": https://chris.beams.io/posts/git-commit/
-
-The commit log mentions the trivial part but omits the important part
-(converting from gpio to gpiod model).
-
-> Signed-off-by: Maíra Canal <maira.canal@usp.br>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 31 ++++++++++-----------------
->  1 file changed, 11 insertions(+), 20 deletions(-)
+On Tue, Oct 19, 2021 at 07:28:35PM +0200, Greg KH wrote:
+> On Tue, Oct 19, 2021 at 09:30:05AM -0700, Luis Chamberlain wrote:
+> > On Tue, Oct 19, 2021 at 06:25:18PM +0200, Greg KH wrote:
+> > > On Tue, Oct 19, 2021 at 08:50:24AM -0700, Luis Chamberlain wrote:
+> > > > So do you want to take the position:
+> > > > 
+> > > > Hey driver authors: you cannot use any shared lock on module removal and
+> > > > on sysfs ops?
+> > > 
+> > > Yes, I would not recommend using such a lock at all.  sysfs operations
+> > > happen on a per-device basis, so you can lock the device structure.
+> > 
+> > All devices are going to be removed on module removal and so cannot be locked.
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 80fc98acf097..e5ee54e37d05 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -11,13 +11,12 @@
->  #include <linux/bitfield.h>
->  #include <linux/clk.h>
->  #include <linux/delay.h>
-> -#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/kernel.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
->  #include <linux/mfd/syscon/imx7-iomuxc-gpr.h>
->  #include <linux/module.h>
-> -#include <linux/of_gpio.h>
->  #include <linux/of_device.h>
->  #include <linux/of_address.h>
->  #include <linux/pci.h>
-> @@ -63,7 +62,7 @@ struct imx6_pcie_drvdata {
->  
->  struct imx6_pcie {
->  	struct dw_pcie		*pci;
-> -	int			reset_gpio;
-> +	struct gpio_desc    *reset_gpio;
->  	bool			gpio_active_high;
->  	struct clk		*pcie_bus;
->  	struct clk		*pcie_phy;
-> @@ -526,11 +525,11 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
->  	usleep_range(200, 500);
->  
->  	/* Some boards don't have PCIe reset GPIO. */
-> -	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
-> -		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> +	if (imx6_pcie->reset_gpio) {
-> +		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
->  					imx6_pcie->gpio_active_high);
->  		msleep(100);
-> -		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> +		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
->  					!imx6_pcie->gpio_active_high);
->  	}
->  
-> @@ -1025,22 +1024,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  		return PTR_ERR(pci->dbi_base);
->  
->  	/* Fetch GPIOs */
-> -	imx6_pcie->reset_gpio = of_get_named_gpio(node, "reset-gpio", 0);
->  	imx6_pcie->gpio_active_high = of_property_read_bool(node,
->  						"reset-gpio-active-high");
-> -	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
-> -		ret = devm_gpio_request_one(dev, imx6_pcie->reset_gpio,
-> -				imx6_pcie->gpio_active_high ?
-> -					GPIOF_OUT_INIT_HIGH :
-> -					GPIOF_OUT_INIT_LOW,
-> -				"PCIe reset");
-> -		if (ret) {
-> -			dev_err(dev, "unable to get reset gpio\n");
-> -			return ret;
-> -		}
-> -	} else if (imx6_pcie->reset_gpio == -EPROBE_DEFER) {
-> -		return imx6_pcie->reset_gpio;
-> -	}
-> +	imx6_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-> +			imx6_pcie->gpio_active_high ?  GPIOD_OUT_HIGH :
-> +				GPIOD_OUT_LOW);
-> +	if (IS_ERR(imx6_pcie->reset_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(imx6_pcie->reset_gpio),
-> +					  "unable to get reset gpio\n");
->  
->  	/* Fetch clocks */
->  	imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
-> -- 
-> 2.31.1
+> devices are not normally created by a driver, that is up to the bus
+> controller logic.  A module will just disconnect itself from the device,
+> the device does not go away.
 > 
+> But yes, there are exceptions, and if you are doing something odd like
+> that, then you need to be aware of crazy things like this, so be
+> careful.  But for all normal drivers, they do not have to worry about
+> this.
+
+"Recommend" is a weak position to take given a possible deadlock with sysfs.
+
+Do we want to at the very least document this is not a supported scheme?
+
+If so I can also add a simple 1 level indirrection coccinelle patch to
+detect these schemes and complain about them as wel, if we are going to
+take this position.
+
+But to simply disregard this as "not an issue", or we won't do anything
+seems pretty counter productive given we *do* had drivers with this
+issue before *and* still have them upstream, and can end up with more
+drivers like this later.
+
+  Luis
