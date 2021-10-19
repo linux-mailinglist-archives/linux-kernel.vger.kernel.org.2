@@ -2,99 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDBC433484
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF15433495
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235429AbhJSLSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:18:53 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4005 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235411AbhJSLSv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:18:51 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HYWLT6wwcz67rNM;
-        Tue, 19 Oct 2021 19:12:49 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 19 Oct 2021 13:16:36 +0200
-Received: from [10.47.85.98] (10.47.85.98) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 19 Oct
- 2021 12:16:35 +0100
-Subject: Re: [PATCH v2 04/21] perf pmu: Make pmu_event tables const.
-To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
-        "Jiri Olsa" <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        "Zhen Lei" <thunder.leizhen@huawei.com>,
-        ToastC <mrtoastcheng@gmail.com>,
-        "Joakim Zhang" <qiangqing.zhang@nxp.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Fabian Hemmer" <copy@copy.sh>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Denys Zagorui <dzagorui@cisco.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        "Sumanth Korikkar" <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        "Andrew Kilroy" <andrew.kilroy@arm.com>
-CC:     Stephane Eranian <eranian@google.com>
-References: <20211015172132.1162559-1-irogers@google.com>
- <20211015172132.1162559-5-irogers@google.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <d9566a3a-179e-ab3c-6a63-256ea23778b9@huawei.com>
-Date:   Tue, 19 Oct 2021 12:19:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S235315AbhJSLYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhJSLYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:24:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAE5260E8B;
+        Tue, 19 Oct 2021 11:22:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634642531;
+        bh=N9+zFCzvQ7Gjy4aNJ5xgoy+jim52LVDD5RVoWrvd4ZQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uddzvnCtyF/JsKwA+1qOsyWnPLhapFiRlDqilmVf/mbFamWbr9xdwyLpiRyq0MHPv
+         7ZFuD3m547Tj0BamBaJIMmizYrzJcdbF7y1I6t2Wkeqnph/s9OVJEuJ7KjBtnR2s+b
+         3DyN7bd4kD1viHJZSJ2NrVlMaiW3SC4MjCpAYZUE=
+Date:   Tue, 19 Oct 2021 13:22:07 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 5.14 060/151] KVM: PPC: Book3S HV: Fix stack handling in
+ idle_kvm_start_guest()
+Message-ID: <YW6qXwnmhv6vMVof@kroah.com>
+References: <20211018132340.682786018@linuxfoundation.org>
+ <20211018132342.644684017@linuxfoundation.org>
+ <87a6j5cmif.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20211015172132.1162559-5-irogers@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.98]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a6j5cmif.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/2021 18:21, Ian Rogers wrote:
-
-- bouncing Changbin Du <changbin.du@intel.com> and Jin Yao 
-<yao.jin@linux.intel.com>
-
-> Make lookup nature of data structures clearer through their type. Reduce
-> scope of architecture specific pmu_event tables by making them static.
+On Tue, Oct 19, 2021 at 09:55:04PM +1100, Michael Ellerman wrote:
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> > From: Michael Ellerman <mpe@ellerman.id.au>
+> >
+> > commit 9b4416c5095c20e110c82ae602c254099b83b72f upstream.
+> >
+> > In commit 10d91611f426 ("powerpc/64s: Reimplement book3s idle code in
+> > C") kvm_start_guest() became idle_kvm_start_guest(). The old code
+> > allocated a stack frame on the emergency stack, but didn't use the
+> > frame to store anything, and also didn't store anything in its caller's
+> > frame.
 > 
-> Suggested-by: John Garry<john.garry@huawei.com>
-> Acked-by: Andi Kleen<ak@linux.intel.com>
-> Signed-off-by: Ian Rogers<irogers@google.com>
+> Please drop this and the next patch.
 
-Reviewed-by: John Garry <john.garry@huawei.com>
+All now dropped from all 3 queues, thanks!
 
-BTW, We seem to be using > 80 char per line now. Well in metricgroup.h 
-anyway, from a brief check. I know checkpatch.pl is ok with this now, 
-but some maintainers aren't. Just saying.
-
-Thanks,
-John
+greg k-h
