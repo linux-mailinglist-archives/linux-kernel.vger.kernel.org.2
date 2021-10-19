@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8478432E7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713B4432E82
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbhJSGpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:45:17 -0400
-Received: from relay.sw.ru ([185.231.240.75]:43164 "EHLO relay.sw.ru"
+        id S234242AbhJSGrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:47:45 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:27136 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233888AbhJSGpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:45:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=7OMO0M/WVTVgdjf54DbVIyAnXJtSdE0/PzhJZH94xwI=; b=fPQL2wCo4GhLrjLrD
-        anIW7ziZKa2yTrj1Yv+V3pi/G++isnPb2GTrpeZlWODv2dfS13Hse6Ohml5LOq9tSMfcC4BhU3xWz
-        Lq1x991hoRqY/xa4bB6VwdX8WbAEeq4qDFq5WNm6fbE3KcEZblf99MLXtfUce9BjcqcZuVKQ6hETI
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mcipv-006Qte-Ql; Tue, 19 Oct 2021 09:42:59 +0300
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
- <27dc0c49-a0d6-875b-49c6-0ef5c0cc3ac8@virtuozzo.com>
- <YW1oMxNkUCaAimmg@dhcp22.suse.cz>
- <CALvZod42uwgrg83CCKn6JgYqAQtR1RLJSuybNYjtkFo4wVgT1w@mail.gmail.com>
- <153f7aa6-39ef-f064-8745-a9489e088239@virtuozzo.com>
- <CALvZod5Kut63MLVfCkEW5XemqN4Jnd1iEQD_Gk0w5=fPffL8Bg@mail.gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <25120323-d222-cc5e-fe08-6471bce13bd6@virtuozzo.com>
-Date:   Tue, 19 Oct 2021 09:42:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229649AbhJSGrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:47:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1634625931;
+  x=1666161931;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OCzsBZ1UYObgnkazmJWe5p/esmlOxq+X2TO4w+LwJdM=;
+  b=EfF1SY5tGzLPN4vRAJGy2i0SJigorRuWtN9HEkbq7RyDdW8qwGUGYCk/
+   2qyZPiXuN2aTxxiC2Etvilj6QF37Sn2wy3HPzPGZ+oMue84mkCPFnIY5l
+   X50lFgfx8TlbAGiBV9PZkUBdU5mmJakFmiNtYjqXzcUL8Q3vjV3IdTwk/
+   6RC9gMCFc7yZXwCX7Tuc7SGsc6kU0Z/uY3AVDAhCNeGRAfxffIYuR2YiN
+   NMqAAeXLvl6gSIME8Tu9KZdiw1UJ8w0jWMKEJfDCubxsYWVG8cPw/JJ9i
+   T9aJvzPFEF+Q6hpMeVM4F32hE2NmGUFyJ/yt6/9zpp2wKm1tjlapwckJi
+   w==;
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     <jic23@kernel.org>, Peter Rosin <peda@axentia.se>
+CC:     <kernel@axis.com>, <linux-iio@vger.kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        kernel test robot <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mux: fix kernel doc prototype
+Date:   Tue, 19 Oct 2021 08:45:21 +0200
+Message-ID: <20211019064521.18113-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CALvZod5Kut63MLVfCkEW5XemqN4Jnd1iEQD_Gk0w5=fPffL8Bg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.2021 08:33, Shakeel Butt wrote:
-> On Mon, Oct 18, 2021 at 11:52 AM Vasily Averin <vvs@virtuozzo.com> wrote:
->>
->> On 18.10.2021 18:07, Shakeel Butt wrote:
->>> On Mon, Oct 18, 2021 at 5:27 AM Michal Hocko <mhocko@suse.com> wrote:
->>>>
->>>> [restore the cc list]
->>>>
->>>> On Mon 18-10-21 15:14:26, Vasily Averin wrote:
->>>>> On 18.10.2021 14:53, Michal Hocko wrote:
->>>>>> On Mon 18-10-21 13:05:35, Vasily Averin wrote:
->>>>>>> On 18.10.2021 12:04, Michal Hocko wrote:
->>>>>>> Here we call try_charge_memcg() that return success and approve the allocation,
->>>>>>> however then we hit into kmem limit and fail the allocation.
->>>>>>
->>>>>> Just to make sure I understand this would be for the v1 kmem explicit
->>>>>> limit, correct?
->>>>>
->>>>> yes, I mean this limit.
->>>>
->>>> OK, thanks for the clarification. This is a known problem. Have a look
->>>> at I think we consider that one to 0158115f702b ("memcg, kmem: deprecate
->>>> kmem.limit_in_bytes"). We are reporting the deprecated and to-be removed
->>>> status since 2019 without any actual report sugested by the kernel
->>>> message. Maybe we should try and remove it and see whether that prompts
->>>> some pushback.
->>>
->>> Yes, I think now should be the right time to take the next step for
->>> deprecation of kmem limits:
->>> https://lore.kernel.org/all/20201118175726.2453120-1-shakeelb@google.com/
->>
->> Are you going to push it to stable kernels too?
-> 
-> Not really. Is there a reason I should? More exposure to catch breakage?
+Fix this warning from scripts/kernel-doc:
 
-There is a problem: kmem limit can trigger fake global OOM.
-To fix it in upstream you can remove kmem controller.
+ drivers/mux/core.c:391: warning: expecting prototype for
+ mux_control_try_select(). Prototype was for
+ mux_control_try_select_delay() instead
 
-However how to handle this problem in stable and LTS kernels?
-My current patch resolves the problem too, and it can be backported.
-However I afraid nobody will do it if teh patch will not be approved in upsteam.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ drivers/mux/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you,
-	Vasily Averin
+diff --git a/drivers/mux/core.c b/drivers/mux/core.c
+index dee6945e92f7..22f4709768d1 100644
+--- a/drivers/mux/core.c
++++ b/drivers/mux/core.c
+@@ -371,7 +371,7 @@ int mux_control_select_delay(struct mux_control *mux, unsigned int state,
+ EXPORT_SYMBOL_GPL(mux_control_select_delay);
+ 
+ /**
+- * mux_control_try_select() - Try to select the given multiplexer state.
++ * mux_control_try_select_delay() - Try to select the given multiplexer state.
+  * @mux: The mux-control to request a change of state from.
+  * @state: The new requested state.
+  * @delay_us: The time to delay (in microseconds) if the mux state is changed.
+-- 
+2.28.0
+
