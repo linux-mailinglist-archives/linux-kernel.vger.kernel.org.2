@@ -2,94 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E756432E8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65235432E89
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234329AbhJSGtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        id S234313AbhJSGtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233986AbhJSGtd (ORCPT
+        with ESMTP id S229695AbhJSGs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:49:33 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2B2C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 23:47:21 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id y4so13042189plb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 23:47:21 -0700 (PDT)
+        Tue, 19 Oct 2021 02:48:59 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90912C06161C;
+        Mon, 18 Oct 2021 23:46:47 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id n2so4067941qta.2;
+        Mon, 18 Oct 2021 23:46:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=46hHnRr3YTPXmRk/mfEBr3Jwf0d6+QS6fhmqHfW8e6A=;
-        b=BHp5YvdXcJepgmPn+D0oe6Lu+5rQwUdRi0VX3eDvmrFqcFmFWYfpH+cwVzyrMp2eoN
-         ++HuHrI206EEBDMHvJvJ0KV3cRvX1w546b6zt2oFzRdWSXctsfrQKemZFnF8F8iVS2Fx
-         PNPj4BTqBejwewbrnptSRveGXZfh0XAaRmTnLkOFutw7jkmfTc+S3FR98F4f/4nihxR9
-         DCvpIBrNgpHnIXGzX8/vvNyaVttJPgyTPODcbk6Ehn4jIlh+EY9xiSEnczTObGA88IpD
-         wdCHPpZNCgSWjrWwXDPoQLGUDsWqYQvCGn1qkMRJzBrLoJdlkVwxkMumVGE8B1vEpPDk
-         ll8Q==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BoewNDuKiwgSJLTwqWzb1Sriu8DiIwvWpOuR2ScPTk4=;
+        b=QHs4n5hnOVcUomIu8wiPM8BfAY6BrwZYKx6S+ZGt9f7T2ShA549Gx9hhBhksM3REWk
+         p19NXWIT7b5+ErfSPkcsQlQuuB4NFiz5sXw6czSEZcteUsEnA7aD+hydB2IyXD7YFzqP
+         UoiE/4fqLRWGejfpdv0fMKRl3knzi0Ln0MjZg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=46hHnRr3YTPXmRk/mfEBr3Jwf0d6+QS6fhmqHfW8e6A=;
-        b=sQK3prUn7bMKuQq/i3hHhgHhzaTHiOXPJ3m07WyWH9qZHmg3Y5gxINFcCkvEoYaWJ/
-         5jSH/iyeVxO5bEwSC4N/mUhIm17fsWKe8g12rERSUpbtzzWlSXcte1Saz25WYpzF7kSd
-         5g5cKFZF02w2Lj/kbgTPypXUeypFheELfytQTdieSxZcvUXBL5wQyFU87AakSm4rFUY1
-         dBEap38NO2WSicX+TX1wFqvGBPBB6yFbv5+15/VzJKQhSgL2GVYvem13IhHV1khmP7pR
-         ZHpWVYvGd+RKOQif35h8El0MmP3xWBw/dZQ1y4lCQ0mQAdoVN2qjRgqeTQJexYOaFc8Y
-         ldBg==
-X-Gm-Message-State: AOAM532QtPySxGoTOewP7j3FO8w199nfOdoHNQiHj0HS6wcif0Knrf/h
-        QeKkA3mDYEnQN6vgrcYDapk=
-X-Google-Smtp-Source: ABdhPJz2FKdhfb+MwdRDo5LQrFoIasz8p1thrUImzSDOnJgmcLgYXSpLld26xLZg90uthycc2iZHzQ==
-X-Received: by 2002:a17:902:bb94:b0:13c:9113:5652 with SMTP id m20-20020a170902bb9400b0013c91135652mr32365510pls.70.1634626040926;
-        Mon, 18 Oct 2021 23:47:20 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id f15sm2894205pfe.132.2021.10.18.23.46.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 23:46:50 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ye.guojin@zte.com.cn
-To:     mingo@redhat.com
-Cc:     peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] sched: remove duplicate include in sched.h
-Date:   Tue, 19 Oct 2021 06:46:21 +0000
-Message-Id: <20211019064621.982233-1-ye.guojin@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BoewNDuKiwgSJLTwqWzb1Sriu8DiIwvWpOuR2ScPTk4=;
+        b=UUxgIcK3Fk1r02i/RAYgzg2A5lo/Eb1MS1trU19JXCjR6miw6qguyr45TavMJwNnQC
+         X2uG37mWcs53VsUR9t9DnIbO4ej0fWacVxykMLlNXlbwc49rBfH+SdkgZjXnFjU7sIHb
+         Stb3sscf7bwKqlhqCrvfd/RveIeJ5yw9eBUZl1RATcSWwGLMNb8zPnKx6xxFdGGSb3jB
+         zyyhAp0d8HmZr7QbkH6OCR2wVp73wT1SaY/EnO+JU1YSLlrgqGalWTTp/mG5G8xBCujE
+         7YNQmjADVUUNIMF6G+jmUXeaskDe3PAw4ewnduoeLxLuMUFDY/2GaNAJdUXcMyzPzx7I
+         fDjA==
+X-Gm-Message-State: AOAM533fVNHBgiJKSdFGBsNEk5y4znVcHmLjMpYI8ALobfAiBk9klNSB
+        aJd3Jkj1ezRQlWhbK+e43JyLHHD8WH2lm1Dwrms=
+X-Google-Smtp-Source: ABdhPJxJYlKZwgLWJqa7Jjs3CaYkmR98qbL+qFd8eRHWChM/xN85crXRZyY/H6rVG/YAvcSTvVX2QuqlcrygIrn/byM=
+X-Received: by 2002:ac8:5e49:: with SMTP id i9mr33068309qtx.145.1634626006635;
+ Mon, 18 Oct 2021 23:46:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211019060155.945-1-quan@os.amperecomputing.com> <20211019060155.945-3-quan@os.amperecomputing.com>
+In-Reply-To: <20211019060155.945-3-quan@os.amperecomputing.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 19 Oct 2021 06:46:34 +0000
+Message-ID: <CACPK8Xe645Me=NnjKP8L40a+ADT1FteL==b7SRNPAGM=K9UC3g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] ARM: dts: aspeed: mtjade: Add I2C buses for NVMe devices
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Guojin <ye.guojin@zte.com.cn>
+On Tue, 19 Oct 2021 at 06:02, Quan Nguyen <quan@os.amperecomputing.com> wrote:
+>
+> This commit adds configuration i2c busses for 24 NVMe slots and
+> 2 M2 NVMe slots found on Mt.Jade hardware reference platform
+> with Ampere's Altra processor family.
+>
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
 
-'linux/psi.h' included in 'sched.h' is duplicated.
-it's also included at line 59.
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
----
- kernel/sched/sched.h | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 5e82db2c2799..a5dadf63d92a 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -354,7 +354,6 @@ extern bool dl_cpu_busy(unsigned int cpu);
- #ifdef CONFIG_CGROUP_SCHED
- 
- #include <linux/cgroup.h>
--#include <linux/psi.h>
- 
- struct cfs_rq;
- struct rt_rq;
--- 
-2.25.1
-
+> ---
+> v2:
+>   + Introduced in v2
+>
+>  .../arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 258 ++++++++++++++++++
+>  1 file changed, 258 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
+> index 3515d55bd312..723c7063c223 100644
+> --- a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
+> +++ b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
+> @@ -7,6 +7,50 @@ / {
+>         model = "Ampere Mt. Jade BMC";
+>         compatible = "ampere,mtjade-bmc", "aspeed,ast2500";
+>
+> +       aliases {
+> +               /*
+> +                *  i2c bus 50-57 assigned to NVMe slot 0-7
+> +                */
+> +               i2c50 = &nvmeslot_0;
+> +               i2c51 = &nvmeslot_1;
+> +               i2c52 = &nvmeslot_2;
+> +               i2c53 = &nvmeslot_3;
+> +               i2c54 = &nvmeslot_4;
+> +               i2c55 = &nvmeslot_5;
+> +               i2c56 = &nvmeslot_6;
+> +               i2c57 = &nvmeslot_7;
+> +
+> +               /*
+> +                *  i2c bus 60-67 assigned to NVMe slot 8-15
+> +                */
+> +               i2c60 = &nvmeslot_8;
+> +               i2c61 = &nvmeslot_9;
+> +               i2c62 = &nvmeslot_10;
+> +               i2c63 = &nvmeslot_11;
+> +               i2c64 = &nvmeslot_12;
+> +               i2c65 = &nvmeslot_13;
+> +               i2c66 = &nvmeslot_14;
+> +               i2c67 = &nvmeslot_15;
+> +
+> +               /*
+> +                *  i2c bus 70-77 assigned to NVMe slot 16-23
+> +                */
+> +               i2c70 = &nvmeslot_16;
+> +               i2c71 = &nvmeslot_17;
+> +               i2c72 = &nvmeslot_18;
+> +               i2c73 = &nvmeslot_19;
+> +               i2c74 = &nvmeslot_20;
+> +               i2c75 = &nvmeslot_21;
+> +               i2c76 = &nvmeslot_22;
+> +               i2c77 = &nvmeslot_23;
+> +
+> +               /*
+> +                *  i2c bus 80-81 assigned to NVMe M2 slot 0-1
+> +                */
+> +               i2c80 = &nvme_m2_0;
+> +               i2c81 = &nvme_m2_1;
+> +       };
+> +
+>         chosen {
+>                 stdout-path = &uart5;
+>                 bootargs = "console=ttyS4,115200 earlycon";
+> @@ -445,6 +489,220 @@ rtc@51 {
+>
+>  &i2c5 {
+>         status = "okay";
+> +       i2c-mux@70 {
+> +               compatible = "nxp,pca9548";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               reg = <0x70>;
+> +               i2c-mux-idle-disconnect;
+> +
+> +               nvmeslot_0_7: i2c@3 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x3>;
+> +               };
+> +       };
+> +
+> +       i2c-mux@71 {
+> +               compatible = "nxp,pca9548";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               reg = <0x71>;
+> +               i2c-mux-idle-disconnect;
+> +
+> +               nvmeslot_8_15: i2c@4 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x4>;
+> +               };
+> +
+> +               nvmeslot_16_23: i2c@3 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x3>;
+> +               };
+> +
+> +       };
+> +
+> +       i2c-mux@72 {
+> +               compatible = "nxp,pca9545";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               reg = <0x72>;
+> +               i2c-mux-idle-disconnect;
+> +
+> +               nvme_m2_0: i2c@0 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x0>;
+> +               };
+> +
+> +               nvme_m2_1: i2c@1 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x1>;
+> +               };
+> +       };
+> +};
+> +
+> +&nvmeslot_0_7 {
+> +       status = "okay";
+> +
+> +       i2c-mux@75 {
+> +               compatible = "nxp,pca9548";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               reg = <0x75>;
+> +               i2c-mux-idle-disconnect;
+> +
+> +               nvmeslot_0: i2c@0 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x0>;
+> +               };
+> +               nvmeslot_1: i2c@1 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x1>;
+> +               };
+> +               nvmeslot_2: i2c@2 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x2>;
+> +               };
+> +               nvmeslot_3: i2c@3 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x3>;
+> +               };
+> +               nvmeslot_4: i2c@4 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x4>;
+> +               };
+> +               nvmeslot_5: i2c@5 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x5>;
+> +               };
+> +               nvmeslot_6: i2c@6 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x6>;
+> +               };
+> +               nvmeslot_7: i2c@7 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x7>;
+> +               };
+> +
+> +       };
+> +};
+> +
+> +&nvmeslot_8_15 {
+> +       status = "okay";
+> +
+> +       i2c-mux@75 {
+> +               compatible = "nxp,pca9548";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               reg = <0x75>;
+> +               i2c-mux-idle-disconnect;
+> +
+> +               nvmeslot_8: i2c@0 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x0>;
+> +               };
+> +               nvmeslot_9: i2c@1 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x1>;
+> +               };
+> +               nvmeslot_10: i2c@2 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x2>;
+> +               };
+> +               nvmeslot_11: i2c@3 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x3>;
+> +               };
+> +               nvmeslot_12: i2c@4 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x4>;
+> +               };
+> +               nvmeslot_13: i2c@5 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x5>;
+> +               };
+> +               nvmeslot_14: i2c@6 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x6>;
+> +               };
+> +               nvmeslot_15: i2c@7 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x7>;
+> +               };
+> +       };
+> +};
+> +
+> +&nvmeslot_16_23 {
+> +       status = "okay";
+> +
+> +       i2c-mux@75 {
+> +               compatible = "nxp,pca9548";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               reg = <0x75>;
+> +               i2c-mux-idle-disconnect;
+> +
+> +               nvmeslot_16: i2c@0 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x0>;
+> +               };
+> +               nvmeslot_17: i2c@1 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x1>;
+> +               };
+> +               nvmeslot_18: i2c@2 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x2>;
+> +               };
+> +               nvmeslot_19: i2c@3 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x3>;
+> +               };
+> +               nvmeslot_20: i2c@4 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x4>;
+> +               };
+> +               nvmeslot_21: i2c@5 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x5>;
+> +               };
+> +               nvmeslot_22: i2c@6 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x6>;
+> +               };
+> +               nvmeslot_23: i2c@7 {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       reg = <0x7>;
+> +               };
+> +       };
+>  };
+>
+>  &i2c6 {
+> --
+> 2.28.0
+>
