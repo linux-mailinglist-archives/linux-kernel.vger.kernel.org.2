@@ -2,73 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240C7433678
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45CE43367C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235781AbhJSNBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:01:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235517AbhJSNBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:01:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0988461360;
-        Tue, 19 Oct 2021 12:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634648332;
-        bh=caXBS3UB21RWBsaDUtaoarJP8pbeCJWQLJy/YJFswPQ=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=Ea+0+2X3myMrrl1AckG3XgkgqEABOqBxDmZcneYwUggaXTI2ns+2BL5upaUXcE3+7
-         B//H3a2uueir36sY0Dm5ITDoneULhDra81xX689DVk1e0JbwQ97EFXu/MAhyXGeopy
-         zGRzBqo4+LYhpLfMVP0rUAoXWJFLj+As0GRvqkhSLEk8hhQyHkFjLVbEXQNxwuf1j9
-         Jg/TaYF6F8Cgvft72uLW8UWITTD5XFx0yaUNxHTpdqHMk9d13rL+vF365bCuaFLZsh
-         abyLmDUOQlJqb9RFLngWHn1XfyqmUYv11VIg3vg/h5FNaBc6YO+ryvOVoUtP6aT+FK
-         7Bv5GE5VjPCdw==
-Message-ID: <f0d5ccd4-56c0-5212-dc13-fccff9d36e5d@kernel.org>
-Date:   Tue, 19 Oct 2021 20:58:49 +0800
+        id S235784AbhJSNB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:01:29 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:29909 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235763AbhJSNB1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 09:01:27 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HYYbz40RQzbnFn;
+        Tue, 19 Oct 2021 20:54:39 +0800 (CST)
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 19 Oct 2021 20:59:12 +0800
+Received: from localhost.localdomain (10.175.101.6) by
+ dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 19 Oct 2021 20:59:11 +0800
+From:   Di Zhu <zhudi2@huawei.com>
+To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kafai@fb.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhudi2@huawei.com>
+Subject: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to sockmap
+Date:   Tue, 19 Oct 2021 20:58:56 +0800
+Message-ID: <20211019125856.2566882-1-zhudi2@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 3/3] erofs: introduce readmore decompression strategy
-Content-Language: en-US
-To:     Gao Xiang <xiang@kernel.org>, linux-erofs@lists.ozlabs.org,
-        LKML <linux-kernel@vger.kernel.org>, Yue Hu <zbestahu@gmail.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-References: <20211008200839.24541-1-xiang@kernel.org>
- <20211008200839.24541-4-xiang@kernel.org>
- <8e39e5d1-285d-52b6-8fea-8bb9ff10bf5a@kernel.org>
- <20211017154253.GB4054@hsiangkao-HP-ZHAN-66-Pro-G1>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20211017154253.GB4054@hsiangkao-HP-ZHAN-66-Pro-G1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500011.china.huawei.com (7.185.36.84)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/17 23:42, Gao Xiang wrote:
-> On Sun, Oct 17, 2021 at 11:34:22PM +0800, Chao Yu wrote:
->> On 2021/10/9 4:08, Gao Xiang wrote:
->>> From: Gao Xiang <hsiangkao@linux.alibaba.com>
->>>
->>> Previously, the readahead window was strictly followed by EROFS
->>> decompression strategy in order to minimize extra memory footprint.
->>> However, it could become inefficient if just reading the partial
->>> requested data for much big LZ4 pclusters and the upcoming LZMA
->>> implementation.
->>>
->>> Let's try to request the leading data in a pcluster without
->>> triggering memory reclaiming instead for the LZ4 approach first
->>> to boost up 100% randread of large big pclusters, and it has no real
->>> impact on low memory scenarios.
->>>
->>> It also introduces a way to expand read lengths in order to decompress
->>> the whole pcluster, which is useful for LZMA since the algorithm
->>> itself is relatively slow and causes CPU bound, but LZ4 is not.
->>>
->>> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Right now there is no way to query whether BPF programs are
+attached to a sockmap or not.
 
-Looks fine to me now.
+we can use the standard interface in libbpf to query, such as:
+bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+the mapFd is the fd of sockmap.
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Di Zhu <zhudi2@huawei.com>
+---
+ include/linux/bpf.h  |  8 +++++
+ kernel/bpf/syscall.c |  4 +++
+ net/core/sock_map.c  | 81 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 93 insertions(+)
 
-Thanks,
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 1c7fd7c4c6d3..69cf70b077d5 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1959,6 +1959,8 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
+ int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
+ int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
++int sockmap_bpf_prog_query(const union bpf_attr *attr,
++			   union bpf_attr __user *uattr);
+ void sock_map_unhash(struct sock *sk);
+ void sock_map_close(struct sock *sk, long timeout);
+ #else
+@@ -2012,6 +2014,12 @@ static inline int sock_map_update_elem_sys(struct bpf_map *map, void *key, void
+ {
+ 	return -EOPNOTSUPP;
+ }
++
++static inline int sockmap_bpf_prog_query(const union bpf_attr *attr,
++					 union bpf_attr __user *uattr)
++{
++	return -EINVAL;
++}
+ #endif /* CONFIG_BPF_SYSCALL */
+ #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4e50c0bfdb7d..3049b9506583 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3275,6 +3275,10 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_FLOW_DISSECTOR:
+ 	case BPF_SK_LOOKUP:
+ 		return netns_bpf_prog_query(attr, uattr);
++	case BPF_SK_SKB_STREAM_PARSER:
++	case BPF_SK_SKB_STREAM_VERDICT:
++	case BPF_SK_MSG_VERDICT:
++		return sockmap_bpf_prog_query(attr, uattr);
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index e252b8ec2b85..32688a1b78c6 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1451,6 +1451,87 @@ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+ 	return 0;
+ }
+ 
++static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog **prog,
++				u32 which)
++{
++	struct sk_psock_progs *progs = sock_map_progs(map);
++
++	if (!progs)
++		return -EOPNOTSUPP;
++
++	switch (which) {
++	case BPF_SK_MSG_VERDICT:
++		*prog = READ_ONCE(progs->msg_parser);
++		break;
++#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
++	case BPF_SK_SKB_STREAM_PARSER:
++		*prog = READ_ONCE(progs->skb_parser);
++		break;
++#endif
++	case BPF_SK_SKB_STREAM_VERDICT:
++		*prog = READ_ONCE(progs->skb_verdict);
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
++int sockmap_bpf_prog_query(const union bpf_attr *attr,
++			   union bpf_attr __user *uattr)
++{
++	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
++	u32 prog_cnt = 0, flags = 0;
++	u32 ufd = attr->target_fd;
++	struct bpf_map *map;
++	struct bpf_prog *prog;
++	struct fd f;
++	int ret;
++
++	if (attr->query.query_flags)
++		return -EINVAL;
++
++	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
++		return -EFAULT;
++
++	f = fdget(ufd);
++	map = __bpf_map_get(f);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++
++	rcu_read_lock();
++
++	ret = sock_map_prog_lookup(map, &prog, attr->query.attach_type);
++	if (ret)
++		goto end;
++
++	prog_cnt = (!prog) ? 0 : 1;
++	if (copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt))) {
++		ret = -EFAULT;
++		goto end;
++	}
++
++	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
++		goto end;
++
++	prog = bpf_prog_inc_not_zero(prog);
++	if (IS_ERR(prog)) {
++		ret = PTR_ERR(prog);
++		goto end;
++	}
++
++	if (copy_to_user(prog_ids, &prog->aux->id, sizeof(u32)))
++		ret = -EFAULT;
++
++	bpf_prog_put(prog);
++
++end:
++	rcu_read_unlock();
++	fdput(f);
++	return ret;
++}
++
+ static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
+ {
+ 	switch (link->map->map_type) {
+-- 
+2.23.0
+
