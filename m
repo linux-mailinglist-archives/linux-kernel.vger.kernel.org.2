@@ -2,137 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F7B43360E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D793433611
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235590AbhJSMh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        id S235688AbhJSMiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhJSMh4 (ORCPT
+        with ESMTP id S230231AbhJSMh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:37:56 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB19C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:44 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id k7so47276715wrd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:43 -0700 (PDT)
+        Tue, 19 Oct 2021 08:37:58 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EDCC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:45 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id o24-20020a05600c511800b0030d9da600aeso2871488wms.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=6ESHQOo9KySzj+CoCPClGyaxb6lsjeZdTqttkXRUbsM=;
-        b=J1eKkiRReI/jo4nvnXN28MxZt0b0JOxrEmv1OZThkjU2bxXVlFeN81h99SP4gqfPuJ
-         bzzeWrmZwWkTx5NNAdL4CJf/WC8Ux5tfQNnYbM4F0zsm2GxwUehFYK3Z7Tv7vjzP0dJl
-         m2osxOIktXW6oUxwpljAdrGeXdKBuB0LHlOidXjOl1InnarZmNcAR4DIGnd14DFKibyh
-         JLIvP2G2sogOtBQI1U9emjRDZE3yxUock6JptUmDtCeMoROgmsjN13Coavl0WOdwUtpu
-         HmN1mxN/pJpfBKPputFBvsaFYommewU3b/GyQ2bX3GAbpnJf1G6cnmxIBxFp7ej7WvKK
-         5I4A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=VbpSYYhmqSApsIZymBiS9kQ5AGKVcFL0cEBHXXx/c/g=;
+        b=al+tSTDHoXlry3+FtxyhMGAW3vvkEHur8y0NBhQ5vvE7J8+D3fekzzada/dvZSqVyY
+         prFm/zyno2djtaUN+SIW0d3f1aowuExTreRAyN1I5xruIVC40q5KScp8Ryn9EvrasN/m
+         mruE1JnI3Nwt+vf6eKzb/NqH1R33WssipYNOBd9lS1taNxhgUTQw+7o0Tq0ztTvu4urn
+         6hAsoJYLsTkgiUmbGcH3Mvc0AWbYxMo97hfGDdNXiWHzNSnivbvQ8cQLhYDWgmaKlglz
+         tRNbgoIcHDqXVB/ZOR5wYih9phWxWRLdYXaHCFdscJr1BHZXFKDmghe2OYAvBthvTQ87
+         zTeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=6ESHQOo9KySzj+CoCPClGyaxb6lsjeZdTqttkXRUbsM=;
-        b=W9cgXSypTeWjdWll1DcwCCZwKT4WERsMhMB/V69szg8KXiIQFOjER5s+WGfPehRATs
-         DLmTCLtG56nYo0BIwvuI8N8nfNqaegqF2PMRv99pMTg6/6BMS48Xc7/9L2DPSS1V81L7
-         Lpm3IKM02dNlk2wvTRFsTY6KWvUQnzfQnHkiKWBXdVeYhhE5t8qC5bylMKAAgpLXj8x9
-         TXFNsuaGUkeCC4Rg7EPKQc2Wgm60gXa26+MnywF16rFen1aWEmK0Z+kpcPdvEtglsULb
-         Qg/QtjDKPLH1oKDfmynN6yf7fbLgehF4yvrfivUbPj4E6T11bobmM0TVYb11w1VBfPLW
-         lRXA==
-X-Gm-Message-State: AOAM530C76zsNTPSTvZBGDWgIcO5oMjQ94AX4Vc6ah8YX1T2T1ti1m66
-        sUhxMTw/2vGlTpxjs2xq21WhRA==
-X-Google-Smtp-Source: ABdhPJxtcUBehLH/kWC+8xC+IwhQqMeTHFzatk9gewxEumfqCdo5aNk8BMYKT/CJwtGY4Tx3vfHaIg==
-X-Received: by 2002:adf:8bcf:: with SMTP id w15mr44267036wra.144.1634646942550;
-        Tue, 19 Oct 2021 05:35:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=VbpSYYhmqSApsIZymBiS9kQ5AGKVcFL0cEBHXXx/c/g=;
+        b=k3b2SYplWnu2AAYcRF/rpxZwGxH5pJII1bupoeZizvUkemxkj2eTOGyd14hB6gRv6V
+         jTIJQU0KIF0StoRx1kSV2n2Qm8v8oOiVJsKAi1cUxJm8ibYYHeIvFVMjyyBG8aEinKeA
+         eQCQl3h2jA4zNPEew6vsBKEPL/ilcVZe45jkKpgWGimuGAUYnAzzqqrfJHXMFxdUHzEt
+         HRMj5lxMFkck0XEczMYUJ+njBcWLXp/n22hOZjljkUDnNx4X8mL+8+sV3rBwkqp/9boA
+         CaWQs+NQ5lvHVh6FF8ZGkYN0bpEQG/u0y1VZdFGXe3o/gw1sPwijwT1E6uKebNbN9pMf
+         idJw==
+X-Gm-Message-State: AOAM531ns53AXar+CGPHC1tH43boE6OWJvYbCG2Fiq1JlTFI4D/CCT04
+        ye4Nm9RrAiZP3ITHNP/HiPjCu5Ql/1+rHg==
+X-Google-Smtp-Source: ABdhPJxaSVhRJ9gd1EcYJ76L8tpP0hrqEmOMWyioEik9uwiv+MGHA+f+LDyNji+Oi7wTb70/DVBZGw==
+X-Received: by 2002:a1c:751a:: with SMTP id o26mr5915739wmc.94.1634646944360;
+        Tue, 19 Oct 2021 05:35:44 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:f:6020:6dc7:9883:a79c:5be9])
-        by smtp.gmail.com with ESMTPSA id p18sm15263683wrn.41.2021.10.19.05.35.41
+        by smtp.gmail.com with ESMTPSA id p18sm15263683wrn.41.2021.10.19.05.35.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 05:35:41 -0700 (PDT)
+        Tue, 19 Oct 2021 05:35:43 -0700 (PDT)
 From:   Vincent Guittot <vincent.guittot@linaro.org>
 To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
         mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
         tim.c.chen@linux.intel.com
 Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v3 0/5] Improve newidle lb cost tracking and early abort
-Date:   Tue, 19 Oct 2021 14:35:32 +0200
-Message-Id: <20211019123537.17146-1-vincent.guittot@linaro.org>
+Subject: [PATCH v3 1/5] sched/fair: Account update_blocked_averages in newidle_balance cost
+Date:   Tue, 19 Oct 2021 14:35:33 +0200
+Message-Id: <20211019123537.17146-2-vincent.guittot@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211019123537.17146-1-vincent.guittot@linaro.org>
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset updates newidle lb cost tracking and early abort:
+The time spent to update the blocked load can be significant depending of
+the complexity fo the cgroup hierarchy. Take this time into account in
+the cost of the 1st load balance of a newly idle cpu.
 
-The time spent running update_blocked_averages is now accounted in the 1st
-sched_domain level. This time can be significant and move the cost of
-newidle lb above the avg_idle time.
+Also reduce the number of call to sched_clock_cpu() and track more actual
+work.
 
-The decay of max_newidle_lb_cost is modified to start only when the field
-has not been updated for a while. Recent update will not be decayed
-immediatlybut only after a while.
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ kernel/sched/fair.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-The condition of an avg_idle lower than sysctl_sched_migration_cost has
-been removed as the 500us value is quite large and prevent opportunity to
-pull task on the newly idle CPU for at least 1st domain levels.
-
-Monitoring sd->max_newidle_lb_cost on cpu0 of a Arm64 system
-THX2 (2 nodes * 28 cores * 4 cpus) during the benchmarks gives the
-following results:
-       min    avg   max
-SMT:   1us   33us  273us - this one includes the update of blocked load
-MC:    7us   49us  398us
-NUMA: 10us   45us  158us
-
-
-Some results for hackbench -l $LOOPS -g $group :
-group      tip/sched/core     + this patchset
-1           15.189(+/- 2%)       14.987(+/- 2%)  +1%
-4            4.336(+/- 3%)        4.322(+/- 5%)  +0%
-16           3.654(+/- 1%)        2.922(+/- 3%) +20%
-32           3.209(+/- 1%)        2.919(+/- 3%)  +9%
-64           2.965(+/- 1%)        2.826(+/- 1%)  +4%
-128          2.954(+/- 1%)        2.993(+/- 8%)  -1%
-256          2.951(+/- 1%)        2.894(+/- 1%)  +2%
-
-tbench and reaim have not shown any difference
-
-Change since v2:
-- Update and decay of sd->last_decay_max_lb_cost are gathered in
-  update_newidle_cost(). The behavior remains almost the same except that
-  the decay can happen during newidle_balance now.
-
-  Tests results haven't shown any differences
-  
-  I haven't modified rq->max_idle_balance_cost. It acts as the max value
-  for avg_idle and prevents the latter to reach high value during long
-  idle phase. Moving on an IIR filter instead, could delay the convergence
-  of avg_idle to a reasonnable value that reflect current situation.
-
-- Added a minor cleanup of newidle_balance
-
-Change since v1:
-- account the time spent in update_blocked_averages() in the 1st domain
-
-- reduce number of call of sched_clock_cpu() 
-
-- change the way max_newidle_lb_cost is decayed. Peter suggested to use a
-  IIR but keeping a track of the current max value gave the best result
-
-- removed the condition (this_rq->avg_idle < sysctl_sched_migration_cost)
-  as suggested by Peter
-
-Vincent Guittot (5):
-  sched/fair: Account update_blocked_averages in newidle_balance cost
-  sched/fair: Skip update_blocked_averages if we are defering load
-    balance
-  sched/fair: Wait before decaying max_newidle_lb_cost
-  sched/fair: Remove sysctl_sched_migration_cost condition
-  sched/fair: cleanup newidle_balance
-
- include/linux/sched/topology.h |  2 +-
- kernel/sched/fair.c            | 65 ++++++++++++++++++++++------------
- kernel/sched/topology.c        |  2 +-
- 3 files changed, 45 insertions(+), 24 deletions(-)
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 87db481e8a56..c0145677ee99 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10840,9 +10840,9 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ {
+ 	unsigned long next_balance = jiffies + HZ;
+ 	int this_cpu = this_rq->cpu;
++	u64 t0, t1, curr_cost = 0;
+ 	struct sched_domain *sd;
+ 	int pulled_task = 0;
+-	u64 curr_cost = 0;
+ 
+ 	update_misfit_status(NULL, this_rq);
+ 
+@@ -10887,11 +10887,13 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 
+ 	raw_spin_rq_unlock(this_rq);
+ 
++	t0 = sched_clock_cpu(this_cpu);
+ 	update_blocked_averages(this_cpu);
++
+ 	rcu_read_lock();
+ 	for_each_domain(this_cpu, sd) {
+ 		int continue_balancing = 1;
+-		u64 t0, domain_cost;
++		u64 domain_cost;
+ 
+ 		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
+ 			update_next_balance(sd, &next_balance);
+@@ -10899,17 +10901,18 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 		}
+ 
+ 		if (sd->flags & SD_BALANCE_NEWIDLE) {
+-			t0 = sched_clock_cpu(this_cpu);
+ 
+ 			pulled_task = load_balance(this_cpu, this_rq,
+ 						   sd, CPU_NEWLY_IDLE,
+ 						   &continue_balancing);
+ 
+-			domain_cost = sched_clock_cpu(this_cpu) - t0;
++			t1 = sched_clock_cpu(this_cpu);
++			domain_cost = t1 - t0;
+ 			if (domain_cost > sd->max_newidle_lb_cost)
+ 				sd->max_newidle_lb_cost = domain_cost;
+ 
+ 			curr_cost += domain_cost;
++			t0 = t1;
+ 		}
+ 
+ 		update_next_balance(sd, &next_balance);
 -- 
 2.17.1
 
