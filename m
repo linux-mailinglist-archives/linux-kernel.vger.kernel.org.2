@@ -2,244 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7110434131
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D4B434139
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhJSWMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
+        id S229707AbhJSWQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhJSWMn (ORCPT
+        with ESMTP id S229533AbhJSWQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:12:43 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90695C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:10:30 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id m26so1194437pff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:10:30 -0700 (PDT)
+        Tue, 19 Oct 2021 18:16:43 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AD1C06161C;
+        Tue, 19 Oct 2021 15:14:30 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id j190so13931897pgd.0;
+        Tue, 19 Oct 2021 15:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gcH42ft4PL5Uc/1EXoL8Dp6lDCUUCAQKKLWYXAKG1cg=;
-        b=gLWWTkEYbZJ9S5wn4tB9utjlf9XVjePkQgnPtpzqwjV5+Tgd9KNtnGEhYWs+gca1Lh
-         rNxbvgYEXhl0I3xqP+Cmu1u86u6h2HL6+AWpTA1fXMnsiEkM3o5cQaKyjsu7nhg3rY91
-         gjfn5RrgwxY3j3wjOSMw4nbZQW+p1PmXD32HA=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=db7rEPRLzmzI5PinOMajtHWjLZ84asKHAw3+UbYQqrI=;
+        b=fqe3bvOaBxbVhzaKLdztWbhm4VnbMY66SAxgni9R3Y1MUCCCTIAj6uKVT4rIyP+yKu
+         n8TZY8ZoSh6iRlJaxuVevEFsYZpzUUh9WM8euGEv9SVKdmq3YI+mi9uIYpmTbwCHTlWa
+         yiFk0ohpB4cnFOrk4sdiF0IfR4TyMEXA+5jbE/FVHR/A4zxLVTStxNGNv0nw5dnFYepx
+         MKeDEaA/IVWkFquOHZZW/BgmeAiq2VDwjhDqwAHxoUHLE2FF4Knp11NrkxHrEMiE2Gdm
+         +P4k8Y8+sKfriEd+7YxndGjBobUU1WWrn6wGP4g1wr8apgow3/2kJYbBpv43NrpPSBkG
+         7tFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gcH42ft4PL5Uc/1EXoL8Dp6lDCUUCAQKKLWYXAKG1cg=;
-        b=X9gnZFlWXsm0aKEl8U0N2COxpDmJwIuPisSBy7LySwfXRqb/gq+cMGXIeqhuRGHgy0
-         FB8ELU81UEYvCnFQqSwucx6sYyunk5OVhq7pEAScq2QEdkLuWvOVtMW3bwsd8AjV25LF
-         gu3SLHx3zcE42Ax74oTinn8zeMrXjlWIWXs1FXAgw+/42GqxnnJuc/iKI4HqnXDCblfv
-         jeNxWy5Y/SKzIolm9KQjjAM2KtM3ECq1EEYFk4ucbY6fk+Nspnpk791Bg+qr4bpC4u6u
-         nf2cgoaTsPZg1qVma6KiEaJX4jT2IS8evXVjSD9vK8vm8SB9ZKIYUMi9EwRDrnXJCRBh
-         Tgdw==
-X-Gm-Message-State: AOAM531X3ptIecE3lAKnX/Zmyy5s1OjeboyFgDDMfnIhYm3xCqOQY09P
-        BuHnUSNeSWS8vZkPKVN22pJFkQ==
-X-Google-Smtp-Source: ABdhPJz8FQqhb8sxAUF9c1/0TkQZqd983/XaDEdJ60GExi3IhnaND//4FpVJC7NyexgDMDDuQ7+QWQ==
-X-Received: by 2002:a63:7f0e:: with SMTP id a14mr24338961pgd.390.1634681430017;
-        Tue, 19 Oct 2021 15:10:30 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:6c1f:a561:f56:7d16])
-        by smtp.gmail.com with UTF8SMTPSA id n207sm203903pfd.143.2021.10.19.15.10.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 15:10:29 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 15:10:25 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jens Axboe <axboe@kernel.dk>, Johan Hovold <johan@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=db7rEPRLzmzI5PinOMajtHWjLZ84asKHAw3+UbYQqrI=;
+        b=mh5KOJM5KZAyV0ekMcxKzgk0nybb8WWStVUf3qbtkCFO1kcm0s0riMF3+zaNZGl+gK
+         Yvzh6YuyKh+HR3tivJDxnGmF1KvIwvN2bH8D8UduKRpIe+lTD+ZE2598EY1hMSTjPVt/
+         7nL+QjmiKdK0VXQdPlwEitlB/8jM5nxZ9tdBXDCBOJEp5x8jdXW03uaUVAf2HKc0Iyqs
+         QC9Wm3lRAPTTrrftEb81fpupOncQ8VDyd5KCPTPO9V1w23avXyKlvMupWEP0Fmtu1G6K
+         Tl9ZhNtrAIpeJboF9IY8k1AuAQR7fmdqwoqfl3DXn61QJX432Mfofzuq81DjuBTIlPz0
+         R7Cg==
+X-Gm-Message-State: AOAM532eUMAo1xH8JCCUPv6ka5AEmvLQis2jknl0+0B0hYoSUu1qPNSt
+        cor8nM8ZhGaRkP9IkaaTez5tgIElJJM=
+X-Google-Smtp-Source: ABdhPJzOTticDhcbLAuvC/vCcVPjf0Xza41ZAhCLev8x7LTgw9X3IyBbsaQ4IHukxjc9Vos099ViHQ==
+X-Received: by 2002:a63:84c3:: with SMTP id k186mr31070638pgd.462.1634681669452;
+        Tue, 19 Oct 2021 15:14:29 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id y13sm205587pgc.46.2021.10.19.15.14.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 15:14:28 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
+        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jason Wang <wangborong@cdjrlc.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Lionel DEBIEVE <lionel.debieve@st.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?utf-8?Q?J=C3=BCcker?= <martin.juecker@gmail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Olivier MOYSAN <olivier.moysan@st.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Robert Richter <rric@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Lindgren <tony@atomide.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        William Cohen <wcohen@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Subject: Re: [PATCH v16 0/7] usb: misc: Add onboard_usb_hub driver
-Message-ID: <YW9CUabfA0HrtTAq@google.com>
-References: <20210813195228.2003500-1-mka@chromium.org>
- <YUoRq1RrOIoiBJ5+@google.com>
- <CAD=FV=WrddUhWT0wUVZD0gN_+8Zy1VGY77LYLYBvhaPQQ_SqZw@mail.gmail.com>
- <YWkiGGBKOVokBye9@kroah.com>
- <03f28680-35eb-25f4-5041-f3a56144da24@foss.st.com>
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE)
+Subject: [PATCH] pinctrl: bcm2835: Allow building driver as a module
+Date:   Tue, 19 Oct 2021 15:11:21 -0700
+Message-Id: <20211019221127.1953001-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <03f28680-35eb-25f4-5041-f3a56144da24@foss.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 06:04:06PM +0200, Fabrice Gasnier wrote:
-> On 10/15/21 8:39 AM, Greg Kroah-Hartman wrote:
-> > On Thu, Oct 14, 2021 at 02:38:55PM -0700, Doug Anderson wrote:
-> >> Hi,
-> >>
-> >> On Tue, Sep 21, 2021 at 10:09 AM Matthias Kaehlcke <mka@chromium.org> wrote:
-> >>>
-> >>> Hi Greg,
-> >>>
-> >>> are there any actions pending or can this land in usb-testing?
-> >>>
-> >>> I confirmed that this series can be rebased on top of v5.15-rc2
-> >>> without conflicts.
-> >>
-> >> I'm quite interested to know what the next action items are, too. This
-> >> is one of the very few patches we have for trogdor (excluding MIPI
-> >> camera, which is a long story) that we're carrying downstream, so I'm
-> >> keenly interested in making sure it's unblocked (if, indeed, it's
-> >> blocked on anything).
-> >>
-> >> If folks feel that this needs more review eyes before landing again
-> >> then I'll try to find some time in the next week or two. If it's just
-> >> waiting for the merge window to open/close so it can have maximal bake
-> >> time, that's cool too. Please yell if there's something that I can do
-> >> to help, though! :-)
-> > 
-> > I would love more review-eyes on this please.
-> > 
-> 
-> Hi,
-> 
-> I noticed this series some time ago, and wanted to take a closer look.
-> 
-> The same issue this series address is seen on stm32 board for instance.
-> (arch/arm/boot/dts/stm32mp15xx-dkx.dtsi). On board HUB (not described in
-> the DT) is supplied by an always-on regulator.
-> So it could could be interesting/useful to address the same case ,
-> on stm32 boards, where USB2 (ehci-platform driver) is used currently.
-> 
-> I noticed a few things, especially on the dt-bindings. I've some
-> questions here.
-> 
-> In this series, RTS5411 is used. The dt-bindings documents it as a child
-> node of the USB controller. E.g.
-> 
-> &usb {
-> 	usb_hub_2_0: hub@1 {
-> 		...
-> 	};
-> 
-> 	usb_hub_3_0: hub@2 {
-> 	};
-> }
-> 
-> I had a quick look at RTS5411 datasheet. It looks like there's an i2c
-> interface too.
-> - I guess the I2C interface isn't used in your case ?
->   (I haven't checked what it could be used for...)
+Update the pinctrl-bcm2835 driver to support being built as as a module
+by converting it to a module_platform_driver() with the appropriate
+module license, authors and description.
 
-Correct, the i2c interface isn't used on my board.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/pinctrl/bcm/Kconfig           | 2 +-
+ drivers/pinctrl/bcm/pinctrl-bcm2835.c | 9 ++++++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-Also the binding isn't completely new, it is based on the generic USB
-binding (https://www.kernel.org/doc/Documentation/devicetree/bindings/usb/usb-device.txt)
+diff --git a/drivers/pinctrl/bcm/Kconfig b/drivers/pinctrl/bcm/Kconfig
+index c9c5efc92731..8fc1feedd861 100644
+--- a/drivers/pinctrl/bcm/Kconfig
++++ b/drivers/pinctrl/bcm/Kconfig
+@@ -18,7 +18,7 @@ config PINCTRL_BCM281XX
+ 	  framework.  GPIO is provided by a separate GPIO driver.
+ 
+ config PINCTRL_BCM2835
+-	bool "Broadcom BCM2835 GPIO (with PINCONF) driver"
++	tristate "Broadcom BCM2835 GPIO (with PINCONF) driver"
+ 	depends on OF && (ARCH_BCM2835 || ARCH_BRCMSTB || COMPILE_TEST)
+ 	select PINMUX
+ 	select PINCONF
+diff --git a/drivers/pinctrl/bcm/pinctrl-bcm2835.c b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
+index 6e6fefeb21ea..2abcc6ce4eba 100644
+--- a/drivers/pinctrl/bcm/pinctrl-bcm2835.c
++++ b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
+@@ -20,6 +20,7 @@
+ #include <linux/irqdesc.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
++#include <linux/module.h>
+ #include <linux/of_address.h>
+ #include <linux/of.h>
+ #include <linux/of_irq.h>
+@@ -1332,4 +1333,10 @@ static struct platform_driver bcm2835_pinctrl_driver = {
+ 		.suppress_bind_attrs = true,
+ 	},
+ };
+-builtin_platform_driver(bcm2835_pinctrl_driver);
++module_platform_driver(bcm2835_pinctrl_driver);
++
++MODULE_AUTHOR("Chris Boot");
++MODULE_AUTHOR("Simon Arlott");
++MODULE_AUTHOR("Stephen Warren");
++MODULE_DESCRIPTION("Broadcom BCM2835/2711 pinctrl and GPIO driver");
++MODULE_LICENSE("GPL");
+-- 
+2.25.1
 
-> In the stm32 boards (stm32mp15xx-dkx), there's an usb2514b chip
-> - that also could be wired on I2C interface (0R mount option)
-> - unused on stm32 boards by default
-> 
-> usb2514b chip already has a dt-bindings (with compatible), and a driver:
-> - drivers/usb/misc/usb251xb.c
-> - Documentation/devicetree/bindings/usb/usb251xb.txt
-> 
-> It is defined more as an i2c chip, so I'd expect it as an i2c child,
-> e.g. like:
-> 
-> &i2c {
-> 	usb2514b@2c {
-> 		compatible = "microchip,usb2514b";
-> 		...
-> 	};
-> };
-> 
-> 
-> This way, I don't see how it could be used together with onboard_usb_hub
-> driver ? (But I may have missed it)
-
-Indeed, you can either use the i2c driver for the hub or the onboard_usb_hub
-driver, but not both at the same time. The i2c driver requires the hub to be
-powered before communicating with it over i2c, hence the power sequence
-should not be delegated to the onboard_usb_hub driver.
-
-> Is it possible to use a phandle, instead of a child node ?
-
-The child node is part of the generic USB binding. The onboard_usb_hub
-driver needs it to find the USB device(s) that correspond to the hub,
-to optionally power the hub off during system suspend when no wakeup
-capable devices are connected.
-
-> However, in the stm32mp15xx-dkx case, i2c interface isn't wired/used by
-> default. So obviously the i2c driver isn't used. In this case, could the
-> "microchip,usb2514b" be listed in onboard_usb_hub driver ?
-> (wouldn't it be redundant ?)
-
-You would use the compatible string of the generic USB binding, i.e.
-"usbVID,PID", which would have to be added to the onboard_usb_hub driver.
-
-> In this case it would be a child node of the usb DT node... Maybe that's
-> more a question for Rob: would it be "legal" regarding existing
-> dt-bindings ?
-
-The USB node is always there implicitly (the USB device exists), the only
-difference is that the node is added explicitly (plus additional
-properties).
-
-There was a somewhat related long-winded discussion with Rob on an earlier
-version of the driver/binding:
-https://lore.kernel.org/linux-usb/1613055380.685661.519681.nullmailer@robh.at.kernel.org/
