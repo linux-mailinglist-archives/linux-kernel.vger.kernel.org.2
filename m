@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BEA43309D
+	by mail.lfdr.de (Postfix) with ESMTP id 43E0D43309C
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234821AbhJSIHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:07:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36248 "EHLO mail.kernel.org"
+        id S234688AbhJSIHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:07:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234658AbhJSIGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234704AbhJSIGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Oct 2021 04:06:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B256139F;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0BAA6139D;
         Tue, 19 Oct 2021 08:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1634630667;
-        bh=gsKBaH9q3OVaMoNE0kvFdv7QLCiWctt440OZf7GewRI=;
+        bh=tec3N26Ppj3HiN6XnRgihubCdhjpDSY4LAigZu83/u8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UI8VyPCJfjmi4BGaSboi3ejg7uCkGueU5dvpqeKAT1pLFxoVaVK/MPiU/0gtdggza
-         BJTyCb013M0erUVrsJsZQvGZlrPrQMQARdaz7LWXm0S7KA+UTeiYTRXdtG6INc3cmL
-         IdQpZ4AqIQ3UFK012tUXoxXE/ilVHXlRq6nWLWYSkDZx8W3foJRgoH3g6/GRZxIgWG
-         3YoGyvDBSVXK2lEEPVXtcC4htyqIF9ILSSiYaQI9mtJr8pflqyXq37NNVNFPvfqWW4
-         N+KJYwSTyKy6EA4lYn00FOaBR4vGoN9wNqIrp6PefQClKQLME66YxU6prPmLqgtckW
-         /1Jirl6BMqZyA==
+        b=tHUasibGDKgOMPqbVa3yy31jaz86MII3c+HeUbc0odcKyo2dDxEgew+l1F+lL5eJ3
+         8zc5U3379u+Wuk0mGZ5PZx0yQlfH1aWR9N+tUhdXUP/E9cNteKdi0/5vePojp7RYtL
+         RrBaeTb88qfQPqgwDZffQKL08J8Yj6JHiJdjM5cEGfYpcZz/mXFNVj4y5w/6HaZQ6p
+         J8bJRq8sFEgXsVWswBlIx92EqX2W4ZdzOwyDES0Vd0S8t1RpO0mIOyD7bkqdRW08eO
+         ccdLhc2Lb7x+hYEFbYSVx+7nFghOTaIjyBIyoW35P2BpUH2oifrGjxIINsRaK1u4xb
+         A+x5paxMCjuJQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mck6j-001oJO-6K; Tue, 19 Oct 2021 09:04:25 +0100
+        id 1mck6j-001oJR-6m; Tue, 19 Oct 2021 09:04:25 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 12/23] MAINTAINERS: update mtd-physmap.yaml reference
-Date:   Tue, 19 Oct 2021 09:04:11 +0100
-Message-Id: <cdf3891ef686eca67c6072da8c1d027eedc1ef3e.1634630486.git.mchehab+huawei@kernel.org>
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [PATCH v3 13/23] Documentation: update vcpu-requests.rst reference
+Date:   Tue, 19 Oct 2021 09:04:12 +0100
+Message-Id: <1f62fdbd0dd9298a19c491447a4b415a8ef3bd69.1634630486.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1634630485.git.mchehab+huawei@kernel.org>
 References: <cover.1634630485.git.mchehab+huawei@kernel.org>
@@ -46,37 +51,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
-renamed: Documentation/devicetree/bindings/mtd/arm-versatile.txt
-    and: Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
-to: Documentation/devicetree/bindings/mtd/mtd-physmap.yaml.
+Changeset 2f5947dfcaec ("Documentation: move Documentation/virtual to Documentation/virt")
+renamed: Documentation/virtual/kvm/vcpu-requests.rst
+to: Documentation/virt/kvm/vcpu-requests.rst.
 
-Update their cross-references accordingly.
+Update its cross-reference accordingly.
 
-Fixes: 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Fixes: 2f5947dfcaec ("Documentation: move Documentation/virtual to Documentation/virt")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
 To mailbombing on a large number of people, only mailing lists were C/C on the cover.
 See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
 
- MAINTAINERS | 2 +-
+ arch/riscv/kvm/vcpu.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 66c6c27d2209..d74b08c4fb1f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1421,7 +1421,7 @@ F:	Documentation/devicetree/bindings/auxdisplay/arm,versatile-lcd.yaml
- F:	Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
- F:	Documentation/devicetree/bindings/i2c/i2c-versatile.txt
- F:	Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
--F:	Documentation/devicetree/bindings/mtd/arm-versatile.txt
-+F:	Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
- F:	arch/arm/boot/dts/arm-realview-*
- F:	arch/arm/boot/dts/integrator*
- F:	arch/arm/boot/dts/versatile*
+diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+index c44cabce7dd8..260ce0779a32 100644
+--- a/arch/riscv/kvm/vcpu.c
++++ b/arch/riscv/kvm/vcpu.c
+@@ -912,7 +912,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+ 		 * Ensure we set mode to IN_GUEST_MODE after we disable
+ 		 * interrupts and before the final VCPU requests check.
+ 		 * See the comment in kvm_vcpu_exiting_guest_mode() and
+-		 * Documentation/virtual/kvm/vcpu-requests.rst
++		 * Documentation/virt/kvm/vcpu-requests.rst
+ 		 */
+ 		vcpu->mode = IN_GUEST_MODE;
+ 
 -- 
 2.31.1
 
