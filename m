@@ -2,64 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811B0434167
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130F4434169
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhJSWdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:33:07 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:37828 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhJSWdG (ORCPT
+        id S229890AbhJSWdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhJSWd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:33:06 -0400
-Received: by mail-oi1-f178.google.com with SMTP id o83so7207430oif.4;
-        Tue, 19 Oct 2021 15:30:53 -0700 (PDT)
+        Tue, 19 Oct 2021 18:33:29 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6A5C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:31:16 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id m14so1208112pfc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TNqWms8buUxG/jqA44+qJhAYnqd4fFLNt4zhtuGeXTE=;
+        b=Gl4nSNEhpjn0aav7KlAVCR962auTultauSxUShiqk8e5HA2wOZngXCoWiyjfyXJKzX
+         AYqNOYJx/vAMBWzjKhWDRX7NlZ+XNxfW+7rXvOeMoTCvafq5sIM034mm1XZEF938Nh/m
+         y1qqV1QvhM2PCUXJxahSAOIo9rrfLcAB8unYztkcK84Ptqr0cvvpq09UdoQf8C57q0Ly
+         mIgpI/hRGKAuQlFxKmzK4X+EcOgvV82pNJQrJ8mAr+srT/pGtunKDovVOlTtAn+L1CHw
+         ktA/Rs8XfRWUDO1ukbvvdUsnELBw7OCZy6VfIlQN8zbhzLhV5M0mrns4hUSGzMawNu2a
+         U3GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=c2P3hU+6DosmYSIf3DMYRO0O3fSxz+RiqQskPSBrXIA=;
-        b=XilqN/gs62snEQdXR6fpJK57gzWfBJSjcjUfGe11g49x6WIgcb7qy8ctnV2NnykZbV
-         UD67HIUZbiyxZJESFwJsCoJ27o0xQHCuSpygjkmBbafW4Q2P/51wMUbAegSOCogqONp6
-         YitYcwVMoLgxz3rPorV8W+BcUAIfIqm+SDFLk+8vPVlhB4WxYK+627flTtyj8iRWJE2D
-         gMthWWSIlnQ4xeAbbRxAgjWDp0Ughn9H1ohICDa+iXS9RVsPwM1qQfNYYOCb8i56xTGY
-         wBRiGbeUn0f/Hnh8GW2za4aiJAlGFTaLsct1GOn3G/0PMOi2+ydnOLAM3AEQS8vk+pT2
-         5w2Q==
-X-Gm-Message-State: AOAM532XsE5WMDlJhw1P5jxylU3rfTiMnMSHqSDKEWoLniJxHaxFVw6K
-        UGaVG51aFvkNvNREPymSpA==
-X-Google-Smtp-Source: ABdhPJxYFWvjuVFeLU6eHynZMyA7JBL7ENZUsNvTARz3qLi/UoQfLZzsgsLfSn22lpQTkqg8UCK52w==
-X-Received: by 2002:a05:6808:5d5:: with SMTP id d21mr6164512oij.104.1634682652688;
-        Tue, 19 Oct 2021 15:30:52 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v13sm79885oto.65.2021.10.19.15.30.51
+        bh=TNqWms8buUxG/jqA44+qJhAYnqd4fFLNt4zhtuGeXTE=;
+        b=a+/knYBNhzxsAR83XF2CvtFLXP5htlOuLKMYfxVEaCjyR8BJb+uewb9SmnzFLANSaK
+         sFd4EXnJZomY5bt6IxYipmFzleYY5c9ewyax1HQsWRQEc+6yVTTVVBIHuXbwu3SZs9jH
+         PWyl8kPZnNlqy5WmFQ9qm7Zq7StYFUnO9zS6IAw9s/0aZEynsHKCO5NFv7tXUxnpNMqW
+         qn+riC4PvflbwH6apGSUzSCA3IqwAoXXWbMGvlfWDRJEqGQ7a5QpelUx3iuRYExnpR+1
+         snApOQFn9gh5YkS3Z5GTxxxmpelkV4ZSQhgZoz3NJ+6K4q3xRN6uwG/5i882gMwPHeXU
+         aavA==
+X-Gm-Message-State: AOAM530lP6n6Cq9NjoEtEfaDPQVcckp2EPP+pXP9J8kcm/EcWwDM5B6L
+        gzM4Ezd73nYS7nMOBl6zNV0AtQ==
+X-Google-Smtp-Source: ABdhPJwIeG7z/zS+PtmUska7dpRcnyh0lqHQXMmfhqIBmFpLNup5SmhltI+0HgJ7YJLLHXl+YBn4Eg==
+X-Received: by 2002:a63:f306:: with SMTP id l6mr30167959pgh.72.1634682675889;
+        Tue, 19 Oct 2021 15:31:15 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id on17sm3844560pjb.47.2021.10.19.15.31.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 15:30:52 -0700 (PDT)
-Received: (nullmailer pid 944950 invoked by uid 1000);
-        Tue, 19 Oct 2021 22:30:51 -0000
-Date:   Tue, 19 Oct 2021 17:30:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sebastien Van Cauwenberghe <svancau@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt: Add SpinalHDL vendor
-Message-ID: <YW9HGwAC+pr7xSKM@robh.at.kernel.org>
-References: <20211011100531.443157-1-svancau@gmail.com>
+        Tue, 19 Oct 2021 15:31:15 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 22:31:11 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 01/13] KVM: x86: Cache total page count to avoid
+ traversing the memslot array
+Message-ID: <YW9HL3FOkOk56I5g@google.com>
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
+ <YW9Fi128rYxiF1v3@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211011100531.443157-1-svancau@gmail.com>
+In-Reply-To: <YW9Fi128rYxiF1v3@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 12:05:31 +0200, Sebastien Van Cauwenberghe wrote:
-> Adds SpinalHDL as vendor. This project
-> provides FPGA IPs including VexRiscV CPU
+On Tue, Oct 19, 2021, Sean Christopherson wrote:
+> On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
+> > From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+> > 
+> > There is no point in recalculating from scratch the total number of pages
+> > in all memslots each time a memslot is created or deleted.
+> > 
+> > Just cache the value and update it accordingly on each such operation so
+> > the code doesn't need to traverse the whole memslot array each time.
+> > 
+> > Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> > ---
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 28ef14155726..65fdf27b9423 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -11609,9 +11609,23 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+> >  				const struct kvm_memory_slot *new,
+> >  				enum kvm_mr_change change)
+> >  {
+> > -	if (!kvm->arch.n_requested_mmu_pages)
+> > -		kvm_mmu_change_mmu_pages(kvm,
+> > -				kvm_mmu_calculate_default_mmu_pages(kvm));
+> > +	if (change == KVM_MR_CREATE)
+> > +		kvm->arch.n_memslots_pages += new->npages;
+> > +	else if (change == KVM_MR_DELETE) {
+> > +		WARN_ON(kvm->arch.n_memslots_pages < old->npages);
+> > +		kvm->arch.n_memslots_pages -= old->npages;
+> > +	}
+> > +
+> > +	if (!kvm->arch.n_requested_mmu_pages) {
 > 
-> Signed-off-by: Sebastien Van Cauwenberghe <svancau@gmail.com>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+> Hmm, once n_requested_mmu_pages is set it can't be unset.  That means this can be
+> further optimized to skip avoid taking mmu_lock on flags-only changes (and
+> memslot movement).  E.g.
 > 
+> 	if (!kvm->arch.n_requested_mmu_pages &&
+> 	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
+> 
+> 	}
+> 
+> It's a little risky, but kvm_vm_ioctl_set_nr_mmu_pages() would need to be modified
+> to allow clearing n_requested_mmu_pages and it already takes slots_lock, so IMO
+> it's ok to force kvm_vm_ioctl_set_nr_mmu_pages() to recalculate pages if it wants
+> to allow reverting back to the default.
 
-Applied, thanks!
+Doh, and then I read patch 2...
+
+I would swap the order of patch 2 and patch 1, that way the optimization patch is
+super simple, and you don't end up reworking a bunch of code that was added in the
+immediately preceding patch.  E.g. as a first patch
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 28ef14155726..f3b1aed08566 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11609,7 +11609,8 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+                                const struct kvm_memory_slot *new,
+                                enum kvm_mr_change change)
+ {
+-       if (!kvm->arch.n_requested_mmu_pages)
++       if (!kvm->arch.n_requested_mmu_pages &&
++           (change == KVM_MR_CREATE || change == KVM_MR_DELETE))
+                kvm_mmu_change_mmu_pages(kvm,
+                                kvm_mmu_calculate_default_mmu_pages(kvm));
+
+
+
