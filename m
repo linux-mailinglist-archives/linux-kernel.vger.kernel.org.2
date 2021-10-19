@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CF84332B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A124332B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235102AbhJSJnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:43:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:46748 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234680AbhJSJnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:43:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F6B3D6E;
-        Tue, 19 Oct 2021 02:40:55 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B166C3F73D;
-        Tue, 19 Oct 2021 02:40:53 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 10:40:48 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v13 09/10] PCI: kirin: fix poweroff sequence
-Message-ID: <20211019094048.GA24481@lpieralisi>
-References: <cover.1634539769.git.mchehab+huawei@kernel.org>
- <8116a4ddaaeda8dd056e80fa0ee506c5c6f42ca7.1634539769.git.mchehab+huawei@kernel.org>
- <20211018102127.GD17152@lpieralisi>
- <20211018153716.0370a66c@sal.lan>
+        id S235120AbhJSJnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235059AbhJSJnX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:43:23 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37673C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OzhAUkgUxAsZVvVo72iev/FptlxQMpUIteNenWAl3x0=; b=rSJMH2it0fhVmZSXw9YaBpIgpR
+        SKr7zwGcVAxgWgS8Hl4MRBF0w482BIyv9XQ24lc7aEMwoPdzDsZTDh9IXazBACRN7NsoJUVAGpKRk
+        kmrtNTtDThwwLBdH7nfogCybneL8fBcTggNLk+K4cUK9GL6hHmWRqOIwe0rLo4TudjUxvLJ1jVSUp
+        91n+b0k1cDyS9I2GP10m+xw0gRKwYdi7u0x14bgiqSQYY6l8/JLbnzXeyiqa44bfFPLUk9m6Y271Z
+        AIQ8JwZqKvXyBFtoYZwL51JNySiNNkhxYFv+VrCL4jFqrFp2HkQ5B4M/m6vqpSV9ywYGuA5WLSH2D
+        rzVP4jyw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mclc9-00Akbj-Dl; Tue, 19 Oct 2021 09:40:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E9BE30024D;
+        Tue, 19 Oct 2021 11:40:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2B493236E4530; Tue, 19 Oct 2021 11:40:56 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 11:40:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <YW6SqH1R7stXk2GG@hirez.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
+ <YWmPCF+g+sF4+ieh@zn.tnic>
+ <20211015165635.GH174703@worktop.programming.kicks-ass.net>
+ <20211018225905.86034-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018153716.0370a66c@sal.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211018225905.86034-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 03:37:16PM +0100, Mauro Carvalho Chehab wrote:
-> Em Mon, 18 Oct 2021 11:21:27 +0100
-> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
+On Mon, Oct 18, 2021 at 11:06:35PM +0000, Alexander Lobakin wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Fri, 15 Oct 2021 18:56:35 +0200
 > 
-> > On Mon, Oct 18, 2021 at 08:07:34AM +0100, Mauro Carvalho Chehab wrote:
-> > > This driver currently doesn't call dw_pcie_host_deinit()
-> > > at the .remove() callback. This can cause an OOPS if the driver
-> > > is unbound.  
-> > 
-> > This looks like a fix, it has to be marked as such.
+> Hi,
 > 
-> Well, without patch 10/10, the .remove() ops won't be called,
-> so, it is not really a fix, but I can surely add a c/c
-> stable@vger.kernel.org and add a Fixes: tag here.
+> Gave it a spin with Clang/LLVM, and
 
-You have a point - unless we send patch 10 to stable as well I
-would not tag it then.
+Just your normal clang build, not some fancy LTO ? eg.  make CC=clang.
 
-> > > While here, add a poweroff function, in order to abstract
-> > > between the internal and external PHY logic.
-> > > 
-> > > Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > > 
-> > > See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
-> > > 
-> > >  drivers/pci/controller/dwc/pcie-kirin.c | 30 ++++++++++++++++---------
-> > >  1 file changed, 20 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> > > index b17a194cf78d..ffc63d12f8ed 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> > > @@ -680,6 +680,23 @@ static const struct dw_pcie_host_ops kirin_pcie_host_ops = {
-> > >  	.host_init = kirin_pcie_host_init,
-> > >  };
-> > >  
-> > > +static int kirin_pcie_power_off(struct kirin_pcie *kirin_pcie)
-> > > +{
-> > > +	int i;
-> > > +
-> > > +	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
-> > > +		return hi3660_pcie_phy_power_off(kirin_pcie);
-> > > +
-> > > +	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
-> > > +		gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
-> > > +	}  
-> > 
-> > It looks like you are adding functionality here (ie gpio), not
-> > just wrapping common code in a function.
+
+> > > > +	target = addr + insn->length + insn->immediate.value;
+> > > > +	reg = (target - &__x86_indirect_thunk_rax) /
+> > > > +	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
 > 
-> It is just reverting the power on logic there.
-
-What I am saying is that executing:
-
-for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++)
-	gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
-
-is an addition to what current code does AFAICS (ie you are not just
-moving code into a function - kirin_pcie_power_off(), you are adding
-to it), it is a logical change that belongs in a separate patch.
-
-There are two logical changes:
-
-- Adding dw_pcie_host_deinit()
-- Moving PHY power off code into kirin_pcie_power_off() (and adding
-  gpio handling in it)
-
-That's what I read from the diffstat, please correct me if I am wrong.
-
-Thanks,
-Lorenzo
-
-> > 
-> > Also, remove the braces, they aren't needed.
+> this triggers
 > 
-> Yeah, I forgot to drop it, when I dropped a tem code that had some
-> dev_dbg() on it.
+
+> > > > +
+> > > > +	if (WARN_ON_ONCE(reg & ~0xf))
+> > > > +		return -1;
 > 
-> I'll drop on v14.
+> this:
 > 
-> Regards,
-> Mauro
+> WARN in patch_retpoline:408: addr pcibios_scan_specific_bus+0x196/0x200, op 0xe8, reg 0xb88ca
+> WARN in patch_retpoline:408: addr xen_pv_teardown_msi_irqs+0x8d/0x120, op 0xe8, reg 0xb88ca
+> WARN in patch_retpoline:408: addr __mptcp_sockopt_sync+0x7e/0x200, op 0xe8, reg 0xb88ca
+> [...]
+> (thousands of them, but op == 0xe8 && reg == 0xb88ca are always the same)
+> 
+> I know this reg calculation is about to be replaced, but anyway ;)
+
+Well, I was sorta hoping to keep that with something like:
+
+  https://lkml.kernel.org/r/YWgA+vbWCdGLZhq5@hirez.programming.kicks-ass.net
+
+Anyway, let me try and reproduce.
