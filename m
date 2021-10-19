@@ -2,95 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79126433BCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8B8433BE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbhJSQOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:14:16 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:59056
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232693AbhJSQOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:14:14 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 216713FFF4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634659921;
-        bh=z7xBLmLcK2X0X5LnkmnTHSBeuEfqcw1Dw/LDIsv+Z6c=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=GX63LIXfqZ9hn5e5BWownyjtOuTv+MAZKihQF5IWeP/W+XkqQhbzp6d1lKUPOA+GV
-         BSjQ9WyK9VfPgrMsWcTFT7UxzX7u+XsgsuJpTWh6ru8/vMrQcRGr8SBazD+izxsi/i
-         qzXdYwNJXXgT/yW0dzYEqcWSeB56fo8bgjldMg2OO7StHZfm+ZrAb2L03Fi9BIxt2T
-         1ymFcbkwYMvI6keIgTNloh7UD5yfBxO5C7vmDMoI5QwT8lsOK7H+JrGlGGznikvucN
-         fCB9nTnZYv6v2cjvMabbBONhTN0buin9cZ0TEUzWba4+/flXjUJAWmOOC03v/n48SR
-         uda0fwMLihPWw==
-Received: by mail-lf1-f69.google.com with SMTP id h8-20020a056512220800b003fdf2283e82so1628420lfu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:12:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z7xBLmLcK2X0X5LnkmnTHSBeuEfqcw1Dw/LDIsv+Z6c=;
-        b=BqpKa3wxEGmZXBStJqbw3NAUjAh5FhJJ3Qk6xv9JzjSmqPXuWutHRxfUX6QMsRsRCp
-         GzTz2jQQuepG0IH1XJc05bodYddB4HvTmB/7mTKzhD7ILVumvOPWUbiRUBzYrp3tBYJ1
-         YlMwhPcyHXwQVEpqBYvcPZKTRVzE3rHWv5ylErQnNDwIkuYRs3nsR/gjqSCPKE5fDa/T
-         tNyjNA0QfuqMsQd7mhXGsdawLohWjE+0n0V0WHqC6CMO5zIKWQXQyb5rJkFvmpFIUjZ1
-         6Gnnd+FIvk5Kh0hhnfaiKlh5XcmZNRX8+RYMpDvnFYxJxM8QKua05e7A998JSMCNtlIa
-         /b3Q==
-X-Gm-Message-State: AOAM531aeOnJmB4Ysumuc0YF6tVOO/ZTnk7qVz7rT+6Yq+U11X4q83jt
-        XiyAm1lzKzSVUxSfsYyFv90U2N+/XRZ05oybUdTomLIa/G9T0oUZJ0teMsv2XSHOXSfI4gwEDRO
-        bwpFyd+ndyARDFt3yK0DIuNPSCOZXPxWi9J6hkzU/Jw==
-X-Received: by 2002:a2e:87da:: with SMTP id v26mr7525617ljj.187.1634659920222;
-        Tue, 19 Oct 2021 09:12:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTg27Zf2509Smzn5DCvG7kNJj6uFchnd2mdxqTdR+kibwBRiaY/9ioxCcyspjAelLWXXAEUQ==
-X-Received: by 2002:a2e:87da:: with SMTP id v26mr7525598ljj.187.1634659920014;
-        Tue, 19 Oct 2021 09:12:00 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id c16sm1837878lfi.180.2021.10.19.09.11.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 09:11:59 -0700 (PDT)
-Subject: Re: [PATCH 1/4] rtc: s3c: Remove usage of devm_rtc_device_register()
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211019131724.3109-1-semen.protsenko@linaro.org>
- <20211019131724.3109-2-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <85851ab2-af49-120c-ab21-b4152a2ba40d@canonical.com>
-Date:   Tue, 19 Oct 2021 18:11:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233372AbhJSQUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:20:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhJSQUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:20:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 274FA6113D;
+        Tue, 19 Oct 2021 16:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634660303;
+        bh=CSThRwfLLBbnWmpSAkjzo6ykAldK6QMiL9G46/Dm69w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nVlcNJMijXvUCkk4ZNOavUI5JqGD7uYB1LEujLRt6C24Y9Dp4GGcBQzIcpTEcUJ65
+         tIl/13gwTNZtxSAGmErXo80daX/BWtXLbTa3PNUN1uxc6Ja7E+JDGpYXeffBf50wPg
+         kzE9NUEhBmkIja6HvQtT8CEesZLNCZRmz7YFLMfrQcJefyplMnQMZpstSdel1NoPv8
+         5C9rrybmpr1+vpm3CxebjEowX9gfHUxxGHwg1syJ7mZ2CerpR+sPADgvGuru3tTLqQ
+         MGXAhGoeknfwRASCjuSqq5ImM2xpA+ylpNccmFZ/XU5FGNdZKmH8br7cHU2Go2HZLK
+         R2eW43Ge42x1Q==
+Received: by mail-ed1-f51.google.com with SMTP id i20so14731424edj.10;
+        Tue, 19 Oct 2021 09:18:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533dLQZYmL+GnX1F1unmNbXkLQIxmzLkPhAxCSa0ATU6oPOFQhuS
+        t+0X4QjQyxSzUoRxzVpk19y2G/bv9XYC3Vr3lQ==
+X-Google-Smtp-Source: ABdhPJyECg/ex6JGhxYjfVAKj9ZTQDiYmMDq836QH65YEzFdOsqIbnkT+Rd0QJdZrzxam94/CGdjldneWAz1SLg2GHg=
+X-Received: by 2002:aa7:c357:: with SMTP id j23mr57477452edr.145.1634660136617;
+ Tue, 19 Oct 2021 09:15:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211019131724.3109-2-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211013223921.4380-1-ansuelsmth@gmail.com> <20211013223921.4380-17-ansuelsmth@gmail.com>
+ <YW2BcC2izFM6HjG5@robh.at.kernel.org> <YW2Cp6vWAYDM68rs@Ansuel-xps.localdomain>
+In-Reply-To: <YW2Cp6vWAYDM68rs@Ansuel-xps.localdomain>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 19 Oct 2021 11:15:24 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ7QAMRWQs4iuEmPpj2q2t0tCEGBNP+9QvTwZ=aeJn4vQ@mail.gmail.com>
+Message-ID: <CAL_JsqJ7QAMRWQs4iuEmPpj2q2t0tCEGBNP+9QvTwZ=aeJn4vQ@mail.gmail.com>
+Subject: Re: [net-next PATCH v7 16/16] dt-bindings: net: dsa: qca8k: convert
+ to YAML schema
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        John Crispin <john@phrozen.org>,
+        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Matthew Hagan <mnhagan88@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2021 15:17, Sam Protsenko wrote:
-> devm_rtc_device_register() is deprecated. Use devm_rtc_allocate_device()
-> and devm_rtc_register_device() API instead. This change doesn't change
-> the behavior, but allows for further improvements.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/rtc/rtc-s3c.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
+On Mon, Oct 18, 2021 at 9:22 AM Ansuel Smith <ansuelsmth@gmail.com> wrote:
+>
+> On Mon, Oct 18, 2021 at 09:15:12AM -0500, Rob Herring wrote:
+> > On Thu, Oct 14, 2021 at 12:39:21AM +0200, Ansuel Smith wrote:
+> > > From: Matthew Hagan <mnhagan88@gmail.com>
+> > >
+> > > Convert the qca8k bindings to YAML format.
+> > >
+> > > Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> > > Co-developed-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > > ---
+> > >  .../devicetree/bindings/net/dsa/qca8k.txt     | 245 ------------
+> > >  .../devicetree/bindings/net/dsa/qca8k.yaml    | 362 ++++++++++++++++++
+> > >  2 files changed, 362 insertions(+), 245 deletions(-)
+> > >  delete mode 100644 Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > >  create mode 100644 Documentation/devicetree/bindings/net/dsa/qca8k.yaml
 
+> > > +patternProperties:
+> > > +  "^(ethernet-)?ports$":
+> > > +    type: object
+> > > +    properties:
+> > > +      '#address-cells':
+> > > +        const: 1
+> > > +      '#size-cells':
+> > > +        const: 0
+> > > +
+> > > +    patternProperties:
+> > > +      "^(ethernet-)?port@[0-6]$":
+> > > +        type: object
+> > > +        description: Ethernet switch ports
+> > > +
+> > > +        properties:
+> > > +          reg:
+> > > +            description: Port number
+> > > +
+> > > +          label:
+> > > +            description:
+> > > +              Describes the label associated with this port, which will become
+> > > +              the netdev name
+> > > +            $ref: /schemas/types.yaml#/definitions/string
+> > > +
+> > > +          link:
+> > > +            description:
+> > > +              Should be a list of phandles to other switch's DSA port. This
+> > > +              port is used as the outgoing port towards the phandle ports. The
+> > > +              full routing information must be given, not just the one hop
+> > > +              routes to neighbouring switches
+> > > +            $ref: /schemas/types.yaml#/definitions/phandle-array
+> > > +
+> > > +          ethernet:
+> > > +            description:
+> > > +              Should be a phandle to a valid Ethernet device node.  This host
+> > > +              device is what the switch port is connected to
+> > > +            $ref: /schemas/types.yaml#/definitions/phandle
+> >
+> > All of this is defined in dsa.yaml. Add a $ref to it and don't duplicate
+> > it here.
+> >
+>
+> The reason I redefined it is because I didn't manage to find a way on
+> how to add additional bindings for the qca,sgmii... . Any hint about
+> that?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+The problem is we can't have a single schema for parent and child
+nodes and then allow additional properties in a child node at least if
+we want to make sure all child properties are defined.
 
+The port part of dsa.yaml needs to be split out either to a separate
+file or under '$defs' in the same file so that you can reference it
+and add properties.
 
-Best regards,
-Krzysztof
+As a separate file, you can then do:
+
+"^(ethernet-)?port@[0-9]+$":
+  $ref: dsa-port.yaml#
+  unevaluatedProperties: false
+  properties:
+    a-custom-prop: ...
+
+>
+> I tried with allOf but the make check still printed errors in the
+> example with not valid binding about qca,sgmii.
