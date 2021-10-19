@@ -2,120 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A6643417D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD501434189
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhJSWmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhJSWmq (ORCPT
+        id S229943AbhJSWqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:46:16 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:34768 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229879AbhJSWqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:42:46 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98894C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:40:32 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id y74-20020a1c7d4d000000b00322f53b9bbfso6065935wmc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kryo-se.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d9wXTaAe8EZKUW9RoLamxl/gBzPnIjD8BEMLKwjF/+s=;
-        b=Dv20iBPZdh24X6XR+0eFfH0JEwtZTNuZ3ZPlJbmppMhERHlI7RIY2VwuwoHxGIoNjs
-         G7IsDZHlTlNNryQz7VT1AFQdt0kPpCJ5wOjqCH44TeqnqXn5kN+s/dlHaIj/+xUALFF/
-         /eYcF5nOJOtkFbUqtGCK3ZZm6h9assN8dAY1bfSoknVzieW4GnaxnFe98QSTxPtm3RRK
-         bd+Anmoh4gKHKTQdx49iYF1lMZswRhr6nk7bUuAf7jcZapyTqOa3NtgMM3OpFhIPQ/P2
-         YqS2I9F+Ap3AU4thNA5KclHaxmphwDDfAuMfNKlbC7UgYRx0OA1heGhswrF7Er0STuHF
-         bmoQ==
+        Tue, 19 Oct 2021 18:46:15 -0400
+Received: by mail-oo1-f43.google.com with SMTP id n15-20020a4ad12f000000b002b6e3e5fd5dso1464079oor.1;
+        Tue, 19 Oct 2021 15:44:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d9wXTaAe8EZKUW9RoLamxl/gBzPnIjD8BEMLKwjF/+s=;
-        b=2XyH5iZNzKWO5eCF99QO5TQDKSQjeLG3fXSdh7Bm0VGykTyeeBiypCrTjsOuGS4c3/
-         aF4kkC6ArUTt8b21Wvjpnp9xyztvX+XWWcp4oHbOWlYpveGG+Y5gK8cpC8HKXCi17bDR
-         Oe0XZZWY6Q3fu2EdOoloWphhp9lztuf/OdXmjoOq102IALwrR3Ee/IYZa5AiTkxCl7lW
-         poDSZEukGuhj3iJm3GBkGVVe8dg1KzEMh3Clx3Pew4jgtXh8nK1/UNe8Tnj/UE8jU8UF
-         dgX3mG7iCpS90WWGbFwqVFcV/OQmXQjfRfyPSRbMiFvzM0zPafL/R2Pam+HGKzyekjO5
-         R1rg==
-X-Gm-Message-State: AOAM532+kUOmL+JPCAt3iX8922vC//hL3Y3IY15RFKEILZxQFmgeHbds
-        0WbxiDrgAA7tqfsnHR/u+IvdlA==
-X-Google-Smtp-Source: ABdhPJzR0VcaWXGjlK01vmVG/NTFxbT2aPTmdm0HAvIq51grfa7UYVwo9DC2EUUFaM70oYEP2eyCUw==
-X-Received: by 2002:adf:bbc2:: with SMTP id z2mr48382667wrg.359.1634683230721;
-        Tue, 19 Oct 2021 15:40:30 -0700 (PDT)
-Received: from kerfuffle.. ([2a02:168:9619:0:e47f:e8d:2259:ad13])
-        by smtp.gmail.com with ESMTPSA id r5sm3270300wmh.28.2021.10.19.15.40.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1m9OX/Iwd5yq38UvhnkkIadmZsRZNS3qdx4ir1kcVNw=;
+        b=anuvoZEU7YMdWBOMb/WE7JDUxHfH6jnHqpggCAJogjkbH7AA3cTLb2NGxxHS3re1fE
+         s7jWHFo9rAJ8yaQXlah4amIAZmqAAmsIdwoq2LfFLkt6jrlvcP8MGHT9LlcsEsy7ZvXR
+         mGQSN09u/lh5jY3HKFMqvJRjM5wifCBDcKkUBL3j6Nwv9WW+DsVSXubJER4fasPcWhER
+         LsfWPtWINHzZvVFQ4cjUHC3z1WJMtd/RShb3m68/A5C5w/KoDmjhgWWedgKdRyYQ73l2
+         y47jDco66+UmW+k2M+imqWALiNrnUWgU1L94Dv2o3Y6vKoOod+r6Un10G0JowlFfwQ3J
+         mOEg==
+X-Gm-Message-State: AOAM530LCOCYrfqO6cH7qVDrLmNLmg1BqPVuS0A7Sr1usvMHjyUi1why
+        Zw+gQogiaWmznk/CaMn8wA==
+X-Google-Smtp-Source: ABdhPJzUU3VUWI682S2KU0DU1+1kmv1QzDke4dNPNWl7FQZwt9qn1gRrdnqxwwN0MoQjOcDzG6b8xw==
+X-Received: by 2002:a4a:a38d:: with SMTP id s13mr6755243ool.60.1634683441388;
+        Tue, 19 Oct 2021 15:44:01 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k2sm99873oot.37.2021.10.19.15.44.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 15:40:30 -0700 (PDT)
-From:   Erik Ekman <erik@kryo.se>
-To:     Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Erik Ekman <erik@kryo.se>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] sfc: Don't use netif_info before net_device setup
-Date:   Wed, 20 Oct 2021 00:40:16 +0200
-Message-Id: <20211019224016.26530-1-erik@kryo.se>
-X-Mailer: git-send-email 2.31.1
+        Tue, 19 Oct 2021 15:44:00 -0700 (PDT)
+Received: (nullmailer pid 962499 invoked by uid 1000);
+        Tue, 19 Oct 2021 22:43:59 -0000
+Date:   Tue, 19 Oct 2021 17:43:59 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/9] dt-bindings: memory-controller: Add apple,mcc
+ binding
+Message-ID: <YW9KL+3MgD8NYxF5@robh.at.kernel.org>
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-3-marcan@marcan.st>
+ <6999f3f4-338c-f1ba-2360-40fa50ecd45d@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6999f3f4-338c-f1ba-2360-40fa50ecd45d@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pci_info instead to avoid unnamed/uninitialized noise:
+On Tue, Oct 12, 2021 at 10:48:12AM +0200, Krzysztof Kozlowski wrote:
+> On 11/10/2021 18:57, Hector Martin wrote:
+> > This device represents the memory controller in Apple SoCs, and is
+> > chiefly in charge of adjusting performance characteristics according to
+> > system demand.
+> > 
+> > Signed-off-by: Hector Martin <marcan@marcan.st>
+> > ---
+> >  .../memory-controllers/apple,mcc.yaml         | 80 +++++++++++++++++++
+> >  .../opp/apple,mcc-operating-points.yaml       | 62 ++++++++++++++
+> >  2 files changed, 142 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/apple,mcc.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/opp/apple,mcc-operating-points.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/memory-controllers/apple,mcc.yaml b/Documentation/devicetree/bindings/memory-controllers/apple,mcc.yaml
+> > new file mode 100644
+> > index 000000000000..0774f10e65ed
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/memory-controllers/apple,mcc.yaml
+> > @@ -0,0 +1,80 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/memory-controllers/apple,mcc.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Apple SoC MCC memory controller performance controls
+> > +
+> > +maintainers:
+> > +  - Hector Martin <marcan@marcan.st>
+> > +
+> > +description: |
+> > +  Apple SoCs contain a multichannel memory controller that can have its
+> > +  configuration changed to adjust to changing performance requirements from
+> > +  the rest of the SoC. This node represents the controller and provides a
+> > +  power domain provider that downstream devices can use to adjust the memory
+> > +  controller performance level.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - enum:
+> > +          - apple,t8103-mcc
+> > +      - const: apple,mcc
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  "#power-domain-cells":
+> > +    const: 0
+> > +
+> > +  operating-points-v2:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +    description:
+> > +      A reference to the OPP table describing the memory controller performance
+> > +      levels. Each OPP node should contain an `apple,memory-perf-config`
+> > +      property that contains the configuration values for that performance
+> > +      level.
+> > +
+> > +  apple,num-channels:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      The number of memory channels in use.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - "#power-domain-cells"
+> > +  - operating-points-v2
+> > +  - apple,num-channels
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  # See clock/apple,cluster-clock.yaml for an example of downstream usage.
+> > +  - |
+> > +    mcc_opp: opp-table-2 {
+> > +        compatible = "operating-points-v2";
+> 
+> apple,mcc-operating-points?
 
-[197088.688729] sfc 0000:01:00.0: Solarflare NIC detected
-[197088.690333] sfc 0000:01:00.0: Part Number : SFN5122F
-[197088.729061] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no SR-IOV VFs probed
-[197088.729071] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no PTP support
++1
 
-Inspired by fa44821a4ddd ("sfc: don't use netif_info et al before
-net_device is registered") from Heiner Kallweit.
 
-Signed-off-by: Erik Ekman <erik@kryo.se>
----
- drivers/net/ethernet/sfc/ptp.c         | 4 ++--
- drivers/net/ethernet/sfc/siena_sriov.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+> > +
+> > +        mcc_lowperf: opp0 {
+> > +            opp-level = <0>;
+> > +            apple,memory-perf-config = <0x813057f 0x1800180>;
+> > +        };
+> > +        mcc_highperf: opp1 {
+> > +            opp-level = <1>;
+> > +            apple,memory-perf-config = <0x133 0x55555340>;
+> > +        };
+> > +    };
+> > +    soc {
+> > +        #address-cells = <2>;
+> > +        #size-cells = <2>;
+> > +
+> > +        mcc: memory-controller@200200000 {
+> > +            compatible = "apple,t8103-mcc", "apple,mcc";
+> > +            #power-domain-cells = <0>;
+> > +            reg = <0x2 0x200000 0x0 0x200000>;
+> > +            operating-points-v2 = <&mcc_opp>;
+> > +            apple,num-channels = <8>;
+> > +        };
+> > +    };
+> > diff --git a/Documentation/devicetree/bindings/opp/apple,mcc-operating-points.yaml b/Documentation/devicetree/bindings/opp/apple,mcc-operating-points.yaml
+> > new file mode 100644
+> > index 000000000000..babf27841bb7
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/opp/apple,mcc-operating-points.yaml
+> > @@ -0,0 +1,62 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/opp/apple,mcc-operating-points.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Apple SoC memory controller OPP bindings
+> > +
+> > +maintainers:
+> > +  - Hector Martin <marcan@marcan.st>
+> > +
+> > +description: |
+> > +  Apple SoCs can have their memory controller performance adjusted depending on
+> > +  system requirements. These performance states are represented by specific
+> > +  memory controller register values. The apple-mcc driver uses these values
+> > +  to change the MCC performance.
+> > +
+> > +allOf:
+> > +  - $ref: opp-v2-base.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: apple,mcc-operating-points
+> > +
+> > +required:
+> > +  - compatible
+> > +
+> > +patternProperties:
+> > +  "opp[0-9]+":
+> > +    type: object
+> > +
+> > +    properties:
+> > +      opp-level: true
+> 
+> You don't need to mention it.
 
-diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
-index a39c5143b386..797e51802ccb 100644
---- a/drivers/net/ethernet/sfc/ptp.c
-+++ b/drivers/net/ethernet/sfc/ptp.c
-@@ -648,7 +648,7 @@ static int efx_ptp_get_attributes(struct efx_nic *efx)
- 	} else if (rc == -EINVAL) {
- 		fmt = MC_CMD_PTP_OUT_GET_ATTRIBUTES_SECONDS_NANOSECONDS;
- 	} else if (rc == -EPERM) {
--		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
-+		pci_info(efx->pci_dev, "no PTP support\n");
- 		return rc;
- 	} else {
- 		efx_mcdi_display_error(efx, MC_CMD_PTP, sizeof(inbuf),
-@@ -824,7 +824,7 @@ static int efx_ptp_disable(struct efx_nic *efx)
- 	 * should only have been called during probe.
- 	 */
- 	if (rc == -ENOSYS || rc == -EPERM)
--		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
-+		pci_info(efx->pci_dev, "no PTP support\n");
- 	else if (rc)
- 		efx_mcdi_display_error(efx, MC_CMD_PTP,
- 				       MC_CMD_PTP_IN_DISABLE_LEN,
-diff --git a/drivers/net/ethernet/sfc/siena_sriov.c b/drivers/net/ethernet/sfc/siena_sriov.c
-index 83dcfcae3d4b..441e7f3e5375 100644
---- a/drivers/net/ethernet/sfc/siena_sriov.c
-+++ b/drivers/net/ethernet/sfc/siena_sriov.c
-@@ -1057,7 +1057,7 @@ void efx_siena_sriov_probe(struct efx_nic *efx)
- 		return;
- 
- 	if (efx_siena_sriov_cmd(efx, false, &efx->vi_scale, &count)) {
--		netif_info(efx, probe, efx->net_dev, "no SR-IOV VFs probed\n");
-+		pci_info(efx->pci_dev, "no SR-IOV VFs probed\n");
- 		return;
- 	}
- 	if (count > 0 && count > max_vfs)
--- 
-2.31.1
+Actually, you do.
 
+You are thinking unevaluatedProperties takes care of it, but it doesn't 
+here. The problem is if you have 2 schemas (this one and 
+opp-v2-base.yaml) with child nodes, the child nodes in each schema are 
+evaluated separately.
+
+So anywhere we have child nodes, we need the child node schema to be a 
+separate file or able to be directly referenced (i.e. under $defs). I 
+only realized this when testing out unevaluatedProperties support.
+
+Rob
