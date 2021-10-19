@@ -2,60 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120904335F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D154335F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235650AbhJSMaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:30:06 -0400
-Received: from mga07.intel.com ([134.134.136.100]:13390 "EHLO mga07.intel.com"
+        id S235524AbhJSMb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:31:26 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46496 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231441AbhJSMaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:30:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="291959518"
-X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
-   d="scan'208";a="291959518"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 05:27:52 -0700
-X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
-   d="scan'208";a="531405674"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 05:27:50 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 994E520316;
-        Tue, 19 Oct 2021 15:27:48 +0300 (EEST)
-Date:   Tue, 19 Oct 2021 15:27:48 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     kernel@puri.sm, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        paul.kocialkowski@bootlin.com, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] media: hi846: depend on OF
-Message-ID: <YW65xC1Ln9Lc2tHJ@paasikivi.fi.intel.com>
-References: <20211018095859.255912-1-martin.kepplinger@puri.sm>
- <20211018134246.383594-1-martin.kepplinger@puri.sm>
+        id S230097AbhJSMbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:31:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=4KPabGMaD3wPi9aIZhTTDGiCmqEZZ5KOQzX/xnMFK5c=; b=VhBMmqOHyvEmQuDl3D8SGZQPPM
+        xFEqu3sRwnKlaXlypIFyzG7eMiNc7mf/R7H1crPxPT3+xkgRzZDm8Y9TZTShnxLDhChIp56acq1Xg
+        ghzKcxNFng2fA/V4bjy06voGS4M6yyfDzg689NC8nnmS/s64dFXhIjClXmAVOKCIwkOg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mcoEn-00B4gv-5L; Tue, 19 Oct 2021 14:29:01 +0200
+Date:   Tue, 19 Oct 2021 14:29:01 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jie Luo <quic_luoj@quicinc.com>
+Cc:     Luo Jie <luoj@codeaurora.org>, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH v3 03/13] net: phy: at803x: improve the WOL feature
+Message-ID: <YW66DXOIt8GrR2IQ@lunn.ch>
+References: <20211018033333.17677-1-luoj@codeaurora.org>
+ <20211018033333.17677-4-luoj@codeaurora.org>
+ <YW2/wck2NPhgwjuL@lunn.ch>
+ <0ba3022d-9879-bf85-251d-3f48b9cff93b@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018134246.383594-1-martin.kepplinger@puri.sm>
+In-Reply-To: <0ba3022d-9879-bf85-251d-3f48b9cff93b@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+> Hi Andrew,
+> 
+> when this register AT803X_INTR_STATUS bits are cleared after read, we can't
+> clear only WOL interrupt here.
 
-On Mon, Oct 18, 2021 at 03:42:46PM +0200, Martin Kepplinger wrote:
-> Since other device enumerate mechanisms are currently not implemented,
-> make the hi846 sensor driver depend on CONFIG_OF.
+O.K. But you do have the value of the interrupt status register. So
+you could call phy_trigger_machine(phydev) if there are any other
+interrupt pending. They won't get lost that way.
 
-As far as I understand, this should work on ACPI based systems with just
-of_match_ptr() macro removed.
-
-In any case, linux/of_graph.h header should be replaced with
-linux/property.h.
-
-How about that instead?
-
--- 
-Kind regards,
-
-Sakari Ailus
+	  Andrew
