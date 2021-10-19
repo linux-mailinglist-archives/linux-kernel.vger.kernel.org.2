@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD594432B0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 02:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F7C432B0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 02:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhJSAKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 20:10:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50402 "EHLO mail.kernel.org"
+        id S234126AbhJSAK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 20:10:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233969AbhJSAKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 20:10:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFFC26134F;
-        Tue, 19 Oct 2021 00:08:31 +0000 (UTC)
+        id S234005AbhJSAKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 20:10:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB2D761350;
+        Tue, 19 Oct 2021 00:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634602114;
-        bh=SUELVCRP5ACiu9FTbVAeY3f2v6/npNMQ+AvNWYclvy0=;
+        s=k20201202; t=1634602117;
+        bh=fLn6ocTx+EWXy4W8OwuxYR9lzwO3sB18/WU7q3DT7N4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y9nabvqHJCbOOvcWWrbmqGAMPK1KQ4wfw13n17Xm5auxYE7BKQsQjE0i/vqgLK85i
-         rP7e3DdVxBjUUxpis/R91J8/9kFyr3yzqfrhIVSAy30/NXIxSICSYI/vgCANgzWr1F
-         48sDhquNSBij+izw36MRedHoEbk0csT/L07HaJTF40fDutNovFw5TrOgKgGxkB0AQj
-         ze2PQqQ2hIvkXV0RlRzyjI+CvHWrc/A0zD3Z/HV8xsGM7dJwk7Q94RgF0Mq1A3taDh
-         BP4PKYhRrqsFRvNsj0MrlMj9MhT/6MRxiFbNKCEB+gZwL0HRnA98rR4oBxLw7fj0os
-         1S/SCI0Rigz4w==
+        b=GmvnEs53fr7xd+DsBJmpm16OHymFltUE9MjwF45FApHFSP46172kMNRtqrPoh/7hu
+         ClDCiTJfSo+nDbB+j5U+xeeKizaZXBRyEUr/MbKRjrlPhLGhKvHkz9R3JAo06JOqj9
+         AQHo+bwiY1QtYzS3B33pxxChyI05OOf5dyb+WphzAUP4oNNvY1LxOsDlOiPFVX1lJo
+         yZra795hj2t74H3o4+b3syBfx3o/o8wOaAeOggk/VJQGFs800I3xoYl8P3c3qDX98N
+         evm+i+4x6a6JmZ/WzEFgO6JoJtAsQh+0JDSjZ1YQtstuRpTbfokKHfPIcWni14m9kG
+         UDVD/JDhVOyXA==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -37,9 +37,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 04/10] rcu/nocb: Make rcu_core() callbacks acceleration (de-)offloading safe
-Date:   Tue, 19 Oct 2021 02:08:10 +0200
-Message-Id: <20211019000816.455375-5-frederic@kernel.org>
+Subject: [PATCH 05/10] rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check
+Date:   Tue, 19 Oct 2021 02:08:11 +0200
+Message-Id: <20211019000816.455375-6-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211019000816.455375-1-frederic@kernel.org>
 References: <20211019000816.455375-1-frederic@kernel.org>
@@ -49,19 +49,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When callbacks are offloaded, the NOCB kthreads handle the callbacks
-progression on behalf of rcu_core().
+It's not entirely obvious why rdp->qlen_last_fqs_check is updated before
+processing the queue only on offloaded rdp. There can be different
+effect to that, either in favour of triggering the force quiescent state
+path or not. For example:
 
-However during the (de-)offloading process, the kthread may not be
-entirely up to the task. As a result some callbacks grace period
-sequence number may remain stale for a while because rcu_core() won't
-take care of them either.
+1) If the number of callbacks has decreased since the last
+   rdp->qlen_last_fqs_check update (because we recently called
+   rcu_do_batch() and we executed below qhimark callbacks) and the number
+   of processed callbacks on a subsequent do_batch() arranges for
+   exceeding qhimark on non-offloaded but not on offloaded setup, then we
+   may spare a later run to the force quiescent state
+   slow path on __call_rcu_nocb_wake(), as compared to the non-offloaded
+   counterpart scenario.
 
-Fix this with forcing callbacks acceleration from rcu_core() as long
-as the offloading process isn't complete.
+   Here is such an offloaded scenario instance:
+
+    qhimark = 1000
+    rdp->last_qlen_last_fqs_check = 3000
+    rcu_segcblist_n_cbs(rdp) = 2000
+
+    rcu_do_batch() {
+        if (offloaded)
+            rdp->last_qlen_fqs_check = rcu_segcblist_n_cbs(rdp) // 2000
+        // run 1000 callback
+        rcu_segcblist_n_cbs(rdp) = 1000
+        // Not updating rdp->qlen_last_fqs_check
+        if (count < rdp->qlen_last_fqs_check - qhimark)
+            rdp->qlen_last_fqs_check = count;
+    }
+
+    call_rcu() * 1001 {
+        __call_rcu_nocb_wake() {
+            // not taking the fqs slowpath:
+            // rcu_segcblist_n_cbs(rdp) == 2001
+            // rdp->qlen_last_fqs_check == 2000
+            // qhimark == 1000
+            if (len > rdp->qlen_last_fqs_check + qhimark)
+                ...
+    }
+
+    In the case of a non-offloaded scenario, rdp->qlen_last_fqs_check
+    would be 1000 and the fqs slowpath would have executed.
+
+2) If the number of callbacks has increased since the last
+   rdp->qlen_last_fqs_check update (because we recently queued below
+   qhimark callbacks) and the number of callbacks executed in rcu_do_batch()
+   doesn't exceed qhimark for either offloaded or non-offloaded setup,
+   then it's possible that the offloaded scenario later run the force
+   quiescent state slow path on __call_rcu_nocb_wake() while the
+   non-offloaded doesn't.
+
+    qhimark = 1000
+    rdp->last_qlen_last_fqs_check = 3000
+    rcu_segcblist_n_cbs(rdp) = 2000
+
+    rcu_do_batch() {
+        if (offloaded)
+            rdp->last_qlen_last_fqs_check = rcu_segcblist_n_cbs(rdp) // 2000
+        // run 100 callbacks
+        // concurrent queued 100
+        rcu_segcblist_n_cbs(rdp) = 2000
+        // Not updating rdp->qlen_last_fqs_check
+        if (count < rdp->qlen_last_fqs_check - qhimark)
+            rdp->qlen_last_fqs_check = count;
+    }
+
+    call_rcu() * 1001 {
+        __call_rcu_nocb_wake() {
+            // Taking the fqs slowpath:
+            // rcu_segcblist_n_cbs(rdp) == 3001
+            // rdp->qlen_last_fqs_check == 2000
+            // qhimark == 1000
+            if (len > rdp->qlen_last_fqs_check + qhimark)
+                ...
+    }
+
+    In the case of a non-offloaded scenario, rdp->qlen_last_fqs_check
+    would be 3000 and the fqs slowpath would have executed.
+
+The reason for updating rdp->qlen_last_fqs_check when invoking callbacks
+for offloaded CPUs is that there is usually no point in waking up either
+the rcuog or rcuoc kthreads while in this state.  After all, both threads
+are prohibited from indefinite sleeps.
+
+The exception is when some huge number of callbacks are enqueued while
+rcu_do_batch() is in the midst of invoking, in which case interrupting
+the rcuog kthread's timed sleep might get more callbacks set up for the
+next grace period.
 
 Reported-and-tested-by: Valentin Schneider <valentin.schneider@arm.com>
 Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Original-patch-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Valentin Schneider <valentin.schneider@arm.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -74,53 +153,22 @@ Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4869a6856bf1..a43924244000 100644
+index a43924244000..27500981d4b1 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2288,6 +2288,7 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 	unsigned long flags;
- 	unsigned long mask;
- 	bool needwake = false;
-+	bool needacc = false;
- 	struct rcu_node *rnp;
+@@ -2508,7 +2508,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	trace_rcu_batch_start(rcu_state.name,
+ 			      rcu_segcblist_n_cbs(&rdp->cblist), bl);
+ 	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+-	if (offloaded)
++	if (rcu_rdp_is_offloaded(rdp))
+ 		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
  
- 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
-@@ -2315,16 +2316,29 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 		 * This GP can't end until cpu checks in, so all of our
- 		 * callbacks can be processed during the next GP.
- 		 *
--		 * NOCB kthreads have their own way to deal with that.
-+		 * NOCB kthreads have their own way to deal with that...
- 		 */
--		if (!rcu_rdp_is_offloaded(rdp))
-+		if (!rcu_rdp_is_offloaded(rdp)) {
- 			needwake = rcu_accelerate_cbs(rnp, rdp);
-+		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
-+			/*
-+			 * ...but NOCB kthreads may miss or delay callbacks acceleration
-+			 * if in the middle of a (de-)offloading process.
-+			 */
-+			needacc = true;
-+		}
- 
- 		rcu_disable_urgency_upon_qs(rdp);
- 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
- 		/* ^^^ Released rnp->lock */
- 		if (needwake)
- 			rcu_gp_kthread_wake();
-+
-+		if (needacc) {
-+			rcu_nocb_lock_irqsave(rdp, flags);
-+			rcu_accelerate_cbs_unlocked(rnp, rdp);
-+			rcu_nocb_unlock_irqrestore(rdp, flags);
-+		}
- 	}
- }
- 
+ 	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
 -- 
 2.25.1
 
