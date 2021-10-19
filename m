@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393444339C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B29C4339C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhJSPKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:10:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57910 "EHLO mail.kernel.org"
+        id S233880AbhJSPKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:10:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233463AbhJSPKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:10:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB5861378;
-        Tue, 19 Oct 2021 15:07:57 +0000 (UTC)
+        id S233527AbhJSPKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:10:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4BF061074;
+        Tue, 19 Oct 2021 15:07:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634656078;
-        bh=3D534yrUCTvMARvW+XXEKtdcBOmG/E4GnwElvn8JhEA=;
+        s=k20201202; t=1634656080;
+        bh=WjEPB0Xf1aXQX6GI9buYFpVKc/LElMg4zZDLF5DMy4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uT9wV7x05Fs4C4X4b62IqH1a+LrrTdBAttlBBZZSltKlgSJtqkIEhkOBaS6fB51jn
-         /SjOanKBMpm06qKbBCl40qT0dKQKQLm91uPkN8aA6QQ67WMkTgExw8kXP/kZ+Kjcai
-         PU1w4r24BaG/QJDCZJiwhxPo7DmiypUH8Ipxukcqjk0ALf0gl2SbhcUxuLMQA9BSP1
-         eYZRQE4G5wgqTgsEtcP1nB83R5f9sAufbmnycU6ku2rVCKQr1qs3Jcfb79lotcHDtB
-         QC0/FLrghuYZ7GWCOYIg4VJ/nN4fUpZouwVtzbiWKa2p0pHudNkzNChAPjTGeh9BL/
-         sfnnfhZFyBbJg==
+        b=HPx54krvbO2AzZmu+cRDeV2wJb8/kpKLXEo9NfXk+ThD0v1fAliY4ymLowSLdcjTR
+         EnI7UClzHmE+gHaGBOsyqVtXtIMHqX3gP6ixV+i0B/s0dPVwdRpwvNtTk1PludMG3h
+         MCOPJKaYrFtoxu+nO/2PbK7Y1Sj1+Oj4q8Fmw8Fa9FYjcrXP4WuurDoBiZPQ29s5kD
+         RdVNNIlOWOxJqMuIoBaRY1XJadft7r9JMhoRh4djZ458hN+Q1ZK2sEVkITZL3H7/do
+         sGZZ4tm0+q0UB1FlUojboeSU4l6hLnhFjIc2uafyQ5N0c2BWyU7xwv3TZgBpPblF2J
+         DqtQBmWjOJfDw==
 From:   SeongJae Park <sj@kernel.org>
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
@@ -32,9 +32,9 @@ Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
         rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/15] mm/damon/dbgfs: Support quotas of schemes
-Date:   Tue, 19 Oct 2021 15:07:21 +0000
-Message-Id: <20211019150731.16699-6-sj@kernel.org>
+Subject: [PATCH 06/15] mm/damon/selftests: Support schemes quotas
+Date:   Tue, 19 Oct 2021 15:07:22 +0000
+Message-Id: <20211019150731.16699-7-sj@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211019150731.16699-1-sj@kernel.org>
 References: <20211019150731.16699-1-sj@kernel.org>
@@ -42,50 +42,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit makes the debugfs interface of DAMON support the scheme
-quotas by chaning the format of the input for the schemes file.
+This commit updates DAMON selftests to support updated schemes debugfs
+file format for the quotas.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- mm/damon/dbgfs.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ tools/testing/selftests/damon/debugfs_attrs.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index a04bd50cc4c4..097e6745ba75 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -105,11 +105,14 @@ static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
+diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
+index 639cfb6a1f65..8e33a7b584e7 100755
+--- a/tools/testing/selftests/damon/debugfs_attrs.sh
++++ b/tools/testing/selftests/damon/debugfs_attrs.sh
+@@ -63,10 +63,10 @@ echo "$orig_content" > "$file"
+ file="$DBGFS/schemes"
+ orig_content=$(cat "$file")
  
- 	damon_for_each_scheme(s, c) {
- 		rc = scnprintf(&buf[written], len - written,
--				"%lu %lu %u %u %u %u %d %lu %lu\n",
-+				"%lu %lu %u %u %u %u %d %lu %lu %lu %lu %lu\n",
- 				s->min_sz_region, s->max_sz_region,
- 				s->min_nr_accesses, s->max_nr_accesses,
- 				s->min_age_region, s->max_age_region,
--				s->action, s->stat_count, s->stat_sz);
-+				s->action,
-+				s->quota.ms, s->quota.sz,
-+				s->quota.reset_interval,
-+				s->stat_count, s->stat_sz);
- 		if (!rc)
- 			return -ENOMEM;
+-test_write_succ "$file" "1 2 3 4 5 6 4" \
++test_write_succ "$file" "1 2 3 4 5 6 4 0 0 0" \
+ 	"$orig_content" "valid input"
+ test_write_fail "$file" "1 2
+-3 4 5 6 3" "$orig_content" "multi lines"
++3 4 5 6 3 0 0 0" "$orig_content" "multi lines"
+ test_write_succ "$file" "" "$orig_content" "disabling"
+ echo "$orig_content" > "$file"
  
-@@ -190,10 +193,11 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
- 	while (pos < len && *nr_schemes < max_nr_schemes) {
- 		struct damos_quota quota = {};
- 
--		ret = sscanf(&str[pos], "%lu %lu %u %u %u %u %u%n",
-+		ret = sscanf(&str[pos], "%lu %lu %u %u %u %u %u %lu %lu %lu%n",
- 				&min_sz, &max_sz, &min_nr_a, &max_nr_a,
--				&min_age, &max_age, &action, &parsed);
--		if (ret != 7)
-+				&min_age, &max_age, &action, &quota.ms,
-+				&quota.sz, &quota.reset_interval, &parsed);
-+		if (ret != 10)
- 			break;
- 		if (!damos_action_valid(action)) {
- 			pr_err("wrong action %d\n", action);
 -- 
 2.17.1
 
