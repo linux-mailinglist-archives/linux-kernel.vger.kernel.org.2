@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1EE434123
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C7E434125
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhJSWCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJSWBm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:01:42 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E69AC0613E3;
-        Tue, 19 Oct 2021 14:59:24 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id g184so20631668pgc.6;
-        Tue, 19 Oct 2021 14:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2G1kdri23kWnlj1enPufIZN1leyxpMasJ2EyRU0acfw=;
-        b=Y5clh4hJuQyM8eC5A+hgiBCp367+x4gkBxd+43EC3gI8EhkdW9oupc9VprJN88A+SS
-         MXTHIQCNafVT3DbL2pCZSy3fiLeF0SEKKp0m6MVaa6nk70CD2U8zGmq/1cEi5NM/7I3X
-         DVM4WarHYUHHtzY263A4Kz2rszp3lsNoKs0v2rvv6hfDsyAFR7ILK2Ov1P81G/OXu7+n
-         UuW4Sa46ne3mVkOBB09KzfcE/ffd4WXtx3d1ugUwrqtf/VI+0bfPdTMw128tcJ4+X95R
-         a1/YA5eKCmN+kkII9t5ISBDNRfN5T4/yLr6NPGd1/mT3rgLbS5u860+VgdrpyHIxNta2
-         A1sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2G1kdri23kWnlj1enPufIZN1leyxpMasJ2EyRU0acfw=;
-        b=NXnCuJBOwvWguOJFx7y33gqrKsjkoonVytNu0mvAtTpbyVnxr/RJNBCe0FCseZ5toY
-         hSDlW4ntQatClg4+Ubguq2/DCNm0ZBXRK30e9Y/cruOKWMCYOK7GowOkUnNKfxl45qjg
-         rQBlSTBablsSuYAIynsRCvAq9KpgOPfXlMvTeOH6tj2D58xokiXQNeUkwo+X5gZ+R1tE
-         4V1MpWKUdyrkAMcttKrrNEPa6g55D0TrMPDvdAqtJOVRv60KwqLu4nLFe5wzBMOygtlo
-         ojxgnn5inxu5lUVtM5KHX1FS3Xeyq9dssgkEs83o3LH12TvgXtG/MuX7KSwP9/vJpOvR
-         iWlA==
-X-Gm-Message-State: AOAM531C2bzl/ZKkjDSWsq4PzxBbFwx3TbHYjdIqA+2kU86ylTPlVm8D
-        RkeuECv4ZTcz8wkkFdRhzjLkUYNkhWI=
-X-Google-Smtp-Source: ABdhPJxR3R8hw1YDkPeaq+1XWGII38BdkuxodKSXvnmpG9QGveZCyXnqmGNQGOxR6w5CknBLqcfbnA==
-X-Received: by 2002:a63:7514:: with SMTP id q20mr5138672pgc.232.1634680763731;
-        Tue, 19 Oct 2021 14:59:23 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id bf7sm139325pjb.14.2021.10.19.14.59.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 14:59:23 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
-        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM
-        SUB-ARCHITECTURES), linux-mips@vger.kernel.org (open list:MIPS),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE)
-Subject: [PATCH v5 14/14] irqchip: Fix kernel-doc parameter typo for IRQCHIP_DECLARE
-Date:   Tue, 19 Oct 2021 14:58:55 -0700
-Message-Id: <20211019215855.1920099-15-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019215855.1920099-1-f.fainelli@gmail.com>
-References: <20211019215855.1920099-1-f.fainelli@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229704AbhJSWCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:02:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229963AbhJSWCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 18:02:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FE0960FDA;
+        Tue, 19 Oct 2021 22:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1634680827;
+        bh=Rk43kt/rzfIF9w6y1lPOwDQjIprPyWMfV86zk0IuZz4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mM0x0H7FCOinXZ4mdFMqWNW7smp4C8w8lQtnMlj9VvCKdIW/SFcPU/RxPsKDbsP1t
+         z5A59chQaUCEMvnwBQDimhND52a8u62ysdVmWCy88aEidcmxII8iqtpdqeGNfRkfsx
+         waP9eBwf4tcdC+5UkRoYp/O1Jy625nCCmK4DZTDE=
+Date:   Tue, 19 Oct 2021 15:00:25 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     NeilBrown <neilb@suse.de>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/8] Remove dependency on congestion_wait in mm/
+Message-Id: <20211019150025.c62a0c72538d1f9fa20f1e81@linux-foundation.org>
+In-Reply-To: <20211019090108.25501-1-mgorman@techsingularity.net>
+References: <20211019090108.25501-1-mgorman@techsingularity.net>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation refers to "compstr" when we have the parameter named
-"compat", fix the typo.
+On Tue, 19 Oct 2021 10:01:00 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- include/linux/irqchip.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Changelog since v3
+> o Count writeback completions for NR_THROTTLED_WRITTEN only
+> o Use IRQ-safe inc_node_page_state
+> o Remove redundant throttling
+> 
+> This series is also available at
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-reclaimcongest-v4r2
+> 
+> This series that removes all calls to congestion_wait
+> in mm/ and deletes wait_iff_congested. It's not a clever
+> implementation but congestion_wait has been broken for a long time
+> (https://lore.kernel.org/linux-mm/45d8b7a6-8548-65f5-cccf-9f451d4ae3d4@kernel.dk/).
 
-diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
-index 67351aac65ef..ccf32758ea85 100644
---- a/include/linux/irqchip.h
-+++ b/include/linux/irqchip.h
-@@ -23,7 +23,7 @@
-  *
-  * @name: name that must be unique across all IRQCHIP_DECLARE of the
-  * same file.
-- * @compstr: compatible string of the irqchip driver
-+ * @compat: compatible string of the irqchip driver
-  * @fn: initialization function
-  */
- #define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
--- 
-2.25.1
+The block layer doesn't call clear_bdi_congested() at all.  I never
+knew this until recent discussions :(
 
+So this means that congestion_wait() will always time out, yes?
+
+> Even if congestion throttling worked, it was never a great idea.
+
+Well.  It was a good idea until things like isolation got added!
+
+> While
+> excessive dirty/writeback pages at the tail of the LRU is one possibility
+> that reclaim may be slow, there is also the problem of too many pages
+> being isolated and reclaim failing for other reasons (elevated references,
+> too many pages isolated, excessive LRU contention etc).
+> 
+> This series replaces the "congestion" throttling with 3 different types.
+> 
+> o If there are too many dirty/writeback pages, sleep until a timeout
+>   or enough pages get cleaned
+> o If too many pages are isolated, sleep until enough isolated pages
+>   are either reclaimed or put back on the LRU
+> o If no progress is being made, direct reclaim tasks sleep until
+>   another task makes progress with acceptable efficiency.
+> 
+> This was initially tested with a mix of workloads that used to trigger
+> corner cases that no longer work.
+
+Mix of workloads is nice, but a mix of devices is more important here. 
+I trust some testing was done on plain old spinning disks?  And USB
+storage, please!  And NFS plays with BDI congestion.  Ceph and FUSE also.
+
+We've had complaints about this stuff forever.  Usually of the form of
+interactive tasks getting horridly stalled by writeout/swap activity.
