@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC8F433C6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B16433C77
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhJSQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbhJSQhv (ORCPT
+        id S234379AbhJSQjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:39:11 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:46023 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233499AbhJSQjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:37:51 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FE7C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:35:38 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id l39so10635135vkd.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hcpunpJfD02BVk7gvPKYSvVCpndtXyJiwVOsvlKcqZI=;
-        b=BdQ2OzL6SWeWZ9lnMcxZWN5DaQ/d8jf2h45OJs9cH+GlYlrjJIzPQv/DepQEx0AVuv
-         GWiTPlZoXqr7Cy5NtlV+3wWBgyR+jVTfzAaFvSmKS8dWGevDt7UhY+6L0iEorvlsoL5J
-         1P+ObMZy40jiLfXR1cMZS5RKUUsOUcevGJNt1CczAFeX2ABB7TVvmfrByhRVJQYdP4ww
-         po/itndSylNqIpsco0VtIYqycpaCG0ykS21mfQb1sIzwGhUMUin7+QPSc4XvP2qjOvuF
-         drZXawwJ2H2xmZBU7yxOYB+Z1GROv1vQOl0WCCjGw20ACo8d0nKaUqK1TGVhF0EKUnXu
-         Mfsg==
+        Tue, 19 Oct 2021 12:39:09 -0400
+Received: by mail-pl1-f169.google.com with SMTP id s1so12242284plg.12;
+        Tue, 19 Oct 2021 09:36:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hcpunpJfD02BVk7gvPKYSvVCpndtXyJiwVOsvlKcqZI=;
-        b=39S37wpcS9JlHaC9EolsdzmAy1tfS+5KNokWqvIg+sBZjluDSyw84HwPk0N/YNUf6+
-         nD5coG7Zn/QeLEF3wGTMgYPJhtz+tftpB1hP+Ib1x7g6Cd3feZ7kgq9u4wniCkBunI/6
-         mbNWIKPFbnAY+aAuiNvstDiAJMT/65Cop797Cl13nRN+vQUKkAY62ugIXYA3Xo5iGkNJ
-         lSb34cG3IIH21ZMNzPYj8/TFn7rOKlRJL571OOJ805FlFhi38ljVCIIHKFPtb1zfNywV
-         aL4ClDZzFnV9QCbZe+GCXShkJMAdJlh2r2GnriJMflzBwmSHy/zUg9N0gQDdfpo+e9z9
-         0NOw==
-X-Gm-Message-State: AOAM531K4QBkch3suYEfNubKOvZ/X9iEFbYes5Ve7fZfYIvnaSu8+0T0
-        tIo35lw61zXDCuIM/wG96y/gNUyae534FzEn7eSYq+6fcYb8rVHl
-X-Google-Smtp-Source: ABdhPJxiZkNnPp8L2tDYceQO0IZ4U2Vv1yzsBlHqRJNbQZbT3vX8Ww0HOFEE3jsk6TcubludTT/ovXMLWY9QcgDhjJM=
-X-Received: by 2002:a1f:f241:: with SMTP id q62mr13676041vkh.12.1634661338139;
- Tue, 19 Oct 2021 09:35:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kLdN4liOKdc+fP0eP65RqqF4TfZVXdiQZ9p/Tw3qQU8=;
+        b=HarQYOj26/zHVwCu3eisFNJvjup1KNFR5m7TIe5DpFK74770Q8wmW45mtSrAyAFY91
+         i7ivMaducnXirbiacEqqNZOAur+Ze/vb9cYH+fTiszlEyjqXY53SFxlcvKw1fabXGeH0
+         7/Sgd+15vsFuSTRg6FHOzGv2Wa26JiNnh4cYoZ+9nxJ2E/I0etWOPC82i5V9tP9NJsb6
+         nDLnb5h0RoTd6zjZs5wTF3c+MB2kujtsolO2F/ZlUUs+HKTvAd/sQRCXq5hD0YlicMkV
+         JrAvXUej0sASdx3Mc0wVbRDpa6L51m7hOI01PPrg0GYThpXI+hFM1NNeoDfcUh3W0stn
+         7qhw==
+X-Gm-Message-State: AOAM530FLh4U2CrBSIXQPcXLgG3ZMu9GEEmxjoFd4IFwO+PhIkxEm8eI
+        KyGaNg6iGWqZ5gg/LQpM/gBi1qSEXrM=
+X-Google-Smtp-Source: ABdhPJwCY35pOvxvGym85U/8cYQFG4xdT9I5H6WrOoEm+Ps5AaJUfhzoOFAbtov19JdMyFN9XhDJYw==
+X-Received: by 2002:a17:90b:fd0:: with SMTP id gd16mr858576pjb.157.1634661415526;
+        Tue, 19 Oct 2021 09:36:55 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:3f60:dc0f:50d7:6a24])
+        by smtp.gmail.com with ESMTPSA id t14sm16110248pga.62.2021.10.19.09.36.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 09:36:55 -0700 (PDT)
+Subject: Re: [PATCH] scsi: mpt3sas: make mpt3sas_dev_attrs static
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        sathya.prakash@broadcom.com
+Cc:     sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, MPT-FusionLinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1634639239-2892-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <9cdf9d31-cb90-0792-29e8-52339c1e1043@acm.org>
+Date:   Tue, 19 Oct 2021 09:36:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211019131724.3109-1-semen.protsenko@linaro.org>
- <20211019131724.3109-3-semen.protsenko@linaro.org> <6dbd4812-bac3-55dc-108e-c322e8a493de@canonical.com>
- <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com>
-In-Reply-To: <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 19 Oct 2021 19:35:26 +0300
-Message-ID: <CAPLW+4mE09AOSco+X9qE=1sjXvNVkOxtJqur+HoBJExxiw0J=g@mail.gmail.com>
-Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1634639239-2892-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 at 19:22, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 19/10/2021 18:17, Krzysztof Kozlowski wrote:
-> > On 19/10/2021 15:17, Sam Protsenko wrote:
-> >> This RTC driver only accepts dates from 2000 to 2099 year. It starts
-> >> counting from 2000 to avoid Y2K problem,
-> >
-> > 1. Where is the minimum (2000) year set in the RTC driver?
->
-> Ah, indeed. I found it now in the driver.
->
-> >
-> >> and S3C RTC only supports 100
-> >
-> > On some of the devices 100, on some 1000, therefore, no. This does not
-> > look correct.
->
-> That part of sentence is still incorrect, but change itself makes sense.
-> Driver does not support <2000.
->
+On 10/19/21 3:27 AM, Jiapeng Chong wrote:
+> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+> 
+> This symbol is not used outside of mpt3sas_ctl.c, so marks it static.
+> 
+> Fixes the following sparse warning:
+> 
+> drivers/scsi/mpt3sas/mpt3sas_ctl.c:3988:18: warning: symbol
+> 'mpt3sas_dev_attrs' was not declared. Should it be static?
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Fixes: 1bb3ca27d2ca ("scsi: mpt3sas: Switch to attribute groups")
+> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+> ---
+>   drivers/scsi/mpt3sas/mpt3sas_ctl.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+> index 0aabc9761be1..05b6c6a073c3 100644
+> --- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+> +++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+> @@ -3985,7 +3985,7 @@ sas_ncq_prio_enable_store(struct device *dev,
+>   }
+>   static DEVICE_ATTR_RW(sas_ncq_prio_enable);
+>   
+> -struct attribute *mpt3sas_dev_attrs[] = {
+> +static struct attribute *mpt3sas_dev_attrs[] = {
+>   	&dev_attr_sas_address.attr,
+>   	&dev_attr_sas_device_handle.attr,
+>   	&dev_attr_sas_ncq_prio_supported.attr,
+> 
 
-Driver itself does not allow setting year >= 2100:
-
-<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
-    if (year < 0 || year >= 100) {
-        dev_err(dev, "rtc only supports 100 years\n");
-        return -EINVAL;
-    }
-<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
-
-Devices might allow it, so the commit message phrasing is incorrect
-and should be replaced, yes. But the code should be correct. Should I
-send v2 with fixed commit message?
-
-> Best regards,
-> Krzysztof
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
