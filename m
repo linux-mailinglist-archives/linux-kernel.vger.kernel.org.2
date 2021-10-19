@@ -2,233 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406AA433048
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9BB433054
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhJSH7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:59:48 -0400
-Received: from mail-mw2nam12on2101.outbound.protection.outlook.com ([40.107.244.101]:8800
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        id S234556AbhJSIDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:03:07 -0400
+Received: from mail-eopbgr80112.outbound.protection.outlook.com ([40.107.8.112]:43847
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231187AbhJSH7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:59:44 -0400
+        id S230365AbhJSICR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 04:02:17 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KMBAqb4osItwAlLSv2mVXrfeESnPFBrTBGyX6Q70rnnhqqUsyAOKjuF4I0JD09gCV4+2GwjYPAAHcv8hWR/onzUwv1OzRa+2yCNjfNcPVMdRMNrkQPfjHld0ryz6DHGPsnMXAqBlXRA0ErvA7JUes86Edqw58qhcWkZJma3gNO/Xib7o7++qbeuetPfj1/it0a4s+gqMHiqYq/D6ukvgy2jTNV6WXIiItpFg/dqHCzzJyuCwIC/xA9PAv2w+M6yTp7U86BCmBuksFcoWylyVFt1O8hOdpeeSeoKrOHc1gaKKRdg1CyFR46RUREQLls+GRRIGHOjtr0QWO9Mk0mTUPw==
+ b=hjkgqY/LwinGLuSTlZLd+i8gE2pCECZaim/8X9HT0NSHTftcBpdO1fQUCeqc0sRDORh04mL6htepNIo7QQYAD+wSJaP8CDwoNa13wefamq2uTVRNXG2kU6b4edKR4X2FGQpGRNLaQQaXs5Qu6sLz+i2ZZgj4TqRRv1Q9Vnl60OedrENWQg+pQnzGPOdCkCeT+xzVvc+4UFj+3JIZTqoPAbGw3ZIwLbUyhkxPpW1N0pKJtpOJoAJ7u30EBIuql17SSKu+TJ9Bg3DyHyAB9IczHMLnOn1eG/sM5i14sjJkqBn8JxYNjM2pFrGxiDrI33dj3939/FPP9yABlNTRzJNIVQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e+I56tpV+0lwXd/quSJ+34BJ4mXTClCIT8z2bPeuGc8=;
- b=m3rdQ8pCppVXOrfTZT7qHeQagv3Abj4eaNfTV8pFHJgS+n2fCm82O2iig7eA+/9RG4id3MTBZrYlBbk+Knpm17c25Cf3Qgp7VFdS+uV2WgIvzvVzNQeKdI3qxhtKGiw/CxiZ13M7Iv1zDtmJ97sGZIWvEqK5GdwOTjEaDff+CKQ8B9SYNr/kGfY9qmXFB2taPftgkTBO4FmzK4lDB3PbadBeSUFEaYxuIzX4JpEKhJE8iFX6JUMDTBvFVazXDZxhsFq1RLxWl6jKH2fbOp6UqNIweNjGdzw/3Kq2FHNfX33Afdmb8OwETFXJHOPdgJqZSOoQwd7omRZ6NsgydO6NPA==
+ bh=58+0n4A/DLQ6xZIdV2mn9JjiIVlJhTOls2tA6dZNx+U=;
+ b=DX4wZsItQNP1Xcrgcm2rVwgFGFms5117QeUQKnZoXhJ3bdMrU5AFz4baKPYM1ylyiGaohzA/njRntVLbEoc6FXy/skdtEEQy0JE9orPFcv/7uc954mWjCEeGHoyU+HbF8yYteyjZM4SLC5Gp47oThj5e8s4ITG6356J3PgOYYSAqFsZ2bCUp6pYIYO1q9OtLONC9Vm21wZ+UJCEdwY7+HgkHvXjrphjZqXlFxCG1TVSfCbFjiLBHYPVzEQr79yRMQ0RmbeRQN646/0s+1WDfuVXiDcUe2OgsTbdZ2Cy9pMkEwzanVemafw10f3i49mb6stCjkYuO+LKsqmsNR1hIzw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
+ smtp.mailfrom=opensynergy.com; dmarc=pass action=none
+ header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e+I56tpV+0lwXd/quSJ+34BJ4mXTClCIT8z2bPeuGc8=;
- b=J6TQVHnQyfX8O8O0QdgBXAm3XHoDVX4bStcluEVejha32x3TRpfcOGOL8+t7G7si6INmGv921oPFSWEG3Q2FtzRFkTZWuADAkvl+KHnaH06FPt+73cXTcfIg6B9hcMw+L7Pv1QJO4oAVLy2/R0AE5uwCO2pTfFK95OTvkkhT/CY=
-Received: from BYAPR11MB3671.namprd11.prod.outlook.com (2603:10b6:a03:b3::15)
- by BYAPR11MB2918.namprd11.prod.outlook.com (2603:10b6:a03:92::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Tue, 19 Oct
- 2021 07:57:27 +0000
-Received: from BYAPR11MB3671.namprd11.prod.outlook.com
- ([fe80::49d4:a1dd:5b55:4c94]) by BYAPR11MB3671.namprd11.prod.outlook.com
- ([fe80::49d4:a1dd:5b55:4c94%6]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 07:57:27 +0000
-From:   George Song <George.Song@maximintegrated.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "george.song@analog.com" <george.song@analog.com>,
-        Ryan Lee <RyanS.Lee@maximintegrated.com>,
-        Steve Lee <SteveS.Lee@maximintegrated.com>
-Subject: RE: [EXTERNAL] Re: [v3 2/2] ASoC: max98520: add max98520 audio
- amplifier driver
-Thread-Topic: [EXTERNAL] Re: [v3 2/2] ASoC: max98520: add max98520 audio
- amplifier driver
-Thread-Index: AQHXw/s2x3A5X1ZlPEurKpXCb3FgFavYshcAgAFD2bA=
-Date:   Tue, 19 Oct 2021 07:57:26 +0000
-Message-ID: <BYAPR11MB367106FDD5394AA4F88A42D4F4BD9@BYAPR11MB3671.namprd11.prod.outlook.com>
-References: <20211018083554.5360-1-george.song@maximintegrated.com>
- <20211018083554.5360-2-george.song@maximintegrated.com>
- <YW1quluaCzsUpET0@sirena.org.uk>
-In-Reply-To: <YW1quluaCzsUpET0@sirena.org.uk>
-Accept-Language: ko-KR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=maximintegrated.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e9299050-c638-4b5e-9fc7-08d992d617e7
-x-ms-traffictypediagnostic: BYAPR11MB2918:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB2918C32E4D49D15B649C04F1F4BD9@BYAPR11MB2918.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: b1KdyAh7+Sb2gMMtTLgAYqy1xT0tyOi/s7czLBRceYMcf6FmYz5zydZqPS6k91E257x4rObE+a3iu3+YnAZQfVW6a6e6pb5wobruyYgLB+uIQgshrcq14e7c3o9eD4JReS7vUzgTTTm2jk2StT7ZhRWNMh84Rjzykf9vQ5UNO3didFUVXiK9acX0Dm5b9nx0OTdqRKN/FZtPYJ3zQUYmmiS9HU9+gnjoP1DlWY5o04gd0Pj1Wf0HawwpccWVzUa0ODWMHgatqpPTp9Tf2n1sfT9SBbyr8qbJ0pHu4LK/wOhB7kAHDVFpL7FfI5sZ+y++iquPBhRe7cHs4aAIMUmstiFWXsZI7A4OAFyeGG5McfMTqKlNYRIrd2PdIz23zVtEuj79CmPzi6zWom28LZn3c8d9uON3qAtiIxg08wkMbsWRzAL/TzQLJS6V3KE4r4TNNYKsQp+LrJYzC0LLcjgi7UQnbVhWhYHndHJLJW9K/20cnk+Y9aWYIdMuE5D8AW/MecP1kQ8waDGZDH/RpP8B0sd4kvif7BZ3HKx6uLUk+Hfxo4AYVaq2OgLsRmjrXSHusTmc/CtAWbA0VC54pqXSKi+SQCyzj4Lnk2LDm+ij+DkJar4U51Lcf3x7sdlF+svnqdxyPTdCFG+Jypb+2EwOAQhDhrM53iYLn0rkAgByNRE2PJ7weJNCNGSgmkvMJY6iAN+zMQtB28s5o0r5ovFqqA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3671.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(54906003)(71200400001)(2906002)(83380400001)(5660300002)(7696005)(122000001)(9686003)(38070700005)(66446008)(86362001)(64756008)(66556008)(508600001)(55016002)(38100700002)(8936002)(33656002)(26005)(186003)(8676002)(4326008)(76116006)(6916009)(66476007)(6506007)(52536014)(107886003)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?BC6aTa8XhI5dGIRxk8XneZhPfMnGD2LcmqMPmpYu5n4/WCgwDbzKRvbyGeAG?=
- =?us-ascii?Q?3rLiCrqLPiFEmRKdQ63+oamU0k5NrxZiWNa9wtW2MmVzNqf00MLHd1eyDqH7?=
- =?us-ascii?Q?nBHdf8d7fSWgAU4K3YWZhE/0YMRANG9Bqg7DBrVe9FtXtQCs6EzT0yxCOb9i?=
- =?us-ascii?Q?ssiEdMfzEQ+9wFppPYzQVwtJoIywV3ejuxKkbzfPyD9oSNtjsMSJKjUQXWZC?=
- =?us-ascii?Q?fRmHfq469LYBarBrk6i44wFa/wMyEIVIHvRcZGb5s5wYp1r9q8f2gG6/X/ip?=
- =?us-ascii?Q?JqzOcHsj6asZf/1cH0bjCURhnmQTin4tXUAehb1YOJWvm87Fr+PCss5tO0Yw?=
- =?us-ascii?Q?y6u90N5GNEhpJbJriQczDK55iWOrghrf/0Fs/0MiMYvRZtPGfSJxCc9nrJAr?=
- =?us-ascii?Q?qRHgWVXLlxO+PFAE9pyNsjqPZNAnD2YnEt7/FJqOCox66swr5+Bm799nh1ID?=
- =?us-ascii?Q?8DSlumg4ZlurrJVuwuMF9NERu4i7I/dTp7R2QMxLiIGwiVaMFLUH0R68fLZl?=
- =?us-ascii?Q?+xpTI6LEXEXm7kvUhBorw1/2pUbRqf4TBo+RgLABzvzi1jAkuAMvnwzXJRxx?=
- =?us-ascii?Q?sItEd3rXGtEmT93FjXJ0AXRfK1YHA3tqBi4I+GYxjyeC5POAoKPlkvRVg4QW?=
- =?us-ascii?Q?kCuxLT8VuFf9sB0/3cy3lGzgNsDhEMKgnULZv94epdKQ2SUugiGkb77+c8Ml?=
- =?us-ascii?Q?WP1orveQv1USY7DtuxSiXS+vqoRxVGr99FKbmQwT6gF3/EVPt8g+OKMOAecP?=
- =?us-ascii?Q?WDhxAWeP8DzhONHsS/J5Ju3qHySHTz1sz6emfgqVdXpI7j5D6WinEeTziEre?=
- =?us-ascii?Q?85ryz4k1svxsrw1gDX0RJHaiWXkLKmftfzZ1pcQSSu1K5oRp+2S+HNmY1iDm?=
- =?us-ascii?Q?BlUCRAh0199JXIK9OI90y4cD/T1dk8+lUxvUQyCjYHqu02qEDx8wtM7EHWzg?=
- =?us-ascii?Q?J6V/fTiDKaG1qQv0fVZl8UUIsbg3pctgzPcY0jnPtWz56r4AxKZOj8lIkjA6?=
- =?us-ascii?Q?3RgHOUbfMCzSK5gOOacv6L6QPXqKaTlIB0VsZ0o691X71LU0Exj3h1M3ATRQ?=
- =?us-ascii?Q?YgA7uGG6i2c4hp6vEk/VSec56IMMG+lvIJIeqUvKXZayKNSVU6rF75u658te?=
- =?us-ascii?Q?a4fXCsLZ4HqhpEw3Nh+2KVw4h0jJHex4tx9G6CiVDePjTEYDH5R3wG5WEvjX?=
- =?us-ascii?Q?2c1+NawXjKkEb/UM3jiUs5dZwPvNR47auTov8fHKajER/0iEuthuEmg1gMU/?=
- =?us-ascii?Q?hIyf8Zg8UieBzx8ip3MYZzgAkJwTr2BR7qho06CplPTUvmGGIVIWKDxSn4If?=
- =?us-ascii?Q?qcc=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=58+0n4A/DLQ6xZIdV2mn9JjiIVlJhTOls2tA6dZNx+U=;
+ b=lwc3HA6W3tO2Ri8TJERZOkdH3pBiFnOGcpoP0sBGVHj9g11jLzMYQ9/BgJe+RBUvCOncIncZXmtlpKRqm4irm7fx7l+p4AVJXKpTrrvwWdzjgdi1x8UzmOfll+Mh3okQWWUoaZ9ZazhdnA8xwvt58uVPQstoWh+NYziepxzToXE=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=opensynergy.com;
+From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+To:     jbhayana@google.com, jic23@kernel.org
+Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
+        andriy.tryshnivskyy@opensynergy.com
+Subject: [PATCH v6 0/1] iio/scmi: Add reading "raw" attribute.
+Date:   Tue, 19 Oct 2021 10:59:48 +0300
+Message-Id: <20211019075949.17644-1-andriy.tryshnivskyy@opensynergy.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: FR3P281CA0063.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4b::13) To AM6PR04MB6359.eurprd04.prod.outlook.com
+ (2603:10a6:20b:fc::16)
 MIME-Version: 1.0
-X-OriginatorOrg: maximintegrated.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a35e4eb8-ee61-459b-bc75-08d992d673fc
+X-MS-TrafficTypeDiagnostic: AM6PR04MB5159:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB5159630E33778304C74964ABE6BD9@AM6PR04MB5159.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zH/1EvA8w5AdFWZIJPUx4MknGmRefIiAmZvX963Eypzcj/YM3+oqmHF9Hgw0hawpfehuIBLYzALfDL8lHCqJYNf0pmgMFYqeEklGC8JgjSCaZh+YxKhKlRm1S2jzD2aYcM1xGZgPaRK/4yz0e1FusRhjvNIgSj2+pfzmaABIU0iXUEEgVLj8KaUZIV/fWBk1YJN32lYp4gwoO4A46eIj6az1gGXXN7oi7yjlaM9NuLlzui3szqNvmgH0LTNytaaKfTd8bHufd0Nlg2NmFzmXhS6WYlefkVwyt1OWdAuUN09O8ipYTucwLUQLwPJI33TYEghTTcza7ibPEBdJ3uaJJ0jS6belWHuv0zgKhyC0w5DYZ4Kg2gtuIeKCL+loj8A+KcXVo9l+jOkS+ufvCVbJBkk8gTmwlvs26sK8GvHOtSackQwEzluwDxW6ezB/gBPqLeWRP8oHtFcacnWi3B+GhRanckt5biuEGIs5/wa+6rUYIg7qf3bdwc2Ojsy2OzDbmAbG4ZHMK3EeqyW2dWgSgimWgls6mBPGBRtBAG4cStef9opfDPRdOCYDg16Nn0rcoqqzYEL+n+ONS3Kf6YUij9Au0Jwc6kWRAax3j8TZAhZFjlPESg9uzajk1bnLU70Gk0M9ieFGyJKdUUWjWBgizDNxT9BnCqBATjED63d0z/XgeX3M7A3TOW/yHONVCZPH+f8c7mZZb/vKohgNpyPnqg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(396003)(39840400004)(366004)(52116002)(107886003)(4326008)(66476007)(2616005)(44832011)(83380400001)(8936002)(42186006)(38100700002)(1076003)(8676002)(2906002)(55236004)(86362001)(66946007)(316002)(26005)(5660300002)(66556008)(186003)(36756003)(38350700002)(508600001)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JgFv8heJ2JHCRzPYRni0pWd/ecn41lts35C7wTv1LvDFYxbFfHLQ+xz/CnVl?=
+ =?us-ascii?Q?E2fyqYUtwHJDqOLYogs8GqKLCBPPc1Hu4KtUWvWU+cCOwx5GJos3UBZ9rlP5?=
+ =?us-ascii?Q?W4PkfPYFYGb4h6zpbjzZEYk6ayBS01nGOzlbACPpeeJbHJkP3U2bKDT0KAyF?=
+ =?us-ascii?Q?EOe+9xepcCwiNeTOKQ9emDkEh99IOQHeZx2RmiOfraHJJNSB/SyPXLB78zGa?=
+ =?us-ascii?Q?a6RujY2VabQXgThouo5dWvbCvwBfOFx1qtLityv0KR20p6d0eJBty7RwsmHz?=
+ =?us-ascii?Q?WZNkhH9699xU3nXfoHo+rMfTROW6JzUOJjQ3376VV7fcaZMtFz/UBG3P+01k?=
+ =?us-ascii?Q?+Z1N4tQDzv/uUR0U999xCmSVWsaDbhwJIyZsNE6H7tAmDN5wj4sK0G2vR+5j?=
+ =?us-ascii?Q?m5zyjEyBP4DmYJkHAqTGz/LplXVY6AydFE8QaIEmlxkGsa+oZ2Y/pJKQWZF7?=
+ =?us-ascii?Q?A6e4HM+qSen4qHBny8G5YcHy+AlmxTPoo99lgYBDZ0H6n4yPjcKzlGILvfhB?=
+ =?us-ascii?Q?4vyoajPPe0pMxta1famJrRkQRF8ICqKZhjAdoEn4yQFzE6R4ioaXg9+LRA/2?=
+ =?us-ascii?Q?WTE8MTfs79zDqcD+7ctzESajwyiGtZPZb3/tqUx7s83xXvSjwiISM7dy2Z4T?=
+ =?us-ascii?Q?s9gadEUd96zIHEMNdq0wwBxtDF+/rceorB4e6hUlXWoXDZR5J3rB8kjEwe8T?=
+ =?us-ascii?Q?kQG6uZyr7FylD+R0owXVgWcmy0zIFfIDq2nR2kRk2tvOgaXIgR+xsZFh5JH3?=
+ =?us-ascii?Q?o3RWxntZgjJyaeoDTZ2IR7Y4S0Y6GsCdy2NBu05n1B+hbevFmbOZuWx60pBr?=
+ =?us-ascii?Q?rnDi2qgD/RJeq5x73EPlD6PSdTpuTo+NiMKk7g1txnmaR4mY0yy/y+Al4sAS?=
+ =?us-ascii?Q?imQ0Ec06M7afcwTYC07h0kTt8xqQ+78V8KOgFbTPPmXkrWWGrcqBVIZEsWhb?=
+ =?us-ascii?Q?/KGUBS+LERJ06EYuUOJAAyCCnz5pueUk5ljjQd6TCyCtx5Xmcl2qChiHwOOx?=
+ =?us-ascii?Q?+lFmOGOhKhVVBAkWX2E74WNXDEO+DqO4fKRAA/XAXWmFPsxsPoIpjAVHQ0NQ?=
+ =?us-ascii?Q?n/vNKTvaTqI16NmtowE4Jvt8eI5gyDKFsrBnS4RPkYTGKw0bGjKfgcnPfWRe?=
+ =?us-ascii?Q?axgPjmE4pr9XUgvFehAKmMumuY18vhFg0tSL2zSpFYNGjNGLUm+VVhqpkQKI?=
+ =?us-ascii?Q?amR4TQ+P56TO0EzawxLxmyCNg7vDMGq88SsBPAPr6e+oicx0qDagCPSQ6/+N?=
+ =?us-ascii?Q?jy8Alpy19br0wszwjBRmvRXeyT29t7NQx+8i1GVraBX9Lro9P9RKwxQOBNEM?=
+ =?us-ascii?Q?BJcDlLU0YdX3MlIgFQ1b3VbQ?=
+X-OriginatorOrg: opensynergy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a35e4eb8-ee61-459b-bc75-08d992d673fc
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3671.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9299050-c638-4b5e-9fc7-08d992d617e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2021 07:57:26.9938
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 08:00:01.8484
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TypROab26yg3DtcZc5rOxkFO2JjrYkqA3IAW+tQzFqKG64HQvfVyS5qPzkK/yGa7qhL8nIwzwIQsCEAn3uxByLX5hsAgG1JPCnf99Wz+kyw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2918
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: glat@opensynergy.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Oct 18, 2021 at 05:35:54PM +0900, George Song wrote:
->=20
-> > +	case SND_SOC_DAPM_POST_PMD:
-> > +		dev_dbg(component->dev, " AMP OFF\n");
-> > +
-> > +		regmap_write(max98520->regmap, MAX98520_R210F_GLOBAL_EN, 0);
-> > +		usleep_range(30000, 31000);
-> > +		max98520->tdm_mode =3D false;
-> > +		break;
->=20
-> Why would stopping the DAC put us out of TDM mode?  Not that I can see
-> anything which ever sets tdm_mode to anything other than false or checks
-> the value...
-It will be removed tdm_mode to false line.
->=20
-> > +static const struct snd_soc_dapm_widget max98520_dapm_widgets[] =3D {
-> > +	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
-> > +			   MAX98520_R209F_AMP_EN, 0, 0, max98520_dac_event,
-> > +	SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
->=20
-> I can't help think that the global enable ought to be a _SUPPLY widget, i=
-t
-> would get enabled before the DAC rather than after it but it's not clear
-> that the ordering is critical here.
-It will be modified SND_SOC_NOPM instead of MAX98520_R209F_AMP_EN.
->=20
-> > +static DECLARE_TLV_DB_SCALE(max98520_digital_tlv, -6300, 50, 1);
-> > +static const DECLARE_TLV_DB_RANGE(max98520_spk_tlv,
-> > +	0, 5, TLV_DB_SCALE_ITEM(600, 300, 0), );
->=20
-> Why is _digital_tlv not const?  It's also a bit weird that _spk_tlv is a
-> range with one entry not a scale.
-It will be added const casting in front of DECLARE_TLV_DB_SCALE.
->=20
-> > +	count =3D 0;
-> > +	while (count < 3) {
-> > +		usleep_range(10000, 11000);
-> > +		/* Software Reset Verification */
-> > +		ret =3D regmap_read(max98520->regmap,
-> MAX98520_R21FF_REVISION_ID, &reg);
-> > +		if (!ret) {
-> > +			dev_info(dev, "Reset completed (retry:%d)\n", count);
-> > +			return;
-> > +		}
-> > +		count++;
->=20
-> Does this really need to be logged?
-It will be removed for logging regarding reset completed.
->=20
-> > +	/* Software Reset */
-> > +	max98520_reset(max98520, component->dev);
-> > +	usleep_range(30000, 31000);
->=20
-> Shouldn't that delay be in the reset routine?  Perhaps between the
-> attempts to read the ID register?
-It will be removed 30ms sleep after reset function.
->=20
-> > +	/* L/R mix configuration */
-> > +	regmap_write(max98520->regmap, MAX98520_R2043_PCM_RX_SRC1, 0x2);
-> > +
-> > +	regmap_write(max98520->regmap, MAX98520_R2044_PCM_RX_SRC2, 0x10);
->=20
-> These should be exposed to the user, not hard coded - different systems
-> may need different configurations.
-It`s already exposed for 2043 register which is regarding mono mixer for "D=
-AI Sel Mux"
-It will be exposed for 2044 register which is regarding pcm input channel s=
-election to dapm mixer.
->=20
-> > +	/* Disable Speaker Safe Mode */
-> > +	regmap_update_bits(max98520->regmap,
-> > +			   MAX98520_R2092_AMP_DSP_CFG,
-> MAX98520_SPK_SAFE_EN_MASK, 0);
->=20
-> This seems like something that should be left as is by default given the
-> name (or forced on if it were disabled by default)?
-It will be removed to be left as is by default given the name.
->=20
-> > +	/* Hard coded values for the experiments */
-> > +	regmap_write(max98520->regmap, MAX98520_R21FF_REVISION_ID, 0x54);
-> > +	regmap_write(max98520->regmap, MAX98520_R21FF_REVISION_ID, 0x4d);
-> > +	regmap_write(max98520->regmap, MAX98520_R2161_BOOST_TM1, 0x2);
-> > +	regmap_write(max98520->regmap, MAX98520_R2095_AMP_CFG, 0xc8);
->=20
-> This doesn't seem suitable for upstream.
-They will be removed.
->=20
-> > +	/* Power on device */
-> > +	if (gpio_is_valid(max98520->reset_gpio)) {
-> > +		ret =3D devm_gpio_request(&i2c->dev, max98520->reset_gpio,
-> > +					"MAX98520_RESET");
->=20
-> You should use the gpiod APIs for new code, not the legacy GPIO interface=
-.
-> This GPIO wasn't mentioned in the DT bindings but should have been
-> described there.
-It will be modified to gpiod APIs like devm_gpiod_get_optional for getting =
-reset_gpio (struct gpio_desc *reset_gpio).
->=20
-> > +		if (ret) {
-> > +			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
-> > +				__func__, max98520->reset_gpio);
-> > +			return -EINVAL;
-> > +		}
-> > +		gpio_direction_output(max98520->reset_gpio, 0);
-> > +		msleep(50);
-> > +		gpio_direction_output(max98520->reset_gpio, 1);
-> > +		msleep(20);
-> > +	}
->=20
-> Shouldn't the disable/enable of the reset GPIO be in the reset function?
-It will be modified to gpiod APIs like gpiod_set_value_cansleep function in=
-stead of gpio_direction_output.
+iio/scmi: Add reading "raw" attribute.
+
+Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
+reading "raw" attribute in scmi_iio_read_raw.
+Introduce new type IIO_VAL_INT_64 to read 64-bit value
+for "raw" attribute.
+
+The patch is based on v5.14.
+
+Any comments are very welcome.
+
+Thanks,
+Andriy.
+
+Andriy Tryshnivskyy (1):
+  iio/scmi: Add reading "raw" attribute.
+
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 57 +++++++++++++++++++++-
+ drivers/iio/industrialio-core.c            |  3 ++
+ include/linux/iio/types.h                  |  1 +
+ 3 files changed, 60 insertions(+), 1 deletion(-)
+
+
+base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+-- 
+2.17.1
+
