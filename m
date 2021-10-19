@@ -2,150 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F23433719
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966EA43371B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235864AbhJSNdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:33:43 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:11050 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231563AbhJSNde (ORCPT
+        id S235884AbhJSNeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:34:07 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:41775 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231563AbhJSNeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:33:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1634650271;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Q/NtJ7KiFCCIZLLJe6eyRG2jqj17800w/HejDZWo5fU=;
-    b=AZSL3FWYlJWnXLmLbVr3hbc/1HGF95QmiBNeB14RNYwupVBKZFUzA+Q2yBmAoES+No
-    E1RmkdV7PYGQwnFi2CO7uHAv8nY9U469hiC3FpMoQEGn2FFbH8/Pmu5Q7Z3T4yHdpWIt
-    LuEvNWBEOVedrcjMsk+Hib9jakIAnTDoodEuslmlsDN3kJNQiLnhUK4gXFYLwZxZIwQ4
-    yAoaNHtHQKuDHKIsUYIV7jjcRoN4W+REZo7IHJU82I0O+ldUKZfr4p+aKN+VYWBG2gaU
-    1J/nEi8klDQcCvO717VaAtIO+494qKzsVYtso1TMTzOZDHxhJmhdv8MZ+UG9fduzSyXY
-    KVGQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLVrKw5+aY="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id 301038x9JDV9e1k
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 19 Oct 2021 15:31:09 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 15:31:04 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        netdev <netdev@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
-        <dmaengine@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        phone-devel@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
-        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
-        Shevchenko <andy.shevchenko@gmail.com>," 
-        <~postmarketos/upstreaming@lists.sr.ht>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Subject: Re: [PATCH net-next v2 3/4] dt-bindings: net: Add schema for
- Qualcomm BAM-DMUX
-Message-ID: <YW7ImCwT/ERdnfni@gerhold.net>
-References: <20211011141733.3999-1-stephan@gerhold.net>
- <20211011141733.3999-4-stephan@gerhold.net>
- <YW3XgaiT2jBv4D+L@robh.at.kernel.org>
- <YW5t01Su5ycLm67c@gerhold.net>
- <CAL_JsqLWV56ehsT2HHpg_qCDxhWmTHgCQoKgZLot_Q8xCdF-OA@mail.gmail.com>
+        Tue, 19 Oct 2021 09:34:05 -0400
+Received: by mail-ot1-f53.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so1923209ote.8;
+        Tue, 19 Oct 2021 06:31:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U6dyuKoKqnraomZVjHNySnHy0G4MecFaWtG9OL7iF/g=;
+        b=3YMVKJa+WR1/8HWqiOksdsdTyYyuB3CqmZdYCrYn5nptGhBQgqp0BLyBpXIm4A4Gt6
+         JHobrktXBvgrtPMtrPAKvTYvRQhOudS3zveoGE65qYarLPEeEDqrE/Kz4J9Nq+JD5Qh0
+         5vpDuBF68pnbFJXwrVGFiqqr7AhtLDOxTMG42ZWk6maJtnm0b14yo5nNQF0lJ2eATEZs
+         m3/ncGMECkUDN9WUlAn6QV37o8gYdRKlMbvILAr1cHVir9TObaiu4HJMzRGLzJrHCMFC
+         JizPWaTUaGGdaeokBP0D8aswqmhkHgOsvj0uVuifuzeA+6ggeCMRmzTWd1GD3i1G0PDk
+         DWfg==
+X-Gm-Message-State: AOAM532jAa82K5/M3HNUA3JPaAFt3aBI2NWhJ90zQPyCuixg/LMuVvzj
+        B6LWiUtKqqrFFBqf9Vzn8srouOjlU/86Y7LXj/Y=
+X-Google-Smtp-Source: ABdhPJzA4KeA+we+cX9bD7GpWwMAux6IBCf3UUSiJNx5IcLvLkWmjiGrhbC/PTFmD5I/fjtqTzbSrvcJ5P2MisoO0V0=
+X-Received: by 2002:a05:6830:90b:: with SMTP id v11mr5364765ott.254.1634650312053;
+ Tue, 19 Oct 2021 06:31:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLWV56ehsT2HHpg_qCDxhWmTHgCQoKgZLot_Q8xCdF-OA@mail.gmail.com>
+References: <20211019132211.2792475-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20211019132211.2792475-1-daniel.lezcano@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 19 Oct 2021 15:31:40 +0200
+Message-ID: <CAJZ5v0hBZ9R8LO340uY62bcMJK0KKi2RkX3p_SYPrkWJ-Qd8xQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] thermal/core: Make the userspace governor deprecated
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 08:19:42AM -0500, Rob Herring wrote:
-> On Tue, Oct 19, 2021 at 2:03 AM Stephan Gerhold <stephan@gerhold.net> wrote:
-> >
-> > On Mon, Oct 18, 2021 at 03:22:25PM -0500, Rob Herring wrote:
-> > > On Mon, Oct 11, 2021 at 04:17:35PM +0200, Stephan Gerhold wrote:
-> > > > The BAM Data Multiplexer provides access to the network data channels of
-> > > > modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916 or
-> > > > MSM8974. It is built using a simple protocol layer on top of a DMA engine
-> > > > (Qualcomm BAM) and bidirectional interrupts to coordinate power control.
-> > > >
-> > > > The device tree node combines the incoming interrupt with the outgoing
-> > > > interrupts (smem-states) as well as the two DMA channels, which allows
-> > > > the BAM-DMUX driver to request all necessary resources.
-> > > >
-> > > > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > > > ---
-> > > > Changes since RFC: None.
-> > > > ---
-> > > >  .../bindings/net/qcom,bam-dmux.yaml           | 87 +++++++++++++++++++
-> > > >  1 file changed, 87 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml b/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..33e125e70cb4
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
-> > > > @@ -0,0 +1,87 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/net/qcom,bam-dmux.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Qualcomm BAM Data Multiplexer
-> > > > +
-> > > > +maintainers:
-> > > > +  - Stephan Gerhold <stephan@gerhold.net>
-> > > > +
-> > > > +description: |
-> > > > +  The BAM Data Multiplexer provides access to the network data channels
-> > > > +  of modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916
-> > > > +  or MSM8974. It is built using a simple protocol layer on top of a DMA engine
-> > > > +  (Qualcomm BAM DMA) and bidirectional interrupts to coordinate power control.
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: qcom,bam-dmux
-> > >
-> > > Is this block the same on every SoC? It needs to be SoC specific.
-> > >
-> >
-> > Hm, I think describing it as *SoC*-specific wouldn't be accurate:
-> > This node does not describe any hardware block, it's more a "firmware
-> > convention". The only hardware involved is the BAM DMA engine, which
-> > already has SoC/IP-specific compatibles in its own device tree node.
-> >
-> > This means that if anything there should be "firmware version"-specific
-> > compatibles, because one SoC might have different (typically signed)
-> > firmware versions that provide slightly different functionality.
-> > However, I have to admit that I'm not familiar enough with the different
-> > firmware versions to come up with a reasonable naming schema for the
-> > compatible. :/
-> >
-> > In general, I cannot think of any difference between different versions
-> > that would matter to a driver. The protocol is quite simple, and minor
-> > firmware differences can be better handled through the control channel
-> > that sets up the connection for the modem.
-> >
-> > Does that make sense?
-> 
-> Okay. Please add some of the above details to the binding.
-> 
+On Tue, Oct 19, 2021 at 3:22 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> The userspace governor is sending temperature when polling is active
+> and trip point crossed events. Nothing else.
+>
+> AFAICT, this governor is used with custom kernels making the userspace
+> governor co-existing with another governor on the same thermal zone
+> because there was no notification mechanism.
+>
+> The new netlink thermal notification is able to provide more
+> information than the userspace governor and give the opportunity to
+> the users of this governor to replace it by a dedicated notification
+> framework.
+>
+> The userspace governor will be removed as its usage is no longer
+> needed.
+>
+> Add a warning message to tell the userspace governor is deprecated.
+>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>  drivers/thermal/gov_user_space.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/thermal/gov_user_space.c b/drivers/thermal/gov_user_space.c
+> index 82a7198bbe71..95d6d3d6b8f7 100644
+> --- a/drivers/thermal/gov_user_space.c
+> +++ b/drivers/thermal/gov_user_space.c
+> @@ -15,6 +15,14 @@
+>
+>  #include "thermal_core.h"
+>
+> +static int user_space_bind(struct thermal_zone_device *tz)
+> +{
+> +       WARN(1, "Userspace governor deprecated: use thermal netlink "   \
+> +            "notification instead\n");
 
-OK, I will try to clarify this a bit in v3.
+This is really aggressive, because this becomes BUG() in certain
+kernel configurations.
 
-Thanks!
-Stephan
+pr_warn() should be sufficient IMO.
+
+> +
+> +       return 0;
+> +}
+> +
+>  /**
+>   * notify_user_space - Notifies user space about thermal events
+>   * @tz: thermal_zone_device
+> @@ -43,5 +51,6 @@ static int notify_user_space(struct thermal_zone_device *tz, int trip)
+>  static struct thermal_governor thermal_gov_user_space = {
+>         .name           = "user_space",
+>         .throttle       = notify_user_space,
+> +       .bind_to_tz     = user_space_bind,
+>  };
+>  THERMAL_GOVERNOR_DECLARE(thermal_gov_user_space);
+> --
