@@ -2,136 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E144D434150
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FECE434152
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhJSW0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        id S229943AbhJSW0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhJSW0Y (ORCPT
+        with ESMTP id S229890AbhJSW0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:26:24 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36D8C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:24:10 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so970526pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:24:10 -0700 (PDT)
+        Tue, 19 Oct 2021 18:26:30 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B618C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:24:17 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id om14so1015637pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:24:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=1HjkJ/s77qpPQedlx0RgSf6Pe/gtFpXgvkvC8dCGFU0=;
-        b=BxTLhk9+ebegQi7VeiuJ8gELz4u56+OXRjyqMZBoX0LqA7qfsOxJSz29PFrPQ2a5RY
-         LcxqHlpG5bSgJ3CFC57RhTH/R1HJkTDhjH7E7MLDPRTHfCwF3VUpggNElqDqkUS2LMrz
-         WrNip9ynF/P+x0QTDG0K5z9ZML7kLwU/Wcllgd4JYzKccvn0TPybqUlBx1mDIHh66jJF
-         cahqD9ok9M1Xuk1xeoHgN0qA9CMsGamHAulesB+mv/0r6Qwjtu5IdwmFHnOlMxAZ7Zge
-         8pj6oZJmyZ45JDp8Niu4HYLZB6PLDBK0UzjfbGSLG2hZeMLFKj0odEo1QVoz6EIjCDWe
-         OMuA==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7DYCUknc3dQUBnoaGeUnyUU/CuK4FgSm2oYsWvbJD5E=;
+        b=ba33n7vXoirIraKwU+JkwtO9KxLQ6aPywRIkMDrDzPTXzSRhapzDByeCLM0PAr0rKm
+         vAsZVDuWksxGPfUulEA8y14nUsrf6mN7IMNQVc0ccewhv6VJ6gv8mM/dVArwPTmVQAQM
+         yw+YYdfPHR8gYaTyH+R7PtJlIPir+cfv2J89mVEQCGGlpR2nGup3mHTZeZAG03rsmqVB
+         eyW9W0lbCChrj1bhkyGJd8Ln1F9rQurWt5kc24B9cMXANjtlvOK4eOitvh/itFg08B1j
+         BZ4GAgVTcElDI/DWXfuf4kD+zYv9qK76JsHp5fmrqkGTf6YK/D9r+jMY8uCFR36v2AC9
+         /9NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=1HjkJ/s77qpPQedlx0RgSf6Pe/gtFpXgvkvC8dCGFU0=;
-        b=fCma5iIz0VTuimXBOdqLC3x+nYR3EJLsjxdG1KJ657pl3yaEcqYk56w5EsFXjqLn70
-         yN77tXkWPGT5uY0jBwth8TIFgm5cyGNgsWaLnJQxgz9E2B3PzhQpyLIqlx73c2Li9xgu
-         Tkb5sdswtZl39Rx0fkV/Bo6F5ciF+4JmhOVO6vzZDR0WSl5JZxYK13VhcSP6vR2MtDD+
-         6QqXzDu1yoT7Gwnxxl+d6gU6VrA7r4NSwDtjKU2+xf4QmrFr3D+0XX/XAjwnbBIQ8tZW
-         SBauAjvgQAGXmzvupncgIGuzXdzQeNCavgCtThcKVJpnFkUy2q3I62eeih7zkLWzteIc
-         sBAg==
-X-Gm-Message-State: AOAM531UvAKDIk3pVqtnUhdFuQAsOd56AFjmDRz4PVVfkSaGgtCHQyXi
-        9ze71/jyFpKBjhAeD0iOtgme/w==
-X-Google-Smtp-Source: ABdhPJwLQqa9/353IjPEVTMx7skJRSXdLKW1mf1YwaUVOFV6ydmL3thqxJXuxdriUBbXxED+AQ4PcA==
-X-Received: by 2002:a17:902:7804:b0:13e:d4c6:e701 with SMTP id p4-20020a170902780400b0013ed4c6e701mr35682103pll.66.1634682250190;
-        Tue, 19 Oct 2021 15:24:10 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id z124sm227235pfb.108.2021.10.19.15.24.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7DYCUknc3dQUBnoaGeUnyUU/CuK4FgSm2oYsWvbJD5E=;
+        b=h04AsfiYSTPoOivCGFlA4scW3zZVkGUnFmgfr6f73IrhDcuVgIaSol+SjxdHzp+XE3
+         P7bAtQA9VLjOu1sOHYtuqVf+T9FJcmBfnLOSX5dLwchKiN/XFwaH7rP/+vT+k0d9bLvl
+         OmOpuzQslAUbGsGTjYKqLJL8mFdNo39gWAPBHyv+TwJ9plaobrIrZap0VL/5qSTYePS5
+         vWaV/k+giFmrKoMoBasHgBP9YTFSvwqh0CNvPG6r4nCMUdgNh9MNwyuLMzZHKI0lacsE
+         3CkQ53k6GycJ/wPyLeFaT0NYzSRAyTQSmOTYXB4pGJmPos6cL6t7Qa+M5q9ba+RnmvoQ
+         yDRA==
+X-Gm-Message-State: AOAM5329jhGVHqO0UnaffEiEwBQN06CwyA9sPph80NptQqZSFXporq7a
+        jZz1dUAtvTU1XXLJ7kV5CwXOZA==
+X-Google-Smtp-Source: ABdhPJwvxhW/BXgKa0H3kIJtuPrBi6OJ/RRAqa+whZ3cQ7SanraNICIPOafZ0qis8jqNs/OwFMjYCg==
+X-Received: by 2002:a17:90a:d48e:: with SMTP id s14mr3026552pju.49.1634682256598;
+        Tue, 19 Oct 2021 15:24:16 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z13sm217243pfq.130.2021.10.19.15.24.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 15:24:09 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Tim Bird <tbird20d@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Linux Embedded <linux-embedded@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Matt Porter <mporter@konsulko.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Tim Bird <tim.bird@sony.com>
-Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is
- obsolete
-In-Reply-To: <CAMuHMdVCrC5_AjNDJN+nwrnn=EVTfD-8ddG=FaFBBh_0UY5acQ@mail.gmail.com>
-References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
- <CA+bK7J741D=DgZMNeEC5xg9kDDSaJu19QsRunVvXkBGx1mKGnQ@mail.gmail.com>
- <YW5r61ZQx+E9xfuH@pendragon.ideasonboard.com>
- <57122a67509bebdf0d1b9f5bc15db116e0124e5d.camel@infradead.org>
- <YW6UGP10hfGJ2kYy@pendragon.ideasonboard.com>
- <CAMuHMdVCrC5_AjNDJN+nwrnn=EVTfD-8ddG=FaFBBh_0UY5acQ@mail.gmail.com>
-Date:   Tue, 19 Oct 2021 15:24:08 -0700
-Message-ID: <7hlf2oejqv.fsf@baylibre.com>
+        Tue, 19 Oct 2021 15:24:15 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 22:24:11 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 01/13] KVM: x86: Cache total page count to avoid
+ traversing the memslot array
+Message-ID: <YW9Fi128rYxiF1v3@google.com>
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+> 
+> There is no point in recalculating from scratch the total number of pages
+> in all memslots each time a memslot is created or deleted.
+> 
+> Just cache the value and update it accordingly on each such operation so
+> the code doesn't need to traverse the whole memslot array each time.
+> 
+> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> ---
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 28ef14155726..65fdf27b9423 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11609,9 +11609,23 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+>  				const struct kvm_memory_slot *new,
+>  				enum kvm_mr_change change)
+>  {
+> -	if (!kvm->arch.n_requested_mmu_pages)
+> -		kvm_mmu_change_mmu_pages(kvm,
+> -				kvm_mmu_calculate_default_mmu_pages(kvm));
+> +	if (change == KVM_MR_CREATE)
+> +		kvm->arch.n_memslots_pages += new->npages;
+> +	else if (change == KVM_MR_DELETE) {
+> +		WARN_ON(kvm->arch.n_memslots_pages < old->npages);
+> +		kvm->arch.n_memslots_pages -= old->npages;
+> +	}
+> +
+> +	if (!kvm->arch.n_requested_mmu_pages) {
 
-> On Tue, Oct 19, 2021 at 11:48 AM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
->> On Tue, Oct 19, 2021 at 10:33:10AM +0100, David Woodhouse wrote:
->> > On Tue, 2021-10-19 at 09:55 +0300, Laurent Pinchart wrote:
->> > > On Mon, Oct 18, 2021 at 03:17:22PM -0600, Tim Bird wrote:
->> > > > I think an overhaul of the "EMBEDDED LINUX" MAINTAINERS entry
->> > > > is long-overdue.
->> > > >
->> > > > No offense to any of the 3 persons listed, but I think the kernel =
-developer
->> > > > community would be better served by a group of individuals with a =
-more
->> > > > current active role in embedded linux.  I have a few names I'll
->> > > > toss out for
->> > > > candidates: Matt Porter, Kevin Hilman, Thomas Gleixner,  Thomas
->> > > > Petazonni, Laurent Pinchart, and Uwe Kleine-K=C3=B6nig (and maybe =
-even
->> > > > myself).
->> > > >
->> > > > This entry in the MAINTAINERS file is somewhat special, in that it
->> > > > covers a "field of endeavor" rather than a specific set of files or
->> > > > directories.
->> > > >
->> > > > Thoughts?
->> > >
->> > > Thank you for volunteering me :-)
->> > >
->> > > I was indeed wondering about this particular MAINTAINERS entry. As it
->> > > doesn't cover any particular set of files, directories, drivers,
->> > > subsystems or architectures, what does being listed here endeavour ?
->> >
->> > Basically nothing; I was going to suggest removing it entirely. There's
->> > certainly no point listing me there any more.
->> >
->> > Once upon a time it involved a certain amount of heckling about memory
->> > usage and "your hash table doesn't need to be that large" but that ship
->> > sailed a long time ago :)
->>
->> Heckling is still an option without a MAINTAINERS entry I suppose :-)
->
-> Don't worry, I keep on sailing ;-)
->
->> I wouldn't object if we were to remove it.
->
-> +1
->
+Hmm, once n_requested_mmu_pages is set it can't be unset.  That means this can be
+further optimized to skip avoid taking mmu_lock on flags-only changes (and
+memslot movement).  E.g.
 
-Agreed.  Let's just drop this entry.
+	if (!kvm->arch.n_requested_mmu_pages &&
+	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
 
-Kevin
+	}
+
+It's a little risky, but kvm_vm_ioctl_set_nr_mmu_pages() would need to be modified
+to allow clearing n_requested_mmu_pages and it already takes slots_lock, so IMO
+it's ok to force kvm_vm_ioctl_set_nr_mmu_pages() to recalculate pages if it wants
+to allow reverting back to the default.
+
+> +		u64 memslots_pages;
+> +		unsigned long nr_mmu_pages;
+> +
+> +		memslots_pages = kvm->arch.n_memslots_pages * KVM_PERMILLE_MMU_PAGES;
+> +		do_div(memslots_pages, 1000);
+> +		nr_mmu_pages = max_t(typeof(nr_mmu_pages),
+> +				     memslots_pages, KVM_MIN_ALLOC_MMU_PAGES);
+
+"memslots_pages" is a bit of a misnomer.  Any objection to avoiding naming problems
+by explicitly casting to an "unsigned long" and simply operating on nr_mmu_pages?
+
+		nr_mmu_pages = (unsigned long)kvm->arch.n_memslots_pages;
+		nr_mmu_pages *= (KVM_PERMILLE_MMU_PAGES / 1000);
+		nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
+		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
+
+E.g. the whole thing can be
+
+	if (!kvm->arch.n_requested_mmu_pages &&
+	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
+		unsigned long nr_mmu_pages;
+
+		if (change == KVM_MR_CREATE) {
+			kvm->arch.n_memslots_pages += new->npages;
+		} else {
+			WARN_ON(kvm->arch.n_memslots_pages < old->npages);
+			kvm->arch.n_memslots_pages -= old->npages;
+		}
+
+		nr_mmu_pages = (unsigned long)kvm->arch.n_memslots_pages;
+		nr_mmu_pages *= (KVM_PERMILLE_MMU_PAGES / 1000);
+		nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
+		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
+	}
+
+> +		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
+> +	}
+>  
+>  	kvm_mmu_slot_apply_flags(kvm, old, new, change);
+>  
