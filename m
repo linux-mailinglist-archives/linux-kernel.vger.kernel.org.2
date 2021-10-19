@@ -2,187 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17777433011
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230B1433014
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbhJSHtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:49:40 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:33482 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231187AbhJSHte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:49:34 -0400
+        id S234559AbhJSHty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234593AbhJSHtt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 03:49:49 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D943FC061749
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 00:47:36 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so1238461ott.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 00:47:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1634629642;
-  x=1666165642;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=3iS2Wp/ND5XNFRfvGFe/o/oh4xpyxMXQnejsY854Ups=;
-  b=jX8In9j22t4rO3NTIoV9nIcSFCiJmYslYBhYHze/3IxZjOHLrpw7CrdT
-   YsnLbUU1NOxSgapFL1WznGcF3JkVe6l2rA2IcxhuPpL9C+jhSZoTqb2jR
-   zFU5zlscOoxJLF/MeqBBLxmqWMPE/ZqdUfUhKHUwPwF0xDXY4+5GuTIma
-   ZeDJNYe5/r26DohYUTQgGvNwLRMiDqtW8qOlWz13ToKwJyHKgnB7O1pnr
-   p9FoFz4xzHi9lcBCxPAXh3bFHkXt/hwe9fEQEP1DjH9sXP2nqED8H9MPh
-   2C8Vf1LlyRgOTnh4Or7PbmYQ6Xp+CjLCKofIfkERwx8M2WmrmuiCingyO
-   A==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     <wsa@kernel.org>, <jie.deng@intel.com>, <viresh.kumar@linaro.org>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: [PATCH 2/2] i2c: virtio: fix completion handling
-Date:   Tue, 19 Oct 2021 09:46:47 +0200
-Message-ID: <20211019074647.19061-3-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20211019074647.19061-1-vincent.whitchurch@axis.com>
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZIp5y20MTLUX/wuWPcFL6uTZh+zoI77h3dAGydOu8xA=;
+        b=vXlzQB/zVj1oGRzM8bgVZ+LNTlaXx1CvSlpO+BKpQ5Y4HQTaEskLg6uWtWVjSI14sA
+         oZeOhP92ZHJZhcXhErorWBi40nkLKqIrcE0TGEjZYGF6am1axjqTEsIoXU6s6yS9k5+C
+         PKvlKqY2VzlmlO4xwpN/kN+4MK1G9/JLrj9u+W1JhgGT0HfGATk1w7dv3OSdOHWyFAJX
+         jRy9cWr6kJvBv+oPth5B02OJLPLYCf6ttgAahLRbxvXfkAQWuElYo4hBMRGh4jkgIdra
+         tc4K3myjL9wPCahlREXnLUj2Zz10Xn9+yggi91pdq9MJ1Quc1zXUplxbtTE5XItnd3KW
+         Vgpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZIp5y20MTLUX/wuWPcFL6uTZh+zoI77h3dAGydOu8xA=;
+        b=MXyt50qbthhCdcvMqaHGllaN66V+GmaQ4KaLk9b9CH24Yy8LjZFHqttidQTrXdkz+i
+         5vGUr2iEs+p0MRUSMrbMjFN4l3kq/gGKnX3npigOJZC2501RYTGLFBVgZZMYkC8mjMfV
+         vqa7BvJWvZEmnmC3UzB8bvwKugbNWNaslFxwKTriSdJFPrU4zup98WMQ8+6pqqJhyEmV
+         ee5Gz1ffEvNiseTxlaFbCsPr+PZZekEVJeyc2d5XBLPuxX8cZsc6DU7aYRyN+NUmq0XA
+         XmvNBFHPzN/7plbtiaMwxhkHx/Z1NZRYeVfMcVmMn34YKvyUT54AIPS/yIi24Tjv3vQ5
+         KXww==
+X-Gm-Message-State: AOAM532hzLNMhs0LU914a9rFhxul+rvViDCfxsrLPMJuz2WuGmCpncg1
+        5EiaKY9JwF0OhyMrq6qk07cWs0jCCg1DUJVnmmwJrA==
+X-Google-Smtp-Source: ABdhPJyF3q5Fyl4/SI7GH3gFF++NnJe0H55v5pAfYvt6+j+25IMh4X0/XM/iuG+o9YjZDMencCp3S5/FdqYg4PKEJCQ=
+X-Received: by 2002:a05:6830:4011:: with SMTP id h17mr4042422ots.208.1634629656070;
+ Tue, 19 Oct 2021 00:47:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20211018143033.725101193@linuxfoundation.org>
+In-Reply-To: <20211018143033.725101193@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 19 Oct 2021 13:17:23 +0530
+Message-ID: <CA+G9fYsQpWaxEij6cAnvthCBpk9YC-wGtJE9Kd1b+=2p0532XA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/49] 4.19.213-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver currently assumes that the notify callback is only received
-when the device is done with all the queued buffers.
+On Mon, 18 Oct 2021 at 20:01, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.213 release.
+> There are 49 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 20 Oct 2021 14:30:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.213-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-However, this is not true, since the notify callback could be called
-without any of the queued buffers being completed (for example, with
-virtio-pci and shared interrupts) or with only some of the buffers being
-completed (since the driver makes them available to the device in
-multiple separate virtqueue_add_sgs() calls).
 
-This can lead to incorrect data on the I2C bus or memory corruption in
-the guest if the device operates on buffers which are have been freed by
-the driver.  (The WARN_ON in the driver is also triggered.)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
- BUG kmalloc-128 (Tainted: G        W        ): Poison overwritten
- First byte 0x0 instead of 0x6b
- Allocated in i2cdev_ioctl_rdwr+0x9d/0x1de age=243 cpu=0 pid=28
- 	memdup_user+0x2e/0xbd
- 	i2cdev_ioctl_rdwr+0x9d/0x1de
- 	i2cdev_ioctl+0x247/0x2ed
- 	vfs_ioctl+0x21/0x30
- 	sys_ioctl+0xb18/0xb41
- Freed in i2cdev_ioctl_rdwr+0x1bb/0x1de age=68 cpu=0 pid=28
- 	kfree+0x1bd/0x1cc
- 	i2cdev_ioctl_rdwr+0x1bb/0x1de
- 	i2cdev_ioctl+0x247/0x2ed
- 	vfs_ioctl+0x21/0x30
- 	sys_ioctl+0xb18/0xb41
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Fix this by calling virtio_get_buf() from the notify handler like other
-virtio drivers and by actually waiting for all the buffers to be
-completed.
+## Build
+* kernel: 4.19.213-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.19.y
+* git commit: 30fdb0bbff04f8d763c2252764a13735ce7a6641
+* git describe: v4.19.211-63-g30fdb0bbff04
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.211-63-g30fdb0bbff04
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/i2c/busses/i2c-virtio.c | 34 +++++++++++++++------------------
- 1 file changed, 15 insertions(+), 19 deletions(-)
+## No regressions (compared to v4.19.212-51-g6332251ed7a3)
 
-diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-index 7b2474e6876f..2d3ae8e238ec 100644
---- a/drivers/i2c/busses/i2c-virtio.c
-+++ b/drivers/i2c/busses/i2c-virtio.c
-@@ -22,24 +22,24 @@
- /**
-  * struct virtio_i2c - virtio I2C data
-  * @vdev: virtio device for this controller
-- * @completion: completion of virtio I2C message
-  * @adap: I2C adapter for this controller
-  * @vq: the virtio virtqueue for communication
-  */
- struct virtio_i2c {
- 	struct virtio_device *vdev;
--	struct completion completion;
- 	struct i2c_adapter adap;
- 	struct virtqueue *vq;
- };
- 
- /**
-  * struct virtio_i2c_req - the virtio I2C request structure
-+ * @completion: completion of virtio I2C message
-  * @out_hdr: the OUT header of the virtio I2C message
-  * @buf: the buffer into which data is read, or from which it's written
-  * @in_hdr: the IN header of the virtio I2C message
-  */
- struct virtio_i2c_req {
-+	struct completion completion;
- 	struct virtio_i2c_out_hdr out_hdr	____cacheline_aligned;
- 	uint8_t *buf				____cacheline_aligned;
- 	struct virtio_i2c_in_hdr in_hdr		____cacheline_aligned;
-@@ -47,9 +47,11 @@ struct virtio_i2c_req {
- 
- static void virtio_i2c_msg_done(struct virtqueue *vq)
- {
--	struct virtio_i2c *vi = vq->vdev->priv;
-+	struct virtio_i2c_req *req;
-+	unsigned int len;
- 
--	complete(&vi->completion);
-+	while ((req = virtqueue_get_buf(vq, &len)))
-+		complete(&req->completion);
- }
- 
- static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
-@@ -69,6 +71,8 @@ static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
- 		if (!msgs[i].len)
- 			break;
- 
-+		init_completion(&reqs[i].completion);
-+
- 		/*
- 		 * Only 7-bit mode supported for this moment. For the address
- 		 * format, Please check the Virtio I2C Specification.
-@@ -108,21 +112,13 @@ static int virtio_i2c_complete_reqs(struct virtqueue *vq,
- 				    struct virtio_i2c_req *reqs,
- 				    struct i2c_msg *msgs, int num)
- {
--	struct virtio_i2c_req *req;
- 	bool failed = false;
--	unsigned int len;
- 	int i, j = 0;
- 
- 	for (i = 0; i < num; i++) {
--		/* Detach the ith request from the vq */
--		req = virtqueue_get_buf(vq, &len);
-+		struct virtio_i2c_req *req = &reqs[i];
- 
--		/*
--		 * Condition req == &reqs[i] should always meet since we have
--		 * total num requests in the vq. reqs[i] can never be NULL here.
--		 */
--		if (!failed && (WARN_ON(req != &reqs[i]) ||
--				req->in_hdr.status != VIRTIO_I2C_MSG_OK))
-+		if (!failed && req->in_hdr.status != VIRTIO_I2C_MSG_OK)
- 			failed = true;
- 
- 		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
-@@ -158,11 +154,13 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
- 	 * remote here to clear the virtqueue, so we can try another set of
- 	 * messages later on.
- 	 */
--
--	reinit_completion(&vi->completion);
- 	virtqueue_kick(vq);
- 
--	wait_for_completion(&vi->completion);
-+	/*
-+	 * We only need to wait for the last one since the device is required
-+	 * to complete requests in order.
-+	 */
-+	wait_for_completion(&reqs[count - 1].completion);
- 
- 	count = virtio_i2c_complete_reqs(vq, reqs, msgs, count);
- 
-@@ -211,8 +209,6 @@ static int virtio_i2c_probe(struct virtio_device *vdev)
- 	vdev->priv = vi;
- 	vi->vdev = vdev;
- 
--	init_completion(&vi->completion);
--
- 	ret = virtio_i2c_setup_vqs(vi);
- 	if (ret)
- 		return ret;
--- 
-2.28.0
+## No fixes (compared to v4.19.212-51-g6332251ed7a3)
 
+## Test result summary
+total: 81108, pass: 66428, fail: 530, skip: 12173, xfail: 1977
+
+## Build Summary
+* arm: 129 total, 129 passed, 0 failed
+* arm64: 37 total, 37 passed, 0 failed
+* i386: 17 total, 17 passed, 0 failed
+* mips: 29 total, 29 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x86_64: 21 total, 21 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
