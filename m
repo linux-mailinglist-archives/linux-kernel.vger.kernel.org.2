@@ -2,52 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED0F433A2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B880C433A35
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhJSPXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:23:45 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:46846 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233680AbhJSPXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:23:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Lp6ro8uTR1sPkKxnmENA4j6VSdZ6TN9ht8xh5ZFZnjg=; b=Kv02nsYVHVc69P0oe7XmcD2J6g
-        yJGR8F7hy51rFq0/s44KCmhovdVjb8+xy9GW4sp3pUu1nBSEat3M1d41U4SrVi5E+o8fl3iFldkx4
-        J31YB0Np+SpBGe0hwJHc41pLuwWLYMtusOSVj5WaRIZJZMReVRQr/OuzKKd/SC4676cA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mcqvc-00B5Zx-MH; Tue, 19 Oct 2021 17:21:24 +0200
-Date:   Tue, 19 Oct 2021 17:21:24 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Erik Ekman <erik@kryo.se>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sfc: Fix reading non-legacy supported link modes
-Message-ID: <YW7idC0/+zq6dDNv@lunn.ch>
-References: <20211017171657.85724-1-erik@kryo.se>
+        id S233803AbhJSPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233046AbhJSPZS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:25:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55740C06161C;
+        Tue, 19 Oct 2021 08:23:05 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 15:23:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634656983;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8oIhw1V+D9EWudXItX59MZmRyRriR+/LqVGZE2btCEk=;
+        b=KDp7Ot57iWyu9oJP8p2yUF3XhhbdtxeVcHu4vdhfdZnwA4TcQZzO1DLTGxhM1uDOmOwL7P
+        +VeFYiOfsDLUaRCAhgYsJdwNfYfxVd+P4f2zGbYFqKZt2kXXusNzpStRBXKi7tUQZ1xNmO
+        ZPo3lXRlPy/b7/Qa1+YVX4eNSi6jqgCA9h/q7ZdlXhBB0XoM9veh5uE09BTbFq2LdXDftf
+        xw36QHEAhh3L7jNWZ8fthEg7rGxhcCAdVQ0RFjJLViUlXzleyIiRoU6KSVkuVwq+5QK2EC
+        +RlND0/j5cSey03MhA+3gqydI3XKPzy3y2ciHHRedeWNzYF5/ottk5IMsyAGxA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634656983;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8oIhw1V+D9EWudXItX59MZmRyRriR+/LqVGZE2btCEk=;
+        b=JIZf0/YMxkJBwFI2r/+7QriKKyGmbqHVueO0reofx3ZaBmd4oUyDIG75FSAM5/4aQJF/S0
+        RtnxQDkP7WFTa8AA==
+From:   "tip-bot2 for Woody Lin" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/scs: Reset the shadow stack when idle_task_exit
+Cc:     Woody Lin <woodylin@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20211012083521.973587-1-woodylin@google.com>
+References: <20211012083521.973587-1-woodylin@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211017171657.85724-1-erik@kryo.se>
+Message-ID: <163465698182.25758.5265949885721821003.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 07:16:57PM +0200, Erik Ekman wrote:
-> Everything except the first 32 bits was lost when the pause flags were
-> added. This makes the 50000baseCR2 mode flag (bit 34) not appear.
-> 
-> I have tested this with a 10G card (SFN5122F-R7) by modifying it to
-> return a non-legacy link mode (10000baseCR).
+The following commit has been merged into the sched/urgent branch of tip:
 
-Does this need a Fixes: tag? Should it be added to stable?
+Commit-ID:     45dfb89b8f96643268449c25d7025b17de46717c
+Gitweb:        https://git.kernel.org/tip/45dfb89b8f96643268449c25d7025b17de46717c
+Author:        Woody Lin <woodylin@google.com>
+AuthorDate:    Tue, 12 Oct 2021 16:35:21 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Mon, 18 Oct 2021 16:58:41 +02:00
 
-     Andrew
+sched/scs: Reset the shadow stack when idle_task_exit
+
+There was a 'init_idle' that resets scs sp to base, but is removed by
+f1a0a376ca0c. Without the resetting, the hot-plugging implemented by
+cpu_psci_cpu_boot will use the previous scs sp as new base when starting
+up a CPU core, so the usage on scs page is being stacked up until
+overflow.
+
+This only happens on idle task since __cpu_up is using idle task as the
+main thread to start up a CPU core, so the overflow can be fixed by
+resetting scs sp to base in 'idle_task_exit'.
+
+Fixes: f1a0a376ca0c ("sched/core: Initialize the idle task with preemption disabled")
+Signed-off-by: Woody Lin <woodylin@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lore.kernel.org/r/20211012083521.973587-1-woodylin@google.com
+---
+ kernel/sched/core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 1bba412..f21714e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8795,6 +8795,7 @@ void idle_task_exit(void)
+ 		finish_arch_post_lock_switch();
+ 	}
+ 
++	scs_task_reset(current);
+ 	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+ }
+ 
