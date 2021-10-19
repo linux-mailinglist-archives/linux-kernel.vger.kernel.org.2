@@ -2,290 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455B4432BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 04:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F5F432BC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 04:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhJSCZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 22:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        id S230311AbhJSCaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 22:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhJSCZe (ORCPT
+        with ESMTP id S229663AbhJSCai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 22:25:34 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4E3C06161C;
-        Mon, 18 Oct 2021 19:23:22 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id lk8-20020a17090b33c800b001a0a284fcc2so855654pjb.2;
-        Mon, 18 Oct 2021 19:23:22 -0700 (PDT)
+        Mon, 18 Oct 2021 22:30:38 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118DEC06161C;
+        Mon, 18 Oct 2021 19:28:26 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id e144so18670088iof.3;
+        Mon, 18 Oct 2021 19:28:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w/5ympYvhaN2axaHCFvNwG3dKfShNuC/zGFJZLprG+k=;
-        b=SHGeA8+clXrQJL+NCOSUmjtpoXaBosuoxzhsvEXid71kNNC+GcBcEFpgmj71btzpHQ
-         44HJzeubCVBWxHCu9xivnwy1dpiyd5rLVvdibycVkpQu+402a1hhN5QwAKCCnU7eMnkH
-         TEtaR3Tg9MkUKnp7MdS3XlYzKdlMccWBezNbJFuH5aTenywfdmZBjWcJp4B6HdqqTpQS
-         zMS6fyXvztHcH3hpVgrEbHGI+wyX3nQsuNZEFyWS27n7IYziqmKO34re9er4d0DCbwyc
-         4mqCxSeISMXGDb76n9QsRvTyztnhhl3zs+rIkjhiYoiwj1X+08rI6CtSqq5enIu1a906
-         6+nw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MYTy8qhFIbvvo8k/hrkOVgzbZyPvP4OJ7aoxYjQBFn8=;
+        b=PVu2oSy/RAVs6uQUP1My29HbWLJJi/TeANy9CRMEgehcJRhZTQ0JPEJVLvxrThf54a
+         VHmQKOOGj2NrNEAMQYHJciq8KxdosodPNpu5vHgdZWECrFUzOywjmoXKvBYrCuZHlAn9
+         J5YiW1IIWt1K65YT2fEpvGQwAL25gnmKAfoNIFF0MpuItSB4/14or+Bv/0fl6AqjeP4l
+         dv73hM2+EBZT4/CJM64xlPYc9XLxGYYUVePvM2pbZDty3wbTWf9zFO1YTcmqZ4bs/vLp
+         mWro741NqtulTli3cIU/+Ti1DDMiXPrAl63InQrBsT9mobiMjCJhNzlUSROpapEVOOdJ
+         S7Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w/5ympYvhaN2axaHCFvNwG3dKfShNuC/zGFJZLprG+k=;
-        b=xuNedo3Zp17hTtT7JcsuRvWV2aAad3NnYE8N5Ie9Jz/jmfukSL8auduphfAcXE57n5
-         0csDyewmSwknKrCK+7KRuwG3UZkDqsA01AkcjOnXXiR7AaioezAJI03+WEt4f+Dhw5Ws
-         Or9HN5sDtDtYVaMf3CkSrd30hUB3YrrVs+dosTv8ZxTsTomM0Z2takJUDOFCa/u6ZQdw
-         RCDEyO+HZ7sxvBz9FhL3hEo7OJvfNuaiDvbSRSdGBLIVsTP7HqWisremr4tlyLYlGAhE
-         KZYSk6UXyOc0Ix4TddL7y9p1ssriajQZQdCgHs7ukI00Zt4B7WJuqVBglP6sgzgjbsJR
-         I9ZA==
-X-Gm-Message-State: AOAM53181PxLIV2PENNIeS/tXOeNp1NPLchx604cx4hy948UkNzS/Mcd
-        oJL3I/PKPOjHomY1tCbH1gxkft/F8UQ=
-X-Google-Smtp-Source: ABdhPJxIW7SvUXHBYY3sELLyC7TDVKb4xUjvhQtAaAX5rx8jr6NVpsr9aTlQVNP+o/mNvti+h799lg==
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id c6-20020a170902724600b00138a6ed66ccmr31746920pll.22.1634610201926;
-        Mon, 18 Oct 2021 19:23:21 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id gm14sm707678pjb.40.2021.10.18.19.23.20
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MYTy8qhFIbvvo8k/hrkOVgzbZyPvP4OJ7aoxYjQBFn8=;
+        b=YXR/H+gvTcNLhnT1UlrkMdCryZMlrog1VQjco6fcZo0HuZ5fNO9YPfpU/UzrI1r2/5
+         wcBJvwIWZF9zNCRDl1nt18wZ357C5dcG1pW0H4YH8hJvBWZ6D8m+ItxGqsbrfVW6F0wj
+         jDAmRWh6FcANkyLZ6HjFr0XFx73kxkOtMl7UnHYjtk3si0zFS1VSlGNVnKltYfaJzbMH
+         VpnTlUSxTN4Zw3athy5HBGZRDOSy72FJa6TSeIPqpdMmojJB0+b+iFVOsAPcHEN4fphS
+         EWW0fGifUGNDthYaQ6IwANGF1lB8kieziPw1Ej1ZWQ8pOYwMh1oRa0Uqyr8l0y8uqPK2
+         k5jA==
+X-Gm-Message-State: AOAM531RtxJMcvyye8js8+aE9EZxgPSvpX55PI7zRKH5GsSbaFN+B80u
+        OvOcm6gHlUuy98gIHmxvdwM=
+X-Google-Smtp-Source: ABdhPJwvPv2pN1MPnRzQKXUrjBbIjVusvKIV66N5vHPdtwSU+54TIhe2N2JtP+vtUataKmuWYMk2Jg==
+X-Received: by 2002:a05:6638:1924:: with SMTP id p36mr2281425jal.142.1634610505273;
+        Mon, 18 Oct 2021 19:28:25 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id t12sm7653286ilp.43.2021.10.18.19.28.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 19:23:21 -0700 (PDT)
-From:   Ye Guojin <cgel.zte@gmail.com>
-X-Google-Original-From: Ye Guojin <ye.guojin@zte.com.cn>
-To:     jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zealci@zte.com.cn,
-        ye.guojin@zte.com.cn
-Subject: [PATCH] scsi: fixup coccinelle warnings
-Date:   Tue, 19 Oct 2021 02:22:52 +0000
-Message-Id: <20211019022252.971916-1-ye.guojin@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 18 Oct 2021 19:28:24 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E50E527C0054;
+        Mon, 18 Oct 2021 22:28:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 18 Oct 2021 22:28:22 -0400
+X-ME-Sender: <xms:Ri1uYTzyKM6MFOR8dd-quACnmPxfbDpWA2APnQr_2Pdqjza8i-cdWQ>
+    <xme:Ri1uYbQnVzDMowI3MWOJ3DBYj3xk7JwztVd_V3FK3CckyYD3VkAPompZKvj9PUDY3
+    6cuC9PjE3ugtKBagw>
+X-ME-Received: <xmr:Ri1uYdX3F4xZDFSUx_ngmZWMbMPw69uBPE4b_vr1voPMTT0QzTNhYO4ZUx4ejw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvuddgheejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvg
+    hnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhephfelledtkeeliedtgedt
+    gfdtjeejgeelgfeltdevkeegueehvddtgfeutefhfffgnecuffhomhgrihhnpehlihhvvg
+    hjohhurhhnrghlrdgtohhmpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthh
+    hpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhn
+    rdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:Ri1uYdhPHaKJR7BHujYqQnIVxLtEupoy7ARRUxaD7ltI5I51kpl7CA>
+    <xmx:Ri1uYVDTmoMUZD-rLjzERmdkkBnJwbck6zApBuhC7mi2vHOPBL9Ndg>
+    <xmx:Ri1uYWJ1bNFgVKuUJ6-IEkkE76gq7XPwZiIwYVWbzxGkBzHG9bkZtg>
+    <xmx:Ri1uYdy6RLDWzQdoo7IJODJtoB9C0gQLvX0ZRE-rQMq8PjYxGxzKdujvVpA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Oct 2021 22:28:22 -0400 (EDT)
+Date:   Tue, 19 Oct 2021 10:28:04 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: Another possible use for LKMM, or a subset (strengthening)
+ thereof
+Message-ID: <YW4tNHz42/EbAdHM@boqun-archlinux>
+References: <20211007205621.GA584182@paulmck-ThinkPad-P17-Gen-1>
+ <20211018225313.GA855976@paulmck-ThinkPad-P17-Gen-1>
+ <YW4Jsw2y4BWTH5YS@boqun-archlinux>
+ <20211019000729.GY880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019000729.GY880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
-WARNING  use scnprintf or sprintf
+On Mon, Oct 18, 2021 at 05:07:29PM -0700, Paul E. McKenney wrote:
+> On Tue, Oct 19, 2021 at 07:56:35AM +0800, Boqun Feng wrote:
+> > Hi Paul,
+> > 
+> > On Mon, Oct 18, 2021 at 03:53:13PM -0700, Paul E. McKenney wrote:
+> > > On Thu, Oct 07, 2021 at 01:56:21PM -0700, Paul E. McKenney wrote:
+> > > > Hello!
+> > > > 
+> > > > On the perhaps unlikely chance that this is new news of interest...
+> > > > 
+> > > > I have finally prototyped the full "So You Want to Rust the Linux
+> > > > Kernel?" series (as in marked "under construction").
+> > > > 
+> > > > https://paulmck.livejournal.com/62436.html
+> > > 
+> > > And this blog series is now proclaimed to be feature complete.
+> > > 
+> > > Recommendations (both short- and long-term) may be found in the last post,
+> > > "TL;DR: Memory-Model Recommendations for Rusting the Linux Kernel",
+> > > at https://paulmck.livejournal.com/65341.html.
+> > 
+> > Thanks for putting this together! For the short-term recommendations, I
+> > think one practical goal would be having the equivalent (or stronger)
+> > litmus tests in Rust for the ones in tools/memory-model/litmus-tests.
+> > The translation of litmus tests may be trivial, but it at least ensure
+> > us that Rust can support the existing patterns widely used in Linux
+> > kernel. Of course, the Rust litmus tests don't have to be able to run
+> > with herd, we just need some code snippest to check our understanding of
+> > Rust memory model. ;-)
+> 
+> It would be very helpful for klitmus to be able to check Rust-code memory
+> ordering, now that you mention it!  This would be useful (for example)
+> to test the Rust wrappers on weakly ordered systems, such as ARM's.
+> 
 
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+Right.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
----
- drivers/scsi/scsi_sysfs.c | 50 +++++++++++++++++++--------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+> > Besides, it's interesting to how things react with each if one function
+> > in the litmus test is in Rust and the other is in C ;-) Maybe this is a
+> > long-term goal.
+> > 
+> > Thoughts?
+> 
+> These issues are quite important.  How do you feel that they should be
+> tracked?
+> 
 
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index a35841b34bfd..69885999ec5f 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -163,7 +163,7 @@ show_##name (struct device *dev, struct device_attribute *attr, 	\
- 	     char *buf)							\
- {									\
- 	struct Scsi_Host *shost = class_to_shost(dev);			\
--	return snprintf (buf, 20, format_string, shost->field);		\
-+	return sysfs_emit(buf, format_string, shost->field);		\
- }
- 
- /*
-@@ -228,7 +228,7 @@ show_shost_state(struct device *dev, struct device_attribute *attr, char *buf)
- 	if (!name)
- 		return -EINVAL;
- 
--	return snprintf(buf, 20, "%s\n", name);
-+	return sysfs_emit(buf, "%s\n", name);
- }
- 
- /* DEVICE_ATTR(state) clashes with dev_attr_state for sdev */
-@@ -274,7 +274,7 @@ show_shost_active_mode(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 
- 	if (shost->active_mode == MODE_UNKNOWN)
--		return snprintf(buf, 20, "unknown\n");
-+		return sysfs_emit(buf, "unknown\n");
- 	else
- 		return show_shost_mode(shost->active_mode, buf);
- }
-@@ -324,8 +324,8 @@ show_shost_eh_deadline(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 
- 	if (shost->eh_deadline == -1)
--		return snprintf(buf, strlen("off") + 2, "off\n");
--	return sprintf(buf, "%u\n", shost->eh_deadline / HZ);
-+		return sysfs_emit(buf, "off\n");
-+	return sysfs_emit(buf, "%u\n", shost->eh_deadline / HZ);
- }
- 
- static ssize_t
-@@ -382,14 +382,14 @@ static ssize_t
- show_host_busy(struct device *dev, struct device_attribute *attr, char *buf)
- {
- 	struct Scsi_Host *shost = class_to_shost(dev);
--	return snprintf(buf, 20, "%d\n", scsi_host_busy(shost));
-+	return sysfs_emit(buf, "%d\n", scsi_host_busy(shost));
- }
- static DEVICE_ATTR(host_busy, S_IRUGO, show_host_busy, NULL);
- 
- static ssize_t
- show_use_blk_mq(struct device *dev, struct device_attribute *attr, char *buf)
- {
--	return sprintf(buf, "1\n");
-+	return sysfs_emit(buf, "1\n");
- }
- static DEVICE_ATTR(use_blk_mq, S_IRUGO, show_use_blk_mq, NULL);
- 
-@@ -399,7 +399,7 @@ show_nr_hw_queues(struct device *dev, struct device_attribute *attr, char *buf)
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct blk_mq_tag_set *tag_set = &shost->tag_set;
- 
--	return snprintf(buf, 20, "%d\n", tag_set->nr_hw_queues);
-+	return sysfs_emit(buf, "%d\n", tag_set->nr_hw_queues);
- }
- static DEVICE_ATTR(nr_hw_queues, S_IRUGO, show_nr_hw_queues, NULL);
- 
-@@ -593,7 +593,7 @@ sdev_show_##field (struct device *dev, struct device_attribute *attr,	\
- {									\
- 	struct scsi_device *sdev;					\
- 	sdev = to_scsi_device(dev);					\
--	return snprintf (buf, 20, format_string, sdev->field);		\
-+	return sysfs_emit(buf, format_string, sdev->field);		\
- }									\
- 
- /*
-@@ -680,7 +680,7 @@ sdev_show_device_busy(struct device *dev, struct device_attribute *attr,
- 		char *buf)
- {
- 	struct scsi_device *sdev = to_scsi_device(dev);
--	return snprintf(buf, 20, "%d\n", scsi_device_busy(sdev));
-+	return sysfs_emit(buf, "%d\n", scsi_device_busy(sdev));
- }
- static DEVICE_ATTR(device_busy, S_IRUGO, sdev_show_device_busy, NULL);
- 
-@@ -689,7 +689,7 @@ sdev_show_device_blocked(struct device *dev, struct device_attribute *attr,
- 		char *buf)
- {
- 	struct scsi_device *sdev = to_scsi_device(dev);
--	return snprintf(buf, 20, "%d\n", atomic_read(&sdev->device_blocked));
-+	return sysfs_emit(buf, "%d\n", atomic_read(&sdev->device_blocked));
- }
- static DEVICE_ATTR(device_blocked, S_IRUGO, sdev_show_device_blocked, NULL);
- 
-@@ -701,7 +701,7 @@ sdev_show_timeout (struct device *dev, struct device_attribute *attr, char *buf)
- {
- 	struct scsi_device *sdev;
- 	sdev = to_scsi_device(dev);
--	return snprintf(buf, 20, "%d\n", sdev->request_queue->rq_timeout / HZ);
-+	return sysfs_emit(buf, "%d\n", sdev->request_queue->rq_timeout / HZ);
- }
- 
- static ssize_t
-@@ -722,7 +722,7 @@ sdev_show_eh_timeout(struct device *dev, struct device_attribute *attr, char *bu
- {
- 	struct scsi_device *sdev;
- 	sdev = to_scsi_device(dev);
--	return snprintf(buf, 20, "%u\n", sdev->eh_timeout / HZ);
-+	return sysfs_emit(buf, "%u\n", sdev->eh_timeout / HZ);
- }
- 
- static ssize_t
-@@ -842,7 +842,7 @@ show_state_field(struct device *dev, struct device_attribute *attr, char *buf)
- 	if (!name)
- 		return -EINVAL;
- 
--	return snprintf(buf, 20, "%s\n", name);
-+	return sysfs_emit(buf, "%s\n", name);
- }
- 
- static DEVICE_ATTR(state, S_IRUGO | S_IWUSR, show_state_field, store_state_field);
-@@ -857,7 +857,7 @@ show_queue_type_field(struct device *dev, struct device_attribute *attr,
- 	if (sdev->simple_tags)
- 		name = "simple";
- 
--	return snprintf(buf, 20, "%s\n", name);
-+	return sysfs_emit(buf, "%s\n", name);
- }
- 
- static ssize_t
-@@ -934,7 +934,7 @@ static ssize_t
- show_iostat_counterbits(struct device *dev, struct device_attribute *attr,
- 			char *buf)
- {
--	return snprintf(buf, 20, "%d\n", (int)sizeof(atomic_t) * 8);
-+	return sysfs_emit(buf, "%d\n", (int)sizeof(atomic_t) * 8);
- }
- 
- static DEVICE_ATTR(iocounterbits, S_IRUGO, show_iostat_counterbits, NULL);
-@@ -946,7 +946,7 @@ show_iostat_##field(struct device *dev, struct device_attribute *attr,	\
- {									\
- 	struct scsi_device *sdev = to_scsi_device(dev);			\
- 	unsigned long long count = atomic_read(&sdev->field);		\
--	return snprintf(buf, 20, "0x%llx\n", count);			\
-+	return sysfs_emit(buf, "0x%llx\n", count);			\
- }									\
- static DEVICE_ATTR(field, S_IRUGO, show_iostat_##field, NULL)
- 
-@@ -959,7 +959,7 @@ sdev_show_modalias(struct device *dev, struct device_attribute *attr, char *buf)
- {
- 	struct scsi_device *sdev;
- 	sdev = to_scsi_device(dev);
--	return snprintf (buf, 20, SCSI_DEVICE_MODALIAS_FMT "\n", sdev->type);
-+	return sysfs_emit(buf, SCSI_DEVICE_MODALIAS_FMT "\n", sdev->type);
- }
- static DEVICE_ATTR(modalias, S_IRUGO, sdev_show_modalias, NULL);
- 
-@@ -970,7 +970,7 @@ sdev_show_evt_##name(struct device *dev, struct device_attribute *attr,	\
- {									\
- 	struct scsi_device *sdev = to_scsi_device(dev);			\
- 	int val = test_bit(SDEV_EVT_##Cap_name, sdev->supported_events);\
--	return snprintf(buf, 20, "%d\n", val);				\
-+	return sysfs_emit(buf, "%d\n", val);				\
- }
- 
- #define DECLARE_EVT_STORE(name, Cap_name)				\
-@@ -1092,9 +1092,9 @@ sdev_show_dh_state(struct device *dev, struct device_attribute *attr,
- 	struct scsi_device *sdev = to_scsi_device(dev);
- 
- 	if (!sdev->handler)
--		return snprintf(buf, 20, "detached\n");
-+		return sysfs_emit(buf, "detached\n");
- 
--	return snprintf(buf, 20, "%s\n", sdev->handler->name);
-+	return sysfs_emit(buf, "%s\n", sdev->handler->name);
- }
- 
- static ssize_t
-@@ -1152,7 +1152,7 @@ sdev_show_access_state(struct device *dev,
- 	access_state = (sdev->access_state & SCSI_ACCESS_STATE_MASK);
- 	access_state_name = scsi_access_state_name(access_state);
- 
--	return sprintf(buf, "%s\n",
-+	return sysfs_emit(buf, "%s\n",
- 		       access_state_name ? access_state_name : "unknown");
- }
- static DEVICE_ATTR(access_state, S_IRUGO, sdev_show_access_state, NULL);
-@@ -1168,9 +1168,9 @@ sdev_show_preferred_path(struct device *dev,
- 		return -EINVAL;
- 
- 	if (sdev->access_state & SCSI_ACCESS_STATE_PREFERRED)
--		return sprintf(buf, "1\n");
-+		return sysfs_emit(buf, "1\n");
- 	else
--		return sprintf(buf, "0\n");
-+		return sysfs_emit(buf, "0\n");
- }
- static DEVICE_ATTR(preferred_path, S_IRUGO, sdev_show_preferred_path, NULL);
- #endif
-@@ -1182,7 +1182,7 @@ sdev_show_queue_ramp_up_period(struct device *dev,
- {
- 	struct scsi_device *sdev;
- 	sdev = to_scsi_device(dev);
--	return snprintf(buf, 20, "%u\n",
-+	return sysfs_emit(buf, "%u\n",
- 			jiffies_to_msecs(sdev->queue_ramp_up_period));
- }
- 
--- 
-2.25.1
+Yep, it's already in my list. I created a small repo to track all issues
+I know about LKMM for Rust:
 
+	https://github.com/fbq/lkmm-for-rust
 
+It's still under construction, but I put the litmus test thing in that
+list.
+
+Regards,
+Boqun
+
+> 							Thanx, Paul
