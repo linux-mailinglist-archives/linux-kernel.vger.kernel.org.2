@@ -2,111 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD174334D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8415F4334CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbhJSLjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbhJSLji (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:39:38 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5B7C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:25 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id t9so6806500lfd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CwfDNTxztsaFFsnMzgXIH5wS3ZyzclKxra1KT8MNpgQ=;
-        b=Djlw03UNXO1XUB5rvTWozOrTXI61Rd2t0/E0T3eVHz5A8+A+LdKVUkFga+7BShD5RF
-         hE6Ghz7dGz6XUAqj0UTOE8KKqUR+60Jg0PmdsA/NAi87fldmewCRm34XhEmbIPqR7GWb
-         w1Z42F1t/SSUAtkq2JVqkjsYGJ5kgQiMHCaElfzQalkMXq+8DU3ZUV5Bnx9rnD1TXkZo
-         BpPV96vUysgEL7Y+FOYQITxwwVufBP027CnMgVWHyfblYcycIE4St/wm8T35mzgeYMbg
-         YgS9xRDofO0VlOqFvX6Ph7whGNH3mwGsU8l8aNrjcpG8X9fs+yC4Bg/hNA3R5dvFUmRA
-         P1cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CwfDNTxztsaFFsnMzgXIH5wS3ZyzclKxra1KT8MNpgQ=;
-        b=BxLarfR+uzJVrHpdML9vG67qRJI0QBOMDBjhBiHfH46alNojHHsgVsdxXVYAPxXCiZ
-         p1CFe9gCDNjrSVipGmMM9gTZe3XS4BF29oNaw6cEApcpuaae1owkjPGgWiaWCpgwgMpD
-         5TEa8MGR0/hkuSCrGfuaM3YUavjPgMZkO3Ao4dskOC1lAKoVFe635/Zu4HMm0b1sQgVW
-         jZpFGmRToLlKvkY/JEMTc6OXVz5eus9oSiECXSyN6DcfaS2fdz2FKzg5MuZDMtfFulQZ
-         0QilL3CGO5qhohOrNqfrAAh2t0gJszf/TDCtWo0wZEPxz3Oy2Ns/RPlpNzwn70c2BsqV
-         mZLA==
-X-Gm-Message-State: AOAM533ZxJtcnIOxPh3soiQRH/7caOx6Wh5AyPdaKVJ1ny6g72zWkYnD
-        B4y2KvTOpbTLbo75B2Q+hL0Q2iroNjMzByYGESJrdf/QNfw=
-X-Google-Smtp-Source: ABdhPJwKUD35kQ6H8T4ZUXwLM6yT/9Zi5J5IpF/jT0jYnziIq0TIFEZANVCooZqV1pAEC4qgZoWDu9C2MOPsIbuEtUA=
-X-Received: by 2002:a05:6512:32c5:: with SMTP id f5mr5717565lfg.373.1634643443626;
- Tue, 19 Oct 2021 04:37:23 -0700 (PDT)
+        id S235349AbhJSLjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:39:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:48032 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhJSLjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:39:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E873D6E;
+        Tue, 19 Oct 2021 04:36:51 -0700 (PDT)
+Received: from [10.57.25.70] (unknown [10.57.25.70])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3AE03F70D;
+        Tue, 19 Oct 2021 04:36:49 -0700 (PDT)
+Subject: Re: [PATCH v5 03/15] arm64: errata: Add workaround for TSB flush
+ failures
+To:     Will Deacon <will@kernel.org>
+Cc:     mathieu.poirier@linaro.org, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
+ <20211014223125.2605031-4-suzuki.poulose@arm.com>
+ <20211019110233.GD13251@willie-the-truck>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <850c67de-a656-7515-e575-d47d2af78200@arm.com>
+Date:   Tue, 19 Oct 2021 12:36:48 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Oct 2021 13:36:47 +0200
-Message-ID: <CAPDyKFpX8Xh6aZ6aO=CcHYw45aq89oSywZx9tVaq+GOW1HP=aA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] mmc: sdhci-pci: Remove dead code and deduplicate
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Eric Biggers <ebiggers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Raul E Rangel <rrangel@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211019110233.GD13251@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 at 15:26, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> It appears that one of the supported platform magically worked with
-> the custom IRQ handler (any hints how?) while having two PCB designs
-> with an opposite CD sense level. Quirking it out reveals the code
-> duplication and dead code.
->
-> Patch 1 is code deduplication to save few LOCs.
-> Patch 2-5 are dead code removals.
->
-> In v3:
-> - dropped the fix as it has been applied (Ulf)
-> - added tag (Adrian)
-> - elaborated commit IDs with their short descriptions in patch 3 (Adrian)
-> - corrected dependency in patch 5 (Adrian)
->
-> In v2:
-> - redone fix to use ->get_cd() instead of quirks (Adrian)
-> - due to above transformed previous clean up to the current patch 2
-> - added a new patch, i.e. patch 3
-> - added commit IDs to patch 4 (Adrian)
-> - mentioned dependencies on previous patches in patch 5 and 6 (Adrian)
->
-> Andy Shevchenko (5):
->   mmc: sdhci: Deduplicate sdhci_get_cd_nogpio()
->   mmc: sdhci: Remove unused prototype declaration in the header
->   mmc: sdhci-pci: Remove dead code (struct sdhci_pci_data et al)
->   mmc: sdhci-pci: Remove dead code (cd_gpio, cd_irq et al)
->   mmc: sdhci-pci: Remove dead code (rst_n_gpio et al)
->
->  drivers/mmc/host/Makefile          |   1 -
->  drivers/mmc/host/sdhci-acpi.c      |  14 +--
->  drivers/mmc/host/sdhci-pci-core.c  | 152 +----------------------------
->  drivers/mmc/host/sdhci-pci-data.c  |   6 --
->  drivers/mmc/host/sdhci-pci.h       |   5 -
->  drivers/mmc/host/sdhci.c           |  19 ++++
->  drivers/mmc/host/sdhci.h           |   2 +-
->  include/linux/mmc/sdhci-pci-data.h |  18 ----
->  8 files changed, 26 insertions(+), 191 deletions(-)
->  delete mode 100644 drivers/mmc/host/sdhci-pci-data.c
->  delete mode 100644 include/linux/mmc/sdhci-pci-data.h
->
+On 19/10/2021 12:02, Will Deacon wrote:
+> On Thu, Oct 14, 2021 at 11:31:13PM +0100, Suzuki K Poulose wrote:
+>> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
+>> index ccd757373f36..bdbeac75ead6 100644
+>> --- a/arch/arm64/kernel/cpu_errata.c
+>> +++ b/arch/arm64/kernel/cpu_errata.c
+>> @@ -352,6 +352,18 @@ static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
+>>   };
+>>   #endif	/* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
+>>   
+>> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
+>> +static const struct midr_range tsb_flush_fail_cpus[] = {
+>> +#ifdef CONFIG_ARM64_ERRATUM_2067961
+>> +	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
+>> +#endif
+>> +#ifdef CONFIG_ARM64_ERRATUM_2054223
+>> +	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
+>> +#endif
+>> +	{},
+>> +};
+>> +#endif	/* CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
+>> +
+>>   const struct arm64_cpu_capabilities arm64_errata[] = {
+>>   #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
+>>   	{
+>> @@ -558,6 +570,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
+>>   		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
+>>   		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
+>>   	},
+>> +#endif
+>> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
+> 
+> You still haven't fixed this typo...
+> 
 
-Applied for next, thanks!
+Sorry about that. I thought it was about selecting the
+Kconfig entries, which was fixed. I will fix this.
 
-Kind regards
-Uffe
+> Seriously, I get compile warnings from this -- are you not seeing them?
+
+No, I don't get any warnings. Is there something that I am missing ?
+
+--8>--
+
+suzuki@ewhatever:coresight$ grep "WERROR\|TSB" .config
+CONFIG_WERROR=y
+CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE=y
+suzuki@ewhatever:coresight$ grep TSB arch/arm64/kernel/cpu_errata.c
+#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
+#endif  /* CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
+#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
+                 .capability = ARM64_WORKAROUND_TSB_FLUSH_FAILURE,
+
+
+suzuki@ewhatever:coresight$ touch arch/arm64/kernel/cpu_errata.c
+suzuki@ewhatever:coresight$ make -j16
+   CALL    scripts/atomic/check-atomics.sh
+   CALL    scripts/checksyscalls.sh
+   CHK     include/generated/compile.h
+   CC      arch/arm64/kernel/cpu_errata.o
+   AR      arch/arm64/kernel/built-in.a
+   AR      arch/arm64/built-in.a
+   GEN     .version
+   CHK     include/generated/compile.h
+   UPD     include/generated/compile.h
+   CC      init/version.o
+   AR      init/built-in.a
+   LD      vmlinux.o
+   MODPOST vmlinux.symvers
+   MODINFO modules.builtin.modinfo
+   GEN     modules.builtin
+   LD      .tmp_vmlinux.kallsyms1
+   KSYMS   .tmp_vmlinux.kallsyms1.S
+   AS      .tmp_vmlinux.kallsyms1.S
+   LD      .tmp_vmlinux.kallsyms2
+   KSYMS   .tmp_vmlinux.kallsyms2.S
+   AS      .tmp_vmlinux.kallsyms2.S
+   LD      vmlinux
+   SORTTAB vmlinux
+   SYSMAP  System.map
+   MODPOST modules-only.symvers
+   OBJCOPY arch/arm64/boot/Image
+   GEN     Module.symvers
+   GZIP    arch/arm64/boot/Image.gz
+
+Suzuki
+> 
+> Will
+> 
+
