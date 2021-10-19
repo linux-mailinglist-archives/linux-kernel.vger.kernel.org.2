@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD57433330
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F207F433342
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235105AbhJSKI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:08:57 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:41300 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbhJSKI4 (ORCPT
+        id S235109AbhJSKNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230007AbhJSKNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:08:56 -0400
-Date:   Tue, 19 Oct 2021 10:06:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1634637998; bh=LOFsSQgEL4w+fS68cEWnarmWnUdXiUZe2VQW9yMhlYk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=kgnUhhOx8j6ksT5RA6+ox2FUcgrA4VVcqOldtTlgDhhKSNfUVd498eXSm5hL82SQn
-         Vm3wvVOK0PrS3vSnid7gZE6SBQBntl4WR/Omv6Cq4Idpv6TJUU+pgbBB1XGTN1MYiT
-         hNIk4CI43LHFyiElLWwvfQYkg0hJLXQrHSuGtYE8cw9xFo58ByNHjnTL7Mhk3WzwyN
-         08R/zkYS6jzfHnRjsWKuTL6BybGW+N7dAMV+Rd+b7FVIpJ8eXw0V4z3KeIxMpP+QAp
-         nGqASZ2lfKwKJw1L75wTS8+Prb7EzGYyhsz+08EzUZjo0s3SkKNhwkJLmgWpd60aoP
-         kHly93G10ZO4Q==
-To:     Sami Tolvanen <samitolvanen@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>, x86@kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
-Message-ID: <20211019095947.89257-1-alobakin@pm.me>
-In-Reply-To: <20211013181658.1020262-1-samitolvanen@google.com>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
+        Tue, 19 Oct 2021 06:13:52 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E77C06161C;
+        Tue, 19 Oct 2021 03:11:40 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id v77so4135823oie.1;
+        Tue, 19 Oct 2021 03:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ctl1coiiBgIR1zUuBcj1SRCWr0mc617dDGiuKbUwbY=;
+        b=c873+lYsgqVl0Yfr6t+uWwUHLzQB6VnoRVOeUx2Ee/HORwwyNrC2oqUYkY3POlnmuL
+         n+tc8p2TX0E2tcBh1VU6j4TChwpyIth3Td7GdJVDMXKXjs7FhTqoNNZoZJhlqyZAnalq
+         jWKjAxIlZkC/9kxvhngfvq0iQBttHIriATnyQ1gDhabE2To/TIB09ixSL7Eo/vZ4muUN
+         xGvX8g37HvIrbcSKV3+zLiHg6agms0W+wiyRHvKfNc+toLVklWhtsug4KjJeS3LDGh6f
+         EVtVtXLFJVHgd5lydDxrOqgS673Gqrq9IhiyFLEXkZRM9NVqEh5hBAXb0gpaSJvr8qFK
+         HuQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ctl1coiiBgIR1zUuBcj1SRCWr0mc617dDGiuKbUwbY=;
+        b=oyIeUsh2bXDH7dCdQre0+gwOcWo2rgy+vBlSdIwyo87Fq3DVYPCLy8ntS8yYzxNDM7
+         udOho5YSluKkNsasRj+9fU6fbLn+aMPI9vdgPsti9Byn6mi3UTk6XRKu/IAuqvZ76+QH
+         VDBUxRhEbeE9xYqCb9YnGeL4GZqTndDrDSsk4K912z4EHvhtn62rgTDjaGTaS1c13xDX
+         XFTL3+uqJyvkuaEfBxc47SnIecCaVeciZzZZ/3J3AVr9Wa14sUAOYOzxYtQYIKRn3bjl
+         2iL4XEFDpnTu+MCzEgjmCHzf55LXhVYoFbeSUDQGeGyB4yWcVm69XNmjZXd0473O6AxL
+         K8WA==
+X-Gm-Message-State: AOAM531rXuvDZIswuKQCgjXFbzn7aoFUsZUI/Etb1OKQcfGpo/DBbnPW
+        cALmx9LZdUAXoBOH6ga6UsdMxjiJKxcjRtXWWA==
+X-Google-Smtp-Source: ABdhPJybA/174GdIrs0q4NSa5FqT5pPxCeY63ObMStK/SaVjnPZJBE4By7fv6IinsJ8E9sGDlb0DFnENP/H8rQqhgbY=
+X-Received: by 2002:aca:5cd4:: with SMTP id q203mr3509045oib.179.1634638299649;
+ Tue, 19 Oct 2021 03:11:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <0000000000005639cd05ce3a6d4d@google.com> <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
+ <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
+In-Reply-To: <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
+From:   Jussi Maki <joamaki@gmail.com>
+Date:   Tue, 19 Oct 2021 12:11:28 +0200
+Message-ID: <CAHn8xcnoPvt4KNZ3cD17PD9qbTa=58h38E8O0zePvYiKHFEc+A@mail.gmail.com>
+Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, ast@kernel.org,
+        bpf <bpf@vger.kernel.org>, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        toke@toke.dk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sami Tolvanen <samitolvanen@google.com>
-Date: Wed, 13 Oct 2021 11:16:43 -0700
-
-> This series adds support for Clang's Control-Flow Integrity (CFI)
-> checking to x86_64. With CFI, the compiler injects a runtime
-> check before each indirect function call to ensure the target is
-> a valid function with the correct static type. This restricts
-> possible call targets and makes it more difficult for an attacker
-> to exploit bugs that allow the modification of stored function
-> pointers. For more details, see:
+On Thu, Oct 14, 2021 at 3:50 PM Paolo Abeni <pabeni@redhat.com> wrote:
 >
->   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+> On Wed, 2021-10-13 at 15:35 +0200, Daniel Borkmann wrote:
+> > On 10/13/21 1:40 PM, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> >
+> > [ +Paolo/Toke wrt veth/XDP, +Jussi wrt bond/XDP, please take a look, thanks! ]
 >
-> Note that v5 is based on tip/master. The first two patches contain
-> objtool support for CFI, the remaining patches change function
-> declarations to use opaque types, fix type mismatch issues that
-> confuse the compiler, and disable CFI where it can't be used.
+> For the records: Toke and me are actively investigating this issue and
+> the other recent related one. So far we could not find anything
+> relevant.
 >
-> You can also pull this series from
+> The onluy note is that the reproducer is not extremelly reliable - I
+> could not reproduce locally, and multiple syzbot runs on the same code
+> give different results. Anyhow, so far the issue was only observerable
+> on a specific 'next' commit which is currently "not reachable" from any
+> branch. I'm wondering if the issue was caused by some incosistent
+> status of such tree.
 >
->   https://github.com/samitolvanen/linux.git x86-cfi-v5
 
-Hi,
+Hey,
 
-I found [0] while was testing Peter's retpoline series, wanted to
-ask / double check if that is because I'm using ClangCFI for x86
-on unsupported Clang 12. It is fixed in 13 I suppose?
-
-[0] https://lore.kernel.org/all/20211019094038.80569-1-alobakin@pm.me
-
-Thanks,
-Al
-
+I took a look at the bond/XDP related bits and couldn't find anything
+obvious there. And for what it's worth, I was running the syzbot repro
+under bpf-next tree (223f903e9c8) in the bpf vmtest.sh environment for
+30 minutes without hitting this. An inconsistent tree might be a
+plausible cause.
