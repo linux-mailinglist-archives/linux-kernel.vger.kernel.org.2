@@ -2,138 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C52F4333DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004054333F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235300AbhJSKvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhJSKv3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:51:29 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEC7C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 03:49:16 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id h196so19798989iof.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 03:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S8qU62v5ABSqw8uHLGFA6G1Wsae+M8SptK2YZCIED20=;
-        b=4nCu9j8hZHb4nBfjRvjVINhLDXFKdtQd38DuyJTmPyBjUNgAJAZWabGhsTciNk4GAc
-         427FyusGK0wRzyP5mK95FFKk5xE+/LptfuNW3i0icvifyyP/CvnOBhwWp2Fh6TA5Yh1o
-         B/uRg2wcsO2OO3f/JOdlgBpHO4e/ODEgDMzIfDhAZNNAyzCjxjw/i1tk5qvz79POWaUM
-         xQYKWMhFn09ax31sdovt6iHW05trDF8EJmWVro3RfLi8EKNAZqQkAcn8oZLkNg7VBjOl
-         51WClz0XZMSkaAXUzQoMr1DtORmDqs40nD1+j/nE1cqCSG7ys3GS4eS8GdUmsL7JfwLq
-         Bw5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S8qU62v5ABSqw8uHLGFA6G1Wsae+M8SptK2YZCIED20=;
-        b=EOXajfuECOgqIIIRhTDYurCsdgjUJ0b3QzpecLDK334wfXVChcrSXmTRZPisOq4Lvo
-         OmbTAyzFAWJU0/sv4AkNUEfyjiCOs83chjQMYIduR9UR/+2Qp7fTSJmo5fcqOtmw2Z/y
-         i9hqBIbQDfMf2YmxlPb1PMjgV8g6nhvfjVxciCurtRIHpddtP/zDV18VAxpU2BtZsobY
-         bErWPBMFY78qwLBPz20nBk5dYvR+RSXfa9mRRiMUrXQ82LMtfsTf7Bm0aUZTVcxuloX+
-         Jf+Lk7pk3rJRme/yyMY1cecvo9RjGC++P8O20E4UFNEb/YB0MLImdz9wXCgfbwLHW6oU
-         u/gA==
-X-Gm-Message-State: AOAM531atp5PPeyobrNcVdBYlFkpjnzr8npfzK/gN9VB3VfZeW1lL7Pu
-        wg6x6EBgGCII9jTGl+SPbdLVVuiO2YUaLzPlKZDFjA==
-X-Google-Smtp-Source: ABdhPJwnIonL+/XK5k8HqiIuHro2Y3pbpLIttvFLCUZAL3irD4adnb7DqD/Ox2bNwS5GtVH+xGM1GbQ8lsD8aZhjA/Q=
-X-Received: by 2002:a5d:9813:: with SMTP id a19mr18348121iol.74.1634640556207;
- Tue, 19 Oct 2021 03:49:16 -0700 (PDT)
+        id S235338AbhJSKwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:52:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230117AbhJSKwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 06:52:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF4BC61154;
+        Tue, 19 Oct 2021 10:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634640623;
+        bh=L0poGPzGEIYL2TPnM3Vav05iGMWfIk7Klty6aCujrWU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=hhpwCv4+TSuvJTXfVfwSPpVU9VUjtDc1xOV9b/Oo0h/ZW0bpj6fGmjUi8fQy1xJmh
+         MDXRtn29lhl+vax+BYu9n0oTTQhjDoSsW0ULRWC+FD68jj4GTbMB3nKqwxCATulhfx
+         BpDT3UROXvgjbOaAtHRiTWXPvYIa8rowtLz9xHP/bfpn17GKFEbjh00u3I06maIL7f
+         wcxhuszXDtmgaQ28+VhV22uC4bDBLEH5ZAvUP5/FY7try11yGHPTVeDYma7KPJIUFC
+         uPzN+YBRaNA3KJoGwLR5ej035byan9HjAalyfZs2z8Tdx3P3p1hYKV15UhkAu48ELC
+         4UMYaOkiotwRQ==
+Message-ID: <f352a2e4b50a8678a8ddef5177702ecf9040490f.camel@kernel.org>
+Subject: Re: [PATCH v3 18/23] fs: remove a comment pointing to the removed
+ mandatory-locking file
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 19 Oct 2021 06:50:21 -0400
+In-Reply-To: <887de3a1ecadda3dbfe0adf9df9070f0afa9406c.1634630486.git.mchehab+huawei@kernel.org>
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+         <887de3a1ecadda3dbfe0adf9df9070f0afa9406c.1634630486.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-References: <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
- <20210713222528.GA952399@robh.at.kernel.org> <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
- <20210719225906.GA2769608@robh.at.kernel.org> <CACRpkdbq6Jow6AT9OpsR7Q0JVCWVMcmamh9KHPXMtUnkoe7ZFw@mail.gmail.com>
- <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com>
- <CACRpkdZfZLQMgpMAF2FwSVt1YAzhQJ9ZWkVUjVc2xpmWL7yEvQ@mail.gmail.com>
- <CA+HBbNHZyYnnyz9=4Hgav96ZH8-R-nYoi300j2x3fgei8aa4zQ@mail.gmail.com>
- <CACRpkdaBUrgnyFnO0Tdae56PKR4pLN1boLpK0FMCk7eYshZ5LA@mail.gmail.com>
- <CA+HBbNFeTN45cz8G75V94tF9cBcOGNzeenTMjdJ-4oKFCvHYLA@mail.gmail.com> <YW4iIP7jpRj4qcNN@lunn.ch>
-In-Reply-To: <YW4iIP7jpRj4qcNN@lunn.ch>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 19 Oct 2021 12:49:05 +0200
-Message-ID: <CA+HBbNH+4US9U_ZfGZHS2J-pBou2k1LCOAZwuestQHK1GmH0Eg@mail.gmail.com>
-Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        "Jonathan M. Polom" <jmp@epiphyte.org>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 3:40 AM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > The SFP driver requires GPIO-s, it only knows how to use GPIO-s, and
-> > its a generic driver,
-> > it covers any device that has an SFP port that is implemented per spec.
-> > So, I cannot just extend it to suit my devices needs and I don't see
-> > how can I extend it in
-> > a generic manner so that it controls the pins directly via a regmap
-> > for example, especially since
-> > each switch has a different number of SFP ports and thus pins and a
-> > different register layout.
-> >
-> > I have added Andrew Lunn as he is one of the maintainers of PHYLIB
-> > under which the SFP driver
-> > is, he may have some input on how to proceed with this.
-> >
-> > I honestly think that we have some kind of misunderstanding here and
-> > look forward to resolving it.
->
-> Hi Robert
->
-> Can you describe your hardware and regmap in a bit more detail. What
-> do these registers look like? How do they map to the SFP cage pins?
+On Tue, 2021-10-19 at 09:04 +0100, Mauro Carvalho Chehab wrote:
+> The mandatory file locking got removed due to its problems, but
+> there's still a comment inside fs/locks.c pointing to the removed
+> doc.
+> 
+> Remove it.
+> 
+> Fixes: f7e33bdbd6d1 ("fs: remove mandatory file locking support")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+> 
+> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
+> 
+>  fs/locks.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/locks.c b/fs/locks.c
+> index d397394633be..94feadcdab4e 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -61,7 +61,6 @@
+>   *
+>   *  Initial implementation of mandatory locks. SunOS turned out to be
+>   *  a rotten model, so I implemented the "obvious" semantics.
+> - *  See 'Documentation/filesystems/mandatory-locking.rst' for details.
+>   *  Andy Walker (andy@lysaker.kvaerner.no), April 06, 1996.
+>   *
+>   *  Don't allow mandatory locks on mmap()'ed files. Added simple functions to
 
-Hi Andrew,
-This board is simple as it only has 4 SFP ports so they have split the
-respective
-pins into individual registers per their purpose.
-
-So TX disable pins have their own 8bit register and they map pins
-using individual bits.
-This is how the register looks:
-+-----+---------------+-----+-------------------+---------------+
-| Bit |     Name      | R/W |    Description    | Default value |
-+-----+---------------+-----+-------------------+---------------+
-| 7:4 | Reserved         | R/W | Not used                |     0 |
-| 3   | TX_Disable_52 | R/W | Enable/disable       |     0 |
-| 2   | TX_Disable_51 | R/W | SFP TX transmiter |     0 |
-| 1   | TX_Disable_50 | R/W | 1 = TX off               |     0 |
-| 0   | TX_Disable_49 | R/W | 0 = TX on               |     0 |
-+-----+---------------+-----+-------------------+---------------+
-
-Presence and LOS pins also have their respective registers in
-the same format.
-So you can see that the register bits map directly to the SFP cage pins.
-
-Regards,
-Robert
->
->           Andrew
-
-
-
+Thanks Mauro. I'll pick this into my locks branch, so it should make
+v5.16 as well.
 -- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+Jeff Layton <jlayton@kernel.org>
+
