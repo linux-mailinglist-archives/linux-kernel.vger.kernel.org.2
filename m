@@ -2,231 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E08643403F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAFC434041
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbhJSVQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhJSVQG (ORCPT
+        id S229670AbhJSVQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:16:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56004 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhJSVQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:16:06 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D577C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:13:53 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id m42so14454383wms.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kryo-se.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l6gE86fggrp1Bnsb8sfug4v8+vo2kGXRhPZjmGdtdj8=;
-        b=443ImPeqZVoO+mnnRDQWXv2tldarNEL3aBGVlnJu5/7F0YPVsWcHIkVJE9/+lTH4sX
-         HKsMRVssZ7FkJrSQlL+NoihR4roGZeSmSb8xTZoB7ffcyWvI9pWFzSOUt4qE9aWKR7D8
-         69Gmhmf6/7umXY/DL7PWu7ololEsJF49aLOWDWRe87t4/k2tcn7j8jo1TQ2asZ5Akdda
-         UtX+g4RZ9RAYOAZQGbGvZA0VMfZG+wt8tKQPO08dSMh2QR4Tdf7bBFh+UkmKbLhNtC86
-         OcRx0SlgjhVf/powEczo+KOVCvuuKDFPiBXMNUj+6TVyMPXwRTQmeDDlyYRAHG1VBAFA
-         H/8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l6gE86fggrp1Bnsb8sfug4v8+vo2kGXRhPZjmGdtdj8=;
-        b=yIbnGLS2XfpwyrB4R+/Nw/uGDmlvTp9DJgf+J88utoiSOwEXeyJAl2wJtwo07Qfpkl
-         yR86+FfDCfXX+C145GxuO6GDUR+CSAAAkwfkTBStudQP/prJZlZLIrw8UeGeidJ6OZ7+
-         Wqzhswc3YqRJMu4pr+AnJH5OVcj+j9obNei2O9qmluKidVU/Id0AcZ3MSDX6EdU6c9gn
-         3wY+aN9VU0jpd6aU5+CDWRLWer8RrkC9Gfv5oUYimA/rWwFGoPwKqQ9R+g5FcOmQaSFp
-         5BVhkyrQxBodJTxcCRrrRX8RQo8HeAp0hvb+K2huT0arbf5nJXn5odkIRYMVn55YfH8n
-         rhKA==
-X-Gm-Message-State: AOAM531Cgf2IephBtS/mT6hIoQZCJ1+Wr2TNe7aPQEScEgFrYz6rvdAv
-        6d2KblAOnw04FvEcsRjyT96jtg==
-X-Google-Smtp-Source: ABdhPJzTAOhGml9ZLIhKYSNUfQC7ft8zX+Im9HeR0z90hZbniLjpxkYn9q+5OM1EmSBmNYv1iHD98A==
-X-Received: by 2002:adf:a34b:: with SMTP id d11mr46398025wrb.107.1634678031406;
-        Tue, 19 Oct 2021 14:13:51 -0700 (PDT)
-Received: from kerfuffle.. ([2a02:168:9619:0:e47f:e8d:2259:ad13])
-        by smtp.gmail.com with ESMTPSA id v13sm100929wrs.53.2021.10.19.14.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 14:13:50 -0700 (PDT)
-From:   Erik Ekman <erik@kryo.se>
-To:     Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Erik Ekman <erik@kryo.se>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] sfc: Export fibre-specific supported link modes
-Date:   Tue, 19 Oct 2021 23:13:32 +0200
-Message-Id: <20211019211333.19494-1-erik@kryo.se>
-X-Mailer: git-send-email 2.31.1
+        Tue, 19 Oct 2021 17:16:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634678057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eGX3DkPpYpGXRrwMUxctHGFJQDGfHUM6kkQDDtznVBE=;
+        b=ChZL+N9rO2bYBGDm1iouMJZ7LknI1j3bV4dk/cDbokocPri+2iyz5abECt0Avjyh+L2l+v
+        RLELbaPuTlP95HPQRMOjzi6RTw0faSvrBNoQzP6IwWxZiB05cVtcQm4uNDMaixBmxGfYiy
+        mPf5nNX4XZPSIGq3Icpe9Pzb1s5br9U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-47-92i0sIO5MJOtLLx1fbgWHg-1; Tue, 19 Oct 2021 17:14:14 -0400
+X-MC-Unique: 92i0sIO5MJOtLLx1fbgWHg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5036A80A5C0;
+        Tue, 19 Oct 2021 21:14:12 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BE0162AEE;
+        Tue, 19 Oct 2021 21:14:05 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YW7uN2p8CihCDsln@moria.home.lan>
+References: <YW7uN2p8CihCDsln@moria.home.lan> <YUfvK3h8w+MmirDF@casper.infradead.org> <YUo20TzAlqz8Tceg@cmpxchg.org> <YUpC3oV4II+u+lzQ@casper.infradead.org> <YUpKbWDYqRB6eBV+@moria.home.lan> <YUpNLtlbNwdjTko0@moria.home.lan> <YUtHCle/giwHvLN1@cmpxchg.org> <YWpG1xlPbm7Jpf2b@casper.infradead.org> <YW2lKcqwBZGDCz6T@cmpxchg.org> <YW25EDqynlKU14hx@moria.home.lan> <YW3dByBWM0dSRw/X@cmpxchg.org>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     dhowells@redhat.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: Splitting struct page into multiple types - Was: re: Folio discussion recap -
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2981361.1634678044.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 19 Oct 2021 22:14:04 +0100
+Message-ID: <2981362.1634678044@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 1/10GbaseT modes were set up for cards with SFP+ cages in
-3497ed8c852a5 ("sfc: report supported link speeds on SFP connections").
-10GbaseT was likely used since no 10G fibre mode existed.
+Kent Overstreet <kent.overstreet@gmail.com> wrote:
 
-The missing fibre modes for 1/10G were added to ethtool.h in 5711a9822144
-("net: ethtool: add support for 1000BaseX and missing 10G link modes")
-shortly thereafter.
+> =
 
-The user guide available at https://support-nic.xilinx.com/wp/drivers
-lists support for the following cable and transceiver types in section 2.9:
-- QSFP28 100G Direct Attach Cables
-- QSFP28 100G SR Optical Transceivers (with SR4 modules listed)
-- SFP28 25G Direct Attach Cables
-- SFP28 25G SR Optical Transceivers
-- QSFP+ 40G Direct Attach Cables
-- QSFP+ 40G Active Optical Cables
-- QSFP+ 40G SR4 Optical Transceivers
-- QSFP+ to SFP+ Breakout Direct Attach Cables
-- QSFP+ to SFP+ Breakout Active Optical Cables
-- SFP+ 10G Direct Attach Cables
-- SFP+ 10G SR Optical Transceivers
-- SFP+ 10G LR Optical Transceivers
-- SFP 1000BASE‐T Transceivers
-- 1G Optical Transceivers
-(From user guide issue 28. Issue 16 which also includes older cards like
-SFN5xxx/SFN6xxx has matching lists for 1/10/40G transceiver types.)
+>  - page->lru is used by the old .readpages interface for the list of pag=
+es we're
+>    doing reads to; Matthew converted most filesystems to his new and imp=
+roved
+>    .readahead which thankfully no longer uses page->lru, but there's sti=
+ll a few
+>    filesystems that need to be converted - it looks like cifs and erofs,=
+ not
+>    sure what's going on with fs/cachefiles/. We need help from the maint=
+ainers
+>    of those filesystems to get that conversion done, this is holding up =
+future
+>    cleanups.
 
-Regarding SFP+ 10GBASE‐T transceivers the latest guide says:
-"Solarflare adapters do not support 10GBASE‐T transceiver modules."
+fscache and cachefiles should be taken care of by my patchset here:
 
-Tested using SFN5122F-R7 (with 2 SFP+ ports). Supported link modes do not change
-depending on module used (tested with 1000BASE-T, 1000BASE-BX10, 10GBASE-LR).
-Before:
+	https://lore.kernel.org/r/163363935000.1980952.15279841414072653108.stgit=
+@warthog.procyon.org.uk
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
+/?h=3Dfscache-remove-old-io
 
-$ ethtool ext
-Settings for ext:
-	Supported ports: [ FIBRE ]
-	Supported link modes:   1000baseT/Full
-	                        10000baseT/Full
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: No
-	Supported FEC modes: Not reported
-	Advertised link modes:  Not reported
-	Advertised pause frame use: No
-	Advertised auto-negotiation: No
-	Advertised FEC modes: Not reported
-	Link partner advertised link modes:  Not reported
-	Link partner advertised pause frame use: No
-	Link partner advertised auto-negotiation: No
-	Link partner advertised FEC modes: Not reported
-	Speed: 1000Mb/s
-	Duplex: Full
-	Auto-negotiation: off
-	Port: FIBRE
-	PHYAD: 255
-	Transceiver: internal
-        Current message level: 0x000020f7 (8439)
-                               drv probe link ifdown ifup rx_err tx_err hw
-	Link detected: yes
+With that 9p, afs and ceph use netfs lib to handle readpage, readahead and
+part of write_begin.
 
-After:
+nfs and cifs do their own wrangling of readpages/readahead, but will call =
+out
+to the cache directly to handle each page individually.  At some point, ci=
+fs
+will hopefully be converted to use netfs lib.
 
-$ ethtool ext
-Settings for ext:
-	Supported ports: [ FIBRE ]
-	Supported link modes:   1000baseT/Full
-	                        1000baseX/Full
-	                        10000baseCR/Full
-	                        10000baseSR/Full
-	                        10000baseLR/Full
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: No
-	Supported FEC modes: Not reported
-	Advertised link modes:  Not reported
-	Advertised pause frame use: No
-	Advertised auto-negotiation: No
-	Advertised FEC modes: Not reported
-	Link partner advertised link modes:  Not reported
-	Link partner advertised pause frame use: No
-	Link partner advertised auto-negotiation: No
-	Link partner advertised FEC modes: Not reported
-	Speed: 1000Mb/s
-	Duplex: Full
-	Auto-negotiation: off
-	Port: FIBRE
-	PHYAD: 255
-	Transceiver: internal
-	Supports Wake-on: g
-	Wake-on: d
-        Current message level: 0x000020f7 (8439)
-                               drv probe link ifdown ifup rx_err tx_err hw
-	Link detected: yes
-
-Signed-off-by: Erik Ekman <erik@kryo.se>
----
- drivers/net/ethernet/sfc/mcdi_port_common.c | 37 +++++++++++++++------
- 1 file changed, 26 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/ethernet/sfc/mcdi_port_common.c b/drivers/net/ethernet/sfc/mcdi_port_common.c
-index 4bd3ef8f3384..c4fe3c48ac46 100644
---- a/drivers/net/ethernet/sfc/mcdi_port_common.c
-+++ b/drivers/net/ethernet/sfc/mcdi_port_common.c
-@@ -132,16 +132,27 @@ void mcdi_to_ethtool_linkset(u32 media, u32 cap, unsigned long *linkset)
- 	case MC_CMD_MEDIA_SFP_PLUS:
- 	case MC_CMD_MEDIA_QSFP_PLUS:
- 		SET_BIT(FIBRE);
--		if (cap & (1 << MC_CMD_PHY_CAP_1000FDX_LBN))
-+		if (cap & (1 << MC_CMD_PHY_CAP_1000FDX_LBN)) {
- 			SET_BIT(1000baseT_Full);
--		if (cap & (1 << MC_CMD_PHY_CAP_10000FDX_LBN))
--			SET_BIT(10000baseT_Full);
--		if (cap & (1 << MC_CMD_PHY_CAP_40000FDX_LBN))
-+			SET_BIT(1000baseX_Full);
-+		}
-+		if (cap & (1 << MC_CMD_PHY_CAP_10000FDX_LBN)) {
-+			SET_BIT(10000baseCR_Full);
-+			SET_BIT(10000baseLR_Full);
-+			SET_BIT(10000baseSR_Full);
-+		}
-+		if (cap & (1 << MC_CMD_PHY_CAP_40000FDX_LBN)) {
- 			SET_BIT(40000baseCR4_Full);
--		if (cap & (1 << MC_CMD_PHY_CAP_100000FDX_LBN))
-+			SET_BIT(40000baseSR4_Full);
-+		}
-+		if (cap & (1 << MC_CMD_PHY_CAP_100000FDX_LBN)) {
- 			SET_BIT(100000baseCR4_Full);
--		if (cap & (1 << MC_CMD_PHY_CAP_25000FDX_LBN))
-+			SET_BIT(100000baseSR4_Full);
-+		}
-+		if (cap & (1 << MC_CMD_PHY_CAP_25000FDX_LBN)) {
- 			SET_BIT(25000baseCR_Full);
-+			SET_BIT(25000baseSR_Full);
-+		}
- 		if (cap & (1 << MC_CMD_PHY_CAP_50000FDX_LBN))
- 			SET_BIT(50000baseCR2_Full);
- 		break;
-@@ -192,15 +203,19 @@ u32 ethtool_linkset_to_mcdi_cap(const unsigned long *linkset)
- 		result |= (1 << MC_CMD_PHY_CAP_100FDX_LBN);
- 	if (TEST_BIT(1000baseT_Half))
- 		result |= (1 << MC_CMD_PHY_CAP_1000HDX_LBN);
--	if (TEST_BIT(1000baseT_Full) || TEST_BIT(1000baseKX_Full))
-+	if (TEST_BIT(1000baseT_Full) || TEST_BIT(1000baseKX_Full) ||
-+			TEST_BIT(1000baseX_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_1000FDX_LBN);
--	if (TEST_BIT(10000baseT_Full) || TEST_BIT(10000baseKX4_Full))
-+	if (TEST_BIT(10000baseT_Full) || TEST_BIT(10000baseKX4_Full) ||
-+			TEST_BIT(10000baseCR_Full) || TEST_BIT(10000baseLR_Full) ||
-+			TEST_BIT(10000baseSR_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_10000FDX_LBN);
--	if (TEST_BIT(40000baseCR4_Full) || TEST_BIT(40000baseKR4_Full))
-+	if (TEST_BIT(40000baseCR4_Full) || TEST_BIT(40000baseKR4_Full) ||
-+			TEST_BIT(40000baseSR4_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_40000FDX_LBN);
--	if (TEST_BIT(100000baseCR4_Full))
-+	if (TEST_BIT(100000baseCR4_Full) || TEST_BIT(100000baseSR4_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_100000FDX_LBN);
--	if (TEST_BIT(25000baseCR_Full))
-+	if (TEST_BIT(25000baseCR_Full) || TEST_BIT(25000baseSR_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_25000FDX_LBN);
- 	if (TEST_BIT(50000baseCR2_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_50000FDX_LBN);
--- 
-2.31.1
+David
 
