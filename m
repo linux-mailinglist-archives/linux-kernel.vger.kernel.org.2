@@ -2,141 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECEA43320B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A9243320F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234910AbhJSJWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:22:44 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:52248
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231652AbhJSJWm (ORCPT
+        id S234990AbhJSJXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234952AbhJSJXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:22:42 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 69B263F4A4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634635229;
-        bh=rpgxbiGnzy8DYr2MZRZYdU/1oLQHESx+ODNQvDWuN40=;
-        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type;
-        b=JQcbMqXF2Ijg2i9elP37/m4rUOKZdQOEgyvTjrkgbh/nJwYR4nKW7MdvyWOIDOELL
-         IG688lw/iijX2vqrmD4u38PVjn7A/KWe+dcHORFzTM9L8/HhD76LiksI8ne2EyHGsp
-         JtdZeHODaVMYYK6Bwb+FtSOD+9Vb82+5EavEZgEQkfW+/+anh+C4KKHrILFMSwwq3X
-         V/inqGyQQ1UPjMnaJ/etsplTCjjsgba3vSq5sFWYLVQ6/ySyVHnw9y4AwZQbbyYKS2
-         /4xk5ZF4xtgzuBsW8iXqfwbINXB4umLAVbVlsLNdpbqqMczrV9G9ITMMO0t08dhMia
-         EpsOLtzR+xANQ==
-Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso16929738edj.20
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:20:29 -0700 (PDT)
+        Tue, 19 Oct 2021 05:23:10 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EF0C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:20:57 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id g10so10228521edj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=toRRVEqTLUd3SSxzIDP/+DUaLEtYke19fi6Pz2sUJkE=;
+        b=Cf18QzOp+PRhe6QqZXXGOa4O7FcIcT8tM6VPOG1htKyJ1o5kTmJFuUaCM3AI4CWu3s
+         Kh+keaBzAGxQygo9i8deGphOkop3SLutGrTs2ukML7vLZ/vSvRkWQZFS4YfdoyXOkcjg
+         9MueBURbdbqni8kwo6RPOs8F1cVzS3nDxLl16afPJBfbdKclb387x3ZtXgT90MS/ydPS
+         z7nDn6GTXp+SswME3vjPhHMaUF+zyQg5kvjNVfzTw95BdRCk+7paJWKFGR8VYyjsZSjB
+         +TxMnqCQiGou0u0rE6TaY3tx0yNlgJFYq5CdiYl3qj0P2ZFm3Y36xbGtK7IpJiOTr18P
+         hzhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=rpgxbiGnzy8DYr2MZRZYdU/1oLQHESx+ODNQvDWuN40=;
-        b=iHyAoI5WDDLZzXyDkTLHwMJGlxAVgOgjFSZ0a+gOZs+jyJhwl7Cr8Qdcxrtqsh7C76
-         OHquPz2rDMctLYU6NksS75HTEjziWcTVWfEaC8xd+qkqt3GsH7BTltIHafjsTpZshfRR
-         G/eyoACQwYrtthG7COzSZOQKayJaKlxBZqqppgvnfKjyF1dt8RwktWnzVDRGGSGUcu8K
-         ueDxlCjdUbzqLl+UUA1ftLgSDU7dYIpObv9NnnfhMsHry456/GOuA6jni2bHNW8J78s5
-         4bjIGaHuqSABMVgH1CdCKlrBwIpcVcs2MVpdDhKAPy6G/6rmmwRck2XjshLYxvWh3OYi
-         ZMHQ==
-X-Gm-Message-State: AOAM530sLPpjojj8hslBrFmABJbF/wrdQu5HilAeTZ+swTEs8o5qE6DO
-        IF1Qxp5ivqhMA+KBmO2Yf3Dy/9LoB0Et4xz8M2G5rEAmghGULvL3X/6mQmyF/gbNq1OHTKD/0SI
-        uQwlFkXRW77qhsqyVYrOKouYz6pqFA1ObDXsCpbt/DQ==
-X-Received: by 2002:a17:906:c0d:: with SMTP id s13mr36852729ejf.309.1634635228963;
-        Tue, 19 Oct 2021 02:20:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwH+/q0Q40JwlqtO5cLdOb2cCV0PlkoAQOYXX01RXfcrhg/kUSi7c4momn7LoyUNaBLjjv5WA==
-X-Received: by 2002:a17:906:c0d:: with SMTP id s13mr36852714ejf.309.1634635228744;
-        Tue, 19 Oct 2021 02:20:28 -0700 (PDT)
-Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id 91sm8114459ede.56.2021.10.19.02.20.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 02:20:28 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 11:20:26 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, Omar Sandoval <osandov@fb.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] blk-wbt: prevent NULL pointer dereference in wb_timer_fn
-Message-ID: <YW6N2qXpBU3oc50q@arighi-desktop>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=toRRVEqTLUd3SSxzIDP/+DUaLEtYke19fi6Pz2sUJkE=;
+        b=EZPwjxWosgVS/sjD35hSXRWoAm93eYVcXb7+Nzal2akI4yTJ+pi1+tlLdLohMPhTal
+         ow0o2YgFvuyKiV315kTt9B2KMtJTOaodVMK2VEeOqgSigmUR9GX42MeDqHiRFyOiZYct
+         HX3AnmaW76Oz1Vq8ZxpOSS/VFV93CM0wEFc8fDvepgUFBAcbHqb4JYBY5OtVpFLCAr2+
+         ZCRn4P3mZDkhJWw9i2h8K05SV7xM87JPr8FyJInMUP5+WLOgCkf7S5bFVQWYEoMIcIjH
+         kb7t9tyKqRAuaTQlNhjVDjvLJo0Np46P7MwS9NVbzYwJKZl4xNR+zNcqviTZo1qedOgr
+         e0Ww==
+X-Gm-Message-State: AOAM531jbGIZiWWqhoMGRCeuXg4Ly6Et8DLkzVraB9uHmssWp5+x1r6o
+        4ZOZFPU9+wPj3u74XifaFHSM7abEsvCjUAlaBVrNGQ==
+X-Google-Smtp-Source: ABdhPJzEQhtxbot5YkrZdRE19sSa4f2O5W5kZNzagpESU86f9Z1ZP1xca6lG0VyOTvQlnZg+aWhg3uov1zMvvMMgn2Y=
+X-Received: by 2002:a17:906:d975:: with SMTP id rp21mr36538913ejb.104.1634635255802;
+ Tue, 19 Oct 2021 02:20:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20211018114046.25571-1-etienne.carriere@linaro.org> <YW2xhRXQ+MA/Cxm1@robh.at.kernel.org>
+In-Reply-To: <YW2xhRXQ+MA/Cxm1@robh.at.kernel.org>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Tue, 19 Oct 2021 11:20:44 +0200
+Message-ID: <CAN5uoS_ab2Te6++JPAQ2UJqjdO46t=vyT2Ek0DvWG8umSibTnQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: arm: Add OP-TEE transport for SCMI
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The timer callback used to evaluate if the latency is exceeded can be
-executed after the corresponding disk has been released, causing the
-following NULL pointer dereference:
+On Mon, 18 Oct 2021 at 19:40, Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Oct 18, 2021 at 01:40:45PM +0200, Etienne Carriere wrote:
+> > Introduce compatible "linaro,scmi-optee" for SCMI transport channel
+> > based on an OP-TEE service invocation. The compatible mandates a
+> > channel ID defined with property "linaro,optee-channel-id".
+> >
+> > Cc: devicetree@vger.kernel.org
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+> > ---
+> > Changes since v2:
+> >  - Define mandatory property linaro,optee-channel-id
+> >  - Rebased on yaml description file
+> >
+> > Changes since v1:
+> >  - Removed modification regarding mboxes property description.
+> > ---
+> >  .../bindings/firmware/arm,scmi.yaml           | 44 +++++++++++++++++++
+> >  1 file changed, 44 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > index 5c4c6782e052..12154ecc081b 100644
+> > --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > @@ -38,6 +38,9 @@ properties:
+> >                       The virtio transport only supports a single device.
+> >          items:
+> >            - const: arm,scmi-virtio
+> > +      - description: SCMI compliant firmware with OP-TEE transport
+> > +        items:
+> > +          - const: linaro,scmi-optee
+> >
+> >    interrupts:
+> >      description:
+> > @@ -83,6 +86,11 @@ properties:
+> >      description:
+> >        SMC id required when using smc or hvc transports
+> >
+> > +  linaro,optee-channel-id:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Channel id required when using OP-TEE transports
+> > +
+> >    protocol@11:
+> >      type: object
+> >      properties:
+> > @@ -195,6 +203,9 @@ patternProperties:
+> >          minItems: 1
+> >          maxItems: 2
+> >
+> > +      linaro,optee-channel-id:
+> > +        maxItems: 1
+>
+> Why is the same property in 2 different spots? That doesn't seem ideal.
+>
+> Unfortunately, you have to duplicate the definition.
 
-[ 119.987108] BUG: kernel NULL pointer dereference, address: 0000000000000098
-[ 119.987617] #PF: supervisor read access in kernel mode
-[ 119.987971] #PF: error_code(0x0000) - not-present page
-[ 119.988325] PGD 7c4a4067 P4D 7c4a4067 PUD 7bf63067 PMD 0
-[ 119.988697] Oops: 0000 [#1] SMP NOPTI
-[ 119.988959] CPU: 1 PID: 9353 Comm: cloud-init Not tainted 5.15-rc5+arighi #rc5+arighi
-[ 119.989520] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-[ 119.990055] RIP: 0010:wb_timer_fn+0x44/0x3c0
-[ 119.990376] Code: 41 8b 9c 24 98 00 00 00 41 8b 94 24 b8 00 00 00 41 8b 84 24 d8 00 00 00 4d 8b 74 24 28 01 d3 01 c3 49 8b 44 24 60 48 8b 40 78 <4c> 8b b8 98 00 00 00 4d 85 f6 0f 84 c4 00 00 00 49 83 7c 24 30 00
-[ 119.991578] RSP: 0000:ffffb5f580957da8 EFLAGS: 00010246
-[ 119.991937] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000004
-[ 119.992412] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88f476d7f780
-[ 119.992895] RBP: ffffb5f580957dd0 R08: 0000000000000000 R09: 0000000000000000
-[ 119.993371] R10: 0000000000000004 R11: 0000000000000002 R12: ffff88f476c84500
-[ 119.993847] R13: ffff88f4434390c0 R14: 0000000000000000 R15: ffff88f4bdc98c00
-[ 119.994323] FS: 00007fb90bcd9c00(0000) GS:ffff88f4bdc80000(0000) knlGS:0000000000000000
-[ 119.994952] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 119.995380] CR2: 0000000000000098 CR3: 000000007c0d6000 CR4: 00000000000006e0
-[ 119.995906] Call Trace:
-[ 119.996130] ? blk_stat_free_callback_rcu+0x30/0x30
-[ 119.996505] blk_stat_timer_fn+0x138/0x140
-[ 119.996830] call_timer_fn+0x2b/0x100
-[ 119.997136] __run_timers.part.0+0x1d1/0x240
-[ 119.997470] ? kvm_clock_get_cycles+0x11/0x20
-[ 119.997826] ? ktime_get+0x3e/0xa0
-[ 119.998110] ? native_apic_msr_write+0x2c/0x30
-[ 119.998456] ? lapic_next_event+0x20/0x30
-[ 119.998779] ? clockevents_program_event+0x94/0xf0
-[ 119.999150] run_timer_softirq+0x2a/0x50
-[ 119.999465] __do_softirq+0xcb/0x26f
-[ 119.999764] irq_exit_rcu+0x8c/0xb0
-[ 120.000057] sysvec_apic_timer_interrupt+0x43/0x90
-[ 120.000429] ? asm_sysvec_apic_timer_interrupt+0xa/0x20
-[ 120.000836] asm_sysvec_apic_timer_interrupt+0x12/0x20
+Property linaro,optee-channel-id for compatible linaro,scmi-optee
+is like properties mboxes and shmem for compatibile arm,scmi.
+There are mandated in the scmi node and are optional in its subnodes:
+an scmi protocol (a subnode), can have a dedicated scmi channel.
 
-In this case simply return from the timer callback (no action
-required) to prevent the NULL pointer dereference.
+The yaml description is expected to reflect that.
 
-BugLink: https://bugs.launchpad.net/bugs/1947557
-Link: https://lore.kernel.org/linux-mm/YWRNVTk9N8K0RMst@arighi-desktop/
-Fixes: 34dbad5d26e2 ("blk-stat: convert to callback-based statistics reporting")
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
+Regards,
+Etienne
 
-NOTE: I'm not sure if this is more of a bandaid rather than a proper
-fix, but I have a reliable reproducer and with this applied I can
-prevent the kernel from exploding badly.
-
----
- block/blk-wbt.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/block/blk-wbt.c b/block/blk-wbt.c
-index 874c1c37bf0c..0c119be0e813 100644
---- a/block/blk-wbt.c
-+++ b/block/blk-wbt.c
-@@ -357,6 +357,9 @@ static void wb_timer_fn(struct blk_stat_callback *cb)
- 	unsigned int inflight = wbt_inflight(rwb);
- 	int status;
- 
-+	if (!rwb->rqos.q->disk)
-+		return;
-+
- 	status = latency_exceeded(rwb, cb->stat);
- 
- 	trace_wbt_timer(rwb->rqos.q->disk->bdi, status, rqd->scale_step,
--- 
-2.32.0
-
+>
+> > +
+> >      required:
+> >        - reg
+> >
+> > @@ -226,6 +237,16 @@ else:
+> >        - arm,smc-id
+> >        - shmem
+> >
+> > +  else:
+> > +    if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: linaro,scmi-optee
+> > +    then:
+> > +      required:
+> > +        - linaro,optee-channel-id
+> > +
+> >  examples:
+> >    - |
+> >      firmware {
+> > @@ -340,7 +361,30 @@ examples:
+> >                  reg = <0x11>;
+> >                  #power-domain-cells = <1>;
+> >              };
+> > +        };
+> > +    };
+> > +
+> > +  - |
+> > +    firmware {
+> > +        scmi {
+> > +            compatible = "linaro,scmi-optee";
+> > +            linaro,optee-channel = <0>;
+> > +
+> > +            #address-cells = <1>;
+> > +            #size-cells = <0>;
+> > +
+> > +            scmi_clk: protocol@14 {
+> > +                reg = <0x14>;
+> > +                #clock-cells = <1>;
+> > +            };
+> > +
+> > +            scmi_dvfs: protocol@13 {
+> > +                reg = <0x13>;
+> >
+> > +                #clock-cells = <1>;
+> > +                linaro,optee-channel = <1>;
+> > +                shmem = <&cpu_scp_hpri0>;
+> > +            };
+> >          };
+> >      };
+> >
+> > --
+> > 2.17.1
+> >
+> >
