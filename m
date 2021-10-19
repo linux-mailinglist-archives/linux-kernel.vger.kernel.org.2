@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3DE4341DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00304341ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhJSXCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
+        id S229851AbhJSXRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 19:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhJSXCY (ORCPT
+        with ESMTP id S229498AbhJSXRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:02:24 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B994C06161C;
-        Tue, 19 Oct 2021 16:00:10 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id n8so10870689lfk.6;
-        Tue, 19 Oct 2021 16:00:10 -0700 (PDT)
+        Tue, 19 Oct 2021 19:17:09 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25069C06161C;
+        Tue, 19 Oct 2021 16:14:56 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id y17so20136704ilb.9;
+        Tue, 19 Oct 2021 16:14:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a88qg38+MHwgayXwRxD5MdpDf9+mfzp1qVrL1oByJeU=;
-        b=kA9EsuhL3/N3fKQjjy5KKGYwd4taVPf179Wy+M3axYvPRLCCJcaLmysu6/zyCbQhPY
-         JOMV6FyN+fi6SGd70PfKtIooF4IGfcGjaY80N9cMr3cvf6MkmQa+G1Dgk0NfRfvh8rbY
-         ZzVnxHjWnvVIurVWTH1023W/zht1mYpe8X9kDoudvDipkRu2c4kHO98tvU6BdcyHaLQb
-         9cgue9aF/a17Bxmv2+DoXk1wt7hSHY+UEiMxnGhbjrO+HKAs+CLXY8d7Wajbt/w+qQLo
-         cXIEjIM6A9ZkRnK5wZ2V8KnGY2K1CjQJSuu0kCLTQ1+4NiakCSvC3DbSHc1PmKhLBMiD
-         i4sw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zrpUaoVvt5AlUK4ZVm+tzAJguis11QzWu+GC5e0/HsQ=;
+        b=R2CXYQwuyS8tpS5KHqWJYBfj5mAki/U4l8yzO1/O+VV55lknzcm4yP+iTceUFKFRMA
+         TvgrR/4ozjGcX9AVdZkDURNRg7kzqud4WyaLRsKCMdyMbJn71upAJ/2SglfXs20NhjUt
+         FYEtZsG0eTqsJWswVdsrPnX5KWN+2qqfVSTGrNcn4PNQHdf6GcgA5C+tc6RER1tl+oZd
+         EWI5ZcVh8H/8OHcbLsW8kJHXaDpAK6xOgVvp+m/G+1MGinIxPIiLzD1iceuX2yXVfNpQ
+         Fr4byRZ8CdQtASjg4R5Z2+lSDPceDnHhCFpkPiwLskFt4v41vvuSFeZmXyV9/A2TSaqf
+         4tvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a88qg38+MHwgayXwRxD5MdpDf9+mfzp1qVrL1oByJeU=;
-        b=5cgwULuFmjjG2B6Jj4IYUtQivqWXh+nbhKN9GQNGriu+UL4JmpX+AQo2pffN5JaY/M
-         ou2s0kZH9R2qYDmlLb0tVr1lxeDed4w7aVB7GtppYaKGBIs7ll2e7TRyX8I3K0AlSmer
-         Mohsbe6yE3+NUkt1an7bXbQoDx44dgtbDha+0uKNM7pAkhWCCSNloASvXGKvzQGBUPm1
-         C3PBzWZHl9wvCoFKAGmeYEuoJ9/bDheEgiIbMPukMEkjkAyPflfs4vXhcU+7LQ0wfmml
-         4B56zl+FDWGM46f1tB6eEdq8MhLsiCdh0vbVu5gUYHStc0PcsiE+4kgzzU+zcCnCYwcy
-         k6Jw==
-X-Gm-Message-State: AOAM532SRUetFkzUcZJUG3OmHQ2Qk40Dpc9ZzUJMNDchZ4UKYD4KqGB+
-        jFiy7T3bWC/EV8PJ7cxWimq9VsMyA2I=
-X-Google-Smtp-Source: ABdhPJxX3C4sQ0bUdp8xWbdoxRUTy9FTgsKWNE0hAgaj65a+zHXQMp6ARMP8QSubzwEoZCoP0cqVdg==
-X-Received: by 2002:a05:6512:2344:: with SMTP id p4mr8606274lfu.324.1634684408827;
-        Tue, 19 Oct 2021 16:00:08 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
-        by smtp.googlemail.com with ESMTPSA id v3sm41462lfr.61.2021.10.19.16.00.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 16:00:08 -0700 (PDT)
-Subject: Re: [PATCH 1/2] pinctrl: tegra: include lpdr pin properties
-To:     Prathamesh Shete <pshete@nvidia.com>, linus.walleij@linaro.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-gpio@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     smangipudi@nvidia.com
-References: <20211018121815.3017-1-pshete@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <742eef64-c607-451b-3a28-171c628a44d4@gmail.com>
-Date:   Wed, 20 Oct 2021 02:00:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zrpUaoVvt5AlUK4ZVm+tzAJguis11QzWu+GC5e0/HsQ=;
+        b=RuvbK5cg63XCRsRFMVdzk+zblK/pKBITgwNkVkLisCGs2fsx5xOHl4sUqS7dlYb0Vz
+         0cqhMTkyH58UUCEsojjkzU8LmJPs7nlBAs1FcVlDVWFXs6Ryre8FOVxjj5SYOXzmtNlv
+         eDWSq/pZAN7daB0RwBH/cWoPJUlDcVxNKo1EG+vwOSDOojAfXkxxrjIuMJjUYoad+u2Q
+         6/LSXQ6eoRyOcAfcRWTd9uFOrO80PDbMUMfxc632fw2ui505lScakkig3cpAnQSAZyDN
+         hUrKkJrmgXQithkQwo8rB3YTZ5KAcrDG5eXyBQygC61pld3d17s+z/WSUqL+hsSUYKil
+         DxHQ==
+X-Gm-Message-State: AOAM531ujvZ7WqHnhv26isYvIF7RFHuaM7jX+h8jrEIHIDI7XdGdfw1U
+        b3RC3lypiaaF0NEkwp5on+YBKgIe9QumwD12KAs=
+X-Google-Smtp-Source: ABdhPJy3iJPFtUkZwa1+rcrOFAnL5k4AxU9bHWqWoOMWZ4Nhr2D4WUwI27a154ZG/6ykw/rBduzXUJAf6Ze3juWMYdw=
+X-Received: by 2002:a05:6e02:1543:: with SMTP id j3mr20327074ilu.151.1634685295474;
+ Tue, 19 Oct 2021 16:14:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211018121815.3017-1-pshete@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1634337180-92127-1-git-send-email-ashimida@linux.alibaba.com> <202110191006.68BB660@keescook>
+In-Reply-To: <202110191006.68BB660@keescook>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 20 Oct 2021 01:14:44 +0200
+Message-ID: <CANiq72k9GMuCtJq0=3Csk1yO8imGkveXJ5io0gjJH3+R73RRdg@mail.gmail.com>
+Subject: Re: [PATCH] [PATCH V5]ARM64: SCS: Add gcc plugin to support Shadow
+ Call Stack
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dan Li <ashimida@linux.alibaba.com>,
+        Qing Zhao <qing.zhao@oracle.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>, frederic@kernel.org,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, yifeifz2@illinois.edu,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>, andreyknvl@gmail.com,
+        Colin King <colin.king@canonical.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hardening@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.10.2021 15:18, Prathamesh Shete пишет:
-> From: Suresh Mangipudi <smangipudi@nvidia.com>
-> 
-> Update lpdr pin-property for supported pins.
-> 
-> lpdr property help disable most basic driver fingers
-> leaving only minimal base driver finger.
-> 
-> Signed-off-by: Suresh Mangipudi <smangipudi@nvidia.com>
-> Signed-off-by: Prathamesh Shete <pshete@nvidia.com>
-> ---
->  drivers/pinctrl/tegra/pinctrl-tegra.h    |   2 +
->  drivers/pinctrl/tegra/pinctrl-tegra210.c | 330 ++++++++++++-----------
->  2 files changed, 168 insertions(+), 164 deletions(-)
+On Tue, Oct 19, 2021 at 11:40 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> Anyway, this is a long way to say that I don't think I want to add
+> a new gcc-plugin when it is at "State 2" (i.e. Clang has support but
+> GCC doesn't.) There's no need to "prove" that the compiler feature is
+> generally desirable, so it's best to get this into GCC directly.
 
-The code of this driver was generated by [1]. Have you considered
-updating the generator?
+Sounds reasonable.
 
-[1] https://github.com/NVIDIA/tegra-pinmux-scripts
+Cc'ing linux-toolchains, by the way.
+
+Cheers,
+Miguel
