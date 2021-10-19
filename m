@@ -2,134 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDC7432C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C20432C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbhJSDsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhJSDsV (ORCPT
+        id S232769AbhJSDtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:49:50 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:23625 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJSDtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:48:21 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AFC5C06161C;
-        Mon, 18 Oct 2021 20:46:09 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so959699pjc.3;
-        Mon, 18 Oct 2021 20:46:09 -0700 (PDT)
+        Mon, 18 Oct 2021 23:49:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BZZTHz9glvu1cCcglzMbueWb2cAg5BGgcHCHhFUYOyo=;
-        b=TYnT0JHLak+IGcZunfBdTnuCxhsG4IO5Tbh/KUz/Psnz1HThhD88kQE12+vOZa+imz
-         kD/cMsM18F6DFAaN9wH6mmBOOgG8/U66kxQgWQphN1BIx5I6ZZ8bFVJYKRpoLj+U5UVS
-         pokXtrPApMxYYppvRzlANb0W0WEsBwt1t9LMKWU6ZqWv+gM9aAgj0MuudOWDSgtQ7qEi
-         mX/K5MzheHeBndh+f5s+unzTp+0xMHLU932x/aV8h/pCBCYvbQdaW4y5N1TKodsGaN3Q
-         bLv6XV5NTrzIas5YWc5nwRNNX1Aq24HU4wDl9NR7TfWVO/UBADX832LXKDklBZg6cPO0
-         eEDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BZZTHz9glvu1cCcglzMbueWb2cAg5BGgcHCHhFUYOyo=;
-        b=gJFdCen47zvuNRBpGfAv2gmEboQaRzw0CaPrYMksMaXT5us+m7WCSfcjrvTacbI6qR
-         LLbH0byPnqQLlcG+vf68hV1YZ6auj+Quhzcf384cs3AF0eKMh+hP8K4LF5Idt4PGlVBS
-         baAXLyApc3KiOQyUbrB7VdaAS1Iu4nB4aKBrRn5/zjvPVA54+ncYMkdbUFoRETXf7Dxw
-         /UxeIe4mKcFZUONMKoGjZ9gGZDDJVjvf0Ojv5b1ObOpVm10s86yPSCcl8lSCR+z5PEz3
-         CZK9W4huN/JJeLjxPYDLLptKC/Y5/3qIKB10zRCPeTWRXg8nAFZyYh4aalILd/jeNCBj
-         lExw==
-X-Gm-Message-State: AOAM533Wu13TxmPPsUOVovSF0tBfSE4Ly+1HNi7jS9HgftZzZIeiWkd2
-        3l0VxKz1LJUfdWRJ2PdMblhkHAkwWmgJm8QSViE=
-X-Google-Smtp-Source: ABdhPJxUtFFZ/TdUvhg3UFl/iRBV82O13ot3ca0wwDlvmopzKaMuVbedurIxZEDyynaNtS/8vAkxaNqYlz17/ZTpTQE=
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
- c6-20020a170902724600b00138a6ed66ccmr32071190pll.22.1634615168946; Mon, 18
- Oct 2021 20:46:08 -0700 (PDT)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634615257; x=1666151257;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=mDM3qAEfcMEPecgWSmw2OUi2y/VRocP9oNg9Qjjj39o=;
+  b=KvMC6TenXuxmiviERJToNlhIADnF/d3Dp6vzVZMHNi28gH+2sOHelngu
+   L5E4JaXFoEsdLQKJg603sU3BY2YOoNCE9z9IM2hSvg611uifLT05ZSsas
+   R9zHa8P8InSjzCXfFE0JAKquCt3goUWn2+5PdAzF2t/JaSozy8JaMVqdf
+   A=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 18 Oct 2021 20:47:37 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 20:47:36 -0700
+Received: from [10.111.172.190] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Mon, 18 Oct 2021
+ 20:47:34 -0700
+Message-ID: <a354fadd-268f-8119-d37a-102e5efa1437@quicinc.com>
+Date:   Mon, 18 Oct 2021 23:47:32 -0400
 MIME-Version: 1.0
-References: <20211015090353.31248-1-zhouchengming@bytedance.com>
- <CAADnVQ+A5LdWQTXFugNTceGcz_biV-uEJma4oT5UJKeHQBHQPw@mail.gmail.com>
- <6d7246b6-195e-ee08-06b1-2d1ec722e7b2@bytedance.com> <CAADnVQKG5=qVSjZGzHEc0ijwiYABVCU1uc8vOQ-ZLibhpW--Hg@mail.gmail.com>
- <b8f6c2f6-1b07-9306-46da-5ab170a125f9@bytedance.com>
-In-Reply-To: <b8f6c2f6-1b07-9306-46da-5ab170a125f9@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 18 Oct 2021 20:45:57 -0700
-Message-ID: <CAADnVQJpcFXVE1j5aEdeyCoBZytzytiYP+3AwQxtWmNj6q-kNQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] bpf: use count for prealloc hashtab too
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 04/11] sched: Simplify wake_up_*idle*()
+Content-Language: en-US
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Peter Zijlstra <peterz@infradead.org>, <gor@linux.ibm.com>,
+        <jpoimboe@redhat.com>, <jikos@kernel.org>, <mbenes@suse.cz>,
+        <pmladek@suse.com>, <mingo@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <joe.lawrence@redhat.com>,
+        <fweisbec@gmail.com>, <tglx@linutronix.de>, <hca@linux.ibm.com>,
+        <svens@linux.ibm.com>, <sumanthk@linux.ibm.com>,
+        <live-patching@vger.kernel.org>, <paulmck@kernel.org>,
+        <rostedt@goodmis.org>, <x86@kernel.org>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152428.769328779@infradead.org>
+ <ba4ca17f-100e-bef7-6d7b-4de0f5a515b9@quicinc.com>
+In-Reply-To: <ba4ca17f-100e-bef7-6d7b-4de0f5a515b9@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 8:14 PM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> =E5=9C=A8 2021/10/19 =E4=B8=8A=E5=8D=889:57, Alexei Starovoitov =E5=86=99=
-=E9=81=93:
-> > On Sun, Oct 17, 2021 at 10:49 PM Chengming Zhou
-> > <zhouchengming@bytedance.com> wrote:
-> >>
-> >> =E5=9C=A8 2021/10/16 =E4=B8=8A=E5=8D=883:58, Alexei Starovoitov =E5=86=
-=99=E9=81=93:
-> >>> On Fri, Oct 15, 2021 at 11:04 AM Chengming Zhou
-> >>> <zhouchengming@bytedance.com> wrote:
-> >>>>
-> >>>> We only use count for kmalloc hashtab not for prealloc hashtab, beca=
-use
-> >>>> __pcpu_freelist_pop() return NULL when no more elem in pcpu freelist=
-.
-> >>>>
-> >>>> But the problem is that __pcpu_freelist_pop() will traverse all CPUs=
- and
-> >>>> spin_lock for all CPUs to find there is no more elem at last.
-> >>>>
-> >>>> We encountered bad case on big system with 96 CPUs that alloc_htab_e=
-lem()
-> >>>> would last for 1ms. This patch use count for prealloc hashtab too,
-> >>>> avoid traverse and spin_lock for all CPUs in this case.
-> >>>>
-> >>>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> >>>
-> >>> It's not clear from the commit log what you're solving.
-> >>> The atomic inc/dec in critical path of prealloc maps hurts performanc=
-e.
-> >>> That's why it's not used.
-> >>>
-> >> Thanks for the explanation, what I'm solving is when hash table hasn't=
- free
-> >> elements, we don't need to call __pcpu_freelist_pop() to traverse and
-> >> spin_lock all CPUs. The ftrace output of this bad case is below:
-> >>
-> >>  50)               |  htab_map_update_elem() {
-> >>  50)   0.329 us    |    _raw_spin_lock_irqsave();
-> >>  50)   0.063 us    |    lookup_elem_raw();
-> >>  50)               |    alloc_htab_elem() {
-> >>  50)               |      pcpu_freelist_pop() {
-> >>  50)   0.209 us    |        _raw_spin_lock();
-> >>  50)   0.264 us    |        _raw_spin_lock();
-> >
-> > This is LRU map. Not hash map.
-> > It will grab spin_locks of other cpus
-> > only if all previous cpus don't have free elements.
-> > Most likely your map is actually full and doesn't have any free elems.
-> > Since it's an lru it will force free an elem eventually.
-> >
->
-> Maybe I missed something, the map_update_elem function of LRU map is
-> htab_lru_map_update_elem() and the htab_map_update_elem() above is the
-> map_update_elem function of hash map.
-> Because of the implementation of percpu freelist used in hash map, it
-> will spin_lock all other CPUs when there is no free elements.
+Peter, any thoughts? I did confirm that reverting the commit fixed the issue.
 
-Ahh. Right. Then what's the point of optimizing the error case
-at the expense of the fast path?
+On 10/13/2021 10:32 AM, Qian Cai wrote:
+> 
+> 
+> On 9/29/2021 11:17 AM, Peter Zijlstra wrote:
+>> --- a/kernel/smp.c
+>> +++ b/kernel/smp.c
+>> @@ -1170,14 +1170,14 @@ void wake_up_all_idle_cpus(void)
+>>  {
+>>  	int cpu;
+>>  
+>> -	preempt_disable();
+>> +	cpus_read_lock();
+>>  	for_each_online_cpu(cpu) {
+>> -		if (cpu == smp_processor_id())
+>> +		if (cpu == raw_smp_processor_id())
+>>  			continue;
+>>  
+>>  		wake_up_if_idle(cpu);
+>>  	}
+>> -	preempt_enable();
+>> +	cpus_read_unlock();
+> 
+> Peter, it looks like this thing introduced a deadlock during CPU online/offline.
+> 
+> [  630.145166][  T129] WARNING: possible recursive locking detected
+> [  630.151164][  T129] 5.15.0-rc5-next-20211013+ #145 Not tainted
+> [  630.156988][  T129] --------------------------------------------
+> [  630.162984][  T129] cpuhp/21/129 is trying to acquire lock:
+> [  630.168547][  T129] ffff800011f466d0 (cpu_hotplug_lock){++++}-{0:0}, at: wake_up_all_idle_cpus+0x40/0xe8
+> wake_up_all_idle_cpus at /usr/src/linux-next/kernel/smp.c:1174
+> [  630.178040][  T129]
+> [  630.178040][){++++}-{0:0}, at help us debug this:
+> [  630.202292][  T129]  Possible unsafe locking scenario:
+> [  630.202292][  T129]
+> [  630.209590][  T129]        CPU0
+> [  630.212720][  T129]        ----
+> [  630.215851][  T129]   lock(cpu_hotplug_lock);
+> [  630.220202][  T129]   lock(cpu_hotplug_lock);
+> [  630.224553][  T129]
+> [  630.224553][  T129]  *** DEADLOCK ***
+> [  630.224553][  T129]
+> [  630.232545][  T129]  May be due to missing lock nesting notation
+> [  630.232545][  T129]
+> [  630.240711][  T129] 3 locks held by cpuhp/21/129:
+> [  630.245406][  T129]  #0: ffff800011f466d0 (cpu_hotplug_lock){++++}-{0:0}, at: cpuhp_thread_fun+0xe0/0x588
+> [  630.254976][  T129]  #1: ffff800011f46780 (cpuhp_state-up){+.+.}-{0:0}, at: cpuhp_thread_fun+0xe0/0x588
+> [  630.264372][  T129]  #2: ffff8000191fb9c8 (cpuidle_lock){+.+.}-{3:3}, at: cpuidle_pause_and_lock+0x24/0x38
+> [  630.274031][  T129]
+> [  630.274031][  T129] stack backtrace:
+> [  630.279767][  T129] CPU: 21 PID: 129 Comm: cpuhp/21 Not tainted 5.15.0-rc5-next-20211013+ #145
+> [  630.288371][  T129] Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 1.6 06/28/2020
+> [  630.296886][  T129] Call trace:
+> [  630.300017][  T129]  dump_backtrace+0x0/0x3b8
+> [  630.304369][  T129]  show_stack+0x20/0x30
+> [  630.308371][  T129]  dump_stack_lvl+0x8c/0xb8
+> [  630.312722][  T129]  dump_stack+0x1c/0x38
+> [  630.316723][  T129]  validate_chain+0x1d84/0x1da0
+> [  630.321421][  T129]  __lock_acquire+0xab0/0x2040
+> [  630.326033][  T129]  lock_acquire+0x32c/0xb08
+> [  630.330390][  T129]  cpus_read_lock+0x94/0x308
+> [  630.334827][  T129]  wake_up_all_idle_cpus+0x40/0xe8
+> [  630.339784][  T129]  cpuidle_uninstall_idle_handler+0x3c/0x50
+> [  630.345524][  T129]  cpuidle_pause_and_lock+0x28/0x38
+> [  630.350569][  T129]  acpi_processor_hotplug+0xc0/0x170
+> [  630.355701][  T129]  acpi_soft_cpu_online+0x124/0x250
+> [  630.360745][  T129]  cpuhp_invoke_callback+0x51c/0x2ab8
+> [  630.365963][  T129]  cpuhp_thread_fun+0x204/0x588
+> [  630.370659][  T129]  smpboot_thread_fn+0x3f0/0xc40
+> [  630.375444][  T129]  kthread+0x3d8/0x488
+> [  630.379360][  T129]  ret_from_fork+0x10/0x20
+> [  863.525716][  T191] INFO: task cpuhp/21:129 blocked for more than 122 seconds.
+> [  863.532954][  T191]       Not tainted 5.15.0-rc5-next-20211013+ #145
+> [  863.539361][  T191] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  863.547927][  T191] task:cpuhp/21        state:D stack:59104 pid:  129 ppid:     2 flags:0x00000008
+> [  863.557029][  T191] Call trace:
+> [  863.560171][  T191]  __switch_to+0x184/0x400
+> [  863.564448][  T191]  __schedule+0x74c/0x1940
+> [  863.568753][  T191]  schedule+0x110/0x318
+> [  863.572764][  T191]  percpu_rwsem_wait+0x1b8/0x348
+> [  863.577592][  T191]  __percpu_down_read+0xb0/0x148
+> [  863.582386][  T191]  cpus_read_lock+0x2b0/0x308
+> [  863.586961][  T191]  wake_up_all_idle_cpus+0x40/0xe8
+> [  863.591931][  T191]  cpuidle_uninstall_idle_handler+0x3c/0x50
+> [  863.597716][  T191]  cpuidle_pause_and_lock+0x28/0x38
+> [  863.602771][  T191]  acpi_processor_hotplug+0xc0/0x170
+> [  863.607946][  T191]  acpi_soft_cpu_online+0x124/0x250
+> [  863.613001][  T191]  cpuhp_invoke_callback+0x51c/0x2ab8
+> [  863.618261][  T191]  cpuhp_thread_fun+0x204/0x588
+> [  863.622967][  T191]  smpboot_thread_fn+0x3f0/0xc40
+> [  863.627787][  T191]  kthread+0x3d8/0x488
+> [  863.631712][  T191]  ret_from_fork+0x10/0x20
+> [  863.636020][  T191] INFO: task kworker/0:2:189 blocked for more than 122 seconds.
+> [  863.643500][  T191]       Not tainted 5.15.0-rc5-next-20211013+ #145
+> [  863.649882][  T191] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  863.658425][  T191] task:kworker/0:2     state:D stack:58368 pid:  189 ppid:     2 flags:0x00000008
+> [  863.667516][  T191] Workqueue: events vmstat_shepherd
+> [  863.672573][  T191] Call trace:
+> [  863.675731][  T191]  __switch_to+0x184/0x400
+> [  863.680001][  T191]  __schedule+0x74c/0x1940
+> [  863.684268][  T191]  schedule+0x110/0x318
+> [  863.688295][  T191]  percpu_rwsem_wait+0x1b8/0x348
+> [  863.693085][  T191]  __percpu_down_read+0xb0/0x148
+> [  863.697892][  T191]  cpus_read_lock+0x2b0/0x308
+> [  863.702421][  T191]  vmstat_shepherd+0x5c/0x1a8
+> [  863.706977][  T191]  process_one_work+0x808/0x19d0
+> [  863.711767][  T191]  worker_thread+0x334/0xae0
+> [  863.716227][  T191]  kthread+0x3d8/0x488
+> [  863.720149][  T191]  ret_from_fork+0x10/0x20
+> [  863.724487][  T191] INFO: task lsbug:4642 blocked for more than 123 seconds.
+> [  863.731565][  T191]       Not tainted 5.15.0-rc5-next-20211013+ #145
+> [  863.737938][  T191] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  863.746490][  T191] task:lsbug           state:D stack:55536 pid: 4642 ppid:  4638 flags:0x00000008
+> [  863.755549][  T191] Call trace:
+> [  863.758712][  T191]  __switch_to+0x184/0x400
+> [  863.762984][  T191]  __schedule+0x74c/0x1940
+> [  863.767286][  T191]  schedule+0x110/0x318
+> [  863.771294][  T191]  schedule_timeout+0x188/0x238
+> [  863.776016][  T191]  wait_for_completion+0x174/0x290
+> [  863.780979][  T191]  __cpuhp_kick_ap+0x158/0x1a8
+> [  863.785592][  T191]  cpuhp_kick_ap+0x1f0/0x828
+> [  863.790053][  T191]  bringup_cpu+0x180/0x1e0
+> [  863.794320][  T191]  cpuhp_invoke_callback+0x51c/0x2ab8
+> [  863.799561][  T191]  cpuhp_invoke_callback_range+0xa4/0x108
+> [  863.805130][  T191]  cpu_up+0x528/0xd78
+> [  863.808982][  T191]  cpu_device_up+0x4c/0x68
+> [  863.813249][  T191]  cpu_subsys_online+0xc0/0x1f8
+> [  863.817972][  T191]  device_online+0x10c/0x180
+> [  863.822413][  T191]  online_store+0x10c/0x118
+> [  863.826791][  T191]  dev_attr_store+0x44/0x78
+> [  863.831148][  T191]  sysfs_kf_write+0xe8/0x138
+> [  863.835590][  T191]  kernfs_fop_write_iter+0x26c/0x3d0
+> [  863.840745][  T191]  new_sync_write+0x2bc/0x4f8
+> [  863.845275][  T191]  vfs_write+0x714/0xcd8
+> [  863.849387][  T191]  ksys_write+0xf8/0x1e0
+> [  863.853481][  T191]  __arm64_sys_write+0x74/0xa8
+> [  863.858113][  T191]  invoke_syscall.constprop.0+0xdc/0x1d8
+> [  863.863597][  T191]  do_el0_svc+0xe4/0x298
+> [  863.867710][  T191]  el0_svc+0x64/0x130
+> [  863.871545][  T191]  el0t_64_sync_handler+0xb0/0xb8
+> [  863.876437][  T191]  el0t_64_sync+0x180/0x184
+> [  863.880798][  T191] INFO: task mount:4682 blocked for more than 123 seconds.
+> [  863.887881][  T191]       Not tainted 5.15.0-rc5-next-20211013+ #145
+> [  863.894232][  T191] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  863.902776][  T191] task:mount           state:D stack:55856 pid: 4682 ppid:  1101 flags:0x00000000
+> [  863.911865][  T191] Call trace:
+> [  863.915003][  T191]  __switch_to+0x184/0x400
+> [  863.919296][  T191]  __schedule+0x74c/0x1940
+> [  863.923564][  T191]  schedule+0x110/0x318
+> [  863.927590][  T191]  percpu_rwsem_wait+0x1b8/0x348
+> [  863.932380][  T191]  __percpu_down_read+0xb0/0x148
+> [  863.937187][  T191]  cpus_read_lock+0x2b0/0x308
+> [  863.941715][  T191]  alloc_workqueue+0x730/0xd48
+> [  863.946357][  T191]  loop_configure+0x2d4/0x1180 [loop]
+> [  863.951592][  T191]  lo_ioctl+0x5dc/0x1228 [loop]
+> [  863.956321][  T191]  blkdev_ioctl+0x258/0x820
+> [  863.960678][  T191]  __arm64_sys_ioctl+0x114/0x180
+> [  863.965468][  T191]  invoke_syscall.constprop.0+0xdc/0x1d8
+> [  863.970974][  T191]  do_el0_svc+0xe4/0x298
+> [  863.975069][  T191]  el0_svc+0x64/0x130
+> [  863.978922][  T191]  el0t_64_sync_handler+0xb0/0xb8
+> [  863.983798][  T191]  el0t_64_sync+0x180/0x184
+> [  863.988172][  T191] INFO: lockdep is turned off.
+> 
