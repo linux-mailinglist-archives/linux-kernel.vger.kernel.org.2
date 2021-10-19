@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FC3433AA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CCE433AA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbhJSPhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:37:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231888AbhJSPht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:37:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84BEE61074;
-        Tue, 19 Oct 2021 15:35:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634657736;
-        bh=DxWRJWAj/zdrQswUAfCVlDVJpMFIF9IpXMFPLAXRYKM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GMsDOCQAJEt1Pl+XVrt0Iv8x1+PjbfYdPlx9J7nbNsAiudShRlGG9Dr3cDkSrF6bN
-         14GyBkn5FUfK98ABuA7gwqGb+nIWyFMebbtGStkFXt73MCDjAOx608vUXnFLIkAgHr
-         rWirUVzn9ynJxsdrp05ZZy3HGtcCavsgD4g4E02kDGG4PW6K6/FVOL26xJ74NV0UhR
-         69HvskM7S6jwMecRCS6K8SjQYKtw/Ck/uBW9+emraQTk5MuPfDZKjenF9WYhLg/GQy
-         xZNqZmdzfl2r8Ip4jjO01eRN9z9Xtpko7dQx+h0W9V4PBVbv5MHSQhT2zKfIZV7QCl
-         zl/O9vWN6eAgg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        dmaengine@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: stm32-dma: avoid 64-bit division in stm32_dma_get_max_width
-Date:   Tue, 19 Oct 2021 17:35:27 +0200
-Message-Id: <20211019153532.366429-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232139AbhJSPhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231379AbhJSPhu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:37:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB4BC061746;
+        Tue, 19 Oct 2021 08:35:37 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 15:35:35 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634657736;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WJ2h9hd3Fu6v6Na8a7vKsei1q56OAd6Vc7H98oZ9jDg=;
+        b=X7IfOLU26Mm1WuEGlFlH5jcSPpyEjx3HnHzcUdv63rc7AppIlL0xymp35hdI+9KDWpQ5pr
+        eztAaheVAVUx5xpqQcavi++ecS74eGsJFhF1MNgLq+scxjuDmJz8y1S6EVcR59P6hJ1pra
+        N4xZmi9qzzUGYy4ftrWOK+g0QETQOaRDvAKjOLLpaYt16o9W/hkKmgmdsJLNdWunqxRDYY
+        ttz9Q1qXk25AizEs3TnsIkE1jLcuxju53zHidsF/N5AocMo1PVLLqu7BXnpTH1InxcUkvJ
+        DeWsbnPn92Dl1X6f6Q9BIJ5Z5M4icjilT/TuCet/b7/atuUKUyIB1a9YQqZJJQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634657736;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WJ2h9hd3Fu6v6Na8a7vKsei1q56OAd6Vc7H98oZ9jDg=;
+        b=TDL3AWt3+n/NmMAyf/OwESAAW8HRtJs4+AYbd11XvlhaSP/oHsuS+jyI8bjCJUWqoGTom8
+        VQVvNwp5yOy3rtBQ==
+From:   "tip-bot2 for Yanfei Xu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/rwsem: Fix comments about reader
+ optimistic lock stealing conditions
+Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211013134154.1085649-4-yanfei.xu@windriver.com>
+References: <20211013134154.1085649-4-yanfei.xu@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <163465773536.25758.8800618521559459734.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+The following commit has been merged into the locking/core branch of tip:
 
-Using the % operator on a 64-bit variable is expensive and can
-cause a link failure:
+Commit-ID:     5197fcd09ab6dcc4df79edec7e8e27575276374c
+Gitweb:        https://git.kernel.org/tip/5197fcd09ab6dcc4df79edec7e8e27575276374c
+Author:        Yanfei Xu <yanfei.xu@windriver.com>
+AuthorDate:    Wed, 13 Oct 2021 21:41:54 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 19 Oct 2021 17:27:06 +02:00
 
-arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_get_max_width':
-stm32-dma.c:(.text+0x170): undefined reference to `__aeabi_uldivmod'
-arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_set_xfer_param':
-stm32-dma.c:(.text+0x1cd4): undefined reference to `__aeabi_uldivmod'
+locking/rwsem: Fix comments about reader optimistic lock stealing conditions
 
-As we know that we just want to check the alignment in
-stm32_dma_get_max_width(), there is no need for a full division, and
-using a simple mask is a faster replacement.
+After the commit 617f3ef95177 ("locking/rwsem: Remove reader
+optimistic spinning"), reader doesn't support optimistic spinning
+anymore, there is no need meet the condition which OSQ is empty.
 
-In stm32_dma_set_xfer_param(), it is possible to pass a non-power-of-two
-length, so this does not work. I assume this would in fact be a mistake,
-and the hardware does not work correctly with a burst of e.g. 5 bytes
-on a five-byte aligned address. Change this to only allow burst
-transfers if the address is a multiple of the length, and that length
-is a power-of-two number.
+BTW, add an unlikely() for the max reader wakeup check in the loop.
 
-Fixes: b20fd5fa310c ("dmaengine: stm32-dma: fix stm32_dma_get_max_width")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Link: https://lore.kernel.org/r/20211013134154.1085649-4-yanfei.xu@windriver.com
 ---
- drivers/dma/stm32-dma.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/locking/rwsem.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
-index 2283c500f4ce..102278f7d13e 100644
---- a/drivers/dma/stm32-dma.c
-+++ b/drivers/dma/stm32-dma.c
-@@ -280,7 +280,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
- 	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
- 		max_width = max_width >> 1;
- 
--	if (buf_addr % max_width)
-+	if (buf_addr & (max_width - 1))
- 		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
- 
- 	return max_width;
-@@ -757,7 +757,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
- 		 * Set memory burst size - burst not possible if address is not aligned on
- 		 * the address boundary equal to the size of the transfer
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 884aa08..c51387a 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -56,7 +56,6 @@
+  *
+  * A fast path reader optimistic lock stealing is supported when the rwsem
+  * is previously owned by a writer and the following conditions are met:
+- *  - OSQ is empty
+  *  - rwsem is not currently writer owned
+  *  - the handoff isn't set.
+  */
+@@ -485,7 +484,7 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
+ 		/*
+ 		 * Limit # of readers that can be woken up per wakeup call.
  		 */
--		if (buf_addr % buf_len)
-+		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
- 			src_maxburst = 1;
- 		else
- 			src_maxburst = STM32_DMA_MAX_BURST;
-@@ -813,7 +813,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
- 		 * Set memory burst size - burst not possible if address is not aligned on
- 		 * the address boundary equal to the size of the transfer
- 		 */
--		if (buf_addr % buf_len)
-+		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
- 			dst_maxburst = 1;
- 		else
- 			dst_maxburst = STM32_DMA_MAX_BURST;
--- 
-2.29.2
-
+-		if (woken >= MAX_READERS_WAKEUP)
++		if (unlikely(woken >= MAX_READERS_WAKEUP))
+ 			break;
+ 	}
+ 
