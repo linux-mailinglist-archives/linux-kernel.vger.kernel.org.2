@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB82B433487
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDBC433484
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235357AbhJSLTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235370AbhJSLTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:19:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 790AF6128B;
-        Tue, 19 Oct 2021 11:16:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634642211;
-        bh=zowoZA2DNh4UwkN2v6Xd3q8lGJcDY+Iha2h2tBForeA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yj6I2acSnV7xWPZ/fC3LkxRxWyygbqXfz1qRVSydcPPlMI9fO/W8abjJAuGJIjBMz
-         wQNHWiV28UR+80KR3//XNGg5nj2AyR8gLF4xr69/BPb+e/JaGrQdtXSVZUFDAzzLbb
-         gzgAIWwBgxIPcuP/6xkA5EYLifKBaT/enpUvNGvI=
-Date:   Tue, 19 Oct 2021 13:16:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>, wsa@kernel.org,
-        jie.deng@intel.com, virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
-Message-ID: <YW6pHkXOPvtidtwS@kroah.com>
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
- <20211019074647.19061-2-vincent.whitchurch@axis.com>
- <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
- <YW6Rj/T6dWfMf7lU@kroah.com>
- <20211019094203.3kjzch7ipbdv7peg@vireshk-i7>
+        id S235429AbhJSLSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:18:53 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4005 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235411AbhJSLSv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:18:51 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HYWLT6wwcz67rNM;
+        Tue, 19 Oct 2021 19:12:49 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 19 Oct 2021 13:16:36 +0200
+Received: from [10.47.85.98] (10.47.85.98) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 19 Oct
+ 2021 12:16:35 +0100
+Subject: Re: [PATCH v2 04/21] perf pmu: Make pmu_event tables const.
+To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
+        "Jiri Olsa" <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        "Zhen Lei" <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        "Joakim Zhang" <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Fabian Hemmer" <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        "Sumanth Korikkar" <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        "Andrew Kilroy" <andrew.kilroy@arm.com>
+CC:     Stephane Eranian <eranian@google.com>
+References: <20211015172132.1162559-1-irogers@google.com>
+ <20211015172132.1162559-5-irogers@google.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <d9566a3a-179e-ab3c-6a63-256ea23778b9@huawei.com>
+Date:   Tue, 19 Oct 2021 12:19:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019094203.3kjzch7ipbdv7peg@vireshk-i7>
+In-Reply-To: <20211015172132.1162559-5-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.85.98]
+X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 03:12:03PM +0530, Viresh Kumar wrote:
-> On 19-10-21, 11:36, Greg KH wrote:
-> > What is the "other side" here?  Is it something that you trust or not?
+On 15/10/2021 18:21, Ian Rogers wrote:
+
+- bouncing Changbin Du <changbin.du@intel.com> and Jin Yao 
+<yao.jin@linux.intel.com>
+
+> Make lookup nature of data structures clearer through their type. Reduce
+> scope of architecture specific pmu_event tables by making them static.
 > 
-> Other side can be a remote processor (for remoteproc over virtio or
-> something similar), or traditionally it can be host OS or host
-> firmware providing virtualisation to a Guest running Linux (this
-> driver). Or something else..
-> 
-> I would incline towards "we trust the other side" here.
+> Suggested-by: John Garry<john.garry@huawei.com>
+> Acked-by: Andi Kleen<ak@linux.intel.com>
+> Signed-off-by: Ian Rogers<irogers@google.com>
 
-That's in contradition with what other people seem to think the virtio
-drivers are for, see this crazy thread for details about that:
-	https://lore.kernel.org/all/20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com/
+Reviewed-by: John Garry <john.garry@huawei.com>
 
-You can "trust" the hardware, but also handle things when hardware is
-broken, which is most often the case in the real world.
+BTW, We seem to be using > 80 char per line now. Well in metricgroup.h 
+anyway, from a brief check. I know checkpatch.pl is ok with this now, 
+but some maintainers aren't. Just saying.
 
-So why is having a timeout a problem here?  If you have an overloaded
-system, you want things to time out so that you can start to recover.
-
-> > Usually we trust the hardware, but if you do not trust the hardware,
-> > then yes, you need to have a timeout here.
-> 
-> The other side is the software that has access to the _Real_ hardware,
-> and so we should trust it. So we can have a actually have a completion
-> without timeout here, interesting.
-
-And if that hardware stops working?  Timeouts are good to have, why not
-just bump it up a bit if you are running into it in a real-world
-situation?
-
-thanks,
-
-greg k-h
+Thanks,
+John
