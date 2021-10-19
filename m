@@ -2,59 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D657A4335DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C31C4335E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235550AbhJSM0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:26:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230513AbhJSM0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:26:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0B486137B;
-        Tue, 19 Oct 2021 12:24:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634646274;
-        bh=4IrO+sXfnK8xpkI3TCB8EnCCEAY7jnrvePIPQfW4Juo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jx5N/lB97Eleqd/09I9fldRnoVPLx9Xpba9Jtaagtq17H0V9re10EGEueul3r1YUC
-         7R4UVAEnjUuPh7W1lG4gfSIIkf9p7CA22wmYfYIX7j277r9dH3IL7eghXyFAJB1lYS
-         jdFdLgyFWOi/tU9yuiQbMGgLrXZi3nnysOMFGxfs=
-Date:   Tue, 19 Oct 2021 14:24:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org, wangqing@vivo.com,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] MAINTAINERS: Update the entry for MHI bus
-Message-ID: <YW64/hzKom7MiVDV@kroah.com>
-References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
- <20211016065734.28802-2-manivannan.sadhasivam@linaro.org>
- <661c564c-e6cd-cbd4-0b17-a7c230d911b2@codeaurora.org>
+        id S235638AbhJSM2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:28:23 -0400
+Received: from smtprelay0090.hostedemail.com ([216.40.44.90]:45042 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235533AbhJSM2W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:28:22 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id B7607100CD86D;
+        Tue, 19 Oct 2021 12:26:07 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id C18ED315D74;
+        Tue, 19 Oct 2021 12:26:06 +0000 (UTC)
+Message-ID: <4c6a85a4934ef977eee07fb7e38b07b8061bfce4.camel@perches.com>
+Subject: Re: [PATCH] staging: vt6655: Fix line wrapping in rf.c file
+From:   Joe Perches <joe@perches.com>
+To:     Karolina Drobnik <karolinadrobnik@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Tue, 19 Oct 2021 05:26:05 -0700
+In-Reply-To: <810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel@gmail.com>
+References: <20211018150526.9718-1-karolinadrobnik@gmail.com>
+         <YW2O3wC8wMEKS3Ub@kroah.com>
+         <84f3c940fedb961e6e7e88d47c3d15e598bc32c3.camel@perches.com>
+         <810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <661c564c-e6cd-cbd4-0b17-a7c230d911b2@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: C18ED315D74
+X-Spam-Status: No, score=-2.90
+X-Stat-Signature: 87uixfj7rnyqhe7tuq9g4m97zeze61wg
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1//BRstIUjWag0uUzgJvaEENDABgRIeRoI=
+X-HE-Tag: 1634646366-419216
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 09:19:16PM -0700, Hemant Kumar wrote:
+On Tue, 2021-10-19 at 11:59 +0100, Karolina Drobnik wrote:
+> Hi,
 > 
+> Thank you very much for your comments.
 > 
-> On 10/15/2021 11:57 PM, Manivannan Sadhasivam wrote:
-> > Since Hemant is not carrying out any maintainership duties let's make
-> > him as a dedicated reviewer. Also add the new mailing lists dedicated
-> > for MHI in subspace mailing list server.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> On Mon, 2021-10-18 at 17:12 +0200, Greg KH wrote:
+> > Also, these are all just fine as-is for now.  A better way to make
+> > these lines smaller is to use better variable and function names 
+> > that are shorter and make sense :)
 > 
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> I have v2 ready but I'm not sure, given the Joe's patch, if my solution
+> is a satisfactory one. I didn't jump on such refactoring as I'm still
+> learning about the codebase/process and didn't want to muddle the
+> waters (...more than I do already).
+> 
+> Greg, what would you prefer? Should I back up with my patch, pick
+> something else and let Joe's patch be merged?
 
-Great, Manivannan, can you resend just this patch with this reviewed-by
-so that I can apply it?
+What I suggested is not a patch it's just an example.
 
-thanks,
+There's quite a lot of code in that driver that _could_
+be updated/refined/refactored (none of which _I_ will
+submit), but it's up to you do whatever _you_ want.
 
-greg k-h
+You could:
+
+o remove the Hungarian notation
+o convert the mixed case variables to snake case
+o remove unnecessary function definitions and make them static
+o refactor various functions
+
+Generally, I prefer refactoring code to make it simpler or
+more like the generally preferred kernel styles.
+
+Another option would be to submit a completely new driver for
+this device based on this existing driver as what's there isn't
+particularly great IMO, but read the vt6655 TODO file and see if
+there's something you actually want to do there.
+
+> Also, I have a question about the patch if that's ok :)
+
+It's OK to ask.
+
+> On Mon, 2021-10-18 at 22:56 -0700, Joe Perches wrote:
+> > Maybe some refactoring like:
+> > ---
+[]
+> > diff --git a/drivers/staging/vt6655/rf.c
+[]
+> > +       uChannel--;
+> 
+> I see that you introduced `uChannel--` to further tidy up the lines
+> with `[uChannel - 1]`. In general, is there anything wrong with
+> indexing like `i - 1`?
+
+Depends on how often it's used and if it's ever missed accidentally.
+
+> What's the preference here? DRY things up as much as possible?
+
+Up to you
+
+> I'm asking because when I was reading this line, at first, it wasn't
+> clear to me why we could decrement it (example though: "Was this
+> modified earlier? Do we need to "correct" it?").
+
+Generally, just try to make code clear for a reader.
+
+When you do that, the compiler will also do a better job
+at what it does.
+
+If you look at the callers of the function, see if it's better
+to decrement the argument instead.
+
