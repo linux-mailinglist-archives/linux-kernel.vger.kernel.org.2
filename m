@@ -2,208 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF76432D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1AE432D72
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhJSFys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 01:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
+        id S233831AbhJSFyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 01:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbhJSFyo (ORCPT
+        with ESMTP id S229784AbhJSFym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 01:54:44 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A12C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:52:32 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id d131so3053797ybd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hhQEzUyEKyXCEjjzkYdjEsFZ3KqkRdQuV0vIpz0DeEU=;
-        b=8GjQYpKjvAO+JbTgbadd4Qpv0oYVQW5dLMGDgEVDqvaHL6WbpvpMzwRNiJHLxAVaXb
-         lYxFY59tWmotTsbj3CGvxZ3s6AXrOyvXNkpsfaKIt7hwgO04SCFnoZuarqpRvGaQboj6
-         JPtTFD42/O2UOmNCTM8mKs3MTdBpYxvbpiQETy5yMbRT7P3WJtw+nqWWz/RJCNB0tFSD
-         8WehQP3Oc/7Pu2mSdAIGRWfKFpIRuRXdu2EklENy1Yhrs3+5Wu5cvZ4nsxZ7/5Rg+q6i
-         m9NikMGLce+kWvRCBxXdYDBbe97Wm8ZaE7B2nce10OEn1VMblIWVJuVoTmPUa6F8HBL4
-         nipw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hhQEzUyEKyXCEjjzkYdjEsFZ3KqkRdQuV0vIpz0DeEU=;
-        b=FJjaiC64R80CRr0pa67fhv5yXgNqokSgdfs/ym+DmDleVokdv4p0pfb+7xVhOHEebh
-         t86mO7T6IMNQIHN4DRSm/9pfkWTyeePL8VtIonl0VCbKicWGMc/ZwP3u4VG1ttNXUrgw
-         jPLQ9EMlN360owmMqORlF6d37KsP600OrPl2ozeE7Wi1NbzRdu7f8bgfa6J3LB0NZZfJ
-         abH0PeoAFdphpAxTf/SILKEsovsRQpXJYEnE2FqkgiDWzqkkGuD/IIMpzkqjTEHI7K4O
-         +PpU2ormvLRcLVEfDHpkXa35yNJtgPSPTEV6MIBIZKfAVlVUzx5OlEPY2drdI5xOVHEK
-         xNew==
-X-Gm-Message-State: AOAM531xYhAgvmZ/R+k+SE2oyrorRXvzzn6GsiSCwFE8k81gWohO7vBR
-        LelTJ4MO8QuZKzMghoLqqhv2tGo3FdK2klWXydnhma71qloZ1A==
-X-Google-Smtp-Source: ABdhPJytPBg2t7FEILWhgzh4fD7L32s4XWKCrqwC0E2FSf3XWTNjerbXi/5h/hgXLR1JJ9w/T0/WKNUi4U+3CMSPoVg=
-X-Received: by 2002:a25:aac4:: with SMTP id t62mr34689318ybi.419.1634622751860;
- Mon, 18 Oct 2021 22:52:31 -0700 (PDT)
+        Tue, 19 Oct 2021 01:54:42 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A812C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:52:29 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 14:52:21 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1634622748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eleFrI14OL3nhvSbN5u9PeAeR7eMrpEMGjnceXAO42w=;
+        b=dJZ910Bq7uAQPTACw1YuK1xa43xV5o64PfQlD/qatlaV4qPpHaZGvPaCtxlGkVu01rYZV1
+        MnuCpNomxvOZCDuchCqK++KnbLxFWM+YCnk/MQ4mMJQ1tNABQv7a2y6f07NDLJVSj2EZqT
+        Qe2DIIjUHmjM9w9opjuZqbMgAO7sEOc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     naoya.horiguchi@nec.com, hughd@google.com,
+        kirill.shutemov@linux.intel.com, willy@infradead.org,
+        peterx@redhat.com, osalvador@suse.de, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v4 PATCH 5/6] mm: shmem: don't truncate page if memory failure
+ happens
+Message-ID: <20211019055221.GC2268449@u2004>
+References: <20211014191615.6674-1-shy828301@gmail.com>
+ <20211014191615.6674-6-shy828301@gmail.com>
 MIME-Version: 1.0
-References: <20211019053058.2873615-1-shakeelb@google.com>
-In-Reply-To: <20211019053058.2873615-1-shakeelb@google.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 19 Oct 2021 13:51:55 +0800
-Message-ID: <CAMZfGtUy5CQR4B1BFE+pEJfvzE2s0MDLJF2sC3cxkvZpahWKWg@mail.gmail.com>
-Subject: Re: [PATCH v2] memcg, kmem: further deprecate kmem.limit_in_bytes
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211014191615.6674-6-shy828301@gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 1:31 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> The deprecation process of kmem.limit_in_bytes started with the commit
-> 0158115f702 ("memcg, kmem: deprecate kmem.limit_in_bytes") which also
-> explains in detail the motivation behind the deprecation. To summarize,
-> it is the unexpected behavior on hitting the kmem limit. This patch
-> moves the deprecation process to the next stage by disallowing to set
-> the kmem limit. In future we might just remove the kmem.limit_in_bytes
-> file completely.
->
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Cc: Vasily Averin <vvs@virtuozzo.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
+On Thu, Oct 14, 2021 at 12:16:14PM -0700, Yang Shi wrote:
+> The current behavior of memory failure is to truncate the page cache
+> regardless of dirty or clean.  If the page is dirty the later access
+> will get the obsolete data from disk without any notification to the
+> users.  This may cause silent data loss.  It is even worse for shmem
+> since shmem is in-memory filesystem, truncating page cache means
+> discarding data blocks.  The later read would return all zero.
+> 
+> The right approach is to keep the corrupted page in page cache, any
+> later access would return error for syscalls or SIGBUS for page fault,
+> until the file is truncated, hole punched or removed.  The regular
+> storage backed filesystems would be more complicated so this patch
+> is focused on shmem.  This also unblock the support for soft
+> offlining shmem THP.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 > ---
-> Changes since v1:
-> - Replaced EINVAL with ENOTSUPP on setting kmem limits.
-> - V1 was posted last year at [0].
->
-> [0] https://lore.kernel.org/all/20201118175726.2453120-1-shakeelb@google.com/
->
->  .../admin-guide/cgroup-v1/memory.rst          |  6 ++--
->  mm/memcontrol.c                               | 35 +++----------------
->  2 files changed, 6 insertions(+), 35 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-> index 41191b5fb69d..9be961521743 100644
-> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> @@ -87,10 +87,8 @@ Brief summary of control files.
->   memory.oom_control                 set/show oom controls.
->   memory.numa_stat                   show the number of memory usage per numa
->                                      node
-> - memory.kmem.limit_in_bytes          set/show hard limit for kernel memory
-> -                                     This knob is deprecated and shouldn't be
-> -                                     used. It is planned that this be removed in
-> -                                     the foreseeable future.
-> + memory.kmem.limit_in_bytes          This knob is deprecated and writing to
-> +                                     it will return -ENOTSUPP.
->   memory.kmem.usage_in_bytes          show current kernel memory allocation
->   memory.kmem.failcnt                 show the number of kernel memory usage
->                                      hits limits
-
-Since memory.kmem.limit_in_bytes can not be set, how about removing
-those instructions as well?
-
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst
-b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 41191b5fb69d..f710f36770fa 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -518,11 +518,6 @@ will be charged as a new owner of it.
-   charged file caches. Some out-of-use page caches may keep charged until
-   memory pressure happens. If you want to avoid that, force_empty
-will be useful.
--   Also, note that when memory.kmem.limit_in_bytes is set the charges due to
--   kernel pages will still be seen. This is not considered a failure and the
--   write will still return success. In this case, it is expected that
--   memory.kmem.usage_in_bytes == memory.usage_in_bytes.
--
-5.2 stat file
--------------
-
-With this changes,
-
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-
-Thanks.
-
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8f1d9c028897..49a76049a885 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2999,7 +2999,6 @@ static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
->  static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
->                                    unsigned int nr_pages)
+>  mm/memory-failure.c | 10 +++++++++-
+>  mm/shmem.c          | 37 ++++++++++++++++++++++++++++++++++---
+>  mm/userfaultfd.c    |  5 +++++
+>  3 files changed, 48 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index cdf8ccd0865f..f5eab593b2a7 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -57,6 +57,7 @@
+>  #include <linux/ratelimit.h>
+>  #include <linux/page-isolation.h>
+>  #include <linux/pagewalk.h>
+> +#include <linux/shmem_fs.h>
+>  #include "internal.h"
+>  #include "ras/ras_event.h"
+>  
+> @@ -866,6 +867,7 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
 >  {
-> -       struct page_counter *counter;
->         struct mem_cgroup *memcg;
->         int ret;
->
-> @@ -3009,21 +3008,8 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
->         if (ret)
->                 goto out;
->
-> -       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
-> -           !page_counter_try_charge(&memcg->kmem, nr_pages, &counter)) {
-> -
-> -               /*
-> -                * Enforce __GFP_NOFAIL allocation because callers are not
-> -                * prepared to see failures and likely do not have any failure
-> -                * handling code.
-> -                */
-> -               if (gfp & __GFP_NOFAIL) {
-> -                       page_counter_charge(&memcg->kmem, nr_pages);
-> -                       goto out;
-> -               }
-> -               cancel_charge(memcg, nr_pages);
-> -               ret = -ENOMEM;
-> -       }
-> +       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> +               page_counter_charge(&memcg->kmem, nr_pages);
+>  	int ret;
+>  	struct address_space *mapping;
+> +	bool extra_pins;
+>  
+>  	delete_from_lru_cache(p);
+>  
+> @@ -894,6 +896,12 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
+>  		goto out;
+>  	}
+>  
+> +	/*
+> +	 * The shmem page is kept in page cache instead of truncating
+> +	 * so is expected to have an extra refcount after error-handling.
+> +	 */
+> +	extra_pins = shmem_mapping(mapping);
+> +
+>  	/*
+>  	 * Truncation is a bit tricky. Enable it per file system for now.
+>  	 *
+> @@ -903,7 +911,7 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
 >  out:
->         css_put(&memcg->css);
->
-> @@ -3715,17 +3701,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
+>  	unlock_page(p);
+>  
+> -	if (has_extra_refcount(ps, p, false))
+> +	if (has_extra_refcount(ps, p, extra_pins))
+>  		ret = MF_FAILED;
+>  
+>  	return ret;
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index b5860f4a2738..69eaf65409e6 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2456,6 +2456,7 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+>  	struct inode *inode = mapping->host;
+>  	struct shmem_inode_info *info = SHMEM_I(inode);
+>  	pgoff_t index = pos >> PAGE_SHIFT;
+> +	int ret = 0;
+>  
+>  	/* i_rwsem is held by caller */
+>  	if (unlikely(info->seals & (F_SEAL_GROW |
+> @@ -2466,7 +2467,15 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+>  			return -EPERM;
+>  	}
+>  
+> -	return shmem_getpage(inode, index, pagep, SGP_WRITE);
+> +	ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
+> +
+> +	if (*pagep && PageHWPoison(*pagep)) {
+
+shmem_getpage() could return with pagep == NULL, so you need check ret first
+to avoid NULL pointer dereference.
+
+> +		unlock_page(*pagep);
+> +		put_page(*pagep);
+> +		ret = -EIO;
+> +	}
+> +
+> +	return ret;
 >  }
->  #endif /* CONFIG_MEMCG_KMEM */
->
-> -static int memcg_update_kmem_max(struct mem_cgroup *memcg,
-> -                                unsigned long max)
-> -{
-> -       int ret;
-> -
-> -       mutex_lock(&memcg_max_mutex);
-> -       ret = page_counter_set_max(&memcg->kmem, max);
-> -       mutex_unlock(&memcg_max_mutex);
-> -       return ret;
-> -}
-> -
->  static int memcg_update_tcp_max(struct mem_cgroup *memcg, unsigned long max)
->  {
->         int ret;
-> @@ -3791,10 +3766,8 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
->                         ret = mem_cgroup_resize_max(memcg, nr_pages, true);
->                         break;
->                 case _KMEM:
-> -                       pr_warn_once("kmem.limit_in_bytes is deprecated and will be removed. "
-> -                                    "Please report your usecase to linux-mm@kvack.org if you "
-> -                                    "depend on this functionality.\n");
-> -                       ret = memcg_update_kmem_max(memcg, nr_pages);
-> +                       /* kmem.limit_in_bytes is deprecated. */
-> +                       ret = -ENOTSUPP;
->                         break;
->                 case _TCP:
->                         ret = memcg_update_tcp_max(memcg, nr_pages);
-> --
-> 2.33.0.1079.g6e70778dc9-goog
->
+>  
+>  static int
+> @@ -2555,6 +2564,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>  			unlock_page(page);
+>  		}
+>  
+> +		if (page && PageHWPoison(page)) {
+> +			error = -EIO;
+
+Is it cleaner to add PageHWPoison() check in the existing "if (page)" block
+just above?  Then, you don't have to check "page != NULL" twice.
+
+@@ -2562,7 +2562,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+                        if (sgp == SGP_CACHE)
+                                set_page_dirty(page);
+                        unlock_page(page);
+
++                       if (PageHWPoison(page)) {
++                               error = -EIO;
++                               break;
++                       }
+                }
+
+                /*
+
+
+Thanks,
+Naoya Horiguchi
