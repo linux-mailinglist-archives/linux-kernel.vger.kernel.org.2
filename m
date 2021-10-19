@@ -2,276 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDC7432D1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A1D432D1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhJSFUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 01:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbhJSFUA (ORCPT
+        id S233043AbhJSFX4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Oct 2021 01:23:56 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:49280 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhJSFXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 01:20:00 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C71C061769
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:48 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id kk10so13832196pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CdG0RVNBWcqQw3zs+cjsQldLBf7DFcbPNI5BlnMPCmE=;
-        b=LLzK9miIgzF5zl3lJAsPflvm0sjSIoEoITPzH4Bn+syLlfqS+c2Hu28apgu4f/NINK
-         rrkSRRsWHYbmQ+lqgwow1GTvic0zq8nwK/lSsIQj0flHLI8sl05UerbwS/FJmZdH1Wan
-         OfkWC9w3LxsEKh7ObzJ6pUjGUXY7q/Kn8M7u5qP8SmM+Fqg4piYLL8yE5838hUNI1a+m
-         DXnouE3G+lhTBgZY2BVa3DiAdw0G6+aGpdD7Ha6Uf8WP2a91JLIXWXvCK17EKhGE3YSA
-         XmAyqYkCaJbb2NTZZZFKhI7HMCz7XGIHLkriI2cjoV31v6EIFi7E6WwMNPTyAAhItbkI
-         xluA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CdG0RVNBWcqQw3zs+cjsQldLBf7DFcbPNI5BlnMPCmE=;
-        b=lmr+hMadEJA1G2RM78Jc1Qxhat13CyxemDRDPbCgx2s5gV+9UMXm9nqohzitgiVbD9
-         npEgoED+QnCgw5n2xPxjzwEnnicVJOHL/bueBO+VgyNmW420Hhsz2FGFZqHh3CFF/aDk
-         2BMAtZMMujNsaNbydkBMaYRhDaxm6COd9zLSBrQRwww0rIYNUC5j9D4Nu9fVTwP7VJ5d
-         M2EGCbq4hpldyWbzwQVoxG7crnp8a1Zj1UN9pnvtlZuTYLf41MSWK7dntzcR0Gg6QdAF
-         fK96NslpDWkCPB0pbJUIFSKQI1bUHG2iOPi6DPig1fKDQPykNvA2GGrlFeaarEvKq604
-         08Jw==
-X-Gm-Message-State: AOAM532qn33OQuPh7pAu6yCzqw1+9Ijf/AE2inh/nRa+V61WoixG6yV/
-        Z5IHpcGJIxYG8V5mnpeEtshQkRRn0hg=
-X-Google-Smtp-Source: ABdhPJwAngjvuX18gs+olI5F7Jn5DCc8eCedvyS0yvV5BGjn8if+Stm0wNkPVtkaYlDuRP11pneuqw==
-X-Received: by 2002:a17:903:4042:b0:13f:a8ef:7334 with SMTP id n2-20020a170903404200b0013fa8ef7334mr16317806pla.43.1634620667606;
-        Mon, 18 Oct 2021 22:17:47 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:641:401:1d20:4171:83c2:8384:24c5])
-        by smtp.gmail.com with ESMTPSA id me12sm1168844pjb.27.2021.10.18.22.17.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 22:17:47 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     linux-xtensa@linux-xtensa.org
-Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH 10/10] xtensa: move section symbols to asm/sections.h
-Date:   Mon, 18 Oct 2021 22:17:16 -0700
-Message-Id: <20211019051716.4173-11-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211019051716.4173-1-jcmvbkbc@gmail.com>
-References: <20211019051716.4173-1-jcmvbkbc@gmail.com>
+        Tue, 19 Oct 2021 01:23:55 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 19J5LMzqC005662, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 19J5LMzqC005662
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 19 Oct 2021 13:21:23 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 19 Oct 2021 13:21:22 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 22:21:22 -0700
+Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
+ RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
+ 15.01.2106.013; Tue, 19 Oct 2021 13:21:21 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     "cgel.zte@gmail.com" <cgel.zte@gmail.com>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "lv.ruyi@zte.com.cn" <lv.ruyi@zte.com.cn>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: RE: [PATCH] rtw89: fix error function parameter
+Thread-Topic: [PATCH] rtw89: fix error function parameter
+Thread-Index: AQHXxJzcl/L9Ey4To0qT1Twz/99G66vZyNbw
+Date:   Tue, 19 Oct 2021 05:21:21 +0000
+Message-ID: <90ac6c3911ef4f7385df3dde3d3b6d55@realtek.com>
+References: <20211019035311.974706-1-lv.ruyi@zte.com.cn>
+In-Reply-To: <20211019035311.974706-1-lv.ruyi@zte.com.cn>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.188]
+x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/10/19_=3F=3F_03:04:00?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 10/19/2021 04:58:50
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 166808 [Oct 18 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 10/19/2021 05:02:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce asm/sections.h and move section declarations to this header
-from setup.c. Assign section symbols char array type uniformly and drop
-address operator from section symbol references in code.
-Sort headers in setup.c while at it.
 
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
----
- arch/xtensa/include/asm/sections.h |  41 ++++++++++++
- arch/xtensa/kernel/setup.c         | 100 +++++++++--------------------
- 2 files changed, 70 insertions(+), 71 deletions(-)
- create mode 100644 arch/xtensa/include/asm/sections.h
+> -----Original Message-----
+> From: cgel.zte@gmail.com <cgel.zte@gmail.com>
+> Sent: Tuesday, October 19, 2021 11:53 AM
+> To: kvalo@codeaurora.org
+> Cc: davem@davemloft.net; kuba@kernel.org; Pkshih <pkshih@realtek.com>; lv.ruyi@zte.com.cn;
+> linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Zeal
+> Robot <zealci@zte.com.cn>
+> Subject: [PATCH] rtw89: fix error function parameter
+> 
+> From: Lv Ruyi <lv.ruyi@zte.com.cn>
+> 
+> This patch fixes the following Coccinelle warning:
+> drivers/net/wireless/realtek/rtw89/rtw8852a.c:753:
+> WARNING  possible condition with no effect (if == else)
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
 
-diff --git a/arch/xtensa/include/asm/sections.h b/arch/xtensa/include/asm/sections.h
-new file mode 100644
-index 000000000000..a8c42d08e281
---- /dev/null
-+++ b/arch/xtensa/include/asm/sections.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _XTENSA_SECTIONS_H
-+#define _XTENSA_SECTIONS_H
-+
-+#include <asm-generic/sections.h>
-+
-+#ifdef CONFIG_VECTORS_ADDR
-+extern char _WindowVectors_text_start[];
-+extern char _WindowVectors_text_end[];
-+extern char _DebugInterruptVector_text_start[];
-+extern char _DebugInterruptVector_text_end[];
-+extern char _KernelExceptionVector_text_start[];
-+extern char _KernelExceptionVector_text_end[];
-+extern char _UserExceptionVector_text_start[];
-+extern char _UserExceptionVector_text_end[];
-+extern char _DoubleExceptionVector_text_start[];
-+extern char _DoubleExceptionVector_text_end[];
-+extern char _exception_text_start[];
-+extern char _exception_text_end[];
-+extern char _Level2InterruptVector_text_start[];
-+extern char _Level2InterruptVector_text_end[];
-+extern char _Level3InterruptVector_text_start[];
-+extern char _Level3InterruptVector_text_end[];
-+extern char _Level4InterruptVector_text_start[];
-+extern char _Level4InterruptVector_text_end[];
-+extern char _Level5InterruptVector_text_start[];
-+extern char _Level5InterruptVector_text_end[];
-+extern char _Level6InterruptVector_text_start[];
-+extern char _Level6InterruptVector_text_end[];
-+#endif
-+#ifdef CONFIG_SMP
-+extern char _SecondaryResetVector_text_start[];
-+extern char _SecondaryResetVector_text_end[];
-+#endif
-+#ifdef CONFIG_XIP_KERNEL
-+extern char _xip_start[];
-+extern char _xip_end[];
-+#endif
-+
-+#endif
-diff --git a/arch/xtensa/kernel/setup.c b/arch/xtensa/kernel/setup.c
-index 3638fb98a1ab..c9fc39883ea9 100644
---- a/arch/xtensa/kernel/setup.c
-+++ b/arch/xtensa/kernel/setup.c
-@@ -37,14 +37,15 @@
- #include <asm/bootparam.h>
- #include <asm/kasan.h>
- #include <asm/mmu_context.h>
--#include <asm/processor.h>
--#include <asm/timex.h>
--#include <asm/platform.h>
- #include <asm/page.h>
--#include <asm/setup.h>
- #include <asm/param.h>
-+#include <asm/platform.h>
-+#include <asm/processor.h>
-+#include <asm/sections.h>
-+#include <asm/setup.h>
- #include <asm/smp.h>
- #include <asm/sysmem.h>
-+#include <asm/timex.h>
- 
- #if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_DUMMY_CONSOLE)
- struct screen_info screen_info = {
-@@ -271,49 +272,6 @@ void __init init_arch(bp_tag_t *bp_start)
-  * Initialize system. Setup memory and reserve regions.
-  */
- 
--extern char _end[];
--extern char _stext[];
--extern char _WindowVectors_text_start;
--extern char _WindowVectors_text_end;
--extern char _DebugInterruptVector_text_start;
--extern char _DebugInterruptVector_text_end;
--extern char _KernelExceptionVector_text_start;
--extern char _KernelExceptionVector_text_end;
--extern char _UserExceptionVector_text_start;
--extern char _UserExceptionVector_text_end;
--extern char _DoubleExceptionVector_text_start;
--extern char _DoubleExceptionVector_text_end;
--extern char _exception_text_start;
--extern char _exception_text_end;
--#if XCHAL_EXCM_LEVEL >= 2
--extern char _Level2InterruptVector_text_start;
--extern char _Level2InterruptVector_text_end;
--#endif
--#if XCHAL_EXCM_LEVEL >= 3
--extern char _Level3InterruptVector_text_start;
--extern char _Level3InterruptVector_text_end;
--#endif
--#if XCHAL_EXCM_LEVEL >= 4
--extern char _Level4InterruptVector_text_start;
--extern char _Level4InterruptVector_text_end;
--#endif
--#if XCHAL_EXCM_LEVEL >= 5
--extern char _Level5InterruptVector_text_start;
--extern char _Level5InterruptVector_text_end;
--#endif
--#if XCHAL_EXCM_LEVEL >= 6
--extern char _Level6InterruptVector_text_start;
--extern char _Level6InterruptVector_text_end;
--#endif
--#ifdef CONFIG_SMP
--extern char _SecondaryResetVector_text_start;
--extern char _SecondaryResetVector_text_end;
--#endif
--#ifdef CONFIG_XIP_KERNEL
--extern char _xip_start[];
--extern char _xip_end[];
--#endif
--
- static inline int __init_memblock mem_reserve(unsigned long start,
- 					      unsigned long end)
- {
-@@ -350,50 +308,50 @@ void __init setup_arch(char **cmdline_p)
- 
- #ifdef CONFIG_VECTORS_ADDR
- #ifdef SUPPORT_WINDOWED
--	mem_reserve(__pa(&_WindowVectors_text_start),
--		    __pa(&_WindowVectors_text_end));
-+	mem_reserve(__pa(_WindowVectors_text_start),
-+		    __pa(_WindowVectors_text_end));
- #endif
- 
--	mem_reserve(__pa(&_DebugInterruptVector_text_start),
--		    __pa(&_DebugInterruptVector_text_end));
-+	mem_reserve(__pa(_DebugInterruptVector_text_start),
-+		    __pa(_DebugInterruptVector_text_end));
- 
--	mem_reserve(__pa(&_KernelExceptionVector_text_start),
--		    __pa(&_KernelExceptionVector_text_end));
-+	mem_reserve(__pa(_KernelExceptionVector_text_start),
-+		    __pa(_KernelExceptionVector_text_end));
- 
--	mem_reserve(__pa(&_UserExceptionVector_text_start),
--		    __pa(&_UserExceptionVector_text_end));
-+	mem_reserve(__pa(_UserExceptionVector_text_start),
-+		    __pa(_UserExceptionVector_text_end));
- 
--	mem_reserve(__pa(&_DoubleExceptionVector_text_start),
--		    __pa(&_DoubleExceptionVector_text_end));
-+	mem_reserve(__pa(_DoubleExceptionVector_text_start),
-+		    __pa(_DoubleExceptionVector_text_end));
- 
--	mem_reserve(__pa(&_exception_text_start),
--		    __pa(&_exception_text_end));
-+	mem_reserve(__pa(_exception_text_start),
-+		    __pa(_exception_text_end));
- #if XCHAL_EXCM_LEVEL >= 2
--	mem_reserve(__pa(&_Level2InterruptVector_text_start),
--		    __pa(&_Level2InterruptVector_text_end));
-+	mem_reserve(__pa(_Level2InterruptVector_text_start),
-+		    __pa(_Level2InterruptVector_text_end));
- #endif
- #if XCHAL_EXCM_LEVEL >= 3
--	mem_reserve(__pa(&_Level3InterruptVector_text_start),
--		    __pa(&_Level3InterruptVector_text_end));
-+	mem_reserve(__pa(_Level3InterruptVector_text_start),
-+		    __pa(_Level3InterruptVector_text_end));
- #endif
- #if XCHAL_EXCM_LEVEL >= 4
--	mem_reserve(__pa(&_Level4InterruptVector_text_start),
--		    __pa(&_Level4InterruptVector_text_end));
-+	mem_reserve(__pa(_Level4InterruptVector_text_start),
-+		    __pa(_Level4InterruptVector_text_end));
- #endif
- #if XCHAL_EXCM_LEVEL >= 5
--	mem_reserve(__pa(&_Level5InterruptVector_text_start),
--		    __pa(&_Level5InterruptVector_text_end));
-+	mem_reserve(__pa(_Level5InterruptVector_text_start),
-+		    __pa(_Level5InterruptVector_text_end));
- #endif
- #if XCHAL_EXCM_LEVEL >= 6
--	mem_reserve(__pa(&_Level6InterruptVector_text_start),
--		    __pa(&_Level6InterruptVector_text_end));
-+	mem_reserve(__pa(_Level6InterruptVector_text_start),
-+		    __pa(_Level6InterruptVector_text_end));
- #endif
- 
- #endif /* CONFIG_VECTORS_ADDR */
- 
- #ifdef CONFIG_SMP
--	mem_reserve(__pa(&_SecondaryResetVector_text_start),
--		    __pa(&_SecondaryResetVector_text_end));
-+	mem_reserve(__pa(_SecondaryResetVector_text_start),
-+		    __pa(_SecondaryResetVector_text_end));
- #endif
- 	parse_early_param();
- 	bootmem_init();
--- 
-2.20.1
+Thanks for the catch.
+
+Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+
+> ---
+>  drivers/net/wireless/realtek/rtw89/rtw8852a.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/realtek/rtw89/rtw8852a.c
+> b/drivers/net/wireless/realtek/rtw89/rtw8852a.c
+> index b1b87f0aadbb..5c6ffca3a324 100644
+> --- a/drivers/net/wireless/realtek/rtw89/rtw8852a.c
+> +++ b/drivers/net/wireless/realtek/rtw89/rtw8852a.c
+> @@ -753,11 +753,11 @@ static void rtw8852a_ctrl_ch(struct rtw89_dev *rtwdev, u8 central_ch,
+>                 if (is_2g)
+>                         rtw89_phy_write32_idx(rtwdev, R_P1_MODE,
+>                                               B_P1_MODE_SEL,
+>                                               1, phy_idx);
+>  		else
+>  			rtw89_phy_write32_idx(rtwdev, R_P1_MODE,
+>  					      B_P1_MODE_SEL,
+> -					      1, phy_idx);
+> +					      0, phy_idx);
+>  		/* SCO compensate FC setting */
+>  		sco_comp = rtw8852a_sco_mapping(central_ch);
+>  		rtw89_phy_write32_idx(rtwdev, R_FC0_BW, B_FC0_BW_INV,
+> --
+> 2.25.1
 
