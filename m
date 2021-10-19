@@ -2,214 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB06433A89
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FB1433A7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbhJSPe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbhJSPeu (ORCPT
+        id S229941AbhJSPeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:34:36 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:43056 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhJSPec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:34:50 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8FDC06174E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:32:37 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id 187so231919pfc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:32:37 -0700 (PDT)
+        Tue, 19 Oct 2021 11:34:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Fxvvbxs7gfwj8X673aD2/pAKWVOalT8g3gZlZ6FiINc=;
-        b=RKV3BzMqw22aCESASRVbdyruWIJLyRFzVu0OHYX0qeth1T46S12eZ3FmGN5WzCkki7
-         3N2gswTwIJL3oMgOyLrY4LoJiU/QhjfXVpTy1eaaBl7wsO3W8488qy06HpjeuPTV0Kh8
-         SNEIglpT495UE8UxzrI8JLK4kwnc8f2yDq7lc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Fxvvbxs7gfwj8X673aD2/pAKWVOalT8g3gZlZ6FiINc=;
-        b=Y+9ejE4hLkUfEaMZhlzLy2GjfWf1tAOs3Ot5perMIu+ehPUr3HPLHhYItfrWeIMb8j
-         4oHeesRhg/qRRjKLdcDo7KtcWSAq+I1wCDAzSI9VqlvSjh1DBtfKhUOouhs3FKaSetSS
-         wGDCK6OZdbPeAlW7lajPTVIDTgPNUs//HiB+ll/pdU6knUTQh27KoXs6O4G83r0ahgWh
-         aR11c+x7dZ9mP/PCM+0Xq4HG1qacQPlfWZ6dFXl6DkcJ6bI7TRFI8b0TUNV0quCjePUU
-         m8fpNuDaY4MvqpvrwKlDlcsJCMfIZSYFLfZ6Q5jaodUDSRC9RUlO5nSuR8DPNtvx21LQ
-         P7tw==
-X-Gm-Message-State: AOAM531t+SsWQ5DRyO0JQj5GOK54Hz7VT3QNe9UbZtbPvmEcrfA0Istb
-        cv1iXmLnMHYhKNO9PVtJTeZBFQ==
-X-Google-Smtp-Source: ABdhPJxFoLLzZT1e5zp7U+EpZj6f6YwumDONO8bkV09WKsn9ifAPoA0OBXm5zLIesrROI7D0GEIuKg==
-X-Received: by 2002:a63:b04c:: with SMTP id z12mr28743687pgo.371.1634657556924;
-        Tue, 19 Oct 2021 08:32:36 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:490f:f89:7449:e615])
-        by smtp.gmail.com with ESMTPSA id v8sm3087474pjd.7.2021.10.19.08.32.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 08:32:36 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        David Matlack <dmatlack@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Suleiman Souhlal <suleiman@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHV2 3/3] KVM: x86: add KVM_SET_MMU_PREFETCH ioctl
-Date:   Wed, 20 Oct 2021 00:32:14 +0900
-Message-Id: <20211019153214.109519-4-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-In-Reply-To: <20211019153214.109519-1-senozhatsky@chromium.org>
-References: <20211019153214.109519-1-senozhatsky@chromium.org>
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634657540; x=1666193540;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9k1DtCLnVq8onijKayfDBwbvoGq8mjdO5uaTCO13EY8=;
+  b=VUdr2YWzIRcr4NgjiCT6UTpG9D9T4JQkzyPL9zIWBVS4KxKSLqFq6+mZ
+   qetZ40vx3+mL0zO9J1hP3fFHSlFW1SONETbo5SIkiltcuiiNYQmF+0WG6
+   +rPSNWrbxg2CLqhRbjveN5EFRXA2cFg6j2rV30KEZ2OrmwW/CwtfDdJdZ
+   Y=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 19 Oct 2021 08:32:20 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 08:32:19 -0700
+Received: from [10.111.162.88] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 19 Oct 2021
+ 08:32:16 -0700
+Message-ID: <468c435b-192b-790b-2a2d-8f7ddfb4a061@quicinc.com>
+Date:   Tue, 19 Oct 2021 11:32:15 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 04/11] sched: Simplify wake_up_*idle*()
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <gor@linux.ibm.com>, <jpoimboe@redhat.com>, <jikos@kernel.org>,
+        <mbenes@suse.cz>, <pmladek@suse.com>, <mingo@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <joe.lawrence@redhat.com>,
+        <fweisbec@gmail.com>, <tglx@linutronix.de>, <hca@linux.ibm.com>,
+        <svens@linux.ibm.com>, <sumanthk@linux.ibm.com>,
+        <live-patching@vger.kernel.org>, <paulmck@kernel.org>,
+        <rostedt@goodmis.org>, <x86@kernel.org>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152428.769328779@infradead.org>
+ <ba4ca17f-100e-bef7-6d7b-4de0f5a515b9@quicinc.com>
+ <a354fadd-268f-8119-d37a-102e5efa1437@quicinc.com>
+ <YW6IUIRZsBAZ+6hK@hirez.programming.kicks-ass.net>
+ <YW6LgO4OK+YPy90S@hirez.programming.kicks-ass.net>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+In-Reply-To: <YW6LgO4OK+YPy90S@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This ioctl lets user-space set the number of PTEs KVM will
-prefetch:
 
--  pte_prefetch 8
 
-             VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
+On 10/19/2021 5:10 AM, Peter Zijlstra wrote:
+> Here, hows this then?
+> 
+> ---
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index ad0b68a3a3d3..61ddc7a3bafa 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -1170,14 +1170,12 @@ void wake_up_all_idle_cpus(void)
+>  {
+>  	int cpu;
+>  
+> -	cpus_read_lock();
+> -	for_each_online_cpu(cpu) {
+> -		if (cpu == raw_smp_processor_id())
+> -			continue;
+> -
+> -		wake_up_if_idle(cpu);
+> +	for_each_cpu(cpu) {
+> +		preempt_disable();
+> +		if (cpu != smp_processor_id() && cpu_online(cpu))
+> +			wake_up_if_idle(cpu);
+> +		preempt_enable();
+>  	}
+> -	cpus_read_unlock();
+>  }
+>  EXPORT_SYMBOL_GPL(wake_up_all_idle_cpus);
 
-       EPT_VIOLATION     760998    54.85%     7.23%      0.92us  31765.89us      7.78us ( +-   1.46% )
-           MSR_WRITE     170599    12.30%     0.53%      0.60us   3334.13us      2.52us ( +-   0.86% )
-  EXTERNAL_INTERRUPT     159510    11.50%     1.65%      0.49us  43705.81us      8.45us ( +-   7.54% )
-[..]
+This does not compile.
 
-Total Samples:1387305, Total events handled time:81900258.99us.
-
-- pte_prefetch 16
-
-             VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
-
-       EPT_VIOLATION     658064    52.58%     7.04%      0.91us  17022.84us      8.34us ( +-   1.52% )
-           MSR_WRITE     163776    13.09%     0.54%      0.56us   5192.10us      2.57us ( +-   1.25% )
-  EXTERNAL_INTERRUPT     144588    11.55%     1.62%      0.48us  97410.16us      8.75us ( +-  11.44% )
-[..]
-
-Total Samples:1251546, Total events handled time:77956187.56us.
-
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- Documentation/virt/kvm/api.rst | 21 +++++++++++++++++++++
- arch/x86/kvm/x86.c             | 29 +++++++++++++++++++++++++++++
- include/uapi/linux/kvm.h       |  4 ++++
- 3 files changed, 54 insertions(+)
-
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 0c0bf26426b3..b06b7c11a430 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -5473,6 +5473,17 @@ the trailing ``'\0'``, is indicated by ``name_size`` in the header.
- The Stats Data block contains an array of 64-bit values in the same order
- as the descriptors in Descriptors block.
- 
-+4.134 KVM SET MMU PREFETCH
-+----------------------
-+
-+:Capability: KVM_CAP_MMU PREFETCH
-+:Architectures: x86
-+:Type: vm ioctl
-+:Parameters: int value (in)
-+:Returns: 0 on success, error code otherwise
-+
-+Sets the maximum number of PTEs KVM will try to prefetch.
-+
- 5. The kvm_run structure
- ========================
- 
-@@ -7440,3 +7451,13 @@ The argument to KVM_ENABLE_CAP is also a bitmask, and must be a subset
- of the result of KVM_CHECK_EXTENSION.  KVM will forward to userspace
- the hypercalls whose corresponding bit is in the argument, and return
- ENOSYS for the others.
-+
-+8.35 KVM_CAP_MMU_PTE_PREFETCH
-+---------------------------
-+
-+:Capability: KVM_CAP_MMU_PTE_PREFETCH
-+:Architectures: x86
-+:Parameters: args[0] - the number of PTEs to prefetch
-+
-+Sets the maximum number of PTEs KVM will prefetch. The value must be power
-+of two and within (0, 128] range.
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4805960a89e6..e1b2224c4176 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4030,6 +4030,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_VM_COPY_ENC_CONTEXT_FROM:
- 	case KVM_CAP_SREGS2:
- 	case KVM_CAP_EXIT_ON_EMULATION_FAILURE:
-+	case KVM_CAP_MMU_PTE_PREFETCH:
- 		r = 1;
- 		break;
- 	case KVM_CAP_EXIT_HYPERCALL:
-@@ -5831,6 +5832,25 @@ int kvm_arch_pm_notifier(struct kvm *kvm, unsigned long state)
- }
- #endif /* CONFIG_HAVE_KVM_PM_NOTIFIER */
- 
-+static int kvm_arch_mmu_pte_prefetch(struct kvm *kvm, unsigned int num_pages)
-+{
-+	struct kvm_vcpu *vcpu;
-+	int i, ret;
-+
-+	mutex_lock(&kvm->lock);
-+	kvm_for_each_vcpu(i, vcpu, kvm) {
-+		ret = kvm_set_pte_prefetch(vcpu, num_pages);
-+		if (ret) {
-+			kvm_err("Failed to set PTE prefetch on VCPU%d: %d\n",
-+				vcpu->vcpu_id, ret);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&kvm->lock);
-+
-+	return ret;
-+}
-+
- static int kvm_vm_ioctl_get_clock(struct kvm *kvm, void __user *argp)
- {
- 	struct kvm_clock_data data;
-@@ -6169,6 +6189,15 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 	case KVM_X86_SET_MSR_FILTER:
- 		r = kvm_vm_ioctl_set_msr_filter(kvm, argp);
- 		break;
-+	case KVM_SET_MMU_PREFETCH: {
-+		u64 val;
-+
-+		r = -EFAULT;
-+		if (copy_from_user(&val, argp, sizeof(val)))
-+			goto out;
-+		r = kvm_arch_mmu_pte_prefetch(kvm, val);
-+		break;
-+	}
- 	default:
- 		r = -ENOTTY;
- 	}
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index 322b4b588d75..0782eb4c424d 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1120,6 +1120,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_BINARY_STATS_FD 203
- #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
- #define KVM_CAP_ARM_MTE 205
-+#define KVM_CAP_MMU_PTE_PREFETCH 206
- 
- #ifdef KVM_CAP_IRQ_ROUTING
- 
-@@ -2015,4 +2016,7 @@ struct kvm_stats_desc {
- 
- #define KVM_GET_STATS_FD  _IO(KVMIO,  0xce)
- 
-+/* Set number of PTEs to prefetch */
-+#define KVM_SET_MMU_PREFETCH      _IOW(KVMIO, 0xcf, __u64)
-+
- #endif /* __LINUX_KVM_H */
--- 
-2.33.0.1079.g6e70778dc9-goog
-
+kernel/smp.c:1173:18: error: macro "for_each_cpu" requires 2 arguments, but only 1 given
