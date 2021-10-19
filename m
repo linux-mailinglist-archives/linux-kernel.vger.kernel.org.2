@@ -2,74 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E6D4333E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A28F4333DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235277AbhJSKvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:51:39 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:46252 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235291AbhJSKvg (ORCPT
+        id S235286AbhJSKvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:51:24 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53034 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235282AbhJSKvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:51:36 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 19 Oct 2021 03:49:24 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 19 Oct 2021 03:49:22 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 19 Oct 2021 16:19:09 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 78DC45554; Tue, 19 Oct 2021 16:19:08 +0530 (IST)
-From:   Satya Priya <skakit@codeaurora.org>
-To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>, swboyd@chromium.org,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        satya priya <skakit@codeaurora.org>
-Subject: [PATCH V2 3/3] arm64: dts: qcom: pm8350c: Add pwm support
-Date:   Tue, 19 Oct 2021 16:18:51 +0530
-Message-Id: <1634640531-15813-4-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634640531-15813-1-git-send-email-skakit@codeaurora.org>
-References: <1634640531-15813-1-git-send-email-skakit@codeaurora.org>
+        Tue, 19 Oct 2021 06:51:23 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Usued8d_1634640540;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Usued8d_1634640540)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 19 Oct 2021 18:49:09 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     rostedt@goodmis.org
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] ftrace: make ftrace_profile_pages_init static
+Date:   Tue, 19 Oct 2021 18:48:54 +0800
+Message-Id: <1634640534-18280-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: satya priya <skakit@codeaurora.org>
+From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-Add pwm support for PM8350C pmic.
+This symbol is not used outside of ftrace.c, so marks it static.
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
+Fixes the following sparse warning:
+
+kernel/trace/ftrace.c:579:5: warning: symbol 'ftrace_profile_pages_init'
+was not declared. Should it be static?
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: cafb168a1c92 ("tracing: make the function profiler per cpu")
+Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 ---
-Changes in V2:
- - Dropped suffix '4' from pwm phandle and removed "status=ok".
+ kernel/trace/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-index e1b75ae..08fc0a8 100644
---- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-@@ -29,6 +29,12 @@
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 		};
-+
-+		pm8350c_pwm: pwm {
-+			compatible = "qcom,pm8350c-pwm";
-+			#pwm-cells = <2>;
-+			status = "disabled";
-+		};
- 	};
- };
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 655a7deb59d6..f89d25125d97 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -576,7 +576,7 @@ static void ftrace_profile_reset(struct ftrace_profile_stat *stat)
+ 	       FTRACE_PROFILE_HASH_SIZE * sizeof(struct hlist_head));
+ }
  
+-int ftrace_profile_pages_init(struct ftrace_profile_stat *stat)
++static int ftrace_profile_pages_init(struct ftrace_profile_stat *stat)
+ {
+ 	struct ftrace_profile_page *pg;
+ 	int functions;
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.19.1.6.gb485710b
 
