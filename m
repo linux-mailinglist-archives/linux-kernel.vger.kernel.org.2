@@ -2,220 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB244330AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F52F4330A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235004AbhJSIH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:07:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:20679 "EHLO mga04.intel.com"
+        id S234761AbhJSIHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:07:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234743AbhJSIGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:06:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="227218625"
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; 
-   d="scan'208";a="227218625"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 01:03:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; 
-   d="scan'208";a="493985151"
-Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
-  by orsmga008.jf.intel.com with ESMTP; 19 Oct 2021 01:03:26 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Brent Lu <brent.lu@intel.com>,
-        Mac Chiang <mac.chiang@intel.com>,
-        Curtis Malainey <cujomalainey@chromium.org>,
-        linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Gongjun Song <gongjun.song@intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 6/6] ASoC: Intel: soc-acpi: use const for all uses of snd_soc_acpi_codecs
-Date:   Tue, 19 Oct 2021 15:59:41 +0800
-Message-Id: <20211019075941.2037787-7-brent.lu@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019075941.2037787-1-brent.lu@intel.com>
-References: <20211019075941.2037787-1-brent.lu@intel.com>
+        id S234722AbhJSIGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 04:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E94EB61452;
+        Tue, 19 Oct 2021 08:04:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634630668;
+        bh=Uvci5l/z6Xl7igGPEJw1tvb5zXG8EEBvSjZvZQvPw7o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rpKkaVAryy3dOHI5Z0AVHWDGL+qYu3wofMEsdn+Pc8CjxVWvhXVazy7gZrKiPAaDD
+         xNVXTC8q0dsZKNR3ih1oPwNBgr4zydsOmvnv3poIDksXNNKT3SfE6lRbc6lup8jshp
+         UFeWO8R7fla6iyuPrQH95m37/OifKGJ7dEFFb9jjachmzIGkjNuxHpa2sx0ZtXdKS1
+         AGVBuul1FLqAXwuvTgrPKfeB7WXkylEdnmiuXkM/w4yevSt2//z+WrduhEbO7W0aHm
+         qsWGPEPZWnGjrqUdazSHMDIBy5fUq5IJo3r1SYMCGrtFiTcQmrOZ5eRKUX3tYFWXRU
+         876wQqSSyZ5qw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mck6j-001oIo-02; Tue, 19 Oct 2021 09:04:25 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Alex Shi <alexs@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Chen-Yu Tsai <wens@csie.org>, Colin Cross <ccross@android.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, devicetree@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, netdev@vger.kernel.org,
+        sparmaintainer@unisys.com
+Subject: [PATCH v3 00/23] Fix some issues at documentation
+Date:   Tue, 19 Oct 2021 09:03:59 +0100
+Message-Id: <cover.1634630485.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hi Jon,
 
-'const' qualifiers are missing on some platforms, add as needed.
+This series is against today's next (next-20211019) and addresses missing
+links to Documentation/*.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/common/soc-acpi-intel-bxt-match.c |  2 +-
- sound/soc/intel/common/soc-acpi-intel-cml-match.c |  8 ++++----
- sound/soc/intel/common/soc-acpi-intel-glk-match.c |  2 +-
- sound/soc/intel/common/soc-acpi-intel-jsl-match.c |  8 ++++----
- sound/soc/intel/common/soc-acpi-intel-kbl-match.c | 12 ++++++------
- sound/soc/intel/common/soc-acpi-intel-skl-match.c |  2 +-
- 6 files changed, 17 insertions(+), 17 deletions(-)
+The best would be to have the patches applied directly to the trees that
+contain the patches that moved/renamed files, and then apply the
+remaining ones either later during the merge window or just afterwards,
+whatever works best for you.
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-index 78cfdc48ad45..342d34052204 100644
---- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-@@ -41,7 +41,7 @@ static struct snd_soc_acpi_mach *apl_quirk(void *arg)
- 	return mach;
- }
- 
--static struct snd_soc_acpi_codecs bxt_codecs = {
-+static const struct snd_soc_acpi_codecs bxt_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
- };
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-index b591c6fd13fd..b4eb0c97edf1 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-@@ -9,22 +9,22 @@
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- 
--static struct snd_soc_acpi_codecs rt1011_spk_codecs = {
-+static const struct snd_soc_acpi_codecs rt1011_spk_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"10EC1011"}
- };
- 
--static struct snd_soc_acpi_codecs rt1015_spk_codecs = {
-+static const struct snd_soc_acpi_codecs rt1015_spk_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"10EC1015"}
- };
- 
--static struct snd_soc_acpi_codecs max98357a_spk_codecs = {
-+static const struct snd_soc_acpi_codecs max98357a_spk_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
- };
- 
--static struct snd_soc_acpi_codecs max98390_spk_codecs = {
-+static const struct snd_soc_acpi_codecs max98390_spk_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98390"}
- };
-diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-index 32fff9389eb3..904ec0abeca5 100644
---- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-@@ -9,7 +9,7 @@
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- 
--static struct snd_soc_acpi_codecs glk_codecs = {
-+static const struct snd_soc_acpi_codecs glk_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
- };
-diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-index 46aa96bfbf14..2a4eb39ebff7 100644
---- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-@@ -9,22 +9,22 @@
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- 
--static struct snd_soc_acpi_codecs jsl_7219_98373_codecs = {
-+static const struct snd_soc_acpi_codecs jsl_7219_98373_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98373"}
- };
- 
--static struct snd_soc_acpi_codecs rt1015_spk = {
-+static const struct snd_soc_acpi_codecs rt1015_spk = {
- 	.num_codecs = 1,
- 	.codecs = {"10EC1015"}
- };
- 
--static struct snd_soc_acpi_codecs rt1015p_spk = {
-+static const struct snd_soc_acpi_codecs rt1015p_spk = {
- 	.num_codecs = 1,
- 	.codecs = {"RTL1015"}
- };
- 
--static struct snd_soc_acpi_codecs mx98360a_spk = {
-+static const struct snd_soc_acpi_codecs mx98360a_spk = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98360A"}
- };
-diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-index 741bf2f9e081..4e817f559d38 100644
---- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-@@ -12,32 +12,32 @@
- 
- static struct skl_machine_pdata skl_dmic_data;
- 
--static struct snd_soc_acpi_codecs kbl_codecs = {
-+static const struct snd_soc_acpi_codecs kbl_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"10508825"}
- };
- 
--static struct snd_soc_acpi_codecs kbl_poppy_codecs = {
-+static const struct snd_soc_acpi_codecs kbl_poppy_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"10EC5663"}
- };
- 
--static struct snd_soc_acpi_codecs kbl_5663_5514_codecs = {
-+static const struct snd_soc_acpi_codecs kbl_5663_5514_codecs = {
- 	.num_codecs = 2,
- 	.codecs = {"10EC5663", "10EC5514"}
- };
- 
--static struct snd_soc_acpi_codecs kbl_7219_98357_codecs = {
-+static const struct snd_soc_acpi_codecs kbl_7219_98357_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
- };
- 
--static struct snd_soc_acpi_codecs kbl_7219_98927_codecs = {
-+static const struct snd_soc_acpi_codecs kbl_7219_98927_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98927"}
- };
- 
--static struct snd_soc_acpi_codecs kbl_7219_98373_codecs = {
-+static const struct snd_soc_acpi_codecs kbl_7219_98373_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98373"}
- };
-diff --git a/sound/soc/intel/common/soc-acpi-intel-skl-match.c b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-index 961df8d6b5e4..75302e956742 100644
---- a/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-@@ -12,7 +12,7 @@
- 
- static struct skl_machine_pdata skl_dmic_data;
- 
--static struct snd_soc_acpi_codecs skl_codecs = {
-+static const struct snd_soc_acpi_codecs skl_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"10508825"}
- };
+Regards,
+Mauro
+
+Mauro Carvalho Chehab (23):
+  visorbus: fix a copyright symbol that was bad encoded
+  libbpf: update index.rst reference
+  docs: accounting: update delay-accounting.rst reference
+  MAINTAINERS: update arm,vic.yaml reference
+  MAINTAINERS: update aspeed,i2c.yaml reference
+  MAINTAINERS: update faraday,ftrtc010.yaml reference
+  MAINTAINERS: update ti,sci.yaml reference
+  MAINTAINERS: update intel,ixp46x-rng.yaml reference
+  MAINTAINERS: update nxp,imx8-jpeg.yaml reference
+  MAINTAINERS: update gemini.yaml reference
+  MAINTAINERS: update brcm,unimac-mdio.yaml reference
+  MAINTAINERS: update mtd-physmap.yaml reference
+  Documentation: update vcpu-requests.rst reference
+  bpftool: update bpftool-cgroup.rst reference
+  docs: translations: zn_CN: irq-affinity.rst: add a missing extension
+  docs: translations: zh_CN: memory-hotplug.rst: fix a typo
+  docs: fs: locks.rst: update comment about mandatory file locking
+  fs: remove a comment pointing to the removed mandatory-locking file
+  Documentation/process: fix a cross reference
+  dt-bindings: mfd: update x-powers,axp152.yaml reference
+  regulator: dt-bindings: update samsung,s2mpa01.yaml reference
+  regulator: dt-bindings: update samsung,s5m8767.yaml reference
+  dt-bindings: reserved-memory: ramoops: update ramoops.yaml references
+
+ Documentation/admin-guide/ramoops.rst         |  2 +-
+ Documentation/admin-guide/sysctl/kernel.rst   |  2 +-
+ Documentation/bpf/index.rst                   |  2 +-
+ .../devicetree/bindings/gpio/gpio-axp209.txt  |  2 +-
+ .../bindings/regulator/samsung,s2mpa01.yaml   |  2 +-
+ .../bindings/regulator/samsung,s5m8767.yaml   |  2 +-
+ Documentation/filesystems/locks.rst           | 17 +++++-----------
+ Documentation/process/submitting-patches.rst  |  4 ++--
+ .../zh_CN/core-api/irq/irq-affinity.rst       |  2 +-
+ .../zh_CN/core-api/memory-hotplug.rst         |  2 +-
+ MAINTAINERS                                   | 20 +++++++++----------
+ arch/riscv/kvm/vcpu.c                         |  2 +-
+ drivers/visorbus/visorbus_main.c              |  2 +-
+ fs/locks.c                                    |  1 -
+ .../selftests/bpf/test_bpftool_synctypes.py   |  2 +-
+ 15 files changed, 28 insertions(+), 36 deletions(-)
+
 -- 
-2.25.1
+2.31.1
+
 
