@@ -2,255 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D2C4336FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5448E43370B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbhJSN2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:28:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59936 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235754AbhJSN2i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:28:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634649985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bUbADiikNrKItOeyvl1XlM9vGXDNaqE+WJmF5wYrcJI=;
-        b=CYuXVRkmsVbk9lVVonDcwaJdK1mpvpjCwXNytbPFKqBtZWbQj6FJEPXJT3NcIyqTfD0pbZ
-        XXhDvzdnEAZIhkdGs5ms6KSekX4SKUyGI2TxTsba3HVZ6pCuo8TgYUD2F1wibtTpnOMXtn
-        aTW4/TK/7dOXhzWGA2SyDxotWhkraIs=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-xsvtD3TmMFWVuXj4sndsTA-1; Tue, 19 Oct 2021 09:26:24 -0400
-X-MC-Unique: xsvtD3TmMFWVuXj4sndsTA-1
-Received: by mail-ed1-f69.google.com with SMTP id d3-20020a056402516300b003db863a248eso17557151ede.16
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:26:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bUbADiikNrKItOeyvl1XlM9vGXDNaqE+WJmF5wYrcJI=;
-        b=huFWptDX1YOjrFJqaLCOsZ7TXXuArXOML5AhB+AJ12ApuqN1UVfDRpBSX0x4DhqyAe
-         rxq7xVFzx1agYyE9DskOdYA0nwRtQe+mLf1m0czshZMoGzxrlcEPyjr3NAXx86nQjma+
-         g7gProuyy46qEe1DcFWoU+1dsAJCvGo1pWRydU13D+11jE/6AejKylMcesWTVQnsUkmf
-         RNFor9QVy0FfdVZ7P2jkxJlbYDPtY2SuqbERf7S5u7VPpfNANONTMkkHvNxHjnUjp9WY
-         XNtkcEyiMQbBfsNH2kyDlHz9GJzYkBHfjb2TsFm5srq/X/iGrt38ayQRVkEnZsX9JHlD
-         JRCA==
-X-Gm-Message-State: AOAM532hdtY4QWh4YDnsRAfngEH50b5YU5/DSdCjyFHCM/14sGly98o2
-        EfYLE7FXnn53Fp1ko8N7rEYnetu+Zh1LaQ7Zvs71NNXHB3jC/N0zHYuALOFqxQhU1uYi5Azihn2
-        7mKIL9LRZNczRzz5O7DYmg7nA
-X-Received: by 2002:a50:9e43:: with SMTP id z61mr8607126ede.278.1634649983165;
-        Tue, 19 Oct 2021 06:26:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy62EfSYdgDeaHrlAb3736SelVSwBK7IJhVFYkdE/gexnUl7p1lCZQACzD7HUYMujU/YRH2Pg==
-X-Received: by 2002:a50:9e43:: with SMTP id z61mr8607094ede.278.1634649982960;
-        Tue, 19 Oct 2021 06:26:22 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id q14sm10102365eji.63.2021.10.19.06.26.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 06:26:22 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 15:26:21 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
-Message-ID: <YW7HfV9+UiuYxt7N@krava>
-References: <20211008091336.33616-1-jolsa@kernel.org>
- <20211008091336.33616-8-jolsa@kernel.org>
- <20211014162819.5c85618b@gandalf.local.home>
- <YWluhdDMfkNGwlhz@krava>
- <20211015100509.78d4fb01@gandalf.local.home>
- <YWq6C69rQhUcAGe+@krava>
- <20211018221015.3f145843@gandalf.local.home>
- <YW7F8kTc3Bl8AkVx@krava>
+        id S235897AbhJSN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:29:32 -0400
+Received: from relay.sw.ru ([185.231.240.75]:40462 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235557AbhJSN3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 09:29:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=/PQsb2dM0oFSPlxvAAc6dyIPl0/QcXaCgaYTwTTHcCo=; b=cZpZJ2mRO3f3GNSKw
+        XLAO8S6kyieJLawIdS/gJRQz8yix6idY6Hc/p++bKMFw7d+AijUA1Nc5XPrZqKDIbrtVGT2CGVZZH
+        xQEGfdidIGKULnHpY+TzuVwSuLIcwPK4lXaqzVZ4uk5eZL+Dj3zFeCWCM9kABRKqdSOqpGLexHD98
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mcp95-006UEO-Q1; Tue, 19 Oct 2021 16:27:11 +0300
+Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
+ task
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
+ <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+ <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
+ <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
+ <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
+ <YW6GoZhFUJc1uLYr@dhcp22.suse.cz>
+ <687bf489-f7a7-5604-25c5-0c1a09e0905b@virtuozzo.com>
+ <YW6yAeAO+TeS3OdB@dhcp22.suse.cz> <YW60Rs1mi24sJmp4@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <6c422150-593f-f601-8f91-914c6c5e82f4@virtuozzo.com>
+Date:   Tue, 19 Oct 2021 16:26:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW7F8kTc3Bl8AkVx@krava>
+In-Reply-To: <YW60Rs1mi24sJmp4@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 03:19:48PM +0200, Jiri Olsa wrote:
-> On Mon, Oct 18, 2021 at 10:10:15PM -0400, Steven Rostedt wrote:
-> > On Sat, 16 Oct 2021 13:39:55 +0200
-> > Jiri Olsa <jolsa@redhat.com> wrote:
-> > 
-> > > On Fri, Oct 15, 2021 at 10:05:09AM -0400, Steven Rostedt wrote:
-> > > > On Fri, 15 Oct 2021 14:05:25 +0200
-> > > > Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >   
-> > > > > ATM I'm bit stuck on the bpf side of this whole change, I'll test
-> > > > > it with my other changes when I unstuck myself ;-)  
-> > > > 
-> > > > If you want, I'll apply this as a separate change on top of your patch set.
-> > > > As I don't see anything wrong with your current code.
-> > > > 
-> > > > And when you are satisfied with this, just give me a "tested-by" and I'll
-> > > > push it too.  
-> > > 
-> > > sounds great, thanks
-> > > jirka
-> > 
-> > Would you want to ack/review this?
+On 19.10.2021 15:04, Michal Hocko wrote:
+> On Tue 19-10-21 13:54:42, Michal Hocko wrote:
+>> On Tue 19-10-21 13:30:06, Vasily Averin wrote:
+>>> On 19.10.2021 11:49, Michal Hocko wrote:
+>>>> On Tue 19-10-21 09:30:18, Vasily Averin wrote:
+>>>> [...]
+>>>>> With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
+>>>>> a) due to fatal signal
+>>>>> b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
+>>>>>
+>>>>> To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
+>>>>> To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
+>>>
+>>>> How is b) possible without current being killed? Do we allow remote
+>>>> charging?
+>>>
+>>> out_of_memory for memcg_oom
+>>>  select_bad_process
+>>>   mem_cgroup_scan_tasks
+>>>    oom_evaluate_task
+>>>     oom_badness
+>>>
+>>>         /*
+>>>          * Do not even consider tasks which are explicitly marked oom
+>>>          * unkillable or have been already oom reaped or the are in
+>>>          * the middle of vfork
+>>>          */
+>>>         adj = (long)p->signal->oom_score_adj;
+>>>         if (adj == OOM_SCORE_ADJ_MIN ||
+>>>                         test_bit(MMF_OOM_SKIP, &p->mm->flags) ||
+>>>                         in_vfork(p)) {
+>>>                 task_unlock(p);
+>>>                 return LONG_MIN;
+>>>         }
+>>>
+>>> This time we handle userspace page fault, so we cannot be kenrel thread,
+>>> and cannot be in_vfork().
+>>> However task can be marked as oom unkillable, 
+>>> i.e. have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
+>>
+>> You are right. I am not sure there is a way out of this though. The task
+>> can only retry for ever in this case. There is nothing actionable here.
+>> We cannot kill the task and there is no other way to release the memory.
 > 
-> hum, do you have it in some branch already? I'm getting:
-> 
-> patching file kernel/trace/ftrace.c
-> Hunk #1 succeeded at 5521 with fuzz 1 (offset -40 lines).
-> Hunk #2 FAILED at 5576.
-> Hunk #3 succeeded at 5557 (offset -44 lines).
-> 1 out of 3 hunks FAILED -- saving rejects to file kernel/trace/ftrace.c.rej
-> 
-> 
-> when trying to apply on top of my changes
+> Btw. don't we force the charge in that case?
 
-I updated my ftrace/direct branch, it actually still had the previous
-version.. sorry, perhaps this is the cause of fuzz
+We should force charge for allocation from inside page fault handler,
+to prevent endless cycle in retried page faults.
+However we should not do it for allocations from task context,
+to prevent memcg-limited vmalloc-eaters from to consume all host memory.
 
-jirka
+Also I would like to return to the following hunk.
+@@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 * A few threads which were not waiting at mutex_lock_killable() can
+ 	 * fail to bail out. Therefore, check again after holding oom_lock.
+ 	 */
+-	ret = should_force_charge() || out_of_memory(&oc);
++	ret = task_is_dying() || out_of_memory(&oc);
+ 
+ unlock:
+ 	mutex_unlock(&oom_lock);
 
-> 
-> thanks,
-> jirka
-> 
-> > 
-> > -- Steve
-> > 
-> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > Subject: [PATCH] ftrace/direct: Do not disable when switching direct callers
-> > 
-> > Currently to switch a set of "multi" direct trampolines from one
-> > trampoline to another, a full shutdown of the current set needs to be
-> > done, followed by an update to what trampoline the direct callers would
-> > call, and then re-enabling the callers. This leaves a time when the
-> > functions will not be calling anything, and events may be missed.
-> > 
-> > Instead, use a trick to allow all the functions with direct trampolines
-> > attached will always call either the new or old trampoline while the
-> > switch is happening. To do this, first attach a "dummy" callback via
-> > ftrace to all the functions that the current direct trampoline is attached
-> > to. This will cause the functions to call the "list func" instead of the
-> > direct trampoline. The list function will call the direct trampoline
-> > "helper" that will set the function it should call as it returns back to
-> > the ftrace trampoline.
-> > 
-> > At this moment, the direct caller descriptor can safely update the direct
-> > call trampoline. The list function will pick either the new or old
-> > function (depending on the memory coherency model of the architecture).
-> > 
-> > Now removing the dummy function from each of the locations of the direct
-> > trampoline caller, will put back the direct call, but now to the new
-> > trampoline.
-> > 
-> > A better visual is:
-> > 
-> > [ Changing direct call from my_direct_1 to my_direct_2 ]
-> > 
-> >   <traced_func>:
-> >      call my_direct_1
-> > 
-> >  ||||||||||||||||||||
-> >  vvvvvvvvvvvvvvvvvvvv
-> > 
-> >   <traced_func>:
-> >      call ftrace_caller
-> > 
-> >   <ftrace_caller>:
-> >     [..]
-> >     call ftrace_ops_list_func
-> > 
-> > 	ftrace_ops_list_func()
-> > 	{
-> > 		ops->func() -> direct_helper -> set rax to my_direct_1 or my_direct_2
-> > 	}
-> > 
-> >    call rax (to either my_direct_1 or my_direct_2
-> > 
-> >  ||||||||||||||||||||
-> >  vvvvvvvvvvvvvvvvvvvv
-> > 
-> >   <traced_func>:
-> >      call my_direct_2
-> > 
-> > Link: https://lore.kernel.org/all/20211014162819.5c85618b@gandalf.local.home/
-> > 
-> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > ---
-> >  kernel/trace/ftrace.c | 33 ++++++++++++++++++++-------------
-> >  1 file changed, 20 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > index 30120342176e..7ad1e8ae5855 100644
-> > --- a/kernel/trace/ftrace.c
-> > +++ b/kernel/trace/ftrace.c
-> > @@ -5561,8 +5561,12 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
-> >   */
-> >  int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> >  {
-> > -	struct ftrace_hash *hash = ops->func_hash->filter_hash;
-> > +	struct ftrace_hash *hash;
-> >  	struct ftrace_func_entry *entry, *iter;
-> > +	static struct ftrace_ops tmp_ops = {
-> > +		.func		= ftrace_stub,
-> > +		.flags		= FTRACE_OPS_FL_STUB,
-> > +	};
-> >  	int i, size;
-> >  	int err;
-> >  
-> > @@ -5572,21 +5576,22 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> >  		return -EINVAL;
-> >  
-> >  	mutex_lock(&direct_mutex);
-> > -	mutex_lock(&ftrace_lock);
-> > +
-> > +	/* Enable the tmp_ops to have the same functions as the direct ops */
-> > +	ftrace_ops_init(&tmp_ops);
-> > +	tmp_ops.func_hash = ops->func_hash;
-> > +
-> > +	err = register_ftrace_function(&tmp_ops);
-> > +	if (err)
-> > +		goto out_direct;
-> >  
-> >  	/*
-> > -	 * Shutdown the ops, change 'direct' pointer for each
-> > -	 * ops entry in direct_functions hash and startup the
-> > -	 * ops back again.
-> > -	 *
-> > -	 * Note there is no callback called for @ops object after
-> > -	 * this ftrace_shutdown call until ftrace_startup is called
-> > -	 * later on.
-> > +	 * Now the ftrace_ops_list_func() is called to do the direct callers.
-> > +	 * We can safely change the direct functions attached to each entry.
-> >  	 */
-> > -	err = ftrace_shutdown(ops, 0);
-> > -	if (err)
-> > -		goto out_unlock;
-> > +	mutex_lock(&ftrace_lock);
-> >  
-> > +	hash = ops->func_hash->filter_hash;
-> >  	size = 1 << hash->size_bits;
-> >  	for (i = 0; i < size; i++) {
-> >  		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
-> > @@ -5597,10 +5602,12 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> >  		}
-> >  	}
-> >  
-> > -	err = ftrace_startup(ops, 0);
-> > +	/* Removing the tmp_ops will add the updated direct callers to the functions */
-> > +	unregister_ftrace_function(&tmp_ops);
-> >  
-> >   out_unlock:
-> >  	mutex_unlock(&ftrace_lock);
-> > + out_direct:
-> >  	mutex_unlock(&direct_mutex);
-> >  	return err;
-> >  }
-> > -- 
-> > 2.31.1
-> > 
+Now I think it's better to keep task_is_dying() check here.
+if task is dying, it is not necessary to push other task to free the memory.
+We broke vmalloc cycle already, so it looks like nothing should prevent us
+from returning to userspace, handle fatal signal, exit and free the memory.
 
+Thank you,
+	Vasily Averin
