@@ -2,120 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059C943332D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FE043331D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhJSKHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234914AbhJSKH3 (ORCPT
+        id S235181AbhJSKGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:06:43 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55241 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234794AbhJSKGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:07:29 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD45C06161C;
-        Tue, 19 Oct 2021 03:05:17 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id y30so9774593edi.0;
-        Tue, 19 Oct 2021 03:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=weqn2VVSwGcyXsa0H+TZIaJZQbD+c+j8TTHDHQ3X1gI=;
-        b=d4ezrvuUdFBB6wWt1NQAxkXil5Lg+SgXN+f7KJAQMQPKwOn6wsEFR1e/ZwtwAX9k71
-         eC6HsCkZRUtIiHHk4UtU/uSyxV7pgYY89B4jS0KMug+qccRe68KFNL4q+/yjlbsktaqm
-         QnOtRR8Fu4KNeFdE0aC/LOoHqYEeuVF8IS6iRpFi/m9wg+KtNZ0xzixJUVkVwtDfuvXX
-         wR7kYH81AqJunWHDvTsYLrb+w3F1Y0XAGghwqj/nkIz7L6CMB7ra/Oi54oxPFcl3m6Wp
-         iNYZkVNcgbzkVBBJUxRuPO0Dcw94VwzzIzw0HXmMaKUCV0ZqZUN5PXLueeQ7SoIp5AUt
-         kPGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=weqn2VVSwGcyXsa0H+TZIaJZQbD+c+j8TTHDHQ3X1gI=;
-        b=ULW1EphLuDwk7HJekOGBfYNLJZ2BoRNnc7ZyRNd0vuWew7BaA6A0ryanOTNLInYh79
-         P4jvcvoQiA/gnWAhueM7uKk5I1P0g6eGa5oSYA+iD0dmSD/loIlpT37IoNPYUrZo11An
-         Vi4bMUSo789lEUId9sGkdpdz/iL7ItYAQN5zV1p1ud6HExVyJWUhZEwwSLOn322B3sMI
-         6oscA5ockuif9+tPNsfz0kFeoywSPHZOQCXL07LXEay+99HfcxjYeZLe1PrbwRtYZswX
-         TCUgZg6w49K7HmgnCr9+/5J+1GShoXFWDoxMTb/akII6lvWmKBPHcWbv2oikAa36b5mu
-         pcdw==
-X-Gm-Message-State: AOAM532+GZuNX5r2F5ayzOyZICJWBlv9FKcHbQeO7uAO6YCC/SjJPdg4
-        x+B0YAsq0LZvUIctXiEpG/t6yQeq7npwxPd34oLFyW4H0UyvRpon
-X-Google-Smtp-Source: ABdhPJz1rktonq3jgZFoXdQzqkmtScwjEv3/nZx2zO05n6Bow3B4vYCxO8AlbBSp28HuUoUw2imT4VJVmb/rrQjQlQ0=
-X-Received: by 2002:a17:907:8a27:: with SMTP id sc39mr36338752ejc.567.1634637913069;
- Tue, 19 Oct 2021 03:05:13 -0700 (PDT)
+        Tue, 19 Oct 2021 06:06:41 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UsupxQ._1634637864;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UsupxQ._1634637864)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 19 Oct 2021 18:04:25 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v2 1/2] crypto: use SM3 instead of SM3_256
+Date:   Tue, 19 Oct 2021 18:04:22 +0800
+Message-Id: <20211019100423.43615-2-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+In-Reply-To: <20211019100423.43615-1-tianjia.zhang@linux.alibaba.com>
+References: <20211019100423.43615-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20211019032648.2208-1-mario.limonciello@amd.com>
-In-Reply-To: <20211019032648.2208-1-mario.limonciello@amd.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 19 Oct 2021 13:04:21 +0300
-Message-ID: <CAHp75Vexw8P6EcyX=fpoH_SxHTzSahrb82GfUCgzpyK3ePEjhg@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: amd: Fix wakeups when IRQ is shared with SCI
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Joerie de Gram <j.de.gram@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 6:27 AM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> On some Lenovo AMD Gen2 platforms the IRQ for the SCI and pinctrl drivers
-> are shared.  Due to how the s2idle loop handling works, this case needs
-> an extra explicit check whether the interrupt was caused by SCI or by
-> the GPIO controller.
->
-> To fix this rework the existing IRQ handler function to function as a
-> checker and an IRQ handler depending on the calling arguments.
->
-> BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1738
+According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.html,
+SM3 always produces a 256-bit hash value and there are no plans for
+other length development, so there is no ambiguity in the name of sm3.
 
-Should it have a Fixes tag?
+Suggested-by: James Bottomley <jejb@linux.ibm.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ Documentation/security/keys/trusted-encrypted.rst | 2 +-
+ crypto/hash_info.c                                | 4 ++--
+ drivers/char/tpm/tpm2-cmd.c                       | 2 +-
+ include/crypto/hash_info.h                        | 2 +-
+ include/uapi/linux/hash_info.h                    | 3 ++-
+ security/keys/trusted-keys/trusted_tpm2.c         | 2 +-
+ 6 files changed, 8 insertions(+), 7 deletions(-)
 
-> Reported-by: Joerie de Gram <j.de.gram@gmail.com>
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-
-...
-
-> +#ifdef CONFIG_ACPI
-
-__maybe_unused?
-
-> +static bool amd_gpio_check_wake(void *dev_id)
-> +{
-> +       return _amd_gpio_irq_handler(-1, dev_id);
-> +}
-> +#endif
-
-...
-
-> +#ifdef CONFIG_ACPI
-> +       acpi_register_wakeup_handler(gpio_dev->irq, amd_gpio_check_wake, gpio_dev);
-> +#endif
-
-Not what I expected.
-
-...
-
-> +#ifdef CONFIG_ACPI
-> +       acpi_unregister_wakeup_handler(amd_gpio_check_wake, gpio_dev);
-> +#endif
-
-Ditto.
-
-Yes, I see the problem, perhaps you need to add the stubs. If this is
-a real regression fix, then probably this patch should follow by two:
-adding stubs, removing ugly ifdeffery here. Otherwise, introduce stubs
-as patch 1 preceding this one in a series.
-
+diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
+index 80d5a5af62a1..3292461517f6 100644
+--- a/Documentation/security/keys/trusted-encrypted.rst
++++ b/Documentation/security/keys/trusted-encrypted.rst
+@@ -162,7 +162,7 @@ Usage::
+                      default 1 (resealing allowed)
+        hash=         hash algorithm name as a string. For TPM 1.x the only
+                      allowed value is sha1. For TPM 2.x the allowed values
+-                     are sha1, sha256, sha384, sha512 and sm3-256.
++                     are sha1, sha256, sha384, sha512 and sm3.
+        policydigest= digest for the authorization policy. must be calculated
+                      with the same hash algorithm as specified by the 'hash='
+                      option.
+diff --git a/crypto/hash_info.c b/crypto/hash_info.c
+index a49ff96bde77..fe0119407219 100644
+--- a/crypto/hash_info.c
++++ b/crypto/hash_info.c
+@@ -26,7 +26,7 @@ const char *const hash_algo_name[HASH_ALGO__LAST] = {
+ 	[HASH_ALGO_TGR_128]	= "tgr128",
+ 	[HASH_ALGO_TGR_160]	= "tgr160",
+ 	[HASH_ALGO_TGR_192]	= "tgr192",
+-	[HASH_ALGO_SM3_256]	= "sm3",
++	[HASH_ALGO_SM3]		= "sm3",
+ 	[HASH_ALGO_STREEBOG_256] = "streebog256",
+ 	[HASH_ALGO_STREEBOG_512] = "streebog512",
+ };
+@@ -50,7 +50,7 @@ const int hash_digest_size[HASH_ALGO__LAST] = {
+ 	[HASH_ALGO_TGR_128]	= TGR128_DIGEST_SIZE,
+ 	[HASH_ALGO_TGR_160]	= TGR160_DIGEST_SIZE,
+ 	[HASH_ALGO_TGR_192]	= TGR192_DIGEST_SIZE,
+-	[HASH_ALGO_SM3_256]	= SM3256_DIGEST_SIZE,
++	[HASH_ALGO_SM3]		= SM3_DIGEST_SIZE,
+ 	[HASH_ALGO_STREEBOG_256] = STREEBOG256_DIGEST_SIZE,
+ 	[HASH_ALGO_STREEBOG_512] = STREEBOG512_DIGEST_SIZE,
+ };
+diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
+index a25815a6f625..20f55de9d87b 100644
+--- a/drivers/char/tpm/tpm2-cmd.c
++++ b/drivers/char/tpm/tpm2-cmd.c
+@@ -19,7 +19,7 @@ static struct tpm2_hash tpm2_hash_map[] = {
+ 	{HASH_ALGO_SHA256, TPM_ALG_SHA256},
+ 	{HASH_ALGO_SHA384, TPM_ALG_SHA384},
+ 	{HASH_ALGO_SHA512, TPM_ALG_SHA512},
+-	{HASH_ALGO_SM3_256, TPM_ALG_SM3_256},
++	{HASH_ALGO_SM3, TPM_ALG_SM3_256},
+ };
+ 
+ int tpm2_get_timeouts(struct tpm_chip *chip)
+diff --git a/include/crypto/hash_info.h b/include/crypto/hash_info.h
+index dd4f06785049..c1e6b2884732 100644
+--- a/include/crypto/hash_info.h
++++ b/include/crypto/hash_info.h
+@@ -32,7 +32,7 @@
+ #define TGR192_DIGEST_SIZE 24
+ 
+ /* not defined in include/crypto/ */
+-#define SM3256_DIGEST_SIZE 32
++#define SM3_DIGEST_SIZE 32
+ 
+ extern const char *const hash_algo_name[HASH_ALGO__LAST];
+ extern const int hash_digest_size[HASH_ALGO__LAST];
+diff --git a/include/uapi/linux/hash_info.h b/include/uapi/linux/hash_info.h
+index 74a8609fcb4d..3829279b2d37 100644
+--- a/include/uapi/linux/hash_info.h
++++ b/include/uapi/linux/hash_info.h
+@@ -32,7 +32,8 @@ enum hash_algo {
+ 	HASH_ALGO_TGR_128,
+ 	HASH_ALGO_TGR_160,
+ 	HASH_ALGO_TGR_192,
+-	HASH_ALGO_SM3_256,
++	HASH_ALGO_SM3,
++	HASH_ALGO_SM3_256 = HASH_ALGO_SM3,
+ 	HASH_ALGO_STREEBOG_256,
+ 	HASH_ALGO_STREEBOG_512,
+ 	HASH_ALGO__LAST
+diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
+index 0165da386289..52a696035176 100644
+--- a/security/keys/trusted-keys/trusted_tpm2.c
++++ b/security/keys/trusted-keys/trusted_tpm2.c
+@@ -23,7 +23,7 @@ static struct tpm2_hash tpm2_hash_map[] = {
+ 	{HASH_ALGO_SHA256, TPM_ALG_SHA256},
+ 	{HASH_ALGO_SHA384, TPM_ALG_SHA384},
+ 	{HASH_ALGO_SHA512, TPM_ALG_SHA512},
+-	{HASH_ALGO_SM3_256, TPM_ALG_SM3_256},
++	{HASH_ALGO_SM3, TPM_ALG_SM3_256},
+ };
+ 
+ static u32 tpm2key_oid[] = { 2, 23, 133, 10, 1, 5 };
 -- 
-With Best Regards,
-Andy Shevchenko
+2.19.1.3.ge56e4f7
+
