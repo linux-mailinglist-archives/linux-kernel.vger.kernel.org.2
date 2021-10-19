@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78A6433596
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F3543358C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbhJSMP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235584AbhJSMPZ (ORCPT
+        id S235544AbhJSMPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:15:13 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:30905 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhJSMPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:15:25 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0041C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:12 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id k6-20020a7bc306000000b0030d92a6bdc7so1074530wmj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=9qioxcWNTdM29KTskJovFvpNouj7jwaQhn/w48JNYr0=;
-        b=RCVF+kFj8+Q1ZIvAw2o1YEfdbyV/QvERANN2zOL3vp6KFp4sOKvq50TuiuJVXjk8CI
-         sJ8+ANxFKAZIB5XW2WXqgfxqioUa8/FqpJDAAlHYk4VwJzPsMiTKfyXjGsWp6nYM2egs
-         6ve8/RASgPFUMVKruWnMc+7Dq7xO467GfVDxse/ta3etQdRPTINc1Tn1t35gFQUffSa4
-         I17Na6p96zob6zezj90RVS7pxK8HHoy186iRxq1vgOzGonEHYihEMN8mRi5acuaAqYmN
-         0uVSCaCv9OaDCrMFHRsAD+gEn2IzZEReHw70B6v4JZTVux2bKXVrx5uW9Gfu3BqI6frT
-         y8QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=9qioxcWNTdM29KTskJovFvpNouj7jwaQhn/w48JNYr0=;
-        b=IugALC0pb51Nt5WtTQCFWXfN3X4+YJMhqeKjaGqOwQcoWA3muGEMi6wLGp2zu7l9V9
-         w42jUgU9Q/px00PkRxbteCANOgVT206RVMvNS2wSQRkspvoEPCmCxyPqPYu+UypGCM+N
-         dz6OHRf6G1g+QWdk8Y9yz8DpdMWW35UDkyPeb2UdeqryYDyJ4uCH6pi0JsFgAdz3Ok4X
-         Bb/Rw0lJuJjZ0mFm16qCoHiEYEsz/pJM+cC18Tky02dnIFeaUrebayE8A3h4hc2p/UhN
-         WLJda95LYYbRH8WzdZSO2jyeJtVn7/+LUgWzo1akaI3WmoDia/Xo5j2lNPD6MQ2UR/Xz
-         1kaA==
-X-Gm-Message-State: AOAM5339v9kRK/Urep5EddXRIZeYlhimQtolQ/OwGNrrUPOtks2IVOJN
-        NlsQcOgwP6BykJG/I0m8yFao1W2IbB+j
-X-Google-Smtp-Source: ABdhPJwlXJ0DM6qyO/wxtqG0399vc1RBGDWqJP0qqKuvfhECekIT7zJoTt4K3Fn+DO1gRLB/9VBwvtDmOWwC
-X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:59ca:401f:83a8:de6d])
- (user=qperret job=sendgmr) by 2002:a05:6000:50:: with SMTP id
- k16mr42638419wrx.32.1634645591442; Tue, 19 Oct 2021 05:13:11 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 13:12:51 +0100
-In-Reply-To: <20211019121304.2732332-1-qperret@google.com>
-Message-Id: <20211019121304.2732332-3-qperret@google.com>
-Mime-Version: 1.0
-References: <20211019121304.2732332-1-qperret@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2 02/15] KVM: arm64: Provide {get,put}_page() stubs for early
- hyp allocator
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Andrew Walbran <qwandor@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        qperret@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 19 Oct 2021 08:15:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634645579; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=AAP0IMAw/zT/DZZ+e/k3WPaV5KaUEEwAiUGgzytam/c=; b=aL2VbJE2yjuhEIff9iJLcqHjh0Gc+6d2IoHR8QHgJcd1PQ3hpwU2pdemoeokxpSWrT95ve4L
+ h/z38zE5xbYv5z6/OySzDad6b8df/mJbIwdR+OW8SlpqY6SbXeD9IzChP8Cc4y989FLyDTsB
+ PUyNTr5NsJA5saTjvlZlI9o5wd8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 616eb649bc30296958aedd54 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Oct 2021 12:12:57
+ GMT
+Sender: quic_luoj=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5C50DC43617; Tue, 19 Oct 2021 12:12:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.92.1.38] (unknown [180.166.53.36])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 45A6FC4338F;
+        Tue, 19 Oct 2021 12:12:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 45A6FC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+Subject: Re: [PATCH v3 08/13] net: phy: add qca8081 config_aneg
+To:     Andrew Lunn <andrew@lunn.ch>, Luo Jie <luoj@codeaurora.org>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+References: <20211018033333.17677-1-luoj@codeaurora.org>
+ <20211018033333.17677-9-luoj@codeaurora.org> <YW3pMD7PD2M3lD3o@lunn.ch>
+From:   Jie Luo <quic_luoj@quicinc.com>
+Message-ID: <6a7cf7c3-f79f-b142-8900-05abd44ead65@quicinc.com>
+Date:   Tue, 19 Oct 2021 20:12:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YW3pMD7PD2M3lD3o@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In nVHE protected mode, the EL2 code uses a temporary allocator during
-boot while re-creating its stage-1 page-table. Unfortunately, the
-hyp_vmmemap is not ready to use at this stage, so refcounting pages
-is not possible. That is not currently a problem because hyp stage-1
-mappings are never removed, which implies refcounting of page-table
-pages is unnecessary.
 
-In preparation for allowing hypervisor stage-1 mappings to be removed,
-provide stub implementations for {get,put}_page() in the early allocator.
+On 10/19/2021 5:37 AM, Andrew Lunn wrote:
+> On Mon, Oct 18, 2021 at 11:33:28AM +0800, Luo Jie wrote:
+>> Reuse at803x phy driver config_aneg excepting
+>> adding 2500M auto-negotiation.
+>>
+>> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+>> ---
+>>   drivers/net/phy/at803x.c | 26 +++++++++++++++++++++++++-
+>>   1 file changed, 25 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+>> index 0c22ef735230..c124d3fe40fb 100644
+>> --- a/drivers/net/phy/at803x.c
+>> +++ b/drivers/net/phy/at803x.c
+>> @@ -1084,7 +1084,30 @@ static int at803x_config_aneg(struct phy_device *phydev)
+>>   			return ret;
+>>   	}
+>>   
+>> -	return genphy_config_aneg(phydev);
+>> +	/* Do not restart auto-negotiation by setting ret to 0 defautly,
+>> +	 * when calling __genphy_config_aneg later.
+>> +	 */
+>> +	ret = 0;
+>> +
+>> +	if (phydev->drv->phy_id == QCA8081_PHY_ID) {
+>> +		int phy_ctrl = 0;
+>> +
+>> +		/* The reg MII_BMCR also needs to be configured for force mode, the
+>> +		 * genphy_config_aneg is also needed.
+>> +		 */
+>> +		if (phydev->autoneg == AUTONEG_DISABLE)
+>> +			genphy_c45_pma_setup_forced(phydev);
+>> +
+>> +		if (linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->advertising))
+>> +			phy_ctrl = MDIO_AN_10GBT_CTRL_ADV2_5G;
+>> +
+>> +		ret = phy_modify_mmd_changed(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_CTRL,
+>> +				MDIO_AN_10GBT_CTRL_ADV2_5G, phy_ctrl);
+> Does the PHY also have MDIO_MMD_AN, MDIO_AN_ADVERTISE ? I'm wondering
+> if you can use genphy_c45_an_config_aneg()
+>
+>     Andrew
+Thanks Andrew for this comments, since the PHY does not have the regiser 
+MDIO_AN_ADVERTISE,
 
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/kvm/hyp/nvhe/early_alloc.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/arm64/kvm/hyp/nvhe/early_alloc.c b/arch/arm64/kvm/hyp/nvhe/early_alloc.c
-index 1306c430ab87..00de04153cc6 100644
---- a/arch/arm64/kvm/hyp/nvhe/early_alloc.c
-+++ b/arch/arm64/kvm/hyp/nvhe/early_alloc.c
-@@ -43,6 +43,9 @@ void *hyp_early_alloc_page(void *arg)
- 	return hyp_early_alloc_contig(1);
- }
- 
-+static void hyp_early_alloc_get_page(void *addr) { }
-+static void hyp_early_alloc_put_page(void *addr) { }
-+
- void hyp_early_alloc_init(void *virt, unsigned long size)
- {
- 	base = cur = (unsigned long)virt;
-@@ -51,4 +54,6 @@ void hyp_early_alloc_init(void *virt, unsigned long size)
- 	hyp_early_alloc_mm_ops.zalloc_page = hyp_early_alloc_page;
- 	hyp_early_alloc_mm_ops.phys_to_virt = hyp_phys_to_virt;
- 	hyp_early_alloc_mm_ops.virt_to_phys = hyp_virt_to_phys;
-+	hyp_early_alloc_mm_ops.get_page = hyp_early_alloc_get_page;
-+	hyp_early_alloc_mm_ops.put_page = hyp_early_alloc_put_page;
- }
--- 
-2.33.0.1079.g6e70778dc9-goog
+genphy_c45_an_config_aneg can't be used here.
 
