@@ -2,115 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973774332AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77294332B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235136AbhJSJmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:42:11 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:60981 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234808AbhJSJmI (ORCPT
+        id S235079AbhJSJmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234680AbhJSJml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:42:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UsueS9M_1634636390;
-Received: from 30.240.101.11(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UsueS9M_1634636390)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 19 Oct 2021 17:39:51 +0800
-Message-ID: <aac78812-18dc-5e78-ab48-61e15eeb9315@linux.alibaba.com>
-Date:   Tue, 19 Oct 2021 17:39:49 +0800
+        Tue, 19 Oct 2021 05:42:41 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017C6C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:40:29 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id k7so46397732wrd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+v4Hfkg/w1/B4R5A/ecV7kDZ1+BpxRgtZ9ZYRUTGvYQ=;
+        b=SKdRW7siAk731anszKLFJ7LCVf1ZukxuHCQa9UfvTaS+LMfaeSqnc+PdFEyz2b9Vql
+         R9n2h4pfsBE+hTtl9Ghcf73/JuT7EvSbvrayRN4ynnOPhQo2YSbaa2uPZt5r4puv5gfK
+         GaTMyTPjRRQgvhLvowqAFIDI+9cKrp/IeO9ZAC8t6pdqf4w8t/Q1YC4NIoHvacb0FPms
+         Cgm3gUBIOrm4FhPkuzjC6bGgzVMTNnDNWmpEOZz92J1kYF54KTktv+6+qRpIPIOleMfH
+         7rW14/k/BiowMiLxGBg2YIKmhi2tV85quWfj9WotO4rPM5TGN+7tWvTBQUosIYMhYK9X
+         v8wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+v4Hfkg/w1/B4R5A/ecV7kDZ1+BpxRgtZ9ZYRUTGvYQ=;
+        b=Oq5ehedJSFXgqqV71DBzuQ/rkmsayz3pPTtlqlrOkZjJPzpRRqSwC/+XzCDBYlORxw
+         4HGzVvpiGCGVg4No8QYVoYoSY/4raMpNyLk5h0gZrh7qocWunhqpr9815bvqX7z5LU+p
+         U8A1X04X+Oxybkq3kkgh4xNeqbbIuFT9+viCMkWQRuk1uam4w/QQaT6wYg24Xgu9m6m2
+         P9BwEodJE1Cw8z7FF8zdluTPbWyujRYDoTrjK2mcPBlFurVAyvBXz0DIpeOTsjyhS2tL
+         ckD6YuYhAqgFY5Rk4r+qWMuucBXOZjM9cO8ZYMhSEC87j4FRVkXFjQBdnuvtp9FYElLc
+         dfHQ==
+X-Gm-Message-State: AOAM531EzRiGDTJt52QQgQ/e+9bFN9rkPCINNbUvw+cU3sDm8sn9fSe2
+        XxZNA0I5z+oRZyt2MsVzw5HsbQ==
+X-Google-Smtp-Source: ABdhPJy9ly25Wdf1sCClM7a9Zz77DNMQFpedsH5Fh26mLWFifdz5sv78JyKVIUA8hXD5r5R+3vWcpA==
+X-Received: by 2002:adf:ec46:: with SMTP id w6mr29994052wrn.240.1634636427307;
+        Tue, 19 Oct 2021 02:40:27 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:59ca:401f:83a8:de6d])
+        by smtp.gmail.com with ESMTPSA id g33sm1594777wmp.45.2021.10.19.02.40.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 02:40:26 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 10:40:24 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 16/16] KVM: arm64: pkvm: Unshare guest structs during
+ teardown
+Message-ID: <YW6SiMLU19YN1ARe@google.com>
+References: <20211013155831.943476-1-qperret@google.com>
+ <20211013155831.943476-17-qperret@google.com>
+ <87h7dhupfa.wl-maz@kernel.org>
+ <YW1NLb9Pn9NyEYZF@google.com>
+ <YW1+mQ6Bn2HXwl34@google.com>
+ <3ec8ab06f9950a13818109051835fdb9@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH 1/2] crypto: use SM3 instead of SM3_256
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, jejb@linux.ibm.com,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
- <20211009130828.101396-2-tianjia.zhang@linux.alibaba.com>
- <7035153d58e220473fe3cd17c9f574f2d91c740b.camel@linux.ibm.com>
- <dbac037710d711959d5ce0969f80ea0dd18a176e.camel@kernel.org>
- <af8c2098c4cfe23b941a191f7b4ec0e3a5251760.camel@linux.ibm.com>
- <41aba1e1c5849b58f83108eb9f9f115d0cd5826f.camel@kernel.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <41aba1e1c5849b58f83108eb9f9f115d0cd5826f.camel@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ec8ab06f9950a13818109051835fdb9@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarkko,
+On Monday 18 Oct 2021 at 18:12:22 (+0100), Marc Zyngier wrote:
+> On 2021-10-18 15:03, Quentin Perret wrote:
+> > On Monday 18 Oct 2021 at 11:32:13 (+0100), Quentin Perret wrote:
+> > > Another option is to take a refcount on 'current' from
+> > > kvm_arch_vcpu_run_map_fp() before sharing thread-specific structs with
+> > > the hyp and release the refcount of the previous task after unsharing.
+> > > But that means we'll have to also drop the refcount when the vcpu
+> > > gets destroyed, as well as explicitly unshare at that point. Shouldn't
+> > > be too bad I think. Thoughts?
+> > 
+> > Something like the below seems to work OK on my setup, including
+> > SIGKILL'ing the guest and such. How much do you hate it?
+> 
+> It is annoyingly elegant! Small nitpick below.
+> 
+> > 
+> > diff --git a/arch/arm64/include/asm/kvm_host.h
+> > b/arch/arm64/include/asm/kvm_host.h
+> > index f8be56d5342b..50598d704c71 100644
+> > --- a/arch/arm64/include/asm/kvm_host.h
+> > +++ b/arch/arm64/include/asm/kvm_host.h
+> > @@ -322,6 +322,7 @@ struct kvm_vcpu_arch {
+> > 
+> >  	struct thread_info *host_thread_info;	/* hyp VA */
+> >  	struct user_fpsimd_state *host_fpsimd_state;	/* hyp VA */
+> > +	struct task_struct *parent_task;
+> > 
+> >  	struct {
+> >  		/* {Break,watch}point registers */
+> > @@ -738,6 +739,7 @@ int kvm_arch_vcpu_run_map_fp(struct kvm_vcpu *vcpu);
+> >  void kvm_arch_vcpu_load_fp(struct kvm_vcpu *vcpu);
+> >  void kvm_arch_vcpu_ctxsync_fp(struct kvm_vcpu *vcpu);
+> >  void kvm_arch_vcpu_put_fp(struct kvm_vcpu *vcpu);
+> > +void kvm_vcpu_unshare_task_fp(struct kvm_vcpu *vcpu);
+> > 
+> >  static inline bool kvm_pmu_counter_deferred(struct perf_event_attr
+> > *attr)
+> >  {
+> > diff --git a/arch/arm64/kvm/fpsimd.c b/arch/arm64/kvm/fpsimd.c
+> > index 2fe1128d9f3d..27afeebbe1cb 100644
+> > --- a/arch/arm64/kvm/fpsimd.c
+> > +++ b/arch/arm64/kvm/fpsimd.c
+> > @@ -15,6 +15,22 @@
+> >  #include <asm/kvm_mmu.h>
+> >  #include <asm/sysreg.h>
+> > 
+> > +void kvm_vcpu_unshare_task_fp(struct kvm_vcpu *vcpu)
+> > +{
+> > +	struct task_struct *p = vcpu->arch.parent_task;
+> > +	struct user_fpsimd_state *fpsimd;
+> > +	struct thread_info *ti;
+> > +
+> > +	if (!static_branch_likely(&kvm_protected_mode_initialized) || !p)
+> 
+> Shouldn't this be a check on is_protected_kvm_enabled() instead?
+> The two should be equivalent outside of the initialisation code...
 
-On 10/18/21 9:41 PM, Jarkko Sakkinen wrote:
-> On Mon, 2021-10-18 at 09:32 -0400, James Bottomley wrote:
->> On Mon, 2021-10-18 at 16:27 +0300, Jarkko Sakkinen wrote:
->>> On Mon, 2021-10-18 at 09:05 -0400, James Bottomley wrote:
->>>> On Sat, 2021-10-09 at 21:08 +0800, Tianjia Zhang wrote:
->>>> [...]
->>>>> diff --git a/include/uapi/linux/hash_info.h
->>>>> b/include/uapi/linux/hash_info.h
->>>>> index 74a8609fcb4d..1355525dd4aa 100644
->>>>> --- a/include/uapi/linux/hash_info.h
->>>>> +++ b/include/uapi/linux/hash_info.h
->>>>> @@ -32,7 +32,7 @@ enum hash_algo {
->>>>>          HASH_ALGO_TGR_128,
->>>>>          HASH_ALGO_TGR_160,
->>>>>          HASH_ALGO_TGR_192,
->>>>> -       HASH_ALGO_SM3_256,
->>>>> +       HASH_ALGO_SM3,
->>>>>          HASH_ALGO_STREEBOG_256,
->>>>>          HASH_ALGO_STREEBOG_512,
->>>>>          HASH_ALGO__LAST
->>>>
->>>> This is another one you can't do: all headers in UAPI are exports
->>>> to userspace and the definitions constitute an ABI.  If you simply
->>>> do a rename, every userspace program that uses the current
->>>> definition will immediately break on compile.  You could add
->>>> HASH_ALGO_SM3, but you can't remove HASH_ALGO_SM3_256
->>>>
->>>> James
->>>
->>> So: shouldn't then also the old symbol continue to work also
->>> semantically?
->>
->> Yes, that's the point: you can add a new definition ... in this case an
->> alias for the old one, but you can't remove a definition that's been
->> previously exported.
-> 
-> Thanks, this of course obvious :-) I forgot temporarily that crypto
-> has uapi interface. Tianjia, this patch set break production systems,
-> so no chance we would ever merge it in this form.
-> 
-> Why not just do this:
-> 
-> ...
-> HASH_ALGO_SM3_256,
-> HASH_ALOG_SM3 = HASH_ALOG_SM_256,
-> ...
-> 
-> There is not good reason to mod the implementation because both symbols
-> are kept.
-> 
-> /Jarkko
-> 
+Yup, it'd be nice to do checks on kvm_protected_mode_initialized only
+when they're strictly necessary, and that's not the case here. I'll fold
+that change in v2.
 
-Very good suggestion, I will do this in the next version patch. Maybe 
-this is more appropriate:
-
-   HASH_ALGO_SM3,
-   HASH_ALGO_SM3_256 = HASH_ALGO_SM3,
-
-Best regards,
-Tianjia
+Cheers
+Quentin
