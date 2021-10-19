@@ -2,429 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FABA4330BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B57433197
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbhJSIJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234805AbhJSII4 (ORCPT
+        id S234829AbhJSIzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:55:53 -0400
+Received: from gateway20.websitewelcome.com ([192.185.59.4]:19144 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229930AbhJSIzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:08:56 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2B1C061777
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 01:05:49 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id r19so5532670lfe.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 01:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=TOgHgcMwG2T4LdCnfiP/Sf2u4JL85Q6aYFTHg56s5DU=;
-        b=N4pf0PD+WEHoP8RpEOoRSrP1Hh8UcxuvtMlabfUt1nUw5/NdB4mPY1Oo2OeEmf8N+I
-         Ihco8spJsF+1CVb/+j02ithrKa8xp80a+IQZrdYZZnJ0p88sVGzYkxjTZDwRKbiKFDw/
-         blmDnBVfZW6Q2uNhZY/Ye7tDq/Z9BAhXbmXWhd37XCVNhOM47XtHBlHojMlnzbgeTUW1
-         cbSJcsHsiEOdqt8oGGzLJyYT+wPkjTKcnGsu8aHYIH0F/vG5VI/+vR0NN4dw1LNyzKKm
-         kZZ+W0P7xj+oNGUfmIVF5XFd/TYbR7Nkvwv62OflF7RNRWNoJh7OLNzCztVli4lZzGQP
-         wHdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=TOgHgcMwG2T4LdCnfiP/Sf2u4JL85Q6aYFTHg56s5DU=;
-        b=aC7JWlhpSiQnEngpi0rdc/T12cVq+HmpiBgL/cNljEDjEuvbQB3wQcndr/0+ZmLkU6
-         NLcbbPKA9NcUE8KICz6qUFIxA7lmqzBDiA6Ja2nBj8IUqA05Fy3ApeFK3ShPe7mBWwMq
-         Forto56XSxeaCFX9j4pXIHnGQwWjY/UQEGlGnDaogvBgnqNM43CPfjc8uJNPJFp+z7HU
-         oHR13+RpHOchjKEf8VuhGMI0zLmRwiKGHEcBrRlZTzH+GHIDceGSxNIjkeFeciy2bdtg
-         bd3QOBPUuuEwE0hI1FkGwMVkTsp64RG/reVI7VhYGKcFBF+iuN4MtXSI75ILPCVmHOQL
-         sY5Q==
-X-Gm-Message-State: AOAM532E4WSJ8Vb7CZPQAnlnADLTMiZXO95APmVflsHikpV4mgpsTMWu
-        by5LEW01z1qrKZXDKamwKr8=
-X-Google-Smtp-Source: ABdhPJy3OcUXgFagjD8gh11icUMMmbB0xPHxhCi/51g4d1EL9CwGQKVK+Ga5r7xep8u/0yhB9zkJ+Q==
-X-Received: by 2002:ac2:54a6:: with SMTP id w6mr4719757lfk.277.1634630747626;
-        Tue, 19 Oct 2021 01:05:47 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id a25sm1607526lfo.197.2021.10.19.01.05.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 01:05:46 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 11:05:35 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        contact@emersion.fr, leandro.ribeiro@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org
-Subject: Re: [PATCH 6/6] drm: vkms: Refactor the plane composer to accept
- new formats
-Message-ID: <20211019110535.18f56272@eldfell>
-In-Reply-To: <d5f92494-9c55-2b7d-6107-6048abb41759@gmail.com>
-References: <20211005201637.58563-1-igormtorrente@gmail.com>
-        <20211005201637.58563-7-igormtorrente@gmail.com>
-        <20211018113009.5519457c@eldfell>
-        <d5f92494-9c55-2b7d-6107-6048abb41759@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 19 Oct 2021 04:55:52 -0400
+X-Greylist: delayed 1499 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Oct 2021 04:55:52 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id EA172400D190F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 03:06:41 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id ck8vm4sbsIWzGck8vmEaM4; Tue, 19 Oct 2021 03:06:41 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:58572 helo=[10.0.0.35])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1mck8u-000jRJ-HQ; Tue, 19 Oct 2021 03:06:40 -0500
+Message-ID: <b093fc67-a251-fad3-e6f6-19c5d85253dc@kernel.org>
+Date:   Tue, 19 Oct 2021 10:06:36 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/y.0ESSWVeFW=WgObJd32FkV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH V3 06/19] rtla: Real-Time Linux Analysis tool
+Content-Language: en-US
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1634574261.git.bristot@kernel.org>
+ <65fbb9b508a2c1803bacfe255c1d568eb8f4ba4f.1634574261.git.bristot@kernel.org>
+ <YW3LUhMOVWTvQlKh@lx-t490>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <YW3LUhMOVWTvQlKh@lx-t490>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.18.63.114
+X-Source-L: No
+X-Exim-ID: 1mck8u-000jRJ-HQ
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:58572
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 1
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/y.0ESSWVeFW=WgObJd32FkV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/18/21 21:30, Ahmed S. Darwish wrote:
+> On Mon, Oct 18, 2021, Daniel Bristot de Oliveira wrote:
+>> --- /dev/null
+>> +++ b/tools/tracing/rtla/Makefile
+>> @@ -0,0 +1,59 @@
+>> +CC	:=	gcc
+> 
+> Some $(CROSS_COMPILE) for the poor souls who will integrate this into
+> embedded distributions?
+> 
+>> +
+>> +TRACEFS_HEADERS		:= $$(pkg-config --cflags libtracefs)
+>> +
+> 
+> ditto. This uses the host's pkg-config unconditionally.
 
-On Mon, 18 Oct 2021 16:26:06 -0300
-Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
+mind trying this (on top of the current one)?
 
-> Hi Pekka,
->=20
-> On 10/18/21 5:30 AM, Pekka Paalanen wrote:
-> > On Tue,  5 Oct 2021 17:16:37 -0300
-> > Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
-> >  =20
-> >> Currently the blend function only accepts XRGB_8888 and ARGB_8888
-> >> as a color input.
-> >>
-> >> This patch refactors all the functions related to the plane composition
-> >> to overcome this limitation.
-> >>
-> >> Now the blend function receives a format handler to each plane and a
-> >> blend function pointer. It will take two ARGB_1616161616 pixels, one
-> >> for each handler, and will use the blend function to calculate and
-> >> store the final color in the output buffer.
-> >>
-> >> These format handlers will receive the `vkms_composer` and a pair of
-> >> coordinates. And they should return the respective pixel in the
-> >> ARGB_16161616 format.
-> >>
-> >> The blend function will receive two ARGB_16161616 pixels, x, y, and
-> >> the vkms_composer of the output buffer. The method should perform the
-> >> blend operation and store output to the format aforementioned
-> >> ARGB_16161616. =20
-> >=20
-> > Hi,
-> >=20
-> > here are some drive-by comments which you are free to take or leave.
-> >=20
-> > To find more efficient ways to do this, you might want research Pixman
-> > library. It's MIT licensed.
-> >=20
-> > IIRC, the elementary operations there operate on pixel lines (pointer +
-> > length), not individual pixels (image, x, y). Input conversion function
-> > reads and converts a whole line a time. Blending function blends two
-> > lines and writes the output into back one of the lines. Output
-> > conversion function takes a line and converts it into destination
-> > buffer. That way the elementary operations do not need to take stride
-> > into account, and blending does not need to deal with varying memory
-> > alignment FWIW. The inner loops involve much less function calls and
-> > state, probably. =20
->=20
-> I was doing some rudimentary profiling, and I noticed that the code=20
-> spends most of the time with the indirect system call overhead and not=20
-> the actual computation. This can definitively help with it.
+Thanks!
 
-Hi,
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index 9a914391e507..8c2b7f8c7f20 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -1,14 +1,30 @@
+ NAME	:=	rtla
+ VERSION	:=	0.1
+ 
++# Makefiles suck: This macro sets a default value of $(2) for the
++# variable named by $(1), unless the variable has been set by
++# environment or command line. This is necessary for CC and AR
++# because make sets default values, so the simpler ?= approach
++# won't work as expected.
++define allow-override
++  $(if $(or $(findstring environment,$(origin $(1))),\
++            $(findstring command line,$(origin $(1)))),,\
++    $(eval $(1) = $(2)))
++endef
++
++# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
++$(call allow-override,CC,$(CROSS_COMPILE)gcc)
++$(call allow-override,AR,$(CROSS_COMPILE)ar)
++$(call allow-override,PKG_CONFIG,pkg-config)
++$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
++$(call allow-override,LDCONFIG,ldconfig)
++
+ INSTALL	=	install
+-CC	:=	gcc
+ FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
+-		-fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
+-MOPTS	:=	-m64 -mtune=generic
++		-fasynchronous-unwind-tables -fstack-clash-protection
+ WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
+ 
+-TRACEFS_HEADERS		:= $$(pkg-config --cflags libtracefs)
++TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
+ 
+ CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
+ LDFLAGS	:=	-ggdb
 
-I suppose you mean function (pointer) call, not system call?
-
-Really good that you have already profiled things. All optimisations
-should be guided by profiling, otherwise they are just guesses (and I
-got lucky this time I guess).
-
-> > Pixman may not do exactly this, but it does something very similar.
-> > Pixman also has multiple different levels of optimisations, which may
-> > not be necessary for VKMS.
-> >=20
-> > It's a trade-off between speed and temporary memory consumed. You need
-> > temporary buffers for two lines, but not more (not a whole image in
-> > full intermediate precision). Further optimisation could determine
-> > whether to process whole image rows as lines, or split a row into
-> > multiple lines to stay within CPU cache size.
-> >  =20
->=20
-> Sorry, I didn't understand the idea of the last sentence.
-
-If an image is very wide, a single row could still be relatively large
-in size (bytes). If it is large enough that the working set falls out
-of a faster CPU cache into a slower CPU cache (or worse yet, into RAM
-accesses), performance may suffer and become memory bandwidth limited
-rather than ALU rate limited. Theoretically that can be worked around
-by limiting the maximum size of a line, and splitting an image row into
-multiple lines.
-
-However, this is an optimisation one probably should not do until there
-is performance profiling data showing that it actually is useful. The
-optimal line size limit depends on the CPU model as well. So it's a bit
-far out, but something you could keep in mind just in case.
-
-> > Since it seems you are blending multiple planes into a single
-> > destination which is assumed to be opaque, you might also be able to do
-> > the multiple blends without convert-writing and read-converting to/from
-> > the destination between every plane. I think that might be possible to
-> > architect on top of the per-line operations still. =20
->=20
-> I tried it. But I don't know how to do this without looking like a mess.=
-=20
-
-Dedicate one of the temporary line buffers for the destination, and
-instead of writing it out and loading it back for each input plane,
-leave it in place over all planes and write it out just once at the end.
-
-I do expect more state tracking needed. You need to iterate over the
-list of planes for each output row, extract only the used part of an
-input plane's buffer into the other temporary line buffer, and offset
-the destination line buffer and length to match when passing those into
-a blending function.
-
-It's not an obvious win but a trade-off, so profiling is again needed.
-
-Btw. the use of temporary line buffers should also help with
-implementing scaling. You could do the filtering during reading of the
-input buffer. If the filter is not nearest, meaning you need to access
-more than one input pixel per pixel-for-blending, there are a few ways
-to go about that. You could do the filtering during the input buffer
-reading, or you could load two input buffer rows into temporary line
-buffers and do filtering as a separate step into yet another line
-buffer. As the composition advances from top to bottom, only one of the
-input buffer rows will change at a time (during up-scaling) so you can
-avoid re-loading a row by swapping the line buffers.
-
-This is getting ahead of things, so don't worry about scaling or
-filtering yet. The first thing is to see if you can make the line
-buffer approach give you a significant speed-up.
-
-> Does the pixman perform some similar?
-
-No, Pixman composition operation has only three images: source,
-mask, and destination. All those it can handle simultaneously, but
-since there is no "multi-blending" API, it doesn't need to take care of
-more.
-
-IIRC, Pixman also has a form of optimised operations that do blending
-and converting to destination in the same pass. The advantage of that
-is that blending can work with less precision when it knows what
-precision the output will be converted to and it saves some bandwidth
-by not needing to write-after-blending and read-for-conversion
-intermediate precision values. The disadvantage is that the number of
-needed specialised blending functions explodes by the number of
-possible destination formats. Pixman indeed makes those specialised
-functions optional, falling back to more generic C code. I would hope
-that VKMS does not need to go this far in optimisations though.
-
-> >  =20
-> >> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-> >> ---
-> >>   drivers/gpu/drm/vkms/vkms_composer.c | 275 ++++++++++++++-----------=
---
-> >>   drivers/gpu/drm/vkms/vkms_formats.h  | 125 ++++++++++++
-> >>   2 files changed, 271 insertions(+), 129 deletions(-)
-> >>   create mode 100644 drivers/gpu/drm/vkms/vkms_formats.h =20
-> >=20
-> > ...
-> >  =20
-> >> +
-> >> +u64 ARGB8888_to_ARGB16161616(struct vkms_composer *composer, int x, i=
-nt y)
-> >> +{
-> >> +	u8 *pixel_addr =3D packed_pixels_addr(composer, x, y);
-> >> +
-> >> +	/*
-> >> +	 * Organizes the channels in their respective positions and converts
-> >> +	 * the 8 bits channel to 16.
-> >> +	 * The 257 is the "conversion ratio". This number is obtained by the
-> >> +	 * (2^16 - 1) / (2^8 - 1) division. Which, in this case, tries to get
-> >> +	 * the best color value in a color space with more possibilities. =20
-> >=20
-> > Pixel format, not color space. > =20
-> >> +	 * And a similar idea applies to others RGB color conversions.
-> >> +	 */
-> >> +	return ((u64)pixel_addr[3] * 257) << 48 |
-> >> +	       ((u64)pixel_addr[2] * 257) << 32 |
-> >> +	       ((u64)pixel_addr[1] * 257) << 16 |
-> >> +	       ((u64)pixel_addr[0] * 257); =20
-> >=20
-> > I wonder if the compiler is smart enough to choose between "mul 257"
-> > and "(v << 8) | v" operations... but that's probably totally drowning
-> > under the overhead of per (x,y) looping. =20
->=20
-> I disassembled the code to check it. And looks like the compiler is=20
-> replacing the multiplication with shifts and additions.
->=20
-> ARGB8888_to_ARGB16161616:
->     0xffffffff816ad660 <+0>:     imul   0x12c(%rdi),%edx
->     0xffffffff816ad667 <+7>:     imul   0x130(%rdi),%esi
->     0xffffffff816ad66e <+14>:    add    %edx,%esi
->     0xffffffff816ad670 <+16>:    add    0x128(%rdi),%esi
->     0xffffffff816ad676 <+22>:    movslq %esi,%rax
->     0xffffffff816ad679 <+25>:    add    0xe8(%rdi),%rax
->     0xffffffff816ad680 <+32>:    movzbl 0x3(%rax),%ecx
->     0xffffffff816ad684 <+36>:    movzbl 0x2(%rax),%esi
->     0xffffffff816ad688 <+40>:    mov    %rcx,%rdx
->     0xffffffff816ad68b <+43>:    shl    $0x8,%rdx
->     0xffffffff816ad68f <+47>:    add    %rcx,%rdx
->     0xffffffff816ad692 <+50>:    mov    %rsi,%rcx
->     0xffffffff816ad695 <+53>:    shl    $0x8,%rcx
->     0xffffffff816ad699 <+57>:    shl    $0x30,%rdx
->     0xffffffff816ad69d <+61>:    add    %rsi,%rcx
->     0xffffffff816ad6a0 <+64>:    movzbl (%rax),%esi
->     0xffffffff816ad6a3 <+67>:    shl    $0x20,%rcx
->     0xffffffff816ad6a7 <+71>:    or     %rcx,%rdx
->     0xffffffff816ad6aa <+74>:    mov    %rsi,%rcx
->     0xffffffff816ad6ad <+77>:    shl    $0x8,%rcx
->     0xffffffff816ad6b1 <+81>:    add    %rsi,%rcx
->     0xffffffff816ad6b4 <+84>:    or     %rcx,%rdx
->     0xffffffff816ad6b7 <+87>:    movzbl 0x1(%rax),%ecx
->     0xffffffff816ad6bb <+91>:    mov    %rcx,%rax
->     0xffffffff816ad6be <+94>:    shl    $0x8,%rax
->     0xffffffff816ad6c2 <+98>:    add    %rcx,%rax
->     0xffffffff816ad6c5 <+101>:   shl    $0x10,%rax
->     0xffffffff816ad6c9 <+105>:   or     %rdx,%rax
->     0xffffffff816ad6cc <+108>:   ret
-
-Nice!
-
-> >  =20
-> >> +}
-> >> +
-> >> +u64 XRGB8888_to_ARGB16161616(struct vkms_composer *composer, int x, i=
-nt y)
-> >> +{
-> >> +	u8 *pixel_addr =3D packed_pixels_addr(composer, x, y);
-> >> +
-> >> +	/*
-> >> +	 * The same as the ARGB8888 but with the alpha channel as the
-> >> +	 * maximum value as possible.
-> >> +	 */
-> >> +	return 0xffffllu << 48 |
-> >> +	       ((u64)pixel_addr[2] * 257) << 32 |
-> >> +	       ((u64)pixel_addr[1] * 257) << 16 |
-> >> +	       ((u64)pixel_addr[0] * 257);
-> >> +}
-> >> +
-> >> +u64 get_ARGB16161616(struct vkms_composer *composer, int x, int y)
-> >> +{
-> >> +	__le64 *pixel_addr =3D packed_pixels_addr(composer, x, y);
-> >> +
-> >> +	/*
-> >> +	 * Because the format byte order is in little-endian and this code
-> >> +	 * needs to run on big-endian machines too, we need modify
-> >> +	 * the byte order from little-endian to the CPU native byte order.
-> >> +	 */
-> >> +	return le64_to_cpu(*pixel_addr);
-> >> +}
-> >> +
-> >> +/*
-> >> + * The following functions are used as blend operations. But unlike t=
-he
-> >> + * `alpha_blend`, these functions take an ARGB16161616 pixel from the
-> >> + * source, convert it to a specific format, and store it in the desti=
-nation.
-> >> + *
-> >> + * They are used in the `compose_active_planes` and `write_wb_buffer`=
- to
-> >> + * copy and convert one pixel from/to the output buffer to/from
-> >> + * another buffer (e.g. writeback buffer, primary plane buffer).
-> >> + */
-> >> +
-> >> +void convert_to_ARGB8888(u64 argb_src1, u64 argb_src2, int x, int y,
-> >> +			 struct vkms_composer *dst_composer)
-> >> +{
-> >> +	u8 *pixel_addr =3D packed_pixels_addr(dst_composer, x, y);
-> >> +
-> >> +	/*
-> >> +	 * This sequence below is important because the format's byte order =
-is
-> >> +	 * in little-endian. In the case of the ARGB8888 the memory is
-> >> +	 * organized this way:
-> >> +	 *
-> >> +	 * | Addr     | =3D blue channel
-> >> +	 * | Addr + 1 | =3D green channel
-> >> +	 * | Addr + 2 | =3D Red channel
-> >> +	 * | Addr + 3 | =3D Alpha channel
-> >> +	 */
-> >> +	pixel_addr[0] =3D DIV_ROUND_UP(argb_src1 & 0xffffllu, 257);
-> >> +	pixel_addr[1] =3D DIV_ROUND_UP((argb_src1 & (0xffffllu << 16)) >> 16=
-, 257);
-> >> +	pixel_addr[2] =3D DIV_ROUND_UP((argb_src1 & (0xffffllu << 32)) >> 32=
-, 257);
-> >> +	pixel_addr[3] =3D DIV_ROUND_UP((argb_src1 & (0xffffllu << 48)) >> 48=
-, 257); =20
-> >=20
-> > This could be potentially expensive if the compiler ends up using an
-> > actual div instruction.
-> >  =20
-> Yes, I'm using the DIV_ROUND_UP because I couldn't figure out how the=20
-> "Faster div by 255" works to adapt to 16 bits.
-
-But does the compiler actually do a div instruction? If not, then no
-worries. If it does, then maybe something to look into, *if* this shows
-up in profiling.
-
-
-Thanks,
-pq
-
-> > Btw. this would be shorter to write as
-> >=20
-> > 	(argb_src1 >> 16) & 0xffff
-> >=20
-> > etc. =20
-> I will use it in the V2. Thanks.
->=20
-> >=20
-> > Thanks,
-> > pq
-> >  =20
-> >> +}
-> >> +
-> >> +void convert_to_XRGB8888(u64 argb_src1, u64 argb_src2, int x, int y,
-> >> +			 struct vkms_composer *dst_composer)
-> >> +{
-> >> +	u8 *pixel_addr =3D packed_pixels_addr(dst_composer, x, y);
-> >> +
-> >> +	pixel_addr[0] =3D DIV_ROUND_UP(argb_src1 & 0xffffllu, 257);
-> >> +	pixel_addr[1] =3D DIV_ROUND_UP((argb_src1 & (0xffffllu << 16)) >> 16=
-, 257);
-> >> +	pixel_addr[2] =3D DIV_ROUND_UP((argb_src1 & (0xffffllu << 32)) >> 32=
-, 257);
-> >> +	pixel_addr[3] =3D 0xff;
-> >> +}
-> >> +
-> >> +void convert_to_ARGB16161616(u64 argb_src1, u64 argb_src2, int x, int=
- y,
-> >> +			     struct vkms_composer *dst_composer)
-> >> +{
-> >> +	__le64 *pixel_addr =3D packed_pixels_addr(dst_composer, x, y);
-> >> +
-> >> +	*pixel_addr =3D cpu_to_le64(argb_src1);
-> >> +}
-> >> +
-> >> +#endif /* _VKMS_FORMATS_H_ */ =20
-> >  =20
-
-
---Sig_/y.0ESSWVeFW=WgObJd32FkV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmFufE8ACgkQI1/ltBGq
-qqdJTBAAsA9jIx1H3pqczUELzjTjeW0X++r5w6MqjHjpS6z/naOIIaN09Eh8tybc
-5S+STRuO5VJkN7zixO5KGpKz/cenh/sm12/AGrF5/qgudrCWYoCQwPxpmzLeuv7P
-fGdDyeos+5fZcUbEE7N0gBXS72zclBfHNPF29hhvXSfkb8VvwvEwbVHFr+h5BZf/
-sYM5czjZk2wCRII8l+mRaSuDOjLirnlfv98rUvaZ7e7sKFr0tOxnUxTeytE+6/qG
-1wSmLMBa6zGl9f5RLT2NZkIbLHEt9eYiiTiX0E++RRIuXsZW4C7gCel5wmhmFMAu
-IIyirGofmqYBSHuvYUthmtp5ZsWkdaxfE1ittlGR28ODnpQr/jATPEhvj+km8AX1
-x11niADVHv5saBzkZ5fhF1hrj0UF1LSG1KxnqHksfzBKU7te9WvCbQZR9lO2xcca
-mz3gwuyi1ijeBz9YD/h3QsXkTIkjXGKk1GXkULeXXonO4Un/ffWXneHzSHSzM7nC
-XLy/EnvEKiRc1+3EMRRtK2ILssXFbnP5ZtAPOkzS3X97FUtb4weNjuk9S78TO6r4
-53zK0M20LNPLzI+Xh2TQUTJ0ocIrGwef31srWQc9/5VXbVQgb+M9rRcej7NhEYdR
-X3cF3OzgSnENtrLmq9qWA3USYL3zhKeaScQ3B0YKDkvvb5ukHlI=
-=2n/U
------END PGP SIGNATURE-----
-
---Sig_/y.0ESSWVeFW=WgObJd32FkV--
