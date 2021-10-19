@@ -2,194 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24F14335B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BE84335AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbhJSMQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:16:49 -0400
-Received: from comms.puri.sm ([159.203.221.185]:50238 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235703AbhJSMQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:16:39 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id C7BF6DF862;
-        Tue, 19 Oct 2021 05:13:56 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id QFfPGFfaxQqO; Tue, 19 Oct 2021 05:13:56 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 14:13:49 +0200
-From:   Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
-To:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm, phone-devel@vger.kernel.org
-Subject: [PATCHv3 2/4] media: imx: Store the type of hardware implementation
-Message-ID: <20211019120047.827915-2-dorota.czaplejewicz@puri.sm>
-In-Reply-To: <20211019120047.827915-1-dorota.czaplejewicz@puri.sm>
-References: <20211019120047.827915-1-dorota.czaplejewicz@puri.sm>
-Organization: Purism
+        id S235605AbhJSMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235784AbhJSMQJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:16:09 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B146C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:56 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id s17so19965757ioa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pk5y5XIMhh/tG68HZxQqkvzMZzS0BORw3x9mVON2B+o=;
+        b=na4AN+NihvQEOJ2fjaKAqWgeN2LnuG718wxc4mXri/fs04C/eUG/pg8oOK9ZpllO+Y
+         HP/xjbQ3pgZBTFO7tmsc3if2u9KJwTPQTGyK/Xdaj6c4FowqiufFeuamwQKxTpf9MjqO
+         d06xXrf9zOElxoz6LZNfKpB6pPClOl3q23kUIdnrfpcF39I3pZ4itr0+nJ6K0b7W49gO
+         OBFtc5FvSfmnu/dG2UiHX6a/8gTOBnt4fl+LmIL4HWy1f7A5xxPNTEdzB8M+LNnINo4V
+         spoeP19SyeDIwmxgEtTYNGyKVn3avCj+QRe8dC/LMuhoaR6whi+/dBsRYHgjUtYqfkmx
+         9jzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pk5y5XIMhh/tG68HZxQqkvzMZzS0BORw3x9mVON2B+o=;
+        b=YzyRwpw2Rz6A1o89nQyM6WfNVgf9v8aWw4Q1DsIAcPsQJJ/5Di3gVXzy3FDaTF6eev
+         YnyBMKa+Syae/+XojqAp8QmEpiDe6942yF3OHjE6+7Rkmbf9KZ0gB2KJuM8gA5KyLQuY
+         OtY1DrNlKSCktYcRDKVAAl6VyZbdBNnsJsgYAgQZteTbaXeIL2aDjgOgBdcuYQcFTOfg
+         wVup5fPuFvwqclAKgrvl3DiWEv6AcdfjCsOniiaAvX3058k/Z/l26Idl5umFR7TJOg61
+         C5kZ/itzSr45RbqM6A5ThsIXZdpR3PMXKbEFlo7F8e5SHAPSXGwh8S1IQvCK9eUSRYzR
+         vuZA==
+X-Gm-Message-State: AOAM530epLOlpbooreC8xrajUcKtZFt2J+zoM3qYh8yKSt0fFOG7oajn
+        218Q1RsI+Xuv9NKYiIWNDnCDhX19k7+gIg==
+X-Google-Smtp-Source: ABdhPJyrkGlgYSptiwUkxsgSjFMRhruX5Ih2RQzOWpEucuDarfLM14sRw4qEsrT7YxIFM1wHljfhOg==
+X-Received: by 2002:a6b:dc05:: with SMTP id s5mr18118974ioc.131.1634645635968;
+        Tue, 19 Oct 2021 05:13:55 -0700 (PDT)
+Received: from localhost.localdomain ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id s7sm6333123iow.31.2021.10.19.05.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 05:13:55 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Omar Sandoval <osandov@fb.com>,
+        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH] blk-wbt: prevent NULL pointer dereference in wb_timer_fn
+Date:   Tue, 19 Oct 2021 06:13:52 -0600
+Message-Id: <163464562777.598602.10382818884305108379.b4-ty@kernel.dk>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <YW6N2qXpBU3oc50q@arighi-desktop>
+References: <YW6N2qXpBU3oc50q@arighi-desktop>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/C/qie6iC_3PE.OgG.HdTuwE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/C/qie6iC_3PE.OgG.HdTuwE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 19 Oct 2021 11:20:26 +0200, Andrea Righi wrote:
+> The timer callback used to evaluate if the latency is exceeded can be
+> executed after the corresponding disk has been released, causing the
+> following NULL pointer dereference:
+> 
+> [ 119.987108] BUG: kernel NULL pointer dereference, address: 0000000000000098
+> [ 119.987617] #PF: supervisor read access in kernel mode
+> [ 119.987971] #PF: error_code(0x0000) - not-present page
+> [ 119.988325] PGD 7c4a4067 P4D 7c4a4067 PUD 7bf63067 PMD 0
+> [ 119.988697] Oops: 0000 [#1] SMP NOPTI
+> [ 119.988959] CPU: 1 PID: 9353 Comm: cloud-init Not tainted 5.15-rc5+arighi #rc5+arighi
+> [ 119.989520] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+> [ 119.990055] RIP: 0010:wb_timer_fn+0x44/0x3c0
+> [ 119.990376] Code: 41 8b 9c 24 98 00 00 00 41 8b 94 24 b8 00 00 00 41 8b 84 24 d8 00 00 00 4d 8b 74 24 28 01 d3 01 c3 49 8b 44 24 60 48 8b 40 78 <4c> 8b b8 98 00 00 00 4d 85 f6 0f 84 c4 00 00 00 49 83 7c 24 30 00
+> [ 119.991578] RSP: 0000:ffffb5f580957da8 EFLAGS: 00010246
+> [ 119.991937] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000004
+> [ 119.992412] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88f476d7f780
+> [ 119.992895] RBP: ffffb5f580957dd0 R08: 0000000000000000 R09: 0000000000000000
+> [ 119.993371] R10: 0000000000000004 R11: 0000000000000002 R12: ffff88f476c84500
+> [ 119.993847] R13: ffff88f4434390c0 R14: 0000000000000000 R15: ffff88f4bdc98c00
+> [ 119.994323] FS: 00007fb90bcd9c00(0000) GS:ffff88f4bdc80000(0000) knlGS:0000000000000000
+> [ 119.994952] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 119.995380] CR2: 0000000000000098 CR3: 000000007c0d6000 CR4: 00000000000006e0
+> [ 119.995906] Call Trace:
+> [ 119.996130] ? blk_stat_free_callback_rcu+0x30/0x30
+> [ 119.996505] blk_stat_timer_fn+0x138/0x140
+> [ 119.996830] call_timer_fn+0x2b/0x100
+> [ 119.997136] __run_timers.part.0+0x1d1/0x240
+> [ 119.997470] ? kvm_clock_get_cycles+0x11/0x20
+> [ 119.997826] ? ktime_get+0x3e/0xa0
+> [ 119.998110] ? native_apic_msr_write+0x2c/0x30
+> [ 119.998456] ? lapic_next_event+0x20/0x30
+> [ 119.998779] ? clockevents_program_event+0x94/0xf0
+> [ 119.999150] run_timer_softirq+0x2a/0x50
+> [ 119.999465] __do_softirq+0xcb/0x26f
+> [ 119.999764] irq_exit_rcu+0x8c/0xb0
+> [ 120.000057] sysvec_apic_timer_interrupt+0x43/0x90
+> [ 120.000429] ? asm_sysvec_apic_timer_interrupt+0xa/0x20
+> [ 120.000836] asm_sysvec_apic_timer_interrupt+0x12/0x20
+> 
+> [...]
 
-The driver covers i.MX5/6, as well as i.MX7/8 hardware.
-Those implementations differ, e.g. in the sizes of buffers they accept.
+Applied, thanks!
 
-Some functionality should be abstracted, and storing type achieves that.
+[1/1] blk-wbt: prevent NULL pointer dereference in wb_timer_fn
+      commit: 480d42dc001bbfe953825a92073012fcd5a99161
 
-Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
----
- drivers/staging/media/imx/imx-ic-prpencvf.c   | 3 ++-
- drivers/staging/media/imx/imx-media-capture.c | 5 ++++-
- drivers/staging/media/imx/imx-media-csi.c     | 3 ++-
- drivers/staging/media/imx/imx-media.h         | 8 +++++++-
- drivers/staging/media/imx/imx7-media-csi.c    | 3 ++-
- 5 files changed, 17 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/staging/media/imx/imx-ic-prpencvf.c b/drivers/staging/=
-media/imx/imx-ic-prpencvf.c
-index d990553de87b..e06f5fbe5174 100644
---- a/drivers/staging/media/imx/imx-ic-prpencvf.c
-+++ b/drivers/staging/media/imx/imx-ic-prpencvf.c
-@@ -1265,7 +1265,8 @@ static int prp_registered(struct v4l2_subdev *sd)
-=20
- 	priv->vdev =3D imx_media_capture_device_init(ic_priv->ipu_dev,
- 						   &ic_priv->sd,
--						   PRPENCVF_SRC_PAD, true);
-+						   PRPENCVF_SRC_PAD, true,
-+						   DEVICE_TYPE_IMX56);
- 	if (IS_ERR(priv->vdev))
- 		return PTR_ERR(priv->vdev);
-=20
-diff --git a/drivers/staging/media/imx/imx-media-capture.c b/drivers/stagin=
-g/media/imx/imx-media-capture.c
-index 93ba09236010..65dc95a48ecc 100644
---- a/drivers/staging/media/imx/imx-media-capture.c
-+++ b/drivers/staging/media/imx/imx-media-capture.c
-@@ -34,6 +34,7 @@ struct capture_priv {
-=20
- 	struct imx_media_video_dev vdev;	/* Video device */
- 	struct media_pad vdev_pad;		/* Video device pad */
-+	enum imx_media_device_type type;	/* Type of hardware implementation */
-=20
- 	struct v4l2_subdev *src_sd;		/* Source subdev */
- 	int src_sd_pad;				/* Source subdev pad */
-@@ -957,7 +958,8 @@ EXPORT_SYMBOL_GPL(imx_media_capture_device_unregister);
-=20
- struct imx_media_video_dev *
- imx_media_capture_device_init(struct device *dev, struct v4l2_subdev *src_=
-sd,
--			      int pad, bool legacy_api)
-+			      int pad, bool legacy_api,
-+			      enum imx_media_device_type type)
- {
- 	struct capture_priv *priv;
- 	struct video_device *vfd;
-@@ -972,6 +974,7 @@ imx_media_capture_device_init(struct device *dev, struc=
-t v4l2_subdev *src_sd,
- 	priv->src_sd_pad =3D pad;
- 	priv->dev =3D dev;
- 	priv->legacy_api =3D legacy_api;
-+	priv->type =3D type;
-=20
- 	mutex_init(&priv->mutex);
- 	INIT_LIST_HEAD(&priv->ready_q);
-diff --git a/drivers/staging/media/imx/imx-media-csi.c b/drivers/staging/me=
-dia/imx/imx-media-csi.c
-index 6a94fff49bf6..b6758c3787c7 100644
---- a/drivers/staging/media/imx/imx-media-csi.c
-+++ b/drivers/staging/media/imx/imx-media-csi.c
-@@ -1794,7 +1794,8 @@ static int csi_registered(struct v4l2_subdev *sd)
- 	}
-=20
- 	priv->vdev =3D imx_media_capture_device_init(priv->sd.dev, &priv->sd,
--						   CSI_SRC_PAD_IDMAC, true);
-+						   CSI_SRC_PAD_IDMAC, true,
-+						   DEVICE_TYPE_IMX56);
- 	if (IS_ERR(priv->vdev)) {
- 		ret =3D PTR_ERR(priv->vdev);
- 		goto free_fim;
-diff --git a/drivers/staging/media/imx/imx-media.h b/drivers/staging/media/=
-imx/imx-media.h
-index d2a150aac6cd..08e0c94e2de1 100644
---- a/drivers/staging/media/imx/imx-media.h
-+++ b/drivers/staging/media/imx/imx-media.h
-@@ -96,6 +96,11 @@ enum imx_pixfmt_sel {
- 	PIXFMT_SEL_ANY =3D PIXFMT_SEL_YUV | PIXFMT_SEL_RGB | PIXFMT_SEL_BAYER,
- };
-=20
-+enum imx_media_device_type {
-+	DEVICE_TYPE_IMX56,
-+	DEVICE_TYPE_IMX78,
-+};
-+
- struct imx_media_buffer {
- 	struct vb2_v4l2_buffer vbuf; /* v4l buffer must be first */
- 	struct list_head  list;
-@@ -282,7 +287,8 @@ int imx_media_ic_unregister(struct v4l2_subdev *sd);
- /* imx-media-capture.c */
- struct imx_media_video_dev *
- imx_media_capture_device_init(struct device *dev, struct v4l2_subdev *src_=
-sd,
--			      int pad, bool legacy_api);
-+			      int pad, bool legacy_api,
-+			      enum imx_media_device_type type);
- void imx_media_capture_device_remove(struct imx_media_video_dev *vdev);
- int imx_media_capture_device_register(struct imx_media_video_dev *vdev,
- 				      u32 link_flags);
-diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/m=
-edia/imx/imx7-media-csi.c
-index d7dc0d8edf50..1a11f07620e9 100644
---- a/drivers/staging/media/imx/imx7-media-csi.c
-+++ b/drivers/staging/media/imx/imx7-media-csi.c
-@@ -1012,7 +1012,8 @@ static int imx7_csi_registered(struct v4l2_subdev *sd)
- 	}
-=20
- 	csi->vdev =3D imx_media_capture_device_init(csi->sd.dev, &csi->sd,
--						  IMX7_CSI_PAD_SRC, false);
-+						  IMX7_CSI_PAD_SRC, false,
-+						  DEVICE_TYPE_IMX78);
- 	if (IS_ERR(csi->vdev))
- 		return PTR_ERR(csi->vdev);
-=20
---=20
-2.31.1
+Best regards,
+-- 
+Jens Axboe
 
 
---Sig_/C/qie6iC_3PE.OgG.HdTuwE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEExKRqtqfFqmh+lu1oADBpX4S8ZncFAmFutn0ACgkQADBpX4S8
-ZndtUA//f4CmXDa3NGZc3c3RifGXRnhCxrb5I8j8vqbR5ZKM3beLQ8x5ULkFoqko
-LeAGihlm6egPIrryT/PZe8LXhbe/i/4B6EvlrsRLHhIMMoDLQrapDQJQIcL3b32Y
-Dl0y4zYDoPuAg7RBzuwqgjwClFtg8Lr5FXPv86h7pLwbzmH87ssR6YSXYePg8wTC
-XVy58pPm4HXklGd6Q2BllO/ih5KyMwvuEVwEL4o9WjYOfocWCdQIuuNfqTnqchWz
-eUh04uQKaFs8yeUowHWttgT+r9Bjy7uztCfrp9gnpKtNkBBeatPMF/benhKTWZgb
-7lJUIkLehLSRkkHWDtQqIpZpZyDHxmic9fkaE+b/llt82gIuVdr3B/961fxX5pAR
-Me9Gppf/2x9+JPma/BVq2TaKkvEem6m7PHM2oulSVq3TmebOwLK90OMAWcbxeNRF
-zZhYBRhQG3vS7RxEXBeSGw+4+cwqioC8KHjQ+zP3CmrITCiogPau9L+nSv+IKmmt
-VSwvthTXjpoDd7p7UO3F77oROKUUs5dUx+gCsk1x9So01uH068VT+g4yJ5NeuqkQ
-1Tt7GMooIc4fihsjIzdMafnoCVKVx5Ha0x4aWLNJFpCozWKQchx+dJMXBN3fKrST
-JuDXZVl5lcMm2tr60FusGX3MGtBx5KWu+HK2MkXnTUjmywumjsI=
-=2IvE
------END PGP SIGNATURE-----
-
---Sig_/C/qie6iC_3PE.OgG.HdTuwE--
