@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA95F4331C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62ECC4331C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbhJSJEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:04:49 -0400
-Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:45706 "EHLO
-        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234993AbhJSJEn (ORCPT
+        id S234364AbhJSJE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:04:56 -0400
+Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:42345 "EHLO
+        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234980AbhJSJEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:04:43 -0400
+        Tue, 19 Oct 2021 05:04:55 -0400
 Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id C513C136001
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:02:30 +0100 (IST)
-Received: (qmail 10197 invoked from network); 19 Oct 2021 09:02:30 -0000
+        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 21B78CCC44
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:02:41 +0100 (IST)
+Received: (qmail 10926 invoked from network); 19 Oct 2021 09:02:40 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPA; 19 Oct 2021 09:02:30 -0000
+  by 81.17.254.9 with ESMTPA; 19 Oct 2021 09:02:40 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
@@ -34,9 +34,9 @@ Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
         Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 7/8] mm/vmscan: Increase the timeout if page reclaim is not making progress
-Date:   Tue, 19 Oct 2021 10:01:07 +0100
-Message-Id: <20211019090108.25501-8-mgorman@techsingularity.net>
+Subject: [PATCH 8/8] mm/vmscan: Delay waking of tasks throttled on NOPROGRESS
+Date:   Tue, 19 Oct 2021 10:01:08 +0100
+Message-Id: <20211019090108.25501-9-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211019090108.25501-1-mgorman@techsingularity.net>
 References: <20211019090108.25501-1-mgorman@techsingularity.net>
@@ -46,47 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tracing of the stutterp workload showed the following delays
-
-      1 usect_delayed=124000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      1 usect_delayed=128000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      1 usect_delayed=176000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      1 usect_delayed=536000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      1 usect_delayed=544000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      1 usect_delayed=556000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      1 usect_delayed=624000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      1 usect_delayed=716000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      1 usect_delayed=772000 reason=VMSCAN_THROTTLE_NOPROGRESS
-      2 usect_delayed=512000 reason=VMSCAN_THROTTLE_NOPROGRESS
-     16 usect_delayed=120000 reason=VMSCAN_THROTTLE_NOPROGRESS
-     53 usect_delayed=116000 reason=VMSCAN_THROTTLE_NOPROGRESS
-    116 usect_delayed=112000 reason=VMSCAN_THROTTLE_NOPROGRESS
-   5907 usect_delayed=108000 reason=VMSCAN_THROTTLE_NOPROGRESS
-  71741 usect_delayed=104000 reason=VMSCAN_THROTTLE_NOPROGRESS
-
-All the throttling hit the full timeout and then there was wakeup delays
-meaning that the wakeups are premature as no other reclaimer such as
-kswapd has made progress. This patch increases the maximum timeout.
+Tracing indicates that tasks throttled on NOPROGRESS are woken
+prematurely resulting in occasional massive spikes in direct
+reclaim activity. This patch wakes tasks throttled on NOPROGRESS
+if reclaim efficiency is at least 12%.
 
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/vmscan.c | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/vmscan.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 1f5c467dc83c..ec2006680242 100644
+index ec2006680242..28adc196353d 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -1033,6 +1033,8 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
- 	 */
- 	switch(reason) {
- 	case VMSCAN_THROTTLE_NOPROGRESS:
-+		timeout = HZ/2;
-+		break;
- 	case VMSCAN_THROTTLE_WRITEBACK:
- 		timeout = HZ/10;
+@@ -1057,7 +1057,7 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
+ 	ret = schedule_timeout(timeout);
+ 	finish_wait(wqh, &wait);
  
+-	if (reason == VMSCAN_THROTTLE_ISOLATED)
++	if (reason == VMSCAN_THROTTLE_WRITEBACK)
+ 		atomic_dec(&pgdat->nr_writeback_throttled);
+ 
+ 	trace_mm_vmscan_throttled(pgdat->node_id, jiffies_to_usecs(timeout),
+@@ -3349,8 +3349,11 @@ static inline bool compaction_ready(struct zone *zone, struct scan_control *sc)
+ 
+ static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
+ {
+-	/* If reclaim is making progress, wake any throttled tasks. */
+-	if (sc->nr_reclaimed) {
++	/*
++	 * If reclaim is making progress greater than 12% efficiency then
++	 * wake all the NOPROGRESS throttled tasks.
++	 */
++	if (sc->nr_reclaimed > (sc->nr_scanned >> 3)) {
+ 		wait_queue_head_t *wqh;
+ 
+ 		wqh = &pgdat->reclaim_wait[VMSCAN_THROTTLE_NOPROGRESS];
 -- 
 2.31.1
 
