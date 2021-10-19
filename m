@@ -2,327 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2D1433F89
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFBD433F8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhJSUAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 16:00:23 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:41180 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231888AbhJSUAT (ORCPT
+        id S233199AbhJSUCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 16:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229701AbhJSUCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 16:00:19 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JJ2aBx027760;
-        Tue, 19 Oct 2021 19:57:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=Vm/clMDIfA9tEYzCoD6o89gy6g31+Yrx4MGs463p+uU=;
- b=ZbYPtLFy9Wzci3PLK9LZhZ6JHgBFRQ2ADvRNNrp6HLwQi75AiPzSvVxN9xCBP7l4VmMc
- 6e38j2xRYH2dXbnVj0GXlYlBAL52edmES50kvvGzHwOolWOLIob/9ESW6O662DSiw1rw
- TQbRLagKNoZMxAvnJ8tXtNgGY9K9bgNqtyibjXmo/Pk5tewPQa9IRGiBuiDi1cIYkvqV
- s4KRQFpAB0NIbI8bbki4nvpJBAsa9e8VYJaNPfRzLsubRkGMihdX7sdCiDK2+E5+2ZPr
- 2TR5pURAa42/HPmjBq4Qx2e7xOmG+yH6FlOhAUTno6D68FpzynQTXMZwtQaziK0gMy80 CA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bsn7kn01j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 19:57:05 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19JJon74079452;
-        Tue, 19 Oct 2021 19:57:00 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
-        by aserp3030.oracle.com with ESMTP id 3bqmsfb4hm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 19:57:00 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=exlb7lPIRdcuO1Jimpq3h+wSHXNwRYP/5fksNBKa4yg75hJJZD7SeEB52BiVb9pqI0vzsARCVIqhyavV9APAMM5d/3JdUuFJyYir+SICchekgC+PefEMvAcwt+IeyCQDm2aiGiuueywUVsC5tH5U/+eHf0xCAtwKf5PrvcSqblyHy52LM/bT+jV3mREs1l6o3iaQffe6YCKGVzKywkocjQEgDaR6gCM1FWVWTfJfMYVKVARX4gotRxCUPb7vdfi0HCBLoftj4LC+EPUcVwdVoPmjc3//0OJuthJOiF8wcewfzQ5sIIEVekPVuMa02ik3zY09DIhNwHfGepE0TfV5hQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Vm/clMDIfA9tEYzCoD6o89gy6g31+Yrx4MGs463p+uU=;
- b=XTZaveQfOKXoLA+Czm3GAm/Qkpb476O4K1yqvSzvC4UrC/lcAAXqNQ92789RGtaG0MdwSWRdTpFlqTRZn5hoHAO9kflsP+saVdBfGa+7Yz8LplXgfUEDvwzqquEe5gNWsLsvwRBQT3jN7sgFBmdfRyS8j3+tO3mIDIW90PF55XT83XeRE3Me7fUP6IsqXlpfbqbV6bPL8ZFPXo26V/A/+kt3pbkYi7TkWAX/igOTXAclZ2YW+L/C3bhS2IBN7EXR4ap7wiWIrGyQrxEpiXtpK5Ew0REtLVoWDOUa9aHCoetrWP4/Hp1oQ7CknM3DqT43pdo6zkpYL2nwGUnWx4uRHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 19 Oct 2021 16:02:50 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CEFC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 13:00:37 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id k3so19671005ilu.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 13:00:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vm/clMDIfA9tEYzCoD6o89gy6g31+Yrx4MGs463p+uU=;
- b=q1ifXfZbNIhe63TI1M8Sdw60oGPNIL4sWIiv/74M+g/FrraTo3Npy5EkROD8fYzlA0KcWf7raZLIuoK7SgxhBmqqLB/vq7jMv8B0SrBw8lF0z9zlULeQlcs3cpCu4p5ODCzEOAH2UieOSa4hOsvhEqJIyWHbERJk8CDlQt/HGTk=
-Authentication-Results: stuge.se; dkim=none (message not signed)
- header.d=none;stuge.se; dmarc=none action=none header.from=oracle.com;
-Received: from DM6PR10MB2986.namprd10.prod.outlook.com (2603:10b6:5:6b::26) by
- DM5PR1001MB2396.namprd10.prod.outlook.com (2603:10b6:4:30::29) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.18; Tue, 19 Oct 2021 19:56:57 +0000
-Received: from DM6PR10MB2986.namprd10.prod.outlook.com
- ([fe80::c5da:305e:be30:abac]) by DM6PR10MB2986.namprd10.prod.outlook.com
- ([fe80::c5da:305e:be30:abac%3]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 19:56:57 +0000
-Date:   Tue, 19 Oct 2021 15:56:52 -0400
-From:   Alec Brown <alec.r.brown@oracle.com>
-To:     Peter Stuge <peter@stuge.se>
-Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        "coreboot@coreboot.org" <coreboot@coreboot.org>,
-        "grub-devel@gnu.org" <grub-devel@gnu.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "systemd-devel@lists.freedesktop.org" 
-        <systemd-devel@lists.freedesktop.org>,
-        "trenchboot-devel@googlegroups.com" 
-        <trenchboot-devel@googlegroups.com>,
-        "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        Aleksandr Burmashev <alexander.burmashev@oracle.com>,
-        "allen.cryptic@gmail.com" <allen.cryptic@gmail.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "btrotter@gmail.com" <btrotter@gmail.com>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        "dpsmith@apertussolutions.com" <dpsmith@apertussolutions.com>,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        "frowand.list@gmail.com" <frowand.list@gmail.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "hun@n-dimensional.de" <hun@n-dimensional.de>,
-        "james.dutton@gmail.com" <james.dutton@gmail.com>,
-        "javierm@redhat.com" <javierm@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        "jwerner@chromium.org" <jwerner@chromium.org>,
-        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
-        Konrad Wilk <konrad.wilk@oracle.com>,
-        "krystian.hebel@3mdeb.com" <krystian.hebel@3mdeb.com>,
-        "leif@nuviainc.co m" <leif@nuviainc.com>,
-        "lukasz.hawrylko@intel.com" <lukasz.hawrylko@intel.com>,
-        "luto@amacapital.net" <luto@amacapital.net>,
-        "michal.zygowski@3mdeb.com" <michal.zygowski@3mdeb.com>,
-        "mjg59@google.com" <mjg59@google.com>,
-        "mtottenh@akamai.com" <mtottenh@akamai.com>,
-        "phcoder@gmail.com" <phcoder@gmail.com>,
-        "piotr.krol@3mdeb.com" <piotr.krol@3mdeb.com>,
-        "pjones@redhat.com" <pjones@redhat.com>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
-        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        Ross Philipson <ross.philipson@oracle.com>,
-        "sjg@chromium.org" <sjg@chromium.org>,
-        "trini@konsulko.com" <trini@konsulko.com>,
-        "tyhicks@linux.microsoft.com" <tyhicks@linux.microsoft.com>,
-        "ulrich.windl@rz.uni-regensburg.de" 
-        <ulrich.windl@rz.uni-regensburg.de>,
-        "wvervoorn@eltan.com" <wvervoorn@eltan.com>,
-        "rharwood@redhat.com" <rharwood@redhat.com>
-Subject: Re: [External] : Re: [SPECIFICATION RFC v3] The firmware and
- bootloader log specification
-Message-ID: <YW8jBOYbFFeYVtDW@alec-orcl>
-References: <A7F710D3-5148-4E92-9E3D-5D850AD0245F@gmx.de>
- <DM6PR10MB2986A960E859A744FDC3875ABCDE9@DM6PR10MB2986.namprd10.prod.outlook.com>
- <20210921154021.19289.qmail@stuge.se>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210921154021.19289.qmail@stuge.se>
-X-ClientProxiedBy: BL1PR13CA0263.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::28) To DM6PR10MB2986.namprd10.prod.outlook.com
- (2603:10b6:5:6b::26)
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9NU9PI5h+XIjdFaV8cJFhnAUvW54J00YhhaMQMKLO8o=;
+        b=JqOvObYObmHnMw/K5VX2OvTdj7KV86fkY/1/00npJRjr4O56ZHVu9hpu31vU+2esAw
+         upoaZHzqKeITLw+FmxVqOTnhdxJlV5hD/GcE9HKPB716Fby5Q1sfqTvA2S5um/SYCPVl
+         aLoVSxXZkrlPCsNLgKv+fw1iOMqO7nAkpgD5ETA9d2ionMfzs+vItT/+TyD8L8TszHc+
+         tW3eoeWdwzbg5ompA1VYx3Eq1t82BjpbcL3TI21Evry4qKiZS8TbgYW06UO5ZMrdE0zv
+         X6/vaJjlLo5jQqGpMZK/PokiXpCZx9g08UXmzEUbz0Y9ZE1nPxp2WOoOClPNyhF6gpQD
+         6NAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9NU9PI5h+XIjdFaV8cJFhnAUvW54J00YhhaMQMKLO8o=;
+        b=0eNT9ByinWp2zsB6vuP1y6KfoMr1oG/yr4f2141JdKwYfoZck3gxv+FX8F7JGq+wZP
+         lAK/R82hBUmHUO7DPEtgdD0mfnKmqbRLKK4vwRKYesj+uVfNjCcjt5B++3Hltbcvfvyu
+         OUWgo146SJHC8kQXF+K6KNWMyNDlhoNOqfEOtXiULQRPMcZ87AUHPXnDu+rfKfY+C7IH
+         MoXUNxfX1OJjnPJjcMj5bfbxHU32S6YYUGbOMxt/78ZGJqzzqgc28AdU8MszJAz1dn+T
+         2N2PfQ3Hki/u9BuqIAblOv5PRy1AXs9UJyEaGYPxLOY1dqXbXfztBgZ0Q80gJINjiSNR
+         GgPw==
+X-Gm-Message-State: AOAM532bWpQZIqmVu+8d4sEqOAex4a/xehsTb78Jkv0uDPCsxB3owPo6
+        46Tu7YG8e4QX6+w2kXVlwaL+Z1ctZzOqRPwib1YHEg==
+X-Google-Smtp-Source: ABdhPJyqOJ7lv0Mj1nbom5b8As8VQx02ZXfyxIgGChPV+oeW9WuS3DO8uf2HdmxZxxCCGUaiXCAjk15iIYUFpnNcwyE=
+X-Received: by 2002:a05:6e02:1ca8:: with SMTP id x8mr20827199ill.150.1634673636531;
+ Tue, 19 Oct 2021 13:00:36 -0700 (PDT)
 MIME-Version: 1.0
-Received: from alec-orcl (73.61.222.52) by BL1PR13CA0263.namprd13.prod.outlook.com (2603:10b6:208:2ba::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.8 via Frontend Transport; Tue, 19 Oct 2021 19:56:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 91fd845a-7531-45cb-7c32-08d9933a9b64
-X-MS-TrafficTypeDiagnostic: DM5PR1001MB2396:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR1001MB2396CC2BDF8EFDF8B7552B91BCBD9@DM5PR1001MB2396.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: s4yM0CZL5/N5SdOCySU8DTZZim48QHgV7bELzZjxwRoVix60or/iy5vz1tONVcoEc4JHSYn4FQZj06WlDwBXevWwrp6P50rnfOIAIwZc8qnWjVFV7vg9HXZUj3O11VdgiqRWzwXP1w16QS2WZb2eV7aGonpBz4dqMHBkBEYgFPcF9JNSSotxokly4e3q/OFA3zExwgZiOrJUPZ/LuQE8DK7assqKSs/Jhe1s0IsHHJrvzd87nHM/Q2jYDApTW5XtiZ7zQNZkPTaHcHelGuF/wI3t7sW/IO/4BA0NmO/Pg2lajJ2ymmfljN5eppGYJO79qR3O7N6dqJHVKZmu3DRvSPDEHY0HLOPLz1v2lFzsKWv0QtnzYwQ6jZzqRgaU0Erj3HOe2bAl0DW6sdEMWNtL7BOhGzAAw8Y910UhbAgV5wtF2ArfKYnpVnO4ADK0MuTe02BFHm7niADpHSJ7HbK428xKKiuYDTBSDTvqZXQuYpFJl5D9m97US3xUBORpsw5DQRwYeErhMUTPRTQ0srCNnZDXYa3SF9lqof1j8hzUKyn3KF9U5W8zwco1kii6mERMorX6lENp4KCFtM2sP5CSVLB1E4dq7irw3Aow3jSbGgxgltZEiQ65SpEgoFxzc6dA573FD5TDi/cofwa8y0Grwg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB2986.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(33716001)(7416002)(5660300002)(86362001)(8676002)(4326008)(7406005)(9686003)(26005)(55016002)(66946007)(2906002)(6666004)(83380400001)(66476007)(66556008)(316002)(38100700002)(508600001)(54906003)(6496006)(956004)(186003)(8936002)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yQ2lUxqfMcz3alIdGc8m/9fg9zKxgxv9rpp1/A9bPOM29xWJRjG4kIeyxMpu?=
- =?us-ascii?Q?/CsQkcF9ySq48R0Hpj5EReC2hTuh/ml3MNpbv0BwEPFPFhp42rtGQVvR+O8z?=
- =?us-ascii?Q?Q5q//UCgpnCGoJDthWt0mRihcdE1TZ1VZs7eFNuemurzytdRf7WI1m3JZPJj?=
- =?us-ascii?Q?1xgoPjlCnH1SimNcX/RxSucAC+AeGA0oDKSoMef8+fGS2WuuFbsIc9gpjI3u?=
- =?us-ascii?Q?q9+wsK+HLXhsQYa+KjXVDee/f/Fccs1WTXUy04j7be2pMT8HgpBrVS9pbcYS?=
- =?us-ascii?Q?MIrK6utCfP3kY+s1J9D8UUMiZu/HLSqibpUeZk8vyfzVYef+CaYvdmODwBo9?=
- =?us-ascii?Q?flUfaRRydG2armgsddS/n6iCn9WYJAU8+GhNP03kXaUzp1MGb2nGNES8dryc?=
- =?us-ascii?Q?EgXXV2v9VBJpP5vRFz56dJs4DiJ77xit1FmI3Kfdl/2OCarKoHi1fB4VHMvY?=
- =?us-ascii?Q?KHGcmJ1TY2JVBq7cadDmX+rdi948R78CmVs/Xm513qtYH9BQbMqxWo3t3d/U?=
- =?us-ascii?Q?zIG8kAC29/Vq4KuqT/KO0v3Gw0IH8uCwGCyWjca4wXGzVCBC+AJCcHUyQD8P?=
- =?us-ascii?Q?zOuccXCI4Tvb+PGvzWDvA0IxI3NI14S0hqlZyvQq48XXtd5t17xtH7DlPeju?=
- =?us-ascii?Q?7DXDMMFHysjP9YzQ+MhsMP8/WgFjy8Pw4zgYOODjGpXelS6VcI7dlQLNi6qb?=
- =?us-ascii?Q?7q6leyk4cPTsFTIiPkjWXkX9ncGjRPcNevSAJsEnbdhNZN3XWhhdjjP7Mnt7?=
- =?us-ascii?Q?ZOWqH1x+IGKA7iWBRgCkjMHy8Hu7W8nEk8B0lBHCfXoWVBO1QNxxUpnbTFNh?=
- =?us-ascii?Q?Y8P6vpcKNLq0Q0/2V+EyghHDk0sclRV5zWiVAxGHk+jJUZki6WDmJW2paHFQ?=
- =?us-ascii?Q?UiKZfYmGgBtIsrJbu8QS17WXtb9YusshU/aEXOv2Mx2ZHrc5bZC4Hty7B0dJ?=
- =?us-ascii?Q?lSBtO4dhS3CsYBXQ/VKGrGkOxtckCBM1zijVIbzdOmGT5XP/46KrWpsMF91t?=
- =?us-ascii?Q?+FrjCcH23MDd4spFAz68MlxA4ILLzqqLh2Zok2lP1wQSrj9Dx9d7F68TuouH?=
- =?us-ascii?Q?X15q3rRKk2n1ssPfa514iRQuQu1vFo1VwE/sYAUrFMTwSDxcOvW0AZVd/U3L?=
- =?us-ascii?Q?PKqqOqWIJuPiknKYuoo/s2v3xn7Jd+2XAe38bdni609+GJWObA9GxFkfoOhB?=
- =?us-ascii?Q?CtfrARTunFRriI8Pf2lpM4D1/oZxTAlhdPQxWb/oLRlHyj57KuNXyL18irCd?=
- =?us-ascii?Q?ht6PJhWkf7b2/1Hp9jHY+9Qr2ABUNao1P/MFJTVLClpH9qSZyfMx5baxdFmB?=
- =?us-ascii?Q?18xd19220lkaliOeP+Xx1Ezb?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91fd845a-7531-45cb-7c32-08d9933a9b64
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB2986.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 19:56:57.6454
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: alec.r.brown@oracle.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1001MB2396
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10142 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110190114
-X-Proofpoint-ORIG-GUID: 8kaSmN8gTiMWgEgYmz3Fd0g8fjiB-dzy
-X-Proofpoint-GUID: 8kaSmN8gTiMWgEgYmz3Fd0g8fjiB-dzy
+References: <20211015172132.1162559-1-irogers@google.com> <20211015172132.1162559-22-irogers@google.com>
+ <YW7e6OvE/juYY8it@kernel.org> <YW7gsEDXBw1jk65o@kernel.org>
+ <YW7hdvJ8eHS/jlgx@kernel.org> <YW7htMxwcNjZOtJH@kernel.org>
+In-Reply-To: <YW7htMxwcNjZOtJH@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 19 Oct 2021 13:00:23 -0700
+Message-ID: <CAP-5=fV85eOA5_vpaNSx5M8thSVvoiF+tzDmYe83TPF7Hk+0vA@mail.gmail.com>
+Subject: Re: [PATCH v2 21/21] perf metric: Allow modifiers on metrics.
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Andrew Kilroy <andrew.kilroy@arm.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 19, 2021 at 8:18 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Oct 19, 2021 at 12:17:10PM -0300, Arnaldo Carvalho de Melo escrev=
+eu:
+> > Em Tue, Oct 19, 2021 at 12:13:52PM -0300, Arnaldo Carvalho de Melo escr=
+eveu:
+> > > Em Tue, Oct 19, 2021 at 12:06:17PM -0300, Arnaldo Carvalho de Melo es=
+creveu:
+> > > > Em Fri, Oct 15, 2021 at 10:21:32AM -0700, Ian Rogers escreveu:
+> > > > > By allowing modifiers on metrics we can, for example, gather the
+> > > > > same metric for kernel and user mode. On a SkylakeX with
+> > > > > TopDownL1 this gives:
+> > > > >
+> > > > > $ perf stat -M TopDownL1:u,TopDownL1:k -a sleep 2
+> > > > >
+> > > > >  Performance counter stats for 'system wide':
+> > > >
+> > > > Hi Ian, can you please take a look on this? this is on my perf/core
+> > > > branch.
+> > >
+> > > I processed the first version of this series, reviewed by Andi, can y=
+ou
+> > > please submit the diff from one to the other?
+> >
+> > The interdiff from the 21st patch on the first batch versus on the v2
+> > batch is below, but it doesn't apply to my current perf/core branch,
+> > lemme push it to tmp.perf/core...
+>
+> It was there already, what I have locally is what is in tmp.perf/core.
 
-On Tue, Sep 21, 2021 at 03:40:20PM +0000, Peter Stuge wrote:
-> Alec Brown wrote:
-> > Below is how the layout of these logs would store their data.
-> > 
-> > bf_log_header:
-> >                +-------------------+
-> > u32            | version           |
-> > u32            | size              |
-> > u8[64]         | producer          |
-> > u8[64]         | log_format        |
-> > u64            | flags             |
-> > u64            | next_bflh_addr    |
-> > u64            | log_addr          |
-> > u32            | log_size          |
-> >                +-------------------+
-> 
-> I suggest to include a .magic at least in bf_log_header and an
-> .xor_checksum or .crc32 only in bf_log_header.
-> 
-> .magic doubles as endianess indicator when the structures are
-> stored on movable media. (Pick an asymmetric magic bit pattern!)
+Hi Arnaldo,
 
-This is something we will need to think about.
+The last change I see in tmp.perf/core is:
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=3D=
+tmp.perf/core&id=3D5f43061b84d815c0f6477c1a8836bf0c6fec15a2
 
->  
-> I suggest renaming .next_bflh_addr to .next_log_header and .log_addr
-> to .log_buffer_addr.
-> 
-> I suggest to remove .size and .log_size:
-> 
-> The rationale for .size is "to allow for backward compatibility" but
-> that seems redundant thanks to .version.
-> 
-> .log_size can be calculated from the subordinate data and is thus
-> mostly an unneccessary source of potential inconsistency.
+The difference between v2 and v1 which fixes this bug is:
 
-Looking back, I agree with removing .size since .version accomplishes the same
-task. I'm not so sure on removing .log_size as it can be very convenient, and
-.log_size won't need to be calculated every time someone wants to know the size
-of the logs generated from the boot component.
++@@ -1500,7 +1568,10 @@ int metricgroup__copy_metric_events(struct
+evlist *evlist, struct cgroup *cgrp,
++                               return -ENOMEM;
++
++                       new_expr->metric_expr =3D old_expr->metric_expr;
++-                      new_expr->metric_name =3D old_expr->metric_name;
+++                      new_expr->metric_name =3D strdup(old_expr->metric_n=
+ame);
+++                      if (!new_expr->metric_name)
+++                              return -ENOMEM;
+++
++                       new_expr->metric_unit =3D old_expr->metric_unit;
++                       new_expr->runtime =3D old_expr->runtime;
++
 
-> 
-> 
-> > bf_log_buffer:
-> >                +-------------------+
-> > u32            | version           |
-> > u32            | size              |
-> > u8[64]         | producer          |
-> > u32            | next_msg_off      |
-> > bf_log_msg[l]  | msgs              |
-> >                +-------------------+
-> 
-> I suggest replacing .size and .next_msg_off with .messages containing l:
-> 
-> .size can then be calculated from .messages; again, reliably avoiding
-> inconsistency between .size and .next_msg_off.
-> 
-> Allocated size doesn't seem useful if writers must anyway maintain state
-> containing the starting address. If writers must be allowed to be completely
-> stateless then maybe at least rename .size to .allocated_size and see below
-> for discovery.
-> 
-> Having .messages also eliminates the need for an end-of-messages marker
-> when the allocated space is not yet filled.
-> 
+I also cleaned up some checkpatch line length warnings in v2, which I
+think is the reason for the other changes. Ideally I'd prefer the v2
+patch set over the v1, but they are largely identical. Both were based
+on acme/perf/core. Let me know how I can help.
 
-After some thinking, it makes sense to replace the meaning of .size with the
-meaning of .next_msg_off and removing .next_msg_off from the structure. This 
-wouldn't be useful to store for the readers of the log.
+Thanks,
+Ian
 
-> 
-> > bf_log_msg:
-> >                +-------------------+
-> > u32            | size              |
-> > u64            | ts_nsec           |
-> > u32            | level             |
-> > u32            | facility          |
-> > u32            | msg_off           |
-> > u8[n]          | type              |
-> > u8[m]          | msg               |
-> >                +-------------------+
-> 
-> It seems inconsistent that log_header.size and log_msg.size cover only
-> the respective struct itself while log_buffer.size also covers all
-> subordinate messages. Skipping all .size in this version fixes that.
-> 
-> And log_msg.size is not very useful since both .type and .msg have variable
-> length; it's not possible to access .msg without scanning .type. Please at
-> a minimum add .type_size but better yet replace .size with .type_size and
-> .msg_size.
-> 
-
-You bring up some good points about the names for the fields and that they need
-to be more consistent. By removing .size in bf_log_header, this should make it
-more consistent.
-
-> 
-> > There is still the outstanding issue of how the logs will be sent to the OS. If
-> > UEFI is used, we can use config tables. If ACPI or Device Tree is used, we can
-> > use bf_log_header.next_bflh_addr to present the logs. If none of these platforms
-> > are used, it becomes a lot trickier to solve this issue.
-> > 
-> > Any suggestions are much appreciated and will be taken into consideration.
-> 
-> Having bf_log_header.magic and some bf_log_header.$checksum, a strict rule
-> for bf_log_header start address granularity and a strict maximum offset
-> for the first header from top and/or bottom of memory allows to quickly
-> discover a log in memory without explicit handover.
-> 
-
-This is something we'll have to think about some more. We aren't convinced about
-using .magic for log discovery and are looking for a more explicit way of doing
-this.
-
-> 
-> > LPC System Boot and Security Micro-conference on the 22nd of September
-> > at 7:50 AM PDT (14:50 UTC).
-> 
-> Have fun! :)
-> 
-> 
-> Heinrich Schuchardt wrote:
-> > We already the EFI_TCG2_PROTOCOL and RFC 5424 (The syslog protocol).
-> > Why do we need to start from scratch?
-> 
-> That's a good question. I guess noone wants to settle for a standard
-> from somewhere else. ;)
-> 
-> I wouldn't mind if log_msg was a syslog transport, but I can understand
-> if that's rejected because syslog messages require a lot of parsing for
-> presentation while Alec's proposal seems focused on efficiency and simplicity.
-> 
-> It's also nice to be able to strictly mandate UTF-8 for all fields.
-> (RFC 5424 allows MSG to be anything.)
-> 
-> 
-> Kind regards
-> 
-> //Peter
+> > - Arnaldo
+> >
+> > =E2=AC=A2[acme@toolbox perf]$ interdiff ~/wb/old.patch ~/wb/new.patch
+> > diff -u b/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > --- b/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -1308,8 +1308,7 @@
+> >       int ret;
+> >
+> >       *out_evlist =3D NULL;
+> > -     ret =3D metricgroup__build_event_string(&events, ids, modifier,
+> > -                                           has_constraint);
+> > +     ret =3D metricgroup__build_event_string(&events, ids, has_constra=
+int);
+> >       if (ret)
+> >               return ret;
+> >
+> > @@ -1324,7 +1323,8 @@
+> >
+> >               ids__insert(ids->ids, tmp);
+> >       }
+> > -     ret =3D metricgroup__build_event_string(&events, ids, has_constra=
+int);
+> > +     ret =3D metricgroup__build_event_string(&events, ids, modifier,
+> > +                                           has_constraint);
+> >       if (ret)
+> >               return ret;
+> >
+> > @@ -1568,7 +1568,10 @@
+> >                               return -ENOMEM;
+> >
+> >                       new_expr->metric_expr =3D old_expr->metric_expr;
+> > -                     new_expr->metric_name =3D old_expr->metric_name;
+> > +                     new_expr->metric_name =3D strdup(old_expr->metric=
+_name);
+> > +                     if (!new_expr->metric_name)
+> > +                             return -ENOMEM;
+> > +
+> >                       new_expr->metric_unit =3D old_expr->metric_unit;
+> >                       new_expr->runtime =3D old_expr->runtime;
+> >
+> > =E2=AC=A2[acme@toolbox perf]$
+>
+> --
+>
+> - Arnaldo
