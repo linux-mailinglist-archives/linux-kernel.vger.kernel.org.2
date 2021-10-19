@@ -2,301 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDB6434250
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87240434255
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhJSXwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:52:09 -0400
-Received: from ixit.cz ([94.230.151.217]:54124 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229707AbhJSXwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:52:06 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 7CB8A20064;
-        Wed, 20 Oct 2021 01:49:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1634687390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=o0YUdAIctq2TetXHh6SB+UpGOdk4PznD4UiezKrfJFE=;
-        b=odQQVx7NvELSo+dlqWMtuSoKvOhB3zqZ4Hc0NR06yCy/fQiJDmVc07849woMVUfn092gzn
-        e++WO2/HQnzvxogNqfpWdf3InSiL/UN38/Pt9TDS1ddbL9IvUtwhJFy4FlA9DtnZmZQz+U
-        Yfr8dr5k/RWfPA4JpKFipCcu/TdHx9E=
-From:   David Heidelberg <david@ixit.cz>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH v2] dt-bindings: input: microchip,cap11xx: Convert txt bindings to yaml
-Date:   Wed, 20 Oct 2021 01:48:16 +0200
-Message-Id: <20211019234816.32060-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S229757AbhJSX52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 19:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhJSX50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 19:57:26 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE866C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:55:11 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id c4so13820930pgv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FD+dLvVnnCC/StfyVK70KDJDUKEKowHXu1o53Gq30mA=;
+        b=VB/HUAggfIPegcPbYKVjT4DV1b471yus1m7ifa3zfMqwPSXH+lm+/mouqjOlJinjys
+         j2XfS5PC2W8r+Y71yY+AQCUO2gu2MmCIYBGf/BPIYB/2CiwoW2mk1h4aFtrSX1lsscq+
+         TiE82aKzNVh3Og7as7mxcMpp6nUSLSrL6KG+wGVc8yYQwsNRi5N27h885DNfXpPrj5+c
+         dxnHXynpgQN2WhJFmII1m9yYb3zG6QfF3aOLBWtiAvxD3R4YEpvamUh3XDpnLbxj5iSw
+         sLyCjfNcgqtBQVN8x4HGTgPUcRxrKWgorj80o2O+K7XLXhkTxNZZ4ru5JrxdiXlNBtyX
+         IzPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FD+dLvVnnCC/StfyVK70KDJDUKEKowHXu1o53Gq30mA=;
+        b=b1isAlGUiGPtiU48rk4gcpsyNm6Cw8FSqFgmdRegC5Rl+fSiiqGTxsiSu5dD4PdYnB
+         N6I1cTISurqSMQLM1BcBCRDc3T8PajDahWLL9NKvjp/Pb3LGogbeilUJc1kZLlAsGNoL
+         7ixgTlx5Y6zrtLsUFdv4rL6HLUN76Rl8Tz1URLN9PsPuulpP/M2FQ0EH/LdXmNPIlNHN
+         hwYYw/WBDrMzDrTZJYjvQEec04MFcqpOj/CQz37tbhpBqLWfJYEglasTWMYN/IrEZ6ff
+         VM4knL9LgDCKAUiLVYLYDpkg9rMIhzwoUJFkuaqOYH0Wk1OknzoaviqI5mjLbk5qLT6q
+         yWLw==
+X-Gm-Message-State: AOAM533MBEWYF2eWWBJJiOsZii6nAF8QjRnHE6rvSQ20Sbij7pk+dl3w
+        VMIBSaFc4rae+jkEDnUDXoUH2g==
+X-Google-Smtp-Source: ABdhPJwkpdNTZJOlEM11e8/ojC8NQRaFrNhKzoN9YNlb2Eh8os4Okwxuv257WYzTCuAHPo3m8sittQ==
+X-Received: by 2002:a63:18d:: with SMTP id 135mr31151991pgb.78.1634687710983;
+        Tue, 19 Oct 2021 16:55:10 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id bt5sm262736pjb.9.2021.10.19.16.55.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 16:55:10 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 23:55:06 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 07/13] KVM: Just resync arch fields when
+ slots_arch_lock gets reacquired
+Message-ID: <YW9a2s8wHXzf8Xqw@google.com>
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <311810ebd1111bed50d931d424297384171afc36.1632171479.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <311810ebd1111bed50d931d424297384171afc36.1632171479.git.maciej.szmigiero@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert binding for the Microchip CAP11xx series HW to the YAML syntax.
+On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+> 
+> There is no need to copy the whole memslot data after releasing
+> slots_arch_lock for a moment to install temporary memslots copy in
+> kvm_set_memslot() since this lock only protects the arch field of each
+> memslot.
+> 
+> Just resync this particular field after reacquiring slots_arch_lock.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-v2:
- - changed mail to robh (original author seems to be not actively
-   maintaining the driver since 2015)
- - common.yaml path fixed
- - $ref input.yaml added
+I assume this needed to avoid having a mess when introducing the r-b tree?  If so,
+please call that out.  Iterating over the slots might actually be slower than the
+full memcpy, i.e. as a standalone patch this may or may not be make sense.
 
- .../devicetree/bindings/input/cap11xx.txt     |  78 ---------
- .../bindings/input/microchip,cap11xx.yaml     | 148 ++++++++++++++++++
- 2 files changed, 148 insertions(+), 78 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/input/cap11xx.txt
- create mode 100644 Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> ---
+>  virt/kvm/kvm_main.c | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 348fae880189..48d182840060 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1482,6 +1482,15 @@ static void kvm_copy_memslots(struct kvm_memslots *to,
+>  	memcpy(to, from, kvm_memslots_size(from->used_slots));
+>  }
+>  
+> +static void kvm_copy_memslots_arch(struct kvm_memslots *to,
+> +				   struct kvm_memslots *from)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < from->used_slots; i++)
+> +		to->memslots[i].arch = from->memslots[i].arch;
 
-diff --git a/Documentation/devicetree/bindings/input/cap11xx.txt b/Documentation/devicetree/bindings/input/cap11xx.txt
-deleted file mode 100644
-index 8c67a0b5058d..000000000000
---- a/Documentation/devicetree/bindings/input/cap11xx.txt
-+++ /dev/null
-@@ -1,78 +0,0 @@
--Device tree bindings for Microchip CAP11xx based capacitive touch sensors
--
--The node for this device must be a child of a I2C controller node, as the
--device communication via I2C only.
--
--Required properties:
--
--	compatible:		Must contain one of:
--					"microchip,cap1106"
--					"microchip,cap1126"
--					"microchip,cap1188"
--
--	reg:			The I2C slave address of the device.
--
--	interrupts:		Property describing the interrupt line the
--				device's ALERT#/CM_IRQ# pin is connected to.
--				The device only has one interrupt source.
--
--Optional properties:
--
--	autorepeat:		Enables the Linux input system's autorepeat
--				feature on the input device.
--
--	microchip,sensor-gain:	Defines the gain of the sensor circuitry. This
--				effectively controls the sensitivity, as a
--				smaller delta capacitance is required to
--				generate the same delta count values.
--				Valid values are 1, 2, 4, and 8.
--				By default, a gain of 1 is set.
--
--	microchip,irq-active-high:	By default the interrupt pin is active low
--				open drain. This property allows using the active
--				high push-pull output.
--
--	linux,keycodes:		Specifies an array of numeric keycode values to
--				be used for the channels. If this property is
--				omitted, KEY_A, KEY_B, etc are used as
--				defaults. The array must have exactly six
--				entries.
--
--Example:
--
--i2c_controller {
--	cap1106@28 {
--		compatible = "microchip,cap1106";
--		interrupt-parent = <&gpio1>;
--		interrupts = <0 0>;
--		reg = <0x28>;
--		autorepeat;
--		microchip,sensor-gain = <2>;
--
--		linux,keycodes = <103>,		/* KEY_UP */
--				 <106>,		/* KEY_RIGHT */
--				 <108>,		/* KEY_DOWN */
--				 <105>,		/* KEY_LEFT */
--				 <109>,		/* KEY_PAGEDOWN */
--				 <104>;		/* KEY_PAGEUP */
--
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		usr@0 {
--			label = "cap11xx:green:usr0";
--			reg = <0>;
--		};
--
--		usr@1 {
--			label = "cap11xx:green:usr1";
--			reg = <1>;
--		};
--
--		alive@2 {
--			label = "cap11xx:green:alive";
--			reg = <2>;
--			linux,default_trigger = "heartbeat";
--		};
--	};
--}
-diff --git a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
-new file mode 100644
-index 000000000000..fa0f37a90ac9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
-@@ -0,0 +1,148 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/input/microchip,cap11xx.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Device tree bindings for Microchip CAP11xx based capacitive touch sensors
-+
-+description: |
-+  The Microchip CAP1xxx Family of RightTouchTM multiple-channel capacitive
-+  touch controllers and LED drivers. The device communication via I2C only.
-+
-+maintainers:
-+  - Rob Herring <robh@kernel.org>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - microchip,cap1106
-+      - microchip,cap1126
-+      - microchip,cap1188
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+  interrupts:
-+    maxItems: 1
-+    description: |
-+      Property describing the interrupt line the
-+      device's ALERT#/CM_IRQ# pin is connected to.
-+      The device only has one interrupt source.
-+
-+  autorepeat:
-+    description: |
-+      Enables the Linux input system's autorepeat feature on the input device.
-+
-+  linux,keycodes:
-+    minItems: 6
-+    maxItems: 6
-+    description: |
-+      Specifies an array of numeric keycode values to
-+      be used for the channels. If this property is
-+      omitted, KEY_A, KEY_B, etc are used as defaults.
-+      The array must have exactly six entries.
-+
-+  microchip,sensor-gain:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 1
-+    enum: [1, 2, 4, 8]
-+    description: |
-+      Defines the gain of the sensor circuitry. This
-+      effectively controls the sensitivity, as a
-+      smaller delta capacitance is required to
-+      generate the same delta count values.
-+
-+  microchip,irq-active-high:
-+    type: boolean
-+    description: |
-+      By default the interrupt pin is active low
-+      open drain. This property allows using the active
-+      high push-pull output.
-+
-+patternProperties:
-+  "^led@[0-7]$":
-+    type: object
-+    description: CAP11xx LEDs
-+    $ref: /schemas/leds/common.yaml#
-+
-+    properties:
-+      reg:
-+        enum: [0, 1, 2, 3, 4, 5, 6, 7]
-+
-+      label: true
-+
-+      linux,default-trigger: true
-+
-+      default-state: true
-+
-+    required:
-+      - reg
-+
-+    additionalProperties: false
-+
-+allOf:
-+  - $ref: input.yaml
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - microchip,cap1106
-+    then:
-+      patternProperties:
-+        "^led@[0-7]$": false
-+
-+required:
-+  - compatible
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      cap1188@28 {
-+        compatible = "microchip,cap1188";
-+        interrupt-parent = <&gpio1>;
-+        interrupts = <0 0>;
-+        reg = <0x28>;
-+        autorepeat;
-+        microchip,sensor-gain = <2>;
-+
-+        linux,keycodes = <103>,	/* KEY_UP */
-+                         <106>,	/* KEY_RIGHT */
-+                         <108>,	/* KEY_DOWN */
-+                         <105>,	/* KEY_LEFT */
-+                         <109>,	/* KEY_PAGEDOWN */
-+                         <104>;	/* KEY_PAGEUP */
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        led@0 {
-+                label = "cap11xx:green:usr0";
-+                reg = <0>;
-+        };
-+
-+        led@1 {
-+                label = "cap11xx:green:usr1";
-+                reg = <1>;
-+        };
-+
-+        led@2 {
-+                label = "cap11xx:green:alive";
-+                reg = <2>;
-+                linux,default-trigger = "heartbeat";
-+        };
-+      };
-+    };
--- 
-2.33.0
+This should probably be a memcpy(), I don't know what all shenanigans the compiler
+can throw at us if it gets to copy a struct by value.
 
+> +}
+> +
+>  /*
+>   * Note, at a minimum, the current number of used slots must be allocated, even
+>   * when deleting a memslot, as we need a complete duplicate of the memslots for
+
+There's an out-of-sight comment that's now stale, can you revert to the
+pre-slots_arch_lock comment?
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 48d182840060..ef3345428047 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1555,9 +1555,10 @@ static int kvm_set_memslot(struct kvm *kvm,
+                slot->flags |= KVM_MEMSLOT_INVALID;
+
+                /*
+-                * We can re-use the memory from the old memslots.
+-                * It will be overwritten with a copy of the new memslots
+-                * after reacquiring the slots_arch_lock below.
++                * We can re-use the old memslots, the only difference from the
++                * newly installed memslots is the invalid flag, which will get
++                * dropped by update_memslots anyway.  We'll also revert to the
++                * old memslots if preparing the new memory region fails.
+                 */
+                slots = install_new_memslots(kvm, as_id, slots);
+
+> @@ -1567,10 +1576,10 @@ static int kvm_set_memslot(struct kvm *kvm,
+>  		/*
+>  		 * The arch-specific fields of the memslots could have changed
+>  		 * between releasing the slots_arch_lock in
+> -		 * install_new_memslots and here, so get a fresh copy of the
+> -		 * slots.
+> +		 * install_new_memslots and here, so get a fresh copy of these
+> +		 * fields.
+>  		 */
+> -		kvm_copy_memslots(slots, __kvm_memslots(kvm, as_id));
+> +		kvm_copy_memslots_arch(slots, __kvm_memslots(kvm, as_id));
+>  	}
+>  
+>  	r = kvm_arch_prepare_memory_region(kvm, old, new, mem, change);
+> @@ -1587,8 +1596,6 @@ static int kvm_set_memslot(struct kvm *kvm,
+>  
+>  out_slots:
+>  	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE) {
+> -		slot = id_to_memslot(slots, old->id);
+> -		slot->flags &= ~KVM_MEMSLOT_INVALID;
+>  		slots = install_new_memslots(kvm, as_id, slots);
+>  	} else {
+
+The braces can be dropped since both branches are now single lines.
+
+>  		mutex_unlock(&kvm->slots_arch_lock);
