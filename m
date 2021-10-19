@@ -2,233 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA22E433367
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6035F433390
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbhJSKWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:22:12 -0400
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:43634 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhJSKWL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:22:11 -0400
-Received: by mail-ua1-f48.google.com with SMTP id i22so2753367ual.10;
-        Tue, 19 Oct 2021 03:19:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p6OZFW3ezrlsvIWoQgzoCARmyBJqP61SO2gxRkAy/uo=;
-        b=CMv4MSCjHqRUSlfvIzI1QNel+7CTWtK7AByjbxm29PMGppkQIcIA14ayL/rooAj8Ha
-         m5EzkDAa5Ec1PjKqAihtn7DE4boAbVk+pCU3yDc7fAOP+VwmDCppjF1xoFz/2ELI1gI1
-         le+0JJMILhETO/xw9m277ba0BjXj/6laCvuryXJI90ryw+bV0aUHXpx/zH/LVB+AHcXC
-         KKOvBZ+xOO3yqogtmc589H5P6/CdOwGoVy7a/9JFD5c4qZeypO9016N5VJxCDcZ+OXJI
-         AxyWyyEJAiK/mw2dm+VGmqDbPXxlxCL82XCXyHBQp5LX8Ejkhs8jZG8md6Jm+9NnykSk
-         wDJQ==
-X-Gm-Message-State: AOAM5331/NSAKzZ4bmFqfxtTRtGkZK3Qo3Vnq5pcye7STWOnWLjcAoEt
-        WvDqODtsoeJgON1zrlRRr77JqtnJz1QWmA==
-X-Google-Smtp-Source: ABdhPJwyTbDbYL9Be2J58hjWet64L1WtCHnEOSZSgVQPRRIyaTSHNtGKzzzrqCBUjtacWppBQeRecg==
-X-Received: by 2002:a67:d51a:: with SMTP id l26mr33813660vsj.29.1634638797600;
-        Tue, 19 Oct 2021 03:19:57 -0700 (PDT)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id u75sm10778783vke.29.2021.10.19.03.19.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 03:19:57 -0700 (PDT)
-Received: by mail-ua1-f44.google.com with SMTP id i22so2753205ual.10;
-        Tue, 19 Oct 2021 03:19:56 -0700 (PDT)
-X-Received: by 2002:a9f:29a5:: with SMTP id s34mr26300307uas.122.1634638796170;
- Tue, 19 Oct 2021 03:19:56 -0700 (PDT)
+        id S235222AbhJSKft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:35:49 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:52034 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230123AbhJSKfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 06:35:47 -0400
+X-Greylist: delayed 381 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Oct 2021 06:35:47 EDT
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4HYVKr2r5bz9s3J;
+        Tue, 19 Oct 2021 12:27:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7iKP7iS616PV; Tue, 19 Oct 2021 12:27:12 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.83])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4HYVKr0XW5z9s3G;
+        Tue, 19 Oct 2021 12:27:12 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19JAK6rX3281019
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 12:20:06 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19JAK4eo3281018;
+        Tue, 19 Oct 2021 12:20:04 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/boot: Set LANG=C in wrapper script
+Date:   Tue, 19 Oct 2021 12:20:01 +0200
+Message-Id: <6a103cc4bb5ada724f893711e35ae6c459f95f3e.1634638790.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211019095858.21316-1-Meng.Li@windriver.com>
-In-Reply-To: <20211019095858.21316-1-Meng.Li@windriver.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 19 Oct 2021 12:19:45 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUJ4nzz169=LG_q6rx7naKVdk-VUrxiQ9VzS=fxjCQ2WA@mail.gmail.com>
-Message-ID: <CAMuHMdUJ4nzz169=LG_q6rx7naKVdk-VUrxiQ9VzS=fxjCQ2WA@mail.gmail.com>
-Subject: Re: [PATCH] pci: pcie-rcar: add regulators support
-To:     Meng Li <Meng.Li@windriver.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634638800; l=2377; s=20211009; h=from:subject:message-id; bh=J6dXEsofym7EtEBxI/CSPyYHggX1yrammQlt+eY4z2k=; b=1GDtEu59IqFZOB2XQd802PwgL84gwPuzTEZk3L1TUuoQw1eqmka8tn1oTLyrC2+3hsuEOTU+CNQv rW0KJSvWA04vP5Sudk334x4+riayHJdAvwTMYeqsX9Q9KIObooT9
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Meng,
+While trying to build a simple Image for ACADIA platform, I got the
+following error:
 
-On Tue, Oct 19, 2021 at 11:59 AM Meng Li <Meng.Li@windriver.com> wrote:
-> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
->
-> Add PCIe regulators for KingFisher board.
->
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+	  WRAP    arch/powerpc/boot/simpleImage.acadia
+	INFO: Uncompressed kernel (size 0x6ae7d0) overlaps the address of the wrapper(0x400000)
+	INFO: Fixing the link_address of wrapper to (0x700000)
+	powerpc64-linux-gnu-ld : mode d'émulation non reconnu : -T
+	Émulations prises en charge : elf64ppc elf32ppc elf32ppclinux elf32ppcsim elf64lppc elf32lppc elf32lppclinux elf32lppcsim
+	make[1]: *** [arch/powerpc/boot/Makefile:424 : arch/powerpc/boot/simpleImage.acadia] Erreur 1
+	make: *** [arch/powerpc/Makefile:285 : simpleImage.acadia] Erreur 2
 
-Thanks for your patch!
+Trying again with V=1 shows the following command
 
->  arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 47 +++++++++++++++++
->  drivers/pci/controller/pcie-rcar-host.c  | 64 ++++++++++++++++++++++++
+	powerpc64-linux-gnu-ld -m -T arch/powerpc/boot/zImage.lds -Ttext 0x700000 --no-dynamic-linker -o arch/powerpc/boot/simpleImage.acadia -Map wrapper.map arch/powerpc/boot/fixed-head.o arch/powerpc/boot/simpleboot.o ./zImage.3278022.o arch/powerpc/boot/wrapper.a
 
-Please split patches touching both DT and driver sources.
+The argument of '-m' is missing.
 
-> --- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+This is due to the wrapper script calling 'objdump -p vmlinux' and
+looking for 'file format', whereas the output of objdump is:
 
-> @@ -259,6 +303,9 @@
->
->  &pciec1 {
->         status = "okay";
-> +
-> +       pcie3v3-supply = <&mpcie_3v3>;
-> +       pcie1v8-supply = <&mpcie_1v8>;
+	vmlinux:     format de fichier elf32-powerpc
 
-This needs an update to the R-Car PCIe DT bindings first.
+	En-tête de programme:
+	    LOAD off    0x00010000 vaddr 0xc0000000 paddr 0x00000000 align 2**16
+	         filesz 0x0069e1d4 memsz 0x006c128c flags rwx
+	    NOTE off    0x0064591c vaddr 0xc063591c paddr 0x0063591c align 2**2
+	         filesz 0x00000054 memsz 0x00000054 flags ---
 
-> --- a/drivers/pci/controller/pcie-rcar-host.c
-> +++ b/drivers/pci/controller/pcie-rcar-host.c
+Add LANG=C at the beginning of the wrapper script in order to get the
+output expected by the script:
 
-> @@ -893,6 +896,36 @@ static const struct of_device_id rcar_pcie_of_match[] = {
->         {},
->  };
->
-> +static int rcar_pcie_set_vpcie(struct rcar_pcie_host *host)
-> +{
-> +       struct device *dev = host->pcie.dev;
-> +       int err;
-> +
-> +       if (!IS_ERR(host->pcie3v3)) {
-> +               err = regulator_enable(host->pcie3v3);
+	vmlinux:     file format elf32-powerpc
 
-This will crash if host->pcie3v3 is NULL (optional regulator not
-present).  Probably you just want to check for non-NULL (see below).
+	Program Header:
+	    LOAD off    0x00010000 vaddr 0xc0000000 paddr 0x00000000 align 2**16
+	         filesz 0x0069e1d4 memsz 0x006c128c flags rwx
+	    NOTE off    0x0064591c vaddr 0xc063591c paddr 0x0063591c align 2**2
+	         filesz 0x00000054 memsz 0x00000054 flags ---
 
-> +               if (err) {
-> +                       dev_err(dev, "fail to enable vpcie3v3 regulator\n");
-> +                       goto err_out;
-> +               }
-> +       }
-> +
-> +       if (!IS_ERR(host->pcie1v8)) {
-> +               err = regulator_enable(host->pcie1v8);
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/boot/wrapper | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Likewise.
+diff --git a/arch/powerpc/boot/wrapper b/arch/powerpc/boot/wrapper
+index 1cd82564c996..59fafa1cf897 100755
+--- a/arch/powerpc/boot/wrapper
++++ b/arch/powerpc/boot/wrapper
+@@ -26,6 +26,8 @@
+ # Stop execution if any command fails
+ set -e
+ 
++export LANG=C
++
+ # Allow for verbose output
+ if [ "$V" = 1 ]; then
+     set -x
+-- 
+2.31.1
 
-> +               if (err) {
-> +                       dev_err(dev, "fail to enable vpcie1v8 regulator\n");
-> +                       goto err_disable_3v3;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +
-> +err_disable_3v3:
-> +       if (!IS_ERR(host->pcie3v3))
-
-Likewise.
-
-> +               regulator_disable(host->pcie3v3);
-> +err_out:
-> +       return err;
-> +}
-> +
->  static int rcar_pcie_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
-> @@ -911,6 +944,31 @@ static int rcar_pcie_probe(struct platform_device *pdev)
->         pcie->dev = dev;
->         platform_set_drvdata(pdev, host);
->
-> +       host->pcie3v3 = devm_regulator_get_optional(dev, "pcie3v3");
-> +       if (IS_ERR(host->pcie3v3)) {
-> +               if (PTR_ERR(host->pcie3v3) == -EPROBE_DEFER) {
-> +                       pci_free_host_bridge(bridge);
-
-Please drop this.  As the bridge was allocated using
-devm_pci_alloc_host_bridge(), freeing it manually will cause a
-double free.
-
-> +                       return -EPROBE_DEFER;
-> +               }
-> +               dev_info(dev, "no pcie3v3 regulator found\n");
-
-devm_regulator_get_optional() returns NULL if the regulator was not
-found.  Hence if IS_ERR() is true, this indicates a real error, which
-you should handle:
-
-    if (IS_ERR(host->pcie3v3))
-            return PTR_ERR(host->pcie3v3);
-
-> +       }
-> +
-> +       host->pcie1v8 = devm_regulator_get_optional(dev, "pcie1v8");
-> +       if (IS_ERR(host->pcie1v8)) {
-> +               if (PTR_ERR(host->pcie1v8) == -EPROBE_DEFER) {
-> +                       pci_free_host_bridge(bridge);
-> +                       return -EPROBE_DEFER;
-> +               }
-> +               dev_info(dev, "no pcie1v8 regulator found\n");
-
-Likewise.
-
-> +       }
-> +
-> +       err = rcar_pcie_set_vpcie(host);
-> +       if (err) {
-> +               dev_err(dev, "failed to set pcie regulators\n");
-> +               pci_free_host_bridge(bridge);
-
-Please drop this to avoid double free.
-
-> +               return err;
-> +       }
-> +
->         pm_runtime_enable(pcie->dev);
->         err = pm_runtime_get_sync(pcie->dev);
->         if (err < 0) {
-> @@ -985,6 +1043,12 @@ static int rcar_pcie_probe(struct platform_device *pdev)
->         irq_dispose_mapping(host->msi.irq1);
->
->  err_pm_put:
-> +       if(!IS_ERR(host->pcie3v3))
-
-if (host->pcie3v3)
-
-> +               if (regulator_is_enabled(host->pcie3v3))
-
-If you get here, the regulator should be enabled?
-
-> +                       regulator_disable(host->pcie3v3);
-> +       if(!IS_ERR(host->pcie1v8))
-
-if (host->pcie1v8)
-
-> +               if (regulator_is_enabled(host->pcie1v8))
-> +                       regulator_disable(host->pcie1v8);
-
-Please move this below the call to pm_runtime_disable(), to preserve
-symmetry.
-
->         pm_runtime_put(dev);
->         pm_runtime_disable(dev);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
