@@ -2,98 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD647433C3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF6C433C27
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbhJSQeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
+        id S233960AbhJSQbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhJSQeP (ORCPT
+        with ESMTP id S231574AbhJSQbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:34:15 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3828AC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:32:02 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id t16so15101831eds.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:32:02 -0700 (PDT)
+        Tue, 19 Oct 2021 12:31:41 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0552C06161C;
+        Tue, 19 Oct 2021 09:29:28 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id g6so8131391ybb.3;
+        Tue, 19 Oct 2021 09:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8xUa4jDp8wEq2+KyjYLUoyDAf9haNG/CAH7QLO3lCFg=;
-        b=Rk3hPiN1Cgn4j+zmGpM0dENIhRnzhwt3kwrJw0dXrtwRIVtz33CBjd1xw9nFoz4Y54
-         orSrK+/3veW61o8sx5I9LiM2oX+VL9+WV8tNCkfSFeACCFxjFpO8cuGdJWAtcl/R/iyd
-         JSllRqHrbTYt0SodjJZCokHVxZoY+roP3verKxSMGZha5nDo8UundCHVvMKz1yLlLX+A
-         Yv2x2RPOb7INYdlisfjqVAAnylzMCH1JejmnWqjvrI9KZfd5Z+AdFC3UQVR1xC3YrEtN
-         +oo8OMgQVykkiHbVa0UEw91IZP1jygwfZXxmIv3yzPWsmS4pbb1XvJ2GC/68Aw6XihBt
-         Rcaw==
+        bh=J78XHtk0yTiXURgVL3TaxzbN4iqYDfNXS5o8OtDU9bs=;
+        b=V6BkfA59n1q/wUPW5mIxLE6Mlin2TdZOOctv/yUZp+GvrRa1N9oDplN3RnpQyB1ErR
+         lL8UyJmxV/b/lXVwf8chRAN0+nQlqLaA8ThyK/nFPfEkzB2JFg4AdMmgJMLAyG/52d7/
+         hy8ICxIqBD4F11hDClAUF9FDlwy1iW7D0uS+zOkx/ijI+B+2srdJ7ir8qXqGMUW9jvw3
+         XNY5HH/tgWv4tIpOZXPJXYIk5Kp21Mhw/cBK6EYsfrnbZcJAK4d5dSf6zXl2L/lyKThL
+         wBfNycRfBSkZsF18jd/YizBdl5ncv1STnJdO+x5SJEOLqzv/80gWBb/BqfswALw1YUXb
+         7Ucw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8xUa4jDp8wEq2+KyjYLUoyDAf9haNG/CAH7QLO3lCFg=;
-        b=sYonrBA/sj/s/NAjtJNoSXAWqZ2CZ0j0GrasyLf1ntX01tnzgS33mgIememtcu+gg7
-         720jVsT03R2qyfn+RwHzoseGwSv6/vcRhKKZ/iPhhyl2i1n0ewdCtCXwiNRJJ2Sq/zLR
-         c6WtCpRKpYPnte5svfnXVvaVGQOUb5oFkyOl9C5dnKtuJu2m5jZni5LeUcKQtRmdigGC
-         IFNoQ5aFQfQo4gUrj6gA7/y27xNsl1qxnkka2wGD+pbw0ToKtmm8Ej9bOnUd89yuUR5O
-         GXveckeDxBjxFabCh4Joy4ma3XPOKADUTOKyAQrp3ljuM97N5xE76KTqjPP318XDCpNt
-         5jIw==
-X-Gm-Message-State: AOAM533+zhQIo88TEDhlGWo+RKyOvWv/sfaOMy5b61opLlgkFBwiSc0m
-        4sYs/cv7wfRY5rId+rKzlXOhyvHl7P26n6CpLSlY
-X-Google-Smtp-Source: ABdhPJx2DygXOAUIL+ZmjqAeaXSLbDoYpIDmg/VlX8my35/hQmEKkmgE44G+Jhusz2tWvG+Y9ihUjD2QYXGPH0taDhY=
-X-Received: by 2002:a05:6402:22d6:: with SMTP id dm22mr55776304edb.209.1634660962615;
- Tue, 19 Oct 2021 09:29:22 -0700 (PDT)
+        bh=J78XHtk0yTiXURgVL3TaxzbN4iqYDfNXS5o8OtDU9bs=;
+        b=QEKFjGJbfJlgz0BNEIkGu0IVyGjE+Qb9FctXXBSOBEb/0QQlWpfZnpLyyuf5tPeLIG
+         OfQUgrZqAKta4pma9o5ZKl0z8im0ONY6RmmDn7jNbEohRSKXju97cN/js4hZUDEbwGBm
+         mvtvKhyGUmvPTc5mOCTd7f/WZrWxq1vfHHUnUDtHVKghn8hoTM/CJQsJBjf0cTiyGaQG
+         UEOBaNYsbhzH8ELuVXcGo3JTzKT0NjObPioQGsFd6gtKMCPZ7mHkUzzFdzO4eBKRhsgm
+         +FnXXlJG3C06+FHGCBuYOU2aTwLIAGwabEEzVCHW8cKcDvfJa+kasKY2UpzsTOazQQ9u
+         8frw==
+X-Gm-Message-State: AOAM530WzCW4UzFAgI3GM1nGVBRxCgq49a15cN3TWiGbCJ3MUIXNS2Py
+        M/WNojveJC7JcRsyiDonz9sHSU3AD39XozQeB7E=
+X-Google-Smtp-Source: ABdhPJy4PLn5pDo/W7hEIGapAm+cHHFPBsqpwcP95QTzvHzjwia8X1+iDF4y8YtJl0JYML7X2HOsnoIj3DVyPSsDq+4=
+X-Received: by 2002:a25:5846:: with SMTP id m67mr35963205ybb.231.1634660968212;
+ Tue, 19 Oct 2021 09:29:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYuY3BJ9osvhwg0-YG=L+etgCBfCq0koC9BEkvK8-GR3ew@mail.gmail.com>
- <20211019131049.GE28644@breakpoint.cc>
-In-Reply-To: <20211019131049.GE28644@breakpoint.cc>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 19 Oct 2021 12:29:11 -0400
-Message-ID: <CAHC9VhTobH9ExRt5fLx+S9ibRipeA4pj8yFhjDKb0Buq6naD5A@mail.gmail.com>
-Subject: Re: [next] BUG: kernel NULL pointer dereference, address:: selinux_ip_postroute_compat
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        selinux@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Eric Paris <eparis@parisplace.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
+ <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
+ <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
+ <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
+ <YW3ErLKGtmyhSFd3@smile.fi.intel.com> <CACAwPwYrxxFstQgYHhPOhMwUz_5RprSuoPNHL7m9ft1i-N2icQ@mail.gmail.com>
+ <CAHp75VdCF_Fhso-uS_4JL7a9X90_nQ5JcyCwpeLM3b-YKVqjYw@mail.gmail.com>
+In-Reply-To: <CAHp75VdCF_Fhso-uS_4JL7a9X90_nQ5JcyCwpeLM3b-YKVqjYw@mail.gmail.com>
+From:   Maxim Levitsky <maximlevitsky@gmail.com>
+Date:   Tue, 19 Oct 2021 19:29:17 +0300
+Message-ID: <CACAwPwaN-4onX=o+czsLh-0emDCJRCg_-qgqPWYqj1b3-4N+Bg@mail.gmail.com>
+Subject: Re: BMI160 accelerometer on AyaNeo tablet
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-realtek-soc@lists.infradead.org,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>, nic_swsd@realtek.com,
+        Derek Fang <derek.fang@realtek.com>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Kailang Yang <kailang@realtek.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        LKML <linux-kernel@vger.kernel.org>, info@ayaneo.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 9:10 AM Florian Westphal <fw@strlen.de> wrote:
+On Tue, Oct 19, 2021 at 12:59 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > Following kernel crash noticed on linux next 20211019 tag.
-> > on x86, i386 and other architectures.
+> On Mon, Oct 18, 2021 at 11:42 PM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+> > On Mon, Oct 18, 2021 at 10:02 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Mon, Oct 18, 2021 at 09:02:40PM +0300, Maxim Levitsky wrote:
 >
-> Paul, this might be caused by
-> 1d1e1ded13568be81a0e19d228e310a48997bec8
-> ("selinux: make better use of the nf_hook_state passed to the NF
->  hooks"), in particular this hunk here:
+> ...
 >
-> -       if (sk == NULL)
-> +       if (state->sk == NULL)
->                 return NF_ACCEPT;
-> +       sk = skb_to_full_sk(skb);
->         sksec = sk->sk_security;
+> > > Thank you for sharing. Seems they indeed used (deliberately or not) the wrong
+> > > ID. So there are questions I have:
+> > > - Is the firmware available in the wild?
+> >
+> > Likely so. It looks Aya team only released a single windows driver which
+> > works on all revisions of their device including the Founder Edition,
+> > which was released more that a year ago.
+> >
+> > It is likely that all 3 revisions that they sold carry this ACPI ID.
+> > (The founder edition, first batch of IndieGoGo orders which had a
+> > redesigned shell,
+> > and 2nd batch (which I have) which has a new wifi card, a bit better
+> > controller,
+> > among other changes).
+> >
+> >
+> > > - Do they plan to update firmware to fix this?
+> > > - Can we make sure that guys got their mistake and will be more careful
+> > >   in the future?
+> >
+> > I CCed them, hoping that they would hear us. I can also raise this on their
+> > discord when I find time to look there.
 >
-> state->sk might not be related to skb->sk.
-> I suspect that this should instead be:
->
-> +       sk = skb_to_full_sk(skb);
->         if (sk == NULL)
->
-> See 7026b1ddb6b8d4e6ee33dc2bd06c0ca8746fa7ab for the origin of this
-> additional socket pointer.
+> I expect to have confirmation from them that they have got it and
+> promise to fix the firmware (ACPI tables) for supported and future
+> products.Can it be achieved? (Note, Hans already told what the HID
+> should be used there)
 
-Sure, I'll patch that up now.
+Small Note: we are talking about BMI160 and not BMC150 and its ACPI HID is
+I think is BMI0160. This doesn't change much, other that maybe a bit
+more code to be added to read the rotation matrix.
 
--- 
-paul moore
-www.paul-moore.com
+>
+> > > Realtek probably should make this ID marked somehow broken and not use
+> > > in their products in case the answer to the first of the above question
+> > > is "yes". (Of course in case the ID will be used for solely PCI enumerated
+> > > product there will be no conflict, I just propose to be on the safest side,
+> > > but remark should be made somewhere).
+>
+> Any comments from Realtek, please?
+>
+> > > > BTW, I also notice a rotation matrix embedded in DSTD, but the linux's
+> > > > BMI160 driver doesn't recognize it.
+> > >
+> > > This is done by the commit 8a0672003421 ("iio: accel: bmc150: Get
+> > > mount-matrix from ACPI") which needs to be amended to take care about
+> > > more devices, somewhere in drivers/iio/industialio-acpi.c ? Jonathan,
+> > > Hans, what do you think?
+> >
+> > If you like to, I can probably volunteer to prepare a patch for this myself next
+> > weekend, using this pointer as a reference.
+>
+> The best is to cooperate with Hans as he is much more involved in the
+> topic of how these sensors are programmed and used in the Linux
+> kernel. My job here is to fix ACPI HID and
+> make every stakeholder be aware now and in the future.
+
+Yep, not a problem at all, I am open to test any patch to fix these issues,
+as well as try to write my own.
+
+
+>
+> ...
+>
+> > I will prepare a patch with a better commit description this weekend.
+>
+> Thanks, but let's not be in such a hurry, I really want to hear from
+> both vendors. I guess a couple of weeks would be a reasonable time to
+> settle this down.
+
+I guess you are right. Waiting a few weeks seems very reasonable.
+
+Thanks,
+Best regards,
+        Maxim Levitsky
+
+
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
