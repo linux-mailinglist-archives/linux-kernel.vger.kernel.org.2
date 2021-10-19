@@ -2,95 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54EC4332CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1254332D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbhJSJto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S235125AbhJSJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235096AbhJSJtl (ORCPT
+        with ESMTP id S235104AbhJSJtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:49:41 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEC8C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:47:29 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id s1so11480314plg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:47:29 -0700 (PDT)
+        Tue, 19 Oct 2021 05:49:43 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18A4C061769
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:47:30 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id i5so7059679pla.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AW90+0ECu0jFh8CdzlWHccywuwAGlUm3CUlVVFXdqic=;
-        b=fyP+7f/LVSu4Rs1PK5OiJMYlJXG9EEqWapYe/TDCTrJuP9To2ZJGCDg53mMkw/gxmM
-         Fs9rJ1aGjQOmebk7RZuHNnhP6ABDlUjI7cyHSPd5SnRleJCceeF45ffEdhrIT2rs0nx7
-         qMGITGCV00y6jzAQ/zaXQDqp+hoC3wGQEu4NVXEBOQHzSErshgK8R4q+RqvuFEeMcj44
-         mt89gEcQ+XCXuCpsmT+9MNLSQnKxciyM6wyrtkE3XokIvdFofa4RxI47sJH5ToFPrXJF
-         xLrPO0Ajp2XmD/ZAqDlfWvhDAPYEXLghaAGoVidVf0R0UIa2RKvk/noKjZx1hJ+E6QDz
-         A7rw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rb8ExGG2m6SToBzEBDnEJVncQUD0CuENj6IXXVw/aPM=;
+        b=q12/aHJIbvh4jCgzlU0YpjBa724C+4452crxCrhVOHnvH7LUzsW0H3nEWB9Y0/mVSn
+         nF/PDPZ1dvcbuSiIs1PKqz8eZFk0up71EkAk4ewJVvblI6S7jnUG+Lj+v2VPZM9TI/tz
+         f/RNNLy9poVSvWi0WRw7AgR8xL9Y9df/v1fmf2NZRUbBuosMZgv8Q3iJDlHpCoRz63JG
+         ghq2877rXcPLS/Md6qNM6K/Wor84a6hi6a1JpdAjTxDbIWbzVul0XO491giT5Y7T5NSh
+         LbuM7zA4R+krhr7LSPKfg4g1O4Buszhj6AoeWu7jdoRvPrBxTlJtbyIwORI6W6UYOdya
+         +XWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AW90+0ECu0jFh8CdzlWHccywuwAGlUm3CUlVVFXdqic=;
-        b=qS3aOQ4rB4N/aMe3kYmopDg9Ymw5bdpRSy0V1yQs9199yfcyICSr/pp/8JpRn4xskq
-         AcLEOEYHEN5bRPl4qTIOltjOSn3eSO9EMs+Lag9/KSinEoVr3duWeU6X/dcwG5DCOX8p
-         Hfn7hhH5Ty/MgtFCc49vX5MKG/e3/SCuxbPxD+M38C/7wYn2SumE29SpTj8d7rzZOSNO
-         XJ8VGEh5oJwHjFc8ztj+cHdMju1JAqZWe471WJHu6wartHgeQKj5gDbCM3OgBa0YnroD
-         lKwOCuCe5XORPdOFCElg+ERCXqZmFv418fpR6aGEYRp4gj6G2q0U56NdFgTLLq2l+ByB
-         1PFQ==
-X-Gm-Message-State: AOAM533LS6v/1/wT9S6q/zY4b0TfUSb1BFIAoKh5oXSnlpU8yWN+iP4E
-        L05IskwJxwUGeOKJ08NKAOD6sBgEAEYOLa1VV4iTTQ==
-X-Google-Smtp-Source: ABdhPJwP1HHCKcZxy6X+e0Bms/h1VpcsmX+KoWgwv5qu2dKntHFdMmYf/e2mEICECkUkU1kdjL37Qs8iz/0it4SvqNQ=
-X-Received: by 2002:a17:902:c94e:b0:13f:1b02:e539 with SMTP id
- i14-20020a170902c94e00b0013f1b02e539mr32133251pla.72.1634636848802; Tue, 19
- Oct 2021 02:47:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rb8ExGG2m6SToBzEBDnEJVncQUD0CuENj6IXXVw/aPM=;
+        b=vmPNfVJ8kR9KsldnGoZzPNeMPnNwIQb+2XVqw0wpiS5VhsBwP1I9Kek9WgEDTukV61
+         NtlXXe6Ut/cBx/AKWGxy/E32IUg6h9JHYn335ZUPs8ZRbg1c9wG7pGgGCSzAtsfNuukm
+         GTeG3zMoBjKQYZOt4FHVn7hpFFe9DSyHCKVfaclGyS/gjlLgHp3BhjSNpQIEHUWBCyZY
+         f4gR9DbXZVw5brk3vYnNWQqd4HnRrjum8XcArbQV217xTyt/u260LoupYI3kumopD10L
+         IgRL9jcebVRXC0usv350yczzcDGLeC4cHXbySWF+4QPqMmaCU1OgvlBuSSqY3XbEMqs8
+         HmLw==
+X-Gm-Message-State: AOAM533TtFeWsR7wxnS5QAbSPeP0/HMHD39KvqFxD0z6CVo7Gib7JwoA
+        8MszYn6oCnEVnv+cdAXTBFZC5A==
+X-Google-Smtp-Source: ABdhPJyIBnnZqluV3NjfjUtyBpQBjEurCCCZ/4HqDgEPEknf2y4RPBYdBg7T4hopVIKhIOJYriHoMQ==
+X-Received: by 2002:a17:90b:18f:: with SMTP id t15mr5398140pjs.19.1634636850019;
+        Tue, 19 Oct 2021 02:47:30 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id nu16sm2328393pjb.56.2021.10.19.02.47.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 Oct 2021 02:47:29 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 17:47:21 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>
+Subject: Re: [PATCH v12 2/5] soc: qcom: Add Sleep stats driver
+Message-ID: <20211019094720.GD7231@dragon>
+References: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
+ <1634107104-22197-3-git-send-email-mkshah@codeaurora.org>
+ <20211015135809.GB7231@dragon>
+ <0802823a-4be2-6d55-b259-5084a809c7bb@codeaurora.org>
 MIME-Version: 1.0
-References: <20211002233447.1105-1-digetx@gmail.com>
-In-Reply-To: <20211002233447.1105-1-digetx@gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 19 Oct 2021 11:47:17 +0200
-Message-ID: <CAG3jFysa8G_fuGDfSLze-ovft3=gc5PXLaPtwTkC2_e0itQYNw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] Improvements for TC358768 DSI bridge driver
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-tegra@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0802823a-4be2-6d55-b259-5084a809c7bb@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied to drm-misc-next
+On Mon, Oct 18, 2021 at 07:45:30PM +0530, Maulik Shah wrote:
+> > > +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
+> > > +					     struct stats_data *d,
+> > > +					     const struct stats_config *config)
+> > > +{
+> > > +	char stat_type[sizeof(u32) + 1] = {0};
+> > > +	size_t stats_offset = config->stats_offset;
+> > > +	u32 offset = 0, type;
+> > > +	int i, j;
+> > > +
+> > > +	/*
+> > > +	 * On RPM targets, stats offset location is dynamic and changes from target
+> > > +	 * to target and sometimes from build to build for same target.
+> > > +	 *
+> > > +	 * In such cases the dynamic address is present at 0x14 offset from base
+> > > +	 * address in devicetree. The last 16bits indicates the stats_offset.
+> > > +	 */
+> > > +	if (config->dynamic_offset) {
+> > > +		stats_offset = readl(reg + RPM_DYNAMIC_ADDR);
+> > > +		stats_offset &= RPM_DYNAMIC_ADDR_MASK;
+> > > +	}
+> > > +
+> > > +	for (i = 0; i < config->num_records; i++) {
+> > > +		d[i].base = reg + offset + stats_offset;
+> > > +
+> > > +		/*
+> > > +		 * Read the low power mode name and create debugfs file for it.
+> > > +		 * The names read could be of below,
+> > > +		 * (may change depending on low power mode supported).
+> > > +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
+> > > +		 * For rpm-sleep-stats: "vmin" and "vlow".
+> > 
+> > It reports 'vmin' and 'xosd' on MSM8939, 'vmin' and 'vlow' on SDM660.
+> > I know that 'vmin' is VDD Minimization mode, and 'xosd' is XO Shutdown
+> > mode.  But I'm not sure about 'vlow' mode.  Could you share some
+> > information regarding what this low power mode is, and how it differs
+> > from 'vmin' and 'xosd'?
+> 
+> vlow and xosd are same.
+> vmin is xosd plus voltage minimization of chip, memory rails.
 
-On Sun, 3 Oct 2021 at 01:35, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> This series adds couple improvements to the TC358768 DSI bridge driver,
-> enabling Panasonic VVX10F004B00 DSI panel support. This panel is used by
-> ASUS Transformer TF700T tablet, which is ready for upstream kernel and
-> display panel support is the biggest missing part.
->
-> Dmitry Osipenko (5):
->   drm/bridge: tc358768: Enable reference clock
->   drm/bridge: tc358768: Support pulse mode
->   drm/bridge: tc358768: Calculate video start delay
->   drm/bridge: tc358768: Disable non-continuous clock mode
->   drm/bridge: tc358768: Correct BTACNTRL1 programming
->
->  drivers/gpu/drm/bridge/tc358768.c | 94 +++++++++++++++++++++++--------
->  1 file changed, 71 insertions(+), 23 deletions(-)
->
-> --
-> 2.32.0
->
+Thanks much for the info, Maulik!
+
+I'm running your driver on qcm2290 and trying to reach vlow mode.
+
+# cat /sys/kernel/debug/qcom_sleep_stats/vlow
+Count: 0
+Last Entered At: 0
+Last Exited At: 0
+Accumulated Duration: 0
+Client Votes: 0x81
+# echo mem > /sys/power/state 
+[  551.446603] PM: suspend entry (s2idle)
+[  551.450948] Filesystems sync: 0.000 seconds
+[  551.462828] Freezing user space processes ... (elapsed 0.002 seconds) done.
+[  551.472276] OOM killer disabled.
+[  551.475556] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[  551.484461] printk: Suspending console(s) (use no_console_suspend to debug)
+[  551.561280] OOM killer enabled.
+[  551.564461] Restarting tasks ... done.
+[  551.569652] PM: suspend exit
+# cat /sys/kernel/debug/qcom_sleep_stats/vlow
+Count: 0
+Last Entered At: 0
+Last Exited At: 0
+Accumulated Duration: 0
+Client Votes: 0x818081
+
+The count doesn't increases along with suspend/resume cycle at the
+moment.  But as you can see, 'Client Votes' field changes.  If possible,
+could you shed some light on what this means?
+
+As the comparison, I'm also running the downstream 'rpm_master_stats'
+driver in the same kernel, and the 'xo_count' field of APSS does
+increase along with suspend/resume cycle.  May I ask some advices what
+I'm possibly missing and thus getting different result between 'vlow'
+and 'rpm_master_stats' report?
+
+# cat /sys/kernel/debug/rpm_master_stats 
+APSS
+        shutdown_req:0x37EA3CC74
+        wakeup_ind:0x0
+        bringup_req:0x37F041958
+        bringup_ack:0x37F042D54
+        xo_last_entered_at:0x286FF36AC
+        xo_last_exited_at:0x28AF94178
+        xo_accumulated_duration:0x3EDD55B
+        last_sleep_transition_duration:0x122f
+        last_wake_transition_duration:0x11f8
+        xo_count:0x1
+        wakeup_reason:0x0
+        numshutdowns:0x641
+        active_cores:0x1
+                core0
+MPSS
+        shutdown_req:0x0
+        wakeup_ind:0x0
+        bringup_req:0x0
+        bringup_ack:0x0
+        xo_last_entered_at:0x0
+        xo_last_exited_at:0x0
+        xo_accumulated_duration:0x0
+        last_sleep_transition_duration:0x0
+        last_wake_transition_duration:0x0
+        xo_count:0x0
+        wakeup_reason:0x0
+        numshutdowns:0x0
+        active_cores:0x1
+                core0
+ADSP
+        shutdown_req:0x0
+        wakeup_ind:0x0
+        bringup_req:0x0
+        bringup_ack:0x0
+        xo_last_entered_at:0x0
+        xo_last_exited_at:0x0
+        xo_accumulated_duration:0x0
+        last_sleep_transition_duration:0x0
+        last_wake_transition_duration:0x0
+        xo_count:0x0
+        wakeup_reason:0x0
+        numshutdowns:0x0
+        active_cores:0x1
+                core0
+CDSP
+        shutdown_req:0x0
+        wakeup_ind:0x0
+        bringup_req:0x0
+        bringup_ack:0x0
+        xo_last_entered_at:0x0
+        xo_last_exited_at:0x0
+        xo_accumulated_duration:0x0
+        last_sleep_transition_duration:0x0
+        last_wake_transition_duration:0x0
+        xo_count:0x0
+        wakeup_reason:0x0
+        numshutdowns:0x0
+        active_cores:0x0
+TZ
+        shutdown_req:0x0
+        wakeup_ind:0x0
+        bringup_req:0x0
+        bringup_ack:0x0
+        xo_last_entered_at:0x0
+        xo_last_exited_at:0x0
+        xo_accumulated_duration:0x0
+        last_sleep_transition_duration:0x0
+        last_wake_transition_duration:0x0
+        xo_count:0x0
+        wakeup_reason:0x0
+        numshutdowns:0x0
+        active_cores:0x0
+
+Any comment or suggestion would be much appreciated!
+
+Shawn
