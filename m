@@ -2,253 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE1A43364B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC27B43364D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235692AbhJSMt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:49:26 -0400
+        id S235702AbhJSMur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:50:47 -0400
 Received: from m43-7.mailgun.net ([69.72.43.7]:19316 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235684AbhJSMtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:49:25 -0400
+        id S230267AbhJSMuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:50:46 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634647632; h=Content-Transfer-Encoding: Content-Type:
+ s=smtp; t=1634647714; h=Content-Transfer-Encoding: Content-Type:
  In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=/t2zwX7o7apvnAvjKrNCpcaUDtarMlWQusLB8pvZMkk=; b=nTZXFoo3z+9k/gbwvoYnckTe73qOwr7qtxlgRVNAmOjxLyW7LBgwINtbQ26rzc/C1IpIAEO3
- bMkxcMQJCoC3EL5AESThjVzrrF3/YqEgQgurI62B9CaXviIQV86r/sJiAQmHGc2QwTtZKIY0
- Kt+ibK+dhwaGXS8sNqscdsQGTkA=
+ Subject: Sender; bh=ILJ6KUzz5UKYPnWbk1cGvixDN6iLtxb7woY6fRVqBHg=; b=HHqFBzlp0SfdzvmHRmL78qGYoADMNUAjf6RU+SunetfijYCQftyEhZHVWRILErZL2L3oiheW
+ p+PBA3eOjJo8WufTfMKC4XLjrQNICsf+YXTVwqAMwRAjBmhv5buBjpA8PqUZt2yxzd8nBZhj
+ 9/8rhQNei1MnQDEktKw3lZjJxGo=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 616ebe4c308e0dd330f10090 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Oct 2021 12:47:07
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 616ebe975ca800b6c1b80db7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Oct 2021 12:48:23
  GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Sender: quic_luoj=quicinc.com@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 44260C43618; Tue, 19 Oct 2021 12:47:07 +0000 (UTC)
+        id 5010AC4360C; Tue, 19 Oct 2021 12:48:23 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
         NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.231.137] (unknown [106.213.197.51])
+Received: from [10.92.1.38] (unknown [180.166.53.36])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E3456C43460;
-        Tue, 19 Oct 2021 12:47:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E3456C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v12 2/5] soc: qcom: Add Sleep stats driver
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
-        lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>
-References: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
- <1634107104-22197-3-git-send-email-mkshah@codeaurora.org>
- <20211015135809.GB7231@dragon>
- <0802823a-4be2-6d55-b259-5084a809c7bb@codeaurora.org>
- <20211019094720.GD7231@dragon>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <38c6bc38-8d5b-a65d-1a26-eb9f268c7644@codeaurora.org>
-Date:   Tue, 19 Oct 2021 18:16:57 +0530
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98236C4338F;
+        Tue, 19 Oct 2021 12:48:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 98236C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+Subject: Re: [PATCH v3 06/13] net: phy: add qca8081 read_status
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Luo Jie <luoj@codeaurora.org>, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+References: <20211018033333.17677-1-luoj@codeaurora.org>
+ <20211018033333.17677-7-luoj@codeaurora.org> <YW3qLe8iHe1wdMev@lunn.ch>
+ <0472b75b-9fd7-55e3-dc1b-f33786643103@quicinc.com> <YW66vT1HQsVfjZDz@lunn.ch>
+From:   Jie Luo <quic_luoj@quicinc.com>
+Message-ID: <e0c4aa61-e1ac-e1f3-8a26-635784336512@quicinc.com>
+Date:   Tue, 19 Oct 2021 20:48:18 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211019094720.GD7231@dragon>
+In-Reply-To: <YW66vT1HQsVfjZDz@lunn.ch>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
 
-On 10/19/2021 3:17 PM, Shawn Guo wrote:
-> On Mon, Oct 18, 2021 at 07:45:30PM +0530, Maulik Shah wrote:
->>>> +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
->>>> +					     struct stats_data *d,
->>>> +					     const struct stats_config *config)
+On 10/19/2021 8:31 PM, Andrew Lunn wrote:
+> On Tue, Oct 19, 2021 at 08:10:15PM +0800, Jie Luo wrote:
+>> On 10/19/2021 5:42 AM, Andrew Lunn wrote:
+>>>> +static int qca808x_read_status(struct phy_device *phydev)
 >>>> +{
->>>> +	char stat_type[sizeof(u32) + 1] = {0};
->>>> +	size_t stats_offset = config->stats_offset;
->>>> +	u32 offset = 0, type;
->>>> +	int i, j;
+>>>> +	int ret;
 >>>> +
->>>> +	/*
->>>> +	 * On RPM targets, stats offset location is dynamic and changes from target
->>>> +	 * to target and sometimes from build to build for same target.
->>>> +	 *
->>>> +	 * In such cases the dynamic address is present at 0x14 offset from base
->>>> +	 * address in devicetree. The last 16bits indicates the stats_offset.
->>>> +	 */
->>>> +	if (config->dynamic_offset) {
->>>> +		stats_offset = readl(reg + RPM_DYNAMIC_ADDR);
->>>> +		stats_offset &= RPM_DYNAMIC_ADDR_MASK;
->>>> +	}
+>>>> +	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_STAT);
+>>>> +	if (ret < 0)
+>>>> +		return ret;
 >>>> +
->>>> +	for (i = 0; i < config->num_records; i++) {
->>>> +		d[i].base = reg + offset + stats_offset;
+>>>> +	linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->lp_advertising,
+>>>> +			ret & MDIO_AN_10GBT_STAT_LP2_5G);
 >>>> +
->>>> +		/*
->>>> +		 * Read the low power mode name and create debugfs file for it.
->>>> +		 * The names read could be of below,
->>>> +		 * (may change depending on low power mode supported).
->>>> +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
->>>> +		 * For rpm-sleep-stats: "vmin" and "vlow".
+>>> Could genphy_c45_read_lpa() be used here?
 >>>
->>> It reports 'vmin' and 'xosd' on MSM8939, 'vmin' and 'vlow' on SDM660.
->>> I know that 'vmin' is VDD Minimization mode, and 'xosd' is XO Shutdown
->>> mode.  But I'm not sure about 'vlow' mode.  Could you share some
->>> information regarding what this low power mode is, and how it differs
->>> from 'vmin' and 'xosd'?
+>>>         Andrew
+>> Hi Andrew,
 >>
->> vlow and xosd are same.
->> vmin is xosd plus voltage minimization of chip, memory rails.
-> 
-> Thanks much for the info, Maulik!
-> 
-> I'm running your driver on qcm2290 and trying to reach vlow mode.
-> 
-> # cat /sys/kernel/debug/qcom_sleep_stats/vlow
-> Count: 0
-> Last Entered At: 0
-> Last Exited At: 0
-> Accumulated Duration: 0
-> Client Votes: 0x81
-> # echo mem > /sys/power/state
-> [  551.446603] PM: suspend entry (s2idle)
-> [  551.450948] Filesystems sync: 0.000 seconds
-> [  551.462828] Freezing user space processes ... (elapsed 0.002 seconds) done.
-> [  551.472276] OOM killer disabled.
-> [  551.475556] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> [  551.484461] printk: Suspending console(s) (use no_console_suspend to debug)
-> [  551.561280] OOM killer enabled.
-> [  551.564461] Restarting tasks ... done.
-> [  551.569652] PM: suspend exit
-> # cat /sys/kernel/debug/qcom_sleep_stats/vlow
-> Count: 0
-> Last Entered At: 0
-> Last Exited At: 0
-> Accumulated Duration: 0
-> Client Votes: 0x818081
-> 
-> The count doesn't increases along with suspend/resume cycle at the
-> moment.  But as you can see, 'Client Votes' field changes.  If possible,
-> could you shed some light on what this means?
+>> Thanks for the comments,  the MDIO_STAT1 of PHY does not follow the
+>> standard, bit0~bit6 of MDIO_STAT1 are
+>>
+>> always 0, genphy_c45_read_lpa can't be used.
+> O.K. It is a shame the hardware partially follow the standard, but
+> breaks it as well. Why go to the effort of partially following it,
+> when you don't gain anything from it because you need custom code
+> anyway?
+>
+> 	Andrew
 
-The count will increase only when all the subsystems (APSS/Modem,etc) 
-are in power down mode and finally RPM decides to turn off xo clock.
+Hi Andrew,
 
-> 
-> As the comparison, I'm also running the downstream 'rpm_master_stats'
-> driver in the same kernel, and the 'xo_count' field of APSS does
-> increase along with suspend/resume cycle.  May I ask some advices what
-> I'm possibly missing and thus getting different result between 'vlow'
-> and 'rpm_master_stats' report?
+Thanks for the suggestion. qca8081 PHY indeed add 2.5G capability based 
+on the
 
-The vlow is a SoC level state whereas the rpm master stats indicate
-individual subsystem state. Since you are running suspend-resume the 
-APSS is going to sleep so you see xo_count incremented for it but for 
-MPSS i see it does not increase (modem is not entering to low power 
-mode). similarly for ADSP/CDSP it does not increment. if all of these 
-subsystems goes to power down and then there is sufficient sleep time 
-for the SoC then you may see vlow/vmin incrementing.
+general 1G PHY, i will feedback this to the HW design team, thanks for 
+this comments.
 
-Hope this clarifies.
-
-Thanks,
-Maulik
-
-> 
-> # cat /sys/kernel/debug/rpm_master_stats
-> APSS
->          shutdown_req:0x37EA3CC74
->          wakeup_ind:0x0
->          bringup_req:0x37F041958
->          bringup_ack:0x37F042D54
->          xo_last_entered_at:0x286FF36AC
->          xo_last_exited_at:0x28AF94178
->          xo_accumulated_duration:0x3EDD55B
->          last_sleep_transition_duration:0x122f
->          last_wake_transition_duration:0x11f8
->          xo_count:0x1
->          wakeup_reason:0x0
->          numshutdowns:0x641
->          active_cores:0x1
->                  core0
-> MPSS
->          shutdown_req:0x0
->          wakeup_ind:0x0
->          bringup_req:0x0
->          bringup_ack:0x0
->          xo_last_entered_at:0x0
->          xo_last_exited_at:0x0
->          xo_accumulated_duration:0x0
->          last_sleep_transition_duration:0x0
->          last_wake_transition_duration:0x0
->          xo_count:0x0
->          wakeup_reason:0x0
->          numshutdowns:0x0
->          active_cores:0x1
->                  core0
-> ADSP
->          shutdown_req:0x0
->          wakeup_ind:0x0
->          bringup_req:0x0
->          bringup_ack:0x0
->          xo_last_entered_at:0x0
->          xo_last_exited_at:0x0
->          xo_accumulated_duration:0x0
->          last_sleep_transition_duration:0x0
->          last_wake_transition_duration:0x0
->          xo_count:0x0
->          wakeup_reason:0x0
->          numshutdowns:0x0
->          active_cores:0x1
->                  core0
-> CDSP
->          shutdown_req:0x0
->          wakeup_ind:0x0
->          bringup_req:0x0
->          bringup_ack:0x0
->          xo_last_entered_at:0x0
->          xo_last_exited_at:0x0
->          xo_accumulated_duration:0x0
->          last_sleep_transition_duration:0x0
->          last_wake_transition_duration:0x0
->          xo_count:0x0
->          wakeup_reason:0x0
->          numshutdowns:0x0
->          active_cores:0x0
-> TZ
->          shutdown_req:0x0
->          wakeup_ind:0x0
->          bringup_req:0x0
->          bringup_ack:0x0
->          xo_last_entered_at:0x0
->          xo_last_exited_at:0x0
->          xo_accumulated_duration:0x0
->          last_sleep_transition_duration:0x0
->          last_wake_transition_duration:0x0
->          xo_count:0x0
->          wakeup_reason:0x0
->          numshutdowns:0x0
->          active_cores:0x0
-> 
-> Any comment or suggestion would be much appreciated!
-> 
-> Shawn
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of Code Aurora Forum, hosted by The Linux Foundation
