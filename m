@@ -2,102 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9534336B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208744336C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhJSNPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        id S235832AbhJSNQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhJSNPL (ORCPT
+        with ESMTP id S235825AbhJSNQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:15:11 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE71C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:12:58 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id i20so12630201edj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:12:58 -0700 (PDT)
+        Tue, 19 Oct 2021 09:16:06 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1BCC06161C;
+        Tue, 19 Oct 2021 06:13:53 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id w19so12722714edd.2;
+        Tue, 19 Oct 2021 06:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=C51Lh41WoBpmX5ebPui+TVxwhH8ZqyDbgZK9znUvKYU=;
-        b=iJ2VeR0tYteIn3RLl/KzJUoYJI5TVGEyyJN0AdZFGDFPieNfAkC+3VzS+gc0J8An35
-         ikAy8SFTrevYcV9NPLhr0qe4lio7Q+PxJlPjbliVJ/ZX0B5NL4RQc1djqNlfwkr/Q/Ba
-         NgkiQA0dakNdVNuQsxvbjFOPppXtWTkoVVX4wn6ZL0UTHvmWkUQ6/gBlPk6ngTyw9LSs
-         ocnaKxjN5J27MBGKRbHHGEVDfqrWP5e2UorJkJ55xx0JAaB0cOY3R3hI/ehsgBk/5EGp
-         M8NXl5TxMESLLVJik9t+7nzd4lFT1vLZI2Cno3fx7IIRXuv1bWC1RnnrD+CK7hQUH9IA
-         /vLA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yb5AYlFBZpmOcMRPANWbIoCRCA80wADgh4x7iAW1ExU=;
+        b=H0zGly0sCkacvlKcxqqWAJ4IY4FSkznN2vKL1ODg8xYFhSUhN15I8y7637JR93fvhV
+         zoWDzKhPk9HxNtj3XG9NRzVM/oBxD+tK+d8ptg7nlcvCstOPufCxvJAjzRcDQvx2XUBV
+         xiiSufc+SOdXorgmUOKj+RVUGhPyaWF2GDlX4+q5fyfLjTm5iDqWH43jdEJbrV4dPj/z
+         wG7NpiXYOc6IT5nA+t4A3d+mYB6DloDmyXw21PLOi3EZuBLUi2A0JBQc6hanaGYBUvXi
+         oTIPxlEb6Ng/oe9bISOlYuWnAFT32WZHtt+uCMioDRUp4y6tGOc0AoPvNC+c48J5Z+7n
+         8Zpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=C51Lh41WoBpmX5ebPui+TVxwhH8ZqyDbgZK9znUvKYU=;
-        b=aSLZOiaSjZ2RlVD3QVaZndciQfvrJBqHOA0N40PcitzDw89vRbPd+oLwkRwuHGEnx0
-         IgSGtuqwqlpQR5mlvIOp7YCZpOqNWLTkNYZZ8eWfSQ56PbaiI3ipbJJaCl8E51kZR2jV
-         f1Czog2f82aD4ByvH0QBSJ3sROcwZqwsQ/cTgLPLMtHMpVNfzqp6fl8TAqa39Pz7m7vp
-         1NcBIziZvpMxVRQ3CCcxLn57tbuCJj8G5doEHxHdqQtV+p/NbDh0NzEvHpIZbn5NzsIK
-         u42aktHf0tKW3ue2LRvhvtZJbX726P6Xv0/1NTgUBIKe8NUTq+GB/ZEyT9k9M3ONF0ei
-         eOSQ==
-X-Gm-Message-State: AOAM533wMbIXuEKlJgcPgF2S/EuFn7FO4eQ52a1s9I7Hlaik2MxwBAOE
-        mLUQCFlqg+aj+bQJOnd+Owo=
-X-Google-Smtp-Source: ABdhPJxsINe2KSf73o5DhZVu5wrNvDYPYK8vz1rURG2vB/nBNJa/zJ0wq6njRkrRDOUssLSxpFMwGg==
-X-Received: by 2002:a17:907:2d12:: with SMTP id gs18mr33605414ejc.353.1634649169144;
-        Tue, 19 Oct 2021 06:12:49 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id h11sm10131010eji.96.2021.10.19.06.12.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 06:12:48 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Karolina Drobnik <karolinadrobnik@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com
-Cc:     outreachy-kernel@googlegroups.com, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Joe Perches <joe@perches.com>
-Subject: Re: [Outreachy kernel] Re: [PATCH] staging: vt6655: Fix line wrapping in rf.c file
-Date:   Tue, 19 Oct 2021 15:12:47 +0200
-Message-ID: <2001042.7W5oOxFLzk@localhost.localdomain>
-In-Reply-To: <4c6a85a4934ef977eee07fb7e38b07b8061bfce4.camel@perches.com>
-References: <20211018150526.9718-1-karolinadrobnik@gmail.com> <810a4e29b0c54520a30cae4d37fde0a59ea3d83b.camel@gmail.com> <4c6a85a4934ef977eee07fb7e38b07b8061bfce4.camel@perches.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yb5AYlFBZpmOcMRPANWbIoCRCA80wADgh4x7iAW1ExU=;
+        b=V0Rq1ZZLlm26QcQReqMm27RhXYrnfLiSRnbk5nFXyFoo9xskclVBw1riZzlwxiHjtj
+         Hz8o83mMkL17IgRoxziDGJ8iqqXzDgcioKk0JOyh5Vq5bey5xQHNWQ4HsR60XyF+Q+Em
+         O/hLMV6XH3pUmAQrWJ3UTvmFwR0dSs1dPHYFPm0zWGv57M7E4y0ni3B50UVIM75x1g0F
+         VUu3Cmxiko9iuRm60fc0/NVinNvgoraKeJNKFW5hfA9WvwhnUGpg9u8orSFVk/FYjEkQ
+         YfqUHphfPmm0Fl6o8qr7ZiVDHISwWh5uyYOgTQvOT+JjDILSwkGOVo6rJtsc8vJBShDA
+         FD+g==
+X-Gm-Message-State: AOAM530BnPIRb444gCQi85iGb1tP1u252ERNH/VW9A1Ni0vmQ/s9wV4N
+        sqhsmuO6VPO60/bk1GrdP7XTk8NiCgCqSnd9FbY=
+X-Google-Smtp-Source: ABdhPJzpUjCirAMo9LRcvIUqEhu7nS182O8i9NHU3B0apVjOzlvvl++HVxgQGWYCXow969iY47xNrnxdD2OuKLxsBEg=
+X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr35432917ejb.356.1634649229512;
+ Tue, 19 Oct 2021 06:13:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20210325122832.119147-1-sandberg@mailfence.com>
+ <20211019125731.4327-1-maukka@ext.kapsi.fi> <20211019125731.4327-3-maukka@ext.kapsi.fi>
+In-Reply-To: <20211019125731.4327-3-maukka@ext.kapsi.fi>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 19 Oct 2021 16:12:57 +0300
+Message-ID: <CAHp75VeOZY+YHfFsnTNdYfan=dxZx9ZEoCr8PAgOewAZX4khsQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] gpio: gpio-cascade: add generic GPIO cascade
+To:     Mauri Sandberg <maukka@ext.kapsi.fi>
+Cc:     Mauri Sandberg <sandberg@mailfence.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Drew Fustini <drew@beagleboard.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, October 19, 2021 2:26:05 PM CEST Joe Perches wrote:
-> On Tue, 2021-10-19 at 11:59 +0100, Karolina Drobnik wrote:
-> > Hi,
-> > 
-> > Thank you very much for your comments.
-> > 
-> > On Mon, 2021-10-18 at 17:12 +0200, Greg KH wrote:
-> > > Also, these are all just fine as-is for now.  A better way to make
-> > > these lines smaller is to use better variable and function names 
-> > > that are shorter and make sense :)
-> > 
-> > I have v2 ready but I'm not sure, given the Joe's patch, if my solution
-> > is a satisfactory one. I didn't jump on such refactoring as I'm still
-> > learning about the codebase/process and didn't want to muddle the
-> > waters (...more than I do already).
-> > 
-> > Greg, what would you prefer? Should I back up with my patch, pick
-> > something else and let Joe's patch be merged?
-> 
-> What I suggested is not a patch it's just an example.
+On Tue, Oct 19, 2021 at 4:00 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
+>
+> Adds support for building cascades of GPIO lines. That is, it allows
+> setups when there is one upstream line and multiple cascaded lines, out
+> of which one can be chosen at a time. The status of the upstream line
+> can be conveyed to the selected cascaded line or, vice versa, the status
+> of the cascaded line can be conveyed to the upstream line.
+>
+> A multiplexer is being used to select, which cascaded GPIO line is being
+> used at any given time.
+>
+> At the moment only input direction is supported. In future it should be
+> possible to add support for output direction, too.
 
-Sorry, Joe. I sent a message trying to explain what you were showing to 
-Karolina with your previous email. Soon after sending my reply, I noticed 
-that you had already elaborated a bit more.
+Thanks for an update! My comments below.
 
-I hope that you don't mind. If I wrote something that contradicts your 
-thoughts and intentions please accept my apologies.
+...
 
-Regards,
+> +config GPIO_CASCADE
+> +       tristate "General GPIO cascade"
+> +       select MULTIPLEXER
+> +       help
+> +         Say yes here to enable support for generic GPIO cascade.
+> +
+> +         This allows building one-to-many cascades of GPIO lines using
+> +         different types of multiplexers readily available. At the
+> +         moment only input lines are supported.
 
-Fabio
+Care to mention what will be the module name in the case of being
+built as a module?
+(Hint: there are plenty of existing examples in the kernel)
 
+...
 
+> +#include <linux/module.h>
 
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/gpio/driver.h>
+
+I would move this group...
+
+> +#include <linux/slab.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/mux/consumer.h>
+> +
+
+...to be somewhere here to explicitly show that this is the GPIO
+subsystem related driver.
+
+...
+
+> +       mc = devm_mux_control_get(dev, NULL);
+> +       if (IS_ERR(mc))
+
+> +               return dev_err_probe(dev,
+> +                                    PTR_ERR(mc),
+> +                                    "unable to get mux-control\n");
+
+Why not one line?
+
+...
+
+> +       upstream = devm_gpiod_get(dev, "upstream",  GPIOD_IN);
+> +       if (IS_ERR(upstream)) {
+> +               dev_err(dev, "unable to claim upstream GPIO line\n");
+> +               return -ENODEV;
+
+Why shadowing error code? What happens if it's deferred?
+Hint: use dev_err_probe() here as well.
+
+> +       }
+
+...
+
+> +       err = devm_gpiochip_add_data(dev, &cas->gpio_chip, NULL);
+> +       if (err) {
+> +               dev_err(dev, "unable to add gpio chip\n");
+> +               return err;
+> +       }
+> +
+> +       platform_set_drvdata(pdev, cas);
+> +       return 0;
+
+I would rather do
+
+       platform_set_drvdata(pdev, cas);
+
+       return devm_gpiochip_add_data(dev, &cas->gpio_chip, NULL);
+
+-- 
+With Best Regards,
+Andy Shevchenko
