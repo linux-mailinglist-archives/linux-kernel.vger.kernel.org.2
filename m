@@ -2,170 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81152433567
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065D843356A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235523AbhJSMJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:09:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:48300 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230129AbhJSMJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:09:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97E762F;
-        Tue, 19 Oct 2021 05:06:46 -0700 (PDT)
-Received: from [10.57.25.70] (unknown [10.57.25.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E93F33F70D;
-        Tue, 19 Oct 2021 05:06:44 -0700 (PDT)
-Subject: Re: [PATCH v5 03/15] arm64: errata: Add workaround for TSB flush
- failures
-To:     Will Deacon <will@kernel.org>
-Cc:     mathieu.poirier@linaro.org, catalin.marinas@arm.com,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
- <20211014223125.2605031-4-suzuki.poulose@arm.com>
- <20211019110233.GD13251@willie-the-truck>
- <850c67de-a656-7515-e575-d47d2af78200@arm.com>
- <20211019114234.GH13251@willie-the-truck>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <390f8d9b-d5b3-50de-74c1-df16572dd589@arm.com>
-Date:   Tue, 19 Oct 2021 13:06:43 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S235487AbhJSMJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhJSMJg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:09:36 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DA6C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:07:24 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id c4so12092529pgv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mVmaGFLR4mR+Ps4pLiOUdexGniIqHe1BvZrlKrHaafw=;
+        b=eZ7KME3dVRwV8n9OV2vvqLBIROV+94NVObD5NDO4Lhj7Jv/pqGAU1wPs/oI3IFve9o
+         gUE4M1IcaNHA7xIlqYVnoWxSre4z04Nipz8AI9+onKgcehSrlmJwggrjSD/9IbkGRdjC
+         VwZPy2+IxjiGYW1XvHKXcEkDS8p0v0u3MCBvw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mVmaGFLR4mR+Ps4pLiOUdexGniIqHe1BvZrlKrHaafw=;
+        b=Hdj0uCvcKtZZZt0t3X3rutGnMG7VIRcI5PFsL/KRmcmoRTHDk4qA4ggMRLl8cD63b2
+         MCzx1Dmq8/y1MUbmcD9qbPsUipx33uomJvWien2Ri6pQQWOpWzG5Qrw07qqrvRlgybP7
+         +6ZWkAxldIi++x5+f3bPqtPGAtNbdpS8VVq5k5DpnehPT+neinIKs2nCkUB0Nl4t4J6/
+         qKyM67ju8pPIihRmdvtdtcrOBpAEOlTsYi0fabhgT1AVwGkbonhc+52q0TWPA82EmIbt
+         +MLbWkwALijDK8jrEbeycKlCvzZms9qarPZJgcu/i/i/7Wm1pbLPy5nYqurTso5KAy/W
+         kuvQ==
+X-Gm-Message-State: AOAM532nDunIa8FSG0vRhurRseymogO+vxDYkkMFgIo//eq6uct7urbH
+        znZf0TREdoeqfMSa3AQ2G7wmbg==
+X-Google-Smtp-Source: ABdhPJxbeLhQNzOykO63gRBryXeRsr3j7bGN9ONO4ZIzhlpFISunCXW/AT4+ox/cL8ZWTwO20/48zQ==
+X-Received: by 2002:aa7:8b1a:0:b0:44d:37c7:dbb6 with SMTP id f26-20020aa78b1a000000b0044d37c7dbb6mr35215726pfd.11.1634645243631;
+        Tue, 19 Oct 2021 05:07:23 -0700 (PDT)
+Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:10:1d7c:b745:dee:c8a4])
+        by smtp.gmail.com with ESMTPSA id k16sm5236160pgt.57.2021.10.19.05.07.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 05:07:22 -0700 (PDT)
+From:   Joseph Hwang <josephsih@chromium.org>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com, pali@kernel.org
+Cc:     josephsih@google.com, chromeos-bluetooth-upstreaming@chromium.org,
+        Joseph Hwang <josephsih@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v5 1/3] Bluetooth: Add struct of reading AOSP vendor capabilities
+Date:   Tue, 19 Oct 2021 20:07:13 +0800
+Message-Id: <20211019200701.v5.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 MIME-Version: 1.0
-In-Reply-To: <20211019114234.GH13251@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2021 12:42, Will Deacon wrote:
-> On Tue, Oct 19, 2021 at 12:36:48PM +0100, Suzuki K Poulose wrote:
->> On 19/10/2021 12:02, Will Deacon wrote:
->>> On Thu, Oct 14, 2021 at 11:31:13PM +0100, Suzuki K Poulose wrote:
->>>> @@ -558,6 +570,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
->>>>    		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
->>>>    		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
->>>>    	},
->>>> +#endif
->>>> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
->>>
->>> You still haven't fixed this typo...
->>>
->>
->> Sorry about that. I thought it was about selecting the
->> Kconfig entries, which was fixed. I will fix this.
-> 
-> Sorry, I thought it was such a howler that it would've jumped out ;)
-> That's what made me think we should make sure the series compiles without
-> the coresight changes, so we can catch these problems early.
-> 
->>> Seriously, I get compile warnings from this -- are you not seeing them?
->>
->> No, I don't get any warnings. Is there something that I am missing ?
-> 
-> Interesting. I see the warning below in my bisection testing, since the typo
-> means that the midr lookup table isn't used. Maybe you're only compiling the
-> end result?
+This patch adds the struct of reading AOSP vendor capabilities.
+New capabilities are added incrementally. Note that the
+version_supported octets will be used to determine whether a
+capability has been defined for the version.
 
-No, I was compiling this at the commit. Also, please note that the
-TSB flush failure config is enabled with the patch, unlike the TRBE
-errata ones.
+Signed-off-by: Joseph Hwang <josephsih@chromium.org>
 
-My GCC is :
+---
 
-gcc version 9.3.1 20200408 (Red Hat 9.3.1-2) (GCC)
+Changes in v5:
+- This is a new patch.
+- Add struct aosp_rp_le_get_vendor_capabilities so that next patch
+  can determine whether a particular capability is supported or not.
 
+ net/bluetooth/aosp.c | 45 +++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 42 insertions(+), 3 deletions(-)
 
-$ grep TSB arch/arm64/Kconfig arch/arm64/kernel/cpu_errata.c .config
-arch/arm64/Kconfig:config ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-arch/arm64/Kconfig:     bool "Cortex-A710: 2054223: workaround TSB 
-instruction failing to flush trace"
-arch/arm64/Kconfig:     select ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-arch/arm64/Kconfig:       Affected cores may fail to flush the trace 
-data on a TSB instruction, when
-arch/arm64/Kconfig:       Workaround is to issue two TSB consecutively 
-on affected cores.
-arch/arm64/Kconfig:     bool "Neoverse-N2: 2067961: workaround TSB 
-instruction failing to flush trace"
-arch/arm64/Kconfig:     select ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-arch/arm64/Kconfig:       Affected cores may fail to flush the trace 
-data on a TSB instruction, when
-arch/arm64/Kconfig:       Workaround is to issue two TSB consecutively 
-on affected cores.
-arch/arm64/kernel/cpu_errata.c:#ifdef 
-CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-arch/arm64/kernel/cpu_errata.c:#endif   /* 
-CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
-arch/arm64/kernel/cpu_errata.c:#ifdef 
-CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
-arch/arm64/kernel/cpu_errata.c:         .capability = 
-ARM64_WORKAROUND_TSB_FLUSH_FAILURE,
-.config:CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE=y
-suzuki@ewhatever:coresight$ git log --oneline -1
-89e0c94bd734 (HEAD) arm64: errata: Add workaround for TSB flush failures
-
-
-> 
-> Will
-> 
-> --->8
-> 
-> +arch/arm64/kernel/cpu_errata.c:356:32: warning: ‘tsb_flush_fail_cpus’ defined but not used [-Wunused-const-variable=]
-> +  356 | static const struct midr_range tsb_flush_fail_cpus[] = {
-> +      |                                ^~~~~~~~~~~~~~~~~~~
-> 
-
-That looks a valid warning. Hmm, strange.
-
-It does complain for an unused function though.
-
-$ make -j16
-   CALL    scripts/atomic/check-atomics.sh
-   CALL    scripts/checksyscalls.sh
-   CHK     include/generated/compile.h
-   CC      arch/arm64/kernel/cpu_errata.o
-arch/arm64/kernel/cpu_errata.c:90:13: error: 
-‘here_is_an_unused_function’ defined but not used [-Werror=unused-function]
-  static void here_is_an_unused_function(void)
-              ^~~~~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-make[2]: *** [scripts/Makefile.build:277: 
-arch/arm64/kernel/cpu_errata.o] Error 1
-make[1]: *** [scripts/Makefile.build:540: arch/arm64/kernel] Error 2
-make: *** [Makefile:1874: arch/arm64] Error 2
-make: *** Waiting for unfinished jobs....
-
---8>--
-
-diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-index aaa66c9eee24..57c83e84b274 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -87,12 +87,20 @@ has_mismatched_cache_type(const struct 
-arm64_cpu_capabilities *entry,
-         return (ctr_real != sys) && (ctr_raw != sys);
-  }
-
-+static void here_is_an_unused_function(void)
-+{
-+       pr_crit("I am unused\n");
-+}
+diff --git a/net/bluetooth/aosp.c b/net/bluetooth/aosp.c
+index a1b7762335a5..3f0ea57a68de 100644
+--- a/net/bluetooth/aosp.c
++++ b/net/bluetooth/aosp.c
+@@ -8,9 +8,32 @@
+ 
+ #include "aosp.h"
+ 
++#define AOSP_OP_LE_GET_VENDOR_CAPABILITIES	0x153
++struct aosp_rp_le_get_vendor_capabilities {
++	__u8	status;
++	__u8	max_advt_instances;
++	__u8	offloaded_resolution_of_private_address;
++	__u16	total_scan_results_storage;
++	__u8	max_irk_list_sz;
++	__u8	filtering_support;
++	__u8	max_filter;
++	__u8	activity_energy_info_support;
++	__u16	version_supported;
++	__u16	total_num_of_advt_tracked;
++	__u8	extended_scan_support;
++	__u8	debug_logging_supported;
++	__u8	le_address_generation_offloading_support;
++	__u32	a2dp_source_offload_capability_mask;
++	__u8	bluetooth_quality_report_support;
++	__u32	dynamic_audio_buffer_support;
++} __packed;
 +
-  static void
-  cpu_enable_trap_ctr_access(const struct arm64_cpu_capabilities *cap)
-  {
-         u64 mask = arm64_ftr_reg_ctrel0.strict_mask;
-         bool enable_uct_trap = false;
+ void aosp_do_open(struct hci_dev *hdev)
+ {
+ 	struct sk_buff *skb;
++	struct aosp_rp_le_get_vendor_capabilities *rp;
++	u16 opcode;
++	u16 version_supported;
+ 
+ 	if (!hdev->aosp_capable)
+ 		return;
+@@ -18,10 +41,26 @@ void aosp_do_open(struct hci_dev *hdev)
+ 	bt_dev_dbg(hdev, "Initialize AOSP extension");
+ 
+ 	/* LE Get Vendor Capabilities Command */
+-	skb = __hci_cmd_sync(hdev, hci_opcode_pack(0x3f, 0x153), 0, NULL,
+-			     HCI_CMD_TIMEOUT);
+-	if (IS_ERR(skb))
++	opcode = hci_opcode_pack(0x3f, AOSP_OP_LE_GET_VENDOR_CAPABILITIES);
++	skb = __hci_cmd_sync(hdev, opcode, 0, NULL, HCI_CMD_TIMEOUT);
++	if (IS_ERR(skb)) {
++		bt_dev_warn(hdev, "AOSP get vendor capabilities (%ld)",
++			    PTR_ERR(skb));
++		return;
++	}
++
++	bt_dev_info(hdev, "aosp le vendor capabilities length %d", skb->len);
++
++	rp = (struct aosp_rp_le_get_vendor_capabilities *)skb->data;
++
++	if (rp->status) {
++		bt_dev_err(hdev, "AOSP LE Get Vendor Capabilities status %d",
++			   rp->status);
+ 		return;
++	}
++
++	version_supported = le16_to_cpu(rp->version_supported);
++	bt_dev_info(hdev, "AOSP version 0x%4.4x", version_supported);
+ 
+ 	kfree_skb(skb);
+ }
+-- 
+2.33.0.1079.g6e70778dc9-goog
 
-+#ifdef CONFIG_UNUSED_FUNCTION
-+       here_is_an_unused_function();
-+#endif
-
-Cheers
-Suzuki
