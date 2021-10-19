@@ -2,224 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B2E432C43
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D796432C4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhJSD2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhJSD2i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:28:38 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86576C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:26:26 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so2416702otr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2kDCjaiT5Ss8ypFk/g02JO5kAs+j7feWXWeMknFRF+E=;
-        b=Vm9sDyA/Zy7YWmH5g0I/KXvqFj/GtiwmTj5LRlO6sk+CS7NvkWz2ulD0LbGnFZToIy
-         s+fy4IrQXv0+y8rD8wbtQZtHduwRkkyI+Dx7XuH8V2jlPEHe3GyG+dQUZc4HHY0eeB8o
-         JbNYtic7evSOIdKlW2f355k/I+103FNi8sgE6Ndwmqc2xhhIJDG4V1/l20dLAwN6S0R3
-         vyxj+IIe4e9/fFmEqInI/kQDPFvbMW2uI7lxQwwrvOo5zrS00pqOkMiaIa+2QfwoTsdA
-         1WlF3nN280F+psnbSlNwzzc3C/qQemqFNvLRSMkg02bA7vimLOlQN1OCf4bVG9aPJGh7
-         zw/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2kDCjaiT5Ss8ypFk/g02JO5kAs+j7feWXWeMknFRF+E=;
-        b=MQ4JBFKzxXAfChTgDqHPb975jtnMDRlXu0iylWpa6pktZ3ae+ciaa0r6YZyotn1pxW
-         goyG8TdwY7UIFF1pteeEuqNOXePAGdvYACFatYBMVT1uKccDgpfkNBSLalVN02xPNIf0
-         ktDjdNs1ItwtbsZP/RtASOWNFht5arY8IBvceVFTYnshJl3MbyzdKtH7JVF0++U52hAh
-         9r8jqCDkkguDuVco2GD37mxoipFVWHwo2EalwyerXOlYPEGuqHAgHOG+oS+0+TAvfl7g
-         ovzkxr7ZdXQ95hiQ9md61E9y8coadvdbb54UYI+b0GQSib6ljO0A2NCL8flR0i4W1xXE
-         0F8w==
-X-Gm-Message-State: AOAM533VZrQMpnOymjWy+MUVm3wPzWqbBgBebRG6/yT2VYmHTs9BF3u8
-        HR/ir8GeDLelQY7xPKWyogvDFg==
-X-Google-Smtp-Source: ABdhPJyR+lHFuiwAuR9xacdFc5LbZn2MOfk4j0VAlIEXh7SpW9M69dFeEMmJ4M/GMZjqza5whOebAQ==
-X-Received: by 2002:a05:6830:2b11:: with SMTP id l17mr608684otv.298.1634613985746;
-        Mon, 18 Oct 2021 20:26:25 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id a13sm3344684oiy.9.2021.10.18.20.26.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 20:26:25 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 20:28:11 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v5 0/4] Restructure the rpmsg char to decorrelate the
- control part.
-Message-ID: <YW47S1HKWKPVHqtp@ripper>
-References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
- <YWDSXu/MDOwOLDg0@ripper>
- <8b7179ff-6d0a-8ed5-c0a3-4298fa9b9dc6@foss.st.com>
+        id S232409AbhJSDdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:33:43 -0400
+Received: from mail-eopbgr1300118.outbound.protection.outlook.com ([40.107.130.118]:21600
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229742AbhJSDdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 23:33:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b84RRAD8kSASHEASxQQcLGQCalnYyp7DgtrZE6/lqISAiW5vk4HxaX0j5qUsJUDTa/VFxT8LmjMHhvA4303uGdtqf0Y/gcAS7xJPC5tATStIq6kdJgjqrwXzzQHXCXq/XyobdDxniEiOD+/HwgiYk3LgJFambrq+2C78lB51uC008nIuC1jhQ+aFijMUA4nPf235GLG5LuK/5ioFt47Rg2v0anTVZLJOca7qrsvv+vZiPXvrOxt2wv/rqlLYilzeM/7WOF1nvJ0MirU8cae2pDHL1h09koWirl9te/hcghOTtMDxmWx526M/QoK9L2qXL7v1UKJJL8VWFFg6+WzJSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l+/Gbl9RcHPHALXzUQc/IaJJru4/7ck30TDwkTTPLi4=;
+ b=KV0HmEVDMdkUoYyuEZtdzL5foTBkd2Ia/JDknfAUl/p+SdLqVaaBPTBet86zkUmiVgvOcXWcyi3noW6pAN7S5pleoczuRwus56nUGZvUbrfoI0GRw74nMxD4D9ONfs+HwV2EH6sNhPBN8lQcjhda+kHFVMQSvybT+30K45F64a7liVdQyfQFMVDWUBSbYrwGwDZHfpB1MgnfMY144nh0lHOjYrHD/Iw/54E84L7WAAV2720Qv2enDO3IZt5RB5j+W0DfqXrH+BjsFAR0+VQ8/EWJwKgUm/0UK0a1U/3yfprrNF0XAIEhDKTNXDizL4A3Zr7Pcq9fRoQiuVWzB5nUjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l+/Gbl9RcHPHALXzUQc/IaJJru4/7ck30TDwkTTPLi4=;
+ b=k5NVNdeImy4/NC664iMYbBhQi9gBMMGDvcSnqk9hcFiocbAou6gBIOP3wQ9ePCXKifZuzjRShC61/TWP/k16rbabkPK/BD9r5gwlT1p6lIHmUtdsCeYYsaQUlMeXyhmAeCLEGCfc16UxZ9/fIOChaRIpIQ19bql6T+uOQ7p4FOo=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB2121.apcprd06.prod.outlook.com (2603:1096:4:9::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.17; Tue, 19 Oct 2021 03:31:27 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 03:31:27 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>,
+        syzbot+4e7b6c94d22f4bfca9a0@syzkaller.appspotmail.com
+Subject: [PATCH] mwifiex: Fix divide error in mwifiex_usb_dnld_fw
+Date:   Mon, 18 Oct 2021 23:31:01 -0400
+Message-Id: <20211019033101.27658-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HKAPR03CA0015.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::20) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8b7179ff-6d0a-8ed5-c0a3-4298fa9b9dc6@foss.st.com>
+Received: from localhost.localdomain (218.213.202.190) by HKAPR03CA0015.apcprd03.prod.outlook.com (2603:1096:203:c8::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.13 via Frontend Transport; Tue, 19 Oct 2021 03:31:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 47f3bd93-0aa7-4249-5e58-08d992b0eec5
+X-MS-TrafficTypeDiagnostic: SG2PR06MB2121:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR06MB2121F713F67BC73DDDEC0C9DABBD9@SG2PR06MB2121.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:883;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NZXmGl7az5JVxAamJ9QAolSWAsvUjprAoXyi+PMmCiA0z33CWuY6NT+tyUHxg5Gh/851ZXErpUGSPBhuyR+sgEOrEy7vxu68rXxVFr0efqVM7nLR3q6DPOfvlN24rvLYqpItSu1Ebh3C5+tcHZOEC4AgxR9PVfVx/TOnIP8u0LfTb8CyjFEpODyrRy8NAvsyvlQZ2FYGcN32TDYjwyABcaCaF0LQtS+bT9c0vNtOJwYa1eZ860NFghrR05dZ+mKlhTZhz/MeoZqjgWsXoxmyMfEI71hTXtC6LXjZJo7+lrVDB+RVmvHA4rdNPv0feoY6y/V+WoDJmyACfSwHywiADfvIhDH/oS3QetNgOBz1+TPsGtjkkkt95IKRCAVXquMvxUDoxC0NIEE3fLcAXbqLxNb74ffEBZuXI2tAvpL06lTiyMLlRLNLJu5q+PFtnNXSQ0WoEsu4VBl2m8omw6TkFKPXeuXhBUSpliXJBmlTh17a4l6Xzpsd8LXfR1yyNn1V3KdPotu5MzolD29weur18rt5p0otEmZ4oABj5QqRiq8roUJaCwbaWko4vrooYVZDuabP3D4jxN0NGdJ2Po84xzM1gyqtN2RJhXzDBWUFfNvslJf4FYgG4OfKeQtYxSjpNEPn4BbZgKITjLglq+CvzEGY0eibf9btRIoKyWIYrAKh0ArpXQ/V64tHZCidocseEz/xTV6vtiiVSLGtn7tmhxphbR3JPiRvEAnFmGGpa/zq5crRU5N1RUJ/ODMTcTJj26TWTSOtnf9OwFAc48I7hwVtX0Ws3aAWSduUFt4eudDOgjMpLPi1Qk1FFQ54eAj2EjySfEH2i0kk9O8C5c6idF15vsSwEET0CDClbSQKMpLOyCkXM3WrrODGtWwVKm6ytVNKwcP1VUA7xKECza6SHw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(6666004)(36756003)(6486002)(86362001)(83380400001)(66946007)(66556008)(316002)(66476007)(921005)(6512007)(8936002)(1076003)(52116002)(110136005)(6506007)(966005)(38350700002)(38100700002)(2906002)(2616005)(956004)(7416002)(4326008)(508600001)(5660300002)(8676002)(26005)(99710200001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TfegXpZXODXgHAlBC2CCIWAs8ALQ5NGfHi/9RngV0t3/8DmwRUBE7jGUa9K0?=
+ =?us-ascii?Q?meD1HcGXxuJLXna5adU0L3/Deiuj1pIJXMfV74QX5raBA6whKSsjkUDmEMhu?=
+ =?us-ascii?Q?8mZUekR95HiC5I60SzF99CUAqaHd/2rS2Qkl8TJ7RoXHqFHjcyxU3v8GyJ+x?=
+ =?us-ascii?Q?OeBaNvbsogSXE3wanfLFCFGn+dGssZn4Im6awvVZoZ655VsDkUDZR0Qi3hM7?=
+ =?us-ascii?Q?gYNohDHblFmJQRZp+r3ENvo3xxMkSMJSCQFunRVTbjzZ25eJUsqgnILkGMGT?=
+ =?us-ascii?Q?X90BmX4h3Lx1wCuVTL5H8SWVR9sy3GgdHzTgAcBVj+7Tkq83654fk76RvGlP?=
+ =?us-ascii?Q?CTHjEzXbZ/sSK9VAmitUM0YfukdsdFwi2tP5wnU238IxlxXzutwtJM2DkUar?=
+ =?us-ascii?Q?w1vf3WbXqyOSCoKc3vYpjq77qqYnOZj9UkfUWRwp3pF4Y5yAChHMoBSrwno/?=
+ =?us-ascii?Q?w68I8wcBpFdcHvyjbRNVF2yrc7g/hPgNZSfmQCCMybyelc3Wll8TyK+xGXck?=
+ =?us-ascii?Q?9pSooZYyRUf+82B/CYY8DFREBSOLX4vympu+F/0WiNtvIl52x0j+oKgNYsvq?=
+ =?us-ascii?Q?oPSYyH6iNQs/NtJXUZUaGwOYvKUnPEburRcTZaVeW6wkngRhL9bEjF81xHvQ?=
+ =?us-ascii?Q?9F79rfDM0nclDjXsB4zppbh6fk+5SDfIFDZetzAaF+Dw+4Mpp0u/YbRCAzVl?=
+ =?us-ascii?Q?yoV08AwKdnfsYNgdU/Utf4z8hxsp3xrmAGus+Y0dYgQkQVBV0QMc6lFDwLe9?=
+ =?us-ascii?Q?iZNRi4E1umw4ygHCulcNjPDKMtDUgkrsZBzPBq+pmn5zQiJFntS+pkvDEv7O?=
+ =?us-ascii?Q?d/0QO9goa8YSfAU1uLF9fe7TVVDKcYXtyLvw8BgfCB/rSqYDr2kwrnvEPQeu?=
+ =?us-ascii?Q?srNsHl8KaxRJqpUL7mGCq64/UGSoHCAxriMtTMv/VyDrUJARRnDaQXhLpvEd?=
+ =?us-ascii?Q?Xsasu90B/OJCSABk2IoyMGQOaBApqABalr6srf4neC6P4EWI/phnlYjXipHE?=
+ =?us-ascii?Q?xWKEuO0QAYFcwaKacKK52LDgNiFEIe75ABkY8zOiByHz1avVzuRjWzCPrIHk?=
+ =?us-ascii?Q?sa7kRAim5KhFX/DneStXIVPMnNEftZu6gJEJF4bx4sBB+IO/i4Jzox3yySzk?=
+ =?us-ascii?Q?qXPFXyMBR/rCD0fSkiZrCoeOBjZaYhwlTStjhul0PCt70ixe8drnCidoTnMv?=
+ =?us-ascii?Q?4yhe392yglqBbWxjWhTvSk+VUHmLtfhK4nlkUku6mZAHWHQVFaRUNS2GaIM0?=
+ =?us-ascii?Q?8I8iLVOEbcBgyl4iPZxvvbxVG+aHRJ1qwRuGz6iZ4yOtboY3mwpA3x5B3WOD?=
+ =?us-ascii?Q?xBMGOdoiV88S98fFfAQ1Rdft?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47f3bd93-0aa7-4249-5e58-08d992b0eec5
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 03:31:26.9935
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cf+FfcmUM4ekKpLsS0OVptUn6WEDLb8sBIq53eLDHnPjL7qXcOwctgC4U5oqUzNP77/nVWXl8aQzyhLEYOxDHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11 Oct 03:38 PDT 2021, Arnaud POULIQUEN wrote:
+This patch try to fix bug reported by syzkaller:
+divide error: 0000 [#1] SMP KASAN
+CPU: 1 PID: 17 Comm: kworker/1:0 Not tainted 5.15.0-rc5-syzkaller #0
+Hardware name: Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events request_firmware_work_func
+RIP: 0010:mwifiex_write_data_sync drivers/net/wireless/marvell/mwifiex/usb.c:696 [inline]
+RIP: 0010:mwifiex_prog_fw_w_helper drivers/net/wireless/marvell/mwifiex/usb.c:1437 [inline]
+RIP: 0010:mwifiex_usb_dnld_fw+0xabd/0x11a0 drivers/net/wireless/marvell/mwifiex/usb.c:1518
+Call Trace:
+ _mwifiex_fw_dpc+0x181/0x10a0 drivers/net/wireless/marvell/mwifiex/main.c:542
+ request_firmware_work_func+0x12c/0x230 drivers/base/firmware_loader/main.c:1081
+ process_one_work+0x9bf/0x1620 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3c2/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-> 
-> 
-> On 10/9/21 1:21 AM, Bjorn Andersson wrote:
-> > On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
-> > 
-> >> Main update from V4 [1] 
-> >>  - complete commit messages with Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >>  - rebased on kernel V.14-rc1.
-> >>
-> >> This series can be applied and tested on "Linux 5.14-rc1"(e73f0f0ee754) branch
-> >>
-> >> Series description:
-> >> This series is the second step in the division of the series [2]: 
-> >> "Introducing a Generic IOCTL Interface for RPMsg Channel Management".
-> >>
-> >> The purpose of this patchset is to split the code related to the control
-> >> and the endpoint. The code related to the control part is moved in the rpmsg_ctrl.c.
-> > 
-> > I'm not convinced about the merits for this refactoring, you're creating
-> > yet another kernel module which is fairly tightly coupled with
-> > the rpmsg_char kernel module and the only case I can see where this
-> > would be useful is if you want to be able to create reach
-> > RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_EPT_IOCTL without having to
-> > include the rpmsg_char part in your kernel.
-> 
-> This is what we discussed during a meeting we had on the rpsmg_tty subject the
-> July 7, 2020. [1] sump-up what you requested from me before introducing the
-> rpmsg tty. But we miss-understood your requirement?
-> 
-> This work is the result of our discussion:
-> - decorrelate the control and stream part of the rpmsg_char to be able to reuse
-> the control for other rpmsg services such as the rpmsg_tty.
-> - Add capability to instantiate other rpmsg service from Linux user land
-> applications.
-> 
-> The correlation between the rpmsg_char and the rpmsg_ctrl is due to the support
-> of the RPMSG_CREATE_EPT_IOCTL RPMSG_DESTROY_EPT_IOCTL legacy controls for the
-> QCOM driver.
-> 
-> At the end I guess the rpmsg_ctrl could become, in the future, a channel for
-> endpoint signaling between processors.
-> 
-> [1] https://lkml.org/lkml/2020/7/15/868
-> 
-> > 
-> >> This split is an intermediate step to extend the controls to allow user applications to
-> >> instantiate rpmsg devices.
-> 
-> >>     
-> > 
-> > Can you give a concrete example of when this would be used?
-> 
-> Similar to what it is done with the RPMSG_CREATE_EPT_IOCTL but based on the
-> channel not the endpoint (as the rpmsg_bus virtio is channel based).
-> 
+Link: https://syzkaller.appspot.com/bug?extid=4e7b6c94d22f4bfca9a0
+Reported-and-tested-by: syzbot+4e7b6c94d22f4bfca9a0@syzkaller.appspotmail.com
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/net/wireless/marvell/mwifiex/usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've always seen the rpmsg_endpoint as some form of pipe (with the
-special case in virtio rpmsg of it possibly not being connected to
-anything) and then the rpmsg_channel being essentially the glue between
-a "primary" endpoint and an rpmsg_device.
+diff --git a/drivers/net/wireless/marvell/mwifiex/usb.c b/drivers/net/wireless/marvell/mwifiex/usb.c
+index 426e39d4ccf0..c24ec27d4057 100644
+--- a/drivers/net/wireless/marvell/mwifiex/usb.c
++++ b/drivers/net/wireless/marvell/mwifiex/usb.c
+@@ -693,7 +693,7 @@ static int mwifiex_write_data_sync(struct mwifiex_adapter *adapter, u8 *pbuf,
+ 	struct usb_card_rec *card = adapter->card;
+ 	int actual_length, ret;
+ 
+-	if (!(*len % card->bulk_out_maxpktsize))
++	if (card->bulk_out_maxpktsize && !(*len % card->bulk_out_maxpktsize))
+ 		(*len)++;
+ 
+ 	/* Send the data block */
+-- 
+2.20.1
 
-As such I assumed that it would make sense to do NS announcements of
-rpmsg_endpoints in general, not only rpmsg_channels.
-
-> For instance we received several issue reports from customer on rpmsg
-> communication. The reason was that the coprocessor creates an unidirectional
-> channel to transfer data to the main processor. But nothing works because the
-> coprocessor doesn't have the remote address until the main processor send a
-> first message. The workaround is to send a fake message from the Linux to
-> provide is ept address.
-> Making this in the other direction allows the Linux application to initiate such
-> link when it is ready to receive data.
-> 
-> Other examples of usage:
-> - Create a temporary channel to get for instance logs of the remotre proc
-> - destroy and re-create some channels on Linux suspend/resume.
-> 
-
-What's the context these two sets of channels live in? A separate
-rpmsg_device or you're having some userspace entity invoke the
-create/destroy during suspend and resume?
-
-> As the proposal of exposing the capability to userland to initiate the link (if
-> i well remember) is coming from you, don't hesitate if you have some extra
-> uscase that i can add in the cover letter.
-> 
-
-Right, I remember expressing the need to extend rpmsg_char (somehow) to
-make it possible for userspace to initiate the creation of a channel to
-the other side.
-
-It's the part where userspace pokes the kernel, so that the kernel goes
-and create the rpmsg_device, which magically ends up probing some driver
-that I'm wondering about...
-
-> > 
-> > Per our previous discussions I believe you intend to use this to bind
-> > your rpmsg_tty driver to arbitrary channels in runtime, which to me
-> > sounds like you're reinventing the bind/unbind sysfs attrs.
-> 
-> Please tell me if I wrong, but the bind /unbind allows to probe/remove an
-> exiting device. the RPMSG_CREATE_DEV_IOCTL creates a new one on the rpmsg bus,
-> so not exactly the same use case.
-> 
-
-You're correct, it wouldn't allow you to locally create a new
-channel/endpoint and have some driver attached to that.
-
-Regards,
-Bjorn
-
-> Regards,
-> Arnaud
-> 
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> >> Notice that this patchset does not modify the behavior for using the RPMSG_CREATE_EPT_IOCTL
-> >> and RPMSG_DESTROY_EPT_IOCTL controls.
-> >>   
-> >> The next step should be to add the capability to:
-> >> - instantiate rpmsg_chrdev from the remote side (NS announcement),
-> >> - instantiate rpmsg_chrdev from local user application by introducing the
-> >>   IOCTLs RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_DEV_IOCTL to instantiate the rpmsg devices,
-> >> - send a NS announcement to the remote side on rpmsg_chrdev local instantiation.
-> >>
-> >> [1]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
-> >> [2]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=435523
-> >>
-> >> Arnaud Pouliquen (4):
-> >>   rpmsg: char: Remove useless include
-> >>   rpmsg: char: Export eptdev create an destroy functions
-> >>   rpmsg: Move the rpmsg control device from rpmsg_char to rpmsg_ctrl
-> >>   rpmsg: Update rpmsg_chrdev_register_device function
-> >>
-> >>  drivers/rpmsg/Kconfig             |   9 ++
-> >>  drivers/rpmsg/Makefile            |   1 +
-> >>  drivers/rpmsg/qcom_glink_native.c |   2 +-
-> >>  drivers/rpmsg/qcom_smd.c          |   2 +-
-> >>  drivers/rpmsg/rpmsg_char.c        | 184 ++-----------------------
-> >>  drivers/rpmsg/rpmsg_char.h        |  51 +++++++
-> >>  drivers/rpmsg/rpmsg_ctrl.c        | 215 ++++++++++++++++++++++++++++++
-> >>  drivers/rpmsg/rpmsg_internal.h    |   8 +-
-> >>  drivers/rpmsg/virtio_rpmsg_bus.c  |   2 +-
-> >>  9 files changed, 293 insertions(+), 181 deletions(-)
-> >>  create mode 100644 drivers/rpmsg/rpmsg_char.h
-> >>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
-> >>
-> >> -- 
-> >> 2.17.1
-> >>
