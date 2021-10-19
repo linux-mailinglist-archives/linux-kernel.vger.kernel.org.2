@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4C8433AB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0AD433AB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhJSPi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:38:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46556 "EHLO
+        id S233397AbhJSPiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:38:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46574 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbhJSPiG (ORCPT
+        with ESMTP id S232764AbhJSPiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Oct 2021 11:38:06 -0400
-Date:   Tue, 19 Oct 2021 15:35:50 -0000
+Date:   Tue, 19 Oct 2021 15:35:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634657751;
+        s=2020; t=1634657752;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tjENM1cuhSphHESG3ho75jIk68ot3IJolYJNmyHGvEQ=;
-        b=3tMm7dwhwB2CCH9PWFgITNHYHrevm4/HNNwFcoaBgRNpSls4PbH655/PNumTxPzkm3nkWa
-        bQIpNGNV44kLRJOgJjrAoQQ3P5BI5ZhXTTSlFK7IkD85cciaco6Y+/hga+upbfoWVlkpbR
-        Lorw1WUkeFQtCq8mtZknMTvy1yjiiHjzBOKXl5LQEMPpyIF3zpgwhBIjbYXmw47nfmF7Z/
-        Pkm/pAUWzDUIQiwlSo37cQDMS0IjWeQEXG2gTxwj614mHkAqjJly5zUwtYoTJTJN7HpKHD
-        bXDwU2mvXThmGYR9jfn+jVZLrW2zIBkPxsaRWNb8moqjDQuin/L3Lky0XAH8rA==
+        bh=+eEmYjdIyqwwU/pKTwGQEc0xNbJpVQ/7bP6B5Q8Tmqk=;
+        b=sP6w4QxlBmBcXAl3/Y8iQAhIdH8AoT7eJ24cCYfNwqybktL+kIywAqlNJ0LkX5DcNGjxhc
+        jx7iA68UrFYScgGJE9iP3g7xzGl4T3ISdu4TKf98WzTkleiaTma1XmsIiENHL5MnpoNCYI
+        8797b9BZjs76lLt7flJCodM9aq7dPrbEVAnlvYRqhie/IQdU2ypNlLGxkJOUjaZiUv0k5z
+        dySBnVcWinx4jkHKig+FJWM1QVF5NwKCJuIhif9pCP4PMXca5kyHpWGxWfpEfXcYyBL1iU
+        Y2/BiTcjNEpeFmgtZ7phbp7FvbpMGXkgmUZX3dlv9Pwri5l3Cmjl/nWVnm8fwQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634657751;
+        s=2020e; t=1634657752;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tjENM1cuhSphHESG3ho75jIk68ot3IJolYJNmyHGvEQ=;
-        b=G+olvCDAMFtLRwmqZiwfXB8sg5gnTA3u3cvJUTwy/ei4M3YEr7ibiT7CghNaZe3di8z5tS
-        Wl4xqPphKWdzaVAA==
+        bh=+eEmYjdIyqwwU/pKTwGQEc0xNbJpVQ/7bP6B5Q8Tmqk=;
+        b=TFhq46jp0tUTiMZLweuxfBYkfyqf+gLRvYcNnqNVY8qJoreWVWM7LjyjHLxCAose3xggkA
+        cbSVrdQfhUs/OpDQ==
 From:   "tip-bot2 for Kajol Jain" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Add mem_hops field in perf_mem_data_src structure
+Subject: [tip: perf/core] perf: Add comment about current state of
+ PERF_MEM_LVL_* namespace and remove an extra line
 Cc:     Kajol Jain <kjain@linux.ibm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20211006140654.298352-3-kjain@linux.ibm.com>
-References: <20211006140654.298352-3-kjain@linux.ibm.com>
+In-Reply-To: <20211006140654.298352-2-kjain@linux.ibm.com>
+References: <20211006140654.298352-2-kjain@linux.ibm.com>
 MIME-Version: 1.0
-Message-ID: <163465775096.25758.11158076319685088974.tip-bot2@tip-bot2>
+Message-ID: <163465775164.25758.14073611860087904014.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,74 +59,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     fec9cc6175d0ec1e13efe12be491d9bd4de62f80
-Gitweb:        https://git.kernel.org/tip/fec9cc6175d0ec1e13efe12be491d9bd4de62f80
+Commit-ID:     f4c6217f7f5936f7173d028559ff5d25cce10816
+Gitweb:        https://git.kernel.org/tip/f4c6217f7f5936f7173d028559ff5d25cce10816
 Author:        Kajol Jain <kjain@linux.ibm.com>
-AuthorDate:    Wed, 06 Oct 2021 19:36:52 +05:30
+AuthorDate:    Wed, 06 Oct 2021 19:36:51 +05:30
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Tue, 19 Oct 2021 17:27:00 +02:00
 
-perf: Add mem_hops field in perf_mem_data_src structure
+perf: Add comment about current state of PERF_MEM_LVL_* namespace and remove an extra line
 
-Going forward, future generation systems can have more hierarchy
-within the node/package level but currently we don't have any data source
-encoding field in perf, which can be used to represent this level of data.
+Add a comment about PERF_MEM_LVL_* namespace being depricated
+to some extent in favour of added PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_}
+fields.
 
-Add a new field called 'mem_hops' in the perf_mem_data_src structure
-which can be used to represent intra-node/package or inter-node/off-package
-details. This field is of size 3 bits where PERF_MEM_HOPS_{NA, 0..6} value
-can be used to present different hop levels data.
-
-Also add corresponding macros to define mem_hop field values
-and shift value.
-
-Currently we define macro for HOPS_0 which corresponds
-to data coming from another core but same node.
-
-For ex: Encodings for mem_hops fields with L2 cache:
-
-L2			- local L2
-L2 | REMOTE | HOPS_0	- remote core, same node L2
+Remove an extra line present in perf_mem__lvl_scnprintf function.
 
 Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20211006140654.298352-3-kjain@linux.ibm.com
+Link: https://lore.kernel.org/r/20211006140654.298352-2-kjain@linux.ibm.com
 ---
- include/uapi/linux/perf_event.h | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ include/uapi/linux/perf_event.h       | 8 +++++++-
+ tools/include/uapi/linux/perf_event.h | 8 +++++++-
+ tools/perf/util/mem-events.c          | 1 -
+ 3 files changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index a74538c..bd8860e 100644
+index c89535d..a74538c 100644
 --- a/include/uapi/linux/perf_event.h
 +++ b/include/uapi/linux/perf_event.h
-@@ -1225,14 +1225,16 @@ union perf_mem_data_src {
- 			mem_remote:1,   /* remote */
- 			mem_snoopx:2,	/* snoop mode, ext */
- 			mem_blk:3,	/* access blocked */
--			mem_rsvd:21;
-+			mem_hops:3,	/* hop level */
-+			mem_rsvd:18;
- 	};
- };
- #elif defined(__BIG_ENDIAN_BITFIELD)
- union perf_mem_data_src {
- 	__u64 val;
- 	struct {
--		__u64	mem_rsvd:21,
-+		__u64	mem_rsvd:18,
-+			mem_hops:3,	/* hop level */
- 			mem_blk:3,	/* access blocked */
- 			mem_snoopx:2,	/* snoop mode, ext */
- 			mem_remote:1,   /* remote */
-@@ -1328,6 +1330,11 @@ union perf_mem_data_src {
- #define PERF_MEM_BLK_ADDR	0x04 /* address conflict */
- #define PERF_MEM_BLK_SHIFT	40
+@@ -1256,7 +1256,13 @@ union perf_mem_data_src {
+ #define PERF_MEM_OP_EXEC	0x10 /* code (execution) */
+ #define PERF_MEM_OP_SHIFT	0
  
-+/* hop level */
-+#define PERF_MEM_HOPS_0		0x01 /* remote core, same node */
-+/* 2-7 available */
-+#define PERF_MEM_HOPS_SHIFT	43
-+
- #define PERF_MEM_S(a, s) \
- 	(((__u64)PERF_MEM_##a##_##s) << PERF_MEM_##a##_SHIFT)
+-/* memory hierarchy (memory level, hit or miss) */
++/*
++ * PERF_MEM_LVL_* namespace being depricated to some extent in the
++ * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
++ * Supporting this namespace inorder to not break defined ABIs.
++ *
++ * memory hierarchy (memory level, hit or miss)
++ */
+ #define PERF_MEM_LVL_NA		0x01  /* not available */
+ #define PERF_MEM_LVL_HIT	0x02  /* hit level */
+ #define PERF_MEM_LVL_MISS	0x04  /* miss level  */
+diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
+index f92880a..e1701e9 100644
+--- a/tools/include/uapi/linux/perf_event.h
++++ b/tools/include/uapi/linux/perf_event.h
+@@ -1241,7 +1241,13 @@ union perf_mem_data_src {
+ #define PERF_MEM_OP_EXEC	0x10 /* code (execution) */
+ #define PERF_MEM_OP_SHIFT	0
  
+-/* memory hierarchy (memory level, hit or miss) */
++/*
++ * PERF_MEM_LVL_* namespace being depricated to some extent in the
++ * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
++ * Supporting this namespace inorder to not break defined ABIs.
++ *
++ * memory hierarchy (memory level, hit or miss)
++ */
+ #define PERF_MEM_LVL_NA		0x01  /* not available */
+ #define PERF_MEM_LVL_HIT	0x02  /* hit level */
+ #define PERF_MEM_LVL_MISS	0x04  /* miss level  */
+diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+index f0e75df..ff7289e 100644
+--- a/tools/perf/util/mem-events.c
++++ b/tools/perf/util/mem-events.c
+@@ -320,7 +320,6 @@ int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_info)
+ 	/* already taken care of */
+ 	m &= ~(PERF_MEM_LVL_HIT|PERF_MEM_LVL_MISS);
+ 
+-
+ 	if (mem_info && mem_info->data_src.mem_remote) {
+ 		strcat(out, "Remote ");
+ 		l += 7;
