@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1AF43308D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BEA43309D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhJSIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:06:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36160 "EHLO mail.kernel.org"
+        id S234821AbhJSIHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:07:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234700AbhJSIGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234658AbhJSIGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Oct 2021 04:06:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9247361381;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B256139F;
         Tue, 19 Oct 2021 08:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1634630667;
-        bh=wY3fxruG22HqOKaFVDNRauDM1mfVAfkO9EW4ebZcww8=;
+        bh=gsKBaH9q3OVaMoNE0kvFdv7QLCiWctt440OZf7GewRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QckYmw5rUwR+zAK+yirmwpGWExL7CvS2JyTlECIBBEx5AyHZ/ZBHmtDW6xnGVr2Su
-         jgWpAARP0Nts8szDoOAWdTemqCBfgbLkhChsbtRaCF/MJcvHgbLQR0+Ct+YNT14+0n
-         aTprTxjykbAdiWC1ZhFLGRO4/CTSGknpJyXsIbCm4HkFkRoQvah4/eXZ4mHaDzDwTU
-         Ap2VUdkonIwts+jhGOSetOGSJhcq87C2qd5KqF13XJG5yVUddKMqPxnH0SOSAH9/hK
-         cD/xdBxDcas4Qf2Ci7eeDxLd8K95IMTR0X8CEV9NB6J6VUItnDeRCw7tOU9Z7Mniv3
-         cfnGnLxAw2U2w==
+        b=UI8VyPCJfjmi4BGaSboi3ejg7uCkGueU5dvpqeKAT1pLFxoVaVK/MPiU/0gtdggza
+         BJTyCb013M0erUVrsJsZQvGZlrPrQMQARdaz7LWXm0S7KA+UTeiYTRXdtG6INc3cmL
+         IdQpZ4AqIQ3UFK012tUXoxXE/ilVHXlRq6nWLWYSkDZx8W3foJRgoH3g6/GRZxIgWG
+         3YoGyvDBSVXK2lEEPVXtcC4htyqIF9ILSSiYaQI9mtJr8pflqyXq37NNVNFPvfqWW4
+         N+KJYwSTyKy6EA4lYn00FOaBR4vGoN9wNqIrp6PefQClKQLME66YxU6prPmLqgtckW
+         /1Jirl6BMqZyA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mck6j-001oJL-5u; Tue, 19 Oct 2021 09:04:25 +0100
+        id 1mck6j-001oJO-6K; Tue, 19 Oct 2021 09:04:25 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 11/23] MAINTAINERS: update brcm,unimac-mdio.yaml reference
-Date:   Tue, 19 Oct 2021 09:04:10 +0100
-Message-Id: <16b1368230352f3ec136d98766090a2161f84f9f.1634630486.git.mchehab+huawei@kernel.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 12/23] MAINTAINERS: update mtd-physmap.yaml reference
+Date:   Tue, 19 Oct 2021 09:04:11 +0100
+Message-Id: <cdf3891ef686eca67c6072da8c1d027eedc1ef3e.1634630486.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1634630485.git.mchehab+huawei@kernel.org>
 References: <cover.1634630485.git.mchehab+huawei@kernel.org>
@@ -47,13 +46,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 5d1c5594b646 ("dt-bindings: net: brcm,unimac-mdio: convert to the json-schema")
-renamed: Documentation/devicetree/bindings/net/brcm,unimac-mdio.txt
-to: Documentation/devicetree/bindings/net/brcm,unimac-mdio.yaml.
+Changeset 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
+renamed: Documentation/devicetree/bindings/mtd/arm-versatile.txt
+    and: Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
+to: Documentation/devicetree/bindings/mtd/mtd-physmap.yaml.
 
-Update its cross-reference accordingly.
+Update their cross-references accordingly.
 
-Fixes: 5d1c5594b646 ("dt-bindings: net: brcm,unimac-mdio: convert to the json-schema")
+Fixes: 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
@@ -64,18 +65,18 @@ See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mcheha
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 74428ad1a74d..66c6c27d2209 100644
+index 66c6c27d2209..d74b08c4fb1f 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -3783,7 +3783,7 @@ L:	bcm-kernel-feedback-list@broadcom.com
- L:	netdev@vger.kernel.org
- S:	Supported
- F:	Documentation/devicetree/bindings/net/brcm,bcmgenet.txt
--F:	Documentation/devicetree/bindings/net/brcm,unimac-mdio.txt
-+F:	Documentation/devicetree/bindings/net/brcm,unimac-mdio.yaml
- F:	drivers/net/ethernet/broadcom/genet/
- F:	drivers/net/ethernet/broadcom/unimac.h
- F:	drivers/net/mdio/mdio-bcm-unimac.c
+@@ -1421,7 +1421,7 @@ F:	Documentation/devicetree/bindings/auxdisplay/arm,versatile-lcd.yaml
+ F:	Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
+ F:	Documentation/devicetree/bindings/i2c/i2c-versatile.txt
+ F:	Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
+-F:	Documentation/devicetree/bindings/mtd/arm-versatile.txt
++F:	Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+ F:	arch/arm/boot/dts/arm-realview-*
+ F:	arch/arm/boot/dts/integrator*
+ F:	arch/arm/boot/dts/versatile*
 -- 
 2.31.1
 
