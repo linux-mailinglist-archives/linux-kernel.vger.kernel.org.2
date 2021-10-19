@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE21433E70
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C790433E68
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234901AbhJSScO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 14:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbhJSScN (ORCPT
+        id S234687AbhJSSbn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Oct 2021 14:31:43 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:53923 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231783AbhJSSbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 14:32:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D57C06161C;
-        Tue, 19 Oct 2021 11:30:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GZ9xrxMcNRI8ZuFFAy2iTPbxahYga2XstNQpPO9cMgE=; b=cn4Pc1pEaoHMVy8gIsrUIPBp6n
-        IvhYVvPxLOGXmopmvPBIi8Z01toSzSmWvibfLFkBjdaHyUYJOrxR08qrwOT8UZ0xqUlec+T5luiVg
-        GzIFfFKh4dwXqT/lDoAJASJwu3IC6cN7Nd7fTUc4kJHy6UjU9MOVZASY6Q/pq5RXGcHm+wZiqO5xJ
-        L7mBvfVKYZM/Ih213xkdpm9shfhx35HfA4lgljh8ZVAEeC0fdP+lXyV7QW2BHwjDKms8f+xacEzUx
-        RYX/9mTfEdCpiyeJAUYH1Hz1l6jJXF6KG6nNRl9qXwdGZU88BN3vWFIH5MDv87MotH6YVNyhJZwtM
-        Byq3EC8w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mctqE-00Bvpr-F1; Tue, 19 Oct 2021 18:28:14 +0000
-Date:   Tue, 19 Oct 2021 19:28:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-cachefs@redhat.com,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/67] mm: Stop filemap_read() from grabbing a
- superfluous page
-Message-ID: <YW8OMsrEzrY8aSxo@casper.infradead.org>
-References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
- <163456863216.2614702.6384850026368833133.stgit@warthog.procyon.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163456863216.2614702.6384850026368833133.stgit@warthog.procyon.org.uk>
+        Tue, 19 Oct 2021 14:31:42 -0400
+Received: from smtpclient.apple (p54899aa7.dip0.t-ipconnect.de [84.137.154.167])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 3A778CED07;
+        Tue, 19 Oct 2021 20:29:28 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH 1/2] Bluetooth: btrtl: Add support for RTL8822C hci_ver
+ 0x08
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211019095738.2098486-2-adeep@lexina.in>
+Date:   Tue, 19 Oct 2021 20:29:27 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chbgdn <chbgdn@gmail.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F99878E7-51E7-48B0-921B-8CDD53693E04@holtmann.org>
+References: <20211019095738.2098486-1-adeep@lexina.in>
+ <20211019095738.2098486-2-adeep@lexina.in>
+To:     Vyacheslav Bocharov <adeep@lexina.in>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 03:50:32PM +0100, David Howells wrote:
-> @@ -2625,6 +2625,10 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->  		if ((iocb->ki_flags & IOCB_WAITQ) && already_read)
->  			iocb->ki_flags |= IOCB_NOWAIT;
->  
-> +		isize = i_size_read(inode);
-> +		if (unlikely(iocb->ki_pos >= isize))
-> +			goto put_pages;
+Hi Vyacheslav,
+
+> Add detection of RTL8822CS controller with hci_ver = 0x08
+> 
+> Signed-off-by: chbgdn <chbgdn@gmail.com>
+
+clear name please.
+
+> Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
+> ---
+> drivers/bluetooth/btrtl.c | 7 +++++++
+> 1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+> index 1f8afa0244d8..60c4a9976d5a 100644
+> --- a/drivers/bluetooth/btrtl.c
+> +++ b/drivers/bluetooth/btrtl.c
+> @@ -152,6 +152,13 @@ static const struct id_table ic_id_table[] = {
+> 	  .fw_name  = "rtl_bt/rtl8822cs_fw.bin",
+> 	  .cfg_name = "rtl_bt/rtl8822cs_config" },
+> 
+> +	/* 8822C with UART interface */
+> +	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0x8, HCI_UART),
+> +	  .config_needed = true,
+> +	  .has_rom_version = true,
+> +	  .fw_name  = "rtl_bt/rtl8822cs_fw.bin",
+> +	  .cfg_name = "rtl_bt/rtl8822cs_config" },
 > +
 
-Is there a good reason to assign to isize here?  I'd rather not,
-because it complicates analysis, and a later change might look at
-the isize read here, not realising it was a racy use.  So I'd
-rather see:
+what about the .has_msft_ext here. Does this one support the Microsoft extension?
 
-		if (unlikely(iocb->ki_pos >= i_size_read(inode)))
-			goto put_pages;
+Regards
+
+Marcel
+
