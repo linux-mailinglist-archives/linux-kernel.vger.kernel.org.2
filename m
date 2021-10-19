@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D00C433FDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E07433FDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234474AbhJSUjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 16:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
+        id S231845AbhJSUlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 16:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhJSUjr (ORCPT
+        with ESMTP id S230147AbhJSUlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 16:39:47 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8758DC06161C;
-        Tue, 19 Oct 2021 13:37:34 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x27so10150290lfa.9;
-        Tue, 19 Oct 2021 13:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UQCS/V1OenULVK9R6Tw7aWNVLvU1czAAbhPbfB4Rzsg=;
-        b=MDt1xqXERlKTsKE8X6vGyD1SmJynrXEcifkumtwKerfy4DRq7eXm4mgJb+jSGHYBoa
-         sHW4BAO7Qd1YNB0e8xBwObCsonZFuh1jsqy/b3ELJByBi0PRYShatMc+QxSmTq03I0ZS
-         qan7rGTHZg8CJUbtb3FfSHMg7ccxJC0rf3fTno/OCGRFNFNYqD+JaMwGuBBXj6Oqrr3w
-         bWu444lL3H8CtEcwNIr31RrF1L/Gyex+5f5eCLFOz31tN78WHShEfCr1b2upPgOHE9qk
-         jyROMJ5XuT9CJ4TF69I34WMV4GCK5hZOKXweyW0ctWn56FZC8+whel4dlVYgwCk5Cwss
-         JUEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UQCS/V1OenULVK9R6Tw7aWNVLvU1czAAbhPbfB4Rzsg=;
-        b=rUZKutax9p7Ic5t9eLfby2ekiScLD0QPYsZYxdmnuZ8a2cb5SEorZIVeidRkvLdncg
-         uXyyj9ETXLzuW55KJnbMwqzuIcx1HNzPeLfux59YOedWWzpMR0YhzS0ACcK02ovx/oi0
-         mhwloB3iSaCt76cqdhXcqfGbnxZxGqSggDH43bC1jtp3zS6BIdKvZpimxvX4+r1uOkIM
-         drG3k3TWRFI9+ja+IAT0X6CXT1elW3/GyYCRO5FJCFeW2kGzKjGT/Cm9nrqvzqtzUk74
-         EjvAROw5ADdfZS1KylPPoIE5bA5hy2RLe7edVD+CcjlnvN7GWkirmxjyiW2wxyadaeNJ
-         we+A==
-X-Gm-Message-State: AOAM532fIVAS/x3x1gjQsVQshBxYxKyMTFTJJlPtJC/D2DwgQ2VlFOuR
-        knd0mM7N1IGcZf2LyxBR9kN2jmnTvRw=
-X-Google-Smtp-Source: ABdhPJwi3MBJsk7bnUK1n3ahnuwFh9onvvYQfR7Vs5lTIaQX2RsaGDu3pJvHsTBVwzz4lYo52cQPGg==
-X-Received: by 2002:a05:6512:11ec:: with SMTP id p12mr5066040lfs.41.1634675852646;
-        Tue, 19 Oct 2021 13:37:32 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
-        by smtp.googlemail.com with ESMTPSA id p5sm16676lfk.113.2021.10.19.13.37.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 13:37:32 -0700 (PDT)
-Subject: Re: [PATCH v1 0/5] Improvements for TC358768 DSI bridge driver
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-tegra@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20211002233447.1105-1-digetx@gmail.com>
- <CAG3jFysa8G_fuGDfSLze-ovft3=gc5PXLaPtwTkC2_e0itQYNw@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c09bd552-767e-e783-3f9f-114b8cedb475@gmail.com>
-Date:   Tue, 19 Oct 2021 23:37:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 19 Oct 2021 16:41:16 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D626FC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 13:39:02 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mcvsw-0001vH-Ow; Tue, 19 Oct 2021 22:38:58 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mcvst-00043Q-HV; Tue, 19 Oct 2021 22:38:55 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mcvst-0007Vm-Gb; Tue, 19 Oct 2021 22:38:55 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH] platform/chrome: cros_ec: Make cros_ec_unregister() return void
+Date:   Tue, 19 Oct 2021 22:38:50 +0200
+Message-Id: <20211019203850.3833915-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAG3jFysa8G_fuGDfSLze-ovft3=gc5PXLaPtwTkC2_e0itQYNw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+X-Patch-Hashes: v=1; h=sha256; i=S1VHM/NhCjzPjGpfM9+hgJb6ByC69MKprk1ULgkymvo=; m=58i1uvy6fFn2ebBRnwdV68ql+sMa1KeiXb0VEjTgxfk=; p=YmS6eYbqemyNyDpD+lepezFEqgWRNoI13ptmgvNkPnc=; g=e60b54a191b420ead06dcb36c562df4225a6ab1c
+X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFvLNYACgkQwfwUeK3K7AkfuQf/bTM RvVweiP/L6FuEhidi6Bjs81DsrWP9I3YQYAN/lGaq2ccaKAK+8iTpE4g0CkkpS9EgGK3Y9RUwC+sI sjZJS9XwQFVWkq09h99gRwtq4yoTmO7sGZxIUaSBdg5ROUpZHBZZ0y58t5bkp6PN7I5K8icZpXQt4 2cDDdo/mF6Zz6ILBV6S9S9mWAT8n8LkF6Y/b6BMm+/1dmehNk/hZ/+D0jdG8CYMurx8y0h7I1esWW mmU31u7avZMYqlGVn8I7vKbF3do4SLJtePJDJFVrFZLS8dnZgnGzRNtDXMs18+OnbJs5Ws5uxRD+/ 3KbR9a7DzV4pqM307HM8mHFMaFtickw==
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.10.2021 12:47, Robert Foss пишет:
-> Applied to drm-misc-next
-> 
-> On Sun, 3 Oct 2021 at 01:35, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> This series adds couple improvements to the TC358768 DSI bridge driver,
->> enabling Panasonic VVX10F004B00 DSI panel support. This panel is used by
->> ASUS Transformer TF700T tablet, which is ready for upstream kernel and
->> display panel support is the biggest missing part.
->>
->> Dmitry Osipenko (5):
->>   drm/bridge: tc358768: Enable reference clock
->>   drm/bridge: tc358768: Support pulse mode
->>   drm/bridge: tc358768: Calculate video start delay
->>   drm/bridge: tc358768: Disable non-continuous clock mode
->>   drm/bridge: tc358768: Correct BTACNTRL1 programming
->>
->>  drivers/gpu/drm/bridge/tc358768.c | 94 +++++++++++++++++++++++--------
->>  1 file changed, 71 insertions(+), 23 deletions(-)
->>
->> --
->> 2.32.0
->>
+Up to now cros_ec_unregister() returns zero unconditionally. Make it
+return void instead which makes it easier to see in the callers that
+there is no error to handle.
 
-Robert, thank you for taking care of these patches! Now nothing is
-holding us from upstreaming the device-tree of the Transformer tablet.
+Also the return value of i2c, platform and spi remove callbacks is
+ignored anyway.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/platform/chrome/cros_ec.c     | 2 +-
+ drivers/platform/chrome/cros_ec.h     | 2 +-
+ drivers/platform/chrome/cros_ec_i2c.c | 4 +++-
+ drivers/platform/chrome/cros_ec_lpc.c | 4 +++-
+ drivers/platform/chrome/cros_ec_spi.c | 4 +++-
+ 5 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
+index fc5aa1525d13..eeb94b3563e2 100644
+--- a/drivers/platform/chrome/cros_ec.c
++++ b/drivers/platform/chrome/cros_ec.c
+@@ -302,7 +302,7 @@ EXPORT_SYMBOL(cros_ec_register);
+  *
+  * Return: 0 on success or negative error code.
+  */
+-int cros_ec_unregister(struct cros_ec_device *ec_dev)
++void cros_ec_unregister(struct cros_ec_device *ec_dev)
+ {
+ 	if (ec_dev->pd)
+ 		platform_device_unregister(ec_dev->pd);
+diff --git a/drivers/platform/chrome/cros_ec.h b/drivers/platform/chrome/cros_ec.h
+index 78363dcfdf23..bbca0096868a 100644
+--- a/drivers/platform/chrome/cros_ec.h
++++ b/drivers/platform/chrome/cros_ec.h
+@@ -11,7 +11,7 @@
+ #include <linux/interrupt.h>
+ 
+ int cros_ec_register(struct cros_ec_device *ec_dev);
+-int cros_ec_unregister(struct cros_ec_device *ec_dev);
++void cros_ec_unregister(struct cros_ec_device *ec_dev);
+ 
+ int cros_ec_suspend(struct cros_ec_device *ec_dev);
+ int cros_ec_resume(struct cros_ec_device *ec_dev);
+diff --git a/drivers/platform/chrome/cros_ec_i2c.c b/drivers/platform/chrome/cros_ec_i2c.c
+index 30c8938c27d5..22feb0fd4ce7 100644
+--- a/drivers/platform/chrome/cros_ec_i2c.c
++++ b/drivers/platform/chrome/cros_ec_i2c.c
+@@ -313,7 +313,9 @@ static int cros_ec_i2c_remove(struct i2c_client *client)
+ {
+ 	struct cros_ec_device *ec_dev = i2c_get_clientdata(client);
+ 
+-	return cros_ec_unregister(ec_dev);
++	cros_ec_unregister(ec_dev);
++
++	return 0;
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chrome/cros_ec_lpc.c
+index 1f7861944044..8527a1bac765 100644
+--- a/drivers/platform/chrome/cros_ec_lpc.c
++++ b/drivers/platform/chrome/cros_ec_lpc.c
+@@ -439,7 +439,9 @@ static int cros_ec_lpc_remove(struct platform_device *pdev)
+ 		acpi_remove_notify_handler(adev->handle, ACPI_ALL_NOTIFY,
+ 					   cros_ec_lpc_acpi_notify);
+ 
+-	return cros_ec_unregister(ec_dev);
++	cros_ec_unregister(ec_dev);
++
++	return 0;
+ }
+ 
+ static const struct acpi_device_id cros_ec_lpc_acpi_device_ids[] = {
+diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
+index 14c4046fa04d..713c58687721 100644
+--- a/drivers/platform/chrome/cros_ec_spi.c
++++ b/drivers/platform/chrome/cros_ec_spi.c
+@@ -790,7 +790,9 @@ static int cros_ec_spi_remove(struct spi_device *spi)
+ {
+ 	struct cros_ec_device *ec_dev = spi_get_drvdata(spi);
+ 
+-	return cros_ec_unregister(ec_dev);
++	cros_ec_unregister(ec_dev);
++
++	return 0;
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+-- 
+2.30.2
+
