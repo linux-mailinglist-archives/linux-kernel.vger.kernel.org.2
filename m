@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B40F432E4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8ED432E50
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhJSGcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhJSGcC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:32:02 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0597C06161C;
-        Mon, 18 Oct 2021 23:29:50 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id c4so11385069pgv.11;
-        Mon, 18 Oct 2021 23:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dnXn+h5taVTZko0OST5Rrf452xL+m2nCHrGrWQWsoO8=;
-        b=pL4ipHDmG3TfyQE5wlMTOb8U/OdBLqTm607+cLDZdIFBBFRpgfFMDf45EWwDFFVbg8
-         liUD57wxDtfz3Hg+kwalp2G9MJEYVeC8M55bEmf7+riBxIZtxEtMCXQDUHb5Pi9wD2bw
-         pv8dKByL5OobbvsJG6jQ08xkwPQGwY4cP4Oa78d3dhrNTetjPFDCYLwdJvF271RaBhgx
-         CK8ETdWLB879kZldQWhqCopY7baJMQgz8BN/iZIJLoUbx5M59dd4azMftALHWC22bPzj
-         D7hxx5kcPa5nCWQgpnXejbm5Z5T9MINwkfEodZbo/32G4lAv3/hhwa323Q68d9xKnla4
-         mgow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dnXn+h5taVTZko0OST5Rrf452xL+m2nCHrGrWQWsoO8=;
-        b=Ojnl6N4+QpfxO8hcL5fQ/8be3Uw9YG538t2FmXph7zcR7GAmRqBUV1x/sFu3/Zzcx0
-         grPBGnc3nDX/LBwANJKllgXOpNwCXKYxSx25UcRd6qyznl3xKoI5GyjB1AJYKw+YDOcL
-         A9Umrrw7yyMf53sd6ug3huF8YW+5wBKFm/WqW2HhvJa5ZO2mjsMlEVkV7S171TUINhHu
-         6ZCaqmLmGRTFxAssiYkW2GDdOySfFVAZLjb4g/YCXVa6UT3Vcv3VKDrf5Ljcv4HO/0Ka
-         zRgI/5rVIESPjOwT4z93FLuzhcssUtx1YXtAgI5g8Ha7h2b0NFy5XhsR20Z0pOUBywSA
-         OeeQ==
-X-Gm-Message-State: AOAM5306xMIh9d0aNsOFAIDsyHY9ltPRhzNIOAkh4XRH7FPpa8wglEGG
-        +dfY9st/ao6iIKkh7RBudQE=
-X-Google-Smtp-Source: ABdhPJwExjdwTxD3Dj/lgIOSPSS3R74iQXiAt6bQeFWHIwggACFsS+Lj/fzO+5rgWMmY8wHSm3+4xg==
-X-Received: by 2002:a05:6a00:2390:b0:44d:bccd:7bc with SMTP id f16-20020a056a00239000b0044dbccd07bcmr16462708pfc.4.1634624990209;
-        Mon, 18 Oct 2021 23:29:50 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d14sm6469690pfu.124.2021.10.18.23.29.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 23:29:49 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     mturquette@baylibre.com, wenst@chromium.org
-Cc:     sboyd@kernel.org, matthias.bgg@gmail.com,
-        chun-jie.chen@mediatek.com, ran.jianping@zte.com.cn,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH v2 clk:mediatek] clk:mediatek: remove duplicate include in  clk-mt8195-imp_iic_wrap.c
-Date:   Tue, 19 Oct 2021 06:29:39 +0000
-Message-Id: <20211019062939.979660-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S234247AbhJSGc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:32:59 -0400
+Received: from relay.sw.ru ([185.231.240.75]:36512 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229755AbhJSGc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:32:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=tI9gj9p8cg4CnX2QaPSuoyzqKweCoJS55yHjYE7xcKM=; b=is7WHUREKxBUK1eox
+        a3i8e7lEICkLoC40q5DdZ9O1639miZT0QpjLzmTbey1KH61kzqfqNE46f3xVo3z+vEfv84cDtb3BC
+        5uvyqf7GIL1gRY7JUEs8Zy0etcbnAGPB4cxnlKeeFvMMW0HehqKkIbzMNocCK8KtCM4Z+5ti9g7d8
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mcie0-006Qqh-4l; Tue, 19 Oct 2021 09:30:40 +0300
+Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
+ task
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
+ <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+ <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
+ <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
+Date:   Tue, 19 Oct 2021 09:30:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ran Jianping <ran.jianping@zte.com.cn>
+On 18.10.2021 14:53, Michal Hocko wrote:
+> On Mon 18-10-21 13:05:35, Vasily Averin wrote:
+>> On 18.10.2021 12:04, Michal Hocko wrote:
+>>> On Mon 18-10-21 11:13:52, Vasily Averin wrote:
+>>> [...]
+>>>> How could this happen?
+>>>>
+>>>> User-space task inside the memcg-limited container generated a page fault,
+>>>> its handler do_user_addr_fault() called handle_mm_fault which could not
+>>>> allocate the page due to exceeding the memcg limit and returned VM_FAULT_OOM.
+>>>> Then do_user_addr_fault() called pagefault_out_of_memory() which executed
+>>>> out_of_memory() without set of memcg.
+>>>>
+>>>> Partially this problem depends on one of my recent patches, disabled unlimited
+>>>> memory allocation for dying tasks. However I think the problem can happen
+>>>> on non-killed tasks too, for example because of kmem limit.
+>>>
+>>> Could you be more specific on how this can happen without your patch? I
+>>> have to say I haven't realized this side effect when discussing it.
 
-'dt-bindings/clock/mt8195-clk.h' included in
-'/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c' is duplicated.It is
-also included on the 13 line.
+>> If required I can try to search how try_charge_memcg() can reject page allocation 
+>> of non-dying task too.
+> 
+> Yes.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ran Jianping <ran.jianping@zte.com.cn>
+Now I think that such failure was very unlikely (w/o my patch and kmem limit).
+I cannot exclude it completely, because I did not finished this review and perhaps I missed something,
+but I checked most part of code and found nothing.
 
-v2:
-  delete extra empty line.
+With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
+a) due to fatal signal
+b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
 
----
- drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c | 2 --
- 1 file changed, 2 deletion(-)
+To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
+To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
 
-diff --git a/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c b/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
-index 0e2ac0a30aa0..1aa5afc05929 100644
---- a/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
-+++ b/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
-@@ -10,8 +10,6 @@
- #include <linux/clk-provider.h>
- #include <linux/platform_device.h>
- 
--#include <dt-bindings/clock/mt8195-clk.h>
--
- static const struct mtk_gate_regs imp_iic_wrap_cg_regs = {
- 	.set_ofs = 0xe08,
- 	.clr_ofs = 0xe04,
--- 
-2.25.1
+However all these cases can be successfully handled by my new patch
+"memcg: prevent false global OOM triggered by memcg limited task"
+and I think it is better solution.
 
+Thank you,
+	Vasily Averin
