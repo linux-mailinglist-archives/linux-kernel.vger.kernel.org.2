@@ -2,206 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95595432F1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312CB432F23
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbhJSHQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:16:43 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:43852 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234167AbhJSHQh (ORCPT
+        id S234409AbhJSHRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhJSHRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:16:37 -0400
-Received: by mail-il1-f200.google.com with SMTP id s8-20020a92cbc8000000b002582a281a7bso9545388ilq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 00:14:24 -0700 (PDT)
+        Tue, 19 Oct 2021 03:17:52 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC50CC06161C;
+        Tue, 19 Oct 2021 00:15:39 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id h10so17474943ilq.3;
+        Tue, 19 Oct 2021 00:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hl1u9M0rl+9gSZUge+5bqfea4i7wHZvAs7wZITYpJJA=;
+        b=nlDfQiCw4MTxALTdhD/5ocAg54hueHcy/dOILGBUU87jwiukUiMy/UmCkYBqhj+rVj
+         I/a1WANgLOExWOwX/d1E+p+QVTtEVNWIEJryS/DPnZXj4O9q9uj7uvwkTB0E2h8SUJ37
+         AJYEQiTkTC9llejX7E7wbcgwQz8gAEyTabybDfshVqUzmiuH5dN7nXNX/ocoDdH4266d
+         GbtPvd94vS1YRTh8hnIe1GcOIsvLSC3FonqrJsrKmgEPJ9/NxCu+DasngdEGCjPRwRYz
+         +mJyaspMFaBQpeLrXD7jC1El18QDhzlPLz0N55yEFLOia05TmUeQF9N6T4MEOlqyGPY+
+         yDTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=CXKVnUGmYGztxjAsNd+4B7UFAUm4UxN5Bde/sRxdqFg=;
-        b=avBDA9Iq5cqQxdpPmIpUvtwMZxplY5R3wEg6ceQHCdzy74g5pnpFoLWwkPHnk4RthC
-         Xpadxj36l3h055TOjFj0+aHW5+4l0IiQnLiIIk2uwaQLYEyDUveL5cTNY20Ldlf5+m0D
-         XMbjOJEaREEhKkHQa3ZbWAkzgY/uJ80DcU3G7W7167VWQIpQLJcAiEA1OLP+scqAZHJk
-         otckRWUAoeSCrIuj4XF6b6M2Rsa/0k8U/kFzuN/H8FFYZCDCuJXzQ6Ng+TJWw0xDgWwB
-         McucqlLqubteGusZ3kOvJs4ws/f3hcCat7d2SYHQu8c0HE5QGbPueGR/g/T4MdfQif5P
-         EFxA==
-X-Gm-Message-State: AOAM530Gwr165AoRmJxAinRxab1xUzgYOZLqXDnPR/rLO81UiDAIUpxw
-        4XaXrm2g0D0oNmHuAl5XSWiALDRMMEhDna5M68RHETNyrK6Y
-X-Google-Smtp-Source: ABdhPJxGmij+PCT4D9LnfkRCqcQCHZWhCvbAaRvQu8+p+R5mmcMXkCsB75dXrbxeVEE2K9ajgSoxQCKBNb/1/ZRQBEolZqc32Idv
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hl1u9M0rl+9gSZUge+5bqfea4i7wHZvAs7wZITYpJJA=;
+        b=IUEmD526lTaYGYpb6EIJE2fqW4WQ9cRCgkcPLxM2Os55GEO3VeSrfluIkoG+r8Fdw8
+         g7q3dbnyS9AeF3vvcQJVnr4B3MFo7HRhtwPqkgwPTmN9yuNYlJx1Jp8eoJH/4RPo7ecb
+         m5Nof8O8Q2wMqRlXrIYAhypBz5i7aGfzBZXHvENZgHog5J7v5uf9vfnP8GGNp7wtbJWZ
+         UEnDiOIBXTRTAdkXPfNMtAjPvXL6Ms9CgF2uCfak23jbDCII4u/O1jKCrnjGH6rOL+eu
+         bsZHOYRA9fj87PVQQtTaC+FfIruNCuKbE99MCLz73oiqmUzYCH1euL3CbBWAZ9i/xEC0
+         VmvQ==
+X-Gm-Message-State: AOAM533K9a4Bt1yumVzlWOAI5kedXoneerD2akWKtttBHb7KmdSQQO7V
+        cT3DVXmZvJ5lhckLes+cBbrM3dTo5271XETU3ZY=
+X-Google-Smtp-Source: ABdhPJwOXz1RO8P/VLPzBCkzHmzOYMWA6zWUBuDUmc2QhEF54bdXUDQl5UZv3uXWYAYwUpd827+MtKqGv1ZxDPm4dtg=
+X-Received: by 2002:a92:cd82:: with SMTP id r2mr18370814ilb.198.1634627739368;
+ Tue, 19 Oct 2021 00:15:39 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:ccf1:: with SMTP id l17mr2998059jaq.131.1634627664695;
- Tue, 19 Oct 2021 00:14:24 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 00:14:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b5a3705ceaf6908@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in cipso_v4_doi_add
-From:   syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        paul@paul-moore.com, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
+References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-10-cgxu519@mykernel.net>
+In-Reply-To: <20210923130814.140814-10-cgxu519@mykernel.net>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 19 Oct 2021 10:15:28 +0300
+Message-ID: <CAOQ4uxj4no4zHaOKSXyefUpP+JuMsjeuMPzpZ8BAm1xrs2h+Aw@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 09/10] fs: introduce new helper sync_fs_and_blockdev()
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Sep 23, 2021 at 4:08 PM Chengguang Xu <cgxu519@mykernel.net> wrote:
+>
+> Overlayfs needs to call upper layer's ->sync_fs
+> and __sync_blockdev() to sync metadata during syncfs(2).
+>
+> Currently, __sync_blockdev() does not export to module
+> so introduce new helper sync_fs_and_blockdev() to wrap
+> those operations.
 
-syzbot found the following issue on:
+Heads up: looks like __sync_blockdev() will be gone soon,
+but you will have other exported symbols that overlayfs can use
 
-HEAD commit:    26d657410983 MAINTAINERS: Update entry for the Stratix10 f..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=110cb258b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1de5da8af5c2277d
-dashboard link: https://syzkaller.appspot.com/bug?extid=93dba5b91f0fed312cbd
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+https://lore.kernel.org/linux-fsdevel/20211019062530.2174626-1-hch@lst.de/T/
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in cipso_v4_doi_search net/ipv4/cipso_ipv4.c:363 [inline]
-BUG: KASAN: use-after-free in cipso_v4_doi_add+0x4e0/0x7c0 net/ipv4/cipso_ipv4.c:420
-Read of size 4 at addr ffff88803f6a5a00 by task syz-executor.3/14359
-
-CPU: 1 PID: 14359 Comm: syz-executor.3 Not tainted 5.15.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106
- print_address_description+0x66/0x3e0 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report+0x19a/0x1f0 mm/kasan/report.c:459
- cipso_v4_doi_search net/ipv4/cipso_ipv4.c:363 [inline]
- cipso_v4_doi_add+0x4e0/0x7c0 net/ipv4/cipso_ipv4.c:420
- smk_cipso_doi+0x2d3/0x580 security/smack/smackfs.c:706
- smk_write_doi+0x1ab/0x270 security/smack/smackfs.c:1615
- vfs_write+0x327/0xe90 fs/read_write.c:592
- ksys_write+0x18f/0x2c0 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f31447cba39
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3141d41188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f31448cef60 RCX: 00007f31447cba39
-RDX: 0000000000000014 RSI: 0000000020000640 RDI: 0000000000000003
-RBP: 00007f3144825c5f R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd5bc3df9f R14: 00007f3141d41300 R15: 0000000000022000
-
-Allocated by task 14339:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc+0xdc/0x110 mm/kasan/common.c:513
- kasan_kmalloc include/linux/kasan.h:264 [inline]
- kmem_cache_alloc_trace+0x9f/0x310 mm/slub.c:3233
- kmalloc include/linux/slab.h:591 [inline]
- smk_cipso_doi+0x200/0x580 security/smack/smackfs.c:696
- smk_write_doi+0x1ab/0x270 security/smack/smackfs.c:1615
- vfs_write+0x327/0xe90 fs/read_write.c:592
- ksys_write+0x18f/0x2c0 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 14339:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track+0x4c/0x80 mm/kasan/common.c:46
- kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:360
- ____kasan_slab_free+0x10d/0x150 mm/kasan/common.c:366
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1700 [inline]
- slab_free_freelist_hook+0x129/0x1a0 mm/slub.c:1725
- slab_free mm/slub.c:3483 [inline]
- kfree+0xcf/0x2f0 mm/slub.c:4543
- smk_cipso_doi+0x3b7/0x580
- smk_write_doi+0x1ab/0x270 security/smack/smackfs.c:1615
- vfs_write+0x327/0xe90 fs/read_write.c:592
- ksys_write+0x18f/0x2c0 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff88803f6a5a00
- which belongs to the cache kmalloc-64 of size 64
-The buggy address is located 0 bytes inside of
- 64-byte region [ffff88803f6a5a00, ffff88803f6a5a40)
-The buggy address belongs to the page:
-page:ffffea0000fda940 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x3f6a5
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000200 ffffea0000866240 000000170000000d ffff888011041640
-raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 6522, ts 209857791495, free_ts 209857731843
- prep_new_page mm/page_alloc.c:2424 [inline]
- get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4153
- __alloc_pages+0x255/0x580 mm/page_alloc.c:5375
- alloc_slab_page mm/slub.c:1763 [inline]
- allocate_slab+0xcc/0x4d0 mm/slub.c:1900
- new_slab mm/slub.c:1963 [inline]
- ___slab_alloc+0x41e/0xc40 mm/slub.c:2994
- __slab_alloc mm/slub.c:3081 [inline]
- slab_alloc_node mm/slub.c:3172 [inline]
- kmem_cache_alloc_node_trace+0x2c4/0x350 mm/slub.c:3256
- kmalloc_node include/linux/slab.h:609 [inline]
- kzalloc_node include/linux/slab.h:732 [inline]
- __get_vm_area_node+0x13a/0x2f0 mm/vmalloc.c:2416
- __vmalloc_node_range+0xe3/0x890 mm/vmalloc.c:3010
- __vmalloc_node mm/vmalloc.c:3069 [inline]
- vzalloc+0x75/0x80 mm/vmalloc.c:3139
- alloc_counters+0xd2/0x800 net/ipv6/netfilter/ip6_tables.c:817
- copy_entries_to_user net/ipv6/netfilter/ip6_tables.c:839 [inline]
- get_entries net/ipv6/netfilter/ip6_tables.c:1041 [inline]
- do_ip6t_get_ctl+0xf57/0x1f40 net/ipv6/netfilter/ip6_tables.c:1672
- nf_getsockopt+0x2ab/0x2d0 net/netfilter/nf_sockopt.c:116
- ipv6_getsockopt+0x4ae/0x3f30 net/ipv6/ipv6_sockglue.c:1486
- __sys_getsockopt+0x29f/0x560 net/socket.c:2220
- __do_sys_getsockopt net/socket.c:2235 [inline]
- __se_sys_getsockopt net/socket.c:2232 [inline]
- __x64_sys_getsockopt+0xb1/0xc0 net/socket.c:2232
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1338 [inline]
- free_pcp_prepare+0xc29/0xd20 mm/page_alloc.c:1389
- free_unref_page_prepare mm/page_alloc.c:3315 [inline]
- free_unref_page+0x7d/0x580 mm/page_alloc.c:3394
- __vunmap+0x926/0xa70 mm/vmalloc.c:2621
- copy_entries_to_user net/ipv6/netfilter/ip6_tables.c:884 [inline]
- get_entries net/ipv6/netfilter/ip6_tables.c:1041 [inline]
- do_ip6t_get_ctl+0x186d/0x1f40 net/ipv6/netfilter/ip6_tables.c:1672
- nf_getsockopt+0x2ab/0x2d0 net/netfilter/nf_sockopt.c:116
- ipv6_getsockopt+0x4ae/0x3f30 net/ipv6/ipv6_sockglue.c:1486
- __sys_getsockopt+0x29f/0x560 net/socket.c:2220
- __do_sys_getsockopt net/socket.c:2235 [inline]
- __se_sys_getsockopt net/socket.c:2232 [inline]
- __x64_sys_getsockopt+0xb1/0xc0 net/socket.c:2232
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff88803f6a5900: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff88803f6a5980: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->ffff88803f6a5a00: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-                   ^
- ffff88803f6a5a80: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff88803f6a5b00: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Amir.
