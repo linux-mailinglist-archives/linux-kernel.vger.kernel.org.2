@@ -2,158 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D588B433DE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35429433DE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234915AbhJSR4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:56:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61454 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234801AbhJSR40 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:56:26 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JGHhhl001976;
-        Tue, 19 Oct 2021 13:54:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=q/3DR9hWr4hjriuIEVzl47dAQxxL9n6DlZStTH7FA+4=;
- b=iUxgnPD4rjPIB9JzIGZqZwLhdtJ7AEQvC52wkAH2q65SvP9faeqYsvqz1wDr5FHeUlDT
- usYQ4UR4l+m8uM1Hrrkx3bCqCMnYjKSyg9Oq/KaYtEAgzo+praRj1Zeaz0ZhtWPov1rE
- EVW6UVNjDWMC7jB0vWuRp/XEMyE11OPoMzOWug080mv8BiaRXUTTczdFajOC4FqpnxZk
- Wtwt36SC64rCS6BXqVBIvooAWLCZvo33ED5iJkbULmo9Q8hDfNE2NEyfrGTnGpmygYmd
- y1XkPUJwS19tMHUQQ1GaJ5gzQMDGLyX1ULlZwBWSsLMTQ0I7VnEosYJWPhaSoWdaei+I Rg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bt1draavr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 13:54:12 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19JGkmMJ011074;
-        Tue, 19 Oct 2021 13:54:12 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bt1draav7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 13:54:12 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19JHrNHv006558;
-        Tue, 19 Oct 2021 17:54:10 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 3bqpcbjr8f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 17:54:10 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19JHs70P35520954
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 17:54:07 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E685EAE053;
-        Tue, 19 Oct 2021 17:54:06 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73446AE045;
-        Tue, 19 Oct 2021 17:54:06 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Oct 2021 17:54:06 +0000 (GMT)
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, farman@linux.ibm.com,
-        kvm@vger.kernel.org
-Subject: [PATCH 3/3] KVM: s390: clear kicked_mask if not idle after set
-Date:   Tue, 19 Oct 2021 19:54:01 +0200
-Message-Id: <20211019175401.3757927-4-pasic@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019175401.3757927-1-pasic@linux.ibm.com>
-References: <20211019175401.3757927-1-pasic@linux.ibm.com>
+        id S234942AbhJSR4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234939AbhJSR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:56:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5328860F57;
+        Tue, 19 Oct 2021 17:54:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634666073;
+        bh=0lmHBiMAYwQI6ZLGGLhhIuhQ0S+abmoZURDHJhYO9DE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YxBiacY1zC4MphhR5iKglY+9y5xo38OaiVqWRhG40SjtxcNvYiFUV52YxQ20WiKeU
+         wjhebfLkt4veySjZg7gP3hEJsJtsCymcp1asP5F8l2sHwCHMOoS0pHok8lD51j5pYE
+         U1aB58E8NZtIwCOPQWtnGKgLBb9+ajDlzgucylgz0BkBgn/K/+L/5GSe+Oi/ITmkNf
+         FLrQ7hD62IYXvvi++fBwsTfoKBoJNQW6Yy8JXg9M9LSRRdTS5tUPC20hx8250NeTNV
+         4MNuv/iD4bq4vSZ3ZD2op3k61ZVbgWIdaq4ip/tI0orZDJZ9GgfdVWWTVT3fDhL9UI
+         20j8dCjUWZmTA==
+Date:   Wed, 20 Oct 2021 01:54:20 +0800
+From:   Gao Xiang <xiang@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Splitting struct page into multiple types - Was: re: Folio
+ discussion recap -
+Message-ID: <20211019175419.GA22532@hsiangkao-HP-ZHAN-66-Pro-G1>
+Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+References: <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+ <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW25EDqynlKU14hx@moria.home.lan>
+ <YW3dByBWM0dSRw/X@cmpxchg.org>
+ <YW7uN2p8CihCDsln@moria.home.lan>
+ <20211019170603.GA15424@hsiangkao-HP-ZHAN-66-Pro-G1>
+ <YW8Bm77gZgVG2ga4@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rZtmK9zhXz0uxj3kfkvTk0v391lt4HVG
-X-Proofpoint-ORIG-GUID: TfSOrbrLVH_MZgr95rHj096R307ZfErf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-19_02,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- adultscore=0 spamscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 mlxlogscore=810 phishscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110190103
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YW8Bm77gZgVG2ga4@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The idea behind kicked mask is that we should not re-kick a vcpu
-from __airqs_kick_single_vcpu() that is already in the middle of
-being kicked by the same function.
+Hi Matthew,
 
-If however the vcpu that was idle before when the idle_mask was
-examined, is not idle any more after the kicked_mask is set, that
-means that we don't need to kick, and that we need to clear the
-bit we just set because we may be beyond the point where it would
-get cleared in the wake-up process. Since the time window is short,
-this is probably more a theoretical than a practical thing: the race
-window is small.
+On Tue, Oct 19, 2021 at 06:34:19PM +0100, Matthew Wilcox wrote:
+> On Wed, Oct 20, 2021 at 01:06:04AM +0800, Gao Xiang wrote:
+> > On Tue, Oct 19, 2021 at 12:11:35PM -0400, Kent Overstreet wrote:
+> > > Other things that need to be fixed:
+> > > 
+> > >  - page->lru is used by the old .readpages interface for the list of pages we're
+> > >    doing reads to; Matthew converted most filesystems to his new and improved
+> > >    .readahead which thankfully no longer uses page->lru, but there's still a few
+> > >    filesystems that need to be converted - it looks like cifs and erofs, not
+> > >    sure what's going on with fs/cachefiles/. We need help from the maintainers
+> > >    of those filesystems to get that conversion done, this is holding up future
+> > >    cleanups.
+> > 
+> > The reason why using page->lru for non-LRU pages was just because the
+> > page struct is already there and it's an effective way to organize
+> > variable temporary pages without any extra memory overhead other than
+> > page structure itself. Another benefits is that such non-LRU pages can
+> > be immediately picked from the list and added into page cache without
+> > any pain (thus ->lru can be reused for real lru usage).
+> > 
+> > In order to maximize the performance (so that pages can be shared in
+> > the same read request flexibly without extra overhead rather than
+> > memory allocation/free from/to the buddy allocator) and minimise extra
+> > footprint, this way was used. I'm pretty fine to transfer into some
+> > other way instead if some similar field can be used in this way.
+> > 
+> > Yet if no such field anymore, I'm also very glad to write a patch to
+> > get rid of such usage, but I wish it could be merged _only_ with the
+> > real final transformation together otherwise it still takes the extra
+> > memory of the old page structure and sacrifices the overall performance
+> > to end users (..thus has no benefits at all.)
+> 
+> I haven't dived in to clean up erofs because I don't have a way to test
+> it, and I haven't taken the time to understand exactly what it's doing.
 
-To get things harmonized let us also move the clear from vcpu_pre_run()
-to __unset_cpu_idle().
+Actually I don't think it's an actual clean up due to the current page
+structure design.
 
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-Fixes: 9f30f6216378 ("KVM: s390: add gib_alert_irq_handler()")
----
- arch/s390/kvm/interrupt.c | 7 ++++++-
- arch/s390/kvm/kvm-s390.c  | 2 --
- 2 files changed, 6 insertions(+), 3 deletions(-)
+> 
+> The old ->readpages interface gave you pages linked together on ->lru
+> and this code seems to have been written in that era, when you would
+> add pages to the page cache yourself.
+> 
+> In the new scheme, the pages get added to the page cache for you, and
+> then you take care of filling them (and marking them uptodate if the
+> read succeeds).  There's now readahead_expand() which you can call to add
+> extra pages to the cache if the readahead request isn't compressed-block
+> aligned.  Of course, it may not succeed if we're out of memory or there
+> were already pages in the cache.
 
-diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-index 2245f4b8d362..3c80a2237ef5 100644
---- a/arch/s390/kvm/interrupt.c
-+++ b/arch/s390/kvm/interrupt.c
-@@ -426,6 +426,7 @@ static void __unset_cpu_idle(struct kvm_vcpu *vcpu)
- {
- 	kvm_s390_clear_cpuflags(vcpu, CPUSTAT_WAIT);
- 	clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.idle_mask);
-+	clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.gisa_int.kicked_mask);
- }
- 
- static void __reset_intercept_indicators(struct kvm_vcpu *vcpu)
-@@ -3064,7 +3065,11 @@ static void __airqs_kick_single_vcpu(struct kvm *kvm, u8 deliverable_mask)
- 			/* lately kicked but not yet running */
- 			if (test_and_set_bit(vcpu_idx, gi->kicked_mask))
- 				return;
--			kvm_s390_vcpu_wakeup(vcpu);
-+			/* if meanwhile not idle: clear  and don't kick */
-+			if (test_bit(vcpu_idx, kvm->arch.idle_mask))
-+				kvm_s390_vcpu_wakeup(vcpu);
-+			else
-+				clear_bit(vcpu_idx, gi->kicked_mask);
- 			return;
- 		}
- 	}
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 1c97493d21e1..6b779ef9f5fb 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -4067,8 +4067,6 @@ static int vcpu_pre_run(struct kvm_vcpu *vcpu)
- 		kvm_s390_patch_guest_per_regs(vcpu);
- 	}
- 
--	clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.gisa_int.kicked_mask);
--
- 	vcpu->arch.sie_block->icptcode = 0;
- 	cpuflags = atomic_read(&vcpu->arch.sie_block->cpuflags);
- 	VCPU_EVENT(vcpu, 6, "entering sie flags %x", cpuflags);
--- 
-2.25.1
+Hmmm, these temporary pages in the list may be (re)used later for page
+cache,
 
+or just used for temporary compressed pages for some I/O or lz4
+decompression buffer (technically called lz77 sliding window) to
+temporarily contain some decompressed data in the same read request
+(due to some pages are already mapped and we cannot expose the
+decompression process to userspace or some other reasons). All are
+in the recycle way.
+
+These temporary pages may finally go into some file page cache or
+recycle for several temporary uses for many time and finally free to
+the buddy allocator.
+
+> 
+> It looks like this will be quite a large change to how erofs handles
+> compressed blocks, but if you're open to taking this on, I'd be very happy.
+
+For ->lru, it's quite small, but it sacrifices the performance. Yet I'm
+very glad to do if some decision of this ->lru field is determined.
+
+Thanks,
+Gao Xiang
