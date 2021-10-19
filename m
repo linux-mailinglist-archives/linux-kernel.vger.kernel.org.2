@@ -2,118 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EAAD432C53
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92911432C55
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhJSDkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
+        id S232486AbhJSDkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhJSDkd (ORCPT
+        with ESMTP id S232488AbhJSDkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:40:33 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BBAC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:21 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id w14so7423687edv.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:21 -0700 (PDT)
+        Mon, 18 Oct 2021 23:40:42 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DFCC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:29 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id p16so4362107lfa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=d6v/Mt4fBV71aSvKwsHjvF9UUdBQqDQB9fIY21m5wO4=;
-        b=Qo2PQdjlT2H4b7oUHJF/iAJHs1k0Nn9sRTGKIIP6S4dCs0FKYY+2755mSc1m+EmJml
-         UnDUQEYEjCEGXNV1crZrgNCB5MyqvgKh8x4Z6qFcXOTBueUo1hY6j78tAqqHj555vaVu
-         NEOQTspae33UyLoKqDruDgcYi2neb8MN9ltFOo0N5LtGOpsSSU139wj1DubDxD0whHst
-         fHDjqKr1fkz4CR5hxSTwbjfhEehZORiIQvYyH6oNA7mGNqfWGqkuCaosryFc/Px9OnJ4
-         A1sCR6MX3U3IljJ6xR9tRoeeOhpD1+soy33I9fbQDOM3oespuz7Ni61eDZVg22in66SV
-         4IIQ==
+        bh=8/Vo8naa2pVOSCfV4UFA2BJ46wmQrSEVSsBZouXgR8Q=;
+        b=TBqUPv05LF6J1Ap/h7Pz9XJiHiK0IslnX+9wn7xlIvHPKYKx/hZE2OdYd8/tUHUJiY
+         5A0XsyYfcM8kS3aHiGgfpEG+nkoekDVqu2WkEHgchyxUgt84AkSR1/G59wXD3IbW6RJ1
+         4qij4MWM98pZd9rp8BkYS9iuIRoGDWcJuG/YE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=d6v/Mt4fBV71aSvKwsHjvF9UUdBQqDQB9fIY21m5wO4=;
-        b=f6Itw6Uh0N6TBZKmObIjPKnyq+zU4Jt5qrD4nlmxOA8uNGM/3pUCWR5gs/vc5T16fs
-         DjgbKnZWHwGd5qw0hTCrbRQiNGDYPeQlkhbKSKjXdsrESmzl2bBggN9+f2xd3AkWy5YN
-         dEPy7SvOkv7RTClqXv3Twau/NKxLfKcN4s8gu5HrYrB4ZFo5kkqErQBZ3uCD+h1MI3we
-         B3SNpoGnHtfZ4aXfiB34PvzDRLt3qLPtXLhKC3hXhAC1zMZsvl2W4OBRVlRayydKlZax
-         qilJlTWWXNCfVfUsqygkOZAdgfT/W6nyC1lcGit008eqKidC5Xb4nG+oDRROl4yEeyAc
-         rRxQ==
-X-Gm-Message-State: AOAM5330ddaavbyyPGJtqtTZLwJdS0IU8YRl0GB6FeFQVw73Cd3cUkbO
-        cmWNVV+mBX1OfewJA1kiZC3G9I8O4NHiX0y1F3J8HA==
-X-Google-Smtp-Source: ABdhPJzsvq+63J4r045SwxshqJsbP5kyW2EiHEjzKuP7+1Kehol6CsymXj6wY93upNjaXmuKU5DSYwHrbLe3wmlSj2U=
-X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr50064702edc.182.1634614699563;
- Mon, 18 Oct 2021 20:38:19 -0700 (PDT)
+        bh=8/Vo8naa2pVOSCfV4UFA2BJ46wmQrSEVSsBZouXgR8Q=;
+        b=VlV49Xq7kFIpeyj27m0r9q2a+41MRMKphotS/h8o8m942XUF+UAxKBaXe8NoX2UzrW
+         amMu87AB6KLtzAgnvqn57vuTpsEWQhU4N3ZowX7JK5Pg0N4TFolgp4OYCx3PrNUMfHfU
+         ut7R3TGnCOVitw+rWodrjNpl3UKt4P/J+S7HrnI+hGzklYuVZZV5CaHWT26oBtZB912t
+         kBxsOMACnLLd8BLv1mBuF31ChL2SlDfuNduK1yKjuVzl6u/w/SVyc4flObTRNMBZw+z5
+         p9VNlJqf0iyzc0GwEja6qYUHKbPMfv2RmY4fnPnh73OueHKbV21hZelFTdSaH4HF6YLm
+         DkcQ==
+X-Gm-Message-State: AOAM530AIVHjzrQ7DZCdU/l8qywh//q4evVgVNFH5Q4gplZVdET+I6qR
+        /SK1QkYRJ2S0U+I+xmxbxepXr0xdmD8hCO0p
+X-Google-Smtp-Source: ABdhPJyZGXgOm7H/KhiuRR47FBSDwNlYAX3iyA2kr0I08Sx8kxPc2V3ePar++nJx/dZsiMAF74uluQ==
+X-Received: by 2002:a05:6512:128b:: with SMTP id u11mr3681831lfs.528.1634614707539;
+        Mon, 18 Oct 2021 20:38:27 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id l26sm1551284lfh.247.2021.10.18.20.38.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 20:38:26 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id y15so4302787lfk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:25 -0700 (PDT)
+X-Received: by 2002:a05:6512:12d4:: with SMTP id p20mr3786322lfg.280.1634614705218;
+ Mon, 18 Oct 2021 20:38:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211018132340.682786018@linuxfoundation.org>
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 19 Oct 2021 09:08:08 +0530
-Message-ID: <CA+G9fYtLTmosatvO8VBe-RDjEHEvY01P=Fw5mvRvwbxL31ahOA@mail.gmail.com>
-Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jens Wiklander <jens.wiklander@linaro.org>
+References: <20211018182537.2316800-1-nathan@kernel.org> <CAKwvOdn4_DrgaZoAo-v7CbYurNUpfAK5tnzT023=WCDzkmYQVg@mail.gmail.com>
+ <CAHk-=wi7hUsTTcmPfZCkUEw51Y3ayq3JJxzFsNgodsxxDyk9Ww@mail.gmail.com> <CAKwvOd=wGjd_L1703Y9Kngcr9-_wTvcRLToiydXYkR=S_9xWDw@mail.gmail.com>
+In-Reply-To: <CAKwvOd=wGjd_L1703Y9Kngcr9-_wTvcRLToiydXYkR=S_9xWDw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 18 Oct 2021 17:38:09 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wjwOnrHXDSqnmhiKujk=5XieJFvfnQwc2WKOKFwzcqvaA@mail.gmail.com>
+Message-ID: <CAHk-=wjwOnrHXDSqnmhiKujk=5XieJFvfnQwc2WKOKFwzcqvaA@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Tor Vic <torvic9@mailbox.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 at 19:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, Oct 18, 2021 at 10:14 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> This is the start of the stable review cycle for the 5.14.14 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> Right, the patch that added the warning explicitly checks for side effects.
 
-Following build errors noticed while building Linux stable rc 5.14
-with gcc-11 allmodconfig for arm64 architecture.
+Well, it's a bit questionable. The "side effects" are things like any
+pointer dereference, because it could fault, but if you know that
+isn't an issue, then clang basically ends up complaining about code
+that is perfectly fine. Maybe it was written that way on purpose, like
+the kvm code.
 
-  - 5.14.14 gcc-11 arm64 allmodconfig FAILED
+Now, it's probably not worth keeping that "bitops of booleans" logic -
+if it is a noticeable optimization, it's generally something that the
+compiler should do for us, but basically clang is warning about
+perfectly valid code.
 
-> Sudeep Holla <sudeep.holla@arm.com>
->     firmware: arm_ffa: Add missing remove callback to ffa_bus_type
+And what I find absolutely disgusting is the suggested "fix" that
+clang gives you.
 
-drivers/firmware/arm_ffa/bus.c:96:27: error: initialization of 'int
-(*)(struct device *)' from incompatible pointer type 'void (*)(struct
-device *)' [-Werror=incompatible-pointer-types]
-   96 |         .remove         = ffa_device_remove,
-      |                           ^~~~~~~~~~~~~~~~~
-drivers/firmware/arm_ffa/bus.c:96:27: note: (near initialization for
-'ffa_bus_type.remove')
-cc1: some warnings being treated as errors
+If the warning said "maybe you meant to use a logical or (||)", then
+that would be one thing. But what clang suggests as the "fix" for the
+warning is just bad coding practice.
 
-Build config:
-https://builds.tuxbuild.com/1zhYTWmjxG50Rb8sGtfneME9kLT/config
+If a warning fix involves making the code uglier, then the warning fix is wrong.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+This is not the first time we've had compilers suggesting garbage. Gcc
+used to suggest (perhaps still does) the "extra parenthesis" for
+"assignment used as a truth value" situation. Which is - once again -
+disgusting garbage.
 
-steps to reproduce:
-https://builds.tuxbuild.com/1zhYTWmjxG50Rb8sGtfneME9kLT/tuxmake_reproducer.sh
+Writing code like
 
---
-Linaro LKFT
-https://lkft.linaro.org
+        if (a = b) ..
+
+is bad and error prone. But the suggestion to "fix" the warning with
+
+        if ((a = b)) ..
+
+is just completely unacceptably stupid, and is just BAD CODE.
+
+The proper fix might be to write it like
+
+        if ((a = b) != 0) ...
+
+which at least makes the truth value part explicit - in ways that a
+silly double parenthesis does not. Or, better yet, write it as
+
+        a = b;
+        if (a) ..
+
+instead, which is legible and fine.
+
+The clang suggestion to add a cast to 'int' to avoid the warning is
+the same kind of "write bad code" suggestion. Just don't do it.
+
+             Linus
