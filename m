@@ -2,160 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703E5433629
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0578F43362F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235551AbhJSMnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbhJSMnb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:43:31 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD589C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:41:18 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id z20so12218624edc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EHf1d6jYC47N493Pv/6pFABfQdMKx4e8O3xhKroDPbE=;
-        b=NyuJgkOEqVr2HgSuFzucrmFl6uCC47sSvbC4sO8TJI5tKjSPUp2CuXuUVzlYed/0Wd
-         UuwdEFSyvQRiZn4dT7Vi6Yr2OGeienXD0cr3JRJIZxso6VZBlHhPqR4DRBDUcM22HpyY
-         aTuV8ClK37PNqKNrFn6vFa4AlhIToFy9MbcfY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=EHf1d6jYC47N493Pv/6pFABfQdMKx4e8O3xhKroDPbE=;
-        b=vhlIAYWBhP36HiZg7+RCU70GG+wWOzkJjYpytOaFUab8iVIFqdJAdxbtm9FS5yGKG6
-         9MINJzp/JzRkPvfNTM0wt8LfDSgiqgPP+m9cOwbmsa5TyG7uDUT8sijlhT9ibBF3qcyc
-         4ehLRfXIrnPHdKgBez6g721cHWmwZzmcDu9LG/qYmrdqKJH1xa28IeiKBPa6YWR7KGoa
-         I6FOYqR3SZafywIPCnMaGAHhgyIifvoVXrL/ycJUj5euPWCkuNPFc8dmujy0H9MtTHtF
-         +B6NRIBNNUPumhqwBbzJ56JBGp5LK8YX5Syc/mtOmOO6IkZHNII9LbTzaUKAOcYSI96W
-         +CRA==
-X-Gm-Message-State: AOAM530Y5BON5UK0w93rTFVD8NpbtwXJYurlJzh+yvC6WDnujiZz9h3L
-        ci+AJfdzR6bEM1KcDQ6aMf9yTA==
-X-Google-Smtp-Source: ABdhPJx6vSo6OufSaFH9rFLrzmjtgXdXhc8T6jVm1AlxqNyN88YtlQU+itfte1ctjSnqHOIrQwPvAg==
-X-Received: by 2002:a05:6402:84d:: with SMTP id b13mr54514480edz.110.1634647277354;
-        Tue, 19 Oct 2021 05:41:17 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p23sm12148807edw.94.2021.10.19.05.41.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 05:41:16 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 14:41:14 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     guangming.cao@mediatek.com
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, wsd_upstream@mediatek.com
-Subject: Re: [PATCH] dma-buf: add attachments empty check for dma_buf_release
-Message-ID: <YW686sIZie4xRUQO@phenom.ffwll.local>
-Mail-Followup-To: guangming.cao@mediatek.com,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
-        wsd_upstream@mediatek.com
-References: <20211019122345.160555-1-guangming.cao@mediatek.com>
+        id S235640AbhJSMpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:45:07 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61299 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230514AbhJSMpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:45:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634647373; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=EAEzTgD3dlRVMChpTEmeUHjEeqs0R/ykyjpNvM1MaPo=; b=ZmvX4yKo2ccoxPGKsyXTnxtEpqB2AlVWN8cSo9NG5W5se5CDBPmRBjBGuszIJ7oE1dwwvLEp
+ jzW7r+IF1QJVGZEwbKyFg4Dr9wYhJ0sEmbT8PoZrX41TeAzo++zt9Ic6BgO8YOEU0IUy0UYf
+ 3se4lgcn9EoWmsTucPMvS4IraQM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 616ebd2eb03398c06ce26134 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Oct 2021 12:42:22
+ GMT
+Sender: quic_luoj=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CF637C43616; Tue, 19 Oct 2021 12:42:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.92.1.38] (unknown [180.166.53.36])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 633B5C4360C;
+        Tue, 19 Oct 2021 12:42:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 633B5C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+Subject: Re: [PATCH v3 03/13] net: phy: at803x: improve the WOL feature
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Luo Jie <luoj@codeaurora.org>, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+References: <20211018033333.17677-1-luoj@codeaurora.org>
+ <20211018033333.17677-4-luoj@codeaurora.org> <YW2/wck2NPhgwjuL@lunn.ch>
+ <0ba3022d-9879-bf85-251d-3f48b9cff93b@quicinc.com> <YW66DXOIt8GrR2IQ@lunn.ch>
+From:   Jie Luo <quic_luoj@quicinc.com>
+Message-ID: <8eebd0aa-7345-7c4b-8435-067b703ad59a@quicinc.com>
+Date:   Tue, 19 Oct 2021 20:42:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019122345.160555-1-guangming.cao@mediatek.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+In-Reply-To: <YW66DXOIt8GrR2IQ@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 08:23:45PM +0800, guangming.cao@mediatek.com wrote:
-> From: Guangming Cao <Guangming.Cao@mediatek.com>
-> 
-> Since there is no mandatory inspection for attachments in dma_buf_release.
-> There will be a case that dma_buf already released but attachment is still
-> in use, which can points to the dmabuf, and it maybe cause
-> some unexpected issues.
-> 
-> With IOMMU, when this cases occurs, there will have IOMMU address
-> translation fault(s) followed by this warning,
-> I think it's useful for dma devices to debug issue.
-> 
-> Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
 
-This feels a lot like hand-rolling kobject debugging. If you want to do
-this then I think adding kobject debug support to
-dma_buf/dma_buf_attachment would be better than hand-rolling something
-bespoke here.
-
-Also on the patch itself: You don't need the trylock. For correctly
-working code non one else can get at the dma-buf, so no locking needed to
-iterate through the attachment list. For incorrect code the kernel will be
-on fire pretty soon anyway, trying to do locking won't help :-) And
-without the trylock we can catch more bugs (e.g. if you also forgot to
-unlock and not just forgot to detach).
--Daniel
-
-> ---
->  drivers/dma-buf/dma-buf.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index 511fe0d217a0..672404857d6a 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -74,6 +74,29 @@ static void dma_buf_release(struct dentry *dentry)
->  	 */
->  	BUG_ON(dmabuf->cb_shared.active || dmabuf->cb_excl.active);
->  
-> +	/* attachment check */
-> +	if (dma_resv_trylock(dmabuf->resv) && WARN(!list_empty(&dmabuf->attachments),
-> +	    "%s err, inode:%08lu size:%08zu name:%s exp_name:%s flags:0x%08x mode:0x%08x, %s\n",
-> +	    __func__, file_inode(dmabuf->file)->i_ino, dmabuf->size,
-> +	    dmabuf->name, dmabuf->exp_name,
-> +	    dmabuf->file->f_flags, dmabuf->file->f_mode,
-> +	    "Release dmabuf before detach all attachments, dump attach:\n")) {
-> +		int attach_cnt = 0;
-> +		dma_addr_t dma_addr;
-> +		struct dma_buf_attachment *attach_obj;
-> +		/* dump all attachment info */
-> +		list_for_each_entry(attach_obj, &dmabuf->attachments, node) {
-> +			dma_addr = (dma_addr_t)0;
-> +			if (attach_obj->sgt)
-> +				dma_addr = sg_dma_address(attach_obj->sgt->sgl);
-> +			pr_err("attach[%d]: dev:%s dma_addr:0x%-12lx\n",
-> +			       attach_cnt, dev_name(attach_obj->dev), dma_addr);
-> +			attach_cnt++;
-> +		}
-> +		pr_err("Total %d devices attached\n\n", attach_cnt);
-> +		dma_resv_unlock(dmabuf->resv);
-> +	}
-> +
->  	dmabuf->ops->release(dmabuf);
->  
->  	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
-> -- 
-> 2.17.1
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+On 10/19/2021 8:29 PM, Andrew Lunn wrote:
+>> Hi Andrew,
+>>
+>> when this register AT803X_INTR_STATUS bits are cleared after read, we can't
+>> clear only WOL interrupt here.
+> O.K. But you do have the value of the interrupt status register. So
+> you could call phy_trigger_machine(phydev) if there are any other
+> interrupt pending. They won't get lost that way.
+>
+> 	  Andrew
+This make sense, thanks for this comment, will add it in the next patch set.
