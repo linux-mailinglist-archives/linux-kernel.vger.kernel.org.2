@@ -2,130 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C01F4336CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD4A4336DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235844AbhJSNT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhJSNTv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:19:51 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26134C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:17:39 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id w19so12777402edd.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ewk+JEJPIl628LqXQys4kMJx/dyvNqWJyRtOhvqF++g=;
-        b=Yc4z25m9SraOPeiH3fHVJW5xx3KlcCixhz0k7H2JTkNHVZdcA36BlPe0AlbS8b0JD4
-         c5v5LU1YLvlq1oTAST4LZxTg0Z7wWnvH46hZLeFFhexMx8Oroz3dPwcIxONA0984EFnG
-         bh/lJoBGN2Wzw9vijQT6GPu4pdi21lcRZTGh7DhbtdgQzfvL8++z7CBTPG3OtaA4s2p+
-         IT3aKeAVa6DURrDiNwZ7oKDWP8n0lJVGWcq0JLMU/ytXAWQ/D6JwGVaSVCbHyKazf3/s
-         DMtQwJQQ7fax80a/UsxkGD7zKoRuRGOcxk890Cw7spYDADMvr4SVrz0lTXCU8Kx+pl0i
-         p5mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ewk+JEJPIl628LqXQys4kMJx/dyvNqWJyRtOhvqF++g=;
-        b=qpcfbU8AdCYjI2ZHExvoNx4wNWd5Ty25Yii/4tUhZ0APanLcPOzDxaXfK1fYuC96x8
-         q9O3dYQB9YSW/xbpbuKDVrHEJ35uOKp2Pjx/oHHfAHdIgm1w8ntY63BAu95yI/xOlx14
-         NqCkV4eL5649pnlzArVymaNmDoeGRKj8z0qRNKMPlXA4ZX6XPeCkD0CFzlqiz+QYKNcK
-         NMGtaXWnI1HDHuMPh7ASwOfk+njKoZNkBBMGL3Nd+cwdedMUw+US71i1YfAXuYBH9AQ7
-         eZS0MMnYK9xV3p7w+UxcwoFllU/X6eQbchi6568OpLv9mVes/ZdzpBbevtXOp1x2fDEZ
-         o7gg==
-X-Gm-Message-State: AOAM531bQQxcYmHtJFm2ng7A9oBvjPMd1ix+SvvbszXgQxUvUkq5lyQB
-        ITUOF7DOJhVfa1NizSeaXVbyEw==
-X-Google-Smtp-Source: ABdhPJziJB5SbEcOtz0oFtQUCLbbWw4+8Tt+U0AspLInaG+PMwo/xOaYy5WYP43QRMA2QWE2c9rGRA==
-X-Received: by 2002:a17:906:64a:: with SMTP id t10mr39685589ejb.5.1634649453375;
-        Tue, 19 Oct 2021 06:17:33 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id w11sm11336968edl.87.2021.10.19.06.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 06:17:33 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] rtc: s3c: Fix RTC read on first boot
-Date:   Tue, 19 Oct 2021 16:17:24 +0300
-Message-Id: <20211019131724.3109-5-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211019131724.3109-1-semen.protsenko@linaro.org>
-References: <20211019131724.3109-1-semen.protsenko@linaro.org>
+        id S235866AbhJSNWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:22:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231563AbhJSNWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 09:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AAF1610E7;
+        Tue, 19 Oct 2021 13:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634649608;
+        bh=xGEIDfi1JKH3eqvvi6gZj8PD5RM7Y9UpbqwvaVzs/Wo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=m49h4VW6MoCd4zMCdev/m86jNWKuJXK1Pvme1TuC3s7014zUBOYNyR0oDjYStrz6h
+         HcGQ3SsdxazHbz+uU7eyGedc0n58OXoh9hWtnzJP3mFb+T4F8bC5TBftgPhjALJsAa
+         UmT5EKpoEXNh9lU4lG/uDCByq5+sY8uHY9gQXCTB0+YqyElgM9IoBOUMHVRdcYcAY2
+         aKssdW17ZWuW9g5wd+XRVoBk9ndAmAVWY0/O7y992m/ewf6T1/8JSCe2zbkzBaVuxR
+         VvLaA4qhc0hOINVPN8nU58AT/0VOW96gBOkPway5Lz7KAYBR/CnvcGU430bvMNKmQO
+         kojxFIc+kLPmA==
+Received: by mail-ed1-f45.google.com with SMTP id a25so12763134edx.8;
+        Tue, 19 Oct 2021 06:20:08 -0700 (PDT)
+X-Gm-Message-State: AOAM531yp/c+Y2E8ypiSWONOxsy3RlCTKCTn50xiIc/6aUtTVkpsthy6
+        /1aBN92EBvYuF7BgRo8GYo+IAXLMlHY1QRdynQ==
+X-Google-Smtp-Source: ABdhPJwuCT2accakT1n8HM9H8FZqhzJoiBD2H7LJdGtKC3BtNmJwjl0n52dVamz1Jg6FtFki6Znb7OXYl78LT011sgY=
+X-Received: by 2002:a17:906:c350:: with SMTP id ci16mr36562486ejb.466.1634649595458;
+ Tue, 19 Oct 2021 06:19:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211011141733.3999-1-stephan@gerhold.net> <20211011141733.3999-4-stephan@gerhold.net>
+ <YW3XgaiT2jBv4D+L@robh.at.kernel.org> <YW5t01Su5ycLm67c@gerhold.net>
+In-Reply-To: <YW5t01Su5ycLm67c@gerhold.net>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 19 Oct 2021 08:19:42 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLWV56ehsT2HHpg_qCDxhWmTHgCQoKgZLot_Q8xCdF-OA@mail.gmail.com>
+Message-ID: <CAL_JsqLWV56ehsT2HHpg_qCDxhWmTHgCQoKgZLot_Q8xCdF-OA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/4] dt-bindings: net: Add schema for Qualcomm BAM-DMUX
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        netdev <netdev@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
+        <dmaengine@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        phone-devel@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
+        Shevchenko <andy.shevchenko@gmail.com>," 
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On first RTC boot it has the month register value set to 0.
-Unconditional subtracting of 1 subsequently in s3c_rtc_gettime() leads
-to the next error message in kernel log:
+On Tue, Oct 19, 2021 at 2:03 AM Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> On Mon, Oct 18, 2021 at 03:22:25PM -0500, Rob Herring wrote:
+> > On Mon, Oct 11, 2021 at 04:17:35PM +0200, Stephan Gerhold wrote:
+> > > The BAM Data Multiplexer provides access to the network data channels of
+> > > modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916 or
+> > > MSM8974. It is built using a simple protocol layer on top of a DMA engine
+> > > (Qualcomm BAM) and bidirectional interrupts to coordinate power control.
+> > >
+> > > The device tree node combines the incoming interrupt with the outgoing
+> > > interrupts (smem-states) as well as the two DMA channels, which allows
+> > > the BAM-DMUX driver to request all necessary resources.
+> > >
+> > > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > > ---
+> > > Changes since RFC: None.
+> > > ---
+> > >  .../bindings/net/qcom,bam-dmux.yaml           | 87 +++++++++++++++++++
+> > >  1 file changed, 87 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml b/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
+> > > new file mode 100644
+> > > index 000000000000..33e125e70cb4
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
+> > > @@ -0,0 +1,87 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/net/qcom,bam-dmux.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Qualcomm BAM Data Multiplexer
+> > > +
+> > > +maintainers:
+> > > +  - Stephan Gerhold <stephan@gerhold.net>
+> > > +
+> > > +description: |
+> > > +  The BAM Data Multiplexer provides access to the network data channels
+> > > +  of modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916
+> > > +  or MSM8974. It is built using a simple protocol layer on top of a DMA engine
+> > > +  (Qualcomm BAM DMA) and bidirectional interrupts to coordinate power control.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: qcom,bam-dmux
+> >
+> > Is this block the same on every SoC? It needs to be SoC specific.
+> >
+>
+> Hm, I think describing it as *SoC*-specific wouldn't be accurate:
+> This node does not describe any hardware block, it's more a "firmware
+> convention". The only hardware involved is the BAM DMA engine, which
+> already has SoC/IP-specific compatibles in its own device tree node.
+>
+> This means that if anything there should be "firmware version"-specific
+> compatibles, because one SoC might have different (typically signed)
+> firmware versions that provide slightly different functionality.
+> However, I have to admit that I'm not familiar enough with the different
+> firmware versions to come up with a reasonable naming schema for the
+> compatible. :/
+>
+> In general, I cannot think of any difference between different versions
+> that would matter to a driver. The protocol is quite simple, and minor
+> firmware differences can be better handled through the control channel
+> that sets up the connection for the modem.
+>
+> Does that make sense?
 
-    hctosys: unable to read the hardware clock
+Okay. Please add some of the above details to the binding.
 
-That happens in s3c_rtc_probe() when trying to register the RTC, which
-in turn tries to read and validate the time. Initialize RTC date/time
-registers to valid values in probe function on the first boot to prevent
-such errors.
-
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/rtc/rtc-s3c.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/rtc/rtc-s3c.c b/drivers/rtc/rtc-s3c.c
-index 238928e29fbc..c7e763bcf61f 100644
---- a/drivers/rtc/rtc-s3c.c
-+++ b/drivers/rtc/rtc-s3c.c
-@@ -403,6 +403,28 @@ static int s3c_rtc_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+/* Set RTC with valid date/time values on first boot */
-+static int s3c_rtc_init_time(struct s3c_rtc *info)
-+{
-+	struct rtc_time tm;
-+	int ret;
-+
-+	ret = s3c_rtc_read_time(info, &tm);
-+	if (ret)
-+		return ret;
-+
-+	/* Only init RTC date/time on first boot */
-+	if (tm.tm_mday > 0)
-+		return 0;
-+
-+	/* Init date/time: 1 Jan 2000 00:00:00 */
-+	memset(&tm, 0, sizeof(struct rtc_time));
-+	tm.tm_mday = 1;	/* tm_mday min valid value is 1 */
-+	tm.tm_mon = 1;	/* January in internal representation */
-+
-+	return s3c_rtc_write_time(info, &tm);
-+}
-+
- static int s3c_rtc_probe(struct platform_device *pdev)
- {
- 	struct s3c_rtc *info = NULL;
-@@ -471,6 +493,10 @@ static int s3c_rtc_probe(struct platform_device *pdev)
- 
- 	device_init_wakeup(&pdev->dev, 1);
- 
-+	ret = s3c_rtc_init_time(info);
-+	if (ret)
-+		goto err_nortc;
-+
- 	info->rtc = devm_rtc_allocate_device(&pdev->dev);
- 	if (IS_ERR(info->rtc)) {
- 		ret = PTR_ERR(info->rtc);
--- 
-2.30.2
-
+Rob
