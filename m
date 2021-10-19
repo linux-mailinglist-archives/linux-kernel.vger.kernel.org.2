@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BB0433712
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF3F433710
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235831AbhJSNcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:32:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:49380 "EHLO foss.arm.com"
+        id S235795AbhJSNcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:32:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235817AbhJSNca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:32:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 598A42F;
-        Tue, 19 Oct 2021 06:30:16 -0700 (PDT)
-Received: from [10.57.25.70] (unknown [10.57.25.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 918433F70D;
-        Tue, 19 Oct 2021 06:30:05 -0700 (PDT)
-Subject: Re: [PATCH v5 04/15] arm64: errata: Add detection for TRBE write to
- out-of-range
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     will@kernel.org, catalin.marinas@arm.com,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
- <20211014223125.2605031-5-suzuki.poulose@arm.com>
- <20211018155041.GA3163131@p14s>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <928f02ab-8226-1679-a120-06778d03c93c@arm.com>
-Date:   Tue, 19 Oct 2021 14:29:58 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S231563AbhJSNcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 09:32:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D4AB61374;
+        Tue, 19 Oct 2021 13:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634650208;
+        bh=f/wB0Vy8SSk93aaj9uXpLmhnQ6j6vR6JE5NX/5XOTLk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=kSs8J+h7vHCexTiX4JxHH2cZhH9R2XzyTETKuuof/x0oPYLcWM0atJg2OaU48MXW4
+         W4Fo4sum+Zti0WYc9yuqWwzELFW+C4KMYzxegHAiqW0icZ/7Phz7kCDcjykwgUyoft
+         lfSFEO7r/MPHk8WktZOaYbQ0BNXxc5v8JLgt/I21GSWtjWMq29pVbMSHTaH53+KWBD
+         6Sjysoh2lybw61bPFpbh+GLse4Cm/RCHwdC3ct//Hjti7ktl/BsaNXUki/k7egeBam
+         tBgbWTBIEtiRvrpOzbFAn8pP14sBLRihkMYo7VfuYvVtk2cSnOhwPgh6FET46bElpU
+         h2yhP8GywpAWw==
+Date:   Tue, 19 Oct 2021 08:30:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Meng Li <Meng.Li@windriver.com>
+Cc:     geert+renesas@glider.be, magnus.damm@gmail.com, robh+dt@kernel.org,
+        marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com,
+        lorenzo.pieralisi@arm.com, kw@linux.com, bhelgaas@google.com,
+        lgirdwood@gmail.com, broonie@kernel.org,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH] pci: pcie-rcar: add regulators support
+Message-ID: <20211019133007.GA2331336@bhelgaas>
 MIME-Version: 1.0
-In-Reply-To: <20211018155041.GA3163131@p14s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019095858.21316-1-Meng.Li@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2021 16:50, Mathieu Poirier wrote:
-> Good morning,
+On Tue, Oct 19, 2021 at 05:58:58PM +0800, Meng Li wrote:
+> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 > 
-> On Thu, Oct 14, 2021 at 11:31:14PM +0100, Suzuki K Poulose wrote:
->> Arm Neoverse-N2 and Cortex-A710 cores are affected by an erratum where the
->> trbe, under some circumstances, might write upto 64bytes to an address after
-> 
-> Checkpatch gives me a warning about this line...
-> 
->> the Limit as programmed by the TRBLIMITR_EL1.LIMIT. This might -
->>
->>    - Corrupt a page in the ring buffer, which may corrupt trace from a
->>      previous session, consumed by userspace.
->>    - Hit the guard page at the end of the vmalloc area and raise a fault.
->>
->> To keep the handling simpler, we always leave the last page from the
->> range, which TRBE is allowed to write. This can be achieved by ensuring
->> that we always have more than a PAGE worth space in the range, while
->> calculating the LIMIT for TRBE. And then the LIMIT pointer can be adjusted
->> to leave the PAGE (TRBLIMITR.LIMIT -= PAGE_SIZE), out of the TRBE range
->> while enabling it. This makes sure that the TRBE will only write to an area
->> within its allowed limit (i.e, [head-head+size]) and we do not have to handle
-> 
-> I'm pretty sure this line will also be flagged.
-> 
+> Add PCIe regulators for KingFisher board.
 
-Thanks for pointing them out. I have fixed it now.
+Please pay attention to the existing code and history.  Your current
+subject line is:
 
-Suzuki
+  pci: pcie-rcar: add regulators support
+
+which looks nothing like the history:
+
+  $ git log --oneline drivers/pci/controller/pcie-rcar-host.c
+  861e133ba268 ("PCI: rcar-host: Remove unneeded includes")
+  a115b1bd3af0 ("PCI: rcar: Add L1 link state fix into data abort hook")
+  d21faba11693 ("PCI: Bulk conversion to generic_handle_domain_irq()")
+  83ed8d4fa656 ("PCI: rcar: Convert to MSI domains")
+  93cd1bb4862d ("PCI: rcar: Don't allocate extra memory for the MSI capture address")
+  c4e0fec2f7ee ("PCI: rcar: Always allocate MSI addresses in 32bit space")
+  6e8e137abeab ("PCI: rcar: Drop unused members from struct rcar_pcie_host")
+  b64aa11eb2dd ("PCI: Set bridge map_irq and swizzle_irq to default functions")
+  669cbc708122 ("PCI: Move DT resource setup into devm_pci_alloc_host_bridge()")
+  b411b2e1adb9 ("PCI: rcar: Use struct pci_host_bridge.windows list directly")
+  61f11f8250e2 ("PCI: rcar: Use devm_pci_alloc_host_bridge()")
+  4f5c883d7815 ("PCI: Move setting pci_host_bridge.busnr out of host drivers")
+  6176a5f32751 ("PCI: rcar: Use pci_is_root_bus() to check if bus is root bus")
+  6a589900d050 ("PCI: Set default bridge parent device")
+  a68e06e729b1 ("PCI: rcar: Fix runtime PM imbalance on error")
+  56d292348470 ("PCI: rcar: Use pci_host_probe() to register host")
+  78a0d7f2f5a3 ("PCI: rcar: Move shareable code to a common file")
+  a18f4b6ea50b ("PCI: rcar: Rename pcie-rcar.c to pcie-rcar-host.c")
+
+You could use something like:
+
+  PCI: rcar-host: Add regulator support for KingFisher
+
+> +	host->pcie3v3 = devm_regulator_get_optional(dev, "pcie3v3");
+> +	if (IS_ERR(host->pcie3v3)) {
+
++1 to Geert's comments.  Sprinkling IS_ERR() everywhere is kind of
+ugly.  host->pcie3v3 should be NULL if not present.
+
+Bjorn
