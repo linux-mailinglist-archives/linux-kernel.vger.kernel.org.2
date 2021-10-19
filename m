@@ -2,329 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80183433587
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A20B43358F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbhJSMOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32868 "EHLO
+        id S235564AbhJSMPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhJSMOB (ORCPT
+        with ESMTP id S235571AbhJSMPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:14:01 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B585FC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:11:48 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id a7so3477771yba.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:11:48 -0700 (PDT)
+        Tue, 19 Oct 2021 08:15:21 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218A9C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:08 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id z26-20020a05600c221a00b0030da55bc454so2489397wml.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=imTFDrWe85v4P6kkmQziiHJ0XlRBvngkTyOsy1ovX1A=;
-        b=MHQ1lkouaegpQAmfQVB6poDsGHxVDgGqpCqsaU8e2cYImbn17EDdTRHxwb4Xoiw+fc
-         xLUwt0nMvHga7UHcu5wGsAWDCmAg3IEjIBVx268YEEcqmBTo+NNB8HEdaCQLvHryMCgz
-         hJvUxJ/zcDwpl9gMxLyKTWxqnQqEQwftQUks61MjH5UOaUGNr1ca/h0jv05ULEBtXZ1/
-         ZQrkZMfiHQ5+q8fvg2FwDy4jAslfWEu1eLybh3xVAa8Dh2pMg2SfH9lw2/Dmvf5Snfa9
-         zd8SoXV1lwajus2VU1648HU3srnLpgM6AfTEfybCRFicnXlC+K/hgFGQlBDIn4UVLO14
-         qyig==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Fy4DNJg+LJGIWoeCxYMWIL1CKlINKgnhRdgDVyd1Xho=;
+        b=Nr4MJ1aI7q7w3UdTcVj6uCTcnUI7GEUmwq2F1i25CsIrzLEbTiVmLCgtKGbFFMtnzj
+         A0IEcU+/iuEOzhIOixBDn/V6QiT02j8f644HbyG4nVN8ml3f/EdohG6B0Dxq5D0IpiLB
+         q8LciAgHkLAV2t3dEYif+bOwdQrTAo0WQ0FPesXnFw1naWLXxBXnVxty6DMhm498g5lv
+         4lIDI0hW+WNGf3nm+DqiXlCC7heRmA/GZGmIlGDurd93+jhzyplTOVv/oiHJZz5ZzJso
+         vpDCREebQW3sMC78QseUu6Z6tLs7JutRKfuaPJ69qU40glehGG/wmTOkqSjBra3jh4+l
+         PgQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=imTFDrWe85v4P6kkmQziiHJ0XlRBvngkTyOsy1ovX1A=;
-        b=btlEUwSlUsnMiais40G4XO2PpNhRecvtjxTNhB9nKlj+Oe8+uzXfE1uH449SA79kA8
-         RGSLqz6+TiteFzFEeOOtPVwk1q89Xc6ujRSKuTc/d2nk/x16GuqGTwc0WDFlpIrP+cAV
-         3+QXP/IgFaN59VfyV91cgb0/4CFnJukKetnzkCGDnjxaEzJcoztrLsAMxrgIajTYSI4p
-         mn2hADh+lUvwSosRibASXcQRda+0lQw0Kx8wHXgFgRtjyXI9MRz07Jntbdsj3r0NKMD2
-         z6Fdv6/kSsIxy9+nly+Orv4L2NwYeeBVfyL8yYoExNfFJiIt+JXeTgBL4k3md7J1Bxh+
-         odAg==
-X-Gm-Message-State: AOAM530UhEB/cnhRvm9IOQwdPr0j7vWzMuC2xWotoQed/CuU0eAodOk7
-        2n3N5BhBnUAxl+RkDKHFTM8ID6R79pGodSZfY4CV+Q==
-X-Google-Smtp-Source: ABdhPJxpGMJU0jUkBjGwARUpg9mOUyflDlUDvPVtfk54oNFIqj7YInNVhE+/JaXLBYpwo6bBlo3ZdmQ+NK7l2BQu5/Y=
-X-Received: by 2002:a25:3817:: with SMTP id f23mr34089287yba.436.1634645507522;
- Tue, 19 Oct 2021 05:11:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210926150657.v4.1.Iaa4a0269e51d8e8d8784a6ac8e05899b49a1377d@changeid>
- <4A480983-CAF2-46B7-B462-9BC84E1783CC@holtmann.org>
-In-Reply-To: <4A480983-CAF2-46B7-B462-9BC84E1783CC@holtmann.org>
-From:   Joseph Hwang <josephsih@google.com>
-Date:   Tue, 19 Oct 2021 20:11:35 +0800
-Message-ID: <CAHFy41-sPBtMDtA7pmQz2Ey-3saaeKREX19uyHe20mnX6ngnTQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] Bluetooth: aosp: Support AOSP Bluetooth Quality Report
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Fy4DNJg+LJGIWoeCxYMWIL1CKlINKgnhRdgDVyd1Xho=;
+        b=7ujJcxQyikEpw9oqCQqnqg4qg+bH6XuhNb4EI74DDI3gIvgY+OLr/wlkY+TB9lrm9F
+         GjoVpob0tJ5sROqNR4/mtcIVaVgr2rkCbx6UQTQxd5CikVLyTbuvPlkzeb2cptfvtoQQ
+         02RLki2VQwfdROfWlFK6Zl+RTT3hYbbYUGhXD8YJfuEFEkmtCusEy76O/TguFWmFC4CB
+         tfJdRRuBK6xOMfq5lo6JRM357oJ3y0j3PlEtQyFQL1rXjQlYtD4bkhnN906eP8BGbVLw
+         4S+UCeLgUucjnU7JaEdP+97rk7KnyXptBM3MI6EMP6I03H0vUq0klYOOh/pE4Q/rjx80
+         irhA==
+X-Gm-Message-State: AOAM531LfEu+od5O2hihLiMFDnERvu3mY+j4744SZuyrCLs6U2HBHHds
+        kmG1vR+CyjtsHJ2oI9su3WHgdDV1WZGR
+X-Google-Smtp-Source: ABdhPJyrcmjf8nedcASO5PXz/po0MxrFVu8ZXOjfZXlzQFBuQrME6M29/wyaWdnny2GWZzG1UFy/1PGuR63M
+X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:59ca:401f:83a8:de6d])
+ (user=qperret job=sendgmr) by 2002:a05:600c:3b88:: with SMTP id
+ n8mr5585459wms.93.1634645586407; Tue, 19 Oct 2021 05:13:06 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 13:12:49 +0100
+Message-Id: <20211019121304.2732332-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH v2 00/15] KVM: arm64: pkvm: Implement unshare hypercall
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Andrew Walbran <qwandor@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        qperret@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel:
+Hi all,
 
-  Thanks for the RFC. I have fixed the patches per your request and
-submitted them for re-review.
+This is v2 of the series previously posted here:
 
-Thanks and regards!
+  https://lore.kernel.org/kvmarm/20211013155831.943476-1-qperret@google.com/
 
+This series implements an unshare hypercall at EL2 in nVHE protected
+mode, and makes use of it to unmmap guest-specific data-structures from
+EL2 stage-1 during guest tear-down. Crucially, the implementation of the
+share and unshare routines use page refcounts in the host kernel to
+avoid accidentally unmapping data-structures that overlap a common page.
 
-On Tue, Sep 28, 2021 at 6:45 PM Marcel Holtmann <marcel@holtmann.org> wrote=
-:
->
-> Hi Joseph,
->
-> > This patch adds the support of the AOSP Bluetooth Quality Report
-> > (BQR) events.
-> >
-> > Multiple vendors have supported the AOSP Bluetooth Quality Report.
-> > When a Bluetooth controller supports the capability, it can enable
-> > the capability through hci_set_aosp_capable. Then hci_core will
-> > set up the hdev->set_quality_report callback accordingly.
-> >
-> > Note that Intel also supports a distinct telemetry quality report
-> > specification. Intel sets up the hdev->set_quality_report callback
-> > in the btusb driver module.
-> >
-> > Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> > Signed-off-by: Joseph Hwang <josephsih@chromium.org>
-> >
-> > ---
-> >
-> > Changes in v4:
-> > - Move the AOSP BQR support from the driver level to net/bluetooth/aosp=
-.
-> > - Fix the drivers to use hci_set_aosp_capable to enable aosp.
-> > - Add Mediatek to support the capability too.
-> >
-> > Changes in v3:
-> > - Fix the auto build test ERROR
-> >  "undefined symbol: btandroid_set_quality_report" that occurred
-> >  with some kernel configs.
-> > - Note that the mgmt-tester "Read Exp Feature - Success" failed.
-> >  But on my test device, the same test passed. Please kindly let me
-> >  know what may be going wrong. These patches do not actually
-> >  modify read/set experimental features.
-> > - As to CheckPatch failed. No need to modify the MAINTAINERS file.
-> >  Thanks.
-> >
-> > Changes in v2:
-> > - Fix the titles of patches 2/3 and 3/3 and reduce their lengths.
-> >
-> > net/bluetooth/aosp.c     | 79 ++++++++++++++++++++++++++++++++++++++++
-> > net/bluetooth/aosp.h     |  7 ++++
-> > net/bluetooth/hci_core.c | 17 +++++++++
-> > 3 files changed, 103 insertions(+)
-> >
-> > diff --git a/net/bluetooth/aosp.c b/net/bluetooth/aosp.c
-> > index a1b7762335a5..c2b22bc83fb2 100644
-> > --- a/net/bluetooth/aosp.c
-> > +++ b/net/bluetooth/aosp.c
-> > @@ -33,3 +33,82 @@ void aosp_do_close(struct hci_dev *hdev)
-> >
-> >       bt_dev_dbg(hdev, "Cleanup of AOSP extension");
-> > }
-> > +
-> > +/* BQR command */
-> > +#define BQR_OPCODE                   hci_opcode_pack(0x3f, 0x015e)
-> > +
-> > +/* BQR report action */
-> > +#define REPORT_ACTION_ADD            0x00
-> > +#define REPORT_ACTION_DELETE         0x01
-> > +#define REPORT_ACTION_CLEAR          0x02
-> > +
-> > +/* BQR event masks */
-> > +#define QUALITY_MONITORING           BIT(0)
-> > +#define APPRAOCHING_LSTO             BIT(1)
-> > +#define A2DP_AUDIO_CHOPPY            BIT(2)
-> > +#define SCO_VOICE_CHOPPY             BIT(3)
-> > +
-> > +#define DEFAULT_BQR_EVENT_MASK       (QUALITY_MONITORING | APPRAOCHING=
-_LSTO | \
-> > +                              A2DP_AUDIO_CHOPPY | SCO_VOICE_CHOPPY)
-> > +
-> > +/* Reporting at milliseconds so as not to stress the controller too mu=
-ch.
-> > + * Range: 0 ~ 65535 ms
-> > + */
-> > +#define DEFALUT_REPORT_INTERVAL_MS   5000
-> > +
-> > +struct aosp_bqr_cp {
-> > +     __u8    report_action;
-> > +     __u32   event_mask;
-> > +     __u16   min_report_interval;
-> > +} __packed;
-> > +
-> > +static int enable_quality_report(struct hci_dev *hdev)
-> > +{
-> > +     struct sk_buff *skb;
-> > +     struct aosp_bqr_cp cp;
-> > +
-> > +     cp.report_action =3D REPORT_ACTION_ADD;
-> > +     cp.event_mask =3D DEFAULT_BQR_EVENT_MASK;
-> > +     cp.min_report_interval =3D DEFALUT_REPORT_INTERVAL_MS;
-> > +
-> > +     skb =3D __hci_cmd_sync(hdev, BQR_OPCODE, sizeof(cp), &cp,
-> > +                          HCI_CMD_TIMEOUT);
-> > +     if (IS_ERR(skb)) {
-> > +             bt_dev_err(hdev, "Enabling Android BQR failed (%ld)",
-> > +                        PTR_ERR(skb));
-> > +             return PTR_ERR(skb);
-> > +     }
-> > +
-> > +     kfree_skb(skb);
-> > +     return 0;
-> > +}
-> > +
-> > +static int disable_quality_report(struct hci_dev *hdev)
-> > +{
-> > +     struct sk_buff *skb;
-> > +     struct aosp_bqr_cp cp =3D { 0 };
-> > +
-> > +     cp.report_action =3D REPORT_ACTION_CLEAR;
-> > +
-> > +     skb =3D __hci_cmd_sync(hdev, BQR_OPCODE, sizeof(cp), &cp,
-> > +                          HCI_CMD_TIMEOUT);
-> > +     if (IS_ERR(skb)) {
-> > +             bt_dev_err(hdev, "Disabling Android BQR failed (%ld)",
-> > +                        PTR_ERR(skb));
-> > +             return PTR_ERR(skb);
-> > +     }
-> > +
-> > +     kfree_skb(skb);
-> > +     return 0;
-> > +}
-> > +
-> > +int aosp_set_quality_report(struct hci_dev *hdev, bool enable)
-> > +{
-> > +     bt_dev_info(hdev, "quality report enable %d", enable);
-> > +
-> > +     /* Enable or disable the quality report feature. */
-> > +     if (enable)
-> > +             return enable_quality_report(hdev);
-> > +     else
-> > +             return disable_quality_report(hdev);
-> > +}
-> > diff --git a/net/bluetooth/aosp.h b/net/bluetooth/aosp.h
-> > index 328fc6d39f70..384e111c1260 100644
-> > --- a/net/bluetooth/aosp.h
-> > +++ b/net/bluetooth/aosp.h
-> > @@ -8,9 +8,16 @@
-> > void aosp_do_open(struct hci_dev *hdev);
-> > void aosp_do_close(struct hci_dev *hdev);
-> >
-> > +int aosp_set_quality_report(struct hci_dev *hdev, bool enable);
-> > +
-> > #else
-> >
-> > static inline void aosp_do_open(struct hci_dev *hdev) {}
-> > static inline void aosp_do_close(struct hci_dev *hdev) {}
-> >
-> > +static inline int aosp_set_quality_report(struct hci_dev *hdev, bool e=
-nable)
-> > +{
-> > +     return false;
-> > +}
-> > +
-> > #endif
-> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> > index aeec5a3031a6..a2c22a4921d4 100644
-> > --- a/net/bluetooth/hci_core.c
-> > +++ b/net/bluetooth/hci_core.c
-> > @@ -1315,6 +1315,21 @@ static void hci_dev_get_bd_addr_from_property(st=
-ruct hci_dev *hdev)
-> >       bacpy(&hdev->public_addr, &ba);
-> > }
-> >
-> > +static void hci_set_quality_report(struct hci_dev *hdev)
-> > +{
-> > +#ifdef CONFIG_BT_AOSPEXT
-> > +     if (hdev->aosp_capable) {
-> > +             /* The hdev->set_quality_report callback is setup here fo=
-r
-> > +              * the vendors that support AOSP quality report specifica=
-tion.
-> > +              * Note that Intel, while supporting a distinct telemetry
-> > +              * quality report specification, sets up the
-> > +              * hdev->set_quality_report callback in the btusb module.
-> > +              */
-> > +             hdev->set_quality_report =3D aosp_set_quality_report;
-> > +     }
-> > +#endif
-> > +}
-> > +
->
-> I think that I wasn=E2=80=99t super clear in my review on how I wanted th=
-is feature. So hdev->set_quality_report should really only ever set by a tr=
-ansport driver. The core stack should never touch it.
->
-> So I wanted something like this:
->
->         if (hdev->set_quality_report)
->                 err =3D hdev->set_quality_report(hdev, val);
->         else
->                 err =3D aosp_set_quality_report(hdev, val);
->
-> I send a RFC showing you how I think this should be done.
->
-> An extra important step of course is to check if the Android extension ac=
-tually supports the quality report feature in the first place.
->
-> And while writing that patch, I realized that your initial support has a =
-mistake. I send a patch for fixing it. The mgmt document is pretty clear on=
- how experimental flags are defined.
->
-> Read Experimental Features Information Command
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->         Command Code:           0x0049
->         Controller Index:       <controller id> or <non-controller>
->         Command Parameters:
->         Return Parameters:      Feature_Count (2 Octets)
->                                 Feature1 {
->                                         UUID (16 Octets)
->                                         Flags (4 Octets)
->                                 }
->                                 Feature2 {  }
->                                 ...
->
->         This command is used to retrieve the supported experimental featu=
-res
->         by the host stack.
->
->         The UUID values are not defined here. They can change over time a=
-nd
->         are on purpose not stable. Features that mature will be removed a=
-t
->         some point. The mapping of feature UUID to the actual functionali=
-ty
->         of a given feature is out of scope here.
->
->         The following bits are defined for the Flags parameter:
->
->                 0       Feature active
->                 1       Causes change in supported settings
->
-> So please don=E2=80=99t just make up things and exp UUID should only be p=
-resent if they are supported. If they are not supported because the hardwar=
-e is lacking support, they should not be reported.
->
-> Regards
->
-> Marcel
->
+This series has two main benefits. Firstly it allows EL2 to track the
+state of shared pages cleanly, as they can now transition from SHARED
+back to OWNED. This will simplify permission checks once e.g. pkvm
+implements a donation hcall to provide memory to protected guests, as
+there should then be no reason for the host to donate a page that is
+currently marked shared. And secondly, it avoids having dangling
+mappings in the hypervisor's stage-1, which should be a good idea from
+a security perspective as the hypervisor is obviously running with
+elevated privileges. And perhaps worth noting is that this also
+refactors the EL2 page-tracking checks in a more scalable way, which
+should allow to implement other memory transitions (host donating memory
+to a guest, a guest sharing back with the host, ...) much more easily in
+the future.
+
+Changes since v2:
+
+ - moved the refcounting of pages shared more than once to the host in
+   order to simplify and optimize the hyp code;
+
+ - synchronized lifetime of the vcpu and its parent task struct using
+   get_task_struct() / put_task_struct();
+
+ - rebased on kvmarm/next
+
+ - rebased on Marc's v2 refactoring of the first vcpu run:
+   https://lore.kernel.org/kvmarm/20211018211158.3050779-1-maz@kernel.org
+
+ - small improvements/refactoring throughout;
+
+This has been lightly tested on Qemu, by spawning and powering off a
+guest 50 times. You can find a branch with everything applied here:
+
+  https://android-kvm.googlesource.com/linux qperret/hyp-unshare-v2
+
+Thanks!
+Quentin
 
 
---=20
+Quentin Perret (7):
+  KVM: arm64: Check if running in VHE from kvm_host_owns_hyp_mappings()
+  KVM: arm64: Provide {get,put}_page() stubs for early hyp allocator
+  KVM: arm64: Refcount hyp stage-1 pgtable pages
+  KVM: arm64: Fixup hyp stage-1 refcount
+  KVM: arm64: Introduce kvm_share_hyp()
+  KVM: arm64: pkvm: Refcount the pages shared with EL2
+  KVM: arm64: pkvm: Unshare guest structs during teardown
 
-Joseph Shyh-In Hwang
-Email: josephsih@google.com
+Will Deacon (8):
+  KVM: arm64: Hook up ->page_count() for hypervisor stage-1 page-table
+  KVM: arm64: Implement kvm_pgtable_hyp_unmap() at EL2
+  KVM: arm64: Extend pkvm_page_state enumeration to handle absent pages
+  KVM: arm64: Introduce wrappers for host and hyp spin lock accessors
+  KVM: arm64: Implement do_share() helper for sharing memory
+  KVM: arm64: Implement __pkvm_host_share_hyp() using do_share()
+  KVM: arm64: Implement do_unshare() helper for unsharing memory
+  KVM: arm64: Expose unshare hypercall to the host
+
+ arch/arm64/include/asm/kvm_asm.h              |   1 +
+ arch/arm64/include/asm/kvm_host.h             |   2 +
+ arch/arm64/include/asm/kvm_mmu.h              |   2 +
+ arch/arm64/include/asm/kvm_pgtable.h          |  21 +
+ arch/arm64/kvm/arm.c                          |   6 +-
+ arch/arm64/kvm/fpsimd.c                       |  33 +-
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |   6 +
+ arch/arm64/kvm/hyp/nvhe/early_alloc.c         |   5 +
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c            |   8 +
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 500 +++++++++++++++---
+ arch/arm64/kvm/hyp/nvhe/setup.c               |  32 +-
+ arch/arm64/kvm/hyp/pgtable.c                  |  80 ++-
+ arch/arm64/kvm/mmu.c                          | 132 ++++-
+ arch/arm64/kvm/reset.c                        |  10 +-
+ 14 files changed, 733 insertions(+), 105 deletions(-)
+
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
