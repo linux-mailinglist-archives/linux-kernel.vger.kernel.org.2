@@ -2,164 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33F64340DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9804340DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhJSVzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:55:40 -0400
-Received: from mail-eopbgr1400107.outbound.protection.outlook.com ([40.107.140.107]:51392
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229483AbhJSVzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:55:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KtFUvdpKjJFePJi0MdIokgqxEfZMV8m+7PU7DcjmAbjahuaDYKrAYdFhNon5u3I8FGMqKj3PjAY7dBleminOsNeiYKTmVdX43Yn8oq80gK38fqN/oTVRm9Z0GS4ycDLPAQVDQR9C+V9hsuLadn4HhMS7j/XAhe9rghfqPIMEREhpob8Z6z/wxV0m5rmK1Vc+fJkbakPHLWTnVPj/r7oX+ivCZx1LHxFo/SaYTYalz9uADp0KqrNduGcvHHTIOPXgfFeQStGsjjsMINOLcrnVQyWdXIK9oZ7vqOPdDVKLf0KQSH8nDQDDny69eaI4SNVIjzrA5QIe2I9yFoOMXsXDRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uzFXG1T6orTp+pjxL1Yp8FVOkJRPEOYi7oVlDZzbL4A=;
- b=jksdefLxK5oNVWX/mWXctbSGrfMi80kengCl5S73XsCdl7GFKqIIK9XBJ4RoWHV9b8ZM09jXzemoWFSzYffOzqZYHAhpJeufVewBlb8XSboz8Op6nDeJvrsC0npJs+D9nDelKTvi0LDcw9MJK86mmdACNxOP0rQEBCBx39jhgvGJ//37Q32ui1CXsF+eUOSLdC8m4k35pvnf1dr9LuGk4/CkMpqanfaJhULZvjd7pGO8vZrwzrkkW4Z6Z6UAKPaRk00IZNBUhI1ZE3nQ8v6B0j8zTGcJfalFg/gMxOjHUlHMPl2ytyZqJGh9mhF3bIE8PFux/W1acZ1UtlyLWqf0DQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
+        id S229639AbhJSV45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhJSV44 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 17:56:56 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B76C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:54:42 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i21-20020a253b15000000b005b9c0fbba45so27287642yba.20
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:54:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uzFXG1T6orTp+pjxL1Yp8FVOkJRPEOYi7oVlDZzbL4A=;
- b=hguXBbchwz7E9idF7FFdjJ8XNhNiOV1WE7i2bocxR3CSOROz4fyU9386zPfo0ywswkYqY0A2a7yFhaWnotuJkkWlz7niNsY5sdF2w03EjBYMIYSdqh+YFXhGT2wiKJ4q+x6netSmL0AFlL6oLYaB6wHWdQbiOpHHvGCTBWzQcxY=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=renesas.com;
-Received: from OSAPR01MB3892.jpnprd01.prod.outlook.com (20.178.102.215) by
- OSAPR01MB4450.jpnprd01.prod.outlook.com (20.179.176.211) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.16; Tue, 19 Oct 2021 21:53:21 +0000
-Received: from OSAPR01MB3892.jpnprd01.prod.outlook.com
- ([fe80::9ce6:72c0:21b3:155e]) by OSAPR01MB3892.jpnprd01.prod.outlook.com
- ([fe80::9ce6:72c0:21b3:155e%6]) with mapi id 15.20.4628.016; Tue, 19 Oct 2021
- 21:53:18 +0000
-Subject: Re: [PATCH v6 1/2] dt-bindings: Add binding for Renesas 8T49N241
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
-        Rob Herring <robh@kernel.org>
-References: <20210913170436.243-1-alexander.helms.jy@renesas.com>
- <20210913170436.243-2-alexander.helms.jy@renesas.com>
- <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
- <CAMuHMdXq2NyBf539raFJSoWSGXnwxOAMWcVB_WV-=uf+kOs7rw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXq2NyBf539raFJSoWSGXnwxOAMWcVB_WV-=uf+kOs7rw@mail.gmail.com>
-From:   Alex Helms <alexander.helms.jy@renesas.com>
-Message-ID: <4f2f81a8-9a79-3211-5ec3-fa679c3e7bb9@renesas.com>
-Date:   Tue, 19 Oct 2021 14:52:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR10CA0014.namprd10.prod.outlook.com
- (2603:10b6:a03:255::19) To OSAPR01MB3892.jpnprd01.prod.outlook.com
- (2603:1096:604:5b::23)
-MIME-Version: 1.0
-Received: from [132.158.153.83] (68.225.135.226) by BY3PR10CA0014.namprd10.prod.outlook.com (2603:10b6:a03:255::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Tue, 19 Oct 2021 21:53:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e903e2ae-33a0-4fd2-67aa-08d9934adc39
-X-MS-TrafficTypeDiagnostic: OSAPR01MB4450:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <OSAPR01MB445004645FD4D1DEE91BA74AC8BD9@OSAPR01MB4450.jpnprd01.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RvK0ZYp0yCoTmBRZIuQtyaO8Gld7YJn3/FIwOwD1YJCVxosXMMpEK6Om8Gjn86esCJef/X1s8IaRCr+JYQWP1aesJcN4fF4UeH/4H8Tzkre4jHgkelgz0w5vx9wXUJ2ZIct2BUn/aaL2+xCbUEiC9gAxbHKMK0rbKrX/tyvoTk4i5xopRN/eVEZT6Gp9EsxNGTunxxgHvt5aVLxKuqdKtluXmFTAXpaovYuwchZ8yoq9BdKiwYA4FvK2y+QfHYmWdBR7TVZhNZy5pGIfdLftbMe6NzIFQc9LguWBQXX72tdLYnRsTosDThVnKSFEpyAAkG7AomYw87ZAplFEMkTQFNC/Zr3SBxs2VVEMuKu8duCEnX7QeBcF62+Qrbkr3G9aWmYEiPPwkdsC67yx/rogO36LxyAQ12+u/8zVjrejcG4Gy8AJyRXnKREpw+aCQNp3CZqBiKqSwtFVNfbbsafXYKM/Gbm0x7plZXMj668ghFphM7voMhvd/Ppk/o4llb/y6T2JbKNf6rNMxsVyL5GadQ0EorWFmvokNDpk8WYSnuT4QmIhv7d4LwfWsScRML2dbAzs3YFM5k8t5gvt//4AXOS1QbO/kS6Nz7SHC1Kft5jhp5RP0Y2t5a8qS7ujlKj9pkvxrlIwyHxA2OnZrWumiBNaB3MTF/AjDjyopVz6EKY2QZ1fjkIrfpCTj8RNSqt2yZA0lXke3vwWyTNCWY42IKSqJV6bM8lLOKD71K5Tqltm7WhpEzZtvPWWuU9hFDvJscS7//OX9jKW4i6Vp1Kdfz4OSX2q1ztFCmLswiLVDeA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB3892.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(83380400001)(16576012)(66476007)(8676002)(6706004)(66556008)(38350700002)(6666004)(38100700002)(36756003)(86362001)(316002)(52116002)(956004)(508600001)(31696002)(8936002)(6486002)(31686004)(186003)(6916009)(26005)(2906002)(2616005)(7416002)(53546011)(54906003)(4326008)(66946007)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V01UdVVJdVI4VjRVbUdFMGYvV2liTFl3N1pYMmNwRTNjSkNjREVnZE9UdWtU?=
- =?utf-8?B?dkRLckVkSE81a2tGZExvK1lmRmJ5MUJOemg0RlVaM1NLV1BoSndvTUdIOXJQ?=
- =?utf-8?B?Z2ZUc3MrYW1SaytaNFhVTmdwRk9qYS9TQ2hmQjhPSWpnQ0Zhd3ZmMnd1M1VQ?=
- =?utf-8?B?RStGdTRETnJyZ2NWTEVDcHluSkVZbmtFS0NzNEl1WW1haEpra2Vxc1hGZ0dZ?=
- =?utf-8?B?aldKTzR3b052QTU3eTR3UFVma2R0WWVlcS9CVWhOc1NCSGJzbWQxS2Z4WW1O?=
- =?utf-8?B?SzUvNTI0WFdoSUF2Q1hFZnp0VlRhY2k2d1BaekJBcWpiMDNlOVJBR3NOMmNS?=
- =?utf-8?B?cG9YSDVZNWNPa0RTZFpUN3NqbEtlQ1FsbnQ4Wit2M2ZTdUQxekxVc3YwMVVS?=
- =?utf-8?B?b25UUnJ6SDRlL3lTbzQ4VEs4cVVUODlPenhvaGdabUpEVjhOWHhUTkE4MWZD?=
- =?utf-8?B?a0FEcXZuS2Q4em0vQWF2Nkd0MHZENEh5ajhJU3M1NFZJNUdESUhiZzM2K3Jk?=
- =?utf-8?B?ZzJhNjhpanBUUkNRNXRMU0NBUHBUUCtHTG9KQmdSOElIdTlxTTE4Uk9FYU52?=
- =?utf-8?B?Qll2SUdGRnFmazY3YVZYVXp0SEJyWW5JdlhMWDNLMVVjM2JYR2N2RXV3TjFU?=
- =?utf-8?B?M21HUUNKa3paSysrb1NTNEN0cmsxSG1hTDg3RlNHRFFDbDh5UERxVlRaMkxy?=
- =?utf-8?B?bFBFRnV6bGhXMWlHWlg1K3NCbXB4bU9TbEF2VVJiOUxvZnMzazlaY1RFNW5G?=
- =?utf-8?B?ZkI3ZlJwY3EyUG44bXVBalVhZENsS29LL3hra2l2UThsME12MEd1ZCtMY2xn?=
- =?utf-8?B?ZWlGdm51RlNkVytJbHNuUy9CVGNPNUhvZjFMb25kbkZFSjJRaVNiVlhEcGxG?=
- =?utf-8?B?dXZQZjNuT1RVN0tzeDVCRVBxSWgvQ29jYitoZzcyRks1NU1PbWVJSFpjNmpG?=
- =?utf-8?B?UGpEd3FyTnV1ajY1NGhoL3VNdjFTcjF6Uld3N3lHRmFJdi9YL2RDbm81OWJZ?=
- =?utf-8?B?OFZrVVlNK0hoekZseE5Uc3NQZVZtN3ZzdTdOeHh3cXhkMzA1R01LcFVuU2tp?=
- =?utf-8?B?VG43am1xSTZrZE00b0ttZG5BSzdGSHVEVmNBZWlaT0cybFRobTZzd0FRdWVZ?=
- =?utf-8?B?Z1lXLzJ3YXo3QW5uU1hUSGt1M2ZOWTZZUndlRmQrVTYxRWtuV3E2dVFqWFBS?=
- =?utf-8?B?bm9INUt1SG94akc3TGVzRjREQS85RVIwZ2tRSk1wbjZrV3ZpQmVMSEo4Zjk2?=
- =?utf-8?B?V0l0ZXJ3cEZ3NUpZRnlpS1dwN2pjRDN4QnJOT3ppWDY0bkFiKzFWN0d6dVJS?=
- =?utf-8?B?TG1rQWpjZlZZcnNkZlJzY2hoUzBGcjZsbVNXM0RsaldBQWF6WEJVN3Nram1k?=
- =?utf-8?B?MjB1dmczaEhqbXQ3WW94QktZdmVnOEVJMk00bmZCcjFyK1dxb0U0NHB0Mmc0?=
- =?utf-8?B?aFYweWdnL0R4V1gya1N1QnhabUxJTEtJSWhySTd3OHZabDV0byswc1BnazhP?=
- =?utf-8?B?bi9JNFN3b0xuTG9uV2ZpVXA1a2pYNWZ4U0Z6TUljVXB2TmcvN0ZKWXZRQTRQ?=
- =?utf-8?B?Zk5UU3BkZnZCT0tGbWI3cDJCdWJIemlQam5kYXFleDFSOVA5RURKUVdCOWZY?=
- =?utf-8?B?RlF5SkFsSngveFVaYndGK2hzZVFxU3BMSlJWUytJNnZEZ0E3cEliVk5tcWts?=
- =?utf-8?B?ZDcrUU5Ia0JsVGRjb0lxZEtYclpaSGZhWXRnckhadTNVcm8reVB4QlhBVlJh?=
- =?utf-8?Q?LgMxl1Opo5vXT9LMF9m8EeXMAgBKgb8YAz4wroz?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e903e2ae-33a0-4fd2-67aa-08d9934adc39
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB3892.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 21:53:18.3816
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2C5EIhxzNzyHhJ79zpw+qDBWkBO99oIOC6h9V4KYIyzz20ym67rlSbrxEgTU624zIzI23XxwEi0K9J8eh8XlWjjuTJHg3YrvPN+CAjYurpk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB4450
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=N37/ZDE/stuSdTvoWUqsrclxHqEOMNddJd9o/CCtglM=;
+        b=Q6SbYo3CrCeEFv0MvKu5Mx+k/sxnT48d5wDds4FI7ZLPbDox1ZK7z4cN59dfL0R/sE
+         MPVr6BO6UeGw2RAF6FFFH9RR68tMblK/JQ3wMgiLzuz8sJ2Bua4K1cqrB0yPdfELhzJS
+         Gcb7lCm7guYTtMRHcYpwYKmjR05Y2xe2nrDt/vrjnYgQZjdxAW7U/ra1x1VBgyGJ28Ab
+         8mJP6Sc4QnoSwHly/x3LT4N8RrJjJc565bhQiGRPJ3toJeA72vreiHfQ8WGi53CkGRIR
+         1rVr+pgaTjw1GcKs6iU8+N5SMxR8nlEW+v8cLHh37x/+0wF5IPAUL6I+k9wWT8Kkhh8E
+         yMAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=N37/ZDE/stuSdTvoWUqsrclxHqEOMNddJd9o/CCtglM=;
+        b=zF8GESUcWHRUHQ0P7fw5MjGu0KbzanZUD/o8bGc/pmf0U2Y7k4lO+L6+oHvZlq2vTI
+         brq2W6NuxsANQm4l2ypS8/t4tdEZBuNKpqUt/OI/5gMuoSgRvIgbryrjhvLxZifMF71e
+         l1fGb/80o5eONsIh3Gviu2jA/UD5zMORMqxtG+YRlPCjWPH4Fn1x2QBrkOIW5XwJnk4d
+         r/QlpRzsWVtVtCkmg9sGB/coEN8+lehI86wHvtTYHsFgBYqn4Wg4dUjFG+I+LnNBpU6z
+         43glCnlZ2rahuUiVNVDUUW4RvE3Xjxj9CndaBG+ppYLuIh208bEbBo1EleCxe0zKzFsk
+         xWEA==
+X-Gm-Message-State: AOAM533VesjmI4inGSI71rfV2b42/I8G+f7PLSeWEsyBXHKx7JmxumH7
+        Uoccw4ycKcUQssoUNEr+tvVFss8N6fK/yg8R/Q==
+X-Google-Smtp-Source: ABdhPJzJnSPOsPIGqGgU7Jex0XqNdys8rXQsriEBtbntvgunBNBe5Us+cy4DNlrMdw2JUJz5c70rSaWzgPbE1n9Tyw==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:4296:dcb4:8789:7223])
+ (user=almasrymina job=sendgmr) by 2002:a25:c344:: with SMTP id
+ t65mr12900900ybf.340.1634680481807; Tue, 19 Oct 2021 14:54:41 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 14:54:37 -0700
+Message-Id: <20211019215437.2348421-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH v1] hugetlb: Add hugetlb.*.numa_stat file
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
+        Joanna Li <joannali@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/2021 5:16 AM, Geert Uytterhoeven wrote:
-> Hi Alex,
-> 
-> On Wed, Oct 13, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Mon, Sep 13, 2021 at 7:05 PM Alex Helms
->> <alexander.helms.jy@renesas.com> wrote:
->>> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
->>> The 8T49N241 accepts up to two differential or single-ended input clocks
->>> and a fundamental-mode crystal input. The internal PLL can lock to either
->>> of the input reference clocks or to the crystal to behave as a frequency
->>> synthesizer.
->>>
->>> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
->>> Reviewed-by: Rob Herring <robh@kernel.org>
->>
->> Thanks for your patch!
->>
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
-> 
->> BTW, do you plan to add interrupt and/or GPIO support later?
-> 
-> To clarify, and I really meant to add:
-> 
->   interrupts:
->     maxItems: 1
-> 
-> to the bindings now, and GPIO-related properties and subnodes later.
+For hugetlb backed jobs/VMs it's critical to understand the numa
+information for the memory backing these jobs to deliver optimal
+performance.
 
-Any additional features such as interrupts and GPIO properties would only be added if there is customer demand for such features. Since there is no interrupt support, does the "interrupts" item still need to be added to the yaml?
+Currently this techinically can be queried from /proc/self/numa_maps, but
+there are significant issues with that. Namely:
+1. Memory can be mapped on unmapped.
+2. numa_maps are per process and need to be aggregaged across all
+   proceses in the cgroup. For shared memory this is more involved as
+   the userspace needs to make sure it doesn't double count shared
+   mappings.
+3. I believe querying numa_maps needs to hold the mmap_lock which adds
+   to the contention on this lock.
 
--Alex
+For these reasons I propose simply adding hugetlb.*.numa_stat file,
+which shows the numa information of the cgroup similarly to
+memory.numa_stat.
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+On cgroup-v2:
+   cat /dev/cgroup/memory/test/hugetlb.2MB.numa_stat
+   total=3D2097152 N0=3D2097152 N1=3D0
 
+On cgroup-v1:
+   cat /dev/cgroup/memory/test/hugetlb.2MB.numa_stat
+   total=3D2097152 N0=3D2097152 N1=3D0
+   hierarichal_total=3D2097152 N0=3D2097152 N1=3D0
+
+This patch was tested manually by allocating hugetlb memory and querying
+the hugetlb.*.numa_stat file of the cgroup and its parents.
+=EF=BF=BC
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Jue Wang <juew@google.com>
+Cc: Yang Yao <ygyao@google.com>
+Cc: Joanna Li <joannali@google.com>
+Cc: Cannon Matthews <cannonmatthews@google.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+---
+ .../admin-guide/cgroup-v1/hugetlb.rst         |  4 +
+ Documentation/admin-guide/cgroup-v2.rst       |  7 ++
+ include/linux/hugetlb.h                       |  4 +-
+ include/linux/hugetlb_cgroup.h                |  7 ++
+ mm/hugetlb_cgroup.c                           | 93 +++++++++++++++++--
+ .../testing/selftests/vm/write_to_hugetlbfs.c |  9 +-
+ 6 files changed, 113 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentatio=
+n/admin-guide/cgroup-v1/hugetlb.rst
+index 338f2c7d7a1c..0fa724d82abb 100644
+--- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
++++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
+@@ -29,12 +29,14 @@ Brief summary of control files::
+  hugetlb.<hugepagesize>.max_usage_in_bytes             # show max "hugepag=
+esize" hugetlb  usage recorded
+  hugetlb.<hugepagesize>.usage_in_bytes                 # show current usag=
+e for "hugepagesize" hugetlb
+  hugetlb.<hugepagesize>.failcnt                        # show the number o=
+f allocation failure due to HugeTLB usage limit
++ hugetlb.<hugepagesize>.numa_stat                      # show the numa inf=
+ormation of the hugetlb memory charged to this cgroup
+
+ For a system supporting three hugepage sizes (64k, 32M and 1G), the contro=
+l
+ files include::
+
+   hugetlb.1GB.limit_in_bytes
+   hugetlb.1GB.max_usage_in_bytes
++  hugetlb.1GB.numa_stat
+   hugetlb.1GB.usage_in_bytes
+   hugetlb.1GB.failcnt
+   hugetlb.1GB.rsvd.limit_in_bytes
+@@ -43,6 +45,7 @@ files include::
+   hugetlb.1GB.rsvd.failcnt
+   hugetlb.64KB.limit_in_bytes
+   hugetlb.64KB.max_usage_in_bytes
++  hugetlb.64KB.numa_stat
+   hugetlb.64KB.usage_in_bytes
+   hugetlb.64KB.failcnt
+   hugetlb.64KB.rsvd.limit_in_bytes
+@@ -51,6 +54,7 @@ files include::
+   hugetlb.64KB.rsvd.failcnt
+   hugetlb.32MB.limit_in_bytes
+   hugetlb.32MB.max_usage_in_bytes
++  hugetlb.32MB.numa_stat
+   hugetlb.32MB.usage_in_bytes
+   hugetlb.32MB.failcnt
+   hugetlb.32MB.rsvd.limit_in_bytes
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
+guide/cgroup-v2.rst
+index 4d8c27eca96b..8ba0d6aadd2c 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2252,6 +2252,13 @@ HugeTLB Interface Files
+ 	are local to the cgroup i.e. not hierarchical. The file modified event
+ 	generated on this file reflects only the local events.
+
++  hugetlb.<hugepagesize>.numa_stat
++	Similar to memory.numa_stat, it shows the numa information of the
++	memory in this cgroup:
++
++	/dev/cgroup/memory/test # cat hugetlb.2MB.numa_stat
++	total=3D0 N0=3D0 N1=3D0
++
+ Misc
+ ----
+
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 1faebe1cd0ed..0445faaa636e 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -613,8 +613,8 @@ struct hstate {
+ #endif
+ #ifdef CONFIG_CGROUP_HUGETLB
+ 	/* cgroup control files */
+-	struct cftype cgroup_files_dfl[7];
+-	struct cftype cgroup_files_legacy[9];
++	struct cftype cgroup_files_dfl[8];
++	struct cftype cgroup_files_legacy[10];
+ #endif
+ 	char name[HSTATE_NAME_LEN];
+ };
+diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.=
+h
+index c137396129db..54ff6ec68ed3 100644
+--- a/include/linux/hugetlb_cgroup.h
++++ b/include/linux/hugetlb_cgroup.h
+@@ -36,6 +36,11 @@ enum hugetlb_memory_event {
+ 	HUGETLB_NR_MEMORY_EVENTS,
+ };
+
++struct hugetlb_cgroup_per_node {
++	/* hugetlb usage in bytes over all hstates. */
++	unsigned long usage[HUGE_MAX_HSTATE];
++};
++
+ struct hugetlb_cgroup {
+ 	struct cgroup_subsys_state css;
+
+@@ -57,6 +62,8 @@ struct hugetlb_cgroup {
+
+ 	/* Handle for "hugetlb.events.local" */
+ 	struct cgroup_file events_local_file[HUGE_MAX_HSTATE];
++
++	struct hugetlb_cgroup_per_node *nodeinfo[];
+ };
+
+ static inline struct hugetlb_cgroup *
+diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+index 5383023d0cca..0a550954fb5a 100644
+--- a/mm/hugetlb_cgroup.c
++++ b/mm/hugetlb_cgroup.c
+@@ -92,6 +92,7 @@ static void hugetlb_cgroup_init(struct hugetlb_cgroup *h_=
+cgroup,
+ 				struct hugetlb_cgroup *parent_h_cgroup)
+ {
+ 	int idx;
++	int node;
+
+ 	for (idx =3D 0; idx < HUGE_MAX_HSTATE; idx++) {
+ 		struct page_counter *fault_parent =3D NULL;
+@@ -124,6 +125,15 @@ static void hugetlb_cgroup_init(struct hugetlb_cgroup =
+*h_cgroup,
+ 			limit);
+ 		VM_BUG_ON(ret);
+ 	}
++
++	for_each_node(node) {
++		/* Set node_to_alloc to -1 for offline nodes. */
++		int node_to_alloc =3D
++			node_state(node, N_NORMAL_MEMORY) ? node : -1;
++		h_cgroup->nodeinfo[node] =3D
++			kzalloc_node(sizeof(struct hugetlb_cgroup_per_node),
++				     GFP_KERNEL, node_to_alloc);
++	}
+ }
+
+ static struct cgroup_subsys_state *
+@@ -132,7 +142,10 @@ hugetlb_cgroup_css_alloc(struct cgroup_subsys_state *p=
+arent_css)
+ 	struct hugetlb_cgroup *parent_h_cgroup =3D hugetlb_cgroup_from_css(parent=
+_css);
+ 	struct hugetlb_cgroup *h_cgroup;
+
+-	h_cgroup =3D kzalloc(sizeof(*h_cgroup), GFP_KERNEL);
++	unsigned int size =3D
++		sizeof(*h_cgroup) +
++		MAX_NUMNODES * sizeof(struct hugetlb_cgroup_per_node *);
++	h_cgroup =3D kzalloc(size, GFP_KERNEL);
+ 	if (!h_cgroup)
+ 		return ERR_PTR(-ENOMEM);
+
+@@ -292,7 +305,9 @@ static void __hugetlb_cgroup_commit_charge(int idx, uns=
+igned long nr_pages,
+ 		return;
+
+ 	__set_hugetlb_cgroup(page, h_cg, rsvd);
+-	return;
++	if (!rsvd && h_cg)
++		h_cg->nodeinfo[page_to_nid(page)]->usage[idx] +=3D nr_pages
++								 << PAGE_SHIFT;
+ }
+
+ void hugetlb_cgroup_commit_charge(int idx, unsigned long nr_pages,
+@@ -331,7 +346,9 @@ static void __hugetlb_cgroup_uncharge_page(int idx, uns=
+igned long nr_pages,
+
+ 	if (rsvd)
+ 		css_put(&h_cg->css);
+-
++	else
++		h_cg->nodeinfo[page_to_nid(page)]->usage[idx] -=3D nr_pages
++								 << PAGE_SHIFT;
+ 	return;
+ }
+
+@@ -421,6 +438,56 @@ enum {
+ 	RES_RSVD_FAILCNT,
+ };
+
++static int hugetlb_cgroup_read_numa_stat(struct seq_file *seq, void *dummy=
+)
++{
++	int nid;
++	struct cftype *cft =3D seq_cft(seq);
++	int idx =3D MEMFILE_IDX(cft->private);
++	bool legacy =3D MEMFILE_ATTR(cft->private);
++	struct hugetlb_cgroup *h_cg =3D hugetlb_cgroup_from_css(seq_css(seq));
++	struct cgroup_subsys_state *css;
++	unsigned long usage;
++
++	if (legacy) {
++		/* Add up usage across all nodes for the non-hierarchical total. */
++		usage =3D 0;
++		for_each_node_state(nid, N_MEMORY)
++			usage +=3D h_cg->nodeinfo[nid]->usage[idx];
++		seq_printf(seq, "total=3D%lu", usage);
++
++		/* Simply print the per-node usage for the non-hierarchical total. */
++		for_each_node_state(nid, N_MEMORY)
++			seq_printf(seq, " N%d=3D%lu", nid,
++				   h_cg->nodeinfo[nid]->usage[idx]);
++		seq_putc(seq, '\n');
++	}
++
++	/* The hierarchical total is pretty much the value recorded by the
++	 * counter, so use that.
++	 */
++	seq_printf(seq, "%stotal=3D%lu", legacy ? "hierarichal_" : "",
++		   (u64)page_counter_read(&h_cg->hugepage[idx]) * PAGE_SIZE);
++
++	/* For each node, transverse the css tree to obtain the hierarichal
++	 * node usage.
++	 */
++	for_each_node_state(nid, N_MEMORY) {
++		usage =3D 0;
++		rcu_read_lock();
++		css_for_each_descendant_pre(css, &h_cg->css) {
++			usage +=3D hugetlb_cgroup_from_css(css)
++					 ->nodeinfo[nid]
++					 ->usage[idx];
++		}
++		rcu_read_unlock();
++		seq_printf(seq, " N%d=3D%lu", nid, usage);
++	}
++
++	seq_putc(seq, '\n');
++
++	return 0;
++}
++
+ static u64 hugetlb_cgroup_read_u64(struct cgroup_subsys_state *css,
+ 				   struct cftype *cft)
+ {
+@@ -654,8 +721,14 @@ static void __init __hugetlb_cgroup_file_dfl_init(int =
+idx)
+ 	cft->seq_show =3D hugetlb_cgroup_read_u64_max;
+ 	cft->flags =3D CFTYPE_NOT_ON_ROOT;
+
+-	/* Add the events file */
++	/* Add the numa stat file */
+ 	cft =3D &h->cgroup_files_dfl[4];
++	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.numa_stat", buf);
++	cft->seq_show =3D hugetlb_cgroup_read_numa_stat;
++	cft->flags =3D CFTYPE_NOT_ON_ROOT;
++
++	/* Add the events file */
++	cft =3D &h->cgroup_files_dfl[5];
+ 	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.events", buf);
+ 	cft->private =3D MEMFILE_PRIVATE(idx, 0);
+ 	cft->seq_show =3D hugetlb_events_show;
+@@ -663,7 +736,7 @@ static void __init __hugetlb_cgroup_file_dfl_init(int i=
+dx)
+ 	cft->flags =3D CFTYPE_NOT_ON_ROOT;
+
+ 	/* Add the events.local file */
+-	cft =3D &h->cgroup_files_dfl[5];
++	cft =3D &h->cgroup_files_dfl[6];
+ 	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.events.local", buf);
+ 	cft->private =3D MEMFILE_PRIVATE(idx, 0);
+ 	cft->seq_show =3D hugetlb_events_local_show;
+@@ -672,7 +745,7 @@ static void __init __hugetlb_cgroup_file_dfl_init(int i=
+dx)
+ 	cft->flags =3D CFTYPE_NOT_ON_ROOT;
+
+ 	/* NULL terminate the last cft */
+-	cft =3D &h->cgroup_files_dfl[6];
++	cft =3D &h->cgroup_files_dfl[7];
+ 	memset(cft, 0, sizeof(*cft));
+
+ 	WARN_ON(cgroup_add_dfl_cftypes(&hugetlb_cgrp_subsys,
+@@ -742,8 +815,14 @@ static void __init __hugetlb_cgroup_file_legacy_init(i=
+nt idx)
+ 	cft->write =3D hugetlb_cgroup_reset;
+ 	cft->read_u64 =3D hugetlb_cgroup_read_u64;
+
++	/* Add the numa stat file */
++	cft =3D &h->cgroup_files_dfl[8];
++	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.numa_stat", buf);
++	cft->private =3D MEMFILE_PRIVATE(idx, 1);
++	cft->seq_show =3D hugetlb_cgroup_read_numa_stat;
++
+ 	/* NULL terminate the last cft */
+-	cft =3D &h->cgroup_files_legacy[8];
++	cft =3D &h->cgroup_files_legacy[9];
+ 	memset(cft, 0, sizeof(*cft));
+
+ 	WARN_ON(cgroup_add_legacy_cftypes(&hugetlb_cgrp_subsys,
+diff --git a/tools/testing/selftests/vm/write_to_hugetlbfs.c b/tools/testin=
+g/selftests/vm/write_to_hugetlbfs.c
+index 6a2caba19ee1..d2da6315a40c 100644
+--- a/tools/testing/selftests/vm/write_to_hugetlbfs.c
++++ b/tools/testing/selftests/vm/write_to_hugetlbfs.c
+@@ -37,8 +37,8 @@ static int shmid;
+ static void exit_usage(void)
+ {
+ 	printf("Usage: %s -p <path to hugetlbfs file> -s <size to map> "
+-	       "[-m <0=3Dhugetlbfs | 1=3Dmmap(MAP_HUGETLB)>] [-l] [-r] "
+-	       "[-o] [-w] [-n]\n",
++	       "[-m <0=3Dhugetlbfs | 1=3Dmmap(MAP_HUGETLB)>] [-l(sleep)] [-r(priv=
+ate)] "
++	       "[-o(populate)] [-w(rite)] [-n(o-reserve)]\n",
+ 	       self);
+ 	exit(EXIT_FAILURE);
+ }
+@@ -161,6 +161,11 @@ int main(int argc, char **argv)
+ 	else
+ 		printf("RESERVE mapping.\n");
+
++	if (want_sleep)
++		printf("Sleeping\n");
++	else
++		printf("Not sleeping\n");
++
+ 	switch (method) {
+ 	case HUGETLBFS:
+ 		printf("Allocating using HUGETLBFS.\n");
+--
+2.33.0.1079.g6e70778dc9-goog
