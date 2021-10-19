@@ -2,223 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66984333A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D814333AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbhJSKkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:40:04 -0400
-Received: from mail-mw2nam12on2122.outbound.protection.outlook.com ([40.107.244.122]:39194
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230097AbhJSKkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:40:02 -0400
+        id S235268AbhJSKk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:40:57 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:29310 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230123AbhJSKk4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 06:40:56 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JAaVT8010378;
+        Tue, 19 Oct 2021 10:38:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=iArUNgSW7wg5vF0G3exdVVyPjWDRm2tqmFGPAANWwVI=;
+ b=SY11+oCG7347QDgEb5iQNLUSOKZfNI29bkVjQ36QWmdLkPxHOMUGy2F7Y0euElIv0Jrx
+ /4GG9TmzaM2rSJY9ZtEyzfjpCrkkvgxAP7a2hreIJXkFRjxOnHU1zn/SMMWDxY0Jz0Ul
+ KdVwnSzedHF0TE9m6lqxIuiuXezoqsreksDqKRPVE6QVmFQM411KvgUtOAyh9DtLfYOz
+ EBZ2svVcgNTJdsnEH7V8zGpsX2URhUPuZhFfQb9+p69W9CxP9/IVx/SDNiDjJ6NxX3tV
+ QnHDOKjI/Yx8zUYbkquNAPE5AuO50CCoBlC2LMTKCliOiNkERN8VAGnrKmGnXqb/YzHi Kg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bsr451c40-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 10:38:39 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19JAUnY4021132;
+        Tue, 19 Oct 2021 10:38:38 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
+        by aserp3030.oracle.com with ESMTP id 3bqmsehh3r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 10:38:38 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZGiE83nZNsqBsJbsmp8XmNaaqk0OILHlejh5DcKD0JaFS1khvVrE8+rbwIqDaWhhv4okiTJ4PJ4GAGffeVDGPD5oROcgOe8EY1zhJsC1NITjcapqAbGPz5Gl3Z4Z2NIdi+MpMBX+nFpSZPAR3lUSoGtaydidKKJTSkTOApVjvnz+C5YjCclxnihpiqdnVmSt6cd7YhHDqDrlptqX1xxKuWTwiO//Kq6sMRhnAEb4hDs/KhKgjNyxWc8R3/39aCAb4Vb8Ds0a3RjXSmVHNMb4ZhXGcbMfEK0ssgiNn7NsrEp6p1NGMW6c0Q7Ca+vIITAQZ7tU2VjUSamFubbDBdFyrQ==
+ b=Mp8Y8qdOXYGbjjcnC0lQib6ALszL2qTV76b0j+zRVBMey2guaZqTuB33xMZ/9LHJIAy5uwQip+inIncDH/Q+9IolCol2q6wU2PIl8+6jRUeoj0bbn9Wn3Umg9kXz8nr3TQm8rQAFaMaMHOkLLunSA0VXYRrpr/jXQ3B5Qu5hMYILaUSXNBpFLi0u0TLl1VIC7PYSl8VV+wFNUi76PJtcNE6RMCGMzobKZdL9tVvYnmcc6XztDk9Jgm3sBujp317jBXi8PTwPuGNOYkzLi/D8MmvspZyNhHaidukP6inJDaJpJWLI+T/UVgtNS/fW7yN+/HG4yTiLB0udEXcgFW9arA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x7yWm3bkKTkq+MyS2SQO7QnMD8ckP/yInVUO4fAv8V4=;
- b=SE72hs5fa+wPEiSFxJBoTg8ORunkU2phzeY8fuHfNVYahpsdazSGPaAjTceH6WJXP/5RkdKrD3f49lwbiOFsFdhnT1huKs2Qo1D3KI8zXoNyoNqrGaoo739FEdvEHYJxz+bHj2khrMXz+3LcTb+4Vzl30+2Io+Q29UDBHp9LEgbe5plXkWZ0kl2UeWxUS7OPYjYCAd2frtzC9WZey9L+IZU0SJgOhui8NbA6sn5O+68QAxkivHp+jc7D41/RqCov6A+Jy/gS1rvWl9JKSDW7wFdU4Er0D8CUyU+/NSYtgVACaehwKnsXRY46uzcOMV2qub5akIis6MRSWimjCJOpBw==
+ bh=iArUNgSW7wg5vF0G3exdVVyPjWDRm2tqmFGPAANWwVI=;
+ b=Q0+iooiKrVs6jUXRpD2skXsFp8xMvEUwRr84tstCVHntxp4z8t6JIyxr+e++mWzzFFIe5OnIAto95npRP3X0/Q6wtbqOPngk/phEcBS2jq00aAvGu2l35keCj2pyP2JPTtl5HZKSB99DLGhJFoZRiICrmutIi6UogFnyWUvuG/syYC4zB98mtdC9gJJhqR2fB1T94rbev8mgq8eFIuh/lXMz6ezqU4ZHxtX0RWHstF61BkVuUlf1v4G9q4rokhuAwKbjrVmi8/qtv9itbE5SXTODGyOwl4ezsxAFTLVOx+sofX7nokDmnI+2HqsGbfdT1k32xtmjt7MPRsUN6FYMzA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x7yWm3bkKTkq+MyS2SQO7QnMD8ckP/yInVUO4fAv8V4=;
- b=RvR6BYwbPANoBcZM4/QZ6YVAVQdFYr2Q/genSDlGZMiUyWEFTeexyU2oEk6DlDc70g7xFRMtx6R6He4Ye3mkM+HQC0N4MBWHsIzzWYSkGqt+QqI3yMhyfNgFewkg8+Uu+c9tTXmTDP8fPxALyxuaZYmV89KKrbdsTsMPE3D7J/0=
-Authentication-Results: jms.id.au; dkim=none (message not signed)
- header.d=none;jms.id.au; dmarc=none action=none
- header.from=amperemail.onmicrosoft.com;
-Received: from SJ0PR01MB7238.prod.exchangelabs.com (2603:10b6:a03:3f7::22) by
- BYAPR01MB5286.prod.exchangelabs.com (2603:10b6:a03:86::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.17; Tue, 19 Oct 2021 10:37:45 +0000
-Received: from SJ0PR01MB7238.prod.exchangelabs.com
- ([fe80::1d89:1ea0:77b9:2328]) by SJ0PR01MB7238.prod.exchangelabs.com
- ([fe80::1d89:1ea0:77b9:2328%9]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 10:37:45 +0000
-Message-ID: <161db1b2-f52f-2bbb-7121-a4097df8cf48@amperemail.onmicrosoft.com>
-Date:   Tue, 19 Oct 2021 17:37:34 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH v2 1/3] ARM: dts: aspeed: mtjade: Add some gpios
-Content-Language: en-US
-To:     Joel Stanley <joel@jms.id.au>,
-        Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20211019060155.945-1-quan@os.amperecomputing.com>
- <20211019060155.945-2-quan@os.amperecomputing.com>
- <CACPK8Xcp0ruL-7p3AA+yvba3Drrwm-=-hMnMpd=a1aHwQHnE1A@mail.gmail.com>
-From:   Thang Nguyen <thang@amperemail.onmicrosoft.com>
-In-Reply-To: <CACPK8Xcp0ruL-7p3AA+yvba3Drrwm-=-hMnMpd=a1aHwQHnE1A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HK2PR02CA0215.apcprd02.prod.outlook.com
- (2603:1096:201:20::27) To SJ0PR01MB7238.prod.exchangelabs.com
- (2603:10b6:a03:3f7::22)
+ bh=iArUNgSW7wg5vF0G3exdVVyPjWDRm2tqmFGPAANWwVI=;
+ b=FFhEk80wVep/rl4394BQ09Eo8iezAQ9hsrOhpD3uhZtAwVmEE9t8T/FL3vmn9f+WQJm7lJxJ//xCZQcpk5oqGZHqTohZfv1U+bAvdVDJgQIyiQ/F4jJlXPvwhIk0k06yu8M6AkHCuJDjf2KUECrcJ/fOoZ/8GaVSJMavfGnbpXk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BLAPR10MB4867.namprd10.prod.outlook.com (2603:10b6:208:321::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Tue, 19 Oct
+ 2021 10:38:37 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 10:38:36 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <jbacik@fb.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH stable-4.14.y] btrfs: always wait on ordered extents at fsync time
+Date:   Tue, 19 Oct 2021 18:38:20 +0800
+Message-Id: <4fb0d755f4265d71b2a0d314232e53b22067fb0b.1634624427.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0244.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::28) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Received: from [192.168.86.197] (42.116.119.23) by HK2PR02CA0215.apcprd02.prod.outlook.com (2603:1096:201:20::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Tue, 19 Oct 2021 10:37:41 +0000
+Received: from localhost.localdomain (39.109.140.76) by SG2PR06CA0244.apcprd06.prod.outlook.com (2603:1096:4:ac::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend Transport; Tue, 19 Oct 2021 10:38:34 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98cc5d47-7daf-4680-35c6-08d992ec7cb0
-X-MS-TrafficTypeDiagnostic: BYAPR01MB5286:
+X-MS-Office365-Filtering-Correlation-Id: b443b619-b853-46ba-de58-08d992ec9b6b
+X-MS-TrafficTypeDiagnostic: BLAPR10MB4867:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR01MB528625E5E8F98DB92250CB448DBD9@BYAPR01MB5286.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Microsoft-Antispam-PRVS: <BLAPR10MB48672419872D9FED0613B210E5BD9@BLAPR10MB4867.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QsIHlkrD6Pgk60kE/0HiLcOvEu4z/IRlQElG5hjyKYqj/yVTTIWzx2NZD2Q9J//W1oI5Ri34Ur08YRu672PO4lfLtY7oQ6glyGO62KjEzufoNArCpj2k5y1T2dDUvoBcMxzB7qmb+mJ5QyfKhGc68cL5Mb+aLdC8UgbVU5fbjjcVqct+APakXYot65M9TQwrzlnVBm8aqgBowC1TXqTbgGtOe8H17mhEZS2lvzbdmoRSzu9Xm/BWSPNzw11URoSuoNpeb+cAviJjdMf1JBxx4awTdTPJjnNT4DqqG8bFetR/WsXttINACamkV5eTIR+l9HvfMm2dNlA9iba+r7LU0LYIk8vXKPbx3dOQybwotz50XXYJBnqmrZAar4wwlIFyj6MLZv4jhhmSHJvlCPKplXAWDX02dIjY9B9hT+ZCmdZZGqp7j/9GU6CPKe7woevKhIJC1zqGDEe+2xHgioxaxVpR8YwjwyVGqDYrCn10lfa7LYz3DsZIBdaUe6DEBJZFEz/EMb9X9aBBImHXjIfGkmns4ud4DPKqaP+GoSqblPRENF1phM+d9BAcycZrTP7KrDJtII9J4TS1MRHUvQ/Ne/v5f4WGCXbHhhFMk0PRx7/6eLi83AuigjU4CmPaqoQF1kZMF7ylsFKP9iVPu1OqjS+oQhPGRQmoddkASzzoUKXfDpnZgzE/7zlfMxkKSqLteeOy6yVVNU7Gg02A01w81SINH/VylJ3oSiuszGFHyM1zrrRFzDRmwvj8H2xlJk3IvIpuBJ/78zShgkw0L/dfilWYs6WmGRlLkbT7eTBX5l+X33BytU4E23N9SdSoFzjtWZgrOc2rPzqck9tl5UGXgEipSp8r+SSB/T/EnIXrPQ4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB7238.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(26005)(66556008)(6486002)(54906003)(956004)(107886003)(5660300002)(53546011)(966005)(83380400001)(110136005)(8936002)(83170400001)(31696002)(66946007)(2616005)(42882007)(16576012)(31686004)(8676002)(316002)(38350700002)(2906002)(508600001)(52116002)(186003)(38100700002)(6666004)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: obMBX7u6Rrr73qi1ugFhh6TqD0gwaA51esjG6AZ4KqRHg8p1H/j800gYsIZHnihHZ+BwqnlA38Wfnokw6cWkat7pUH96HzK4K6oOM5jknWqaEA2w+cn542/4BL2/H29Cwj/iBerKnd5HkkxNQKC0D59OJgKpM+fAVN6rq0rye3EVidqQKQyK1zMEbsjddlkdD/tfPXFYuAcHZhzIvwtXUSKg2DafuKE+f4r1bjwJRx4vJH6NlDNLx/l6OAv/tjI7CTDlzEgVh1AogWzGR3RczqiOuoGvVWR/+RtorhJAvegu1CWTexe1Bg+fuuQZPdOJtecohdo/5mmj6y7nAlmFgOuijjk84z3CiIkwzlxNK+H8yVFPZ7ZF3irsmlhIzRTbcLsQZN8LI6XHKI62STRlyv0GoFuT3kS1b7ItENg7k++jgCTAy8Df0RYSdLstxyWvcY2T9RqGc/0efq4siRnyoSmWvBiscCr1KmGP2s3otr2hk1H3wN3pEj8MAfMHJ+cW7zr09q0msxK0UC6PZcHFL458LbBM4eiE6z8WPBUGQKLjaLEj+l9ZvG2/Zh0ZkfTA+LdrM2J+ZKOPsIkEJCYbrhQUCQMnm7gVhsEYirL6yhPZSjkYqpwga6waOKAEe7fYDpn0xlWFZH8MWFlt7DJhp+6vWzx/ti6LCNtmF4I68Lm5ZRBV4DRsT/ZBIdLuTjK4umPnkfv6O/pwxdp603u81A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(44832011)(8676002)(2906002)(26005)(8936002)(52116002)(186003)(316002)(54906003)(956004)(2616005)(508600001)(6512007)(86362001)(38350700002)(6486002)(38100700002)(83380400001)(6666004)(107886003)(36756003)(6506007)(66946007)(66476007)(4326008)(66556008);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZGxRM2Q0YnFrSFdIYldkdUtJRWNnaEdqcC82WW5hYjFxaUl4ZzdtZ253S3Ja?=
- =?utf-8?B?OUF0bEVQU0puREFLdzN1eFRRNFlBYnFnUGIvcGZnN0h6cUpaS0RQRS8rSWxC?=
- =?utf-8?B?WUljZ3B3Z3l1TzBnTWtRNW9lSnhvZHUyWGlnZEtQSXBpdDhWK1VDQ2tmMlM3?=
- =?utf-8?B?blBJam8zZlJuV3h4VHBiVllPRnhDZ1poYS9GOXg0RFlUeFpDaGpwSVNTRk9S?=
- =?utf-8?B?NUV4RWtlQzN2UnAvNGpQOU80UmpSM3BGaVJlYmRONTc5RnRHbmIwcWRMSUE5?=
- =?utf-8?B?T1orWHhKdkRrQTZiM1BUUXNQRzFtYUtPaUx3bjQ0eFJHTWVMOXRiMlFDQnNM?=
- =?utf-8?B?S0JHd2RSZFRtRkFXQ1NRNzQ5cVNwZEV2K2FUSlJRTStOQjdRT2FkSStzSnJk?=
- =?utf-8?B?OTRhaWpNQzFneVpnMjZ4REZpK2kwZWRvdW9URDQzcDFlNnRxNTBST05nVWpP?=
- =?utf-8?B?bktNYk5iS1JnaEFreVVyc20wcUNWV3pmRXAzWUVjTnIwdmpLNGdPcEdjUDAw?=
- =?utf-8?B?V05yRFU2VWhqQU9ZUjFEZUJJUG9pS1ZxTVQyOHlHcTNFc3NZaHI5aDR1R1J4?=
- =?utf-8?B?S1BLR1B5V0c3MVVXYmxZMkpDcjdXYlBiS21sZGV4UDRNV28vZzVrclZFeFg4?=
- =?utf-8?B?aU85bzM4MmtsREczdTZHbDlSRTBtZWs3WkdiVGxWUzZZNzFjcGpHSlh3bU1M?=
- =?utf-8?B?bHpFajdQV3o1VUxWdnBaN09NZ3dPUnJCMTdWUjlneDRpTkNNcmV4YjFmeFI0?=
- =?utf-8?B?MWZXenRJbzdaRWVteTk5Ylh5LzNvaXdRWW1TWHBoSU9nWTVJZXlhM2Jhb0Fu?=
- =?utf-8?B?T2p3YytVMVdOU1V5N25DM1MvOWxhVzZJWU1Sbk1IK1A0U3YxZXcwREVIWER1?=
- =?utf-8?B?ZzgrVytSRDg2Wjg2ZGFTSHlmdy9lUlhDcVdhUEN0K2lWS3BXZ1VLSmZ4Mm92?=
- =?utf-8?B?UXdQb0h6cUZmbDMyU0dmRkxtQWVrUTlpZ0ZJMy9VMmVtTnMyakphVkN1SjRC?=
- =?utf-8?B?UlVCdFJEcmIrTCt3dEhjQ2ZvZjdVdGtuWUZJd2hPc1dGMC9TWVNwRnhaTlgr?=
- =?utf-8?B?Q1gwbkVkN1Z4RDdpdXhMV05vSUpRME9GakxZUDJEUzBadURjM3pVTlJaNlJZ?=
- =?utf-8?B?bDA4N0dKZFVIdlc0cHZleTRRcm02SjlYbTVvS2t4N1FYUm5jUmo2Z3VVczBU?=
- =?utf-8?B?bVNHTmllY3hac2prV0VieHNZalFmbG1xRDVyYXNNRDJXUmtjL0Z6VDB6eG9K?=
- =?utf-8?B?WFVOakljbkx5QVV5dm9raXhkMDkzb2ZVWWtWcDdGS0s4NWtLQWlGMTZsUG1y?=
- =?utf-8?B?Qml6N3lYemtNeFA3UUlpdmkxSFphNnFSU3RQWGptd1hHS1pUb2R3T0w4UHhJ?=
- =?utf-8?B?YVdtU3hUV0IxNjR5L09ZRGFLVmdURnkyTllzL2VWT082ems5T3VXOEx2TmtR?=
- =?utf-8?B?RE94TUM3WmlOU3VTSyt0Ulh6MEFyUnRBZjVPckEyMEtheHNKT0NYeDhBMW94?=
- =?utf-8?B?cndSUVJqTnA0WVNHOUp3cEVFbmYyOUZTazAwdjJuVjlGeEVmTUJiNlFLdnZk?=
- =?utf-8?B?MlJPdy9Rak9ZNEFMLy9UT3VFWVd3UmVKNFp6alNzbG1XZG1yY25EYlZ2VndW?=
- =?utf-8?B?U1ZFNUp5emJIRTY3dUxqTmVrd3FGNkdLS0R3MnJWeE9OQ2JsaTIrc0lRNFla?=
- =?utf-8?B?SGo5V2lqUzNYeXNVc0hHZ25GK0lZRlZ5cTd6N01JRGlFb1ZLZWVueVF2Wm51?=
- =?utf-8?Q?qLOnsuC62FbcFmf+jPcN1G8tPmsapblt/k/lnP7?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98cc5d47-7daf-4680-35c6-08d992ec7cb0
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB7238.prod.exchangelabs.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dfa7/meg28jIVqDSclf9+bmKQLIzQQJaxF0D7M3hDRUTDs+gqFO/7XMWuSff?=
+ =?us-ascii?Q?KrDA9M/rY6OboRe8Qe0x6jQlrZSmShjM8l0gaKkQ3eg/2WQb3FrrLj+lgKXu?=
+ =?us-ascii?Q?OD0kM/g9aJbKUtDtoFtdWRLh80KLqKNtPA90rUu8JKpygCArl/r4JFqsU/zb?=
+ =?us-ascii?Q?DPXYuU7PcqVhq47EVKWPyIh142jbgklH7QoaH32/7/WjJPqkt11iRDZh+xJy?=
+ =?us-ascii?Q?pNABHWxIZVFNry7xK8SYSe4yAbJEjuLRCNZH8x6YJ9oqw6mVgo1hRO37KO7p?=
+ =?us-ascii?Q?8fsKRaqRcRmIKxtGtVrzqFu8MnaLxgEEB1+VvNrxjLfkz3UAE95w3TEJ/AVu?=
+ =?us-ascii?Q?jdb64ZBVdml3elGh1gstnHjLeDTXzWXXq+UOGCcuvyNHjaSj9lt8YjD1nIuC?=
+ =?us-ascii?Q?O3IuNRZC7uWSIBNsRYmn0R5pVvXnL7/nEKN3SCRDb4MoxDUR3Am2P8JaoGxA?=
+ =?us-ascii?Q?pUWzQr+PZlj69syJyPLfXfrYoXoxplYOrKpJeHZBve/AvFGSQi1RS1DR+Zmo?=
+ =?us-ascii?Q?wewpY0t7mqZbdfei1nu2sqzjTOH44qroL1nsRaIUnC1n+hb56TkyI5qCUiMj?=
+ =?us-ascii?Q?R7jCmJUJQHjPmXoSqE+gqrI5hF0wjWmXmgWtQ9Drpeuq8NIzEUrQ4hFGsLFM?=
+ =?us-ascii?Q?lu71Qy/xLvQU93/mQsKtLGKcznM1JsQZaqhZe1EAEDq6pewmbspmmHYWtIM4?=
+ =?us-ascii?Q?NSL9qr1sZn7/UWBTah1HKJ6lZL1FM27uaTasLT+rB6J+Ar8y8QhlBOtIFdYi?=
+ =?us-ascii?Q?LC4uz0vEC2jGCCb+HQEY9CdmsD/4P6Jdge0oMFDT1DsDlbyMVzyeRSuXaYim?=
+ =?us-ascii?Q?1q1iGkSExYEn2sc5E7CU7SH0vZRWwGWKAKfNnB58SxvppoRT3aV+6mPstp7R?=
+ =?us-ascii?Q?Ka2mRBhhJcBc92nUAvtzrv2aUHGSdr5XdSEr4BBY01+sHn6S7bCF6vPLNt8x?=
+ =?us-ascii?Q?ezjWE/h96mULNZDQY//RM3ZSgMEq2a3c5FgxgOBPUE6kihqKrYsV2B8lLZvX?=
+ =?us-ascii?Q?F/2DZxWO+BAqbPReNQPWGJ2ubSPfSgTvdcdWhhz9+MZR9+OFGF0QhhtVKg1n?=
+ =?us-ascii?Q?h4zP/OiFr+X1zTFzrKMwxCnMHyBdDixOAXZHtkqN3D2fBbyaGrT3SDjc2EMa?=
+ =?us-ascii?Q?qHckc6BKnQNnM1c/Yq+lZU+F2tJ/jjtpcNruTzEBhNvLLBUlWoprTfXlPJr+?=
+ =?us-ascii?Q?8nVpp1JgNaU1TB4Wmki8vnHeX4FQmR7JLW+ybp/2QpE/eI0MbZBsLlWwHMqQ?=
+ =?us-ascii?Q?7TvTPtdS8qlnA9piZgdwKkbl8ttGT5dQn+0iRgRvEf/bocbilbSbmytJ5Uyn?=
+ =?us-ascii?Q?SiPtoqd4bA8lOxG2aJV7Ss3k?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b443b619-b853-46ba-de58-08d992ec9b6b
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 10:37:45.4203
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 10:38:36.9271
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DhvLgr9/9lZN0gPaL2yZllo4XJfTl3rnGTdKD+KvtPQ85KpxYJdsGS2pk5M+VJyz66OmPT8zp2I2i+IyesCH+qiHbuS32cAASm2TCX8/QFOEBfo9KZ8warZRiKFCH5hI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB5286
+X-MS-Exchange-CrossTenant-UserPrincipalName: xCQVN3EvOmvV9HWQZqigVIbmwRLNVuqdJtOpipTZ+c/2VvRqcl3IbHgIqwl6rQ8ElW/D+2EGIIX83fejbLgNSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4867
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10141 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110190064
+X-Proofpoint-ORIG-GUID: Wu9cy2XsaWk3rl-KpUBr6n0jJlKCqfhZ
+X-Proofpoint-GUID: Wu9cy2XsaWk3rl-KpUBr6n0jJlKCqfhZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Josef Bacik <jbacik@fb.com>
 
+Commit b5e6c3e170b77025b5f6174258c7ad71eed2d4de upstream.
 
-On 19/10/2021 13:46, Joel Stanley wrote:
-> On Tue, 19 Oct 2021 at 06:02, Quan Nguyen <quan@os.amperecomputing.com> wrote:
->>
->> Add S0_SCP_AUTH_FAIL, S1_SCP_AUTH_FAIL gpios to indicates firmware
->> authentication fail on each socket.
-> 
-> These use the gpio-keys API to expose the GPIOs. I think OpenBMC is
-> moving away from this abstraction, and instead reading the GPIOs with
-> the gpio chardev interface.
-Can you give an example of the suggested change?
-> 
->>
->> Add gpio RTC_BAT_SEN_EN to enable RTC battery adc sensor.
->>
->> Add BMC_I2C4_O_EN gpio to go high at boot to enable access to I2C4 bus.
-> 
-> OpenBMC has started a process to document GPIOs that are exposed to
-> userspace, initially so a common userspace can be used across
-> machines. I like doing it for the additional reason that it provides
-> consistency in the naming.
-[Thang] The BMC_I2C4_O_EN GPIO is used in kernel only which enabling 
-access to all I2C devices in I2C4 bus, like FRU EEPROM. As it is used as 
-gpio-hog, no userspace access is allowed/intended. It can't be 
-configured in userspace as FRU EEPROM is probed only in kernel boot.
-> 
-> https://github.com/openbmc/docs/blob/master/designs/device-tree-gpio-naming.md
-> 
-> If you could take a look at that document and add your GPIOs where
-> possible, and then update the device tree.
-[Thang] I am aware of this GPIO naming convention document. But I think 
-it is to define common name for special GPIOs that applications can use.
+There's a priority inversion that exists currently with btrfs fsync.  In
+some cases we will collect outstanding ordered extents onto a list and
+only wait on them at the very last second.  However this "very last
+second" falls inside of a transaction handle, so if we are in a lower
+priority cgroup we can end up holding the transaction open for longer
+than needed, so if a high priority cgroup is also trying to fsync()
+it'll see latency.
 
->>
->> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
->> Signed-off-by: Thang Nguyen <thang@os.amperecomputing.com>
->> ---
->> v2:
->>    - None
->>
->>   .../arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 21 ++++++++++++++++++-
->>   1 file changed, 20 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
->> index 57b0c45a2298..3515d55bd312 100644
->> --- a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
->> +++ b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
->> @@ -86,6 +86,18 @@ S0_cpu_fault {
->>                          linux,code = <ASPEED_GPIO(J, 1)>;
->>                  };
->>
->> +               S0_scp_auth_fail {
->> +                       label = "S0_SCP_AUTH_FAIL";
->> +                       gpios = <&gpio ASPEED_GPIO(J, 2) GPIO_ACTIVE_LOW>;
->> +                       linux,code = <ASPEED_GPIO(J, 2)>;
->> +               };
->> +
->> +               S1_scp_auth_fail {
->> +                       label = "S1_SCP_AUTH_FAIL";
->> +                       gpios = <&gpio ASPEED_GPIO(Z, 5) GPIO_ACTIVE_LOW>;
->> +                       linux,code = <ASPEED_GPIO(Z, 5)>;
->> +               };
->> +
->>                  S1_overtemp {
->>                          label = "S1_OVERTEMP";
->>                          gpios = <&gpio ASPEED_GPIO(Z, 6) GPIO_ACTIVE_LOW>;
->> @@ -590,7 +602,7 @@ &gpio {
->>          /*Q0-Q7*/       "","","","","","UID_BUTTON","","",
->>          /*R0-R7*/       "","","BMC_EXT_HIGHTEMP_L","OCP_AUX_PWREN",
->>                          "OCP_MAIN_PWREN","RESET_BUTTON","","",
->> -       /*S0-S7*/       "","","","","","","","",
->> +       /*S0-S7*/       "","","","","RTC_BAT_SEN_EN","","","",
-> 
-> I suggest you create a proposal to call this one
-> battery-voltage-read-enable. I know that some of the IBM machines
-> intend to have this same GPIO.
-[Thang] is there any application to use this pin name?
-> 
->>          /*T0-T7*/       "","","","","","","","",
->>          /*U0-U7*/       "","","","","","","","",
->>          /*V0-V7*/       "","","","","","","","",
->> @@ -604,4 +616,11 @@ &gpio {
->>                          "S1_BMC_DDR_ADR","","","","",
->>          /*AC0-AC7*/     "SYS_PWR_GD","","","","","BMC_READY","SLAVE_PRESENT_L",
->>                          "BMC_OCP_PG";
->> +
->> +       i2c4_o_en {
->> +               gpio-hog;
->> +               gpios = <ASPEED_GPIO(Y, 2) GPIO_ACTIVE_HIGH>;
->> +               output-high;
->> +               line-name = "BMC_I2C4_O_EN";
->> +       };
->>   };
->> --
->> 2.28.0
->>
+Signed-off-by: Josef Bacik <jbacik@fb.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/file.c | 56 ++++---------------------------------------------
+ 1 file changed, 4 insertions(+), 52 deletions(-)
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index dd2504322a87..2f386d8dbd0e 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2102,53 +2102,12 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	atomic_inc(&root->log_batch);
+ 	full_sync = test_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
+ 			     &BTRFS_I(inode)->runtime_flags);
++
+ 	/*
+-	 * We might have have had more pages made dirty after calling
+-	 * start_ordered_ops and before acquiring the inode's i_mutex.
++	 * We have to do this here to avoid the priority inversion of waiting on
++	 * IO of a lower priority task while holding a transaciton open.
+ 	 */
+-	if (full_sync) {
+-		/*
+-		 * For a full sync, we need to make sure any ordered operations
+-		 * start and finish before we start logging the inode, so that
+-		 * all extents are persisted and the respective file extent
+-		 * items are in the fs/subvol btree.
+-		 */
+-		ret = btrfs_wait_ordered_range(inode, start, len);
+-	} else {
+-		/*
+-		 * Start any new ordered operations before starting to log the
+-		 * inode. We will wait for them to finish in btrfs_sync_log().
+-		 *
+-		 * Right before acquiring the inode's mutex, we might have new
+-		 * writes dirtying pages, which won't immediately start the
+-		 * respective ordered operations - that is done through the
+-		 * fill_delalloc callbacks invoked from the writepage and
+-		 * writepages address space operations. So make sure we start
+-		 * all ordered operations before starting to log our inode. Not
+-		 * doing this means that while logging the inode, writeback
+-		 * could start and invoke writepage/writepages, which would call
+-		 * the fill_delalloc callbacks (cow_file_range,
+-		 * submit_compressed_extents). These callbacks add first an
+-		 * extent map to the modified list of extents and then create
+-		 * the respective ordered operation, which means in
+-		 * tree-log.c:btrfs_log_inode() we might capture all existing
+-		 * ordered operations (with btrfs_get_logged_extents()) before
+-		 * the fill_delalloc callback adds its ordered operation, and by
+-		 * the time we visit the modified list of extent maps (with
+-		 * btrfs_log_changed_extents()), we see and process the extent
+-		 * map they created. We then use the extent map to construct a
+-		 * file extent item for logging without waiting for the
+-		 * respective ordered operation to finish - this file extent
+-		 * item points to a disk location that might not have yet been
+-		 * written to, containing random data - so after a crash a log
+-		 * replay will make our inode have file extent items that point
+-		 * to disk locations containing invalid data, as we returned
+-		 * success to userspace without waiting for the respective
+-		 * ordered operation to finish, because it wasn't captured by
+-		 * btrfs_get_logged_extents().
+-		 */
+-		ret = start_ordered_ops(inode, start, end);
+-	}
++	ret = btrfs_wait_ordered_range(inode, start, len);
+ 	if (ret) {
+ 		up_write(&BTRFS_I(inode)->dio_sem);
+ 		inode_unlock(inode);
+@@ -2283,13 +2242,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 				goto out;
+ 			}
+ 		}
+-		if (!full_sync) {
+-			ret = btrfs_wait_ordered_range(inode, start, len);
+-			if (ret) {
+-				btrfs_end_transaction(trans);
+-				goto out;
+-			}
+-		}
+ 		ret = btrfs_commit_transaction(trans);
+ 	} else {
+ 		ret = btrfs_end_transaction(trans);
+-- 
+2.31.1
+
