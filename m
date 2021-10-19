@@ -2,124 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F152433D8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAA5433D94
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbhJSRgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
+        id S234702AbhJSRio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233580AbhJSRgf (ORCPT
+        with ESMTP id S231226AbhJSRim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:36:35 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF56EC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:34:22 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id gn3so537720pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:34:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NjGdMesKPRHMsbGOSSUvBzUH+Hfo6W31ARL6oUWKiVk=;
-        b=NpNjfiEeF9ovOS5X62Qo1rOzKILbUXV8rLjQBCIASPsAgVSSetl7LO7FoEMfiWQzQf
-         STxb0KG8a/k5Nzk4V/Bevt/znGcymafg1kf+Wxgjc5zE6GXPvRneqXNhEwh/ba7e98n0
-         D/G2JeMN3HfA36a3jeCGrDBdsPPEnTtUXl55OooYMm38h8aYAUT+n1oiRq8iNzDdboNu
-         iIm44+DG/E1sjYcMS1TXzyP37EkOepSqkMjx6BIK7RagqShk9quQ2UIX2/ezIC2mgPaZ
-         pjglccqEESx9azyyh8s/9O8Hz/RMqVd40765ObKujuZOuyNLxrJkzpYenv+sozPVlK7p
-         wCLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NjGdMesKPRHMsbGOSSUvBzUH+Hfo6W31ARL6oUWKiVk=;
-        b=URXltiKaiu1aWV63Ka8vt3EIcf3gJnqza77jhmsGgHnq6fgsq6SzSphU3i3KyyojC4
-         TjjDpnWA4+ui/tDTd4R+p1t2a3DbRse893qRSfKtMn6HgoCB0Tm12StdlSBzYOVYW+k0
-         zv/k4y41aSnXFzuUJ9O7nWJEiH5ZdZj3h+/LMdGOOrGOmB4pZ3zhhZcjb9vUopm3d4jD
-         n5XOCHukf20xdVtZVuxx+e6jGqzzcc3EiHpxiXkErVIo0NhYO2DFv9ibF4l/UF9BK1nX
-         QkEVuOYFzAkCdAs1IQPidaPSNVO/3S/grwqDMpEXe6UI8K1eFpnX3bwLwWNisWB8uHS0
-         Xd8g==
-X-Gm-Message-State: AOAM532p4Hezas/3+ZArflUfx9flXHVrYfpN6UZEeG4F6bnmIDA12sXm
-        61ss6VrEzi/O6Q48EkW7pBuICw==
-X-Google-Smtp-Source: ABdhPJwv8dT6ctIw/V+txBO/4qohNN2lLT+h81JZKV6hYfYpQcQXY3q/sqedSLACiph6PuhDh/7sNQ==
-X-Received: by 2002:a17:902:7c94:b0:13b:8d10:cc4f with SMTP id y20-20020a1709027c9400b0013b8d10cc4fmr35001584pll.54.1634664862116;
-        Tue, 19 Oct 2021 10:34:22 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p5sm17439165pfb.95.2021.10.19.10.34.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 10:34:21 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 17:34:17 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v3 3/3] KVM: vCPU kick tax cut for running vCPU
-Message-ID: <YW8BmRJHVvFscWTo@google.com>
-References: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
- <1634631160-67276-3-git-send-email-wanpengli@tencent.com>
- <24e67e43-c50c-7e0f-305a-c7f6129f8d70@redhat.com>
+        Tue, 19 Oct 2021 13:38:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC62C06161C;
+        Tue, 19 Oct 2021 10:36:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iGktxexAEoG0emyXHElZXYDAND8qNTZfv5O/CYCJ99M=; b=reoRGClF8bgKnA4JfMds3a3Hk4
+        F2Pw57daKcHkrJC/utVAOKj6/ffru3WejLS70ia63Jc/XgzvNRRt+3+BS2w7EykDmIAmURAP7ZRxf
+        2sshYFfVypDem9ztYzNIcuQNOPGY9GTZOMwe3ygpfxPUJbu37K9g19kEcM9zerZFrC3VZRy4x4QJ/
+        SzmwRdqlJSegU6xWF5+d1GcBbOiqy89AZzMV71fIHRkhk0eT2DKXyGYD8p4L6p72bWL6oHZqDSa+B
+        F8fDo+8rTMjZHAaBJUqnpKvkTwYmKt3a3lukma9ymwlIa3Oh/tDk+gdIc7tMt+rjKAycjHsTtuoTD
+        +PKI2Rww==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mct0F-00BtoI-SE; Tue, 19 Oct 2021 17:34:34 +0000
+Date:   Tue, 19 Oct 2021 18:34:19 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Splitting struct page into multiple types - Was: re: Folio
+ discussion recap -
+Message-ID: <YW8Bm77gZgVG2ga4@casper.infradead.org>
+References: <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+ <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW25EDqynlKU14hx@moria.home.lan>
+ <YW3dByBWM0dSRw/X@cmpxchg.org>
+ <YW7uN2p8CihCDsln@moria.home.lan>
+ <20211019170603.GA15424@hsiangkao-HP-ZHAN-66-Pro-G1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <24e67e43-c50c-7e0f-305a-c7f6129f8d70@redhat.com>
+In-Reply-To: <20211019170603.GA15424@hsiangkao-HP-ZHAN-66-Pro-G1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021, Paolo Bonzini wrote:
-> On 19/10/21 10:12, Wanpeng Li wrote:
-> > -	if (kvm_vcpu_wake_up(vcpu))
-> > -		return;
-> > +	me = get_cpu();
-> > +
-> > +	if (rcuwait_active(kvm_arch_vcpu_get_wait(vcpu)) && kvm_vcpu_wake_up(vcpu))
-> > +		goto out;
+On Wed, Oct 20, 2021 at 01:06:04AM +0800, Gao Xiang wrote:
+> On Tue, Oct 19, 2021 at 12:11:35PM -0400, Kent Overstreet wrote:
+> > Other things that need to be fixed:
+> > 
+> >  - page->lru is used by the old .readpages interface for the list of pages we're
+> >    doing reads to; Matthew converted most filesystems to his new and improved
+> >    .readahead which thankfully no longer uses page->lru, but there's still a few
+> >    filesystems that need to be converted - it looks like cifs and erofs, not
+> >    sure what's going on with fs/cachefiles/. We need help from the maintainers
+> >    of those filesystems to get that conversion done, this is holding up future
+> >    cleanups.
 > 
-> This is racy.  You are basically doing the same check that rcuwait_wake_up
-> does, but without the memory barrier before.
+> The reason why using page->lru for non-LRU pages was just because the
+> page struct is already there and it's an effective way to organize
+> variable temporary pages without any extra memory overhead other than
+> page structure itself. Another benefits is that such non-LRU pages can
+> be immediately picked from the list and added into page cache without
+> any pain (thus ->lru can be reused for real lru usage).
+> 
+> In order to maximize the performance (so that pages can be shared in
+> the same read request flexibly without extra overhead rather than
+> memory allocation/free from/to the buddy allocator) and minimise extra
+> footprint, this way was used. I'm pretty fine to transfer into some
+> other way instead if some similar field can be used in this way.
+> 
+> Yet if no such field anymore, I'm also very glad to write a patch to
+> get rid of such usage, but I wish it could be merged _only_ with the
+> real final transformation together otherwise it still takes the extra
+> memory of the old page structure and sacrifices the overall performance
+> to end users (..thus has no benefits at all.)
 
-I was worried that was the case[*], but I didn't have the two hours it would have
-taken me to verify there was indeed a problem :-)
+I haven't dived in to clean up erofs because I don't have a way to test
+it, and I haven't taken the time to understand exactly what it's doing.
 
-The intent of the extra check was to avoid the locked instruction that comes with
-disabling preemption via rcu_read_lock().  But thinking more, the extra op should
-be little more than a basic arithmetic operation in the grand scheme on modern x86
-since the cache line is going to be locked and written no matter what, either
-immediately before or immediately after.
+The old ->readpages interface gave you pages linked together on ->lru
+and this code seems to have been written in that era, when you would
+add pages to the page cache yourself.
 
-So with Paolo's other comment, maybe just this?  And if this doesn't provide the
-desired performance boost, changes to the rcuwait behavior should go in separate
-patch.
+In the new scheme, the pages get added to the page cache for you, and
+then you take care of filling them (and marking them uptodate if the
+read succeeds).  There's now readahead_expand() which you can call to add
+extra pages to the cache if the readahead request isn't compressed-block
+aligned.  Of course, it may not succeed if we're out of memory or there
+were already pages in the cache.
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 9ec99f5b972c..ebc6d4f2fbfa 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3333,11 +3333,22 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
-         * vCPU also requires it to leave IN_GUEST_MODE.
-         */
-        me = get_cpu();
-+
-+       /*
-+        * Avoid the moderately expensive "should kick" operation if this pCPU
-+        * is currently running the target vCPU, in which case it's a KVM bug
-+        * if the vCPU is in the inner run loop.
-+        */
-+       if (vcpu == __this_cpu_read(kvm_running_vcpu) &&
-+           !WARN_ON_ONCE(vcpu->mode == IN_GUEST_MODE))
-+               goto out;
-+
-        if (kvm_arch_vcpu_should_kick(vcpu)) {
-                cpu = READ_ONCE(vcpu->cpu);
-                if (cpu != me && (unsigned)cpu < nr_cpu_ids && cpu_online(cpu))
-                        smp_send_reschedule(cpu);
-        }
-+out:
-        put_cpu();
- }
- EXPORT_SYMBOL_GPL(kvm_vcpu_kick);
-
-[*] https://lkml.kernel.org/r/YWoOG40Ap0Islpu2@google.com
+It looks like this will be quite a large change to how erofs handles
+compressed blocks, but if you're open to taking this on, I'd be very happy.
