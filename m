@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0AD433AB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8EE433AB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbhJSPiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:38:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46574 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbhJSPiG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:38:06 -0400
-Date:   Tue, 19 Oct 2021 15:35:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634657752;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+eEmYjdIyqwwU/pKTwGQEc0xNbJpVQ/7bP6B5Q8Tmqk=;
-        b=sP6w4QxlBmBcXAl3/Y8iQAhIdH8AoT7eJ24cCYfNwqybktL+kIywAqlNJ0LkX5DcNGjxhc
-        jx7iA68UrFYScgGJE9iP3g7xzGl4T3ISdu4TKf98WzTkleiaTma1XmsIiENHL5MnpoNCYI
-        8797b9BZjs76lLt7flJCodM9aq7dPrbEVAnlvYRqhie/IQdU2ypNlLGxkJOUjaZiUv0k5z
-        dySBnVcWinx4jkHKig+FJWM1QVF5NwKCJuIhif9pCP4PMXca5kyHpWGxWfpEfXcYyBL1iU
-        Y2/BiTcjNEpeFmgtZ7phbp7FvbpMGXkgmUZX3dlv9Pwri5l3Cmjl/nWVnm8fwQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634657752;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+eEmYjdIyqwwU/pKTwGQEc0xNbJpVQ/7bP6B5Q8Tmqk=;
-        b=TFhq46jp0tUTiMZLweuxfBYkfyqf+gLRvYcNnqNVY8qJoreWVWM7LjyjHLxCAose3xggkA
-        cbSVrdQfhUs/OpDQ==
-From:   "tip-bot2 for Kajol Jain" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Add comment about current state of
- PERF_MEM_LVL_* namespace and remove an extra line
-Cc:     Kajol Jain <kjain@linux.ibm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211006140654.298352-2-kjain@linux.ibm.com>
-References: <20211006140654.298352-2-kjain@linux.ibm.com>
+        id S234202AbhJSPid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:38:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234130AbhJSPiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:38:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27CC9600D3;
+        Tue, 19 Oct 2021 15:36:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634657764;
+        bh=NzBsq2V2m7i7GEd2bbQfY/EVxbEmxKIigcuDaW2asqA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HG7qfJNHok6ozu/kVnyDlCo2lY04bMPt2YhqG/NLvzZ/Gs5Jbw/BUfYLSzxw/xtkG
+         dFdeb6yINcamV/c0o0MFePpc8EPO9d3UINgzvsdM7iHjthbQP0OPYRmyc4eRwlHwDz
+         wc6Jp+X4suL+sC7Jyo59DYwIxpELyw1ZiLzgKKMzckZ7sjg8cdY1bxudDngNtkmRaq
+         QZkslu2J9g6jHtbfpzHGOmDU47Eo6dxdjnxbwoeTuUnTiA1PpwCSRI0Oh+QU2p5VHc
+         fqVJ1XuK711OATIFTtfJNdejUV9K6ELm12jshUO448mbGM46XVshKmrj8qaqBES8F0
+         gkHa/PlvdOpnQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Avri Altman <avri.altman@wdc.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: core: ufs-pci: hide unused ufshcd_pci_restore function
+Date:   Tue, 19 Oct 2021 17:35:51 +0200
+Message-Id: <20211019153600.380220-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Message-ID: <163465775164.25758.14073611860087904014.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+From: Arnd Bergmann <arnd@arndb.de>
 
-Commit-ID:     f4c6217f7f5936f7173d028559ff5d25cce10816
-Gitweb:        https://git.kernel.org/tip/f4c6217f7f5936f7173d028559ff5d25cce10816
-Author:        Kajol Jain <kjain@linux.ibm.com>
-AuthorDate:    Wed, 06 Oct 2021 19:36:51 +05:30
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 19 Oct 2021 17:27:00 +02:00
+When CONFIG_PM_SLEEP is disabled, ufshcd_pci_restore() fails
+to compile but is also unused:
 
-perf: Add comment about current state of PERF_MEM_LVL_* namespace and remove an extra line
+drivers/scsi/ufs/ufshcd-pci.c: In function 'ufshcd_pci_restore':
+drivers/scsi/ufs/ufshcd-pci.c:459:16: error: implicit declaration of function 'ufshcd_system_resume'; did you mean 'ufshcd_runtime_resume'? [-Werror=implicit-function-declaration]
+  459 |         return ufshcd_system_resume(dev);
+      |                ^~~~~~~~~~~~~~~~~~~~
+      |                ufshcd_runtime_resume
+At top level:
+drivers/scsi/ufs/ufshcd-pci.c:452:12: error: 'ufshcd_pci_restore' defined but not used [-Werror=unused-function]
+  452 | static int ufshcd_pci_restore(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~
 
-Add a comment about PERF_MEM_LVL_* namespace being depricated
-to some extent in favour of added PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_}
-fields.
+Enclose it within the same #ifdef as the related code.
 
-Remove an extra line present in perf_mem__lvl_scnprintf function.
-
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20211006140654.298352-2-kjain@linux.ibm.com
+Fixes: 21431d5bdf15 ("scsi: core: ufs-pci: Force a full restore after suspend-to-disk")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/uapi/linux/perf_event.h       | 8 +++++++-
- tools/include/uapi/linux/perf_event.h | 8 +++++++-
- tools/perf/util/mem-events.c          | 1 -
- 3 files changed, 14 insertions(+), 3 deletions(-)
+ drivers/scsi/ufs/ufshcd-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index c89535d..a74538c 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -1256,7 +1256,13 @@ union perf_mem_data_src {
- #define PERF_MEM_OP_EXEC	0x10 /* code (execution) */
- #define PERF_MEM_OP_SHIFT	0
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index d65e6cd7a28d..51424557810d 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -449,6 +449,7 @@ static struct ufs_hba_variant_ops ufs_intel_lkf_hba_vops = {
+ 	.device_reset		= ufs_intel_device_reset,
+ };
  
--/* memory hierarchy (memory level, hit or miss) */
-+/*
-+ * PERF_MEM_LVL_* namespace being depricated to some extent in the
-+ * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
-+ * Supporting this namespace inorder to not break defined ABIs.
-+ *
-+ * memory hierarchy (memory level, hit or miss)
-+ */
- #define PERF_MEM_LVL_NA		0x01  /* not available */
- #define PERF_MEM_LVL_HIT	0x02  /* hit level */
- #define PERF_MEM_LVL_MISS	0x04  /* miss level  */
-diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-index f92880a..e1701e9 100644
---- a/tools/include/uapi/linux/perf_event.h
-+++ b/tools/include/uapi/linux/perf_event.h
-@@ -1241,7 +1241,13 @@ union perf_mem_data_src {
- #define PERF_MEM_OP_EXEC	0x10 /* code (execution) */
- #define PERF_MEM_OP_SHIFT	0
++#ifdef CONFIG_PM_SLEEP
+ static int ufshcd_pci_restore(struct device *dev)
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+@@ -458,6 +459,7 @@ static int ufshcd_pci_restore(struct device *dev)
  
--/* memory hierarchy (memory level, hit or miss) */
-+/*
-+ * PERF_MEM_LVL_* namespace being depricated to some extent in the
-+ * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
-+ * Supporting this namespace inorder to not break defined ABIs.
-+ *
-+ * memory hierarchy (memory level, hit or miss)
-+ */
- #define PERF_MEM_LVL_NA		0x01  /* not available */
- #define PERF_MEM_LVL_HIT	0x02  /* hit level */
- #define PERF_MEM_LVL_MISS	0x04  /* miss level  */
-diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-index f0e75df..ff7289e 100644
---- a/tools/perf/util/mem-events.c
-+++ b/tools/perf/util/mem-events.c
-@@ -320,7 +320,6 @@ int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_info)
- 	/* already taken care of */
- 	m &= ~(PERF_MEM_LVL_HIT|PERF_MEM_LVL_MISS);
+ 	return ufshcd_system_resume(dev);
+ }
++#endif
  
--
- 	if (mem_info && mem_info->data_src.mem_remote) {
- 		strcat(out, "Remote ");
- 		l += 7;
+ /**
+  * ufshcd_pci_shutdown - main function to put the controller in reset state
+-- 
+2.29.2
+
