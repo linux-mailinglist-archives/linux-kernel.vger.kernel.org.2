@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F223433250
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76163433257
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235048AbhJSJhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:37:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234817AbhJSJhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:37:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FC1861177;
-        Tue, 19 Oct 2021 09:34:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634636091;
-        bh=/GWakFsYwXkSWJEyHHuny34u7KmSCHMduRF5sRRPRuI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X0JGkzCfrlgYOn8YH9zUNzkMSOGCMbfN48dpARvc0/1GRFUKJ04VoETkYk77tK7of
-         UnzSC7lKB4bSjlm4Zn4PVvzer36LKgetthPXC0NUq9I+CdEf+vbjcFM1Lls95jQCOi
-         EgHjnkyjLIpyTkXrCiPYCbo/1trF/ac7cS0j8iSo=
-Date:   Tue, 19 Oct 2021 11:34:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc1 review
-Message-ID: <YW6ROCyvBy5MjOkG@kroah.com>
-References: <20211018132340.682786018@linuxfoundation.org>
- <CA+G9fYtLTmosatvO8VBe-RDjEHEvY01P=Fw5mvRvwbxL31ahOA@mail.gmail.com>
- <YW5iBGg4VKP6ZL+O@kroah.com>
- <20211019091818.utbm254kec4uh6nw@bogus>
+        id S235080AbhJSJha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:37:30 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:35815 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234561AbhJSJh2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:37:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UsuQlL7_1634636110;
+Received: from 30.240.101.11(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UsuQlL7_1634636110)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 19 Oct 2021 17:35:11 +0800
+Message-ID: <3bd42726-b383-eb33-5c03-2932036d06a4@linux.alibaba.com>
+Date:   Tue, 19 Oct 2021 17:35:05 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019091818.utbm254kec4uh6nw@bogus>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH 1/2] crypto: use SM3 instead of SM3_256
+Content-Language: en-US
+To:     jejb@linux.ibm.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
+ <20211009130828.101396-2-tianjia.zhang@linux.alibaba.com>
+ <7035153d58e220473fe3cd17c9f574f2d91c740b.camel@linux.ibm.com>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <7035153d58e220473fe3cd17c9f574f2d91c740b.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 10:18:18AM +0100, Sudeep Holla wrote:
-> Hi Greg,
-> 
-> On Tue, Oct 19, 2021 at 08:13:24AM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Oct 19, 2021 at 09:08:08AM +0530, Naresh Kamboju wrote:
-> > > On Mon, 18 Oct 2021 at 19:08, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.14.14 release.
-> > > > There are 151 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > > 
-> > > Following build errors noticed while building Linux stable rc 5.14
-> > > with gcc-11 allmodconfig for arm64 architecture.
-> > > 
-> > >   - 5.14.14 gcc-11 arm64 allmodconfig FAILED
-> > > 
-> > > > Sudeep Holla <sudeep.holla@arm.com>
-> > > >     firmware: arm_ffa: Add missing remove callback to ffa_bus_type
-> > > 
-> > > drivers/firmware/arm_ffa/bus.c:96:27: error: initialization of 'int
-> > > (*)(struct device *)' from incompatible pointer type 'void (*)(struct
-> > > device *)' [-Werror=incompatible-pointer-types]
-> > >    96 |         .remove         = ffa_device_remove,
-> > >       |                           ^~~~~~~~~~~~~~~~~
-> > > drivers/firmware/arm_ffa/bus.c:96:27: note: (near initialization for
-> > > 'ffa_bus_type.remove')
-> > > cc1: some warnings being treated as errors
-> 
-> Sorry for that.
-> 
-> Commit fc7a6209d571 ("bus: Make remove callback return void") was merged
-> in v5.15 I think.
-> 
-> Do you need me to send the patch for v5.14 or you have already fixed it ?
+Hi James,
 
-I've already fixed this up, so all is good, no worries!
+On 10/18/21 9:05 PM, James Bottomley wrote:
+> On Sat, 2021-10-09 at 21:08 +0800, Tianjia Zhang wrote:
+> [...]
+>> diff --git a/include/uapi/linux/hash_info.h
+>> b/include/uapi/linux/hash_info.h
+>> index 74a8609fcb4d..1355525dd4aa 100644
+>> --- a/include/uapi/linux/hash_info.h
+>> +++ b/include/uapi/linux/hash_info.h
+>> @@ -32,7 +32,7 @@ enum hash_algo {
+>>   	HASH_ALGO_TGR_128,
+>>   	HASH_ALGO_TGR_160,
+>>   	HASH_ALGO_TGR_192,
+>> -	HASH_ALGO_SM3_256,
+>> +	HASH_ALGO_SM3,
+>>   	HASH_ALGO_STREEBOG_256,
+>>   	HASH_ALGO_STREEBOG_512,
+>>   	HASH_ALGO__LAST
+> 
+> This is another one you can't do: all headers in UAPI are exports to
+> userspace and the definitions constitute an ABI.  If you simply do a
+> rename, every userspace program that uses the current definition will
+> immediately break on compile.  You could add HASH_ALGO_SM3, but you
+> can't remove HASH_ALGO_SM3_256
+> 
+> James
+> 
 
-greg k-h
+Correct, Thanks for pointing it out, redefining a macro is indeed a more 
+appropriate method.
+
+Best regards,
+Tianjia
