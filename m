@@ -2,127 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E473D432E92
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41421432E69
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbhJSGuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234026AbhJSGuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 265B760F56;
-        Tue, 19 Oct 2021 06:48:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634626080;
-        bh=vIawcnn8K7nDu0LC/rzRPqDISbQx6Hr8NmhDx9Cug58=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sB4sP3Z5GjonkVSWDUom0lppPfKnxY6CaS31HjneE1Ig8WOtoBG3poi2OSKj9+zXC
-         ZwkIKwa3y2F7Qu5VQJNOKj3S+ZUsZC/K/fLbIc6AUV/mAQtBWNDGlBq2TLCp73XzpB
-         YDSFgvYcdcjacX1ZTwlZoXM0UDakFA8ZP7faC2zc=
-Date:   Tue, 19 Oct 2021 08:47:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc1 review
-Message-ID: <YW5qHvEHtkxCwOBh@kroah.com>
-References: <20211018132340.682786018@linuxfoundation.org>
- <CA+G9fYtLTmosatvO8VBe-RDjEHEvY01P=Fw5mvRvwbxL31ahOA@mail.gmail.com>
- <YW5iBGg4VKP6ZL+O@kroah.com>
- <CA+G9fYv3mpZMZjoarc6=WNNzrer+xFX_diqVKMy1VFV=xhKpTg@mail.gmail.com>
+        id S234251AbhJSGjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:39:42 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25166 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhJSGjj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:39:39 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HYPBh51Zfz1DHkm;
+        Tue, 19 Oct 2021 14:35:40 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Tue, 19
+ Oct 2021 14:37:25 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v3 0/5] Fix some issues about mmp
+Date:   Tue, 19 Oct 2021 14:49:54 +0800
+Message-ID: <20211019064959.625557-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYv3mpZMZjoarc6=WNNzrer+xFX_diqVKMy1VFV=xhKpTg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 12:04:13PM +0530, Naresh Kamboju wrote:
-> On Tue, 19 Oct 2021 at 11:43, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Oct 19, 2021 at 09:08:08AM +0530, Naresh Kamboju wrote:
-> > > On Mon, 18 Oct 2021 at 19:08, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.14.14 release.
-> > > > There are 151 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > > Following build errors noticed while building Linux stable rc 5.14
-> > > with gcc-11 allmodconfig for arm64 architecture.
-> > >
-> > >   - 5.14.14 gcc-11 arm64 allmodconfig FAILED
-> > >
-> > > > Sudeep Holla <sudeep.holla@arm.com>
-> > > >     firmware: arm_ffa: Add missing remove callback to ffa_bus_type
-> > >
-> > > drivers/firmware/arm_ffa/bus.c:96:27: error: initialization of 'int
-> > > (*)(struct device *)' from incompatible pointer type 'void (*)(struct
-> > > device *)' [-Werror=incompatible-pointer-types]
-> > >    96 |         .remove         = ffa_device_remove,
-> > >       |                           ^~~~~~~~~~~~~~~~~
-> > > drivers/firmware/arm_ffa/bus.c:96:27: note: (near initialization for
-> > > 'ffa_bus_type.remove')
-> > > cc1: some warnings being treated as errors
-> > >
-> > > Build config:
-> > > https://builds.tuxbuild.com/1zhYTWmjxG50Rb8sGtfneME9kLT/config
-> > >
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> >
-> > Thanks, will go fix this up now.
-> >
-> > > steps to reproduce:
-> > > https://builds.tuxbuild.com/1zhYTWmjxG50Rb8sGtfneME9kLT/tuxmake_reproducer.sh
-> >
-> > Hm, no, those steps fail for me:
-> >         $ tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11 --kconfig allmodconfig
-> >         E: Unsupported architecture/toolchain combination: arm64/gcc-11
-> >
-> > What did I do wrong?
-> 
-> May i request to force install and try,
-> 
-> $ pip install --force-reinstall tuxmake
-> $ tuxmake --version              # this should get tuxmake 0.29.0
-> $ tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11
-> --kconfig allmodconfig
+I test mmp function as follow steps:
+1. Inject delay 5s in ext4_multi_mount_protect function after
+"skip:" label.
+2. Share HostA block device(sda) with HostB(nbd0) by NBD.
+3. Enable mmp feature when mkfs.ext4 sda.
+4. Mount sda and nbd0 at the same time.
 
-Ah much better, I had an older version of tuxmake here.
+I found kmmpd never trigger detect multi-mount. Reason is as follow:
+1. Kmmpd init seq with 0, if two host have same nodename, will lead to
+detect confliction very slow, even never detect confliction.
+2. When detect confliction in kmmpd, we get 'check_bh' is same with 'bh'.
+so we compare data with itself.
+3. We only trigger detect when ”diff > mmp_check_interval * HZ“,
+'mmp_check_interval' is double of 'mmp_update_interval', 'diff' is
+about 'mmp_update_interval'. So 'diff' is little than 'mmp_check_interval * HZ'
+normaly. As Jan Kara explain as follows:
+"I think the check is there only for the case where write_mmp_block() +
+sleep took longer than mmp_check_interval. I agree that should rarely
+happen but on a really busy system it is possible and in that case we would
+miss updating mmp block for too long and so another node could have started
+using the filesystem. "
 
-Now it fails with an expected permission problem:
-Error: writing blob: adding layer with blob "sha256:10348114f214e2f07f30fa82aaa743c1750b2a9025cc8bec19f3f4f2b087a96d": Error processing tar file(exit status 1): potentially insufficient UIDs or GIDs available in user namespace (requested 0:42 for /etc/gshadow): Check /etc/subuid and /etc/subgid: lchown /etc/gshadow: invalid argument
-E: Runtime preparation failed: failed to pull remote image docker.io/tuxmake/arm64_gcc-11
+v1->v2:
+Fix 'last_check_time' not initialized before checking.
 
-Note, I will not run kernel builds or random containers downloaded from
-the internet as root, sorry :)
+v3->v2:
+1. drop commit "ext4: introduce last_check_time record previous check time"
+As Ted explain as follows:
+"I'd like Andreas to comment here.  My understanding is that MMP
+originally intended as a safety mechanism which would be used as part
+of a primary/backup high availability system, but not as the *primary*
+system where you might try to have two servers simultaneously try to
+mount the file system and use MMP as the "election" mechanism to
+decide which server is going to be the primary system, and which would
+be the backup system.
 
-thanks,
+The cost of being able to handle this particular race is it would slow
+down the mounts of cleanly unmounted systems.
 
-greg k-h
+There *are* better systems to implement leader elections[1] than using
+MMP.  Most of these more efficient leader elections assume that you
+have a working IP network, and so if you have a separate storage
+network (including a shared SCSI bus) from your standard IP network,
+then MMP is a useful failsafe in the face of a network partition of
+your IP network.  The question is whether MMP should be useful for
+more than that.  And if it isn't, then we should probably document
+what MMP is and isn't good for, and give advice in the form of an
+application note for how MMP should be used in the context of a larger
+system."
+2. drop commit "ext4: fix possible store wrong check interval value in disk when umount"
+3. simplify read_mmp_block fucntion to avoid UAF
+
+
+Ye Bin (5):
+  ext4: init 'seq' with the value which set in
+    'ext4_multi_mount_protect'
+  ext4: compare to local seq and nodename when check conflict
+  ext4: get buffer head before read_mmp_block
+  ext4: simplify read_mmp_block fucntion
+  ext4: avoid to re-read mmp check data get from page cache
+
+ fs/ext4/ext4.h |  5 +++-
+ fs/ext4/mmp.c  | 67 ++++++++++++++++++++++----------------------------
+ 2 files changed, 33 insertions(+), 39 deletions(-)
+
+-- 
+2.31.1
+
