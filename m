@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A605433CC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60321433CCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhJSQzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:55:03 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:44572 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhJSQzC (ORCPT
+        id S234503AbhJSQzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:55:52 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:39509 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhJSQzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:55:02 -0400
-Received: by mail-oi1-f170.google.com with SMTP id y207so5852192oia.11;
-        Tue, 19 Oct 2021 09:52:49 -0700 (PDT)
+        Tue, 19 Oct 2021 12:55:49 -0400
+Received: by mail-oi1-f173.google.com with SMTP id s9so3552502oiw.6;
+        Tue, 19 Oct 2021 09:53:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fg0cCwJVHF76pIKAhe13PodfxRRyNCDHrc0ozMywzNw=;
-        b=XJx3BHDQcRn5lHt5LTxkkaknh4Cv1c763/+wzPrzxcQkFAm2EL+1D8dRR8Pgo9EChA
-         gxWU2VGe6Kg0Skq1M+lP+je25tuF2c7jH948Gpg4hx7RhkfSUr103wVWno9QLoaJg7yS
-         rxkkgwWHz4b42+r0L3Rz3CmPwoiopfQm7uKZzRhHQdzoGKW2RjOlzD7m16SkIROJtYW9
-         OC1EkFZMbMwUKFkdqwT+nZp/4i+uHuLSOJz/RmTeXDAY1qEQfExHjupblRY3QzAp5JjI
-         WacMU84GnCQyCA9tTRcsQrfE9qleSz/37fm34NENDB7VCIachB4QfMZonoOYgk2oCNID
-         DGcQ==
-X-Gm-Message-State: AOAM531AG6YGZGdjwxYmdReflTb8Rfx7AipUlsVPdRIMVTJ5n4/CavVC
-        Wb1M6Z5uBC4HqN7h7yQzcijLnCd5w3z81dt+REs=
-X-Google-Smtp-Source: ABdhPJydRVGsHDP0DrSDIexcFoZ34NnYWweKqZKndMhsMWMgocVz7pqdpzE7bjQh6NXPOYcv/36RcFZk9gDH6wKkjRM=
-X-Received: by 2002:aca:5c5:: with SMTP id 188mr5151432oif.154.1634662368345;
- Tue, 19 Oct 2021 09:52:48 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fnwMHmBtcUTzeN7AT8ukQSoNU1knCjzi3Fwq9Ac0g90=;
+        b=HJdKu9Yc8oALg0EUXoUMBKenRfGSuc1q4BNOBnq1d3QPbXkCq0Q5jlBTo0ea8p8UZl
+         TFoRbrGnbWaGpIrHbQBqSuwUjDBjln3eaN2Tq7E0W56vbVBbTfmfC0AToRtbsfbJrN2f
+         TGQLAwhyx4BbOTgYtABGlXWrUetqHt59xqngUL10JUAD9n2+2D9oWEUJzviJL0Jxj5V5
+         1ehW808u32vCVZl2iVvCq3srHVgLn+AvHiMGVaozwkhe/dawpGSKvp7qDZAT2I5VNhxs
+         BJzngAMZ1t+SxOkjC/HJaDKF7a5CBdMUeB22usBCn/Xn19ZwnQcZOApGMc6tjISI+tdo
+         6Amw==
+X-Gm-Message-State: AOAM531GWuQFQ3L5WRDnGlhygdiI/0FEMysCTKio0KzcAOE7RqhVCKqw
+        nUgroemq5t+BnedFQmoE8w==
+X-Google-Smtp-Source: ABdhPJxG3M4MMDejwrse4k8mTAjT5I/40KR+eLLfq1+ZBF3yaKS308ugfGwsvK1xSATT6JQLbB2GBw==
+X-Received: by 2002:a05:6808:1185:: with SMTP id j5mr5157383oil.16.1634662416108;
+        Tue, 19 Oct 2021 09:53:36 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l26sm3843004oti.45.2021.10.19.09.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 09:53:35 -0700 (PDT)
+Received: (nullmailer pid 427792 invoked by uid 1000);
+        Tue, 19 Oct 2021 16:53:33 -0000
+Date:   Tue, 19 Oct 2021 11:53:33 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Rob Herring <robh+dt@kernel.org>, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
+        netdev@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        KP Singh <kpsingh@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Cross <ccross@android.com>, Alex Shi <alexs@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Kees Cook <keescook@chromium.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>, kvm@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        sparmaintainer@unisys.com,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>, devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v3 00/23] Fix some issues at documentation
+Message-ID: <YW74Dez4/3cIbe1Q@robh.at.kernel.org>
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210926090605.3556134-1-ray.huang@amd.com> <20210926090605.3556134-4-ray.huang@amd.com>
-In-Reply-To: <20210926090605.3556134-4-ray.huang@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 19 Oct 2021 18:52:37 +0200
-Message-ID: <CAJZ5v0ivJk-cVv0kHUeF1M7aWBZ9ziuUF-9=M_eF+WQ1vQJfgQ@mail.gmail.com>
-Subject: Re: [PATCH v2 03/21] ACPI: CPPC: Check online CPUs for determining
- _CPC is valid
-To:     Huang Rui <ray.huang@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1634630485.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 11:06 AM Huang Rui <ray.huang@amd.com> wrote:
->
-> From: Mario Limonciello <mario.limonciello@amd.com>
->
-> As this is a static check, it should be based upon what is currently
-> present on the system. This makes probeing more deterministic.
->
-> While local APIC flags field (lapic_flags) of cpu core in MADT table is
-> 0, then the cpu core won't be enabled. In this case, _CPC won't be found
-> in this core, and return back to _CPC invalid with walking through
-> possible cpus (include disable cpus). This is not expected, so switch to
-> check online CPUs instead.
->
-> Reported-by: Jinzhou Su <Jinzhou.Su@amd.com>
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> ---
->  drivers/acpi/cppc_acpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index a4d4eebba1da..2efe2ba97d96 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -411,7 +411,7 @@ bool acpi_cpc_valid(void)
->         struct cpc_desc *cpc_ptr;
->         int cpu;
->
-> -       for_each_possible_cpu(cpu) {
-> +       for_each_online_cpu(cpu) {
+On Tue, 19 Oct 2021 09:03:59 +0100, Mauro Carvalho Chehab wrote:
+> Hi Jon,
+> 
+> This series is against today's next (next-20211019) and addresses missing
+> links to Documentation/*.
+> 
+> The best would be to have the patches applied directly to the trees that
+> contain the patches that moved/renamed files, and then apply the
+> remaining ones either later during the merge window or just afterwards,
+> whatever works best for you.
+> 
+> Regards,
+> Mauro
+> 
+> Mauro Carvalho Chehab (23):
+>   visorbus: fix a copyright symbol that was bad encoded
+>   libbpf: update index.rst reference
+>   docs: accounting: update delay-accounting.rst reference
+>   MAINTAINERS: update arm,vic.yaml reference
+>   MAINTAINERS: update aspeed,i2c.yaml reference
+>   MAINTAINERS: update faraday,ftrtc010.yaml reference
+>   MAINTAINERS: update ti,sci.yaml reference
+>   MAINTAINERS: update intel,ixp46x-rng.yaml reference
+>   MAINTAINERS: update nxp,imx8-jpeg.yaml reference
+>   MAINTAINERS: update gemini.yaml reference
+>   MAINTAINERS: update brcm,unimac-mdio.yaml reference
+>   MAINTAINERS: update mtd-physmap.yaml reference
 
-Shouldn't this be for_each_present_cpu()?  In case a CPU is present,
-but not online when cppc_cpufreq is loaded?
+Applied patches 3-12.
 
->                 cpc_ptr = per_cpu(cpc_desc_ptr, cpu);
->                 if (!cpc_ptr)
->                         return false;
-> --
+>   Documentation: update vcpu-requests.rst reference
+>   bpftool: update bpftool-cgroup.rst reference
+>   docs: translations: zn_CN: irq-affinity.rst: add a missing extension
+>   docs: translations: zh_CN: memory-hotplug.rst: fix a typo
+>   docs: fs: locks.rst: update comment about mandatory file locking
+>   fs: remove a comment pointing to the removed mandatory-locking file
+>   Documentation/process: fix a cross reference
+>   dt-bindings: mfd: update x-powers,axp152.yaml reference
+>   regulator: dt-bindings: update samsung,s2mpa01.yaml reference
+>   regulator: dt-bindings: update samsung,s5m8767.yaml reference
+>   dt-bindings: reserved-memory: ramoops: update ramoops.yaml references
