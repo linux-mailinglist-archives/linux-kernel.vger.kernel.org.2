@@ -2,151 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419D34341B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1252C4341D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhJSW4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhJSW4f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:56:35 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB73C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:54:22 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id f5so20728103pgc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:54:22 -0700 (PDT)
+        id S229702AbhJSW7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:59:55 -0400
+Received: from mail-eopbgr80057.outbound.protection.outlook.com ([40.107.8.57]:36200
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229483AbhJSW7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 18:59:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h34d4FvQeMWiufEBKbQDD3PfwNDQu61jeMyl41wbUhBsec2ndnagodvTZIb73BuoZP0RUVCTUbQNltIW7ieymY+O2QWW3q00Cruxx4t3PejrdR9YoHUnKemhFO8p9uBgtvgoFdvPRz6pMhrx0hjwe1phO+c2Twn5Qqas5aub0kYcRFIeuhgVzVlQQhvrPlm5PDEUxqx1Vh7wU/8hh0DLW74vXwYzLqhi/nGBROUQJvklYQT48Gdq0TexDmg461+H3odTvg9glvTG8XQdgz+sPpZe4xBcvL++7i3qZdUsHSOJX9n1t2f9KkV2e4woPR/xKKAs2N1XMkR2PVYlqwlVRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EyJdeTqjbHQcH8HJiW6MatwE1WWzOzSvViihFdPiJOQ=;
+ b=Q7cofUYlkw9Xbol9q+BIbHRo5umNu4SE02H1O7Z7Q0gxO3OaxSVgSfDKV3QcR1eerNdPIR9AjvjGYxLocPTTUGFydK0aN9nVOJUByw1FGpJxIf31xhbyxh2Rxuq/3yl3RsiOujYO3GlsFtKt2ICe6Z7lgYnduIeN0tcqHSj/U70lZU6/1VTEuejAy9lYiCmFo50zlaPO3I8kxwuZDG/a3R+UZaf2Z9JHyHd58ZFrO1pqllV6jhdDjMQEWPlZfpnZdAUXvUyWgz4Oh9WK0zi2z8UCFxwZO/3jnZh/ELHYalNCjvY1hzSc+HupG8+cU6pb3kIDreRZEME7/KOY5wOqOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wacom.com; dmarc=pass action=none header.from=wacom.com;
+ dkim=pass header.d=wacom.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cU3HJbTF7v8oN4m9QpyNLUi7Z2VsnXCEZXyNBnXavMs=;
-        b=cuhVndCamK8/716BHL8VV3m6G8gcGkThTiSVQ6WCdR23cmkvS8BAdf5MUWNZ3+xdJh
-         SXNvDs9u/lEzXmzt2H4VqFJR13EW1nC9xTyUpNjgvdyajBpGbxaWkVSkwru2zDmzhJL5
-         9+BvigGJweB1Imcox7fO16zbnV5IFg9bzbcUo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cU3HJbTF7v8oN4m9QpyNLUi7Z2VsnXCEZXyNBnXavMs=;
-        b=SQPfFPXm5HdbNVXTBrvEPxD1lLvDo0kdXxsZIlMEiR/QOhRDYSODFY9eH4dOo+qz6S
-         KXGMQaBBgo5EvEpyLlsySAh7gEmcNkAWb4cCEYXVbSUQ+SWvjDuzhCbTyPtkXblJydVQ
-         /dkhF+LPDANsS2RFO9YpGe3wiqrJQb/cziXUBan8tteVHwipgubarlBmaArSfBn2attz
-         00OSbU90Q3AR6EzGEjxspBncmIgINEize3PupgRBdkoaKoBhjDftdzRfC0lNnl6RIFWL
-         Hgrvr4s71+s29uYvvMmdFddB9kaSaSHLF7av19BpBTHjifySlBogWYPiTkXNisB9NDRl
-         lfeA==
-X-Gm-Message-State: AOAM530CjMMlgFiJWNqEf7i7YrHW/d6wNaA79wbihmzbhD+bBYmpmvoH
-        ihCdBiPcMysxmSIWUzldq4oHXA==
-X-Google-Smtp-Source: ABdhPJwhFFyHmKUMVfxbdbUIRSGmuKpqlVMRtb5XW/S/r0SYWKyVbrnMtwygjRKH7m1CQn1PDJPYsw==
-X-Received: by 2002:a62:5804:0:b0:44b:b75b:ec8f with SMTP id m4-20020a625804000000b0044bb75bec8fmr2499812pfb.63.1634684061497;
-        Tue, 19 Oct 2021 15:54:21 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:6c1f:a561:f56:7d16])
-        by smtp.gmail.com with UTF8SMTPSA id q6sm245804pgc.1.2021.10.19.15.54.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 15:54:21 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 15:54:18 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Peter Chen <peter.chen@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-usb@vger.kernel.org,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Andy Gross <agross@kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nishanth Menon <nm@ti.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH v15 0/6] usb: misc: Add onboard_usb_hub driver
-Message-ID: <YW9MmoSTouEDdpxa@google.com>
-References: <20210727004118.2583774-1-mka@chromium.org>
- <CAA8EJpq55e+fk9oDi8+JXDWiPcXDXK5oz1DL5eqfx+FkT-xhnw@mail.gmail.com>
+ d=wacomaad.onmicrosoft.com; s=selector2-wacomaad-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EyJdeTqjbHQcH8HJiW6MatwE1WWzOzSvViihFdPiJOQ=;
+ b=nmPJHuet8SuVXgJQ3GOJubsxh/zerQvxY6IHpIsmKA80J5ufSCVFIgQ42z80Qli5s5zptNJtsyagdC1mnlCh0CuOk5029YbIo1elKmoJkOLggWiFrww7CGlBAKaSDSaUxQsXp1UKZOa6IEuXgaSPRHAaytvyDRnnxLMri/MuQOk=
+Received: from AM8PR07MB7396.eurprd07.prod.outlook.com (2603:10a6:20b:24d::23)
+ by AM9PR07MB7057.eurprd07.prod.outlook.com (2603:10a6:20b:2cc::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.11; Tue, 19 Oct
+ 2021 22:57:36 +0000
+Received: from AM8PR07MB7396.eurprd07.prod.outlook.com
+ ([fe80::65d3:ed38:b118:fc4d]) by AM8PR07MB7396.eurprd07.prod.outlook.com
+ ([fe80::65d3:ed38:b118:fc4d%3]) with mapi id 15.20.4628.015; Tue, 19 Oct 2021
+ 22:57:36 +0000
+From:   "Tobita, Tatsunosuke" <tatsunosuke.tobita@wacom.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ping Cheng <pinglinux@gmail.com>
+CC:     Alistair Francis <alistair@alistair23.me>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "linux-imx@nxp.com" <linux-imx@nxp.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "alistair23@gmail.com" <alistair23@gmail.com>
+Subject: RE: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the data
+ values
+Thread-Topic: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the
+ data values
+Thread-Index: AQHXvQLkRs45KqGVP02BAT9/lvnGjavZnY8FgAFeRDA=
+Date:   Tue, 19 Oct 2021 22:57:36 +0000
+Message-ID: <AM8PR07MB739659D037054A3B1EB2647087BD9@AM8PR07MB7396.eurprd07.prod.outlook.com>
+References: <20211009114313.17967-1-alistair@alistair23.me>
+ <CAF8JNh+OUzvAHA9tBrH2d_WxWPXRgiunhGO5KV4-fqVG+tUOyQ@mail.gmail.com>
+ <YW4kgnI0DQHj4sw4@google.com>
+In-Reply-To: <YW4kgnI0DQHj4sw4@google.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wacom.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c76167c2-a57c-412e-1576-08d99353d7cd
+x-ms-traffictypediagnostic: AM9PR07MB7057:
+x-microsoft-antispam-prvs: <AM9PR07MB7057ED4B89AF0CD7CE01643487BD9@AM9PR07MB7057.eurprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3/UoTbaKrgzzmlp3/8ElVNN2/4pyhHWeKILP2ZF860pqGojh/kP46eHbHIm6B6ik1R6ujgHX2VpCOkgiAiQUUP/XEZQI7Z5l1jUINLi9LYttNBnksKaifKC9tnkvrR+Ua/bJ5wB9a4IbggLUKwwJTxfQIXuk0+SY5ZLKvR99INTMxJm+I7dBVgIiA4BhIxRj8WEXny1ZW6gYM6djeLzuTGviJvAdMg7o4XuJGW4Zb7INY0GSoZCrN1uRBaL0QY+uzM8c8bFocMrevgGYLz7n3nZqIyIxdpDIeUmSqzofXvcEkcWfm67EbfEmLagWqXMdJdO69uUC/0+6TbNVRg6SOg4hOb9YppIW6mS5BlGcG+aVoKvPhh9ti5c81gGMXD4N1N6X7GRqt/ofYnrwF6Y7KuQwxQajS0Pm4DsjSv3ZW/8raAIfmYw72MBqyjaegjZMDiweBljpLyKnb5bcGYpPuuffKBjjouYP3CdQcLSgh+n/XDR4GB16Ns3WxI6lLsDaYnh32FSmg6ExsCe3PVp7YH+/KKzW2MhokgJ8n2nd2+40sdnsrxfZuvcETzy5a6Rmg3zMBSlPKl1NbWZOYCcRpPsa2bZE/daBEmud3VTAuN+8Pt6NmC0ReNNaBAZ0LurPwQEydLQhsUXqv3Ut3XWZZeQ8Jj2G8t8AyDgwmcdSQDaJzenYzxQRVZ10ujLC278DhBFvp8DCIn7RqlPOG7YHUw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR07MB7396.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(53546011)(4326008)(122000001)(6506007)(186003)(52536014)(8676002)(8936002)(83380400001)(55016002)(9686003)(26005)(508600001)(71200400001)(38100700002)(86362001)(38070700005)(2906002)(7416002)(5660300002)(33656002)(110136005)(7696005)(54906003)(316002)(66946007)(66446008)(64756008)(66556008)(76116006)(66476007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?PTxBnpWtz//eYVtzaLMaDHbwjUS1JTnfBwyGM2nlWFuCDN6TWkPtdBxABqQJ?=
+ =?us-ascii?Q?JrorHJX16/QWe8mzF0Py0/jdrd2zpNfwHxLpSjioaEoVwHjRq2lpP6wCdQZX?=
+ =?us-ascii?Q?tg1yCYwpsO12xHm+Dn7Tcx+MQOf9PT4q7WoRxaM5woB94uIqBO3tM54epmch?=
+ =?us-ascii?Q?CO+/ASFU8LjRdBk7n0HL2ANNTZwb6l9Jlzh8FQFjhMxZzDtuqWoW8TJiYa9X?=
+ =?us-ascii?Q?GutK6vJMVdF9rya0jFuBF5T6r14UOA/qTgLgyzOWk/tjBrNEOBqyLxkuG+EO?=
+ =?us-ascii?Q?r2MB2ERkU3Iw/CoVvIlQCt+JUfoNSD3FOqUCddk9Lc/g5WvFKguYxC6p1oBR?=
+ =?us-ascii?Q?K+ZNbp6p3XjMy1ub+6KO5wMP1iy3JYpshlpDdfue0m1uzTD7zkqsLkvjlhcn?=
+ =?us-ascii?Q?udiLgp5XI+KOKa29bBJSZ+24/ow0R7qlvQaDCIlfU8AF+DzA3xL7/EgKWttU?=
+ =?us-ascii?Q?wXatJJKCdvEcmRoHXdpGzxfd9q9afVv6pq+8e30fMxVcm2J++zczq21FobH9?=
+ =?us-ascii?Q?KQo/t/FsOC8A79qYK7kxjbp2N7sN99AG8dhQtl3dl+k8to+TWgVqV4fr4LNL?=
+ =?us-ascii?Q?iASiO/vju0UMNqNOFR50/hmgrMPHracfJQ3diuGhBml5fhsepL9/6o9NwzPf?=
+ =?us-ascii?Q?ERNHu87EeVoD0eUYKlLFo2WkYomLGlReCma1hW89jhIa3Qv3nuK59KHlpxLi?=
+ =?us-ascii?Q?YFuJ5SDaXbW7DlPNHdrdiC0Vm8GcjXdYdv4tRAMAHFSe9mqiVRhXOGWRTsH9?=
+ =?us-ascii?Q?GE493p0zeYp2jQvbHFv4gp3+Y0u4mVz56dI1H/fjz1INZADMvuMC3RatF2Wr?=
+ =?us-ascii?Q?yv5U7ph2s6v61frR7GAJrG5cCFRnQ+/cVzCfucvnZ086EQFQrSgc4jUFKebs?=
+ =?us-ascii?Q?ur0/rgOzzv8TkXs2ZPq7DSzHWN6dj2sZQ/TyKcYh+fcsLRdcIjsiNuNMj00A?=
+ =?us-ascii?Q?Tdm0Wrgkpvb3eOmmd9tMb8cfrckEZbGtsyCR1LAp7QJ5NjWazJgeEDuQDm/B?=
+ =?us-ascii?Q?6DZV/z5YtdAcDvisKTzWJy7tFmgoy8fFvifZVMZJC/AI/9uC+ww6vEZjimFv?=
+ =?us-ascii?Q?58aSN4WiTJKFeoiK6eJxOsHYJS3wguBFUoa4+QFWUEUSfLmmBnV5okSjSsK/?=
+ =?us-ascii?Q?IaLnYPi3F6/J7FK4zAD+YtjnZ3SN29JZ4jn247FzqMFJC/8JZ8Dnvqrw4+7C?=
+ =?us-ascii?Q?bf7QFU43UCmwyXks5WNSJ3vY9+mvV0aLCpUCVRENnR4jgcF6+Tc5PvRUgAm+?=
+ =?us-ascii?Q?4dE7Jk+O4UTKNKrLQj9ZNgLKN70y6MivjM6HvzX5jxaTjHF6fJHucB/1Wr7N?=
+ =?us-ascii?Q?lrhnLMiBjwBBUm9U24CkYUrvSRLTdV2tOL/vVR6TxHBei4u+GO98+MtvRSlj?=
+ =?us-ascii?Q?Dkk/QQgRUHABaEnkJ6ehQHkiYFnoMu97sAsd7msOY2OgxjVto2i/Afb7oBRk?=
+ =?us-ascii?Q?1zGoHkdTGl0x/OYDCf7KXHgxiu3CC2w5?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpq55e+fk9oDi8+JXDWiPcXDXK5oz1DL5eqfx+FkT-xhnw@mail.gmail.com>
+X-OriginatorOrg: wacom.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM8PR07MB7396.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c76167c2-a57c-412e-1576-08d99353d7cd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2021 22:57:36.0671
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9655a91b-107e-4537-834e-d15e84872626
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tatsunosuke.tobita@wacom.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR07MB7057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Dmitry,
 
-On Tue, Oct 19, 2021 at 07:24:41PM +0300, Dmitry Baryshkov wrote:
-> On Tue, 27 Jul 2021 at 03:41, Matthias Kaehlcke <mka@chromium.org> wrote:
+>I am really confused about this distinction. Could you please elaborate wh=
+y wacom driver only supports 0x056a (and, curiously, some Lenovo) devices.
+We want 0x2d1F to work with ***ONLY*** with the generic HID driver because =
+the every recent firmware is designed for that; no help is needed from othe=
+r sides.
+In contrast, the most of the devices is required help from other sides. The=
+refore, the devices with VID 0x2D1F devices are supposed to run alone and s=
+eparated out from our brand shipped products.=20
+I don't know how much we can go further to tell you about this -because of =
+our business, but 0x2D1F was obtained such purpose. Your understanding is m=
+uch appreciated.
+
+Thanks,
+
+Tats
+
+-----Original Message-----
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>=20
+Sent: Tuesday, October 19, 2021 10:51 AM
+To: Ping Cheng <pinglinux@gmail.com>
+Cc: Alistair Francis <alistair@alistair23.me>; shawnguo@kernel.org; s.hauer=
+@pengutronix.de; linux-imx@nxp.com; Jiri Kosina <jikos@kernel.org>; Benjami=
+n Tissoires <benjamin.tissoires@redhat.com>; linux-input <linux-input@vger.=
+kernel.org>; devicetree@vger.kernel.org; LKML <linux-kernel@vger.kernel.org=
+>; linux-arm-kernel@lists.infradead.org; alistair23@gmail.com
+Subject: Re: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the d=
+ata values
+
+[EXTERNAL]
+
+Hi Ping,
+
+On Mon, Oct 18, 2021 at 10:41:55AM -0700, Ping Cheng wrote:
+> Hi Alistair,
+>
+> On Sat, Oct 9, 2021, 4:44 AM Alistair Francis <alistair@alistair23.me>
+> wrote:
+>
+> > Add support to the Wacom HID device for flipping the values based on=20
+> > device tree settings. This allows us to support devices where the=20
+> > panel is installed in a different orientation, such as the reMarkable2.
 > >
-> > This series adds:
-> > - the onboard_usb_hub_driver
-> > - glue in the xhci-plat driver to create and destroy the
-> >   onboard_usb_hub platform devices if needed
-> > - a device tree binding for the Realtek RTS5411 USB hub controller
-> > - device tree changes that add RTS5411 entries for the QCA SC7180
-> >   based boards trogdor and lazor
-> > - a couple of stubs for platform device functions to avoid
-> >   unresolved symbols with certain kernel configs
+>
+> This device was designed for hid-generic driver, if it's not driven by=20
+> wacom_i2c.c or an out of tree driver.
+>
+> wacom.ko doesn't support vid 0x2d1f devices.
+
+I am really confused about this distinction. Could you please elaborate why=
+ wacom driver only supports 0x056a (and, curiously, some Lenovo) devices.
+
+Thanks.
+
+
+>
+> Nacked-by: Ping Cheng <Ping.Cheng@wacom.com>
+>
+> Sorry about that,
+> Ping
+>
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > ---
+> >  .../bindings/input/hid-over-i2c.txt           | 20 ++++++
+> >  drivers/hid/wacom_sys.c                       | 25 ++++++++
+> >  drivers/hid/wacom_wac.c                       | 61 +++++++++++++++++++
+> >  drivers/hid/wacom_wac.h                       | 13 ++++
+> >  4 files changed, 119 insertions(+)
 > >
-> > The main issue the driver addresses is that a USB hub needs to be
-> > powered before it can be discovered. For discrete onboard hubs (an
-> > example for such a hub is the Realtek RTS5411) this is often solved
-> > by supplying the hub with an 'always-on' regulator, which is kind
-> > of a hack. Some onboard hubs may require further initialization
-> > steps, like changing the state of a GPIO or enabling a clock, which
-> > requires even more hacks. This driver creates a platform device
-> > representing the hub which performs the necessary initialization.
-> > Currently it only supports switching on a single regulator, support
-> > for multiple regulators or other actions can be added as needed.
-> > Different initialization sequences can be supported based on the
-> > compatible string.
-> 
-> I have the feeling that you might want to check if you can use pwrseq
-> subsystem being proposed at
-> https://lore.kernel.org/linux-arm-msm/20211006035407.1147909-1-dmitry.baryshkov@linaro.org/.
-> It has been created for exactly the same reason of handling complex
-> power up/down requirements in a bus-neutral way. So instead of
-> creating an onboard-usb-hub, you might want to populate the hub node
-> with the reference to pwrseq device and make usb core call into
-> pwrseq. How does that sound to you?
+> > diff --git=20
+> > a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> > b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> > index c76bafaf98d2..16ebd7c46049 100644
+> > --- a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> > +++ b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+> > @@ -33,6 +33,26 @@ device-specific compatible properties, which=20
+> > should be used in addition to the
+> >  - post-power-on-delay-ms: time required by the device after=20
+> > enabling its regulators
+> >    or powering it on, before it is ready for communication.
+> >
+> > +  flip-tilt-x:
+> > +    type: boolean
+> > +    description: Flip the tilt X values read from device
+> > +
+> > +  flip-tilt-y:
+> > +    type: boolean
+> > +    description: Flip the tilt Y values read from device
 
-Thanks for the pointer, it's good to see another attempt to sort out
-power sequencing.
+Do these really need to be controlled separately from the main touchcsreen =
+orientation?
 
-The pwrseq framework could potentially be used by the onboard_usb_hub
-driver, but it probably can't replace it completely. Besides powering
-the USB hub on before enumeration the driver also can optionally power
-it off during system suspend when no wakeup capable USB devices are
-connected, which can result in signifcant power savings on battery
-powered devices. For this the driver needs knowledge about the USB
-(hub) devices that are provided by a hub chip. That part is probably
-best implemented by a driver under drivers/usb/.
+> > +
+> > +  flip-pos-x:
+> > +    type: boolean
+> > +    description: Flip the X position values read from device
+> > +
+> > +  flip-pos-y:
+> > +    type: boolean
+> > +    description: Flip the Y position values read from device
 
-It might be an option to have the USB core and the onboard_usb_hub
-driver use the pwrseq framework, though we'd have to ensure that it
-isn't a problem that the USB core turns power on (before
-enumeration) and the onboard_usb_hub driver turns it off during
-system suspend (and on again on resume).
+We already have touchscreen-inverted-x/y defined in Documentation/devicetre=
+e/bindings/input/touchscreen/touchscreen.yaml,
+why are they not sufficient?
+
+> > +
+> > +  flip-distance:
+> > +    type: boolean
+> > +    description: Flip the distance values read from device
+
+I am still confused of the notion of flipped distance.
+
+> > +
+> >  Example:
+> >
+> >         i2c-hid-dev@2c {
+> > diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c index=20
+> > 93f49b766376..47d9590b10bd 100644
+> > --- a/drivers/hid/wacom_sys.c
+> > +++ b/drivers/hid/wacom_sys.c
+> > @@ -10,6 +10,7 @@
+> >
+> >  #include "wacom_wac.h"
+> >  #include "wacom.h"
+> > +#include <linux/of.h>
+> >  #include <linux/input/mt.h>
+> >
+> >  #define WAC_MSG_RETRIES                5
+> > @@ -2730,6 +2731,28 @@ static void wacom_mode_change_work(struct=20
+> > work_struct *work)
+> >         return;
+> >  }
+> >
+> > +static void wacom_of_read(struct hid_device *hdev, struct wacom_wac
+> > *wacom_wac)
+> > +{
+> > +       if (IS_ENABLED(CONFIG_OF)) {
+> > +               wacom_wac->flip_tilt_x =3D
+> > of_property_read_bool(hdev->dev.parent->of_node,
+> > +                                                       "flip-tilt-x");
+> > +               wacom_wac->flip_tilt_y =3D
+> > of_property_read_bool(hdev->dev.parent->of_node,
+> > +                                                       "flip-tilt-y");
+> > +               wacom_wac->flip_pos_x =3D
+> > of_property_read_bool(hdev->dev.parent->of_node,
+> > +                                                       "flip-pos-x");
+> > +               wacom_wac->flip_pos_y =3D
+> > of_property_read_bool(hdev->dev.parent->of_node,
+> > +                                                       "flip-pos-y");
+> > +               wacom_wac->flip_distance =3D
+> > of_property_read_bool(hdev->dev.parent->of_node,
+> > +                                                       "flip-distance"=
+);
+> > +       } else {
+> > +               wacom_wac->flip_tilt_x =3D false;
+> > +               wacom_wac->flip_tilt_y =3D false;
+> > +               wacom_wac->flip_pos_x =3D false;
+> > +               wacom_wac->flip_pos_y =3D false;
+> > +               wacom_wac->flip_distance =3D false;
+> > +       }
+> > +}
+> > +
+> >  static int wacom_probe(struct hid_device *hdev,
+> >                 const struct hid_device_id *id)  { @@ -2797,6=20
+> > +2820,8 @@ static int wacom_probe(struct hid_device *hdev,
+> >                                  error);
+> >         }
+> >
+> > +       wacom_of_read(hdev, wacom_wac);
+> > +
+> >         wacom_wac->probe_complete =3D true;
+> >         return 0;
+> >  }
+> > diff --git a/drivers/hid/wacom_wac.c b/drivers/hid/wacom_wac.c index=20
+> > 33a6908995b1..c01f683e23fa 100644
+> > --- a/drivers/hid/wacom_wac.c
+> > +++ b/drivers/hid/wacom_wac.c
+> > @@ -3261,6 +3261,63 @@ static int wacom_status_irq(struct wacom_wac=20
+> > *wacom_wac, size_t len)
+> >         return 0;
+> >  }
+> >
+> > +static int wacom_of_irq(struct wacom_wac *wacom_wac, size_t len) {
+> > +       const struct wacom_features *features =3D &wacom_wac->features;
+> > +       unsigned char *data =3D wacom_wac->data;
+> > +       struct input_dev *input =3D wacom_wac->pen_input;
+> > +       unsigned int x, y, pressure;
+> > +       unsigned char tsw, f1, f2, ers;
+> > +       short tilt_x, tilt_y, distance;
+> > +
+> > +       if (!IS_ENABLED(CONFIG_OF))
+> > +               return 0;
+> > +
+> > +       tsw =3D data[1] & WACOM_TIP_SWITCH_bm;
+> > +       ers =3D data[1] & WACOM_ERASER_bm;
+> > +       f1 =3D data[1] & WACOM_BARREL_SWITCH_bm;
+> > +       f2 =3D data[1] & WACOM_BARREL_SWITCH_2_bm;
+> > +       x =3D le16_to_cpup((__le16 *)&data[2]);
+> > +       y =3D le16_to_cpup((__le16 *)&data[4]);
+> > +       pressure =3D le16_to_cpup((__le16 *)&data[6]);
+> > +
+> > +       /* Signed */
+> > +       tilt_x =3D get_unaligned_le16(&data[9]);
+> > +       tilt_y =3D get_unaligned_le16(&data[11]);
+> > +
+> > +       distance =3D get_unaligned_le16(&data[13]);
+
+You are still parsing raw data. The point of HID is to provide common frame=
+work for scaling raw values.
+
+Thanks.
+
+--
+Dmitry
