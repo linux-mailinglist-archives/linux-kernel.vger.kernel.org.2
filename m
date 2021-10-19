@@ -2,186 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEB2434236
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5802A43423C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhJSXlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49222 "EHLO
+        id S229992AbhJSXny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 19:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhJSXlJ (ORCPT
+        with ESMTP id S229707AbhJSXnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:41:09 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86BDC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:38:55 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id s136so17612170pgs.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 16:38:55 -0700 (PDT)
+        Tue, 19 Oct 2021 19:43:47 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05593C06161C;
+        Tue, 19 Oct 2021 16:41:33 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 63-20020a1c0042000000b0030d60716239so6385959wma.4;
+        Tue, 19 Oct 2021 16:41:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2QsW5fKhp22EmYwLesRxP1OLU4KgoBD8JpSEUKHaa7U=;
-        b=FF+oKNuXuU00ds8QRcbr8sqquKLJ4lADTJLozGgltzxK1vJNNa3JX+ICrkY1N3x5fH
-         xb5TH5P7t7MeFi7+vruSFecBpwDZaBGidgcRbLz4uj4FlWxXFvErHYc6Tq9HNwHjfcL/
-         2RlxSyk1TwEXi0zIB38Cqo/cvaeezCyd6SPhN3bCWZY17CN5WJZ2vfBY3+8Wa8OGSVtI
-         WGasOZtksSYbDGJjHF5nUU2M5Gop3ebb57GX87eEuJsytHpw9607G+3Sm/TMVOPJsgzw
-         /nPXMCdvr1WQ7JT6mFFCIA7gGJFX9fnYTujCkLs1TOYj0Ex4kvZP70hoBSpmMEiDDKoP
-         5a7Q==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uQM7560niPcf8GUHkEig/paB8tgdSzM7i6A+3PQ9XbY=;
+        b=fqSzBjumPhiqcB85nZUL7r1HosmqwgJYyCVeflqY/hyv4qeluaksQE28Q+Yi9Lr5ik
+         7IPpEhBMZJotuqM+il+XY+VotQdVt7hUGdJqKN2KPul60SGSSW9V+XwJAKdojwrgfOOk
+         XEmdEWeUqblayDNg2gqK2co8MJi9TKXoCL0NVmHdhSLSmdEThWLLREoyJGKDrdzH4rof
+         rJExE4bbRv95s3vKq4NEaQnbdDuBc1uAWy7VGYJlO7GWfnaCFIIVIHKyWbTyHOf151JP
+         /FuYSmyEZsnUN8MXPqPayEXxp0t++W5gtrBfkQhJW2Zt2Aczn84eghXf+4BYClh0IyGA
+         g+ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2QsW5fKhp22EmYwLesRxP1OLU4KgoBD8JpSEUKHaa7U=;
-        b=OwOX/qTokBIOILwwZXSYtUSTwoyY180D9KmivyfwoDhoegjpLCtfROu4F/rS4qL3Lt
-         Osh+r8Mcvs+JZF3KlQz+GxvRVsX++Mf25obE+/xXM5mFuPVgcCbIrJAsOFai4/cwoCRG
-         PCslj69fLN8goNKsUglPG7ahL0+IVpNLkiRM6Yk4sy1hHxSJpuMBMxY7Fp64YGaIZuVi
-         4ec+tcLEhUmjLQVrtfPXQpKG36WJowCcFyX8boXT55fsd+ewY9npQMtFUO86B/OudPIY
-         NLyh+MCjzCrP5aqtzMWDXaT8v7eqJ3PQAPsxHm25E8Ope1a+IBqHY0slvuRhu+hgbFtZ
-         e6+w==
-X-Gm-Message-State: AOAM532VB7KCYMMBB7Jjhlmc2/aaVYlHJ+bv9ix8Pd8Xg1eembSibU3A
-        lhiohlv1IuMEid0xaw4my/8kvg==
-X-Google-Smtp-Source: ABdhPJx+NMf/4ZfMDchDW6N8cMJnMUiaMZv4+dmhnJZoV4qJJH2iE4M9g2JQOk/S53ObxAEo0exQ/w==
-X-Received: by 2002:a05:6a00:2343:b0:44d:2e13:3edf with SMTP id j3-20020a056a00234300b0044d2e133edfmr2744482pfj.72.1634686734917;
-        Tue, 19 Oct 2021 16:38:54 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p17sm3752720pju.34.2021.10.19.16.38.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uQM7560niPcf8GUHkEig/paB8tgdSzM7i6A+3PQ9XbY=;
+        b=QEqDNF9gDmL09O9z83bJtq8HIZUTDSefIHe2SnSXIA5sEB3HwYqvvhNqP9J3VHc48j
+         DF8SiE1QX2L7maxU1XWLfUFD+Jwgav5zBnxYoCkIicLo8x9gAIqxaZ4lMqX7ounk7di/
+         YTlFa+Uz1x0/357XraQqziC0NFbJ8QyT7qNj5B9ksmdHs0+Te7XicW58O+7acG0ecSBA
+         B27X7SiMcpSqf3VkboAQTfUJsAmMvYSjbu7xT8SzcfldE4tmprVJ+T31T08jZEB+rWog
+         I3sppr0P50OLRdQMygNv4tsgIhbEDliEfpju/O9ENKY14PhUcLM/G0gIqD1cFgZF43cF
+         aWew==
+X-Gm-Message-State: AOAM531KQfwxXuqTTXhmz0Ihn0wiU6SAvvlZkJruMIMpSzjSlbK6OF60
+        gUGbUzfqS+CR8FURubK8U/c=
+X-Google-Smtp-Source: ABdhPJzGbfbmOs36wsuvADCvsgYd48T7QFbZCacg8//QDJXOCsETVzvklvcpG+U4eJTLg+aleT1mcg==
+X-Received: by 2002:adf:a413:: with SMTP id d19mr48749150wra.246.1634686892470;
+        Tue, 19 Oct 2021 16:41:32 -0700 (PDT)
+Received: from localhost.localdomain (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
+        by smtp.gmail.com with ESMTPSA id g70sm414807wme.29.2021.10.19.16.41.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 16:38:54 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 23:38:50 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 05/13] KVM: Integrate gfn_to_memslot_approx() into
- search_memslots()
-Message-ID: <YW9XCp3B+ogPIl7i@google.com>
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <d0d2c6fda0a21962eefcf28b37a603caa4be1819.1632171479.git.maciej.szmigiero@oracle.com>
+        Tue, 19 Oct 2021 16:41:32 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: [PATCH v1] ARM: dts: elpida_ecb240abacn: Change Elpida compatible
+Date:   Wed, 20 Oct 2021 02:40:59 +0300
+Message-Id: <20211019234059.29877-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d0d2c6fda0a21962eefcf28b37a603caa4be1819.1632171479.git.maciej.szmigiero@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
-> @@ -1267,7 +1280,7 @@ search_memslots(struct kvm_memslots *slots, gfn_t gfn, int *index)
->   * itself isn't here as an inline because that would bloat other code too much.
->   */
->  static inline struct kvm_memory_slot *
-> -__gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
-> +__gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn, bool approx)
+Vendor prefix shouldn't start with capital letter. The Elpida Memory
+compatible was never used in practice, hence just correct the compatible.
 
-This function name is a misnomer.  The helper is not an "approx" version, it's an
-inner helper that takes an @approx param.  Unless someone has a more clever name,
-the dreaded four underscores seems like the way to go.  Warning away users is a
-good thing in this case...
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ arch/arm/boot/dts/elpida_ecb240abacn.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  {
->  	struct kvm_memory_slot *slot;
->  	int slot_index = atomic_read(&slots->last_used_slot);
-> @@ -1276,7 +1289,7 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
->  	if (slot)
->  		return slot;
->  
-> -	slot = search_memslots(slots, gfn, &slot_index);
-> +	slot = search_memslots(slots, gfn, &slot_index, approx);
->  	if (slot) {
->  		atomic_set(&slots->last_used_slot, slot_index);
->  		return slot;
-> @@ -1285,6 +1298,12 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
->  	return NULL;
->  }
->  
+diff --git a/arch/arm/boot/dts/elpida_ecb240abacn.dtsi b/arch/arm/boot/dts/elpida_ecb240abacn.dtsi
+index d87ee4794f83..9698801cbcfb 100644
+--- a/arch/arm/boot/dts/elpida_ecb240abacn.dtsi
++++ b/arch/arm/boot/dts/elpida_ecb240abacn.dtsi
+@@ -5,7 +5,7 @@
+ 
+ / {
+ 	elpida_ECB240ABACN: lpddr2 {
+-		compatible	= "Elpida,ECB240ABACN","jedec,lpddr2-s4";
++		compatible	= "elpida,ECB240ABACN","jedec,lpddr2-s4";
+ 		density		= <2048>;
+ 		io-width	= <32>;
+ 
+-- 
+2.32.0
 
-There's a comment that doesn't show up in this diff that should also be moved,
-and opportunistically updated.
-
-> +static inline struct kvm_memory_slot *
-> +__gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
-> +{
-> +	return __gfn_to_memslot_approx(slots, gfn, false);
-> +}
-> +
->  static inline unsigned long
->  __gfn_to_hva_memslot(const struct kvm_memory_slot *slot, gfn_t gfn)
->  {
-
-E.g. this as fixup?
-
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 540fa948baa5..2964c773b36c 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -1964,10 +1964,15 @@ static int kvm_s390_peek_cmma(struct kvm *kvm, struct kvm_s390_cmma_log *args,
-        return 0;
- }
-
-+static int gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn)
-+{
-+       return ____gfn_to_memslot(slots, cur_gfn, true);
-+}
-+
- static unsigned long kvm_s390_next_dirty_cmma(struct kvm_memslots *slots,
-                                              unsigned long cur_gfn)
- {
--       struct kvm_memory_slot *ms = __gfn_to_memslot_approx(slots, cur_gfn, true);
-+       struct kvm_memory_slot *ms = gfn_to_memslot_approx(slots, cur_gfn);
-        int slotidx = ms - slots->memslots;
-        unsigned long ofs = cur_gfn - ms->base_gfn;
-
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 8fd9644f40b2..ec1a074c2f6e 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1274,13 +1274,8 @@ search_memslots(struct kvm_memslots *slots, gfn_t gfn, int *index, bool approx)
-        return NULL;
- }
-
--/*
-- * __gfn_to_memslot() and its descendants are here because it is called from
-- * non-modular code in arch/powerpc/kvm/book3s_64_vio{,_hv}.c. gfn_to_memslot()
-- * itself isn't here as an inline because that would bloat other code too much.
-- */
- static inline struct kvm_memory_slot *
--__gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn, bool approx)
-+____gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn, bool approx)
- {
-        struct kvm_memory_slot *slot;
-        int slot_index = atomic_read(&slots->last_used_slot);
-@@ -1298,10 +1293,15 @@ __gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn, bool approx)
-        return NULL;
- }
-
-+/*
-+ * __gfn_to_memslot() and its descendants are here to allow arch code to inline
-+ * the lookups in hot paths.  gfn_to_memslot() itself isn't here as an inline
-+ * because that would bloat other code too much.
-+ */
- static inline struct kvm_memory_slot *
- __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
- {
--       return __gfn_to_memslot_approx(slots, gfn, false);
-+       return ____gfn_to_memslot(slots, gfn, false);
- }
-
- static inline unsigned long
