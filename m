@@ -2,63 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5D04332D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6474332E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhJSJu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:50:29 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:56116 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbhJSJu1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:50:27 -0400
-Received: by mail-il1-f198.google.com with SMTP id o8-20020a056e02068800b0025999dab84fso3582435ils.22
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:48:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=HkppKwxJSrwxL7dC9UV89aph7+9yntblLWJOhC1mcHE=;
-        b=mCM9r2SShDjww+BaI0AulXGUB1yOPgHRVIamlTANLydT/bs3Vj+8sykWmL4Ciyh5JY
-         2k52dXH+1XepjckNO7Ac3DsIwYrWfbrP3e08o3N+0YtX2IPNMbtHqVEwLgfFwLk+7T0w
-         8EB2OJQvQlCLv5BALOKjFZlpRfpFwU6ypZctVwu5MSJu9EsDfKlXtFHh8iX5EdFVudHl
-         1W2k/9KI7zGCPt88rfjjrWs4y/sKqKQusyt5W2dqpua+cgJljxKj1EtJ/JYYSGU5TdcR
-         DnsAbZkfL1kmjmiJ/je9//+jBF2eRaUamlX/z8Vp7ZVdo2DWHHZeTqXDmUV05Eo8gHRJ
-         bhog==
-X-Gm-Message-State: AOAM531pFfZnmNVU3HGTMoRfjixX6q3QyCDulxZqAcBA/+TphUlN+5at
-        ktFopFf8tRHk4KfvEiEFlPKGeeGwGc9nooiPUgFE4+qbhvRR
-X-Google-Smtp-Source: ABdhPJyb8p3gPAxw/6FfoTBFhII+XiWGMzkh14vkr61G0rGK1ckzMLcK93Jd+koQdBXdoVfetU5dm6E+S+J/mN81JU2MLpgzl/ik
+        id S235041AbhJSJym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:54:42 -0400
+Received: from mga17.intel.com ([192.55.52.151]:65378 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231652AbhJSJyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:54:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="209266693"
+X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
+   d="scan'208";a="209266693"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 02:52:27 -0700
+X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
+   d="scan'208";a="531371974"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 02:52:21 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mclms-000SXr-2L;
+        Tue, 19 Oct 2021 12:52:02 +0300
+Date:   Tue, 19 Oct 2021 12:52:02 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+Message-ID: <YW6VQutGMFOZPNlC@smile.fi.intel.com>
+References: <20211012134027.684712-1-kernel@esmil.dk>
+ <20211012134027.684712-13-kernel@esmil.dk>
+ <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
+ <CANBLGcxHD2vy0+tXYo5Pkqri9mV7aD9jikvs3ygBJRxF4ApLMA@mail.gmail.com>
+ <CAHp75Vc65deoHbks-aPmnjEJzm3GdqFMfBCUqw4vVLVr=71Ncg@mail.gmail.com>
+ <CANBLGcxriKLZ+CKUsj5sviW8FdHnWTF2koROwmAb=G2tbmE6vQ@mail.gmail.com>
+ <CAHp75VccSDLVbs1sF_-1zghWyLKtKKV1qtxOxZZ-cS0e6S-sBA@mail.gmail.com>
+ <CAHp75VcgFRGpca-pSU9T5Oo1fT4aWQJd5EQfyZscGYx0mDMJ_Q@mail.gmail.com>
+ <CANBLGcxHLQZygX9CHsXK4aYS9m4VE5OnLNROOmvP1ps5UP-xAw@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1e0c:: with SMTP id g12mr17531265ila.260.1634636895325;
- Tue, 19 Oct 2021 02:48:15 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 02:48:15 -0700
-In-Reply-To: <20211019091639.GE3255@quack2.suse.cz>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007b948805ceb18f83@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in __isofs_iget
-From:   syzbot <syzbot+6fc7fb214625d82af7d1@syzkaller.appspotmail.com>
-To:     bingjingc@synology.com, cccheng@synology.com, jack@suse.cz,
-        linux-kernel@vger.kernel.org, pali@kernel.org,
-        robbieko@synology.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANBLGcxHLQZygX9CHsXK4aYS9m4VE5OnLNROOmvP1ps5UP-xAw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Oct 18, 2021 at 07:02:43PM +0200, Emil Renner Berthing wrote:
+> On Mon, 18 Oct 2021 at 18:29, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Mon, Oct 18, 2021 at 7:23 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+...
 
-Reported-and-tested-by: syzbot+6fc7fb214625d82af7d1@syzkaller.appspotmail.com
+> > Having a second look I found even problematic error paths because of
+> > mixing devm_*() with non-devm_*() calls, which only assures me that
+> > your ->probe() error path is broken and should be revisited.
+> 
+> So do you want to expand on that now or should I send v2 first?
 
-Tested on:
+Here is not enough context anymore to point out. I expect one to have done
+their homework anyway.
 
-commit:         519d8195 Linux 5.15-rc6
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fd205ca848a57406
-dashboard link: https://syzkaller.appspot.com/bug?extid=6fc7fb214625d82af7d1
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=101927c8b00000
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Note: testing is done by a robot and is best-effort only.
+
