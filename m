@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AF44335C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2820D4335C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235599AbhJSMVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:21:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235431AbhJSMVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:21:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54C9260F25;
-        Tue, 19 Oct 2021 12:18:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634645928;
-        bh=wCIcwvoJd4spptMcCYgIR/4TmnYg3S+BO2UT5K4fWVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jHSmWihieDaIN0Y1fAWtFmHjpDnSCIBT8+OEcb73Knw3qKdyO944Pr6qFFqYoTjZP
-         yMlJG/hvF46TMZ7mR6SYVS5uF6twMhjS59qUXUeAisw8BN87u70aE1WsloxTSgQ0NL
-         Ll/T/PH8mZ3ksXpZ5ILuxdBtuEZCSioCQW9iFBOk/OZYJV6arAhL2vp+rJqcQwgn3Z
-         Q1M9/e2y0AF9D5osSbB5HwM5/SNQNg9idJFxBdcPFbqCfarbvu5RVFvI+M+vDBAhBP
-         mgxeFy5cvWIZbg1vNZLPH/3CEfLBo/kotmQcHc8Ff9WDGWklH9I3E6dHmga27s5UAu
-         cRUZJHH14Rn+g==
-Date:   Tue, 19 Oct 2021 13:18:45 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     sugar zhang <sugar.zhang@rock-chips.com>
-Cc:     John Keeping <john@metanate.com>, alsa-devel@alsa-project.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: Re: [PATCH] ASoC: rockchip: =?utf-8?Q?use_?=
- =?utf-8?B?Z2VuZXJpYyBETUEgZW5naW5lIGNvbmZpZ3VyYXRpb27jgJDor7fms6jmhI8=?=
- =?utf-8?B?77yM6YKu5Lu255SxbGludXgtcm9ja2NoaXAtYm91bmNlcytzdWdhci56aGFu?=
- =?utf-8?B?Zz1yb2NrLWNoaXBzLmNvbUBsaXN0cy5pbmZyYWRlYWQub3Jn5Luj5Y+R44CR?=
-Message-ID: <YW63pduAGW01PUoj@sirena.org.uk>
-References: <20211018114844.1746351-1-john@metanate.com>
- <YW1svMVSgBJygfpV@sirena.org.uk>
- <a5eebd60-da6f-cc56-b1fe-221dc827e097@rock-chips.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Ezt81brnuxSWZqCl"
-Content-Disposition: inline
-In-Reply-To: <a5eebd60-da6f-cc56-b1fe-221dc827e097@rock-chips.com>
-X-Cookie: I program, therefore I am.
+        id S235611AbhJSMVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhJSMVS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:21:18 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E372C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:19:05 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so2517245pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:19:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=nTgW/IuVY6FOmd2NIqc+LkXN9w9F4uGLer3FYQNnChY=;
+        b=vRVpLNdC0d06O3y1Z0BSlXE+wLrVMVxYcmt1WeBJ6YzJz7ek/pAdvFXjkjl6qJXA1/
+         z0tyEzZ+JcRSW//cb6R1MHx2mGuJX7AgNG+3Z9+GI5Rv31hoz3gmV11WDhOgUKsfxaX9
+         W6Gx+2/i4OiaTNNEboGj1sCfRpHPTuHW3JzkGs5VJkRYBIb0T0n/nBUakRBy1Yy0p3Kj
+         fXfdl7XsB2OCe0IrkGf3eqFGs5W+IGCkgA3BK1fpPeOg1q12Uv9KCeOPj9xATPKA0lzl
+         Kmdp1brBk119571HMkeJ5BM3Cr0OJdDPkXdW9Dr22kVXDJpGWR/pOsiDfRKU+iGW+cYg
+         O4VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=nTgW/IuVY6FOmd2NIqc+LkXN9w9F4uGLer3FYQNnChY=;
+        b=bqr3MwYTxDAfaJVW/zrao3ctzvZ9GWX8sd5Pcg4UNaNi59bGqCEfSTEXmLQe64AHBD
+         vra6UyvWQatRT49xM0UpoP1hZuN7l529x3g6GOPsgs5CImZDp/IQLmehWiRY4EVigpjX
+         4jjByQICvLd5tEQIiIIpdDTHxyPWVCMWYG4lhrjp2Is5W2mmnETPXB3R+1OKPKsb8drQ
+         pci3FYJ4yp6Iar6w0BbkVl+6HcqBMU2XKL3EDsFdFNlZQQm02pYfFVqu4bXJrF20/yha
+         0iZPV8rfAoC069mmSU3SU+PIbEl0zmeYoLbPma0VzyY+DR+k8TtMb+TnQSeLgpdSJJKa
+         UjLA==
+X-Gm-Message-State: AOAM531W56R2qLL6QnbmL66aC3VwSTBZ9ja6W+0CtXvF68z9nvgzD4HB
+        LD71FcnyYuGgSVwtDWkMdAXDqg==
+X-Google-Smtp-Source: ABdhPJx7mnBn9ls5XGxsDyhP3V4prK+OAh40Vd2NAboQVPTtdY9c8YiI3F3pxxgUXLdN8f+mGrEcow==
+X-Received: by 2002:a17:90a:ba94:: with SMTP id t20mr6293863pjr.138.1634645945075;
+        Tue, 19 Oct 2021 05:19:05 -0700 (PDT)
+Received: from n210-191-019.byted.org ([49.7.44.97])
+        by smtp.googlemail.com with ESMTPSA id i12sm16338331pfo.126.2021.10.19.05.18.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Oct 2021 05:19:04 -0700 (PDT)
+From:   Li Yu <liyu.yukiteru@bytedance.com>
+To:     pbonzini@redhat.com
+Cc:     liyu.yukiteru@bytedance.com,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: x86/mmu: Warn on nx_huge_pages when initializing kvm
+Date:   Tue, 19 Oct 2021 20:18:48 +0800
+Message-Id: <20211019121848.245347-1-liyu.yukiteru@bytedance.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add warning when `nx_huge_pages` is enabled by kvm mmu for hint that
+huge pages may be splited by kernel.
 
---Ezt81brnuxSWZqCl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Li Yu <liyu.yukiteru@bytedance.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-On Tue, Oct 19, 2021 at 10:11:27AM +0800, sugar zhang wrote:
-> Hi Mark, John,
->=20
-> Actually, I have submit patch[1] to do the same thing a few weeks ago, and
-> explain the original purpose.
->=20
-> [1] https://x-lore.kernel.org/linux-rockchip/1632792957-80428-1-git-send-=
-email-sugar.zhang@rock-chips.com/
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 1a64ba5b9437..b75dbaf29f2d 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -6091,12 +6091,17 @@ static int set_nx_huge_pages(const char *val, const struct kernel_param *kp)
+ 	return 0;
+ }
+ 
++#define ITLB_MULTIHIT_MSG "iTLB multi-hit CPU bug present and cpu mitigations enabled, huge pages may be splited by kernel for security. See CVE-2018-12207 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/multihit.html for details.\n"
++
+ int kvm_mmu_module_init(void)
+ {
+ 	int ret = -ENOMEM;
+ 
+-	if (nx_huge_pages == -1)
++	if (nx_huge_pages == -1) {
+ 		__set_nx_huge_pages(get_nx_auto_mode());
++		if (is_nx_huge_page_enabled())
++			pr_warn_once(ITLB_MULTIHIT_MSG);
++	}
+ 
+ 	/*
+ 	 * MMU roles use union aliasing which is, generally speaking, an
+-- 
+2.11.0
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
-
---Ezt81brnuxSWZqCl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFut6QACgkQJNaLcl1U
-h9DB9gf/RZVy+523LzSVJYBk9szCLUA5EDcqjGgHOk+IVjtaKqN33yr/3aY9haqa
-GhliGqlmI4kGCJIOQkLQdzuPbR06KSjhRDO1F++YxSs4oteFXmoIHBU3JW839lVW
-9tkKxnRt14oMuvg2OB4mTrY8WaXNZB00fM7xI42I8YvO1vmUvxqxu4iSdVcfbrsW
-Eoj+XlvwnNyesulfY6u28ZHq4m6nM+DeJ/2A68ilyYo/2EzIoqsp2aG31Q/thm8u
-fFOyaLekuQc7WndqoWjnA0u0fwzChlrbJLteFSELnfWvYHA3Ca0ASAly7GvVoIbl
-n6DJt1BkDmUvqn3B3Hv9kT+2s7UK2g==
-=8z1n
------END PGP SIGNATURE-----
-
---Ezt81brnuxSWZqCl--
