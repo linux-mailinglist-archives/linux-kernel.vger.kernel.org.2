@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2C64335C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AF44335C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235587AbhJSMUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhJSMUv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:20:51 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD98BC06161C;
-        Tue, 19 Oct 2021 05:18:38 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id i12so47285074wrb.7;
-        Tue, 19 Oct 2021 05:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MsFAqTdto9KD8SmdGT1+LtifFFQHI+C4P/7IoIQ82qQ=;
-        b=AxTULgBhGeZOq+B3XK02Ynr6GEjAOLI5Q+JtUOyA1U8KiFMbT9GBUKifT3Rd2gMNU9
-         6pbhNsBayMo2zoPAeqjVGZ/gl4bpq95eQHaSTFrU5d4Fz9sHNPEDuom8YTfITvbxxLFI
-         OyunG64ebVb3BPd3FI7ISbFG3COmpM+ERpgv35F8T6KBjT0rgjoAzQ6FCaosUbmLJ0AJ
-         zGikPRi6BOs7+FdpGygugGmypsoQiMDHjmaLq82ezhabu1X+ja//aCR0gWlTHw/zvBgW
-         uERpalX7tsVLkoV0EpyzGE0YULFbZlzBOm6/Q/LbPv/9tAElXlfxT8JZ6gtKATrL8H65
-         LLlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MsFAqTdto9KD8SmdGT1+LtifFFQHI+C4P/7IoIQ82qQ=;
-        b=XdB9agRKZtopiX+aV2VAV93yyk/bnx+0dfwMuy/wkqy4yh4KEiYKGxSTPWi5MeXur/
-         WfmlKlhdl9BlkIrsKHSTqSXj/Uzh1Ox28IIVoImp+UGGVVfGcD76LkHaUnTCJ+GjQsB3
-         LRtsq6MB+BKMrhO1ucRB2ubfjfNBsnBkztImZAjNOR9kO0kVrCyABlEQ7k/xk/d22stC
-         kKEu9EezFj5VKmP6SEmzedJF233DLYITrWPALuEbpL1F+KNqLtvlHwHjyVR5flG9BxMD
-         ETtvf74DvSraRm143ud54jxMv8S+dCtNwK/vs5R0CdFsw2yx7h1QLAecXrUjaol2aLop
-         HqGQ==
-X-Gm-Message-State: AOAM532MOztEgzwq7OTlfxXSLCV02dROG4PlZ976R3pNRd/5rSYesc08
-        Qnuug4+HFX/yjlGu6wzOQQNnZJOvO50=
-X-Google-Smtp-Source: ABdhPJyhocyh75B6+WJtHR4f+NWvmfaG/j6/+yZHAutuBOIEtheMcyqKmY3s2bADyH4E0PAj2ToD0w==
-X-Received: by 2002:adf:ab46:: with SMTP id r6mr43174330wrc.71.1634645917468;
-        Tue, 19 Oct 2021 05:18:37 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id l20sm2246206wmq.42.2021.10.19.05.18.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 05:18:37 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 13:18:35 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/49] 4.19.213-rc2 review
-Message-ID: <YW63m/OequXnGwtT@debian>
-References: <20211018143033.725101193@linuxfoundation.org>
+        id S235599AbhJSMVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:21:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235431AbhJSMVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:21:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54C9260F25;
+        Tue, 19 Oct 2021 12:18:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634645928;
+        bh=wCIcwvoJd4spptMcCYgIR/4TmnYg3S+BO2UT5K4fWVw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jHSmWihieDaIN0Y1fAWtFmHjpDnSCIBT8+OEcb73Knw3qKdyO944Pr6qFFqYoTjZP
+         yMlJG/hvF46TMZ7mR6SYVS5uF6twMhjS59qUXUeAisw8BN87u70aE1WsloxTSgQ0NL
+         Ll/T/PH8mZ3ksXpZ5ILuxdBtuEZCSioCQW9iFBOk/OZYJV6arAhL2vp+rJqcQwgn3Z
+         Q1M9/e2y0AF9D5osSbB5HwM5/SNQNg9idJFxBdcPFbqCfarbvu5RVFvI+M+vDBAhBP
+         mgxeFy5cvWIZbg1vNZLPH/3CEfLBo/kotmQcHc8Ff9WDGWklH9I3E6dHmga27s5UAu
+         cRUZJHH14Rn+g==
+Date:   Tue, 19 Oct 2021 13:18:45 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     sugar zhang <sugar.zhang@rock-chips.com>
+Cc:     John Keeping <john@metanate.com>, alsa-devel@alsa-project.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Subject: Re: [PATCH] ASoC: rockchip: =?utf-8?Q?use_?=
+ =?utf-8?B?Z2VuZXJpYyBETUEgZW5naW5lIGNvbmZpZ3VyYXRpb27jgJDor7fms6jmhI8=?=
+ =?utf-8?B?77yM6YKu5Lu255SxbGludXgtcm9ja2NoaXAtYm91bmNlcytzdWdhci56aGFu?=
+ =?utf-8?B?Zz1yb2NrLWNoaXBzLmNvbUBsaXN0cy5pbmZyYWRlYWQub3Jn5Luj5Y+R44CR?=
+Message-ID: <YW63pduAGW01PUoj@sirena.org.uk>
+References: <20211018114844.1746351-1-john@metanate.com>
+ <YW1svMVSgBJygfpV@sirena.org.uk>
+ <a5eebd60-da6f-cc56-b1fe-221dc827e097@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Ezt81brnuxSWZqCl"
 Content-Disposition: inline
-In-Reply-To: <20211018143033.725101193@linuxfoundation.org>
+In-Reply-To: <a5eebd60-da6f-cc56-b1fe-221dc827e097@rock-chips.com>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On Mon, Oct 18, 2021 at 04:30:51PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.213 release.
-> There are 49 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 20 Oct 2021 14:30:23 +0000.
-> Anything received after that time might be too late.
+--Ezt81brnuxSWZqCl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Build test:
-mips (gcc version 11.2.1 20211012): 63 configs -> no failure
-arm (gcc version 11.2.1 20211012): 116 configs -> no new failure
-arm64 (gcc version 11.2.1 20211012): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+On Tue, Oct 19, 2021 at 10:11:27AM +0800, sugar zhang wrote:
+> Hi Mark, John,
+>=20
+> Actually, I have submit patch[1] to do the same thing a few weeks ago, and
+> explain the original purpose.
+>=20
+> [1] https://x-lore.kernel.org/linux-rockchip/1632792957-80428-1-git-send-=
+email-sugar.zhang@rock-chips.com/
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-[1]. https://openqa.qa.codethink.co.uk/tests/287
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
+--Ezt81brnuxSWZqCl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+-----BEGIN PGP SIGNATURE-----
 
---
-Regards
-Sudip
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFut6QACgkQJNaLcl1U
+h9DB9gf/RZVy+523LzSVJYBk9szCLUA5EDcqjGgHOk+IVjtaKqN33yr/3aY9haqa
+GhliGqlmI4kGCJIOQkLQdzuPbR06KSjhRDO1F++YxSs4oteFXmoIHBU3JW839lVW
+9tkKxnRt14oMuvg2OB4mTrY8WaXNZB00fM7xI42I8YvO1vmUvxqxu4iSdVcfbrsW
+Eoj+XlvwnNyesulfY6u28ZHq4m6nM+DeJ/2A68ilyYo/2EzIoqsp2aG31Q/thm8u
+fFOyaLekuQc7WndqoWjnA0u0fwzChlrbJLteFSELnfWvYHA3Ca0ASAly7GvVoIbl
+n6DJt1BkDmUvqn3B3Hv9kT+2s7UK2g==
+=8z1n
+-----END PGP SIGNATURE-----
 
+--Ezt81brnuxSWZqCl--
