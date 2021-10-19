@@ -2,231 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D134337B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A417143378E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235922AbhJSNuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:50:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:58272 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235741AbhJSNuV (ORCPT
+        id S235963AbhJSNr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235949AbhJSNrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:50:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634651288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MGsX/Ml84CMC+OjHlH5RDMfLJcW/FIl8Qk/LyCJCDBE=;
-        b=ZSclhDlI9f7DSnX5T+RtxbAZsiyWUPYaX6Ng9BCfTgxUNykaueuQpCVEckHMjmUYoflALw
-        A7pP8KaYVIfM3x9VU4Da+PClamRu/Lg5sc2RkHLQRtqJ1a105HfKBORIxHTsnfxmMchDJO
-        wMhZBvu6M3TxTPgNiJg7PRKfNWyB+3g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-86WeWPCuMNSZLCuVHcUO8Q-1; Tue, 19 Oct 2021 09:46:11 -0400
-X-MC-Unique: 86WeWPCuMNSZLCuVHcUO8Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF6C91006AA5;
-        Tue, 19 Oct 2021 13:46:09 +0000 (UTC)
-Received: from max.com (unknown [10.40.193.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3A35A102AE42;
-        Tue, 19 Oct 2021 13:45:59 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v8 17/17] gfs2: Fix mmap + page fault deadlocks for direct I/O
-Date:   Tue, 19 Oct 2021 15:42:04 +0200
-Message-Id: <20211019134204.3382645-18-agruenba@redhat.com>
-In-Reply-To: <20211019134204.3382645-1-agruenba@redhat.com>
-References: <20211019134204.3382645-1-agruenba@redhat.com>
+        Tue, 19 Oct 2021 09:47:24 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C60FC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:45:10 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id v8so13521673pfu.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2kvblXUORr+LJ9sIpb+2/3CnmQvxl21vFOz3lnIkYl8=;
+        b=ACOWtTbBdqr6n8/6fbONuWoxQ4aC40vjOZCY+0hBAqVulRiUeBGVy/uNk5O+CbU1oG
+         Bnxa/S41TszsImaFBxWvNlC9QSWo5J6zxDlA8OiLqovnn8WE4vws464pWBGW23L3G5FU
+         cxmQyAbliHsLgtW1yBexQKf1Owzrjr1twIhJ9kX2dLmcYufcnUkLbKyg8FR+QXAKXueM
+         NDuxsUPW57AUumfn9DGjeTxRa08qQ4V+fKnIGtkbYVZcVVYmMs4QyFpqLqo9U+MfQ/du
+         p0r/4amTWdkW3Pw6JSuOq3mlorWcG0SU6uKi4y/ny9rP4rymDrFOTSFIgpVDj/vhYDyn
+         YmKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2kvblXUORr+LJ9sIpb+2/3CnmQvxl21vFOz3lnIkYl8=;
+        b=mxPH+j7P5QgORRtimZp6WTGQ4Zia9HHinoS8Tz0mT0YpbHdmS9VDcygZRHU92QQe0i
+         HnGEWQEjpoqc1TVo0lvv/jgahzV4jOKzTA+7JTrIbZvf6Lt7BYNHN23lNM5rgx+ui20p
+         yvlzvj/nHGHvfW78Gh5p6PNcJKOIsSlVeFYada54lDMDI2QapxR1GB3CXarrSFYFVQdP
+         ql1K3xTJlkFm9UTzSgtGqIdAhtnY81D8lRvGef346zJcy4hhWAMV/Ny7ZsjW6EGH0uOl
+         QqtNDDvuJTjandxD+sM91X4jMF3rm0UM7LyQaN57C2L8SVbhWEbzOn7WdizixzwWjC23
+         UCvQ==
+X-Gm-Message-State: AOAM532s99NoM3L7Bb+zMwEFL540bewJn4OsqIyfNs/N/oL+qQC2NDjU
+        B8g1C6ZlG9lhyEWGhyWZDKI2rKR1BZ+0
+X-Google-Smtp-Source: ABdhPJwkzM8K/S35sLMOqJWgvEmqhuUFJK41/CNo7PdRWqg+sY8+d/nvxMGiDTtng58xs7XykQFiJg==
+X-Received: by 2002:a63:6bc2:: with SMTP id g185mr23973933pgc.356.1634651109413;
+        Tue, 19 Oct 2021 06:45:09 -0700 (PDT)
+Received: from localhost.localdomain ([202.21.43.8])
+        by smtp.gmail.com with ESMTPSA id lp9sm3295358pjb.35.2021.10.19.06.45.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 06:45:08 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     mhi@lists.linux.dev
+Cc:     loic.poulain@linaro.org, hemantk@codeaurora.org,
+        bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        netdev@vger.kernel.org
+Subject: [PATCH] bus: mhi: Add mhi_prepare_for_transfer_autoqueue API for DL auto queue
+Date:   Tue, 19 Oct 2021 19:14:51 +0530
+Message-Id: <20211019134451.174318-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also disable page faults during direct I/O requests and implement a
-similar kind of retry logic as in the buffered I/O case.
+Add a new API "mhi_prepare_for_transfer_autoqueue" for using with client
+drivers like QRTR to request MHI core to autoqueue buffers for the DL
+channel along with starting both UL and DL channels.
 
-The retry logic in the direct I/O case differs from the buffered I/O
-case in the following way: direct I/O doesn't provide the kinds of
-consistency guarantees between concurrent reads and writes that buffered
-I/O provides, so once we lose the inode glock while faulting in user
-pages, we always resume the operation.  We never need to return a
-partial read or write.
+So far, the "auto_queue" flag specified by the controller drivers in
+channel definition served this purpose but this will be removed at some
+point in future.
 
-This locking problem was originally reported by Jan Kara.  Linus came up
-with the idea of disabling page faults.  Many thanks to Al Viro and
-Matthew Wilcox for their feedback.
-
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: netdev@vger.kernel.org
+Co-developed-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- fs/gfs2/file.c | 101 +++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 89 insertions(+), 12 deletions(-)
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index ae06defcf369..a8e440b4d21c 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -811,22 +811,65 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
+Dave, Jakub: This patch should go through MHI tree. But since the QRTR driver
+is also modified, this needs an Ack from you.
+
+ drivers/bus/mhi/core/internal.h |  6 +++++-
+ drivers/bus/mhi/core/main.c     | 21 +++++++++++++++++----
+ include/linux/mhi.h             | 21 ++++++++++++++++-----
+ net/qrtr/mhi.c                  |  2 +-
+ 4 files changed, 39 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 3a732afaf73e..597da2cce069 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -681,8 +681,12 @@ void mhi_deinit_free_irq(struct mhi_controller *mhi_cntrl);
+ void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+ 		      struct image_info *img_info);
+ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl);
++
++/* Automatically allocate and queue inbound buffers */
++#define MHI_CH_INBOUND_ALLOC_BUFS BIT(0)
+ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
+-			struct mhi_chan *mhi_chan);
++			struct mhi_chan *mhi_chan, unsigned int flags);
++
+ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
+ 		       struct mhi_chan *mhi_chan);
+ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index b15c5bc37dd4..eaa1f62d16a5 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -1430,7 +1430,7 @@ static void mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
+ }
+ 
+ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
+-			struct mhi_chan *mhi_chan)
++			struct mhi_chan *mhi_chan, unsigned int flags)
  {
- 	struct file *file = iocb->ki_filp;
- 	struct gfs2_inode *ip = GFS2_I(file->f_mapping->host);
--	size_t count = iov_iter_count(to);
-+	size_t prev_count = 0, window_size = 0;
-+	size_t written = 0;
- 	ssize_t ret;
- 
--	if (!count)
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we indicate
-+	 * that the inode glock may be dropped, fault in the pages manually,
-+	 * and retry.
-+	 *
-+	 * Unlike generic_file_read_iter, for reads, iomap_dio_rw can trigger
-+	 * physical as well as manual page faults, and we need to disable both
-+	 * kinds.
-+	 *
-+	 * For direct I/O, gfs2 takes the inode glock in deferred mode.  This
-+	 * locking mode is compatible with other deferred holders, so multiple
-+	 * processes and nodes can do direct I/O to a file at the same time.
-+	 * There's no guarantee that reads or writes will be atomic.  Any
-+	 * coordination among readers and writers needs to happen externally.
-+	 */
-+
-+	if (!iov_iter_count(to))
- 		return 0; /* skip atime */
- 
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
+ 	int ret = 0;
+ 	struct device *dev = &mhi_chan->mhi_dev->dev;
+@@ -1455,6 +1455,9 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
  	if (ret)
- 		goto out_uninit;
-+retry_under_glock:
-+	pagefault_disable();
-+	to->nofault = true;
-+	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, written);
-+	to->nofault = false;
-+	pagefault_enable();
-+	if (ret > 0)
-+		written = ret;
+ 		goto error_pm_state;
  
--	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0, 0);
--	gfs2_glock_dq(gh);
-+	if (unlikely(iov_iter_count(to) && (ret > 0 || ret == -EFAULT)) &&
-+	    should_fault_in_pages(to, &prev_count, &window_size)) {
-+		size_t leftover;
++	if (mhi_chan->dir == DMA_FROM_DEVICE)
++		mhi_chan->pre_alloc = !!(flags & MHI_CH_INBOUND_ALLOC_BUFS);
 +
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_writeable(to, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return written;
+ 	/* Pre-allocate buffer for xfer ring */
+ 	if (mhi_chan->pre_alloc) {
+ 		int nr_el = get_nr_avail_ring_elements(mhi_cntrl,
+@@ -1609,8 +1612,7 @@ void mhi_reset_chan(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan)
+ 	read_unlock_bh(&mhi_cntrl->pm_lock);
  }
  
- static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
-@@ -835,10 +878,20 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file->f_mapping->host;
- 	struct gfs2_inode *ip = GFS2_I(inode);
--	size_t len = iov_iter_count(from);
--	loff_t offset = iocb->ki_pos;
-+	size_t prev_count = 0, window_size = 0;
-+	size_t read = 0;
- 	ssize_t ret;
+-/* Move channel to start state */
+-int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
++int __mhi_prepare_for_transfer(struct mhi_device *mhi_dev, unsigned int flags)
+ {
+ 	int ret, dir;
+ 	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+@@ -1621,7 +1623,7 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
+ 		if (!mhi_chan)
+ 			continue;
  
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we indicate
-+	 * that the inode glock may be dropped, fault in the pages manually,
-+	 * and retry.
-+	 *
-+	 * For writes, iomap_dio_rw only triggers manual page faults, so we
-+	 * don't need to disable physical ones.
-+	 */
-+
- 	/*
- 	 * Deferred lock, even if its a write, since we do no allocation on
- 	 * this path. All we need to change is the atime, and this lock mode
-@@ -848,22 +901,46 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	 * VFS does.
- 	 */
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
--
-+retry_under_glock:
- 	/* Silently fall back to buffered I/O when writing beyond EOF */
--	if (offset + len > i_size_read(&ip->i_inode))
-+	if (iocb->ki_pos + iov_iter_count(from) > i_size_read(&ip->i_inode))
- 		goto out;
+-		ret = mhi_prepare_channel(mhi_cntrl, mhi_chan);
++		ret = mhi_prepare_channel(mhi_cntrl, mhi_chan, flags);
+ 		if (ret)
+ 			goto error_open_chan;
+ 	}
+@@ -1639,8 +1641,19 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
  
--	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0, 0);
-+	from->nofault = true;
-+	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, read);
-+	from->nofault = false;
-+
- 	if (ret == -ENOTBLK)
- 		ret = 0;
-+	if (ret > 0)
-+		read = ret;
-+
-+	if (unlikely(iov_iter_count(from) && (ret > 0 || ret == -EFAULT)) &&
-+	    should_fault_in_pages(from, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_readable(from, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
- out:
--	gfs2_glock_dq(gh);
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return read;
+ 	return ret;
  }
++
++int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
++{
++	return __mhi_prepare_for_transfer(mhi_dev, 0);
++}
+ EXPORT_SYMBOL_GPL(mhi_prepare_for_transfer);
  
- static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
++int mhi_prepare_for_transfer_autoqueue(struct mhi_device *mhi_dev)
++{
++	return __mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
++}
++EXPORT_SYMBOL_GPL(mhi_prepare_for_transfer_autoqueue);
++
+ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
+ {
+ 	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index 723985879035..271db1d6da85 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -717,15 +717,26 @@ void mhi_device_put(struct mhi_device *mhi_dev);
+ 
+ /**
+  * mhi_prepare_for_transfer - Setup UL and DL channels for data transfer.
+- *                            Allocate and initialize the channel context and
+- *                            also issue the START channel command to both
+- *                            channels. Channels can be started only if both
+- *                            host and device execution environments match and
+- *                            channels are in a DISABLED state.
+  * @mhi_dev: Device associated with the channels
++ *
++ * Allocate and initialize the channel context and also issue the START channel
++ * command to both channels. Channels can be started only if both host and
++ * device execution environments match and channels are in a DISABLED state.
+  */
+ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
+ 
++/**
++ * mhi_prepare_for_transfer_autoqueue - Setup UL and DL channels with auto queue
++ *                                      buffers for DL traffic
++ * @mhi_dev: Device associated with the channels
++ *
++ * Allocate and initialize the channel context and also issue the START channel
++ * command to both channels. Channels can be started only if both host and
++ * device execution environments match and channels are in a DISABLED state.
++ * The MHI core will automatically allocate and queue buffers for the DL traffic.
++ */
++int mhi_prepare_for_transfer_autoqueue(struct mhi_device *mhi_dev);
++
+ /**
+  * mhi_unprepare_from_transfer - Reset UL and DL channels for data transfer.
+  *                               Issue the RESET channel command and let the
+diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
+index fa611678af05..18196e1c8c2f 100644
+--- a/net/qrtr/mhi.c
++++ b/net/qrtr/mhi.c
+@@ -79,7 +79,7 @@ static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
+ 	int rc;
+ 
+ 	/* start channels */
+-	rc = mhi_prepare_for_transfer(mhi_dev);
++	rc = mhi_prepare_for_transfer_autoqueue(mhi_dev);
+ 	if (rc)
+ 		return rc;
+ 
 -- 
-2.26.3
+2.25.1
 
