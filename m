@@ -2,254 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3403432D20
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB68432D23
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhJSF1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 01:27:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:44548 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhJSF1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 01:27:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D9432F;
-        Mon, 18 Oct 2021 22:25:40 -0700 (PDT)
-Received: from [10.163.74.241] (unknown [10.163.74.241])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 597C33F73D;
-        Mon, 18 Oct 2021 22:25:37 -0700 (PDT)
-Subject: Re: [PATCH v5 09/15] coresight: trbe: Add infrastructure for Errata
- handling
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>, will@kernel.org,
-        mathieu.poirier@linaro.org
-Cc:     catalin.marinas@arm.com, mike.leach@linaro.org, leo.yan@linaro.org,
-        maz@kernel.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
- <20211014223125.2605031-10-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <addefe1c-64b1-6c80-f30d-54cddef2c4b3@arm.com>
-Date:   Tue, 19 Oct 2021 10:55:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232856AbhJSFcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 01:32:09 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:40351 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhJSFcI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 01:32:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634621397; x=1666157397;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=3KXJipwBT5wM0QpPKt1Aur/nMl/J6f6HBWrRGQ/gVn4=;
+  b=nXzb0GR5EEILJS29dbl34DeDnCbOpllaGZQ7YzAyDRAhfSMOz9Kp+q52
+   RZA8TnJssq8goUaRp8zCi0JPq0K16S7PkDe7K5ylY/gBzN+tQxJGi934y
+   BbbdmlMCacD0NVh4VdbzqvlPJy6zp7n1Gp1RnF0yNLueRaeSpWtb9wHl5
+   U=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 18 Oct 2021 22:29:57 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 22:29:56 -0700
+Received: from fenglinw-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Mon, 18 Oct 2021 22:29:53 -0700
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sboyd@kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
+        <quic_fenglinw@quicinc.com>, <tglx@linutronix.de>,
+        <maz@kernel.org>, "Fenglin Wu" <fenglinw@codeaurora.org>
+Subject: [PATCH v2 00/10] A bunch of fix and optimization patches in spmi-pmic-arb.c
+Date:   Tue, 19 Oct 2021 13:29:11 +0800
+Message-ID: <1634621361-17155-1-git-send-email-quic_fenglinw@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20211014223125.2605031-10-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Fenglin Wu <fenglinw@codeaurora.org>
 
+This change series includes some fixes and optimizations in spmi-pmic-arb.c.
+Following changes are made in v2 patches comparing to v1:
+  In [v2 01/10], added code to handle spurious interrupt.
+  In [v2 03/10], adressed minor comments to update the code logic.
+  In [v2 04/10], minor update to detect spurious interrupt.
+  In [v2 05/10], added Fixes tag.
+  In [v2 07/10], added Fixes tag and updated commit text to explain the problem.
+  In [v2 08/10], added binding change to make interrupt properties as optional.
+  In [v2 09/10], updated to check presence of "interrupt-controller" property.
 
-On 10/15/21 4:01 AM, Suzuki K Poulose wrote:
-> Add a minimal infrastructure to keep track of the errata
-> affecting the given TRBE instance. Given that we have
-> heterogeneous CPUs, we have to manage the list per-TRBE
-> instance to be able to apply the work around as needed.
-> Thus we will need to check if individual CPUs are affected
-> by the erratum.
-> 
-> We rely on the arm64 errata framework for the actual
-> description and the discovery of a given erratum, to
-> keep the Erratum work around at a central place and
-> benefit from the code and the advertisement from the
-> kernel. Though we could reuse the "this_cpu_has_cap()"
-> to apply an erratum work around, it is a bit of a heavy
-> operation, as it must go through the "erratum" detection
-> check on the CPU every time it is called (e.g, scanning
-> through a table of affected MIDRs). Since we need
-> to do this check for every session, may be multiple
-> times (depending on the wrok around), we could save
-> the cycles by caching the affected errata per-CPU
-> instance in the per-CPU struct trbe_cpudata.
-> 
-> Since we are only interested in the errata affecting
-> the TRBE driver, we only need to track a very few of them
-> per-CPU.  Thus we use a local mapping of the CPUCAP for the
-> erratum to avoid bloating up a bitmap for trbe_cpudata.
-> 
-> i.e, each arm64 TRBE erratum bit is assigned a "index"
-> within the driver to track. Each trbe instance updates
-> the list of affected erratum at probe time on the CPU.
-> This makes sure that we can easily access the list of
-> errata on a given TRBE instance without much overhead.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes since v4:
->   - Ensure the arm_trbe_probe_cpu() is called from non preemptible
->     context for hotplugged CPUs
+Abhijeet Dharmapurikar (1):
+  spmi: pmic-arb: handle spurious interrupt
 
-This (both renaming and non preemptible context) makes sense.
+Ashay Jaiswal (1):
+  spmi: pmic-arb: add support to dispatch interrupt based on IRQ status
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+David Collins (6):
+  spmi: pmic-arb: check apid against limits before calling irq handler
+  spmi: pmic-arb: correct duplicate APID to PPID mapping logic
+  spmi: pmic-arb: block access for invalid PMIC arbiter v5 SPMI writes
+  bindings: spmi: spmi-pmic-arb: mark interrupt properties as optional
+  spmi: pmic-arb: make interrupt support optional
+  spmi: pmic-arb: increase SPMI transaction timeout delay
 
-A small nit though.
+Subbaraman Narayanamurthy (1):
+  spmi: pmic-arb: do not ack and clear peripheral interrupts in
+    cleanup_irq
 
-Should the array sentinel value '-1' be bit formalized with a
-macro and check like this != instead.
+Yimin Peng (1):
+  spmi: pmic-arb: clear unexpected interrupt trigger type
 
-if (WARN_ON_ONCE(cap != TRBE_ERRATA_SENTINEL))
- 
+ .../bindings/spmi/qcom,spmi-pmic-arb.txt           |   2 +
+ drivers/spmi/spmi-pmic-arb.c                       | 148 +++++++++++++++------
+ 2 files changed, 107 insertions(+), 43 deletions(-)
 
-> Changes since v2:
->   - Automatically define TRBE_ERRATA_MAX
->   - Add some basic sanity check to make sure the new entries
->     are added in order.
->   - Describe the design choice of caching CPU local errata
->     in trbe_cpudata instead of using this_cpu_has_cap()
-> Changes since v1:
->   - Flip the order of args for trbe_has_erratum()
->   - Move erratum detection further down in the sequence
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 71 +++++++++++++++++++-
->  1 file changed, 68 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index f8c04c428780..314e5e7374c7 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -16,6 +16,7 @@
->  #define pr_fmt(fmt) DRVNAME ": " fmt
->  
->  #include <asm/barrier.h>
-> +
->  #include "coresight-self-hosted-trace.h"
->  #include "coresight-trbe.h"
->  
-> @@ -67,14 +68,43 @@ struct trbe_buf {
->  	struct trbe_cpudata *cpudata;
->  };
->  
-> +/*
-> + * TRBE erratum list
-> + *
-> + * The errata are defined in arm64 generic cpu_errata framework.
-> + * Since the errata work arounds could be applied individually
-> + * to the affected CPUs inside the TRBE driver, we need to know if
-> + * a given CPU is affected by the erratum. Unlike the other erratum
-> + * work arounds, TRBE driver needs to check multiple times during
-> + * a trace session. Thus we need a quicker access to per-CPU
-> + * errata and not issue costly this_cpu_has_cap() everytime.
-> + * We keep a set of the affected errata in trbe_cpudata, per TRBE.
-> + *
-> + * We rely on the corresponding cpucaps to be defined for a given
-> + * TRBE erratum. We map the given cpucap into a TRBE internal number
-> + * to make the tracking of the errata lean.
-> + *
-> + * This helps in :
-> + *   - Not duplicating the detection logic
-> + *   - Streamlined detection of erratum across the system
-> + */
-> +
-> +static int trbe_errata_cpucaps[] = {
-> +	-1,		/* Sentinel, must be the last entry */
-> +};
-> +
-> +/* The total number of listed errata in trbe_errata_cpucaps */
-> +#define TRBE_ERRATA_MAX			(ARRAY_SIZE(trbe_errata_cpucaps) - 1)
-> +
->  /*
->   * struct trbe_cpudata: TRBE instance specific data
->   * @trbe_flag		- TRBE dirty/access flag support
->   * @trbe_hw_align	- Actual TRBE alignment required for TRBPTR_EL1.
-> - * @trbe_align		- Software alignment used for the TRBPTR_EL1,
-> + * @trbe_align		- Software alignment used for the TRBPTR_EL1
->   * @cpu			- CPU this TRBE belongs to.
->   * @mode		- Mode of current operation. (perf/disabled)
->   * @drvdata		- TRBE specific drvdata
-> + * @errata		- Bit map for the errata on this TRBE.
->   */
->  struct trbe_cpudata {
->  	bool trbe_flag;
-> @@ -84,6 +114,7 @@ struct trbe_cpudata {
->  	enum cs_mode mode;
->  	struct trbe_buf *buf;
->  	struct trbe_drvdata *drvdata;
-> +	DECLARE_BITMAP(errata, TRBE_ERRATA_MAX);
->  };
->  
->  struct trbe_drvdata {
-> @@ -96,6 +127,25 @@ struct trbe_drvdata {
->  	struct platform_device *pdev;
->  };
->  
-> +static void trbe_check_errata(struct trbe_cpudata *cpudata)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < TRBE_ERRATA_MAX; i++) {
-> +		int cap = trbe_errata_cpucaps[i];
-> +
-> +		if (WARN_ON_ONCE(cap < 0))
-> +			return;
-> +		if (this_cpu_has_cap(cap))
-> +			set_bit(i, cpudata->errata);
-> +	}
-> +}
-> +
-> +static inline bool trbe_has_erratum(struct trbe_cpudata *cpudata, int i)
-> +{
-> +	return (i < TRBE_ERRATA_MAX) && test_bit(i, cpudata->errata);
-> +}
-> +
->  static int trbe_alloc_node(struct perf_event *event)
->  {
->  	if (event->cpu == -1)
-> @@ -952,6 +1002,9 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
->  	cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
->  }
->  
-> +/*
-> + * Must be called with preemption disabled, for trbe_check_errata().
-> + */
->  static void arm_trbe_probe_cpu(void *info)
->  {
->  	struct trbe_drvdata *drvdata = info;
-> @@ -979,6 +1032,12 @@ static void arm_trbe_probe_cpu(void *info)
->  		goto cpu_clear;
->  	}
->  
-> +	/*
-> +	 * Run the TRBE erratum checks, now that we know
-> +	 * this instance is about to be registered.
-> +	 */
-> +	trbe_check_errata(cpudata);
-> +
->  	cpudata->trbe_align = cpudata->trbe_hw_align;
->  	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
->  	cpudata->cpu = cpu;
-> @@ -1032,18 +1091,24 @@ static int arm_trbe_remove_coresight(struct trbe_drvdata *drvdata)
->  	return 0;
->  }
->  
-> +static void arm_trbe_probe_hotplugged_cpu(struct trbe_drvdata *drvdata)
-> +{
-> +	preempt_disable();
-> +	arm_trbe_probe_cpu(drvdata);
-> +	preempt_enable();
-> +}
-> +
->  static int arm_trbe_cpu_startup(unsigned int cpu, struct hlist_node *node)
->  {
->  	struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
->  
->  	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
-> -
->  		/*
->  		 * If this CPU was not probed for TRBE,
->  		 * initialize it now.
->  		 */
->  		if (!coresight_get_percpu_sink(cpu)) {
-> -			arm_trbe_probe_cpu(drvdata);
-> +			arm_trbe_probe_hotplugged_cpu(drvdata);
->  			if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
->  				arm_trbe_register_coresight_cpu(drvdata, cpu);
->  			if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
-> 
+-- 
+2.7.4
+
