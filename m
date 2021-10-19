@@ -2,96 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2CA4331C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827904331CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhJSJE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234980AbhJSJE5 (ORCPT
+        id S234698AbhJSJJA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Oct 2021 05:09:00 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:25616 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229930AbhJSJI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:04:57 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754D6C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:02:45 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id g184so18733813pgc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:02:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sW5kzqI2ZLlgm72jV9aPPdFKNC889wnGZx9L6y3GNDE=;
-        b=KQ6KKZrilTzlxQ5KkvqlvnbNQ/cJxM54GDqV4uxqzpBbCnSiHHjsgyu7ZqkvO12KPf
-         uXVbkuTWMPodLFMAAM4pzZApcjfjUIj3lcRn3R9nX8Wx7UNRtXUcHaD1Cy0ikOksTAsi
-         QB79kgXcaIdeJ2LEgdh+riEPU4/GUN98aUzchgmRJvakDLi89c6yVA2WpJ0cYxS6XA19
-         G94hjk/Ay8IcRUV/tQav7P/AQNxN5tE/E+Y+J4rOT8oWdAH+q2KVtkHVCgnS4EUhq6LI
-         uWt5500ppG1B5lgc+XqWt9oe6XbochwNDiCvhEXC5fmhErRKIobuJXptWKZybloQ18+C
-         P7Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sW5kzqI2ZLlgm72jV9aPPdFKNC889wnGZx9L6y3GNDE=;
-        b=evBLAb3TK6ITle5yqGnSHI06yiFO1lJwaijIPXyCHM7ptFtSjmN0ypmrbf7jEvAOoh
-         Rb2EocPrWYDsYJS52uor4q0aE0y9ccj9m80jwEtGa9xxg8gkPBO1Pene1/7KRFZE6SE9
-         4e3+Mffi+FyjbnQ9qJCimLf7k87V2/f8NUn3aHJXNNz3zQUYg8EFJVST03Sm0tblRogB
-         yEEp9zN1+o0sLuoBPrpe5SxiBecfty0HBwQsTdyrBYdwFJdVZmk2fND34qOAsIzz8wSC
-         unpXYRguW1h0BDDFby9Ucp4bgi+C9xk9hkG4u4zzhV6QvuBPlY1AFTYobvn5P4umuyrX
-         sCjA==
-X-Gm-Message-State: AOAM531KNOgNAuJL91wO1lHYTTvhDlpRgICt7yLxXZOO4GIHb89X2ORg
-        oCK6WCrB6sT6rJyEtD7ZXQU=
-X-Google-Smtp-Source: ABdhPJwUfkoqRsVd+CCYM8ak6IRF7IftK8GgqFupS44n7zlu7KDBI56oFbj2TEQOPZQoPwy/mwU7DQ==
-X-Received: by 2002:a63:8742:: with SMTP id i63mr16229969pge.328.1634634165079;
-        Tue, 19 Oct 2021 02:02:45 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id s2sm15184610pfw.30.2021.10.19.02.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 02:02:44 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     jani.nikula@linux.intel.com
-Cc:     joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, matthew.auld@intel.com,
-        thomas.hellstrom@linux.intel.com, chris@chris-wilson.co.uk,
-        maarten.lankhorst@linux.intel.com, ran.jianping@zte.com.cn,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] remove duplicate include in mock_region.c
-Date:   Tue, 19 Oct 2021 09:02:05 +0000
-Message-Id: <20211019090205.1003458-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 19 Oct 2021 05:08:59 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-250-8TNOiqasOU63UmYEpcjisA-1; Tue, 19 Oct 2021 10:06:41 +0100
+X-MC-Unique: 8TNOiqasOU63UmYEpcjisA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Tue, 19 Oct 2021 10:06:40 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Tue, 19 Oct 2021 10:06:40 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Michael Matz' <matz@suse.de>, Willy Tarreau <w@1wt.eu>
+CC:     Borislav Petkov <bp@alien8.de>,
+        Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+Subject: RE: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the
+ clobber list
+Thread-Topic: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the
+ clobber list
+Thread-Index: AQHXwE7LTncX5QIgaEymHCfZB5yMpqvaDgyA
+Date:   Tue, 19 Oct 2021 09:06:40 +0000
+Message-ID: <01650203956e4f13adf1feed85fc36a3@AcuMS.aculab.com>
+References: <YWXwQ2P0M0uzHo0o@zn.tnic>
+ <20211012222311.578581-1-ammar.faizi@students.amikom.ac.id>
+ <YWbUbSUVLy/tx7Zu@zn.tnic> <20211013125142.GD5485@1wt.eu>
+ <YWbZz7gHBV18QJC3@zn.tnic> <20211013140723.GE5485@1wt.eu>
+ <YWbrR1BqI1CxneN/@zn.tnic> <20211013142433.GB8557@1wt.eu>
+ <alpine.LSU.2.20.2110131601000.26294@wotan.suse.de>
+In-Reply-To: <alpine.LSU.2.20.2110131601000.26294@wotan.suse.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ran Jianping <ran.jianping@zte.com.cn>
+From: Michael Matz
+> Sent: 13 October 2021 17:24
+> 
+> Hello,
+> 
+> On Wed, 13 Oct 2021, Willy Tarreau wrote:
+> 
+> > On Wed, Oct 13, 2021 at 04:20:55PM +0200, Borislav Petkov wrote:
+> > > On Wed, Oct 13, 2021 at 04:07:23PM +0200, Willy Tarreau wrote:
+> > > > Yes I agree with the "potentially" here. If it can potentially be (i.e.
+> > > > the kernel is allowed by contract to later change the way it's currently
+> > > > done) then we have to save them even if it means lower code efficiency.
+> > > >
+> > > > If, however, the kernel performs such savings on purpose because it is
+> > > > willing to observe a stricter saving than the AMD64 ABI, we can follow
+> > > > it but only once it's written down somewhere that it is by contract and
+> > > > will not change.
+> > >
+> > > Right, and Micha noted that such a change to the document can be done.
+> >
+> > great.
+> >
+> > > And we're basically doing that registers restoring anyway, in POP_REGS.
+> >
+> > That's what I based my analysis on when I wanted to verify Ammar's
+> > finding. I would tend to think that if we're burning cycles popping
+> > plenty of registers it's probably for a reason, maybe at least a good
+> > one, which is that it's the only way to make sure we're not leaking
+> > internal kernel data! This is not a concern for kernel->kernel nor
+> > user->user calls but for user->kernel calls it definitely is one, and
+> > I don't think we could relax that series of pop without causing leaks
+> > anyway.
+> 
+> It might also be interesting to know that while the wording of the psABI
+> was indeed intended to imply that all argument registers are potentially
+> clobbered (like with normal calls) glibc's inline assembler to call
+> syscalls relies on most registers to actually be preserved:
+> 
+> # define REGISTERS_CLOBBERED_BY_SYSCALL "cc", "r11", "cx"
+> ...
+> #define internal_syscall6(number, arg1, arg2, arg3, arg4, arg5, arg6) \
+> ({                                                                      \
+>     unsigned long int resultvar;                                        \
+>     TYPEFY (arg6, __arg6) = ARGIFY (arg6);                              \
+>     TYPEFY (arg5, __arg5) = ARGIFY (arg5);                              \
+>     TYPEFY (arg4, __arg4) = ARGIFY (arg4);                              \
+>     TYPEFY (arg3, __arg3) = ARGIFY (arg3);                              \
+>     TYPEFY (arg2, __arg2) = ARGIFY (arg2);                              \
+>     TYPEFY (arg1, __arg1) = ARGIFY (arg1);                              \
+>     register TYPEFY (arg6, _a6) asm ("r9") = __arg6;                    \
+>     register TYPEFY (arg5, _a5) asm ("r8") = __arg5;                    \
+>     register TYPEFY (arg4, _a4) asm ("r10") = __arg4;                   \
+>     register TYPEFY (arg3, _a3) asm ("rdx") = __arg3;                   \
+>     register TYPEFY (arg2, _a2) asm ("rsi") = __arg2;                   \
+>     register TYPEFY (arg1, _a1) asm ("rdi") = __arg1;                   \
+>     asm volatile (                                                      \
+>     "syscall\n\t"                                                       \
+>     : "=a" (resultvar)                                                  \
+>     : "0" (number), "r" (_a1), "r" (_a2), "r" (_a3), "r" (_a4),         \
+>       "r" (_a5), "r" (_a6)                                              \
+>     : "memory", REGISTERS_CLOBBERED_BY_SYSCALL);                        \
+>     (long int) resultvar;                                               \
+> })
+> 
+> 
+> Note in particular the missing clobbers or outputs of any of the argument
+> regs.
 
-'drm/ttm/ttm_placement.h' included in
-'drivers/gpu/drm/i915/selftests/mock_region.c' is duplicated.
-It is also included on the 9 line.
+What about all the AVX registers?
+These are normally caller-saved - so are unlikely to be live in a gcc stub.
+But glibc is unlikely to keep the clobber list up do date - even if they
+were ever added.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ran Jianping <ran.jianping@zte.com.cn>
----
- drivers/gpu/drm/i915/selftests/mock_region.c | 2 --
- 1 file changed, 2 deletions(-)
+While the kernel can't return 'junk' in the AVX registers, it may be
+significantly cheaper to zero the registers on at least some code paths.
 
-diff --git a/drivers/gpu/drm/i915/selftests/mock_region.c b/drivers/gpu/drm/i915/selftests/mock_region.c
-index efa86dffe3c6..75793008c4ef 100644
---- a/drivers/gpu/drm/i915/selftests/mock_region.c
-+++ b/drivers/gpu/drm/i915/selftests/mock_region.c
-@@ -6,8 +6,6 @@
- #include <drm/ttm/ttm_placement.h>
- #include <linux/scatterlist.h>
- 
--#include <drm/ttm/ttm_placement.h>
+The same is true for the rxx registers.
+Executing 'xor %rxx,%rxx' is faster than 'pop $rxx'.
+Especially since the xor cam all be execute in parallel.
+
+	David
+
 -
- #include "gem/i915_gem_region.h"
- #include "intel_memory_region.h"
- #include "intel_region_ttm.h"
--- 
-2.25.1
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
