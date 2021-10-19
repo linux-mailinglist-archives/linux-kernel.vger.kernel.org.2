@@ -2,129 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED80433F0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF147433F0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234977AbhJSTOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
+        id S234991AbhJSTPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234361AbhJSTOf (ORCPT
+        with ESMTP id S234361AbhJSTPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:14:35 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53615C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:12:22 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id i6so5494824vkk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:12:22 -0700 (PDT)
+        Tue, 19 Oct 2021 15:15:00 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDE9C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:12:47 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id j8so1995519uak.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:12:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Paa52ALECI3wUgugNy8CX4++EAERrhUzLClLzz2TeNo=;
-        b=hh3mY9mbnyhpcdRWYDvhD2yUXHW8hgFnt3kUIWZ22dBTVZ+gi5IeJ1qesyZWkqPzwN
-         +aOQNt9Pgi6oky9KfgTvuPgk5JWQdaxqMet37tg+BFtstHZJOtpuJqQWjL1lY6AdRFEC
-         aeBQDsDVpVUUIwXdfjti+9Kl1dzW1Vxx7ZfNScNF7jKmK5GOA45gwI8FTRYBJkY9TJ/e
-         cROr8c6AbzibsRO18sfK5ZOrbUK8RkYkyM4Iu69q4pIbwOkHZXhhOYPbWdaCMUN3SjfB
-         /gSXNEQst1CrUPrDAkiuTLxmD3F9lmMZ/K84fGgncj9TQPGEgEZsRkDDR953i3rZ2mlc
-         R/xQ==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UL2YWvVo40k3t4YquvgzfNyGVxoWuhyDYA5TDAnYaqE=;
+        b=XhFSPrpOjgsv8KEQw7fqBFsEbBSYxR3HokS9HBLiBqjgviw64athINP2fH7Y/2bB2a
+         G4W1EELpCpPpkZhK1IW99mWADLO8p6uQXPwtgHDWZevBZrgsbqoziSzNEl+REjUszxQk
+         KGsUming6DmMk/tQi9zkfsU7meppqZ59upelZVK4s3y9mS2cbsd0P19E5iEl9XjQfxX7
+         EsCqDfXoYae7Xiypa7gpRnkze8Q9EQ97fMPLcOlTs8tVctWKrAWKtE/BwHNVN6jkqxlj
+         oEUKLYo6/jw7taJB0ZxaNnkm4MLbYFdnAs8q+4jm1avG81vm0L/ENgROSDb3k3STburd
+         BvgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Paa52ALECI3wUgugNy8CX4++EAERrhUzLClLzz2TeNo=;
-        b=cyFbOWRP+GSB4TVWHKQH1YCL96ff0YDRqOTBS6iurHt2zh8L5wNouhQFWo2h90wlW/
-         cZygB4WLuSzSNui9sUZTgHeIqwRbaNDpUL6vXIElnoJVTcWSkzLHmasZAHV4sQ0AYr+L
-         sNqnMc99nfYZHJR67IkrIsuEl6ZGpDyi1CFoQcqLVNqKAhyY6mIy4R/8MnSC4qfg0PFy
-         tdhXSR/nJo+ZXoRaxgKPBmFtWykLkUSzRTegPXcJDp8XHkI+inPho6GVzZmUAJ1frw2m
-         jGJ22PvX7NUvCJ7zH47dOMTOnY1a1PtJ4ynNwR3FgMUYIkvcq8Yo3cfUSBS/YNztiavj
-         qwEw==
-X-Gm-Message-State: AOAM53154mGpoogbCyMJ1/72WoOqUKntQMk9nhOzBOAEuSOLkQLJqH46
-        56c1npnUBsEJPUlMTK4kDyo+091xkclmCAh10nlVSQ==
-X-Google-Smtp-Source: ABdhPJx845gtrTjm894uIjrixRTNWXu9JloLMW6uMUJ2a4I4qovMj6pHpPkts51wz84kHFITnZsXoTuCa0oF9HNSAuw=
-X-Received: by 2002:a05:6122:da0:: with SMTP id bc32mr34368591vkb.4.1634670741090;
- Tue, 19 Oct 2021 12:12:21 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UL2YWvVo40k3t4YquvgzfNyGVxoWuhyDYA5TDAnYaqE=;
+        b=OMbRiIby7eJhxnbkPlpbeMqeT0lGNBPUNSQ0TF0oLe6km5QO0CA5qwMu3/kmVut0fL
+         67E5VUiImS9+rFM/ZXR10fPOOhXBgHojTNnPeeBe3D88ueopoXwiCya1gyrkQIKcoBv3
+         URnRp2ICHMgfV1Zi7VmWXVAMzwWYgE/V3d3nECqY8rVXRZ4EQQr8OF8pqRK7vOHXja5a
+         ZSfFuWiO59AmwLPf28VV8UNjX97TuR47Xk+z9s+k/OFvWbcsOybA86Y/W/X9TRq665UI
+         cThld7MN+m5fkoFqqwixkLQT7L+2rxUryQwETZw299qML2DnN4wjWpuLx6C4P9MWiLDv
+         Mzww==
+X-Gm-Message-State: AOAM532h+2W1VVjgaFIu7PogPQIb11ChLMR317d3I/wdJH0OneS6sbbs
+        eC6k/vz0/zZVD9IoQHdMuh6rh3CwCj0=
+X-Google-Smtp-Source: ABdhPJy+bqHMFR+qhpS79F3P6nzKEvZAUNkMkSHHF9xEtGfVOoCuHJhhn6PP3nJEztxC5RiEmToGSw==
+X-Received: by 2002:a05:6102:956:: with SMTP id a22mr14433080vsi.20.1634670766080;
+        Tue, 19 Oct 2021 12:12:46 -0700 (PDT)
+Received: from ?IPv6:2804:431:c7f4:b20b:270b:2d4a:f08:5534? ([2804:431:c7f4:b20b:270b:2d4a:f08:5534])
+        by smtp.gmail.com with ESMTPSA id w27sm11708299vsi.25.2021.10.19.12.12.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 12:12:45 -0700 (PDT)
+Subject: Re: [PATCH 5/6] drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to
+ accept multiple formats
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
+Cc:     hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+ <20211005201637.58563-6-igormtorrente@gmail.com>
+ <5507450a-eb69-b24c-9f43-a1780dafbfa9@suse.de>
+ <e9cbdad7-416a-65fe-eb50-1cbb42a01e7b@gmail.com>
+ <9dbd2c55-2c29-eb12-94d0-dbd5110c302e@suse.de>
+ <4d573cd9-ac1b-59d6-fb97-e5c24152892b@gmail.com>
+ <f20d3359-1ec8-35ca-e885-bd35caa55c50@suse.de>
+From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Message-ID: <fbe3ad70-375e-0f14-dba3-8f2e3f081457@gmail.com>
+Date:   Tue, 19 Oct 2021 16:12:42 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211019131724.3109-1-semen.protsenko@linaro.org>
- <20211019131724.3109-3-semen.protsenko@linaro.org> <6dbd4812-bac3-55dc-108e-c322e8a493de@canonical.com>
- <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com> <CAPLW+4mE09AOSco+X9qE=1sjXvNVkOxtJqur+HoBJExxiw0J=g@mail.gmail.com>
- <YW8E6oeIoRdpmPL8@piout.net>
-In-Reply-To: <YW8E6oeIoRdpmPL8@piout.net>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 19 Oct 2021 22:12:09 +0300
-Message-ID: <CAPLW+4k26qZDug4JkuPaM_gZMgz8LPg7GHe-5C7zKzEGtzdp=g@mail.gmail.com>
-Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f20d3359-1ec8-35ca-e885-bd35caa55c50@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 at 20:48, Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
->
-> On 19/10/2021 19:35:26+0300, Sam Protsenko wrote:
-> > On Tue, 19 Oct 2021 at 19:22, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@canonical.com> wrote:
-> > >
-> > > On 19/10/2021 18:17, Krzysztof Kozlowski wrote:
-> > > > On 19/10/2021 15:17, Sam Protsenko wrote:
-> > > >> This RTC driver only accepts dates from 2000 to 2099 year. It starts
-> > > >> counting from 2000 to avoid Y2K problem,
-> > > >
-> > > > 1. Where is the minimum (2000) year set in the RTC driver?
-> > >
-> > > Ah, indeed. I found it now in the driver.
-> > >
-> > > >
-> > > >> and S3C RTC only supports 100
-> > > >
-> > > > On some of the devices 100, on some 1000, therefore, no. This does not
-> > > > look correct.
-> > >
-> > > That part of sentence is still incorrect, but change itself makes sense.
-> > > Driver does not support <2000.
-> > >
-> >
-> > Driver itself does not allow setting year >= 2100:
-> >
-> > <<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
-> >     if (year < 0 || year >= 100) {
-> >         dev_err(dev, "rtc only supports 100 years\n");
-> >         return -EINVAL;
-> >     }
-> > <<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
-> >
-> > Devices might allow it, so the commit message phrasing is incorrect
-> > and should be replaced, yes. But the code should be correct. Should I
-> > send v2 with fixed commit message?
-> >
->
-> It would be better to pass the proper values because else nobody will
-> ever come back and fix it (hence why I didn't move that driver to
-> devm_rtc_register_device yet).
->
+Hi Thomas,
 
-Krzysztof, do you have by chance the doc for different SoCs supported
-by S3C RTC driver? I can implement proper values for min/max range for
-each SoC, as Alexandre asked, by adding those to driver data. But I
-need max year register value (100, 1000, etc) for each of those chips:
+On 10/19/21 4:17 AM, Thomas Zimmermann wrote:
+> Hi
+> 
+> Am 18.10.21 um 21:32 schrieb Igor Matheus Andrade Torrente:
+>> Hi Thomas,
+>>
+>> On 10/18/21 3:06 PM, Thomas Zimmermann wrote:
+>>> Hi
+>>>
+>>> Am 18.10.21 um 19:41 schrieb Igor Matheus Andrade Torrente:
+>>>> Hello,
+>>>>
+>>>> On 10/18/21 7:14 AM, Thomas Zimmermann wrote:
+>>>>> Hi
+>>>>>
+>>>>> Am 05.10.21 um 22:16 schrieb Igor Matheus Andrade Torrente:
+>>>>>> Currently, the vkms atomic check only goes through the first
+>>>>>> position of
+>>>>>> the `vkms_wb_formats` vector.
+>>>>>>
+>>>>>> This change prepares the atomic_check to check the entire vector.
+>>>>>>
+>>>>>> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+>>>>>> ---
+>>>>>>    drivers/gpu/drm/vkms/vkms_writeback.c | 11 ++++++++++-
+>>>>>>    1 file changed, 10 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c
+>>>>>> b/drivers/gpu/drm/vkms/vkms_writeback.c
+>>>>>> index 5a3e12f105dc..56978f499203 100644
+>>>>>> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
+>>>>>> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
+>>>>>> @@ -30,6 +30,8 @@ static int vkms_wb_encoder_atomic_check(struct
+>>>>>> drm_encoder *encoder,
+>>>>>>    {
+>>>>>>        struct drm_framebuffer *fb;
+>>>>>>        const struct drm_display_mode *mode = &crtc_state->mode;
+>>>>>> +    bool format_supported = false;
+>>>>>> +    int i;
+>>>>>>        if (!conn_state->writeback_job ||
+>>>>>> !conn_state->writeback_job->fb)
+>>>>>>            return 0;
+>>>>>> @@ -41,7 +43,14 @@ static int vkms_wb_encoder_atomic_check(struct
+>>>>>> drm_encoder *encoder,
+>>>>>>            return -EINVAL;
+>>>>>>        }
+>>>>>> -    if (fb->format->format != vkms_wb_formats[0]) {
+>>>>>> +    for (i = 0; i < ARRAY_SIZE(vkms_wb_formats); i++) {
+>>>>>> +        if (fb->format->format == vkms_wb_formats[i]) {
+>>>>>> +            format_supported = true;
+>>>>>> +            break;
+>>>>>> +        }
+>>>>>> +    }
+>>>>>
+>>>>> At a minimum, this loop should be in a helper function. But more
+>>>>> generally, I'm surprised that this isn't already covered by the
+>>>>> DRM's atomic helpers.
+>>>>
+>>>> Ok, I can wrap it in a new function.
+>>>>
+>>>> AFAIK the DRM doesn't cover it. But I may be wrong...
+>>>
+>>> I couldn't find anything either.
+>>>
+>>> Other drivers do similar format and frambuffer checks. So I guess a
+>>> helper could be implemented. All plane's are supposed to call
+>>> drm_atomic_helper_check_plane_state() in their atomic_check() code.
+>>> You could add a similar helper, say
+>>> drm_atomic_helper_check_writeback_encoder_state(), that tests for the
+>>> format and maybe other things as well.
+>>
+>> Do you think this should be done before or after this patch series?
+> 
+> Just add it as part of this series and use it for vkms. Other drivers
+> can adopt it later on. The rcar-du code [1] looks similar to the one in
+> vkms. Maybe put the common tests in to the new helper. You can extract
+> the list of supported formats from the property blob, I think.
+> 
 
-  - "samsung,s3c2410-rtc"
-  - "samsung,s3c2416-rtc"
-  - "samsung,s3c2443-rtc"
-  - "samsung,s3c6410-rtc"
-  - "samsung,exynos3250-rtc"
+OK, Thanks!
 
-For example Exynos850 TRM states that BCDYEAR register has [11:0] bits
-for holding the year value in BCD format, so it's 10^(12/4)=1000 years
-max.
-
-> --
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+> Best regards
+> Thomas
+> 
+> [1]
+> https://elixir.bootlin.com/linux/v5.14.13/source/drivers/gpu/drm/rcar-du/rcar_du_writeback.c#L140
+> 
+>>
+>>>
+>>> Best regards
+>>> Thomas
+>>>
+>>>>
+>>>>>
+>>>>> Best regards
+>>>>> Thomas
+>>>>>
+>>>>>> +
+>>>>>> +    if (!format_supported) {
+>>>>>>            DRM_DEBUG_KMS("Invalid pixel format %p4cc\n",
+>>>>>>                      &fb->format->format);
+>>>>>>            return -EINVAL;
+>>>>>>
+>>>>>
+>>>
+>>
+>> Thanks,
+>> Igor Torrente
+> 
