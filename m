@@ -2,168 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21584330CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF4C4330D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234585AbhJSILa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234132AbhJSIL3 (ORCPT
+        id S234668AbhJSIMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:12:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59081 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234657AbhJSIM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:11:29 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB26C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 01:09:16 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id t184so16091490pfd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 01:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gj+IjdwtpSoU7uXOoxinPHHGnAi13nWqEOcSDstepQk=;
-        b=F3ZWHZrZGIo4fL4XNTI5PKIk2fc+8OHzj4mZeLmgAUHn+40G6TRfdl2q2peQ5dX1d0
-         boz4hwjWY4imzL3aipUGIUhwrTsMIoelvjqp2GMEret6+qnUsBIkXhnEFuWfcFViizgr
-         7gmo1RJcAJPGc4HvDfxxjYTDiGnN79mSlhkSI0gB8HfT5T0rnkZW6STiavTMFf2hAyva
-         u7/ZW8iRALoIpfm2vMxhveqHSO8N9PwWBMnc6k+tc4qEkE8sH4CkhmpF9n1NtgFzDwe6
-         Ms9VJGvhA+4cJ97hJRAHKYgtghKmyVTJD563R2hhbAYD5bhImnMygnxjASZFmIu2niRi
-         a4MQ==
+        Tue, 19 Oct 2021 04:12:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634631015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FkXFhcV+/zxfEYqnjfBha3xxa5ZEj2GAqqrXULNm9mw=;
+        b=hKP+eEcgZEHIb89PAnrq8lZwFpSgDsauVQnzETba3QPGhISLwMBhP/iHeU9qBiv97vJ07I
+        q6PFX69WbTjMnSNd/D9YKGcYRvrxo2ezrVZDPXcyTfmHsMAbEvPc+bto3+7y5T6sKbBUWb
+        ad0vLrQV9frEDfM6xqNcRgoPm6ykB0M=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-fOEGH-dFNUGBIPtzZgzBVw-1; Tue, 19 Oct 2021 04:10:14 -0400
+X-MC-Unique: fOEGH-dFNUGBIPtzZgzBVw-1
+Received: by mail-ed1-f72.google.com with SMTP id h19-20020aa7de13000000b003db6ad5245bso16905871edv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 01:10:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gj+IjdwtpSoU7uXOoxinPHHGnAi13nWqEOcSDstepQk=;
-        b=Cw1C1x7MAvPiERcvc2JxQIVg+No5MonbooC7oOG/OUoTjc+YiW2Rq1ELRxJk3BMc8u
-         0o68lpQHYxErTzLTRfsUzfSp6YvJjWtIa+cSdUS3MI2bxRamcZd6Rjm/vCNme4G6bz8Z
-         8Nf2c0wFuYTBGfAUL5RootSmRP4rg4lhSkv/TFGTppC+G/SZWVQDpE9yjRjXz6s9RLgM
-         QWCUVxSDRR8cHAnszXvkbT6YilaXn5osOwJd0vDLviTOscuUL/CSc5QCJpnj9onYyumW
-         pqKjIh5Ca7LyEiQVRflWN4flaFk8/PwVjIqSm7MdDxS8e9DhKzcH6xZXdy+mCuK6YI/R
-         ohVg==
-X-Gm-Message-State: AOAM530JtCmkKBgsE23OxuV2hXUN0lAyG/FXWlRu7daeRBrIHRSu3ZS0
-        hWdNfyot9yxbAFSOyk6v/jJ8dQ==
-X-Google-Smtp-Source: ABdhPJz5JKUnGVnJdr/vOWsWzz9hNwGVMVhXP2Wre7zIFrVbrX2b84fVwC13u/6EoqaE4W9pCK83xA==
-X-Received: by 2002:a63:7b1e:: with SMTP id w30mr8237662pgc.464.1634630956083;
-        Tue, 19 Oct 2021 01:09:16 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id ls7sm1831782pjb.16.2021.10.19.01.09.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 01:09:14 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 13:39:13 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        gregkh@linuxfoundation.org
-Cc:     wsa@kernel.org, jie.deng@intel.com,
-        virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
-Message-ID: <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
- <20211019074647.19061-2-vincent.whitchurch@axis.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=FkXFhcV+/zxfEYqnjfBha3xxa5ZEj2GAqqrXULNm9mw=;
+        b=gaujLSeWAIsN1Z2fE+QifUJarIKIDwd4UTiivrgh//wtiJhDcCYUDkoINxW7ajRnSn
+         c1Oj/oUn+M74L1+uZTJngJRCoosmA7DcopRtaNCqxZH9edjo0TQ2IjF13c71DQ3EAZAq
+         KWEOW3bn2ajXrVOm0lOoGRw6URTWUzWMCfIlRfdpXh55BEU7bjiWwtlYl0a7j1bSX0j3
+         uKLcpKmWDxTbUc2hR4iOUxlfLn53a+vUCDHxgf52qkehfd4/WBODlY0wKfmAKzIYueHE
+         H4H/9+2wfQYTvR5c8N9Yt/tOm/8jFXMmsjG0HyYNqvMFXwh8ZZJ9xkf+K4i24i/hxSPu
+         k+Xw==
+X-Gm-Message-State: AOAM530WHWeP3oD54pjUFPdVNfcait6FA1DrQKu9xpFRSwcU5lkra3Qa
+        vne+Zi6AgfW46JpewQoNFuqyAYPWZAVGFwDSwin3dXIoXchR1exT6vlmvsr3SLivveVOYuDsYJn
+        u3OULS8LJGM8PeX52ngjS7XIo
+X-Received: by 2002:a50:d885:: with SMTP id p5mr52171853edj.255.1634631012916;
+        Tue, 19 Oct 2021 01:10:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzosqBQafK63EMeHqdbkT6tgiXIRHSVtmPYVHpHH/GgdpC3lhfGo5ZhNFQunq7pMNngQ60wzw==
+X-Received: by 2002:a50:d885:: with SMTP id p5mr52171824edj.255.1634631012690;
+        Tue, 19 Oct 2021 01:10:12 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id q9sm9816205ejf.70.2021.10.19.01.10.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 01:10:12 -0700 (PDT)
+Message-ID: <7522243d-79f4-9687-103f-3692eb70533f@redhat.com>
+Date:   Tue, 19 Oct 2021 10:10:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019074647.19061-2-vincent.whitchurch@axis.com>
-User-Agent: NeoMutt/20180716-391-311a52
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: BMI160 accelerometer on AyaNeo tablet
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxim Levitsky <maximlevitsky@gmail.com>
+Cc:     linux-realtek-soc@lists.infradead.org,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>, nic_swsd@realtek.com,
+        Derek Fang <derek.fang@realtek.com>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Kailang Yang <kailang@realtek.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        LKML <linux-kernel@vger.kernel.org>, info@ayaneo.com
+References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
+ <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
+ <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
+ <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
+ <YW3ErLKGtmyhSFd3@smile.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <YW3ErLKGtmyhSFd3@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Greg.
+Hi,
 
-On 19-10-21, 09:46, Vincent Whitchurch wrote:
-> If a timeout is hit, it can result is incorrect data on the I2C bus
-> and/or memory corruptions in the guest since the device can still be
-> operating on the buffers it was given while the guest has freed them.
+On 10/18/21 21:02, Andy Shevchenko wrote:
+> On Mon, Oct 18, 2021 at 09:02:40PM +0300, Maxim Levitsky wrote:
+>> I also suspect a mistake from the hardware vendors.
+>>
+>> I attached all DSDT decompiled, which shows that they indeed use that
+>> ID, and I also attached the windows driver .INF which was published on
+>> their website  with the driver (https://www.ayaneo.com/downloads)
+>>
+>> They are a small startup so they might have used the realtek ID by mistake.
+>> I added them to the CC.
 > 
-> Here is, for example, the start of a slub_debug splat which was
-> triggered on the next transfer after one transfer was forced to timeout
-> by setting a breakpoint in the backend (rust-vmm/vhost-device):
+> Thank you for sharing. Seems they indeed used (deliberately or not) the wrong
+> ID. So there are questions I have:
+> - Is the firmware available in the wild?
+> - Do they plan to update firmware to fix this?
+> - Can we make sure that guys got their mistake and will be more careful
+>   in the future?
 > 
->  BUG kmalloc-1k (Not tainted): Poison overwritten
->  First byte 0x1 instead of 0x6b
->  Allocated in virtio_i2c_xfer+0x65/0x35c age=350 cpu=0 pid=29
->  	__kmalloc+0xc2/0x1c9
->  	virtio_i2c_xfer+0x65/0x35c
->  	__i2c_transfer+0x429/0x57d
->  	i2c_transfer+0x115/0x134
->  	i2cdev_ioctl_rdwr+0x16a/0x1de
->  	i2cdev_ioctl+0x247/0x2ed
->  	vfs_ioctl+0x21/0x30
->  	sys_ioctl+0xb18/0xb41
->  Freed in virtio_i2c_xfer+0x32e/0x35c age=244 cpu=0 pid=29
->  	kfree+0x1bd/0x1cc
->  	virtio_i2c_xfer+0x32e/0x35c
->  	__i2c_transfer+0x429/0x57d
->  	i2c_transfer+0x115/0x134
->  	i2cdev_ioctl_rdwr+0x16a/0x1de
->  	i2cdev_ioctl+0x247/0x2ed
->  	vfs_ioctl+0x21/0x30
->  	sys_ioctl+0xb18/0xb41
+> Realtek probably should make this ID marked somehow broken and not use
+> in their products in case the answer to the first of the above question
+> is "yes". (Of course in case the ID will be used for solely PCI enumerated
+> product there will be no conflict, I just propose to be on the safest side,
+> but remark should be made somewhere).
 > 
-> There is no simple fix for this (the driver would have to always create
-> bounce buffers and hold on to them until the device eventually returns
-> the buffers), so just disable the timeout support for now.
-
-That is a very valid problem, and I have faced it too when my QEMU
-setup is very slow :)
-
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> ---
->  drivers/i2c/busses/i2c-virtio.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
+>> BTW, I also notice a rotation matrix embedded in DSTD, but the linux's
+>> BMI160 driver doesn't recognize it.
 > 
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> index f10a603b13fb..7b2474e6876f 100644
-> --- a/drivers/i2c/busses/i2c-virtio.c
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -106,11 +106,10 @@ static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
->  
->  static int virtio_i2c_complete_reqs(struct virtqueue *vq,
->  				    struct virtio_i2c_req *reqs,
-> -				    struct i2c_msg *msgs, int num,
-> -				    bool timedout)
-> +				    struct i2c_msg *msgs, int num)
->  {
->  	struct virtio_i2c_req *req;
-> -	bool failed = timedout;
-> +	bool failed = false;
->  	unsigned int len;
->  	int i, j = 0;
->  
-> @@ -132,7 +131,7 @@ static int virtio_i2c_complete_reqs(struct virtqueue *vq,
->  			j++;
->  	}
->  
-> -	return timedout ? -ETIMEDOUT : j;
-> +	return j;
->  }
->  
->  static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> @@ -141,7 +140,6 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
->  	struct virtio_i2c *vi = i2c_get_adapdata(adap);
->  	struct virtqueue *vq = vi->vq;
->  	struct virtio_i2c_req *reqs;
-> -	unsigned long time_left;
->  	int count;
->  
->  	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
-> @@ -164,11 +162,9 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
->  	reinit_completion(&vi->completion);
->  	virtqueue_kick(vq);
->  
-> -	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
-> -	if (!time_left)
-> -		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
-> +	wait_for_completion(&vi->completion);
+> This is done by the commit 8a0672003421 ("iio: accel: bmc150: Get
+> mount-matrix from ACPI") which needs to be amended to take care about
+> more devices, somewhere in drivers/iio/industialio-acpi.c ? Jonathan,
+> Hans, what do you think?
 
-Doing this may not be a good thing based on the kernel rules I have
-understood until now. Maybe Greg and Wolfram can clarify on this.
+First of all the vendor needs to be asked to fix their DSDT to just
+use BOSC0200 as HID. That will fix both the driver not binding as well
+as it will make the bmc150_apply_acpi_orientation() just work.
 
-We are waiting here for an external entity (Host kernel) or a firmware
-that uses virtio for transport. If the other side is hacked, it can
-make the kernel hang here for ever. I thought that is something that
-the kernel should never do.
+If we are going to add the funky ACPI HID to the driver, then this
+HID check in bmc150_apply_acpi_orientation():
 
--- 
-viresh
+	if (!adev || !acpi_dev_hid_uid_match(adev, "BOSC0200", NULL))
+		return false;
+
+Should probable just be dropped changing the check to just:
+
+	if (!adev)
+		return false;
+
+We already check for the method name later, so the HID check is not
+really necessary.
+
+This dropping of the HID check should probably be done in a separate
+commit, with its own explanation of why this is ok.
+
+Regards,
+
+Hans
+
