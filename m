@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963B6433873
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0C4433809
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhJSOgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:36:03 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.43]:21689 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229960AbhJSOgB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:36:01 -0400
-X-Greylist: delayed 1277 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Oct 2021 10:36:01 EDT
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id 0736040106B09
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:09:48 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id cpmMmElNKIWzGcpmMmORcu; Tue, 19 Oct 2021 09:07:47 -0500
-X-Authority-Reason: nr=8
-Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:58578 helo=[10.0.0.35])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1mcpmL-0042su-LX; Tue, 19 Oct 2021 09:07:45 -0500
-Message-ID: <ecf3bfee-8a7a-e3bf-4fba-af9bc479526e@kernel.org>
-Date:   Tue, 19 Oct 2021 16:07:40 +0200
+        id S231844AbhJSOKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:10:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230162AbhJSOKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 10:10:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 244E6610A1;
+        Tue, 19 Oct 2021 14:07:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634652475;
+        bh=SLWuDyENjrttrY/yKGmL/fqA3+noRXUboMcPH0sIE94=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oM0gZvjxdIWCCSyTgbkEwXNW+yBmqzUXnDXgyeJJjaOCCn/R6Q6eA3foe5S6et5NX
+         UJszBzdPoyg/4NYkWZDhqmzKmFrr57nTVwL8CIFDxL8YXFOK+IXn13c90B2wsmknki
+         uKXjWuUnoHzxUgT7P0Edeenpbdr296O1YL8rNJCwxm8MOfDMN/rXkZUnOF86ycdREN
+         kDbI91dUD3k30j9iSl+bsl7djiew/9IHBYXi5Xd3yH8zWOI+R0QsLn4C266WrqR5Qz
+         ks7DrZZCqMb4tVV9yP1Rr8/aq1avdYa4/U73x2nLPGuY91uswYtISAwAyp4QX+mSMq
+         w7Uak4Sgc0S0A==
+Date:   Tue, 19 Oct 2021 19:37:51 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v2 02/11] drm/msm/disp/dpu1: Add support for DSC
+Message-ID: <YW7RNz/9vd/XS0+O@matsya>
+References: <20211007070900.456044-1-vkoul@kernel.org>
+ <20211007070900.456044-3-vkoul@kernel.org>
+ <c9c77691-f6e8-576c-7e2d-a87295b13ba7@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH V3 13/19] rtla: Add Documentation
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1634574261.git.bristot@kernel.org>
- <7e205854656f41afe9a35e6390d3e3cbd724706f.1634574261.git.bristot@kernel.org>
- <877deaut3b.fsf@meer.lwn.net>
- <f0c50222-a9a8-d0e5-d705-d9d670467142@kernel.org>
- <20211019092124.6b403ca4@gandalf.local.home>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20211019092124.6b403ca4@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.18.63.114
-X-Source-L: No
-X-Exim-ID: 1mcpmL-0042su-LX
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:58578
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 1
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9c77691-f6e8-576c-7e2d-a87295b13ba7@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/21 15:21, Steven Rostedt wrote:
-> On Tue, 19 Oct 2021 14:56:15 +0200
-> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
-> 
->> I am not a document format specialist, neither have a strong opinion on this, so
->> suggestions are welcome. I used this format as a suggestion from steven, it is
->> also similar to what we have on perf...
-> 
-> My suggestion came from not knowing that the man pages were going to live
-> in the kernel Documentation tree ;-)
+On 14-10-21, 17:40, Dmitry Baryshkov wrote:
+> On 07/10/2021 10:08, Vinod Koul wrote:
 
-That is true!
-
-Question, should we mode these files to Documentation/trace/ ?
-
->>
->> The idea here is to create a set of man pages. I saw that it is possible to
->> create man pages using Sphinx, but there are so many options that it is hard to
->> get started...
->>
->> I also noticed that bpftools uses .rst files, but uses rst2man to convert the files.
->>
->> Converting the current files to .rst is easy.
->>
->> So, could give me some directions on what you think would be the best way to
->> create this set of man pages?
->>
->> A link to a project that creates a set of man pages using Sphinx using a
->> Makefile would be a plus :-).
+> > +static void dpu_hw_dsc_config(struct dpu_hw_dsc *hw_dsc,
+> > +			      struct msm_display_dsc_config *dsc, u32 mode)
+> > +{
+> > +	struct dpu_hw_blk_reg_map *c = &hw_dsc->hw;
+> > +	u32 data, lsb, bpp;
+> > +	u32 initial_lines = dsc->initial_lines;
+> > +	bool is_cmd_mode = !(mode & BIT(2));
 > 
+> DSC_MODE_VIDEO
+
+Updated
+
+> > +static void dpu_hw_dsc_config_thresh(struct dpu_hw_dsc *hw_dsc,
+> > +				     struct msm_display_dsc_config *dsc)
 > 
-> If everyone is OK with converting to .rst and using rst2man I'm fine with
+> I thought that it might make sense to pass just drm_dsc_rc_range_parameters
+> here, but it's a matter of personal preference. I won't insist on doing
 > that.
 
-+1
+This is called from encoder, so prefer not to have encoder invoke
+dsc->drm->rc_range_params
 
--- Daniel
+So will keep this.
 
-> -- Steve
-> 
-
+-- 
+~Vinod
