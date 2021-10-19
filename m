@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782AF433FF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC16433FFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbhJSUwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 16:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
+        id S232495AbhJSUyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 16:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbhJSUwa (ORCPT
+        with ESMTP id S230190AbhJSUyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 16:52:30 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728D1C06161C;
-        Tue, 19 Oct 2021 13:50:17 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id r134so21961324iod.11;
-        Tue, 19 Oct 2021 13:50:17 -0700 (PDT)
+        Tue, 19 Oct 2021 16:54:13 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F43C06161C;
+        Tue, 19 Oct 2021 13:51:59 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id s19so8464666ljj.11;
+        Tue, 19 Oct 2021 13:51:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9vqaYPJTseMPHZqZJ05hvv6wCPKInTtA3VDUdp0xR2U=;
-        b=fx32n+sSi8AkWwRIAigmx9mp67eG857PjM9zzxL6ZiuP/vkQgrb/Xg38qMRIvqu9Db
-         EI70VP6p3CwfgCKxyWRGC7D+Z2P5h9R5W7kN5Qd4FfKVpy4eDzNUZ2qWOCvFdVvVNkud
-         kvnmkBEQvKvUIEbslSxG3dMZ6h5lH7KEuywxFtAXj7ntJgafHV+e9ziNQwGHCHyrGL7X
-         mZ9AvxGkaywuZ71ROmvwnQb6Ah+Eif9iuzhWHm2NOSeuy865QdlVJpaBA3m+c5XRgfek
-         uJefi1HZ7nJvMKHdH6xJQSF1So9vR7VNK0EbAUkrpel9cqrK181shBL1fkhkgX1TtUi6
-         jOUw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G7qwr2Tn9hf9lesJD/Db4IBpXW2EeZKyA2WDSHyoBgE=;
+        b=NcHIZ/b/jQIJNFN8E9x67a6l3qpkGJtyBwX5tfhhG8ClJzF5t/0e0BzGo0AaMPi1sW
+         2rlOkgFeIamyNrWbuoDjs9yheW66Z9qe4oxE8AL+TlawkcnQkGosFJj0L4RP2yHDQTdg
+         5RqPbphtMf/ohwndNjCyjrzAa/hvz3rgPzcq4UDoOGOI9dYWzjmdnby9yFyJnVfxhpkk
+         OvnrFZ10nv6DEgkyiOHhnBJFufBPNpzwpb68qDc0o8fT4BEbPWjE2+wssCSH4xM0scaI
+         qv6TYbiAiNR11McbwzD6FF+SuyEaooybxuD6+Qb/N1eKEjtK9HnHPQ6u8E6yraOVKFRo
+         3Mog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9vqaYPJTseMPHZqZJ05hvv6wCPKInTtA3VDUdp0xR2U=;
-        b=LVg6hz4cVSilUgfc+ym4VUP/vY+OXZE+Q3HF4FZ6WVIecDKtdAML5CUAEKI1ZOJqKW
-         cP6BNDqmT3GXLvv9yICIT2JPnVrHVybVpb6mkEoU89yr5lDNiPEGpN+6yjEKCTblktQW
-         Y253PCdhFABQ2ESGuiXlfTAoSuk2CRXD2fqdjluh954SRH2f3qlGcgRmEoeKHkuzTvDu
-         iGyL2LZ2MOSqEaC5dS1FIVVuNVXskuGBEz+Nx5hojlD5NqYhexIZo1yFqdVX4HRZBCCg
-         f9WQAlNMxxmnjXVeTy+r8VdayTFUh2hfwUR3vJRV/9Ij6dmGZvh9EFkzkpKLQ+/yULSg
-         v0NQ==
-X-Gm-Message-State: AOAM533I4fVzK3Zx/jRMcgMRIAjxzwxSp/BWiaQw+laoqQrhL4hrGorN
-        /Te9+RsgK/K4OsLK34byz2gOqbv9GaiHSdrULso=
-X-Google-Smtp-Source: ABdhPJx3Mzrw6dFvnsflFCQyUYi5Fa3FPp5lTiKKE15jhmvleJ3cb1J4Askbc/O330XlH0ME4eBrTq3lwg56KrjrgXQ=
-X-Received: by 2002:a05:6602:2d4e:: with SMTP id d14mr21238434iow.172.1634676616752;
- Tue, 19 Oct 2021 13:50:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G7qwr2Tn9hf9lesJD/Db4IBpXW2EeZKyA2WDSHyoBgE=;
+        b=B8pt2gOKf2Ys1W00optKvY+BqHKpiR2Z35Kf4rNoLJZTTJXNXzHnOGwH4BqT7ePCVx
+         FZss+OQs+ZSkFdjCmvbwr/sIIZCFVL5+LzYbtxsJ1ulZpfbRTJiN33dTDu8gWtPiYXlr
+         wBW/jJSnHhPhfK7WTh1P6RaHJDznZMT7phFBblxi73e4IR5oBEai0x9lDciU9fxrraMZ
+         h1armlm6Vv67J6gGpevPOuYgaptusx663J0JliB4zJ7U/VkYolebsoYMEbUvjaGQCAbS
+         qsFRkEtfLqYbr0vTEG+GrS1Z/D1JZH8eAfVAvdcNchQLN/QiBZsAmt/ExFm1ZQZgLJYk
+         NadA==
+X-Gm-Message-State: AOAM532mNYEq2HRT2Xb5YjiWEaWW0nPIS2c0YdKJk59PF3QI3LpwO1U/
+        JInetwRj/D7vpK3WUlmDN797HpWoAXw=
+X-Google-Smtp-Source: ABdhPJw5rl0M7vhAOyhjzlSRXOdFqJxYZiK6HqOugk5MbOmToxZpxdULdyGyIx60L5Px3IsuETozUg==
+X-Received: by 2002:a2e:994:: with SMTP id 142mr9123423ljj.481.1634676718023;
+        Tue, 19 Oct 2021 13:51:58 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
+        by smtp.googlemail.com with ESMTPSA id x24sm11283ljd.89.2021.10.19.13.51.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 13:51:57 -0700 (PDT)
+Subject: Re: [PATCH v1 4/6] mfd: max77620: Use power off call chain API
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20211007060253.17049-1-digetx@gmail.com>
+ <20211007060253.17049-5-digetx@gmail.com> <YW7k0SW73kcvyo2W@google.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c488d332-46b3-2250-cd96-34897189562f@gmail.com>
+Date:   Tue, 19 Oct 2021 23:51:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211019144520.3613926-1-geert@linux-m68k.org> <20211019144520.3613926-4-geert@linux-m68k.org>
-In-Reply-To: <20211019144520.3613926-4-geert@linux-m68k.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 19 Oct 2021 22:50:05 +0200
-Message-ID: <CANiq72nJS_rxwB7BQJ30iEeFcX8_7VznkF0DvueM_Ym+Wqd94A@mail.gmail.com>
-Subject: Re: [PATCH v8 03/21] auxdisplay: img-ascii-lcd: Fix lock-up when
- displaying empty string
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YW7k0SW73kcvyo2W@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 4:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> +               devm_kfree(&ctx->pdev->dev, ctx->message);
+19.10.2021 18:31, Lee Jones пишет:
+> On Thu, 07 Oct 2021, Dmitry Osipenko wrote:
+> 
+>> Use new power off call chain API which allows multiple power off handlers
+>> to coexist. Nexus 7 Android tablet can be powered off using MAX77663 PMIC
+>> and using a special bootloader command. At first the bootloader option
+>> should be tried, it will have a higher priority than the PMIC.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/mfd/max77620.c       | 22 +++++++++++++++-------
+>>  include/linux/mfd/max77620.h |  2 ++
+>>  2 files changed, 17 insertions(+), 7 deletions(-)
+> I don't have a problem with the approach in general.
+> 
+> I guess it's up to the relevant maintainers to decide.
+> 
 
-Unrelated to this patch (and no need to change it), but we could
-remove the conditional guarding the devm_kfree below to match this
-one.
-
-Cheers,
-Miguel
+Thank you for taking a look at this. Guenter Roeck gave me advice based
+on his previous experience of working on this topic and I'm now in a
+process of finalizing v2 that will be a more comprehensive and nicer
+solution. So you will need to take another look soon, thanks.
