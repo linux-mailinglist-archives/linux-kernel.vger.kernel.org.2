@@ -2,160 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE5C4335B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFFD4335BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhJSMRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:17:06 -0400
-Received: from comms.puri.sm ([159.203.221.185]:50388 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230129AbhJSMRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:17:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id BD63BDF8A3;
-        Tue, 19 Oct 2021 05:14:19 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id woGARjsew7sL; Tue, 19 Oct 2021 05:14:19 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 14:14:12 +0200
-From:   Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
-To:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm, phone-devel@vger.kernel.org
-Subject: [PATCHv3 4/4] media: imx: Use dedicated format handler for i.MX7/8
-Message-ID: <20211019120047.827915-4-dorota.czaplejewicz@puri.sm>
-In-Reply-To: <20211019120047.827915-1-dorota.czaplejewicz@puri.sm>
-References: <20211019120047.827915-1-dorota.czaplejewicz@puri.sm>
-Organization: Purism
+        id S235515AbhJSMTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhJSMTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:19:30 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8ECBC06161C;
+        Tue, 19 Oct 2021 05:17:17 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id v8so13312694pfu.11;
+        Tue, 19 Oct 2021 05:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=HWaF+++REMznNvpJiE6JG2z8SLyWqKnYc7C9QzfgitA=;
+        b=Djrut6kKLnuDAX1lZnwlnek5v/1LasGcBrOg6WDKpN75Rmd41NOCouRy94LwuVBh91
+         1epl/P2UUaIaeAEFmxJMTovIEZpmXNxmibkEAKeW3EDNPgFORlJvFJ4qVHBExR0RbdUA
+         mwmPasS2Fn1iS66+AqHmu+PpjcAnTQV8cdMkctbdvHhBE00wOPpWW7LdZIBPORGTwBVC
+         dq15K67UAdctijr1mJdtF5cLK+SURZO2Vpq46/+tEgseNzEhm57zBZIozj4lSehhUqUX
+         DK0gtv2LwZ7l77SMPhaQRelGcHtHtsC97xUUHoi1gmNNiBwmQ30ORwCuQg4f7vILUx6/
+         gCxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=HWaF+++REMznNvpJiE6JG2z8SLyWqKnYc7C9QzfgitA=;
+        b=iNbhSNS3QcXH2NBa++1/d9hgljJeRSDNejwBKYMFeBrCEPy5KOMr40coRuWMxkLIh5
+         u1qM/3gHkjBAe/KjNVYIvvAgtA4y6hUKXnBmPBYlybUi5+flZQybhrJDV/nVdUeOW2JD
+         SiNNzBBH2aTCRx9fNhy6pm1W1j6+9ayt5gsO01R9UIKp5w5/4F1brrGa/f29nfAUgFN7
+         i80zquFjm36XZCnEaaO9DAy9PHWrml9uQniwlbJtrV0hGIrmvoG3dSic3lg52KMTX36S
+         pLmFGwCfUMBGDxCX4mrtlXlLRyNA0r4M1xd39MnChCspfxgA5JlNCZKEVJCPzrPKgn2j
+         2Y+Q==
+X-Gm-Message-State: AOAM532kxOUfKDoU7Ztchp2GfOYfwIO7tbHxAOfusCpkWdq/xK3beEzd
+        l0QwMKOZHO3//GfGJsMECSs=
+X-Google-Smtp-Source: ABdhPJxTqy6MfCMeLDN0EfE00NawwhTEKXEMO8BKoC+O+L8UW1mNBbE/YXc384xdYAiMlzJ9sdMYnQ==
+X-Received: by 2002:aa7:983a:0:b0:44d:8bc8:b0ac with SMTP id q26-20020aa7983a000000b0044d8bc8b0acmr29936275pfl.83.1634645837233;
+        Tue, 19 Oct 2021 05:17:17 -0700 (PDT)
+Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id i11sm5798618pgp.18.2021.10.19.05.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 05:17:16 -0700 (PDT)
+Message-ID: <bba35342b4a0fcb2a707c10662e57e4d0e668770.camel@gmail.com>
+Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to
+ intel_pmic_bytcrc driver
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 19 Oct 2021 21:17:13 +0900
+In-Reply-To: <YW60cwMHNoTYgQL6@smile.fi.intel.com>
+References: <20211017161523.43801-1-kitakar@gmail.com>
+         <20211017161523.43801-2-kitakar@gmail.com>
+         <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
+         <23d641620aebd1aa47fd73d040dec4ad8974d03d.camel@gmail.com>
+         <YW60cwMHNoTYgQL6@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/OrfD4L/d0u/BfKgT0T7LQaI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/OrfD4L/d0u/BfKgT0T7LQaI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2021-10-19 at 15:05 +0300, Andy Shevchenko wrote:
+> On Tue, Oct 19, 2021 at 08:56:04PM +0900, Tsuchiya Yuto wrote:
+> > On Mon, 2021-10-18 at 11:16 +0200, Hans de Goede wrote:
+> > > On 10/17/21 18:15, Tsuchiya Yuto wrote:
+> 
+> ...
+> 
+> > > Tsuchiya, can you give the attached patch a try.
+> > 
+> > Thanks!
+> > 
+> > I tried your attached patch, and I can confirm that it's working as
+> > expected.
+> > 
+> > Now it's using cht one:
+> > 
+> >         $ ls /sys/devices/pci0000:00/808622C1:05/i2c-5/i2c-INT33FD:00
+> >         cht_crystal_cove_pmic  crystal_cove_gpio  crystal_cove_pwm  driver  firmware_node  modalias  name  power  subsystem  uevent
+> > 
+> > and the function intel_soc_pmic_exec_mipi_pmic_seq_element() is also
+> > working with atomisp driver.
+> 
+> To be formal you may give a dedicated tag here, i.e. Tested-by:.
+> It will be easier for tools, such as `b4`, to catch it up
+> and not forget.
 
-This splits out a format handler which takes into account
-the capabilities of the i.MX7/8 video device,
-as opposed to the default handler compatible with both i.MX5/6 and i.MX7/8.
+Thanks!
 
-Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
----
- drivers/staging/media/imx/imx-media-utils.c | 56 +++++++++++++++++++--
- 1 file changed, 52 insertions(+), 4 deletions(-)
+Hm, then, not sure if mine is helpful but here is
+Tested-by: Tsuchiya Yuto <kitakar@gmail.com>
 
-diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/=
-media/imx/imx-media-utils.c
-index 8b5c6bcfd4fa..1ff7ec4c877a 100644
---- a/drivers/staging/media/imx/imx-media-utils.c
-+++ b/drivers/staging/media/imx/imx-media-utils.c
-@@ -516,10 +516,9 @@ void imx_media_try_colorimetry(struct v4l2_mbus_framef=
-mt *tryfmt,
- }
- EXPORT_SYMBOL_GPL(imx_media_try_colorimetry);
-=20
--int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
--				  const struct v4l2_mbus_framefmt *mbus,
--				  const struct imx_media_pixfmt *cc,
--				  enum imx_media_device_type type)
-+static int imx56_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
-+					   const struct v4l2_mbus_framefmt *mbus,
-+					   const struct imx_media_pixfmt *cc)
- {
- 	u32 width;
- 	u32 stride;
-@@ -568,6 +567,55 @@ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_form=
-at *pix,
-=20
- 	return 0;
- }
-+
-+static int imx78_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
-+					   const struct v4l2_mbus_framefmt *mbus,
-+					   const struct imx_media_pixfmt *cc)
-+{
-+	int ret;
-+
-+	if (!cc)
-+		cc =3D imx_media_find_mbus_format(mbus->code, PIXFMT_SEL_ANY);
-+
-+	/*
-+	 * The hardware can handle line lengths divisible by 4 pixels
-+	 * as long as the whole buffer size ends up divisible by 8 bytes.
-+	 * If not, use the value of 8 pixels recommended in the datasheet.
-+	 */
-+	ret =3D v4l2_fill_pixfmt(pix, cc->fourcc,
-+			       round_up(mbus->width, 4), mbus->height);
-+	if (ret)
-+		return ret;
-+
-+	/* Only 8bits-per-pixel formats may need to get aligned to 8 pixels,
-+	 * because both 10-bit and 16-bit pixels occupy 2 bytes.
-+	 * In those, 4-pixel aligmnent is equal to 8-byte alignment.
-+	 */
-+	if (pix->sizeimage % 8 !=3D 0)
-+		ret =3D v4l2_fill_pixfmt(pix, cc->fourcc,
-+				       round_up(mbus->width, 8), mbus->height);
-+
-+	pix->colorspace =3D mbus->colorspace;
-+	pix->xfer_func =3D mbus->xfer_func;
-+	pix->ycbcr_enc =3D mbus->ycbcr_enc;
-+	pix->quantization =3D mbus->quantization;
-+	pix->field =3D mbus->field;
-+
-+	return ret;
-+}
-+
-+int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
-+				  const struct v4l2_mbus_framefmt *mbus,
-+				  const struct imx_media_pixfmt *cc,
-+				  enum imx_media_device_type type) {
-+	switch (type) {
-+	case DEVICE_TYPE_IMX56:
-+		return imx56_media_mbus_fmt_to_pix_fmt(pix, mbus, cc);
-+	case DEVICE_TYPE_IMX78:
-+		return imx78_media_mbus_fmt_to_pix_fmt(pix, mbus, cc);
-+	}
-+	return -EINVAL;
-+}
- EXPORT_SYMBOL_GPL(imx_media_mbus_fmt_to_pix_fmt);
-=20
- void imx_media_free_dma_buf(struct device *dev,
---=20
-2.31.1
+Regards,
+Tsuchiya Yuto
 
-
---Sig_/OrfD4L/d0u/BfKgT0T7LQaI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEExKRqtqfFqmh+lu1oADBpX4S8ZncFAmFutpQACgkQADBpX4S8
-Znedzw//bzwh5zl4ZO7nmbF0ECF891A7VSwTcttePok80enVZxZqQhpYKydrNgEI
-BldE0MyfcP5oJ0RHLqiEDDDi/e+wkS2p2bddmvzGHCXjm3ITCd0+Hfu3LOY6DJsC
-qIbNYz3i9NGOkbfcxj6zW3Fq8+U/XouOTO+zwpqOKxCHQbLa3FWvkdhfFngah0gb
-oIul+P43EGoZcrxL37oMvYXIvVOcIIE29m2ThVWQAdI2iTDBvFq7iHxZ37qF712Y
-7PgDt0E/U8upIQtO/UFqpluI1yZe7byNc6cwR5CHYupw0fc/VL040RYAS3HlbVV1
-DC9p8RPSML5x/tQMsm+LblF0izwlZg5I5o/s+ZOoQySqccNWJg3lADVrZTLexmHM
-MavzC8UiXsW6iI+ByZVvxLHVOvhlcqQcYqoAsMj9z/XEqmMuaRV8MB3Z1bkd1VEk
-1/okpyeRZRzzcBT6Dd1fzfKKWVd8YVWneJgdbjZFOjpIh7ZEVVnrUAXWKjNOIJyW
-JW1Q85POxP3LfIRJk30WgOyAmpht5q3B2uSZEHVUC/VzgPXNMY+VqQSd6hl0q6uB
-uwxouUd73ucpf/CrnT/sgHhnikB0OXnjGlWOfLYkbrkcZAHnPgRbAif7q12TXC88
-xEumN1x95efo6q6gDxf50SEzX651fDSPCGsRE4lueofS44MbkGs=
-=tgUC
------END PGP SIGNATURE-----
-
---Sig_/OrfD4L/d0u/BfKgT0T7LQaI--
