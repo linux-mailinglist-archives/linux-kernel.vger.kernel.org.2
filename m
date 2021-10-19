@@ -2,131 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482D9433CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993EE433CE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234441AbhJSRCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:02:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46035 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234319AbhJSRCc (ORCPT
+        id S234575AbhJSRDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230158AbhJSRDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:02:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634662818;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zGvLIs148hziB4PUxgRa4SMQOneyHkfkSPS3E4B1O/U=;
-        b=f1DebP4SeQSz/51ulKZ1YJsZqxxaj1hOxegGnVBUsX/wHg6NyOtO4NUkbCqYkyl9n+gDOo
-        68XA4RS74mqrhT1RkGJFsta1sywNreIeCF/ZwObc8FVLtCkZ2a73spHS6Z2UfqkRU9I7nD
-        LfdTfULVdz9T3k2fT01T+N+nCZyjurs=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-w4gk2xbLOm2lDM3MbzcqFA-1; Tue, 19 Oct 2021 13:00:12 -0400
-X-MC-Unique: w4gk2xbLOm2lDM3MbzcqFA-1
-Received: by mail-ed1-f69.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso518530edj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:00:12 -0700 (PDT)
+        Tue, 19 Oct 2021 13:03:05 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4D5C06161C;
+        Tue, 19 Oct 2021 10:00:52 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso382404pjw.2;
+        Tue, 19 Oct 2021 10:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5oDh6wY5mxgjBgRFmj6OpdKqeAcazi57fngXpPsPLWE=;
+        b=lRts9Q2QN5BocnpFjJPqpBK3Fxaxv4kEBoF/rHLBeWaGIYwAxlKsPIhkQCB7sNAmRj
+         UERoxRYtgRGMzur8k2GM5Y/uFfigfGYqd1hcqOryGHOglz1dxWtZNVUYhgx0tD+hilKq
+         V8/oWKqn3J2sTUprRMG/t7pLpLgbMEIoyy/+Yyr6FKU3FUd/0I1Urd0FLCulQCkhKyz8
+         4TLlu7kFoFyRAEOHLSuV4dkq9oUAiIfZuvxmu4RCbRc28MpW7etPuuxUZLeetNOmIejx
+         9MpRHH231nr3EYgiUBiOpX+2Z1SpFRYcJy86zemrDgVuzLz5/JQWebAYxJqNe4SaNEB/
+         rBww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zGvLIs148hziB4PUxgRa4SMQOneyHkfkSPS3E4B1O/U=;
-        b=Ry1X4yiCvYGxuD3AJGmjkqMRgctrscCRam/gO9yBhA9sEER08wAr/0t/E8zuynDcXW
-         0dLOC8twVrMSmaks66xS1XKG+/V5+1cBaqQ0PzsESP8/KQKYtr0K4sj4NNHdiUOM+e3t
-         bkIiSTTsm/yLQ8mJVWmfT1W0tp8tLEgX/3xzZ8OUuR5uyCzdmXc/kZnvbwTF+3a4MF9L
-         O3rvhXaIPql/n9/DFl/+rUHRlZveSmbVtGdWdWUajueNp3gMOA9j7qk3gDqO5mgOaJI7
-         DBIYwwwzqDCdMCQwORAiVxtJjDCaIi+0DcT1tHC9TQCy2Ptx/ZctNdV0VZA9/MtXMVfN
-         wujw==
-X-Gm-Message-State: AOAM531UacSgBH4sdMZxU+c0dsb70NI4DkIvVjv4usEbw4xVcLgGt4j1
-        ri93SEXZrc64MtLlM2yKpkA3pCc/RB8rXUxR0Q+Eg2m+lF8cDX3MNLqtQev4n347TDnvJ1vU6Dp
-        YZC5pXjIF9AGZLpw2rvC2xCCY
-X-Received: by 2002:a17:906:cccb:: with SMTP id ot11mr38326047ejb.219.1634662810967;
-        Tue, 19 Oct 2021 10:00:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVDgHSlgJMQQCpSKbI6RvbpD0gCr7VgQKsONRyAup2RQedluzTYxrKtWBegjWiO9mZ9tbj8Q==
-X-Received: by 2002:a17:906:cccb:: with SMTP id ot11mr38325973ejb.219.1634662810372;
-        Tue, 19 Oct 2021 10:00:10 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:8e02:b072:96b1:56d0? ([2001:b07:6468:f312:8e02:b072:96b1:56d0])
-        by smtp.gmail.com with ESMTPSA id n10sm10310389ejk.86.2021.10.19.10.00.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 10:00:09 -0700 (PDT)
-Message-ID: <39b178d0-f3aa-9bab-e142-60f917b0f707@redhat.com>
-Date:   Tue, 19 Oct 2021 19:00:03 +0200
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5oDh6wY5mxgjBgRFmj6OpdKqeAcazi57fngXpPsPLWE=;
+        b=j+/sT10d7Kmyk1NLXKKnjsj1T7gQ/gSjhAEZOG/oNP/KWILgAsbWR+8hmypzvQGScz
+         0nDq6oQfxT1r/qkz34+jqTk1IGaL0ActKV5pYnYdjMQhFUeFP9C50WEav3jDvzPetlSw
+         z4OiwZ6xY0v6fGZ+sHEtcDj6fU8Uhrp4bnbCIbcvihoOOs45KTlYvRLynlMtezOuYp/w
+         r1bjoCiE13EX68qggPPqC0qO2DBw4mxldSQD1mAUxszaI+n0kziYJP9FIsURqBzil/Z4
+         0GWaU2N3/o4C3tG8ceZ55X4W0HMOA1W0maI9DxSwjPd3LpY7ELJw5MR+NLiA4nHqUTo+
+         m5qg==
+X-Gm-Message-State: AOAM532A4F/NOZujYTYIdskqkXkb1HYdN4grMr+PRWvyvcKFHh4cuoT6
+        F9LEjn4Pa1IwADd1Q9NsSvRtdy27rn4BYw==
+X-Google-Smtp-Source: ABdhPJz2Txw4Iyq0OpTfOKDWQ5EPgZrJEgJ5wmiLGj6rOynX5rPquD2dOQEYI7PZZR0bLUwKgFAVJg==
+X-Received: by 2002:a17:902:c942:b0:13f:d1c:819a with SMTP id i2-20020a170902c94200b0013f0d1c819amr34461656pla.64.1634662851444;
+        Tue, 19 Oct 2021 10:00:51 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id i123sm16894060pfg.157.2021.10.19.10.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 10:00:50 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 19 Oct 2021 07:00:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, paolo.valente@linaro.org,
+        avanzini.arianna@gmail.com, fchecconi@gmail.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v3 -next 1/2] blk-cgroup: don't call
+ blk_mq_freeze_queue() in blkcg_deactivate_policy()
+Message-ID: <YW75wUcf9CcmqdD5@slm.duckdns.org>
+References: <20211019024132.432458-1-yukuai3@huawei.com>
+ <20211019024132.432458-2-yukuai3@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v3 1/3] KVM: emulate: Don't inject #GP when emulating
- RDMPC if CR0.PE=0
-Content-Language: en-US
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019024132.432458-2-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/21 10:12, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> SDM mentioned that, RDPMC:
-> 
->    IF (((CR4.PCE = 1) or (CPL = 0) or (CR0.PE = 0)) and (ECX indicates a supported counter))
->        THEN
->            EAX := counter[31:0];
->            EDX := ZeroExtend(counter[MSCB:32]);
->        ELSE (* ECX is not valid or CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1 *)
->            #GP(0);
->    FI;
-> 
-> Let's add the CR0.PE is 1 checking to rdpmc emulate, though this isn't
-> strictly necessary since it's impossible for CPL to be >0 if CR0.PE=0.
+Hello,
 
-Why not just add a comment then instead?
-
-Paolo
-
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v2 -> v3:
->   * add the missing 'S'
-> v1 -> v2:
->   * update patch description
+On Tue, Oct 19, 2021 at 10:41:31AM +0800, Yu Kuai wrote:
+> blkcg_deactivate_policy() can be called from either
+> blk_cleanup_queue() for all policies or elevator_switch() for bfq
+> policy. Thus there is no need to freeze queue in
+> blkcg_deactivate_policy() since the caller freeze the queue aready.
 > 
->   arch/x86/kvm/emulate.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> index 9a144ca8e146..ab7ec569e8c9 100644
-> --- a/arch/x86/kvm/emulate.c
-> +++ b/arch/x86/kvm/emulate.c
-> @@ -4213,6 +4213,7 @@ static int check_rdtsc(struct x86_emulate_ctxt *ctxt)
->   static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
->   {
->   	u64 cr4 = ctxt->ops->get_cr(ctxt, 4);
-> +	u64 cr0 = ctxt->ops->get_cr(ctxt, 0);
->   	u64 rcx = reg_read(ctxt, VCPU_REGS_RCX);
->   
->   	/*
-> @@ -4222,7 +4223,7 @@ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
->   	if (enable_vmware_backdoor && is_vmware_backdoor_pmc(rcx))
->   		return X86EMUL_CONTINUE;
->   
-> -	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt)) ||
-> +	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt) && (cr0 & X86_CR0_PE)) ||
->   	    ctxt->ops->check_pmc(ctxt, rcx))
->   		return emulate_gp(ctxt, 0);
->   
-> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
+I would just keep the calls. The operation requires the q to be frozen and
+there isn't a good way to annotate that the caller must be holding a usage
+count, so it's useful even just as documentation.
+
+Thanks.
+
+-- 
+tejun
