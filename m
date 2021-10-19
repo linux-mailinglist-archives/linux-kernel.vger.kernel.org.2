@@ -2,90 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B82E433834
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42EC43380C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhJSOSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:18:54 -0400
-Received: from mga06.intel.com ([134.134.136.31]:43531 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhJSOSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:18:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="289374764"
-X-IronPort-AV: E=Sophos;i="5.87,164,1631602800"; 
-   d="scan'208";a="289374764"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 07:06:58 -0700
-X-IronPort-AV: E=Sophos;i="5.87,164,1631602800"; 
-   d="scan'208";a="526668039"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 07:06:52 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mcplB-000f1m-2P;
-        Tue, 19 Oct 2021 17:06:33 +0300
-Date:   Tue, 19 Oct 2021 17:06:33 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nable <nable.maininbox@googlemail.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>
-Subject: Re: [BUG 0/5] bug reports for atomisp to make it work
-Message-ID: <YW7Q6ZXMffrNY3RL@smile.fi.intel.com>
-References: <20211017162337.44860-1-kitakar@gmail.com>
- <2170cfdf-767f-969c-f241-4e61bfafd1f5@redhat.com>
- <CAHp75VcuP4NTYYL6FreW-bdB549T1WNwty74PUFm+LYLeLkdhA@mail.gmail.com>
- <919e6e09bf258b48dd8819ec43cd13ab48489aa7.camel@gmail.com>
+        id S232498AbhJSOKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231442AbhJSOKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 10:10:52 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4A8C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:08:39 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id i20so13274256edj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:08:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sl6TRXG8dGdor4UXTJjg2nfq9PmQ5t6JZMxma2/u/hQ=;
+        b=UO8V/cOM646I62LCXaZTAodRLe/AtTXmaai9Gqz5KuTLju2SgV7v1Et+G6FqrlX70I
+         fu0vxVN2ENngFvcQ3Owk/q7YfCaJiyLZ/NVekkdaDaIILu92fQJrKJnuykKk36iOn5HJ
+         /y2V30q/88CU6hxh9oRKh3fVnm4awJiBEiXFllEi627EKQjGzz7obzqvHJPWVikwLBTC
+         6Yw/whtbKbn/1Oo6Ggy+QCZdhCt2kRJZ+wZEPAqdKhJVZk9VWjxX0dyr92aSsSv2FL0I
+         OFmiRQj8/0nOO0Jtj68RXUFdbKMKWV7DYBhWO1R4pHJRQaAiQdcjSx5hRZELXu7Ma1Wt
+         l5cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sl6TRXG8dGdor4UXTJjg2nfq9PmQ5t6JZMxma2/u/hQ=;
+        b=CcqE9P2IqONXuGU1P3e1w5ArZcfJBp3vJyQ/LrlMdtJ1XIFXZLgxLqC/ii9pSte3h5
+         QJsuVv77B2PKK6guw1OONcN7o9NetwUIhZ7+wxlE914ZRtGD4FQnmLLe0Eg5OYHwpbfp
+         zrBg6vIGERIFVjMIYz4FB6jTBPvjGlL/MZzQltptwmqDIt5+YzJMW3k+e387Q373hPHD
+         zcXOK+bkn47xHWGhK0bBglUU+lle0UZpJQ5BPOKLaYwVvhVfzE68stec+Ellpi4VhyRE
+         pNfg3In08c38qQ3F3Sa7H3kATznPME99kPvfiMyANQpALw+BnVMzt1zik6wbQCQqlECD
+         dhMg==
+X-Gm-Message-State: AOAM5329MsbEm/DohL1ccKF/DikRkGpNratMjVLRV3i1tWKKKhF0GRMe
+        HbS9D/NCfdWAsRWU3P2hM9W+FSopiDMJe2ccl3w4EA==
+X-Google-Smtp-Source: ABdhPJx+itqr0L6RxTVPTcoVDXDI8OgBIK9PhH1BaN41cJX6+hdIJ6ivEBcFaA1u6f0x724tp5nxi5DesZeZNMf/h2U=
+X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr54735754edz.198.1634652445451;
+ Tue, 19 Oct 2021 07:07:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <919e6e09bf258b48dd8819ec43cd13ab48489aa7.camel@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211019061402.629202866@linuxfoundation.org>
+In-Reply-To: <20211019061402.629202866@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 19 Oct 2021 19:37:11 +0530
+Message-ID: <CA+G9fYvK-B6Rp8NCgu=vGTogMaCbTy-O5uedi1-LXQKhmy6E7w@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 09:58:20PM +0900, Tsuchiya Yuto wrote:
-> On Mon, 2021-10-18 at 11:10 +0300, Andy Shevchenko wrote:
-> > On Mon, Oct 18, 2021 at 10:51 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> > 
-> > > Just adding some folks to the Cc.
-> > 
-> > A hint to the newly added folks, there is an archive of the Linux
-> > kernel related emails located on lore.kernel.org. The quite famous
-> > distros already have in their repositories the `b4` tool that helps to
-> > access that archive. So, after installing that tool you may download
-> > the whole thread as a mailbox or as a bundle ready for `git am` just
-> > using the Message-ID value.
-> 
-> Ah sorry, I failed to add people to Cc who I should have definitly
-> added.
-> 
-> And I might have sent all of the emails to people who I should not
-> by blindly using `scripts/get_maintainer.pl` for the first bug report
-> with `--cc-cmd`.
+On Tue, 19 Oct 2021 at 11:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.14 release.
+> There are 151 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 21 Oct 2021 06:13:39 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.14.14-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I have written a script [1] for myself which helps me a lot nowadays.
-It tries to be smart enough to include all interested parties. Although,
-user may expand the Cc and/or To lists.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-[1]: https://github.com/andy-shev/home-bin-tools/blob/master/ge2maintainer.sh
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
--- 
-With Best Regards,
-Andy Shevchenko
+## Build
+* kernel: 5.14.14-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.14.y
+* git commit: 6b894d18a514aeedc4c9464f976c72a2730043ef
+* git describe: v5.14.12-182-g6b894d18a514
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
+.12-182-g6b894d18a514
 
+## No regressions (compared to v5.14.13-152-g20eb7f403c90)
 
+## No fixes (compared to v5.14.13-152-g20eb7f403c90)
+
+## Test result summary
+total: 87941, pass: 74754, fail: 595, skip: 11848, xfail: 744
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 289 total, 289 passed, 0 failed
+* arm64: 39 total, 39 passed, 0 failed
+* i386: 37 total, 37 passed, 0 failed
+* mips: 39 total, 39 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tes[
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
