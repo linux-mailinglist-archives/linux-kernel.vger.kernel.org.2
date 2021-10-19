@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E0D43309C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95884330BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234688AbhJSIHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:07:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36214 "EHLO mail.kernel.org"
+        id S234679AbhJSIIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:08:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234704AbhJSIGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:06:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0BAA6139D;
+        id S234719AbhJSIGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 04:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB8CC613A1;
         Tue, 19 Oct 2021 08:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1634630667;
-        bh=tec3N26Ppj3HiN6XnRgihubCdhjpDSY4LAigZu83/u8=;
+        bh=Bx3pYVSsyeLYtIU48WDc61BgSRFYlI2YfsZiMvIGhhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tHUasibGDKgOMPqbVa3yy31jaz86MII3c+HeUbc0odcKyo2dDxEgew+l1F+lL5eJ3
-         8zc5U3379u+Wuk0mGZ5PZx0yQlfH1aWR9N+tUhdXUP/E9cNteKdi0/5vePojp7RYtL
-         RrBaeTb88qfQPqgwDZffQKL08J8Yj6JHiJdjM5cEGfYpcZz/mXFNVj4y5w/6HaZQ6p
-         J8bJRq8sFEgXsVWswBlIx92EqX2W4ZdzOwyDES0Vd0S8t1RpO0mIOyD7bkqdRW08eO
-         ccdLhc2Lb7x+hYEFbYSVx+7nFghOTaIjyBIyoW35P2BpUH2oifrGjxIINsRaK1u4xb
-         A+x5paxMCjuJQ==
+        b=Eh9hDX6SZrJVjbWC2FCyqRTIwBeadzTzMeT4AUU3IeIaIcopNl88MW32R+ROOnhxu
+         4mSKhRxWb+40FjUS1C4aJKfQKTdAEH2BXnMwZwf+i6FNa/oQLyz9xguBK0weFK+a75
+         76xhtVXvhh8VCIrVgPiL1+Zc6NpjCTTBjGXGB+pJUB8BlWCPnkAXZ0TX3vj4AtgKyH
+         XPTEBDP5URW50tgSDgg/dPw35He3jy4w8QOhsMZTktDMMvEy/Pv3auFmdEbfUCi1gp
+         E1OFpvxnF2gJ97+LGjwe98bL06H2k45yENf+tGlaZ7oxFOG2U+2cPPqvV/rxz7H+ei
+         e3VAA+C9Mctkg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mck6j-001oJR-6m; Tue, 19 Oct 2021 09:04:25 +0100
+        id 1mck6j-001oJU-7F; Tue, 19 Oct 2021 09:04:25 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH v3 13/23] Documentation: update vcpu-requests.rst reference
-Date:   Tue, 19 Oct 2021 09:04:12 +0100
-Message-Id: <1f62fdbd0dd9298a19c491447a4b415a8ef3bd69.1634630486.git.mchehab+huawei@kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v3 14/23] bpftool: update bpftool-cgroup.rst reference
+Date:   Tue, 19 Oct 2021 09:04:13 +0100
+Message-Id: <11f3dc3cfc192e2ee271467d7a6c7c1920006766.1634630486.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1634630485.git.mchehab+huawei@kernel.org>
 References: <cover.1634630485.git.mchehab+huawei@kernel.org>
@@ -51,35 +55,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 2f5947dfcaec ("Documentation: move Documentation/virtual to Documentation/virt")
-renamed: Documentation/virtual/kvm/vcpu-requests.rst
-to: Documentation/virt/kvm/vcpu-requests.rst.
+The file name: Documentation/bpftool-cgroup.rst
+should be, instead: tools/bpf/bpftool/Documentation/bpftool-cgroup.rst.
 
 Update its cross-reference accordingly.
 
-Fixes: 2f5947dfcaec ("Documentation: move Documentation/virtual to Documentation/virt")
+Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
+Fixes: 5ccda64d38cc ("bpftool: implement cgroup bpf operations")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
 To mailbombing on a large number of people, only mailing lists were C/C on the cover.
 See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
 
- arch/riscv/kvm/vcpu.c | 2 +-
+ tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-index c44cabce7dd8..260ce0779a32 100644
---- a/arch/riscv/kvm/vcpu.c
-+++ b/arch/riscv/kvm/vcpu.c
-@@ -912,7 +912,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 * Ensure we set mode to IN_GUEST_MODE after we disable
- 		 * interrupts and before the final VCPU requests check.
- 		 * See the comment in kvm_vcpu_exiting_guest_mode() and
--		 * Documentation/virtual/kvm/vcpu-requests.rst
-+		 * Documentation/virt/kvm/vcpu-requests.rst
- 		 */
- 		vcpu->mode = IN_GUEST_MODE;
+diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+index be54b7335a76..617b8084c440 100755
+--- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
++++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+@@ -392,7 +392,7 @@ class ManCgroupExtractor(ManPageExtractor):
+     """
+     An extractor for bpftool-cgroup.rst.
+     """
+-    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-cgroup.rst')
++    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-cgroup.rst')
  
+     def get_attach_types(self):
+         return self.get_rst_list('ATTACH_TYPE')
 -- 
 2.31.1
 
