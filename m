@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3DA433D95
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7D9433D7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbhJSRiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234712AbhJSRip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:38:45 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCB7C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:36:32 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id i20so15572418edj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
-        b=moyLH3xE2gLElTaPJmiSs+B5S/5lR7fZoU9SNI/NUefAhBoxWgkFYLFFxqFXwPL9mb
-         /gC4oJ4sFAe/grViaqK0k36woootMPJEIHO+qgeqmw67A5IYQiQOmx1py5PeWb///n1L
-         bPXJREGlYaSj5/oDg2sA6f1aS9CE9kRfODbR6yohGiEtLRdnAPR/en8Ize3lQWAwaAQm
-         SKzTNDE4u3E9vjtOCxjwlsKCxIL52QO9OWT/w8MKAMpTnDJqpw+L9kQWcifeWnEvywyZ
-         O/KOT1bQTLB+e5JEOWRun0yIcfrLcRXVyi5rLfh0vGrqx36yZamgJ7bYUxIdyMpHLjSd
-         DsvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
-        b=Uu7Pi7ShKOHbRver/StnnXrxZJRLEk3YOtIMweT5IhFuog6W+pjRP28JuSToyQVbgb
-         M6SxxOGIPjZiMTJKSjfekMYMexk6PVA53K4JlOOmMgU/y628qNd+HlAOZ3mdtG2wayM1
-         OQi0KWk5a7eXtG9HFzPmoRw4FQP8HZoY6paAjlRG8zhb6BlDdSe7cNMDzPwqhknahaOA
-         1M9QYWkH09FjI8XuTq4nGX09+v4OwS/XulilO9u8FACpkkCe7x3rO7UhicM/rW0HlC6x
-         onN/B9c8Fvd3+gEvpI4nLj48Qb4RAVk9KaYu9s+mnU7KQZRNhTpextzKNfm36UHgGdLY
-         Snvg==
-X-Gm-Message-State: AOAM5320UiEaznus3YCOtqjlPKOJf1iLuLzSLjhXdUytet6059/vaaeh
-        lOaHJTfMxURM0S/MNQ32AnK2KdDXsNoWwPsycm2aHrPropU=
-X-Google-Smtp-Source: ABdhPJwjAD/Z/AQRghq4l6fXoUXMoyAWh/r5f6WmTImdgMP1y7xmoAMUAxwlvxGGhp0zji+VrlnM/b/+P04ecSHJrwc=
-X-Received: by 2002:a17:906:14c7:: with SMTP id y7mr42213166ejc.123.1634664490264;
- Tue, 19 Oct 2021 10:28:10 -0700 (PDT)
+        id S234591AbhJSRaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231226AbhJSRau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:30:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BE4F61355;
+        Tue, 19 Oct 2021 17:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634664517;
+        bh=59LlQsuP3ZW+Cqkg0bmKDDTdZJ6xYatNGwXXx+Ql12c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YWZi9VFvsWHjYkDIPd8f49GxBVmj/S9NVGgH7d94tK3kKeCF+lF3syMiKzMmqfuyg
+         JEHxrMIxVUmTbr2P3UxsxW/NFBzES4GLdSmR5jSm9QRoc0t7a8kiYYJnuP8TXiAFgt
+         ifpV2BfQaooqVVlB4sG6JiSoyYkjtUSC8FI4Ss/k=
+Date:   Tue, 19 Oct 2021 19:28:35 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YW8AQ4fMNV8MT1vX@kroah.com>
+References: <YWjCpLUNPF3s4P2U@T590>
+ <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+ <YWk9e957Hb+I7HvR@T590>
+ <YWm68xUnAofop3PZ@bombadil.infradead.org>
+ <YWq3Z++uoJ/kcp+3@T590>
+ <YW3LuzaPhW96jSBK@bombadil.infradead.org>
+ <YW4uwep3BCe9Vxq8@T590>
+ <YW7pQKi8AlV+ZemU@bombadil.infradead.org>
+ <YW7xbnrqfzifa9OC@kroah.com>
+ <YW7yjQVC4NRfrWxD@bombadil.infradead.org>
 MIME-Version: 1.0
-Received: by 2002:a50:7e83:0:0:0:0:0 with HTTP; Tue, 19 Oct 2021 10:28:09
- -0700 (PDT)
-Reply-To: mariehamidou0@gmail.com
-From:   MARIE Hamidou <ms.ruthdesmond8@gmail.com>
-Date:   Tue, 19 Oct 2021 19:28:09 +0200
-Message-ID: <CAFax6YAUFkktj8vZjgrUmwcZ3++sCu4UEDEQm+5RkN8A6EBKyQ@mail.gmail.com>
-Subject: Urgent,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW7yjQVC4NRfrWxD@bombadil.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Urgent,
+On Tue, Oct 19, 2021 at 09:30:05AM -0700, Luis Chamberlain wrote:
+> On Tue, Oct 19, 2021 at 06:25:18PM +0200, Greg KH wrote:
+> > On Tue, Oct 19, 2021 at 08:50:24AM -0700, Luis Chamberlain wrote:
+> > > So do you want to take the position:
+> > > 
+> > > Hey driver authors: you cannot use any shared lock on module removal and
+> > > on sysfs ops?
+> > 
+> > Yes, I would not recommend using such a lock at all.  sysfs operations
+> > happen on a per-device basis, so you can lock the device structure.
+> 
+> All devices are going to be removed on module removal and so cannot be locked.
 
-I need your assistance to validate your name in our Bank System to
-enable the Bank transfer the sum of $ 3.5 million Dollars, into your
-nominated bank account to your account for onward investment,
+devices are not normally created by a driver, that is up to the bus
+controller logic.  A module will just disconnect itself from the device,
+the device does not go away.
 
-or any profitable business in your country and you will take 50% of
-the total  fund , for your assistance.To commence this transaction,  I
-require you to immediately indicate your interest by a return mail for
-more details,
+But yes, there are exceptions, and if you are doing something odd like
+that, then you need to be aware of crazy things like this, so be
+careful.  But for all normal drivers, they do not have to worry about
+this.
 
-Thanks for your anticipated co-operation.
-Best regards.
-Ms.MARIE Hamidou
+thanks,
+
+greg k-h
