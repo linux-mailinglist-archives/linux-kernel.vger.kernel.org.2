@@ -2,131 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AF3433722
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFFE43372E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235817AbhJSNgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:36:01 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39339 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230487AbhJSNgA (ORCPT
+        id S235763AbhJSNil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:38:41 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:45901 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhJSNij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:36:00 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UswbPeO_1634650423;
-Received: from B-J4ZXMD6R-0327.local(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0UswbPeO_1634650423)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 19 Oct 2021 21:33:45 +0800
-Subject: Re: [PATCH] ACPI, APEI, EINJ: Relax platform response timeout to 1
- second.
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
-        "zhuo.song@linux.alibaba.com" <zhuo.song@linux.alibaba.com>
-References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
- <4d492cef3640414d85ecfdb602ad6fa0@intel.com>
- <869f0c92-0800-b24e-9de8-d8c9cb6972a7@linux.alibaba.com>
- <YW2Vbkn5d6r3Y4LA@agluck-desk2.amr.corp.intel.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-Message-ID: <d6e54c7f-c944-3bb1-aa50-d88bc1000c85@linux.alibaba.com>
-Date:   Tue, 19 Oct 2021 21:33:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tue, 19 Oct 2021 09:38:39 -0400
+Received: by mail-oi1-f171.google.com with SMTP id z126so4890917oiz.12;
+        Tue, 19 Oct 2021 06:36:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lnpf5eUhLXI8j2gElhp4/XH3DNWhAe73BljjrUh6kl8=;
+        b=Pbi6+9DMUxbit0oG3gzVRUD/GcvF2sgEnNrpkajuvHt0KH5RpZehhA8BKJkunj85TH
+         tmpKcS7Om4t45RHBqYmj8eHMpnjMucxJFosjGi/8RHeFmcqQgpnRrELFw0AsNAY1pmMd
+         N5iXe8ldVQXWttwdSZqfHScjLhnRc71lPQjgsHpx7VoLe6nAHk7nf23qORJ3kN3g04cq
+         qzx2v397AASQRTdO5Pj7QweDUz0UQH8m3STXLMsUqsgenQ4nq1i209hkCrWMxyaaCy07
+         RaY9486sT7fyxb+JCS0ZvtbSmW0V0bqGDggNFgKrjSpMRIk0x8Ut6j6Bx60vR7rxnyv4
+         jXRA==
+X-Gm-Message-State: AOAM530RfRgwCnJ8A179J/s1QLURim3eDmJ995G8yMBWLKAqNdVEkP7C
+        mn4koMXYJyqeEFcss/23aAgEwCBKKBSdYeZmVXs=
+X-Google-Smtp-Source: ABdhPJyLg69p7yFiPbQt3tlp9YiwCFJ/XYkoJTm1uPJm5yZpYQx4xx6EANj90TymnUjmY5/AQesSv8GqTSHHSArXNwQ=
+X-Received: by 2002:aca:b5c3:: with SMTP id e186mr4383173oif.51.1634650586176;
+ Tue, 19 Oct 2021 06:36:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YW2Vbkn5d6r3Y4LA@agluck-desk2.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211019132211.2792475-1-daniel.lezcano@linaro.org> <20211019132211.2792475-2-daniel.lezcano@linaro.org>
+In-Reply-To: <20211019132211.2792475-2-daniel.lezcano@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 19 Oct 2021 15:36:15 +0200
+Message-ID: <CAJZ5v0hdhHiSEOrMp+pK0=MvNjT9sTRS8=o0M2bCfwC43GK=6g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] thermal/core: Make deprecated cooling device state
+ change from userspace
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
-
-> I'm not at all sure that I'm right that the spin could be replaced
-> with an msleep(). It will certainly slow things down for systems
-> and EINJ operations that actually complete quickly (because instead
-> of returnining within 100ns (or 100us with your patch) it will sleep
-> for 1 ms (rounded up to next jiffie ... so 4 ms of HZ=250 systems.
+On Tue, Oct 19, 2021 at 3:22 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
 >
-> But I don't care if my error injections take 4ms.
+> The cooling devices have their cooling device set_cur_state
+> read-writable all the time in the sysfs directory, thus allowing the
+> userspace to act on it.
 >
-> I do care that one logical CPU spins for 1 second.
-Agree. The side effect of sleep is to slow down the injection that
-actually complete quickly and error injection is not concerned with
-real-time.
+> The thermal framework is wrongly used by userspace as a power capping
+> framework by acting on the cooling device opaque state. This one then
+> competes with the in-kernel governor decision.
+>
+> We have seen in out-of-tree kernels, a big number of devices which are
+> abusely declaring themselves as cooling device just to act on their
+> power.
+>
+> The role of the thermal framework is to protect the junction
+> temperature of the silicon.
 
-I will send a v2 patch implemented in msleep soon.
+It's more than that.  You also don't want to let the system's skin
+temperature get too high, for example.
 
-Regards.
-Shuai
+I would just say that the role of the thermal framework is thermal control.
 
+> Letting the userspace to play with a
+> cooling device is wrong and potentially dangerous.
 
-On 2021/10/18 PM11:40, Luck, Tony wrote:
-> On Sun, Oct 17, 2021 at 12:06:52PM +0800, Shuai Xue wrote:
->> Hi, Tony,
->>
->> Thank you for your reply.
->>
->>> Spinning for 1ms was maybe ok. Spinning for up to 1s seems like a bad idea.
->>>
->>> This code is executed inside a mutex ... so maybe it is safe to sleep instead of spin?
->>
->> May the email Subject misled you. This code do NOT spin for 1 sec. The period of the
->> spinning depends on the SPIN_UNIT.
-> 
-> Not just the subject line. See the comment you changed here:
-> 
->>> -#define SPIN_UNIT		100			/* 100ns */
->>> -/* Firmware should respond within 1 milliseconds */
->>> -#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
->>> +#define SPIN_UNIT		100			/* 100us */
->>> +/* Firmware should respond within 1 seconds */
->>> +#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
-> 
-> That definitely reads to me that the timeout was increased from
-> 1 millisecond to 1 second. With the old code polling for completion
-> every 100ns, and the new code polling every 100us
->>
->> The period was 100 ns and changed to 100 us now. In my opinion, spinning for 100 ns or 100 us is OK :)
-> 
-> But what does the code do in between polls? The calling code is:
-> 
->         for (;;) {
->                 rc = apei_exec_run(&ctx, ACPI_EINJ_CHECK_BUSY_STATUS);
->                 if (rc)
->                         return rc;
->                 val = apei_exec_ctx_get_output(&ctx);
->                 if (!(val & EINJ_OP_BUSY))
->                         break;
->                 if (einj_timedout(&timeout))
->                         return -EIO;
->         }
-> 
-> Now apei_exec_run() and apei_exec_ctx_get_output() are a maze of
-> functions & macros. But I don't think they can block, sleep, or
-> context switch.
-> 
-> So this code is "spinning" until either BIOS says the operation is
-> complete, or the FIRMWARE_TIMEOUT is reached.
-> 
-> It avoids triggering a watchdog by the call to touch_nmi_watchdog()
-> after each spin between polls. But the whole thing may be spinning
-> for a second.
-> 
-> I'm not at all sure that I'm right that the spin could be replaced
-> with an msleep(). It will certainly slow things down for systems
-> and EINJ operations that actually complete quickly (because instead
-> of returnining within 100ns (or 100us with your patch) it will sleep
-> for 1 ms (rounded up to next jiffie ... so 4 ms of HZ=250 systems.
-> 
-> But I don't care if my error injections take 4ms.
-> 
-> I do care that one logical CPU spins for 1 second.
-> 
-> -Tony
-> 
+Agreed, although I would say "invalid" instead of "wrong".
+
+> The powercap framework is the right framework to do power capping and
+> moreover it deals with the aggregation via the dev pm qos.
+>
+> As the userspace governor is marked deprecated and about to be
+> removed, there is no point to keep this file writable also in the
+> future.
+>
+> Emit a warning and deprecate the interface.
+>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>  drivers/thermal/thermal_sysfs.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+> index 1c4aac8464a7..3f4ea3a283ae 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -610,6 +610,8 @@ cur_state_store(struct device *dev, struct device_attribute *attr,
+>         unsigned long state;
+>         int result;
+>
+> +       WARN_ON_ONCE(1, "Setting cooling device state is deprecated\n");
+> +
+
+I would use pr_warn_once() instead.
+
+>         if (sscanf(buf, "%ld\n", &state) != 1)
+>                 return -EINVAL;
+>
+> --
