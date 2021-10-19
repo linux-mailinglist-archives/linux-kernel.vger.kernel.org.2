@@ -2,77 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CB1433415
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D06A433434
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhJSLBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:01:44 -0400
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:40539 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235308AbhJSLBk (ORCPT
+        id S235477AbhJSLCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235433AbhJSLCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:01:40 -0400
-Received: by mail-oo1-f47.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so867017ooh.7;
-        Tue, 19 Oct 2021 03:59:28 -0700 (PDT)
+        Tue, 19 Oct 2021 07:02:04 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B54C06176A
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 03:59:50 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id l5so5307487lja.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 03:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yvpR/+LDc/4vIIRPGMLgKA8FJKUHtg12S0DrPQp+iCA=;
+        b=ShER1y/hDIZPAQU1v1YNeGWehRkRxSpc08jn/rG7iGr+0+du6oAPScZBT57yeOVBcE
+         MS2Z4Y0smUW0XWeN7JnbpmWjczvKIg8k9cEEcAeO7ZZofw4IiAI0y45+7E7p/1Zq4VuB
+         o4S9JXVQSC+D5d/zEfZuN+g0Sia6I2eefLBvrGziO2tiqYSIh38KAHMJfuygRSXF5YIX
+         IPyiNxQ6MiCt9OwO1snXJM7HYUyV36ELXQ2xO4GQIQ7YlB02hgVn0hENH8cbHEgWAIBH
+         iy6EfpHjbIoun0qCkC7oYwmREc2djmQ5IBjhcVj2J5VBCqV9DX7M/ofj8I9TBorxQ/5N
+         2rDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rB3WXW5Ly9nsEO4krnqGBalVpdpkoDadBf+vIxcOOSg=;
-        b=3HS9o0gDheSM49xhkC5i4bUBBMcqK2WN8hXq4/kAzKtwbvpSbXr9XSR2vqelW0olSL
-         SKWVuuCF8jg5KJCUtfC8u6fK367OcZSAntY+o86/ppJ8cn07bzYPOG8t7CdsV3qGGVdr
-         /IqdTS12+oeo6dBV0x+cDPkZ9Tq5aBHEwL8/kv2l7h2paTsyQueiPRBP0vBA8FJb4oIr
-         nQ9pyQyYDOm8lEWtiKsgIHgPwInSeRDYW6loVBORdvTExmdiqVrVGABsg9uOxJkAsktS
-         /MRz3JuVDKBc/TMI8uGF485m005Xxj0oE1tprCD6MobjIhod6o3pDJR2fNZQ3+VYw6yp
-         k4og==
-X-Gm-Message-State: AOAM531o9AIjgZpI5o9lhBc68XL5K6v+K9L+OyrkCSw+pCw8YDf2TNzO
-        n0sv2hvFcE1X6CxxOfHCpuLHD94Q7OOlXWSnxmu9MOap
-X-Google-Smtp-Source: ABdhPJw1l1Z/gDFkRNI+kJ8UJaIjgSPtqc6rUcoEaB8xL3gI57XMaDvB6i7leEP2YX4KcH9/KUSqG83cXyU7r8EOPOM=
-X-Received: by 2002:a4a:e1fd:: with SMTP id u29mr4251102ood.0.1634641167969;
- Tue, 19 Oct 2021 03:59:27 -0700 (PDT)
+        bh=yvpR/+LDc/4vIIRPGMLgKA8FJKUHtg12S0DrPQp+iCA=;
+        b=TOxmebGWpA9H70rUxRnhUu5ee9OndVIPfAXgqzIuahv/8o7w4Hcrp8wpoZJZcBDltc
+         vd0veYEp3vYMrzILzyAsn9WrPduadOQLxRtR7UFDQ04lwhrwclEIaCpq+fpTeVIQsGJj
+         43CcJIKM1+bn86mXFJy5dAkmApbe7PW3skJqT3ZBlAGe9w3N9YpJN2NsI2zs32Ktqjk7
+         b+fKAPcICEujIyKA3ehGuZLFPEJuHa1HFmPwOt2ivTxDzaEQiPDhqOnTv7kSW8Sl0Ktv
+         8YGJA9TpS0eKYwxVcbyyCdDroSTMYom+FyNA22WbhPLyKu4kSnBRJzwTQ9eso+ASsbXO
+         L/MQ==
+X-Gm-Message-State: AOAM530Bl4lsziHv56cJzhjUttp8CshrNq8JNQ65yk88tceFK8gQnhLG
+        q6UFlIQsTdB6zB+m7+OfmfEYCa0GnxzUwouTwnO0YdEuxoU=
+X-Google-Smtp-Source: ABdhPJweCp01ZjPFICCqBQ55XvXqdFtPCUZr+w6qvIuEAd0a/tIavRkspbIkoBgN9dnt2TjEcaWQ2UBNJYvKKC1xVcI=
+X-Received: by 2002:a2e:b550:: with SMTP id a16mr634976ljn.229.1634641188965;
+ Tue, 19 Oct 2021 03:59:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <21226252.EfDdHjke4D@kreacher> <8835496.CDJkKcVGEf@kreacher> <5521425.DvuYhMxLoT@kailua>
-In-Reply-To: <5521425.DvuYhMxLoT@kailua>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 19 Oct 2021 12:59:11 +0200
-Message-ID: <CAJZ5v0gt4wGOzRrV+4pT0vbpxwCgBh9x04h-dzTQgSEss6u=0g@mail.gmail.com>
-Subject: Re: [EXT] [PATCH v1 2/2][RFT] ACPI: PM: Check states of power
- resources during initialization
-To:     "Andreas K. Huettel" <andreas.huettel@ur.de>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <20211017175949.23838-1-rdunlap@infradead.org>
+In-Reply-To: <20211017175949.23838-1-rdunlap@infradead.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 19 Oct 2021 12:59:12 +0200
+Message-ID: <CAPDyKFrhdkp2W6rPorw+0T_dZkcg6TXFcqB2vrWnnfvwdhpKzw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: winbond: don't build on M68K
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pierre Ossman <pierre@ossman.eu>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 12:41 PM Andreas K. Huettel
-<andreas.huettel@ur.de> wrote:
+On Sun, 17 Oct 2021 at 19:59, Randy Dunlap <rdunlap@infradead.org> wrote:
 >
-> Am Freitag, 15. Oktober 2021, 19:14:10 CEST schrieb Rafael J. Wysocki:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > To avoid situations in which the actual states of certain ACPI power
-> > resources are not known just because they have never been referenced
-> > by any device configuration objects, check the initial states of all
-> > power resources as soon as they are found in the ACPI namespace (and
-> > fall back to turning them on if the state check fails).
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > Andreas, please test this patch (on top of the [1/2]) and let me know
-> > if it works for you.
-> >
+> The Winbond MMC driver fails to build on ARCH=m68k so prevent
+> that build config. Silences these build errors:
 >
-> I see no negative impact (actually, no impact at all) of the second
-> additional patch. The network card is again working fine now.
+> ../drivers/mmc/host/wbsd.c: In function 'wbsd_request_end':
+> ../drivers/mmc/host/wbsd.c:212:28: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
+>   212 |                 dmaflags = claim_dma_lock();
+> ../drivers/mmc/host/wbsd.c:215:17: error: implicit declaration of function 'release_dma_lock'; did you mean 'release_task'? [-Werror=implicit-function-declaration]
+>   215 |                 release_dma_lock(dmaflags);
 >
-> Boot logs (unpatched, with one patch, with both patches) at
-> https://dev.gentoo.org/~dilfridge/igb/  (the 5.14.12* files).
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Pierre Ossman <pierre@ossman.eu>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: linux-mmc@vger.kernel.org
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: Arnd Bergmann <arnd@arndb.de>
 
-Thanks!
+Applied for fixes, thanks!
+
+Kind regards
+Uffe
+
+> ---
+>  drivers/mmc/host/Kconfig |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- linux-next-20211015.orig/drivers/mmc/host/Kconfig
+> +++ linux-next-20211015/drivers/mmc/host/Kconfig
+> @@ -508,7 +508,7 @@ config MMC_OMAP_HS
+>
+>  config MMC_WBSD
+>         tristate "Winbond W83L51xD SD/MMC Card Interface support"
+> -       depends on ISA_DMA_API
+> +       depends on ISA_DMA_API && !M68K
+>         help
+>           This selects the Winbond(R) W83L51xD Secure digital and
+>           Multimedia card Interface.
