@@ -2,72 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F152E433DA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F152433D8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234583AbhJSRmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
+        id S234645AbhJSRgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhJSRme (ORCPT
+        with ESMTP id S233580AbhJSRgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:42:34 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152C1C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:40:21 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id z15so446188qvj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:40:21 -0700 (PDT)
+        Tue, 19 Oct 2021 13:36:35 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF56EC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:34:22 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id gn3so537720pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
-        b=i3rt/qdNipmbWxKjHWM5H6tWWFr401WXPFSjUn6SnuG0rOtzPoybQxAQprZU+maT9i
-         ZX2UUZH40u1AP6McBrSA8PeN5k3ZS26vu/GslpZdFfDCPFP0IEB1WcvbwNU1JFtxlvcA
-         KYqlumY/ezVK9XesgnHTV0jezxm30Px7Fh8EKShbiADYgJRytH7SQTvCwk3ciXF/VSdz
-         /dDs13xaYOYk9jnUkc2VjV0qgC4cWxoI+nlYmrR/m0jd6RfcjmCQJzefN1pfY0ZplTm9
-         6vewGbxa/fdn1GOlSFy6zcTlemqnQd1U8KrHWeteQ6Zv5Bkh2rptO+PWvmDT45ZZljBZ
-         EiPg==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NjGdMesKPRHMsbGOSSUvBzUH+Hfo6W31ARL6oUWKiVk=;
+        b=NpNjfiEeF9ovOS5X62Qo1rOzKILbUXV8rLjQBCIASPsAgVSSetl7LO7FoEMfiWQzQf
+         STxb0KG8a/k5Nzk4V/Bevt/znGcymafg1kf+Wxgjc5zE6GXPvRneqXNhEwh/ba7e98n0
+         D/G2JeMN3HfA36a3jeCGrDBdsPPEnTtUXl55OooYMm38h8aYAUT+n1oiRq8iNzDdboNu
+         iIm44+DG/E1sjYcMS1TXzyP37EkOepSqkMjx6BIK7RagqShk9quQ2UIX2/ezIC2mgPaZ
+         pjglccqEESx9azyyh8s/9O8Hz/RMqVd40765ObKujuZOuyNLxrJkzpYenv+sozPVlK7p
+         wCLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
-        b=sdMSSDQeR9YpEWMoga6HPGJYveRJZ+dqFGHMnb4vLqpL8XueULMyLQ7kTbTFCYN2ar
-         DdVOG/YJp2Dfb6HHbwZP4Z5vxKuXGQTAghbhflYX0IzDk4fSSk8xZBiF4OrIx2kIo0QD
-         qjJqsMu74JKq+8HeWNtWPSJIX8/whXG5PH3l3RtBcsOUb887EJFTumVsqGMnbEVn3TBe
-         EI/JZCCV+Vceksw/H4r9LpjPBSRsrdRn8pxnu3jsrglkPKXI7TrOsl4ClKJv7I7TCyzx
-         wkJnu+I529EG6tuI32mvDaeEsoAu4UYpdIyn/BLhk+9yY3W8/yhf20M51yr2bgZleiZn
-         A7gw==
-X-Gm-Message-State: AOAM533jCybNFS/7O19Gi5iLlWmeJsm3evW2q7/w7e+f8TikajveFAX5
-        pDWmzLllYt32vMImWkBcSJSmLpkYR9fexlM5kMw=
-X-Google-Smtp-Source: ABdhPJz3r2+y+gw8eVD56eltDqF1YGwvvLeuoxI7RvpJlghhFZdZpsfQ7t1nVMH7vHelCPmYpdkSWSJE14o3eBWYmew=
-X-Received: by 2002:a05:6214:708:: with SMTP id b8mr1244699qvz.44.1634664758056;
- Tue, 19 Oct 2021 10:32:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NjGdMesKPRHMsbGOSSUvBzUH+Hfo6W31ARL6oUWKiVk=;
+        b=URXltiKaiu1aWV63Ka8vt3EIcf3gJnqza77jhmsGgHnq6fgsq6SzSphU3i3KyyojC4
+         TjjDpnWA4+ui/tDTd4R+p1t2a3DbRse893qRSfKtMn6HgoCB0Tm12StdlSBzYOVYW+k0
+         zv/k4y41aSnXFzuUJ9O7nWJEiH5ZdZj3h+/LMdGOOrGOmB4pZ3zhhZcjb9vUopm3d4jD
+         n5XOCHukf20xdVtZVuxx+e6jGqzzcc3EiHpxiXkErVIo0NhYO2DFv9ibF4l/UF9BK1nX
+         QkEVuOYFzAkCdAs1IQPidaPSNVO/3S/grwqDMpEXe6UI8K1eFpnX3bwLwWNisWB8uHS0
+         Xd8g==
+X-Gm-Message-State: AOAM532p4Hezas/3+ZArflUfx9flXHVrYfpN6UZEeG4F6bnmIDA12sXm
+        61ss6VrEzi/O6Q48EkW7pBuICw==
+X-Google-Smtp-Source: ABdhPJwv8dT6ctIw/V+txBO/4qohNN2lLT+h81JZKV6hYfYpQcQXY3q/sqedSLACiph6PuhDh/7sNQ==
+X-Received: by 2002:a17:902:7c94:b0:13b:8d10:cc4f with SMTP id y20-20020a1709027c9400b0013b8d10cc4fmr35001584pll.54.1634664862116;
+        Tue, 19 Oct 2021 10:34:22 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p5sm17439165pfb.95.2021.10.19.10.34.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 10:34:21 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 17:34:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v3 3/3] KVM: vCPU kick tax cut for running vCPU
+Message-ID: <YW8BmRJHVvFscWTo@google.com>
+References: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
+ <1634631160-67276-3-git-send-email-wanpengli@tencent.com>
+ <24e67e43-c50c-7e0f-305a-c7f6129f8d70@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:ad4:48c2:0:0:0:0:0 with HTTP; Tue, 19 Oct 2021 10:32:37
- -0700 (PDT)
-Reply-To: mariehamidou0@gmail.com
-From:   MARIE Hamidou <maryam.hagari1@gmail.com>
-Date:   Tue, 19 Oct 2021 19:32:37 +0200
-Message-ID: <CACn12s=XJN09e=zsefZcR3pm31c2Cy57i16sD9s-x+YLVDJJkQ@mail.gmail.com>
-Subject: Urgent,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24e67e43-c50c-7e0f-305a-c7f6129f8d70@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Urgent,
+On Tue, Oct 19, 2021, Paolo Bonzini wrote:
+> On 19/10/21 10:12, Wanpeng Li wrote:
+> > -	if (kvm_vcpu_wake_up(vcpu))
+> > -		return;
+> > +	me = get_cpu();
+> > +
+> > +	if (rcuwait_active(kvm_arch_vcpu_get_wait(vcpu)) && kvm_vcpu_wake_up(vcpu))
+> > +		goto out;
+> 
+> This is racy.  You are basically doing the same check that rcuwait_wake_up
+> does, but without the memory barrier before.
 
-I need your assistance to validate your name in our Bank System to
-enable the Bank transfer the sum of $ 3.5 million Dollars, into your
-nominated bank account to your account for onward investment,
+I was worried that was the case[*], but I didn't have the two hours it would have
+taken me to verify there was indeed a problem :-)
 
-or any profitable business in your country and you will take 50% of
-the total  fund , for your assistance.To commence this transaction,  I
-require you to immediately indicate your interest by a return mail for
-more details,
+The intent of the extra check was to avoid the locked instruction that comes with
+disabling preemption via rcu_read_lock().  But thinking more, the extra op should
+be little more than a basic arithmetic operation in the grand scheme on modern x86
+since the cache line is going to be locked and written no matter what, either
+immediately before or immediately after.
 
-Thanks for your anticipated co-operation.
-Best regards.
-Ms.MARIE Hamidou
+So with Paolo's other comment, maybe just this?  And if this doesn't provide the
+desired performance boost, changes to the rcuwait behavior should go in separate
+patch.
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 9ec99f5b972c..ebc6d4f2fbfa 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -3333,11 +3333,22 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
+         * vCPU also requires it to leave IN_GUEST_MODE.
+         */
+        me = get_cpu();
++
++       /*
++        * Avoid the moderately expensive "should kick" operation if this pCPU
++        * is currently running the target vCPU, in which case it's a KVM bug
++        * if the vCPU is in the inner run loop.
++        */
++       if (vcpu == __this_cpu_read(kvm_running_vcpu) &&
++           !WARN_ON_ONCE(vcpu->mode == IN_GUEST_MODE))
++               goto out;
++
+        if (kvm_arch_vcpu_should_kick(vcpu)) {
+                cpu = READ_ONCE(vcpu->cpu);
+                if (cpu != me && (unsigned)cpu < nr_cpu_ids && cpu_online(cpu))
+                        smp_send_reschedule(cpu);
+        }
++out:
+        put_cpu();
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_kick);
+
+[*] https://lkml.kernel.org/r/YWoOG40Ap0Islpu2@google.com
