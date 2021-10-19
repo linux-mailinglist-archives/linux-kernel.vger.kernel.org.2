@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00304341ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110394341F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhJSXRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
+        id S229897AbhJSXSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 19:18:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhJSXRJ (ORCPT
+        with ESMTP id S229498AbhJSXSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:17:09 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25069C06161C;
-        Tue, 19 Oct 2021 16:14:56 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id y17so20136704ilb.9;
-        Tue, 19 Oct 2021 16:14:56 -0700 (PDT)
+        Tue, 19 Oct 2021 19:18:43 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10E0C06161C;
+        Tue, 19 Oct 2021 16:16:29 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id o24so7564186wms.0;
+        Tue, 19 Oct 2021 16:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zrpUaoVvt5AlUK4ZVm+tzAJguis11QzWu+GC5e0/HsQ=;
-        b=R2CXYQwuyS8tpS5KHqWJYBfj5mAki/U4l8yzO1/O+VV55lknzcm4yP+iTceUFKFRMA
-         TvgrR/4ozjGcX9AVdZkDURNRg7kzqud4WyaLRsKCMdyMbJn71upAJ/2SglfXs20NhjUt
-         FYEtZsG0eTqsJWswVdsrPnX5KWN+2qqfVSTGrNcn4PNQHdf6GcgA5C+tc6RER1tl+oZd
-         EWI5ZcVh8H/8OHcbLsW8kJHXaDpAK6xOgVvp+m/G+1MGinIxPIiLzD1iceuX2yXVfNpQ
-         Fr4byRZ8CdQtASjg4R5Z2+lSDPceDnHhCFpkPiwLskFt4v41vvuSFeZmXyV9/A2TSaqf
-         4tvw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=irTv5TiOSZ/Hvhv+R6lTxY2eZG4GvO0YoQObjdDBNH8=;
+        b=SWV35HIxDuZ77zB4+OKvo5EvdfdLIgkJs9B1ZQUSqNfEibPA5L+Ez/c2gX71zoPZpF
+         rjP2IY0h+svVBllnXi67c7xhg2BEg9CVbFZ6nEBvH9O26mAsMw87ZcVkZTjjqaPuZV8d
+         e2dEW009zaA9Ramzat6Qco3ePTKLBAxGTb/W2uSIE5f1kDZ4EuWACJydj6wwNJ5uQ+Fv
+         t9Vr8mKAUfliYcC883YTiKhd8HOG7yG7HpAe3eyHf+3X5dfOOv8idkEDj9xJTUmViWPI
+         C8aAj93nW1LiDeNgG5qv99qoS40V7d8qczFuaREWP3rVqtElQT7nPB9jpCjrcgHfUVix
+         B1nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zrpUaoVvt5AlUK4ZVm+tzAJguis11QzWu+GC5e0/HsQ=;
-        b=RuvbK5cg63XCRsRFMVdzk+zblK/pKBITgwNkVkLisCGs2fsx5xOHl4sUqS7dlYb0Vz
-         0cqhMTkyH58UUCEsojjkzU8LmJPs7nlBAs1FcVlDVWFXs6Ryre8FOVxjj5SYOXzmtNlv
-         eDWSq/pZAN7daB0RwBH/cWoPJUlDcVxNKo1EG+vwOSDOojAfXkxxrjIuMJjUYoad+u2Q
-         6/LSXQ6eoRyOcAfcRWTd9uFOrO80PDbMUMfxc632fw2ui505lScakkig3cpAnQSAZyDN
-         hUrKkJrmgXQithkQwo8rB3YTZ5KAcrDG5eXyBQygC61pld3d17s+z/WSUqL+hsSUYKil
-         DxHQ==
-X-Gm-Message-State: AOAM531ujvZ7WqHnhv26isYvIF7RFHuaM7jX+h8jrEIHIDI7XdGdfw1U
-        b3RC3lypiaaF0NEkwp5on+YBKgIe9QumwD12KAs=
-X-Google-Smtp-Source: ABdhPJy3iJPFtUkZwa1+rcrOFAnL5k4AxU9bHWqWoOMWZ4Nhr2D4WUwI27a154ZG/6ykw/rBduzXUJAf6Ze3juWMYdw=
-X-Received: by 2002:a05:6e02:1543:: with SMTP id j3mr20327074ilu.151.1634685295474;
- Tue, 19 Oct 2021 16:14:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=irTv5TiOSZ/Hvhv+R6lTxY2eZG4GvO0YoQObjdDBNH8=;
+        b=SBPBGsUQ1GxHIpC4ouBBKooBwUSHy7CQrR0K8tRW+sJnBJ/Azd226gt1nAxMMHCHY3
+         Hn2ESWCICz5k2ZTiheAEf8DPN7h7LLfT8nypNfoUtszG0GknUOEWXAnuTu6ive3pQnTU
+         IWKc9qfK4j5J+Ci+xSh4mbUoF/55Dl/6t9qFZsZofOJjeZIP5jrE0Ed5KVu3xDVTWPGa
+         xu6Dp2QR5043OsEKHNUDLtjnuV+rnAqXjjeTNAQI2FXTYF/8XZ5R7h9vErV2k5H/X3HI
+         l5tJ5O0wGVSE1dQB21xE2/1EeyNUamdrcgi3R5RBmJ3i0Zje6ansKQB9NM0F/nwxNip1
+         LwPg==
+X-Gm-Message-State: AOAM530PE7VpxOTgiAn6g9IMlfdbaL/5Wd2AlCayXuRSgOFMac3Oh0HG
+        qGOp5jgaS77pzwKVZTOji5c=
+X-Google-Smtp-Source: ABdhPJxu/lK53sY6QzpBywQ95fKffShUdHHjqWiBa7SLhjPtJOFlCOBvvzCVo+L0kJbVNM2AsrXE8Q==
+X-Received: by 2002:adf:a1d7:: with SMTP id v23mr47123821wrv.171.1634685388431;
+        Tue, 19 Oct 2021 16:16:28 -0700 (PDT)
+Received: from localhost.localdomain (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
+        by smtp.gmail.com with ESMTPSA id r205sm426497wma.3.2021.10.19.16.16.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 16:16:28 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Nicolas Chauvet <kwizart@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v1] memory: tegra20-emc: Add runtime dependency on devfreq governor module
+Date:   Wed, 20 Oct 2021 02:15:24 +0300
+Message-Id: <20211019231524.888-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <1634337180-92127-1-git-send-email-ashimida@linux.alibaba.com> <202110191006.68BB660@keescook>
-In-Reply-To: <202110191006.68BB660@keescook>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 20 Oct 2021 01:14:44 +0200
-Message-ID: <CANiq72k9GMuCtJq0=3Csk1yO8imGkveXJ5io0gjJH3+R73RRdg@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH V5]ARM64: SCS: Add gcc plugin to support Shadow
- Call Stack
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Dan Li <ashimida@linux.alibaba.com>,
-        Qing Zhao <qing.zhao@oracle.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>, frederic@kernel.org,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, yifeifz2@illinois.edu,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>, andreyknvl@gmail.com,
-        Colin King <colin.king@canonical.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hardening@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 11:40 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Anyway, this is a long way to say that I don't think I want to add
-> a new gcc-plugin when it is at "State 2" (i.e. Clang has support but
-> GCC doesn't.) There's no need to "prove" that the compiler feature is
-> generally desirable, so it's best to get this into GCC directly.
+Tegra20 EMC driver uses simple devfreq governor. Add simple devfreq
+governor to the list of the Tegra20 EMC driver module softdeps to allow
+userspace initramfs tools like dracut to automatically pull the devfreq
+module into ramfs image together with the EMC module.
 
-Sounds reasonable.
+Reported-by: Nicolas Chauvet <kwizart@gmail.com>
+Suggested-by: Nicolas Chauvet <kwizart@gmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/memory/tegra/tegra20-emc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Cc'ing linux-toolchains, by the way.
+diff --git a/drivers/memory/tegra/tegra20-emc.c b/drivers/memory/tegra/tegra20-emc.c
+index 77c5cd52d1a2..497b6edbf3ca 100644
+--- a/drivers/memory/tegra/tegra20-emc.c
++++ b/drivers/memory/tegra/tegra20-emc.c
+@@ -1288,4 +1288,5 @@ module_platform_driver(tegra_emc_driver);
+ 
+ MODULE_AUTHOR("Dmitry Osipenko <digetx@gmail.com>");
+ MODULE_DESCRIPTION("NVIDIA Tegra20 EMC driver");
++MODULE_SOFTDEP("pre: governor_simpleondemand");
+ MODULE_LICENSE("GPL v2");
+-- 
+2.32.0
 
-Cheers,
-Miguel
