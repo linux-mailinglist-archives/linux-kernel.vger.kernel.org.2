@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D37434203
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34358434207
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhJSXWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:22:19 -0400
-Received: from mail-bn8nam11on2061.outbound.protection.outlook.com ([40.107.236.61]:6742
+        id S230010AbhJSXXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 19:23:05 -0400
+Received: from mail-bn8nam11on2068.outbound.protection.outlook.com ([40.107.236.68]:52801
         "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229554AbhJSXWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:22:18 -0400
+        id S229668AbhJSXXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 19:23:03 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T/l0AYIwdm1Ct7P1QuW3DylkRQeu980dHBAhVz7U1wx5+YlNiOsR333byOSWLJHTLvuRFYAZyIBgb7xcX3Vs0eGtiCy2Bo/myCEvWk/5IbAoPGlzQ7UFhcef6utDgPMTaYgzyIEXqZJbPy1vtLStnMYEuOyrpVKhkdNYYoEhgcarvoMxj+NtDR3akJ794U3WVFTs8Alzjy6PdcBECW7QIO+G5/XJcCX1p6aBTniYEOVVko+Ag6otM569ctAj+1elRd2jf0VOaVBrrpwx8DJW5DH5TP7JVkUGugWhiF1uXtrreRl2qf4UX6YfEAIljAfecrLnEfyqN948ngfMlmaqcw==
+ b=Gv2QCofqxXtm1kNeJOb0oiUQrR7tkypBqgD81QOqwJ7vQ4RnWM2nhNZ7Igmc7jsco3SmtLqm8J9lePkM64ECScYCbLRMzL/ZGpQBYA4eFHNNdtDRnqj2xrlOB3eUVdVVfwIY10uhLlsT5kYJ8umT2tOayJo56PRhQq+CbabRsHyBb1Ag4CUgFEwltDnkY/kt83yFp+cHrn8bfjfRpKkqU4vQS2mSLI82Jw56ZMlqdP8NGLzCGsAP2g3qsmbJNBTuxqxFivbClR3xBwyXSQZlsHSdhHukpppHzKoJTDHVS1nbPYV1qxzMjZhwvMAiAAetJIFmeu9WICoXjEMkx8xSYg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HJb1jhV8Iq8P/vkygJlAh1jrfYFQWvCBeBAjYBIL9dM=;
- b=BVNOGrxpSJbskg5p3Yk73aeuRxiUlYTJeuCjE/y0gm6uwurep8hr58lVqnO0a82Q+ObgE+MgaJltN2o78HBIcGGOalQ97U5CHiTvqEimRWJJvzN8lj1Ms07lxSZrTufJQLLKobnCgfIMuLLokXU5jq6kSQ/vq3e+gh/mUSM5wRW9WJSZzWSGY7UmmbwChmRzaWbDbvBpuUl4o6n4EsS7TrnkE2SsP8xQXOE6d5bqbjwWbf+BPC35obgrnkVLgA4VT3KDUXT761t6Gv/gpJ0WIPI7yOjlgXu8DBwNp7/NmKI3FTwmrkgEvFNXKDb0QZa59gfeSy7ItpaOdxG/gf1cLQ==
+ bh=JCEYF7jhMii5g4M6Ypb5HSjcM7DWLbQthpOYJ/lb+mI=;
+ b=goWCgHOgIrv+WPcZqkIbiXrjjPiptTLd0IiMdXAEmj5W3phYqkmaDql7NKnK6uJ9aCl19CKFWzE1BsqA7ErSyqjzYdjCZab41iVIR8WCy3D53SQUBCpiXExgHGDO3xupWhokJ1kDa9JQykcaUCw675Cog6sEEVwLevAbRv/dY4uXQpl/3wiHDVE8pwKLkdrQ/+y2T5ZKNIqwb7i1/bHW/hnuRJXSdhVFl6Bv0iWdk4VYXUQV1iK416MMrcZeGMybnd3BV6XvbaGmbw4uitmzh1rHxhwU6EizZkhaSMOBNeby1jpFitUE/zbfn8U4pHCRl8yY2xv/YrP3npxL7EvPdg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HJb1jhV8Iq8P/vkygJlAh1jrfYFQWvCBeBAjYBIL9dM=;
- b=nmxlH0ylQBdYPija5Btwm5jmX1SiBt/YGuQ3S2F2YuSULpoEM4MCnWMezs+xfTZkoIq01hcB6gA9mjl2EYvI82BKyXlHrYVk1H09LN/TiV+oUN1+mKpTtKmjAehWh85z075obXs849q5jeMsPMl0RS/9oa49ZWdSmaWbGsNx0RA=
+ bh=JCEYF7jhMii5g4M6Ypb5HSjcM7DWLbQthpOYJ/lb+mI=;
+ b=IrcDG0VCQNB40exStBF5sbnsIzX+Uz6TvZ4fqRIAvT4t8wH90vVJV+FbhWE4tbx9Tha5jYWUQYFdpUUs61Zi9MmhMHymQCVO2X6/3wGZJjNwlxyma3RFIoktBavydbuf3DtS97yj9KwUOkKBXBF3Hb6kc7eN0G8PVe2wv5Myius=
 Authentication-Results: fujitsu.com; dkim=none (message not signed)
  header.d=none;fujitsu.com; dmarc=none action=none header.from=amd.com;
 Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
  by MWHPR12MB1168.namprd12.prod.outlook.com (2603:10b6:300:e::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
- 2021 23:20:01 +0000
+ 2021 23:20:47 +0000
 Received: from MW3PR12MB4553.namprd12.prod.outlook.com
  ([fe80::41ef:d712:79a2:30c1]) by MW3PR12MB4553.namprd12.prod.outlook.com
  ([fe80::41ef:d712:79a2:30c1%7]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 23:20:01 +0000
+ 23:20:47 +0000
 From:   Babu Moger <babu.moger@amd.com>
-Subject: Re: [PATCH v2 07/23] x86/resctrl: Add domain offline callback for
- resctrl work
+Subject: Re: [PATCH v2 17/23] x86/resctrl: Abstract __rmid_read()
 To:     James Morse <james.morse@arm.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -53,66 +52,66 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         lcherian@marvell.com, bobo.shaobowang@huawei.com,
         tan.shaopeng@fujitsu.com
 References: <20211001160302.31189-1-james.morse@arm.com>
- <20211001160302.31189-8-james.morse@arm.com>
-Message-ID: <47b1bfc9-1b31-d905-955d-638f3504778f@amd.com>
-Date:   Tue, 19 Oct 2021 18:19:57 -0500
+ <20211001160302.31189-18-james.morse@arm.com>
+Message-ID: <887f8946-6d2b-27bf-a49b-f83af05cbc68@amd.com>
+Date:   Tue, 19 Oct 2021 18:20:43 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-In-Reply-To: <20211001160302.31189-8-james.morse@arm.com>
+In-Reply-To: <20211001160302.31189-18-james.morse@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BLAP220CA0016.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:208:32c::21) To MW3PR12MB4553.namprd12.prod.outlook.com
+X-ClientProxiedBy: BLAP220CA0011.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:32c::16) To MW3PR12MB4553.namprd12.prod.outlook.com
  (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-Received: from [10.236.30.47] (165.204.77.1) by BLAP220CA0016.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:32c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend Transport; Tue, 19 Oct 2021 23:19:59 +0000
+Received: from [10.236.30.47] (165.204.77.1) by BLAP220CA0011.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:32c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Tue, 19 Oct 2021 23:20:45 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d9ea3847-f1e7-45ce-c323-08d99356f9b1
+X-MS-Office365-Filtering-Correlation-Id: b54064d3-e48b-4ead-5088-08d9935714f3
 X-MS-TrafficTypeDiagnostic: MWHPR12MB1168:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1168435F3CB9A33B802B538495BD9@MWHPR12MB1168.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Microsoft-Antispam-PRVS: <MWHPR12MB116808656C33E1B05DBF126695BD9@MWHPR12MB1168.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:862;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tiy6yDSvZ6dKhd9jGfuOOq6bHh3cg3X1bNEZaz7YBgIy7zYf5Xooj5tRaXmdiQlZ+QzGdelD9EWA7oxfIfGGG9+wmm/qs3Uaho5wWHthKt/VKoP7bTX8XYYdcfbhtMwpixBZYelLVLxIsxq+ojkMfmwmwg7sByqXoLMCSlDIC9ouFkBFoMd0ovZ1EDH7c1a+ADJX4Pl+n/SAuMgus13pjoFZM6AKpY61+3wasahk9cHrTuN32iNGLTK9qjD/qrw19XtulaxPCHWSpgrRVkX5XY9sFQqo3yyTxOe+JrL/yz0S3IrM07bd5z9RaZE/Kn2EN6hZ22MMFV3JsGgonU+03qmUIsIKbDzofo+i5GVs6gjROPkgmXSosgVRH9UNTEliz0ahzehvWTwOpgJ1sQ2a4X3OOL67WQPIQA5TOuKAWxHtu5cUrWJ3DunEIxGOyt/lILdSN5GQ4YdWLq82D7QfurQI0lMjgHtm3FAgcuBlnkvSK9BpbwpGWPo1thBYHkj9BaXtyjlKlu9Q7GOxuJdDGGwB2XYdwh0ie/xWRpxSIABRmqZ7Q1jysUfxwG1jlJ3LbyKUCuzmUYoQ3BsxO48wsVZ8L6VTtm8gq9r1huzSroc0EDOmCsViNuhxe5l06vXAYCeBPJHh6sVURfSK3pypXBg+kI3Y/lJEiu3U7o6RPB5R/3sYBgeyCSKWjGsr4AHqjgr6T5bnR+shZqfzftjnbL4tMFsAGVpr3W7MwuIawf0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(86362001)(38100700002)(53546011)(31696002)(26005)(31686004)(83380400001)(8676002)(6486002)(66476007)(956004)(508600001)(66946007)(186003)(44832011)(2906002)(66556008)(2616005)(4326008)(5660300002)(316002)(7416002)(36756003)(16576012)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: suZi1XFCoTTMMCnMw/X6UTtw7i7kvbGAoZTgirjicYcwWq8XMKVI9vvqksBZSNmh4dlUUocvHE7LpikkGlMp3tV6vgqGEvVeokrO8MG0VH1PyBlstkit8JqYmil9T6PQQvoCRSR3r+1KTk/yN5UT5FCfbgSqmuPd9d9YTeaMWRBQRQFIcpueULqJrJnHXsHb5KMDTMqpmHW9KlajmN7kmQ60us/h5DLI4h9BowoE7e5nM9sH3G4V8LHTBAFIT7INoFlOZg7eHRz97r5CK6tfDU3Na3642oIU/8UbDiOy/u8StYHTHQtodYEwFhhAoL5Z9qDP4sph1Mig4+XItiCRt4HTxQJsIuC3btsufgtxGe12oPXj2PunjtC3n8d/vxHYSBe2u9/2WLMN7sJ1efnDqbX+/27FAkiMac8AqIg/EHZh9iPP4Aob7sJz4A9Sp/jALI8PFldVttoRQVhT734oc3H+6wJ5KoK/Z2nam+C0gFfF3b//YQpGZOKZu+bdsyxwa8qJi2OgT8ww25dWYWkVmI5K02PoYuOtWk9lJt8p0+z2nsNcJieSgriQyh6Xj3riAQz+Yiz59eHgOxHp7hPSaKYe6o2rQ5DzrHHbmqzODxVRTIhwX6LyMlNJE1x9fUxBP9cV5FSNfN83sM3keCH1bXgGatpuxAT+4/A32FH4AJCzJ4rjvDNM+jz1KXiOuOs/WgZjz448t34QOqKwLZ4OW6RkvSu2s2AyftAZ9V55qWzyItar29FjsQR+1MuwGxJ8D81mSjdZ+jIY5tfUhgJl2yxK9sh47gUap5YOypqUoGtag+8jRtTMPuxjxVEkJV2p
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(86362001)(38100700002)(53546011)(31696002)(26005)(31686004)(83380400001)(8676002)(6486002)(66476007)(956004)(508600001)(66946007)(186003)(44832011)(2906002)(66556008)(2616005)(4326008)(5660300002)(316002)(7416002)(36756003)(966005)(16576012)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RThzajVXVFNoSGUvSWZ5Vk8rMWwvT09yL09YWXprMEhYQlhQQzd3NUkraHk3?=
- =?utf-8?B?eG1yVnF0SEJmKzJtTHlNRlJnNWJJWktjWTR1Q1lVSjJZRmg0QnQ0ckhJN21o?=
- =?utf-8?B?YUJ4RWN1d0tnQjZLbzc1a3Btb1Q3S2RLWVM2K2xTVVJ4ZnFGZjBUanRsRlMy?=
- =?utf-8?B?WTRqaXl6bzFEQngvUzc2cURJbTVybXY5ejVMV29LSkE0VFNKNEtlejROUXpK?=
- =?utf-8?B?UGc1V0JwUzBUeFNLM1kxRmtRMjdJQUhiNWREOGdMMSswQXdlOUR3VUZDaWVH?=
- =?utf-8?B?d29YSTZCK3dra3NaS3FadEwxRElsUUFUUkYyUjBibXFRZWNMUlZrdlhkckdx?=
- =?utf-8?B?S0EyUG96Q2xDNDNNWUExWWtyNTg1UGw4aFRXMERnZUNxR1pFSGVXM3BwaWNF?=
- =?utf-8?B?Ty9MNmd4cW5uNjkrRTVvVk9wNmEvOEdNdy9jRlZxRTFITitjcnljaEtoRkg1?=
- =?utf-8?B?em4wZk1PRjZFTlNLNW5RUTFuRHkvWjdyWVpNNDlYNTZNdDRTTTA2K1V5TGNQ?=
- =?utf-8?B?dm9TVzRzUHFPalRXcFhtWXFjSHRFWEttR1JDcmYwYTVPTWFvdWNNTGFabk8y?=
- =?utf-8?B?amlQcDVhL1FqdCt3WU0vSFlicEhrY2dMeWxXZ3kxM0hQSG1ka2JVZTlwRnAx?=
- =?utf-8?B?Rm85UFFiZHFnUnNtd2pzMFFjRVhlUEtjMHdObFFONER0Nmk5cFA3RXBVek9M?=
- =?utf-8?B?VTBmM0dEaFRXbUE3eEQvT2lpY3FUMFcvWlAxekF5djllOVZ5bFhQNTZjSkF4?=
- =?utf-8?B?MlR5VkloanhLbmdLNXpYWWYyTU92cWpZRUhzZE4zOSszcU9ndzk1LzBGV2F2?=
- =?utf-8?B?NEcyWWRhcDVQaDNHdktlMGhxVEZ0b1VHZWUyS1NuZnRkbU44ZkcrYkRjYUpH?=
- =?utf-8?B?T1RPREJ0ZTBHaENHUEx0OEdSSm5IQWJwRTVEU0Z1R2Nxa3BZckdwdktBbmJJ?=
- =?utf-8?B?dDhubDVrNXJjTEM2VTJhKzl6R2xxdnp0aHJNZUNWMWJ6Q0tPVTdLSHFxdnhY?=
- =?utf-8?B?VlJSTXJWOFhDUEpWaTk4VW4yMlM4aTIzZjdQUWR5d1Y5VGtLNWJrUGc1RjEv?=
- =?utf-8?B?eFZ6b3V6dG9LUytJQ1hGUWQ2MG1Vd29nZDB5QTBxWkpJVkxJNFJpU2M4V3hI?=
- =?utf-8?B?Z3N3UGdvUzBuc2hybDk4SVpNUFRCdGRqYzVnUG1seXJHb3p3TzAzMGxDcFM3?=
- =?utf-8?B?Sno1R3VHRkJ6NDhjZ1dGVlp4eTdLU3RLY1pyLzQ2QmpUbVhvdWV2eGFSeGZt?=
- =?utf-8?B?ZzRURVpjVEZ4WWJLT2s0cm1wQVRDSjg3VUcwci96MFhBSGpWREtibWZpVnlF?=
- =?utf-8?B?WHNrRnJ2UHJHZkxzQVNua0lPbXZ0ZFJ6MTliWjMxT3NHRlBDMEdZdGRNVkxn?=
- =?utf-8?B?WWY2OG1FbndmVy9wTjRXZ296cDVSSDU2RFhFbHV4czArYnNRTHVlSEN6RjUr?=
- =?utf-8?B?ZEFzN2NVc25WeWs3UmJoTWdPWFNpYU9IZmV6MFRGbW4rUmN2bTI4Z3BqV2hk?=
- =?utf-8?B?TXVqQ3dhZDBaOStlWHZqT2pxeXBsanFTdWwwdUNoWVpNSTdCeEN0aFFJSmhm?=
- =?utf-8?B?ZGxWakVTdEUrTU9EQkhUakNNUVA1QitHRGxrblhVUEx0R0ZUZW5EMHlJNU41?=
- =?utf-8?B?Y2ZrZnZiQTZXR09PNUlBUE5nWThZT0lOVWtaeUVHOTg5dzV4cGhrVG0wZmFP?=
- =?utf-8?B?MVlhcUlEVStSWmt3ZXVSYmphTllBcHdpNTRXTlRULzRYQTRxcGR6Y05tV0Vy?=
- =?utf-8?Q?vkLMuI4f4ArOhVqp/emLn2MxTAFO5Jn199jYBhi?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a1BCbmk4Q0ErSGNEajI3Y3YxejVuQzNibmhpcDd6TzlYaGd0NXNQa2tlY01a?=
+ =?utf-8?B?clp3U3dKc1RwWGZwMHZGYzlkZW5BRFB1KzQ1K0xrNWFmRmVqbzJTRmJ2RFUv?=
+ =?utf-8?B?ZkM2MEJTMU0vc0VZNkxKRm9lZEtZT0t2bjNXVUdVNW9PcDRZSzlmWGxGOVFO?=
+ =?utf-8?B?YUZqUzVDa3NWL2h1LzJhTmpRQ1NwSnB0cVNudW1hb0NHUjlNQ2lUR2tsNkV6?=
+ =?utf-8?B?eWVUeDd4bGR4eWZ5YWlxcWxDOEVoOFd2cXZGcWovWk1mZGVvNU5qQ0YyTUx5?=
+ =?utf-8?B?MWZjVmRnUTYydThCeVNYTnJUaENzQk1kVnpVdzl3L3dHRFdEQ2JBelA0bUFP?=
+ =?utf-8?B?ZXBxUmN6dXA3N3UwYXVBZ0h5SDRFY3BUMm1hQVhyaFJyekpXUmowWGpNem5M?=
+ =?utf-8?B?aysvcFBOMEd1RzU2WlR4TzNTakx1MXMyRldOdHV1RXU1eG01VzdxNG1ha2FL?=
+ =?utf-8?B?T2Q0SEpLMnVROTBMSk9Id0FyelJTQ3lFNzAzVUloMmlBNnptK29yR09sWnFH?=
+ =?utf-8?B?ODlCVDNHYkg1cUpvODN3NVVDVG56YVhyMUgwdkdJdTI1UWNYQTdqMzBRS2Nm?=
+ =?utf-8?B?UnVMY00zUlRKZWg2Y1lMNU5temlSOGV1Z1VjN2lOcXFxb2txbnlHLzBlc2w2?=
+ =?utf-8?B?NGJjMEcrQmg4YU5Wa0tSQ2FIYmVsK2hCbnV5MHBTelVKV0hjSXlLTExUZG5t?=
+ =?utf-8?B?R2FWWmtpaHB2d0JiZXJPTUkvc0FnUnY2VmhkT0FPTDNxZUxzLzBFeEZLbnI5?=
+ =?utf-8?B?bUJLSnp4MG5ydFZGeVV0Q0t6dkcvVTlFT1hHekdPUW9QSVQ5cFQxMytlMFVK?=
+ =?utf-8?B?dnNnazRSWFdJOTA2eG15TVRraWJpT0VzaFdDcktWeW5LanQzODREaEdzcDQ0?=
+ =?utf-8?B?WmZyM0RMZm8venRxR0hFaytudVRacFppemZMRTNWYjhxNzIrQ0tJV2tzc2hN?=
+ =?utf-8?B?SUNGYmhrS1BVTnlaYWs1S0V0NTBzVThtNlVHYyt4WUIwRkhZZFVBdnhEaExt?=
+ =?utf-8?B?b3Z1eW5iUnlra0hZajhyNWcvWmo5TGZJcTRkYUdaSU5BbkRKRCtWelV2M243?=
+ =?utf-8?B?NTlmR3lmc3pVRytzOGd3dUN4ZGExb1Jlc0NzL0J3VHZab3VoblgrK2JoV1ZR?=
+ =?utf-8?B?L2ZhS09pVkduQlRPdzNIMVZxUUloanNmWjU1SXlBdFhZU3J4QW1KN2syOFF1?=
+ =?utf-8?B?by9vd2Z1MVVDeWcxdmJxVjBaZy8wME5LZ0ExcmZoWFZhdEs2MEc1VXIwTmox?=
+ =?utf-8?B?eVZUSmt3T05JcDBFc3JZVkhIQVBzTE5UZnVRa2dlVjlaYzk2aDJBYkNwd1ZB?=
+ =?utf-8?B?bHhaaDdtbmxESGs0encrdWY1Zjh5MXU3R1grZTFTNHdVVEVlUVUyenZMN0Nk?=
+ =?utf-8?B?OHdITjVrdGVEc0d4SWhVUytWNFZZb2o1THRkenF3VENHVHQ3UFhVTTUxZ1Vk?=
+ =?utf-8?B?M2MwSGEvZDNubWU4QTh6a0ZHaUtiM09zZ1BabTlNRnduK3RLOS9CYWRDNjl2?=
+ =?utf-8?B?SElwQzlRaVZtMkFoR24wRTRwWm5keHpaNXBUQmVVRkI3bTViWnRlbHZZT3VP?=
+ =?utf-8?B?Uks1UWRFNUlpWmFJMVh0MllnTlhCVGtKM2JUVnpkQnJrUXVUanZnMldDRUQv?=
+ =?utf-8?B?WENGMEUrWjBtWlJLM1Y3MGZaY1lvMStaTjJWdjFmeE80b2xaUzZxMWpyYitG?=
+ =?utf-8?B?RGVhTHgvU2lhVWQrK0JBUUs1eWYxUitUNWFhWnc3eDZXcVFKV1JuUDB3cVNw?=
+ =?utf-8?Q?4QK3+Qeqz8pPHBD5DMHpXCagzJ/wMgONoyRC2UP?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9ea3847-f1e7-45ce-c323-08d99356f9b1
+X-MS-Exchange-CrossTenant-Network-Message-Id: b54064d3-e48b-4ead-5088-08d9935714f3
 X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 23:20:01.7553
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 23:20:47.3947
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
@@ -123,130 +122,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
+Hi James,
 
 On 10/1/21 11:02 AM, James Morse wrote:
-> Because domains are exposed to user-space via resctrl, the filesystem
-> must update its state when CPU hotplug callbacks are triggered.
+> __rmid_read() selects the specified eventid and returns the counter
+> value from the msr. The error handling is architecture specific, and
+> handled by the callers, rdtgroup_mondata_show() and __mon_event_count().
 > 
-> Some of this work is common to any architecture that would support
-> resctrl, but the work is tied up with the architecture code to
-> free the memory.
+> Error handling should be handled by architecture specific code, as
+> a different architecture may have different requirements. MPAM's
+> counters can report that they are 'not ready', requiring a second
+> read after a short delay. This should be hidden from resctrl.
 > 
-> Move the monitor subdir removal and the cancelling of the mbm/limbo
-> works into a new resctrl_offline_domain() call. These bits are not
-> specific to the architecture. Grouping them in one function allows
-> that code to be moved to /fs/ and re-used by another architecture.
+> Make __rmid_read() the architecture specific function for reading
+> a counter. Rename it resctrl_arch_rmid_read() and move the error
+> handling into it.
 > 
 > Signed-off-by: James Morse <james.morse@arm.com>
 > ---
 > Changes since v1:
->  * Removed a redundant mon_capable check
->  * Capitalisation
->  * Removed inline comment
->  * Added to the commit message
+>  * Return EINVAL from the impossible case in __mon_event_count() instead
+>    of an x86 hardware specific value.
 > ---
->  arch/x86/kernel/cpu/resctrl/core.c     | 26 ++---------------
->  arch/x86/kernel/cpu/resctrl/internal.h |  2 --
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 39 +++++++++++++++++++++++---
->  include/linux/resctrl.h                |  1 +
->  4 files changed, 38 insertions(+), 30 deletions(-)
+>  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  4 +--
+>  arch/x86/kernel/cpu/resctrl/internal.h    |  2 +-
+>  arch/x86/kernel/cpu/resctrl/monitor.c     | 42 +++++++++++++++--------
+>  include/linux/resctrl.h                   |  1 +
+>  4 files changed, 31 insertions(+), 18 deletions(-)
 > 
-> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-> index 7a2c24c5652c..1dd8428df008 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -523,27 +523,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
+> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> index 25baacd331e0..c8ca7184c6d9 100644
+> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> @@ -579,9 +579,9 @@ int rdtgroup_mondata_show(struct seq_file *m, void *arg)
 >  
->  	cpumask_clear_cpu(cpu, &d->cpu_mask);
->  	if (cpumask_empty(&d->cpu_mask)) {
-> -		/*
-> -		 * If resctrl is mounted, remove all the
-> -		 * per domain monitor data directories.
-> -		 */
-> -		if (static_branch_unlikely(&rdt_mon_enable_key))
-> -			rmdir_mondata_subdir_allrdtgrp(r, d->id);
-> +		resctrl_offline_domain(r, d);
->  		list_del(&d->list);
-> -		if (r->mon_capable && is_mbm_enabled())
-> -			cancel_delayed_work(&d->mbm_over);
-> -		if (is_llc_occupancy_enabled() &&  has_busy_rmid(r, d)) {
-> -			/*
-> -			 * When a package is going down, forcefully
-> -			 * decrement rmid->ebusy. There is no way to know
-> -			 * that the L3 was flushed and hence may lead to
-> -			 * incorrect counts in rare scenarios, but leaving
-> -			 * the RMID as busy creates RMID leaks if the
-> -			 * package never comes back.
-> -			 */
-> -			__check_limbo(d, true);
-> -			cancel_delayed_work(&d->cqm_limbo);
-> -		}
+>  	mon_event_read(&rr, r, d, rdtgrp, evtid, false);
 >  
->  		/*
->  		 * rdt_domain "d" is going to be freed below, so clear
-> @@ -551,11 +532,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
->  		 */
->  		if (d->plr)
->  			d->plr->d = NULL;
-> -
-> -		bitmap_free(d->rmid_busy_llc);
-> -		kfree(d->mbm_total);
-> -		kfree(d->mbm_local);
->  		domain_free(hw_dom);
-> +
->  		return;
->  	}
->  
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index be48a682dbdb..e12b55f815bf 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -522,8 +522,6 @@ void free_rmid(u32 rmid);
->  int rdt_get_mon_l3_config(struct rdt_resource *r);
->  void mon_event_count(void *info);
->  int rdtgroup_mondata_show(struct seq_file *m, void *arg);
-> -void rmdir_mondata_subdir_allrdtgrp(struct rdt_resource *r,
-> -				    unsigned int dom_id);
->  void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
->  		    struct rdt_domain *d, struct rdtgroup *rdtgrp,
->  		    int evtid, int first);
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 19691f9ab061..38670bb810cb 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -2499,14 +2499,12 @@ static int mon_addfile(struct kernfs_node *parent_kn, const char *name,
->   * Remove all subdirectories of mon_data of ctrl_mon groups
->   * and monitor groups with given domain id.
->   */
-> -void rmdir_mondata_subdir_allrdtgrp(struct rdt_resource *r, unsigned int dom_id)
-> +static void rmdir_mondata_subdir_allrdtgrp(struct rdt_resource *r,
-> +					   unsigned int dom_id)
->  {
->  	struct rdtgroup *prgrp, *crgrp;
->  	char name[32];
->  
-> -	if (!r->mon_capable)
-> -		return;
-> -
->  	list_for_each_entry(prgrp, &rdt_all_groups, rdtgroup_list) {
->  		sprintf(name, "mon_%s_%02d", r->name, dom_id);
->  		kernfs_remove_by_name(prgrp->mon.mon_data_kn, name);
-> @@ -3233,6 +3231,39 @@ static int __init rdtgroup_setup_root(void)
->  	return ret;
->  }
->  
-> +void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
-> +{
-> +	lockdep_assert_held(&rdtgroup_mutex);
+> -	if (rr.val & RMID_VAL_ERROR)
+> +	if (rr.err == -EIO)
+>  		seq_puts(m, "Error\n");
+> -	else if (rr.val & RMID_VAL_UNAVAIL)
+> +	else if (rr.err == -EINVAL)
+>  		seq_puts(m, "Unavailable\n");
+>  	else
+>  		seq_printf(m, "%llu\n", rr.val * hw_res->mon_scale);
 
-Is this really required?
+This patch breaks the earlier fix
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.15-rc6&id=064855a69003c24bd6b473b367d364e418c57625
 
-> +
-> +	if (!r->mon_capable)
-> +		return;
+When the user reads the events on the default monitoring group with
+multiple subgroups, the events on all subgroups are consolidated
+together. In case if the last rmid read was resulted in error then whole
+group will be reported as error. The err field needs to be cleared.
 
-I don't see the need for this check either.
+Please add this patch to clear the error.
 
-Thanks
-Babu
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c
+b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 14bc843043da..0e4addf237ec 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -444,6 +444,8 @@ void mon_event_count(void *info)
+        /* Report error if none of rmid_reads are successful */
+        if (ret_val)
+                rr->val = ret_val;
++       else
++               rr->err  = 0;
+ }
+
+ /*
+
