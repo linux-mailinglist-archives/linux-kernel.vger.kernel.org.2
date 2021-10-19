@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B3C432FED
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C6C432FF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234577AbhJSHpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55720 "EHLO mail.kernel.org"
+        id S234624AbhJSHpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:45:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230365AbhJSHpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:45:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 198BD6136F;
-        Tue, 19 Oct 2021 07:42:56 +0000 (UTC)
+        id S234581AbhJSHpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 03:45:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 385656136F;
+        Tue, 19 Oct 2021 07:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634629376;
-        bh=HfzBxbwvlGACvGlHDYJHMxVKdFA+2m32c4s7O2PDMvw=;
+        s=k20201202; t=1634629382;
+        bh=hJoet635Vy1bZq8U3J0xmPvh7E+f4HrdZFse3BcIUaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EqVM1lwfZT2zUVbA54MVbz2u67PXB726G/KUKI8X8q1fiJzE/ajBFkkJ8oN/OxHSo
-         FcUBvMk+lYV5bAnNN1p7apvsDOqRvC0iEQL0GYsmLhLKKQ2KG4vhTlM6ey5o8/1saN
-         Asypa0nFpN1wpyP/IioMzIGm1CmfNT5kEGWCbKB3uZSThDIXhOCJ0JscGozLvO9CwJ
-         z9TZKupoexJcSA0vErG3OjN0xnB9XqXLCzaWPPeEvlySnFa8t3pXi/OSsL35eLHmm5
-         JE65nJ3KpJhHNYl1iG5bi1i6+qdIWs6mybTV6COVcGtuFWRfMW+ZwG7GP3HW/8b+Lu
-         1FhRztElMFu4A==
+        b=ZAiYan56EhycFINj4QXIHezUk0hXKMCem+RCbBFZQB0gwQk8FLcLUWWw0CDNtiW1g
+         jqrJVPxyn6aZBikDklBi7T7q6JCJHW41tvbaiJlso8PH3H3xHPbfRegZIYizB4gQgu
+         nvTQd3Yv4P4rNbGMVp/pZZGUdH+eyxQrPDK82cfzfjddpgSTNthoj/MRvS8IRV/dix
+         dHgusBY45kDfnyoIYVOdc9XTDqhrIIy4gCZ54k+73jqNREHjuBVSzEa0XLDFT6RXVB
+         PZoe7Lnw9JHN7HklmO7w/plzsLdxl7Tg3Zz8b6kHYXk4AYR3xhdMaRBFun1ts8G3SE
+         ljzeut4d9MIkg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mcjlt-001nLh-7t; Tue, 19 Oct 2021 08:42:53 +0100
+        id 1mcjlt-001nLk-8V; Tue, 19 Oct 2021 08:42:53 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] scripts: documentation-file-ref-check: ignore hidden files
-Date:   Tue, 19 Oct 2021 08:42:50 +0100
-Message-Id: <dd0125a931b4fecf8fab6be8aa527faa18f78e43.1634629094.git.mchehab+huawei@kernel.org>
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 2/2] scripts: documentation-file-ref-check: fix bpf selftests path
+Date:   Tue, 19 Oct 2021 08:42:51 +0100
+Message-Id: <49b765cbac6ccd22d627573154806ec9389d60f0.1634629094.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1634629094.git.mchehab+huawei@kernel.org>
 References: <cover.1634629094.git.mchehab+huawei@kernel.org>
@@ -45,20 +52,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a warning there from a .gitignore file:
+tools/testing/selftests/bpf/test_bpftool_synctypes.py use
+relative patches on the top of BPFTOOL_DIR:
 
-	tools/perf/.gitignore: Documentation/doc.dep
+	BPFTOOL_DIR = os.path.join(LINUX_ROOT, 'tools/bpf/bpftool')
 
-This is not really a cross-reference type of warning, so
-no need to report it.
+Change the script to automatically convert:
 
-In a matter of fact, it doesn't make sense at all to even
-parse hidden files, as some text editors may create such
-files for their own usage.
+	testing/selftests/bpf -> bpf/bpftool
 
-So, just ignore everything that matches this pattern:
-
-	/\.*
+In order to properly check the files used by such script.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
@@ -66,22 +69,20 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To mailbombing on a large number of people, only mailing lists were C/C on the cover.
 See [PATCH 0/2] at: https://lore.kernel.org/all/cover.1634629094.git.mchehab+huawei@kernel.org/
 
- scripts/documentation-file-ref-check | 3 +++
- 1 file changed, 3 insertions(+)
+ scripts/documentation-file-ref-check | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/scripts/documentation-file-ref-check b/scripts/documentation-file-ref-check
-index 7187ea5e5149..6865d8e63d5c 100755
+index 6865d8e63d5c..68083f2f1122 100755
 --- a/scripts/documentation-file-ref-check
 +++ b/scripts/documentation-file-ref-check
-@@ -94,6 +94,9 @@ while (<IN>) {
- 	# Makefiles and scripts contain nasty expressions to parse docs
- 	next if ($f =~ m/Makefile/ || $f =~ m/\.sh$/);
- 
-+	# It doesn't make sense to parse hidden files
-+	next if ($f =~ m#/\.#);
-+
- 	# Skip this script
- 	next if ($f eq $scriptname);
+@@ -147,6 +147,7 @@ while (<IN>) {
+ 		if ($f =~ m/tools/) {
+ 			my $path = $f;
+ 			$path =~ s,(.*)/.*,$1,;
++			$path =~ s,testing/selftests/bpf,bpf/bpftool,;
+ 			next if (grep -e, glob("$path/$ref $path/../$ref $path/$fulref"));
+ 		}
  
 -- 
 2.31.1
