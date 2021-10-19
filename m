@@ -2,429 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12A4432D9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1421432DA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhJSGEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:04:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhJSGED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:04:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48810611EF;
-        Tue, 19 Oct 2021 06:01:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634623310;
-        bh=0F9kleSFJ9nK+wVZLn1cdTaZ5EXA2k0thI1ZxzugtYY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=m/1KWH1NUiTS0VSgO21HAtsHk6Xnr6Yaect56xxiD0o6slx2mzSwjrOkhJnFS3S3l
-         BCEq9YxEEU7PGMHkuSB7//Vw/JY8eAl4qWoKA+0hQVK+WLxEcdLDI2hlMf/dbwpb36
-         HIj2lfYFBtJTByKBAjNQJnh+p/TF0xpf6/gbAqBWXbULbHJWstW7HnkjCSzoUt46yC
-         XIjd4W/WAJryPKN4KGk+O1bR5a7xjoBhdFMEGahOkaCGtoVFDrZuk3aBl2rFQLY977
-         DkZmSJeVq4CHFO+/bQAW842F8sedpwWzXSngi8nJQG94s6/AVehiqpFOJ+HmkWFK7U
-         iUfQqkyc3ZckQ==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] spi: spi-geni-qcom: Add support for GPI dma
-Date:   Tue, 19 Oct 2021 11:31:35 +0530
-Message-Id: <20211019060135.1482666-1-vkoul@kernel.org>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
+        id S234127AbhJSGEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:04:42 -0400
+Received: from mail-bn1nam07on2095.outbound.protection.outlook.com ([40.107.212.95]:20623
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229527AbhJSGEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:04:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PVsfoTI4Gb5CpRZLJMbffa+H5AKxPwx9krnTnx6FC5GR/inKkFCrrpz7GRFaNZUCNcNHTiDHU9RB1XkDgquxzQNs6tZlU2dWrR/QZV9zQGo+Qv6qDlvyzvGA2i25YBru7ghibuWLTNSwW03xAXnogy4oR1JW9+WoI/67Qarr5pbVfQTP7UFdPot6gKgj/4rIk5xtyN8esKLpklSc2B3CMkdBxNH1vYwpFIUaVwJMOpl4zRHj1X1d4ADbGPdOCF2LknhiofigGtB6uTsrdWdo/eYv14OnrLPCdvyCvWhWfBHRoNZK1E9XLNZnKfsLl6UGM2Bt46fzz9yLfBCB7ZoZ6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kv4/+TRblO4J544PIc42mHH7u3vjlrwCQiVV6hLPe84=;
+ b=HBbXLdqNGdOMnfdPESotinmYUaO1qUSFsvnqMQ2JSid0CkCICMwnMnPZEpOJkMsG8aPo34/Cga5qH1OYTUFnSRSZREqsUesfKSzE5HwCzsBOMeKk5UlSScF9K5SRFFWbeKPotGbktE0zGAZZGkr1rZC16RMxhJ/sPkt5kP3Vz/V/X9v0gOOpmxFmf8Nn5iwVSP6YTpJM+fIy1o+Go0Qu+d7UQibHqRe20TX2OIplbUN4bKYGNUsh7IWArsVHGWugBta9ofceav6PDe0wwmUXBuxp7/PYo3v9pC5Y7V3rwehYzrHU6zLVrYvq/q0CLxBR37oK5jD6ZSIBPuL+GPGHmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kv4/+TRblO4J544PIc42mHH7u3vjlrwCQiVV6hLPe84=;
+ b=dzv623B1z7IJq0DnhwLUhO8GSZT2DQ3oBFvVqdHHokIdjYX9k6/h8TYcEEgXb65zU8pcy9lwsNuT9/WnFpcXZaeC+0cdet8TxVULB3SPBkjvuy29UJQLewBol/G1aJ1/avcQPVwahv5z+GECpXEgr7P44GZRZZqzfDEsOykRICQ=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from SJ0PR01MB7282.prod.exchangelabs.com (2603:10b6:a03:3f2::24) by
+ BYAPR01MB5062.prod.exchangelabs.com (2603:10b6:a03:7f::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.17; Tue, 19 Oct 2021 06:02:15 +0000
+Received: from SJ0PR01MB7282.prod.exchangelabs.com
+ ([fe80::f14d:21a9:9ebf:2924]) by SJ0PR01MB7282.prod.exchangelabs.com
+ ([fe80::f14d:21a9:9ebf:2924%9]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 06:02:15 +0000
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>
+Cc:     Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: [PATCH v2 0/3] Update gpios, nvme i2c busses and uefi partition
+Date:   Tue, 19 Oct 2021 13:01:52 +0700
+Message-Id: <20211019060155.945-1-quan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.28.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK0PR01CA0059.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::23) To SJ0PR01MB7282.prod.exchangelabs.com
+ (2603:10b6:a03:3f2::24)
+MIME-Version: 1.0
+Received: from hcm-sw-17.amperecomputing.com (118.69.219.201) by HK0PR01CA0059.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend Transport; Tue, 19 Oct 2021 06:02:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6381198d-ee16-4aeb-0a93-08d992c5ffe9
+X-MS-TrafficTypeDiagnostic: BYAPR01MB5062:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR01MB506221B3C3E8FD03A3029B11F2BD9@BYAPR01MB5062.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4HJ7oqO/AiWdc3B3oom6Z9aRzq1qY77InmXTiTyl+Tx8TBRUFUeAMUM9faH9HCE6IFNQgvaSAPkwfL9EsWBuJkKymj34dXfnEgvsx9tao06nabYkcpxyiF6T6S5ju8g+3q76d2DrRruxmKRNhT8zC0F9bI7pE2hf3hOT4vFVxxbVVQZNkpOipA3D/qFQmsVIMtLyEMzM55GGU8GOVxCYdVnK0xKS52PcTOdvNiEw9r+piB2LzZdo6gJpiUbA/2VAJN+woYHG/xEaIcksj9WTpd7V+DVTPXt7uzJOt0007GQQK0lmwAL2u+iiKxwBlYncCFwO8kSsGtALfUfoOyv4FSSekNUQfwEn/LOz2HCrELXIkz7jwQJb58hvyjwqkUMT/f/MoynjToFwX98OAOq/NuJhP/q7xeBlwUnZTj2xB/QwSIWSfTFCc9p2pvQT0c/kx9zTG+uzAgcUN5hvtZKhNvDe77xZJ6yOk3Ylmeuq/NTNCOPZd6FHwy85Y3jpW9EQLM+b7Hr7+QxU8hJBNtMHM9bTwhB8fst+7tsWjxNnn/V9rpsoS8+h5oojWe2F8Zus504mbkDWVYGG31LScYj66JFX7Wblggd+rcw6OEbWnZoTCk+9NgiVt7yotySx2V/03ceuVqwAj4kFmY2Ea+xi5oz8ka+Ti5Ioqb+rlt2+N4BB0O8aaExctyFDRJJlnsZSZLWcX182mbUjnl1nul52+X7gmlu2ndlC0xdBJkBaDAmYE+ZZ9R9J1AuyXN7kFGeQ55wyXUPemfiEhpgINAnFSK1g2bom/AbevSBPJJESXiw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB7282.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(6512007)(110136005)(956004)(2616005)(508600001)(66946007)(5660300002)(107886003)(66556008)(966005)(6666004)(316002)(8936002)(2906002)(52116002)(38350700002)(6506007)(38100700002)(4744005)(86362001)(6486002)(83380400001)(8676002)(186003)(66476007)(4326008)(1076003)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?68Ubw/cLHlztKThhL3ayp9qfQappd+fLNhctHCf/zMq22wuGASQpJDNaE5Bs?=
+ =?us-ascii?Q?5cax0+0vbjqDiOod9UiiHs4eGwNltucceqoyrOYdzSOfkf8EFZJ004DzFYF5?=
+ =?us-ascii?Q?t29voWy3uCWP/q8xHD2SZ4pt0mC3tR8dYbHaIoFN3i02xdJrSPVKLpgSCf78?=
+ =?us-ascii?Q?0eSWrJsVtLIku2qUdFevH9rrrsWRaRJqthc1ROwNYQVNaij2FuDjVW6fV5q7?=
+ =?us-ascii?Q?Eygwzm4uWTxmsu9R0qY4M9c27ROzKfX8CSLeDhFSqbJApNam9knHLU8R6V7T?=
+ =?us-ascii?Q?I3irbNoiGi/Veq+2JHWMo2s8cSPPHK5FUhchQm3/f2bMWRof76XXXjVk1Vxj?=
+ =?us-ascii?Q?kL1ersDAvtpn6bzxtu7usGhPZGTdc4rh+SJbzXDthXHeAAB9hbEc02NMZER2?=
+ =?us-ascii?Q?2GekSCggXZ4bu0kqGK8pCzW6T18BHb4j26U4IJYx3DkwezfUXNu2jvj9WT9A?=
+ =?us-ascii?Q?i+7zAfEZCYa4uLDiGNNV9EfeG5wTNCtrYzsGtaLtztavlukvUzMcakclXm3v?=
+ =?us-ascii?Q?8dB/FKjdP4MUq6BYvs3NO+VEuyprtEgPmGwyOXGJDjJiJ9KaZh37E/C5ao5a?=
+ =?us-ascii?Q?HzpGKJudCvhDqUZamiqJBB3u0naTw8wuWblahid5otksJ01FKg4UnzcHcNuU?=
+ =?us-ascii?Q?WTLQOaq6d/eg8Psn5irtB0kUv+HszOX2NwzPUR9N6hBlpUBVxpTyBCGoHllJ?=
+ =?us-ascii?Q?bTCq+3dCzJX2nBT14X7d5EDCFYOorN69I5P4aF5JjQIJqzPHOHlktlaG1cL3?=
+ =?us-ascii?Q?vhrvDhfIfuQ9QloCUexI/d8iHSvqo7JpU9WIMOfnGJjBGKm1SwI638fh+uTl?=
+ =?us-ascii?Q?L7LGkEB6BA0sHMEyItWWQ8sWqPfy3YQzVXcx4M7iOXCIaLnb6r7Mwpw1j6G3?=
+ =?us-ascii?Q?zpRAf85oB8IhQmQjpsLGaQGB1xA81zIIW226IXKi+L+IsUmWodjUDVCzPwC5?=
+ =?us-ascii?Q?Ixu0txMouY1l1eLKWlkbXASX1i5nZfMmulAM6rQw/48vtaTYcFMqLdycmoLP?=
+ =?us-ascii?Q?Mxj6j3aWrw4AkEC5QYSmqv99xaAsTCEyQYk1oBLh/JYTT80A4Wy7B6/YKT9d?=
+ =?us-ascii?Q?KZs5RXpMAGKUMLGc/+eW/qb+xZKE9ficdzCK9hoQU9JHFMnxCXfn8XnjE5ya?=
+ =?us-ascii?Q?QfEl0WcY4Jhj8ERJ6kiwmuVOy2zZxxzs65NG22zodL2fdglZn8AwsoscM4f8?=
+ =?us-ascii?Q?oe5AwowQujbZEE9S+VMwYdjWrn8Te55f1Xb54n7Ir6KzxMURRMyTWcoAQ6LH?=
+ =?us-ascii?Q?t/cH4qTr/NbPxQB5xYKgye+43BgI9XqUBq/N7VhxogPkNNxDlKJKq++9zbPG?=
+ =?us-ascii?Q?PJzVPLP/KX4sVYIo+uDNrYR7?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6381198d-ee16-4aeb-0a93-08d992c5ffe9
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB7282.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 06:02:15.4418
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Nq1ZIVlnAy566SbSW1TFdeb/IFJ//BEggjvoX2Afl0pITiYeDgeT2/kwfxqoSKSd4O9h8fjuJbjlib88CfLBeMMwk09RQ92w/4vsw6lSHCQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB5062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can use GPI DMA for devices where it is enabled by firmware. Add
-support for this mode
+This patchset adds gpios, i2c configuration busses for NVMe
+slots and uefi spi nor partition for BMC on Mt.Jade hardware
+reference platform.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
--
-Changes since v3:
- - Drop merged spi core, geni patches
- - Remove global structs and use local variables instead
- - modularize code more as suggested by Doug
- - fix kbuild bot warning
+v2: 
+  + Added changes for NVMe slot i2c busses and uefi partition [Quan]
 
- drivers/i2c/busses/i2c-qcom-geni.c | 275 +++++++++++++++++++++++++++--
- 1 file changed, 264 insertions(+), 11 deletions(-)
+v1:
+  + Add some gpios                                            [Quan]
+  https://lore.kernel.org/r/all/20210917082945.19111-1-quan@os.amperecomputing.com
 
---
- drivers/spi/spi-geni-qcom.c | 254 +++++++++++++++++++++++++++++++++---
- 1 file changed, 239 insertions(+), 15 deletions(-)
+Quan Nguyen (3):
+  ARM: dts: aspeed: mtjade: Add some gpios
+  ARM: dts: aspeed: mtjade: Add I2C buses for NVMe devices
+  ARM: dts: aspeed: mtjade: Add uefi partition
 
-diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-index 2f51421e2a71..bdeb732dda5c 100644
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -2,6 +2,9 @@
- // Copyright (c) 2017-2018, The Linux foundation. All rights reserved.
- 
- #include <linux/clk.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/dma/qcom-gpi-dma.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/log2.h>
-@@ -63,6 +66,15 @@
- #define TIMESTAMP_AFTER		BIT(3)
- #define POST_CMD_DELAY		BIT(4)
- 
-+#define GSI_LOOPBACK_EN		BIT(0)
-+#define GSI_CS_TOGGLE		BIT(3)
-+#define GSI_CPHA		BIT(4)
-+#define GSI_CPOL		BIT(5)
-+
-+#define MAX_TX_SG		3
-+#define NUM_SPI_XFER		8
-+#define SPI_XFER_TIMEOUT_MS	250
-+
- struct spi_geni_master {
- 	struct geni_se se;
- 	struct device *dev;
-@@ -84,6 +96,9 @@ struct spi_geni_master {
- 	int irq;
- 	bool cs_flag;
- 	bool abort_failed;
-+	struct dma_chan *tx;
-+	struct dma_chan *rx;
-+	int cur_xfer_mode;
- };
- 
- static int get_spi_clk_cfg(unsigned int speed_hz,
-@@ -330,34 +345,197 @@ static int setup_fifo_params(struct spi_device *spi_slv,
- 	return geni_spi_set_clock_and_bw(mas, spi_slv->max_speed_hz);
- }
- 
-+static void
-+spi_gsi_callback_result(void *cb, const struct dmaengine_result *result)
-+{
-+	struct spi_master *spi = cb;
-+
-+	if (result->result != DMA_TRANS_NOERROR) {
-+		dev_err(&spi->dev, "DMA txn failed: %d\n", result->result);
-+		return;
-+	}
-+
-+	if (!result->residue) {
-+		dev_dbg(&spi->dev, "DMA txn completed\n");
-+		spi_finalize_current_transfer(spi);
-+	} else {
-+		dev_err(&spi->dev, "DMA xfer has pending: %d\n", result->residue);
-+	}
-+}
-+
-+static int setup_gsi_xfer(struct spi_transfer *xfer, struct spi_geni_master *mas,
-+			  struct spi_device *spi_slv, struct spi_master *spi)
-+{
-+	unsigned long flags = DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
-+	struct dma_slave_config config = {};
-+	struct gpi_spi_config peripheral = {};
-+	struct dma_async_tx_descriptor *tx_desc, *rx_desc;
-+	int ret;
-+
-+	config.peripheral_config = &peripheral;
-+	config.peripheral_size = sizeof(peripheral);
-+	peripheral.set_config = true;
-+
-+	if (xfer->bits_per_word != mas->cur_bits_per_word ||
-+	    xfer->speed_hz != mas->cur_speed_hz) {
-+		mas->cur_bits_per_word = xfer->bits_per_word;
-+		mas->cur_speed_hz = xfer->speed_hz;
-+	}
-+
-+	if (xfer->tx_buf && xfer->rx_buf) {
-+		peripheral.cmd = SPI_DUPLEX;
-+	} else if (xfer->tx_buf) {
-+		peripheral.cmd = SPI_TX;
-+		peripheral.rx_len = 0;
-+	} else if (xfer->rx_buf) {
-+		peripheral.cmd = SPI_RX;
-+		if (!(mas->cur_bits_per_word % MIN_WORD_LEN)) {
-+			peripheral.rx_len = ((xfer->len << 3) / mas->cur_bits_per_word);
-+		} else {
-+			int bytes_per_word = (mas->cur_bits_per_word / BITS_PER_BYTE) + 1;
-+
-+			peripheral.rx_len = (xfer->len / bytes_per_word);
-+		}
-+	}
-+
-+	peripheral.loopback_en = spi_slv->mode && SPI_LOOP;
-+	peripheral.clock_pol_high = spi_slv->mode && SPI_CPOL;
-+	peripheral.data_pol_high = spi_slv->mode && SPI_CPHA;
-+	peripheral.cs = spi_slv->chip_select;
-+	peripheral.pack_en = true;
-+	peripheral.word_len = xfer->bits_per_word - MIN_WORD_LEN;
-+
-+	ret = get_spi_clk_cfg(mas->cur_speed_hz, mas,
-+			      &peripheral.clk_src, &peripheral.clk_div);
-+	if (ret) {
-+		dev_err(mas->dev, "Err in get_spi_clk_cfg() :%d\n", ret);
-+		return ret;
-+	}
-+
-+	if (!xfer->cs_change) {
-+		if (!list_is_last(&xfer->transfer_list, &spi->cur_msg->transfers))
-+			peripheral.fragmentation = FRAGMENTATION;
-+	}
-+
-+	if (peripheral.cmd & SPI_RX) {
-+		dmaengine_slave_config(mas->rx, &config);
-+		rx_desc = dmaengine_prep_slave_sg(mas->rx, xfer->rx_sg.sgl, xfer->rx_sg.nents,
-+						  DMA_DEV_TO_MEM, flags);
-+		if (!rx_desc) {
-+			dev_err(mas->dev, "Err setting up rx desc\n");
-+			return -EIO;
-+		}
-+	}
-+
-+	/*
-+	 * Prepare the TX always, even for RX or tx_buf being null, we would
-+	 * need TX to be prepared per GSI spec
-+	 */
-+	dmaengine_slave_config(mas->tx, &config);
-+	tx_desc = dmaengine_prep_slave_sg(mas->tx, xfer->tx_sg.sgl, xfer->tx_sg.nents,
-+					  DMA_MEM_TO_DEV, flags);
-+	if (!tx_desc) {
-+		dev_err(mas->dev, "Err setting up tx desc\n");
-+		return -EIO;
-+	}
-+
-+	tx_desc->callback_result = spi_gsi_callback_result;
-+	tx_desc->callback_param = spi;
-+
-+	if (peripheral.cmd & SPI_RX)
-+		dmaengine_submit(rx_desc);
-+	dmaengine_submit(tx_desc);
-+
-+	if (peripheral.cmd & SPI_RX)
-+		dma_async_issue_pending(mas->rx);
-+
-+	dma_async_issue_pending(mas->tx);
-+	return 1;
-+}
-+
-+static bool geni_can_dma(struct spi_controller *ctlr,
-+			 struct spi_device *slv, struct spi_transfer *xfer)
-+{
-+	struct spi_geni_master *mas = spi_master_get_devdata(slv->master);
-+
-+	/* check if dma is supported */
-+	return mas->cur_xfer_mode != GENI_SE_FIFO;
-+}
-+
- static int spi_geni_prepare_message(struct spi_master *spi,
- 					struct spi_message *spi_msg)
- {
--	int ret;
- 	struct spi_geni_master *mas = spi_master_get_devdata(spi);
-+	int ret;
- 
--	if (spi_geni_is_abort_still_pending(mas))
--		return -EBUSY;
-+	switch (mas->cur_xfer_mode) {
-+	case GENI_SE_FIFO:
-+		if (spi_geni_is_abort_still_pending(mas))
-+			return -EBUSY;
-+		ret = setup_fifo_params(spi_msg->spi, spi);
-+		if (ret)
-+			dev_err(mas->dev, "Couldn't select mode %d\n", ret);
-+		return ret;
- 
--	ret = setup_fifo_params(spi_msg->spi, spi);
--	if (ret)
--		dev_err(mas->dev, "Couldn't select mode %d\n", ret);
-+	case GENI_GPI_DMA:
-+		/* nothing to do for GPI DMA */
-+		return 0;
-+	}
-+
-+	dev_err(mas->dev, "Mode not supported %d", mas->cur_xfer_mode);
-+	return -EINVAL;
-+}
-+
-+static int spi_geni_grab_gpi_chan(struct spi_geni_master *mas)
-+{
-+	int ret;
-+
-+	mas->tx = dma_request_chan(mas->dev, "tx");
-+	ret = dev_err_probe(mas->dev, IS_ERR(mas->tx), "Failed to get tx DMA ch\n");
-+	if (ret < 0)
-+		goto err_tx;
-+
-+	mas->rx = dma_request_chan(mas->dev, "rx");
-+	ret = dev_err_probe(mas->dev, IS_ERR(mas->rx), "Failed to get rx DMA ch\n");
-+	if (ret < 0)
-+		goto err_rx;
-+
-+	return 0;
-+
-+err_rx:
-+	dma_release_channel(mas->tx);
-+	mas->tx = NULL;
-+err_tx:
-+	mas->rx = NULL;
- 	return ret;
- }
- 
-+static void spi_geni_release_dma_chan(struct spi_geni_master *mas)
-+{
-+	if (mas->rx) {
-+		dma_release_channel(mas->rx);
-+		mas->rx = NULL;
-+	}
-+
-+	if (mas->tx) {
-+		dma_release_channel(mas->tx);
-+		mas->tx = NULL;
-+	}
-+}
-+
- static int spi_geni_init(struct spi_geni_master *mas)
- {
- 	struct geni_se *se = &mas->se;
- 	unsigned int proto, major, minor, ver;
--	u32 spi_tx_cfg;
-+	u32 spi_tx_cfg, fifo_disable;
-+	int ret = -ENXIO;
- 
- 	pm_runtime_get_sync(mas->dev);
- 
- 	proto = geni_se_read_proto(se);
- 	if (proto != GENI_SE_SPI) {
- 		dev_err(mas->dev, "Invalid proto %d\n", proto);
--		pm_runtime_put(mas->dev);
--		return -ENXIO;
-+		goto out_pm;
- 	}
- 	mas->tx_fifo_depth = geni_se_get_tx_fifo_depth(se);
- 
-@@ -380,15 +558,38 @@ static int spi_geni_init(struct spi_geni_master *mas)
- 	else
- 		mas->oversampling = 1;
- 
--	geni_se_select_mode(se, GENI_SE_FIFO);
-+	fifo_disable = readl(se->base + GENI_IF_DISABLE_RO) & FIFO_IF_DISABLE;
-+	switch (fifo_disable) {
-+	case 1:
-+		ret = spi_geni_grab_gpi_chan(mas);
-+		if (!ret) { /* success case */
-+			mas->cur_xfer_mode = GENI_GPI_DMA;
-+			geni_se_select_mode(se, GENI_GPI_DMA);
-+			dev_dbg(mas->dev, "Using GPI DMA mode for SPI\n");
-+			break;
-+		}
-+		/*
-+		 * in case of failure to get dma channel, we can still do the
-+		 * FIFO mode, so fallthrough
-+		 */
-+		dev_warn(mas->dev, "FIFO mode disabled, but couldn't get DMA, fall back to FIFO mode\n");
-+		fallthrough;
-+
-+	case 0:
-+		mas->cur_xfer_mode = GENI_SE_FIFO;
-+		geni_se_select_mode(se, GENI_SE_FIFO);
-+		ret = 0;
-+		break;
-+	}
- 
- 	/* We always control CS manually */
- 	spi_tx_cfg = readl(se->base + SE_SPI_TRANS_CFG);
- 	spi_tx_cfg &= ~CS_TOGGLE;
- 	writel(spi_tx_cfg, se->base + SE_SPI_TRANS_CFG);
- 
-+out_pm:
- 	pm_runtime_put(mas->dev);
--	return 0;
-+	return ret;
- }
- 
- static unsigned int geni_byte_per_fifo_word(struct spi_geni_master *mas)
-@@ -569,8 +770,11 @@ static int spi_geni_transfer_one(struct spi_master *spi,
- 	if (!xfer->len)
- 		return 0;
- 
--	setup_fifo_xfer(xfer, mas, slv->mode, spi);
--	return 1;
-+	if (mas->cur_xfer_mode == GENI_SE_FIFO) {
-+		setup_fifo_xfer(xfer, mas, slv->mode, spi);
-+		return 1;
-+	}
-+	return setup_gsi_xfer(xfer, mas, slv, spi);
- }
- 
- static irqreturn_t geni_spi_isr(int irq, void *data)
-@@ -665,6 +869,13 @@ static int spi_geni_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return irq;
- 
-+	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-+	if (ret) {
-+		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
-+		if (ret)
-+			return dev_err_probe(dev, ret, "could not set DMA mask\n");
-+	}
-+
- 	base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
-@@ -704,9 +915,10 @@ static int spi_geni_probe(struct platform_device *pdev)
- 	spi->max_speed_hz = 50000000;
- 	spi->prepare_message = spi_geni_prepare_message;
- 	spi->transfer_one = spi_geni_transfer_one;
-+	spi->can_dma = geni_can_dma;
-+	spi->dma_map_dev = dev->parent;
- 	spi->auto_runtime_pm = true;
- 	spi->handle_err = handle_fifo_timeout;
--	spi->set_cs = spi_geni_set_cs;
- 	spi->use_gpio_descriptors = true;
- 
- 	init_completion(&mas->cs_done);
-@@ -732,9 +944,17 @@ static int spi_geni_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto spi_geni_probe_runtime_disable;
- 
-+	/*
-+	 * check the mode supported and set_cs for fifo mode only
-+	 * for dma (gsi) mode, the gsi will set cs based on params passed in
-+	 * TRE
-+	 */
-+	if (mas->cur_xfer_mode == GENI_SE_FIFO)
-+		spi->set_cs = spi_geni_set_cs;
-+
- 	ret = request_irq(mas->irq, geni_spi_isr, 0, dev_name(dev), spi);
- 	if (ret)
--		goto spi_geni_probe_runtime_disable;
-+		goto spi_geni_release_dma;
- 
- 	ret = spi_register_master(spi);
- 	if (ret)
-@@ -743,6 +963,8 @@ static int spi_geni_probe(struct platform_device *pdev)
- 	return 0;
- spi_geni_probe_free_irq:
- 	free_irq(mas->irq, spi);
-+spi_geni_release_dma:
-+	spi_geni_release_dma_chan(mas);
- spi_geni_probe_runtime_disable:
- 	pm_runtime_disable(dev);
- 	return ret;
-@@ -756,6 +978,8 @@ static int spi_geni_remove(struct platform_device *pdev)
- 	/* Unregister _before_ disabling pm_runtime() so we stop transfers */
- 	spi_unregister_master(spi);
- 
-+	spi_geni_release_dma_chan(mas);
-+
- 	free_irq(mas->irq, spi);
- 	pm_runtime_disable(&pdev->dev);
- 	return 0;
+ .../arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 288 +++++++++++++++++-
+ 1 file changed, 287 insertions(+), 1 deletion(-)
+
 -- 
-2.31.1
+2.28.0
 
