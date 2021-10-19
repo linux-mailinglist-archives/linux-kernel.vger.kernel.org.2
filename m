@@ -2,265 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E7B4339BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AED2433B25
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhJSPKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:10:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232813AbhJSPKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:10:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED5F361212;
-        Tue, 19 Oct 2021 15:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634656073;
-        bh=3morts9r87ok3AUYF173aInD64hgHZ2XGd+lDVCD26Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VPYqCdcXL76NSDFaj/nRgl+9Olo/rj9sHX2ibbVjktrYUKEfoK007+YSIhTFDvPTb
-         xl2h9vTwmb7xMum1iW/Lkh4S6zLKuvyVOkiuwNU/Hiwc0ZZD49I9oGR5aNkmAMZngx
-         lA4OBS7QnoqY8eM3Yi1nfN00YspP0F7mr75lxbe5xVe9j3DlIT3J+0cs9wjrH0RoJS
-         Jarb7yqFBF5NGmmMFwJWFPhPWHh2FHotHnkqWNJPhVZX2CseZkDL0oHCotJp+zESd/
-         BlqONh2y1y5i2BQojQpR80pyTNPyboO1qrv7jf1qQ1jJS8qWJyN+lxgc6lRvc9QWKI
-         gr5r9AIM+ZLng==
-From:   SeongJae Park <sj@kernel.org>
-To:     akpm@linux-foundation.org
-Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
-        amit@kernel.org, benh@kernel.crashing.org, corbet@lwn.net,
-        david@redhat.com, dwmw@amazon.com, elver@google.com,
-        foersleo@amazon.de, gthelen@google.com, markubo@amazon.de,
-        rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 02/15] mm/damon/schemes: Implement size quota for schemes application speed control
-Date:   Tue, 19 Oct 2021 15:07:18 +0000
-Message-Id: <20211019150731.16699-3-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211019150731.16699-1-sj@kernel.org>
-References: <20211019150731.16699-1-sj@kernel.org>
+        id S233325AbhJSPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:53:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35713 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233380AbhJSPw7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:52:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634658646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wsccSX59W4YeJaYSTM3gJiasyvFI3K5d9wkdPDLF474=;
+        b=FXVgkGk+1pivUatLMgmRe029PjnBqHE394uXaFdBi1f5RkdN+dLOO320zngAquupI30cTF
+        iYRVCeuoxoPXeYKA5kyocNrVGoCPxlJXCGRy1q/aJ9HuEl/UxSTbRK1TUGg2+HeAtVBLp8
+        v311hSsVyrd750bgbQihPTmFk/hB3YE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-T-vBfGN-MWG5s-wJ9p5bPQ-1; Tue, 19 Oct 2021 11:50:45 -0400
+X-MC-Unique: T-vBfGN-MWG5s-wJ9p5bPQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 283EB80A5E3;
+        Tue, 19 Oct 2021 15:50:43 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 90EB55DAA5;
+        Tue, 19 Oct 2021 15:50:03 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 2C0E84172ED8; Tue, 19 Oct 2021 12:07:18 -0300 (-03)
+Date:   Tue, 19 Oct 2021 12:07:18 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [patch v4 1/8] add basic task isolation prctl interface
+Message-ID: <20211019150718.GA61531@fuller.cnet>
+References: <20211007192346.731667417@fedora.localdomain>
+ <20211007193525.755160804@fedora.localdomain>
+ <YWWIHkoAdTkzU0TP@hirez.programming.kicks-ass.net>
+ <20211013105637.GA88322@fuller.cnet>
+ <YWb0ycw/sNV8isBH@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWb0ycw/sNV8isBH@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There could be arbitrarily large memory regions fulfilling the target
-data access pattern of a DAMON-based operation scheme.  In the case,
-applying the action of the scheme could incur too high overhead.  To
-provide an intuitive way for avoiding it, this commit implements a
-feature called size quota.  If the quota is set, DAMON tries to apply
-the action only up to the given amount of memory regions within a given
-time window.
+On Wed, Oct 13, 2021 at 05:01:29PM +0200, Peter Zijlstra wrote:
+> That's absolutely terrible :/ you're adding extra unconditinal atomics
+> to the entry/exit path instead of using the ones that are already there.
+> That's no good.
+> 
+> Also, you're very much not dealing with that race either.
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- include/linux/damon.h | 36 +++++++++++++++++++++++---
- mm/damon/core.c       | 60 +++++++++++++++++++++++++++++++++++++------
- mm/damon/dbgfs.c      |  4 ++-
- 3 files changed, 87 insertions(+), 13 deletions(-)
+Again, because we haven't seen any use for the notification signal.
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 715dadd21f7c..af8c2ada2655 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -89,6 +89,26 @@ enum damos_action {
- 	DAMOS_STAT,		/* Do nothing but only record the stat */
- };
- 
-+/**
-+ * struct damos_quota - Controls the aggressiveness of the given scheme.
-+ * @sz:			Maximum bytes of memory that the action can be applied.
-+ * @reset_interval:	Charge reset interval in milliseconds.
-+ *
-+ * To avoid consuming too much CPU time or IO resources for applying the
-+ * &struct damos->action to large memory, DAMON allows users to set a size
-+ * quota.  The quota can be set by writing non-zero values to &sz.  If the size
-+ * quota is set, DAMON tries to apply the action only up to &sz bytes within
-+ * &reset_interval.
-+ */
-+struct damos_quota {
-+	unsigned long sz;
-+	unsigned long reset_interval;
-+
-+/* private: For charging the quota */
-+	unsigned long charged_sz;
-+	unsigned long charged_from;
-+};
-+
- /**
-  * struct damos - Represents a Data Access Monitoring-based Operation Scheme.
-  * @min_sz_region:	Minimum size of target regions.
-@@ -98,13 +118,20 @@ enum damos_action {
-  * @min_age_region:	Minimum age of target regions.
-  * @max_age_region:	Maximum age of target regions.
-  * @action:		&damo_action to be applied to the target regions.
-+ * @quota:		Control the aggressiveness of this scheme.
-  * @stat_count:		Total number of regions that this scheme is applied.
-  * @stat_sz:		Total size of regions that this scheme is applied.
-  * @list:		List head for siblings.
-  *
-- * For each aggregation interval, DAMON applies @action to monitoring target
-- * regions fit in the condition and updates the statistics.  Note that both
-- * the minimums and the maximums are inclusive.
-+ * For each aggregation interval, DAMON finds regions which fit in the
-+ * condition (&min_sz_region, &max_sz_region, &min_nr_accesses,
-+ * &max_nr_accesses, &min_age_region, &max_age_region) and applies &action to
-+ * those.  To avoid consuming too much CPU time or IO resources for the
-+ * &action, &quota is used.
-+ *
-+ * After applying the &action to each region, &stat_count and &stat_sz is
-+ * updated to reflect the number of regions and total size of regions that the
-+ * &action is applied.
-  */
- struct damos {
- 	unsigned long min_sz_region;
-@@ -114,6 +141,7 @@ struct damos {
- 	unsigned int min_age_region;
- 	unsigned int max_age_region;
- 	enum damos_action action;
-+	struct damos_quota quota;
- 	unsigned long stat_count;
- 	unsigned long stat_sz;
- 	struct list_head list;
-@@ -310,7 +338,7 @@ struct damos *damon_new_scheme(
- 		unsigned long min_sz_region, unsigned long max_sz_region,
- 		unsigned int min_nr_accesses, unsigned int max_nr_accesses,
- 		unsigned int min_age_region, unsigned int max_age_region,
--		enum damos_action action);
-+		enum damos_action action, struct damos_quota *quota);
- void damon_add_scheme(struct damon_ctx *ctx, struct damos *s);
- void damon_destroy_scheme(struct damos *s);
- 
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 2f6785737902..cce14a0d5c72 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -89,7 +89,7 @@ struct damos *damon_new_scheme(
- 		unsigned long min_sz_region, unsigned long max_sz_region,
- 		unsigned int min_nr_accesses, unsigned int max_nr_accesses,
- 		unsigned int min_age_region, unsigned int max_age_region,
--		enum damos_action action)
-+		enum damos_action action, struct damos_quota *quota)
- {
- 	struct damos *scheme;
- 
-@@ -107,6 +107,11 @@ struct damos *damon_new_scheme(
- 	scheme->stat_sz = 0;
- 	INIT_LIST_HEAD(&scheme->list);
- 
-+	scheme->quota.sz = quota->sz;
-+	scheme->quota.reset_interval = quota->reset_interval;
-+	scheme->quota.charged_sz = 0;
-+	scheme->quota.charged_from = 0;
-+
- 	return scheme;
- }
- 
-@@ -530,15 +535,25 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
- 	}
- }
- 
-+static void damon_split_region_at(struct damon_ctx *ctx,
-+		struct damon_target *t, struct damon_region *r,
-+		unsigned long sz_r);
-+
- static void damon_do_apply_schemes(struct damon_ctx *c,
- 				   struct damon_target *t,
- 				   struct damon_region *r)
- {
- 	struct damos *s;
--	unsigned long sz;
- 
- 	damon_for_each_scheme(s, c) {
--		sz = r->ar.end - r->ar.start;
-+		struct damos_quota *quota = &s->quota;
-+		unsigned long sz = r->ar.end - r->ar.start;
-+
-+		/* Check the quota */
-+		if (quota->sz && quota->charged_sz >= quota->sz)
-+			continue;
-+
-+		/* Check the target regions condition */
- 		if (sz < s->min_sz_region || s->max_sz_region < sz)
- 			continue;
- 		if (r->nr_accesses < s->min_nr_accesses ||
-@@ -546,22 +561,51 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
- 			continue;
- 		if (r->age < s->min_age_region || s->max_age_region < r->age)
- 			continue;
--		s->stat_count++;
--		s->stat_sz += sz;
--		if (c->primitive.apply_scheme)
-+
-+		/* Apply the scheme */
-+		if (c->primitive.apply_scheme) {
-+			if (quota->sz && quota->charged_sz + sz > quota->sz) {
-+				sz = ALIGN_DOWN(quota->sz - quota->charged_sz,
-+						DAMON_MIN_REGION);
-+				if (!sz)
-+					goto update_stat;
-+				damon_split_region_at(c, t, r, sz);
-+			}
- 			c->primitive.apply_scheme(c, t, r, s);
-+			quota->charged_sz += sz;
-+		}
- 		if (s->action != DAMOS_STAT)
- 			r->age = 0;
-+
-+update_stat:
-+		s->stat_count++;
-+		s->stat_sz += sz;
- 	}
- }
- 
- static void kdamond_apply_schemes(struct damon_ctx *c)
- {
- 	struct damon_target *t;
--	struct damon_region *r;
-+	struct damon_region *r, *next_r;
-+	struct damos *s;
-+
-+	damon_for_each_scheme(s, c) {
-+		struct damos_quota *quota = &s->quota;
-+
-+		if (!quota->sz)
-+			continue;
-+
-+		/* New charge window starts */
-+		if (time_after_eq(jiffies, quota->charged_from +
-+					msecs_to_jiffies(
-+						quota->reset_interval))) {
-+			quota->charged_from = jiffies;
-+			quota->charged_sz = 0;
-+		}
-+	}
- 
- 	damon_for_each_target(t, c) {
--		damon_for_each_region(r, t)
-+		damon_for_each_region_safe(r, next_r, t)
- 			damon_do_apply_schemes(c, t, r);
- 	}
- }
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index c90988a20fa4..a04bd50cc4c4 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -188,6 +188,8 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
- 
- 	*nr_schemes = 0;
- 	while (pos < len && *nr_schemes < max_nr_schemes) {
-+		struct damos_quota quota = {};
-+
- 		ret = sscanf(&str[pos], "%lu %lu %u %u %u %u %u%n",
- 				&min_sz, &max_sz, &min_nr_a, &max_nr_a,
- 				&min_age, &max_age, &action, &parsed);
-@@ -200,7 +202,7 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
- 
- 		pos += parsed;
- 		scheme = damon_new_scheme(min_sz, max_sz, min_nr_a, max_nr_a,
--				min_age, max_age, action);
-+				min_age, max_age, action, &quota);
- 		if (!scheme)
- 			goto fail;
- 
--- 
-2.17.1
+But anyway, about the general race:
+
+CPU0                                    CPU1
+
+sys_prctl()
+<kernel entry>
+                                        if (target_cpu->isolated)
+                                          // checks CPU0, not userspace, queues IPI
+mark task 'task isolated'
+<kernel exit>
+
+		                         arch_send_call_function_ipi_mask()
+
+task is interrupted
+
+----
+
+A possible solution would be to synchronize_rcu (or _expedited if
+necessary):
+
+
+CPU0                                    	CPU1
+
+sys_prctl()
+<kernel entry>
+						rcu_read_lock()
+                                        	if (target_cpu->isolated) {
+                                          		// checks CPU0, not userspace, queues IPI
+cpu0->isolated = true
+synchronize_rcu/synchronize_rcu_expedited
+
+		                         		arch_send_call_function_ipi_mask()
+						}
+						rcu_read_unlock()
+
+<kernel exit>
+
+----
+
+But that cpu0->isolated variable is not usable for the TLB flush
+stuff, for example.
+
+But regarding the question
+"the inherently racy nature of some of the don't disturb me stuff":
+i think it depends on the case (as in what piece of kernel code).
+For example, for the TLB flush case the atomic cmpxchg loop gets rid of the race.
+
+But the above RCU protection might be sufficient for other cases.
+
+And about the notification to userspace, can't see a reason why it can't 
+be performed in asynchronous fashion (say via eventfd to a manager
+thread rather than isolated threads themselves).
+
+> Also, I think you're broken vs instrumentation, all of this needs to
+> happen super early on entry, possibly while still on the entry stack,
+> otherwise the missed TLBi might be handled too late and we just used a
+> stale TLB entry.
+
+Alright, right after switch to kernel CR3, right before switch to user CR3 
+(or as early/late as possible).
 
