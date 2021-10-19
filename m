@@ -2,70 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1034F4340AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADAC4340B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbhJSVmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:42:12 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:41645 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhJSVmJ (ORCPT
+        id S229691AbhJSVnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhJSVnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:42:09 -0400
-Received: by mail-ot1-f48.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so3690342ote.8;
-        Tue, 19 Oct 2021 14:39:55 -0700 (PDT)
+        Tue, 19 Oct 2021 17:43:00 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56D1C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:40:46 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id x1so19933964ilv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LClSOOpg7kPxuR3kD0ycxlchBsf5cxCr8/0lGkihBXg=;
+        b=iDZOrxhkzi9KAxSkFnKa7yI2APgyUbWXaQMORM/t46Tt3iRqOnj5O86X4wlPFmQrW3
+         Ja4VrQHqVTy84YE8jYWI6ehRERvfJwDqs8u/vCNEsBch5Osd9WyEvCPVhphzAHM8KFxr
+         JmVpl2eWz7Kr9yI33HwlV5Hn6Sida0B7qIR4QvzDEZ+oi5Zq2Ux67bt9klL3uYc5dyED
+         ZGAFx0BZLk4f6OtcarA2kO7RWN0yUuibyOJgL4bpaolTISG6aVLhczg+tGRwHD1y7DWi
+         2dwgnKrt1TwQGFjH73j8plVN+LTxEHZRXkD4l8KU/pbJwTaZxcA2p91w77wed0s+W8Qx
+         wUSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sKNbAmszLsQhFT7DFncEwajZs0JtulmAZhcXAEilTy8=;
-        b=fkVlHXn6A8tHvWilj7MTv8t8qkckzLryKEwAMCqtJycfHGQH60kvyoOEoF3sDMa8nx
-         qqKzwpR4nIYXcQJ49mM4zBkxDj7fFMrnMqXHRsyjX5NeaMrUKDYvqZMB69o0AaDF4Khd
-         V6DGXQtGQc7I2ncV7+8Sbz9Or4Y1M//EBNPzJQI6Jby+xVOpNxCySAS1uju22aPrEKb+
-         UZbR6EhohZ26vz0NqkYPIIE6S5SwXuYiP/IlxospKeMLScUN7S/I3ITjqzcam8EDejCd
-         W4J6s6i2GH1N69H+W0yDsdu0EeLtqCwloWbfWsS4nQuKNE0poXeJRgUPMp6Z81/tRpM8
-         GnWg==
-X-Gm-Message-State: AOAM531rW/eEZplH+IyoS5J2sYUvA/PdaIekYJ7niqgGJm6VagtqVaiy
-        V4ht204MyERhEXIuuEFCCA==
-X-Google-Smtp-Source: ABdhPJzNM/V1GkO10wBoHVN8fdVxQS1rZrUnsyPZm07zkS4nFXr5zlcBNOs8/rjBJxOBn91wzmGCKQ==
-X-Received: by 2002:a05:6830:1e11:: with SMTP id s17mr7530141otr.100.1634679595660;
-        Tue, 19 Oct 2021 14:39:55 -0700 (PDT)
-Received: from robh.at.kernel.org (rrcs-67-78-118-34.sw.biz.rr.com. [67.78.118.34])
-        by smtp.gmail.com with ESMTPSA id n187sm48942oif.52.2021.10.19.14.39.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 14:39:55 -0700 (PDT)
-Received: (nullmailer pid 886061 invoked by uid 1000);
-        Tue, 19 Oct 2021 21:39:54 -0000
-Date:   Tue, 19 Oct 2021 16:39:54 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: net: marvell-bluetooth: Convert txt
- bindings to yaml
-Message-ID: <YW87KoSkFnn2Anw2@robh.at.kernel.org>
-References: <20211009104716.46162-1-david@ixit.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LClSOOpg7kPxuR3kD0ycxlchBsf5cxCr8/0lGkihBXg=;
+        b=yHeL8bHRz3FGt8gS3RcVYS9WWATOfcAodiK1tnz86CfksT2vpcKlJnheE4OwchLTtm
+         6yJRrH0VWFt2eO/jzOgetyVECakU4rC2srL27eCTc6+LlFKs3abwXm4mnJwcR9Vzh+Cp
+         /NU6q4ygRsHfy+OdxSGulqhyFNoGGhei2BgM7gsQBeP/aFg0xvfDTj/BMy1mNSdPD05T
+         XKxZzYrgf4FCPlUHPWgr65GdPvB9m1KASmW7LEyJFDx5J4uSEdlO+sscBEAr9sndfwl4
+         xYME0FgVnHRQYBlpunuZ1pf3z4w+eVG2DiF09Bgs85G9gmFAg04lcfTvniKktcx6Lfov
+         42Pg==
+X-Gm-Message-State: AOAM530dN+G/h9OM6xuuO9BSPy08Gri4BBjqdaHo7mYGXgKhP8bHmHaQ
+        f1z+WxRlZTI3H9dUGqcKYVR/BZGY2EBFRm0rXcwh2g==
+X-Google-Smtp-Source: ABdhPJwKRMTXBrLdex/0NTGSS+fexan0RRUgWuiUTpEp2+ZcRfsPlkR/O3Dfs6YTDtfthu6rsJH1k8+25ug0T+1Ksew=
+X-Received: by 2002:a05:6e02:148f:: with SMTP id n15mr19718255ilk.121.1634679645712;
+ Tue, 19 Oct 2021 14:40:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211009104716.46162-1-david@ixit.cz>
+References: <20211008152930.03787395@canb.auug.org.au> <ba01fb13-e1a1-299e-9a7b-ccdeaeef267a@linuxfoundation.org>
+ <009188fd-a744-fb50-a9d2-ca1ce9b7905f@linuxfoundation.org>
+In-Reply-To: <009188fd-a744-fb50-a9d2-ca1ce9b7905f@linuxfoundation.org>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 19 Oct 2021 14:40:34 -0700
+Message-ID: <CAGS_qxqeFfrqptjgbX9D2boCxm-5fUfc_1u15v=YQS6-9duRRw@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the kunit-next tree with the
+ kunit-fixes tree
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 09 Oct 2021 12:47:16 +0200, David Heidelberg wrote:
-> Convert documentation for The Marvell Avastar 88W8897 into YAML syntax.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  .../bindings/net/marvell-bluetooth.txt        | 25 ---------------
->  .../bindings/net/marvell-bluetooth.yaml       | 31 +++++++++++++++++++
->  2 files changed, 31 insertions(+), 25 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/marvell-bluetooth.txt
->  create mode 100644 Documentation/devicetree/bindings/net/marvell-bluetooth.yaml
-> 
+On Tue, Oct 19, 2021 at 2:26 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 10/8/21 10:31 AM, Shuah Khan wrote:
+> > On 10/7/21 10:29 PM, Stephen Rothwell wrote:
+> >> Hi all,
+> >>
+> >> Today's linux-next merge of the kunit-next tree got a conflict in:
+> >>
+> >>    tools/testing/kunit/kunit.py
+> >>
+> >> between commit:
+> >>
+> >>    d8c23ead708b ("kunit: tool: better handling of quasi-bool args (--json, --raw_output)")
+> >>
+> >> from the kunit-fixes tree and commit:
+> >>
+> >>    6710951ee039 ("kunit: tool: support running each suite/test separately")
+> >>
+> >> from the kunit-next tree.
+> >>
+> >> I fixed it up (see below) and can carry the fix as necessary. This
+> >> is now fixed as far as linux-next is concerned, but any non trivial
+> >> conflicts should be mentioned to your upstream maintainer when your tree
+> >> is submitted for merging.  You may also want to consider cooperating
+> >> with the maintainer of the conflicting tree to minimise any particularly
+> >> complex conflicts.
+> >>
+> >
+> > Thank you for the fixing it up. I will fix this up in the kunit-next once
+> > the kunit-fixes pull request goes out.
+> >
+>
+> I fixed the merge conflict in kunit-next tree after rebase to Linux 5.15-rc6.
+> There is no need to carry this fix.
+>
+> Daniel! Please review to see if it looks good. It was very minor fix-up.
 
-Applied, thanks!
+ff9e09a3762fbd7aba83cfd1530972b57ae52b3b looks good to me.
+Thanks, Shuah!
+
+To be extra safe, I checked
+
+Test that test-level filtering and hermetic testing work as expected
+$ ./tools/testing/kunit/kunit.py run --run_isolated=suite '*ex*.*skipped*'
+$ ./tools/testing/kunit/kunit.py run --run_isolated=suite '*ex*.*s[iu]*'
+
+kunit.py's unit test:
+$ ./tools/testing/kunit/kunit_tool_test.py
+
+Type-checkers:
+$ pytype ./tools/testing/kunit/*.py
+$ mypy ./tools/testing/kunit/*.py  # this had the expected errors
+
+>
+> - from typing import Iterable, Sequence
+>   -from typing import Iterable, List
+> ++from typing import Iterable, Sequence, List
+>
+> thanks,
+> -- Shuah
+>
