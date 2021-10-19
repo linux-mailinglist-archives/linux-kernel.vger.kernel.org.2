@@ -2,182 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EB7433F44
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC90433F47
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhJSTcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        id S234965AbhJSTct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhJSTcJ (ORCPT
+        with ESMTP id S231738AbhJSTcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:32:09 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC58FC061749
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:29:56 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t7so5872072pgl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:29:56 -0700 (PDT)
+        Tue, 19 Oct 2021 15:32:48 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA03C06161C;
+        Tue, 19 Oct 2021 12:30:34 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id u5so8120543ljo.8;
+        Tue, 19 Oct 2021 12:30:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rfcO7m570cVuA/+Db71WdJTCayi39VVzxp2McfxCX74=;
-        b=B7Z9r9zCyfmJ619PtenNpaQGb6qmcF4yoCj76L8uwEDsm4NkXnSyI2EiwoHO9r2/ly
-         G/gHBXShpzddrPltdGZyEelGpaaJMFi+cCZZIBQqK2MR4AstD1vJwJ8+F//rPA62T6gE
-         pbmc3pNFNPDP7+Ypxq5jK9F7zebdWalWyC39c=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QtbIYKqyjuoCeOS42MgIvrpZ7Pn419j5CC8FsD29r50=;
+        b=Jo6/1MckxITRPeE2qvas3MY1v6ySQgD1x0LuooElQnuiSzOryUoACqfKUkk5jtCQEF
+         YHTmA/IjBTUnlc7z0n7o7GEabC2SCJOgsa/pgsqS36lorEZ8V3tvm60D3cJdNJPX8eSN
+         LdLMGDO7mtQB8HiQVTuYgQ/s346NoZ3QOrbHHKymJFOpqMxWOwUggd1mAZM4FJ11lXE0
+         v9dLOIEa/QBrFzH37OCCiu8uAI5K23v8u3E1K5njdB60CDRy7mSpGfN64dmLuQFVWxv1
+         74cM/8RWVz9nBn7gSe0JsrYnNEF9fWnL8OJHWlUuPp4irJesHT4mkNrSGT7m9ZZdFp8l
+         AjnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rfcO7m570cVuA/+Db71WdJTCayi39VVzxp2McfxCX74=;
-        b=v0pFZ7aMpzY7ehdaC/VyMltqRgFcTnx9xOvqLvqfb5MBHNJRSRszfnLA3UYErqt9aD
-         KI2wRovNpoQ6rOKgFnvrKYu3nyQol0EoU8b9gPCodLdVicbK8mEDP73e/89ecuTNXhNP
-         u+5u3Sd5FcP4wYvUN1aBhQUcpIDWRSkE+vuNyDZdyT4kKR5dzt+fLiXZO/sjd9Hc1vsC
-         efBLyiG+42+k238hd/vOkII1nzqQIMncbtvqZKrtSbk8NOzU6ORFlbzHy2+RQTJ26sLc
-         fZjMEa1t1BznZyJTDiWQoxB3WuSzGkMRdxfVwiHD/giZu3WGLbgv+s37LMP5QnJ413bG
-         brBQ==
-X-Gm-Message-State: AOAM530X6h+HR1iLjrJFvNfdyevpNZ3RVqtXZU9U8dJxFwxTEVd7IV13
-        bigO7zYggvYwUT5v0R7L7krNSw==
-X-Google-Smtp-Source: ABdhPJx5yIg+YlwtgRdehYGb3XeBfLuwpZPey4QJAE352AvMl6Jb4rurpfHyp4NKVQlduw0Kgn0kUw==
-X-Received: by 2002:a63:8bca:: with SMTP id j193mr27225596pge.213.1634671796405;
-        Tue, 19 Oct 2021 12:29:56 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:6c1f:a561:f56:7d16])
-        by smtp.gmail.com with UTF8SMTPSA id u74sm24063pfc.87.2021.10.19.12.29.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 12:29:55 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 12:29:53 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     tjiang@codeaurora.org
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for variant WCN6855 by
- using different nvm
-Message-ID: <YW8csSr/I1IRgAaT@google.com>
-References: <81add00a4a038008e9f734c5f5e5b712@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QtbIYKqyjuoCeOS42MgIvrpZ7Pn419j5CC8FsD29r50=;
+        b=XQYUu82T00PcJ0SD31p02kTyZPTiXtpiakLZFJPu3f1u9jljRxs1QauBX00FITibJk
+         4j0+BtJHyFiTPbX51JFLGVDyvzjtQ4ZXyMKiNPXp2AS1rDavQGW+9QJs2M+PE144SPvg
+         vvpLUV1fa0I1nwEVyZes7oGOm7jUHFVA1d6LbkQgZtzZmQXHGHqu+EvR7SYWUf6cpUax
+         px1pO2HBghoBM+rNhLDth2sjLnkW0pzgMGiOXBYKBaDCKKtN5TPTSgmKgKyBoTcN1lgb
+         dtCisY4YnvruwBk9DODjiDIpsCkeaHpgPJr41+5XN+N3R7sWTweEJYwpwHYUBFOq7VN6
+         ax0Q==
+X-Gm-Message-State: AOAM532vm6b2gpZZ4bB8pgb56asi5JD5jUvsfeBP6+2ccc+RY55kdN5H
+        yqJPXcwrzWHWvklxX0sKxSD4Pl4Ptu5sgZZ0C0l4fcqprVg=
+X-Google-Smtp-Source: ABdhPJxuey+7YvjOHCyb/UoYoYOYp+VMMAVfZL8a6SDIMzd3d4M/j2J0R7ViaL6W0Mv8sDSEhqUJK607TowX8O6OYWs=
+X-Received: by 2002:a05:651c:339:: with SMTP id b25mr8786662ljp.15.1634671833366;
+ Tue, 19 Oct 2021 12:30:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <81add00a4a038008e9f734c5f5e5b712@codeaurora.org>
+References: <20211014211828.291213-1-cpp.code.lv@gmail.com> <1d0a5e90-b878-61a1-99af-35702b72f2d9@ovn.org>
+In-Reply-To: <1d0a5e90-b878-61a1-99af-35702b72f2d9@ovn.org>
+From:   Cpp Code <cpp.code.lv@gmail.com>
+Date:   Tue, 19 Oct 2021 12:30:22 -0700
+Message-ID: <CAASuNyXe6OYPe0Utd4xG1-ZTHZet3sJDi2sxXJ-7RWQ-GaEW2w@mail.gmail.com>
+Subject: Re: [ovs-dev] [PATCH net-next v7] net: openvswitch: IPv6: Add IPv6
+ extension header support
+To:     Ilya Maximets <i.maximets@ovn.org>
+Cc:     netdev@vger.kernel.org, pshelar@ovn.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        ovs dev <dev@openvswitch.org>, linux-kernel@vger.kernel.org,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 03:55:56PM +0800, tjiang@codeaurora.org wrote:
-> the RF performance of wcn6855 soc chip from different foundries will be
-> difference, so we should use different nvm to configure them.
-> 
-> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
-> ---
->  drivers/bluetooth/btusb.c | 56
-> +++++++++++++++++++++++++++++++++++------------
->  1 file changed, 42 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 75c83768c257..f352ff351b61 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -3190,6 +3190,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev
-> *hdev,
->  #define QCA_DFU_TIMEOUT		3000
->  #define QCA_FLAG_MULTI_NVM      0x80
-> 
-> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-> +
->  struct qca_version {
->  	__le32	rom_version;
->  	__le32	patch_version;
-> @@ -3221,6 +3224,7 @@ static const struct qca_device_info
-> qca_devices_table[] = {
->  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
->  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
->  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
->  };
-> 
->  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-> @@ -3375,6 +3379,43 @@ static int btusb_setup_qca_load_rampatch(struct
-> hci_dev *hdev,
->  	return err;
->  }
-> 
-> +static void btusb_generate_qca_nvm_name(char *fwname,
-> +					size_t max_size,
-> +					struct qca_version *ver)
+On Fri, Oct 15, 2021 at 6:56 AM Ilya Maximets <i.maximets@ovn.org> wrote:
+>
+> On 10/14/21 23:18, Toms Atteka wrote:
+> > This change adds a new OpenFlow field OFPXMT_OFB_IPV6_EXTHDR and
+> > packets can be filtered using ipv6_ext flag.
+> >
+> > Signed-off-by: Toms Atteka <cpp.code.lv@gmail.com>
+> > ---
+> >  include/uapi/linux/openvswitch.h |  16 +++-
+> >  net/openvswitch/flow.c           | 140 +++++++++++++++++++++++++++++++
+> >  net/openvswitch/flow.h           |  14 ++++
+> >  net/openvswitch/flow_netlink.c   |  24 +++++-
+> >  4 files changed, 192 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/uapi/linux/openvswitch.h b/include/uapi/linux/openvswitch.h
+> > index a87b44cd5590..763adf3dce23 100644
+> > --- a/include/uapi/linux/openvswitch.h
+> > +++ b/include/uapi/linux/openvswitch.h
+> > @@ -344,8 +344,17 @@ enum ovs_key_attr {
+> >       OVS_KEY_ATTR_NSH,       /* Nested set of ovs_nsh_key_* */
+> >
+> >  #ifdef __KERNEL__
+> > -     OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info */
+> > +     OVS_KEY_ATTR_TUNNEL_INFO,/* struct ip_tunnel_info */
+> > +     __OVS_KEY_ATTR_PADDING_1,/* Padding to match field count with ovs */
+> >  #endif
+> > +
+> > +#ifndef __KERNEL__
+> > +     __OVS_KEY_ATTR_PADDING_2,/* Padding to match field count with ovs */
+> > +     __OVS_KEY_ATTR_PADDING_3,/* Padding to match field count with ovs */
+> > +#endif
+> > +
+> > +     OVS_KEY_ATTR_IPV6_EXTHDRS,  /* struct ovs_key_ipv6_exthdr */
+> > +
+> >       __OVS_KEY_ATTR_MAX
+> >  };
+>
+> Not a full review, but, I think, that we should not add paddings, and
+> define OVS_KEY_ATTR_IPV6_EXTHDRS before the OVS_KEY_ATTR_TUNNEL_INFO
+> instead.  See my comments for v6:
+>   https://lore.kernel.org/netdev/8c4ee3e8-0400-ee6e-b12c-327806f26dae@ovn.org/T/#u
+>
+> Best regards, Ilya Maximets.
 
-=> const struct qca_version *ver
+Maybe I am still missing the idea, but I think it's not possible.
 
-> +{
-> +	u32 rom_version = le32_to_cpu(ver->rom_version);
-> +	u16 flag = le16_to_cpu(ver->flag);
-> +
-> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> +		u16 board_id = le16_to_cpu(ver->board_id);
-> +		u32 ram_version = le32_to_cpu(ver->ram_version);
-> +		const char *variant;
-> +
-> +		switch (ram_version) {
-> +		case WCN6855_2_0_RAM_VERSION_GF:
-> +		case WCN6855_2_1_RAM_VERSION_GF:
-> +			variant = "_gf";
-> +			break;
-> +		default:
-> +			variant = "";
+If we consider userspace code:
+OVS_KEY_ATTR_NSH,       /* Nested set of ovs_nsh_key_* */
 
-instead of the default branch you could assign a default to 'variant' at
-declaration time, but it's fine either way.
+#ifdef __KERNEL__
+/* Only used within kernel data path. */
+OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ovs_tunnel_info */
+#endif
 
-> +			break;
-> +		}
-> +
-> +		/* if boardid equal 0, use default nvm without suffix */
+#ifndef __KERNEL__
+/* Only used within userspace data path. */
+OVS_KEY_ATTR_PACKET_TYPE,  /* be32 packet type */
+OVS_KEY_ATTR_ND_EXTENSIONS, /* struct ovs_key_nd_extensions */
+#endif
 
-delete the comment, it just states the obvious
+__OVS_KEY_ATTR_MAX
+};
 
-> +		if (board_id == 0x0) {
+adding OVS_KEY_ATTR_IPV6_EXTHDRS before OVS_KEY_ATTR_PACKET_TYPE will
+conflict on kernel update.
 
-nit: is there really any value in using a hex number here instead of a
-plain decimal 0?
+And we will see following warning:
+00001|odp_util(handler1)|WARN|attribute packet_type has length 2 but
+should have length 4
 
-> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
-> +				rom_version, variant);
-> +		} else {
-> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
-> +				rom_version, variant, board_id);
-> +		}
-> +	} else {
-> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
-> +			rom_version);
-> +	}
-> +
-> +}
-> +
->  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
->  				    struct qca_version *ver,
->  				    const struct qca_device_info *info)
-> @@ -3383,20 +3424,7 @@ static int btusb_setup_qca_load_nvm(struct hci_dev
-> *hdev,
->  	char fwname[64];
->  	int err;
-> 
-> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> -		/* if boardid equal 0, use default nvm without surfix */
-> -		if (le16_to_cpu(ver->board_id) == 0x0) {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -				 le32_to_cpu(ver->rom_version));
-> -		} else {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-> -				le32_to_cpu(ver->rom_version),
-> -				le16_to_cpu(ver->board_id));
-> -		}
-> -	} else {
-> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -			 le32_to_cpu(ver->rom_version));
-> -	}
-> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
-> 
->  	err = request_firmware(&fw, fwname, &hdev->dev);
->  	if (err) {
+Best,
+Tom
