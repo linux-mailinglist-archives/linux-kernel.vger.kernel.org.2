@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B84433EBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B706433EC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbhJSSuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 14:50:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231783AbhJSSut (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 14:50:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634669315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W0LKdMZo9vNdqSvore2I0xfjftCA66bzkuaIif0bJYs=;
-        b=g/u2dqnVBOn9FGWhex2r7w76fxIJ4HvlaeOi6Zeb+0yyi4274hKCipMfnNBy9J0X7txm95
-        gETnPuDSrrIfXKZjRHexSwUeHahBCdJdFPn5raUe8jXpMiuZxdxvsycIvgoZ3+m35WLv4e
-        QQuUonyHm7/TurF8rDZs2Nj75pNnrTk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-j1U2L1iBM6ODM8XJ0ZVuqg-1; Tue, 19 Oct 2021 14:48:32 -0400
-X-MC-Unique: j1U2L1iBM6ODM8XJ0ZVuqg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2130C19251A1;
-        Tue, 19 Oct 2021 18:48:30 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 965D65DD68;
-        Tue, 19 Oct 2021 18:48:16 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YW8OMsrEzrY8aSxo@casper.infradead.org>
-References: <YW8OMsrEzrY8aSxo@casper.infradead.org> <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk> <163456863216.2614702.6384850026368833133.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-cachefs@redhat.com,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/67] mm: Stop filemap_read() from grabbing a superfluous page
+        id S234546AbhJSSxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 14:53:34 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47402 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230432AbhJSSxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 14:53:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=XyDOlNEps2PQPz5H4bnK67kSEIkgFEX6exshJ2yzhyM=; b=bA+YYgRDKxKJpD5QHiKoXNPb8i
+        cIqAjABUWsHq/iIfvSKyYreq5Kxs+xSTXA4ZgwanMczGCB1iXjvCXY7FCAVMm/mGCVAFgivPU2oJx
+        4BrqqGWcvD3CsP4PmU1YrhrEDcW3pl/MeKeno0dn3talGkcsjHxDcdCZvtu8nmgSsjng=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mcuCc-00B7DH-5q; Tue, 19 Oct 2021 20:51:10 +0200
+Date:   Tue, 19 Oct 2021 20:51:10 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] net: phy: dp83867: introduce critical chip
+ default init for non-of platform
+Message-ID: <YW8TnjisOh1OEpz+@lunn.ch>
+References: <20211013034128.2094426-1-boon.leong.ong@intel.com>
+ <20211013034128.2094426-2-boon.leong.ong@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2971213.1634669295.1@warthog.procyon.org.uk>
-Date:   Tue, 19 Oct 2021 19:48:15 +0100
-Message-ID: <2971214.1634669295@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013034128.2094426-2-boon.leong.ong@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
-
-> > +		isize = i_size_read(inode);
-> > +		if (unlikely(iocb->ki_pos >= isize))
-> > +			goto put_pages;
-> > +
+On Wed, Oct 13, 2021 at 11:41:27AM +0800, Ong Boon Leong wrote:
+> From: "Lay, Kuan Loon" <kuan.loon.lay@intel.com>
 > 
-> Is there a good reason to assign to isize here?  I'd rather not,
-> because it complicates analysis, and a later change might look at
-> the isize read here, not realising it was a racy use.  So I'd
-> rather see:
+> PHY driver dp83867 has rich supports for OF-platform to fine-tune the PHY
+> chip during phy configuration. However, for non-OF platform, certain PHY
+> tunable parameters such as IO impedence and RX & TX internal delays are
+> critical and should be initialized to its default during PHY driver probe.
+> 
+> Signed-off-by: Lay, Kuan Loon <kuan.loon.lay@intel.com>
+> Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
+> Tested-by: Clement <clement@intel.com>
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+> ---
+>  drivers/net/phy/dp83867.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/net/phy/dp83867.c b/drivers/net/phy/dp83867.c
+> index 6bbc81ad295f..bb4369b75179 100644
+> --- a/drivers/net/phy/dp83867.c
+> +++ b/drivers/net/phy/dp83867.c
+> @@ -619,6 +619,24 @@ static int dp83867_of_init(struct phy_device *phydev)
+>  #else
+>  static int dp83867_of_init(struct phy_device *phydev)
+>  {
+> +	struct dp83867_private *dp83867 = phydev->priv;
+> +	u16 delay;
 
-If we don't set isize, the loop will never end.  Actually, maybe we can just
-break out at that point rather than going to put_pages.
+So this is in the stub for when OF is disabled. What about the case
+that OF is enabled? I've used DT on x86, even Intel used it for
+intel,ce4100 aka falconfalls. So rather than do this in the stub, i
+would look at the value of dev->of_node. If it is NULL, do this. That
+should always work, and it is how other drivers deal with none OF
+cases.
 
-David
+> +	/* Per datasheet, IO impedance is default to 50-ohm, so we set the same
+> +	 * here or else the default '0' means highest IO impedence which is wrong.
+> +	 */
+> +	dp83867->io_impedance = DP83867_IO_MUX_CFG_IO_IMPEDANCE_MIN / 2;
+> +
 
+I would prefer you add a new define
+DP83867_IO_MUX_CFG_IO_IMPEDANCE_DEFAULT, which then avoids this very
+odd looking 1/2 the minimum.
+
+    Andrew
