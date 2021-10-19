@@ -2,236 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDAB432B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 03:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABAC432B79
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 03:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbhJSBX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 21:23:29 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:29777 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhJSBX2 (ORCPT
+        id S230214AbhJSBYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 21:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhJSBYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 21:23:28 -0400
+        Mon, 18 Oct 2021 21:24:43 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCDB1C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 18:22:31 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id e65so15442914pgc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 18:22:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634606477; x=1666142477;
-  h=subject:from:to:cc:references:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Zx89XVWdlmsCKxuiWsRLKdDqOfRlsYCYIwY3y4DKaYE=;
-  b=dZfohoTi/OLt/ASIv1zK8ExaFZeSl8pm+vhWZ+NrdcwOyS+QfZf5zKq+
-   s7tgCfRBSvnijEToXorJ+Mi7ECT4+ImSCk/7i8A9bAkBvgwFArtLxMoeH
-   DV1bzlue6TKDOLOsiiZ/2ajUbwEQlUzMEK0BB7SwAxzUWIKXHDuBaCqDx
-   s=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 18 Oct 2021 18:21:16 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 18:21:15 -0700
-Received: from [10.47.233.232] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Mon, 18 Oct 2021
- 18:21:15 -0700
-Subject: Re: [PATCH v2] thermal: Fix a NULL pointer dereference
-From:   Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        David Collins <quic_collinsd@quicinc.com>,
-        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        <stable@vger.kernel.org>
-References: <1631041289-11804-1-git-send-email-quic_subbaram@quicinc.com>
- <003252f2-510f-e9ea-0032-6034f26aad11@linaro.org>
- <16af9946-b662-0bbf-206f-278b7ef98123@quicinc.com>
-Message-ID: <8cda69a6-907b-e09e-ba64-011b0216a4df@quicinc.com>
-Date:   Mon, 18 Oct 2021 18:21:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+YOaBslX4qQWuo6l9MyOOELjnCnQrK4/rjlKQ4on+uI=;
+        b=PAoteaNB2U05XT9NzhUNZ8BfJ9IGdDGJbFqsLK5aGtRwHISTazk1CdeqfRIo2CsZAI
+         pXL36igTTnJZd6SD+X6X31806gm5WTTOwqoTbCc33Hmk3K16e59AuaYmdasS6cLn0dlM
+         yekdCRME2oRJsXVp55esvuVkOWF4smz9ZaSnycj1WIRGNT1XWurSTvuzc9gv13FmcEDR
+         RB8823pD6E09XjA6Xf2Enk3MJy3q7gwQjwI83eIbAB8DPVVYsOck8j1BxPhvFnA/AAmI
+         8CBbfQMmwj4wZg12thf/1n4J/IkKnY/61Ehywa+FVVl2ECG0wasuRlHwNY7T3f0pzPmc
+         L/Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+YOaBslX4qQWuo6l9MyOOELjnCnQrK4/rjlKQ4on+uI=;
+        b=XyKtMcezECbRX6OByynNkp92QeOf2cSSNc13x/Bn5MyAXLbyvE+Ju80VkoAlMFOeP8
+         qeOpPS5s3XjLZAPfrpRtzzcSxCCiilj+khEpbFUb3Vc5+47kczrFcYcPu2FqRG0oTtlq
+         moEUoi4r5mslXkbyvqdSB0p+zX45rm1sZluyOmJWvIcpQKgjy4inD372A70EM228E5kb
+         WMKoKJk+YuVH4+JnERwARH6AfeP6IW1featxxBNnqZWYkstox5lxv7sNUR54VNk89Out
+         la7bJtC2xyd+cVNcbxxpUj1JwIy1an8xxP51wvz5pGLzqHFAZ+Dmq0F2dtuEsuW9ygNQ
+         Vz8w==
+X-Gm-Message-State: AOAM532tKDb2B5srR2/vRgJeF2xJmr5LyFnRwfZDnSLuyiniSSFxQitw
+        fBMDYp9d8qVNBOg80FFkqoE=
+X-Google-Smtp-Source: ABdhPJx/gurImig6XRrgeoEO/r7wyQ5O40+HcN6GJkbcox6Gf8TSIr+7QFKlwoYAMkAlcDAZ7Yn1TQ==
+X-Received: by 2002:a63:1444:: with SMTP id 4mr26015024pgu.251.1634606551172;
+        Mon, 18 Oct 2021 18:22:31 -0700 (PDT)
+Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
+        by smtp.gmail.com with ESMTPSA id v9sm14748903pfc.23.2021.10.18.18.22.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 18:22:30 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 18:22:28 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        djwong@kernel.org, david@fromorbit.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        gregkh@linuxfoundation.org, viro@zeniv.linux.org.uk,
+        dvyukov@google.com
+Subject: Re: [PATCH] slob: add size header to all allocations
+Message-ID: <YW4d1FppmaqAuPHd@nuc10>
+References: <20211015005729.GD24333@magnolia>
+ <20211018033841.3027515-1-rkovhaev@gmail.com>
+ <20758764-8139-ab0b-a782-dc63559b43ba@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <16af9946-b662-0bbf-206f-278b7ef98123@quicinc.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20758764-8139-ab0b-a782-dc63559b43ba@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 12:50 PM, Subbaraman Narayanamurthy wrote:
-> On 10/6/21 4:08 AM, Daniel Lezcano wrote:
->> On 07/09/2021 21:01, Subbaraman Narayanamurthy wrote:
->>> of_parse_thermal_zones() parses the thermal-zones node and registers a
->>> thermal_zone device for each subnode. However, if a thermal zone is
->>> consuming a thermal sensor and that thermal sensor device hasn't probed
->>> yet, an attempt to set trip_point_*_temp for that thermal zone device
->>> can cause a NULL pointer dereference. Fix it.
->>>
->>>  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
->>>  ...
->>>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
->> I'm still not convinced by the changes.
->>
->> Could please tell the commit-id where this is happening and give the
->> procedure to reproduce the bug ?
->>
-> Here is the commit id where this problem was reported.
-> https://android.googlesource.com/kernel/common/+/997d24a932a9b6e2040f39a8dd76e873e6519a1c
->
-> BTW, this problem was not 100% reproducible but seems to be a race condition when vendor modules are loaded and thermal HAL or userspace thermal SW is attempting to set trip points on one of the thermal zones and that sensor driver supplying that thermal zone have not completed probing.
->
-> I was able to reproduce the problem manually by disabling the pmk8350_adc_tm device in device tree which supplies to some thermal zone devices (e.g. xo-therm below).
->
-> pmk8350_adc_tm: adc_tm@3400 {                                  
->     compatible = "qcom,adc-tm7";                           
->     reg = <0x3400>;                                        
->     interrupts = <0x0 0x34 0x0 IRQ_TYPE_EDGE_RISING>;         
->     interrupt-names = "threshold";                         
->     #address-cells = <1>;                                  
->     #size-cells = <0>;                                     
->     #thermal-sensor-cells = <1>;                           
->     status = "disabled"; /* This is what I've added to simulate the problem */                                  
-> };
->
-> &thermal_zones {
-> ...
->         xo-therm {                                                             
->                 polling-delay-passive = <0>;                                   
->                 polling-delay = <0>;                                           
->                 thermal-sensors = <&pmk8350_adc_tm PMK8350_ADC7_AMUX_THM1_100K_PU>;
->                 trips {
->                     ...
->                 };
-> };
->
-> With this and reverting my change (which got picked up in internal tree), I can see this.
->
-> /sys/class/thermal # cat thermal_zone87/type                                   
-> xo-therm
->                                                                        
-> /sys/class/thermal # cd thermal_zone87                                         
-> /sys/devices/virtual/thermal/thermal_zone87 # ls                               
-> available_policies  cdev5_trip_point  mode               trip_point_4_hyst        
-> cdev0               cdev5_weight      offset             trip_point_4_temp        
-> cdev0_trip_point    cdev6             policy             trip_point_4_type        
-> cdev0_weight        cdev6_trip_point  power              trip_point_5_hyst        
-> cdev1               cdev6_weight      slope              trip_point_5_temp        
-> cdev10              cdev7             subsystem          trip_point_5_type        
-> cdev10_trip_point   cdev7_trip_point  sustainable_power  trip_point_6_hyst        
-> cdev10_weight       cdev7_weight      temp               trip_point_6_temp        
-> cdev1_trip_point    cdev8             trip_point_0_hyst  trip_point_6_type        
-> cdev1_weight        cdev8_trip_point  trip_point_0_temp  trip_point_7_hyst        
-> cdev2               cdev8_weight      trip_point_0_type  trip_point_7_temp        
-> cdev2_trip_point    cdev9             trip_point_1_hyst  trip_point_7_type        
-> cdev2_weight        cdev9_trip_point  trip_point_1_temp  trip_point_8_hyst        
-> cdev3               cdev9_weight      trip_point_1_type  trip_point_8_temp        
-> cdev3_trip_point    emul_temp         trip_point_2_hyst  trip_point_8_type        
-> cdev3_weight        integral_cutoff   trip_point_2_temp  type                  
-> cdev4               k_d               trip_point_2_type  uevent                
-> cdev4_trip_point    k_i               trip_point_3_hyst                        
-> cdev4_weight        k_po              trip_point_3_temp                        
-> cdev5               k_pu              trip_point_3_type
->                         
-> /sys/devices/virtual/thermal/thermal_zone87 # cat trip_point_0_temp            
-> 125000                                                                         
->
-> /sys/devices/virtual/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp  
-> [  184.290964][  T211] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
-> [  184.300896][  T211] Mem abort info:                                         
-> [  184.304486][  T211]   ESR = 0x96000006                                      
-> [  184.308348][  T211]   EC = 0x25: DABT (current EL), IL = 32 bits            
-> [  184.314531][  T211]   SET = 0, FnV = 0                                      
-> [  184.318384][  T211]   EA = 0, S1PTW = 0                                     
-> [  184.322323][  T211] Data abort info:                                        
-> [  184.325993][  T211]   ISV = 0, ISS = 0x00000006                             
-> [  184.330655][  T211]   CM = 0, WnR = 0                                       
-> [  184.334425][  T211] user pgtable: 4k pages, 39-bit VAs, pgdp=000000081a7a2000
-> [  184.341750][  T211] [0000000000000020] pgd=000000081a7a7003, p4d=000000081a7a7003, pud=000000081a7a7003, pmd=0000000000000000
-> [  184.353359][  T211] Internal error: Oops: 96000006 [#1] PREEMPT SMP         
-> [  184.359797][  T211] Dumping ftrace buffer:                                  
-> [  184.364001][  T211]    (ftrace buffer empty)
->
-> Hope this helps.
+On Mon, Oct 18, 2021 at 11:22:46AM +0200, Vlastimil Babka wrote:
+> On 10/18/21 05:38, Rustam Kovhaev wrote:
+> > Let's prepend all  allocations of (PAGE_SIZE - align_offset) and less
+> > with the size header. This way kmem_cache_alloc() memory can be freed
+> > with kfree() and the other way around, as long as they are less than
+> > (PAGE_SIZE - align_offset).
+> 
+> This size limitation seems like an unnecessary gotcha. Couldn't we make
+> these large allocations in slob_alloc_node() (that use slob_new_pages()
+> directly) similar enough to large kmalloc() ones, so that kfree() can
+> recognize them and free properly? AFAICS it might mean just adding
+> __GFP_COMP to make sure there's a compound order stored, as these already
+> don't seem to set PageSlab.
 
-Hi Daniel,
-Have you got a chance to look at this?
+Thanks for the pointers, I'll send a new version.
 
-Thanks,
-Subbaraman
+> > The main reason for this change is to simplify SLOB a little bit, make
+> > it a bit easier to debug whenever something goes wrong.
+> 
+> I would say the main reason is to simplify the slab API and guarantee that
+> both kmem_cache_alloc() and kmalloc() can be freed by kfree().
+> 
+> We should also update the comments at top of slob.c to reflect the change.
+> And Documentation/core-api/memory-allocation.rst (the last paragraph).
 
->
->>>  ...
->>>  Call trace:
->>>   of_thermal_set_trip_temp+0x40/0xc4
->>>   trip_point_temp_store+0xc0/0x1dc
->>>   dev_attr_store+0x38/0x88
->>>   sysfs_kf_write+0x64/0xc0
->>>   kernfs_fop_write_iter+0x108/0x1d0
->>>   vfs_write+0x2f4/0x368
->>>   ksys_write+0x7c/0xec
->>>   __arm64_sys_write+0x20/0x30
->>>   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
->>>   do_el0_svc+0x28/0xa0
->>>   el0_svc+0x14/0x24
->>>   el0_sync_handler+0x88/0xec
->>>   el0_sync+0x1c0/0x200
->>>
->>> While at it, fix the possible NULL pointer dereference in other
->>> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
->>> of_thermal_get_trend().
->>>
->>> Cc: stable@vger.kernel.org
->>> Suggested-by: David Collins <quic_collinsd@quicinc.com>
->>> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
->>> ---
->>> Changes for v2:
->>> - Added checks in of_thermal_get_temp(), of_thermal_set_emul_temp(), of_thermal_get_trend().
->>>
->>>  drivers/thermal/thermal_of.c | 9 ++++++---
->>>  1 file changed, 6 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
->>> index 6379f26..9233f7e 100644
->>> --- a/drivers/thermal/thermal_of.c
->>> +++ b/drivers/thermal/thermal_of.c
->>> @@ -89,7 +89,7 @@ static int of_thermal_get_temp(struct thermal_zone_device *tz,
->>>  {
->>>  	struct __thermal_zone *data = tz->devdata;
->>>  
->>> -	if (!data->ops->get_temp)
->>> +	if (!data->ops || !data->ops->get_temp)
->>>  		return -EINVAL;
->>>  
->>>  	return data->ops->get_temp(data->sensor_data, temp);
->>> @@ -186,6 +186,9 @@ static int of_thermal_set_emul_temp(struct thermal_zone_device *tz,
->>>  {
->>>  	struct __thermal_zone *data = tz->devdata;
->>>  
->>> +	if (!data->ops || !data->ops->set_emul_temp)
->>> +		return -EINVAL;
->>> +
->>>  	return data->ops->set_emul_temp(data->sensor_data, temp);
->>>  }
->>>  
->>> @@ -194,7 +197,7 @@ static int of_thermal_get_trend(struct thermal_zone_device *tz, int trip,
->>>  {
->>>  	struct __thermal_zone *data = tz->devdata;
->>>  
->>> -	if (!data->ops->get_trend)
->>> +	if (!data->ops || !data->ops->get_trend)
->>>  		return -EINVAL;
->>>  
->>>  	return data->ops->get_trend(data->sensor_data, trip, trend);
->>> @@ -301,7 +304,7 @@ static int of_thermal_set_trip_temp(struct thermal_zone_device *tz, int trip,
->>>  	if (trip >= data->ntrips || trip < 0)
->>>  		return -EDOM;
->>>  
->>> -	if (data->ops->set_trip_temp) {
->>> +	if (data->ops && data->ops->set_trip_temp) {
->>>  		int ret;
->>>  
->>>  		ret = data->ops->set_trip_temp(data->sensor_data, trip, temp);
->>>
+OK, thank you!
 
+> > meminfo right after the system boot, without the patch:
+> > Slab:              35500 kB
+> > 
+> > the same, with the patch:
+> > Slab:              36396 kB
+> 
+> 2.5% increase, hopefully acceptable.
+> 
+> Thanks!
