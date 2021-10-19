@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB51433F13
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F877433F15
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234832AbhJSTRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40656 "EHLO mail.kernel.org"
+        id S233787AbhJSTSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:18:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233744AbhJSTRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:17:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87EC26136F;
-        Tue, 19 Oct 2021 19:14:56 +0000 (UTC)
+        id S230432AbhJSTSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 15:18:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12F156135E;
+        Tue, 19 Oct 2021 19:15:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634670898;
-        bh=/znmkFn+1hv2P3Gitl75yKUrCACWkay2CRqRv1A/zkE=;
+        s=k20201202; t=1634670949;
+        bh=saeUwL+UJoT1ITyT6b5D5yFqwkea6DBOyq/MVsrSG5g=;
         h=From:To:Cc:Subject:Date:From;
-        b=ltitQs67F5lcd0NsyCr7JXCQz3HfQUheX6dZx0f100TfB6DPwGp9AL+3iEphBNwhJ
-         LsUkWdjdSQBnXCcefttZPEMgi/fnGuOvEpmHMwjLatRX/R8AOpcp4VKjyBlsdMLmIX
-         uhteC0ayykb9Dy6Mv3pain3D7a4BL1z6tJJjblXu8uLgqyXqKBo1lxgh+2DooGGrED
-         sTDBV6jyaWWQIpFK5A0yIfcROO2ug3WSXYhquDcnddVs5VFwjUVrcw6b/ktcOW7dYh
-         bmtkgtFxWTdBvRnk9HeTqNWIqFAqsuvG6c3V47en7TfJJHxQoqdj7udyvkSLWwlFfY
-         ZNEHLnkkiAWfA==
+        b=HZ6qYBbCj1dG16Ui6YZdMQcE7UnEj6Ut6GcJcvx20cwv5ohy/wAEqmBbAirm4R20r
+         SBm0zh2t5mYcTCzuhxtpXgJxsq5SiLHzLvZJpETsRivtQrhUGlMnXtBfstmg7USMpK
+         uFIrOITmwHGMjbBJKy817/JIfuX4cjreHdjmB2xIAgC/G10ihfeRoORDt2TlloxIfb
+         68dji29NV6UTrh0rlNMrzUC2vW9QnuPygwcizAbgbQKezQocIviQLpLU1z9xbWU92F
+         hu0D1fCXaUH8pz+/7JpEv+lYlp7w51v0k+rn3drmjnS9O9cb4IQbGdx6728XaRlx+d
+         xthVCnYBAllWw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: amd: vangogh: add SPI dependency
-Date:   Tue, 19 Oct 2021 21:14:43 +0200
-Message-Id: <20211019191453.3047514-1-arnd@kernel.org>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] net: sched: gred: dynamically allocate tc_gred_qopt_offload
+Date:   Tue, 19 Oct 2021 21:15:29 +0200
+Message-Id: <20211019191544.3063872-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,34 +48,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Without CONFIG_SPI, this fails to build:
+The tc_gred_qopt_offload structure has grown too big to be on the
+stack for 32-bit architectures after recent changes.
 
-WARNING: unmet direct dependencies detected for SND_SOC_CS35L41_SPI
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SPI_MASTER [=n]
-  Selected by [m]:
-  - SND_SOC_AMD_VANGOGH_MACH [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_AMD_ACP5x [=m] && I2C [=y]
-ERROR: modpost: "spi_setup" [sound/soc/codecs/snd-soc-cs35l41-spi.ko] undefined!
-ERROR: modpost: "__devm_regmap_init_spi" [sound/soc/codecs/snd-soc-cs35l41-spi.ko] undefined!
+net/sched/sch_gred.c:903:13: error: stack frame size (1180) exceeds limit (1024) in 'gred_destroy' [-Werror,-Wframe-larger-than]
+net/sched/sch_gred.c:310:13: error: stack frame size (1212) exceeds limit (1024) in 'gred_offload' [-Werror,-Wframe-larger-than]
 
-Fixes: 96792fdd77cd ("ASoC: amd: enable vangogh platform machine driver build")
+Use dynamic allocation per qdisc to avoid this.
+
+Fixes: 50dc9a8572aa ("net: sched: Merge Qdisc::bstats and Qdisc::cpu_bstats data types")
+Fixes: 67c9e6270f30 ("net: sched: Protect Qdisc::bstats with u64_stats")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/amd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Jakub,
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index d91a9399777c..edee2098c82e 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -68,7 +68,7 @@ config SND_SOC_AMD_VANGOGH_MACH
- 	tristate "AMD Vangogh support for NAU8821 CS35L41"
- 	select SND_SOC_NAU8821
- 	select SND_SOC_CS35L41_SPI
--	depends on SND_SOC_AMD_ACP5x && I2C
-+	depends on SND_SOC_AMD_ACP5x && I2C && SPI
- 	help
- 	  This option enables machine driver for Vangogh platform
- 	  using NAU8821 and CS35L41 codecs.
+Not sure if this is what you had in mind, if not it might be easier
+if you do it yourself. In particular, adding tc_gred_qopt_offload
+to gred_sched directly rather than as a pointer may be easier here,
+but that may have other downsides.
+
+Changes in v2:
+- allocate structure at init time rather than inside of
+  gred_offload()
+---
+ net/sched/sch_gred.c | 50 ++++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 20 deletions(-)
+
+diff --git a/net/sched/sch_gred.c b/net/sched/sch_gred.c
+index 72de08ef8335..d44958f3411a 100644
+--- a/net/sched/sch_gred.c
++++ b/net/sched/sch_gred.c
+@@ -56,6 +56,7 @@ struct gred_sched {
+ 	u32 		DPs;
+ 	u32 		def;
+ 	struct red_vars wred_set;
++	struct tc_gred_qopt_offload *opt;
+ };
+ 
+ static inline int gred_wred_mode(struct gred_sched *table)
+@@ -311,42 +312,45 @@ static void gred_offload(struct Qdisc *sch, enum tc_gred_command command)
+ {
+ 	struct gred_sched *table = qdisc_priv(sch);
+ 	struct net_device *dev = qdisc_dev(sch);
+-	struct tc_gred_qopt_offload opt = {
+-		.command	= command,
+-		.handle		= sch->handle,
+-		.parent		= sch->parent,
+-	};
++	struct tc_gred_qopt_offload *opt = table->opt;
+ 
+ 	if (!tc_can_offload(dev) || !dev->netdev_ops->ndo_setup_tc)
+ 		return;
+ 
++	memset(opt, 0, sizeof(*opt));
++	opt->command = command;
++	opt->handle = sch->handle;
++	opt->parent = sch->parent;
++
+ 	if (command == TC_GRED_REPLACE) {
+ 		unsigned int i;
+ 
+-		opt.set.grio_on = gred_rio_mode(table);
+-		opt.set.wred_on = gred_wred_mode(table);
+-		opt.set.dp_cnt = table->DPs;
+-		opt.set.dp_def = table->def;
++		opt->set.grio_on = gred_rio_mode(table);
++		opt->set.wred_on = gred_wred_mode(table);
++		opt->set.dp_cnt = table->DPs;
++		opt->set.dp_def = table->def;
+ 
+ 		for (i = 0; i < table->DPs; i++) {
+ 			struct gred_sched_data *q = table->tab[i];
+ 
+ 			if (!q)
+ 				continue;
+-			opt.set.tab[i].present = true;
+-			opt.set.tab[i].limit = q->limit;
+-			opt.set.tab[i].prio = q->prio;
+-			opt.set.tab[i].min = q->parms.qth_min >> q->parms.Wlog;
+-			opt.set.tab[i].max = q->parms.qth_max >> q->parms.Wlog;
+-			opt.set.tab[i].is_ecn = gred_use_ecn(q);
+-			opt.set.tab[i].is_harddrop = gred_use_harddrop(q);
+-			opt.set.tab[i].probability = q->parms.max_P;
+-			opt.set.tab[i].backlog = &q->backlog;
++			opt->set.tab[i].present = true;
++			opt->set.tab[i].limit = q->limit;
++			opt->set.tab[i].prio = q->prio;
++			opt->set.tab[i].min = q->parms.qth_min >> q->parms.Wlog;
++			opt->set.tab[i].max = q->parms.qth_max >> q->parms.Wlog;
++			opt->set.tab[i].is_ecn = gred_use_ecn(q);
++			opt->set.tab[i].is_harddrop = gred_use_harddrop(q);
++			opt->set.tab[i].probability = q->parms.max_P;
++			opt->set.tab[i].backlog = &q->backlog;
+ 		}
+-		opt.set.qstats = &sch->qstats;
++		opt->set.qstats = &sch->qstats;
+ 	}
+ 
+-	dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_QDISC_GRED, &opt);
++	dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_QDISC_GRED, opt);
++
++	return;
+ }
+ 
+ static int gred_offload_dump_stats(struct Qdisc *sch)
+@@ -731,6 +735,7 @@ static int gred_change(struct Qdisc *sch, struct nlattr *opt,
+ static int gred_init(struct Qdisc *sch, struct nlattr *opt,
+ 		     struct netlink_ext_ack *extack)
+ {
++	struct gred_sched *table = qdisc_priv(sch);
+ 	struct nlattr *tb[TCA_GRED_MAX + 1];
+ 	int err;
+ 
+@@ -754,6 +759,10 @@ static int gred_init(struct Qdisc *sch, struct nlattr *opt,
+ 		sch->limit = qdisc_dev(sch)->tx_queue_len
+ 		             * psched_mtu(qdisc_dev(sch));
+ 
++	table->opt = kzalloc(sizeof(table->opt), GFP_KERNEL);
++	if (!table->opt)
++		return -ENOMEM;
++
+ 	return gred_change_table_def(sch, tb[TCA_GRED_DPS], extack);
+ }
+ 
+@@ -910,6 +919,7 @@ static void gred_destroy(struct Qdisc *sch)
+ 			gred_destroy_vq(table->tab[i]);
+ 	}
+ 	gred_offload(sch, TC_GRED_DESTROY);
++	kfree(table->opt);
+ }
+ 
+ static struct Qdisc_ops gred_qdisc_ops __read_mostly = {
 -- 
 2.29.2
 
