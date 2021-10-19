@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC16433FFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD100434002
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhJSUyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 16:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJSUyN (ORCPT
+        id S233844AbhJSUzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 16:55:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64596 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230190AbhJSUzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 16:54:13 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F43C06161C;
-        Tue, 19 Oct 2021 13:51:59 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id s19so8464666ljj.11;
-        Tue, 19 Oct 2021 13:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G7qwr2Tn9hf9lesJD/Db4IBpXW2EeZKyA2WDSHyoBgE=;
-        b=NcHIZ/b/jQIJNFN8E9x67a6l3qpkGJtyBwX5tfhhG8ClJzF5t/0e0BzGo0AaMPi1sW
-         2rlOkgFeIamyNrWbuoDjs9yheW66Z9qe4oxE8AL+TlawkcnQkGosFJj0L4RP2yHDQTdg
-         5RqPbphtMf/ohwndNjCyjrzAa/hvz3rgPzcq4UDoOGOI9dYWzjmdnby9yFyJnVfxhpkk
-         OvnrFZ10nv6DEgkyiOHhnBJFufBPNpzwpb68qDc0o8fT4BEbPWjE2+wssCSH4xM0scaI
-         qv6TYbiAiNR11McbwzD6FF+SuyEaooybxuD6+Qb/N1eKEjtK9HnHPQ6u8E6yraOVKFRo
-         3Mog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G7qwr2Tn9hf9lesJD/Db4IBpXW2EeZKyA2WDSHyoBgE=;
-        b=B8pt2gOKf2Ys1W00optKvY+BqHKpiR2Z35Kf4rNoLJZTTJXNXzHnOGwH4BqT7ePCVx
-         FZss+OQs+ZSkFdjCmvbwr/sIIZCFVL5+LzYbtxsJ1ulZpfbRTJiN33dTDu8gWtPiYXlr
-         wBW/jJSnHhPhfK7WTh1P6RaHJDznZMT7phFBblxi73e4IR5oBEai0x9lDciU9fxrraMZ
-         h1armlm6Vv67J6gGpevPOuYgaptusx663J0JliB4zJ7U/VkYolebsoYMEbUvjaGQCAbS
-         qsFRkEtfLqYbr0vTEG+GrS1Z/D1JZH8eAfVAvdcNchQLN/QiBZsAmt/ExFm1ZQZgLJYk
-         NadA==
-X-Gm-Message-State: AOAM532mNYEq2HRT2Xb5YjiWEaWW0nPIS2c0YdKJk59PF3QI3LpwO1U/
-        JInetwRj/D7vpK3WUlmDN797HpWoAXw=
-X-Google-Smtp-Source: ABdhPJw5rl0M7vhAOyhjzlSRXOdFqJxYZiK6HqOugk5MbOmToxZpxdULdyGyIx60L5Px3IsuETozUg==
-X-Received: by 2002:a2e:994:: with SMTP id 142mr9123423ljj.481.1634676718023;
-        Tue, 19 Oct 2021 13:51:58 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
-        by smtp.googlemail.com with ESMTPSA id x24sm11283ljd.89.2021.10.19.13.51.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 13:51:57 -0700 (PDT)
-Subject: Re: [PATCH v1 4/6] mfd: max77620: Use power off call chain API
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20211007060253.17049-1-digetx@gmail.com>
- <20211007060253.17049-5-digetx@gmail.com> <YW7k0SW73kcvyo2W@google.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c488d332-46b3-2250-cd96-34897189562f@gmail.com>
-Date:   Tue, 19 Oct 2021 23:51:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 19 Oct 2021 16:55:45 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JKqYta010227;
+        Tue, 19 Oct 2021 16:53:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=bWSLdJokj3Lbnm7HvXDpghITkmfYosOMdEXedxpqtzI=;
+ b=nDW6OHne8hEetonI9eRDw9MJHXBWm9buXJS5KUYRBiscsPUlXF/1H5qjuDkmEa/M7s3S
+ noaNMRoDIvhkkF0mw6M7q/oxuj0Ves91riYtdS9JFX1J1poJcciOQQYGHs7+v8nxiln4
+ TsBCgmF7mnwSJOfAI8RCkYYLkEbI2Zew8XOtzjMlrLqvtK7adrAtY3LNHvQptIfVmlQo
+ OtbiMrtruJOm5Gg5b+GS6ekpcPwRchAhxFIpTtGOIHuK5B5rCvHOIHZY/ADrpTeIK+Bc
+ WC6BQBhv3XYfE6TwvmYbUZBYAnDMForYJ6WX39YypvnYr43M5EkNdPzqrzr/pCpn9mRE lw== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bt5ek00da-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 16:53:10 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19JKq1FI031910;
+        Tue, 19 Oct 2021 20:53:09 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03wdc.us.ibm.com with ESMTP id 3bt4srs1d9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 20:53:09 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19JKr8ST52560214
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 20:53:08 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6E8F0124055;
+        Tue, 19 Oct 2021 20:53:08 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C6E3124058;
+        Tue, 19 Oct 2021 20:53:07 +0000 (GMT)
+Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.36.93])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 19 Oct 2021 20:53:07 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-fsi@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        jk@ozlabs.org, joel@jms.id.au, linux@roeck-us.net,
+        jdelvare@suse.com, eajames@linux.ibm.com
+Subject: [PATCH v4 0/4] occ: fsi and hwmon: Extract and provide the SBEFIFO FFDC
+Date:   Tue, 19 Oct 2021 15:53:03 -0500
+Message-Id: <20211019205307.36946-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YW7k0SW73kcvyo2W@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sQzvMspzv4QAgSPwezngz6BHdGZXZyA4
+X-Proofpoint-ORIG-GUID: sQzvMspzv4QAgSPwezngz6BHdGZXZyA4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-19_02,2021-10-19_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 malwarescore=0 mlxlogscore=721 adultscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110190118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.10.2021 18:31, Lee Jones пишет:
-> On Thu, 07 Oct 2021, Dmitry Osipenko wrote:
-> 
->> Use new power off call chain API which allows multiple power off handlers
->> to coexist. Nexus 7 Android tablet can be powered off using MAX77663 PMIC
->> and using a special bootloader command. At first the bootloader option
->> should be tried, it will have a higher priority than the PMIC.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/mfd/max77620.c       | 22 +++++++++++++++-------
->>  include/linux/mfd/max77620.h |  2 ++
->>  2 files changed, 17 insertions(+), 7 deletions(-)
-> I don't have a problem with the approach in general.
-> 
-> I guess it's up to the relevant maintainers to decide.
-> 
+Currently, users have no way to obtain the FFDC (First Failure Data
+Capture) provided by the SBEFIFO when an operation fails. To remedy this,
+add code in the FSI OCC driver to store this FFDC in the user's response
+buffer and set the response length accordingly.
+On the hwmon side, there is a need at the application level to perform
+side-band operations in response to SBE errors. Therefore, add a new
+binary sysfs file that provides the FFDC (or lack thereof) when there is
+an SBEFIFO error. Now applications can take action when an SBE error is
+detected.
 
-Thank you for taking a look at this. Guenter Roeck gave me advice based
-on his previous experience of working on this topic and I'm now in a
-process of finalizing v2 that will be a more comprehensive and nicer
-solution. So you will need to take another look soon, thanks.
+Changes since v3:
+ - Rebase
+ - Add a check for valid FFDC length
+ - Add comments about SBE words being four bytes
+
+Changes since v2:
+ - Add documentation
+
+Changes since v1:
+ - Remove the magic value that indicated an SBE/SBEFIFO error with no
+   FFDC.
+ - Remove binary sysfs state management and intead just clear the error
+   flag when the whole FFDC has been read.
+
+Eddie James (4):
+  fsi: occ: Use a large buffer for responses
+  fsi: occ: Store the SBEFIFO FFDC in the user response buffer
+  docs: ABI: testing: Document the OCC hwmon FFDC binary interface
+  hwmon: (occ) Provide the SBEFIFO FFDC in binary sysfs
+
+ .../sysfs-bus-platform-devices-occ-hwmon      |  13 ++
+ drivers/fsi/fsi-occ.c                         | 164 +++++++++---------
+ drivers/hwmon/occ/p9_sbe.c                    |  86 ++++++++-
+ include/linux/fsi-occ.h                       |   2 +
+ 4 files changed, 186 insertions(+), 79 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-devices-occ-hwmon
+
+-- 
+2.27.0
+
