@@ -2,130 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92911432C55
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A23432C5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhJSDkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57242 "EHLO
+        id S232606AbhJSDmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbhJSDkm (ORCPT
+        with ESMTP id S232025AbhJSDmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:40:42 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DFCC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:29 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id p16so4362107lfa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:29 -0700 (PDT)
+        Mon, 18 Oct 2021 23:42:19 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42A6C06161C;
+        Mon, 18 Oct 2021 20:40:07 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id t184so15571360pfd.0;
+        Mon, 18 Oct 2021 20:40:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8/Vo8naa2pVOSCfV4UFA2BJ46wmQrSEVSsBZouXgR8Q=;
-        b=TBqUPv05LF6J1Ap/h7Pz9XJiHiK0IslnX+9wn7xlIvHPKYKx/hZE2OdYd8/tUHUJiY
-         5A0XsyYfcM8kS3aHiGgfpEG+nkoekDVqu2WkEHgchyxUgt84AkSR1/G59wXD3IbW6RJ1
-         4qij4MWM98pZd9rp8BkYS9iuIRoGDWcJuG/YE=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tOq8p3az740sR6QT9kkDjUVDdnMQ5++3NL//gil0HwI=;
+        b=K8MKZ5H8jRnQ8zDmTuMJKCCXSA5LbWuQqn+kYiyjRzTK2JSOwOu7w/DRLr2K/xnyr6
+         oI5BxJoHnYxTePO1mzqD//LDDijw61YN5EBAsJW/uvYZwOp1wWivmVwyCL1Oz5kftBYb
+         UQLf3UZIpzD9dRPvRqMHgTSjF+N9gP837HW53XWzL+LIfNjZ8VDflLc5lV3aynEXzvmy
+         /TAxSpVT5oFMTKf6KaDikAPVlp7bZ1koqqMYzj7xf/YpYmKmk7sRpyZzESlmskXkcTq/
+         5Dz/lux08DIRF8mvC/opESlcioD5vTPfOX4FGPtsGomydxGjU95gbqFAyHlnzv0A2obp
+         xxbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8/Vo8naa2pVOSCfV4UFA2BJ46wmQrSEVSsBZouXgR8Q=;
-        b=VlV49Xq7kFIpeyj27m0r9q2a+41MRMKphotS/h8o8m942XUF+UAxKBaXe8NoX2UzrW
-         amMu87AB6KLtzAgnvqn57vuTpsEWQhU4N3ZowX7JK5Pg0N4TFolgp4OYCx3PrNUMfHfU
-         ut7R3TGnCOVitw+rWodrjNpl3UKt4P/J+S7HrnI+hGzklYuVZZV5CaHWT26oBtZB912t
-         kBxsOMACnLLd8BLv1mBuF31ChL2SlDfuNduK1yKjuVzl6u/w/SVyc4flObTRNMBZw+z5
-         p9VNlJqf0iyzc0GwEja6qYUHKbPMfv2RmY4fnPnh73OueHKbV21hZelFTdSaH4HF6YLm
-         DkcQ==
-X-Gm-Message-State: AOAM530AIVHjzrQ7DZCdU/l8qywh//q4evVgVNFH5Q4gplZVdET+I6qR
-        /SK1QkYRJ2S0U+I+xmxbxepXr0xdmD8hCO0p
-X-Google-Smtp-Source: ABdhPJyZGXgOm7H/KhiuRR47FBSDwNlYAX3iyA2kr0I08Sx8kxPc2V3ePar++nJx/dZsiMAF74uluQ==
-X-Received: by 2002:a05:6512:128b:: with SMTP id u11mr3681831lfs.528.1634614707539;
-        Mon, 18 Oct 2021 20:38:27 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id l26sm1551284lfh.247.2021.10.18.20.38.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 20:38:26 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id y15so4302787lfk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:25 -0700 (PDT)
-X-Received: by 2002:a05:6512:12d4:: with SMTP id p20mr3786322lfg.280.1634614705218;
- Mon, 18 Oct 2021 20:38:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tOq8p3az740sR6QT9kkDjUVDdnMQ5++3NL//gil0HwI=;
+        b=xJ4QdKpzUzCdL3zGCnaUGpm1Pv3lh3RQqcE5NPDATrM+4Aiyu+x85FI82+u+d7k62/
+         279KborB0a0u+TC/f3dkN6ETXsmQtI14PT5+HNdoB5/+ISWMuH2vMYzDIk+97ZCXIMJs
+         2IqDTioubRIFCB8tu1sDni93z6q64MWH+jhKKbm6rXvA0exmAwNV7vfW6Wqdtw7MjVg2
+         FxE/ASq8vlqJKFvyU4sxAktY5zq01J/4HONG/J3MzRu+KG20vC+GrBExpnAB990JDWVy
+         rqSL/nS0qIpnFPN9QkT74lkAE6tGvhMWoJl/DZgSe69JIMel+7Pwu/agdKbaB9FzUGPN
+         pl2w==
+X-Gm-Message-State: AOAM5324cmnYlHF2Y0OLyOuUzXHKnD+9FiyW/eR5OB1K5iLHmP8vA5cY
+        DALUV4BcUbcoCzTleGrXBb/QzaehhEYxQmzQKFo=
+X-Google-Smtp-Source: ABdhPJy3OQcJks3p/zF6f6RTyJWmySP+ASYh672j3wgFkROgmDPkiKiprFxm6AB+daH639RcUIsCcA==
+X-Received: by 2002:a63:ce0a:: with SMTP id y10mr26643738pgf.133.1634614807117;
+        Mon, 18 Oct 2021 20:40:07 -0700 (PDT)
+Received: from localhost.localdomain ([94.177.118.15])
+        by smtp.gmail.com with ESMTPSA id s21sm7377955pfg.70.2021.10.18.20.40.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 20:40:06 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] driver: s3c_camif: move s3c_camif_unregister_subdev out of camif_unregister_media_entities
+Date:   Tue, 19 Oct 2021 11:39:52 +0800
+Message-Id: <20211019033953.3328944-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211018182537.2316800-1-nathan@kernel.org> <CAKwvOdn4_DrgaZoAo-v7CbYurNUpfAK5tnzT023=WCDzkmYQVg@mail.gmail.com>
- <CAHk-=wi7hUsTTcmPfZCkUEw51Y3ayq3JJxzFsNgodsxxDyk9Ww@mail.gmail.com> <CAKwvOd=wGjd_L1703Y9Kngcr9-_wTvcRLToiydXYkR=S_9xWDw@mail.gmail.com>
-In-Reply-To: <CAKwvOd=wGjd_L1703Y9Kngcr9-_wTvcRLToiydXYkR=S_9xWDw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 18 Oct 2021 17:38:09 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjwOnrHXDSqnmhiKujk=5XieJFvfnQwc2WKOKFwzcqvaA@mail.gmail.com>
-Message-ID: <CAHk-=wjwOnrHXDSqnmhiKujk=5XieJFvfnQwc2WKOKFwzcqvaA@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, Tor Vic <torvic9@mailbox.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 10:14 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Right, the patch that added the warning explicitly checks for side effects.
+In the error handling of s3c_camif_probe, s3c_camif_unregister_subdev
+may be executed twice, one is from camif_unregister_media_entities.
+Although there is sanity check about the registration status,
+it is not good to call s3c_camif_unregister_subdev twice in the error
+handling code.
 
-Well, it's a bit questionable. The "side effects" are things like any
-pointer dereference, because it could fault, but if you know that
-isn't an issue, then clang basically ends up complaining about code
-that is perfectly fine. Maybe it was written that way on purpose, like
-the kvm code.
+Fix this by moving s3c_camif_unregister_subdev out of
+camif_unregister_media_entities, and add a s3c_camif_unregister_subdev
+in the s3c_camif_remove.
 
-Now, it's probably not worth keeping that "bitops of booleans" logic -
-if it is a noticeable optimization, it's generally something that the
-compiler should do for us, but basically clang is warning about
-perfectly valid code.
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/media/platform/s3c-camif/camif-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-And what I find absolutely disgusting is the suggested "fix" that
-clang gives you.
+diff --git a/drivers/media/platform/s3c-camif/camif-core.c b/drivers/media/platform/s3c-camif/camif-core.c
+index e1d51fd3e700..ba91cf7d3ab0 100644
+--- a/drivers/media/platform/s3c-camif/camif-core.c
++++ b/drivers/media/platform/s3c-camif/camif-core.c
+@@ -292,7 +292,6 @@ static void camif_unregister_media_entities(struct camif_dev *camif)
+ {
+ 	camif_unregister_video_nodes(camif);
+ 	camif_unregister_sensor(camif);
+-	s3c_camif_unregister_subdev(camif);
+ }
+ 
+ /*
+@@ -524,6 +523,7 @@ static int s3c_camif_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 	camif_clk_put(camif);
++	s3c_camif_unregister_subdev(camif);
+ 	pdata->gpio_put();
+ 
+ 	return 0;
+-- 
+2.25.1
 
-If the warning said "maybe you meant to use a logical or (||)", then
-that would be one thing. But what clang suggests as the "fix" for the
-warning is just bad coding practice.
-
-If a warning fix involves making the code uglier, then the warning fix is wrong.
-
-This is not the first time we've had compilers suggesting garbage. Gcc
-used to suggest (perhaps still does) the "extra parenthesis" for
-"assignment used as a truth value" situation. Which is - once again -
-disgusting garbage.
-
-Writing code like
-
-        if (a = b) ..
-
-is bad and error prone. But the suggestion to "fix" the warning with
-
-        if ((a = b)) ..
-
-is just completely unacceptably stupid, and is just BAD CODE.
-
-The proper fix might be to write it like
-
-        if ((a = b) != 0) ...
-
-which at least makes the truth value part explicit - in ways that a
-silly double parenthesis does not. Or, better yet, write it as
-
-        a = b;
-        if (a) ..
-
-instead, which is legible and fine.
-
-The clang suggestion to add a cast to 'int' to avoid the warning is
-the same kind of "write bad code" suggestion. Just don't do it.
-
-             Linus
