@@ -2,65 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFB243402B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8959343402F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235071AbhJSVLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:11:22 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:52972 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbhJSVLV (ORCPT
+        id S235104AbhJSVLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235091AbhJSVLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:11:21 -0400
-Received: by mail-il1-f199.google.com with SMTP id h6-20020a92c266000000b002590d9f7d14so10981862ild.19
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:09:07 -0700 (PDT)
+        Tue, 19 Oct 2021 17:11:44 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B2CC06161C;
+        Tue, 19 Oct 2021 14:09:31 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id r134so22017263iod.11;
+        Tue, 19 Oct 2021 14:09:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gSgmLlZesXp0UPK7EJc5fRtKiiMGTySocpMsl7A7n7Q=;
+        b=HAxMmitDGLKWbQjqS4FDAiW85pmatSMd5L7L4Pxet8v2HGIRLnugWRFX+RSqlbqn7H
+         2uoF/TwW75mJx2Ae/QRIoL4BYEMDEBVQDYqNAdmknQgJi1hNyWHYm9UK1Fb9AsNGVGJv
+         8KrXCFHrnW1nbcNzfrDdUpjrt0TBfQa2iMKD1mH8mGWP6c4gMLPCEYdf2znJRsHgF4dv
+         yLCa/Po410JXUpQqzRP9RPv9yXTLVonh/T/K3HNioxV1Ctt2VZ+oBIF40Bym5+YeJ+Zv
+         76iow0Ntqigt/k88WXjV8mpFuLjuMbVfzDS1aRtwkHro7/WMP9xWYbj/lMrDcBtGbKJw
+         oLVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=zv4Ff+EvirxD9Sti+DPatT77gsB6mvVIfAn+44z0Cf8=;
-        b=YogKYXsoxMeo3udsYxjMvT/NoJMV9yho021ZHQOUNeFLXAWmR1l4e+faOKVxevg/Zc
-         y2emZBIq+D5Ewa7yTdFPJ/CTMOXyvsrOm8Vj7bRjspJqZZfGgY56zcOmIGe6uBtfhO/2
-         Rg8roGWIeptUo91cCITAScfFyvjxS7pVHyPzEhTODEDjik/Ysq9ajp/lDwFc/zWwfVdU
-         A0IS2JYFH9Jyvxdbwlbgug+o+duNBrRZDYzY/35BQT9llJ3uNXgNhQi6is9xVS5kemkE
-         vdMazAssUJFty/l99HxBwxB2O3US6a026NcM733KCQPQkVdtLgyBcEX4nnJQzGRz/kCK
-         QhxA==
-X-Gm-Message-State: AOAM532htOLH7TtyTqJPTUKT5b2RIH7s43nb5dMwChoOCuh6ko2H2MU0
-        aZf/mkFnrZsjBRinGCvv9QsH5f9/5gud+HA85dnbvpuuKKiw
-X-Google-Smtp-Source: ABdhPJzLYFSTrQZlVF6KtsED28EZgP23hSEbF0h5Qnz5TuhAwjS5tV/Ty7UnPxCZ1gy7WhBDFIjl/kQ6ls1FrBpBH7aREnB92H/K
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gSgmLlZesXp0UPK7EJc5fRtKiiMGTySocpMsl7A7n7Q=;
+        b=3DEysfJHKijYhY8B9Tfk3UOCMU8e56G5AS9H539cVpAbkUeeXcU/q1WPN1YqTpxWNF
+         du6vvGNuF4DWWobJyjnvlXIgd0S+cTdK9D6Y86t3f2FwstDF7e8kmotiLSXn4bq2r9J2
+         9wCnICnAfMrgusma4DN4PsBZqcBk9fXtwYdk/ktUpHjGhxuGdWAFsd/Muhx/rz6zGBIs
+         XpquTtXdbHdufTT1ieEKZOuWU7IpidWQxgYgpsZk/plo5LBwpHDHpjDeT4kT4XivsgTr
+         aTo3SHW1PqsILpuqf1hZog/THpyhaEzyEyT1gUQJWYdVjgw3wpK+nElloKQ9pLMswUfi
+         bB7g==
+X-Gm-Message-State: AOAM532s10G33o/G0K/jLgBeU/PR2ihdgsFbV7IxdSR2H1g7SLmHpHUI
+        Q//F03+dO3N7DWS/rzwbmWlZJLD9u6b+IYiVj/4=
+X-Google-Smtp-Source: ABdhPJz+PExeukRcxH0tc75AJjRxjzJphT/Ebaz3zbzs5+L8nbOuox/h1IspP25GGXhXdlINfWQE9L4CatIp5Cyet78=
+X-Received: by 2002:a05:6638:1924:: with SMTP id p36mr5920361jal.142.1634677770420;
+ Tue, 19 Oct 2021 14:09:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:fe05:: with SMTP id x5mr21247279ioh.201.1634677747302;
- Tue, 19 Oct 2021 14:09:07 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 14:09:07 -0700
-In-Reply-To: <4617c408-b7f6-8861-4307-ed0ec24283ea@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000073441e05cebb127c@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in rtl8712_dl_fw
-From:   syzbot <syzbot+c55162be492189fb4f51@syzkaller.appspotmail.com>
-To:     Larry.Finger@lwfinger.net, agamkohli9@gmail.com,
-        florian.c.schilhabel@googlemail.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-usb@vger.kernel.org, paskripkin@gmail.com,
-        syzkaller-bugs@googlegroups.com
+References: <20211019144520.3613926-1-geert@linux-m68k.org>
+ <20211019144520.3613926-4-geert@linux-m68k.org> <CANiq72nJS_rxwB7BQJ30iEeFcX8_7VznkF0DvueM_Ym+Wqd94A@mail.gmail.com>
+In-Reply-To: <CANiq72nJS_rxwB7BQJ30iEeFcX8_7VznkF0DvueM_Ym+Wqd94A@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 19 Oct 2021 23:09:19 +0200
+Message-ID: <CANiq72nGPzDEeiQccTQ6QCeionfkfp01EDjp4btBfYKabXzGrg@mail.gmail.com>
+Subject: Re: [PATCH v8 03/21] auxdisplay: img-ascii-lcd: Fix lock-up when
+ displaying empty string
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 19, 2021 at 10:50 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> Unrelated to this patch (and no need to change it), but we could
+> remove the conditional guarding the devm_kfree below to match this
+> one.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Yeah, you did it when moving the code later on -- I guess we could
+have done it before too, to match, like the sysfs_emit change does it
+before, but it is not that important.
 
-Reported-and-tested-by: syzbot+c55162be492189fb4f51@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         8ef1e587 usb: typec: STUSB160X should select REGMAP_I2C
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c27d285bdb7457e2
-dashboard link: https://syzkaller.appspot.com/bug?extid=c55162be492189fb4f51
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=164527c8b00000
-
-Note: testing is done by a robot and is best-effort only.
+Cheers,
+Miguel
