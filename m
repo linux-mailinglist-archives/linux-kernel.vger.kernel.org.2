@@ -2,107 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAA5433D94
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788ED433D8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234702AbhJSRio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhJSRim (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:38:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC62C06161C;
-        Tue, 19 Oct 2021 10:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iGktxexAEoG0emyXHElZXYDAND8qNTZfv5O/CYCJ99M=; b=reoRGClF8bgKnA4JfMds3a3Hk4
-        F2Pw57daKcHkrJC/utVAOKj6/ffru3WejLS70ia63Jc/XgzvNRRt+3+BS2w7EykDmIAmURAP7ZRxf
-        2sshYFfVypDem9ztYzNIcuQNOPGY9GTZOMwe3ygpfxPUJbu37K9g19kEcM9zerZFrC3VZRy4x4QJ/
-        SzmwRdqlJSegU6xWF5+d1GcBbOiqy89AZzMV71fIHRkhk0eT2DKXyGYD8p4L6p72bWL6oHZqDSa+B
-        F8fDo+8rTMjZHAaBJUqnpKvkTwYmKt3a3lukma9ymwlIa3Oh/tDk+gdIc7tMt+rjKAycjHsTtuoTD
-        +PKI2Rww==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mct0F-00BtoI-SE; Tue, 19 Oct 2021 17:34:34 +0000
-Date:   Tue, 19 Oct 2021 18:34:19 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Splitting struct page into multiple types - Was: re: Folio
- discussion recap -
-Message-ID: <YW8Bm77gZgVG2ga4@casper.infradead.org>
-References: <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW25EDqynlKU14hx@moria.home.lan>
- <YW3dByBWM0dSRw/X@cmpxchg.org>
- <YW7uN2p8CihCDsln@moria.home.lan>
- <20211019170603.GA15424@hsiangkao-HP-ZHAN-66-Pro-G1>
+        id S234694AbhJSRgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:36:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:52354 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234670AbhJSRgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:36:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66331D6E;
+        Tue, 19 Oct 2021 10:34:28 -0700 (PDT)
+Received: from [10.57.73.194] (unknown [10.57.73.194])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25CB03F694;
+        Tue, 19 Oct 2021 10:34:26 -0700 (PDT)
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        James Clark <james.clark@arm.com>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-4-german.gomez@arm.com>
+ <20211017120546.GB130233@leoy-ThinkPad-X240s>
+From:   German Gomez <german.gomez@arm.com>
+Message-ID: <0661828d-f7d9-fd8f-2a57-19364d2e5218@arm.com>
+Date:   Tue, 19 Oct 2021 18:34:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019170603.GA15424@hsiangkao-HP-ZHAN-66-Pro-G1>
+In-Reply-To: <20211017120546.GB130233@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 01:06:04AM +0800, Gao Xiang wrote:
-> On Tue, Oct 19, 2021 at 12:11:35PM -0400, Kent Overstreet wrote:
-> > Other things that need to be fixed:
-> > 
-> >  - page->lru is used by the old .readpages interface for the list of pages we're
-> >    doing reads to; Matthew converted most filesystems to his new and improved
-> >    .readahead which thankfully no longer uses page->lru, but there's still a few
-> >    filesystems that need to be converted - it looks like cifs and erofs, not
-> >    sure what's going on with fs/cachefiles/. We need help from the maintainers
-> >    of those filesystems to get that conversion done, this is holding up future
-> >    cleanups.
-> 
-> The reason why using page->lru for non-LRU pages was just because the
-> page struct is already there and it's an effective way to organize
-> variable temporary pages without any extra memory overhead other than
-> page structure itself. Another benefits is that such non-LRU pages can
-> be immediately picked from the list and added into page cache without
-> any pain (thus ->lru can be reused for real lru usage).
-> 
-> In order to maximize the performance (so that pages can be shared in
-> the same read request flexibly without extra overhead rather than
-> memory allocation/free from/to the buddy allocator) and minimise extra
-> footprint, this way was used. I'm pretty fine to transfer into some
-> other way instead if some similar field can be used in this way.
-> 
-> Yet if no such field anymore, I'm also very glad to write a patch to
-> get rid of such usage, but I wish it could be merged _only_ with the
-> real final transformation together otherwise it still takes the extra
-> memory of the old page structure and sacrifices the overall performance
-> to end users (..thus has no benefits at all.)
+Hi Leo,
 
-I haven't dived in to clean up erofs because I don't have a way to test
-it, and I haven't taken the time to understand exactly what it's doing.
+On 17/10/2021 13:05, Leo Yan wrote:
+> On Thu, Sep 16, 2021 at 04:46:34PM +0100, German Gomez wrote:
+>
+> [...]
+>
+> If run a test case (the test is pasted at the end of the reply), I
+> can get quite different AUX trace data with passing different wait
+> period before sending the first USR2 signal.
+>
+>   # sh test_arm_spe_snapshot.sh 2
+>   Couldn't synthesize bpf events.
+>   stress: info: [5768] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+>   [ perf record: Woken up 3 times to write data ]
+>   [ perf record: Captured and wrote 2.833 MB perf.data ]
+>
+>   # sh test_arm_spe_snapshot.sh 10
+>   Couldn't synthesize bpf events.
+>   stress: info: [5776] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+>   [ perf record: Woken up 3 times to write data ]
+>   [ perf record: Captured and wrote 24.356 MB perf.data ]
+>
+> The first command passes argument '2' so the test will wait for 2
+> seconds before send USR2 signal for snapshot, and the perf data file is
+> 2.833 MB (so this means the Arm SPE trace data is about 2MB) for three
+> snapshots.  In the second command, the argument '10' means it will wait
+> for 10 seconds before sending the USR2 signals, and every time it records
+> the trace data from the full AUX buffer (8MB), at the end it gets 24MB
+> AUX trace data.
+>
+> The issue happens in the second command, waiting for 10 seconds leads
+> to the *full* AUX ring buffer is filled by Arm SPE, so the function
+> arm_spe_buffer_has_wrapped() always return back true for this case.
+> Afterwards, arm_spe_find_snapshot() doesn't respect the passed old
+> header (from '*old') and assumes the trace data size is 'mm->len'.
 
-The old ->readpages interface gave you pages linked together on ->lru
-and this code seems to have been written in that era, when you would
-add pages to the page cache yourself.
+Returning the entire contents of the buffer once the first wrap-around
+was detected was the intention of the patch, so I don't currently see it
+as wrong. What were the values you were expecting to see in the test?
 
-In the new scheme, the pages get added to the page cache for you, and
-then you take care of filling them (and marking them uptodate if the
-read succeeds).  There's now readahead_expand() which you can call to add
-extra pages to the cache if the readahead request isn't compressed-block
-aligned.  Of course, it may not succeed if we're out of memory or there
-were already pages in the cache.
+If the handling of snapshot mode by the perf tool can be improved after
+upstreaming the changes to the driver, we could submit a followup patch
+after that has been fixed.
 
-It looks like this will be quite a large change to how erofs handles
-compressed blocks, but if you're open to taking this on, I'd be very happy.
+>
+> To allow arm_spe_buffer_has_wrapped() to work properly, I think we
+> need to clean up the top 8 bytes of the AUX buffer in Arm SPE driver
+> when start the PMU event (please note, this change has an assumption
+> that is meantioned in another email that suggests to remove redundant
+> PERF_RECORD_AUX events so the function arm_spe_perf_aux_output_begin()
+> is invoked only once when start PMU event, so we can use the top 8
+> bytes in AUX buffer to indicate trace is wrap around or not).
+>
+>
+> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+> index d44bcc29d99c..eb35f85d0efb 100644
+> --- a/drivers/perf/arm_spe_pmu.c
+> +++ b/drivers/perf/arm_spe_pmu.c
+> @@ -493,6 +493,16 @@ static void arm_spe_perf_aux_output_begin(struct perf_output_handle *handle,
+>         if (limit)
+>                 limit |= BIT(SYS_PMBLIMITR_EL1_E_SHIFT);
+>
+> +       /*
+> +        * Cleanup the top 8 bytes for snapshot mode; these 8 bytes are
+> +        * used to indicate if trace data is wrap around if they are not
+> +        * zero.
+> +        */
+> +       if (buf->snapshot) {
+> +               void *tail = buf->base + (buf->nr_pages << PAGE_SHIFT) - 8;
+> +               memset(tail, 0x0, 8);
+> +       }
+> +
+>         limit += (u64)buf->base;
+>         base = (u64)buf->base + PERF_IDX2OFF(handle->head, buf);
+>         write_sysreg_s(base, SYS_PMBPTR_EL1);
+>
+> Thanks,
+> Leo
+
+I will try these and the other driver changes and discuss them with the
+team internally, thanks!
+
+>
+> ---8<---
+>
+> #!/bin/sh
+>
+> ./perf record -e arm_spe/period=148576/u -C 0 -S -m8M,8M -- taskset --cpu-list 0 stress --cpu 1 &
+>
+> PERFPID=$!
+>
+> echo "sleep $1 seconds" > /sys/kernel/debug/tracing/trace_marker
+>
+> # Wait for perf program
+> sleep  $1
+>
+> # Send signal to snapshot trace data
+> kill -USR2 $PERFPID
+> sleep .03
+> kill -USR2 $PERFPID
+> sleep .03
+> kill -USR2 $PERFPID
+>
+> echo "Stop snapshot" > /sys/kernel/debug/tracing/trace_marker
+>
+> kill $PERFPID
+> wait $PERFPID
