@@ -2,130 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8867B432D7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD1A432D7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233726AbhJSF4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 01:56:09 -0400
-Received: from out0.migadu.com ([94.23.1.103]:61843 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhJSF4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 01:56:07 -0400
-Date:   Tue, 19 Oct 2021 14:53:47 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1634622834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4dWiSpMB3su/IESmjRL9fRWxwQYhjK9579FgEZKcS4I=;
-        b=A0/6loa1p9FRmwRzqhbsm8QrH6BBJf9nkZgU0CxtGvqAJ6LiwXLLnNYnw0Lu6cOiP0bedJ
-        fr5TblLT+aB33aqHu3gpS/vn32FiGNoctPXoZm9XYpursNMQwFfGESUzbrrqQA7BcXe2pV
-        72TlY8xAryiUGrRvLeL37EFWvSFCT0I=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        peterx@redhat.com, osalvador@suse.de, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC v4 PATCH 0/6] Solve silent data loss caused by poisoned
- page cache (shmem/tmpfs)
-Message-ID: <20211019055347.GD2268449@u2004>
-References: <20211014191615.6674-1-shy828301@gmail.com>
+        id S233939AbhJSF4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 01:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233722AbhJSF4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 01:56:17 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45370C061745;
+        Mon, 18 Oct 2021 22:54:05 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HYNGg6SmFz4xbL;
+        Tue, 19 Oct 2021 16:54:03 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634622844;
+        bh=hRumk0+uXOJH+4WTGGilujOJ7TIRVH2nLYUWV7N7AKU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ARMg33hb6fk/gsvpt1NohzfigWRSW4ZuMXLFyqlTZlcYfrouLUfTffjzA5liimKQf
+         UlRVPu1Fm9egrQPgrHGZ3eW9QCc6ISByuUaTcmeYqtBci7iqtlZhQO7GhqNR0hA08b
+         TnX6/m0iU3obr3yXv2x3B02Jm8arLrYHyTbQZPNXu2m+ZsWe3iQSJ9jz9qK716SARP
+         6YQ/AtEHqTCkzympSd9y8pqO1UdHtFdL8u+Ipwt4pBHXhGlRSTjR4URULAM0sB8Xwd
+         gHxI8hZGPpVajnEHGU3ePP2ZU5yJmldAv1K2q6tPAHlt9EIMhkJfCOJfD5og/7kF6W
+         CRTwaEFKQ4/1w==
+Date:   Tue, 19 Oct 2021 16:54:02 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the sound tree
+Message-ID: <20211019165402.4fa82c38@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211014191615.6674-1-shy828301@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+Content-Type: multipart/signed; boundary="Sig_/Xux7DOXQo8riLuR6xbu9apM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:16:09PM -0700, Yang Shi wrote:
-> 
-> When discussing the patch that splits page cache THP in order to offline the
-> poisoned page, Noaya mentioned there is a bigger problem [1] that prevents this
-> from working since the page cache page will be truncated if uncorrectable
-> errors happen.  By looking this deeper it turns out this approach (truncating
-> poisoned page) may incur silent data loss for all non-readonly filesystems if
-> the page is dirty.  It may be worse for in-memory filesystem, e.g. shmem/tmpfs
-> since the data blocks are actually gone.
-> 
-> To solve this problem we could keep the poisoned dirty page in page cache then
-> notify the users on any later access, e.g. page fault, read/write, etc.  The
-> clean page could be truncated as is since they can be reread from disk later on.
-> 
-> The consequence is the filesystems may find poisoned page and manipulate it as
-> healthy page since all the filesystems actually don't check if the page is
-> poisoned or not in all the relevant paths except page fault.  In general, we
-> need make the filesystems be aware of poisoned page before we could keep the
-> poisoned page in page cache in order to solve the data loss problem.
-> 
-> To make filesystems be aware of poisoned page we should consider:
-> - The page should be not written back: clearing dirty flag could prevent from
->   writeback.
-> - The page should not be dropped (it shows as a clean page) by drop caches or
->   other callers: the refcount pin from hwpoison could prevent from invalidating
->   (called by cache drop, inode cache shrinking, etc), but it doesn't avoid
->   invalidation in DIO path.
-> - The page should be able to get truncated/hole punched/unlinked: it works as it
->   is.
-> - Notify users when the page is accessed, e.g. read/write, page fault and other
->   paths (compression, encryption, etc).
-> 
-> The scope of the last one is huge since almost all filesystems need do it once
-> a page is returned from page cache lookup.  There are a couple of options to
-> do it:
-> 
-> 1. Check hwpoison flag for every path, the most straightforward way.
-> 2. Return NULL for poisoned page from page cache lookup, the most callsites
->    check if NULL is returned, this should have least work I think.  But the
->    error handling in filesystems just return -ENOMEM, the error code will incur
->    confusion to the users obviously.
-> 3. To improve #2, we could return error pointer, e.g. ERR_PTR(-EIO), but this
->    will involve significant amount of code change as well since all the paths
->    need check if the pointer is ERR or not just like option #1.
-> 
-> I did prototype for both #1 and #3, but it seems #3 may require more changes
-> than #1.  For #3 ERR_PTR will be returned so all the callers need to check the
-> return value otherwise invalid pointer may be dereferenced, but not all callers
-> really care about the content of the page, for example, partial truncate which
-> just sets the truncated range in one page to 0.  So for such paths it needs
-> additional modification if ERR_PTR is returned.  And if the callers have their
-> own way to handle the problematic pages we need to add a new FGP flag to tell
-> FGP functions to return the pointer to the page.
-> 
-> It may happen very rarely, but once it happens the consequence (data corruption)
-> could be very bad and it is very hard to debug.  It seems this problem had been
-> slightly discussed before, but seems no action was taken at that time. [2]
-> 
-> As the aforementioned investigation, it needs huge amount of work to solve
-> the potential data loss for all filesystems.  But it is much easier for
-> in-memory filesystems and such filesystems actually suffer more than others
-> since even the data blocks are gone due to truncating.  So this patchset starts
-> from shmem/tmpfs by taking option #1.
+--Sig_/Xux7DOXQo8riLuR6xbu9apM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for the work. I have a few comment on todo...
+Hi all,
 
-> 
-> TODO:
-> * The unpoison has been broken since commit 0ed950d1f281 ("mm,hwpoison: make
->   get_hwpoison_page() call get_any_page()"), and this patch series make
->   refcount check for unpoisoning shmem page fail.
+After merging the sound tree, today's linux-next build (htmldocs)
+produced these warnings:
 
-It's OK to leave unpoison unsolved now. I'm working on this now (revising
-v1 patch [1]), but I'm facing some race issue cauisng kernel panic with kernel
-mode page fault, so I need to solve it.
+sound/core/memalloc.c:203: warning: Function parameter or member 'mode' not=
+ described in 'snd_dma_buffer_sync'
+sound/core/memalloc.c:203: warning: Excess function parameter 'mod' descrip=
+tion in 'snd_dma_buffer_sync'
 
-[1] https://lore.kernel.org/linux-mm/20210614021212.223326-1-nao.horiguchi@gmail.com/
+Introduced by commit
 
-> * Expand to other filesystems.  But I haven't heard feedback from filesystem
->   developers yet.
+  a25684a95646 ("ALSA: memalloc: Support for non-contiguous page allocation=
+")
 
-I think that hugetlbfs can be a good next target because it's similar to
-shmem in that it's in-memory filesystem.
+Also, the declaration of this function in include/ound/memalloc.h looks
+incorrect as it has different declarations depending on CONFIG_HAS_DMA, but
+then another one afterwards.  I expect this will cause errors if
+CONFIG_HAS_DMA is not set.
+--=20
+Cheers,
+Stephen Rothwell
 
-Thanks,
-Naoya Horiguchi
+--Sig_/Xux7DOXQo8riLuR6xbu9apM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFuXXoACgkQAVBC80lX
+0GxJrggAgb43iVvo/fDgVFMEXskGs71sCGdqwX7zR9rmbIRL9/zwkoyWOwkdi5pU
+jLTA/RzO/2cd7A7xAHE+8GGmySlTbLSkYBMy3zQSZIO5UeCFaTLkW6Rh1oUCAB/c
+pSYuNI1uNLmCpTsg53pzQmm/0d0Q7eoa2hQMchZcR+EFdp3Q26jaIlsUOl40Fbzm
+GBGse/4yiSmdAJUVK6ND9jdojPeo8/flgO6+C91F3gDULbawUPcq4n0w73NCBRHA
+vtGg2BQ79TFg3AWWkbpG9LoJxUrufw1dnrsBbwlOHP+qpv/FWMO+U6fp49UiBvBT
+VoxtJV4i/PXQaRJcVnky8APslMYAdg==
+=IFLl
+-----END PGP SIGNATURE-----
+
+--Sig_/Xux7DOXQo8riLuR6xbu9apM--
