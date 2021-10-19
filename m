@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC62433EA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC36433EAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234159AbhJSSn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 14:43:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhJSSnz (ORCPT
+        id S233140AbhJSSpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 14:45:36 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:45741 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230059AbhJSSpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 14:43:55 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A748C06161C;
-        Tue, 19 Oct 2021 11:41:42 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id gn3so683765pjb.0;
-        Tue, 19 Oct 2021 11:41:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yMmq/EvVUp6K2/9IlYhUruY5kDimDnW8QzqXZwCnn/Y=;
-        b=KDloipmUeFx1W7w3ZzgQpdg2EUUoK+eAoyRMF7ETZTLIMs39uMKRTFGmLS5q0O+7hX
-         kbXNnxSe+pSb3I+9daTBXIkaUwPs1jmXPOxWKNmbuRmbbzJjuo5XYfqoL6z9L5eLaJbo
-         +ALVAgfFNt9R1QBUeuy0E16WhGGjaxlm9YguoXl0LnC0h/o+vV3P+bG2mk6Leg5YmLaJ
-         1RpAjpbg+K/kbRw/nDeO2K3QjRhjb61/VuXYDdwskRy7RnQ1S96NBsvFWdnpne/Zuf76
-         bgOZ3j4UuzCNTzDccMErGOGsWqrJzxxDXTGkGh5FKML+oMIsEdx8nAZ3FaQnfNRyL8WZ
-         +7ow==
+        Tue, 19 Oct 2021 14:45:35 -0400
+Received: by mail-io1-f69.google.com with SMTP id k9-20020a5d91c9000000b005dc4a740599so13941626ior.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 11:43:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=yMmq/EvVUp6K2/9IlYhUruY5kDimDnW8QzqXZwCnn/Y=;
-        b=ksZ5jbj8wwmXG/CbRYiYwu3gCGYSS6RRNVda6SfYzHcQGEFL2WeRAec7rnBI0Cl4zw
-         mStJpSzA/jvlyUp5Qh6PRGES5GlFsI5gBgdk1z+QZCfPbZjxS0KQeKqrjsdVN5RGwCSN
-         zlzUloDVkDRw9Gu244KKf0n0mfCJXhwWIQgCjoV2xK9DXymm1TJBje/EP3OUJvfv6mg8
-         gjkvAqDL4UwaE8QVbV7SXM2cq/grmTLSywgUzIJ7YtKHUl0VxGaRaOrDWlv5pDWA/MrJ
-         4LLUmaj5U0UVxBmT50yVP68LRNd8YoGVYfkvf0JzuxG4725f3IxAlGfIrIBkCGjo0qSi
-         mYLg==
-X-Gm-Message-State: AOAM531oFLXqXYMwUjesFIL8+vGT+zWnJeSExA/xpdgBwEbN1ReSz277
-        mkJ3ayskwB+R/30HteKivaE=
-X-Google-Smtp-Source: ABdhPJzPx4AgsWbz11VtL9l8HJ4U9YNHo08SHbucAYizDyOmrLQqyiEuOfHfa3WyRdm2HILYdrLU1w==
-X-Received: by 2002:a17:90b:3786:: with SMTP id mz6mr1720720pjb.245.1634668901861;
-        Tue, 19 Oct 2021 11:41:41 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id bp19sm3194802pjb.46.2021.10.19.11.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 11:41:41 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 19 Oct 2021 08:41:39 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Imran Khan <imran.f.khan@oracle.com>
-Cc:     jiangshanlai@gmail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rafael@kernel.org, pavel@ucw.cz,
-        len.brown@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v3] workqueue: Introduce show_one_worker_pool and
- show_one_workqueue.
-Message-ID: <YW8RYxb3rKGcD5mR@slm.duckdns.org>
-References: <20211016002007.143661-1-imran.f.khan@oracle.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/TmOz32LqCZU2Gra3Lfki6YPIXGi50aEZYx+opSR52k=;
+        b=4Gq1wFAH/4noJdA6nlZSWfAWOpRcA6LKCpG5CSD0wbCyh4xEF5yilCXdyPnFzgNDs7
+         zBQn4orepTFR7RkBIXqq4SCwdNuS5yg57SqbPWoXvZyiFx5flJ+soBAa2iPHKYG/Ys3i
+         +4h+RPlgs8fNq3/lp2w3h7Of9YP4cLWWDAOtFiXZFM7IBBD8pxEqXOdDI70Od82WU72Q
+         6F0DztGWaamusszhwnI5nqNk/mxv1oALaBCGAygZhXVOOaOsifSZlvM1z/L1XMPpDPnd
+         OuTBIaVA8FY8eZGlky3bedl3EpAsYhXGC/LFPg3wkrI8V2LM3h8tvbxtC+0FGHZ0WDbQ
+         F6Xw==
+X-Gm-Message-State: AOAM533XbTF1Exs+/fxRp+etggoHgrgWM9hFRSWPBgiRbC3jVNnXeoh3
+        2ZjSKKGtf/jc54HWMX8aXJ2/myNRUmd91ZgMEFG8S+ZP57Qw
+X-Google-Smtp-Source: ABdhPJz2IGVv63qi1hZQu0aDJntHVnSBLaVpb1jMu3ZMhjsNVStTYCkhV7XwVc/JQxI48ek4jAWSSGbMnv2tYYVy0+JYsq9dcEya
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211016002007.143661-1-imran.f.khan@oracle.com>
+X-Received: by 2002:a05:6602:2cd0:: with SMTP id j16mr20379206iow.171.1634669001887;
+ Tue, 19 Oct 2021 11:43:21 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 11:43:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002ed23205ceb9097b@google.com>
+Subject: [syzbot] WARNING in dpm_sysfs_add
+From:   syzbot <syzbot+578bea23bb8e6bd8c33c@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 11:20:07AM +1100, Imran Khan wrote:
-> Currently show_workqueue_state shows the state of all workqueues and of
-> all worker pools. In certain cases we may need to dump state of only a
-> specific workqueue or worker pool. For example in destroy_workqueue we
-> only need to show state of the workqueue which is getting destroyed.
-> 
-> So rename show_workqueue_state to show_all_workqueues(to signify it
-> dumps state of all busy workqueues) and divide it into more granular
-> functions (show_one_workqueue and show_one_worker_pool), that would show
-> states of individual workqueues and worker pools and can be used in
-> cases such as the one mentioned above.
-> 
-> Also, as mentioned earlier, make destroy_workqueue dump data pertaining
-> to only the workqueue that is being destroyed and make user(s) of
-> earlier interface(show_workqueue_state), use new interface
-> (show_all_workqueues).
-> 
-> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
+Hello,
 
-Can you respin the patch on top of the following branch?
+syzbot found the following issue on:
 
- git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-5.16
+HEAD commit:    ec681c53f8d2 Merge tag 'net-5.15-rc6' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=166855f4b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bab9d35f204746a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=578bea23bb8e6bd8c33c
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: i386
 
-Thank you.
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-tejun
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+578bea23bb8e6bd8c33c@syzkaller.appspotmail.com
+
+usb 7-1: Falling back to sysfs fallback for: ueagle-atm/eagleI.fw
+------------[ cut here ]------------
+sysfs group 'power' not found for kobject 'ueagle-atm!eagleI.fw'
+WARNING: CPU: 0 PID: 5 at fs/sysfs/group.c:279 sysfs_remove_group+0x126/0x170 fs/sysfs/group.c:279
+Modules linked in:
+CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.15.0-rc5-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Workqueue: events request_firmware_work_func
+RIP: 0010:sysfs_remove_group+0x126/0x170 fs/sysfs/group.c:279
+Code: 48 89 d9 49 8b 14 24 48 b8 00 00 00 00 00 fc ff df 48 c1 e9 03 80 3c 01 00 75 37 48 8b 33 48 c7 c7 a0 4e 9d 89 e8 d6 db fd 06 <0f> 0b eb 98 e8 a1 77 c8 ff e9 01 ff ff ff 48 89 df e8 94 77 c8 ff
+RSP: 0018:ffffc9000036fa80 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffffff89fcfc20 RCX: 0000000000000000
+RDX: ffff8880115b0000 RSI: ffffffff815e88a8 RDI: fffff5200006df42
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815e264e R11: 0000000000000000 R12: ffff8880480f9008
+R13: ffffffff89fd01c0 R14: 1ffff9200006df63 R15: ffff88804dde40a8
+FS:  0000000000000000(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563e4a92aed0 CR3: 00000000221dc000 CR4: 0000000000150ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ dpm_sysfs_add+0x1f4/0x290 drivers/base/power/sysfs.c:734
+ device_add+0xac4/0x1ee0 drivers/base/core.c:3352
+ fw_load_sysfs_fallback drivers/base/firmware_loader/fallback.c:507 [inline]
+ fw_load_from_user_helper drivers/base/firmware_loader/fallback.c:583 [inline]
+ firmware_fallback_sysfs+0x408/0xe70 drivers/base/firmware_loader/fallback.c:659
+ _request_firmware+0xbb5/0x1040 drivers/base/firmware_loader/main.c:833
+ request_firmware_work_func+0xdd/0x230 drivers/base/firmware_loader/main.c:1079
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
