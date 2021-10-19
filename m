@@ -2,91 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E9E432CF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 06:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A69B432D0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbhJSE60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 00:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhJSE6Z (ORCPT
+        id S232995AbhJSFQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 01:16:07 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:17416 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJSFQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 00:58:25 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6214C06161C;
-        Mon, 18 Oct 2021 21:56:12 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id o4so3039876oia.10;
-        Mon, 18 Oct 2021 21:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bpS2GG3XN2CaoLrol9u8Yu+pu0zzW3Q/ybUX9NDPVZk=;
-        b=hVbF97jHZ3FxInU19HaYpREimJVEOr+fIUwN06EZveevoFHDkuXiBUi3Hx8LCJy2RR
-         KfL0aQ3bHVXMV8y9wc6zVTUMRpDoKooDWsPctkSP/ZjxBFjX2kIhPqdHCX9t7MC43kj5
-         GI90lY1OeqBPkzMeFJxRWccHZksCGWJJS5nKo0uQWV4S3JxmXFAeRK1tVxLRIegVlgB5
-         Ke9cpGI41k76UfTvvp2F4u6CymDn+4rUav4xvPm5Bg0SOR42y/yO0g9XytY/kFENCL4Y
-         DXPUIIGOXLvzeTTRYU+mjpqb47SEhA/O2j6BWwl0pMtMfvsx1lUglWQoTKc/jE0SJHz3
-         7jwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bpS2GG3XN2CaoLrol9u8Yu+pu0zzW3Q/ybUX9NDPVZk=;
-        b=JRrUbiSju0lmMzPaPs+ed17FmwoRbmyL4DxbzpT2EuiDRc8DkoN7COv/VOdhx1WWNy
-         LqPBYgviMGay+KDNO0S/GBuEMy1wSJYkQhyPNOtTSTeessFI8uZHuOvWyyindszf4U/E
-         TYgEjv7236k9QLQIcFbgI0K+TuDH4dIVsh43XN7P+t1ryYmWyPIBp+UWjpdfQuBmPrBL
-         RoV3tJtqiF37WRhhEZlbt3KrfFHah7Z+k1jnUUwZGwgyPKfyeIDTls0LbV5u/MJePWpV
-         QqTTOMHbPh+DT0SFmepUl4n2E9DuOzIl1vm2eylXPUtb2wJH38gMS6yXN7OqQVP+E3mN
-         WTBA==
-X-Gm-Message-State: AOAM531mNUizuoyyipNRa08WCkuslb1ez0tojMYsCSEASaWXF+hLN2SC
-        hUOEaupK6Bb0aipKsb0zOsBx7pdprzk=
-X-Google-Smtp-Source: ABdhPJznYOgSWRzG3kc+CLiahyzHIAiMVPVLbjddNrfbyX7niJGEMGMItFVh8CzanjcB5dgGn8UTgQ==
-X-Received: by 2002:aca:ba41:: with SMTP id k62mr2468755oif.53.1634619371818;
-        Mon, 18 Oct 2021 21:56:11 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y4sm3385807oix.23.2021.10.18.21.56.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 21:56:11 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: Potential issue with smb word operations for tmp461 device in
- tmp401 driver
-To:     "Wilson, David T. (GSFC-5870)" <david.wilson@nasa.gov>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-References: <SA1PR09MB7440BF952778F0DB8138747DE7B99@SA1PR09MB7440.namprd09.prod.outlook.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <7f334e4c-0e71-2005-854f-c2d4e068ef85@roeck-us.net>
-Date:   Mon, 18 Oct 2021 21:56:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <SA1PR09MB7440BF952778F0DB8138747DE7B99@SA1PR09MB7440.namprd09.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 19 Oct 2021 01:16:05 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211019051351epoutp031cd00773015d3ecc1539761aa7d85f1c~vVp9D650U2417524175epoutp03j
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211019051351epoutp031cd00773015d3ecc1539761aa7d85f1c~vVp9D650U2417524175epoutp03j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1634620431;
+        bh=FudOjlJ6D5/jgTmPY1C0mRqJku+8iiIy7TKFbhuwvBU=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=DfrClabvTRZuGSLqQiTG1++WjfeX0oIeISNklJRwPgajGmvDZ2bp2pIWYUr/bRL2H
+         tRMSRgvz46dcuoyK1AstuE2Yc0YYfO2AOehnVPiUAy+6dQprdOGsuKOtpoZJqXM9dc
+         dBNGPRExJ1uH18+djelnMoacXNOVbNHkFfUDF7no=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20211019051351epcas2p375e0ce61f07998c0ca20b5eaf3cda0cf~vVp8aVj5h1667916679epcas2p35;
+        Tue, 19 Oct 2021 05:13:51 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.36.99]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4HYMND5qrKz4x9Qg; Tue, 19 Oct
+        2021 05:13:48 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        28.60.09868.B045E616; Tue, 19 Oct 2021 14:13:47 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20211019051346epcas2p132d3b9c6a1c812f3132e913525235b83~vVp4bTQv01527115271epcas2p18;
+        Tue, 19 Oct 2021 05:13:46 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211019051346epsmtrp16f44d9fc87cdc94baa573b6e580f2cf5~vVp4aZ3HT1490514905epsmtrp1B;
+        Tue, 19 Oct 2021 05:13:46 +0000 (GMT)
+X-AuditID: b6c32a45-9a3ff7000000268c-6b-616e540bc644
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        94.86.08738.A045E616; Tue, 19 Oct 2021 14:13:46 +0900 (KST)
+Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20211019051346epsmtip2dbf70093c25cbf90ac11d95b3f0a8eac~vVp4I7RVn0229902299epsmtip2X;
+        Tue, 19 Oct 2021 05:13:46 +0000 (GMT)
+From:   Kiwoong Kim <kwmad.kim@samsung.com>
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
+        hy50.seo@samsung.com, sh425.lee@samsung.com,
+        bhoon95.kim@samsung.com, vkumar.1997@samsung.com
+Cc:     Kiwoong Kim <kwmad.kim@samsung.com>
+Subject: [PATCH RESEND v2] scsi: ufs: clear doorbell for hibern8 errors when
+ using ah8
+Date:   Tue, 19 Oct 2021 13:57:07 +0900
+Message-Id: <1634619427-171880-1-git-send-email-kwmad.kim@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmk+LIzCtJLcpLzFFi42LZdljTQpc7JC/R4P5vPouTT9awWTyYt43N
+        4uXPq2wWBx92slh8XfqM1eLT+mWsFqsXP2CxWHRjG5PFzS1HWSwu75rDZtF9fQebxfLj/5gs
+        uu7eYLRY+u8ti8Wd+x9ZHPg9Lvf1Mnks3vOSyWPCogOMHt/Xd7B5fHx6i8Wjb8sqRo/Pm+Q8
+        2g90MwVwRGXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl
+        5gBdr6RQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMC/QK07MLS7NS9fLSy2xMjQw
+        MDIFKkzIzlh14hJLwXOeisZ1R5gaGA9xdTFyckgImEjMWnKKqYuRi0NIYAejxPcNk9kgnE+M
+        Ekcu/2WFcD4zSkzffo0VpuXfy5vMILaQwC5Gif2vnSGKfjBKLFvQBpZgE9CUeHpzKhOILSJw
+        nUli3vYMEJtZQF1i14QTYHFhgQiJ269+sHcxcnCwCKhKHFgbBhLmFXCT+HFqJyPELjmJm+c6
+        mUHmSwg0ckhc6NrNDFIvIeAisbVZC6JGWOLV8S3sELaUxMv+Nii7XmLf1AZWiN4eRomn+/5B
+        DTWWmPWsnRFkDjPQnet36UOMVJY4cosF4ko+iY7Df9khwrwSHW1CEI3KEr8mTYYaIikx8+Yd
+        qE0eEu8+XgEbKCQQK3HkotAERtlZCOMXMDKuYhRLLSjOTU8tNiowhMdQcn7uJkZwatRy3cE4
+        +e0HvUOMTByMhxglOJiVRHiTXHMThXhTEiurUovy44tKc1KLDzGaAgNrIrOUaHI+MDnnlcQb
+        mlgamJiZGZobmRqYK4nzWopmJwoJpCeWpGanphakFsH0MXFwSjUwJS2J/GF0Y1K61InVag+m
+        ne730ma29ujZ2dxqeHRZ8dMFF34928Rn5N2yOXZq7InZ+v9f/M//1si85ujKft2XSY2mGm8O
+        cD6+vnN71uzz3VnvfOrtmzSCon8VPtLp/q9hxXmsvUBv5upJZwrP3DpRbSCy66Tekdtrd+mt
+        fME0gXHZsU4j1Y/HrBbLMVpMXvy86/O3v+xpl/SmLtybbh+gt7psd1dDaInk46BmgZzDiy5N
+        XD+d6RXn1D2iDv90/A18zZrspHIZT968xR56pf+fUOh7eROtvsBl5TvlY+dKaU4+esq+IvXr
+        dve6adsjGH2jp/7bM+G4c83VlsNSFS5p1WZHNG90Zelefqz/6h6DvRJLcUaioRZzUXEiAMC8
+        yu4WBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKLMWRmVeSWpSXmKPExsWy7bCSvC5XSF6iwcxr6hYnn6xhs3gwbxub
+        xcufV9ksDj7sZLH4uvQZq8Wn9ctYLVYvfsBisejGNiaLm1uOslhc3jWHzaL7+g42i+XH/zFZ
+        dN29wWix9N9bFos79z+yOPB7XO7rZfJYvOclk8eERQcYPb6v72Dz+Pj0FotH35ZVjB6fN8l5
+        tB/oZgrgiOKySUnNySxLLdK3S+DKWHXiEkvBc56KxnVHmBoYD3F1MXJySAiYSPx7eZMZxBYS
+        2MEosf4PD0RcUuLEzueMELawxP2WI6xdjFxANd8YJR5/PckKkmAT0JR4enMqE0hCROAlk8SL
+        OWvYQBLMAuoSuyacYAKxhQXCJLbtnQsU5+BgEVCVOLA2DCTMK+Am8ePUTqgFchI3z3UyT2Dk
+        WcDIsIpRMrWgODc9t9iwwCgvtVyvODG3uDQvXS85P3cTIzhktbR2MO5Z9UHvECMTB+MhRgkO
+        ZiUR3iTX3EQh3pTEyqrUovz4otKc1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUa
+        mMx87XxYT0ucTDRdrHXbtPHw6X7p/gZNhhzduy5vwpb5Hgl6avDq2cwwBYvHkpdMZ4cLMXY+
+        ebqOpfaJQLFC649jlRpMlnVLJp2dsvXfi5s58VMOdrIKNJy89KA3eqFdVp647bdQId6w0HUW
+        Flo5V1dqSnZejYgVilohnDVl15TNMz4VxJzd2iopfDBH+VDZ/0Mdy2a922VcrPiqdYIZs07t
+        QQtjN2WNzhKmqV4r7cqS94pvXHH13f/PthGtfNfb2/xUVjT7LAjxuMTbLFJlsLY+jeHhhQk3
+        ZNpeK89+Fttbb2O69Bj/zq7VhVuDM/Nb5j0y6yxyci3uYovKOeT2jPPhIYdbf9O4AsPVjzQq
+        sRRnJBpqMRcVJwIAqD+7pMgCAAA=
+X-CMS-MailID: 20211019051346epcas2p132d3b9c6a1c812f3132e913525235b83
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211019051346epcas2p132d3b9c6a1c812f3132e913525235b83
+References: <CGME20211019051346epcas2p132d3b9c6a1c812f3132e913525235b83@epcas2p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David,
+Changes from v1:
+* Change the time to requeue pended commands
 
-On 10/15/21 10:43 AM, Wilson, David T. (GSFC-5870) wrote:
-> Hi,
-> 
-> I am reporting what I believe is a potential issue in the tmp401 driver for the tmp461 device specifically. I am new to reporting issues, so I apologize in advance if I've provided insufficient information for an issue report.
-> 
-> The problem I'm encountering is that when I use the tmp401 linux driver to read temperature values from the tmp461, all of the read temperature values end with 996 (e.g. 33996, 38996, etc...).
-> 
-> Looking further into the tmp401 commit messages, I see that the driver was changed to use smb word operations instead of separate byte operations. Although the other supported devices (i.e. tmp432, etc...) are noted to support 16-bit read operations in their respective datasheets, I see no indications of 16-bit read support in the tmp461 datasheet, which is supported by my inquiry in the TI forums (https://e2e.ti.com/support/sensors-group/sensors/f/sensors-forum/1044935/tmp461-linux-driver-support-and-16-bit-temperature-register-reads).
-> 
-> Reverting the driver to the commit before the smb word change, I am then able to read temperature values that do not end only with 996. As a result, I believe that the tmp461 support may be partially broken by the switch to smb word operations.
-> 
+When an scsi command is dispatched right after host complete
+all the pended requests and ufs driver tries to ring a doorbell,
+host might be still during entering into hibern8.
+If the hibern8 error occurrs during that period, the doorbell
+might not be zero and clearing it should have done.
+But, current ufshcd_err_handler goes directly to reset
+w/o clearing the doorbell when the driver's link state is broken.
+This patch is to requeue pended commands after host reset.
 
-can you try to instantiate the lm90 driver (instead of the tmp401 driver)
-and let me know if it works for you ? If your system uses devicetree,
-you might have to select "ti,tmp451" instead of "ti,tmp461".
+Here's an actual symptom that I've faced. At the time, tag #17
+is still pended even after host reset. And then the block timer
+is expired.
 
-Thanks,
-Guenter
+exynos-ufs 11100000.ufs: ufshcd_check_errors: Auto Hibern8
+Enter failed - status: 0x00000040, upmcrs: 0x00000001
+..
+host_regs: 00000050: b8671000 00000008 00020000 00000000
+..
+exynos-ufs 11100000.ufs: ufshcd_abort: Device abort task at tag 17
+
+Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 9faf02c..e5d4ef7 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -7136,8 +7136,10 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+ 	err = ufshcd_hba_enable(hba);
+ 
+ 	/* Establish the link again and restore the device */
+-	if (!err)
++	if (!err) {
++		ufshcd_retry_aborted_requests(hba);
+ 		err = ufshcd_probe_hba(hba, false);
++	}
+ 
+ 	if (err)
+ 		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+-- 
+2.7.4
+
