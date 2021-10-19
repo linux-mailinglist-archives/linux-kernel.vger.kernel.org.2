@@ -2,180 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D13434158
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B028434154
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhJSW2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:28:51 -0400
-Received: from ixit.cz ([94.230.151.217]:54002 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229632AbhJSW2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:28:40 -0400
-Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id AD26920064;
-        Wed, 20 Oct 2021 00:26:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1634682386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5jg69UQKQD2tfZXqs0E8mJ/KCQlQAP8qmUqnBxG4Qmc=;
-        b=oDJMZM2oqDFrpN31K5nWQscg6a1VUzgAVbDDln45t1tsQpX4+3jO4cNelc7PqdzfMzUG3j
-        7JHGAVnRzDU9vMNIfQrp6L7UYoWI/n8rUDcQbovynNtE3tN5Ex8QnhXTAaHBIKs/1lB/as
-        lgRsGXHVAyppd4bcv4qIBgcBaULVj9M=
-Date:   Wed, 20 Oct 2021 00:24:52 +0200
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH] WIP: dt-bindings: arm: firmware: tlm,trusted-foundations:
- Convert txt bindings to yaml
-To:     Rob Herring <robh@kernel.org>
-Cc:     Stephen Warren <swarren@nvidia.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht
-Message-Id: <GXW81R.AUXV3AJ9VUDL@ixit.cz>
-In-Reply-To: <YW86yrhJBTunU121@robh.at.kernel.org>
-References: <20211009104518.45596-1-david@ixit.cz>
-        <YW86yrhJBTunU121@robh.at.kernel.org>
-X-Mailer: geary/40.0
+        id S229764AbhJSW2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhJSW2W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 18:28:22 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0C2C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:26:09 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id x1so22215981iof.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CxAVpN65ej2sl22y1JSHL1CR7fzfghNGDTHMGW2HI7s=;
+        b=RyQoURPjykhjcaibRBekjVUtz6XomYDbVvGGV1gY3Bu0y1FSYrX2qyG0GxAHh8z0IF
+         rG/RyrgMm6WirXQDFvpNUbGGc+tC2e1OI4+glAtW8+7ZK/d2Ahf39Ba7A+Yuavgid6PA
+         QGm17zXL9TYo4oQwGMqvyEjXbWN6tJHsTkIWIBnEZq3MJAeJu2fXjtWbPZctjjQO4qnx
+         8vf7cdGw3KgBV0bW3xClsWA44DiVbbRnBUPq43NFKbW4/QsRTC0aAqR5qSvwUBE0rHZh
+         /Xon2EeaVjPTcbShNvl+RfFZMxnePyMZWOcdaX9N2QGaEjF5/KGT1NVHCNgfPgCrvQK3
+         0vHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CxAVpN65ej2sl22y1JSHL1CR7fzfghNGDTHMGW2HI7s=;
+        b=HYJBCCTr767cBGQJIDXVqDESkyPFFh2OIOUO9NDgrwd8G7IRkbnxLEASJBpIV6tB5L
+         ijMLAMMnb70OdJ+ou4K9/UhGCmcSl8UL9VFhfj9LXaagvev4lx9NQpNShRy+zVpvkjgT
+         BzmmFAlpMjL7m1ce4b+IOahXVOwQOMdnuojrCjf3N5aY8CiYw3BDBzM5jik5Lr4LwPon
+         k+n8mSfH4mMH1ZaTv0QUG7AY2xYl1JXE07WUo1mWX681J+8PkkviGerlZHoaBWUWymo8
+         /zEcqSYZOarOA8ATTKFwU6Lk/Z6pZMs9vR8rwAghy5d1mwFfnJphtPwg8q3bgh1AoXdU
+         psqA==
+X-Gm-Message-State: AOAM5315XSOydM00mW/XCge8DSH4P86IhNRWylPKaXBLDI7oqEY7m+oo
+        JV2jB9tpR9gYz8fEmWK5YcKDOg==
+X-Google-Smtp-Source: ABdhPJw/RHyzSVpfTWPUJngmo5nYBRpsPRYqd5V3qJivu8WmBU3NeWQEM3tOK+irVmIzUL1P1UtBBw==
+X-Received: by 2002:a02:9609:: with SMTP id c9mr6213669jai.118.1634682368917;
+        Tue, 19 Oct 2021 15:26:08 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id 81sm169730iou.21.2021.10.19.15.26.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 15:26:08 -0700 (PDT)
+Subject: Re: [PATCH 06/14] block: store elevator state in request
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     linux-block@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernelci@groups.io" <kernelci@groups.io>
+References: <20211017013748.76461-1-axboe@kernel.dk>
+ <20211017013748.76461-7-axboe@kernel.dk>
+ <1a08141a-407f-0fda-4b27-e9dd350c6e79@collabora.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8654edbf-0161-5dc1-5133-2d0623628229@kernel.dk>
+Date:   Tue, 19 Oct 2021 16:26:06 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+In-Reply-To: <1a08141a-407f-0fda-4b27-e9dd350c6e79@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-
-On Tue, Oct 19 2021 at 16:38:18 -0500, Rob Herring <robh@kernel.org> 
-wrote:
-> On Sat, Oct 09, 2021 at 12:45:18PM +0200, David Heidelberg wrote:
->>  Convert Trusted Foundation binding to the YAML syntax.
+On 10/19/21 4:21 PM, Guillaume Tucker wrote:
+> Hi Jens,
 > 
-> Looks fine. Why WIP?
+> On 17/10/2021 02:37, Jens Axboe wrote:
+>> Add an rq private RQF_ELV flag, which tells the block layer that this
+>> request was initialized on a queue that has an IO scheduler attached.
+>> This allows for faster checking in the fast path, rather than having to
+>> deference rq->q later on.
+>>
+>> Elevator switching does full quiesce of the queue before detaching an
+>> IO scheduler, so it's safe to cache this in the request itself.
 > 
-
-Can you drop the WIP prefix I forgot or should I resend?
-
-
-> If version number ranges are known, you could add constraints on 
-> those.
-
-from driver:
-         * we are not using version information for now since currently
-         * supported SMCs are compatible with all TF releases
-so I guess at least driver currently doesn't care and know any enums.
-
-David
-
+> A kernelci.org automated bisection found that this patch
+> introduced a regression in next-20211019 with a NULL pointer
+> dereference, which only seems to be affecting QEMU but across all
+> architectures.
 > 
->> 
->>  Signed-off-by: David Heidelberg <david@ixit.cz>
->>  ---
->>   .../arm/firmware/tlm,trusted-foundations.txt  | 20 --------
->>   .../arm/firmware/tlm,trusted-foundations.yaml | 46 
->> +++++++++++++++++++
->>   2 files changed, 46 insertions(+), 20 deletions(-)
->>   delete mode 100644 
->> Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.txt
->>   create mode 100644 
->> Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
->> 
->>  diff --git 
->> a/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.txt 
->> b/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.txt
->>  deleted file mode 100644
->>  index 780d0392a66b..000000000000
->>  --- 
->> a/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.txt
->>  +++ /dev/null
->>  @@ -1,20 +0,0 @@
->>  -Trusted Foundations
->>  --------------------
->>  -
->>  -Boards that use the Trusted Foundations secure monitor can signal 
->> its
->>  -presence by declaring a node compatible with 
->> "tlm,trusted-foundations"
->>  -under the /firmware/ node
->>  -
->>  -Required properties:
->>  -- compatible: "tlm,trusted-foundations"
->>  -- tlm,version-major: major version number of Trusted Foundations 
->> firmware
->>  -- tlm,version-minor: minor version number of Trusted Foundations 
->> firmware
->>  -
->>  -Example:
->>  -	firmware {
->>  -		trusted-foundations {
->>  -			compatible = "tlm,trusted-foundations";
->>  -			tlm,version-major = <2>;
->>  -			tlm,version-minor = <8>;
->>  -		};
->>  -	};
->>  diff --git 
->> a/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml 
->> b/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
->>  new file mode 100644
->>  index 000000000000..9d1857c0aa07
->>  --- /dev/null
->>  +++ 
->> b/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
->>  @@ -0,0 +1,46 @@
->>  +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>  +%YAML 1.2
->>  +---
->>  +$id: 
->> "http://devicetree.org/schemas/arm/firmware/tlm,trusted-foundations.yaml#"
->>  +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->>  +
->>  +title: Trusted Foundations
->>  +
->>  +description: |
->>  +  Boards that use the Trusted Foundations secure monitor can 
->> signal its
->>  +  presence by declaring a node compatible under the /firmware/ node
->>  +
->>  +maintainers:
->>  +  - Stephen Warren <swarren@nvidia.com>
->>  +
->>  +properties:
->>  +  $nodename:
->>  +    const: trusted-foundations
->>  +
->>  +  compatible:
->>  +    const: tlm,trusted-foundations
->>  +
->>  +  tlm,version-major:
->>  +    $ref: /schemas/types.yaml#/definitions/uint32
->>  +    description: major version number of Trusted Foundations 
->> firmware
->>  +
->>  +  tlm,version-minor:
->>  +    $ref: /schemas/types.yaml#/definitions/uint32
->>  +    description: minor version number of Trusted Foundations 
->> firmware
->>  +
->>  +required:
->>  +  - compatible
->>  +  - tlm,version-major
->>  +  - tlm,version-minor
->>  +
->>  +additionalProperties: false
->>  +
->>  +examples:
->>  +  - |
->>  +    firmware {
->>  +      trusted-foundations {
->>  +        compatible = "tlm,trusted-foundations";
->>  +        tlm,version-major = <2>;
->>  +        tlm,version-minor = <8>;
->>  +      };
->>  +    };
->>  --
->>  2.33.0
->> 
->> 
+> More details about the regression can be found here:
+> 
+>   https://linux.kernelci.org/test/job/next/branch/master/kernel/next-20211019/plan/baseline/
+>   https://linux.kernelci.org/test/case/id/616ea20eb7104071c43358ea/
+> 
+> See also all the test jobs involved in the automated bisection:
+> 
+>   https://lava.collabora.co.uk/scheduler/device_type/qemu?dt_search=bisection-287
+> 
+> If you do send a fix, please include this trailer:
+> 
+>   Reported-by: "kernelci.org bot" <bot@kernelci.org>
+> 
+> 
+> Please let us know if this seems like a valid bisection result
+> and if you need any help to debug the issue or try a fix.
 
+This got fixed yesterday, current tree is fine.
+
+-- 
+Jens Axboe
 
