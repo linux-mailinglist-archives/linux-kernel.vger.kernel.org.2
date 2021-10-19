@@ -2,152 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD713432C28
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D501432C39
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhJSDTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:19:44 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:45962 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhJSDTm (ORCPT
+        id S232381AbhJSDZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJSDZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:19:42 -0400
-Received: by mail-il1-f200.google.com with SMTP id q14-20020a92750e000000b002589d954013so9229352ilc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:17:30 -0700 (PDT)
+        Mon, 18 Oct 2021 23:25:15 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED13DC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:23:03 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id oa4so13653147pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BVN5xeuqFq0lTVkizM80YhZzkA/69tY6m4YTtcTyQN8=;
+        b=nwvWBQkLFZa1BJzfjnwOShW2NglcjTLQHlQ6mQG5SCNHPwh3OrQ4J6NUPrSjqGf9oS
+         x6IjwruBTm/IMQqvrvGcFP0DSJhTOvFG1kQBJb0NIq5cci0mPC5dH3C7xhJkXcsF1D6x
+         xlz/XKf49OjKs6YmmtMmiBuSnIB/PXoOj7VAc5oRfKF07MqfpGvmIhaHyZfESpp/eeeT
+         RpqUji1aVBD/IPpolTCscTc3ls9fvPgp+yqZii0XnvB8b0g3P8pTrm54YQgSimT9gVh8
+         Lm1FZG7SwHbQ2JIm/1MyPthZb82BLo0zcgZl+nEHWFkc/Ed9eYqC05gowXq8wFNMZkui
+         +jEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=OaCb4m2Y41G8nZRW9KQLy/L6JXv6G8zOIqHDza5NSKY=;
-        b=mJTIE3VT0NetnXnGXXJcY416a11F/8X8KQCgv3KCdjwfmxMl8t4Y5bNk73nPt1mwf0
-         KM2pypUQn0mAMQIte5UIUTom8huKqt85d2St4oBCxBSpxrcY7cfWpd1zQ8ex7Bxpn/K7
-         8WCaUCiDx+Dec8I2A4Gpv6ZzZEN/snybNgpgY6IjxL1ENOWhdHtIgu/A4jwsysN7Fkje
-         /jM5vV3K3a/pCMkrCXSd2DmwZUt9KADcmj+TTDGfSHbgSow8I6fISC/j1LRstGxdELll
-         6/EdFscW6qe8AeQ+ePi57FnOSamPED/CHflSo5qcixXE60P7yZ3QokeVcDfx98vX+hG9
-         hE5A==
-X-Gm-Message-State: AOAM532DcTDUMT25b3WcCYY0wXqpaUo4P5ecNNtoDzn+m50OudVCXxcS
-        w5GsWhVyuPVSLcqrhHFyrGHZT6T1+KqjRqHNFOJl4E5rAa9l
-X-Google-Smtp-Source: ABdhPJytT01GGfwmypDTPjJGvud3xJD/NRIzfMyKE/Wt5woHb/L6cvKtWWgzORzXXgPLYExfF4IloMbwxriKJhcmvYnYPvVeicuK
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BVN5xeuqFq0lTVkizM80YhZzkA/69tY6m4YTtcTyQN8=;
+        b=i1BIhRiPn0Z03XjwouoTbmT3vcjA2r9HiZoU2Z+z/raYQvU2plzZiJ6tauIJHn2DQl
+         W+0g6O1Wn/4ogtghREQeFdFyDMdo1SiiBTtKihY7jSfOSGsHP+mVOelIadFd5WsU7nYA
+         w2gW1E9A1OXuJzQd2PVVD/HQIYk95ewI0gU8PAfByKUvXBj7Fkf6ippN1KF5CEhd3NBM
+         vy/SL0myP8PBmurN+2dGr0ehjxQs3l08F37eXTiyX49Dwask7oyviS8Vm7oSntzQPU4H
+         PK0dtyEPs4sRW+r9H16lQWzpfbF7QyAB7U8L9vmMrnVeaug4L77OZ4Bc5OQx0k6xezZl
+         PSxg==
+X-Gm-Message-State: AOAM532fCC9qVf1GF/IfcvewhQGFfM6WbUAk4s7feI8s99SEL1pGVUPm
+        xi0V4P2l3p1erVyniDkBS74=
+X-Google-Smtp-Source: ABdhPJxeof47oga3uEXuZkZBG/pBIzQgLRngk1yktVpmMCHxKvjBbbuFyhjqubQfA90yUs5Vjv0Yng==
+X-Received: by 2002:a17:90a:9291:: with SMTP id n17mr3466221pjo.243.1634613783343;
+        Mon, 18 Oct 2021 20:23:03 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id r13sm6686587pgv.21.2021.10.18.20.23.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 20:23:02 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     mingo@redhat.com
+Cc:     will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] locking/ww-mutex: use swap()
+Date:   Tue, 19 Oct 2021 03:22:39 +0000
+Message-Id: <20211019032239.974296-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:220c:: with SMTP id l12mr2445346jas.149.1634613449745;
- Mon, 18 Oct 2021 20:17:29 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 20:17:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000046acd05ceac1a72@google.com>
-Subject: [syzbot] divide error in usbnet_start_xmit
-From:   syzbot <syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        oneukum@suse.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-syzbot found the following issue on:
+Use swap() in order to make code cleaner. Issue found by coccinelle.
 
-HEAD commit:    c03fb16bafdf Merge 5.15-rc6 into usb-next
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d48f1f300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c27d285bdb7457e2
-dashboard link: https://syzkaller.appspot.com/bug?extid=76bb1d34ffa0adc03baa
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14fe6decb00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c7bcaf300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
-
-divide error: 0000 [#1] SMP KASAN
-CPU: 0 PID: 1315 Comm: kworker/0:6 Not tainted 5.15.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: mld mld_ifc_work
-RIP: 0010:usbnet_start_xmit+0x3f1/0x1f70 drivers/net/usb/usbnet.c:1404
-Code: 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 4b 18 00 00 8b 44 24 08 31 d2 31 ff <41> f7 b5 28 0d 00 00 41 89 d4 89 d6 e8 4e 12 b5 fd 45 85 e4 0f 84
-RSP: 0018:ffffc9000104f660 EFLAGS: 00010246
-RAX: 000000000000005a RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff838cbdc1 RDI: 0000000000000000
-RBP: ffff8881155b1350 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffffff838cbdb4 R11: 0000000000000000 R12: 00000000c0011100
-R13: ffff888119304000 R14: ffff8881155b1280 R15: ffff8881155b0d00
-FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f24d7edaa70 CR3: 000000010a45d000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __netdev_start_xmit include/linux/netdevice.h:4988 [inline]
- netdev_start_xmit include/linux/netdevice.h:5002 [inline]
- xmit_one net/core/dev.c:3576 [inline]
- dev_hard_start_xmit+0x1df/0x890 net/core/dev.c:3592
- sch_direct_xmit+0x25b/0x790 net/sched/sch_generic.c:342
- __dev_xmit_skb net/core/dev.c:3803 [inline]
- __dev_queue_xmit+0xf25/0x2d40 net/core/dev.c:4170
- neigh_resolve_output net/core/neighbour.c:1492 [inline]
- neigh_resolve_output+0x50e/0x820 net/core/neighbour.c:1472
- neigh_output include/net/neighbour.h:510 [inline]
- ip6_finish_output2+0xdbe/0x1b20 net/ipv6/ip6_output.c:126
- __ip6_finish_output.part.0+0x387/0xbb0 net/ipv6/ip6_output.c:191
- __ip6_finish_output include/linux/skbuff.h:982 [inline]
- ip6_finish_output net/ipv6/ip6_output.c:201 [inline]
- NF_HOOK_COND include/linux/netfilter.h:296 [inline]
- ip6_output+0x3d2/0x810 net/ipv6/ip6_output.c:224
- dst_output include/net/dst.h:450 [inline]
- NF_HOOK include/linux/netfilter.h:307 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- mld_sendpack+0x979/0xe10 net/ipv6/mcast.c:1826
- mld_send_cr net/ipv6/mcast.c:2127 [inline]
- mld_ifc_work+0x71c/0xdc0 net/ipv6/mcast.c:2659
- process_one_work+0x9bf/0x1620 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3c2/0x4a0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Modules linked in:
----[ end trace 3c734ee50b55655e ]---
-RIP: 0010:usbnet_start_xmit+0x3f1/0x1f70 drivers/net/usb/usbnet.c:1404
-Code: 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 4b 18 00 00 8b 44 24 08 31 d2 31 ff <41> f7 b5 28 0d 00 00 41 89 d4 89 d6 e8 4e 12 b5 fd 45 85 e4 0f 84
-RSP: 0018:ffffc9000104f660 EFLAGS: 00010246
-RAX: 000000000000005a RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff838cbdc1 RDI: 0000000000000000
-RBP: ffff8881155b1350 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffffff838cbdb4 R11: 0000000000000000 R12: 00000000c0011100
-R13: ffff888119304000 R14: ffff8881155b1280 R15: ffff8881155b0d00
-FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f24d7edaa70 CR3: 000000010a45d000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-   7:	fc ff df
-   a:	48 89 fa             	mov    %rdi,%rdx
-   d:	48 c1 ea 03          	shr    $0x3,%rdx
-  11:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax
-  15:	84 c0                	test   %al,%al
-  17:	74 08                	je     0x21
-  19:	3c 03                	cmp    $0x3,%al
-  1b:	0f 8e 4b 18 00 00    	jle    0x186c
-  21:	8b 44 24 08          	mov    0x8(%rsp),%eax
-  25:	31 d2                	xor    %edx,%edx
-  27:	31 ff                	xor    %edi,%edi
-* 29:	41 f7 b5 28 0d 00 00 	divl   0xd28(%r13) <-- trapping instruction
-  30:	41 89 d4             	mov    %edx,%r12d
-  33:	89 d6                	mov    %edx,%esi
-  35:	e8 4e 12 b5 fd       	callq  0xfdb51288
-  3a:	45 85 e4             	test   %r12d,%r12d
-  3d:	0f                   	.byte 0xf
-  3e:	84                   	.byte 0x84
-
-
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/locking/test-ww_mutex.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+index 353004155d65..daad819fcd16 100644
+--- a/kernel/locking/test-ww_mutex.c
++++ b/kernel/locking/test-ww_mutex.c
+@@ -389,7 +389,7 @@ struct stress {
+ static int *get_random_order(int count)
+ {
+ 	int *order;
+-	int n, r, tmp;
++	int n, r;
+ 
+ 	order = kmalloc_array(count, sizeof(*order), GFP_KERNEL);
+ 	if (!order)
+@@ -401,9 +401,7 @@ static int *get_random_order(int count)
+ 	for (n = count - 1; n > 1; n--) {
+ 		r = get_random_int() % (n + 1);
+ 		if (r != n) {
+-			tmp = order[n];
+-			order[n] = order[r];
+-			order[r] = tmp;
++			swap(order[n], order[r]);
+ 		}
+ 	}
+ 
+-- 
+2.25.1
+
