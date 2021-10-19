@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657C64341AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419D34341B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhJSW4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:56:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229483AbhJSW4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:56:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8712B61074;
-        Tue, 19 Oct 2021 22:53:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634684032;
-        bh=a6eeZS/LZBl+OZKeBZ0Xvg/kT5IZrCEt3S2OPTd7s20=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=n9y7wy/hVq0fzn44+J2dKMaBrYIZp+5HEzTYhKxH+uV+GPsyrLHNxvfRzaSHNItEs
-         hRYUZVLQ962h0t0kTtoBUkiZ3qPH/70/vebaBKcs0c4FxoUF912mYoYqDlbyW4BpWU
-         EqMTK/4NJ3wZJ9bJukVHO1Vnu9WviQVsqRVuN5laK+EbSZfQfhLXQgMZomCNwaFems
-         P1JxE+pDJ3W7ifngq/lKOuLLcKyU2kKc79OLnsgdlMc/5xR5AcTlqBbYWqIyhSnhIr
-         +503+vqcBtUDCTlj6ts+F9i1ceme2o9tOlZzDb/EwVxRkKkjC1MYvm8VJ82WhwCXB9
-         Zc1OU4gON+Jmw==
-Date:   Tue, 19 Oct 2021 17:53:51 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com, tsbogend@alpha.franken.de,
-        linux-pci@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 2/6] MIPS: OCTEON: Remove redundant clearing of AER
- status registers
-Message-ID: <20211019225351.GA2416612@bhelgaas>
+        id S229929AbhJSW4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhJSW4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 18:56:35 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB73C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:54:22 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id f5so20728103pgc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:54:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cU3HJbTF7v8oN4m9QpyNLUi7Z2VsnXCEZXyNBnXavMs=;
+        b=cuhVndCamK8/716BHL8VV3m6G8gcGkThTiSVQ6WCdR23cmkvS8BAdf5MUWNZ3+xdJh
+         SXNvDs9u/lEzXmzt2H4VqFJR13EW1nC9xTyUpNjgvdyajBpGbxaWkVSkwru2zDmzhJL5
+         9+BvigGJweB1Imcox7fO16zbnV5IFg9bzbcUo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cU3HJbTF7v8oN4m9QpyNLUi7Z2VsnXCEZXyNBnXavMs=;
+        b=SQPfFPXm5HdbNVXTBrvEPxD1lLvDo0kdXxsZIlMEiR/QOhRDYSODFY9eH4dOo+qz6S
+         KXGMQaBBgo5EvEpyLlsySAh7gEmcNkAWb4cCEYXVbSUQ+SWvjDuzhCbTyPtkXblJydVQ
+         /dkhF+LPDANsS2RFO9YpGe3wiqrJQb/cziXUBan8tteVHwipgubarlBmaArSfBn2attz
+         00OSbU90Q3AR6EzGEjxspBncmIgINEize3PupgRBdkoaKoBhjDftdzRfC0lNnl6RIFWL
+         Hgrvr4s71+s29uYvvMmdFddB9kaSaSHLF7av19BpBTHjifySlBogWYPiTkXNisB9NDRl
+         lfeA==
+X-Gm-Message-State: AOAM530CjMMlgFiJWNqEf7i7YrHW/d6wNaA79wbihmzbhD+bBYmpmvoH
+        ihCdBiPcMysxmSIWUzldq4oHXA==
+X-Google-Smtp-Source: ABdhPJwhFFyHmKUMVfxbdbUIRSGmuKpqlVMRtb5XW/S/r0SYWKyVbrnMtwygjRKH7m1CQn1PDJPYsw==
+X-Received: by 2002:a62:5804:0:b0:44b:b75b:ec8f with SMTP id m4-20020a625804000000b0044bb75bec8fmr2499812pfb.63.1634684061497;
+        Tue, 19 Oct 2021 15:54:21 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:6c1f:a561:f56:7d16])
+        by smtp.gmail.com with UTF8SMTPSA id q6sm245804pgc.1.2021.10.19.15.54.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 15:54:21 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 15:54:18 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Peter Chen <peter.chen@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-usb@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Andy Gross <agross@kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nishanth Menon <nm@ti.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH v15 0/6] usb: misc: Add onboard_usb_hub driver
+Message-ID: <YW9MmoSTouEDdpxa@google.com>
+References: <20210727004118.2583774-1-mka@chromium.org>
+ <CAA8EJpq55e+fk9oDi8+JXDWiPcXDXK5oz1DL5eqfx+FkT-xhnw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <81597ce8ee30ad01da86fe1edf0fab76aa9b9710.1633369560.git.naveennaidu479@gmail.com>
+In-Reply-To: <CAA8EJpq55e+fk9oDi8+JXDWiPcXDXK5oz1DL5eqfx+FkT-xhnw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 11:29:28PM +0530, Naveen Naidu wrote:
-> e8635b484f64 ("MIPS: Add Cavium OCTEON PCI support.") added MIPS
-> specific code to enable PCIe and AER error reporting (*irrespective
-> of CONFIG_PCIEAER value*) because PCI core didn't do that at the time.
-> 
-> Currently when CONFIG_PCIEAER=y, the Uncorrectable Error status,
-> Correctable Error status and Root status registers are cleared
-> during the PCI Bus enumeration path by pci_aer_init() via
-> pci_init_capabilities()
+Hi Dmitry,
 
-So the current tree (before this patch) always clears these AER status
-registers regardless of CONFIG_PCIEAER.
-
-After this patch, we would clear them only if CONFIG_PCIEAER=y.  I
-don't see anything in arch/mips that sets CONFIG_PCIEAER, so I'm
-concerned we will no longer clear the AER status bits.
-
-I only want to propose a change here if we're very confident that it
-won't change any OCTEON behavior.
-
-> It is now no longer necessary for Octeon code to clear AER status
-> registers since it's done by PCI core.
+On Tue, Oct 19, 2021 at 07:24:41PM +0300, Dmitry Baryshkov wrote:
+> On Tue, 27 Jul 2021 at 03:41, Matthias Kaehlcke <mka@chromium.org> wrote:
+> >
+> > This series adds:
+> > - the onboard_usb_hub_driver
+> > - glue in the xhci-plat driver to create and destroy the
+> >   onboard_usb_hub platform devices if needed
+> > - a device tree binding for the Realtek RTS5411 USB hub controller
+> > - device tree changes that add RTS5411 entries for the QCA SC7180
+> >   based boards trogdor and lazor
+> > - a couple of stubs for platform device functions to avoid
+> >   unresolved symbols with certain kernel configs
+> >
+> > The main issue the driver addresses is that a USB hub needs to be
+> > powered before it can be discovered. For discrete onboard hubs (an
+> > example for such a hub is the Realtek RTS5411) this is often solved
+> > by supplying the hub with an 'always-on' regulator, which is kind
+> > of a hack. Some onboard hubs may require further initialization
+> > steps, like changing the state of a GPIO or enabling a clock, which
+> > requires even more hacks. This driver creates a platform device
+> > representing the hub which performs the necessary initialization.
+> > Currently it only supports switching on a single regulator, support
+> > for multiple regulators or other actions can be added as needed.
+> > Different initialization sequences can be supported based on the
+> > compatible string.
 > 
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> ---
->  arch/mips/pci/pci-octeon.c | 11 -----------
->  1 file changed, 11 deletions(-)
-> 
-> diff --git a/arch/mips/pci/pci-octeon.c b/arch/mips/pci/pci-octeon.c
-> index fc29b85cfa92..8e8b282226cc 100644
-> --- a/arch/mips/pci/pci-octeon.c
-> +++ b/arch/mips/pci/pci-octeon.c
-> @@ -124,11 +124,6 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
->  	/* Find the Advanced Error Reporting capability */
->  	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
->  	if (pos) {
-> -		/* Clear Uncorrectable Error Status */
-> -		pci_read_config_dword(dev, pos + PCI_ERR_UNCOR_STATUS,
-> -				      &dconfig);
-> -		pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_STATUS,
-> -				       dconfig);
->  		/* Enable reporting of all uncorrectable errors */
->  		/* Uncorrectable Error Mask - turned on bits disable errors */
->  		pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, 0);
-> @@ -138,9 +133,6 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
->  		 * correctable, not if the error is reported.
->  		 */
->  		/* PCI_ERR_UNCOR_SEVER - Uncorrectable Error Severity */
-> -		/* Clear Correctable Error Status */
-> -		pci_read_config_dword(dev, pos + PCI_ERR_COR_STATUS, &dconfig);
-> -		pci_write_config_dword(dev, pos + PCI_ERR_COR_STATUS, dconfig);
->  		/* Enable reporting of all correctable errors */
->  		/* Correctable Error Mask - turned on bits disable errors */
->  		pci_write_config_dword(dev, pos + PCI_ERR_COR_MASK, 0);
-> @@ -159,9 +151,6 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
->  				       PCI_ERR_ROOT_CMD_COR_EN |
->  				       PCI_ERR_ROOT_CMD_NONFATAL_EN |
->  				       PCI_ERR_ROOT_CMD_FATAL_EN);
-> -		/* Clear the Root status register */
-> -		pci_read_config_dword(dev, pos + PCI_ERR_ROOT_STATUS, &dconfig);
-> -		pci_write_config_dword(dev, pos + PCI_ERR_ROOT_STATUS, dconfig);
->  	}
->  
->  	return 0;
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> Linux-kernel-mentees mailing list
-> Linux-kernel-mentees@lists.linuxfoundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
+> I have the feeling that you might want to check if you can use pwrseq
+> subsystem being proposed at
+> https://lore.kernel.org/linux-arm-msm/20211006035407.1147909-1-dmitry.baryshkov@linaro.org/.
+> It has been created for exactly the same reason of handling complex
+> power up/down requirements in a bus-neutral way. So instead of
+> creating an onboard-usb-hub, you might want to populate the hub node
+> with the reference to pwrseq device and make usb core call into
+> pwrseq. How does that sound to you?
+
+Thanks for the pointer, it's good to see another attempt to sort out
+power sequencing.
+
+The pwrseq framework could potentially be used by the onboard_usb_hub
+driver, but it probably can't replace it completely. Besides powering
+the USB hub on before enumeration the driver also can optionally power
+it off during system suspend when no wakeup capable USB devices are
+connected, which can result in signifcant power savings on battery
+powered devices. For this the driver needs knowledge about the USB
+(hub) devices that are provided by a hub chip. That part is probably
+best implemented by a driver under drivers/usb/.
+
+It might be an option to have the USB core and the onboard_usb_hub
+driver use the pwrseq framework, though we'd have to ensure that it
+isn't a problem that the USB core turns power on (before
+enumeration) and the onboard_usb_hub driver turns it off during
+system suspend (and on again on resume).
