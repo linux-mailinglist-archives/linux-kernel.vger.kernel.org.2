@@ -2,100 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300E943409C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF2943409F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhJSV3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:29:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229483AbhJSV3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:29:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D639611C7;
-        Tue, 19 Oct 2021 21:27:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634678847;
-        bh=n5oKhj49goNe7lHOmGWW8DH88TSwDNvemsZekDVUD+g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hA8jLmLCMkT0f8JITb9xNQlvJW/fBCTKXqZqkYvpXpW9mIuTSpdqXIQJYXFgGnyqb
-         XAU6fUA6S4YpfO7TT9OTDvEJklw/Sxr4JV2Gy8XsUhJCYCAiR+tVsAhE9AO7tsWfRG
-         7KM3wKkpTlyultA7pI12K4mjHuLzfBrOeIXS+1X6/G9nlmO9KMZ158dGkcrBtsuoSz
-         Y21Z0w0DxNlxhb0UrG1ccW4ehLnJMBGfAZzh9DCsxQyt3VXuxM/+kGNgBXrJhJ1fFI
-         PgSl0UsxBrkNcJGWUQBqkaso6+9h7eXXUmIFEGEfM0iZFuyV1QCOGRJYsrs/1Ln6nX
-         A7pyLacvyHGZg==
-Received: by mail-wm1-f50.google.com with SMTP id v127so14540204wme.5;
-        Tue, 19 Oct 2021 14:27:27 -0700 (PDT)
-X-Gm-Message-State: AOAM532/i/abnc/NQwMetnRfgvhYWR9014cAOHspg2rCUx47sB9g+MIn
-        G1fuwotp/+P+GnEmK9AAHz1amxnTwElIhjFPwBI=
-X-Google-Smtp-Source: ABdhPJyhBvMAj7E4hwSuCHCizWK1p4jiSiUNfn+Rg4ldLs8/ysSNQSLbiYhlq6WQaCwWkA1g6gF7Za9VyAjZbwku+l8=
-X-Received: by 2002:adf:e292:: with SMTP id v18mr45066638wri.369.1634678845729;
- Tue, 19 Oct 2021 14:27:25 -0700 (PDT)
+        id S229632AbhJSVeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhJSVeM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 17:34:12 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D173C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:31:59 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id i20so17890659edj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 14:31:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KP7m3hF4vs54edPCFJbBnxbNAVx5P/u/TEvzaplpID0=;
+        b=amJVaAiWVdLKpuvaL9uFiQwXcXEfk+lR+ypEeTLz7nR53taY4Cdt/jR+b7VDTQdRqz
+         rsHoDV72Gpddw62ICTefP9i+eGI+aLGLvlseW6qg5JcXuIKyaLbZpjgOeyhAJ5nBPOVI
+         Fuw+3xuZUbSI7WWyVnHhxBpXtlmrmhdfM9UBrr+cnKFL5juE/b1nodmDsFjyGdOT35LF
+         jRvlqr2vCpG/Ows0GlaGRUQ9D8RMl9oK8C1hCorZ1Pbrepz1/c16ycjSwVZ1IdkB2cIz
+         gzxTUcZL8dfsgHF65fEbe66EM1//1xbovu5mhxkJsH+Lp6ExfSJ8lAvjdclK2rg9kfnk
+         5OiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KP7m3hF4vs54edPCFJbBnxbNAVx5P/u/TEvzaplpID0=;
+        b=o0IkKJ+xLF/KzMNorpAZtOfPOaMthokLWS3LSQGJ1jUzOe2LW8LvIFjpzikYc8l4Rm
+         zJNSVbsCi5DswFQ3roEtskfQvt4ff8EuTHhyLY4R3bjBmS9Al7b6GbVfwW6rok89p6ta
+         JwhtXJpHnSxXUrLG6Tn+w/gP80BQ2SOAKSEG9DAx0jhAMI4UyrRHJLWbs3T8NzEgQ8nx
+         5R86GfFH8E8AXkB21m+jidOyzYyqBAJ5Xk6qhDZM/RlcPJtZSN5IxsTwD9WdOIK8PXBo
+         l4MQK+EdOre2cmba5KO4X5xMGqHh3vKTPg4dwBqzA302vYRWZpuCruv59JAvsywlL15k
+         r4+Q==
+X-Gm-Message-State: AOAM5311ytM2Wr78voTbhztPilr8NgQhMC1X1H5aeILoG7bhODU9m10F
+        uFhQLBeNBhxwpKpY2kv5q+QdTkLH1CkZHmYTqredoQ==
+X-Google-Smtp-Source: ABdhPJyU7RAD/t0qeLSYWVLIbcp8HVs9urCZmblE/iT+u4cSPcX63qHX2g8apvivOdj1dX7iAz/ukxLoocECaPEfLEo=
+X-Received: by 2002:a50:e14a:: with SMTP id i10mr57304342edl.73.1634679117548;
+ Tue, 19 Oct 2021 14:31:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
- <1632399378-12229-9-git-send-email-rajpat@codeaurora.org> <CAK8P3a3KuTEAXbSTU+n3D_fryquo8B-eXSF2+HrikiNVn6kSSg@mail.gmail.com>
- <YW8xl0fLnQE5o3AQ@ripper> <CAD=FV=XsiMp5jSpX5ong27KYW=G-XYhCfjo48E5cC6Cm+oU-mA@mail.gmail.com>
-In-Reply-To: <CAD=FV=XsiMp5jSpX5ong27KYW=G-XYhCfjo48E5cC6Cm+oU-mA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 19 Oct 2021 23:27:09 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2FroDEppfEkPge7Mm4gGF8ZNHvCwL3r-8Cg7f575YhPw@mail.gmail.com>
-Message-ID: <CAK8P3a2FroDEppfEkPge7Mm4gGF8ZNHvCwL3r-8Cg7f575YhPw@mail.gmail.com>
-Subject: Re: [PATCH V10 8/8] arm64: dts: sc7280: Add aliases for I2C and SPI
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajesh Patil <rajpat@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        msavaliy@qti.qualcomm.com, satya priya <skakit@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
+References: <20211019203850.3833915-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20211019203850.3833915-1-u.kleine-koenig@pengutronix.de>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Tue, 19 Oct 2021 14:31:46 -0700
+Message-ID: <CABXOdTeOO=Yf37_p1c8HVigkqqRyR90RqRDaLk5qxxp3jAGgEA@mail.gmail.com>
+Subject: Re: [PATCH] platform/chrome: cros_ec: Make cros_ec_unregister()
+ return void
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel@pengutronix.de
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 11:11 PM Doug Anderson <dianders@chromium.org> wrote:
-> On Tue, Oct 19, 2021 at 1:57 PM Bjorn Andersson
+On Tue, Oct 19, 2021 at 1:39 PM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
 >
-> Hrm. I know this gets into slightly controversial topics, but I'm a
-> little curious what the downside of having these in the dtsi is. In
-> the case where these i2c/spi/mmc devices _don't_ have "well defined"
-> numbers in the hardware manual of the SoC then I can agree that it
-> doesn't make sense to list these in the dtsi file. However, in the
-> case of sc7280 these numbers are well defined at the SoC level for i2c
-> and SPI.
+> Up to now cros_ec_unregister() returns zero unconditionally. Make it
+> return void instead which makes it easier to see in the callers that
+> there is no error to handle.
 >
-> Said another way: if you have a board that's got peripherals connected
-> on the pins labelled "i2c2" and "i2c6" on the SoC then it's a really
-> nice thing if these show up on /dev/i2c-2 and /dev/i2c-6.
+> Also the return value of i2c, platform and spi remove callbacks is
+> ignored anyway.
 >
-> ...so I'm not sure what board exactly would be overriding and
-> re-numbering? Unless a board really has a strong use case where they
-> need the device connected to the pins for "i2c2" to show up on
-> "/dev/i2c-0"?
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> ---
+>  drivers/platform/chrome/cros_ec.c     | 2 +-
+>  drivers/platform/chrome/cros_ec.h     | 2 +-
+>  drivers/platform/chrome/cros_ec_i2c.c | 4 +++-
+>  drivers/platform/chrome/cros_ec_lpc.c | 4 +++-
+>  drivers/platform/chrome/cros_ec_spi.c | 4 +++-
+>  5 files changed, 11 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/=
+cros_ec.c
+> index fc5aa1525d13..eeb94b3563e2 100644
+> --- a/drivers/platform/chrome/cros_ec.c
+> +++ b/drivers/platform/chrome/cros_ec.c
+> @@ -302,7 +302,7 @@ EXPORT_SYMBOL(cros_ec_register);
+>   *
+>   * Return: 0 on success or negative error code.
+>   */
+> -int cros_ec_unregister(struct cros_ec_device *ec_dev)
+> +void cros_ec_unregister(struct cros_ec_device *ec_dev)
+>  {
+>         if (ec_dev->pd)
+>                 platform_device_unregister(ec_dev->pd);
 
-There are multiple things going on here:
+Isn't there a "return 0;" hiding about here which would now result in
+a compile error ?
 
-- The aliases are traditionally managed by the bootloader, same way
-   as the /chosen nodes including the kernel command line, so the
-   numbers are local policy, and the per-board defaults are just
-   for convenience.
+Guenter
 
-- IMHO there should not be any aliases for status="disabled"
-  nodes, and the status is usually set in the board files.
-
-- The labels on the board don't always match what the SoC calls
-  them, or there might not be any labels at all. This is more
-  important for things like serial ports that are often bare
-  connectors rather than already wired up. The aliases should
-  normally match how the board numbers the connectors, not
-  how they are attached internally.
-
-- For i2c, it's not uncommon to have i2c devices attached behind
-  expanders on i2c/spi/gpio/usb/pci devices
-
-       Arnd
+> diff --git a/drivers/platform/chrome/cros_ec.h b/drivers/platform/chrome/=
+cros_ec.h
+> index 78363dcfdf23..bbca0096868a 100644
+> --- a/drivers/platform/chrome/cros_ec.h
+> +++ b/drivers/platform/chrome/cros_ec.h
+> @@ -11,7 +11,7 @@
+>  #include <linux/interrupt.h>
+>
+>  int cros_ec_register(struct cros_ec_device *ec_dev);
+> -int cros_ec_unregister(struct cros_ec_device *ec_dev);
+> +void cros_ec_unregister(struct cros_ec_device *ec_dev);
+>
+>  int cros_ec_suspend(struct cros_ec_device *ec_dev);
+>  int cros_ec_resume(struct cros_ec_device *ec_dev);
+> diff --git a/drivers/platform/chrome/cros_ec_i2c.c b/drivers/platform/chr=
+ome/cros_ec_i2c.c
+> index 30c8938c27d5..22feb0fd4ce7 100644
+> --- a/drivers/platform/chrome/cros_ec_i2c.c
+> +++ b/drivers/platform/chrome/cros_ec_i2c.c
+> @@ -313,7 +313,9 @@ static int cros_ec_i2c_remove(struct i2c_client *clie=
+nt)
+>  {
+>         struct cros_ec_device *ec_dev =3D i2c_get_clientdata(client);
+>
+> -       return cros_ec_unregister(ec_dev);
+> +       cros_ec_unregister(ec_dev);
+> +
+> +       return 0;
+>  }
+>
+>  #ifdef CONFIG_PM_SLEEP
+> diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chr=
+ome/cros_ec_lpc.c
+> index 1f7861944044..8527a1bac765 100644
+> --- a/drivers/platform/chrome/cros_ec_lpc.c
+> +++ b/drivers/platform/chrome/cros_ec_lpc.c
+> @@ -439,7 +439,9 @@ static int cros_ec_lpc_remove(struct platform_device =
+*pdev)
+>                 acpi_remove_notify_handler(adev->handle, ACPI_ALL_NOTIFY,
+>                                            cros_ec_lpc_acpi_notify);
+>
+> -       return cros_ec_unregister(ec_dev);
+> +       cros_ec_unregister(ec_dev);
+> +
+> +       return 0;
+>  }
+>
+>  static const struct acpi_device_id cros_ec_lpc_acpi_device_ids[] =3D {
+> diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chr=
+ome/cros_ec_spi.c
+> index 14c4046fa04d..713c58687721 100644
+> --- a/drivers/platform/chrome/cros_ec_spi.c
+> +++ b/drivers/platform/chrome/cros_ec_spi.c
+> @@ -790,7 +790,9 @@ static int cros_ec_spi_remove(struct spi_device *spi)
+>  {
+>         struct cros_ec_device *ec_dev =3D spi_get_drvdata(spi);
+>
+> -       return cros_ec_unregister(ec_dev);
+> +       cros_ec_unregister(ec_dev);
+> +
+> +       return 0;
+>  }
+>
+>  #ifdef CONFIG_PM_SLEEP
+> --
+> 2.30.2
+>
