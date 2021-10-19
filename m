@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E527D433C67
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC8F433C6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234334AbhJSQhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
+        id S234386AbhJSQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhJSQhf (ORCPT
+        with ESMTP id S234326AbhJSQhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:37:35 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B18C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:35:22 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 63-20020a1c0042000000b0030d60716239so3830080wma.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:35:22 -0700 (PDT)
+        Tue, 19 Oct 2021 12:37:51 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FE7C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:35:38 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id l39so10635135vkd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6lGbUk9scuSolc0mMC7O3O5jKEdhtvYf+nI62abO4j4=;
-        b=ppRTjWSzYtJqN0FzfUhvG4tLw/33KSdRGOXyf0A972B6B9Qqo8wsj6RBVzmuuqb/wW
-         GwNSwmXgm9JVb512/caLZjdGQeYjwLQJpKqRkxTPjAXApdz0Jj8cG6gPgzIzibmQ4LPb
-         VDMb35EslXmp7JmscSylFEmQY60WdVrn4uOIZ3AZXnt7nFCqcHV58xzIocbGEZMkAcOx
-         sGwcWTkiQtLyDJ23NKScPp5QxBFih7YB0A6Xbq7YnDhZOryF3SFot24TLJB2LMzJOPWB
-         r3+3xQozGKC7oswJO0f2E98ameFHg+zigQHiyvRqraVCu60IP7tBnXyHDqauaDVY2qZC
-         13Jg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hcpunpJfD02BVk7gvPKYSvVCpndtXyJiwVOsvlKcqZI=;
+        b=BdQ2OzL6SWeWZ9lnMcxZWN5DaQ/d8jf2h45OJs9cH+GlYlrjJIzPQv/DepQEx0AVuv
+         GWiTPlZoXqr7Cy5NtlV+3wWBgyR+jVTfzAaFvSmKS8dWGevDt7UhY+6L0iEorvlsoL5J
+         1P+ObMZy40jiLfXR1cMZS5RKUUsOUcevGJNt1CczAFeX2ABB7TVvmfrByhRVJQYdP4ww
+         po/itndSylNqIpsco0VtIYqycpaCG0ykS21mfQb1sIzwGhUMUin7+QPSc4XvP2qjOvuF
+         drZXawwJ2H2xmZBU7yxOYB+Z1GROv1vQOl0WCCjGw20ACo8d0nKaUqK1TGVhF0EKUnXu
+         Mfsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6lGbUk9scuSolc0mMC7O3O5jKEdhtvYf+nI62abO4j4=;
-        b=uYvLOHPhk0aJ7SpG0r9YYxR+/ahx8us8xJpziQv6yCt+JkiNTJ0kdQYRW+jaIarr2t
-         0neMOd7Kvu0sgCv6FWoHQOPwOMUg5ZtLsnjnSy2BmuGK13Sd/iSkm/VlOelHVrwX+tIM
-         x8K0b/xv90zMdFKA/XmVJoZHOQLPbY4CSSWE4N/uGp0QcUjEMXlQPYOGKtq+umSjv6Ts
-         wL+obyNzE2I4B7jikhVFrmtCKQco55x8JnFOP2B0iromQ/WgOgg/5QmLTXg92K2wGfmY
-         /28FO+eASIZK1St0eFpR8UY+ncSQv97mqQDdFytCqtNababtXywr8GilEUDSiKyd2Uvl
-         iSCw==
-X-Gm-Message-State: AOAM532l5RnOWmebHkjMKNq9fIHXDJgHFjPN+ob9elQyQJqn+fNhUk6T
-        CDIoRJ9fdlgH+d5ZDggGUluAnzfMfbhPal70
-X-Google-Smtp-Source: ABdhPJz4qYyTxSplorxLWlOxOc1azR2uKhPM6L83bGXJ4bXdXMR5I0XYlkeHzwIxpQijTU0pclODLQ==
-X-Received: by 2002:a7b:c08a:: with SMTP id r10mr7301002wmh.135.1634661320770;
-        Tue, 19 Oct 2021 09:35:20 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e34:ed2f:f020:4799:198d:b6ef:8da7])
-        by smtp.gmail.com with ESMTPSA id n7sm15377389wra.37.2021.10.19.09.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 09:35:20 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rjw@rjwysocki.net
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Subject: [PATCH v3 2/2] thermal/core: Deprecate changing cooling device state from userspace
-Date:   Tue, 19 Oct 2021 18:35:06 +0200
-Message-Id: <20211019163506.2831454-2-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019163506.2831454-1-daniel.lezcano@linaro.org>
-References: <20211019163506.2831454-1-daniel.lezcano@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hcpunpJfD02BVk7gvPKYSvVCpndtXyJiwVOsvlKcqZI=;
+        b=39S37wpcS9JlHaC9EolsdzmAy1tfS+5KNokWqvIg+sBZjluDSyw84HwPk0N/YNUf6+
+         nD5coG7Zn/QeLEF3wGTMgYPJhtz+tftpB1hP+Ib1x7g6Cd3feZ7kgq9u4wniCkBunI/6
+         mbNWIKPFbnAY+aAuiNvstDiAJMT/65Cop797Cl13nRN+vQUKkAY62ugIXYA3Xo5iGkNJ
+         lSb34cG3IIH21ZMNzPYj8/TFn7rOKlRJL571OOJ805FlFhi38ljVCIIHKFPtb1zfNywV
+         aL4ClDZzFnV9QCbZe+GCXShkJMAdJlh2r2GnriJMflzBwmSHy/zUg9N0gQDdfpo+e9z9
+         0NOw==
+X-Gm-Message-State: AOAM531K4QBkch3suYEfNubKOvZ/X9iEFbYes5Ve7fZfYIvnaSu8+0T0
+        tIo35lw61zXDCuIM/wG96y/gNUyae534FzEn7eSYq+6fcYb8rVHl
+X-Google-Smtp-Source: ABdhPJxiZkNnPp8L2tDYceQO0IZ4U2Vv1yzsBlHqRJNbQZbT3vX8Ww0HOFEE3jsk6TcubludTT/ovXMLWY9QcgDhjJM=
+X-Received: by 2002:a1f:f241:: with SMTP id q62mr13676041vkh.12.1634661338139;
+ Tue, 19 Oct 2021 09:35:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211019131724.3109-1-semen.protsenko@linaro.org>
+ <20211019131724.3109-3-semen.protsenko@linaro.org> <6dbd4812-bac3-55dc-108e-c322e8a493de@canonical.com>
+ <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com>
+In-Reply-To: <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 19 Oct 2021 19:35:26 +0300
+Message-ID: <CAPLW+4mE09AOSco+X9qE=1sjXvNVkOxtJqur+HoBJExxiw0J=g@mail.gmail.com>
+Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cooling devices have their cooling device set_cur_state
-read-writable all the time in the sysfs directory, thus allowing the
-userspace to act on it.
+On Tue, 19 Oct 2021 at 19:22, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 19/10/2021 18:17, Krzysztof Kozlowski wrote:
+> > On 19/10/2021 15:17, Sam Protsenko wrote:
+> >> This RTC driver only accepts dates from 2000 to 2099 year. It starts
+> >> counting from 2000 to avoid Y2K problem,
+> >
+> > 1. Where is the minimum (2000) year set in the RTC driver?
+>
+> Ah, indeed. I found it now in the driver.
+>
+> >
+> >> and S3C RTC only supports 100
+> >
+> > On some of the devices 100, on some 1000, therefore, no. This does not
+> > look correct.
+>
+> That part of sentence is still incorrect, but change itself makes sense.
+> Driver does not support <2000.
+>
 
-The thermal framework is wrongly used by userspace as a power capping
-framework by acting on the cooling device opaque state. This one then
-competes with the in-kernel governor decision.
+Driver itself does not allow setting year >= 2100:
 
-We have seen in out-of-tree kernels, a big number of devices which are
-abusely declaring themselves as cooling device just to act on their
-power.
+<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
+    if (year < 0 || year >= 100) {
+        dev_err(dev, "rtc only supports 100 years\n");
+        return -EINVAL;
+    }
+<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
 
-The role of the thermal framework is to protect the junction
-temperature of the silicon. Letting the userspace to play with a
-cooling device is invalid and potentially dangerous.
+Devices might allow it, so the commit message phrasing is incorrect
+and should be replaced, yes. But the code should be correct. Should I
+send v2 with fixed commit message?
 
-The powercap framework is the right framework to do power capping and
-moreover it deals with the aggregation via the dev pm qos.
-
-As the userspace governor is marked deprecated and about to be
-removed, there is no point to keep this file writable also in the
-future.
-
-Emit a warning and deprecate the interface.
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/thermal/thermal_sysfs.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-index 1c4aac8464a7..f154bada2906 100644
---- a/drivers/thermal/thermal_sysfs.c
-+++ b/drivers/thermal/thermal_sysfs.c
-@@ -610,6 +610,9 @@ cur_state_store(struct device *dev, struct device_attribute *attr,
- 	unsigned long state;
- 	int result;
- 
-+	dev_warn_once(&cdev->device,
-+		      "Setting cooling device state is deprecated\n");
-+	
- 	if (sscanf(buf, "%ld\n", &state) != 1)
- 		return -EINVAL;
- 
--- 
-2.25.1
-
+> Best regards,
+> Krzysztof
