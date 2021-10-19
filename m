@@ -2,180 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C8C4335BD
+	by mail.lfdr.de (Postfix) with ESMTP id C8B144335BE
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbhJSMTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
+        id S235576AbhJSMTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhJSMTv (ORCPT
+        with ESMTP id S235551AbhJSMTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:19:51 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4A3C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:17:38 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id bj31so15487120qkb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:17:38 -0700 (PDT)
+        Tue, 19 Oct 2021 08:19:36 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9A3C06161C;
+        Tue, 19 Oct 2021 05:17:23 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id o20so47482354wro.3;
+        Tue, 19 Oct 2021 05:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kijv5qL9428KbEsMvhhOkfYFxEXTMEb84ZQBLi4PpCQ=;
-        b=Gi5OFux62U6gfpHmIyyxCMDkNAHUeM2GK+sHT9RWUxj1FUTXmY/66hoqw8hPmdDsIr
-         KdvRaSwoPsxzQNNUG/5B3z2j2urRSPWjG/wxdnbx7WmXDCaEj4seQSPqYELUO/4DmAt4
-         4Sh3qMlQL1R33bIZa4jaW8UTWwoJFn+eDn+BLjuhysbpHfQE4IqwJTJcJXnR8H+hk2DW
-         8xd6CMq63liUcrrL1wDOSug+kxcBcjNScp2ZyvStj6mF9ZDmhpN7W8XvIr5p6oPE2iH1
-         cEZ41DAKEjh6KAdS3HfWEVmuT5kovbsb0xMwdWjuIn60/Z/dRhymt3cR9MEHgHygXbnj
-         b8Tw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=88KvQ8MdXceC+8zAxE6BfvdHFdBiDoLz2q1m2brnxJg=;
+        b=ph3KzMorHixjCmz+KxPL+y5l3Nt5LN2mD/D405UejLV5yZHpcyNlRglibRQNFC8MSu
+         Yrgb05GM7byNXhWw0bZI95dz5JovFOFOMI8XKRjBvnHrFWvi0gh3qstYQx+V66JfHxJ5
+         qg5rPS45jDqsvKk/QbypiiLcUeoM/itB8AoV7Rt7t6mz7q1b2Od5mTn1rrKyGhUVb6wk
+         SlTwrWoM4iZA+jCynT2QS2AC9cm8dvzLkEVn0xUISgFXGgPdpMza7EFAtb6aPON6kOts
+         6Cc6xfKjm5NQGK0Ape1FMTPhe5wMoFASmcUcYBAt9xRTpATqkbn2q1eVANT+aPXpN2a9
+         rYPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kijv5qL9428KbEsMvhhOkfYFxEXTMEb84ZQBLi4PpCQ=;
-        b=jwj3QF7+2AqE3DQLZLZks1thWT2j9tGv4T4xVz4+PM7kgCMPbqxFqL8WUn2RFLF00h
-         uY6tNAUOmLg194dfjKx50W3M5VEJHTHSLfPFkJGCYeAEbY9Mw1JMsgthZl62wxFxN9Lk
-         Ygg85eAWheho2QXzkyUWSDAtuJ8AW3hwWyGfH6cROQ/+B4QOSS+zHS7HMRbh0h5THzx5
-         +2A/Gt6ej8jMoS2fc9CAJgD47dCW+ilVLawOGXvI4/NQ4CpW5DaTErT+Vxff8nKNo2z1
-         A+UIA8zwB7s6jdxSee/zCy4+1dqYR/LCf0Itk9KtyPLoaddfWMNUNqv2ey1wqCRGOSlX
-         a1pA==
-X-Gm-Message-State: AOAM532necravBrHi4LL2/ySAsdH0TMXEcSQM+dotEXqEqvwvl73yMmT
-        kGY6ab9lnmxCwmc+93guXjgkMdElhJWUdtji72I=
-X-Google-Smtp-Source: ABdhPJxgI8V0HGIgCrFenzHGcPvVKMpopan6DSFnDUyxXzq30DY2bTh5MbEbi6Nnrgw2NxQQiVeVBZYWtNYZnyh4ZOI=
-X-Received: by 2002:a37:80c:: with SMTP id 12mr28500543qki.298.1634645857698;
- Tue, 19 Oct 2021 05:17:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=88KvQ8MdXceC+8zAxE6BfvdHFdBiDoLz2q1m2brnxJg=;
+        b=Ht6wItzFoBuMWQaNRzj+Z3VGbbVWa6FI6TyZC6WfQmSIece4BQyAtiVaXRQjZjoQAG
+         vatmEX9nZZdMPyxdKbGsDDm9FgJiep/ZcG/bfq4O03FM4VnOfRtxEVOyVFvp6DER/R+w
+         R2MYIyw1XDVrrA1WOfAhZnyWHO95x4YcA6aa3y8j2xI5o8/HG7Bulp/VkX6izWENq/Ah
+         FZRXx1bmCJoQ7kCqFswQVBRKYsCV9dqnwUsKMmg5m1ixGTQh2qSskrKHNEI2KlzYu787
+         tW4raoA0L0SxcPLf+Lei9NQhbEv7j42pYX9INuhIIEdunXG7L1viCKBE3j3dSnyrtafM
+         bDig==
+X-Gm-Message-State: AOAM530iJ+gX/xvHyWpAGWdheBecv9kx7azd4mQ7Yu/xLiTqjMDSzpzo
+        1Maon9h+RCP0VGJNVDPdtkY=
+X-Google-Smtp-Source: ABdhPJygDFMM+4zG93QvACgtlY1sa6gBUvtnwusr9gsXn6Pc98vLG71Nnf5xiPdvsQGapADZPeN8HQ==
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr43691158wrb.83.1634645842510;
+        Tue, 19 Oct 2021 05:17:22 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id c185sm2124671wma.8.2021.10.19.05.17.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 05:17:22 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 13:17:20 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/68] 5.4.155-rc2 review
+Message-ID: <YW63UBHVOOQtVRBE@debian>
+References: <20211018143049.664480980@linuxfoundation.org>
 MIME-Version: 1.0
-References: <1634278529-16983-1-git-send-email-huangzhaoyang@gmail.com>
- <YW0u67o8wl3CGikP@dhcp22.suse.cz> <CAGWkznEO9SyNFEBqL8=JxewVTvaUhwFLPow69mi=R1MJ=XCpow@mail.gmail.com>
- <YW1rcv4bN1WWhzLD@dhcp22.suse.cz> <CAGWkznG65_FGx9jU7rjj5biEdyHZ=kcPwmXj6cGxxVmPy2rdKQ@mail.gmail.com>
- <YW6LSVK+NTiZ05+X@dhcp22.suse.cz>
-In-Reply-To: <YW6LSVK+NTiZ05+X@dhcp22.suse.cz>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Tue, 19 Oct 2021 20:17:16 +0800
-Message-ID: <CAGWkznHSPAu572BjoE510Sm+G9vGetKg-v2TkjwtcmZGo8MPVw@mail.gmail.com>
-Subject: Re: [PATCH] mm: skip current when memcg reclaim
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018143049.664480980@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 5:09 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 19-10-21 15:11:30, Zhaoyang Huang wrote:
-> > On Mon, Oct 18, 2021 at 8:41 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 18-10-21 17:25:23, Zhaoyang Huang wrote:
-> > > > On Mon, Oct 18, 2021 at 4:23 PM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > > > I would be really curious about more specifics of the used hierarchy.
-> > > > What I am facing is a typical scenario on Android, that is a big
-> > > > memory consuming APP(camera etc) launched while background filled by
-> > > > other processes. The hierarchy is like what you describe above where B
-> > > > represents the APP and memory.low is set to help warm restart. Both of
-> > > > kswapd and direct reclaim work together to reclaim pages under this
-> > > > scenario, which can cause 20MB file page delete from LRU in several
-> > > > second. This change could help to have current process's page escape
-> > > > from being reclaimed and cause page thrashing. We observed the result
-> > > > via systrace which shows that the Uninterruptible sleep(block on page
-> > > > bit) and iowait get smaller than usual.
-> > >
-> > > I still have hard time to understand the exact setup and why the patch
-> > > helps you. If you want to protect B more than the low limit would allow
-> > > for by stealiong from C then the same thing can happen from anybody
-> > > reclaiming from C so in the end there is no protection. The same would
-> > > apply for any global direct memory reclaim done by a 3rd party. So I
-> > > suspect that your patch just happens to work by a luck.
-> > B and C compete fairly and superior than others. The idea based on
-> > assuming NOT all groups will trap into direct reclaim concurrently, so
-> > we want to have the groups steal pages from the processes under
-> > root(Non-memory sensitive) or other groups with lower thresholds(high
-> > memory tolerance) or the one totally sleeping(not busy for the time
-> > being, borrow some pages).
->
-> I am really confused now. The memcg reclaim cannot really reclaim
-> anything from outside of the reclaimed hierarchy. Protected memcgs are
-> only considered if the reclaim was not able to reclaim anything during
-> the first hierarchy walk. That would imply that the reclaimed hierarchy
-> has either all memcgs with memory protected or non-protected memcgs do
-> not have any memory to reclaim.
->
-> I think it would really help to provide much details about what is going
-> on here before we can move forward.
->
-> > > Why both B and C have low limit setup and they both cannot be reclaimed?
-> > > Isn't that a weird setup where A hard limit is too close to sum of low
-> > > limits of B and C?
-> > >
-> > > In other words could you share a more detailed configuration you are
-> > > using and some more details why both B and C have been skipped during
-> > > the first pass of the reclaim?
-> > My practical scenario is that important processes(vip APP etc) are
-> > placed into protected memcg and keep other processes just under root.
-> > Current introduces direct reclaim because of alloc_pages(DMA_ALLOC
-> > etc), in which the number of allocation would be much larger than low
-> > but would NOT be charged to LRU. Whereas, current also wants to keep
-> > the pages(.so files to exec) on LRU.
->
-> I am sorry but this description makes even less sense to me. If your
-> important process runs under a protected memcg and everything else is
-> running under root memcg then your memcg will get protected as long as
-> there is a reclaimable memory. There should ever be only global memory
-> reclaim happening, unless you specify a hard/high limit on your
-> important memcg. If you do so then there is no way to reclaim from
-> outside of that specific memcg.
->
-> I really fail how your patch can help with either of those situations.
+Hi Greg,
 
-please find cgv2 hierarchy on my sys[1], where uid_2000 is a cgroup
-under root and trace_printk info[3] from trace_printk embedded in
-shrink_node[2]. I don't why you say there should be no reclaim from
-groups under root which opposite to[3]
+On Mon, Oct 18, 2021 at 04:31:04PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.155 release.
+> There are 68 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 20 Oct 2021 14:30:36 +0000.
+> Anything received after that time might be too late.
 
-[1]
-/sys/fs/cgroup # ls uid_2000
-cgroup.controllers  cgroup.max.depth        cgroup.stat
-cgroup.type   io.pressure     memory.events.local  memory.max
-memory.pressure      memory.swap.events
-cgroup.events       cgroup.max.descendants  cgroup.subtree_control
-cpu.pressure  memory.current  memory.high          memory.min
-memory.stat          memory.swap.max
-cgroup.freeze       cgroup.procs            cgroup.threads
-cpu.stat      memory.events   memory.low           memory.oom.group
-memory.swap.current  pid_275
+Build test:
+mips (gcc version 11.2.1 20211012): 65 configs -> no new failure
+arm (gcc version 11.2.1 20211012): 107 configs -> no new failure
+arm64 (gcc version 11.2.1 20211012): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
-[2]
-@@ -2962,6 +2962,7 @@ static bool shrink_node(pg_data_t *pgdat, struct
-scan_control *sc)
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
 
-                        reclaimed = sc->nr_reclaimed;
-                        scanned = sc->nr_scanned;
-+                     trace_printk("root %x memcg %x reclaimed
-%ld\n",root_mem_cgroup,memcg,sc->nr_reclaimed);
-                        shrink_node_memcg(pgdat, memcg, sc, &lru_pages);
-                        node_lru_pages += lru_pages;
-
-[3]
- allocator@4.0-s-1034    [005] ....   442.077013: shrink_node: root
-ef022800 memcg ef027800 reclaimed 41
-   kworker/u16:3-931     [002] ....   442.077019: shrink_node: root
-ef022800 memcg c7e54000 reclaimed 17
- allocator@4.0-s-1034    [005] ....   442.077019: shrink_node: root
-ef022800 memcg ef025000 reclaimed 41
- allocator@4.0-s-1034    [005] ....   442.077024: shrink_node: root
-ef022800 memcg ef023000 reclaimed 41
-   kworker/u16:3-931     [002] ....   442.077026: shrink_node: root
-ef022800 memcg c7e57800 reclaimed 17
- allocator@4.0-s-1034    [005] ....   442.077028: shrink_node: root
-ef022800 memcg ef026800 reclaimed 41
+[1]. https://openqa.qa.codethink.co.uk/tests/285
 
 
-> --
-> Michal Hocko
-> SUSE Labs
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
+
