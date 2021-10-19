@@ -2,210 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD50432C45
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B2E432C43
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhJSD3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:29:38 -0400
-Received: from mail-bn8nam11on2081.outbound.protection.outlook.com ([40.107.236.81]:40736
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229692AbhJSD3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:29:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OKhgo0dOosqiY1lC5j0u7bJFnXjqA5UytvUy9hhMhuICGS7uqkeeZ94r+aOR5FtyMlBxqsusWcnsN7/Ywk+n9nBoHq/FjAb0+8RmUPDsx9AJNm8jDFgJtz2d9SxGGXGXElQemse21Bt75OUlN0Qv4Jb9QoWMg8C37P4oFkXfiZ/CU+K6td6y/U0cbphWEIcJ3aoIvwAJIW2HgdNJFMpMxgOwC2B55hKiFC0P3iIgtUEcOHte7V0BTy8k57Txv9RS5Su9QX1cC94D/OM2oPZfeOHRk4f5sSBXyNGaKwi97qU1FkbFqulJo5D1T7zpF8JDvVSJUBrYsTaRFQ39z24UWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=23BA8Z9Bv7qyS9LsrmfiD5FycS367NHqPE30+6TvgHk=;
- b=Br7lsxd7OtDMbePNN0Ers8GAZB0KNI0TpVP9FrL3vB2b2SB3s11ft/QZvHQnhti52O062aOT359nF9+mCAAy7z/FK327eNsK9zUJwH9Q8Kk5VIm6yr+kDor4eO2QgHvcjqZtEBxby3Mnc20sPHYCNdZ9UdpDk5UDvPFchMLq5HL/LhOlg7zLx963gdUhb08/T+LBA0xbIUboyOrPSSh/VPyG6rH/Xz6BRnUUaG0z4z2GQ5Z+Oo6Wg6eZ5neQ5We0wdTEqvgsxH2iGJG8cZtp/PEFkRrbNHMjyjDqyU8jRUps0KyljHaoS1FNFKwM/geRKKjmRl5nsGYSlkw8VPSWSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=23BA8Z9Bv7qyS9LsrmfiD5FycS367NHqPE30+6TvgHk=;
- b=fzwdNoOTtoHUae6afLQj7SPX0ftsgf5y0kNYJTYYgX6AB07HI/S6AIsrCSXoM9s9JFkB3V9pSJqO3cQ6pGL8SuQDQsrV94w4/qQAjZjk4tSKTstIUWavad4lGyEl1tHuCl5eS5BEOglMHZ5FBctVrAAr92WP7FqqYhpYRcU6GsE=
-Received: from MWHPR14CA0061.namprd14.prod.outlook.com (2603:10b6:300:81::23)
- by SA0PR12MB4398.namprd12.prod.outlook.com (2603:10b6:806:9f::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
- 2021 03:27:22 +0000
-Received: from CO1NAM11FT051.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:81:cafe::3b) by MWHPR14CA0061.outlook.office365.com
- (2603:10b6:300:81::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend
- Transport; Tue, 19 Oct 2021 03:27:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT051.mail.protection.outlook.com (10.13.174.114) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4608.15 via Frontend Transport; Tue, 19 Oct 2021 03:27:21 +0000
-Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 18 Oct
- 2021 22:27:17 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-CC:     "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Joerie de Gram <j.de.gram@gmail.com>
-Subject: [PATCH v2] pinctrl: amd: Fix wakeups when IRQ is shared with SCI
-Date:   Mon, 18 Oct 2021 22:26:48 -0500
-Message-ID: <20211019032648.2208-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
+        id S232140AbhJSD2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhJSD2i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 23:28:38 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86576C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:26:26 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so2416702otr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2kDCjaiT5Ss8ypFk/g02JO5kAs+j7feWXWeMknFRF+E=;
+        b=Vm9sDyA/Zy7YWmH5g0I/KXvqFj/GtiwmTj5LRlO6sk+CS7NvkWz2ulD0LbGnFZToIy
+         s+fy4IrQXv0+y8rD8wbtQZtHduwRkkyI+Dx7XuH8V2jlPEHe3GyG+dQUZc4HHY0eeB8o
+         JbNYtic7evSOIdKlW2f355k/I+103FNi8sgE6Ndwmqc2xhhIJDG4V1/l20dLAwN6S0R3
+         vyxj+IIe4e9/fFmEqInI/kQDPFvbMW2uI7lxQwwrvOo5zrS00pqOkMiaIa+2QfwoTsdA
+         1WlF3nN280F+psnbSlNwzzc3C/qQemqFNvLRSMkg02bA7vimLOlQN1OCf4bVG9aPJGh7
+         zw/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2kDCjaiT5Ss8ypFk/g02JO5kAs+j7feWXWeMknFRF+E=;
+        b=MQ4JBFKzxXAfChTgDqHPb975jtnMDRlXu0iylWpa6pktZ3ae+ciaa0r6YZyotn1pxW
+         goyG8TdwY7UIFF1pteeEuqNOXePAGdvYACFatYBMVT1uKccDgpfkNBSLalVN02xPNIf0
+         ktDjdNs1ItwtbsZP/RtASOWNFht5arY8IBvceVFTYnshJl3MbyzdKtH7JVF0++U52hAh
+         9r8jqCDkkguDuVco2GD37mxoipFVWHwo2EalwyerXOlYPEGuqHAgHOG+oS+0+TAvfl7g
+         ovzkxr7ZdXQ95hiQ9md61E9y8coadvdbb54UYI+b0GQSib6ljO0A2NCL8flR0i4W1xXE
+         0F8w==
+X-Gm-Message-State: AOAM533VZrQMpnOymjWy+MUVm3wPzWqbBgBebRG6/yT2VYmHTs9BF3u8
+        HR/ir8GeDLelQY7xPKWyogvDFg==
+X-Google-Smtp-Source: ABdhPJyR+lHFuiwAuR9xacdFc5LbZn2MOfk4j0VAlIEXh7SpW9M69dFeEMmJ4M/GMZjqza5whOebAQ==
+X-Received: by 2002:a05:6830:2b11:: with SMTP id l17mr608684otv.298.1634613985746;
+        Mon, 18 Oct 2021 20:26:25 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id a13sm3344684oiy.9.2021.10.18.20.26.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 20:26:25 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 20:28:11 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v5 0/4] Restructure the rpmsg char to decorrelate the
+ control part.
+Message-ID: <YW47S1HKWKPVHqtp@ripper>
+References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
+ <YWDSXu/MDOwOLDg0@ripper>
+ <8b7179ff-6d0a-8ed5-c0a3-4298fa9b9dc6@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 84844421-9e5d-40f2-71ad-08d992b05c91
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4398:
-X-Microsoft-Antispam-PRVS: <SA0PR12MB439805FCD836D4BAFAECF347E2BD9@SA0PR12MB4398.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bkGTNMPYeMc5RrxjxnoO0yAFaFrmDYC5aGyBc+fjuAJDRIIZt9YWyZJaMF8uNAkKpuAH6mWIIGnuVPFqxpLU7736PMet9if0TDx6EZsq3zU6Ayb8+/q54Y9hNdlmQH71+nD0GW2yhv8+ZHmflc8Pehmo45E/CR74vzLtPAzSof682kcrID6hFt7qjSV7DqQBYY/Ts4A7yWDKWUO+ckZWyC8txVmWK+QqgCXEl5hzSpaKozsgtrq52ZcE6AIE41hedvo/tgoosSoaWIYzHFJCazpxE9KtEpaQexebAnHGwN9jmQ6Zo+he8QwDb8bzngwlNR8ME+csAnjm7/jCCmVwocQ+gbtEmRW+wRLGke+t8UCroOG7MVjsPkXfLiWbujCgFSc/yONbfu738h857SxFQx2Je0Mam10OuzP3WHNkCCiKsoILCP3Fmm/g9lNjfAHZnqvYIez4/45NRyn7S3lT24OwjUy5Ql4dZsM/8jYeQEJD/X4E5Z3zyIDN4hKktSGWAodRH4ga+Ty3Wa/vUBz8zG0TyqWo6eEkZyoXnsWUhuY8lavAfNAoTWMdwBeZzCH61fK4QECdO33lKNZg0CL949kwTTykR0kFB68h/0N+wHutLiZPTQ3EwH8faQQ6xK4lMF+xfpTj4j+swgN9g5JT/wXIBMiS3s/f3NwVlEg86zNkqPQOHpz6JCkvtoUE5W4ojHdcwc4t/EHlGn+3HZ6KMoUMZDB60KO6j//IG+YgEQ4=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(8676002)(508600001)(336012)(316002)(36860700001)(186003)(44832011)(70586007)(54906003)(2906002)(47076005)(2616005)(26005)(81166007)(4326008)(110136005)(36756003)(8936002)(82310400003)(5660300002)(6636002)(83380400001)(1076003)(6666004)(70206006)(7696005)(356005)(16526019)(966005)(86362001)(426003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 03:27:21.3031
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84844421-9e5d-40f2-71ad-08d992b05c91
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT051.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4398
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b7179ff-6d0a-8ed5-c0a3-4298fa9b9dc6@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some Lenovo AMD Gen2 platforms the IRQ for the SCI and pinctrl drivers
-are shared.  Due to how the s2idle loop handling works, this case needs
-an extra explicit check whether the interrupt was caused by SCI or by
-the GPIO controller.
+On Mon 11 Oct 03:38 PDT 2021, Arnaud POULIQUEN wrote:
 
-To fix this rework the existing IRQ handler function to function as a
-checker and an IRQ handler depending on the calling arguments.
+> 
+> 
+> On 10/9/21 1:21 AM, Bjorn Andersson wrote:
+> > On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
+> > 
+> >> Main update from V4 [1] 
+> >>  - complete commit messages with Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >>  - rebased on kernel V.14-rc1.
+> >>
+> >> This series can be applied and tested on "Linux 5.14-rc1"(e73f0f0ee754) branch
+> >>
+> >> Series description:
+> >> This series is the second step in the division of the series [2]: 
+> >> "Introducing a Generic IOCTL Interface for RPMsg Channel Management".
+> >>
+> >> The purpose of this patchset is to split the code related to the control
+> >> and the endpoint. The code related to the control part is moved in the rpmsg_ctrl.c.
+> > 
+> > I'm not convinced about the merits for this refactoring, you're creating
+> > yet another kernel module which is fairly tightly coupled with
+> > the rpmsg_char kernel module and the only case I can see where this
+> > would be useful is if you want to be able to create reach
+> > RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_EPT_IOCTL without having to
+> > include the rpmsg_char part in your kernel.
+> 
+> This is what we discussed during a meeting we had on the rpsmg_tty subject the
+> July 7, 2020. [1] sump-up what you requested from me before introducing the
+> rpmsg tty. But we miss-understood your requirement?
+> 
+> This work is the result of our discussion:
+> - decorrelate the control and stream part of the rpmsg_char to be able to reuse
+> the control for other rpmsg services such as the rpmsg_tty.
+> - Add capability to instantiate other rpmsg service from Linux user land
+> applications.
+> 
+> The correlation between the rpmsg_char and the rpmsg_ctrl is due to the support
+> of the RPMSG_CREATE_EPT_IOCTL RPMSG_DESTROY_EPT_IOCTL legacy controls for the
+> QCOM driver.
+> 
+> At the end I guess the rpmsg_ctrl could become, in the future, a channel for
+> endpoint signaling between processors.
+> 
+> [1] https://lkml.org/lkml/2020/7/15/868
+> 
+> > 
+> >> This split is an intermediate step to extend the controls to allow user applications to
+> >> instantiate rpmsg devices.
+> 
+> >>     
+> > 
+> > Can you give a concrete example of when this would be used?
+> 
+> Similar to what it is done with the RPMSG_CREATE_EPT_IOCTL but based on the
+> channel not the endpoint (as the rpmsg_bus virtio is channel based).
+> 
 
-BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1738
-Reported-by: Joerie de Gram <j.de.gram@gmail.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
-Changes from v1->v2:
- * drop Kconfig changes to drop COMPILE_TEST, instead #ifdef CONFIG_ACPI
- * fix a logic error during wakeup
- * Use IRQ_RETVAL()
- drivers/pinctrl/pinctrl-amd.c | 35 ++++++++++++++++++++++++++++++-----
- 1 file changed, 30 insertions(+), 5 deletions(-)
+I've always seen the rpmsg_endpoint as some form of pipe (with the
+special case in virtio rpmsg of it possibly not being connected to
+anything) and then the rpmsg_channel being essentially the glue between
+a "primary" endpoint and an rpmsg_device.
 
-diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-index d19974aceb2e..f7b44ecbbb79 100644
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -598,16 +598,16 @@ static struct irq_chip amd_gpio_irqchip = {
- 
- #define PIN_IRQ_PENDING	(BIT(INTERRUPT_STS_OFF) | BIT(WAKE_STS_OFF))
- 
--static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
-+static bool _amd_gpio_irq_handler(int irq, void *dev_id)
- {
- 	struct amd_gpio *gpio_dev = dev_id;
- 	struct gpio_chip *gc = &gpio_dev->gc;
--	irqreturn_t ret = IRQ_NONE;
- 	unsigned int i, irqnr;
- 	unsigned long flags;
- 	u32 __iomem *regs;
- 	u32  regval;
- 	u64 status, mask;
-+	bool ret = false;
- 
- 	/* Read the wake status */
- 	raw_spin_lock_irqsave(&gpio_dev->lock, flags);
-@@ -627,6 +627,12 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 		/* Each status bit covers four pins */
- 		for (i = 0; i < 4; i++) {
- 			regval = readl(regs + i);
-+			/* called from resume context on a shared IRQ, just
-+			 * checking wake source.
-+			 */
-+			if (irq < 0 && (regval & BIT(WAKE_STS_OFF)))
-+				return true;
-+
- 			if (!(regval & PIN_IRQ_PENDING) ||
- 			    !(regval & BIT(INTERRUPT_MASK_OFF)))
- 				continue;
-@@ -652,9 +658,12 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 			}
- 			writel(regval, regs + i);
- 			raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
--			ret = IRQ_HANDLED;
-+			ret = true;
- 		}
- 	}
-+	/* called from resume context on shared IRQ but didn't cause wake */
-+	if (irq < 0)
-+		return false;
- 
- 	/* Signal EOI to the GPIO unit */
- 	raw_spin_lock_irqsave(&gpio_dev->lock, flags);
-@@ -666,6 +675,18 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 	return ret;
- }
- 
-+static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
-+{
-+	return IRQ_RETVAL(_amd_gpio_irq_handler(irq, dev_id));
-+}
-+
-+#ifdef CONFIG_ACPI
-+static bool amd_gpio_check_wake(void *dev_id)
-+{
-+	return _amd_gpio_irq_handler(-1, dev_id);
-+}
-+#endif
-+
- static int amd_get_groups_count(struct pinctrl_dev *pctldev)
- {
- 	struct amd_gpio *gpio_dev = pinctrl_dev_get_drvdata(pctldev);
-@@ -1004,7 +1025,9 @@ static int amd_gpio_probe(struct platform_device *pdev)
- 		goto out2;
- 
- 	platform_set_drvdata(pdev, gpio_dev);
--
-+#ifdef CONFIG_ACPI
-+	acpi_register_wakeup_handler(gpio_dev->irq, amd_gpio_check_wake, gpio_dev);
-+#endif
- 	dev_dbg(&pdev->dev, "amd gpio driver loaded\n");
- 	return ret;
- 
-@@ -1021,7 +1044,9 @@ static int amd_gpio_remove(struct platform_device *pdev)
- 	gpio_dev = platform_get_drvdata(pdev);
- 
- 	gpiochip_remove(&gpio_dev->gc);
--
-+#ifdef CONFIG_ACPI
-+	acpi_unregister_wakeup_handler(amd_gpio_check_wake, gpio_dev);
-+#endif
- 	return 0;
- }
- 
--- 
-2.25.1
+As such I assumed that it would make sense to do NS announcements of
+rpmsg_endpoints in general, not only rpmsg_channels.
 
+> For instance we received several issue reports from customer on rpmsg
+> communication. The reason was that the coprocessor creates an unidirectional
+> channel to transfer data to the main processor. But nothing works because the
+> coprocessor doesn't have the remote address until the main processor send a
+> first message. The workaround is to send a fake message from the Linux to
+> provide is ept address.
+> Making this in the other direction allows the Linux application to initiate such
+> link when it is ready to receive data.
+> 
+> Other examples of usage:
+> - Create a temporary channel to get for instance logs of the remotre proc
+> - destroy and re-create some channels on Linux suspend/resume.
+> 
+
+What's the context these two sets of channels live in? A separate
+rpmsg_device or you're having some userspace entity invoke the
+create/destroy during suspend and resume?
+
+> As the proposal of exposing the capability to userland to initiate the link (if
+> i well remember) is coming from you, don't hesitate if you have some extra
+> uscase that i can add in the cover letter.
+> 
+
+Right, I remember expressing the need to extend rpmsg_char (somehow) to
+make it possible for userspace to initiate the creation of a channel to
+the other side.
+
+It's the part where userspace pokes the kernel, so that the kernel goes
+and create the rpmsg_device, which magically ends up probing some driver
+that I'm wondering about...
+
+> > 
+> > Per our previous discussions I believe you intend to use this to bind
+> > your rpmsg_tty driver to arbitrary channels in runtime, which to me
+> > sounds like you're reinventing the bind/unbind sysfs attrs.
+> 
+> Please tell me if I wrong, but the bind /unbind allows to probe/remove an
+> exiting device. the RPMSG_CREATE_DEV_IOCTL creates a new one on the rpmsg bus,
+> so not exactly the same use case.
+> 
+
+You're correct, it wouldn't allow you to locally create a new
+channel/endpoint and have some driver attached to that.
+
+Regards,
+Bjorn
+
+> Regards,
+> Arnaud
+> 
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> >> Notice that this patchset does not modify the behavior for using the RPMSG_CREATE_EPT_IOCTL
+> >> and RPMSG_DESTROY_EPT_IOCTL controls.
+> >>   
+> >> The next step should be to add the capability to:
+> >> - instantiate rpmsg_chrdev from the remote side (NS announcement),
+> >> - instantiate rpmsg_chrdev from local user application by introducing the
+> >>   IOCTLs RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_DEV_IOCTL to instantiate the rpmsg devices,
+> >> - send a NS announcement to the remote side on rpmsg_chrdev local instantiation.
+> >>
+> >> [1]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
+> >> [2]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=435523
+> >>
+> >> Arnaud Pouliquen (4):
+> >>   rpmsg: char: Remove useless include
+> >>   rpmsg: char: Export eptdev create an destroy functions
+> >>   rpmsg: Move the rpmsg control device from rpmsg_char to rpmsg_ctrl
+> >>   rpmsg: Update rpmsg_chrdev_register_device function
+> >>
+> >>  drivers/rpmsg/Kconfig             |   9 ++
+> >>  drivers/rpmsg/Makefile            |   1 +
+> >>  drivers/rpmsg/qcom_glink_native.c |   2 +-
+> >>  drivers/rpmsg/qcom_smd.c          |   2 +-
+> >>  drivers/rpmsg/rpmsg_char.c        | 184 ++-----------------------
+> >>  drivers/rpmsg/rpmsg_char.h        |  51 +++++++
+> >>  drivers/rpmsg/rpmsg_ctrl.c        | 215 ++++++++++++++++++++++++++++++
+> >>  drivers/rpmsg/rpmsg_internal.h    |   8 +-
+> >>  drivers/rpmsg/virtio_rpmsg_bus.c  |   2 +-
+> >>  9 files changed, 293 insertions(+), 181 deletions(-)
+> >>  create mode 100644 drivers/rpmsg/rpmsg_char.h
+> >>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+> >>
+> >> -- 
+> >> 2.17.1
+> >>
