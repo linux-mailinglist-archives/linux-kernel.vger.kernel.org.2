@@ -2,135 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885A44330E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4DD4330F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234728AbhJSIPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
+        id S234596AbhJSIY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234691AbhJSIPt (ORCPT
+        with ESMTP id S231758AbhJSIY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:15:49 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3324AC06161C;
-        Tue, 19 Oct 2021 01:13:37 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so2026215pjb.3;
-        Tue, 19 Oct 2021 01:13:37 -0700 (PDT)
+        Tue, 19 Oct 2021 04:24:26 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D275C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 01:22:14 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id c4so11607616pgv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 01:22:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VL752dQ/ApTxdZicGQxzzNcLpxU27cNK3lNjF5txPOw=;
-        b=WgpKJtaTfoyGk4NrJi0/ACPr965uwGZK0C2I3opbI50uwNhUSv8EMjJHdr/R/Ypr0d
-         RosDVLkBc8aKr8F6caDHRuJtfUt/6/eWeNlSzXOBQGVsP9m6yEZ3xXkB5I05d/TwPLfi
-         kwXIgQ1WtOe/RA5rAVVPDZhX8S+5SOvJ1z8Qbn+z2W4qkDTn3DU5E2r1I3i2vRCHmlwg
-         ByPCmEYb4bAK8pz/rK9a6vhK3NhPM2b3n0k/v1SMHyvIpDWnzTava0NPWeoDd23o8Cuo
-         CJmC9+BqK7+N4E6paos5B3hDCFYLW88evhXBW6zIHwTUzPGFo/SWMqhuguQSaVajNiJU
-         SDWQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Q4dXGZ3NpyXYFT6kSbI1+eF5ag5MVYmMy9y0dVt/g1s=;
+        b=o5XP+ARvD/j0GyX9i6mY9geDotz1RLUZEED7x6esrPwjcyJt6NzkfSbG4x5elr8b24
+         53kNa/hUilDY98HVZCh2IAE5+5wGFoMhkC05QzwjQTnVDJIBIRnGkHLGMriEIf+vvHI1
+         qkMPKQCwdhllpvD8qowPHfCwjC2VfdsQ4HusggJwM8VlayAC7Xeox45lL3Mm0LGW4VOa
+         PICfuwFx6yGs4nECVC+1WleqSl1u9v9Ti/dMxprOJITzMsibt4tylswFBWs/3ZOazJlY
+         QveEBQ5UbjFYiMXEaK0otoh7ZH9uQ/cW+MlhXOGZTQ8Y+MCwMcxKlNiKMXifigrai2E6
+         mYTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VL752dQ/ApTxdZicGQxzzNcLpxU27cNK3lNjF5txPOw=;
-        b=llyObr4o91NNLj+pY/qmLBCBHm/tRW9PiSeK+dYYhZ4CFsQ5qyy4eCETTBkkGGGWcx
-         qG0JcsQ6EEQGJWXG5L2R/36JeJhoQHEosG/HM3a7vS4Gy+9c/eQX/g0f1xqkBpNQuAZT
-         R0fMsQqO2U82LuCDOiDY5C2woZBPqqBjKt4kJM0TxzIy0OfwNhG226Zd2NsN0ZZTYgvA
-         7/dNtQr8A9MThH1OZHqNukV9PdD/m7NkJJxzl/G8Z6kNncfVDX/u59yR9nAtdNZA9N8J
-         1sPSHXT91Xc5+sfXQwqVMfMnk9yZUDU36VWoHd9jDk5/QYD/Eyrv6g6s82Jp8Ye5/BjY
-         S3LQ==
-X-Gm-Message-State: AOAM5338lRu7kDO2dTh2P10tk2FpLkQePnB1ESij5CaA+RaYnizWGmrx
-        D70Y3fylHnVBGNthEkRnbtglZbxjuq9SJw==
-X-Google-Smtp-Source: ABdhPJy6DCFdFFnNb4wPvjMEo8q12xi6dK403Ji6mA6X4dOS2YqjvAKt4Mu2492lgx703+8Ny3s7EQ==
-X-Received: by 2002:a17:902:bb94:b0:13c:9113:5652 with SMTP id m20-20020a170902bb9400b0013c91135652mr32687269pls.70.1634631216561;
-        Tue, 19 Oct 2021 01:13:36 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.110])
-        by smtp.googlemail.com with ESMTPSA id f15sm3254064pfe.132.2021.10.19.01.13.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Oct 2021 01:13:36 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v3 3/3] KVM: vCPU kick tax cut for running vCPU
-Date:   Tue, 19 Oct 2021 01:12:40 -0700
-Message-Id: <1634631160-67276-3-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
-References: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Q4dXGZ3NpyXYFT6kSbI1+eF5ag5MVYmMy9y0dVt/g1s=;
+        b=d5Ec7uepgijvnsZbfQb/+H44eEtZtB23InWtusg8n0sg3TdbHiZxaVosgr3YCXHtOz
+         F3Zm4hif5WwW5Jn75x8Ny1spB3nnLgl+EVVE5Y7K8Q+A9zxrsPUERSkBkXrfv59e/Xok
+         Ds3odWien307xLddf63qe09i/NPYvSui7qZlm1XLOxapVoenjC6TLWHrXK9S9iAI9trR
+         jxz36oLLKVJ6JD9gr7Fw+lbg8szCGDQxgAIO6I1C5EDMDerIhcj0Q84pLCbK3bIJdmEK
+         2xbeKD8SN6yfHmAekboMFcbh8eqyddyeXeH0a3GNCLECc/bRbyTuOTv3I4tZYiQlkoay
+         Vzbw==
+X-Gm-Message-State: AOAM5334IwMGSTt0p7zNqZxhj35IyRQKPNZPOEKrNqp0oemUFvh9hY4X
+        tMVLs8nRHnqeTRWcILV9FShXKg==
+X-Google-Smtp-Source: ABdhPJx66YQtym98ASzCKZD8wkXrms3VZUZjaMJ52yR55kR/QXQmtyXnOwevtdfvnUQ36QXKW6UTIA==
+X-Received: by 2002:a05:6a00:124e:b0:44d:cb39:40f6 with SMTP id u14-20020a056a00124e00b0044dcb3940f6mr12053599pfi.22.1634631733568;
+        Tue, 19 Oct 2021 01:22:13 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id h1sm9040268pfi.168.2021.10.19.01.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 01:22:13 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 13:52:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     wsa@kernel.org, jie.deng@intel.com,
+        virtualization@lists.linux-foundation.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+Subject: Re: [PATCH 2/2] i2c: virtio: fix completion handling
+Message-ID: <20211019082211.ngkkkxlfcrsvfaxg@vireshk-i7>
+References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
+ <20211019074647.19061-3-vincent.whitchurch@axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019074647.19061-3-vincent.whitchurch@axis.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On 19-10-21, 09:46, Vincent Whitchurch wrote:
+>  static void virtio_i2c_msg_done(struct virtqueue *vq)
+>  {
+> -	struct virtio_i2c *vi = vq->vdev->priv;
+> +	struct virtio_i2c_req *req;
+> +	unsigned int len;
+>  
+> -	complete(&vi->completion);
+> +	while ((req = virtqueue_get_buf(vq, &len)))
+> +		complete(&req->completion);
 
-Sometimes a vCPU kick is following a pending request, even if @vcpu is 
-the running vCPU. It suffers from both rcuwait_wake_up() which has 
-rcu/memory barrier operations and cmpxchg(). Let's check vcpu->wait 
-before rcu_wait_wake_up() and whether @vcpu is the running vCPU before 
-cmpxchg() to tax cut this overhead.
+Instead of adding a completion for each request and using only the
+last one, maybe we can do this instead here:
 
-We evaluate the kvm-unit-test/vmexit.flat on an Intel ICX box, most of the 
-scores can improve ~600 cpu cycles especially when APICv is disabled.
+	while ((req = virtqueue_get_buf(vq, &len))) {
+                if (req->out_hdr.flags == cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT))
+                        complete(&vi->completion);
+        }
 
-tscdeadline_immed
-tscdeadline
-self_ipi_sti_nop
-..............
-x2apic_self_ipi_tpr_sti_hlt
+Since we already know which is the last one, we can also check at this
+point if buffers for all other requests are received or not.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
-v2 -> v3:
- * use kvm_arch_vcpu_get_wait()
-v1 -> v2:
- * move checking running vCPU logic to kvm_vcpu_kick
- * check rcuwait_active(&vcpu->wait) etc
-
- virt/kvm/kvm_main.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 7851f3a1b5f7..1bc52eab0a7d 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3314,8 +3314,15 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
- {
- 	int me, cpu;
- 
--	if (kvm_vcpu_wake_up(vcpu))
--		return;
-+	me = get_cpu();
-+
-+	if (rcuwait_active(kvm_arch_vcpu_get_wait(vcpu)) && kvm_vcpu_wake_up(vcpu))
-+		goto out;
-+
-+	if (vcpu == __this_cpu_read(kvm_running_vcpu)) {
-+		WARN_ON_ONCE(vcpu->mode == IN_GUEST_MODE);
-+		goto out;
-+	}
- 
- 	/*
- 	 * Note, the vCPU could get migrated to a different pCPU at any point
-@@ -3324,12 +3331,12 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
- 	 * IPI is to force the vCPU to leave IN_GUEST_MODE, and migrating the
- 	 * vCPU also requires it to leave IN_GUEST_MODE.
- 	 */
--	me = get_cpu();
- 	if (kvm_arch_vcpu_should_kick(vcpu)) {
- 		cpu = READ_ONCE(vcpu->cpu);
- 		if (cpu != me && (unsigned)cpu < nr_cpu_ids && cpu_online(cpu))
- 			smp_send_reschedule(cpu);
- 	}
-+out:
- 	put_cpu();
- }
- EXPORT_SYMBOL_GPL(kvm_vcpu_kick);
 -- 
-2.25.1
-
+viresh
