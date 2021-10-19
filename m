@@ -2,82 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C98A432B8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 03:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB79432B8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 03:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhJSBnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 21:43:07 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45602 "EHLO vps0.lunn.ch"
+        id S229880AbhJSBoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 21:44:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhJSBnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 21:43:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=FhlfOCbg3MmNuL+I1U1nD+p7uQpYMASB7+aM/nTmKR8=; b=J+7is9zKDDyOEXbyJ+X/0ITW45
-        DH+IVYNQe9xvfhltXKoyK9DHdHz8j5EkoDrMweTyb7vnw7Vx6r8n7BvJAAd4guSZB1K6ECYwA1HAu
-        pfLPJBfnqqa3jDYCS4TxgHC874nL/w0aTuiqx6izO2jeQ5LMEjRl0+ShRELNW6oiU2pI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mce7U-00B1i5-Ve; Tue, 19 Oct 2021 03:40:48 +0200
-Date:   Tue, 19 Oct 2021 03:40:48 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        "Jonathan M. Polom" <jmp@epiphyte.org>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers
- bindings
-Message-ID: <YW4iIP7jpRj4qcNN@lunn.ch>
-References: <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
- <20210713222528.GA952399@robh.at.kernel.org>
- <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
- <20210719225906.GA2769608@robh.at.kernel.org>
- <CACRpkdbq6Jow6AT9OpsR7Q0JVCWVMcmamh9KHPXMtUnkoe7ZFw@mail.gmail.com>
- <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com>
- <CACRpkdZfZLQMgpMAF2FwSVt1YAzhQJ9ZWkVUjVc2xpmWL7yEvQ@mail.gmail.com>
- <CA+HBbNHZyYnnyz9=4Hgav96ZH8-R-nYoi300j2x3fgei8aa4zQ@mail.gmail.com>
- <CACRpkdaBUrgnyFnO0Tdae56PKR4pLN1boLpK0FMCk7eYshZ5LA@mail.gmail.com>
- <CA+HBbNFeTN45cz8G75V94tF9cBcOGNzeenTMjdJ-4oKFCvHYLA@mail.gmail.com>
+        id S229777AbhJSBob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 21:44:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41B2C61260;
+        Tue, 19 Oct 2021 01:42:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634607738;
+        bh=D7YEQastTxFQdKRaYpytIqKQ/4otb+9xuoq/+a0xTe8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Q1vHyVjPA1YYlW/kk/Au08uMtZBfDh7TNX69DFvVdRf1xD0GS1vp3Oi9sy5fivxYj
+         r5JrbeMLvihQ+uygHe8teqas18pTG0utLYcc+I7xgnlb2Wf4VO3WcpyONxS8N7Tbf4
+         XDC1P44EmhjMkN0GAcpQLAa0G1cF/3FRCqh8sAvvKab+E3DbeQnVOW52mEKr7Vfj+1
+         THhKyJTKesrfOEpOb9vZ/UmaqqgYfHC4xLwJmWhsdu2ssEvO9eoFBSjhCGdn7s16Dg
+         IEYfImJoHV/Z8swOgD7zG9LOVN69KhavBUJtNXTCCWUlMzJ9BBMV3TItaED+Dab/Fz
+         O+wHEroE2revA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] ice: Fix clang -Wimplicit-fallthrough in ice_pull_qvec_from_rc()
+Date:   Mon, 18 Oct 2021 18:42:03 -0700
+Message-Id: <20211019014203.1926130-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.1.637.gf443b226ca
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+HBbNFeTN45cz8G75V94tF9cBcOGNzeenTMjdJ-4oKFCvHYLA@mail.gmail.com>
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The SFP driver requires GPIO-s, it only knows how to use GPIO-s, and
-> its a generic driver,
-> it covers any device that has an SFP port that is implemented per spec.
-> So, I cannot just extend it to suit my devices needs and I don't see
-> how can I extend it in
-> a generic manner so that it controls the pins directly via a regmap
-> for example, especially since
-> each switch has a different number of SFP ports and thus pins and a
-> different register layout.
-> 
-> I have added Andrew Lunn as he is one of the maintainers of PHYLIB
-> under which the SFP driver
-> is, he may have some input on how to proceed with this.
-> 
-> I honestly think that we have some kind of misunderstanding here and
-> look forward to resolving it.
+Clang warns:
 
-Hi Robert
+drivers/net/ethernet/intel/ice/ice_lib.c:1906:2: error: unannotated fall-through between switch labels [-Werror,-Wimplicit-fallthrough]
+        default:
+        ^
+drivers/net/ethernet/intel/ice/ice_lib.c:1906:2: note: insert 'break;' to avoid fall-through
+        default:
+        ^
+        break;
+1 error generated.
 
-Can you describe your hardware and regmap in a bit more detail. What
-do these registers look like? How do they map to the SFP cage pins?
+Clang is a little more pedantic than GCC, which does not warn when
+falling through to a case that is just break or return. Clang's version
+is more in line with the kernel's own stance in deprecated.rst, which
+states that all switch/case blocks must end in either break,
+fallthrough, continue, goto, or return. Add the missing break to silence
+the warning.
 
-	  Andrew
+Link: https://github.com/ClangBuiltLinux/linux/issues/1482
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/net/ethernet/intel/ice/ice_lib.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
+index f981e77f72ad..03443c060507 100644
+--- a/drivers/net/ethernet/intel/ice/ice_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+@@ -1903,6 +1903,7 @@ static struct ice_q_vector *ice_pull_qvec_from_rc(struct ice_ring_container *rc)
+ 	case ICE_TX_CONTAINER:
+ 		if (rc->tx_ring)
+ 			return rc->tx_ring->q_vector;
++		break;
+ 	default:
+ 		break;
+ 	}
+
+base-commit: 939a6567f976efb8b3e6d601ce35eb56b17babd0
+-- 
+2.33.1.637.gf443b226ca
+
