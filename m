@@ -2,74 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DC1433953
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8461433958
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhJSO44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230464AbhJSO4z (ORCPT
+        id S231889AbhJSO7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:59:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37945 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229702AbhJSO7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:56:55 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64275C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:54:41 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id y12so15020694eda.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:54:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p8WCCnGWa29x2/KunWHwcjm82Vw3dcAhuVE+3OJhddw=;
-        b=rU5vioG1bMFpSpuNxlfrRNAmnyB/zWyFYgYnrVbDtevPy/kYno3fOlryVFFCm17/ah
-         ctHSyOqJg4vN14m3j0VjK+xfznSAc6PFHb66PthDVifzsJ7m3gH16wZOj/2OAx2V9Adg
-         UAiK0PSV3AL/IBDlh1I0vMStcfLxnKW2TJXNI/DPVmMvkVcMFSK8q9gTOuxlabGVESFK
-         ScrSNYsKA9fpN4RfTB/7PsDUtiMJ6kTz2Gm85mH3CjFXTTUD9edEhRJFq6QZGvEbV21x
-         wpWQN1CavsjWqK9GP4aMwcpuxggAOa1SetoXyu1qMBvStvdZm1DmeO+kot7xoxPDKZmD
-         HqwA==
+        Tue, 19 Oct 2021 10:59:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634655413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OBmpX0iW/CRhRFEp9uYQsaSMgyDiFRAV+89olCeMNzQ=;
+        b=avLQS5gNrwqd3UUXx6ugbwX2xOrVaUUwYRmbDdnPCy1ZG48jDbncGqiCj9tsr/11hZF2Ai
+        UFcIasnIQBtxrhyXMx7A9BIuhOi/lVqJNLWcmhS7OD6FPDGj147qK8ln46DOzYwCClcMl9
+        RQXAmzXhYTk3PmSIdNmJG2yzsDSuXeE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-XzgPggMpNia9SCKOvWk26w-1; Tue, 19 Oct 2021 10:56:50 -0400
+X-MC-Unique: XzgPggMpNia9SCKOvWk26w-1
+Received: by mail-ed1-f70.google.com with SMTP id t28-20020a508d5c000000b003dad7fc5caeso683309edt.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:56:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p8WCCnGWa29x2/KunWHwcjm82Vw3dcAhuVE+3OJhddw=;
-        b=6zopLpWcFXmD9H35rn+j4GTfNBSoZbrm/MERwKMw1WLovXoI5vlUQJqM8a5kSxkwBB
-         rWmTu1h0NTc3Ih8C+ZEmOkT7Hv4R8yrL4oYvKQ+O9GMHvEd4+Eg0rKjPIsxnT7XjU5uI
-         +dFJC/MTwxdvH/f7OrFpSmOxF5lEh7eQ21w48ANMpEk8Q2T+h8H2hsoSnscuaSgs6p7g
-         LKab0ZlBZil8100uP8eZH9tT8dfO2bGcucF+5WQfi2GIzVZohUAi4k+H7SbMamaE6Yxy
-         SItASwGyQ1wFs2tR9HDO+VV/aT0DgIzMvx9VBM66d+de6hmU4YWudcNKseSd5dlqMhDE
-         Ca8A==
-X-Gm-Message-State: AOAM530kqzBfLypqpaLU1fNw1XSqYaRK2BWJKOosBuerN+aMSVYf95b0
-        SobDZETzK7LvxAcAmuhBzxC6fAZ/ui5Q31/j2Gk6
-X-Google-Smtp-Source: ABdhPJwAbxoeGs0mbCBHBjXTOn1yFExp0cgb99yx3IdluFYlp9BKuUWx279YFfFYR0f5mulARyCVEG4/C/IK9Cz3ldw=
-X-Received: by 2002:a17:907:629b:: with SMTP id nd27mr37148924ejc.24.1634655210383;
- Tue, 19 Oct 2021 07:53:30 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=OBmpX0iW/CRhRFEp9uYQsaSMgyDiFRAV+89olCeMNzQ=;
+        b=kjdWjxa3B+8+GGYltnDPrm5pZ16ClhbgvJeq1H1r5ytB7GkL+5Jkl5FwDIAGO1k9Xx
+         vrXKFldVzihbt/BySUNWxDKdkNbdStcbUa1POpk4UBCe+AKM6DerL7NYalFsjHBOYXhp
+         pheoz4lEim7KLgWLhz0SxcPY2AdzRpd7f/foGwvJwIoz4O8jsoj70HiZKd7oA87c0vpL
+         m5lEz/LVQtkpCdCoRfJlgGgAgK83RY8mo1e1JhVNI8A5scmPiKcCIU8HOwFhA4EKbUSF
+         0P6rVgzGogRDERcGyvrFmA4ie5jUfISJHKm4NnK5pQlNdB6BzumK6mVf+9mvBKoRQtnT
+         zOQg==
+X-Gm-Message-State: AOAM533vZsd2845HzEHoVSs5LGuY+EuGxg7LNQlKoLLxZY5oEUHJitE5
+        62Ni1tXOZ8LTOhFnUGLUdzvvndJkqisyzxhEeaRgvKU3A0VgFs9OxcNHl+t5VVTDPbxSS1lE6ZF
+        ezyeqCFZ4wfPvN2eGqZA0E2Yv
+X-Received: by 2002:a17:906:a1c1:: with SMTP id bx1mr37889348ejb.447.1634655408763;
+        Tue, 19 Oct 2021 07:56:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0nnLTuU3+onl11l2kVenp5svRoJZ++/IJFJSR5Mpc5PW9Y/sfPaVT+pWQqzOVFiOleUA5LA==
+X-Received: by 2002:a17:906:a1c1:: with SMTP id bx1mr37889322ejb.447.1634655408571;
+        Tue, 19 Oct 2021 07:56:48 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t19sm10427623ejb.115.2021.10.19.07.56.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 07:56:48 -0700 (PDT)
+Message-ID: <9e22cbe0-1cca-13d7-7c34-79ba73c795e1@redhat.com>
+Date:   Tue, 19 Oct 2021 16:56:47 +0200
 MIME-Version: 1.0
-References: <20211016072351.237745-1-cuigaosheng1@huawei.com>
- <20211016072351.237745-3-cuigaosheng1@huawei.com> <5543735.DvuYhMxLoT@x2>
-In-Reply-To: <5543735.DvuYhMxLoT@x2>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 19 Oct 2021 10:53:19 -0400
-Message-ID: <CAHC9VhTtyQKVkWbBy9DTYiZzZCcMspfruPzx3Kf5ZgD4UzsX0g@mail.gmail.com>
-Subject: Re: [PATCH -next, v3 2/2] audit: return early if the rule has a lower priority
-To:     Steve Grubb <sgrubb@redhat.com>
-Cc:     Eric Paris <eparis@redhat.com>, rgb@redhat.com,
-        linux-audit@redhat.com, wangweiyang2@huawei.com,
-        linux-kernel@vger.kernel.org,
-        Gaosheng Cui <cuigaosheng1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 4/7] surface: surface3-wmi: Use ACPI_COMPANION()
+ directly
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        platform-driver-x86@vger.kernel.org
+References: <4369779.LvFx2qVVIh@kreacher> <3414042.iIbC2pHGDl@kreacher>
+ <12896717.uLZWGnKmhe@kreacher>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <12896717.uLZWGnKmhe@kreacher>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 10:51 AM Steve Grubb <sgrubb@redhat.com> wrote:
-> Just wondering something... If the first thing we do is to decide to return,
-> should we have called the function in the first place? I wonder if this test
-> should be used to break out of the rule iteration loops so that we don't keep
-> calling only to return ?
+Hi,
 
-Patches are welcome ... ;)
+On 10/13/21 18:10, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> The ACPI_HANDLE() macro is a wrapper arond the ACPI_COMPANION()
+> macro and the ACPI handle produced by the former comes from the
+> ACPI device object produced by the latter, so it is way more
+> straightforward to evaluate the latter directly instead of passing
+> the handle produced by the former to acpi_bus_get_device().
+> 
+> Modify s3_wmi_check_platform_device() accordingly (no intentional
+> functional impact).
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
 
--- 
-paul moore
-www.paul-moore.com
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+> ---
+> 
+> v1 -> v2:
+>    * Resend with a different From and S-o-b address and with R-by from
+>      Maximilian.  No other changes.
+> 
+> ---
+>  drivers/platform/surface/surface3-wmi.c |    9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> Index: linux-pm/drivers/platform/surface/surface3-wmi.c
+> ===================================================================
+> --- linux-pm.orig/drivers/platform/surface/surface3-wmi.c
+> +++ linux-pm/drivers/platform/surface/surface3-wmi.c
+> @@ -139,13 +139,12 @@ static acpi_status s3_wmi_attach_spi_dev
+>  
+>  static int s3_wmi_check_platform_device(struct device *dev, void *data)
+>  {
+> -	struct acpi_device *adev, *ts_adev = NULL;
+> -	acpi_handle handle;
+> +	struct acpi_device *adev = ACPI_COMPANION(dev);
+> +	struct acpi_device *ts_adev = NULL;
+>  	acpi_status status;
+>  
+>  	/* ignore non ACPI devices */
+> -	handle = ACPI_HANDLE(dev);
+> -	if (!handle || acpi_bus_get_device(handle, &adev))
+> +	if (!adev)
+>  		return 0;
+>  
+>  	/* check for LID ACPI switch */
+> @@ -159,7 +158,7 @@ static int s3_wmi_check_platform_device(
+>  	    strlen(SPI_CTL_OBJ_NAME)))
+>  		return 0;
+>  
+> -	status = acpi_walk_namespace(ACPI_TYPE_DEVICE, handle, 1,
+> +	status = acpi_walk_namespace(ACPI_TYPE_DEVICE, adev->handle, 1,
+>  				     s3_wmi_attach_spi_device, NULL,
+>  				     &ts_adev, NULL);
+>  	if (ACPI_FAILURE(status))
+> 
+> 
+> 
+
