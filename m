@@ -2,178 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42694432D5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F3A432D5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhJSFop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 01:44:45 -0400
-Received: from mail-dm3gcc02lp2103.outbound.protection.outlook.com ([104.47.65.103]:6442
-        "EHLO GCC02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229527AbhJSFoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 01:44:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KfK6mbW3DwwcTxa1E8RV5NhXqNLmUuwXI2pSBc43nPo5kDNscmzE1748dsQLL93Bgt5ejl+Rs2uTDcZjOr3RatPUiY3LR4FmXpjRQFd8hns4lyhELKSf/vUsHxEt2UqVALCe1Egmz2ipQNA9Uf4WbBdu1qpDjarkfXEuO39agFtohgdKVO2Umptro+yiaPhY3OXwX+HOFAqnD7ClaQ+/+ZyWltPNULCpTVqKGd3bZCz9Fdut7kZwR4w2PZs8mYGPnawr0geFgcHtOgvXGUTkZSOSg19xD64PE68RzEMHkeqqJDA+n8cE/48Hld+l+cMyu4xALcIUPi9/RrrOtu5Skw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wQjs1AZiZs3f/oNPDlKamoth6vq6BbPVBTcdS+e3qOo=;
- b=ALG4SXe5JMbzlUUSQLUO059ObDhP0LShJrt44R7fQlNSirNHoCKBHW3twy8F3r6/uX6HGcjygxKDYq2YCXxQPxM5LIfydln0BD39/67RtxFmSpcmypZpWjMZdtYSiB+S7u5YHe/+gdIcget2knn+Ub2TS7s4qzK7TE5r3ljDBq3rTgGkD/tnT2qO8szOfgXKJwjuNdfn3uaQqpfM+YnO9Kjux8B50LgtxbXAh1EAi5RSuEiemwV7HnT1YTBuls8FqPXOYIHBFSQWDKuHTIwHohK8Zv5969DGLaxo6AuBU+J8S/NqYii4GBoLFLjKsj/6foD4LRrC5zNaZ3xteIaQbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nasa.gov; dmarc=pass action=none header.from=nasa.gov;
- dkim=pass header.d=nasa.gov; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nasa.gov; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wQjs1AZiZs3f/oNPDlKamoth6vq6BbPVBTcdS+e3qOo=;
- b=IMv/kmqTzcfWUzOUimu13SU43lW5pbNAPQRTqM8CDLNUs3g7RPlhq6n2EcOriEu5i8AVOL5wT5FdUaXsd0CVfoL0OIgsUkF6+lX/SRcQ+fBjyyLACbOo17fYKKQ2KP7fLxOt1x/uo+D4M7/HCHlAr5uGoTe/+4LjL1l+63zYE6Q=
-Received: from SA1PR09MB7440.namprd09.prod.outlook.com (2603:10b6:806:183::14)
- by SA1PR09MB8589.namprd09.prod.outlook.com (2603:10b6:806:173::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Tue, 19 Oct
- 2021 05:42:28 +0000
-Received: from SA1PR09MB7440.namprd09.prod.outlook.com
- ([fe80::b0d6:a789:37f1:1995]) by SA1PR09MB7440.namprd09.prod.outlook.com
- ([fe80::b0d6:a789:37f1:1995%2]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 05:42:28 +0000
-From:   "Wilson, David T. (GSFC-5870)" <david.wilson@nasa.gov>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: Potential issue with smb word operations for
- tmp461 device in tmp401 driver
-Thread-Topic: [EXTERNAL] Re: Potential issue with smb word operations for
- tmp461 device in tmp401 driver
-Thread-Index: AQHXwevE+jBPDZzzYE22a/VOYXutsqvZx2uAgAAKYFM=
-Date:   Tue, 19 Oct 2021 05:42:28 +0000
-Message-ID: <SA1PR09MB74408633E36AE3C97B4D2CA7E7BD9@SA1PR09MB7440.namprd09.prod.outlook.com>
-References: <SA1PR09MB7440BF952778F0DB8138747DE7B99@SA1PR09MB7440.namprd09.prod.outlook.com>
- <7f334e4c-0e71-2005-854f-c2d4e068ef85@roeck-us.net>
-In-Reply-To: <7f334e4c-0e71-2005-854f-c2d4e068ef85@roeck-us.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-suggested_attachment_session_id: 7a63ed15-3f07-61d2-d2b9-8c11b6d7470e
-authentication-results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none header.from=nasa.gov;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5db77696-fb6b-4391-8ab4-08d992c33ce6
-x-ms-traffictypediagnostic: SA1PR09MB8589:
-x-microsoft-antispam-prvs: <SA1PR09MB85892C2C4891911AAB78A245E7BD9@SA1PR09MB8589.namprd09.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Q4JRbgH79Ivn+q1iS63bci6IRU5r99bxTfLD8DW6zdMUwanjMK6mKgM0VC3J89q5iAGy7r7tZREQj/XApwoO+yYzD3bqxNzorcpwXcOyGRF7pcPCesqKuTIOT1OwIJUqIVuOC0EjvoPOrEihFt/5Sveh2zv2I//mSXCsQdRxnPYTmrhcbH0AILwZeP06KTieKAWiCnGuC3yB3v+qFpn5NHnoo3av6qSi3+PPPUASCSrGB+7D1OLOYLYM0cNLHCaLAjYtpu11VxDf2WHGyzQWRuHs/YbPn/cXHY6pZDd94PH8zbvixuvKM0zqcxjzMouSaCLlIMRCD4yV5mpMx/5VaKcCgaYfH0pa0DBnDZbrSWUsPgxAFJtxgaMkM0kEMaw/5ds3HTRRU9p/2ZaR22RMrmrXpX41BmlCnNKdwaISG4zX7sPLkypxV4BlAExkQ1q3G+zRInrR+enl6CpSZbO8YYuhAD+CY91IwXTqqm5Mvl9JcGhiSFmPMikui4yS6MqVPdLjxJPf2z53MiCbrgiPOL4kKp00g2+nojUIPLv9jWv9bg61wmDzlwD8NLSSq0FUnuw0AKBCIZqPBRrYaLNDkfGU3ZhM6FNqsUm+WV9c10ejuwnYjxJGEnWtMbh+XUP6Zx/dbUX8sU0n9VxXoUXfRLlqwip6VETbQKgFlsRqMh+v3nmvPs2Gsx8GCH1Rckx5pSQYbJpQ74iuaz5e02gSEg755oVpOCNCEn+muCJcsxGqRPZjMNNAVKaIMaJvK+uK4YT1y5IQrKE19l8eQXHtBxlvxDjP6zFzr2s0a4QVMO0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR09MB7440.namprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(33656002)(8676002)(7696005)(9686003)(83380400001)(38070700005)(38100700002)(91956017)(2906002)(54906003)(122000001)(55016002)(6916009)(66446008)(66556008)(66476007)(508600001)(4326008)(6506007)(26005)(53546011)(45080400002)(8936002)(64756008)(86362001)(5660300002)(186003)(316002)(71200400001)(76116006)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Np7+mLGLNpB2SRGJwBMbAvOiiAmZNOIc0UzjAMXglUaMaoF9DdATRDFgsG?=
- =?iso-8859-1?Q?AzJfmcvcMBL3EJWXFIS6i5MX7cbQoWdVpF8O5HQeNtKPZ0VZPoCRfabuiW?=
- =?iso-8859-1?Q?QbEQA+1zJC8EUSqeHPFjXU7v5cZE27KqBfhCzKn6AyPsRVxEHu1m5zSwQc?=
- =?iso-8859-1?Q?ereqnzXxfc9zPHLfuNxl+ZfmG7zuIlNbVOYs4xJ6E3JRdQXyeWqeTzN8US?=
- =?iso-8859-1?Q?FC8mnXnpt1hD1GFkc5CVRlrvAZ8swGIkuq/NY8hmBPB2EIuZC5YngiAn/a?=
- =?iso-8859-1?Q?ndy2aTVxgGUtoA3sjoFnpZULWA3wVqV69RyIGqCm9OFDCshLusnpExOnDf?=
- =?iso-8859-1?Q?6yvFU5b52BWOSWvPbEK3j0iwzsMlbjkZdSUJ8vrgoHOWXWY5qgOOSe5+cU?=
- =?iso-8859-1?Q?S2cKAZBuDhduQUiJ7I1yfTTcChtKiu9hW8cq1FLpWv0faJC0gGTGH2ZntX?=
- =?iso-8859-1?Q?44iY+bPmKmMXe+ENw5VQjqAQt3sU1DVQnRRyiMPFbt16A1UsK79uYZeWxE?=
- =?iso-8859-1?Q?/CoR3g7ieMZail7EeMK6RDf/EXXRXC22wtvSwKwkvZanuHq+uOQiAvGWpW?=
- =?iso-8859-1?Q?oDq/5xGdfwejyc2AfMUNfyr7+1sRVuWZNsqE3Yj0niJCuhINVBC0w+d8EQ?=
- =?iso-8859-1?Q?F9rNH7KDj+1Hs2hhZx7LFyAb6Ch0ojGEv3QxYcE1K9LwFN0DZbZPCZFsWL?=
- =?iso-8859-1?Q?+kTZRxJ1wHkP8yFyPz7/PqSGhzxVGmytvuF1Z7bKtky9QS+HMrAt+ur3Ab?=
- =?iso-8859-1?Q?dlqC+pU/3QCKOqvfcxBEWbbjR5p03Z6lvRyL7XePOMqRm9tX7D9G+pxxaj?=
- =?iso-8859-1?Q?sSw9RZ2iyPCkk4KfqaGd+sB4lpUcuLnLpv2lBtKB+JHF8k7wpOrF7uMTP+?=
- =?iso-8859-1?Q?Cin9OetM/hIaCHmMmm+4SKRZV2rFbpjp7yGitBYx1p51Wh7hJtjii4cajL?=
- =?iso-8859-1?Q?iQ52zKUWWBnK5eqXstl/XfSknl4N5bv462KpSRQA/Y2dG08sPxcdD6w/UO?=
- =?iso-8859-1?Q?1AntjRTBUt2+AUEnoUC7FFlHHgzbLwysP3iLEpU1TfNfkewJXPhMlF0Y1l?=
- =?iso-8859-1?Q?LDIBU4ioS6QDLV+G0ablHaCIXEcWgRCMI8qRTX9Lgqs1xwa/FbKmSHfX5R?=
- =?iso-8859-1?Q?HqOCQtFV9AgzFecYv+hWINs2QTKNt1fP8/uKFfqh2zEC5Tg1V45RYJA6Ui?=
- =?iso-8859-1?Q?p9SLJEp/1QragcizR9PotqksJVru2K5aImYhFkUZ//SWEDv5ebaCweSreM?=
- =?iso-8859-1?Q?4LfcL4IxZ1t8bI5iRBHNJ2z0C5kqc2CmNIv1Go/SWgjeK4Za+b26JY9H5a?=
- =?iso-8859-1?Q?f805Dm6LNgq+ucao2Gw5MffZyhX/CuQmo+tqAT0LVi241/8=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S233655AbhJSFo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 01:44:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:44636 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229755AbhJSFoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 01:44:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 881842F;
+        Mon, 18 Oct 2021 22:42:43 -0700 (PDT)
+Received: from [10.163.74.241] (unknown [10.163.74.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 405673F73D;
+        Mon, 18 Oct 2021 22:42:39 -0700 (PDT)
+Subject: Re: [PATCH v5 10/15] coresight: trbe: Workaround TRBE errata
+ overwrite in FILL mode
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>, will@kernel.org,
+        mathieu.poirier@linaro.org
+Cc:     catalin.marinas@arm.com, mike.leach@linaro.org, leo.yan@linaro.org,
+        maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
+ <20211014223125.2605031-11-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <b985d493-054e-6482-76ed-f28d9fe73192@arm.com>
+Date:   Tue, 19 Oct 2021 11:12:39 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: nasa.gov
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR09MB7440.namprd09.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5db77696-fb6b-4391-8ab4-08d992c33ce6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2021 05:42:28.6132
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 7005d458-45be-48ae-8140-d43da96dd17b
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR09MB8589
+In-Reply-To: <20211014223125.2605031-11-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guenter,=0A=
-=0A=
-I've tried testing the patch by checking out the most recent commit's versi=
-on for tmp401.c and applying the patch. However, the temperature values see=
-m to be to low <1000 for each read.=0A=
-=0A=
-If I'm understanding the driver code correctly, I believe there's two place=
-s of interest that might explain the low values=0A=
-1. In tmp401_update_device_reg16, the final assignment to data->temp[j][i] =
-overrides the patch's assignment to data->temp[j][i] in the tmp461 branch=
-=0A=
-2. In SENSOR_DEVICE_ATTR_2_RW, the temp2_offset is at (6, 1), but the newly=
- added LSB array does not contain the LSB address at (6, 1)=0A=
-=0A=
-Regarding your most recent email, I will try the lm90 by changing the drive=
-r tree entry to "ti,tmp451" and I'll let you know if that works for me.=0A=
-=0A=
-Thanks,=0A=
-David=0A=
-=0A=
-From: Guenter Roeck <groeck7@gmail.com> on behalf of Guenter Roeck <linux@r=
-oeck-us.net>=0A=
-Sent: Tuesday, October 19, 2021 12:56 AM=0A=
-To: Wilson, David T. (GSFC-5870) <david.wilson@nasa.gov>=0A=
-Cc: linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-hwmo=
-n@vger.kernel.org <linux-hwmon@vger.kernel.org>=0A=
-Subject: [EXTERNAL] Re: Potential issue with smb word operations for tmp461=
- device in tmp401 driver =0A=
-=A0=0A=
-David,=0A=
-=0A=
-On 10/15/21 10:43 AM, Wilson, David T. (GSFC-5870) wrote:=0A=
-> Hi,=0A=
-> =0A=
-> I am reporting what I believe is a potential issue in the tmp401 driver f=
-or the tmp461 device specifically. I am new to reporting issues, so I apolo=
-gize in advance if I've provided insufficient information for an issue repo=
-rt.=0A=
-> =0A=
-> The problem I'm encountering is that when I use the tmp401 linux driver t=
-o read temperature values from the tmp461, all of the read temperature valu=
-es end with 996 (e.g. 33996, 38996, etc...).=0A=
-> =0A=
-> Looking further into the tmp401 commit messages, I see that the driver wa=
-s changed to use smb word operations instead of separate byte operations. A=
-lthough the other supported devices (i.e. tmp432, etc...) are noted to supp=
-ort 16-bit read operations in their respective datasheets, I see no indicat=
-ions of 16-bit read support in the tmp461 datasheet, which is supported by =
-my inquiry in the TI forums (https://gcc02.safelinks.protection.outlook.com=
-/?url=3Dhttps%3A%2F%2Fe2e.ti.com%2Fsupport%2Fsensors-group%2Fsensors%2Ff%2F=
-sensors-forum%2F1044935%2Ftmp461-linux-driver-support-and-16-bit-temperatur=
-e-register-reads&amp;data=3D04%7C01%7Cdavid.wilson%40nasa.gov%7C2bf9c723497=
-6452dd4a808d992bcc836%7C7005d45845be48ae8140d43da96dd17b%7C0%7C0%7C63770216=
-1780144423%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJB=
-TiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DJerajTZnSdtQgGlVrfm3IOLNpQcoV=
-Keg5haNU8h1aDs%3D&amp;reserved=3D0).=0A=
-> =0A=
-> Reverting the driver to the commit before the smb word change, I am then =
-able to read temperature values that do not end only with 996. As a result,=
- I believe that the tmp461 support may be partially broken by the switch to=
- smb word operations.=0A=
-> =0A=
-=0A=
-can you try to instantiate the lm90 driver (instead of the tmp401 driver)=
-=0A=
-and let me know if it works for you ? If your system uses devicetree,=0A=
-you might have to select "ti,tmp451" instead of "ti,tmp461".=0A=
-=0A=
-Thanks,=0A=
-Guenter=
+
+
+On 10/15/21 4:01 AM, Suzuki K Poulose wrote:
+> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
+> an erratum, which when triggered, might cause the TRBE to overwrite
+> the trace data already collected in FILL mode, in the event of a WRAP.
+> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
+> and could write upto 3 cache line size worth trace. Thus, this could
+> corrupt the trace at the "BASE" pointer.
+> 
+> The workaround is to program the write pointer 256bytes from the
+> base, such that if the erratum is triggered, it doesn't overwrite
+> the trace data that was captured. This skipped region could be
+> padded with ignore packets at the end of the session, so that
+> the decoder sees a continuous buffer with some padding at the
+> beginning. The trace data written at the base is considered
+> lost as the limit could have been in the middle of the perf
+> ring buffer, and jumping to the "base" is not acceptable.
+> We set the flags already to indicate that some amount of trace
+> was lost during the FILL event IRQ. So this is fine.
+> 
+> One important change with the work around is, we program the
+> TRBBASER_EL1 to current page where we are allowed to write.
+> Otherwise, it could overwrite a region that may be consumed
+> by the perf. Towards this, we always make sure that the
+> "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
+> so that we can set the BASE to the PAGE base and move the
+> TRBPTR to the 256bytes offset.
+> 
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+
+> ---
+> Changes since v2:
+>  - Updated the ASCII art to include better description of
+>    all the steps in the work around
+> Change since v1:
+>  - Updated comment with ASCII art
+>  - Add _BYTES suffix for the space to skip for the work around.
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 169 +++++++++++++++++--
+>  1 file changed, 158 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 314e5e7374c7..b56b166b2dec 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -16,6 +16,7 @@
+>  #define pr_fmt(fmt) DRVNAME ": " fmt
+>  
+>  #include <asm/barrier.h>
+> +#include <asm/cpufeature.h>
+>  
+>  #include "coresight-self-hosted-trace.h"
+>  #include "coresight-trbe.h"
+> @@ -88,14 +89,22 @@ struct trbe_buf {
+>   *   - Not duplicating the detection logic
+>   *   - Streamlined detection of erratum across the system
+>   */
+> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE	0
+>  
+>  static int trbe_errata_cpucaps[] = {
+> +	[TRBE_WORKAROUND_OVERWRITE_FILL_MODE] = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
+>  	-1,		/* Sentinel, must be the last entry */
+>  };
+>  
+>  /* The total number of listed errata in trbe_errata_cpucaps */
+>  #define TRBE_ERRATA_MAX			(ARRAY_SIZE(trbe_errata_cpucaps) - 1)
+>  
+> +/*
+> + * Safe limit for the number of bytes that may be overwritten
+> + * when ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE is triggered.
+> + */
+> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES	256
+> +
+>  /*
+>   * struct trbe_cpudata: TRBE instance specific data
+>   * @trbe_flag		- TRBE dirty/access flag support
+> @@ -146,6 +155,11 @@ static inline bool trbe_has_erratum(struct trbe_cpudata *cpudata, int i)
+>  	return (i < TRBE_ERRATA_MAX) && test_bit(i, cpudata->errata);
+>  }
+>  
+> +static inline bool trbe_may_overwrite_in_fill_mode(struct trbe_cpudata *cpudata)
+> +{
+> +	return trbe_has_erratum(cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE);
+> +}
+> +
+>  static int trbe_alloc_node(struct perf_event *event)
+>  {
+>  	if (event->cpu == -1)
+> @@ -549,10 +563,13 @@ static void trbe_enable_hw(struct trbe_buf *buf)
+>  	set_trbe_limit_pointer_enabled(buf->trbe_limit);
+>  }
+>  
+> -static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+> +static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *handle,
+> +						 u64 trbsr)
+>  {
+>  	int ec = get_trbe_ec(trbsr);
+>  	int bsc = get_trbe_bsc(trbsr);
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +	struct trbe_cpudata *cpudata = buf->cpudata;
+>  
+>  	WARN_ON(is_trbe_running(trbsr));
+>  	if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
+> @@ -561,10 +578,16 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+>  	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
+>  		return TRBE_FAULT_ACT_FATAL;
+>  
+> -	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
+> -		if (get_trbe_write_pointer() == get_trbe_base_pointer())
+> -			return TRBE_FAULT_ACT_WRAP;
+> -	}
+> +	/*
+> +	 * If the trbe is affected by TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
+> +	 * it might write data after a WRAP event in the fill mode.
+> +	 * Thus the check TRBPTR == TRBBASER will not be honored.
+> +	 */
+> +	if ((is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) &&
+> +	    (trbe_may_overwrite_in_fill_mode(cpudata) ||
+> +	     get_trbe_write_pointer() == get_trbe_base_pointer()))
+> +		return TRBE_FAULT_ACT_WRAP;
+> +
+>  	return TRBE_FAULT_ACT_SPURIOUS;
+>  }
+>  
+> @@ -573,6 +596,8 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
+>  {
+>  	u64 write;
+>  	u64 start_off, end_off;
+> +	u64 size;
+> +	u64 overwrite_skip = TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES;
+>  
+>  	/*
+>  	 * If the TRBE has wrapped around the write pointer has
+> @@ -593,7 +618,18 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
+>  
+>  	if (WARN_ON_ONCE(end_off < start_off))
+>  		return 0;
+> -	return (end_off - start_off);
+> +
+> +	size = end_off - start_off;
+> +	/*
+> +	 * If the TRBE is affected by the following erratum, we must fill
+> +	 * the space we skipped with IGNORE packets. And we are always
+> +	 * guaranteed to have at least a PAGE_SIZE space in the buffer.
+> +	 */
+> +	if (trbe_has_erratum(buf->cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE) &&
+> +	    !WARN_ON(size < overwrite_skip))
+> +		__trbe_pad_buf(buf, start_off, overwrite_skip);
+> +
+> +	return size;
+>  }
+>  
+>  static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
+> @@ -712,7 +748,7 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>  		clr_trbe_irq();
+>  		isb();
+>  
+> -		act = trbe_get_fault_act(status);
+> +		act = trbe_get_fault_act(handle, status);
+>  		/*
+>  		 * If this was not due to a WRAP event, we have some
+>  		 * errors and as such buffer is empty.
+> @@ -736,21 +772,117 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>  	return size;
+>  }
+>  
+> +
+> +static int trbe_apply_work_around_before_enable(struct trbe_buf *buf)
+> +{
+> +	/*
+> +	 * TRBE_WORKAROUND_OVERWRITE_FILL_MODE causes the TRBE to overwrite a few cache
+> +	 * line size from the "TRBBASER_EL1" in the event of a "FILL".
+> +	 * Thus, we could loose some amount of the trace at the base.
+> +	 *
+> +	 * Before Fix:
+> +	 *
+> +	 *  normal-BASE     head (normal-TRBPTR)         tail (normal-LIMIT)
+> +	 *  |                   \/                       /
+> +	 *   -------------------------------------------------------------
+> +	 *  |   Pg0      |   Pg1       |           |          |  PgN     |
+> +	 *   -------------------------------------------------------------
+> +	 *
+> +	 * In the normal course of action, we would set the TRBBASER to the
+> +	 * beginning of the ring-buffer (normal-BASE). But with the erratum,
+> +	 * the TRBE could overwrite the contents at the "normal-BASE", after
+> +	 * hitting the "normal-LIMIT", since it doesn't stop as expected. And
+> +	 * this is wrong. This could result in overwriting trace collected in
+> +	 * one of the previous runs, being consumed by the user. So we must
+> +	 * always make sure that the TRBBASER is within the region
+> +	 * [head, head+size]. Note that TRBBASER must be PAGE aligned,
+> +	 *
+> +	 *  After moving the BASE:
+> +	 *
+> +	 *  normal-BASE     head (normal-TRBPTR)         tail (normal-LIMIT)
+> +	 *  |                   \/                       /
+> +	 *   -------------------------------------------------------------
+> +	 *  |         |          |xyzdef.     |..   tuvw|                |
+> +	 *   -------------------------------------------------------------
+> +	 *                      /
+> +	 *              New-BASER
+> +	 *
+> +	 * Also, we would set the TRBPTR to head (after adjusting for
+> +	 * alignment) at normal-PTR. This would mean that the last few bytes
+> +	 * of the trace (say, "xyz") might overwrite the first few bytes of
+> +	 * trace written ("abc"). More importantly they will appear in what
+> +	 * userspace sees as the beginning of the trace, which is wrong. We may
+> +	 * not always have space to move the latest trace "xyz" to the correct
+> +	 * order as it must appear beyond the LIMIT. (i.e, [head..head+size]).
+> +	 * Thus it is easier to ignore those bytes than to complicate the
+> +	 * driver to move it, assuming that the erratum was triggered and
+> +	 * doing additional checks to see if there is indeed allowed space at
+> +	 * TRBLIMITR.LIMIT.
+> +	 *
+> +	 *  Thus the full workaround will move the BASE and the PTR and would
+> +	 *  look like (after padding at the skipped bytes at the end of
+> +	 *  session) :
+> +	 *
+> +	 *  normal-BASE     head (normal-TRBPTR)         tail (normal-LIMIT)
+> +	 *  |                   \/                       /
+> +	 *   -------------------------------------------------------------
+> +	 *  |         |          |///abc..     |..  rst|                |
+> +	 *   -------------------------------------------------------------
+> +	 *                      /    |
+> +	 *              New-BASER    New-TRBPTR
+> +	 *
+> +	 * To summarize, with the work around:
+> +	 *
+> +	 *  - We always align the offset for the next session to PAGE_SIZE
+> +	 *    (This is to ensure we can program the TRBBASER to this offset
+> +	 *    within the region [head...head+size]).
+> +	 *
+> +	 *  - At TRBE enable:
+> +	 *     - Set the TRBBASER to the page aligned offset of the current
+> +	 *       proposed write offset. (which is guaranteed to be aligned
+> +	 *       as above)
+> +	 *     - Move the TRBPTR to skip first 256bytes (that might be
+> +	 *       overwritten with the erratum). This ensures that the trace
+> +	 *       generated in the session is not re-written.
+> +	 *
+> +	 *  - At trace collection:
+> +	 *     - Pad the 256bytes skipped above again with IGNORE packets.
+> +	 */
+> +	if (trbe_has_erratum(buf->cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE)) {
+> +		if (WARN_ON(!IS_ALIGNED(buf->trbe_write, PAGE_SIZE)))
+> +			return -EINVAL;
+> +		buf->trbe_hw_base = buf->trbe_write;
+> +		buf->trbe_write += TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int __arm_trbe_enable(struct trbe_buf *buf,
+>  			     struct perf_output_handle *handle)
+>  {
+> +	int ret = 0;
+> +
+>  	perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
+>  	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+>  	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+>  	if (buf->trbe_limit == buf->trbe_base) {
+> -		trbe_stop_and_truncate_event(handle);
+> -		return -ENOSPC;
+> +		ret = -ENOSPC;
+> +		goto err;
+>  	}
+>  	/* Set the base of the TRBE to the buffer base */
+>  	buf->trbe_hw_base = buf->trbe_base;
+> +
+> +	ret = trbe_apply_work_around_before_enable(buf);
+> +	if (ret)
+> +		goto err;
+> +
+>  	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
+>  	trbe_enable_hw(buf);
+>  	return 0;
+> +err:
+> +	trbe_stop_and_truncate_event(handle);
+> +	return ret;
+>  }
+>  
+>  static int arm_trbe_enable(struct coresight_device *csdev, u32 mode, void *data)
+> @@ -890,7 +1022,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>  	if (!is_perf_trbe(handle))
+>  		return IRQ_NONE;
+>  
+> -	act = trbe_get_fault_act(status);
+> +	act = trbe_get_fault_act(handle, status);
+>  	switch (act) {
+>  	case TRBE_FAULT_ACT_WRAP:
+>  		truncated = !!trbe_handle_overflow(handle);
+> @@ -1038,7 +1170,22 @@ static void arm_trbe_probe_cpu(void *info)
+>  	 */
+>  	trbe_check_errata(cpudata);
+>  
+> -	cpudata->trbe_align = cpudata->trbe_hw_align;
+> +	/*
+> +	 * If the TRBE is affected by erratum TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
+> +	 * we must always program the TBRPTR_EL1, 256bytes from a page
+> +	 * boundary, with TRBBASER_EL1 set to the page, to prevent
+> +	 * TRBE over-writing 256bytes at TRBBASER_EL1 on FILL event.
+> +	 *
+> +	 * Thus make sure we always align our write pointer to a PAGE_SIZE,
+> +	 * which also guarantees that we have at least a PAGE_SIZE space in
+> +	 * the buffer (TRBLIMITR is PAGE aligned) and thus we can skip
+> +	 * the required bytes at the base.
+> +	 */
+> +	if (trbe_may_overwrite_in_fill_mode(cpudata))
+> +		cpudata->trbe_align = PAGE_SIZE;
+> +	else
+> +		cpudata->trbe_align = cpudata->trbe_hw_align;
+> +
+>  	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
+>  	cpudata->cpu = cpu;
+>  	cpudata->drvdata = drvdata;
+> 
