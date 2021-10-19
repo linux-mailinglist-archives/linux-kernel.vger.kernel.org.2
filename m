@@ -2,372 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B327D432F83
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074E8432F98
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbhJSHdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:33:01 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:43130 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhJSHcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:32:54 -0400
-Received: from [192.168.224.11] (ert768.prtnl [192.168.224.11])
-        by sparta.prtnl (Postfix) with ESMTP id 301E944A024E;
-        Tue, 19 Oct 2021 09:30:34 +0200 (CEST)
-Subject: Re: [PATCH v5 0/4] iio: chemical: Add support for Sensirion SCD4x CO2
- sensor
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>
-References: <20211008101706.755942-1-roan@protonic.nl>
- <20211010165919.51f06938@jic23-huawei> <20211013183828.521f043f@jic23-huawei>
- <3ecfe246-b942-0c1e-08e6-17eff4c5cc16@protonic.nl>
- <20211014181932.5f70d2e4@jic23-huawei>
- <2c7f8b7c-3070-5763-7b74-3811cdbfcabc@protonic.nl>
- <20211018185225.11396bb0@jic23-huawei>
-From:   Roan van Dijk <roan@protonic.nl>
-Message-ID: <23636d50-56b9-b7da-59b5-3568e1f3d5ca@protonic.nl>
-Date:   Tue, 19 Oct 2021 09:30:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234491AbhJSHfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:35:12 -0400
+Received: from mail-db8eur05on2063.outbound.protection.outlook.com ([40.107.20.63]:38401
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229930AbhJSHfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 03:35:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HOHNpK/+N/sFf+1wRNgK/rntN9j7TCRkDLsX78ZrPw9Qq5CWiDZati1hl3fWh9rsOkt1w7JRJ3Jkw7pt2P4NQd6L9XahFp6u6eQt4fIgyKSUSZGzuJA287lb/LYCbzhMavDoDZApptnVR0i+8PBqDu++ie+vFzxbFr82uK6E6XanGpg7SMrEWRZZ1wVBnuGvMp+mysIkRvHmtBiIOe9P+lNvpFwENMTs9bl+2Cw0KrVvCoUVNzxjnA7srm27RhP3NLLsRtvLpURkezVSlDUoSZ/WNF6hZTsdaL2Cuhs4gGgSNhMZuJcbTwMZi+e4OEFDM45i1mRyN+YQfLPbLUl9Vg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=alg8bTvIpAAizR4bBPSNVZqwS1F9jF3VNh8rEU7yCfA=;
+ b=SHj0oiXrNe1E7bghwydR8I7wfh65rkZlbwIKTWV4LLYeVBrgM1GjiS8mvv13VCBL5LPsK79PblMzB/l1n1EZFVGkO94lPu9wd/YEU8BJ+U/uApVBgItUFDVCYKMmMo0/tHmOFMAXqnqNh93KFJPLWmr7EGk/Ws7Bx2RBGq1YnE1XEvnIhEdnkzS2tB326sBtDQAj0tophBaD9/qBPQ30RgipgEvUERWgtNsqp3WLaowngea8Vwuk4uByBoODiPvVepOYY87HNGccgvaV3zOS5Oom02VqB7ykbNA+i0yT+eNcjXHGczC7KkJBLPTrqzppczUVZcUw3J6KZxB3IwHu5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=alg8bTvIpAAizR4bBPSNVZqwS1F9jF3VNh8rEU7yCfA=;
+ b=OtAqA8irtEonlxqos63VGf1RfhxJ+OvCFqZ61yfoUH25SMW1BIgkGuVPCp0YHA9gI7z4zk8XK46CwDaT/C9lcN9DBPQJBH2NWAyv3iXLU0KD0p8gpSubbSPDSdn34Xpmda8DgUbCMDbHV5R7aRWRcdd5UHmXEuwMBvlmvk3Z0bg=
+Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
+ by AS8PR04MB8882.eurprd04.prod.outlook.com (2603:10a6:20b:42d::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
+ 2021 07:32:55 +0000
+Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
+ ([fe80::b059:46c6:685b:e0fc]) by AS8PR04MB8676.eurprd04.prod.outlook.com
+ ([fe80::b059:46c6:685b:e0fc%4]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 07:32:55 +0000
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: RE: [RESEND v2 1/5] PCI: imx6: Encapsulate the clock enable into one
+ standalone function
+Thread-Topic: [RESEND v2 1/5] PCI: imx6: Encapsulate the clock enable into one
+ standalone function
+Thread-Index: AQHXwY4s6kZeP+E3uEGrVnpQc2fDkqvUXbIAgAWWIQA=
+Date:   Tue, 19 Oct 2021 07:32:55 +0000
+Message-ID: <AS8PR04MB86764DE4738047BB39EEF9658CBD9@AS8PR04MB8676.eurprd04.prod.outlook.com>
+References: <1634277941-6672-1-git-send-email-hongxing.zhu@nxp.com>
+         <1634277941-6672-2-git-send-email-hongxing.zhu@nxp.com>
+ <b1c38eb0cbded46d5f3c087e641b18cdb4f500ac.camel@pengutronix.de>
+In-Reply-To: <b1c38eb0cbded46d5f3c087e641b18cdb4f500ac.camel@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e4313ebf-89cb-4c10-1f7c-08d992d2aacf
+x-ms-traffictypediagnostic: AS8PR04MB8882:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AS8PR04MB8882EF3DF6FAF17158358C808CBD9@AS8PR04MB8882.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2331;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5sJi4GNeB1r5QkE9uGGC/DyelturoClOotDJgltQYnbNR/+caOym6NhQ0t++9xrOtAnVhxVuB9VJ1MJhPrOCrrvj8CoBHMQEv0NH0diail7sdKoLzAuNOTcoO/GMdthbKSmhY8SB+4mXRm8uTeM8UPSxZnC6jXq/+vIS9KI1Gztd2OeR0msk1I0XR7rZRKzfh+HHxSVCu6ZVu13a1e7ShUeJeThXXMCi/zGgOgBqkfpRyMumDwniJjo4kCFdjZzDrr2YqbKLNkG9HX+gXdHfJGmlQF9ZuYXiTaCawRrBiAr9y8tHSEmnPwE7TdrrbURUlDhMDHYWAwsFmqidduSePPDIeGbbjDd5ZK9vI7H/smvo1n3JhDfHVqyQAocyTct2zzLjr07ebOomPNZDU83TKA49jQSOGjiGpEZ5flv5w+B1P1YVNjaLWOsAVsbTg7HRWOxifJxZ1OD8chmNvDvXqzMlAUCXzuTNi87GtqAK6oV6D5ld3neZ5UiIvNk2cItaucQpk/w/TtGsXvVJvXFYNMOyGXRpXCAZVCLukGiqUqDssX6ijqjto2BqJTBAZfa1ZMtF6MzJl5ZaVPfInUOaMs+VH6y+Kxa2gVkhlYwRzqfQXjb2S0X0Ycb74tOTZY8nxeSHeOMyJs/7p8C46laUAmL4dEBaLsccabxMFMXpuP4fvAA9SV5yW7ulH0EQNW+BLJ1NCWHIocEV5iyqCavAog==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(52536014)(86362001)(2906002)(122000001)(33656002)(76116006)(508600001)(9686003)(6506007)(8676002)(66556008)(26005)(53546011)(110136005)(5660300002)(316002)(83380400001)(66946007)(54906003)(64756008)(66446008)(66476007)(38100700002)(38070700005)(55016002)(8936002)(7696005)(4326008)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bURMYVhXRGdjZmlTSlUvU2s0Y1dhaXIvM3pDdE82eGhSMkFlUHAzd1VmQXhD?=
+ =?utf-8?B?V1pwT3JTTWRSTmJiRk5NcHdBZHg2elQwVGRRaWdDTGNncnoxZmYwQVJoejFN?=
+ =?utf-8?B?TzlKS1Zvdy9IeXVrMFIrWGY4OEhRV1drNEpaZk9HNzhHVnJXdHNCVndaMG1M?=
+ =?utf-8?B?M21Yakk5R1l6SlNNck5DVHhBMnlpVlRkbVk2N3RDYWhncnNGR3Vhd3o3d3Ir?=
+ =?utf-8?B?YTdhblA5Q0JzU3VRL21Xa1RVNUlHZ1FVYW90cmowRGV4SU4yN2pqZ2M1Mzd3?=
+ =?utf-8?B?U1kxQy85dElYN2wzeE40eXkrVSs1YlJ4cDhrYjNtOHRLOTN1TjRySGVvemxu?=
+ =?utf-8?B?U3BCK3RZT2ZVNk1ZMDVDR1BKYlNOcDFmdzVJV2NOZUsvWVZCSkd4TXpLQ2s0?=
+ =?utf-8?B?NStuMFNZMzRNanl1eTM3eHd0OUZ6Ly84Zkt0ZEpzekdOR0Z0UWtJWXFZeUNy?=
+ =?utf-8?B?VmM5dVZkUVFIL1hLYjR5bGlSYTRvUVIyOHp6bjJTKzJmdEJyWDFxcmdnNzda?=
+ =?utf-8?B?WkEzSllKWkhneXlOTURtck0wWE16ay9HNEo2VUhnaDBYbEoyM2luSW93Z2RH?=
+ =?utf-8?B?Z2crYWF4RXgzVTY1UklmOXVSWTRDZmgrWHRGdHFGWVlxSVZ4T01BaXVsdmtt?=
+ =?utf-8?B?MkgyRktVRTFvUzFOL0ttMXpETk9YbUNBaEFmeTFqUEp4MUhnT3l2WUVEYmYy?=
+ =?utf-8?B?a29EQ3pNZEpLaktneFdFd1hEN1ZqY1ZpWGx3Qi91WFRFb0NBMjFsdjZBd1F6?=
+ =?utf-8?B?MlRjYmNRVEg0cDhiUmZhQ3VwMXUrbU1OYWUrTzF4RCtHSThySDhvZEV4VEow?=
+ =?utf-8?B?andCNzR4SzRrb3lIcjk4MDRtTGIvUzRpTk9kTmlxd0YvZ1BmclFYajVLMC93?=
+ =?utf-8?B?cmptKytTSDN1M2pVN0l6aHF1TXI1T0FZNmZYM0lzUnNzYWVhMWN4Y2dvdFJr?=
+ =?utf-8?B?ZnNOUzNUWXNMN1lSbE1Dam5uUlJheEhhOGx2RHVZWitMZlpRRTdrVG1tdnk3?=
+ =?utf-8?B?RE5ZR2JKTnZWNnhwODJwVURIbXZ0SWdweFlLckdnQ3BtYmxxbDMvQ29BcFdu?=
+ =?utf-8?B?MzQ1bWxZdGMweThmNERFNXJkbzBnL2F4OThadUR3NVgyTE9XVC9FbWNXbGts?=
+ =?utf-8?B?M0E1Y2JrczJIVi9JYXg2ZjlldVBhOFpwMzNUV3BkSXVMVHhjaXI0ck1keDZs?=
+ =?utf-8?B?L3JQdW1EYW1xMlJVa2IvbmNrQjFmYXJnVHJSZlFVMUVya2ErcGxHT25TL2Zp?=
+ =?utf-8?B?TG5mMHZGQjZRazVaQjFtbFViUDU0a0xyL29zSEk4ZmZKRjVOYVl2clNFYTNC?=
+ =?utf-8?B?L00zVEJQb1pkWHFORmswRmQvTnlQcWRTRWRHNWhrSjNVd3V0RHBKY3JjMWhw?=
+ =?utf-8?B?bjN2dlp3aGF2RVNxeGhqUFhDSmlWNDJFeUZIUndKRTFyckNoREhqeVZCR2lM?=
+ =?utf-8?B?aFFDV3NmRm4yWEdYUnJEUTdidjh6NVZGeVdxeTYxNlRhbzBtNUVvamdpV1BQ?=
+ =?utf-8?B?RmRDbEh4NjZMcW9sY1IyTE10aDZkWDliam9acE1WSlRrcy9iWS8xU0ZBRG1M?=
+ =?utf-8?B?VjhWZkJBMlIrdFB1Y1pRWWJGL0FRcDBYTGNraEtBZHN0ekVkUmJMaCswVVdt?=
+ =?utf-8?B?U0M4RWxndW04ZlRBU09nMFc1ZGZEM0lZVjc1NjljTTFYcHQvMVY0cThqRVQ3?=
+ =?utf-8?B?REVXQlZmUGJPWDg1M00zUUprWjVpeEF2YmgwZkFXOFh6bHJzUU14QXBjRG9L?=
+ =?utf-8?Q?1aCn6uzqE73OMaw+i8iRdijhGTw3qzQ7F2IAUKK?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20211018185225.11396bb0@jic23-huawei>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: nl
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4313ebf-89cb-4c10-1f7c-08d992d2aacf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2021 07:32:55.5188
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Fiu4xH1rhyaWf5mFj6aqDeLBt/Cx6f6Vl+nCI8vvNMChRVJi96QQyeGLcdi/YBmq+cTtov8c2fkxsVV8nht72g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8882
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 18-10-2021 19:52, Jonathan Cameron wrote:
-> On Mon, 18 Oct 2021 10:19:42 +0200
-> Roan van Dijk <roan@protonic.nl> wrote:
-> 
->> On 14-10-2021 19:19, Jonathan Cameron wrote:
->>> On Thu, 14 Oct 2021 10:24:54 +0200
->>> Roan van Dijk <roan@protonic.nl> wrote:
->>>    
->>>> On 13-10-2021 19:38, Jonathan Cameron wrote:
->>>>> On Sun, 10 Oct 2021 16:59:19 +0100
->>>>> Jonathan Cameron <jic23@kernel.org> wrote:
->>>>>       
->>>>>> On Fri,  8 Oct 2021 12:17:02 +0200
->>>>>> Roan van Dijk <roan@protonic.nl> wrote:
->>>>>>      
->>>>>>> This series adds support for the Sensirion SCD4x sensor.
->>>>>>>
->>>>>>> The driver supports continuous reads of temperature, relative humdity and CO2
->>>>>>> concentration. There is an interval of 5 seconds between readings. During
->>>>>>> this interval the drivers checks if the sensor has new data available.
->>>>>>>
->>>>>>> The driver is based on the scd30 driver. However, The scd4x has become too
->>>>>>> different to just expand the scd30 driver. I made a new driver instead of
->>>>>>> expanding the scd30 driver. I hope I made the right choice by doing so?
->>>>>>
->>>>>> Applied to the togreg branch of iio.git with the issues Randy mentioned tidied
->>>>>> up. Pushed out as testing for 0-day to see if it can find anything we missed
->>>>>
->>>>> And indeed - I missed a bunch of places where explicit __be16 types should have
->>>>> been used.
->>>>>
->>>>> I've applied the following fixup, shout if it's wrong.
->>>>>      
->>>> Thank you Jonathan for applying this fixup. No need to shout :) Your
->>>> changes should fix the issue.
->>>>
->>>> However, I have a question about something else. The co2 concentration
->>>> is an IIO_CHAN_INFO_RAW, but doesn't have a scale or offset at this
->>>> moment. Is an _scale always required for an _raw in the ABI? I could not
->>>> find anything in the documentation if there is a rule for this. Someone
->>>> mentioned this to me, so I want to check if I did this right.
->>>>
->>>> The sensor returns the actual co2 value upon reading, like 450 ppm. We
->>>> can set an offset of this co2 value with the calibration_forced_value
->>>> through the ABI, but this offset is handled internally by the sensor. So
->>>> there isn't anything with scaling or an offset needed at the driver side.
->>>
->>> Ah. We could have mapped this to calibbias, though here it's made more
->>> complex by other calibrations existing that don't use the value so let's
->>> leave it as it is.
->>>    
->>>>
->>>> Was I right by making it of type RAW? If needed we could make it more
->>>> like the scd30 driver, keeping it of type RAW but with scale = 1. What
->>>> should I do or is it fine as it is?
->>>
->>> Hmm. Interesting corner case in the ABI.  A _raw value without a scale
->>> normally means we don't know it for some reason.  The most common case
->>> of this is light sensors where several _raw intensity values are combined
->>> in some (typically non linear) transform to form a single measure of illuminance.
->>> Those intensity_raw channels don't have an meaningful units, but devices
->>> often have threshold events on them so we have to expose them.
->>>
->>> I would say make it a processed value, but there is a quirk.
->>> concentrations in IIO are expressed in percent not per million, so you need
->>> a scale anyway, I guess 10000?  See Documentation/ABI/testing/sysfs-bus-iio
->>>
->>>
->>> No need to do a new driver version, just send a patch tidying up this corner.
->>>    
->>
->> Hi Jonathan,
->>
->> As you suggested, these are my fixes for the concentration reading.
->>
->> The co2 reading is now a processed value and has a scale. I also added
->> the information in sysfs-bus-iio documentation, because this type of
->> processed value is new in the ABI.
->>
->> diff --git a/Documentation/ABI/testing/sysfs-bus-iio
->> b/Documentation/ABI/testing/sysfs-bus-iio
->> index c27347d3608e..66a17f4c831e 100644
->> --- a/Documentation/ABI/testing/sysfs-bus-iio
->> +++ b/Documentation/ABI/testing/sysfs-bus-iio
->> @@ -1716,6 +1716,7 @@ Description:
->>
->>    What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_raw
->>    What:          /sys/bus/iio/devices/iio:deviceX/in_concentrationX_raw
->> +What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_co2_input
->>    What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_co2_raw
->>    What:          /sys/bus/iio/devices/iio:deviceX/in_concentrationX_co2_raw
->>    What:
->> /sys/bus/iio/devices/iio:deviceX/in_concentration_ethanol_raw
->> diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
->> index 09b34201c42b..bc1c6676029d 100644
->> --- a/drivers/iio/chemical/scd4x.c
->> +++ b/drivers/iio/chemical/scd4x.c
->> @@ -337,6 +337,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
->>
->>           switch (mask) {
->>           case IIO_CHAN_INFO_RAW:
->> +       case IIO_CHAN_INFO_PROCESSED:
->>                   ret = iio_device_claim_direct_mode(indio_dev);
->>                   if (ret)
->>                           return ret;
->> @@ -352,7 +353,11 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
->>                   *val = ret;
->>                   return IIO_VAL_INT;
->>           case IIO_CHAN_INFO_SCALE:
->> -               if (chan->type == IIO_TEMP) {
->> +               if (chan->type == IIO_CONCENTRATION) {
->> +                       *val = 0;
->> +                       *val2 = 100;
->> +                       return IIO_VAL_INT_PLUS_MICRO;
->> +               } else if (chan->type == IIO_TEMP) {
->>                           *val = 175000;
->>                           *val2 = 65536;
->>                           return IIO_VAL_FRACTIONAL;
->> @@ -501,7 +506,8 @@ static const struct iio_chan_spec scd4x_channels[] = {
->>                   .type = IIO_CONCENTRATION,
->>                   .channel2 = IIO_MOD_CO2,
->>                   .modified = 1,
->> -               .info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
->> +               .info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
->> +                                       BIT(IIO_CHAN_INFO_SCALE),
-> You shouldn't have scale and processed.  If we need a scale, then it should
-> be _RAW.
-> 
-> Jonathan
-
-Okay, it's now a _RAW value with a scale to make the concentration value 
-expressed in percent. This should be the fix then.
-
-diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
-index 09b34201c42b..b063b378c7d5 100644
---- a/drivers/iio/chemical/scd4x.c
-+++ b/drivers/iio/chemical/scd4x.c
-@@ -352,7 +352,11 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
-                 *val = ret;
-                 return IIO_VAL_INT;
-         case IIO_CHAN_INFO_SCALE:
--               if (chan->type == IIO_TEMP) {
-+               if (chan->type == IIO_CONCENTRATION) {
-+                       *val = 0;
-+                       *val2 = 100;
-+                       return IIO_VAL_INT_PLUS_MICRO;
-+               } else if (chan->type == IIO_TEMP) {
-                         *val = 175000;
-                         *val2 = 65536;
-                         return IIO_VAL_FRACTIONAL;
-@@ -501,7 +505,8 @@ static const struct iio_chan_spec scd4x_channels[] = {
-                 .type = IIO_CONCENTRATION,
-                 .channel2 = IIO_MOD_CO2,
-                 .modified = 1,
--               .info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-+               .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+                                       BIT(IIO_CHAN_INFO_SCALE),
-                 .address = SCD4X_CO2,
-                 .scan_index = SCD4X_CO2,
-                 .scan_type = {
-
-Thanks,
-
-Roan
-
-> 
->>                   .address = SCD4X_CO2,
->>                   .scan_index = SCD4X_CO2,
->>                   .scan_type = {
->>
->> Thanks,
->>
->> Roan
->>
->>> Thanks,
->>>
->>> Jonathan
->>>
->>>    
->>>> Sorry for not asking this earlier.
->>>>
->>>> Thanks,
->>>>
->>>> Roan
->>>>   
->>>>> diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
->>>>> index 09b34201c42b..ebebcb117ba2 100644
->>>>> --- a/drivers/iio/chemical/scd4x.c
->>>>> +++ b/drivers/iio/chemical/scd4x.c
->>>>> @@ -263,7 +263,7 @@ static int scd4x_write_and_fetch(struct scd4x_state *state, enum scd4x_cmd cmd,
->>>>>     static int scd4x_read_meas(struct scd4x_state *state, uint16_t *meas)
->>>>>     {
->>>>>     	int i, ret;
->>>>> -	uint16_t buf[3];
->>>>> +	__be16 buf[3];
->>>>>     
->>>>>     	ret = scd4x_read(state, CMD_READ_MEAS, buf, sizeof(buf));
->>>>>     	if (ret)
->>>>> @@ -282,12 +282,13 @@ static int scd4x_wait_meas_poll(struct scd4x_state *state)
->>>>>     	int ret;
->>>>>     
->>>>>     	do {
->>>>> +		__be16 bval;
->>>>>     		uint16_t val;
->>>>>     
->>>>> -		ret = scd4x_read(state, CMD_GET_DATA_READY, &val, sizeof(val));
->>>>> +		ret = scd4x_read(state, CMD_GET_DATA_READY, &bval, sizeof(bval));
->>>>>     		if (ret)
->>>>>     			return -EIO;
->>>>> -		val = be16_to_cpu(val);
->>>>> +		val = be16_to_cpu(bval);
->>>>>     
->>>>>     		/* new measurement available */
->>>>>     		if (val & 0x7FF)
->>>>> @@ -333,7 +334,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
->>>>>     {
->>>>>     	struct scd4x_state *state = iio_priv(indio_dev);
->>>>>     	int ret;
->>>>> -	uint16_t tmp;
->>>>> +	__be16 tmp;
->>>>>     
->>>>>     	switch (mask) {
->>>>>     	case IIO_CHAN_INFO_RAW:
->>>>> @@ -405,17 +406,18 @@ static ssize_t calibration_auto_enable_show(struct device *dev,
->>>>>     	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->>>>>     	struct scd4x_state *state = iio_priv(indio_dev);
->>>>>     	int ret;
->>>>> -	uint16_t val;
->>>>> +	__be16 bval;
->>>>> +	u16 val;
->>>>>     
->>>>>     	mutex_lock(&state->lock);
->>>>> -	ret = scd4x_read(state, CMD_GET_ASC, &val, sizeof(val));
->>>>> +	ret = scd4x_read(state, CMD_GET_ASC, &bval, sizeof(bval));
->>>>>     	mutex_unlock(&state->lock);
->>>>>     	if (ret) {
->>>>>     		dev_err(dev, "failed to read automatic calibration");
->>>>>     		return ret;
->>>>>     	}
->>>>>     
->>>>> -	val = (be16_to_cpu(val) & SCD4X_READY_MASK) ? 1 : 0;
->>>>> +	val = (be16_to_cpu(bval) & SCD4X_READY_MASK) ? 1 : 0;
->>>>>     
->>>>>     	return sprintf(buf, "%d\n", val);
->>>>>     }
->>>>>
->>>>>       
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>> Jonathan
->>>>>>      
->>>>>>>
->>>>>>> Changes since v5:
->>>>>>> scd4x.c:
->>>>>>>      - Fix bug in trigger_handler
->>>>>>>
->>>>>>> Changes since v4:
->>>>>>> scd4x.c:
->>>>>>>      - Minor fixes in documentation
->>>>>>>      - Reorder trigger_handler so memcpy is not needed anymore
->>>>>>> Documentation:
->>>>>>>      - Change information about the KernelVersion for the
->>>>>>>        calibration_forced_value_available
->>>>>>>
->>>>>>> Changes since v3:
->>>>>>> scd4x.c
->>>>>>>      - Change read and write_and_fetch function parameter. CRC byte is now
->>>>>>>        hidden inside the function.
->>>>>>>      - Fix minor style issues
->>>>>>>      - Add calibration_forced_value_available attribute to the driver
->>>>>>>      - Remove including BUFFER_TRIGGERED
->>>>>>>      - Change calibbias to raw ADC readings rather than converting it to
->>>>>>>        milli degrees C.
->>>>>>> Documentation:
->>>>>>>      - Change description of driver attributes
->>>>>>>      - Add calibration_forced_value_available documentation
->>>>>>>
->>>>>>> Changes since v2:
->>>>>>> scd4x.c:
->>>>>>>      - Change boolean operations
->>>>>>>      - Document scope of lock
->>>>>>>      - Remove device *dev from struct
->>>>>>>      - Add goto block for errror handling
->>>>>>>      - Add function to read value per channel in read_raw
->>>>>>>      - Fix bug with lock in error paths
->>>>>>>      - Remove conversion of humidity and temperature values
->>>>>>>      - Add scale and offset to temperature channel
->>>>>>>      - Add scale to humidity channel
->>>>>>>      - Move memset out of locked section
->>>>>>>      - Remove unused irq functions
->>>>>>>      - Move device register at end of probe function
->>>>>>> Documentation:
->>>>>>>      - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
->>>>>>>      - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
->>>>>>>
->>>>>>> Changes since v1:
->>>>>>> dt-bindings:
->>>>>>>      - Separated compatible string for each sensor type
->>>>>>> scd4x.c:
->>>>>>>      - Changed probe, resume and suspend functions to static
->>>>>>>      - Added SIMPLE_DEV_PM_OPS function call for power management
->>>>>>>        operations.
->>>>>>>
->>>>>>> Roan van Dijk (4):
->>>>>>>      dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
->>>>>>>      MAINTAINERS: Add myself as maintainer of the scd4x driver
->>>>>>>      drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
->>>>>>>      iio: documentation: Document scd4x calibration use
->>>>>>>
->>>>>>>     Documentation/ABI/testing/sysfs-bus-iio       |  41 ++
->>>>>>>     Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
->>>>>>>     .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
->>>>>>>     MAINTAINERS                                   |   6 +
->>>>>>>     drivers/iio/chemical/Kconfig                  |  13 +
->>>>>>>     drivers/iio/chemical/Makefile                 |   1 +
->>>>>>>     drivers/iio/chemical/scd4x.c                  | 689 ++++++++++++++++++
->>>>>>>     7 files changed, 796 insertions(+), 34 deletions(-)
->>>>>>>     delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
->>>>>>>     create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
->>>>>>>     create mode 100644 drivers/iio/chemical/scd4x.c
->>>>>>>          
->>>>>>      
->>>>>       
->>>    
-> 
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEx1Y2FzIFN0YWNoIDxsLnN0
+YWNoQHBlbmd1dHJvbml4LmRlPg0KPiBTZW50OiBTYXR1cmRheSwgT2N0b2JlciAxNiwgMjAyMSAy
+OjE0IEFNDQo+IFRvOiBSaWNoYXJkIFpodSA8aG9uZ3hpbmcuemh1QG54cC5jb20+OyBiaGVsZ2Fh
+c0Bnb29nbGUuY29tOw0KPiBsb3JlbnpvLnBpZXJhbGlzaUBhcm0uY29tDQo+IENjOiBsaW51eC1w
+Y2lAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsNCj4g
+bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5r
+ZXJuZWwub3JnOw0KPiBrZXJuZWxAcGVuZ3V0cm9uaXguZGUNCj4gU3ViamVjdDogUmU6IFtSRVNF
+TkQgdjIgMS81XSBQQ0k6IGlteDY6IEVuY2Fwc3VsYXRlIHRoZSBjbG9jayBlbmFibGUgaW50bw0K
+PiBvbmUgc3RhbmRhbG9uZSBmdW5jdGlvbg0KPiANCj4gQW0gRnJlaXRhZywgZGVtIDE1LjEwLjIw
+MjEgdW0gMTQ6MDUgKzA4MDAgc2NocmllYiBSaWNoYXJkIFpodToNCj4gPiBObyBmdW5jdGlvbiBj
+aGFuZ2VzLCBqdXN0IGVuY2Fwc3VsYXRlIHRoZSBpLk1YIFBDSWUgY2xvY2tzIGVuYWJsZQ0KPiA+
+IG9wZXJhdGlvbnMgaW50byBvbmUgc3RhbmRhbG9uZSBmdW5jdGlvbg0KPiA+DQo+ID4gU2lnbmVk
+LW9mZi1ieTogUmljaGFyZCBaaHUgPGhvbmd4aW5nLnpodUBueHAuY29tPg0KPiANCj4gUmV2aWV3
+ZWQtYnk6IEx1Y2FzIFN0YWNoIDxsLnN0YWNoQHBlbmd1dHJvbml4LmRlPg0KPiANCltSaWNoYXJk
+IFpodV0gVGhhbmtzLg0KDQpCZXN0IFJlZ2FyZHMNClJpY2hhcmQgWmh1DQo+ID4gLS0tDQo+ID4g
+IGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaS1pbXg2LmMgfCA3OQ0KPiA+ICsrKysrKysr
+KysrKysrKystLS0tLS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNDggaW5zZXJ0aW9ucygr
+KSwgMzEgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvY29u
+dHJvbGxlci9kd2MvcGNpLWlteDYuYw0KPiA+IGIvZHJpdmVycy9wY2kvY29udHJvbGxlci9kd2Mv
+cGNpLWlteDYuYw0KPiA+IGluZGV4IDI2ZjQ5Zjc5N2IwZi4uMWZhMWRiYTZkYTgxIDEwMDY0NA0K
+PiA+IC0tLSBhL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaS1pbXg2LmMNCj4gPiArKysg
+Yi9kcml2ZXJzL3BjaS9jb250cm9sbGVyL2R3Yy9wY2ktaW14Ni5jDQo+ID4gQEAgLTQ3MCwzOCAr
+NDcwLDE2IEBAIHN0YXRpYyBpbnQgaW14Nl9wY2llX2VuYWJsZV9yZWZfY2xrKHN0cnVjdA0KPiBp
+bXg2X3BjaWUgKmlteDZfcGNpZSkNCj4gPiAgCXJldHVybiByZXQ7DQo+ID4gIH0NCj4gPg0KPiA+
+IC1zdGF0aWMgdm9pZCBpbXg3ZF9wY2llX3dhaXRfZm9yX3BoeV9wbGxfbG9jayhzdHJ1Y3QgaW14
+Nl9wY2llDQo+ID4gKmlteDZfcGNpZSkgLXsNCj4gPiAtCXUzMiB2YWw7DQo+ID4gLQlzdHJ1Y3Qg
+ZGV2aWNlICpkZXYgPSBpbXg2X3BjaWUtPnBjaS0+ZGV2Ow0KPiA+IC0NCj4gPiAtCWlmIChyZWdt
+YXBfcmVhZF9wb2xsX3RpbWVvdXQoaW14Nl9wY2llLT5pb211eGNfZ3ByLA0KPiA+IC0JCQkJICAg
+ICBJT01VWENfR1BSMjIsIHZhbCwNCj4gPiAtCQkJCSAgICAgdmFsICYgSU1YN0RfR1BSMjJfUENJ
+RV9QSFlfUExMX0xPQ0tFRCwNCj4gPiAtCQkJCSAgICAgUEhZX1BMTF9MT0NLX1dBSVRfVVNMRUVQ
+X01BWCwNCj4gPiAtCQkJCSAgICAgUEhZX1BMTF9MT0NLX1dBSVRfVElNRU9VVCkpDQo+ID4gLQkJ
+ZGV2X2VycihkZXYsICJQQ0llIFBMTCBsb2NrIHRpbWVvdXRcbiIpOw0KPiA+IC19DQo+ID4gLQ0K
+PiA+IC1zdGF0aWMgdm9pZCBpbXg2X3BjaWVfZGVhc3NlcnRfY29yZV9yZXNldChzdHJ1Y3QgaW14
+Nl9wY2llDQo+ID4gKmlteDZfcGNpZSkNCj4gPiArc3RhdGljIGludCBpbXg2X3BjaWVfY2xrX2Vu
+YWJsZShzdHJ1Y3QgaW14Nl9wY2llICppbXg2X3BjaWUpDQo+ID4gIHsNCj4gPiAgCXN0cnVjdCBk
+d19wY2llICpwY2kgPSBpbXg2X3BjaWUtPnBjaTsNCj4gPiAgCXN0cnVjdCBkZXZpY2UgKmRldiA9
+IHBjaS0+ZGV2Ow0KPiA+ICAJaW50IHJldDsNCj4gPg0KPiA+IC0JaWYgKGlteDZfcGNpZS0+dnBj
+aWUgJiYgIXJlZ3VsYXRvcl9pc19lbmFibGVkKGlteDZfcGNpZS0+dnBjaWUpKSB7DQo+ID4gLQkJ
+cmV0ID0gcmVndWxhdG9yX2VuYWJsZShpbXg2X3BjaWUtPnZwY2llKTsNCj4gPiAtCQlpZiAocmV0
+KSB7DQo+ID4gLQkJCWRldl9lcnIoZGV2LCAiZmFpbGVkIHRvIGVuYWJsZSB2cGNpZSByZWd1bGF0
+b3I6ICVkXG4iLA0KPiA+IC0JCQkJcmV0KTsNCj4gPiAtCQkJcmV0dXJuOw0KPiA+IC0JCX0NCj4g
+PiAtCX0NCj4gPiAtDQo+ID4gIAlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoaW14Nl9wY2llLT5w
+Y2llX3BoeSk7DQo+ID4gIAlpZiAocmV0KSB7DQo+ID4gIAkJZGV2X2VycihkZXYsICJ1bmFibGUg
+dG8gZW5hYmxlIHBjaWVfcGh5IGNsb2NrXG4iKTsNCj4gPiAtCQlnb3RvIGVycl9wY2llX3BoeTsN
+Cj4gPiArCQlyZXR1cm4gcmV0Ow0KPiA+ICAJfQ0KPiA+DQo+ID4gIAlyZXQgPSBjbGtfcHJlcGFy
+ZV9lbmFibGUoaW14Nl9wY2llLT5wY2llX2J1cyk7DQo+ID4gQEAgLTUyNCw2ICs1MDIsNTEgQEAg
+c3RhdGljIHZvaWQgaW14Nl9wY2llX2RlYXNzZXJ0X2NvcmVfcmVzZXQoc3RydWN0DQo+ID4gaW14
+Nl9wY2llICppbXg2X3BjaWUpDQo+ID4NCj4gPiAgCS8qIGFsbG93IHRoZSBjbG9ja3MgdG8gc3Rh
+YmlsaXplICovDQo+ID4gIAl1c2xlZXBfcmFuZ2UoMjAwLCA1MDApOw0KPiA+ICsJcmV0dXJuIDA7
+DQo+ID4gKw0KPiA+ICtlcnJfcmVmX2NsazoNCj4gPiArCWNsa19kaXNhYmxlX3VucHJlcGFyZShp
+bXg2X3BjaWUtPnBjaWUpOw0KPiA+ICtlcnJfcGNpZToNCj4gPiArCWNsa19kaXNhYmxlX3VucHJl
+cGFyZShpbXg2X3BjaWUtPnBjaWVfYnVzKTsNCj4gPiArZXJyX3BjaWVfYnVzOg0KPiA+ICsJY2xr
+X2Rpc2FibGVfdW5wcmVwYXJlKGlteDZfcGNpZS0+cGNpZV9waHkpOw0KPiA+ICsNCj4gPiArCXJl
+dHVybiByZXQ7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyB2b2lkIGlteDdkX3BjaWVfd2Fp
+dF9mb3JfcGh5X3BsbF9sb2NrKHN0cnVjdCBpbXg2X3BjaWUNCj4gPiArKmlteDZfcGNpZSkgew0K
+PiA+ICsJdTMyIHZhbDsNCj4gPiArCXN0cnVjdCBkZXZpY2UgKmRldiA9IGlteDZfcGNpZS0+cGNp
+LT5kZXY7DQo+ID4gKw0KPiA+ICsJaWYgKHJlZ21hcF9yZWFkX3BvbGxfdGltZW91dChpbXg2X3Bj
+aWUtPmlvbXV4Y19ncHIsDQo+ID4gKwkJCQkgICAgIElPTVVYQ19HUFIyMiwgdmFsLA0KPiA+ICsJ
+CQkJICAgICB2YWwgJiBJTVg3RF9HUFIyMl9QQ0lFX1BIWV9QTExfTE9DS0VELA0KPiA+ICsJCQkJ
+ICAgICBQSFlfUExMX0xPQ0tfV0FJVF9VU0xFRVBfTUFYLA0KPiA+ICsJCQkJICAgICBQSFlfUExM
+X0xPQ0tfV0FJVF9USU1FT1VUKSkNCj4gPiArCQlkZXZfZXJyKGRldiwgIlBDSWUgUExMIGxvY2sg
+dGltZW91dFxuIik7IH0NCj4gPiArDQo+ID4gK3N0YXRpYyB2b2lkIGlteDZfcGNpZV9kZWFzc2Vy
+dF9jb3JlX3Jlc2V0KHN0cnVjdCBpbXg2X3BjaWUNCj4gPiArKmlteDZfcGNpZSkgew0KPiA+ICsJ
+c3RydWN0IGR3X3BjaWUgKnBjaSA9IGlteDZfcGNpZS0+cGNpOw0KPiA+ICsJc3RydWN0IGRldmlj
+ZSAqZGV2ID0gcGNpLT5kZXY7DQo+ID4gKwlpbnQgcmV0Ow0KPiA+ICsNCj4gPiArCWlmIChpbXg2
+X3BjaWUtPnZwY2llICYmICFyZWd1bGF0b3JfaXNfZW5hYmxlZChpbXg2X3BjaWUtPnZwY2llKSkg
+ew0KPiA+ICsJCXJldCA9IHJlZ3VsYXRvcl9lbmFibGUoaW14Nl9wY2llLT52cGNpZSk7DQo+ID4g
+KwkJaWYgKHJldCkgew0KPiA+ICsJCQlkZXZfZXJyKGRldiwgImZhaWxlZCB0byBlbmFibGUgdnBj
+aWUgcmVndWxhdG9yOiAlZFxuIiwNCj4gPiArCQkJCXJldCk7DQo+ID4gKwkJCXJldHVybjsNCj4g
+PiArCQl9DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJcmV0ID0gaW14Nl9wY2llX2Nsa19lbmFibGUo
+aW14Nl9wY2llKTsNCj4gPiArCWlmIChyZXQpIHsNCj4gPiArCQlkZXZfZXJyKGRldiwgInVuYWJs
+ZSB0byBlbmFibGUgcGNpZSBjbG9ja3NcbiIpOw0KPiA+ICsJCWdvdG8gZXJyX2Nsa3M7DQo+ID4g
+Kwl9DQo+ID4NCj4gPiAgCS8qIFNvbWUgYm9hcmRzIGRvbid0IGhhdmUgUENJZSByZXNldCBHUElP
+LiAqLw0KPiA+ICAJaWYgKGdwaW9faXNfdmFsaWQoaW14Nl9wY2llLT5yZXNldF9ncGlvKSkgeyBA
+QCAtNTc4LDEzICs2MDEsNyBAQA0KPiA+IHN0YXRpYyB2b2lkIGlteDZfcGNpZV9kZWFzc2VydF9j
+b3JlX3Jlc2V0KHN0cnVjdCBpbXg2X3BjaWUgKmlteDZfcGNpZSkNCj4gPg0KPiA+ICAJcmV0dXJu
+Ow0KPiA+DQo+ID4gLWVycl9yZWZfY2xrOg0KPiA+IC0JY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGlt
+eDZfcGNpZS0+cGNpZSk7DQo+ID4gLWVycl9wY2llOg0KPiA+IC0JY2xrX2Rpc2FibGVfdW5wcmVw
+YXJlKGlteDZfcGNpZS0+cGNpZV9idXMpOw0KPiA+IC1lcnJfcGNpZV9idXM6DQo+ID4gLQljbGtf
+ZGlzYWJsZV91bnByZXBhcmUoaW14Nl9wY2llLT5wY2llX3BoeSk7DQo+ID4gLWVycl9wY2llX3Bo
+eToNCj4gPiArZXJyX2Nsa3M6DQo+ID4gIAlpZiAoaW14Nl9wY2llLT52cGNpZSAmJiByZWd1bGF0
+b3JfaXNfZW5hYmxlZChpbXg2X3BjaWUtPnZwY2llKSA+IDApIHsNCj4gPiAgCQlyZXQgPSByZWd1
+bGF0b3JfZGlzYWJsZShpbXg2X3BjaWUtPnZwY2llKTsNCj4gPiAgCQlpZiAocmV0KQ0KPiANCg0K
