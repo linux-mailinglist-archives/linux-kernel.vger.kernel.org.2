@@ -2,90 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D4E4332BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146F94332BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235069AbhJSJob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234887AbhJSJoS (ORCPT
+        id S235034AbhJSJpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:45:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43544 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234764AbhJSJpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:44:18 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30731C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:42:06 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id 187so17104672pfc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZObreM2oofTkM3qJIYvGBPc4dPhqrsVSh4sl9pXqX94=;
-        b=gvXmPjPnRSNvISobWg1zZ6bO0AluECpeMJn/Wtis+JgxiwNWlke4JGvx/mqVLqczl8
-         4jegSqD2RFGK0e+025gFJmGB8Qvce8i7b/zZvQ5P1o4tLw1CzTJCwwCocqUq7fuHZO+p
-         MysEs4HafXErdZiKjnpU0yu+cum9rB5wSlO9OOgu1EapetCEmzj0NnS7gBq21lAK4Hmb
-         us2FlYi0wzPlsPFN+EMKrExs6+LEEyUnmsxebLREjpYBNZbdZXV2nC9luLFkNAXb785e
-         VKs72+TSrOMuYyZ1MUsqyan//oK3gDLuHtSMWLNH5V4uXwMqvV5oIPkyMVN3VdplB57K
-         d2Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZObreM2oofTkM3qJIYvGBPc4dPhqrsVSh4sl9pXqX94=;
-        b=A7qKwqcnJtvyR31r9TJstFcbT9IJUSLOM6idxpMmxntB65JLWQTxYEXgxiNcmilkRt
-         /hQQUw5edjb5/sq24ncr2d8CZCXjgWPtErLK5KFINOzKfXwIAATmF0DIpvZFVi7hSler
-         0EL7YEJ0MY25vEzzi/WIv67tPWBPnx1yshDUnc3ayzy867aG2CpuNlUbcThzZ7hQDILg
-         rEH3+m7dXG3gCCQ+TU+Xf7P+CUmnMMUDmnUIrAlFf7Ow+2GKmFHh4exBS8lddWWGxUlV
-         EiqFPhAjN5gLjTuCbBzh2LWNT28yUab0kv0FUeblCXlW3wpB1wWwUikaAADJ6kqvbcrH
-         cOtw==
-X-Gm-Message-State: AOAM531xIPN20TlLastRkc8aT4h94lMQeTapf97uJGnNCvTbQtWFZbaE
-        5Hzj6x1hsvOgNcXFQAP/wVBcbw==
-X-Google-Smtp-Source: ABdhPJxcbC3OBgUMO+Lzh3jDx/hudBuFmrzaHwnRyTDEgDNQv+z9BMlhRENFVRvc+ZiQhDZAdCws7A==
-X-Received: by 2002:a63:154:: with SMTP id 81mr27360406pgb.38.1634636525679;
-        Tue, 19 Oct 2021 02:42:05 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id u4sm2037379pjg.54.2021.10.19.02.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 02:42:05 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 15:12:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>, wsa@kernel.org,
-        jie.deng@intel.com, virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
-Message-ID: <20211019094203.3kjzch7ipbdv7peg@vireshk-i7>
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
- <20211019074647.19061-2-vincent.whitchurch@axis.com>
- <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
- <YW6Rj/T6dWfMf7lU@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW6Rj/T6dWfMf7lU@kroah.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        Tue, 19 Oct 2021 05:45:43 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1D190219CC;
+        Tue, 19 Oct 2021 09:43:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634636610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=qUv3z1ooUyXdmHCffygn4XXVf9BCppnyjRJlLylLaEdhj/NlnuPgDmOMgW7DVTyTL1GfHj
+        qzV6c/RzsBRxDVK4FtcMl1Yznu5zObWSQIi60MYmIULi/Ym4DBOtfcsw+3RHHaYCmw2i92
+        4Mip3CzbtfBas5gVpQTeJcTADxdCh5k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634636610;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=sUbocXVn5KkTfDdpHw54CqMld7LXX/pIct6Dy46anwSJPDeJJUchMTI81ErtSuM3xbP1h4
+        UkInmBAvD0e6FFDQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id CF6B0A3B84;
+        Tue, 19 Oct 2021 09:43:29 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 11:43:29 +0200
+Message-ID: <s5hlf2p2vum.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Joerg Schambacher <joerg@hifiberry.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jack Yu <jack.yu@realtek.com>, Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Shuming Fan <shumingf@realtek.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org (open list),
+        alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM...)
+Subject: Re: [PATCH] sound/soc: adds TAS5754M digital input amplifier component driver
+In-Reply-To: <20211005133558.5001-1-joerg@hifiberry.com>
+References: <20211005133558.5001-1-joerg@hifiberry.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-10-21, 11:36, Greg KH wrote:
-> What is the "other side" here?  Is it something that you trust or not?
-
-Other side can be a remote processor (for remoteproc over virtio or
-something similar), or traditionally it can be host OS or host
-firmware providing virtualisation to a Guest running Linux (this
-driver). Or something else..
-
-I would incline towards "we trust the other side" here.
-
-> Usually we trust the hardware, but if you do not trust the hardware,
-> then yes, you need to have a timeout here.
-
-The other side is the software that has access to the _Real_ hardware,
-and so we should trust it. So we can have a actually have a completion
-without timeout here, interesting.
-
--- 
-viresh
