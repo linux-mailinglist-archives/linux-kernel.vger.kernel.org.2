@@ -2,116 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60321433CCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71A3433CD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234503AbhJSQzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:55:52 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:39509 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhJSQzt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:55:49 -0400
-Received: by mail-oi1-f173.google.com with SMTP id s9so3552502oiw.6;
-        Tue, 19 Oct 2021 09:53:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fnwMHmBtcUTzeN7AT8ukQSoNU1knCjzi3Fwq9Ac0g90=;
-        b=HJdKu9Yc8oALg0EUXoUMBKenRfGSuc1q4BNOBnq1d3QPbXkCq0Q5jlBTo0ea8p8UZl
-         TFoRbrGnbWaGpIrHbQBqSuwUjDBjln3eaN2Tq7E0W56vbVBbTfmfC0AToRtbsfbJrN2f
-         TGQLAwhyx4BbOTgYtABGlXWrUetqHt59xqngUL10JUAD9n2+2D9oWEUJzviJL0Jxj5V5
-         1ehW808u32vCVZl2iVvCq3srHVgLn+AvHiMGVaozwkhe/dawpGSKvp7qDZAT2I5VNhxs
-         BJzngAMZ1t+SxOkjC/HJaDKF7a5CBdMUeB22usBCn/Xn19ZwnQcZOApGMc6tjISI+tdo
-         6Amw==
-X-Gm-Message-State: AOAM531GWuQFQ3L5WRDnGlhygdiI/0FEMysCTKio0KzcAOE7RqhVCKqw
-        nUgroemq5t+BnedFQmoE8w==
-X-Google-Smtp-Source: ABdhPJxG3M4MMDejwrse4k8mTAjT5I/40KR+eLLfq1+ZBF3yaKS308ugfGwsvK1xSATT6JQLbB2GBw==
-X-Received: by 2002:a05:6808:1185:: with SMTP id j5mr5157383oil.16.1634662416108;
-        Tue, 19 Oct 2021 09:53:36 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l26sm3843004oti.45.2021.10.19.09.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 09:53:35 -0700 (PDT)
-Received: (nullmailer pid 427792 invoked by uid 1000);
-        Tue, 19 Oct 2021 16:53:33 -0000
-Date:   Tue, 19 Oct 2021 11:53:33 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Rob Herring <robh+dt@kernel.org>, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
-        netdev@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        KP Singh <kpsingh@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Shuah Khan <shuah@kernel.org>,
-        Colin Cross <ccross@android.com>, Alex Shi <alexs@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Kees Cook <keescook@chromium.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>, kvm@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        sparmaintainer@unisys.com,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>, devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v3 00/23] Fix some issues at documentation
-Message-ID: <YW74Dez4/3cIbe1Q@robh.at.kernel.org>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+        id S233737AbhJSQ6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:58:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229774AbhJSQ6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:58:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 759766113B;
+        Tue, 19 Oct 2021 16:56:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634662595;
+        bh=O/2mCEk859jM6shQhgv+fX2GqL6oT0eP64zQhWzS8XA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vQOwAFXnmBJNnyD0+d8jW5THLSLuYsgiKsPzu07BEx1yVJnYmmNHNqlRrMZIwgu1C
+         xExURgAQOYBOzdSRNhaD0IHOPr7ivqJhBCryPsc4amDTsXAWERIPfl01w61UZ07AJa
+         /Ag9TRIuzBWVtxYgaor2LcbKOhURKp09PhhVeDhTQNhJhRtuKSAXUWkTRJ7pa/7WFX
+         JAP8yPACcKApT+4+M8nFjYR9e8iNfuKi0sFE97Nv1SEc6DGGg1SDWz6hxr7CgRmdKD
+         yAah+9IgFTuH9Eg8CSia0MEKsc+Ef22BTNwwyJxjaCHvE5sO6m+JvBO9ajfG2K+g/d
+         EDLoohP9itwag==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E68B8410A1; Tue, 19 Oct 2021 13:56:32 -0300 (-03)
+Date:   Tue, 19 Oct 2021 13:56:32 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        namhyung@kernel.org, jolsa@redhat.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
+        dave@stgolabs.net, dvhart@infradead.org, peterz@infradead.org,
+        mingo@redhat.com, tglx@linutronix.de, atish.patra@wdc.com,
+        arnd@arndb.de, Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH v2 1/2] perf bench futex: Use a 64-bit time_t
+Message-ID: <YW74wK03ibOS3jVZ@kernel.org>
+References: <20211015005634.2658470-1-alistair.francis@opensource.wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1634630485.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20211015005634.2658470-1-alistair.francis@opensource.wdc.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 09:03:59 +0100, Mauro Carvalho Chehab wrote:
-> Hi Jon,
+Em Fri, Oct 15, 2021 at 10:56:33AM +1000, Alistair Francis escreveu:
+> From: Alistair Francis <alistair.francis@wdc.com>
 > 
-> This series is against today's next (next-20211019) and addresses missing
-> links to Documentation/*.
+> Convert tools/perf to only use a 64-bit time_t. On 64-bit architectures
+> this isn't a functional change. On 32-bit architectures we now only
+> perform 64-bit time_t syscalls (__NR_futex_time64) and use a struct
+> timespec64.
 > 
-> The best would be to have the patches applied directly to the trees that
-> contain the patches that moved/renamed files, and then apply the
-> remaining ones either later during the merge window or just afterwards,
-> whatever works best for you.
-> 
-> Regards,
-> Mauro
-> 
-> Mauro Carvalho Chehab (23):
->   visorbus: fix a copyright symbol that was bad encoded
->   libbpf: update index.rst reference
->   docs: accounting: update delay-accounting.rst reference
->   MAINTAINERS: update arm,vic.yaml reference
->   MAINTAINERS: update aspeed,i2c.yaml reference
->   MAINTAINERS: update faraday,ftrtc010.yaml reference
->   MAINTAINERS: update ti,sci.yaml reference
->   MAINTAINERS: update intel,ixp46x-rng.yaml reference
->   MAINTAINERS: update nxp,imx8-jpeg.yaml reference
->   MAINTAINERS: update gemini.yaml reference
->   MAINTAINERS: update brcm,unimac-mdio.yaml reference
->   MAINTAINERS: update mtd-physmap.yaml reference
+> This won't work on kernels before 5.1, but as perf is tied to the kernel
+> that's ok.
 
-Applied patches 3-12.
+No, perf is not tied to the kernel, one can use a new perf tool on any
+previous kernel, and an old perf tool should work on new kernels as
+well.
 
->   Documentation: update vcpu-requests.rst reference
->   bpftool: update bpftool-cgroup.rst reference
->   docs: translations: zn_CN: irq-affinity.rst: add a missing extension
->   docs: translations: zh_CN: memory-hotplug.rst: fix a typo
->   docs: fs: locks.rst: update comment about mandatory file locking
->   fs: remove a comment pointing to the removed mandatory-locking file
->   Documentation/process: fix a cross reference
->   dt-bindings: mfd: update x-powers,axp152.yaml reference
->   regulator: dt-bindings: update samsung,s2mpa01.yaml reference
->   regulator: dt-bindings: update samsung,s5m8767.yaml reference
->   dt-bindings: reserved-memory: ramoops: update ramoops.yaml references
+- Arnaldo
+ 
+> This allows us to build perf for 32-bit architectures with 64-bit time_t
+> like RISC-V 32-bit.
+> 
+> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+> ---
+>  tools/perf/bench/futex.h | 26 ++++++++++++++++++++------
+>  1 file changed, 20 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/perf/bench/futex.h b/tools/perf/bench/futex.h
+> index b3853aac3021c..b9665d43d2988 100644
+> --- a/tools/perf/bench/futex.h
+> +++ b/tools/perf/bench/futex.h
+> @@ -12,6 +12,7 @@
+>  #include <sys/syscall.h>
+>  #include <sys/types.h>
+>  #include <linux/futex.h>
+> +#include <linux/time_types.h>
+>  
+>  struct bench_futex_parameters {
+>  	bool silent;
+> @@ -27,12 +28,14 @@ struct bench_futex_parameters {
+>  	unsigned int nrequeue;
+>  };
+>  
+> +#define timespec64 __kernel_timespec
+> +
+>  /**
+>   * futex() - SYS_futex syscall wrapper
+>   * @uaddr:	address of first futex
+>   * @op:		futex op code
+>   * @val:	typically expected value of uaddr, but varies by op
+> - * @timeout:	typically an absolute struct timespec (except where noted
+> + * @timeout:	typically an absolute struct timespec64 (except where noted
+>   *		otherwise). Overloaded by some ops
+>   * @uaddr2:	address of second futex for some ops
+>   * @val3:	varies by op
+> @@ -47,15 +50,26 @@ struct bench_futex_parameters {
+>   * These argument descriptions are the defaults for all
+>   * like-named arguments in the following wrappers except where noted below.
+>   */
+> -#define futex(uaddr, op, val, timeout, uaddr2, val3, opflags) \
+> -	syscall(SYS_futex, uaddr, op | opflags, val, timeout, uaddr2, val3)
+> +/**
+> + * We only support 64-bit time_t for the timeout.
+> + * On 64-bit architectures we can use __NR_futex
+> + * On 32-bit architectures we use __NR_futex_time64. This only works on kernel
+> + * versions 5.1+.
+> + */
+> +#if __BITS_PER_LONG == 64
+> +# define futex(uaddr, op, val, timeout, uaddr2, val3, opflags) \
+> +	syscall(__NR_futex, uaddr, op | opflags, val, timeout, uaddr2, val3)
+> +#else
+> +# define futex(uaddr, op, val, timeout, uaddr2, val3, opflags) \
+> +	syscall(__NR_futex_time64, uaddr, op | opflags, val, timeout, uaddr2, val3)
+> +#endif
+>  
+>  /**
+>   * futex_wait() - block on uaddr with optional timeout
+>   * @timeout:	relative timeout
+>   */
+>  static inline int
+> -futex_wait(u_int32_t *uaddr, u_int32_t val, struct timespec *timeout, int opflags)
+> +futex_wait(u_int32_t *uaddr, u_int32_t val, struct timespec64 *timeout, int opflags)
+>  {
+>  	return futex(uaddr, FUTEX_WAIT, val, timeout, NULL, 0, opflags);
+>  }
+> @@ -74,7 +88,7 @@ futex_wake(u_int32_t *uaddr, int nr_wake, int opflags)
+>   * futex_lock_pi() - block on uaddr as a PI mutex
+>   */
+>  static inline int
+> -futex_lock_pi(u_int32_t *uaddr, struct timespec *timeout, int opflags)
+> +futex_lock_pi(u_int32_t *uaddr, struct timespec64 *timeout, int opflags)
+>  {
+>  	return futex(uaddr, FUTEX_LOCK_PI, 0, timeout, NULL, 0, opflags);
+>  }
+> @@ -111,7 +125,7 @@ futex_cmp_requeue(u_int32_t *uaddr, u_int32_t val, u_int32_t *uaddr2, int nr_wak
+>   */
+>  static inline int
+>  futex_wait_requeue_pi(u_int32_t *uaddr, u_int32_t val, u_int32_t *uaddr2,
+> -		      struct timespec *timeout, int opflags)
+> +		      struct timespec64 *timeout, int opflags)
+>  {
+>  	return futex(uaddr, FUTEX_WAIT_REQUEUE_PI, val, timeout, uaddr2, 0,
+>  		     opflags);
+> -- 
+> 2.31.1
+
+-- 
+
+- Arnaldo
