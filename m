@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B3A433E3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28E4433E3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbhJSSRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 14:17:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44752 "EHLO mail.kernel.org"
+        id S234827AbhJSSRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 14:17:24 -0400
+Received: from mga11.intel.com ([192.55.52.93]:50074 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231586AbhJSSRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 14:17:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E76C60FC1;
-        Tue, 19 Oct 2021 18:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634667288;
-        bh=+SM1BWHbH2LUlxh8AtYn+MneiN1TVdwLnuJB4dZdQUs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=byfnkPVjenYe/JfxSbZWIYWne0Kj1sE8gy5KJkEspDbt86gRE/5YRaI4IFqG7XT39
-         H+U6ywiTHOo3cmggSafvQ1R864AVq4QhVzKjzdU3eAaXAMaiGWi8jn/wr/4GE0AbuO
-         eD3bj++jBVmIpgjjQV33Uc4G+yy9BI95RCAVCu0wwSgo8lSpWy8UyuJIQWGwxf1yDL
-         9/qX2ll/3HCus5l9gzPpzBuVKZnTfSCjcSK+E9lGChMa1NIxIseia47gLJ8okGcjb/
-         1RubxDJF+CpD27pzeQuVQqwBma+u4+ENVaQopx1C8Rno9+/qtS7iexES+DNFugwF7G
-         l+6gUtZOFcmkA==
-Date:   Tue, 19 Oct 2021 20:14:45 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        jie.deng@intel.com, virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
-Message-ID: <YW8LFTcBuN1bB3PD@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        jie.deng@intel.com, virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
- <20211019074647.19061-2-vincent.whitchurch@axis.com>
- <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
- <YW6Rj/T6dWfMf7lU@kroah.com>
- <20211019094203.3kjzch7ipbdv7peg@vireshk-i7>
- <YW6pHkXOPvtidtwS@kroah.com>
- <20211019143748.wrpqopj2hmpvblh4@vireshk-i7>
+        id S232130AbhJSSRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 14:17:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="226054219"
+X-IronPort-AV: E=Sophos;i="5.87,164,1631602800"; 
+   d="scan'208";a="226054219"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 11:15:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,164,1631602800"; 
+   d="scan'208";a="494226142"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga008.jf.intel.com with SMTP; 19 Oct 2021 11:15:03 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 19 Oct 2021 21:15:02 +0300
+Date:   Tue, 19 Oct 2021 21:15:02 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <seanpaul@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/5] drm/i915: Clarify probing order in
+ intel_dp_aux_init_backlight_funcs()
+Message-ID: <YW8LJrCi41BkterA@intel.com>
+References: <20211006024018.320394-1-lyude@redhat.com>
+ <20211006024018.320394-6-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Z4xbno6aVwUYspRx"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211019143748.wrpqopj2hmpvblh4@vireshk-i7>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211006024018.320394-6-lyude@redhat.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 05, 2021 at 10:40:18PM -0400, Lyude Paul wrote:
+> Hooray! We've managed to hit enough bugs upstream that I've been able to
+> come up with a pretty solid explanation for how backlight controls are
+> actually supposed to be detected and used these days. As well, having the
+> rest of the PWM bits in VESA's backlight interface implemented seems to
+> have fixed all of the problematic brightness controls laptop panels that
+> we've hit so far.
+> 
+> So, let's actually document this instead of just calling the laptop panels
+> liars. As well, I would like to formally apologize to all of the laptop
+> panels I called liars. I'm sorry laptop panels, hopefully you can all
+> forgive me and we can move past this~
+> 
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  .../drm/i915/display/intel_dp_aux_backlight.c    | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> index 91daf9ab50e8..04a52d6a74ed 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> @@ -455,11 +455,17 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *connector)
+>  	}
+>  
+>  	/*
+> -	 * A lot of eDP panels in the wild will report supporting both the
+> -	 * Intel proprietary backlight control interface, and the VESA
+> -	 * backlight control interface. Many of these panels are liars though,
+> -	 * and will only work with the Intel interface. So, always probe for
+> -	 * that first.
+> +	 * Since Intel has their own backlight control interface, the majority of machines out there
+> +	 * using DPCD backlight controls with Intel GPUs will be using this interface as opposed to
+> +	 * the VESA interface. However, other GPUs (such as Nvidia's) will always use the VESA
+> +	 * interface. This means that there's quite a number of panels out there that will advertise
+> +	 * support for both interfaces, primarily systems with Intel/Nvidia hybrid GPU setups.
+> +	 *
+> +	 * There's a catch to this though: on many panels that advertise support for both
+> +	 * interfaces, the VESA backlight interface will stop working once we've programmed the
+> +	 * panel with Intel's OUI - which is also required for us to be able to detect Intel's
+> +	 * backlight interface at all. This means that the only sensible way for us to detect both
+> +	 * interfaces is to probe for Intel's first, and VESA's second.
+>  	 */
 
---Z4xbno6aVwUYspRx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You know a lot more about this than I do.
 
+Acked-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-> I think it is set to HZ currently, though I haven't tried big
-> transfers but I still get into some issues with Qemu based stuff.
-> Maybe we can bump it up to few seconds :)
+>  	if (try_intel_interface && intel_dp_aux_supports_hdr_backlight(connector)) {
+>  		drm_dbg_kms(dev, "Using Intel proprietary eDP backlight controls\n");
+> -- 
+> 2.31.1
 
-If you use adapter->timeout, this can even be set at runtime using a
-ioctl. So, it can adapt to use cases. Of course, the driver should
-initialize it to a sane default if the automatic default (HZ) is not
-suitable.
-
-
---Z4xbno6aVwUYspRx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFvCxEACgkQFA3kzBSg
-Kbb+yxAAoCt/AZ5kNarMw5Lh1QJZ/R1PY2mAkx/6X6xJdMtT2677sD7PqCNNnoaP
-JoPHTZzPkX6UFFw15vgH8VNnTnMj1zAxmVQNJb2fCdYCYL1En/hoRLVkggrpQ66a
-wOGtjwulBZmp1hHuaaPQT/92bRvG4RuMaBxU34wNq7qXC4PRQlQcxHn35+lHNpRW
-vbxwpUOpgVvcWOYo4aIMZhanDLXQHJwuy0ZZlr5HLvNAvuPLLcf/dd5l0kWOO8Fh
-Y2DmFeBMiduevRcd/dn3+dKts4ORn1mIqLPYaQaYgx8q9Mfy5HSYWgAPWYsW4bnT
-8QAzud6HJuG+LJKiD+oqWgLA/HTjOq26plxGnsSGYB2q5iKaqL/qhyAymepAN7jF
-m1dLSWSdj9++SeAAIOXCU+ux2corGHBcqs/JExwBgRYsh1am/sswZ+XA2/OknIpV
-rXmlLdg1fjqud1EOXpLi70gp/Sxzp4TfknL7PXIwEOlOXcZ2+BV2600DyMQNf0Vc
-5wsjESlpKcaiUxhyTPuYG0jUoqd2rWNtw4p8VUV4BPdDd7dAkrpeZe/Q+1IzjeCr
-t/JUBeAJZr7g7fWIjos5ZiHDiWDvl1aOeFKAl+KpooasFQOUPI4I9w6ivGeqcVNC
-ilP9Avt+vQFlbD7KpY8FQcOt8nLoayjh7cXJQTrlqAO7f7gl2Wo=
-=Ji5I
------END PGP SIGNATURE-----
-
---Z4xbno6aVwUYspRx--
+-- 
+Ville Syrjälä
+Intel
