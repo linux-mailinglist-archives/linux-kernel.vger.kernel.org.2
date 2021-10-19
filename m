@@ -2,401 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBF4432F78
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36C1432F6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhJSHcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:32:23 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:59985 "EHLO pegase2.c-s.fr"
+        id S234454AbhJSHbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234530AbhJSHcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:32:20 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HYQPJ0yNLz9sSp;
-        Tue, 19 Oct 2021 09:29:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4Rv2tbI_LnfC; Tue, 19 Oct 2021 09:29:56 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HYQP70h67z9sSs;
-        Tue, 19 Oct 2021 09:29:47 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 01CB38B763;
-        Tue, 19 Oct 2021 09:29:47 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id KRrxPBlMVxeC; Tue, 19 Oct 2021 09:29:46 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.71])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 217908B77B;
-        Tue, 19 Oct 2021 09:29:46 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19J7Tcof3188422
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 09:29:38 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19J7TcUw3188421;
-        Tue, 19 Oct 2021 09:29:38 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v3 06/22] powerpc/32s: Do kuep_lock() and kuep_unlock() in assembly
+        id S232782AbhJSHbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 03:31:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEBF46137C;
+        Tue, 19 Oct 2021 07:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634628560;
+        bh=7DBC4uP7Zw484qr74x65d+eKLssb0wwO4d56g8ohVjc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NCpx3AwRst5DvZU2AwLlPmwYq7uH84UUyes0KdDUwKHI+vjxrVjyluK7JJf5m6gdF
+         lxdiT8canB0mWH1ZgQj8o53fZj8cg6Im+pXAflEMJVYe6/WvhJMHgYfukcQxRkubq8
+         fQfnoDpKAVaHUP8MWak6tVQ1RFpq9xSfLkdMwe1E=
 Date:   Tue, 19 Oct 2021 09:29:17 +0200
-Message-Id: <115cb279e9b9948dfd93a065e047081c59e3a2a6.1634627931.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1634627931.git.christophe.leroy@csgroup.eu>
-References: <cover.1634627931.git.christophe.leroy@csgroup.eu>
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     David Lechner <david@lechnology.com>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter: drop chrdev_lock
+Message-ID: <YW5zzVJZ89cFW9bD@kroah.com>
+References: <20211017185521.3468640-1-david@lechnology.com>
+ <YW0673OckeCY6Qs/@shinobu>
+ <e8158cd7-fbde-5a9a-f4d9-a863745e3d58@lechnology.com>
+ <YW5rVLrbrVVJ75SY@shinobu>
+ <YW5uxIQ1WuW66cf0@kroah.com>
+ <YW5xUtWdvW5zHFx5@shinobu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1634628570; l=10278; s=20211009; h=from:subject:message-id; bh=z8eTfu7gv8jRZ07f7Qw9Fp+6ge2Wg8qyBixTNP0tq70=; b=/YYsCUuhMMUN7TOuK7X9EMCTp2YicMlYn2ChTt3HWuFDZHx/W07P1f8YYfPe01JuoLKLhtm5mB/g 2aNZ4X6WCv4pSS+fhTiKZqblxC+/jjEK13svgwX11Xfobj+zAFss
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW5xUtWdvW5zHFx5@shinobu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When interrupt and syscall entries where converted to C, KUEP locking
-and unlocking was also converted. It improved performance by unrolling
-the loop, and allowed easily implementing boot time deactivation of
-KUEP.
+On Tue, Oct 19, 2021 at 04:18:42PM +0900, William Breathitt Gray wrote:
+> On Tue, Oct 19, 2021 at 09:07:48AM +0200, Greg KH wrote:
+> > On Tue, Oct 19, 2021 at 03:53:08PM +0900, William Breathitt Gray wrote:
+> > > On Mon, Oct 18, 2021 at 11:03:49AM -0500, David Lechner wrote:
+> > > > On 10/18/21 4:14 AM, William Breathitt Gray wrote:
+> > > > > On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
+> > > > >> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
+> > > > >> index 1ccd771da25f..7bf8882ff54d 100644
+> > > > >> --- a/drivers/counter/counter-sysfs.c
+> > > > >> +++ b/drivers/counter/counter-sysfs.c
+> > > > >> @@ -796,25 +796,18 @@ static int counter_events_queue_size_write(struct counter_device *counter,
+> > > > >>   					   u64 val)
+> > > > >>   {
+> > > > >>   	DECLARE_KFIFO_PTR(events, struct counter_event);
+> > > > >> -	int err = 0;
+> > > > >> -
+> > > > >> -	/* Ensure chrdev is not opened more than 1 at a time */
+> > > > >> -	if (!atomic_add_unless(&counter->chrdev_lock, 1, 1))
+> > > > >> -		return -EBUSY;
+> > > > >> +	int err;
+> > > > >>   
+> > > > >>   	/* Allocate new events queue */
+> > > > >>   	err = kfifo_alloc(&events, val, GFP_KERNEL);
+> > > > >>   	if (err)
+> > > > >> -		goto exit_early;
+> > > > >> +		return err;
+> > > > >>   
+> > > > >>   	/* Swap in new events queue */
+> > > > >>   	kfifo_free(&counter->events);
+> > > > >>   	counter->events.kfifo = events.kfifo;
+> > > > > 
+> > > > > Do we need to hold the events_lock mutex here for this swap in case
+> > > > > counter_chrdev_read() is in the middle of reading the kfifo to
+> > > > > userspace, or do the kfifo macros already protect us from a race
+> > > > > condition here?
+> > > > > 
+> > > > Another possibility might be to disallow changing the size while
+> > > > events are enabled. Otherwise, we also need to protect against
+> > > > write after free.
+> > > > 
+> > > > I considered this:
+> > > > 
+> > > > 	swap(counter->events.kfifo, events.kfifo);
+> > > > 	kfifo_free(&events);
+> > > > 
+> > > > But I'm not sure that would be safe enough.
+> > > 
+> > > I think it depends on whether it's safe to call kfifo_free() while other
+> > > kfifo_*() calls are executing. I suspect it is not safe because I don't
+> > > think kfifo_free() waits until all kfifo read/write operations are
+> > > finished before freeing -- but if I'm wrong here please let me know.
+> > > 
+> > > Because of that, will need to hold the counter->events_lock afterall so
+> > > that we don't modify the events fifo while a kfifo read/write is going
+> > > on, lest we suffer an address fault. This can happen regardless of
+> > > whether you swap before or after the kfifo_free() because the old fifo
+> > > address could still be in use within those uncompleted kfifo_*() calls
+> > > if they were called before the swap but don't complete before the
+> > > kfifo_free().
+> > > 
+> > > So we have a problem now that I think you have already noticed: the
+> > > kfifo_in() call in counter_push_events() also needs protection, but it's
+> > > executing within an interrupt context so we can't try to lock a mutex
+> > > lest we end up sleeping.
+> > > 
+> > > One option we have is as you suggested: we disallow changing size while
+> > > events are enabled. However, that will require us to keep track of when
+> > > events are disabled and implement a spinlock to ensure that we don't
+> > > disable events in the middle of a kfifo_in().
+> > > 
+> > > Alternatively, we could change events_lock to a spinlock and use it to
+> > > protect all these operations on the counter->events fifo. Would this
+> > > alternative be a better option so that we avoid creating another
+> > > separate lock?
+> > 
+> > I would recommend just having a single lock here if at all possible,
+> > until you determine that there a performance problem that can be
+> > measured that would require it to be split up.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> All right let's go with a single events_lock spinlock then. David, if
+> you make those changes and submit a v2, I'll be okay with this patch and
+> can provide my ack for it.
 
-However, null_syscall selftest shows that KUEP is still heavy
-(361 cycles with KUEP, 212 cycles without).
+Wait, no, you need one patch to remove the atomic lock for the open
+"protection" and then another one for the other locks.  The original
+patch here was fine, but can be part of a patch series, don't lump them
+all together into one huge change.
 
-A way to improve more is to group 'mtsr's together, instead of
-repeating 'addi' + 'mtsr' several times.
+thanks,
 
-In order to do that, more registers need to be available. In C, GCC
-will always be able to provide the requested number of registers, but
-at the cost of saving some data on the stack, which is counter
-performant here.
-
-So let's do it in assembly, when we have full control of which
-register can be used. It also has the advantage of locking earlier
-and unlocking later and it helps GCC generating less tricky code.
-The only drawback is to make boot time deactivation less straight
-forward and require 'hand' instruction patching.
-
-Group 'mtsr's by 4.
-
-With this change, null_syscall selftest reports 336 cycles. Without
-the change it was 361 cycles, that's a 7% reduction.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/book3s/32/kup.h      | 34 --------
- arch/powerpc/include/asm/book3s/32/mmu-hash.h | 77 ++++++++++++++++++-
- arch/powerpc/include/asm/interrupt.h          |  6 +-
- arch/powerpc/include/asm/kup.h                |  5 --
- arch/powerpc/kernel/entry_32.S                | 31 ++++++++
- arch/powerpc/kernel/head_32.h                 |  6 ++
- arch/powerpc/kernel/head_book3s_32.S          |  4 +
- arch/powerpc/kernel/interrupt.c               |  3 -
- arch/powerpc/mm/book3s32/kuep.c               |  2 -
- 9 files changed, 119 insertions(+), 49 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
-index fb6c39225dd1..e3db5ed4b255 100644
---- a/arch/powerpc/include/asm/book3s/32/kup.h
-+++ b/arch/powerpc/include/asm/book3s/32/kup.h
-@@ -23,40 +23,6 @@ static __always_inline bool kuep_is_disabled(void)
- 	return !IS_ENABLED(CONFIG_PPC_KUEP);
- }
- 
--static inline void kuep_lock(void)
--{
--	if (kuep_is_disabled())
--		return;
--
--	update_user_segments(mfsr(0) | SR_NX);
--	/*
--	 * This isync() shouldn't be necessary as the kernel is not excepted to
--	 * run any instruction in userspace soon after the update of segments,
--	 * but hash based cores (at least G3) seem to exhibit a random
--	 * behaviour when the 'isync' is not there. 603 cores don't have this
--	 * behaviour so don't do the 'isync' as it saves several CPU cycles.
--	 */
--	if (mmu_has_feature(MMU_FTR_HPTE_TABLE))
--		isync();	/* Context sync required after mtsr() */
--}
--
--static inline void kuep_unlock(void)
--{
--	if (kuep_is_disabled())
--		return;
--
--	update_user_segments(mfsr(0) & ~SR_NX);
--	/*
--	 * This isync() shouldn't be necessary as a 'rfi' will soon be executed
--	 * to return to userspace, but hash based cores (at least G3) seem to
--	 * exhibit a random behaviour when the 'isync' is not there. 603 cores
--	 * don't have this behaviour so don't do the 'isync' as it saves several
--	 * CPU cycles.
--	 */
--	if (mmu_has_feature(MMU_FTR_HPTE_TABLE))
--		isync();	/* Context sync required after mtsr() */
--}
--
- #ifdef CONFIG_PPC_KUAP
- 
- #include <linux/sched.h>
-diff --git a/arch/powerpc/include/asm/book3s/32/mmu-hash.h b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
-index f5be185cbdf8..e2f7ccc13edb 100644
---- a/arch/powerpc/include/asm/book3s/32/mmu-hash.h
-+++ b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
-@@ -64,7 +64,82 @@ struct ppc_bat {
- #define SR_KP	0x20000000	/* User key */
- #define SR_KS	0x40000000	/* Supervisor key */
- 
--#ifndef __ASSEMBLY__
-+#ifdef __ASSEMBLY__
-+
-+#include <asm/asm-offsets.h>
-+
-+.macro uus_addi sr reg1 reg2 imm
-+	.if NUM_USER_SEGMENTS > \sr
-+	addi	\reg1,\reg2,\imm
-+	.endif
-+.endm
-+
-+.macro uus_mtsr sr reg1
-+	.if NUM_USER_SEGMENTS > \sr
-+	mtsr	\sr, \reg1
-+	.endif
-+.endm
-+
-+/*
-+ * This isync() shouldn't be necessary as the kernel is not excepted to run
-+ * any instruction in userspace soon after the update of segments and 'rfi'
-+ * instruction is used to return to userspace, but hash based cores
-+ * (at least G3) seem to exhibit a random behaviour when the 'isync' is not
-+ * there. 603 cores don't have this behaviour so don't do the 'isync' as it
-+ * saves several CPU cycles.
-+ */
-+.macro uus_isync
-+#ifdef CONFIG_PPC_BOOK3S_604
-+BEGIN_MMU_FTR_SECTION
-+	isync
-+END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
-+#endif
-+.endm
-+
-+.macro update_user_segments_by_4 tmp1 tmp2 tmp3 tmp4
-+	uus_addi	1, \tmp2, \tmp1, 0x111
-+	uus_addi	2, \tmp3, \tmp1, 0x222
-+	uus_addi	3, \tmp4, \tmp1, 0x333
-+
-+	uus_mtsr	0, \tmp1
-+	uus_mtsr	1, \tmp2
-+	uus_mtsr	2, \tmp3
-+	uus_mtsr	3, \tmp4
-+
-+	uus_addi	4, \tmp1, \tmp1, 0x444
-+	uus_addi	5, \tmp2, \tmp2, 0x444
-+	uus_addi	6, \tmp3, \tmp3, 0x444
-+	uus_addi	7, \tmp4, \tmp4, 0x444
-+
-+	uus_mtsr	4, \tmp1
-+	uus_mtsr	5, \tmp2
-+	uus_mtsr	6, \tmp3
-+	uus_mtsr	7, \tmp4
-+
-+	uus_addi	8, \tmp1, \tmp1, 0x444
-+	uus_addi	9, \tmp2, \tmp2, 0x444
-+	uus_addi	10, \tmp3, \tmp3, 0x444
-+	uus_addi	11, \tmp4, \tmp4, 0x444
-+
-+	uus_mtsr	8, \tmp1
-+	uus_mtsr	9, \tmp2
-+	uus_mtsr	10, \tmp3
-+	uus_mtsr	11, \tmp4
-+
-+	uus_addi	12, \tmp1, \tmp1, 0x444
-+	uus_addi	13, \tmp2, \tmp2, 0x444
-+	uus_addi	14, \tmp3, \tmp3, 0x444
-+	uus_addi	15, \tmp4, \tmp4, 0x444
-+
-+	uus_mtsr	12, \tmp1
-+	uus_mtsr	13, \tmp2
-+	uus_mtsr	14, \tmp3
-+	uus_mtsr	15, \tmp4
-+
-+	uus_isync
-+.endm
-+
-+#else
- 
- /*
-  * This macro defines the mapping from contexts to VSIDs (virtual
-diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
-index a1d238255f07..3bbca1fbbe1e 100644
---- a/arch/powerpc/include/asm/interrupt.h
-+++ b/arch/powerpc/include/asm/interrupt.h
-@@ -139,12 +139,10 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
- 	if (!arch_irq_disabled_regs(regs))
- 		trace_hardirqs_off();
- 
--	if (user_mode(regs)) {
--		kuep_lock();
-+	if (user_mode(regs))
- 		account_cpu_user_entry();
--	} else {
-+	else
- 		kuap_save_and_lock(regs);
--	}
- #endif
- 
- #ifdef CONFIG_PPC64
-diff --git a/arch/powerpc/include/asm/kup.h b/arch/powerpc/include/asm/kup.h
-index 8699ca5884b9..94734a8eb54d 100644
---- a/arch/powerpc/include/asm/kup.h
-+++ b/arch/powerpc/include/asm/kup.h
-@@ -40,11 +40,6 @@ void setup_kuep(bool disabled);
- static inline void setup_kuep(bool disabled) { }
- #endif /* CONFIG_PPC_KUEP */
- 
--#ifndef CONFIG_PPC_BOOK3S_32
--static inline void kuep_lock(void) { }
--static inline void kuep_unlock(void) { }
--#endif
--
- #ifdef CONFIG_PPC_KUAP
- void setup_kuap(bool disabled);
- #else
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index 61fdd53cdd9a..4ba6a8c43475 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -73,6 +73,34 @@ prepare_transfer_to_handler:
- _ASM_NOKPROBE_SYMBOL(prepare_transfer_to_handler)
- #endif /* CONFIG_PPC_BOOK3S_32 || CONFIG_E500 */
- 
-+#if defined(CONFIG_PPC_KUEP) && defined(CONFIG_PPC_BOOK3S_32)
-+	.globl	__kuep_lock
-+__kuep_lock:
-+	mfsr    r9,0
-+	rlwinm  r9,r9,0,8,3
-+	oris    r9,r9,SR_NX@h
-+	update_user_segments_by_4 r9, r10, r11, r12
-+	blr
-+
-+__kuep_unlock:
-+	mfsr    r9,0
-+	rlwinm  r9,r9,0,8,2
-+	update_user_segments_by_4 r9, r10, r11, r12
-+	blr
-+
-+.macro	kuep_lock
-+	bl	__kuep_lock
-+.endm
-+.macro	kuep_unlock
-+	bl	__kuep_unlock
-+.endm
-+#else
-+.macro	kuep_lock
-+.endm
-+.macro	kuep_unlock
-+.endm
-+#endif
-+
- 	.globl	transfer_to_syscall
- transfer_to_syscall:
- 	stw	r11, GPR1(r1)
-@@ -94,6 +122,7 @@ transfer_to_syscall:
- 	SAVE_2GPRS(7, r1)
- 	addi	r2,r10,-THREAD
- 	SAVE_NVGPRS(r1)
-+	kuep_lock
- 
- 	/* Calling convention has r9 = orig r0, r10 = regs */
- 	addi	r10,r1,STACK_FRAME_OVERHEAD
-@@ -110,6 +139,7 @@ ret_from_syscall:
- 	cmplwi	cr0,r5,0
- 	bne-	2f
- #endif /* CONFIG_PPC_47x */
-+	kuep_unlock
- 	lwz	r4,_LINK(r1)
- 	lwz	r5,_CCR(r1)
- 	mtlr	r4
-@@ -273,6 +303,7 @@ interrupt_return:
- 	beq	.Lkernel_interrupt_return
- 	bl	interrupt_exit_user_prepare
- 	cmpwi	r3,0
-+	kuep_unlock
- 	bne-	.Lrestore_nvgprs
- 
- .Lfast_user_interrupt_return:
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 6b1ec9e3541b..133197039775 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -136,6 +136,12 @@ _ASM_NOKPROBE_SYMBOL(\name\()_virt)
- 	andi.	r12,r9,MSR_PR
- 	bne	777f
- 	bl	prepare_transfer_to_handler
-+#ifdef CONFIG_PPC_KUEP
-+	b	778f
-+777:
-+	bl	__kuep_lock
-+778:
-+#endif
- 777:
- #endif
- .endm
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index 68e5c0a7e99d..fa84744d6b24 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -931,7 +931,11 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- _GLOBAL(load_segment_registers)
- 	li	r0, NUM_USER_SEGMENTS /* load up user segment register values */
- 	mtctr	r0		/* for context 0 */
-+#ifdef CONFIG_PPC_KUEP
-+	lis	r3, SR_NX@h	/* Kp = 0, Ks = 0, VSID = 0 */
-+#else
- 	li	r3, 0		/* Kp = 0, Ks = 0, VSID = 0 */
-+#endif
- 	li	r4, 0
- 3:	mtsrin	r3, r4
- 	addi	r3, r3, 0x111	/* increment VSID */
-diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-index de10a2697258..0d12aa66e1f9 100644
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -81,8 +81,6 @@ notrace long system_call_exception(long r3, long r4, long r5,
- {
- 	syscall_fn f;
- 
--	kuep_lock();
--
- 	regs->orig_gpr3 = r3;
- 
- 	if (IS_ENABLED(CONFIG_PPC_IRQ_SOFT_MASK_DEBUG))
-@@ -406,7 +404,6 @@ interrupt_exit_user_prepare_main(unsigned long ret, struct pt_regs *regs)
- 
- 	/* Restore user access locks last */
- 	kuap_user_restore(regs);
--	kuep_unlock();
- 
- 	return ret;
- }
-diff --git a/arch/powerpc/mm/book3s32/kuep.c b/arch/powerpc/mm/book3s32/kuep.c
-index 8474edce3df9..bac1420d028b 100644
---- a/arch/powerpc/mm/book3s32/kuep.c
-+++ b/arch/powerpc/mm/book3s32/kuep.c
-@@ -5,8 +5,6 @@
- 
- void setup_kuep(bool disabled)
- {
--	kuep_lock();
--
- 	if (smp_processor_id() != boot_cpuid)
- 		return;
- 
--- 
-2.31.1
-
+greg k-h
