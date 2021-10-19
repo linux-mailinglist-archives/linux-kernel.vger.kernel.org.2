@@ -2,90 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1C4433B6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A65433B6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhJSQBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        id S232319AbhJSQBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhJSQBO (ORCPT
+        with ESMTP id S229774AbhJSQBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:01:14 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE49C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:59:01 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id u32so4665592ybd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:59:01 -0700 (PDT)
+        Tue, 19 Oct 2021 12:01:39 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6200C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:59:26 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 63-20020a1c0042000000b0030d60716239so3554489wma.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:59:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RlGsUhZv7y1Y43YyXgR+WSHhAI3+aP3m+Q58wtMVpx4=;
-        b=WnFq6cutaUIfG5uekqdmLBjybpuQxsfOFzPE50VX9aflVapzESKbSxF/rcN8RnhRLz
-         eHrgXRMB1PjuUW6U4v40FFCYGSyi7mcH6FlxkE+eQR0OOvpjAEVnAU6B6gE5PNiMXRBF
-         /dwr+mL3vbPOXICuvzFlFe90usff6gA3XBYJwtz+5whizBpqpNTbBuENeRdnr4W4DyEJ
-         YvuGjJwZ+etR4qBxOlAlvIHE8dtvJ/utBXgSF8Hj6nuq72yxCnkiQmG/LwsEQYaHJIaU
-         dXvZAnUrfsHRh475Rli5/AjqJcp01oyuLieMQ9y9209Irdb+KIeFngLUYIgMUaAf+uv9
-         EzZQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TrPkKI/PTQOY+KiTWvxkvriPYak1YRQZt1dLiDrFKEM=;
+        b=vomS9y1WQIrU5vL3leRMaAFA04AJAdX6pRwkbNerk0ePSi7S8rEbj4lC6TaIZLE+op
+         6/N/cP+m1ZOCIHqwQVCx4RHAsZlAnuNprphwxK6CjdDFlyTW/r72Kryv2N8fXCAG4Lm+
+         9TpMbmcLznbTzgnJVbm3kLoXD10i6DLmjeWUZ/zgPJOHOUcU0BPH5Eh0Ai7yfMn4/HoG
+         4VaThQ3PvaOUMxXoqGg2Qy49EKNMjfb+T/Fl3FNmBl/IiDo5G21kPswFyKEBzQ/uiJLC
+         iUVnYJd10dJYUE5+3J9sEkVgwpl8+TsWy60h43VDHBN0kPgDt5KV7Qo3d2kKZRhPGL8i
+         2/sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RlGsUhZv7y1Y43YyXgR+WSHhAI3+aP3m+Q58wtMVpx4=;
-        b=hFLeaBVHX79NDXrOG+UA584qfXjz0AXYMnOVJR3N7ZuVeHiWgy7IaEkxFlwz7J7qSO
-         S4KoHRWNQY77bW7D+wYcjtWegOKStpvnlwm4FjswRfIqjgt6guz9DkIyqMrmzcmZZHd0
-         Hck9WflXtp7/4QyEo+txfUOTekl3o+WGRKtCyf+l9Ow9hO+MnOFI1K9axDzTXNWvbj4I
-         gUBjwbFr1iozTZp6c8ysm7XuFWlWvw7sRSYBXZEPKbKwwKBOJS0NkmxuNHlSmJvcY3Xc
-         dHy9Przn0wPL1wrObuUefeEqcRdpultW939PsQi7ZLA1RqT93Vq4CStaA7dYHqxixJQg
-         P8ww==
-X-Gm-Message-State: AOAM530fc3EWD9Y101wXJ/h5tu1OJFJh5YeWcpg9wgn1ukB+SH7jd6ZS
-        2CB3N+WTQFjPCdR+nd+DSnXP+3GSPjusyPo9MoWBng==
-X-Google-Smtp-Source: ABdhPJxv0xZ2ZbCv0Z5wxw3zRP/jtunmb6Y8Hmy1MkV8mEkPkKVr6DkPItiGN0uzi9rh5Gqaw+Hu7G6aZSk2KvdUsV8=
-X-Received: by 2002:a25:918e:: with SMTP id w14mr20591461ybl.225.1634659140106;
- Tue, 19 Oct 2021 08:59:00 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TrPkKI/PTQOY+KiTWvxkvriPYak1YRQZt1dLiDrFKEM=;
+        b=4BHX5wawwaThjdKZXYxBXWEALNTLTAO4ReVsp1k6HSQBNReFaoDEKCmJ6aJn7U/R/V
+         fQQCVAuUESmMjCosyeNHq9aXrLCJzf+Hem6umye7BzGDjOZCQhgc4DWMoo6ImVOHYovw
+         wg4heN/PU7b4jZs4tQzmZpwS4JNX3S7F6ROJY8sjT0IbnUtruIFaoXQ6ckoQKrA2fCaf
+         S3cQ2frA5puQqW3ZnSIPrH3rBzV25J7hYssmKz+2AjlHqwH6DO2fsGDbbZgc4SwzLVFV
+         syGje8Fe5oSbPPgpd61W9cc2bRCCP0SVzPC1E+FpH6Js5sYuU6NKdvMZ/mXUtFx+AVoi
+         0AjQ==
+X-Gm-Message-State: AOAM532Y7syqOZ5EyxyQJVq21H01U841ZMot3d6wxP132iHKktmIyCR1
+        GQ8yRE+tI7Iv4g1Ze9tN3mBlNg==
+X-Google-Smtp-Source: ABdhPJzEqFeFsW6w8uGlaAXHzzXDQJ/vOM1kPtnGLvkKUtgoFYLuZA+nEJj+ls0gvvR0HORl54YLig==
+X-Received: by 2002:a1c:20cc:: with SMTP id g195mr1827307wmg.22.1634659165173;
+        Tue, 19 Oct 2021 08:59:25 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:4799:198d:b6ef:8da7? ([2a01:e34:ed2f:f020:4799:198d:b6ef:8da7])
+        by smtp.googlemail.com with ESMTPSA id o6sm2871742wms.3.2021.10.19.08.59.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 08:59:24 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] thermal/core: Make deprecated cooling device state
+ change from userspace
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+References: <20211019150203.2805738-1-daniel.lezcano@linaro.org>
+ <20211019150203.2805738-2-daniel.lezcano@linaro.org>
+ <CAJZ5v0i1RCKs8nMCc0ROsM03beOPL941r+=NPbQpidiZJ2OA8A@mail.gmail.com>
+ <CAJZ5v0hLVb=vbyxtraoBgPBWb8FkjzpPtH+10_AY4E8CDgc5sA@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <7a6ba739-a7f4-8553-187b-6c0f6dc9a208@linaro.org>
+Date:   Tue, 19 Oct 2021 17:59:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211018123710.1540996-1-chenwandun@huawei.com>
- <20211018123710.1540996-2-chenwandun@huawei.com> <YW1rEt0u2CSCYgnJ@casper.infradead.org>
- <CALvZod4BEu3sYuo3kZ9OS0SXHm_q7C8w7sYObJo9X_xeMUd8sQ@mail.gmail.com>
-In-Reply-To: <CALvZod4BEu3sYuo3kZ9OS0SXHm_q7C8w7sYObJo9X_xeMUd8sQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 19 Oct 2021 08:58:48 -0700
-Message-ID: <CANn89iKN_N=tSiv-xFHYAGAagty9pP_FCH2FtfjUU=NGpRf3dg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mm/vmalloc: fix numa spreading for large hash tables
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Chen Wandun <chenwandun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, guohanjun@huawei.com,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJZ5v0hLVb=vbyxtraoBgPBWb8FkjzpPtH+10_AY4E8CDgc5sA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 8:54 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Mon, Oct 18, 2021 at 5:41 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Mon, Oct 18, 2021 at 08:37:09PM +0800, Chen Wandun wrote:
-> > > Eric Dumazet reported a strange numa spreading info in [1], and found
-> > > commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings") introduced
-> > > this issue [2].
-> >
-> > I think the root problem here is that we have two meanings for
-> > NUMA_NO_NODE.  I tend to read it as "The memory can be allocated from
-> > any node", but here it's used to mean "The memory should be spread over
-> > every node".  Should we split those out as -1 and -2?
->
-> I agree with Willy's suggestion to make it more explicit but as a
-> followup work. This patch needs a backport, so keep this simple.
+On 19/10/2021 17:43, Rafael J. Wysocki wrote:
+> On Tue, Oct 19, 2021 at 5:40 PM Rafael J. Wysocki <rafael@kernel.org>
+> wrote:
+>> 
+>> On Tue, Oct 19, 2021 at 5:02 PM Daniel Lezcano 
+>> <daniel.lezcano@linaro.org> wrote:
+>>> 
+>>> The cooling devices have their cooling device set_cur_state 
+>>> read-writable all the time in the sysfs directory, thus allowing
+>>> the userspace to act on it.
+>>> 
+>>> The thermal framework is wrongly used by userspace as a power
+>>> capping framework by acting on the cooling device opaque state.
+>>> This one then competes with the in-kernel governor decision.
+>>> 
+>>> We have seen in out-of-tree kernels, a big number of devices
+>>> which are abusely declaring themselves as cooling device just to
+>>> act on their power.
+>>> 
+>>> The role of the thermal framework is to protect the junction 
+>>> temperature of the silicon. Letting the userspace to play with a 
+>>> cooling device is invalid and potentially dangerous.
+>>> 
+>>> The powercap framework is the right framework to do power capping
+>>> and moreover it deals with the aggregation via the dev pm qos.
+>>> 
+>>> As the userspace governor is marked deprecated and about to be 
+>>> removed, there is no point to keep this file writable also in
+>>> the future.
+>>> 
+>>> Emit a warning and deprecate the interface.
+>>> 
+>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org> --- 
+>>> drivers/thermal/thermal_sysfs.c | 2 ++ 1 file changed, 2
+>>> insertions(+)
+>>> 
+>>> diff --git a/drivers/thermal/thermal_sysfs.c
+>>> b/drivers/thermal/thermal_sysfs.c index
+>>> 1c4aac8464a7..730f1361dbef 100644 ---
+>>> a/drivers/thermal/thermal_sysfs.c +++
+>>> b/drivers/thermal/thermal_sysfs.c @@ -610,6 +610,8 @@
+>>> cur_state_store(struct device *dev, struct device_attribute
+>>> *attr, unsigned long state; int result;
+>>> 
+>>> +       pr_warn_once("Setting cooling device state is
+>>> deprecated\n");
+>> 
+>> Maybe dev_warn_once() even?  I guess it won\t hurt to print it
+>> once per the affected device?
 
-NUMA_NO_NODE in process context also meant :
-Please follow current thread NUMA policies.
+Actually, there is no difference except it will be prefixed by the
+device name.
 
-One could hope for instance, that whenever large BPF maps are allocated,
-current thread could set non default NUMA policies.
+As the static variable to write once the message is local to the
+function, not the dev, the warning will appear only once even if we use
+dev, or cdev->device.
+
+The other calls in the file are pr_warn. I suggest to stay consistent in
+this case. Is that fine ?
+
+>>> + if (sscanf(buf, "%ld\n", &state) != 1) return -EINVAL;
+>>> 
+>>> --
+> 
+> Also I think that changing the subject to something like "Deprecate 
+> changing cooling device state from userspace" would help.
+
+Ok
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
