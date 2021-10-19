@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FAC433EE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF63433EE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234738AbhJSTDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:03:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52984 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231355AbhJSTDf (ORCPT
+        id S234931AbhJSTEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234361AbhJSTEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:03:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634670081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=luTsdgmE900iDsk4r7Drx7azoYqgQwbXioWRwmTxsXU=;
-        b=Z/8hcUNmY3chnTqVZEp+xsaD/2h8dIELhPbcV6A3pLr/S/Sc3CdmSvwYPP2GwW5cofyMAQ
-        wLclC/JWmmvOZq02gqf8YQYT8tpoD3R6NP8tcCugjQQ9zik7e8bZJMnzE1PZRoeXmxTHMZ
-        APRN6dNdBNnInqV5WO27H81/U0hoC4I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-JCqP3r1lPumGoWAVNqfxIw-1; Tue, 19 Oct 2021 15:01:17 -0400
-X-MC-Unique: JCqP3r1lPumGoWAVNqfxIw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31D42800482;
-        Tue, 19 Oct 2021 19:01:12 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EB0645D6D7;
-        Tue, 19 Oct 2021 19:00:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <b2ea9fdf90939731c08329575c8843e8db5f3219.camel@kernel.org>
-References: <b2ea9fdf90939731c08329575c8843e8db5f3219.camel@kernel.org> <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     dhowells@redhat.com, linux-cachefs@redhat.com,
-        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        v9fs-developer@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Steve French <sfrench@samba.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/67] fscache: Rewrite index API and management system
+        Tue, 19 Oct 2021 15:04:06 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55183C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:01:53 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id x1so19492086ilv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WobMCGHbd5iE8RXCKMYU25vcm8PDvkdc5bc8OyqVW5s=;
+        b=iGJ44RcAwe0LUv+MQxo6HEWoTqk4jJySctYq88Z7zREHp9rezPalo4koU/wfR0C/Nv
+         0H9hRpvy/FRxEyXFQmTb2d0rfQFmdkiEGj0fFm+VaXmfNZecNaOD0pFRZgLBtXAYnSJ4
+         rVKh45jNrKu9Riy2IwY0gFX3torYsWGp1aJD3FToIErNBIYpEfo3um5mICrtHgKmVdPV
+         C79pD493xMQAaGyveiZb3Ny2i13GmwOZ3bJLdlC3WhQjm4KTfp7rfbnfVV6t0iJGJLUr
+         27X3iMpoc8TAHrssN1rNTi/rcM+ZLQPv5N9q6GgnA05AvT9x54XmTYY1wu/T2ZwM/E29
+         hV6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WobMCGHbd5iE8RXCKMYU25vcm8PDvkdc5bc8OyqVW5s=;
+        b=6m+IPjmwIsBZeR5OxV5gtTxAHNMbF4xLsJNQUrtOODPp47WhB5fWQQErYGzaKVUI07
+         iy5XHKgqps7q9iw+lF8CL84gjWhzvUjq61BGaniOPfVjGEzbIYEO/D0xITEldiSw2Svx
+         dqVtGMEpi03Tk77erXiX5IBE29EIn3VOiydRp+po1w7LfjukAMNCpRGmvURvw/Sggz7E
+         jSP6YC3HVj3zyq61c2tIhTVIRn6sXyMbyHLfDgN1BdLNtRwP977TKGYn/WcvpMhvSoiq
+         4ryIk9jgkWCdKjanSJ9vS5JwsSxWzc/nbaAjrUPoAu1/6t2BWFyGyIBYhZeBFf5xVafZ
+         MdfQ==
+X-Gm-Message-State: AOAM531DXZa7YXcyz45e2js4CAqx/Nt5wLkq318AiblGNyo6LgKkXuWf
+        1zg75bNPLPyzq9vvz49QyHI8DofbFRy0+o0yCH4=
+X-Google-Smtp-Source: ABdhPJzU2z69O7Fqug+dPQ5GAVvRp04WE2rMCgYGOE487by9Yq9YbM36FEYlS9uT+ieFNlJILMVNTFhq9sT1rYHAXfg=
+X-Received: by 2002:a05:6e02:188c:: with SMTP id o12mr18622447ilu.321.1634670112704;
+ Tue, 19 Oct 2021 12:01:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2972093.1634670049.1@warthog.procyon.org.uk>
-Date:   Tue, 19 Oct 2021 20:00:49 +0100
-Message-ID: <2972094.1634670049@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20211019171121.3510624-1-arnd@kernel.org>
+In-Reply-To: <20211019171121.3510624-1-arnd@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 19 Oct 2021 21:01:41 +0200
+Message-ID: <CANiq72kckY71gg=xMFOHEraW+PYGbRBsm2xv1tBn7013ipyyWg@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] x86: avoid -mtune=atom with clang
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> wrote:
+On Tue, Oct 19, 2021 at 7:11 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> +ifdef CONFIG_CC_IS_CLANG
+> +        cflags-$(CONFIG_MATOM)         += -march=atom -mtune=generic
+> +else
+>          cflags-$(CONFIG_MATOM)         += -march=atom
+> +endif
 
-> Given the indexing changes, what sort of behavior should we expect when
-> upgrading from old-style to new-style indexes? Do they just not match,
-> and we end up downloading new copies of all the data and the old stale
-> stuff eventually gets culled?
+Is it possible to factor it out? Also, a comment with the LLVM version
+we last checked would be good. Something like...
 
-Correct: they don't match.  The names of the directories and files will be
-quite different - and so will the attached xattrs.  However, no filesystems
-currently store locally-modified data in the cache, so you shouldn't lose any
-data after upgrading.
+    cflags-$(CONFIG_MATOM)         += -march=atom
 
-> Ditto for downgrades -- can we expect sane behavior if someone runs an
-> old kernel on top of an existing fscache that was populated by a new
-> kernel?
+    # Atom optimizations do not seem well exercised in, at least, LLVM <= 13,
+    # to the point of getting problems with register allocation.
+    ifdef CONFIG_CC_IS_CLANG
+            cflags-$(CONFIG_MATOM)         += -mtune=generic
+    endif
 
-Correct.  With this branch, filesystems now store locally-modified data into
-the cache - but they also upload it to the server at the same time.  If
-there's a disagreement between what's in the cache and what's on the server
-with this branch, the cache is discarded, so simply discarding the cache on a
-download shouldn't be a problem.
-
-It's currently operating as a write-through cache, not a write-back cache.
-That will change if I get round to implementing disconnected operation, but
-it's not there yet.
-
-David
-
+Cheers,
+Miguel
