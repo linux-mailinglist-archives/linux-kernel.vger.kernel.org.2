@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648BE432E1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6F5432E20
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbhJSGZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:25:54 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:24357 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbhJSGZw (ORCPT
+        id S234170AbhJSG0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:26:09 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50458 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234165AbhJSG0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:25:52 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HYNqW22kqzcfcY;
-        Tue, 19 Oct 2021 14:19:03 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 19 Oct 2021 14:23:35 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 19 Oct 2021 14:23:34 +0800
-Subject: Re: [PATCH 4.19 00/49] 4.19.213-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20211018143033.725101193@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <fa0a3861-84ba-74c2-3a75-cc59d4c13b2a@huawei.com>
-Date:   Tue, 19 Oct 2021 14:23:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 19 Oct 2021 02:26:07 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 346CE2197E;
+        Tue, 19 Oct 2021 06:23:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634624633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aNvJPt85vZf9bBMJjbgwMuKxAMmcbsHIJPwZz/3xngo=;
+        b=aPPUZQip1FXzonJxM4wqd/690HrZk6fz9rhHm/1JCFBw9ALlZDpceFtf6flMY3j6oMRMFe
+        AQmevTkq51HUk5WPl3N4P1eN9xv890mbZxJ7GfHV8xreOSPvAbt4ZkskV7eS7JuJeAvANa
+        9uoyyw60aVq6hbOMcli3eofF+oZayMg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634624633;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aNvJPt85vZf9bBMJjbgwMuKxAMmcbsHIJPwZz/3xngo=;
+        b=GijXbiZXw/n+u9uG38fm5BwLSEeX5PBkSlrFwGvVSFdmfffvdMVEtRW9XLwkcJp1P8EfmE
+        6ukLpP3n3DF7j3Dw==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 0341FA3B8A;
+        Tue, 19 Oct 2021 06:23:52 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 08:23:51 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Ming Lei <ming.lei@redhat.com>
+cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+In-Reply-To: <YW4uwep3BCe9Vxq8@T590>
+Message-ID: <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
+References: <20210927163805.808907-12-mcgrof@kernel.org> <YWeOJP2UJWYF94fu@T590> <YWeR4moCRh+ZHOmH@T590> <YWiSAN6xfYcUDJCb@bombadil.infradead.org> <YWjCpLUNPF3s4P2U@T590> <YWjJ0O7K+31Iz3ox@bombadil.infradead.org> <YWk9e957Hb+I7HvR@T590>
+ <YWm68xUnAofop3PZ@bombadil.infradead.org> <YWq3Z++uoJ/kcp+3@T590> <YW3LuzaPhW96jSBK@bombadil.infradead.org> <YW4uwep3BCe9Vxq8@T590>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20211018143033.725101193@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/10/18 22:30, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.213 release.
-> There are 49 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> > By you only addressing the deadlock as a requirement on approach a) you are
+> > forgetting that there *may* already be present drivers which *do* implement
+> > such patterns in the kernel. I worked on addressing the deadlock because
+> > I was informed livepatching *did* have that issue as well and so very
+> > likely a generic solution to the deadlock could be beneficial to other
+> > random drivers.
 > 
-> Responses should be made by Wed, 20 Oct 2021 14:30:23 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.213-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> In-tree zram doesn't have such deadlock, if livepatching has such AA deadlock,
+> just fixed it, and seems it has been fixed by 3ec24776bfd0.
 
-Tested on arm64 and x86 for 4.19.213-rc2,
+I would not call it a fix. It is a kind of ugly workaround because the 
+generic infrastructure lacked (lacks) the proper support in my opinion. 
+Luis is trying to fix that.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.213-rc2
-Commit: 30fdb0bbff04f8d763c2252764a13735ce7a6641
-Compiler: gcc version 7.3.0 (GCC)
+Just my two cents.
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8859
-passed: 8859
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8859
-passed: 8859
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Miroslav
