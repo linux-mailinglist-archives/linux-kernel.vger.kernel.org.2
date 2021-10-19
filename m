@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359B143309E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B701433082
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234732AbhJSIHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 04:07:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36238 "EHLO mail.kernel.org"
+        id S234756AbhJSIGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:06:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234712AbhJSIGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234698AbhJSIGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Oct 2021 04:06:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A095C61391;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CA5561374;
         Tue, 19 Oct 2021 08:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1634630667;
-        bh=kT+onznJm4uj9/bJWP0tZZgq/f5Io63eILB7+ifUduU=;
+        bh=xaf6KuSLcTnttMKNEiXwZh6FOYo6xmMhCzoJ1OhWWM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YeUPqY5Y8OiFwXJV3Mq7ZWA6vN14QhvjUMSWrq3a8qGtmcIFtvCRC9i3fWUaH5kiJ
-         VPMrCFw0St084L+L5Pej2L4j9s9jva1U1jaiZM/WymDMJfEMYQCYSSl8CCDuQeE4ep
-         c2/mMqxk8tYWE0ylmSyo1EcFTWsRQrp3/voxgg6JGFlq86aymPqzc1gJAPDPSF6QRm
-         mx6dHG3D4ftDEShdHsmpvkzatbD8uVZO/n7x0Z+4Dqjs2mTiS4jMIPSvLKA0Zjg1vf
-         NCTxBztxT+w4cbummjNk4DMh2kXSPQBVXOe3v6vscAKK+p7bQuk2IYf6Fhx1awHFR7
-         BAlHybavHE0jw==
+        b=tm+/c6Y7qmf2d9izKanzk4lPpwADtc4Me9L5s93AKZqxuj4TFoBaAFCzXkzZQXDCC
+         /866pWYPhmN+j+E57meWMHjYhm3eAzbyMDhndecQlgvCfGJwyFaMiyKoo1dMyM0DPi
+         cAV6WIXDxBcrWWzTj/4T2OrgyF1cw6Mr4MSJtS2f4ady0J+KN+pasyLhs2V/lrmt91
+         US9YLLtw3CBTW6Lt3z9zbH+xocA0Szt/WH2yWQLGx3MMdnksfNe83OtjzuSaYWobjo
+         fmbQxzYdoIKqwV0KFvzbgsIMmQCU/NG/KB6vulFooOcPbx9VC5Kp90o0L7R4cCgcpw
+         DPvjF/Qyu7hCg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mck6j-001oJg-90; Tue, 19 Oct 2021 09:04:25 +0100
+        id 1mck6j-001oJj-9V; Tue, 19 Oct 2021 09:04:25 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 18/23] fs: remove a comment pointing to the removed mandatory-locking file
-Date:   Tue, 19 Oct 2021 09:04:17 +0100
-Message-Id: <887de3a1ecadda3dbfe0adf9df9070f0afa9406c.1634630486.git.mchehab+huawei@kernel.org>
+        Borislav Petkov <bp@alien8.de>,
+        Hannu Hartikainen <hannu@hrtk.in>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 19/23] Documentation/process: fix a cross reference
+Date:   Tue, 19 Oct 2021 09:04:18 +0100
+Message-Id: <5a34d27bb99b880579db8d1aafbe4d97705affd5.1634630486.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1634630485.git.mchehab+huawei@kernel.org>
 References: <cover.1634630485.git.mchehab+huawei@kernel.org>
@@ -47,34 +50,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mandatory file locking got removed due to its problems, but
-there's still a comment inside fs/locks.c pointing to the removed
-doc.
+The cross-reference for the handbooks section works. However, it is
+meant to describe the path inside the Kernel's doc where the section
+is, but there's an space instead of a dash, plus it lacks the .rst at
+the end, which makes:
 
-Remove it.
+	./scripts/documentation-file-ref-check
 
-Fixes: f7e33bdbd6d1 ("fs: remove mandatory file locking support")
+to complain.
+
+Fixes: 604370e106cc ("Documentation/process: Add maintainer handbooks section")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
 To mailbombing on a large number of people, only mailing lists were C/C on the cover.
 See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
 
- fs/locks.c | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/process/submitting-patches.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/locks.c b/fs/locks.c
-index d397394633be..94feadcdab4e 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -61,7 +61,6 @@
-  *
-  *  Initial implementation of mandatory locks. SunOS turned out to be
-  *  a rotten model, so I implemented the "obvious" semantics.
-- *  See 'Documentation/filesystems/mandatory-locking.rst' for details.
-  *  Andy Walker (andy@lysaker.kvaerner.no), April 06, 1996.
-  *
-  *  Don't allow mandatory locks on mmap()'ed files. Added simple functions to
+diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+index b0f31aa82fcd..22d876eda6ef 100644
+--- a/Documentation/process/submitting-patches.rst
++++ b/Documentation/process/submitting-patches.rst
+@@ -22,8 +22,8 @@ use it, it will make your life as a kernel developer and in general much
+ easier.
+ 
+ Some subsystems and maintainer trees have additional information about
+-their workflow and expectations, see :ref:`Documentation/process/maintainer
+-handbooks <maintainer_handbooks_main>`.
++their workflow and expectations, see
++:ref:`Documentation/process/maintainer-handbooks.rst <maintainer_handbooks_main>`.
+ 
+ Obtain a current source tree
+ ----------------------------
 -- 
 2.31.1
 
