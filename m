@@ -2,102 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66988434145
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D5643414D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhJSWZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhJSWZO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:25:14 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A2DC06161C;
-        Tue, 19 Oct 2021 15:23:00 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HYpCk6DDWz4xbX;
-        Wed, 20 Oct 2021 09:22:58 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634682179;
-        bh=iLDqRXur7srB+p/mAgEXltNX0n54+7xkeKIirqJucSg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=s9amZAZa1OpZhdJAlnKOimIKSX34fIqCDk+rDKUNdyi0ynjj7GnZIkjn2rfKg7IX/
-         AdClWpnpYk5o33IcS5JhMRRuK1AKZaIrcCE99EI+N+03fOLhV2gRnb+SOZTFNvY+IM
-         fNQCOSHswsqT79T9pEmEhPPAWhyLz8y8ds1gXg6Vlm2vFMQCpgNiED2CtUcpsVzSPX
-         m7qaGXKmfzNRWUJtzA7JDW3d6rcJhlVngk5hNQOVYezoo3XmWPhqk4+kCiEqw7F4vQ
-         2hk7sXoXO9yJTK18vXqhJN2hbcSfLma+7GDkZXEGdgubBvrlccENTw/uOGfwsKeSAu
-         ventU3l4Fcz6g==
-Date:   Wed, 20 Oct 2021 09:22:58 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Whitehouse <swhiteho@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the gfs2 tree
-Message-ID: <20211020092258.71861678@canb.auug.org.au>
+        id S229839AbhJSW0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:26:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229632AbhJSW0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 18:26:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7673A60FDA;
+        Tue, 19 Oct 2021 22:24:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634682245;
+        bh=MnWoQVQ2JyZGLbQ15UMwC70ak3+mkXZWPOhHgYpY6V4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GyBQOR+rltd+kgSCettTJMVhlwMnrnfmNPIChH6fmtumPnYUnAs59mUx4+hTq2nP4
+         0HRzxqkbPh2I6FLsFD70opThQXQngSUqE6oH1Z3qkA57XTeSMfNpE990JtagGkHpCK
+         jzixONAJVfoiYUqQ0C4YdSjEK5kaAQatl+bN37rr0Z7DqI5J5vceTWbpxdp6yq9rhb
+         aAgYCb1g+MFa3e8so5JwnmWhd5Lo1KL7HEPwE4q9Z8XTzybzGywTpf6LAGhqlNje0O
+         Sc9Qwwm48LfTfT6y1Bmou1ot+f6fnkwD5snL+L2dbYMVS3ZqTyxjH8yxVPbFHd+Pde
+         HkeTYniPGgv7A==
+Received: by mail-ed1-f42.google.com with SMTP id y12so20511883eda.4;
+        Tue, 19 Oct 2021 15:24:05 -0700 (PDT)
+X-Gm-Message-State: AOAM5334U6Ow2iRYVv6oFbw3sfOa2cyyMjDtqEzLA5Za3t1GCL0cMfqF
+        zjHtxN9FDrJdchnuhiIU64KqdvU3BkrsP8yCCg==
+X-Google-Smtp-Source: ABdhPJzbdHa3t+aQakxf8cVFAM0Vd3iXBqYEWUCpX0L3/NyEeN5SmxaiFvTKurE6FRSPRlVm700peFXIM+Krf4JmIls=
+X-Received: by 2002:a17:907:7d8b:: with SMTP id oz11mr41803746ejc.84.1634682243846;
+ Tue, 19 Oct 2021 15:24:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qB4ldzyDKcjrwVSaR1qHkI+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211009022023.3796472-1-f.fainelli@gmail.com>
+ <20211009022023.3796472-10-f.fainelli@gmail.com> <871r4gvggb.wl-maz@kernel.org>
+In-Reply-To: <871r4gvggb.wl-maz@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 19 Oct 2021 17:23:52 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+CWeFHsHHaAwbb940Zk1thU50gDGcqfO6NdgWQ2FPTWA@mail.gmail.com>
+Message-ID: <CAL_Jsq+CWeFHsHHaAwbb940Zk1thU50gDGcqfO6NdgWQ2FPTWA@mail.gmail.com>
+Subject: Re: [PATCH v4 09/14] irqchip: Provide platform_device to of_irq_init_cb_t
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM SUB-ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qB4ldzyDKcjrwVSaR1qHkI+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+ On Tue, Oct 19, 2021 at 4:43 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Sat, 09 Oct 2021 03:20:18 +0100,
+> Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >
+> > Provide the platform device mapping to the interrupt controller node to
+> > the of_irq_init_cb_t callback such that drivers can make use of it.
+> >
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> > ---
+> >  drivers/irqchip/irqchip.c  | 2 +-
+> >  drivers/irqchip/qcom-pdc.c | 3 ++-
+> >  drivers/of/irq.c           | 2 +-
+> >  include/linux/of_irq.h     | 5 ++++-
+> >  4 files changed, 8 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/irqchip.c b/drivers/irqchip/irqchip.c
+> > index 3570f0a588c4..289784eefd00 100644
+> > --- a/drivers/irqchip/irqchip.c
+> > +++ b/drivers/irqchip/irqchip.c
+> > @@ -55,6 +55,6 @@ int platform_irqchip_probe(struct platform_device *pd=
+ev)
+> >       if (par_np && !irq_find_matching_host(par_np, DOMAIN_BUS_ANY))
+> >               return -EPROBE_DEFER;
+> >
+> > -     return irq_init_cb(np, par_np);
+> > +     return irq_init_cb(np, par_np, pdev);
+> >  }
+> >  EXPORT_SYMBOL_GPL(platform_irqchip_probe);
+> > diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+> > index 173e6520e06e..819a93360b96 100644
+> > --- a/drivers/irqchip/qcom-pdc.c
+> > +++ b/drivers/irqchip/qcom-pdc.c
+> > @@ -359,7 +359,8 @@ static int pdc_setup_pin_mapping(struct device_node=
+ *np)
+> >       return 0;
+> >  }
+> >
+> > -static int qcom_pdc_init(struct device_node *node, struct device_node =
+*parent)
+> > +static int qcom_pdc_init(struct device_node *node, struct device_node =
+*parent,
+> > +                      struct platform_device *pdev)
+> >  {
+> >       struct irq_domain *parent_domain, *pdc_domain, *pdc_gpio_domain;
+> >       int ret;
+> > diff --git a/drivers/of/irq.c b/drivers/of/irq.c
+> > index 352e14b007e7..18f3f5c00c87 100644
+> > --- a/drivers/of/irq.c
+> > +++ b/drivers/of/irq.c
+> > @@ -538,7 +538,7 @@ void __init of_irq_init(const struct of_device_id *=
+matches)
+> >                                desc->dev,
+> >                                desc->dev, desc->interrupt_parent);
+> >                       ret =3D desc->irq_init_cb(desc->dev,
+> > -                                             desc->interrupt_parent);
+> > +                                             desc->interrupt_parent, N=
+ULL);
+> >                       if (ret) {
+> >                               of_node_clear_flag(desc->dev, OF_POPULATE=
+D);
+> >                               kfree(desc);
+> > diff --git a/include/linux/of_irq.h b/include/linux/of_irq.h
+> > index aaf219bd0354..89acc8b089f0 100644
+> > --- a/include/linux/of_irq.h
+> > +++ b/include/linux/of_irq.h
+> > @@ -9,7 +9,10 @@
+> >  #include <linux/ioport.h>
+> >  #include <linux/of.h>
+> >
+> > -typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_no=
+de *);
+> > +struct platform_device;
+> > +
+> > +typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_no=
+de *,
+> > +                             struct platform_device *);
+>
+> Having added some type-checking to the IRQCHIP_MATCH() #definery, I
+> end-up with warnings such as:
+>
+> In file included from ./include/linux/kernel.h:16,
+>                  from drivers/irqchip/irq-bcm7038-l1.c:12:
+> ./include/linux/minmax.h:20:28: warning: comparison of distinct pointer t=
+ypes lacks a cast
+>    20 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
+>       |                            ^~
+> ./include/linux/irqchip.h:41:2: note: in expansion of macro =E2=80=98__ty=
+pecheck=E2=80=99
+>    41 |  __typecheck(typecheck_irq_init_cb, fn) ? fn : fn
+>       |  ^~~~~~~~~~~
+> ./include/linux/irqchip.h:44:12: note: in expansion of macro =E2=80=98typ=
+echeck_irq_init_cb=E2=80=99
+>    44 |    .data =3D typecheck_irq_init_cb(fn), },
+>       |            ^~~~~~~~~~~~~~~~~~~~~
+> drivers/irqchip/irq-bcm7038-l1.c:459:1: note: in expansion of macro =E2=
+=80=98IRQCHIP_MATCH=E2=80=99
+>   459 | IRQCHIP_MATCH("brcm,bcm7038-l1-intc", bcm7038_l1_of_init)
+>       | ^~~~~~~~~~~~~
+>
+> Clearly, you didn't update the drivers you just converted to
+> IRQCHIP_MATCH(), and only fixed the QC driver.
+>
+> FWIW, I'm planning to take something like the hack below into the tree
+> to detect this sort of stuff early.
+>
+>         M.
+>
+> diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+> index ccf32758ea85..146a9d80a6a2 100644
+> --- a/include/linux/irqchip.h
+> +++ b/include/linux/irqchip.h
+> @@ -33,7 +33,15 @@ extern int platform_irqchip_probe(struct platform_devi=
+ce *pdev);
+>  #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
+>  static const struct of_device_id drv_name##_irqchip_match_table[] =3D {
+>
+> -#define IRQCHIP_MATCH(compat, fn) { .compatible =3D compat, .data =3D fn=
+ },
+> +/* Undefined on purpose */
+> +int typecheck_irq_init_cb(struct device_node *, struct device_node *,
+> +                         struct platform_device *);
+> +
+> +#define typecheck_irq_init_cb(fn)                                      \
+> +       __typecheck(typecheck_irq_init_cb, fn) ? fn : fn
 
-Hi all,
+That's nice! Shouldn't it also be used for IRQCHIP_DECLARE?
 
-After merging the gfs2 tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> +#define IRQCHIP_MATCH(compat, fn) { .compatible =3D compat,      \
+> +                       .data =3D typecheck_irq_init_cb(fn), },
 
-In file included from fs/gfs2/glock.c:39:
-fs/gfs2/glock.c: In function 'may_grant':
-fs/gfs2/glock.c:332:16: error: passing argument 2 of 'gfs2_dump_glock' disc=
-ards 'const' qualifier from pointer target type [-Werror=3Ddiscarded-qualif=
-iers]
-  332 |   GLOCK_BUG_ON(gl, !test_bit(HIF_HOLDER,
-      |                ^~
-fs/gfs2/glock.h:222:26: note: in definition of macro 'GLOCK_BUG_ON'
-  222 |    gfs2_dump_glock(NULL, gl, true); \
-      |                          ^~
-fs/gfs2/glock.h:219:70: note: expected 'struct gfs2_glock *' but argument i=
-s of type 'const struct gfs2_glock *'
-  219 | extern void gfs2_dump_glock(struct seq_file *seq, struct gfs2_glock=
- *gl,
-      |                                                   ~~~~~~~~~~~~~~~~~=
-~~^~
-cc1: all warnings being treated as errors
+I was going to say I wasn't really a fan of IRQCHIP_MATCH given it had
+nothing irqchip specific about it, but you fixed that now...
 
-Caused by commit
-
-  9d0f1e82baf2 ("gfs2: Introduce flag for glock holder auto-demotion")
-
-I have used the gfs2 tree from next-20211019 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qB4ldzyDKcjrwVSaR1qHkI+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFvRUIACgkQAVBC80lX
-0Gz5ugf9Fg7XP6A7rvHPmkuV/yNYC0RJr1GQHly3f+4bbsGULmAsEiCdxAs660SL
-dgcc6l1bPY0XJexK7WNsB9IhWHouvfX1WNbFMfsZ2acpDRx+R2zsYeBRQasTiNpM
-e8LdP5SLtSYFIUVvAF8tXMKnsGgoNZxuZVbCUg8eUffgqGmhAcyRtHaQUvEiv7CF
-vt66SFxrtLlLQyAszRSURVLZxLdN6wq9OIFhwsgxDCsSjRbpV5MNAxsbI2A89MnM
-wfMcuqo7e4MXN2dUW8VuCxsaR3DzJPGgD1PPEiF+lKy6BBnJbXmm/TECK93i4x4N
-adCZKn/SXLzgOF/sFZ6/BRCNk38unA==
-=n3+q
------END PGP SIGNATURE-----
-
---Sig_/qB4ldzyDKcjrwVSaR1qHkI+--
+>
+>  #define IRQCHIP_PLATFORM_DRIVER_END(drv_name)                          \
+>         {},                                                             \
+>
+> --
+> Without deviation from the norm, progress is not possible.
