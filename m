@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC27B43364D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B163C433652
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhJSMur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:50:47 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19316 "EHLO m43-7.mailgun.net"
+        id S235720AbhJSMvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:51:19 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46570 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhJSMuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:50:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634647714; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=ILJ6KUzz5UKYPnWbk1cGvixDN6iLtxb7woY6fRVqBHg=; b=HHqFBzlp0SfdzvmHRmL78qGYoADMNUAjf6RU+SunetfijYCQftyEhZHVWRILErZL2L3oiheW
- p+PBA3eOjJo8WufTfMKC4XLjrQNICsf+YXTVwqAMwRAjBmhv5buBjpA8PqUZt2yxzd8nBZhj
- 9/8rhQNei1MnQDEktKw3lZjJxGo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 616ebe975ca800b6c1b80db7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Oct 2021 12:48:23
- GMT
-Sender: quic_luoj=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5010AC4360C; Tue, 19 Oct 2021 12:48:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.92.1.38] (unknown [180.166.53.36])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98236C4338F;
-        Tue, 19 Oct 2021 12:48:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 98236C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
-Subject: Re: [PATCH v3 06/13] net: phy: add qca8081 read_status
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Luo Jie <luoj@codeaurora.org>, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-References: <20211018033333.17677-1-luoj@codeaurora.org>
- <20211018033333.17677-7-luoj@codeaurora.org> <YW3qLe8iHe1wdMev@lunn.ch>
- <0472b75b-9fd7-55e3-dc1b-f33786643103@quicinc.com> <YW66vT1HQsVfjZDz@lunn.ch>
-From:   Jie Luo <quic_luoj@quicinc.com>
-Message-ID: <e0c4aa61-e1ac-e1f3-8a26-635784336512@quicinc.com>
-Date:   Tue, 19 Oct 2021 20:48:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235717AbhJSMvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:51:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=WL+AhJ29oQhp/ABSxCpfNEGXC6M38yZhnHP80vHki3U=; b=YIBORPbrg/8KLOQvRTkSCGmHfT
+        OO6DKNUo9ditLnFIr5HbOTDqtWgtAR1OjDrsOy/vI6PnVfv5i25XMcyKHkKzkvGEcj8eYwtTHiwdY
+        GptHrDVuoG7ahLYmm9sE4f7nUaSsoXWdugpmhz25wRjueviZwrU462F3NKYbba11LfLE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mcoXv-00B4qW-96; Tue, 19 Oct 2021 14:48:47 +0200
+Date:   Tue, 19 Oct 2021 14:48:47 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+Cc:     kuba@kernel.org, mickeyr@marvell.com, serhiy.pshyk@plvision.eu,
+        taras.chornyi@plvision.eu, Volodymyr Mytnyk <vmytnyk@marvell.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Yevhen Orlov <yevhen.orlov@plvision.eu>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net: marvell: prestera: add firmware v4.0
+ support
+Message-ID: <YW6+r9u2a9k6wKF+@lunn.ch>
+References: <1634623424-15011-1-git-send-email-volodymyr.mytnyk@plvision.eu>
 MIME-Version: 1.0
-In-Reply-To: <YW66vT1HQsVfjZDz@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634623424-15011-1-git-send-email-volodymyr.mytnyk@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 19, 2021 at 09:03:43AM +0300, Volodymyr Mytnyk wrote:
+> From: Volodymyr Mytnyk <vmytnyk@marvell.com>
+> 
+> Add firmware (FW) version 4.0 support for Marvell Prestera
+> driver. This FW ABI will be compatible with future Prestera
+> driver versions and features.
+> 
+> The previous FW support is dropped due to significant changes
+> in FW ABI, thus this version of Prestera driver will not be
+> compatible with previous FW versions.
 
-On 10/19/2021 8:31 PM, Andrew Lunn wrote:
-> On Tue, Oct 19, 2021 at 08:10:15PM +0800, Jie Luo wrote:
->> On 10/19/2021 5:42 AM, Andrew Lunn wrote:
->>>> +static int qca808x_read_status(struct phy_device *phydev)
->>>> +{
->>>> +	int ret;
->>>> +
->>>> +	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_STAT);
->>>> +	if (ret < 0)
->>>> +		return ret;
->>>> +
->>>> +	linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->lp_advertising,
->>>> +			ret & MDIO_AN_10GBT_STAT_LP2_5G);
->>>> +
->>> Could genphy_c45_read_lpa() be used here?
->>>
->>>         Andrew
->> Hi Andrew,
->>
->> Thanks for the comments,  the MDIO_STAT1 of PHY does not follow the
->> standard, bit0~bit6 of MDIO_STAT1 are
->>
->> always 0, genphy_c45_read_lpa can't be used.
-> O.K. It is a shame the hardware partially follow the standard, but
-> breaks it as well. Why go to the effort of partially following it,
-> when you don't gain anything from it because you need custom code
-> anyway?
->
-> 	Andrew
+So we are back to breaking any switch already deployed using the
+driver with the older firmware. Bricks in broom closets, needing
+physical access to fix them. Was nothing learnt from the upgrade from
+v2 to v3 with its ABI breakage and keeping backwards support for one
+version? Do you see other vendors making ABI breaking changes to there
+firmware?
 
-Hi Andrew,
+Why would anybody decide to use Marvell, when you can use Microchip
+devices an avoid all these problems?
 
-Thanks for the suggestion. qca8081 PHY indeed add 2.5G capability based 
-on the
-
-general 1G PHY, i will feedback this to the HW design team, thanks for 
-this comments.
-
+	Andrew
