@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31374433597
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6481643359B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235598AbhJSMPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        id S235625AbhJSMPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbhJSMP2 (ORCPT
+        with ESMTP id S235588AbhJSMPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:15:28 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA68C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:15 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id p12-20020adfc38c000000b00160d6a7e293so10046561wrf.18
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:15 -0700 (PDT)
+        Tue, 19 Oct 2021 08:15:31 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80180C061769
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:17 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id v10-20020a1cf70a000000b00318203a6bd1so1072497wmh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 05:13:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=TYk1LPnI99k/ggVKO8Mj9uEvzzDQ3GdDPOmXLwpCDNI=;
-        b=O8yTSrO0Uca5wm5K4vU0ejt4H7paio27+Bqs4+KFIFEGBAiFkCCrrUrGNwkEt/Fefe
-         28wzo1Ssyx+9lQZLUUAw2vVund8vhlY/9UwK8rovsHyNg4yw2Rn3gBGVepSL7Eq2w3yF
-         hOEEM+UMiw4N/19fDLtDtMDjzcuOLCQZrQwnn8kjya9y0T0dnD7uEF3AAv8UWU/4yrKi
-         S6OImPM+oD/vG3KMqhrA+Gyqt8kAYJpzoj+A1WyLb90HutKsJMU8ddw6cAouTDJTBNKC
-         PQvZvate6zTr45VFMsJe5Czj+08pSBtCAh4K0m25lr/XPX0osBrElQ5U3Cd9eTV8m49b
-         ZmUw==
+        bh=++xVX7cq9dri2+SFZW5WIc0fF/Kl7wWBtgdSK2pMHEw=;
+        b=YfeNcGEPdATddU+z3YnUUEeQ58+n/htJaUr7pcFV0pLA8xf8N3BummwMBtbl3EkXsd
+         5k5yC2YGf2i6gvmE+RzgT0nkae5+wdy/qpTCYJ2RFzC+k0trTK9gggZpZpt8KAEIh0Fa
+         ewhY3rYjID7F6W3V0jeBklt1ck6TqnAD2uCqaZ2EjRpP12OowyDJSEC/xSOu6LMRgjju
+         4IcUs8iFs92golKvI4zYNg+BTy+L8nK5+HfpFxA9z/rdh4Gg4waWf2oAdnC8KUoxp8N9
+         LhGqQkkyjCCBEo5f856TkfoeG0dIh52NHjH5Jedm2jt+9zDWLyDLl2hgbw60pjmTfn+n
+         0NYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=TYk1LPnI99k/ggVKO8Mj9uEvzzDQ3GdDPOmXLwpCDNI=;
-        b=6UDsXz5s6ta4C/rfSQxinCaZ6D8cLzjdtGZP05aCJCzzfU8KTdzvGcOHBlNlRG+HN1
-         8orhnxD5Ogx+vTMAqrwYtnwOojGsYLSzrFDmtnHDdr4FT6nBdlULgrc/euPJOf8UkZoY
-         zJ9SqFzYbOgJ8ssq9vR9scp4xualUcSKfGmtuPVVIg7MLS5DZH3PpZR7bk5InOpBB8kk
-         XRZU79HEMXgTQgxlg6mB1PG5zQV2WRcYljK7FmUXVVfQbkMdHAryjZl8zJkU7JAbfDYe
-         UGFuC+1fvGsZpg0cfPYbFocbkjOWFZmZxapC2eqPyByWp2pETcZdxTHeVfAwdLp/izOj
-         wBwg==
-X-Gm-Message-State: AOAM532reNpsne5nhMa6Gp6VSBMQLDC5+DmMXZMxmGafJu+/v+nzJCzp
-        9e/6hVy6cLOGRU0XvH7RxqCTl3YZ0iTS
-X-Google-Smtp-Source: ABdhPJzFSw1s7wfnFX8qmHfRSKmq59QIp1f27cUPH/WdPiT9CqXbF6yjtS78WRcCH6lpSA4IMEtzt5LuNzVT
+        bh=++xVX7cq9dri2+SFZW5WIc0fF/Kl7wWBtgdSK2pMHEw=;
+        b=ur9NVxMKNuySkzdcSkwfK0LxQa5Wh128k0SBtBMNZfZiF9XINWH5yQDiDF5A7fzzvj
+         NXrHDnt9NTXyjUdjzg+5bWTEnaR1NsHhp600+1o++3vabHC5iPm7R/+XBveeaKQgjBBD
+         04YWR6bywSJfLMh2Tks3zN2mQAhXC9+wCeza1Mpq2ZuUA+MUtEP0wsFCCxXuEtFOAxtk
+         7qo7NZFDinLgGKIbddQhvsS+BX4nVVNSYI/xxmESuQ90y9OIl8w6kVESZbzD5IJY2nyG
+         rrJpr12ldv2kjRdz4ZGpeU5cPFoMrYKz/u5o2Ijoz7TsAtkSvhkpsWpVArJSLLKVir9Y
+         U4QA==
+X-Gm-Message-State: AOAM533a1l+kbGO/q69sKt/lV3rOC8mYzTVrI9TrJBSXW6NHAy56rOGw
+        S761UIYynYb6yyI/lH9uwgDQM/IsI2i4
+X-Google-Smtp-Source: ABdhPJyUp2THf2vqTs2t6aOxbzWJ1ZyfKwGpN2QbKlKxK+/isqHvkyIyOmDTVZPJdG4S62oIcZFlzqHeLYBK
 X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:59ca:401f:83a8:de6d])
- (user=qperret job=sendgmr) by 2002:a1c:2b04:: with SMTP id
- r4mr5781071wmr.48.1634645593915; Tue, 19 Oct 2021 05:13:13 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 13:12:52 +0100
+ (user=qperret job=sendgmr) by 2002:adf:b1d4:: with SMTP id
+ r20mr43489909wra.308.1634645596136; Tue, 19 Oct 2021 05:13:16 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 13:12:53 +0100
 In-Reply-To: <20211019121304.2732332-1-qperret@google.com>
-Message-Id: <20211019121304.2732332-4-qperret@google.com>
+Message-Id: <20211019121304.2732332-5-qperret@google.com>
 Mime-Version: 1.0
 References: <20211019121304.2732332-1-qperret@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2 03/15] KVM: arm64: Refcount hyp stage-1 pgtable pages
+Subject: [PATCH v2 04/15] KVM: arm64: Fixup hyp stage-1 refcount
 From:   Quentin Perret <qperret@google.com>
 To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
         Alexandru Elisei <alexandru.elisei@arm.com>,
@@ -68,66 +68,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To prepare the ground for allowing hyp stage-1 mappings to be removed at
-run-time, update the KVM page-table code to maintain a correct refcount
-using the ->{get,put}_page() function callbacks.
+In nVHE-protected mode, the hyp stage-1 page-table refcount is broken
+due to the lack of refcount support in the early allocator. Fix-up the
+refcount in the finalize walker, once the 'hyp_vmemmap' is up and running.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/pgtable.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ arch/arm64/kvm/hyp/nvhe/setup.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index f8ceebe4982e..768a58835153 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -408,8 +408,10 @@ static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
- 		return false;
- 
- 	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
--	if (hyp_pte_needs_update(old, new))
-+	if (hyp_pte_needs_update(old, new)) {
- 		smp_store_release(ptep, new);
-+		data->mm_ops->get_page(ptep);
-+	}
- 
- 	data->phys += granule;
- 	return true;
-@@ -433,6 +435,7 @@ static int hyp_map_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 		return -ENOMEM;
- 
- 	kvm_set_table_pte(ptep, childp, mm_ops);
-+	mm_ops->get_page(ptep);
- 	return 0;
- }
- 
-@@ -482,8 +485,16 @@ static int hyp_free_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 			   enum kvm_pgtable_walk_flags flag, void * const arg)
+diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
+index 862c7b514e20..9e5c92237a51 100644
+--- a/arch/arm64/kvm/hyp/nvhe/setup.c
++++ b/arch/arm64/kvm/hyp/nvhe/setup.c
+@@ -167,12 +167,22 @@ static int finalize_host_mappings_walker(u64 addr, u64 end, u32 level,
  {
- 	struct kvm_pgtable_mm_ops *mm_ops = arg;
-+	kvm_pte_t pte = *ptep;
-+
-+	if (!kvm_pte_valid(pte))
+ 	enum kvm_pgtable_prot prot;
+ 	enum pkvm_page_state state;
++	struct kvm_pgtable_mm_ops *mm_ops = arg;
+ 	kvm_pte_t pte = *ptep;
+ 	phys_addr_t phys;
+ 
+ 	if (!kvm_pte_valid(pte))
+ 		return 0;
+ 
++	/*
++	 * Fix-up the refcount for the page-table pages as the early allocator
++	 * was unable to access the hyp_vmemmap and so the buddy allocator has
++	 * initialised the refcount to '1'.
++	 */
++	mm_ops->get_page(ptep);
++	if (flag != KVM_PGTABLE_WALK_LEAF)
 +		return 0;
 +
-+	mm_ops->put_page(ptep);
-+
-+	if (kvm_pte_table(pte, level))
-+		mm_ops->put_page(kvm_pte_follow(pte, mm_ops));
+ 	if (level != (KVM_PGTABLE_MAX_LEVELS - 1))
+ 		return -EINVAL;
  
--	mm_ops->put_page((void *)kvm_pte_follow(*ptep, mm_ops));
- 	return 0;
- }
- 
-@@ -491,7 +502,7 @@ void kvm_pgtable_hyp_destroy(struct kvm_pgtable *pgt)
+@@ -205,7 +215,8 @@ static int finalize_host_mappings(void)
  {
  	struct kvm_pgtable_walker walker = {
- 		.cb	= hyp_free_walker,
--		.flags	= KVM_PGTABLE_WALK_TABLE_POST,
+ 		.cb	= finalize_host_mappings_walker,
+-		.flags	= KVM_PGTABLE_WALK_LEAF,
 +		.flags	= KVM_PGTABLE_WALK_LEAF | KVM_PGTABLE_WALK_TABLE_POST,
- 		.arg	= pgt->mm_ops,
++		.arg	= pkvm_pgtable.mm_ops,
  	};
  
+ 	return kvm_pgtable_walk(&pkvm_pgtable, 0, BIT(pkvm_pgtable.ia_bits), &walker);
+@@ -230,19 +241,19 @@ void __noreturn __pkvm_init_finalise(void)
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = finalize_host_mappings();
+-	if (ret)
+-		goto out;
+-
+ 	pkvm_pgtable_mm_ops = (struct kvm_pgtable_mm_ops) {
+-		.zalloc_page = hyp_zalloc_hyp_page,
+-		.phys_to_virt = hyp_phys_to_virt,
+-		.virt_to_phys = hyp_virt_to_phys,
+-		.get_page = hpool_get_page,
+-		.put_page = hpool_put_page,
++		.zalloc_page	= hyp_zalloc_hyp_page,
++		.phys_to_virt	= hyp_phys_to_virt,
++		.virt_to_phys	= hyp_virt_to_phys,
++		.get_page	= hpool_get_page,
++		.put_page	= hpool_put_page,
+ 	};
+ 	pkvm_pgtable.mm_ops = &pkvm_pgtable_mm_ops;
+ 
++	ret = finalize_host_mappings();
++	if (ret)
++		goto out;
++
+ out:
+ 	/*
+ 	 * We tail-called to here from handle___pkvm_init() and will not return,
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
