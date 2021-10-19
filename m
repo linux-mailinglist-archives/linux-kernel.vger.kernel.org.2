@@ -2,98 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802C9433CF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DBA433CF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234038AbhJSRFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhJSRF2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:05:28 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DB9C06161C;
-        Tue, 19 Oct 2021 10:03:16 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v20so14101036plo.7;
-        Tue, 19 Oct 2021 10:03:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cb9GiFttJIShHLaHyamc/d4toGTaUJ3k9crbveF7gg0=;
-        b=BOmxdUfCMIyD2fZr8/EH5QtzCVoYpqEgfRrF3aH/hGloS6T1vl6Tdvj6YFM6KkUavy
-         RiUXbbMRJjlY/7JW6N+rgYfOaijFtrV2a2N5RWQjGjYI85VTkaXw4F6dEJMh/rwPnErE
-         9QvDSK3qqn5jZQmbFWAY01uZ8ra8GZSHVmcG88sibvQ4RKTsqXh8NXIegJhSOCJ96AsF
-         Vno+Bp3O5ZCNCbjIws4ckNImT7MTuDSOuciaJjDvQf91B2i9lFqT1X4AItb1f1dlFh6m
-         cHO+YPJKuZP4eSgU0q6J694zr7qbycHQ+3esEoDmKGhX7LfHVRQP9bFkEsGD61GBLbS7
-         QdNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=cb9GiFttJIShHLaHyamc/d4toGTaUJ3k9crbveF7gg0=;
-        b=ETgsbm93EFGKz6m3nPxdnQ2muuEV+HZi4u2PS3aCExetrPgc7NvAV3GLy5fjuEjSGe
-         Vv7CLTLvdK5MMpcQ7JZ3C+SFzc0c/5I3GmZYTkYpXgYl+fGPTCHdd1fdmyPcXiOSb5z7
-         u4D7Q62CzVxQLvv9Z2mNvUQaE0Sdp1Mhjbabh0hRRtH1WZi4couG4P1Nqhwgp+l2qoEd
-         NQuBVbx6ehJCwRnFstVG1j7tc52Xxyn+Gd86zPJic7CZCNFM/qHv2of5un8Sh/72j/MI
-         HzYPCcSjovZUrDdLaQ5esC36mGUcRIzLSMPoH1J/wsBwN6WHrpO45TlwUy8++mRgSKYd
-         mbuw==
-X-Gm-Message-State: AOAM531HOi9HqoaVYQ+jcVOteokmCez2h6DIDuW4JAkHhGmIUB8g12CQ
-        4Qes99WWhvZlNpB7m8BJVYQ=
-X-Google-Smtp-Source: ABdhPJz66mdTpBEd9DTd8aqGMXjA5dOYLLbqdtqrA/PRHKQ6nTHF2vOhfbwm/tGwEIFakJGrtN1MaQ==
-X-Received: by 2002:a17:90a:e64a:: with SMTP id ep10mr1219201pjb.124.1634662995400;
-        Tue, 19 Oct 2021 10:03:15 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id c9sm15935346pgq.58.2021.10.19.10.03.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 10:03:14 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 19 Oct 2021 07:03:13 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, paolo.valente@linaro.org,
-        avanzini.arianna@gmail.com, fchecconi@gmail.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v3 -next 2/2] blk-cgroup: synchoronize blkg creation
- against policy deactivation
-Message-ID: <YW76UThK20WaCWO6@slm.duckdns.org>
-References: <20211019024132.432458-1-yukuai3@huawei.com>
- <20211019024132.432458-3-yukuai3@huawei.com>
+        id S231741AbhJSRHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:07:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:52118 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229774AbhJSRHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:07:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A380BD6E;
+        Tue, 19 Oct 2021 10:05:27 -0700 (PDT)
+Received: from [10.57.21.130] (unknown [10.57.21.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A8363F694;
+        Tue, 19 Oct 2021 10:05:26 -0700 (PDT)
+Subject: Re: [PATCH] PM: EM: do not allow pd creation prior to debugfs
+ initialization
+To:     Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Cc:     rafael.j.wysocki@intel.com, qperret@google.com,
+        daniel.lezcano@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20211019152819.6141-1-clingutla@codeaurora.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <e01188a0-1dc7-db57-309f-f49390216875@arm.com>
+Date:   Tue, 19 Oct 2021 18:05:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019024132.432458-3-yukuai3@huawei.com>
+In-Reply-To: <20211019152819.6141-1-clingutla@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-Some nitpicks.
 
-On Tue, Oct 19, 2021 at 10:41:32AM +0800, Yu Kuai wrote:
-...
-> Because blkcg_deactivate_policy() require queue to be freezed, thus grab
-                                    ^                   ^        ^
-                                    requires            frozen   we can grab
+On 10/19/21 4:28 PM, Lingutla Chandrasekhar wrote:
+> em_dev_register_perf_domain() can be called from any initcall level before
 
-> q_usage_counter to synchoronize blkg_conf_prep() against
-> blkcg_deactivate_policy().
-...
-> +	/*
-> +	 * blkcg_deactivate_policy() require queue to be freezed, thus grab
-> +	 * q_usage_counter to prevent concurrent with blkcg_deactivate_policy().
-> +	 */
+The EM is registered by cpufreq drivers (or devfreq), which is later
+than fs_initcall, so the debugfs is setup. We even have added recently
+a dedicated callback into the cpufreq (register_em()) for that.
 
-Same here.
+Do you have such code which registers EM for CPUs (or some devfreq)
+earlier than this fs_initcall?
 
-Looks good otherwise. Please feel free to add
+I cannot find such code in mainline.
 
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+Regards,
+Lukasz
