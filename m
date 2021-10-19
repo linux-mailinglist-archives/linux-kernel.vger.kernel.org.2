@@ -2,130 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811E6433F7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABD6433F82
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbhJSTzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:55:40 -0400
-Received: from sonic309-27.consmr.mail.ne1.yahoo.com ([66.163.184.153]:35151
-        "EHLO sonic309-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233954AbhJSTzh (ORCPT
+        id S234447AbhJST7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:59:46 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:40594 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230147AbhJST7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:55:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1634673203; bh=LfYW3Z+rcYIBTifgCH7sWBJQvcpvijhLIxG8FhERmbA=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=LnbcWjyEyoVUimCgVvEMDArKC+r8x5mGv3ioZp/NsSbruJqE4tkfLbkPk/fsx7wIgb0Eh+HZRtCj2ruzRynrbXTzCzIRKho3+38z1yUxwKEmETsLogUWvFLAYeXDlEidXNcXJ//5UtKkw6k0tNARPjCoaz1WkJPyq5p85+bjAE7V460tevfRic2C/KxfgpSz6cP9vULKQcVGb5ASwIFzLxEUFV9sc1EN5/TgQOTHv2a2LQA2V3bDjwf+uyCon71p+PYbu6ieqKwQcBr0P6LoO1bRYDmlO/8GcyzfED5cXI+5hTtmylobDpLZHP1tJyz6KoWrLiVuEV02/FrEN/pnlQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1634673203; bh=xfjRX/X+PtMeOUPLT3Aiqwh0bTJiSqzM4HXqlwF+RUn=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=MYTMb2piE5iIrNTEXGsB3B5Atti7PuA84LGyP47MMT+65glpLPjfJZRcObsnvV1tXyaqx70jGEMJ/9HAClqGhnK8pyappmiLll8oxZtlKfU0i9BgwPm5XgWfO6LeaW/UEr14vl3HoV1I//ame+39oqsydiMvLA87MRFvSNRreJ+lyZDkUGNoJT3w2Qk5dj82wtzCxwH7o2v88LKUxilWypGxpnSdQKmMyIaixLlBpnCq69pVTtmaphMFswjYgJV3rDiJ69CntBHUlCXPLSRGvzT8+ojgMCOA93wquwyaD9032s1MfjSm3pJ97UMkfujA07lJKPtEHw1ywTGfNV+SwA==
-X-YMail-OSG: F24JJaoVM1nzm3H8whxyuHv5PDta44pMAvxLlq5VNnPL_wK0wWjEy8kuB3bUEdb
- jy.w49Q.EebjnKOWFBntXK_wZRe.k.T8Ybyx.s40vQRZqLxuRMo7AwPwbrohzfz1zUjV5WTbQv4w
- aycVKfKWTIPdfdhmy.z07vJnH3P1Dj1dRN1ug5xeIgjgLka4j9x2REtCFYz7X.8rDhUUlyWbJfSr
- 3H7HHXmCR5ndyrWrXJsDXxv78WgH033vcj1KW24PGfRpowjbJMvvw.nMOuIj9NtEctGCCDOL4gFT
- ioqwwaehwBb6E7AKhgbGUYAH3zVkmKbdFbP4aLVxYA.ZLj3SU1QKEgz7uIabMQPOGJ_wCuBBt9ol
- kKn0Uq8FiU9y7tJqdIz5MnqtpH_COWjOrOM3qzedQoPtIDxZO.fVFSSB7uxJksuHmEOnbpi0Bpmt
- dS4IaP0J7QDefxjeUhIqurCbKWN.ECrevpujAvlV3dqqOMu0rSH3OisanTocHk4OMLwIJaZrvWVZ
- fA2sf7xwjkaIpOC1EzBTQUbVsW08nHWjT_4hQ4b7qoPzstdoxu.gdsPpRTw0ZlSTr9Wt5uQzEQm3
- 41e6c1wWGl7OA7L_mpBePSSFuGhvxeOqPeFwhilJXoagz_HAlY39fT3OJ0U6P59KmdDSxCtKcC4a
- f2SvLGn.J_asAhjNwbhFzbqeFQvjtR4jBzNMF8B05V7p6ssuZ86ahZ4PAlWstGE6s99iBRh6.Jts
- JzawP1RGTFjVrGR5E0B4I68m7II_yOYxm6c2Kstos9zvD5QyYYtlyhDZ6orJ1xBsHGQSRqypOGPu
- S4ggQRWksoYqSJrMrORDEdVSuhoyHAhcQcVrLpbt5cHcfjVu_mX3TTSIZI2stadrcI40CWdfAEuP
- JZauHi5sJteUJZDjvDjynAoQ9dnaoqJDY5Z_bhDwxUHBBEulnzHw20w6BCTAE4Yq8X8IHd5RZ_75
- jrsBSURmZHb88vtOnrg81ef5n5265EYbP87rNa0UqEkM7J2Ws5pfmSiNXLrjyFMGtoMRUkKDr5Zp
- 2Pcysafcg.8tVFbHLMoYBXpHIxcUraGmJPNpXI_JNuYFdsXOy4ig11iKtlGhTC1qCcfg84U7NbIg
- 3ktdIg33ag_1MkMywYDFvm1cA5r62B0c7VZ1EO4JsatOh34gIA6FVV4TN7t4Ql2VxdSs_m0ViTIJ
- W_c3om9AALz0ScmwFa3qg8dQM.dxbuoFodBix27i4PsMuuxZS5nqHwsnoc1a7wmWW0Q1zxYcKPfj
- InVmne4Qn8hS_yJDpgj_OWLNx8PbrXo0JaHyPg8vXo2UiKP7LKOzZ5hec.bcBn8Dmh6rzV3KxmNl
- V4VPdNYZwTySKt.230_DQsu9IBoy.op214xQ.721Vk_eY.UNZCnrn5b6xXfRl0rEOMFGd3Xr3yvm
- 6qYbNm_82hVrD2Bn19yFGkT4t3z3XHn5iez_HHglxO_c1TUMnNnLaDi5U7KT4P9VWaMjRrdvdx0d
- 3SAlQzyyiR4s2YOSxwuNY2BPAAEcoZtT1VxTMR7UghyZT4GHfqO9F.JXAq7t9cUGVXjvgDTRJH88
- uja8sHghuBqtgYLug_qTN2CLZR2UYlg8y0XPH0YOpnoKhCrszjYjEj9dWBRqWZ3BIw17dnN2Z9Fd
- 3BLtPcJrZ0qpuYoP0hSB.id7mdPW8L2Sj2jZfXhqLGtLr91_eVqv8rmXRjMipLjrQ3QFPm.laEDa
- BZwQ1qWR.p63gNXSDHJ72E3EVc9uyQAG2T74bwuoQqy_rB12QbJ84v8qobllcrUTuDkLHoA5OIkO
- WegNNGf3_gkUDOTrjQL32hqONocLM5kBt3bnEyHcIRwQvjKAygmi_yMvLGRYLEoCywXspKNJQ7_L
- _6HDaIj1Unp3QYlgzRHUIGMOPc_rzZwTXJhwkMg8QvXN5SiUjMNl2kLhNrEnU5MUdLdj983pKmyj
- NQH.niFrtfPTlv.njK24HBmmKQwzQ8EM.TfH8PkNkFInehx2ZZve0j2MtoirbRfC44rdp62X3rRr
- MfTnaDUSXmNx8P338Ve7ycIuesHw.1j2XEvXDilDkXBVkyBQgTVhbkr97g9JrFoJZ3RGWyMk39c3
- LUEMVeLgfiuKWn.sFJMQ2xSKWwty124hGPIU6B8XpfZgbYSmFmfYXN0oU0RO510sVoeQT2ZoU.S6
- 620XS1i6PwHUvAmrJWBLilvIXbFcDDYEzLorqnYpHGU8Y_06StAkmbjzJrw4iESQdtFuuLkufEfw
- FS3_OfxID1JfkQyReAqc-
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Tue, 19 Oct 2021 19:53:23 +0000
-Received: by kubenode540.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 3e58ff3403911a0410e3ec72c97ff0ad;
-          Tue, 19 Oct 2021 19:53:20 +0000 (UTC)
-Message-ID: <8918e7c6-f70f-9a9a-7acf-5b06bcf53c4a@schaufler-ca.com>
-Date:   Tue, 19 Oct 2021 12:53:14 -0700
+        Tue, 19 Oct 2021 15:59:44 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JJ20hZ005510;
+        Tue, 19 Oct 2021 19:56:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=+XR3LTOt/2W6NSg8Z8xkfFmcz8BR0yTrJbA4p1J5W6w=;
+ b=jh7MmqFa7mj2mdtEDGa/wXexJXuGxB7m2zPObitG6ULUygjGdXVtMBaWakulb7bZgHKl
+ e6yABbGSFpl9xI9opWgeoPfJ4nrXeqNdvayizlnO1bFZN3vtNZNJtmF5LnBDamW5cIz4
+ 01pbJvthH470NUUxseStAe8Gg1KKcAdXjqz7flAuszDBi16DzHi6RXnrcB2xl4yPPHZu
+ v1tJwV3XINbK3iOnmhp80I5l4Kj0NOauLZfteFTGiwEe0O9Lujgm2meVZESSSTVZa8Uo
+ jzwmjesdxm+dgbXmR9DYNZA5BFQCmhpElB33Uio2H3IOOb1T2yrcqeBPahVuiltRO7Uo Cg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bsqgmmv7t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 19:56:08 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19JJpWA1195512;
+        Tue, 19 Oct 2021 19:56:04 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by userp3020.oracle.com with ESMTP id 3br8gsxubx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 19:56:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nxOvUGJO24U50UkNmhfKAWEwudOAo8cp3qj3bBG1S5zKxIMAB2Q6xxtfCyj2k8DyoonavmipSyq5d5eR86crPUI2DADHXw5HmnlrK5ApziGpfhglN3EBrlGgfSuwrw8nqaienbXBnilSXW7+lgGHIQLDA0fzFB9wRoLyw0y0xTXUgXzO9O8wQjLCxBJjF2OntuK+zZ7j8jX+SGPjiy++I9mD+oQNygr/o7KLgoSNuDd6sDDc8mnb5w+GhKa8YAosxYGEWVQc5hUiXu62T5JFb1HOlDQRu5aNXQLGSp1g5LJeC3h1pi6QBu28OlHMwaBoaBT8NljxxdzzrLd4TCl1/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+XR3LTOt/2W6NSg8Z8xkfFmcz8BR0yTrJbA4p1J5W6w=;
+ b=ZsEZoYkAcP8w6wXtA0AO0l31KvSW1VWkgYAV1nDHfyMwz1J+urX0uHX5lFg7wgXLIRV7GUTHv/RoWuCurZcQgb8/kwHC0yGatM11A4VYqqfTvM3E1OtzuCi6abotx8uRYcZUIh4OacPSTIIN5mNikkWsqZuLxsdgAyiEZfGjmP5rXf31LkJ0HKIs5wsI3hXfgBXTQ+4fu7FAvxiQlGxJ9ejbDUoZgA/EY3wtdhbiD91NYvf4zwXJtW4mRkKXKkp6CdYplixvqBRExa6j8cYlO8euqQzcUCuLVzMHJqiwJarmXHYs0tWAeziUB1pK6KU8sfiAog7rKm7iCw8qgMjZrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+XR3LTOt/2W6NSg8Z8xkfFmcz8BR0yTrJbA4p1J5W6w=;
+ b=ZCutfKV1MUPwDbBfTeCFkqs7mtNmSZCp2kQo517QGJeUQrfzGvnHm1vlIv3xw0o6699bfkczRJwISlWPpexd24OFo6yq9tgxu1+/cDUzcqAPr19+Z/OFt5WQlFLJVbM8YiBsZL6yf2lE2mw88J0MLTd66FoEs8yXp5S9NkVYzu4=
+Authentication-Results: gmx.de; dkim=none (message not signed)
+ header.d=none;gmx.de; dmarc=none action=none header.from=oracle.com;
+Received: from DM6PR10MB2986.namprd10.prod.outlook.com (2603:10b6:5:6b::26) by
+ DM5PR1001MB2396.namprd10.prod.outlook.com (2603:10b6:4:30::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.18; Tue, 19 Oct 2021 19:56:01 +0000
+Received: from DM6PR10MB2986.namprd10.prod.outlook.com
+ ([fe80::c5da:305e:be30:abac]) by DM6PR10MB2986.namprd10.prod.outlook.com
+ ([fe80::c5da:305e:be30:abac%3]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 19:56:01 +0000
+Date:   Tue, 19 Oct 2021 15:55:56 -0400
+From:   Alec Brown <alec.r.brown@oracle.com>
+To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc:     "coreboot@coreboot.org" <coreboot@coreboot.org>,
+        "grub-devel@gnu.org" <grub-devel@gnu.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "systemd-devel@lists.freedesktop.org" 
+        <systemd-devel@lists.freedesktop.org>,
+        "trenchboot-devel@googlegroups.com" 
+        <trenchboot-devel@googlegroups.com>,
+        "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Aleksandr Burmashev <alexander.burmashev@oracle.com>,
+        "allen.cryptic@gmail.com" <allen.cryptic@gmail.com>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "btrotter@gmail.com" <btrotter@gmail.com>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        "dpsmith@apertussolutions.com" <dpsmith@apertussolutions.com>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        "frowand.list@gmail.com" <frowand.list@gmail.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "hun@n-dimensional.de" <hun@n-dimensional.de>,
+        "james.dutton@gmail.com" <james.dutton@gmail.com>,
+        "javierm@redhat.com" <javierm@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        "jwerner@chromium.org" <jwerner@chromium.org>,
+        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
+        Konrad Wilk <konrad.wilk@oracle.com>,
+        "krystian.hebel@3mdeb.com" <krystian.hebel@3mdeb.com>,
+        "leif@nuviainc.com" <leif@nuviainc.com>,
+        "lukasz.hawrylko@intel.com" <lukasz.hawrylko@intel.com>,
+        "luto@amacapital.net" <luto@amacapital.net>,
+        "michal.zygowski@3mdeb.com" <michal.zygowski@3mdeb.com>,
+        "mjg59@google.com" <mjg59@google.com>,
+        "mtottenh@akamai.com" <mtottenh@akamai.com>,
+        "nico.h@gmx.de" <nico.h@gmx.de>,
+        "phcoder@gmail.com" <phcoder@gmail.com>,
+        "piotr.krol@3mdeb.com" <piotr.krol@3mdeb.com>,
+        "pjones@redhat.com" <pjones@redhat.com>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
+        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "roger.pau@citrix.com" <roger.pau@citrix.com>,
+        Ross Philipson <ross.philipson@oracle.com>,
+        "sjg@chromium.org" <sjg@chromium.org>,
+        "trini@konsulko.com" <trini@konsulko.com>,
+        "tyhicks@linux.microsoft.com" <tyhicks@linux.microsoft.com>,
+        "ulrich.windl@rz.uni-regensburg.de" 
+        <ulrich.windl@rz.uni-regensburg.de>,
+        "wvervoorn@eltan.com" <wvervoorn@eltan.com>,
+        "rharwood@redhat.com" <rharwood@redhat.com>
+Subject: Re: [SPECIFICATION RFC v3] The firmware and bootloader log
+ specification
+Message-ID: <YW8izCvup7gKiKGc@alec-orcl>
+References: <DM6PR10MB2986A960E859A744FDC3875ABCDE9@DM6PR10MB2986.namprd10.prod.outlook.com>
+ <A7F710D3-5148-4E92-9E3D-5D850AD0245F@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <A7F710D3-5148-4E92-9E3D-5D850AD0245F@gmx.de>
+X-ClientProxiedBy: MN2PR17CA0009.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::22) To DM6PR10MB2986.namprd10.prod.outlook.com
+ (2603:10b6:5:6b::26)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] Fixing returning a userspace address for return value
-Content-Language: en-US
-To:     James Morris <jmorris@namei.org>,
-        "T. Williams" <tdwilliamsiv@gmail.com>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <CADN=F_=tijrY7Lwv2coPcXS04uzEQsUL70=v3wHceGe9p6W7pw@mail.gmail.com>
- <7df6e94f-a4c7-d181-7f9a-165e95b493@namei.org>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <7df6e94f-a4c7-d181-7f9a-165e95b493@namei.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.19116 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Received: from alec-orcl (73.61.222.52) by MN2PR17CA0009.namprd17.prod.outlook.com (2603:10b6:208:15e::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend Transport; Tue, 19 Oct 2021 19:55:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7843de07-0e2f-44cf-44e4-08d9933a798d
+X-MS-TrafficTypeDiagnostic: DM5PR1001MB2396:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR1001MB23963AA636AFF93D4852C44ABCBD9@DM5PR1001MB2396.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EbaiNoifvw7ECI9qx7Uu3gK1oc4d7yHlrysDNpLEEzdnr96/HbrzqJeKGjgHyV/1MZ/OIeARxdS2t3uxUhmc1FABkL/SKnc2SasInLgxprbwo8vTtvz5VeYqKBUDHJJSCU+lmrdaBrPzXxOL57Ia7HUx84yQp/Cb1RyGb66ljG7sJrDgje+q7CIdo5h5ySPNM/FyUZPc8agwIuV+A3UnE3H6um6fQ9AKolfGglqJ6yUgycx0af8fWp0bvFMu3mQ2+YPf9l2yGh0DMGwKpDhLKDOw1+kvSM8N7Lp0wUS+epan+2VlLmFtRQ2E1g1avjDCI1WJQcIRXrvt5gSW89HH1unqtTiMz43RQSnRkZQdggwdjYZW76oUqvgyRqKtj55Wq7ehpuSpDjjRPEYvQtIAVZAr4rVTAGVYsDorYDM301Wvrc7W5NdS3TP9QXHpk/6rRBzLZDSm86O9b7cDQ+kbJpIC5x7QZ9KFj0o0sKuMbWDLbjvzG8gzKQ3MkpfbBvy8CNFTmbOjaUqcUKYrZOxSemznmeBr3eqKZ60vTxgHQSLWesaiKZlsT0a8lH+RjY9TogGBTThaFqxAkdF7KVvjaCrDyXxcOYVD7tP6Xg25Wj4iu/PJGLLeOzB2HtKd4SvQeHQxjINjl/kgJXrQj7BT66zcFWkCn9+nwysM7tfC3RzahUQn8w/8tH0F2/w20fas1buYeoRPTbFCFqw1gLxsd7H3kaD+tykPSf4gfsa9SnySeQMS1zrXa9bAJjPKSgY/fcA7Q9E/SSOQnHa/FDYVkg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB2986.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(33716001)(7416002)(5660300002)(86362001)(8676002)(4326008)(7406005)(9686003)(26005)(55016002)(66946007)(966005)(2906002)(83380400001)(66476007)(66556008)(316002)(38100700002)(508600001)(54906003)(6496006)(956004)(186003)(8936002)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MyEAvdH5fdrP1X6Vto4tc/tRdtK9Lgup0fAo1bPDBAMlbjkKRjEr78UaD3C+?=
+ =?us-ascii?Q?DM3fRPCnlEK6cLW7ZbSexY3WcDcEla+KWmTenxnDCY+OwEyv+DJ0xbKPotmA?=
+ =?us-ascii?Q?I2pg4mhi7m4Mq1qtmLxJqncJfSLruFv0YHHZqvcue2YdzjTbb2p8Jnk+nKau?=
+ =?us-ascii?Q?RDM3rTz5wFlKNa+VZB6/CZ7/j2HJg1pFoeiXeLqMlPFuK3z3aJ5EshmJBCXB?=
+ =?us-ascii?Q?inlSIQBL0wjzwJnFDvaOmzvIcSGdmIj2//hx+7yL1Ac9KVsnTOKdnocCqBdz?=
+ =?us-ascii?Q?4838bDxTvQFzIVlBBaWOcI09gSIRu/NcPVo6B/uXrHqsgG/Kljt2EJ+eevqy?=
+ =?us-ascii?Q?X7arumQeTPp1/uQDgkdYcAnulHHxkIy6RATLOAxYCc2Eszn5hhoYzzzc4jB3?=
+ =?us-ascii?Q?tr3dscKwlFyGxmokh3zzfkqrFYdAVEjPkzotLvxSiJrHEeElXOk6o54S/gj2?=
+ =?us-ascii?Q?bD0RekrBZZkf/H2hjAS4NgSTSDMZ5dZwKG2DqIDS+qBCdECnf/V7aeMQrMLm?=
+ =?us-ascii?Q?IVBIUG7Qd5buNZTJIYHtTuOPqAp2VW/kefv0udrPPRov4I2wRCRY8v9srQCK?=
+ =?us-ascii?Q?aeSJHSBYrPnKIKynqmmfMmrhZG2mT3k8h8XXz4UsKkDryL1bA3SrNghSL+5L?=
+ =?us-ascii?Q?Kiye5Gcr11mfDqsfy0fP7iga5le+y4CBLPcgyaUhRyQVpYrgL49sXTSbFfIX?=
+ =?us-ascii?Q?CaYyxRh/UYkZVH5L0PBEFrOeDz7tI79wyrsA7X0WvAAdi37no2gcTS3Lsa7x?=
+ =?us-ascii?Q?eoP4KYR27bFzafZvTFoToRpjduyyyNGvdd7pHGyExByyuxUCATro9Sm8zlnx?=
+ =?us-ascii?Q?9lC94lGMUvAxY08bWnSckVrQw00V+F4py5KePJHa0POfqRPnkJlukMRLqS19?=
+ =?us-ascii?Q?NbYIDmRKl7dzQemypqrZEdusoBMkqrB2A3PggQ1+EGXa4Ydls5+1MXVz7SEb?=
+ =?us-ascii?Q?khTszj6rGrIEC/hQdHpSSEIqxcj940QBhI0mhyZMhBfrMQJ8UIDDGUeGS3O/?=
+ =?us-ascii?Q?HcteVMiOVHgwJ5qrwYl7nAz/0kzi4oUxuyf+0w5rT6iaugGmcNCD40zMNpvL?=
+ =?us-ascii?Q?il6k0lTtfk/QX49TB5O7X3e//tYqeCrlDtWaME1ln+42D3adeoTydUnSnJwv?=
+ =?us-ascii?Q?t5xvk4OvwL4ZsbGloSQNxuKl3wPTuO2ljXiAy/BjJSUiiD9Xjxb3iNQc1vVL?=
+ =?us-ascii?Q?ltBoyzgd3UIzAwi1BgHyr3fQHoO61/WAENodPjbLv23XuF/XfnzoAQZhLMxh?=
+ =?us-ascii?Q?KHdevEFa/XI87m7zjqAiwIzN/BaUK8JXo5xI1HTl7/QtF1tWdRSJCdm1aYxB?=
+ =?us-ascii?Q?nXuLIR73eZA3ccQuK2b8y9iw?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7843de07-0e2f-44cf-44e4-08d9933a798d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB2986.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 19:56:00.8931
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: alec.r.brown@oracle.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1001MB2396
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10142 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ spamscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110190114
+X-Proofpoint-GUID: etKxljiA5g1qGrbHSJYzOMBhTxHuyrIR
+X-Proofpoint-ORIG-GUID: etKxljiA5g1qGrbHSJYzOMBhTxHuyrIR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/2021 11:41 AM, James Morris wrote:
-> On Tue, 19 Oct 2021, T. Williams wrote:
->
->> Fixing user memory dereference bug.
->>
->> Signed-off-by: Thelford Williams <tdwilliamsiv@gmail.com>
-> Casey, can you check the logic on this?
->
->> ---
->>   security/security.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/security/security.c b/security/security.c
->> index 9ffa9e9c5c55..7c41b5d732ab 100644
->> --- a/security/security.c
->> +++ b/security/security.c
->> @@ -1737,6 +1737,8 @@ int security_kernel_read_file(struct file *file, enum
->> kernel_read_file_id id,
->>          int ret;
->>
->>          ret = call_int_hook(kernel_read_file, 0, file, id, contents);
->> +       if (ret > 0)
->> +               return -EINVAL;
 
-Does the failing configuration include a BPF program that might be
-invoked for this hook? SELinux is the only traditional security module
-that provides a hook, and it never returns a positive value. I don't
-see a case where the proposed check makes any sense. If the problem is
-in a BPF program it should be fixed there.
+On Sun, Sep 19, 2021 at 12:53:35AM +0200, Heinrich Schuchardt wrote:
+> 
+> 
+> Am 18. September 2021 18:04:13 MESZ schrieb Alec Brown <alec.r.brown@oracle.com>:
+> >Hi everyone,
+> >
+> >I've been working on improving the specification for the firmware and bootloader
+> >log that Daniel Kiper has proposed and take into account most of the suggestions
+> >that were made in these threads [1], [2].
+> >
+> >The goal is to allow various boot components to pass logs to the running OS and
+> >then to the user space for processing and analysis. These logs should be generic
+> >enough so that it can work in multiple environments and be human readable.
+> 
+> Hello Alec,
+> 
+> in your mail it remains unclear which information you want to put into the log and why it is needed. I would prefer the motivation and content to be clarified before defining any interface structures.
+> 
+> We already the EFI_TCG2_PROTOCOL and RFC 5424 (The syslog protocol). Why do we need to start from scratch?
+> 
+> Best regards
+> 
+> Heinrich 
 
->>          if (ret)
->>                  return ret;
->>          return ima_read_file(file, id, contents);
->> -- 
->> 2.25.1
->>
->> This commit is to fix a userspace address dereference found by
->> syzkaller.
->> The crash is triggered by passing a file descriptor to an incorrectly
->> formed kernel module to finit_module.
->>
->> Kernel/module.c:4175 : Within the finit_module, info.len is set to the
->> return value from kernel_read_file_from_fd. This value is then
->> dereferenced by memcmp within module_sig_check from inside load_module.
->> The value is 0xb000000 so the kernel dereferences user memory and kernel
->> panics.
->>
->> To prevent this adding a check from within security_kernel_read_file to
->> make sure call_int_hook doesn't return an address which in the syzkaller
->> program is what causes the return value to be 0xb000000. Then the return
->> value of security_kernel_read_file is returned to kernel_read_file(also
->> in security/security.c) which returns the value to
->> kernel_read_file_from_fd (fs/kernel_read_file.c) and this returns the
->> value into err then being set to info.len causing the dereference when
->> info is passed into load_module.
->>
+Hi Heinrich,
+
+The motivation behind developing these logs was to allow TrenchBoot to be able
+to view how the platform was setup during boot. We intend for our specification
+to target the Bootloader and Firmware and collect logs from them, but not TPM
+event logs, which is what the EFI_TCG2_PROTOCOL collects. We plan on using our
+specification for the GRUB Bootloader since it will be more efficient and
+flexible to use than the syslog protocol. However, if other boot components
+want to use a different logging format, our bf_log_header allows them to do so.
+
+Alec Brown
+
+> 
+> >
+> >It has yet to be decided where to put the final version of this specification.
+> >It should be merged into an existing specification, e.g. UEFI, ACPI, Multiboot2,
+> >or be standalone, such as a part of OASIS Standards.
+> >
+> >Below is how the layout of these logs would store their data.
+> >
+> >bf_log_header:
+> >               +-------------------+
+> >u32            | version           |
+> >u32            | size              |
+> >u8[64]         | producer          |
+> >u8[64]         | log_format        |
+> >u64            | flags             |
+> >u64            | next_bflh_addr    |
+> >u64            | log_addr          |
+> >u32            | log_size          |
+> >               +-------------------+
+> >
+> >bf_log_buffer:
+> >               +-------------------+
+> >u32            | version           |
+> >u32            | size              |
+> >u8[64]         | producer          |
+> >u32            | next_msg_off      |
+> >bf_log_msg[l]  | msgs              |
+> >               +-------------------+
+> >
+> >bf_log_msg:
+> >               +-------------------+
+> >u32            | size              |
+> >u64            | ts_nsec           |
+> >u32            | level             |
+> >u32            | facility          |
+> >u32            | msg_off           |
+> >u8[n]          | type              |
+> >u8[m]          | msg               |
+> >               +-------------------+
+> >
+> >Where l is the number of msgs, n is the size of type, and m is the size of the
+> >msg.
+> >
+> >The bf_log_header structure forms a linked list. Each bf_log_header element in
+> >the linked list points to the individual log buffer and the next bf_log_header
+> >element in the linked list. The first element in the linked list points to the
+> >last boot component in the boot chain. The last element points to the starting
+> >boot component in the boot chain. The log buffers which contain the log
+> >messages are produced by the various boot components, typically from the
+> >firmware to the bootloader. The log message is stored in a log format that is
+> >compatible with the boot component that produced it.
+> >
+> >The fields in bf_log_header structure:
+> >  - version: the firmware and bootloader log header version number, 1 for now,
+> >  - size: the size of the bf_log_header to allow for backward compatibility if 
+> >    other fields are added,
+> >  - producer: the producer/firmware/bootloader/... entity, NUL terminated
+> >    string, e.g. GRUB, Coreboot; the length allows for ASCII UUID storage,
+> >  - log_format: the format used to record the log messages, NUL terminated
+> >    string, e.g. bf_log_msg, cbmem_cons, etc.; various producers may generate
+> >    logs in various formats if needed,
+> >  - flags: bit field used to store information about the log state, if bit 0 has
+> >    been set it means the log was truncated,
+> >  - next_bflh_addr: the physical address of the next bf_log_header structure,
+> >    none if zero,
+> >  - log_addr: the physical address of where the log buffer is stored,
+> >  - log_size: the total size of the log buffer.
+> >
+> >The bf_log_buffer is used to store log messages from the firmware and
+> >bootloader. This format for storing messages is called the bf log format. The
+> >bf_log_buffer contains the header information of the bf log format with the log
+> >messages being stored in an array of bf_log_msg messages.
+> >
+> >The fields in bf_log_buffer structure:
+> >  - version: the firmware and bootloader log version number, 1 for now,
+> >  - size: the total allocated space for the bf_log_buffer including the log
+> >    messages stored in msgs,
+> >  - producer: the producer/firmware/bootloader/... entity, NUL terminated
+> >    string, e.g. GRUB, Coreboot; the length allows for ASCII UUID storage; same
+> >    as the field in bf_log_header,
+> >  - next_msg_off: the byte offset from the beginning of the allocated space for
+> >    bf_log_buffer to the next byte after the last bf_log_msg in msgs,
+> >  - msgs: the array of log messages stored in the bf_log_msg structures.
+> >
+> >The fields in bf_log_msg structure:
+> >  - size: the total size of the bf_log_msg entry,
+> >  - ts_nsec: the timestamp in nanoseconds starting from 0 (zero); the producer
+> >    using this log format defines the meaning of 0,
+> >  - level: similar to the syslog meaning; used to differentiate normal log
+> >    messages from debug log messages, but the exact interpretation depends on
+> >    the producer,
+> >  - facility: similar to the syslog meaning; used to differentiate the sources
+> >    of the log messages, but the exact interpretation depends on the producer,
+> >  - msg_off: the byte offset which the msg field starts in bf_log_msg,
+> >  - type: the log message type; similar to facility but NUL terminated string
+> >    instead of integer, but the exact interpretation depends on the producer,
+> >  - msg: the log message, NUL terminated string.
+> >
+> >In bf_log_msg, the producers are free to use or ignore any of the level,
+> >facility, and type fields. If level or facility are ignored, they should be set
+> >to 0. If type is ignored, it should be set to an empty NUL terminated string.
+> >
+> >Since it doesn't seem possible to have each boot component using the same log
+> >format, we added a log_format and log_phys_addr fields to give flexibility in
+> >how logs are stored. An example of a different log format that can be used is
+> >the cbmem_console log format used by coreboot:
+> >
+> >cbmem_console:
+> >               +-------------------+
+> >u32            | size              |
+> >u32            | cursor            |
+> >u8[m]          | body              |
+> >               +-------------------+
+> >
+> >There is still the outstanding issue of how the logs will be sent to the OS. If
+> >UEFI is used, we can use config tables. If ACPI or Device Tree is used, we can
+> >use bf_log_header.next_bflh_addr to present the logs. If none of these platforms
+> >are used, it becomes a lot trickier to solve this issue.
+> >
+> >Any suggestions are much appreciated and will be taken into consideration.
+> >
+> >I will be presenting this work at the LPC System Boot and Security
+> >Micro-conference on the 22nd of September at 7:50 AM PDT (14:50 UTC). Come and
+> >join if you want to discuss the design. The schedule for the System Boot and
+> >Security Micro-conference can be found here [3].
+> >
+> >Thanks!
+> >Alec Brown
+> >
+> >[1] https://lists.gnu.org/archive/html/grub-devel/2020-11/msg00100.html
+> >[2] https://lists.gnu.org/archive/html/grub-devel/2020-12/msg00021.html
+> >[3] https://linuxplumbersconf.org/event/11/sessions/116/#20210922
