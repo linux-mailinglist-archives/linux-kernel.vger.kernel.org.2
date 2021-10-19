@@ -2,237 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6E34341FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4284341FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhJSXUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:20:31 -0400
-Received: from mail-co1nam11on2078.outbound.protection.outlook.com ([40.107.220.78]:55040
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229498AbhJSXU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:20:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NX4vcvvAc6aSC8ZWIqag0xjn6lCc6HvyYsNeew5Mfs7rW/NtLhok++44O6BGJHEmSiBO2zHzto2h6ONn651UatGCqjDGkujF7DZ3uKBH/VCKPA19a9zPdJ6+2pnYQAi/JvVjDvCu0p3tZ7zVd9MuPbE1f731hEEYZh0FZkfUJXj7hiI+nuTgaZgNtE4e5WfmHK7V23vjyn/r2xBpkhf9I4vQQ/k3/Csj9YhftrVv5bA3h4YhbCe69Tj2SOzcXg2Iz7lnH/q8VrCESWMmD6FHLufDaJ1LC61vh8FbR6i2KKMdIwx2XXpBHkm/U3edbS7naXM/LNfbfbO+gaB4V+CsAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rRSqdflQvfKcz9fBtFwfuokLOUKOP4Oh9emUSDaWSn0=;
- b=hRgbYXV3kBbWMeDsZcaaLzIiA3VCfUgP5FAiF+xB6Z93DxdEkWBMKU48Fj0WcQrUBbWhR1E5QbMZghzzLPIkOKkaE40S4j5J45nJonQOrKQdGSgw1bNEPf3iWHEUDkiLacd0veqEHDVrCb5GJ98/Bk8oltldAQftHRG6bLssuNWey3/efRRz+9mG3Bd0lkrMmTxFTKdoEzd0sVEBdLor6B/BKitXn2u05gH8Uyk/DmFTLyWbFUdfKNxVcpStACz1x4+T8Ouk1ffuAnGxrakdgk9X+bBT9hoEn4KUCYJFVkHZQYLZXfcX/E0QAs6SVcxerSwpLJWDfJLinT/g+sS4Og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rRSqdflQvfKcz9fBtFwfuokLOUKOP4Oh9emUSDaWSn0=;
- b=PAYd4j7oDXChMZIJluqBKWNAQqR4hEAqFX/SHWbObJOmxwUMg3VBqKxERZ/rQdvoaoyGHk8tKLzZH+GjidTpB+4tZ26S9XJ9Pf7Icvy+gCraLe1yiuGP1r4/OiOD22VLjfWz0TL37R8nxrrOXoUt2OOMbAQtMd4MYX0gi85OTOI=
-Authentication-Results: fujitsu.com; dkim=none (message not signed)
- header.d=none;fujitsu.com; dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by MWHPR1201MB0062.namprd12.prod.outlook.com (2603:10b6:301:54::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
- 2021 23:18:13 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::41ef:d712:79a2:30c1]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::41ef:d712:79a2:30c1%7]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 23:18:13 +0000
-From:   Babu Moger <babu.moger@amd.com>
-Subject: Re: [PATCH v2 04/23] x86/resctrl: Merge mon_capable and mon_enabled
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
+        id S229905AbhJSXVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 19:21:23 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:37710 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhJSXVW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 19:21:22 -0400
+Received: by mail-ot1-f41.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso4125224otl.4;
+        Tue, 19 Oct 2021 16:19:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5nsHnaoXk8+Eq2Xg8Mog77Q4uh/2i59CEd9nzRezXh4=;
+        b=LyvbxUU+4gHSTmekZCVLQHRGzwpBE8eR97zuyIUMHmNgm5v8VBe3Fa3w2kf6BVmkIJ
+         U9xzQYUrzVFlv6xg2R+GiZenPbJn3Oh2WjCwgGlgX0weK8SIAc+2urYfjyDn8J0DJeRq
+         eVlO5A0cwPvXKpl5h4Biowj1zHTRpQOtgz1XOmHSBsgYi+iEa95dXodxeU5U/BXwvgEb
+         OlPmN0gNZwPzaxht0400K3o/UpBHQz4OfrpFq5Xm59pqhvqRxGo0XlPOeWNcjbxvCXoG
+         LRb1p9gvSMPn+PwRPStVLhMMmcomTYaXAHy9H3++KfGbshISnNVatveE42mYAURLLlo4
+         L21w==
+X-Gm-Message-State: AOAM533N34rCrS5Qz5CBC+ytlAOP3QGkqrD2lMJ8ALYWEWD10yPlfsCl
+        Uj298giiPXnDWVKGM9yhnw==
+X-Google-Smtp-Source: ABdhPJyE3rEDlADOo0/u2ciFtKjsxe9O6w7eeSObdBN4LU3kLtPb9FiNZ8xTQxzxuLhTZrhHMjHN0w==
+X-Received: by 2002:a9d:560c:: with SMTP id e12mr330882oti.160.1634685548723;
+        Tue, 19 Oct 2021 16:19:08 -0700 (PDT)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id w141sm118375oif.20.2021.10.19.16.19.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 16:19:08 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Vince Weaver <vincent.weaver@maine.edu>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        lcherian@marvell.com, bobo.shaobowang@huawei.com,
-        tan.shaopeng@fujitsu.com
-References: <20211001160302.31189-1-james.morse@arm.com>
- <20211001160302.31189-5-james.morse@arm.com>
-Message-ID: <44ce43de-b6d9-cfbf-b991-0b7cfd819d39@amd.com>
-Date:   Tue, 19 Oct 2021 18:18:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20211001160302.31189-5-james.morse@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL0PR02CA0056.namprd02.prod.outlook.com
- (2603:10b6:207:3d::33) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH v11 0/5] arm64 userspace counter support
+Date:   Tue, 19 Oct 2021 18:19:02 -0500
+Message-Id: <20211019231907.1009567-1-robh@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: from [10.236.30.47] (165.204.77.1) by BL0PR02CA0056.namprd02.prod.outlook.com (2603:10b6:207:3d::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17 via Frontend Transport; Tue, 19 Oct 2021 23:18:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5f8dab59-014c-4a28-b2ca-08d99356b8bc
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0062:
-X-Microsoft-Antispam-PRVS: <MWHPR1201MB0062B793EBA0899A667F52BE95BD9@MWHPR1201MB0062.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Z5u9rbDv3UG2kDZ0jF9lhulQCtce8iVOzkmwyf6WKXpS4IZ6wBZPHWHVovjkisyPgZtLJGlZHw0Q7tAXDbdukjaQ2ILcHuKwtOv9WwCc72Q+h5hlTLe1v7xhDNxQo1FyNzjhtq9qvfUq6iiCVC7uy3rkLvCmUnrkbSg4IzTvBF4xbK+UImXo/Lbw8/Zf6fp64QB25sgdApNhuclw7C/NDkyVXh+tpwT21VpOyeSO7A3fPRkallVWaB+CHguzHXjRtMvej/aBw6IiZYFCRICXlNz/d++IbaDfjHJltRnRtaIcDgwYjuxNgYP2xwq8KWVpqAGb+6Z0hekv4HZ4JLNzU0T6v6NsH87f8fqCLrLH1TBREQ6PrPA8AtOLPmqJB+WCZ6uuldx6EaDwrmKccKLjeY+FeyJSQ1iGp1V6FLR0wuuxZbIUZ7GYuy8D9gA9uPBPDdm12mCaZQGQVxd6LJ03HYhVT4l5hZ5eqbN2qGJqSvk75jXaIJZszMOWBDrJBDRsdjhl1V8+68C61QazR1/w3E6ho1FroCuF9hntZrkfVCWdMwmbAy8PA4KScHogGOTYvuZNypWEq6UzaQ+2j/xmMoSKrRgkJTcSIZY+YSkEzTDTdv3mrrdYCsd/LGspt0bumpEzUhU0Ly6XBEcD/rd9iEMeqPFCLDneRxP3vRbCSOLb1ebHZfaQeeguHbrRLsq067kbnibIEPnghKIva9XrTMxiQCFqLFKywzpb39ua27R23fhESZzUNAk8uYYK6XHq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(956004)(508600001)(66556008)(2616005)(44832011)(66476007)(83380400001)(186003)(5660300002)(31686004)(66946007)(36756003)(38100700002)(16576012)(316002)(4326008)(8936002)(8676002)(53546011)(54906003)(86362001)(7416002)(31696002)(26005)(6486002)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWZoWXFPditNVzlPd1dJR3EvaGR4NHFkZHBKbE5tRDdNbEJBcE1xazFwNXpC?=
- =?utf-8?B?UHBzZjl6REp1VWpQekc5R1M4REo1S2xoZnc2VVpJOUNseXZmYkliQ1hFMHFL?=
- =?utf-8?B?SVNyTCtoR05TZ1JmenZLRjNtNjN6ODlGZDk5SHJnQ2kwdXFDWU41c1Uvai9T?=
- =?utf-8?B?aXA1NExyZkRVSHFjYllyMjkzYW43dHM2N2NKRW5CeVpQSUtUSC9mOWNkTWRm?=
- =?utf-8?B?cGlQY1FqYjI5VG9STGpObnNVSndGdzRoSXRIbEdVYmsvWmlsZ3Noa1NQNU9E?=
- =?utf-8?B?dFA3VkhrQzM4cXQ3cSsySnhyTVFDWE9wblZyMXJoeVU0Ry90YXl1RGkrT2hT?=
- =?utf-8?B?RmRkejBvWVZzRXBBTnNJZjJ1NXdac1hwTkFDaUdxWkJ4NkZvVElTUUdsck1z?=
- =?utf-8?B?Ykc4TkdHd0NkQ0NOUUJHSit6QVN3c3hkV1BXRE5jc0hDZUtXZkxma1BGalpV?=
- =?utf-8?B?eENYbW5RWTN6TkEydzlKdFZ6akRPZ1FtZ2FLZEszVis5cGl5dmxJRUxOOUt4?=
- =?utf-8?B?bUp5MXlpRzgxNmdXd0taSGNZMEFrbnU2Y1pGRW5OcTZ2OWlIMVloRjdQeCtX?=
- =?utf-8?B?VlBKa3JFUTFiRURtdmRKVW1TaHZDa1NFV1pLb0w0ZjhoSEpCblBBUUFxK2pI?=
- =?utf-8?B?MWV1b1paSXRtenZOeHVrYUZpVWpPRWpNK2VtLzRTMFJZUFZMV211SDhuMjZw?=
- =?utf-8?B?UGFXZUVCTU94b3g2U3ZBYUJsMTlqcHV4a3ROSXc0UURSM3FLNExnazB2bXZP?=
- =?utf-8?B?amQ1Yk1XQVEzbEdmWXFZL3F4RmxpUjkzdVhoREtNZzN2ZWltRVVzKys4SXpw?=
- =?utf-8?B?NEdzTnhTbEVsQmE0NisxZzhDN2psRFNCOStRQldrYlMyWno4R2E5cVI2VE9k?=
- =?utf-8?B?ZmRGV2hDbTVjZHdOQVpENGZXYkFrc0VyQmRWTndXSzVQeDZwRmMrS0Zid045?=
- =?utf-8?B?WmxwUTBxOVI1dUdSalB5TzVtSXFIMXRKbXhNamZWN21DRUxmVXFWZDdncjFE?=
- =?utf-8?B?US9FejhsOWRFSkF2R2hrYitKdWtoQTl6aFROZnNrRll2bWp1SzhHMFloNXZq?=
- =?utf-8?B?OXg3dXFPcDN0VzJyb2xuR0pLcStDTHF0S2Zoc0lRS0Z5YkhTNXBsZGtkN3pX?=
- =?utf-8?B?ZU5MUFgrajNMWTVEd0FGQ241dExmdWh6MUMyQ1J4WkVtbFF5Z2x4bGxmcHpz?=
- =?utf-8?B?WTZzZXBJVGpUYjU3YVBWSEErNXFndjVucUg4TVAwZmJqV2I3Q1VQaTVMYWw0?=
- =?utf-8?B?WnpLbGxBSWZFVEI2U2p3MmU3bzVQNHpHTmcvUGM3Y0VESmVaYnYwbEFCcG9Q?=
- =?utf-8?B?QjM2dllwTnNZWnFwUjBXLzlxL3VIWnJ5UlRyaGpIQ2VWaDVWellidEozdzFo?=
- =?utf-8?B?NG0xT3BSMG1qN0EvNzBkUmNxamxhK21DZ2Z3NFl6Z2g1NzN2RTNFZW5xemtk?=
- =?utf-8?B?TVVGRy9EOFNoWWJydklvQVo4YUc0bEk5amVpbklRMjduQ1lSeFUxcWFyU3BR?=
- =?utf-8?B?M05Kd3VBTnQ4V1N4K291OHdvNjNJNnZIUmVLV0Y1ZHRHVTlDNTRXbTB6cU1P?=
- =?utf-8?B?NjNoZkJ4MVlqakNzaC9tanh0VllGbm12QWlYcnpaOUFEWEhMZENJaWJlUU1k?=
- =?utf-8?B?aTlxcjJObDV0ZXBUM1U5QkpmRnFmaWo5RmpSYS9KNnNzcUtTTWJNcnJEL0Y1?=
- =?utf-8?B?QWNCZjJtOVExZlo0WG5tUjNZVnNSVVM1WFdPZGVZNkJ0UHl3Ui8zR1hvRGJa?=
- =?utf-8?Q?9baqcoGZdCoF9DEMYrjNReqoAGLSlaoZdCh6sXb?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f8dab59-014c-4a28-b2ca-08d99356b8bc
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 23:18:12.8059
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bmoger@amd.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0062
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Another version of arm64 userspace counter access support.
 
-On 10/1/21 11:02 AM, James Morse wrote:
-> mon_enabled and mon_capable are always set as a pair by
-> rdt_get_mon_l3_config().
-> 
-> There is no point having two values.
-> 
-> Merge them together.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
-> Changes since v1:
->  * Removed stray cdp_capable changes.
-> ---
->  arch/x86/kernel/cpu/resctrl/internal.h | 4 ----
->  arch/x86/kernel/cpu/resctrl/monitor.c  | 1 -
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 8 ++++----
->  include/linux/resctrl.h                | 2 --
->  4 files changed, 4 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 53f3d275a98f..8828b5c1b6d2 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -459,10 +459,6 @@ int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable);
->  	for_each_rdt_resource(r)					      \
->  		if (r->mon_capable)
->  
-> -#define for_each_mon_enabled_rdt_resource(r)				      \
-> -	for_each_rdt_resource(r)					      \
-> -		if (r->mon_enabled)
-> -
->  /* CPUID.(EAX=10H, ECX=ResID=1).EAX */
->  union cpuid_0x10_1_eax {
->  	struct {
-> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-> index c9f0f3d63f75..37af1790337f 100644
-> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -717,7 +717,6 @@ int rdt_get_mon_l3_config(struct rdt_resource *r)
->  	l3_mon_evt_init(r);
->  
->  	r->mon_capable = true;
-> -	r->mon_enabled = true;
->  
->  	return 0;
->  }
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index e327f8d1c8a3..e243c7d15b81 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -1765,7 +1765,7 @@ static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
->  			goto out_destroy;
->  	}
->  
-> -	for_each_mon_enabled_rdt_resource(r) {
-> +	for_each_mon_capable_rdt_resource(r) {
->  		fflags =  r->fflags | RF_MON_INFO;
->  		sprintf(name, "%s_MON", r->name);
->  		ret = rdtgroup_mkdir_info_resdir(r, name, fflags);
-> @@ -2504,7 +2504,7 @@ void rmdir_mondata_subdir_allrdtgrp(struct rdt_resource *r, unsigned int dom_id)
->  	struct rdtgroup *prgrp, *crgrp;
->  	char name[32];
->  
-> -	if (!r->mon_enabled)
-> +	if (!r->mon_capable)
->  		return;
->  
->  	list_for_each_entry(prgrp, &rdt_all_groups, rdtgroup_list) {
-> @@ -2572,7 +2572,7 @@ void mkdir_mondata_subdir_allrdtgrp(struct rdt_resource *r,
->  	struct rdtgroup *prgrp, *crgrp;
->  	struct list_head *head;
->  
-> -	if (!r->mon_enabled)
-> +	if (!r->mon_capable)
->  		return;
->  
->  	list_for_each_entry(prgrp, &rdt_all_groups, rdtgroup_list) {
-> @@ -2642,7 +2642,7 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
->  	 * Create the subdirectories for each domain. Note that all events
->  	 * in a domain like L3 are grouped into a resource whose domain is L3
->  	 */
-> -	for_each_mon_enabled_rdt_resource(r) {
-> +	for_each_mon_capable_rdt_resource(r) {
->  		ret = mkdir_mondata_subdir_alldom(kn, r, prgrp);
->  		if (ret)
->  			goto out_destroy;
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 386ab3a41500..8180c539800d 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -130,7 +130,6 @@ struct resctrl_schema;
->  /**
->   * struct rdt_resource - attributes of a resctrl resource
->   * @rid:		The index of the resource
-> - * @mon_enabled:	Is monitoring enabled for this feature
->   * @alloc_capable:	Is allocation available on this machine
->   * @mon_capable:	Is monitor feature available on this machine
->   * @num_rmid:		Number of RMIDs available
-> @@ -149,7 +148,6 @@ struct resctrl_schema;
->   */
->  struct rdt_resource {
->  	int			rid;
-> -	bool			mon_enabled;
->  	bool			alloc_capable;
->  	bool			mon_capable;
+The arm64 support departs from the x86 implementation by requiring the user
+to explicitly request user access (via attr.config1) and only enables access
+for task bound events. Since usage is explicitly requested, access is
+enabled at perf_event_open() rather than on mmap() as that greatly
+simplifies the implementation. Rather than trying to lock down the access
+as the x86 implementation has been doing, we can start with only a limited
+use case enabled and later expand it if needed.
 
-Also we should probably rename alloc_capable and mon_capable to
-alloc_supported and mon_supported respectively. We dont have an option to
-enable and disable these feature. If it is supported, it is always supported.
+I've run this version thru Vince's perf tests[13] with arm64 support added.
+I wish I'd found these tests sooner...
 
-Thanks
-Babu
+This originally resurrected Raphael's series[1] to enable userspace counter
+access on arm64. My previous versions are here[2][3][4][5][6][7][8][9][10][11].
+A git branch is here[12].
+
+Changes in v11:
+ - User request for 64-bit counters and userspace access will fail on
+   open if h/w doesn't support 64-bit counters instead of reporting the
+   maximum counter size. The open will also fail if not a task bound
+   event.
+
+Changes in v10:
+ - Drop changing event_mapped/event_unmapped ops to run on the event's
+   current CPU. This won't work for x86 where any thread sharing an mm
+   context will have rdpmc enabled. Instead, simply track user access
+   events when added to a perf context and use that count.
+ - Documentation for the sysctl disable
+
+Changes in v9:
+ - Reworked x86 and perf core to handle user access tracking and call
+   .event_mapped() and .event_unmapped() on the CPU with the event like
+   other changes to events.
+ - Use sysctl instead of sysfs to disable user access.
+
+Changes in v8:
+ - Restrict user access to thread bound events which simplifies the
+   implementation. A couple of perf core changes (patches 1 and 2) are
+   needed to do this.
+ - Always require the user to request userspace access.
+
+Changes in v7:
+ - Handling of dirty counter leakage and reworking of context switch and
+   user access enabling. The .sched_task hook and undef instruction handler
+   are now utilized. (Patch 3)
+ - Add a userspace disable switch like x86. (Patch 5)
+
+Changes in v6:
+ - Reworking of the handling of 64-bit counters and user access. There's
+   a new config1 flag to request user access. This takes priority over
+   the 64-bit flag and the user will get the maximum size the h/w
+   supports without chaining.
+ - The libperf evsel mmap struct is stored in its own xyarray
+ - New tests for user 64-bit and 32-bit counters
+ - Rebase to v5.12-rc2
+
+Changes in v5:
+ - Limit enabling/disabling access to CPUs associated with the PMU
+   (supported_cpus) and with the mm_struct matching current->active_mm.
+   The x86 method of using mm_cpumask doesn't work for arm64 as it is not
+   updated.
+ - Only set cap_user_rdpmc if event is on current cpu. See patch 2.
+ - Create an mmap for every event in an evsel. This results in some changes
+   to the libperf mmap API from the last version.
+ - Rebase to v5.11-rc2
+
+Changes in v4:
+ - Dropped 'arm64: pmu: Add hook to handle pmu-related undefined instructions'.
+   The onus is on userspace to pin itself to a homogeneous subset of CPUs
+   and avoid any aborts on heterogeneous systems, so the hook is not needed.
+ - Make perf_evsel__mmap() take pages rather than bytes for size
+ - Fix building arm64 heterogeneous test.
+
+Changes in v3:
+ - Dropped removing x86 rdpmc test until libperf tests can run via 'perf test'
+ - Added verbose prints for tests
+ - Split adding perf_evsel__mmap() to separate patch
+
+The following changes to the arm64 support have been made compared to
+Raphael's last version:
+
+The major change is support for heterogeneous systems with some
+restrictions. Specifically, userspace must pin itself to like CPUs, open
+a specific PMU by type, and use h/w specific events. The tests have been
+reworked to demonstrate this.
+
+Chained events are not supported. The problem with supporting chained
+events was there's no way to distinguish between a chained event and a
+native 64-bit counter. We could add some flag, but do self monitoring
+processes really need that? Native 64-bit counters are supported if the
+PMU h/w has support. As there's already an explicit ABI to request 64-bit
+counters, userspace can request 64-bit counters and if user
+access is not enabled, then it must retry with 32-bit counters.
+
+Prior versions broke the build on arm32 (surprisingly never caught by
+0-day). As a result, event_mapped and event_unmapped implementations have
+been moved into the arm64 code.
+
+There was a bug in that pmc_width was not set in the user page. The tests
+now check for this.
+
+The documentation has been converted to rST. I've added sections on
+chained events and heterogeneous.
+
+Rob
+
+[1] https://lore.kernel.org/r/20190822144220.27860-1-raphael.gault@arm.com/
+[2] https://lore.kernel.org/r/20200707205333.624938-1-robh@kernel.org/
+[3] https://lore.kernel.org/r/20200828205614.3391252-1-robh@kernel.org/
+[4] https://lore.kernel.org/r/20200911215118.2887710-1-robh@kernel.org/
+[5] https://lore.kernel.org/r/20201001140116.651970-1-robh@kernel.org/
+[6] https://lore.kernel.org/r/20210114020605.3943992-1-robh@kernel.org/
+[7] https://lore.kernel.org/r/20210311000837.3630499-1-robh@kernel.org/
+[8] https://lore.kernel.org/r/20210420031511.2348977-1-robh@kernel.org/
+[9] https://lore.kernel.org/r/20210517195405.3079458-1-robh@kernel.org/
+[10] https://lore.kernel.org/all/20210806225123.1958497-1-robh@kernel.org/
+[11] https://lore.kernel.org/all/20210914204800.3945732-1-robh@kernel.org/
+[12] git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git arm64-user-perf-event-v11
+[13] https://github.com/deater/perf_event_tests
+
+
+Raphael Gault (1):
+  Documentation: arm64: Document PMU counters access from userspace
+
+Rob Herring (4):
+  x86: perf: Move RDPMC event flag to a common definition
+  perf: Add a counter for number of user access events in context
+  arm64: perf: Add userspace counter access disable switch
+  arm64: perf: Enable PMU counter userspace access for perf event
+
+ Documentation/admin-guide/sysctl/kernel.rst |  11 ++
+ Documentation/arm64/perf.rst                |  75 ++++++++++-
+ arch/arm64/kernel/perf_event.c              | 132 +++++++++++++++++++-
+ arch/x86/events/core.c                      |  10 +-
+ arch/x86/events/perf_event.h                |   2 +-
+ include/linux/perf_event.h                  |  10 ++
+ kernel/events/core.c                        |   4 +
+ 7 files changed, 231 insertions(+), 13 deletions(-)
+
+-- 
+2.32.0
+
