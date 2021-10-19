@@ -2,86 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6462C433FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCE4433FD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhJSU3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 16:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        id S233421AbhJSUhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 16:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbhJSU3u (ORCPT
+        with ESMTP id S230147AbhJSUhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 16:29:50 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98985C06161C;
-        Tue, 19 Oct 2021 13:27:37 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id z126so6740303oiz.12;
-        Tue, 19 Oct 2021 13:27:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4gJiVod5N6BKX4OnC8ZdSE4FkABW/4VZ+M2Dy1zOycM=;
-        b=a0mPQCw0ehQeCBC8qbGogm54/Tb9aF1N9pRZqzOKLDRjzkgXUKz37hAV4Tsw/eAmR8
-         gMwA+LHqKRS9pSIetXJb+eXzTxMKyHyjg223E8ZTraBID35ua5UFHV+mDZQkqD5QcWyx
-         7DxFSaZooili18tu+Zil3VGHBxk5+351u8K9+GK8VliGoe77XQIuO3cwsL59st44Clam
-         G3ELX7Zcslds9kLhr3a4UlELy5DCpFNQs2Vwi8/RjVZwRISsflM6mmyvUPzAzd8NmKfE
-         jhEKNB7ckkwiqX/HR9RfRws/kGWiWVbXKVSZtHWTLDtDfz+KYnz97toCHH+sX4QC9Ugy
-         bNDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=4gJiVod5N6BKX4OnC8ZdSE4FkABW/4VZ+M2Dy1zOycM=;
-        b=ZVoDi/Ux7wNxMG+TLifRv66rrwZQYX7ayH/OQserL42f2ijkvZUj6G3WrB+9WKT/qa
-         U19llVomr/kJ9Nl26UkntvCgcsNiLl6eBnvhL7QtS+ZOqVRHTdk3yle1oyY/EEag+WVJ
-         TsuCRw9A1mOPG/9qak4/pzyXftTUKq94rKW79fHmXDUR6hOJgrQ9DiPHRN+oTqLXT0Hk
-         Eu7N53tQP126XkQbhkG95jAp7rZbsxY3uF6QGUSZdzsO/k8PoMveKptXgJGwrn8NLp1v
-         vPWG1EdmIvkyvvYrWMxW0iv6+TyZh6x2gOdBS1hJWOtWJ6AWkhBJ0Kj/MNyM5ao0AsDy
-         807w==
-X-Gm-Message-State: AOAM531IvOLPYNYsULY7xpGHDcOc6YKmY6tOOQZx6BvZmFSU78uXHoYi
-        BtcIiNcdEzXa83CFybgMlKf7zUPBeLI=
-X-Google-Smtp-Source: ABdhPJxoG0XcLYlnx7GD3uM6JjwUmuk/NN/ZCJ05vEsfrblu44uZ/SgPs22fxvF8wj3cepKY9iM7gw==
-X-Received: by 2002:aca:ac0b:: with SMTP id v11mr5962742oie.155.1634675257077;
-        Tue, 19 Oct 2021 13:27:37 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u15sm34867oon.35.2021.10.19.13.27.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 13:27:36 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 19 Oct 2021 13:27:35 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc2 review
-Message-ID: <20211019202735.GE748554@roeck-us.net>
-References: <20211019061402.629202866@linuxfoundation.org>
+        Tue, 19 Oct 2021 16:37:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FBCC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 13:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jQk7zjHB0gPoX00cDocKNrAvGgoKnQS6YZIN9q19mQU=; b=Kc3bNV+r3pphi8bq2HNYdy5jYA
+        3bppYx5YRml80T6wJb2fzwechqqOpsEIPJWku3v7aJtZ1Dy1DS3bAWoJJnqzGZYR2NRdNIG6yM9eK
+        uCM8QcZV2OfAzeF0he5wvZ07ClTDSBMnLmGBTNQl4hVltqvARN1cZuBQzh+EDrR4svFDMz6GsJ4Zv
+        KbOVJ9PW0CEv5VRmB63ZP3b1vUykECddU2BjZ5O4mBXu41KWMchLuSMwDUmU/KrQBYr4Lr3Kzr3yY
+        1NjhCJFlO/p6hxyOKKvAFX+c939PuV90lX65xYOXDRckYTa2kl2UntzZIZSL6/ic9aP4G3qpnA10Z
+        01ifadcg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcvi2-00BzTi-Js; Tue, 19 Oct 2021 20:28:05 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B0E56986DD9; Tue, 19 Oct 2021 22:27:41 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 22:27:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     syzbot <syzbot+d5b23b18d2f4feae8a67@syzkaller.appspotmail.com>,
+        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        gor@linux.ibm.com, jgross@suse.com, juri.lelli@redhat.com,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@kernel.org,
+        mingo@redhat.com, namit@vmware.com, rdunlap@infradead.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        vincent.guittot@linaro.org
+Subject: Re: [syzbot] possible deadlock in wake_up_all_idle_cpus
+Message-ID: <20211019202741.GN174703@worktop.programming.kicks-ass.net>
+References: <000000000000cf252605ce67014a@google.com>
+ <00000000000041567305ce80b8af@google.com>
+ <20211019190811.ubam63tfv33c7lmx@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019061402.629202866@linuxfoundation.org>
+In-Reply-To: <20211019190811.ubam63tfv33c7lmx@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 08:28:35AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.14 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 21 Oct 2021 06:13:39 +0000.
-> Anything received after that time might be too late.
-> 
+On Tue, Oct 19, 2021 at 09:08:11PM +0200, Sebastian Andrzej Siewior wrote:
+> Does this do anything useful?
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+I've got https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=sched/core&id=3dfddc2f0f76525218dd2d0c8725d9f21dd411e2
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+There's like 3 or 4 threads on this :/ I just got a tested-by on that.
