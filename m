@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F224D43395B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0513843395E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhJSO7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:59:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47403 "EHLO
+        id S231890AbhJSO7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:59:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37865 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229702AbhJSO7Q (ORCPT
+        by vger.kernel.org with ESMTP id S231226AbhJSO7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:59:16 -0400
+        Tue, 19 Oct 2021 10:59:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634655423;
+        s=mimecast20190719; t=1634655437;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S+NrsU0gaObw7QSCSHFIz2Urcvc9T1qjARe37K5Lbog=;
-        b=bi5Kl/kGi0pOjVbP70ZfKuQf2l0jCVvyeW+uRYo4KC51TkBqwnDn3Lf4fPGk7lncUOwAh9
-        p5ka6PYd/1Xgat6B26QNtyGoEj6Uo/cxS2fZk2p194QxUiUB8JXZFjKuv+8E+VV+Szi+Ai
-        TOWWCTNvPMNDVSzX20Y4BDPDn4MoC4k=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-7sRdj4iZOciX69ALArtn_g-1; Tue, 19 Oct 2021 10:57:02 -0400
-X-MC-Unique: 7sRdj4iZOciX69ALArtn_g-1
-Received: by mail-ed1-f70.google.com with SMTP id r25-20020a05640216d900b003dca3501ab4so1416070edx.15
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:57:01 -0700 (PDT)
+        bh=jVtJ+jWtoyifMEkXi2ijdTEVKJmm5rBLCAV/XYMHwdQ=;
+        b=IgzpJ/qFRYMN5/XYQudUsAj+wO38P7PsduyVPR64PSSsvhk7iOqXB/l/2774stiJsRtv7h
+        +l+u3XTKEZj+ASzWeKR3e68O2UDYL+b94UM2qhlLN3f2cc3B3TZXVu5SbZeEVmvsGijZ+R
+        u3OgKj3ftAVFZJrwl9UWL7sD9QHAUNw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-76-fDzYEZJ9NaaO4oLF23Mkfw-1; Tue, 19 Oct 2021 10:57:16 -0400
+X-MC-Unique: fDzYEZJ9NaaO4oLF23Mkfw-1
+Received: by mail-ed1-f69.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso157291edj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:57:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=S+NrsU0gaObw7QSCSHFIz2Urcvc9T1qjARe37K5Lbog=;
-        b=5bFjkCTyyxe63h4ApBJ56/QWYPPYvLgTIPXsY8ef6XdgL31zp3d9+n3h/nNPRzzOrn
-         qWVuuvT3WA+TokoarowgZq3R2cTmNsP7CjL9s169MIuiLdBsk9iHvIKqbKXi4zxWZoRs
-         YwBvToLcRWBQTQBGRrKMSuGUHabhcI0PKkWbQ/c5bEM16lcTOklyLi4opBFb5U4AVmEh
-         UXEXl9pn9OUjki1s3mZgD6itkWMVWxnRRZ5PUZn5sIENXSvbNE0ZREJaXCyZHiIyNTyK
-         t5G97RM6zh2bLnVLEgEFenWWBlfjBkaay/cZ/SSIzqq9O05tjIX56zTPIZhPn/uAHqG3
-         z9ZQ==
-X-Gm-Message-State: AOAM530CJmlYYSRiVHfDxx5Rl/rgsuZEdwXCYhpRr70+hedJ6fkoyJ7z
-        jc9i8NR9FLJf8ixspjaJafYxX8B4jgwAiQQHBMTITbH51F6Lzf0gxrzjcqV09OaYENsr+aA9wjb
-        dDkJC4ptXHTwRIVnjXeQsBaGk
-X-Received: by 2002:a50:da45:: with SMTP id a5mr25578155edk.306.1634655420733;
-        Tue, 19 Oct 2021 07:57:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzeI9lj1WH/w8Z2UVplul9Gb/rlnFrrof54n/CAJhnpMgWy208Hhp1lEF6v4i09Zs6SIOfjbA==
-X-Received: by 2002:a50:da45:: with SMTP id a5mr25578125edk.306.1634655420533;
-        Tue, 19 Oct 2021 07:57:00 -0700 (PDT)
+        bh=jVtJ+jWtoyifMEkXi2ijdTEVKJmm5rBLCAV/XYMHwdQ=;
+        b=KXegtKnkI10aiCm+ByoLQfU6hFlyOeWKInWMesrfnSojea+ZIX7zt2HdDP4lAb84kB
+         RFEfC/NRnfGC7VbZlmDhLjPFe/A+W2MqLof4+YIaIpaeTwcNExC9jy0HIYZlAlOMXf09
+         eqnAvzk9hsIFQChOzZF2K9ZrkJs2mazuQ8e5KBJSKP0jjQiHseFllc+qp0Ucd3Z0AFXC
+         lgK4/IXyJfhRzwbQsMp385Xw2PHpKGqcuo45zXW5shcTfi0OEcOiM8Y8rWqknW+PyA0L
+         9QlAuyAjzqItIAyqCPX6YZkfrCvxLASC7DMfhf8b3hq8W45wNsdYELrmSQROt+Dsuiai
+         E/rA==
+X-Gm-Message-State: AOAM533tYw27+mXsUZ6Qp2lJBiDbCnr8OeySfFtSH3zRhqkItJMw4OuC
+        /2RLUIxTf5ILPxQsHYYy8ceMAI7Y4x6h+HgU0rpl5lWYJNCIzdLH7ZTyRmj0x4FP0VwcfZEfeII
+        cEF4OOi/KUJ7e+dfnROYOAElO
+X-Received: by 2002:a05:6402:c11:: with SMTP id co17mr12026208edb.36.1634655434885;
+        Tue, 19 Oct 2021 07:57:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRGGeys2qHXAWbVnVawsUZF5Og/F7GAcshOuREMS9vGiX8Rvt69GA/Z2U4kPt/F/iRFH87BA==
+X-Received: by 2002:a05:6402:c11:: with SMTP id co17mr12026181edb.36.1634655434753;
+        Tue, 19 Oct 2021 07:57:14 -0700 (PDT)
 Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id z4sm10406983ejw.46.2021.10.19.07.56.59
+        by smtp.gmail.com with ESMTPSA id z4sm10407243ejw.46.2021.10.19.07.57.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 07:57:00 -0700 (PDT)
-Message-ID: <9878301f-0080-7063-8a34-926b2d63524d@redhat.com>
-Date:   Tue, 19 Oct 2021 16:56:59 +0200
+        Tue, 19 Oct 2021 07:57:14 -0700 (PDT)
+Message-ID: <5f767384-a458-3b8f-6111-45e09b77af41@redhat.com>
+Date:   Tue, 19 Oct 2021 16:57:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.0
-Subject: Re: [PATCH v3 5/7] surface: surface3_power: Drop redundant
- acpi_bus_get_device() call
+Subject: Re: [PATCH v2 6/7] platform: x86: ideapad-laptop: Use
+ ACPI_COMPANION() directly
 Content-Language: en-US
 To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>
+        Linux ACPI <linux-acpi@vger.kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
+        Ike Panhc <ike.pan@canonical.com>,
         platform-driver-x86@vger.kernel.org
-References: <4369779.LvFx2qVVIh@kreacher> <3089655.5fSG56mABF@kreacher>
- <2503491.Lt9SDvczpP@kreacher> <3160001.aeNJFYEL58@kreacher>
+References: <4369779.LvFx2qVVIh@kreacher> <1727796.VLH7GnMWUR@kreacher>
+ <8000884.T7Z3S40VBb@kreacher>
 From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <3160001.aeNJFYEL58@kreacher>
+In-Reply-To: <8000884.T7Z3S40VBb@kreacher>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -78,21 +77,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 10/13/21 18:12, Rafael J. Wysocki wrote:
+On 10/13/21 18:13, Rafael J. Wysocki wrote:
 > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> If the ACPI companion of a given device is not present, the result
-> of the ACPI_HANDLE() evaluation for it will be NULL, so calling
-> acpi_bus_get_device() on ACPI_HANDLE() result in order to validate
-> it is redundant.
+> The ACPI_HANDLE() macro is a wrapper arond the ACPI_COMPANION()
+> macro and the ACPI handle produced by the former comes from the
+> ACPI device object produced by the latter, so it is way more
+> straightforward to evaluate the latter directly instead of passing
+> the handle produced by the former to acpi_bus_get_device().
 > 
-> Drop the redundant acpi_bus_get_device() call from mshw0011_notify()
-> along with a local variable related to it.
-> 
-> No intentional functional impact.
+> Modify ideapad_acpi_add() accordingly (no intentional functional
+> impact).
 > 
 > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
 
 Thank you for your patch, I've applied this patch to my review-hans 
 branch:
@@ -113,32 +110,37 @@ Hans
 
 > ---
 > 
-> v2 -> v3:
->    * Resend with a different From and S-o-b address and with R-by from
->      Maximilian.  No other changes.
+> v1 -> v2:
+>    * Resend with a different From and S-o-b address.  No other changes.
 > 
 > ---
->  drivers/platform/surface/surface3_power.c |    3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/platform/x86/ideapad-laptop.c |    8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> Index: linux-pm/drivers/platform/surface/surface3_power.c
+> Index: linux-pm/drivers/platform/x86/ideapad-laptop.c
 > ===================================================================
-> --- linux-pm.orig/drivers/platform/surface/surface3_power.c
-> +++ linux-pm/drivers/platform/surface/surface3_power.c
-> @@ -159,12 +159,11 @@ mshw0011_notify(struct mshw0011_data *cd
->  		unsigned int *ret_value)
->  {
->  	union acpi_object *obj;
-> -	struct acpi_device *adev;
->  	acpi_handle handle;
->  	unsigned int i;
+> --- linux-pm.orig/drivers/platform/x86/ideapad-laptop.c
+> +++ linux-pm/drivers/platform/x86/ideapad-laptop.c
+> @@ -1534,17 +1534,13 @@ static void ideapad_check_features(struc
 >  
->  	handle = ACPI_HANDLE(&cdata->adp1->dev);
-> -	if (!handle || acpi_bus_get_device(handle, &adev))
-> +	if (!handle)
+>  static int ideapad_acpi_add(struct platform_device *pdev)
+>  {
+> +	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
+>  	struct ideapad_private *priv;
+> -	struct acpi_device *adev;
+>  	acpi_status status;
+>  	unsigned long cfg;
+>  	int err, i;
+>  
+> -	err = acpi_bus_get_device(ACPI_HANDLE(&pdev->dev), &adev);
+> -	if (err)
+> -		return -ENODEV;
+> -
+> -	if (eval_int(adev->handle, "_CFG", &cfg))
+> +	if (!adev || eval_int(adev->handle, "_CFG", &cfg))
 >  		return -ENODEV;
 >  
->  	obj = acpi_evaluate_dsm_typed(handle, &mshw0011_guid, arg1, arg2, NULL,
+>  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
 > 
 > 
 > 
