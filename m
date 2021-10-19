@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B004339A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC20E43399A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhJSPF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:05:29 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:53993 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229803AbhJSPF1 (ORCPT
+        id S233276AbhJSPE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232972AbhJSPEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:05:27 -0400
-Received: from [77.244.183.192] (port=62116 helo=melee.fritz.box)
-        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mcqe1-00D5qd-09; Tue, 19 Oct 2021 17:03:13 +0200
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2 9/9] rtc: max77686: add MAX77714 support
-Date:   Tue, 19 Oct 2021 16:59:19 +0200
-Message-Id: <20211019145919.7327-10-luca@lucaceresoli.net>
+        Tue, 19 Oct 2021 11:04:24 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2332C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:02:11 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id l38-20020a05600c1d2600b0030d80c3667aso3374519wms.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dMWZFxsiTx6gl0CFXfVaEgeXD66O9+HqBjAcLlM0fSM=;
+        b=acSWg3P0WlR9gGIFl8bI5XZCiLAIe1j7mzf/xPqyZdvdnRqHgq+728of8crHDZ8odS
+         996pzI/SVJVILPAKXFSLBB233+0imtXP8GVjiCzVeMelJPd1ffk32/d2YTxBGJ8v6qKP
+         tVkBERIVuN4Zdk/UHvUl3xZc0BCWwlNhrrhVM9DHSqOHmrYNz7bftnDt+cqxiWjPtXGj
+         AAf4gWtQPLrL4pT44GrEMJRztQIQCd6bu6A6nGQIU5IqRQepj9Lgb8AvO0OEpR+Hdwxf
+         gagasKdUMWWeRBRSYbVhWP35FAUVB8XZJ3xT9XBGwnlo9qfAGIa/kk9BJKV8eLD28fHo
+         ZZ1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dMWZFxsiTx6gl0CFXfVaEgeXD66O9+HqBjAcLlM0fSM=;
+        b=jWDhcqC7pmOJk+Iujl7TLkVfdVcAXPcV0Er/DurO7Ce2oIFeicg6duwPUv83zKrqqQ
+         V5BWU9tiWm8nZd9zI1Ra7rhAMeeul0rRUS1iy4x2h1Ay5HW80h3mxhItgcRENdagjQXW
+         VOVhO3YqjsUJwvZ9epbx6RLl36fZtlX5+/I1cLcllL35J+JYjhTegyqjwrnFuP3exIyR
+         DOjbDbHDVQLVMpzH5GpfHGPlmdQIOj//mdQOWBdBxiBYf+HSNJ4ReC4eqpe4OQ5aB1Qd
+         NEOwLhqQFLDM3e64glCJmSXL01XvQQtqsoBEyy/e6Mkb5ARDRYP4XFEtp4Q0r4We0C+m
+         PH+g==
+X-Gm-Message-State: AOAM533hnAzbg2Gru09d0/3MGWmDu6ojYDkt0lN3NznkIoJZRq6F/A2Y
+        1uz8TRtImuWdG86JXZuJKEQr8Q==
+X-Google-Smtp-Source: ABdhPJwq2se/IZq7vwCsjff2ocsLBElQMnXuRFP4NIAw/yx8C6NoD3rOvuqQYGO1cYNEKH5kkWFJvA==
+X-Received: by 2002:a05:600c:4f81:: with SMTP id n1mr6631340wmq.63.1634655730221;
+        Tue, 19 Oct 2021 08:02:10 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e34:ed2f:f020:4799:198d:b6ef:8da7])
+        by smtp.gmail.com with ESMTPSA id h11sm14581468wrz.5.2021.10.19.08.02.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 08:02:09 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org, rjw@rjwysocki.net
+Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Subject: [PATCH v2 1/2] thermal/core: Make the userspace governor deprecated
+Date:   Tue, 19 Oct 2021 17:02:02 +0200
+Message-Id: <20211019150203.2805738-1-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019145919.7327-1-luca@lucaceresoli.net>
-References: <20211019145919.7327-1-luca@lucaceresoli.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RTC included in the MAX77714 PMIC is very similar to the one in the
-MAX77686. Reuse the rtc-max77686.c driver with the minimum required changes
-for the MAX77714 RTC.
+The userspace governor is sending temperature when polling is active
+and trip point crossed events. Nothing else.
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+AFAICT, this governor is used with custom kernels making the userspace
+governor co-existing with another governor on the same thermal zone
+because there was no notification mechanism, implying a hack in the
+framework to support this configuration.
 
+The new netlink thermal notification is able to provide more
+information than the userspace governor and give the opportunity to
+the users of this governor to replace it by a dedicated notification
+framework.
+
+The userspace governor will be removed as its usage is no longer
+needed.
+
+Add a warning message to tell the userspace governor is deprecated.
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
+ drivers/thermal/gov_user_space.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Changes in v2: none
----
- drivers/rtc/Kconfig        |  2 +-
- drivers/rtc/rtc-max77686.c | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index e1bc5214494e..a73591ad292b 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -375,7 +375,7 @@ config RTC_DRV_MAX8997
+diff --git a/drivers/thermal/gov_user_space.c b/drivers/thermal/gov_user_space.c
+index 82a7198bbe71..f4fe050e1cbc 100644
+--- a/drivers/thermal/gov_user_space.c
++++ b/drivers/thermal/gov_user_space.c
+@@ -15,6 +15,14 @@
  
- config RTC_DRV_MAX77686
- 	tristate "Maxim MAX77686"
--	depends on MFD_MAX77686 || MFD_MAX77620 || COMPILE_TEST
-+	depends on MFD_MAX77686 || MFD_MAX77620 || MFD_MAX77714 || COMPILE_TEST
- 	help
- 	  If you say yes here you will get support for the
- 	  RTC of Maxim MAX77686/MAX77620/MAX77802 PMIC.
-diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
-index 5c64d08c0732..b0250d91fb00 100644
---- a/drivers/rtc/rtc-max77686.c
-+++ b/drivers/rtc/rtc-max77686.c
-@@ -19,6 +19,7 @@
+ #include "thermal_core.h"
  
- #define MAX77686_I2C_ADDR_RTC		(0x0C >> 1)
- #define MAX77620_I2C_ADDR_RTC		0x68
-+#define MAX77714_I2C_ADDR_RTC		0x48
- #define MAX77686_INVALID_I2C_ADDR	(-1)
- 
- /* Define non existing register */
-@@ -200,6 +201,28 @@ static const struct max77686_rtc_driver_data max77686_drv_data = {
- 	.regmap_config = &max77686_rtc_regmap_config,
- };
- 
-+static const struct regmap_irq_chip max77714_rtc_irq_chip = {
-+	.name		= "max77714-rtc",
-+	.status_base	= MAX77686_RTC_INT,
-+	.mask_base	= MAX77686_RTC_INTM,
-+	.num_regs	= 1,
-+	.irqs		= max77686_rtc_irqs,
-+	.num_irqs	= ARRAY_SIZE(max77686_rtc_irqs) - 1, /* no WTSR on 77714 */
-+};
++static int user_space_bind(struct thermal_zone_device *tz)
++{
++	pr_warn("Userspace governor deprecated: use thermal netlink "	\
++		"notification instead\n");
 +
-+static const struct max77686_rtc_driver_data max77714_drv_data = {
-+	.delay = 16000,
-+	.mask  = 0x7f,
-+	.map   = max77686_map,
-+	.alarm_enable_reg = false,
-+	.rtc_irq_from_platform = false,
-+	/* On MAX77714 RTCA1 is BIT 1 of RTCINT (0x00). Not supported by this driver. */
-+	.alarm_pending_status_reg = MAX77686_INVALID_REG,
-+	.rtc_i2c_addr = MAX77714_I2C_ADDR_RTC,
-+	.rtc_irq_chip = &max77714_rtc_irq_chip,
-+	.regmap_config = &max77686_rtc_regmap_config,
-+};
++	return 0;
++}
 +
- static const struct regmap_config max77620_rtc_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
-@@ -843,6 +866,7 @@ static const struct platform_device_id rtc_id[] = {
- 	{ "max77686-rtc", .driver_data = (kernel_ulong_t)&max77686_drv_data, },
- 	{ "max77802-rtc", .driver_data = (kernel_ulong_t)&max77802_drv_data, },
- 	{ "max77620-rtc", .driver_data = (kernel_ulong_t)&max77620_drv_data, },
-+	{ "max77714-rtc", .driver_data = (kernel_ulong_t)&max77714_drv_data, },
- 	{},
+ /**
+  * notify_user_space - Notifies user space about thermal events
+  * @tz: thermal_zone_device
+@@ -43,5 +51,6 @@ static int notify_user_space(struct thermal_zone_device *tz, int trip)
+ static struct thermal_governor thermal_gov_user_space = {
+ 	.name		= "user_space",
+ 	.throttle	= notify_user_space,
++	.bind_to_tz	= user_space_bind,
  };
- MODULE_DEVICE_TABLE(platform, rtc_id);
+ THERMAL_GOVERNOR_DECLARE(thermal_gov_user_space);
 -- 
 2.25.1
 
