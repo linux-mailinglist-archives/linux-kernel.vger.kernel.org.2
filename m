@@ -2,265 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B761434218
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD59443421D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 01:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhJSXfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 19:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhJSXfy (ORCPT
+        id S229955AbhJSXge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 19:36:34 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:52101 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhJSXgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 19:35:54 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC07C06161C;
-        Tue, 19 Oct 2021 16:33:40 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id n7so22466127iod.0;
-        Tue, 19 Oct 2021 16:33:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=25rWtVJ6antFlMKw+3pZxLgSVWLey+YCqrJLukUkDHQ=;
-        b=H7c+hB7X91riOlLeouKV8ZaBVBWQqIcSjW+PmO/QGmd73wmuMDc4JL7WsuBVj+lL7Q
-         /13w9EhRqmUY63kGcfV+4xEAUlLtDFQ2FJ5mGdE4NpJRqKG6kFBW1HLPekJGlnUhh/ox
-         Y5gaRXfv48cdC61MNhnM4gtwCYcnGJGzEDe1raU31cXL2EYDLCotfjfJtY0f2yawAoZO
-         cm66z9vFwmRiuO97lEWb4uLzKLo53nztTr/FGkKLmJ/jjKhb3HPKNjoGNLFTrbmEphac
-         OVzM0OewPn2IjNFhHS1xAFOPagt7CpwuGieNYQNl0szHcgTLt9jpS0RwvSd8AtWJj3bt
-         aBKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=25rWtVJ6antFlMKw+3pZxLgSVWLey+YCqrJLukUkDHQ=;
-        b=HVxeLL4WojxX7WPhLnYo2H5+LgVGJzOI7VuuTBaQwAq9olDvwnb6BnB6uN3vduE3v1
-         B+oVGAxOUa9+7LiQG+aYJfFJ589V0VI/aVktlRBYhErCBIKgHa7HXAkbp/rQSU8ErXjh
-         t1BZ04m5zPGpi4hyxYKoLuawT2DgBQFXGmWon9PnVB3MAxA25DZlcznX5clV1r/nIZge
-         OYp1Y5wTouxLeQr2r7ciM+r651uiL+vKOO6/wUILbOjsfu4tK0zy8cMNAfajV4tgd0Sz
-         LMGMDoBN+Ggf2N+HTfhBoJS7SNlhe8sZlcKmRSkrzEd825Ea/YZ1rWG0pu/xShy20MHR
-         p65Q==
-X-Gm-Message-State: AOAM530tVk40E3b1m+eChUVDxc7pjx7SvwsQMWVhsd7uR65mYQJkpjlM
-        6NN2uTvt4+4t7LfuVaZziKRht+19CrtzqKMXSek=
-X-Google-Smtp-Source: ABdhPJyRmICumBr3hkAN5zDPyjw6E2QPC/S9FYCXywaKJmpiMx6L5D0jjzwJBbXy+KoshuC/KwcAr8lxScqF1MH10zU=
-X-Received: by 2002:a05:6638:1489:: with SMTP id j9mr4111709jak.18.1634686420144;
- Tue, 19 Oct 2021 16:33:40 -0700 (PDT)
+        Tue, 19 Oct 2021 19:36:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HYqp05qNvz4xbP;
+        Wed, 20 Oct 2021 10:34:16 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634686457;
+        bh=a2YGRENPpVP9X/6KzFVetTvNS4DQSPpW45kTm2eue9c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oUrOFknEhT2tupjpczyp0VYw8y7L//ckrVnbl95bCPNGjNalGBIKNYiLGtGbF+DQg
+         sKhXg+CrTMWqLn1Xs/uZ69aQ1x2TNH6tGJ6+TROfsInUP/OdfBHnwgL5QoUdc6zioQ
+         LSYqRPXIHs3ijokgV+M4vSN6Zdkmfq6BmKEYFD7fVXN1EwJ8A5aP3ytzUjhr2y/739
+         47zN9gdmdgorftxumvmNfRCBS0+nelV3yaCk/ZkJFlEdvW0emzzuozG4FaTSk5H66i
+         +VIPW/IuFJWixlEDWSd7k3kwXJky2Ul6tsjgXiC3NLipA9DZnSorcM6Ajwt2XJlruC
+         ntyUUs40GCJaw==
+Date:   Wed, 20 Oct 2021 10:34:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Aharon Landau <aharonl@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Mark Zhang <markzhang@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: linux-next: manual merge of the net-next tree with the rdma tree
+Message-ID: <20211020103414.3e7533f4@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211009114313.17967-1-alistair@alistair23.me>
- <CAF8JNh+OUzvAHA9tBrH2d_WxWPXRgiunhGO5KV4-fqVG+tUOyQ@mail.gmail.com> <YW4kgnI0DQHj4sw4@google.com>
-In-Reply-To: <YW4kgnI0DQHj4sw4@google.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Wed, 20 Oct 2021 09:33:13 +1000
-Message-ID: <CAKmqyKMrb=Uz0+-ycj0HkAKJYdRU11Dc+24+KJw_j3MHT=2+yw@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the data values
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Ping Cheng <pinglinux@gmail.com>,
-        Alistair Francis <alistair@alistair23.me>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/bNvDVWR+DvTaT6EPwJ+Gii_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 11:51 AM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Ping,
->
-> On Mon, Oct 18, 2021 at 10:41:55AM -0700, Ping Cheng wrote:
-> > Hi Alistair,
-> >
-> > On Sat, Oct 9, 2021, 4:44 AM Alistair Francis <alistair@alistair23.me>
-> > wrote:
-> >
-> > > Add support to the Wacom HID device for flipping the values based on
-> > > device tree settings. This allows us to support devices where the panel
-> > > is installed in a different orientation, such as the reMarkable2.
-> > >
-> >
-> > This device was designed for hid-generic driver, if it's not driven by
-> > wacom_i2c.c or an out of tree driver.
-> >
-> > wacom.ko doesn't support vid 0x2d1f devices.
->
-> I am really confused about this distinction. Could you please elaborate
-> why wacom driver only supports 0x056a (and, curiously, some Lenovo)
-> devices.
->
-> Thanks.
->
->
-> >
-> > Nacked-by: Ping Cheng <Ping.Cheng@wacom.com>
-> >
-> > Sorry about that,
-> > Ping
-> >
-> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > > ---
-> > >  .../bindings/input/hid-over-i2c.txt           | 20 ++++++
-> > >  drivers/hid/wacom_sys.c                       | 25 ++++++++
-> > >  drivers/hid/wacom_wac.c                       | 61 +++++++++++++++++++
-> > >  drivers/hid/wacom_wac.h                       | 13 ++++
-> > >  4 files changed, 119 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> > > b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> > > index c76bafaf98d2..16ebd7c46049 100644
-> > > --- a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> > > +++ b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
-> > > @@ -33,6 +33,26 @@ device-specific compatible properties, which should be
-> > > used in addition to the
-> > >  - post-power-on-delay-ms: time required by the device after enabling its
-> > > regulators
-> > >    or powering it on, before it is ready for communication.
-> > >
-> > > +  flip-tilt-x:
-> > > +    type: boolean
-> > > +    description: Flip the tilt X values read from device
-> > > +
-> > > +  flip-tilt-y:
-> > > +    type: boolean
-> > > +    description: Flip the tilt Y values read from device
->
-> Do these really need to be controlled separately from the main
-> touchcsreen orientation?
+--Sig_/bNvDVWR+DvTaT6EPwJ+Gii_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't think so actually.
+Hi all,
 
->
-> > > +
-> > > +  flip-pos-x:
-> > > +    type: boolean
-> > > +    description: Flip the X position values read from device
-> > > +
-> > > +  flip-pos-y:
-> > > +    type: boolean
-> > > +    description: Flip the Y position values read from device
->
-> We already have touchscreen-inverted-x/y defined in
-> Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml,
-> why are they not sufficient?
+Today's linux-next merge of the net-next tree got a conflict in:
 
-The touchscreen-* properties aren't applied to HID devices though, at
-least not that I can tell.
+  include/linux/mlx5/fs.h
 
-Alistair
+between commit:
 
->
-> > > +
-> > > +  flip-distance:
-> > > +    type: boolean
-> > > +    description: Flip the distance values read from device
->
-> I am still confused of the notion of flipped distance.
->
-> > > +
-> > >  Example:
-> > >
-> > >         i2c-hid-dev@2c {
-> > > diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c
-> > > index 93f49b766376..47d9590b10bd 100644
-> > > --- a/drivers/hid/wacom_sys.c
-> > > +++ b/drivers/hid/wacom_sys.c
-> > > @@ -10,6 +10,7 @@
-> > >
-> > >  #include "wacom_wac.h"
-> > >  #include "wacom.h"
-> > > +#include <linux/of.h>
-> > >  #include <linux/input/mt.h>
-> > >
-> > >  #define WAC_MSG_RETRIES                5
-> > > @@ -2730,6 +2731,28 @@ static void wacom_mode_change_work(struct
-> > > work_struct *work)
-> > >         return;
-> > >  }
-> > >
-> > > +static void wacom_of_read(struct hid_device *hdev, struct wacom_wac
-> > > *wacom_wac)
-> > > +{
-> > > +       if (IS_ENABLED(CONFIG_OF)) {
-> > > +               wacom_wac->flip_tilt_x =
-> > > of_property_read_bool(hdev->dev.parent->of_node,
-> > > +                                                       "flip-tilt-x");
-> > > +               wacom_wac->flip_tilt_y =
-> > > of_property_read_bool(hdev->dev.parent->of_node,
-> > > +                                                       "flip-tilt-y");
-> > > +               wacom_wac->flip_pos_x =
-> > > of_property_read_bool(hdev->dev.parent->of_node,
-> > > +                                                       "flip-pos-x");
-> > > +               wacom_wac->flip_pos_y =
-> > > of_property_read_bool(hdev->dev.parent->of_node,
-> > > +                                                       "flip-pos-y");
-> > > +               wacom_wac->flip_distance =
-> > > of_property_read_bool(hdev->dev.parent->of_node,
-> > > +                                                       "flip-distance");
-> > > +       } else {
-> > > +               wacom_wac->flip_tilt_x = false;
-> > > +               wacom_wac->flip_tilt_y = false;
-> > > +               wacom_wac->flip_pos_x = false;
-> > > +               wacom_wac->flip_pos_y = false;
-> > > +               wacom_wac->flip_distance = false;
-> > > +       }
-> > > +}
-> > > +
-> > >  static int wacom_probe(struct hid_device *hdev,
-> > >                 const struct hid_device_id *id)
-> > >  {
-> > > @@ -2797,6 +2820,8 @@ static int wacom_probe(struct hid_device *hdev,
-> > >                                  error);
-> > >         }
-> > >
-> > > +       wacom_of_read(hdev, wacom_wac);
-> > > +
-> > >         wacom_wac->probe_complete = true;
-> > >         return 0;
-> > >  }
-> > > diff --git a/drivers/hid/wacom_wac.c b/drivers/hid/wacom_wac.c
-> > > index 33a6908995b1..c01f683e23fa 100644
-> > > --- a/drivers/hid/wacom_wac.c
-> > > +++ b/drivers/hid/wacom_wac.c
-> > > @@ -3261,6 +3261,63 @@ static int wacom_status_irq(struct wacom_wac
-> > > *wacom_wac, size_t len)
-> > >         return 0;
-> > >  }
-> > >
-> > > +static int wacom_of_irq(struct wacom_wac *wacom_wac, size_t len)
-> > > +{
-> > > +       const struct wacom_features *features = &wacom_wac->features;
-> > > +       unsigned char *data = wacom_wac->data;
-> > > +       struct input_dev *input = wacom_wac->pen_input;
-> > > +       unsigned int x, y, pressure;
-> > > +       unsigned char tsw, f1, f2, ers;
-> > > +       short tilt_x, tilt_y, distance;
-> > > +
-> > > +       if (!IS_ENABLED(CONFIG_OF))
-> > > +               return 0;
-> > > +
-> > > +       tsw = data[1] & WACOM_TIP_SWITCH_bm;
-> > > +       ers = data[1] & WACOM_ERASER_bm;
-> > > +       f1 = data[1] & WACOM_BARREL_SWITCH_bm;
-> > > +       f2 = data[1] & WACOM_BARREL_SWITCH_2_bm;
-> > > +       x = le16_to_cpup((__le16 *)&data[2]);
-> > > +       y = le16_to_cpup((__le16 *)&data[4]);
-> > > +       pressure = le16_to_cpup((__le16 *)&data[6]);
-> > > +
-> > > +       /* Signed */
-> > > +       tilt_x = get_unaligned_le16(&data[9]);
-> > > +       tilt_y = get_unaligned_le16(&data[11]);
-> > > +
-> > > +       distance = get_unaligned_le16(&data[13]);
->
-> You are still parsing raw data. The point of HID is to provide common
-> framework for scaling raw values.
->
-> Thanks.
->
-> --
-> Dmitry
+  b8dfed636fc6 ("net/mlx5: Add priorities for counters in RDMA namespaces")
+
+from the rdma tree and commit:
+
+  425a563acb1d ("net/mlx5: Introduce port selection namespace")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/mlx5/fs.h
+index f2c3da2006d9,7a43fec63a35..000000000000
+--- a/include/linux/mlx5/fs.h
++++ b/include/linux/mlx5/fs.h
+@@@ -83,8 -83,7 +83,9 @@@ enum mlx5_flow_namespace_type=20
+  	MLX5_FLOW_NAMESPACE_RDMA_RX,
+  	MLX5_FLOW_NAMESPACE_RDMA_RX_KERNEL,
+  	MLX5_FLOW_NAMESPACE_RDMA_TX,
+ +	MLX5_FLOW_NAMESPACE_RDMA_RX_COUNTERS,
+ +	MLX5_FLOW_NAMESPACE_RDMA_TX_COUNTERS,
++ 	MLX5_FLOW_NAMESPACE_PORT_SEL,
+  };
+ =20
+  enum {
+
+--Sig_/bNvDVWR+DvTaT6EPwJ+Gii_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFvVfYACgkQAVBC80lX
+0Gz/vgf+NQ1i+LJBGV2jG+t967hX+9jwXOO6DazWxOAkczm7HlCGnNjOHELDN307
+y2Ip928sPeLL1kqwYJwqIUAXb06diAdtvvoa9wgFRG/JjwBfnM1JHcD9u990ZiSu
+XWAQjv7Lsepp1QjbHWqiSgU83XF51fNix86M4HIBANLCGg581j28KdGL3gPPa9qF
+o2PEqre9mHOSzkdA7o20BWWgGoPMUbQM4QCuuAuJE9k9C8YKKY15wmRpkKf1oTX0
+10sgydLIUw+eHDvWOw33v//JbU7KCtv/gtdv+daYqwH23CJT461lWt7CMqnFIg4H
+1pGSYSCsUtLmpi+wAj6i4lMwEVuEtA==
+=r2BJ
+-----END PGP SIGNATURE-----
+
+--Sig_/bNvDVWR+DvTaT6EPwJ+Gii_--
