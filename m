@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B0C433CBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A605433CC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234395AbhJSQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:54:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35168 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229789AbhJSQyh (ORCPT
+        id S234456AbhJSQzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:55:03 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:44572 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhJSQzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:54:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634662344;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RjMQi48Y3BWRD5Wrxhvo6RSSyJjbJwh5TzWGFZw/n9U=;
-        b=gxAknUuWaop6CXLzUcxMtyXC62cNx7F5dSR10KGM5k19xi3Q39+IwfLqobDgcPZp42DDYY
-        C2jvLJSs2DfJwgK4cRIUU5K+bLU3P/WLiJapmWATTQ8LMGg/Af2eZMVfBw1xaBdOieEEgu
-        brUe/Ydo0f2IbnSO/wY3Cx9swwSi0QY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-115-vmLSzqJtMX-r3WWMbZZ8Uw-1; Tue, 19 Oct 2021 12:52:23 -0400
-X-MC-Unique: vmLSzqJtMX-r3WWMbZZ8Uw-1
-Received: by mail-wm1-f71.google.com with SMTP id c69-20020a1c9a48000000b0030d95485d90so1037058wme.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:52:22 -0700 (PDT)
+        Tue, 19 Oct 2021 12:55:02 -0400
+Received: by mail-oi1-f170.google.com with SMTP id y207so5852192oia.11;
+        Tue, 19 Oct 2021 09:52:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=RjMQi48Y3BWRD5Wrxhvo6RSSyJjbJwh5TzWGFZw/n9U=;
-        b=4Q2OG2weqdZJW0LZQmA4o4s6o7oiq9VL1q8ogTuqVvrJAUF44VGdso5PSVRMDc8L4A
-         vj72OIyVp1hf3X5L7dj8npx+MzpNkzDFbys3EWhCvpw5K5PFHSygxdz525khuiMCEF1N
-         V/8+6UCHK2u+sTGuoj6SO6eT9Wsuz6AAHXKKBj+UYYBqVa7fWHLJngsvME8C4K3RDZ4S
-         2MDWo4dC9kbPOqeAM1DGh+2ei+cqL80y8MCbUEtOLdIQUAc9r7owpCbMBPQ4qP+LI7Za
-         oFlOrKnFK/GzmsNINsZ+jKauXFfAOG5l7CWT/Ty1vfPFzoftor7+mA9/D36NRPomh/Wo
-         O+7w==
-X-Gm-Message-State: AOAM532Xs4W0DYLaOioxTWYqqpygvsBisIFroEnGL4y+18+kdIN5Mw3A
-        5KDTD0t7d7dp7nEiNQlxL7Pk5uRmY0KuwOl4G/hFXdOGb0jq6zH4o+0pJ5MbdMpzYDNyOoyKDUz
-        yoR6dpX2kWf4GVaI0obVx7p3c
-X-Received: by 2002:adf:a390:: with SMTP id l16mr45622649wrb.291.1634662341714;
-        Tue, 19 Oct 2021 09:52:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwFgKUnmqhDWkJbPB/NEuTMocAhYLf4akh06ar3YPj10YH9Ht4wI/IzCQvyoWjAcfV5wfHHlw==
-X-Received: by 2002:adf:a390:: with SMTP id l16mr45622606wrb.291.1634662341377;
-        Tue, 19 Oct 2021 09:52:21 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:8e02:b072:96b1:56d0? ([2001:b07:6468:f312:8e02:b072:96b1:56d0])
-        by smtp.gmail.com with ESMTPSA id g33sm2427155wmp.45.2021.10.19.09.52.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 09:52:20 -0700 (PDT)
-Message-ID: <166e2d66-1c16-29d4-3275-517310043ae0@redhat.com>
-Date:   Tue, 19 Oct 2021 18:52:18 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fg0cCwJVHF76pIKAhe13PodfxRRyNCDHrc0ozMywzNw=;
+        b=XJx3BHDQcRn5lHt5LTxkkaknh4Cv1c763/+wzPrzxcQkFAm2EL+1D8dRR8Pgo9EChA
+         gxWU2VGe6Kg0Skq1M+lP+je25tuF2c7jH948Gpg4hx7RhkfSUr103wVWno9QLoaJg7yS
+         rxkkgwWHz4b42+r0L3Rz3CmPwoiopfQm7uKZzRhHQdzoGKW2RjOlzD7m16SkIROJtYW9
+         OC1EkFZMbMwUKFkdqwT+nZp/4i+uHuLSOJz/RmTeXDAY1qEQfExHjupblRY3QzAp5JjI
+         WacMU84GnCQyCA9tTRcsQrfE9qleSz/37fm34NENDB7VCIachB4QfMZonoOYgk2oCNID
+         DGcQ==
+X-Gm-Message-State: AOAM531AG6YGZGdjwxYmdReflTb8Rfx7AipUlsVPdRIMVTJ5n4/CavVC
+        Wb1M6Z5uBC4HqN7h7yQzcijLnCd5w3z81dt+REs=
+X-Google-Smtp-Source: ABdhPJydRVGsHDP0DrSDIexcFoZ34NnYWweKqZKndMhsMWMgocVz7pqdpzE7bjQh6NXPOYcv/36RcFZk9gDH6wKkjRM=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr5151432oif.154.1634662368345;
+ Tue, 19 Oct 2021 09:52:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 0/7] KVM: VMX: PT (processor trace) optimization
- cleanup and fixes
-Content-Language: en-US
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210827070249.924633-1-xiaoyao.li@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20210827070249.924633-1-xiaoyao.li@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210926090605.3556134-1-ray.huang@amd.com> <20210926090605.3556134-4-ray.huang@amd.com>
+In-Reply-To: <20210926090605.3556134-4-ray.huang@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 19 Oct 2021 18:52:37 +0200
+Message-ID: <CAJZ5v0ivJk-cVv0kHUeF1M7aWBZ9ziuUF-9=M_eF+WQ1vQJfgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 03/21] ACPI: CPPC: Check online CPUs for determining
+ _CPC is valid
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/21 09:02, Xiaoyao Li wrote:
-> Patch 1-3 are optimization and cleanup.
-> 
-> Patch 4-7 are fixes for PT. Patch 4 and 5 fix the virtulazation of PT to
-> provide architectual consistent behavior for guest. Patch 6 fix the case
-> that malicious userspace can exploit PT to cause vm-entry failure or #GP
-> in KVM. Patch 7 fix the potential MSR access #GP if some PT MSRs not
-> available on hardware.
-> 
-> Patch 3 and patch 7 are added in v2.
+On Sun, Sep 26, 2021 at 11:06 AM Huang Rui <ray.huang@amd.com> wrote:
+>
+> From: Mario Limonciello <mario.limonciello@amd.com>
+>
+> As this is a static check, it should be based upon what is currently
+> present on the system. This makes probeing more deterministic.
+>
+> While local APIC flags field (lapic_flags) of cpu core in MADT table is
+> 0, then the cpu core won't be enabled. In this case, _CPC won't be found
+> in this core, and return back to _CPC invalid with walking through
+> possible cpus (include disable cpus). This is not expected, so switch to
+> check online CPUs instead.
+>
+> Reported-by: Jinzhou Su <Jinzhou.Su@amd.com>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
+> ---
+>  drivers/acpi/cppc_acpi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index a4d4eebba1da..2efe2ba97d96 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -411,7 +411,7 @@ bool acpi_cpc_valid(void)
+>         struct cpc_desc *cpc_ptr;
+>         int cpu;
+>
+> -       for_each_possible_cpu(cpu) {
+> +       for_each_online_cpu(cpu) {
 
-Queued patches 1-4, thanks.
+Shouldn't this be for_each_present_cpu()?  In case a CPU is present,
+but not online when cppc_cpufreq is loaded?
 
-Paolo
-
+>                 cpc_ptr = per_cpu(cpc_desc_ptr, cpu);
+>                 if (!cpc_ptr)
+>                         return false;
+> --
