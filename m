@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55784433542
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82B043353E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235516AbhJSMCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:02:07 -0400
-Received: from comms.puri.sm ([159.203.221.185]:49260 "EHLO comms.puri.sm"
+        id S235453AbhJSMB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:01:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235389AbhJSMB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:01:59 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 0C42ADF854;
-        Tue, 19 Oct 2021 04:59:46 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id guT2m-3wI9ko; Tue, 19 Oct 2021 04:59:45 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 13:59:29 +0200
-From:   Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@purism
-Subject: [PATCH] media: Add 16-bit Bayer formats
-Message-ID: <20211019114718.827400-1-dorota.czaplejewicz@puri.sm>
-Organization: Purism
+        id S230514AbhJSMB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:01:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCFC4610E7;
+        Tue, 19 Oct 2021 11:59:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634644784;
+        bh=ySRYvdK7NTrM3AmKXqKhUuV0WZHW9zMiPWB/cj1v/W4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A8oNo2ySNIrGLpLu+RI0T0jN9YSNIjyAYk86yxHa9JLnINNu1zWxFQVhGB/E2UIpG
+         YP9LASeCm4erapn4ZB7x8abIFlYL/ZNp/m7e/z45OSIbvszzQOO+lNVXt5hcOE/AZ8
+         md37xvbQoKG6yly811l5jjl8jCeb+7DmpJu54dUiR17rsCOmkcc/ytcCUXpP376koA
+         5l1ZChVy9v27n65n9WAi++ayBGK0yJpjbpO9rCiCdM8k77bwp4dmU6gLDMlMSgbAcJ
+         ATcgKXiiOkkLAMJl4NCyfEdzNIQq/+LpBU4L6u41YgaMbikKEU4XKNi55EF50ULGvH
+         aan7h2L/008zg==
+Date:   Tue, 19 Oct 2021 12:59:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     George Song <George.Song@maximintegrated.com>
+Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "george.song@analog.com" <george.song@analog.com>,
+        Ryan Lee <RyanS.Lee@maximintegrated.com>,
+        Steve Lee <SteveS.Lee@maximintegrated.com>
+Subject: Re: [EXTERNAL] Re: [v3 2/2] ASoC: max98520: add max98520 audio
+ amplifier driver
+Message-ID: <YW6zKsiWPE+xGWTy@sirena.org.uk>
+References: <20211018083554.5360-1-george.song@maximintegrated.com>
+ <20211018083554.5360-2-george.song@maximintegrated.com>
+ <YW1quluaCzsUpET0@sirena.org.uk>
+ <BYAPR11MB367106FDD5394AA4F88A42D4F4BD9@BYAPR11MB3671.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wpPNuNnC_Dn6UWVV0uU2aGA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tHVcRvqxv/TkamTw"
+Content-Disposition: inline
+In-Reply-To: <BYAPR11MB367106FDD5394AA4F88A42D4F4BD9@BYAPR11MB3671.namprd11.prod.outlook.com>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wpPNuNnC_Dn6UWVV0uU2aGA
-Content-Type: text/plain; charset=US-ASCII
+
+--tHVcRvqxv/TkamTw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-16-bit bayer formats are used by the i.MX driver.
+On Tue, Oct 19, 2021 at 07:57:26AM +0000, George Song wrote:
 
-Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
----
-Hello,
+> > > +	/* L/R mix configuration */
+> > > +	regmap_write(max98520->regmap, MAX98520_R2043_PCM_RX_SRC1, 0x2);
+> > > +
+> > > +	regmap_write(max98520->regmap, MAX98520_R2044_PCM_RX_SRC2, 0x10);
+> >=20
+> > These should be exposed to the user, not hard coded - different systems
+> > may need different configurations.
+> It`s already exposed for 2043 register which is regarding mono mixer for =
+"DAI Sel Mux"
+> It will be exposed for 2044 register which is regarding pcm input channel=
+ selection to dapm mixer.
 
-While working on the i.MX8 video driver, I discovered that `v4l2_fill_pixfm=
-t` will fail when using 10-bit sensor formats. (For background, see the con=
-versation at https://lkml.org/lkml/2021/10/17/93 .)
+Then leave the values at the defaults and let the user select what's
+sensible for their system.
 
-It appears that the video hardware will fill a 16-bit-per-pixel buffer when=
- fed 10-bit-per-pixel Bayer data, making `v4l2_fill_pixfmt` effectively bro=
-ken for this case.
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
 
-This change adds the relevant entries to the format info structure.
-
-Difference in behaviour observed using the i846 driver on the Librem 5.
-
-Regards,
-Dorota Czaplejewicz
-
- drivers/media/v4l2-core/v4l2-common.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-cor=
-e/v4l2-common.c
-index 04af03285a20..d2e61538e979 100644
---- a/drivers/media/v4l2-core/v4l2-common.c
-+++ b/drivers/media/v4l2-core/v4l2-common.c
-@@ -309,6 +309,10 @@ const struct v4l2_format_info *v4l2_format_info(u32 fo=
-rmat)
- 		{ .format =3D V4L2_PIX_FMT_SGBRG12,	.pixel_enc =3D V4L2_PIXEL_ENC_BAYER,=
- .mem_planes =3D 1, .comp_planes =3D 1, .bpp =3D { 2, 0, 0, 0 }, .hdiv =3D =
-1, .vdiv =3D 1 },
- 		{ .format =3D V4L2_PIX_FMT_SGRBG12,	.pixel_enc =3D V4L2_PIXEL_ENC_BAYER,=
- .mem_planes =3D 1, .comp_planes =3D 1, .bpp =3D { 2, 0, 0, 0 }, .hdiv =3D =
-1, .vdiv =3D 1 },
- 		{ .format =3D V4L2_PIX_FMT_SRGGB12,	.pixel_enc =3D V4L2_PIXEL_ENC_BAYER,=
- .mem_planes =3D 1, .comp_planes =3D 1, .bpp =3D { 2, 0, 0, 0 }, .hdiv =3D =
-1, .vdiv =3D 1 },
-+		{ .format =3D V4L2_PIX_FMT_SBGGR16,	.pixel_enc =3D V4L2_PIXEL_ENC_BAYER,=
- .mem_planes =3D 1, .comp_planes =3D 1, .bpp =3D { 2, 0, 0, 0 }, .hdiv =3D =
-1, .vdiv =3D 1 },
-+		{ .format =3D V4L2_PIX_FMT_SGBRG16,	.pixel_enc =3D V4L2_PIXEL_ENC_BAYER,=
- .mem_planes =3D 1, .comp_planes =3D 1, .bpp =3D { 2, 0, 0, 0 }, .hdiv =3D =
-1, .vdiv =3D 1 },
-+		{ .format =3D V4L2_PIX_FMT_SGRBG16,	.pixel_enc =3D V4L2_PIXEL_ENC_BAYER,=
- .mem_planes =3D 1, .comp_planes =3D 1, .bpp =3D { 2, 0, 0, 0 }, .hdiv =3D =
-1, .vdiv =3D 1 },
-+		{ .format =3D V4L2_PIX_FMT_SRGGB16,	.pixel_enc =3D V4L2_PIXEL_ENC_BAYER,=
- .mem_planes =3D 1, .comp_planes =3D 1, .bpp =3D { 2, 0, 0, 0 }, .hdiv =3D =
-1, .vdiv =3D 1 },
- 	};
- 	unsigned int i;
-=20
---=20
-2.31.1
-
-
---Sig_/wpPNuNnC_Dn6UWVV0uU2aGA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--tHVcRvqxv/TkamTw
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEExKRqtqfFqmh+lu1oADBpX4S8ZncFAmFusyEACgkQADBpX4S8
-ZndwxQ/+LzSvfUPU6hgPC3U3pA2+klpV5QsqXz+Ikai/azH38h3ZdVe5JbXiI6MH
-p4TjBi2fteQHms0MyqRI9PAMcY9DtL67NOI9DUAxo8XQxjpft8f0Z9d6gWGXt/Su
-jLDaBBzGxbeSN0dPYs7l2CwjYHou4S0dMYF0iQZV280tb/qOj5GEc+qlIrtb10t8
-Vl3Ws7mNhUvezFzRstZwGuXtM1e4EXh1g1k2R5UDliIKEhYgWq24m8iuuJtPNCaH
-fFlhMyNrR4cqRT/P0Aoe2bViujhN8itmXLjI3P2uue2sflsGIB/ZnW6Wc7/eKuyd
-lp0llnEsIdbSdIguvYrX2U2B3ktayKX0BT4qC2tFr3ye9WQONv3GEHxonQo1qGXZ
-ovAezDI0ZGshOf4+cbLPGIMewR32tBJkG6//87J7PNznO+sCQ1JT83E2QJvIrqaQ
-vAaPGTkdrwUjCI3SjD6AyW8cC4NmLPL0d3XKRfIh+0i/KShhYFqoVdF18CDYQpbX
-Z+2Jl4xuLiEUeb5xsq5e9U5MWwkxY4GcWSuR5ttI0CS8bBigU8eim5YsIuwauZvI
-0PNn0wldmb6zjNZ4HXE3mZxbBeISJAG+Cf12uGWXtyE5TsRf+1oUBao2viukFKyj
-MlN7Trs9NEHconaL0Ivu1ghDoGSNawc2sHgUIM8feDILQa0+E6Q=
-=V9Ml
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFusykACgkQJNaLcl1U
+h9DFVQf/XvEmsHsRZThYw5Rh2fJiTUcH0nU71YKqB8OtTm+GmyIjxXvVot3FDVRy
+kfbXh3uenZDDIPOPPnWKUmNKh5v1W6j0IFVcDAzoVBi2GZsZJz0bLq8/aGIZOb+t
+vIVtBG1rGuTQuXSfVuFQ1oRzbJagBrvUBVtHqBnmKyPkZVzL9q7zfa4nD4UpXlt3
+nk53cWjWr91NKrc4m9lyTaPdEv2Tw2zw1UektO6KALKjVOFHj8Q48rqc0e/f5MZH
+6bWU6ylcFUGG+XTOMCdrQdr9r/fqJLazU29zqGYeBWrVDMkKltc9i/xsteS2rQCI
+jDC+lwC+qHRNWnl51YnKm8Hz3lLSSQ==
+=f6mJ
 -----END PGP SIGNATURE-----
 
---Sig_/wpPNuNnC_Dn6UWVV0uU2aGA--
+--tHVcRvqxv/TkamTw--
