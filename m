@@ -2,123 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4C443325D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7500243325F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234817AbhJSJiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235023AbhJSJiC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:38:02 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E671C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:35:49 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id g25so46446967wrb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=L2Opnlu/+Ei1mILrJUudB00wyP5HtEuEpZxkiaGcTuk=;
-        b=4Uvv/V9yhjJYTwf+O9NvMcCHZPepWSsWQ2DUG9K7T456ybg9EBcQvphaGM/VctW7mv
-         UXLs7h8Sh9o39g1WSMZgTt5pHkZBakrJZqayHGdmOXsrYJlqf7oDOVBbF/EHTSmlOMyM
-         a6IlSoE+YWI5Uld+lTvGOg/MOcO72KNwvdOOGLxYL53+KWobDyx1phCv8M3Ok53Efots
-         YvjwEjeZ9gSlhjRFgkE+fTmHhQgBNYZ6nIrX6sTpJ0IBFzXwwbDLAglILfPEYJiKXEYu
-         1EBw+rQt9324DpZLRV++n8Erlk1/ztmsoKNHHMZ0PnAoOkLDs5PbL0hHWC1QGe2BYPOH
-         YB1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=L2Opnlu/+Ei1mILrJUudB00wyP5HtEuEpZxkiaGcTuk=;
-        b=JmAZclT9Skrzwk8R+JoT3d1hoilHO1KoH08Mt8uEAROz7DU2b0rOkjx7nPMm6kYKT1
-         +1wU8koyiP1getqFu4QLPLXIx2RpW9nz3v184ChAKTz534l0EAGSWRqBGIwsHC6AIE9X
-         zJ5LLn/NM20xwr97/vvnOMadgSiDiV/bILAZU14QJg7q2pjvdTWM0jjwMISkqa7Msd33
-         fFopJlsAOiUxvIxlUS2eYWH+JpAfLoSXWu+a8+GzQ/WI6ghi8dFttAQBhz8yWeZyTvQ7
-         lgPSw+i3Tk7hpwAsoNrOycIHTGhn53WU4elXQFZyxqPxFc3JkUy4DN5JgSNBS4SvfNKi
-         xCIQ==
-X-Gm-Message-State: AOAM532ArFGJRY3GfGnuYIDMk/yMaelIFzDWVagfwiN87uPs+JrOJNfM
-        OZ6gcRZa4CQZDxiXqtkVtwMceg==
-X-Google-Smtp-Source: ABdhPJx8VfDG1M08CY2EwW4NlYD+30EjdeM5Y4rFFcgsoqwPfH7CxovxzrJhPB1TEyjaKCuj+tU1uA==
-X-Received: by 2002:adf:9b8a:: with SMTP id d10mr40402392wrc.151.1634636148051;
-        Tue, 19 Oct 2021 02:35:48 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.82.20])
-        by smtp.gmail.com with ESMTPSA id p3sm1727165wmp.43.2021.10.19.02.35.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 02:35:47 -0700 (PDT)
-Message-ID: <e11c38fa-22fa-a0ae-4dd1-cac5a208e021@isovalent.com>
-Date:   Tue, 19 Oct 2021 10:35:46 +0100
+        id S235060AbhJSJic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:38:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234955AbhJSJia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:38:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 404BE61355;
+        Tue, 19 Oct 2021 09:36:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634636177;
+        bh=NQqE2z/KGm5u9Kr3otcrSyoobhm80I6yy3yCvR3GYKU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iwh/w953n9lU67AgSajdSyi3JfGbgMvFnBZBfQ6EmJie20mFp6VBqkXYzmSfUyYOQ
+         BS/G9tsasHOJb0RZHmwg8RV7gr/RhavCI+G+hYxd9qnzDn0sHbX3xn92jAJULqdPOb
+         c53PNOyBtzXKXntSDfT3+rdzswQ23N5a0OXlfBIU=
+Date:   Tue, 19 Oct 2021 11:36:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>, wsa@kernel.org,
+        jie.deng@intel.com, virtualization@lists.linux-foundation.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
+Message-ID: <YW6Rj/T6dWfMf7lU@kroah.com>
+References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
+ <20211019074647.19061-2-vincent.whitchurch@axis.com>
+ <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 14/23] bpftool: update bpftool-cgroup.rst reference
-Content-Language: en-US
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
- <11f3dc3cfc192e2ee271467d7a6c7c1920006766.1634630486.git.mchehab+huawei@kernel.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <11f3dc3cfc192e2ee271467d7a6c7c1920006766.1634630486.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-10-19 09:04 UTC+0100 ~ Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org>
-> The file name: Documentation/bpftool-cgroup.rst
-> should be, instead: tools/bpf/bpftool/Documentation/bpftool-cgroup.rst.
+On Tue, Oct 19, 2021 at 01:39:13PM +0530, Viresh Kumar wrote:
+> +Greg.
 > 
-> Update its cross-reference accordingly.
+> On 19-10-21, 09:46, Vincent Whitchurch wrote:
+> > If a timeout is hit, it can result is incorrect data on the I2C bus
+> > and/or memory corruptions in the guest since the device can still be
+> > operating on the buffers it was given while the guest has freed them.
+> > 
+> > Here is, for example, the start of a slub_debug splat which was
+> > triggered on the next transfer after one transfer was forced to timeout
+> > by setting a breakpoint in the backend (rust-vmm/vhost-device):
+> > 
+> >  BUG kmalloc-1k (Not tainted): Poison overwritten
+> >  First byte 0x1 instead of 0x6b
+> >  Allocated in virtio_i2c_xfer+0x65/0x35c age=350 cpu=0 pid=29
+> >  	__kmalloc+0xc2/0x1c9
+> >  	virtio_i2c_xfer+0x65/0x35c
+> >  	__i2c_transfer+0x429/0x57d
+> >  	i2c_transfer+0x115/0x134
+> >  	i2cdev_ioctl_rdwr+0x16a/0x1de
+> >  	i2cdev_ioctl+0x247/0x2ed
+> >  	vfs_ioctl+0x21/0x30
+> >  	sys_ioctl+0xb18/0xb41
+> >  Freed in virtio_i2c_xfer+0x32e/0x35c age=244 cpu=0 pid=29
+> >  	kfree+0x1bd/0x1cc
+> >  	virtio_i2c_xfer+0x32e/0x35c
+> >  	__i2c_transfer+0x429/0x57d
+> >  	i2c_transfer+0x115/0x134
+> >  	i2cdev_ioctl_rdwr+0x16a/0x1de
+> >  	i2cdev_ioctl+0x247/0x2ed
+> >  	vfs_ioctl+0x21/0x30
+> >  	sys_ioctl+0xb18/0xb41
+> > 
+> > There is no simple fix for this (the driver would have to always create
+> > bounce buffers and hold on to them until the device eventually returns
+> > the buffers), so just disable the timeout support for now.
 > 
-> Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
-> Fixes: 5ccda64d38cc ("bpftool: implement cgroup bpf operations")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
+> That is a very valid problem, and I have faced it too when my QEMU
+> setup is very slow :)
 > 
-> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
+> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> > ---
+> >  drivers/i2c/busses/i2c-virtio.c | 14 +++++---------
+> >  1 file changed, 5 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+> > index f10a603b13fb..7b2474e6876f 100644
+> > --- a/drivers/i2c/busses/i2c-virtio.c
+> > +++ b/drivers/i2c/busses/i2c-virtio.c
+> > @@ -106,11 +106,10 @@ static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
+> >  
+> >  static int virtio_i2c_complete_reqs(struct virtqueue *vq,
+> >  				    struct virtio_i2c_req *reqs,
+> > -				    struct i2c_msg *msgs, int num,
+> > -				    bool timedout)
+> > +				    struct i2c_msg *msgs, int num)
+> >  {
+> >  	struct virtio_i2c_req *req;
+> > -	bool failed = timedout;
+> > +	bool failed = false;
+> >  	unsigned int len;
+> >  	int i, j = 0;
+> >  
+> > @@ -132,7 +131,7 @@ static int virtio_i2c_complete_reqs(struct virtqueue *vq,
+> >  			j++;
+> >  	}
+> >  
+> > -	return timedout ? -ETIMEDOUT : j;
+> > +	return j;
+> >  }
+> >  
+> >  static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> > @@ -141,7 +140,6 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> >  	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+> >  	struct virtqueue *vq = vi->vq;
+> >  	struct virtio_i2c_req *reqs;
+> > -	unsigned long time_left;
+> >  	int count;
+> >  
+> >  	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+> > @@ -164,11 +162,9 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> >  	reinit_completion(&vi->completion);
+> >  	virtqueue_kick(vq);
+> >  
+> > -	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
+> > -	if (!time_left)
+> > -		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
+> > +	wait_for_completion(&vi->completion);
 > 
->  tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Doing this may not be a good thing based on the kernel rules I have
+> understood until now. Maybe Greg and Wolfram can clarify on this.
 > 
-> diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> index be54b7335a76..617b8084c440 100755
-> --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> @@ -392,7 +392,7 @@ class ManCgroupExtractor(ManPageExtractor):
->      """
->      An extractor for bpftool-cgroup.rst.
->      """
-> -    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-cgroup.rst')
-> +    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-cgroup.rst')
->  
->      def get_attach_types(self):
->          return self.get_rst_list('ATTACH_TYPE')
-> 
+> We are waiting here for an external entity (Host kernel) or a firmware
+> that uses virtio for transport. If the other side is hacked, it can
+> make the kernel hang here for ever. I thought that is something that
+> the kernel should never do.
 
-No, this change is incorrect. We have discussed it several times before
-[0][1]. Please drop this patch.
+What is the "other side" here?  Is it something that you trust or not?
 
-Quentin
+Usually we trust the hardware, but if you do not trust the hardware,
+then yes, you need to have a timeout here.
 
-[0]
-https://lore.kernel.org/bpf/eb80e8f5-b9d7-5031-8ebb-4595bb295dbf@isovalent.com/
-[1]
-https://lore.kernel.org/bpf/CAEf4BzZhr+3JzuPvyTozQSts7QixnyY1N8CD+-ZuteHodCpmRA@mail.gmail.com/
+thanks,
+
+greg k-h
