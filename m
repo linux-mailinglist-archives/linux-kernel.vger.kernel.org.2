@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9F743312C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE45B433123
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 10:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbhJSIjd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Oct 2021 04:39:33 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:54007 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234720AbhJSIjb (ORCPT
+        id S234648AbhJSIgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 04:36:51 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4001 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhJSIgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:39:31 -0400
-Received: by mail-il1-f200.google.com with SMTP id x4-20020a923004000000b00258f6abf8feso9610313ile.20
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 01:37:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc:content-transfer-encoding;
-        bh=PFI/xvIX6dAhXFtBNV+Jg9qJIg4WEZhFXiwnbN51eZw=;
-        b=VAOlcrVylwxqVrBDnvTh6QAcdF9rkqQQLwOlSr1yy5EvCDndUQWu1tX/WtHGt2Fjlp
-         pUbcea+7e09N2f4wkkUkGn0rTJXBXjlqQcTDTMqAvcxQSt7bvMmuH0LEMk4KdvDCqjKE
-         yBejWCjKT8K/vLV2xtyF264sLxCCTmjzy4zri9ZX7WlxxdsSlvrKaavnJt+Jg9/gFkCK
-         5JRBqzCrdMcpgJOFbwfnIu+KHdoRvPZJVgYeV895NZuNXDkFbZyHuJJTQVyqyPpUuGl6
-         ADXtE+y4pRzD2TKUhUjS+wtTnf4CdDcgRjNaFKW0PREwfwCwd8tbTlFA16XVz6AovXBA
-         qEcQ==
-X-Gm-Message-State: AOAM531jY+WMNxw7dtzHjFvmtBX5dHrRbYSdsP5O9JWz8CZPovQDGknB
-        mwWwU8WMD5FJJC9HNUMQ9I45Ab+PalYBchQ3oWcije7TKjMm
-X-Google-Smtp-Source: ABdhPJyFlPlQBhnI+xQAZw+JXYUDFdiLClcZtVlG70fa05SRXDQ4ulT8GrK9c38R3l7MM3n4mM7M87XLk5F6WnNtES4lFS7MxtJt
+        Tue, 19 Oct 2021 04:36:49 -0400
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HYRl54zNKz67Kvc;
+        Tue, 19 Oct 2021 16:30:25 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Tue, 19 Oct 2021 10:34:35 +0200
+Received: from [10.47.85.98] (10.47.85.98) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 19 Oct
+ 2021 09:34:34 +0100
+Subject: Re: [PATCH 2/2] perf jevents: Enable warnings through HOSTCFLAGS
+To:     James Clark <james.clark@arm.com>, <peterz@infradead.org>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <mingo@redhat.com>
+CC:     <irogers@google.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kjain@linux.ibm.com>
+References: <1634316507-227751-1-git-send-email-john.garry@huawei.com>
+ <1634316507-227751-3-git-send-email-john.garry@huawei.com>
+ <1804d7f3-c3bb-a90f-c86d-d96bff4235d2@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <89695366-c729-492e-aad6-5c98f914da79@huawei.com>
+Date:   Tue, 19 Oct 2021 09:37:23 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b2a:: with SMTP id e10mr16785350ilu.53.1634632638959;
- Tue, 19 Oct 2021 01:37:18 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 01:37:18 -0700
-In-Reply-To: <370f6719-b2db-20f8-9a3d-0e1927931b06@suse.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c8965005ceb09116@google.com>
-Subject: Re: [syzbot] divide error in genelink_tx_fixup
-From:   syzbot <syzbot+a6ec4dd9d38cb9261a77@syzkaller.appspotmail.com>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        oneukum@suse.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1804d7f3-c3bb-a90f-c86d-d96bff4235d2@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.85.98]
+X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> On 18.10.21 20:55, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    660a92a59b9e usb: xhci: Enable runtime-pm by default on AM..
->> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
->> console output: https://syzkaller.appspot.com/x/log.txt?x=1506ccf0b00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=5016916cdc0a4a84
->> dashboard link: https://syzkaller.appspot.com/bug?extid=a6ec4dd9d38cb9261a77
->> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11308734b00000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f56f68b00000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+a6ec4dd9d38cb9261a77@syzkaller.appspotmail.com
->
-> #syz test  
+On 18/10/2021 11:41, James Clark wrote:
+> 
+> 
+> On 15/10/2021 17:48, John Garry wrote:
+>> Currently no compiler warnings at all are enabled for building jevents,
+>> so help catch bugs at compile time by enabling through HOSTCFLAGS.
+> 
 
-unknown command "test\u00a0\u00a0"
+Hi James,
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git c03fb16bafdf
->
->
->
->
+> Is there any reason to not enable -Wall and -Werror so that it builds like
+> the main project? Or if HOSTCFLAGS ends up being the same as CORE_CFLAGS
+> then why not use CORE_CFLAGS instead?
+
+I am not sure that we really want that, as CORE_CFLAGS brings with it 
+things like _LARGEFILE64_SOURCE, which I doubt we want.
+
+> 
+> I added them like this and only one unused function needs to be removed to
+> make it build successfully:
+> 
+> 
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 65934984f032..b2edcedf01db 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -18,6 +18,8 @@ detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
+>   
+>   CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+>   HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+> +HOSTCFLAGS += -Wall
+> +HOSTCFLAGS += -Wextra
+>   
+>   include $(srctree)/tools/scripts/Makefile.arch
+>   
+> @@ -212,6 +214,7 @@ endif
+>   ifneq ($(WERROR),0)
+>     CORE_CFLAGS += -Werror
+>     CXXFLAGS += -Werror
+> +  HOSTCFLAGS += -Werror
+
+These seem fine to add. Actually what I have in HOSTCFLAGS doesn't seem 
+to detect unused functions, with one example fixed in b94729919db2.
+
+Thanks,
+John
