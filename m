@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9018E4334CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC6B4334E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235355AbhJSLj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhJSLj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:39:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25ED0610A1;
-        Tue, 19 Oct 2021 11:37:13 +0000 (UTC)
-Date:   Tue, 19 Oct 2021 12:37:10 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
-Message-ID: <YW6t5tBe/IjSYWn3@arm.com>
-References: <20211013054756.12177-1-rppt@kernel.org>
- <c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com>
- <YW5bjV128Qk1foIv@kernel.org>
+        id S235475AbhJSLlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:41:47 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:45424
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235415AbhJSLlj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:41:39 -0400
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4E8053FFF6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 11:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634643566;
+        bh=nX+hgZuu9fE6BhknlkkEZCMXVcIn2J/gsqHaBdOU6g0=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=KegxTO01XyXg5ktc6Scv/x72tjEP9P1n5XL0+Q7AvS3G8wXjYAYecGUmYOscCdNs5
+         CjFzMXNg6NYoz+o/QcMkFXuaqYt8dwCIbYXqQK7OuE4G5vYapzNezod8zU3CbLaD0W
+         yqDtdwTheXtuheJhuti7dOmRY99lvKIXcnuYcJeVfAYGbS+C43S7cCkDwYee8vNA5+
+         xGVAfarmbm62pD0HhTJDWBHxrMx8vbCDzeytq2p0n9p8EnROsM91EgnlWMIcMvzeHb
+         5m2hV7sqo6SfZnHwhkqwE4ixMGCCci0kqrYmXBFMmvgMircmDw0+0oaq4cRaUJWiIX
+         u/P69PKR15Agg==
+Received: by mail-pg1-f200.google.com with SMTP id n22-20020a6563d6000000b0029261ffde9bso11473881pgv.22
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:39:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nX+hgZuu9fE6BhknlkkEZCMXVcIn2J/gsqHaBdOU6g0=;
+        b=6mfNOvU3sS0sVYLibjW6AhtrdBY9v9G9bFy1P8LQmM/XNLz2TAG2KoY/PxST18xk2S
+         rsd9b0fJA1PT/keqxWEyLLaS5IKtsEapKG0rOoV62lKWFKIyvJv3bXNfjQQt5zT8UAnB
+         /R228FC4ILYWa348HQgVke18/6OEqOX9w1yDrD7ebmD2SSeZ+hGUzvKilOm+7IotL/v3
+         +5XjbP4CcAkG8z9OcYpiP8gvdq1mv4t6RiEuFTNKm+GrbHzQ2UKJRltdT69BvKuGfLz/
+         LBqMow+WK73FiP8L4p6Nf/cvC69494YLmRR+8j5ohpzwzlc20XaM71skXPRXHGErC7cP
+         A65Q==
+X-Gm-Message-State: AOAM533OawKB5hasyMQ+EgwDZ8Vp/dl0lPR9r0BUWt9dYiEujp55aoJT
+        C9b/lCUh61WIVpjj2M+2gC1Nf8yKhz3IerySjVusmSb+OcK6I02H2deKZBnT7RvHyLVT79V717U
+        0uJgTQe+0QtxHrZ6B+WwNBGLg8pd6wlw49tfnApz5XA==
+X-Received: by 2002:a17:902:e282:b0:13f:62b1:9a06 with SMTP id o2-20020a170902e28200b0013f62b19a06mr32926772plc.1.1634643564635;
+        Tue, 19 Oct 2021 04:39:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzyXR2OsgUdzLBM3eT6ViBbK3B7Gx8dj2DyWABV4UYbeu2DDl1H4b7QR4zEJNVXlKGlLVsziw==
+X-Received: by 2002:a17:902:e282:b0:13f:62b1:9a06 with SMTP id o2-20020a170902e28200b0013f62b19a06mr32926746plc.1.1634643564357;
+        Tue, 19 Oct 2021 04:39:24 -0700 (PDT)
+Received: from [192.168.1.124] ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id y18sm15951322pff.184.2021.10.19.04.39.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 04:39:23 -0700 (PDT)
+Subject: Re: [PATCH][linux-next] net/smc: prevent NULL dereference in
+ smc_find_rdma_v2_device_serv()
+To:     Karsten Graul <kgraul@linux.ibm.com>, linux-s390@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211018183128.17743-1-tim.gardner@canonical.com>
+ <ceb1a1ce-b4a4-7908-7d18-832cca1bfbe2@linux.ibm.com>
+From:   Tim Gardner <tim.gardner@canonical.com>
+Message-ID: <00975c56-da9a-2583-ac42-ae6a83e40050@canonical.com>
+Date:   Tue, 19 Oct 2021 05:39:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YW5bjV128Qk1foIv@kernel.org>
+In-Reply-To: <ceb1a1ce-b4a4-7908-7d18-832cca1bfbe2@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 08:45:49AM +0300, Mike Rapoport wrote:
-> On Mon, Oct 18, 2021 at 11:55:40PM -0400, Qian Cai wrote:
-> > On 10/13/2021 1:47 AM, Mike Rapoport wrote:
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > 
-> > > Vladimir Zapolskiy reports:
-> > > 
-> > > commit a7259df76702 ("memblock: make memblock_find_in_range method private")
-> > > invokes a kernel panic while running kmemleak on OF platforms with nomaped
-> > > regions:
-> > > 
-> > >   Unable to handle kernel paging request at virtual address fff000021e00000
-> > >   [...]
-> > >     scan_block+0x64/0x170
-> > >     scan_gray_list+0xe8/0x17c
-> > >     kmemleak_scan+0x270/0x514
-> > >     kmemleak_write+0x34c/0x4ac
-> > > 
-> > > Indeed, NOMAP regions don't have linear map entries so an attempt to scan
-> > > these areas would fault.
-> > > 
-> > > Prevent such faults by excluding NOMAP regions from kmemleak.
-> > > 
-> > > Link: https://lore.kernel.org/all/8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org
-> > > Fixes: a7259df76702 ("memblock: make memblock_find_in_range method private")
-> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > > Tested-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-> > 
-> > Mike, reverting this commit on the top of today's linux-next fixed the early booting hang
-> > on an arm64 server with kmemleak. Even with "earlycon", it could only print out those
-> > lines.
-> > 
-> > EFI stub: Booting Linux Kernel...
-> > EFI stub: EFI_RNG_PROTOCOL unavailable
-> > EFI stub: ERROR: FIRMWARE BUG: kernel image not aligned on 128k boundary
-> > EFI stub: ERROR: FIRMWARE BUG: Image BSS overlaps adjacent EFI memory region
-> > EFI stub: Using DTB from configuration table
-> > EFI stub: Exiting boot services…
-> > 
-> > I could help to confirm if it hangs right in the early boot somewhere if needed.
+
+
+On 10/19/21 12:33 AM, Karsten Graul wrote:
+> On 18/10/2021 20:31, Tim Gardner wrote:
+>> Coverity complains of a possible NULL dereference in smc_find_rdma_v2_device_serv().
+>>
+>> 1782        smc_v2_ext = smc_get_clc_v2_ext(pclc);
+>> CID 121151 (#1 of 1): Dereference null return value (NULL_RETURNS)
+>> 5. dereference: Dereferencing a pointer that might be NULL smc_v2_ext when calling smc_clc_match_eid. [show details]
+>> 1783        if (!smc_clc_match_eid(ini->negotiated_eid, smc_v2_ext, NULL, NULL))
+>> 1784                goto not_found;
+>>
+>> Fix this by checking for NULL.
 > 
-> The kernel config and a log of working kernel would help to start with.
+> Hmm that's a fundamental question for me: do we want to make the code checkers happy?
+> While I understand that those warnings give an uneasy feeling I am not sure
+> if the code should have additional (unneeded) checks only to avoid them.
+> 
 
-I don't think there's much in the log other than the EFI stub above.
+Coverity produces a lot of false positives. I thought this one might be 
+legitimate, but if you're comfortable that its not an issue then I'm OK 
+with that.
 
-> > start_kernel()
-> >   setup_arch()
-> >     paging_init()
-> >       map_mem()
-> >         memblock_mark_nomap(
+> In this case all NULL checks are initially done in smc_listen_v2_check(),
+> afterwards no more NULL checks are needed. When we would like to add them
+> then a lot more checks are needed, e.g. 3 times in smc_find_ism_v2_device_serv()
+> (not sure why coverity does not complain about them, too).
+> 
+> Thoughts?
+> 
 
-Is this actual trace? It would be good to know where exactly it got
-stuck.
+Coverity probably has produced a report from the other call sites if 
+you've used a similar pattern, I just hadn't gotten to them yet.
 
-> So we have kmemleak_free_part_phys() here.
+I'll just mark them all as false positives.
 
-I wonder whether the memblock_mark_nomap() here is too early for
-kmemleak. We don't have the linear map created, though it shouldn't be
-an issue as the kernel sections are mapped. Also I think
-delete_object_part() in kmemleak.c would bail out early as there
-shouldn't be any prior memblock_alloc for this range.
-
+rtg
 -- 
-Catalin
+-----------
+Tim Gardner
+Canonical, Inc
