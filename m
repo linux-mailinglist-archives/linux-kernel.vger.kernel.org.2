@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30951432D13
+	by mail.lfdr.de (Postfix) with ESMTP id 7C25C432D14
 	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233181AbhJSFTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 01:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
+        id S233522AbhJSFT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 01:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbhJSFTv (ORCPT
+        with ESMTP id S233119AbhJSFTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 01:19:51 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA19C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:39 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id ez7-20020a17090ae14700b001a132a1679bso1135275pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:39 -0700 (PDT)
+        Tue, 19 Oct 2021 01:19:52 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ABCC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:40 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d9so9399507pfl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:17:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iTWeQO2Mdg6bDDkAU7yT+BrO4BSg+e1FR9ssbbVUoBA=;
-        b=pZJlJoxn4e85Q4ATiX77se+8J/cyT9t1+A1D90IJI2YmZ49Nn2AhAJ+gL8E5hZa6LA
-         EY/mVj+YQ+n5NjSTaFNReBrToV0uS3mOEW8DxLtWHxoCQpCgdg0PiRlxUraGbMSwP9+3
-         /crvv+evNKZZTkc8Fu9yj0CoF04Mmk5A58pLwKEThRKtG8CbjeL4/QLwRYNi5CfI5HtT
-         LFuRc893rRfN2GKTtsy3w8FyiJtUlJhbrDm0Y+UeJV3wjzfq9XuB+kqo8wKIpenfR9Sz
-         axlbKhMbmN30x/LXIycXieIyzK9X374lCwSNJ+aIkKOLjhP4a+cXUbO+FX5SLpghe5Ff
-         3u0w==
+        bh=E97yT8hy4yQjsz2siz81ZUOBpPmnI0CI1OEE09TeSxw=;
+        b=pSTuv1nBD7aA6HBo4K3ES1BRFTFzfoV4odvOZ3VAyeWD11GEpz46koZHh0LaOShJrr
+         TEzhJO3Ai1dA7Cz/mZPKYIychasyBupTwZRjFzeh1qF/wjksr8nJkiUApyZNKe19Tfw5
+         9Dry3bRTTrhuCyxJ7torA8ow/Q8berMLr7FkwZCavJk6wjh0I+WJDtqSCnNxXOaV/63C
+         7cRQmJZqFp97UE0AmsA2IhW3QCIEwWLngVN29L0q3fU+Vg3u/6edKk7jKOSR1gOgwl69
+         kgLylwyNCWAqUUnuj5QOc3ILZyo8ugrWiHNTOVOvRTdPZ0j9dFrzkw0aK5SbAPAIY0vk
+         B6xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iTWeQO2Mdg6bDDkAU7yT+BrO4BSg+e1FR9ssbbVUoBA=;
-        b=O8Vcdt+jVN02kA45gnzNTxPHUpbEdtCVcVUG6rCijA/LcDutRQq54VEF800Au/Akln
-         GmVJMhUbb3KsAahekiSY44A+hVpm/NvIRXViSN2syNnGRG0/JWNfHOA0s/G/HSbw8bQE
-         oZdNdrgKWtDA4oxLHIhdi/MMbw/T/0M0eOUjjZsdhxhpO5N6CZtgukTBSwb3nCeZWs2+
-         c3h2amxkc6SbBzgcq5aMTWBO2ekkQbWo4IUKFsJ6HCfOUINjkJfLyHc6NTAy90mlAMce
-         mp9x+uaTUiima+xBGi1kWKRSPMOx3jAT3kr69B7shAYxzUO3W3X+Xd0BY1LloByHg2Q6
-         ZTiQ==
-X-Gm-Message-State: AOAM531zsh+7o8u1IfrPaNibF4ohQwG5cFKeSPCrbnOAGYTQGh7AsF0C
-        mmp97ghePiP5c1m6/GHrp3LF46mllm0=
-X-Google-Smtp-Source: ABdhPJww0j/UyodiSmkqcRrADEa+MCk6ersmucimEp143SVSGxEQOzfFjikvcGVwQ+NIPXgCa3K/sw==
-X-Received: by 2002:a17:90a:9297:: with SMTP id n23mr4016635pjo.199.1634620658694;
-        Mon, 18 Oct 2021 22:17:38 -0700 (PDT)
+        bh=E97yT8hy4yQjsz2siz81ZUOBpPmnI0CI1OEE09TeSxw=;
+        b=crWwcXd/t1X3KWr11K18AD4uF0OVSod58OdBjCoZkwqthFe7gfPtCkBQXXOBBlWmqa
+         /aUjeJKoM9GuZDw2gVPehUz6Rl7U4ZY0vdxogegMnrey0m7SQ5JkiY1FmZTJyHcCK7cB
+         1WANWFQuhGhcklbCI/IiSMFzPg/bgiTmS5Mvf7k9+39Unue+r5by3EUsFBcZBbsy8zof
+         2h5HWGHiWQScOdp1IFhkk0b7enkm/O51Q0wL0XeSdM420OxWelyl9x++ya3vd6a/Qkm3
+         4KK7L/ARgltzIobmimpqUwlctqa4bBQ9aobfR7EJ2IZMP3NBtHVVJRbH7/jr7H8TC/hN
+         /1dw==
+X-Gm-Message-State: AOAM530xNhfSOFRMvf1baP5YJW0PF4LfTfklP6qFLh3ii2vhh93B0hq1
+        Mae7pgDRGTgPx5+B1YI1ZR0ZxVM1aTE=
+X-Google-Smtp-Source: ABdhPJye9KzM3Lpwia8jWssfE/3vVkbWwswo5w8mSSvPcsjfr59h3BD9MkeDz5YlJ9qIc4TqY9dywQ==
+X-Received: by 2002:a05:6a00:2181:b0:44c:f4bc:2f74 with SMTP id h1-20020a056a00218100b0044cf4bc2f74mr33061725pfi.68.1634620659820;
+        Mon, 18 Oct 2021 22:17:39 -0700 (PDT)
 Received: from octofox.hsd1.ca.comcast.net ([2601:641:401:1d20:4171:83c2:8384:24c5])
-        by smtp.gmail.com with ESMTPSA id me12sm1168844pjb.27.2021.10.18.22.17.37
+        by smtp.gmail.com with ESMTPSA id me12sm1168844pjb.27.2021.10.18.22.17.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 22:17:38 -0700 (PDT)
+        Mon, 18 Oct 2021 22:17:39 -0700 (PDT)
 From:   Max Filippov <jcmvbkbc@gmail.com>
 To:     linux-xtensa@linux-xtensa.org
 Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
         Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH 03/10] xtensa: don't use a12 in strncpy_user
-Date:   Mon, 18 Oct 2021 22:17:09 -0700
-Message-Id: <20211019051716.4173-4-jcmvbkbc@gmail.com>
+Subject: [PATCH 04/10] xtensa: don't use a12 in __xtensa_copy_user in call0 ABI
+Date:   Mon, 18 Oct 2021 22:17:10 -0700
+Message-Id: <20211019051716.4173-5-jcmvbkbc@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211019051716.4173-1-jcmvbkbc@gmail.com>
 References: <20211019051716.4173-1-jcmvbkbc@gmail.com>
@@ -65,78 +65,103 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 a12 is callee-saved register in xtensa call0 ABI, so a function must not
-change it. a10 is not used in this function at all, use it instead of
-a12 to avoid saving/restoring it.
+change it. The main unaligned copy loop of __xtensa_copy_user uses all
+low-numbered registers, so a register must be spilled to avoid using a12
+as a loop counter.
 
 Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 ---
- arch/xtensa/lib/strncpy_user.S | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ arch/xtensa/lib/usercopy.S | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/arch/xtensa/lib/strncpy_user.S b/arch/xtensa/lib/strncpy_user.S
-index 4faf46fe3f38..0731912227d3 100644
---- a/arch/xtensa/lib/strncpy_user.S
-+++ b/arch/xtensa/lib/strncpy_user.S
-@@ -45,7 +45,6 @@
- #   a9/ tmp
- #   a10/ tmp
- #   a11/ dst
--#   a12/ tmp
+diff --git a/arch/xtensa/lib/usercopy.S b/arch/xtensa/lib/usercopy.S
+index a0aa4047f94a..16128c094c62 100644
+--- a/arch/xtensa/lib/usercopy.S
++++ b/arch/xtensa/lib/usercopy.S
+@@ -60,7 +60,12 @@
+ 	.text
+ ENTRY(__xtensa_copy_user)
  
- .text
- ENTRY(__strncpy_user)
-@@ -61,7 +60,7 @@ ENTRY(__strncpy_user)
- 	bbsi.l	a3, 0, .Lsrc1mod2 # if only  8-bit aligned
- 	bbsi.l	a3, 1, .Lsrc2mod4 # if only 16-bit aligned
- .Lsrcaligned:	# return here when src is word-aligned
--	srli	a12, a4, 2	# number of loop iterations with 4B per loop
-+	srli	a10, a4, 2	# number of loop iterations with 4B per loop
- 	movi	a9, 3
- 	bnone	a11, a9, .Laligned
- 	j	.Ldstunaligned
-@@ -102,11 +101,11 @@ EX(10f)	s8i	a9, a11, 0		# store byte 0
- 	.byte	0		# (0 mod 4 alignment for LBEG)
- .Laligned:
- #if XCHAL_HAVE_LOOPS
--	loopnez	a12, .Loop1done
-+	loopnez	a10, .Loop1done
- #else
--	beqz	a12, .Loop1done
--	slli	a12, a12, 2
--	add	a12, a12, a11	# a12 = end of last 4B chunck
-+	beqz	a10, .Loop1done
-+	slli	a10, a10, 2
-+	add	a10, a10, a11	# a10 = end of last 4B chunck
- #endif
- .Loop1:
- EX(11f)	l32i	a9, a3, 0		# get word from src
-@@ -118,7 +117,7 @@ EX(10f)	s32i	a9, a11, 0		# store word to dst
- 	bnone	a9, a8, .Lz3		# if byte 3 is zero
- 	addi	a11, a11, 4		# advance dst pointer
+-	abi_entry_default
++#if !XCHAL_HAVE_LOOPS && defined(__XTENSA_CALL0_ABI__)
++#define STACK_SIZE 4
++#else
++#define STACK_SIZE 0
++#endif
++	abi_entry(STACK_SIZE)
+ 	# a2/ dst, a3/ src, a4/ len
+ 	mov	a5, a2		# copy dst so that a2 is return value
+ 	mov	a11, a4		# preserve original len for error case
+@@ -75,7 +80,7 @@ ENTRY(__xtensa_copy_user)
+ 	__ssa8	a3		# set shift amount from byte offset
+ 	bnez	a4, .Lsrcunaligned
+ 	movi	a2, 0		# return success for len==0
+-	abi_ret_default
++	abi_ret(STACK_SIZE)
+ 
+ /*
+  * Destination is unaligned
+@@ -127,7 +132,7 @@ EX(10f)	s8i	a6, a5, 0
+ #endif /* !XCHAL_HAVE_LOOPS */
+ .Lbytecopydone:
+ 	movi	a2, 0		# return success for len bytes copied
+-	abi_ret_default
++	abi_ret(STACK_SIZE)
+ 
+ /*
+  * Destination and source are word-aligned.
+@@ -187,7 +192,7 @@ EX(10f)	l8ui	a6, a3,  0
+ EX(10f)	s8i	a6, a5,  0
+ .L5:
+ 	movi	a2, 0		# return success for len bytes copied
+-	abi_ret_default
++	abi_ret(STACK_SIZE)
+ 
+ /*
+  * Destination is aligned, Source is unaligned
+@@ -205,8 +210,14 @@ EX(10f)	l32i	a6, a3, 0	# load first word
+ 	loopnez	a7, .Loop2done
+ #else /* !XCHAL_HAVE_LOOPS */
+ 	beqz	a7, .Loop2done
++#if defined(__XTENSA_CALL0_ABI__)
++	s32i	a10, a1, 0
++	slli	a10, a7, 4
++	add	a10, a10, a3	# a10 = end of last 16B source chunk
++#else
+ 	slli	a12, a7, 4
+ 	add	a12, a12, a3	# a12 = end of last 16B source chunk
++#endif
+ #endif /* !XCHAL_HAVE_LOOPS */
+ .Loop2:
+ EX(10f)	l32i	a7, a3,  4
+@@ -224,7 +235,12 @@ EX(10f)	s32i	a8, a5,  8
+ EX(10f)	s32i	a9, a5, 12
+ 	addi	a5, a5, 16
  #if !XCHAL_HAVE_LOOPS
--	blt	a11, a12, .Loop1
-+	blt	a11, a10, .Loop1
- #endif
++#if defined(__XTENSA_CALL0_ABI__)
++	blt	a3, a10, .Loop2
++	l32i	a10, a1, 0
++#else
+ 	blt	a3, a12, .Loop2
++#endif
+ #endif /* !XCHAL_HAVE_LOOPS */
+ .Loop2done:
+ 	bbci.l	a4, 3, .L12
+@@ -264,7 +280,7 @@ EX(10f)	l8ui	a6, a3,  0
+ EX(10f)	s8i	a6, a5,  0
+ .L15:
+ 	movi	a2, 0		# return success for len bytes copied
+-	abi_ret_default
++	abi_ret(STACK_SIZE)
  
- .Loop1done:
-@@ -185,7 +184,7 @@ EX(10f)	s8i	a9, a11, 2
- 	loopnez	a4, .Lunalignedend
- #else
- 	beqz	a4, .Lunalignedend
--	add	a12, a11, a4		# a12 = ending address
-+	add	a10, a11, a4		# a10 = ending address
- #endif /* XCHAL_HAVE_LOOPS */
- .Lnextbyte:
- EX(11f)	l8ui	a9, a3, 0
-@@ -194,7 +193,7 @@ EX(10f)	s8i	a9, a11, 0
- 	beqz	a9, .Lunalignedend
- 	addi	a11, a11, 1
- #if !XCHAL_HAVE_LOOPS
--	blt	a11, a12, .Lnextbyte
-+	blt	a11, a10, .Lnextbyte
- #endif
+ ENDPROC(__xtensa_copy_user)
  
- .Lunalignedend:
+@@ -281,4 +297,4 @@ ENDPROC(__xtensa_copy_user)
+ 10:
+ 	sub	a2, a5, a2	/* a2 <-- bytes copied */
+ 	sub	a2, a11, a2	/* a2 <-- bytes not copied */
+-	abi_ret_default
++	abi_ret(STACK_SIZE)
 -- 
 2.20.1
 
