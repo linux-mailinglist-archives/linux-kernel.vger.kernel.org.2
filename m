@@ -2,169 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FECE434152
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D13434158
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 00:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhJSW0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 18:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhJSW0a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 18:26:30 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B618C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:24:17 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id om14so1015637pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 15:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7DYCUknc3dQUBnoaGeUnyUU/CuK4FgSm2oYsWvbJD5E=;
-        b=ba33n7vXoirIraKwU+JkwtO9KxLQ6aPywRIkMDrDzPTXzSRhapzDByeCLM0PAr0rKm
-         vAsZVDuWksxGPfUulEA8y14nUsrf6mN7IMNQVc0ccewhv6VJ6gv8mM/dVArwPTmVQAQM
-         yw+YYdfPHR8gYaTyH+R7PtJlIPir+cfv2J89mVEQCGGlpR2nGup3mHTZeZAG03rsmqVB
-         eyW9W0lbCChrj1bhkyGJd8Ln1F9rQurWt5kc24B9cMXANjtlvOK4eOitvh/itFg08B1j
-         BZ4GAgVTcElDI/DWXfuf4kD+zYv9qK76JsHp5fmrqkGTf6YK/D9r+jMY8uCFR36v2AC9
-         /9NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7DYCUknc3dQUBnoaGeUnyUU/CuK4FgSm2oYsWvbJD5E=;
-        b=h04AsfiYSTPoOivCGFlA4scW3zZVkGUnFmgfr6f73IrhDcuVgIaSol+SjxdHzp+XE3
-         P7bAtQA9VLjOu1sOHYtuqVf+T9FJcmBfnLOSX5dLwchKiN/XFwaH7rP/+vT+k0d9bLvl
-         OmOpuzQslAUbGsGTjYKqLJL8mFdNo39gWAPBHyv+TwJ9plaobrIrZap0VL/5qSTYePS5
-         vWaV/k+giFmrKoMoBasHgBP9YTFSvwqh0CNvPG6r4nCMUdgNh9MNwyuLMzZHKI0lacsE
-         3CkQ53k6GycJ/wPyLeFaT0NYzSRAyTQSmOTYXB4pGJmPos6cL6t7Qa+M5q9ba+RnmvoQ
-         yDRA==
-X-Gm-Message-State: AOAM5329jhGVHqO0UnaffEiEwBQN06CwyA9sPph80NptQqZSFXporq7a
-        jZz1dUAtvTU1XXLJ7kV5CwXOZA==
-X-Google-Smtp-Source: ABdhPJwvxhW/BXgKa0H3kIJtuPrBi6OJ/RRAqa+whZ3cQ7SanraNICIPOafZ0qis8jqNs/OwFMjYCg==
-X-Received: by 2002:a17:90a:d48e:: with SMTP id s14mr3026552pju.49.1634682256598;
-        Tue, 19 Oct 2021 15:24:16 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z13sm217243pfq.130.2021.10.19.15.24.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 15:24:15 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 22:24:11 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 01/13] KVM: x86: Cache total page count to avoid
- traversing the memslot array
-Message-ID: <YW9Fi128rYxiF1v3@google.com>
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
+        id S229777AbhJSW2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 18:28:51 -0400
+Received: from ixit.cz ([94.230.151.217]:54002 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229632AbhJSW2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 18:28:40 -0400
+Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id AD26920064;
+        Wed, 20 Oct 2021 00:26:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1634682386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jg69UQKQD2tfZXqs0E8mJ/KCQlQAP8qmUqnBxG4Qmc=;
+        b=oDJMZM2oqDFrpN31K5nWQscg6a1VUzgAVbDDln45t1tsQpX4+3jO4cNelc7PqdzfMzUG3j
+        7JHGAVnRzDU9vMNIfQrp6L7UYoWI/n8rUDcQbovynNtE3tN5Ex8QnhXTAaHBIKs/1lB/as
+        lgRsGXHVAyppd4bcv4qIBgcBaULVj9M=
+Date:   Wed, 20 Oct 2021 00:24:52 +0200
+From:   David Heidelberg <david@ixit.cz>
+Subject: Re: [PATCH] WIP: dt-bindings: arm: firmware: tlm,trusted-foundations:
+ Convert txt bindings to yaml
+To:     Rob Herring <robh@kernel.org>
+Cc:     Stephen Warren <swarren@nvidia.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht
+Message-Id: <GXW81R.AUXV3AJ9VUDL@ixit.cz>
+In-Reply-To: <YW86yrhJBTunU121@robh.at.kernel.org>
+References: <20211009104518.45596-1-david@ixit.cz>
+        <YW86yrhJBTunU121@robh.at.kernel.org>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+
+
+
+On Tue, Oct 19 2021 at 16:38:18 -0500, Rob Herring <robh@kernel.org> 
+wrote:
+> On Sat, Oct 09, 2021 at 12:45:18PM +0200, David Heidelberg wrote:
+>>  Convert Trusted Foundation binding to the YAML syntax.
 > 
-> There is no point in recalculating from scratch the total number of pages
-> in all memslots each time a memslot is created or deleted.
+> Looks fine. Why WIP?
 > 
-> Just cache the value and update it accordingly on each such operation so
-> the code doesn't need to traverse the whole memslot array each time.
+
+Can you drop the WIP prefix I forgot or should I resend?
+
+
+> If version number ranges are known, you could add constraints on 
+> those.
+
+from driver:
+         * we are not using version information for now since currently
+         * supported SMCs are compatible with all TF releases
+so I guess at least driver currently doesn't care and know any enums.
+
+David
+
 > 
-> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> ---
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 28ef14155726..65fdf27b9423 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11609,9 +11609,23 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
->  				const struct kvm_memory_slot *new,
->  				enum kvm_mr_change change)
->  {
-> -	if (!kvm->arch.n_requested_mmu_pages)
-> -		kvm_mmu_change_mmu_pages(kvm,
-> -				kvm_mmu_calculate_default_mmu_pages(kvm));
-> +	if (change == KVM_MR_CREATE)
-> +		kvm->arch.n_memslots_pages += new->npages;
-> +	else if (change == KVM_MR_DELETE) {
-> +		WARN_ON(kvm->arch.n_memslots_pages < old->npages);
-> +		kvm->arch.n_memslots_pages -= old->npages;
-> +	}
-> +
-> +	if (!kvm->arch.n_requested_mmu_pages) {
+>> 
+>>  Signed-off-by: David Heidelberg <david@ixit.cz>
+>>  ---
+>>   .../arm/firmware/tlm,trusted-foundations.txt  | 20 --------
+>>   .../arm/firmware/tlm,trusted-foundations.yaml | 46 
+>> +++++++++++++++++++
+>>   2 files changed, 46 insertions(+), 20 deletions(-)
+>>   delete mode 100644 
+>> Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.txt
+>>   create mode 100644 
+>> Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
+>> 
+>>  diff --git 
+>> a/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.txt 
+>> b/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.txt
+>>  deleted file mode 100644
+>>  index 780d0392a66b..000000000000
+>>  --- 
+>> a/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.txt
+>>  +++ /dev/null
+>>  @@ -1,20 +0,0 @@
+>>  -Trusted Foundations
+>>  --------------------
+>>  -
+>>  -Boards that use the Trusted Foundations secure monitor can signal 
+>> its
+>>  -presence by declaring a node compatible with 
+>> "tlm,trusted-foundations"
+>>  -under the /firmware/ node
+>>  -
+>>  -Required properties:
+>>  -- compatible: "tlm,trusted-foundations"
+>>  -- tlm,version-major: major version number of Trusted Foundations 
+>> firmware
+>>  -- tlm,version-minor: minor version number of Trusted Foundations 
+>> firmware
+>>  -
+>>  -Example:
+>>  -	firmware {
+>>  -		trusted-foundations {
+>>  -			compatible = "tlm,trusted-foundations";
+>>  -			tlm,version-major = <2>;
+>>  -			tlm,version-minor = <8>;
+>>  -		};
+>>  -	};
+>>  diff --git 
+>> a/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml 
+>> b/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
+>>  new file mode 100644
+>>  index 000000000000..9d1857c0aa07
+>>  --- /dev/null
+>>  +++ 
+>> b/Documentation/devicetree/bindings/arm/firmware/tlm,trusted-foundations.yaml
+>>  @@ -0,0 +1,46 @@
+>>  +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>  +%YAML 1.2
+>>  +---
+>>  +$id: 
+>> "http://devicetree.org/schemas/arm/firmware/tlm,trusted-foundations.yaml#"
+>>  +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>>  +
+>>  +title: Trusted Foundations
+>>  +
+>>  +description: |
+>>  +  Boards that use the Trusted Foundations secure monitor can 
+>> signal its
+>>  +  presence by declaring a node compatible under the /firmware/ node
+>>  +
+>>  +maintainers:
+>>  +  - Stephen Warren <swarren@nvidia.com>
+>>  +
+>>  +properties:
+>>  +  $nodename:
+>>  +    const: trusted-foundations
+>>  +
+>>  +  compatible:
+>>  +    const: tlm,trusted-foundations
+>>  +
+>>  +  tlm,version-major:
+>>  +    $ref: /schemas/types.yaml#/definitions/uint32
+>>  +    description: major version number of Trusted Foundations 
+>> firmware
+>>  +
+>>  +  tlm,version-minor:
+>>  +    $ref: /schemas/types.yaml#/definitions/uint32
+>>  +    description: minor version number of Trusted Foundations 
+>> firmware
+>>  +
+>>  +required:
+>>  +  - compatible
+>>  +  - tlm,version-major
+>>  +  - tlm,version-minor
+>>  +
+>>  +additionalProperties: false
+>>  +
+>>  +examples:
+>>  +  - |
+>>  +    firmware {
+>>  +      trusted-foundations {
+>>  +        compatible = "tlm,trusted-foundations";
+>>  +        tlm,version-major = <2>;
+>>  +        tlm,version-minor = <8>;
+>>  +      };
+>>  +    };
+>>  --
+>>  2.33.0
+>> 
+>> 
 
-Hmm, once n_requested_mmu_pages is set it can't be unset.  That means this can be
-further optimized to skip avoid taking mmu_lock on flags-only changes (and
-memslot movement).  E.g.
 
-	if (!kvm->arch.n_requested_mmu_pages &&
-	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
-
-	}
-
-It's a little risky, but kvm_vm_ioctl_set_nr_mmu_pages() would need to be modified
-to allow clearing n_requested_mmu_pages and it already takes slots_lock, so IMO
-it's ok to force kvm_vm_ioctl_set_nr_mmu_pages() to recalculate pages if it wants
-to allow reverting back to the default.
-
-> +		u64 memslots_pages;
-> +		unsigned long nr_mmu_pages;
-> +
-> +		memslots_pages = kvm->arch.n_memslots_pages * KVM_PERMILLE_MMU_PAGES;
-> +		do_div(memslots_pages, 1000);
-> +		nr_mmu_pages = max_t(typeof(nr_mmu_pages),
-> +				     memslots_pages, KVM_MIN_ALLOC_MMU_PAGES);
-
-"memslots_pages" is a bit of a misnomer.  Any objection to avoiding naming problems
-by explicitly casting to an "unsigned long" and simply operating on nr_mmu_pages?
-
-		nr_mmu_pages = (unsigned long)kvm->arch.n_memslots_pages;
-		nr_mmu_pages *= (KVM_PERMILLE_MMU_PAGES / 1000);
-		nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
-		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
-
-E.g. the whole thing can be
-
-	if (!kvm->arch.n_requested_mmu_pages &&
-	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
-		unsigned long nr_mmu_pages;
-
-		if (change == KVM_MR_CREATE) {
-			kvm->arch.n_memslots_pages += new->npages;
-		} else {
-			WARN_ON(kvm->arch.n_memslots_pages < old->npages);
-			kvm->arch.n_memslots_pages -= old->npages;
-		}
-
-		nr_mmu_pages = (unsigned long)kvm->arch.n_memslots_pages;
-		nr_mmu_pages *= (KVM_PERMILLE_MMU_PAGES / 1000);
-		nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
-		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
-	}
-
-> +		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
-> +	}
->  
->  	kvm_mmu_slot_apply_flags(kvm, old, new, change);
->  
