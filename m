@@ -2,324 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41458432C04
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6817432C0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbhJSDF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhJSDF1 (ORCPT
+        id S231872AbhJSDIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:08:52 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:60914 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229692AbhJSDIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:05:27 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CD8C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:03:15 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id q129so2834517oib.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XwmJSb7nfcImajEHpUl9n5s2C1XLnIf9H2t02kWUkyE=;
-        b=d7WhzgQZumD+mKfAN3pEkh+FsOSx4RvMVl0+yJ3KkQLf7ae0KRsQq65AB7IskWvtdJ
-         fh6Qv1Q8D08OcHWBilLu3/E2MSHh2RJwosWxNjXJyUVjqBhIYR8bfYXp3sxKxMJpTxJL
-         C/W9G6L7aug5Du3kd6RSP7UfGheBeVT715xeQebaxR2SNS1qeGe4sGA81qjyR4Fh6TUC
-         M/FV8GJ2sLsijO1rkhMNQTsIdlt0lon2MXRkkd4au5wwBiGEb7M1sxrknlvYBodX9ZCb
-         j3veVj/h4kGf/DOymtQfLXvSkLgkCR7MUimW9SyTgkKGRkKNv3UyVDizsjWtK9S9iPbB
-         lhQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XwmJSb7nfcImajEHpUl9n5s2C1XLnIf9H2t02kWUkyE=;
-        b=mC7YnPdfmK5SJaBXy69lFcjfDpUbphx6P2gKRlHiQLdyLSOLLMcF/FkqC8ABvl+VLm
-         +qCFKC4rL8wjZATFBlQMo7Koz7ViOjoweaChi47i3FJqNgKhbhoiK1ZbyAQ7jY30C4PI
-         GX/3+3Reh3npG6K3nCLGcAptVU5aJNnnhYuaf2qD/cFejHMw0dO1UiRKWXz0l/vnFPUQ
-         +kyZAtLuZJI9IBWSEAA1nl2FiDgGdL+yIdTM/rjmzSkPsg9KGZZ51qXLepZQ0ecfygeI
-         Kmb7L/6OKCLvaIk3TfrAUHBx1pK0ft8Ejhv7Xb5vooN6t0hND6/B7bvMIHof36zS2Kb8
-         j4bA==
-X-Gm-Message-State: AOAM5310ouaJxSX5UPe6ZCV+nv0wHnoVE0Roz58qGkRCT/FcwgmXHkZy
-        StwvboRtYifJXWONVWgKNfL1dw==
-X-Google-Smtp-Source: ABdhPJwHIshzVSAdfWycMFyp1q7PzfOrZtlJuLMoAYOYAX6Ub/AFZ3XygOaYuoyjr6Mijr4Fq+5hlg==
-X-Received: by 2002:aca:59c4:: with SMTP id n187mr2160329oib.11.1634612594596;
-        Mon, 18 Oct 2021 20:03:14 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id j8sm1026198otu.59.2021.10.18.20.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 20:03:14 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 20:05:00 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Deepak Kumar Singh <deesin@codeaurora.org>, swboyd@chromium.org,
-        clew@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Subject: Re: [PATCH V1 1/3] rpmsg: core: Add signal API support
-Message-ID: <YW413AjBmkpNH0Yk@ripper>
-References: <1633015924-881-1-git-send-email-deesin@codeaurora.org>
- <1633015924-881-2-git-send-email-deesin@codeaurora.org>
- <20211011180245.GA3817586@p14s>
- <YWpcq2Uy9wM1voRH@yoga>
- <20211018175225.GF3163131@p14s>
+        Mon, 18 Oct 2021 23:08:49 -0400
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19J2ZK1r025234;
+        Tue, 19 Oct 2021 03:06:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version; s=PPS06212021;
+ bh=fE0lxglUEH2rUj09qhmKPE0wUI444bua2uVZXrL+j+o=;
+ b=UmeFKIpBPddPjfivmcLUky7Y1hKGVcfJFjjSECBYnXKM4ndBBjec4XxL83m8Rh3eF9ee
+ cKmvG3POfn/6MOB4bn9aE1x6N5OxHIs7dAAxzNF8yqbP62UE3agVO8n6Gx+y6Vo32rZj
+ B8QS/lUcfz+aLE6n+hHfZyGrHTnrET0B+IMsMn+2+rGBkn2XTJbquwBWHlNIRa/a0nDN
+ sYBKBV/tsO4wuhnyesv4Qt/BF9qJ93NqrAKIjTTOtewRPKDQcGNkqC/c5TtDiULNgAeO
+ S8wr1gmlb3229r60wKxzERYR+5Juz4wuUe+h23M6lZsF9y3GLOlAa9jVpZu48meuVKPJ AA== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
+        by mx0a-0064b401.pphosted.com with ESMTP id 3bs9apgk9v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 03:06:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ofKgJjgoavR45NPAc2+ph8NGPEVikX+xuAQYtbTNXRuX4YeD1VwFXH4eGiQpYHRHt8K+ebYOlstOnhXT2zJ4YlcW3lnWHbtGk3ITpwzkR8+Wi169zR505wPJfPyRFwiVz/w5a+NS6c+ytxqEUSNcU35jy4jj/Sqw4jKb7HgaOMQKLrRWir2hVCPr5xTNgjsW/7BQbnI3qGpB36U7t72Tz4blzvUW0nmFe05FJYQdWXPox9wlnQh4iYvqg96P5beyOXDeRPgYPQorGflk4cmpE2LdPfdyPDcekItnaSENvtkXfDSn033XKAVHCsHbDOhmo1bhb9mWMyKLwnGvjEqW/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fE0lxglUEH2rUj09qhmKPE0wUI444bua2uVZXrL+j+o=;
+ b=lSe+UuL4QRRVuM6b3sFLBZMT7kYZTAYPK6AeNUCaL2FcwzEDkOJEkfsPd6smDaGqYLOBSJ+pI0f6LzKFqQutyWJL1ZtHRtpERYpH8XxmZb1iUHn4GEzEJJrz6QuXweUdIdS/gQpKrE8fu+/PPKeWG2nXxgj3/XgBmiK/t6+QInwDJn1x4pZrSIVVIGwbY6HCGO63u/RE2rtcmB7GNJv8eoku8uFTD+snkuR9dlOVloYh7vlkvtp8nDzAoiFvtRAwawe/AVt6Y3zwxUmPtciFeLPsZ1eEzmRSKhMBUyrmTbFSOSMkAw5XJGwqcluqP+OBn3yZrObejxnxyYYp+WrkRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=windriver.com;
+Received: from PH0PR11MB5191.namprd11.prod.outlook.com (2603:10b6:510:3e::24)
+ by PH0PR11MB5927.namprd11.prod.outlook.com (2603:10b6:510:14e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
+ 2021 03:06:18 +0000
+Received: from PH0PR11MB5191.namprd11.prod.outlook.com
+ ([fe80::c11a:b99e:67ce:4a14]) by PH0PR11MB5191.namprd11.prod.outlook.com
+ ([fe80::c11a:b99e:67ce:4a14%8]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 03:06:18 +0000
+From:   Meng.Li@windriver.com
+To:     Roy.Pledge@nxp.com, leoyang.li@nxp.com, youri.querry_1@nxp.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, meng.li@windriver.com
+Subject: [PATCH] driver: soc: dpio: use the whole functions to protect critical zone
+Date:   Tue, 19 Oct 2021 11:05:55 +0800
+Message-Id: <20211019030555.29461-1-Meng.Li@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR0401CA0012.apcprd04.prod.outlook.com
+ (2603:1096:202:2::22) To PH0PR11MB5191.namprd11.prod.outlook.com
+ (2603:10b6:510:3e::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018175225.GF3163131@p14s>
+Received: from pek-mli1-d2.wrs.com (60.247.85.82) by HK2PR0401CA0012.apcprd04.prod.outlook.com (2603:1096:202:2::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17 via Frontend Transport; Tue, 19 Oct 2021 03:06:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b8c57d1f-0c5c-47d9-2dec-08d992ad6b8f
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5927:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR11MB5927F0825FD1AB1693F9A742F1BD9@PH0PR11MB5927.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:989;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sEOraeYWAhbYB+XAitQCrMFnHV/mNImGRUDWc2jO+dMxsGwU+P1FIAJSKkQeswcX+t9NbhpItkRI7XN9nq+2GdDgQUaZyAidEiCtFsHN8xb8IP2vE3uAL5tpES2K8pemX5KFzldrNnkGHZaADRCTxDJeNPOJx2ZiESm0de76KqRCfABaaTvqZRhoOAeZOVUzA2V6Ygb+kUCSz4T4opEPrGsnjP9TJHdo/iuTCSg3DajZZlRKlDPGZ5gc1RcGbAWrwq8CYxs82JdNqvsQELpXznNPECOGU1p8Xkxd7SpwcLTqkrgIDUozba+i7E2eGOdsFPDdjubL9nrtFCAxBIXzbYz/mbEh+4Efb4/iQ/ZusYpekDHezWnxSYMgeHuiRWuODwg2Y6WC8Ttx9nADmFoDYUgDV1shgrDyDFyti2/2Ss1IdSqCnukLQMGOtfV2rDffbn1MIXH7Lg5UDPwbrcq+Y2gWB3A6/tjjSD9wzB34dIvN0NlawZGH761opyVrbWXWC6Ix592rgeLb3bvmkd0qndKd+C3QqoYARVvjL47aAZL002s4It06c9nUXYs/ol2C2wmCAztr/Fyg26ZN54QVcKFiDeYxJPoUej04lynZiASeLtl+k517aOQFFblrr8EKARjOwPsR1U2McvyHJi+jcPP1/vd2UgSYN3p9VxNFEz83t4IxU0mpgmMO3vL86Un/CuAfmA1EM9zGOU2g6fA2Ug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5191.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(86362001)(9686003)(8936002)(6506007)(38100700002)(8676002)(52116002)(2616005)(107886003)(38350700002)(1076003)(6666004)(6512007)(956004)(4326008)(508600001)(26005)(316002)(186003)(5660300002)(36756003)(66556008)(6486002)(66476007)(66946007)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4DdH4d4qSYeYXitr2lhPMriqwmatpMoztSziDi0RcESMW+0FxlRRKhgLdUcf?=
+ =?us-ascii?Q?3qD2S5idXDNiGU748SuS4cbtO7BCGee8wHqhAKFcKqlJLmQQavOksbPMkZWH?=
+ =?us-ascii?Q?uvE8A4RtgR3ZcepYWnbi6dyy4JlY8lzu9xZqi8o5vnlLI1X+mHECUgRDQ3/i?=
+ =?us-ascii?Q?lCvGPHyCiq5l2OSM9NKa8N6spV+96v2X2RMsVKMU/e6Iw7L+CyPJW+SfBKO/?=
+ =?us-ascii?Q?n/IRkg7DBhkROP2eKQEkmF8MxfeWW3aEJN8xlLyEpgTD6+iiZnO0pOTgq1xG?=
+ =?us-ascii?Q?UglPG0tF9TZtHJ2nkChLm/M1UbLYRXRIMnjD01BGAc9uB+v365B42A4DUr4g?=
+ =?us-ascii?Q?QyPKG1/OJFDjQIf7o8ID7OhQnGXA2bCyoeSHmxexLhwWvKn5vvrh/nK8f/3+?=
+ =?us-ascii?Q?0QUWAUjkMxzKV5Io81HYfJunSI73+vdk6c1JlVfAM1hyJsB4GhGvKFA9lc9z?=
+ =?us-ascii?Q?QEAhNM11N1K8WSFOzE6Sc1oVFD5B8v2TpEo3d5Kbsm5aa2B6Q+qeSbr8IvgY?=
+ =?us-ascii?Q?AEv22wggUGxjLa9N0zXrYrzqbP0Q2tZGRp7/ObuGh/e6TAgQ59JQvgoAaCza?=
+ =?us-ascii?Q?mf0CN68/B8U9o36EUr96yt34Qua2T5tXlrStx4eecF3hOuuPhfyoEcM/EivZ?=
+ =?us-ascii?Q?ovgvka8Vyd+LU+rNf7ODsAiqoX3gzu5qD28FYBzqgpIjL6zSIpRulhJbJ5SW?=
+ =?us-ascii?Q?EAZrMXrSEIAwwdHes0bua+bUjYTJIIw/X6Y1h+aNyCNp2KBQAh38fPv1tXx5?=
+ =?us-ascii?Q?4PFNQnihiOPszsGBp8gwET7ytFYeNrD3UEi3yuhVF5IehLPG5VcYd3Un2P8s?=
+ =?us-ascii?Q?2GsvN26+ssJ0JaqKY73cq6WLpc+OzXaEbZ7xtmp+POi/CU9tT+mOAtzk5pf8?=
+ =?us-ascii?Q?yWCbb6O7nJNvgTTvSVM1RhJENYC4mnBHRw6FJbEQh57WPiaJIjogPYJ+QRAN?=
+ =?us-ascii?Q?SVtOjRdmcZINMfACOTH+YK2or00M9D5jbDTwO0B1Yt60m5MWZ0EVgEqR8miU?=
+ =?us-ascii?Q?MG2brYqkfU2Cps9/LdQAodng1NvUKJHJqYYNRsnB6oR39pihRZfRObiCSPay?=
+ =?us-ascii?Q?2+hYTupE+QPWt0W7/gtx1PoqvCg4BZR9tAFyRI3U/DUGOnOBwbsTotOuJzSl?=
+ =?us-ascii?Q?qosL8trBEzjcqz0G7YVR2ZZ8ldIpQb+pCaF3LpyDQtRGio6OCtEoIBBAwNzz?=
+ =?us-ascii?Q?BL6nh4i6KOsUwul0u28SKqa+VjOSXwqXvmXtJwLpIpLIrY53vKPmXihz7ezW?=
+ =?us-ascii?Q?LoyYB76EY3tW9/zUDG97CYNp4xuqkf/1rspYspm32P85KD5QYV0ecrLBSQAA?=
+ =?us-ascii?Q?eyjVKrkKQ1xqU5DX4Oud0BuJ?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8c57d1f-0c5c-47d9-2dec-08d992ad6b8f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5191.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 03:06:18.2672
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HrRQMHjeiuQU8wcDXQVDf85l45Onm6L7gyPeqTVkamA0cRooCrC95vD056dO2gQLjeVVhtgGmgRIq74TVoaeKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5927
+X-Proofpoint-GUID: atanGH9l_5FrpMRtRI_FRs-tf4CTVbUM
+X-Proofpoint-ORIG-GUID: atanGH9l_5FrpMRtRI_FRs-tf4CTVbUM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_07,2021-10-18_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ phishscore=0 spamscore=0 mlxscore=0 priorityscore=1501 clxscore=1011
+ impostorscore=0 bulkscore=0 mlxlogscore=259 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110190016
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 18 Oct 10:52 PDT 2021, Mathieu Poirier wrote:
+From: Meng Li <Meng.Li@windriver.com>
 
-> On Sat, Oct 16, 2021 at 12:01:31AM -0500, Bjorn Andersson wrote:
-> > On Mon 11 Oct 13:02 CDT 2021, Mathieu Poirier wrote:
-> > 
-> > > Good day Deepak,
-> > > 
-> > > On Thu, Sep 30, 2021 at 09:02:01PM +0530, Deepak Kumar Singh wrote:
-> > > > Some transports like Glink support the state notifications between
-> > > > clients using signals similar to serial protocol signals.
-> > > > Local glink client drivers can send and receive signals to glink
-> > > > clients running on remote processors.
-> > > > 
-> > > > Add apis to support sending and receiving of signals by rpmsg clients.
-> > > > 
-> > > > Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> > > > ---
-> > > >  drivers/rpmsg/rpmsg_core.c     | 21 +++++++++++++++++++++
-> > > >  drivers/rpmsg/rpmsg_internal.h |  2 ++
-> > > >  include/linux/rpmsg.h          | 15 +++++++++++++++
-> > > >  3 files changed, 38 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> > > > index 9151836..5cae50c 100644
-> > > > --- a/drivers/rpmsg/rpmsg_core.c
-> > > > +++ b/drivers/rpmsg/rpmsg_core.c
-> > > > @@ -327,6 +327,24 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
-> > > >  }
-> > > >  EXPORT_SYMBOL(rpmsg_trysend_offchannel);
-> > > >  
-> > > > +/**
-> > > > + * rpmsg_set_flow_control() - sets/clears searial flow control signals
-> > > > + * @ept:	the rpmsg endpoint
-> > > > + * @enable:	enable or disable serial flow control
-> > > > + *
-> > > > + * Returns 0 on success and an appropriate error value on failure.
-> > > > + */
-> > > > +int rpmsg_set_flow_control(struct rpmsg_endpoint *ept, bool enable)
-> > > > +{
-> > > > +	if (WARN_ON(!ept))
-> > > > +		return -EINVAL;
-> > > > +	if (!ept->ops->set_flow_control)
-> > > > +		return -ENXIO;
-> > > > +
-> > > > +	return ept->ops->set_flow_control(ept, enable);
-> > > > +}
-> > > > +EXPORT_SYMBOL(rpmsg_set_flow_control);
-> > > > +
-> > > 
-> > > I'm looking at this patchset as the introduction of an out-of-bound
-> > > control interface.  But looking at the implementation of the GLINK's
-> > > set_flow_control() the data is sent in-band, making me perplexed about
-> > > introducing a new rpmsg_endpoint_ops for something that could be done
-> > > from user space.  Especially when user space is triggering the message
-> > > with an ioctl in patch 3.
-> > > 
-> > 
-> > GLINK is built around one fifo per processor pair, similar to a
-> > virtqueue. So the signal request is muxed in the same pipe as data
-> > requests, but the signal goes alongside data request, not within them.
-> >
-> 
-> I reflected more on this and I can see scenarios where sending control flow
-> messages alongside other data packet could be the only solution.  How the signal
-> is implemented is a platform specific choice.  I believe the same kind of
-> delivery mechanism implemented by kick() functions would be the best way to go
-> but if that isn't possible then in-band, as suggested in this patchset, is
-> better than nothing. 
-> 
-> > > Moreover this interface is case specific and doesn't reflect the
-> > > generic nature found in ept->sig_cb.
-> > > 
-> > 
-> > The previous proposal from Deepak was to essentially expose the normal
-> > tty flags all the way down to the rpmsg driver. But I wasn't sure how
-> > those various flags should be interpreted in the typical rpmsg driver.
-> 
-> That is interesting.  I was hoping to keep the user level signal interfaces
-> generic and let the drivers do as they please with them.  I see your point
-> though and this might be one of those cases where there isn't a right or wrong
-> answer.
-> 
+In orininal code, use 2 function spin_lock() and local_irq_save() to
+protect the critical zone. But when enable the kernel debug config,
+there are below inconsistent lock state detected.
+================================
+WARNING: inconsistent lock state
+5.10.63-yocto-standard #1 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+lock_torture_wr/226 [HC0[0]:SC1[5]:HE1:SE0] takes:
+ffff002005b2dd80 (&p->access_spinlock){+.?.}-{3:3}, at: qbman_swp_enqueue_multiple_mem_back+0x44/0x270
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire.part.0+0xf8/0x250
+  lock_acquire+0x68/0x84
+  _raw_spin_lock+0x68/0x90
+  qbman_swp_enqueue_multiple_mem_back+0x44/0x270
+  ......
+  cryptomgr_test+0x38/0x60
+  kthread+0x158/0x164
+  ret_from_fork+0x10/0x38
+irq event stamp: 4498
+hardirqs last  enabled at (4498): [<ffff800010fcf980>] _raw_spin_unlock_irqrestore+0x90/0xb0
+hardirqs last disabled at (4497): [<ffff800010fcffc4>] _raw_spin_lock_irqsave+0xd4/0xe0
+softirqs last  enabled at (4458): [<ffff8000100108c4>] __do_softirq+0x674/0x724
+softirqs last disabled at (4465): [<ffff80001005b2a4>] __irq_exit_rcu+0x190/0x19c
 
-I'm definitely in favor of something generic, my objection was simply to
-inherit the tty interface as that generic thing.
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+       CPU0
+       ----
+  lock(&p->access_spinlock);
+  <Interrupt>
+    lock(&p->access_spinlock);
+ *** DEADLOCK ***
 
-If nothing else I myself have a hard time understanding the actual
-meaning of those bits and tend to have to look them up every time.
+So, in order to avoid deadlock, use the whole functinos
+spin_lock_irqsave/spin_unlock_irqrestore() to protect critical zone.
 
-> > 
-> > I therefor asked Deepak to change it so the rpmsg api would contain a
-> > single "pause incoming data"/"resume incoming data" - given that this is
-> > a wish that we've seen in a number of discussions.
-> >
-> 
-> This will work for as long as we have a single usecase for it, i.e flow control.
-> I fear things will quickly get out of hands when more messages are needed, hence
-> the idea of keeping things as generic as possible.  
-> 
+Fixes: 3b2abda7d28c ("soc: fsl: dpio: Replace QMAN array mode with ring mode enqueue")
+Cc: stable@vger.kernel.org
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+---
+ drivers/soc/fsl/dpio/qbman-portal.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-Do you have any other types of signals in mind?
+diff --git a/drivers/soc/fsl/dpio/qbman-portal.c b/drivers/soc/fsl/dpio/qbman-portal.c
+index 845e91416b58..a56dbe4de34f 100644
+--- a/drivers/soc/fsl/dpio/qbman-portal.c
++++ b/drivers/soc/fsl/dpio/qbman-portal.c
+@@ -785,8 +785,7 @@ int qbman_swp_enqueue_multiple_mem_back(struct qbman_swp *s,
+ 	int i, num_enqueued = 0;
+ 	unsigned long irq_flags;
+ 
+-	spin_lock(&s->access_spinlock);
+-	local_irq_save(irq_flags);
++	spin_lock_irqsave(&s->access_spinlock, irq_flags);
+ 
+ 	half_mask = (s->eqcr.pi_ci_mask>>1);
+ 	full_mask = s->eqcr.pi_ci_mask;
+@@ -797,8 +796,7 @@ int qbman_swp_enqueue_multiple_mem_back(struct qbman_swp *s,
+ 		s->eqcr.available = qm_cyc_diff(s->eqcr.pi_ring_size,
+ 					eqcr_ci, s->eqcr.ci);
+ 		if (!s->eqcr.available) {
+-			local_irq_restore(irq_flags);
+-			spin_unlock(&s->access_spinlock);
++			spin_unlock_irqrestore(&s->access_spinlock, irq_flags);
+ 			return 0;
+ 		}
+ 	}
+@@ -837,8 +835,7 @@ int qbman_swp_enqueue_multiple_mem_back(struct qbman_swp *s,
+ 	dma_wmb();
+ 	qbman_write_register(s, QBMAN_CINH_SWP_EQCR_PI,
+ 				(QB_RT_BIT)|(s->eqcr.pi)|s->eqcr.pi_vb);
+-	local_irq_restore(irq_flags);
+-	spin_unlock(&s->access_spinlock);
++	spin_unlock_irqrestore(&s->access_spinlock, irq_flags);
+ 
+ 	return num_enqueued;
+ }
+-- 
+2.17.1
 
-> > 
-> > Unfortunately I don't have any good suggestion for how we could
-> > implement this in the virtio backend at this time, but with the muxing
-> > of all the different channels in the same virtqueue it would be good for
-> > a driver to able to pause the inflow on a specific endpoint, to avoid
-> > stalling other communication when a driver can't receive more messages.
-> 
-> Humm...
-> 
-> For application to remote processor things would work the same as it does for
-> GLINK, whether the communication is done from a rpmsg_driver (as in
-> rpmsg_client_sample.c) or from user space via something like the rpmsg_char.c
-> driver.  
-> 
-> For remote processor to application processor the interruptions would need to
-> carry the destination address of the endpoint, which might not be possible.
-> 
-> All this discussion proves that we really need to think about this before moving
-> forward, especially with Arnaud's ongoing refactoring of the rpmsg_char driver.
-> 
-
-The concept of flow control comes pretty natural in both GLINK and SMD,
-given that an endpoint is the local representation of an established
-link to an entity on the other side - while in virtio rpmsg endpoints
-doesn't really have a state and a limited sense of there being something
-on the other side.
-
-So I agree that flow controlling in virtio rpmsg could have unforeseen
-consequences e.g. by a service being blocked forever because it's
-waiting for "flow resume" from an endpoint that never existed.
-
-But I believe the impact of this is that we need to accept that there
-will be cases where the flow control requests can't be fulfilled; such
-as a loose rpmsg_endpoint without a predefined dst address or when
-communicating with a remote that predates the protocol extensions that
-will be necessary.
-
-Regards,
-Bjorn
-
-> Thanks,
-> Mathieu
-> 
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > >  /*
-> > > >   * match a rpmsg channel with a channel info struct.
-> > > >   * this is used to make sure we're not creating rpmsg devices for channels
-> > > > @@ -514,6 +532,9 @@ static int rpmsg_dev_probe(struct device *dev)
-> > > >  
-> > > >  		rpdev->ept = ept;
-> > > >  		rpdev->src = ept->addr;
-> > > > +
-> > > > +		if (rpdrv->signals)
-> > > > +			ept->sig_cb = rpdrv->signals;
-> > > >  	}
-> > > >  
-> > > >  	err = rpdrv->probe(rpdev);
-> > > > diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-> > > > index a76c344..dcb2ec1 100644
-> > > > --- a/drivers/rpmsg/rpmsg_internal.h
-> > > > +++ b/drivers/rpmsg/rpmsg_internal.h
-> > > > @@ -53,6 +53,7 @@ struct rpmsg_device_ops {
-> > > >   * @trysendto:		see @rpmsg_trysendto(), optional
-> > > >   * @trysend_offchannel:	see @rpmsg_trysend_offchannel(), optional
-> > > >   * @poll:		see @rpmsg_poll(), optional
-> > > > + * @set_flow_control:	see @rpmsg_set_flow_control(), optional
-> > > >   *
-> > > >   * Indirection table for the operations that a rpmsg backend should implement.
-> > > >   * In addition to @destroy_ept, the backend must at least implement @send and
-> > > > @@ -72,6 +73,7 @@ struct rpmsg_endpoint_ops {
-> > > >  			     void *data, int len);
-> > > >  	__poll_t (*poll)(struct rpmsg_endpoint *ept, struct file *filp,
-> > > >  			     poll_table *wait);
-> > > > +	int (*set_flow_control)(struct rpmsg_endpoint *ept, bool enable);
-> > > >  };
-> > > >  
-> > > >  struct device *rpmsg_find_device(struct device *parent,
-> > > > diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-> > > > index d97dcd0..b805c70 100644
-> > > > --- a/include/linux/rpmsg.h
-> > > > +++ b/include/linux/rpmsg.h
-> > > > @@ -62,12 +62,14 @@ struct rpmsg_device {
-> > > >  };
-> > > >  
-> > > >  typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
-> > > > +typedef int (*rpmsg_rx_sig_t)(struct rpmsg_device *, void *, u32);
-> > > >  
-> > > >  /**
-> > > >   * struct rpmsg_endpoint - binds a local rpmsg address to its user
-> > > >   * @rpdev: rpmsg channel device
-> > > >   * @refcount: when this drops to zero, the ept is deallocated
-> > > >   * @cb: rx callback handler
-> > > > + * @sig_cb: rx serial signal handler
-> > > >   * @cb_lock: must be taken before accessing/changing @cb
-> > > >   * @addr: local rpmsg address
-> > > >   * @priv: private data for the driver's use
-> > > > @@ -90,6 +92,7 @@ struct rpmsg_endpoint {
-> > > >  	struct rpmsg_device *rpdev;
-> > > >  	struct kref refcount;
-> > > >  	rpmsg_rx_cb_t cb;
-> > > > +	rpmsg_rx_sig_t sig_cb;
-> > > >  	struct mutex cb_lock;
-> > > >  	u32 addr;
-> > > >  	void *priv;
-> > > > @@ -104,6 +107,7 @@ struct rpmsg_endpoint {
-> > > >   * @probe: invoked when a matching rpmsg channel (i.e. device) is found
-> > > >   * @remove: invoked when the rpmsg channel is removed
-> > > >   * @callback: invoked when an inbound message is received on the channel
-> > > > + * @signals: invoked when a serial signal change is received on the channel
-> > > >   */
-> > > >  struct rpmsg_driver {
-> > > >  	struct device_driver drv;
-> > > > @@ -111,6 +115,7 @@ struct rpmsg_driver {
-> > > >  	int (*probe)(struct rpmsg_device *dev);
-> > > >  	void (*remove)(struct rpmsg_device *dev);
-> > > >  	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
-> > > > +	int (*signals)(struct rpmsg_device *rpdev, void *priv, u32);
-> > > >  };
-> > > >  
-> > > >  static inline u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, __rpmsg16 val)
-> > > > @@ -186,6 +191,8 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
-> > > >  __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
-> > > >  			poll_table *wait);
-> > > >  
-> > > > +int rpmsg_set_flow_control(struct rpmsg_endpoint *ept, bool enable);
-> > > > +
-> > > >  #else
-> > > >  
-> > > >  static inline int rpmsg_register_device(struct rpmsg_device *rpdev)
-> > > > @@ -296,6 +303,14 @@ static inline __poll_t rpmsg_poll(struct rpmsg_endpoint *ept,
-> > > >  	return 0;
-> > > >  }
-> > > >  
-> > > > +static inline int rpmsg_set_flow_control(struct rpmsg_endpoint *ept, bool enable);
-> > > > +{
-> > > > +	/* This shouldn't be possible */
-> > > > +	WARN_ON(1);
-> > > > +
-> > > > +	return -ENXIO;
-> > > > +}
-> > > > +
-> > > >  #endif /* IS_ENABLED(CONFIG_RPMSG) */
-> > > >  
-> > > >  /* use a macro to avoid include chaining to get THIS_MODULE */
-> > > > -- 
-> > > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > > > a Linux Foundation Collaborative Project
-> > > > 
