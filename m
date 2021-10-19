@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004054333F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A02B4333F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235338AbhJSKwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:52:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhJSKwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:52:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF4BC61154;
-        Tue, 19 Oct 2021 10:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634640623;
-        bh=L0poGPzGEIYL2TPnM3Vav05iGMWfIk7Klty6aCujrWU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hhpwCv4+TSuvJTXfVfwSPpVU9VUjtDc1xOV9b/Oo0h/ZW0bpj6fGmjUi8fQy1xJmh
-         MDXRtn29lhl+vax+BYu9n0oTTQhjDoSsW0ULRWC+FD68jj4GTbMB3nKqwxCATulhfx
-         BpDT3UROXvgjbOaAtHRiTWXPvYIa8rowtLz9xHP/bfpn17GKFEbjh00u3I06maIL7f
-         wcxhuszXDtmgaQ28+VhV22uC4bDBLEH5ZAvUP5/FY7try11yGHPTVeDYma7KPJIUFC
-         uPzN+YBRaNA3KJoGwLR5ej035byan9HjAalyfZs2z8Tdx3P3p1hYKV15UhkAu48ELC
-         4UMYaOkiotwRQ==
-Message-ID: <f352a2e4b50a8678a8ddef5177702ecf9040490f.camel@kernel.org>
-Subject: Re: [PATCH v3 18/23] fs: remove a comment pointing to the removed
- mandatory-locking file
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 19 Oct 2021 06:50:21 -0400
-In-Reply-To: <887de3a1ecadda3dbfe0adf9df9070f0afa9406c.1634630486.git.mchehab+huawei@kernel.org>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
-         <887de3a1ecadda3dbfe0adf9df9070f0afa9406c.1634630486.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S235272AbhJSKxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:53:31 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:48397 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235180AbhJSKx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 06:53:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UsvUfEV_1634640657;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UsvUfEV_1634640657)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 19 Oct 2021 18:51:13 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     aacraid@microsemi.com
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: core: return -ENOMEM on ips_init_phase1() allocation failure
+Date:   Tue, 19 Oct 2021 18:50:55 +0800
+Message-Id: <1634640655-20667-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-19 at 09:04 +0100, Mauro Carvalho Chehab wrote:
-> The mandatory file locking got removed due to its problems, but
-> there's still a comment inside fs/locks.c pointing to the removed
-> doc.
-> 
-> Remove it.
-> 
-> Fixes: f7e33bdbd6d1 ("fs: remove mandatory file locking support")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-> 
-> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
-> 
->  fs/locks.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/locks.c b/fs/locks.c
-> index d397394633be..94feadcdab4e 100644
-> --- a/fs/locks.c
-> +++ b/fs/locks.c
-> @@ -61,7 +61,6 @@
->   *
->   *  Initial implementation of mandatory locks. SunOS turned out to be
->   *  a rotten model, so I implemented the "obvious" semantics.
-> - *  See 'Documentation/filesystems/mandatory-locking.rst' for details.
->   *  Andy Walker (andy@lysaker.kvaerner.no), April 06, 1996.
->   *
->   *  Don't allow mandatory locks on mmap()'ed files. Added simple functions to
+From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-Thanks Mauro. I'll pick this into my locks branch, so it should make
-v5.16 as well.
+Fixes the following smatch warning:
+
+drivers/scsi/ips.c:6901 ips_init_phase1() warn: returning -1 instead of
+-ENOMEM is sloppy.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: dd00cc486ab1 ("some kmalloc/memset ->kzalloc (tree wide)")
+Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/scsi/ips.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/ips.c b/drivers/scsi/ips.c
+index 498bf04499ce..2ce97f407d18 100644
+--- a/drivers/scsi/ips.c
++++ b/drivers/scsi/ips.c
+@@ -6898,7 +6898,7 @@ ips_init_phase1(struct pci_dev *pci_dev, int *indexPtr)
+ 	if (ha == NULL) {
+ 		IPS_PRINTK(KERN_WARNING, pci_dev,
+ 			   "Unable to allocate temporary ha struct\n");
+-		return -1;
++		return -ENOMEM;
+ 	}
+ 
+ 	ips_sh[index] = NULL;
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.19.1.6.gb485710b
 
