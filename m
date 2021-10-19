@@ -2,239 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2094337C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E374337C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235999AbhJSNyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
+        id S236074AbhJSNyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 09:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235979AbhJSNyB (ORCPT
+        with ESMTP id S235991AbhJSNyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 Oct 2021 09:54:01 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BD9C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:51:48 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id r7so47978549wrc.10
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBA0C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:51:49 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso3122095wme.1
         for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:51:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=F12BPIt+v3XNTHcLN2A5MDSV9pIZoXfGTfiqOPQbmvo=;
-        b=esmBHBOmgPFn29+TU4iCBtbSGdk/0VVfE87Lj9+WrLuPbKfL/LtEFMBEGeHTHroIdA
-         I+OC01iO8RcjymNH7yGWk3H/afGOiaL+P9mEh956pcLmxE9wV2TfCTd4FQFdEFrv3PfW
-         35ALCY9J0/j44Yy51OvN1Qe8IDKsrShDbC8mvz5gqVQnjC4R+ffPUXcIgMH6B2Yl9fEf
-         5Tcy0rGZRzyJwjcJhwsnUWYhACiY5+kEcLulYZK/NpiXiN78Ii5T6zdr9TNs30OxCGkS
-         YUcksMo7swt9M8KJDvqJOi55hH5KJZCQxEHYgBjZdm3LL7eILf1GgsZ5CJW/lvv/jd/k
-         KhEA==
+        bh=GAt3ss7oQNnV6xLJ2Fs/3pWmqU9uyoS5/AOSPJCSeWo=;
+        b=b2ErpmAM//MpfN4UsehZtaHobw3E6YvVratgXFNSzpW7Ot5ZcRrFluuUFXMhQp5MV7
+         f9b4RZroaiBeFbJJAq9Bf9KZOe3kRq+Y4FCOMBX1j7PsXUbxu1KxF8XC7MLLpPzsbTRg
+         s27NwrQ8AwpG6VFTfvpIGqIEKoCvBNWDTS/A3DOZmFsRzX2Y68vU9ECJBktDm68anHkd
+         3qTA6iTsd1DUxlnQbDGTR3Zl4Cbj2fQnTpAspgeRsnWAd2anEh3NXiRLRl0mBglvODD8
+         CfFiA7EjJvp4uMG7DBmUdAxO2pnQRx9CN3wlotyjVczyaCNXuuIBX3corCzuF0ZeOTsm
+         MEIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=F12BPIt+v3XNTHcLN2A5MDSV9pIZoXfGTfiqOPQbmvo=;
-        b=UYfI5KxQlY4aWh6wjJP2cn9SFb4/mB+mdq3kNmIZoEe1GF6SuwN6KjAAd69Xq/bmtb
-         by4hyyT5yuyqtvXL1TlmluPZvBPTlASW5262IItTReM3qK1EFUPoPBc0YEFo4HFHHxR/
-         4Qievp2eMX+GbQ7BOjDZ/z2UiTStscGas+c6B7DZe/ab5Ngu96uPZ3nNxjX3MXm4r4zF
-         EF8oXVHRRQIAEFhlSZ+V5iRS+ugLeLDod2v8N/aCFYnNYSM2f1nJNG+FOOwQPgp85NJs
-         V5eK1CEQpZPiwtPuRC25jJ6awE2rq/t0uizLU6WP6jqsM25LC91eN9G55DDY9DwT2ixL
-         oqHA==
-X-Gm-Message-State: AOAM5332DHpaxlhlO7EUFz/Qs8txUUClw/ojIn90cmu6lu2VU3q3r3m/
-        rHHZ0MivFYDjNCjiEpXMFPY=
-X-Google-Smtp-Source: ABdhPJz/hDG2hculQruMLjuhTELAJ15SN3en2ly8nzOxhvLqFm9LwLOj38J7ez1xlP5vihyxtTQUvQ==
-X-Received: by 2002:adf:de0e:: with SMTP id b14mr44021282wrm.271.1634651507035;
+        bh=GAt3ss7oQNnV6xLJ2Fs/3pWmqU9uyoS5/AOSPJCSeWo=;
+        b=lOSEESdgWzn6lvH9bp732dlCA+NVKZpBuZOqGDpv++9HimwDPcjNrs+tRWFiKNrLov
+         Ds/n2xQ1nFSXlnEjo3gyodOD7czuXoFqXYSd5f+1trSdlXP2IODRAQ7LaBYRJtpKH8yV
+         qFHZpm46p2EHfgxE4Gnc4YnCWWFOYAWoRxo1yMEKLh//sz8wjSdcC2q+gCEkxtONlHKM
+         qk2yk7y1BSIRVWcxn5vvmS2qOwV0q5cHtP+B/erjISf2hkH9CHN59YFfFzgoiZAxTXf2
+         7HEUh8rZ7CEF30DFUaPmHPDTszjI5/zCr0NWwT7X+OmfukJz//W2mGYeUpwXuvVfo4S0
+         enqQ==
+X-Gm-Message-State: AOAM531s+P9kBoGdfPgs4yRBlE9/XBITInmKUjuFLgmg2hkttC41M8UN
+        V9WUuq/gmSC3YnadzhynWgs=
+X-Google-Smtp-Source: ABdhPJwIdxFmacdQP36hB6x6hFr0ELZXo1RxOAShTwC2qiOpCA4E7whbggN99hAjNlp+jz0vadUwVg==
+X-Received: by 2002:a1c:a302:: with SMTP id m2mr6342134wme.111.1634651507689;
         Tue, 19 Oct 2021 06:51:47 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::3de4])
-        by smtp.gmail.com with ESMTPSA id i203sm2280699wma.48.2021.10.19.06.51.46
+        by smtp.gmail.com with ESMTPSA id i203sm2280699wma.48.2021.10.19.06.51.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 06:51:46 -0700 (PDT)
+        Tue, 19 Oct 2021 06:51:47 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 6/7] staging: r8188eu: remove unused enums and defines from odm.h
-Date:   Tue, 19 Oct 2021 15:51:36 +0200
-Message-Id: <20211019135137.9893-7-straube.linux@gmail.com>
+Subject: [PATCH 7/7] staging: r8188eu: RFType type is always ODM_1T1R
+Date:   Tue, 19 Oct 2021 15:51:37 +0200
+Message-Id: <20211019135137.9893-8-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211019135137.9893-1-straube.linux@gmail.com>
 References: <20211019135137.9893-1-straube.linux@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused enums and defines from odm.h.
+This driver is for 1T1R chips. The field RfType of odm_dm_struct is
+set to ODM_1T1R and never changed. Remove code that initializes RFType,
+remove it from odm_dm_struct and remove resulting dead code.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/include/odm.h | 95 ---------------------------
- 1 file changed, 95 deletions(-)
+ drivers/staging/r8188eu/hal/HalPhyRf_8188e.c | 82 ++------------------
+ drivers/staging/r8188eu/hal/odm.c            | 40 +++-------
+ drivers/staging/r8188eu/hal/rtl8188e_dm.c    |  7 --
+ drivers/staging/r8188eu/include/odm.h        | 14 ----
+ 4 files changed, 14 insertions(+), 129 deletions(-)
 
+diff --git a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+index 9fcee29b42b8..60d4ba275196 100644
+--- a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
++++ b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+@@ -583,50 +583,6 @@ static void patha_fill_iqk(struct adapter *adapt, bool iqkok, s32 result[][8], u
+ 	}
+ }
+ 
+-static void pathb_fill_iqk(struct adapter *adapt, bool iqkok, s32 result[][8], u8 final_candidate, bool txonly)
+-{
+-	u32 Oldval_1, X, TX1_A, reg;
+-	s32 Y, TX1_C;
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(adapt);
+-	struct odm_dm_struct *dm_odm = &pHalData->odmpriv;
+-
+-	if (final_candidate == 0xFF) {
+-		return;
+-	} else if (iqkok) {
+-		Oldval_1 = (ODM_GetBBReg(dm_odm, rOFDM0_XBTxIQImbalance, bMaskDWord) >> 22) & 0x3FF;
+-
+-		X = result[final_candidate][4];
+-		if ((X & 0x00000200) != 0)
+-			X = X | 0xFFFFFC00;
+-		TX1_A = (X * Oldval_1) >> 8;
+-		ODM_SetBBReg(dm_odm, rOFDM0_XBTxIQImbalance, 0x3FF, TX1_A);
+-
+-		ODM_SetBBReg(dm_odm, rOFDM0_ECCAThreshold, BIT(27), ((X * Oldval_1 >> 7) & 0x1));
+-
+-		Y = result[final_candidate][5];
+-		if ((Y & 0x00000200) != 0)
+-			Y = Y | 0xFFFFFC00;
+-
+-		TX1_C = (Y * Oldval_1) >> 8;
+-		ODM_SetBBReg(dm_odm, rOFDM0_XDTxAFE, 0xF0000000, ((TX1_C & 0x3C0) >> 6));
+-		ODM_SetBBReg(dm_odm, rOFDM0_XBTxIQImbalance, 0x003F0000, (TX1_C & 0x3F));
+-
+-		ODM_SetBBReg(dm_odm, rOFDM0_ECCAThreshold, BIT(25), ((Y * Oldval_1 >> 7) & 0x1));
+-
+-		if (txonly)
+-			return;
+-
+-		reg = result[final_candidate][6];
+-		ODM_SetBBReg(dm_odm, rOFDM0_XBRxIQImbalance, 0x3FF, reg);
+-
+-		reg = result[final_candidate][7] & 0x3F;
+-		ODM_SetBBReg(dm_odm, rOFDM0_XBRxIQImbalance, 0xFC00, reg);
+-
+-		reg = (result[final_candidate][7] >> 6) & 0xF;
+-		ODM_SetBBReg(dm_odm, rOFDM0_AGCRSSITable, 0x0000F000, reg);
+-	}
+-}
+-
+ void _PHY_SaveADDARegisters(struct adapter *adapt, u32 *ADDAReg, u32 *ADDABackup, u32 RegisterNum)
+ {
+ 	u32 i;
+@@ -759,23 +715,11 @@ static bool phy_SimularityCompare_8188E(
+ 	)
+ {
+ 	u32 i, j, diff, sim_bitmap, bound = 0;
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(adapt);
+-	struct odm_dm_struct *dm_odm = &pHalData->odmpriv;
+ 	u8 final_candidate[2] = {0xFF, 0xFF};	/* for path A and path B */
+ 	bool result = true;
+-	bool is2t;
+ 	s32 tmp1 = 0, tmp2 = 0;
+ 
+-	if ((dm_odm->RFType == ODM_2T2R) || (dm_odm->RFType == ODM_2T3R) || (dm_odm->RFType == ODM_2T4R))
+-		is2t = true;
+-	else
+-		is2t = false;
+-
+-	if (is2t)
+-		bound = 8;
+-	else
+-		bound = 4;
+-
++	bound = 4;
+ 	sim_bitmap = 0;
+ 
+ 	for (i = 0; i < bound; i++) {
+@@ -1049,8 +993,8 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
+ 	struct odm_dm_struct *dm_odm = &pHalData->odmpriv;
+ 	s32 result[4][8];	/* last is final result */
+ 	u8 i, final_candidate;
+-	bool pathaok, pathbok;
+-	s32 RegE94, RegE9C, RegEA4, RegEB4, RegEBC, RegEC4;
++	bool pathaok;
++	s32 RegE94, RegE9C, RegEA4, RegEB4, RegEBC;
+ 	bool is12simular, is13simular, is23simular;
+ 	bool singletone = false, carrier_sup = false;
+ 	u32 IQK_BB_REG_92C[IQK_BB_REG_NUM] = {
+@@ -1059,9 +1003,6 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
+ 		rOFDM0_XATxIQImbalance, rOFDM0_XBTxIQImbalance,
+ 		rOFDM0_XCTxAFE, rOFDM0_XDTxAFE,
+ 		rOFDM0_RxIQExtAnta};
+-	bool is2t;
+-
+-	is2t = (dm_odm->RFType == ODM_2T2R) ? true : false;
+ 
+ 	if (!(dm_odm->SupportAbility & ODM_RF_CALIBRATION))
+ 		return;
+@@ -1086,13 +1027,12 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
+ 	}
+ 	final_candidate = 0xff;
+ 	pathaok = false;
+-	pathbok = false;
+ 	is12simular = false;
+ 	is23simular = false;
+ 	is13simular = false;
+ 
+ 	for (i = 0; i < 3; i++) {
+-		phy_IQCalibrate_8188E(adapt, result, i, is2t);
++		phy_IQCalibrate_8188E(adapt, result, i, false);
+ 
+ 		if (i == 1) {
+ 			is12simular = phy_SimularityCompare_8188E(adapt, result, 0, 1);
+@@ -1124,7 +1064,6 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
+ 		RegEA4 = result[i][2];
+ 		RegEB4 = result[i][4];
+ 		RegEBC = result[i][5];
+-		RegEC4 = result[i][6];
+ 	}
+ 
+ 	if (final_candidate != 0xff) {
+@@ -1137,9 +1076,7 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
+ 		dm_odm->RFCalibrateInfo.RegE9C = RegE9C;
+ 		dm_odm->RFCalibrateInfo.RegEB4 = RegEB4;
+ 		dm_odm->RFCalibrateInfo.RegEBC = RegEBC;
+-		RegEC4 = result[final_candidate][6];
+ 		pathaok = true;
+-		pathbok = true;
+ 	} else {
+ 		dm_odm->RFCalibrateInfo.RegE94 = 0x100;
+ 		dm_odm->RFCalibrateInfo.RegEB4 = 0x100;	/* X default value */
+@@ -1148,10 +1085,6 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
+ 	}
+ 	if (RegE94 != 0)
+ 		patha_fill_iqk(adapt, pathaok, result, final_candidate, (RegEA4 == 0));
+-	if (is2t) {
+-		if (RegEB4 != 0)
+-			pathb_fill_iqk(adapt, pathbok, result, final_candidate, (RegEC4 == 0));
+-	}
+ 
+ /* To Fix BSOD when final_candidate is 0xff */
+ /* by sherry 20120321 */
+@@ -1182,10 +1115,5 @@ void PHY_LCCalibrate_8188E(struct adapter *adapt)
+ 		timecount += 50;
+ 	}
+ 
+-	if (dm_odm->RFType == ODM_2T2R) {
+-		phy_LCCalibrate_8188E(adapt, true);
+-	} else {
+-		/*  For 88C 1T1R */
+-		phy_LCCalibrate_8188E(adapt, false);
+-	}
++	phy_LCCalibrate_8188E(adapt, false);
+ }
+diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
+index 3aa84078319e..47d8cdf1c3e8 100644
+--- a/drivers/staging/r8188eu/hal/odm.c
++++ b/drivers/staging/r8188eu/hal/odm.c
+@@ -202,9 +202,6 @@ void ODM_CmnInfoInit(struct odm_dm_struct *pDM_Odm, enum odm_common_info_def Cmn
+ 	case	ODM_CMNINFO_MP_TEST_CHIP:
+ 		pDM_Odm->bIsMPChip = (u8)Value;
+ 		break;
+-	case	ODM_CMNINFO_RF_TYPE:
+-		pDM_Odm->RFType = (u8)Value;
+-		break;
+ 	case    ODM_CMNINFO_RF_ANTENNA_TYPE:
+ 		pDM_Odm->AntDivType = (u8)Value;
+ 		break;
+@@ -275,9 +272,6 @@ void ODM_CmnInfoUpdate(struct odm_dm_struct *pDM_Odm, u32 CmnInfo, u64 Value)
+ 	case	ODM_CMNINFO_ABILITY:
+ 		pDM_Odm->SupportAbility = (u32)Value;
+ 		break;
+-	case	ODM_CMNINFO_RF_TYPE:
+-		pDM_Odm->RFType = (u8)Value;
+-		break;
+ 	case	ODM_CMNINFO_WIFI_DIRECT:
+ 		pDM_Odm->bWIFI_Direct = (bool)Value;
+ 		break;
+@@ -714,36 +708,20 @@ u32 ODM_Get_Rate_Bitmap(struct odm_dm_struct *pDM_Odm, u32 macid, u32 ra_mask, u
+ 			rate_bitmap = 0x00000ff5;
+ 		break;
+ 	case (ODM_WM_B | ODM_WM_G | ODM_WM_N24G):
+-		if (pDM_Odm->RFType == ODM_1T2R || pDM_Odm->RFType == ODM_1T1R) {
+-			if (rssi_level == DM_RATR_STA_HIGH) {
+-				rate_bitmap = 0x000f0000;
+-			} else if (rssi_level == DM_RATR_STA_MIDDLE) {
+-				rate_bitmap = 0x000ff000;
+-			} else {
+-				if (*pDM_Odm->pBandWidth == ODM_BW40M)
+-					rate_bitmap = 0x000ff015;
+-				else
+-					rate_bitmap = 0x000ff005;
+-			}
++		if (rssi_level == DM_RATR_STA_HIGH) {
++			rate_bitmap = 0x000f0000;
++		} else if (rssi_level == DM_RATR_STA_MIDDLE) {
++			rate_bitmap = 0x000ff000;
+ 		} else {
+-			if (rssi_level == DM_RATR_STA_HIGH) {
+-				rate_bitmap = 0x0f8f0000;
+-			} else if (rssi_level == DM_RATR_STA_MIDDLE) {
+-				rate_bitmap = 0x0f8ff000;
+-			} else {
+-				if (*pDM_Odm->pBandWidth == ODM_BW40M)
+-					rate_bitmap = 0x0f8ff015;
+-				else
+-					rate_bitmap = 0x0f8ff005;
+-			}
++			if (*pDM_Odm->pBandWidth == ODM_BW40M)
++				rate_bitmap = 0x000ff015;
++			else
++				rate_bitmap = 0x000ff005;
+ 		}
+ 		break;
+ 	default:
+ 		/* case WIRELESS_11_24N: */
+-		if (pDM_Odm->RFType == RF_1T2R)
+-			rate_bitmap = 0x000fffff;
+-		else
+-			rate_bitmap = 0x0fffffff;
++		rate_bitmap = 0x0fffffff;
+ 		break;
+ 	}
+ 
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+index d3292956d818..4ce2c3749665 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+@@ -35,13 +35,6 @@ static void Init_ODM_ComInfo_88E(struct adapter *Adapter)
+ 
+ 	ODM_CmnInfoInit(dm_odm, ODM_CMNINFO_MP_TEST_CHIP, IS_NORMAL_CHIP(hal_data->VersionID));
+ 
+-	if (hal_data->rf_type == RF_1T1R)
+-		ODM_CmnInfoUpdate(dm_odm, ODM_CMNINFO_RF_TYPE, ODM_1T1R);
+-	else if (hal_data->rf_type == RF_2T2R)
+-		ODM_CmnInfoUpdate(dm_odm, ODM_CMNINFO_RF_TYPE, ODM_2T2R);
+-	else if (hal_data->rf_type == RF_1T2R)
+-		ODM_CmnInfoUpdate(dm_odm, ODM_CMNINFO_RF_TYPE, ODM_1T2R);
+-
+ 	ODM_CmnInfoInit(dm_odm, ODM_CMNINFO_RF_ANTENNA_TYPE, hal_data->TRxAntDivType);
+ 
+ 	pdmpriv->InitODMFlag =	ODM_RF_CALIBRATION |
 diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
-index 97a24f8d2f53..eb46386ceddd 100644
+index eb46386ceddd..1fc90a8dc063 100644
 --- a/drivers/staging/r8188eu/include/odm.h
 +++ b/drivers/staging/r8188eu/include/odm.h
-@@ -159,7 +159,6 @@ struct odm_rate_adapt {
+@@ -229,7 +229,6 @@ enum odm_common_info_def {
+ 	/* HOOK BEFORE REG INIT----------- */
+ 	ODM_CMNINFO_ABILITY,		/* ODM_ABILITY_E */
+ 	ODM_CMNINFO_MP_TEST_CHIP,
+-	ODM_CMNINFO_RF_TYPE,		/* RF_PATH_E or ODM_RF_TYPE_E? */
+ 	/* HOOK BEFORE REG INIT-----------  */
  
- #define IQK_MAC_REG_NUM		4
- #define IQK_ADDA_REG_NUM	16
--#define IQK_BB_REG_NUM_MAX	10
- #define IQK_BB_REG_NUM		9
- #define HP_THERMAL_NUM		8
- 
-@@ -287,19 +286,6 @@ enum odm_ability_def {
+ 	/*  Dynamic value: */
+@@ -286,17 +285,6 @@ enum odm_ability_def {
  
  # define ODM_ITRF_USB 0x2
  
--/*  ODM_CMNINFO_RF_TYPE */
--/*  For example 1T2R (A+AB = BIT(0)|BIT(4)|BIT(5)) */
--enum odm_rf_path {
--	ODM_RF_TX_A	=	BIT(0),
--	ODM_RF_TX_B	=	BIT(1),
--	ODM_RF_TX_C	=	BIT(2),
--	ODM_RF_TX_D	=	BIT(3),
--	ODM_RF_RX_A	=	BIT(4),
--	ODM_RF_RX_B	=	BIT(5),
--	ODM_RF_RX_C	=	BIT(6),
--	ODM_RF_RX_D	=	BIT(7),
--};
--
- enum odm_rf_type {
- 	ODM_1T1R	=	0,
- 	ODM_1T2R	=	1,
-@@ -311,14 +297,6 @@ enum odm_rf_type {
- 	ODM_4T4R	=	7,
- };
- 
--/*  ODM Dynamic common info value definition */
--
--enum odm_mac_phy_mode {
--	ODM_SMSP	= 0,
--	ODM_DMSP	= 1,
--	ODM_DMDP	= 2,
+-enum odm_rf_type {
+-	ODM_1T1R	=	0,
+-	ODM_1T2R	=	1,
+-	ODM_2T2R	=	2,
+-	ODM_2T3R	=	3,
+-	ODM_2T4R	=	4,
+-	ODM_3T3R	=	5,
+-	ODM_3T4R	=	6,
+-	ODM_4T4R	=	7,
 -};
 -
  /*  ODM_CMNINFO_OP_MODE */
  enum odm_operation_mode {
  	ODM_NO_LINK		= BIT(0),
-@@ -341,38 +319,12 @@ enum odm_wireless_mode {
- 	ODM_WM_AUTO	= BIT(5),
- };
+@@ -493,8 +481,6 @@ struct odm_dm_struct {
+ /* HOOK BEFORE REG INIT----------- */
+ 	/*  ODM Support Ability DIG/RATR/TX_PWR_TRACK/ �K�K = 1/2/3/�K */
+ 	u32	SupportAbility;
+-	/*  RF Type 4T4R/3T3R/2T2R/1T2R/1T1R/... */
+-	u8	RFType;
  
--/*  ODM_CMNINFO_SEC_CHNL_OFFSET */
--enum odm_sec_chnl_offset {
--	ODM_DONT_CARE	= 0,
--	ODM_BELOW	= 1,
--	ODM_ABOVE	= 2
--};
--
--/*  ODM_CMNINFO_SEC_MODE */
--enum odm_security {
--	ODM_SEC_OPEN		= 0,
--	ODM_SEC_WEP40		= 1,
--	ODM_SEC_TKIP		= 2,
--	ODM_SEC_RESERVE		= 3,
--	ODM_SEC_AESCCMP		= 4,
--	ODM_SEC_WEP104		= 5,
--	ODM_WEP_WPA_MIXED   	= 6, /*  WEP + WPA */
--	ODM_SEC_SMS4		= 7,
--};
--
- /*  ODM_CMNINFO_BW */
- enum odm_bw {
- 	ODM_BW20M		= 0,
- 	ODM_BW40M		= 1,
- };
- 
--/*  ODM_CMNINFO_ONE_PATH_CCA */
--enum odm_cca_path {
--	ODM_CCA_2R		= 0,
--	ODM_CCA_1R_A		= 1,
--	ODM_CCA_1R_B		= 2,
--};
--
- struct odm_ra_info {
- 	u8 RateID;
- 	u32 RateMask;
-@@ -673,13 +625,6 @@ struct odm_dm_struct {
- 	struct timer_list FastAntTrainingTimer;
- };		/*  DM_Dynamic_Mechanism_Structure */
- 
--enum ODM_RF_CONTENT {
--	odm_radioa_txt = 0x1000,
--	odm_radiob_txt = 0x1001,
--	odm_radioc_txt = 0x1002,
--	odm_radiod_txt = 0x1003
--};
--
- enum odm_bb_config_type {
-     CONFIG_BB_PHY_REG,
-     CONFIG_BB_AGC_TAB,
-@@ -687,38 +632,9 @@ enum odm_bb_config_type {
-     CONFIG_BB_PHY_REG_PG,
- };
- 
--/*  Status code */
--enum rt_status {
--	RT_STATUS_SUCCESS,
--	RT_STATUS_FAILURE,
--	RT_STATUS_PENDING,
--	RT_STATUS_RESOURCE,
--	RT_STATUS_INVALID_CONTEXT,
--	RT_STATUS_INVALID_PARAMETER,
--	RT_STATUS_NOT_SUPPORT,
--	RT_STATUS_OS_API_FAILED,
--};
--
--/* 3=========================================================== */
--/* 3 DIG */
--/* 3=========================================================== */
--
--enum dm_dig_op {
--	RT_TYPE_THRESH_HIGH	= 0,
--	RT_TYPE_THRESH_LOW	= 1,
--	RT_TYPE_BACKOFF		= 2,
--	RT_TYPE_RX_GAIN_MIN	= 3,
--	RT_TYPE_RX_GAIN_MAX	= 4,
--	RT_TYPE_ENABLE		= 5,
--	RT_TYPE_DISABLE		= 6,
--	DIG_OP_TYPE_MAX
--};
--
- #define		DM_DIG_THRESH_HIGH	40
- #define		DM_DIG_THRESH_LOW	35
- 
--#define		DM_SCAN_RSSI_TH		0x14 /* scan return issue for LC */
--
- #define		DM_false_ALARM_THRESH_LOW	400
- #define		DM_false_ALARM_THRESH_HIGH	1000
- 
-@@ -726,23 +642,12 @@ enum dm_dig_op {
- #define		DM_DIG_MIN_NIC			0x1e /* 0x22/0x1c */
- 
- #define		DM_DIG_MAX_AP			0x32
--#define		DM_DIG_MIN_AP			0x20
--
--#define		DM_DIG_MAX_NIC_HP		0x46
--#define		DM_DIG_MIN_NIC_HP		0x2e
--
--#define		DM_DIG_MAX_AP_HP		0x42
--#define		DM_DIG_MIN_AP_HP		0x30
- 
- /* vivi 92c&92d has different definition, 20110504 */
- /* this is for 92c */
- #define		DM_DIG_FA_TH0			0x200/* 0x20 */
- #define		DM_DIG_FA_TH1			0x300/* 0x100 */
- #define		DM_DIG_FA_TH2			0x400/* 0x200 */
--/* this is for 92d */
--#define		DM_DIG_FA_TH0_92D		0x100
--#define		DM_DIG_FA_TH1_92D		0x400
--#define		DM_DIG_FA_TH2_92D		0x600
- 
- #define		DM_DIG_BACKOFF_MAX		12
- #define		DM_DIG_BACKOFF_MIN		-4
+ 	u32	BK_SupportAbility;
+ 	u8	AntDivType;
 -- 
 2.33.1
 
