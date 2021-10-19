@@ -2,134 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CC1432EE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38237432EF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhJSHGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:06:10 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:15950 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234431AbhJSHGJ (ORCPT
+        id S234425AbhJSHHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:07:52 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:11251 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234304AbhJSHHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:06:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1634627032;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=LqqeB6DceXFWyX7sgoc88gYwP71+I7K3TbIfjPLLW2Y=;
-    b=aDGNLEDBAsCzsBywjPlMbPSjUGQluq8ru6QGESYwJ+vh4AaJvzK6Jxj57m7iBAUALc
-    wH9p9cA0rBjTgGo6tIy9GW4RokDSXJYGNce6DQbsGawA8vD4xbN64+T7WZL32rk/bQoP
-    0OyUoWf/zy1DAwTyRoBHqznHjJPxvYW5MR0g8eB7+Eb4c7ED5kYW3035CiZWaV6WFf/e
-    l+yQwxUtz4WXv3/9tNOoHp6Q1L36X9f1pHXVKIjLEhR0SL5NM4d3ca2kXEe3xGVKlEgm
-    m5kpPxAZVDG4UdPej5/lfJ5b0L369+t5eATGkshiD+ta4ZnQv5tg/MgSAMQpVSUMTv3s
-    QTjg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLVrKw5+aY="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id 301038x9J73obME
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 19 Oct 2021 09:03:50 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 09:03:47 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Subject: Re: [PATCH net-next v2 3/4] dt-bindings: net: Add schema for
- Qualcomm BAM-DMUX
-Message-ID: <YW5t01Su5ycLm67c@gerhold.net>
-References: <20211011141733.3999-1-stephan@gerhold.net>
- <20211011141733.3999-4-stephan@gerhold.net>
- <YW3XgaiT2jBv4D+L@robh.at.kernel.org>
+        Tue, 19 Oct 2021 03:07:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634627140; x=1666163140;
+  h=message-id:subject:from:to:date:in-reply-to:references:
+   mime-version:content-transfer-encoding;
+  bh=E2JqTr0sfmprfmXR10/j2F7yLEYic33j/+AfHhLsyuE=;
+  b=B8bX74/r9dszTsuvnpLN48OpwaDNnEingRSLlpReCMP6PYlDeGoIcn88
+   qok6TC5foFwRKfPtDdA4qQNstg7EBhG8/EQfDMOJqtNbiyEfBRUQJ4oWa
+   Jh2qzvIxnVOOsZ7e5B0wKSu+D+WOnc3oV+u8BKUacPjjIPA3R1/Jc/egH
+   hFmGX/ZVoL1FTj56iin94FvfrhTglswQ8mFdVnfJF41FEmTL/bn9V8Tu2
+   hk2sRkhmC+AZRwb0SWhnbRYnGJEpPIG24b0yZsDC6B5UMsKzl47qu9XY7
+   uAajkRPjYWQm1DyfVfHNKIF3DDJ+/zgN6wz6i/N60dnPS9ikRFHjTtWHv
+   g==;
+IronPort-SDR: 7v21Wd4/rlBRGNh7rD58ibn7fWw4MTPSgSOGKVteCfxXYSsVmdrDzXvBPPMe3ImzKRqckS6Z17
+ amBlp9rb/jUdH4+mIEgJaKF1Wp3ggGucjkfZ1VPEOE+lx4PctanDwj/1LLVQ0FWXKBwtgbMlwz
+ mW26h3H805khUIRAfEhEGwQ0rM5UcruAqDemwCcvj2DaWKBVc1NcJOQLJv/vfQj5zLzZzlwPzv
+ UQ8C+W6T5nmqJk44MyHNg4eDVgpfbCWcysopbS0Tr36QtnRdV1bKiQn/a7og/1dyJA21pZa1xM
+ sXHde+fSuhfoeFme+5BQZYPG
+X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; 
+   d="scan'208";a="140250818"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Oct 2021 00:05:39 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 19 Oct 2021 00:05:38 -0700
+Received: from [10.205.21.35] (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 19 Oct 2021 00:05:36 -0700
+Message-ID: <93cd70be182298ea0a782ceee83526997fd8734b.camel@microchip.com>
+Subject: Re: [PATCH v6 2/2] pinctrl: microchip sgpio: use reset driver
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Tue, 19 Oct 2021 09:05:35 +0200
+In-Reply-To: <20211018085754.1066056-3-horatiu.vultur@microchip.com>
+References: <20211018085754.1066056-1-horatiu.vultur@microchip.com>
+         <20211018085754.1066056-3-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW3XgaiT2jBv4D+L@robh.at.kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 03:22:25PM -0500, Rob Herring wrote:
-> On Mon, Oct 11, 2021 at 04:17:35PM +0200, Stephan Gerhold wrote:
-> > The BAM Data Multiplexer provides access to the network data channels of
-> > modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916 or
-> > MSM8974. It is built using a simple protocol layer on top of a DMA engine
-> > (Qualcomm BAM) and bidirectional interrupts to coordinate power control.
-> > 
-> > The device tree node combines the incoming interrupt with the outgoing
-> > interrupts (smem-states) as well as the two DMA channels, which allows
-> > the BAM-DMUX driver to request all necessary resources.
-> > 
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> > Changes since RFC: None.
-> > ---
-> >  .../bindings/net/qcom,bam-dmux.yaml           | 87 +++++++++++++++++++
-> >  1 file changed, 87 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml b/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
-> > new file mode 100644
-> > index 000000000000..33e125e70cb4
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
-> > @@ -0,0 +1,87 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/qcom,bam-dmux.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm BAM Data Multiplexer
-> > +
-> > +maintainers:
-> > +  - Stephan Gerhold <stephan@gerhold.net>
-> > +
-> > +description: |
-> > +  The BAM Data Multiplexer provides access to the network data channels
-> > +  of modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916
-> > +  or MSM8974. It is built using a simple protocol layer on top of a DMA engine
-> > +  (Qualcomm BAM DMA) and bidirectional interrupts to coordinate power control.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: qcom,bam-dmux
+On Mon, 2021-10-18 at 10:57 +0200, Horatiu Vultur wrote:
+> On lan966x platform when the switch gets reseted then also the sgpio
+> gets reseted. The fix for this is to extend also the sgpio driver to
+> call the reset driver which will be reseted only once by the first
+> driver that is probed.
 > 
-> Is this block the same on every SoC? It needs to be SoC specific.
-> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-Hm, I think describing it as *SoC*-specific wouldn't be accurate:
-This node does not describe any hardware block, it's more a "firmware
-convention". The only hardware involved is the BAM DMA engine, which
-already has SoC/IP-specific compatibles in its own device tree node.
+Reviewed-by: Steen Hegelund <steen.hegelund@microchip.com> 
 
-This means that if anything there should be "firmware version"-specific
-compatibles, because one SoC might have different (typically signed)
-firmware versions that provide slightly different functionality.
-However, I have to admit that I'm not familiar enough with the different
-firmware versions to come up with a reasonable naming schema for the
-compatible. :/
+-- 
+BR
+Steen
 
-In general, I cannot think of any difference between different versions
-that would matter to a driver. The protocol is quite simple, and minor
-firmware differences can be better handled through the control channel
-that sets up the connection for the modem.
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+steen.hegelund@microchip.com
 
-Does that make sense?
 
-Thanks!
-Stephan
