@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA61D43381E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47424433820
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhJSOPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60926 "EHLO
+        id S232873AbhJSOP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbhJSOPY (ORCPT
+        with ESMTP id S232615AbhJSOP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:15:24 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A349C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:13:11 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id o11so6389404ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:13:11 -0700 (PDT)
+        Tue, 19 Oct 2021 10:15:26 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A26C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:13:13 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id q16so6453692ljg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:13:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/25LReJpLmexJOLsg1U4LuPGd27FRP03kBeKy7B8I5o=;
-        b=PtXf40cExBsKA6nV5e77WfUEMxzkT2NFQnPtC51Tu9UOotsDNjZoMbvVM/+d40IM9h
-         dQmyjQ1bAXa6nMhcNsNH2cmus5iQJHjWtdU6YRrA7XdZRFtrolWVr+WjdSdYYZ/bMGyR
-         W26A2vfhvBBB7zEXD299MRX57UMNCuDQjoEFPTA6SPtj3AnA2XychO6W4PieX3DNtf9n
-         jcrILVHDbCcjJPYq0nLZCbndOcZUhR/nPMagLtsQ5TkMPCZHudEuRGJumsgyOWnH9bEB
-         vXoR/wUCO7+ZYiW0hKWxQ2kdt2BX0zIgArk+BaLwC+pqtzMwsIsmcDx3vFNl0VGVWn5y
-         Wkzw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xOf0sXy4r35p6gXgfs572/QVIu+3RqyjsQzstLELFKo=;
+        b=xOzg9dDLFJ2rIaTnWwrjon0eSXJL9XxQdU0uVA3N6jx041/RkHqwl2YULEw3kckCHk
+         tpoxMWz5/sAEs0hRLL/tOLiDIgtnUOmhF2mSfmhnenpwaMowoiLTioQBJMWsrzPT9p+S
+         CbhJXTbaM4u7Ysf5W8W1hublkFZH2AZFWWCEGw3EnTnqoHxJN6ieozBRhOEm81yDwRZf
+         GoOvQsmRfAV0kh4aYI4GPaAwH8F0l5k2hm1NyvjnwMbM8fmnJ44spbnr3lhIpv3uK7ix
+         bNs2AmFZ4TVfQjKuGJRABruNdp0H0T87n+UFDj/HjbnazX3IzjLYzEDnWs7cJtizQVsM
+         +ilw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/25LReJpLmexJOLsg1U4LuPGd27FRP03kBeKy7B8I5o=;
-        b=F+wWJ81LUwdBTzY4SC5Uh6PWs5AOGBJ8nuCsrsfqbMCg3GmCoiCdnoE3RGwgPK3fCY
-         XGS60xtMgmLTKMBZT23Pihms7CtIRbPBOi6m11eOU+5WQgs2PwLkmuzzvaA9k9qflVK5
-         CathXHsFXTvCeiialEJhESQiZSYUQFUawN4MGh4NsB9ZYORvr6dYFz0azfAK3N9l7XiJ
-         6FpFsCKTmHENjk04VImwesYgdpuCvBWU68c9c+xOiimUpTRhHdvhkLvB3hKySedSCU3m
-         vXkF4odmEigyNcewaXiRfefQG8dUatWbmLG6t7fBm2WHfElDtVJs1pelpgmp4tE85ch8
-         4iOQ==
-X-Gm-Message-State: AOAM530tsI6rzdaq/swvdYpRriiU6agU6txohV2uY24RKqE+K2NLHnmg
-        736M2XmaVoANVTzlTlmPWNLr+A==
-X-Google-Smtp-Source: ABdhPJzPP4EtERsJnIetXPWwwfIY3iWtk4TXNDwY/nr3BsDBbk3teRY3BsGmScoX1PK5HNNXeEvo3A==
-X-Received: by 2002:a2e:6818:: with SMTP id c24mr7148268lja.471.1634652789734;
-        Tue, 19 Oct 2021 07:13:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xOf0sXy4r35p6gXgfs572/QVIu+3RqyjsQzstLELFKo=;
+        b=0eX4rqzaK3ndTbQ0XJ6o1sk1siXjvZ3NXtrUY9WGMXFRv6M3b/XaCkxYXql0Ykgfl8
+         f4GjQkNT3rvMfMfOY90pfM1yqROQQeUhw10s+iNqHKteksvXQGM1ncND2zvIzOk4CWck
+         NIX95TldXpa9kxCZzmU119g7lAMNS/7PPdGrRqGPK/ITE8wpAQx3diZzoigqWnWLJBC9
+         lD+VvgvYr9elzSLD1RALB9gAOUL1fTF1NFxIwvZV6qUXJKTYgj20GOWyCeQMKatmYPAE
+         LaROalckp5PA6GBw8gQQUPW7KKAOWc9+yi9C/qr3qfnmvTNV0vOln+gdvLZNGnJgDs4b
+         Wbkg==
+X-Gm-Message-State: AOAM533kUwmAqkBGsNMCQrYKpAi28KGVHrnMvBFDSerZdXYMy+aw8qxm
+        6fLnPCcaS/B+38XMBQ31SDO9IA==
+X-Google-Smtp-Source: ABdhPJwB5/NUjhIzDhmdfovwpekqaEGkErkI7uh6Y4F08p8/rAjaHeGJTWShQGEc56ngqQAFoTpCZQ==
+X-Received: by 2002:a2e:9b12:: with SMTP id u18mr6952241lji.447.1634652791875;
+        Tue, 19 Oct 2021 07:13:11 -0700 (PDT)
 Received: from grasshopper.googchameleon.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id d24sm1957805ljc.2.2021.10.19.07.13.08
+        by smtp.gmail.com with ESMTPSA id d24sm1957805ljc.2.2021.10.19.07.13.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 07:13:09 -0700 (PDT)
+        Tue, 19 Oct 2021 07:13:11 -0700 (PDT)
 From:   =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
 To:     dinguyen@kernel.org, robh+dt@kernel.org, arnd@arndb.de,
         olof@lixom.net, soc@kernel.org
@@ -56,10 +56,12 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         mw@semihalf.com, jam@semihalf.com, ka@semihalf.com,
         tn@semihalf.com, amstan@google.com,
         =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
-Subject: [PATCH v4 0/2] Add support for the Mercury+ AA1 module
-Date:   Tue, 19 Oct 2021 16:12:26 +0200
-Message-Id: <20211019141228.1271617-1-pan@semihalf.com>
+Subject: [PATCH v4 1/2] socfpga: dts: move arria10 aliases to socfpga_arria10.dtsi
+Date:   Tue, 19 Oct 2021 16:12:27 +0200
+Message-Id: <20211019141228.1271617-2-pan@semihalf.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211019141228.1271617-1-pan@semihalf.com>
+References: <20211019141228.1271617-1-pan@semihalf.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -67,32 +69,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patches add support for the Mercury+ AA1 with an
-Arria 10 SoCFPGA.
+socfpga_arria10_socdk.dtsi declares aliases which will most likely
+be used by other arria10 boards in the exact same way. move these
+aliases to the parent file.
 
-v4:
-* move devicetree aliases to socfpga_arria10.dtsi
-* sort arria10 entries in arch/arm/boot/dts/Makefile
+Signed-off-by: Paweł Anikiel <pan@semihalf.com>
+---
+ arch/arm/boot/dts/socfpga_arria10.dtsi       | 13 +++++++++++++
+ arch/arm/boot/dts/socfpga_arria10_socdk.dtsi |  7 +------
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
-v3:
-* replace i2c busno property with devicetree aliases
-* reset controller patch added to Philipp Zabel's tree
-
-v2:
-* remove spi flash node
-* rename memory and mdio nodes
-* add gpio nodes
-* add busno property to designware i2c driver
-
-Paweł Anikiel (2):
-  reset: socfpga: add empty driver allowing consumers to probe
-  socfpga: dts: move arria10 aliases to socfpga_arria10.dtsi
-
- arch/arm/boot/dts/socfpga_arria10.dtsi       | 13 ++++++++++
- arch/arm/boot/dts/socfpga_arria10_socdk.dtsi |  7 +-----
- drivers/reset/reset-socfpga.c                | 26 ++++++++++++++++++++
- 3 files changed, 40 insertions(+), 6 deletions(-)
-
+diff --git a/arch/arm/boot/dts/socfpga_arria10.dtsi b/arch/arm/boot/dts/socfpga_arria10.dtsi
+index a574ea91d9d3..26b1662cc00f 100644
+--- a/arch/arm/boot/dts/socfpga_arria10.dtsi
++++ b/arch/arm/boot/dts/socfpga_arria10.dtsi
+@@ -10,6 +10,19 @@ / {
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+ 
++	aliases {
++		ethernet0 = &gmac0;
++		ethernet1 = &gmac1;
++		ethernet2 = &gmac2;
++		serial0 = &uart0;
++		serial1 = &uart1;
++		i2c0 = &i2c0;
++		i2c1 = &i2c1;
++		i2c2 = &i2c2;
++		i2c3 = &i2c3;
++		i2c4 = &i2c4;
++	};
++
+ 	cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+diff --git a/arch/arm/boot/dts/socfpga_arria10_socdk.dtsi b/arch/arm/boot/dts/socfpga_arria10_socdk.dtsi
+index 7edebe20e859..e9bb56ec15f1 100644
+--- a/arch/arm/boot/dts/socfpga_arria10_socdk.dtsi
++++ b/arch/arm/boot/dts/socfpga_arria10_socdk.dtsi
+@@ -8,14 +8,9 @@ / {
+ 	model = "Altera SOCFPGA Arria 10";
+ 	compatible = "altr,socfpga-arria10", "altr,socfpga";
+ 
+-	aliases {
+-		ethernet0 = &gmac0;
+-		serial0 = &uart1;
+-	};
+-
+ 	chosen {
+ 		bootargs = "earlyprintk";
+-		stdout-path = "serial0:115200n8";
++		stdout-path = "serial1:115200n8";
+ 	};
+ 
+ 	memory@0 {
 -- 
 2.25.1
 
