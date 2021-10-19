@@ -2,84 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E071A433DBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A914433DC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbhJSRup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:50:45 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:35173 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233613AbhJSRul (ORCPT
+        id S234816AbhJSRve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233613AbhJSRvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:50:41 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7A38E240004;
-        Tue, 19 Oct 2021 17:48:26 +0000 (UTC)
-Date:   Tue, 19 Oct 2021 19:48:26 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
-Message-ID: <YW8E6oeIoRdpmPL8@piout.net>
-References: <20211019131724.3109-1-semen.protsenko@linaro.org>
- <20211019131724.3109-3-semen.protsenko@linaro.org>
- <6dbd4812-bac3-55dc-108e-c322e8a493de@canonical.com>
- <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com>
- <CAPLW+4mE09AOSco+X9qE=1sjXvNVkOxtJqur+HoBJExxiw0J=g@mail.gmail.com>
+        Tue, 19 Oct 2021 13:51:33 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB76C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:49:20 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 187so592231pfc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=89Q/XwlG7K9QjhGfCn1Wc1KjC2i0sRysqqYs+AmNUQE=;
+        b=QqBZQ2oY0XncA0F2vWMKSAd1b02KZ1fZMpyo5zMWdEAftnVkOaBQWB/5RLU4FI1opi
+         jkOZJlMz6WLfWBCeygXdJXIHT+cBGooxdY326qmmymUk5GdXZciETGT0RLsFAVmitW50
+         zxKEax9RktgHj28gpfInseMAVbJSpXae0a+sm1DtL6e6DeScdyyoSh7UEI1b8/ayZ9EZ
+         356fDv1e+rib82YPUwHA/Ucil+4Cv1gwWyhi4f3FoU7KMjzvagupwxUBCfrzpWuLKYMz
+         /pMSPg3WhEKuEd8nmj+EQlFiiUPts8rBe4p3Yrk1yMiCiHN5tzWbRze+CplP2OC8noBL
+         J2bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=89Q/XwlG7K9QjhGfCn1Wc1KjC2i0sRysqqYs+AmNUQE=;
+        b=Up26OLrgjXcvwoo3r3eHnxF9xPUX1oFs0OYbjqGLO3SsmqdGWe5gf4M3oRbo8jVK/e
+         5uhnjLCqDH9GIFtsmKOGddTM5Lwnz729+TKN2lqSthFa7VmIYYOpdjIOFFYnfiyze9hu
+         0ro8t5ejzosSjuH1t36bY14v29ad73tpRYQJ2osmyCNaOEkl+5M9ovT4qkecg+Q7et9S
+         7vduDsuPDM+9cE3884HLP5IJQtrWkt/OcPe2ZUFVwWrMVF3J5Dze1lL17KQNr5J4bbnZ
+         tI9bZihZCh+92cXv2+f1ow4/zJldY3NRU5JxX9J3iVW0ouUbTj7SgTW86NPUL/uqq0RF
+         D04Q==
+X-Gm-Message-State: AOAM530l6kKcSVF3itg1ZxQCQNYIKYu6bGZSvGAHbMsaYOuFmx2sSPiF
+        iLeQZCTrYif2+8QW0hQZGIIofg==
+X-Google-Smtp-Source: ABdhPJyEWdYwNsiXCAAz9qvhhihWmXzPVhX2Nk3xsl0xaBfcdISq0U7NdW2leRUWeoK1YEYbfPzPmg==
+X-Received: by 2002:a05:6a00:234f:b0:3eb:3ffd:6da2 with SMTP id j15-20020a056a00234f00b003eb3ffd6da2mr1252022pfj.15.1634665759796;
+        Tue, 19 Oct 2021 10:49:19 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id s22sm16722906pfe.76.2021.10.19.10.49.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 10:49:18 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 11:49:16 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Rob Herring <robh@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        Bruce Ashfield <bruce.ashfield@xilinx.com>
+Subject: Re: [RFC PATCH 4/7] remoteproc: create the REMOTEPROC_VIRTIO config
+Message-ID: <20211019174916.GB3340362@p14s>
+References: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com>
+ <20211001101234.4247-5-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPLW+4mE09AOSco+X9qE=1sjXvNVkOxtJqur+HoBJExxiw0J=g@mail.gmail.com>
+In-Reply-To: <20211001101234.4247-5-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2021 19:35:26+0300, Sam Protsenko wrote:
-> On Tue, 19 Oct 2021 at 19:22, Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
-> >
-> > On 19/10/2021 18:17, Krzysztof Kozlowski wrote:
-> > > On 19/10/2021 15:17, Sam Protsenko wrote:
-> > >> This RTC driver only accepts dates from 2000 to 2099 year. It starts
-> > >> counting from 2000 to avoid Y2K problem,
-> > >
-> > > 1. Where is the minimum (2000) year set in the RTC driver?
-> >
-> > Ah, indeed. I found it now in the driver.
-> >
-> > >
-> > >> and S3C RTC only supports 100
-> > >
-> > > On some of the devices 100, on some 1000, therefore, no. This does not
-> > > look correct.
-> >
-> > That part of sentence is still incorrect, but change itself makes sense.
-> > Driver does not support <2000.
-> >
+On Fri, Oct 01, 2021 at 12:12:31PM +0200, Arnaud Pouliquen wrote:
+> Create the config to associate to the remoteproc virtio.
 > 
-> Driver itself does not allow setting year >= 2100:
+> Notice that the REMOTEPROC_VIRTIO config can not set to m. the reason
+> is that it defines API that is used by the built-in remote proc core.
+> Functions such are rproc_add_virtio_dev can be called during the
+> Linux boot phase.
 > 
-> <<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
->     if (year < 0 || year >= 100) {
->         dev_err(dev, "rtc only supports 100 years\n");
->         return -EINVAL;
->     }
-> <<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/remoteproc/Kconfig               | 11 +++++++++-
+>  drivers/remoteproc/Makefile              |  2 +-
+>  drivers/remoteproc/remoteproc_internal.h | 28 ++++++++++++++++++++++++
+>  3 files changed, 39 insertions(+), 2 deletions(-)
 > 
-> Devices might allow it, so the commit message phrasing is incorrect
-> and should be replaced, yes. But the code should be correct. Should I
-> send v2 with fixed commit message?
-> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index 9a6eedc3994a..f271552c0d84 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -6,7 +6,7 @@ config REMOTEPROC
+>  	depends on HAS_DMA
+>  	select CRC32
+>  	select FW_LOADER
+> -	select VIRTIO
+> +	select REMOTEPROC_VIRTIO
+>  	select WANT_DEV_COREDUMP
+>  	help
+>  	  Support for remote processors (such as DSP coprocessors). These
+> @@ -14,6 +14,15 @@ config REMOTEPROC
+>  
+>  if REMOTEPROC
+>  
+> +config REMOTEPROC_VIRTIO
+> +	bool "Remoteproc virtio device "
+> +	select VIRTIO
+> +	help
+> +	  Say y here to have a virtio device support for the remoteproc
+> +	  communication.
+> +
+> +	  It's safe to say N if you don't use the virtio for the IPC.
 
-It would be better to pass the proper values because else nobody will
-ever come back and fix it (hence why I didn't move that driver to
-devm_rtc_register_device yet).
+This one is weird but there is no need to comment further after reading your
+conversation with Bjorn.
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> +
+>  config REMOTEPROC_CDEV
+>  	bool "Remoteproc character device interface"
+>  	help
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index bb26c9e4ef9c..73d2384a76aa 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -8,8 +8,8 @@ remoteproc-y				:= remoteproc_core.o
+>  remoteproc-y				+= remoteproc_coredump.o
+>  remoteproc-y				+= remoteproc_debugfs.o
+>  remoteproc-y				+= remoteproc_sysfs.o
+> -remoteproc-y				+= remoteproc_virtio.o
+>  remoteproc-y				+= remoteproc_elf_loader.o
+> +obj-$(CONFIG_REMOTEPROC_VIRTIO)		+= remoteproc_virtio.o
+>  obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
+>  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
+>  obj-$(CONFIG_INGENIC_VPU_RPROC)		+= ingenic_rproc.o
+> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> index 152fe2e8668a..4ce012c353c0 100644
+> --- a/drivers/remoteproc/remoteproc_internal.h
+> +++ b/drivers/remoteproc/remoteproc_internal.h
+> @@ -30,10 +30,38 @@ int rproc_of_parse_firmware(struct device *dev, int index,
+>  			    const char **fw_name);
+>  
+>  /* from remoteproc_virtio.c */
+> +#if IS_ENABLED(CONFIG_REMOTEPROC_VIRTIO)
+> +
+>  int rproc_rvdev_add_device(struct rproc_vdev *rvdev);
+>  irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id);
+>  void rproc_vdev_release(struct kref *ref);
+>  
+> +#else
+> +
+> +int rproc_rvdev_add_device(struct rproc_vdev *rvdev)
+> +{
+> +	/* This shouldn't be possible */
+> +	WARN_ON(1);
+> +
+> +	return -ENXIO;
+> +}
+> +
+> +static inline irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id)
+> +{
+> +	/* This shouldn't be possible */
+> +	WARN_ON(1);
+> +
+> +	return IRQ_NONE;
+> +}
+> +
+> +static inline void rproc_vdev_release(struct kref *ref)
+> +{
+> +	/* This shouldn't be possible */
+> +	WARN_ON(1);
+> +}
+> +
+> +#endif
+> +
+>  /* from remoteproc_debugfs.c */
+>  void rproc_remove_trace_file(struct dentry *tfile);
+>  struct dentry *rproc_create_trace_file(const char *name, struct rproc *rproc,
+> -- 
+> 2.17.1
+> 
