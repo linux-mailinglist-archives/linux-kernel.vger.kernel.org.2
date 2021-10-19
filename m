@@ -2,139 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CB04334DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77C24334CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235461AbhJSLkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
+        id S235392AbhJSLjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235401AbhJSLj7 (ORCPT
+        with ESMTP id S230097AbhJSLjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:39:59 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E651AC061772
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:37 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x27so6774047lfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U36LIf5+tljufBvVEM58yc8vCPbhSTcJ8OL4uJO2PFM=;
-        b=zEOFkXRvhUqeeBzMbMrkfCpPQwfb2xW23osQXL1q9VtS9XMSBvnFtcInNPvmzPCv2i
-         Y/4Szbo8QuKG70ldNdcts4hXKIdKoV7R3s7WcT/PJvA4pV1japkkbY4eWI/37YAYBAs7
-         SRKyZL/1qFGHnhoznGUdDx0CNYwgGHmL1xoYHmOyy3L21EzqOigNuWA4s3Iqz7JbhREp
-         xRrzaDUW+FlE8K4oLUDSpELoxfWOZ9dciloZxAtiKXs4WGFenYy9FpihvHclQ/2L9f7r
-         4GDv2Wrj2uWORwrV31M7yLPbQKHky+hRKpk9tpYVWmYWtFJyAz6U+KBqHpW95tp/EF/U
-         BkTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U36LIf5+tljufBvVEM58yc8vCPbhSTcJ8OL4uJO2PFM=;
-        b=cUTv5dtk8tmu6IDxWLKqDxk5n//CHDwoB5tJFfrlkD7cBQdkvO9xsOTPP7AfAB1598
-         TAVBKk2rkvFMkR82f84gJ4qYXxvsvvF/zec5zxCUpGzSjIfd48Ui/igCrQaPYQ27kn4U
-         afmXAXMpwoLjAZdLOLr5vW6Z3D8sji7y6pkAeDhSS/DSgJN/j8h/1XL6ZugEpQyGXfij
-         dbCPu7d9HGL6Cy7ZWM9yDTaBRKjgNp1MBBEXlrCs/Kqh4dki0pw1VniLjqu5F71BadXl
-         ZSn6PyOekPtjHXxMk7jzQgvW1Ae9WX0PtUx9vpW/VIFj3VMXaIRjVPrsM9uZbfNKpfKf
-         KA/g==
-X-Gm-Message-State: AOAM532O/G693hdUuh3eKKusfkN1utmB964b4euO8WQaPWToQpxz4QpU
-        eauGgDh3koWu45PK8qxVHyTdTzFkCVxcnjv1OUHsaw==
-X-Google-Smtp-Source: ABdhPJzZoWIKBvppscKREVbWcuzaxw1WipKDOxdzvZxLuHJRu3ua1R5naxHREJaxvKXNplNOKPTE/Il2eRRibOTPz3U=
-X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr5598334lfb.71.1634643456337;
- Tue, 19 Oct 2021 04:37:36 -0700 (PDT)
+        Tue, 19 Oct 2021 07:39:32 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDF6C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bGnPWyU/ex0mrojfpq5huP+5pTxB1pC0VCVQxTYOlA0=; b=I505kGwju3lVF61pmKpyMc9oQa
+        COXPFFb60sFt9MGVA+svsUr/TKzQpby/KimIrqtIDehXpLOiQ1wQK7EQ8pTYCUGpv6n3Db3e6Q7Ti
+        7EcmWwH128bDCpZcvnOu1wk1AZbYgUbazD/I1YnZ4mJtnrmeBGNoioKSh+tT9UzzP0F0O9FtFD8Km
+        ft3udazfQ7zzviRdFyA3nzHvRsHoYYCaeMztUqT613bHjdYU7i35xIpycsR3VTzK7I8+3Jf2RfrR+
+        Z05dMybAC0sNWyIoSg+SPoy6otTDL5Na7cdJQ+cdwaaLmvkMsggFIEWGuOWSrbFKGanPmhTdiTLcA
+        zzs8MfcQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcnQc-00AlUX-5h; Tue, 19 Oct 2021 11:37:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 42A6030024D;
+        Tue, 19 Oct 2021 13:37:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 231ED21BE687A; Tue, 19 Oct 2021 13:37:09 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 13:37:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <YW6t5catO1mx+eCZ@hirez.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
+ <20211013205259.44cvvaxiexiff5w5@treble>
 MIME-Version: 1.0
-References: <1634383581-11055-1-git-send-email-zheyuma97@gmail.com>
-In-Reply-To: <1634383581-11055-1-git-send-email-zheyuma97@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Oct 2021 13:36:59 +0200
-Message-ID: <CAPDyKFp4tt4xA-Fo_E7yWV2Mi4ES5ko=g1XgfaJwxhkSiaCEMg@mail.gmail.com>
-Subject: Re: [PATCH] memstick: r592: Fix a UAF bug when removing the driver
-To:     Zheyu Ma <zheyuma97@gmail.com>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013205259.44cvvaxiexiff5w5@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Oct 2021 at 13:26, Zheyu Ma <zheyuma97@gmail.com> wrote:
->
-> In r592_remove(), the driver will free dma after freeing the host, which
-> may cause a UAF bug.
->
-> The following log reveals it:
->
-> [   45.361796 ] BUG: KASAN: use-after-free in r592_remove+0x269/0x350 [r592]
-> [   45.364286 ] Call Trace:
-> [   45.364472 ]  dump_stack_lvl+0xa8/0xd1
-> [   45.364751 ]  print_address_description+0x87/0x3b0
-> [   45.365137 ]  kasan_report+0x172/0x1c0
-> [   45.365415 ]  ? r592_remove+0x269/0x350 [r592]
-> [   45.365834 ]  ? r592_remove+0x269/0x350 [r592]
-> [   45.366168 ]  __asan_report_load8_noabort+0x14/0x20
-> [   45.366531 ]  r592_remove+0x269/0x350 [r592]
-> [   45.378785 ]
-> [   45.378903 ] Allocated by task 4674:
-> [   45.379162 ]  ____kasan_kmalloc+0xb5/0xe0
-> [   45.379455 ]  __kasan_kmalloc+0x9/0x10
-> [   45.379730 ]  __kmalloc+0x150/0x280
-> [   45.379984 ]  memstick_alloc_host+0x2a/0x190
-> [   45.380664 ]
-> [   45.380781 ] Freed by task 5509:
-> [   45.381014 ]  kasan_set_track+0x3d/0x70
-> [   45.381293 ]  kasan_set_free_info+0x23/0x40
-> [   45.381635 ]  ____kasan_slab_free+0x10b/0x140
-> [   45.381950 ]  __kasan_slab_free+0x11/0x20
-> [   45.382241 ]  slab_free_freelist_hook+0x81/0x150
-> [   45.382575 ]  kfree+0x13e/0x290
-> [   45.382805 ]  memstick_free+0x1c/0x20
-> [   45.383070 ]  device_release+0x9c/0x1d0
-> [   45.383349 ]  kobject_put+0x2ef/0x4c0
-> [   45.383616 ]  put_device+0x1f/0x30
-> [   45.383865 ]  memstick_free_host+0x24/0x30
-> [   45.384162 ]  r592_remove+0x242/0x350 [r592]
-> [   45.384473 ]  pci_device_remove+0xa9/0x250
->
-> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+On Wed, Oct 13, 2021 at 01:52:59PM -0700, Josh Poimboeuf wrote:
 
-Applied for next, thanks!
+> BTW, CALL_NOSPEC results in a retpoline site in .altinstr_replacement:
+> 
+> Relocation section [40] '.rela.retpoline_sites' for section [39] '.retpoline_sites' at offset 0x8d28 contains 1 entry:
+>   Offset              Type            Value               Addend Name
+>   000000000000000000  X86_64_PC32     000000000000000000     +10 .altinstr_replacement
+> 
+> Which I assume we don't want.
 
-Kind regards
-Uffe
+(I missed this initially, and just independently rediscovered it)
 
+In principle this problem affects static_call_list, the __sanitizer_cov_
+and __fentry__ and now retpoline_sites.
 
-> ---
->  drivers/memstick/host/r592.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
-> index e79a0218c492..1d35d147552d 100644
-> --- a/drivers/memstick/host/r592.c
-> +++ b/drivers/memstick/host/r592.c
-> @@ -838,15 +838,15 @@ static void r592_remove(struct pci_dev *pdev)
->         }
->         memstick_remove_host(dev->host);
->
-> +       if (dev->dummy_dma_page)
-> +               dma_free_coherent(&pdev->dev, PAGE_SIZE, dev->dummy_dma_page,
-> +                       dev->dummy_dma_page_physical_address);
-> +
->         free_irq(dev->irq, dev);
->         iounmap(dev->mmio);
->         pci_release_regions(pdev);
->         pci_disable_device(pdev);
->         memstick_free_host(dev->host);
-> -
-> -       if (dev->dummy_dma_page)
-> -               dma_free_coherent(&pdev->dev, PAGE_SIZE, dev->dummy_dma_page,
-> -                       dev->dummy_dma_page_physical_address);
->  }
->
->  #ifdef CONFIG_PM_SLEEP
-> --
-> 2.17.6
->
+Granted, it seems really unlikely to find __fentry__ or __sanitizer_cov_
+references in alternatives, but it should be trivial to manually create
+one.
+
+I'm thinking we want to exclude all those when found in
+.altinstr_replacement, right? It just doesn't make sense to rewrite
+replacement text.
+
+How is something like the below? (I'm not completely happy with it, but
+I couldn't think of something better either).
+
+---
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1039,14 +1039,39 @@ static void remove_insn_ops(struct instr
+ 	}
+ }
+ 
++#define DEST_RETPOLINE	((void *)-1L)
++
+ static void add_call_dest(struct objtool_file *file, struct instruction *insn,
+ 			  struct symbol *dest, bool sibling)
+ {
+ 	struct reloc *reloc = insn_reloc(file, insn);
+ 
+-	insn->call_dest = dest;
+-	if (!dest)
++	if (dest != DEST_RETPOLINE) {
++		insn->call_dest = dest;
++		if (!dest )
++			return;
++	}
++
++	/*
++	 * Whatever stack impact regular CALLs have, should be undone
++	 * by the RETURN of the called function.
++	 *
++	 * Annotated intra-function calls retain the stack_ops but
++	 * are converted to JUMP, see read_intra_function_calls().
++	 */
++	remove_insn_ops(insn);
++
++	/*
++	 * Whatever we do, do not rewrite replacement text.
++	 */
++	if (!strcmp(insn->sec->name, ".altinstr_replacement"))
++		return;
++
++	if (dest == DEST_RETPOLINE) {
++		list_add_tail(&insn->call_node,
++			      &file->retpoline_call_list);
+ 		return;
++	}
+ 
+ 	if (insn->call_dest->static_call_tramp) {
+ 		list_add_tail(&insn->call_node,
+@@ -1091,15 +1116,6 @@ static void add_call_dest(struct objtool
+ 		list_add_tail(&insn->mcount_loc_node,
+ 			      &file->mcount_loc_list);
+ 	}
+-
+-	/*
+-	 * Whatever stack impact regular CALLs have, should be undone
+-	 * by the RETURN of the called function.
+-	 *
+-	 * Annotated intra-function calls retain the stack_ops but
+-	 * are converted to JUMP, see read_intra_function_calls().
+-	 */
+-	remove_insn_ops(insn);
+ }
+ 
+ /*
+@@ -1133,10 +1149,9 @@ static int add_jump_destinations(struct
+ 			else
+ 				insn->type = INSN_JUMP_DYNAMIC_CONDITIONAL;
+ 
+-			list_add_tail(&insn->call_node,
+-				      &file->retpoline_call_list);
+-
+ 			insn->retpoline_safe = true;
++
++			add_call_dest(file, insn, DEST_RETPOLINE, true);
+ 			continue;
+ 		} else if (insn->func) {
+ 			/* internal or external sibling call (with reloc) */
+@@ -1272,12 +1287,7 @@ static int add_call_destinations(struct
+ 			insn->type = INSN_CALL_DYNAMIC;
+ 			insn->retpoline_safe = true;
+ 
+-			list_add_tail(&insn->call_node,
+-				      &file->retpoline_call_list);
+-
+-			remove_insn_ops(insn);
+-			continue;
+-
++			add_call_dest(file, insn, DEST_RETPOLINE, false);
+ 		} else
+ 			add_call_dest(file, insn, reloc->sym, false);
+ 	}
