@@ -2,153 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1B0432C50
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAAD432C53
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhJSDhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:37:55 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:60350 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229742AbhJSDhx (ORCPT
+        id S232203AbhJSDkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhJSDkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:37:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UspWPeR_1634614539;
-Received: from 30.225.27.240(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UspWPeR_1634614539)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 19 Oct 2021 11:35:39 +0800
-Subject: Re: [PATCH] firmware: arm_sdei: pass sdei_api_event_register right
- parameters
-To:     James Morse <james.morse@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210910040117.98736-1-zhangliguang@linux.alibaba.com>
- <3fb354d1-bdc1-8aa2-aa90-4fd92e9a2e9a@arm.com>
- <b93cf74a-ec1a-dcfc-990b-d3dbc4b55c3d@linux.alibaba.com>
- <f983a17a-27d4-d43b-e6e6-9f03aa5508b0@arm.com>
-From:   =?UTF-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Message-ID: <6b36e47e-3fd6-f7fe-7b88-ed56cd3c9b4e@linux.alibaba.com>
-Date:   Tue, 19 Oct 2021 11:35:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 18 Oct 2021 23:40:33 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BBAC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:21 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id w14so7423687edv.11
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:38:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d6v/Mt4fBV71aSvKwsHjvF9UUdBQqDQB9fIY21m5wO4=;
+        b=Qo2PQdjlT2H4b7oUHJF/iAJHs1k0Nn9sRTGKIIP6S4dCs0FKYY+2755mSc1m+EmJml
+         UnDUQEYEjCEGXNV1crZrgNCB5MyqvgKh8x4Z6qFcXOTBueUo1hY6j78tAqqHj555vaVu
+         NEOQTspae33UyLoKqDruDgcYi2neb8MN9ltFOo0N5LtGOpsSSU139wj1DubDxD0whHst
+         fHDjqKr1fkz4CR5hxSTwbjfhEehZORiIQvYyH6oNA7mGNqfWGqkuCaosryFc/Px9OnJ4
+         A1sCR6MX3U3IljJ6xR9tRoeeOhpD1+soy33I9fbQDOM3oespuz7Ni61eDZVg22in66SV
+         4IIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d6v/Mt4fBV71aSvKwsHjvF9UUdBQqDQB9fIY21m5wO4=;
+        b=f6Itw6Uh0N6TBZKmObIjPKnyq+zU4Jt5qrD4nlmxOA8uNGM/3pUCWR5gs/vc5T16fs
+         DjgbKnZWHwGd5qw0hTCrbRQiNGDYPeQlkhbKSKjXdsrESmzl2bBggN9+f2xd3AkWy5YN
+         dEPy7SvOkv7RTClqXv3Twau/NKxLfKcN4s8gu5HrYrB4ZFo5kkqErQBZ3uCD+h1MI3we
+         B3SNpoGnHtfZ4aXfiB34PvzDRLt3qLPtXLhKC3hXhAC1zMZsvl2W4OBRVlRayydKlZax
+         qilJlTWWXNCfVfUsqygkOZAdgfT/W6nyC1lcGit008eqKidC5Xb4nG+oDRROl4yEeyAc
+         rRxQ==
+X-Gm-Message-State: AOAM5330ddaavbyyPGJtqtTZLwJdS0IU8YRl0GB6FeFQVw73Cd3cUkbO
+        cmWNVV+mBX1OfewJA1kiZC3G9I8O4NHiX0y1F3J8HA==
+X-Google-Smtp-Source: ABdhPJzsvq+63J4r045SwxshqJsbP5kyW2EiHEjzKuP7+1Kehol6CsymXj6wY93upNjaXmuKU5DSYwHrbLe3wmlSj2U=
+X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr50064702edc.182.1634614699563;
+ Mon, 18 Oct 2021 20:38:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f983a17a-27d4-d43b-e6e6-9f03aa5508b0@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 19 Oct 2021 09:08:08 +0530
+Message-ID: <CA+G9fYtLTmosatvO8VBe-RDjEHEvY01P=Fw5mvRvwbxL31ahOA@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+On Mon, 18 Oct 2021 at 19:08, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.14 release.
+> There are 151 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-在 2021/10/19 1:32, James Morse 写道:
-> Hi Liguang,
->
-> On 11/10/2021 06:40, 乱石 wrote:
->> 在 2021/10/9 1:39, James Morse 写道:
->>> On 10/09/2021 05:01, Liguang Zhang wrote:
->>>> Function _local_event_enable is used for private sdei event
->>>> registeration called by sdei_event_register. We should pass
->>> (registration)
->>>> sdei_api_event_register right flag and mpidr parameters, otherwise atf
->>>> may trigger assert errors.
->>>> diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
->>>> index a7e762c352f9..0736752dadde 100644
->>>> --- a/drivers/firmware/arm_sdei.c
->>>> +++ b/drivers/firmware/arm_sdei.c
->>>> @@ -558,14 +558,16 @@ static int sdei_api_event_register(u32 event_num, unsigned long
->>>> entry_point,
->>>>    static void _local_event_register(void *data)
->>>>    {
->>>>        int err;
->>>> +    u64 mpidr;
->>>>        struct sdei_registered_event *reg;
->>>>        struct sdei_crosscall_args *arg = data;
->>>>          WARN_ON(preemptible());
->>>>    +    mpidr = read_cpuid_mpidr();
->>>>        reg = per_cpu_ptr(arg->event->private_registered, smp_processor_id());
->>>>        err = sdei_api_event_register(arg->event->event_num, sdei_entry_point,
->>>> -                      reg, 0, 0);
->>>> +                      reg, SDEI_EVENT_REGISTER_RM_PE, mpidr);
->>> Hmmm, this looks like a bug in TFA.
->>>
->>> 5.1.2.2 "Parameters" of DEN 0054B has:
->>> | Routing mode is valid only for a shared event. For a private event, the routing mode is
->>> | ignored.
->>>
->>> Worse, the mpidr field has:
->>> | Currently the format is defined only when the selected routing mode is RM_PE.
->
->> For a private event, we route SDEI_EVENT_REGISTER_RM_PE and mpidr parameters may be more
->> rationable.
-> You are making this call from Linux?
->
-> This isn't valid for private events. Private events are private to the CPU - they can only
-> be reset, register and taken on that CPU. The specification for SDEI_EVENT_ROUTING_SET has
-> this:
-> | This call is used to change the routing information of a shared event.
->
-> To borrow the GIC's terms: Private events are like PPI, Shared events are like SPI.
->
->
->>> Over in trusted firmware land:
->>>
->>> https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/tree/services/std_svc/sdei/sdei_main.c?h=v2.5#n361
->>>
->>>
->>> | static int64_t sdei_event_register(int ev_num,
->>> |                 uint64_t ep,
->>> |                 uint64_t arg,
->>> |                 uint64_t flags,
->>> |                uint64_t mpidr)
->>> | {
->>>
->>> |    /* Private events always target the PE */
->>> |    if (is_event_private(map))
->>> |        flags = SDEI_REGF_RM_PE;
->>>
->>> It looks like this re-uses the 'caller specified the routing' code, but didn't update the
->>> mpidr.
->>>
->>>
->>> You mention TFA takes an assert failure, I assume that brings the machine down.
->>> (Presumably you don't have a CPU with an affinity of zero.)
->> Yes, that brings the machine down. In opensource ATF, CPU with an affinity of zero.
->>
->> The problem backaround:
->>
->> we use local secure arch timer as sdei watchdog timer
-> Is that an SPI? If so, you should really be generating a shared event.
+Following build errors noticed while building Linux stable rc 5.14
+with gcc-11 allmodconfig for arm64 architecture.
 
-It's an PPI, secured arch timer used for hardlockup detection.
+  - 5.14.14 gcc-11 arm64 allmodconfig FAILED
 
+> Sudeep Holla <sudeep.holla@arm.com>
+>     firmware: arm_ffa: Add missing remove callback to ffa_bus_type
 
->
->
->> for hardlockup detection, in  os
->> panic ,we mask sdei event, then trigger the assert
->> if (se->reg_flags == SDEI_REGF_RM_PE)
->>
->>      assert(se->affinity == my_mpidr);
->
-> I'm not sure where this code in TFA is, but RM_PE for a private event is going to hit this
-> on all but one CPU. You shouldn't be able to set RM_PE for a private event.
->
->
-> I assume this is the TFA side of the problem from your colleague:
-> https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/11393
->
->
-> Does the problem occur with this TFA patch applied, and without any attempt to mess with
-> the routing of per-cpu/private events?
+drivers/firmware/arm_ffa/bus.c:96:27: error: initialization of 'int
+(*)(struct device *)' from incompatible pointer type 'void (*)(struct
+device *)' [-Werror=incompatible-pointer-types]
+   96 |         .remove         = ffa_device_remove,
+      |                           ^~~~~~~~~~~~~~~~~
+drivers/firmware/arm_ffa/bus.c:96:27: note: (near initialization for
+'ffa_bus_type.remove')
+cc1: some warnings being treated as errors
 
-Thanks for your reply. With the patch applied, the problem resolved.
+Build config:
+https://builds.tuxbuild.com/1zhYTWmjxG50Rb8sGtfneME9kLT/config
 
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks,
+steps to reproduce:
+https://builds.tuxbuild.com/1zhYTWmjxG50Rb8sGtfneME9kLT/tuxmake_reproducer.sh
 
-Liguang
-
->
->
-> Thanks,
->
-> James
+--
+Linaro LKFT
+https://lkft.linaro.org
