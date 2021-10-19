@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EC6433CF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB48B433CFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234449AbhJSRIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231956AbhJSRIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:08:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E3396113B;
-        Tue, 19 Oct 2021 17:06:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634663179;
-        bh=IND+vmJTvpD3wGDfo3MrtiZeVOyq5schvPDxZ56+lYY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lJCJtbJXGH1Wu7VSlDOUMrX73wQ7typCnvAXyrUM6IIJ6/VGEiI2RNcd1AZSPNf2O
-         e4V3DXM41XWSm199u7ihLcHQiQ2eCwBhKYyCw65iq5NWS7JtycbDYlpNkN+vJkGD0s
-         DjaZVNCJldCECuF5fxJpo2rXRhtjiHnCqLywcDv1BUPsSA7axQrSxBChN6CzIpU0vp
-         o0rl7CysmQovrNlCi0p6mA5A4PfwDb5Sd08R8MF9EfGeAW/3vI++BumbZOBh7Cz+qe
-         U1Z2mnqVhrIxctauT7m7qM+SnZ5JGuHvo1+vsKyVpcFS2/iCLDYiKpAu9EhabA/0Ly
-         f6rVfxJZ09zpQ==
-Date:   Wed, 20 Oct 2021 01:06:04 +0800
-From:   Gao Xiang <xiang@kernel.org>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Splitting struct page into multiple types - Was: re: Folio
- discussion recap -
-Message-ID: <20211019170603.GA15424@hsiangkao-HP-ZHAN-66-Pro-G1>
-Mail-Followup-To: Kent Overstreet <kent.overstreet@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-References: <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW25EDqynlKU14hx@moria.home.lan>
- <YW3dByBWM0dSRw/X@cmpxchg.org>
- <YW7uN2p8CihCDsln@moria.home.lan>
+        id S234549AbhJSRJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhJSRJQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:09:16 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089AAC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:07:03 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so2499549otk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:07:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tRUzeHjn1JScYsy8o3opbyIOuIsB/FtwNfAyTowowWw=;
+        b=F832Pj/VWsWXq14tuowyPd+60g+tsKelOOjTQIFcBFAP/emkcy+rJkb3RhvyHAMBQx
+         oTaTU7qmIcc+o6biGXLnm8ai3mBaEULu/q1CiaNG+LvPn11thXJ0j2jxR87BY6MN2kcF
+         aXv8rFCEi9eHsCol+2ZxiCrh7kVm4do4XZHz0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tRUzeHjn1JScYsy8o3opbyIOuIsB/FtwNfAyTowowWw=;
+        b=A8z9ZG1gu4XlRPOVuZJD4BFuflUonVJIyGnui8NmgwTwRIRYAK5zo+KljQ/dqy5dHX
+         g6wtEa+957E3IPpAVyNGaDyOY8QUt8FdjCSYejbKEcTG18C4C9wG0cmvVn5ELwxrWLXy
+         UXuBDpPvOnwQv+s/dfGCszrUnR5He3uXsK1n2MJk+wTsjC9PK80+XUgS+uMJygBHZDcL
+         xBI6uvCW5w9QH+sPwpsVDcPJANvmFU1ocC5mkT0N32iNxMpE5tCq8R7hoTwIoGCz0l6O
+         oBWmPP3DgFN41xD2GOg63OX+zoo1tipOlvG6/9s4K6e2oHEdPghTPN0JqrxR6/xARWm8
+         wZHQ==
+X-Gm-Message-State: AOAM531b34E5inbun2O86xtPMgywt7eIXDlKaP4rqQdLdGpeRSjLDcSm
+        JDEq0U5lqeuK4dSNeRcaCLPqOVI2wjPWiA==
+X-Google-Smtp-Source: ABdhPJwk0P4Fe+KxnjpZWkrUn5VqW5n6yN2Df5qzajc/pwapVAosirWuM06osAOdB8ZUNgJVraG9fA==
+X-Received: by 2002:a9d:3e4a:: with SMTP id h10mr6211995otg.147.1634663222092;
+        Tue, 19 Oct 2021 10:07:02 -0700 (PDT)
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com. [209.85.167.173])
+        by smtp.gmail.com with ESMTPSA id e7sm3783624otq.4.2021.10.19.10.07.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 10:07:00 -0700 (PDT)
+Received: by mail-oi1-f173.google.com with SMTP id o4so5931064oia.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:07:00 -0700 (PDT)
+X-Received: by 2002:aca:603:: with SMTP id 3mr5184997oig.117.1634663219994;
+ Tue, 19 Oct 2021 10:06:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YW7uN2p8CihCDsln@moria.home.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211019033101.27658-1-wanjiabing@vivo.com> <1ae64510-0519-4852-a2a0-5c32490a195c@gmail.com>
+In-Reply-To: <1ae64510-0519-4852-a2a0-5c32490a195c@gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Tue, 19 Oct 2021 10:06:45 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXNbLHDJ4Z8DNzNuxVJuqgKoKJynedXdnUP_1_Vvxgvc+A@mail.gmail.com>
+Message-ID: <CA+ASDXNbLHDJ4Z8DNzNuxVJuqgKoKJynedXdnUP_1_Vvxgvc+A@mail.gmail.com>
+Subject: Re: [PATCH] mwifiex: Fix divide error in mwifiex_usb_dnld_fw
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Wan Jiabing <wanjiabing@vivo.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>, kael_w@yeah.net,
+        syzbot+4e7b6c94d22f4bfca9a0@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 12:11:35PM -0400, Kent Overstreet wrote:
-> On Mon, Oct 18, 2021 at 04:45:59PM -0400, Johannes Weiner wrote:
-> > On Mon, Oct 18, 2021 at 02:12:32PM -0400, Kent Overstreet wrote:
-> > > On Mon, Oct 18, 2021 at 12:47:37PM -0400, Johannes Weiner wrote:
-> > > > I find this line of argument highly disingenuous.
-> > > > 
-> > > > No new type is necessary to remove these calls inside MM code. Migrate
-> > > > them into the callsites and remove the 99.9% very obviously bogus
-> > > > ones. The process is the same whether you switch to a new type or not.
-> > > 
-> > > Conversely, I don't see "leave all LRU code as struct page, and ignore anonymous
-> > > pages" to be a serious counterargument. I got that you really don't want
-> > > anonymous pages to be folios from the call Friday, but I haven't been getting
-> > > anything that looks like a serious counterproposal from you.
-> > > 
-> > > Think about what our goal is: we want to get to a world where our types describe
-> > > unambigiuously how our data is used. That means working towards
-> > >  - getting rid of type punning
-> > >  - struct fields that are only used for a single purpose
-> > 
-> > How is a common type inheritance model with a generic page type and
-> > subclasses not a counter proposal?
-> > 
-> > And one which actually accomplishes those two things you're saying, as
-> > opposed to a shared folio where even 'struct address_space *mapping'
-> > is a total lie type-wise?
-> > 
-> > Plus, really, what's the *alternative* to doing that anyway? How are
-> > we going to implement code that operates on folios and other subtypes
-> > of the page alike? And deal with attributes and properties that are
-> > shared among them all? Willy's original answer to that was that folio
-> > is just *going* to be all these things - file, anon, slab, network,
-> > rando driver stuff. But since that wasn't very popular, would not get
-> > rid of type punning and overloaded members, would get rid of
-> > efficiently allocating descriptor memory etc.- what *is* the
-> > alternative now to common properties between split out subtypes?
-> > 
-> > I'm not *against* what you and Willy are saying. I have *genuinely
-> > zero idea what* you are saying.
-> 
-> So we were starting to talk more concretely last night about the splitting of
-> struct page into multiple types, and what that means for page->lru.
-> 
-> The basic process I've had in mind for splitting struct page up into multiple
-> types is: create a new type for each struct in the union-of-structs, change code
-> to refer to that type instead of struct page, then - importantly - delete those
-> members from the union-of-structs in struct page.
-> 
-> E.g. for struct slab, after Willy's struct slab patches, we want to delete that
-> stuff from struct page - otherwise we've introduced new type punning where code
-> can refer to the same members via struct page and struct slab, and it's also
-> completely necessary in order to separately allocate these new structs and slim
-> down struct page.
-> 
-> Roughly what I've been envisioning for folios is that the struct in the
-> union-of-structs with lru, mapping & index - that's what turns into folios.
-> 
-> Note that we have a bunch of code using page->lru, page->mapping, and
-> page->index that really shouldn't be. The buddy allocator uses page->lru for
-> freelists, and it shouldn't be, but there's a straightforward solution for that:
-> we need to create a new struct in the union-of-structs for free pages, and
-> confine the buddy allocator to that (it'll be a nice cleanup, right now it's
-> overloading both page->lru and page->private which makes no sense, and it'll
-> give us a nice place to stick some other things).
-> 
-> Other things that need to be fixed:
-> 
->  - page->lru is used by the old .readpages interface for the list of pages we're
->    doing reads to; Matthew converted most filesystems to his new and improved
->    .readahead which thankfully no longer uses page->lru, but there's still a few
->    filesystems that need to be converted - it looks like cifs and erofs, not
->    sure what's going on with fs/cachefiles/. We need help from the maintainers
->    of those filesystems to get that conversion done, this is holding up future
->    cleanups.
+On Mon, Oct 18, 2021 at 9:04 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> On 10/18/21 8:31 PM, Wan Jiabing wrote:
+> > --- a/drivers/net/wireless/marvell/mwifiex/usb.c
+> > +++ b/drivers/net/wireless/marvell/mwifiex/usb.c
+> > @@ -693,7 +693,7 @@ static int mwifiex_write_data_sync(struct mwifiex_adapter *adapter, u8 *pbuf,
+> >       struct usb_card_rec *card = adapter->card;
+> >       int actual_length, ret;
+> >
+> > -     if (!(*len % card->bulk_out_maxpktsize))
+> > +     if (card->bulk_out_maxpktsize && !(*len % card->bulk_out_maxpktsize))
+>
+>
+> Are you sure this fix is not working around the real bug ?
+>
+> In which cases bulk_out_maxpktsize would be zero ?
+>
+> If this is a valid case, this needs to be explained in the changelog.
 
-The reason why using page->lru for non-LRU pages was just because the
-page struct is already there and it's an effective way to organize
-variable temporary pages without any extra memory overhead other than
-page structure itself. Another benefits is that such non-LRU pages can
-be immediately picked from the list and added into page cache without
-any pain (thus ->lru can be reused for real lru usage).
+I'm with Eric here. This was a bug reported by a fuzzer, which throws
+invalid input at the driver. The right answer is likely that we should
+reject such invalid input when we receive it -- i.e., we should fail
+to probe() the device if it has invalid capabilities. In particular,
+we should fail to probe if wMaxPacketSize==0.
 
-In order to maximize the performance (so that pages can be shared in
-the same read request flexibly without extra overhead rather than
-memory allocation/free from/to the buddy allocator) and minimise extra
-footprint, this way was used. I'm pretty fine to transfer into some
-other way instead if some similar field can be used in this way.
+I was thinking of sending such a patch myself, but I don't have any
+USB mwifiex hardware to test, so I deferred. It's probably pretty low
+risk anyway, though.
 
-Yet if no such field anymore, I'm also very glad to write a patch to
-get rid of such usage, but I wish it could be merged _only_ with the
-real final transformation together otherwise it still takes the extra
-memory of the old page structure and sacrifices the overall performance
-to end users (..thus has no benefits at all.)
-
-Thanks,
-Gao Xiang
+Brian
