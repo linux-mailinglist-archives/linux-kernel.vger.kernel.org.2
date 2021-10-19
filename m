@@ -2,139 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CB0434085
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2932043408E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 23:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhJSV05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 17:26:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10976 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229790AbhJSV0z (ORCPT
+        id S229836AbhJSV1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 17:27:21 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:42580 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhJSV1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 17:26:55 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JKmvA8003889;
-        Tue, 19 Oct 2021 17:24:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mQPAKHdHgKlOZTBNm1OjmfNiqGzyQSM0iUDWVQSTjRs=;
- b=sxynQ3cjMn9aHWwvxPGNJbqV//GVf0zahh3ab+mtNc5FenUwRPFbTUVmtypI9Bu/SIqt
- exiZnIs6VaP0hUKxy8f0eg0UcLWIZNbBRPh7r0SkLDPjmWYhkqEa7wJeCChJgDZyglUs
- wp1h3lavTsykaIOERuxc/fg1OolPB7fuuicFfmnvbLTT38COp/wNPeAJPmAp7sID4he0
- dKRB2HUzGzzXQWjGFysB5Pm6HNqu9fLcJQSJJ8j+Esq0KmBBoh9MGuvZkHugYNrr6pIc
- LFxchcrIRkPeDOR7HrQFL1vQm8mt6dNpVjUvuFLTjlCIhItCfzHz4X62VYcwomPGSqLa 6Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bt362c2vd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 17:24:41 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19JK8BMC017358;
-        Tue, 19 Oct 2021 17:24:40 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bt362c2uy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 17:24:40 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19JLCIE4032115;
-        Tue, 19 Oct 2021 21:24:39 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 3bqp0k4925-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 21:24:38 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19JLOZ5A52494836
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 21:24:35 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B6714C050;
-        Tue, 19 Oct 2021 21:24:35 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E0A3E4C04E;
-        Tue, 19 Oct 2021 21:24:34 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.54.36])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Oct 2021 21:24:34 +0000 (GMT)
-Subject: Re: [PATCH 2/3] KVM: s390: preserve deliverable_mask in
- __airqs_kick_single_vcpu
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, farman@linux.ibm.com,
-        kvm@vger.kernel.org
-References: <20211019175401.3757927-1-pasic@linux.ibm.com>
- <20211019175401.3757927-3-pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <e8faa255-5157-4afb-b79f-710c961ef159@de.ibm.com>
-Date:   Tue, 19 Oct 2021 23:24:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 19 Oct 2021 17:27:20 -0400
+Received: by mail-oi1-f182.google.com with SMTP id g125so6974450oif.9;
+        Tue, 19 Oct 2021 14:25:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q+OJDx5FymiLds3Rk5vgoSW8vy1KRIWasS3RIQPvnjw=;
+        b=lYAubNTkkXy9ifQUJJqxxNi8pc0WxcZbGTV0245NTRT6BvVopMCxnhqwdQFiKs02Y8
+         Pd7XYSUEdBEg5DOufYAqW/ThTgTMwJ8eY4W98agW9hupmZ2FhHhg0PPQWPDY8Z9i/vMY
+         KR3fv44ocVtf+sFfqckVlVHluMto1P6Kd+6/l59ZUwoW/HQl1Q2nXinQPE3rrUGpvGk2
+         ovEHO2CGkEFpbMmby0ADBb6VvrmjHAgqGeLLryRGk44PHTt/BTiwupL4fXtrwiYRXl8i
+         TgeX///Yych9qKFV1wiU0sRHRSIxKLXbrySZyij4D75kaFQbOIZ5VH63wDvSlTergoHh
+         U0mw==
+X-Gm-Message-State: AOAM531ML8WPdvWMvwGLCqs7/nLA5HK/5l29XDzcUSE6PJ1UJP4nRPcD
+        4PeFl3yXlN3ZTdYv194Glw==
+X-Google-Smtp-Source: ABdhPJyjnK98KH12DbshUH97zi4FbzM0bds33eS4InU42Epat5TE8jC7RPfxeZZyzNjt5jXpMeVEzg==
+X-Received: by 2002:a54:4e98:: with SMTP id c24mr5974224oiy.159.1634678706591;
+        Tue, 19 Oct 2021 14:25:06 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-67-78-118-34.sw.biz.rr.com. [67.78.118.34])
+        by smtp.gmail.com with ESMTPSA id bm43sm41495oib.50.2021.10.19.14.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 14:25:05 -0700 (PDT)
+Received: (nullmailer pid 866769 invoked by uid 1000);
+        Tue, 19 Oct 2021 21:25:03 -0000
+Date:   Tue, 19 Oct 2021 16:25:03 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     jic23@kernel.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        kernel@axis.com, devicetree@vger.kernel.org, lars@metafoo.de,
+        linux-iio@vger.kernel.org
+Subject: Re: [PATCH 4/3] dt-bindings: iio: io-channel-mux: add optional
+ #io-channel-cells
+Message-ID: <YW83r+AqgTookHjp@robh.at.kernel.org>
+References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
+ <20211007134641.13417-3-vincent.whitchurch@axis.com>
+ <1633661172.633248.1409599.nullmailer@robh.at.kernel.org>
+ <43e22ba4-0619-49bc-8062-b561cf19ca23@axentia.se>
 MIME-Version: 1.0
-In-Reply-To: <20211019175401.3757927-3-pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8YUA7e5jHvjyBjmkC1j-tXi4Hs0Vxn_a
-X-Proofpoint-ORIG-GUID: fDWV0cTXB5mDtPQVT3Ac9K-F6mH_qqoz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-19_02,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=966 clxscore=1015 adultscore=0 suspectscore=0 impostorscore=0
- malwarescore=0 phishscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110190122
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43e22ba4-0619-49bc-8062-b561cf19ca23@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Am 19.10.21 um 19:54 schrieb Halil Pasic:
-> Changing the deliverable mask in __airqs_kick_single_vcpu() is a bug. If
-> one idle vcpu can't take the interrupts we want to deliver, we should
-> look for another vcpu that can, instead of saying that we don't want
-> to deliver these interrupts by clearing the bits from the
-> deliverable_mask.
+On Sat, 09 Oct 2021 00:11:21 +0200, Peter Rosin wrote:
+> Needed for in-kernel use of the child channels of the mux.
 > 
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 9f30f6216378 ("KVM: s390: add gib_alert_irq_handler()")
-
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-
+> Fixes problems like this, reported by dtbs_check:
+> adc0mux: '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dt.yaml
+> 
+> Suggested-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> Signed-off-by: Peter Rosin <peda@axentia.se>
 > ---
->   arch/s390/kvm/interrupt.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
+>  .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml    | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-> index 10722455fd02..2245f4b8d362 100644
-> --- a/arch/s390/kvm/interrupt.c
-> +++ b/arch/s390/kvm/interrupt.c
-> @@ -3053,13 +3053,14 @@ static void __airqs_kick_single_vcpu(struct kvm *kvm, u8 deliverable_mask)
->   	int vcpu_idx, online_vcpus = atomic_read(&kvm->online_vcpus);
->   	struct kvm_s390_gisa_interrupt *gi = &kvm->arch.gisa_int;
->   	struct kvm_vcpu *vcpu;
-> +	u8 vcpu_isc_mask;
->   
->   	for_each_set_bit(vcpu_idx, kvm->arch.idle_mask, online_vcpus) {
->   		vcpu = kvm_get_vcpu(kvm, vcpu_idx);
->   		if (psw_ioint_disabled(vcpu))
->   			continue;
-> -		deliverable_mask &= (u8)(vcpu->arch.sie_block->gcr[6] >> 24);
-> -		if (deliverable_mask) {
-> +		vcpu_isc_mask = (u8)(vcpu->arch.sie_block->gcr[6] >> 24);
-> +		if (deliverable_mask & vcpu_isc_mask) {
->   			/* lately kicked but not yet running */
->   			if (test_and_set_bit(vcpu_idx, gi->kicked_mask))
->   				return;
-> 
+
+Acked-by: Rob Herring <robh@kernel.org>
