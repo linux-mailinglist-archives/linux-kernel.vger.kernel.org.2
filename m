@@ -2,137 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36C1432F6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29A5432F76
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 09:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234454AbhJSHbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 03:31:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48422 "EHLO mail.kernel.org"
+        id S234525AbhJSHcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 03:32:20 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:59985 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232782AbhJSHbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:31:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEBF46137C;
-        Tue, 19 Oct 2021 07:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634628560;
-        bh=7DBC4uP7Zw484qr74x65d+eKLssb0wwO4d56g8ohVjc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NCpx3AwRst5DvZU2AwLlPmwYq7uH84UUyes0KdDUwKHI+vjxrVjyluK7JJf5m6gdF
-         lxdiT8canB0mWH1ZgQj8o53fZj8cg6Im+pXAflEMJVYe6/WvhJMHgYfukcQxRkubq8
-         fQfnoDpKAVaHUP8MWak6tVQ1RFpq9xSfLkdMwe1E=
-Date:   Tue, 19 Oct 2021 09:29:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     David Lechner <david@lechnology.com>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: drop chrdev_lock
-Message-ID: <YW5zzVJZ89cFW9bD@kroah.com>
-References: <20211017185521.3468640-1-david@lechnology.com>
- <YW0673OckeCY6Qs/@shinobu>
- <e8158cd7-fbde-5a9a-f4d9-a863745e3d58@lechnology.com>
- <YW5rVLrbrVVJ75SY@shinobu>
- <YW5uxIQ1WuW66cf0@kroah.com>
- <YW5xUtWdvW5zHFx5@shinobu>
+        id S234552AbhJSHcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 03:32:18 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HYQPH1qqZz9sSq;
+        Tue, 19 Oct 2021 09:29:55 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2jbC-2c9jPIW; Tue, 19 Oct 2021 09:29:55 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HYQP70Bv6z9sSp;
+        Tue, 19 Oct 2021 09:29:47 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E5C6E8B77E;
+        Tue, 19 Oct 2021 09:29:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id SW140AOcC3df; Tue, 19 Oct 2021 09:29:46 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.71])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1BA918B779;
+        Tue, 19 Oct 2021 09:29:46 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19J7Tc1I3188426
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 09:29:39 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19J7Tcot3188425;
+        Tue, 19 Oct 2021 09:29:38 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v3 07/22] powerpc/32s: Save content of sr0 to avoid 'mfsr'
+Date:   Tue, 19 Oct 2021 09:29:18 +0200
+Message-Id: <b02baf2ed8f09bad910dfaeeb7353b2ae6830525.1634627931.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1634627931.git.christophe.leroy@csgroup.eu>
+References: <cover.1634627931.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW5xUtWdvW5zHFx5@shinobu>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634628570; l=6500; s=20211009; h=from:subject:message-id; bh=IjtW0jnmN2CsgyTMQSJUpGmi8Te8USjw8DHA07uZXVI=; b=n/aYVIRedCOvtxERPgP9gbFP36PZ9gU/sIFKXloipiV1kauvle3+yEEmVAgwnC9oXGsgDCsUhYMq v4jXb54ODXVSFsCifQwldwAY4xZftL5AyCqVZv8f/54WTXGHIccM
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 04:18:42PM +0900, William Breathitt Gray wrote:
-> On Tue, Oct 19, 2021 at 09:07:48AM +0200, Greg KH wrote:
-> > On Tue, Oct 19, 2021 at 03:53:08PM +0900, William Breathitt Gray wrote:
-> > > On Mon, Oct 18, 2021 at 11:03:49AM -0500, David Lechner wrote:
-> > > > On 10/18/21 4:14 AM, William Breathitt Gray wrote:
-> > > > > On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
-> > > > >> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
-> > > > >> index 1ccd771da25f..7bf8882ff54d 100644
-> > > > >> --- a/drivers/counter/counter-sysfs.c
-> > > > >> +++ b/drivers/counter/counter-sysfs.c
-> > > > >> @@ -796,25 +796,18 @@ static int counter_events_queue_size_write(struct counter_device *counter,
-> > > > >>   					   u64 val)
-> > > > >>   {
-> > > > >>   	DECLARE_KFIFO_PTR(events, struct counter_event);
-> > > > >> -	int err = 0;
-> > > > >> -
-> > > > >> -	/* Ensure chrdev is not opened more than 1 at a time */
-> > > > >> -	if (!atomic_add_unless(&counter->chrdev_lock, 1, 1))
-> > > > >> -		return -EBUSY;
-> > > > >> +	int err;
-> > > > >>   
-> > > > >>   	/* Allocate new events queue */
-> > > > >>   	err = kfifo_alloc(&events, val, GFP_KERNEL);
-> > > > >>   	if (err)
-> > > > >> -		goto exit_early;
-> > > > >> +		return err;
-> > > > >>   
-> > > > >>   	/* Swap in new events queue */
-> > > > >>   	kfifo_free(&counter->events);
-> > > > >>   	counter->events.kfifo = events.kfifo;
-> > > > > 
-> > > > > Do we need to hold the events_lock mutex here for this swap in case
-> > > > > counter_chrdev_read() is in the middle of reading the kfifo to
-> > > > > userspace, or do the kfifo macros already protect us from a race
-> > > > > condition here?
-> > > > > 
-> > > > Another possibility might be to disallow changing the size while
-> > > > events are enabled. Otherwise, we also need to protect against
-> > > > write after free.
-> > > > 
-> > > > I considered this:
-> > > > 
-> > > > 	swap(counter->events.kfifo, events.kfifo);
-> > > > 	kfifo_free(&events);
-> > > > 
-> > > > But I'm not sure that would be safe enough.
-> > > 
-> > > I think it depends on whether it's safe to call kfifo_free() while other
-> > > kfifo_*() calls are executing. I suspect it is not safe because I don't
-> > > think kfifo_free() waits until all kfifo read/write operations are
-> > > finished before freeing -- but if I'm wrong here please let me know.
-> > > 
-> > > Because of that, will need to hold the counter->events_lock afterall so
-> > > that we don't modify the events fifo while a kfifo read/write is going
-> > > on, lest we suffer an address fault. This can happen regardless of
-> > > whether you swap before or after the kfifo_free() because the old fifo
-> > > address could still be in use within those uncompleted kfifo_*() calls
-> > > if they were called before the swap but don't complete before the
-> > > kfifo_free().
-> > > 
-> > > So we have a problem now that I think you have already noticed: the
-> > > kfifo_in() call in counter_push_events() also needs protection, but it's
-> > > executing within an interrupt context so we can't try to lock a mutex
-> > > lest we end up sleeping.
-> > > 
-> > > One option we have is as you suggested: we disallow changing size while
-> > > events are enabled. However, that will require us to keep track of when
-> > > events are disabled and implement a spinlock to ensure that we don't
-> > > disable events in the middle of a kfifo_in().
-> > > 
-> > > Alternatively, we could change events_lock to a spinlock and use it to
-> > > protect all these operations on the counter->events fifo. Would this
-> > > alternative be a better option so that we avoid creating another
-> > > separate lock?
-> > 
-> > I would recommend just having a single lock here if at all possible,
-> > until you determine that there a performance problem that can be
-> > measured that would require it to be split up.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> All right let's go with a single events_lock spinlock then. David, if
-> you make those changes and submit a v2, I'll be okay with this patch and
-> can provide my ack for it.
+Calling 'mfsr' to get the content of segment registers is heavy,
+in addition it requires clearing of the 'reserved' bits.
 
-Wait, no, you need one patch to remove the atomic lock for the open
-"protection" and then another one for the other locks.  The original
-patch here was fine, but can be part of a patch series, don't lump them
-all together into one huge change.
+In order to avoid this operation, save it in mm context and in
+thread struct.
 
-thanks,
+The saved sr0 is the one used by kernel, this means that on
+locking entry it can be used as is.
 
-greg k-h
+For unlocking, the only thing to do is to clear SR_NX.
+
+This improves null_syscall selftest by 12 cycles, ie 4%.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/book3s/32/mmu-hash.h |  5 +++++
+ arch/powerpc/include/asm/processor.h          |  9 +++++++++
+ arch/powerpc/kernel/asm-offsets.c             |  1 +
+ arch/powerpc/kernel/entry_32.S                |  8 +++-----
+ arch/powerpc/mm/book3s32/kuap.c               |  5 ++++-
+ arch/powerpc/mm/book3s32/kuep.c               |  1 +
+ arch/powerpc/mm/book3s32/mmu_context.c        | 15 +++++++--------
+ arch/powerpc/mm/mmu_context.c                 |  3 +++
+ 8 files changed, 33 insertions(+), 14 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/book3s/32/mmu-hash.h b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
+index e2f7ccc13edb..7be27862329f 100644
+--- a/arch/powerpc/include/asm/book3s/32/mmu-hash.h
++++ b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
+@@ -175,9 +175,14 @@ struct hash_pte {
+ 
+ typedef struct {
+ 	unsigned long id;
++	unsigned long sr0;
+ 	void __user *vdso;
+ } mm_context_t;
+ 
++#ifdef CONFIG_PPC_KUEP
++#define INIT_MM_CONTEXT(mm) .context.sr0 = SR_NX
++#endif
++
+ void update_bats(void);
+ static inline void cleanup_cpu_mmu_context(void) { }
+ 
+diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/include/asm/processor.h
+index f348e564f7dd..e64ec54398c6 100644
+--- a/arch/powerpc/include/asm/processor.h
++++ b/arch/powerpc/include/asm/processor.h
+@@ -157,6 +157,7 @@ struct thread_struct {
+ #ifdef CONFIG_PPC_BOOK3S_32
+ 	unsigned long	r0, r3, r4, r5, r6, r8, r9, r11;
+ 	unsigned long	lr, ctr;
++	unsigned long	sr0;
+ #endif
+ #endif /* CONFIG_PPC32 */
+ 	/* Debug Registers */
+@@ -276,6 +277,12 @@ struct thread_struct {
+ #define SPEFSCR_INIT
+ #endif
+ 
++#ifdef CONFIG_PPC_BOOK3S_32
++#define SR0_INIT	.sr0 = IS_ENABLED(CONFIG_PPC_KUEP) ? SR_NX : 0,
++#else
++#define SR0_INIT
++#endif
++
+ #if defined(CONFIG_PPC_BOOK3S_32) && defined(CONFIG_PPC_KUAP)
+ #define INIT_THREAD { \
+ 	.ksp = INIT_SP, \
+@@ -283,6 +290,7 @@ struct thread_struct {
+ 	.kuap = ~0UL, /* KUAP_NONE */ \
+ 	.fpexc_mode = MSR_FE0 | MSR_FE1, \
+ 	SPEFSCR_INIT \
++	SR0_INIT \
+ }
+ #elif defined(CONFIG_PPC32)
+ #define INIT_THREAD { \
+@@ -290,6 +298,7 @@ struct thread_struct {
+ 	.pgdir = swapper_pg_dir, \
+ 	.fpexc_mode = MSR_FE0 | MSR_FE1, \
+ 	SPEFSCR_INIT \
++	SR0_INIT \
+ }
+ #else
+ #define INIT_THREAD  { \
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index e563d3222d69..256aa669cf80 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -141,6 +141,7 @@ int main(void)
+ 	OFFSET(THR11, thread_struct, r11);
+ 	OFFSET(THLR, thread_struct, lr);
+ 	OFFSET(THCTR, thread_struct, ctr);
++	OFFSET(THSR0, thread_struct, sr0);
+ #endif
+ #ifdef CONFIG_SPE
+ 	OFFSET(THREAD_EVR0, thread_struct, evr[0]);
+diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+index 4ba6a8c43475..cf3cc0e52d07 100644
+--- a/arch/powerpc/kernel/entry_32.S
++++ b/arch/powerpc/kernel/entry_32.S
+@@ -76,15 +76,13 @@ _ASM_NOKPROBE_SYMBOL(prepare_transfer_to_handler)
+ #if defined(CONFIG_PPC_KUEP) && defined(CONFIG_PPC_BOOK3S_32)
+ 	.globl	__kuep_lock
+ __kuep_lock:
+-	mfsr    r9,0
+-	rlwinm  r9,r9,0,8,3
+-	oris    r9,r9,SR_NX@h
++	lwz	r9, THREAD+THSR0(r2)
+ 	update_user_segments_by_4 r9, r10, r11, r12
+ 	blr
+ 
+ __kuep_unlock:
+-	mfsr    r9,0
+-	rlwinm  r9,r9,0,8,2
++	lwz	r9, THREAD+THSR0(r2)
++	rlwinm  r9,r9,0,~SR_NX
+ 	update_user_segments_by_4 r9, r10, r11, r12
+ 	blr
+ 
+diff --git a/arch/powerpc/mm/book3s32/kuap.c b/arch/powerpc/mm/book3s32/kuap.c
+index 0f920f09af57..28676cabb005 100644
+--- a/arch/powerpc/mm/book3s32/kuap.c
++++ b/arch/powerpc/mm/book3s32/kuap.c
+@@ -20,8 +20,11 @@ EXPORT_SYMBOL(kuap_unlock_all_ool);
+ 
+ void setup_kuap(bool disabled)
+ {
+-	if (!disabled)
++	if (!disabled) {
+ 		kuap_lock_all_ool();
++		init_mm.context.sr0 |= SR_KS;
++		current->thread.sr0 |= SR_KS;
++	}
+ 
+ 	if (smp_processor_id() != boot_cpuid)
+ 		return;
+diff --git a/arch/powerpc/mm/book3s32/kuep.c b/arch/powerpc/mm/book3s32/kuep.c
+index bac1420d028b..78fc48eee510 100644
+--- a/arch/powerpc/mm/book3s32/kuep.c
++++ b/arch/powerpc/mm/book3s32/kuep.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ 
++#include <asm/code-patching.h>
+ #include <asm/kup.h>
+ #include <asm/smp.h>
+ 
+diff --git a/arch/powerpc/mm/book3s32/mmu_context.c b/arch/powerpc/mm/book3s32/mmu_context.c
+index e2708e387dc3..269a3eb25a73 100644
+--- a/arch/powerpc/mm/book3s32/mmu_context.c
++++ b/arch/powerpc/mm/book3s32/mmu_context.c
+@@ -69,6 +69,12 @@ EXPORT_SYMBOL_GPL(__init_new_context);
+ int init_new_context(struct task_struct *t, struct mm_struct *mm)
+ {
+ 	mm->context.id = __init_new_context();
++	mm->context.sr0 = CTX_TO_VSID(mm->context.id, 0);
++
++	if (!kuep_is_disabled())
++		mm->context.sr0 |= SR_NX;
++	if (!kuap_is_disabled())
++		mm->context.sr0 |= SR_KS;
+ 
+ 	return 0;
+ }
+@@ -108,20 +114,13 @@ void __init mmu_context_init(void)
+ void switch_mmu_context(struct mm_struct *prev, struct mm_struct *next, struct task_struct *tsk)
+ {
+ 	long id = next->context.id;
+-	unsigned long val;
+ 
+ 	if (id < 0)
+ 		panic("mm_struct %p has no context ID", next);
+ 
+ 	isync();
+ 
+-	val = CTX_TO_VSID(id, 0);
+-	if (!kuep_is_disabled())
+-		val |= SR_NX;
+-	if (!kuap_is_disabled())
+-		val |= SR_KS;
+-
+-	update_user_segments(val);
++	update_user_segments(next->context.sr0);
+ 
+ 	if (IS_ENABLED(CONFIG_BDI_SWITCH))
+ 		abatron_pteptrs[1] = next->pgd;
+diff --git a/arch/powerpc/mm/mmu_context.c b/arch/powerpc/mm/mmu_context.c
+index 74246536b832..e618d5442a28 100644
+--- a/arch/powerpc/mm/mmu_context.c
++++ b/arch/powerpc/mm/mmu_context.c
+@@ -18,6 +18,9 @@ static inline void switch_mm_pgdir(struct task_struct *tsk,
+ {
+ 	/* 32-bit keeps track of the current PGDIR in the thread struct */
+ 	tsk->thread.pgdir = mm->pgd;
++#ifdef CONFIG_PPC_BOOK3S_32
++	tsk->thread.sr0 = mm->context.sr0;
++#endif
+ }
+ #elif defined(CONFIG_PPC_BOOK3E_64)
+ static inline void switch_mm_pgdir(struct task_struct *tsk,
+-- 
+2.31.1
+
