@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160E3433FD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D00C433FDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235066AbhJSUfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 16:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
+        id S234474AbhJSUjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 16:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhJSUfp (ORCPT
+        with ESMTP id S230147AbhJSUjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 16:35:45 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A185C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 13:33:32 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so3538615otb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 13:33:32 -0700 (PDT)
+        Tue, 19 Oct 2021 16:39:47 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8758DC06161C;
+        Tue, 19 Oct 2021 13:37:34 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x27so10150290lfa.9;
+        Tue, 19 Oct 2021 13:37:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DOqRh/1Ua7gaB2YIvupL83cX+ks/UH4oOCeOkubEg+I=;
-        b=QSxSD64FavqWcg0SCB8tgXGbDjsJOCFew8H88qS4b6OOiAdL2oRBvoVd+8JMND2d9M
-         sQQMburzQHky4ALFU5u/9isSpKrx8H6JSSmP1SFdTWF9NEbvc0G25h1N0vcyuC06YPXl
-         k6sO9GgOQpWeWj10j4KXuRbngWbqZkc8dCr1KloSLZAruMZrIOUWV/bmS6mx0drRNTpx
-         GglfYIxSk6hQI1aPpc3Sjvq7U5L5QTucwo14yQk4nhl6KH/C1/SP2xl6gWtF2+4Z2bJa
-         fLOYu3iv/tnyz23vMmDZ301p6qgolhx3P/4FtK1+MzC1PIyR1L1jTMS+2iVxzPUPwOBD
-         AkVw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UQCS/V1OenULVK9R6Tw7aWNVLvU1czAAbhPbfB4Rzsg=;
+        b=MDt1xqXERlKTsKE8X6vGyD1SmJynrXEcifkumtwKerfy4DRq7eXm4mgJb+jSGHYBoa
+         sHW4BAO7Qd1YNB0e8xBwObCsonZFuh1jsqy/b3ELJByBi0PRYShatMc+QxSmTq03I0ZS
+         qan7rGTHZg8CJUbtb3FfSHMg7ccxJC0rf3fTno/OCGRFNFNYqD+JaMwGuBBXj6Oqrr3w
+         bWu444lL3H8CtEcwNIr31RrF1L/Gyex+5f5eCLFOz31tN78WHShEfCr1b2upPgOHE9qk
+         jyROMJ5XuT9CJ4TF69I34WMV4GCK5hZOKXweyW0ctWn56FZC8+whel4dlVYgwCk5Cwss
+         JUEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DOqRh/1Ua7gaB2YIvupL83cX+ks/UH4oOCeOkubEg+I=;
-        b=rzUSD2qZuYu5csIgdV+vjYz4zWRFZjcLXsdGEx7vL73PBj1QSox0Mq0l6PKV83U2uM
-         XHznOyqdm7rrGE12JEn3YrbNZfs1Oyxf+hkO3zMSXA2nk5Yw9GBEpqxFj8DEbNsbcxo+
-         fckRImGAksU84dEn8A1TrD3tF4I3Ath8bYAAXqZj6zyhoVZqzvhNfs6GThc1f+3qGmut
-         UbsIPf04J23PwMZD4ilKYgzHp4iHQT8WG1+Fh2vnT3l80RJChXAwgCpQhRf3NYpsenKp
-         CcdYvQmnx+5TCPvvZj715GmDGR++O4dhVPf9IA2VpNigeKQGpDdfuQva3sFwg8MAA6sx
-         +w/A==
-X-Gm-Message-State: AOAM533wkMSl2ulLJkmtwF+nBbSB5aHP0GQfu3qOpY53d46tbhqfB3SE
-        nrUHIT4KPkf4qMLUXHa/0IicL/LPJo6HlXDFZJU=
-X-Google-Smtp-Source: ABdhPJwbvBP3caz6rJULs5wo0+7q702H1t6nq5mSszwrMHFvV3psA+RHqSmLUNlp8fraE3I5E5R5j0u3z70DoRNKLak=
-X-Received: by 2002:a9d:718e:: with SMTP id o14mr7374367otj.299.1634675611573;
- Tue, 19 Oct 2021 13:33:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <1634280441-4248-1-git-send-email-wangqing@vivo.com>
-In-Reply-To: <1634280441-4248-1-git-send-email-wangqing@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 19 Oct 2021 16:33:20 -0400
-Message-ID: <CADnq5_PVZ_nFA=adGMXyBsMHMVV6JhDYTDN9sk7rVuKsTZDfYw@mail.gmail.com>
-Subject: Re: [PATCH] amdgpu: replace snprintf in show functions with sysfs_emit
-To:     Qing Wang <wangqing@vivo.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UQCS/V1OenULVK9R6Tw7aWNVLvU1czAAbhPbfB4Rzsg=;
+        b=rUZKutax9p7Ic5t9eLfby2ekiScLD0QPYsZYxdmnuZ8a2cb5SEorZIVeidRkvLdncg
+         uXyyj9ETXLzuW55KJnbMwqzuIcx1HNzPeLfux59YOedWWzpMR0YhzS0ACcK02ovx/oi0
+         mhwloB3iSaCt76cqdhXcqfGbnxZxGqSggDH43bC1jtp3zS6BIdKvZpimxvX4+r1uOkIM
+         drG3k3TWRFI9+ja+IAT0X6CXT1elW3/GyYCRO5FJCFeW2kGzKjGT/Cm9nrqvzqtzUk74
+         EjvAROw5ADdfZS1KylPPoIE5bA5hy2RLe7edVD+CcjlnvN7GWkirmxjyiW2wxyadaeNJ
+         we+A==
+X-Gm-Message-State: AOAM532fIVAS/x3x1gjQsVQshBxYxKyMTFTJJlPtJC/D2DwgQ2VlFOuR
+        knd0mM7N1IGcZf2LyxBR9kN2jmnTvRw=
+X-Google-Smtp-Source: ABdhPJwi3MBJsk7bnUK1n3ahnuwFh9onvvYQfR7Vs5lTIaQX2RsaGDu3pJvHsTBVwzz4lYo52cQPGg==
+X-Received: by 2002:a05:6512:11ec:: with SMTP id p12mr5066040lfs.41.1634675852646;
+        Tue, 19 Oct 2021 13:37:32 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
+        by smtp.googlemail.com with ESMTPSA id p5sm16676lfk.113.2021.10.19.13.37.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 13:37:32 -0700 (PDT)
+Subject: Re: [PATCH v1 0/5] Improvements for TC358768 DSI bridge driver
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-tegra@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20211002233447.1105-1-digetx@gmail.com>
+ <CAG3jFysa8G_fuGDfSLze-ovft3=gc5PXLaPtwTkC2_e0itQYNw@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c09bd552-767e-e783-3f9f-114b8cedb475@gmail.com>
+Date:   Tue, 19 Oct 2021 23:37:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAG3jFysa8G_fuGDfSLze-ovft3=gc5PXLaPtwTkC2_e0itQYNw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  thanks!
+19.10.2021 12:47, Robert Foss пишет:
+> Applied to drm-misc-next
+> 
+> On Sun, 3 Oct 2021 at 01:35, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> This series adds couple improvements to the TC358768 DSI bridge driver,
+>> enabling Panasonic VVX10F004B00 DSI panel support. This panel is used by
+>> ASUS Transformer TF700T tablet, which is ready for upstream kernel and
+>> display panel support is the biggest missing part.
+>>
+>> Dmitry Osipenko (5):
+>>   drm/bridge: tc358768: Enable reference clock
+>>   drm/bridge: tc358768: Support pulse mode
+>>   drm/bridge: tc358768: Calculate video start delay
+>>   drm/bridge: tc358768: Disable non-continuous clock mode
+>>   drm/bridge: tc358768: Correct BTACNTRL1 programming
+>>
+>>  drivers/gpu/drm/bridge/tc358768.c | 94 +++++++++++++++++++++++--------
+>>  1 file changed, 71 insertions(+), 23 deletions(-)
+>>
+>> --
+>> 2.32.0
+>>
 
-On Fri, Oct 15, 2021 at 2:48 AM Qing Wang <wangqing@vivo.com> wrote:
->
-> show() must not use snprintf() when formatting the value to be
-> returned to user space.
->
-> Fix the following coccicheck warning:
-> drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c:427:
-> WARNING: use scnprintf or sprintf.
->
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c
-> index 2834981..faf4011 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c
-> @@ -424,7 +424,7 @@ static ssize_t show_##name(struct device *dev,                              \
->         struct drm_device *ddev = dev_get_drvdata(dev);                 \
->         struct amdgpu_device *adev = drm_to_adev(ddev);                 \
->                                                                         \
-> -       return snprintf(buf, PAGE_SIZE, "0x%08x\n", adev->field);       \
-> +       return sysfs_emit(buf, "0x%08x\n", adev->field);        \
->  }                                                                      \
->  static DEVICE_ATTR(name, mode, show_##name, NULL)
->
-> --
-> 2.7.4
->
+Robert, thank you for taking care of these patches! Now nothing is
+holding us from upstreaming the device-tree of the Transformer tablet.
