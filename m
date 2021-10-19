@@ -2,129 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1808433F03
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED80433F0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234949AbhJSTMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:12:02 -0400
-Received: from relay.sw.ru ([185.231.240.75]:59846 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231355AbhJSTMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:12:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=Yqr1YShrQcBCidEtPOA9sMOR94IFy+dgIlzbwZ5QLM0=; b=hmWnZiptUY0gW9Ixx
-        F3iAf57vhvo+PH2jLrgp3MwAYAFI8HIJaGCey++5FcHdvnDNHuBaz5vYYRiGRkSJvnoKV5HLs30ES
-        ap16a4SDbcsjwIAEnIJvKsavVyn44eyjZqFjeB/JlipTbu6UfhyqHrlTBG0a1RypKzEgx5lsCjKXI
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mcuUX-006Vw6-6X; Tue, 19 Oct 2021 22:09:41 +0300
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
- <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
- <YW6GoZhFUJc1uLYr@dhcp22.suse.cz>
- <687bf489-f7a7-5604-25c5-0c1a09e0905b@virtuozzo.com>
- <YW6yAeAO+TeS3OdB@dhcp22.suse.cz> <YW60Rs1mi24sJmp4@dhcp22.suse.cz>
- <6c422150-593f-f601-8f91-914c6c5e82f4@virtuozzo.com>
- <YW7SfkZR/ZsabkXV@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <3c76e2d7-e545-ef34-b2c3-a5f63b1eff51@virtuozzo.com>
-Date:   Tue, 19 Oct 2021 22:09:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234977AbhJSTOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234361AbhJSTOf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 15:14:35 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53615C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:12:22 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id i6so5494824vkk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 12:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Paa52ALECI3wUgugNy8CX4++EAERrhUzLClLzz2TeNo=;
+        b=hh3mY9mbnyhpcdRWYDvhD2yUXHW8hgFnt3kUIWZ22dBTVZ+gi5IeJ1qesyZWkqPzwN
+         +aOQNt9Pgi6oky9KfgTvuPgk5JWQdaxqMet37tg+BFtstHZJOtpuJqQWjL1lY6AdRFEC
+         aeBQDsDVpVUUIwXdfjti+9Kl1dzW1Vxx7ZfNScNF7jKmK5GOA45gwI8FTRYBJkY9TJ/e
+         cROr8c6AbzibsRO18sfK5ZOrbUK8RkYkyM4Iu69q4pIbwOkHZXhhOYPbWdaCMUN3SjfB
+         /gSXNEQst1CrUPrDAkiuTLxmD3F9lmMZ/K84fGgncj9TQPGEgEZsRkDDR953i3rZ2mlc
+         R/xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Paa52ALECI3wUgugNy8CX4++EAERrhUzLClLzz2TeNo=;
+        b=cyFbOWRP+GSB4TVWHKQH1YCL96ff0YDRqOTBS6iurHt2zh8L5wNouhQFWo2h90wlW/
+         cZygB4WLuSzSNui9sUZTgHeIqwRbaNDpUL6vXIElnoJVTcWSkzLHmasZAHV4sQ0AYr+L
+         sNqnMc99nfYZHJR67IkrIsuEl6ZGpDyi1CFoQcqLVNqKAhyY6mIy4R/8MnSC4qfg0PFy
+         tdhXSR/nJo+ZXoRaxgKPBmFtWykLkUSzRTegPXcJDp8XHkI+inPho6GVzZmUAJ1frw2m
+         jGJ22PvX7NUvCJ7zH47dOMTOnY1a1PtJ4ynNwR3FgMUYIkvcq8Yo3cfUSBS/YNztiavj
+         qwEw==
+X-Gm-Message-State: AOAM53154mGpoogbCyMJ1/72WoOqUKntQMk9nhOzBOAEuSOLkQLJqH46
+        56c1npnUBsEJPUlMTK4kDyo+091xkclmCAh10nlVSQ==
+X-Google-Smtp-Source: ABdhPJx845gtrTjm894uIjrixRTNWXu9JloLMW6uMUJ2a4I4qovMj6pHpPkts51wz84kHFITnZsXoTuCa0oF9HNSAuw=
+X-Received: by 2002:a05:6122:da0:: with SMTP id bc32mr34368591vkb.4.1634670741090;
+ Tue, 19 Oct 2021 12:12:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YW7SfkZR/ZsabkXV@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211019131724.3109-1-semen.protsenko@linaro.org>
+ <20211019131724.3109-3-semen.protsenko@linaro.org> <6dbd4812-bac3-55dc-108e-c322e8a493de@canonical.com>
+ <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com> <CAPLW+4mE09AOSco+X9qE=1sjXvNVkOxtJqur+HoBJExxiw0J=g@mail.gmail.com>
+ <YW8E6oeIoRdpmPL8@piout.net>
+In-Reply-To: <YW8E6oeIoRdpmPL8@piout.net>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 19 Oct 2021 22:12:09 +0300
+Message-ID: <CAPLW+4k26qZDug4JkuPaM_gZMgz8LPg7GHe-5C7zKzEGtzdp=g@mail.gmail.com>
+Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.2021 17:13, Michal Hocko wrote:
-> On Tue 19-10-21 16:26:50, Vasily Averin wrote:
->> On 19.10.2021 15:04, Michal Hocko wrote:
->>> On Tue 19-10-21 13:54:42, Michal Hocko wrote:
->>>> On Tue 19-10-21 13:30:06, Vasily Averin wrote:
->>>>> On 19.10.2021 11:49, Michal Hocko wrote:
->>>>>> On Tue 19-10-21 09:30:18, Vasily Averin wrote:
->>>>>> [...]
->>>>>>> With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
->>>>>>> a) due to fatal signal
->>>>>>> b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
->>>>>>>
->>>>>>> To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
->>>>>>> To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
->>>>>
->>>>>> How is b) possible without current being killed? Do we allow remote
->>>>>> charging?
->>>>>
->>>>> out_of_memory for memcg_oom
->>>>>  select_bad_process
->>>>>   mem_cgroup_scan_tasks
->>>>>    oom_evaluate_task
->>>>>     oom_badness
->>>>>
->>>>>         /*
->>>>>          * Do not even consider tasks which are explicitly marked oom
->>>>>          * unkillable or have been already oom reaped or the are in
->>>>>          * the middle of vfork
->>>>>          */
->>>>>         adj = (long)p->signal->oom_score_adj;
->>>>>         if (adj == OOM_SCORE_ADJ_MIN ||
->>>>>                         test_bit(MMF_OOM_SKIP, &p->mm->flags) ||
->>>>>                         in_vfork(p)) {
->>>>>                 task_unlock(p);
->>>>>                 return LONG_MIN;
->>>>>         }
->>>>>
->>>>> This time we handle userspace page fault, so we cannot be kenrel thread,
->>>>> and cannot be in_vfork().
->>>>> However task can be marked as oom unkillable, 
->>>>> i.e. have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
->>>>
->>>> You are right. I am not sure there is a way out of this though. The task
->>>> can only retry for ever in this case. There is nothing actionable here.
->>>> We cannot kill the task and there is no other way to release the memory.
->>>
->>> Btw. don't we force the charge in that case?
->>
->> We should force charge for allocation from inside page fault handler,
->> to prevent endless cycle in retried page faults.
->> However we should not do it for allocations from task context,
->> to prevent memcg-limited vmalloc-eaters from to consume all host memory.
-> 
-> I don't see a big difference between those two. Because the #PF could
-> result into the very same situation depleting all the memory by
-> overcharging. A different behavior just leads to a confusion and
-> unexpected behavior. E.g. in the past we only triggered memcg OOM killer
-> from the #PF path and failed the charge otherwise. That is something
-> different but it shows problems we haven't anticipated and had user
-> visible problems. See 29ef680ae7c2 ("memcg, oom: move out_of_memory back
-> to the charge path").
+On Tue, 19 Oct 2021 at 20:48, Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+>
+> On 19/10/2021 19:35:26+0300, Sam Protsenko wrote:
+> > On Tue, 19 Oct 2021 at 19:22, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@canonical.com> wrote:
+> > >
+> > > On 19/10/2021 18:17, Krzysztof Kozlowski wrote:
+> > > > On 19/10/2021 15:17, Sam Protsenko wrote:
+> > > >> This RTC driver only accepts dates from 2000 to 2099 year. It starts
+> > > >> counting from 2000 to avoid Y2K problem,
+> > > >
+> > > > 1. Where is the minimum (2000) year set in the RTC driver?
+> > >
+> > > Ah, indeed. I found it now in the driver.
+> > >
+> > > >
+> > > >> and S3C RTC only supports 100
+> > > >
+> > > > On some of the devices 100, on some 1000, therefore, no. This does not
+> > > > look correct.
+> > >
+> > > That part of sentence is still incorrect, but change itself makes sense.
+> > > Driver does not support <2000.
+> > >
+> >
+> > Driver itself does not allow setting year >= 2100:
+> >
+> > <<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
+> >     if (year < 0 || year >= 100) {
+> >         dev_err(dev, "rtc only supports 100 years\n");
+> >         return -EINVAL;
+> >     }
+> > <<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>
+> >
+> > Devices might allow it, so the commit message phrasing is incorrect
+> > and should be replaced, yes. But the code should be correct. Should I
+> > send v2 with fixed commit message?
+> >
+>
+> It would be better to pass the proper values because else nobody will
+> ever come back and fix it (hence why I didn't move that driver to
+> devm_rtc_register_device yet).
+>
 
-In this case I think we should fail this allocation.
-It's better do not allow overcharge, neither in #PF not in regular allocations.
+Krzysztof, do you have by chance the doc for different SoCs supported
+by S3C RTC driver? I can implement proper values for min/max range for
+each SoC, as Alexandre asked, by adding those to driver data. But I
+need max year register value (100, 1000, etc) for each of those chips:
 
-However this failure will trigger false global OOM in pagefault_out_of_memory(),
-and we need to find some way to prevent it.
+  - "samsung,s3c2410-rtc"
+  - "samsung,s3c2416-rtc"
+  - "samsung,s3c2443-rtc"
+  - "samsung,s3c6410-rtc"
+  - "samsung,exynos3250-rtc"
 
-Thank you,
-	Vasily Averin
+For example Exynos850 TRM states that BCDYEAR register has [11:0] bits
+for holding the year value in BCD format, so it's 10^(12/4)=1000 years
+max.
+
+> --
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
