@@ -2,126 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B4B4339AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FC34339B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhJSPIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:08:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232316AbhJSPId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:08:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9FC16115A;
-        Tue, 19 Oct 2021 15:06:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634655980;
-        bh=McyFOJTAzTyYw41z1YF9eETGWDWdlZDxE9H0XbVk8m4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RhcIXXlISyAo2Cp3KUlwK4daus2D5a3p6b8jRrPTNwxwC9VY9xe/ITz1XqrpInmWD
-         tZV1+o4jkd9GDy1srZp48JU5tVK1LEQ1JMklLeh6MU965FHX/OpBjOElx3APkAni69
-         z3QAq6tj9rfzE/RhPdGPSNz6Qe/kI9VmozvIqYWSYPlTXnxO9fuVvHIw/AEsmP1uL/
-         uJmo3HMICI6UotOqZjzUW2OKqktF5Bde9idyb83xWc/b5xkAQWpsBvY0y219iXl1lQ
-         NqgLdBmtS6bKigYdrEk37wBcXBuRHJTda6ibxMCcXfyJPgehVAZqNRDavYTe/i+s/J
-         xvrrhDO8GydaQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0BB2D410A1; Tue, 19 Oct 2021 12:06:16 -0300 (-03)
-Date:   Tue, 19 Oct 2021 12:06:16 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        ToastC <mrtoastcheng@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Denys Zagorui <dzagorui@cisco.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 21/21] perf metric: Allow modifiers on metrics.
-Message-ID: <YW7e6OvE/juYY8it@kernel.org>
-References: <20211015172132.1162559-1-irogers@google.com>
- <20211015172132.1162559-22-irogers@google.com>
+        id S232630AbhJSPIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232425AbhJSPIo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:08:44 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B716C061749;
+        Tue, 19 Oct 2021 08:06:31 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id o26-20020a4abe9a000000b002b74bffdef0so1070024oop.12;
+        Tue, 19 Oct 2021 08:06:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zcKZ03bkYnpMqLmBQj5cKpbb5QeOBGTteSpOn5lkqU8=;
+        b=pRdBWFWocvsPbdxj/vXSr0K5uWxqmAx4RIR1I8KNUVs2Jj2VsNhUxg5KumBIeTuTUk
+         D7ETI1O1+OSPS86rIgaVaGP4oqox7fD2mHB9GBJl15H8tphw7CTmP/D3H8+6halkOMOZ
+         B8qBI3TOQR7nvHcK4hLTwCj1AbwpN669xkJ8dRUZVB6COLlAIoW7dZDWTWNPb3V8eoDS
+         quTGt+0szDyQFMJiG7xuNF2d6ikoKEdVcLHnxvsWpHW4hnos8SrGGLfBRnT83XUufxEh
+         BVClcCb0tIRc9zYcNvuSeWOdfYEmOhSQ4IS3G15F1gjGd7RhCEDcb2NMf97xmz0NVtl6
+         AjmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zcKZ03bkYnpMqLmBQj5cKpbb5QeOBGTteSpOn5lkqU8=;
+        b=EHWQBnNzZXHBzdgnQovNn0gNIDU0Pt11UQDTPk76L3qwj7c57fOSDykRStgyoxkw6R
+         Q5kDN7oiss0hUH5AmBh3UaHmMjqc35aKjHGpK/+JHMLzKEcFpRrWjS9hRW7WlpKZLRfN
+         QPLyUsjICgp30bjDq/X1J6ZYxGEgy+KpQNPFXnZMN4RtW3npoGWj6g32v+KvY319t+Ek
+         qsBfoyNDTgAneCIrklLr1YfpNnlsysbyDF42kcBnevm/pJ7qPLFYvY9FV0DnCRKlX87V
+         8Oq/I0pLh5X4kRLCi+PRcr5M4lU6z/kUgz6hSYib8ozp0q7xYnUx9nCwxRPj1TnnUL32
+         CLIQ==
+X-Gm-Message-State: AOAM530u1ZM5oPCzb6frCwYnEJKBxik0YYAuelFHXO6TjQMGSoxyhzTb
+        QpCGVbMTHuW7V04YHJccJQ4=
+X-Google-Smtp-Source: ABdhPJyrzFPkg70vsDxFGnNtK9DST1WieTtzxPdTinZumRssrFZ3LP85pDRG/oqrN9R/phiFzLYTMQ==
+X-Received: by 2002:a4a:430c:: with SMTP id k12mr5147250ooj.43.1634655990864;
+        Tue, 19 Oct 2021 08:06:30 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d15sm3433771oic.32.2021.10.19.08.06.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 08:06:30 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 7/9] watchdog: Kconfig: fix help text indentation
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20211019145919.7327-1-luca@lucaceresoli.net>
+ <20211019145919.7327-8-luca@lucaceresoli.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <62fb371c-81d3-a338-624b-0e3fbade23db@roeck-us.net>
+Date:   Tue, 19 Oct 2021 08:06:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211015172132.1162559-22-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20211019145919.7327-8-luca@lucaceresoli.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Oct 15, 2021 at 10:21:32AM -0700, Ian Rogers escreveu:
-> By allowing modifiers on metrics we can, for example, gather the
-> same metric for kernel and user mode. On a SkylakeX with
-> TopDownL1 this gives:
+On 10/19/21 7:59 AM, Luca Ceresoli wrote:
+> Some entries indent their help text with 1 tab + 1 space or 1 tab only
+> instead of 1 tab + 2 spaces. Add the missing spaces.
 > 
-> $ perf stat -M TopDownL1:u,TopDownL1:k -a sleep 2
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+
+FWIW, this patch should probably be handled separately, not as part
+of this series.
+
+Anyway,
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>   drivers/watchdog/Kconfig | 48 ++++++++++++++++++++--------------------
+>   1 file changed, 24 insertions(+), 24 deletions(-)
 > 
->  Performance counter stats for 'system wide':
-
-Hi Ian, can you please take a look on this? this is on my perf/core
-branch.
-
-- Arnaldo
-
-[root@five ~]# perf test -vv "for cgroups"
-70: Event expansion for cgroups                                     :
---- start ---
-test child forked, pid 992568
-Using CPUID AuthenticAMD-25-21-0
-libpfm was not enabled
-metric expr 1 / IPC for CPI
-parsing metric: 1 / IPC
-metric expr instructions / cycles for IPC
-parsing metric: instructions / cycles
-found event instructions
-found event cycles
-Parsing metric events '{instructions/metric-id=instructions/,cycles/metric-id=cycles/}:W'
-copying metric event for cgroup 'A': instructions (idx=0)
-copying metric event for cgroup 'B': instructions (idx=0)
-copying metric event for cgroup 'C': instructions (idx=0)
-free(): double free detected in tcache 2
-test child interrupted
----- end ----
-Event expansion for cgroups: FAILED!
-[root@five ~]#
-
-⬢[acme@toolbox perf]$ git bisect bad
-c067335fcbfc67c36663dabdb9ccaa96badf9359 is the first bad commit
-commit c067335fcbfc67c36663dabdb9ccaa96badf9359
-Author: Ian Rogers <irogers@google.com>
-Date:   Thu Oct 7 09:56:47 2021 -0700
-
-    perf metric: Allow modifiers on metrics.
-
-    By allowing modifiers on metrics we can, for example, gather the
-    same metric for kernel and user mode. On a SkylakeX with
-    TopDownL1 this gives:
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index bf59faeb3de1..a24385099a91 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -694,10 +694,10 @@ config MAX77620_WATCHDOG
+>   	depends on MFD_MAX77620 || COMPILE_TEST
+>   	select WATCHDOG_CORE
+>   	help
+> -	 This is the driver for the Max77620 watchdog timer.
+> -	 Say 'Y' here to enable the watchdog timer support for
+> -	 MAX77620 chips. To compile this driver as a module,
+> -	 choose M here: the module will be called max77620_wdt.
+> +	  This is the driver for the Max77620 watchdog timer.
+> +	  Say 'Y' here to enable the watchdog timer support for
+> +	  MAX77620 chips. To compile this driver as a module,
+> +	  choose M here: the module will be called max77620_wdt.
+>   
+>   config IMX2_WDT
+>   	tristate "IMX2+ Watchdog"
+> @@ -1453,26 +1453,26 @@ config TQMX86_WDT
+>   	depends on X86
+>   	select WATCHDOG_CORE
+>   	help
+> -	This is the driver for the hardware watchdog timer in the TQMX86 IO
+> -	controller found on some of their ComExpress Modules.
+> +	  This is the driver for the hardware watchdog timer in the TQMX86 IO
+> +	  controller found on some of their ComExpress Modules.
+>   
+> -	To compile this driver as a module, choose M here; the module
+> -	will be called tqmx86_wdt.
+> +	  To compile this driver as a module, choose M here; the module
+> +	  will be called tqmx86_wdt.
+>   
+> -	Most people will say N.
+> +	  Most people will say N.
+>   
+>   config VIA_WDT
+>   	tristate "VIA Watchdog Timer"
+>   	depends on X86 && PCI
+>   	select WATCHDOG_CORE
+>   	help
+> -	This is the driver for the hardware watchdog timer on VIA
+> -	southbridge chipset CX700, VX800/VX820 or VX855/VX875.
+> +	  This is the driver for the hardware watchdog timer on VIA
+> +	  southbridge chipset CX700, VX800/VX820 or VX855/VX875.
+>   
+> -	To compile this driver as a module, choose M here; the module
+> -	will be called via_wdt.
+> +	  To compile this driver as a module, choose M here; the module
+> +	  will be called via_wdt.
+>   
+> -	Most people will say N.
+> +	  Most people will say N.
+>   
+>   config W83627HF_WDT
+>   	tristate "Watchdog timer for W83627HF/W83627DHG and compatibles"
+> @@ -1758,10 +1758,10 @@ config BCM7038_WDT
+>   	depends on HAS_IOMEM
+>   	depends on ARCH_BRCMSTB || BMIPS_GENERIC || COMPILE_TEST
+>   	help
+> -	 Watchdog driver for the built-in hardware in Broadcom 7038 and
+> -	 later SoCs used in set-top boxes.  BCM7038 was made public
+> -	 during the 2004 CES, and since then, many Broadcom chips use this
+> -	 watchdog block, including some cable modem chips.
+> +	  Watchdog driver for the built-in hardware in Broadcom 7038 and
+> +	  later SoCs used in set-top boxes.  BCM7038 was made public
+> +	  during the 2004 CES, and since then, many Broadcom chips use this
+> +	  watchdog block, including some cable modem chips.
+>   
+>   config IMGPDC_WDT
+>   	tristate "Imagination Technologies PDC Watchdog Timer"
+> @@ -2122,12 +2122,12 @@ config KEEMBAY_WATCHDOG
+>   	depends on ARCH_KEEMBAY || (ARM64 && COMPILE_TEST)
+>   	select WATCHDOG_CORE
+>   	help
+> -	 This option enable support for an In-secure watchdog timer driver for
+> -	 Intel Keem Bay SoC. This WDT has a 32 bit timer and decrements in every
+> -	 count unit. An interrupt will be triggered, when the count crosses
+> -	 the threshold configured in the register.
+> +	  This option enable support for an In-secure watchdog timer driver for
+> +	  Intel Keem Bay SoC. This WDT has a 32 bit timer and decrements in every
+> +	  count unit. An interrupt will be triggered, when the count crosses
+> +	  the threshold configured in the register.
+>   
+> -	 To compile this driver as a module, choose M here: the
+> -	 module will be called keembay_wdt.
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called keembay_wdt.
+>   
+>   endif # WATCHDOG
+> 
 
