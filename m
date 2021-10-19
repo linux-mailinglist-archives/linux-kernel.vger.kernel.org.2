@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C66432BA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 04:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B4C432BAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 04:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhJSCEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 22:04:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45474 "EHLO mail.kernel.org"
+        id S229814AbhJSCHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 22:07:52 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45648 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhJSCEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 22:04:21 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3B6A60ED4;
-        Tue, 19 Oct 2021 02:02:06 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 22:02:03 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, live-patching@vger.kernel.org,
-        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH] tracing: Have all levels of checks prevent recursion
-Message-ID: <20211018220203.064a42ed@gandalf.local.home>
-In-Reply-To: <YW1KKCFallDG+E01@alley>
-References: <20211015110035.14813389@gandalf.local.home>
-        <YW1KKCFallDG+E01@alley>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229529AbhJSCHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 22:07:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Nd+6samNzQY+DVw53kP6OH3tIFdDWZQMzF2DxiLi2NE=; b=vAQ7YlBtr+peudAqEn0PEHBH2w
+        zBBoZOFoTQo71V5C5xAnphQVrQEl8UovCvfRncG9Q0rSYedebU/p7EFbiA3Ve7zp58YpgnDSRGOK6
+        pVfeBaliMVbK/ZpsCQHeDQ7GR+vLViGleNLJQGAIPV5nKOTFGzAjzXwighM4t+v+QzVY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mceVS-00B1pE-KX; Tue, 19 Oct 2021 04:05:34 +0200
+Date:   Tue, 19 Oct 2021 04:05:34 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+Message-ID: <YW4n7hUIEB320dFv@lunn.ch>
+References: <20210607123317.3242031-1-robert.marko@sartura.hr>
+ <20210607123317.3242031-5-robert.marko@sartura.hr>
+ <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
+ <20210713222528.GA952399@robh.at.kernel.org>
+ <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 12:19:20 +0200
-Petr Mladek <pmladek@suse.com> wrote:
+> > > > +  GPIO controller module provides GPIO-s for the SFP slots.
+> > > > +  It is split into 3 controllers, one output only for the SFP TX disable
+> > > > +  pins, one input only for the SFP present pins and one input only for
+> > > > +  the SFP LOS pins.
 
-> > -
-> >  	bit = trace_get_context_bit() + start;
-> >  	if (unlikely(val & (1 << bit))) {
-> >  		/*
-> >  		 * It could be that preempt_count has not been updated during
-> >  		 * a switch between contexts. Allow for a single recursion.
-> >  		 */
-> > -		bit = TRACE_TRANSITION_BIT;
-> > +		bit = TRACE_CTX_TRANSITION + start;  
->
+Late to the conversation, so i might be asking questions already
+asked...
 
-[..]
+So the PLD has restrictions? You have a collection of GPOs and a
+collection of GPIs? You don't have an GPIOs?
 
-> Could we please update the comment? I mean to say if it is a race
-> or if we trace a function that should not get traced.
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    enum:
+> > > > +      - delta,tn48m-gpio-sfp-tx-disable
+> > > > +      - delta,tn48m-gpio-sfp-present
+> > > > +      - delta,tn48m-gpio-sfp-los
 
-What do you think of this change?
+Do these names have any real significant? Are you really forced to
+connect the SFP cage in this dedicated manor? Is there any reason why
+i cannot use a GPO to control an LED? A GPI for a button?
 
-diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-index 1d8cce02c3fb..24f284eb55a7 100644
---- a/include/linux/trace_recursion.h
-+++ b/include/linux/trace_recursion.h
-@@ -168,8 +168,12 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
- 	bit = trace_get_context_bit() + start;
- 	if (unlikely(val & (1 << bit))) {
- 		/*
--		 * It could be that preempt_count has not been updated during
--		 * a switch between contexts. Allow for a single recursion.
-+		 * If an interrupt occurs during a trace, and another trace
-+		 * happens in that interrupt but before the preempt_count is
-+		 * updated to reflect the new interrupt context, then this
-+		 * will think a recursion occurred, and the event will be dropped.
-+		 * Let a single instance happen via the TRANSITION_BIT to
-+		 * not drop those events.
- 		 */
- 		bit = TRACE_TRANSITION_BIT;
- 		if (val & (1 << bit)) {
-
-
--- Steve
+	Andrew
