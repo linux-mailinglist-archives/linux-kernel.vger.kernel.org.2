@@ -2,70 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067E84335CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C844335D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235645AbhJSMWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:22:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230513AbhJSMWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 999AE61360;
-        Tue, 19 Oct 2021 12:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634646010;
-        bh=VeDrrE7ogjkDjlQCNJOEFQtNOrHmD/UPVHH400oNckI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=W9Ac7dYICXkwMJJGMut/l5moJD1+afTPJo5OzApZqcNKxXn4wdQmEb+s4UbQeNekV
-         tO3veb5rZy66s4lBvBzyVwt8bYiiKtoqx3zS1PbPSCTqnDtamps3rNpp1itVFI6vhs
-         gUZCUmidbcj2qL91ZVne1+7AEo2dUqG+d1PTrz6UJ7OhG92YiGbpEUd8mzOSs9s82R
-         5TTvIqkcWkMwp7USL0cm425ocaGAmh5rTzoo3kzxBkdQrWJWiQLvqLUSHL/y/eDhIg
-         3ldaEzloYDE1FOLLE5oEiV5f10+7M/UTrHBVvYLIyk6cdSGLPY6eO7qP46Wh7M1svI
-         /mJtHqVz2cYzw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 92F3A609E3;
-        Tue, 19 Oct 2021 12:20:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235649AbhJSMXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230527AbhJSMXB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:23:01 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D32C06161C;
+        Tue, 19 Oct 2021 05:20:48 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id i12so47295822wrb.7;
+        Tue, 19 Oct 2021 05:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HIYCHBTIK4PyzXlMJSYD0ICsSQ1KS9BVG01K7TMsEtw=;
+        b=pFU4ZiptoFqJEEaWX7E3selPixqv9gWWVSoI5PgUF19P6C/TYrPKnLpiQ8iTELxyBL
+         mkmSKYR6It/ka+KZjp5P5Ph3QcFzIFdiWdVi2oWAQLPrML2opPfyX9ZaIuAW2MYGR7Sr
+         nmZRyZKLbL/iYaa7ilYDsPXirJwgdnjSsQFZG+ECT7r+2MreKfRPnUambceR817Lgl2C
+         1V0AkVeLYgyqLJKr90a305n684350nEvcZ17LoXzhjRPk8gISTj25mojoc41ydSC+Nw5
+         Pd5V6irzETtWm6JM+V3T0I1skfIUlHn+l2PAzWCUCbWMfB9EMCLeveRpRkMoByRrGfc8
+         DA+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HIYCHBTIK4PyzXlMJSYD0ICsSQ1KS9BVG01K7TMsEtw=;
+        b=e0iCJ0HnJBos9HlTLW94zUbMkrLrYueHIRLsvUufjgieghVSO355YxTKMcA3gg9UwV
+         2T6soSb6D74SJN84p7AaSq8gha6Cri7T2vETPH0lsyRPF3BRpjJJG9ca6p9PmDXvTc/N
+         skh+EnrPEkJm2jAr8VQPeA1wXYvCTmF5iNFoKm8gBxD0/OpPQn7lSpnaWA8AXeNUj4GY
+         Z8yZL8Q4wQBKzq4fohXWc7UyJrchBWGN1C6zWntBuyXcdzQ4kQk+oP4HTsw4SiKRMFlX
+         +sOW7NYHq42E1rB+62ZsGL0eIKT0v1a+sYyX+8X5U7EGKjcvqCoEQpFjva1eMCTD86FK
+         JqaA==
+X-Gm-Message-State: AOAM5303/fqas7yq7OnIUVnNh5w1vV+b8sdLtdWAMVGCg8VUjL+Uxzkn
+        ACWjO55g+2n8Jkx5qdyYj8k=
+X-Google-Smtp-Source: ABdhPJwFxa9m/kwKkJBN4Grh5yBocQZtiwrOrI4hoN2VY2sY2ir68PZf9u1YG0Me+vJhk9r9eG+LzA==
+X-Received: by 2002:a5d:4a0c:: with SMTP id m12mr44238921wrq.27.1634646047046;
+        Tue, 19 Oct 2021 05:20:47 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id e15sm14942767wrv.74.2021.10.19.05.20.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 05:20:46 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 13:20:44 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/103] 5.10.75-rc1 review
+Message-ID: <YW64HASCBJLrbO6r@debian>
+References: <20211018132334.702559133@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH linux-next] ethernet: Remove redundant statement
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163464601059.7615.14277737202380451691.git-patchwork-notify@kernel.org>
-Date:   Tue, 19 Oct 2021 12:20:10 +0000
-References: <20211018085513.854395-1-luo.penghao@zte.com.cn>
-In-Reply-To: <20211018085513.854395-1-luo.penghao@zte.com.cn>
-To:     Ye Guojin <cgel.zte@gmail.com>
-Cc:     siva.kallam@broadcom.com, prashant@broadcom.com,
-        mchan@broadcom.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo.penghao@zte.com.cn, zealci@zte.com.cn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Greg,
 
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Mon, 18 Oct 2021 08:55:13 +0000 you wrote:
-> The variable will be assigned again later in the if condition,
-> there is no meaning there.
+On Mon, Oct 18, 2021 at 03:23:36PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.75 release.
+> There are 103 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> drivers/net/ethernet/broadcom/tg3.c:5750:2 warning:
-> 
-> Value stored to 'current_link_up' is never read.
-> 
-> [...]
+> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
+> Anything received after that time might be too late.
 
-Here is the summary with links:
-  - [linux-next] ethernet: Remove redundant statement
-    https://git.kernel.org/netdev/net-next/c/3c71e0c9ab4f
+Build test:
+mips (gcc version 11.2.1 20211012): 63 configs -> no new failure
+arm (gcc version 11.2.1 20211012): 105 configs -> no new failure
+arm64 (gcc version 11.2.1 20211012): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
-You are awesome, thank you!
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+arm64: Booted on rpi4b (4GB model). No regression. [2]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/288
+[2]. https://openqa.qa.codethink.co.uk/tests/283
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
 --
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Regards
+Sudip
 
