@@ -2,212 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEFD433B9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BAE433B98
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbhJSQGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:06:39 -0400
-Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:25697
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232144AbhJSQGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:06:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nEVYqR5RdAoto9rATDzkW5YPy5TIvoXBjlD8iiEcO2g3CLwNgT4t361QaNN9qPzMtiRk77mn8AkoJ2I6xy8Wxu2e9okQ0I5j/mqN5MbjAs0VHJ/6OTTfoOdCedXrdGfEpOjyDQVLBIxMz7T43AC3P+Bi8xilCMIoHaavksBb0041CyPW857NQkNHqA6dzmXoj2V85RaB2lzjkJ0qWSOjsgwKluOv0nsWcdkbEPvgGCLkhLtjp7rKH6ye6bL1sy/PsGl5ghrLa/m11e91P6BmiVPchPVLH1NBb5idAwYC7X4OHp7OZvRJG3Qj2KMp84PLN7Bm4ajg18TcTGZdpHYY6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8Vdyt6RZ3ESmgarHk2T8Z7XDrLbsnx4n0voM5VkJOlo=;
- b=oDMXrcT9B9vEzVxFpucVnwcRtBUml53Lh3UWvTFH+e//8RbfREkvYEZnKWOa7WfU8OnqsaR38Qvm6bilZzUgI9hyJ5SlOEsJGq4Q5yx9Jn3HOPRHRlZYJNw6FcrkYNhVpVm/fWf8GpuuEkEFmNP/q6TkDoTwTvEYQ7BHI/yC8Wduz6RVtskBboKDxnTTerY5W5Kgj6yPwKWE7zmAJHA5zqxzywqqGMFDqOY5V/2BtKFcqK7AO+d4uEf3cla5qOKeKWdC9YLq4IrmcdUm9P67VCDI15q7G8MXX1iBpHJEvn7bgk+4JrgbvDWfBQ0HfYzYNG9MdmQR9J/QmHEU90rqaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Vdyt6RZ3ESmgarHk2T8Z7XDrLbsnx4n0voM5VkJOlo=;
- b=u9xhcielQsauwuNhzJRfwSArZES7sHuHqLbahlGpslWzLMcAgoEWXwm8Qdr4REqzbomVda6Th/iLC/mCJIHI0lvIBCqJ4Ou07WgYgkbB3IU/4PDtZG92CZBj18A5vrIZp3R1r+kcNzakZKUEVfS2IpIVHlHiS1izg81pcXkqREM=
-Received: from MW4PR04CA0048.namprd04.prod.outlook.com (2603:10b6:303:6a::23)
- by MWHPR12MB1710.namprd12.prod.outlook.com (2603:10b6:300:114::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
- 2021 16:04:20 +0000
-Received: from CO1NAM11FT007.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:6a:cafe::5c) by MW4PR04CA0048.outlook.office365.com
- (2603:10b6:303:6a::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend
- Transport; Tue, 19 Oct 2021 16:04:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT007.mail.protection.outlook.com (10.13.174.131) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4608.15 via Frontend Transport; Tue, 19 Oct 2021 16:04:19 +0000
-Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 19 Oct
- 2021 11:04:14 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-CC:     "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Joerie de Gram <j.de.gram@gmail.com>
-Subject: [PATCH v3 2/2] pinctrl: amd: Fix wakeups when IRQ is shared with SCI
-Date:   Tue, 19 Oct 2021 11:04:01 -0500
-Message-ID: <20211019160401.8296-2-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019160401.8296-1-mario.limonciello@amd.com>
-References: <20211019160401.8296-1-mario.limonciello@amd.com>
+        id S232896AbhJSQGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:06:35 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:53144 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230168AbhJSQGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:06:33 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JE1L0R004966;
+        Tue, 19 Oct 2021 18:04:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=fdqa3FWQjGrFeZEe9ls1cJx0wp/BD6sM4yLn8Lo2/UM=;
+ b=MQ9RMn/gavH7KWZKGlRD6W0G2SSSkl5rnWfomMnQraGoBLCCHVk7jvRfO3aOZbIRWyNK
+ rTEUjBGacbreKzkcYuCBGK8UiX/Ut9TxE807dUDJCBr5jcV3Vcf3545KxTw35ANnCi79
+ ntGjUtShm65X9ljUriPAf/Qnl3Ikeq8raNJJBn2P+eH5AtWhltGkoFo5MjpgCDDirkpX
+ LKA6IMeKuLKHVln5APy8+shqAHtWyYFWeBr8Z3nBH/MpMJnRFx72LkX4P7aMsYNpgRXf
+ lebYdKxDqnm/vEwwKrjLzLxo9DDHqMLeUMcs+GHoGb8XvJ0iyRECLeXXCIo141/KFMqs NA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bstrwauuq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 18:04:12 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C1EA3100034;
+        Tue, 19 Oct 2021 18:04:09 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 61C78231518;
+        Tue, 19 Oct 2021 18:04:09 +0200 (CEST)
+Received: from [10.48.0.126] (10.75.127.50) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 19 Oct
+ 2021 18:04:06 +0200
+Subject: Re: Re: [PATCH v16 0/7] usb: misc: Add onboard_usb_hub driver
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Alan Stern <stern@rowland.harvard.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        "Felipe Balbi" <balbi@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        "Ravi Chandra Sadineni" <ravisadineni@chromium.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Aswath Govindraju" <a-govindraju@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jens Axboe <axboe@kernel.dk>, Johan Hovold <johan@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Lionel DEBIEVE <lionel.debieve@st.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "Marek Szyprowski" <m.szyprowski@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Martin_J=c3=bccker?= <martin.juecker@gmail.com>,
+        Nishanth Menon <nm@ti.com>,
+        Olivier MOYSAN <olivier.moysan@st.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Robert Richter <rric@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Tony Lindgren <tony@atomide.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        William Cohen <wcohen@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+References: <20210813195228.2003500-1-mka@chromium.org>
+ <YUoRq1RrOIoiBJ5+@google.com>
+ <CAD=FV=WrddUhWT0wUVZD0gN_+8Zy1VGY77LYLYBvhaPQQ_SqZw@mail.gmail.com>
+ <YWkiGGBKOVokBye9@kroah.com>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <03f28680-35eb-25f4-5041-f3a56144da24@foss.st.com>
+Date:   Tue, 19 Oct 2021 18:04:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4eccdfb3-22b7-42ac-16a6-08d9931a1c07
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1710:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB17107E2AB6E1F7D0AE4D4BA0E2BD9@MWHPR12MB1710.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ay9XKx541qV7dnjIlo/Rs88b0kXyRrq+lKwLaTVAYb9KPdR8OPoXywRBCWP0v30s6MFOJBlgAJ71OsJIugkj+EVlncWFnjFXdRj8QB0bTKA3OWCJc//3vT2wLX/Ddz64Mj9JESHwOQFzlZB1r6QgFhHkwldutt3lwhcueS9ebkqYckt7FkpiE1bHTIdFptJWw0YZQW68mot5hBMszXjOkKg2oppVcOMPgQcqEbU21CcktA04ZO9Q0T6fGJQc3qql0l+VGkxTRdl2jnBx94d6kFOzMB0UeVV+5vrIlyuQ0aV+MYjnDap7KH8+OEVwS9QzRBV3BPcV6bKlcthWmofTntZ72eQcVwqU+NgdMvkUdHW4XLMl7kGv/GaF/sl+OUDfhrT+mMErOxT+GzwIGGSAGYnC7MbBpgmDKHxkKobQ4PCQvb5mz9wOH+/2seEjoJ2L60MCpwUUcs2p8M5XrOaeUDJarvqqQhlKXuQe78JbYrmb3mKzZenWtHoD/gnbeAgm/wKeEbp48gNl88bmPXQSzagFP3g6nxw3nAKQ/eLMzidQy3+VtgRVeYOi7GDf65aMBk2GBsxOgVJqLNdbUBhqDL6vPYeqi970gNMDwNxpYZ5lR8EEagO0jK19k0jpPDcStL+r3x7G8bmGOAx8S+JhQl0ov5fVGNdGu0lkBbAupNFAvLVHfPzWdmeDVXoUkMtjqg65l8nkPI+SRZ6feN1v077Oh0b4Z9hI29f/N3gLk6o=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(70586007)(336012)(2616005)(508600001)(426003)(1076003)(186003)(86362001)(81166007)(8936002)(8676002)(47076005)(6636002)(36756003)(36860700001)(110136005)(26005)(16526019)(356005)(7696005)(2906002)(5660300002)(44832011)(70206006)(83380400001)(4326008)(54906003)(6666004)(966005)(316002)(82310400003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 16:04:19.6876
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4eccdfb3-22b7-42ac-16a6-08d9931a1c07
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT007.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1710
+In-Reply-To: <YWkiGGBKOVokBye9@kroah.com>
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-19_02,2021-10-19_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some Lenovo AMD Gen2 platforms the IRQ for the SCI and pinctrl drivers
-are shared.  Due to how the s2idle loop handling works, this case needs
-an extra explicit check whether the interrupt was caused by SCI or by
-the GPIO controller.
+On 10/15/21 8:39 AM, Greg Kroah-Hartman wrote:
+> On Thu, Oct 14, 2021 at 02:38:55PM -0700, Doug Anderson wrote:
+>> Hi,
+>>
+>> On Tue, Sep 21, 2021 at 10:09 AM Matthias Kaehlcke <mka@chromium.org> wrote:
+>>>
+>>> Hi Greg,
+>>>
+>>> are there any actions pending or can this land in usb-testing?
+>>>
+>>> I confirmed that this series can be rebased on top of v5.15-rc2
+>>> without conflicts.
+>>
+>> I'm quite interested to know what the next action items are, too. This
+>> is one of the very few patches we have for trogdor (excluding MIPI
+>> camera, which is a long story) that we're carrying downstream, so I'm
+>> keenly interested in making sure it's unblocked (if, indeed, it's
+>> blocked on anything).
+>>
+>> If folks feel that this needs more review eyes before landing again
+>> then I'll try to find some time in the next week or two. If it's just
+>> waiting for the merge window to open/close so it can have maximal bake
+>> time, that's cool too. Please yell if there's something that I can do
+>> to help, though! :-)
+> 
+> I would love more review-eyes on this please.
+> 
 
-To fix this rework the existing IRQ handler function to function as a
-checker and an IRQ handler depending on the calling arguments.
+Hi,
 
-BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1738
-Reported-by: Joerie de Gram <j.de.gram@gmail.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
-Note:
- This is *possibly* a fix from fdde0ff8590b, 56b991849009 or other
- changes in the acpi_s2idle_wake handling, but AMD didn't support
- s2idle across the kernel widely until 5.14 or later. This is the
- reason for lack of a fixes tag.
-Changes from v2->v3:
- * Add new precursor patch for fixing missing ACPI function stubs
- * Add __maybe_unused for unused function when set with COMPILE_TEST
-Changes from v1->v2:
- * drop Kconfig changes to drop COMPILE_TEST, instead #ifdef CONFIG_ACPI
- * fix a logic error during wakeup
- * Use IRQ_RETVAL()
- drivers/pinctrl/pinctrl-amd.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+I noticed this series some time ago, and wanted to take a closer look.
 
-diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-index d19974aceb2e..1272ecd8791f 100644
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -598,16 +598,16 @@ static struct irq_chip amd_gpio_irqchip = {
- 
- #define PIN_IRQ_PENDING	(BIT(INTERRUPT_STS_OFF) | BIT(WAKE_STS_OFF))
- 
--static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
-+static bool _amd_gpio_irq_handler(int irq, void *dev_id)
- {
- 	struct amd_gpio *gpio_dev = dev_id;
- 	struct gpio_chip *gc = &gpio_dev->gc;
--	irqreturn_t ret = IRQ_NONE;
- 	unsigned int i, irqnr;
- 	unsigned long flags;
- 	u32 __iomem *regs;
- 	u32  regval;
- 	u64 status, mask;
-+	bool ret = false;
- 
- 	/* Read the wake status */
- 	raw_spin_lock_irqsave(&gpio_dev->lock, flags);
-@@ -627,6 +627,12 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 		/* Each status bit covers four pins */
- 		for (i = 0; i < 4; i++) {
- 			regval = readl(regs + i);
-+			/* called from resume context on a shared IRQ, just
-+			 * checking wake source.
-+			 */
-+			if (irq < 0 && (regval & BIT(WAKE_STS_OFF)))
-+				return true;
-+
- 			if (!(regval & PIN_IRQ_PENDING) ||
- 			    !(regval & BIT(INTERRUPT_MASK_OFF)))
- 				continue;
-@@ -652,9 +658,12 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 			}
- 			writel(regval, regs + i);
- 			raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
--			ret = IRQ_HANDLED;
-+			ret = true;
- 		}
- 	}
-+	/* called from resume context on shared IRQ but didn't cause wake */
-+	if (irq < 0)
-+		return false;
- 
- 	/* Signal EOI to the GPIO unit */
- 	raw_spin_lock_irqsave(&gpio_dev->lock, flags);
-@@ -666,6 +675,16 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 	return ret;
- }
- 
-+static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
-+{
-+	return IRQ_RETVAL(_amd_gpio_irq_handler(irq, dev_id));
-+}
-+
-+static bool __maybe_unused amd_gpio_check_wake(void *dev_id)
-+{
-+	return _amd_gpio_irq_handler(-1, dev_id);
-+}
-+
- static int amd_get_groups_count(struct pinctrl_dev *pctldev)
- {
- 	struct amd_gpio *gpio_dev = pinctrl_dev_get_drvdata(pctldev);
-@@ -1004,6 +1023,7 @@ static int amd_gpio_probe(struct platform_device *pdev)
- 		goto out2;
- 
- 	platform_set_drvdata(pdev, gpio_dev);
-+	acpi_register_wakeup_handler(gpio_dev->irq, amd_gpio_check_wake, gpio_dev);
- 
- 	dev_dbg(&pdev->dev, "amd gpio driver loaded\n");
- 	return ret;
-@@ -1021,6 +1041,7 @@ static int amd_gpio_remove(struct platform_device *pdev)
- 	gpio_dev = platform_get_drvdata(pdev);
- 
- 	gpiochip_remove(&gpio_dev->gc);
-+	acpi_unregister_wakeup_handler(amd_gpio_check_wake, gpio_dev);
- 
- 	return 0;
- }
--- 
-2.25.1
+The same issue this series address is seen on stm32 board for instance.
+(arch/arm/boot/dts/stm32mp15xx-dkx.dtsi). On board HUB (not described in
+the DT) is supplied by an always-on regulator.
+So it could could be interesting/useful to address the same case ,
+on stm32 boards, where USB2 (ehci-platform driver) is used currently.
 
+I noticed a few things, especially on the dt-bindings. I've some
+questions here.
+
+In this series, RTS5411 is used. The dt-bindings documents it as a child
+node of the USB controller. E.g.
+
+&usb {
+	usb_hub_2_0: hub@1 {
+		...
+	};
+
+	usb_hub_3_0: hub@2 {
+	};
+}
+
+I had a quick look at RTS5411 datasheet. It looks like there's an i2c
+interface too.
+- I guess the I2C interface isn't used in your case ?
+  (I haven't checked what it could be used for...)
+
+In the stm32 boards (stm32mp15xx-dkx), there's an usb2514b chip
+- that also could be wired on I2C interface (0R mount option)
+- unused on stm32 boards by default
+
+usb2514b chip already has a dt-bindings (with compatible), and a driver:
+- drivers/usb/misc/usb251xb.c
+- Documentation/devicetree/bindings/usb/usb251xb.txt
+
+It is defined more as an i2c chip, so I'd expect it as an i2c child,
+e.g. like:
+
+&i2c {
+	usb2514b@2c {
+		compatible = "microchip,usb2514b";
+		...
+	};
+};
+
+
+This way, I don't see how it could be used together with onboard_usb_hub
+driver ? (But I may have missed it)
+Is it possible to use a phandle, instead of a child node ?
+
+However, in the stm32mp15xx-dkx case, i2c interface isn't wired/used by
+default. So obviously the i2c driver isn't used. In this case, could the
+"microchip,usb2514b" be listed in onboard_usb_hub driver ?
+(wouldn't it be redundant ?)
+
+In this case it would be a child node of the usb DT node... Maybe that's
+more a question for Rob: would it be "legal" regarding existing
+dt-bindings ?
+
+
+Thanks in advance
+Best Regards,
+Fabrice
+
+
+> It's in my queue to review, I just need to spend the time on it, sorry
+> for the delay.
+> 
+> greg k-h
+> 
