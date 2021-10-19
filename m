@@ -2,183 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6033143383F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756C0433832
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhJSOUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbhJSOUn (ORCPT
+        id S231442AbhJSOSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:18:39 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:33190 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhJSOSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:20:43 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9436DC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:18:30 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w14so13237571edv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 07:18:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kgCDDEsGSe1etnRXFlGlYA3RdOp2g4WwA49g9BH2mKE=;
-        b=tWFghgkkUlfwYWjFZ3PYbgFlQf/5Mi+IMgCHPscUSOO7C1RUHeBeoxtuvWPSEzFLev
-         wVFrWrFn98WLfL4h4+OMZ/U6TlUplFq2ctVYWcBR10YBLVQeaezu4BX56/hIYr9z7xZl
-         EOAf9FiQC2zv/Dh63ggvbYyyYn8l3/mWtXfuvdp2lJVhyAXc7ujE/iRJ1fdH60NR2XXg
-         vHiLXdv7bC+W3qJXQKo+/DhFRRomE4ojmENGbVXyvw2XStajmJCmm/BaWPW87A4mLjQu
-         k/Kpyr39gGNM65JZBs7uMC7/pESvkUguFyRBRdzO74ygiW4l6UUjkiHXI2FsNJZuFW9J
-         PSjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kgCDDEsGSe1etnRXFlGlYA3RdOp2g4WwA49g9BH2mKE=;
-        b=Jcnd2tIy4UE4CDxmNOVraYc2daYgWQWBLXbOsdk44x+JsEZ1SavgK9OEk5zVdhCCGU
-         TONh2sV1lqoJG6MyEm0QJA0zsV+IKKKtDmMYhX5A9vX9P7iApSoQ22RU89hXzCis4r+V
-         5VSuNiA492CBoyj5vGyejI/WKe1hKQsYnIep76jvYL5ZGK8TWrf2zuUpRmz3kQ1WjBGZ
-         L+eJ1lGgseum2XAgHV8QY5T11dehmQgrgHlcOFkDnfy9BkNgfw6JzATWuJKHjdjtY0sG
-         AGj4UBX+XX5Aif4Au13Q5Zfu+AkIhZuUgjeUKUCCJV/IrQ8swf4ijQzje/hEQ1fAeKfv
-         Crsw==
-X-Gm-Message-State: AOAM530PXHXGlbdvITiweVQFtiLBiYbzWN6Cwc7uUf1l42y8/U00KOAf
-        buZoaPFTVsyNYupJEMAAQBMlsB25c6VjEGOKEXcKGw==
-X-Google-Smtp-Source: ABdhPJy1gSI41oeorN63MssHPM8MixeVINo6yVf++/lR4YLCwf0LjmL8Upf93f3ovx7b7dmSgVflhalUnudvZZUPAi0=
-X-Received: by 2002:a17:907:764e:: with SMTP id kj14mr37506778ejc.349.1634652981528;
- Tue, 19 Oct 2021 07:16:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211008081739.26807-1-brgl@bgdev.pl> <20211008081739.26807-6-brgl@bgdev.pl>
- <YW1PEvTyqdhiRYR6@smile.fi.intel.com>
-In-Reply-To: <YW1PEvTyqdhiRYR6@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 19 Oct 2021 16:16:10 +0200
-Message-ID: <CAMRc=Mcem-EC=ckD2HwiihJXUsOGpGdiJ=U-vWGq1SzmOVwbTg@mail.gmail.com>
-Subject: Re: [PATCH v7 5/8] gpio: sim: new testing module
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jack Winch <sunt.un.morcov@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Tue, 19 Oct 2021 10:18:38 -0400
+Date:   Tue, 19 Oct 2021 10:16:24 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     musl@lists.openwall.com, Takashi Iwai <tiwai@suse.de>,
+        Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Colin Ian King <colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+Message-ID: <20211019141622.GN7074@brightrain.aerifal.cx>
+References: <s5h5yu79aab.wl-tiwai@suse.de>
+ <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
+ <s5hv9277oux.wl-tiwai@suse.de>
+ <20211008120736.GF7074@brightrain.aerifal.cx>
+ <s5hsfx95n99.wl-tiwai@suse.de>
+ <20211018144259.GK7074@brightrain.aerifal.cx>
+ <s5hlf2q4byc.wl-tiwai@suse.de>
+ <20211018150824.GL7074@brightrain.aerifal.cx>
+ <CAK8P3a1RAk5WRtMjqV6QZ1eHtFu_sxhSBJn0Uv-MhRA5WGiJqQ@mail.gmail.com>
+ <20211018204203.GM7074@brightrain.aerifal.cx>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="0ntfKIWw70PvrIHh"
+Content-Disposition: inline
+In-Reply-To: <20211018204203.GM7074@brightrain.aerifal.cx>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 12:40 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Oct 08, 2021 at 10:17:36AM +0200, Bartosz Golaszewski wrote:
-> > Implement a new, modern GPIO testing module controlled by configfs
-> > attributes instead of module parameters. The goal of this driver is
-> > to provide a replacement for gpio-mockup that will be easily extensible
-> > with new features and doesn't require reloading the module to change
-> > the setup.
-> >
-> > Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
-> > [Andy: Initialize attribute allocated on the heap]
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > [Colin: Fix dereference of free'd pointer config]
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Some nit-picks below, up to you to address.
->
-> ...
->
-> > +     ret = gpio_sim_setup_sysfs(chip);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     return 0;
->
-> return gpio_sim_...(chip); ?
->
 
-Sure, can do.
+--0ntfKIWw70PvrIHh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ...
->
-> > +
->
-> Redundant empty line.
->
-> > +CONFIGFS_ATTR_RO(gpio_sim_config_, dev_name);
->
-> ...
->
-> > +
->
-> Ditto.
->
-> > +CONFIGFS_ATTR_RO(gpio_sim_config_, chip_name);
->
-> ...
->
-> > +
->
-> Ditto.
->
-> > +CONFIGFS_ATTR(gpio_sim_config_, label);
->
-> ...
->
-> > +
->
-> Ditto.
->
-> > +CONFIGFS_ATTR(gpio_sim_config_, num_lines);
->
-> ...
->
-> > +
->
-> Ditto.
->
-> > +CONFIGFS_ATTR(gpio_sim_config_, line_names);
->
+On Mon, Oct 18, 2021 at 04:42:04PM -0400, Rich Felker wrote:
+> On Mon, Oct 18, 2021 at 05:26:35PM +0200, Arnd Bergmann wrote:
+> > On Mon, Oct 18, 2021 at 5:08 PM Rich Felker <dalias@libc.org> wrote:
+> > > On Mon, Oct 18, 2021 at 04:58:03PM +0200, Takashi Iwai wrote:
+> > > > On Mon, 18 Oct 2021 16:43:00 +0200, Rich Felker wrote:
+> > >
+> > > No, I don't think so. The musl translator is to translate between the
+> > > time64 ioctl structures and the old time32 ones for the sake of
+> > > executing on an old kernel. Up til now, it has been broken comparably
+> > > to how 32-bit binaries running in compat mode on a 64-bit kernel were
+> > > broken: the code in musl translated the time64 structure to (and back
+> > > from) the time32 one assuming the intended padding. But the
+> > > application was using the actual kernel uapi struct where the padding
+> > > was (and still is) illogical. Thus, nothing was built with the wrong
+> > > ABI; it's only the musl-internal translation logic that was wrong (and
+> > > only pre-time64 kernels are affected).
+> > >
+> > > The attached patch should fix it, I think.
+> > >
+> > > + int adj = BYTE_ORDER==BIG_ENDIAN ? 4 : 0;
+> > > + if (dir==W) {
+> > > +     memcpy(old+68, new+72+adj, 4);
+> > > +     memcpy(old+72, new+72+4+2*adj, 4);
+> > 
+> > I think that should be "new+72+4+3*adj": the "2*adj" would
+> > be what the code does already for the originally intended
+> > format.
+> 
+> Well for little endian either would work (because adj is 0 :) but yes
+> there are 3 such paddings before the second member on big endian, so
+> it should be 3.
 
-These are on purpose - there's the store and show function and putting
-it next to only one is misleading IMO.
+How about this? It avoids open coding the logic and handles it as 2
+4-byte substructures with endian-specific offsets.
 
-> ...
->
-> > +     fwnode = fwnode_create_software_node(properties, NULL);
-> > +     if (IS_ERR(fwnode))
-> > +             return PTR_ERR(fwnode);
->
->
-> > +     fwnode = dev_fwnode(&config->pdev->dev);
-> > +     platform_device_unregister(config->pdev);
-> > +     fwnode_remove_software_node(fwnode);
->
-> This seems correct, thank you for modifying the code.
->
-> ...
->
-> > +     config->pdev = NULL;
-> > +     mutex_unlock(&config->lock);
->
-> mutex_destroy() ?
-> Or is it done in the upper level?
->
+Rich
 
-It's done in the release callback.
+--0ntfKIWw70PvrIHh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="snd_pcm_mmap_control_v2.diff"
 
-Bart
+diff --git a/src/misc/ioctl.c b/src/misc/ioctl.c
+index 49282811..35804f02 100644
+--- a/src/misc/ioctl.c
++++ b/src/misc/ioctl.c
+@@ -6,6 +6,7 @@
+ #include <stddef.h>
+ #include <stdint.h>
+ #include <string.h>
++#include <endian.h>
+ #include "syscall.h"
+ 
+ #define alignof(t) offsetof(struct { char c; t x; }, x)
+@@ -53,7 +54,7 @@ static const struct ioctl_compat_map compat_map[] = {
+ 	{ _IOWR('A', 0x23, char[136]), _IOWR('A', 0x23, char[132]), 0, WR, 1, 0 },
+ 	{ 0, 0, 4, WR, 1, 0 }, /* snd_pcm_sync_ptr (flags only) */
+ 	{ 0, 0, 32, WR, 1, OFFS(8,12,16,24,28) }, /* snd_pcm_mmap_status */
+-	{ 0, 0, 8, WR, 1, OFFS(0,4) }, /* snd_pcm_mmap_control */
++	{ 0, 0, 4, WR, 1, 0 }, /* snd_pcm_mmap_control (each member) */
+ 
+ 	/* VIDIOC_QUERYBUF, VIDIOC_QBUF, VIDIOC_DQBUF, VIDIOC_PREPARE_BUF */
+ 	{ _IOWR('V',  9, new_misaligned(68)), _IOWR('V',  9, char[68]), 68, WR, 1, OFFS(20, 24) },
+@@ -90,7 +91,11 @@ static void convert_ioctl_struct(const struct ioctl_compat_map *map, char *old,
+ 		 * if another exception appears this needs changing. */
+ 		convert_ioctl_struct(map+1, old, new, dir);
+ 		convert_ioctl_struct(map+2, old+4, new+8, dir);
+-		convert_ioctl_struct(map+3, old+68, new+72, dir);
++		/* snd_pcm_mmap_control, special-cased due to kernel
++		 * type definition having been botched. */
++		int adj = BYTE_ORDER==BIG_ENDIAN ? 4 : 0;
++		convert_ioctl_struct(map+3, old+68, new+72+adj, dir);
++		convert_ioctl_struct(map+3, old+72, new+76+3*adj, dir);
+ 		return;
+ 	}
+ 	for (int i=0; i < map->noffs; i++) {
 
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+--0ntfKIWw70PvrIHh--
