@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1884432DF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B02C432DFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhJSGSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:18:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        id S234157AbhJSGSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:18:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234157AbhJSGSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:18:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA11260FD8;
-        Tue, 19 Oct 2021 06:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634624166;
-        bh=mx/BkxT0o8Xb5VpFFH8AkWfA1dK+acaE7dGk1O65ts8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qF1riMWAcm6LnyBf8yBTOGBE7s10q4a++uW/BehxggTqrejzar0Wh2HguhQeb4TK4
-         ofRPU0EOWCva3d5EQzEqRQrptw5FEnSZYPiem3xcchgaOErjGcn2SM0ONQhn0dJAmk
-         3uIGb3+JLq6sQJ+XNz1g+I8knEf9PpM5CmvOYsfw7bJdkACWcX3oEb2lTgokK31Y9s
-         ++q+QO4piqpm20AvgxF9kTfMCBJZnRb+1Si7gGwj6yH9rD6pNmM24HrBkJUuUoXs9U
-         ygcD8VsVvvLmOtH/KXdrR2ok4YzKuE400e++vKCy0KQA2LmwA6l7jQcs21n4wWtP6L
-         J47d2HdpBUY5w==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Mark Zhang <markzhang@nvidia.com>,
-        Aharon Landau <aharonl@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Mark Bloch <mbloch@nvidia.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [RFC] RDMA/mlx5: fix build error with INFINIBAND_USER_ACCESS=n
-Date:   Tue, 19 Oct 2021 08:15:45 +0200
-Message-Id: <20211019061602.3062196-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233786AbhJSGS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:18:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACB4E6115B;
+        Tue, 19 Oct 2021 06:16:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634624176;
+        bh=FeG/qotMCAtt11mlzDTQUemMTc8grksOYH2YcYkz2NA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lg0afarjb/JXs+cYDe2ZtQnrFJR3J8h/C9seWBF8QOrfPEm6YSKILrheQecQ13sp/
+         XtQ4Ld/FMCpATfvZLaqjxSeTlpDtgQ8S3F31aewNRcQsifzyG9A+PBe5rqNWMcDdqS
+         kp4IF8+D53rd5pQi/7eTWLdwt6Z90NX9npx8yWn8=
+Date:   Tue, 19 Oct 2021 08:16:14 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
+        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
+        david.brown@linaro.org, bjorn.andersson@linaro.org,
+        linux-wireless@vger.kernel.org, keescook@chromium.org,
+        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
+        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
+        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
+        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
+        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
+        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
+        andresx7@gmail.com, dan.rue@linaro.org, brendanhiggins@google.com,
+        yzaikin@google.com, sfr@canb.auug.org.au, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 04/14] firmware_loader: add built-in firmware kconfig
+ entry
+Message-ID: <YW5irpRIIr0H/tXh@kroah.com>
+References: <20210917182226.3532898-1-mcgrof@kernel.org>
+ <20210917182226.3532898-5-mcgrof@kernel.org>
+ <YVxhbhmNd7tahLV7@kroah.com>
+ <YWR16e/seTx/wxE+@bombadil.infradead.org>
+ <YWR4XKrC2Bkr4qKQ@kroah.com>
+ <YWS7ABDdBIpdt/84@bombadil.infradead.org>
+ <YW3gae4HoUd9izyj@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW3gae4HoUd9izyj@bombadil.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Oct 18, 2021 at 02:00:25PM -0700, Luis Chamberlain wrote:
+> On Mon, Oct 11, 2021 at 03:30:24PM -0700, Luis Chamberlain wrote:
+> > On Mon, Oct 11, 2021 at 07:46:04PM +0200, Greg KH wrote:
+> > > >   o By default we now always skip built-in firmware even if a FW_LOADER=y
+> > > 
+> > > I do not understand, why would we ever want to skip built-in firmware?
+> > 
+> > Because it is done this way today only implicitly because
+> > EXTRA_FIRMWARE is empty. Using a kconfig entry makes this
+> > more obvious.
+> 
+> Greg,
+> 
+> The fact that it was not obvious to you we were effectively disabling
+> the built-in firmware functionality by default using side kconfig
+> symbols is a good reason to clarify this situation with its own kconfig
+> symbol.
+> 
+> And consider what I started below as well.
+> 
+> Please let me know why on the other hand we should *not* add this new
+> kconfig symbol?
 
-The mlx5_ib_fs_add_op_fc/mlx5_ib_fs_remove_op_fc functions are
-only available when user access is enabled, without that we
-run into a link error:
+Because added complexity for no real good reason?  You need to justify
+why we need yet-another firmware kconfig option here.  We should be
+working to remove them, not add more, if at all possible.
 
-ERROR: modpost: "mlx5_ib_fs_add_op_fc" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
-ERROR: modpost: "mlx5_ib_fs_remove_op_fc" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+thanks,
 
-Conditionally compiling the newly added code section makes
-it build, though this is probably not a correct fix.
-
-Fixes: a29b934ceb4c ("RDMA/mlx5: Add modify_op_stat() support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/infiniband/hw/mlx5/counters.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
-index 6f1c4b57110e..945758f39523 100644
---- a/drivers/infiniband/hw/mlx5/counters.c
-+++ b/drivers/infiniband/hw/mlx5/counters.c
-@@ -641,9 +641,9 @@ static void mlx5_ib_dealloc_counters(struct mlx5_ib_dev *dev)
- 			if (!dev->port[i].cnts.opfcs[j].fc)
- 				continue;
- 
--			mlx5_ib_fs_remove_op_fc(dev,
--						&dev->port[i].cnts.opfcs[j],
--						j);
-+			if (IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS))
-+				mlx5_ib_fs_remove_op_fc(dev,
-+					&dev->port[i].cnts.opfcs[j], j);
- 			mlx5_fc_destroy(dev->mdev,
- 					dev->port[i].cnts.opfcs[j].fc);
- 			dev->port[i].cnts.opfcs[j].fc = NULL;
-@@ -885,7 +885,8 @@ static const struct ib_device_ops hw_stats_ops = {
- 	.counter_dealloc = mlx5_ib_counter_dealloc,
- 	.counter_alloc_stats = mlx5_ib_counter_alloc_stats,
- 	.counter_update_stats = mlx5_ib_counter_update_stats,
--	.modify_hw_stat = mlx5_ib_modify_stat,
-+	.modify_hw_stat = IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS) ?
-+			  mlx5_ib_modify_stat : NULL,
- };
- 
- static const struct ib_device_ops hw_switchdev_stats_ops = {
--- 
-2.29.2
-
+greg k-h
