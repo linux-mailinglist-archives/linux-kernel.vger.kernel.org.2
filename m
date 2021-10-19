@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1D34337CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01EF4337DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 15:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236008AbhJSNyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 09:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235996AbhJSNyH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:54:07 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44ED4C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:51:55 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id k3so18459560ilu.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 06:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=szeolAqmJqd0hJn5d47PHeNOyZWuU1CeFrejo0YAi2g=;
-        b=j/AyowO+6JKdUq9H9W3cRdSIcY2JdO7fr5ELQnVVxwn9+YnNmVcOyG4W1c1eCGPXgn
-         82d3hH3VRyQT/mwXkTgd5jH0Q2BESsBmO6uGbWxpsbsZXPUz6nUMVaecG2z36H3tJSHX
-         IPM6gMFDE//k39kKtppc8OzbTEukcddWYtKTpEwlKMLfRVpLzD9asWgzXtceqatpMvh6
-         cme63MplEi879SWNlTvQinozuBHqzHTiqHKEOrB1bTm5IiT5a0QwVK8X8szENXjQTD68
-         TGN7zEuisbPY4D/yMvGTim3vIGX+YOvv4IgwbNdgLUzHmfJWI705ODeAATPE4ucsOQph
-         ERrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=szeolAqmJqd0hJn5d47PHeNOyZWuU1CeFrejo0YAi2g=;
-        b=t205+mtBeBM+Ms9JNCDIeV2AFQs+f15oCeyCxliyl4khXinQSVhZBbqv1veFFlqQNY
-         JhvIiIwON8Q5ISd/+blanAXk4LXZFsC1r132X8xPMyTiKKinidBr56RSwjjUJXulBu7d
-         We28xnqE+gtuWAkLY6UyBG9L2RWBxOouphCfYG3B/fOGvSF8mxA0VD4z13JMnKLkDFjs
-         V4Fz6Cw1zZSIZRNTfOs25Dy+cCmZLvOb33w3+UvDd03yVWcloMnF9o0etJsM0fm2ejul
-         nk+RRa+ToCPzJI66R3bKcX77WUyUN1rXwEtpEsSxOTVpmKj9WBBaUb7W2CVIE9UYgzFc
-         qpsQ==
-X-Gm-Message-State: AOAM532/E5UICP4K3qIBpEr9/SB4PuYLFp+raM9OW+u4wOm6CrZrptTI
-        grZTGnKf+pgDfO/WULYYQ96EdotOWeHwg2BxE4E=
-X-Google-Smtp-Source: ABdhPJzR6vdk3AJzHsNRutcMCeU0tmigKKpeKkmLSKO1GyX3dPE0DBO1SyA94OmrGuR4Ztcdi64kws6QSvDmUrXq/Ew=
-X-Received: by 2002:a92:cda9:: with SMTP id g9mr17693512ild.147.1634651514715;
- Tue, 19 Oct 2021 06:51:54 -0700 (PDT)
+        id S235863AbhJSOAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:00:14 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:57182 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230487AbhJSOAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 10:00:13 -0400
+Received: from zn.tnic (p200300ec2f12f600999171228a6b1e18.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:f600:9991:7122:8a6b:1e18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B5CE91EC0531;
+        Tue, 19 Oct 2021 15:57:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634651878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Eyr0BrQZjw5sA8H+/VXcyKJdpJUglZVq/GeFUKleCV4=;
+        b=QF8gs6XkuuDcKOT13EUBQzf9lyHTxW5lV7gAtEvIN8wrhfvvKsrtdW0u3OyzuQl9o9oPC9
+        g6vLJPblxsuxMCz5FAqebChv09tHnR9hf/faZRWncEBjRgHesQYF137zk7h9agm8Axz1eA
+        gVKxa+XbD67lOoBLWeuCURojCdedmy4=
+Date:   Tue, 19 Oct 2021 15:57:56 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com,
+        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
+        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com,
+        Hikys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, davem@davemloft.net, kuba@kernel.org,
+        gregkh@linuxfoundation.org, arnd@arndb.de, jroedel@suse.de,
+        brijesh.singh@amd.com, Tianyu.Lan@microsoft.com, pgonda@google.com,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, tj@kernel.org, aneesh.kumar@linux.ibm.com,
+        saravanand@fb.com, hannes@cmpxchg.org, rientjes@google.com,
+        michael.h.kelley@microsoft.com
+Subject: Re: [PATCH V7 5/9] x86/sev-es: Expose __sev_es_ghcb_hv_call() to
+ call ghcb hv call out of sev code
+Message-ID: <YW7O5HmcD/JK0Twr@zn.tnic>
+References: <20211006063651.1124737-1-ltykernel@gmail.com>
+ <20211006063651.1124737-6-ltykernel@gmail.com>
+ <9b5fc629-9f88-039c-7d5d-27cbdf6b00fd@gmail.com>
+ <YWRyvD413h+PwU9B@zn.tnic>
+ <5a0b9de8-e133-c17b-bc0d-93bfb593c48f@gmail.com>
+ <2772390d-09c1-80c1-082f-225f32eae4aa@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a02:c904:0:0:0:0:0 with HTTP; Tue, 19 Oct 2021 06:51:54
- -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <gaddafimrsaisha155@gmail.com>
-Date:   Tue, 19 Oct 2021 06:51:54 -0700
-Message-ID: <CAATVZ=Tz-D_wqw555_4Rgg31ajdPAgeag7BnG3h1LoB-HM7k_A@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2772390d-09c1-80c1-082f-225f32eae4aa@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Mon, Oct 18, 2021 at 08:19:30PM +0800, Tianyu Lan wrote:
+> Gentle Ping.
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+$ patch -p1 --dry-run -i /tmp/ltykernel.01
+checking file arch/x86/include/asm/sev.h
+patch: **** malformed patch at line 128: return 0; }
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+Can you pls send a patch which is not mangled and I can apply?
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
-Best Regards
-Mrs Aisha Al-Qaddafi
+Also, this might have some info on the matter:
+
+Documentation/process/email-clients.rst
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
