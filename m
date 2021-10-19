@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A580B4339F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4914E4339F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbhJSPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232601AbhJSPQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:16:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FCF460FDA;
-        Tue, 19 Oct 2021 15:13:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634656435;
-        bh=9XoFczMc+6tFEnlfl7hf3gXyyeGcNpPKujV8wE7uMk0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=raIJEbfogEXYYugcM4ZZnVr7nSCS8Le0kLTOHNQh/D1aqCahzkGvvuchWQJbtrZn7
-         Cf9uAAjcs9hr6veVBSde8LCLbiP5GvsFqAYAcgBTs8eJ0LJQ0jxV8+ZIsP4/V/NDQq
-         PxtLTNK3nJaBjQUT5KNi/eJN9P/N67JzAmRDfPd5wy2HbbsGwBpRAnEJCkBswqxAaU
-         un4oKRaPXm8BOMs1KDO56vsjy/DystQINPYVs+w+zNqtR2mxkwYZ+uyhXH9L5kbvJ5
-         u6fiN0Vis2UkjeA7JgGtwPbgjY8R56eOM3WEyOXyTw/SGeT7ezkRSgAjO4gstD1Sah
-         CyJ/DdlpePzuQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DC5C5410A1; Tue, 19 Oct 2021 12:13:52 -0300 (-03)
-Date:   Tue, 19 Oct 2021 12:13:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        ToastC <mrtoastcheng@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Denys Zagorui <dzagorui@cisco.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 21/21] perf metric: Allow modifiers on metrics.
-Message-ID: <YW7gsEDXBw1jk65o@kernel.org>
-References: <20211015172132.1162559-1-irogers@google.com>
- <20211015172132.1162559-22-irogers@google.com>
- <YW7e6OvE/juYY8it@kernel.org>
+        id S233627AbhJSPQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:16:22 -0400
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:33723 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232601AbhJSPQT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:16:19 -0400
+Received: by mail-vk1-f178.google.com with SMTP id r26so1161098vkq.0;
+        Tue, 19 Oct 2021 08:14:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fB/2pInV/75e4NnyCMXXkeVh+Ni7M1P708BMXGlIBnc=;
+        b=MhyTJSAnXTBD24vluoR/dimjofvSMbNYVkIsjRDw8AlTKPkIzbOovwr2LCKjyluweU
+         pr12k5ZbMMmEMy776rFsN2h2dtSMKaRL1xovh80hVrJ5e1cakpkgebHum723oythGS+p
+         mAiys1XQQ8dLw0gez7rp/8YWfQFhLwnGejghxO0uL7w9JIt1XbqwSaBrBpYTjSjWmBc0
+         yH1LDmOHGVstMT9UJVhrmH4PDiTGNbxkYTx2Gvo1nFNH5Apgt9pZQ7uVughMRqgjdPwT
+         8lH7T/9EsFbzr40b5G0xKn6y9eg07zJbZfSnXF8ve5LCif2wsKXVSOBlPSCaYKqKammj
+         Dwdg==
+X-Gm-Message-State: AOAM530m3xw/uYRdZ0M4mCPSkqtfkv3+dmDsWWHe3kK81qTDMyEB770s
+        aInNzqQEEcPF/HLdSwUJZ7+QCi1sSRoHiQ==
+X-Google-Smtp-Source: ABdhPJydq6bpuaLUhng8Pj+QLHtGE+AmsJAHNijPKNzByPNr8UrriJTaKkmV8krptY5FCVK/Z4oFKg==
+X-Received: by 2002:a1f:1844:: with SMTP id 65mr32315692vky.3.1634656445571;
+        Tue, 19 Oct 2021 08:14:05 -0700 (PDT)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
+        by smtp.gmail.com with ESMTPSA id o18sm11083178vkb.21.2021.10.19.08.14.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 08:14:04 -0700 (PDT)
+Received: by mail-vk1-f171.google.com with SMTP id j12so10507435vka.4;
+        Tue, 19 Oct 2021 08:14:04 -0700 (PDT)
+X-Received: by 2002:a05:6122:a20:: with SMTP id 32mr32414786vkn.15.1634656444011;
+ Tue, 19 Oct 2021 08:14:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YW7e6OvE/juYY8it@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20211019145719.122751-1-kory.maincent@bootlin.com>
+In-Reply-To: <20211019145719.122751-1-kory.maincent@bootlin.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 Oct 2021 17:13:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
+Message-ID: <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
+Subject: Re: [PATCH] net: renesas: Fix rgmii-id delays
+To:     Kory Maincent <kory.maincent@bootlin.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Adam Ford <aford173@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Oct 19, 2021 at 12:06:17PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Oct 15, 2021 at 10:21:32AM -0700, Ian Rogers escreveu:
-> > By allowing modifiers on metrics we can, for example, gather the
-> > same metric for kernel and user mode. On a SkylakeX with
-> > TopDownL1 this gives:
-> > 
-> > $ perf stat -M TopDownL1:u,TopDownL1:k -a sleep 2
-> > 
-> >  Performance counter stats for 'system wide':
-> 
-> Hi Ian, can you please take a look on this? this is on my perf/core
-> branch.
+Hi Kory,
 
-I processed the first version of this series, reviewed by Andi, can you
-please submit the diff from one to the other?
+Thanks for your patch!
 
-- Arnaldo
- 
-> - Arnaldo
-> 
-> [root@five ~]# perf test -vv "for cgroups"
-> 70: Event expansion for cgroups                                     :
-> --- start ---
-> test child forked, pid 992568
-> Using CPUID AuthenticAMD-25-21-0
-> libpfm was not enabled
-> metric expr 1 / IPC for CPI
-> parsing metric: 1 / IPC
-> metric expr instructions / cycles for IPC
-> parsing metric: instructions / cycles
-> found event instructions
-> found event cycles
-> Parsing metric events '{instructions/metric-id=instructions/,cycles/metric-id=cycles/}:W'
-> copying metric event for cgroup 'A': instructions (idx=0)
-> copying metric event for cgroup 'B': instructions (idx=0)
-> copying metric event for cgroup 'C': instructions (idx=0)
-> free(): double free detected in tcache 2
-> test child interrupted
-> ---- end ----
-> Event expansion for cgroups: FAILED!
-> [root@five ~]#
-> 
-> ⬢[acme@toolbox perf]$ git bisect bad
-> c067335fcbfc67c36663dabdb9ccaa96badf9359 is the first bad commit
-> commit c067335fcbfc67c36663dabdb9ccaa96badf9359
-> Author: Ian Rogers <irogers@google.com>
-> Date:   Thu Oct 7 09:56:47 2021 -0700
-> 
->     perf metric: Allow modifiers on metrics.
-> 
->     By allowing modifiers on metrics we can, for example, gather the
->     same metric for kernel and user mode. On a SkylakeX with
->     TopDownL1 this gives:
-> 
+On Tue, Oct 19, 2021 at 4:57 PM Kory Maincent <kory.maincent@bootlin.com> wrote:
+> Invert the configuration of the RGMII delay selected by RGMII_RXID and
+> RGMII_TXID.
+>
+> The ravb MAC is adding RX delay if RGMII_RXID is selected and TX delay
+> if RGMII_TXID but that behavior is wrong.
+> Indeed according to the ethernet.txt documentation the ravb configuration
 
--- 
+Do you mean ethernet-controller.yaml?
 
-- Arnaldo
+> should be inverted:
+>   * "rgmii-rxid" (RGMII with internal RX delay provided by the PHY, the MAC
+>      should not add an RX delay in this case)
+>   * "rgmii-txid" (RGMII with internal TX delay provided by the PHY, the MAC
+>      should not add an TX delay in this case)
+>
+> This patch inverts the behavior, i.e adds TX delay when RGMII_RXID is
+> selected and RX delay when RGMII_TXID is selected.
+>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+
+Does this fix an actual problem for you?
+
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2114,13 +2114,13 @@ static void ravb_parse_delay_mode(struct device_node *np, struct net_device *nde
+>         /* Fall back to legacy rgmii-*id behavior */
+
+Note that in accordance with the comment above, the code section
+below is only present to support old DTBs.  Contemporary DTBs rely
+on the now mandatory "rx-internal-delay-ps" and "tx-internal-delay-ps"
+properties instead.
+Hence changing this code has no effect on DTS files as supplied with
+the kernel, but may have ill effects on DTB files in the field, which
+rely on the current behavior.
+
+>         if (priv->phy_interface == PHY_INTERFACE_MODE_RGMII_ID ||
+>             priv->phy_interface == PHY_INTERFACE_MODE_RGMII_RXID) {
+> -               priv->rxcidm = 1;
+> +               priv->txcidm = 1;
+>                 priv->rgmii_override = 1;
+>         }
+>
+>         if (priv->phy_interface == PHY_INTERFACE_MODE_RGMII_ID ||
+>             priv->phy_interface == PHY_INTERFACE_MODE_RGMII_TXID) {
+> -               priv->txcidm = 1;
+> +               priv->rxcidm = 1;
+>                 priv->rgmii_override = 1;
+>         }
+>  }
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
