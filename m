@@ -2,108 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCE7433D80
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45041433D83
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbhJSRbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:31:50 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:49439 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhJSRbs (ORCPT
+        id S234661AbhJSRdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234517AbhJSRdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:31:48 -0400
-Received: from [192.168.1.18] ([92.140.161.106])
-        by smtp.orange.fr with ESMTPA
-        id csvdmJ16MPNphcsvem4kWR; Tue, 19 Oct 2021 19:29:34 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Tue, 19 Oct 2021 19:29:34 +0200
-X-ME-IP: 92.140.161.106
-Subject: Re: [PATCH] i2c: thunderx: Fix some resource leak
-To:     Robert Richter <rric@kernel.org>
-Cc:     jan.glauber@gmail.com, wsa@kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <6657505309174d3ea6df14169d42b6df91298470.1634374036.git.christophe.jaillet@wanadoo.fr>
- <YW3j4MF/y4T6Rtzp@rric.localdomain>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <5a3eccff-f39d-29dc-976c-1de7b32e36c5@wanadoo.fr>
-Date:   Tue, 19 Oct 2021 19:29:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 19 Oct 2021 13:33:36 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967ABC061749;
+        Tue, 19 Oct 2021 10:31:22 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id w19so15787207edd.2;
+        Tue, 19 Oct 2021 10:31:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZNRPA5Y035ENoBEEnphzYyCovDbPmtOdSVwcFg1HX7s=;
+        b=fWgyvW/rGsgnqNAqcunvXvurYtUn79Lt9cXScpF8vT/QKp/yJbFyPWfTGHHbMfr/Qr
+         GmNvEaQyWOTAxUopNX2k3hC8XzH885aPukNHbhrdmAZNVdSZaisl+nuR10NVzLmxTXnF
+         KjxhuC1XxwokYIoBQ2DTG07QpcuH5KOdqegBZBrq/7CQZlHaFKQj7zCy9ts0sjel92ob
+         oionIRvKDb52cCzSdPZSLI0iqF3dVG6b44ypmE7eqEdZJX8//4VCwBV9zOP4iGDYUb5H
+         qrGsO7h3o6UIjEWEcF4aQTbpuJt2EJiw2gQIWSQWZUzKZYXQWFnBF4tv4HaU6RLomJf1
+         xvIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZNRPA5Y035ENoBEEnphzYyCovDbPmtOdSVwcFg1HX7s=;
+        b=iS/RG1hW3jakpK6zljWa6HXl1DMhhDAuXglT2U5aPK9TPTnLT2nFOoPy2kxi9XB646
+         U3+dVz1dIufroDYGf6v8t+EMKaLaNFZKujGgE9cbNIQVh/9ffF13hIELWdhxQ0esY9mE
+         WTy3EGRzfyL7CPEytcP+KnxrD3iTUyd3WvQPTkIZtwXn219PejPmuldBdDue3geENvh3
+         tqYcJQzbrasAkGScGJDvzsQOLuuLw4bd2L6IWit9VN1xGQtltiVdSdWN/f4dUt76PvX/
+         Ubq79bfMvacxfQ6qSCTmO45n0BBfIYq5RzoYQZ9lAIWlJmHfdUczYZrxowPiZu4V4ShM
+         dqlQ==
+X-Gm-Message-State: AOAM533kTQSMq6HJrsfcW+Amoy+KHt3k6T0ZoQ7jCZBlW8jnXr8v5UQB
+        9e1Yi5NmXRzXfDwtyytZaAEc/YuX8Gm4CEZxK8T+IZ7o
+X-Google-Smtp-Source: ABdhPJwP7pVSw14q5bqPkE3n1jFqa5RdzcCX4HOZcWEKDa3sLdwe2MV31QxFZ2+NPr6SYQntTXpw5h82iuGlVY6NJ1U=
+X-Received: by 2002:a17:906:a94b:: with SMTP id hh11mr40193608ejb.85.1634664603268;
+ Tue, 19 Oct 2021 10:30:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YW3j4MF/y4T6Rtzp@rric.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20211014191615.6674-1-shy828301@gmail.com> <20211014191615.6674-6-shy828301@gmail.com>
+ <20211019055221.GC2268449@u2004>
+In-Reply-To: <20211019055221.GC2268449@u2004>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 19 Oct 2021 10:29:51 -0700
+Message-ID: <CAHbLzkqfbsnUtxZCs0JK_b_G95id1D0q=c_hCuuZe7i6q_6oDQ@mail.gmail.com>
+Subject: Re: [v4 PATCH 5/6] mm: shmem: don't truncate page if memory failure happens
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 18/10/2021 à 23:15, Robert Richter a écrit :
-> On 16.10.21 10:48:26, Christophe JAILLET wrote:
->> We need to undo a 'pci_request_regions()' call in the error handling path
->> of the probe function and in the remove function.
-> 
-> Isn't that devm and thus not needed?
+On Mon, Oct 18, 2021 at 10:52 PM Naoya Horiguchi
+<naoya.horiguchi@linux.dev> wrote:
+>
+> On Thu, Oct 14, 2021 at 12:16:14PM -0700, Yang Shi wrote:
+> > The current behavior of memory failure is to truncate the page cache
+> > regardless of dirty or clean.  If the page is dirty the later access
+> > will get the obsolete data from disk without any notification to the
+> > users.  This may cause silent data loss.  It is even worse for shmem
+> > since shmem is in-memory filesystem, truncating page cache means
+> > discarding data blocks.  The later read would return all zero.
+> >
+> > The right approach is to keep the corrupted page in page cache, any
+> > later access would return error for syscalls or SIGBUS for page fault,
+> > until the file is truncated, hole punched or removed.  The regular
+> > storage backed filesystems would be more complicated so this patch
+> > is focused on shmem.  This also unblock the support for soft
+> > offlining shmem THP.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  mm/memory-failure.c | 10 +++++++++-
+> >  mm/shmem.c          | 37 ++++++++++++++++++++++++++++++++++---
+> >  mm/userfaultfd.c    |  5 +++++
+> >  3 files changed, 48 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> > index cdf8ccd0865f..f5eab593b2a7 100644
+> > --- a/mm/memory-failure.c
+> > +++ b/mm/memory-failure.c
+> > @@ -57,6 +57,7 @@
+> >  #include <linux/ratelimit.h>
+> >  #include <linux/page-isolation.h>
+> >  #include <linux/pagewalk.h>
+> > +#include <linux/shmem_fs.h>
+> >  #include "internal.h"
+> >  #include "ras/ras_event.h"
+> >
+> > @@ -866,6 +867,7 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
+> >  {
+> >       int ret;
+> >       struct address_space *mapping;
+> > +     bool extra_pins;
+> >
+> >       delete_from_lru_cache(p);
+> >
+> > @@ -894,6 +896,12 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
+> >               goto out;
+> >       }
+> >
+> > +     /*
+> > +      * The shmem page is kept in page cache instead of truncating
+> > +      * so is expected to have an extra refcount after error-handling.
+> > +      */
+> > +     extra_pins = shmem_mapping(mapping);
+> > +
+> >       /*
+> >        * Truncation is a bit tricky. Enable it per file system for now.
+> >        *
+> > @@ -903,7 +911,7 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
+> >  out:
+> >       unlock_page(p);
+> >
+> > -     if (has_extra_refcount(ps, p, false))
+> > +     if (has_extra_refcount(ps, p, extra_pins))
+> >               ret = MF_FAILED;
+> >
+> >       return ret;
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index b5860f4a2738..69eaf65409e6 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -2456,6 +2456,7 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+> >       struct inode *inode = mapping->host;
+> >       struct shmem_inode_info *info = SHMEM_I(inode);
+> >       pgoff_t index = pos >> PAGE_SHIFT;
+> > +     int ret = 0;
+> >
+> >       /* i_rwsem is held by caller */
+> >       if (unlikely(info->seals & (F_SEAL_GROW |
+> > @@ -2466,7 +2467,15 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+> >                       return -EPERM;
+> >       }
+> >
+> > -     return shmem_getpage(inode, index, pagep, SGP_WRITE);
+> > +     ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
+> > +
+> > +     if (*pagep && PageHWPoison(*pagep)) {
+>
+> shmem_getpage() could return with pagep == NULL, so you need check ret first
+> to avoid NULL pointer dereference.
 
-My bad, you are obviously right, sorry for the noise.
+Realy? IIUC pagep can't be NULL. It is a pointer's pointer passed in
+by the caller, for example, generic_perform_write(). Of course,
+"*pagep" could be NULL.
 
-I was aware that 'pcim_enable_device()' was turning automagically 
-'pci_alloc_irq_vectors()' into a managed function. But I wasn't for 
-'pci_request_regions()'. Now I'm :)
+>
+> > +             unlock_page(*pagep);
+> > +             put_page(*pagep);
+> > +             ret = -EIO;
+> > +     }
+> > +
+> > +     return ret;
+> >  }
+> >
+> >  static int
+> > @@ -2555,6 +2564,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+> >                       unlock_page(page);
+> >               }
+> >
+> > +             if (page && PageHWPoison(page)) {
+> > +                     error = -EIO;
+>
+> Is it cleaner to add PageHWPoison() check in the existing "if (page)" block
+> just above?  Then, you don't have to check "page != NULL" twice.
+>
+> @@ -2562,7 +2562,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>                         if (sgp == SGP_CACHE)
+>                                 set_page_dirty(page);
+>                         unlock_page(page);
+>
+> +                       if (PageHWPoison(page)) {
+> +                               error = -EIO;
+> +                               break;
+> +                       }
 
-CJ
+Yeah, it looks better indeed.
 
-> 
->>
->> Fixes: 22d40209de3b ("i2c: thunderx: Add i2c driver for ThunderX SOC")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/i2c/busses/i2c-thunderx-pcidrv.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
->> index 12c90aa0900e..2d37096a6968 100644
->> --- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
->> +++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
->> @@ -177,8 +177,10 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
->>   		return ret;
->>   
-> 
-> There is a pcim_enable_device() call before all that, so the regions
-> should be removed on device release, see pcim_release().
-> 
-> -Robert
-> 
->>   	i2c->twsi_base = pcim_iomap(pdev, 0, pci_resource_len(pdev, 0));
->> -	if (!i2c->twsi_base)
->> -		return -EINVAL;
->> +	if (!i2c->twsi_base) {
->> +		ret = -EINVAL;
->> +		goto err_release_regions;
->> +	}
->>   
->>   	thunder_i2c_clock_enable(dev, i2c);
->>   	ret = device_property_read_u32(dev, "clock-frequency", &i2c->twsi_freq);
->> @@ -231,6 +233,8 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
->>   
->>   error:
->>   	thunder_i2c_clock_disable(dev, i2c->clk);
->> +err_release_regions:
->> +	pci_release_regions(pdev);
->>   	return ret;
->>   }
->>   
->> @@ -241,6 +245,7 @@ static void thunder_i2c_remove_pci(struct pci_dev *pdev)
->>   	thunder_i2c_smbus_remove(i2c);
->>   	thunder_i2c_clock_disable(&pdev->dev, i2c->clk);
->>   	i2c_del_adapter(&i2c->adap);
->> +	pci_release_regions(pdev);
->>   }
->>   
->>   static const struct pci_device_id thunder_i2c_pci_id_table[] = {
->> -- 
->> 2.30.2
->>
-> 
-
+>                 }
+>
+>                 /*
+>
+>
+> Thanks,
+> Naoya Horiguchi
