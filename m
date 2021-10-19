@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A308E433560
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDA9433563
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhJSMHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44186 "EHLO mail.kernel.org"
+        id S235552AbhJSMHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:07:44 -0400
+Received: from mga09.intel.com ([134.134.136.24]:56258 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhJSMHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:07:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 909486113D;
-        Tue, 19 Oct 2021 12:05:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634645121;
-        bh=Yfzv3JLOoikBX5r0f6NfD+xVedKpz1VXqAirmc35zTA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YSVCkvJ4gbqhy5ptebDPhXkK7TvFGUETIaHbESiXy62S/1kmp4B2Nacw3b+in1DuY
-         662rjmB+Oxuyr9FpGGzTVO8UPVPZitMZoBAHD5g15s068GRXaAZfw+RdPAx97VzvdH
-         XpN6QAWEZuHnhrwILQpU8lp2/DZTo9JWrzRNN94AXGiEWkYjgbU1XaHbodaI9s+/Pj
-         s2WIe/vz2huIkSUv9JQ7N0Ufk6P/SWAOwgrcY59C8t3zhoFmvkFJpFKoq7bkILXgpH
-         YWXVMwsZ1z112/xiYfx00GJ3K9HFEn+gT37FkhbnIm5gV+QlFtXulENj+diC/CxHOU
-         vvQ7FrQ6iOsDA==
-Date:   Tue, 19 Oct 2021 13:04:59 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v3 21/23] regulator: dt-bindings: update
- samsung,s2mpa01.yaml reference
-Message-ID: <YW60a8z0JNDnTLV/@sirena.org.uk>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
- <9acc235dc4af794d18e1267371944a3955e1fb21.1634630486.git.mchehab+huawei@kernel.org>
+        id S235546AbhJSMHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:07:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="228367676"
+X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
+   d="scan'208";a="228367676"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 05:05:28 -0700
+X-IronPort-AV: E=Sophos;i="5.85,384,1624345200"; 
+   d="scan'208";a="462731000"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 05:05:26 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mcnrf-000TJE-S8;
+        Tue, 19 Oct 2021 15:05:07 +0300
+Date:   Tue, 19 Oct 2021 15:05:07 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to
+ intel_pmic_bytcrc driver
+Message-ID: <YW60cwMHNoTYgQL6@smile.fi.intel.com>
+References: <20211017161523.43801-1-kitakar@gmail.com>
+ <20211017161523.43801-2-kitakar@gmail.com>
+ <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
+ <23d641620aebd1aa47fd73d040dec4ad8974d03d.camel@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EWoxm8P8Rct2LAPY"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9acc235dc4af794d18e1267371944a3955e1fb21.1634630486.git.mchehab+huawei@kernel.org>
-X-Cookie: I program, therefore I am.
+In-Reply-To: <23d641620aebd1aa47fd73d040dec4ad8974d03d.camel@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 19, 2021 at 08:56:04PM +0900, Tsuchiya Yuto wrote:
+> On Mon, 2021-10-18 at 11:16 +0200, Hans de Goede wrote:
+> > On 10/17/21 18:15, Tsuchiya Yuto wrote:
 
---EWoxm8P8Rct2LAPY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+...
 
-On Tue, Oct 19, 2021 at 09:04:20AM +0100, Mauro Carvalho Chehab wrote:
+> > Tsuchiya, can you give the attached patch a try.
+> 
+> Thanks!
+> 
+> I tried your attached patch, and I can confirm that it's working as
+> expected.
+> 
+> Now it's using cht one:
+> 
+>         $ ls /sys/devices/pci0000:00/808622C1:05/i2c-5/i2c-INT33FD:00
+>         cht_crystal_cove_pmic  crystal_cove_gpio  crystal_cove_pwm  driver  firmware_node  modalias  name  power  subsystem  uevent
+> 
+> and the function intel_soc_pmic_exec_mipi_pmic_seq_element() is also
+> working with atomisp driver.
 
-> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
+To be formal you may give a dedicated tag here, i.e. Tested-by:.
+It will be easier for tools, such as `b4`, to catch it up
+and not forget.
 
-It'd be a bit easier to put a note in here about what the dependencies
-are rather than forcing people to go out to a link to figure out what's
-going on unless it's complicated.  For a case like this where there's no
-dependencies or real relationship between the patches it's probably
-better to just not thread everything and send the patches separately to
-everyone, the threading is just adding noise and confusion.
+-- 
+With Best Regards,
+Andy Shevchenko
 
---EWoxm8P8Rct2LAPY
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFutGsACgkQJNaLcl1U
-h9CpcQf/eSHN/SxKNGSizt9rtPBAa8/G/yrOVJanFr1TpMgBqymW7cBkBbXTGEoz
-MlvVhYvaOC1OUl2Ov3V/R5vs4HmOXbFkm+uU3Hy0pdmuoR+xp2GXkRykwFp8VOo9
-u86bgJzCmE1vMGPs6CU5L/oLaZtgu2fOSkIddls4s2BzCEgj9RXCZVZZDuiwu1p5
-En59hCC7xvkrwl+DzR7ELgphtrGbhWP8udWOpispPKOra+L2fvck+d1CNHVWWx0T
-hHXnc2o0xvG2TVSXxxD14sYrgOOEPahJN1EFZSMqmo+1KDjK7lyXXsAkMNYAoTT5
-mdoz3TDNrINobQeldsheYs7AYnpjQQ==
-=OxCs
------END PGP SIGNATURE-----
-
---EWoxm8P8Rct2LAPY--
