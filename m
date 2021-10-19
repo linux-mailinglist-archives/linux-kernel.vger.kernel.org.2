@@ -2,68 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F94433E95
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F75A433E96
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 20:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbhJSSkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 14:40:53 -0400
-Received: from mga17.intel.com ([192.55.52.151]:51110 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231586AbhJSSkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 14:40:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="209393241"
-X-IronPort-AV: E=Sophos;i="5.87,164,1631602800"; 
-   d="scan'208";a="209393241"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 11:38:39 -0700
-X-IronPort-AV: E=Sophos;i="5.87,164,1631602800"; 
-   d="scan'208";a="718503564"
-Received: from tzanussi-mobl4.amr.corp.intel.com (HELO [10.212.76.147]) ([10.212.76.147])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 11:38:38 -0700
-Subject: Re: [QUESTION] Performance deterioration caused by commit
- 85f726a35e504418
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Yang Jihong <yangjihong1@huawei.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <992d3b1c-70db-5cc7-8400-39caa5d502d5@huawei.com>
- <20211018093731.2dd5917f@gandalf.local.home>
- <19e4222c-c9ac-5c1a-0c3a-b8bfd3524ab7@huawei.com>
- <20211018225112.3f6bda99@gandalf.local.home>
- <a138a0db-94a0-f77e-9b2d-bcffcba6862b@linux.intel.com>
- <20211019141002.386e7b6a@gandalf.local.home>
-From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
-Message-ID: <ea059f74-95d8-3e33-fbeb-02ef1ac567b0@linux.intel.com>
-Date:   Tue, 19 Oct 2021 13:38:37 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S234483AbhJSSlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 14:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233102AbhJSSk7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 14:40:59 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A17C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 11:38:46 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id m26so738057pff.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 11:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YS/ZZwdTMJ17Yr56yzlxDDUyUyTkXy20QdhmyCZ2gw8=;
+        b=ZM0cA1hqFyEK8iHYryf2JkH5sTILR3bCqlm6ODs0zt59x4czD/CQmmqVLhY5XeMzP8
+         ID0BhlJJnPR76+OCIH97WBinUZUgx7K3O6U9UPrcna91WawroDtzJJrZ1SIeFGkI32sC
+         EEaBVn0z+CP3tgwujf8C6T6/FgLtIG39uwpZ2mL7yezsda1WY/A89cZ5eXP0dOhRDn0t
+         tumFOfaVbMKRPXQuzWolVc3mQoB2VjpCVlHm/wqwdJJn0S47QrlBwzxjdTzmQPAnZpfi
+         FDbdgar28v23wD1AQJ2ORsTa2Vwpd/gekyPlaVfJknl3YyKaW+IBGB2l0w1IV/xchoF8
+         Bo+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=YS/ZZwdTMJ17Yr56yzlxDDUyUyTkXy20QdhmyCZ2gw8=;
+        b=6Zx0eQsEkRy4iO460unR/QY/xKvV4sEKpAvTz+hnUh75bC/XrldNJPjh2ZfYdXHwWI
+         uuxHDQopdsUeoQ6OdRIPRY4cnKALCAMWMQpKqNoNfswcf23AvJNAlOhiBhrKZ5Y6UNQ0
+         3YtLJ6akz+hkftfd0kfBmW71cxSIP5q1UqqMFGq+D7O8fs2o+V6ZZRzyfH18e1Q+LhL6
+         1CdPqN6+KYWpUAFZN4OR0IMrsx9qLMN8RO0qaxISkHCN0/ea0hNotW2haGT5VbNYKJ7e
+         9VKY6B4nj+pwaZ/IavKCSSEXG+21/AdpT84E9kgcZei+uFofx4OU268aEgaEo+eKoDih
+         tZmw==
+X-Gm-Message-State: AOAM531VfUaNi1VcAlgD5qbBpwV+WGtOQax4UGPjTj7hHHc9befmK+TH
+        tL4fASlrZZwvJUWgw16+oz0=
+X-Google-Smtp-Source: ABdhPJzjt5IgYNfH7XYl0Ui57e0FmZTzyZ7bHRYKd4WoYrj18f0Xbr5KAKva+bDHTX9nnMiK4WEKcQ==
+X-Received: by 2002:a63:470b:: with SMTP id u11mr29745002pga.441.1634668726062;
+        Tue, 19 Oct 2021 11:38:46 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id qe17sm4094137pjb.39.2021.10.19.11.38.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 11:38:45 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 19 Oct 2021 08:38:44 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        mengensun@tencent.com, Menglong Dong <imagedong@tencent.com>
+Subject: Re: [PATCH v2] workqueue: make sysfs of unbound kworker cpumask more
+ clever
+Message-ID: <YW8QtIU5lqRB+NNU@slm.duckdns.org>
+References: <20211017120402.2423524-1-imagedong@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <20211019141002.386e7b6a@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211017120402.2423524-1-imagedong@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/2021 1:10 PM, Steven Rostedt wrote:
-> On Tue, 19 Oct 2021 12:30:28 -0500
-> "Zanussi, Tom" <tom.zanussi@linux.intel.com> wrote:
+On Sun, Oct 17, 2021 at 08:04:02PM +0800, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <imagedong@tencent.com>
 > 
->> So anyway, as far as the histograms go, I think optimizing the two
->> changes in 85f726a35e504418 while ignoring trailing garbage can be done
->> without affecting the histogram correctness.
+> Some unfriendly component, such as dpdk, write the same mask to
+> unbound kworker cpumask again and again. Every time it write to
+> this interface some work is queue to cpu, even though the mask
+> is same with the original mask.
 > 
-> So, none of that is exported to user space?
-
-I meant just that any optimization of those two things that ignored the
-trailing garbage wouldn't affect the histogram keys.
-
-But yeah I think you're correct that ignoring it in the case of
-saved_cmdlines wouldn't be a problem either but it would be in the case of
-max_buffer since that's exported by the ring buffer.
-
-Tom
-
+> So, fix it by return success and do nothing if the cpumask is
+> equal with the old one.
 > 
-> -- Steve
-> 
+> Signed-off-by: Mengen Sun <mengensun@tencent.com>
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+
+Applied to wq/for-5.16.
+
+Thanks.
+
+-- 
+tejun
