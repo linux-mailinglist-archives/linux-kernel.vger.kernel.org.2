@@ -2,156 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788ED433D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6155433D8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234694AbhJSRgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:36:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:52354 "EHLO foss.arm.com"
+        id S234650AbhJSRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:37:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234670AbhJSRgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:36:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66331D6E;
-        Tue, 19 Oct 2021 10:34:28 -0700 (PDT)
-Received: from [10.57.73.194] (unknown [10.57.73.194])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25CB03F694;
-        Tue, 19 Oct 2021 10:34:26 -0700 (PDT)
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        James Clark <james.clark@arm.com>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-4-german.gomez@arm.com>
- <20211017120546.GB130233@leoy-ThinkPad-X240s>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <0661828d-f7d9-fd8f-2a57-19364d2e5218@arm.com>
-Date:   Tue, 19 Oct 2021 18:34:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231226AbhJSRh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:37:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68CA261354;
+        Tue, 19 Oct 2021 17:35:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634664943;
+        bh=q9xjKEzI1+duipt5OANPox9tf8qby25kRaIJ/mILN6M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iI3BeSSwZceP6uTe+dwvRxuv0TYsXHFoJkjJSmjOH7QEZSFeqgsrnRACsHj2ore1A
+         1pKadda1j2+32HgOnV2IXSgR0UtExzVuzCI1f4fT9ASUy1FeFG7Mgpdmrh0XroKoAa
+         aj/Pv56K6mFvNwm2fqpRmMeFysHGswQiq/ly0pjVXW436cZXkBvJIWqPkBzl8ml1qv
+         Jommkhrc2u6DvIJwEOIEtmwhupZzZJvd3oXeuRvh57DquOXheq+feg+A69iXck+f1X
+         LuAOXkIVqjnDYg2vb3dC6aa2YspCSBUnlKTmxVKUq+yX5zX5zpCVAT8lV3K0xw+jQV
+         bnh+qtp36xx/Q==
+Date:   Tue, 19 Oct 2021 10:35:39 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Tor Vic <torvic9@mailbox.org>,
+        =?iso-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Fix bitwise vs. logical
+ warning
+Message-ID: <YW8B6yMdnIJnFkHE@archlinux-ax161>
+References: <20211018182537.2316800-1-nathan@kernel.org>
+ <CAKwvOdn4_DrgaZoAo-v7CbYurNUpfAK5tnzT023=WCDzkmYQVg@mail.gmail.com>
+ <CAHk-=wi7hUsTTcmPfZCkUEw51Y3ayq3JJxzFsNgodsxxDyk9Ww@mail.gmail.com>
+ <CAKwvOd=wGjd_L1703Y9Kngcr9-_wTvcRLToiydXYkR=S_9xWDw@mail.gmail.com>
+ <CAHk-=wjwOnrHXDSqnmhiKujk=5XieJFvfnQwc2WKOKFwzcqvaA@mail.gmail.com>
+ <YW5Q253s0Y+zYxdi@archlinux-ax161>
+ <CAHk-=wi-UJAGo6uwYx8XKydSEsnQ33mW4t+kUnb+CNY+Oxobjg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211017120546.GB130233@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wi-UJAGo6uwYx8XKydSEsnQ33mW4t+kUnb+CNY+Oxobjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+Trimming up the replies as we are not really talking about the x86
+platform drivers warning anymore.
 
-On 17/10/2021 13:05, Leo Yan wrote:
-> On Thu, Sep 16, 2021 at 04:46:34PM +0100, German Gomez wrote:
->
-> [...]
->
-> If run a test case (the test is pasted at the end of the reply), I
-> can get quite different AUX trace data with passing different wait
-> period before sending the first USR2 signal.
->
->   # sh test_arm_spe_snapshot.sh 2
->   Couldn't synthesize bpf events.
->   stress: info: [5768] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
->   [ perf record: Woken up 3 times to write data ]
->   [ perf record: Captured and wrote 2.833 MB perf.data ]
->
->   # sh test_arm_spe_snapshot.sh 10
->   Couldn't synthesize bpf events.
->   stress: info: [5776] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
->   [ perf record: Woken up 3 times to write data ]
->   [ perf record: Captured and wrote 24.356 MB perf.data ]
->
-> The first command passes argument '2' so the test will wait for 2
-> seconds before send USR2 signal for snapshot, and the perf data file is
-> 2.833 MB (so this means the Arm SPE trace data is about 2MB) for three
-> snapshots.  In the second command, the argument '10' means it will wait
-> for 10 seconds before sending the USR2 signals, and every time it records
-> the trace data from the full AUX buffer (8MB), at the end it gets 24MB
-> AUX trace data.
->
-> The issue happens in the second command, waiting for 10 seconds leads
-> to the *full* AUX ring buffer is filled by Arm SPE, so the function
-> arm_spe_buffer_has_wrapped() always return back true for this case.
-> Afterwards, arm_spe_find_snapshot() doesn't respect the passed old
-> header (from '*old') and assumes the trace data size is 'mm->len'.
+On Mon, Oct 18, 2021 at 08:27:02PM -1000, Linus Torvalds wrote:
+> On Mon, Oct 18, 2021 at 7:00 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > For what it's worth, the suggested fix is the '||' underneath the
+> > warning text:
+> >
+> > In file included from arch/x86/kvm/mmu/tdp_iter.c:5:
+> > arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+> >         return __is_bad_mt_xwr(rsvd_check, spte) |
+> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >                                                  ||
+> > arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+> > 1 error generated.
+> 
+> Hmm. That's not at all obvious.
 
-Returning the entire contents of the buffer once the first wrap-around
-was detected was the intention of the patch, so I don't currently see it
-as wrong. What were the values you were expecting to see in the test?
+I agree, hence the question added to the warning.
 
-If the handling of snapshot mode by the perf tool can be improved after
-upstreaming the changes to the driver, we could submit a followup patch
-after that has been fixed.
+> The *much* bigger part is that
+> 
+>    note: cast one or both operands to int to silence this warning
+> 
+> which is what I'm complaining about. That note should die. It should
+> say "maybe you meant to use a logical or" or something like that.
+> 
+> > Perhaps that hint should also be added to the warning text, like:
+> >
+> > In file included from arch/x86/kvm/mmu/tdp_iter.c:5:
+> > arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands; did you mean logical '||'? [-Werror,-Wbitwise-instead-of-logical]
+> >         return __is_bad_mt_xwr(rsvd_check, spte) |
+> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >                                                  ||
+> > arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+> 
+> I don't understand why you seem to continue to ignore the "note"
+> message, which makes a completely crazy suggestion.
 
->
-> To allow arm_spe_buffer_has_wrapped() to work properly, I think we
-> need to clean up the top 8 bytes of the AUX buffer in Arm SPE driver
-> when start the PMU event (please note, this change has an assumption
-> that is meantioned in another email that suggests to remove redundant
-> PERF_RECORD_AUX events so the function arm_spe_perf_aux_output_begin()
-> is invoked only once when start PMU event, so we can use the top 8
-> bytes in AUX buffer to indicate trace is wrap around or not).
->
->
-> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-> index d44bcc29d99c..eb35f85d0efb 100644
-> --- a/drivers/perf/arm_spe_pmu.c
-> +++ b/drivers/perf/arm_spe_pmu.c
-> @@ -493,6 +493,16 @@ static void arm_spe_perf_aux_output_begin(struct perf_output_handle *handle,
->         if (limit)
->                 limit |= BIT(SYS_PMBLIMITR_EL1_E_SHIFT);
->
-> +       /*
-> +        * Cleanup the top 8 bytes for snapshot mode; these 8 bytes are
-> +        * used to indicate if trace data is wrap around if they are not
-> +        * zero.
-> +        */
-> +       if (buf->snapshot) {
-> +               void *tail = buf->base + (buf->nr_pages << PAGE_SHIFT) - 8;
-> +               memset(tail, 0x0, 8);
-> +       }
-> +
->         limit += (u64)buf->base;
->         base = (u64)buf->base + PERF_IDX2OFF(handle->head, buf);
->         write_sysreg_s(base, SYS_PMBPTR_EL1);
->
-> Thanks,
-> Leo
+Sorry, I was not intentionally ignoring the note. As far as I understand
+it, it is fairly common for clang to offer a fix up in case the answer
+to the question of "did you mean to do this?" is "no" but also offer a
+way to shut the warning up in case the answer is "yes, I know what I am
+doing", hence the note about casting.
 
-I will try these and the other driver changes and discuss them with the
-team internally, thanks!
+Changing to logical OR is not always the answer, as something like
 
->
-> ---8<---
->
-> #!/bin/sh
->
-> ./perf record -e arm_spe/period=148576/u -C 0 -S -m8M,8M -- taskset --cpu-list 0 stress --cpu 1 &
->
-> PERFPID=$!
->
-> echo "sleep $1 seconds" > /sys/kernel/debug/tracing/trace_marker
->
-> # Wait for perf program
-> sleep  $1
->
-> # Send signal to snapshot trace data
-> kill -USR2 $PERFPID
-> sleep .03
-> kill -USR2 $PERFPID
-> sleep .03
-> kill -USR2 $PERFPID
->
-> echo "Stop snapshot" > /sys/kernel/debug/tracing/trace_marker
->
-> kill $PERFPID
-> wait $PERFPID
+    int a, b, c;
+
+    changed = foo(&a) | foo(&b) | foo(&c);
+    if (changed)
+        bar(a, b, c);
+
+no longer works. It could be changed to
+
+    int a, b, c;
+
+    changed = foo(&a);
+    changed |= foo(&b);
+    changed |= foo(&c);
+    if (changed)
+        baz(a, b, c);
+
+to make it clearer to both humans and the compiler that every call to
+foo() needs to happen and the results are being aggregated. With that,
+perhaps the note could be changed to something like:
+
+note: separate expressions with '|=' to silence this warning
+
+Although, that would require that the expression was being assigned to a
+variable, rather than being returned or used in a loop like the KVM one
+or this other one that is seen in fs/namei.c on big endian ARM
+configurations with CONFIG_DCACHE_WORD_ACCESS because has_zero() returns
+bool instead of unsigned long on little endian architectures:
+
+fs/namei.c:2149:13: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
+        } while (!(has_zero(a, &adata, &constants) | has_zero(b, &bdata, &constants)));
+                  ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                   ||
+fs/namei.c:2149:13: note: cast one or both operands to int to silence this warning
+1 warning generated.
+
+Perhaps the note should just be eliminated entirely so that developers
+can be left to try and figure out a way to silence it on their own or
+just rework the code to use logical OR or not use boolean types, I do
+not know.
+
+There was some discussion upstream around how the warning should be
+silenced during the warning's creation. I have added the author of the
+warning, David, to this thread to see if he has any insights.
+
+David, you can see the start of this thread here and follow along with
+the threading at the bottom:
+
+https://lore.kernel.org/r/CAHk-=wi7hUsTTcmPfZCkUEw51Y3ayq3JJxzFsNgodsxxDyk9Ww@mail.gmail.com/
+
+Cheers,
+Nathan
