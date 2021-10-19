@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C844335D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E9D4335D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbhJSMXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhJSMXB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:23:01 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D32C06161C;
-        Tue, 19 Oct 2021 05:20:48 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id i12so47295822wrb.7;
-        Tue, 19 Oct 2021 05:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HIYCHBTIK4PyzXlMJSYD0ICsSQ1KS9BVG01K7TMsEtw=;
-        b=pFU4ZiptoFqJEEaWX7E3selPixqv9gWWVSoI5PgUF19P6C/TYrPKnLpiQ8iTELxyBL
-         mkmSKYR6It/ka+KZjp5P5Ph3QcFzIFdiWdVi2oWAQLPrML2opPfyX9ZaIuAW2MYGR7Sr
-         nmZRyZKLbL/iYaa7ilYDsPXirJwgdnjSsQFZG+ECT7r+2MreKfRPnUambceR817Lgl2C
-         1V0AkVeLYgyqLJKr90a305n684350nEvcZ17LoXzhjRPk8gISTj25mojoc41ydSC+Nw5
-         Pd5V6irzETtWm6JM+V3T0I1skfIUlHn+l2PAzWCUCbWMfB9EMCLeveRpRkMoByRrGfc8
-         DA+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HIYCHBTIK4PyzXlMJSYD0ICsSQ1KS9BVG01K7TMsEtw=;
-        b=e0iCJ0HnJBos9HlTLW94zUbMkrLrYueHIRLsvUufjgieghVSO355YxTKMcA3gg9UwV
-         2T6soSb6D74SJN84p7AaSq8gha6Cri7T2vETPH0lsyRPF3BRpjJJG9ca6p9PmDXvTc/N
-         skh+EnrPEkJm2jAr8VQPeA1wXYvCTmF5iNFoKm8gBxD0/OpPQn7lSpnaWA8AXeNUj4GY
-         Z8yZL8Q4wQBKzq4fohXWc7UyJrchBWGN1C6zWntBuyXcdzQ4kQk+oP4HTsw4SiKRMFlX
-         +sOW7NYHq42E1rB+62ZsGL0eIKT0v1a+sYyX+8X5U7EGKjcvqCoEQpFjva1eMCTD86FK
-         JqaA==
-X-Gm-Message-State: AOAM5303/fqas7yq7OnIUVnNh5w1vV+b8sdLtdWAMVGCg8VUjL+Uxzkn
-        ACWjO55g+2n8Jkx5qdyYj8k=
-X-Google-Smtp-Source: ABdhPJwFxa9m/kwKkJBN4Grh5yBocQZtiwrOrI4hoN2VY2sY2ir68PZf9u1YG0Me+vJhk9r9eG+LzA==
-X-Received: by 2002:a5d:4a0c:: with SMTP id m12mr44238921wrq.27.1634646047046;
-        Tue, 19 Oct 2021 05:20:47 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id e15sm14942767wrv.74.2021.10.19.05.20.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 05:20:46 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 13:20:44 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/103] 5.10.75-rc1 review
-Message-ID: <YW64HASCBJLrbO6r@debian>
-References: <20211018132334.702559133@linuxfoundation.org>
+        id S230129AbhJSMXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:23:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235671AbhJSMXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:23:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F9B660F25;
+        Tue, 19 Oct 2021 12:20:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634646056;
+        bh=H3khuVYDiaupUZyOWzK/AXtJDMJOmnC4bzkYQyyRWRo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=o/tsJgESF6CbrvmsCIQqF2C48YQD0/aFTlohjyEmzSvkm+0bh0dusLC2DoNEmvrwF
+         E4QnvjN0fxFE+wgO5dMQaHM7xcbGGEikG9hAO/QYuNd40YsyaMlF7uzik4ShV8811Z
+         C3EsuSYHRBfHHYJS+Kx43PFjuGhgnBXyN0bgPvwTjXDzxXJHF+UDix6BXOoxCQgThb
+         LQAJRY9jDUqsEH14qtGwa1Z4oA3JhnS4c17lqgc5vowjAMixmkzSE74JPUJPxtbt7G
+         KwlRSAVgbwT0wVvtuQXhIJME8Gm0PxzNlSnCtmhn/jGwLdaFmNrAhzrseJR+ttMyPb
+         S4jxROl+7Uosw==
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Raghavendra Rao Ananta <rananta@google.com>
+Subject: Re: [PATCH v4 00/17] clocksource/arm_arch_timer: Add basic ARMv8.6 support
+Date:   Tue, 19 Oct 2021 13:20:50 +0100
+Message-Id: <163463738200.1805973.16833903783921788275.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211017124225.3018098-1-maz@kernel.org>
+References: <20211017124225.3018098-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, Oct 18, 2021 at 03:23:36PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.75 release.
-> There are 103 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Sun, 17 Oct 2021 13:42:08 +0100, Marc Zyngier wrote:
+> This is v4 (final?) of the series enabling ARMv8.6 support for timer
+> subsystem, and was prompted by a discussion with Oliver around the
+> fact that an ARMv8.6 implementation must have a 1GHz counter, which
+> leads to a number of things to break in the timer code:
 > 
-> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
-> Anything received after that time might be too late.
+> - the counter rollover can come pretty quickly as we only advertise a
+>   56bit counter,
+> - the maximum timer delta can be remarkably small, as we use the
+>   countdown interface which is limited to 32bit...
+> 
+> [...]
 
-Build test:
-mips (gcc version 11.2.1 20211012): 63 configs -> no new failure
-arm (gcc version 11.2.1 20211012): 105 configs -> no new failure
-arm64 (gcc version 11.2.1 20211012): 3 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+Applied 14-17 to arm64 (for-next/8.6-timers), thanks!
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
+[14/17] arm64: Add a capability for FEAT_ECV
+        https://git.kernel.org/arm64/c/fdf865988b5a
+[15/17] arm64: Add CNT{P,V}CTSS_EL0 alternatives to cnt{p,v}ct_el0
+        https://git.kernel.org/arm64/c/9ee840a96042
+[16/17] arm64: Add handling of CNTVCTSS traps
+        https://git.kernel.org/arm64/c/ae976f063b60
+[17/17] arm64: Add HWCAP for self-synchronising virtual counter
+        https://git.kernel.org/arm64/c/fee29f008aa3
 
-[1]. https://openqa.qa.codethink.co.uk/tests/288
-[2]. https://openqa.qa.codethink.co.uk/tests/283
+Cheers,
+-- 
+Will
 
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
-
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
