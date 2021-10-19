@@ -2,152 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827904331CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B0C4331D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234698AbhJSJJA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 Oct 2021 05:09:00 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:25616 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229930AbhJSJI7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:08:59 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-250-8TNOiqasOU63UmYEpcjisA-1; Tue, 19 Oct 2021 10:06:41 +0100
-X-MC-Unique: 8TNOiqasOU63UmYEpcjisA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Tue, 19 Oct 2021 10:06:40 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Tue, 19 Oct 2021 10:06:40 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Michael Matz' <matz@suse.de>, Willy Tarreau <w@1wt.eu>
-CC:     Borislav Petkov <bp@alien8.de>,
-        Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Subject: RE: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the
- clobber list
-Thread-Topic: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the
- clobber list
-Thread-Index: AQHXwE7LTncX5QIgaEymHCfZB5yMpqvaDgyA
-Date:   Tue, 19 Oct 2021 09:06:40 +0000
-Message-ID: <01650203956e4f13adf1feed85fc36a3@AcuMS.aculab.com>
-References: <YWXwQ2P0M0uzHo0o@zn.tnic>
- <20211012222311.578581-1-ammar.faizi@students.amikom.ac.id>
- <YWbUbSUVLy/tx7Zu@zn.tnic> <20211013125142.GD5485@1wt.eu>
- <YWbZz7gHBV18QJC3@zn.tnic> <20211013140723.GE5485@1wt.eu>
- <YWbrR1BqI1CxneN/@zn.tnic> <20211013142433.GB8557@1wt.eu>
- <alpine.LSU.2.20.2110131601000.26294@wotan.suse.de>
-In-Reply-To: <alpine.LSU.2.20.2110131601000.26294@wotan.suse.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S234797AbhJSJLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:11:30 -0400
+Received: from mail-eopbgr70041.outbound.protection.outlook.com ([40.107.7.41]:20130
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229930AbhJSJL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:11:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JpO2t4ezZANCWYCrscvCv57rmbYZ2ngY4xWOQQxoI32NDa/ai3RueL5GhLsCNeT1VlALf4QPsJ1fyMY/MS44Me7KYCPqi4BfqQavdpvABcN5GchFNYzTW7uN212TFW4nS519PYDCqmuJPWehvp0jK040pavLDU9BKyZuISaTd67/MWNjF9mAHmfPdEsrRrUuEdo23nkswGaEvQHa+ZagwjXoKq8IniPuiMgTx6USavLFVM35acLFPxoqrLT2tweNUfV/rv3gWiItMXuAw+OvzEPMeR7lBicbDLiLeGi89GNtIG+G328wE/DmJXEXk6kdJjhaFpOVdjVkfU8OdQOrQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jhxbw6Pt3z+5vWZPxHSP5RhDz+PF10LIbYwsyvR4YKI=;
+ b=ABdN2zKBOSsSlhpfccKwS9s8snQNUgqkSOBQ46ahj+pUT+vEBnvWMvb1WkhbYuIqN1eTI+3aTR6YsY81kZwFrKrPQrTVdXFqI+WpQDmq4xvjlxEjTNz2HfaYgTHELXZlo6eymoW6dkuL18DZqAmHkForsCN1h4uL+XWonetL/f3M4w6G2Yqbf2QyOU7Vc0S8FTKtfLGJKk63QRn2t4FM+9edzNkS7by/D6juX1NNMaAu3fyiNvC4CX1TZgLeFNSjf+xiENfaVRLJkNSxDnbkbXaH4GJxFlIe80z7iNGVJy+XWW5WpiYJNnSh4IxLff9ji+q8XICnne04/LXBUQZstQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jhxbw6Pt3z+5vWZPxHSP5RhDz+PF10LIbYwsyvR4YKI=;
+ b=cHOCmyDn73eaAYs2LSHqFgUyeYraOK3U44BCGPk+Jt2HWMCL4uYM3W3Qp8cvkjhnDBgdmzEAPpj8F4hVSxA/e9D7dwMq97dKtIyErT1jdWumciKUnLMZmfg2Fle+lOkOqNyN/I1A6KO5fnjfKV5kbpgzqVMNjPTy/wp34A/GDN0=
+Authentication-Results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=nxp.com;
+Received: from AM4PR0401MB2308.eurprd04.prod.outlook.com
+ (2603:10a6:200:4f::13) by AM8PR04MB7266.eurprd04.prod.outlook.com
+ (2603:10a6:20b:1d6::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
+ 2021 09:09:12 +0000
+Received: from AM4PR0401MB2308.eurprd04.prod.outlook.com
+ ([fe80::6476:5ddb:7bf2:e726]) by AM4PR0401MB2308.eurprd04.prod.outlook.com
+ ([fe80::6476:5ddb:7bf2:e726%8]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 09:09:12 +0000
+From:   Ioana Ciornei <ioana.ciornei@nxp.com>
+To:     tim.gardner@canonical.com
+Cc:     linux-arm-kernel@lists.infradead.org, leoyang.li@nxp.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH][linux-next] soc: fsl: dpio: Unsigned compared against 0 in
+Date:   Tue, 19 Oct 2021 12:08:55 +0300
+Message-Id: <20211019090855.246625-1-ioana.ciornei@nxp.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211018160541.13512-1-tim.gardner@canonical.com>
+References: <20211018160541.13512-1-tim.gardner@canonical.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM4PR0902CA0023.eurprd09.prod.outlook.com
+ (2603:10a6:200:9b::33) To AM4PR0401MB2308.eurprd04.prod.outlook.com
+ (2603:10a6:200:4f::13)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Received: from yoga-910.localhost (188.25.174.251) by AM4PR0902CA0023.eurprd09.prod.outlook.com (2603:10a6:200:9b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Tue, 19 Oct 2021 09:09:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1341da8a-4728-4144-3ca0-08d992e01db5
+X-MS-TrafficTypeDiagnostic: AM8PR04MB7266:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM8PR04MB7266D6D8B7196FF352E61178E0BD9@AM8PR04MB7266.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GcY4nMPqJleA99mnqQ9GAKCaZn8aFWkfYC33KgNNcrS/8owE98otv4H5YAZarNQTGICz0mxts/0e1ZxSJJkLoiGLjEYvgtcxBRQfyCwN2Ipm15Pk29PQd7TJMeN96I+QlPPS9qeiYYL8qbxYb/al6UQ/sYJ02wwqUU0NqqVL1Jf0Bz0yW7tabJC0KQ9dnvUQtqochYNPrpd1Lb/XtrGe3XUw2Z4OqQ8a+zoyKRS0veu5UNgkXO9D31O45TlhwbhEgYzGRqeHZNk9fJOMrujYzu48Wf4aexw8wEaUoDt/g9MUjWaWgh373QRE3jDORgfy3KW6PaxDGsUmtoBmzkMJUOTjTtxFwtkkFIdRoQ7M6SQBUkXEzLWuhfZ7wHzZGihSQScQChC/HemPi/i5wvarVUuVl4j8ZPz8C1nXMN/e3RB6KtyshsXfQUhMKdK5MOQtiuqhoEufJZBQtxBtITnz2Ob9F3EyJLzzCBo9LYo+z87jUFNGJrkRhcu9SHdPmo5BFfcFTTEdL2H5ujA9ugv7TvZQHAr2VFB+uNjmph2Tcb/gFmd+zFQP82hDI6Cj0jYXcRXt5ovcQPWpnxVfGhz8/lyGRbMl2+9fXHD3LcyZn+sSOREQkMfH7Qm59x20WUc+J43DasHo+bB8MbY3lTph+zNGiaxELmbguSuI6JWHwz64bxDWfu/KARsYAjiVKw6YnN3IpMYfBz4QfeZcccY5gw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0401MB2308.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(44832011)(6666004)(38100700002)(508600001)(8676002)(2616005)(66946007)(83380400001)(52116002)(956004)(38350700002)(26005)(4326008)(36756003)(6486002)(6506007)(316002)(66556008)(8936002)(5660300002)(66476007)(6916009)(186003)(6512007)(86362001)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JCg3tNHaRltfhgtiI3Aq9u8xbzJjunQX3bb9a8jzRsGprbmVOJBJx8C9A+vp?=
+ =?us-ascii?Q?5twjeClsW9j4Cdeu4F0FugTeEioHewDdIcERpOOkf6Ja/4vZyeYauO89YYBY?=
+ =?us-ascii?Q?FgD7Xj/a4OmhvtcCY23eCrml1I/kz5UzdAjUvMkWeEpFVqdn38CWLYaSALGL?=
+ =?us-ascii?Q?1jVlopbShUvkQHHE9Jn6t7457BlViRxsgcggX3g+invXpUb4wAjI0TXmkqS9?=
+ =?us-ascii?Q?fcyUMaEMzgDpOMmtVqpiwpnG8ghNDg+4WfW5AOgUiAVIUmpNSQduvZi2U2AV?=
+ =?us-ascii?Q?xFHqrSxa3wh6P86UWeuSBlCQYOLUi4iu7u+owElgPDgk2qq4Z8iSp7B8i4q/?=
+ =?us-ascii?Q?CP2Lk0AeAlLjYvh4vtgbnM6rgN+a1XBRtBmSQ5lLP8rk4DpXWHT7n4738ABs?=
+ =?us-ascii?Q?sB2Vg3Gx9fY7IfnrhdIDByjtplAKw0v0oj3NmspGeq77z3zCLSH330/ll6VP?=
+ =?us-ascii?Q?pACfT7xEpPW56noWbrljxtodCSv6g0p6zpXCq9n+iWMNfvSwj+cvHq6oLWU+?=
+ =?us-ascii?Q?Fy6xVyi/5yfwxUhzDb1R4k4EZQbqrC4F3/CJYCy1//ha1cEtpQ2eOSAPB942?=
+ =?us-ascii?Q?SZrwWYEzzGbe9Ex5lxVmnm/e4oCIZEW4Lz6KVr61e6iX593hg5XCZ2JPxE/S?=
+ =?us-ascii?Q?ii5VhiKMpvaZd9mVRmP7cg9smi6/zdJmVADfziuwyNaOWEeNw3fdD1T6Yqvj?=
+ =?us-ascii?Q?14gn1SMHz7pDNx9h7osQd/59eTsZ1tDXuDzoHyvODlHIJ+XgPr9FKB+ubh3j?=
+ =?us-ascii?Q?odfOAuIbuPSrfzvKl1Zio+atgcpJvgH/qVk05J9q/DxTcuI6M7YpxPo38Cz1?=
+ =?us-ascii?Q?WOgKkq2yRsO7qTUXdr747PTmEnrmwrp8RYLvj5dw7gDLJsryAe4iidHh4BbR?=
+ =?us-ascii?Q?X44Mfp2SMaY7AZrBNQcoB9UGNLjbcr33TAzVTts6qK8bGHkUCTWrMj7tNYR0?=
+ =?us-ascii?Q?78DJyihlYt2axwgJGhgo5Yn4BQRqtfBl8r+wQXWAJe/3VKq46flCL4dKSVQb?=
+ =?us-ascii?Q?OZGPuGGj0T4WGy0hzbPO9mSOirOdU2B55E9Akeh1GK2kSubTuk4W0kmpVGzA?=
+ =?us-ascii?Q?aENS6Yy+o/Xzq22LcG2WyBhkK20kVPEfLkXsP/niWfQcaBFTuW9hmrCciMws?=
+ =?us-ascii?Q?b1SOf4nAYvrKXx2YUfv9wZ4DqfDKUmNdl0QT38IEe+nh3gm7ri7al+r/m92X?=
+ =?us-ascii?Q?Qk5J6aAtljnnyBq3STZnux6vFBTi79GvhqNSR/B/HGaQShM7CI9ShFhj1W6o?=
+ =?us-ascii?Q?aJqlOoHvlUlav9o5W+C3riHYdpqvzOk/5NIxElQFWFEeJ1c1/2tqWvJ74bFe?=
+ =?us-ascii?Q?f3QHKCeQPJgkLdOaQydbfDsp?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1341da8a-4728-4144-3ca0-08d992e01db5
+X-MS-Exchange-CrossTenant-AuthSource: AM4PR0401MB2308.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 09:09:12.1580
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TZ0YMOGvKSgVxduENi6mgbij0kAHrx4m/7lF6Dqs61RMW9cD2Y+3gnbE7/1945zsAKW4Tbu3aH7URSGzacv9ZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7266
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Matz
-> Sent: 13 October 2021 17:24
 > 
-> Hello,
+> Subject: [PATCH][linux-next] soc: fsl: dpio: Unsigned compared against 0 in
 > 
-> On Wed, 13 Oct 2021, Willy Tarreau wrote:
+> Coverity complains of unsigned compare against 0. There are 2 cases in
+> this function:
 > 
-> > On Wed, Oct 13, 2021 at 04:20:55PM +0200, Borislav Petkov wrote:
-> > > On Wed, Oct 13, 2021 at 04:07:23PM +0200, Willy Tarreau wrote:
-> > > > Yes I agree with the "potentially" here. If it can potentially be (i.e.
-> > > > the kernel is allowed by contract to later change the way it's currently
-> > > > done) then we have to save them even if it means lower code efficiency.
-> > > >
-> > > > If, however, the kernel performs such savings on purpose because it is
-> > > > willing to observe a stricter saving than the AMD64 ABI, we can follow
-> > > > it but only once it's written down somewhere that it is by contract and
-> > > > will not change.
-> > >
-> > > Right, and Micha noted that such a change to the document can be done.
-> >
-> > great.
-> >
-> > > And we're basically doing that registers restoring anyway, in POP_REGS.
-> >
-> > That's what I based my analysis on when I wanted to verify Ammar's
-> > finding. I would tend to think that if we're burning cycles popping
-> > plenty of registers it's probably for a reason, maybe at least a good
-> > one, which is that it's the only way to make sure we're not leaking
-> > internal kernel data! This is not a concern for kernel->kernel nor
-> > user->user calls but for user->kernel calls it definitely is one, and
-> > I don't think we could relax that series of pop without causing leaks
-> > anyway.
+> 1821        itp = (irq_holdoff * 1000) / p->desc->qman_256_cycles_per_ns;
 > 
-> It might also be interesting to know that while the wording of the psABI
-> was indeed intended to imply that all argument registers are potentially
-> clobbered (like with normal calls) glibc's inline assembler to call
-> syscalls relies on most registers to actually be preserved:
+> CID 121131 (#1 of 1): Unsigned compared against 0 (NO_EFFECT)
+> unsigned_compare: This less-than-zero comparison of an unsigned value is never true. itp < 0U.
+> 1822        if (itp < 0 || itp > 4096) {
+> 1823                max_holdoff = (p->desc->qman_256_cycles_per_ns * 4096) / 1000;
+> 1824                pr_err("irq_holdoff must be between 0..%dus\n", max_holdoff);
+> 1825                return -EINVAL;
+> 1826        }
+> 1827
+>     	unsigned_compare: This less-than-zero comparison of an unsigned value is never true. irq_threshold < 0U.
+> 1828        if (irq_threshold >= p->dqrr.dqrr_size || irq_threshold < 0) {
+> 1829                pr_err("irq_threshold must be between 0..%d\n",
+> 1830                       p->dqrr.dqrr_size - 1);
+> 1831                return -EINVAL;
+> 1832        }
 > 
-> # define REGISTERS_CLOBBERED_BY_SYSCALL "cc", "r11", "cx"
-> ...
-> #define internal_syscall6(number, arg1, arg2, arg3, arg4, arg5, arg6) \
-> ({                                                                      \
->     unsigned long int resultvar;                                        \
->     TYPEFY (arg6, __arg6) = ARGIFY (arg6);                              \
->     TYPEFY (arg5, __arg5) = ARGIFY (arg5);                              \
->     TYPEFY (arg4, __arg4) = ARGIFY (arg4);                              \
->     TYPEFY (arg3, __arg3) = ARGIFY (arg3);                              \
->     TYPEFY (arg2, __arg2) = ARGIFY (arg2);                              \
->     TYPEFY (arg1, __arg1) = ARGIFY (arg1);                              \
->     register TYPEFY (arg6, _a6) asm ("r9") = __arg6;                    \
->     register TYPEFY (arg5, _a5) asm ("r8") = __arg5;                    \
->     register TYPEFY (arg4, _a4) asm ("r10") = __arg4;                   \
->     register TYPEFY (arg3, _a3) asm ("rdx") = __arg3;                   \
->     register TYPEFY (arg2, _a2) asm ("rsi") = __arg2;                   \
->     register TYPEFY (arg1, _a1) asm ("rdi") = __arg1;                   \
->     asm volatile (                                                      \
->     "syscall\n\t"                                                       \
->     : "=a" (resultvar)                                                  \
->     : "0" (number), "r" (_a1), "r" (_a2), "r" (_a3), "r" (_a4),         \
->       "r" (_a5), "r" (_a6)                                              \
->     : "memory", REGISTERS_CLOBBERED_BY_SYSCALL);                        \
->     (long int) resultvar;                                               \
-> })
+> Fix this by checking for 0. Also fix a minor comment typo.
 > 
-> 
-> Note in particular the missing clobbers or outputs of any of the argument
-> regs.
+> Fixes ed1d2143fee53755ec601eb4d48a337a93933f71 ("soc: fsl: dpio: add support for
+> irq coalescing per software portal")
 
-What about all the AVX registers?
-These are normally caller-saved - so are unlikely to be live in a gcc stub.
-But glibc is unlikely to keep the clobber list up do date - even if they
-were ever added.
+I think this should be formatted as following:
 
-While the kernel can't return 'junk' in the AVX registers, it may be
-significantly cheaper to zero the registers on at least some code paths.
+Fixes: ed1d2143fee5 ("soc: fsl: dpio: add support for irq coalescing per software portal")
 
-The same is true for the rxx registers.
-Executing 'xor %rxx,%rxx' is faster than 'pop $rxx'.
-Especially since the xor cam all be execute in parallel.
+> 
+> Cc: Roy Pledge <Roy.Pledge@nxp.com>
+> Cc: Li Yang <leoyang.li@nxp.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> ---
+> 
+> I'm not 100% sure this is the right way to fix the warning, but according to the
+> pr_err() comments these values should never be 0.
 
-	David
+These threshold values can be 0, the pr_err comment tries to say that those are
+the ranges, 0 and the maximum included.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> 
+> ---
+>  drivers/soc/fsl/dpio/qbman-portal.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/soc/fsl/dpio/qbman-portal.c b/drivers/soc/fsl/dpio/qbman-portal.c
+> index d3c58df6240d..b768a14bb271 100644
+> --- a/drivers/soc/fsl/dpio/qbman-portal.c
+> +++ b/drivers/soc/fsl/dpio/qbman-portal.c
+> @@ -1816,16 +1816,16 @@ int qbman_swp_set_irq_coalescing(struct qbman_swp *p, u32 irq_threshold,
+>  	u32 itp, max_holdoff;
+>  
+>  	/* Convert irq_holdoff value from usecs to 256 QBMAN clock cycles
+> -	 * increments. This depends to the QBMAN internal frequency.
+> +	 * increments. This depends on the QBMAN internal frequency.
+>  	 */
+>  	itp = (irq_holdoff * 1000) / p->desc->qman_256_cycles_per_ns;
+> -	if (itp < 0 || itp > 4096) {
+> +	if (!itp || itp > 4096) {
+>  		max_holdoff = (p->desc->qman_256_cycles_per_ns * 4096) / 1000;
+>  		pr_err("irq_holdoff must be between 0..%dus\n", max_holdoff);
+>  		return -EINVAL;
+>  	}
+>  
+> -	if (irq_threshold >= p->dqrr.dqrr_size || irq_threshold < 0) {
+> +	if (irq_threshold >= p->dqrr.dqrr_size || !irq_threshold) {
+>  		pr_err("irq_threshold must be between 0..%d\n",
+>  		       p->dqrr.dqrr_size - 1);
+>  		return -EINVAL;
+> 
+
+These 'value < 0' checks should be removed all together. Somehow I missed that
+those are unsigned values.
+
+Anyhow, thanks a lot that you spotted this.
+
+Could you please sent the v2 towards the net-next tree since that's the tree
+that adds the fixed patch?
+
+Thanks.
+
+-Ioana
 
