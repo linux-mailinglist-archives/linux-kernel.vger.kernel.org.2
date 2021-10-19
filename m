@@ -2,91 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E75E432C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D894432C0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 05:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbhJSDKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 23:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
+        id S232021AbhJSDJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 23:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhJSDKe (ORCPT
+        with ESMTP id S231893AbhJSDJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:10:34 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CE2C06161C;
-        Mon, 18 Oct 2021 20:08:21 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id m21so18011720pgu.13;
-        Mon, 18 Oct 2021 20:08:21 -0700 (PDT)
+        Mon, 18 Oct 2021 23:09:12 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A41EC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:07:00 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id o83so2767501oif.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 20:07:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IUyhklULDNWU6fwM13VbKzX6fIzbRhikt8otoP7sTAU=;
-        b=ODhMPxDMQ6x3vBafBLKSVrdQgHJ4d3uLTxqAFPdKAPLcrc9/fA1Wf7Iyz0JH6rlRok
-         O5uyyhEJkmtBM8J0lCzrjsFp+TccGvNZyWW4l5t8yTo26WlH/UrZZ8S+tVhZkGzVh4Gy
-         YuLTfWYEVPTzurox8X4u5KazmMdSAEdUk0rxhn2HujrJAA+R/ndbOi+xrEMIuzrUTz22
-         xjXXDrBmo8AAwivdhX9GR2pgnzlcnjNsCh/rZfKcIg/pVqFRC5/TG5eZUSyl/mflsOHa
-         gdkRtIudH898d0lUiH46fjhIkLZOMPuIBeovrQZoNbQ3JR5JrTX5HQoUtTCbZ9hqgd9t
-         Aehg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ASSGMPImuuIUj7uz+ftmcXorRU78+ZHBGPyjATEUEfo=;
+        b=Ox2299nAE1pU/PWKgODFZpHzshOzObJFcqhUd2WPbUovkTzsbAMEPXCV0PorYRCOhs
+         3fBSM0TLiv+ZbELS428PdTjFzvmIJw6CJfHflvpW+J0UcqKQf2Y+6p4Fcguvsj2qB/aV
+         g7cGaKUeGiVHZy7ay6dutbhy4dMwX/lCDQrDG60mMJTqsFOuAt8DyvQYExXdpypmEHNW
+         khiOns6T3xDLtJEJYQ/AO1eKHRNED9iNYvlb0Ng9scxP1QinlRlgdcdF6zpra+dIy1G8
+         u4+Tgv+gbk7HtwwhvXaFjKGnwHqinyp5UN1tmrhqstyWaMeKeq7ay4eFqHJqdYh0ZE3s
+         6WKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IUyhklULDNWU6fwM13VbKzX6fIzbRhikt8otoP7sTAU=;
-        b=2/k3SO7HE6CjeGZGf/XLnCixVVvdHuWxfI1YJOW6cVgzzT2h9mQOSNGPlwtQmoWLU8
-         uJbrPWkVdbrUCNsVepLRVDveUA60GZWSM6nZOOrzcBbs183an+SkN3ognxUxr4OOXiZd
-         UXHwsiKvLg0xgvGleDR82uKDUr+Bfw4mB21RCVkBgofjFimfe8yKo5xddHP33AAR0+XO
-         ITx90DVBiB0aQ68TydV7iBlAQB+ro1A9lXfyekM7zBHqLa2V0tCHa0+dvoQlfLHmZn1E
-         FlxJJJMxShIue0y+Ejtz8vUYceIXajQuszfD8gwO7mlEymWTb/1sAgyxIYf28WhdupQd
-         j6dA==
-X-Gm-Message-State: AOAM531O5MB73Rq8ZSSGJZC9ceFIw0rjaR/mUL0MW/GfXfPWg1lY2vSw
-        qZHpzwCJpXFof/ei+ef4JgU=
-X-Google-Smtp-Source: ABdhPJyfcMj79DF+NlyHb93YCbnanVUWgVrodo162DkAtvimiJfg5S71x3BGU6XMG6n+33G3M8YEAQ==
-X-Received: by 2002:a63:6dc1:: with SMTP id i184mr11756502pgc.165.1634612900522;
-        Mon, 18 Oct 2021 20:08:20 -0700 (PDT)
-Received: from localhost.localdomain ([94.177.118.15])
-        by smtp.gmail.com with ESMTPSA id e6sm14405803pfm.212.2021.10.18.20.08.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ASSGMPImuuIUj7uz+ftmcXorRU78+ZHBGPyjATEUEfo=;
+        b=aklZLaMEmouqJ7iHwRFQLbmAtoMgwRuJaN1XHJ0I0mfuBuaDK+0HNZIMOFCtEslkp7
+         pFD93DDXtD+O21vsfcmAgDtmtAVtGAm2GgRqPCSzQ0UsPkr4SrMfbZkFVmSvl5xpdkXi
+         ejrMLcvk1Ej7wuIUqU7Mm6eNWyLA1Yf5fmO7YPKl1CtMpI3SXgMOPj08lekVa39LbOGY
+         qG63XlLM+bHQalq6PmRz/oEEovPcbCdcSlSNkIdrzTvnfeK749o4t9+aN47UeHC67dSs
+         EWnMoUY6VI/+uXDgeHADBk8dY9z/FlQY2DTLGGCklqNztNp5vXyflmoPHp7kgW6heg+n
+         fjBA==
+X-Gm-Message-State: AOAM53308EFjwxjvlgJ+qFnKoIoO773eM9UBNODRvM/f3NOPsjU3zP7U
+        haFQDQ6xQqB1lJ8sA+WlNpOvKA==
+X-Google-Smtp-Source: ABdhPJy4qDdJNNcQjwuwmXCRWPdhKKHoAauqZHPXMBGZiUgS0AS23J/ZoJi0aKHfopmr9e4hvYvQQw==
+X-Received: by 2002:aca:2406:: with SMTP id n6mr2131470oic.28.1634612819796;
+        Mon, 18 Oct 2021 20:06:59 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id e23sm3408844oih.40.2021.10.18.20.06.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 20:08:20 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Fabien Dessenne <fabien.dessenne@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] driver: bdisp: add pm_runtime_disable in the error handling code
-Date:   Tue, 19 Oct 2021 11:08:08 +0800
-Message-Id: <20211019030808.3327043-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 18 Oct 2021 20:06:59 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 20:08:46 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v5 3/4] rpmsg: Move the rpmsg control device from
+ rpmsg_char to rpmsg_ctrl
+Message-ID: <YW42vhByiSG1hhqc@ripper>
+References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
+ <20210712123752.10449-4-arnaud.pouliquen@foss.st.com>
+ <YWDVwArEz5Yub3GJ@ripper>
+ <f0696b4d-c0b6-5283-2eda-e5791462cbba@foss.st.com>
+ <YWpZMwgWqcPMvL5q@yoga>
+ <ffb110dc-bc3b-dbc2-679f-de2416f7b90f@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ffb110dc-bc3b-dbc2-679f-de2416f7b90f@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the error handling code of bdisp_probe, it fails to invoke
-pm_runtime_disable in many error sites.
+On Mon 18 Oct 02:13 PDT 2021, Arnaud POULIQUEN wrote:
 
-Fix this by adding pm_runtime_disable at the label err_remove.
+> 
+> 
+> On 10/16/21 6:46 AM, Bjorn Andersson wrote:
+> > On Mon 11 Oct 05:46 CDT 2021, Arnaud POULIQUEN wrote:
+> > 
+> >>
+> >>
+> >> On 10/9/21 1:35 AM, Bjorn Andersson wrote:
+> >>> On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
+> >>>
+> >>>> Create the rpmsg_ctrl.c module and move the code related to the
+> >>>> rpmsg_ctrldev device in this new module.
+> >>>>
+> >>>> Add the dependency between rpmsg_char and rpmsg_ctrl in the
+> >>>> kconfig file.
+> >>>>
+> >>>
+> >>> As I said in the cover letter, the only reason I can see for doing this
+> >>> refactoring is in relation to the introduction of
+> >>> RPMSG_CREATE_DEV_IOCTL. So I would like this patch to go together with
+> >>> that patch, together with a good motivation why there's merit to
+> >>> creating yet another kernel module (and by bind/unbind can't be used).
+> >>>
+> >>> Perhaps I'm just missing some good usecase related to this?
+> >>
+> >>
+> >>>
+> >>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >>>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >>>> ---
+> >>>>  drivers/rpmsg/Kconfig      |   9 ++
+> >>>>  drivers/rpmsg/Makefile     |   1 +
+> >>>>  drivers/rpmsg/rpmsg_char.c | 170 +----------------------------
+> >>>>  drivers/rpmsg/rpmsg_char.h |   2 +
+> >>>>  drivers/rpmsg/rpmsg_ctrl.c | 215 +++++++++++++++++++++++++++++++++++++
+> >>>>  5 files changed, 229 insertions(+), 168 deletions(-)
+> >>>>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+> >>>>
+> >>> [..]
+> >>>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> >>> [..]
+> >>>> -static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+> >>>> -{
+> >>> [..]
+> >>>> -	dev = &ctrldev->dev;
+> >>>> -	device_initialize(dev);
+> >>>> -	dev->parent = &rpdev->dev;
+> >>>> -	dev->class = rpmsg_class;
+> >>> [..]
+> >>>> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+> >>> [..]
+> >>>> +static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+> >>>> +{
+> >>> [..]
+> >>>> +	dev = &ctrldev->dev;
+> >>>> +	device_initialize(dev);
+> >>>> +	dev->parent = &rpdev->dev;
+> >>>
+> >>> You lost the assignment of dev->class here, which breaks the udev rules
+> >>> we use to invoke rpmsgexport to create endpoints and it causes udevadm
+> >>> to complain that rpmsg_ctrlN doesn't have a "subsystem".
+> >>
+> >> We discussed this point with Mathieu, as a first step i kept the class, but that
+> >> generated another dependency with the rpmsg_char device while information was
+> >> available on the rpmsg bus. The char device and ctrl device should share the
+> >> same class. As rpmsg_ctrl is created first it would have to create the class,and
+> >> provide an API to rpmsg char
+> >>
+> > 
+> > Perhaps if this is considered a common piece shared between multiple
+> > rpmsg modules we can create such class in the rpmsg "core" itself?
+> 
+> Yes that seems a good alternative
+> 
+> > 
+> >> Please could you details what does means "rpmsg_ctrlN doesn't have a
+> >> "subsystem"." What exactly the udev is looking for? could it base it check on
+> >> the /dev/rpmsg_ctrl0 or /sys/bus/rpmsg/devices/...?
+> >>
+> > 
+> > If I read the uevent messages correctly they seem to contain a SUBSYTEM=
+> > property when the class is provided. But I'm not sure about the reasons
+> > for that.
+> 
+> If it part of the udev requirement, i suppose that it is mandatory, and in this
+> case, declare the class in the core make sense.
+> 
 
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
-v1->v2: move pm_runtime_disable from the end of label err_pm to
-	the beginning of err_remove
- drivers/media/platform/sti/bdisp/bdisp-v4l2.c | 1 +
- 1 file changed, 1 insertion(+)
+I don't know if it's a requirement. But I think it's worth keeping the
+class around, as it's the only problem I've found with existing users.
 
-diff --git a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-index 6413cd279125..01cc8b577ad4 100644
---- a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-+++ b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-@@ -1395,6 +1395,7 @@ static int bdisp_probe(struct platform_device *pdev)
- err_pm:
- 	pm_runtime_put(dev);
- err_remove:
-+	pm_runtime_disable(dev);
- 	bdisp_debugfs_remove(bdisp);
- 	v4l2_device_unregister(&bdisp->v4l2_dev);
- err_clk:
--- 
-2.25.1
+> I will send a new patchset that will squash all the remaining patches, taking
+> into account your comment.
+> 
 
+Thanks,
+Bjorn
+
+> Thanks,
+> Arnaud
+> 
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> >> Thanks,
+> >> Arnaud
+> >>
+> >>>
+> >>> Regards,
+> >>> Bjorn
+> >>>
