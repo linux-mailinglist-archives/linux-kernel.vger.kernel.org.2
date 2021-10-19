@@ -2,383 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CD4433460
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5474B433463
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235380AbhJSLHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
+        id S235409AbhJSLHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235532AbhJSLHK (ORCPT
+        with ESMTP id S235282AbhJSLHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:07:10 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBD4C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:04:49 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id a140-20020a1c7f92000000b0030d8315b593so2236143wmd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:04:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CN/Dv/6YKgAeJCJI90wMy0Tdo+rJz4ywym+xK0hXggo=;
-        b=duggVdUJFiCRdR5CntOD0hhuCZWwSEbeyStMXPL5gwVl/9dkSoekIY0hx7nQgdnFXx
-         tEwhASQVAoctPS1RK4pCYinTaKXNqFIvSnQC/hh1UmD9eMq8xQUcTCPTdUfJdnt9WuUX
-         icSV1bRV8iCAa69LPSCTUWFj7rQr8BZOG1+9b3bywMnJHDsjr83+54i43U/gXJWhiJJh
-         hLyHPXQGp/kAQla0Y5ugx/SWlqzsxwOCSmHHGBH1m7Nz+zaHKRxNKvNO08lo7qtJAM5J
-         38/ZTuExHfXJTnTAhJi+ntuORbGfEmyIhHrAAkHEmSqLOSzpzC0Ae1D27kSnALZ4pptz
-         /YAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CN/Dv/6YKgAeJCJI90wMy0Tdo+rJz4ywym+xK0hXggo=;
-        b=6+BrH5Jk4+1aVeQkpA66634BNjoRpOhMZ3i60Zue4ab7WUmLFiY7xEe1ff9MvApxLf
-         8hikkYL2VMXq6ew38O2a1bCeQ5uUyDyqC3lbPZk7YIyGS8sfn26JADXmdcAdkXlYhj+K
-         D+PQ7tPF19TSWJcPdBfCWjFQT28SnJZkjU2Guh32fzrWs/cry9ytASL1D2/oWHwOjh9X
-         68Iezovl3biWaOrkHxMF/v448Y3rMc1KauVL1043LWmmW3NzhcHHWw0rKUrhno6NV28r
-         LDkaDqgFNr+lj28oKwSM5ZUq5IvSfcMRmciO/BIXRtGStepgGLq4Wy8o4KFU9nLIwfFP
-         Hn1A==
-X-Gm-Message-State: AOAM5323lVoxkJw4wiUfTReImN1fIqcFoMsjI64gwjFq4ote4lSwxA1r
-        1S5+dHioISf/Qi+GeLEqS+xMEw==
-X-Google-Smtp-Source: ABdhPJyMmIrLWdpEFKzPt947QN9m+CxjJXudkw85sGlwfvTuG9BCcPh5I7OwznrE9eE4gBJl5PsH+g==
-X-Received: by 2002:a05:600c:ac1:: with SMTP id c1mr5232929wmr.99.1634641488060;
-        Tue, 19 Oct 2021 04:04:48 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c590:9206:d20a:23bd? ([2a01:e34:ed2f:f020:c590:9206:d20a:23bd])
-        by smtp.googlemail.com with ESMTPSA id a63sm1912233wmd.34.2021.10.19.04.04.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 04:04:47 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] thermal: imx: implement runtime PM support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Amit Kucheria <amitk@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, David Jander <david@protonic.nl>,
-        Petr Benes <petrben@gmail.com>
-References: <20210924115032.29684-1-o.rempel@pengutronix.de>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <19b2ab33-aa56-75fb-f6ef-3c928be9c50c@linaro.org>
-Date:   Tue, 19 Oct 2021 13:04:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 19 Oct 2021 07:07:43 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CDEC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
+        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
+        :Content-Description; bh=G0vy0gfT1MBGR0CuBLSSr4wQtefGi5HSiFmVJWbubHU=; b=mNlD
+        eJpsCh8BkHLYKVHew5zq3taXVZBHWf8TjPMdT5P+kB67HMQYB/5Gx+tY47e3iKtwn44kAxyOjRnoC
+        YUmdwg8xTQ04j3gjKD/rX5AONw6YjeHCkgA8v0mDFjhiuPZ5eCSv2XZZnwzYXBSIm1SA/EAkWCXTc
+        mYb1ylTAVE0b//ZdUpOF7FUlIT5sYtVmRR8mfQvxp405TfW/ksmwNIF0D2lELazzrlMe/AXg+GuC8
+        wPJGtP2qpW5xjwlx9UdYxM1oXAKqMhlMvEWUUK1OUdjGP6La7MouSGC7AA/VjZLmKHqm9nLI4mV0M
+        D2xzYvAov+ZBU+/g1ghpYfXkuLfWMg==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mcmvf-0008Qm-Oy; Tue, 19 Oct 2021 12:05:11 +0100
+Date:   Tue, 19 Oct 2021 12:05:10 +0100
+From:   John Keeping <john@metanate.com>
+To:     Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc:     broonie@kernel.org, heiko@sntech.de, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] Revert "ASoC: rockchip: add config for rockchip
+ dmaengine pcm register"
+Message-ID: <20211019120510.363578b8.john@metanate.com>
+In-Reply-To: <1632792957-80428-1-git-send-email-sugar.zhang@rock-chips.com>
+References: <1632792957-80428-1-git-send-email-sugar.zhang@rock-chips.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210924115032.29684-1-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2021 13:50, Oleksij Rempel wrote:
-> Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's local
-> data to decide whether to run a measurement") this driver stared using
-> irq_enabled flag to make decision to power on/off the thermal core. This
-> triggered a regression, where after reaching critical temperature, alarm
-> IRQ handler set irq_enabled to false,  disabled thermal core and was not
-> able read temperature and disable cooling sequence.
-> 
-> In case the cooling device is "CPU/GPU freq", the system will run with
-> reduce performance until next reboot.
-> 
-> To solve this issue, we need to move all parts implementing hand made
-> runtime power management and let it handle actual runtime PM framework.
-> 
-> Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+On Tue, 28 Sep 2021 09:35:57 +0800
+Sugar Zhang <sugar.zhang@rock-chips.com> wrote:
 
-Thanks for this fix.
+> This reverts commit 75b31192fe6ad20b42276b20ee3bdf1493216d63.
+> 
+> The original purpose of customized pcm was to config prealloc buffer size
+> flexibly. but, we can do the same thing by soc-generic-dmaengine-pcm.
+> 
+> And the generic one can generated the better config by querying DMA
+> capabilities from dmaengine driver rather than the Hard-Coded one.
+> 
+> e.g.
+> 
+> the customized one:
+> 
+>   static const struct snd_pcm_hardware snd_rockchip_hardware = {
+>          .info                   = SNDRV_PCM_INFO_MMAP |
+>                                    SNDRV_PCM_INFO_MMAP_VALID |
+>                                    SNDRV_PCM_INFO_PAUSE |
+>                                    SNDRV_PCM_INFO_RESUME |
+>                                    SNDRV_PCM_INFO_INTERLEAVED,
+>   ...
+> 
+> the generic one:
+> 
+>   ret = dma_get_slave_caps(chan, &dma_caps);
+>   if (ret == 0) {
+>           if (dma_caps.cmd_pause && dma_caps.cmd_resume)
+>                   hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
+>           if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
+>                   hw.info |= SNDRV_PCM_INFO_BATCH;
+>   ...
+> 
+> So, let's revert back to use the generic dmaengine pcm.
+> 
+> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 
-Petr or Oleksij,
-
-could you confirm it is tested and working without CONFIG_PM ?
+Reviewed-by: John Keeping <john@metanate.com>
 
 > ---
->  drivers/thermal/imx_thermal.c | 145 +++++++++++++++++++++-------------
->  1 file changed, 91 insertions(+), 54 deletions(-)
 > 
-> diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
-> index 2c7473d86a59..1db7ce6221b1 100644
-> --- a/drivers/thermal/imx_thermal.c
-> +++ b/drivers/thermal/imx_thermal.c
-> @@ -15,6 +15,7 @@
->  #include <linux/regmap.h>
->  #include <linux/thermal.h>
->  #include <linux/nvmem-consumer.h>
-> +#include <linux/pm_runtime.h>
+>  sound/soc/rockchip/Makefile       |  3 +--
+>  sound/soc/rockchip/rockchip_i2s.c |  3 +--
+>  sound/soc/rockchip/rockchip_pcm.c | 44 ---------------------------------------
+>  sound/soc/rockchip/rockchip_pcm.h | 11 ----------
+>  4 files changed, 2 insertions(+), 59 deletions(-)
+>  delete mode 100644 sound/soc/rockchip/rockchip_pcm.c
+>  delete mode 100644 sound/soc/rockchip/rockchip_pcm.h
+> 
+> diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+> index 65e814d..05b078e 100644
+> --- a/sound/soc/rockchip/Makefile
+> +++ b/sound/soc/rockchip/Makefile
+> @@ -1,11 +1,10 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # ROCKCHIP Platform Support
+>  snd-soc-rockchip-i2s-objs := rockchip_i2s.o
+> -snd-soc-rockchip-pcm-objs := rockchip_pcm.o
+>  snd-soc-rockchip-pdm-objs := rockchip_pdm.o
+>  snd-soc-rockchip-spdif-objs := rockchip_spdif.o
 >  
->  #define REG_SET		0x4
->  #define REG_CLR		0x8
-> @@ -194,6 +195,7 @@ static struct thermal_soc_data thermal_imx7d_data = {
->  };
+> -obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-rockchip-i2s.o snd-soc-rockchip-pcm.o
+> +obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-rockchip-i2s.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_PDM) += snd-soc-rockchip-pdm.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) += snd-soc-rockchip-spdif.o
 >  
->  struct imx_thermal_data {
-> +	struct device *dev;
->  	struct cpufreq_policy *policy;
->  	struct thermal_zone_device *tz;
->  	struct thermal_cooling_device *cdev;
-> @@ -252,44 +254,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
->  	const struct thermal_soc_data *soc_data = data->socdata;
->  	struct regmap *map = data->tempmon;
->  	unsigned int n_meas;
-> -	bool wait, run_measurement;
->  	u32 val;
-> +	int ret;
+> diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+> index 7e89f5b..a6d7656 100644
+> --- a/sound/soc/rockchip/rockchip_i2s.c
+> +++ b/sound/soc/rockchip/rockchip_i2s.c
+> @@ -20,7 +20,6 @@
+>  #include <sound/dmaengine_pcm.h>
 >  
-> -	run_measurement = !data->irq_enabled;
-> -	if (!run_measurement) {
-> -		/* Check if a measurement is currently in progress */
-> -		regmap_read(map, soc_data->temp_data, &val);
-> -		wait = !(val & soc_data->temp_valid_mask);
-> -	} else {
-> -		/*
-> -		 * Every time we measure the temperature, we will power on the
-> -		 * temperature sensor, enable measurements, take a reading,
-> -		 * disable measurements, power off the temperature sensor.
-> -		 */
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> -			    soc_data->power_down_mask);
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> -			    soc_data->measure_temp_mask);
-> -
-> -		wait = true;
-> -	}
-> -
-> -	/*
-> -	 * According to the temp sensor designers, it may require up to ~17us
-> -	 * to complete a measurement.
-> -	 */
-> -	if (wait)
-> -		usleep_range(20, 50);
-> +	ret = pm_runtime_resume_and_get(data->dev);
-> +	if (ret < 0)
-> +		return ret;
+>  #include "rockchip_i2s.h"
+> -#include "rockchip_pcm.h"
 >  
->  	regmap_read(map, soc_data->temp_data, &val);
+>  #define DRV_NAME "rockchip-i2s"
 >  
-> -	if (run_measurement) {
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> -			     soc_data->measure_temp_mask);
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> -			     soc_data->power_down_mask);
-> -	}
-> -
->  	if ((val & soc_data->temp_valid_mask) == 0) {
->  		dev_dbg(&tz->device, "temp measurement never finished\n");
->  		return -EAGAIN;
-> @@ -328,6 +301,8 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
->  		enable_irq(data->irq);
+> @@ -756,7 +755,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+>  		goto err_suspend;
 >  	}
 >  
-> +	pm_runtime_put(data->dev);
-> +
->  	return 0;
->  }
->  
-> @@ -335,24 +310,16 @@ static int imx_change_mode(struct thermal_zone_device *tz,
->  			   enum thermal_device_mode mode)
->  {
->  	struct imx_thermal_data *data = tz->devdata;
-> -	struct regmap *map = data->tempmon;
-> -	const struct thermal_soc_data *soc_data = data->socdata;
->  
->  	if (mode == THERMAL_DEVICE_ENABLED) {
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> -			     soc_data->power_down_mask);
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> -			     soc_data->measure_temp_mask);
-> +		pm_runtime_get(data->dev);
->  
->  		if (!data->irq_enabled) {
->  			data->irq_enabled = true;
->  			enable_irq(data->irq);
->  		}
->  	} else {
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> -			     soc_data->measure_temp_mask);
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> -			     soc_data->power_down_mask);
-> +		pm_runtime_put(data->dev);
->  
->  		if (data->irq_enabled) {
->  			disable_irq(data->irq);
-> @@ -393,6 +360,11 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
->  			     int temp)
->  {
->  	struct imx_thermal_data *data = tz->devdata;
-> +	int ret;
-> +
-> +	ret = pm_runtime_resume_and_get(data->dev);
-> +	if (ret < 0)
-> +		return ret;
->  
->  	/* do not allow changing critical threshold */
->  	if (trip == IMX_TRIP_CRITICAL)
-> @@ -406,6 +378,8 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
->  
->  	imx_set_alarm_temp(data, temp);
->  
-> +	pm_runtime_put(data->dev);
-> +
->  	return 0;
->  }
->  
-> @@ -681,6 +655,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  	if (!data)
->  		return -ENOMEM;
->  
-> +	data->dev = &pdev->dev;
-> +
->  	map = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "fsl,tempmon");
->  	if (IS_ERR(map)) {
->  		ret = PTR_ERR(map);
-> @@ -801,6 +777,14 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
->  		     data->socdata->measure_temp_mask);
->  
-> +	/* the core was configured and enabled just before */
-> +	pm_runtime_set_active(&pdev->dev);
-> +	pm_runtime_enable(data->dev);
-> +
-> +	ret = pm_runtime_resume_and_get(data->dev);
-> +	if (ret < 0)
-> +		goto disable_runtime_pm;
-> +
->  	data->irq_enabled = true;
->  	ret = thermal_zone_device_enable(data->tz);
->  	if (ret)
-> @@ -814,10 +798,17 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  		goto thermal_zone_unregister;
->  	}
->  
-> +	ret = pm_runtime_put(data->dev);
-> +	if (ret < 0)
-> +		goto disable_runtime_pm;
-> +
->  	return 0;
->  
->  thermal_zone_unregister:
->  	thermal_zone_device_unregister(data->tz);
-> +disable_runtime_pm:
-> +	pm_runtime_put_noidle(data->dev);
-> +	pm_runtime_disable(data->dev);
->  clk_disable:
->  	clk_disable_unprepare(data->thermal_clk);
->  legacy_cleanup:
-> @@ -829,13 +820,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  static int imx_thermal_remove(struct platform_device *pdev)
->  {
->  	struct imx_thermal_data *data = platform_get_drvdata(pdev);
-> -	struct regmap *map = data->tempmon;
->  
-> -	/* Disable measurements */
-> -	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
-> -		     data->socdata->power_down_mask);
-> -	if (!IS_ERR(data->thermal_clk))
-> -		clk_disable_unprepare(data->thermal_clk);
-> +	pm_runtime_put_noidle(data->dev);
-> +	pm_runtime_disable(data->dev);
->  
->  	thermal_zone_device_unregister(data->tz);
->  	imx_thermal_unregister_legacy_cooling(data);
-> @@ -858,29 +845,79 @@ static int __maybe_unused imx_thermal_suspend(struct device *dev)
->  	ret = thermal_zone_device_disable(data->tz);
->  	if (ret)
->  		return ret;
-> +
-> +	return pm_runtime_force_suspend(data->dev);
-> +}
-> +
-> +static int __maybe_unused imx_thermal_resume(struct device *dev)
-> +{
-> +	struct imx_thermal_data *data = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = pm_runtime_force_resume(data->dev);
-> +	if (ret)
-> +		return ret;
-> +	/* Enabled thermal sensor after resume */
-> +	return thermal_zone_device_enable(data->tz);
-> +}
-> +
-> +static int __maybe_unused imx_thermal_runtime_suspend(struct device *dev)
-> +{
-> +	struct imx_thermal_data *data = dev_get_drvdata(dev);
-> +	const struct thermal_soc_data *socdata = data->socdata;
-> +	struct regmap *map = data->tempmon;
-> +	int ret;
-> +
-> +	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
-> +			   socdata->measure_temp_mask);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
-> +			   socdata->power_down_mask);
-> +	if (ret)
-> +		return ret;
-> +
->  	clk_disable_unprepare(data->thermal_clk);
->  
->  	return 0;
->  }
->  
-> -static int __maybe_unused imx_thermal_resume(struct device *dev)
-> +static int __maybe_unused imx_thermal_runtime_resume(struct device *dev)
->  {
->  	struct imx_thermal_data *data = dev_get_drvdata(dev);
-> +	const struct thermal_soc_data *socdata = data->socdata;
-> +	struct regmap *map = data->tempmon;
->  	int ret;
->  
->  	ret = clk_prepare_enable(data->thermal_clk);
->  	if (ret)
->  		return ret;
-> -	/* Enabled thermal sensor after resume */
-> -	ret = thermal_zone_device_enable(data->tz);
-> +
-> +	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
-> +			   socdata->power_down_mask);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
-> +			   socdata->measure_temp_mask);
->  	if (ret)
->  		return ret;
->  
-> +	/*
-> +	 * According to the temp sensor designers, it may require up to ~17us
-> +	 * to complete a measurement.
-> +	 */
-> +	usleep_range(20, 50);
-> +
->  	return 0;
->  }
->  
-> -static SIMPLE_DEV_PM_OPS(imx_thermal_pm_ops,
-> -			 imx_thermal_suspend, imx_thermal_resume);
-> +static const struct dev_pm_ops imx_thermal_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(imx_thermal_suspend, imx_thermal_resume)
-> +	SET_RUNTIME_PM_OPS(imx_thermal_runtime_suspend,
-> +			   imx_thermal_runtime_resume, NULL)
-> +};
->  
->  static struct platform_driver imx_thermal = {
->  	.driver = {
-> 
+> -	ret = rockchip_pcm_platform_register(&pdev->dev);
+> +	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Could not register PCM\n");
+>  		goto err_suspend;
+> diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockchip_pcm.c
+> deleted file mode 100644
+> index 02254e4..0000000
+> --- a/sound/soc/rockchip/rockchip_pcm.c
+> +++ /dev/null
+> @@ -1,44 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -/*
+> - * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
+> - */
+> -
+> -#include <linux/device.h>
+> -#include <linux/init.h>
+> -#include <linux/module.h>
+> -
+> -#include <sound/core.h>
+> -#include <sound/pcm.h>
+> -#include <sound/soc.h>
+> -#include <sound/dmaengine_pcm.h>
+> -
+> -#include "rockchip_pcm.h"
+> -
+> -static const struct snd_pcm_hardware snd_rockchip_hardware = {
+> -	.info			= SNDRV_PCM_INFO_MMAP |
+> -				  SNDRV_PCM_INFO_MMAP_VALID |
+> -				  SNDRV_PCM_INFO_PAUSE |
+> -				  SNDRV_PCM_INFO_RESUME |
+> -				  SNDRV_PCM_INFO_INTERLEAVED,
+> -	.period_bytes_min	= 32,
+> -	.period_bytes_max	= 8192,
+> -	.periods_min		= 1,
+> -	.periods_max		= 52,
+> -	.buffer_bytes_max	= 64 * 1024,
+> -	.fifo_size		= 32,
+> -};
+> -
+> -static const struct snd_dmaengine_pcm_config rk_dmaengine_pcm_config = {
+> -	.pcm_hardware = &snd_rockchip_hardware,
+> -	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
+> -	.prealloc_buffer_size = 32 * 1024,
+> -};
+> -
+> -int rockchip_pcm_platform_register(struct device *dev)
+> -{
+> -	return devm_snd_dmaengine_pcm_register(dev, &rk_dmaengine_pcm_config,
+> -		SND_DMAENGINE_PCM_FLAG_COMPAT);
+> -}
+> -EXPORT_SYMBOL_GPL(rockchip_pcm_platform_register);
+> -
+> -MODULE_LICENSE("GPL v2");
+> diff --git a/sound/soc/rockchip/rockchip_pcm.h b/sound/soc/rockchip/rockchip_pcm.h
+> deleted file mode 100644
+> index 7f00e2c..0000000
+> --- a/sound/soc/rockchip/rockchip_pcm.h
+> +++ /dev/null
+> @@ -1,11 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0-only */
+> -/*
+> - * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
+> - */
+> -
+> -#ifndef _ROCKCHIP_PCM_H
+> -#define _ROCKCHIP_PCM_H
+> -
+> -int rockchip_pcm_platform_register(struct device *dev);
+> -
+> -#endif
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
