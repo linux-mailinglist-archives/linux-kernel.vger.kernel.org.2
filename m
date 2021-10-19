@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2594331E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7294331EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbhJSJOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:14:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38420 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbhJSJOa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:14:30 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 59BA421976;
-        Tue, 19 Oct 2021 09:12:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634634737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PNviG73W5CXxu7k+Hr5pl6wFnyxtJHN8JrkqiiHK7LA=;
-        b=XrPg5jT+DCKoaG2k5ocQTEfHGkSppHT1XVgCQNLxJhXX+T9JbVG+nr0+BMbX5+Hlp4c2ic
-        nAlcRclPn7O2+VB/BCfj7dEl/XNA89DzSyzoDvwNccFk6hKGIUUvdhiuOICEnApyvz1LX1
-        f0PQXTnBp2zF/y+eFqFdiCiisycfQo8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634634737;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PNviG73W5CXxu7k+Hr5pl6wFnyxtJHN8JrkqiiHK7LA=;
-        b=jIx8pGNL+vHQm7rncO/9sNPXnIpk/ya0K95ryK6YnHjP/cwwDtHvsCfEJLySgzI4b8IPPi
-        /Cxj+PTxEGefy2DQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 3F203A3B8B;
-        Tue, 19 Oct 2021 09:12:17 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 001101E0BE5; Tue, 19 Oct 2021 11:12:16 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 11:12:16 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next v3 3/5] ext4: get buffer head before read_mmp_block
-Message-ID: <20211019091216.GD3255@quack2.suse.cz>
-References: <20211019064959.625557-1-yebin10@huawei.com>
- <20211019064959.625557-4-yebin10@huawei.com>
+        id S234944AbhJSJOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:14:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231652AbhJSJOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:14:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D87560ED5;
+        Tue, 19 Oct 2021 09:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634634748;
+        bh=4Y54qAG6SRXNvYiZ1LcJOiHDloI0SXwfRzo3IjO3mVk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ijSLT+QR1DpZHv68nkYmfDqx6EE/62lPKZ5RnrVfbCmfw2UY8er4UWQUcmB1OwwHL
+         21KgwMiL7vG2ibKtz0CmwybzmlsEPY4nZwft4dMWA6GWfniAE6ZuAy22+QnqU5tHMT
+         ZY22siodxD1jQHLazru6Sg5JLm5OexZ06Jn8wDrQ=
+Date:   Tue, 19 Oct 2021 11:12:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     cgel.zte@gmail.com
+Cc:     arve@android.com, tkjos@android.com, maco@android.com,
+        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        Ran Jianping <ran.jianping@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH binder] binder: remove duplicate include in binder.c
+Message-ID: <YW6L+LkxamhGLwmt@kroah.com>
+References: <20211019080402.993974-1-ran.jianping@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019064959.625557-4-yebin10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211019080402.993974-1-ran.jianping@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 19-10-21 14:49:57, Ye Bin wrote:
-> There is only pass NULL 'bh' in ext4_multi_mount_protect,
-> So just call sb_getblk get buffer head fisrt, and we will
-> simplify read_mmp_block function.
+On Tue, Oct 19, 2021 at 08:04:02AM +0000, cgel.zte@gmail.com wrote:
+> From: Ran Jianping <ran.jianping@zte.com.cn>
 > 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-
-I don't think there's a need to separate this into a special patch. Just
-fold this change into patch 4. With that feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-The combined change looks good to me.
-
-								Honza
-
+> 'binder_trace.h' included in 'drivers/android/binder.c'
+>  is duplicated.It is also included on the 6026 line.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Ran Jianping <ran.jianping@zte.com.cn>
 > ---
->  fs/ext4/mmp.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  drivers/android/binder.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 4af8b99ade84..6ac6aacd8fa5 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -295,6 +295,10 @@ int ext4_multi_mount_protect(struct super_block *sb,
->  		goto failed;
->  	}
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index 26382e982c5e..19f6247d33f5 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -6023,6 +6023,5 @@ static int __init binder_init(void)
+>  device_initcall(binder_init);
 >  
-> +	bh = sb_getblk(sb, mmp_block);
-> +	if (bh)
-> +		goto failed;
-> +
->  	retval = read_mmp_block(sb, &bh, mmp_block);
->  	if (retval)
->  		goto failed;
+>  #define CREATE_TRACE_POINTS
+> -#include "binder_trace.h"
+>  
+>  MODULE_LICENSE("GPL v2");
 > -- 
-> 2.31.1
+> 2.25.1
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+Did you build this code after making this change and verify that the
+tracepoints still work properly?
+
+Please fix your "robot", it is broken.
+
+greg k-h
