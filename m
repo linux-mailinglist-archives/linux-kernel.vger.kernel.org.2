@@ -2,122 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A22432D66
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED21432D68
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 07:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbhJSFu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 01:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhJSFu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 01:50:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77906C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 22:48:44 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mchzF-0004x1-86; Tue, 19 Oct 2021 07:48:33 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mchzC-0004ue-Fz; Tue, 19 Oct 2021 07:48:30 +0200
-Date:   Tue, 19 Oct 2021 07:48:30 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     alexandru.tachici@analog.com, andrew@lunn.ch, davem@davemloft.net,
-        devicetree@vger.kernel.org, hkallweit1@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v3 7/8] dt-bindings: net: phy: Add 10-baseT1L 2.4 Vpp
-Message-ID: <20211019054830.GA16320@pengutronix.de>
-References: <20211011142215.9013-1-alexandru.tachici@analog.com>
- <20211011142215.9013-8-alexandru.tachici@analog.com>
- <YW3Fq7WMSB+TL2u4@robh.at.kernel.org>
+        id S233568AbhJSFwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 01:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhJSFv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 01:51:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57D9760F46;
+        Tue, 19 Oct 2021 05:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634622586;
+        bh=rQloIryMv0HhFIsTzvWz8cG6c81v5XbKulgqtGe5oMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bMPCUCAfqUtw8rJmYCKZJsEOw/CMwHrfR7jC5+XbhE7KB0LB36e6+TaovvqdpoS8T
+         VPMKNCpJwVHr2vG+5ZNr73Y2GAbwyudwRer6u0AYUTIXQWP62ZNV9/Yr/5AXeMjw49
+         VprmGCxbuAcqFW39DWGkd6P7WskDKkWqSQC02z9E=
+Date:   Tue, 19 Oct 2021 07:49:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: vt6655: fix camelcase byData in card.c
+Message-ID: <YW5ceCLSIRl5zJIm@kroah.com>
+References: <20211018192124.8738-1-tomm.merciai@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YW3Fq7WMSB+TL2u4@robh.at.kernel.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 07:32:09 up 243 days,  8:56, 111 users,  load average: 0.35, 0.20,
- 0.19
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211018192124.8738-1-tomm.merciai@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 02:06:19PM -0500, Rob Herring wrote:
-> On Mon, Oct 11, 2021 at 05:22:14PM +0300, alexandru.tachici@analog.com wrote:
-> > From: Alexandru Tachici <alexandru.tachici@analog.com>
-> > 
-> > Add a tristate property to advertise desired transmit level.
-> > 
-> > If the device supports the 2.4 Vpp operating mode for 10BASE-T1L,
-> > as defined in 802.3gc, and the 2.4 Vpp transmit voltage operation
-> > is desired, property should be set to 1. This property is used
-> > to select whether Auto-Negotiation advertises a request to
-> > operate the 10BASE-T1L PHY in increased transmit level mode.
-> > 
-> > If property is set to 1, the PHY shall advertise a request
-> > to operate the 10BASE-T1L PHY in increased transmit level mode.
-> > If property is set to zero, the PHY shall not advertise
-> > a request to operate the 10BASE-T1L PHY in increased transmit level mode.
-> > 
-> > Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
-> > ---
-> >  Documentation/devicetree/bindings/net/ethernet-phy.yaml | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-> > index 2766fe45bb98..2bb3a96612a2 100644
-> > --- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-> > +++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-> > @@ -77,6 +77,15 @@ properties:
-> >      description:
-> >        Maximum PHY supported speed in Mbits / seconds.
-> >  
-> > +  an-10base-t1l-2.4vpp:
+On Mon, Oct 18, 2021 at 09:21:22PM +0200, Tommaso Merciai wrote:
+> Replace camelcase variable "byData" into linux kernel coding style
+> equivalent variable "data" in card.c.
+> "by" prefix in hungarian notation stands for byte or unsigned char
 > 
-> What does 'an' mean?
+> References:
+>  - https://www.cse.iitk.ac.in/users/dsrkg/cs245/html/Guide.htm
 
-I assume, it is for Auto Negotiate.
+Don't provide web links in a changelog text, they might not endure.
 
-> > +    description: |
-> > +      tristate, request/disable 2.4 Vpp operating mode. The values are:
-> > +      0: Disable 2.4 Vpp operating mode.
-> > +      1: Request 2.4 Vpp operating mode from link partner.
-> > +      Absence of this property will leave configuration to default values.
-> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> > +    enum: [0, 1]
-> 
-> What happened to this one doing the same thing?:
-> 
-> https://lore.kernel.org/lkml/20201117201555.26723-3-dmurphy@ti.com/
+>  - https://www.kernel.org/doc/html/v4.10/process/coding-style.html
 
-This one was not really synced with the IEEE 802.3 standard. According
-to the standard, there is optional 10base-t1l specific 2.4 Vpp operating mode.
-To be able to operate in this mode, HW should be designed to do so.
-And other way around, if HW is designed for explosive environment, it
-should never operate in 2.4 Vpp mode.
-So, depending on this property, the ability of the link-partner and user
-space configuration, we may allow to auto negotiate this mode.
+Why the old and obsolete 4.10 kernel document?
 
-The question is, should it actually be called "an-", since this property
-should limit automatic and manual link configuration
+thanks,
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+greg k-h
