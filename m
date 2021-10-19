@@ -2,74 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FCD433F24
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A110E433F34
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235009AbhJSTU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhJSTUx (ORCPT
+        id S234361AbhJSTZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:25:02 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:9743 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230432AbhJSTZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:20:53 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CE0C061746;
-        Tue, 19 Oct 2021 12:18:40 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6BCD297D;
-        Tue, 19 Oct 2021 19:18:39 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6BCD297D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1634671119; bh=z7ldVbQnsWAW8Gf9GiVNdED1fjhjWDpnGSCtCasTfCQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=eAeQI5bFW2K4zUVa0zD89H/SOlLVtv/+NBCoyOjfx9KaQuMDvl0b3NUv9vr4j4R6O
-         3jR2afECnmqfHLlQJVRC6PGz/P8SlXPG6BevKQXYBYER6j0Oph9XGqlZEdx7CK8XW1
-         A/v62ai9qxoho0O9nhD0FFnqEvfqZPm4dEIakDE8/kTzi/L9STjd32LcqPAQNCtn+j
-         R2Fw7HVZc5OL9OKNdELehDXd3zkFug5lbtTrzxLmsOGpuECsuqBbK3SpeHtFY0vBaD
-         0UG7vGHS+cRvxM8juvFmL4BTRJyLm2Aef/I3RMNtXlRvB23kLh9LwHJdF6Am4eeeTX
-         S+q8GY0CTRUXA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH V3 13/19] rtla: Add Documentation
-In-Reply-To: <5796a3d5-ae98-9d28-138f-981a06dab34b@kernel.org>
-References: <cover.1634574261.git.bristot@kernel.org>
- <7e205854656f41afe9a35e6390d3e3cbd724706f.1634574261.git.bristot@kernel.org>
- <877deaut3b.fsf@meer.lwn.net>
- <f0c50222-a9a8-d0e5-d705-d9d670467142@kernel.org>
- <20211019092124.6b403ca4@gandalf.local.home>
- <ecf3bfee-8a7a-e3bf-4fba-af9bc479526e@kernel.org>
- <8735oxt4ny.fsf@meer.lwn.net> <20211019113618.02bcdf8b@gandalf.local.home>
- <5796a3d5-ae98-9d28-138f-981a06dab34b@kernel.org>
-Date:   Tue, 19 Oct 2021 13:18:38 -0600
-Message-ID: <87tuhcsu0h.fsf@meer.lwn.net>
+        Tue, 19 Oct 2021 15:25:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634671369; x=1666207369;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ExsAedC7QQt+DwS6S+9BDoDKGHnSvAGFEV/QJVocC04=;
+  b=BOUCuhqpVsBdPD3uLtoqodb9zfewLs9ZJoWwpA7PkZeu/CSuYEt9+sbD
+   +fJtjwqp+5JjRdcfVP2Uk7JA3+MD1MnA74BqjkSVDxdVdvASaC1JAIDun
+   XfT369F8NK4BWHRF3jJlMfizPOdLfzxFZzF0G8YS3+9plumV33+wS2ePa
+   k=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 19 Oct 2021 12:22:49 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 12:22:47 -0700
+Received: from [10.110.29.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 19 Oct 2021
+ 12:22:44 -0700
+Subject: Re: [PATCH v2 04/11] sched: Simplify wake_up_*idle*()
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <gor@linux.ibm.com>, <jpoimboe@redhat.com>, <jikos@kernel.org>,
+        <mbenes@suse.cz>, <pmladek@suse.com>, <mingo@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <joe.lawrence@redhat.com>,
+        <fweisbec@gmail.com>, <tglx@linutronix.de>, <hca@linux.ibm.com>,
+        <svens@linux.ibm.com>, <sumanthk@linux.ibm.com>,
+        <live-patching@vger.kernel.org>, <paulmck@kernel.org>,
+        <rostedt@goodmis.org>, <x86@kernel.org>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152428.769328779@infradead.org>
+ <ba4ca17f-100e-bef7-6d7b-4de0f5a515b9@quicinc.com>
+ <a354fadd-268f-8119-d37a-102e5efa1437@quicinc.com>
+ <YW6IUIRZsBAZ+6hK@hirez.programming.kicks-ass.net>
+ <YW6LgO4OK+YPy90S@hirez.programming.kicks-ass.net>
+ <468c435b-192b-790b-2a2d-8f7ddfb4a061@quicinc.com>
+ <YW7pOTqMT49cIsKz@hirez.programming.kicks-ass.net>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <80919fdc-0f36-2f8a-627d-c1a97f1830fb@quicinc.com>
+Date:   Tue, 19 Oct 2021 15:22:43 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YW7pOTqMT49cIsKz@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Bristot de Oliveira <bristot@kernel.org> writes:
 
-> Sounds good to me... actually, not only to me, but for all tools on tools I guess.
->
-> Should I start with Documentation/tools/rtla/${rtla_files}.rst?
 
-Sounds good to me.
+On 10/19/21 11:50 AM, Peter Zijlstra wrote:
+>>> diff --git a/kernel/smp.c b/kernel/smp.c
+>>> index ad0b68a3a3d3..61ddc7a3bafa 100644
+>>> --- a/kernel/smp.c
+>>> +++ b/kernel/smp.c
+>>> @@ -1170,14 +1170,12 @@ void wake_up_all_idle_cpus(void)
+>>>  {
+>>>  	int cpu;
+>>>  
+>>> -	cpus_read_lock();
+>>> -	for_each_online_cpu(cpu) {
+>>> -		if (cpu == raw_smp_processor_id())
+>>> -			continue;
+>>> -
+>>> -		wake_up_if_idle(cpu);
+>>> +	for_each_cpu(cpu) {
+>>> +		preempt_disable();
+>>> +		if (cpu != smp_processor_id() && cpu_online(cpu))
+>>> +			wake_up_if_idle(cpu);
+>>> +		preempt_enable();
+>>>  	}
+>>> -	cpus_read_unlock();
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(wake_up_all_idle_cpus);
+>>
+>> This does not compile.
+>>
+>> kernel/smp.c:1173:18: error: macro "for_each_cpu" requires 2 arguments, but only 1 given
+> 
+> Bah, for_each_possible_cpu(), lemme update the patch, I'm sure the
+> robots will scream bloody murder on that too.
 
-Thanks,
-
-jon
+This survived the regression tests here.
