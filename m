@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EAE433618
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045254335E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 14:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235750AbhJSMi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 08:38:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235726AbhJSMiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:38:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CEA361260;
-        Tue, 19 Oct 2021 12:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634646971;
-        bh=u73RnjWbRxhH6CwTauke6NzU7tR5DI62J9FiY8yQVbs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TqrwQPwytMD1dfbq9Mtnro8tcleYatLeGtxlHL9aRTHzVTrMrqRCc5Q5qIXLoP1VL
-         y1gAC3s3q5RxgnG+mt1Mnd+MMkk20x3T442HHl9B7+jEiXygfHKeSDW1H5g96t6gMy
-         t5gEMN/JxlbDOfqjNgSWkdM9CSjmzW997iSiZs+h0wwKEN+QnwKo+/OKMaKZDgf24S
-         1GYnil1dhH0AcMlNL+G0oY5XDpSyLi83jl0XDBbmXuY2wvtFvZcg9nrO5Cj7etEUdw
-         TWFZEm6guT3uA6Y236lN1khW177KNWlDxeKN2w9Zx6wKZOGJenIpOvFpLZRoVUYwfo
-         KpON6gydXzB5w==
-Date:   Tue, 19 Oct 2021 13:36:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Meng Li <Meng.Li@windriver.com>
-Cc:     geert+renesas@glider.be, magnus.damm@gmail.com, robh+dt@kernel.org,
-        marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com,
-        lorenzo.pieralisi@arm.com, kw@linux.com, bhelgaas@google.com,
-        lgirdwood@gmail.com, linux-renesas-soc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH] pci: pcie-rcar: add regulators support
-Message-ID: <YW67tsigF89EkDWS@sirena.org.uk>
-References: <20211019095858.21316-1-Meng.Li@windriver.com>
+        id S235561AbhJSM3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 08:29:13 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:24358 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhJSM3L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 08:29:11 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HYXtm2XD8zbd5C;
+        Tue, 19 Oct 2021 20:22:24 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Tue, 19
+ Oct 2021 20:26:56 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next v4 0/3] Fix some issues about mmp
+Date:   Tue, 19 Oct 2021 20:39:28 +0800
+Message-ID: <20211019123931.1545295-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZkQuIMugRNgJ9HKi"
-Content-Disposition: inline
-In-Reply-To: <20211019095858.21316-1-Meng.Li@windriver.com>
-X-Cookie: I program, therefore I am.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I test mmp function as follow steps:
+1. Inject delay 5s in ext4_multi_mount_protect function after
+"skip:" label.
+2. Share HostA block device(sda) with HostB(nbd0) by NBD.
+3. Enable mmp feature when mkfs.ext4 sda.
+4. Mount sda and nbd0 at the same time.
 
---ZkQuIMugRNgJ9HKi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I found kmmpd never trigger detect multi-mount. Reason is as follow:
+1. Kmmpd init seq with 0, if two host have same nodename, will lead to
+detect confliction very slow, even never detect confliction.
+2. When detect confliction in kmmpd, we get 'check_bh' is same with 'bh'.
+so we compare data with itself.
+3. We only trigger detect when ”diff > mmp_check_interval * HZ“,
+'mmp_check_interval' is double of 'mmp_update_interval', 'diff' is
+about 'mmp_update_interval'. So 'diff' is little than 'mmp_check_interval * HZ'
+normaly. As Jan Kara explain as follows:
+"I think the check is there only for the case where write_mmp_block() +
+sleep took longer than mmp_check_interval. I agree that should rarely
+happen but on a really busy system it is possible and in that case we would
+miss updating mmp block for too long and so another node could have started
+using the filesystem. "
 
-On Tue, Oct 19, 2021 at 05:58:58PM +0800, Meng Li wrote:
+v1->v2:
+Fix 'last_check_time' not initialized before checking.
 
-> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
->=20
-> Add PCIe regulators for KingFisher board.
->=20
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
-> ---
+v2->v3:
+1. drop commit "ext4: introduce last_check_time record previous check time"
+As Ted explain as follows:
+"I'd like Andreas to comment here.  My understanding is that MMP
+originally intended as a safety mechanism which would be used as part
+of a primary/backup high availability system, but not as the *primary*
+system where you might try to have two servers simultaneously try to
+mount the file system and use MMP as the "election" mechanism to
+decide which server is going to be the primary system, and which would
+be the backup system.
 
-You've not provided a Signed-off-by for Andrey, please see
-Documentation/process/submitting-patches.rst for details on what this is
-and why it's important.
+The cost of being able to handle this particular race is it would slow
+down the mounts of cleanly unmounted systems.
 
-> +	host->pcie3v3 =3D devm_regulator_get_optional(dev, "pcie3v3");
+There *are* better systems to implement leader elections[1] than using
+MMP.  Most of these more efficient leader elections assume that you
+have a working IP network, and so if you have a separate storage
+network (including a shared SCSI bus) from your standard IP network,
+then MMP is a useful failsafe in the face of a network partition of
+your IP network.  The question is whether MMP should be useful for
+more than that.  And if it isn't, then we should probably document
+what MMP is and isn't good for, and give advice in the form of an
+application note for how MMP should be used in the context of a larger
+system."
+2. drop commit "ext4: fix possible store wrong check interval value in disk when umount"
+3. simplify read_mmp_block fucntion to avoid UAF
 
-> +	host->pcie1v8 =3D devm_regulator_get_optional(dev, "pcie1v8");
+v3->v4:
+1. drop commit "ext4: init 'seq' with the value which set in 'ext4_multi_mount_protect'"
+2. merge "ext4: get buffer head before read_mmp_block" to
+"ext4: simplify read_mmp_block fucntion"
+3. rename "ext4: avoid to re-read mmp check data get from page cache" to
+"ext4: remove useless bh_check variable"
+4. reorder "ext4: remove useless bh_check variable" and 
+"ext4: simplify read_mmp_block fucntion"
 
-Unless PCIe works without these supplies (which are in my understanding
-mandatory according to the spec) these should not be optional, this API
-is for supplies that may be physically absent.
+Ye Bin (3):
+  ext4: compare to local seq and nodename when check conflict
+  ext4: remove useless bh_check variable
+  ext4: simplify read_mmp_block fucntion
 
---ZkQuIMugRNgJ9HKi
-Content-Type: application/pgp-signature; name="signature.asc"
+ fs/ext4/ext4.h |  5 +++-
+ fs/ext4/mmp.c  | 64 +++++++++++++++++++++-----------------------------
+ 2 files changed, 31 insertions(+), 38 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.31.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFuu7YACgkQJNaLcl1U
-h9Arnwf+PlApDFGSrd0BxXmjAa5FJY9Vb9EbiuK19rDX3HvMtAKrjMfYkmMoO/6w
-7vZ1B/AjW3O8GV7mVJZbela5JVwm3FeDUyL2YDRYsIyRChgwvD7zlUjBoT5bEZVa
-kad7VwGSBXaWZfGsm5xlAsN/AAKSKxSkGu/85fYlVWNm/Cg+Mb/N+qp5O+U+jHa6
-4eIsau9/dnP2Hu0wjq8+qvfTZQ9gaSqDZdXC8o1y/j5+3cWSGwwQ9cOQMnKO/YlN
-w5E5pJ8UCjeA2i7PNp8bFfkGOjqft377c2jpNyrQY8uKeWW/pBCHAQB+DoqR7n2p
-npgiAcdcadDCCYkAt0FBJyMjIH5oMg==
-=0qYG
------END PGP SIGNATURE-----
-
---ZkQuIMugRNgJ9HKi--
