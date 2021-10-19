@@ -2,180 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCA6433FBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1E6433FC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 22:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbhJSU0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 16:26:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35182 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230147AbhJSU0z (ORCPT
+        id S235001AbhJSU1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 16:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234783AbhJSU1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 16:26:55 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JJI37P020516;
-        Tue, 19 Oct 2021 16:24:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=vxrHAhnRe6WhgnolQ/Fpgp5YIFLWPE4T7HjgC+P+xyQ=;
- b=toXbUup9wkTnWIALUxlLmcd/S1qhQnxrNlmMYoCuyfkkcSK2gN7/5kXB/A9r3372jHkE
- 7R9Kt6gdIUnBwa/AU6jSrWV1uVZR+DsgDGRfXt3WDNoSC2vxY90fHWmUHeKLdZrVC/HN
- 8Ok3tKEgDOOazdgvkpusZ+ethRlgYWKYcf0JCLFbY1P+hoqEybwi3s6s6AOakH6sjXFK
- A1VZZzPSv5b7fI0dW2K7EjixG5Nk5SLcfyfGsuIyJ9l26hjZrx55URZPk2FMWpxugL5c
- UrVrbYzumaWlFFN7Uwvhg8kwCkbNityK/4TNUPOjEIFmwwuC4dUEtKFAr9+/lo6m0mjb KQ== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bt2qykbxf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 16:24:35 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19JKDN8u010286;
-        Tue, 19 Oct 2021 20:24:34 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03dal.us.ibm.com with ESMTP id 3bqpcbdyw3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 20:24:34 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19JKOXMF31392234
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 20:24:33 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6E6D16E059;
-        Tue, 19 Oct 2021 20:24:33 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3497F6E05D;
-        Tue, 19 Oct 2021 20:24:33 +0000 (GMT)
-Received: from [9.211.36.93] (unknown [9.211.36.93])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Oct 2021 20:24:33 +0000 (GMT)
-Subject: Re: [PATCH] fsi: sbefifo: Add sysfs file indicating a timeout error
-To:     Joel Stanley <joel@jms.id.au>, Amitay Isaacs <amitay@ozlabs.org>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsi@lists.ozlabs.org
-References: <20210920190031.22168-1-eajames@linux.ibm.com>
- <CACPK8XczD=4PXxRQrZ=aGCYtZk47i4-XoFVwep04qszf3Ls6jg@mail.gmail.com>
-From:   Eddie James <eajames@linux.ibm.com>
-Message-ID: <2edfe3a2-a853-3cfc-55fb-f89f5d68e7e1@linux.ibm.com>
-Date:   Tue, 19 Oct 2021 15:24:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 19 Oct 2021 16:27:12 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4305CC06161C;
+        Tue, 19 Oct 2021 13:24:59 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so3464237ote.8;
+        Tue, 19 Oct 2021 13:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f5Fp6kBMzM/Rbiwq2AxhBxp4FKxeYZ3Affhz0AYCuGI=;
+        b=d9ENM7Ax4judTmAg92T4eqw8BRtJ/VL7cxlF3LzZoCgW3dJRbMZeSh1T9hksAWgebw
+         nNWz8UADziol5bPFEZTJoW1k+kUz7nxMEyDCEeYLbTHF/98MX9YgyZQIgrat2UucQYFW
+         3B5QMsLl6pyxRwrNJdP3xyB8D1vv5Rahl36+yk09K5jfbT0rH53gSsUJZaTbGxD67xak
+         /2VH+v2C4OdYC4tABz4xrbCetDqAj4bgShLvZ00XwfHC18sHuyQLL93lM8wQu15rekzq
+         tRYThjD7oDbrEwYUty4h1OpvZLFWoTORHz3tZXCnYbR6vmYSlR3+/k0H8iCq0wbhcjLZ
+         ZY6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=f5Fp6kBMzM/Rbiwq2AxhBxp4FKxeYZ3Affhz0AYCuGI=;
+        b=HR7OoqLrYpEDNkDc/A4Wm499Mk1StO4gH6FSx1v+i1qrNDtyqOcMv+kjcOxap/kjjj
+         Tx60KT9pyD+DIaX6xXlz5Mz7aT1gVMpqO0TaAZmDo5FJsqCLLiKZqshyVg7Nd7PCiK+y
+         9M6mFEZaF66yPKPB5atCVnWLQLjuDzvWpF7UdxM0fyWRbtAT/rnyr6TG+fXz0WvA2BH4
+         UzHD5uiqobgaq/m3w7ICjeVuMyREzD10HukTjTQU5XIJTzNPC2ntox2S5OUMxeIqCTds
+         JjmeM10KLU/YExdpUPWJEeYXplnxxf9GXufvnSg4hT1+aua+00dLW/We7cuIBmK8ovIx
+         JK5w==
+X-Gm-Message-State: AOAM532hfWLaY37h1+EF29si/GfTcn58agZXho5XPcsGN0xkD6IDLVho
+        W3eFTqDJRbD6EL0A0zQ0wbE=
+X-Google-Smtp-Source: ABdhPJyf02y0UL5SWMf40E7uH/Ur/AQD3rENmcJMNcJ7IFuJWicC+9XyoEWkiUPw2b1ByqcxG0A0+Q==
+X-Received: by 2002:a05:6830:1318:: with SMTP id p24mr7542065otq.82.1634675098572;
+        Tue, 19 Oct 2021 13:24:58 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u15sm33413oon.35.2021.10.19.13.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 13:24:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 19 Oct 2021 13:24:56 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 00/39] 4.14.252-rc1 review
+Message-ID: <20211019202456.GA748554@roeck-us.net>
+References: <20211018132325.426739023@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <CACPK8XczD=4PXxRQrZ=aGCYtZk47i4-XoFVwep04qszf3Ls6jg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nyS-u48evwPY8CFNFZ2DEzewUn8v6HlH
-X-Proofpoint-ORIG-GUID: nyS-u48evwPY8CFNFZ2DEzewUn8v6HlH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-19_02,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 phishscore=0 adultscore=0
- clxscore=1015 impostorscore=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110190116
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 18, 2021 at 03:24:09PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.252 release.
+> There are 39 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
+> Anything received after that time might be too late.
+> 
 
-On 10/15/21 12:08 AM, Joel Stanley wrote:
-> On Mon, 20 Sept 2021 at 19:00, Eddie James <eajames@linux.ibm.com> wrote:
->> The SBEFIFO timeout error requires special handling in userspace
->> to do recovery operations. Add a sysfs file to indicate a timeout
->> error, and notify pollers when a timeout occurs.
-> Should this have some documentation too?
+Build results:
+	total: 163 pass: 163 fail: 0
+Qemu test results:
+	total: 394 pass: 394 fail: 0
 
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Yes, will add in v2.
-
-
->
-> What userspace uses this?
-
-
-At the moment, the openpower-occ-control application.
-
-
->
-> Looks good to me otherwise.
->
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-
-Thanks!
-
-Eddie
-
-
->
->> Signed-off-by: Eddie James <eajames@linux.ibm.com>
->> ---
->>   drivers/fsi/fsi-sbefifo.c | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
->>
->> diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
->> index 84cb965bfed5..b414ab4431ef 100644
->> --- a/drivers/fsi/fsi-sbefifo.c
->> +++ b/drivers/fsi/fsi-sbefifo.c
->> @@ -124,6 +124,7 @@ struct sbefifo {
->>          bool                    broken;
->>          bool                    dead;
->>          bool                    async_ffdc;
->> +       bool                    timed_out;
->>   };
->>
->>   struct sbefifo_user {
->> @@ -136,6 +137,14 @@ struct sbefifo_user {
->>
->>   static DEFINE_MUTEX(sbefifo_ffdc_mutex);
->>
->> +static ssize_t timeout_show(struct device *dev, struct device_attribute *attr,
->> +                           char *buf)
->> +{
->> +       struct sbefifo *sbefifo = container_of(dev, struct sbefifo, dev);
->> +
->> +       return sysfs_emit(buf, "%d\n", sbefifo->timed_out ? 1 : 0);
->> +}
->> +static DEVICE_ATTR_RO(timeout);
->>
->>   static void __sbefifo_dump_ffdc(struct device *dev, const __be32 *ffdc,
->>                                  size_t ffdc_sz, bool internal)
->> @@ -462,11 +471,14 @@ static int sbefifo_wait(struct sbefifo *sbefifo, bool up,
->>                          break;
->>          }
->>          if (!ready) {
->> +               sysfs_notify(&sbefifo->dev.kobj, NULL, dev_attr_timeout.attr.name);
->> +               sbefifo->timed_out = true;
->>                  dev_err(dev, "%s FIFO Timeout ! status=%08x\n", up ? "UP" : "DOWN", sts);
->>                  return -ETIMEDOUT;
->>          }
->>          dev_vdbg(dev, "End of wait status: %08x\n", sts);
->>
->> +       sbefifo->timed_out = false;
->>          *status = sts;
->>
->>          return 0;
->> @@ -993,6 +1005,8 @@ static int sbefifo_probe(struct device *dev)
->>                                   child_name);
->>          }
->>
->> +       device_create_file(&sbefifo->dev, &dev_attr_timeout);
->> +
->>          return 0;
->>    err_free_minor:
->>          fsi_free_minor(sbefifo->dev.devt);
->> @@ -1018,6 +1032,8 @@ static int sbefifo_remove(struct device *dev)
->>
->>          dev_dbg(dev, "Removing sbefifo device...\n");
->>
->> +       device_remove_file(&sbefifo->dev, &dev_attr_timeout);
->> +
->>          mutex_lock(&sbefifo->lock);
->>          sbefifo->dead = true;
->>          mutex_unlock(&sbefifo->lock);
->> --
->> 2.27.0
->>
+Guenter
