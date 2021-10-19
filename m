@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C91D4334D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CB04334DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235442AbhJSLkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        id S235461AbhJSLkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbhJSLj5 (ORCPT
+        with ESMTP id S235401AbhJSLj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:39:57 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F47C06176F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:32 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id n8so6761647lfk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:32 -0700 (PDT)
+        Tue, 19 Oct 2021 07:39:59 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E651AC061772
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:37 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id x27so6774047lfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=D5PzwEBrOldlaIz/yoBnECaUyGI46VY83yvfxIz1ZF4=;
-        b=WXLTnuVzOfIvphbQT4ZFrAt0wNTFY+MOeJZN7s04aT4LzVae1rULH5dGy0LzUllzwz
-         2I4HFJQR5QtcmWPoKV+r+z10l5H05Rzls7CPnkijH4T6AEiHheOanmzBjxzEQ6qUxQME
-         k4oVD0v2jt2O4MWMDbs4klhoyOG7bMYoHh5YdkRVDZFUl9eE1b7WqwkPZqczaB2BDBB2
-         IFs/RI6e7oQxWn2EIZdL68Snl+58JXtiGJpflTE9bgI067dDWM1naY3dh1uRG/qfmZ5+
-         5Ji72Gr0JlOP1Ij/DTKFk+dzrGseMPb1EWaEFK4otMo4H4NaGZIaDuk/JgFMvPPmf7wu
-         kSWg==
+        bh=U36LIf5+tljufBvVEM58yc8vCPbhSTcJ8OL4uJO2PFM=;
+        b=zEOFkXRvhUqeeBzMbMrkfCpPQwfb2xW23osQXL1q9VtS9XMSBvnFtcInNPvmzPCv2i
+         Y/4Szbo8QuKG70ldNdcts4hXKIdKoV7R3s7WcT/PJvA4pV1japkkbY4eWI/37YAYBAs7
+         SRKyZL/1qFGHnhoznGUdDx0CNYwgGHmL1xoYHmOyy3L21EzqOigNuWA4s3Iqz7JbhREp
+         xRrzaDUW+FlE8K4oLUDSpELoxfWOZ9dciloZxAtiKXs4WGFenYy9FpihvHclQ/2L9f7r
+         4GDv2Wrj2uWORwrV31M7yLPbQKHky+hRKpk9tpYVWmYWtFJyAz6U+KBqHpW95tp/EF/U
+         BkTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=D5PzwEBrOldlaIz/yoBnECaUyGI46VY83yvfxIz1ZF4=;
-        b=2h4Bv9pYNGnyrZhX0qLic4qFLnK9TuR1vjck8XjKWQNLHDyPHBeWDT/4bE+WwDxqXc
-         MTV7cMDu0NjyPUQqYzJ8TE1v7qzZ5yH69H6cGW68DGMrXL7x726bDrtK/yDRMSL7f1Xf
-         ZAjGs5a5Lf0gfTJMw1n55KrVdqHGqhqaeJjz57e8IFze0B4kXNScC396DxjfLg1Dtszl
-         LCXwaAu935GPxDfeYLzb6jxZ7InZlAwSbyNcWWHFKgWaHRZPzFLEDR8oAdpKGLPG/vMX
-         VfnwXlD5eKNgLuz5kjsDscsidyz8G3MPRfpni2/S0EPvBJBSeBMuMSryOf4BsuCMGp6g
-         tNYQ==
-X-Gm-Message-State: AOAM532vNsjwNs2Jf9O+vOqKAHtTez3n/AEP4orUm7NZrERUznkbe77m
-        klnUARX//p2005w5Wlffxq+Eg2GZxf+JMCACcbGYHw==
-X-Google-Smtp-Source: ABdhPJxI1KBn0TsgDp3DyQqblAi01bephKSl6c86Z7+PTcABb14fvdzOS9EMLr3KRGaiG817ECkKj2j23M8q4eSma5I=
-X-Received: by 2002:ac2:4293:: with SMTP id m19mr5618302lfh.254.1634643451083;
- Tue, 19 Oct 2021 04:37:31 -0700 (PDT)
+        bh=U36LIf5+tljufBvVEM58yc8vCPbhSTcJ8OL4uJO2PFM=;
+        b=cUTv5dtk8tmu6IDxWLKqDxk5n//CHDwoB5tJFfrlkD7cBQdkvO9xsOTPP7AfAB1598
+         TAVBKk2rkvFMkR82f84gJ4qYXxvsvvF/zec5zxCUpGzSjIfd48Ui/igCrQaPYQ27kn4U
+         afmXAXMpwoLjAZdLOLr5vW6Z3D8sji7y6pkAeDhSS/DSgJN/j8h/1XL6ZugEpQyGXfij
+         dbCPu7d9HGL6Cy7ZWM9yDTaBRKjgNp1MBBEXlrCs/Kqh4dki0pw1VniLjqu5F71BadXl
+         ZSn6PyOekPtjHXxMk7jzQgvW1Ae9WX0PtUx9vpW/VIFj3VMXaIRjVPrsM9uZbfNKpfKf
+         KA/g==
+X-Gm-Message-State: AOAM532O/G693hdUuh3eKKusfkN1utmB964b4euO8WQaPWToQpxz4QpU
+        eauGgDh3koWu45PK8qxVHyTdTzFkCVxcnjv1OUHsaw==
+X-Google-Smtp-Source: ABdhPJzZoWIKBvppscKREVbWcuzaxw1WipKDOxdzvZxLuHJRu3ua1R5naxHREJaxvKXNplNOKPTE/Il2eRRibOTPz3U=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr5598334lfb.71.1634643456337;
+ Tue, 19 Oct 2021 04:37:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr>
+References: <1634383581-11055-1-git-send-email-zheyuma97@gmail.com>
+In-Reply-To: <1634383581-11055-1-git-send-email-zheyuma97@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 Oct 2021 13:36:54 +0200
-Message-ID: <CAPDyKFo-ahKB8naaBFBdrCy3f_a08s_2e9FnjwOqsDc1-gWYvg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mxs-mmc: disable regulator on error and in the
- remove function
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>, Chris Ball <cjb@laptop.org>,
+Date:   Tue, 19 Oct 2021 13:36:59 +0200
+Message-ID: <CAPDyKFp4tt4xA-Fo_E7yWV2Mi4ES5ko=g1XgfaJwxhkSiaCEMg@mail.gmail.com>
+Subject: Re: [PATCH] memstick: r592: Fix a UAF bug when removing the driver
+To:     Zheyu Ma <zheyuma97@gmail.com>
+Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
         linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Oct 2021 at 08:21, Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
+On Sat, 16 Oct 2021 at 13:26, Zheyu Ma <zheyuma97@gmail.com> wrote:
 >
-> The 'reg_vmmc' regulator is enabled in the probe. It is never disabled.
-> Neither in the error handling path of the probe nor in the remove
-> function.
+> In r592_remove(), the driver will free dma after freeing the host, which
+> may cause a UAF bug.
 >
-> Register a devm_action to disable it when needed.
+> The following log reveals it:
 >
-> Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> [   45.361796 ] BUG: KASAN: use-after-free in r592_remove+0x269/0x350 [r592]
+> [   45.364286 ] Call Trace:
+> [   45.364472 ]  dump_stack_lvl+0xa8/0xd1
+> [   45.364751 ]  print_address_description+0x87/0x3b0
+> [   45.365137 ]  kasan_report+0x172/0x1c0
+> [   45.365415 ]  ? r592_remove+0x269/0x350 [r592]
+> [   45.365834 ]  ? r592_remove+0x269/0x350 [r592]
+> [   45.366168 ]  __asan_report_load8_noabort+0x14/0x20
+> [   45.366531 ]  r592_remove+0x269/0x350 [r592]
+> [   45.378785 ]
+> [   45.378903 ] Allocated by task 4674:
+> [   45.379162 ]  ____kasan_kmalloc+0xb5/0xe0
+> [   45.379455 ]  __kasan_kmalloc+0x9/0x10
+> [   45.379730 ]  __kmalloc+0x150/0x280
+> [   45.379984 ]  memstick_alloc_host+0x2a/0x190
+> [   45.380664 ]
+> [   45.380781 ] Freed by task 5509:
+> [   45.381014 ]  kasan_set_track+0x3d/0x70
+> [   45.381293 ]  kasan_set_free_info+0x23/0x40
+> [   45.381635 ]  ____kasan_slab_free+0x10b/0x140
+> [   45.381950 ]  __kasan_slab_free+0x11/0x20
+> [   45.382241 ]  slab_free_freelist_hook+0x81/0x150
+> [   45.382575 ]  kfree+0x13e/0x290
+> [   45.382805 ]  memstick_free+0x1c/0x20
+> [   45.383070 ]  device_release+0x9c/0x1d0
+> [   45.383349 ]  kobject_put+0x2ef/0x4c0
+> [   45.383616 ]  put_device+0x1f/0x30
+> [   45.383865 ]  memstick_free_host+0x24/0x30
+> [   45.384162 ]  r592_remove+0x242/0x350 [r592]
+> [   45.384473 ]  pci_device_remove+0xa9/0x250
+>
+> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
 
 Applied for next, thanks!
 
@@ -86,37 +108,33 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/mxs-mmc.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  drivers/memstick/host/r592.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-> index 947581de7860..8c3655d3be96 100644
-> --- a/drivers/mmc/host/mxs-mmc.c
-> +++ b/drivers/mmc/host/mxs-mmc.c
-> @@ -552,6 +552,11 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
->  };
->  MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
->
-> +static void mxs_mmc_regulator_disable(void *regulator)
-> +{
-> +       regulator_disable(regulator);
-> +}
-> +
->  static int mxs_mmc_probe(struct platform_device *pdev)
->  {
->         struct device_node *np = pdev->dev.of_node;
-> @@ -591,6 +596,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
->                                 "Failed to enable vmmc regulator: %d\n", ret);
->                         goto out_mmc_free;
->                 }
-> +
-> +               ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
-> +                                              reg_vmmc);
-> +               if (ret)
-> +                       goto out_mmc_free;
+> diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+> index e79a0218c492..1d35d147552d 100644
+> --- a/drivers/memstick/host/r592.c
+> +++ b/drivers/memstick/host/r592.c
+> @@ -838,15 +838,15 @@ static void r592_remove(struct pci_dev *pdev)
 >         }
+>         memstick_remove_host(dev->host);
 >
->         ssp->clk = devm_clk_get(&pdev->dev, NULL);
+> +       if (dev->dummy_dma_page)
+> +               dma_free_coherent(&pdev->dev, PAGE_SIZE, dev->dummy_dma_page,
+> +                       dev->dummy_dma_page_physical_address);
+> +
+>         free_irq(dev->irq, dev);
+>         iounmap(dev->mmio);
+>         pci_release_regions(pdev);
+>         pci_disable_device(pdev);
+>         memstick_free_host(dev->host);
+> -
+> -       if (dev->dummy_dma_page)
+> -               dma_free_coherent(&pdev->dev, PAGE_SIZE, dev->dummy_dma_page,
+> -                       dev->dummy_dma_page_physical_address);
+>  }
+>
+>  #ifdef CONFIG_PM_SLEEP
 > --
-> 2.30.2
+> 2.17.6
 >
