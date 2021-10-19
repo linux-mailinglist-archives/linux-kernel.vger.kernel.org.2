@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7594339DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C664D4339AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhJSPMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:12:38 -0400
-Received: from forward400p.mail.yandex.net ([77.88.28.105]:50318 "EHLO
-        forward400p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230097AbhJSPMh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:12:37 -0400
-X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 Oct 2021 11:12:36 EDT
-Received: from sas1-35b601a382d3.qloud-c.yandex.net (sas1-35b601a382d3.qloud-c.yandex.net [IPv6:2a02:6b8:c08:c505:0:640:35b6:1a3])
-        by forward400p.mail.yandex.net (Yandex) with ESMTP id B3FDE642286;
-        Tue, 19 Oct 2021 18:03:09 +0300 (MSK)
-Received: from 2a02:6b8:c08:ff10:0:640:4fe1:bb3c (2a02:6b8:c08:ff10:0:640:4fe1:bb3c [2a02:6b8:c08:ff10:0:640:4fe1:bb3c])
-        by sas1-35b601a382d3.qloud-c.yandex.net (mxback/Yandex) with HTTP id 73eMvu1D8uQ1-38DSiAdb;
-        Tue, 19 Oct 2021 18:03:08 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxt.ru; s=mail; t=1634655788;
-        bh=RySuvpUFF5Z2mnwc3pWWlYjRFA8psdGb79jKB96dvSo=;
-        h=Message-Id:Date:Cc:Subject:To:From;
-        b=LuYqnK6keNdYKAST6FSAFHNtkE91MS1PB7lj3MqEcXkvoNy6ClnCbKgYv1ioDICqU
-         vJECXjXXppNR75wJDFwcufKKOiUm3Od2aAUbM5z4/QApjhIPttIo8zYAUUHULa3l3i
-         PsrTqbm5gNTJLZpfRsEoLG6QpsCpvLyaA1Jlscrs=
-Authentication-Results: sas1-35b601a382d3.qloud-c.yandex.net; dkim=pass header.i=@nxt.ru
-Received: by sas2-4fe1bb3c0a49.qloud-c.yandex.net with HTTP;
-        Tue, 19 Oct 2021 18:03:08 +0300
-From:   sanekf@nxt.ru
-To:     Takashi Iwai <tiwai@suse.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: WC vs UC mappings in snd_dma_sg_alloc()
+        id S232608AbhJSPGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:06:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229803AbhJSPGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:06:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A7236115A;
+        Tue, 19 Oct 2021 15:04:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634655847;
+        bh=32/zovTwFvkouc5ENTCs/No8X0J+VVtCWoVWVN/axmc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=iVieWef4zRJ55PGvCXzCgoZ15DMW3c4x6eUSJHyoDEnTHZpJARctM/82MuAIPp3is
+         v5pyHzulp6iaq7Rrd8CSjMCZzbvigsR+rGlqkau36HC2vttzNkLvloO8E32g/7T2W3
+         YEJ8ZcNHDlCEiZyc0s2OeE6ZEH0w8VDymDxirkkfKtLTCZBDYsomFv9pKQlzjGTu58
+         oPvd5K9NOpdVFb3c1dBeG5F4WZNy0BZ2KVlm8t75yy7NImAkokLqZbkFFkpsSa0Z+c
+         JqYmsYG338e/4dU7QOoCEnSxfQo42KvFCxwIE0s1ctaAVEnT3+59U/REyN1UbHNBJM
+         Jb0E3qzfn/S6A==
+Date:   Tue, 19 Oct 2021 10:04:05 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Xuesong Chen <xuesong.chen@linux.alibaba.com>
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] ACPI: APEI: Filter the PCI MCFG address with an
+ arch-agnostic method
+Message-ID: <20211019150405.GA2338201@bhelgaas>
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Tue, 19 Oct 2021 18:03:08 +0300
-Message-Id: <493661634654791@mail.yandex.ru>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW5OmSBM4mO1lDHs@Dennis-MBP.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Tue, Oct 19, 2021 at 12:50:33PM +0800, Xuesong Chen wrote:
+> The commit d91525eb8ee6 ("ACPI, EINJ: Enhance error injection tolerance
+> level") fixes the issue that the ACPI/APEI can not access the PCI MCFG
+> address on x86 platform, but this issue can also happen on other
+> architectures, for instance, we got below error message on arm64 platform:
+> ...
+> APEI: Can not request [mem 0x50100000-0x50100003] for APEI EINJ Trigger registers
+> ...
+> 
+> This patch will try to handle this case in a more common way instead of the
+> original 'arch' specific solution, which will be beneficial to all the
+> APEI-dependent platforms after that.
+> 
+> Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-I've stumbled across this code in sound/core/sgbuf.c:
+The purpose of this patch is not to fix a problem reported by the
+kernel test robot, so remove this tag.
 
-66 static void *snd_dma_sg_alloc(struct snd_dma_buffer *dmab, size_t size)
-67 {
-< ... >
-80 	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG) {
-81 		type = SNDRV_DMA_TYPE_DEV_WC;
-82 #ifdef pgprot_noncached
-83 		prot = pgprot_noncached(PAGE_KERNEL);
-84 #endif
-85 	}
-< ... >
-131 	area = vmap(sgbuf->page_table, sgbuf->pages, VM_MAP, prot);
+I know the robot found a problem with a previous version of this
+patch, but we treat that the same as a code review comment.  We
+normally don't explicitly credit reviewers unless it was something
+major, and then it would go in the commit log, not a "Reported-by"
+tag.
 
-Does not this violate x86 rules about using the same memory mapping type for all mappings? It seems that the following patch should fix it (only compile tested - my x86 PCs are either without Linux or without sound, and probably in practice this might not trigger any problems since both WC and UC-minus are incoherent types):
+It makes sense to credit the kernel test robot for things found in
+Linus' tree, but it's a little too aggressive about suggesting the tag
+for problems with unmerged changes.
 
------------------------------
+> Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 
-ALSA: memalloc: duly use pgprot_writecombine() for WC mapping
+This tag can only be added when Lorenzo explicitly supplies it
+himself.  I do not see that on the mailing list, so please remove this
+tag as well.  After Lorenzo supplies it, you can include it in future
+postings as long as you don't make significant changes to the patch.
 
-x86 has strict rules about not having memory type aliasing (Documentation/x86/pat.rst). snd_dma_sg_alloc() violates them by mapping first as WC (with set_memory_wc()) and then as UC- (with pgprot_noncached() + vmap()). Switching to pgprot_writecombine() should fix this.
-
-Signed-off-by: Aleksandr Fedorov <halcien@gmail.com>
-diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
-index 8352a5cdb19f..670b30c3b6e5 100644
---- a/sound/core/sgbuf.c
-+++ b/sound/core/sgbuf.c
-@@ -79,9 +79,7 @@ static void *snd_dma_sg_alloc(struct snd_dma_buffer *dmab, size_t size)
- 		return NULL;
- 	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG) {
- 		type = SNDRV_DMA_TYPE_DEV_WC;
--#ifdef pgprot_noncached
--		prot = pgprot_noncached(PAGE_KERNEL);
--#endif
-+		prot = pgprot_writecombine(PAGE_KERNEL);
- 	}
- 	sgbuf->dev = dmab->dev.dev;
- 	pages = snd_sgbuf_aligned_pages(size);
+Bjorn
