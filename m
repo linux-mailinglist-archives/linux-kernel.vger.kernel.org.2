@@ -2,234 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D814333AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4E44333B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 12:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235268AbhJSKk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 06:40:57 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:29310 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230123AbhJSKk4 (ORCPT
+        id S235270AbhJSKln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 06:41:43 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:53647 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhJSKll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 06:40:56 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JAaVT8010378;
-        Tue, 19 Oct 2021 10:38:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=iArUNgSW7wg5vF0G3exdVVyPjWDRm2tqmFGPAANWwVI=;
- b=SY11+oCG7347QDgEb5iQNLUSOKZfNI29bkVjQ36QWmdLkPxHOMUGy2F7Y0euElIv0Jrx
- /4GG9TmzaM2rSJY9ZtEyzfjpCrkkvgxAP7a2hreIJXkFRjxOnHU1zn/SMMWDxY0Jz0Ul
- KdVwnSzedHF0TE9m6lqxIuiuXezoqsreksDqKRPVE6QVmFQM411KvgUtOAyh9DtLfYOz
- EBZ2svVcgNTJdsnEH7V8zGpsX2URhUPuZhFfQb9+p69W9CxP9/IVx/SDNiDjJ6NxX3tV
- QnHDOKjI/Yx8zUYbkquNAPE5AuO50CCoBlC2LMTKCliOiNkERN8VAGnrKmGnXqb/YzHi Kg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bsr451c40-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 10:38:39 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19JAUnY4021132;
-        Tue, 19 Oct 2021 10:38:38 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by aserp3030.oracle.com with ESMTP id 3bqmsehh3r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Oct 2021 10:38:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mp8Y8qdOXYGbjjcnC0lQib6ALszL2qTV76b0j+zRVBMey2guaZqTuB33xMZ/9LHJIAy5uwQip+inIncDH/Q+9IolCol2q6wU2PIl8+6jRUeoj0bbn9Wn3Umg9kXz8nr3TQm8rQAFaMaMHOkLLunSA0VXYRrpr/jXQ3B5Qu5hMYILaUSXNBpFLi0u0TLl1VIC7PYSl8VV+wFNUi76PJtcNE6RMCGMzobKZdL9tVvYnmcc6XztDk9Jgm3sBujp317jBXi8PTwPuGNOYkzLi/D8MmvspZyNhHaidukP6inJDaJpJWLI+T/UVgtNS/fW7yN+/HG4yTiLB0udEXcgFW9arA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iArUNgSW7wg5vF0G3exdVVyPjWDRm2tqmFGPAANWwVI=;
- b=Q0+iooiKrVs6jUXRpD2skXsFp8xMvEUwRr84tstCVHntxp4z8t6JIyxr+e++mWzzFFIe5OnIAto95npRP3X0/Q6wtbqOPngk/phEcBS2jq00aAvGu2l35keCj2pyP2JPTtl5HZKSB99DLGhJFoZRiICrmutIi6UogFnyWUvuG/syYC4zB98mtdC9gJJhqR2fB1T94rbev8mgq8eFIuh/lXMz6ezqU4ZHxtX0RWHstF61BkVuUlf1v4G9q4rokhuAwKbjrVmi8/qtv9itbE5SXTODGyOwl4ezsxAFTLVOx+sofX7nokDmnI+2HqsGbfdT1k32xtmjt7MPRsUN6FYMzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iArUNgSW7wg5vF0G3exdVVyPjWDRm2tqmFGPAANWwVI=;
- b=FFhEk80wVep/rl4394BQ09Eo8iezAQ9hsrOhpD3uhZtAwVmEE9t8T/FL3vmn9f+WQJm7lJxJ//xCZQcpk5oqGZHqTohZfv1U+bAvdVDJgQIyiQ/F4jJlXPvwhIk0k06yu8M6AkHCuJDjf2KUECrcJ/fOoZ/8GaVSJMavfGnbpXk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by BLAPR10MB4867.namprd10.prod.outlook.com (2603:10b6:208:321::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Tue, 19 Oct
- 2021 10:38:37 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 10:38:36 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <jbacik@fb.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH stable-4.14.y] btrfs: always wait on ordered extents at fsync time
-Date:   Tue, 19 Oct 2021 18:38:20 +0800
-Message-Id: <4fb0d755f4265d71b2a0d314232e53b22067fb0b.1634624427.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.31.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0244.apcprd06.prod.outlook.com
- (2603:1096:4:ac::28) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
+        Tue, 19 Oct 2021 06:41:41 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20211019103927euoutp01dd5ff962a0fd2e4355a201098c18a3db~vaGPiyF4p1728517285euoutp01O;
+        Tue, 19 Oct 2021 10:39:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20211019103927euoutp01dd5ff962a0fd2e4355a201098c18a3db~vaGPiyF4p1728517285euoutp01O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1634639968;
+        bh=k1kzWdo5mMyAOnBWjwq1xK8wjhau4Rd288/hL7OWpiI=;
+        h=From:To:Cc:Subject:In-Reply-To:Date:References:From;
+        b=MVVIDbYDYBbchxbIGmT4ZREwmjZ9UBbY2a/dFcOd3OPkqs9zgTXLREoW3zhfRf+0I
+         FrrffyDaIYHDa0U/hFDO5Eck6s/SmF3sKRB2K8MCcigAzLZ341GymicUHcD64UucKS
+         aUNK3TrxYMSRL3e9B9gz19NZPl2Uw6K1tXkmG5Bk=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20211019103927eucas1p20e22699505a1f49ab7660a3cf8f7b9d7~vaGPMZNLv2874028740eucas1p2y;
+        Tue, 19 Oct 2021 10:39:27 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 73.20.42068.F50AE616; Tue, 19
+        Oct 2021 11:39:27 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20211019103927eucas1p23697a67a1be906965012c06be3542f56~vaGOt87x_1514615146eucas1p2L;
+        Tue, 19 Oct 2021 10:39:27 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211019103927eusmtrp2a70acbbe78e8d1d2bacc86a3a2616716~vaGOtLl-x1875118751eusmtrp2I;
+        Tue, 19 Oct 2021 10:39:27 +0000 (GMT)
+X-AuditID: cbfec7f4-c89ff7000002a454-26-616ea05fe460
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id AA.8C.20981.E50AE616; Tue, 19
+        Oct 2021 11:39:26 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20211019103926eusmtip2769bf9bc1bc904de5f6b1f18f5af3cde~vaGOcH3Vg0421004210eusmtip2e;
+        Tue, 19 Oct 2021 10:39:26 +0000 (GMT)
+From:   Lukasz Stelmach <l.stelmach@samsung.com>
+To:     Andrzej Hajda <andrzej.hajda@intel.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Update email of Andrzej Hajda
+In-Reply-To: <20211018211353.586986-1-andrzej.hajda@intel.com> (Andrzej
+        Hajda's message of "Mon, 18 Oct 2021 21:13:53 +0000")
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Date:   Tue, 19 Oct 2021 12:39:10 +0200
+Message-ID: <dleftjh7ddpacx.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-Received: from localhost.localdomain (39.109.140.76) by SG2PR06CA0244.apcprd06.prod.outlook.com (2603:1096:4:ac::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend Transport; Tue, 19 Oct 2021 10:38:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b443b619-b853-46ba-de58-08d992ec9b6b
-X-MS-TrafficTypeDiagnostic: BLAPR10MB4867:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BLAPR10MB48672419872D9FED0613B210E5BD9@BLAPR10MB4867.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: obMBX7u6Rrr73qi1ugFhh6TqD0gwaA51esjG6AZ4KqRHg8p1H/j800gYsIZHnihHZ+BwqnlA38Wfnokw6cWkat7pUH96HzK4K6oOM5jknWqaEA2w+cn542/4BL2/H29Cwj/iBerKnd5HkkxNQKC0D59OJgKpM+fAVN6rq0rye3EVidqQKQyK1zMEbsjddlkdD/tfPXFYuAcHZhzIvwtXUSKg2DafuKE+f4r1bjwJRx4vJH6NlDNLx/l6OAv/tjI7CTDlzEgVh1AogWzGR3RczqiOuoGvVWR/+RtorhJAvegu1CWTexe1Bg+fuuQZPdOJtecohdo/5mmj6y7nAlmFgOuijjk84z3CiIkwzlxNK+H8yVFPZ7ZF3irsmlhIzRTbcLsQZN8LI6XHKI62STRlyv0GoFuT3kS1b7ItENg7k++jgCTAy8Df0RYSdLstxyWvcY2T9RqGc/0efq4siRnyoSmWvBiscCr1KmGP2s3otr2hk1H3wN3pEj8MAfMHJ+cW7zr09q0msxK0UC6PZcHFL458LbBM4eiE6z8WPBUGQKLjaLEj+l9ZvG2/Zh0ZkfTA+LdrM2J+ZKOPsIkEJCYbrhQUCQMnm7gVhsEYirL6yhPZSjkYqpwga6waOKAEe7fYDpn0xlWFZH8MWFlt7DJhp+6vWzx/ti6LCNtmF4I68Lm5ZRBV4DRsT/ZBIdLuTjK4umPnkfv6O/pwxdp603u81A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(44832011)(8676002)(2906002)(26005)(8936002)(52116002)(186003)(316002)(54906003)(956004)(2616005)(508600001)(6512007)(86362001)(38350700002)(6486002)(38100700002)(83380400001)(6666004)(107886003)(36756003)(6506007)(66946007)(66476007)(4326008)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dfa7/meg28jIVqDSclf9+bmKQLIzQQJaxF0D7M3hDRUTDs+gqFO/7XMWuSff?=
- =?us-ascii?Q?KrDA9M/rY6OboRe8Qe0x6jQlrZSmShjM8l0gaKkQ3eg/2WQb3FrrLj+lgKXu?=
- =?us-ascii?Q?OD0kM/g9aJbKUtDtoFtdWRLh80KLqKNtPA90rUu8JKpygCArl/r4JFqsU/zb?=
- =?us-ascii?Q?DPXYuU7PcqVhq47EVKWPyIh142jbgklH7QoaH32/7/WjJPqkt11iRDZh+xJy?=
- =?us-ascii?Q?pNABHWxIZVFNry7xK8SYSe4yAbJEjuLRCNZH8x6YJ9oqw6mVgo1hRO37KO7p?=
- =?us-ascii?Q?8fsKRaqRcRmIKxtGtVrzqFu8MnaLxgEEB1+VvNrxjLfkz3UAE95w3TEJ/AVu?=
- =?us-ascii?Q?jdb64ZBVdml3elGh1gstnHjLeDTXzWXXq+UOGCcuvyNHjaSj9lt8YjD1nIuC?=
- =?us-ascii?Q?O3IuNRZC7uWSIBNsRYmn0R5pVvXnL7/nEKN3SCRDb4MoxDUR3Am2P8JaoGxA?=
- =?us-ascii?Q?pUWzQr+PZlj69syJyPLfXfrYoXoxplYOrKpJeHZBve/AvFGSQi1RS1DR+Zmo?=
- =?us-ascii?Q?wewpY0t7mqZbdfei1nu2sqzjTOH44qroL1nsRaIUnC1n+hb56TkyI5qCUiMj?=
- =?us-ascii?Q?R7jCmJUJQHjPmXoSqE+gqrI5hF0wjWmXmgWtQ9Drpeuq8NIzEUrQ4hFGsLFM?=
- =?us-ascii?Q?lu71Qy/xLvQU93/mQsKtLGKcznM1JsQZaqhZe1EAEDq6pewmbspmmHYWtIM4?=
- =?us-ascii?Q?NSL9qr1sZn7/UWBTah1HKJ6lZL1FM27uaTasLT+rB6J+Ar8y8QhlBOtIFdYi?=
- =?us-ascii?Q?LC4uz0vEC2jGCCb+HQEY9CdmsD/4P6Jdge0oMFDT1DsDlbyMVzyeRSuXaYim?=
- =?us-ascii?Q?1q1iGkSExYEn2sc5E7CU7SH0vZRWwGWKAKfNnB58SxvppoRT3aV+6mPstp7R?=
- =?us-ascii?Q?Ka2mRBhhJcBc92nUAvtzrv2aUHGSdr5XdSEr4BBY01+sHn6S7bCF6vPLNt8x?=
- =?us-ascii?Q?ezjWE/h96mULNZDQY//RM3ZSgMEq2a3c5FgxgOBPUE6kihqKrYsV2B8lLZvX?=
- =?us-ascii?Q?F/2DZxWO+BAqbPReNQPWGJ2ubSPfSgTvdcdWhhz9+MZR9+OFGF0QhhtVKg1n?=
- =?us-ascii?Q?h4zP/OiFr+X1zTFzrKMwxCnMHyBdDixOAXZHtkqN3D2fBbyaGrT3SDjc2EMa?=
- =?us-ascii?Q?qHckc6BKnQNnM1c/Yq+lZU+F2tJ/jjtpcNruTzEBhNvLLBUlWoprTfXlPJr+?=
- =?us-ascii?Q?8nVpp1JgNaU1TB4Wmki8vnHeX4FQmR7JLW+ybp/2QpE/eI0MbZBsLlWwHMqQ?=
- =?us-ascii?Q?7TvTPtdS8qlnA9piZgdwKkbl8ttGT5dQn+0iRgRvEf/bocbilbSbmytJ5Uyn?=
- =?us-ascii?Q?SiPtoqd4bA8lOxG2aJV7Ss3k?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b443b619-b853-46ba-de58-08d992ec9b6b
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 10:38:36.9271
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xCQVN3EvOmvV9HWQZqigVIbmwRLNVuqdJtOpipTZ+c/2VvRqcl3IbHgIqwl6rQ8ElW/D+2EGIIX83fejbLgNSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4867
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10141 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110190064
-X-Proofpoint-ORIG-GUID: Wu9cy2XsaWk3rl-KpUBr6n0jJlKCqfhZ
-X-Proofpoint-GUID: Wu9cy2XsaWk3rl-KpUBr6n0jJlKCqfhZ
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNKsWRmVeSWpSXmKPExsWy7djPc7rxC/ISDeb9UbS4v/gzi8WVr+/Z
+        LC7vmsNm0bNhK6vF2iN32S0Ov2lndWDzWLznJZPH/e7jTB59W1YxenzeJBfAEsVlk5Kak1mW
+        WqRvl8CV8XzFLaaClbIVyx78Zmxg3CDZxcjJISFgIvHy8HeWLkYuDiGBFYwSc0/uZIdwvjBK
+        rLw9mxGkSkjgM6PE23MZMB1vJm1igihazigx8+wTVgjnOaPEt9+TgGZxcLAJ6EmsXRsB0iAi
+        oC1x8fAlZpAaZoH9jBLnNq9iA6kRFrCX6P9sC1LDKVAv8XD3T2YQW1TAUuLPs4/sIDaLgKrE
+        zM+rmUBsXgFzianHDjJC2IISJ2c+YQGxmQVyJWaef8MIMl9C4AmHxIKpq5ghLnWRWLH1JxOE
+        LSzx6vgWdghbRuL/zvlMIDdIAC2ePMkMoreHUWLbnB8sEDXWEnfO/WKDsB0lDt/oY4Wo55O4
+        8VYQYi+fxKRt05khwrwSHW1CENUqEuv690BNkZLofbWCEcL2kPh8q58NElQTGSVmzD7HMoFR
+        YRaSd2YheWcW0FhmAU2J9bv0IcLaEssWvmaGsG0l1q17z7KAkXUVo3hqaXFuemqxUV5quV5x
+        Ym5xaV66XnJ+7iZGYBo6/e/4lx2My1991DvEyMTBeIhRBaj50YbVFxilWPLy81KVRHiPtecl
+        CvGmJFZWpRblxxeV5qQWH2KU5mBREudN2rImXkggPbEkNTs1tSC1CCbLxMEp1cAUVn7+mqN8
+        4PM3Djvmrfpq96dl06X0n/brenMkUyY21EfUnktOZbftveOwMFCcL/9V9tp651Wxu1b6LZq5
+        /u7Xg1JvGB4kHJYN1BJWfh58huVlgWTXM/1/S2Tcd4upB+1t3D/93uI1s+4l/NX1PdztJvJu
+        S21EhVTfIUNl19D23Z9leF/93GlnvNtKYvfsww2LX6cps6nITmld8LdzhbXpqXVlpisniPX0
+        OB97yyItcyeX72qu99Fr1eUzbievTexg4uHa0vKpRuR6D0vYsfX2M+9vtXzoeDhRw7Hkw+34
+        6edf7WTeZ3WwzsovOEOm8M0Hzecfn108/Hyp1MuafVJnLhotKtwZ/uXs8soPTPsuK7EUZyQa
+        ajEXFScCAPLOKZq+AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEIsWRmVeSWpSXmKPExsVy+t/xe7pxC/ISDRY1W1ncX/yZxeLK1/ds
+        Fpd3zWGz6NmwldVi7ZG77BaH37SzOrB5LN7zksnjfvdxJo++LasYPT5vkgtgidKzKcovLUlV
+        yMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DLeL7iFlPBStmKZQ9+
+        MzYwbpDsYuTkkBAwkXgzaRMTiC0ksJRRYtJX+y5GDqC4lMTKuekQJcISf651sXUxcgGVPGWU
+        WL6wlRmkhk1AT2Lt2giQGhEBbYmLhy8xg9QwCxxglHh0eyYrSI2wgL1E/2dbkBpOgXqJh7t/
+        MkOsspV4vngDC4gtKmAp8efZR3YQm0VAVWLm59Vg5/AKmEtMPXaQEcIWlDg58wlYPbNAtsTX
+        1c+ZJzAKzEKSmoUkNQtoM7OApsT6XfoQYW2JZQtfM0PYthLr1r1nWcDIuopRJLW0ODc9t9hI
+        rzgxt7g0L10vOT93EyMwgrYd+7llB+PKVx/1DjEycTAeYlQB6ny0YfUFRimWvPy8VCUR3mPt
+        eYlCvCmJlVWpRfnxRaU5qcWHGE2BXpjILCWanA+M7bySeEMzA1NDEzNLA1NLM2MlcV6TI2vi
+        hQTSE0tSs1NTC1KLYPqYODilGpjKmk5ZBCy6xTNVwffNjAdGgpZGL8Qb1KMl7h7yCfbjrVwq
+        UGnUsUhj9ZW7ItenbPJT19/Dbmskb58kMLFmuZt34XaGpu1mr+0W1HBaN3doVRx2ez3txX7F
+        DsGn83ybJk7wSmjm952x4tKV7RqeetHsU7TDzU3yu7iWVwtPObpK++8qz1Ln6LIlzI/vmlyR
+        7SubtqDKMC47Q/j335v7bRjSrnXyrH+1/uvUHyZMF2Jd/t7TuXJFty7jZ5/j3xtrbghJm5SL
+        ah+qLc7WspHnyosoFvm4skTs/9+LtfqVH0TfMi1p+/6V/Wfcj+I/PUkZT2tm75syrbQ4Jefy
+        hCc8T36ui4uewpk+L/dV/psdkkosxRmJhlrMRcWJALdNvPQ1AwAA
+X-CMS-MailID: 20211019103927eucas1p23697a67a1be906965012c06be3542f56
+X-Msg-Generator: CA
+X-RootMTR: 20211019103927eucas1p23697a67a1be906965012c06be3542f56
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20211019103927eucas1p23697a67a1be906965012c06be3542f56
+References: <20211018211353.586986-1-andrzej.hajda@intel.com>
+        <CGME20211019103927eucas1p23697a67a1be906965012c06be3542f56@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <jbacik@fb.com>
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Commit b5e6c3e170b77025b5f6174258c7ad71eed2d4de upstream.
+It was <2021-10-18 pon 21:13>, when Andrzej Hajda wrote:
+> Beside updating email, the patch updates maintainers
+> of Samsung drivers.
+>
+> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
+> ---
+>  .mailmap    |  1 +
+>  MAINTAINERS | 13 ++++++++-----
+>  2 files changed, 9 insertions(+), 5 deletions(-)
+>
+> diff --git a/.mailmap b/.mailmap
+> index 4f6e37da60589..4283a86f70d26 100644
+> --- a/.mailmap
+> +++ b/.mailmap
+> @@ -40,6 +40,7 @@ Andrew Vasquez <andrew.vasquez@qlogic.com>
+>  Andrey Konovalov <andreyknvl@gmail.com> <andreyknvl@google.com>
+>  Andrey Ryabinin <ryabinin.a.a@gmail.com> <a.ryabinin@samsung.com>
+>  Andrey Ryabinin <ryabinin.a.a@gmail.com> <aryabinin@virtuozzo.com>
+> +Andrzej Hajda <andrzej.hajda@intel.com> <a.hajda@samsung.com>
+>  Andy Adamson <andros@citi.umich.edu>
+>  Antoine Tenart <atenart@kernel.org> <antoine.tenart@bootlin.com>
+>  Antoine Tenart <atenart@kernel.org> <antoine.tenart@free-electrons.com>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 54cd05d3aab65..e3fadb4ebced3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2546,7 +2546,7 @@ N:	s3c64xx
+>  N:	s5pv210
+>=20=20
+>  ARM/SAMSUNG S5P SERIES 2D GRAPHICS ACCELERATION (G2D) SUPPORT
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	=C5=81ukasz Stelmach <l.stelmach@samsung.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  L:	linux-media@vger.kernel.org
+>  S:	Maintained
+> @@ -2570,7 +2570,8 @@ S:	Maintained
+>  F:	drivers/media/platform/s5p-jpeg/
 
-There's a priority inversion that exists currently with btrfs fsync.  In
-some cases we will collect outstanding ordered extents onto a list and
-only wait on them at the very last second.  However this "very last
-second" falls inside of a transaction handle, so if we are in a lower
-priority cgroup we can end up holding the transaction open for longer
-than needed, so if a high priority cgroup is also trying to fsync()
-it'll see latency.
+Acked-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
 
-Signed-off-by: Josef Bacik <jbacik@fb.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/file.c | 56 ++++---------------------------------------------
- 1 file changed, 4 insertions(+), 52 deletions(-)
+>=20=20
+>  ARM/SAMSUNG S5P SERIES Multi Format Codec (MFC) SUPPORT
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Marek Szyprowski <m.szyprowski@samsung.com>
+> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  L:	linux-media@vger.kernel.org
+>  S:	Maintained
+> @@ -6254,7 +6255,7 @@ F:	Documentation/devicetree/bindings/display/atmel/
+>  F:	drivers/gpu/drm/atmel-hlcdc/
+>=20=20
+>  DRM DRIVERS FOR BRIDGE CHIPS
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
+>  M:	Neil Armstrong <narmstrong@baylibre.com>
+>  M:	Robert Foss <robert.foss@linaro.org>
+>  R:	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> @@ -16748,13 +16749,15 @@ F:	Documentation/devicetree/bindings/net/nfc/sa=
+msung,s3fwrn5.yaml
+>  F:	drivers/nfc/s3fwrn5
+>=20=20
+>  SAMSUNG S5C73M3 CAMERA DRIVER
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/media/i2c/s5c73m3/*
+>=20=20
+>  SAMSUNG S5K5BAF CAMERA DRIVER
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/media/i2c/s5k5baf.c
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index dd2504322a87..2f386d8dbd0e 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2102,53 +2102,12 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	atomic_inc(&root->log_batch);
- 	full_sync = test_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
- 			     &BTRFS_I(inode)->runtime_flags);
-+
- 	/*
--	 * We might have have had more pages made dirty after calling
--	 * start_ordered_ops and before acquiring the inode's i_mutex.
-+	 * We have to do this here to avoid the priority inversion of waiting on
-+	 * IO of a lower priority task while holding a transaciton open.
- 	 */
--	if (full_sync) {
--		/*
--		 * For a full sync, we need to make sure any ordered operations
--		 * start and finish before we start logging the inode, so that
--		 * all extents are persisted and the respective file extent
--		 * items are in the fs/subvol btree.
--		 */
--		ret = btrfs_wait_ordered_range(inode, start, len);
--	} else {
--		/*
--		 * Start any new ordered operations before starting to log the
--		 * inode. We will wait for them to finish in btrfs_sync_log().
--		 *
--		 * Right before acquiring the inode's mutex, we might have new
--		 * writes dirtying pages, which won't immediately start the
--		 * respective ordered operations - that is done through the
--		 * fill_delalloc callbacks invoked from the writepage and
--		 * writepages address space operations. So make sure we start
--		 * all ordered operations before starting to log our inode. Not
--		 * doing this means that while logging the inode, writeback
--		 * could start and invoke writepage/writepages, which would call
--		 * the fill_delalloc callbacks (cow_file_range,
--		 * submit_compressed_extents). These callbacks add first an
--		 * extent map to the modified list of extents and then create
--		 * the respective ordered operation, which means in
--		 * tree-log.c:btrfs_log_inode() we might capture all existing
--		 * ordered operations (with btrfs_get_logged_extents()) before
--		 * the fill_delalloc callback adds its ordered operation, and by
--		 * the time we visit the modified list of extent maps (with
--		 * btrfs_log_changed_extents()), we see and process the extent
--		 * map they created. We then use the extent map to construct a
--		 * file extent item for logging without waiting for the
--		 * respective ordered operation to finish - this file extent
--		 * item points to a disk location that might not have yet been
--		 * written to, containing random data - so after a crash a log
--		 * replay will make our inode have file extent items that point
--		 * to disk locations containing invalid data, as we returned
--		 * success to userspace without waiting for the respective
--		 * ordered operation to finish, because it wasn't captured by
--		 * btrfs_get_logged_extents().
--		 */
--		ret = start_ordered_ops(inode, start, end);
--	}
-+	ret = btrfs_wait_ordered_range(inode, start, len);
- 	if (ret) {
- 		up_write(&BTRFS_I(inode)->dio_sem);
- 		inode_unlock(inode);
-@@ -2283,13 +2242,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 				goto out;
- 			}
- 		}
--		if (!full_sync) {
--			ret = btrfs_wait_ordered_range(inode, start, len);
--			if (ret) {
--				btrfs_end_transaction(trans);
--				goto out;
--			}
--		}
- 		ret = btrfs_commit_transaction(trans);
- 	} else {
- 		ret = btrfs_end_transaction(trans);
--- 
-2.31.1
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
 
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAmFuoE4ACgkQsK4enJil
+gBA9aggAnv121xyKAdO0Ue9VjAe6EhTYwBohYZrb116hLKwOs9K3NVQebppwD16j
+DjG2mML5PrsxfbjxmWd0gKLEBYTmE4Yow17i0TcjLZaXbaIbZBbNPeN5Nhv2PNwu
+WZX1bvamrvOtJwnIWWeU4wysvfgvMASzeRp8opBEj58Vi4woDehY7/X3+MmurI5K
+uY+UhR7uXiMykFnfQByxAjk0Y92c22HP3i+TrnhYZ9Vy/sbedk+PaPd3gQFN9k67
+3dnKTF47OwvrHAYKBNX8+6bJgMD/EcxIfYCf4lBGmezUsdLb2/64Y5FuEYfLqdob
+XI7ThbOwdXF3YqCGMwme29kl00PfgA==
+=vbOD
+-----END PGP SIGNATURE-----
+--=-=-=--
