@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B07432B93
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 03:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDBB432B95
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 03:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhJSBsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 21:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhJSBsI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 21:48:08 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5804C06161C;
-        Mon, 18 Oct 2021 18:45:56 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id q10-20020a17090a1b0a00b001a076a59640so1007782pjq.0;
-        Mon, 18 Oct 2021 18:45:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bmyYiX/NUQLZNLOTI9xr+fYlkHKgPJ5IMoked9OK5MA=;
-        b=jCP4Lvv+aWKjRvppe76F6YyPxRIbsryzzfSIAsHMZxxWKS4Qn6vXKbOXjcADUHcYrr
-         Da3ieWamwcyCbqnLB9Gk3Fz2RKaFx72rZwkui6wD+gjRsZcZdkhlzO1KD8UQYjWnRoUJ
-         At/MmE8+a51zC7Z077B7ifLKSXFBW9I8OUS5KG1rsyFD5x2G45msW/Kyd+M5HoOKCBw8
-         oZkYdO9XzWcuoVZ0zE35dBY0s6HuXUIQE40JW0ORvlDR90B/4dsnu4Z8g9pWBP4AP8Fv
-         Gw+Ilps/cxOUD95DgG5RCnW+73Qn33JsMmmc35JPN+SowzQVPSpqURJDpACRmCHL64HB
-         U4VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bmyYiX/NUQLZNLOTI9xr+fYlkHKgPJ5IMoked9OK5MA=;
-        b=TLGjRudO0iZFk6b+5FWNjyZghmohJ0ilCOiK1w77KgbrVpo1MXnv5rSzRdg9HrNDCp
-         LwPgOfm45iy6MFba1CBxPAyCGCy+yDo/J3obD5BgwDxtdQ3mgAR1worAzKNQRaHo+CfK
-         kUPd39oT9JmrLvqGTL6Kp+AJwYSop94+3fM56N3CvY44bNU/JnoaCv4Fh92JqUFLU+Ff
-         V3THBy++MwLiSsfsvHZsaqye19V/8P6RQpq3VfY7Sg0nPXV9JDEfEzEvb3ioR98IgdlE
-         r26ujY3AqCP6PAGLpudvTewcPD87aYEvxEQ/v+TaIxNRWvG3NCHyD2LCdVxiCuJC87Yw
-         1/LA==
-X-Gm-Message-State: AOAM531d2S3SYWge8YNNSWfzrJsyVWA8xSwKJfZU48z4aQcVLr3tzUZk
-        w0ZiJUqsaf9LBeGOcMIXm9g=
-X-Google-Smtp-Source: ABdhPJxZDkNjdM3kjqmX7ea+2BkW87DY3mmDG0E7+E9cIxCMRv7Pf9bsjGVqYHX1pfvqlIMdpEqg4Q==
-X-Received: by 2002:a17:90a:3189:: with SMTP id j9mr3022471pjb.54.1634607956531;
-        Mon, 18 Oct 2021 18:45:56 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id t22sm10719891pfg.148.2021.10.18.18.45.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 18:45:56 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     shuah@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ran Jianping <ran.jianping@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH selftests/bpf] selftests/bpf: remove duplicate include in cgroup_helpers.c.
-Date:   Tue, 19 Oct 2021 01:45:49 +0000
-Message-Id: <20211019014549.970830-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S231215AbhJSBsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 21:48:51 -0400
+Received: from mga14.intel.com ([192.55.52.115]:58305 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229588AbhJSBsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 21:48:50 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="228673420"
+X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; 
+   d="scan'208";a="228673420"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 18:46:33 -0700
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="661608314"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.123]) ([10.239.13.123])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 18:46:31 -0700
+Message-ID: <b9b72305-d05e-bb60-ab24-7d4eb45182e3@intel.com>
+Date:   Tue, 19 Oct 2021 09:46:29 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.2.0
+Subject: Re: [PATCH v2 6/7] KVM: VMX: Check Intel PT related CPUID leaves
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210827070249.924633-1-xiaoyao.li@intel.com>
+ <20210827070249.924633-7-xiaoyao.li@intel.com> <YTp/oGmiin19q4sQ@google.com>
+ <a7988439-5a4c-3d5a-ea4a-0fad181ad733@intel.com>
+ <486f0075-494d-1d84-2d85-1d451496d1f0@redhat.com>
+ <157ba65d-bd2a-288a-6091-9427e2809b02@intel.com>
+ <YW2uUcor5nhDZ3DS@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <YW2uUcor5nhDZ3DS@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ran Jianping <ran.jianping@zte.com.cn>
+On 10/19/2021 1:26 AM, Sean Christopherson wrote:
+> On Mon, Oct 18, 2021, Xiaoyao Li wrote:
+>> On 10/18/2021 8:47 PM, Paolo Bonzini wrote:
+>>>>> One option would be to bump that to the theoretical max of 15,
+>>>>> which doesn't seem too horrible, especially if pt_desc as a whole
+>>>>> is allocated on-demand, which it probably should be since it isn't
+>>>>> exactly tiny (nor ubiquitous)
+>>>>>
+>>>>> A different option would be to let userspace define whatever it
+>>>>> wants for guest CPUID, and instead cap nr_addr_ranges at
+>>>>> min(host.cpuid, guest.cpuid, RTIT_ADDR_RANGE).
+>>>
+>>> This is the safest option.
 
-unistd.h included in '/tools/testing/selftests/bpf/cgroup_helpers.c'
- is duplicated.It is also included on the 14 line.
+I think I misunderstood it. sigh...
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ran Jianping <ran.jianping@zte.com.cn>
----
- tools/testing/selftests/bpf/cgroup_helpers.c | 1 -
- 1 file changed, 1 deletion(-)
+It's not architecture consistent that guest sees a certain number of 
+RTIT_ADDR_RANGE from its CPUID but may get #GP when it accesses high index.
 
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index 8fcd44841bb2..9d59c3990ca8 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.c
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -11,7 +11,6 @@
- #include <fcntl.h>
- #include <unistd.h>
- #include <ftw.h>
--#include <unistd.h>
- 
- #include "cgroup_helpers.h"
- 
--- 
-2.25.1
+OK, you mean it's userspace's fault and KVM shouldn't get blamed for it. 
+It seems reasonable for me now.
+
+>> My concern was that change userspace's input silently is not good.
+> 
+> Technically KVM isn't changing userspace's input, as KVM will still enumerate
+> CPUID as defined by userspace.  What KVM is doing is refusing to emulate/virtualize
+> a bogus vCPU model, e.g. by injecting #GP on an MSR access that userspace
+> incorrectly told the guest was legal.  That is standard operation procedure for
+> KVM, e.g. there are any number of instructions that will fault if userspace lies
+> about the vCPU model.
+> 
+>> prefer this, we certainly need to extend the userspace to query what value
+>> is finally accepted and set by KVM.
+> 
+> That would be __do_cpuid_func()'s responsibility to cap leaf 0x14 output with
+> RTIT_ADDR_RANGE.  I.e. enumerate the supported ranges in KVM_GET_SUPPORTED_CPUID,
+> after that it's userspace's responsibility to not mess up.
+> 
+
+
 
