@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8415F4334CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C91D4334D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235349AbhJSLjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:39:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:48032 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhJSLjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:39:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E873D6E;
-        Tue, 19 Oct 2021 04:36:51 -0700 (PDT)
-Received: from [10.57.25.70] (unknown [10.57.25.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3AE03F70D;
-        Tue, 19 Oct 2021 04:36:49 -0700 (PDT)
-Subject: Re: [PATCH v5 03/15] arm64: errata: Add workaround for TSB flush
- failures
-To:     Will Deacon <will@kernel.org>
-Cc:     mathieu.poirier@linaro.org, catalin.marinas@arm.com,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
- <20211014223125.2605031-4-suzuki.poulose@arm.com>
- <20211019110233.GD13251@willie-the-truck>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <850c67de-a656-7515-e575-d47d2af78200@arm.com>
-Date:   Tue, 19 Oct 2021 12:36:48 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S235442AbhJSLkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235400AbhJSLj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:39:57 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F47C06176F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:32 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id n8so6761647lfk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 04:37:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D5PzwEBrOldlaIz/yoBnECaUyGI46VY83yvfxIz1ZF4=;
+        b=WXLTnuVzOfIvphbQT4ZFrAt0wNTFY+MOeJZN7s04aT4LzVae1rULH5dGy0LzUllzwz
+         2I4HFJQR5QtcmWPoKV+r+z10l5H05Rzls7CPnkijH4T6AEiHheOanmzBjxzEQ6qUxQME
+         k4oVD0v2jt2O4MWMDbs4klhoyOG7bMYoHh5YdkRVDZFUl9eE1b7WqwkPZqczaB2BDBB2
+         IFs/RI6e7oQxWn2EIZdL68Snl+58JXtiGJpflTE9bgI067dDWM1naY3dh1uRG/qfmZ5+
+         5Ji72Gr0JlOP1Ij/DTKFk+dzrGseMPb1EWaEFK4otMo4H4NaGZIaDuk/JgFMvPPmf7wu
+         kSWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D5PzwEBrOldlaIz/yoBnECaUyGI46VY83yvfxIz1ZF4=;
+        b=2h4Bv9pYNGnyrZhX0qLic4qFLnK9TuR1vjck8XjKWQNLHDyPHBeWDT/4bE+WwDxqXc
+         MTV7cMDu0NjyPUQqYzJ8TE1v7qzZ5yH69H6cGW68DGMrXL7x726bDrtK/yDRMSL7f1Xf
+         ZAjGs5a5Lf0gfTJMw1n55KrVdqHGqhqaeJjz57e8IFze0B4kXNScC396DxjfLg1Dtszl
+         LCXwaAu935GPxDfeYLzb6jxZ7InZlAwSbyNcWWHFKgWaHRZPzFLEDR8oAdpKGLPG/vMX
+         VfnwXlD5eKNgLuz5kjsDscsidyz8G3MPRfpni2/S0EPvBJBSeBMuMSryOf4BsuCMGp6g
+         tNYQ==
+X-Gm-Message-State: AOAM532vNsjwNs2Jf9O+vOqKAHtTez3n/AEP4orUm7NZrERUznkbe77m
+        klnUARX//p2005w5Wlffxq+Eg2GZxf+JMCACcbGYHw==
+X-Google-Smtp-Source: ABdhPJxI1KBn0TsgDp3DyQqblAi01bephKSl6c86Z7+PTcABb14fvdzOS9EMLr3KRGaiG817ECkKj2j23M8q4eSma5I=
+X-Received: by 2002:ac2:4293:: with SMTP id m19mr5618302lfh.254.1634643451083;
+ Tue, 19 Oct 2021 04:37:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211019110233.GD13251@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 19 Oct 2021 13:36:54 +0200
+Message-ID: <CAPDyKFo-ahKB8naaBFBdrCy3f_a08s_2e9FnjwOqsDc1-gWYvg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mxs-mmc: disable regulator on error and in the
+ remove function
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>, Chris Ball <cjb@laptop.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2021 12:02, Will Deacon wrote:
-> On Thu, Oct 14, 2021 at 11:31:13PM +0100, Suzuki K Poulose wrote:
->> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
->> index ccd757373f36..bdbeac75ead6 100644
->> --- a/arch/arm64/kernel/cpu_errata.c
->> +++ b/arch/arm64/kernel/cpu_errata.c
->> @@ -352,6 +352,18 @@ static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
->>   };
->>   #endif	/* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
->>   
->> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
->> +static const struct midr_range tsb_flush_fail_cpus[] = {
->> +#ifdef CONFIG_ARM64_ERRATUM_2067961
->> +	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
->> +#endif
->> +#ifdef CONFIG_ARM64_ERRATUM_2054223
->> +	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
->> +#endif
->> +	{},
->> +};
->> +#endif	/* CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
->> +
->>   const struct arm64_cpu_capabilities arm64_errata[] = {
->>   #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
->>   	{
->> @@ -558,6 +570,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
->>   		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
->>   		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
->>   	},
->> +#endif
->> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
-> 
-> You still haven't fixed this typo...
-> 
+On Sat, 16 Oct 2021 at 08:21, Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> The 'reg_vmmc' regulator is enabled in the probe. It is never disabled.
+> Neither in the error handling path of the probe nor in the remove
+> function.
+>
+> Register a devm_action to disable it when needed.
+>
+> Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Sorry about that. I thought it was about selecting the
-Kconfig entries, which was fixed. I will fix this.
+Applied for next, thanks!
 
-> Seriously, I get compile warnings from this -- are you not seeing them?
-
-No, I don't get any warnings. Is there something that I am missing ?
-
---8>--
-
-suzuki@ewhatever:coresight$ grep "WERROR\|TSB" .config
-CONFIG_WERROR=y
-CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE=y
-suzuki@ewhatever:coresight$ grep TSB arch/arm64/kernel/cpu_errata.c
-#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-#endif  /* CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
-#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
-                 .capability = ARM64_WORKAROUND_TSB_FLUSH_FAILURE,
+Kind regards
+Uffe
 
 
-suzuki@ewhatever:coresight$ touch arch/arm64/kernel/cpu_errata.c
-suzuki@ewhatever:coresight$ make -j16
-   CALL    scripts/atomic/check-atomics.sh
-   CALL    scripts/checksyscalls.sh
-   CHK     include/generated/compile.h
-   CC      arch/arm64/kernel/cpu_errata.o
-   AR      arch/arm64/kernel/built-in.a
-   AR      arch/arm64/built-in.a
-   GEN     .version
-   CHK     include/generated/compile.h
-   UPD     include/generated/compile.h
-   CC      init/version.o
-   AR      init/built-in.a
-   LD      vmlinux.o
-   MODPOST vmlinux.symvers
-   MODINFO modules.builtin.modinfo
-   GEN     modules.builtin
-   LD      .tmp_vmlinux.kallsyms1
-   KSYMS   .tmp_vmlinux.kallsyms1.S
-   AS      .tmp_vmlinux.kallsyms1.S
-   LD      .tmp_vmlinux.kallsyms2
-   KSYMS   .tmp_vmlinux.kallsyms2.S
-   AS      .tmp_vmlinux.kallsyms2.S
-   LD      vmlinux
-   SORTTAB vmlinux
-   SYSMAP  System.map
-   MODPOST modules-only.symvers
-   OBJCOPY arch/arm64/boot/Image
-   GEN     Module.symvers
-   GZIP    arch/arm64/boot/Image.gz
-
-Suzuki
-> 
-> Will
-> 
-
+> ---
+>  drivers/mmc/host/mxs-mmc.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+> index 947581de7860..8c3655d3be96 100644
+> --- a/drivers/mmc/host/mxs-mmc.c
+> +++ b/drivers/mmc/host/mxs-mmc.c
+> @@ -552,6 +552,11 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
+>
+> +static void mxs_mmc_regulator_disable(void *regulator)
+> +{
+> +       regulator_disable(regulator);
+> +}
+> +
+>  static int mxs_mmc_probe(struct platform_device *pdev)
+>  {
+>         struct device_node *np = pdev->dev.of_node;
+> @@ -591,6 +596,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
+>                                 "Failed to enable vmmc regulator: %d\n", ret);
+>                         goto out_mmc_free;
+>                 }
+> +
+> +               ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
+> +                                              reg_vmmc);
+> +               if (ret)
+> +                       goto out_mmc_free;
+>         }
+>
+>         ssp->clk = devm_clk_get(&pdev->dev, NULL);
+> --
+> 2.30.2
+>
