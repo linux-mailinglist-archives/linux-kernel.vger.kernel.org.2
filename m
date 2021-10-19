@@ -2,163 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE362433CBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B0C433CBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhJSQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:53:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229789AbhJSQxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:53:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8D0161175;
-        Tue, 19 Oct 2021 16:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634662291;
-        bh=DfTQJs64LQ8BFMva0fsuPqpILcNUsBEcTHtydyZExOo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Va78o910x+zTOVrNzgaURxPgJkVqKi+sM2NXvpj6TvxZ9GuO2e8fQ4zc53qS9W0G4
-         sdKrjckd77aMgt40aDLPWO9T1960oAgwqboSaRTIpNzoXPs0rSs7I4XwYXjh76LYNs
-         zJaIjJqr6SyRF2XvQpyVsbFZXqdJgRA4GYPehxxbLTP0SWGTCwSt6eVCDUNWtEngcX
-         EZQvzoTGDXiGQIuW5to2O/dIh2ldzxnSYEmaPtaTpA4IjoWiKNmy3uLNJ+iLOe63Yc
-         yQYc1rLfq/KMj3jmaLYC6Gg0+SHqtrR11JRJberBAYyxdttKlTaqoQ0ZuUcq4d5pfp
-         FQf7k6fPP3ZCA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 91D54410A1; Tue, 19 Oct 2021 13:51:27 -0300 (-03)
-Date:   Tue, 19 Oct 2021 13:51:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, rostedt <rostedt@goodmis.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        lkp <lkp@lists.01.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark@chromium.org, christian@brauner.io,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        bristot <bristot@redhat.com>,
-        aubrey li <aubrey.li@linux.intel.com>,
-        yu c chen <yu.c.chen@intel.com>
-Subject: Re: [sched.h] 317419b91e:
- perf-sanity-tests.Parse_sched_tracepoints_fields.fail
-Message-ID: <YW73j66QbG9i0MV+@kernel.org>
-References: <20211010102429.99577-4-laoar.shao@gmail.com>
- <20211014072707.GA18719@xsang-OptiPlex-9020>
- <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
- <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
+        id S234395AbhJSQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:54:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35168 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229789AbhJSQyh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:54:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634662344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RjMQi48Y3BWRD5Wrxhvo6RSSyJjbJwh5TzWGFZw/n9U=;
+        b=gxAknUuWaop6CXLzUcxMtyXC62cNx7F5dSR10KGM5k19xi3Q39+IwfLqobDgcPZp42DDYY
+        C2jvLJSs2DfJwgK4cRIUU5K+bLU3P/WLiJapmWATTQ8LMGg/Af2eZMVfBw1xaBdOieEEgu
+        brUe/Ydo0f2IbnSO/wY3Cx9swwSi0QY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-115-vmLSzqJtMX-r3WWMbZZ8Uw-1; Tue, 19 Oct 2021 12:52:23 -0400
+X-MC-Unique: vmLSzqJtMX-r3WWMbZZ8Uw-1
+Received: by mail-wm1-f71.google.com with SMTP id c69-20020a1c9a48000000b0030d95485d90so1037058wme.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 09:52:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=RjMQi48Y3BWRD5Wrxhvo6RSSyJjbJwh5TzWGFZw/n9U=;
+        b=4Q2OG2weqdZJW0LZQmA4o4s6o7oiq9VL1q8ogTuqVvrJAUF44VGdso5PSVRMDc8L4A
+         vj72OIyVp1hf3X5L7dj8npx+MzpNkzDFbys3EWhCvpw5K5PFHSygxdz525khuiMCEF1N
+         V/8+6UCHK2u+sTGuoj6SO6eT9Wsuz6AAHXKKBj+UYYBqVa7fWHLJngsvME8C4K3RDZ4S
+         2MDWo4dC9kbPOqeAM1DGh+2ei+cqL80y8MCbUEtOLdIQUAc9r7owpCbMBPQ4qP+LI7Za
+         oFlOrKnFK/GzmsNINsZ+jKauXFfAOG5l7CWT/Ty1vfPFzoftor7+mA9/D36NRPomh/Wo
+         O+7w==
+X-Gm-Message-State: AOAM532Xs4W0DYLaOioxTWYqqpygvsBisIFroEnGL4y+18+kdIN5Mw3A
+        5KDTD0t7d7dp7nEiNQlxL7Pk5uRmY0KuwOl4G/hFXdOGb0jq6zH4o+0pJ5MbdMpzYDNyOoyKDUz
+        yoR6dpX2kWf4GVaI0obVx7p3c
+X-Received: by 2002:adf:a390:: with SMTP id l16mr45622649wrb.291.1634662341714;
+        Tue, 19 Oct 2021 09:52:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFgKUnmqhDWkJbPB/NEuTMocAhYLf4akh06ar3YPj10YH9Ht4wI/IzCQvyoWjAcfV5wfHHlw==
+X-Received: by 2002:adf:a390:: with SMTP id l16mr45622606wrb.291.1634662341377;
+        Tue, 19 Oct 2021 09:52:21 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:8e02:b072:96b1:56d0? ([2001:b07:6468:f312:8e02:b072:96b1:56d0])
+        by smtp.gmail.com with ESMTPSA id g33sm2427155wmp.45.2021.10.19.09.52.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 09:52:20 -0700 (PDT)
+Message-ID: <166e2d66-1c16-29d4-3275-517310043ae0@redhat.com>
+Date:   Tue, 19 Oct 2021 18:52:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
-X-Url:  http://acmel.wordpress.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 0/7] KVM: VMX: PT (processor trace) optimization
+ cleanup and fixes
+Content-Language: en-US
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210827070249.924633-1-xiaoyao.li@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20210827070249.924633-1-xiaoyao.li@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 14, 2021 at 08:42:05AM -0400, Mathieu Desnoyers escreveu:
-> ----- On Oct 14, 2021, at 5:24 AM, Yafang Shao laoar.shao@gmail.com wrote:
-> > On Thu, Oct 14, 2021 at 3:08 PM kernel test robot <oliver.sang@intel.com> wrote:
-> > That issue is caused by another hardcode 16 ...
-
-> > Seems we should make some change as below,
-
-> > diff --git a/tools/perf/tests/evsel-tp-sched.c
-> > b/tools/perf/tests/evsel-tp-sched.c
-> > index f9e34bd26cf3..401a737b1d85 100644
-> > --- a/tools/perf/tests/evsel-tp-sched.c
-> > +++ b/tools/perf/tests/evsel-tp-sched.c
-> > @@ -42,7 +42,7 @@ int test__perf_evsel__tp_sched_test(struct test
-> > *test __maybe_unused, int subtes
-> >                return -1;
-> >        }
-
-> > -       if (evsel__test_field(evsel, "prev_comm", 16, false))
-> > +       if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN, false))
+On 27/08/21 09:02, Xiaoyao Li wrote:
+> Patch 1-3 are optimization and cleanup.
 > 
-> tools/perf/tests/* contains userspace test programs. This means it gets the
-> TASK_COMM_LEN from the uapi. The fix you propose won't do any good here.
+> Patch 4-7 are fixes for PT. Patch 4 and 5 fix the virtulazation of PT to
+> provide architectual consistent behavior for guest. Patch 6 fix the case
+> that malicious userspace can exploit PT to cause vm-entry failure or #GP
+> in KVM. Patch 7 fix the potential MSR access #GP if some PT MSRs not
+> available on hardware.
+> 
+> Patch 3 and patch 7 are added in v2.
 
-That specific test is just checking if the parsing is being done as
-expected, i.e. we know beforehand that COMMs have 16 bytes, so the test
-expects that.
+Queued patches 1-4, thanks.
 
-Now that it can have a different size, then the test should accept the
-two sizes as possible and pass if it is 16 or 24.
+Paolo
 
-Like in this patch:
-
-diff --git a/tools/perf/tests/evsel-tp-sched.c b/tools/perf/tests/evsel-tp-sched.c
-index f9e34bd26cf33536..182328f3f7f70e0e 100644
---- a/tools/perf/tests/evsel-tp-sched.c
-+++ b/tools/perf/tests/evsel-tp-sched.c
-@@ -5,7 +5,7 @@
- #include "tests.h"
- #include "debug.h"
- 
--static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
-+static int evsel__test_field_alt(struct evsel *evsel, const char *name, int size, int alternate_size, bool should_be_signed)
- {
- 	struct tep_format_field *field = evsel__field(evsel, name);
- 	int is_signed;
-@@ -23,15 +23,23 @@ static int evsel__test_field(struct evsel *evsel, const char *name, int size, bo
- 		ret = -1;
- 	}
- 
--	if (field->size != size) {
--		pr_debug("%s: \"%s\" size (%d) should be %d!\n",
-+	if (field->size != size && field->size != alternate_size) {
-+		pr_debug("%s: \"%s\" size (%d) should be %d",
- 			 evsel->name, name, field->size, size);
-+		if (alternate_size > 0)
-+			pr_debug(" or %d", alternate_size);
-+		pr_debug("!\n");
- 		ret = -1;
- 	}
- 
- 	return ret;
- }
- 
-+static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
-+{
-+	return evsel__test_field_alt(evsel, name, size, -1, should_be_signed);
-+}
-+
- int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtest __maybe_unused)
- {
- 	struct evsel *evsel = evsel__newtp("sched", "sched_switch");
-@@ -42,7 +50,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
- 		return -1;
- 	}
- 
--	if (evsel__test_field(evsel, "prev_comm", 16, false))
-+	if (evsel__test_field_alt(evsel, "prev_comm", 16, 24, false))
- 		ret = -1;
- 
- 	if (evsel__test_field(evsel, "prev_pid", 4, true))
-@@ -54,7 +62,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
- 	if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
- 		ret = -1;
- 
--	if (evsel__test_field(evsel, "next_comm", 16, false))
-+	if (evsel__test_field_alt(evsel, "next_comm", 16, 24, false))
- 		ret = -1;
- 
- 	if (evsel__test_field(evsel, "next_pid", 4, true))
-@@ -72,7 +80,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
- 		return -1;
- 	}
- 
--	if (evsel__test_field(evsel, "comm", 16, false))
-+	if (evsel__test_field_alt(evsel, "comm", 16, 24, false))
- 		ret = -1;
- 
- 	if (evsel__test_field(evsel, "pid", 4, true))
