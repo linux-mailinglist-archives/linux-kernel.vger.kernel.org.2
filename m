@@ -2,87 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CB3433F23
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF9E433F21
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 21:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbhJSTUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 15:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230432AbhJSTUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:20:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD43A60EE2;
-        Tue, 19 Oct 2021 19:18:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634671100;
-        bh=gQ8mFwkO2LHy0BaSGZp8wy9fYbOMNeZ+u2d3mSVXVjc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YWX3iEMh3xVmNbS9D1V3gsCoaa9IpyGzVbxWcU7EVHqorf7b24KMocLmkT4Z9R/Qd
-         YVCGGboYxN6f0gksXEAQfzaaLhwb+K6WmHpWqfhuGvRTtXcFU+t3WsKC1Qvz/gHwQl
-         3KmarBccafeAP/R9LAGYymZpJQs3w6IuY0s8cwHXgGMkCSGtjeh0ApmWJUjboJA37V
-         hWno2+j8UKNCggoOpcuX6L6/YGG8b9w16pgQY+aXB/bIYlVaAF4SuTytjp/8XoAbX+
-         zczigJtCvQZIaB4DO7cHmEqivd+/glA34CP50uvUvycp3Te57VIvxQl0hhPLsGjleI
-         UNiEAc5bG0S+w==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Nirmoy Das <nirmoy.das@amd.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [SUBMITTED 20200529] drm/selftests/mm: reduce per-function stack usage
-Date:   Tue, 19 Oct 2021 21:18:06 +0200
-Message-Id: <20211019191815.3159266-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234959AbhJSTUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 15:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230432AbhJSTUX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 15:20:23 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2F9C06161C;
+        Tue, 19 Oct 2021 12:18:10 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id n7-20020a05600c4f8700b00323023159e1so4877947wmq.2;
+        Tue, 19 Oct 2021 12:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=InDKItQ11uQ3VYhvXe8c9poh+/aIqQ+YampvUePROjQ=;
+        b=PyB9JkGY2AFcD0rrE/0D3wlN0mdMjEq2007SbKKlAoEOQfFxFOAvk1WmmNw6CdeVEU
+         O4U6Rvd6vbz0HEKUcIXw/xfb6y/9/1iSF2uiPFWGcnsH8sFDfSDWgwFcGPtW3P+fnlnx
+         c0MwDxenf1Fj02sX1dx+oh+zTwJs0cmFowxK1mJjcJUEekiFaF/9nehyOTykCtLRL0yd
+         /AMXpfwVAzRSYhjQs4Hcl8FLr/nxAsq0GaBjMIFNRgQ+P+F8I9KJfZnQoeGKf0JrUUwP
+         P+idXBO22RjbCJpY/6MnYwbkOpwGJDP6hfx31MKS5Ij3CL7T0Y+j9fyhD9qFD/NqIW0m
+         khrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=InDKItQ11uQ3VYhvXe8c9poh+/aIqQ+YampvUePROjQ=;
+        b=pWxSafBzXbsh8xYoQ5+ubLvTOdCEXrOol8ulNqcVhVODI464rnKBvRo7nKxi2KK5h7
+         lr5LVElcUrQq2tC//w/Mlt9887n6XcSI8VaSz+qyEr0ivdSNR3xFwMLK0YyXqq2COnNL
+         eeon7FQN1NZorof5XUFBXlBmLjQwM6uOHNeIYIBeNhws95Anf58h56bIM93AcNQSRbc7
+         rezwiktBX2o/zSMmCqGwQnttekEebLaKQhmL8682XCEXjwqYbme0nsYUWHH2S++z2Lzu
+         0MNbutp99LE0dijvz55tNHFnYegPTCkDc40aWlHHmisdbkSPgM842To6AcgGtzBKT6X7
+         T8cA==
+X-Gm-Message-State: AOAM533EdeMbEzUlns4L4IXx+HqoGDrraU8oNnqbjLd4BMgfzs1zjgwr
+        JMXLT96BeuBu95YALzgC3sc=
+X-Google-Smtp-Source: ABdhPJzdXAyggjZI6RBikmtOHBGe1gIxhrdxYTGJWDNVkLgORLdbVWGMUjq65DWDnbP8+R6F49T9IA==
+X-Received: by 2002:a7b:c441:: with SMTP id l1mr8033693wmi.69.1634671089090;
+        Tue, 19 Oct 2021 12:18:09 -0700 (PDT)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id n12sm2138786wri.22.2021.10.19.12.18.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 Oct 2021 12:18:08 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 20:18:06 +0100
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Erik Ekman <erik@kryo.se>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sfc: Export fibre-specific link modes for 1/10G
+Message-ID: <20211019191806.csewm7p26x3imk25@gmail.com>
+Mail-Followup-To: Erik Ekman <erik@kryo.se>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211018183709.124744-1-erik@kryo.se>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018183709.124744-1-erik@kryo.se>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Oct 18, 2021 at 08:37:08PM +0200, Erik Ekman wrote:
+> These modes were added to ethtool.h in 5711a98221443 ("net: ethtool: add support
+> for 1000BaseX and missing 10G link modes") back in 2016.
+> 
+> Only setting CR mode for 10G, similar to how 25/40/50/100G modes are set up.
+> 
+> Tested using SFN5122F-R7 (with 2 SFP+ ports) and a 1000BASE-BX10 SFP module.
+> Before:
+> 
+> $ ethtool ext
+> Settings for ext:
+> 	Supported ports: [ FIBRE ]
+> 	Supported link modes:   1000baseT/Full
+> 	                        10000baseT/Full
+> 	Supported pause frame use: Symmetric Receive-only
+> 	Supports auto-negotiation: No
+> 	Supported FEC modes: Not reported
+> 	Advertised link modes:  Not reported
+> 	Advertised pause frame use: No
+> 	Advertised auto-negotiation: No
+> 	Advertised FEC modes: Not reported
+> 	Link partner advertised link modes:  Not reported
+> 	Link partner advertised pause frame use: No
+> 	Link partner advertised auto-negotiation: No
+> 	Link partner advertised FEC modes: Not reported
+> 	Speed: 1000Mb/s
+> 	Duplex: Full
+> 	Auto-negotiation: off
+> 	Port: FIBRE
+> 	PHYAD: 255
+> 	Transceiver: internal
+>         Current message level: 0x000020f7 (8439)
+>                                drv probe link ifdown ifup rx_err tx_err hw
+> 	Link detected: yes
+> 
+> After:
+> 
+> $ ethtool ext
+> Settings for ext:
+> 	Supported ports: [ FIBRE ]
+> 	Supported link modes:   1000baseX/Full
+> 	                        10000baseCR/Full
+> 	Supported pause frame use: Symmetric Receive-only
+> 	Supports auto-negotiation: No
+> 	Supported FEC modes: Not reported
+> 	Advertised link modes:  Not reported
+> 	Advertised pause frame use: No
+> 	Advertised auto-negotiation: No
+> 	Advertised FEC modes: Not reported
+> 	Link partner advertised link modes:  Not reported
+> 	Link partner advertised pause frame use: No
+> 	Link partner advertised auto-negotiation: No
+> 	Link partner advertised FEC modes: Not reported
+> 	Speed: 1000Mb/s
+> 	Duplex: Full
+> 	Auto-negotiation: off
+> 	Port: FIBRE
+> 	PHYAD: 255
+> 	Transceiver: internal
+> 	Supports Wake-on: g
+> 	Wake-on: d
+>         Current message level: 0x000020f7 (8439)
+>                                drv probe link ifdown ifup rx_err tx_err hw
+> 	Link detected: yes
+> 
+> Signed-off-by: Erik Ekman <erik@kryo.se>
 
-The check_reserve_boundaries() function has a large array on the stack,
-over 500 bytes. It gets inlined into __igt_reserve, which has multiple
-other large structures as well but stayed just under the stack size
-warning limit of 1024 bytes until one more member got added to struct
-drm_mm_node, causing a warning:
+Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
 
-drivers/gpu/drm/selftests/test-drm_mm.c:371:12: error:
-stack frame size of 1032 bytes in function '__igt_reserve' [-Werror,-Wframe-larger-than=]
-
-As far as I can tell, this is not nice but will not be called from
-a context that is already low for the kernel stack, so just annotate
-the inner function as noinline_for_stack to ensure that each function
-by itself stays under the warning limit.
-
-Fixes: 0cdea4455acd ("drm/mm: optimize rb_hole_addr rbtree search")
-Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
-Link: https://lore.kernel.org/all/20200529201534.474853-1-arnd@arndb.de/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-This happens rather rarely, I just ran into it again and found my
-old patch.
----
- drivers/gpu/drm/selftests/test-drm_mm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/selftests/test-drm_mm.c b/drivers/gpu/drm/selftests/test-drm_mm.c
-index b768b53c4aee..76973c72855e 100644
---- a/drivers/gpu/drm/selftests/test-drm_mm.c
-+++ b/drivers/gpu/drm/selftests/test-drm_mm.c
-@@ -324,9 +324,8 @@ static bool expect_reserve_fail(struct drm_mm *mm, struct drm_mm_node *node)
- 	return false;
- }
- 
--static bool check_reserve_boundaries(struct drm_mm *mm,
--				     unsigned int count,
--				     u64 size)
-+static noinline_for_stack bool
-+check_reserve_boundaries(struct drm_mm *mm, unsigned int count, u64 size)
- {
- 	const struct boundary {
- 		u64 start, size;
--- 
-2.29.2
-
+> ---
+>  drivers/net/ethernet/sfc/mcdi_port_common.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/sfc/mcdi_port_common.c b/drivers/net/ethernet/sfc/mcdi_port_common.c
+> index 4bd3ef8f3384..e84cdcb6a595 100644
+> --- a/drivers/net/ethernet/sfc/mcdi_port_common.c
+> +++ b/drivers/net/ethernet/sfc/mcdi_port_common.c
+> @@ -133,9 +133,9 @@ void mcdi_to_ethtool_linkset(u32 media, u32 cap, unsigned long *linkset)
+>  	case MC_CMD_MEDIA_QSFP_PLUS:
+>  		SET_BIT(FIBRE);
+>  		if (cap & (1 << MC_CMD_PHY_CAP_1000FDX_LBN))
+> -			SET_BIT(1000baseT_Full);
+> +			SET_BIT(1000baseX_Full);
+>  		if (cap & (1 << MC_CMD_PHY_CAP_10000FDX_LBN))
+> -			SET_BIT(10000baseT_Full);
+> +			SET_BIT(10000baseCR_Full);
+>  		if (cap & (1 << MC_CMD_PHY_CAP_40000FDX_LBN))
+>  			SET_BIT(40000baseCR4_Full);
+>  		if (cap & (1 << MC_CMD_PHY_CAP_100000FDX_LBN))
+> @@ -192,9 +192,11 @@ u32 ethtool_linkset_to_mcdi_cap(const unsigned long *linkset)
+>  		result |= (1 << MC_CMD_PHY_CAP_100FDX_LBN);
+>  	if (TEST_BIT(1000baseT_Half))
+>  		result |= (1 << MC_CMD_PHY_CAP_1000HDX_LBN);
+> -	if (TEST_BIT(1000baseT_Full) || TEST_BIT(1000baseKX_Full))
+> +	if (TEST_BIT(1000baseT_Full) || TEST_BIT(1000baseKX_Full) ||
+> +	    TEST_BIT(1000baseX_Full))
+>  		result |= (1 << MC_CMD_PHY_CAP_1000FDX_LBN);
+> -	if (TEST_BIT(10000baseT_Full) || TEST_BIT(10000baseKX4_Full))
+> +	if (TEST_BIT(10000baseT_Full) || TEST_BIT(10000baseKX4_Full) ||
+> +	    TEST_BIT(10000baseCR_Full))
+>  		result |= (1 << MC_CMD_PHY_CAP_10000FDX_LBN);
+>  	if (TEST_BIT(40000baseCR4_Full) || TEST_BIT(40000baseKR4_Full))
+>  		result |= (1 << MC_CMD_PHY_CAP_40000FDX_LBN);
+> -- 
+> 2.31.1
