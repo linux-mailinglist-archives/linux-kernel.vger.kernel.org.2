@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA7B43321C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A815D43322A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235042AbhJSJZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235006AbhJSJZp (ORCPT
+        id S235070AbhJSJ0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:26:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44022 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235066AbhJSJ0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:25:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9E1C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:23:32 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mclLB-00052N-CE; Tue, 19 Oct 2021 11:23:25 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-6267-dd6f-bd00-49b6.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:6267:dd6f:bd00:49b6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 27707697F76;
-        Tue, 19 Oct 2021 09:23:21 +0000 (UTC)
-Date:   Tue, 19 Oct 2021 11:23:20 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Meng Li <Meng.Li@windriver.com>
-Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
-        mailhol.vincent@wanadoo.fr, socketcan@hartkopp.net,
-        ramesh.shanmugasundaram@bp.renesas.com, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] driver: net: can: disable clock when it is in enable
- status
-Message-ID: <20211019092320.wrs2o7cmn4pmnirt@pengutronix.de>
-References: <20211019091416.16923-1-Meng.Li@windriver.com>
+        Tue, 19 Oct 2021 05:26:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634635462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wmbGZV2ZKwLQrOAxpGl2pHHhTDBQE+6LCzInPZcyFEo=;
+        b=C2htgnLEqXtFHo7nE1qpoGRVdxdqRcTB3IflMkETyc9fR0quUHTlpcCqk6kwGhNPfIAhHQ
+        jhkqIXRXOwACDZrdOrG/XA5amm9qoraBH1lbLDebPQcJiBjHewJmSSFSr6c95W472XiRRi
+        F/UgFEyCmyvXONprfOgDRhBcbLey5oA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-Lm_WcdWwPiKJafreVln3Gg-1; Tue, 19 Oct 2021 05:24:16 -0400
+X-MC-Unique: Lm_WcdWwPiKJafreVln3Gg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9044B802575;
+        Tue, 19 Oct 2021 09:24:12 +0000 (UTC)
+Received: from T590 (ovpn-8-39.pek2.redhat.com [10.72.8.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 612425D6D5;
+        Tue, 19 Oct 2021 09:23:55 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 17:23:50 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YW6OptglA6UykZg/@T590>
+References: <YWeR4moCRh+ZHOmH@T590>
+ <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+ <YWjCpLUNPF3s4P2U@T590>
+ <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+ <YWk9e957Hb+I7HvR@T590>
+ <YWm68xUnAofop3PZ@bombadil.infradead.org>
+ <YWq3Z++uoJ/kcp+3@T590>
+ <YW3LuzaPhW96jSBK@bombadil.infradead.org>
+ <YW4uwep3BCe9Vxq8@T590>
+ <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gcthovzhffxiqrug"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019091416.16923-1-Meng.Li@windriver.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 19, 2021 at 08:23:51AM +0200, Miroslav Benes wrote:
+> > > By you only addressing the deadlock as a requirement on approach a) you are
+> > > forgetting that there *may* already be present drivers which *do* implement
+> > > such patterns in the kernel. I worked on addressing the deadlock because
+> > > I was informed livepatching *did* have that issue as well and so very
+> > > likely a generic solution to the deadlock could be beneficial to other
+> > > random drivers.
+> > 
+> > In-tree zram doesn't have such deadlock, if livepatching has such AA deadlock,
+> > just fixed it, and seems it has been fixed by 3ec24776bfd0.
+> 
+> I would not call it a fix. It is a kind of ugly workaround because the 
+> generic infrastructure lacked (lacks) the proper support in my opinion. 
+> Luis is trying to fix that.
 
---gcthovzhffxiqrug
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What is the proper support of the generic infrastructure? I am not
+familiar with livepatching's model(especially with module unload), you mean
+livepatching have to do the following way from sysfs:
 
-On 19.10.2021 17:14:16, Meng Li wrote:
-> If disable a clock when it is already in disable status, there
-> will be a warning trace generated. So, it is need to confirm
-> whether what status the clock is in before disable it.
->=20
-> Fixes: a23b97e6255b ("can: rcar_can: Move Renesas CAN driver to rcar dir")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+1) during module exit:
+	
+	mutex_lock(lp_lock);
+	kobject_put(lp_kobj);
+	mutex_unlock(lp_lock);
+	
+2) show()/store() method of attributes of lp_kobj
+	
+	mutex_lock(lp_lock)
+	...
+	mutex_unlock(lp_lock)
 
-Thanks for your patch. This problem should have been resolved with:
+IMO, the above usage simply caused AA deadlock. Even in Luis's patch
+'zram: fix crashes with cpu hotplug multistate', new/same AA deadlock
+(hot_remove_store() vs. disksize_store() or reset_store()) is added
+because hot_remove_store() isn't called from module_exit().
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=
-=3Df7c05c3987dcfde9a4e8c2d533db013fabebca0d
+Luis tries to delay unloading module until all show()/store() are done. But
+that can be obtained by the following way simply during module_exit():
 
-regards
-Marc
+	kobject_del(lp_kobj); //all pending store()/show() from lp_kobj are done,
+						  //no new store()/show() can come after
+						  //kobject_del() returns	
+	mutex_lock(lp_lock);
+	kobject_put(lp_kobj);
+	mutex_unlock(lp_lock);
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Or can you explain your requirement on kobject/module unload in a bit
+details?
 
---gcthovzhffxiqrug
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Ming
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFujoAACgkQqclaivrt
-76nC/gf/TRlVrZAuKsSSQtKrMHoOPskhErX7SyAT4+3HLmjHx9ZI7TNUsQxzky5n
-1tuEXlcPzKC8TGSqFrrBBqIUTGEFgZFozuzDBhEvh/AUQRpyP+BTxr1tRrVMBEvl
-mxI9HYl/WDw38CgLNoqKuh1XlNcOPKjyXYnqWMCfmC5qAD3ilkKz+hjTyHwHxOKV
-bvicXaMaeHsle9kDMpPYA0gZ8WLxXuykBlLhZsaQXeYS8Xoq3cWfDQFPQkMT5g+l
-0qzusN90qhQfHYaZlxgXso6dhe9dxYP0G0AgGZCzWdyLhyNqZ4PfmtJeDMsAJrsK
-wEhtgYcl+LMQ7o8ivu8sBoFPWh0LmA==
-=LeJ8
------END PGP SIGNATURE-----
-
---gcthovzhffxiqrug--
