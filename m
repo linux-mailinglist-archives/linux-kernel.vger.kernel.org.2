@@ -2,79 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB5F432DCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D87432DD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 08:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234246AbhJSGJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 02:09:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233786AbhJSGJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 02:09:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7372F61355;
-        Tue, 19 Oct 2021 06:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634623614;
-        bh=1yoLD7UxQCKRek9SwmvM0DGsrQjtyzfsq6N4DgP+9Ss=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GkH5bq2EiUejCMe7IzYbb4pkRp8wb6ZYsMu7wWNuvzQp/i3yZUj+w7V9SCvPb+Lyl
-         0dqRoYVuz9gWsu84PGxUp/fVtKJCKQHZXJP769BXWLWjpZjrK74uFMjl6JcLrp8064
-         QEojuDO5OzQiz8E7UEFWbGjsj0yHPqLim8B6Ktzd02jracE4sliGEEG86HKkFIz3+x
-         8jGRDQx3DOCjFWyLPT6OHK7zs6jgpKlzOaevbHcLISbz8Yvf+ZQLYprQ+bbACnNwV6
-         8Ig7yVm+4YexcAwnr02Y7q+2jSPMqSyB+vTc10lD3YDR9Bip7sbSjzmHxXBEFix4Q/
-         Jr+1ZtrI5mAyw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mciGx-001ks2-Tr; Tue, 19 Oct 2021 07:06:51 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        "Songxiaowei" <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH v14 11/11] PCI: kirin: Allow removing the driver
-Date:   Tue, 19 Oct 2021 07:06:48 +0100
-Message-Id: <a0033f35cee9847a7d90aa7cdf3919a77c656130.1634622716.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1634622716.git.mchehab+huawei@kernel.org>
-References: <cover.1634622716.git.mchehab+huawei@kernel.org>
+        id S234212AbhJSGKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 02:10:30 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:33399 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234272AbhJSGKQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:10:16 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 724F65C014D;
+        Tue, 19 Oct 2021 02:08:00 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 19 Oct 2021 02:08:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:content-type:mime-version
+        :content-transfer-encoding; s=fm1; bh=hRkgF8ZZUt/Xog6cwemU0+CcHu
+        F63kpq3UXZqXJb3o4=; b=FBXQq6WeG5I6iCMgCXshirHJL4kIBEjxMje0gYWmqk
+        axiECcT11JQp0tw4/jV6uKNbA+KhH5ccSJqomwFAELDrv0mmNtOuPjoSrtYkz8u4
+        c18XnTvRw/RlECguaxY1BFtPtVXh4s5t3ucJ46Bg5wgwkWTxVPj78m10uQdab+lA
+        00Hoxxgy954btfkSZVP5dAHTf7EBo2yvob9GQu4rYoly+wzAAiFepMLe97zvD2yw
+        Y0R6nboPruv6q2wsN4PDdJejqMpnFuInkqjm8mVJPX/L59LhN2AM3THPQmeFi6jC
+        TLvjVqjtQVjzq6SpaCqWxCH4q1s56YBfMaS35RdFJIIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=hRkgF8
+        ZZUt/Xog6cwemU0+CcHuF63kpq3UXZqXJb3o4=; b=A+eTYj3bXGuU6EXzOTZI+A
+        01l/kDxnDtmXdqZG+jZlGO7gmlA9ozi+KT4PIoeGPkd7lHYr/uGdu27cssG0MhsJ
+        rZGX/NaFoQHSXxhZEIYigoAsAuROEGvFzpvC7A9t07mM0qqvyxesrqayp0YX2jkU
+        QD7FVHjtcfmJ2nzRnxMeZDXqwi17W+SlB7PUJYtJ1ESN++S8lD4yKaqHOKAn+SfQ
+        zR7XGVYNlPAMQtj9+78d7buz/lZaa8sP/wHBjTz3c97OOcQwFtAB5RJrd5hp9Pbd
+        lXrORK0jReIr0f4ZRWmWp/7Gh822C0iP3aVnUPhoEgX5SN3x2L2cmPY6d0pY7zjg
+        ==
+X-ME-Sender: <xms:wGBuYQG_Ejfg0M04c_C7vSsztnGqzFdimK23JmZum3Nlu3B5n4MF_A>
+    <xme:wGBuYZVVeIUtgU3V1HM-y0_S8R4i4Urz0dYYbz6-f3CrnSwg8gBdxoIWoGHHmxUmw
+    90pca4aytku>
+X-ME-Received: <xmr:wGBuYaKm3ANAjOByqfY_T2eraOMkL6UtVV1wIwhv3ZTtCfTRELVz3OQbe2RPYqGK1PqiXM8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvuddguddtvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepkffuhffvffgtfggggfesthejre
+    dttderjeenucfhrhhomhepkfgrnhcumfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhn
+    vghtqeenucggtffrrghtthgvrhhnpedtueehffeukeekuddvtdfffefhveekgfehteevle
+    dvieelgeekieevkedtgfelueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnhesth
+    hhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:wGBuYSHr40BfumI0p_ZJQBPE7JmCJMXiFUh8j8_1kMXlp5OsGigiPQ>
+    <xmx:wGBuYWWH-gJBsFpex75bD-pLFXY_y21iFcfJ9JsLpDrjp3UnU8dc0Q>
+    <xmx:wGBuYVMAU0JDv4DR_cO4pXJmTTSd0t3MVEOaBote3EJVkRNoBaQ0xg>
+    <xmx:wGBuYfc1p2ait6Q3JA88MKQRBcx9WENGsAe48FhYeH7N7GXrocCCow>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 19 Oct 2021 02:07:58 -0400 (EDT)
+Message-ID: <b54fb31652a4ba76b39db66b8ae795ee3af6f025.camel@themaw.net>
+Subject: [ANNOUNCE] autofs 5.1.8 release
+From:   Ian Kent <raven@themaw.net>
+To:     autofs@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 19 Oct 2021 14:07:55 +0800
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that everything is in place at the poweroff sequence,
-this driver can use module_platform_driver(), which allows
-it to be removed.
+Hi all,
 
-Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+It's time for a release, autofs-5.1.8.
 
-See [PATCH v14 00/11] at: https://lore.kernel.org/all/cover.1634622716.git.mchehab+huawei@kernel.org/
+The bulk of the changes in this release are improvements to the
+internal hosts map and related code.
 
- drivers/pci/controller/dwc/pcie-kirin.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The internal hosts map was performing very poorly when there were a
+very large number of exports from a server. This was because the
+server exports are turned into an autofs map entry with an offset
+for each of the exports and the offset handling code was written
+with the assumption the number of offsets is small. After doing
+as much optimization as possible with the existing code accessing
+a server with 30k exports took more than 45 seconds on initial
+access and shutting down autofs would take more than a minute (with
+all offsets still present), not ok at all.
 
-diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-index fea4d717fff3..cdf568ea0f68 100644
---- a/drivers/pci/controller/dwc/pcie-kirin.c
-+++ b/drivers/pci/controller/dwc/pcie-kirin.c
-@@ -827,7 +827,7 @@ static struct platform_driver kirin_pcie_driver = {
- 		.suppress_bind_attrs	= true,
- 	},
- };
--builtin_platform_driver(kirin_pcie_driver);
-+module_platform_driver(kirin_pcie_driver);
- 
- MODULE_DEVICE_TABLE(of, kirin_pcie_match);
- MODULE_DESCRIPTION("PCIe host controller driver for Kirin Phone SoCs");
--- 
-2.31.1
+Because of need to handle offset mount trees as subtrees the existing
+linear list implementation was complicated and hard to maintain so it
+was re-written to leverage the recently added (in autofs-5.1.7) binary
+tree implementation. The result is much simpler and cleaner and takes
+10-15 seconds on initial access and about the same amount of time to
+shutdown autofs for a server with 30k exports. That's not quite good
+enough for interactive use but it's pretty close and, after all, there
+are a "lot" of exports.
+
+There are also quite a few bug fixes and minor improvements.
+
+autofs
+======
+
+The package can be found at:
+https://www.kernel.org/pub/linux/daemons/autofs/v5/
+
+It is autofs-5.1.8.tar.[gz|xz]
+
+No source rpm is there as it can be produced by using:
+
+rpmbuild -ts autofs-5.1.8.tar.gz
+
+and the binary rpm by using:
+
+rpmbuild -tb autofs-5.1.8.tar.gz
+
+Here are the entries from the CHANGELOG which outline the updates:
+
+- add xdr_exports().
+- remove mount.x and rpcgen dependencies.
+- dont use realloc in host exports list processing.
+- use sprintf() when constructing hosts mapent.
+- fix mnts_remove_amdmount() uses wrong list.
+- Fix option for master read wait.
+- eliminate cache_lookup_offset() usage.
+- fix is mounted check on non existent path.
+- simplify cache_get_parent().
+- set offset parent in update_offset_entry().
+- remove redundant variables from mount_autofs_offset().
+- remove unused parameter form do_mount_autofs_offset().
+- refactor umount_multi_triggers().
+- eliminate clean_stale_multi_triggers().
+- simplify mount_subtree() mount check.
+- fix mnts_get_expire_list() expire list construction.
+- fix inconsistent locking in umount_subtree_mounts().
+- fix return from umount_subtree_mounts() on offset list delete.
+- pass mapent_cache to update_offset_entry().
+- fix inconsistent locking in parse_mount().
+- remove unused mount offset list lock functions.
+- eliminate count_mounts() from expire_proc_indirect().
+- eliminate some strlen calls in offset handling.
+- don't add offset mounts to mounted mounts table.
+- reduce umount EBUSY check delay.
+- cleanup cache_delete() a little.
+- rename path to m_offset in update_offset_entry().
+- don't pass root to do_mount_autofs_offset().
+- rename tree implementation functions.
+- add some multi-mount macros.
+- remove unused functions cache_dump_multi() and cache_dump_cache().
+- add a len field to struct autofs_point.
+- make tree implementation data independent.
+- add mapent tree implementation.
+- add tree_mapent_add_node().
+- add tree_mapent_delete_offsets().
+- add tree_mapent_traverse_subtree().
+- fix mount_fullpath().
+- add tree_mapent_cleanup_offsets().
+- add set_offset_tree_catatonic().
+- add mount and umount offsets functions.
+- switch to use tree implementation for offsets.
+- remove obsolete functions.
+- remove redundant local var from sun_mount().
+- use mount_fullpath() in one spot in parse_mount().
+- pass root length to mount_fullpath().
+- remove unused function master_submount_list_empty().
+- move amd mounts removal into lib/mounts.c.
+- check for offset with no mount location.
+- remove mounts_mutex.
+- remove unused variable from get_exports().
+- add missing free in handle_mounts().
+- remove redundant if check.
+- fix possible memory leak in master_parse().
+- fix possible memory leak in mnts_add_amdmount().
+- fix double unlock in parse_mount().
+- add length check in umount_subtree_mounts().
+- fix flags check in umount_multi().
+- dont try umount after stat() ENOENT fail.
+- remove redundant assignment in master_add_amd_mount_section_mounts().
+- fix dead code in mnts_add_mount().
+- fix arg not used in error print.
+- fix missing lock release in mount_subtree().
+- fix double free in parse_mapent().
+- refactor lookup_prune_one_cache() a bit.
+- cater for empty mounts list in mnts_get_expire_list().
+- add ext_mount_hash_mutex lock helpers.
+- fix amd section mounts map reload.
+- fix dandling symlink creation if nis support is not available.
+- dont use AUTOFS_DEV_IOCTL_CLOSEMOUNT.
+- fix lookup_prune_one_cache() refactoring change.
+- fix amd hosts mount expire.
+- fix offset entries order.
+- use mapent tree root for tree_mapent_add_node().
+- eliminate redundant cache lookup in tree_mapent_add_node().
+- fix hosts map offset order.
+- fix direct mount deadlock.
+- add missing description of null map option.
+- fix nonstrict offset mount fail handling.
+- fix concat_options() error handling.
+- eliminate some more alloca usage.
+- use default stack size for threads.
+- fix use of possibly NULL var in lookup_program.c:match_key().
+- fix incorrect print format specifiers in get_pkt().
+- add mapent path length check in handle_packet_expire_direct().
+- add copy length check in umount_autofs_indirect().
+- add some buffer length checks to master map parser.
+- add buffer length check to rmdir_path().
+- eliminate buffer usage from handle_mounts_cleanup().
+- add buffer length checks to autofs mount_mount().
+- make NFS version check flags consistent.
+- refactor get_nfs_info().
+- also require TCP_REQUESTED when setting NFS port.
+
+Ian
+
+
 
