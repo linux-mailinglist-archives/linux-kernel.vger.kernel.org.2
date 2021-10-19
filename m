@@ -2,69 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A814339F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A580B4339F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhJSPPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:15:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34780 "EHLO mail.kernel.org"
+        id S233462AbhJSPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:16:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhJSPPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:15:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B2860FDA;
-        Tue, 19 Oct 2021 15:13:40 +0000 (UTC)
+        id S232601AbhJSPQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:16:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FCF460FDA;
+        Tue, 19 Oct 2021 15:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634656421;
-        bh=Ph3L3ROWzUXZd5aNMX2ea0Ma/VqirN/nUACXx0Cn39o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=by9L8Lqy4IdC7k1SO8beXKphcYzIZC45I46BlYUaQ4he4C2hT4tNiA4TG/4fEDtQ5
-         KocFL9OvPiN91aZZDJIJ1e6cvlw972e0Lz9ZtFdsdTJKH1LFoQ25LPBgI1hQiWDnVr
-         cCJsuJcgH+zqVLqqz7EzkbqvY3Y2m+h9TgPBp3/qrxuaX4C2lp5qz6Q0/krvSzuEb0
-         lYsRa4DP6zFy1wmG9L6/0hQYIh8ABx3mR/CaqLoG+UxX5fJ3V8Xfk6duvATOKQhJGs
-         Kkt6qcbP2AgpjzZLZtvOtih0/jSlyPy0tJ2/IC3WAm6tSIvzKKLKoJBOeWfp6OWB48
-         wBVkz8f2LF/QQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Xin Hao <xhao@linux.alibaba.com>
-Cc:     sjpark@amazon.de, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mm/damon: Remove unnecessary variable initialization
-Date:   Tue, 19 Oct 2021 15:13:38 +0000
-Message-Id: <20211019151338.17052-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <a2ddd67548879fe8f386f8daf522b47fdf99f581.1634653088.git.bier@B-X3VXMD6M-2058.local>
+        s=k20201202; t=1634656435;
+        bh=9XoFczMc+6tFEnlfl7hf3gXyyeGcNpPKujV8wE7uMk0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=raIJEbfogEXYYugcM4ZZnVr7nSCS8Le0kLTOHNQh/D1aqCahzkGvvuchWQJbtrZn7
+         Cf9uAAjcs9hr6veVBSde8LCLbiP5GvsFqAYAcgBTs8eJ0LJQ0jxV8+ZIsP4/V/NDQq
+         PxtLTNK3nJaBjQUT5KNi/eJN9P/N67JzAmRDfPd5wy2HbbsGwBpRAnEJCkBswqxAaU
+         un4oKRaPXm8BOMs1KDO56vsjy/DystQINPYVs+w+zNqtR2mxkwYZ+uyhXH9L5kbvJ5
+         u6fiN0Vis2UkjeA7JgGtwPbgjY8R56eOM3WEyOXyTw/SGeT7ezkRSgAjO4gstD1Sah
+         CyJ/DdlpePzuQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DC5C5410A1; Tue, 19 Oct 2021 12:13:52 -0300 (-03)
+Date:   Tue, 19 Oct 2021 12:13:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Andrew Kilroy <andrew.kilroy@arm.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 21/21] perf metric: Allow modifiers on metrics.
+Message-ID: <YW7gsEDXBw1jk65o@kernel.org>
+References: <20211015172132.1162559-1-irogers@google.com>
+ <20211015172132.1162559-22-irogers@google.com>
+ <YW7e6OvE/juYY8it@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YW7e6OvE/juYY8it@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 22:26:03 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
-
-> In 'damon_va_apply_three_regions', There is no
-> need to set variable 'i' as 0
+Em Tue, Oct 19, 2021 at 12:06:17PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Oct 15, 2021 at 10:21:32AM -0700, Ian Rogers escreveu:
+> > By allowing modifiers on metrics we can, for example, gather the
+> > same metric for kernel and user mode. On a SkylakeX with
+> > TopDownL1 this gives:
+> > 
+> > $ perf stat -M TopDownL1:u,TopDownL1:k -a sleep 2
+> > 
+> >  Performance counter stats for 'system wide':
 > 
-> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+> Hi Ian, can you please take a look on this? this is on my perf/core
+> branch.
 
-Reviewed-by: SeongJae Park <sj@kernel.org>
+I processed the first version of this series, reviewed by Andi, can you
+please submit the diff from one to the other?
 
-
-Thanks,
-SJ
-
-> ---
->  mm/damon/vaddr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+- Arnaldo
+ 
+> - Arnaldo
 > 
-> diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
-> index b8ba44f69db6..90be463efff7 100644
-> --- a/mm/damon/vaddr.c
-> +++ b/mm/damon/vaddr.c
-> @@ -305,7 +305,7 @@ static void damon_va_apply_three_regions(struct damon_target *t,
->  		struct damon_addr_range bregions[3])
->  {
->  	struct damon_region *r, *next;
-> -	unsigned int i = 0;
-> +	unsigned int i;
->  
->  	/* Remove regions which are not in the three big regions now */
->  	damon_for_each_region_safe(r, next, t) {
-> -- 
-> 2.31.0
+> [root@five ~]# perf test -vv "for cgroups"
+> 70: Event expansion for cgroups                                     :
+> --- start ---
+> test child forked, pid 992568
+> Using CPUID AuthenticAMD-25-21-0
+> libpfm was not enabled
+> metric expr 1 / IPC for CPI
+> parsing metric: 1 / IPC
+> metric expr instructions / cycles for IPC
+> parsing metric: instructions / cycles
+> found event instructions
+> found event cycles
+> Parsing metric events '{instructions/metric-id=instructions/,cycles/metric-id=cycles/}:W'
+> copying metric event for cgroup 'A': instructions (idx=0)
+> copying metric event for cgroup 'B': instructions (idx=0)
+> copying metric event for cgroup 'C': instructions (idx=0)
+> free(): double free detected in tcache 2
+> test child interrupted
+> ---- end ----
+> Event expansion for cgroups: FAILED!
+> [root@five ~]#
+> 
+> ⬢[acme@toolbox perf]$ git bisect bad
+> c067335fcbfc67c36663dabdb9ccaa96badf9359 is the first bad commit
+> commit c067335fcbfc67c36663dabdb9ccaa96badf9359
+> Author: Ian Rogers <irogers@google.com>
+> Date:   Thu Oct 7 09:56:47 2021 -0700
+> 
+>     perf metric: Allow modifiers on metrics.
+> 
+>     By allowing modifiers on metrics we can, for example, gather the
+>     same metric for kernel and user mode. On a SkylakeX with
+>     TopDownL1 this gives:
+> 
+
+-- 
+
+- Arnaldo
