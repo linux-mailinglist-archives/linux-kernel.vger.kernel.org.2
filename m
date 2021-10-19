@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCBE433947
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A4F433945
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 16:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhJSOxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 10:53:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56514 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232363AbhJSOxp (ORCPT
+        id S232248AbhJSOxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 10:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhJSOxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 10:53:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634655092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jNZbYCm4L3nEmVjXY9zlfyw5oLY07ajTFGFsydEKogk=;
-        b=T0ozVcHj6KMMqQ+50fYAqU+Sw7lCl7RMiYpqUqwtHOU2aTcuY9oUKDmydZy7SV4OvGBLt9
-        HWwK8ary9B3UN0F13ZkCieTsZnGtHd3rKk30Ds3iktkN9yIrwH+zzRzS+ILzGL3h1ou4t0
-        al7GV+7xJr4K+GBZzD+QtmkToK4Ivug=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-UsGW6vaSN8eVW9F4nHehiA-1; Tue, 19 Oct 2021 10:51:28 -0400
-X-MC-Unique: UsGW6vaSN8eVW9F4nHehiA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29F3F801FCE;
-        Tue, 19 Oct 2021 14:51:27 +0000 (UTC)
-Received: from x2.localnet (unknown [10.22.33.180])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 58D9C7092D;
-        Tue, 19 Oct 2021 14:51:01 +0000 (UTC)
-From:   Steve Grubb <sgrubb@redhat.com>
-To:     paul@paul-moore.com, eparis@redhat.com, rgb@redhat.com,
-        linux-audit@redhat.com
-Cc:     wangweiyang2@huawei.com, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org,
-        Gaosheng Cui <cuigaosheng1@huawei.com>
-Subject: Re: [PATCH -next, v3 2/2] audit: return early if the rule has a lower priority
-Date:   Tue, 19 Oct 2021 10:51:00 -0400
-Message-ID: <5543735.DvuYhMxLoT@x2>
-Organization: Red Hat
-In-Reply-To: <20211016072351.237745-3-cuigaosheng1@huawei.com>
-References: <20211016072351.237745-1-cuigaosheng1@huawei.com> <20211016072351.237745-3-cuigaosheng1@huawei.com>
+        Tue, 19 Oct 2021 10:53:31 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E39C06161C;
+        Tue, 19 Oct 2021 07:51:17 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A040B12A;
+        Tue, 19 Oct 2021 16:51:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634655075;
+        bh=iqr2dLNHFhosre1aYzI61wcJM13iboH8sIoEJKyps30=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=bLuNS/ZpJW8GN1xKYnIsnR2JRunVKqoTyZs68JuNR1nd5VsuKeHmvXRTFfqv9ZO1z
+         h3oVNKV0cZ3i5+XNeTxtODMTOC1snvGgu3Ty9ZdzH+K/m0Vbq+iU5dc1uu1hzAFp5N
+         6BaeuJwtZmc7rbUHLKRnKSXnt77MA02hDKS1EwoI=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1634544036-36868-1-git-send-email-wangqing@vivo.com>
+References: <1634544036-36868-1-git-send-email-wangqing@vivo.com>
+Subject: Re: [PATCH V2] media: i2c: ccs: replace snprintf in show functions with sysfs_emit
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Qing Wang <wangqing@vivo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Qing Wang <wangqing@vivo.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Date:   Tue, 19 Oct 2021 15:51:13 +0100
+Message-ID: <163465507325.2083150.9943480540280019199@Monstersaurus>
+User-Agent: alot/0.9.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-On Saturday, October 16, 2021 3:23:51 AM EDT Gaosheng Cui wrote:
-> It is not necessary for audit_filter_rules() functions to check
-> audit fileds of the rule with a lower priority, and if we did,
-> there might be some unintended effects, such as the ctx->ppid
-> may be changed unexpectedly, so return early if the rule has
-> a lower priority.
-> 
-> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+Quoting Qing Wang (2021-10-18 09:00:36)
+> show() should not use snprintf() when formatting the value to be
+> returned to user space.
+>=20
+> Fix the following coccicheck warning:
+> drivers/media/i2c/ccs/ccs-core.c:3761: WARNING: use scnprintf or sprintf.
+>=20
+
+Thank you for posting a v2 with the lines adjusted ...
+
+> Signed-off-by: Qing Wang <wangqing@vivo.com>
 > ---
->  kernel/auditsc.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index 42d4a4320526..b517947bfa48 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -470,6 +470,9 @@ static int audit_filter_rules(struct task_struct *tsk,
->  	u32 sid;
->  	unsigned int sessionid;
-> 
-> +	if (ctx && rule->prio <= ctx->prio)
-> +		return 0;
-> +
+>  drivers/media/i2c/ccs/ccs-core.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs=
+-core.c
+> index 5363f3b..9158d3c
+> --- a/drivers/media/i2c/ccs/ccs-core.c
+> +++ b/drivers/media/i2c/ccs/ccs-core.c
+> @@ -2758,13 +2758,13 @@ ident_show(struct device *dev, struct device_attr=
+ibute *attr, char *buf)
+>         struct ccs_module_info *minfo =3D &sensor->minfo;
+> =20
+>         if (minfo->mipi_manufacturer_id)
+> -               return snprintf(buf, PAGE_SIZE, "%4.4x%4.4x%2.2x\n",
+> -                               minfo->mipi_manufacturer_id, minfo->model=
+_id,
+> -                               minfo->revision_number) + 1;
+> +               return sysfs_emit(buf, "%4.4x%4.4x%2.2x\n",
+> +                                   minfo->mipi_manufacturer_id, minfo->m=
+odel_id,
+> +                                   minfo->revision_number) + 1;
 
-Just wondering something... If the first thing we do is to decide to return, 
-should we have called the function in the first place? I wonder if this test 
-should be used to break out of the rule iteration loops so that we don't keep 
-calling only to return ?
-
--Steve
-
->  	cred = rcu_dereference_check(tsk->cred, tsk == current || 
-task_creation);
-> 
->  	for (i = 0; i < rule->field_count; i++) {
-> @@ -737,8 +740,6 @@ static int audit_filter_rules(struct task_struct *tsk,
->  	}
-> 
->  	if (ctx) {
-> -		if (rule->prio <= ctx->prio)
-> -			return 0;
->  		if (rule->filterkey) {
->  			kfree(ctx->filterkey);
->  			ctx->filterkey = kstrdup(rule->filterkey, GFP_ATOMIC);
+However they are still not lined up correctly.
+It should look like:
 
 
+return sysfs_emit(buf, "%4.4x%4.4x%2.2x\n",
+                  minfo->mipi_manufacturer_id, minfo->model_id,
+                  minfo->revision_number) + 1;
+
+With the m from 'minfo' aligned directly below the b from 'buf' to match
+the indention.
+
+--
+Regards
+
+Kieran
 
 
+
+>         else
+> -               return snprintf(buf, PAGE_SIZE, "%2.2x%4.4x%2.2x\n",
+> -                               minfo->smia_manufacturer_id, minfo->model=
+_id,
+> -                               minfo->revision_number) + 1;
+> +               return sysfs_emit(buf, "%2.2x%4.4x%2.2x\n",
+> +                                   minfo->smia_manufacturer_id, minfo->m=
+odel_id,
+> +                                   minfo->revision_number) + 1;
+>  }
+>  static DEVICE_ATTR_RO(ident);
+> =20
+> --=20
+> 2.7.4
+>
