@@ -2,137 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8FA433DA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25092433DAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234790AbhJSRld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234682AbhJSRlc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:41:32 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD732C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:39:19 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id w17so2336979plg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 10:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aIh9saArreNJuwW89Ey0XiYCdKVw/+DI3nSpmQ+KnZk=;
-        b=ac840SZ2tQBDysEKUu7JIgqu1DXb/RmqyWhcj5aO2bQsaec36NNyRrw7pYE264Aa5l
-         ATGTgHvDix/PMVU1JKvrbhcYkr/KC0TuyK0mc0cZsv0vE8aS45RLJ7LeCGNTf2ZL5jHF
-         CtNvMW1dAFALRT2gpeSywg6F+zzVhW27ths3n7cj1blOPf0uhWRHx8WQ46UcNTEYeJG5
-         o93i0WIbyL1I799Q/TWI7/IdN8iBKZVJboon555BYJ70EVm9zaDXiwwzQ+4ypc7/9cBd
-         MExoZJwoUrefvgA+q+ufCjpadLgSVqkmusnSlVWXff5wAxkYRN/G09drV2SwbBce4Mpf
-         xvOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aIh9saArreNJuwW89Ey0XiYCdKVw/+DI3nSpmQ+KnZk=;
-        b=OeswjmUZ1/vyHQzHaF8gJ1NLypqMa9q3Fzh0w9UOtz3j0O0Zt2NDYraHdY4H18RVge
-         3MC73iqCutAY1Jcg+1JBFkN8Om3zEM0Ii0lakoE0qDt49HBYk9xOvN3RvUcTNO+xAiVg
-         nAFWxOfZiWExo9Ai8/Vet8DQhlN7hQZmP9IEYb344BzDlCtxpiv9sRucZniRpxkD1aPm
-         arHXMAFJ0/AMW/GMIVGYsmVEEfgyin0rT7JSZqnw4EBkFBoa+QEWhuJ8m3kzMU95rTlC
-         i/WvMrJoXER4Lac6n6OnIoThIqoLQcYcTa3vizrzq0ZQGmhzmhJGOuKu0cyh5LCUb45X
-         1Oxw==
-X-Gm-Message-State: AOAM5330XT531f/wrSxsPqqSi/VB799lQxv81UoEf/+KCEXz3vtisARG
-        rCc3cmzekcZsB94+NsfoTJCZRA==
-X-Google-Smtp-Source: ABdhPJx6cYHvmTePVyoaUN9kahG9ENPoRxK6HbCGmsj8n9eioURUv101fiZoSUAt0tGA3cwa32k8cA==
-X-Received: by 2002:a17:90a:414c:: with SMTP id m12mr1388141pjg.187.1634665159309;
-        Tue, 19 Oct 2021 10:39:19 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d23sm3386554pjx.4.2021.10.19.10.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 10:39:17 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 11:39:15 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Stefano Stabellini <stefanos@xilinx.com>,
-        Bruce Ashfield <bruce.ashfield@xilinx.com>
-Subject: Re: [RFC PATCH 3/7] remoteproc: Remove vdev_to_rvdev and
- vdev_to_rproc from remoteproc API
-Message-ID: <20211019173915.GA3340362@p14s>
-References: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com>
- <20211001101234.4247-4-arnaud.pouliquen@foss.st.com>
+        id S234704AbhJSRmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:42:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231586AbhJSRmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:42:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C59E161355;
+        Tue, 19 Oct 2021 17:40:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634665238;
+        bh=CmkDVF4O9DMzn3vmYEeic/chg5gWAxEK0NpetX5xAgM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DBo0vktcw0U8GURxAuDOJliOjqa1JqTXkSp2AFYLzOzqq5aWyeBYAQWsXBUCMTTog
+         Rjq9ISOlFMfpojsmXmhCr3eT0lfjvDRksstB2U5F1ypuvPbYsVoH1O/88CERD5JNel
+         lw1VE0P+X1JgIBkXzp/4FhhUS/sOQ21mL5SpYP5HnSpLfjK6fswf6mpZ3mpFsBz08a
+         CqgqQlY/RD687qQySBFS5NSlqQOArudqL3fqxP7v98TDorukMUGGD53u7lmrl14ZzM
+         ifkbYKlmUKhAxJC0UTNlgVVVvtFNJ19Dm4qPqopFgGUOeo56Rt3HpnBlaHPOyZcdCj
+         jis2eLJr7WQOA==
+Date:   Tue, 19 Oct 2021 10:40:33 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] regulator: lp872x: fix enum conversion warning
+Message-ID: <YW8DEXD1bjW73coE@archlinux-ax161>
+References: <20211019153851.509626-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211001101234.4247-4-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <20211019153851.509626-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good morning,
-
-On Fri, Oct 01, 2021 at 12:12:30PM +0200, Arnaud Pouliquen wrote:
-> These both functions are only used by the remoteproc_virtio.
-
-s/"These both functions"/"Both of these functions"
-
-> There is no reason to expose them in the API.
-> Move the functions in remoteproc_virtio.c
+On Tue, Oct 19, 2021 at 05:38:43PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> clang warns that the argument to devm_gpiod_get_optional()
+> is the wrong type:
+> 
+> drivers/regulator/lp872x.c:689:57: error: implicit conversion from enumeration type 'enum lp872x_dvs_state' to different enumeration type 'enum gpiod_flags' [-Werror,-Wenum-conversion]
+>         dvs->gpio = devm_gpiod_get_optional(lp->dev, "ti,dvs", pinstate);
+>                     ~~~~~~~~~~~~~~~~~~~~~~~                    ^~~~~~~~
+> 
+> The enum value is specifcally chosen to be the same here, but
+> the compiler only sees the mismatched types. This could be
+> worked around using another ?: expression, but it seems easiest
+> to replace the assignment with a macro.
+> 
+> Fixes: 72bf80cf09c4 ("regulator: lp872x: replacing legacy gpio interface for gpiod")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+I sent basically the same patch but I also eliminated DSV_{LOW,HIGH}
+in favor of the GPIOD flags outright:
+
+https://lore.kernel.org/r/20211019004335.193492-1-nathan@kernel.org/
+
+Either one works so I do not really care which one gets merged.
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
 > ---
->  drivers/remoteproc/remoteproc_virtio.c | 12 ++++++++++++
->  include/linux/remoteproc.h             | 12 ------------
->  2 files changed, 12 insertions(+), 12 deletions(-)
+>  drivers/regulator/lp872x.c       | 6 +++---
+>  include/linux/regulator/lp872x.h | 8 +++-----
+>  2 files changed, 6 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-> index 5e5a78b3243f..c9eecd2f9fb2 100644
-> --- a/drivers/remoteproc/remoteproc_virtio.c
-> +++ b/drivers/remoteproc/remoteproc_virtio.c
-> @@ -25,6 +25,18 @@
+> diff --git a/drivers/regulator/lp872x.c b/drivers/regulator/lp872x.c
+> index 1dba5dbcd461..61412ebc8d8d 100644
+> --- a/drivers/regulator/lp872x.c
+> +++ b/drivers/regulator/lp872x.c
+> @@ -103,7 +103,7 @@ struct lp872x {
+>  	enum lp872x_id chipid;
+>  	struct lp872x_platform_data *pdata;
+>  	int num_regulators;
+> -	enum lp872x_dvs_state dvs_pin;
+> +	enum gpiod_flags dvs_pin;
+>  };
 >  
->  #include "remoteproc_internal.h"
->  
-> +static struct rproc_vdev *vdev_to_rvdev(struct virtio_device *vdev)
-> +{
-> +	return container_of(vdev->dev.parent, struct rproc_vdev, dev);
-> +}
-> +
-> +static  struct rproc *vdev_to_rproc(struct virtio_device *vdev)
-> +{
-> +	struct rproc_vdev *rvdev = vdev_to_rvdev(vdev);
-> +
-> +	return rvdev->rproc;
-> +}
-> +
->  static int copy_dma_range_map(struct device *to, struct device *from)
+>  /* LP8720/LP8725 shared voltage table for LDOs */
+> @@ -251,7 +251,7 @@ static int lp872x_regulator_enable_time(struct regulator_dev *rdev)
+>  static void lp872x_set_dvs(struct lp872x *lp, enum lp872x_dvs_sel dvs_sel,
+>  			struct gpio_desc *gpio)
 >  {
->  	const struct bus_dma_region *map = from->dma_range_map, *new_map, *r;
-> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> index 83c09ac36b13..e0600e1e5c17 100644
-> --- a/include/linux/remoteproc.h
-> +++ b/include/linux/remoteproc.h
-> @@ -684,18 +684,6 @@ int rproc_coredump_add_custom_segment(struct rproc *rproc,
->  				      void *priv);
->  int rproc_coredump_set_elf_info(struct rproc *rproc, u8 class, u16 machine);
+> -	enum lp872x_dvs_state state;
+> +	enum gpiod_flags state;
 >  
-> -static inline struct rproc_vdev *vdev_to_rvdev(struct virtio_device *vdev)
-> -{
-> -	return container_of(vdev->dev.parent, struct rproc_vdev, dev);
-> -}
-> -
-> -static inline struct rproc *vdev_to_rproc(struct virtio_device *vdev)
-> -{
-> -	struct rproc_vdev *rvdev = vdev_to_rvdev(vdev);
-> -
-> -	return rvdev->rproc;
-> -}
-> -
->  void rproc_add_subdev(struct rproc *rproc, struct rproc_subdev *subdev);
+>  	state = dvs_sel == SEL_V1 ? DVS_HIGH : DVS_LOW;
+>  	gpiod_set_value(gpio, state);
+> @@ -675,7 +675,7 @@ static const struct regulator_desc lp8725_regulator_desc[] = {
+>  static int lp872x_init_dvs(struct lp872x *lp)
+>  {
+>  	struct lp872x_dvs *dvs = lp->pdata ? lp->pdata->dvs : NULL;
+> -	enum lp872x_dvs_state pinstate;
+> +	enum gpiod_flags pinstate;
+>  	u8 mask[] = { LP8720_EXT_DVS_M, LP8725_DVS1_M | LP8725_DVS2_M };
+>  	u8 default_dvs_mode[] = { LP8720_DEFAULT_DVS, LP8725_DEFAULT_DVS };
 >  
->  void rproc_remove_subdev(struct rproc *rproc, struct rproc_subdev *subdev);
+> diff --git a/include/linux/regulator/lp872x.h b/include/linux/regulator/lp872x.h
+> index 8e7e0343c6e1..5b94fe38fc78 100644
+> --- a/include/linux/regulator/lp872x.h
+> +++ b/include/linux/regulator/lp872x.h
+> @@ -40,10 +40,8 @@ enum lp872x_regulator_id {
+>  	LP872X_ID_MAX,
+>  };
+>  
+> -enum lp872x_dvs_state {
+> -	DVS_LOW  = GPIOD_OUT_LOW,
+> -	DVS_HIGH = GPIOD_OUT_HIGH,
+> -};
+> +#define	DVS_LOW				GPIOD_OUT_LOW
+> +#define	DVS_HIGH			GPIOD_OUT_HIGH
+>  
+>  enum lp872x_dvs_sel {
+>  	SEL_V1,
+> @@ -59,7 +57,7 @@ enum lp872x_dvs_sel {
+>  struct lp872x_dvs {
+>  	struct gpio_desc *gpio;
+>  	enum lp872x_dvs_sel vsel;
+> -	enum lp872x_dvs_state init_state;
+> +	enum gpiod_flags init_state;
+>  };
+>  
+>  /**
 > -- 
-> 2.17.1
+> 2.29.2
 > 
