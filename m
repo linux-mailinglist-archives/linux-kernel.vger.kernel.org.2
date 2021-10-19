@@ -2,234 +2,441 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC20A4334BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78EE4334C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 13:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbhJSLeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 07:34:02 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46866 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhJSLeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:34:00 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 36B501F43268
-Received: by earth.universe (Postfix, from userid 1000)
-        id 571063C0CA8; Tue, 19 Oct 2021 13:31:44 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 13:31:44 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~okias/devicetree@lists.sr.ht
-Subject: Re: [PATCH] dt-bindings: power: reset: gpio-poweroff: Convert txt
- bindings to yaml
-Message-ID: <20211019113144.77zhcagw6lvwmfjy@earth.universe>
-References: <20211009163226.45564-1-david@ixit.cz>
+        id S235284AbhJSLgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 07:36:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62557 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230129AbhJSLgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:36:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634643246; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=cibclCvPjCwVswZ2Wn3nttdGOsW+ks1st2MqW5Y6/Uc=; b=dJklErR6rxfx+m22qnKbQfaWVoUCDzd8S9G30gvxgWUhdxQz9QsGlh/DDnafa8zgT6FmRqQk
+ Nec8WlgEKom0KOaYZjWZpq74/AIPwYdBKdye/YEPfQ5ROexZo7yp7qwgD/mmRbtnyGdLRdc/
+ Hwkon98iuiTQ9FSCsx+QaEzHwX4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 616ead2314914866fa59de3b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 Oct 2021 11:33:55
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3C3B4C43618; Tue, 19 Oct 2021 11:33:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.43.137] (unknown [27.61.186.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A92D9C4338F;
+        Tue, 19 Oct 2021 11:33:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A92D9C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v12 2/5] soc: qcom: Add Sleep stats driver
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>
+References: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
+ <1634107104-22197-3-git-send-email-mkshah@codeaurora.org>
+ <20211019092406.GC7231@dragon>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <9caff290-10f9-9b4d-a051-e07f02dac1b2@codeaurora.org>
+Date:   Tue, 19 Oct 2021 17:03:44 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tyn6d3fmh7rrtjqg"
-Content-Disposition: inline
-In-Reply-To: <20211009163226.45564-1-david@ixit.cz>
+In-Reply-To: <20211019092406.GC7231@dragon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Shawn,
 
---tyn6d3fmh7rrtjqg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 10/19/2021 2:54 PM, Shawn Guo wrote:
+> Hi Maulik,
+> 
+> On Wed, Oct 13, 2021 at 12:08:21PM +0530, Maulik Shah wrote:
+>> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+>>
+>> Let's add a driver to read the stats from remote processor and
+>> export to debugfs.
+>>
+>> The driver creates "qcom_sleep_stats" directory in debugfs and
+>> adds files for various low power mode available. Below is sample
+>> output with command
+>>
+>> cat /sys/kernel/debug/qcom_sleep_stats/ddr
+>> count = 0
+>> Last Entered At = 0
+>> Last Exited At = 0
+>> Accumulated Duration = 0
+>>
+>> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+>> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+>> [mkshah: add subsystem sleep stats, create one file for each stat]
+>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+>> ---
+>>   drivers/soc/qcom/Kconfig      |  10 ++
+>>   drivers/soc/qcom/Makefile     |   1 +
+>>   drivers/soc/qcom/qcom_stats.c | 277 ++++++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 288 insertions(+)
+>>   create mode 100644 drivers/soc/qcom/qcom_stats.c
+>>
+>> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+>> index abfef20..3cf3a6b 100644
+>> --- a/drivers/soc/qcom/Kconfig
+>> +++ b/drivers/soc/qcom/Kconfig
+>> @@ -199,6 +199,16 @@ config QCOM_SPM
+>>   	  to manage cores, L2 low power modes and to configure the internal
+>>   	  Adaptive Voltage Scaler parameters, where supported.
+>>   
+>> +config QCOM_STATS
+>> +	tristate "Qualcomm Technologies, Inc. (QTI) Sleep stats driver"
+>> +	depends on (ARCH_QCOM && DEBUG_FS) || COMPILE_TEST
+>> +	depends on QCOM_SMEM
+>> +	help
+>> +	  Qualcomm Technologies, Inc. (QTI) Sleep stats driver to read
+>> +	  the shared memory exported by the remote processor related to
+>> +	  various SoC level low power modes statistics and export to debugfs
+>> +	  interface.
+>> +
+>>   config QCOM_WCNSS_CTRL
+>>   	tristate "Qualcomm WCNSS control driver"
+>>   	depends on ARCH_QCOM || COMPILE_TEST
+>> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+>> index 24514c7..70d5de6 100644
+>> --- a/drivers/soc/qcom/Makefile
+>> +++ b/drivers/soc/qcom/Makefile
+>> @@ -21,6 +21,7 @@ obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+>>   obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+>>   obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
+>>   obj-$(CONFIG_QCOM_SPM)		+= spm.o
+>> +obj-$(CONFIG_QCOM_STATS)	+= qcom_stats.o
+>>   obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+>>   obj-$(CONFIG_QCOM_APR) += apr.o
+>>   obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+>> diff --git a/drivers/soc/qcom/qcom_stats.c b/drivers/soc/qcom/qcom_stats.c
+>> new file mode 100644
+>> index 0000000..817505b
+>> --- /dev/null
+>> +++ b/drivers/soc/qcom/qcom_stats.c
+>> @@ -0,0 +1,277 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
+>> + */
+>> +
+>> +#include <linux/debugfs.h>
+>> +#include <linux/device.h>
+>> +#include <linux/io.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/seq_file.h>
+>> +
+>> +#include <linux/soc/qcom/smem.h>
+>> +#include <clocksource/arm_arch_timer.h>
+>> +
+>> +#define RPM_DYNAMIC_ADDR	0x14
+>> +#define RPM_DYNAMIC_ADDR_MASK	0xFFFF
+>> +
+>> +#define STAT_TYPE_OFFSET	0x0
+>> +#define COUNT_OFFSET		0x4
+>> +#define LAST_ENTERED_AT_OFFSET	0x8
+>> +#define LAST_EXITED_AT_OFFSET	0x10
+>> +#define ACCUMULATED_OFFSET	0x18
+>> +#define CLIENT_VOTES_OFFSET	0x1c
+> 
+>  From downstream 'struct msm_rpm_stats_data' [1], it looks that
+> CLIENT_VOTES_OFFSET should be 0x20?
 
-Hi,
-
-On Sat, Oct 09, 2021 at 06:32:26PM +0200, David Heidelberg wrote:
-> Convert power-off action connected to the GPIO documentation to the YAML =
-syntax.
->=20
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  .../bindings/power/reset/gpio-poweroff.txt    | 41 ------------
->  .../bindings/power/reset/gpio-poweroff.yaml   | 64 +++++++++++++++++++
->  2 files changed, 64 insertions(+), 41 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/power/reset/gpio-po=
-weroff.txt
->  create mode 100644 Documentation/devicetree/bindings/power/reset/gpio-po=
-weroff.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.=
-txt b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
-> deleted file mode 100644
-> index 3e56c1b34a4c..000000000000
-> --- a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
-> +++ /dev/null
-> @@ -1,41 +0,0 @@
-> -Driver a GPIO line that can be used to turn the power off.
-> -
-> -The driver supports both level triggered and edge triggered power off.
-> -At driver load time, the driver will request the given gpio line and
-> -install a handler to power off the system. If the optional properties
-> -'input' is not found, the GPIO line will be driven in the inactive
-> -state. Otherwise its configured as an input.
-> -
-> -When the power-off handler is called, the gpio is configured as an
-> -output, and drive active, so triggering a level triggered power off
-> -condition. This will also cause an inactive->active edge condition, so
-> -triggering positive edge triggered power off. After a delay of 100ms,
-> -the GPIO is set to inactive, thus causing an active->inactive edge,
-> -triggering negative edge triggered power off. After another 100ms
-> -delay the GPIO is driver active again. If the power is still on and
-> -the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
-> -
-> -Required properties:
-> -- compatible : should be "gpio-poweroff".
-> -- gpios : The GPIO to set high/low, see "gpios property" in
-> -  Documentation/devicetree/bindings/gpio/gpio.txt. If the pin should be
-> -  low to power down the board set it to "Active Low", otherwise set
-> -  gpio to "Active High".
-> -
-> -Optional properties:
-> -- input : Initially configure the GPIO line as an input. Only reconfigure
-> -  it to an output when the power-off handler is called. If this optional
-> -  property is not specified, the GPIO is initialized as an output in its
-> -  inactive state.
-> -- active-delay-ms: Delay (default 100) to wait after driving gpio active
-> -- inactive-delay-ms: Delay (default 100) to wait after driving gpio inac=
-tive
-> -- timeout-ms: Time to wait before asserting a WARN_ON(1). If nothing is
-> -              specified, 3000 ms is used.
-> -
-> -Examples:
-> -
-> -gpio-poweroff {
-> -	compatible =3D "gpio-poweroff";
-> -	gpios =3D <&gpio 4 0>;
-> -	timeout-ms =3D <3000>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.=
-yaml b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
-> new file mode 100644
-> index 000000000000..50ae0cec6493
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/reset/gpio-poweroff.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Driver a GPIO line that can be used to turn the power off
-
-This is a DT binding, not kernel driver documentation. Title should
-be something like
-
-title: GPIO controlled power off
-
-> +
-> +maintainers:
-> +  - Sebastian Reichel <sre@kernel.org>
-> +
-> +description:
-> +  The driver supports both level triggered and edge triggered power off.
-> +  At driver load time, the driver will request the given gpio line and
-> +  install a handler to power off the system. If the optional properties
-> +  'input' is not found, the GPIO line will be driven in the inactive
-> +  state. Otherwise its configured as an input.
-> +
-> +  When the power-off handler is called, the gpio is configured as an
-> +  output, and drive active, so triggering a level triggered power off
-> +  condition. This will also cause an inactive->active edge condition, so
-> +  triggering positive edge triggered power off. After a delay of 100ms,
-> +  the GPIO is set to inactive, thus causing an active->inactive edge,
-> +  triggering negative edge triggered power off. After another 100ms
-> +  delay the GPIO is driver active again. If the power is still on and
-> +  the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
-
-This description is quite Linux specific. I think it should be
-easily possible to fix that:
-
-System power off support via a GPIO line. When a shutdown is
-executed the operating system is expected to switch the GPIO
-=66rom inactive to active. After a delay (active-delay-ms) it
-is expected to be switched back to inactive. After another
-delay (inactive-delay-ms) it is configured as active again.
-Finally the operating system assumes the power off failed if
-the system is still running after waiting some time (timeout-ms).
-
-> +properties:
-> +  compatible:
-> +    const: gpio-poweroff
-> +
-> +  gpios: true
-
-maxItems: 1
-
-> +
-> +  input:
-> +    description: |
-> +      Initially configure the GPIO line as an input. Only reconfigure
-> +      it to an output when the power-off handler is called. If this opti=
-onal
-
-type: boolean
-
-s/handler is called/power off sequence is initiated/
-
-> +      property is not specified, the GPIO is initialized as an output in=
- its inactive state.
-> +
-> +  active-delay-ms:
-> +    default: 100
-> +    description: Delay to wait after driving gpio active
-> +
-> +  inactive-delay-ms:
-> +    default: 100
-> +    description: Delay to wait after driving gpio inactive
-> +
-> +  timeout-ms:
-> +    default: 3000
-> +    description: Time to wait before asserting a WARN_ON(1).
-
-Time to wait before assuming the power off sequence failed.
-
-> +required:
-> +  - compatible
-> +  - gpios
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gpio-poweroff {
-> +        compatible =3D "gpio-poweroff";
-> +        gpios =3D <&gpio 4 0>;
-> +        timeout-ms =3D <3000>;
-> +    };
+Thanks for catching this. yeah this should be 0x20 offset.
+I can submit a new patch to fix this as the current series is merged in 
+linux-next.
 
 Thanks,
+Maulik
 
--- Sebastian
+> 
+> Shawn
+> 
+> [1] https://source.codeaurora.org/quic/la/kernel/msm-4.19/tree/drivers/soc/qcom/rpm_stats.c?h=kernel.lnx.4.19.r17-rel#n46
+> 
+>> +
+>> +struct subsystem_data {
+>> +	const char *name;
+>> +	u32 smem_item;
+>> +	u32 pid;
+>> +};
+>> +
+>> +static const struct subsystem_data subsystems[] = {
+>> +	{ "modem", 605, 1 },
+>> +	{ "wpss", 605, 13 },
+>> +	{ "adsp", 606, 2 },
+>> +	{ "cdsp", 607, 5 },
+>> +	{ "slpi", 608, 3 },
+>> +	{ "gpu", 609, 0 },
+>> +	{ "display", 610, 0 },
+>> +	{ "adsp_island", 613, 2 },
+>> +	{ "slpi_island", 613, 3 },
+>> +};
+>> +
+>> +struct stats_config {
+>> +	size_t stats_offset;
+>> +	size_t num_records;
+>> +	bool appended_stats_avail;
+>> +	bool dynamic_offset;
+>> +	bool subsystem_stats_in_smem;
+>> +};
+>> +
+>> +struct stats_data {
+>> +	bool appended_stats_avail;
+>> +	void __iomem *base;
+>> +};
+>> +
+>> +struct sleep_stats {
+>> +	u32 stat_type;
+>> +	u32 count;
+>> +	u64 last_entered_at;
+>> +	u64 last_exited_at;
+>> +	u64 accumulated;
+>> +};
+>> +
+>> +struct appended_stats {
+>> +	u32 client_votes;
+>> +	u32 reserved[3];
+>> +};
+>> +
+>> +static void qcom_print_stats(struct seq_file *s, const struct sleep_stats *stat)
+>> +{
+>> +	u64 accumulated = stat->accumulated;
+>> +	/*
+>> +	 * If a subsystem is in sleep when reading the sleep stats adjust
+>> +	 * the accumulated sleep duration to show actual sleep time.
+>> +	 */
+>> +	if (stat->last_entered_at > stat->last_exited_at)
+>> +		accumulated += arch_timer_read_counter() - stat->last_entered_at;
+>> +
+>> +	seq_printf(s, "Count: %u\n", stat->count);
+>> +	seq_printf(s, "Last Entered At: %llu\n", stat->last_entered_at);
+>> +	seq_printf(s, "Last Exited At: %llu\n", stat->last_exited_at);
+>> +	seq_printf(s, "Accumulated Duration: %llu\n", accumulated);
+>> +}
+>> +
+>> +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
+>> +{
+>> +	struct subsystem_data *subsystem = s->private;
+>> +	struct sleep_stats *stat;
+>> +
+>> +	/* Items are allocated lazily, so lookup pointer each time */
+>> +	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
+>> +	if (IS_ERR(stat))
+>> +		return -EIO;
+>> +
+>> +	qcom_print_stats(s, stat);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int qcom_soc_sleep_stats_show(struct seq_file *s, void *unused)
+>> +{
+>> +	struct stats_data *d = s->private;
+>> +	void __iomem *reg = d->base;
+>> +	struct sleep_stats stat;
+>> +
+>> +	memcpy_fromio(&stat, reg, sizeof(stat));
+>> +	qcom_print_stats(s, &stat);
+>> +
+>> +	if (d->appended_stats_avail) {
+>> +		struct appended_stats votes;
+>> +
+>> +		memcpy_fromio(&votes, reg + CLIENT_VOTES_OFFSET, sizeof(votes));
+>> +		seq_printf(s, "Client Votes: %#x\n", votes.client_votes);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +DEFINE_SHOW_ATTRIBUTE(qcom_soc_sleep_stats);
+>> +DEFINE_SHOW_ATTRIBUTE(qcom_subsystem_sleep_stats);
+>> +
+>> +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
+>> +					     struct stats_data *d,
+>> +					     const struct stats_config *config)
+>> +{
+>> +	char stat_type[sizeof(u32) + 1] = {0};
+>> +	size_t stats_offset = config->stats_offset;
+>> +	u32 offset = 0, type;
+>> +	int i, j;
+>> +
+>> +	/*
+>> +	 * On RPM targets, stats offset location is dynamic and changes from target
+>> +	 * to target and sometimes from build to build for same target.
+>> +	 *
+>> +	 * In such cases the dynamic address is present at 0x14 offset from base
+>> +	 * address in devicetree. The last 16bits indicates the stats_offset.
+>> +	 */
+>> +	if (config->dynamic_offset) {
+>> +		stats_offset = readl(reg + RPM_DYNAMIC_ADDR);
+>> +		stats_offset &= RPM_DYNAMIC_ADDR_MASK;
+>> +	}
+>> +
+>> +	for (i = 0; i < config->num_records; i++) {
+>> +		d[i].base = reg + offset + stats_offset;
+>> +
+>> +		/*
+>> +		 * Read the low power mode name and create debugfs file for it.
+>> +		 * The names read could be of below,
+>> +		 * (may change depending on low power mode supported).
+>> +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
+>> +		 * For rpm-sleep-stats: "vmin" and "vlow".
+>> +		 */
+>> +		type = readl(d[i].base);
+>> +		for (j = 0; j < sizeof(u32); j++) {
+>> +			stat_type[j] = type & 0xff;
+>> +			type = type >> 8;
+>> +		}
+>> +		strim(stat_type);
+>> +		debugfs_create_file(stat_type, 0400, root, &d[i],
+>> +				    &qcom_soc_sleep_stats_fops);
+>> +
+>> +		offset += sizeof(struct sleep_stats);
+>> +		if (d[i].appended_stats_avail)
+>> +			offset += sizeof(struct appended_stats);
+>> +	}
+>> +}
+>> +
+>> +static void qcom_create_subsystem_stat_files(struct dentry *root,
+>> +					     const struct stats_config *config)
+>> +{
+>> +	const struct sleep_stats *stat;
+>> +	int i;
+>> +
+>> +	if (!config->subsystem_stats_in_smem)
+>> +		return;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
+>> +		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
+>> +		if (IS_ERR(stat))
+>> +			continue;
+>> +
+>> +		debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
+>> +				    &qcom_subsystem_sleep_stats_fops);
+>> +	}
+>> +}
+>> +
+>> +static int qcom_stats_probe(struct platform_device *pdev)
+>> +{
+>> +	void __iomem *reg;
+>> +	struct dentry *root;
+>> +	const struct stats_config *config;
+>> +	struct stats_data *d;
+>> +	int i;
+>> +
+>> +	config = device_get_match_data(&pdev->dev);
+>> +	if (!config)
+>> +		return -ENODEV;
+>> +
+>> +	reg = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+>> +	if (IS_ERR(reg))
+>> +		return -ENOMEM;
+>> +
+>> +	d = devm_kcalloc(&pdev->dev, config->num_records,
+>> +			 sizeof(*d), GFP_KERNEL);
+>> +	if (!d)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < config->num_records; i++)
+>> +		d[i].appended_stats_avail = config->appended_stats_avail;
+>> +
+>> +	root = debugfs_create_dir("qcom_stats", NULL);
+>> +
+>> +	qcom_create_subsystem_stat_files(root, config);
+>> +	qcom_create_soc_sleep_stat_files(root, reg, d, config);
+>> +
+>> +	platform_set_drvdata(pdev, root);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int qcom_stats_remove(struct platform_device *pdev)
+>> +{
+>> +	struct dentry *root = platform_get_drvdata(pdev);
+>> +
+>> +	debugfs_remove_recursive(root);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct stats_config rpm_data = {
+>> +	.stats_offset = 0,
+>> +	.num_records = 2,
+>> +	.appended_stats_avail = true,
+>> +	.dynamic_offset = true,
+>> +	.subsystem_stats_in_smem = false,
+>> +};
+>> +
+>> +static const struct stats_config rpmh_data = {
+>> +	.stats_offset = 0x48,
+>> +	.num_records = 3,
+>> +	.appended_stats_avail = false,
+>> +	.dynamic_offset = false,
+>> +	.subsystem_stats_in_smem = true,
+>> +};
+>> +
+>> +static const struct of_device_id qcom_stats_table[] = {
+>> +	{ .compatible = "qcom,rpm-stats", .data = &rpm_data },
+>> +	{ .compatible = "qcom,rpmh-stats", .data = &rpmh_data },
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(of, qcom_stats_table);
+>> +
+>> +static struct platform_driver qcom_stats = {
+>> +	.probe = qcom_stats_probe,
+>> +	.remove = qcom_stats_remove,
+>> +	.driver = {
+>> +		.name = "qcom_stats",
+>> +		.of_match_table = qcom_stats_table,
+>> +	},
+>> +};
+>> +
+>> +static int __init qcom_stats_init(void)
+>> +{
+>> +	return platform_driver_register(&qcom_stats);
+>> +}
+>> +late_initcall(qcom_stats_init);
+>> +
+>> +static void __exit qcom_stats_exit(void)
+>> +{
+>> +	platform_driver_unregister(&qcom_stats);
+>> +}
+>> +module_exit(qcom_stats_exit)
+>> +
+>> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) Stats driver");
+>> +MODULE_LICENSE("GPL v2");
+>> -- 
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>>
 
---tyn6d3fmh7rrtjqg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFurJkACgkQ2O7X88g7
-+ppsbA/+KkgU4fyrWct6l/7zcBjWYuWDAeOb/1WjcRN6RcDWaLlf1JMVo+NCTUhj
-v0brN6mzdNQnGKVnzWypjPL3BZCrxu/RYdaMoBYoCqvMjRDd4k+w9sC4XloA6ByL
-Dhmz3o21GyFGxerk4H1M04+lcJkZIfE+skWbImDHRoSgpugPJC5xCMMlthoeUAmO
-w1kHomDT3yl1ZJjM0VFOc963zm7sreHUDksCuI7/eZTw4d9VcNnnnNnpMtCP9L/r
-2roQJHdCXsAszIPpIL84HFCRfc9V2wV5WvXQX7Y8cRrnzVSLTRXefMU9uVEn3Ol2
-4OyWIcdWHYj8DgR7epN7EvHqHwbHNSh+U9/85JsSeYJDAfdyRdrW1afmenuf4Zzd
-1kfdrrra3ctQbyYYo+HHMskgVzB8I4guASHqGOlbLnC9V2nmyJ6Je5FDq1DbEJnA
-82H1pbgFZQ5AUxQ7MK/dTwLL5GkrQHHjddGoJyiDNSDuYYGefW/DCQvDosxbZAIr
-QEfEFtgPt/sTCn1TyU+fTMBdvrX/ybaTwkURDUxWDt95aWO+VsiZbcybKQ3QKPoU
-Oyzx0/PdA5cduzw9Ny3V9vbsdkiBRdYJh8Pfb4mXHPKdk6DONfI3aOwHLyxX9oz5
-mnl9z9ExNDPXPUnnIt2QZiBt232Bhxgvap6aUeO6d70DI2f5A8c=
-=mb4Y
------END PGP SIGNATURE-----
-
---tyn6d3fmh7rrtjqg--
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
