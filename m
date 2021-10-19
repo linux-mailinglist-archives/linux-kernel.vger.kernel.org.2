@@ -2,149 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13ECA43326F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF0D433273
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 11:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbhJSJjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 05:39:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234914AbhJSJjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:39:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8920B6137E;
-        Tue, 19 Oct 2021 09:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634636212;
-        bh=pQfb+WE4kD/i2MDVdnlwCf0bkkH1uIT9fgG0VVGzPpM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ehg9NqJ26gM56d76yWBIwdvNczt+/LwQwoofv/2i1NqG5ypl9WYpGVi1Bl7p58QRf
-         kpBA8prTvGtZthsvg7pkYTtjScsapoUjKKsQpvzXULd63L130AffJY1UuMH6/dYs80
-         HTZZi602r1VMM9n/bjqr0oLzOBF41lcO17gwK9YM=
-Date:   Tue, 19 Oct 2021 11:36:49 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     David Lechner <david@lechnology.com>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: drop chrdev_lock
-Message-ID: <YW6RsdSa9mfpoS2d@kroah.com>
-References: <20211017185521.3468640-1-david@lechnology.com>
- <YW0673OckeCY6Qs/@shinobu>
- <e8158cd7-fbde-5a9a-f4d9-a863745e3d58@lechnology.com>
- <YW5rVLrbrVVJ75SY@shinobu>
- <YW5uxIQ1WuW66cf0@kroah.com>
- <YW5xUtWdvW5zHFx5@shinobu>
- <YW5zzVJZ89cFW9bD@kroah.com>
- <YW53v22RyU/DCBBx@shinobu>
+        id S235118AbhJSJje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 05:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234914AbhJSJja (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:39:30 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E2BC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:37:17 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so1563679pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 02:37:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ND/+F3Ar6OquSntMCxz9qgsi04nnrmfHfmUAomzm/4I=;
+        b=FPakQL+OMRNJjPfkzZN3ZBE8vdbu/9WnnBjj5mkIEUhTkx7Rqb3FRIWk2gTwmabN7M
+         HxNn2wpfA4/+8yXJ8q6aEc5XptfDatWuu5senZReW2tIxnCl+HFfZfi9PSRNGuEbADeY
+         ZEYbYrsxuWJ68e0fiDjYy9jUS6UtwJuk2HeCVJoqCWTKfim7fNlioHJVMpSIa2OuEnNk
+         YggCW/wWGMuA34KEplUEC0mqlRVGginPMszr7va+pAIXfa+mioE7T38vVgbWQ/ScPKu3
+         /yu8jhTUMmg6M4x1xPeZgyGRMSR7Vs8+LYL45JPI7o3IFKVTfcM+8aFZ0ER4GSZGA6Ri
+         Y4eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ND/+F3Ar6OquSntMCxz9qgsi04nnrmfHfmUAomzm/4I=;
+        b=ugMEcoyOgjwCm+sSwCn9P9MWrh2lkCNIe1rxEq0SUaRkDvFO98rqtRWJNlM3husIim
+         wFmyS/l18AxuVnQaE+pegXrp/bReccSVm6DcHQ5XpK1nmKRPgUUiPIXfbvMFFh6FKN6X
+         fkWsig6+JdtTRxkAAwtS/ENlKBJsLQKUQ5Yc/fq0BG4kgBPZ/ORi8SQAYtQl8OJiBXek
+         N8LhnuvcqSpXS8vq+WI55Fk8xth05g5gFW6Jf71OgYsrpBbMt2Q9RwCCmjf3VP2t+eQY
+         ZBbg+Jfue5kV46PBjqlg+KL3b6RClumNB6lYYs4baO6DY5b4GndyAryw9d5YVxmtAavS
+         lWtw==
+X-Gm-Message-State: AOAM532u5AYCNrksv1A5xAFHkbSZnb9GzjItP93W2sz9Mv9rc6O1I2O9
+        hU8w4cn2iIhV87qmsyr7YxSOVDCFBRKFjMN61o2tpw==
+X-Google-Smtp-Source: ABdhPJwsNzQstsNgy6Pe+DD2TzMylbTunvzCItyZxXHwgT3oEqiF2GJNSa9MTlQx6hVpPU1RNzpxX1vZmj9bsgW0VE4=
+X-Received: by 2002:a17:90b:4c0d:: with SMTP id na13mr5260275pjb.232.1634636237402;
+ Tue, 19 Oct 2021 02:37:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW53v22RyU/DCBBx@shinobu>
+References: <20211002233447.1105-1-digetx@gmail.com> <20211002233447.1105-5-digetx@gmail.com>
+In-Reply-To: <20211002233447.1105-5-digetx@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 19 Oct 2021 11:37:06 +0200
+Message-ID: <CAG3jFyt2NVWyGRWj3QPKhrYgcaRZ+QVifNEHA9CvY0XwnnLvRA@mail.gmail.com>
+Subject: Re: [PATCH v1 4/5] drm/bridge: tc358768: Disable non-continuous clock mode
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-tegra@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 04:46:07PM +0900, William Breathitt Gray wrote:
-> On Tue, Oct 19, 2021 at 09:29:17AM +0200, Greg KH wrote:
-> > On Tue, Oct 19, 2021 at 04:18:42PM +0900, William Breathitt Gray wrote:
-> > > On Tue, Oct 19, 2021 at 09:07:48AM +0200, Greg KH wrote:
-> > > > On Tue, Oct 19, 2021 at 03:53:08PM +0900, William Breathitt Gray wrote:
-> > > > > On Mon, Oct 18, 2021 at 11:03:49AM -0500, David Lechner wrote:
-> > > > > > On 10/18/21 4:14 AM, William Breathitt Gray wrote:
-> > > > > > > On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
-> > > > > > >> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
-> > > > > > >> index 1ccd771da25f..7bf8882ff54d 100644
-> > > > > > >> --- a/drivers/counter/counter-sysfs.c
-> > > > > > >> +++ b/drivers/counter/counter-sysfs.c
-> > > > > > >> @@ -796,25 +796,18 @@ static int counter_events_queue_size_write(struct counter_device *counter,
-> > > > > > >>   					   u64 val)
-> > > > > > >>   {
-> > > > > > >>   	DECLARE_KFIFO_PTR(events, struct counter_event);
-> > > > > > >> -	int err = 0;
-> > > > > > >> -
-> > > > > > >> -	/* Ensure chrdev is not opened more than 1 at a time */
-> > > > > > >> -	if (!atomic_add_unless(&counter->chrdev_lock, 1, 1))
-> > > > > > >> -		return -EBUSY;
-> > > > > > >> +	int err;
-> > > > > > >>   
-> > > > > > >>   	/* Allocate new events queue */
-> > > > > > >>   	err = kfifo_alloc(&events, val, GFP_KERNEL);
-> > > > > > >>   	if (err)
-> > > > > > >> -		goto exit_early;
-> > > > > > >> +		return err;
-> > > > > > >>   
-> > > > > > >>   	/* Swap in new events queue */
-> > > > > > >>   	kfifo_free(&counter->events);
-> > > > > > >>   	counter->events.kfifo = events.kfifo;
-> > > > > > > 
-> > > > > > > Do we need to hold the events_lock mutex here for this swap in case
-> > > > > > > counter_chrdev_read() is in the middle of reading the kfifo to
-> > > > > > > userspace, or do the kfifo macros already protect us from a race
-> > > > > > > condition here?
-> > > > > > > 
-> > > > > > Another possibility might be to disallow changing the size while
-> > > > > > events are enabled. Otherwise, we also need to protect against
-> > > > > > write after free.
-> > > > > > 
-> > > > > > I considered this:
-> > > > > > 
-> > > > > > 	swap(counter->events.kfifo, events.kfifo);
-> > > > > > 	kfifo_free(&events);
-> > > > > > 
-> > > > > > But I'm not sure that would be safe enough.
-> > > > > 
-> > > > > I think it depends on whether it's safe to call kfifo_free() while other
-> > > > > kfifo_*() calls are executing. I suspect it is not safe because I don't
-> > > > > think kfifo_free() waits until all kfifo read/write operations are
-> > > > > finished before freeing -- but if I'm wrong here please let me know.
-> > > > > 
-> > > > > Because of that, will need to hold the counter->events_lock afterall so
-> > > > > that we don't modify the events fifo while a kfifo read/write is going
-> > > > > on, lest we suffer an address fault. This can happen regardless of
-> > > > > whether you swap before or after the kfifo_free() because the old fifo
-> > > > > address could still be in use within those uncompleted kfifo_*() calls
-> > > > > if they were called before the swap but don't complete before the
-> > > > > kfifo_free().
-> > > > > 
-> > > > > So we have a problem now that I think you have already noticed: the
-> > > > > kfifo_in() call in counter_push_events() also needs protection, but it's
-> > > > > executing within an interrupt context so we can't try to lock a mutex
-> > > > > lest we end up sleeping.
-> > > > > 
-> > > > > One option we have is as you suggested: we disallow changing size while
-> > > > > events are enabled. However, that will require us to keep track of when
-> > > > > events are disabled and implement a spinlock to ensure that we don't
-> > > > > disable events in the middle of a kfifo_in().
-> > > > > 
-> > > > > Alternatively, we could change events_lock to a spinlock and use it to
-> > > > > protect all these operations on the counter->events fifo. Would this
-> > > > > alternative be a better option so that we avoid creating another
-> > > > > separate lock?
-> > > > 
-> > > > I would recommend just having a single lock here if at all possible,
-> > > > until you determine that there a performance problem that can be
-> > > > measured that would require it to be split up.
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > 
-> > > All right let's go with a single events_lock spinlock then. David, if
-> > > you make those changes and submit a v2, I'll be okay with this patch and
-> > > can provide my ack for it.
-> > 
-> > Wait, no, you need one patch to remove the atomic lock for the open
-> > "protection" and then another one for the other locks.  The original
-> > patch here was fine, but can be part of a patch series, don't lump them
-> > all together into one huge change.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Understood. I'll provide my ack for this patch here then.
-> 
-> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+On Sun, 3 Oct 2021 at 01:35, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Non-continuous clock mode doesn't work because driver doesn't support it
+> properly. The bridge driver programs wrong bitfields that are required by
+> the non-continuous mode (BTACNTRL1 register bitfields are swapped in the
+> code), but fixing them doesn't help.
+>
+> Display panel of ASUS Transformer TF700T tablet supports non-continuous
+> mode and display doesn't work at all using that mode. There are no
+> device-trees that are actively using this DSI bridge in upstream yet,
+> so clearly the broken mode wasn't ever tested properly. It's a bit too
+> difficult to get LP mode working, hence let's disable the offending mode
+> for now and fall back to continuous mode.
+>
+> Tested-by: Andreas Westman Dorcsak <hedmoo@yahoo.com> # Asus TF700T
+> Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> #TF700T
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/gpu/drm/bridge/tc358768.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+> index 5b3f8723bd3d..cfceba5ef3b8 100644
+> --- a/drivers/gpu/drm/bridge/tc358768.c
+> +++ b/drivers/gpu/drm/bridge/tc358768.c
+> @@ -631,6 +631,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>  {
+>         struct tc358768_priv *priv = bridge_to_tc358768(bridge);
+>         struct mipi_dsi_device *dsi_dev = priv->output.dev;
+> +       unsigned long mode_flags = dsi_dev->mode_flags;
+>         u32 val, val2, lptxcnt, hact, data_type;
+>         const struct drm_display_mode *mode;
+>         u32 dsibclk_nsk, dsiclk_nsk, ui_nsk, phy_delay_nsk;
+> @@ -638,6 +639,11 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>         const u32 internal_delay = 40;
+>         int ret, i;
+>
+> +       if (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) {
+> +               dev_warn_once(priv->dev, "Non-continuous mode unimplemented, falling back to continuous\n");
+> +               mode_flags &= ~MIPI_DSI_CLOCK_NON_CONTINUOUS;
+> +       }
+> +
+>         tc358768_hw_enable(priv);
+>
+>         ret = tc358768_sw_reset(priv);
+> @@ -776,7 +782,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>                 val |= BIT(i + 1);
+>         tc358768_write(priv, TC358768_HSTXVREGEN, val);
+>
+> -       if (!(dsi_dev->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+> +       if (!(mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+>                 tc358768_write(priv, TC358768_TXOPTIONCNTRL, 0x1);
+>
+>         /* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
+> @@ -864,7 +870,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>         if (!(dsi_dev->mode_flags & MIPI_DSI_MODE_LPM))
+>                 val |= TC358768_DSI_CONTROL_TXMD;
+>
+> -       if (!(dsi_dev->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+> +       if (!(mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+>                 val |= TC358768_DSI_CONTROL_HSCKMD;
+>
+>         if (dsi_dev->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
+> --
 
-Thanks, now queued up!
-
-greg k-h
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
