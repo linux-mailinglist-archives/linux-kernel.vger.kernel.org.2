@@ -2,150 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F3D433A04
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A55A433A0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbhJSPSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhJSPSe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:18:34 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6863CC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:16:21 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id y10so232446qkp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 08:16:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z2QCsj8uoI1elGSwjIcPM3flWlmV5asRjFaV2+Zm7wQ=;
-        b=P0eGPUE0ED5s2q2cgVj1MBGSU0NFueMDTHHmFRDzaMGveNnY7eva5aqT9YKQ4ywom6
-         zIBle47EmTwcAGH0xgKkEuTEMYd+gvhyrjK32+CGng9rdAaUEaGnDlgvj43WQBoC1hUg
-         Fp039gNDJQjIHUPuAM6nPkJCi5ezTCcmovk4gOXKIV8ryUuMAN1CxV/T79DoYzhFDQYg
-         kbEdvYeuB4IMGQ+vpKB+O6oyDQ80i5ffweK5/54+rpeYMCPUuqWkQM7qDnXrsPY3o+SZ
-         tr/dVhtB+oqSceg4VpqqguL/+ocqLY1sTtqlBroX8n/oiI+dlCsxIaaWmMdnwA4tin94
-         r+dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z2QCsj8uoI1elGSwjIcPM3flWlmV5asRjFaV2+Zm7wQ=;
-        b=6zQoOlgBqjhbgDEYpkte8afuafhNyTGyANNiRdkyqg9ev0YLvwlgUmSjrS+epramSh
-         BOR3kAAObzJR9DjINTRfjrZWRT1BwuRtCESbJgZh6Uzs8ZiE+QV+vGSkptR/Bd/6gJa/
-         4OwTkET2h60Mxg5oicV6SweBMQkkMT1XR9akcCWS4a2FH12jUpSG3aPlGyCQt5H8k2ER
-         PxYeYq+GYcab93zRzcCP4F6Kblc4aEIQo0ZafZMytRFpvM1VacyXxKejnLz2YMSTanw/
-         ud501cYoZuoEdG7rLVYte/7ZNNPXt3qLX1RXNnleRGadm1UjOUpcJxEHG8xGeaGvKVYC
-         gWrQ==
-X-Gm-Message-State: AOAM530GxKG88lkGY+kOa7vwU5VhljXos9MOEWrfI8V8Ag4EjAuBvwvh
-        5WNMS4tcNsQzYKVIJ/pR2SwDhrT9Mtm3gQ==
-X-Google-Smtp-Source: ABdhPJwGYQB/TCQqWjql20jclqCkpzSoRFFVoS5J1OXAL1VgIP3+MgHBaeuDfu3E2NL2tHQgwsHbvg==
-X-Received: by 2002:a05:620a:45a4:: with SMTP id bp36mr457879qkb.51.1634656580587;
-        Tue, 19 Oct 2021 08:16:20 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id z6sm734425qtj.90.2021.10.19.08.16.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 08:16:19 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 11:16:18 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        id S233345AbhJSPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:19:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232764AbhJSPTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:19:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA79160FE8;
+        Tue, 19 Oct 2021 15:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634656633;
+        bh=Jghv2qiCrh2T7drOu62Q4awOcshsMbwP6PP7jKtWi1M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bt6/2z+zIvp3TGsSWODu3BRbZl/jMTKSeavPb3jIviUjQZxXnA1qxzkmSohvP51+5
+         kItHqxMjndylgZGkBFyz6PxLCVy+00T0kQ1gt8I/ZuICj9C/g4F8YdyLBv+Zl7WyIa
+         I9i7QPu7PoHTDDM6efQupm1mui2UgNwlRBammTMeOUYOHivQCGcXw0E7N1Qf6pVACs
+         u0wUpLqodUtFSjx7E3mgpIambACpOFtnO1DUhx2GTDIeRaM67EnabjZWJhNOxLSXBP
+         tgebH79ygtLLPKKpU0K2TJ/pjKELGxV4iE2UYf76fKcSxfJ/IeRj8CGXVT91j9nXdB
+         +ar7TEdcKN+1g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 38F12410A1; Tue, 19 Oct 2021 12:17:10 -0300 (-03)
+Date:   Tue, 19 Oct 2021 12:17:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YW7hQlny+Go1K3LT@cmpxchg.org>
-References: <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW28vaoW7qNeX3GP@casper.infradead.org>
- <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Andrew Kilroy <andrew.kilroy@arm.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 21/21] perf metric: Allow modifiers on metrics.
+Message-ID: <YW7hdvJ8eHS/jlgx@kernel.org>
+References: <20211015172132.1162559-1-irogers@google.com>
+ <20211015172132.1162559-22-irogers@google.com>
+ <YW7e6OvE/juYY8it@kernel.org>
+ <YW7gsEDXBw1jk65o@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YW7gsEDXBw1jk65o@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 02:16:27AM +0300, Kirill A. Shutemov wrote:
-> On Mon, Oct 18, 2021 at 05:56:34PM -0400, Johannes Weiner wrote:
-> > > I don't think there will ever be consensus as long as you don't take
-> > > the concerns of other MM developers seriously.  On Friday's call, several
-> > > people working on using large pages for anon memory told you that using
-> > > folios for anon memory would make their lives easier, and you didn't care.
+Em Tue, Oct 19, 2021 at 12:13:52PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Oct 19, 2021 at 12:06:17PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, Oct 15, 2021 at 10:21:32AM -0700, Ian Rogers escreveu:
+> > > By allowing modifiers on metrics we can, for example, gather the
+> > > same metric for kernel and user mode. On a SkylakeX with
+> > > TopDownL1 this gives:
+> > > 
+> > > $ perf stat -M TopDownL1:u,TopDownL1:k -a sleep 2
+> > > 
+> > >  Performance counter stats for 'system wide':
 > > 
-> > Nope, one person claimed that it would help, and I asked how. Not
-> > because I'm against typesafety, but because I wanted to know if there
-> > is an aspect in there that would specifically benefit from a shared
-> > folio type. I don't remember there being one, and I'm not against type
-> > safety for anon pages.
-> > 
-> > What several people *did* say at this meeting was whether you could
-> > drop the anon stuff for now until we have consensus.
+> > Hi Ian, can you please take a look on this? this is on my perf/core
+> > branch.
 > 
-> My read on the meeting was that most of people had nothing against anon
-> stuff, but asked if Willy could drop anon parts to get past your
-> objections to move forward.
-> 
-> You was the only person who was vocal against including anon pars. (Hugh
-> nodded to some of your points, but I don't really know his position on
-> folios in general and anon stuff in particular).
+> I processed the first version of this series, reviewed by Andi, can you
+> please submit the diff from one to the other?
 
-Nobody likes to be the crazy person on the soapbox, so I asked Hugh in
-private a few weeks back. Quoting him, with permission:
+The interdiff from the 21st patch on the first batch versus on the v2
+batch is below, but it doesn't apply to my current perf/core branch,
+lemme push it to tmp.perf/core...
 
-: To the first and second order of approximation, you have been
-: speaking for me: but in a much more informed and constructive and
-: coherent and rational way than I would have managed myself.
+- Arnaldo
 
-It's a broad and open-ended proposal with far reaching consequences,
-and not everybody has the time (or foolhardiness) to engage on that. I
-wouldn't count silence as approval - just like I don't see approval as
-a sign that a person took a hard look at all the implications.
+⬢[acme@toolbox perf]$ interdiff ~/wb/old.patch ~/wb/new.patch
+diff -u b/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+--- b/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -1308,8 +1308,7 @@
+ 	int ret;
 
-My only effort from the start has been working out unanswered
-questions in this proposal: Are compound pages the reliable, scalable,
-and memory-efficient way to do bigger page sizes? What's the scope of
-remaining tailpages where typesafety will continue to lack? How do we
-implement code and properties shared by folios and non-folio types
-(like mmap/fault code for folio and network and driver pages)?
+ 	*out_evlist = NULL;
+-	ret = metricgroup__build_event_string(&events, ids, modifier,
+-					      has_constraint);
++	ret = metricgroup__build_event_string(&events, ids, has_constraint);
+ 	if (ret)
+ 		return ret;
 
-There are no satisfying answers to any of these questions, but that
-also isn't very surprising: it's a huge scope. Lack of answers isn't
-failure, it's just a sign that the step size is too large and too
-dependent on a speculative future. It would have been great to whittle
-things down to a more incremental and concrete first step, which would
-have allowed us to keep testing the project against reality as we go
-through all the myriad of uses and cornercases of struct page that no
-single person can keep straight in their head.
+@@ -1324,7 +1323,8 @@
 
-I'm grateful for the struct slab spinoff, I think it's exactly all of
-the above. I'm in full support of it and have dedicated time, effort
-and patches to help work out kinks that immediately and inevitably
-surfaced around the slab<->page boundary.
+ 		ids__insert(ids->ids, tmp);
+ 	}
+-	ret = metricgroup__build_event_string(&events, ids, has_constraint);
++	ret = metricgroup__build_event_string(&events, ids, modifier,
++					      has_constraint);
+ 	if (ret)
+ 		return ret;
 
-I only hoped we could do the same for file pages first, learn from
-that, and then do anon pages; if they come out looking the same in the
-process, a unified folio would be a great trailing refactoring step.
+@@ -1568,7 +1568,10 @@
+ 				return -ENOMEM;
 
-But alas here we are months later at the same impasse with the same
-open questions, and still talking in circles about speculative code.
-I don't have more time to invest into this, and I'm tired of the
-vitriol and ad-hominems both in public and in private channels.
+ 			new_expr->metric_expr = old_expr->metric_expr;
+-			new_expr->metric_name = old_expr->metric_name;
++			new_expr->metric_name = strdup(old_expr->metric_name);
++			if (!new_expr->metric_name)
++				return -ENOMEM;
++
+ 			new_expr->metric_unit = old_expr->metric_unit;
+ 			new_expr->runtime = old_expr->runtime;
 
-I'm not really sure how to exit this. The reasons for my NAK are still
-there. But I will no longer argue or stand in the way of the patches.
+⬢[acme@toolbox perf]$
