@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9FC433D13
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF0D433D15
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 19:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbhJSRMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 13:12:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36142 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhJSRMm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:12:42 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 65A2E21A76;
-        Tue, 19 Oct 2021 17:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634663428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1eyKSX2/7swyCKXn7z9fVjzybvXll+tbtLpZFqDx1m8=;
-        b=RVz/tL02sPQdjtNeumX2ZM+VtIFyIcTOEASFvv6I0/FVlHvZ4o9I/0RJ7QO2xcZDmai6xU
-        4h/KSMw/yrIULI7jwk8EkRvwcpYQFzka8UE4eirJd7G1eClI5pV5rYNy+uIttiWykEFB+n
-        aMD35+up03LH+YwZPGz6j/iIN4qa1fE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F310A13E8E;
-        Tue, 19 Oct 2021 17:10:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YBKFOQP8bmGfIgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 19 Oct 2021 17:10:27 +0000
-Date:   Tue, 19 Oct 2021 19:10:26 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Quanyang Wang <quanyang.wang@windriver.com>
-Cc:     Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
- cgroup_bpf_offline
-Message-ID: <YW78AohHqgqM9Cuw@blackbook>
-References: <20211018075623.26884-1-quanyang.wang@windriver.com>
- <YW04Gqqm3lDisRTc@T590>
- <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
- <YW1vuXh4C4tX9ZHP@T590>
- <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
+        id S234496AbhJSRNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 13:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229991AbhJSRNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:13:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1495261355;
+        Tue, 19 Oct 2021 17:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634663486;
+        bh=OXSJPBEh+ma3f58EanrG7rg6+apPnZurYKY98a3izVs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AadextmZipO+28NFjLcTV3GJZiEhsU5zS76w5R58f9JNmlnWmf5V44H4w6WNSGKoV
+         m+u9TRwyXcA3YAqojteYFbrMXnLCqAWIWtu5gYacmTsH7jNqj7JnkRjTeYRPeJufOu
+         3yqhDf1xdbw1VlxQfBTQ9ygcupQo7vT5C0FmxUv2IxfvwSdGBGKxO35oWk2isBtpub
+         J1Bn2uO1v5UfG8dsqpGOpLTBeqVUVH/WXlRTldmM6OFBJSJXFGRiQ5b3UtubBhk64Y
+         7UgDBFli5o2TgJy6nK2siH152RQLCDGY+o6KBX09uIsO4NWOFHPIFrjcxRHLBciqga
+         R9ETzFuua2iCw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH] [RFC] x86: avoid -mtune=atom with clang
+Date:   Tue, 19 Oct 2021 19:11:08 +0200
+Message-Id: <20211019171121.3510624-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Tue, Oct 19, 2021 at 06:41:14PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
-> So I add 2 "Fixes tags" here to indicate that 2 commits introduce two
-> different issues.
+The clang optimization for atom results in a large number of objtool
+warnings like
 
-AFAIU, both the changes are needed to cause the leak, a single patch
-alone won't cause the issue. Is that correct? (Perhaps not as I realize,
-see below.)
+  drivers/video/hdmi.o: warning: objtool: hdmi_infoframe_check()+0x74: unreachable instruction
+  lib/crypto/curve25519.o: warning: objtool: init_module()+0x12: unreachable instruction
+  drivers/clk/bcm/clk-iproc-armpll.o: warning: objtool: iproc_armpll_setup()+0x10c: unreachable instruction
+  drivers/video/fbdev/core/cfbfillrect.o: warning: objtool: cfb_fillrect()+0xa2: unreachable instruction
+  drivers/clk/bcm/clk-iproc-pll.o: warning: objtool: iproc_pll_clk_setup()+0x36d: unreachable instruction
+  drivers/clk/bcm/clk-iproc-asiu.o: warning: objtool: iproc_asiu_setup()+0x2cf: unreachable instruction
 
-But on second thought, the problem is the missing percpu_ref_exit() in
-the (root) cgroup release path and percpu counter would allocate the
-percpu_count_ptr anyway, so 4bfc0bb2c60e is only making the leak more
-visible. Is this correct?
+and in rare cases problems with the register allocator:
 
-I agree the commit 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
-percpu_ref in fast path") alone did nothing wrong.
+  arch/x86/crypto/curve25519-x86_64.c:610:3: error: inline assembly requires more registers than available
 
-[On a related (but independent) note, there seems to be an optimization
-opportunity in not dealing with cgroup_bpf at all on the non-default
-hierarchies.]
+  error: ran out of registers during register allocation
 
-Regards,
-Michal
+All of those can be avoided by changing the -mtune= option for
+clang, leaving the -march= option unchanged. It's really a bug
+that should be fxied in llvm, but it's fairly clear that the
+atom optimizations are not well exercised in llvm, so not
+using them is probably the safe choice regardless.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1483
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/x86/Makefile        | 4 ++++
+ arch/x86/Makefile_32.cpu | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 7488cfbbd2f6..4c6f92b32385 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -120,7 +120,11 @@ else
+         cflags-$(CONFIG_MK8)		+= -march=k8
+         cflags-$(CONFIG_MPSC)		+= -march=nocona
+         cflags-$(CONFIG_MCORE2)		+= -march=core2
++ifdef CONFIG_CC_IS_CLANG
++        cflags-$(CONFIG_MATOM)		+= -march=atom -mtune=generic
++else
+         cflags-$(CONFIG_MATOM)		+= -march=atom
++endif
+         cflags-$(CONFIG_GENERIC_CPU)	+= -mtune=generic
+         KBUILD_CFLAGS += $(cflags-y)
+ 
+diff --git a/arch/x86/Makefile_32.cpu b/arch/x86/Makefile_32.cpu
+index 94834c4b5e5e..a17b089f367c 100644
+--- a/arch/x86/Makefile_32.cpu
++++ b/arch/x86/Makefile_32.cpu
+@@ -33,8 +33,12 @@ cflags-$(CONFIG_MCYRIXIII)	+= $(call cc-option,-march=c3,-march=i486) $(align)
+ cflags-$(CONFIG_MVIAC3_2)	+= $(call cc-option,-march=c3-2,-march=i686)
+ cflags-$(CONFIG_MVIAC7)		+= -march=i686
+ cflags-$(CONFIG_MCORE2)		+= -march=i686 $(call tune,core2)
++ifdef CONFIG_CC_IS_CLANG
++cflags-$(CONFIG_MATOM)		+= -march=atom -mtune=generic
++else
+ cflags-$(CONFIG_MATOM)		+= $(call cc-option,-march=atom,$(call cc-option,-march=core2,-march=i686)) \
+ 	$(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
++endif
+ 
+ # AMD Elan support
+ cflags-$(CONFIG_MELAN)		+= -march=i486
+-- 
+2.29.2
+
