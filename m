@@ -2,98 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E627432BBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 04:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455B4432BC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 04:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhJSCYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 22:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
+        id S230466AbhJSCZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 22:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhJSCY3 (ORCPT
+        with ESMTP id S229663AbhJSCZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 22:24:29 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F228C06161C;
-        Mon, 18 Oct 2021 19:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=K9yjFTzm8R78+gWBuyz5a22sfs031rU2l2UkfbxmOEQ=; b=BXFVSA4swTMiT4pPkVesKyI4bz
-        OF8Jz/FOsPev/L4bWQTXQibC2V3hDHpKFjZcM1fDFzr8Cv58i+xwWXC9XIgYzaYwgcf6ydexcciIE
-        pvEzaQs/OOJocn7EU7xRmvcXz8ESL0hc51yWArUHkF94xtlcCbYZONojerGmtnws+Eki+i8W33zt3
-        2bG+QuzGB1YLqO2hjrOClqzBy9MXaTq7FwFpkhv5d0XwwOlmS4SrHN62amDRrbEE1jVlqdnnG6Uqc
-        Bw7655+E3u/PXgs7oz/eGh2+wCQyY/IA8isamZR+Bdlzev1+vYNGYEzW27l3aYAYFtiKgJdgCc4SV
-        n9B4fQSw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcelZ-00Ha8K-VE; Tue, 19 Oct 2021 02:22:14 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH -next] Documentation: futex: handle source file rename
-Date:   Mon, 18 Oct 2021 19:22:12 -0700
-Message-Id: <20211019022212.6914-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Mon, 18 Oct 2021 22:25:34 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4E3C06161C;
+        Mon, 18 Oct 2021 19:23:22 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id lk8-20020a17090b33c800b001a0a284fcc2so855654pjb.2;
+        Mon, 18 Oct 2021 19:23:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w/5ympYvhaN2axaHCFvNwG3dKfShNuC/zGFJZLprG+k=;
+        b=SHGeA8+clXrQJL+NCOSUmjtpoXaBosuoxzhsvEXid71kNNC+GcBcEFpgmj71btzpHQ
+         44HJzeubCVBWxHCu9xivnwy1dpiyd5rLVvdibycVkpQu+402a1hhN5QwAKCCnU7eMnkH
+         TEtaR3Tg9MkUKnp7MdS3XlYzKdlMccWBezNbJFuH5aTenywfdmZBjWcJp4B6HdqqTpQS
+         zMS6fyXvztHcH3hpVgrEbHGI+wyX3nQsuNZEFyWS27n7IYziqmKO34re9er4d0DCbwyc
+         4mqCxSeISMXGDb76n9QsRvTyztnhhl3zs+rIkjhiYoiwj1X+08rI6CtSqq5enIu1a906
+         6+nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w/5ympYvhaN2axaHCFvNwG3dKfShNuC/zGFJZLprG+k=;
+        b=xuNedo3Zp17hTtT7JcsuRvWV2aAad3NnYE8N5Ie9Jz/jmfukSL8auduphfAcXE57n5
+         0csDyewmSwknKrCK+7KRuwG3UZkDqsA01AkcjOnXXiR7AaioezAJI03+WEt4f+Dhw5Ws
+         Or9HN5sDtDtYVaMf3CkSrd30hUB3YrrVs+dosTv8ZxTsTomM0Z2takJUDOFCa/u6ZQdw
+         RCDEyO+HZ7sxvBz9FhL3hEo7OJvfNuaiDvbSRSdGBLIVsTP7HqWisremr4tlyLYlGAhE
+         KZYSk6UXyOc0Ix4TddL7y9p1ssriajQZQdCgHs7ukI00Zt4B7WJuqVBglP6sgzgjbsJR
+         I9ZA==
+X-Gm-Message-State: AOAM53181PxLIV2PENNIeS/tXOeNp1NPLchx604cx4hy948UkNzS/Mcd
+        oJL3I/PKPOjHomY1tCbH1gxkft/F8UQ=
+X-Google-Smtp-Source: ABdhPJxIW7SvUXHBYY3sELLyC7TDVKb4xUjvhQtAaAX5rx8jr6NVpsr9aTlQVNP+o/mNvti+h799lg==
+X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id c6-20020a170902724600b00138a6ed66ccmr31746920pll.22.1634610201926;
+        Mon, 18 Oct 2021 19:23:21 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id gm14sm707678pjb.40.2021.10.18.19.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 19:23:21 -0700 (PDT)
+From:   Ye Guojin <cgel.zte@gmail.com>
+X-Google-Original-From: Ye Guojin <ye.guojin@zte.com.cn>
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zealci@zte.com.cn,
+        ye.guojin@zte.com.cn
+Subject: [PATCH] scsi: fixup coccinelle warnings
+Date:   Tue, 19 Oct 2021 02:22:52 +0000
+Message-Id: <20211019022252.971916-1-ye.guojin@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handle the move/rename of kernel/futex.c to kernel/futex/core.c.
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING  use scnprintf or sprintf
 
-Prevents docs build errors and warnings:
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
-Error: Cannot open file ../kernel/futex.c
-Error: Cannot open file ../kernel/futex.c
-Error: Cannot open file ../kernel/futex.c
-Error: Cannot open file ../kernel/futex.c
-WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno -sphinx-version 1.8.5 -internal ../kernel/futex.c' failed with return code 2
-WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno -sphinx-version 1.8.5 -internal ../kernel/futex.c' failed with return code 2
-
-Fixes: 77e52ae35463 ("futex: Move to kernel/futex/")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Darren Hart <dvhart@infradead.org>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: André Almeida <andrealmeid@collabora.com>
-Cc: linux-doc@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
 ---
- Documentation/kernel-hacking/locking.rst                    |    2 +-
- Documentation/translations/it_IT/kernel-hacking/locking.rst |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/scsi_sysfs.c | 50 +++++++++++++++++++--------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
---- linux-next-20211018.orig/Documentation/kernel-hacking/locking.rst
-+++ linux-next-20211018/Documentation/kernel-hacking/locking.rst
-@@ -1352,7 +1352,7 @@ Mutex API reference
- Futex API reference
- ===================
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index a35841b34bfd..69885999ec5f 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -163,7 +163,7 @@ show_##name (struct device *dev, struct device_attribute *attr, 	\
+ 	     char *buf)							\
+ {									\
+ 	struct Scsi_Host *shost = class_to_shost(dev);			\
+-	return snprintf (buf, 20, format_string, shost->field);		\
++	return sysfs_emit(buf, format_string, shost->field);		\
+ }
  
--.. kernel-doc:: kernel/futex.c
-+.. kernel-doc:: kernel/futex/core.c
-    :internal:
+ /*
+@@ -228,7 +228,7 @@ show_shost_state(struct device *dev, struct device_attribute *attr, char *buf)
+ 	if (!name)
+ 		return -EINVAL;
  
- Further reading
---- linux-next-20211018.orig/Documentation/translations/it_IT/kernel-hacking/locking.rst
-+++ linux-next-20211018/Documentation/translations/it_IT/kernel-hacking/locking.rst
-@@ -1396,7 +1396,7 @@ Riferimento per l'API dei Mutex
- Riferimento per l'API dei Futex
- ===============================
+-	return snprintf(buf, 20, "%s\n", name);
++	return sysfs_emit(buf, "%s\n", name);
+ }
  
--.. kernel-doc:: kernel/futex.c
-+.. kernel-doc:: kernel/futex/core.c
-    :internal:
+ /* DEVICE_ATTR(state) clashes with dev_attr_state for sdev */
+@@ -274,7 +274,7 @@ show_shost_active_mode(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
  
- Approfondimenti
+ 	if (shost->active_mode == MODE_UNKNOWN)
+-		return snprintf(buf, 20, "unknown\n");
++		return sysfs_emit(buf, "unknown\n");
+ 	else
+ 		return show_shost_mode(shost->active_mode, buf);
+ }
+@@ -324,8 +324,8 @@ show_shost_eh_deadline(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 
+ 	if (shost->eh_deadline == -1)
+-		return snprintf(buf, strlen("off") + 2, "off\n");
+-	return sprintf(buf, "%u\n", shost->eh_deadline / HZ);
++		return sysfs_emit(buf, "off\n");
++	return sysfs_emit(buf, "%u\n", shost->eh_deadline / HZ);
+ }
+ 
+ static ssize_t
+@@ -382,14 +382,14 @@ static ssize_t
+ show_host_busy(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+-	return snprintf(buf, 20, "%d\n", scsi_host_busy(shost));
++	return sysfs_emit(buf, "%d\n", scsi_host_busy(shost));
+ }
+ static DEVICE_ATTR(host_busy, S_IRUGO, show_host_busy, NULL);
+ 
+ static ssize_t
+ show_use_blk_mq(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "1\n");
++	return sysfs_emit(buf, "1\n");
+ }
+ static DEVICE_ATTR(use_blk_mq, S_IRUGO, show_use_blk_mq, NULL);
+ 
+@@ -399,7 +399,7 @@ show_nr_hw_queues(struct device *dev, struct device_attribute *attr, char *buf)
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct blk_mq_tag_set *tag_set = &shost->tag_set;
+ 
+-	return snprintf(buf, 20, "%d\n", tag_set->nr_hw_queues);
++	return sysfs_emit(buf, "%d\n", tag_set->nr_hw_queues);
+ }
+ static DEVICE_ATTR(nr_hw_queues, S_IRUGO, show_nr_hw_queues, NULL);
+ 
+@@ -593,7 +593,7 @@ sdev_show_##field (struct device *dev, struct device_attribute *attr,	\
+ {									\
+ 	struct scsi_device *sdev;					\
+ 	sdev = to_scsi_device(dev);					\
+-	return snprintf (buf, 20, format_string, sdev->field);		\
++	return sysfs_emit(buf, format_string, sdev->field);		\
+ }									\
+ 
+ /*
+@@ -680,7 +680,7 @@ sdev_show_device_busy(struct device *dev, struct device_attribute *attr,
+ 		char *buf)
+ {
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+-	return snprintf(buf, 20, "%d\n", scsi_device_busy(sdev));
++	return sysfs_emit(buf, "%d\n", scsi_device_busy(sdev));
+ }
+ static DEVICE_ATTR(device_busy, S_IRUGO, sdev_show_device_busy, NULL);
+ 
+@@ -689,7 +689,7 @@ sdev_show_device_blocked(struct device *dev, struct device_attribute *attr,
+ 		char *buf)
+ {
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+-	return snprintf(buf, 20, "%d\n", atomic_read(&sdev->device_blocked));
++	return sysfs_emit(buf, "%d\n", atomic_read(&sdev->device_blocked));
+ }
+ static DEVICE_ATTR(device_blocked, S_IRUGO, sdev_show_device_blocked, NULL);
+ 
+@@ -701,7 +701,7 @@ sdev_show_timeout (struct device *dev, struct device_attribute *attr, char *buf)
+ {
+ 	struct scsi_device *sdev;
+ 	sdev = to_scsi_device(dev);
+-	return snprintf(buf, 20, "%d\n", sdev->request_queue->rq_timeout / HZ);
++	return sysfs_emit(buf, "%d\n", sdev->request_queue->rq_timeout / HZ);
+ }
+ 
+ static ssize_t
+@@ -722,7 +722,7 @@ sdev_show_eh_timeout(struct device *dev, struct device_attribute *attr, char *bu
+ {
+ 	struct scsi_device *sdev;
+ 	sdev = to_scsi_device(dev);
+-	return snprintf(buf, 20, "%u\n", sdev->eh_timeout / HZ);
++	return sysfs_emit(buf, "%u\n", sdev->eh_timeout / HZ);
+ }
+ 
+ static ssize_t
+@@ -842,7 +842,7 @@ show_state_field(struct device *dev, struct device_attribute *attr, char *buf)
+ 	if (!name)
+ 		return -EINVAL;
+ 
+-	return snprintf(buf, 20, "%s\n", name);
++	return sysfs_emit(buf, "%s\n", name);
+ }
+ 
+ static DEVICE_ATTR(state, S_IRUGO | S_IWUSR, show_state_field, store_state_field);
+@@ -857,7 +857,7 @@ show_queue_type_field(struct device *dev, struct device_attribute *attr,
+ 	if (sdev->simple_tags)
+ 		name = "simple";
+ 
+-	return snprintf(buf, 20, "%s\n", name);
++	return sysfs_emit(buf, "%s\n", name);
+ }
+ 
+ static ssize_t
+@@ -934,7 +934,7 @@ static ssize_t
+ show_iostat_counterbits(struct device *dev, struct device_attribute *attr,
+ 			char *buf)
+ {
+-	return snprintf(buf, 20, "%d\n", (int)sizeof(atomic_t) * 8);
++	return sysfs_emit(buf, "%d\n", (int)sizeof(atomic_t) * 8);
+ }
+ 
+ static DEVICE_ATTR(iocounterbits, S_IRUGO, show_iostat_counterbits, NULL);
+@@ -946,7 +946,7 @@ show_iostat_##field(struct device *dev, struct device_attribute *attr,	\
+ {									\
+ 	struct scsi_device *sdev = to_scsi_device(dev);			\
+ 	unsigned long long count = atomic_read(&sdev->field);		\
+-	return snprintf(buf, 20, "0x%llx\n", count);			\
++	return sysfs_emit(buf, "0x%llx\n", count);			\
+ }									\
+ static DEVICE_ATTR(field, S_IRUGO, show_iostat_##field, NULL)
+ 
+@@ -959,7 +959,7 @@ sdev_show_modalias(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+ 	struct scsi_device *sdev;
+ 	sdev = to_scsi_device(dev);
+-	return snprintf (buf, 20, SCSI_DEVICE_MODALIAS_FMT "\n", sdev->type);
++	return sysfs_emit(buf, SCSI_DEVICE_MODALIAS_FMT "\n", sdev->type);
+ }
+ static DEVICE_ATTR(modalias, S_IRUGO, sdev_show_modalias, NULL);
+ 
+@@ -970,7 +970,7 @@ sdev_show_evt_##name(struct device *dev, struct device_attribute *attr,	\
+ {									\
+ 	struct scsi_device *sdev = to_scsi_device(dev);			\
+ 	int val = test_bit(SDEV_EVT_##Cap_name, sdev->supported_events);\
+-	return snprintf(buf, 20, "%d\n", val);				\
++	return sysfs_emit(buf, "%d\n", val);				\
+ }
+ 
+ #define DECLARE_EVT_STORE(name, Cap_name)				\
+@@ -1092,9 +1092,9 @@ sdev_show_dh_state(struct device *dev, struct device_attribute *attr,
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+ 
+ 	if (!sdev->handler)
+-		return snprintf(buf, 20, "detached\n");
++		return sysfs_emit(buf, "detached\n");
+ 
+-	return snprintf(buf, 20, "%s\n", sdev->handler->name);
++	return sysfs_emit(buf, "%s\n", sdev->handler->name);
+ }
+ 
+ static ssize_t
+@@ -1152,7 +1152,7 @@ sdev_show_access_state(struct device *dev,
+ 	access_state = (sdev->access_state & SCSI_ACCESS_STATE_MASK);
+ 	access_state_name = scsi_access_state_name(access_state);
+ 
+-	return sprintf(buf, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 		       access_state_name ? access_state_name : "unknown");
+ }
+ static DEVICE_ATTR(access_state, S_IRUGO, sdev_show_access_state, NULL);
+@@ -1168,9 +1168,9 @@ sdev_show_preferred_path(struct device *dev,
+ 		return -EINVAL;
+ 
+ 	if (sdev->access_state & SCSI_ACCESS_STATE_PREFERRED)
+-		return sprintf(buf, "1\n");
++		return sysfs_emit(buf, "1\n");
+ 	else
+-		return sprintf(buf, "0\n");
++		return sysfs_emit(buf, "0\n");
+ }
+ static DEVICE_ATTR(preferred_path, S_IRUGO, sdev_show_preferred_path, NULL);
+ #endif
+@@ -1182,7 +1182,7 @@ sdev_show_queue_ramp_up_period(struct device *dev,
+ {
+ 	struct scsi_device *sdev;
+ 	sdev = to_scsi_device(dev);
+-	return snprintf(buf, 20, "%u\n",
++	return sysfs_emit(buf, "%u\n",
+ 			jiffies_to_msecs(sdev->queue_ramp_up_period));
+ }
+ 
+-- 
+2.25.1
+
+
