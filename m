@@ -2,89 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8EE433AB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709D8433AB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 17:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234202AbhJSPid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 11:38:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51808 "EHLO mail.kernel.org"
+        id S232968AbhJSPir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 11:38:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234130AbhJSPiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:38:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27CC9600D3;
-        Tue, 19 Oct 2021 15:36:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634657764;
-        bh=NzBsq2V2m7i7GEd2bbQfY/EVxbEmxKIigcuDaW2asqA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HG7qfJNHok6ozu/kVnyDlCo2lY04bMPt2YhqG/NLvzZ/Gs5Jbw/BUfYLSzxw/xtkG
-         dFdeb6yINcamV/c0o0MFePpc8EPO9d3UINgzvsdM7iHjthbQP0OPYRmyc4eRwlHwDz
-         wc6Jp+X4suL+sC7Jyo59DYwIxpELyw1ZiLzgKKMzckZ7sjg8cdY1bxudDngNtkmRaq
-         QZkslu2J9g6jHtbfpzHGOmDU47Eo6dxdjnxbwoeTuUnTiA1PpwCSRI0Oh+QU2p5VHc
-         fqVJ1XuK711OATIFTtfJNdejUV9K6ELm12jshUO448mbGM46XVshKmrj8qaqBES8F0
-         gkHa/PlvdOpnQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Avri Altman <avri.altman@wdc.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: core: ufs-pci: hide unused ufshcd_pci_restore function
-Date:   Tue, 19 Oct 2021 17:35:51 +0200
-Message-Id: <20211019153600.380220-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234207AbhJSPid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 11:38:33 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD915610A1;
+        Tue, 19 Oct 2021 15:36:19 +0000 (UTC)
+Date:   Tue, 19 Oct 2021 11:36:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 13/19] rtla: Add Documentation
+Message-ID: <20211019113618.02bcdf8b@gandalf.local.home>
+In-Reply-To: <8735oxt4ny.fsf@meer.lwn.net>
+References: <cover.1634574261.git.bristot@kernel.org>
+        <7e205854656f41afe9a35e6390d3e3cbd724706f.1634574261.git.bristot@kernel.org>
+        <877deaut3b.fsf@meer.lwn.net>
+        <f0c50222-a9a8-d0e5-d705-d9d670467142@kernel.org>
+        <20211019092124.6b403ca4@gandalf.local.home>
+        <ecf3bfee-8a7a-e3bf-4fba-af9bc479526e@kernel.org>
+        <8735oxt4ny.fsf@meer.lwn.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, 19 Oct 2021 09:28:33 -0600
+Jonathan Corbet <corbet@lwn.net> wrote:
 
-When CONFIG_PM_SLEEP is disabled, ufshcd_pci_restore() fails
-to compile but is also unused:
+> My first reaction would be to make a new directory like
+> Documentation/tools and put man pages there.  That can become a new
+> "book" within the larger documentation collection.  Make sense?
 
-drivers/scsi/ufs/ufshcd-pci.c: In function 'ufshcd_pci_restore':
-drivers/scsi/ufs/ufshcd-pci.c:459:16: error: implicit declaration of function 'ufshcd_system_resume'; did you mean 'ufshcd_runtime_resume'? [-Werror=implicit-function-declaration]
-  459 |         return ufshcd_system_resume(dev);
-      |                ^~~~~~~~~~~~~~~~~~~~
-      |                ufshcd_runtime_resume
-At top level:
-drivers/scsi/ufs/ufshcd-pci.c:452:12: error: 'ufshcd_pci_restore' defined but not used [-Werror=unused-function]
-  452 | static int ufshcd_pci_restore(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~~~
+Sounds good to me. Daniel?
 
-Enclose it within the same #ifdef as the related code.
-
-Fixes: 21431d5bdf15 ("scsi: core: ufs-pci: Force a full restore after suspend-to-disk")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/scsi/ufs/ufshcd-pci.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
-index d65e6cd7a28d..51424557810d 100644
---- a/drivers/scsi/ufs/ufshcd-pci.c
-+++ b/drivers/scsi/ufs/ufshcd-pci.c
-@@ -449,6 +449,7 @@ static struct ufs_hba_variant_ops ufs_intel_lkf_hba_vops = {
- 	.device_reset		= ufs_intel_device_reset,
- };
- 
-+#ifdef CONFIG_PM_SLEEP
- static int ufshcd_pci_restore(struct device *dev)
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
-@@ -458,6 +459,7 @@ static int ufshcd_pci_restore(struct device *dev)
- 
- 	return ufshcd_system_resume(dev);
- }
-+#endif
- 
- /**
-  * ufshcd_pci_shutdown - main function to put the controller in reset state
--- 
-2.29.2
-
+-- Steve
