@@ -2,273 +2,1225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB510433BF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DE0433BF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 18:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhJSQV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 12:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbhJSQVZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:21:25 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CD3C06161C;
-        Tue, 19 Oct 2021 09:19:12 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id j21so8845054lfe.0;
-        Tue, 19 Oct 2021 09:19:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y/ir8B+CRjd7AbSm8xRiASD6VJaRvehWpboSeQHSKr0=;
-        b=lDzUnE6R4ShOTmwd7+5L6htw4nTAhGpC0cd5bWY7sN+bsu/JAeJuFfcAb7Gf3wTSAh
-         rHSQkgrvoBeDJmrcZozfmSpdUuTHCfBio/Nqr5hYuHqBZ6t0kG1bNIQ8Ndr3nwigHdOA
-         4E/uXzEiDmjl0xBByI4RAclePvKwF8IKDWph9QDxcjjdRhan6NLKtdU4VjKlAwTsZH0H
-         VOSulbosmdVsxQysWp+aPne9epy3FtIbaQhVb6HJ5Te5qdGo9kXIeQjmdclLXipBc5di
-         Lp+JJOBf1qJbylh71cn9pgh3g9aukLvIw53GWDXq3nKzhfzLJdX8KRYjfGgm/eo75QqV
-         pACA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y/ir8B+CRjd7AbSm8xRiASD6VJaRvehWpboSeQHSKr0=;
-        b=MFfHptKK6mI3t40MHACLuy0CnvmjUUC6uVbXH5tGETKbg7UzPsN8l8hdlWlnLEyesR
-         /zaHjppdAQqSHK/oGWE3GhWlCrp4mDh8KgTygXdf/ASDqPjWY5oznmguq7rvRLUfzwkA
-         /tlbgDaf704VWQ7fPXtrZ/qyNvc4B0KoiztNzunUfsmWLh5zvLDNHNDVxfdv+EMLBmzd
-         0sGmrIfTzvoZILjhrpOE666UchowbrlQiZz92x6nfxrgNCOfGTsasXu46MttlOI0ZaJK
-         VKjMGug3DkFiQoiiVM0KNLJvYPtBSofMgXDav7b3L1EsC9IrPNZEt87AxvYjcgv7b7tu
-         BiTQ==
-X-Gm-Message-State: AOAM530QNkRVZ533X6q0mCAfCDk2SeMyT/LUW6kEZ6l+/u/+Jc+WxclG
-        JK+nGKn+/Usozy00eUcqJ2h7nAF577s=
-X-Google-Smtp-Source: ABdhPJzaRZbIea0EpRKCfnXRs315sDhS9xgp2ZkNCyeepbohG9WUcKgb1KHDVnnOVqLetH1FZpxI9w==
-X-Received: by 2002:a05:6512:228d:: with SMTP id f13mr6942682lfu.610.1634660350680;
-        Tue, 19 Oct 2021 09:19:10 -0700 (PDT)
-Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id w26sm2114545ljh.18.2021.10.19.09.19.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 09:19:10 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Alex Bee <knaerzche@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
-        David Wu <david.wu@rock-chips.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Cameron Nemo <cnemo@tutanota.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Rockchip SoC support" 
+        id S232187AbhJSQWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 12:22:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:51406 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229846AbhJSQWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:22:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6673C2F;
+        Tue, 19 Oct 2021 09:19:47 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 281F13F694;
+        Tue, 19 Oct 2021 09:19:46 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 17:19:43 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Etienne Carriere <etienne.carriere@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
         <linux-arm-kernel@lists.infradead.org>,
-        Trevor Woerner <twoerner@gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: rk3328: add gpu opp table
-Date:   Tue, 19 Oct 2021 18:19:08 +0200
-Message-ID: <4362028.GryP8xLggj@archbook>
-In-Reply-To: <5a667361-940e-4653-ac3e-ae26a70255a2@gmail.com>
-References: <20211016154548.29555-1-twoerner@gmail.com> <3352474.ljgn2FL0hr@archbook> <5a667361-940e-4653-ac3e-ae26a70255a2@gmail.com>
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [PATCH v3 2/2] firmware: arm_scmi: Add optee transport
+Message-ID: <20211019161943.GB6526@e120937-lin>
+References: <20211018114046.25571-1-etienne.carriere@linaro.org>
+ <20211018114046.25571-2-etienne.carriere@linaro.org>
+ <20211018194317.GA6526@e120937-lin>
+ <CAN5uoS_8E53=0rTeHuuc79_rBandfxVjXKwNcURVF6WsUY33pg@mail.gmail.com>
+ <CAN5uoS-qLOtNnD+jnaEn+Yf0W-zwmG9X-9oT=cM3-hesFCXJDw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN5uoS-qLOtNnD+jnaEn+Yf0W-zwmG9X-9oT=cM3-hesFCXJDw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Dienstag, 19. Oktober 2021 17:52:05 CEST Alex Bee wrote:
-> Am 18.10.21 um 18:49 schrieb Nicolas Frattaroli:
-> > On Samstag, 16. Oktober 2021 17:45:44 CEST Trevor Woerner wrote:
-> >> Add an operating-points table and cooling entry to the GPU on the
-> >> RK3328 SoC to improve its performance. According to its datasheet[1]
-> >> the maximum frequency of the Mali-450 MP2 GPU found on the RK3328 SoC
-> >> is 500MHz.
-> >>
-> >> On my rock64 device, under x11, glmark2-es2 performance increased from
-> >> around 60 to just over 100. Same device running glmark2-es2 under
-> >> wayland/weston improved from just over 100 to just over 200.
-> >>
-> >> [1] https://rockchip.fr/RK3328%20datasheet%20V1.2.pdf
-> >>
-> >> Signed-off-by: Trevor Woerner <twoerner@gmail.com>
-> >> ---
-> >>   arch/arm64/boot/dts/rockchip/rk3328.dtsi | 26 ++++++++++++++++++++++=
-+-
-> >>   1 file changed, 25 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> >> b/arch/arm64/boot/dts/rockchip/rk3328.dtsi index 8c821acb21ff..5e1dcf7=
-1e414
-> >> 100644
-> >> --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> >> +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> >> @@ -532,7 +532,8 @@ map0 {
-> >>   					cooling-device =3D <&cpu0
-> > THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> >>   							 <&cpu1
-> > THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> >>   							 <&cpu2
-> > THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> >> -							 <&cpu3
-> > THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> >> +							 <&cpu3
-> > THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> >> +							 <&gpu
-> > THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> >>   					contribution =3D <4096>;
-> >>   				};
-> >>   			};
-> >> @@ -617,6 +618,29 @@ gpu: gpu@ff300000 {
-> >>   		clocks =3D <&cru ACLK_GPU>, <&cru ACLK_GPU>;
-> >>   		clock-names =3D "bus", "core";
-> >>   		resets =3D <&cru SRST_GPU_A>;
-> >> +		operating-points-v2 =3D <&gpu_opp_table>;
-> >> +		#cooling-cells =3D <2>;
-> >> +	};
-> >> +
-> >> +	gpu_opp_table: gpu-opp-table {
-> >> +		compatible =3D "operating-points-v2";
-> >> +
-> >> +		opp-200000000 {
-> >> +			opp-hz =3D /bits/ 64 <200000000>;
-> >> +			opp-microvolt =3D <1100000>;
-> >> +		};
-> >> +		opp-300000000 {
-> >> +			opp-hz =3D /bits/ 64 <300000000>;
-> >> +			opp-microvolt =3D <1100000>;
-> >> +		};
-> >> +		opp-400000000 {
-> >> +			opp-hz =3D /bits/ 64 <400000000>;
-> >> +			opp-microvolt =3D <1100000>;
-> >> +		};
-> >> +		opp-500000000 {
-> >> +			opp-hz =3D /bits/ 64 <500000000>;
-> >> +			opp-microvolt =3D <1100000>;
-> >> +		};
-> >>   	};
-> >>
-> >>   	h265e_mmu: iommu@ff330200 {
-> >=20
-> > As for whether this works as described on a ROCK64 for glmark2-es2-wayl=
-and:
->=20
-> The probably most "convenient" and also future-proof solution upstream=20
-> for that is to define voltage ranges =E1 la
->=20
->=20
->=20
-> opp-200000000 {
->=20
-> 		opp-hz =3D /bits/ 64 <200000000>;
->=20
-> 		opp-microvolt =3D <950000 950000 1150000>;
->=20
->=20
->=20
-> };
->=20
-> and so on.
->=20
-> And then adapt the regulator-min-microvolt of the logic regulator like
->=20
-> vdd_logic: DCDC_REG1 {
->=20
-> 	regulator-name =3D "vdd_logic";
->=20
-> 	regulator-min-microvolt =3D <1050000>;
->=20
-> ...
-> };
->=20
-> That way all opp-points will be taken, but its ensured, that vdd_log=20
-> never goes below 1.05 V
->=20
-> >=20
-> > Tested-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-> >=20
-> > There is some stuff worth noting that LibreELEC does on this SoC[1]:
-> >=20
-> > 1. they use 1.05V for all OPPs up to and including 400 MHz
-> > 2. they run 500 MHz at 1.15V instead (though 1.10V seemed to work for b=
-oth of
-> > us)
->=20
-> That might be true for your boards, but note that the required voltage=20
-> is per "leakage level" defined in efuse bits - something we do not=20
-> support for Rockchip upstream currently - see [1]
+On Tue, Oct 19, 2021 at 04:24:30PM +0200, Etienne Carriere wrote:
+> Hi,
+> 
 
-Thank you for the insight.
+Hi Etienne,
 
-If we had the efuse bits, is there an already existing mechanism to only
-enable the 500 MHz OPP if the chip happens to be one of those able to do
-it at 1.10V?
+I was replying to the previous one, so I'll stick all my answers togetehr
+in this last email instead :D
 
-Something like only having opp-microvolt-L1 defined and having the opp
-be ignored if we're not an L1 chip.
+> On Tue, 19 Oct 2021 at 11:10, Etienne Carriere
+> <etienne.carriere@linaro.org> wrote:
+> >
+> >  Hello Cristian,
+> >
+> > Thanks a lot for the review.
+> > I see I didn't understand and use correctly the config switch for the transport.
+> > Thanks for all the fixes you sent, i'll integrate them in the patch v4.
+> >
 
->=20
-> > 3. they disable 500 MHz because 1.15V was apparently too high for rkvde=
-c.
-> >=20
-> > 3 is currently not very relevant because mainline Linux has no rkvdec n=
-ode in
-> > the rk3328 dtsi, and we're not running at 1.15V.
-> >=20
-> > I've decided to add their rkvdec dtsi patch[2] on top anyway, and saw no
-> > complaints from the rkvdec module while glmark2-es2-drm was running. Ho=
-wever,
-> > it's not like I tried to actually hardware decode video while it was ru=
-nning
-> > because the userspace situation still won't let me without compiling en=
-tirely
-> > too much stuff from git. Though the rkvdec module was loaded and presen=
-t.
-> You will see no complaints from the module , but you will see the SoC=20
-> crashing if both is running at the same time - see rkvdec-opp-table=20
-> downstream [2]
+As a side thing on this 'depends on', I'm also a bit puzzled by the fact the
+depends is on CONFIG_OPTEE but some errors of the above appear really on
+CONFIG_TEE=m since the scmi_optee is really using the generic tee_ API
+which in turn needs/uses CONFIG_OPTEE in this case (if I got it right
+AFAIU...not really an OPTEE expert here :>)...but maybe CONFIG_OPTEE is
+just the easier and most correct thing we can do.
 
-I did end up finding an old arm64 build I had of a patched ffmpeg that works
-for the current kernel, and
+> > I don't know yet how to address your last comment. See my feedback on
+> > the optee bus dependency issue.
+> >
 
-  ffmpeg -hwaccel drm -i file -f null -
+See below.
 
-was running stably with glmark2-es2-drm running at the same time, though I
-also did not have an rkvdec OPP table.
+> >
+> >
+> > On Mon, 18 Oct 2021 at 21:43, Cristian Marussi <cristian.marussi@arm.com> wrote:
+> > >
+> > > On Mon, Oct 18, 2021 at 01:40:46PM +0200, Etienne Carriere wrote:
+> > > > Add a new transport channel to the SCMI firmware interface driver for
+> > > > SCMI message exchange based on optee transport channel. The optee
+> > > > transport is realized by connecting and invoking OP-TEE SCMI service
+> > > > interface PTA.
+> > > >
+> > > > Optee transport support (CONFIG_ARM_SCMI_TRANSPORT_OPTEE) is default
+> > > > enabled when optee driver (CFG_OPTEE) is enabled. Effective optee
+> > > > transport is setup upon OP-TEE SCMI service discovery at optee
+> > > > device initialization. For this SCMI UUID is registered to the optee
+> > > > bus for probing. This is done at device_init initcall level, after
+> > > > optee bus initialization that is done at subsys_init level, as the scmi
+> > > > driver initialization.
+> > > >
+> > > > The optee transport can use a statically defined shared memory in
+> > > > which case SCMI device tree node defines it using an "arm,scmi-shmem"
+> > > > compatible phandle through property shmem. Alternatively, optee transport
+> > > > allocates the shared memory buffer from the optee driver when no shmem
+> > > > property is defined.
+> > > >
+> > > > The protocol used to exchange SCMI message over that shared memory is
+> > > > negotiated between optee transport driver and the OP-TEE service through
+> > > > capabilities exchange.
+> > > >
+> > > > OP-TEE SCMI service is integrated in OP-TEE since its release tag 3.13.0.
+> > > > The service interface is published in [1].
+> > > >
+> > > > Link: [1] https://github.com/OP-TEE/optee_os/blob/3.13.0/lib/libutee/include/pta_scmi_client.h
+> > > > Cc: Cristian Marussi <cristian.marussi@arm.com>
+> > > > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > > > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+> > > > ---
+> > > > Changes since v2:
+> > > > - Rebase on for-next/scmi, based on Linux v5.15-rc1.
+> > > > - Implement support for dynamic and static shared memory.
+> > > > - Factorize some functions and simplify transport exit sequence.
+> > > > - Rename driver source file from optee_service.c to optee.c.
+> > > >
+> > > > No change since v1
+> > > > ---
+> > >
+> > > Hi Etienne,
+> > >
+> > > a few remarks below.
+> > >
+> > > >  drivers/firmware/arm_scmi/Kconfig  |  12 +
+> > > >  drivers/firmware/arm_scmi/Makefile |   1 +
+> > > >  drivers/firmware/arm_scmi/common.h |   3 +
+> > > >  drivers/firmware/arm_scmi/driver.c |   3 +
+> > > >  drivers/firmware/arm_scmi/optee.c  | 559 +++++++++++++++++++++++++++++
+> > > >  5 files changed, 578 insertions(+)
+> > > >  create mode 100644 drivers/firmware/arm_scmi/optee.c
+> > > >
+> > > > diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
+> > > > index 3d7081e84853..9107e249023c 100644
+> > > > --- a/drivers/firmware/arm_scmi/Kconfig
+> > > > +++ b/drivers/firmware/arm_scmi/Kconfig
+> > > > @@ -77,6 +77,18 @@ config ARM_SCMI_TRANSPORT_VIRTIO
+> > > >         If you want the ARM SCMI PROTOCOL stack to include support for a
+> > > >         transport based on VirtIO, answer Y.
+> > > >
+> > > > +config ARM_SCMI_TRANSPORT_OPTEE
+> > > > +     bool "SCMI transport based on OP-TEE service"
+> > > > +     depends on OPTEE
+> > > > +     select ARM_SCMI_HAVE_TRANSPORT
+> > > > +     select ARM_SCMI_HAVE_SHMEM
+> > > > +     default y
+> > > > +     help
+> > > > +       This enables the OP-TEE service based transport for SCMI.
+> > > > +
+> > > > +       If you want the ARM SCMI PROTOCOL stack to include support for a
+> > > > +       transport based on OP-TEE SCMI service, answer Y.
+> > > > +
+> > > >  endif #ARM_SCMI_PROTOCOL
+> > > >
+> > >
+> > > So this 'depends on OPTEE' reminded me of a similar issue on VIRTIO
+> > > transport spotted by a bot (see the fix for Virtio at: c90521a0e94f firmware:
+> > > arm_scmi: Fix virtio transport Kconfig dependency), that consiste in a broken
+> > > build when SCMI was compiled built-in with VIRTIO transport support with
+> > > ARM_SCMI_PROTOCOL=y while the core was CONFIG_VIRTIO=m.
+> > >
+> > > So I tried similarly to set CONFIG_OPTEE=m while keeping ARM_SCMI_PROTOCOL=y
+> > > expecting to see a similar issue as in VirtIO (i.e. not being able to access
+> > > optee module symbols from the builtin SCMI), instead I spotted a different bug :D
+> >
+> > Sorry, I didn't try this config (optee=m / scmi=y). I though expecting
+> > scmi over optee and scmi=y would mandate optee=y.
 
-Either way, thank you for clearing things up. I guess the easiest way to
-get more useful clocks on mainline right now is to disable the 500 MHz
-OPP and define them all in the way you've suggested.
+Well, yes, but due to a dance of circular-deps in Kconfig which I could
+not find a way to avoid, this awkard ORed depends is what we ended up
+doing to avoid such scenario. (Arnd advised me on this solution
+really...I did not have any better idea on my own)
 
-Regards,
-Nicolas Frattaroli
+> > For the fixup you propose below, i understand how you address the
+> > configuration dependencies.
+> >
+> > >
+> > >   AR      drivers/base/built-in.a
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c: In function ‘invoke_process_smt_channel’:
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:233:27: error: ‘scmi_optee_desc’ undeclared (first use in this function); did you mean ‘scmi_smc_desc’?
+> > >    const size_t msg_size = scmi_optee_desc.max_msg_size;
+> > >                            ^~~~~~~~~~~~~~~
+> > >                            scmi_smc_desc
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:233:27: note: each undeclared identifier is reported only once for each function it appears in
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c: In function ‘setup_dynamic_shmem’:
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:266:26: error: ‘scmi_optee_desc’ undeclared (first use in this function); did you mean ‘scmi_smc_desc’?
+> > >   const size_t msg_size = scmi_optee_desc.max_msg_size;
+> > >                           ^~~~~~~~~~~~~~~
+> > >                           scmi_smc_desc
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/scripts/Makefile.build:277: recipe for target 'drivers/firmware/arm_scmi/optee.o' failed
+> > > make[4]: *** [drivers/firmware/arm_scmi/optee.o] Error 1
+> > > make[4]: *** Waiting for unfinished jobs....
+> > >
+> > > In fact those scmi_optee_desc are reference to a global only declared
+> > > down below. Fixed with a few defines to carry on:
+> > >
+> > > ---8<------------------
+> > >
 
->=20
-> [1]=20
-> https://github.com/rockchip-linux/kernel/blob/develop-4.4/arch/arm64/boot=
-/dts/rockchip/rk3328.dtsi#L750-L751
->=20
-> [2]=20
-> https://github.com/rockchip-linux/kernel/blob/develop-4.4/arch/arm64/boot=
-/dts/rockchip/rk3328.dtsi#L840-L867
->=20
-> Alex
->=20
-> > [1]: https://github.com/LibreELEC/LibreELEC.tv/commit/
-> > 9a6be0d36ba7ff3c3d5df798682d47a1de594ac0
-> > [2]: https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Roc=
-kchip/
-> > patches/linux/default/linux-1001-v4l2-rockchip.patch#L860-L935
-> >=20
-> >=20
-> >=20
-> >=20
-> > _______________________________________________
-> > Linux-rockchip mailing list
-> > Linux-rockchip@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-rockchip
-> >=20
->=20
->=20
+Saw the -next bot today on this...still I don't get why it is exposed
+only when compiling as a module OPTEE ? should not this be catched
+anyway being this C and this being a reference to a global declared
+well later ? (just to understand...)
 
+> > > diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
+> > > index 64aaba4a8bf2..93a84c91457b 100644
+> > > --- a/drivers/firmware/arm_scmi/optee.c
+> > > +++ b/drivers/firmware/arm_scmi/optee.c
+> > > @@ -18,6 +18,8 @@
+> > >
+> > >  #define DRIVER_NAME "optee-scmi"
+> > >
+> > > +#define SCMI_OPTEE_MAX_MSG_SIZE                128
+> > > +
+> > >  enum optee_smci_pta_cmd {
+> > >         /*
+> > >          * PTA_SCMI_CMD_CAPABILITIES - Get channel capabilities
+> > > @@ -230,7 +232,7 @@ static int invoke_process_smt_channel(struct optee_channel *channel)
+> > >         param[0].u.value.a = channel->channel_id;
+> > >
+> > >         if (channel->tee_shm) {
+> > > -               const size_t msg_size = scmi_optee_desc.max_msg_size;
+> > > +               const size_t msg_size = SCMI_OPTEE_MAX_MSG_SIZE;
+> > >
+> > >                 param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT;
+> > >                 param[1].u.memref.shm = channel->tee_shm;
+> > > @@ -263,7 +265,7 @@ static bool optee_chan_available(struct device *dev, int idx)
+> > >
+> > >  static int setup_dynamic_shmem(struct device *dev, struct optee_channel *channel)
+> > >  {
+> > > -       const size_t msg_size = scmi_optee_desc.max_msg_size;
+> > > +       const size_t msg_size = SCMI_OPTEE_MAX_MSG_SIZE;
+> > >
+> > >         channel->tee_shm = tee_shm_alloc_kernel_buf(optee_private->tee_ctx, msg_size);
+> > >         if (IS_ERR(channel->tee_shm)) {
+> > >
+> > > -----------------------------
+> > >
+> > > After the above change it compiled fine, so I went a step further and configured also
+> > > CONFIG_TEE=m (just trying to reproduce what bot saw on similar VirtIO eeh.... not that
+> > > I am so evil and sadic :D)
+> > >
+> > > And indeed now (with ARM_SCMI_PROTOCOL=y and CONFIG_TEE=m) I get:
+> > >
+> > >
+> > >   GEN     modules.builtin
+> > >   LD      .tmp_vmlinux.kallsyms1
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `invoke_process_smt_channel':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:247: undefined reference to `tee_client_invoke_func'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:247: undefined reference to `tee_client_invoke_func'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `optee_chan_free':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:397: undefined reference to `tee_shm_free'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `open_session':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:137: undefined reference to `tee_client_open_session'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `optee_service_remove':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:516: undefined reference to `tee_client_close_context'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `optee_service_probe':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:481: undefined reference to `tee_client_open_context'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:501: undefined reference to `tee_client_close_context'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `get_capabilities':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:172: undefined reference to `tee_client_invoke_func'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `close_session':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:151: undefined reference to `tee_client_close_session'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `get_channel':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:209: undefined reference to `tee_client_invoke_func'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `setup_dynamic_shmem':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:270: undefined reference to `tee_shm_alloc_kernel_buf'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:276: undefined reference to `tee_shm_get_va'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `close_session':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:151: undefined reference to `tee_client_close_session'
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o:(.data+0x10): undefined reference to `tee_bus_type'
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/Makefile:1189: recipe for target 'vmlinux' failed
+> > > make[1]: *** [vmlinux] Error 1
+> > > make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+> > > Makefile:219: recipe for target '__sub-make' failed
+> > >
+> > > Taking a similar approach to Virtio, this fixed for me
+> > >
+> > > diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
+> > > index 9107e249023c..30746350349c 100644
+> > > --- a/drivers/firmware/arm_scmi/Kconfig
+> > > +++ b/drivers/firmware/arm_scmi/Kconfig
+> > > @@ -79,7 +79,7 @@ config ARM_SCMI_TRANSPORT_VIRTIO
+> > >
+> > >  config ARM_SCMI_TRANSPORT_OPTEE
+> > >         bool "SCMI transport based on OP-TEE service"
+> > > -       depends on OPTEE
+> > > +       depends on OPTEE=y || OPTEE=ARM_SCMI_PROTOCOL
+> > >         select ARM_SCMI_HAVE_TRANSPORT
+> > >         select ARM_SCMI_HAVE_SHMEM
+> > >         default y
+> > >
+> > > which basically disables ARM_SCMI_TRANSPORT_OPTEE when CONFIG_OPTEE=m AND
+> > > ARM_SCMI_TRANSPORT_OPTEE=y: in this scenario if TEE is =m you have to build
+> > > ARM_SCMI_PROTOCOL=m too to be able to include ARM_SCMI_TRANSPORT_OPTEE.
+> >
+> > Fully makes sense to me. Thanks. I understand.
+> >
 
+As said, not elegant, but some fancy circular-deps in the Kconfig between
+SCMI core and transports led to this.
 
+> > >
+> > >
+> > > >  config ARM_SCMI_POWER_DOMAIN
+> > > > diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
+> > > > index 1dcf123d64ab..ef66ec8ca917 100644
+> > > > --- a/drivers/firmware/arm_scmi/Makefile
+> > > > +++ b/drivers/firmware/arm_scmi/Makefile
+> > > > @@ -6,6 +6,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_MAILBOX) += mailbox.o
+> > > >  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
+> > > >  scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
+> > > >  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
+> > > > +scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) += optee.o
+> > > >  scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
+> > > >  scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
+> > > >                   $(scmi-transport-y)
+> > > > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > > > index dea1bfbe1052..82ff3c3a6d2d 100644
+> > > > --- a/drivers/firmware/arm_scmi/common.h
+> > > > +++ b/drivers/firmware/arm_scmi/common.h
+> > > > @@ -421,6 +421,9 @@ extern const struct scmi_desc scmi_smc_desc;
+> > > >  #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
+> > > >  extern const struct scmi_desc scmi_virtio_desc;
+> > > >  #endif
+> > > > +#ifdef CONFIG_OPTEE
+> > >
+> > > This should be:
+> > >
+> > > #ifdef CONFIG_ARM_SCMI_TRANSPORT_OPTEE
+> > >
+> > > if not disabling OPTEE transport in Kconfig breaks the build.
+> > >
+> > >  LD      .tmp_vmlinux.kallsyms1
+> > >  /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld:
+> > >  drivers/firmware/arm_scmi/driver.o:(.rodata+0x280): undefined reference
+> > >  to `scmi_optee_desc'
+> > >  /home/crimar01/ARM/dev/src/pdsw/linux/Makefile:1189: recipe for target
+> > >  'vmlinux' failed
+> > >  make[1]: *** [vmlinux] Error 1
+> > >  make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+> > >
+> > >
+> > > > +extern const struct scmi_desc scmi_optee_desc;
+> > > > +#endif
+> > > >
+> > > >  void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv);
+> > > >  void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id);
+> > > > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > > > index b406b3f78f46..06f0a9846c7e 100644
+> > > > --- a/drivers/firmware/arm_scmi/driver.c
+> > > > +++ b/drivers/firmware/arm_scmi/driver.c
+> > > > @@ -1999,6 +1999,9 @@ static const struct of_device_id scmi_of_match[] = {
+> > > >  #endif
+> > > >  #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
+> > > >       { .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
+> > > > +#endif
+> > > > +#ifdef CONFIG_OPTEE
+> > >
+> > > Same as above should be #if CONFIG_ARM_SCMI_TRANSPORT_OPTEE
+> > >
+> > > > +     { .compatible = "linaro,scmi-optee", .data = &scmi_optee_desc },
+> > > >  #endif
+> > > >       { /* Sentinel */ },
+> > > >  };
+> > > > diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
+> > > > new file mode 100644
+> > > > index 000000000000..e294cff37bea
+> > > > --- /dev/null
+> > > > +++ b/drivers/firmware/arm_scmi/optee.c
+> > > > @@ -0,0 +1,559 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/*
+> > > > + * Copyright (C) 2019-2021 Linaro Ltd.
+> > > > + */
+> > > > +
+> > > > +#include <linux/io.h>
+> > > > +#include <linux/of.h>
+> > > > +#include <linux/of_address.h>
+> > > > +#include <linux/kernel.h>
+> > > > +#include <linux/module.h>
+> > > > +#include <linux/mutex.h>
+> > > > +#include <linux/slab.h>
+> > > > +#include <linux/tee_drv.h>
+> > > > +#include <linux/uuid.h>
+> > > > +#include <uapi/linux/tee.h>
+> > > > +
+> > > > +#include "common.h"
+> > > > +
+> > > > +#define DRIVER_NAME "optee-scmi"
+> > > > +
+> > > > +enum optee_smci_pta_cmd {
+> > >               ^
+> > >               scmi ? or is it another fancy 4letters acronym :D
+> >
+> > :) nice catch!
+> >
+> > > > +     /*
+> > > > +      * PTA_SCMI_CMD_CAPABILITIES - Get channel capabilities
+> > > > +      *
+> > > > +      * [out]    value[0].a: Capability bit mask (enum pta_scmi_caps)
+> > > > +      * [out]    value[0].b: Extended capabilities or 0
+> > > > +      */
+> > > > +     PTA_SCMI_CMD_CAPABILITIES = 0,
+> > > > +
+> > > > +     /*
+> > > > +      * PTA_SCMI_CMD_PROCESS_SMT_CHANNEL - Process SCMI message in SMT buffer
+> > > > +      *
+> > > > +      * [in]     value[0].a: Channel handle
+> > > > +      *
+> > > > +      * Shared memory used for SCMI message/response exhange is expected
+> > > > +      * already identified and bound to channel handle in both SCMI agent
+> > > > +      * and SCMI server (OP-TEE) parts.
+> > > > +      * The memory uses SMT header to carry SCMI meta-data (protocol ID and
+> > > > +      * protocol message ID).
+> > > > +      */
+> > > > +     PTA_SCMI_CMD_PROCESS_SMT_CHANNEL = 1,
+> > > > +
+> > > > +     /*
+> > > > +      * PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE - Process SMT/SCMI message
+> > > > +      *
+> > > > +      * [in]     value[0].a: Channel handle
+> > > > +      * [in/out] memref[1]: Message/response buffer (SMT and SCMI payload)
+> > > > +      *
+> > > > +      * Shared memory used for SCMI message/response is a SMT buffer
+> > > > +      * referenced by param[1]. It shall be 128 bytes large to fit response
+> > > > +      * payload whatever message playload size.
+> > > > +      * The memory uses SMT header to carry SCMI meta-data (protocol ID and
+> > > > +      * protocol message ID).
+> > > > +      */
+> > > > +     PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE = 2,
+> > > > +
+> > > > +     /*
+> > > > +      * PTA_SCMI_CMD_GET_CHANNEL - Get channel handle
+> > > > +      *
+> > > > +      * SCMI shm information are 0 if agent expects to use OP-TEE regular SHM
+> > > > +      *
+> > > > +      * [in]     value[0].a: Channel identifier
+> > > > +      * [out]    value[0].a: Returned channel handle
+> > > > +      * [in]     value[0].b: Requested capabilities mask (enum pta_scmi_caps)
+> > > > +      */
+> > > > +     PTA_SCMI_CMD_GET_CHANNEL = 3,
+> > > > +};
+> > > > +
+> > > > +/*
+> > > > + * Capabilities
+> > > > + */
+> > > > +enum pta_scmi_caps {
+> > > > +     PTA_SCMI_CAPS_NONE = 0,
+> > > > +     /*
+> > > > +      * Supports command using SMT header protocol (SCMI shmem) in shared
+> > > > +      * memory buffers to carry SCMI protocol synchronisation information.
+> > > > +      */
+> > > > +     PTA_SCMI_CAPS_SMT_HEADER = BIT(0),
+> > > > +};
+> > > > +
+> > > > +/**
+> > > > + * struct optee_channel - Description of an OP-TEE SCMI channel
+> > > > + *
+> > > > + * @channel_id: OP-TEE channel ID used for this transport
+> > > > + * @mu: Mutex protection on channel access
+> > > > + * @tee_session: TEE session identifier
+> > > > + * @cinfo: SCMI channel information
+> > > > + * @shmem: Virtual base address of the shared memory
+> > > > + * @tee_shm: Reference to TEE shared memory or NULL if using static shmem
+> > > > + * @caps: OP-TEE SCMI channel capabilities
+> > > > + * @link: Reference in agent's channel list
+> > > > + */
+> > > > +struct optee_channel {
+> > > > +     u32 channel_id;
+> > > > +     struct mutex mu;
+> > > > +     u32 tee_session;
+> > > > +     struct scmi_chan_info *cinfo;
+> > > > +     struct scmi_shared_mem __iomem *shmem;
+> > > > +     struct tee_shm *tee_shm;
+> > > > +     enum pta_scmi_caps caps;
+> > > > +     struct list_head link;
+> > > > +};
+> > > > +
+> > > > +/**
+> > > > + * struct optee_agent - OP-TEE transport private data
+> > > > + *
+> > > > + * @dev: Device used for communication with TEE
+> > > > + * @tee_ctx: TEE context used for communication
+> > > > + * @caps: Supported channel capabilities
+> > > > + * @mu: Mutex for protection of @channel_list
+> > > > + * @channel_list: List of all created channels for the agent
+> > > > + */
+> > > > +struct optee_agent {
+> > > > +     struct device *dev;
+> > > > +     struct tee_context *tee_ctx;
+> > > > +     enum pta_scmi_caps caps;
+> > > > +     struct mutex mu;
+> > > > +     struct list_head channel_list;
+> > > > +};
+> > > > +
+> > > > +/* There can be only 1 SCMI service in OP-TEE we connect to */
+> > > > +static struct optee_agent *optee_private;
+> > > > +
+> > >
+> > > Maybe naming these locally defined optee_ structs as scmi_optee_ ?
+> > >
+> > > When I see those optee_ refs around down below I tend to think they
+> > > are OPTEE core structs not locally defined containers.
+> > > (I uderstand that depends on my poor familiarity with OPTEE APIs
+> > > though...)
+> >
+> > Ok. If that help maintenance, I'm fine. I'll use scmi_optee_ where appiicable.
+> >
+
+Thanks, I have not a strong opinion on this, but as an optee-newbie (or ignorant
+if you want :D) I found it easier to reason about it.
+> >
+> > >
+> > > > +/* Open a session toward SCMI OP-TEE service with REE_KERNEL identity */
+> > > > +static int open_session(u32 *tee_session)
+> > > > +{
+> > > > +     struct device *dev = optee_private->dev;
+> > > > +     struct tee_client_device *scmi_pta = to_tee_client_device(dev);
+> > > > +     struct tee_ioctl_open_session_arg arg = { };
+> > > > +     int ret;
+> > > > +
+> > > > +     memcpy(arg.uuid, scmi_pta->id.uuid.b, TEE_IOCTL_UUID_LEN);
+> > > > +     arg.clnt_login = TEE_IOCTL_LOGIN_REE_KERNEL;
+> > > > +
+> > > > +     ret = tee_client_open_session(optee_private->tee_ctx, &arg, NULL);
+> > > > +     if (ret < 0 || arg.ret) {
+> > > > +             dev_err(dev, "Can't open tee session: %d / %#x\n", ret, arg.ret);
+> > > > +
+> > > > +             return -EOPNOTSUPP;
+> > > > +     }
+> > > > +
+> > > > +     *tee_session = arg.session;
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static void close_session(u32 tee_session)
+> > > > +{
+> > > > +     tee_client_close_session(optee_private->tee_ctx, tee_session);
+> > > > +}
+> > > > +
+> > > > +static int get_capabilities(void)
+> > > > +{
+> > > > +     struct optee_agent *agent = optee_private;
+> > > > +     struct tee_ioctl_invoke_arg arg = { };
+> > > > +     struct tee_param param[1] = { };
+> > > > +     u32 tee_session;
+> > > > +     int ret;
+> > > > +
+> > > > +     ret = open_session(&tee_session);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     arg.func = PTA_SCMI_CMD_CAPABILITIES;
+> > > > +     arg.session = tee_session;
+> > > > +     arg.num_params = 1;
+> > > > +
+> > > > +     param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
+> > > > +
+> > > > +     ret = tee_client_invoke_func(agent->tee_ctx, &arg, param);
+> > > > +
+> > > > +     close_session(tee_session);
+> > > > +
+> > > > +     if (ret < 0 || arg.ret) {
+> > > > +             dev_err(agent->dev, "Can't get capabilities: %d / %#x\n", ret, arg.ret);
+> > > > +
+> > > > +             return -EOPNOTSUPP;
+> > > > +     }
+> > > > +
+> > > > +     agent->caps = param[0].u.value.a;
+> > > > +
+> > > > +     if (!(agent->caps & PTA_SCMI_CAPS_SMT_HEADER)) {
+> > > > +             dev_err(agent->dev, "OP-TEE SCMI PTA doesn't support SMT\n");
+> > > > +
+> > > > +             return -EOPNOTSUPP;
+> > > > +     }
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static int get_channel(struct optee_channel *channel)
+> > > > +{
+> > > > +     struct device *dev = optee_private->dev;
+> > > > +     struct tee_ioctl_invoke_arg arg = { };
+> > > > +     struct tee_param param[1] = { };
+> > > > +     unsigned int caps = PTA_SCMI_CAPS_SMT_HEADER;
+> > > > +     int ret;
+> > > > +
+> > > > +     arg.func = PTA_SCMI_CMD_GET_CHANNEL;
+> > > > +     arg.session = channel->tee_session;
+> > > > +     arg.num_params = 1;
+> > > > +
+> > > > +     param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INOUT;
+> > > > +     param[0].u.value.a = channel->channel_id;
+> > > > +     param[0].u.value.b = caps;
+> > > > +
+> > > > +     ret = tee_client_invoke_func(optee_private->tee_ctx, &arg, param);
+> > > > +
+> > > > +     if (ret || arg.ret) {
+> > > > +             dev_err(dev, "Can't get channel with caps %#x: %d / %#x\n", caps, ret, arg.ret);
+> > > > +
+> > > > +             return -EOPNOTSUPP;
+> > > > +     }
+> > > > +
+> > > > +     /* From now on use channel identifer provided by OP-TEE SCMI service */
+> > > > +     channel->channel_id = param[0].u.value.a;
+> > > > +     channel->caps = caps;
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static int invoke_process_smt_channel(struct optee_channel *channel)
+> > > > +{
+> > > > +     struct tee_ioctl_invoke_arg arg = { };
+> > > > +     struct tee_param param[2] = { };
+> > > > +     int ret;
+> > > > +
+> > > > +     arg.session = channel->tee_session;
+> > > > +     param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
+> > > > +     param[0].u.value.a = channel->channel_id;
+> > > > +
+> > > > +     if (channel->tee_shm) {
+> > > > +             const size_t msg_size = scmi_optee_desc.max_msg_size;
+> > > > +
+> > > > +             param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT;
+> > > > +             param[1].u.memref.shm = channel->tee_shm;
+> > > > +             param[1].u.memref.size = msg_size;
+> > > > +             arg.num_params = 2;
+> > > > +             arg.func = PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE;
+> > > > +     } else {
+> > > > +             arg.num_params = 1;
+> > > > +             arg.func = PTA_SCMI_CMD_PROCESS_SMT_CHANNEL;
+> > > > +     }
+> > > > +
+> > > > +     ret = tee_client_invoke_func(optee_private->tee_ctx, &arg, param);
+> > > > +     if (ret < 0 || arg.ret) {
+> > > > +             dev_err(optee_private->dev, "Failed on channel %u: %d / %#x\n",
+> > > > +                     channel->channel_id, ret, arg.ret);
+> > > > +
+> > > > +             return -EIO;
+> > > > +     }
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static bool optee_chan_available(struct device *dev, int idx)
+> > > > +{
+> > > > +     u32 channel_id;
+> > > > +
+> > > > +     return !of_property_read_u32_index(dev->of_node, "linaro,optee-channel-id",
+> > > > +                                        idx, &channel_id);
+> > > > +}
+> > > > +
+> > > > +static int setup_dynamic_shmem(struct device *dev, struct optee_channel *channel)
+> > > > +{
+> > > > +     const size_t msg_size = scmi_optee_desc.max_msg_size;
+> > > > +
+> > > > +     channel->tee_shm = tee_shm_alloc_kernel_buf(optee_private->tee_ctx, msg_size);
+> > > > +     if (IS_ERR(channel->tee_shm)) {
+> > > > +             dev_err(channel->cinfo->dev, "shmem allocation failed\n");
+> > > > +             return -ENOMEM;
+> > > > +     }
+> > > > +
+> > > > +     channel->shmem = (void *)tee_shm_get_va(channel->tee_shm, 0);
+> > > > +     memset(channel->shmem, 0, msg_size);
+> > > > +     shmem_clear_channel(channel->shmem);
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static int setup_static_shmem(struct device *dev, struct scmi_chan_info *cinfo,
+> > > > +                           struct optee_channel *channel)
+> > > > +{
+> > > > +     struct device_node *np;
+> > > > +     resource_size_t size;
+> > > > +     struct resource res;
+> > > > +     int ret;
+> > > > +
+> > > > +     np = of_parse_phandle(cinfo->dev->of_node, "shmem", 0);
+> > > > +     if (!of_device_is_compatible(np, "arm,scmi-shmem")) {
+> > > > +             ret = -ENXIO;
+> > > > +             goto out;
+> > > > +     }
+> > > > +
+> > > > +     ret = of_address_to_resource(np, 0, &res);
+> > > > +     if (ret) {
+> > > > +             dev_err(dev, "Failed to get SCMI Tx shared memory\n");
+> > > > +             goto out;
+> > > > +     }
+> > > > +
+> > > > +     size = resource_size(&res);
+> > > > +
+> > > > +     channel->shmem = devm_ioremap(dev, res.start, size);
+> > > > +     if (!channel->shmem) {
+> > > > +             dev_err(dev, "Failed to ioremap SCMI Tx shared memory\n");
+> > > > +             ret = -EADDRNOTAVAIL;
+> > > > +             goto out;
+> > > > +     }
+> > > > +
+> > > > +     ret = 0;
+> > > > +
+> > > > +out:
+> > > > +     of_node_put(np);
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > > > +static int optee_chan_setup_shmem(struct device *dev, struct scmi_chan_info *cinfo,
+> > > > +                               bool tx, struct optee_channel *channel)
+> > > > +{
+> > > > +     struct device *cdev = cinfo->dev;
+> > > > +
+> > > > +     if (of_find_property(cdev->of_node, "shmem", NULL))
+> > > > +             return setup_static_shmem(dev, cinfo, channel);
+> > > > +     else
+> > > > +             return setup_dynamic_shmem(dev, channel);
+> > > > +}
+> > > > +
+> > > > +static void optee_clear_channel(struct scmi_chan_info *cinfo)
+> > > > +{
+> > > > +     struct optee_channel *channel = cinfo->transport_info;
+> > > > +
+> > > > +     shmem_clear_channel(channel->shmem);
+> > > > +}
+> > > > +
+> > > > +static int optee_chan_setup(struct scmi_chan_info *cinfo, struct device *dev, bool tx)
+> > > > +{
+> > > > +     struct optee_channel *channel;
+> > > > +     uint32_t channel_id;
+> > > > +     int ret;
+> > > > +
+> > > > +     if (!tx)
+> > > > +             return -ENODEV;
+> > > > +
+> > > > +     /* Shall wait for OP-TEE driver to be up and ready */
+> > > > +     if (!optee_private || !optee_private->tee_ctx)
+> > > > +             return -EPROBE_DEFER;
+> > > > +
+> > > > +     channel = devm_kzalloc(dev, sizeof(*channel), GFP_KERNEL);
+> > > > +     if (!channel)
+> > > > +             return -ENOMEM;
+> > > > +
+> > > > +     ret = of_property_read_u32_index(cinfo->dev->of_node, "linaro,optee-channel-id",
+> > > > +                                      0, &channel_id);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     cinfo->transport_info = channel;
+> > > > +     channel->cinfo = cinfo;
+> > > > +     channel->channel_id = channel_id;
+> > > > +     mutex_init(&channel->mu);
+> > > > +
+> > > > +     ret = optee_chan_setup_shmem(dev, cinfo, tx, channel);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     ret = open_session(&channel->tee_session);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     ret = get_channel(channel);
+> > > > +     if (ret) {
+> > > > +             close_session(channel->tee_session);
+> > > > +
+> > > > +             return ret;
+> > > > +     }
+> > > > +
+> > > > +     mutex_lock(&optee_private->mu);
+> > > > +     list_add(&channel->link, &optee_private->channel_list);
+> > > > +     mutex_unlock(&optee_private->mu);
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static int optee_chan_free(int id, void *p, void *data)
+> > > > +{
+> > > > +     struct scmi_chan_info *cinfo = p;
+> > > > +     struct optee_channel *channel = cinfo->transport_info;
+> > > > +
+> > > > +     mutex_lock(&optee_private->mu);
+> > > > +     list_del(&channel->link);
+> > > > +     mutex_unlock(&optee_private->mu);
+> > > > +
+> > > > +     if (channel->tee_shm) {
+> > > > +             tee_shm_free(channel->tee_shm);
+> > > > +             channel->tee_shm = NULL;
+> > > > +     }
+> > > > +
+> > > > +     cinfo->transport_info = NULL;
+> > > > +     channel->cinfo = NULL;
+> > > > +
+> > > > +     scmi_free_channel(cinfo, data, id);
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static struct scmi_shared_mem *get_channel_shm(struct optee_channel *chan, struct scmi_xfer *xfer)
+> > > > +{
+> > > > +     if (!chan)
+> > > > +             return NULL;
+> > > > +
+> > > > +     return chan->shmem;
+> > > > +}
+> > > > +
+> > > > +
+> > > > +static int optee_send_message(struct scmi_chan_info *cinfo,
+> > > > +                           struct scmi_xfer *xfer)
+> > > > +{
+> > > > +     struct optee_channel *channel = cinfo->transport_info;
+> > > > +     struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
+> > > > +     int ret;
+> > > > +
+> > > > +     mutex_lock(&channel->mu);
+> > > > +     shmem_tx_prepare(shmem, xfer);
+> > > > +
+> > > > +     ret = invoke_process_smt_channel(channel);
+> > >
+> > > Here all the associated processing in the TrustedOS is fully completed
+> > > right ? i.e. all the possible reply values have been put into shmem by
+> > > the TrustedOS process before the underlying SMC call returns.
+> > > (just to understand better how OPTEE transport is supposed to behave)
+> >
+> > Yes, once we're back from invoke_process_smt_channel() the SCMI
+> > message has been processed and the response can be read.
+> > If no response is found, it will be reported as a communication error.
+> >
+
+Ok. Maybe in the future this could benefit from some new general mechanism
+I'm adding in the core (with SCMI atomic series) to address this scenario in
+which you really do not have to wait neither poll for anything after the
+send and you could/should avoid calling scmi_rx_callback() and just let
+the SCMI core execute a fetch_response immediately after the send.
+(with scmi_rx_callback supposed to be called when a completion interrupt
+is received)
+
+So, just a heads up here, that I could revisit this (and bother you) once (if)
+the above mentioned SCMI atomic seris is in, BUT definitely nothing to be
+addressed now in this series.
+
+> > >
+> > > > +
+> > > > +     scmi_rx_callback(cinfo, shmem_read_header(shmem), NULL);
+> > > > +     mutex_unlock(&channel->mu);
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > > > +static void optee_fetch_response(struct scmi_chan_info *cinfo,
+> > > > +                              struct scmi_xfer *xfer)
+> > > > +{
+> > > > +     struct optee_channel *channel = cinfo->transport_info;
+> > > > +     struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
+> > > > +
+> > > > +     shmem_fetch_response(shmem, xfer);
+> > > > +}
+> > > > +
+> > > > +static bool optee_poll_done(struct scmi_chan_info *cinfo,
+> > > > +                         struct scmi_xfer *xfer)
+> > > > +{
+> > > > +     struct optee_channel *channel = cinfo->transport_info;
+> > > > +     struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
+> > > > +
+> > > > +     return shmem_poll_done(shmem, xfer);
+> > > > +}
+> > > > +
+> > > > +static struct scmi_transport_ops scmi_optee_ops = {
+> > > > +     .chan_available = optee_chan_available,
+> > > > +     .chan_setup = optee_chan_setup,
+> > > > +     .chan_free = optee_chan_free,
+> > > > +     .send_message = optee_send_message,
+> > > > +     .fetch_response = optee_fetch_response,
+> > > > +     .clear_channel = optee_clear_channel,
+> > > > +     .poll_done = optee_poll_done,
+> > > > +};
+> > > > +
+> > > > +const struct scmi_desc scmi_optee_desc = {
+> > > > +     .ops = &scmi_optee_ops,
+> > > > +     .max_rx_timeout_ms = 30,
+> > > > +     .max_msg = 20,
+> > > > +     .max_msg_size = 128,
+> > > > +};
+> > > > +
+> > > > +static int optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
+> > > > +{
+> > > > +     return ver->impl_id == TEE_IMPL_ID_OPTEE;
+> > > > +}
+> > > > +
+> > > > +static int optee_service_probe(struct device *dev)
+> > > > +{
+> > > > +     struct optee_agent *agent;
+> > > > +     struct tee_context *tee_ctx;
+> > > > +     int ret;
+> > > > +
+> > > > +     /* Only one SCMI OP-TEE device allowed */
+> > > > +     if (optee_private) {
+> > > > +             dev_err(dev, "An SCMI OP-TEE device was already initialized: only one allowed\n");
+> > > > +             return -EBUSY;
+> > > > +     }
+> > > > +
+> > > > +     tee_ctx = tee_client_open_context(NULL, optee_ctx_match, NULL, NULL);
+> > > > +     if (IS_ERR(tee_ctx))
+> > > > +             return -ENODEV;
+> > > > +
+> > > > +     agent = devm_kzalloc(dev, sizeof(*agent), GFP_KERNEL);
+> > > > +     if (!agent) {
+> > > > +             ret = -ENOMEM;
+> > > > +             goto out;
+> > > > +     }
+> > > > +
+> > > > +     agent->dev = dev;
+> > > > +     agent->tee_ctx = tee_ctx;
+> > > > +     INIT_LIST_HEAD(&agent->channel_list);
+> > > > +
+> > > > +     optee_private = agent;
+> > >
+> > > Barrier here to be sure this global is visible and not reordered ?
+> > >
+> > > Not sure if it is plausible that without a barrier the subsequent
+> > > optee_chan_setup could run on another core and simply miss this update
+> > > and bail out. (cannot see any locking of any kind either in the
+> > > chan_available/chan_setup TX path that could trigger a implicit memory
+> > > barrier....bah maybe I'm paranoid)
+> >
+> > No barrier needed IMO. optee_private is standard cached memory visible
+> > to all participant cores
+> > and chan_setup cannot be called before this function completes.
+> > Do I miss something?
+> >
+> 
+> I see why you ask for a barrier. Indeed, at module insertion we can
+> face consistency issues.
+> 
+
+Yes my concern was also about multiple concurrent probing especially,
+even though we really do not support multiple SCMI server nodes the
+fact that you could define multiple channels (on optee) could lead to
+multiple probes, while in virtio you could wrongly try to describe
+multiple mmios devs (with virtio not supporting multiple devices for
+now...hence the check)
+
+> I agree barriers are needed. Looking at the scmi_virtio
+> implementation, i think the barriers are misplaced in the sequences.
+> The barrier should be placed before the global reference is loaded at
+> device probe, so that its content is visible before the device
+> reference itself.
+> On the other hand in the remove sequence, the barrier should be placed
+> after device ref is cleared but before device resources are released.
+> Note that, in smp_store_mb() implementation, the memory barrier is
+> places after the data is loaded, not before.
+> See the patch-like snippet below:
+> 
+>  static int scmi_vio_probe(struct virtio_device *vdev)
+>  {
+>      (...)
+> 
+> -    vdev->priv = channels;
+> -    /* Ensure initialized scmi_vdev is visible */
+> -    smp_store_mb(scmi_vdev, vdev);
+> +    /* Ensure initialized scmi_vdev is visible before scmi_vdev is */
+> +    smp_store_mb(vdev->priv, channels);
+> +    scmi_vdev = vdev;
+> 
+>     return 0;
+>  }
+> 
+>  static void scmi_vio_remove(struct virtio_device *vdev)
+>  {
+> +    /* Ensure scmi_vdev is visible as NULL before resources are released */
+> +    smp_store_mb(scmi_vdev, NULL);
+> +
+>      /*
+>       * Once we get here, virtio_chan_free() will have already been called by
+>       * the SCMI core for any existing channel and, as a consequence, all the
+>       * virtio channels will have been already marked NOT ready, causing any
+>       * outstanding message on any vqueue to be ignored by complete_cb: now
+>       * we can just stop processing buffers and destroy the vqueues.
+>       */
+>      vdev->config->reset(vdev);
+>      vdev->config->del_vqs(vdev);
+> -    /* Ensure scmi_vdev is visible as NULL */
+> -    smp_store_mb(scmi_vdev, NULL);
+>  }
+> 
+> Does that make sense to you?
+> 
+
+So my reasoning was:
+1. I want to have ->priv = channels populated before scmi_dev was visible for
+other PEs as a global.
+
+	BUT
+
+2. want also to be sure that scmi_dev itself was visible to other PEs: what
+if another core is concurrently probing for another (wrongly defined in DT)
+scmi-virtio MMIO device ?
+Will scmi_dev still be viewed as NULL from another probing core for a while
+despite scmi_dev = vdev had been executed on the first core probe ?
+
+My hope (:D), since smp_store_mb() it's a WRITE_ONCE + __smb_mb() which in turn
+is a dmb(ish) on arm64, was to draw a line after which I could have been sure
+that scmi_dev store and all previous mem-accesses (on this core) would have at
+least been initiated (hit the cache) so that after that point any access from
+another PE would have been served properly by the magic of cache coeherency
+protocol on the ish domain.
+
+I could be a bit concerned indeed of an additional missing early WRITE_ONCE()
+on vdev->priv = channels so as to have (to avoid compiler tricks instead
+on vdev->priv):
+
+	WRITE_ONCE(vdev->priv, channels);
+	smp_store_mb(scmi_vdev, vdev);
+
+..but really not sure how much this has a chance to happen.
+
+Same it goes for the remove path...once in scmi_vio_remove() I want to
+be at first stop/flush all pending stuff on the vqueues knowing that:
+
+ 1. virtio_chan_free has been already previously called and it marked all
+    vqueues as NOT ready, so nobody will queue anything on vdev anyway
+
+ 2. any other possible probe would STILL find scmi_dev != NULL and
+    it 'd bail out till I'm done with the remove
+
+ONLY afterwards I would made scmi_dev visible as NULL for everybody.
+
+Does this counter-reasoning makes sense ?
+
+...OR, tbh, I have to just re-read another n-times memory-barriers.txt
+(...and remain a bit puzzled anyway :D)
+
+> > >
+> > > > +
+> > > > +     ret = get_capabilities();
+> > > > +
+> > > > +out:
+> > > > +     if (ret) {
+> > > > +             tee_client_close_context(tee_ctx);
+> > > > +             optee_private = NULL;
+> > >
+> > > Barrier ? (not sure as above...)
+> > >
+> > > > +     }
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > > > +static int optee_service_remove(struct device *dev)
+> > > > +{
+> > > > +     if (optee_private)
+> > > > +             return -EINVAL;
+> > >
+> > > Is it  instead: if (!optee_private) ?
+> >
+> > Oups! indeed :(
+> >
+> > > > +
+> > > > +     if (!list_empty(&optee_private->channel_list))
+> > > > +             return -EBUSY;
+> > > > +
+> > > > +     tee_client_close_context(optee_private->tee_ctx);
+> > > > +
+> > > > +     optee_private = NULL;
+> > > > +
+> > >
+> > > Barrier ? (not sure as above...)
+> > >
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static const struct tee_client_device_id scmi_optee_service_id[] = {
+> > > > +     {
+> > > > +             UUID_INIT(0xa8cfe406, 0xd4f5, 0x4a2e,
+> > > > +                       0x9f, 0x8d, 0xa2, 0x5d, 0xc7, 0x54, 0xc0, 0x99)
+> > > > +     },
+> > > > +     { }
+> > > > +};
+> > > > +
+> > > > +MODULE_DEVICE_TABLE(tee, scmi_optee_service_id);
+> > > > +
+> > > > +static struct tee_client_driver scmi_optee_driver = {
+> > > > +     .id_table       = scmi_optee_service_id,
+> > > > +     .driver         = {
+> > > > +             .name = "scmi-optee",
+> > > > +             .bus = &tee_bus_type,
+> > > > +             .probe = optee_service_probe,
+> > > > +             .remove = optee_service_remove,
+> > > > +     },
+> > > > +};
+> > > > +
+> > > > +static int __init scmi_optee_init(void)
+> > > > +{
+> > > > +     return driver_register(&scmi_optee_driver.driver);
+> > > > +}
+> > > > +
+> > > > +static void __exit scmi_optee_exit(void)
+> > > > +{
+> > > > +     driver_unregister(&scmi_optee_driver.driver);
+> > > > +}
+> > > > +
+> > > > +device_initcall(scmi_optee_init)
+> > > > +module_exit(scmi_optee_exit);
+> > >
+> > > This breaks the build when ARM_SCMI_PROTOCOL=m and SCMI OPTEE transport is enabled,
+> > > since the SCMI transports are not full fledged drivers but they are built into
+> > > the SCMI stack core module, so if you endup trying to define multiple inits.
+> > >
+> > >  LD [M]  drivers/firmware/arm_scmi/scmi-module.o
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `scmi_optee_init':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:549: multiple definition of `init_module'; drivers/firmware/arm_scmi/driver.o:/home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/driver.c:2070: first defined here
+> > > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld: drivers/firmware/arm_scmi/optee.o: in function `scmi_optee_exit':
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee.c:554: multiple definition of `cleanup_module'; drivers/firmware/arm_scmi/driver.o:/home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/driver.c:2099: first defined he> /home/crimar01/ARM/dev/src/pdsw/linux/scripts/Makefile.build:474: recipe for target 'drivers/firmware/arm_scmi/scmi-module.o' failed
+> > > make[4]: *** [drivers/firmware/arm_scmi/scmi-module.o] Error 1
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/scripts/Makefile.build:540: recipe for target 'drivers/firmware/arm_scmi' failed
+> > > make[3]: *** [drivers/firmware/arm_scmi] Error 2
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/scripts/Makefile.build:540: recipe for target 'drivers/firmware' failed
+> > > make[2]: *** [drivers/firmware] Error 2
+> > > make[2]: *** Waiting for unfinished jobs....
+> > > /home/crimar01/ARM/dev/src/pdsw/linux/Makefile:1874: recipe for target 'drivers' failed
+> > > make[1]: *** [drivers] Error 2
+> > > make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+> > > Makefile:219: recipe for target '__sub-make' failed
+> > >
+> > > In order to address this issue (same happended with VirtIO) I added
+> > > transport_init/transport_exit optional hooks into scmi_desc, so that
+> > > you can ask the core SCMI stack to perform whatever your transport
+> > > needs at SCMI core init-time, before the SCMI core stack is probed.
+> > >
+> > > In other words the fix here down below fixes for me the build as a
+> > > module of the SCMI stack.
+> >
+> > To ensure scmi/optee transport can register to the tee bus, it must
+> > wait tee bus is initialized.
+> > The issue is optee driver initializes its tee bus at subsys_initcall
+> > level, same level as the scmi driver.
+> > So I had to call scmi_optee_init() at an earlier init level: device_initcall().
+> >
+> > Virtio bus is registered at core_initcall level hence scmi/virtio init
+> > a subsys_initcall has the dependency resolved.
+> 
+> I have a proposal to address this.
+> 
+> You suggested to use ::transport_init operator from struct scmi_desc
+> for this registration to the optee bus.
+> For the reason above, it does not apply to OP-TEE.
+> My idea is to not ue ::transport_init hook but to register from
+> ::link_supplier hook from struct scmi_transport_ops.
+> The first time a scmi_optee channel to requested, it will be deferred
+> and scmi_optee registering to optee bus done.
+> Something like the below:
+> 
+>   static int scmi_optee_link_supplier(struct device *dev)
+>   {
+>       if (!scmi_optee_private) {
+>           static int register_to_optee = -ENODEV;
+> 
+>           // register to optee bus enumeration if not already successfully done
+>           if (register_to_optee)
+>               register_to_optee = driver_register(&scmi_optee_driver.driver);
+> 
+>           // defer channel setup until
+>           return -EPROBE_DEFER;
+>       }
+> 
+>       if (!device_link_add(dev, scmi_optee_private->dev,
+> DL_FLAG_AUTOREMOVE_CONSUMER)) {
+>           dev_err(dev, "Adding link to supplier optee device failed\n");
+>           return -ECANCELED;
+>       }
+> 
+>       return 0;
+>   }
+
+So when you raised this point in the previous mail my initial thought was
+that, unless we had found a good workaround, I should have started
+working on something I have in my backlog for long, which is supposed to
+handle these scenarios better: i.e. making all/or-some SCMI transport as
+full fledged drivers instead of keeping them embedded into the core.
+(not done till now since not needed and really did not want to change
+also that while integrating virtio)
+
+I have not started really working on this nor thought it through
+properly, but having a way to define a full fledged SCMI transport driver
+that registers with some external subsys (optee/virtio...) and then
+registers itself with the SCMI core itself as an available transport (with
+the core DEFERing till the transport layer has appeared), seemed to me the
+way to go to solve this kind of issues more generally.
+
+Having said that, your proposal seems the kind of workaround that could
+solve fine your issue now simply using what is already in the SCMI core.
+
+So I have nothing against it as an immediate solution (I'll double
+check with Sudeep anyway :D), but I wonder if in the long term the
+full-fledged transport driver approach would still make sense.
+
+> 
+> Note the exit sequence can still use struct scmi_desc::transport_ext hook:
+> 
+>   static void scmi_optee_exit(void)
+>   {
+>       driver_unregister(&scmi_optee_driver.driver);
+>   }
+>   module_exit(scmi_optee_exit);
+> 
+
+Here you mean without the module_exit right ?
+
+So the init would be in charge of .link_supplier and its deferral
+mechanism but the unregister woudld go via
+.transport_exit = scmi_optee_exit() by the core on SCMI core unload.
+
+I would recommend placing a check on 'register_to_optee' also here on exit
+so that the SCMI core on its unload won't try to deregister a driver which
+was never successfully registered.
+
+> May I get your opinion?
+> 
+
+I wrote way too much ... sorry.
+
+Thanks,
+Cristian
 
