@@ -2,174 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D73434AAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48C0434AB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhJTMFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJTMFS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:05:18 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B70C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:03:04 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id i189so24298400ioa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:03:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Olwl5cHA/AN8tE4I0NNhWhyFygCXkQ/WoEuR0N13PWw=;
-        b=VJqsxOcqVBqgVQV5Escnr3iK/6wesXLTM5jx4x87kEdlTxfcCjC6Rb2cXivDnDcl5Z
-         PXAYrsHNKq0vHFmxQ4Jj7i6U0fmCHW323w36PTi+HD5J8AaZR7kZk84G0Qo2ERFJRRCW
-         OyOFZyRKtGZfHp2xxmiGTCrACYIfXpgeqRf9lSQ52GjUH64rfLDMxPTuEbEHB8WaN2rH
-         qy9l7wtRMZ/J6ncXuoxNZp9NfKorKamrYIezSHcRv5X+ON6z5CnMYvpaKGBDTu2CE6+O
-         syz+mVahQRfih7gJ5yHkn3mW79nqm7tTY8J6je9aUgcWn6EyxuqEac4Owa2q4esDzdib
-         P/SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Olwl5cHA/AN8tE4I0NNhWhyFygCXkQ/WoEuR0N13PWw=;
-        b=OfIpujpl8tQOb0kuQcGJvX+nrxNfOK0E46XSnS8+xajit2ofdkEXAZ5oOhzgUzOubg
-         OphaFOO1CKo9gcLTaw2jjE+kjVZYEiCKgpIkNrIQW0NoKHWeAwOzIJ/YQn1YPdVJBvwy
-         zWh88unfFIj6gXt4YSH32EZ/uhKpOqDlymmczj7e+kouE7jbY7hbCHbnfRfdL2i+8fT5
-         y2x+47SH/eWFpi/1VHptrIJFWpRH0aHMCWYophTtH8w10NvxyVGJ0pCMtc8YFc0TS+Ze
-         ps4YglL3iRZIk3lZny3HzmE0R/RTgkpErOU/esQ6VFmKmgcMPZqMEs2i9MhPKeVSBlkF
-         de+A==
-X-Gm-Message-State: AOAM533hzRcVnDXkcrK3stbUwDwLhTmkH/awbm+3bHL3fIIN94U21WJ7
-        vczuuRdv2xUajquYlAkbe1UhbdE2PFzY54Njm383xA==
-X-Google-Smtp-Source: ABdhPJy5ZGwbLgLK9QQOb15fTNWvpIqYexDdT/z5IK1r9rV5PtZtdkEbl3bXiv5TolZ6aZNLL6LsbDK8hL8/Plm/To8=
-X-Received: by 2002:a6b:fd05:: with SMTP id c5mr22928713ioi.15.1634731383700;
- Wed, 20 Oct 2021 05:03:03 -0700 (PDT)
+        id S230185AbhJTMGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:06:25 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52052 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230229AbhJTMGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:06:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634731450; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=O0IH1Cq3STR9DF8CefTN3jktoLIAHu/Gkj+D6afaP00=; b=pbFUMHJR89vS4eXAC1hhGqUA56b1ANEt9tEsck9ExxdkxQAIMzlSUJ80DB35bc31+jaaIneP
+ AGXJUUEm5umWkjxYDukE/QMcguAHh6odaFxIeaoJC+JDOienENm29YzCZs8dbaEbAGn6rGF3
+ JyKrsNUqQVqy/h0ej0FAsVIXtC0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6170058d59612e01006cb13d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 12:03:25
+ GMT
+Sender: clingutla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A18DBC4338F; Wed, 20 Oct 2021 12:03:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.43.40] (unknown [223.185.83.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: clingutla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70153C4338F;
+        Wed, 20 Oct 2021 12:03:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 70153C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] PM: EM: do not allow pd creation prior to debugfs
+ initialization
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rafael.j.wysocki@intel.com, qperret@google.com,
+        daniel.lezcano@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20211019152819.6141-1-clingutla@codeaurora.org>
+ <e01188a0-1dc7-db57-309f-f49390216875@arm.com>
+From:   Chandrasekhar L <clingutla@codeaurora.org>
+Message-ID: <0c42bec7-4358-a8d6-b1db-f52218a8e59a@codeaurora.org>
+Date:   Wed, 20 Oct 2021 17:33:18 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <YW7jvR/2jpAwSpvd@fedora> <20211019194545.GA2393463@bhelgaas>
-In-Reply-To: <20211019194545.GA2393463@bhelgaas>
-From:   =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>
-Date:   Wed, 20 Oct 2021 09:02:52 -0300
-Message-ID: <CAH7FV3nsOsJDKf9td1Gk-bf0w1jengDnD-K9NrghHw4iQenh9Q@mail.gmail.com>
-Subject: Re: [PATCH] pci-imx6: replacing legacy gpio interface for gpiod
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        Bjorn Helgaas <bhelgaas@google.com>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e01188a0-1dc7-db57-309f-f49390216875@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm sorry about the commit log. I made an effort to do a better commit
-log on v2 and sent the new version on the mailing list. Thanks for
-reviewing the entry!
+Thanks Lukasz for comment.
+For any reason (ex: HW dependency, etc), if  init_call level of cpufreq/devfreq driver changed
+prior to fs_init call, we would land there right?
+
+One of such example is, 'drivers/cpufreq/qcom-cpufreq-hw.c' uses postcore_initcall().
+
+Thanks,
+Chandrasekhar L
 
 
-Em ter., 19 de out. de 2021 =C3=A0s 16:45, Bjorn Helgaas
-<helgaas@kernel.org> escreveu:
+On 10/19/2021 10:35 PM, Lukasz Luba wrote:
 >
-> [fixed "linux-pci@vger.kernel.org" in cc]
 >
-> On Tue, Oct 19, 2021 at 12:26:53PM -0300, Ma=C3=ADra Canal wrote:
-> > Removing all dependencies of linux/gpio.h and linux/of_gpio.h and repla=
-cing
-> > it with linux/gpio/consumer.h
+> On 10/19/21 4:28 PM, Lingutla Chandrasekhar wrote:
+>> em_dev_register_perf_domain() can be called from any initcall level before
 >
-> Run "git log --oneline drivers/pci/controller/dwc/pci-imx6.c" and make
-> your subject line match -- capitalization, sentence structure, etc.
+> The EM is registered by cpufreq drivers (or devfreq), which is later
+> than fs_initcall, so the debugfs is setup. We even have added recently
+> a dedicated callback into the cpufreq (register_em()) for that.
 >
-> Write commit log in imperative mood, i.e., "Remove" instead of
-> "Removing": https://chris.beams.io/posts/git-commit/
+> Do you have such code which registers EM for CPUs (or some devfreq)
+> earlier than this fs_initcall?
 >
-> The commit log mentions the trivial part but omits the important part
-> (converting from gpio to gpiod model).
+> I cannot find such code in mainline.
 >
-> > Signed-off-by: Ma=C3=ADra Canal <maira.canal@usp.br>
-> > ---
-> >  drivers/pci/controller/dwc/pci-imx6.c | 31 ++++++++++-----------------
-> >  1 file changed, 11 insertions(+), 20 deletions(-)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/contro=
-ller/dwc/pci-imx6.c
-> > index 80fc98acf097..e5ee54e37d05 100644
-> > --- a/drivers/pci/controller/dwc/pci-imx6.c
-> > +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> > @@ -11,13 +11,12 @@
-> >  #include <linux/bitfield.h>
-> >  #include <linux/clk.h>
-> >  #include <linux/delay.h>
-> > -#include <linux/gpio.h>
-> > +#include <linux/gpio/consumer.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/mfd/syscon.h>
-> >  #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
-> >  #include <linux/mfd/syscon/imx7-iomuxc-gpr.h>
-> >  #include <linux/module.h>
-> > -#include <linux/of_gpio.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/of_address.h>
-> >  #include <linux/pci.h>
-> > @@ -63,7 +62,7 @@ struct imx6_pcie_drvdata {
-> >
-> >  struct imx6_pcie {
-> >       struct dw_pcie          *pci;
-> > -     int                     reset_gpio;
-> > +     struct gpio_desc    *reset_gpio;
-> >       bool                    gpio_active_high;
-> >       struct clk              *pcie_bus;
-> >       struct clk              *pcie_phy;
-> > @@ -526,11 +525,11 @@ static void imx6_pcie_deassert_core_reset(struct =
-imx6_pcie *imx6_pcie)
-> >       usleep_range(200, 500);
-> >
-> >       /* Some boards don't have PCIe reset GPIO. */
-> > -     if (gpio_is_valid(imx6_pcie->reset_gpio)) {
-> > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> > +     if (imx6_pcie->reset_gpio) {
-> > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
-> >                                       imx6_pcie->gpio_active_high);
-> >               msleep(100);
-> > -             gpio_set_value_cansleep(imx6_pcie->reset_gpio,
-> > +             gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
-> >                                       !imx6_pcie->gpio_active_high);
-> >       }
-> >
-> > @@ -1025,22 +1024,14 @@ static int imx6_pcie_probe(struct platform_devi=
-ce *pdev)
-> >               return PTR_ERR(pci->dbi_base);
-> >
-> >       /* Fetch GPIOs */
-> > -     imx6_pcie->reset_gpio =3D of_get_named_gpio(node, "reset-gpio", 0=
-);
-> >       imx6_pcie->gpio_active_high =3D of_property_read_bool(node,
-> >                                               "reset-gpio-active-high")=
-;
-> > -     if (gpio_is_valid(imx6_pcie->reset_gpio)) {
-> > -             ret =3D devm_gpio_request_one(dev, imx6_pcie->reset_gpio,
-> > -                             imx6_pcie->gpio_active_high ?
-> > -                                     GPIOF_OUT_INIT_HIGH :
-> > -                                     GPIOF_OUT_INIT_LOW,
-> > -                             "PCIe reset");
-> > -             if (ret) {
-> > -                     dev_err(dev, "unable to get reset gpio\n");
-> > -                     return ret;
-> > -             }
-> > -     } else if (imx6_pcie->reset_gpio =3D=3D -EPROBE_DEFER) {
-> > -             return imx6_pcie->reset_gpio;
-> > -     }
-> > +     imx6_pcie->reset_gpio =3D devm_gpiod_get_optional(dev, "reset",
-> > +                     imx6_pcie->gpio_active_high ?  GPIOD_OUT_HIGH :
-> > +                             GPIOD_OUT_LOW);
-> > +     if (IS_ERR(imx6_pcie->reset_gpio))
-> > +             return dev_err_probe(dev, PTR_ERR(imx6_pcie->reset_gpio),
-> > +                                       "unable to get reset gpio\n");
-> >
-> >       /* Fetch clocks */
-> >       imx6_pcie->pcie_phy =3D devm_clk_get(dev, "pcie_phy");
-> > --
-> > 2.31.1
-> >
+> Regards,
+> Lukasz
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+ a Linux Foundation Collaborative Project.
+
