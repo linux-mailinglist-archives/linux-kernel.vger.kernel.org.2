@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F902434E79
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB38434E7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhJTPD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhJTPDz (ORCPT
+        id S230282AbhJTPFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:05:24 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56780 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229570AbhJTPFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:03:55 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC23C06161C;
-        Wed, 20 Oct 2021 08:01:41 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id d3so28078746edp.3;
-        Wed, 20 Oct 2021 08:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9wMp6KN4Bl+/16uqAJTSTlwVNnmq+6gMGHhM2eIoSfA=;
-        b=fmuQ1cL1GdQSimrx3H9sCqboDYsk+VgaxYKz/UJYH7UGStaXBiW3Si6588drQZ3Dkf
-         q+HubfDdEvrLyHoG8F7+oW1PWgFvXlNzgq/wvmnrlRW1qVO6aVpaqX151FxoktfWyGTi
-         M1yiY0CLI8lq3WNpFX9CO+moKoFftbseEebm8Pg40W5ctMF2JwG4PgcD6wp5l6o2hNgY
-         FH/TY3gK/2aWdNx8zfF2LgyepAQvS+IvAzZOiVGoY63M/mC5XxjEwY1AKvreVgt2wOp0
-         uo6VDnR4YM5a6PEo2cI08Rs8RNJMP3IU849PnbcThybJCWGto/vhHfkV/UEw9z0LsH9K
-         Y7xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9wMp6KN4Bl+/16uqAJTSTlwVNnmq+6gMGHhM2eIoSfA=;
-        b=k1V8qIxTULgD+h28FHyx9gDFnv9X/Rhu1OHPkBLcq4SPbeib6jR+pRUazQpj8upUDF
-         pnCbS51e8xeHPz5UVoEoCRsvRNHIiAMa9pd8FXVoShbAikC6crlkTRVO4fquzJf8pCGD
-         wrH1/5bOSJi09o3VglcGv6tHyqbM9evVs/Z2+ayVvyGdbJTrIGOFV80n2E40QEW0zDhB
-         WB81pqkEJRuj5yedyCsMgUKBqTcKvYfOb/PDXfkkTr1CQz/i1mcRgeoRVoXksiTqFR33
-         FpYwrlND2NF0xzD3+6pFTjhYl/HzXiPYmOx9adZWcnC4GpRBEtYPhDgSQXGMRn4DbIcj
-         pZUw==
-X-Gm-Message-State: AOAM532ZI66lvvYBDpbx+hHyiQU0lvdO3X8MmFNsVGUEG3ULq/dt2QxQ
-        NfjotACjJP+zaEyaRLDlqaWdK0s5t6dFMtAkcJY=
-X-Google-Smtp-Source: ABdhPJwyjH71/Vo6YOX6/jcjTOh0kzwHB52ML2RdNItKGmpS3BW9iLetdM5gO10tdQ0IFkcsRbXRJACFfzlBRLxtP3A=
-X-Received: by 2002:a50:e009:: with SMTP id e9mr634164edl.254.1634742039339;
- Wed, 20 Oct 2021 08:00:39 -0700 (PDT)
+        Wed, 20 Oct 2021 11:05:22 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KD3Z97008294;
+        Wed, 20 Oct 2021 17:02:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=mtOAELMMg2FfpdI+Q7BA2qRARYKxutpR06ajPBwwq9Y=;
+ b=yQQSQXJ542OSxFmsRHyGX9DTkSXeW3qYEXUypRzpJAigAUdasdc19knryijFmr72fxBX
+ LMzO45yBMizMP2Fps3/NA1mU9bhy5ZoHM5XaiMNE4IZymllzKZiBfaci5VTIuRkqQUwP
+ X62mdhrQTeyDfg/1xKblJoCnM8FMlPBM2p34U8oNGbZBEg1+52e2S1eiJElW8L/4JgL2
+ I4T2DhtksiUDYk/sor3is9KUTKNa1O5+wWfoz57X29v1vXxLGtiIP3Bf1W4EqlTbr67M
+ +KW7tvdcQrnJXcxd6m8XorfhrzdL4vrqIdK+dGunS6/wAo1zZyjG7EFh/Rd/whG7z/rP 7g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3btknp8pjd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 17:02:53 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5136B10002A;
+        Wed, 20 Oct 2021 17:02:52 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 48D7922A6E6;
+        Wed, 20 Oct 2021 17:02:52 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 20 Oct 2021 17:02:52
+ +0200
+From:   Erwan Le Ray <erwan.leray@foss.st.com>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Erwan Le Ray <erwan.leray@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH 1/1] ARM: dts: stm32: clean useless spaces in uart4_idle_pins_a node
+Date:   Wed, 20 Oct 2021 17:02:30 +0200
+Message-ID: <20211020150230.9939-1-erwan.leray@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211018114712.9802-1-mhocko@kernel.org> <20211018114712.9802-3-mhocko@kernel.org>
- <20211019110649.GA1933@pc638.lan> <YW6xZ7vi/7NVzRH5@dhcp22.suse.cz>
- <20211019194658.GA1787@pc638.lan> <YW/SYl/ZKp7W60mg@dhcp22.suse.cz>
- <CA+KHdyUopXQVTp2=X-7DYYFNiuTrh25opiUOd1CXED1UXY2Fhg@mail.gmail.com>
- <YXAiZdvk8CGvZCIM@dhcp22.suse.cz> <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
- <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
-In-Reply-To: <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Wed, 20 Oct 2021 17:00:28 +0200
-Message-ID: <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_05,2021-10-20_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> On Wed 20-10-21 16:29:14, Uladzislau Rezki wrote:
-> > On Wed, Oct 20, 2021 at 4:06 PM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > As I've said I am OK with either of the two. Do you or anybody have any
-> > > preference? Without any explicit event to wake up for neither of the two
-> > > is more than just an optimistic retry.
-> > >
-> > From power perspective it is better to have a delay, so i tend to say
-> > that delay is better.
->
-> I am a terrible random number generator. Can you give me a number
-> please?
->
-Well, we can start from one jiffy so it is one timer tick: schedule_timeout(1)
+Clean useless spaces in uart4_idle_pins_a node.
 
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+
+diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+index 5b60ecbd718f..e13c2a9762b8 100644
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -1737,20 +1737,20 @@
+ 	};
+ 
+ 	uart4_idle_pins_a: uart4-idle-0 {
+-		   pins1 {
+-			 pinmux = <STM32_PINMUX('G', 11, ANALOG)>; /* UART4_TX */
+-		   };
+-		   pins2 {
+-			 pinmux = <STM32_PINMUX('B', 2, AF8)>; /* UART4_RX */
+-			 bias-disable;
+-		   };
++		pins1 {
++			pinmux = <STM32_PINMUX('G', 11, ANALOG)>; /* UART4_TX */
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('B', 2, AF8)>; /* UART4_RX */
++			bias-disable;
++		};
+ 	};
+ 
+ 	uart4_sleep_pins_a: uart4-sleep-0 {
+-		   pins {
++		pins {
+ 			pinmux = <STM32_PINMUX('G', 11, ANALOG)>, /* UART4_TX */
+ 				 <STM32_PINMUX('B', 2, ANALOG)>; /* UART4_RX */
+-		    };
++		};
+ 	};
+ 
+ 	uart4_pins_b: uart4-1 {
 -- 
-Uladzislau Rezki
+2.17.1
+
