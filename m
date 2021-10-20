@@ -2,173 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41718434D25
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C02434D00
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhJTOMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
+        id S230082AbhJTOFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhJTOMx (ORCPT
+        with ESMTP id S230311AbhJTOFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:12:53 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97D8FC06161C;
-        Wed, 20 Oct 2021 07:10:37 -0700 (PDT)
+        Wed, 20 Oct 2021 10:05:41 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D257C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:03:27 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id d20so2107291qvm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:03:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=RJ2zK4UbE9ZurSC5Jh9RSNIdHcuuXmTemL
-        ElGthoHDk=; b=Ro1Lo5Gq0UKtvLrFpUly5yyvlsfTDqk0aaaQRc1euRF+5oi3dO
-        l2HRx+2rKlXnzxU3O7oAPRXXd/rMJCEDO+BlA8+OsGXhM/rmVURnO8SFM+mGNxlD
-        VDfzcvKa7Q4LQKASDkiIj570PDYmhJ7TmfPHM5hPTiPru+h9DMGVhOQ9g=
-Received: from xhacker (unknown [101.86.20.138])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAXHwdAI3BhuIRUAA--.29650S2;
-        Wed, 20 Oct 2021 22:10:09 +0800 (CST)
-Date:   Wed, 20 Oct 2021 22:03:19 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 1/2] riscv: consolidate __ex_table construction
-Message-ID: <20211020220319.41ad167f@xhacker>
-In-Reply-To: <202110180820.HH9NB6vw-lkp@intel.com>
-References: <20211017000443.4275747d@xhacker>
-        <202110180820.HH9NB6vw-lkp@intel.com>
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=942MFQAdclIgl2KqvslSafCq0ctbJW8Cf7/dgZQUQP8=;
+        b=EOlmUEkhqOZfNg6KCsoSgPe20D8i65c2gn7HuFCH20PX4ITkn0JLz10+cHd1Xj5Kbk
+         QhlE6kJinCShLfJxudqCsJjZKPADTf/E8Q86Cp3Lj3jOakzcCaWbWuGdl8WeZMpgOreR
+         UUpGUeFoSBMdcuOraEa7LxEPIdGdhiM40+wofl6jW0lyL5MNwpHlD+R6FKjtkbjjqAkT
+         HRvLd1TRJtnJ3088Mxn7XtnFnG3ruJIO+9KkI1/TX5c2gG/pf+f43Yd5cVr+os4sQ2SR
+         Xt0ICmHzHR0adsOxDUtjUWUdDQPwrqXWn/YHvBZQ00ipG0+0BaGTNXlR7m3ahQw8N42s
+         NR7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=942MFQAdclIgl2KqvslSafCq0ctbJW8Cf7/dgZQUQP8=;
+        b=bBuZAFvM19kJdXZ8yYaJ7W3e607J1VuYQNVaRhjQ/9+rdGqCPyxp8LNtR6jdA7jbAI
+         9tEdYVdgqbX68uy48NhyGUTPMFYiwgMmXOLRHsaBa4GadJnmrXeebKwbRw4ELqx7Irpl
+         0ZkACbjn6B8jD3VbWs5zReIek+/OxJ1i2OD41o5A6nTHWIZ3Fq9g64f79v7pK7VA5n0Y
+         KPX3b6CVVFGxmWeYIFx9zBXQhFxg3SSm6MoyCFs148keaDJ8maVZlQiRtSQl8+MX1J/2
+         BbCWk52mYrULht/wr5IVWsVlOYECHGp26fcWKAva+CgkULC3/Oo5lxwi0UYfmam7N8aT
+         QoNg==
+X-Gm-Message-State: AOAM530JBSclUcRTumk9pwefAU5mP3Ud0CkvwJyMn1onVNWZ27q+wV+d
+        WIFJGOg1bSLZ9ghxpw/pH7dJtQ==
+X-Google-Smtp-Source: ABdhPJyirz3Cl9goKVtyNv2S9QVWLJkniesMCnKLcEsWPFabxqporpeeqWDuvciZdRcNVpcOXsTzcA==
+X-Received: by 2002:a05:6214:144c:: with SMTP id b12mr6306189qvy.56.1634738606352;
+        Wed, 20 Oct 2021 07:03:26 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id y23sm967873qtv.58.2021.10.20.07.03.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 07:03:25 -0700 (PDT)
+Subject: Re: [PATCH v4 00/20] Enable Qualcomm Crypto Engine on sm8250
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <a5927363-5e2f-9af1-7446-2146fd455f36@linaro.org>
+Date:   Wed, 20 Oct 2021 10:03:24 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygAXHwdAI3BhuIRUAA--.29650S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ww48tw1DCr13AFW7uryDKFg_yoW7tw1DpF
-        4Dury0q3yrXr4UCw4qk3ZFy34Utw45G342vry5Ww12v3W3tFy8Jw1DurZxKr1v9r4v9ay0
-        gr47JasYgryUXaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkvb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07beAp5UUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 08:14:28 +0800
-kernel test robot <lkp@intel.com> wrote:
-
-> Hi Jisheng,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on v5.15-rc5 next-20211015]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Jisheng-Zhang/riscv-switch-to-relative-extable/20211017-001318
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 8fe31e0995f048d16b378b90926793a0aa4af1e5
-> config: riscv-randconfig-r032-20211017 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 746dd6a700931988dd9021d3d04718f1929885a5)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install riscv cross compiling tool for clang build
->         # apt-get install binutils-riscv64-linux-gnu
->         # https://github.com/0day-ci/linux/commit/23c273bf6ec4ca672a21dba701725087208dc784
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Jisheng-Zhang/riscv-switch-to-relative-extable/20211017-001318
->         git checkout 23c273bf6ec4ca672a21dba701725087208dc784
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from kernel/futex.c:36:
->    In file included from include/linux/pagemap.h:11:
->    In file included from include/linux/highmem.h:10:
->    In file included from include/linux/hardirq.h:11:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:136:
->    include/asm-generic/io.h:464:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val = __raw_readb(PCI_IOBASE + addr);
->                              ~~~~~~~~~~ ^
->    include/asm-generic/io.h:477:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
->                                                            ~~~~~~~~~~ ^
->    include/uapi/linux/byteorder/little_endian.h:36:51: note: expanded from macro '__le16_to_cpu'
->    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
->                                                      ^
->    In file included from kernel/futex.c:36:
->    In file included from include/linux/pagemap.h:11:
->    In file included from include/linux/highmem.h:10:
->    In file included from include/linux/hardirq.h:11:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:136:
->    include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
->                                                            ~~~~~~~~~~ ^
->    include/uapi/linux/byteorder/little_endian.h:34:51: note: expanded from macro '__le32_to_cpu'
->    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
->                                                      ^
->    In file included from kernel/futex.c:36:
->    In file included from include/linux/pagemap.h:11:
->    In file included from include/linux/highmem.h:10:
->    In file included from include/linux/hardirq.h:11:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:136:
->    include/asm-generic/io.h:501:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writeb(value, PCI_IOBASE + addr);
->                                ~~~~~~~~~~ ^
-
-The warnings like this are not caused by this patch, they existed for a long
-time since NOMMU is supported. But no good solution so far.
-
->    include/asm-generic/io.h:511:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
->                                                          ~~~~~~~~~~ ^
->    include/asm-generic/io.h:521:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
->                                                          ~~~~~~~~~~ ^
->    include/asm-generic/io.h:1024:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
->                                                      ~~~~~~~~~~ ^
->    In file included from kernel/futex.c:43:
-> >> arch/riscv/include/asm/futex.h:51:3: error: expected ')'  
->                    __futex_atomic_op("amoswap.w.aqrl %[ov],%z[op],%[u]",
->                    ^
->    arch/riscv/include/asm/futex.h:33:3: note: expanded from macro '__futex_atomic_op'
->                    _ASM_EXTABLE(1b, 3b)                            \
->                    ^
-
-Errors like this are caused by my patch, I missed NOMMU. Fixed in V2.
 
 
-Thanks
+On 10/13/21 6:55 AM, Bhupesh Sharma wrote:
+> Sorry for a delayed v4, but I have been caught up with some other
+> patches.
+
+Hi Bhupesh,
+
+If possible, please consider splitting this series into 2. One with 
+changes required to support crypto driver on
+sm8250 and other with the generic fixes / fixing the dt-bindings et all.
+It would be easier to review as well
+
+-- 
+Warm Regards
+Thara (She/Her/Hers)
+
+> 
+> Changes since v3:
+> =================
+> - v3 can be seen here: https://lore.kernel.org/linux-arm-msm/20210519143700.27392-1-bhupesh.sharma@linaro.org/
+> - Dropped a couple of patches from v3, on basis of the review comments:
+>     ~ [PATCH 13/17] crypto: qce: core: Make clocks optional
+>     ~ [PATCH 15/17] crypto: qce: Convert the device found dev_dbg() to dev_info()
+> - Addressed review comments from Thara, Rob and Stephan Gerhold.
+> - Collect Reviewed-by from Rob and Thara on some of the patches from the
+>    v3 patchset.
+> 
+> Changes since v2:
+> =================
+> - v2 can be seen here: https://lore.kernel.org/dmaengine/20210505213731.538612-1-bhupesh.sharma@linaro.org/
+> - Drop a couple of patches from v1, which tried to address the defered
+>    probing of qce driver in case bam dma driver is not yet probed.
+>    Replace it instead with a single (simpler) patch [PATCH 16/17].
+> - Convert bam dma and qce crypto dt-bindings to YAML.
+> - Addressed review comments from Thara, Bjorn, Vinod and Rob.
+> 
+> Changes since v1:
+> =================
+> - v1 can be seen here: https://lore.kernel.org/linux-arm-msm/20210310052503.3618486-1-bhupesh.sharma@linaro.org/
+> - v1 did not work well as reported earlier by Dmitry, so v2 contains the following
+>    changes/fixes:
+>    ~ Enable the interconnect path b/w BAM DMA and main memory first
+>      before trying to access the BAM DMA registers.
+>    ~ Enable the interconnect path b/w qce crytpo and main memory first
+>      before trying to access the qce crypto registers.
+>    ~ Make sure to document the required and optional properties for both
+>      BAM DMA and qce crypto drivers.
+>    ~ Add a few debug related print messages in case the qce crypto driver
+>      passes or fails to probe.
+>    ~ Convert the qce crypto driver probe to a defered one in case the BAM DMA
+>      or the interconnect driver(s) (needed on specific Qualcomm parts) are not
+>      yet probed.
+> 
+> Qualcomm crypto engine is also available on sm8250 SoC.
+> It supports hardware accelerated algorithms for encryption
+> and authentication. It also provides support for aes, des, 3des
+> encryption algorithms and sha1, sha256, hmac(sha1), hmac(sha256)
+> authentication algorithms.
+> 
+> Tested the enabled crypto algorithms with cryptsetup test utilities
+> on sm8250-mtp and RB5 board (see [1]) and also with crypto self-tests,
+> including the fuzz tests (CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y).
+> 
+> Note that this series is rebased on a SMMU related fix from Arnd applied
+> on either linus's tip of linux-next's tip (see [2]), without which
+> the sm8250 based boards fail to boot with the latest tip.
+> 
+> [1]. https://linux.die.net/man/8/cryptsetup
+> [2]. https://lore.kernel.org/linux-arm-kernel/CAA8EJpoD4Th1tdwYQLnZur2oA0xX0LojSrNFLyJqdi6+rnB3YQ@mail.gmail.com/T/
+> 
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> 
+> Bhupesh Sharma (17):
+>    arm64/dts: qcom: Fix 'dma' & 'qcom,controlled-remotely' nodes in dts
+>    arm64/dts: qcom: ipq6018: Remove unused 'qcom,config-pipe-trust-reg'
+>      property
+>    arm64/dts: qcom: ipq6018: Remove unused 'iface_clk' property from
+>      dma-controller node
+>    dt-bindings: qcom-bam: Convert binding to YAML
+>    dt-bindings: qcom-bam: Add 'interconnects' & 'interconnect-names' to
+>      optional properties
+>    dt-bindings: qcom-bam: Add 'iommus' to optional properties
+>    dt-bindings: qcom-qce: Convert bindings to yaml
+>    dt-bindings: qcom-qce: Add 'interconnects' and move 'clocks' to
+>      optional properties
+>    dt-bindings: qcom-qce: Add 'iommus' to optional properties
+>    arm64/dts: qcom: sdm845: Use RPMH_CE_CLK macro directly
+>    dt-bindings: crypto : Add new compatible strings for qcom-qce
+>    arm64/dts: qcom: Use new compatibles for crypto nodes
+>    crypto: qce: Add new compatibles for qce crypto driver
+>    crypto: qce: Print a failure msg in case probe() fails
+>    crypto: qce: Defer probing if BAM dma channel is not yet initialized
+>    crypto: qce: Add 'sm8250-qce' compatible string check
+>    arm64/dts: qcom: sm8250: Add dt entries to support crypto engine.
+> 
+> Thara Gopinath (3):
+>    dma: qcom: bam_dma: Add support to initialize interconnect path
+>    crypto: qce: core: Add support to initialize interconnect path
+>    crypto: qce: core: Make clocks optional
+> 
+>   .../devicetree/bindings/crypto/qcom-qce.yaml  |  90 +++++++++++++++
+>   .../devicetree/bindings/dma/qcom_bam_dma.txt  |  50 --------
+>   .../devicetree/bindings/dma/qcom_bam_dma.yaml | 107 ++++++++++++++++++
+>   arch/arm64/boot/dts/qcom/ipq6018.dtsi         |  10 +-
+>   arch/arm64/boot/dts/qcom/ipq8074.dtsi         |   4 +-
+>   arch/arm64/boot/dts/qcom/msm8996.dtsi         |   4 +-
+>   arch/arm64/boot/dts/qcom/msm8998.dtsi         |   2 +-
+>   arch/arm64/boot/dts/qcom/sdm845.dtsi          |  10 +-
+>   arch/arm64/boot/dts/qcom/sm8250.dtsi          |  28 +++++
+>   drivers/crypto/qce/core.c                     |  66 +++++++----
+>   drivers/crypto/qce/core.h                     |   1 +
+>   drivers/dma/qcom/bam_dma.c                    |  16 ++-
+>   12 files changed, 302 insertions(+), 86 deletions(-)
+>   create mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+>   delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+>   create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> 
+
 
