@@ -2,216 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B394351F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0857A4351F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhJTRvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
+        id S230031AbhJTRvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:51:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230445AbhJTRvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:51:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EDB2611EF;
-        Wed, 20 Oct 2021 17:49:02 +0000 (UTC)
+        id S230340AbhJTRvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:51:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46D436128B;
+        Wed, 20 Oct 2021 17:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634752145;
-        bh=qUkSqtT6ZXxe9PpUj77V4X8XVvE98U9OSWC6LuoHU9M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gPkLr9N7/5AHaiR9lFUn1UUT2uXMLTBvjJGr0Z2HCTpvX+IAlVhNNJfDWNERorWY3
-         rNsPhKBBUU6bDKfhXkX8Opj+VPA9qzQ/+r7FZ5iLrrbm0ySzw9ErHl49r9qMV7LXjd
-         he0u+pY26ooTJu5zzxpjmrhS1bjLlklDphPpdttbOdptU6fPmvr2NwME9p8dIOIF3O
-         ukAvNFm/m7Wb1cYLP13hmNwV7KsDdAdRf/OyL9x6dP02rAhWaGHFog2l6ce+IrAxVB
-         fSjtAcAyWdyLfyI2w9rkKl7OQbKZoAUwt6kvVq+CymAG/SGKXK8QEtbFtE/UFY8Ymn
-         p5h9Rlhe+ItVQ==
-Date:   Wed, 20 Oct 2021 10:48:59 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, Dan Li <ashimida@linux.alibaba.com>,
-        ardb@kernel.org, ojeda@kernel.org,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 2/2] gcc-plugins: Remove cyc_complexity
-Message-ID: <YXBWi/bCQoddzXB6@archlinux-ax161>
-References: <20211020173554.38122-1-keescook@chromium.org>
- <20211020173554.38122-3-keescook@chromium.org>
+        s=k20201202; t=1634752173;
+        bh=dWryytcKcquSUHoso2WGDQASvn9GulP3BjDgcWZrpso=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HGzGx/NixfOt14iGdmf9D/TVv5VWgCyLTSJpDJa0X7M8SXHAprDOvVeUlAVmsc7DB
+         Qkmm+O8DJEiUoSx5hz7mEtXVKzHedjFumuJPB0K/qVuPeKSOeHVFTYUYgaeh/trbSl
+         ERjHe3F6+PL5EgaeWEAyutMLjX6ClFTRMhwiuDox1lzQ7ojHoPZkOgeODuA2sLCmQQ
+         7LGNbMD8EpUrIW0FYtx61SY60aEG/Wm+pfM2C7VJoYsLHYfO33Hc8WEp1WpRmUpeGc
+         MSAiwgcJotRX3qT4olCrlZCzt3NTVjbmnfERNz6cOi9axtDWNzufN1bMBEr09dUg5l
+         h30UOkg6LJS7Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 131FE5C094B; Wed, 20 Oct 2021 10:49:33 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 10:49:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Luming Yu <luming.yu@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        yanghui <yanghui.def@bytedance.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, Shaohua Li <shli@fb.com>
+Subject: Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
+Message-ID: <20211020174933.GJ880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
+ <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com>
+ <CALAqxLVgQ6QEThWaN65nOW9F_XCh7885n9RigAQDU+OgDntS5g@mail.gmail.com>
+ <6b715fb7-9850-04f3-4ab8-1a2a8a2cdfbf@gmail.com>
+ <CALAqxLWgw8tA1Lrg27JUUFrGWCQqPQXmhjHyjsTRA5a4qingkg@mail.gmail.com>
+ <95c1a031-6751-f90f-d003-b74fbec0e9d8@gmail.com>
+ <CALAqxLVcc9nscuWT-qFH=JbatVL0c5AxH5B9y3qE1ekG=BZ0aA@mail.gmail.com>
+ <61381153-634e-489b-848f-7077ce46049a@bytedance.com>
+ <CALAqxLUJeF1NFAzvp2ubRizbJV-ws09P6x=5nzSz7_VmMAQLNA@mail.gmail.com>
+ <CAJRGBZz6dF=AADKMFwUodm2WeDyTvBw0XxnQdeJwPLs2=sLLEw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211020173554.38122-3-keescook@chromium.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJRGBZz6dF=AADKMFwUodm2WeDyTvBw0XxnQdeJwPLs2=sLLEw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:35:54AM -0700, Kees Cook wrote:
-> This plugin has no impact on the resulting binary, is disabled
-> under COMPILE_TEST, and is not enabled on any builds I'm aware of.
-> Additionally, given the clarified purpose of GCC plugins in the kernel,
-> remove cyc_complexity.
+On Wed, Oct 20, 2021 at 06:09:58AM -0400, Luming Yu wrote:
+> On Tue, Oct 19, 2021 at 1:04 AM John Stultz <john.stultz@linaro.org> wrote:
+> >
+> > On Mon, Oct 18, 2021 at 9:14 PM yanghui <yanghui.def@bytedance.com> wrote:
+> > > 在 2021/10/19 上午12:14, John Stultz 写道:
+> > > > On Tue, Oct 12, 2021 at 1:06 AM brookxu <brookxu.cn@gmail.com> wrote:
+> > > >> John Stultz wrote on 2021/10/12 13:29:
+> > > >>> On Mon, Oct 11, 2021 at 10:23 PM brookxu <brookxu.cn@gmail.com> wrote:
+> > > >>>> John Stultz wrote on 2021/10/12 12:52 下午:
+> > > >>>>> On Sat, Oct 9, 2021 at 7:04 AM brookxu <brookxu.cn@gmail.com> wrote:
+> > > >>>> If we record the watchdog's start_time in clocksource_start_watchdog(), and then
+> > > >>>> when we verify cycles in clocksource_watchdog(), check whether the clocksource
+> > > >>>> watchdog is blocked. Due to MSB verification, if the blocked time is greater than
+> > > >>>> half of the watchdog timer max_cycles, then we can safely ignore the current
+> > > >>>> verification? Do you think this idea is okay?
+> > > >>>
+> > > >>> I can't say I totally understand the idea. Maybe could you clarify with a patch?
+> > > >>>
+> > > >>
+> > > >> Sorry, it looks almost as follows:
+> > > >>
+> > > >> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> > > >> index b8a14d2..87f3b67 100644
+> > > >> --- a/kernel/time/clocksource.c
+> > > >> +++ b/kernel/time/clocksource.c
+> > > >> @@ -119,6 +119,7 @@
+> > > >>   static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
+> > > >>   static DEFINE_SPINLOCK(watchdog_lock);
+> > > >>   static int watchdog_running;
+> > > >> +static unsigned long watchdog_start_time;
+> > > >>   static atomic_t watchdog_reset_pending;
+> > > >>
+> > > >>   static inline void clocksource_watchdog_lock(unsigned long *flags)
+> > > >> @@ -356,6 +357,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+> > > >>          int next_cpu, reset_pending;
+> > > >>          int64_t wd_nsec, cs_nsec;
+> > > >>          struct clocksource *cs;
+> > > >> +       unsigned long max_jiffies;
+> > > >>          u32 md;
+> > > >>
+> > > >>          spin_lock(&watchdog_lock);
+> > > >> @@ -402,6 +404,10 @@ static void clocksource_watchdog(struct timer_list *unused)
+> > > >>                  if (atomic_read(&watchdog_reset_pending))
+> > > >>                          continue;
+> > > >>
+> > > >> +               max_jiffies = nsecs_to_jiffies(cs->max_idle_ns);
+> > > >> +               if (time_is_before_jiffies(watchdog_start_time + max_jiffies))
+> > > >> +                       continue;
+> > > >> +
+> > > >
+> > > > Sorry, what is the benefit of using jiffies here?   Jiffies are
+> > > > updated by counting the number of tick intervals on the current
+> > > > clocksource.
+> > > >
+> > > > This seems like circular logic, where we're trying to judge the
+> > > > current clocksource by using something we derived from the current
+> > > > clocksource.
+> > > > That's why the watchdog clocksource is important, as it's supposed to
+> > > > be a separate counter that is more reliable (but likely slower) then
+> > > > the preferred clocksource.
+> > > >
+> > > > So I'm not really sure how this helps.
+> > > >
+> > > > The earlier patch by yanghui at least used the watchdog interval to
+> > > > decide if the watchdog timer had expired late. Which seemed
+> > > > reasonable, but I thought it might be helpful to add some sort of a
+> > > > counter so if the case is happening repeatedly (timers constantly
+> > > > being delayed) we have a better signal that the watchdog and current
+> > > > clocksource are out of sync.  Because again, timers are fired based on
+> > >
+> > > I think only have a signal ls not enough. we need to prevent
+> > > clocksource from being incorrectly switched.
+> >
+> > Right, but we also have to ensure that we also properly disqualify
+> > clocksources that are misbehaving.
+> >
+> > In the case that the current clocksource is running very slow (imagine
+> > old TSCs that lowered freq with cpufreq), then system time slows down,
+> > so timers fire late.
+> > So it would constantly seem like the irqs are being delayed, so with
+> > your logic we would not disqualify a clearly malfunctioning
+> > clocksource..
+> >
+> > > The Timer callback function clocksource_watchdog() is executed in the
+> > > context of softirq(run_timer_softirq()). So if softirq is disabled for
+> > > long time(One situation is long time softlockup), clocksource_watchdog()
+> > > will be delay executed.
+> >
+> > Yes. The reality is that timers are often spuriously delayed. We don't
+> > want a short burst of timer misbehavior to disqualify a good
+> > clocksource.
+> >
+> > But the problem is that this situation and the one above (with the
+> > freq changing TSC), will look exactly the same.
+> >
+> > So having a situation where if the watchdog clocksource thinks too
+> > much time has passed between watchdog timers, we can skip judgement,
+> > assuming its a spurious delay. But I think we need to keep a counter
+> > so that if this happens 3-5 times in a row, we stop ignoring the
+> > misbehavior and judge the current clocksource, as it may be running
+> > slowly.
+> >
+> > > >
+> > > I think it will be better to add this to my patch:
+> > >   /*
+> > >    * Interval: 0.5sec.
+> > > - * MaxInterval: 1s.
+> > > + * MaxInterval: 20s.
+> > >    */
+> > >   #define WATCHDOG_INTERVAL (HZ >> 1)
+> > > -#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
+> > > +#define WATCHDOG_MAX_INTERVAL_NS (20 * NSEC_PER_SEC)
+> > >
+> >
+> > Some watchdog counters wrap within 20 seconds, so I don't think this
+> > is a good idea.
+> >
+> > The other proposal to calculate the error rate, rather than a fixed
+> > error boundary might be useful too, as if the current clocksource and
+> > watchdog are close, a long timer delay won't disqualify them if we
+> > scale the error bounds to be within an given error rate.
 > 
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Michal Marek <michal.lkml@markovi.net>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-hardening@vger.kernel.org
-> Cc: linux-kbuild@vger.kernel.org
-> Cc: linux-doc@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-One comment below.
-
-> ---
->  Documentation/kbuild/gcc-plugins.rst        |  2 -
->  scripts/Makefile.gcc-plugins                |  2 -
->  scripts/gcc-plugins/Kconfig                 | 16 -----
->  scripts/gcc-plugins/cyc_complexity_plugin.c | 69 ---------------------
->  4 files changed, 89 deletions(-)
->  delete mode 100644 scripts/gcc-plugins/cyc_complexity_plugin.c
+> In most of tsc unstable trouble shooting on modern servers we experienced,
+> it usually ends up in a false alarm triggered by the  clock source
+> watchdog for tsc.
 > 
-> diff --git a/Documentation/kbuild/gcc-plugins.rst b/Documentation/kbuild/gcc-plugins.rst
-> index 4b28c7a4032f..0ba76719f1b9 100644
-> --- a/Documentation/kbuild/gcc-plugins.rst
-> +++ b/Documentation/kbuild/gcc-plugins.rst
-> @@ -96,7 +96,6 @@ Enable the GCC plugin infrastructure and some plugin(s) you want to use
->  in the kernel config::
->  
->  	CONFIG_GCC_PLUGINS=y
-> -	CONFIG_GCC_PLUGIN_CYC_COMPLEXITY=y
->  	CONFIG_GCC_PLUGIN_LATENT_ENTROPY=y
->  	...
->  
+> I think Paul has a proposal to make a clock source watchdog to be more
+> intelligent.
+> Its job is to find a real problem instead of causing a problem.
 
-There is a comment about the cyc_complexity plugin at the very end of
-this file that should also be removed it seems:
+And that proposal is now in mainline:
 
-"See the cyc_complexity_plugin.c (CONFIG_GCC_PLUGIN_CYC_COMPLEXITY) GCC plugin."
+22a223833716 clocksource: Print deviation in nanoseconds when a clocksource becomes unstable
+1253b9b87e42 clocksource: Provide kernel module to test clocksource watchdog
+2e27e793e280 clocksource: Reduce clocksource-skew threshold
+fa218f1cce6b clocksource: Limit number of CPUs checked for clock synchronization
+7560c02bdffb clocksource: Check per-CPU clock synchronization when marked unstable
+db3a34e17433 clocksource: Retry clock read if long delays detected
 
-> @@ -115,4 +114,3 @@ The GCC plugins are in scripts/gcc-plugins/. You need to put plugin source files
->  right under scripts/gcc-plugins/. Creating subdirectories is not supported.
->  It must be added to scripts/gcc-plugins/Makefile, scripts/Makefile.gcc-plugins
->  and a relevant Kconfig file.
-> -See the cyc_complexity_plugin.c (CONFIG_GCC_PLUGIN_CYC_COMPLEXITY) GCC plugin.
-> diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
-> index 952e46876329..6583ecf2e674 100644
-> --- a/scripts/Makefile.gcc-plugins
-> +++ b/scripts/Makefile.gcc-plugins
-> @@ -1,7 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -gcc-plugin-$(CONFIG_GCC_PLUGIN_CYC_COMPLEXITY)	+= cyc_complexity_plugin.so
-> -
->  gcc-plugin-$(CONFIG_GCC_PLUGIN_LATENT_ENTROPY)	+= latent_entropy_plugin.so
->  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_LATENT_ENTROPY)		\
->  		+= -DLATENT_ENTROPY_PLUGIN
-> diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
-> index 3f5d3580ec06..821a725a7f5c 100644
-> --- a/scripts/gcc-plugins/Kconfig
-> +++ b/scripts/gcc-plugins/Kconfig
-> @@ -19,22 +19,6 @@ menuconfig GCC_PLUGINS
->  
->  if GCC_PLUGINS
->  
-> -config GCC_PLUGIN_CYC_COMPLEXITY
-> -	bool "Compute the cyclomatic complexity of a function" if EXPERT
-> -	depends on !COMPILE_TEST	# too noisy
-> -	help
-> -	  The complexity M of a function's control flow graph is defined as:
-> -	   M = E - N + 2P
-> -	  where
-> -
-> -	  E = the number of edges
-> -	  N = the number of nodes
-> -	  P = the number of connected components (exit nodes).
-> -
-> -	  Enabling this plugin reports the complexity to stderr during the
-> -	  build. It mainly serves as a simple example of how to create a
-> -	  gcc plugin for the kernel.
-> -
->  config GCC_PLUGIN_SANCOV
->  	bool
->  	# Plugin can be removed once the kernel only supports GCC 6.1.0+
-> diff --git a/scripts/gcc-plugins/cyc_complexity_plugin.c b/scripts/gcc-plugins/cyc_complexity_plugin.c
-> deleted file mode 100644
-> index 73124c2b3edd..000000000000
-> --- a/scripts/gcc-plugins/cyc_complexity_plugin.c
-> +++ /dev/null
-> @@ -1,69 +0,0 @@
-> -/*
-> - * Copyright 2011-2016 by Emese Revfy <re.emese@gmail.com>
-> - * Licensed under the GPL v2, or (at your option) v3
-> - *
-> - * Homepage:
-> - * https://github.com/ephox-gcc-plugins/cyclomatic_complexity
-> - *
-> - * https://en.wikipedia.org/wiki/Cyclomatic_complexity
-> - * The complexity M is then defined as:
-> - * M = E - N + 2P
-> - * where
-> - *
-> - *  E = the number of edges of the graph
-> - *  N = the number of nodes of the graph
-> - *  P = the number of connected components (exit nodes).
-> - *
-> - * Usage (4.5 - 5):
-> - * $ make clean; make run
-> - */
-> -
-> -#include "gcc-common.h"
-> -
-> -__visible int plugin_is_GPL_compatible;
-> -
-> -static struct plugin_info cyc_complexity_plugin_info = {
-> -	.version	= "20160225",
-> -	.help		= "Cyclomatic Complexity\n",
-> -};
-> -
-> -static unsigned int cyc_complexity_execute(void)
-> -{
-> -	int complexity;
-> -	expanded_location xloc;
-> -
-> -	/* M = E - N + 2P */
-> -	complexity = n_edges_for_fn(cfun) - n_basic_blocks_for_fn(cfun) + 2;
-> -
-> -	xloc = expand_location(DECL_SOURCE_LOCATION(current_function_decl));
-> -	fprintf(stderr, "Cyclomatic Complexity %d %s:%s\n", complexity,
-> -		xloc.file, DECL_NAME_POINTER(current_function_decl));
-> -
-> -	return 0;
-> -}
-> -
-> -#define PASS_NAME cyc_complexity
-> -
-> -#define NO_GATE
-> -#define TODO_FLAGS_FINISH TODO_dump_func
-> -
-> -#include "gcc-generate-gimple-pass.h"
-> -
-> -__visible int plugin_init(struct plugin_name_args *plugin_info, struct plugin_gcc_version *version)
-> -{
-> -	const char * const plugin_name = plugin_info->base_name;
-> -
-> -	PASS_INFO(cyc_complexity, "ssa", 1, PASS_POS_INSERT_AFTER);
-> -
-> -	if (!plugin_default_version_check(version, &gcc_version)) {
-> -		error(G_("incompatible gcc/plugin versions"));
-> -		return 1;
-> -	}
-> -
-> -	register_callback(plugin_name, PLUGIN_INFO, NULL,
-> -				&cyc_complexity_plugin_info);
-> -	register_callback(plugin_name, PLUGIN_PASS_MANAGER_SETUP, NULL,
-> -				&cyc_complexity_pass_info);
-> -
-> -	return 0;
-> -}
-> -- 
-> 2.30.2
-> 
+The strategy is to disqualify a clock comparison if the reads took too
+long, and to retry the comparison.  If four consecutive comparison take
+too long, clock skew is reported.  The number of consecutive comparisons
+may be adjusted by the usual kernel boot parameter.
+
+> so disabling it for known good-tsc might be a reasonable good idea
+> that can save manpower for other
+> more valuable problems to solve, or at least make it statistically a
+> problem less chance to happen.
+
+One additional piece that is still in prototype state in -rcu is to give
+clocksources some opportunity to resynchronize if there are too many
+slow comparisons.  This is intended to handle cases where clocks often
+take hundreds of microseconds to read out due to cache-buster workloads
+interfering with all and sundry.  Testing indicates that even in the
+midst of such cache-busting, there will almost certainly be at least one
+fast comparison within a five-second period.  So the current thought is
+to give a clocksource 100 seconds in which to get a fast comparison.
+
+Those who have only one clock always know what time it is.  Those with
+more than one can never be certain.  Except that the universe is
+well-supplied with a great many clocks outside of the computer system
+in question.  ;-)
+
+							Thanx, Paul
