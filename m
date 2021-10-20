@@ -2,180 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A394344A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D844344CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhJTF2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 01:28:39 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:8438 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229920AbhJTF2i (ORCPT
+        id S229941AbhJTFqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 01:46:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5050 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229877AbhJTFqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 01:28:38 -0400
-IronPort-Data: =?us-ascii?q?A9a23=3ATCLa5qxnwle8kgihcut6t+ddxyrEfRIJ4+MujC/?=
- =?us-ascii?q?XYbTApGwmgzRTmGoaWzjQO/6CamDzfNhyYdjn90MFuZCGmtM2HQtv/xmBbVoQ9?=
- =?us-ascii?q?5OdWo7xwmQcns+qBpSaChohtq3yU/GYRCwPZiKa9kjF3oTJ9yEmjPjQH+ukVYY?=
- =?us-ascii?q?oBwgqLeNaYHZ44f5cs75h6mJYqYDR7zKl4bsekeWGULOW82Ic3lYv1k62gEgHU?=
- =?us-ascii?q?MIeF98vlgdWifhj5DcynpSOZX4VDfnZw3DQGuG4EgMmLtsvwo1V/kuBl/ssIti?=
- =?us-ascii?q?j1LjmcEwWWaOUNg+L4pZUc/H6xEEc+WppieBmXBYfQR4/ZzGhhc14zs5c85K2U?=
- =?us-ascii?q?hsBMLDOmfgGTl9TFCQW0ahuoeaZeCXm4ZbPp6HBWz62qxl0N2k6NJMZ9s55G2Z?=
- =?us-ascii?q?L8uYSKSxLZReG78q2y7KTS+9inM0vIcDneoQFtRlIwTjfS/RgXpHHR6TD4MRw3?=
- =?us-ascii?q?TEsi8QIFvHbD+IVayVoahvoYBBVPFoTTpUkk4+Agnj5bi0drVe9prQ+6GuVyxZ?=
- =?us-ascii?q?+uJDrLtbUf9miQcROgl3eomPA4nS/DhwEXPSdwDyItHmsm8fIhyrwXI9UH7q9n?=
- =?us-ascii?q?tZugVuO1ikdExEbS1a/iee2h1T4WN9FLUEQvC00osAa8E2tU8m4XBCipnOAlgA?=
- =?us-ascii?q?TVsAWEOAg7gyJjK3O7G6xAmkCUy4EeNI9nNE5SCZs1VKTmd7tQzt1v9Wopdi1n?=
- =?us-ascii?q?luPhWrqf3FLcilZPmlZJTbpKuLL+Okb5i8jhP46TMZZVuHIJAw=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AkTiQOqM9kLBvgcBcTiWjsMiBIKoaSvp037Eq?=
- =?us-ascii?q?v3oedfUzSL3gqynOpoV86faaskdyZJhNo7C90ey7MBThHP1OkO0s1NWZLWrbUQ?=
- =?us-ascii?q?KTRekIh+bfKn/behEWndQw6U4PScdD4ZHLfD1HZNjBkXSFOudl0N+a67qpmOub?=
- =?us-ascii?q?639sSDthY6Zm4xwRMHfhLmRGABlBGYEiFIeRou5Opz+bc3wRacihQlYfWeyrna?=
- =?us-ascii?q?ywqLvWJQ4BGwU86BSDyReh6LvBGRCe2RsEFxNjqI1SiVT4rw=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.87,165,1631548800"; 
-   d="scan'208";a="116151824"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 20 Oct 2021 13:26:01 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 3AB984D0F907;
-        Wed, 20 Oct 2021 13:25:58 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Wed, 20 Oct 2021 13:25:52 +0800
-Received: from [10.167.216.64] (10.167.216.64) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Wed, 20 Oct 2021 13:25:52 +0800
-Subject: Re: [PATCH v7 4/8] pagemap,pmem: Introduce ->memory_failure()
-To:     "Darrick J. Wong" <djwong@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@infradead.org>, <jane.chu@oracle.com>
-References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
- <20210924130959.2695749-5-ruansy.fnst@fujitsu.com>
- <20211014180507.GG24307@magnolia>
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Message-ID: <543054d5-f779-02fa-95d1-4f2cd6efe111@fujitsu.com>
-Date:   Wed, 20 Oct 2021 13:25:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 20 Oct 2021 01:46:00 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K2F9t6012306;
+        Wed, 20 Oct 2021 01:43:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Xsz46CQV9wzjz9CUU80VdRZVE2+AsCqT/S5QK+5suJ8=;
+ b=X68WQJwglovhF92RXy5OhZsI7omtvNevgJ7x7a7brHSOXAsUdT0JrzQw6yCuLn5sQplv
+ LIuLA7GCjJ24IGhSywk8iKBDHk4FBwF07QwcDMicD22DIfDLq9PRpzTo0Ji+H6RwFb4Y
+ GfQtt9ZfKZ/zaB8TrcCoKLJfU/zkpsvmzpCeOJC7epgJ2FY37+DHzqktjN09SEJsvQUX
+ QNssloG8vp2AAd/rcj5cHk5ruGT7klgD6mW1nGlsEtviwJHB3EI2oVcOaWGtLas8a4tM
+ mPG+kP8zLZDRZclDPvT+703DJoFpPEacVVqd+YSZRBNpY9P2JXStTfUu5gUYSnVgzCJ5 2A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bt7436ag0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 01:43:45 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19K4FThr006415;
+        Wed, 20 Oct 2021 01:43:44 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bt7436afj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 01:43:44 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19K5cD6w026478;
+        Wed, 20 Oct 2021 05:43:42 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bqpcarv1u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 05:43:42 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19K5hcpo59310348
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 05:43:38 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE0395204F;
+        Wed, 20 Oct 2021 05:43:37 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.4.68])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 0D1FE5205A;
+        Wed, 20 Oct 2021 05:43:36 +0000 (GMT)
+Date:   Wed, 20 Oct 2021 07:35:15 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>, farman@linux.ibm.com,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 1/3] KVM: s390: clear kicked_mask before sleeping again
+Message-ID: <20211020073515.3ad4c377@p-imbrenda>
+In-Reply-To: <20211019175401.3757927-2-pasic@linux.ibm.com>
+References: <20211019175401.3757927-1-pasic@linux.ibm.com>
+        <20211019175401.3757927-2-pasic@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211014180507.GG24307@magnolia>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-yoursite-MailScanner-ID: 3AB984D0F907.A0283
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Bvx0UAiEpCEJjO7fiTvrwnkE-Eb7XQto
+X-Proofpoint-GUID: LYF-g5SOC3yDchfTQkYOYT2eB4I-00k6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_02,2021-10-19_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110200028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 19 Oct 2021 19:53:59 +0200
+Halil Pasic <pasic@linux.ibm.com> wrote:
 
-
-在 2021/10/15 2:05, Darrick J. Wong 写道:
-> On Fri, Sep 24, 2021 at 09:09:55PM +0800, Shiyang Ruan wrote:
->> When memory-failure occurs, we call this function which is implemented
->> by each kind of devices.  For the fsdax case, pmem device driver
->> implements it.  Pmem device driver will find out the filesystem in which
->> the corrupted page located in.
->>
->> With dax_holder notify support, we are able to notify the memory failure
->> from pmem driver to upper layers.  If there is something not support in
->> the notify routine, memory_failure will fall back to the generic hanlder.
->>
->> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
->> ---
->>   drivers/nvdimm/pmem.c    | 11 +++++++++++
->>   include/linux/memremap.h |  9 +++++++++
->>   mm/memory-failure.c      | 14 ++++++++++++++
->>   3 files changed, 34 insertions(+)
->>
->> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
->> index 72de88ff0d30..0dfafad8fcc5 100644
->> --- a/drivers/nvdimm/pmem.c
->> +++ b/drivers/nvdimm/pmem.c
->> @@ -362,9 +362,20 @@ static void pmem_release_disk(void *__pmem)
->>   	del_gendisk(pmem->disk);
->>   }
->>   
->> +static int pmem_pagemap_memory_failure(struct dev_pagemap *pgmap,
->> +		unsigned long pfn, size_t size, int flags)
->> +{
->> +	struct pmem_device *pmem =
->> +			container_of(pgmap, struct pmem_device, pgmap);
->> +	loff_t offset = PFN_PHYS(pfn) - pmem->phys_addr - pmem->data_offset;
->> +
->> +	return dax_holder_notify_failure(pmem->dax_dev, offset, size, flags);
->> +}
->> +
->>   static const struct dev_pagemap_ops fsdax_pagemap_ops = {
->>   	.kill			= pmem_pagemap_kill,
->>   	.cleanup		= pmem_pagemap_cleanup,
->> +	.memory_failure		= pmem_pagemap_memory_failure,
->>   };
->>   
->>   static int pmem_attach_disk(struct device *dev,
->> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
->> index c0e9d35889e8..36d47bacd46d 100644
->> --- a/include/linux/memremap.h
->> +++ b/include/linux/memremap.h
->> @@ -87,6 +87,15 @@ struct dev_pagemap_ops {
->>   	 * the page back to a CPU accessible page.
->>   	 */
->>   	vm_fault_t (*migrate_to_ram)(struct vm_fault *vmf);
->> +
->> +	/*
->> +	 * Handle the memory failure happens on a range of pfns.  Notify the
->> +	 * processes who are using these pfns, and try to recover the data on
->> +	 * them if necessary.  The flag is finally passed to the recover
->> +	 * function through the whole notify routine.
->> +	 */
->> +	int (*memory_failure)(struct dev_pagemap *pgmap, unsigned long pfn,
->> +			      size_t size, int flags);
->>   };
->>   
->>   #define PGMAP_ALTMAP_VALID	(1 << 0)
->> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
->> index 8ff9b52823c0..85eab206b68f 100644
->> --- a/mm/memory-failure.c
->> +++ b/mm/memory-failure.c
->> @@ -1605,6 +1605,20 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->>   	if (!pgmap_pfn_valid(pgmap, pfn))
->>   		goto out;
->>   
->> +	/*
->> +	 * Call driver's implementation to handle the memory failure, otherwise
->> +	 * fall back to generic handler.
->> +	 */
->> +	if (pgmap->ops->memory_failure) {
->> +		rc = pgmap->ops->memory_failure(pgmap, pfn, PAGE_SIZE, flags);
->> +		/*
->> +		 * Fall back to generic handler too if operation is not
->> +		 * supported inside the driver/device/filesystem.
->> +		 */
->> +		if (rc != EOPNOTSUPP)
+> The idea behind kicked mask is that we should not re-kick a vcpu that
+> is already in the "kick" process, i.e. that was kicked and is
+> is about to be dispatched if certain conditions are met.
 > 
-> -EOPNOTSUPP?  (negative errno)
-
-Yes, my mistake. Thanks for pointing out.
-
-
---
-Thanks,
-Ruan.
-
+> The problem with the current implementation is, that it assumes the
+> kicked vcpu is going to enter SIE shortly. But under certain
+> circumstances, the vcpu we just kicked will be deemed non-runnable and
+> will remain in wait state. This can happen, if the interrupt(s) this
+> vcpu got kicked to deal with got already cleared (because the interrupts
+> got delivered to another vcpu). In this case kvm_arch_vcpu_runnable()
+> would return false, and the vcpu would remain in kvm_vcpu_block(),
+> but this time with its kicked_mask bit set. So next time around we
+> wouldn't kick the vcpu form __airqs_kick_single_vcpu(), but would assume
+> that we just kicked it.
 > 
-> --D
+> Let us make sure the kicked_mask is cleared before we give up on
+> re-dispatching the vcpu.
 > 
->> +			goto out;
->> +	}
->> +
->>   	rc = mf_generic_kill_procs(pfn, flags, pgmap);
->>   out:
->>   	/* drop pgmap ref acquired in caller */
->> -- 
->> 2.33.0
->>
->>
->>
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> Reported-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> Fixes: 9f30f6216378 ("KVM: s390: add gib_alert_irq_handler()")
+> ---
+>  arch/s390/kvm/kvm-s390.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index 6a6dd5e1daf6..1c97493d21e1 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -3363,6 +3363,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>  
+>  int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu)
+>  {
+> +	clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.gisa_int.kicked_mask);
 
+so, you unconditionally clear the flag, before knowing if the vCPU is
+runnable?
+
+from your description I would have expected to only clear the bit if
+the vCPU is not runnable.
+
+would things break if we were to try to kick the vCPU again after
+clearing the bit, but before dispatching it?
+
+>  	return kvm_s390_vcpu_has_irq(vcpu, 0);
+>  }
+>  
 
