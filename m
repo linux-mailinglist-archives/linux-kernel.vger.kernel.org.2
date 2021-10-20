@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0057435333
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22770435313
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbhJTSxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbhJTSxC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:53:02 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9383DC061760;
-        Wed, 20 Oct 2021 11:50:47 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d9so3742621pfl.6;
-        Wed, 20 Oct 2021 11:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2G1kdri23kWnlj1enPufIZN1leyxpMasJ2EyRU0acfw=;
-        b=GwRLeZAgQyhWzXBve39ZZ8disRmnwjqnXMZrtjJMr8p4bDJiS2ak5weMfmJWh4MMF1
-         cq1/VRmUkqMvbTD+bm9Xg5RJbYvwNbf/h5GWAXSuTwfUG9m3yZqFj3kLughJlaEwbCbq
-         WFX0GhuK3476jKxhv3jTzDHrHCShNSSIOsFVIF9Ndy3E6htLHlNHaieXIAa7pZXzOu9h
-         69dpFXdbwAua8TZBAHkSUtNyZPHrdjbLLUeZnFIYjQ6fQCZpPWLg3mSMikvXWH/LX7pd
-         NYI+WYr37cWoONmgtB2i+Am1E6mVnAcBpx7SXwWfVvOmXo2YcV4MxuNwZwMpskTePTFG
-         RaKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2G1kdri23kWnlj1enPufIZN1leyxpMasJ2EyRU0acfw=;
-        b=lIHQll+5u0v/L4z5CM8pZBbOre9X+ksZ9hNmz27iBdEEORQKqMl+yA15D46HM+nJ/q
-         QQZMewyuhX30+ygUf2XiZLIigE85LL6Rofpsknk8xil3qV/uJoaJcB+/Pk+HxKqlgRV5
-         HwN3TA5zHh2t41U71X6a1qM2r8kF3v90QpQT03bxodAg/KBmkpv8MkJzIdHGaBmUemue
-         1jV2U6O0lYaZmI872E0Ok85UqY20UU4jLYTLSVO9reP4O9cl1J5vSFy5KadRJZQbKNKY
-         lvO/GnFyJ9Yv0DY53xlQTbpxV/5JzEB/XbdQ4xmlBf1g00VzGsI4vMiGzHNUr1PbSSk0
-         obYw==
-X-Gm-Message-State: AOAM531K0f3ZRofskxbBWD2PYvEw/MJv0PQRz3zZaV7Et5cUHzOlWQRd
-        wm982YFdfSUeYGFWVi3Pw/wGYZeXbyY=
-X-Google-Smtp-Source: ABdhPJzTBKlnu/SAxrtzo9ELZ3GXRd222mBb2VFjfNED53MAdRSpGCiwjE3SxrYBR4O4pWV+SP/xyg==
-X-Received: by 2002:a63:8c19:: with SMTP id m25mr794397pgd.164.1634755846750;
-        Wed, 20 Oct 2021 11:50:46 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o127sm3267863pfb.216.2021.10.20.11.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 11:50:46 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
-        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM
-        SUB-ARCHITECTURES), linux-mips@vger.kernel.org (open list:MIPS),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE)
-Subject: [PATCH v6 13/13] irqchip: Fix kernel-doc parameter typo for IRQCHIP_DECLARE
-Date:   Wed, 20 Oct 2021 11:48:59 -0700
-Message-Id: <20211020184859.2705451-14-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211020184859.2705451-1-f.fainelli@gmail.com>
-References: <20211020184859.2705451-1-f.fainelli@gmail.com>
+        id S231463AbhJTSwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:52:54 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:49292 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231328AbhJTSwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 14:52:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=F34CO4kJ2wlEtjVzrikO0cx1FdgTWcUmymX9zm/E3dc=; b=5ngATRZbztJzzNL+dFEJjjk3JB
+        YmVvg796mdYlh7ep4ayNoCLyGGCchsBx9XZUjOeooNBzUYhts+VG1sUMzEHt8+wUdRVd0Fq71P29Y
+        rQXQr04skMBB70z1LToITrVa+zFx1wfvrwLgBSDkF2wcVMt3zbnnzX28P2oADYZ/IDEg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mdGfS-00BDIQ-4A; Wed, 20 Oct 2021 20:50:26 +0200
+Date:   Wed, 20 Oct 2021 20:50:26 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: fec: defer probe if PHY on external MDIO bus is not
+ available
+Message-ID: <YXBk8gwuCqrxDbVY@lunn.ch>
+References: <20211014113043.3518-1-matthias.schiffer@ew.tq-group.com>
+ <YW7SWKiUy8LfvSkl@lunn.ch>
+ <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation refers to "compstr" when we have the parameter named
-"compat", fix the typo.
+> > I've not looked at the details yet, just back from vacation. But this
+> > seems wrong. I would of expected phylib to of returned -EPRODE_DEFER
+> > at some point, when asked for a PHY which does not exist yet. All the
+> > driver should need to do is make sure it returns the
+> > -EPRODE_DEFER.
+> 
+> This is what I expected as well, however there are a few complications:
+> 
+> - At the moment the first time the driver does anything with the PHY is
+>   in fec_enet_open(), not in fec_probe() - way too late to defer
+>   anything
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- include/linux/irqchip.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+O.K. Right. Are you using NFS root? For normal user space opening of
+the interface, this has all been sorted out by the time user space
+does anything. The NFS root changes the time in a big way.
 
-diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
-index 67351aac65ef..ccf32758ea85 100644
---- a/include/linux/irqchip.h
-+++ b/include/linux/irqchip.h
-@@ -23,7 +23,7 @@
-  *
-  * @name: name that must be unique across all IRQCHIP_DECLARE of the
-  * same file.
-- * @compstr: compatible string of the irqchip driver
-+ * @compat: compatible string of the irqchip driver
-  * @fn: initialization function
-  */
- #define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
--- 
-2.25.1
+Anyway, i would say some bits of code need moving from open to probe
+so EPROBE_DEFER can be used.
 
+We already have:
+
+        phy_node = of_parse_phandle(np, "phy-handle", 0);
+        if (!phy_node && of_phy_is_fixed_link(np)) {
+                ret = of_phy_register_fixed_link(np);
+                if (ret < 0) {
+                        dev_err(&pdev->dev,
+                                "broken fixed-link specification\n");
+                        goto failed_phy;
+                }
+                phy_node = of_node_get(np);
+        }
+        fep->phy_node = phy_node;
+
+Go one step further. If fep->phy_node is not NULL, we know there
+should be a PHY. So call of_phy_find_device(). If it returns NULL,
+then -EPROBE_DEFER. Otherwise store the phydev into fep, and use it in
+open.
+
+You will need to move the call to fec_enet_mii_init(pdev) earlier, so
+the MDIO bus is available.
+
+    Andrew
