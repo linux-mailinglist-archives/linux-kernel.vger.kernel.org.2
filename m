@@ -2,161 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8D94346C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CAB4346F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhJTIZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:25:17 -0400
-Received: from mga12.intel.com ([192.55.52.136]:17263 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhJTIZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:25:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="208826719"
-X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
-   d="scan'208";a="208826719"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 01:23:01 -0700
-X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
-   d="scan'208";a="444269106"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.176])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 01:22:59 -0700
-Date:   Wed, 20 Oct 2021 16:29:39 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-acpi@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>
-Subject: Re: [PATCH v4 3/4] drivers/acpi: Introduce Platform Firmware Runtime
- Update Telemetry
-Message-ID: <20211020082939.GA44221@chenyu-desktop>
-References: <cover.1634310710.git.yu.c.chen@intel.com>
- <838245e376c7e6fd0fe1ef55d004ed53763846a2.1634310710.git.yu.c.chen@intel.com>
- <YWrrYWeW7uaiJ51u@kroah.com>
+        id S229955AbhJTIc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhJTIcW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:32:22 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E10C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:30:07 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id a140-20020a1c7f92000000b0030d8315b593so9213956wmd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CbvtrLjcUbfgAMTLROLIlvj1tZ7LmmnXHpndaPRCItA=;
+        b=UCGyUGeVpWan4WCX6U/T8SPsoDfVI8CRM1oqIfsJkpGsZUjZ1PJjuoy0Yx2XdBYhOA
+         FDjDLlXRKmgBMVew3f4H+plLhk3YEnccbeLeSMewyXqwlvLWiTZXI6oGP5do8odiS9yj
+         oG7NPxnJhXvgZTREotbgPMKNA+K7wPzH1puMc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CbvtrLjcUbfgAMTLROLIlvj1tZ7LmmnXHpndaPRCItA=;
+        b=VsGFeTlWqZyd3decMYtuCAlo84E+rTyEtNEkJhymKLE7xB0It2MHH2i0UaSytQqrtt
+         nGTyFZw1AAotNNivvcTFqibr2ARD5MbTEcoJgIvimW38KurEiuf+243nxpZnxEOiMawF
+         B7QdT5Nn4848KXJrJgkceJAU2/AnBDlhyhq9ZFG4CLk8O7OjeHtySF1/bKte9EgKul43
+         Xv34Mc9bmWNUWSqJB5HlSA8ysn+/uYqeoZUKKSibrNHxzb2Rs4w+NbTl6wkXT/l/VcGv
+         /eUT+r2zDALJyc1TecFv4f/sRr4jMy67DvkBbOxyi037NnYXoh3xpf5kUkXioinPTTaN
+         OHHw==
+X-Gm-Message-State: AOAM533CFXqIfyPJekNiGKlhRkhzF1cbnM3Y0wXQ01IpvE5fd7fh0gWK
+        yfQtSq3A0b7hgvDCy2i8PyWMxg==
+X-Google-Smtp-Source: ABdhPJyg6rc1ETglY+0y14Mx0eWUrqdIrqIr0lV69WB2xP4oiYg+1LoVvxPsJJ+sjjQmknd4sqwsyQ==
+X-Received: by 2002:a05:6000:1acc:: with SMTP id i12mr49580282wry.249.1634718605797;
+        Wed, 20 Oct 2021 01:30:05 -0700 (PDT)
+Received: from antares.. (d.5.c.c.6.2.1.6.f.5.3.5.c.9.c.f.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:fc9c:535f:6126:cc5d])
+        by smtp.gmail.com with ESMTPSA id s13sm4473133wmc.47.2021.10.20.01.30.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 01:30:05 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next 1/2] libfs: support RENAME_EXCHANGE in simple_rename()
+Date:   Wed, 20 Oct 2021 09:29:55 +0100
+Message-Id: <20211020082956.8359-2-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211020082956.8359-1-lmb@cloudflare.com>
+References: <20211020082956.8359-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWrrYWeW7uaiJ51u@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 05:10:25PM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Oct 16, 2021 at 06:44:31PM +0800, Chen Yu wrote:
-> > Platform Firmware Runtime Update(PFRU) Telemetry Service is part of RoT
-> > (Root of Trust), which allows PFRU handler and other PFRU drivers to
-> > produce telemetry data to upper layer OS consumer at runtime.
-> > 
-> > The linux provides interfaces for the user to query the parameters of
-> > telemetry data, and the user could read out the telemetry data
-> > accordingly.
-> 
-> What type of interface is this?  How does userspace interact with it?
-> 
-> > 
-> > Also add the ABI documentation.
-> 
-> Add it where?
->
-They are all ioctl interfaces, and was introduced in previous patch in
-Documentation/ABI/testing/pfru. The way userspace interace with it is
-introduced in next patch in the man page. I'll revise the commit log to
-better describe how user could use it.
-> > 
-> > Typical log looks like:
-> > [SmmRuntimeUpdateHandler.ProcessSmmRuntimeUpdate]
-> > ProcessSmmRuntimeUpdate = START, Action = 2
-> > [SmmRuntimeUpdateHandler.ProcessSmmRuntimeUpdate]
-> > FwVersion = 0, CodeInjectionVersion = 1
-> > [ShadowSmmRuntimeUpdateImage]
-> > Image = 0x74D9B000, ImageSize = 0x1172
-> > [ProcessSmmRuntimeUpdate]
-> > ShadowSmmRuntimeUpdateImage.Status = Success
-> > [ValidateSmmRuntimeUpdateImage]
-> > CapsuleHeader.CapsuleGuid = 6DCBD5ED-E82D-4C44-BDA1-7194199AD92A
-> > [ValidateSmmRuntimeUpdateImage]
-> > FmpCapHeader.Version = 1
-> > [ValidateSmmRuntimeUpdateImage]
-> > FmpCapImageHeader.UpdateImageTypeId = B2F84B79-7B6E-4E45-885F-3FB9BB185402
-> > [ValidateSmmRuntimeUpdateImage]
-> > SmmRuntimeUpdateVerifyImageWithDenylist.Status = Success
-> > [ValidateSmmRuntimeUpdateImage]
-> > SmmRuntimeUpdateVerifyImageWithAllowlist.Status = Success
-> > [SmmCodeInjectionVerifyPayloadHeader]
-> > PayloadHeader.Signature = 0x31494353
-> > [SmmCodeInjectionVerifyPayloadHeader]
-> > PayloadHeader.PlatformId = 63462139-A8B1-AA4E-9024-F2BB53EA4723
-> > [SmmCodeInjectionVerifyPayloadHeader]
-> > PayloadHeader.SupportedSmmFirmwareVersion = 0,
-> > PayloadHeader.SmmCodeInjectionRuntimeVersion = 1
-> > [ProcessSmmRuntimeUpdate]
-> > ValidateSmmRuntimeUpdateImage.Status = Success
-> > CPU CSR[0B102D28] Before = 7FBF830E
-> > CPU CSR[0B102D28] After = 7FBF8310
-> > [ProcessSmmRuntimeUpdate] ProcessSmmCodeInjection.Status = Success
-> > [SmmRuntimeUpdateHandler.ProcessSmmRuntimeUpdate]
-> > ProcessSmmRuntimeUpdate = End, Status = Success
-> 
-> This log does not make any sense to me, where is it from?  Why the odd
-> line-wrapping?
->
-It is from the telemetry log generated by the BIOS. Since this content is
-platform specific, I'll remove the log in next version.
-> > +};
-> > +
-> > +
-[snip...]
-> > +ssize_t pfru_log_read(struct file *filp, char __user *ubuf,
-> > +		      size_t size, loff_t *off)
-> > +{
-> > +	struct pfru_log_data_info info;
-> > +	phys_addr_t base_addr;
-> > +	int buf_size, ret;
-> > +	char *buf_ptr;
-> > +
-> > +	if (!pfru_log_dev)
-> > +		return -ENODEV;
-> > +
-> > +	if (*off < 0)
-> > +		return -EINVAL;
-> > +
-> > +	ret = get_pfru_log_data_info(&info, pfru_log_dev->info.log_type);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	base_addr = (phys_addr_t)(info.chunk2_addr_lo | (info.chunk2_addr_hi << 32));
-> > +	/* pfru update has not been launched yet.*/
-> > +	if (!base_addr)
-> > +		return -EBUSY;
-> > +
-> > +	buf_size = info.max_data_size;
-> > +	if (*off >= buf_size)
-> > +		return 0;
-> > +
-> > +	buf_ptr = memremap(base_addr, buf_size, MEMREMAP_WB);
-> > +	if (IS_ERR(buf_ptr))
-> > +		return PTR_ERR(buf_ptr);
-> > +
-> > +	size = min_t(size_t, size, buf_size - *off);
-> > +	if (copy_to_user(ubuf, buf_ptr + *off, size))
-> > +		ret = -EFAULT;
-> > +	else
-> > +		ret = 0;
-> 
-> As all you are doing is mapping some memory and reading from it, why do
-> you need a read() file operation at all?  Why not just use mmap?
-> 
-In the beginning mmap() interface was provided to the user. Then it was
-realized that there is no guarantee in the spec that, the physical address
-provided by the BIOS would remain unchanged. So instead of asking the user
-to mmap the file each time before reading the log, the read() is leveraged
-here to always memremap() the latest address.
+Allow atomic exchange via RENAME_EXCHANGE when using simple_rename.
+This affects binderfs, ramfs, hubetlbfs and bpffs. There isn't much
+to do except update the various *time fields.
 
-thanks,
-Chenyu
-> thanks,
-> 
-> greg k-h
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ fs/libfs.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 51b4de3b3447..93c03d593749 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -455,9 +455,12 @@ int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+ 	struct inode *inode = d_inode(old_dentry);
+ 	int they_are_dirs = d_is_dir(old_dentry);
+ 
+-	if (flags & ~RENAME_NOREPLACE)
++	if (flags & ~(RENAME_NOREPLACE | RENAME_EXCHANGE))
+ 		return -EINVAL;
+ 
++	if (flags & RENAME_EXCHANGE)
++		goto done;
++
+ 	if (!simple_empty(new_dentry))
+ 		return -ENOTEMPTY;
+ 
+@@ -472,6 +475,7 @@ int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+ 		inc_nlink(new_dir);
+ 	}
+ 
++done:
+ 	old_dir->i_ctime = old_dir->i_mtime = new_dir->i_ctime =
+ 		new_dir->i_mtime = inode->i_ctime = current_time(old_dir);
+ 
+-- 
+2.30.2
+
