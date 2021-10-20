@@ -2,206 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F464342DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 03:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B604C434308
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 03:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhJTBaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 21:30:24 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:29911 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhJTBaW (ORCPT
+        id S229919AbhJTBo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 21:44:56 -0400
+Received: from mail-qt1-f174.google.com ([209.85.160.174]:37635 "EHLO
+        mail-qt1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhJTBox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 21:30:22 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HYtD60z2hzbnGV;
-        Wed, 20 Oct 2021 09:23:34 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 09:28:02 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Wed, 20
- Oct 2021 09:28:01 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
-        <avanzini.arianna@gmail.com>, <fchecconi@gmail.com>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH v4] blk-cgroup: synchoronize blkg creation against policy deactivation
-Date:   Wed, 20 Oct 2021 09:40:36 +0800
-Message-ID: <20211020014036.2141723-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 19 Oct 2021 21:44:53 -0400
+Received: by mail-qt1-f174.google.com with SMTP id w8so1734052qts.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 18:42:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=phuizum7Jvmwq/i5uKXc0tZWrbM+XXyJMZ25fUOpTLs=;
+        b=YSVIYkhsKPvt6sUNEjv9JGF7yIuB6VRoyVm5XFNV1zudfhZ4K0sV2QwTcLq6Pzvv25
+         vIk/8BzCrKw6zLOdGC2uhbp9mHiNqecCYw/rlwB9PeL74weto9dQbb26UiF7kVmjf2Rz
+         dfXsLgB3E3I2lgTpRNotqr7jvZnuMyy85aP8pXfLW+crroYVCuomFSk9bwSKK3CHKpw0
+         4MCqOl6k58htD1OazvPFg37d+QlciwNLTol5nKjEOgU4PrkkGvxYgXo+FeUbr/FW70cz
+         EkbuEJZJAB3MjpgH56hwMyu9SY0405iWvU9WGAmRwUIgd4DZg/WZ7VIxxhkWoNPn6M4A
+         U2jw==
+X-Gm-Message-State: AOAM531asVH2an0AFLKdSCXUHZK6VmCUQMCuo1ESp6jTJ9rl2sL/VYU1
+        3kTOMLWTV7RSa1v45oxZSPHI+X1RQ8Q=
+X-Google-Smtp-Source: ABdhPJy/ja1TkZRKcCm+Ky9EHmqtXH4D1fagNoNn6u0z9Zj/KxqXnbkYKrFruIhz/G/TbCgCtq1T0Q==
+X-Received: by 2002:ac8:1e9e:: with SMTP id c30mr3783791qtm.238.1634694158854;
+        Tue, 19 Oct 2021 18:42:38 -0700 (PDT)
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com. [209.85.160.177])
+        by smtp.gmail.com with ESMTPSA id d23sm346913qtm.11.2021.10.19.18.42.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 18:42:38 -0700 (PDT)
+Received: by mail-qt1-f177.google.com with SMTP id t16so1728321qto.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 18:42:38 -0700 (PDT)
+X-Received: by 2002:a05:622a:1050:: with SMTP id f16mr3965552qte.127.1634694158181;
+ Tue, 19 Oct 2021 18:42:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+References: <20211019030555.29461-1-Meng.Li@windriver.com>
+In-Reply-To: <20211019030555.29461-1-Meng.Li@windriver.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Tue, 19 Oct 2021 20:42:27 -0500
+X-Gmail-Original-Message-ID: <CADRPPNSuZ9Jidm7tg+BTu_iwbxHE8i+1J3wkPLF0CZuGNd3RDg@mail.gmail.com>
+Message-ID: <CADRPPNSuZ9Jidm7tg+BTu_iwbxHE8i+1J3wkPLF0CZuGNd3RDg@mail.gmail.com>
+Subject: Re: [PATCH] driver: soc: dpio: use the whole functions to protect
+ critical zone
+To:     Meng.Li@windriver.com
+Cc:     Youri Querry <youri.querry_1@nxp.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Out test report a null pointer dereference:
+On Mon, Oct 18, 2021 at 10:07 PM <Meng.Li@windriver.com> wrote:
+>
+> From: Meng Li <Meng.Li@windriver.com>
+>
+> In orininal code, use 2 function spin_lock() and local_irq_save() to
+> protect the critical zone. But when enable the kernel debug config,
+> there are below inconsistent lock state detected.
+> ================================
+> WARNING: inconsistent lock state
+> 5.10.63-yocto-standard #1 Not tainted
+> --------------------------------
+> inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+> lock_torture_wr/226 [HC0[0]:SC1[5]:HE1:SE0] takes:
+> ffff002005b2dd80 (&p->access_spinlock){+.?.}-{3:3}, at: qbman_swp_enqueue_multiple_mem_back+0x44/0x270
+> {SOFTIRQ-ON-W} state was registered at:
+>   lock_acquire.part.0+0xf8/0x250
+>   lock_acquire+0x68/0x84
+>   _raw_spin_lock+0x68/0x90
+>   qbman_swp_enqueue_multiple_mem_back+0x44/0x270
+>   ......
+>   cryptomgr_test+0x38/0x60
+>   kthread+0x158/0x164
+>   ret_from_fork+0x10/0x38
+> irq event stamp: 4498
+> hardirqs last  enabled at (4498): [<ffff800010fcf980>] _raw_spin_unlock_irqrestore+0x90/0xb0
+> hardirqs last disabled at (4497): [<ffff800010fcffc4>] _raw_spin_lock_irqsave+0xd4/0xe0
+> softirqs last  enabled at (4458): [<ffff8000100108c4>] __do_softirq+0x674/0x724
+> softirqs last disabled at (4465): [<ffff80001005b2a4>] __irq_exit_rcu+0x190/0x19c
+>
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
+>        CPU0
+>        ----
+>   lock(&p->access_spinlock);
+>   <Interrupt>
+>     lock(&p->access_spinlock);
+>  *** DEADLOCK ***
+>
+> So, in order to avoid deadlock, use the whole functinos
 
-[  168.534653] ==================================================================
-[  168.535614] Disabling lock debugging due to kernel taint
-[  168.536346] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[  168.537274] #PF: supervisor read access in kernel mode
-[  168.537964] #PF: error_code(0x0000) - not-present page
-[  168.538667] PGD 0 P4D 0
-[  168.539025] Oops: 0000 [#1] PREEMPT SMP KASAN
-[  168.539656] CPU: 13 PID: 759 Comm: bash Tainted: G    B             5.15.0-rc2-next-202100
-[  168.540954] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_0738364
-[  168.542736] RIP: 0010:bfq_pd_init+0x88/0x1e0
-[  168.543318] Code: 98 00 00 00 e8 c9 e4 5b ff 4c 8b 65 00 49 8d 7c 24 08 e8 bb e4 5b ff 4d0
-[  168.545803] RSP: 0018:ffff88817095f9c0 EFLAGS: 00010002
-[  168.546497] RAX: 0000000000000001 RBX: ffff888101a1c000 RCX: 0000000000000000
-[  168.547438] RDX: 0000000000000003 RSI: 0000000000000002 RDI: ffff888106553428
-[  168.548402] RBP: ffff888106553400 R08: ffffffff961bcaf4 R09: 0000000000000001
-[  168.549365] R10: ffffffffa2e16c27 R11: fffffbfff45c2d84 R12: 0000000000000000
-[  168.550291] R13: ffff888101a1c098 R14: ffff88810c7a08c8 R15: ffffffffa55541a0
-[  168.551221] FS:  00007fac75227700(0000) GS:ffff88839ba80000(0000) knlGS:0000000000000000
-[  168.552278] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  168.553040] CR2: 0000000000000008 CR3: 0000000165ce7000 CR4: 00000000000006e0
-[  168.554000] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  168.554929] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  168.555888] Call Trace:
-[  168.556221]  <TASK>
-[  168.556510]  blkg_create+0x1c0/0x8c0
-[  168.556989]  blkg_conf_prep+0x574/0x650
-[  168.557502]  ? stack_trace_save+0x99/0xd0
-[  168.558033]  ? blkcg_conf_open_bdev+0x1b0/0x1b0
-[  168.558629]  tg_set_conf.constprop.0+0xb9/0x280
-[  168.559231]  ? kasan_set_track+0x29/0x40
-[  168.559758]  ? kasan_set_free_info+0x30/0x60
-[  168.560344]  ? tg_set_limit+0xae0/0xae0
-[  168.560853]  ? do_sys_openat2+0x33b/0x640
-[  168.561383]  ? do_sys_open+0xa2/0x100
-[  168.561877]  ? __x64_sys_open+0x4e/0x60
-[  168.562383]  ? __kasan_check_write+0x20/0x30
-[  168.562951]  ? copyin+0x48/0x70
-[  168.563390]  ? _copy_from_iter+0x234/0x9e0
-[  168.563948]  tg_set_conf_u64+0x17/0x20
-[  168.564467]  cgroup_file_write+0x1ad/0x380
-[  168.565014]  ? cgroup_file_poll+0x80/0x80
-[  168.565568]  ? __mutex_lock_slowpath+0x30/0x30
-[  168.566165]  ? pgd_free+0x100/0x160
-[  168.566649]  kernfs_fop_write_iter+0x21d/0x340
-[  168.567246]  ? cgroup_file_poll+0x80/0x80
-[  168.567796]  new_sync_write+0x29f/0x3c0
-[  168.568314]  ? new_sync_read+0x410/0x410
-[  168.568840]  ? __handle_mm_fault+0x1c97/0x2d80
-[  168.569425]  ? copy_page_range+0x2b10/0x2b10
-[  168.570007]  ? _raw_read_lock_bh+0xa0/0xa0
-[  168.570622]  vfs_write+0x46e/0x630
-[  168.571091]  ksys_write+0xcd/0x1e0
-[  168.571563]  ? __x64_sys_read+0x60/0x60
-[  168.572081]  ? __kasan_check_write+0x20/0x30
-[  168.572659]  ? do_user_addr_fault+0x446/0xff0
-[  168.573264]  __x64_sys_write+0x46/0x60
-[  168.573774]  do_syscall_64+0x35/0x80
-[  168.574264]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  168.574960] RIP: 0033:0x7fac74915130
-[  168.575456] Code: 73 01 c3 48 8b 0d 58 ed 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 444
-[  168.577969] RSP: 002b:00007ffc3080e288 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[  168.578986] RAX: ffffffffffffffda RBX: 0000000000000009 RCX: 00007fac74915130
-[  168.579937] RDX: 0000000000000009 RSI: 000056007669f080 RDI: 0000000000000001
-[  168.580884] RBP: 000056007669f080 R08: 000000000000000a R09: 00007fac75227700
-[  168.581841] R10: 000056007655c8f0 R11: 0000000000000246 R12: 0000000000000009
-[  168.582796] R13: 0000000000000001 R14: 00007fac74be55e0 R15: 00007fac74be08c0
-[  168.583757]  </TASK>
-[  168.584063] Modules linked in:
-[  168.584494] CR2: 0000000000000008
-[  168.584964] ---[ end trace 2475611ad0f77a1a ]---
+s/functinos/functions/
 
-This is because blkg_alloc() is called from blkg_conf_prep() without
-holding 'q->queue_lock', and elevator is exited before blkg_create():
+> spin_lock_irqsave/spin_unlock_irqrestore() to protect critical zone.
+>
+> Fixes: 3b2abda7d28c ("soc: fsl: dpio: Replace QMAN array mode with ring mode enqueue")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Meng Li <Meng.Li@windriver.com>
 
-thread 1                            thread 2
-blkg_conf_prep
- spin_lock_irq(&q->queue_lock);
- blkg_lookup_check -> return NULL
- spin_unlock_irq(&q->queue_lock);
+Applied for fix.  Thanks.
 
- blkg_alloc
-  blkcg_policy_enabled -> true
-  pd = ->pd_alloc_fn
-  blkg->pd[i] = pd
-                                   blk_mq_exit_sched
-                                    bfq_exit_queue
-                                     blkcg_deactivate_policy
-                                      spin_lock_irq(&q->queue_lock);
-                                      __clear_bit(pol->plid, q->blkcg_pols);
-                                      spin_unlock_irq(&q->queue_lock);
-                                    q->elevator = NULL;
-  spin_lock_irq(&q->queue_lock);
-   blkg_create
-    if (blkg->pd[i])
-     ->pd_init_fn -> q->elevator is NULL
-  spin_unlock_irq(&q->queue_lock);
-
-Because blkcg_deactivate_policy() requires queue to be frozen, we can
-grab q_usage_counter to synchoronize blkg_conf_prep() against
-blkcg_deactivate_policy().
-
-Fixes: e21b7a0b9887 ("block, bfq: add full hierarchical scheduling and cgroups support")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Acked-by: Tejun Heo <tj@kernel.org>
----
- block/blk-cgroup.c | 10 ++++++++++
-
-Changes in V4:
- - fix some words.
- - remove patch 1 from V3.
-
-Changes in V3:
- - grab q_usage_counter in blkg_conf_prep() instead of introducing a
- new mutex.
-
-Changes in V2:
- - rename the patch title
- - instead of checking policy in blkg_create(), using a new solution.
-
- 1 file changed, 10 insertions(+)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index ca60233c8392..e11b7e28b1b2 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -634,6 +634,14 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 
- 	q = bdev_get_queue(bdev);
- 
-+	/*
-+	 * blkcg_deactivate_policy() requires queue to be frozen, we can grab
-+	 * q_usage_counter to prevent concurrent with blkcg_deactivate_policy().
-+	 */
-+	ret = blk_queue_enter(q, 0);
-+	if (ret)
-+		return ret;
-+
- 	rcu_read_lock();
- 	spin_lock_irq(&q->queue_lock);
- 
-@@ -703,6 +711,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			goto success;
- 	}
- success:
-+	blk_queue_exit(q);
- 	ctx->bdev = bdev;
- 	ctx->blkg = blkg;
- 	ctx->body = input;
-@@ -715,6 +724,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 	rcu_read_unlock();
- fail:
- 	blkdev_put_no_open(bdev);
-+	blk_queue_exit(q);
- 	/*
- 	 * If queue was bypassing, we should retry.  Do so after a
- 	 * short msleep().  It isn't strictly necessary but queue
--- 
-2.31.1
-
+> ---
+>  drivers/soc/fsl/dpio/qbman-portal.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/soc/fsl/dpio/qbman-portal.c b/drivers/soc/fsl/dpio/qbman-portal.c
+> index 845e91416b58..a56dbe4de34f 100644
+> --- a/drivers/soc/fsl/dpio/qbman-portal.c
+> +++ b/drivers/soc/fsl/dpio/qbman-portal.c
+> @@ -785,8 +785,7 @@ int qbman_swp_enqueue_multiple_mem_back(struct qbman_swp *s,
+>         int i, num_enqueued = 0;
+>         unsigned long irq_flags;
+>
+> -       spin_lock(&s->access_spinlock);
+> -       local_irq_save(irq_flags);
+> +       spin_lock_irqsave(&s->access_spinlock, irq_flags);
+>
+>         half_mask = (s->eqcr.pi_ci_mask>>1);
+>         full_mask = s->eqcr.pi_ci_mask;
+> @@ -797,8 +796,7 @@ int qbman_swp_enqueue_multiple_mem_back(struct qbman_swp *s,
+>                 s->eqcr.available = qm_cyc_diff(s->eqcr.pi_ring_size,
+>                                         eqcr_ci, s->eqcr.ci);
+>                 if (!s->eqcr.available) {
+> -                       local_irq_restore(irq_flags);
+> -                       spin_unlock(&s->access_spinlock);
+> +                       spin_unlock_irqrestore(&s->access_spinlock, irq_flags);
+>                         return 0;
+>                 }
+>         }
+> @@ -837,8 +835,7 @@ int qbman_swp_enqueue_multiple_mem_back(struct qbman_swp *s,
+>         dma_wmb();
+>         qbman_write_register(s, QBMAN_CINH_SWP_EQCR_PI,
+>                                 (QB_RT_BIT)|(s->eqcr.pi)|s->eqcr.pi_vb);
+> -       local_irq_restore(irq_flags);
+> -       spin_unlock(&s->access_spinlock);
+> +       spin_unlock_irqrestore(&s->access_spinlock, irq_flags);
+>
+>         return num_enqueued;
+>  }
+> --
+> 2.17.1
+>
