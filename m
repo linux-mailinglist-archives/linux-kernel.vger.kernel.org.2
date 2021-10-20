@@ -2,106 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A263D434549
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B215434547
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhJTGmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:42:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:43230 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhJTGma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:42:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634712016; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
- Subject: From: Sender; bh=izrFRDPPIJzzSEpnDqJmdzIPU5ZzreLatzyS3F4RNbo=;
- b=dnQQDjjESUHTEI1WjQkFh3y+WVV1dXf2BNutUM3JzgtpK2t0trB3Mpmp2uhDaBK/+Q/wbPe4
- XXURY351JwXd33JP3YduRHz7Y9JZEyLZfXxmfqI/wRFaL9NqYFS2gYFILESJsE4SI9T5H3AD
- idMnR33tw3WzK53l+ya25P7f8HM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 616fb9c559612e010088f258 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 06:40:05
- GMT
-Sender: quic_luoj=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B9A90C4360D; Wed, 20 Oct 2021 06:40:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [10.92.1.38] (unknown [180.166.53.36])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 118FCC4338F;
-        Wed, 20 Oct 2021 06:40:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 118FCC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
-From:   Jie Luo <quic_luoj@quicinc.com>
-Subject: Re: [PATCH v3 07/13] net: phy: add qca8081 get_features
-To:     Andrew Lunn <andrew@lunn.ch>, Luo Jie <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-References: <20211018033333.17677-1-luoj@codeaurora.org>
- <20211018033333.17677-8-luoj@codeaurora.org> <YW3qrFRzvPlFrms0@lunn.ch>
-Message-ID: <cf1c8c0a-eeab-d5d2-fa04-ff6e4d37b960@quicinc.com>
-Date:   Wed, 20 Oct 2021 14:39:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <YW3qrFRzvPlFrms0@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S229836AbhJTGm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:42:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34654 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhJTGmZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 02:42:25 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3D8D021A74;
+        Wed, 20 Oct 2021 06:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634712008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=AUB5oU0M1PkD6YEt9HIhnMyIk6FZXboahlugr4CEMZI=;
+        b=x7DKASdS6F1q31BpmIFL3Ax+aEEg8rUSXMEIv8zNPBn6Umxg4/vMwXhrQhuG0f5FpKUsaX
+        wtiZ0K2zpHp4Umd7cOlAhv8VE1vJBBbD9cx+WICiTk/cXaFQHg+Jy0Id3bHUWpZ8DXbV5p
+        nD9ahT9IWi87q4akREsmQ9ghONDth74=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634712008;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=AUB5oU0M1PkD6YEt9HIhnMyIk6FZXboahlugr4CEMZI=;
+        b=W6XsH9QkRc4R809R+vlkpzAUmvn+KbT5IQ9bIBh4RifdBjFj3H7NKV0BFvYrfx2QfH8d7E
+        xyec1vMbDh4/AECg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 36500A3B89;
+        Wed, 20 Oct 2021 06:40:08 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 08:40:08 +0200
+Message-ID: <s5h4k9c19o7.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 5.15-rc7
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Linus,
 
-On 10/19/2021 5:44 AM, Andrew Lunn wrote:
-> On Mon, Oct 18, 2021 at 11:33:27AM +0800, Luo Jie wrote:
->> Reuse the at803x phy driver get_features excepting
->> adding 2500M capability.
->>
->> Signed-off-by: Luo Jie<luoj@codeaurora.org>
->> ---
->>   drivers/net/phy/at803x.c | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
->> index 42d3f8ccca94..0c22ef735230 100644
->> --- a/drivers/net/phy/at803x.c
->> +++ b/drivers/net/phy/at803x.c
->> @@ -719,6 +719,15 @@ static int at803x_get_features(struct phy_device *phydev)
->>   	if (err)
->>   		return err;
->>   
->> +	if (phydev->drv->phy_id == QCA8081_PHY_ID) {
->> +		err = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_NG_EXTABLE);
->> +		if (err < 0)
->> +			return err;
->> +
->> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported,
->> +				err & MDIO_PMA_NG_EXTABLE_2_5GBT);
->> +	}
-> genphy_c45_pma_read_abilities()?
->
-> 	Andrew
+please pull sound fixes for v5.15-rc7 from:
 
-Hi Andrew,
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.15-rc7
 
-Thanks for this comment, if we use genphy_c45_pma_read_abilities here, 
-the ETHTOOL_LINK_MODE_Autoneg_BIT
+The topmost commit is 29664923725a384dc7e0f74af7c66e5ab7bb2a26
 
-will be lost, since MDIO_MMD_AN.MDIO_STAT1 does not have bit 
-MDIO_AN_STAT1_ABLE.
+----------------------------------------------------------------
 
+sound fixes for 5.15-rc7
+
+Again it became bigger than wished, unfortunately, as this contains
+quite a few ASoC fixes that came up a bit late.  It also includes
+yet more HD- and USB-audio quirks: I decided to merge them now, as
+those are for stable, and we'll need them sooner or later.
+
+Although the volumes are a bit high, all changes are device-specific
+(and reasonably small) fixes, so it should be safe for the late rc.
+
+----------------------------------------------------------------
+
+Andy Shevchenko (4):
+      ASoC: Intel: bytcht_es8316: Get platform data via dev_get_platdata()
+      ASoC: Intel: bytcht_es8316: Use temporary variable for struct device
+      ASoC: Intel: bytcht_es8316: Switch to use gpiod_get_optional()
+      ASoC: Intel: bytcht_es8316: Utilize dev_err_probe() to avoid log saturation
+
+Brendan Grieve (1):
+      ALSA: usb-audio: Provide quirk for Sennheiser GSP670 Headset
+
+Davide Baldo (1):
+      ALSA: hda/realtek: Fixes HP Spectre x360 15-eb1xxx speakers
+
+Greg Kroah-Hartman (1):
+      ALSA: usb-audio: add Schiit Hel device to quirk table
+
+Hans de Goede (1):
+      ASoC: nau8824: Fix headphone vs headset, button-press detection no longer working
+
+Marco Giunta (1):
+      ALSA: usb-audio: Fix microphone sound on Jieli webcam.
+
+Mark Brown (2):
+      ASoC: pcm179x: Add missing entries SPI to device ID table
+      ASoC: cs4341: Add SPI device ID table
+
+Peter Rosin (1):
+      ASoC: pcm512x: Mend accesses to the I2S_1 and I2S_2 registers
+
+Shengjiu Wang (2):
+      ASoC: fsl_xcvr: Fix channel swap issue with ARC
+      ASoC: wm8960: Fix clock configuration on slave mode
+
+Srinivasa Rao Mandadapu (2):
+      ASoC: wcd938x: Fix jack detection issue
+      ASoC: codec: wcd938x: Add irq config support
+
+Stefan Binding (1):
+      ASoC: cs42l42: Ensure 0dB full scale volume is used for headsets
+
+Steven Clarkson (1):
+      ALSA: hda/realtek: Add quirk for Clevo PC50HS
+
+Takashi Iwai (1):
+      ASoC: DAPM: Fix missing kctl change notifications
+
+Yang Yingliang (1):
+      ASoC: soc-core: fix null-ptr-deref in snd_soc_del_component_unlocked()
+
+---
+ sound/pci/hda/patch_realtek.c          | 47 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/Kconfig               |  1 +
+ sound/soc/codecs/cs42l42.c             | 16 +++---------
+ sound/soc/codecs/cs4341.c              |  7 +++++
+ sound/soc/codecs/nau8824.c             |  4 +--
+ sound/soc/codecs/pcm179x-spi.c         |  1 +
+ sound/soc/codecs/pcm512x.c             |  2 ++
+ sound/soc/codecs/wcd938x.c             |  6 ++---
+ sound/soc/codecs/wm8960.c              | 13 +++++++---
+ sound/soc/fsl/fsl_xcvr.c               | 17 ++++++++----
+ sound/soc/intel/boards/bytcht_es8316.c | 37 +++++++++-----------------
+ sound/soc/soc-core.c                   |  1 +
+ sound/soc/soc-dapm.c                   | 13 ++++++----
+ sound/usb/mixer.c                      |  7 +++++
+ sound/usb/quirks-table.h               | 32 +++++++++++++++++++++++
+ sound/usb/quirks.c                     |  9 +++++++
+ 16 files changed, 157 insertions(+), 56 deletions(-)
 
