@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32213435390
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE35435393
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhJTTPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231455AbhJTTPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:15:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED3D6611B0;
-        Wed, 20 Oct 2021 19:12:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634757175;
-        bh=HUeYEOubLIJowqLZcwwGkc9BEjtPIPaC7kQ8jsRtATU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=rmCjhlUA1OEDWQMapi13jzwRQnrM10QmCEHZvW7PQ9Sfhu15HDHr0xBKHkOFIIzHn
-         cdnxHLtWh79AlLgrey6P1h9GaysjiQSpdKyZgZnBvBsctbn/sNbwcpE1UqYEqhSeOP
-         HOhv52io1y6DiD1hGFdq6et4Ogsv+0hOpzVUcaSkJicg3lPbjzmizPAg4Z1rxr1uIr
-         HoUbTiTLYraopbPbKrb10f+mZgIY5ZIIeCPkGI+rGTQds7WivC/7TczHZbvECrqRlu
-         0iSTEFxMZEKEMGY74ax6qOrSaLsDalom12y9T4wTolRvFNL9AtlvDXv16AbruT9HlG
-         ipLe1wDpHNPTQ==
-Date:   Wed, 20 Oct 2021 14:12:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Li Chen <lchen@ambarella.com>
-Cc:     Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PCI: cadence: add missing return for plat probe
-Message-ID: <20211020191253.GA2631311@bhelgaas>
+        id S231485AbhJTTQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231442AbhJTTQR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 15:16:17 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E70C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:14:02 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id g125so10842272oif.9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aAzwAmQeKzF0WVBVW16AY3oaoGu6FV5pZ/uvPBUYZKQ=;
+        b=hXvFYkrjyUwbl1APnm9h6moADVcfjzSEmIMX/DlBOPqKrTfDlkOgZtalqb6g7GMx12
+         prWKn65e/yS0LTPXz5wKJfZiMaX1NNXV0b+oubQMPISR8zwH+R/XuN2J3sd73twnlAeq
+         +YXpAT4sar3VvcREPvE/EyydYm0ntgoHFkJoDUynq7BDQBWZM2OseNMpKRfB5EEK/rS+
+         RgbGycv43i0dr2mjHS40V+EHb2As/DFjQuE1wJI+zZi7aRszpuiDyBgCj5IL/YNpvAsT
+         SHlg8NSFSmsuH67awKhxUblGJX1L9fr2p0HdLKeRlK88M68gj9b7s9cGyooYVpirUcfy
+         3+hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aAzwAmQeKzF0WVBVW16AY3oaoGu6FV5pZ/uvPBUYZKQ=;
+        b=B7uu0r2hSVE+JgK+2E3jiOGpYbtttnY1P42rdaL3Hp3rBjgBTsSlMJ7DWTtAIk69Eo
+         bKvXzJpxJBe7JnbN9hDNFx9MjEp58ntTAld2RvQ+m99fsRr85NuicJYQq+SC71mFUUQK
+         WN3/hRBBnvqrJRMc5t5wIiTjtoXVY8yvx8gKVIueBEqcsRU4lnHUoqvg0hExj54wORaX
+         Odvti1HVCU3/Ulb3Nvacg7N4tTf/j+8IHxADTVFJ2yc7XFpmzf9zpxG6bXa33eeDwoxR
+         EJQeC7uXEr3abIapel5eFblmOalDHaTIIHM0dAVtrhdJxQp/33xwdXuzs0mLaE42ddxU
+         D/EA==
+X-Gm-Message-State: AOAM531Ny10CPVavDRIKsgkFgaQM6EbEhEFCO5kOHsbLxEzcnWxLeSql
+        WlxUjIke3Xwk8E7xCLQIaJKemozf4iY=
+X-Google-Smtp-Source: ABdhPJxiD6AH9NssPmRs6ApEEP4rQoaRRAValP45Mwx0MbquvJRLGHoqEDiIK6gMXxBQcTTBTlRCKA==
+X-Received: by 2002:aca:3606:: with SMTP id d6mr1030278oia.35.1634757242152;
+        Wed, 20 Oct 2021 12:14:02 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c17sm673768ots.35.2021.10.20.12.14.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 12:14:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+To:     Dinh Nguyen <dinguyen@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20211020190952.2473153-1-linux@roeck-us.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <1f8d0120-d016-0f83-fb93-abe49e40e9b3@roeck-us.net>
+Date:   Wed, 20 Oct 2021 12:14:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH2PR19MB4024632D33EB6FACF54D3CCAA0BE9@CH2PR19MB4024.namprd19.prod.outlook.com>
+In-Reply-To: <20211020190952.2473153-1-linux@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:17:51AM +0000, Li Chen wrote:
-> Otherwise, the code will continue to error handle,
-> which is not excepted.
+On 10/20/21 12:09 PM, Guenter Roeck wrote:
+> nios2:allmodconfig builds fail with
+> 
 
-In subject and commit log:
+... actual error message goes here. Sorry for the noise.
+v2 sent immediately.
 
-  PCI: cadence: Add missing return in cdns_plat_pcie_probe()
+Guenter
 
-  When cdns_plat_pcie_probe() succeeds, return success instead of
-  falling into the error handling code.
-
-We should have a Fixes: tag here to show where this bug was
-introduced.  Look at previous git history to see the format.  Maybe
-also a stable tag so this will get backported to stable kernels.
-
-Interesting that nobody noticed such an obvious bug until now.
-
-> Signed-off-by: Li Chen <lchen@ambarella.com>
-> Signed-off-by: Xuliang Zhang <xlzhanga@ambarella.com>
-
-Since the patch was sent by Li, that signoff should be last, per
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v5.14#n365
-
-Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
-
-Thanks for the patch!
-
+> This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
+> which in turn enables NIOS2_DTB_SOURCE. This causes the build error
+> because the default value for NIOS2_DTB_SOURCE is an empty string.
+> Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
+> 
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 > ---
->  drivers/pci/controller/cadence/pcie-cadence-plat.c | 2 ++
->  1 file changed, 2 insertions(+)
+>   arch/nios2/platform/Kconfig.platform | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-plat.c b/drivers/pci/controller/cadence/pcie-cadence-plat.c
-> index 5fee0f89ab59..a224afadbcc0 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-plat.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-plat.c
-> @@ -127,6 +127,8 @@ static int cdns_plat_pcie_probe(struct platform_device *pdev)
->  			goto err_init;
->  	}
->  
-> +	return 0;
-> +
->   err_init:
->   err_get_sync:
->  	pm_runtime_put_sync(dev);
-> -- 
-> 2.33.0
+> diff --git a/arch/nios2/platform/Kconfig.platform b/arch/nios2/platform/Kconfig.platform
+> index 9e32fb7f3d4c..e849daff6fd1 100644
+> --- a/arch/nios2/platform/Kconfig.platform
+> +++ b/arch/nios2/platform/Kconfig.platform
+> @@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
+>   
+>   config NIOS2_DTB_SOURCE_BOOL
+>   	bool "Compile and link device tree into kernel image"
+> +	depends on !COMPILE_TEST
+>   	help
+>   	  This allows you to specify a dts (device tree source) file
+>   	  which will be compiled and linked into the kernel image.
 > 
-> **********************************************************************
-> This email and attachments contain Ambarella Proprietary and/or Confidential Information and is intended solely for the use of the individual(s) to whom it is addressed. Any unauthorized review, use, disclosure, distribute, copy, or print is prohibited. If you are not an intended recipient, please contact the sender by reply email and destroy all copies of the original message. Thank you.
+
