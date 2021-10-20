@@ -2,202 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46468434405
+	by mail.lfdr.de (Postfix) with ESMTP id 91145434406
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 06:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhJTEDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 00:03:17 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54156 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhJTEDO (ORCPT
+        id S229878AbhJTEEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 00:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhJTEEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 00:03:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634702461; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=P3DYTaaiVLsvcsVBCW0eBADburMciZ8lW+laDg9RToQ=;
- b=ppM8JCbdCB+w7tcbNfISjo8TB+MZ7yctVphwnNuR+KZfBeDy6DVhfLM15U2Bsd434lTWu8iE
- 60lowX/7nvnDemWXHvNJUGA0asBB0IR60pGzNnSXBwJg47rsYY9OVb4gpbeIPjWf3ODBL37O
- qnO/HXjWjuAEUp1LwH86YSbly9g=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 616f94753416c2cb701e6d8a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 04:00:53
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ECEF3C4360C; Wed, 20 Oct 2021 04:00:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1FFAFC4338F;
-        Wed, 20 Oct 2021 04:00:52 +0000 (UTC)
+        Wed, 20 Oct 2021 00:04:34 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503CBC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 21:02:20 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id a8so20618786ilj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 21:02:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4KJFEwUorje8FLlb79ZL0ZwvURLI9xbnmI43eZiaFn0=;
+        b=AZ7JocdZbxuhbdylEeL4UeSgGfjXq4HkaE6umxJREGHLJZL15imK/PSGAD0hpfmYnX
+         ouCiEAD9wpaQ8Dw55x1J4IF+/C1jUpJroX4jIPH9w4bjr3W1JNb84zsVt56TqLI+G54K
+         PPDwA5DMAJKOdAlh1hLouo3g4zGdNjsHQbmBH2ooYTyzH0fdElPY8IOXei2N6B6Tnahh
+         OcCWJjnVy+PANTWMJ98O2xM/wA2IWpnGqydb1DIViG04E6gpWCRZdPJen2SaAAy0WAww
+         Lw/BFVT3QbaK0lAHs4Xngfi4Pt/kUCxC5fktOHDXcRDJG5PlzzbywX7UKCrcGK+71LlL
+         xxEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4KJFEwUorje8FLlb79ZL0ZwvURLI9xbnmI43eZiaFn0=;
+        b=gjUgKynP/7APg7xra8s9cvJ71okWrMu0DrTxZqXFuHXJ2r34DpvJMhkgX5uSw5XqjP
+         OzHVz/pbFkAMq/QVboIjm2p6csDVyGakWgIHDrX8cqMN33CYPD+Xwexo4X8fXHI1a1/P
+         Xn7G3EQHNBu749Bl0aXVz7yqOBycPvuzbebm3wsj5CTOMGAgDje4gSxkYR+Z/nx7qo2S
+         j5S0Z7ux0qYlCmOXcwx+8St3qsjo4IBUXOVv6Onm+cFdWQSW6nAvJJ0lE0xBLN/MvD9s
+         8GVVLR05EnfdWW6E2OIj1WxfCF+CaS1P6IdQ7xWpJoEwDDemNfDtpnoChYbclT6IMfEi
+         rRKg==
+X-Gm-Message-State: AOAM531UwOjMM7TqffqJ2sSBDR32X1iKKZNkLDHfaJunOjPXswE0NGPr
+        cKv96NjHx0eRKYjD/8nYbRTOipSFIghCgXuZx31fIGqV
+X-Google-Smtp-Source: ABdhPJyHffEazrn0ql2HCZIYoNN3NdARvqkidT1azmDEnyRF2diVNxDN+LPSrMBmMprjzDKHcO7F6CYmK6sE6Cgc/Cs=
+X-Received: by 2002:a05:6e02:12e4:: with SMTP id l4mr13804876iln.25.1634702539054;
+ Tue, 19 Oct 2021 21:02:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 20 Oct 2021 12:00:52 +0800
-From:   tjiang@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for variant WCN6855 by
- using different nvm
-In-Reply-To: <YW8csSr/I1IRgAaT@google.com>
-References: <81add00a4a038008e9f734c5f5e5b712@codeaurora.org>
- <YW8csSr/I1IRgAaT@google.com>
-Message-ID: <39ca0c9102265d6e14f3e0da94fec40d@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020>
+ <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
+ <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com> <YW73j66QbG9i0MV+@kernel.org>
+In-Reply-To: <YW73j66QbG9i0MV+@kernel.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 20 Oct 2021 12:01:43 +0800
+Message-ID: <CALOAHbDxQop8v0yXW+NDxO+7O05Ge1hXi6WVSYh-AqQnRE-hOg@mail.gmail.com>
+Subject: Re: [sched.h] 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rostedt <rostedt@goodmis.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        lkp <lkp@lists.01.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        bristot <bristot@redhat.com>,
+        aubrey li <aubrey.li@linux.intel.com>,
+        yu c chen <yu.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Matthias for the comments. please see my comments inline .
+On Wed, Oct 20, 2021 at 12:51 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Thu, Oct 14, 2021 at 08:42:05AM -0400, Mathieu Desnoyers escreveu:
+> > ----- On Oct 14, 2021, at 5:24 AM, Yafang Shao laoar.shao@gmail.com wrote:
+> > > On Thu, Oct 14, 2021 at 3:08 PM kernel test robot <oliver.sang@intel.com> wrote:
+> > > That issue is caused by another hardcode 16 ...
+>
+> > > Seems we should make some change as below,
+>
+> > > diff --git a/tools/perf/tests/evsel-tp-sched.c
+> > > b/tools/perf/tests/evsel-tp-sched.c
+> > > index f9e34bd26cf3..401a737b1d85 100644
+> > > --- a/tools/perf/tests/evsel-tp-sched.c
+> > > +++ b/tools/perf/tests/evsel-tp-sched.c
+> > > @@ -42,7 +42,7 @@ int test__perf_evsel__tp_sched_test(struct test
+> > > *test __maybe_unused, int subtes
+> > >                return -1;
+> > >        }
+>
+> > > -       if (evsel__test_field(evsel, "prev_comm", 16, false))
+> > > +       if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN, false))
+> >
+> > tools/perf/tests/* contains userspace test programs. This means it gets the
+> > TASK_COMM_LEN from the uapi. The fix you propose won't do any good here.
+>
+> That specific test is just checking if the parsing is being done as
+> expected, i.e. we know beforehand that COMMs have 16 bytes, so the test
+> expects that.
+>
 
-BTW: marcel , do you agree with Matthias comments ? if fine , I will 
-align Matthias comments and make the final version.
+Right.
 
-regards.
-tim
-On 2021-10-20 03:29, Matthias Kaehlcke wrote:
-> On Tue, Oct 12, 2021 at 03:55:56PM +0800, tjiang@codeaurora.org wrote:
->> the RF performance of wcn6855 soc chip from different foundries will 
->> be
->> difference, so we should use different nvm to configure them.
->> 
->> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
->> ---
->>  drivers/bluetooth/btusb.c | 56
->> +++++++++++++++++++++++++++++++++++------------
->>  1 file changed, 42 insertions(+), 14 deletions(-)
->> 
->> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
->> index 75c83768c257..f352ff351b61 100644
->> --- a/drivers/bluetooth/btusb.c
->> +++ b/drivers/bluetooth/btusb.c
->> @@ -3190,6 +3190,9 @@ static int btusb_set_bdaddr_wcn6855(struct 
->> hci_dev
->> *hdev,
->>  #define QCA_DFU_TIMEOUT		3000
->>  #define QCA_FLAG_MULTI_NVM      0x80
->> 
->> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
->> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
->> +
->>  struct qca_version {
->>  	__le32	rom_version;
->>  	__le32	patch_version;
->> @@ -3221,6 +3224,7 @@ static const struct qca_device_info
->> qca_devices_table[] = {
->>  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
->>  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
->>  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
->> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
->>  };
->> 
->>  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
->> request,
->> @@ -3375,6 +3379,43 @@ static int btusb_setup_qca_load_rampatch(struct
->> hci_dev *hdev,
->>  	return err;
->>  }
->> 
->> +static void btusb_generate_qca_nvm_name(char *fwname,
->> +					size_t max_size,
->> +					struct qca_version *ver)
-> 
-> => const struct qca_version *ver
-> 
->> +{
->> +	u32 rom_version = le32_to_cpu(ver->rom_version);
->> +	u16 flag = le16_to_cpu(ver->flag);
->> +
->> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
->> +		u16 board_id = le16_to_cpu(ver->board_id);
->> +		u32 ram_version = le32_to_cpu(ver->ram_version);
->> +		const char *variant;
->> +
->> +		switch (ram_version) {
->> +		case WCN6855_2_0_RAM_VERSION_GF:
->> +		case WCN6855_2_1_RAM_VERSION_GF:
->> +			variant = "_gf";
->> +			break;
->> +		default:
->> +			variant = "";
-> 
-> instead of the default branch you could assign a default to 'variant' 
-> at
-> declaration time, but it's fine either way.
+> Now that it can have a different size, then the test should accept the
+> two sizes as possible and pass if it is 16 or 24.
+>
+> Like in this patch:
+>
 
-[Tim] this code style is recommend by marcel.
+Thanks for the suggestion. I will do it as you suggested.
 
-> 
->> +			break;
->> +		}
->> +
->> +		/* if boardid equal 0, use default nvm without suffix */
-> 
-> delete the comment, it just states the obvious
-> 
->> +		if (board_id == 0x0) {
-> 
-> nit: is there really any value in using a hex number here instead of a
-> plain decimal 0?
+> diff --git a/tools/perf/tests/evsel-tp-sched.c b/tools/perf/tests/evsel-tp-sched.c
+> index f9e34bd26cf33536..182328f3f7f70e0e 100644
+> --- a/tools/perf/tests/evsel-tp-sched.c
+> +++ b/tools/perf/tests/evsel-tp-sched.c
+> @@ -5,7 +5,7 @@
+>  #include "tests.h"
+>  #include "debug.h"
+>
+> -static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
+> +static int evsel__test_field_alt(struct evsel *evsel, const char *name, int size, int alternate_size, bool should_be_signed)
+>  {
+>         struct tep_format_field *field = evsel__field(evsel, name);
+>         int is_signed;
+> @@ -23,15 +23,23 @@ static int evsel__test_field(struct evsel *evsel, const char *name, int size, bo
+>                 ret = -1;
+>         }
+>
+> -       if (field->size != size) {
+> -               pr_debug("%s: \"%s\" size (%d) should be %d!\n",
+> +       if (field->size != size && field->size != alternate_size) {
+> +               pr_debug("%s: \"%s\" size (%d) should be %d",
+>                          evsel->name, name, field->size, size);
+> +               if (alternate_size > 0)
+> +                       pr_debug(" or %d", alternate_size);
+> +               pr_debug("!\n");
+>                 ret = -1;
+>         }
+>
+>         return ret;
+>  }
+>
+> +static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
+> +{
+> +       return evsel__test_field_alt(evsel, name, size, -1, should_be_signed);
+> +}
+> +
+>  int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtest __maybe_unused)
+>  {
+>         struct evsel *evsel = evsel__newtp("sched", "sched_switch");
+> @@ -42,7 +50,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+>                 return -1;
+>         }
+>
+> -       if (evsel__test_field(evsel, "prev_comm", 16, false))
+> +       if (evsel__test_field_alt(evsel, "prev_comm", 16, 24, false))
+>                 ret = -1;
+>
+>         if (evsel__test_field(evsel, "prev_pid", 4, true))
+> @@ -54,7 +62,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+>         if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
+>                 ret = -1;
+>
+> -       if (evsel__test_field(evsel, "next_comm", 16, false))
+> +       if (evsel__test_field_alt(evsel, "next_comm", 16, 24, false))
+>                 ret = -1;
+>
+>         if (evsel__test_field(evsel, "next_pid", 4, true))
+> @@ -72,7 +80,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
+>                 return -1;
+>         }
+>
+> -       if (evsel__test_field(evsel, "comm", 16, false))
+> +       if (evsel__test_field_alt(evsel, "comm", 16, 24, false))
+>                 ret = -1;
+>
+>         if (evsel__test_field(evsel, "pid", 4, true))
 
-[Tim] this line is inherit from last change , if you think I should 
-change 0x0 to 0 , I am fine.
 
-> 
->> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
->> +				rom_version, variant);
->> +		} else {
->> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
->> +				rom_version, variant, board_id);
->> +		}
->> +	} else {
->> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
->> +			rom_version);
->> +	}
->> +
->> +}
->> +
->>  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
->>  				    struct qca_version *ver,
->>  				    const struct qca_device_info *info)
->> @@ -3383,20 +3424,7 @@ static int btusb_setup_qca_load_nvm(struct 
->> hci_dev
->> *hdev,
->>  	char fwname[64];
->>  	int err;
->> 
->> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
->> -		/* if boardid equal 0, use default nvm without surfix */
->> -		if (le16_to_cpu(ver->board_id) == 0x0) {
->> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
->> -				 le32_to_cpu(ver->rom_version));
->> -		} else {
->> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
->> -				le32_to_cpu(ver->rom_version),
->> -				le16_to_cpu(ver->board_id));
->> -		}
->> -	} else {
->> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
->> -			 le32_to_cpu(ver->rom_version));
->> -	}
->> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
->> 
->>  	err = request_firmware(&fw, fwname, &hdev->dev);
->>  	if (err) {
+
+-- 
+Thanks
+Yafang
