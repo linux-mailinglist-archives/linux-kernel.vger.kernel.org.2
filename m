@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E2E4351CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB943435197
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhJTRsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:48:30 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:43702 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhJTRrv (ORCPT
+        id S230325AbhJTRqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhJTRqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:47:51 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:50792)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdFeh-00EwSF-Ig; Wed, 20 Oct 2021 11:45:36 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:47894 helo=localhost.localdomain)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdFeg-001NdN-5S; Wed, 20 Oct 2021 11:45:34 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Date:   Wed, 20 Oct 2021 12:44:06 -0500
-Message-Id: <20211020174406.17889-20-ebiederm@xmission.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <87y26nmwkb.fsf@disp2133>
-References: <87y26nmwkb.fsf@disp2133>
+        Wed, 20 Oct 2021 13:46:45 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07960C06161C;
+        Wed, 20 Oct 2021 10:44:30 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id l7so9659849iln.8;
+        Wed, 20 Oct 2021 10:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uSdR0ukf9MlQw9KUu/xtTk/HmpUv660FPwNY/MfGT4o=;
+        b=hdFDeDsMdZPC3CyXZupqyaqcQ5EjCtOPqYNwZnwX2knJhX/sWq6/az7oIIDrEBrV/O
+         59Apb8EHMcg9E/9F0lGwZ/5JcqbintrbhXJNJZzxO4+aLiwZNPRBj8epO9RpNDQmuiKy
+         3myuj3JIHUcKvURcFQZKWyR3Dq+wOYMDODjXia9WpAQyrOH2wY3ZGzKR8k+S+zWTbIWl
+         aGjfbpYz0doWKKoR0WMYqHcOIrs7dVhC236M+9c/4oeVXrLA7pK1wLIPzqet/7TY8ZlS
+         qm1BY90M4jkJjwmVGXR+LqHDk+K6fGQKeOHp8At0UW6fYQ/a1cC9M0n1v/TM6UpsiSk/
+         dvdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uSdR0ukf9MlQw9KUu/xtTk/HmpUv660FPwNY/MfGT4o=;
+        b=TG2wCXjTnDONNnqnKc+Z3CxP+Bt7b89VtFe/jpVbEj6IMwj6F1uuZqVLv2bCmvdgLd
+         4kgOpQjEQk4Cov4S8RER+gcOoARm/SNZRO6g/BTyh7TFeLdqQrbMjB9WUeVrUdfJChWQ
+         TRfxov7fgapK+B5Iq00RVEGXwpAUUHZzVvhs4ZHHM9vm3aBM2FvE1M/lIzP+XcyqtPf3
+         f1f0ksLJtb2Prz0yrqFBaSUYWKuIIshExUiQgI9YWrbju1n3RpIL3wZc7a0Fklx8Dg+g
+         kWikVE3CffW3KPlUPVVK+a2XP5rIa0Ez+qEv0Ww0QwQWUEzygJj3ODKGEJozrSqu/rdX
+         l1GA==
+X-Gm-Message-State: AOAM530yOBnvN9Wk0SnoLcnaeadE8sxUoNckofNkFSaUgExFx78xfSJr
+        0tJHSAHre3dL+p6/nG48PlMhpwBk4b1HDOScCAdrRZTmCr1YCQ==
+X-Google-Smtp-Source: ABdhPJzLXc+w8dZc7PkAAF2DvdK8GG3MKotQo258y6c5dZJtGp1ELkFyLeJXvfxvmuELWtwQ/2tPWq2LzglvyuhuLw8=
+X-Received: by 2002:a05:6e02:1688:: with SMTP id f8mr362093ila.72.1634751870235;
+ Wed, 20 Oct 2021 10:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-XM-SPF: eid=1mdFeg-001NdN-5S;;;mid=<20211020174406.17889-20-ebiederm@xmission.com>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19D89HivmTg1v5eRhQNtIU+qPtwQAWtO8o=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5028]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;linux-kernel@vger.kernel.org
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 458 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 9 (1.9%), b_tie_ro: 7 (1.6%), parse: 0.92 (0.2%),
-        extract_message_metadata: 11 (2.5%), get_uri_detail_list: 1.29 (0.3%),
-        tests_pri_-1000: 13 (2.9%), tests_pri_-950: 1.32 (0.3%),
-        tests_pri_-900: 1.01 (0.2%), tests_pri_-90: 160 (35.0%), check_bayes:
-        159 (34.7%), b_tokenize: 7 (1.5%), b_tok_get_all: 4.8 (1.1%),
-        b_comp_prob: 1.83 (0.4%), b_tok_touch_all: 142 (30.9%), b_finish: 0.99
-        (0.2%), tests_pri_0: 245 (53.4%), check_dkim_signature: 0.67 (0.1%),
-        check_dkim_adsp: 3.1 (0.7%), poll_dns_idle: 0.39 (0.1%), tests_pri_10:
-        3.5 (0.8%), tests_pri_500: 10 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 20/20] exit/r8188eu: Replace the macro thread_exit with a simple return 0
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20211020173554.38122-1-keescook@chromium.org> <20211020173554.38122-2-keescook@chromium.org>
+In-Reply-To: <20211020173554.38122-2-keescook@chromium.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 20 Oct 2021 19:44:19 +0200
+Message-ID: <CANiq72kCQa7_3JkUqO2=mdj+P2zcjPYJUai0oip5DN7Aaq_ySQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gcc-plugins: Explicitly document purpose and
+ deprecation schedule
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        llvm@lists.linux.dev, Dan Li <ashimida@linux.alibaba.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macro thread_exit is called is at the end of functions started
-with kthread_run.  The code in kthread_run has arranged things so a
-kernel thread can just return and do_exit will be called.
+On Wed, Oct 20, 2021 at 7:35 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> +Purpose
+> +=======
 
-So just have rtw_cmd_thread and mp_xmit_packet_thread return instead
-of calling complete_and_exit.
+Sounds good to me.
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- drivers/staging/r8188eu/core/rtw_cmd.c          | 2 +-
- drivers/staging/r8188eu/core/rtw_mp.c           | 2 +-
- drivers/staging/r8188eu/include/osdep_service.h | 2 --
- 3 files changed, 2 insertions(+), 4 deletions(-)
+>  config GCC_PLUGIN_SANCOV
+>         bool
+> +       # Plugin can be removed once the kernel only supports GCC 6.1.0+
 
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index ce73ac7cf973..d37c9463eecc 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -347,7 +347,7 @@ int rtw_cmd_thread(void *context)
- 
- 	up(&pcmdpriv->terminate_cmdthread_sema);
- 
--	thread_exit();
-+	return 0;
- }
- 
- u8 rtw_setstandby_cmd(struct adapter *padapter, uint action)
-diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
-index dabdd0406f30..3945c4efe45a 100644
---- a/drivers/staging/r8188eu/core/rtw_mp.c
-+++ b/drivers/staging/r8188eu/core/rtw_mp.c
-@@ -580,7 +580,7 @@ static int mp_xmit_packet_thread(void *context)
- 	pmptx->pallocated_buf = NULL;
- 	pmptx->stop = 1;
- 
--	thread_exit();
-+	return 0;
- }
- 
- void fill_txdesc_for_mp(struct adapter *padapter, struct tx_desc *ptxdesc)
-diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
-index 029aa4e92c9b..afbffb551f9b 100644
---- a/drivers/staging/r8188eu/include/osdep_service.h
-+++ b/drivers/staging/r8188eu/include/osdep_service.h
-@@ -49,8 +49,6 @@ struct	__queue	{
- 	spinlock_t lock;
- };
- 
--#define thread_exit() complete_and_exit(NULL, 0)
--
- static inline struct list_head *get_list_head(struct __queue *queue)
- {
- 	return (&(queue->queue));
--- 
-2.20.1
+Since we are just giving the major in the other cases below, I would
+just say GCC 6+ here (the numbering scheme changed in GCC 5 already).
 
+Thanks for adding the versions, by the way -- this is useful long-term
+and not always done for other things...
+
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+
+Cheers,
+Miguel
