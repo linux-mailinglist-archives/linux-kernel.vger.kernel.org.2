@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8144353F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F55B4353FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhJTTqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:46:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20018 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231360AbhJTTqN (ORCPT
+        id S231629AbhJTTq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230155AbhJTTq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:46:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634759038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lk2DJIwlIwjubwL7omTN8Cbj68q/qeG7nk2u/Kt/9zw=;
-        b=BhevXjC8o61Q/wLiNEfnwNtkopTrfRzZqJPw0bPNdKigB5jbRcrhGvLZCnMrhTAOCXh0Si
-        gT7Rl/04Bj35Wa23tvIY9ujkjMJ0nuoHwcR3vx48H3Tn7pvKAQugZZFvyyO3XZXK8i71rP
-        /wj4JaB0gym8DeNfMg+vGewPfO94okk=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-CRSVTddEP_-8f29XnjIKrA-1; Wed, 20 Oct 2021 15:43:56 -0400
-X-MC-Unique: CRSVTddEP_-8f29XnjIKrA-1
-Received: by mail-oo1-f71.google.com with SMTP id u1-20020a4a6141000000b002b6d25c0103so3755549ooe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:43:56 -0700 (PDT)
+        Wed, 20 Oct 2021 15:46:27 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4505AC06161C;
+        Wed, 20 Oct 2021 12:44:13 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so7476011otb.1;
+        Wed, 20 Oct 2021 12:44:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=BnN9MIlNnNEHe3vFSBOy65YT0/zTtejLPjp21ON54XM=;
+        b=f9nQVf2giN3wJxDfbtUTUJkqnEgsHMIAhBRDKRgfJmWICvBJUySo5eN6lnLB1C2bOv
+         EbKO8rhhnyUcWl6uPXB1xydamDaueXTZvJieRoImRhKYleEoNuO2i4hBfgubF6inUk88
+         e+WopyjhmntiepwIvBu/NI8RqXLYv7gNRN6+nVhmrun35wEBIzQCX1GR9d7g41ZoSZDa
+         u4QZqMKaf9hcjRpDou18NtIyrfp5ZlLGSeWvFppe/nUPlYTAMZhWQmqxtHrNJu16VdVI
+         L3i2YP7hw+kDpo9zthUb7MSdenqBciY52p4F9VkV6IfHxIcElZl02oZQw3EfiYGVvwVF
+         R71Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lk2DJIwlIwjubwL7omTN8Cbj68q/qeG7nk2u/Kt/9zw=;
-        b=wIq3MJLK3QPYI2IWBj1FuH4iiiBSr7Flu0+pHrFPWIR8iZG4mpkkluR73IZNqBHqKE
-         i8Z/RIT5KYbRCTcah1MQIbVz801Xs0DvyzYEwfo8ya0/iUjf2m0IHYhTvesMQ2aJDmUR
-         PfRmclYJJ2g6zV7OKLCBuXtYoEROBjf7dF+BZPtwn4d0BVQYJCw0JAbIuoD62Ky56oPb
-         c/NRKC5BiQWFwByodf/fXJkmiajC7ByYd2OJgNIufAsKztac0h81KFLLALhP0QMscrtX
-         scy1MQ7hzu7EzaDVopm/t9TuOtb6IMgysJEFtdaxWmoEIGrEWmugSbKF1d7XJF2hZrOd
-         qp7w==
-X-Gm-Message-State: AOAM531/x4QZ0CbJyNWcTW5/gt8CPCnSyWikWj9q/r8CjPA1EB0irWOs
-        sNWPgH7AB7ZTbsdY67D/XCp15bLlR+Xp0eBwA3MyY/WCnZz14YSJkgnXR0zYerFB+yIE7d+p9zr
-        4JPAzH7eDfULBNmaBZuYxCnep
-X-Received: by 2002:a05:6808:1302:: with SMTP id y2mr1174541oiv.24.1634759035920;
-        Wed, 20 Oct 2021 12:43:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIrpYN9cTB9TC6WsVyKmSGG23X2bm1qKF+DFN41pM/W3tUAe3kxPe7gtECWW+vXwL4nZJN6Q==
-X-Received: by 2002:a05:6808:1302:: with SMTP id y2mr1174533oiv.24.1634759035762;
-        Wed, 20 Oct 2021 12:43:55 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id u21sm598415oiv.25.2021.10.20.12.43.54
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=BnN9MIlNnNEHe3vFSBOy65YT0/zTtejLPjp21ON54XM=;
+        b=P6XqZ0fq2v1zSyThJwiTCQ0JAm2MfDMEGtAyVz5pmKuukD3weHZd0F7wq8e6eicYYL
+         blx2W/3fSPybgOb224NriEDGOraMdiBjcGrUVLeB/ZPaj4CvYRX21l3XFaVXqHudSqnt
+         CIlS4/zfTIt5j35xAmCe7RxaRRNIKjv5BYOiRw5wUecnXMrkgKnJvFRlv8r7VbFfrwi6
+         P1GeXTq1vZ/BNe5hpt2z6q8YN/99YXLPphEG7h1IbSt4uBR28UY5xmsF6p09g0Z+Oh0k
+         wtVbBx17HpvdHN5uTr4lHrdqCK+P7AfhYUTd/8nyRhmGrCHn3GrXSQhxYIKdBUkhk+kt
+         GxPw==
+X-Gm-Message-State: AOAM5327/+4aZ2e4jlbQcT04JCYZknCFbBoF4h4MkyUd6vvgASPEMrmU
+        7DazPUhiN/EQLJCcGRLA5M0=
+X-Google-Smtp-Source: ABdhPJxL4kBEQ8gUV5nBs+kclyHcheCDaeGr/7iHXTpx9JD+NbtcFCTZWeb2l9Q5LpNao1cSG01V2A==
+X-Received: by 2002:a9d:63ca:: with SMTP id e10mr1015031otl.175.1634759052687;
+        Wed, 20 Oct 2021 12:44:12 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w69sm642977otb.16.2021.10.20.12.44.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:43:55 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 12:43:52 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH v2 08/14] x86/retpoline: Create a retpoline thunk array
-Message-ID: <20211020194352.7id6nkvtpenmt3p2@treble>
-References: <20211020104442.021802560@infradead.org>
- <20211020105842.981215247@infradead.org>
- <20211020155750.3u74bkcp66leeyed@treble>
- <f33b9c4e-08c1-f88d-4873-82050a944010@citrix.com>
- <20211020170956.g67xcsvvdkuqg3qa@treble>
- <20211020192229.GP174703@worktop.programming.kicks-ass.net>
+        Wed, 20 Oct 2021 12:44:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 20 Oct 2021 12:44:08 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Mantas =?utf-8?Q?Mikul=C4=97nas?= <grawity@gmail.com>,
+        "Javier S . Pedro" <debbugs@javispedro.com>
+Subject: Re: [PATCH] Revert "watchdog: iTCO_wdt: Account for rebooting on
+ second timeout"
+Message-ID: <20211020194408.GA2882870@roeck-us.net>
+References: <20211008003302.1461733-1-linux@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211020192229.GP174703@worktop.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211008003302.1461733-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 09:22:29PM +0200, Peter Zijlstra wrote:
-> On Wed, Oct 20, 2021 at 10:09:56AM -0700, Josh Poimboeuf wrote:
-> > On Wed, Oct 20, 2021 at 05:46:39PM +0100, Andrew Cooper wrote:
-> > > On 20/10/2021 16:57, Josh Poimboeuf wrote:
-> > > > On Wed, Oct 20, 2021 at 12:44:50PM +0200, Peter Zijlstra wrote:
-> > > >> Stick all the retpolines in a single symbol and have the individual
-> > > >> thunks as inner labels, this should guarantee thunk order and layout.
-> > > > How so?
-> > > >
-> > > > Just wondering what the purpose of the array is.  It doesn't seem to be
-> > > > referenced anywhere.
-> > > 
-> > > The array property is what makes:
-> > > 
-> > > > +	reg = (target - &__x86_indirect_thunk_rax) /
-> > > > +	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
-> > > 
-> > > safe in the next path.
-> > 
-> > The thunks were already 32-byte aligned.  I don't see how slapping a few
-> > unused symbols around them does anything.
-> 
-> Previously there were 16 (or rather 15 without rsp) separate symbols and
-> a toolchain might reasonably expect it could displace them however it
-> liked, with disregard for the relative position.
-> 
-> However, now they're part of a larger symbol. Any change to their
-> relative position would disrupt this larger _array symbol and thus not
-> be sound.
-> 
-> This is I think the same reasoning used for data symbols. On their own
-> there is no guarantee about their relative position wrt to one aonther,
-> but we're still able to do arrays because an array as a whole is a
-> single larger symbol.
+Wim,
 
-Makes sense, I think (and good fodder for the commit log).
+On Thu, Oct 07, 2021 at 05:33:02PM -0700, Guenter Roeck wrote:
+> This reverts commit cb011044e34c ("watchdog: iTCO_wdt: Account for
+> rebooting on second timeout") and commit aec42642d91f ("watchdog: iTCO_wdt:
+> Fix detection of SMI-off case") since those patches cause a regression
+> on certain boards (https://bugzilla.kernel.org/show_bug.cgi?id=213809).
+> 
+> While this revert may result in some boards to only reset after twice
+> the configured timeout value, that is still better than a watchdog reset
+> after half the configured value.
+> 
+> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
+> Fixes: aec42642d91f ("watchdog: iTCO_wdt: Fix detection of SMI-off case")
+> Cc: Jan Kiszka <jan.kiszka@siemens.com>
+> Cc: Mantas Mikulėnas <grawity@gmail.com>
+> Reported-by: Javier S. Pedro <debbugs@javispedro.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
--- 
-Josh
+Any chance you can send a pull request with this patch prior to the v5.15
+release ?
 
+Thanks,
+Guenter
