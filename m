@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8EF043499D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C6F4349B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhJTLDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59606 "EHLO
+        id S230376AbhJTLGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhJTLDS (ORCPT
+        with ESMTP id S230179AbhJTLGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:03:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242C8C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:01:04 -0700 (PDT)
+        Wed, 20 Oct 2021 07:06:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29822C061769
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:04:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=zcL1XtwLrjmXuW5LKPdyWIq96pq2FPUachkJV48zldc=; b=jv4hrgxyRu0jPXqxp+5/sXqie9
-        HIbQ6r3aQodBe86wLHfVc7qGDOu7K6mrQAjOFBitUKfbHPwSI0XgrlGYBO7y8JTBQd2q2Z7s8LJzm
-        ck/z4ugU/u0kX+KkkHXqk5MBcr96Yd0TTAka5W/51JzPX4PJ3v+pvkbR/7LUcZZqCiTNqPD7adyja
-        YWu1LdjOHjJsL5EgiYj5tVmS4IuWiJ+Ie+gfrVb5rdM9rTud/n7+/gLjyg7HPEEiam4eH2oRZbDig
-        H26idSLwQ44yO/+QN+cQV9XSdnGX8RwbB5eLgPMql+CepsbCcq28BqSvJrE7amHIzz9CvTua6wAR6
-        kuPbVTgw==;
+        bh=V2IhW0fCXO4QAAFUee64t/bDnP3tRxcZsX9DqJPYBwg=; b=WGC7HAzTWrjMFOrmpPPFY2w085
+        h9sUkEn6jdY7J2VJ32BWMYjbAY1vFnxq6FMC2AXRGp2/YPTY9QvIve/C8QL4uUH2elbwtgarVOdvZ
+        5FvVwCyEDKSmTZ2rd9jo4c6atPC/QWYwMqUmxWJtYBnk0XssiO6P0OoW/FGEHY3eIf8IIme2CbgBH
+        UFffPAbE4+qGnep3I2+MPtPqsXqlkANFfWrVsciTs7EGZi1E1LdPCTlta+/qAZpO2DVyvG6fgK6C1
+        UstwkO183yraOJKT87Uqn/lsaVdsmId8xkY71/quACbdPMzV1Q/ejCZzMx1HbjYBOHGVHMrvHvmHH
+        Ye6DvpcA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1md9L1-00Aw1B-S9; Wed, 20 Oct 2021 11:00:51 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1md9L1-00CR10-7d; Wed, 20 Oct 2021 11:01:12 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 28322300792;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 275003006C2;
         Wed, 20 Oct 2021 13:00:50 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 07E88201BB3CE; Wed, 20 Oct 2021 13:00:50 +0200 (CEST)
-Message-ID: <20211020105842.981215247@infradead.org>
+        id 101C1201BB3CF; Wed, 20 Oct 2021 13:00:50 +0200 (CEST)
+Message-ID: <20211020105843.042525541@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 20 Oct 2021 12:44:50 +0200
+Date:   Wed, 20 Oct 2021 12:44:51 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         alexei.starovoitov@gmail.com, ndesaulniers@google.com
-Subject: [PATCH v2 08/14] x86/retpoline: Create a retpoline thunk array
+Subject: [PATCH v2 09/14] x86/alternative: Implement .retpoline_sites support
 References: <20211020104442.021802560@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,41 +51,269 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stick all the retpolines in a single symbol and have the individual
-thunks as inner labels, this should guarantee thunk order and layout.
+Rewrite retpoline thunk call sites to be indirect calls for
+spectre_v2=off. This ensures spectre_v2=off is as near to a
+RETPOLINE=n build as possible.
+
+This is the replacement for objtool writing alternative entries to
+ensure the same and achieves feature-parity with the previous
+approach.
+
+One noteworthy feature is that it relies on the thunks to be in
+machine order to compute the register index.
+
+Specifically, this does not yet address the Jcc __x86_indirect_thunk_*
+calls generated by clang, a future patch will add this.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/lib/retpoline.S |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/um/kernel/um_arch.c           |    4 +
+ arch/x86/include/asm/alternative.h |    1 
+ arch/x86/kernel/alternative.c      |  142 +++++++++++++++++++++++++++++++++++--
+ arch/x86/kernel/module.c           |    9 ++
+ 4 files changed, 151 insertions(+), 5 deletions(-)
 
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -30,7 +30,7 @@
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -421,6 +421,10 @@ void __init check_bugs(void)
+ 	os_check_bugs();
+ }
  
- 	.align 32
- 
--SYM_FUNC_START(__x86_indirect_thunk_\reg)
-+SYM_INNER_LABEL(__x86_indirect_thunk_\reg, SYM_L_GLOBAL)
- 
- 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), \
- 		      __stringify(RETPOLINE \reg), X86_FEATURE_RETPOLINE, \
-@@ -55,10 +55,16 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
- #define __EXPORT_THUNK(sym)	_ASM_NOKPROBE(sym); EXPORT_SYMBOL(sym)
- #define EXPORT_THUNK(reg)	__EXPORT_THUNK(__x86_indirect_thunk_ ## reg)
- 
-+	.align 32
-+SYM_CODE_START(__x86_indirect_thunk_array)
++void apply_retpolines(s32 *start, s32 *end)
++{
++}
 +
- #define GEN(reg) THUNK reg
- #include <asm/GEN-for-each-reg.h>
- #undef GEN
+ void apply_alternatives(struct alt_instr *start, struct alt_instr *end)
+ {
+ }
+--- a/arch/x86/include/asm/alternative.h
++++ b/arch/x86/include/asm/alternative.h
+@@ -75,6 +75,7 @@ extern int alternatives_patched;
  
-+	.align 32
-+SYM_CODE_END(__x86_indirect_thunk_array)
+ extern void alternative_instructions(void);
+ extern void apply_alternatives(struct alt_instr *start, struct alt_instr *end);
++extern void apply_retpolines(s32 *start, s32 *end);
+ 
+ struct module;
+ 
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -29,6 +29,7 @@
+ #include <asm/io.h>
+ #include <asm/fixmap.h>
+ #include <asm/paravirt.h>
++#include <asm/asm-prototypes.h>
+ 
+ int __read_mostly alternatives_patched;
+ 
+@@ -113,6 +114,7 @@ static void __init_or_module add_nops(vo
+ 	}
+ }
+ 
++extern s32 __retpoline_sites[], __retpoline_sites_end[];
+ extern struct alt_instr __alt_instructions[], __alt_instructions_end[];
+ extern s32 __smp_locks[], __smp_locks_end[];
+ void text_poke_early(void *addr, const void *opcode, size_t len);
+@@ -221,7 +223,7 @@ static __always_inline int optimize_nops
+  * "noinline" to cause control flow change and thus invalidate I$ and
+  * cause refetch after modification.
+  */
+-static void __init_or_module noinline optimize_nops(struct alt_instr *a, u8 *instr)
++static void __init_or_module noinline optimize_nops(u8 *instr, size_t len)
+ {
+ 	struct insn insn;
+ 	int i = 0;
+@@ -239,11 +241,11 @@ static void __init_or_module noinline op
+ 		 * optimized.
+ 		 */
+ 		if (insn.length == 1 && insn.opcode.bytes[0] == 0x90)
+-			i += optimize_nops_range(instr, a->instrlen, i);
++			i += optimize_nops_range(instr, len, i);
+ 		else
+ 			i += insn.length;
+ 
+-		if (i >= a->instrlen)
++		if (i >= len)
+ 			return;
+ 	}
+ }
+@@ -331,10 +333,136 @@ void __init_or_module noinline apply_alt
+ 		text_poke_early(instr, insn_buff, insn_buff_sz);
+ 
+ next:
+-		optimize_nops(a, instr);
++		optimize_nops(instr, a->instrlen);
+ 	}
+ }
+ 
++#if defined(CONFIG_RETPOLINE) && defined(CONFIG_STACK_VALIDATION)
 +
- #define GEN(reg) EXPORT_THUNK(reg)
- #include <asm/GEN-for-each-reg.h>
- #undef GEN
++/*
++ * CALL/JMP *%\reg
++ */
++static int emit_indirect(int op, int reg, u8 *bytes)
++{
++	int i = 0;
++	u8 modrm;
++
++	switch (op) {
++	case CALL_INSN_OPCODE:
++		modrm = 0x10; /* Reg = 2; CALL r/m */
++		break;
++
++	case JMP32_INSN_OPCODE:
++		modrm = 0x20; /* Reg = 4; JMP r/m */
++		break;
++
++	default:
++		WARN_ON_ONCE(1);
++		return -1;
++	}
++
++	if (reg >= 8) {
++		bytes[i++] = 0x41; /* REX.B prefix */
++		reg -= 8;
++	}
++
++	modrm |= 0xc0; /* Mod = 3 */
++	modrm += reg;
++
++	bytes[i++] = 0xff; /* opcode */
++	bytes[i++] = modrm;
++
++	return i;
++}
++
++/*
++ * Rewrite the compiler generated retpoline thunk calls.
++ *
++ * For spectre_v2=off (!X86_FEATURE_RETPOLINE), rewrite them into immediate
++ * indirect instructions, avoiding the extra indirection.
++ *
++ * For example, convert:
++ *
++ *   CALL __x86_indirect_thunk_\reg
++ *
++ * into:
++ *
++ *   CALL *%\reg
++ *
++ */
++static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
++{
++	void (*target)(void);
++	int reg, i = 0;
++
++	target = addr + insn->length + insn->immediate.value;
++	reg = (target - &__x86_indirect_thunk_rax) /
++	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
++
++	if (WARN_ON_ONCE(reg & ~0xf))
++		return -1;
++
++	/* If anyone ever does: CALL/JMP *%rsp, we're in deep trouble. */
++	BUG_ON(reg == 4);
++
++	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
++		return -1;
++
++	i = emit_indirect(insn->opcode.bytes[0], reg, bytes);
++	if (i < 0)
++		return i;
++
++	for (; i < insn->length;)
++		bytes[i++] = BYTES_NOP1;
++
++	return i;
++}
++
++/*
++ * Generated by 'objtool --retpoline'.
++ */
++void __init_or_module noinline apply_retpolines(s32 *start, s32 *end)
++{
++	s32 *s;
++
++	for (s = start; s < end; s++) {
++		void *addr = (void *)s + *s;
++		struct insn insn;
++		int len, ret;
++		u8 bytes[16];
++		u8 op1, op2;
++
++		ret = insn_decode_kernel(&insn, addr);
++		if (WARN_ON_ONCE(ret < 0))
++			continue;
++
++		op1 = insn.opcode.bytes[0];
++		op2 = insn.opcode.bytes[1];
++
++		switch (op1) {
++		case CALL_INSN_OPCODE:
++		case JMP32_INSN_OPCODE:
++			break;
++
++		default:
++			WARN_ON_ONCE(1);
++			continue;
++		}
++
++		len = patch_retpoline(addr, &insn, bytes);
++		if (len == insn.length) {
++			optimize_nops(bytes, len);
++			text_poke_early(addr, bytes, len);
++		}
++	}
++}
++
++#else /* !RETPOLINES || !CONFIG_STACK_VALIDATION */
++
++void __init_or_module noinline apply_retpolines(s32 *start, s32 *end) { }
++
++#endif /* CONFIG_RETPOLINE && CONFIG_STACK_VALIDATION */
++
+ #ifdef CONFIG_SMP
+ static void alternatives_smp_lock(const s32 *start, const s32 *end,
+ 				  u8 *text, u8 *text_end)
+@@ -643,6 +771,12 @@ void __init alternative_instructions(voi
+ 	apply_paravirt(__parainstructions, __parainstructions_end);
+ 
+ 	/*
++	 * Rewrite the retpolines, must be done before alternatives since
++	 * those can rewrite the retpoline thunks.
++	 */
++	apply_retpolines(__retpoline_sites, __retpoline_sites_end);
++
++	/*
+ 	 * Then patch alternatives, such that those paravirt calls that are in
+ 	 * alternatives can be overwritten by their immediate fragments.
+ 	 */
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -251,7 +251,8 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 		    struct module *me)
+ {
+ 	const Elf_Shdr *s, *text = NULL, *alt = NULL, *locks = NULL,
+-		*para = NULL, *orc = NULL, *orc_ip = NULL;
++		*para = NULL, *orc = NULL, *orc_ip = NULL,
++		*retpolines = NULL;
+ 	char *secstrings = (void *)hdr + sechdrs[hdr->e_shstrndx].sh_offset;
+ 
+ 	for (s = sechdrs; s < sechdrs + hdr->e_shnum; s++) {
+@@ -267,8 +268,14 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 			orc = s;
+ 		if (!strcmp(".orc_unwind_ip", secstrings + s->sh_name))
+ 			orc_ip = s;
++		if (!strcmp(".retpoline_sites", secstrings + s->sh_name))
++			retpolines = s;
+ 	}
+ 
++	if (retpolines) {
++		void *rseg = (void *)retpolines->sh_addr;
++		apply_retpolines(rseg, rseg + retpolines->sh_size);
++	}
+ 	if (alt) {
+ 		/* patch .altinstructions */
+ 		void *aseg = (void *)alt->sh_addr;
 
 
