@@ -2,60 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31B5434D4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD1E434D4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhJTOTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:19:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230017AbhJTOTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:19:16 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D6C2610E6;
-        Wed, 20 Oct 2021 14:17:01 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 10:16:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, <mingo@redhat.com>,
-        <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] kselftests: ftrace: limit the executing time by reading
- from cached trace
-Message-ID: <20211020101659.42360147@gandalf.local.home>
-In-Reply-To: <20211020115522.75f3e25247c1d30726e9b130@kernel.org>
-References: <20211018132616.2234853-1-lizhijian@cn.fujitsu.com>
-        <20211018221636.47157e52@gandalf.local.home>
-        <20211020112027.b01762f2adcfac99e71dcf99@kernel.org>
-        <20211019223454.5da09d74@gandalf.local.home>
-        <20211020115522.75f3e25247c1d30726e9b130@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230103AbhJTOTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhJTOTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 10:19:48 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EA8C06161C;
+        Wed, 20 Oct 2021 07:17:33 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id w17so4398987plg.9;
+        Wed, 20 Oct 2021 07:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=7f2ijMKOoH8cL3tH1omUbgK+gxfuqZ2CPeATZrytvh8=;
+        b=VmZQ+Zo0ykqcmrnMFHV3bHFF+8Mjw5voQGDOq9G2Ox4mlScVz/Fu/OgGsCtSQZo8Zj
+         FZ46ZOfst7Vk0+v2foeyVgig7C2rVfT9eX0K92VJ08z7B0oWOhXGjEp6lxXbyNFGYr/E
+         te9JETjlG557H7w+Q1LmU8mcIV9LWWDGx/7B98wZLxXtIy2IKbq+edHi+THofA6yLh2e
+         CUmmeOQ1ZLufyb86F4F5JNMWyrzI/Yt3ms6K//MpDY5whGRIYoZGHcuUctw9oALAWV+T
+         a8R/mx/aeflVIqdh0M2ftDZvUBdcLLNSpvSiYIl0OGXwTONKKlhnLJddVO2ieENfxmx/
+         mmxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7f2ijMKOoH8cL3tH1omUbgK+gxfuqZ2CPeATZrytvh8=;
+        b=SH6fuhNByRoYnyNA2HCJ5v6dlolQegdkKdUz8Zp/7A1Pn1YU/wa1UNV/JxLCJh/Mjw
+         jOSBNwnLTKFAEPkLVuOAVuAq27QISZsRX21guYhPOxrs4QW7PQ0JL4FX5xDbYbXy8K45
+         RNU3d7BWb9F0GeeW/CDiSGCewmIPnVZSyp7oh710IkwFocwAEkGICOcY5MRJH5H2fpT/
+         dGRlxCZyvfApUS/AGWMrOx7C8qlxF5+OuLnoWyswzBBNT91seA+zJTbdg6/VP6UPhxeK
+         bWLuO0hXXa4T4M56OeJ4kOrBTlxUdWOH7RL4zcYNrVOjCwf5rfCRpGeExIj9z/GWZBI2
+         jJsQ==
+X-Gm-Message-State: AOAM532I1r4Zln/vV6kg0SsudxUVlXPntTTdaHTdGhIsK5/OJ/r8jkz/
+        uxBX2zQbC9lX/4LXvfUGhw==
+X-Google-Smtp-Source: ABdhPJy6pLxwnh13ARTWMNzYC8YNeciAOG85kAi4U++07V7N1FJC3l9ThByWTtaA7zxN/ga8BIb54g==
+X-Received: by 2002:a17:90b:a18:: with SMTP id gg24mr7687677pjb.18.1634739453390;
+        Wed, 20 Oct 2021 07:17:33 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id p31sm2771081pfw.201.2021.10.20.07.17.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Oct 2021 07:17:32 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] scsi: megarad: Fix the return value of the probe function
+Date:   Wed, 20 Oct 2021 14:17:22 +0000
+Message-Id: <1634739442-26844-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 11:55:22 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+During the process of driver probing, the probe function should return < 0
+for failure, otherwise, the kernel will treat value > 0 as success.
 
-> --- a/tools/testing/selftests/ftrace/test.d/functions
-> +++ b/tools/testing/selftests/ftrace/test.d/functions
-> @@ -124,6 +124,12 @@ initialize_ftrace() { # Reset ftrace to initial-state
->      [ -f uprobe_events ] && echo > uprobe_events
->      [ -f synthetic_events ] && echo > synthetic_events
->      [ -f snapshot ] && echo 0 > snapshot
-> +
-> +# Stop tracing while reading the trace file by default, to prevent
-> +# the test results while checking it and to avoid taking a long time
-> +# to check the result.
-> +    [ -f options/pause-on-trace ] && echo 1 > options/pause-on-trace
-> +
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ drivers/scsi/megaraid/megaraid_sas_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Is there a way we can save the previous setting and put it back on reset?
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index e4298bf4a482..b94f9557b2fa 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -7468,7 +7468,7 @@ static int megasas_probe_one(struct pci_dev *pdev,
+ 	case PCI_DEVICE_ID_LSI_AERO_10E4:
+ 	case PCI_DEVICE_ID_LSI_AERO_10E7:
+ 		dev_err(&pdev->dev, "Adapter is in non secure mode\n");
+-		return 1;
++		return -ENODEV;
+ 	case PCI_DEVICE_ID_LSI_AERO_10E1:
+ 	case PCI_DEVICE_ID_LSI_AERO_10E5:
+ 		dev_info(&pdev->dev, "Adapter is in configurable secure mode\n");
+-- 
+2.17.6
 
--- Steve
