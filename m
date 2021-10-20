@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A79434AC3
+	by mail.lfdr.de (Postfix) with ESMTP id D4247434AC5
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhJTMHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
+        id S230261AbhJTMHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbhJTMHD (ORCPT
+        with ESMTP id S230335AbhJTMHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:07:03 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE95C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:04:48 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id t21so7932276plr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:04:48 -0700 (PDT)
+        Wed, 20 Oct 2021 08:07:11 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEF9C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:04:57 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id i76so2754232pfe.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BCKWEoi8FeeBRDvl5EymVEm69MjyykXFzH9HAs/kyO4=;
-        b=cuiutl2QAAxfwD56hLItqR8kvhCEQ7NLO3pkxhfHS9+G/fMLr1/t8rKVJEqmHJiNpb
-         CZ21EE6qwrk20h7kpm27tNC/c4jVdseWv2S9gIsftsOTHCsJLoVZJc0mJkI8+oObIRwY
-         pMNdJZGPHl1m5HRFt9dwroghBaTQXLkVX66aE=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pU7j7Xk9+/byWORMoTjuh+PtfIleRNtFNR9pisRaOIs=;
+        b=V++5qWbqy5428E4+L8MN0z76u0WFToo1W/QPmRiz3Y2mC128yoEwYEbB+FWVhgenuB
+         n+q6iWsUMxoBq63k7TZlDaAFsLpNQMhhMZKNtAvJHVTqVAJ9VUojVmNE8vYiYx8R+ufz
+         cVJPMZ5WhVbo7SnHuHoClSMPP6oZyFSv/o/vg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BCKWEoi8FeeBRDvl5EymVEm69MjyykXFzH9HAs/kyO4=;
-        b=U1S1/SNhENlmdWe8/sQKlOSyaRZmUYIIoOJ7u9yYu0je84RtUbWTKu/e7ASGS+6FbB
-         CJ2XfYnwzuNl9ooW1ni4GtWw9d07PQ3YQkFrbB6VdrYbcd8gu9wxlz7b38Fl0xzhPzdW
-         j2Cu40VHC0maybpwBreFyyt78z/ckpHrN5vcTS7Hg+Lw/0cTCIgKyzQAbkFu5DKCEkt5
-         ZjCvW6/t11ED8gv+NSIwi3NmHGCBE6Xx0YkD8vusEt4lYbw8ISKgy1GXiyeYcDgJOeJu
-         KYKSfK1/N3vkLZ9wV4a8oY0hSksw0VwIYCXQpdJZa/Zlhcr6AUf+HOPJJbVsXLiQX2bm
-         W0vg==
-X-Gm-Message-State: AOAM530a5FH/ohVqYXu2VopHX/+z3mYvAE8l2g7kAtfW4avYPJzD9Ytr
-        Rat4vGyl5R7fHQNQH0PYEME23SUjJRIdvA==
-X-Google-Smtp-Source: ABdhPJzr2LjWMqwdO+RhWupttHiFUwdUh98FJ2jVhkMKr665jMBIQfRoeEZuFCiB3w1/PLoDsOA18Q==
-X-Received: by 2002:a17:90a:c206:: with SMTP id e6mr6827339pjt.193.1634731487726;
-        Wed, 20 Oct 2021 05:04:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pU7j7Xk9+/byWORMoTjuh+PtfIleRNtFNR9pisRaOIs=;
+        b=16nbKpevv1hXRq36dbvTkqC3KFAgzCHpsLPlWFRuhQuGOVaefU6AbFjb83lB7wavHW
+         bdSpDJYDuuOS+kicj0cytTFpmJUdGa92J//7x9ZcY5yBTMu3PALANymE0OxEqqEzuGpv
+         Fk80nLRKjpvVbOtSYgbes6YqREzQ119W4kh5W5ouXo9HTpQy/7fSLDwqQGXRQVAjx1he
+         iXz+kQjDkNuKjS+T8nvm2unok+Qi/h74Ey5oJQlNFO3KkckIFMX1sMD/HHf9idDQOJIi
+         1juY8ozjcIOixQ1XokGEjW9ZxBChOkTyig/7zaGTajAozIqQ5moWmrhBFJ6yN+TQMuIl
+         ud+g==
+X-Gm-Message-State: AOAM530po9IvoIt0CcQNigH6IuStXYHXJOuFGbdQAM0qzu/l8J5t3Ncp
+        WHpE4R1w589pwoa/bDnKXCSbOx63HluMLQ==
+X-Google-Smtp-Source: ABdhPJxaf4wQew/0fxehgf4we7eoDadSQ+ziLebkvEYdeY0bf6NB9PnUwEUIMDvlNw3FihCdjsAaDA==
+X-Received: by 2002:a63:710d:: with SMTP id m13mr33036191pgc.467.1634731496586;
+        Wed, 20 Oct 2021 05:04:56 -0700 (PDT)
 Received: from localhost ([2401:fa00:8f:203:e516:d575:e6f:a526])
-        by smtp.gmail.com with UTF8SMTPSA id fh3sm5721784pjb.8.2021.10.20.05.04.40
+        by smtp.gmail.com with UTF8SMTPSA id i12sm2108246pgd.56.2021.10.20.05.04.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 05:04:47 -0700 (PDT)
+        Wed, 20 Oct 2021 05:04:56 -0700 (PDT)
 From:   Hikaru Nishida <hikalium@chromium.org>
 To:     linux-kernel@vger.kernel.org, dme@dme.org, tglx@linutronix.de,
         mlevitsk@redhat.com, linux@roeck-us.net, pbonzini@redhat.com,
@@ -52,94 +52,70 @@ To:     linux-kernel@vger.kernel.org, dme@dme.org, tglx@linutronix.de,
 Cc:     suleiman@google.com, senozhatsky@google.com,
         kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
         Hikaru Nishida <hikalium@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        Ingo Molnar <mingo@kernel.org>,
         John Stultz <john.stultz@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, x86@kernel.org
-Subject: [RFC PATCH v3 0/5] x86/kvm: Virtual suspend time injection support
-Date:   Wed, 20 Oct 2021 21:04:25 +0900
-Message-Id: <20211020120431.776494-1-hikalium@chromium.org>
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [RFC PATCH v3 1/5] timekeeping: Expose tk->offs_boot via ktime_get_offs_boot_ns
+Date:   Wed, 20 Oct 2021 21:04:26 +0900
+Message-Id: <20211020210348.RFC.v3.1.Ic2211981441d0504581923b8770809f0750a4d0d@changeid>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+In-Reply-To: <20211020120431.776494-1-hikalium@chromium.org>
+References: <20211020120431.776494-1-hikalium@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Expose tk->offs_boot to be used in kvm virtual suspend injection.
 
-Hi,
-
-This patch series adds virtual suspend time injection support to KVM.
-It is an updated version of the following series:
-v2:
-https://lore.kernel.org/kvm/20210806100710.2425336-1-hikalium@chromium.org/
-v1:
-https://lore.kernel.org/kvm/20210426090644.2218834-1-hikalium@chromium.org/
-
-Please take a look again.
-
-To kvm/arm64 folks:
-I'm going to implement this mechanism to ARM64 as well but not
-sure which function should be used to make an IRQ (like kvm_apic_set_irq
-in x86) and if it is okay to use kvm_gfn_to_hva_cache /
-kvm_write_guest_cached for sharing the suspend duration.
-Please let me know if there is other suitable way or any suggestions.
-
-Thanks,
-
-Hikaru Nishida
-
+Signed-off-by: Hikaru Nishida <hikalium@chromium.org>
+---
 
 Changes in v3:
-- Used PM notifier instead of modifying timekeeping_resume()
-  - This avoids holding kvm_lock under interrupt disabled context.
-- Used KVM_REQ_* to make a request for vcpus.
-- Reused HYPERVISOR_CALLBACK_VECTOR IRQ instead of adding a new one.
-- Extracted arch-independent parts.
-- Fixed other reviewed points.
+- Added this patch.
 
-Hikaru Nishida (5):
-  timekeeping: Expose tk->offs_boot via ktime_get_offs_boot_ns
-  kvm/x86: Include asm/pvclock.h in asm/kvmclock.h
-  kvm/x86: virtual suspend time injection: Add common definitions
-  kvm/x86: virtual suspend time injection: Implement host side
-  kvm/x86: virtual suspend time injection: Implement guest side
+ include/linux/timekeeping.h |  2 ++
+ kernel/time/timekeeping.c   | 10 ++++++++++
+ 2 files changed, 12 insertions(+)
 
- Documentation/virt/kvm/cpuid.rst     |   3 +
- Documentation/virt/kvm/msr.rst       |  30 ++++++++
- arch/x86/Kconfig                     |  13 ++++
- arch/x86/include/asm/idtentry.h      |   2 +-
- arch/x86/include/asm/kvm_host.h      |   2 +
- arch/x86/include/asm/kvmclock.h      |  11 +++
- arch/x86/include/uapi/asm/kvm_para.h |   6 ++
- arch/x86/kernel/kvm.c                |  14 +++-
- arch/x86/kernel/kvmclock.c           |  26 +++++++
- arch/x86/kvm/Kconfig                 |  13 ++++
- arch/x86/kvm/cpuid.c                 |   4 +
- arch/x86/kvm/x86.c                   | 109 +++++++++++++++++++++++++++
- arch/x86/mm/fault.c                  |   2 +-
- include/linux/kvm_host.h             |  48 ++++++++++++
- include/linux/timekeeper_internal.h  |   5 ++
- include/linux/timekeeping.h          |   6 ++
- kernel/time/timekeeping.c            |  56 ++++++++++++++
- virt/kvm/kvm_main.c                  |  88 +++++++++++++++++++++
- 18 files changed, 432 insertions(+), 6 deletions(-)
-
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index 78a98bdff76d..f7be69c81dab 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -179,6 +179,8 @@ extern u64 ktime_get_raw_fast_ns(void);
+ extern u64 ktime_get_boot_fast_ns(void);
+ extern u64 ktime_get_real_fast_ns(void);
+ 
++extern u64 ktime_get_offs_boot_ns(void);
++
+ /*
+  * timespec64/time64_t interfaces utilizing the ktime based ones
+  * for API completeness, these could be implemented more efficiently
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index b348749a9fc6..e77580d9f8c1 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -565,6 +565,16 @@ u64 ktime_get_real_fast_ns(void)
+ }
+ EXPORT_SYMBOL_GPL(ktime_get_real_fast_ns);
+ 
++/**
++ * ktime_get_offs_boot_ns - boottime offset to monotonic.
++ * Return: boottime offset in nanoseconds.
++ */
++u64 ktime_get_offs_boot_ns(void)
++{
++	return ktime_to_ns(tk_core.timekeeper.offs_boot);
++}
++EXPORT_SYMBOL_GPL(ktime_get_offs_boot_ns);
++
+ /**
+  * ktime_get_fast_timestamps: - NMI safe timestamps
+  * @snapshot:	Pointer to timestamp storage
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
