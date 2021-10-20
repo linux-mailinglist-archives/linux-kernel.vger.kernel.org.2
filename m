@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382DB434385
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0396434389
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhJTCaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:30:23 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:52231 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229653AbhJTCaW (ORCPT
+        id S229820AbhJTCe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:34:28 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:35068 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhJTCe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:30:22 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Ut-jNXD_1634696886;
-Received: from 30.225.212.40(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Ut-jNXD_1634696886)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Oct 2021 10:28:07 +0800
-Message-ID: <90a632cc-352f-1067-718a-a6b515bf87d7@linux.alibaba.com>
-Date:   Wed, 20 Oct 2021 10:28:06 +0800
+        Tue, 19 Oct 2021 22:34:26 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 19K2VSRx8000319, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 19K2VSRx8000319
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 20 Oct 2021 10:31:28 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 20 Oct 2021 10:31:28 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 20 Oct 2021 10:31:27 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
+ RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
+ 15.01.2106.013; Wed, 20 Oct 2021 10:31:27 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Hans de Goede <hdegoede@redhat.com>,
+        "linux-realtek-soc@lists.infradead.org" 
+        <linux-realtek-soc@lists.infradead.org>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Pkshih <pkshih@realtek.com>, nic_swsd <nic_swsd@realtek.com>,
+        =?utf-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
+        Kailang <kailang@realtek.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "info@ayaneo.com" <info@ayaneo.com>
+Subject: RE: BMI160 accelerometer on AyaNeo tablet
+Thread-Topic: BMI160 accelerometer on AyaNeo tablet
+Thread-Index: AQHXxNAUgmd8rDSWIkW9G49XjG5V2KvbKGbw
+Date:   Wed, 20 Oct 2021 02:31:27 +0000
+Message-ID: <cd43fddcf9b74f6eaa4dd5a8cdd71bf2@realtek.com>
+References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
+ <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
+ <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
+ <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
+ <YW3ErLKGtmyhSFd3@smile.fi.intel.com>
+ <CACAwPwYrxxFstQgYHhPOhMwUz_5RprSuoPNHL7m9ft1i-N2icQ@mail.gmail.com>
+ <CAHp75VdCF_Fhso-uS_4JL7a9X90_nQ5JcyCwpeLM3b-YKVqjYw@mail.gmail.com>
+In-Reply-To: <CAHp75VdCF_Fhso-uS_4JL7a9X90_nQ5JcyCwpeLM3b-YKVqjYw@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.177.203]
+x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?utf-8?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzEwLzE5IOS4i+WNiCAxMDo1MjowMA==?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH v3 0/2] PCI MCFG consolidation and APEI resource filterin
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20211019151258.GA2336650@bhelgaas>
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-In-Reply-To: <20211019151258.GA2336650@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 10/20/2021 02:21:59
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 166840 [Oct 19 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;www.realtek.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 10/20/2021 02:24:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 19/10/2021 23:12, Bjorn Helgaas wrote:
-> On Tue, Oct 19, 2021 at 12:49:16PM +0800, Xuesong Chen wrote:
->> Hello All,
->>
->> The idea of this patch set is very strainforward, it's somehow a refactor
->> of the original codes to share some ones that they should do. Based on that,
->> we can resolve the MCFG address access issue in APEI module on x86 in a 
->> command way instead of the current arch-dependent one, while this issue also
->> does happen on ARM64 platform.
->>
->> The logic of the series is very clear(IMO it's even time-wasting to explain that):
-> 
-> If you want people to look at and care about your changes, it is never
-> a waste of time to explain them.
-
-En, very good point and professional, I'll keep in mind ;-)
-> 
->> Patch #1: Escalating the 'pci_mmcfg_list' and 'pci_mmcfg_region' to the
->> pci.[c,h] which will shared by all the arches. A common sense, in some degree.
->>
->> Patch #2: Since the 'pci_mmcfg_list' now can be shared across all arches,
->> the arch-specific fix method can be replaced by the new solution naturally.
->>
->> Now the v3 patch has been finalized, can we move forward to the next step? -
->> either give the concerns/objections or pick it up.
-> 
-> It's helpful to your reviewers if you include a note about changes
-> between v2 and v3, as you did in your v2 0/2 cover letter.
-> 
-> It's also helpful if you thread the series with patches 1 and 2 as
-> responses to the cover letter.  That makes it easy to download the
-> patches using b4.  Here's a little more background:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/5.Posting.rst?id=v5.14#n320
-
-OK, I will rewrite it in the next version...
-> 
->> Xuesong Chen (2):
->>   PCI: MCFG: Consolidate the separate PCI MCFG table entry list
->>   ACPI: APEI: Filter the PCI MCFG address with an arch-agnostic method
->>
->>  arch/x86/include/asm/pci_x86.h | 17 +---------------
->>  arch/x86/pci/mmconfig-shared.c | 30 ----------------------------
->>  drivers/acpi/apei/apei-base.c  | 45 ++++++++++++++++++++++++++++--------------
->>  drivers/acpi/pci_mcfg.c        | 34 ++++++++++++-------------------
->>  drivers/pci/pci.c              |  2 ++
->>  include/linux/pci.h            | 17 ++++++++++++++++
->>  6 files changed, 63 insertions(+), 82 deletions(-)
->>
->> -- 
->> 1.8.3.1
->>
+QW5keSBTaGV2Y2hlbmtvIDxhbmR5LnNoZXZjaGVua29AZ21haWwuY29tPg0KPiBTZW50OiBUdWVz
+ZGF5LCBPY3RvYmVyIDE5LCAyMDIxIDU6NTkgUE0NClsuLi5dDQo+ID4gPiBSZWFsdGVrIHByb2Jh
+Ymx5IHNob3VsZCBtYWtlIHRoaXMgSUQgbWFya2VkIHNvbWVob3cgYnJva2VuIGFuZCBub3QgdXNl
+DQo+ID4gPiBpbiB0aGVpciBwcm9kdWN0cyBpbiBjYXNlIHRoZSBhbnN3ZXIgdG8gdGhlIGZpcnN0
+IG9mIHRoZSBhYm92ZSBxdWVzdGlvbg0KPiA+ID4gaXMgInllcyIuIChPZiBjb3Vyc2UgaW4gY2Fz
+ZSB0aGUgSUQgd2lsbCBiZSB1c2VkIGZvciBzb2xlbHkgUENJIGVudW1lcmF0ZWQNCj4gPiA+IHBy
+b2R1Y3QgdGhlcmUgd2lsbCBiZSBubyBjb25mbGljdCwgSSBqdXN0IHByb3Bvc2UgdG8gYmUgb24g
+dGhlIHNhZmVzdCBzaWRlLA0KPiA+ID4gYnV0IHJlbWFyayBzaG91bGQgYmUgbWFkZSBzb21ld2hl
+cmUpLg0KPiANCj4gQW55IGNvbW1lbnRzIGZyb20gUmVhbHRlaywgcGxlYXNlPw0KDQpFeGN1c2Ug
+bWUuIEkgZG9uJ3Qga25vdyB0aGlzIGRldmljZSwgc28gSSBkb24ndCBrbm93IHdobyBJIGNvdWxk
+IGZvcndhcmQuDQpNYXliZSB5b3UgY291bGQgdHJ5IG91ciBjb250cmFjdCB3aW5kb3cgZnJvbSBv
+dXIgd2ViIHNpdGUuDQpodHRwczovL3d3dy5yZWFsdGVrLmNvbS9lbi9jdS0xLWVuL2N1LTEtdGFp
+d2FuLWVuDQoNCkJlc3QgUmVnYXJkcywNCkhheWVzDQoNCg==
