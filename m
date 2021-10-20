@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CBD434B2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A020C434B34
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhJTMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230077AbhJTMcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:32:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CF9161355;
-        Wed, 20 Oct 2021 12:30:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634733039;
-        bh=LiE/hWTQ5V9XEhRPLyQB9qsB24jCZaZMytc4IqnfsIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VJhmUgvdf+nNfJtaQ+tmvYAjNLeMkWcdVOxSKh5qHfBm/3xFLe3Uy8u9rFnO6OGFU
-         3Kldf8yXiJejx01qVBeV3oBR6bWGG+1vvMlpnXkVFRWod9iX2+D+oY6d0TqGTD5XT4
-         zFgkBshnc8Rn2Xaq37sfD77eMRxzl8cf3ye92eZs=
-Date:   Wed, 20 Oct 2021 14:30:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "chenxiaosong (A)" <chenxiaosong2@huawei.com>
-Cc:     viro@zeniv.linux.org.uk, stable@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dhowells@redhat.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        zhangxiaoxu5@huawei.com
-Subject: Re: [PATCH 4.19,v2] VFS: Fix fuseblk memory leak caused by mount
- concurrency
-Message-ID: <YXAL7K88XGWXckWe@kroah.com>
-References: <20211013095101.641329-1-chenxiaosong2@huawei.com>
- <YWawy0J9JfStEku0@kroah.com>
- <429d87b0-3a53-052a-a304-0afa8d51900d@huawei.com>
- <860c36c4-3668-1388-66d1-a07d463c2ad9@huawei.com>
+        id S230234AbhJTMeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:34:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43364 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhJTMe3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:34:29 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 481CA21A99;
+        Wed, 20 Oct 2021 12:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634733133; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZB3eWPjo6/a4VBVAOSQrGwoLYIJMO/c6ggvnkEuPMEE=;
+        b=spRlPQAEp/8bnE8P7CsHTxc1rDOtQ3QmN+dMrz3xMru+kfmsboV2CFrIoaOvGrMyWQ5m3H
+        jbYrf4hioT0C7/n85xtAHrpI5Qz9JqaghRkcOVbSgHkA0mtTN6NTOI2hJIzeobEPL6ONwW
+        0CC+gf+eiwmC+6QfO3zkt3YuUxxCftA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634733133;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZB3eWPjo6/a4VBVAOSQrGwoLYIJMO/c6ggvnkEuPMEE=;
+        b=YUdAwqz+w0qkhHsgIqud1T/kS5BMZxUm5UgZ+L6MPYrd17RuApY9NPRLExRlKUX5dnGhYY
+        S/yWt3w8I8TL5fDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D911B13AC7;
+        Wed, 20 Oct 2021 12:32:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eawbM0wMcGE2XwAAMHmgww
+        (envelope-from <jroedel@suse.de>); Wed, 20 Oct 2021 12:32:12 +0000
+Date:   Wed, 20 Oct 2021 14:32:11 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, x86@kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/5] KVM: SVM: Add support to handle AP reset MSR
+ protocol
+Message-ID: <YXAMSyr3uByu4byY@suse.de>
+References: <20210929155330.5597-1-joro@8bytes.org>
+ <20210929155330.5597-4-joro@8bytes.org>
+ <YWdX1WXE3AOPFC6d@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <860c36c4-3668-1388-66d1-a07d463c2ad9@huawei.com>
+In-Reply-To: <YWdX1WXE3AOPFC6d@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 06:49:06PM +0800, chenxiaosong (A) wrote:
-> 在 2021/10/13 18:38, chenxiaosong (A) 写道:
-> > 在 2021/10/13 18:11, Greg KH 写道:
-> > > On Wed, Oct 13, 2021 at 05:51:01PM +0800, ChenXiaoSong wrote:
-> > > > If two processes mount same superblock, memory leak occurs:
-> > > > 
-> > > > CPU0               |  CPU1
-> > > > do_new_mount       |  do_new_mount
-> > > >    fs_set_subtype   |    fs_set_subtype
-> > > >      kstrdup        |
-> > > >                     |      kstrdup
-> > > >      memrory leak   |
-> > > > 
-> > > > Fix this by adding a write lock while calling fs_set_subtype.
-> > > > 
-> > > > Linus's tree already have refactoring patchset [1], one of them
-> > > > can fix this bug:
-> > > >          c30da2e981a7 (fuse: convert to use the new mount API)
-> > > > 
-> > > > Since we did not merge the refactoring patchset in this branch,
-> > > > I create this patch.
-> > > > 
-> > > > [1] https://patchwork.kernel.org/project/linux-fsdevel/patch/20190903113640.7984-3-mszeredi@redhat.com/
-> > > > 
-> > > > 
-> > > > Fixes: 79c0b2df79eb (add filesystem subtype support)
-> > > > Cc: David Howells <dhowells@redhat.com>
-> > > > Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-> > > > ---
-> > > > v1: Can not mount sshfs ([PATCH linux-4.19.y] VFS: Fix fuseblk
-> > > > memory leak caused by mount concurrency)
-> > > > v2: Use write lock while writing superblock
-> > > > 
-> > > >   fs/namespace.c | 9 ++++++---
-> > > >   1 file changed, 6 insertions(+), 3 deletions(-)
-> > > 
-> > > As you are referring to a fuse-only patch above, why are you trying to
-> > > resolve this issue in the core namespace code instead?
-> > > 
-> > > How does fuse have anything to do with this?
-> > > 
-> > > confused,
-> > > 
-> > > greg k-h
-> > > .
-> > > 
-> > 
-> > Now, only `fuse_fs_type` and `fuseblk_fs_type` has `FS_HAS_SUBTYPE` flag
-> > in kernel code, but maybe there is a filesystem module(`struct
-> > file_system_type` has `FS_HAS_SUBTYPE` flag). And only mounting fuseblk
-> > filesystem(e.g. ntfs) will occur memory leak now.
-> 
-> How about updating the subject as: VFS: Fix memory leak caused by mounting
-> fs with subtype concurrency?
+On Wed, Oct 13, 2021 at 10:04:05PM +0000, Sean Christopherson wrote:
+> Rather than put more stuff into x86 that really belongs to SEV, what about moving
+> kvm_emulate_ap_reset_hold() into sev.c and instead exporting __kvm_vcpu_halt()?
 
-That would be a better idea, but still, this is not obvious that this is
-the correct fix at all...
+Did that in a separate patch and fixed things up. Also replaced the kvm_
+with and sev_ prefix and the function now takes an vcpu_svm parameter.
+
+New version coming soon.
+
+Thanks,
+
+	Joerg
