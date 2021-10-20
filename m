@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12277434C2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DBA434C2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhJTNfu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 09:35:50 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:51323 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhJTNft (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:35:49 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MODeL-1mJhzw3XrN-00OUOY; Wed, 20 Oct 2021 15:33:33 +0200
-Received: by mail-wm1-f46.google.com with SMTP id g79-20020a1c2052000000b00323023159e1so1790315wmg.2;
-        Wed, 20 Oct 2021 06:33:33 -0700 (PDT)
-X-Gm-Message-State: AOAM5301XPz0H3iXI2bGvd+m9ERXfiawu/rDO5yrf9dHivxD5xN+wjUf
-        madVRj8iQ3ek+13uCHw7/5BzISHKEf9U/b33vAY=
-X-Google-Smtp-Source: ABdhPJxY/Ua7ZwYe4Z5WF5LhCFLVLILKFKBq3mgQsPNvFmW5mHTQv/qL3luMioBXbYeLCvcOb7xVR7smc7gDFtx2g/E=
-X-Received: by 2002:adf:b1c4:: with SMTP id r4mr51896376wra.428.1634736813387;
- Wed, 20 Oct 2021 06:33:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211019141228.1271617-1-pan@semihalf.com> <20211019141228.1271617-2-pan@semihalf.com>
-In-Reply-To: <20211019141228.1271617-2-pan@semihalf.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 20 Oct 2021 15:33:17 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0g82DoivaADueeOcKOjNVDiutZLAAWAROzgvuYt83Z3w@mail.gmail.com>
-Message-ID: <CAK8P3a0g82DoivaADueeOcKOjNVDiutZLAAWAROzgvuYt83Z3w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] socfpga: dts: move arria10 aliases to socfpga_arria10.dtsi
-To:     =?UTF-8?Q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
-Cc:     Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        SoC Team <soc@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        id S230119AbhJTNgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:36:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhJTNgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:36:22 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99234611C6;
+        Wed, 20 Oct 2021 13:34:07 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mdBjJ-000RVA-Hw; Wed, 20 Oct 2021 14:34:05 +0100
+Date:   Wed, 20 Oct 2021 14:34:05 +0100
+Message-ID: <875ytrddma.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        upstream@semihalf.com, Marcin Wojtas <mw@semihalf.com>,
-        Jacek Majkowski <jam@semihalf.com>,
-        Konrad Adamczyk <ka@semihalf.com>,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Alexandru Stan <amstan@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:9TIBTlutona7zBFgeBOsTKFN5IW8STXY0jlFzDV4LvCQCZhpaFX
- 0GsPasrHE+pnFjq9Uf2Ep6TOI5flGmlesLn5Yph37398bCnAfssBxHgR3dBa5Hh6lgceYfL
- mcDnHrMgkPV3eufRvafcfJjxv/oR3SEGqy7lgGBs/dPVBU7hGqjOJ0amr51P9Vs0h95FM6X
- rKWKpRR05lxVOUMDHIPvw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YZdY5xPBj0c=:+SR+Wko6nNnxVLfq9AFIUH
- hUeS5jwnsiNlPPN6zSjcOUXz/Z3vog2mDdxzqHsvSZPZZnR8ecA7gpmwToh4gCQMRbcaYsQIQ
- 8sqX8Gu3Xwi7TH4yDBCRcoUKZq00tU2JtqFdBpNt64CaZaJAQGOU44yi6g5RD++Yi2MhpJEpK
- J4x0svNo6SzVfFqI6vZpt2gSV0ZyIM9hmwWVRu6umPl6pHOESv8v6Wk8naTcJh+JsqA+x4/Te
- aEo/XkVIWCsBPzeUb2xG/CGx0c49RSAO/MT2Ikk9KZ1eWbFvWDnMO8AkasVMKgb5gMldWCha8
- nchFKDgvC7c4uhh9vOmdtsqa+BvJ0/9c2llMMkx9KtKwBGABvXEvXfbS+Jo2AI7shZQ0v6BLx
- +W5jDrsmOUMfp5tkjAU4mA5LmeOmMJHzZ0dzBn9g1Yhd7KvUbQx6JGfIlmP8139xtxS8AfpMR
- UZcH5vmDh6rpwW0Velre/g0bhdGs6DHUY8HqtWncyNeVoXPQR6h8KRZGQEQ6zbCsIHHSLoFsi
- Y75n+FTz9XKLH83yByUvdDnUuxZ5S3K3JIIzD3kkbBPWApUG/46mMe4BTXvHjZXaIeHvmESV5
- q5G7Z1GnXHDnwrg0aMuOW1l3uJJ8oDFiJrUzVaKmsdJ0Zv+DHIM6Rg+1cIjHaZswSYu11iOqM
- VgIzhQuJ2xMiLmK3YkfeJ586J/UEGJLpNshwymjU145ajFHPsebtGq7BaNK/+eWAU5hWqNeDN
- W3yS4U/fq6LD5xGRSFGg9/nZD6vcE503n1AaEAfrW3Zzo55sBHuQmUdpvK+2Misa3+sWzldoZ
- Schd+D/pgyLXiWUg3quK2qUpCPCh7f9u+/qoGu7Lxi+tZDiCE0=
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
+In-Reply-To: <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
+References: <20211016032200.2869998-1-guoren@kernel.org>
+        <20211016032200.2869998-2-guoren@kernel.org>
+        <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org>
+        <f850af365f2ac77af79ec59f92e6434a@kernel.org>
+        <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
+        <8735oxuxlq.wl-maz@kernel.org>
+        <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: guoren@kernel.org, samuel@sholland.org, anup@brainfault.org, atish.patra@wdc.com, tglx@linutronix.de, palmer@dabbelt.com, heiko@sntech.de, robh@kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, guoren@linux.alibaba.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 4:12 PM Paweł Anikiel <pan@semihalf.com> wrote:
->
-> socfpga_arria10_socdk.dtsi declares aliases which will most likely
-> be used by other arria10 boards in the exact same way. move these
-> aliases to the parent file.
->
-> Signed-off-by: Paweł Anikiel <pan@semihalf.com>
+On Tue, 19 Oct 2021 14:27:02 +0100,
+Guo Ren <guoren@kernel.org> wrote:
+> 
+> On Tue, Oct 19, 2021 at 6:18 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Tue, 19 Oct 2021 10:33:49 +0100,
+> > Guo Ren <guoren@kernel.org> wrote:
+> >
+> > > > If you have an 'automask' behavior and yet the HW doesn't record this
+> > > > in a separate bit, then you need to track this by yourself in the
+> > > > irq_eoi() callback instead. I guess that you would skip the write to
+> > > > the CLAIM register in this case, though I have no idea whether this
+> > > > breaks
+> > > > the HW interrupt state or not.
+> > > The problem is when enable bit is 0 for that irq_number,
+> > > "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
+> > > the hw state machine. Then this irq would enter in ack state and no
+> > > continues irqs could come in.
+> >
+> > Really? This means that you cannot mask an interrupt while it is being
+> > handled? How great...
+> If the completion ID does not match an interrupt source that is
+> currently enabled for the target, the completion is silently ignored.
+> So, C9xx completion depends on enable-bit.
 
-No, please move them into the .dts files instead for consistency.
+Is that what the PLIC spec says? Or what your implementation does? I
+can understand that one implementation would be broken, but if the
+PLIC architecture itself is broken, that's far more concerning.
 
-Each board may use a different subset of them, or have them
-numbered differently, so keep it out of the .dtsi file.
+	M.
 
-     Arnd
+-- 
+Without deviation from the norm, progress is not possible.
