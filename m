@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A9F4349B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6134349DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhJTLHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:07:06 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:48380 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230029AbhJTLHE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:07:04 -0400
-X-UUID: ce69122baba64e8dbf72e8e6e9dd1c21-20211020
-X-UUID: ce69122baba64e8dbf72e8e6e9dd1c21-20211020
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 719726207; Wed, 20 Oct 2021 19:04:47 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Wed, 20 Oct 2021 19:04:46 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 20 Oct 2021 19:04:44 +0800
-Message-ID: <b20bd855eb2ec7aab66dd0026fbda8e6625b30ef.camel@mediatek.com>
-Subject: Re: [PATCH] scsi: ufs: mediatek: avoid sched_clock() misuse
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "Avri Altman" <avri.altman@wdc.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Bean Huo" <beanhuo@micron.com>,
-        Peter Wang <peter.wang@mediatek.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        <linux-scsi@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 20 Oct 2021 19:04:44 +0800
-In-Reply-To: <20211018132022.2281589-1-arnd@kernel.org>
-References: <20211018132022.2281589-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S230157AbhJTLOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:14:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229900AbhJTLOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 07:14:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B0076139F;
+        Wed, 20 Oct 2021 11:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634727889;
+        bh=sMNqIiJjcwrM/kpzKPJkufx9T9IAXcb0wsTgtzG1xm8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SF+pbDEb5LUWi1FIobUSa9latykvOw8D/Rjn5udnGrIKSbxOOJ6lkudyC6Bu2sada
+         wlV4IFiYddC9gBwhc/xSciIzwTot31Ckbj88C6ADvDGZFRKGmiflGOg3KiAFoKu42j
+         gaP4otG5FQmsvCqpGKqRiHe0au5EIbyQ1s0XLZ2zSgiqOfHZ80ieAVf6Xm/AvYI9Lp
+         3+fqA5/6igarlf8LaEL3XLOMcQyBgxK6Jxry4gJWk3pI2olcQGfYOo7NFtvnDgoHNf
+         ydSvMHhfbuRHNun3yFpBhxr/cyx+e31rlFChBvuFYS0ll78rSUQEkhLpL0vwyITHYt
+         XoIINZvWBbaOg==
+Date:   Wed, 20 Oct 2021 12:04:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v3 21/23] regulator: dt-bindings: update
+ samsung,s2mpa01.yaml reference
+Message-ID: <YW/3z1HBU3+WwsZu@sirena.org.uk>
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+ <9acc235dc4af794d18e1267371944a3955e1fb21.1634630486.git.mchehab+huawei@kernel.org>
+ <YW60a8z0JNDnTLV/@sirena.org.uk>
+ <20211020073013.6d144c0d@sal.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ZAEkjZ1m1ca4kKva"
+Content-Disposition: inline
+In-Reply-To: <20211020073013.6d144c0d@sal.lan>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
 
-On Mon, 2021-10-18 at 15:20 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> sched_clock() is not meant to be used in portable driver code,
-> and assuming a particular clock frequency is not how this is
-> meant to be used. It also causes a build failure because of
-> a missing header inclusion:
-> 
-> drivers/scsi/ufs/ufs-mediatek.c:321:12: error: implicit declaration
-> of function 'sched_clock' [-Werror,-Wimplicit-function-declaration]
->         timeout = sched_clock() + retry_ms * 1000000UL;
-> 
-> A better interface to use here ktime_get_mono_fast_ns(), which
-> works mostly like ktime_get() but is safe to use inside of a
-> suspend callback.
-> 
-> Fixes: 9561f58442e4 ("scsi: ufs: mediatek: Support vops pre suspend
-> to disable auto-hibern8")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/scsi/ufs/ufs-mediatek.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-
-> mediatek.c
-> index d1696db70ce8..a47241ed0a57 100644
-> --- a/drivers/scsi/ufs/ufs-mediatek.c
-> +++ b/drivers/scsi/ufs/ufs-mediatek.c
-> @@ -318,15 +318,15 @@ static void ufs_mtk_wait_idle_state(struct
-> ufs_hba *hba,
->  	u32 val, sm;
->  	bool wait_idle;
->  
-> -	timeout = sched_clock() + retry_ms * 1000000UL;
-> -
-> +	/* cannot use plain ktime_get() in suspend */
-> +	timeout = ktime_get_mono_fast_ns() + retry_ms * 1000000UL;
+--ZAEkjZ1m1ca4kKva
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks for this fix.
+On Wed, Oct 20, 2021 at 07:30:13AM +0100, Mauro Carvalho Chehab wrote:
+> Mark Brown <broonie@kernel.org> escreveu:
 
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+> > For a case like this where there's no
+> > dependencies or real relationship between the patches it's probably
+> > better to just not thread everything and send the patches separately to
+> > everyone, the threading is just adding noise and confusion.
 
->  
->  	/* wait a specific time after check base */
->  	udelay(10);
->  	wait_idle = false;
->  
->  	do {
-> -		time_checked = sched_clock();
-> +		time_checked = ktime_get_mono_fast_ns();
->  		ufs_mtk_dbg_sel(hba);
->  		val = ufshcd_readl(hba, REG_UFS_PROBE);
->  
+> It is not that easy, unfortunately. On some cases (specially due to
+> DT binding renames) some patches change the context of a hunk, affecting
+> a subsequent patch.
 
+If that's the case then the cover letter really needs work to make this
+clear, I couldn't tell that there was any risk of dependencies nor would
+I expect any for such trivial changes.
+
+> I tried a couple of times in the past to send the patches individually,
+> but that was messier, as there was harder for people to apply them,
+> as, instead of running b4 just once to get everything, maintainers
+> would need to apply each patch individually. Also, there were cases
+> where the patch order would be relevant, due to context changes.
+
+You could also send a per subsystem series if there's a concern about it
+being hard to pick up individual patches.
+
+--ZAEkjZ1m1ca4kKva
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFv984ACgkQJNaLcl1U
+h9C02Af/QqIIdFgUqHCd9imzBH3Vi5+Z+3/0On7vsl4IbE20RXNk5eZFnv8f5Ved
+2PlH3h6rteKeQFjUiXyFBM2GVhAtb7/PW/JslNVEVv9XatCiRDIwa5la4Eivdrw6
+7n1zkGTV6kk6SQKiE8m9ECRx6JrPEWpGRIk0wdTgqAwhUPZbADYmBB8CyCGnJWw8
+hj04Xhz+Ud1I63Eyv052BBD7OoVGC1JnQhwr8VfQWvg3WPolzBY/eIGp825rg0Ov
+XwEOMSYyWFi7QvHi0HC/xBMK51xg6wlfhliRzX5nnrVKt6u6Etb7TNchakCXQ3/F
+6JqMMaEsGO3D7AXzjR4QLo22YpvAMA==
+=tTrb
+-----END PGP SIGNATURE-----
+
+--ZAEkjZ1m1ca4kKva--
