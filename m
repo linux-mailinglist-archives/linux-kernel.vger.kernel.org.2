@@ -2,55 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D97434F1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D38434F1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhJTPex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:34:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTPew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:34:52 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB56D61373;
-        Wed, 20 Oct 2021 15:32:36 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 11:32:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] tracing: Add support for creating hist trigger
- variables from literal
-Message-ID: <20211020113234.45657902@gandalf.local.home>
-In-Reply-To: <20211020013153.4106001-2-kaleshsingh@google.com>
-References: <20211020013153.4106001-1-kaleshsingh@google.com>
-        <20211020013153.4106001-2-kaleshsingh@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230380AbhJTPfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:35:15 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43602 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTPfN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:35:13 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2B81921A9E;
+        Wed, 20 Oct 2021 15:32:58 +0000 (UTC)
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id 23925A3B83;
+        Wed, 20 Oct 2021 15:32:58 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: octeon: Remove unused functions
+Date:   Wed, 20 Oct 2021 17:32:51 +0200
+Message-Id: <20211020153252.131281-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 18:31:38 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
+cvmx_helper_initialize_packet_io_local() is unused and after removing
+it cvmx_pko_initialize_local() is also unused.
 
-> @@ -89,6 +91,8 @@ typedef u64 (*hist_field_fn_t) (struct hist_field *field,
->  #define HIST_FIELD_OPERANDS_MAX	2
->  #define HIST_FIELDS_MAX		(TRACING_MAP_FIELDS_MAX + TRACING_MAP_VARS_MAX)
->  #define HIST_ACTIONS_MAX	8
-> +#define HIST_CONST_MAX		4
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/cavium-octeon/executive/cvmx-helper.c | 10 ----------
+ arch/mips/cavium-octeon/executive/cvmx-pko.c    | 14 --------------
+ arch/mips/include/asm/octeon/cvmx-helper.h      |  7 -------
+ arch/mips/include/asm/octeon/cvmx-pko.h         |  1 -
+ 4 files changed, 32 deletions(-)
 
-BTW, why is there a limit to the number of constants?
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+index 6044ff471002..b22f664e2d29 100644
+--- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
++++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+@@ -1055,16 +1055,6 @@ int cvmx_helper_initialize_packet_io_global(void)
+ }
+ EXPORT_SYMBOL_GPL(cvmx_helper_initialize_packet_io_global);
+ 
+-/**
+- * Does core local initialization for packet io
+- *
+- * Returns Zero on success, non-zero on failure
+- */
+-int cvmx_helper_initialize_packet_io_local(void)
+-{
+-	return cvmx_pko_initialize_local();
+-}
+-
+ /**
+  * Return the link state of an IPD/PKO port as returned by
+  * auto negotiation. The result of this function may not match
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-pko.c b/arch/mips/cavium-octeon/executive/cvmx-pko.c
+index 7c4879e74318..ae8806e7bce2 100644
+--- a/arch/mips/cavium-octeon/executive/cvmx-pko.c
++++ b/arch/mips/cavium-octeon/executive/cvmx-pko.c
+@@ -229,20 +229,6 @@ void cvmx_pko_initialize_global(void)
+ 	}
+ }
+ 
+-/*
+- * This function does per-core initialization required by the PKO routines.
+- * This must be called on all cores that will do packet output, and must
+- * be called after the FPA has been initialized and filled with pages.
+- *
+- * Returns 0 on success
+- *	   !0 on failure
+- */
+-int cvmx_pko_initialize_local(void)
+-{
+-	/* Nothing to do */
+-	return 0;
+-}
+-
+ /*
+  * Enables the packet output hardware. It must already be
+  * configured.
+diff --git a/arch/mips/include/asm/octeon/cvmx-helper.h b/arch/mips/include/asm/octeon/cvmx-helper.h
+index c6c99e28eefb..0cddce35291b 100644
+--- a/arch/mips/include/asm/octeon/cvmx-helper.h
++++ b/arch/mips/include/asm/octeon/cvmx-helper.h
+@@ -93,13 +93,6 @@ extern int cvmx_helper_ipd_and_packet_input_enable(void);
+  */
+ extern int cvmx_helper_initialize_packet_io_global(void);
+ 
+-/**
+- * Does core local initialization for packet io
+- *
+- * Returns Zero on success, non-zero on failure
+- */
+-extern int cvmx_helper_initialize_packet_io_local(void);
+-
+ /**
+  * Returns the number of ports on the given interface.
+  * The interface must be initialized before the port count
+diff --git a/arch/mips/include/asm/octeon/cvmx-pko.h b/arch/mips/include/asm/octeon/cvmx-pko.h
+index 03fb64b13fba..5fec8476e421 100644
+--- a/arch/mips/include/asm/octeon/cvmx-pko.h
++++ b/arch/mips/include/asm/octeon/cvmx-pko.h
+@@ -277,7 +277,6 @@ typedef struct {
+  * output system.
+  */
+ extern void cvmx_pko_initialize_global(void);
+-extern int cvmx_pko_initialize_local(void);
+ 
+ /**
+  * Enables the packet output hardware. It must already be
+-- 
+2.29.2
 
--- Steve
-
-> +#define HIST_CONST_DIGITS_MAX	21
->  
