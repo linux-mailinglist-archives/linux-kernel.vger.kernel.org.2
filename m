@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6134349DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10DC4349C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhJTLOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:14:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229900AbhJTLOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:14:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B0076139F;
-        Wed, 20 Oct 2021 11:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634727889;
-        bh=sMNqIiJjcwrM/kpzKPJkufx9T9IAXcb0wsTgtzG1xm8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SF+pbDEb5LUWi1FIobUSa9latykvOw8D/Rjn5udnGrIKSbxOOJ6lkudyC6Bu2sada
-         wlV4IFiYddC9gBwhc/xSciIzwTot31Ckbj88C6ADvDGZFRKGmiflGOg3KiAFoKu42j
-         gaP4otG5FQmsvCqpGKqRiHe0au5EIbyQ1s0XLZ2zSgiqOfHZ80ieAVf6Xm/AvYI9Lp
-         3+fqA5/6igarlf8LaEL3XLOMcQyBgxK6Jxry4gJWk3pI2olcQGfYOo7NFtvnDgoHNf
-         ydSvMHhfbuRHNun3yFpBhxr/cyx+e31rlFChBvuFYS0ll78rSUQEkhLpL0vwyITHYt
-         XoIINZvWBbaOg==
-Date:   Wed, 20 Oct 2021 12:04:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v3 21/23] regulator: dt-bindings: update
- samsung,s2mpa01.yaml reference
-Message-ID: <YW/3z1HBU3+WwsZu@sirena.org.uk>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
- <9acc235dc4af794d18e1267371944a3955e1fb21.1634630486.git.mchehab+huawei@kernel.org>
- <YW60a8z0JNDnTLV/@sirena.org.uk>
- <20211020073013.6d144c0d@sal.lan>
+        id S230111AbhJTLLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhJTLLs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 07:11:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB94AC06161C;
+        Wed, 20 Oct 2021 04:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bkwCMh1L283zu+NfIJRFcbJeljr6wS5Wxo/xoHye8V0=; b=qs3LMa2vVLIf+lJ7FoOL5f1hPx
+        HEmWfTaYB8JoNXenwGFzUALEnFQKeMXjhKlAbc6DQX7/HBpz+oN6GiMSlzqIH6iuYmvJDzlX1JnAy
+        H0iymAL0ShIkDqkn7ybPkjNgO0tVIxvyyI2ZZ8jc2EM0NpT5VV0vzV6xzqrM06KnnewYwZcd4NGK7
+        7LZeYo8yWTzpvfbswfHOBnyYjn7VcVmacTAWAdLFLyOdeEvWzsxnSrtcaRKYXbVGfgThMyGCHUQZG
+        h0eRCRSxZhZGSSegjttcOVjVHLu1bDy1Af/5kTewfWFpdwftlbHeDqG/U9FEqPnw9FoB+U61eMw4K
+        xiyoHe2Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1md9QJ-00CRJI-I7; Wed, 20 Oct 2021 11:06:49 +0000
+Date:   Wed, 20 Oct 2021 12:06:19 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     kent.overstreet@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jeff Layton <jlayton@redhat.com>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: Stop filemap_read() from grabbing a superfluous
+ page
+Message-ID: <YW/4K6Rm+WX5aKbf@casper.infradead.org>
+References: <163472463105.3126792.7056099385135786492.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZAEkjZ1m1ca4kKva"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020073013.6d144c0d@sal.lan>
-X-Cookie: I program, therefore I am.
+In-Reply-To: <163472463105.3126792.7056099385135786492.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 20, 2021 at 11:10:31AM +0100, David Howells wrote:
+> Under some circumstances, filemap_read() will allocate sufficient pages to
+> read to the end of the file, call readahead/readpages on them and copy the
+> data over - and then it will allocate another page at the EOF and call
+> readpage on that and then ignore it.  This is unnecessary and a waste of
+> time and resources.
+> 
+> filemap_read() *does* check for this, but only after it has already done
+> the allocation and I/O.  Fix this by checking before calling
+> filemap_get_pages() also.
+> 
+> Changes:
+>  v2) Break out of the loop immediately rather than going to put_pages (the
+>      pvec is unoccupied).  Setting isize is then unnecessary.
+> 
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Kent Overstreet <kent.overstreet@gmail.com>
+> cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> cc: Andrew Morton <akpm@linux-foundation.org>
+> cc: Jeff Layton <jlayton@redhat.com>
+> cc: linux-mm@kvack.org
+> cc: linux-fsdevel@vger.kernel.org
+> Link: https://lore.kernel.org/r/160588481358.3465195.16552616179674485179.stgit@warthog.procyon.org.uk/
+> Link: https://lore.kernel.org/r/163456863216.2614702.6384850026368833133.stgit@warthog.procyon.org.uk/
 
---ZAEkjZ1m1ca4kKva
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Oct 20, 2021 at 07:30:13AM +0100, Mauro Carvalho Chehab wrote:
-> Mark Brown <broonie@kernel.org> escreveu:
-
-> > For a case like this where there's no
-> > dependencies or real relationship between the patches it's probably
-> > better to just not thread everything and send the patches separately to
-> > everyone, the threading is just adding noise and confusion.
-
-> It is not that easy, unfortunately. On some cases (specially due to
-> DT binding renames) some patches change the context of a hunk, affecting
-> a subsequent patch.
-
-If that's the case then the cover letter really needs work to make this
-clear, I couldn't tell that there was any risk of dependencies nor would
-I expect any for such trivial changes.
-
-> I tried a couple of times in the past to send the patches individually,
-> but that was messier, as there was harder for people to apply them,
-> as, instead of running b4 just once to get everything, maintainers
-> would need to apply each patch individually. Also, there were cases
-> where the patch order would be relevant, due to context changes.
-
-You could also send a per subsystem series if there's a concern about it
-being hard to pick up individual patches.
-
---ZAEkjZ1m1ca4kKva
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFv984ACgkQJNaLcl1U
-h9C02Af/QqIIdFgUqHCd9imzBH3Vi5+Z+3/0On7vsl4IbE20RXNk5eZFnv8f5Ved
-2PlH3h6rteKeQFjUiXyFBM2GVhAtb7/PW/JslNVEVv9XatCiRDIwa5la4Eivdrw6
-7n1zkGTV6kk6SQKiE8m9ECRx6JrPEWpGRIk0wdTgqAwhUPZbADYmBB8CyCGnJWw8
-hj04Xhz+Ud1I63Eyv052BBD7OoVGC1JnQhwr8VfQWvg3WPolzBY/eIGp825rg0Ov
-XwEOMSYyWFi7QvHi0HC/xBMK51xg6wlfhliRzX5nnrVKt6u6Etb7TNchakCXQ3/F
-6JqMMaEsGO3D7AXzjR4QLo22YpvAMA==
-=tTrb
------END PGP SIGNATURE-----
-
---ZAEkjZ1m1ca4kKva--
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
