@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B80435382
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F3D435386
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhJTTNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        id S231531AbhJTTNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbhJTTNe (ORCPT
+        with ESMTP id S231433AbhJTTNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:13:34 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA800C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:11:19 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id u69so10868928oie.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:11:19 -0700 (PDT)
+        Wed, 20 Oct 2021 15:13:45 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF6EC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:11:30 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id t11so16811404plq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:11:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3TD/VaGDQqhVY3cS1lVEqz1lY9E/iuwPnp6B8lTAVtk=;
-        b=kMI0U8RvMMo3WO6ikECfHif6WhwwGal456vqrdkefzvbjzkwchxx6lrVdhWW3gCkdg
-         eumuhH6kzYLKuuwpJJA80Pd8FOMGoWNGvhweoYbrUcS4hUBwPdK6/ml9OLFqWS2QlArW
-         iEeiBdWXTx/ZXFSjuaOvIXHkKZlFF+O0BAhfFb+tTzu0dG7IJKOIvyPUTic9Zr5qkhD7
-         s5cgP4wyHA29z+Qz/NKYxT5iaJ4gZVkq7alhzKCEGZ0u+dgn/RaLQm1rec/Lk2m3u2Nq
-         CutQTSD1HZaBebTYrQ9dSo5SSEcqLob0cx4l/h2RiEoWJjag951wPsuhb81n67iBCbWU
-         0MvA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VT1ZnTWZw0jMkeN3fDOrnC1r/jUp1V3OZwD2nwImWMk=;
+        b=nre93T6MzHelf00EfakHYDHtu00QJEKItoSAkKHGP3gUTjHdigzheidpN0Cn+ghvKd
+         LKWv2/OIotRWfXs/WCG7an5/vs5KygZtizL39PVLhD9YZOfqaFwrzigVA2RIjTye4bHE
+         OWKNrjwp2iiSwr71nYKpU9JH0SPNhhNIbBfEw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=3TD/VaGDQqhVY3cS1lVEqz1lY9E/iuwPnp6B8lTAVtk=;
-        b=wwFlaBM2OWPUy3ahb8Ixp8NsFO0Ccxy5FTvnvjEnxNMSBAt6d5Nf03LFIZw7ouRC4z
-         2mCWycZia20o6LFciEuVmEfhG1EuXymmYMeCjZOvA/f9B0zwaBf7/s1/MfSRIxYjD0ug
-         WIJD7HNYDC79C+oncAdk3qVxYW1VsLJ17pZF6g8X2jYxOnu9Ig1U1BUUgRv18eb336gX
-         o8iDS+DYR7+9e0SqEhd9shihrq6ag0HSWUF+4xF33LEp0f/JbLXOC1FhkyxROBuMOebw
-         Oki7CSSbIG5AissiTkb9YeazyR3PYAjncGQXlTaL1CJRU/QwiXmmGmIxGY+bYeIy1wj3
-         Httg==
-X-Gm-Message-State: AOAM531Q/1e99umuJMzZyj4ZHChp2OIaV8ntXSyz1yTCXr+Yqskmaaze
-        QbOzU4larlU6qF/h7TA+Puw/C/HJl9k=
-X-Google-Smtp-Source: ABdhPJzFQRJaPYjLCn44DvxC+O4p/J3WCRICe9oHu84DOmrQ1r8uF8HKAZJTFThkAE3IbiILeikQ6Q==
-X-Received: by 2002:aca:5c5:: with SMTP id 188mr662465oif.154.1634757079169;
-        Wed, 20 Oct 2021 12:11:19 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u21sm581371oiv.25.2021.10.20.12.11.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VT1ZnTWZw0jMkeN3fDOrnC1r/jUp1V3OZwD2nwImWMk=;
+        b=Ql+hcrkdqDjqIR4PKTQLNfdn8aka8PU3tp7RXwSFtnrFzXl1yabP+4HDgBo2UL6U1w
+         JyuZ6Pe6ByxF4SLtAcLMHlBaJP5PDEsZsGKM4x6ZgnpXUkaJKuBdaOlbwHWAd62Oclgm
+         MKbjQPYV+OznXKVm/05jc0enYlYTfP7Bbc8pzl65j+IJfSJKC7pXWaC+TL9UYZ4rUCfA
+         GIWdl65mOy1mK9SQBYZsRen7hkVtuxiU1M3NF/uEksfwVsaLMnBxbgXahKo+5s2z7cpD
+         EPf1olr5+byxqOcgCaYjQ1eM9AKJcIj+OtaouKg+rd4Ogzx9equfDz2xKYSWqNw5Yq5G
+         xCEg==
+X-Gm-Message-State: AOAM53247mquZ7RR1NBt5/64eR14lpgR7xfdrGeqH11Pml2ezrVLwr7Z
+        2s8swzjoy9OSZZ6d5NRYRgWedw==
+X-Google-Smtp-Source: ABdhPJyVMN7MoPGQBIowKQmEG8vN3pK31aaAQUVHuBVZpxjnw8chkJkUkW744OD0Z5Ryu083zYUf6Q==
+X-Received: by 2002:a17:90a:e54d:: with SMTP id ei13mr950751pjb.65.1634757090342;
+        Wed, 20 Oct 2021 12:11:30 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x13sm2869108pge.37.2021.10.20.12.11.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:11:18 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v2] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
-Date:   Wed, 20 Oct 2021 12:11:16 -0700
-Message-Id: <20211020191116.2510450-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        Wed, 20 Oct 2021 12:11:29 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 12:11:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Emese Revfy <re.emese@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Dan Li <ashimida@linux.alibaba.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH 2/2] gcc-plugins: Remove cyc_complexity
+Message-ID: <202110201210.1F70546@keescook>
+References: <20211020173554.38122-1-keescook@chromium.org>
+ <20211020173554.38122-3-keescook@chromium.org>
+ <CANiq72kveT40jX8GWjs1dy0o3YjowUGtGTddPb+da114sb+4iA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiq72kveT40jX8GWjs1dy0o3YjowUGtGTddPb+da114sb+4iA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nios2:allmodconfig builds fail with
+On Wed, Oct 20, 2021 at 07:48:55PM +0200, Miguel Ojeda wrote:
+> On Wed, Oct 20, 2021 at 7:35 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > - * Copyright 2011-2016 by Emese Revfy <re.emese@gmail.com>
+> 
+> Perhaps we should Cc this address to give them notice.
 
-make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
-	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
-make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
+Good point; I'm in the habit of that happening automatically as Emese
+was a co-maintainer of the gcc-plugins. Sorry for the oversight here.
 
-This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
-which in turn enables NIOS2_DTB_SOURCE. This causes the build error
-because the default value for NIOS2_DTB_SOURCE is an empty string.
-Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
+> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: Include error message
+Thanks!
 
- arch/nios2/platform/Kconfig.platform | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/nios2/platform/Kconfig.platform b/arch/nios2/platform/Kconfig.platform
-index 9e32fb7f3d4c..e849daff6fd1 100644
---- a/arch/nios2/platform/Kconfig.platform
-+++ b/arch/nios2/platform/Kconfig.platform
-@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
- 
- config NIOS2_DTB_SOURCE_BOOL
- 	bool "Compile and link device tree into kernel image"
-+	depends on !COMPILE_TEST
- 	help
- 	  This allows you to specify a dts (device tree source) file
- 	  which will be compiled and linked into the kernel image.
 -- 
-2.33.0
-
+Kees Cook
