@@ -2,187 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7490A43470B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C1443470E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhJTIi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:38:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:49173 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhJTIi0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:38:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634718972; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=/+DfA3JiwA8AUDKRRJpj2+ek7HU0RMo/25+SYks37DM=; b=B2AvvU3+GUUGtyFS+F4kafib+pi4WXmzyI2+9V2v0mbdrNaUsc/0x08f3gTX18xvD9KjmrIx
- IN6bD/JIDU1Y8O5RqKzVah+bR5xJGU1548Pk+KhGrZMdXysIQnu7bkqKKOeh598UIaDd4yGS
- +DMZStOS21lnOe42/MerqoKSXys=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 616fd4f65ca800b6c127b656 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 08:36:06
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4F954C4360D; Wed, 20 Oct 2021 08:36:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1B207C4338F;
-        Wed, 20 Oct 2021 08:36:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 1B207C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Pkshih <pkshih@realtek.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-janitors\@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
-References: <20211015154530.34356-1-colin.king@canonical.com>
-        <9cc681c217a449519aee524b35e6b6bc@realtek.com>
-        <87pms2ttvi.fsf@codeaurora.org>
-        <abc2e3a274694d48aa468491df334349@realtek.com>
-Date:   Wed, 20 Oct 2021 11:36:00 +0300
-In-Reply-To: <abc2e3a274694d48aa468491df334349@realtek.com> (Pkshih's message
-        of "Tue, 19 Oct 2021 01:11:25 +0000")
-Message-ID: <87h7dcf5zj.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S229704AbhJTIkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:40:46 -0400
+Received: from mga11.intel.com ([192.55.52.93]:4850 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229555AbhJTIko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:40:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="226188462"
+X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
+   d="scan'208";a="226188462"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 01:38:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
+   d="scan'208";a="444273283"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 20 Oct 2021 01:38:27 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1md77D-000DBb-7m; Wed, 20 Oct 2021 08:38:27 +0000
+Date:   Wed, 20 Oct 2021 16:37:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/core] BUILD SUCCESS WITH WARNING
+ 5197fcd09ab6dcc4df79edec7e8e27575276374c
+Message-ID: <616fd55b.i0O5M6qvLBtWAS2T%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pkshih <pkshih@realtek.com> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/core
+branch HEAD: 5197fcd09ab6dcc4df79edec7e8e27575276374c  locking/rwsem: Fix comments about reader optimistic lock stealing conditions
 
->> -----Original Message-----
->> From: kvalo=codeaurora.org@mg.codeaurora.org
->> <kvalo=codeaurora.org@mg.codeaurora.org> On
->> Behalf Of Kalle Valo
->> Sent: Monday, October 18, 2021 8:12 PM
->> To: Pkshih <pkshih@realtek.com>
->> Cc: Colin King <colin.king@canonical.com>; David S . Miller
->> <davem@davemloft.net>; Jakub
->> Kicinski <kuba@kernel.org>; linux-wireless@vger.kernel.org; netdev@vger.kernel.org;
->> kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
->> 
->> Pkshih <pkshih@realtek.com> writes:
->> 
->> >> -----Original Message-----
->> >> From: Colin King <colin.king@canonical.com>
->> >> Sent: Friday, October 15, 2021 11:46 PM
->> >> To: Kalle Valo <kvalo@codeaurora.org>; David S . Miller <davem@davemloft.net>; Jakub Kicinski
->> >> <kuba@kernel.org>; Pkshih <pkshih@realtek.com>; linux-wireless@vger.kernel.org;
->> >> netdev@vger.kernel.org
->> >> Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
->> >> Subject: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
->> >>
->> >> From: Colin Ian King <colin.king@canonical.com>
->> >>
->> >> The pointer rtwsta is dereferencing pointer sta before sta is
->> >> being null checked, so there is a potential null pointer deference
->> >> issue that may occur. Fix this by only assigning rtwsta after sta
->> >> has been null checked. Add in a null pointer check on rtwsta before
->> >> dereferencing it too.
->> >>
->> >> Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
->> >> Addresses-Coverity: ("Dereference before null check")
->> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> >> ---
->> >>  drivers/net/wireless/realtek/rtw89/core.c | 9 +++++++--
->> >>  1 file changed, 7 insertions(+), 2 deletions(-)
->> >>
->> >> diff --git a/drivers/net/wireless/realtek/rtw89/core.c
->> >> b/drivers/net/wireless/realtek/rtw89/core.c
->> >> index 06fb6e5b1b37..26f52a25f545 100644
->> >> --- a/drivers/net/wireless/realtek/rtw89/core.c
->> >> +++ b/drivers/net/wireless/realtek/rtw89/core.c
->> >> @@ -1534,9 +1534,14 @@ static bool rtw89_core_txq_agg_wait(struct rtw89_dev *rtwdev,
->> >>  {
->> >>  	struct rtw89_txq *rtwtxq = (struct rtw89_txq *)txq->drv_priv;
->> >>  	struct ieee80211_sta *sta = txq->sta;
->> >> -	struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
->> >
->> > 'sta->drv_priv' is only a pointer, we don't really dereference the
->> > data right here, so I think this is safe. More, compiler can optimize
->> > this instruction that reorder it to the place just right before using.
->> > So, it seems like a false alarm.
->> >
->> >> +	struct rtw89_sta *rtwsta;
->> >>
->> >> -	if (!sta || rtwsta->max_agg_wait <= 0)
->> >> +	if (!sta)
->> >> +		return false;
->> >> +	rtwsta = (struct rtw89_sta *)sta->drv_priv;
->> >> +	if (!rtwsta)
->> >> +		return false;
->> >> +	if (rtwsta->max_agg_wait <= 0)
->> >>  		return false;
->> >>
->> >>  	if (rtwdev->stats.tx_tfc_lv <= RTW89_TFC_MID)
->> >
->> > I check the size of object files before/after this patch, and
->> > the original one is smaller.
->> >
->> >    text    data     bss     dec     hex filename
->> >   16781    3392       1   20174    4ece core-0.o  // original
->> >   16819    3392       1   20212    4ef4 core-1.o  // after this patch
->> >
->> > Do you think it is worth to apply this patch?
->> 
->> I think that we should apply the patch. Even though the compiler _may_
->> reorder the code, it might choose not to do that.
->
-> Understand.
->
-> I have another way to fix this coverity warning, like:
->
-> @@ -1617,7 +1617,7 @@ static bool rtw89_core_txq_agg_wait(struct rtw89_dev *rtwdev,
->  {
->         struct rtw89_txq *rtwtxq = (struct rtw89_txq *)txq->drv_priv;
->         struct ieee80211_sta *sta = txq->sta;
-> -       struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
-> +       struct rtw89_sta *rtwsta = sta ? (struct rtw89_sta *)sta->drv_priv : NULL;
->
->         if (!sta || rtwsta->max_agg_wait <= 0)
->                 return false;
->
-> Is this acceptable?
-> It has a little redundant checking of 'sta', but the code looks clean.
+Warning in current branch:
 
-I feel that Colin's fix is more readable, but this is just matter of
-taste. You can choose.
+arch/arm64/include/asm/syscall_wrapper.h:76:32: warning: no previous prototype for '__arm64_sys_futex_waitv' [-Wmissing-prototypes]
 
->> Another question is that can txq->sta really be null? I didn't check the
->> code, but if it should be always set when the null check is not needed.
->> 
->
-> It says
->
-> * struct ieee80211_txq - Software intermediate tx queue
-> * @sta: station table entry, %NULL for per-vif queue
->
-> So, we need to check if 'sta' is NULL.
+possible Warning in current branch (please contact us if interested):
 
-Ok, thanks for checking (no pun intended) :)
+kernel/futex/pi.c:723:3-9: preceding lock on line 821
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Warning ids grouped by kconfigs:
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+gcc_recent_errors
+|-- arm64-defconfig
+|   `-- arch-arm64-include-asm-syscall_wrapper.h:warning:no-previous-prototype-for-__arm64_sys_futex_waitv
+|-- arm64-randconfig-r022-20211019
+|   `-- arch-arm64-include-asm-syscall_wrapper.h:warning:no-previous-prototype-for-__arm64_sys_futex_waitv
+|-- arm64-randconfig-s032-20211019
+|   `-- arch-arm64-include-asm-syscall_wrapper.h:warning:no-previous-prototype-for-__arm64_sys_futex_waitv
+|-- i386-randconfig-c001-20211019
+|   `-- kernel-futex-pi.c:preceding-lock-on-line
+`-- x86_64-randconfig-c002-20211019
+    `-- kernel-futex-pi.c:preceding-lock-on-line
+
+elapsed time: 987m
+
+configs tested: 116
+configs skipped: 3
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211019
+i386                             alldefconfig
+arc                                 defconfig
+powerpc                      mgcoge_defconfig
+sh                          r7780mp_defconfig
+mips                           gcw0_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                           u8500_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                       maple_defconfig
+m68k                        m5407c3_defconfig
+arm                         lubbock_defconfig
+parisc                generic-64bit_defconfig
+sh                              ul2_defconfig
+arc                     nsimosci_hs_defconfig
+arm                     davinci_all_defconfig
+sh                          polaris_defconfig
+arm                           corgi_defconfig
+sh                        edosk7760_defconfig
+arm                       mainstone_defconfig
+arm                          pcm027_defconfig
+arm                        mvebu_v7_defconfig
+sh                            hp6xx_defconfig
+arm                      integrator_defconfig
+arm                  randconfig-c002-20211019
+x86_64               randconfig-c001-20211019
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20211020
+i386                 randconfig-a003-20211020
+i386                 randconfig-a002-20211020
+i386                 randconfig-a005-20211020
+i386                 randconfig-a006-20211020
+i386                 randconfig-a001-20211020
+x86_64               randconfig-a015-20211019
+x86_64               randconfig-a012-20211019
+x86_64               randconfig-a016-20211019
+x86_64               randconfig-a014-20211019
+x86_64               randconfig-a013-20211019
+x86_64               randconfig-a011-20211019
+i386                 randconfig-a014-20211019
+i386                 randconfig-a016-20211019
+i386                 randconfig-a011-20211019
+i386                 randconfig-a015-20211019
+i386                 randconfig-a012-20211019
+i386                 randconfig-a013-20211019
+arc                  randconfig-r043-20211019
+s390                 randconfig-r044-20211019
+riscv                randconfig-r042-20211019
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20211019
+x86_64               randconfig-a006-20211019
+x86_64               randconfig-a005-20211019
+x86_64               randconfig-a001-20211019
+x86_64               randconfig-a002-20211019
+x86_64               randconfig-a003-20211019
+i386                 randconfig-a001-20211019
+i386                 randconfig-a003-20211019
+i386                 randconfig-a004-20211019
+i386                 randconfig-a005-20211019
+i386                 randconfig-a002-20211019
+i386                 randconfig-a006-20211019
+riscv                randconfig-r042-20211020
+s390                 randconfig-r044-20211020
+hexagon              randconfig-r045-20211020
+hexagon              randconfig-r041-20211020
+hexagon              randconfig-r041-20211019
+hexagon              randconfig-r045-20211019
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
