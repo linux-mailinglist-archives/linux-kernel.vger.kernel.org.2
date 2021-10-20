@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DD9434AF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF8A434AF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhJTMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:16:25 -0400
-Received: from relay.sw.ru ([185.231.240.75]:43956 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230299AbhJTMQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:16:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=sUtfqX3vH75qqCOKFcLO4ftwwfJuASZg/BHthju0tgY=; b=IgZ81foHaZvO7TJsKcl
-        yzEbZ910pbQpBRn2icjnDn2zJp5Hjhel+UwzbgScwCjZ0/iUhZy9QiW8IBhadYh12T/GQzf/i6897
-        AjNbTT8OCMxUBz6qBxqqj/rndTNEpKj4VFnjy+6AMY6jUuAS36q8pvlliwRQ5878Orp9MtBnvhM=;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mdATv-006bBe-KV; Wed, 20 Oct 2021 15:14:07 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH memcg 2/3] memcg: remove charge forcinig for dying tasks
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
- <cover.1634730787.git.vvs@virtuozzo.com>
-Message-ID: <56180e53-b705-b1be-9b60-75e141c8560c@virtuozzo.com>
-Date:   Wed, 20 Oct 2021 15:13:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230177AbhJTMQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:16:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38590 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230092AbhJTMQO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:16:14 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KAQL0E019057;
+        Wed, 20 Oct 2021 08:13:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=X7GrgeqNNOzBt33xC3JU3iGJnstVXS4qySkKNNmttsc=;
+ b=B/uj4088cPwIIVr0CE2viJVLAOByAYy/gJj3sXXhkLMO90zaBCTojdgFHpEAXYs61RGF
+ grtUjHeG5US/3w5YnSPofo8dYdpB5vty0MKteHlzFZAv1P6F0k/1viwMFzXMggxOFZQX
+ dbcF5Q+GrHsMdGcz15kymqyTVcXLG1foWBxq4o9UAXngvK4XcYCBWs9BVlUfvBRg+w6J
+ R3zUuxMhAO1vhwBI5+Bx2FLRg9tFaNET6jZsRUzxkIDpyHkZ4Xfc6qTC/v7Ax3urNQ2f
+ Lu+Ntyfjo/PNG/6mzquCATLY6ed9uwXVksXrFzJryhrvqPOzBLGOmkDtDC1nnktJn9UW aA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btcaa0sgd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 08:13:55 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19KC6tff019771;
+        Wed, 20 Oct 2021 08:13:54 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btcaa0sg8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 08:13:54 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19KCCAgd029781;
+        Wed, 20 Oct 2021 12:13:53 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma01dal.us.ibm.com with ESMTP id 3bqpccnkag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 12:13:53 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19KCDqAc36700454
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 12:13:52 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9367978066;
+        Wed, 20 Oct 2021 12:13:52 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 325197805F;
+        Wed, 20 Oct 2021 12:13:51 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.211.92.132])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Oct 2021 12:13:50 +0000 (GMT)
+Message-ID: <670213ce9e6c3b625e9f8ed66b9fad8ea2843322.camel@linux.ibm.com>
+Subject: Re: [PATCH] scsi: megaraid_mbox: return -ENOMEM on
+ megaraid_init_mbox() allocation failure
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com,
+        martin.petersen@oracle.com, megaraidlinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 20 Oct 2021 08:13:49 -0400
+In-Reply-To: <c1a6e7f3-d62f-5c5e-b3ef-2320339e142a@linux-m68k.org>
+References: <1634640800-22502-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+         <2482854e18365087266c2f0907c1bbfd42bd2731.camel@linux.ibm.com>
+         <c1a6e7f3-d62f-5c5e-b3ef-2320339e142a@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <cover.1634730787.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: RkC9NNyMJU9-R40_UDElbQ0kg1yV0Rxj
+X-Proofpoint-ORIG-GUID: B_84UIX3AcfxVO6i3TLor7iJzqzR2Wlw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_04,2021-10-20_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ adultscore=0 clxscore=1011 mlxlogscore=999 lowpriorityscore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110200070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ToDo: should we keep task_is_dying() in mem_cgroup_out_of_memory() ?
+On Wed, 2021-10-20 at 13:56 +1100, Finn Thain wrote:
+> On Tue, 19 Oct 2021, James Bottomley wrote:
+> 
+> > On Tue, 2021-10-19 at 18:53 +0800, Jiapeng Chong wrote:
+> > > From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+> > > 
+> > > Fixes the following smatch warning:
+> > > 
+> > > drivers/scsi/megaraid/megaraid_mbox.c:715 megaraid_init_mbox()
+> > > warn:
+> > > returning -1 instead of -ENOMEM is sloppy.
+> > 
+> > Why is this a problem?  megaraid_init_mbox() is called using this
+> > pattern:
+> > 
+> > 	// Start the mailbox based controller
+> > 	if (megaraid_init_mbox(adapter) != 0) {
+> > 		con_log(CL_ANN, (KERN_WARNING
+> > 			"megaraid: mailbox adapter did not
+> > initialize\n"));
+> > 
+> > 		goto out_free_adapter;
+> > 	}
+> > 
+> > So the only meaningful returns are 0 on success and anything else
+> > (although megaraid uses -1 for this) on failure. 
+> 
+> I think you're arguing for a bool (?)
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- mm/memcontrol.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+I'm not arguing for anything ... I'm just explaining how the current
+code works that makes this change pointless.  Megaraid is an older
+driver, so even if the current return is two state, changing it to bool
+would be unnecessary churn.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6da5020a8656..74a7379dbac1 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -239,7 +239,7 @@ enum res_type {
- 	     iter != NULL;				\
- 	     iter = mem_cgroup_iter(NULL, iter, NULL))
- 
--static inline bool should_force_charge(void)
-+static inline bool task_is_dying(void)
- {
- 	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
- 		(current->flags & PF_EXITING);
-@@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 * A few threads which were not waiting at mutex_lock_killable() can
- 	 * fail to bail out. Therefore, check again after holding oom_lock.
- 	 */
--	ret = should_force_charge() || out_of_memory(&oc);
-+	ret = task_is_dying() || out_of_memory(&oc);
- 
- unlock:
- 	mutex_unlock(&oom_lock);
-@@ -2530,6 +2530,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	struct page_counter *counter;
- 	enum oom_status oom_status;
- 	unsigned long nr_reclaimed;
-+	bool passed_oom = false;
- 	bool may_swap = true;
- 	bool drained = false;
- 	unsigned long pflags;
-@@ -2564,15 +2565,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_ATOMIC)
- 		goto force;
- 
--	/*
--	 * Unlike in global OOM situations, memcg is not in a physical
--	 * memory shortage.  Allow dying and OOM-killed tasks to
--	 * bypass the last charges so that they can exit quickly and
--	 * free their memory.
--	 */
--	if (unlikely(should_force_charge()))
--		goto force;
--
- 	/*
- 	 * Prevent unbounded recursion when reclaim operations need to
- 	 * allocate memory. This might exceed the limits temporarily,
-@@ -2630,8 +2622,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
- 		goto nomem;
- 
--	if (fatal_signal_pending(current))
--		goto force;
-+	/* Avoid endless loop for tasks bypassed by the oom killer */
-+	if (passed_oom && task_is_dying())
-+		goto nomem;
- 
- 	/*
- 	 * keep retrying as long as the memcg oom killer is able to make
-@@ -2642,6 +2635,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 		       get_order(nr_pages * PAGE_SIZE));
- 	switch (oom_status) {
- 	case OOM_SUCCESS:
-+		passed_oom = true;
- 		nr_retries = MAX_RECLAIM_RETRIES;
- 		goto retry;
- 	case OOM_FAILED:
--- 
-2.32.0
+> Smatch apparently did not think of that -- probably needs a holiday.
+> 
+> > Since -1 is the conventional failure return, why alter that to
+> > something different that still won't be printed or acted on?  And
+> > worse still, if we make this change, it will likely excite other
+> > static checkers to complain we're losing error information ...
+> > 
+> 
+> ... and arguably they would be correct.
+
+Well, yes ... that's why I don't want one "fix" that generates a
+cascading sequence of further "fixes".
+
+James
+
+
 
