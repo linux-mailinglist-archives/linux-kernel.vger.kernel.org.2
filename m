@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F6E434AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3292D434AA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhJTMBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:01:38 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25304 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhJTMBh (ORCPT
+        id S230196AbhJTMDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:03:11 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39474 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229548AbhJTMDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:01:37 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HZ8DR2WtCzcfdv;
-        Wed, 20 Oct 2021 19:54:47 +0800 (CST)
-Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 19:59:20 +0800
-Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
- (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 20 Oct
- 2021 19:59:20 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <mchehab@kernel.org>, <gshark.jeong@gmail.com>
-CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] media: i2c: lm3560: Fix possible memory leak in lm3560_probe()
-Date:   Wed, 20 Oct 2021 19:58:24 +0800
-Message-ID: <20211020115824.2013778-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 20 Oct 2021 08:03:10 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KBMh4i001140;
+        Wed, 20 Oct 2021 08:00:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=2atfIvf5ixrkwBkxddiwe1JyhuUXA4C0o6cch/eYBP0=;
+ b=i+wo5AXB739rhOsrv7fJJkPOW4K+qGHZx2ii3jp9u6G88MfrP6oVw8n17VdHs09AXVQ5
+ nIHH4uk73tFrFRk/eLVXVv7CMHekEAz/zWLPBzcGQGN/jpjkVS1NLxIz2i/HMjyZWtZr
+ tcxWgJJDuBZ2XixYlug0I2JxKZv5pyn8cfa/bWhZZOBkEGZK0FNMcd9W65nxFbNg9Ibh
+ 7RTD3e32kfLIORsI/qust+Fh5RDjTbA2GdZ6k+kwIQDihpBf3R1AmrSeElbPMYdQrWJu
+ HYtXBiY0nAwcjrS/907/mD9wwX9+QofumBxZ3UJ05fpx7TWNTMyk1xY55mrhGXBdIQiG jg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btj6f8qpf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 08:00:42 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19KBOCY8007783;
+        Wed, 20 Oct 2021 08:00:41 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btj6f8qmp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 08:00:41 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19KBxHGw027484;
+        Wed, 20 Oct 2021 12:00:36 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma02dal.us.ibm.com with ESMTP id 3bqpcc5e9f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 12:00:36 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19KC0Y0W36635064
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 12:00:34 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E729678091;
+        Wed, 20 Oct 2021 12:00:33 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E09CB7807B;
+        Wed, 20 Oct 2021 12:00:29 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.211.92.132])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Oct 2021 12:00:29 +0000 (GMT)
+Message-ID: <fb309e2686ca42df2c053cc1b060b1bc774fd3e7.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 1/3] efi/libstub: Copy confidential computing secret
+ area
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Dov Murik <dovmurik@linux.ibm.com>
+Cc:     linux-efi@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrew Scull <ascull@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>,
+        Daniele Buono <dbuono@linux.vnet.ibm.com>,
+        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 20 Oct 2021 08:00:28 -0400
+In-Reply-To: <YW+5phDcxynJD2qy@kroah.com>
+References: <20211020061408.3447533-1-dovmurik@linux.ibm.com>
+         <20211020061408.3447533-2-dovmurik@linux.ibm.com>
+         <YW+5phDcxynJD2qy@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600001.china.huawei.com (7.193.23.3)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: fXfdxmVhmW-oHxGkZz5qlolZAwivX7I6
+X-Proofpoint-GUID: EdATHeW8N-0HlDMOIkTMqEVygdiToCfx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_04,2021-10-20_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ priorityscore=1501 suspectscore=0 spamscore=0 malwarescore=0 clxscore=1011
+ mlxlogscore=969 bulkscore=0 lowpriorityscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110200070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the error handling path of lm3560_probe(), ctrl handler allocated by
-lm3560_subdev_init() does not released, and caused memory leak as
-follows:
+On Wed, 2021-10-20 at 08:39 +0200, Greg KH wrote:
+> On Wed, Oct 20, 2021 at 06:14:06AM +0000, Dov Murik wrote:
+[...]
+> > +	help
+> > +	  Copy memory reserved by EFI for Confidential Computing (coco)
+> > +	  injected secrets, if EFI exposes such a table entry.
+> 
+> Why would you want to "copy" secret memory?
+> 
+> This sounds really odd here, it sounds like you are opening up a
+> security hole.  Are you sure this is the correct text that everyone
+> on the "COCO" group agrees with?
 
-unreferenced object 0xffff888257dbac10 (size 16):
-  comm "35", pid 6061, jiffies 4299029793 (age 201.830s)
-  hex dump (first 16 bytes):
-    40 06 ff 0c 81 88 ff ff 40 24 ff 0c 81 88 ff ff  @.......@$......
-  backtrace:
-    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
-    [<ffffffff8167e3eb>] __kmalloc_node+0x16b/0x3a0
-    [<ffffffff815a27df>] kvmalloc_node+0x4f/0xf0
-    [<ffffffff832807a9>] v4l2_ctrl_handler_init_class+0xf9/0x160
-    [<ffffffffa01f8180>] lm3560_subdev_init+0x120/0x340 [lm3560]
-    [<ffffffffa01f882c>] lm3560_probe+0x17c/0x370 [lm3560]
-    [<ffffffff8321d463>] i2c_device_probe+0x5d3/0x600
-    [<ffffffff82b59630>] really_probe+0x190/0x480
-    [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
-    [<ffffffff82b59af3>] driver_probe_device+0x53/0x130
-    [<ffffffff82b5a075>] __device_attach_driver+0x105/0x130
-    [<ffffffff82b55949>] bus_for_each_drv+0x129/0x190
-    [<ffffffff82b593c9>] __device_attach+0x1c9/0x270
-    [<ffffffff82b5a250>] device_initial_probe+0x20/0x30
-    [<ffffffff82b579c2>] bus_probe_device+0x142/0x160
-    [<ffffffff82b52e49>] device_add+0x829/0x1300
-unreferenced object 0xffff888255118100 (size 256):
+The way this works is that EFI covers the secret area with a boot time
+handoff block, which means it gets destroyed as soon as
+ExitBootServices is called as a security measure ... if you do nothing
+the secret is shredded.  This means you need to make a copy of it
+before that happens if there are secrets that need to live beyond the
+EFI boot stub.
 
-Fix the error handling path to avoid memory leak.
+James
 
-Fixes: 7f6b11a18c30 ("[media] media: i2c: add driver for dual LED Flash, lm3560")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/media/i2c/lm3560.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/i2c/lm3560.c b/drivers/media/i2c/lm3560.c
-index 9e34ccce4fc3..8bd60b14b867 100644
---- a/drivers/media/i2c/lm3560.c
-+++ b/drivers/media/i2c/lm3560.c
-@@ -432,15 +432,22 @@ static int lm3560_probe(struct i2c_client *client,
- 
- 	rval = lm3560_subdev_init(flash, LM3560_LED1, "lm3560-led1");
- 	if (rval < 0)
--		return rval;
-+		goto err_subdev_init_led1;
- 
- 	rval = lm3560_init_device(flash);
- 	if (rval < 0)
--		return rval;
-+		goto err_init_device;
- 
- 	i2c_set_clientdata(client, flash);
- 
- 	return 0;
-+
-+err_init_device:
-+	v4l2_ctrl_handler_free(&flash->ctrls_led[LM3560_LED1]);
-+err_subdev_init_led1:
-+	v4l2_ctrl_handler_free(&flash->ctrls_led[LM3560_LED0]);
-+
-+	return rval;
- }
- 
- static int lm3560_remove(struct i2c_client *client)
--- 
-2.25.1
 
