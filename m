@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04871434AE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C8C434AE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhJTMOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:14:22 -0400
-Received: from relay.sw.ru ([185.231.240.75]:41610 "EHLO relay.sw.ru"
+        id S230192AbhJTMOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:14:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhJTMOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:14:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=Ogt0vQ4+gupep/lvDlFo1PXQW0DADnBHbHdATcZzm20=; b=bAVEJIxgSYk7Fvn45dl
-        zabDL0FPXFzAupZNKZRT+F3njJTT6tY9TEmQJfiWXuyPNfiAgrA40jD02Ij0xywkyAmFyWwkgp9WE
-        ArvtFI3nv6lb059uOy/T3Eck744pZCN7U6fYnWGjpyp72IRxDyJtspl6cWMLMCGZo3CyD2VdEsg=;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mdARo-006b83-7l; Wed, 20 Oct 2021 15:11:56 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH memcg RFC 0/3] memcg: prohibit unconditional exceeding the
- limit of dying tasks
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
-Message-ID: <fe1d45a1-276d-b0f4-fb71-8f5c1a9e8872@virtuozzo.com>
-Date:   Wed, 20 Oct 2021 15:11:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230091AbhJTMOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:14:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B553611C6;
+        Wed, 20 Oct 2021 12:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634731908;
+        bh=/7MMHoYfZK7XLnUrE2PQLC1zWR1tC3EW2Hg6y4POQUA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KnG137UxBUNq+tAFiuBegbFpBqPiWBkXFxzbh0G/hCORY/I1RUNpOzov3Yaun84At
+         kkxE+Vr5ue7UsnvsRDv2JDt/bun8Kvz9SSjvfQ+xX/8L0e3KU9lg1VtUnMJgNO64PC
+         ZluY515zwhcw+NufsIT5v0Z9fRRT9CDvvc7d9xVE=
+Date:   Wed, 20 Oct 2021 14:11:46 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Dov Murik <dovmurik@linux.ibm.com>, linux-efi@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrew Scull <ascull@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>,
+        Daniele Buono <dbuono@linux.vnet.ibm.com>,
+        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] efi/libstub: Copy confidential computing secret
+ area
+Message-ID: <YXAHgkcfwSCBeCbh@kroah.com>
+References: <20211020061408.3447533-1-dovmurik@linux.ibm.com>
+ <20211020061408.3447533-2-dovmurik@linux.ibm.com>
+ <YW+5phDcxynJD2qy@kroah.com>
+ <fb309e2686ca42df2c053cc1b060b1bc774fd3e7.camel@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb309e2686ca42df2c053cc1b060b1bc774fd3e7.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Michal,
-as you requested, I splited v4 patch version into 3 separate parts.
-Let's discuss each of them.
+On Wed, Oct 20, 2021 at 08:00:28AM -0400, James Bottomley wrote:
+> On Wed, 2021-10-20 at 08:39 +0200, Greg KH wrote:
+> > On Wed, Oct 20, 2021 at 06:14:06AM +0000, Dov Murik wrote:
+> [...]
+> > > +	help
+> > > +	  Copy memory reserved by EFI for Confidential Computing (coco)
+> > > +	  injected secrets, if EFI exposes such a table entry.
+> > 
+> > Why would you want to "copy" secret memory?
+> > 
+> > This sounds really odd here, it sounds like you are opening up a
+> > security hole.  Are you sure this is the correct text that everyone
+> > on the "COCO" group agrees with?
+> 
+> The way this works is that EFI covers the secret area with a boot time
+> handoff block, which means it gets destroyed as soon as
+> ExitBootServices is called as a security measure ... if you do nothing
+> the secret is shredded.  This means you need to make a copy of it
+> before that happens if there are secrets that need to live beyond the
+> EFI boot stub.
 
-Open questions/ToDo:
+Ok, but "copy secrets" does sound really odd, so you all need a much
+better description here, and hopefully somewhere else in Documentation/
+to describe exactly what this new API is and is to be used for.
 
-- Update patch descriptions (and add some comments) 
+Otherwise I read this as "hey a backdoor to read the secrets I wasn't
+supposed to be able to see!"
 
-- in part 2 aka "memcg: remove charge forcinig for dying tasks":
-  should we keep task_is_dying() in mem_cgroup_out_of_memory() ?
+thanks,
 
-- in part 3 aka "memcg: handle memcg oom failures"
-   what is the best way to notify pagefault_out_of_memory() about 
-    mem_cgroup_out_of_memory failure ?
-    
-- what is the best way to handle memcg failure doe to kmem limit,
-    it can trigger false global OOM
-
-Vasily Averin (3):
-  mm: do not firce global OOM from inside dying tasks
-  memcg: remove charge forcinig for dying tasks
-  memcg: handle memcg oom failures
-
- mm/memcontrol.c | 52 ++++++++++++++++++++++++++++---------------------
- mm/oom_kill.c   |  3 +++
- 2 files changed, 33 insertions(+), 22 deletions(-)
-
--- 
-2.32.0
-
+greg k-h
