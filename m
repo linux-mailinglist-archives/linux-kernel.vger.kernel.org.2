@@ -2,199 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46678434BA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E193B434B9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhJTM5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
+        id S230179AbhJTM4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhJTM5S (ORCPT
+        with ESMTP id S229757AbhJTM4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:57:18 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44112C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:55:04 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id y30so23655823edi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:55:04 -0700 (PDT)
+        Wed, 20 Oct 2021 08:56:49 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066C6C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:54:35 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id j129-20020a1c2387000000b00322f53b9bbfso1445235wmj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:54:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=82ITU3rMrXPNFLNPs43kr8rBrNr3jL7LKXXnaokGi+E=;
-        b=P3tQpSlOQs4X40VCMLBQiaKc6P3mFQSmVb67ddZSIy440yQqS5yR1t8Lw0WqpqCUjj
-         ddMomQkc7KUbgpl1A/UkoL/WYoxUnHjQ77SZQC335favhjk3vZjTRKzHc6ObX3FhV4Gu
-         RGEMPWIRm4MtY1SDCg5NOoNAaJN+PY1bEb7VuNQOgsAzNGP5ceRdHDx+6vG9IXPgKpUC
-         Dy9UJ/ycNvvut37NRv5g/W/buTrecYzozZ76ht5zX+JvcKsyqgNHWFZScCGU+C8yhLv9
-         h5FVXe0HsL4pzNX/E21EkI3AJ3yvJRJFyv4Wzt5RHVQ2gooeDSZF+2/eYPNLCdCjfNXL
-         qagA==
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=RaJru0LeJpp+5gdjew/h/QiM8NOqvMypszVPqMO2bps=;
+        b=oZ6IDXUlY7cvhwSvrcAq7EeqRaqyNFERA30XsAN/R0atKAg0QxWlzqduJ8bvkKfzaL
+         iFFJGIU/gYoi2smwZmc4C4EZ3jD0zqqcq6U+TQwNzyWSqBuJuMvxi8KFz1Lg1GRB6Tmg
+         2T5ACUdq32UKsj+mrEjUOFsFabxxO0uB+Py89RayddZv+QOZohytvuCcV3OpQ/zpWGAP
+         mGREZkfqely9KNwtznFnGyz4VITMXlIcrN0HP63rXc1s3Gb1MAFQ7b+CJkkYW5n8g+Ii
+         fVUu1u1IHOb3Xu80Ym1Bhp9IOoEQNIPULF4sWksWawHUaOgfD8O+4N6grDZVaf42RGkU
+         aVeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=82ITU3rMrXPNFLNPs43kr8rBrNr3jL7LKXXnaokGi+E=;
-        b=YmQAb5DslL5moUEvGpUFSespXv8EiumJdXu5d1DA/VCgPkPy373V2c0Vl0vRS04Vzk
-         5pL72uJvUhJQYAbfp/DsDNR+4ndBNCEH7jh5uLCLcjlpSyH/mweQCn3PHRPxue0oma3y
-         PzrbbHKRBEq3iw4jDNSi1IdG/MfDok53Rb+/GQdHWQ1PLK3/pvHKdqn7myF6vdlQoTJT
-         k57H3p/jM010ohi34hx0oK0pj9CMHN8OOSefiVIThm4390mzJRf9cVQx8y1RB3lBC+cB
-         KAti9VtpEGq9j1FkWruzq3S/4+p1FOdnJ3TEIvOzUidMIJBeMVBeW9Htvn2V10r5RVLH
-         expw==
-X-Gm-Message-State: AOAM530WHQ+0UYx+ITGdBspw/vGaikl1NPai0EqJFcmBT/RKVulVgisC
-        8oUrGscNrJ5gErlcpGiXuvVeKpi321FPDau0L+lu5Q==
-X-Google-Smtp-Source: ABdhPJyyf+KJpst7xbEZ6ZGPiLIm7g8o/Fi8mT1cTrkLSX/EQGvP5rMSifD9xZqlNhDYGSd++hXcLiebofcUJ/zHdTM=
-X-Received: by 2002:a17:906:684e:: with SMTP id a14mr46197800ejs.142.1634734475529;
- Wed, 20 Oct 2021 05:54:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211019203850.3833915-1-u.kleine-koenig@pengutronix.de>
- <CABXOdTeOO=Yf37_p1c8HVigkqqRyR90RqRDaLk5qxxp3jAGgEA@mail.gmail.com> <20211020071753.wltjslmimb6wtlp5@pengutronix.de>
-In-Reply-To: <20211020071753.wltjslmimb6wtlp5@pengutronix.de>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Wed, 20 Oct 2021 05:54:24 -0700
-Message-ID: <CABXOdTcgbobZwVarxXt8J+MTB2v4fO5uq+wZWCTwWsg=4mQTzg@mail.gmail.com>
-Subject: Re: [PATCH v2] platform/chrome: cros_ec: Make cros_ec_unregister()
- return return void
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel@pengutronix.de
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=RaJru0LeJpp+5gdjew/h/QiM8NOqvMypszVPqMO2bps=;
+        b=6XkKCkwbU0Am3yK9AppvWcronGAe8W52ZkleT8/0f+dxF39kJ/JsSGBApZMUrMO9lO
+         vfRDOK6tow/ICfwfMLE2bmgzipS9xorEnhMy7B70L+gf9ppwFForcI8kwGyu4MVScygX
+         BqyOUJkP65rUdEQSKFFnd+JkQX9sbLWEYKeK+y57RO61CpVaypmUISCOLWWYfoPkv+IX
+         tFHEgNuIKbm/8e0r6rVjNEKSL7A6d4RxVarPxwM9x9/BYxXGVwBwNnOQY0Rq1x8okuUY
+         x/rT+zXrTjLkZSlCV+sInimcaauP0qybcZFH+RqXiwXhww/R5nkQZmc38Jmlf0icXvUC
+         e3cQ==
+X-Gm-Message-State: AOAM531gLD5YtLmn6WwNNovkcZqYffdzJ4lMDuATrWQzV3xNmTp+fstv
+        Omzgp1/MFc3NqloLRfDwwGk=
+X-Google-Smtp-Source: ABdhPJweDfWhprqQZ9TXfiXrLPD5b+5FrmVKVr2vfhA4Lm4MbMQzCfLjd2D/qdn6gs98pMAtb6L5iw==
+X-Received: by 2002:a5d:6d51:: with SMTP id k17mr51031912wri.233.1634734473573;
+        Wed, 20 Oct 2021 05:54:33 -0700 (PDT)
+Received: from ?IPv6:2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62? ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id j16sm2253167wms.16.2021.10.20.05.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 05:54:33 -0700 (PDT)
+Message-ID: <6089e564f89ceaa7303bf3a4b4c864bf1389ac25.camel@gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH] staging: vt6655: Rename
+ `by_preamble_type` parameter
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
+        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 20 Oct 2021 13:54:27 +0100
+In-Reply-To: <alpine.DEB.2.22.394.2110201051300.2930@hadrien>
+References: <20211020084033.414994-1-karolinadrobnik@gmail.com>
+         <alpine.DEB.2.22.394.2110201051300.2930@hadrien>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:17 AM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> Up to now cros_ec_unregister() returns zero unconditionally. Make it
-> return void instead which makes it easier to see in the callers that
-> there is no error to handle.
->
-> Also the return value of i2c, platform and spi remove callbacks is
-> ignored anyway.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+On Wed, 2021-10-20 at 10:54 +0200, Julia Lawall wrote:
+> On Wed, 20 Oct 2021, Karolina Drobnik wrote:
+> 
+> > Drop `by` prefix in the first parameter of `bb_get_frame_time`
+> > function.
+> > As the original argument, `byPreambleType`, was renamed to
+> > `preamble_type`,
+> > the parameter referring to it is now renamed to match the new
+> > naming
+> > convention.
+> > Update `bb_get_frame_time` comment to reflect that change.
+> > 
+> > This patch is a follow-up work to this commit:
+> >     Commit 548b6d7ebfa4 ("staging: vt6655: Rename byPreambleType
+> > field")
+> 
+> This is not going to be practical.  If the previous patch is
+> accepted, then this it not needed.
 
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
+This change was there before but Greg told me to do only one logical
+change per patch (which was a struct member rename), so I reverted it.
+I believe this is needed because this parameter still uses Hungarian
+notation, which is against the LK coding style. Also, it makes sense to
+update the name given my previous change.
 
-> ---
-> On Tue, Oct 19, 2021 at 02:31:46PM -0700, Guenter Roeck wrote:
-> > On Tue, Oct 19, 2021 at 1:39 PM Uwe Kleine-K=C3=B6nig
-> > <u.kleine-koenig@pengutronix.de> wrote:
-> > > -int cros_ec_unregister(struct cros_ec_device *ec_dev)
-> > > +void cros_ec_unregister(struct cros_ec_device *ec_dev)
-> > >  {
-> > >         if (ec_dev->pd)
-> > >                 platform_device_unregister(ec_dev->pd);
-> >
-> > Isn't there a "return 0;" hiding about here which would now result in
-> > a compile error ?
->
-> Argh, you're right. I forgot to squash this in after my build test :-\
-> Here's a v2.
->
-> Thanks
-> Uwe
->
->  drivers/platform/chrome/cros_ec.c     | 4 +---
->  drivers/platform/chrome/cros_ec.h     | 2 +-
->  drivers/platform/chrome/cros_ec_i2c.c | 4 +++-
->  drivers/platform/chrome/cros_ec_lpc.c | 4 +++-
->  drivers/platform/chrome/cros_ec_spi.c | 4 +++-
->  5 files changed, 11 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/=
-cros_ec.c
-> index fc5aa1525d13..d49a4efe46c8 100644
-> --- a/drivers/platform/chrome/cros_ec.c
-> +++ b/drivers/platform/chrome/cros_ec.c
-> @@ -302,13 +302,11 @@ EXPORT_SYMBOL(cros_ec_register);
->   *
->   * Return: 0 on success or negative error code.
->   */
-> -int cros_ec_unregister(struct cros_ec_device *ec_dev)
-> +void cros_ec_unregister(struct cros_ec_device *ec_dev)
->  {
->         if (ec_dev->pd)
->                 platform_device_unregister(ec_dev->pd);
->         platform_device_unregister(ec_dev->ec);
-> -
-> -       return 0;
->  }
->  EXPORT_SYMBOL(cros_ec_unregister);
->
-> diff --git a/drivers/platform/chrome/cros_ec.h b/drivers/platform/chrome/=
-cros_ec.h
-> index 78363dcfdf23..bbca0096868a 100644
-> --- a/drivers/platform/chrome/cros_ec.h
-> +++ b/drivers/platform/chrome/cros_ec.h
-> @@ -11,7 +11,7 @@
->  #include <linux/interrupt.h>
->
->  int cros_ec_register(struct cros_ec_device *ec_dev);
-> -int cros_ec_unregister(struct cros_ec_device *ec_dev);
-> +void cros_ec_unregister(struct cros_ec_device *ec_dev);
->
->  int cros_ec_suspend(struct cros_ec_device *ec_dev);
->  int cros_ec_resume(struct cros_ec_device *ec_dev);
-> diff --git a/drivers/platform/chrome/cros_ec_i2c.c b/drivers/platform/chr=
-ome/cros_ec_i2c.c
-> index 30c8938c27d5..22feb0fd4ce7 100644
-> --- a/drivers/platform/chrome/cros_ec_i2c.c
-> +++ b/drivers/platform/chrome/cros_ec_i2c.c
-> @@ -313,7 +313,9 @@ static int cros_ec_i2c_remove(struct i2c_client *clie=
-nt)
->  {
->         struct cros_ec_device *ec_dev =3D i2c_get_clientdata(client);
->
-> -       return cros_ec_unregister(ec_dev);
-> +       cros_ec_unregister(ec_dev);
-> +
-> +       return 0;
->  }
->
->  #ifdef CONFIG_PM_SLEEP
-> diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chr=
-ome/cros_ec_lpc.c
-> index 1f7861944044..8527a1bac765 100644
-> --- a/drivers/platform/chrome/cros_ec_lpc.c
-> +++ b/drivers/platform/chrome/cros_ec_lpc.c
-> @@ -439,7 +439,9 @@ static int cros_ec_lpc_remove(struct platform_device =
-*pdev)
->                 acpi_remove_notify_handler(adev->handle, ACPI_ALL_NOTIFY,
->                                            cros_ec_lpc_acpi_notify);
->
-> -       return cros_ec_unregister(ec_dev);
-> +       cros_ec_unregister(ec_dev);
-> +
-> +       return 0;
->  }
->
->  static const struct acpi_device_id cros_ec_lpc_acpi_device_ids[] =3D {
-> diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chr=
-ome/cros_ec_spi.c
-> index 14c4046fa04d..713c58687721 100644
-> --- a/drivers/platform/chrome/cros_ec_spi.c
-> +++ b/drivers/platform/chrome/cros_ec_spi.c
-> @@ -790,7 +790,9 @@ static int cros_ec_spi_remove(struct spi_device *spi)
->  {
->         struct cros_ec_device *ec_dev =3D spi_get_drvdata(spi);
->
-> -       return cros_ec_unregister(ec_dev);
-> +       cros_ec_unregister(ec_dev);
-> +
-> +       return 0;
->  }
->
->  #ifdef CONFIG_PM_SLEEP
-> --
-> 2.30.2
->
-> --
-> Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig       =
-     |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ =
-|
+> there needs to be a vn+1 putting the patches together into a series.
+
+I didn't know that it should be send this way, especially given the
+fact that Outreachy applicants should first get 3-5 patches out before
+creating a patchset. Or has something changed in this regard?
+
+> > @@ -1691,7 +1691,7 @@ static const unsigned short
+> > awc_frame_time[MAX_RATE] = {
+> >   *
+> >   * Parameters:
+> >   *  In:
+> > - *      by_preamble_type  - Preamble Type
+> > + *      preamble_type     - Preamble Type
+> >   *      by_pkt_type        - PK_TYPE_11A, PK_TYPE_11B,
+> > PK_TYPE_11GB, PK_TYPE_11GA
+> 
+> In the realm of small cleanups to this driver, the extra space in
+> front of the - above is a bit annoying.
+
+I can add this in but will that still count as a one logical change? 
+I described the comment update, will that suffice?
+
+> > @@ -1717,7 +1717,7 @@ unsigned int bb_get_frame_time(unsigned char
+> > by_preamble_type,
+> >         rate = (unsigned int)awc_frame_time[rate_idx];
+> > 
+> >         if (rate_idx <= 3) {                /* CCK mode */
+> > -               if (by_preamble_type == 1) /* Short */
+> > +               if (preamble_type == 1) /* Short */
+> 
+> I hope you will get around to replacing the 1 by the appropriate
+> constant and removing the "Short" comment.
+
+I plan to do so after correcting the name variable.
+
+
+On Wed, 2021-10-20 at 10:55 +0200, Greg KH wrote:
+> On Wed, Oct 20, 2021 at 09:40:33AM +0100, Karolina Drobnik wrote:
+> > Drop `by` prefix in the first parameter of `bb_get_frame_time`
+> > function.
+> > As the original argument, `byPreambleType`, was renamed to
+> > `preamble_type`,
+> > the parameter referring to it is now renamed to match the new
+> > naming
+> > convention.
+> > Update `bb_get_frame_time` comment to reflect that change.
+> > 
+> > This patch is a follow-up work to this commit:
+> >     Commit 548b6d7ebfa4 ("staging: vt6655: Rename byPreambleType
+> > field")
+> 
+> There is no need for these two lines in the changelog text.  They can
+> go
+> below --- if you want to have them.
+
+Thank you for clarifying this. I've been following the Submitting
+Patches docs[1] and thought this is needed.
+
+
+Thanks,
+Karolina
+-------------------------------------------------------------------
+[1]:
+https://elixir.bootlin.com/linux/latest/source/Documentation/process/submitting-patches.rst#L106
+
+
