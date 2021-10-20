@@ -2,138 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D9543524C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DD8435253
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhJTSEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:04:46 -0400
-Received: from mail-mw2nam08on2083.outbound.protection.outlook.com ([40.107.101.83]:56705
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230493AbhJTSEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:04:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=apFd5mpCnSI1EBEyt4IWBfa0Q8YsYxaH1pr0LV5QQaSsDUfB3ynkaYuR+Uz8UdtuksFtlULthbF6r0mcFTu17sLUC++nodyD0rf+1oOnAdvh+WlQqs9y0e++KZ+rvRMp5wuxOO6P6WJKo7ic8rDkTLpg3C9CEvYcb7EbTNqs4aagnDbI134TzvVdt7ITK5RdxcQwlVfPS33sdA6i/TeP6AFrjzZFxbrQJud7LKwEGp1vXPHBdENP4IZP4YBdqNXjirbk74tYQA8rXaW4XYgo/1LLR7huw5ge8Ul8aS75VsyvEeebN5tnVy4lxJJB0KLu79o2PAMFA9w4k0ton0bS3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JrTVy2YsTGVgb5qlzQ39z9i5J5xokYg/dGW8AyfPzdw=;
- b=XXBZSviEN1QaRmFACeaK34eZhC5Bmvw9kjpLTC+087WHjxKU3QHkh+AckQBK5HBshHLOQvOaZ1VqC8FSxmj324pIaGxzssqSRGLKQpSXnjdWeUAwbxapu2QVKNQ+K4Os+ez+0TX9WoG1xd8Kpg8rKv2D3j/b2nSCBr772pD9gXIPMf0eraljps6cQ4wmzpH8LrLWZeq68gvVUkEw0ZbgJ+ahzRd97lyJC3xZFlftNvn5LD6sm7brVnePw7kQPk8Fultis263diTs5wpnMgk7duycslbCRuQNxGrfsj03m9tlS5cu5roMW/9g2+pSZ+HIMT9brv4u0ICQLKaHfhVIIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JrTVy2YsTGVgb5qlzQ39z9i5J5xokYg/dGW8AyfPzdw=;
- b=z6YqLWncrEga4iiniAw9eaEWt65d+GU6q2dSRNC5SJUO77edQyJInOtBLcM4kmNIFaHtkDWfAVCUE0yflrNFIfTKjfWnQp2ed2bCIq9n3wsGspdCLldkv5Kp5MW94aRXMRVBS7nmtn7GzjnRLcoiubAnuQzr0IuzzBsTqnm9gLY=
-Received: from BN1PR12CA0029.namprd12.prod.outlook.com (2603:10b6:408:e1::34)
- by BL1PR12MB5093.namprd12.prod.outlook.com (2603:10b6:208:309::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15; Wed, 20 Oct
- 2021 18:02:25 +0000
-Received: from BN8NAM11FT014.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e1:cafe::47) by BN1PR12CA0029.outlook.office365.com
- (2603:10b6:408:e1::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend
- Transport; Wed, 20 Oct 2021 18:02:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT014.mail.protection.outlook.com (10.13.177.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4628.16 via Frontend Transport; Wed, 20 Oct 2021 18:02:25 +0000
-Received: from tlendack-t1.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 20 Oct
- 2021 13:02:24 -0500
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        <linux-efi@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        <stable@vger.kernel.org>
-Subject: [PATCH] x86/sme: Explicitly map new EFI memmap table as encrypted
-Date:   Wed, 20 Oct 2021 13:02:11 -0500
-Message-ID: <ebf1eb2940405438a09d51d121ec0d02c8755558.1634752931.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.33.1
+        id S230440AbhJTSHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:07:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39547 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230134AbhJTSHP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 14:07:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634753100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Rqy0k0k2+9dGFIZEyrmWS0grYJHei54Mq69/JjUvUA=;
+        b=SwqRNWTkVVnEkkp6ka07GqZYuKv/+A5pHlN94BsPB77mRKW/p4Oy4VxAs/fcrndNHeu6Z9
+        i6zqlfp6R96fkmZRyGuBuZyyaJjvsAhBxMV1A+EulDpqZccLAxs1eAcGGcK9H/r6tycyML
+        E8B3DH73JaEBhFtQ7JiQ/Cd0aQ8Sdxk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-7nQdzHjRPGSPbNG7Y2NJZw-1; Wed, 20 Oct 2021 14:04:59 -0400
+X-MC-Unique: 7nQdzHjRPGSPbNG7Y2NJZw-1
+Received: by mail-wr1-f69.google.com with SMTP id r21-20020adfa155000000b001608162e16dso10240918wrr.15
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:04:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=+Rqy0k0k2+9dGFIZEyrmWS0grYJHei54Mq69/JjUvUA=;
+        b=3tfgZiXDbcgnuonKwFnid3cOEVFufXBY/rqrwolCJll1HS3tOa6PINcIwF1OeMIXO9
+         ejY8UPt/phnRQHIxyqWcNkXr17G4NhSM/gnqXhjkYvC/UEQc+CFfqsH9jwVA9RWXtR10
+         EPKMO0M9Ni0rdpz2VNC53mGEHMj4bTeEqUDUQdQUjAqWT1ru5O9zvjI3VOcX2iOap9I8
+         EpbJvPITiqMdfknwO2+CWvFhyBUGtDXu5C3hzHvGMLH08KZLBB3ZBtLXyvdWQVMEDJ89
+         1o/qbE1wmMDd9c3NL+VN3JO0onEYE0oMDzPKkumzBeGy5mJ+S8y7HJlko1mPTGFAd/tj
+         rEVA==
+X-Gm-Message-State: AOAM530LTTc7ePJitStc3XhCf9GC2M2CiZ4dl5oY/LOFfG+V2GVGZZGc
+        7kGK5tmOJi9UglgAw5XA476rPWBxNRsfdkg1NJkgpy0loE9+u+IlKLYZyr2UMpr8GUEMb2fZH7J
+        bqLgiZ06+MAdMT/FfU2V2XxMF
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr917487wrb.336.1634753098347;
+        Wed, 20 Oct 2021 11:04:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnbhcs8X/+Ni82lPE9E4UUTahXmAl5AM96VeEI/zc9Q//uwgL1v2x+2la/x4nZfuXGZRMdxA==
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr917444wrb.336.1634753098043;
+        Wed, 20 Oct 2021 11:04:58 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c63d4.dip0.t-ipconnect.de. [91.12.99.212])
+        by smtp.gmail.com with ESMTPSA id t188sm2637956wma.43.2021.10.20.11.04.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 11:04:57 -0700 (PDT)
+Message-ID: <436a9f9c-d5af-7d12-b7d2-568e45ffe0a0@redhat.com>
+Date:   Wed, 20 Oct 2021 20:04:56 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0fd01d4b-661e-4d11-8636-08d993f3c5b2
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5093:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB50931FBE2960A0AE82E8C0F9ECBE9@BL1PR12MB5093.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7Yc04aWGR0bFHkH2Kig+Jg1lg/toRpfIGtNGxU7UD+DeA5wrBq5HNRvGErtS9DaK8zHSKTa0lewSxsqregsmQVAHs1sAr7XBNFPxkZGBmpPH3DNhy2Xm9S6t5KVgw4gZtvekj1GQSO2wROMtZrDWkFeM2Yn3jz2+YDTfryFcecNKsk/DtZFPwWlvnxcuZzewb1AYYhsJ3VlwHs3pUtOB1grP8jgNKGxQbJ0GVM/SG9SPKGu8Bs3/4SzT74qx+kOpa85d3mcqXzgJYID4cDKltm+dAY4dSkJDhcyzdUF6dDGK5594RSRR4xD+j3GUfOFJpczjRTmp8rmDzRWqtym5H0QRhKKTGkOOE45vLtO3tbC2DIHbJYNmL+2yOc2aaTV6d2NtxMOHgQPlxL8LYn3TqyS79a16ogRoB9wJvrAdtpJJOmls7BQfZR0Nsg8TSjf6FQb11blVLD3ixiL1R1UB4xLEeAVPH+E0DLwDq2/aGkL8Z8JoK5dC9JGU/mbnaKSe0+iKWemP8hokyEYgIQOvNbw8cWqeFfsZPSgeRv6XT1CGfr2gUHDZIBYDX2vIx1MPtuw7BN2lFF7TqagqbJNHGyXXcAtEB39JvcTEj5iD2zj/W1solqaJMWyhM6NzVA+ULR2XicPlp/itQ9pqT9cAdSrPIN/JV9UFn/5RPniTFQFcvWc94R8M3eHCRzggYUF0EQz9Gp1SpVZypMQSfXdBAdbB9WqGquLTJpt6OHmXaXA=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(7696005)(2906002)(186003)(54906003)(110136005)(356005)(16526019)(6666004)(316002)(336012)(86362001)(2616005)(508600001)(426003)(5660300002)(83380400001)(47076005)(36756003)(70586007)(8936002)(7416002)(8676002)(36860700001)(81166007)(82310400003)(4326008)(26005)(70206006)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 18:02:25.2343
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fd01d4b-661e-4d11-8636-08d993f3c5b2
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT014.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5093
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+References: <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan> <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org> <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW28vaoW7qNeX3GP@casper.infradead.org> <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
+ <YXBRPSjPUYnoQU+M@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+In-Reply-To: <YXBRPSjPUYnoQU+M@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reserving memory using efi_mem_reserve() calls into the x86
-efi_arch_mem_reserve() function. This function will insert a new EFI
-memory descriptor into the EFI memory map representing the area of
-memory to be reserved and marking it as EFI runtime memory. As part
-of adding this new entry, a new EFI memory map is allocated and mapped.
-The mapping is where a problem can occur. This new memory map is mapped
-using early_memremap() and generally mapped encrypted, unless the new
-memory for the mapping happens to come from an area of memory that is
-marked as EFI_BOOT_SERVICES_DATA memory. In this case, the new memory will
-be mapped unencrypted. However, during replacement of the old memory map,
-efi_mem_type() is disabled, so the new memory map will now be long-term
-mapped encrypted (in efi.memmap), resulting in the map containing invalid
-data and causing the kernel boot to crash.
+On 20.10.21 19:26, Matthew Wilcox wrote:
+> On Wed, Oct 20, 2021 at 09:50:58AM +0200, David Hildenbrand wrote:
+>> For the records: I was happy to see the slab refactoring, although I
+>> raised some points regarding how to access properties that belong into
+>> the "struct page".
+> 
+> I thought the slab discussion was quite productive.  Unfortunately,
+> none of our six (!) slab maintainers had anything to say about it.  So I
+> think it's pointless to proceed unless one of them weighs in and says
+> "I'd be interested in merging something along these lines once these
+> problems are addressed".
 
-Since it is known that the area will be mapped encrypted going forward,
-explicitly map the new memory map as encrypted using early_memremap_prot().
+Yes, that's really unfortunate ... :(
 
-Cc: <stable@vger.kernel.org> # 4.14.x
-Fixes: 8f716c9b5feb ("x86/mm: Add support to access boot related data in the clear")
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
----
- arch/x86/platform/efi/quirks.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+>> As raised elsewhere, I'd also be more comfortable
+>> seeing small incremental changes/cleanups that are consistent even
+>> without having decided on an ultimate end-goal -- this includes folios.
+>> I'd be happy to see file-backed THP gaining their own, dedicated type
+>> first ("struct $whatever"), before generalizing it to folios.
+> 
+> I am genuinely confused by this.
+> 
+> Folios are non-tail pages.  That's all.  There's no "ultimate end-goal".
+> It's just a new type that lets the compiler (and humans!) know that this
+> isn't a tail page.
+> 
+> Some people want to take this further, and split off special types from
+> struct page.  I think that's a great idea.  I'm even willing to help.
+> But there are all kinds of places in the kernel where we handle generic
+> pages of almost any type, and so regardless of how much we end up
+> splitting off from struct page, we're still going to want the concept
+> of folio.
 
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index b15ebfe40a73..b0b848d6933a 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -277,7 +277,8 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
- 		return;
- 	}
- 
--	new = early_memremap(data.phys_map, data.size);
-+	new = early_memremap_prot(data.phys_map, data.size,
-+				  pgprot_val(pgprot_encrypted(FIXMAP_PAGE_NORMAL)));
- 	if (!new) {
- 		pr_err("Failed to map new boot services memmap\n");
- 		return;
+And I guess that generic mechanism is where the controversy starts and
+where people start having different expectation. IMHO you can tell that
+from the whole "naming" discussion/controversy. I always thought, why
+not call it "struct compound_page" until I think someone commented that
+it might not be a compound page but only a single base page somewhere.
+But I got tired (most probably just like you) when reading all the wild
+ideas and all the side discussions. Nobody can follow all that.
+
+If we'd be limiting this to "this is an anon THP" and call it "struct
+anon_thp", I assume the end result would be significantly easier. Anon
+THP only make sense with pages >1, otherwise it's simply a base page and
+has to be treated completely different by most MM code (esp. THP splitting).
+
+Similarly, call it "struct filemap" (bad name) and define it as either
+being a single page or a compound page, however, the head of the page
+(what you call folio).
+
+
+Let's think about this (and this is something that might happen for
+real): assume we have to add a field for handling something about anon
+THP in the struct page (let's assume in the head page for simplicity).
+Where would we add it? To "struct folio" and expose it to all other
+folios that don't really need it because it's so special? To "struct
+page" where it actually doesn't belong after all the discussions? And if
+we would have to move that field it into a tail page, it would get even
+more "tricky".
+
+Of course, we could let all special types inherit from "struct folio",
+which inherit from "struct page" ... but I am not convinced that we
+actually want that. After all, we're C programmers ;)
+
+But enough with another side-discussion :)
+
+
+Yes, the types is what I think is something very reasonable to have now
+that we discussed it; and I think it's a valuable result of the whole
+discussion. I consider it as the cleaner, smaller step.
+
+> 
+> I get that in some parts of the MM, we can just assume that any struct
+> page is a non-tail page.  But that's not the case in the filemap APIs;
+> they're pretty much all defined to return the precise page which contains
+> the specific byte.  I think that's a mistake, and I'm working to fix it.
+> But until it is all fixed [1], having a type which says "this is not a
+> tail page" is, frankly, essential.
+
+I can completely understand that the filemap API wants and needs such a
+concept. I think having some way to do that for the filemap API is very
+much desired.
+
 -- 
-2.33.1
+Thanks,
+
+David / dhildenb
 
