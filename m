@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC05435127
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6508543512D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhJTR07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:26:59 -0400
-Received: from mail-4317.proton.ch ([185.70.43.17]:52917 "EHLO
-        mail-4317.proton.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhJTR06 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:26:58 -0400
-Date:   Wed, 20 Oct 2021 17:24:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1634750682;
-        bh=77z2TAz6twFFcjLPzt2kV+UKOHbqTBnqrqy+N6bDW/k=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=qOeFKyQBfqHLSTz41MPxXFO6A2WHcVu9xLb1iy0dUDXfupgvOpbI1jDcH5g8TQcRR
-         trg2pWpGlpFJ0UQOkSjgdl6JCaMR8wQHaqCSJ0pHhgUGbHQs1vZBaBGCmdjkn2yITo
-         a4PGmvE6E1IyGZQGZfpWAKr1OACp++rCbmHnVUhs=
-To:     Steev Klimaszewski <steev@kali.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH] arm64: dts: qcom: sdm845-oneplus: enable second wifi channel
-Message-ID: <037d2bee-c04d-aa22-c8df-232dda4038a1@connolly.tech>
-In-Reply-To: <19359125-16fa-f9e0-1450-b0e9181064e1@kali.org>
-References: <20211020163557.291803-1-caleb@connolly.tech> <19359125-16fa-f9e0-1450-b0e9181064e1@kali.org>
+        id S230354AbhJTR2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:28:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230031AbhJTR2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:28:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27322610EA;
+        Wed, 20 Oct 2021 17:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634750746;
+        bh=Tp2E/SX36NEBnGlGkwTmUzxzFZ6Uw/WEGsaN9+HAuBY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=plPO8L2LITVZQkN/oAUYv25QG0Hm30zDbRNUnPDNuOhdNG4JcRVssV3VkyZSJcHK5
+         FQdJlW+BB5k0v+fArmAbvIUchSjcQXk4tGqbY5fh/e1hC0MXXAoCDWBlUNoZ9KtjbS
+         zKcFffIlqyPEXt058iTZSJVvu57feSj97cq+oDTvZwoexundV3A6GMogD8wRGIJ8VT
+         T0t6aNUCwq2HjYm8Xqyany40G0XhoVS0bHi03k04iI28empwS0eqnnIAVRR3c86wFS
+         TbriS98/uOySj6bQzQccf/j1y8PHr007uPT7PJpV0yBBEzeUDV7K5D2mA4ugpdJdIJ
+         jxP7MO67pYukA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 08EFF410A1; Wed, 20 Oct 2021 14:25:44 -0300 (-03)
+Date:   Wed, 20 Oct 2021 14:25:43 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     peterz@infradead.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, mingo@redhat.com, irogers@google.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        James Clark <James.Clark@arm.com>
+Subject: Re: [PATCH 0/2] perf jevents: Enable build warnings
+Message-ID: <YXBRF0vM8sEwherG@kernel.org>
+References: <1634316507-227751-1-git-send-email-john.garry@huawei.com>
+ <YXAoOgRVfkzr5vcS@kernel.org>
+ <744e6d05-eaec-49d9-1e3d-2f96d4e01e1a@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <744e6d05-eaec-49d9-1e3d-2f96d4e01e1a@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steev,
+Em Wed, Oct 20, 2021 at 03:41:01PM +0100, John Garry escreveu:
+> On 20/10/2021 15:31, Arnaldo Carvalho de Melo wrote:
+> > Em Sat, Oct 16, 2021 at 12:48:25AM +0800, John Garry escreveu:
+> > > Currently jevents builds without any complier warning flags enabled. So
+> > > use newly-defined HOSTCFLAGS, which comes from EXTRA_WARNINGS. I am not
+> > > 100% confident that this is the best way, but sending out for review.
+> > > 
+> > > Baseline is be8ecc57f180 (HEAD, acme/perf/core) perf srcline: Use
+> > > long-running addr2line per DSO
+> > 
+> > Thanks, applied.
+ 
+> I was going to send a v2, with changes according to James Clark's review  -
+> that was to add -Wall & -Werror, but they caused a problem on your perf/core
+> branch as they triggered the warn fixed in commit b94729919db2.
+ 
+> I suppose the best thing now is to send a patch on top once perf/core
+> contains that commit. Let me know otherwise.
 
-On 20/10/2021 18:13, Steev Klimaszewski wrote:
-> Hi Caleb,
->
-> On 10/20/21 11:36 AM, Caleb Connolly wrote:
->> Like the c630, the OnePlus 6 is also capable of using both antenna
->> channels for 2.4 and 5ghz wifi, however unlike the c630 only the first
->> channel is used for bluetooth.
->>
->> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
->> ---
->>    arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi | 7 +++++++
->>    1 file changed, 7 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi b/arch/=
-arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
->> index d4355522374a..8bf2430a3af7 100644
->> --- a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
->> @@ -248,6 +248,12 @@ vreg_l20a_2p95: ldo20 {
->>    =09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
->>    =09=09};
->>
->> +=09=09vreg_l23a_3p3: ldo23 {
->> +=09=09=09regulator-min-microvolt =3D <3300000>;
->> +=09=09=09regulator-max-microvolt =3D <3312000>;
->> +=09=09=09regulator-initial-mode =3D <RPMH_REGULATOR_MODE_HPM>;
->> +=09=09};
->> +
->>    =09=09vdda_qusb_hs0_3p1:
->>    =09=09vreg_l24a_3p075: ldo24 {
->>    =09=09=09regulator-min-microvolt =3D <3088000>;
->> @@ -647,6 +653,7 @@ &wifi {
->>    =09vdd-1.8-xo-supply =3D <&vreg_l7a_1p8>;
->>    =09vdd-1.3-rfa-supply =3D <&vreg_l17a_1p3>;
->>    =09vdd-3.3-ch0-supply =3D <&vreg_l25a_3p3>;
->> +=09vdd-3.3-ch1-supply =3D <&vreg_l23a_3p3>;
->>
->>    =09qcom,snoc-host-cap-8bit-quirk;
->>    };
->> --
->> 2.33.1
->>
->>
-> Just for the record, I added it for completeness, as far as I can tell,
-> the bluetooth driver itself won't use the second channel.
-Ah I see, I can confirm that the bluetooth hardware is only connected to th=
-e first channel on the op6, so with wifi off
-the second antenna can also be turned off to save power without affecting b=
-luetooth signal strength.
->
->
-> -- steev
->
+You can send a v2, as:
 
---
-Kind Regards,
-Caleb
+  29     8.60 debian:experimental-x-mipsel  : FAIL gcc version 11.2.0 (Debian 11.2.0-9)
+    util/intel-pt.c: In function 'intel_pt_synth_pebs_sample':
+    util/intel-pt.c:2146:33: error: passing argument 1 of 'find_first_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     2146 |         for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
+    /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:37:38: note: in definition of macro 'for_each_set_bit'
+       37 |         for ((bit) = find_first_bit((addr), (size));            \
+          |                                      ^~~~
+    In file included from /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops.h:21,
+                     from /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:34,
+                     from /git/perf-5.15.0-rc4/tools/include/linux/bitmap.h:6,
+                     from util/header.h:10,
+                     from util/session.h:7,
+                     from util/intel-pt.c:16:
+    /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops/find.h:109:51: note: expected 'const long unsigned int *' but argument is of type 'const uint64_t *' {aka 'const long long unsigned int *'}
 
+ Adrian, this is on:
+
+ commit 803a3c9233990e1adac8ea2421e3759c2d380cf8
+Author: Adrian Hunter <adrian.hunter@intel.com>
+Date:   Tue Sep 7 19:39:03 2021 +0300
+
+    perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+
+    Originally, software only supported redirecting at most one PEBS event to
+    Intel PT (PEBS-via-PT) because it was not able to differentiate one event
+    from another. To overcome that, add support for the
+    PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
+
+    Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+    Reviewed-by: Andi Kleen <ak@linux.intel.com>
+
+
+That is still just on tmp.perf/core, so we can fix it, probably its just
+making that uint64_t into a unsigned long, will check later if you don't
+beat me to it.
+
+- Arnaldo
