@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8E343463C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C314543464B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhJTHyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:54:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:57072 "EHLO foss.arm.com"
+        id S229846AbhJTH4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:56:52 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30316 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhJTHyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:54:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9DCD2F;
-        Wed, 20 Oct 2021 00:52:02 -0700 (PDT)
-Received: from [192.168.1.131] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFC533F70D;
-        Wed, 20 Oct 2021 00:52:00 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] arm64: vdso32: drop test for -march=armv8-a
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20211019223646.1146945-1-ndesaulniers@google.com>
- <20211019223646.1146945-3-ndesaulniers@google.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <fbb4936e-f4b5-47a3-ad3a-b139ab5e3f10@arm.com>
-Date:   Wed, 20 Oct 2021 09:52:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229503AbhJTH4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 03:56:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634716478; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=l1wCt2XwuXKYZBLiuE4Mb1G+nUelwSpcbnLazoCaWbw=;
+ b=ZDWwht9UeL9gTPsAHE9RlLXccTE/1PFTZdEjmw13dtqc+1qs0lku3/Z1xsDSrV3wW0hg2Q7K
+ BJ+9KIa0+DDQfhHCdK4J4lHZ9jpAtQjwt3bBR/CLH7zgwTueSE4IL6UgFIdpGZMrxQfw712u
+ 6Y7rTOnS2oL9bqw/gZLQ1Y26OSY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 616fcb32b03398c06c89d62a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 07:54:26
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A0B87C4360D; Wed, 20 Oct 2021 07:54:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D33B8C4360C;
+        Wed, 20 Oct 2021 07:54:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D33B8C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211019223646.1146945-3-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210722193459.7474-1-ojab@ojab.ru>
+References: <20210722193459.7474-1-ojab@ojab.ru>
+To:     ojab <ojab@ojab.ru>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ojab <ojab@ojab.ru>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163471645955.23156.7506403648173685920.kvalo@codeaurora.org>
+Date:   Wed, 20 Oct 2021 07:54:25 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ojab <ojab@ojab.ru> wrote:
 
+> After reboot with kernel & firmware updates I found `failed to copy
+> target iram contents:` in dmesg and missing wlan interfaces for both
+> of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
+> it, so while I have no idea what's actually happening, I don't see why
+> we should fail in this case, looks like some optional firmware ability
+> that could be skipped.
+> 
+> Also with additional logging there is
+> ```
+> [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
+> [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
+> [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
+> [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
+> ```
+> so exact branch could be seen.
+> 
+> Signed-off-by: Slava Kardakov <ojab@ojab.ru>
+> Tested-by: Axel Rasmussen <axelrasmussen@google.com>
 
-On 10/20/21 12:36 AM, Nick Desaulniers wrote:
-> As Arnd points out:
->   gcc-4.8 already supported -march=armv8, and we require gcc-5.1 now, so
->   both this #if/#else construct and the corresponding
->   "cc32-option,-march=armv8-a" check should be obsolete now.
-> 
-> Link: https://lore.kernel.org/lkml/CAK8P3a3UBEJ0Py2ycz=rHfgog8g3mCOeQOwO0Gmp-iz6Uxkapg@mail.gmail.com/
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+I'm planning to take this patch instead:
 
-> ---
->  arch/arm64/include/asm/vdso/compat_barrier.h | 7 -------
->  arch/arm64/kernel/vdso32/Makefile            | 8 +-------
->  2 files changed, 1 insertion(+), 14 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/vdso/compat_barrier.h b/arch/arm64/include/asm/vdso/compat_barrier.h
-> index fb60a88b5ed4..3ac35f4a667c 100644
-> --- a/arch/arm64/include/asm/vdso/compat_barrier.h
-> +++ b/arch/arm64/include/asm/vdso/compat_barrier.h
-> @@ -20,16 +20,9 @@
->  
->  #define dmb(option) __asm__ __volatile__ ("dmb " #option : : : "memory")
->  
-> -#if __LINUX_ARM_ARCH__ >= 8
->  #define aarch32_smp_mb()	dmb(ish)
->  #define aarch32_smp_rmb()	dmb(ishld)
->  #define aarch32_smp_wmb()	dmb(ishst)
-> -#else
-> -#define aarch32_smp_mb()	dmb(ish)
-> -#define aarch32_smp_rmb()	aarch32_smp_mb()
-> -#define aarch32_smp_wmb()	dmb(ishst)
-> -#endif
-> -
->  
->  #undef smp_mb
->  #undef smp_rmb
-> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-> index 89299a26638b..1407516e041e 100644
-> --- a/arch/arm64/kernel/vdso32/Makefile
-> +++ b/arch/arm64/kernel/vdso32/Makefile
-> @@ -65,13 +65,7 @@ endif
->  # From arm vDSO Makefile
->  VDSO_CAFLAGS += -fPIC -fno-builtin -fno-stack-protector
->  VDSO_CAFLAGS += -DDISABLE_BRANCH_PROFILING
-> -
-> -
-> -# Try to compile for ARMv8. If the compiler is too old and doesn't support it,
-> -# fall back to v7. There is no easy way to check for what architecture the code
-> -# is being compiled, so define a macro specifying that (see arch/arm/Makefile).
-> -VDSO_CAFLAGS += $(call cc32-option,-march=armv8-a -D__LINUX_ARM_ARCH__=8,\
-> -                                   -march=armv7-a -D__LINUX_ARM_ARCH__=7)
-> +VDSO_CAFLAGS += -march=armv8-a
->  
->  VDSO_CFLAGS := $(VDSO_CAFLAGS)
->  VDSO_CFLAGS += -DENABLE_COMPAT_VDSO=1
-> 
+https://patchwork.kernel.org/project/linux-wireless/patch/20211020075054.23061-1-kvalo@codeaurora.org/
+
+Patch set to Superseded.
 
 -- 
-Regards,
-Vincenzo
+https://patchwork.kernel.org/project/linux-wireless/patch/20210722193459.7474-1-ojab@ojab.ru/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
