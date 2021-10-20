@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F55B4353FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E66B43540A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhJTTq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
+        id S231585AbhJTTxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbhJTTq1 (ORCPT
+        with ESMTP id S229878AbhJTTxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:46:27 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4505AC06161C;
-        Wed, 20 Oct 2021 12:44:13 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so7476011otb.1;
-        Wed, 20 Oct 2021 12:44:13 -0700 (PDT)
+        Wed, 20 Oct 2021 15:53:44 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A52C06161C;
+        Wed, 20 Oct 2021 12:51:29 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id k7so608743wrd.13;
+        Wed, 20 Oct 2021 12:51:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BnN9MIlNnNEHe3vFSBOy65YT0/zTtejLPjp21ON54XM=;
-        b=f9nQVf2giN3wJxDfbtUTUJkqnEgsHMIAhBRDKRgfJmWICvBJUySo5eN6lnLB1C2bOv
-         EbKO8rhhnyUcWl6uPXB1xydamDaueXTZvJieRoImRhKYleEoNuO2i4hBfgubF6inUk88
-         e+WopyjhmntiepwIvBu/NI8RqXLYv7gNRN6+nVhmrun35wEBIzQCX1GR9d7g41ZoSZDa
-         u4QZqMKaf9hcjRpDou18NtIyrfp5ZlLGSeWvFppe/nUPlYTAMZhWQmqxtHrNJu16VdVI
-         L3i2YP7hw+kDpo9zthUb7MSdenqBciY52p4F9VkV6IfHxIcElZl02oZQw3EfiYGVvwVF
-         R71Q==
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QfMvuq4K6cpLtRMk3KHGbMTXe8asjprh2K841Dtt1oA=;
+        b=eKrR198UkLWE8Pj6Uegtd4wafbAXciypdyIk/hVInipJy/z1A0lb1Ao7qI8FNxOxqQ
+         5jhLCE1OjQlSWrJ+UByzv+jgRz/W+XTWWXO5iuCl48k/QCCtMPQUl0lZNoA8W1jQK3Gd
+         pSTtJbzQpLFvzlZi8/313qDegRXfztY/AR1Dc8ltLo3YIZx5rIeBnPUzld3S9JOK60YM
+         xs64ChpCFBn1sdLw0TLh2o89vLVftx+UOrR1d6Jr5sIJsp1ggp909Rnj5NHizbX0G4gs
+         j+cKIbf/D/ASpMphqy1soiV1NupoW+dalxdYiM8/f9e9HVft2YoGv2nL9+iUvcDtI11u
+         i+jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=BnN9MIlNnNEHe3vFSBOy65YT0/zTtejLPjp21ON54XM=;
-        b=P6XqZ0fq2v1zSyThJwiTCQ0JAm2MfDMEGtAyVz5pmKuukD3weHZd0F7wq8e6eicYYL
-         blx2W/3fSPybgOb224NriEDGOraMdiBjcGrUVLeB/ZPaj4CvYRX21l3XFaVXqHudSqnt
-         CIlS4/zfTIt5j35xAmCe7RxaRRNIKjv5BYOiRw5wUecnXMrkgKnJvFRlv8r7VbFfrwi6
-         P1GeXTq1vZ/BNe5hpt2z6q8YN/99YXLPphEG7h1IbSt4uBR28UY5xmsF6p09g0Z+Oh0k
-         wtVbBx17HpvdHN5uTr4lHrdqCK+P7AfhYUTd/8nyRhmGrCHn3GrXSQhxYIKdBUkhk+kt
-         GxPw==
-X-Gm-Message-State: AOAM5327/+4aZ2e4jlbQcT04JCYZknCFbBoF4h4MkyUd6vvgASPEMrmU
-        7DazPUhiN/EQLJCcGRLA5M0=
-X-Google-Smtp-Source: ABdhPJxL4kBEQ8gUV5nBs+kclyHcheCDaeGr/7iHXTpx9JD+NbtcFCTZWeb2l9Q5LpNao1cSG01V2A==
-X-Received: by 2002:a9d:63ca:: with SMTP id e10mr1015031otl.175.1634759052687;
-        Wed, 20 Oct 2021 12:44:12 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w69sm642977otb.16.2021.10.20.12.44.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QfMvuq4K6cpLtRMk3KHGbMTXe8asjprh2K841Dtt1oA=;
+        b=of9Nm9RLHTdO+MlD1zmm11lv3URNsGjoihGVEwyMGlIHHD1nhMZPQxt+zR/ltLi1ad
+         pWXUBp0xYtSTiwKT+zKZp4ghAsBhoBAjQznJhl8/bVcNgHJS+w2PNCVF936S+3rVe6ua
+         XOG18DB2JyNcK9mUdXQkNopuPo+brFEGKhTXmA/uGZhuvFM4uYnUQOcRgHHn12iwogit
+         E5k9SDvAnnFLb9P416G767yyfs1vjbW2SndDZ/BI33JwIDYO6ggfGhI6andJtIqPQn4K
+         D4Ov9zn/5eLdWwe6dNBYhG2LQW4ymLX1nYyi9msArutJOChDjY7ubqlh0PjaJAIXJbkE
+         GJSg==
+X-Gm-Message-State: AOAM530X59B39urIuClbrRPdA80wHBb/xIXU9pXuFu+Inc1rrDfT4N0h
+        Jns/XofxZoTVAtbBJE0GQ98=
+X-Google-Smtp-Source: ABdhPJzNxHFomcOViX4r7AOwWI5eIKmiLGy8O89pX8OtNiMEKNhsm2ixp+JrCw5VDyi89i6Tf32GIQ==
+X-Received: by 2002:adf:f904:: with SMTP id b4mr1528664wrr.403.1634759487982;
+        Wed, 20 Oct 2021 12:51:27 -0700 (PDT)
+Received: from localhost.localdomain (dynamic-2a01-0c23-b9f5-df00-f22f-74ff-fe21-0725.c23.pool.telefonica.de. [2a01:c23:b9f5:df00:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id f3sm2741310wml.11.2021.10.20.12.51.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:44:10 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 20 Oct 2021 12:44:08 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Mantas =?utf-8?Q?Mikul=C4=97nas?= <grawity@gmail.com>,
-        "Javier S . Pedro" <debbugs@javispedro.com>
-Subject: Re: [PATCH] Revert "watchdog: iTCO_wdt: Account for rebooting on
- second timeout"
-Message-ID: <20211020194408.GA2882870@roeck-us.net>
-References: <20211008003302.1461733-1-linux@roeck-us.net>
+        Wed, 20 Oct 2021 12:51:27 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-phy@lists.infradead.org, vkoul@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, kishon@ti.com,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v3 0/2] phy: Add support for the HDMI TX PHY on Meson8/8b/8m2
+Date:   Wed, 20 Oct 2021 21:51:05 +0200
+Message-Id: <20211020195107.1564533-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211008003302.1461733-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wim,
+Amlogic Meson8/8b/8m2 SoCs embed a HDMI TX PHY. Unfortunately there is
+no (public) documentation for this hardware. The best thing we have is
+the 3.10 vendor kernel, which unfortunately doesn't document most
+register bits (only a few are named there, the rest is all magic
+numbers).
+It is possible that this is a TranSwitch HDMI TX PHY based core, but
+this is pure speculation.
 
-On Thu, Oct 07, 2021 at 05:33:02PM -0700, Guenter Roeck wrote:
-> This reverts commit cb011044e34c ("watchdog: iTCO_wdt: Account for
-> rebooting on second timeout") and commit aec42642d91f ("watchdog: iTCO_wdt:
-> Fix detection of SMI-off case") since those patches cause a regression
-> on certain boards (https://bugzilla.kernel.org/show_bug.cgi?id=213809).
-> 
-> While this revert may result in some boards to only reset after twice
-> the configured timeout value, that is still better than a watchdog reset
-> after half the configured value.
-> 
-> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
-> Fixes: aec42642d91f ("watchdog: iTCO_wdt: Fix detection of SMI-off case")
-> Cc: Jan Kiszka <jan.kiszka@siemens.com>
-> Cc: Mantas Mikulėnas <grawity@gmail.com>
-> Reported-by: Javier S. Pedro <debbugs@javispedro.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Adding a driver for the HDMI TX PHY gets us one step closer to video
+output on these older SoCs.
 
-Any chance you can send a pull request with this patch prior to the v5.15
-release ?
 
-Thanks,
-Guenter
+Changes since v2 at [1]:
+- Use "amlogic,meson8-hdmi-tx-phy" as fallback compatible string for
+  Meson8b and Meson8m2. This affects both patches in this series and
+  it's the reason why I dropped Rob's Reviewed-by.
+- Add a comment to the driver explaining that there no detailed
+  register documentation (naming) is available and that's why we also
+  use some magic values in the driver as suggested by Vinod.
+- Hardcode the HHI_HDMI_PHY_CNTL* register offsets (from the HHI area)
+  directly in the driver instead of using some incomplete "reg" property
+  parsing code. This also makes it easier to compare the register values
+  with the vendor kernel sources and datasheets as the offset doesn't
+  have to be added/subtracted when comparing the values.
+
+
+Changes since v1 at [0]:
+- add a reg property to the dt-bindings
+- parse the reg property (register offset) in the driver
+- update copyright year to 2021 (spotted by Vinod, thanks!)
+- drop "default ARCH_MESON" from the Kconfig entry
+
+
+[0] https://patchwork.kernel.org/project/linux-amlogic/cover/20210604190338.2248295-1-martin.blumenstingl@googlemail.com/
+[1] https://patchwork.kernel.org/project/linux-amlogic/cover/20210629182047.893415-1-martin.blumenstingl@googlemail.com/
+
+
+Martin Blumenstingl (2):
+  dt-bindings: phy: Add the Amlogic Meson8 HDMI TX PHY bindings
+  phy: amlogic: Add a new driver for the HDMI TX PHY on Meson8/8b/8m2
+
+ .../phy/amlogic,meson8-hdmi-tx-phy.yaml       |  65 +++++++
+ drivers/phy/amlogic/Kconfig                   |  10 ++
+ drivers/phy/amlogic/Makefile                  |   1 +
+ drivers/phy/amlogic/phy-meson8-hdmi-tx.c      | 160 ++++++++++++++++++
+ 4 files changed, 236 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/amlogic,meson8-hdmi-tx-phy.yaml
+ create mode 100644 drivers/phy/amlogic/phy-meson8-hdmi-tx.c
+
+-- 
+2.33.1
+
