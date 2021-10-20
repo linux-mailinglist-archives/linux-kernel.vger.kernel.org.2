@@ -2,160 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A4A435672
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 01:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB779435662
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 01:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhJTXYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 19:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhJTXYl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 19:24:41 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DDCC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 16:22:26 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id i6so6682646ila.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 16:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WutBa9WFAX4tc3k0wjtFSo8EbR3mrDBc6qpprgC2Kuc=;
-        b=AZw2K34xtdcLXaJk8DEaQMf+B/MWbDi+mIQUKb3VFWgcx6UysmY4isNNa20tv8qsXV
-         btg8vt2RWb5kn6wOVyn9DFxhH6bca3vsTXZHCXPKZCzKOLAGpLTWkS32KKC6LljyoV4Q
-         LjMH2v2qsml/7Gi7wVpx8+0CF6nRKMTn19Qdj++hM2Z2QhpMibJsAz8FmZ3smG0HkGu8
-         HeqDr3BnWB9TTIIatgDIUzuwRGN+9exoBtrS1kvF1n8OR4pk4a3+meHOnjKAFr5snDON
-         Ij75zrRcAsgDd0cK4grmX++Xb7TrN4iKqQxR2CD0kdrkLZIPKoMcUSjmEgRKW6ztfUQO
-         eBqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WutBa9WFAX4tc3k0wjtFSo8EbR3mrDBc6qpprgC2Kuc=;
-        b=0/lNbcLoGFlSHQR9hMw1Jsg720b97J+i+Wv0EA9T8YWGcvj2j5VPoENAFv+CHqevs6
-         d7M58x5KtQwik+UNndqLE0RJVAF6sj7MDt0dozMJG7cPd591LbyaB0nsPeuPcnjDizKl
-         DaUUP4smk0OFTsHhQ/yxJz2+Us1hJICxywWm3KrbHxMJcvlj7A1Pp1hTWx88JbjAyFeI
-         WonkNDz1iD3njGTz1ZLp08C33s0/RH0rcFcBRJwV0L6Q7Ga/tcbW7TYuiCR9bqlt9cIH
-         nhAYWt7QGoc2i7Prn+bp9SigT32CVGX1uNa4nezvi/ohTuaqKDr6WQSjoTt54VFninaA
-         NnZw==
-X-Gm-Message-State: AOAM532jo1RIgV5lx2gvuSGnAlo8ji5lSOhB3H7dP74FRcS+sOD4qfqn
-        oQrJIrae/NAYPuMJ1t6TdB/S9S3n7KjYtXzGZEB1wBJn/dYZug==
-X-Google-Smtp-Source: ABdhPJzn+r9oS73a+on5j+d33ZoWl209dzm3wLULt9aGSr5cGiUaC0EAJYCgTqQAG+dalFw/lOd6JrqVqZF3NlZ88e8=
-X-Received: by 2002:a05:6e02:164d:: with SMTP id v13mr1301693ilu.10.1634772145515;
- Wed, 20 Oct 2021 16:22:25 -0700 (PDT)
+        id S231286AbhJTXUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 19:20:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229702AbhJTXUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 19:20:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2820560EFE;
+        Wed, 20 Oct 2021 23:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634771914;
+        bh=TWlR7qXBnj3Vsm8mAM/r2TdcOX5UhJFd1hVGZd99xyA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M3a8pK8kYSmQLGb6ZHur3eUUUg4KO8gqcz7stt2rlKGzA5S8Aq6tWc5pnzpSDFM1m
+         LQA1MqBbHVoYgewjAQyrxIU/jGNxx5JfLUOyhz75TnACayJyNfo9MLsQdrbmXrB87p
+         iI1bUt/vLXdqSKB8KRjmnVa7D07h7vlcbPV7tedNwTRibOuaIZB/shNklNq/ZlaLL6
+         HYtRX4cK7I5VRBddpEXaubQlNX/SAyXrKjj7GSQulzjW8sAKBcvtHtMInZnK+uUYpa
+         /sVe78yxxgYyvlrRk4HKvsT9mAJ1W6/P23UOiA098H21yuMrfM00ct3m+X98UE5+xP
+         10gBr3gQq30+w==
+Date:   Wed, 20 Oct 2021 18:23:14 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Len Baker <len.baker@gmx.com>, Benjamin LaHaise <bcrl@kvack.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] aio: Prefer struct_size over open coded arithmetic
+Message-ID: <20211020232314.GA1314273@embeddedor>
+References: <20210919094539.30589-1-len.baker@gmx.com>
+ <6cd35222-cc17-b3f5-dad4-ed540e0df79b@embeddedor.com>
 MIME-Version: 1.0
-References: <20211008210752.1109785-1-dlatypov@google.com> <CAGS_qxp0iF+7FLbgVyBHXONN8kKjcAr7B+q=kgF1c71pbgybPQ@mail.gmail.com>
- <CAGS_qxq21Zce-y_DSP2t4Ws98OFLYmbSmrn0O3G5jZ-=DJv0Kg@mail.gmail.com>
-In-Reply-To: <CAGS_qxq21Zce-y_DSP2t4Ws98OFLYmbSmrn0O3G5jZ-=DJv0Kg@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 20 Oct 2021 16:22:13 -0700
-Message-ID: <CAGS_qxrk4JmLp230ArK9f=vCkO45jBxEhk2-NRZGizw5-ArPaQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: continue past invalid utf-8 output
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6cd35222-cc17-b3f5-dad4-ed540e0df79b@embeddedor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 9:51 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Fri, Oct 8, 2021 at 4:51 PM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > On Fri, Oct 8, 2021 at 2:08 PM Daniel Latypov <dlatypov@google.com> wrote:
-> > >
-> > > kunit.py currently crashes and fails to parse kernel output if it's not
-> > > fully valid utf-8.
-> > >
-> > > This can come from memory corruption or or just inadvertently printing
-> > > out binary data as strings.
-> > >
-> > > E.g. adding this line into a kunit test
-> > >   pr_info("\x80")
-> > > will cause this exception
-> > >   UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 1961: invalid start byte
-> > >
-> > > We can tell Python how to handle errors, see
-> > > https://docs.python.org/3/library/codecs.html#error-handlers
-> > >
-> > > Unfortunately, it doesn't seem like there's a way to specify this in
-> > > just one location, so we need to repeat ourselves quite a bit.
-> > >
-> > > Specify `errors='backslashreplace'` so we instead:
-> > > * print out the offending byte as '\x80'
-> > > * try and continue parsing the output.
-> > >   * as long as the TAP lines themselves are valid, we're fine.
-> > >
-> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > > ---
-> > >  tools/testing/kunit/kunit.py        | 3 ++-
-> > >  tools/testing/kunit/kunit_kernel.py | 4 ++--
-> > >  2 files changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> > > index 9c9ed4071e9e..28ae096d4b53 100755
-> > > --- a/tools/testing/kunit/kunit.py
-> > > +++ b/tools/testing/kunit/kunit.py
-> > > @@ -457,9 +457,10 @@ def main(argv, linux=None):
-> > >                         sys.exit(1)
-> > >         elif cli_args.subcommand == 'parse':
-> > >                 if cli_args.file == None:
-> > > +                       sys.stdin.reconfigure(errors='backslashreplace')
-> >
-> > Ugh, pytype doesn't like this even though it's valid.
-> > I can squash the error with
-> >   sys.stdin.reconfigure(errors='backslashreplace')  # pytype:
-> > disable=attribute-error
-> >
-> > I had wanted us to avoid having anything specific to pytype in the code.
-> > But mypy (the more common typechecker iirc) hasn't been smart enough
-> > to typecheck our code since the QEMU support landed.
-> >
-> > If we don't add this directive, both typecheckers will report at least
-> > one spurious warning.
-> > Should I go ahead and add it, Brendan/David?
->
-> Friendly ping.
-> Should we go ahead and add "# pytype: disable=attribute-error" here?
+On Mon, Sep 20, 2021 at 07:11:17PM -0500, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 9/19/21 04:45, Len Baker wrote:
+> > As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> > and Conventions" documentation [1], size calculations (especially
+> > multiplication) should not be performed in memory allocator (or similar)
+> > function arguments due to the risk of them overflowing. This could lead
+> > to values wrapping around and a smaller allocation being made than the
+> > caller was expecting. Using those allocations could lead to linear
+> > overflows of heap memory and other misbehaviors.
+> > 
+> > So, use the struct_size() helper to do the arithmetic instead of the
+> > argument "size + size * count" in the kzalloc() function.
+> > 
+> > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> > 
+> > Signed-off-by: Len Baker <len.baker@gmx.com>
+> 
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-I've sent out a v2 with this:
-https://lore.kernel.org/linux-kselftest/20211020232121.1748376-1-dlatypov@google.com
+I'm taking this in my -next tree.
 
->
-> >
-> > >                         kunit_output = sys.stdin
-> > >                 else:
-> > > -                       with open(cli_args.file, 'r') as f:
-> > > +                       with open(cli_args.file, 'r', errors='backslashreplace') as f:
-> > >                                 kunit_output = f.read().splitlines()
-> > >                 request = KunitParseRequest(cli_args.raw_output,
-> > >                                             None,
-> > > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> > > index faa6320e900e..f08c6c36a947 100644
-> > > --- a/tools/testing/kunit/kunit_kernel.py
-> > > +++ b/tools/testing/kunit/kunit_kernel.py
-> > > @@ -135,7 +135,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
-> > >                                            stdin=subprocess.PIPE,
-> > >                                            stdout=subprocess.PIPE,
-> > >                                            stderr=subprocess.STDOUT,
-> > > -                                          text=True, shell=True)
-> > > +                                          text=True, shell=True, errors='backslashreplace')
-> > >
-> > >  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
-> > >         """An abstraction over command line operations performed on a source tree."""
-> > > @@ -172,7 +172,7 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
-> > >                                            stdin=subprocess.PIPE,
-> > >                                            stdout=subprocess.PIPE,
-> > >                                            stderr=subprocess.STDOUT,
-> > > -                                          text=True)
-> > > +                                          text=True, errors='backslashreplace')
-> > >
-> > >  def get_kconfig_path(build_dir) -> str:
-> > >         return get_file_path(build_dir, KCONFIG_PATH)
-> > >
-> > > base-commit: a032094fc1ed17070df01de4a7883da7bb8d5741
-> > > --
-> > > 2.33.0.882.g93a45727a2-goog
-> > >
+Thanks, Len.
+--
+Gustavo
