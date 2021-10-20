@@ -2,108 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70835435205
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AECA4351E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhJTRw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhJTRw5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:52:57 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB83C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:50:42 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i24so195007lfj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IFvyJDv7zWHNgpVy4rL7we9/QbUTjFwP2DzX3TA0tiQ=;
-        b=DxXrG20AfYyTWbuMUYzNfwR4ma6dWiFGO0KjGKjLqVUYkWc3DGlA7gExcJhltON98Q
-         iCOl7ShLDxT6gW3S/iaxj1F4KrUBb9e17xdURrxubqYpnaDf5fqI+klbo/6SpeMVbaxj
-         bVO5N1ypo4BJgVzIhZmV7S+lvG+ppRftQ74TP0w7xkCYNdCPabymX9EBoVJgU+AiJdnX
-         73rfLrfIuuMZZa7dbpcIoqZmbjgOPkSZh/tq0Pqn9LQQD0c50F18mXQtmzKwXTaIrbI4
-         VLerFWmUTLJfn1+7KKosGH7U2IvcsnC2m3gcHYqoEbu8bW+mpmpUd0FUhndHkvD2mYx+
-         E4OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IFvyJDv7zWHNgpVy4rL7we9/QbUTjFwP2DzX3TA0tiQ=;
-        b=xxxRIOUxttOQz3Z7fdAIyttF0KwYlYpMfh0JbWeCK868WDRsMxn5wxM0MsVGotVMWA
-         0eIRfS2HfYfckTYzJvVvstca8QsXfJqZsH1Tf5HfizOVByYdbdK5AHDmPb1MgIp3JR8N
-         LVygiZyyZK2IXL6BowHS3bAL/zR1BhZzUtESZHvddu/0mllqG1CfptC8O6fxfzHCdo2u
-         rBGZ6ShuDESaDyu5EMATbhRfTrmMPrbQB/PXaVybvUGeqGhIErkrJQPGK+LaNgkLvcMq
-         rNw1KYD3KyEkTS/+LsHwHqjS+o1+El/rW4hEesXvgiC0I0PyDao+NEL2XwuyzxU0hR+t
-         GtGA==
-X-Gm-Message-State: AOAM5304/ExBl7wQkuoirt3QAtPiTD2ajivLEgcft54q+0tm3IJghFwr
-        JPlDmWs1VtEvY0C4CRfKNqb2ViOa2VUn5Vr0p1FIfg==
-X-Google-Smtp-Source: ABdhPJwPFGMtZow5DrrM1QQEhKH4UgBAhO+q3OhbDbIA+NCFfvXVoE6xurM+6DQNbeaHKSEmyE1T/I8F3ayNnhS04hg=
-X-Received: by 2002:a05:6512:2284:: with SMTP id f4mr643276lfu.489.1634752240690;
- Wed, 20 Oct 2021 10:50:40 -0700 (PDT)
+        id S231157AbhJTRtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:49:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230411AbhJTRti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:49:38 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05C2F611C7;
+        Wed, 20 Oct 2021 17:47:21 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 18:51:40 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com
+Subject: Re: [PATCH v6 1/1] iio/scmi: Add reading "raw" attribute.
+Message-ID: <20211020185118.7a02cbf8@jic23-huawei>
+In-Reply-To: <20211019075949.17644-2-andriy.tryshnivskyy@opensynergy.com>
+References: <20211019075949.17644-1-andriy.tryshnivskyy@opensynergy.com>
+        <20211019075949.17644-2-andriy.tryshnivskyy@opensynergy.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211020173554.38122-1-keescook@chromium.org>
-In-Reply-To: <20211020173554.38122-1-keescook@chromium.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 20 Oct 2021 10:50:29 -0700
-Message-ID: <CAKwvOdnH4JG1Qt3scCVYGMT+iyfYKna4wyuODXZqURVfe+DZVg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] gcc-plugins: Explicitly document purpose and
- deprecation schedule
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Dan Li <ashimida@linux.alibaba.com>, ardb@kernel.org,
-        ojeda@kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-security-module@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:35 AM Kees Cook <keescook@chromium.org> wrote:
->
-> Hi,
->
-> GCC plugins should only exist when some compiler feature needs to be
-> proven but does not exist in either GCC nor Clang. For example, if a
-> desired feature is already in Clang, it should be added to GCC upstream.
-> Document this explicitly.
->
-> I'll put this in -next unless there are objections. :)
+On Tue, 19 Oct 2021 10:59:49 +0300
+Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
 
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+> Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
+> reading "raw" attribute in scmi_iio_read_raw.
+> Introduce new type IIO_VAL_INT_64 to read 64-bit value
+> for "raw" attribute.
+> 
+Change log needs to be below the --- otherwise we'll store it forever
+in git.  A linked tag (which will be generated when I apply)
+is sufficient for this sort of historical info.
 
->
-> Thanks!
->
-> -Kees
->
->
-> Kees Cook (2):
->   gcc-plugins: Explicitly document purpose and deprecation schedule
->   gcc-plugins: Remove cyc_complexity
->
->  Documentation/kbuild/gcc-plugins.rst        | 28 ++++++++-
->  scripts/Makefile.gcc-plugins                |  2 -
->  scripts/gcc-plugins/Kconfig                 | 20 +-----
->  scripts/gcc-plugins/cyc_complexity_plugin.c | 69 ---------------------
->  security/Kconfig.hardening                  |  9 ++-
->  5 files changed, 34 insertions(+), 94 deletions(-)
->  delete mode 100644 scripts/gcc-plugins/cyc_complexity_plugin.c
->
-> --
-> 2.30.2
->
+> Changes comparing v5 -> v6:
+> * revert v5 changes since with scmi_iio_read_raw() the channel
+>   can't be used by in kernel users (iio-hwmon)
+> * returned to v3 with direct mode
+> * introduce new type IIO_VAL_INT_64 to read 64-bit value
+> 
+> Changes comparing v4 -> v5:
+> * call iio_device_release_direct_mode() on error
+> * code cleanup, fix typo
+> 
+> Changes comparing v3 -> v4:
+> * do not use scmi_iio_get_raw() for reading raw attribute due to 32-bit
+>   return value limitation (actually I reverted the previous v3)
+> * introduce scmi_iio_read_raw to scmi_iio_ext_info[] which can return
+>   64-bit value
+> * enabling/disabling and reading raw attribute is done in direct mode
+> 
+> Changes comparing v2 -> v3:
+> * adaptation for changes in structure scmi_iio_priv (no member
+>   named 'handle')
+> 
+> Changes comparing v0 -> v2:
+> * added an error return when the error happened during config_set
+> * removed redundant cast for "readings"
+> * added check if raw value fits 32 bits
+> 
+> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+> ---
+>  drivers/iio/common/scmi_sensors/scmi_iio.c | 57 +++++++++++++++++++++-
+>  drivers/iio/industrialio-core.c            |  3 ++
+>  include/linux/iio/types.h                  |  1 +
 
+Two patches needed.  One to introduce the new core functionality then
+a second to use it in the driver.
 
--- 
+Actual code looks good to me though I think I'd like a comment next to
+the #define as not obvious which way around the two parts will go.
+
+There are some other places we will probably need to ultimately handle this
+to allow for in kernel consumers but those can come when someone needs them.
+
+Will need an ack from Jyoti on this one though as driver author.
 Thanks,
-~Nick Desaulniers
+
+Jonathan
+
+
+>  3 files changed, 60 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> index 7cf2bf282cef..2c1aec0fd5ff 100644
+> --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
+> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> @@ -279,6 +279,52 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+>  	return 0;
+>  }
+>  
+> +static int scmi_iio_read_channel_data(struct iio_dev *iio_dev,
+> +			     struct iio_chan_spec const *ch, int *val, int *val2)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	u32 sensor_config;
+> +	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
+> +	int err;
+> +
+> +	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +					SCMI_SENS_CFG_SENSOR_ENABLE);
+> +	err = sensor->sensor_ops->config_set(
+> +		sensor->ph, sensor->sensor_info->id, sensor_config);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in enabling sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	err = sensor->sensor_ops->reading_get_timestamped(
+> +		sensor->ph, sensor->sensor_info->id,
+> +		sensor->sensor_info->num_axis, readings);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in reading raw attribute for sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +					SCMI_SENS_CFG_SENSOR_DISABLE);
+> +	err = sensor->sensor_ops->config_set(
+> +		sensor->ph, sensor->sensor_info->id, sensor_config);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in disabling sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	*val = (u32)readings[ch->scan_index].value;
+> +	*val2 = (u32)(readings[ch->scan_index].value >> 32)
+> +
+> +	return IIO_VAL_INT_64;
+> +}
+> +
+>  static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+>  			     struct iio_chan_spec const *ch, int *val,
+>  			     int *val2, long mask)
+> @@ -300,6 +346,14 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+>  		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
+>  		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> +	case IIO_CHAN_INFO_RAW:
+> +		ret = iio_device_claim_direct_mode(iio_dev);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = scmi_iio_read_channel_data(iio_dev, ch, val, val2);
+> +		iio_device_release_direct_mode(iio_dev);
+> +		return ret;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -381,7 +435,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
+>  	iio_chan->type = type;
+>  	iio_chan->modified = 1;
+>  	iio_chan->channel2 = mod;
+> -	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
+> +	iio_chan->info_mask_separate =
+> +		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
+>  	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+>  	iio_chan->info_mask_shared_by_type_available =
+>  		BIT(IIO_CHAN_INFO_SAMP_FREQ);
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 6d2175eb7af2..49e42d04ea16 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -702,6 +702,9 @@ static ssize_t __iio_format_value(char *buf, size_t offset, unsigned int type,
+>  	}
+>  	case IIO_VAL_CHAR:
+>  		return sysfs_emit_at(buf, offset, "%c", (char)vals[0]);
+> +	case IIO_VAL_INT_64:
+> +		tmp2 = (s64)((((u64)vals[1]) << 32) | (u32)vals[0]);
+> +		return sysfs_emit_at(buf, offset, "%lld", tmp2);
+>  	default:
+>  		return 0;
+>  	}
+> diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
+> index 84b3f8175cc6..e148fe11a3dc 100644
+> --- a/include/linux/iio/types.h
+> +++ b/include/linux/iio/types.h
+> @@ -24,6 +24,7 @@ enum iio_event_info {
+>  #define IIO_VAL_INT_PLUS_NANO 3
+>  #define IIO_VAL_INT_PLUS_MICRO_DB 4
+>  #define IIO_VAL_INT_MULTIPLE 5
+> +#define IIO_VAL_INT_64 6
+
+Possibly worth a descriptive comment. The other
+types tend to make it easy to assume the role
+of val and that of val2, in this case, val being
+the lower 32 bits isn't obvious...
+
+>  #define IIO_VAL_FRACTIONAL 10
+>  #define IIO_VAL_FRACTIONAL_LOG2 11
+>  #define IIO_VAL_CHAR 12
+
