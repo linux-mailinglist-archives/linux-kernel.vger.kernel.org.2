@@ -2,142 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191424346F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7829A4346F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhJTIcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
+        id S229639AbhJTIdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhJTIcZ (ORCPT
+        with ESMTP id S229632AbhJTIdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:32:25 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CF1C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:30:11 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id b189-20020a1c1bc6000000b0030da052dd4fso8266461wmb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AcbCknbbtHbGw3Vd0vk/03qqtzI8ujhtq9XguWeSRMk=;
-        b=ivHmWxkSQLTfxpTj7dhhvSlvzaNXTGh0hbqAT3JucIqokrazKkhu6o15CjUexSM105
-         LBVl+KtdSjaSbZVHd+jogDO5uEgTDVti/GuERREkD2WNmU6cDIQBxX3jkM4GfakiUl5q
-         xqMaGVsNCMnKu9rjNKeXwGEzE8JP7cuLu19Sg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AcbCknbbtHbGw3Vd0vk/03qqtzI8ujhtq9XguWeSRMk=;
-        b=EEvktwhouOd+HFBoRgRHa0Dk8x+r9YGAYorWZZ5QRaOW44os37SNy1uXlKzQmQSaiW
-         KVfawwKq5KE52NsIzfaLLXgB3cTJri1EKxjPZhJ733vulFO7f0BInROT9XZKpe7ZmzKJ
-         krB8lknhwrOLvhEsO5yIFZeCQmUs7SGnHb+he0HiSK10uY9q0J5L9LjcXAuoreKX4yZJ
-         iw73Uwq9DNY+9LYVGcNHO8LFCdEOA3kNbcrWhd5GJBQ3nWBFOEeFgVlXo8giEoNQbSwM
-         v6lMBWuW9Eu26Nr7ZqoYam6kqPPFhpcTrgBvOSdfWHx+e7KOlCkAiJ76GCFhtJ6+c7Ix
-         uQUA==
-X-Gm-Message-State: AOAM5310n1g4s9PvACXHnUxF7fQISDBs6ps2T6lpypX1P+0CSbw0GWZV
-        dgJ3MlUWILi7DbylCrgEVre5NA==
-X-Google-Smtp-Source: ABdhPJw+wTJP3EINkq3wLFo/fNuwR+IAQBZZkqAHuxV8Bf6kn1x5/8XdOPQTT6ggDVmG9S0mC425uA==
-X-Received: by 2002:a1c:6a11:: with SMTP id f17mr12198266wmc.132.1634718607017;
-        Wed, 20 Oct 2021 01:30:07 -0700 (PDT)
-Received: from antares.. (d.5.c.c.6.2.1.6.f.5.3.5.c.9.c.f.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:fc9c:535f:6126:cc5d])
-        by smtp.gmail.com with ESMTPSA id s13sm4473133wmc.47.2021.10.20.01.30.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 01:30:06 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests: bpf: test RENAME_EXCHANGE and RENAME_NOREPLACE on bpffs
-Date:   Wed, 20 Oct 2021 09:29:56 +0100
-Message-Id: <20211020082956.8359-3-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211020082956.8359-1-lmb@cloudflare.com>
-References: <20211020082956.8359-1-lmb@cloudflare.com>
+        Wed, 20 Oct 2021 04:33:01 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AF3C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:30:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3OLZ7qJ08nHHBM2qZTVu1EJSQMFk9MZ440U4M+413G4=; b=RGk1jGc8JOBaFeW4F07MM+J0W9
+        kq0fws2b1RIt1h60kYzTn4SBf2bSpGc6qk2s7+mVih9VllW+7Jd5Brth8UXAwaNTpl7iNTiyKnLI3
+        iunG+ayUMuZhBvAu9pP3MG9Mlxop1SL2C+Gk5eoSXVa370/sn8piAVYQWr13HFGYdJyhazfboiWTT
+        pkgH2ZyabI9d0aY0/RSi/tyRpFm7lHOVte7HjXkCn1LS4Sa4BRPiVimNaux1vcLLsUPQaq2BF7UcD
+        dh452jZWYp5ygNqHGJouW411Xx1gUari7A9ehMx+2kwZPV5Ob5lJbAjUEHiorOvFYw++WQrY/0vyH
+        wVm3o7Zg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1md6ze-00AutD-EU; Wed, 20 Oct 2021 08:30:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 16597300221;
+        Wed, 20 Oct 2021 10:30:38 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ECCA020F080E8; Wed, 20 Oct 2021 10:30:37 +0200 (CEST)
+Date:   Wed, 20 Oct 2021 10:30:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <YW/TrQ4MFjz8yTWC@hirez.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
+ <20211013205259.44cvvaxiexiff5w5@treble>
+ <YW6t5catO1mx+eCZ@hirez.programming.kicks-ass.net>
+ <20211019164659.dybir4wgfmdt4r47@treble>
+ <20211019164913.2dsyyethdeblqjlq@treble>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019164913.2dsyyethdeblqjlq@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tests to exercise the behaviour of RENAME_EXCHANGE and RENAME_NOREPLACE
-on bpffs. The former checks that after an exchange the inode of two
-directories has changed. The latter checks that the source still exists
-after a failed rename.
+On Tue, Oct 19, 2021 at 09:49:13AM -0700, Josh Poimboeuf wrote:
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../selftests/bpf/prog_tests/test_bpffs.c     | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
+> @@ -1087,9 +1109,7 @@ static int add_jump_destinations(struct objtool_file *file)
+>  			else
+>  				insn->type = INSN_JUMP_DYNAMIC_CONDITIONAL;
+>  
+> -			list_add_tail(&insn->call_node,
+> -				      &file->retpoline_call_list);
+> -
+> +			add_call_dest(file, insn, reloc->sym, true);
+>  			insn->retpoline_safe = true;
+>  			continue;
+>  		} else if (insn->func) {
+> @@ -1218,20 +1238,14 @@ static int add_call_destinations(struct objtool_file *file)
+>  
+>  			add_call_dest(file, insn, dest, false);
+>  
+> -		} else if (arch_is_retpoline(reloc->sym)) {
+> +		} else if (reloc->sym->retpoline) {
+>  			/*
+>  			 * Retpoline calls are really dynamic calls in
+>  			 * disguise, so convert them accordingly.
+>  			 */
+>  			insn->type = INSN_CALL_DYNAMIC;
+> +			add_call_dest(file, insn, reloc->sym, false);
+>  			insn->retpoline_safe = true;
+> -
+> -			list_add_tail(&insn->call_node,
+> -				      &file->retpoline_call_list);
+> -
+> -			remove_insn_ops(insn);
+> -			continue;
+> -
+>  		} else
+>  			add_call_dest(file, insn, reloc->sym, false);
+>  	}
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-index 172c999e523c..9c28ae9589bf 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
- #define _GNU_SOURCE
-+#include <stdio.h>
- #include <sched.h>
- #include <sys/mount.h>
- #include <sys/stat.h>
-@@ -29,6 +30,7 @@ static int read_iter(char *file)
- 
- static int fn(void)
- {
-+	struct stat a, b;
- 	int err, duration = 0;
- 
- 	err = unshare(CLONE_NEWNS);
-@@ -67,6 +69,43 @@ static int fn(void)
- 	err = read_iter(TDIR "/fs2/progs.debug");
- 	if (CHECK(err, "reading " TDIR "/fs2/progs.debug", "failed\n"))
- 		goto out;
-+
-+	err = mkdir(TDIR "/fs1/a", 0777);
-+	if (CHECK(err, "creating " TDIR "/fs1/a", "failed\n"))
-+		goto out;
-+	err = mkdir(TDIR "/fs1/a/1", 0777);
-+	if (CHECK(err, "creating " TDIR "/fs1/a/1", "failed\n"))
-+		goto out;
-+	err = mkdir(TDIR "/fs1/b", 0777);
-+	if (CHECK(err, "creating " TDIR "/fs1/b", "failed\n"))
-+		goto out;
-+
-+	/* Check that RENAME_EXCHANGE works. */
-+	err = stat(TDIR "/fs1/a", &a);
-+	if (CHECK(err, "stat(" TDIR "/fs1/a)", "failed\n"))
-+		goto out;
-+	err = renameat2(0, TDIR "/fs1/a", 0, TDIR "/fs1/b", RENAME_EXCHANGE);
-+	if (CHECK(err, "renameat2(RENAME_EXCHANGE)", "failed\n"))
-+		goto out;
-+	err = stat(TDIR "/fs1/b", &b);
-+	if (CHECK(err, "stat(" TDIR "/fs1/b)", "failed\n"))
-+		goto out;
-+	if (CHECK(a.st_ino != b.st_ino, "b should have a's inode", "failed\n"))
-+		goto out;
-+	err = access(TDIR "/fs1/b/1", F_OK);
-+	if (CHECK(err, "access(" TDIR "/fs1/b/1)", "failed\n"))
-+		goto out;
-+
-+	/* Check that RENAME_NOREPLACE works. */
-+	err = renameat2(0, TDIR "/fs1/b", 0, TDIR "/fs1/a", RENAME_NOREPLACE);
-+	if (CHECK(!err, "renameat2(RENAME_NOREPLACE)", "succeeded\n")) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+	err = access(TDIR "/fs1/b", F_OK);
-+	if (CHECK(err, "access(" TDIR "/fs1/b)", "failed\n"))
-+		goto out;
-+
- out:
- 	umount(TDIR "/fs1");
- 	umount(TDIR "/fs2");
--- 
-2.30.2
+So the problem with add_call_dest() like this, is that the instructions
+now get to have ->call_dest set, which is really strange for
+INSN_CALL_DYNAMIC etc.. At the very least it makes call_dest_name()
+misbehave.
 
+I've added add_retpoline_call() that also does the ->type frobbing and
+->retpoline_safe marking instead.
