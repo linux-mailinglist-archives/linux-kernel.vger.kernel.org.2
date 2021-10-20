@@ -2,183 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22B9434690
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1D6434691
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhJTINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:13:44 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:47574 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTINm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:13:42 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 19K7mgAu029087;
-        Wed, 20 Oct 2021 15:48:42 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Oct
- 2021 16:10:44 +0800
-Message-ID: <2608eec6-0007-e8f6-25d7-2e6db95d1230@aspeedtech.com>
-Date:   Wed, 20 Oct 2021 16:10:45 +0800
+        id S230031AbhJTINs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:13:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229881AbhJTINn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:13:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F666115B;
+        Wed, 20 Oct 2021 08:11:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634717488;
+        bh=/CVuPeGBYIKXlMWeIhGMRmFXv6djbpm3+ic5B12qPVw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=k4LaDwFLb0/a834AEPCzz9WWxDWMZvcFL6gINPdhkKn6PvVcl8MpPqZ7DkXPWqQK2
+         Edj2Q+YoR5/juFMKjvBMPJOSFPZftO0vIW2SlAqYjXzWt/MIC9QEpxhmJmniIr7AeX
+         qIxecMsgKFjSDaJjAwxC2gabSgDdn3+iVWV0JD2cjXyX8uikpYJqzpJfquFfpW0R7L
+         OrtVfrYG4nZcLaYTXRAPOD2wgLzisaAnjyUfwoNw04FNRFj2G1R/t3hQxhMt4HM95D
+         PC8aC2FEM3D7TY5CPtTCdWl3Nb6lNC2R8b/nrNRTlXRQwgEhEPszTTqzhKb5ennPSG
+         kTGmu6Au2ACQA==
+Received: by mail-vk1-f177.google.com with SMTP id j12so11641459vka.4;
+        Wed, 20 Oct 2021 01:11:28 -0700 (PDT)
+X-Gm-Message-State: AOAM532l0bkwDeAG/NxAelb7o+JeT/TLi0FL6a9QLz2F49mO2Kka7nii
+        SeOfOPeDi1gXIHPZ3T5WcIpe7i5pskMvs5DxF1A=
+X-Google-Smtp-Source: ABdhPJwwCpxgCr5hHvCeD3/4+sgEaEnEWeOS5DNtuUoDPLxaY/gNrcOiXmPbtdFmbkWdHjVidPluyRwvYcn1frs3iOU=
+X-Received: by 2002:a1f:2a4c:: with SMTP id q73mr37339239vkq.8.1634717488094;
+ Wed, 20 Oct 2021 01:11:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 3/7] media: aspeed: add more debug log message
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211018092207.13336-1-jammy_huang@aspeedtech.com>
- <20211018092207.13336-4-jammy_huang@aspeedtech.com>
- <8212f2f5-d661-b598-1490-0ad5266ff2ca@molgen.mpg.de>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <8212f2f5-d661-b598-1490-0ad5266ff2ca@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 19K7mgAu029087
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
+ <1622970249-50770-11-git-send-email-guoren@kernel.org> <e926ec8a-e993-da89-3c8b-0c59272f1751@gmail.com>
+In-Reply-To: <e926ec8a-e993-da89-3c8b-0c59272f1751@gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 20 Oct 2021 16:11:17 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQ4gD=8H-ML3Pkk4qTn8UGEr62e1b9+bjpe4=sZOmiPXA@mail.gmail.com>
+Message-ID: <CAJF2gTQ4gD=8H-ML3Pkk4qTn8UGEr62e1b9+bjpe4=sZOmiPXA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 07/11] riscv: cmo: Add dma-noncoherency support
+To:     twd2 <twd2.me@gmail.com>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Drew Fustini <drew@beagleboard.org>,
+        liush <liush@allwinnertech.com>,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Paul,
+On Sun, Oct 17, 2021 at 5:28 PM twd2 <twd2.me@gmail.com> wrote:
+>
+>
+> On 2021/6/6 17:04, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > To support DMA device in a non-coherent interconnect SOC system,
+> > we need the below facilities:
+> >  - Changing a virtual memory mapping region attributes from
+> >    cacheable to noncache + strong order which used in DMA
+> >    descriptors.
+> >  - Add noncache + weakorder virtual memory attributes for dma
+> >    mapping.
+> >  - Syncing the cache with memory before DMA start and after DMA
+> >    end with vendor custom CMO instructions.
+> >
+> > This patch enables linux kernel generic dma-noncoherency
+> > infrastructure and introduces new sbi_ecall API for dma_sync.
+> >
+> > @@ -27,6 +27,7 @@ enum sbi_ext_id {
+> > +       SBI_EXT_DMA = 0xAB150401,
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
+> > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: Anup Patel <anup.patel@wdc.com>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Drew Fustini <drew@beagleboard.org>
+> > Cc: Wei Fu <wefu@redhat.com>
+> > Cc: Wei Wu <lazyparser@gmail.com>
+> > Cc: Chen-Yu Tsai <wens@csie.org>
+> > Cc: Maxime Ripard <maxime@cerno.tech>
+> > ---
+> >  arch/riscv/Kconfig               |  5 ++++
+> >  arch/riscv/include/asm/pgtable.h | 26 ++++++++++++++++++++
+> >  arch/riscv/include/asm/sbi.h     | 15 ++++++++++++
+> >  arch/riscv/kernel/sbi.c          | 19 ++++++++++++++
+> >  arch/riscv/mm/Makefile           |  1 +
+> >  arch/riscv/mm/dma-mapping.c      | 53 ++++++++++++++++++++++++++++++++++++++++
+> >  6 files changed, 119 insertions(+)
+> >  create mode 100644 arch/riscv/mm/dma-mapping.c
+> >
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index 05c4976..817a9bb 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -20,6 +20,10 @@ config RISCV
+> >       select ARCH_HAS_DEBUG_VM_PGTABLE
+> >       select ARCH_HAS_DEBUG_VIRTUAL if MMU
+> >       select ARCH_HAS_DEBUG_WX
+> > +     select ARCH_HAS_DMA_PREP_COHERENT
+> > +     select ARCH_HAS_SYNC_DMA_FOR_CPU
+> > +     select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+> > +     select ARCH_HAS_DMA_WRITE_COMBINE
+> >       select ARCH_HAS_FORTIFY_SOURCE
+> >       select ARCH_HAS_GCOV_PROFILE_ALL
+> >       select ARCH_HAS_GIGANTIC_PAGE
+> > @@ -43,6 +47,7 @@ config RISCV
+> >       select CLONE_BACKWARDS
+> >       select CLINT_TIMER if !MMU
+> >       select COMMON_CLK
+> > +     select DMA_DIRECT_REMAP
+> >       select EDAC_SUPPORT
+> >       select GENERIC_ARCH_TOPOLOGY if SMP
+> >       select GENERIC_ATOMIC64 if !64BIT
+> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> > index 6ddeb49..e1a82b6 100644
+> > --- a/arch/riscv/include/asm/pgtable.h
+> > +++ b/arch/riscv/include/asm/pgtable.h
+> > @@ -462,6 +462,32 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+> >       return ptep_test_and_clear_young(vma, address, ptep);
+> >  }
+> >
+> > +#define pgprot_noncached pgprot_noncached
+> > +static inline pgprot_t pgprot_noncached(pgprot_t _prot)
+> > +{
+> > +     unsigned long prot = pgprot_val(_prot);
+> > +
+> > +     prot &= ~_PAGE_DMA_MASK;
+> > +     prot |= _PAGE_DMA_IO;
+> > +
+> > +     return __pgprot(prot);
+> > +}
+> > +
+> > +#define pgprot_writecombine pgprot_writecombine
+> > +static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
+> > +{
+> > +     unsigned long prot = pgprot_val(_prot);
+> > +
+> > +     prot &= ~_PAGE_DMA_MASK;
+> > +     prot |= _PAGE_DMA_WC;
+> > +
+> > +     return __pgprot(prot);
+> > +}
+> > +
+> > +#define __HAVE_PHYS_MEM_ACCESS_PROT
+> > +extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+> > +                                  unsigned long size, pgprot_t vma_prot);
+> > +
+> >  /*
+> >   * Encode and decode a swap entry
+> >   *
+> > diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> > index 0d42693..133e88a 100644
+> > --- a/arch/riscv/include/asm/sbi.h
+> > +++ b/arch/riscv/include/asm/sbi.h
+> > @@ -27,6 +27,7 @@ enum sbi_ext_id {
+> >       SBI_EXT_IPI = 0x735049,
+> >       SBI_EXT_RFENCE = 0x52464E43,
+> >       SBI_EXT_HSM = 0x48534D,
+> > +     SBI_EXT_DMA = 0xAB150401,
+> >  };
+> >
+> >  enum sbi_ext_base_fid {
+> > @@ -63,6 +64,17 @@ enum sbi_ext_hsm_fid {
+> >       SBI_EXT_HSM_HART_STATUS,
+> >  };
+> >
+> > +enum sbi_ext_dma_fid {
+> > +     SBI_DMA_SYNC = 0,
+> > +};
+> > +
+> > +enum sbi_dma_sync_data_direction {
+> > +     SBI_DMA_BIDIRECTIONAL = 0,
+> > +     SBI_DMA_TO_DEVICE = 1,
+> > +     SBI_DMA_FROM_DEVICE = 2,
+> > +     SBI_DMA_NONE = 3,
+> > +};
+> > +
+> >  enum sbi_hsm_hart_status {
+> >       SBI_HSM_HART_STATUS_STARTED = 0,
+> >       SBI_HSM_HART_STATUS_STOPPED,
+> > @@ -128,6 +140,9 @@ int sbi_remote_hfence_vvma_asid(const unsigned long *hart_mask,
+> >                               unsigned long size,
+> >                               unsigned long asid);
+> >  int sbi_probe_extension(int ext);
+> > +void sbi_dma_sync(unsigned long start,
+> > +               unsigned long size,
+> > +               enum sbi_dma_sync_data_direction dir);
+> >
+> >  /* Check if current SBI specification version is 0.1 or not */
+> >  static inline int sbi_spec_is_0_1(void)
+> > diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> > index 7402a41..c936019 100644
+> > --- a/arch/riscv/kernel/sbi.c
+> > +++ b/arch/riscv/kernel/sbi.c
+> > @@ -521,6 +521,25 @@ int sbi_probe_extension(int extid)
+> >  }
+> >  EXPORT_SYMBOL(sbi_probe_extension);
+> >
+> > +void sbi_dma_sync(unsigned long start,
+> > +               unsigned long size,
+> > +               enum sbi_dma_sync_data_direction dir)
+> > +{
+> > +#if 0
+> > +     sbi_ecall(SBI_EXT_DMA, SBI_DMA_SYNC, start, size, dir,
+> > +               0, 0, 0);
+> > +#else
+> > +     /* Just for try, it should be in sbi ecall and will be removed before merged */
+> > +     register unsigned long i asm("a0") = start & ~(L1_CACHE_BYTES - 1);
+> > +
+> > +     for (; i < ALIGN(start + size, L1_CACHE_BYTES); i += L1_CACHE_BYTES)
+> > +             __asm__ __volatile__(".long 0x02b5000b");
+> > +
+>
+>
+> Hi, I'm trying to use this patch for my D1 board.
+>
+> Though the above code will be removed, I notice that the use of the inline assembly is wrong and `i` (i.e. `a0`) might not be correctly passed to the assembly code when we are using some other compilers.
+>
+>
+> It should be `__asm__ __volatile__(".long 0x02b5000b" : : "r"(i))`.
+Yes, I should keep "r"(I).
 
-Sure, thanks for your help.
+Thx
+
+>
+>
+> Thanks,
+> Wende
+>
+>
+> > +     __asm__ __volatile__(".long 0x01b0000b");
+> > +#endif
+> > +}
+> > +EXPORT_SYMBOL(sbi_dma_sync);
+> > +
+> >  static long __sbi_base_ecall(int fid)
+> >  {
+> >       struct sbiret ret;
+> > diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+> > index 7ebaef1..ca0ff90 100644
+> > --- a/arch/riscv/mm/Makefile
+> > +++ b/arch/riscv/mm/Makefile
+> > @@ -13,6 +13,7 @@ obj-y += extable.o
+> >  obj-$(CONFIG_MMU) += fault.o pageattr.o
+> >  obj-y += cacheflush.o
+> >  obj-y += context.o
+> > +obj-y += dma-mapping.o
+> >
+> >  ifeq ($(CONFIG_MMU),y)
+> >  obj-$(CONFIG_SMP) += tlbflush.o
+> > diff --git a/arch/riscv/mm/dma-mapping.c b/arch/riscv/mm/dma-mapping.c
+> > new file mode 100644
+> > index 00000000..4afd9dc
+> > --- /dev/null
+> > +++ b/arch/riscv/mm/dma-mapping.c
+> > @@ -0,0 +1,53 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/dma-map-ops.h>
+> > +#include <asm/sbi.h>
+> > +
+> > +void arch_dma_prep_coherent(struct page *page, size_t size)
+> > +{
+> > +     void *ptr = page_address(page);
+> > +
+> > +     memset(ptr, 0, size);
+> > +     sbi_dma_sync(page_to_phys(page), size, SBI_DMA_BIDIRECTIONAL);
+> > +}
+> > +
+> > +void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
+> > +             enum dma_data_direction dir)
+> > +{
+> > +     switch (dir) {
+> > +     case DMA_TO_DEVICE:
+> > +     case DMA_FROM_DEVICE:
+> > +     case DMA_BIDIRECTIONAL:
+> > +             sbi_dma_sync(paddr, size, dir);
+> > +             break;
+> > +     default:
+> > +             BUG();
+> > +     }
+> > +}
+> > +
+> > +void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+> > +             enum dma_data_direction dir)
+> > +{
+> > +     switch (dir) {
+> > +     case DMA_TO_DEVICE:
+> > +             return;
+> > +     case DMA_FROM_DEVICE:
+> > +     case DMA_BIDIRECTIONAL:
+> > +             sbi_dma_sync(paddr, size, dir);
+> > +             break;
+> > +     default:
+> > +             BUG();
+> > +     }
+> > +}
+> > +
+> > +pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+> > +                           unsigned long size, pgprot_t vma_prot)
+> > +{
+> > +     if (!pfn_valid(pfn))
+> > +             return pgprot_noncached(vma_prot);
+> > +     else if (file->f_flags & O_SYNC)
+> > +             return pgprot_writecombine(vma_prot);
+> > +
+> > +     return vma_prot;
+> > +}
+> > +EXPORT_SYMBOL(phys_mem_access_prot);
+>
+> --
+> Best wishes!
+> Sincerely,
+> twd2
+> https://twd2.me
+>
 
 
-Best regards,
+-- 
+Best Regards
+ Guo Ren
 
-Jammy
-
-
-On 2021/10/18 下午 05:59, Paul Menzel wrote:
-> Dear Jammy:
->
->
-> Am 18.10.21 um 11:22 schrieb Jammy Huang:
->
-> Nit (summary/suject:: message*s*
->
-> Could you add an excerpt of the new log messages please?
->
->
-> Kind regards,
->
-> Paul
->
->
->> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->> ---
->>    drivers/media/platform/aspeed-video.c | 24 ++++++++++++++++++++++++
->>    1 file changed, 24 insertions(+)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
->> index 642ca96c8c52..24ca07f40f14 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -461,12 +461,17 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
->>    
->>    static void update_perf(struct aspeed_video_perf *p)
->>    {
->> +	struct aspeed_video *v = container_of(p, struct aspeed_video,
->> +					      perf);
->> +
->>    	p->duration =
->>    		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
->>    	p->totaltime += p->duration;
->>    
->>    	p->duration_max = max(p->duration, p->duration_max);
->>    	p->duration_min = min(p->duration, p->duration_min);
->> +	v4l2_dbg(2, debug, &v->v4l2_dev, "time consumed: %d ms\n",
->> +		 p->duration);
->>    }
->>    
->>    static int aspeed_video_start_frame(struct aspeed_video *video)
->> @@ -593,6 +598,12 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->>    	struct aspeed_video *video = arg;
->>    	u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
->>    
->> +	v4l2_dbg(1, debug, &video->v4l2_dev, "irq sts=%#x %s%s%s%s\n", sts,
->> +		 sts & VE_INTERRUPT_MODE_DETECT_WD ? ", unlock" : "",
->> +		 sts & VE_INTERRUPT_MODE_DETECT ? ", lock" : "",
->> +		 sts & VE_INTERRUPT_CAPTURE_COMPLETE ? ", capture-done" : "",
->> +		 sts & VE_INTERRUPT_COMP_COMPLETE ? ", comp-done" : "");
->> +
->>    	/*
->>    	 * Resolution changed or signal was lost; reset the engine and
->>    	 * re-initialize
->> @@ -910,6 +921,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->>    
->>    	/* Don't use direct mode below 1024 x 768 (irqs don't fire) */
->>    	if (size < DIRECT_FETCH_THRESHOLD) {
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Sync Mode\n");
->>    		aspeed_video_write(video, VE_TGS_0,
->>    				   FIELD_PREP(VE_TGS_FIRST,
->>    					      video->frame_left - 1) |
->> @@ -921,6 +933,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->>    					      video->frame_bottom + 1));
->>    		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_INT_DE);
->>    	} else {
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Direct Mode\n");
->>    		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_DIRECT_FETCH);
->>    	}
->>    
->> @@ -937,6 +950,10 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->>    		if (!aspeed_video_alloc_buf(video, &video->srcs[1], size))
->>    			goto err_mem;
->>    
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf0 addr(%#x) size(%d)\n",
->> +			 video->srcs[0].dma, video->srcs[0].size);
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf1 addr(%#x) size(%d)\n",
->> +			 video->srcs[1].dma, video->srcs[1].size);
->>    		aspeed_video_write(video, VE_SRC0_ADDR, video->srcs[0].dma);
->>    		aspeed_video_write(video, VE_SRC1_ADDR, video->srcs[1].dma);
->>    	}
->> @@ -1201,6 +1218,9 @@ static int aspeed_video_set_dv_timings(struct file *file, void *fh,
->>    
->>    	timings->type = V4L2_DV_BT_656_1120;
->>    
->> +	v4l2_dbg(1, debug, &video->v4l2_dev, "set new timings(%dx%d)\n",
->> +		 timings->bt.width, timings->bt.height);
->> +
->>    	return 0;
->>    }
->>    
->> @@ -1383,6 +1403,7 @@ static void aspeed_video_resolution_work(struct work_struct *work)
->>    			.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
->>    		};
->>    
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "fire source change event\n");
->>    		v4l2_event_queue(&video->vdev, &ev);
->>    	} else if (test_bit(VIDEO_STREAMING, &video->flags)) {
->>    		/* No resolution change so just restart streaming */
->> @@ -1718,6 +1739,7 @@ static int aspeed_video_init(struct aspeed_video *video)
->>    		dev_err(dev, "Unable to request IRQ %d\n", irq);
->>    		return rc;
->>    	}
->> +	dev_info(video->dev, "irq %d\n", irq);
->>    
->>    	video->eclk = devm_clk_get(dev, "eclk");
->>    	if (IS_ERR(video->eclk)) {
->> @@ -1754,6 +1776,8 @@ static int aspeed_video_init(struct aspeed_video *video)
->>    		rc = -ENOMEM;
->>    		goto err_release_reserved_mem;
->>    	}
->> +	dev_info(video->dev, "alloc mem size(%d) at %#x for jpeg header\n",
->> +		 VE_JPEG_HEADER_SIZE, video->jpeg.dma);
->>    
->>    	aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
->>    
->>
+ML: https://lore.kernel.org/linux-csky/
