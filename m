@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E14434793
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6696D434798
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhJTJHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:07:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49970 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229503AbhJTJHc (ORCPT
+        id S229895AbhJTJHv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 05:07:51 -0400
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:36863 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhJTJHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:07:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634720717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G3m5JwlF+0/iNt2yAgQJIZZFDgUco38WFHvzPst+Es4=;
-        b=QWt2A5bw0yW6moSwx0T2MkVU/VMF3hqvipOQL21wcsdBOI032iTkT7jJ4xRkfntSSDDWk/
-        4FpO/FZ/hWGoxIWLikMGZ3JmGRd/NFs3a4nNe6Kra24BjTwv0rpTWUyD4xNY6+cwVFIGle
-        qIgfCCkAE56R1OxbO6rs0pEZPvwayGw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-U3RGfKNCMm--wwxUB5xfFA-1; Wed, 20 Oct 2021 05:05:14 -0400
-X-MC-Unique: U3RGfKNCMm--wwxUB5xfFA-1
-Received: by mail-wm1-f72.google.com with SMTP id y142-20020a1c7d94000000b00322f2e380f2so2289133wmc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:05:14 -0700 (PDT)
+        Wed, 20 Oct 2021 05:07:50 -0400
+Received: by mail-ua1-f43.google.com with SMTP id e10so5271428uab.3;
+        Wed, 20 Oct 2021 02:05:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=G3m5JwlF+0/iNt2yAgQJIZZFDgUco38WFHvzPst+Es4=;
-        b=C50WHpy1PbprjNpd3qasayUrVv0rzmAkB3RNHvAAiZFxJLxyxk3blIhjdgsuKAxtaX
-         +Zv7WA2teI9owwQsEpKLTzyLo1I7UzRB05AZCHcFup2Q/GbakQESvpVHc5R3dwz02984
-         grm/Z43/5oF0CiTwjn0GrULIztqSl5BT//WZir3oLOQlUzyKC2dBcsbJQCbOb63CWVdJ
-         L/tl8w9et/0dH0fx/XaTCVK3Lu1xHXbQt8Vnq+f70669888mbFSeLvT2H691NFPFAx4R
-         HwVWrhD/tKR+djner/pVSaP8N5sc2NUisUv3HNVvvrxFkeBwqxK/iPjH+uIMbrgrvzHD
-         ipag==
-X-Gm-Message-State: AOAM531UEY6onMIGzzxDSsDs7s5+azHRvRczwzCEamylJDPDh9EXuUMS
-        LkW6FjeL+F4lxeDh3r7PEa13pW1EDc4/QLKPAHDXYeXKDL1mNqMxUdxVypN033NlNXY/qfVTFg/
-        5Jd8Fj618FRDrFLvwvj/vQhbJ
-X-Received: by 2002:a1c:3584:: with SMTP id c126mr12431987wma.0.1634720713275;
-        Wed, 20 Oct 2021 02:05:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzb0SLmpr2zs9xmS3aBX6A3P6t94cO4LjnC5oOjOpNdU5OcPtsA+jx7w/9mCsSb1aqlwe+faA==
-X-Received: by 2002:a1c:3584:: with SMTP id c126mr12431952wma.0.1634720712999;
-        Wed, 20 Oct 2021 02:05:12 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c63d4.dip0.t-ipconnect.de. [91.12.99.212])
-        by smtp.gmail.com with ESMTPSA id c15sm1390559wrs.19.2021.10.20.02.05.12
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bCLgItGTD/ncNi56tmQD8uBfcIL7GrQePrlemPpXCP4=;
+        b=aEWFeFC0bE6j/AYa3WZ8bYBIJ8vPCQZ8auNDuceDDF1tifTU+zxBjzjWbwUoeEasbe
+         TOnwv8c+9PAf7WXYpPMrcdDbJnu/LDQ5eX8J+vSNxzSTCc+OMG+hirbjaqv6WIHNufQ5
+         kfY04CmJteybdSB9WEutq68DOW74ZrAVzyzBmC2ycDRFY5E6Ks8L+Dgc7wpo7VaIwJRG
+         ozeJEeDJASjHiaQ+BhuOs0/BIDk88JVIKB8AhKafhr7fs3WYj7YqWgI4Zvvug9yBErt3
+         CBcmapBfaZUvLc/WY0ucaDO+K9NktFJOUScRut0urrKErutknF21zDCma6WxQeK4020c
+         4l/Q==
+X-Gm-Message-State: AOAM532tnT6/ysDVdyjGt5/duW74tMue+hfwqGzRCZFdLsCnv+2D/HeX
+        z3d5IsiYW/qNUvyYw59cqU7q/oiBMUbjVA==
+X-Google-Smtp-Source: ABdhPJyxXSGAsgBflTc3gLjU5RmcWwye8aDxHGrBu74tVkVOe153uYi2jowk0/fLVlpVvuZL4EiL2w==
+X-Received: by 2002:a9f:2438:: with SMTP id 53mr5419331uaq.116.1634720735541;
+        Wed, 20 Oct 2021 02:05:35 -0700 (PDT)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id l64sm952068vki.40.2021.10.20.02.05.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 02:05:12 -0700 (PDT)
-Message-ID: <cbe8d847-8a2d-4220-c6a3-775d517e2edd@redhat.com>
-Date:   Wed, 20 Oct 2021 11:05:11 +0200
+        Wed, 20 Oct 2021 02:05:34 -0700 (PDT)
+Received: by mail-ua1-f48.google.com with SMTP id a17so5170874uax.12;
+        Wed, 20 Oct 2021 02:05:34 -0700 (PDT)
+X-Received: by 2002:ab0:2bd2:: with SMTP id s18mr5627914uar.78.1634720734621;
+ Wed, 20 Oct 2021 02:05:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Content-Language: en-US
-To:     Jianyong Wu <Jianyong.Wu@arm.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>
-Cc:     "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Anshuman Khandual <Anshuman.Khandual@arm.com>,
-        Justin He <Justin.He@arm.com>, nd <nd@arm.com>
-References: <20211020020712.90240-1-jianyong.wu@arm.com>
- <4858258b-8fb9-b060-8724-25c89ba2ce0e@redhat.com>
- <AM9PR08MB7276FEF0AE524A9728F63A4CF4BE9@AM9PR08MB7276.eurprd08.prod.outlook.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1] init: avoid race condition of update page table in
- kernel init
-In-Reply-To: <AM9PR08MB7276FEF0AE524A9728F63A4CF4BE9@AM9PR08MB7276.eurprd08.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211019145719.122751-1-kory.maincent@bootlin.com>
+ <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
+ <20211019173520.0154a8cb@kmaincent-XPS-13-7390> <YW7nPfzjstmeoMbf@lunn.ch>
+ <20211019175746.11b388ce@windsurf> <CAMuHMdXiMhpU0vDV3KaOg4DY59cszAtoG1sDOgnTRY6C6cyitQ@mail.gmail.com>
+ <20211020105328.411a712f@kmaincent-XPS-13-7390>
+In-Reply-To: <20211020105328.411a712f@kmaincent-XPS-13-7390>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 20 Oct 2021 11:05:22 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW5SF+MXmUO+ydS7XzHxXiF3=6Zj+q_Gu=hOUyQ5Q9Gfg@mail.gmail.com>
+Message-ID: <CAMuHMdW5SF+MXmUO+ydS7XzHxXiF3=6Zj+q_Gu=hOUyQ5Q9Gfg@mail.gmail.com>
+Subject: Re: [PATCH] net: renesas: Fix rgmii-id delays
+To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Adam Ford <aford173@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> But why does it matter on arm64? Can you describe how the exact race
->> triggers?
-> 
-> I don't know much about how x86 does in memory map. Let me show you how the race happens on arm64.
-> When virtio-mem workqueue is triggered, arch_memory_add will be called where the related page table will be created. The call chain is arch_memory_add->__create_pgd_mapping->alloc_init_pud. As the memory add may take for serval seconds, it may be concurrent with mark_rodata_ro, in which page tables are created either.
+Hi Köry,
 
-> The race can occur in alloc_init_pud. See below:
-> /***************************************************************************/
-> Virtio-mem workqueue thread                                                               mark_rodata_ro thread
-> {                                                                                                                         
-> ...
->         pudp = pud_set_fixmap_offset(p4dp, addr); // set fixmap
->         do {
->                 pud_t old_pud = READ_ONCE(*pudp);                                         
-> ...
->         } while (pudp++, addr = next, addr != end);                                   pudp = pud_set_fixmap_offset;  //set fixmap                                
->         pud_clear_fixmap();  // clear fixmap                                              do {
-> }                                                                                                                              pud_t old_pud = READ_ONCE(*pudp);//CRASH
-> 
+On Wed, Oct 20, 2021 at 10:53 AM Köry Maincent
+<kory.maincent@bootlin.com> wrote:
+> On Tue, 19 Oct 2021 22:05:41 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > The current driver is backwards-compatible with the legacy/wrong DTB.
+> > The current DT bindings (as of v5.10-rc1), using "[rt]x-internal-delay-ps"
+> > are correct.
+> > Or am I missing something here?
+>
+> You are correct.
 
-I still don't quite understand how that race can even exist. I assume
-it's due to the weird semantics of the "fixmap". (whatever that is :) )
-I don't see anything similar happen on other archs, especially x86-64
-and s390x, which I'm familiar with.
+Thanks for confirming!
 
-s390x similarly to x86-64 code uses a vmem_mutex to serialize add/remove
-in the direct map and a cpa_mutex to serialize attribute changes (and
-splitting of large mappings).
+Gr{oetje,eeting}s,
 
-The right should be to teach arm64 mmu code that direct mapping updates
-might be concurrent, and that two instances might try messing with the
-fixmap concurrently.
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-On a similar topic: I think we might want to reclaim compeltely empty
-page tables when unplugging memory; I suspect that we also have to mess
-with the fixmap then, whem removing page tables. But I feel like the
-whole fixmap machinery is still a big black box for me.
-
--- 
-Thanks,
-
-David / dhildenb
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
