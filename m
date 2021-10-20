@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C69743432F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 03:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC59434326
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 03:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhJTB66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 21:58:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39149 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229993AbhJTB6y (ORCPT
+        id S229879AbhJTB6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 21:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229877AbhJTB62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 21:58:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634695000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mlRh4bGaTK/lgZByvXsIKeO+VwJfwEqF4xLSsZPtqEc=;
-        b=GcAd7pDJ/NX/Sc0PDQdogY2mLQdn7MhwdiJ77rCeoShLI3TjyeJaiO1BVPhBZ31ZHhv/RP
-        mNPBZ+xwoA6/wmuMGseb+GScpyuWWTdMbz123guILcyEOe+DU2cMdf5w90+jaaTEfhyMS5
-        EgRWU4XU+gnchXlbyHYkeWfKVecsYF0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-jadriz7UNSSmKHNwv2x9mw-1; Tue, 19 Oct 2021 21:56:37 -0400
-X-MC-Unique: jadriz7UNSSmKHNwv2x9mw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D6C010A8E00;
-        Wed, 20 Oct 2021 01:56:36 +0000 (UTC)
-Received: from localhost (ovpn-8-20.pek2.redhat.com [10.72.8.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CB78F19C79;
-        Wed, 20 Oct 2021 01:56:31 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>
-Subject: [PATCH V2 4/4] zram: replace fsync_bdev with sync_blockdev
-Date:   Wed, 20 Oct 2021 09:55:48 +0800
-Message-Id: <20211020015548.2374568-5-ming.lei@redhat.com>
-In-Reply-To: <20211020015548.2374568-1-ming.lei@redhat.com>
-References: <20211020015548.2374568-1-ming.lei@redhat.com>
+        Tue, 19 Oct 2021 21:58:28 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F068DC06161C;
+        Tue, 19 Oct 2021 18:56:14 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so6395781ote.13;
+        Tue, 19 Oct 2021 18:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=THkcJGTXLjxpKELessb5DvMNyRq5o0OQ4/ZTqiQjBE8=;
+        b=bP4d90q4mfezbbLWsUmbM02c0g3avxhDcqqV/XACuW9VK/5fHSvtXAVZlpsTnK+Ptd
+         bX1n8SRZIjCj4w1Qa8ZBc/op+7WdQvk4zdiH61g9lpqvVdS07JbshBlizoJ0tt0as9FQ
+         9R/bz9lT4rnupaCo3QBiv8x/h7riIfXvjkpwxtDG9AaRfEDGuYdepT0HT5aadHt9JSfj
+         lzhgAjhisbl4snmLecqejd5DW+hLMyc//AqPtGcaGheqLjFW1zbl9pEnSEuOwwWYawK8
+         phfI8K3A+Np7PI78Y1EpjXfuOT3h2KszSjWDkiSrY6v/7S/KOITfozAyolITVvsFI9R+
+         HDqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=THkcJGTXLjxpKELessb5DvMNyRq5o0OQ4/ZTqiQjBE8=;
+        b=ECB91rZWtSB4yTK4sp1fCt+kyFKkNiG10IlT2ExYLgkqstub0A3E9PqUaOrK0dIZOV
+         NdGrTNUKIqRI/w8M7V+HIc+EXzROLfGYaoMrsRlO2XKxyGRmiefI/INXs8XcWtmw3U55
+         o3ZkagwaRsPdcDboaSl6E4VfejYfuV9mLIpFTfh6pdkVV3TrhQuCXPuxvfWpoRM2iK5X
+         SbNNSNFgLkLaS346yRqVgRvuQj48V/yma+ozSdFIsZTI54sxkcPvgbBEg4orY5LpZnZj
+         WYQ0dgb6FnfD8N2FtObkL4C+K7vvwrGrA6Nnf75H/SMyAuC9a3syWCP/dMrj5zNQcz6T
+         jn1A==
+X-Gm-Message-State: AOAM533A0g83f8huW/soiTrAf4lu1khvB/AUoGLb1oLmsqPOhF6dOzk2
+        Q4ooYScxUxHOA92ymVo0tx3cOA3jKYcMmCd8ks4=
+X-Google-Smtp-Source: ABdhPJy4i7Er4jMtJy5dgcdVRa7+yvv6pVUHVj/BOlB6iKTcWnYxzFubPn2ngJJSSZBt+F5D0eGUvuOSpsbpcFP3UsM=
+X-Received: by 2002:a9d:ea3:: with SMTP id 32mr8324507otj.0.1634694974401;
+ Tue, 19 Oct 2021 18:56:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <1634631160-67276-1-git-send-email-wanpengli@tencent.com> <39b178d0-f3aa-9bab-e142-60f917b0f707@redhat.com>
+In-Reply-To: <39b178d0-f3aa-9bab-e142-60f917b0f707@redhat.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Wed, 20 Oct 2021 09:56:03 +0800
+Message-ID: <CANRm+CxXogoP0vh9_qPz_d4+p+ZQwy_SdJ6exuG1dd7+3weHSg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] KVM: emulate: Don't inject #GP when emulating
+ RDMPC if CR0.PE=0
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calling fsync_bdev(), zram driver guarantees that the bdev won't be
-opened by anyone, then there can't be one active fs/superblock over the
-zram bdev, so replace fsync_bdev with sync_blockdev.
+On Wed, 20 Oct 2021 at 01:00, Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 19/10/21 10:12, Wanpeng Li wrote:
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > SDM mentioned that, RDPMC:
+> >
+> >    IF (((CR4.PCE = 1) or (CPL = 0) or (CR0.PE = 0)) and (ECX indicates a supported counter))
+> >        THEN
+> >            EAX := counter[31:0];
+> >            EDX := ZeroExtend(counter[MSCB:32]);
+> >        ELSE (* ECX is not valid or CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1 *)
+> >            #GP(0);
+> >    FI;
+> >
+> > Let's add the CR0.PE is 1 checking to rdpmc emulate, though this isn't
+> > strictly necessary since it's impossible for CPL to be >0 if CR0.PE=0.
+>
+> Why not just add a comment then instead?
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- drivers/block/zram/zram_drv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Will do.
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 6078d1dae44a..563af3aa4f5e 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1790,7 +1790,7 @@ static ssize_t reset_store(struct device *dev,
- 	mutex_unlock(&bdev->bd_disk->open_mutex);
- 
- 	/* Make sure all the pending I/O are finished */
--	fsync_bdev(bdev);
-+	sync_blockdev(bdev);
- 	zram_reset_device(zram);
- 
- 	mutex_lock(&bdev->bd_disk->open_mutex);
-@@ -1991,7 +1991,7 @@ static int zram_remove(struct zram *zram)
- 		;
- 	} else {
- 		/* Make sure all the pending I/O are finished */
--		fsync_bdev(bdev);
-+		sync_blockdev(bdev);
- 		zram_reset_device(zram);
- 	}
- 
--- 
-2.31.1
-
+    Wanpeng
