@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D046434382
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382DB434385
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhJTCaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:30:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhJTCaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:30:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DB5460F0F;
-        Wed, 20 Oct 2021 02:27:58 +0000 (UTC)
-Date:   Tue, 19 Oct 2021 22:27:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] tracing: Add division and multiplication support
- for hist triggers
-Message-ID: <20211019222756.1fde436b@gandalf.local.home>
-In-Reply-To: <20211020013153.4106001-3-kaleshsingh@google.com>
-References: <20211020013153.4106001-1-kaleshsingh@google.com>
-        <20211020013153.4106001-3-kaleshsingh@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229789AbhJTCaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:30:23 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:52231 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229653AbhJTCaW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 22:30:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Ut-jNXD_1634696886;
+Received: from 30.225.212.40(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Ut-jNXD_1634696886)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Oct 2021 10:28:07 +0800
+Message-ID: <90a632cc-352f-1067-718a-a6b515bf87d7@linux.alibaba.com>
+Date:   Wed, 20 Oct 2021 10:28:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH v3 0/2] PCI MCFG consolidation and APEI resource filterin
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20211019151258.GA2336650@bhelgaas>
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+In-Reply-To: <20211019151258.GA2336650@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 18:31:39 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
 
-> +static u64 hist_field_div(struct hist_field *hist_field,
-> +			   struct tracing_map_elt *elt,
-> +			   struct trace_buffer *buffer,
-> +			   struct ring_buffer_event *rbe,
-> +			   void *event)
-> +{
-> +	struct hist_field *operand1 = hist_field->operands[0];
-> +	struct hist_field *operand2 = hist_field->operands[1];
-> +
-> +	u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
-> +	u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
-> +
-> +	/* Return -1 for the undefined case */
-> +	if (!val2)
-> +		return -1;
-> +
-> +	return div64_u64(val1, val2);
-> +}
-> +
+On 19/10/2021 23:12, Bjorn Helgaas wrote:
+> On Tue, Oct 19, 2021 at 12:49:16PM +0800, Xuesong Chen wrote:
+>> Hello All,
+>>
+>> The idea of this patch set is very strainforward, it's somehow a refactor
+>> of the original codes to share some ones that they should do. Based on that,
+>> we can resolve the MCFG address access issue in APEI module on x86 in a 
+>> command way instead of the current arch-dependent one, while this issue also
+>> does happen on ARM64 platform.
+>>
+>> The logic of the series is very clear(IMO it's even time-wasting to explain that):
+> 
+> If you want people to look at and care about your changes, it is never
+> a waste of time to explain them.
 
-I wonder if you should add a shift operator as well?
+En, very good point and professional, I'll keep in mind ;-)
+> 
+>> Patch #1: Escalating the 'pci_mmcfg_list' and 'pci_mmcfg_region' to the
+>> pci.[c,h] which will shared by all the arches. A common sense, in some degree.
+>>
+>> Patch #2: Since the 'pci_mmcfg_list' now can be shared across all arches,
+>> the arch-specific fix method can be replaced by the new solution naturally.
+>>
+>> Now the v3 patch has been finalized, can we move forward to the next step? -
+>> either give the concerns/objections or pick it up.
+> 
+> It's helpful to your reviewers if you include a note about changes
+> between v2 and v3, as you did in your v2 0/2 cover letter.
+> 
+> It's also helpful if you thread the series with patches 1 and 2 as
+> responses to the cover letter.  That makes it easy to download the
+> patches using b4.  Here's a little more background:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/5.Posting.rst?id=v5.14#n320
 
-I mean, if for some reason you want to divide by a power of two, then why
-us the division. Especially if this is on a 32 bit machine.
-
-Of course, the parsing could detect that. If the divisor is a constant. Or
-we could even optimize the above with:
-
-	if (!val2)
-		return -1;
-
-	if (!(val2 & (val2 - 1))
-		return val1 >> __ffs64(val2);
-
-Which should be faster than a divide, and even if it isn't a power of two,
-the subtract and & should be in the noise compared to the divide.
-
-Note, the above can be added to this. I'm not suggesting changing this
-patch.
-
--- Steve
+OK, I will rewrite it in the next version...
+> 
+>> Xuesong Chen (2):
+>>   PCI: MCFG: Consolidate the separate PCI MCFG table entry list
+>>   ACPI: APEI: Filter the PCI MCFG address with an arch-agnostic method
+>>
+>>  arch/x86/include/asm/pci_x86.h | 17 +---------------
+>>  arch/x86/pci/mmconfig-shared.c | 30 ----------------------------
+>>  drivers/acpi/apei/apei-base.c  | 45 ++++++++++++++++++++++++++++--------------
+>>  drivers/acpi/pci_mcfg.c        | 34 ++++++++++++-------------------
+>>  drivers/pci/pci.c              |  2 ++
+>>  include/linux/pci.h            | 17 ++++++++++++++++
+>>  6 files changed, 63 insertions(+), 82 deletions(-)
+>>
+>> -- 
+>> 1.8.3.1
+>>
