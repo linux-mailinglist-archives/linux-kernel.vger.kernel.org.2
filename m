@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BDB434B2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CBD434B2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhJTMc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:32:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51110 "EHLO mail.kernel.org"
+        id S230186AbhJTMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhJTMcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230077AbhJTMcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 Oct 2021 08:32:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F4366135E;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CF9161355;
         Wed, 20 Oct 2021 12:30:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634733039;
-        bh=JT2SkvtAggztd5vBpXOy3KiUBY0PoFlXIX09DB3XnHs=;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634733039;
+        bh=LiE/hWTQ5V9XEhRPLyQB9qsB24jCZaZMytc4IqnfsIQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZnIUPEIq+hvzCl00QYwDpobI4iFUDxYE/SkDXuEed4ZxhuhfToaA8W8535LPjTRTY
-         4W7zXSOZRKO7ExURf/LBK31wWDQOsDIIQammx1x/wgABht7VUahDLfta3lxOXRPzZR
-         2RhU5xPdjYWSra4E0GiEO92nr76GHsp78fNqFyAGz247M8mPITA+6u64wn/7aG7r7r
-         2/8HgafaK3ZzaWpVOzC/jmrVZEUpe0rpCJw6Yje7Kx8V9HLKY97UnB744PlD+7nxCY
-         SDk9MZX+hq5fxOapESfk4jEQ2tqLQP+6g7o+e3EXjov0ma1NF3sgnHaNCIquEdkL3G
-         lz+XCHRQJROww==
-Date:   Wed, 20 Oct 2021 13:30:36 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-        Len Brown <lenb@kernel.org>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/3] sound: cs35l41: Allow HDA systems to use
- CS35l41 ASoC driver
-Message-ID: <YXAL7Gc/wGR0Ce3g@sirena.org.uk>
-References: <20211020085944.17577-1-tanureal@opensource.cirrus.com>
- <20211020085944.17577-2-tanureal@opensource.cirrus.com>
+        b=VJhmUgvdf+nNfJtaQ+tmvYAjNLeMkWcdVOxSKh5qHfBm/3xFLe3Uy8u9rFnO6OGFU
+         3Kldf8yXiJejx01qVBeV3oBR6bWGG+1vvMlpnXkVFRWod9iX2+D+oY6d0TqGTD5XT4
+         zFgkBshnc8Rn2Xaq37sfD77eMRxzl8cf3ye92eZs=
+Date:   Wed, 20 Oct 2021 14:30:36 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "chenxiaosong (A)" <chenxiaosong2@huawei.com>
+Cc:     viro@zeniv.linux.org.uk, stable@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dhowells@redhat.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+        zhangxiaoxu5@huawei.com
+Subject: Re: [PATCH 4.19,v2] VFS: Fix fuseblk memory leak caused by mount
+ concurrency
+Message-ID: <YXAL7K88XGWXckWe@kroah.com>
+References: <20211013095101.641329-1-chenxiaosong2@huawei.com>
+ <YWawy0J9JfStEku0@kroah.com>
+ <429d87b0-3a53-052a-a304-0afa8d51900d@huawei.com>
+ <860c36c4-3668-1388-66d1-a07d463c2ad9@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="105KrfQZCqU/K4pU"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211020085944.17577-2-tanureal@opensource.cirrus.com>
-X-Cookie: I program, therefore I am.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <860c36c4-3668-1388-66d1-a07d463c2ad9@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 06:49:06PM +0800, chenxiaosong (A) wrote:
+> 在 2021/10/13 18:38, chenxiaosong (A) 写道:
+> > 在 2021/10/13 18:11, Greg KH 写道:
+> > > On Wed, Oct 13, 2021 at 05:51:01PM +0800, ChenXiaoSong wrote:
+> > > > If two processes mount same superblock, memory leak occurs:
+> > > > 
+> > > > CPU0               |  CPU1
+> > > > do_new_mount       |  do_new_mount
+> > > >    fs_set_subtype   |    fs_set_subtype
+> > > >      kstrdup        |
+> > > >                     |      kstrdup
+> > > >      memrory leak   |
+> > > > 
+> > > > Fix this by adding a write lock while calling fs_set_subtype.
+> > > > 
+> > > > Linus's tree already have refactoring patchset [1], one of them
+> > > > can fix this bug:
+> > > >          c30da2e981a7 (fuse: convert to use the new mount API)
+> > > > 
+> > > > Since we did not merge the refactoring patchset in this branch,
+> > > > I create this patch.
+> > > > 
+> > > > [1] https://patchwork.kernel.org/project/linux-fsdevel/patch/20190903113640.7984-3-mszeredi@redhat.com/
+> > > > 
+> > > > 
+> > > > Fixes: 79c0b2df79eb (add filesystem subtype support)
+> > > > Cc: David Howells <dhowells@redhat.com>
+> > > > Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
+> > > > ---
+> > > > v1: Can not mount sshfs ([PATCH linux-4.19.y] VFS: Fix fuseblk
+> > > > memory leak caused by mount concurrency)
+> > > > v2: Use write lock while writing superblock
+> > > > 
+> > > >   fs/namespace.c | 9 ++++++---
+> > > >   1 file changed, 6 insertions(+), 3 deletions(-)
+> > > 
+> > > As you are referring to a fuse-only patch above, why are you trying to
+> > > resolve this issue in the core namespace code instead?
+> > > 
+> > > How does fuse have anything to do with this?
+> > > 
+> > > confused,
+> > > 
+> > > greg k-h
+> > > .
+> > > 
+> > 
+> > Now, only `fuse_fs_type` and `fuseblk_fs_type` has `FS_HAS_SUBTYPE` flag
+> > in kernel code, but maybe there is a filesystem module(`struct
+> > file_system_type` has `FS_HAS_SUBTYPE` flag). And only mounting fuseblk
+> > filesystem(e.g. ntfs) will occur memory leak now.
+> 
+> How about updating the subject as: VFS: Fix memory leak caused by mounting
+> fs with subtype concurrency?
 
---105KrfQZCqU/K4pU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Oct 20, 2021 at 09:59:42AM +0100, Lucas Tanure wrote:
-
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-
-> Re-use ASoC driver for supporting for Legion 7 16ACHg6
-> laptop.
-> HDA machine driver will find the registered dais for the
-> Amp and use snd_soc_dai_ops to configure it.
-
-It will find the registered DAIs in what way exactly?
-
-This patch is doing a whole bunch of stuff which isn't described at all
-in the changelog which makes it very hard to review, I can't tell what
-it's supposed to do.
-
---105KrfQZCqU/K4pU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFwC+sACgkQJNaLcl1U
-h9BpGgf8C7Znyvqsj/ydwkf+M2pPLh07ukHK6c4VRUmxiuxT4/WUeecjcnTvo4El
-J+dqhOnejW1i0PiJ8C/j2sz9Z/W0+asGY4+UcGy9VWUMQ0mUNt46UbEJPYR573ae
-1WJVSy3Gzrx0FC/U/kRFlFplxPnq1VHITlm2oviYhrlqsvHP+9Xd+lBNmZB4H4Bx
-JeEc7rfpHd7uiftVfhrVVNtgKjb+kvPiB4f1NTnwr4ZkDsF9ydULy5Ytq5qvEx7Q
-AQ7MgwVpvdj14Jbmg1Abz4SNNVwwte9M9nc99X+aajfW9Shg77XxjUb90qoTb3iZ
-nOkeqR9aXbE2RBNQZW3HIDaPLkwkEg==
-=WUeG
------END PGP SIGNATURE-----
-
---105KrfQZCqU/K4pU--
+That would be a better idea, but still, this is not obvious that this is
+the correct fix at all...
