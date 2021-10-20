@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5004348A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9D44348BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhJTKMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 06:12:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229555AbhJTKMw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 06:12:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634724637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=kN+rmXjeIN5RoOoqhjSuUAR3s+V7flhqvRXBT3LvpfY=;
-        b=On+EX1H+81rFjeHgNaVdtA0Pyq3JTm9muPgqTSLvB4iET/EkBjhW5PGuirIL8DC5YrdsPO
-        Uu/AiJxSPzLbHg9S+CjMXKJAYvXM1brvCdPz3Xygn6/FD0ro/Nct6DF43SCrydmVKxPFdW
-        bAjHc0PL3PH9ngg4vKoT2MiHWWar+uE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-Q6BXm1oFMY-Na_Om9Svjow-1; Wed, 20 Oct 2021 06:10:34 -0400
-X-MC-Unique: Q6BXm1oFMY-Na_Om9Svjow-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71DC710A8E02;
-        Wed, 20 Oct 2021 10:10:33 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E5A2BADD9;
-        Wed, 20 Oct 2021 10:10:31 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v2] mm: Stop filemap_read() from grabbing a superfluous page
-From:   David Howells <dhowells@redhat.com>
-To:     kent.overstreet@gmail.com, willy@infradead.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jeff Layton <jlayton@redhat.com>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 20 Oct 2021 11:10:31 +0100
-Message-ID: <163472463105.3126792.7056099385135786492.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S229910AbhJTKP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 06:15:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229555AbhJTKPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 06:15:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D6EC61260;
+        Wed, 20 Oct 2021 10:13:10 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 11:13:06 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
+Message-ID: <YW/rsjxNj+m7aL/a@arm.com>
+References: <20211013054756.12177-1-rppt@kernel.org>
+ <c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com>
+ <YW5bjV128Qk1foIv@kernel.org>
+ <YW6t5tBe/IjSYWn3@arm.com>
+ <089478ad-3755-b085-d9aa-c68e9792895c@quicinc.com>
+ <YW7p3ARYbpxmeLCF@arm.com>
+ <8da41896-dc11-8246-54cf-1174f617ac39@quicinc.com>
+ <YW8PZ0Q5UeRH4W4R@kernel.org>
+ <YW/Hb4sVWGOIxzUk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW/Hb4sVWGOIxzUk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Under some circumstances, filemap_read() will allocate sufficient pages to
-read to the end of the file, call readahead/readpages on them and copy the
-data over - and then it will allocate another page at the EOF and call
-readpage on that and then ignore it.  This is unnecessary and a waste of
-time and resources.
+On Wed, Oct 20, 2021 at 10:38:23AM +0300, Mike Rapoport wrote:
+> On Tue, Oct 19, 2021 at 09:33:11PM +0300, Mike Rapoport wrote:
+> > On Tue, Oct 19, 2021 at 01:59:22PM -0400, Qian Cai wrote:
+> > > [	0.000000][	T0] Booting Linux on physical CPU 0x0000000000 [0x503f0002]
+> > > [	0.000000][	T0] Linux version 5.15.0-rc6-next-20211019+ (root@admin5) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #104 SMP Tue Oct 19 17:36:17 UTC 2021
+> > > [	0.000000][	T0] earlycon: pl11 at MMIO32 0x0000000012600000 (options '')
+> > > [	0.000000][	T0] printk: bootconsole [pl11] enabled
+> > > [	0.000000][	T0] efi: Getting UEFI parameters from /chosen in DT:
+> > > [	0.000000][	T0] efi:   System Table     	: 0x0000009ff7de0018
+> > > [	0.000000][	T0] efi:   MemMap Address   	: 0x0000009fe6dae018
+> > > [	0.000000][	T0] efi:   MemMap Size      	: 0x0000000000000600
+> > > [	0.000000][	T0] efi:   MemMap Desc. Size	: 0x0000000000000030
+> > > [	0.000000][	T0] efi:   MemMap Desc. Version : 0x0000000000000001
+> > > [	0.000000][	T0] efi: EFI v2.70 by American Megatrends
+> > > [	0.000000][	T0] efi: ACPI 2.0=0x9ff5b40000 SMBIOS 3.0=0x9ff686fd98 ESRT=0x9ff1d18298 MEMRESERVE=0x9fe6dacd98  
+> > > [	0.000000][	T0] efi: Processing EFI memory map:
+> > > [	0.000000][	T0] efi:   0x000090000000-0x000091ffffff [Conventional|   |  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
+> > > [	0.000000][	T0] efi:   0x000092000000-0x0000928fffff [Runtime Data|RUN|  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
+> > > [	0.000000][	T0] ------------[ cut here ]------------
+> > > [	0.000000][	T0] kernel BUG at mm/kmemleak.c:1140!
+> > > [	0.000000][	T0] Internal error: Oops - BUG: 0 [#1] SMP
+> > > 
+> > > I did not quite figure out where this BUG() was triggered and I did not
+> > 
+> > This is from here:
+> > arch/arm64/include/asm/memory.h:
+> > 
+> > #define PHYS_OFFSET         ({ VM_BUG_ON(memstart_addr & 1); memstart_addr; })
+> > 
+> > kmemleak_free_part_phys() does __va() which uses PHYS_OFFSET and all this
+> > happens before memstart_addr is set.
+> > 
+> > I'll try to see how this can be untangled...
+>  
+> This late in the cycle I can only think of reverting kmemleak wavier from
+> memblock_mark_nomap() and putting it in
+> early_init_dt_alloc_reserved_memory_arch() being the only user setting
+> MEMBLOCK_NOMAP to an allocated chunk rather than marking NOMAP "unusable"
+> memory reported by firmware.
 
-filemap_read() *does* check for this, but only after it has already done
-the allocation and I/O.  Fix this by checking before calling
-filemap_get_pages() also.
+BTW, would something like this work:
 
-Changes:
- v2) Break out of the loop immediately rather than going to put_pages (the
-     pvec is unoccupied).  Setting isize is then unnecessary.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Kent Overstreet <kent.overstreet@gmail.com>
-cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-cc: Andrew Morton <akpm@linux-foundation.org>
-cc: Jeff Layton <jlayton@redhat.com>
-cc: linux-mm@kvack.org
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/160588481358.3465195.16552616179674485179.stgit@warthog.procyon.org.uk/
-Link: https://lore.kernel.org/r/163456863216.2614702.6384850026368833133.stgit@warthog.procyon.org.uk/
----
-
- mm/filemap.c |    3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index dae481293b5d..e50be519f6a4 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2625,6 +2625,9 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
- 		if ((iocb->ki_flags & IOCB_WAITQ) && already_read)
- 			iocb->ki_flags |= IOCB_NOWAIT;
+diff --git a/mm/memblock.c b/mm/memblock.c
+index aa87ff5ae2a4..7e67378a8ddf 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -939,7 +939,7 @@ int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
+ {
+ 	int ret = memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
  
-+		if (unlikely(iocb->ki_pos >= i_size_read(inode)))
-+			break;
-+
- 		error = filemap_get_pages(iocb, iter, &pvec);
- 		if (error < 0)
- 			break;
+-	if (!ret)
++	if (!ret && memblock_is_region_reserved(base, size))
+ 		kmemleak_free_part_phys(base, size);
+ 
+ 	return ret;
 
-
+-- 
+Catalin
