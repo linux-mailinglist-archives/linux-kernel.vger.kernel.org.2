@@ -2,66 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15281435651
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 01:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F6243566D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 01:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhJTXQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 19:16:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhJTXQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 19:16:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FE85610A2;
-        Wed, 20 Oct 2021 23:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634771670;
-        bh=oi8a3JG/XkmKsI8mfGwa2zI65CTPnyciySVi1vE9Ta8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DuiD96fQvwo7N0m8LmOuS8+Hdz9ngko76+qhxxL2fxsJXaxpKzVtaYiPGQsfmlYGj
-         gPMeHy1ITuu+kEC5Qi3LLDIF206EN3X7NGynD9mVS+1u3nLjlUuQ5k9IwpjXhSxOB8
-         VX0OTArOjQ12nYLnGhUWaCRnXFz/U+udE15+x8J3IbiBvlU9PC8DzeC/Gwn8SE4zfL
-         IWxYHkZc/0jbT9uESoX3O9UxsIuA//e50GJJdYUM8Eu/NQeQPyHrSKNlQsZ90hnjOD
-         CzJIgA0PlB23s8aVADlchl99MhNmJmenLIJoRjpLftDol6l/OLkgAv7kaHxYJSIgLy
-         6EVLMm3gnz3LA==
-Date:   Wed, 20 Oct 2021 18:19:10 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] writeback: prefer struct_size over open coded
- arithmetic
-Message-ID: <20211020231910.GA1313548@embeddedor>
-References: <20210925114308.11455-1-len.baker@gmx.com>
- <20211020144044.GB16460@quack2.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020144044.GB16460@quack2.suse.cz>
+        id S230515AbhJTXXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 19:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhJTXXl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 19:23:41 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396C6C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 16:21:26 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id c2-20020a63d5020000b029023ae853b72cso14115436pgg.18
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 16:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=WeYFI5Q65D5VmaG+HirB0Qtdd3LYXh8Mm68u/4MK/X4=;
+        b=SbfPCdH5oCeJ54y8USj1+eYR13UAlBYSMmIqteq1cHkh1UUTmxvvL3WBt37YgGVOVB
+         j1aN6+/Ol/s06HN0O+8W5tY2fDNhGG7A6vQL1BtcpgoVAi7efDN/FPg2wTHdRqHc1DzB
+         JxwRfuo/V08xluuGhnUQ1odxe1FhcPQXkKGunEWg4pUpQN1fzS2bJKjSE7syyd1R50P9
+         kcuFcfVRFx0WyqCMgI/zf/swPshgVtwZYfDNqAD7DxqSVGT6u/gykapeqYoZOUbaz363
+         oySG/KSE9P1UpLoIpgbFYYfCWsanb7yq/hMBoFVAR706zyW1Qm0YoN/ymopEA3KQvkeO
+         IxGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=WeYFI5Q65D5VmaG+HirB0Qtdd3LYXh8Mm68u/4MK/X4=;
+        b=yX69CIpSPj8qTbnwKipfos9RgBvLCT6Aj/VBSE5zmxi9uNMJsnj0EGqI73LvIZL6jL
+         1M1hzN+OphogX8bNE08CAjtQL3QlrNfrdOhh8ULVG6ftavJE+7kQPaNJbV8jCNhjc4iq
+         MKfR2Us+xgLD8PzPaRxe5/nBGpnMSyNE8Fpd5TmV0FhnS7AhjoFZRaKweBTzwT7+Zwcl
+         vpUYUvvvHbqni0FoQMMTtdoNwh1o51WvONLe5rsGXSLBWJHyA7lf0T9vqsEAGz0t+Gkp
+         Wchsqi0+TJL9YSfu5EliMc1Eplm/7XqpCpiXjTrjUqOhplFE1+gE/Z0rMEI41h+8kMlq
+         cCFQ==
+X-Gm-Message-State: AOAM533At9NMJ6flrCJeWmnOhs0GZuBA9vcGBuv1RIchEjgVU0klfzJm
+        4pMHwZn7sh6ockThcrXJ953nRykXo4BxbQ==
+X-Google-Smtp-Source: ABdhPJxYMLqxV8vp7g+5/pXQ6PH9x2d9AFeM9qcIZLBco7P9UpDuoPBnleKtBctDsBXkfnFaEIwyz8ZzuO51qQ==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:d046:bdee:5827:25d6])
+ (user=dlatypov job=sendgmr) by 2002:a17:90b:1212:: with SMTP id
+ gl18mr2312068pjb.166.1634772085580; Wed, 20 Oct 2021 16:21:25 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 16:21:21 -0700
+Message-Id: <20211020232121.1748376-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH v2] kunit: tool: continue past invalid utf-8 output
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 04:40:44PM +0200, Jan Kara wrote:
-[..]
-> > This code was detected with the help of Coccinelle and audited and fixed
-> > manually.
-> > 
-> > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> > 
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
-> 
-> Looks good. Feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> BTW, writeback patches are usually merged by Andrew Morton so probably send
-> it to him. Thanks!
+kunit.py currently crashes and fails to parse kernel output if it's not
+fully valid utf-8.
 
-I'm taking this in my -next tree.
+This can come from memory corruption or or just inadvertently printing
+out binary data as strings.
 
-Thank you both, Len and Jan.
---
-Gustavo
+E.g. adding this line into a kunit test
+  pr_info("\x80")
+will cause this exception
+  UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 1961: invalid start byte
+
+We can tell Python how to handle errors, see
+https://docs.python.org/3/library/codecs.html#error-handlers
+
+Unfortunately, it doesn't seem like there's a way to specify this in
+just one location, so we need to repeat ourselves quite a bit.
+
+Specify `errors='backslashreplace'` so we instead:
+* print out the offending byte as '\x80'
+* try and continue parsing the output.
+  * as long as the TAP lines themselves are valid, we're fine.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+---
+v1 -> v2: add comment to silence erroneous pytype error
+---
+ tools/testing/kunit/kunit.py        | 3 ++-
+ tools/testing/kunit/kunit_kernel.py | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index e1dd3180f0d1..68e6f461c758 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -477,9 +477,10 @@ def main(argv, linux=None):
+ 			sys.exit(1)
+ 	elif cli_args.subcommand == 'parse':
+ 		if cli_args.file == None:
++			sys.stdin.reconfigure(errors='backslashreplace')  # pytype: disable=attribute-error
+ 			kunit_output = sys.stdin
+ 		else:
+-			with open(cli_args.file, 'r') as f:
++			with open(cli_args.file, 'r', errors='backslashreplace') as f:
+ 				kunit_output = f.read().splitlines()
+ 		request = KunitParseRequest(cli_args.raw_output,
+ 					    None,
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index faa6320e900e..f08c6c36a947 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -135,7 +135,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+ 					   stdin=subprocess.PIPE,
+ 					   stdout=subprocess.PIPE,
+ 					   stderr=subprocess.STDOUT,
+-					   text=True, shell=True)
++					   text=True, shell=True, errors='backslashreplace')
+ 
+ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+ 	"""An abstraction over command line operations performed on a source tree."""
+@@ -172,7 +172,7 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+ 					   stdin=subprocess.PIPE,
+ 					   stdout=subprocess.PIPE,
+ 					   stderr=subprocess.STDOUT,
+-					   text=True)
++					   text=True, errors='backslashreplace')
+ 
+ def get_kconfig_path(build_dir) -> str:
+ 	return get_file_path(build_dir, KCONFIG_PATH)
+
+base-commit: 63b136c634a2bdffd78795bc33ac2d488152ffe8
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
