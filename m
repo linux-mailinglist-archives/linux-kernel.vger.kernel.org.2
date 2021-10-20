@@ -2,156 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1004344DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F30A4344DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhJTFwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 01:52:49 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:31510 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229591AbhJTFwq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 01:52:46 -0400
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K5nB7u013648;
-        Wed, 20 Oct 2021 05:50:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=PPS06212021;
- bh=DW1AHNQbPfybsnklN5Bpm1Dqboju1y5KvRrx2F2ntxE=;
- b=D2MGjRO3mDjICgUVziKLJ37FiI0CPZYYGMiXWILQNcAAgWxyn4u0KZjqK7ky1Asq/nr7
- /yy0LOD72PSVxIyt5+f5VevQrqFKwNooi2DP6I9hzWYddxJPImmKO8MwJjjX0r7Cw0MJ
- bTaXY0gm7tNMUgCI1SjuTN7wi+XpHPC4PRkNdKi3PTVs9miWLV1NtdZgveOEcpcrRZ7A
- M3LDUBiPzO/S1Ox5Wnc0uuFiY5nLvkS7MujZsP6UzaC8jiQ858Tu5HgbD8JZ0gEAe2rJ
- PZutC1va836tWM0aaY0QFw5lVQWrju5icx+7ftpgzVbGHs22/5K7aV5jCk2tl92dm6d2 Ww== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3bt3d18d8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 05:50:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eHoHpW4PdTmrmQmVwRodJO5yUWRJjOPxFqfEDwnP/AJcjdJdHUJWDOt68kaIrnNDLsrf6oa6xYrO1dXc0W6GHkk1laOjtZFfHZXv+iNSZTSGE0DJYOtFypXwBnDXY06KF5KESeiOf7LmL11hsYQzz4IpLMjH+Na5LcwfDanEk3+CfK4AGltSAGJhZN4IsQV0rCos9xC1oH+2MtiNCJ/SM3mwKE4LGB89bcn8MZOQijFPt98hvGJ1dYQ74wxm4KIsjm7NX5e6SW+FUd88hQ/JEzB/5jqM0pg8OLtHjVRwV3kzil054Zf/P4sX0QVNMTGvqo2krO6l+HV0G6kf0ASq3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DW1AHNQbPfybsnklN5Bpm1Dqboju1y5KvRrx2F2ntxE=;
- b=GqwRxeowxt41aBgfSoWOV3+C/qwb+y1PVMhXMjCLOEsRRF/rF/IuvT+UzXsaUaO1x+oVreDlWGJOmrDwdwyKB6kThyFbQ34olAL4noCc0bokpYFmSo4gw6gorHBMs5aFRMsK5UTbopWcnSO8SMJI8c9GlKwhWUdjneFqquxCgLBjDmAqin6EAPhY34etmVdc4U1/msYSXp1PvOhRO3GSFPtyKezXieyyLWXq5bnTLUpougbROGRqOkTqcVs6OJ9AbU+EE+OAISpsnvqcIEIQvxtSHUl659a9MOTafqMhyRnI00TuOxfb7YjlMruV56gbDUKVpTOkfyXeGIQpXo4HrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: armlinux.org.uk; dkim=none (message not signed)
- header.d=none;armlinux.org.uk; dmarc=none action=none
- header.from=windriver.com;
-Received: from PH7PR11MB5819.namprd11.prod.outlook.com (2603:10b6:510:13b::9)
- by PH0PR11MB4936.namprd11.prod.outlook.com (2603:10b6:510:42::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Wed, 20 Oct
- 2021 05:50:01 +0000
-Received: from PH7PR11MB5819.namprd11.prod.outlook.com
- ([fe80::3508:ff4c:362d:579c]) by PH7PR11MB5819.namprd11.prod.outlook.com
- ([fe80::3508:ff4c:362d:579c%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
- 05:50:00 +0000
-From:   quanyang.wang@windriver.com
-To:     Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>
-Subject: [PATCH] ARM: add BUILD_BUG_ON to check if fixmap range spans multiple pmds
-Date:   Wed, 20 Oct 2021 13:49:42 +0800
-Message-Id: <20211020054942.1608637-1-quanyang.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0148.apcprd02.prod.outlook.com
- (2603:1096:202:16::32) To PH7PR11MB5819.namprd11.prod.outlook.com
- (2603:10b6:510:13b::9)
+        id S229890AbhJTFwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 01:52:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhJTFwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 01:52:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B637611EF;
+        Wed, 20 Oct 2021 05:50:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634709039;
+        bh=Y/HNCkQN1Dm+Xz7LGNy6kj13dbmiKV6jL2UTzRuCpY0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aY/iMJmBzRPMOWlea5jYrHiLOtuV8+PJmdylnIE+uk6yvXhayIvbxDZeKriQ80Pp/
+         2Hs+sEoSjjBy3fwKkE58HHDykVwBWwDetqlnNpgcelPwkXGJPixLHtfdNhu0bLwmpA
+         Jm7Tvy0ftkd/urNPNQrrHVLID8K2ry0/MNf6jDQJ4R/eThq2TIo/7VivIqvrV0NPiS
+         IZJIt2O0kdsBYuGf0Ae4Usl/rSwiZrZ65Gq88LT9R3dlKy/X+zDXC0hQoAffbSlVf3
+         eih343gTmfnz/HDoGRWDpifCTp5fW9cJIXLZJYxuQlFwS8qdJO28YSA7Wi2Q2ZyI1k
+         0fvQ9FUljMUpA==
+Date:   Wed, 20 Oct 2021 06:50:33 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] locks: remove changelog comments
+Message-ID: <20211020065033.032c86f9@sal.lan>
+In-Reply-To: <6f4a14d0a455c5a93eccfdf2dc8555b82b79694b.camel@kernel.org>
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+        <887de3a1ecadda3dbfe0adf9df9070f0afa9406c.1634630486.git.mchehab+huawei@kernel.org>
+        <f352a2e4b50a8678a8ddef5177702ecf9040490f.camel@kernel.org>
+        <20211019141427.GA15063@fieldses.org>
+        <e7bdcf0b279989e51c2c333e89acf3e1d476eff0.camel@kernel.org>
+        <20211019161651.GD15063@fieldses.org>
+        <c6d2e1a8691a49afbbc280bb74a05b9b110b7f27.camel@kernel.org>
+        <20211019173835.GE15063@fieldses.org>
+        <6f4a14d0a455c5a93eccfdf2dc8555b82b79694b.camel@kernel.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HK2PR02CA0148.apcprd02.prod.outlook.com (2603:1096:202:16::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend Transport; Wed, 20 Oct 2021 05:49:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98483381-ec54-4672-d951-08d9938d7488
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4936:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR11MB493672A0BC13CD88902FD24FF0BE9@PH0PR11MB4936.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: apbXEyx9eLgko9WcdZLQXPy2TdK1++ADLl4DhIw2yYSAtJb8+vNJWd/ExlsfacenUq5sUVM73qsCPuCNIOChepk150TyXAQT9tpIwxGmpVfVX/yOS1AMngH+YAdKsUKN58NYkPgGTjcFgT7TZAsRMCFCxViWAraDpi09p8QwSZYm4c25oOxwZmWdSjOvpn75qUDXoVfOGOvsBIDimPXXWMARez1rtEDC+FmkAr1yC58HeB0hZm1fAPzpppj6ypkUxhxT3bdXEe8H/M/S8RFh4HKsosqkfhgYX059h2NE1Kgi8xzDHA4wQ1EW15F50HrbfiO8CSY9ZsZdd4hLqvTptH8c99x0pguZIX9Qh1c8voOHCRW18R0Hne8XCmFXx8QbfyT7000hdoaxWCS2rCkIOURDxzVkQ3fTRNIswH76HnbLeTNVYtfvXQ1knA2cwQzMYbgfzGew0MVH905tiUjFZnexwNcdjqbIcj1//7jjqaUNB01Bs/I9rOGg/VjvGXiuZ7/cew77gZwHp1b0gXK2inuteX44/N5/Bw5a1D8qotkWCgD/kYD45a+CGt3Z6gcm+idh21DHRz7yDqOOgKqCqbjlp/1gFiPN1jmP0NaJhpeHgKWpJSZlRGoEgkXYsXUhs+7WipWNH13nDgGx7FbBwpoT8eOa4964HNhHfQnfs4y4RSNCAmJBPxIlXffqnzs83jDOOTumjeRijS9hg6qi6A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(110136005)(107886003)(36756003)(5660300002)(2616005)(6666004)(6512007)(66946007)(956004)(9686003)(4744005)(38350700002)(38100700002)(1076003)(8936002)(508600001)(4326008)(6486002)(186003)(26005)(66476007)(66556008)(316002)(86362001)(52116002)(6506007)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0qY7u0ktq4ES6ZYf8+1N6MsA3qSL1H1b5p4dU/92/Sov9a7hDbio05Jv1nYX?=
- =?us-ascii?Q?4nivHrIkh6UZgN0wfpW786kbGyR04gxLEh9CsdTEibyR5leJ3rZdtwWW7YNk?=
- =?us-ascii?Q?Vsen4xsAMNbvIzXiVIbb+fOaS11ciamUTpuBme7UkoigniNKNnj8RjTvqrZk?=
- =?us-ascii?Q?yqSKb+Rb9QCmebAFjDMzSNAupMVL1Z2TIz/PWPwjg59OM37XjEJGJNZZIzOY?=
- =?us-ascii?Q?4jz128cD3c6YAWrElRPh1Ky91mvy23Fl1HXWNA+l8OnA2muPTdzS/sgK2y8V?=
- =?us-ascii?Q?893vjOCWtOTbUHI4E6R8mzGyYIbovtNPWBftVx6LjMRyk2sLHA2CyALDSvHe?=
- =?us-ascii?Q?+e32sut22vtYqgJ31X8txJsZVlDrTAhUY0z9MROboKWTfBVmTotpjof+Mk5m?=
- =?us-ascii?Q?0g01jWoWQGqRaHGIQmeX3fl8slwiJVUYW4xTvTjlgohWuxNI54maIhTRX3C2?=
- =?us-ascii?Q?dP2fTsGQ1kIlN7yoootId3G/OWqQUBWntK7/O7nYrLwO2gy9u17noPbTvKgg?=
- =?us-ascii?Q?gL2xYASaJtVY6GH6EbBFX7/ttkfRbrvhwZd1tfJ3z/gw2qy8jEncj+EcnA1Z?=
- =?us-ascii?Q?URn1QvnuNyxHpI9ZFqsBrc4WD7pNXF5kxot0QQOaHx8Qu+bsp/ydbwhnlgVN?=
- =?us-ascii?Q?OGTbSKf2zVdnknA5RCCnFldhPvu8uY6WmeBF3PqRWdzAxgVA8OvzlLhppMBg?=
- =?us-ascii?Q?tdwVWAkbRDWcZnNi7dexueh/aBYRx/oJQhsKmBC6xidpH/s4HZcGufUmuQCi?=
- =?us-ascii?Q?qHxaXHmtPCt3a4y+TXHI8U755BgVEoEBi3HtFnEuGuFIyJLswdyLgv+Z9ydT?=
- =?us-ascii?Q?+eIQMDXJMwcaAqeI5DgUJzRQzb80OubRwV7t4aDit04biEmyC5r0vl2EPYYW?=
- =?us-ascii?Q?mc34LTAVOAMzpd9DIjft7wI4o5S0Q88ipToG4aNN9vqhroEuB+cKkkmJYlxG?=
- =?us-ascii?Q?pFLUJ/2jSFcsVh0CXaHhZpGZvZlbrCkhWThXfx/aLCc7mcOvA5G2wfX8yVZg?=
- =?us-ascii?Q?Nz6mcSd8trvaoduZCUgBv+Ew690tBC1tRwKmebjOSE2HjNm2j6lgPbDseL22?=
- =?us-ascii?Q?vi2sTDgoDOBiQ3/7+Nk2P9crY4LaMw9ZQ1mB0Y0Vmz72fBGD/S+DnHGOYVOe?=
- =?us-ascii?Q?Wpv7WNCUiVR561+TuZFPD+gsSjxBW3UFVoIo4oFW5TxVH3Qa1fIX8PgCFA8K?=
- =?us-ascii?Q?RPhD0+KGqu2LjJR1agDYXZrYz3O/NVx+EV93dPNw1bhLJPyY2+7vi+O+72w0?=
- =?us-ascii?Q?XH/RGx+G6gUxVaCdlAffkPubGI80XajKck6i/GcUVfXg/wPjAMhgHi4oOcAW?=
- =?us-ascii?Q?hMB1sGegHemYAZXup/GMt3vJ?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98483381-ec54-4672-d951-08d9938d7488
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 05:50:00.7400
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: quanyang.wang@windriver.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4936
-X-Proofpoint-GUID: OTii4oecVS7xiWMjgr4n-QrPniK7R7Ns
-X-Proofpoint-ORIG-GUID: OTii4oecVS7xiWMjgr4n-QrPniK7R7Ns
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-20_02,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 suspectscore=0 adultscore=0 malwarescore=0
- mlxlogscore=877 impostorscore=0 spamscore=0 clxscore=1011 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110200030
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+Em Tue, 19 Oct 2021 14:14:08 -0400
+Jeff Layton <jlayton@kernel.org> escreveu:
 
-Not only the early fixmap range, but also the fixmap range should be
-checked if it spans multiple pmds. When enabling CONFIG_DEBUG_HIGHMEM,
-some systems which contain up to 16 CPUs will crash.
+> On Tue, 2021-10-19 at 13:38 -0400, J. Bruce Fields wrote:
+> > From: "J. Bruce Fields" <bfields@redhat.com>
+> > 
+> > This is only of historical interest, and anyone interested in the
+> > history can dig out an old version of locks.c from from git.
+> > 
+> > Triggered by the observation that it references the now-removed
+> > Documentation/filesystems/mandatory-locking.rst.
+> > 
+> > Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+> > ---
+> >  fs/locks.c | 114 ++---------------------------------------------------
+> >  1 file changed, 4 insertions(+), 110 deletions(-)
+> > 
+> > On Tue, Oct 19, 2021 at 12:27:55PM -0400, Jeff Layton wrote:  
+> > > Yeah, I think that looks great. Send it with a changelog and I'll pull
+> > > it into the branch I have feeding into -next.  
+> > 
+> > OK!--b.
+> > 
+> > diff --git a/fs/locks.c b/fs/locks.c
+> > index 3d6fb4ae847b..b54813eae44f 100644
+> > --- a/fs/locks.c
+> > +++ b/fs/locks.c
+> > @@ -2,117 +2,11 @@
+> >  /*
+> >   *  linux/fs/locks.c
+> >   *
+> > - *  Provide support for fcntl()'s F_GETLK, F_SETLK, and F_SETLKW calls.
+> > - *  Doug Evans (dje@spiff.uucp), August 07, 1992
+> > + * We implement four types of file locks: BSD locks, posix locks, open
+> > + * file description locks, and leases.  For details about BSD locks,
+> > + * see the flock(2) man page; for details about the other three, see
+> > + * fcntl(2).
+> >   *
+> > - *  Deadlock detection added.
+> > - *  FIXME: one thing isn't handled yet:
+> > - *	- mandatory locks (requires lots of changes elsewhere)
+> > - *  Kelly Carmichael (kelly@[142.24.8.65]), September 17, 1994.
+> > - *
+> > - *  Miscellaneous edits, and a total rewrite of posix_lock_file() code.
+> > - *  Kai Petzke (wpp@marie.physik.tu-berlin.de), 1994
+> > - *
+> > - *  Converted file_lock_table to a linked list from an array, which eliminates
+> > - *  the limits on how many active file locks are open.
+> > - *  Chad Page (pageone@netcom.com), November 27, 1994
+> > - *
+> > - *  Removed dependency on file descriptors. dup()'ed file descriptors now
+> > - *  get the same locks as the original file descriptors, and a close() on
+> > - *  any file descriptor removes ALL the locks on the file for the current
+> > - *  process. Since locks still depend on the process id, locks are inherited
+> > - *  after an exec() but not after a fork(). This agrees with POSIX, and both
+> > - *  BSD and SVR4 practice.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), February 14, 1995
+> > - *
+> > - *  Scrapped free list which is redundant now that we allocate locks
+> > - *  dynamically with kmalloc()/kfree().
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), February 21, 1995
+> > - *
+> > - *  Implemented two lock personalities - FL_FLOCK and FL_POSIX.
+> > - *
+> > - *  FL_POSIX locks are created with calls to fcntl() and lockf() through the
+> > - *  fcntl() system call. They have the semantics described above.
+> > - *
+> > - *  FL_FLOCK locks are created with calls to flock(), through the flock()
+> > - *  system call, which is new. Old C libraries implement flock() via fcntl()
+> > - *  and will continue to use the old, broken implementation.
+> > - *
+> > - *  FL_FLOCK locks follow the 4.4 BSD flock() semantics. They are associated
+> > - *  with a file pointer (filp). As a result they can be shared by a parent
+> > - *  process and its children after a fork(). They are removed when the last
+> > - *  file descriptor referring to the file pointer is closed (unless explicitly
+> > - *  unlocked).
+> > - *
+> > - *  FL_FLOCK locks never deadlock, an existing lock is always removed before
+> > - *  upgrading from shared to exclusive (or vice versa). When this happens
+> > - *  any processes blocked by the current lock are woken up and allowed to
+> > - *  run before the new lock is applied.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), June 09, 1995
+> > - *
+> > - *  Removed some race conditions in flock_lock_file(), marked other possible
+> > - *  races. Just grep for FIXME to see them.
+> > - *  Dmitry Gorodchanin (pgmdsg@ibi.com), February 09, 1996.
+> > - *
+> > - *  Addressed Dmitry's concerns. Deadlock checking no longer recursive.
+> > - *  Lock allocation changed to GFP_ATOMIC as we can't afford to sleep
+> > - *  once we've checked for blocking and deadlocking.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), April 03, 1996.
+> > - *
+> > - *  Initial implementation of mandatory locks. SunOS turned out to be
+> > - *  a rotten model, so I implemented the "obvious" semantics.
+> > - *  See 'Documentation/filesystems/mandatory-locking.rst' for details.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), April 06, 1996.
+> > - *
+> > - *  Don't allow mandatory locks on mmap()'ed files. Added simple functions to
+> > - *  check if a file has mandatory locks, used by mmap(), open() and creat() to
+> > - *  see if system call should be rejected. Ref. HP-UX/SunOS/Solaris Reference
+> > - *  Manual, Section 2.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), April 09, 1996.
+> > - *
+> > - *  Tidied up block list handling. Added '/proc/locks' interface.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), April 24, 1996.
+> > - *
+> > - *  Fixed deadlock condition for pathological code that mixes calls to
+> > - *  flock() and fcntl().
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), April 29, 1996.
+> > - *
+> > - *  Allow only one type of locking scheme (FL_POSIX or FL_FLOCK) to be in use
+> > - *  for a given file at a time. Changed the CONFIG_LOCK_MANDATORY scheme to
+> > - *  guarantee sensible behaviour in the case where file system modules might
+> > - *  be compiled with different options than the kernel itself.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), May 15, 1996.
+> > - *
+> > - *  Added a couple of missing wake_up() calls. Thanks to Thomas Meckel
+> > - *  (Thomas.Meckel@mni.fh-giessen.de) for spotting this.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), May 15, 1996.
+> > - *
+> > - *  Changed FL_POSIX locks to use the block list in the same way as FL_FLOCK
+> > - *  locks. Changed process synchronisation to avoid dereferencing locks that
+> > - *  have already been freed.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), Sep 21, 1996.
+> > - *
+> > - *  Made the block list a circular list to minimise searching in the list.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), Sep 25, 1996.
+> > - *
+> > - *  Made mandatory locking a mount option. Default is not to allow mandatory
+> > - *  locking.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), Oct 04, 1996.
+> > - *
+> > - *  Some adaptations for NFS support.
+> > - *  Olaf Kirch (okir@monad.swb.de), Dec 1996,
+> > - *
+> > - *  Fixed /proc/locks interface so that we can't overrun the buffer we are handed.
+> > - *  Andy Walker (andy@lysaker.kvaerner.no), May 12, 1997.
+> > - *
+> > - *  Use slab allocator instead of kmalloc/kfree.
+> > - *  Use generic list implementation from <linux/list.h>.
+> > - *  Sped up posix_locks_deadlock by only considering blocked locks.
+> > - *  Matthew Wilcox <willy@debian.org>, March, 2000.
+> > - *
+> > - *  Leases and LOCK_MAND
+> > - *  Matthew Wilcox <willy@debian.org>, June, 2000.
+> > - *  Stephen Rothwell <sfr@canb.auug.org.au>, June, 2000.
+> >   *
+> >   * Locking conflicts and dependencies:
+> >   * If multiple threads attempt to lock the same byte (or flock the same file)  
+> 
+> Thanks, Bruce (and Mauro). Applied to the locks-next branch (and I
+> dropped Mauro's patch that touched the same area). It should make v5.16.
 
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
----
- arch/arm/mm/mmu.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks! Yeah, it looks a lot cleaner without those changelog-style
+comments.
 
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index a4e0060051070..57eed92073a4a 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -369,6 +369,8 @@ void __init early_fixmap_init(void)
- 	 */
- 	BUILD_BUG_ON((__fix_to_virt(__end_of_early_ioremap_region) >> PMD_SHIFT)
- 		     != FIXADDR_TOP >> PMD_SHIFT);
-+	BUILD_BUG_ON((__fix_to_virt(__end_of_fixmap_region) >> PMD_SHIFT)
-+		     != FIXADDR_TOP >> PMD_SHIFT);
- 
- 	pmd = fixmap_pmd(FIXADDR_TOP);
- 	pmd_populate_kernel(&init_mm, pmd, bm_pte);
--- 
-2.25.1
-
+> 
+> Cheers,
