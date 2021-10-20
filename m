@@ -2,125 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE634343D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 05:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA814343EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 05:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhJTD0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 23:26:41 -0400
-Received: from mga07.intel.com ([134.134.136.100]:41372 "EHLO mga07.intel.com"
+        id S229820AbhJTDks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 23:40:48 -0400
+Received: from mga14.intel.com ([192.55.52.115]:46912 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229657AbhJTD0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 23:26:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="292143434"
+        id S229555AbhJTDkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 23:40:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="228953344"
 X-IronPort-AV: E=Sophos;i="5.87,165,1631602800"; 
-   d="scan'208";a="292143434"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 20:24:24 -0700
+   d="scan'208";a="228953344"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 20:36:34 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,165,1631602800"; 
-   d="scan'208";a="494426097"
-Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 19 Oct 2021 20:24:23 -0700
-Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1md2DG-000Cwc-Qp; Wed, 20 Oct 2021 03:24:22 +0000
-Date:   Wed, 20 Oct 2021 11:23:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 0f1f557263856d23d2dd4bb8c9ba8f42f02feaf5
-Message-ID: <616f8bcc.E1eu2Y4bLOoetQ3F%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="483547120"
+Received: from unknown (HELO [10.239.154.68]) ([10.239.154.68])
+  by orsmga007.jf.intel.com with ESMTP; 19 Oct 2021 20:36:31 -0700
+Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        gregkh@linuxfoundation.org
+Cc:     wsa@kernel.org, virtualization@lists.linux-foundation.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
+ <20211019074647.19061-2-vincent.whitchurch@axis.com>
+ <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <d16fed64-6aa9-8c68-91e0-06fc84c3049c@intel.com>
+Date:   Wed, 20 Oct 2021 11:36:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 0f1f557263856d23d2dd4bb8c9ba8f42f02feaf5  Merge remote-tracking branch 'tip/x86/sev' into tip-master
 
-elapsed time: 747m
+On 2021/10/19 16:09, Viresh Kumar wrote:
+> Doing this may not be a good thing based on the kernel rules I have
+> understood until now. Maybe Greg and Wolfram can clarify on this.
+>
+> We are waiting here for an external entity (Host kernel) or a firmware
+> that uses virtio for transport. If the other side is hacked, it can
+> make the kernel hang here for ever. I thought that is something that
+> the kernel should never do.
 
-configs tested: 67
-configs skipped: 86
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'm also worried about this. We may be able to solve it by setting a big
 
-gcc tested configs:
-parisc                generic-64bit_defconfig
-sh                              ul2_defconfig
-arc                     nsimosci_hs_defconfig
-arm                  randconfig-c002-20211019
-i386                 randconfig-c001-20211019
-x86_64               randconfig-c001-20211019
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a015-20211019
-x86_64               randconfig-a012-20211019
-x86_64               randconfig-a016-20211019
-x86_64               randconfig-a014-20211019
-x86_64               randconfig-a013-20211019
-x86_64               randconfig-a011-20211019
-i386                 randconfig-a014-20211019
-i386                 randconfig-a016-20211019
-i386                 randconfig-a015-20211019
-i386                 randconfig-a013-20211019
-i386                 randconfig-a011-20211019
-i386                 randconfig-a012-20211019
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+timeout value in the driver.
 
-clang tested configs:
-x86_64               randconfig-a004-20211019
-x86_64               randconfig-a006-20211019
-x86_64               randconfig-a005-20211019
-x86_64               randconfig-a001-20211019
-x86_64               randconfig-a002-20211019
-x86_64               randconfig-a003-20211019
-i386                 randconfig-a001-20211019
-i386                 randconfig-a003-20211019
-i386                 randconfig-a004-20211019
-i386                 randconfig-a005-20211019
-i386                 randconfig-a002-20211019
-i386                 randconfig-a006-20211019
-hexagon              randconfig-r041-20211019
-hexagon              randconfig-r045-20211019
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
