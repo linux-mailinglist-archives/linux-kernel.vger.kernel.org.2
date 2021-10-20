@@ -2,57 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD4A43521A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4E743521C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbhJTR7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:59:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230245AbhJTR7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:59:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA5DD61260;
-        Wed, 20 Oct 2021 17:57:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634752628;
-        bh=XQzcmxRtmpTtwLEmhDRGGu/vVrNymCgV6elsUAeO/hM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MmF2wRMGxunC7sIHQ8p6+oKzruLFtHoFBaGOdwUhByocaotRmDd0N5yoS0djAgeKI
-         dC/3bVbwpUDK5yTIBfJJcJxLRi8eGiQf5Pt26S6HTySFd+7zAhNxvyaf+5JcljSqo7
-         NqSP49J8YZyleU0ti2UzQThHKJAnSbN7mJRqwjUL59v89qaaSrVCXTQ5RN5WPuHRSI
-         zsWmm8hOBgoDTuaku/wWJNjr9ELEkt6u8V6fTAF/fBdZ+zlsqFA4BqegvkPiB+Z0DF
-         /THJ7MWz1X5tuZswLxtGt1T14R0iN2fe9lELzOOldYWy4wPHvgDPXTQjibx3BsdiU1
-         SCbjqLoLtAdQQ==
-Date:   Wed, 20 Oct 2021 23:27:04 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Swapnil Jakhade <sjakhade@cadence.com>
-Cc:     kishon@ti.com, robh+dt@kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mparab@cadence.com, lokeshvutla@ti.com, a-govindraju@ti.com
-Subject: Re: [PATCH v2 0/4] PHY: Add support to output derived and received
- reference clock from Torrent
-Message-ID: <YXBYcOeydTf4xj4H@matsya>
-References: <20210922123735.21927-1-sjakhade@cadence.com>
+        id S230526AbhJTR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhJTR7h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:59:37 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA8FC061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:57:23 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so11807459wmz.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:organization:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eUXnYsZJvnOAF9kzZYgcYvLxfHgvnwyAqbl51jXHyOk=;
+        b=5SRvDSnW9NALjwV2LaLE+zMHcgRRVEur9K+oWOkjkMa/ekGvFZUUWHhW9wUXIuQQFC
+         /a8o1NfWJf7n8u1WCsgJ6DZ9GzXI/vxRCErkva+u6IIt3Ftot2dLC5WyXE/qEkDejh1O
+         kVqvbLZLsY4DiTy7nVUI0vKMtRJFIRvZDD1t4btCIGXSU0hbMQMrdw0UCQ2wHqq9fBJR
+         XWDbyugS/eLkDqzecFcAtr+OSwjbVGG85VaokC0qIQ/n+uJRoJUbG37x3AckVjjiRCnA
+         lG8sEAiA+g4Ih121u9/zb9evJ+eGwkaeaJ5PL8bBFb99jNQJs00eYaRrjJiruivZ0pZW
+         5+mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=eUXnYsZJvnOAF9kzZYgcYvLxfHgvnwyAqbl51jXHyOk=;
+        b=S7pD+c6UrmCK+Nva7h0PI9QCUxbPBvrDGVSS3Vc3Vcd14a8ikiG97EG9njpYEnVeAZ
+         6c6hacuFW6TpVcDKTGtYCNgnk+NUQnK3U+Ky6JJyd6L/vhs2YuMw3qJHji9cAcBe0o5r
+         AYLsGUnIlx8SnSMsJtx7aaDDXtQdtvMvpT2qRoNggVHRL9fWJnlS8iOr2OfYP7BE0UFt
+         A9hrUQZ8GujkcjBG+B3eYB7pXmfqiYR/81Mb6Z+I8cAJE+zwgcM6i31y5lV6+2CYs8kE
+         2U1vZDodFPrHIhpUeoYg9FcSEKDRZ3U0nhyl+WQk0Xl8mkVBsYOqSChd2pkiSAoZKV9P
+         pioQ==
+X-Gm-Message-State: AOAM533NwZF5lQh1PH9AaOSwljCKM+7Ectq2CwLkSXJ29/LUHfDhSPM+
+        48HNq/6e7g3vpp3sB1OK287SxdBqG4N9zA==
+X-Google-Smtp-Source: ABdhPJw5z4pbgVNM5h6MqZvS0r0oCzcOE1i7EGAQsH0+8u7iGi3dGj0Z2eWsGRLSNwQEx+5xxoBcfQ==
+X-Received: by 2002:a05:600c:892:: with SMTP id l18mr784909wmp.89.1634752641318;
+        Wed, 20 Oct 2021 10:57:21 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:d31f:1512:8915:e439? ([2001:861:44c0:66c0:d31f:1512:8915:e439])
+        by smtp.gmail.com with ESMTPSA id s186sm3164965wme.14.2021.10.20.10.57.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 10:57:20 -0700 (PDT)
+Subject: Re: [PATCH] MAINTAINERS: Update email of Andrzej Hajda
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211018211353.586986-1-andrzej.hajda@intel.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <1425b43a-e5ce-b70e-3c9d-a8735860baa5@baylibre.com>
+Date:   Wed, 20 Oct 2021 19:57:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922123735.21927-1-sjakhade@cadence.com>
+In-Reply-To: <20211018211353.586986-1-andrzej.hajda@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-09-21, 14:37, Swapnil Jakhade wrote:
-> This patch series updates reference clock driver implementation for Torrent
-> by adding support to output derived as well as received reference clock.
-> When reference clock driver is enabled, either derived or received refclk
-> is output on cmn_refclk_p/m.
+On 18/10/2021 23:13, Andrzej Hajda wrote:
+> Beside updating email, the patch updates maintainers
+> of Samsung drivers.
 > 
-> In derived reference clock mode, cmn_refclk_p/m outputs the refclk derived
-> from internal PLLs while when received refclk is selected to output on
-> cmn_refclk_p/m, this is the internal reference clock driven on the
-> pma_cmn_refclk_int.
+> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
+> ---
+>  .mailmap    |  1 +
+>  MAINTAINERS | 13 ++++++++-----
+>  2 files changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/.mailmap b/.mailmap
+> index 4f6e37da60589..4283a86f70d26 100644
+> --- a/.mailmap
+> +++ b/.mailmap
+> @@ -40,6 +40,7 @@ Andrew Vasquez <andrew.vasquez@qlogic.com>
+>  Andrey Konovalov <andreyknvl@gmail.com> <andreyknvl@google.com>
+>  Andrey Ryabinin <ryabinin.a.a@gmail.com> <a.ryabinin@samsung.com>
+>  Andrey Ryabinin <ryabinin.a.a@gmail.com> <aryabinin@virtuozzo.com>
+> +Andrzej Hajda <andrzej.hajda@intel.com> <a.hajda@samsung.com>
+>  Andy Adamson <andros@citi.umich.edu>
+>  Antoine Tenart <atenart@kernel.org> <antoine.tenart@bootlin.com>
+>  Antoine Tenart <atenart@kernel.org> <antoine.tenart@free-electrons.com>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 54cd05d3aab65..e3fadb4ebced3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2546,7 +2546,7 @@ N:	s3c64xx
+>  N:	s5pv210
+>  
+>  ARM/SAMSUNG S5P SERIES 2D GRAPHICS ACCELERATION (G2D) SUPPORT
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Łukasz Stelmach <l.stelmach@samsung.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  L:	linux-media@vger.kernel.org
+>  S:	Maintained
+> @@ -2570,7 +2570,8 @@ S:	Maintained
+>  F:	drivers/media/platform/s5p-jpeg/
+>  
+>  ARM/SAMSUNG S5P SERIES Multi Format Codec (MFC) SUPPORT
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Marek Szyprowski <m.szyprowski@samsung.com>
+> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  L:	linux-media@vger.kernel.org
+>  S:	Maintained
+> @@ -6254,7 +6255,7 @@ F:	Documentation/devicetree/bindings/display/atmel/
+>  F:	drivers/gpu/drm/atmel-hlcdc/
+>  
+>  DRM DRIVERS FOR BRIDGE CHIPS
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
+>  M:	Neil Armstrong <narmstrong@baylibre.com>
+>  M:	Robert Foss <robert.foss@linaro.org>
+>  R:	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> @@ -16748,13 +16749,15 @@ F:	Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+>  F:	drivers/nfc/s3fwrn5
 
-Applied, thanks
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
 
--- 
-~Vinod
+>  
+>  SAMSUNG S5C73M3 CAMERA DRIVER
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/media/i2c/s5c73m3/*
+>  
+>  SAMSUNG S5K5BAF CAMERA DRIVER
+> -M:	Andrzej Hajda <a.hajda@samsung.com>
+> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/media/i2c/s5k5baf.c
+> 
+
