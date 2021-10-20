@@ -2,158 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0B0434F5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDEE434F5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhJTPz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
+        id S230452AbhJTPza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhJTPz4 (ORCPT
+        with ESMTP id S229570AbhJTPz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:55:56 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737A7C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:53:41 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id z20so27717036edc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:53:41 -0700 (PDT)
+        Wed, 20 Oct 2021 11:55:29 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82033C06161C;
+        Wed, 20 Oct 2021 08:53:15 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id g184so22893585pgc.6;
+        Wed, 20 Oct 2021 08:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uvpaCofbfPMgdFg6goKpvTUInlV4+5BCgWFCKXUm3As=;
-        b=KUODyXHTdsMRZjAn9iIjtT5u3oa1rlWzzqBTKRCRJZsYsG+3DHhGrLMcowDWA3VtCD
-         qSZ27EkbM6Bmc+U0VoeWgBYWAfdQYM+rYn/a0xchpWt2EDW3PG8s8PU/MuEpNvUSII8J
-         Bcvjj0k2SlKHPx+Q8fA8xinl8+hlpCzj9jEqCfDdPpn1SN4vl6/GxR+hFvxWO2ATKUus
-         PfcloE2D+R9yeol93G4T2L8hv3lx7qM+5PRwJvkUNj8kcstRU5OJS9cqeJaackJd3gKH
-         UmBCLPbnMVoJu5szmseu69oWJzJWnlrBj16Tnr2iHqdosrFPmbEw5l2CBtKw8tHeRrVO
-         H1Lw==
+        bh=xhA2/oCEt4+TSe8HhfDG1W3N2vl25XS6TpMVUP+8B7c=;
+        b=Elm1uOF2K/yXSzs+agfuxO0K+P59PIjamATKAFkWDYNzv6BJno+X9cUln0vGHDyBV6
+         rqab8gnQIHcOurptw6LBq4OlMfs9pJfnFNRKA2/hSNUirJaY6kwbR16VqGl2qzHl7vHy
+         meqX4b1nDmL/xIZCF70hxYv7cthv6Jux0zSjBOuayVXAADJIwDSJ17Ed9VxebQzPn/bb
+         GrzK0lQoMPIEMiJHNXqH95S3dn4CypY8kBNFDapKJsnBJmi3K0yi+hxpNVXwzuhBDlVQ
+         cYYbyQ9i55KbE/O0mdZ2fSkfCfCSVUoSs1KCVBRjF/LH1sNVSMaMNVD6Tyh5A71mIju2
+         U22A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uvpaCofbfPMgdFg6goKpvTUInlV4+5BCgWFCKXUm3As=;
-        b=kQYBsp8c59Ducs5MSVoTaHguLjFvu1Cm9ooVQwgHSLDs9aM2ag7Bv8oqtagtCof4BN
-         q2WIv6Yxf9Nt3/rqGwzB3FhqBTnOfHQv6Cbk+ArTT2J65/HxLMgLiJ24AFCKf7ufOWtE
-         ulmn7e5ecgfZmAWLvlFFW8Aa52lDsVtwbXp5dqMRtp1mBQ1QWH9Jj+iqlf+H4YQaTPu5
-         2HjuG2oEhDqeR8XG9Ub4HOT9KAnfpclXsT8bB/3+Lu7djqFzj6CjcVPdZYSXP/+aFvt0
-         CnLe2Ht3NbYN66PYjgb0PeCb+AyDLJ5dvW8HAHqc0dOsukDplKxxfakKdM6LGfHN8MiT
-         /ixQ==
-X-Gm-Message-State: AOAM5338HOWSC2dFAAY/x7uoVStLmnEUD5jHkVy75AS6XZa5CUA29dMm
-        sHMEuvNUZsa139jYPprIN4ed9O2efVB5fFSeCg06WA==
-X-Google-Smtp-Source: ABdhPJyqXEOVX/X4gZqc9wVobupCAGTN772DwkRBf5KZ1VOLcwhg0EB6QlcXlh1zQaTCMcKXfpE+Z5MKDgfYXwVB5b0=
-X-Received: by 2002:a17:906:9399:: with SMTP id l25mr111901ejx.363.1634745164492;
- Wed, 20 Oct 2021 08:52:44 -0700 (PDT)
+        bh=xhA2/oCEt4+TSe8HhfDG1W3N2vl25XS6TpMVUP+8B7c=;
+        b=rqYbk5+J5Ff6HMGQtCSI2JC53BQJ+wzJzrhOpJDFY5aW0a5GXqJHSNzzE6EvRzBmsV
+         QU3qlZyGE6Q9xkvtVFMONe2tweAg/NEkR+daNNqJbvW0B3Xn3vpBIeQtgig9bVt1tO4w
+         HyNcQBNYh9ZTCcp92cWPQUNArZ4aIFcrr9oSSKn4HK9wrqJfEhWlzjRLf/Nr/5qil3MH
+         TX3cVYlz6VJT8qw6gC5CQurHDkyTtQG3UFJzBEFFoAuxZWPqLYxwySz7m2XNL58cHsQW
+         RbXaHDckOJsrNwBmTuNSM0dwPMdzQa455zAB13EeFoS+t3YAhfkhrFMouD40zV0kzcSx
+         DH7Q==
+X-Gm-Message-State: AOAM531nOCs/hwjf0Ak3mO95ptSK/03IB/qA3UsgKsMaOVl4wpwIHqNM
+        /DZB31i6yARtSU5aWgRYi1FszfVHtT7WRHJX19Q=
+X-Google-Smtp-Source: ABdhPJxpdtnNrcmLdmhraNpt/JUMJ0GSp1pRirnQ8cXxIjWT/hSa89MXwZmgb5e7HAZ9DLAFHAR5ZzdxiSe1yNBQcwk=
+X-Received: by 2002:a63:b218:: with SMTP id x24mr54548pge.29.1634745194968;
+ Wed, 20 Oct 2021 08:53:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211018114046.25571-1-etienne.carriere@linaro.org> <1634578358.516648.2612839.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1634578358.516648.2612839.nullmailer@robh.at.kernel.org>
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-Date:   Wed, 20 Oct 2021 17:52:33 +0200
-Message-ID: <CAN5uoS_B6PrkWtaX5V4xdNnvRjzTJwsB=txVK0YB8bGjWsKdNA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: Add OP-TEE transport for SCMI
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, devicetree@vger.kernel.org
+References: <20211019130809.21281-1-o.rempel@pengutronix.de> <20211020050459.GE16320@pengutronix.de>
+In-Reply-To: <20211020050459.GE16320@pengutronix.de>
+From:   Petr Benes <petrben@gmail.com>
+Date:   Wed, 20 Oct 2021 17:53:03 +0200
+Message-ID: <CAPwXO5b=z1nhQCo55A_XuK-Es2o7TrL2Vj6AkRSXa3Wxh0s8sA@mail.gmail.com>
+Subject: Re: [PATCH v2] thermal: imx: implement runtime PM support
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, David Jander <david@protonic.nl>,
+        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
-
-
-On Mon, 18 Oct 2021 at 19:32, Rob Herring <robh@kernel.org> wrote:
+On Wed, 20 Oct 2021 at 07:05, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 >
-> On Mon, 18 Oct 2021 13:40:45 +0200, Etienne Carriere wrote:
-> > Introduce compatible "linaro,scmi-optee" for SCMI transport channel
-> > based on an OP-TEE service invocation. The compatible mandates a
-> > channel ID defined with property "linaro,optee-channel-id".
+> Hi Petr and Michal,
+>
+> I forgot to add you for v2 in CC. Please test/review this version.
+
+Hi Oleksij,
+
+It works good. with PM as well as without PM. The only minor issue I found is,
+that the first temperature reading (when the driver probes) fails. That is
+(val & soc_data->temp_valid_mask) == 0) holds true. How does
+pm_runtime_resume_and_get() behave in imx_thermal_probe()?
+Does it go through imx_thermal_runtime_resume() with usleep_range()?
+
+>
+> On Tue, Oct 19, 2021 at 03:08:09PM +0200, Oleksij Rempel wrote:
+> > Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's local
+> > data to decide whether to run a measurement") this driver stared using
+> > irq_enabled flag to make decision to power on/off the thermal core. This
+> > triggered a regression, where after reaching critical temperature, alarm
+> > IRQ handler set irq_enabled to false,  disabled thermal core and was not
+> > able read temperature and disable cooling sequence.
 > >
-> > Cc: devicetree@vger.kernel.org
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+> > In case the cooling device is "CPU/GPU freq", the system will run with
+> > reduce performance until next reboot.
+> >
+> > To solve this issue, we need to move all parts implementing hand made
+> > runtime power management and let it handle actual runtime PM framework.
+> >
+> > Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > > ---
-> > Changes since v2:
-> >  - Define mandatory property linaro,optee-channel-id
-> >  - Rebased on yaml description file
+> >  drivers/thermal/imx_thermal.c | 143 +++++++++++++++++++++-------------
+> >  1 file changed, 89 insertions(+), 54 deletions(-)
 > >
-> > Changes since v1:
-> >  - Removed modification regarding mboxes property description.
-> > ---
-> >  .../bindings/firmware/arm,scmi.yaml           | 44 +++++++++++++++++++
-> >  1 file changed, 44 insertions(+)
+> > diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+> > index 2c7473d86a59..cb5a4354fc75 100644
+> > --- a/drivers/thermal/imx_thermal.c
+> > +++ b/drivers/thermal/imx_thermal.c
+> > @@ -15,6 +15,7 @@
+> >  #include <linux/regmap.h>
+> >  #include <linux/thermal.h>
+> >  #include <linux/nvmem-consumer.h>
+> > +#include <linux/pm_runtime.h>
+> >
+> >  #define REG_SET              0x4
+> >  #define REG_CLR              0x8
+> > @@ -194,6 +195,7 @@ static struct thermal_soc_data thermal_imx7d_data = {
+> >  };
+> >
+> >  struct imx_thermal_data {
+> > +     struct device *dev;
+> >       struct cpufreq_policy *policy;
+> >       struct thermal_zone_device *tz;
+> >       struct thermal_cooling_device *cdev;
+> > @@ -252,44 +254,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
+> >       const struct thermal_soc_data *soc_data = data->socdata;
+> >       struct regmap *map = data->tempmon;
+> >       unsigned int n_meas;
+> > -     bool wait, run_measurement;
+> >       u32 val;
+> > +     int ret;
+> >
+> > -     run_measurement = !data->irq_enabled;
+> > -     if (!run_measurement) {
+> > -             /* Check if a measurement is currently in progress */
+> > -             regmap_read(map, soc_data->temp_data, &val);
+> > -             wait = !(val & soc_data->temp_valid_mask);
+> > -     } else {
+> > -             /*
+> > -              * Every time we measure the temperature, we will power on the
+> > -              * temperature sensor, enable measurements, take a reading,
+> > -              * disable measurements, power off the temperature sensor.
+> > -              */
+> > -             regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+> > -                         soc_data->power_down_mask);
+> > -             regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+> > -                         soc_data->measure_temp_mask);
+> > -
+> > -             wait = true;
+> > -     }
+> > -
+> > -     /*
+> > -      * According to the temp sensor designers, it may require up to ~17us
+> > -      * to complete a measurement.
+> > -      */
+> > -     if (wait)
+> > -             usleep_range(20, 50);
+> > +     ret = pm_runtime_resume_and_get(data->dev);
+> > +     if (ret < 0)
+> > +             return ret;
+> >
+> >       regmap_read(map, soc_data->temp_data, &val);
+> >
+> > -     if (run_measurement) {
+> > -             regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+> > -                          soc_data->measure_temp_mask);
+> > -             regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+> > -                          soc_data->power_down_mask);
+> > -     }
+> > -
+> >       if ((val & soc_data->temp_valid_mask) == 0) {
+> >               dev_dbg(&tz->device, "temp measurement never finished\n");
+> >               return -EAGAIN;
+> > @@ -328,6 +301,8 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
+> >               enable_irq(data->irq);
+> >       }
+> >
+> > +     pm_runtime_put(data->dev);
+> > +
+> >       return 0;
+> >  }
+> >
+> > @@ -335,24 +310,16 @@ static int imx_change_mode(struct thermal_zone_device *tz,
+> >                          enum thermal_device_mode mode)
+> >  {
+> >       struct imx_thermal_data *data = tz->devdata;
+> > -     struct regmap *map = data->tempmon;
+> > -     const struct thermal_soc_data *soc_data = data->socdata;
+> >
+> >       if (mode == THERMAL_DEVICE_ENABLED) {
+> > -             regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+> > -                          soc_data->power_down_mask);
+> > -             regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+> > -                          soc_data->measure_temp_mask);
+> > +             pm_runtime_get(data->dev);
+> >
+> >               if (!data->irq_enabled) {
+> >                       data->irq_enabled = true;
+> >                       enable_irq(data->irq);
+> >               }
+> >       } else {
+> > -             regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+> > -                          soc_data->measure_temp_mask);
+> > -             regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+> > -                          soc_data->power_down_mask);
+> > +             pm_runtime_put(data->dev);
+> >
+> >               if (data->irq_enabled) {
+> >                       disable_irq(data->irq);
+> > @@ -393,6 +360,11 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
+> >                            int temp)
+> >  {
+> >       struct imx_thermal_data *data = tz->devdata;
+> > +     int ret;
+> > +
+> > +     ret = pm_runtime_resume_and_get(data->dev);
+> > +     if (ret < 0)
+> > +             return ret;
+> >
+> >       /* do not allow changing critical threshold */
+> >       if (trip == IMX_TRIP_CRITICAL)
+> > @@ -406,6 +378,8 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
+> >
+> >       imx_set_alarm_temp(data, temp);
+> >
+> > +     pm_runtime_put(data->dev);
+> > +
+> >       return 0;
+> >  }
+> >
+> > @@ -681,6 +655,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
+> >       if (!data)
+> >               return -ENOMEM;
+> >
+> > +     data->dev = &pdev->dev;
+> > +
+> >       map = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "fsl,tempmon");
+> >       if (IS_ERR(map)) {
+> >               ret = PTR_ERR(map);
+> > @@ -801,6 +777,14 @@ static int imx_thermal_probe(struct platform_device *pdev)
+> >       regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
+> >                    data->socdata->measure_temp_mask);
+> >
+> > +     /* the core was configured and enabled just before */
+> > +     pm_runtime_set_active(&pdev->dev);
+> > +     pm_runtime_enable(data->dev);
+> > +
+> > +     ret = pm_runtime_resume_and_get(data->dev);
+> > +     if (ret < 0)
+> > +             goto disable_runtime_pm;
+> > +
+> >       data->irq_enabled = true;
+> >       ret = thermal_zone_device_enable(data->tz);
+> >       if (ret)
+> > @@ -814,10 +798,15 @@ static int imx_thermal_probe(struct platform_device *pdev)
+> >               goto thermal_zone_unregister;
+> >       }
+> >
+> > +     pm_runtime_put(data->dev);
+> > +
+> >       return 0;
+> >
+> >  thermal_zone_unregister:
+> >       thermal_zone_device_unregister(data->tz);
+> > +disable_runtime_pm:
+> > +     pm_runtime_put_noidle(data->dev);
+> > +     pm_runtime_disable(data->dev);
+> >  clk_disable:
+> >       clk_disable_unprepare(data->thermal_clk);
+> >  legacy_cleanup:
+> > @@ -829,13 +818,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
+> >  static int imx_thermal_remove(struct platform_device *pdev)
+> >  {
+> >       struct imx_thermal_data *data = platform_get_drvdata(pdev);
+> > -     struct regmap *map = data->tempmon;
+> >
+> > -     /* Disable measurements */
+> > -     regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
+> > -                  data->socdata->power_down_mask);
+> > -     if (!IS_ERR(data->thermal_clk))
+> > -             clk_disable_unprepare(data->thermal_clk);
+> > +     pm_runtime_put_noidle(data->dev);
+> > +     pm_runtime_disable(data->dev);
+> >
+> >       thermal_zone_device_unregister(data->tz);
+> >       imx_thermal_unregister_legacy_cooling(data);
+> > @@ -858,29 +843,79 @@ static int __maybe_unused imx_thermal_suspend(struct device *dev)
+> >       ret = thermal_zone_device_disable(data->tz);
+> >       if (ret)
+> >               return ret;
+> > +
+> > +     return pm_runtime_force_suspend(data->dev);
+> > +}
+> > +
+> > +static int __maybe_unused imx_thermal_resume(struct device *dev)
+> > +{
+> > +     struct imx_thermal_data *data = dev_get_drvdata(dev);
+> > +     int ret;
+> > +
+> > +     ret = pm_runtime_force_resume(data->dev);
+> > +     if (ret)
+> > +             return ret;
+> > +     /* Enabled thermal sensor after resume */
+> > +     return thermal_zone_device_enable(data->tz);
+> > +}
+> > +
+> > +static int __maybe_unused imx_thermal_runtime_suspend(struct device *dev)
+> > +{
+> > +     struct imx_thermal_data *data = dev_get_drvdata(dev);
+> > +     const struct thermal_soc_data *socdata = data->socdata;
+> > +     struct regmap *map = data->tempmon;
+> > +     int ret;
+> > +
+> > +     ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
+> > +                        socdata->measure_temp_mask);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
+> > +                        socdata->power_down_mask);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> >       clk_disable_unprepare(data->thermal_clk);
+> >
+> >       return 0;
+> >  }
+> >
+> > -static int __maybe_unused imx_thermal_resume(struct device *dev)
+> > +static int __maybe_unused imx_thermal_runtime_resume(struct device *dev)
+> >  {
+> >       struct imx_thermal_data *data = dev_get_drvdata(dev);
+> > +     const struct thermal_soc_data *socdata = data->socdata;
+> > +     struct regmap *map = data->tempmon;
+> >       int ret;
+> >
+> >       ret = clk_prepare_enable(data->thermal_clk);
+> >       if (ret)
+> >               return ret;
+> > -     /* Enabled thermal sensor after resume */
+> > -     ret = thermal_zone_device_enable(data->tz);
+> > +
+> > +     ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
+> > +                        socdata->power_down_mask);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
+> > +                        socdata->measure_temp_mask);
+> >       if (ret)
+> >               return ret;
+> >
+> > +     /*
+> > +      * According to the temp sensor designers, it may require up to ~17us
+> > +      * to complete a measurement.
+> > +      */
+> > +     usleep_range(20, 50);
+> > +
+> >       return 0;
+> >  }
+> >
+> > -static SIMPLE_DEV_PM_OPS(imx_thermal_pm_ops,
+> > -                      imx_thermal_suspend, imx_thermal_resume);
+> > +static const struct dev_pm_ops imx_thermal_pm_ops = {
+> > +     SET_SYSTEM_SLEEP_PM_OPS(imx_thermal_suspend, imx_thermal_resume)
+> > +     SET_RUNTIME_PM_OPS(imx_thermal_runtime_suspend,
+> > +                        imx_thermal_runtime_resume, NULL)
+> > +};
+> >
+> >  static struct platform_driver imx_thermal = {
+> >       .driver = {
+> > --
+> > 2.30.2
+> >
 > >
 >
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'description' is a required property
->         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
->         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
->         'type' is a required property
->                 hint: A vendor boolean property can use "type: boolean"
->         Additional properties are not allowed ('maxItems' was unexpected)
->                 hint: A vendor boolean property can use "type: boolean"
->         /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
->                 'enum' is a required property
->                 'const' is a required property
->                 hint: A vendor string property with exact values has an implicit type
->                 from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
->         /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
->                 '$ref' is a required property
->                 'allOf' is a required property
->                 hint: A vendor property needs a $ref to types.yaml
->                 from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
->         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
->         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: ignoring, error in schema: patternProperties: ^protocol@[0-9a-f]+$: properties: linaro,optee-channel-id
-> warning: no schema found in file: ./Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-> Documentation/devicetree/bindings/mailbox/arm,mhu.example.dt.yaml:0:0: /example-1/firmware/scmi: failed to match any schema with compatible: ['arm,scmi']
-> Documentation/devicetree/bindings/firmware/arm,scmi.example.dts:175.39-178.19: ERROR (duplicate_label): /example-2/firmware/scmi/protocol@14: Duplicate label 'scmi_clk' on /example-2/firmware/scmi/protocol@14 and /example-0/firmware/scmi/protocol@14
-> Documentation/devicetree/bindings/firmware/arm,scmi.example.dts:180.40-186.19: ERROR (duplicate_label): /example-2/firmware/scmi/protocol@13: Duplicate label 'scmi_dvfs' on /example-2/firmware/scmi/protocol@13 and /example-0/firmware/scmi/protocol@13
-> ERROR: Input tree has errors, aborting (use -f to force output)
-> make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/firmware/arm,scmi.example.dt.yaml] Error 2
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1441: dt_binding_check] Error 2
->
-> doc reference errors (make refcheckdocs):
->
-> See https://patchwork.ozlabs.org/patch/1542547
->
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
-
-Thanks for the feedback and guidelines. I've played a bit with dt
-checker and saw that description/type/etc.. are not needed when the
-property name does not include a coma ','.
-
-I think i'll use "optee-channel-id" instead of
-"linaro,optee-channel-id" as property name.
-With that name, 'make dt_binding_check' passes without complains on
-arm,scmi.yaml.
-I have no strong preference and here and can go either ways.
-
-I though the "linaro," was expected.
-Please tell me if there's any reason I need to preserve this "linaro,"
-prefix on that property.
-
-Regards,
-Etienne
+> --
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
