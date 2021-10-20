@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1552F434D2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01C4434D49
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhJTOOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhJTOOK (ORCPT
+        id S229972AbhJTOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:19:03 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:52090 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229639AbhJTOTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:14:10 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52203C061753
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:11:56 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id z24so3088009qtv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x7JOzkLp3qJQ5ZEG3Wvg8nto1+QE37HnHtRsZbydM6A=;
-        b=keol+gj5+qeTZu7psqLrfHytYbYF9Njy0f1C2oSux4ZVQa3fJggX2xMmvZcZCrOnzc
-         CGQU5fMG+V+CmoXPEcUUb+lQIEJ4c6INHctBT5mvtWiaBFg+E2XRHhYWKxaM355n1uI/
-         iDwz+FJm9X4PHN5d6ffrvfV42N4MBDB6hhuCOjas27HSXDXCizS3SypOs36+dUP8BmG2
-         O3z7Nfr6wxYBF9thGB91/o/m/ATC6eYbX+TBGXiXV7t0z7UhgN+HSVVa0GCBJPXcnCRQ
-         RsTHJ66Gg0yW0Bj4/jKK6HRNDv3EYh/yPL/3AF07U2jcqbfnn+s2Y6XV1ULfzISJ8wyU
-         bRlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x7JOzkLp3qJQ5ZEG3Wvg8nto1+QE37HnHtRsZbydM6A=;
-        b=GP4NbN95CvlLveGzm4yCg9303X+Mvn8ooyFxjvPq2C+taXk1NfclKAH6vTB9eBJFmE
-         UFNzR7hNZJLpgjc4K8q5cqcxVsx3GRsqO+6qD34As98pcOVqg8GmB2n4yu3/M0IsiZe7
-         PEjD/xW5wVFxhkRLOeP6uVYtEgOGYV4IiaEmSbcqGxVa0OpI/nD/Peva1S1gh+AVC6DI
-         1MXMf/3zXG2dIYKKt/l9kSQXR23fXVX6Y0zv8jXbIK5NSRmwz+w3TrBvWjNqBXgqLizb
-         sMY3cYqt1dtUL2WPIUARr9FZBn3m5qTAVlfleN6LAugFJRIE48SluTasnCUvdi7vIQPc
-         KplQ==
-X-Gm-Message-State: AOAM530EZ2sE/zF2YbgijkFe64AIUrddUDYM1XX56M3+bjvsY3WS/WrW
-        kgsFOl3b+kPCNjWQsVe7zgZlkg==
-X-Google-Smtp-Source: ABdhPJywLYD3sCDbm0hAanxdF+yNPD6msA//MmQPz+lrjVYHgur0Zel8YSlYYQkwYSXID4FUi4RNIA==
-X-Received: by 2002:ac8:7145:: with SMTP id h5mr176222qtp.240.1634739115459;
-        Wed, 20 Oct 2021 07:11:55 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id s189sm1028875qka.100.2021.10.20.07.11.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 07:11:55 -0700 (PDT)
-Subject: Re: [PATCH v4 19/20] crypto: qce: Add 'sm8250-qce' compatible string
- check
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-20-bhupesh.sharma@linaro.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <86fe25d6-c20c-b143-deb2-984aa727c657@linaro.org>
-Date:   Wed, 20 Oct 2021 10:11:54 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 20 Oct 2021 10:19:02 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AHVsaF630E9OvsxVBhXdDqwqjBLUkLtp133Aq?=
+ =?us-ascii?q?2lEZdPU1SL3/qynKpp536faaslcssR0b+exoQZPvfZq+z+8T3WByB8bGYOCOgg?=
+ =?us-ascii?q?LBR72Ki7GSoAEIcxeTygc379YFT0ERMqyTMbCk5fyU3OHee+xQueW6zA=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
+   d="scan'208";a="535002300"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 16:16:43 +0200
+Date:   Wed, 20 Oct 2021 16:16:42 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Joe Perches <joe@perches.com>
+cc:     Karolina Drobnik <karolinadrobnik@gmail.com>,
+        outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
+        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] Re: [PATCH] staging: vt6655: Rename
+ `dwAL2230InitTable` array
+In-Reply-To: <157ee66fd0e3304c238e7ad8123277892e0d1132.camel@perches.com>
+Message-ID: <alpine.DEB.2.22.394.2110201615590.2930@hadrien>
+References: <20211020132811.417341-1-karolinadrobnik@gmail.com>  <16db455b46f130300b5c346160aa434616e4f6b4.camel@perches.com> <157ee66fd0e3304c238e7ad8123277892e0d1132.camel@perches.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20211013105541.68045-20-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/13/21 6:55 AM, Bhupesh Sharma wrote:
-> Add 'sm8250-qce' compatible string check in qce crypto
-> driver as we add support for sm8250 crypto device in the
-> device-tree in the subsequent patch.
-> 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+On Wed, 20 Oct 2021, Joe Perches wrote:
 
-Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+> On Wed, 2021-10-20 at 06:44 -0700, Joe Perches wrote:
+> > trivial suggestion:
+> >
+> > > diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+> > []
+> > > @@ -33,7 +33,7 @@
+> > >  #define SWITCH_CHANNEL_DELAY_AL7230 200 /* us */
+> > >  #define AL7230_PWR_IDX_LEN    64
+> > >
+> > > -static const unsigned long dwAL2230InitTable[CB_AL2230_INIT_SEQ] = {
+> > > +static const unsigned long al2230_init_table[CB_AL2230_INIT_SEQ] = {
+> > >  	0x03F79000 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW,
+> > >  	0x03333100 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW,
+> > >  	0x01A00200 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW,
+> >
+> > In this file there are more than 100 uses of
+> >
+> > 	(BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW
+> >
+> > Maybe add a define for it and substitute the uses for the define.
+>
+> Look at the code too.
+>
+> It looks as if every use of IFRFbWriteEmbedded() has this added to
+> the 2nd argument and that the 2nd argument isn't used anywhere else.
+>
+> Maybe remove it altogether and add it to IFRFbWriteEmbedded().
+>
+> And it looks as if the + uses for these should logically be |
+>
+> Something like:
+>
+> diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+> index 0dae593c6944f..26803f6f9a27b 100644
+> --- a/drivers/staging/vt6655/rf.c
+> +++ b/drivers/staging/vt6655/rf.c
+> @@ -498,7 +498,8 @@ bool IFRFbWriteEmbedded(struct vnt_private *priv, unsigned long dwData)
+>         unsigned short ww;
+>         unsigned long dwValue;
+>
+> -       VNSvOutPortD(iobase + MAC_REG_IFREGCTL, dwData);
+> +       VNSvOutPortD(iobase + MAC_REG_IFREGCTL,
+> +                    dwData | (BY_AL2230_REG_LEN << 3) | IFREGCTL_REGW);
+>
+>         /* W_MAX_TIMEOUT is the timeout period */
+>         for (ww = 0; ww < W_MAX_TIMEOUT; ww++) {
 
--- 
-Warm Regards
-Thara (She/Her/Hers)
+Karolina,
 
-> ---
->   drivers/crypto/qce/core.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index c6f686126fc9..4c55eceb4e7f 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -306,6 +306,7 @@ static int qce_crypto_remove(struct platform_device *pdev)
->   static const struct of_device_id qce_crypto_of_match[] = {
->   	{ .compatible = "qcom,ipq6018-qce", },
->   	{ .compatible = "qcom,sdm845-qce", },
-> +	{ .compatible = "qcom,sm8250-qce", },
->   	{}
->   };
->   MODULE_DEVICE_TABLE(of, qce_crypto_of_match);
-> 
+If more than a hundred such changes are necessary, you may find Coccinelle
+useful:  https://coccinelle.gitlabpages.inria.fr/website/
+
+julia
 
 
+>
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/157ee66fd0e3304c238e7ad8123277892e0d1132.camel%40perches.com.
+>
