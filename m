@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4962434CAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3172434CB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhJTNwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:52:53 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:41644 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhJTNwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:52:40 -0400
-Received: by mail-ot1-f48.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so6150555ote.8;
-        Wed, 20 Oct 2021 06:50:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=PEZXkD74SyZdIyV+d+cp0filvFd2Rp3gOD7po4nsWqk=;
-        b=E1QbG5V+O58rcE4dqtqqt2TxWHTlYeZwOWaGIBd2krIROaKms9/7ZpHfZFDwe2ovru
-         ZrD0UEf9JhizKPWjtjfsi+FpRtwg00eJ+u2NZfXXlPJnUwc40kpxxxYkhEnbL+8yDyaa
-         58Kstb+7EmdYy/o7maCatU/i94XMyoJWgVsyeqO+/gX/mKXCvM6FNNnEx2LFnzgo7B6V
-         hc9cwFwP7DVc/8l5fp2ccCnr8JpuE1EAUTqqTxr3UsSpLrURQidf3eWIyCaKae/RYbGc
-         2Xcve09qRcAl/Ww+Xka2u7JOmsoKJeVesS8dhoqqAsJtjUiNAWAePwR1CXIPYPTpebu/
-         5iuA==
-X-Gm-Message-State: AOAM531C9zrS1bwJ8dsIJtxmQrwd4+NNIEsZ0kCU24ecmT1Wts1PSwc4
-        d9DwhTW5P8lRHENOlgsXIg==
-X-Google-Smtp-Source: ABdhPJzdpE171vomgu71sUM77D67pYolOFhrMZHKHtjQ7wm0L0/GqcC4cBU6sXFt2kOXSyTrvHgcGg==
-X-Received: by 2002:a9d:715c:: with SMTP id y28mr11044070otj.362.1634737825626;
-        Wed, 20 Oct 2021 06:50:25 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id x12sm423235oot.6.2021.10.20.06.50.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:50:24 -0700 (PDT)
-Received: (nullmailer pid 2259917 invoked by uid 1000);
-        Wed, 20 Oct 2021 13:50:23 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Cc:     Guo Ren <guoren@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        devicetree@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        opensbi@lists.infradead.org, Bin Meng <bmeng.cn@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Xiang W <wxjstz@126.com>, linux-riscv@lists.infradead.org
-In-Reply-To: <20211020093603.28653-1-heinrich.schuchardt@canonical.com>
-References: <20211020093603.28653-1-heinrich.schuchardt@canonical.com>
-Subject: Re: [PATCH 1/1] dt-bindings: T-HEAD CLINT
-Date:   Wed, 20 Oct 2021 08:50:23 -0500
-Message-Id: <1634737823.662456.2259916.nullmailer@robh.at.kernel.org>
+        id S230234AbhJTNy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:54:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230031AbhJTNyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:54:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B7BA60EE3;
+        Wed, 20 Oct 2021 13:52:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634737931;
+        bh=SBDigKEN5g+FIb/oTr8InqTwNX3E4a1MT8ec1sBFvlQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ebOZ/YM1U8AKCU7bkBMRow9hfGEg/T5qtZOnzqYL2X4cYzQc3YBPMtGv7baBuoDor
+         IxdawKe6lJCZFRLJV495dwO5XDDiZjfhHWiRG5x2rR3e5gOrIkJ8CIhOCSoU22mQl7
+         Fr07REsSQa4GqxQ09hAeA9DWeapw6ZfUUWv4jlRloaBaEgkcDf+cJSe2Txk6G+ZbUI
+         IZfHGOVEzVKM0eAME2f2N9Ti6yAYtg5TbrDs1Q2C7bD+PYHsTqgDfrisgQtBg2Efx5
+         isY6pjXd7AVvCUYGh1lDcuVsz4IE5lwT4ZMo5SsCXB8DZpq0E0RjVDbZV2d83aKRcW
+         qj3vJk/Y+E23Q==
+Received: by pali.im (Postfix)
+        id E204C883; Wed, 20 Oct 2021 15:52:08 +0200 (CEST)
+Date:   Wed, 20 Oct 2021 15:52:08 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     bhelgaas@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 02/24] PCI: Set error response in config access
+ defines when ops->read() fails
+Message-ID: <20211020135208.zgm2gvhqd7ukb57m@pali>
+References: <cover.1634306198.git.naveennaidu479@gmail.com>
+ <b913b4966938b7cad8c049dc34093e6c4b2fae68.1634306198.git.naveennaidu479@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b913b4966938b7cad8c049dc34093e6c4b2fae68.1634306198.git.naveennaidu479@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 11:36:03 +0200, Heinrich Schuchardt wrote:
-> The CLINT in the T-HEAD 9xx CPUs is similar to the SiFive CLINT but does
-> not support 64bit mmio access to the MTIMER device.
+On Friday 15 October 2021 19:58:17 Naveen Naidu wrote:
+> Make PCI_OP_READ and PCI_USER_READ_CONFIG set the data value with error
+> response (~0), when the PCI device read by a host controller fails.
 > 
-> OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indicate the
-> restriction and the "sifive,cling0" compatible string. An OpenSBI
-> patch suggested to use "reg-io-width = <4>;" as the reg-io-width property
-> is generally used in the devicetree schema for such a condition.
+> This ensures that the controller drivers no longer need to fabricate
+> (~0) value when they detect error. It also  gurantees that the error
+> response (~0) is always set when the controller drivers fails to read a
+> config register from a device.
 > 
-> As the design is not SiFive based it is preferable to apply a compatible
-> string identifying T-HEAD instead.
+> This makes error response fabrication consistent and helps in removal of
+> a lot of repeated code.
 > 
-> Add a new yaml file describing the T-HEAD CLINT.
-> 
-> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
 > ---
-> @Palmer, @Anup
-> I copied you as maintainers from sifive,clint.yaml. Please, indicate if
-> this should be changed.
+>  drivers/pci/access.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 > 
-> For the prior discussion see:
-> https://lore.kernel.org/all/20211015100941.17621-1-heinrich.schuchardt@canonical.com/
-> https://lore.kernel.org/all/20211015120735.27972-1-heinrich.schuchardt@canonical.com/
+> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+> index 46935695cfb9..b3b2006ed1d2 100644
+> --- a/drivers/pci/access.c
+> +++ b/drivers/pci/access.c
+> @@ -42,7 +42,10 @@ int noinline pci_bus_read_config_##size \
+>  	if (PCI_##size##_BAD) return PCIBIOS_BAD_REGISTER_NUMBER;	\
+>  	pci_lock_config(flags);						\
+>  	res = bus->ops->read(bus, devfn, pos, len, &data);		\
+> -	*value = (type)data;						\
+> +	if (res)									\
+> +		SET_PCI_ERROR_RESPONSE(value);			\
+> +	else										\
+> +		*value = (type)data;						\
+
+Hello! Just one small comment. It looks like that in this patch is
+broken alignment of backslashes on the end of lines. Prior this patch
+backslashes on all lines were at the same column. With this patch they
+are not.
+
+>  	pci_unlock_config(flags);					\
+>  	return res;							\
+>  }
+> @@ -228,7 +231,10 @@ int pci_user_read_config_##size						\
+>  	ret = dev->bus->ops->read(dev->bus, dev->devfn,			\
+>  					pos, sizeof(type), &data);	\
+>  	raw_spin_unlock_irq(&pci_lock);				\
+> -	*val = (type)data;						\
+> +	if (ret)								\
+> +		SET_PCI_ERROR_RESPONSE(val);			\
+> +	else									\
+> +		*val = (type)data;						\
+>  	return pcibios_err_to_errno(ret);				\
+>  }									\
+>  EXPORT_SYMBOL_GPL(pci_user_read_config_##size);
+> -- 
+> 2.25.1
 > 
-> A release candidate of the ACLINT specification is available at
-> https://github.com/riscv/riscv-aclint/releases
-> ---
->  .../bindings/timer/thead,clint.yaml           | 62 +++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/thead,clint.yaml
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/thead,clint.yaml: properties:compatible:items: 'oneOf' conditional failed, one must be fixed:
-	[{'const': ['allwinner,sun20i-d1-clint']}, {'const': ['thead,clint0']}] is not of type 'object'
-	['allwinner,sun20i-d1-clint'] is not of type 'string'
-	['thead,clint0'] is not of type 'string'
-	from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/thead,clint.yaml: ignoring, error in schema: properties: compatible: items
-warning: no schema found in file: ./Documentation/devicetree/bindings/timer/thead,clint.yaml
-Documentation/devicetree/bindings/timer/thead,clint.example.dt.yaml:0:0: /example-0/timer@2000000: failed to match any schema with compatible: ['allwinner,sun20i-d1-clint', 'thead,clint0']
-Documentation/devicetree/bindings/timer/thead,clint.example.dt.yaml:0:0: /example-0/timer@2000000: failed to match any schema with compatible: ['allwinner,sun20i-d1-clint', 'thead,clint0']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1543771
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
