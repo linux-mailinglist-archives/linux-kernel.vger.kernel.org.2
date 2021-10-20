@@ -2,125 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA9F4346B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29894346B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhJTIVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:21:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57584 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTIVo (ORCPT
+        id S229972AbhJTIWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:22:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9298 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229544AbhJTIWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:21:44 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 349451FD47;
-        Wed, 20 Oct 2021 08:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634717968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fF05nAEyjqTbx+MUMonWp9IUBJlR+Dw6z0QwyteEkTw=;
-        b=sQPHPToG2Fvjnup+4BPVwdAuh2cpg/MRibClRF00pE0aOFX5rilYheDOWuia/OCg/V/Zqr
-        6REGrweU2AtByO+aaYSQVXNMPeJju96CaKJFs3yacalq0i8KIy1xtdK+k6XVPL8SZYI+Qk
-        40JHGxGTsVeLpcQkwUsXUKfJpmik9zY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634717968;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fF05nAEyjqTbx+MUMonWp9IUBJlR+Dw6z0QwyteEkTw=;
-        b=pNe6tBQODotEc2aHu+V64wYMh/dMMgW2yUPDrkGUUEYB33K5zemch5GehR+z1c3tBJETQ5
-        z80x/CcyVZDgqDDQ==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8E7F6A3B84;
-        Wed, 20 Oct 2021 08:19:27 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 10:19:27 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Ming Lei <ming.lei@redhat.com>
-cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
-        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
-        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-In-Reply-To: <YW/KEsfWJMIPnz76@T590>
-Message-ID: <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
-References: <YWjCpLUNPF3s4P2U@T590> <YWjJ0O7K+31Iz3ox@bombadil.infradead.org> <YWk9e957Hb+I7HvR@T590> <YWm68xUnAofop3PZ@bombadil.infradead.org> <YWq3Z++uoJ/kcp+3@T590> <YW3LuzaPhW96jSBK@bombadil.infradead.org> <YW4uwep3BCe9Vxq8@T590>
- <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz> <YW6OptglA6UykZg/@T590> <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz> <YW/KEsfWJMIPnz76@T590>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Wed, 20 Oct 2021 04:22:16 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K6lexe031316;
+        Wed, 20 Oct 2021 04:19:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=HVktBuFd6LmgPJY8KabqdBhgKyd1NA1KX8ewkk0v6yY=;
+ b=m776LmI1MfhT1dzYlhcDcSEjIhiWDy8jgLvWs5TqO+zwuAswMz7uQiCbeOt5NwD8gbC+
+ njVI2RlTlxQpgGqDmaB4ZJpCzryrKUswlC6EHttm4ayUeWtFwmS3KvYAirtP3wvqR66I
+ bP09Nm4m8sR63v+3Djfex9Gjac/XwcwHElOOi58wks9zzP5r+uJXBL0oIQbCG1mJOxdu
+ FgXp+mwLa6m87ZoTsJbLRIgccYu4YV/3EZ4+oVkkoTzodt5TJcQBZHfuKp0bXp2c/LjY
+ R5OkD1lkf5Kfggn8ywgACK5QAsWf1XL+YTSzT5rxmoQupz7X4dGNQcPlFgKcsnFmFvU3 8A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bte5jhukg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 04:19:51 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19K707Mx012605;
+        Wed, 20 Oct 2021 04:19:51 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bte5jhuk2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 04:19:51 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19K8HSE0030041;
+        Wed, 20 Oct 2021 08:19:50 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma03dal.us.ibm.com with ESMTP id 3bqpcbsnse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 08:19:50 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19K8JmZQ31392080
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 08:19:48 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 360256A04F;
+        Wed, 20 Oct 2021 08:19:48 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 604C26A05A;
+        Wed, 20 Oct 2021 08:19:43 +0000 (GMT)
+Received: from [9.160.85.241] (unknown [9.160.85.241])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Oct 2021 08:19:43 +0000 (GMT)
+Message-ID: <1d79190a-f023-a83c-b197-62b0514dc769@linux.ibm.com>
+Date:   Wed, 20 Oct 2021 11:19:42 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4 2/3] efi: Reserve confidential computing secret area
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-efi@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrew Scull <ascull@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>,
+        Daniele Buono <dbuono@linux.vnet.ibm.com>,
+        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dov Murik <dovmurik@linux.ibm.com>
+References: <20211020061408.3447533-1-dovmurik@linux.ibm.com>
+ <20211020061408.3447533-3-dovmurik@linux.ibm.com>
+ <YW+55YcXqUtrw4/T@kroah.com>
+From:   Dov Murik <dovmurik@linux.ibm.com>
+In-Reply-To: <YW+55YcXqUtrw4/T@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HwgP4MJydJ3Xt9bMi3XEOAMRK3R-OR0v
+X-Proofpoint-GUID: 9Ocsk-Xs2XQvPnWn5epiZJjlFvWVL8d8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_04,2021-10-19_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110200045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021, Ming Lei wrote:
 
-> On Wed, Oct 20, 2021 at 08:43:37AM +0200, Miroslav Benes wrote:
-> > On Tue, 19 Oct 2021, Ming Lei wrote:
-> > 
-> > > On Tue, Oct 19, 2021 at 08:23:51AM +0200, Miroslav Benes wrote:
-> > > > > > By you only addressing the deadlock as a requirement on approach a) you are
-> > > > > > forgetting that there *may* already be present drivers which *do* implement
-> > > > > > such patterns in the kernel. I worked on addressing the deadlock because
-> > > > > > I was informed livepatching *did* have that issue as well and so very
-> > > > > > likely a generic solution to the deadlock could be beneficial to other
-> > > > > > random drivers.
-> > > > > 
-> > > > > In-tree zram doesn't have such deadlock, if livepatching has such AA deadlock,
-> > > > > just fixed it, and seems it has been fixed by 3ec24776bfd0.
-> > > > 
-> > > > I would not call it a fix. It is a kind of ugly workaround because the 
-> > > > generic infrastructure lacked (lacks) the proper support in my opinion. 
-> > > > Luis is trying to fix that.
-> > > 
-> > > What is the proper support of the generic infrastructure? I am not
-> > > familiar with livepatching's model(especially with module unload), you mean
-> > > livepatching have to do the following way from sysfs:
-> > > 
-> > > 1) during module exit:
-> > > 	
-> > > 	mutex_lock(lp_lock);
-> > > 	kobject_put(lp_kobj);
-> > > 	mutex_unlock(lp_lock);
-> > > 	
-> > > 2) show()/store() method of attributes of lp_kobj
-> > > 	
-> > > 	mutex_lock(lp_lock)
-> > > 	...
-> > > 	mutex_unlock(lp_lock)
-> > 
-> > Yes, this was exactly the case. We then reworked it a lot (see 
-> > 958ef1e39d24 ("livepatch: Simplify API by removing registration step"), so 
-> > now the call sequence is different. kobject_put() is basically offloaded 
-> > to a workqueue scheduled right from the store() method. Meaning that 
-> > Luis's work would probably not help us currently, but on the other hand 
-> > the issues with AA deadlock were one of the main drivers of the redesign 
-> > (if I remember correctly). There were other reasons too as the changelog 
-> > of the commit describes.
-> > 
-> > So, from my perspective, if there was a way to easily synchronize between 
-> > a data cleanup from module_exit callback and sysfs/kernfs operations, it 
-> > could spare people many headaches.
+
+On 20/10/2021 9:40, Greg KH wrote:
+> On Wed, Oct 20, 2021 at 06:14:07AM +0000, Dov Murik wrote:
+>> When efi-stub copies an EFI-provided confidential computing (coco)
+>> secret area, reserve that memory block for future use within the kernel.
+>>
+>> Signed-off-by: Dov Murik <dovmurik@linux.ibm.com>
+>> ---
+>>  arch/x86/platform/efi/efi.c   |  3 +++
+>>  drivers/firmware/efi/Makefile |  1 +
+>>  drivers/firmware/efi/coco.c   | 41 +++++++++++++++++++++++++++++++++++
+>>  drivers/firmware/efi/efi.c    |  8 +++++++
+>>  include/linux/efi.h           | 10 +++++++++
+>>  5 files changed, 63 insertions(+)
+>>  create mode 100644 drivers/firmware/efi/coco.c
+>>
+>> diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
+>> index 147c30a81f15..1591d67e0bcd 100644
+>> --- a/arch/x86/platform/efi/efi.c
+>> +++ b/arch/x86/platform/efi/efi.c
+>> @@ -93,6 +93,9 @@ static const unsigned long * const efi_tables[] = {
+>>  #ifdef CONFIG_LOAD_UEFI_KEYS
+>>  	&efi.mokvar_table,
+>>  #endif
+>> +#ifdef CONFIG_EFI_COCO_SECRET
+>> +	&efi.coco_secret,
+>> +#endif
+>>  };
+>>  
+>>  u64 efi_setup;		/* efi setup_data physical address */
+>> diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
+>> index c02ff25dd477..49c4a8c0bfc4 100644
+>> --- a/drivers/firmware/efi/Makefile
+>> +++ b/drivers/firmware/efi/Makefile
+>> @@ -32,6 +32,7 @@ obj-$(CONFIG_APPLE_PROPERTIES)		+= apple-properties.o
+>>  obj-$(CONFIG_EFI_RCI2_TABLE)		+= rci2-table.o
+>>  obj-$(CONFIG_EFI_EMBEDDED_FIRMWARE)	+= embedded-firmware.o
+>>  obj-$(CONFIG_LOAD_UEFI_KEYS)		+= mokvar-table.o
+>> +obj-$(CONFIG_EFI_COCO_SECRET)		+= coco.o
+>>  
+>>  fake_map-y				+= fake_mem.o
+>>  fake_map-$(CONFIG_X86)			+= x86_fake_mem.o
+>> diff --git a/drivers/firmware/efi/coco.c b/drivers/firmware/efi/coco.c
+>> new file mode 100644
+>> index 000000000000..42f477d6188c
+>> --- /dev/null
+>> +++ b/drivers/firmware/efi/coco.c
+>> @@ -0,0 +1,41 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Confidential computing (coco) secret area handling
+>> + *
+>> + * Copyright (C) 2021 IBM Corporation
+>> + * Author: Dov Murik <dovmurik@linux.ibm.com>
+>> + */
+>> +
+>> +#define pr_fmt(fmt) "efi: " fmt
+>> +
+>> +#include <linux/efi.h>
+>> +#include <linux/init.h>
+>> +#include <linux/memblock.h>
+>> +#include <asm/early_ioremap.h>
+>> +
+>> +/*
+>> + * Reserve the confidential computing secret area memory
+>> + */
+>> +int __init efi_coco_secret_area_reserve(void)
+>> +{
+>> +	struct linux_efi_coco_secret_area *secret_area;
+>> +	unsigned long secret_area_size;
+>> +
+>> +	if (efi.coco_secret == EFI_INVALID_TABLE_ADDR)
+>> +		return 0;
+>> +
+>> +	secret_area = early_memremap(efi.coco_secret, sizeof(*secret_area));
+>> +	if (!secret_area) {
+>> +		pr_err("Failed to map confidential computing secret area\n");
+>> +		efi.coco_secret = EFI_INVALID_TABLE_ADDR;
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	secret_area_size = sizeof(*secret_area) + secret_area->size;
+>> +	memblock_reserve(efi.coco_secret, secret_area_size);
+>> +
+>> +	pr_info("Reserved memory of EFI-provided confidential computing secret area");
 > 
-> kobject_del() is supposed to do so, but you can't hold a shared lock
-> which is required in show()/store() method. Once kobject_del() returns,
-> no pending show()/store() any more.
+> When kernel code works properly, it is quiet.  Why do you need to print
+> this out at every boot?
 > 
-> The question is that why one shared lock is required for livepatching to
-> delete the kobject. What are you protecting when you delete one kobject?
 
-I think it boils down to the fact that we embed kobject statically to 
-structures which livepatch uses to maintain data. That is discouraged 
-generally, but all the attempts to implement it correctly were utter 
-failures.
+My kernel is not so quiet at the info loglevel; specifically from efi I 
+see these prints (third log line added by this patch):
 
-Miroslav
+[    0.000000] efi: EFI v2.70 by EDK II
+[    0.000000] efi: SMBIOS=0x7f541000 ACPI=0x7f77e000 ACPI 2.0=0x7f77e014 MEMATTR=0x7ea0c018 CocoSecret=0x7ea0b018
+[    0.000000] efi: Reserved memory of EFI-provided confidential computing secret area
+
+This print is useful to understand that both OVMF (EFI) and kernel support
+the confidential computing secret area.
+
+
+
+>> +
+>> +	early_memunmap(secret_area, sizeof(*secret_area));
+>> +	return 0;
+>> +}
+> 
+> And again, when is this memory freed when shutting down?
+> 
+
+It is currently not freed.  I tried to look for such memory freeing of
+other EFI-provided memory areas (such as efi.tpm_final_log) and couldn't
+find them.  Can you please share pointers/examples of how to do that?
+
+Thanks,
+-Dov
