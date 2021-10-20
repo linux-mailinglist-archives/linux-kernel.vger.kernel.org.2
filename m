@@ -2,351 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818DD434333
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 03:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E4B43433F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhJTCAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:00:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhJTCAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:00:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 550B76113D;
-        Wed, 20 Oct 2021 01:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634695070;
-        bh=y26BPYXmZulSRNurgRMnR7PDS+uCfp/gMKplI7R2cPI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o/VfY+Bux0QhNEozvF2nY9s3BcuxFaFYgMYHAtiQlSWHBZouXprzOfrzyHe8Tywaa
-         o4UK8lRFHWz53L1FZ9U35FiP5aDKs+L+d0fKV8MfW0ugdE8cZCWqulR/uGf9zzgYKX
-         ELSvBC62nHT+wcH7YkA2FYF8CRQzTpITlCQFcUf8XNjd4OTWTPtWqfS9mc/fgCVp66
-         f4hDQNl7dc5ZXEGAH0Yg9tCMW8QCnN3Rde/VISF3tGINlyYnzn5c1vF9LlI2QXzVUu
-         zzYQO2l4D/s2cj4StPBEq+OPee1WGwz+KqQnXoTdi11lpdIMzDNqrHlrHNfM6tNUsm
-         IrHb2QOZkr74A==
-Date:   Tue, 19 Oct 2021 18:57:49 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, ocfs2-devel@oss.oracle.com,
-        kvm-ppc@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v8 14/17] iomap: Add done_before argument to iomap_dio_rw
-Message-ID: <20211020015749.GB24248@magnolia>
-References: <20211019134204.3382645-1-agruenba@redhat.com>
- <20211019134204.3382645-15-agruenba@redhat.com>
- <20211019155105.GA24248@magnolia>
- <CAHc6FU5KGJKxO=OPbiQS915K7nb-kjwxcdABacMcJ6UAtbybVQ@mail.gmail.com>
+        id S229779AbhJTCBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:01:18 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:46828 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229555AbhJTCBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 22:01:15 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19JNTumJ015003;
+        Wed, 20 Oct 2021 01:58:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=Sakv/OVb2RDko0IO6YnOKoNu7Uqkaut4l2Mix8rat0c=;
+ b=pfN2NwiJM5k/++wIAar2alfXHQNCmwS8IztqJJ5xkhYiVZoWiJ2nSxFiq1VNIftcqlCB
+ CIvFGg+Acoy3p73qHDOS2L/feNVosCuNIY7kLFgmPAArw+2e0Dp5Iy0SWxnu+mOIpDWg
+ jyUc9FXqMsvUB54HxqJm0F/yR4bu4ib1vx3lxyJcbG134zpXZFvcPcdCTv9Ap33gkjkY
+ p6qPsuv+Zt1hQSis3GL8C5tETrjhz68g2lu1qNRGgoqJHZONJhaxVBsY13scjltkGtWD
+ iz7IkCvwDcuILPkDepauiSR4sAZWY3D4DVnmF/mwmvg6Pe4LVjxWzCGGkv+zLBSjty/f VQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bsnjhwwsk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 01:58:56 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19K1pXk5194549;
+        Wed, 20 Oct 2021 01:58:54 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
+        by userp3020.oracle.com with ESMTP id 3br8gtbgte-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 01:58:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CJdMo+zSbwkOY9/x/5yOTLamn0ojNq7oUCivZHlcoWccioqakSQxJzQ0HATCPrzlpk0YTJUiE4Hy58KOgsx7aRzlsPzoFSlt1xuZHqRV4QbmDFI9/gsw5xnrrve5hdmm1oaHbuPzTylPYpq7t7edgJO5eFgyhQeON7yWPqzdP+fOZ3+RiR5hXJqqhjcVDzB73qE5MSvdChZYiu4Q+kqlTx1NIUTUHYJslduloNbt5CmNSuh9Q2E/FST+T9m1zBoOqXD73fpLCT130RUqfUq1dI4C3M4LpmGm+Zh7kaxW5EowFKuKVgLUl/FSt7+Bz/MUldEUi10O3PfRCHh++YWMsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Sakv/OVb2RDko0IO6YnOKoNu7Uqkaut4l2Mix8rat0c=;
+ b=XVCpJsLvWmdh4D1G/glUL5UHiWLdNnfOFVy11PBfAVYqnFWoIAWY6iW8U5ctNZOniq3uCAwN6HDUQWFVT7ShgV/AuZ0pyl0u8vxl6ru1CWJFi/poStrpL8cOokZ4W1Id/X18aqcvWRicbN29JxxVaQcqC4OXYVX+1sGn0p2h23JDBzAhxojBED8RTnvUhqvFYHC6rUq6zG7sKkleqAwzNgIFE4vhwz62m892CPN3TpWLr2ti5qV+s9SfSug/0yKZJPFoglM1GZOu6EQ0wcOqfH1lsrty/89wELlHnkTwBOkZcwHFVjn9Ib8F9W+qQWsF+IbBnd5gIsjR+wxk10tCtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sakv/OVb2RDko0IO6YnOKoNu7Uqkaut4l2Mix8rat0c=;
+ b=ozmnG3OwjgxNCntmxxlePjOvksD39LwYO2kzuLJtHf5Z0OGNrQPrHgDdPO6uZMT4wHK0qqDSXXCKawZJRy+49GWd9pkf919XKhbzbjbrjr0v2YbcL/7niCNxJJSRR81ZgM7HMzYKT6JWhd0Xu8ILPbnibdJlsHULwqzYL84zJ8M=
+Received: from BYAPR10MB2934.namprd10.prod.outlook.com (2603:10b6:a03:85::22)
+ by SJ0PR10MB4672.namprd10.prod.outlook.com (2603:10b6:a03:2af::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Wed, 20 Oct
+ 2021 01:58:53 +0000
+Received: from BYAPR10MB2934.namprd10.prod.outlook.com
+ ([fe80::1f5:12bf:3985:e2b6]) by BYAPR10MB2934.namprd10.prod.outlook.com
+ ([fe80::1f5:12bf:3985:e2b6%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
+ 01:58:52 +0000
+From:   Himanshu Madhani <himanshu.madhani@oracle.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+CC:     "sathya.prakash@broadcom.com" <sathya.prakash@broadcom.com>,
+        "sreekanth.reddy@broadcom.com" <sreekanth.reddy@broadcom.com>,
+        "suganath-prabu.subramani@broadcom.com" 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Martin Petersen <martin.petersen@oracle.com>,
+        "MPT-FusionLinux.pdl@broadcom.com" <MPT-FusionLinux.pdl@broadcom.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: mpt3sas: make mpt3sas_dev_attrs static
+Thread-Topic: [PATCH] scsi: mpt3sas: make mpt3sas_dev_attrs static
+Thread-Index: AQHXxNPv7vDkNg8t/UuhyEaJblny3KvbImcA
+Date:   Wed, 20 Oct 2021 01:58:52 +0000
+Message-ID: <4A68DD30-1156-42F8-BBD4-DE663EC73893@oracle.com>
+References: <1634639239-2892-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1634639239-2892-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.7)
+authentication-results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none
+ header.from=oracle.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: da82a356-ebfa-4093-3064-08d9936d2ad6
+x-ms-traffictypediagnostic: SJ0PR10MB4672:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR10MB46726DA89831E4FAF9365471E6BE9@SJ0PR10MB4672.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:913;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8eHORJulfasw9ClI+MubVw3WdL7XE0KyHO5/oXjrAQqJAYOBHpq9l0HkmFPl5VRh1NBtkOihTD+H94U+Cuuf4ETKxXroDyJb/ZLYSWynJApY2TQqWhytmf0G+PKeTMofqCUM8itOUGzTwUoZOGZtqjc5lXy1ap46v+eupGqWYc8mLY0jlOPvDGTngx6huT2wLIXCE65k7z+lwytHlePiMtW+2erWbmqZZUTyu781AhJ99dlaZ6X2r8oBOUvxBmASSIUGQYxPFpPNVxgcpGI8qOMqjmeJVGYcvZkqJGRTgrgDKMZtWwqzvoSP6PXvCpblh7SLk7eo1HpuaB23z44S3B5DJRGafLqSwXuTL9SrUqEywpLK5+3nvX2gsUb5B4V5ZxK7rEKSpG5dSo4xCr+LoGIo9b5JVXFqAFwJSVgLNeczTBSeqzYFRlMPKtDqskFgS5lDgnGjnM0l9lq+bAwMJhJYYDxhDZrPWuUVU61UvFiWzhJOQfQLHRzzouin2xt52M+PRtwyKcvVt+uiY/hrqhfPk8pr/UkPNWwRhuq1Atq8JgXszOkPR/6u/YqGJaHY/3IUqf3UgVF9q9ZEMY2DQ5O3pjjxSeXEmXma+Vxd2jeZmMyH9nUKOkyoQ2590yNc8KGkrg3wPtzUCnehfieeCv5wf/dPodNTr2o6WD1GDjIsz6qc+YKZwAxKppuSjRC8LcMX2vskV0wFd7EOElLORW/OS3iUUkevnuz8CIrZsJGXAFNxOaLxa9XDjlGts63s
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2934.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66946007)(26005)(76116006)(38070700005)(66556008)(2906002)(64756008)(54906003)(2616005)(8936002)(83380400001)(6506007)(91956017)(122000001)(66476007)(38100700002)(186003)(53546011)(316002)(6512007)(44832011)(36756003)(6486002)(4326008)(33656002)(6916009)(508600001)(71200400001)(66446008)(8676002)(5660300002)(86362001)(32563001)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ioCj9p0b/8GMwi/4iuJh5gODnowAapAH6bM0Ey2m2eTUOJkJHQQvFnfRQvCn?=
+ =?us-ascii?Q?YMOkPk8qUj7v68D9bI/2HQsDAKuMwNH5cetil0rAO3wSjlFTmBx0O824KtcI?=
+ =?us-ascii?Q?lN34TuCxOdgV2USVC+xTXdZq3oLGa368Yu1Req1rplMsO4up2ppkArGsPD7U?=
+ =?us-ascii?Q?4pvcqhxPJ36L++5aRZ2RV0EPHIwSgi+XHkFoiXQoiNPG4CArUQse1f4Ft/W0?=
+ =?us-ascii?Q?Jmq3kUJ9Qntkdt0dVuyGK1a6uH3BhFP6XIPWPws2sjH7fYox7dkjeOIul19b?=
+ =?us-ascii?Q?3iDZYwY1UxXXzCxwZl1C7bWBPSPnDJdNhO/ZJDLwqkTdj/F3zJR3s05Yjo3p?=
+ =?us-ascii?Q?ob1VectB1USCeiFx0qRbLmyvBGreoKCPQa529lMxWKQfXrm96Etu8/Nvgowz?=
+ =?us-ascii?Q?QDY/T53iLDghAhW7NS1qux6vHZwVKruoVmufiCutmBPKlJFcS5XNCaBcXlNA?=
+ =?us-ascii?Q?LcMUheGkEXXL1c4705X5TOiPfbq/O4xXabhfesLB8B5T2z4RN8+nC1L7o7iX?=
+ =?us-ascii?Q?yrrNnYt6OFWF/qXbsSYJzV/kWkwIB4PGYuvLBFUmlyLsGrVOypWoO0EFmWU2?=
+ =?us-ascii?Q?kdTcaXhPSsbZEVnMMepKURYZFYSeaS2SUmVdXItzqzHEBYmpb6Y+Ra2dJssh?=
+ =?us-ascii?Q?jDuQAlcg8bZwNlTfB3MhtUagEdLqHJnAyZneBtG1tKQK/KpJtTaEV/F8DMse?=
+ =?us-ascii?Q?IqEl8mBeLnR0uI6+aubYuukBC4L8qZioM+Q+lGBe6nq7SsW57sOC/g+hu68i?=
+ =?us-ascii?Q?r5VPW36dkfR6SBpwjSVwkLQT7VSlUiR5nS2er+OZxqUxCLjEQ7BXt49cwl0J?=
+ =?us-ascii?Q?xNdWrbdGroHS2oVIv0uAVqJBiXg1aY5h+sylBD2Q4P31e+6J3MeadnyyZQCV?=
+ =?us-ascii?Q?UnZuyJGV4jysPtjIyf9SF9DW+VadRwV33YP9CbJxf/mOTwivdOhXLtx/KwdA?=
+ =?us-ascii?Q?GpiofHCtz52kcpCjscoXltk1aRMRXvwaCRWsnF2BW8IdQ+6n/tJEmy/mZ5Ts?=
+ =?us-ascii?Q?AbvYRWfqXmlB/Zs19Yfn8G1sQiFa+ntJ2Qbrdfbxb5Q6G6tNGmkhX3jnBlCu?=
+ =?us-ascii?Q?tnv7KBz9tPYaf+n8nm4pzL64pHQ9Vpqrzi1dYLtE8ElWUOMuUWGPo8EJgLOk?=
+ =?us-ascii?Q?inqfSPt3EKv0Bv174lEdfDzrYT21hqQXqg7tKN0vF+sVOC0YdZ24DkRKi61A?=
+ =?us-ascii?Q?++Mo4sffD6gI/QO2CnLlvk9Q4ZV/suXiugg/WGMsVBSYXU7ZfiNHJDejHiGT?=
+ =?us-ascii?Q?kLYQ6J4RIkXnVqvKSZFjcyqoJjHQeH930PhisL4lNfsERDbQy2ASxvjYUMQr?=
+ =?us-ascii?Q?0EtOCqJQnjB1V8m7H+TUCVlMOkAqantGGDiAzfP+SqOXnw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5CA1BA5E8A334A4DB9114398ACFD53A9@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHc6FU5KGJKxO=OPbiQS915K7nb-kjwxcdABacMcJ6UAtbybVQ@mail.gmail.com>
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2934.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da82a356-ebfa-4093-3064-08d9936d2ad6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2021 01:58:52.7585
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 14tCgyo4bwzrn5o0U+7qINPC3TyLGhuOnINoEXRaUgSibe0OEMK1KHC1UPVrh5xQvIseGtlSaf6SKT3Mf3b6PHaju8Aj7Bh/rrzd3VNn6jI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4672
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10142 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ spamscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110200005
+X-Proofpoint-ORIG-GUID: oeTuKC3h89JXamz76lfSYuzWN-G5kCHL
+X-Proofpoint-GUID: oeTuKC3h89JXamz76lfSYuzWN-G5kCHL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 09:30:58PM +0200, Andreas Gruenbacher wrote:
-> On Tue, Oct 19, 2021 at 5:51 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > On Tue, Oct 19, 2021 at 03:42:01PM +0200, Andreas Gruenbacher wrote:
-> > > Add a done_before argument to iomap_dio_rw that indicates how much of
-> > > the request has already been transferred.  When the request succeeds, we
-> > > report that done_before additional bytes were tranferred.  This is
-> > > useful for finishing a request asynchronously when part of the request
-> > > has already been completed synchronously.
-> > >
-> > > We'll use that to allow iomap_dio_rw to be used with page faults
-> > > disabled: when a page fault occurs while submitting a request, we
-> > > synchronously complete the part of the request that has already been
-> > > submitted.  The caller can then take care of the page fault and call
-> > > iomap_dio_rw again for the rest of the request, passing in the number of
-> > > bytes already tranferred.
-> > >
-> > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > ---
-> > >  fs/btrfs/file.c       |  5 +++--
-> > >  fs/erofs/data.c       |  2 +-
-> > >  fs/ext4/file.c        |  5 +++--
-> > >  fs/gfs2/file.c        |  4 ++--
-> > >  fs/iomap/direct-io.c  | 11 ++++++++---
-> > >  fs/xfs/xfs_file.c     |  6 +++---
-> > >  fs/zonefs/super.c     |  4 ++--
-> > >  include/linux/iomap.h |  4 ++--
-> > >  8 files changed, 24 insertions(+), 17 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > > index f37211d3bb69..9d41b28c67ba 100644
-> > > --- a/fs/btrfs/file.c
-> > > +++ b/fs/btrfs/file.c
-> > > @@ -1957,7 +1957,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
-> > >       }
-> > >
-> > >       dio = __iomap_dio_rw(iocb, from, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
-> > > -                          0);
-> > > +                          0, 0);
-> > >
-> > >       btrfs_inode_unlock(inode, ilock_flags);
-> > >
-> > > @@ -3658,7 +3658,8 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
-> > >               return 0;
-> > >
-> > >       btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
-> > > -     ret = iomap_dio_rw(iocb, to, &btrfs_dio_iomap_ops, &btrfs_dio_ops, 0);
-> > > +     ret = iomap_dio_rw(iocb, to, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
-> > > +                        0, 0);
-> > >       btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> > >       return ret;
-> > >  }
-> > > diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> > > index 9db829715652..16a41d0db55a 100644
-> > > --- a/fs/erofs/data.c
-> > > +++ b/fs/erofs/data.c
-> > > @@ -287,7 +287,7 @@ static ssize_t erofs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> > >
-> > >               if (!err)
-> > >                       return iomap_dio_rw(iocb, to, &erofs_iomap_ops,
-> > > -                                         NULL, 0);
-> > > +                                         NULL, 0, 0);
-> > >               if (err < 0)
-> > >                       return err;
-> > >       }
-> > > diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> > > index ac0e11bbb445..b25c1f8f7c4f 100644
-> > > --- a/fs/ext4/file.c
-> > > +++ b/fs/ext4/file.c
-> > > @@ -74,7 +74,7 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> > >               return generic_file_read_iter(iocb, to);
-> > >       }
-> > >
-> > > -     ret = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL, 0);
-> > > +     ret = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL, 0, 0);
-> > >       inode_unlock_shared(inode);
-> > >
-> > >       file_accessed(iocb->ki_filp);
-> > > @@ -566,7 +566,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> > >       if (ilock_shared)
-> > >               iomap_ops = &ext4_iomap_overwrite_ops;
-> > >       ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
-> > > -                        (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0);
-> > > +                        (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0,
-> > > +                        0);
-> > >       if (ret == -ENOTBLK)
-> > >               ret = 0;
-> > >
-> > > diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> > > index b07b9c2d0446..ae06defcf369 100644
-> > > --- a/fs/gfs2/file.c
-> > > +++ b/fs/gfs2/file.c
-> > > @@ -822,7 +822,7 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
-> > >       if (ret)
-> > >               goto out_uninit;
-> > >
-> > > -     ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0);
-> > > +     ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0, 0);
-> > >       gfs2_glock_dq(gh);
-> > >  out_uninit:
-> > >       gfs2_holder_uninit(gh);
-> > > @@ -856,7 +856,7 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
-> > >       if (offset + len > i_size_read(&ip->i_inode))
-> > >               goto out;
-> > >
-> > > -     ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0);
-> > > +     ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0, 0);
-> > >       if (ret == -ENOTBLK)
-> > >               ret = 0;
-> > >  out:
-> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > > index a434fb7887b2..fdf68339bc8b 100644
-> > > --- a/fs/iomap/direct-io.c
-> > > +++ b/fs/iomap/direct-io.c
-> > > @@ -31,6 +31,7 @@ struct iomap_dio {
-> > >       atomic_t                ref;
-> > >       unsigned                flags;
-> > >       int                     error;
-> > > +     size_t                  done_before;
-> >
-> > I have basically the same comment as last time[1]:
-> >
-> > "So, now that I actually understand the reason why the count of
-> > previously transferred bytes has to be passed into the iomap_dio, I
-> > would like this field to have a comment so that stupid maintainers like
-> > me don't forget the subtleties again:
-> >
-> >         /*
-> >          * For asynchronous IO, we have one chance to call the iocb
-> >          * completion method with the results of the directio operation.
-> >          * If this operation is a resubmission after a previous partial
-> >          * completion (e.g. page fault), we need to know about that
-> >          * progress so that we can report both the results of the prior
-> >          * completion and the result of the resubmission to the iocb
-> >          * submitter.
-> >          */
-> >         size_t                  done_before;
-> >
-> > With that added, I think I can live with this enough to:
-> > Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> 
-> Indeed, sorry for missing that. How about the below change instead
-> though; I think that better sums up what's going on?
-> 
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -454,6 +454,14 @@ static loff_t iomap_dio_iter(const struct iomap_iter *iter,
->   * may be pure data writes. In that case, we still need to do a full data sync
->   * completion.
->   *
 
-What do you think about rearranging the first sentence to mention the
-new flag a bit earlier?  e.g.
 
-"When page faults are disabled and @dio_flags includes IOMAP_DIO_PARTIAL,
-__iomap_dio_rw can return a partial result if it encounters a
-non-resident page in @iter after preparing a transfer.  In that case,
-the non-resident pages can be faulted in and the request resumed with
-@done_before set to the number of bytes previously transferred...
+> On Oct 19, 2021, at 5:27 AM, Jiapeng Chong <jiapeng.chong@linux.alibaba.c=
+om> wrote:
+>=20
+> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+>=20
+> This symbol is not used outside of mpt3sas_ctl.c, so marks it static.
+>=20
+> Fixes the following sparse warning:
+>=20
+> drivers/scsi/mpt3sas/mpt3sas_ctl.c:3988:18: warning: symbol
+> 'mpt3sas_dev_attrs' was not declared. Should it be static?
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Fixes: 1bb3ca27d2ca ("scsi: mpt3sas: Switch to attribute groups")
+> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+> ---
+> drivers/scsi/mpt3sas/mpt3sas_ctl.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mp=
+t3sas_ctl.c
+> index 0aabc9761be1..05b6c6a073c3 100644
+> --- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+> +++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+> @@ -3985,7 +3985,7 @@ sas_ncq_prio_enable_store(struct device *dev,
+> }
+> static DEVICE_ATTR_RW(sas_ncq_prio_enable);
+>=20
+> -struct attribute *mpt3sas_dev_attrs[] =3D {
+> +static struct attribute *mpt3sas_dev_attrs[] =3D {
+> 	&dev_attr_sas_address.attr,
+> 	&dev_attr_sas_device_handle.attr,
+> 	&dev_attr_sas_ncq_prio_supported.attr,
+> --=20
+> 2.19.1.6.gb485710b
+>=20
 
---D
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 
-> + * When page faults are disabled, __iomap_dio_rw has already prepared some data
-> + * to be transferred, @iter references a non-resident page, and @dio_flags
-> + * includes IOMAP_DIO_PARTIAL, __iomap_dio_rw will return a partial result.  In
-> + * that case, the page or pages can be faulted in and the request resumed with
-> + * @done_before set to the number of bytes previously transferred.  The request
-> + * will then complete with the correct total number of bytes transferred; this
-> + * is essential for completing partial requests asynchronously.
-> + *
->   * Returns -ENOTBLK In case of a page invalidation invalidation failure for
->   * writes.  The callers needs to fall back to buffered I/O in this case.
->   */
-> 
-> Thanks,
-> Andreas
-> 
-> >
-> > --D
-> >
-> > [1] https://lore.kernel.org/linux-fsdevel/20210903185351.GD9892@magnolia/
-> >
-> > >       bool                    wait_for_completion;
-> > >
-> > >       union {
-> > > @@ -124,6 +125,9 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> > >       if (ret > 0 && (dio->flags & IOMAP_DIO_NEED_SYNC))
-> > >               ret = generic_write_sync(iocb, ret);
-> > >
-> > > +     if (ret > 0)
-> > > +             ret += dio->done_before;
-> > > +
-> > >       kfree(dio);
-> > >
-> > >       return ret;
-> > > @@ -456,7 +460,7 @@ static loff_t iomap_dio_iter(const struct iomap_iter *iter,
-> > >  struct iomap_dio *
-> > >  __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> > >               const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > > -             unsigned int dio_flags)
-> > > +             unsigned int dio_flags, size_t done_before)
-> > >  {
-> > >       struct address_space *mapping = iocb->ki_filp->f_mapping;
-> > >       struct inode *inode = file_inode(iocb->ki_filp);
-> > > @@ -486,6 +490,7 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> > >       dio->dops = dops;
-> > >       dio->error = 0;
-> > >       dio->flags = 0;
-> > > +     dio->done_before = done_before;
-> > >
-> > >       dio->submit.iter = iter;
-> > >       dio->submit.waiter = current;
-> > > @@ -652,11 +657,11 @@ EXPORT_SYMBOL_GPL(__iomap_dio_rw);
-> > >  ssize_t
-> > >  iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> > >               const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > > -             unsigned int dio_flags)
-> > > +             unsigned int dio_flags, size_t done_before)
-> > >  {
-> > >       struct iomap_dio *dio;
-> > >
-> > > -     dio = __iomap_dio_rw(iocb, iter, ops, dops, dio_flags);
-> > > +     dio = __iomap_dio_rw(iocb, iter, ops, dops, dio_flags, done_before);
-> > >       if (IS_ERR_OR_NULL(dio))
-> > >               return PTR_ERR_OR_ZERO(dio);
-> > >       return iomap_dio_complete(dio);
-> > > diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> > > index 7aa943edfc02..240eb932c014 100644
-> > > --- a/fs/xfs/xfs_file.c
-> > > +++ b/fs/xfs/xfs_file.c
-> > > @@ -259,7 +259,7 @@ xfs_file_dio_read(
-> > >       ret = xfs_ilock_iocb(iocb, XFS_IOLOCK_SHARED);
-> > >       if (ret)
-> > >               return ret;
-> > > -     ret = iomap_dio_rw(iocb, to, &xfs_read_iomap_ops, NULL, 0);
-> > > +     ret = iomap_dio_rw(iocb, to, &xfs_read_iomap_ops, NULL, 0, 0);
-> > >       xfs_iunlock(ip, XFS_IOLOCK_SHARED);
-> > >
-> > >       return ret;
-> > > @@ -569,7 +569,7 @@ xfs_file_dio_write_aligned(
-> > >       }
-> > >       trace_xfs_file_direct_write(iocb, from);
-> > >       ret = iomap_dio_rw(iocb, from, &xfs_direct_write_iomap_ops,
-> > > -                        &xfs_dio_write_ops, 0);
-> > > +                        &xfs_dio_write_ops, 0, 0);
-> > >  out_unlock:
-> > >       if (iolock)
-> > >               xfs_iunlock(ip, iolock);
-> > > @@ -647,7 +647,7 @@ xfs_file_dio_write_unaligned(
-> > >
-> > >       trace_xfs_file_direct_write(iocb, from);
-> > >       ret = iomap_dio_rw(iocb, from, &xfs_direct_write_iomap_ops,
-> > > -                        &xfs_dio_write_ops, flags);
-> > > +                        &xfs_dio_write_ops, flags, 0);
-> > >
-> > >       /*
-> > >        * Retry unaligned I/O with exclusive blocking semantics if the DIO
-> > > diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-> > > index ddc346a9df9b..6122c38ab44d 100644
-> > > --- a/fs/zonefs/super.c
-> > > +++ b/fs/zonefs/super.c
-> > > @@ -852,7 +852,7 @@ static ssize_t zonefs_file_dio_write(struct kiocb *iocb, struct iov_iter *from)
-> > >               ret = zonefs_file_dio_append(iocb, from);
-> > >       else
-> > >               ret = iomap_dio_rw(iocb, from, &zonefs_iomap_ops,
-> > > -                                &zonefs_write_dio_ops, 0);
-> > > +                                &zonefs_write_dio_ops, 0, 0);
-> > >       if (zi->i_ztype == ZONEFS_ZTYPE_SEQ &&
-> > >           (ret > 0 || ret == -EIOCBQUEUED)) {
-> > >               if (ret > 0)
-> > > @@ -987,7 +987,7 @@ static ssize_t zonefs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> > >               }
-> > >               file_accessed(iocb->ki_filp);
-> > >               ret = iomap_dio_rw(iocb, to, &zonefs_iomap_ops,
-> > > -                                &zonefs_read_dio_ops, 0);
-> > > +                                &zonefs_read_dio_ops, 0, 0);
-> > >       } else {
-> > >               ret = generic_file_read_iter(iocb, to);
-> > >               if (ret == -EIO)
-> > > diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> > > index 2a213b0d1e1f..829f2325ecba 100644
-> > > --- a/include/linux/iomap.h
-> > > +++ b/include/linux/iomap.h
-> > > @@ -339,10 +339,10 @@ struct iomap_dio_ops {
-> > >
-> > >  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> > >               const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > > -             unsigned int dio_flags);
-> > > +             unsigned int dio_flags, size_t done_before);
-> > >  struct iomap_dio *__iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> > >               const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > > -             unsigned int dio_flags);
-> > > +             unsigned int dio_flags, size_t done_before);
-> > >  ssize_t iomap_dio_complete(struct iomap_dio *dio);
-> > >  int iomap_dio_iopoll(struct kiocb *kiocb, bool spin);
-> > >
-> > > --
-> > > 2.26.3
-> > >
-> >
-> 
+--
+Himanshu Madhani	 Oracle Linux Engineering
+
