@@ -2,150 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE6843455E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AA043454D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhJTGqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:46:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhJTGqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:46:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A85CE610EA;
-        Wed, 20 Oct 2021 06:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634712250;
-        bh=pJ6WR/t3kSUGVEbEEgaAeXBrFHQpAxoHqhWBx9sS1rE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X7kPJcuXrIpclvVWP3ARxvSGjHQGl4awiLNDu5UpKZjn+uh3UaXm88SzYgI27+gWU
-         MRKN2rgmQVZ+Kqh+9UbgUYHMgDios3U7xLU6uswezW7ai4dipDZvK4GXQbqa2MPToB
-         eiGs6360/lQ5OFNjAHrgZ2X5nMPFCQi5MtMdAVNk=
-Date:   Wed, 20 Oct 2021 08:40:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dov Murik <dovmurik@linux.ibm.com>
-Cc:     linux-efi@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrew Scull <ascull@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>,
-        Daniele Buono <dbuono@linux.vnet.ibm.com>,
-        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] efi: Reserve confidential computing secret area
-Message-ID: <YW+55YcXqUtrw4/T@kroah.com>
-References: <20211020061408.3447533-1-dovmurik@linux.ibm.com>
- <20211020061408.3447533-3-dovmurik@linux.ibm.com>
+        id S229823AbhJTGnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229741AbhJTGnp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 02:43:45 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD53AC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 23:41:31 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id f21so15436227plb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 23:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=otIQhWkkiTUCK7A8zqj4dcMFSS7Btq7zBo70rVUTfH8=;
+        b=pWiezsUCqWZue+ySifqtIfn3GEltgU49NBeZJ+/Mv7Zujj8l7Hm2jNPzH1bwOCVyMz
+         D3Jv+BmNDsABGLssv1QgrbFUey1rHeejyYKgEe3hSaQXr5VVyOmfRyleS8xqu+tsa6ri
+         rSKJvS9KSGbUnl12IStEH9pKrF2nY4ABM+I7zdTF0lmYLCF897/7uTh1W9wnslSdAPY1
+         R1q37pYCFuF33Fig2IqlydmRz9Su1RpohkNZ1/bp8L0tuDdf61TjEIVJ8/epYfcYu7rN
+         5swcvM3pm3s1Ezx+L73ZOdOEm41/+lFGWGqcXeQAMSXOyzNNorHrOZWaruylo9qJ69AX
+         i6AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=otIQhWkkiTUCK7A8zqj4dcMFSS7Btq7zBo70rVUTfH8=;
+        b=Da0IF2eLLERWT2rw1TGfkIEiIqtUm+mOqto/76Tiqb1vq0+A0AbVzg1FluKqj12kWg
+         XA9NvUYlwsF4UHBJdCGS+HjVhn+fFvMuDmQUdQQIJvQ5A+ThKac32W1nj3FO168ZSKRb
+         TJF5eocvrDJJ7JGNKp+OJ2rMpDutrvriqJ/zgcVA9l8I9/Hqccw70dkl1+7xbePTbDM9
+         8Xda3Foz11Kzs6mOUOJYMz2vxqrqhOOKcLFTbj7s3wjSsIF3OMbDkjs3JVEHGXOdy7n2
+         V6gHF35MkSAD9Jqh2KDI8CZjIqC6WD6VqKCMSlHs9DRedwV5tCaF03RmbaRzKJrGvsH/
+         5Iqg==
+X-Gm-Message-State: AOAM5308n618uV6xnyNn86PKL02oT24HKnmIArok9ogjFySuSJdYcpBm
+        nb9lg6mGqAm7sUtUa3XgmAzNXw==
+X-Google-Smtp-Source: ABdhPJzoKP4oeBg3gPjvGCznKOoVE1EtsQzbyyfVfWYL0UiXmVZmMMyypeV17+qxmo+F/34/IEinCA==
+X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr5163946pjb.197.1634712091178;
+        Tue, 19 Oct 2021 23:41:31 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id l6sm4665309pjy.23.2021.10.19.23.41.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 23:41:30 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 12:11:28 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
+Message-ID: <20211020064128.y2bjsbdmpojn7pjo@vireshk-i7>
+References: <20211019074647.19061-2-vincent.whitchurch@axis.com>
+ <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
+ <YW6Rj/T6dWfMf7lU@kroah.com>
+ <20211019094203.3kjzch7ipbdv7peg@vireshk-i7>
+ <YW6pHkXOPvtidtwS@kroah.com>
+ <20211019143748.wrpqopj2hmpvblh4@vireshk-i7>
+ <YW8LFTcBuN1bB3PD@ninjato>
+ <94aa39ab-4ed6-daee-0402-f58bfed0cadd@intel.com>
+ <YW+q1yQ8MuhHINAs@kroah.com>
+ <8e182ea8-5016-fa78-3d77-eefba7d58612@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020061408.3447533-3-dovmurik@linux.ibm.com>
+In-Reply-To: <8e182ea8-5016-fa78-3d77-eefba7d58612@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 06:14:07AM +0000, Dov Murik wrote:
-> When efi-stub copies an EFI-provided confidential computing (coco)
-> secret area, reserve that memory block for future use within the kernel.
+On 20-10-21, 14:35, Jie Deng wrote:
+> Yes, but we need to know what's the best value to be configured for a
+> specific "other side".
 > 
-> Signed-off-by: Dov Murik <dovmurik@linux.ibm.com>
-> ---
->  arch/x86/platform/efi/efi.c   |  3 +++
->  drivers/firmware/efi/Makefile |  1 +
->  drivers/firmware/efi/coco.c   | 41 +++++++++++++++++++++++++++++++++++
->  drivers/firmware/efi/efi.c    |  8 +++++++
->  include/linux/efi.h           | 10 +++++++++
->  5 files changed, 63 insertions(+)
->  create mode 100644 drivers/firmware/efi/coco.c
-> 
-> diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
-> index 147c30a81f15..1591d67e0bcd 100644
-> --- a/arch/x86/platform/efi/efi.c
-> +++ b/arch/x86/platform/efi/efi.c
-> @@ -93,6 +93,9 @@ static const unsigned long * const efi_tables[] = {
->  #ifdef CONFIG_LOAD_UEFI_KEYS
->  	&efi.mokvar_table,
->  #endif
-> +#ifdef CONFIG_EFI_COCO_SECRET
-> +	&efi.coco_secret,
-> +#endif
->  };
->  
->  u64 efi_setup;		/* efi setup_data physical address */
-> diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
-> index c02ff25dd477..49c4a8c0bfc4 100644
-> --- a/drivers/firmware/efi/Makefile
-> +++ b/drivers/firmware/efi/Makefile
-> @@ -32,6 +32,7 @@ obj-$(CONFIG_APPLE_PROPERTIES)		+= apple-properties.o
->  obj-$(CONFIG_EFI_RCI2_TABLE)		+= rci2-table.o
->  obj-$(CONFIG_EFI_EMBEDDED_FIRMWARE)	+= embedded-firmware.o
->  obj-$(CONFIG_LOAD_UEFI_KEYS)		+= mokvar-table.o
-> +obj-$(CONFIG_EFI_COCO_SECRET)		+= coco.o
->  
->  fake_map-y				+= fake_mem.o
->  fake_map-$(CONFIG_X86)			+= x86_fake_mem.o
-> diff --git a/drivers/firmware/efi/coco.c b/drivers/firmware/efi/coco.c
-> new file mode 100644
-> index 000000000000..42f477d6188c
-> --- /dev/null
-> +++ b/drivers/firmware/efi/coco.c
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Confidential computing (coco) secret area handling
-> + *
-> + * Copyright (C) 2021 IBM Corporation
-> + * Author: Dov Murik <dovmurik@linux.ibm.com>
-> + */
-> +
-> +#define pr_fmt(fmt) "efi: " fmt
-> +
-> +#include <linux/efi.h>
-> +#include <linux/init.h>
-> +#include <linux/memblock.h>
-> +#include <asm/early_ioremap.h>
-> +
-> +/*
-> + * Reserve the confidential computing secret area memory
-> + */
-> +int __init efi_coco_secret_area_reserve(void)
-> +{
-> +	struct linux_efi_coco_secret_area *secret_area;
-> +	unsigned long secret_area_size;
-> +
-> +	if (efi.coco_secret == EFI_INVALID_TABLE_ADDR)
-> +		return 0;
-> +
-> +	secret_area = early_memremap(efi.coco_secret, sizeof(*secret_area));
-> +	if (!secret_area) {
-> +		pr_err("Failed to map confidential computing secret area\n");
-> +		efi.coco_secret = EFI_INVALID_TABLE_ADDR;
-> +		return -ENOMEM;
-> +	}
-> +
-> +	secret_area_size = sizeof(*secret_area) + secret_area->size;
-> +	memblock_reserve(efi.coco_secret, secret_area_size);
-> +
-> +	pr_info("Reserved memory of EFI-provided confidential computing secret area");
+> I think the "other side" should be more aware of what value is reasonable to
+> be used.
 
-When kernel code works properly, it is quiet.  Why do you need to print
-this out at every boot?
+If we _really_ need that, then it would require an update to the
+specification first.
 
-> +
-> +	early_memunmap(secret_area, sizeof(*secret_area));
-> +	return 0;
-> +}
+I am not sure if the other side is the only party in play here. It
+depends on the entire setup and not just the hardware device.
+Specially with virtualisation things become really slow because of
+context switches, etc. It may be better for the guest userspace to
+decide on the value.
 
-And again, when is this memory freed when shutting down?
+Since this is specially for virtualisation, the kernel may set the
+value to few HZ by default, lets say 10 (Yeah its really high) :).
 
-thanks,
-
-greg k-h
+-- 
+viresh
