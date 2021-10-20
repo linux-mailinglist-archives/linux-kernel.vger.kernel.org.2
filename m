@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694BF434762
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7554D434765
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhJTIzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhJTIzo (ORCPT
+        id S230155AbhJTIzs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 04:55:48 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:41621 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhJTIzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:55:44 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2295C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:53:30 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 32EFD1F43F4A;
-        Wed, 20 Oct 2021 09:53:29 +0100 (BST)
-Date:   Wed, 20 Oct 2021 10:53:26 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] mtd: rawnand: nand_bbt: hide suspend/resume
- hooks while scanning bbt
-Message-ID: <20211020105326.0dca864a@collabora.com>
-In-Reply-To: <20211020084534.2472305-2-sean@geanix.com>
-References: <20211020084534.2472305-1-sean@geanix.com>
-        <20211020084534.2472305-2-sean@geanix.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Wed, 20 Oct 2021 04:55:46 -0400
+Received: (Authenticated sender: kory.maincent@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id EA6EA100013;
+        Wed, 20 Oct 2021 08:53:28 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 10:53:28 +0200
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Adam Ford <aford173@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH] net: renesas: Fix rgmii-id delays
+Message-ID: <20211020105328.411a712f@kmaincent-XPS-13-7390>
+In-Reply-To: <CAMuHMdXiMhpU0vDV3KaOg4DY59cszAtoG1sDOgnTRY6C6cyitQ@mail.gmail.com>
+References: <20211019145719.122751-1-kory.maincent@bootlin.com>
+        <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
+        <20211019173520.0154a8cb@kmaincent-XPS-13-7390>
+        <YW7nPfzjstmeoMbf@lunn.ch>
+        <20211019175746.11b388ce@windsurf>
+        <CAMuHMdXiMhpU0vDV3KaOg4DY59cszAtoG1sDOgnTRY6C6cyitQ@mail.gmail.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 10:45:31 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+Hello Geert, Thomas
 
-> From: Boris Brezillon <boris.brezillon@collabora.com>
+On Tue, 19 Oct 2021 22:05:41 +0200
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+
+> Hi Thomas,
 > 
-> The BBT scan logic use the MTD helpers before the MTD layer had a
-> chance to initialize the device, and that leads to issues when
-> accessing the uninitialized suspend lock. Let's temporarily set the
-> suspend/resume hooks to NULL to skip the lock acquire/release step.
+> On Tue, Oct 19, 2021 at 5:57 PM Thomas Petazzoni
+> <thomas.petazzoni@bootlin.com> wrote:
+> > On Tue, 19 Oct 2021 17:41:49 +0200
+> > Andrew Lunn <andrew@lunn.ch> wrote:  
+> > > > When people update the kernel version don't they update also the
+> > > > devicetree?  
+> > >
+> > > DT is ABI. Driver writers should not break old blobs running on new
+> > > kernels. Often the DT blob is updated with the kernel, but it is not
+> > > required. It could be stored in a hard to reach place, shared with
+> > > u-boot etc.  
+> >
+> > Right, but conversely if someone reads the DT bindings that exists
+> > today, specifies phy-mode = "rgmii-rxid" or phy-mmode = "rmgii-txid",  
 > 
-> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-> Tested-by: Sean Nyekjaer <sean@geanix.com>
-
-It's missing our Signed-off-by tags.
-
-> ---
->  drivers/mtd/nand/raw/nand_bbt.c | 28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
+> Today == v5.10-rc1 and later?
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-> index b7ad030225f8..93d385703469 100644
-> --- a/drivers/mtd/nand/raw/nand_bbt.c
-> +++ b/drivers/mtd/nand/raw/nand_bbt.c
-> @@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
->   */
->  int nand_create_bbt(struct nand_chip *this)
->  {
-> +	struct mtd_info *mtd = nand_to_mtd(this);
-> +	int (*suspend) (struct mtd_info *) = mtd->_suspend;
-> +	void (*resume) (struct mtd_info *) = mtd->_resume;
->  	int ret;
->  
-> +	/*
-> +	 * The BBT scan logic use the MTD helpers before the MTD layer had a
-> +	 * chance to initialize the device, and that leads to issues when
-> +	 * accessing the uninitialized suspend lock. Let's temporarily set the
-> +	 * suspend/resume hooks to NULL to skip the lock acquire/release step.
-> +	 *
-> +	 * FIXME: This is an ugly hack, so please don't copy this pattern to
-> +	 * other MTD implementations. The proper fix would be to implement a
-> +	 * generic BBT scan logic at the NAND level that's not using any of the
-> +	 * MTD helpers to access pages. We also might consider doing a two
-> +	 * step initialization at the MTD level (mtd_device_init() +
-> +	 * mtd_device_register()) so some of the fields are initialized
-> +	 * early.
-> +	 */
-> +	mtd->_suspend = NULL;
-> +	mtd->_resume = NULL;
-> +
->  	/* Is a flash based bad block table requested? */
->  	if (this->bbt_options & NAND_BBT_USE_FLASH) {
->  		/* Use the default pattern descriptors */
-> @@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
->  			return ret;
->  	}
->  
-> -	return nand_scan_bbt(this, this->badblock_pattern);
-> +	ret = nand_scan_bbt(this, this->badblock_pattern);
-> +
-> +	/* Restore the suspend/resume hooks. */
-> +	mtd->_suspend = suspend;
-> +	mtd->_resume = resume;
-> +
-> +	return ret;
->  }
->  EXPORT_SYMBOL(nand_create_bbt);
->  
+> > this person will get incorrect behavior. Sure a behavior that is
+> > backward compatible with older DTs, but a terribly wrong one when you
+> > write a new DT and read the DT binding documentation. This is exactly
+> > the problem that happened to us.  
+> 
+> If you write a new DT, you read the DT binding documentation, and
+> "make dtbs_check" will inform you politely if you use the legacy/wrong
+> DT (i.e. lacking "[rt]x-internal-delay-ps")?
 
+Indeed this command will inform the missing required "[rt]x-internal-delay-ps".
+I am not use to that command, as it seems to check all the devicetree each time
+where I want only to check one.
+
+> 
+> The current driver is backwards-compatible with the legacy/wrong DTB.
+> The current DT bindings (as of v5.10-rc1), using "[rt]x-internal-delay-ps"
+> are correct.
+> Or am I missing something here?
+
+You are correct.
+
+> 
+> BTW, it's still not clear to me why the inversion would be needed.
+> Cfr. Andrew's comment:
+> 
+> | So with rgmii-rxid, what is actually passed to the PHY? Is your
+> | problem you get twice the delay in one direction, and no delay in the
+> | other?
+
+Yes, it was the problem I got.
+The PHY I use have RX delay enabled by default, currently the PHY driver does
+not support delay configuration, therefore I let the MAC handle TX delay. I
+have stumbling over that legacy/wrong DTS on the old Kernel.
+
+Regards,
+Köry
