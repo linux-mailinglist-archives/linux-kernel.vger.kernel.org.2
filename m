@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315A94351DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFF54351F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhJTRtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
+        id S230416AbhJTRvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhJTRtD (ORCPT
+        with ESMTP id S230452AbhJTRvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:49:03 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA5AC061753;
-        Wed, 20 Oct 2021 10:46:38 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id v195so12636405ybb.0;
-        Wed, 20 Oct 2021 10:46:38 -0700 (PDT)
+        Wed, 20 Oct 2021 13:51:23 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C26BC06174E;
+        Wed, 20 Oct 2021 10:49:07 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id s3so23098801ild.0;
+        Wed, 20 Oct 2021 10:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sOKBPHMdWljkZNSIDrjUwmzeBvLMb2d21VbPwWacTgM=;
-        b=fuvYz9EiYxo+eAIB8lLKMZjoVGkpQhjptDXD7t+bH2LGHwLxNuORBHqD1+aGki/29m
-         i3EKQZOhqRpXiuRC2Zm4sQYgBCuMPwBm1dGN9n3MkQ0A6YJEq8sWqdKlhju3FghSEFGL
-         vTuPceVxHo5Lm2sX5h9jQYrUb9Kop382Wa5/dGGHRc5Hbc9Qvs7IiN8Hg3IAXjkuRijt
-         eWd5+ACFNktNe7+DxVYf7BPTXZLRLOfuWIzS3JTFiG8+PieISTfdQwSzv6n+nG57DE8x
-         uGo/A1znriTj0fcp2Mj2omTwSp+zw+BxxnpGAwxgkLwlfpvTYoRM0G/H3ZUNFpczG821
-         k45w==
+        bh=HjdW/J41CTP6p7TduzFh9+zmoUvsISMf0iYtuNEONWQ=;
+        b=fSJDCwnxeFIxZrnJ3pIimYU8vOVErPsMkXvZdtKzrc3sh9Q2L5XuIVSSjBJqTM+DMR
+         3Wpw9/Wwb4zCkMhxxLpgDiriFDH8iiY5wuk5p7Zz9W7Iq3gSHSLiWHZ2a886Ul5nY9jI
+         skPbHCjjS0JH6nk85+feQb0JRRVQS7ES6Ty4TDr8JdMaoN2ST8cM7xPBQ98aG+7AStQJ
+         geocgiHecYGpjXyXF394vGOHScN7e7juEY+MndYbJXCk/yYpniBEWsE+zm33HmFRCJ70
+         L5ANsq4ciODRNCT4YJviYXYnMR/uWdLfvJWVBK3ssk+7rnqEWFpXhT7qGTjspJSK3yrj
+         TGuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sOKBPHMdWljkZNSIDrjUwmzeBvLMb2d21VbPwWacTgM=;
-        b=LCXhYdW/BbswA7D2CBUMj0q71PSPQ4q5tl+fhj+STUnb5nBiB25crKtM9R68uE8t+6
-         chqHxav8kK7lqyGfFhDWW2t0Ueqd3XcQFve4ZYpMYIGXZE7g3SCQ8KLhWcmtyI8N8H+b
-         8FrsY7lCyNHTflthQeXdJn3/1NsQACX4OKIhCzggpG6VluhABjK52pzySomhc4ST8I4Q
-         aNNVv3xEXg/kb3M1kzPWO1thWnAxnBpL6rbwaQstnCNHQ77LqU3XuwlEWWcjmVag3ZtO
-         QAoGchDjNDrEcmmO0pAc0oUs/7uk6sA+5TELhyVxKqstkVc2ftgePdd3fTwaY2+p6hC+
-         KnRA==
-X-Gm-Message-State: AOAM530tVnpEtXYMSnovegjjgF+uzJaPmHwBA0SDi+SmV6wP9SfF83cJ
-        aZ395Lj5526hUs8500TtLvBOG1LPNXjTlRtKFZk=
-X-Google-Smtp-Source: ABdhPJy1/YWZivJtSDC696TGHVh7c8JDcR90h3/DoB2Lt5zT45YYfw4swcV8w8OngSAn2svPXmcGkpXF4IMshFTPFB0=
-X-Received: by 2002:a25:d3c8:: with SMTP id e191mr444609ybf.455.1634751998190;
- Wed, 20 Oct 2021 10:46:38 -0700 (PDT)
+        bh=HjdW/J41CTP6p7TduzFh9+zmoUvsISMf0iYtuNEONWQ=;
+        b=oIvOjOlFZTWBy0Jz8cvd4hZT03pJxDQRuYLx+c0ascoq3FhE93PgA2IB4rUDFZY2PE
+         I4s1vEHnLjxtisLqmji0epNA371Su4Qa3EDkSw4JQZXe973Nmez1EvlmfyA7bKSngTls
+         7ISH1gFZn0f8ZYP5QIhCH3jEehmxQZ3B8WiRpxb3qSvzJ/9O/XfeV70prk6aDREPLsAL
+         QmnSmeQLI8oZ6vyl1aCyiyqA3HzUOjv03LiBD3lMbkhq9LZ9t0wRrNV1U2/QLJFo/MbK
+         8qBm3k9F79pLT2omgaZ6jxTLUokM6Q231AF5OhmEjyU7wdQG+oB0Kkvu3kpwKahBMLzD
+         fueQ==
+X-Gm-Message-State: AOAM531W7YnYsqh9D0ypy8JLrtu3PU1UJ001SRYcte9YXyMcO+rZ2R+c
+        OkPvdcoaoK91MUdZuMYTtyW8iyCuFfWNqqUaHFs=
+X-Google-Smtp-Source: ABdhPJwqc4x1oIQbpSHkR5LIDn4xq+/w7aGOGNe/RpeEeJU5EAfsWRl0yDYwgmO9nDxDvIqwfZl6hH2VWM7OHSICK2s=
+X-Received: by 2002:a05:6e02:2141:: with SMTP id d1mr342997ilv.5.1634752146703;
+ Wed, 20 Oct 2021 10:49:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211012023231.19911-1-wanjiabing@vivo.com> <616d9ba173075_1eb12088b@john-XPS-13-9370.notmuch>
-In-Reply-To: <616d9ba173075_1eb12088b@john-XPS-13-9370.notmuch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Oct 2021 10:46:27 -0700
-Message-ID: <CAEf4BzaAmvoT-n8pusycm_q1-Tp4B+KMxu3yw1BXkM3xHY2-HQ@mail.gmail.com>
-Subject: Re: [PATCH] [v2] selftests: bpf: Remove duplicated include in cgroup_helpers
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Wan Jiabing <wanjiabing@vivo.com>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, kael_w@yeah.net
+References: <20211020173554.38122-1-keescook@chromium.org> <20211020173554.38122-3-keescook@chromium.org>
+In-Reply-To: <20211020173554.38122-3-keescook@chromium.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 20 Oct 2021 19:48:55 +0200
+Message-ID: <CANiq72kveT40jX8GWjs1dy0o3YjowUGtGTddPb+da114sb+4iA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gcc-plugins: Remove cyc_complexity
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Dan Li <ashimida@linux.alibaba.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 9:07 AM John Fastabend <john.fastabend@gmail.com> wrote:
+On Wed, Oct 20, 2021 at 7:35 PM Kees Cook <keescook@chromium.org> wrote:
 >
-> Wan Jiabing wrote:
-> > Fix following checkincludes.pl warning:
-> > ./scripts/checkincludes.pl tools/testing/selftests/bpf/cgroup_helpers.c
-> > tools/testing/selftests/bpf/cgroup_helpers.c: unistd.h is included more
-> > than once.
-> >
-> > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> > ---
-> > Changelog:
-> > v2:
-> > - Fix the commit description.
-> > ---
->
-> The Subject is a bit unusual. Typically it would be something like,
->
->  "[PATCH bpf-next] selftests, remove duplicated include in cgroup_helpers"
+> - * Copyright 2011-2016 by Emese Revfy <re.emese@gmail.com>
 
-Also for selftests we use "selftests/bpf: " prefix (at least we
-generally try, for consistency). Fixed up, applied to bpf-next.
-Thanks.
+Perhaps we should Cc this address to give them notice.
 
->
-> For the actual patch though LGTM.
->
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+
+Cheers,
+Miguel
