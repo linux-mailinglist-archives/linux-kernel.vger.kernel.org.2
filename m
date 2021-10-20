@@ -2,116 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F50434805
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A8443484B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhJTJiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:38:15 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:29917 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhJTJiO (ORCPT
+        id S229833AbhJTJvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:51:18 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:49606 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230031AbhJTJvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:38:14 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HZ53050sczbnCM;
-        Wed, 20 Oct 2021 17:31:24 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
- (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Wed, 20
- Oct 2021 17:35:57 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <josef@toxicpanda.com>, <axboe@kernel.dk>,
-        <linux-block@vger.kernel.org>, <nbd@other.debian.org>
-CC:     <linux-kernel@vger.kernel.org>, Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next] nbd: Fix hungtask when nbd_config_put
-Date:   Wed, 20 Oct 2021 17:48:30 +0800
-Message-ID: <20211020094830.3056325-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 20 Oct 2021 05:51:16 -0400
+X-UUID: 52b919d9a5ba49d6a32525d28890f2c0-20211020
+X-UUID: 52b919d9a5ba49d6a32525d28890f2c0-20211020
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <kuan-ying.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1720517181; Wed, 20 Oct 2021 17:48:54 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Wed, 20 Oct 2021 17:48:52 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 20 Oct 2021 17:48:52 +0800
+From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Marco Elver <elver@google.com>
+CC:     <chinwen.chang@mediatek.com>, <yee.lee@mediatek.com>,
+        <nicholas.tang@mediatek.com>, <kasan-dev@googlegroups.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Subject: [PATCH v3] kasan: add kasan mode messages when kasan init
+Date:   Wed, 20 Oct 2021 17:48:50 +0800
+Message-ID: <20211020094850.4113-1-Kuan-Ying.Lee@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got follow issue:
-[  247.381177] INFO: task kworker/u10:0:47 blocked for more than 120 seconds.
-[  247.382644]       Not tainted 4.19.90-dirty #140
-[  247.383502] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  247.385027] Call Trace:
-[  247.388384]  schedule+0xb8/0x3c0
-[  247.388966]  schedule_timeout+0x2b4/0x380
-[  247.392815]  wait_for_completion+0x367/0x510
-[  247.397713]  flush_workqueue+0x32b/0x1340
-[  247.402700]  drain_workqueue+0xda/0x3c0
-[  247.403442]  destroy_workqueue+0x7b/0x690
-[  247.405014]  nbd_config_put.cold+0x2f9/0x5b6
-[  247.405823]  recv_work+0x1fd/0x2b0
-[  247.406485]  process_one_work+0x70b/0x1610
-[  247.407262]  worker_thread+0x5a9/0x1060
-[  247.408699]  kthread+0x35e/0x430
-[  247.410918]  ret_from_fork+0x1f/0x30
+There are multiple kasan modes. It makes sense that we add some messages
+to know which kasan mode is when booting up. see [1].
 
-We can reprodeuce issue as follows:
-1. Inject memory fault in nbd_start_device
-@@ -1244,10 +1248,18 @@ static int nbd_start_device(struct nbd_device *nbd)
-        nbd_dev_dbg_init(nbd);
-        for (i = 0; i < num_connections; i++) {
-                struct recv_thread_args *args;
--
--               args = kzalloc(sizeof(*args), GFP_KERNEL);
-+
-+               if (i == 1) {
-+                       args = NULL;
-+                       printk("%s: inject malloc error\n", __func__);
-+               }
-+               else
-+                       args = kzalloc(sizeof(*args), GFP_KERNEL);
-2. Inject delay in recv_work
-@@ -757,6 +760,8 @@ static void recv_work(struct work_struct *work)
-
-                blk_mq_complete_request(blk_mq_rq_from_pdu(cmd));
-        }
-+       printk("%s: comm=%s pid=%d\n", __func__, current->comm, current->pid);
-+       mdelay(5 * 1000);
-        nbd_config_put(nbd);
-        atomic_dec(&config->recv_threads);
-        wake_up(&config->recv_wq);
-3. Create nbd server
-nbd-server 8000 /tmp/disk
-4. Create nbd client
-nbd-client localhost 8000 /dev/nbd1
-Then will trigger above issue.
-
-Reason is when add delay in recv_work, lead to relase the last reference
-of 'nbd->config_refs'. nbd_config_put will call flush_workqueue to make
-all work finish. Obviously, it will lead to deadloop.
-To solve this issue, we must ensure 'recv_work' all exit before release
-the last 'nbd->config_refs' reference count.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=212195 [1]
+Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
 ---
- drivers/block/nbd.c | 3 +++
- 1 file changed, 3 insertions(+)
+v3:
+ - Rebase to linux-next
+ - Move kasan_mode_info() into hw_tags.c
+v2:
+ - Rebase to linux-next
+ - HW-tag based mode need to consider asymm mode
+ - Thanks Marco's suggestion
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 0ee104fbb628..ba74887e24a8 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -2074,6 +2074,9 @@ static int nbd_genl_connect(struct sk_buff *skb, struct genl_info *info)
- 		set_bit(NBD_RT_HAS_CONFIG_REF, &config->runtime_flags);
- 		refcount_inc(&nbd->config_refs);
- 		nbd_connect_reply(info, nbd->index);
-+	} else if (nbd->recv_workq){
-+		sock_shutdown(nbd);
-+		flush_workqueue(nbd->recv_workq);
+ arch/arm64/mm/kasan_init.c |  2 +-
+ mm/kasan/hw_tags.c         | 14 +++++++++++++-
+ mm/kasan/sw_tags.c         |  2 +-
+ 3 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+index 5b996ca4d996..6f5a6fe8edd7 100644
+--- a/arch/arm64/mm/kasan_init.c
++++ b/arch/arm64/mm/kasan_init.c
+@@ -309,7 +309,7 @@ void __init kasan_init(void)
+ 	kasan_init_depth();
+ #if defined(CONFIG_KASAN_GENERIC)
+ 	/* CONFIG_KASAN_SW_TAGS also requires kasan_init_sw_tags(). */
+-	pr_info("KernelAddressSanitizer initialized\n");
++	pr_info("KernelAddressSanitizer initialized (generic)\n");
+ #endif
+ }
+ 
+diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+index dc892119e88f..7355cb534e4f 100644
+--- a/mm/kasan/hw_tags.c
++++ b/mm/kasan/hw_tags.c
+@@ -106,6 +106,16 @@ static int __init early_kasan_flag_stacktrace(char *arg)
+ }
+ early_param("kasan.stacktrace", early_kasan_flag_stacktrace);
+ 
++static inline const char *kasan_mode_info(void)
++{
++	if (kasan_mode == KASAN_MODE_ASYNC)
++		return "async";
++	else if (kasan_mode == KASAN_MODE_ASYMM)
++		return "asymm";
++	else
++		return "sync";
++}
++
+ /* kasan_init_hw_tags_cpu() is called for each CPU. */
+ void kasan_init_hw_tags_cpu(void)
+ {
+@@ -177,7 +187,9 @@ void __init kasan_init_hw_tags(void)
+ 		break;
  	}
- 	nbd_config_put(nbd);
- 	if (put_dev)
+ 
+-	pr_info("KernelAddressSanitizer initialized\n");
++	pr_info("KernelAddressSanitizer initialized (hw-tags, mode=%s, stacktrace=%s)\n",
++		kasan_mode_info(),
++		kasan_stack_collection_enabled() ? "on" : "off");
+ }
+ 
+ void kasan_alloc_pages(struct page *page, unsigned int order, gfp_t flags)
+diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+index bd3f540feb47..77f13f391b57 100644
+--- a/mm/kasan/sw_tags.c
++++ b/mm/kasan/sw_tags.c
+@@ -42,7 +42,7 @@ void __init kasan_init_sw_tags(void)
+ 	for_each_possible_cpu(cpu)
+ 		per_cpu(prng_state, cpu) = (u32)get_cycles();
+ 
+-	pr_info("KernelAddressSanitizer initialized\n");
++	pr_info("KernelAddressSanitizer initialized (sw-tags)\n");
+ }
+ 
+ /*
 -- 
-2.31.1
+2.18.0
 
