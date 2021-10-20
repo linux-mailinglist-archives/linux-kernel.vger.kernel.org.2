@@ -2,238 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5F1434A5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ED2434A6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhJTLpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:45:12 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35788
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230178AbhJTLpK (ORCPT
+        id S230090AbhJTLsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhJTLsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:45:10 -0400
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7F63D3F320
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:42:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634730175;
-        bh=tdDpH01uDMaig+FuQ9PM8Nx6u5iJw79tILyhirsrWXQ=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=Btif3CdhbSObdGakPCnM4eRUrCg0Ch6YN/wC3x/QlODfQV7mxiFrSRA0EqozpyhUw
-         RdDQ8MdtWUHuXwxJmx9wVJ+qiXZCWvZNANdvFKbS1EfA2WxuhJN2v/Oz+ywRP+6I9r
-         zU4756dFsBJbEwv5L/hvAjbIvMGw/Ch1C4PRcpLjX97d0arnjbT/VVJ3D61OyXnvMv
-         ScGIbyr1pTAW54QvzqMr8GmC5qbTISDZO/Wd2Nfg6omCNya4FRje6PNeVocNcACBCO
-         48BxVlqD2rgFcm2+QH0sy7VFHotDn/3qorOGsMGrEMiSEjtEyzVjDLBtAg4HXcbCRG
-         u5wiQ6l5VYc0g==
-Received: by mail-wm1-f71.google.com with SMTP id c201-20020a1c9ad2000000b0030d6982305bso170256wme.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:42:55 -0700 (PDT)
+        Wed, 20 Oct 2021 07:48:10 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BEAC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:45:55 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id r17so2676550qtx.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vhvaoZ+wHJBa6Q68stwGndjLH++jNxGQGS33m44y204=;
+        b=p+6RSM8zu41A9edVgEJFVALuyQXSLPZ+K/uBBm6aM+W1ROFU6TK4BRDvF3ET4KsV6G
+         vUQiqVOCau1zQ3FBz1OfhdWaTinQXIwS7uy8um0HGCiwE17BS6sCucrCkC/ZRVqLfMQs
+         99+z+AnQWTr8TmvhLiQoe5wRWm1ucBCnKT7SPpPpXRqDC1MlhpnHBYJ1JwIvhdqSHjMi
+         R2r/wwU4C0Ycb3hO0rfvfspQxld29VphdheFp65xwLrui9qlm027QQ0+DfyIr7zDA2M4
+         lrAqiUlBaJrJhW29ksxwYVmtPeHjJTY4GaGAPbWJZKN+DTXAZV73597dlhbRXDJp2aHG
+         xpDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=tdDpH01uDMaig+FuQ9PM8Nx6u5iJw79tILyhirsrWXQ=;
-        b=51iVLfLLy/J/Wh/P6S0IZnPYxNcc1ttm/LWwef17AwDpeBgnnGxwhItIwNh0xGh59X
-         7WKkebSLIlq7fA145yfXq1ztE4AcmVtAEgLEYy3kt/Aog9XW34lr2DIqp5xu8OTDLQ3f
-         YJG9s2TOWyYDo9+ObPm3PO3MlBeFrLEglwviVzhx8fNqfBCnZsvqVV1mNnNF+kVqURGb
-         2gAvbPtgX+x4c0ZuJ3xwRjwex7ez5OpldSGbA1BpKP/hHVSdAN26Fl2/tGkpQ1ByMRs9
-         wFujb0rCO4PtwumkqGYgHrXWQkL2hHCT0GkT/VnpPLhLbKxscszfXJNywXzPdEwWeBhU
-         r74A==
-X-Gm-Message-State: AOAM531Aam3diSlyl0Gmv2s8R4qlveesD/f/WnCdy0M730UIYa7eKcnq
-        v0upX5Nzo2BE/mEoy/c9NUGgTV4WaIA6RToZ/lGDVQJfQNR4yT17ZRBIxhZRQccVRK/Yp/HNy22
-        hMKg5RRpxkmM34pJHzbtVjq+5fiVfpMY3074HVQkVqQ==
-X-Received: by 2002:a05:6000:2af:: with SMTP id l15mr52558016wry.296.1634730175190;
-        Wed, 20 Oct 2021 04:42:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyTYsmDUEoSmOgGfRQuvGXjp4xEXc4RGTmMWLib1J1UD0fvSL7a7UiTabgi/AyDkMpNJ682wg==
-X-Received: by 2002:a05:6000:2af:: with SMTP id l15mr52557999wry.296.1634730174949;
-        Wed, 20 Oct 2021 04:42:54 -0700 (PDT)
-Received: from [192.168.123.55] (ip-88-152-144-157.hsi03.unitymediagroup.de. [88.152.144.157])
-        by smtp.gmail.com with ESMTPSA id z8sm1830913wrq.16.2021.10.20.04.42.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 04:42:54 -0700 (PDT)
-Message-ID: <ff1fdb31-d739-ee85-9ce0-8386065e297f@canonical.com>
-Date:   Wed, 20 Oct 2021 13:42:53 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vhvaoZ+wHJBa6Q68stwGndjLH++jNxGQGS33m44y204=;
+        b=xQNPNbsb0bQAF9nGBFppPnq2iT/zIywNT3ZFPMErClvDfQNNClieWpzSOIOmAKRHnc
+         8L9aDI5pTXdAhhl/yFSCJ6QbRjaEn5QOgTRrOojq7j8lit8zTd61NJR8vaHsy4oIYI0m
+         mS6Wv+uwUPtSePQV82RN23GfJXdbKq6v/G3XhpebgwtIRnlT8X8ETdYNTWcsmER283LB
+         LPLDrqNmMYSNyGObDZumVdsBF5v0BirCNK50tr488krjVvaCjZ2F4dWSIbNz0q/4TDGE
+         OLiPFuRZ82raJwCt5+3bTj8DYdLM8jW70gHy4c794IKZZU4eAPTL86hXGmBrxssvWPO2
+         8eaA==
+X-Gm-Message-State: AOAM5307FNCGWbDvASt/5NiJYmjlc7E8373DIdp6HY0Bh+9iOX2YiOar
+        gmmF2p98hx3D9Konl5DLi6BajwEMd5Q6r+u+vMY=
+X-Google-Smtp-Source: ABdhPJwqeggaHeS4vdFzq8VqOVZD42AfkTVUHwtPn98HL6j4rhcJBTezcWbpnFTEuKzTDiC5b6E717eDsjqPhOo6kJA=
+X-Received: by 2002:a05:622a:1998:: with SMTP id u24mr6305457qtc.156.1634730355177;
+ Wed, 20 Oct 2021 04:45:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 1/1] dt-bindings: T-HEAD CLINT
-Content-Language: en-US
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Bin Meng <bmeng.cn@gmail.com>, Xiang W <wxjstz@126.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        OpenSBI <opensbi@lists.infradead.org>
-References: <20211020093603.28653-1-heinrich.schuchardt@canonical.com>
- <CAAhSdy22y3gWM0Y9x7m84CdmtHKo7VsDC4+ZDY7+mhkJ9HcYyA@mail.gmail.com>
-From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-In-Reply-To: <CAAhSdy22y3gWM0Y9x7m84CdmtHKo7VsDC4+ZDY7+mhkJ9HcYyA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <1634278529-16983-1-git-send-email-huangzhaoyang@gmail.com>
+ <YW0u67o8wl3CGikP@dhcp22.suse.cz> <CAGWkznEO9SyNFEBqL8=JxewVTvaUhwFLPow69mi=R1MJ=XCpow@mail.gmail.com>
+ <YW1rcv4bN1WWhzLD@dhcp22.suse.cz> <CAGWkznG65_FGx9jU7rjj5biEdyHZ=kcPwmXj6cGxxVmPy2rdKQ@mail.gmail.com>
+ <YW6LSVK+NTiZ05+X@dhcp22.suse.cz> <CAGWkznHSPAu572BjoE510Sm+G9vGetKg-v2TkjwtcmZGo8MPVw@mail.gmail.com>
+ <YW7G7znfHxd52b/T@dhcp22.suse.cz> <CAGWkznGb05Uykxz=9K+8uB6axS7LCo_7hMXAn7DFJXvAmkFy5Q@mail.gmail.com>
+ <YW/Zf/s/CtRFlJ87@dhcp22.suse.cz>
+In-Reply-To: <YW/Zf/s/CtRFlJ87@dhcp22.suse.cz>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Wed, 20 Oct 2021 19:45:33 +0800
+Message-ID: <CAGWkznHF8Q8VEiKmDHNXW7Lf2=37=YXC+oP0COxe7WhY4bPWiQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: skip current when memcg reclaim
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 13:27, Anup Patel wrote:
-> On Wed, Oct 20, 2021 at 3:06 PM Heinrich Schuchardt
-> <heinrich.schuchardt@canonical.com> wrote:
->>
->> The CLINT in the T-HEAD 9xx CPUs is similar to the SiFive CLINT but does
->> not support 64bit mmio access to the MTIMER device.
->>
->> OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indicate the
->> restriction and the "sifive,cling0" compatible string. An OpenSBI
->> patch suggested to use "reg-io-width = <4>;" as the reg-io-width property
->> is generally used in the devicetree schema for such a condition.
->>
->> As the design is not SiFive based it is preferable to apply a compatible
->> string identifying T-HEAD instead.
->>
->> Add a new yaml file describing the T-HEAD CLINT.
->>
->> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
->> ---
->> @Palmer, @Anup
->> I copied you as maintainers from sifive,clint.yaml. Please, indicate if
->> this should be changed.
->>
->> For the prior discussion see:
->> https://lore.kernel.org/all/20211015100941.17621-1-heinrich.schuchardt@canonical.com/
->> https://lore.kernel.org/all/20211015120735.27972-1-heinrich.schuchardt@canonical.com/
->>
->> A release candidate of the ACLINT specification is available at
->> https://github.com/riscv/riscv-aclint/releases
-> 
-> T-HEAD supporting only 32bit accesses to MTIME and MTIMECMP
-> registers are totally allowed. The RISC-V privileged specification does
-> not enforce RV64 platforms to support 64bit accesses to MTIME and
-> MTIMECMP registers. Also, the ACLINT specification only states
-> that MTIME and MTIMECMP registers are 64-bit wide but it does
-> not enforce platforms to support 64-bit accesses.
-> 
-> Here are some discussions from tech-aia mailing list:
-> https://lists.riscv.org/g/tech-aia/message/115
-> https://lists.riscv.org/g/tech-aia/message/119
-> https://lists.riscv.org/g/tech-aia/message/120
-> 
-> In other words, the T-HEAD CLINT (MTIMER+MSWI) is compliant
-> with the RISC-V ACLINT specification.
-> 
-> I think we should add implementation specific compatible strings
-> for Allwinner D1 in the ACLINT MTIMER and ACLINT MSWI
-> DT bindings.
-> 
-> How about including the following two compatible strings in
-> ACLINT DT bindings ?
-> allwinner,sun20i-d1-aclint-mtimer
-> allwinner,sun20i-d1-aclint-mswi
+On Wed, Oct 20, 2021 at 4:55 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 20-10-21 15:33:39, Zhaoyang Huang wrote:
+> [...]
+> > Do you mean that direct reclaim should succeed for the first round
+> > reclaim within which memcg get protected by memory.low and would NOT
+> > retry by setting memcg_low_reclaim to true?
+>
+> Yes, this is the semantic of low limit protection in the upstream
+> kernel. Have a look at do_try_to_free_pages and how it sets
+> memcg_low_reclaim only if there were no pages reclaimed.
+>
+> > It is not true in android
+> > like system, where reclaim always failed and introduce lmk and even
+> > OOM.
+>
+> I am not familiar with android specific changes to the upstream reclaim
+> logic. You should be investigating why the reclaim couldn't make a
+> forward progress (aka reclaim pages) from non-protected memcgs. There
+> are tracepoints you can use (generally vmscan prefix).
+Ok, I am aware of why you get confused now. I think you are analysing
+cgroup's behaviour according to a pre-defined workload and memory
+pattern, which should work according to the design, such as processes
+within root should provide memory before protected memcg get
+reclaimed. You can refer [1] as the hierarchy, where effective
+userspace workloads locate in protect groups and have rest of
+processes be non-grouped. In fact, non-grouped ones can not provide
+enough memory as they are kernel threads and the processes with few
+pages on LRU(control logic inside). The practical scenario is groupA
+launched a high-order kmalloc and introduce reclaiming(kswapd and
+direct reclaim). As I said, non-grouped ones can not provide enough
+contiguous memory blocks which let direct reclaim quickly fail for the
+first round reclaiming. What I am trying to do is that let kswapd try
+more for the target. It is also fair if groupA,B,C are trapping in
+slow path concurrently.
 
-If the Allwinner CLINT is sufficiently compliant, this makes sense to me.
-
-Will there be a new round of
-[RFC PATCH v4 08/10] dt-bindings: timer: Add ACLINT MTIMER bindings
-https://lore.kernel.org/all/20211007123632.697666-9-anup.patel@wdc.com/
-were you could add the Allwinner device? Or is that series already merged?
-
-Should the riscv,aclint-mtimer.yaml file mention that there are 
-different access sizes and either state per compatibility string what 
-that size is or provide a parameter for that purpose?
-
-Best regards
-
-Heinrich
-
-> 
-> Regards,
-> Anup
-> 
->> ---
->>   .../bindings/timer/thead,clint.yaml           | 62 +++++++++++++++++++
->>   1 file changed, 62 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/timer/thead,clint.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/timer/thead,clint.yaml b/Documentation/devicetree/bindings/timer/thead,clint.yaml
->> new file mode 100644
->> index 000000000000..02463fb2043a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/timer/thead,clint.yaml
->> @@ -0,0 +1,62 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/timer/thead,clint.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: SiFive Core Local Interruptor
->> +
->> +maintainers:
->> +  - Palmer Dabbelt <palmer@dabbelt.com>
->> +  - Anup Patel <anup.patel@wdc.com>
->> +
->> +description:
->> +  T-HEAD (and other RISC-V) SOCs include an implementation of the T-HEAD
->> +  Core Local Interruptor (CLINT) for M-mode timer and M-mode inter-processor
->> +  interrupts. It directly connects to the timer and inter-processor interrupt
->> +  lines of various HARTs (or CPUs) so RISC-V per-HART (or per-CPU) local
->> +  interrupt controller is the parent interrupt controller for CLINT device.
->> +  The clock frequency of the CLINT is specified via "timebase-frequency" DT
->> +  property of "/cpus" DT node. The "timebase-frequency" DT property is
->> +  described in Documentation/devicetree/bindings/riscv/cpus.yaml
->> +
->> +properties:
->> +  compatible:
->> +    items:
->> +      - const:
->> +          - allwinner,sun20i-d1-clint
->> +      - const:
->> +          - thead,clint0
->> +
->> +    description:
->> +      Should be "<vendor>,<chip>-clint" and "thead,clint<version>" for
->> +      the T-HEAD derived CLINTs.
->> +      Supported compatible strings are -
->> +      "allwinner,sun20i-d1-clint" for the CLINT in the Allwinner D1 SoC
->> +      and "thead,clint0" for the T-HEAD IP block with no chip
->> +      integration tweaks.
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts-extended:
->> +    minItems: 1
->> +
->> +additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts-extended
->> +
->> +examples:
->> +  - |
->> +    timer@2000000 {
->> +      compatible = "allwinner,sun20i-d1-clint", "thead,clint0";
->> +      interrupts-extended = <&cpu1intc 3 &cpu1intc 7
->> +                             &cpu2intc 3 &cpu2intc 7
->> +                             &cpu3intc 3 &cpu3intc 7
->> +                             &cpu4intc 3 &cpu4intc 7>;
->> +       reg = <0x2000000 0x10000>;
->> +    };
->> +...
->> --
->> 2.32.0
->>
-
+[1]
+root
+|                                                       |
+|              |
+non-grouped processes             groupA    groupB  groupC
+>
+> --
+> Michal Hocko
+> SUSE Labs
