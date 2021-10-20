@@ -2,153 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46482434AD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0A4434AD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhJTMJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:09:11 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:54839 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhJTMJJ (ORCPT
+        id S229998AbhJTMJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhJTMJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:09:09 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20211020120654euoutp01c916ec37d70f24cd63dc82c368e2da18~vu7315DNG1578515785euoutp01a
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:06:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20211020120654euoutp01c916ec37d70f24cd63dc82c368e2da18~vu7315DNG1578515785euoutp01a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1634731614;
-        bh=8ssmdz378H2O6GPkTWYZCibFa9nC5r5ueHzA0hIFHVo=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=u/5Lxkg6fJ6AP96ZQSZe0pSxJX7Ut/idMVsgo7Hc/PwikEEY36Bso6YO7dtvwiUWX
-         X8JGng4vG4/oDa/zh+XHAiqvT3g4MJFwXtk6McrTmI4OtH7MKPDDCvCO5SgpprldUs
-         mlSnTSrZVcaPC0nytrnzB3J2ok2k1fHl8LTeQgHM=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211020120653eucas1p18d0a90d20c1e55bd931a6cbdc19baa2d~vu73Xa5rI2464724647eucas1p1n;
-        Wed, 20 Oct 2021 12:06:53 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id ED.25.42068.D5600716; Wed, 20
-        Oct 2021 13:06:53 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211020120653eucas1p176e7d48624cd773f2d96c06994e21856~vu72srT8A1153911539eucas1p1R;
-        Wed, 20 Oct 2021 12:06:53 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211020120653eusmtrp2dbbcef9489ba0e7510c901ea1d8d5709~vu72r4SZ21871218712eusmtrp2B;
-        Wed, 20 Oct 2021 12:06:53 +0000 (GMT)
-X-AuditID: cbfec7f4-c89ff7000002a454-5f-6170065d59f8
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id E8.7C.20981.D5600716; Wed, 20
-        Oct 2021 13:06:53 +0100 (BST)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20211020120652eusmtip1f97a50283e9634607e59aeb8e70cb4f6~vu72LtMRP2013220132eusmtip1J;
-        Wed, 20 Oct 2021 12:06:52 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [PATCH] cpuidle: qcom_spm: make driver multi-arch friendly
-Date:   Wed, 20 Oct 2021 14:06:43 +0200
-Message-Id: <20211020120643.28231-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLIsWRmVeSWpSXmKPExsWy7djPc7qxbAWJBsf2yFuce/ybxWLmyVYm
-        i7+TjrFbnN7/jsVi3mdZi4n7z7JbXN41h83ic+8RRou1R+6yW8z9MpXZ4sZcEwduj9+/JjF6
-        tC2w99i0qpPN4861PWwefVtWMXp0nmX0+LxJLoA9issmJTUnsyy1SN8ugSvj4JtG9oL/3BXb
-        ptk3ME7m6mLk5JAQMJE4MPEVexcjF4eQwApGiY833kM5Xxgl1q66zQLhfGaUWPn8BQtMy5kb
-        35ghEssZJXqm32eCa9nxewIjSBWbgKFE19suNhBbRCBa4uvPq2BFzAKvmCQ2b3jFBJIQFnCW
-        WHf+LTuIzSKgKjHn6kKwBl4BW4kjPQeYIdbJS6zecABsnYTAUg6Jn7cvs0MkXCRudPQzQtjC
-        Eq+Ob4GKy0j83zmfCaKhmVHi4bm17BBOD6PE5aYZUB3WEnfO/QJaxwF0k6bE+l36EGFHiaYl
-        zewgYQkBPokbbwVBwsxA5qRt05khwrwSHW1CENVqErOOr4Nbe/DCJaibPSR+rzgP9ouQQKzE
-        7I3f2Ccwys1C2LWAkXEVo3hqaXFuemqxUV5quV5xYm5xaV66XnJ+7iZGYAo5/e/4lx2My199
-        1DvEyMTBeIhRgoNZSYR3d0V+ohBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHepC1r4oUE0hNLUrNT
-        UwtSi2CyTBycUg1MgQy8QXl8Pvu4trewfpPfrC4t+1iI/W/PopopniYC3X/SZcobHyZWnXB9
-        K3Ck/UratVPu2qVV7bYZqk+8/1mJn/eeke4c+rL+l4XXuQM9Ny6e22HvzKR9uDIlrWi/iele
-        TvF7r2/93eDEIv/J9fYqE93Hwf7qYaptuXUxZ0vfSa0R2Gs/68SNRwYXxKK9Ju3Jc9+3X2XX
-        wfY9iSsYN+lziH5c617/1UWnge1c8K/Dl5Z/mbMoifVJFL856/pk1owdclJqvsuY3nkkPtJX
-        CDvi1vJ196r2o0Zt69UyX7ytV5qsu8ix9Mb7B64bom6Jis+p/7OPX/WTkYvXG0PxbBH16pWF
-        DtmvT0/38uV211BiKc5INNRiLipOBADakz8CkAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrELMWRmVeSWpSXmKPExsVy+t/xu7qxbAWJBucfM1uce/ybxWLmyVYm
-        i7+TjrFbnN7/jsVi3mdZi4n7z7JbXN41h83ic+8RRou1R+6yW8z9MpXZ4sZcEwduj9+/JjF6
-        tC2w99i0qpPN4861PWwefVtWMXp0nmX0+LxJLoA9Ss+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLP
-        yMRSz9DYPNbKyFRJ384mJTUnsyy1SN8uQS/j4JtG9oL/3BXbptk3ME7m6mLk5JAQMJE4c+Mb
-        cxcjF4eQwFJGiTd3H7JBJGQkTk5rYIWwhSX+XOtigyj6xChx/8gCFpAEm4ChRNfbLrAGEYFY
-        ibsHD7KDFDELvGOSuL5qDVi3sICzxLrzb9lBbBYBVYk5VxeCNfAK2Eoc6TnADLFBXmL1hgPM
-        Exh5FjAyrGIUSS0tzk3PLTbSK07MLS7NS9dLzs/dxAgM3G3Hfm7Zwbjy1Ue9Q4xMHIyHGCU4
-        mJVEeHdX5CcK8aYkVlalFuXHF5XmpBYfYjQF2jeRWUo0OR8YO3kl8YZmBqaGJmaWBqaWZsZK
-        4rwmR9bECwmkJ5akZqemFqQWwfQxcXBKNTBJLImU+crPPPWm5HaLRy4u308F6mlEb5DYfss/
-        TMmCJ45tse+Kj93HQzr/vVhkuXKC0sdEliPms+XP1p+umRGbcv+y+8EvVew7trn9jVi1unDB
-        6xvLd9701nO6x9a1s2vTy+XLGDrnlwafXbNHJaVUOPXl7pcFP18pqrlzsW2V+PJv2wH2VWlK
-        PPzOzPXTlYxyIzgb3y/oe6L8vb0u0ea09vQ1a55sErgWK/2Ty3qS2oovQUsklbiz/zO9aun6
-        +/GpR69Y7U/zOn7GSweX7KgW3fUpbtkXp+suSz9XfZ+xo4xJgnNB6Obrx3bv+q4ud8I+Jf7A
-        5TLtm2qpco5PqnyOLd8Q1LLa5s2TOp2e3p8KSizFGYmGWsxFxYkActV4lOUCAAA=
-X-CMS-MailID: 20211020120653eucas1p176e7d48624cd773f2d96c06994e21856
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20211020120653eucas1p176e7d48624cd773f2d96c06994e21856
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20211020120653eucas1p176e7d48624cd773f2d96c06994e21856
-References: <CGME20211020120653eucas1p176e7d48624cd773f2d96c06994e21856@eucas1p1.samsung.com>
+        Wed, 20 Oct 2021 08:09:52 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D72C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:07:37 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id y1so15968478plk.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UPb23yf1YkyfOx+oag7Ck//sJg18vV7uspwA+E7VEtk=;
+        b=DMq8CQb8145WnBh56YUXI87IitFSapenMfe4DDTV8hUsTUsiLYw4XRbUw3w5R9rBM9
+         b+ZYOdlWv+oFKRKxtvAlpD+OpIhUDEbcJlnPUPTTmpudRw2ztYPv0wnaZXx8SnZDbL+S
+         5M43mm30t2OLt2IjJLS1ajqbvPrcDTgo35H3WpyAVVU1HXl1UyGblE0ranub1VIZFV1B
+         XmOUFgBX2DF9lf9yuIgV53spgv7ellxEcthCmpZOrQuzOkWAJyqnzGZsbzmbd7WokKZE
+         sASek1uWUTfk+cAI4YQ3RNOPpKyjrCooiARK57Fa8J1BGzBiDt7hcHJfxwx6pDMPTedl
+         fhjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UPb23yf1YkyfOx+oag7Ck//sJg18vV7uspwA+E7VEtk=;
+        b=A5D8Xb99yzaly0afiBoppEaesWTQdzWTXkMmItIEju4Ar90MllnaxJ+5NnoW17ISZ4
+         UEcz6YpwKIvT0E1B5BAMWXPLCk3iDLpPVmyBYk0NAiRjg/RrGTa4sk+4pw8GFpSVDYcM
+         BC6ciT13eUY+mwjCiwpXOYJ8QD0DomAYPAtNEDTCMkv+y76iCvBv9bYgkS0QwK8M9F+f
+         vIVVA4jhYaawq/w12HWrOnUJHgMbSKwH56wc6BGBII1jWmgE5A9AuW5pq0y/6Ad/NTws
+         D36/D77qI+IdfEeezs6a9bEddwwigtMp0PiCMEwNFaBUtnieSjJAruFgyqJ0gVc4vZTc
+         +E+A==
+X-Gm-Message-State: AOAM532UODArSFJ6vD6vLfGy81nBymjPsQRvImQlFzpeyHfbRbp21Gwc
+        PjHNJkjTEndO21CqIPC1g21OPg==
+X-Google-Smtp-Source: ABdhPJxXKuFjiVRLuWSpaoxDL57/NxBql+534hTakttbVJJ00w2S51CzmB+kaHBLm9jfrM18hOLnmw==
+X-Received: by 2002:a17:90b:ecc:: with SMTP id gz12mr6952300pjb.241.1634731657391;
+        Wed, 20 Oct 2021 05:07:37 -0700 (PDT)
+Received: from libai.bytedance.net ([61.120.150.71])
+        by smtp.gmail.com with ESMTPSA id o72sm2268237pjo.50.2021.10.20.05.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 05:07:36 -0700 (PDT)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     pbonzini@redhat.com, corbet@lwn.net
+Cc:     wanpengli@tencent.com, seanjc@google.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        zhenwei pi <pizhenwei@bytedance.com>
+Subject: [PATCH] x86/kvm: Introduce boot parameter no-kvm-pvipi
+Date:   Wed, 20 Oct 2021 20:07:26 +0800
+Message-Id: <20211020120726.4022086-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid returning -EPROBE_DEFER from spm_cpuidle_drv_probe() on non-qcom
-based systems. This makes the driver multi-arch friendly again after
-commit 60f3692b5f0b ("cpuidle: qcom_spm: Detach state machine from main
-SPM handling").
+Although host side exposes KVM PV SEND IPI feature to guest side,
+guest should still have a chance to disable it.
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
----
-This fixes the issue I've reported some time ago:
-https://lore.kernel.org/all/86e3e09f-a8d7-3dff-3fc6-ddd7d30c5d78@samsung.com/
----
- drivers/cpuidle/cpuidle-qcom-spm.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+A typicall case of this parameter:
+If the host AMD server enables AVIC feature, the flat mode of APIC
+get better performance in the guest.
 
-diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
-index 01e77913a414..1ee056fdfbb8 100644
---- a/drivers/cpuidle/cpuidle-qcom-spm.c
-+++ b/drivers/cpuidle/cpuidle-qcom-spm.c
-@@ -129,12 +129,26 @@ static int spm_cpuidle_register(struct device *cpuidle_dev, int cpu)
- 	return cpuidle_register(&data->cpuidle_driver, NULL);
- }
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+---
+ Documentation/admin-guide/kernel-parameters.txt |  2 ++
+ arch/x86/kernel/kvm.c                           | 13 ++++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 43dc35fe5bc0..73b8712b94b0 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3495,6 +3495,8 @@
+ 	no-kvmapf	[X86,KVM] Disable paravirtualized asynchronous page
+ 			fault handling.
  
-+static int spm_dev_check(struct device_driver *drv, void *data)
-+{
-+	if (strcmp(drv->name, "qcom_spm") == 0) {
-+		struct device_node *np;
++	no-kvm-pvipi	[X86,KVM] Disable paravirtualized KVM send IPI.
 +
-+		np = of_find_matching_node(NULL, drv->of_match_table);
-+		if (np) {
-+			of_node_put(np);
-+			return -EPROBE_DEFER;
-+		}
-+	}
-+	return -ENODEV;
+ 	no-vmw-sched-clock
+ 			[X86,PV_OPS] Disable paravirtualized VMware scheduler
+ 			clock and use the default one.
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index b656456c3a94..911f1cd2bec5 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -62,6 +62,17 @@ static int __init parse_no_stealacc(char *arg)
+ 
+ early_param("no-steal-acc", parse_no_stealacc);
+ 
++static int kvm_pvipi = 1;
++
++static int __init parse_no_kvm_pvipi(char *arg)
++{
++	kvm_pvipi = 0;
++
++	return 0;
 +}
 +
- static int spm_cpuidle_drv_probe(struct platform_device *pdev)
++early_param("no-kvm-pvipi", parse_no_kvm_pvipi);
++
+ static DEFINE_PER_CPU_DECRYPTED(struct kvm_vcpu_pv_apf_data, apf_reason) __aligned(64);
+ DEFINE_PER_CPU_DECRYPTED(struct kvm_steal_time, steal_time) __aligned(64) __visible;
+ static int has_steal_clock = 0;
+@@ -795,7 +806,7 @@ static uint32_t __init kvm_detect(void)
+ static void __init kvm_apic_init(void)
  {
- 	int cpu, ret;
- 
- 	if (!qcom_scm_is_available())
--		return -EPROBE_DEFER;
-+		return bus_for_each_drv(pdev->dev.bus, NULL, NULL, spm_dev_check);
- 
- 	for_each_possible_cpu(cpu) {
- 		ret = spm_cpuidle_register(&pdev->dev, cpu);
+ #ifdef CONFIG_SMP
+-	if (pv_ipi_supported())
++	if (pv_ipi_supported() && kvm_pvipi)
+ 		kvm_setup_pv_ipi();
+ #endif
+ }
 -- 
-2.17.1
+2.25.1
 
