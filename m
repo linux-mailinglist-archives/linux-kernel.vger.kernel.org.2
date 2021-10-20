@@ -2,195 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91145434406
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 06:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476CD434408
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 06:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhJTEEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 00:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhJTEEe (ORCPT
+        id S229919AbhJTEG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 00:06:58 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:39862 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhJTEG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 00:04:34 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503CBC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 21:02:20 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id a8so20618786ilj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 21:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4KJFEwUorje8FLlb79ZL0ZwvURLI9xbnmI43eZiaFn0=;
-        b=AZ7JocdZbxuhbdylEeL4UeSgGfjXq4HkaE6umxJREGHLJZL15imK/PSGAD0hpfmYnX
-         ouCiEAD9wpaQ8Dw55x1J4IF+/C1jUpJroX4jIPH9w4bjr3W1JNb84zsVt56TqLI+G54K
-         PPDwA5DMAJKOdAlh1hLouo3g4zGdNjsHQbmBH2ooYTyzH0fdElPY8IOXei2N6B6Tnahh
-         OcCWJjnVy+PANTWMJ98O2xM/wA2IWpnGqydb1DIViG04E6gpWCRZdPJen2SaAAy0WAww
-         Lw/BFVT3QbaK0lAHs4Xngfi4Pt/kUCxC5fktOHDXcRDJG5PlzzbywX7UKCrcGK+71LlL
-         xxEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4KJFEwUorje8FLlb79ZL0ZwvURLI9xbnmI43eZiaFn0=;
-        b=gjUgKynP/7APg7xra8s9cvJ71okWrMu0DrTxZqXFuHXJ2r34DpvJMhkgX5uSw5XqjP
-         OzHVz/pbFkAMq/QVboIjm2p6csDVyGakWgIHDrX8cqMN33CYPD+Xwexo4X8fXHI1a1/P
-         Xn7G3EQHNBu749Bl0aXVz7yqOBycPvuzbebm3wsj5CTOMGAgDje4gSxkYR+Z/nx7qo2S
-         j5S0Z7ux0qYlCmOXcwx+8St3qsjo4IBUXOVv6Onm+cFdWQSW6nAvJJ0lE0xBLN/MvD9s
-         8GVVLR05EnfdWW6E2OIj1WxfCF+CaS1P6IdQ7xWpJoEwDDemNfDtpnoChYbclT6IMfEi
-         rRKg==
-X-Gm-Message-State: AOAM531UwOjMM7TqffqJ2sSBDR32X1iKKZNkLDHfaJunOjPXswE0NGPr
-        cKv96NjHx0eRKYjD/8nYbRTOipSFIghCgXuZx31fIGqV
-X-Google-Smtp-Source: ABdhPJyHffEazrn0ql2HCZIYoNN3NdARvqkidT1azmDEnyRF2diVNxDN+LPSrMBmMprjzDKHcO7F6CYmK6sE6Cgc/Cs=
-X-Received: by 2002:a05:6e02:12e4:: with SMTP id l4mr13804876iln.25.1634702539054;
- Tue, 19 Oct 2021 21:02:19 -0700 (PDT)
+        Wed, 20 Oct 2021 00:06:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1634702684; x=1666238684;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6gb3s1zVXQceT0cndY6bROxz31Z1zp2P/F3Gu6V2XyI=;
+  b=l8xWpwdVmng/JdQDHmZu+unqoT6UhTJMMNGXxdJWIewJHJ6xOKwv176I
+   36qqY56+JQjc9gXhpXX+uwPyUask4F8eCYLqBtL6g8JGVGgqLTq4SqNnB
+   WXPSt3/DkTYatmUdluDfJ9sZh5fGyxUH6hgmkCICtiII9hRjyfTPEnnVu
+   CgME/MouTIObMKeG54lILYuOl0E+Rkcxi19vFU2xg9REJClCiBW5acr9N
+   wxsuuiZuCnX8VYvaWMgO4Npa1yPnxDZXlkPmXr+Vv72QaCGA7sAG//RJ0
+   uo6vGyfovpjF+sP9cFxWLi2KVuC14d0bDdRwqD9Vb9GRwn0txjkedRn1M
+   w==;
+X-IronPort-AV: E=Sophos;i="5.87,165,1631548800"; 
+   d="scan'208";a="287242371"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Oct 2021 12:04:43 +0800
+IronPort-SDR: jVDntCGLt2kGL90etJTFfMmTsPtU5VZDqdWxaZAqvuv0NZz06JlUnBhuLZtDbYTyjjt/fe3aaE
+ 1ttOkoixXHwxUeB+pr93GBGLUoAy8v3592xVdTdLTJC6HMDHHag4zPQx+sJj+07aV5wdObsz4s
+ 5ixbPcjSDPu23Mh3i/Smei3tqcDJwO3gYMUZrnUnJ2rG5weBC7zAenxwk33liwd10tFTHp5J56
+ R9YZimoG6zd2K1nguDVNAAtDkyAh+9J+sZZNdwJUhRoNc/fyckrptjufrpuKzY+HBP4h8yZ3VU
+ jwaE7+zSG54gg4mICj6Ql79r
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 20:38:49 -0700
+IronPort-SDR: 4wQrjwGwvw+OWurqzimUm4b8acbqLaHLMOQqaCy2MODOlZ/Zu+uFUw6nuOiWWaaxzOSnLmmN1B
+ 871xHBqMvXI6D/iBqdHOWle17CN3xgBOLJz9rD55FijGDjBbIinNliU5NNPF5IvG+tGUEWw6UE
+ ZrsXJABHfz/3Tedh3kWhRSUXpGkZqshsPHk0jBLzhCOz99C/eRpYwiDk1pchkiH2avjHOK2fm4
+ 1R4S0py31hW1tMnaGoiQ3gVd6z6YeV+3J6i6w5q4QNYp9Cr3hXt9cVmODC8Cw0eHQ5GEulTH+K
+ M9I=
+WDCIronportException: Internal
+Received: from hy7bl13.ad.shared (HELO naota-xeon.wdc.com) ([10.225.58.195])
+  by uls-op-cesaip01.wdc.com with ESMTP; 19 Oct 2021 21:04:43 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] block: schedule queue restart after BLK_STS_ZONE_RESOURCE
+Date:   Wed, 20 Oct 2021 13:04:04 +0900
+Message-Id: <20211020040404.132984-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020>
- <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
- <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com> <YW73j66QbG9i0MV+@kernel.org>
-In-Reply-To: <YW73j66QbG9i0MV+@kernel.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 20 Oct 2021 12:01:43 +0800
-Message-ID: <CALOAHbDxQop8v0yXW+NDxO+7O05Ge1hXi6WVSYh-AqQnRE-hOg@mail.gmail.com>
-Subject: Re: [sched.h] 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rostedt <rostedt@goodmis.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        lkp <lkp@lists.01.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        bristot <bristot@redhat.com>,
-        aubrey li <aubrey.li@linux.intel.com>,
-        yu c chen <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:51 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Thu, Oct 14, 2021 at 08:42:05AM -0400, Mathieu Desnoyers escreveu:
-> > ----- On Oct 14, 2021, at 5:24 AM, Yafang Shao laoar.shao@gmail.com wrote:
-> > > On Thu, Oct 14, 2021 at 3:08 PM kernel test robot <oliver.sang@intel.com> wrote:
-> > > That issue is caused by another hardcode 16 ...
->
-> > > Seems we should make some change as below,
->
-> > > diff --git a/tools/perf/tests/evsel-tp-sched.c
-> > > b/tools/perf/tests/evsel-tp-sched.c
-> > > index f9e34bd26cf3..401a737b1d85 100644
-> > > --- a/tools/perf/tests/evsel-tp-sched.c
-> > > +++ b/tools/perf/tests/evsel-tp-sched.c
-> > > @@ -42,7 +42,7 @@ int test__perf_evsel__tp_sched_test(struct test
-> > > *test __maybe_unused, int subtes
-> > >                return -1;
-> > >        }
->
-> > > -       if (evsel__test_field(evsel, "prev_comm", 16, false))
-> > > +       if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN, false))
-> >
-> > tools/perf/tests/* contains userspace test programs. This means it gets the
-> > TASK_COMM_LEN from the uapi. The fix you propose won't do any good here.
->
-> That specific test is just checking if the parsing is being done as
-> expected, i.e. we know beforehand that COMMs have 16 bytes, so the test
-> expects that.
->
+When dispatching a zone append write request to a SCSI zoned block device,
+if the target zone of the request is already locked, the device driver will
+return BLK_STS_ZONE_RESOURCE and the request will be pushed back to the
+hctx dipatch queue. The queue will be marked as RESTART in
+dd_finish_request() and restarted in __blk_mq_free_request(). However, this
+restart applies to the hctx of the completed request. If the requeued
+request is on a different hctx, dispatch will no be retried until another
+request is submitted or the next periodic queue run triggers, leading to up
+to 30 seconds latency for the requeued request.
 
-Right.
+Fix this problem by scheduling a queue restart similarly to the
+BLK_STS_RESOURCE case or when we cannot get the budget.
 
-> Now that it can have a different size, then the test should accept the
-> two sizes as possible and pass if it is 16 or 24.
->
-> Like in this patch:
->
+Also, consolidate the checks into the "need_resource" variable to simplify
+the condition.
 
-Thanks for the suggestion. I will do it as you suggested.
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ block/blk-mq.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-> diff --git a/tools/perf/tests/evsel-tp-sched.c b/tools/perf/tests/evsel-tp-sched.c
-> index f9e34bd26cf33536..182328f3f7f70e0e 100644
-> --- a/tools/perf/tests/evsel-tp-sched.c
-> +++ b/tools/perf/tests/evsel-tp-sched.c
-> @@ -5,7 +5,7 @@
->  #include "tests.h"
->  #include "debug.h"
->
-> -static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
-> +static int evsel__test_field_alt(struct evsel *evsel, const char *name, int size, int alternate_size, bool should_be_signed)
->  {
->         struct tep_format_field *field = evsel__field(evsel, name);
->         int is_signed;
-> @@ -23,15 +23,23 @@ static int evsel__test_field(struct evsel *evsel, const char *name, int size, bo
->                 ret = -1;
->         }
->
-> -       if (field->size != size) {
-> -               pr_debug("%s: \"%s\" size (%d) should be %d!\n",
-> +       if (field->size != size && field->size != alternate_size) {
-> +               pr_debug("%s: \"%s\" size (%d) should be %d",
->                          evsel->name, name, field->size, size);
-> +               if (alternate_size > 0)
-> +                       pr_debug(" or %d", alternate_size);
-> +               pr_debug("!\n");
->                 ret = -1;
->         }
->
->         return ret;
->  }
->
-> +static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
-> +{
-> +       return evsel__test_field_alt(evsel, name, size, -1, should_be_signed);
-> +}
-> +
->  int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtest __maybe_unused)
->  {
->         struct evsel *evsel = evsel__newtp("sched", "sched_switch");
-> @@ -42,7 +50,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
->                 return -1;
->         }
->
-> -       if (evsel__test_field(evsel, "prev_comm", 16, false))
-> +       if (evsel__test_field_alt(evsel, "prev_comm", 16, 24, false))
->                 ret = -1;
->
->         if (evsel__test_field(evsel, "prev_pid", 4, true))
-> @@ -54,7 +62,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
->         if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
->                 ret = -1;
->
-> -       if (evsel__test_field(evsel, "next_comm", 16, false))
-> +       if (evsel__test_field_alt(evsel, "next_comm", 16, 24, false))
->                 ret = -1;
->
->         if (evsel__test_field(evsel, "next_pid", 4, true))
-> @@ -72,7 +80,7 @@ int test__perf_evsel__tp_sched_test(struct test *test __maybe_unused, int subtes
->                 return -1;
->         }
->
-> -       if (evsel__test_field(evsel, "comm", 16, false))
-> +       if (evsel__test_field_alt(evsel, "comm", 16, 24, false))
->                 ret = -1;
->
->         if (evsel__test_field(evsel, "pid", 4, true))
-
-
-
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 9c64f0025a56..439f78b0d86a 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1318,6 +1318,7 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
+ 	int errors, queued;
+ 	blk_status_t ret = BLK_STS_OK;
+ 	LIST_HEAD(zone_list);
++	bool need_resource = false;
+ 
+ 	if (list_empty(list))
+ 		return false;
+@@ -1363,6 +1364,8 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
+ 			queued++;
+ 			break;
+ 		case BLK_STS_RESOURCE:
++			need_resource = true;
++			fallthrough;
+ 		case BLK_STS_DEV_RESOURCE:
+ 			blk_mq_handle_dev_resource(rq, list);
+ 			goto out;
+@@ -1373,6 +1376,7 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
+ 			 * accept.
+ 			 */
+ 			blk_mq_handle_zone_resource(rq, &zone_list);
++			need_resource = true;
+ 			break;
+ 		default:
+ 			errors++;
+@@ -1399,7 +1403,6 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
+ 		/* For non-shared tags, the RESTART check will suffice */
+ 		bool no_tag = prep == PREP_DISPATCH_NO_TAG &&
+ 			(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED);
+-		bool no_budget_avail = prep == PREP_DISPATCH_NO_BUDGET;
+ 
+ 		if (nr_budgets)
+ 			blk_mq_release_budgets(q, list);
+@@ -1440,14 +1443,15 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
+ 		 * If driver returns BLK_STS_RESOURCE and SCHED_RESTART
+ 		 * bit is set, run queue after a delay to avoid IO stalls
+ 		 * that could otherwise occur if the queue is idle.  We'll do
+-		 * similar if we couldn't get budget and SCHED_RESTART is set.
++		 * similar if we couldn't get budget or couldn't lock a zone
++		 * and SCHED_RESTART is set.
+ 		 */
+ 		needs_restart = blk_mq_sched_needs_restart(hctx);
++		need_resource |= (prep == PREP_DISPATCH_NO_BUDGET);
+ 		if (!needs_restart ||
+ 		    (no_tag && list_empty_careful(&hctx->dispatch_wait.entry)))
+ 			blk_mq_run_hw_queue(hctx, true);
+-		else if (needs_restart && (ret == BLK_STS_RESOURCE ||
+-					   no_budget_avail))
++		else if (needs_restart && need_resource)
+ 			blk_mq_delay_run_hw_queue(hctx, BLK_MQ_RESOURCE_DELAY);
+ 
+ 		blk_mq_update_dispatch_busy(hctx, true);
 -- 
-Thanks
-Yafang
+2.33.1
+
