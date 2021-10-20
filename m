@@ -2,110 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8224342FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 03:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538634342F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 03:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhJTBhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 21:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhJTBhT (ORCPT
+        id S229785AbhJTBgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 21:36:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39519 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229555AbhJTBgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 21:37:19 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CC7C06174E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 18:35:06 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id c65-20020a251c44000000b005ba81fe4944so27908172ybc.14
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 18:35:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=IYOJmQ2nEaASN59pmylXXLLP+FrglnzeH7l3JWIvSSI=;
-        b=XGXOwhu+3ly4GGQ1oRi8qz2yqWWUke3CkXEYsjduM7C/tJS6yJeHXy2j5xGYawLq2z
-         rb1FEnzkNVoLle2OjDHjZTO+RnowokFV8JDHe5avoDhfLbEKSnFnO2Vtk6N3UDhuSxty
-         v+KTsqzaz9kw8ZRK+XP10KKGJhyeWhJ2IF9/ZzDlXeo28BAZ57R/6WkRD0tRd7hZRUqs
-         nqR77wQaksmIDKYEDKZcJ7Fv9+8ByKyq5+OWyZfZh+CDUSSc/qhD/H0VKYKloOMGPEB3
-         lcj/VdaCp+ojGLKD7HKQPGhf/g0uwhUvK74T39GjDQecSd1WGaxrgrPT/QGdZDJEHvsV
-         8WoQ==
+        Tue, 19 Oct 2021 21:36:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634693643;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ltXfto+2D3qHt5R0luKHd8lxHSlL7nx4NZbjj+fLLmY=;
+        b=gab8DE29eXuWK/QgqqaklYIBcNHBIW2SS4UJ8AX+uhEfUoVpg6Zcp1guue5Ih3P7ade3gM
+        4kWlbZ0hPGMwPnU85XbNuIoRVkP1plLSzY1KXImrBCeiFbhgUQTnewJhUSq1AuUpMoyysm
+        A0/k8pllA+6gIRPDupM6Hxe/iwIlxDo=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-9TLKD5d9P2qHEtMqdO2dBw-1; Tue, 19 Oct 2021 21:34:02 -0400
+X-MC-Unique: 9TLKD5d9P2qHEtMqdO2dBw-1
+Received: by mail-lf1-f70.google.com with SMTP id br42-20020a056512402a00b003fd94a74905so2312342lfb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 18:34:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=IYOJmQ2nEaASN59pmylXXLLP+FrglnzeH7l3JWIvSSI=;
-        b=lQgy8x45kPX97Luiwzp0MeLq/arj9D3dK33AvrNfV+McBwGc0/fbcdAzczjlvMq6z/
-         PE2a2SyoA6I1GDED0TIxGnemK6rC48ODYAcffkV7jelfPMC2DLtHGQ25HeAjv87S2gr/
-         JF9QsrSqCIYPosTKSG6PyrbGqFZOe2q5NuJqo5OgzShCXU1pvZTtko3Da/Ak5gUs6L/e
-         Yle4hb837KDNXBETMSPclwaiTLDWFgmvol7glfsDB8KJ2Unsi2ux3TtE6RYL/1P+99xW
-         rpt6uEUjyhf1bL6TfG8ygkL2KKPO+2mUx/jYGGdlPeruPNACPBGn+V1v8/jQp44s1fw4
-         HCkw==
-X-Gm-Message-State: AOAM532nj2lNdBo9OvUVPmNRpWED33nCHOrKOp5tTHcABJ3jKCu7p+GL
-        LhN7WYRxPiJ1Ul7K68FpK3aSlvsm/d7wzVT4cw==
-X-Google-Smtp-Source: ABdhPJwdmdJ3rocY1RE5RBQflLKGa7RbWoXi5F/Gb1zI4tZm2gFPWWaQWmi5tTLT+iznoarcNeyZ7eNWYJDXAepx0Q==
-X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:1953:b886:7a6c:bf0])
- (user=kaleshsingh job=sendgmr) by 2002:a25:1b0a:: with SMTP id
- b10mr40405957ybb.520.1634693705344; Tue, 19 Oct 2021 18:35:05 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 18:31:42 -0700
-In-Reply-To: <20211020013153.4106001-1-kaleshsingh@google.com>
-Message-Id: <20211020013153.4106001-6-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20211020013153.4106001-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2 5/5] tracing/histogram: Document expression arithmetic and constants
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ltXfto+2D3qHt5R0luKHd8lxHSlL7nx4NZbjj+fLLmY=;
+        b=7BwPDgAHZ8y5D94qwnoGxb+JMaiBCX7VRbe2MxI8kb+SsCCiCQRMUot5T/P8SdKmMw
+         BNYYSnDri4DqsudP/9E3I6K3P3s1WwhKGefSWZ9GcTqPIXxlNVl3mH3dhCGfG6GmRXDs
+         YilCJ+rCSzyNO9AEpTFGQEx2yeNzmYDUkoCKiqAq71Y+84aXjnmREudBPUISpgIcFYq+
+         vcx7cVkJDaSLriMafVALQ6nag8O6R2WAEUL08bIVcoeGtF0zue/PgWhL1tuMbu+StrcT
+         hRIdJxY3o16fqYg+pQFVxH1fALv8zDPnrvvdK57PDhnymxypHYEq0rAeWnGDRRFWw7aT
+         uC/w==
+X-Gm-Message-State: AOAM533zxW4zvF7sWHsLMN98PxZfcO6gVBY3iLSfawB61z5h98QOdPP6
+        ukHR6Ktg/HvvWDt530CuyfQVg7VMNjZ+W2pWW5Onj+a6RZUNTSuXElxK0Yocy8i05VCadQw+FCv
+        fzZaLEuz+J+tOESkNZ52hMnhFPd/HjPY2ankpv7wr
+X-Received: by 2002:a05:6512:128a:: with SMTP id u10mr9534662lfs.84.1634693640818;
+        Tue, 19 Oct 2021 18:34:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzF+/cEU7+91nx7pxgumxGT2rgLZSQW4vhO2/x8Z65P97rY4mBDOhUnt29vb3LfSb6KnDQ6ltfEwK978AmcDe4=
+X-Received: by 2002:a05:6512:128a:: with SMTP id u10mr9534640lfs.84.1634693640619;
+ Tue, 19 Oct 2021 18:34:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211012065227.9953-1-jasowang@redhat.com> <20211012065227.9953-7-jasowang@redhat.com>
+ <c6641b6a-6204-2b41-e775-ad329314711c@oracle.com> <20211015132639-mutt-send-email-mst@kernel.org>
+ <CACGkMEujcgMTtLiJWx5ZazVgM5qopB0ZVDkvg6cEuyRGAL31AA@mail.gmail.com> <c51930a2-3f47-407a-2b1a-fdd1d23ca7c2@oracle.com>
+In-Reply-To: <c51930a2-3f47-407a-2b1a-fdd1d23ca7c2@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 20 Oct 2021 09:33:49 +0800
+Message-ID: <CACGkMEvSVA=qx6m7BvM-P9mm=KpPihWhVWUycj2WGnwxfa+HAA@mail.gmail.com>
+Subject: Re: [PATCH V2 06/12] virtio_pci: harden MSI-X interrupts
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Histogram expressions now support division, and multiplication in
-addition to the already supported subtraction and addition operators.
+On Wed, Oct 20, 2021 at 1:02 AM Dongli Zhang <dongli.zhang@oracle.com> wrote:
+>
+>
+>
+> On 10/18/21 6:33 PM, Jason Wang wrote:
+> > On Sat, Oct 16, 2021 at 1:27 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >>
+> >> On Fri, Oct 15, 2021 at 05:09:38AM -0700, Dongli Zhang wrote:
+> >>> Hi Jason,
+> >>>
+> >>> On 10/11/21 11:52 PM, Jason Wang wrote:
+> >>>> We used to synchronize pending MSI-X irq handlers via
+> >>>> synchronize_irq(), this may not work for the untrusted device which
+> >>>> may keep sending interrupts after reset which may lead unexpected
+> >>>> results. Similarly, we should not enable MSI-X interrupt until the
+> >>>
+> >>> About "unexpected results", while you mentioned below in v1 ...
+> >>>
+> >>> "My understanding is that e.g in the case of SEV/TDX we don't trust the
+> >>> hypervisor. So the hypervisor can keep sending interrupts even if the
+> >>> device is reset. The guest can only trust its own software interrupt
+> >>> management logic to avoid call virtio callback in this case."
+> >>>
+> >>> .. and you also mentioned to avoid the panic (due to untrusted device) in as
+> >>> many scenarios as possible.
+> >>>
+> >>>
+> >>> Here is my understanding.
+> >>>
+> >>> The reason we do not trust hypervisor is to protect (1) data/code privacy for
+> >>> most of times and sometimes (2) program execution integrity.
+> >>>
+> >>> The bad thing is: the hypervisor is able to panic/destroy the VM in the worst case.
+> >>>
+> >>> It is reasonable to re-configure/recover if we assume there is BUG at
+> >>> hypervisor/device side. That is, the hypervisor/device is buggy, but not malicious.
+> >>>
+> >>> However, how about to just detect and report the hypervisor/device is malicious
+> >>> and shutdown/panic the VM immediately? If we have detected the malicious
+> >>> hypervisor, we should avoid running VMs on the malicious hypervisor further. At
+> >>> least how about to print error message to reminder users that the hypervisor is
+> >>> malicious?
+> >
+> > I understand your point, but several questions needs to be answered:
+> >
+> > 1) how can we easily differentiate "malicious" from "buggy"?
+> > 2) If we want to detect malicious hypervisor, virtio is not the only
+> > place that we want to do this
+> > 3) Is there a way that "malicious" hypervisor can prevent guest from
+> > shutting down itself?
+> >
+> >>>
+> >>>
+> >>> About "unexpected results", it should not be hang/panic. I suggest ...
+> >>>
+> >
+> > It's just the phenomenon not the logic behind that. It could be e.g
+> > OOB which may lead the unexpected kernel codes to be executed in
+> > unexpected ways (e.g mark the page as shared or go with IOTLB etc).
+> > Sometimes we can see panic finally but it's not always.
+>
+> This is what I was trying to explain.
+>
+> The objective is to protect "data privacy" (or code execution integrity in some
+> case), but not to prevent DoS attack. That is, the 'malicious' hypervisor should
+> not be able to derive VM data privacy.
+>
+> Suppose the hypervisor did something buggy/malicious when SEV/TDX is used by VM,
+> the "unexpected results" should never reveal secure/private data to the hypervisor.
+>
+> In my own opinion, the threat model is:
+>
+> Attacker: 'malicious' hypervisor
+>
+> Victim: VM with SEV/TDX/SGX
+>
+> The attacker should not be able to steal secure/private data from VM, when the
+> hypervisor's action is unexpected. DoS is out of the scope.
+>
+> My concern is: it is very hard to clearly explain in the patchset how the
+> hypervisor is able to steal VM's data, by setting queue=0 or injecting unwanted
+> interrupts to VM.
 
-Numeric constants can also be used in a hist trigger expressions
-or assigned to a variable and used by refernce in an expression.
+Yes, it's a hard question but instead of trying to answer that, we can
+just fix the case of e.g unexpected interrupts.
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-Reviewed-by: Namhyung Kim <namhyung@kernel.org>
----
-Changes in v2:
-  - Add Namhyung's Reviewed-by
+Thanks
 
- Documentation/trace/histogram.rst | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-index 533415644c54..e12699abaee8 100644
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -1763,6 +1763,20 @@ using the same key and variable from yet another event::
- 
-   # echo 'hist:key=pid:wakeupswitch_lat=$wakeup_lat+$switchtime_lat ...' >> event3/trigger
- 
-+Expressions support the use of addition, subtraction, multiplication and
-+division operators (+-*/).
-+
-+Note that division by zero always returns -1.
-+
-+Numeric constants can also be used directly in an expression::
-+
-+  # echo 'hist:keys=next_pid:timestamp_secs=common_timestamp/1000000 ...' >> event/trigger
-+
-+or assigned to a variable and referenced in a subsequent expression::
-+
-+  # echo 'hist:keys=next_pid:us_per_sec=1000000 ...' >> event/trigger
-+  # echo 'hist:keys=next_pid:timestamp_secs=common_timestamp/$us_per_sec ...' >> event/trigger
-+
- 2.2.2 Synthetic Events
- ----------------------
- 
--- 
-2.33.0.1079.g6e70778dc9-goog
+>
+> Thank you very much!
+>
+> Dongli Zhang
+>
+> >
+> >>> Assuming SEV/TDX is involved, the hypervisor should never be able to derive the
+> >>> VM privacy (at least secure memory data) by providing malicious configuration,
+> >>> e.g., num_queues=0.
+> >
+> > Yes.
+> >
+> >>> If we detect hypervisor is malicious, the VM is
+> >>> panic/shutdown immediately.
+> >
+> > This seems to enforce the policy into the kernel, we need to leave
+> > this to userspace to decide.
+> >
+> >>> At least how about to print error message to
+> >>> reminder users.
+> >
+> > This is fine.
+> >
+> >>>
+> >>>
+> >>> BTW, while I always do care about the loss of interrupt issue, the malicious
+> >>> device is able to hang a VM by dropping a single interrupt on purpose for
+> >>> virtio-scsi :)
+> >>>
+> >
+> > Right.
+> >
+> >>>
+> >>> Thank you very much!
+> >>
+> >>
+> >> Can't say I understand what it's about. TDX does not protect against
+> >> hypervisor DoS attacks.
+> >
+> > Yes, I think what Dongli wants to discuss is how to behave if we
+> > detect a malicious hypervisor. He suggested a shutdown instead of
+> > failing the probe.
+> >
+> > Thanks
+> >
+> >>
+> >>> Dongli Zhang
+> >>>
+> >>>> device is ready. So this patch fixes those two issues by:
+> >>>>
+> >>>> 1) switching to use disable_irq() to prevent the virtio interrupt
+> >>>>    handlers to be called after the device is reset.
+> >>>> 2) using IRQF_NO_AUTOEN and enable the MSI-X irq during .ready()
+> >>>>
+> >>>> This can make sure the virtio interrupt handler won't be called before
+> >>>> virtio_device_ready() and after reset.
+> >>>>
+> >>>> Cc: Thomas Gleixner <tglx@linutronix.de>
+> >>>> Cc: Peter Zijlstra <peterz@infradead.org>
+> >>>> Cc: Paul E. McKenney <paulmck@kernel.org>
+> >>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> >>>> ---
+> >>>>  drivers/virtio/virtio_pci_common.c | 27 +++++++++++++++++++++------
+> >>>>  drivers/virtio/virtio_pci_common.h |  6 ++++--
+> >>>>  drivers/virtio/virtio_pci_legacy.c |  5 +++--
+> >>>>  drivers/virtio/virtio_pci_modern.c |  6 ++++--
+> >>>>  4 files changed, 32 insertions(+), 12 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> >>>> index b35bb2d57f62..0b9523e6dd39 100644
+> >>>> --- a/drivers/virtio/virtio_pci_common.c
+> >>>> +++ b/drivers/virtio/virtio_pci_common.c
+> >>>> @@ -24,8 +24,8 @@ MODULE_PARM_DESC(force_legacy,
+> >>>>              "Force legacy mode for transitional virtio 1 devices");
+> >>>>  #endif
+> >>>>
+> >>>> -/* wait for pending irq handlers */
+> >>>> -void vp_synchronize_vectors(struct virtio_device *vdev)
+> >>>> +/* disable irq handlers */
+> >>>> +void vp_disable_vectors(struct virtio_device *vdev)
+> >>>>  {
+> >>>>     struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> >>>>     int i;
+> >>>> @@ -34,7 +34,20 @@ void vp_synchronize_vectors(struct virtio_device *vdev)
+> >>>>             synchronize_irq(vp_dev->pci_dev->irq);
+> >>>>
+> >>>>     for (i = 0; i < vp_dev->msix_vectors; ++i)
+> >>>> -           synchronize_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> >>>> +           disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> >>>> +}
+> >>>> +
+> >>>> +/* enable irq handlers */
+> >>>> +void vp_enable_vectors(struct virtio_device *vdev)
+> >>>> +{
+> >>>> +   struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> >>>> +   int i;
+> >>>> +
+> >>>> +   if (vp_dev->intx_enabled)
+> >>>> +           return;
+> >>>> +
+> >>>> +   for (i = 0; i < vp_dev->msix_vectors; ++i)
+> >>>> +           enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> >>>>  }
+> >>>>
+> >>>>  /* the notify function used when creating a virt queue */
+> >>>> @@ -141,7 +154,8 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
+> >>>>     snprintf(vp_dev->msix_names[v], sizeof *vp_dev->msix_names,
+> >>>>              "%s-config", name);
+> >>>>     err = request_irq(pci_irq_vector(vp_dev->pci_dev, v),
+> >>>> -                     vp_config_changed, 0, vp_dev->msix_names[v],
+> >>>> +                     vp_config_changed, IRQF_NO_AUTOEN,
+> >>>> +                     vp_dev->msix_names[v],
+> >>>>                       vp_dev);
+> >>>>     if (err)
+> >>>>             goto error;
+> >>>> @@ -160,7 +174,8 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
+> >>>>             snprintf(vp_dev->msix_names[v], sizeof *vp_dev->msix_names,
+> >>>>                      "%s-virtqueues", name);
+> >>>>             err = request_irq(pci_irq_vector(vp_dev->pci_dev, v),
+> >>>> -                             vp_vring_interrupt, 0, vp_dev->msix_names[v],
+> >>>> +                             vp_vring_interrupt, IRQF_NO_AUTOEN,
+> >>>> +                             vp_dev->msix_names[v],
+> >>>>                               vp_dev);
+> >>>>             if (err)
+> >>>>                     goto error;
+> >>>> @@ -337,7 +352,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
+> >>>>                      "%s-%s",
+> >>>>                      dev_name(&vp_dev->vdev.dev), names[i]);
+> >>>>             err = request_irq(pci_irq_vector(vp_dev->pci_dev, msix_vec),
+> >>>> -                             vring_interrupt, 0,
+> >>>> +                             vring_interrupt, IRQF_NO_AUTOEN,
+> >>>>                               vp_dev->msix_names[msix_vec],
+> >>>>                               vqs[i]);
+> >>>>             if (err)
+> >>>> diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> >>>> index beec047a8f8d..a235ce9ff6a5 100644
+> >>>> --- a/drivers/virtio/virtio_pci_common.h
+> >>>> +++ b/drivers/virtio/virtio_pci_common.h
+> >>>> @@ -102,8 +102,10 @@ static struct virtio_pci_device *to_vp_device(struct virtio_device *vdev)
+> >>>>     return container_of(vdev, struct virtio_pci_device, vdev);
+> >>>>  }
+> >>>>
+> >>>> -/* wait for pending irq handlers */
+> >>>> -void vp_synchronize_vectors(struct virtio_device *vdev);
+> >>>> +/* disable irq handlers */
+> >>>> +void vp_disable_vectors(struct virtio_device *vdev);
+> >>>> +/* enable irq handlers */
+> >>>> +void vp_enable_vectors(struct virtio_device *vdev);
+> >>>>  /* the notify function used when creating a virt queue */
+> >>>>  bool vp_notify(struct virtqueue *vq);
+> >>>>  /* the config->del_vqs() implementation */
+> >>>> diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+> >>>> index d62e9835aeec..bdf6bc667ab5 100644
+> >>>> --- a/drivers/virtio/virtio_pci_legacy.c
+> >>>> +++ b/drivers/virtio/virtio_pci_legacy.c
+> >>>> @@ -97,8 +97,8 @@ static void vp_reset(struct virtio_device *vdev)
+> >>>>     /* Flush out the status write, and flush in device writes,
+> >>>>      * including MSi-X interrupts, if any. */
+> >>>>     ioread8(vp_dev->ioaddr + VIRTIO_PCI_STATUS);
+> >>>> -   /* Flush pending VQ/configuration callbacks. */
+> >>>> -   vp_synchronize_vectors(vdev);
+> >>>> +   /* Disable VQ/configuration callbacks. */
+> >>>> +   vp_disable_vectors(vdev);
+> >>>>  }
+> >>>>
+> >>>>  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+> >>>> @@ -194,6 +194,7 @@ static void del_vq(struct virtio_pci_vq_info *info)
+> >>>>  }
+> >>>>
+> >>>>  static const struct virtio_config_ops virtio_pci_config_ops = {
+> >>>> +   .ready          = vp_enable_vectors,
+> >>>>     .get            = vp_get,
+> >>>>     .set            = vp_set,
+> >>>>     .get_status     = vp_get_status,
+> >>>> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> >>>> index 30654d3a0b41..acf0f6b6381d 100644
+> >>>> --- a/drivers/virtio/virtio_pci_modern.c
+> >>>> +++ b/drivers/virtio/virtio_pci_modern.c
+> >>>> @@ -172,8 +172,8 @@ static void vp_reset(struct virtio_device *vdev)
+> >>>>      */
+> >>>>     while (vp_modern_get_status(mdev))
+> >>>>             msleep(1);
+> >>>> -   /* Flush pending VQ/configuration callbacks. */
+> >>>> -   vp_synchronize_vectors(vdev);
+> >>>> +   /* Disable VQ/configuration callbacks. */
+> >>>> +   vp_disable_vectors(vdev);
+> >>>>  }
+> >>>>
+> >>>>  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+> >>>> @@ -380,6 +380,7 @@ static bool vp_get_shm_region(struct virtio_device *vdev,
+> >>>>  }
+> >>>>
+> >>>>  static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+> >>>> +   .ready          = vp_enable_vectors,
+> >>>>     .get            = NULL,
+> >>>>     .set            = NULL,
+> >>>>     .generation     = vp_generation,
+> >>>> @@ -397,6 +398,7 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+> >>>>  };
+> >>>>
+> >>>>  static const struct virtio_config_ops virtio_pci_config_ops = {
+> >>>> +   .ready          = vp_enable_vectors,
+> >>>>     .get            = vp_get,
+> >>>>     .set            = vp_set,
+> >>>>     .generation     = vp_generation,
+> >>>>
+> >>
+> >
+>
 
