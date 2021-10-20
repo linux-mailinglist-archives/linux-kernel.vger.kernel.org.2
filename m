@@ -2,370 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B95A4349C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C090E4349CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhJTLJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S230160AbhJTLMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbhJTLJa (ORCPT
+        with ESMTP id S229864AbhJTLMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:09:30 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99033C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:07:13 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id d3so25141664edp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1ws8ir5ko7b0963hak0dKo3NQDeBkVKurbFdaZzXm40=;
-        b=XX4I+Zqs/y42xREnKW33FnJsaDsPetXdcY/7GGlC90XtyZU+q0bY5l687mIPUxv7j2
-         DyerOXdh/LMpsQ0EgxNZlUQlzDWXdeKzfdgmM+6Uv7FqNP3/qi/p58U0NfDejq9dhuCf
-         k2M0RhUDDnGBZaAAoMQDOnyiXQvh0YF+WieyYnCLouQTjiVFmyKIKjs8jLOBCo5DVeDZ
-         Ti/kpyFvrVJ6rfajCvVYRIfyh4FtnjhVGOUDDSRxMa9aBJU1ddLv9E35dc4WqU59mCO4
-         VNa0UDF/lKtcZNBWLLM8VQhz+MkroCG/et2MfxxggLlXoxBodVEjSsEOZD94svYGOxCW
-         0pbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1ws8ir5ko7b0963hak0dKo3NQDeBkVKurbFdaZzXm40=;
-        b=jTRIhPU3zW9VGVGIFNUoLLHNrOHKr4TSVAXzngfkvXQQeJYMxjvo26n8EeRSjEqWgx
-         aZTAE37JFcIKaPPLmLyO1fchn1rVM/j6TqCoHZUOVtxtChfIXqjGLMrvuo075rvz2wj3
-         avRaHU8V/u7sKGTGn7jTYYI7qtugRv0i26JTkAFYZfzJhnqydNZckeJPVOwfxrmc/Zd2
-         8PYk3TRKF6JECGRt6NrrAlUA2RZHvV94lbgJF06f79C/Of8CqI4NtaYy38VOawp4OMw/
-         X4nipLcNRLYA+yRvYXSr0tB2jNai12kembEFDmOd7cPiVDCv1XPaITtZj96dANaXw9Cc
-         aPcA==
-X-Gm-Message-State: AOAM531LZRFbQ0lsLHP15UMTXm377y9FRVAcc+9arUf7WMboHagNWPn9
-        ilkWw6r7Qi8u8t56lhqiw+DzmgRaCAfgZm84BPCv4Q==
-X-Google-Smtp-Source: ABdhPJxtvbwU5/cek1swkiwSJlnKeKc0aRlKBlFXx+3wtzS/wsdMQAOZjGPJ5fdvUyy9ZqsH1yof6w52yPU+GPQX5PE=
-X-Received: by 2002:a17:906:3944:: with SMTP id g4mr46487185eje.426.1634728031784;
- Wed, 20 Oct 2021 04:07:11 -0700 (PDT)
+        Wed, 20 Oct 2021 07:12:13 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9ADCC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:09:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zt/OzRjbS+FMMBY/5pb3m8NJ0VtDCrV9eTFjp4dDyAQ=; b=AdgQAwhb5MaE2kO5RcRB2VCemz
+        ejEi6ga3aBKM/pIu3IlUxZTiFfvEiqiEtI/oD2kBHQhc/KZTmxL3zZJ/ShcA/KsYR5VZKabuWTLdh
+        xgTGnQ/OdXmITl5RBTt7VPX7kjCL6x2ELJB3g+gXuwvtrZxCCEs03fWqP69ToGUnZFDqbgWVGOesC
+        6Am3aZEdEq+3e83sUPhguIKA9LlQ+cuI3no19NuuMjBmuyU0VllVWM6OuJlePTieGgJQm1CrPS3Oa
+        XxgDFt2Xg0M1wZUKU2yl7pw0lV/DDTZlXjvAqJrnLgFsk8UnJDtoQTdIyWDocz081QfjjpT5alOr6
+        QXJtjTxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1md9Tj-00Aw5l-PJ; Wed, 20 Oct 2021 11:09:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 68244300221;
+        Wed, 20 Oct 2021 13:09:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4BDFB201BB3D5; Wed, 20 Oct 2021 13:09:51 +0200 (CEST)
+Date:   Wed, 20 Oct 2021 13:09:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com
+Cc:     linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
+Message-ID: <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105843.345016338@infradead.org>
 MIME-Version: 1.0
-References: <20210929160439.6601-1-andrzej.p@collabora.com>
- <3448839.R56niFO833@kista> <84fd4395-5cac-c933-7639-dd3cd844a9cf@collabora.com>
- <11847752.O9o76ZdvQC@kista>
-In-Reply-To: <11847752.O9o76ZdvQC@kista>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Wed, 20 Oct 2021 08:06:59 -0300
-Message-ID: <CAAEAJfBYwbUrjUFvs70u8YkuBgrCK6LuYdT9Y2Om7OLo6_cV1g@mail.gmail.com>
-Subject: Re: Re: [PATCH v7 11/11] media: hantro: Support NV12 on the G2 core
-To:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc:     linux-media <linux-media@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020105843.345016338@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jernej,
+On Wed, Oct 20, 2021 at 12:44:56PM +0200, Peter Zijlstra wrote:
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
 
-On Tue, 19 Oct 2021 at 13:38, Jernej =C5=A0krabec <jernej.skrabec@gmail.com=
-> wrote:
->
-> Hi Andrzej!
->
-> Dne petek, 15. oktober 2021 ob 19:19:47 CEST je Andrzej Pietrasiewicz
-> napisal(a):
-> > Hi Jernej,
-> >
-> > W dniu 14.10.2021 o 19:42, Jernej =C5=A0krabec pisze:
-> > > Hi Andrzej!
-> > >
-> > > Dne sreda, 29. september 2021 ob 18:04:39 CEST je Andrzej Pietrasiewi=
-cz
-> > > napisal(a):
-> > >> The G2 decoder block produces NV12 4x4 tiled format (NV12_4L4).
-> > >> Enable the G2 post-processor block, in order to produce regular NV12=
-.
-> > >>
-> > >> The logic in hantro_postproc.c is leveraged to take care of allocati=
-ng
-> > >> the extra buffers and configure the post-processor, which is
-> > >> significantly simpler than the one on the G1.
-> > >
-> > > Quick summary of discussion on LibreELEC Slack:
-> > > When using NV12 format on Allwinner H6 variant of G2 (needs some driv=
-er
-> > > changes), I get frames out of order. If I use native NV12 tiled forma=
-t,
-> frames
-> > > are ordered correctly.
-> > >
-> > > Currently I'm not sure if this is issue with my changes or is this ge=
-neral
-> > > issue.
-> > >
-> > > I would be grateful if anyone can test frame order with and without
-> > > postprocessing enabled on imx8. Take some dynamic video with a lot of
-> short
-> > > scenes. It's pretty obvious when frames are out of order.
-> > >
-> >
-> > I checked on imx8 and cannot observe any such artifacts.
->
-> I finally found the issue. As you mentioned on Slack, register write orde=
-r once
-> already affected decoding. Well, it's the case again. I made hacky test a=
-nd
-> moved postproc enable call after output buffers are set and it worked. So=
-, this
-> is actually core quirk which is obviously fixed in newer variants.
->
+> +#ifdef CONFIG_RETPOLINE
+> +#define INDIRECT_SIZE (2 + 3*cpu_feature_enabled(X86_FEATURE_RETPOLINE))
+> +#else
+> +#define INDIRECT_SIZE (2)
+> +#endif
 
-Ugh, good catch.
+> @@ -411,10 +442,10 @@ static int get_pop_bytes(bool *callee_re
+>   * out:
+>   */
+>  static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
+> -					u32 stack_depth)
+> +					u32 stack_depth, u8 *ip)
+>  {
+>  	int tcc_off = -4 - round_up(stack_depth, 8);
+> -	u8 *prog = *pprog;
+> +	u8 *prog = *pprog, *start = *pprog;
+>  	int pop_bytes = 0;
+>  	int off1 = 42;
+>  	int off2 = 31;
+> @@ -448,7 +479,7 @@ static void emit_bpf_tail_call_indirect(
+>  	EMIT2(0x89, 0xD2);                        /* mov edx, edx */
+>  	EMIT3(0x39, 0x56,                         /* cmp dword ptr [rsi + 16], edx */
+>  	      offsetof(struct bpf_array, map.max_entries));
+> -#define OFFSET1 (off1 + RETPOLINE_RCX_BPF_JIT_SIZE) /* Number of bytes to jump */
+> +#define OFFSET1 (off1 + INDIRECT_SIZE) /* Number of bytes to jump */
+>  	EMIT2(X86_JBE, OFFSET1);                  /* jbe out */
+>  
+>  	/*
+> @@ -457,7 +488,7 @@ static void emit_bpf_tail_call_indirect(
+>  	 */
+>  	EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
+>  	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
+> -#define OFFSET2 (off2 + RETPOLINE_RCX_BPF_JIT_SIZE)
+> +#define OFFSET2 (off2 + INDIRECT_SIZE)
+>  	EMIT2(X86_JA, OFFSET2);                   /* ja out */
+>  	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
+>  	EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
+> @@ -471,7 +502,7 @@ static void emit_bpf_tail_call_indirect(
+>  	 *	goto out;
+>  	 */
+>  	EMIT3(0x48, 0x85, 0xC9);                  /* test rcx,rcx */
+> -#define OFFSET3 (off3 + RETPOLINE_RCX_BPF_JIT_SIZE)
+> +#define OFFSET3 (off3 + INDIRECT_SIZE)
+>  	EMIT2(X86_JE, OFFSET3);                   /* je out */
+>  
+>  	*pprog = prog;
+> @@ -493,7 +524,7 @@ static void emit_bpf_tail_call_indirect(
+>  	 * rdi == ctx (1st arg)
+>  	 * rcx == prog->bpf_func + X86_TAIL_CALL_OFFSET
+>  	 */
+> -	RETPOLINE_RCX_BPF_JIT();
+> +	emit_indirect_jump(&prog, 1 /* rcx */, ip + (prog - start));
+>  
+>  	/* out: */
+>  	*pprog = prog;
 
-What happens if you move all the calls to HANTRO_PP_REG_WRITE_S
-(HANTRO_PP_REG_WRITE does a relaxed write)?
+Alexei; could the above not be further improved with something like the
+below?
 
-Or what happens if the HANTRO_PP_REG_WRITE(vpu, out_luma_base, dst_dma)
-is moved to be done after all the other registers?
+Despite several hours trying and Song helping, I can't seem to run
+anything bpf, that stuff is cursed. So I've no idea if the below
+actually works, but it seems reasonable.
 
-> This makes this series with minor adaptations completely working on H6. I=
- see
-> no reason not to merge whole series.
->
+---
 
-Do you have plans to submit your H6 work on top of this?
-
-Thanks,
-Ezequiel
-
-
-> Thanks for testing.
->
-> Best regards,
-> Jernej
->
-> >
-> > Andrzej
-> >
-> > > However, given that frames themself are correctly decoded and without
-> > > postprocessing in right order, that shouldn't block merging previous
-> patches.
-> > > I tried few different videos and frames were all decoded correctly.
-> > >
-> > > Best regards,
-> > > Jernej
-> > >
-> > >>
-> > >> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > >> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> > >> ---
-> > >>   .../staging/media/hantro/hantro_g2_vp9_dec.c  |  6 ++--
-> > >>   drivers/staging/media/hantro/hantro_hw.h      |  1 +
-> > >>   .../staging/media/hantro/hantro_postproc.c    | 31 +++++++++++++++=
-++++
-> > >>   drivers/staging/media/hantro/imx8m_vpu_hw.c   | 11 +++++++
-> > >>   4 files changed, 46 insertions(+), 3 deletions(-)
-> > >>
-> > >> diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/driv=
-ers/
-> > > staging/media/hantro/hantro_g2_vp9_dec.c
-> > >> index 7f827b9f0133..1a26be72c878 100644
-> > >> --- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-> > >> +++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-> > >> @@ -152,7 +152,7 @@ static void config_output(struct hantro_ctx *ctx=
-,
-> > >>    hantro_reg_write(ctx->dev, &g2_out_dis, 0);
-> > >>    hantro_reg_write(ctx->dev, &g2_output_format, 0);
-> > >>
-> > >> -  luma_addr =3D vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf=
-,
-> > > 0);
-> > >> +  luma_addr =3D hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf)=
-;
-> > >>    hantro_write_addr(ctx->dev, G2_OUT_LUMA_ADDR, luma_addr);
-> > >>
-> > >>    chroma_addr =3D luma_addr + chroma_offset(ctx, dec_params);
-> > >> @@ -191,7 +191,7 @@ static void config_ref(struct hantro_ctx *ctx,
-> > >>    hantro_reg_write(ctx->dev, &ref_reg->hor_scale, (refw << 14) /
-> > > dst->vp9.width);
-> > >>    hantro_reg_write(ctx->dev, &ref_reg->ver_scale, (refh << 14) /
-> > > dst->vp9.height);
-> > >>
-> > >> -  luma_addr =3D vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf=
-,
-> > > 0);
-> > >> +  luma_addr =3D hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf)=
-;
-> > >>    hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
-> > >>
-> > >>    chroma_addr =3D luma_addr + chroma_offset(ctx, dec_params);
-> > >> @@ -236,7 +236,7 @@ static void config_ref_registers(struct hantro_c=
-tx
-> *ctx,
-> > >>    config_ref(ctx, dst, &ref_regs[1], dec_params, dec_params-
-> > >> golden_frame_ts);
-> > >>    config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params-
-> > >> alt_frame_ts);
-> > >>
-> > >> -  mv_addr =3D vb2_dma_contig_plane_dma_addr(&mv_ref->base.vb.vb2_bu=
-f,
-> > > 0) +
-> > >> +  mv_addr =3D hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf=
-) +
-> > >>              mv_offset(ctx, dec_params);
-> > >>    hantro_write_addr(ctx->dev, G2_REF_MV_ADDR(0), mv_addr);
-> > >>
-> > >> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/stag=
-ing/
-> > > media/hantro/hantro_hw.h
-> > >> index 2961d399fd60..3d4a5dc1e6d5 100644
-> > >> --- a/drivers/staging/media/hantro/hantro_hw.h
-> > >> +++ b/drivers/staging/media/hantro/hantro_hw.h
-> > >> @@ -274,6 +274,7 @@ extern const struct hantro_variant
-> rk3399_vpu_variant;
-> > >>   extern const struct hantro_variant sama5d4_vdec_variant;
-> > >>
-> > >>   extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
-> > >> +extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
-> > >>
-> > >>   extern const u32 hantro_vp8_dec_mc_filter[8][6];
-> > >>
-> > >> diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/driver=
-s/
-> > > staging/media/hantro/hantro_postproc.c
-> > >> index 4549aec08feb..79a66d001738 100644
-> > >> --- a/drivers/staging/media/hantro/hantro_postproc.c
-> > >> +++ b/drivers/staging/media/hantro/hantro_postproc.c
-> > >> @@ -11,6 +11,7 @@
-> > >>   #include "hantro.h"
-> > >>   #include "hantro_hw.h"
-> > >>   #include "hantro_g1_regs.h"
-> > >> +#include "hantro_g2_regs.h"
-> > >>
-> > >>   #define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
-> > >>   { \
-> > >> @@ -99,6 +100,21 @@ static void hantro_postproc_g1_enable(struct
-> hantro_ctx
-> > > *ctx)
-> > >>    HANTRO_PP_REG_WRITE(vpu, display_width, ctx->dst_fmt.width);
-> > >>   }
-> > >>
-> > >> +static void hantro_postproc_g2_enable(struct hantro_ctx *ctx)
-> > >> +{
-> > >> +  struct hantro_dev *vpu =3D ctx->dev;
-> > >> +  struct vb2_v4l2_buffer *dst_buf;
-> > >> +  size_t chroma_offset =3D ctx->dst_fmt.width * ctx->dst_fmt.height=
-;
-> > >> +  dma_addr_t dst_dma;
-> > >> +
-> > >> +  dst_buf =3D hantro_get_dst_buf(ctx);
-> > >> +  dst_dma =3D vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
-> > >> +
-> > >> +  hantro_write_addr(vpu, G2_RS_OUT_LUMA_ADDR, dst_dma);
-> > >> +  hantro_write_addr(vpu, G2_RS_OUT_CHROMA_ADDR, dst_dma +
-> > > chroma_offset);
-> > >> +  hantro_reg_write(vpu, &g2_out_rs_e, 1);
-> > >> +}
-> > >> +
-> > >>   void hantro_postproc_free(struct hantro_ctx *ctx)
-> > >>   {
-> > >>    struct hantro_dev *vpu =3D ctx->dev;
-> > >> @@ -127,6 +143,9 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx=
-)
-> > >>    if (ctx->vpu_src_fmt->fourcc =3D=3D V4L2_PIX_FMT_H264_SLICE)
-> > >>            buf_size +=3D hantro_h264_mv_size(ctx->dst_fmt.width,
-> > >>                                            ctx-
-> > >> dst_fmt.height);
-> > >> +  else if (ctx->vpu_src_fmt->fourcc =3D=3D V4L2_PIX_FMT_VP9_FRAME)
-> > >> +          buf_size +=3D hantro_vp9_mv_size(ctx->dst_fmt.width,
-> > >> +                                         ctx-
-> > >> dst_fmt.height);
-> > >>
-> > >>    for (i =3D 0; i < num_buffers; ++i) {
-> > >>            struct hantro_aux_buf *priv =3D &ctx->postproc.dec_q[i];
-> > >> @@ -152,6 +171,13 @@ static void hantro_postproc_g1_disable(struct
-> > > hantro_ctx *ctx)
-> > >>    HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
-> > >>   }
-> > >>
-> > >> +static void hantro_postproc_g2_disable(struct hantro_ctx *ctx)
-> > >> +{
-> > >> +  struct hantro_dev *vpu =3D ctx->dev;
-> > >> +
-> > >> +  hantro_reg_write(vpu, &g2_out_rs_e, 0);
-> > >> +}
-> > >> +
-> > >>   void hantro_postproc_disable(struct hantro_ctx *ctx)
-> > >>   {
-> > >>    struct hantro_dev *vpu =3D ctx->dev;
-> > >> @@ -172,3 +198,8 @@ const struct hantro_postproc_ops
-> hantro_g1_postproc_ops
-> > > =3D {
-> > >>    .enable =3D hantro_postproc_g1_enable,
-> > >>    .disable =3D hantro_postproc_g1_disable,
-> > >>   };
-> > >> +
-> > >> +const struct hantro_postproc_ops hantro_g2_postproc_ops =3D {
-> > >> +  .enable =3D hantro_postproc_g2_enable,
-> > >> +  .disable =3D hantro_postproc_g2_disable,
-> > >> +};
-> > >> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/
-> staging/
-> > > media/hantro/imx8m_vpu_hw.c
-> > >> index 455a107ffb02..1a43f6fceef9 100644
-> > >> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> > >> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> > >> @@ -132,6 +132,14 @@ static const struct hantro_fmt imx8m_vpu_dec_fm=
-ts[]
-> =3D {
-> > >>    },
-> > >>   };
-> > >>
-> > >> +static const struct hantro_fmt imx8m_vpu_g2_postproc_fmts[] =3D {
-> > >> +  {
-> > >> +          .fourcc =3D V4L2_PIX_FMT_NV12,
-> > >> +          .codec_mode =3D HANTRO_MODE_NONE,
-> > >> +          .postprocessed =3D true,
-> > >> +  },
-> > >> +};
-> > >> +
-> > >>   static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] =3D {
-> > >>    {
-> > >>            .fourcc =3D V4L2_PIX_FMT_NV12_4L4,
-> > >> @@ -301,6 +309,9 @@ const struct hantro_variant imx8mq_vpu_g2_varian=
-t =3D {
-> > >>    .dec_offset =3D 0x0,
-> > >>    .dec_fmts =3D imx8m_vpu_g2_dec_fmts,
-> > >>    .num_dec_fmts =3D ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
-> > >> +  .postproc_fmts =3D imx8m_vpu_g2_postproc_fmts,
-> > >> +  .num_postproc_fmts =3D ARRAY_SIZE(imx8m_vpu_g2_postproc_fmts),
-> > >> +  .postproc_ops =3D &hantro_g2_postproc_ops,
-> > >>    .codec =3D HANTRO_HEVC_DECODER | HANTRO_VP9_DECODER,
-> > >>    .codec_ops =3D imx8mq_vpu_g2_codec_ops,
-> > >>    .init =3D imx8mq_vpu_hw_init,
-> > >> --
-> > >> 2.17.1
-> > >>
-> > >>
-> > >
-> > >
-> >
-> >
->
->
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -398,12 +398,6 @@ static int get_pop_bytes(bool *callee_re
+ 
+ #define EMIT_LFENCE()	EMIT3(0x0F, 0xAE, 0xE8)
+ 
+-#ifdef CONFIG_RETPOLINE
+-#define INDIRECT_SIZE (2 + 3*cpu_feature_enabled(X86_FEATURE_RETPOLINE))
+-#else
+-#define INDIRECT_SIZE (2)
+-#endif
+-
+ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
+ {
+ 	u8 *prog = *pprog;
+@@ -446,25 +440,8 @@ static void emit_bpf_tail_call_indirect(
+ {
+ 	int tcc_off = -4 - round_up(stack_depth, 8);
+ 	u8 *prog = *pprog, *start = *pprog;
+-	int pop_bytes = 0;
+-	int off1 = 42;
+-	int off2 = 31;
+-	int off3 = 9;
+-
+-	/* count the additional bytes used for popping callee regs from stack
+-	 * that need to be taken into account for each of the offsets that
+-	 * are used for bailing out of the tail call
+-	 */
+-	pop_bytes = get_pop_bytes(callee_regs_used);
+-	off1 += pop_bytes;
+-	off2 += pop_bytes;
+-	off3 += pop_bytes;
+-
+-	if (stack_depth) {
+-		off1 += 7;
+-		off2 += 7;
+-		off3 += 7;
+-	}
++	static int out_label = -1;
++	int offset;
+ 
+ 	/*
+ 	 * rdi - pointer to ctx
+@@ -479,8 +456,9 @@ static void emit_bpf_tail_call_indirect(
+ 	EMIT2(0x89, 0xD2);                        /* mov edx, edx */
+ 	EMIT3(0x39, 0x56,                         /* cmp dword ptr [rsi + 16], edx */
+ 	      offsetof(struct bpf_array, map.max_entries));
+-#define OFFSET1 (off1 + INDIRECT_SIZE) /* Number of bytes to jump */
+-	EMIT2(X86_JBE, OFFSET1);                  /* jbe out */
++
++	offset = out_label - (prog - start) + 2;
++	EMIT2(X86_JBE, offset);                  /* jbe out */
+ 
+ 	/*
+ 	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+@@ -488,8 +466,9 @@ static void emit_bpf_tail_call_indirect(
+ 	 */
+ 	EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
+ 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
+-#define OFFSET2 (off2 + INDIRECT_SIZE)
+-	EMIT2(X86_JA, OFFSET2);                   /* ja out */
++
++	offset = out_label - (prog - start) + 2;
++	EMIT2(X86_JA, offset);                   /* ja out */
+ 	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
+ 	EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
+ 
+@@ -502,8 +481,9 @@ static void emit_bpf_tail_call_indirect(
+ 	 *	goto out;
+ 	 */
+ 	EMIT3(0x48, 0x85, 0xC9);                  /* test rcx,rcx */
+-#define OFFSET3 (off3 + INDIRECT_SIZE)
+-	EMIT2(X86_JE, OFFSET3);                   /* je out */
++
++	offset = out_label - (prog - start) + 2;
++	EMIT2(X86_JE, offset);                   /* je out */
+ 
+ 	*pprog = prog;
+ 	pop_callee_regs(pprog, callee_regs_used);
+@@ -527,6 +507,8 @@ static void emit_bpf_tail_call_indirect(
+ 	emit_indirect_jump(&prog, 1 /* rcx */, ip + (prog - start));
+ 
+ 	/* out: */
++	out_label = (prog - start);
++
+ 	*pprog = prog;
+ }
+ 
