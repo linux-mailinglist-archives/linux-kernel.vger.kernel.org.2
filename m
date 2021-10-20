@@ -2,118 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0A6434F43
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F72D434F45
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhJTPtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:49:41 -0400
-Received: from relay.sw.ru ([185.231.240.75]:36086 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTPth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:49:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=ttAK6Gqf/TyX+MT4z0DPfUPRY7KYPOn3puccc9GorZE=; b=rqfgh5Q5comYze+CV
-        u0HaVR5J9Mkytg6GHPvR91X3KbZesnUGemY2IC41F4dwNhVLm/NOsEkGzpwcriwMuNZ7lJejaVELX
-        b5i5NPD2PCdADzCdMFoT5B+yheZly9Hk9agPrNnFVoHi05+aHXdAtXu+to+93VWpX8rGNeY3SvlLI
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mdDoE-006cn0-HO; Wed, 20 Oct 2021 18:47:18 +0300
-Subject: Re: [PATCH memcg 3/3] memcg: handle memcg oom failures
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
- <cover.1634730787.git.vvs@virtuozzo.com>
- <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
- <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <d3b32c72-6375-f755-7599-ab804719e1f6@virtuozzo.com>
-Date:   Wed, 20 Oct 2021 18:46:56 +0300
+        id S230431AbhJTPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhJTPuE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:50:04 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC126C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:47:49 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id l38-20020a05600c1d2600b0030d80c3667aso11248119wms.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V5dUc3E8xYRjRHxDa64Ps24H2rGkhTRP9vrTdU8yWzE=;
+        b=xwh+5HDl11axUbn19OofzzxEzk1oFCc11uAMTDUo4qVWkoZmsVZY1c37pZYXIopGgL
+         QwMAXvHTZkID+BJ9WC9HFJqfniPfPx3QJJk7hCQR8GwDhzxyJbSDILmRmpDYb13GsX3s
+         dR9RGHRbOZKb2WYuD6+teSL5PegfLkcqpP1RaNMHPKPXiD3TBaBqd+jemi4oFjvWJaFg
+         BoAyRw2No68vcC3DfdrS1QPD9BGFtCMglbjd2iTTDJukvwTvUvnbvTGneiStXfQV+ebG
+         weUmbkErwHQCUpLhl/xmhzMvktPxQ9ku4IIr965xzFVYLCHJ+8bKLxoxR62g07th7ifq
+         JjLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V5dUc3E8xYRjRHxDa64Ps24H2rGkhTRP9vrTdU8yWzE=;
+        b=QZYYh1xiP5iponq8mpaA8rr2p05I7Bf2a97NPuGiWAb0utWvsmydI48hf5c4tyjC5R
+         ap9qvDoh094C5QjqfFHbK9sU2J3WOcailzn9k8xzZ/2EszXnad93fhEn68vrsN3hljOP
+         /yPZkM6JvZackN8Q2NiYXITpwAMEvtZ4MP31YZBYk48xyhCmLInbXb4mu1QTHmJM8S52
+         fi7wfgKzPVjwT5jqSePGrPooB9DVwTX8MRz5CDLtoAxGhFldzcYhxGU2Mk9tpd42zwgj
+         OZIe5ARzqGvKfIdZa6hVuuVYh3Xow9sIHoe2KG6RtenOxbUcrqj/O6q6unXZWKViSUiW
+         WmxA==
+X-Gm-Message-State: AOAM530fcNNPe8BPkifBiNcqUQJBS8pRwCA56mVHK3z55DNT5oLjh5rx
+        Trk7adGhaTMU+tJDbvs8iOzaWA==
+X-Google-Smtp-Source: ABdhPJytV+zF2EuYHFhOYaHgVY4QzD+WkscPKbYnywhAcDkiX9dN9ETPFpqyMdt7bJyadTVVrtaJQQ==
+X-Received: by 2002:a5d:59ae:: with SMTP id p14mr40449wrr.76.1634744868502;
+        Wed, 20 Oct 2021 08:47:48 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id e8sm3543288wrg.48.2021.10.20.08.47.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 08:47:48 -0700 (PDT)
+Subject: Re: [PATCH] scsi: ufs: ufshcd-pltfrm: fix memory leak due to probe
+ defer
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     draviv@codeaurora.org, sthumma@codeaurora.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org
+References: <20210914092214.6468-1-srinivas.kandagatla@linaro.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <48895dce-8c26-0763-419d-9b53d7f7281b@linaro.org>
+Date:   Wed, 20 Oct 2021 16:47:47 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210914092214.6468-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.10.2021 16:02, Michal Hocko wrote:
-> On Wed 20-10-21 15:14:27, Vasily Averin wrote:
->> mem_cgroup_oom() can fail if current task was marked unkillable
->> and oom killer cannot find any victim.
->>
->> Currently we force memcg charge for such allocations,
->> however it allow memcg-limited userspace task in to overuse assigned limits
->> and potentially trigger the global memory shortage.
+
+
+On 14/09/2021 10:22, Srinivas Kandagatla wrote:
+> UFS drivers that probe defer will endup leaking memory allocated for
+> clk and regulator names via kstrdup because the structure that is
+> holding this memory is allocated via devm_* variants which will be
+> freed during probe defer but the names are never freed.
 > 
-> You should really go into more details whether that is a practical
-> problem to handle. OOM_FAILED means that the memcg oom killer couldn't
-> find any oom victim so it cannot help with a forward progress. There are
-> not that many situations when that can happen. Naming that would be
-> really useful.
-
-I've pointed above: 
-"if current task was marked unkillable and oom killer cannot find any victim."
-This may happen when current task cannot be oom-killed because it was marked
-unkillable i.e. it have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
-and other processes in memcg are either dying, or are kernel threads or are marked unkillable 
-by the same way. Or when memcg have this process only.
-
-If we always approve such kind of allocation, it can be misused.
-Process can mmap a lot of memory,
-ant then touch it and generate page fault and make overcharged memory allocations.
-Finally it can consume all node memory and trigger global memory shortage on the host.
-
->> Let's fail the memory charge in such cases.
->>
->> This failure should be somehow recognised in #PF context,
+> Use same devm_* variant of kstrdup to free the memory allocated to
+> name when driver probe defers.
 > 
-> explain why
-
-When #PF cannot allocate memory (due to reason described above), handle_mm_fault returns VM_FAULT_OOM,
-then its caller executes pagefault_out_of_memory(). If last one cannot recognize the real reason of this fail,
-it expect it was global memory shortage and executed global out_ouf_memory() that can kill random process 
-or just crash node if sysctl vm.panic_on_oom is set to 1.
-
-Currently pagefault_out_of_memory() knows about possible async memcg OOM and handles it correctly.
-However it is not aware that memcg can reject some other allocations, do not recognize the fault
-as memcg-related and allows to run global OOM.
-
->> so let's use current->memcg_in_oom == (struct mem_cgroup *)OOM_FAILED
->>
->> ToDo: what is the best way to notify pagefault_out_of_memory() about 
->>     mem_cgroup_out_of_memory failure ?
+> Kmemleak found around 11 leaks on Qualcomm Dragon Board RB5:
 > 
-> why don't you simply remove out_of_memory from pagefault_out_of_memory
-> and leave it only with the blocking memcg OOM handling? Wouldn't that be a
-> more generic solution? Your first patch already goes that way partially.
+> unreferenced object 0xffff66f243fb2c00 (size 128):
+>    comm "kworker/u16:0", pid 7, jiffies 4294893319 (age 94.848s)
+>    hex dump (first 32 bytes):
+>      63 6f 72 65 5f 63 6c 6b 00 76 69 72 74 75 61 6c  core_clk.virtual
+>      2f 77 6f 72 6b 71 75 65 75 65 2f 73 63 73 69 5f  /workqueue/scsi_
+>    backtrace:
+>      [<000000006f788cd1>] slab_post_alloc_hook+0x88/0x410
+>      [<00000000cfd1372b>] __kmalloc_track_caller+0x138/0x230
+>      [<00000000a92ab17b>] kstrdup+0xb0/0x110
+>      [<0000000037263ab6>] ufshcd_pltfrm_init+0x1a8/0x500
+>      [<00000000a20a5caa>] ufs_qcom_probe+0x20/0x58
+>      [<00000000a5e43067>] platform_probe+0x6c/0x118
+>      [<00000000ef686e3f>] really_probe+0xc4/0x330
+>      [<000000005b18792c>] __driver_probe_device+0x88/0x118
+>      [<00000000a5d295e8>] driver_probe_device+0x44/0x158
+>      [<000000007e83f58d>] __device_attach_driver+0xb4/0x128
+>      [<000000004bfa4470>] bus_for_each_drv+0x68/0xd0
+>      [<00000000b89a83bc>] __device_attach+0xec/0x170
+>      [<00000000ada2beea>] device_initial_probe+0x14/0x20
+>      [<0000000079921612>] bus_probe_device+0x9c/0xa8
+>      [<00000000d268bf7c>] deferred_probe_work_func+0x90/0xd0
+>      [<000000009ef64bfa>] process_one_work+0x29c/0x788
+> unreferenced object 0xffff66f243fb2c80 (size 128):
+>    comm "kworker/u16:0", pid 7, jiffies 4294893319 (age 94.848s)
+>    hex dump (first 32 bytes):
+>      62 75 73 5f 61 67 67 72 5f 63 6c 6b 00 00 00 00  bus_aggr_clk....
+>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> 
+> with this patch no memory leaks are reported.
+> Fixes: aa4976130934 ("ufs: Add regulator enable support")
+> Fixes: c6e79dacd86f ("ufs: Add clock initialization support")
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
 
-I clearly understand that global out_of_memory should not be trggired by memcg restrictions.
-I clearly understand that dying task will release some memory soon and we can do not run global oom if current task is dying.
+Gentle Ping ?
 
-However I'm not sure that I can remove out_of_memory at all. At least I do not have good arguments to do it.
+This is not a critical issue, but it will be nice to get this fixed 
+atleast in 5.16 release.
 
-> This change is more risky than the first one. If somebody returns
-> VM_FAULT_OOM without invoking allocator then it can loop for ever but
-> invoking OOM killer in such a situation is equally wrong as the oom
-> killer cannot really help, right?
+--srini
 
-I'm not ready to comment this right now and take time out to think about.
-
-Thank you,
-	Vasily Averin
+>   drivers/scsi/ufs/ufshcd-pltfrm.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> index 8859c13f4e09..eaeae83b999f 100644
+> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> @@ -91,7 +91,7 @@ static int ufshcd_parse_clock_info(struct ufs_hba *hba)
+>   
+>   		clki->min_freq = clkfreq[i];
+>   		clki->max_freq = clkfreq[i+1];
+> -		clki->name = kstrdup(name, GFP_KERNEL);
+> +		clki->name = devm_kstrdup(dev, name, GFP_KERNEL);
+>   		if (!strcmp(name, "ref_clk"))
+>   			clki->keep_link_active = true;
+>   		dev_dbg(dev, "%s: min %u max %u name %s\n", "freq-table-hz",
+> @@ -126,7 +126,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+>   	if (!vreg)
+>   		return -ENOMEM;
+>   
+> -	vreg->name = kstrdup(name, GFP_KERNEL);
+> +	vreg->name = devm_kstrdup(dev, name, GFP_KERNEL);
+>   
+>   	snprintf(prop_name, MAX_PROP_SIZE, "%s-max-microamp", name);
+>   	if (of_property_read_u32(np, prop_name, &vreg->max_uA)) {
+> 
