@@ -2,49 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C7B43439F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0834343A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhJTCzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:55:12 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:24367 "EHLO
+        id S229820AbhJTCz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:55:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14831 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhJTCzK (ORCPT
+        with ESMTP id S229555AbhJTCz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:55:10 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HYw5y0QDbzQvgw;
-        Wed, 20 Oct 2021 10:48:22 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 10:52:55 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 10:52:54 +0800
-Subject: Re: [PATCH 4.14 00/39] 4.14.252-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20211018132325.426739023@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <995d0012-23ec-71ec-a48d-88bdd84416f0@huawei.com>
-Date:   Wed, 20 Oct 2021 10:52:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 19 Oct 2021 22:55:58 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HYw6R1pfXz90FP;
+        Wed, 20 Oct 2021 10:48:47 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Wed, 20 Oct 2021 10:53:42 +0800
+Subject: Re: [PATCH -next v4 3/3] ext4: simplify read_mmp_block fucntion
+To:     Jan Kara <jack@suse.cz>
+References: <20211019123931.1545295-1-yebin10@huawei.com>
+ <20211019123931.1545295-4-yebin10@huawei.com>
+ <20211019134952.GJ3255@quack2.suse.cz>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <616F84B6.4040307@huawei.com>
+Date:   Wed, 20 Oct 2021 10:53:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+In-Reply-To: <20211019134952.GJ3255@quack2.suse.cz>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,42 +45,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/10/18 21:24, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.252 release.
-> There are 39 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.252-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On 2021/10/19 21:49, Jan Kara wrote:
+> On Tue 19-10-21 20:39:31, Ye Bin wrote:
+>> This patch is according to Jan Kara's suggestion:
+>> I guess I would just get rid of sb_getblk() in read_mmp_block() and always
+>> expect valid bh passed. The only place that passes NULL bh after this
+>> patch is one case in ext4_multi_mount_protect() and that can call
+>> sb_getblk() on its own. That way we can also simplify read_mmp_block()
+>> prototype to:
+>>
+>> static int read_mmp_block(struct super_block *sb, struct buffer_head *bh);
+>>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> Reviewed-by: Jan Kara <jack@suse.cz>
+> ...
+>
+>> @@ -289,7 +279,11 @@ int ext4_multi_mount_protect(struct super_block *sb,
+>>   		goto failed;
+>>   	}
+>>   
+>> -	retval = read_mmp_block(sb, &bh, mmp_block);
+>> +	bh = sb_getblk(sb, mmp_block);
+>> +	if (bh)
+> 	^^^^^^
+>
+> !bh here, please.
+Sorry，it's my fault. I will fix it and test  this patch set base on 
+linux mainline.
+>
+> 								Honza
+>
 
-Tested on x86 for 4.14.252-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.14.y
-Version: 4.14.252-rc1
-Commit: f772f5cdea8646ee293bac8c4e702ad235969ecd
-Compiler: gcc version 7.3.0 (GCC)
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8837
-passed: 8837
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
