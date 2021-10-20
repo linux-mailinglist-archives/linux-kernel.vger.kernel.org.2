@@ -2,280 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8301143540F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F026E43542F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhJTTxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
+        id S231716AbhJTT5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhJTTxq (ORCPT
+        with ESMTP id S231724AbhJTT5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:53:46 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359BCC06161C;
-        Wed, 20 Oct 2021 12:51:31 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id g25so625312wrb.2;
-        Wed, 20 Oct 2021 12:51:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N9trX6BUcNb0j2IVKNM+Xz6Qfq7brKDHnZXMGzRSkSA=;
-        b=mnvqchSp+CCj4iMN0D8Oi+rdYe1Z2sFSIhdFBDL3xwtxSwhZEaEzZfko5GyaI3jkY+
-         Ir9s3c5UijXmLDNdBOom1N95uo0ZpjTJWgB+X2yzpMB9HAO/Xr9ukKiJwj+pk5FFxX2n
-         wx5yS514Bo2ks4KqT2Wz/1n+iYpdmbGS62VLohYF9hBjN7dVReF3EZDPeP2ZlETytn6U
-         HiRoL6yMPlrQjV1ue9ESEVA6w+JBqIbkuipzSkqUaeQAa2DVOgz6eiqXprP5+1+qt9G+
-         JTnirBTJLgIuznBPlohKFn3+gRrjO3Hpq5NjUDo3qn7BHgvFW3KAEHYL1ecT9zoWxVA0
-         amsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N9trX6BUcNb0j2IVKNM+Xz6Qfq7brKDHnZXMGzRSkSA=;
-        b=wFB57UIO8Yjhz+fuY2lPjXfUCI6yszQrKnS2/qiG34rz2cEvSLW+2plD6s/yU2ifGN
-         OFO4xZ8uu6eGUPNee/6DNZgjruVch/xDUTSmlNtr1FWMNDvcyIG6wvBR07kpkd/enzu7
-         wEXR+TUQAEn8NI+djNApR3Y4v0Jvm0nH0IUsKkeiAV83rv4+9XaD7J5ZOqQPyXgbVscB
-         s1U03WPEthmsYQSZlZibtv5AYLf9MPosVub1+aYVPGeoUT11o1K3jxvYlXoPfLstLo37
-         5k/O75QOscm+7wJYpbFQPakkECTDm3InGA+gONBB/sy/keacq7zZvr37kNlRCpgr2d1t
-         VsSw==
-X-Gm-Message-State: AOAM532KYah5URK1xnb+UEVkIAk2qjUC3GjKRKN4zubmfrGBrY7HSMYm
-        Slf7NdRiOJWE5YPKwMeWols+NwzxvpA=
-X-Google-Smtp-Source: ABdhPJxvbSbZ3lODadM+Se1fG2YW1EKusNJWgMmB6xKpOc5/J9LzV5h3eM5Wm5B6S22fBOlFPY1+Xw==
-X-Received: by 2002:a05:6000:145:: with SMTP id r5mr1556083wrx.64.1634759489688;
-        Wed, 20 Oct 2021 12:51:29 -0700 (PDT)
-Received: from localhost.localdomain (dynamic-2a01-0c23-b9f5-df00-f22f-74ff-fe21-0725.c23.pool.telefonica.de. [2a01:c23:b9f5:df00:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id f3sm2741310wml.11.2021.10.20.12.51.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:51:29 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-phy@lists.infradead.org, vkoul@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, kishon@ti.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v3 2/2] phy: amlogic: Add a new driver for the HDMI TX PHY on Meson8/8b/8m2
-Date:   Wed, 20 Oct 2021 21:51:07 +0200
-Message-Id: <20211020195107.1564533-3-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211020195107.1564533-1-martin.blumenstingl@googlemail.com>
-References: <20211020195107.1564533-1-martin.blumenstingl@googlemail.com>
+        Wed, 20 Oct 2021 15:57:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED67C061749;
+        Wed, 20 Oct 2021 12:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PJroMUkrNsdbbHOZ83LbsX148S8G/Sk1T+SJjJQKedA=; b=VJkHyviEqMqc79SP7cdtGPlwkE
+        u1PDE4CLPy3fUkqXXFV0psShYswAUgjr6y0azKyCa+PSRNZvXasbVlF9LaKBGeK9jwFUwrG+rCY4j
+        zv895JfcaJSSFU2KS75K2/q8BysNy4daWTAeXIZbKhkvKwiLyMMoxEPLbotF1dHnXkYkHHql698KY
+        bdR6G8ZTLeGBqKJ8d2qHqFoMUHhCL7JWRl3vEkOJq962C4HYcKqgrGUN/KtS0QqjuAxF39N2llF1F
+        7+Y6/JRcISaOC0lTKqmU+CqCy8HpJiH0asdNFxNGnHMWorzJYmaKcHD67aaC3uDdHsf3BbKw5hW3W
+        +cnlHxiA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdHca-00CoYg-7l; Wed, 20 Oct 2021 19:51:47 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D189F986DD9; Wed, 20 Oct 2021 21:51:31 +0200 (CEST)
+Date:   Wed, 20 Oct 2021 21:51:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>, x86@kernel.org
+Subject: Re: [tip: sched/core] sched: Add cluster scheduler level for x86
+Message-ID: <20211020195131.GT174703@worktop.programming.kicks-ass.net>
+References: <20210924085104.44806-4-21cnbao@gmail.com>
+ <163429109791.25758.3107620034958821511.tip-bot2@tip-bot2>
+ <9e7b0c92-5a3b-8099-8c69-83a9d62aced4@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e7b0c92-5a3b-8099-8c69-83a9d62aced4@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amlogic Meson8/8b/8m2 have a built-in HDMI PHY in the HHI register
-region. Unfortunately only few register bits are documented. For
-HHI_HDMI_PHY_CNTL0 the magic numbers are taken from the 3.10 vendor
-kernel.
+On Wed, Oct 20, 2021 at 08:12:51AM -0500, Tom Lendacky wrote:
+> On 10/15/21 4:44 AM, tip-bot2 for Tim Chen wrote:
+> > The following commit has been merged into the sched/core branch of tip:
+> > 
+> > Commit-ID:     66558b730f2533cc2bf2b74d51f5f80b81e2bad0
+> > Gitweb:        https://git.kernel.org/tip/66558b730f2533cc2bf2b74d51f5f80b81e2bad0
+> > Author:        Tim Chen <tim.c.chen@linux.intel.com>
+> > AuthorDate:    Fri, 24 Sep 2021 20:51:04 +12:00
+> > Committer:     Peter Zijlstra <peterz@infradead.org>
+> > CommitterDate: Fri, 15 Oct 2021 11:25:16 +02:00
+> > 
+> > sched: Add cluster scheduler level for x86
+> > 
+> > There are x86 CPU architectures (e.g. Jacobsville) where L2 cahce is
+> > shared among a cluster of cores instead of being exclusive to one
+> > single core.
+> > 
+> > To prevent oversubscription of L2 cache, load should be balanced
+> > between such L2 clusters, especially for tasks with no shared data.
+> > On benchmark such as SPECrate mcf test, this change provides a boost
+> > to performance especially on medium load system on Jacobsville.  on a
+> > Jacobsville that has 24 Atom cores, arranged into 6 clusters of 4
+> > cores each, the benchmark number is as follow:
+> > 
+> >   Improvement over baseline kernel for mcf_r
+> >   copies		run time	base rate
+> >   1		-0.1%		-0.2%
+> >   6		25.1%		25.1%
+> >   12		18.8%		19.0%
+> >   24		0.3%		0.3%
+> > 
+> > So this looks pretty good. In terms of the system's task distribution,
+> > some pretty bad clumping can be seen for the vanilla kernel without
+> > the L2 cluster domain for the 6 and 12 copies case. With the extra
+> > domain for cluster, the load does get evened out between the clusters.
+> > 
+> > Note this patch isn't an universal win as spreading isn't necessarily
+> > a win, particually for those workload who can benefit from packing.
+> > 
+> > Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Link: https://lore.kernel.org/r/20210924085104.44806-4-21cnbao@gmail.com
+> 
+> I've bisected to this patch which now results in my EPYC systems issuing a
+> lot of:
+> 
+> [    4.788480] BUG: arch topology borken
+> [    4.789578]      the SMT domain not a subset of the CLS domain
+> 
+> messages (one for each CPU in the system).
+> 
+> I haven't had a chance to dig deeper and understand everything, does anyone
+> have some quick insights/ideas?
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/phy/amlogic/Kconfig              |  10 ++
- drivers/phy/amlogic/Makefile             |   1 +
- drivers/phy/amlogic/phy-meson8-hdmi-tx.c | 160 +++++++++++++++++++++++
- 3 files changed, 171 insertions(+)
- create mode 100644 drivers/phy/amlogic/phy-meson8-hdmi-tx.c
+Urgh, sorry about that. So this stuff uses cpu_l2c_id to build 'clusters',
+basically CPUs that share L2, as a subset of the 'multi-core' topology,
+which is all CPUs that share LLC (L3 typically).
 
-diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
-index db5d0cd757e3..486ca23aba32 100644
---- a/drivers/phy/amlogic/Kconfig
-+++ b/drivers/phy/amlogic/Kconfig
-@@ -2,6 +2,16 @@
- #
- # Phy drivers for Amlogic platforms
- #
-+config PHY_MESON8_HDMI_TX
-+	tristate "Meson8, Meson8b and Meson8m2 HDMI TX PHY driver"
-+	depends on (ARCH_MESON && ARM) || COMPILE_TEST
-+	depends on OF
-+	select MFD_SYSCON
-+	help
-+	  Enable this to support the HDMI TX PHYs found in Meson8,
-+	  Meson8b and Meson8m2 SoCs.
-+	  If unsure, say N.
-+
- config PHY_MESON8B_USB2
- 	tristate "Meson8, Meson8b, Meson8m2 and GXBB USB2 PHY driver"
- 	default ARCH_MESON
-diff --git a/drivers/phy/amlogic/Makefile b/drivers/phy/amlogic/Makefile
-index 8fa07fbd0d92..c0886c850bb0 100644
---- a/drivers/phy/amlogic/Makefile
-+++ b/drivers/phy/amlogic/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_PHY_MESON8_HDMI_TX)		+= phy-meson8-hdmi-tx.o
- obj-$(CONFIG_PHY_MESON8B_USB2)			+= phy-meson8b-usb2.o
- obj-$(CONFIG_PHY_MESON_GXL_USB2)		+= phy-meson-gxl-usb2.o
- obj-$(CONFIG_PHY_MESON_G12A_USB2)		+= phy-meson-g12a-usb2.o
-diff --git a/drivers/phy/amlogic/phy-meson8-hdmi-tx.c b/drivers/phy/amlogic/phy-meson8-hdmi-tx.c
-new file mode 100644
-index 000000000000..f9a6572c27d8
---- /dev/null
-+++ b/drivers/phy/amlogic/phy-meson8-hdmi-tx.c
-@@ -0,0 +1,160 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Meson8, Meson8b and Meson8m2 HDMI TX PHY.
-+ *
-+ * Copyright (C) 2021 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
-+#include <linux/clk.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+
-+/*
-+ * Unfortunately there is no detailed documentation available for the
-+ * HHI_HDMI_PHY_CNTL0 register. CTL0 and CTL1 is all we know about.
-+ * Magic register values in the driver below are taken from the vendor
-+ * BSP / kernel.
-+ */
-+#define HHI_HDMI_PHY_CNTL0				0x3a0
-+	#define HHI_HDMI_PHY_CNTL0_HDMI_CTL1		GENMASK(31, 16)
-+	#define HHI_HDMI_PHY_CNTL0_HDMI_CTL0		GENMASK(15, 0)
-+
-+#define HHI_HDMI_PHY_CNTL1				0x3a4
-+	#define HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE		BIT(1)
-+	#define HHI_HDMI_PHY_CNTL1_SOFT_RESET		BIT(0)
-+
-+#define HHI_HDMI_PHY_CNTL2				0x3a8
-+
-+struct phy_meson8_hdmi_tx_priv {
-+	struct regmap		*hhi;
-+	struct clk		*tmds_clk;
-+};
-+
-+static int phy_meson8_hdmi_tx_init(struct phy *phy)
-+{
-+	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
-+
-+	return clk_prepare_enable(priv->tmds_clk);
-+}
-+
-+static int phy_meson8_hdmi_tx_exit(struct phy *phy)
-+{
-+	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
-+
-+	clk_disable_unprepare(priv->tmds_clk);
-+
-+	return 0;
-+}
-+
-+static int phy_meson8_hdmi_tx_power_on(struct phy *phy)
-+{
-+	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
-+	unsigned int i;
-+	u16 hdmi_ctl0;
-+
-+	if (clk_get_rate(priv->tmds_clk) >= 2970UL * 1000 * 1000)
-+		hdmi_ctl0 = 0x1e8b;
-+	else
-+		hdmi_ctl0 = 0x4d0b;
-+
-+	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0,
-+		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL1, 0x08c3) |
-+		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL0, hdmi_ctl0));
-+
-+	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1, 0x0);
-+
-+	/* Reset three times, just like the vendor driver does */
-+	for (i = 0; i < 3; i++) {
-+		regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1,
-+			     HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE |
-+			     HHI_HDMI_PHY_CNTL1_SOFT_RESET);
-+		usleep_range(1000, 2000);
-+
-+		regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1,
-+			     HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE);
-+		usleep_range(1000, 2000);
-+	}
-+
-+	return 0;
-+}
-+
-+static int phy_meson8_hdmi_tx_power_off(struct phy *phy)
-+{
-+	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
-+
-+	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0,
-+		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL1, 0x0841) |
-+		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL0, 0x8d00));
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops phy_meson8_hdmi_tx_ops = {
-+	.init		= phy_meson8_hdmi_tx_init,
-+	.exit		= phy_meson8_hdmi_tx_exit,
-+	.power_on	= phy_meson8_hdmi_tx_power_on,
-+	.power_off	= phy_meson8_hdmi_tx_power_off,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int phy_meson8_hdmi_tx_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct phy_meson8_hdmi_tx_priv *priv;
-+	struct phy_provider *phy_provider;
-+	struct resource *res;
-+	struct phy *phy;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -EINVAL;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->hhi = syscon_node_to_regmap(np->parent);
-+	if (IS_ERR(priv->hhi))
-+		return PTR_ERR(priv->hhi);
-+
-+	priv->tmds_clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(priv->tmds_clk))
-+		return PTR_ERR(priv->tmds_clk);
-+
-+	phy = devm_phy_create(&pdev->dev, np, &phy_meson8_hdmi_tx_ops);
-+	if (IS_ERR(phy))
-+		return PTR_ERR(phy);
-+
-+	phy_set_drvdata(phy, priv);
-+
-+	phy_provider = devm_of_phy_provider_register(&pdev->dev,
-+						     of_phy_simple_xlate);
-+
-+	return PTR_ERR_OR_ZERO(phy_provider);
-+}
-+
-+static const struct of_device_id phy_meson8_hdmi_tx_of_match[] = {
-+	{ .compatible = "amlogic,meson8-hdmi-tx-phy" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, phy_meson8_hdmi_tx_of_match);
-+
-+static struct platform_driver phy_meson8_hdmi_tx_driver = {
-+	.probe	= phy_meson8_hdmi_tx_probe,
-+	.driver	= {
-+		.name		= "phy-meson8-hdmi-tx",
-+		.of_match_table	= phy_meson8_hdmi_tx_of_match,
-+	},
-+};
-+module_platform_driver(phy_meson8_hdmi_tx_driver);
-+
-+MODULE_AUTHOR("Martin Blumenstingl <martin.blumenstingl@googlemail.com>");
-+MODULE_DESCRIPTION("Meson8, Meson8b and Meson8m2 HDMI TX PHY driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.33.1
+Your EPYC seems to think the SMT group is not a strict subset of the L2.
+The implication is that you have threads with different L2, which would
+franky be quite 'exotic' if true :-)
 
+
+If it does boot, what does something like:
+
+  for i in /sys/devices/system/cpu/cpu*/topology/*{_id,_list}; do echo -n "${i}: " ; cat $i; done
+
+produce?
+
+I'll try and figure out how AMD sets l2c_id, that stuff is always a bit
+of a maze.
