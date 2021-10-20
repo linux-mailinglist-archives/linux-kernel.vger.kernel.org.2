@@ -2,94 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B934345CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9274B4345D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhJTHUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:20:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44797 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229842AbhJTHUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:20:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634714303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdgj6SdvLhFwHBvEbV5KY24EzQ2wsW3+msXZfewzZ28=;
-        b=Pm72XrXVY3AWPhzSZSd02Dw0R6FLuf4twOba3C51MmtcPA4zq9ysrGbID2P0nuXvH/T5h/
-        wL9HbNhl530pyEv2VqNGb9muhLHAqCYAgmRYnqHE5K5pg8oXZIw9OpV6cfNib4Op11ucY4
-        72ilHw6TFTiGgYprNitGW6CubHiTHcA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-eRdnDaPKMeiE6Fc09Iys2A-1; Wed, 20 Oct 2021 03:18:21 -0400
-X-MC-Unique: eRdnDaPKMeiE6Fc09Iys2A-1
-Received: by mail-ed1-f69.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso2379590edj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:18:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xdgj6SdvLhFwHBvEbV5KY24EzQ2wsW3+msXZfewzZ28=;
-        b=3JVu1At9Z1FvkdlIKlXjqYAzntpdKzRS/XA5H4Xe0Nt2J8rsxrNgKTeaeQqQaJYjWj
-         6S/hjTxWSbSNxJtX6WHHz9uRpPUpJN8SDU4BhjL8WFKZZ1M0iO1BfWLBdasDu/CIkMVU
-         Z4nHIxWDIxczShO4kuIqq+bFB6urRr+usa+Iu9FtZ5imHIvcaN9Q4LoeNy4f6B1iUw0V
-         AVYY6mUbINkPy49ug8RsVDJLhOoyX5mnJcoWmstVp9tevfypHv5uLb3wwWHut7TPO8yi
-         DKuEl36BRQMDzEWQbqpBJ0c523tGr3w+7L3qCTLfcvkrv8pqhx3oSlPpzxbvQ6wX5IxM
-         3B3Q==
-X-Gm-Message-State: AOAM533Js6N0LHgAsizHaBifhW2tXRB0XM9IC2DPydh50TfFSOVaQnj1
-        A5CgBsWXvU7CpMVo68C8ClIIxJMawTCjnvZMF7MrfOUqDCS7oaPC8xgBHc+VIoGsauggCFkgg21
-        3DkVwCvfRZWkQcenhV//IhANx
-X-Received: by 2002:a05:6402:1c94:: with SMTP id cy20mr60372410edb.144.1634714300326;
-        Wed, 20 Oct 2021 00:18:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHtowpIQurYGdY2Ipfvn7cEUWyB9V830NvZof3v0pUEFTKdE9/01f6TbWLuJvV0UND3sbbFQ==
-X-Received: by 2002:a05:6402:1c94:: with SMTP id cy20mr60372386edb.144.1634714300083;
-        Wed, 20 Oct 2021 00:18:20 -0700 (PDT)
-Received: from steredhat (host-79-34-250-211.business.telecomitalia.it. [79.34.250.211])
-        by smtp.gmail.com with ESMTPSA id u23sm655460edr.97.2021.10.20.00.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 00:18:19 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 09:18:17 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: Re: [PATCH V3 01/10] virtio-blk: validate num_queues during probe
-Message-ID: <20211020071817.pzyfploxlryvdf3p@steredhat>
-References: <20211019070152.8236-1-jasowang@redhat.com>
- <20211019070152.8236-2-jasowang@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20211019070152.8236-2-jasowang@redhat.com>
+        id S229888AbhJTHXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:23:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229817AbhJTHXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 03:23:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCAAA60F59;
+        Wed, 20 Oct 2021 07:21:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634714488;
+        bh=ezv1SktQ7LD/gDQz+w7ted6/IJ4FUqR/RbIpQzSNSss=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=nYy80r1lxebC92cZLRYCmlA9rLJBxKP2RkbiPEo0BXfuYu3/+L5zFD/jiWyrgWL7N
+         SsjKjMEzjCt3BNfoWFFP0UA9L4TMpJ37DVi3gGOdD8W/AWb0xvauWdod2FKJ8OVSNW
+         8jaHFf+rR0me9lrW9rRg36YfAMrngmBjHMM/nH5+yAVAiEhSlbiZZeEk/RVLg6lxq4
+         KYV4vGXzA1bee2RwK1215rNor1yxcJ1uGGStfnclfEbkuS0PzNyVGfrzYLMYPA+X78
+         TjD0EKUC557NPYSr007brCyr7FIn+5Pc4OWKe2k2gc+r0dmu9cWbFGneARPq4LvM5w
+         GLB/z9ghN/zaA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Xin Hao <xhao@linux.alibaba.com>
+Cc:     sjpark@amazon.de, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm/damon/dbgfs: Add adaptive_targets list check before enable monitor_on
+Date:   Wed, 20 Oct 2021 07:21:21 +0000
+Message-Id: <20211020072121.17166-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <f78a4c9a2c4ddf037cc3d9b405e51d9fcf5b6648.1634693911.git.xhao@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 03:01:43PM +0800, Jason Wang wrote:
->If an untrusted device neogitates BLK_F_MQ but advertises a zero
+On Wed, 20 Oct 2021 09:42:33 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
 
-s/neogitates/negotiates
+> When the ctx->adaptive_targets list is empty,
+> I did some test on monitor_on interface like this.
+> 
+>     # echo > /sys/kernel/debug/damon/target_ids
 
->num_queues, the driver may end up trying to allocating zero size
->buffers where ZERO_SIZE_PTR is returned which may pass the checking
->against the NULL. This will lead unexpected results.
->
->Fixing this by failing the probe in this case.
->
->Cc: Paolo Bonzini <pbonzini@redhat.com>
->Cc: Stefan Hajnoczi <stefanha@redhat.com>
->Cc: Stefano Garzarella <sgarzare@redhat.com>
->Signed-off-by: Jason Wang <jasowang@redhat.com>
->---
-> drivers/block/virtio_blk.c | 4 ++++
-> 1 file changed, 4 insertions(+)
+Thanks for the change, but you missed writing 'on' to 'monitor_on' in the above
+example.
 
-Should we CC stable?
+> 
+> Though the ctx->adaptive_targets list is empty, but the
+> kthread_run still be called, and the kdamond.x thread still
+> be created, this is meaningless.
+> 
+> So there adds a judgment in 'dbgfs_monitor_on_write',
+> if the ctx->adaptive_targets list is empty, return -EINVAL.
+> 
+> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Other parts looks good to me.  However, seems this commit conflicts with a
+patch[1] which already merged in -mm tree.  Could you please rebase this on it?
+FYI, all DAMON patches that merged in -mm tree are also applied on DAMON
+development tree.  So, you could get the patch applied tree by:
 
+    $ git remote add sj git://git.kernel.org/pub/scm/linux/kernel/git/sj/linux.git
+    $ git fetch sj
+    $ git checkout 0fa378d04b12
+
+[1] https://lore.kernel.org/linux-mm/20211014073014.35754-1-sj@kernel.org/
+
+
+Thanks,
+SJ
+
+> ---
+>  include/linux/damon.h |  1 +
+>  mm/damon/core.c       |  5 +++++
+>  mm/damon/dbgfs.c      | 13 ++++++++++---
+>  3 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/damon.h b/include/linux/damon.h
+> index 715dadd21f7c..4fce5f1f6dad 100644
+> --- a/include/linux/damon.h
+> +++ b/include/linux/damon.h
+> @@ -316,6 +316,7 @@ void damon_destroy_scheme(struct damos *s);
+> 
+>  struct damon_target *damon_new_target(unsigned long id);
+>  void damon_add_target(struct damon_ctx *ctx, struct damon_target *t);
+> +bool damon_targets_empty(struct damon_ctx *ctx);
+>  void damon_free_target(struct damon_target *t);
+>  void damon_destroy_target(struct damon_target *t);
+>  unsigned int damon_nr_regions(struct damon_target *t);
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index 2f6785737902..c3a1374dbe0b 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+> @@ -156,6 +156,11 @@ void damon_add_target(struct damon_ctx *ctx, struct damon_target *t)
+>  	list_add_tail(&t->list, &ctx->adaptive_targets);
+>  }
+> 
+> +bool damon_targets_empty(struct damon_ctx *ctx)
+> +{
+> +	return list_empty(&ctx->adaptive_targets);
+> +}
+> +
+>  static void damon_del_target(struct damon_target *t)
+>  {
+>  	list_del(&t->list);
+> diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+> index 38188347d8ab..9dee29f7d103 100644
+> --- a/mm/damon/dbgfs.c
+> +++ b/mm/damon/dbgfs.c
+> @@ -865,12 +865,19 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
+>  		return -EINVAL;
+>  	}
+> 
+> -	if (!strncmp(kbuf, "on", count))
+> +	if (!strncmp(kbuf, "on", count)) {
+> +		int i;
+> +
+> +		for (i = 0; i < dbgfs_nr_ctxs; i++) {
+> +			if (damon_targets_empty(dbgfs_ctxs[i]))
+> +				return -EINVAL;
+> +		}
+>  		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
+> -	else if (!strncmp(kbuf, "off", count))
+> +	} else if (!strncmp(kbuf, "off", count)) {
+>  		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
+> -	else
+> +	} else {
+>  		err = -EINVAL;
+> +	}
+> 
+>  	if (err)
+>  		ret = err;
+> --
+> 2.31.0
