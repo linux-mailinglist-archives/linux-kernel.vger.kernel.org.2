@@ -2,222 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8881434F8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0D4434F91
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhJTQCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:02:32 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:46841 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbhJTQCa (ORCPT
+        id S231130AbhJTQEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:04:00 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:52932 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230510AbhJTQD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:02:30 -0400
-Received: by mail-ot1-f42.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so8740009ote.13;
-        Wed, 20 Oct 2021 09:00:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O8Vh3j/5jDTLXwbY1bkY5BeXtXCmKpCTYashNJhu/CY=;
-        b=sEKjPHZ47Anvm+BR3aFCgVZ2/aQCq4YaOSKcKLgmXsDaVUFQlMSbe8EN2OA3O9afPa
-         0tus3qE2D4KDl/+wxWAnBcnIkZMqUkyqYXyxJZ5dFQJGODTvOQg6scc1ytKqBED+/u+t
-         juNjIYsIPw+4AgvNyJOXX56JxW+umTxM1kqPcpbP3wNpwBbmE7BneqaW72scrwrvGgEs
-         XUw/8pM/gtrkCzYxs30wCv7QpFl+4TImkLKcbg/PgtupcRd/BJp44O9pkLhymvTFJBfi
-         z9kHfMuOGEpMW/vuxRNwyXH8vremtYhi5Coq3bvvquaSyCVMhfqfGTRFIvBBF8F7yHj2
-         v8Yg==
-X-Gm-Message-State: AOAM531OKgCXBbXkP1OXKL+Ioze78Qu4h/yBlSQ6or2S8pbTfKk6AQOX
-        s78N+ouYoQxXiyKDtm8a5ervu/uEfj+pM09CKw8=
-X-Google-Smtp-Source: ABdhPJwJl+cQeOqwfxw/oclkGzX5j9/GJ2q0VC9R9Wz4kp1ZHF+LdxTAocR2UaocJNw1k+WRUxzePHLB/Ggl74mPM8s=
-X-Received: by 2002:a05:6830:90b:: with SMTP id v11mr53327ott.254.1634745615563;
- Wed, 20 Oct 2021 09:00:15 -0700 (PDT)
+        Wed, 20 Oct 2021 12:03:57 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:40844)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdE28-002QTs-V7; Wed, 20 Oct 2021 10:01:40 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:42706 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdE27-000qtw-Tc; Wed, 20 Oct 2021 10:01:40 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Alexey Gladkov <legion@kernel.org>
+References: <20211020144651.10321529@canb.auug.org.au>
+Date:   Wed, 20 Oct 2021 11:00:14 -0500
+In-Reply-To: <20211020144651.10321529@canb.auug.org.au> (Stephen Rothwell's
+        message of "Wed, 20 Oct 2021 14:46:51 +1100")
+Message-ID: <875ytrptyp.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20211014075731.GB18719@xsang-OptiPlex-9020> <51c0a15f-1941-f161-dcec-a7a9acc726f2@gmail.com>
- <e526de16-5efd-6474-20e1-3f96a2e3c524@intel.com> <6755cf07-fa5a-cbb7-c076-57c162a08c99@gmail.com>
- <d3cf18f1-2af7-5e4d-abe4-c882f25bd5c3@intel.com> <20aedfba-14e3-3677-d21a-b87610095445@gmail.com>
- <d36f79b4-472c-4852-7370-a011f9f556ce@intel.com> <4300a3d4-76de-70c5-2a7b-c4d066ef5bc6@gmail.com>
- <CAJZ5v0jmGWLfK7-7ULEVjzHtCr2wckK0TiY=59ud=hSM0x4hkA@mail.gmail.com> <8ebd1cad-fa35-8ad8-0be5-3dd3364196cb@gmail.com>
-In-Reply-To: <8ebd1cad-fa35-8ad8-0be5-3dd3364196cb@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 20 Oct 2021 18:00:04 +0200
-Message-ID: <CAJZ5v0iL+PwiJ3gxSzE3sJh0zyAd-3HZC=0sij7SdmDV=uR+Qg@mail.gmail.com>
-Subject: Re: [PM] bfcc1e67ff: kernel-selftests.breakpoints.step_after_suspend_test.fail
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, kbuild test robot <lkp@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1mdE27-000qtw-Tc;;;mid=<875ytrptyp.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+nFg8WEoM2KyuoGiFCYzJt/cSk6/DICqw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4987]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Stephen Rothwell <sfr@canb.auug.org.au>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 402 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 10 (2.6%), b_tie_ro: 9 (2.3%), parse: 0.75 (0.2%),
+         extract_message_metadata: 10 (2.4%), get_uri_detail_list: 1.11 (0.3%),
+         tests_pri_-1000: 4.5 (1.1%), tests_pri_-950: 1.09 (0.3%),
+        tests_pri_-900: 0.83 (0.2%), tests_pri_-90: 144 (35.9%), check_bayes:
+        143 (35.5%), b_tokenize: 6 (1.4%), b_tok_get_all: 6 (1.4%),
+        b_comp_prob: 1.59 (0.4%), b_tok_touch_all: 126 (31.4%), b_finish: 0.88
+        (0.2%), tests_pri_0: 217 (54.0%), check_dkim_signature: 0.47 (0.1%),
+        check_dkim_adsp: 2.4 (0.6%), poll_dns_idle: 1.74 (0.4%), tests_pri_10:
+        1.74 (0.4%), tests_pri_500: 9 (2.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: linux-next: build failure after merge of the userns tree
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 5:34 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
->
->
-> On 10/20/2021 6:49 AM, Rafael J. Wysocki wrote:
-> > On Tue, Oct 19, 2021 at 9:04 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>
-> >> On 10/19/21 11:53 AM, Rafael J. Wysocki wrote:
-> >>> On 10/15/2021 9:40 PM, Florian Fainelli wrote:
-> >>>> On 10/15/21 11:45 AM, Rafael J. Wysocki wrote:
-> >>>>> On 10/14/2021 11:55 PM, Florian Fainelli wrote:
-> >>>>>> On 10/14/21 12:23 PM, Rafael J. Wysocki wrote:
-> >>>>>>> On 10/14/2021 6:26 PM, Florian Fainelli wrote:
-> >>>>>>>> On 10/14/21 12:57 AM, kernel test robot wrote:
-> >>>>>>>>> Greeting,
-> >>>>>>>>>
-> >>>>>>>>> FYI, we noticed the following commit (built with gcc-9):
-> >>>>>>>>>
-> >>>>>>>>> commit: bfcc1e67ff1e4aa8bfe2ca57f99390fc284c799d ("PM: sleep: Do not
-> >>>>>>>>> assume that "mem" is always present")
-> >>>>>>>>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git
-> >>>>>>>>> master
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> in testcase: kernel-selftests
-> >>>>>>>>> version: kernel-selftests-x86_64-c8c9111a-1_20210929
-> >>>>>>>>> with following parameters:
-> >>>>>>>>>
-> >>>>>>>>>        group: group-00
-> >>>>>>>>>        ucode: 0x11
-> >>>>>>>>>
-> >>>>>>>>> test-description: The kernel contains a set of "self tests" under
-> >>>>>>>>> the
-> >>>>>>>>> tools/testing/selftests/ directory. These are intended to be small
-> >>>>>>>>> unit tests to exercise individual code paths in the kernel.
-> >>>>>>>>> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> on test machine: 288 threads 2 sockets Intel(R) Xeon Phi(TM) CPU
-> >>>>>>>>> 7295
-> >>>>>>>>> @ 1.50GHz with 80G memory
-> >>>>>>>>>
-> >>>>>>>>> caused below changes (please refer to attached dmesg/kmsg for entire
-> >>>>>>>>> log/backtrace):
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> If you fix the issue, kindly add following tag
-> >>>>>>>>> Reported-by: kernel test robot <oliver.sang@intel.com>
-> >>>>>>>> Thanks for your report. Assuming that the code responsible for
-> >>>>>>>> registering the suspend operations is drivers/acpi/sleep.c for your
-> >>>>>>>> platform, and that acpi_sleep_suspend_setup() iterated over all
-> >>>>>>>> possible
-> >>>>>>>> sleep states, your platform must somehow be returning that
-> >>>>>>>> ACPI_STATE_S3
-> >>>>>>>> is not a supported state somehow?
-> >>>>>>>>
-> >>>>>>>> Rafael have you ever encountered something like that?
-> >>>>>>> Yes, there are systems with ACPI that don't support S3.
-> >>>>>> OK and do you know what happens when we enter suspend with "mem" in
-> >>>>>> those cases? Do we immediately return because ultimately the firmware
-> >>>>>> does not support ACPI S3?
-> >>>>> "mem" should not be present in the list of available strings then, so it
-> >>>>> should be rejected right away.
-> >>>> Well yes, that was the purpose of the patch I submitted, but assuming
-> >>>> that we did provide "mem" as one of the possible standby modes even
-> >>>> though that was wrong (before patch), and the test was trying to enter
-> >>>> ACPI S3 standby, what would have happened, would the ACPI firmware honor
-> >>>> the request but return an error, or would it actually enter ACPI S3?
-> >>>>
-> >>>> In any case, I will change the test to check that this is a supported
-> >>>> standby mode before trying it.
-> >>>
-> >>> Unfortunately, I will need to revert bfcc1e67ff1e4aa8bfe2, because it
-> >>> breaks user space compatibility and that's got caught properly by the test.
-> >>
-> >> Reverting my commit will break powerpc and other ARM/ARM64 platforms
-> >> where mem is not supported (via PSCI),
-> >
-> > It won't break anything, although the things that didn't work before
-> > will still not work after it.
-> >
-> > And "mem" is always supported even if there are no suspend_ops at all,
-> > in which case it becomes an alternative way to trigger s2idle.
-> >
-> > So, on the affected systems, what's there in /sys/power/?  Is
-> > mem_sleep present?  If so, what's in it?
->
-> With 4.9 which is what I used initially:
->
-> # cat /sys/power/state
-> freeze standby
-> # cat /sys/power/
-> pm_async           pm_print_times     pm_wakeup_irq      wakeup_count
-> pm_freeze_timeout  pm_test            state
->
-> With a newer kernel without my patch:
->
-> # cat /sys/power/state
-> freeze standby mem
-> # cat /sys/power/mem_sleep
-> s2idle shallow [deep]
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-OK, so the "deep" and "shallow" suspend variants appear to be
-supported.  What's the problem with advertising "mem" then?
-
-> # cat /sys/power/
-> mem_sleep          pm_freeze_timeout  pm_wakeup_irq      wakeup_count
-> pm_async           pm_print_times     state
-> pm_debug_messages  pm_test            suspend_stats/
+> Hi all,
 >
+> After merging the userns tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
 >
-> >
-> >> I have a change pending for PSCI
-> >> that will actually check that SYSTEM_SUSPEND is supported before
-> >> unconditionally making use of it.
-> >>
-> >>>
-> >>> What happens is that "mem" is a "pointer" to a secondary list of
-> >>> possible states and that generally is "s2idle shallow deep" and if
-> >>> s2idle is the only available option, it will be just "s2idle".
-> >>>
-> >>> This list is there in /sys/power/mem_sleep.
-> >>>
-> >>> It was done this way, because some variants of user space expect "mem"
-> >>> to be always present and don't recognize "freeze" properly.
-> >>>
-> >>> Sorry for the confusion.
-> >>
-> >> So how do we all get our cookie here? Should we just slap an #ifndef
-> >> CONFIG_ACPI in order to allow platforms that do not have "mem" to not
-> >> have it?
-> >
-> > Certainly not.
-> >
-> > I've just hacked my test-bed system with ACPI so it does not register
-> > any suspend_ops at all and I have "freeze mem disk" in
-> > /sys/power/state and "s2idle" in /sys/power/mem_sleep.  Writing "mem"
-> > to /sys/power/state causes s2idle to be carried out.
-> >
-> > Since this is the expected behavior, I'm not sure what the problem is.
+> In file included from arch/x86/include/asm/bug.h:84,
+>                  from include/linux/bug.h:5,
+>                  from arch/x86/include/asm/paravirt.h:15,
+>                  from arch/x86/include/asm/irqflags.h:63,
+>                  from include/linux/irqflags.h:16,
+>                  from include/linux/rcupdate.h:26,
+>                  from include/linux/rculist.h:11,
+>                  from include/linux/pid.h:5,
+>                  from include/linux/sched.h:14,
+>                  from security/keys/process_keys.c:9:
+> security/keys/process_keys.c: In function 'key_change_session_keyring':
+> security/keys/process_keys.c:923:16: error: format '%s' expects a matching 'char *' argument [-Werror=format=]
+>   923 |   WARN_ONCE(1, "In %s get_ucounts failed\n");
+>       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> include/asm-generic/bug.h:99:17: note: in definition of macro '__WARN_printf'
+>    99 |   __warn_printk(arg);     \
+>       |                 ^~~
+> include/linux/once_lite.h:19:4: note: in expansion of macro 'WARN'
+>    19 |    func(__VA_ARGS__);    \
+>       |    ^~~~
+> include/asm-generic/bug.h:150:2: note: in expansion of macro 'DO_ONCE_LITE_IF'
+>   150 |  DO_ONCE_LITE_IF(condition, WARN, 1, format)
+>       |  ^~~~~~~~~~~~~~~
+> security/keys/process_keys.c:923:3: note: in expansion of macro 'WARN_ONCE'
+>   923 |   WARN_ONCE(1, "In %s get_ucounts failed\n");
+>       |   ^~~~~~~~~
+> security/keys/process_keys.c:923:21: note: format string is defined here
+>   923 |   WARN_ONCE(1, "In %s get_ucounts failed\n");
+>       |                    ~^
+>       |                     |
+>       |                     char *
+> cc1: all warnings being treated as errors
 >
-> The problem is advertising "mem" in /sys/power/state when the state is
-> not actually supported by the platform firmware here, whether that
-> translates into the form of s2idle or not. It is not supported, and it
-> should not be there IMHO.
-
-Well, it is there, because some user space expects it to be there on
-systems supporting any kind of system-wide suspend, including s2idle.
-Like it or not.
-
-If it is not there, the utilities in question assume that system-wide
-suspend is not supported at all.
-
->I was late to the game in identifying that,
-> but the 4.9 kernel makes sense to me.
+> Caused by commit
 >
-> Similarly, if you take arch/powerpc/sysdev/fsl_pmc.c only
-> PM_SUSPEND_STANDBY is valid, so advertising mem would be wrong if we
-> don't look at what ->valid tells us.
+>   346b5b4aa656 ("ucounts: Move get_ucounts from cred_alloc_blank to key_change_session_keyring")
+>
+> I have used the userns tree from next-20211019 for today.
 
-Again: "mem" appears in /sys/power/state if the system supports any
-kind of system-wide suspend (because of the expectations of user space
-mentioned above) and mem_sleep decides what it really means.
+Thank you very much for catching that.
 
-And this is documented too (see Documentation/admin-guide/pm/sleep-states.html).
+I am now quite embarrassed I did not catch that myself.
+
+Eric
+
