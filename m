@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C56943540E
+	by mail.lfdr.de (Postfix) with ESMTP id 8301143540F
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhJTTxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        id S231552AbhJTTxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbhJTTxp (ORCPT
+        with ESMTP id S231612AbhJTTxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:53:45 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712ACC06161C;
-        Wed, 20 Oct 2021 12:51:30 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r18so375170wrg.6;
-        Wed, 20 Oct 2021 12:51:30 -0700 (PDT)
+        Wed, 20 Oct 2021 15:53:46 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359BCC06161C;
+        Wed, 20 Oct 2021 12:51:31 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id g25so625312wrb.2;
+        Wed, 20 Oct 2021 12:51:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rEPbVntSVNxrbhdJwi/7dPL1juvL8UMRg34+Vcw02A0=;
-        b=D/944o960+AH1AnjpNsW45QQHAF9MVw6BSZrk4pfxU2gI9dBiY5WPhpDd6+ywu8KrU
-         wnuGJ2D+ozGuRZhF3VDb0scNqPzShxH3/1O/5BVmMKqm6qv4nUWpjRaH6hV8HNEZ8dCE
-         9w15KoJC3/s/LYdU/hAIWgcOHA3u51n1HWkY5iZjKspGIMPVEiwU9SIhfKAx+9R86O6x
-         433Msh5C8uo8lUTItNR5Brif130MPX1rOpYAzGM7iGoOdt+cFVeo0/bA3PvjJE3Gq2Qb
-         wGLpn9R1fj3462kGLRRjwZ+nsKI/c9o4d5JnWDaNhVWPZJtgqGwvWdAhMEizAPjMCMOE
-         gqMA==
+        bh=N9trX6BUcNb0j2IVKNM+Xz6Qfq7brKDHnZXMGzRSkSA=;
+        b=mnvqchSp+CCj4iMN0D8Oi+rdYe1Z2sFSIhdFBDL3xwtxSwhZEaEzZfko5GyaI3jkY+
+         Ir9s3c5UijXmLDNdBOom1N95uo0ZpjTJWgB+X2yzpMB9HAO/Xr9ukKiJwj+pk5FFxX2n
+         wx5yS514Bo2ks4KqT2Wz/1n+iYpdmbGS62VLohYF9hBjN7dVReF3EZDPeP2ZlETytn6U
+         HiRoL6yMPlrQjV1ue9ESEVA6w+JBqIbkuipzSkqUaeQAa2DVOgz6eiqXprP5+1+qt9G+
+         JTnirBTJLgIuznBPlohKFn3+gRrjO3Hpq5NjUDo3qn7BHgvFW3KAEHYL1ecT9zoWxVA0
+         amsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rEPbVntSVNxrbhdJwi/7dPL1juvL8UMRg34+Vcw02A0=;
-        b=614Ja7TY07w42mj8skwx9QzfcgfxThaobong580NJ+Y3ZkrDdPevOIZhuNomrZFvce
-         ToFSQ3hSA6mN7PVI3jYnA+6NsqNlPL9a7oZlsoZiMFfMJLGwrmywsRhKXJ9hYFii1cvx
-         W6oEqYxdIpl2XMLIYSpIH+AUkt71gmYFMYO13CRaqeReKZoASfuv/5bYb4w+uCfhElz2
-         Dtq+UZmQ6Gcg7oJXQC4wgjY/AAwAQ088Nsic8mvR1qtrckqII3+V9E4PfpCHFcuJ1cRs
-         S0P0u5WlY56Gp3fTbkdxheALYrWVnIKzH/Ol1jjB5+lVkSV+n6byit1ze/olxncYlw07
-         UPNA==
-X-Gm-Message-State: AOAM532lsPEmBoP5MWB7aE2rDpxm+c+W6uYEPv7wID9P0VaIestad0I1
-        Kcj9Ayusf/dyZN7bRtMRVR8=
-X-Google-Smtp-Source: ABdhPJyrDaJa0UTdawpxf/nBYOHmNqDCNEkIFFaONFmF21uOpkE6Y/wVQ3QwqYaFe/BIxGKf1hNttw==
-X-Received: by 2002:a5d:47c3:: with SMTP id o3mr1581002wrc.25.1634759488962;
-        Wed, 20 Oct 2021 12:51:28 -0700 (PDT)
+        bh=N9trX6BUcNb0j2IVKNM+Xz6Qfq7brKDHnZXMGzRSkSA=;
+        b=wFB57UIO8Yjhz+fuY2lPjXfUCI6yszQrKnS2/qiG34rz2cEvSLW+2plD6s/yU2ifGN
+         OFO4xZ8uu6eGUPNee/6DNZgjruVch/xDUTSmlNtr1FWMNDvcyIG6wvBR07kpkd/enzu7
+         wEXR+TUQAEn8NI+djNApR3Y4v0Jvm0nH0IUsKkeiAV83rv4+9XaD7J5ZOqQPyXgbVscB
+         s1U03WPEthmsYQSZlZibtv5AYLf9MPosVub1+aYVPGeoUT11o1K3jxvYlXoPfLstLo37
+         5k/O75QOscm+7wJYpbFQPakkECTDm3InGA+gONBB/sy/keacq7zZvr37kNlRCpgr2d1t
+         VsSw==
+X-Gm-Message-State: AOAM532KYah5URK1xnb+UEVkIAk2qjUC3GjKRKN4zubmfrGBrY7HSMYm
+        Slf7NdRiOJWE5YPKwMeWols+NwzxvpA=
+X-Google-Smtp-Source: ABdhPJxvbSbZ3lODadM+Se1fG2YW1EKusNJWgMmB6xKpOc5/J9LzV5h3eM5Wm5B6S22fBOlFPY1+Xw==
+X-Received: by 2002:a05:6000:145:: with SMTP id r5mr1556083wrx.64.1634759489688;
+        Wed, 20 Oct 2021 12:51:29 -0700 (PDT)
 Received: from localhost.localdomain (dynamic-2a01-0c23-b9f5-df00-f22f-74ff-fe21-0725.c23.pool.telefonica.de. [2a01:c23:b9f5:df00:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id f3sm2741310wml.11.2021.10.20.12.51.28
+        by smtp.googlemail.com with ESMTPSA id f3sm2741310wml.11.2021.10.20.12.51.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:51:28 -0700 (PDT)
+        Wed, 20 Oct 2021 12:51:29 -0700 (PDT)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
         linux-phy@lists.infradead.org, vkoul@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         robh+dt@kernel.org, kishon@ti.com,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v3 1/2] dt-bindings: phy: Add the Amlogic Meson8 HDMI TX PHY bindings
-Date:   Wed, 20 Oct 2021 21:51:06 +0200
-Message-Id: <20211020195107.1564533-2-martin.blumenstingl@googlemail.com>
+Subject: [PATCH v3 2/2] phy: amlogic: Add a new driver for the HDMI TX PHY on Meson8/8b/8m2
+Date:   Wed, 20 Oct 2021 21:51:07 +0200
+Message-Id: <20211020195107.1564533-3-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211020195107.1564533-1-martin.blumenstingl@googlemail.com>
 References: <20211020195107.1564533-1-martin.blumenstingl@googlemail.com>
@@ -66,87 +66,216 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amlogic Meson8, Meson8b and Meson8m2 all include an identical (or at
-least very similar) HDMI TX PHY. The PHY registers are part of the HHI
-register area.
+Amlogic Meson8/8b/8m2 have a built-in HDMI PHY in the HHI register
+region. Unfortunately only few register bits are documented. For
+HHI_HDMI_PHY_CNTL0 the magic numbers are taken from the 3.10 vendor
+kernel.
 
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- .../phy/amlogic,meson8-hdmi-tx-phy.yaml       | 65 +++++++++++++++++++
- 1 file changed, 65 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/amlogic,meson8-hdmi-tx-phy.yaml
+ drivers/phy/amlogic/Kconfig              |  10 ++
+ drivers/phy/amlogic/Makefile             |   1 +
+ drivers/phy/amlogic/phy-meson8-hdmi-tx.c | 160 +++++++++++++++++++++++
+ 3 files changed, 171 insertions(+)
+ create mode 100644 drivers/phy/amlogic/phy-meson8-hdmi-tx.c
 
-diff --git a/Documentation/devicetree/bindings/phy/amlogic,meson8-hdmi-tx-phy.yaml b/Documentation/devicetree/bindings/phy/amlogic,meson8-hdmi-tx-phy.yaml
+diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
+index db5d0cd757e3..486ca23aba32 100644
+--- a/drivers/phy/amlogic/Kconfig
++++ b/drivers/phy/amlogic/Kconfig
+@@ -2,6 +2,16 @@
+ #
+ # Phy drivers for Amlogic platforms
+ #
++config PHY_MESON8_HDMI_TX
++	tristate "Meson8, Meson8b and Meson8m2 HDMI TX PHY driver"
++	depends on (ARCH_MESON && ARM) || COMPILE_TEST
++	depends on OF
++	select MFD_SYSCON
++	help
++	  Enable this to support the HDMI TX PHYs found in Meson8,
++	  Meson8b and Meson8m2 SoCs.
++	  If unsure, say N.
++
+ config PHY_MESON8B_USB2
+ 	tristate "Meson8, Meson8b, Meson8m2 and GXBB USB2 PHY driver"
+ 	default ARCH_MESON
+diff --git a/drivers/phy/amlogic/Makefile b/drivers/phy/amlogic/Makefile
+index 8fa07fbd0d92..c0886c850bb0 100644
+--- a/drivers/phy/amlogic/Makefile
++++ b/drivers/phy/amlogic/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++obj-$(CONFIG_PHY_MESON8_HDMI_TX)		+= phy-meson8-hdmi-tx.o
+ obj-$(CONFIG_PHY_MESON8B_USB2)			+= phy-meson8b-usb2.o
+ obj-$(CONFIG_PHY_MESON_GXL_USB2)		+= phy-meson-gxl-usb2.o
+ obj-$(CONFIG_PHY_MESON_G12A_USB2)		+= phy-meson-g12a-usb2.o
+diff --git a/drivers/phy/amlogic/phy-meson8-hdmi-tx.c b/drivers/phy/amlogic/phy-meson8-hdmi-tx.c
 new file mode 100644
-index 000000000000..1f085cdd1c85
+index 000000000000..f9a6572c27d8
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/amlogic,meson8-hdmi-tx-phy.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/phy/amlogic,meson8-hdmi-tx-phy.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++++ b/drivers/phy/amlogic/phy-meson8-hdmi-tx.c
+@@ -0,0 +1,160 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Meson8, Meson8b and Meson8m2 HDMI TX PHY.
++ *
++ * Copyright (C) 2021 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
++ */
 +
-+title: Amlogic Meson8, Meson8b and Meson8m2 HDMI TX PHY
++#include <linux/bitfield.h>
++#include <linux/bits.h>
++#include <linux/clk.h>
++#include <linux/mfd/syscon.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/phy/phy.h>
++#include <linux/platform_device.h>
++#include <linux/property.h>
++#include <linux/regmap.h>
 +
-+maintainers:
-+  - Martin Blumenstingl <martin.blumenstingl@googlemail.com>
++/*
++ * Unfortunately there is no detailed documentation available for the
++ * HHI_HDMI_PHY_CNTL0 register. CTL0 and CTL1 is all we know about.
++ * Magic register values in the driver below are taken from the vendor
++ * BSP / kernel.
++ */
++#define HHI_HDMI_PHY_CNTL0				0x3a0
++	#define HHI_HDMI_PHY_CNTL0_HDMI_CTL1		GENMASK(31, 16)
++	#define HHI_HDMI_PHY_CNTL0_HDMI_CTL0		GENMASK(15, 0)
 +
-+description: |+
-+  The HDMI TX PHY node should be the child of a syscon node with the
-+  required property:
++#define HHI_HDMI_PHY_CNTL1				0x3a4
++	#define HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE		BIT(1)
++	#define HHI_HDMI_PHY_CNTL1_SOFT_RESET		BIT(0)
 +
-+  compatible = "amlogic,meson-hhi-sysctrl", "simple-mfd", "syscon"
++#define HHI_HDMI_PHY_CNTL2				0x3a8
 +
-+  Refer to the bindings described in
-+  Documentation/devicetree/bindings/mfd/syscon.yaml
++struct phy_meson8_hdmi_tx_priv {
++	struct regmap		*hhi;
++	struct clk		*tmds_clk;
++};
 +
-+properties:
-+  $nodename:
-+    pattern: "^hdmi-phy@[0-9a-f]+$"
++static int phy_meson8_hdmi_tx_init(struct phy *phy)
++{
++	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
 +
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - amlogic,meson8b-hdmi-tx-phy
-+              - amlogic,meson8m2-hdmi-tx-phy
-+          - const: amlogic,meson8-hdmi-tx-phy
-+      - const: amlogic,meson8-hdmi-tx-phy
++	return clk_prepare_enable(priv->tmds_clk);
++}
 +
-+  reg:
-+    maxItems: 1
++static int phy_meson8_hdmi_tx_exit(struct phy *phy)
++{
++	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
 +
-+  clocks:
-+    minItems: 1
-+    description:
-+      HDMI TMDS clock
++	clk_disable_unprepare(priv->tmds_clk);
 +
-+  "#phy-cells":
-+    const: 0
++	return 0;
++}
 +
-+required:
-+  - compatible
-+  - "#phy-cells"
++static int phy_meson8_hdmi_tx_power_on(struct phy *phy)
++{
++	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
++	unsigned int i;
++	u16 hdmi_ctl0;
 +
-+additionalProperties: false
++	if (clk_get_rate(priv->tmds_clk) >= 2970UL * 1000 * 1000)
++		hdmi_ctl0 = 0x1e8b;
++	else
++		hdmi_ctl0 = 0x4d0b;
 +
-+examples:
-+  - |
-+    hdmi-phy@3a0 {
-+      compatible = "amlogic,meson8-hdmi-tx-phy";
-+      reg = <0x3a0 0xc>;
-+      clocks = <&tmds_clock>;
-+      #phy-cells = <0>;
-+    };
-+  - |
-+    hdmi-phy@3a0 {
-+      compatible = "amlogic,meson8b-hdmi-tx-phy", "amlogic,meson8-hdmi-tx-phy";
-+      reg = <0x3a0 0xc>;
-+      clocks = <&tmds_clock>;
-+      #phy-cells = <0>;
-+    };
++	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0,
++		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL1, 0x08c3) |
++		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL0, hdmi_ctl0));
++
++	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1, 0x0);
++
++	/* Reset three times, just like the vendor driver does */
++	for (i = 0; i < 3; i++) {
++		regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1,
++			     HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE |
++			     HHI_HDMI_PHY_CNTL1_SOFT_RESET);
++		usleep_range(1000, 2000);
++
++		regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1,
++			     HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE);
++		usleep_range(1000, 2000);
++	}
++
++	return 0;
++}
++
++static int phy_meson8_hdmi_tx_power_off(struct phy *phy)
++{
++	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
++
++	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0,
++		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL1, 0x0841) |
++		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL0, 0x8d00));
++
++	return 0;
++}
++
++static const struct phy_ops phy_meson8_hdmi_tx_ops = {
++	.init		= phy_meson8_hdmi_tx_init,
++	.exit		= phy_meson8_hdmi_tx_exit,
++	.power_on	= phy_meson8_hdmi_tx_power_on,
++	.power_off	= phy_meson8_hdmi_tx_power_off,
++	.owner		= THIS_MODULE,
++};
++
++static int phy_meson8_hdmi_tx_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct phy_meson8_hdmi_tx_priv *priv;
++	struct phy_provider *phy_provider;
++	struct resource *res;
++	struct phy *phy;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -EINVAL;
++
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->hhi = syscon_node_to_regmap(np->parent);
++	if (IS_ERR(priv->hhi))
++		return PTR_ERR(priv->hhi);
++
++	priv->tmds_clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(priv->tmds_clk))
++		return PTR_ERR(priv->tmds_clk);
++
++	phy = devm_phy_create(&pdev->dev, np, &phy_meson8_hdmi_tx_ops);
++	if (IS_ERR(phy))
++		return PTR_ERR(phy);
++
++	phy_set_drvdata(phy, priv);
++
++	phy_provider = devm_of_phy_provider_register(&pdev->dev,
++						     of_phy_simple_xlate);
++
++	return PTR_ERR_OR_ZERO(phy_provider);
++}
++
++static const struct of_device_id phy_meson8_hdmi_tx_of_match[] = {
++	{ .compatible = "amlogic,meson8-hdmi-tx-phy" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, phy_meson8_hdmi_tx_of_match);
++
++static struct platform_driver phy_meson8_hdmi_tx_driver = {
++	.probe	= phy_meson8_hdmi_tx_probe,
++	.driver	= {
++		.name		= "phy-meson8-hdmi-tx",
++		.of_match_table	= phy_meson8_hdmi_tx_of_match,
++	},
++};
++module_platform_driver(phy_meson8_hdmi_tx_driver);
++
++MODULE_AUTHOR("Martin Blumenstingl <martin.blumenstingl@googlemail.com>");
++MODULE_DESCRIPTION("Meson8, Meson8b and Meson8m2 HDMI TX PHY driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.33.1
 
