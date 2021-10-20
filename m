@@ -2,174 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E587F435084
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C04443508B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhJTQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhJTQrm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:47:42 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33406C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:45:24 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g8so409638edb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:45:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=54ox45iamAqJI/ZSpvjT5ytrb9y5qaD60KiIyvWufQE=;
-        b=JEupWRdH/ZFgHpE7i0xYU+gheIJ1mWk/Jz6nhN8ZHLR8hos3roX9F3YPG+T0GhLy54
-         V9z2FFrRspZ+M/UVhD6C9+ntvoNq9NQmwqdkmy7P0biv9p3fxbC9TCX8vsuozogk6IfP
-         w45AvME8aouQje4BLDMWoy/UeUIa3cY3oIShCUMWl2fraXHU65RnBPw0Q7K5NckNkGZ5
-         3Mi4zHehqsT/5ei+v6usNQ0sxxTXbE33FsfjqIqkE+/LJjLlJW5nxnkxPYN68u53iKa2
-         GllZVbX1htMdYfc5hAkSQvrYUboiqh/Ce/oSKMuKV37t6r5fdRqkHkdcTELd4iTU5aS9
-         YEkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=54ox45iamAqJI/ZSpvjT5ytrb9y5qaD60KiIyvWufQE=;
-        b=kkoT2A0YcG3g4wNvGBRr94UPDigZm0sBe8NdftJeBdwYiALpVmc30wCO3QlBgqb/6B
-         iSgfNr/Ur+rk7u01Zpmm8W8Tr7fEi65PHIT1ZzCbchYaxcHxIDLVGC3YfYRUbxpAyCC7
-         aHqKQWgXAEefC0EZX8dedez8EaQ2vaamCVNwNNvwFOetW7ZPFhxnJ54f0OtyNjT1a7Y/
-         hfSGDQEOpzHN8GxURW4jnYMeKR+vLoFTuGd55FuzGenapTQPRtbWAuHkMKmdiQeDwVMm
-         i54iPx/ld24Nj43LtvRERKSIroffsZFXyZNLWK5mYf5k/4ps+jxnW4sRKgPUzMOFmPsy
-         XxyA==
-X-Gm-Message-State: AOAM530i2JnFMm2p1i7EWIHc9zp3y1Dj290eDnfYbwdfhXM9P7iLvP/y
-        fypYF2FKaMzz2HN/BVDeumptD3ONPLnHhv6AFl68bA==
-X-Google-Smtp-Source: ABdhPJwESR4BaiSZNwncK3k5JFkYwYy3lXgr3LuPP4BgzRv4dmOeosqMpCxNFStPOzgnfaTqzpxnUP59bHg64aVX7uU=
-X-Received: by 2002:a50:ec0f:: with SMTP id g15mr61186edr.47.1634748322553;
- Wed, 20 Oct 2021 09:45:22 -0700 (PDT)
+        id S230396AbhJTQsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:48:11 -0400
+Received: from mga05.intel.com ([192.55.52.43]:59922 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230374AbhJTQsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 12:48:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="315032949"
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="315032949"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 09:45:52 -0700
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="720486000"
+Received: from yakasaka-mobl1.gar.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.9.165])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 09:45:51 -0700
+Subject: Re: [PATCH v5 06/16] x86/tdx: Make DMA pages shared
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <654455db-a605-5069-d652-fe822ae066b0@amd.com>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <66acafb6-7659-7d76-0f52-d002cfae9cc8@linux.intel.com>
+Date:   Wed, 20 Oct 2021 09:45:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211018114046.25571-1-etienne.carriere@linaro.org>
- <1634578358.516648.2612839.nullmailer@robh.at.kernel.org> <CAN5uoS_B6PrkWtaX5V4xdNnvRjzTJwsB=txVK0YB8bGjWsKdNA@mail.gmail.com>
-In-Reply-To: <CAN5uoS_B6PrkWtaX5V4xdNnvRjzTJwsB=txVK0YB8bGjWsKdNA@mail.gmail.com>
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-Date:   Wed, 20 Oct 2021 18:45:11 +0200
-Message-ID: <CAN5uoS8V7ygo04iOjb=AF8HLf58cpZkL8QzkaG8kouKtUYS-aw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: Add OP-TEE transport for SCMI
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <654455db-a605-5069-d652-fe822ae066b0@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again,
-
-On Wed, 20 Oct 2021 at 17:52, Etienne Carriere
-<etienne.carriere@linaro.org> wrote:
->
-> Hello Rob,
->
->
-> On Mon, 18 Oct 2021 at 19:32, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Mon, 18 Oct 2021 13:40:45 +0200, Etienne Carriere wrote:
-> > > Introduce compatible "linaro,scmi-optee" for SCMI transport channel
-> > > based on an OP-TEE service invocation. The compatible mandates a
-> > > channel ID defined with property "linaro,optee-channel-id".
-> > >
-> > > Cc: devicetree@vger.kernel.org
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
-> > > ---
-> > > Changes since v2:
-> > >  - Define mandatory property linaro,optee-channel-id
-> > >  - Rebased on yaml description file
-> > >
-> > > Changes since v1:
-> > >  - Removed modification regarding mboxes property description.
-> > > ---
-> > >  .../bindings/firmware/arm,scmi.yaml           | 44 +++++++++++++++++++
-> > >  1 file changed, 44 insertions(+)
-> > >
-> >
-> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> >
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'description' is a required property
-> >         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-> >         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
-> >         'type' is a required property
-> >                 hint: A vendor boolean property can use "type: boolean"
-> >         Additional properties are not allowed ('maxItems' was unexpected)
-> >                 hint: A vendor boolean property can use "type: boolean"
-> >         /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
-> >                 'enum' is a required property
-> >                 'const' is a required property
-> >                 hint: A vendor string property with exact values has an implicit type
-> >                 from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-> >         /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: patternProperties:^protocol@[0-9a-f]+$:properties:linaro,optee-channel-id: 'oneOf' conditional failed, one must be fixed:
-> >                 '$ref' is a required property
-> >                 'allOf' is a required property
-> >                 hint: A vendor property needs a $ref to types.yaml
-> >                 from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-> >         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-> >         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.yaml: ignoring, error in schema: patternProperties: ^protocol@[0-9a-f]+$: properties: linaro,optee-channel-id
-> > warning: no schema found in file: ./Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-> > Documentation/devicetree/bindings/mailbox/arm,mhu.example.dt.yaml:0:0: /example-1/firmware/scmi: failed to match any schema with compatible: ['arm,scmi']
-> > Documentation/devicetree/bindings/firmware/arm,scmi.example.dts:175.39-178.19: ERROR (duplicate_label): /example-2/firmware/scmi/protocol@14: Duplicate label 'scmi_clk' on /example-2/firmware/scmi/protocol@14 and /example-0/firmware/scmi/protocol@14
-> > Documentation/devicetree/bindings/firmware/arm,scmi.example.dts:180.40-186.19: ERROR (duplicate_label): /example-2/firmware/scmi/protocol@13: Duplicate label 'scmi_dvfs' on /example-2/firmware/scmi/protocol@13 and /example-0/firmware/scmi/protocol@13
-> > ERROR: Input tree has errors, aborting (use -f to force output)
-> > make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/firmware/arm,scmi.example.dt.yaml] Error 2
-> > make[1]: *** Waiting for unfinished jobs....
-> > make: *** [Makefile:1441: dt_binding_check] Error 2
-> >
-> > doc reference errors (make refcheckdocs):
-> >
-> > See https://patchwork.ozlabs.org/patch/1542547
-> >
-> > This check can fail if there are any dependencies. The base for a patch
-> > series is generally the most recent rc1.
-> >
-> > If you already ran 'make dt_binding_check' and didn't see the above
-> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> > date:
-> >
-> > pip3 install dtschema --upgrade
-> >
-> > Please check and re-submit.
-> >
->
-> Thanks for the feedback and guidelines. I've played a bit with dt
-> checker and saw that description/type/etc.. are not needed when the
-> property name does not include a coma ','.
->
-> I think i'll use "optee-channel-id" instead of
-> "linaro,optee-channel-id" as property name.
-> With that name, 'make dt_binding_check' passes without complains on
-> arm,scmi.yaml.
-> I have no strong preference and here and can go either ways.
-
-Discard my comment. I'll preserve the linaro, vendor prefix.
-This property is all but generic.
-I"ll add a clean description where needed and run dt_checker against.
-
-Sorry for the noise.
-Regards,
-Etienne
 
 
->
-> I though the "linaro," was expected.
-> Please tell me if there's any reason I need to preserve this "linaro,"
-> prefix on that property.
->
-> Regards,
-> Etienne
+On 10/20/21 9:33 AM, Tom Lendacky wrote:
+> On 10/8/21 7:37 PM, Kuppuswamy Sathyanarayanan wrote:
+>> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+>>
+>> Just like MKTME, TDX reassigns bits of the physical address for
+>> metadata.  MKTME used several bits for an encryption KeyID. TDX
+>> uses a single bit in guests to communicate whether a physical page
+>> should be protected by TDX as private memory (bit set to 0) or
+>> unprotected and shared with the VMM (bit set to 1).
+>>
+>> __set_memory_enc_dec() is now aware about TDX and sets Shared bit
+>> accordingly following with relevant TDX hypercall.
+>>
+>> Also, Do TDX_ACCEPT_PAGE on every 4k page after mapping the GPA range
+>> when converting memory to private. Using 4k page size limit is due
+>> to current TDX spec restriction. Also, If the GPA (range) was
+>> already mapped as an active, private page, the host VMM may remove
+>> the private page from the TD by following the “Removing TD Private
+>> Pages” sequence in the Intel TDX-module specification [1] to safely
+>> block the mapping(s), flush the TLB and cache, and remove the
+>> mapping(s).
+>>
+>> BUG() if TDX_ACCEPT_PAGE fails (except "previously accepted page" case)
+>> , as the guest is completely hosed if it can't access memory.
+>>
+>> [1] 
+>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsoftware.intel.com%2Fcontent%2Fdam%2Fdevelop%2Fexternal%2Fus%2Fen%2Fdocuments%2Ftdx-module-1eas-v0.85.039.pdf&amp;data=04%7C01%7Cthomas.lendacky%40amd.com%7C0e667adf5a4042abce3908d98abd07a8%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637693367201703893%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=UGxQ9xBjWsmev7PetX%2BuS0RChkAXyaH7q6JHO9ZiUtY%3D&amp;reserved=0 
+>>
+>>
+>> Tested-by: Kai Huang <kai.huang@linux.intel.com>
+>> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>> Reviewed-by: Tony Luck <tony.luck@intel.com>
+>> Signed-off-by: Kuppuswamy Sathyanarayanan 
+>> <sathyanarayanan.kuppuswamy@linux.intel.com>
+> 
+> ...
+> 
+>> diff --git a/arch/x86/mm/mem_encrypt_common.c 
+>> b/arch/x86/mm/mem_encrypt_common.c
+>> index f063c885b0a5..119a9056efbb 100644
+>> --- a/arch/x86/mm/mem_encrypt_common.c
+>> +++ b/arch/x86/mm/mem_encrypt_common.c
+>> @@ -9,9 +9,18 @@
+>>   #include <asm/mem_encrypt_common.h>
+>>   #include <linux/dma-mapping.h>
+>> +#include <linux/cc_platform.h>
+>>   /* Override for DMA direct allocation check - 
+>> ARCH_HAS_FORCE_DMA_UNENCRYPTED */
+>>   bool force_dma_unencrypted(struct device *dev)
+>>   {
+>> -    return amd_force_dma_unencrypted(dev);
+>> +    if (cc_platform_has(CC_ATTR_GUEST_TDX) &&
+>> +        cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+>> +        return true;
+>> +
+>> +    if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) ||
+>> +        cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
+>> +        return amd_force_dma_unencrypted(dev);
+>> +
+>> +    return false;
+> 
+> Assuming the original force_dma_unencrypted() function was moved here or 
+> cc_platform.c, then you shouldn't need any changes. Both SEV and TDX 
+> require true be returned if CC_ATTR_GUEST_MEM_ENCRYPT returns true. And 
+> then TDX should never return true for CC_ATTR_HOST_MEM_ENCRYPT.
+
+
+For non TDX case, in CC_ATTR_HOST_MEM_ENCRYPT, we should still call
+amd_force_dma_unencrypted() right?
+
+> 
+>>   }
+>> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+>> index 527957586f3c..6c531d5cb5fd 100644
+>> --- a/arch/x86/mm/pat/set_memory.c
+>> +++ b/arch/x86/mm/pat/set_memory.c
+>> @@ -30,6 +30,7 @@
+>>   #include <asm/proto.h>
+>>   #include <asm/memtype.h>
+>>   #include <asm/set_memory.h>
+>> +#include <asm/tdx.h>
+>>   #include "../mm_internal.h"
+>> @@ -1981,8 +1982,10 @@ int set_memory_global(unsigned long addr, int 
+>> numpages)
+>>                       __pgprot(_PAGE_GLOBAL), 0);
+>>   }
+>> -static int __set_memory_enc_dec(unsigned long addr, int numpages, 
+>> bool enc)
+>> +static int __set_memory_protect(unsigned long addr, int numpages, 
+>> bool protect)
+>>   {
+>> +    pgprot_t mem_protected_bits, mem_plain_bits;
+>> +    enum tdx_map_type map_type;
+>>       struct cpa_data cpa;
+>>       int ret;
+>> @@ -1997,8 +2000,25 @@ static int __set_memory_enc_dec(unsigned long 
+>> addr, int numpages, bool enc)
+>>       memset(&cpa, 0, sizeof(cpa));
+>>       cpa.vaddr = &addr;
+>>       cpa.numpages = numpages;
+>> -    cpa.mask_set = enc ? __pgprot(_PAGE_ENC) : __pgprot(0);
+>> -    cpa.mask_clr = enc ? __pgprot(0) : __pgprot(_PAGE_ENC);
+>> +
+>> +    if (cc_platform_has(CC_ATTR_GUEST_SHARED_MAPPING_INIT)) {
+>> +        mem_protected_bits = __pgprot(0);
+>> +        mem_plain_bits = pgprot_cc_shared_mask();
+> 
+> How about having generic versions for both shared and private that 
+> return the proper value for SEV or TDX. Then this remains looking 
+> similar to as it does now, just replacing the __pgprot() calls with the 
+> appropriate pgprot_cc_{shared,private}_mask().
+
+Makes sense.
+
+> 
+> Thanks,
+> Tom
+> 
+>> +    } else {
+>> +        mem_protected_bits = __pgprot(_PAGE_ENC);
+>> +        mem_plain_bits = __pgprot(0);
+>> +    }
+>> +
+>> +    if (protect) {
+>> +        cpa.mask_set = mem_protected_bits;
+>> +        cpa.mask_clr = mem_plain_bits;
+>> +        map_type = TDX_MAP_PRIVATE;
+>> +    } else {
+>> +        cpa.mask_set = mem_plain_bits;
+>> +        cpa.mask_clr = mem_protected_bits;
+>> +        map_type = TDX_MAP_SHARED;
+>> +    }
+>> +
+>>       cpa.pgd = init_mm.pgd;
+>>       /* Must avoid aliasing mappings in the highmem code */
+>> @@ -2006,9 +2026,17 @@ static int __set_memory_enc_dec(unsigned long 
+>> addr, int numpages, bool enc)
+>>       vm_unmap_aliases();
+>>       /*
+>> -     * Before changing the encryption attribute, we need to flush 
+>> caches.
+>> +     * Before changing the encryption attribute, flush caches.
+>> +     *
+>> +     * For TDX, guest is responsible for flushing caches on 
+>> private->shared
+>> +     * transition. VMM is responsible for flushing on shared->private.
+>>        */
+>> -    cpa_flush(&cpa, !this_cpu_has(X86_FEATURE_SME_COHERENT));
+>> +    if (cc_platform_has(CC_ATTR_GUEST_TDX)) {
+>> +        if (map_type == TDX_MAP_SHARED)
+>> +            cpa_flush(&cpa, 1);
+>> +    } else {
+>> +        cpa_flush(&cpa, !this_cpu_has(X86_FEATURE_SME_COHERENT));
+>> +    }
+>>       ret = __change_page_attr_set_clr(&cpa, 1);
+>> @@ -2021,18 +2049,21 @@ static int __set_memory_enc_dec(unsigned long 
+>> addr, int numpages, bool enc)
+>>        */
+>>       cpa_flush(&cpa, 0);
+>> +    if (!ret && cc_platform_has(CC_ATTR_GUEST_SHARED_MAPPING_INIT))
+>> +        ret = tdx_hcall_gpa_intent(__pa(addr), numpages, map_type);
+>> +
+>>       return ret;
+>>   }
+>>   int set_memory_encrypted(unsigned long addr, int numpages)
+>>   {
+>> -    return __set_memory_enc_dec(addr, numpages, true);
+>> +    return __set_memory_protect(addr, numpages, true);
+>>   }
+>>   EXPORT_SYMBOL_GPL(set_memory_encrypted);
+>>   int set_memory_decrypted(unsigned long addr, int numpages)
+>>   {
+>> -    return __set_memory_enc_dec(addr, numpages, false);
+>> +    return __set_memory_protect(addr, numpages, false);
+>>   }
+>>   EXPORT_SYMBOL_GPL(set_memory_decrypted);
+>>
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
