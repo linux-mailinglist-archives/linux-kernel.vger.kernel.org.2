@@ -2,89 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE25434BF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2F9434BF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhJTNZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:25:21 -0400
-Received: from mga17.intel.com ([192.55.52.151]:60606 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTNZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:25:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="209571797"
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
-   d="scan'208";a="209571797"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 06:22:45 -0700
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
-   d="scan'208";a="527061761"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 06:22:43 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mdBY0-000DOj-0j;
-        Wed, 20 Oct 2021 16:22:24 +0300
-Date:   Wed, 20 Oct 2021 16:22:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     lianzhi chang <changlianzhi@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org, 282827961@qq.com
-Subject: Re: [PATCH v5] tty: Fix the keyboard led light display problem
-Message-ID: <YXAYENOfaRr7bfJ8@smile.fi.intel.com>
-References: <20211020125050.16446-1-changlianzhi@uniontech.com>
+        id S230052AbhJTN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTN0H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:26:07 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92375C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:23:52 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id b189-20020a1c1bc6000000b0030da052dd4fso10234856wmb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:23:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xK9DNZI2WxuIz+Ctgl2vXcWcIENDorkB7WicrZ5sMlw=;
+        b=D2jt52BW4x4UxWlPWIeJILigF+dk35bbQBWylH2BYt9nYqPexh7mFTEru41QxZwN+O
+         UHut3BOS91CHPbXg07iVYWFqs4M6XrrjFpzFzxaA63EkYAIR8VM4vwdns8mZVepmfonc
+         Joshy7f06L3vP1zPh1ybGSHok0GjxN+1KHpeOnqs6fEDuDAJQW2MusejKeaEZgK0KKk/
+         RjlcisnP4yilFg5Nq5xZlYkmHCguyJQDikhfTTtXCUrNGUPPrRkOhUCyImEf8xmHYEpA
+         qDHcnnEgZCFfvYYpj/ZwGY6JVWcMhpte1zpejzNRmuTDcjIrwt2j797AS7szY+pCNQAM
+         Qbtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xK9DNZI2WxuIz+Ctgl2vXcWcIENDorkB7WicrZ5sMlw=;
+        b=cBeRbI0AVTsobnzD7Ad5iSu9iid/zvdl3bjzxkSlz9S4S9ptegDBy+M7fAuKi6sY4z
+         NPoUie0O1CAQf8kIsIFDu3qNqlTx85W1pNO02irbmAMgDRIdj/Nu0iH1slFLIpkA8Qkq
+         yYr8IA8TI59MSOj5z0ujpPS1rcr4EuzFDPX6J5EPdQBFW/lgCMUZ9GziTIKNIj7eigHN
+         tXFKPx+DqOpW/MW2+VSsLsUU99RUI6lZg9y7mdnSbEKFAkg8zp0klQ09Srz7Fo4AbjkC
+         ppTJKjh1dAgr8yXFPkcVuG33WznlU+eQCp9AU/ozg7sNrW9C/FON7PQD6o8r8cVwWTwU
+         r1Mg==
+X-Gm-Message-State: AOAM532KX9kPRwFXxfabSVX4D14rEQR2B1aNG+axtxBxA4I+6liHbzzi
+        SVJS22waJB4lUf1XjFg6DnQ=
+X-Google-Smtp-Source: ABdhPJzA1mhv83/9w7/Y0vUlp7/KoKz3Whha9WKlXxhTN+u0wOhzDSF+ciF2aRR4xM8TA5VKHzYNzA==
+X-Received: by 2002:adf:bc42:: with SMTP id a2mr52925368wrh.4.1634736231141;
+        Wed, 20 Oct 2021 06:23:51 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id l5sm2064106wru.24.2021.10.20.06.23.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 06:23:50 -0700 (PDT)
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Karolina Drobnik <karolinadrobnik@gmail.com>
+Subject: [PATCH v2] staging: vt6655: Rename `by_preamble_type` parameter
+Date:   Wed, 20 Oct 2021 14:23:26 +0100
+Message-Id: <20211020132326.417059-1-karolinadrobnik@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020125050.16446-1-changlianzhi@uniontech.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 08:50:50PM +0800, lianzhi chang wrote:
-> Switching from the desktop environment to the tty environment,
-> the state of the keyboard led lights and the state of the keyboard
-> lock are inconsistent. This is because the attribute kb->kbdmode
-> of the tty bound in the desktop environment (xorg) is set to
-> VC_OFF, which causes the ledstate and kb->ledflagstate
-> values of the bound tty to always be 0, which causes the switch
-> from the desktop When to the tty environment, the LED light
-> status is inconsistent with the keyboard lock status.
+Drop Hungarian notation prefix in the first parameter of
+`bb_get_frame_time` function. Update the comment to
+reflect that change.
 
-Thank you for an update! My comments below.
+Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
+---
+v2:
+* Update the change log: delete description of why `byPreambleType`
+  rename influenced that change and reference to an already merged commit
 
-...
+ drivers/staging/vt6655/baseband.c | 6 +++---
+ drivers/staging/vt6655/baseband.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> +static void kbd_update_ledstate(struct input_dev *dev)
-> +{
-> +	unsigned long leds;
-> +
-> +	if (ledstate == -1U)
-> +		ledstate = 0;
-
-> +	leds = (unsigned long)ledstate;
-
-It's still unclear why do you need casting here.
-
-> +	if (!!test_bit(LED_NUML, dev->led) != !!test_bit(VC_NUMLOCK, &leds))
-> +		ledstate ^= BIT(VC_NUMLOCK);
-> +	if (!!test_bit(LED_CAPSL, dev->led) != !!test_bit(VC_CAPSLOCK, &leds))
-> +		ledstate ^= BIT(VC_CAPSLOCK);
-> +	if (!!test_bit(LED_SCROLLL, dev->led) != !!test_bit(VC_SCROLLOCK, &leds))
-> +		ledstate ^= BIT(VC_SCROLLOCK);
-> +}
-
-...
-
->  	unsigned int leds;
->  	unsigned long flags;
-> +	struct kbd_struct *kb;
-
-Can we use reversed xmas tree ordering as I showed previously, please?
-
-
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index 5efca92f1f18..8f9177db6663 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -1691,7 +1691,7 @@ static const unsigned short awc_frame_time[MAX_RATE] = {
+  *
+  * Parameters:
+  *  In:
+- *      by_preamble_type  - Preamble Type
++ *      preamble_type     - Preamble Type
+  *      by_pkt_type        - PK_TYPE_11A, PK_TYPE_11B, PK_TYPE_11GB, PK_TYPE_11GA
+  *      cb_frame_length   - Baseband Type
+  *      tx_rate           - Tx Rate
+@@ -1700,7 +1700,7 @@ static const unsigned short awc_frame_time[MAX_RATE] = {
+  * Return Value: FrameTime
+  *
+  */
+-unsigned int bb_get_frame_time(unsigned char by_preamble_type,
++unsigned int bb_get_frame_time(unsigned char preamble_type,
+ 			       unsigned char by_pkt_type,
+ 			       unsigned int cb_frame_length,
+ 			       unsigned short tx_rate)
+@@ -1717,7 +1717,7 @@ unsigned int bb_get_frame_time(unsigned char by_preamble_type,
+ 	rate = (unsigned int)awc_frame_time[rate_idx];
+ 
+ 	if (rate_idx <= 3) {		    /* CCK mode */
+-		if (by_preamble_type == 1) /* Short */
++		if (preamble_type == 1) /* Short */
+ 			preamble = 96;
+ 		else
+ 			preamble = 192;
+diff --git a/drivers/staging/vt6655/baseband.h b/drivers/staging/vt6655/baseband.h
+index 0a30afaa7cc3..15b2802ed727 100644
+--- a/drivers/staging/vt6655/baseband.h
++++ b/drivers/staging/vt6655/baseband.h
+@@ -44,7 +44,7 @@
+ #define TOP_RATE_2M         0x00200000
+ #define TOP_RATE_1M         0x00100000
+ 
+-unsigned int bb_get_frame_time(unsigned char by_preamble_type,
++unsigned int bb_get_frame_time(unsigned char preamble_type,
+ 			       unsigned char by_pkt_type,
+ 			       unsigned int cb_frame_length,
+ 			       unsigned short w_rate);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.2
 
