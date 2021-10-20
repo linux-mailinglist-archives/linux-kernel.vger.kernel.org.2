@@ -2,91 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C80A4344C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AE14344C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhJTFoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 01:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhJTFoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 01:44:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4956B610FF;
-        Wed, 20 Oct 2021 05:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634708511;
-        bh=W/zndsrIO03CCVWRiW3h89JjE5e2vGwXoypJkY4Fy40=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mqX/5eUckZ+hGL7rMu5XaCNgADjckqv3UJNSpmXc9VSsZz7vmV0DXKu+CkYY0w6DZ
-         WakHDvNlIO2xH+/yoiP47n3ZaZg0QuQDF3r5PgetfUY0A7KJd3pjYzjaM5PZQ6FQye
-         Kv78ilP6eRKJbUSjktsbvuvyAgCzo6rMaAAWdFP/pwpk2aKhQfJAVaNyK0Zt+bqjUl
-         uwsaIKPuVJU5FiPSUSrRoXzq3IUcTTiVXhNp+gDTUsdAFdn/ofOCrzae60x72ErtYb
-         7y0yOvNDViI2d3imlCMpncufEHSJgtvY4SKQy1IoquHH7MTs8mh/L1ZF/NZJdlUEEV
-         GYGT/l7tVsr3w==
-Date:   Wed, 20 Oct 2021 06:41:42 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        "Songxiaowei (Kirin_DRV)" <songxiaowei@hisilicon.com>,
-        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh@kernel.org>, Simon Xue <xxm@rock-chips.com>,
-        Srikanth Thokala <srikanth.thokala@intel.com>,
-        Wesley Sheng <wesley.sheng@amd.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v14 00/11] Add support for Hikey 970 PCIe
-Message-ID: <20211020064142.0807ae70@sal.lan>
-In-Reply-To: <20211019192758.GA2393049@bhelgaas>
-References: <cover.1634622716.git.mchehab+huawei@kernel.org>
-        <20211019192758.GA2393049@bhelgaas>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229846AbhJTFow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 01:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhJTFou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 01:44:50 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE71CC06161C;
+        Tue, 19 Oct 2021 22:42:36 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id g184so21502282pgc.6;
+        Tue, 19 Oct 2021 22:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ifN0cxqE/QoI02nqwKUsKcrwVn6J3RV5OLBMXfGT3qo=;
+        b=SAxr/n0IsILMQCBwUaFxiBz4EXLbe6CBFXHaCj5yYf9VsHWvdv8swDsMuxfRc3c+1+
+         amFv/LhcBaNz5bixV7yFzVZn91XC6QQj2feY1c44qoreUGMZsQodWNZReRxX0EkbY8H1
+         pX+AxL3/Ymza1O7HGiG6OpCFiLpE1gTjXP5Q+le+JmBpc/qbY7Mp3rWHPJfnOBtFJUuc
+         5LuyvK/kWoJoikV2mJfI6ITQ0ezoE7ckttMXc38SKII/dSdt4lq48GRRMdzqhW9zgBuH
+         nToBrHNBwN1QKHliiFbXzrMCAqMoESgi7BJuxg4YPaBbup7Wqxk13O3umFOjsT/gV0tH
+         Oa/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ifN0cxqE/QoI02nqwKUsKcrwVn6J3RV5OLBMXfGT3qo=;
+        b=VBJfV+R9RqpyHvppt1Y11mkH2EQ1UBYwxuVfCINhgqnvRRro/9yd8x2GkYTt1pHFKo
+         dJzCcS4KmbniZ4QKk/N4t9IrHG7f2SloLcRynfK7xPxGaRJcdB9V1MLBuWWqJTQOoCdM
+         CqXKPLz3NBURIDdJl45gwgOZatCLC+09fD/o2IhlsNxYI9Mkml2LFcr6ozz3pm0defwd
+         6WZ71/TvLp2zOFfLfSSxtwAF1K5RqhtuxjWXHi1vBqpzL+aMGeEAmGGQzxBSMXc9kl/c
+         fX5t726WL4Lfhg682ba7ipkg0R7mbqRSY/3X5J1akIb4to0dM7jTDlEKmjMUxKqDcj44
+         4ogQ==
+X-Gm-Message-State: AOAM532nZAwFPllZaD2w5s9JZygDyNIeu2ZoogKpwbTFdZn1lHI7HSrt
+        Fl0ld+YUyXO8NK1980/non4=
+X-Google-Smtp-Source: ABdhPJxC66hGrQ6LK/ZEcOJBetYNNicjFRkY/JOygFGq308F07cRqc9aWxWJdbtXJke3jJ39FFAFMA==
+X-Received: by 2002:a05:6a00:1255:b0:44c:dd49:b39a with SMTP id u21-20020a056a00125500b0044cdd49b39amr4288882pfi.66.1634708556298;
+        Tue, 19 Oct 2021 22:42:36 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id l29sm916127pgc.47.2021.10.19.22.42.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 22:42:35 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 14:42:31 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter: drop chrdev_lock
+Message-ID: <YW+sRz0EQ0uKMDuT@shinobu>
+References: <20211017185521.3468640-1-david@lechnology.com>
+ <YW0673OckeCY6Qs/@shinobu>
+ <e8158cd7-fbde-5a9a-f4d9-a863745e3d58@lechnology.com>
+ <YW5rVLrbrVVJ75SY@shinobu>
+ <YW5uxIQ1WuW66cf0@kroah.com>
+ <YW5xUtWdvW5zHFx5@shinobu>
+ <c0a4cd67-6046-b06d-c33c-c0f3374d0b52@lechnology.com>
+ <YW8xtA7ZU+80W/N7@shinobu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vEWqxqo7oFyNGX06"
+Content-Disposition: inline
+In-Reply-To: <YW8xtA7ZU+80W/N7@shinobu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 19 Oct 2021 14:27:58 -0500
-Bjorn Helgaas <helgaas@kernel.org> escreveu:
 
-> On Tue, Oct 19, 2021 at 07:06:37AM +0100, Mauro Carvalho Chehab wrote:
-> 
-> > Mauro Carvalho Chehab (11):
-> >   PCI: kirin: Reorganize the PHY logic inside the driver
-> >   PCI: kirin: Add support for a PHY layer
-> >   PCI: kirin: Use regmap for APB registers
-> >   PCI: kirin: Add support for bridge slot DT schema
-> >   PCI: kirin: give more time for PERST# reset to finish
-> >   PCI: kirin: Add Kirin 970 compatible
-> >   PCI: kirin: Add MODULE_* macros
-> >   PCI: kirin: Allow building it as a module
-> >   PCI: kirin: Add power_off support for Kirin 960 PHY
-> >   PCI: kirin: fix poweroff sequence
-> >   PCI: kirin: Allow removing the driver  
-> 
-> Don't repost for this, but if you have occasion to repost for other
-> reasons, two of these are not capitalized like the others:
-> 
-> >   PCI: kirin: give more time for PERST# reset to finish
-> >   PCI: kirin: fix poweroff sequence  
-> 
-> These are write-once for you, but I'll be reading them many times in
-> the future and they're minor distractions.
+--vEWqxqo7oFyNGX06
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ok, changed on my working repository. On media and on other subsystems
-I contribute regularly, the practice is just the opposite: to use
-lowercase after colons.
+On Wed, Oct 20, 2021 at 05:59:32AM +0900, William Breathitt Gray wrote:
+> On Tue, Oct 19, 2021 at 09:44:04AM -0500, David Lechner wrote:
+> > On 10/19/21 2:18 AM, William Breathitt Gray wrote:
+> > > On Tue, Oct 19, 2021 at 09:07:48AM +0200, Greg KH wrote:
+> > >> On Tue, Oct 19, 2021 at 03:53:08PM +0900, William Breathitt Gray wro=
+te:
+> > >>> On Mon, Oct 18, 2021 at 11:03:49AM -0500, David Lechner wrote:
+> > >>>> On 10/18/21 4:14 AM, William Breathitt Gray wrote:
+> > >>>>> On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
+> > >>>>>> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/c=
+ounter-sysfs.c
+> > >>>>>> index 1ccd771da25f..7bf8882ff54d 100644
+> > >>>>>> --- a/drivers/counter/counter-sysfs.c
+> > >>>>>> +++ b/drivers/counter/counter-sysfs.c
+> > >>>>>> @@ -796,25 +796,18 @@ static int counter_events_queue_size_write=
+(struct counter_device *counter,
+> > >>>>>>    					   u64 val)
+> > >>>>>>    {
+> > >>>>>>    	DECLARE_KFIFO_PTR(events, struct counter_event);
+> > >>>>>> -	int err =3D 0;
+> > >>>>>> -
+> > >>>>>> -	/* Ensure chrdev is not opened more than 1 at a time */
+> > >>>>>> -	if (!atomic_add_unless(&counter->chrdev_lock, 1, 1))
+> > >>>>>> -		return -EBUSY;
+> > >>>>>> +	int err;
+> > >>>>>>   =20
+> > >>>>>>    	/* Allocate new events queue */
+> > >>>>>>    	err =3D kfifo_alloc(&events, val, GFP_KERNEL);
+> > >>>>>>    	if (err)
+> > >>>>>> -		goto exit_early;
+> > >>>>>> +		return err;
+> > >>>>>>   =20
+> > >>>>>>    	/* Swap in new events queue */
+> > >>>>>>    	kfifo_free(&counter->events);
+> > >>>>>>    	counter->events.kfifo =3D events.kfifo;
+> > >>>>>
+> > >>>>> Do we need to hold the events_lock mutex here for this swap in ca=
+se
+> > >>>>> counter_chrdev_read() is in the middle of reading the kfifo to
+> > >>>>> userspace, or do the kfifo macros already protect us from a race
+> > >>>>> condition here?
+> > >>>>>
+> > >>>> Another possibility might be to disallow changing the size while
+> > >>>> events are enabled. Otherwise, we also need to protect against
+> > >>>> write after free.
+> > >>>>
+> > >>>> I considered this:
+> > >>>>
+> > >>>> 	swap(counter->events.kfifo, events.kfifo);
+> > >>>> 	kfifo_free(&events);
+> > >>>>
+> > >>>> But I'm not sure that would be safe enough.
+> > >>>
+> > >>> I think it depends on whether it's safe to call kfifo_free() while =
+other
+> > >>> kfifo_*() calls are executing. I suspect it is not safe because I d=
+on't
+> > >>> think kfifo_free() waits until all kfifo read/write operations are
+> > >>> finished before freeing -- but if I'm wrong here please let me know.
+> > >>>
+> > >>> Because of that, will need to hold the counter->events_lock afteral=
+l so
+> > >>> that we don't modify the events fifo while a kfifo read/write is go=
+ing
+> > >>> on, lest we suffer an address fault. This can happen regardless of
+> > >>> whether you swap before or after the kfifo_free() because the old f=
+ifo
+> > >>> address could still be in use within those uncompleted kfifo_*() ca=
+lls
+> > >>> if they were called before the swap but don't complete before the
+> > >>> kfifo_free().
+> > >>>
+> > >>> So we have a problem now that I think you have already noticed: the
+> > >>> kfifo_in() call in counter_push_events() also needs protection, but=
+ it's
+> > >>> executing within an interrupt context so we can't try to lock a mut=
+ex
+> > >>> lest we end up sleeping.
+> > >>>
+> > >>> One option we have is as you suggested: we disallow changing size w=
+hile
+> > >>> events are enabled. However, that will require us to keep track of =
+when
+> > >>> events are disabled and implement a spinlock to ensure that we don't
+> > >>> disable events in the middle of a kfifo_in().
+> > >>>
+> > >>> Alternatively, we could change events_lock to a spinlock and use it=
+ to
+> > >>> protect all these operations on the counter->events fifo. Would this
+> > >>> alternative be a better option so that we avoid creating another
+> > >>> separate lock?
+> > >>
+> > >> I would recommend just having a single lock here if at all possible,
+> > >> until you determine that there a performance problem that can be
+> > >> measured that would require it to be split up.
+> > >>
+> > >> thanks,
+> > >>
+> > >> greg k-h
+> > >=20
+> > > All right let's go with a single events_lock spinlock then. David, if
+> > > you make those changes and submit a v2, I'll be okay with this patch =
+and
+> > > can provide my ack for it.
+> > >=20
+> >=20
+> > We can't use a spin lock for everything since there are operations
+> > that can sleep that need to be in the critical sections. Likewise,
+> > we can't use a mutex for everything since some critical sections
+> > are in interrupt handlers. But, I suppose we can try combining
+> > the existing mutexes. Since the kfifo is accessed from both
+> > contexts, it seems like it still needs more consideration than
+> > just a mutex or a spin lock, e.g. if events are enabled, don't
+> > allow swapping out the kfifo buffer.
+>=20
+> I think there is a deadlock case if we combine the ops_exists_lock with
+> the n_events_list_lock, so this will need further thought. However, at
+> the very least the swap occuring in counter_events_queue_size_write()
+> and the kfifo_in() in counter_push_events() require some sort of
+> locking; it is trivial to cause a page fault with the code in its
+> current state.
+>=20
+> I think this can be fixed if just events_lock is changed to spinlock for
+> now without modifying the other locks. We can try to combine the
+> remaining locks in a subsequent patch, if they are capable of being
+> combined.
+>=20
+> William Breathitt Gray
 
-Regards,
-Mauro
+After considering this further, kfifo_to_user() could possibly sleep so
+we can't use a spinlock here afterall. As such, events_lock should
+remain as a mutex and instead we'll only allow swapping out the kfifo
+buffer when events are disabled.
+
+William Breathitt Gray
+
+--vEWqxqo7oFyNGX06
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFvrDoACgkQhvpINdm7
+VJKqbQ/+Jjh7Uy7/QPR7xOdrvPr2Pb3nngQf9Z3frUl3B6T8iX4a24yNSPoUQfNW
+iMjIFEtCkt7mgjPv5KlDMeO1dWDvIyFm5sGT8uVrrZ2S43UtDaRk7LeBnxPILj4/
+nG5FjH/J9mTiO+2NxQkJw9otUt8yAY/oOj1+Onz+OloSWv40aaZ9Pwjg0lv2Njew
+tcXCPG1UllLPmNNovODea1huwfIbUajE58XmeYiXtLwn0/DQZfsgUEXlF3bYam4V
+QpMFbz5MURQ4JEJRwiSEb+9/gE5Um+dMkHAdCJ0IsasxtSnjfV9g9ypdaIGKvCDg
+DafEPcjePFD/h/MPU+gjt+W4iNy+J8KirluMI3XUDIqeF+ZkEmmhbWmYowqWhZkC
+ZRyqEVcBn4jskKUl+wPtTQLk3dqGyZAOTLVsqyfNpSYkHcNIsj7lDhMht0A2i0Dc
+s5JCdpqKi+OT6Np2LBF9TWuaDYUtsNy2NfUbzWVE6fbVWZNKhYxWNtHk5m0mBz9e
+Eb0Dpa2SEr1sxF6TxS+H6k6DK+q/DwWpDalG30kACWBM2M6EG9H4MrjaTyHu2E72
+BhzF69MLfC4/6zaX7sTz0/A4HBPG8BUKs/UmTC1L4woZyRCtBsGdSHM3ajW/zB0B
+TpYfny46aGvdtO16O74Y4lyPDNlGLEZwx5fRb2aXsjih2aGGS0M=
+=RljO
+-----END PGP SIGNATURE-----
+
+--vEWqxqo7oFyNGX06--
