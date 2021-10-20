@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1351E43542C
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEA343542D
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhJTT45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
+        id S231676AbhJTT47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbhJTT4x (ORCPT
+        with ESMTP id S231664AbhJTT4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:56:53 -0400
+        Wed, 20 Oct 2021 15:56:54 -0400
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A646BC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:54:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D94CC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:54:39 -0700 (PDT)
 Received: from dslb-188-096-142-022.188.096.pools.vodafone-ip.de ([188.96.142.22] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1mdHfW-0007Cd-H6; Wed, 20 Oct 2021 21:54:34 +0200
+        id 1mdHfX-0007Cd-EC; Wed, 20 Oct 2021 21:54:35 +0200
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
@@ -27,9 +27,9 @@ Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
         Michael Straube <straube.linux@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 4/5] staging: r8188eu: use helper to set broadcast address
-Date:   Wed, 20 Oct 2021 21:54:00 +0200
-Message-Id: <20211020195401.12931-4-martin@kaiser.cx>
+Subject: [PATCH 5/5] staging: r8188eu: remove unused defines and enums
+Date:   Wed, 20 Oct 2021 21:54:01 +0200
+Message-Id: <20211020195401.12931-5-martin@kaiser.cx>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211020195401.12931-1-martin@kaiser.cx>
 References: <20211020195401.12931-1-martin@kaiser.cx>
@@ -39,94 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The eth_broadcast_addr helper assigns the broadcast address to an address
-array. Call this function instead of copying the address bytes manually.
+Remove a couple of unused defines and an unused enum
+from rtl8188e_cmd.h.
 
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- drivers/staging/r8188eu/core/rtw_mlme_ext.c | 13 +++++--------
- drivers/staging/r8188eu/hal/rtl8188e_cmd.c  |  3 +--
- 2 files changed, 6 insertions(+), 10 deletions(-)
+ drivers/staging/r8188eu/include/rtl8188e_cmd.h | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index b0dfafe526f7..7b372374e638 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -3409,7 +3409,6 @@ static int _issue_probereq_p2p(struct adapter *padapter, u8 *da, int wait_ack)
- 	unsigned char			*mac;
- 	struct xmit_priv		*pxmitpriv = &padapter->xmitpriv;
- 	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
--	u8 bc_addr[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
- 	struct wifidirect_info	*pwdinfo = &padapter->wdinfo;
- 	u8 wpsie[255] = { 0x00 }, p2pie[255] = { 0x00 };
- 	u16 wpsielen = 0, p2pielen = 0;
-@@ -3443,8 +3442,8 @@ static int _issue_probereq_p2p(struct adapter *padapter, u8 *da, int wait_ack)
- 			memcpy(pwlanhdr->addr3, pwdinfo->p2p_peer_interface_addr, ETH_ALEN);
- 		} else {
- 			/*	broadcast probe request frame */
--			memcpy(pwlanhdr->addr1, bc_addr, ETH_ALEN);
--			memcpy(pwlanhdr->addr3, bc_addr, ETH_ALEN);
-+			eth_broadcast_addr(pwlanhdr->addr1);
-+			eth_broadcast_addr(pwlanhdr->addr3);
- 		}
- 	}
- 	memcpy(pwlanhdr->addr2, mac, ETH_ALEN);
-@@ -4311,7 +4310,6 @@ void issue_beacon(struct adapter *padapter, int timeout_ms)
- 	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
- 	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
- 	struct wlan_bssid_ex		*cur_network = &pmlmeinfo->network;
--	u8	bc_addr[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
- 	struct wifidirect_info	*pwdinfo = &padapter->wdinfo;
+diff --git a/drivers/staging/r8188eu/include/rtl8188e_cmd.h b/drivers/staging/r8188eu/include/rtl8188e_cmd.h
+index 01404b774ebd..1e01c1662f9a 100644
+--- a/drivers/staging/r8188eu/include/rtl8188e_cmd.h
++++ b/drivers/staging/r8188eu/include/rtl8188e_cmd.h
+@@ -27,15 +27,6 @@ enum RTL8188E_H2C_CMD_ID {
+ 	/* Class DM */
+ 	H2C_DM_MACID_CFG		= 0x40,
+ 	H2C_DM_TXBF			= 0x41,
+-
+-	/* Class BT */
+-	H2C_BT_COEX_MASK		= 0x60,
+-	H2C_BT_COEX_GPIO_MODE		= 0x61,
+-	H2C_BT_DAC_SWING_VAL		= 0x62,
+-	H2C_BT_PSD_RST			= 0x63,
+-
+-	/* Class */
+-	 H2C_RESET_TSF			= 0xc0,
+ };
  
- 	pmgntframe = alloc_mgtxmitframe(pxmitpriv);
-@@ -4334,7 +4332,7 @@ void issue_beacon(struct adapter *padapter, int timeout_ms)
- 	fctrl = &pwlanhdr->frame_ctl;
- 	*(fctrl) = 0;
+ struct cmd_msg_parm {
+@@ -44,10 +35,6 @@ struct cmd_msg_parm {
+ 	u8 buf[6];
+ };
  
--	memcpy(pwlanhdr->addr1, bc_addr, ETH_ALEN);
-+	eth_broadcast_addr(pwlanhdr->addr1);
- 	memcpy(pwlanhdr->addr2, myid(&padapter->eeprompriv), ETH_ALEN);
- 	memcpy(pwlanhdr->addr3, get_my_bssid(cur_network), ETH_ALEN);
- 
-@@ -4676,7 +4674,6 @@ static int _issue_probereq(struct adapter *padapter, struct ndis_802_11_ssid *ps
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
- 	int	bssrate_len = 0;
--	u8	bc_addr[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
- 
- 	pmgntframe = alloc_mgtxmitframe(pxmitpriv);
- 	if (!pmgntframe)
-@@ -4702,8 +4699,8 @@ static int _issue_probereq(struct adapter *padapter, struct ndis_802_11_ssid *ps
- 		memcpy(pwlanhdr->addr3, da, ETH_ALEN);
- 	} else {
- 		/*	broadcast probe request frame */
--		memcpy(pwlanhdr->addr1, bc_addr, ETH_ALEN);
--		memcpy(pwlanhdr->addr3, bc_addr, ETH_ALEN);
-+		eth_broadcast_addr(pwlanhdr->addr1);
-+		eth_broadcast_addr(pwlanhdr->addr3);
- 	}
- 
- 	memcpy(pwlanhdr->addr2, mac, ETH_ALEN);
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-index c5f9353fe3e6..14eed14a4c6a 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-@@ -226,14 +226,13 @@ static void ConstructBeacon(struct adapter *adapt, u8 *pframe, u32 *pLength)
- 	struct mlme_ext_priv *pmlmeext = &adapt->mlmeextpriv;
- 	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
- 	struct wlan_bssid_ex		*cur_network = &pmlmeinfo->network;
--	u8 bc_addr[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
- 
- 	pwlanhdr = (struct rtw_ieee80211_hdr *)pframe;
- 
- 	fctrl = &pwlanhdr->frame_ctl;
- 	*(fctrl) = 0;
- 
--	memcpy(pwlanhdr->addr1, bc_addr, ETH_ALEN);
-+	eth_broadcast_addr(pwlanhdr->addr1);
- 	memcpy(pwlanhdr->addr2, myid(&adapt->eeprompriv), ETH_ALEN);
- 	memcpy(pwlanhdr->addr3, get_my_bssid(cur_network), ETH_ALEN);
- 
+-enum {
+-	PWRS
+-};
+-
+ struct setpwrmode_parm {
+ 	u8 Mode;/* 0:Active,1:LPS,2:WMMPS */
+ 	u8 SmartPS_RLBM;/* LPS= 0:PS_Poll,1:PS_Poll,2:NullData,WMM= 0:PS_Poll,1:NullData */
 -- 
 2.20.1
 
