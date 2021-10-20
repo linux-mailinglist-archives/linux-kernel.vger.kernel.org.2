@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B0B4345E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165534345E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhJTHcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:32:14 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:29916 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhJTHcN (ORCPT
+        id S229959AbhJTHc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:32:26 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56824 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhJTHcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:32:13 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HZ2Fb3VL3zbnKC;
-        Wed, 20 Oct 2021 15:25:23 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 15:29:56 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 15:29:56 +0800
-Subject: Re: [PATCH v2 2/2] iommu/arm-smmu-v3: Simplify useless instructions
- in arm_smmu_cmdq_build_cmd()
-To:     Will Deacon <will@kernel.org>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>,
-        "John Garry" <john.garry@huawei.com>
-References: <20210818080452.2079-1-thunder.leizhen@huawei.com>
- <20210818080452.2079-3-thunder.leizhen@huawei.com>
- <20211004120714.GD27373@willie-the-truck>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <68742c41-8610-9b3f-49b7-7ae04dc87ec2@huawei.com>
-Date:   Wed, 20 Oct 2021 15:29:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 20 Oct 2021 03:32:25 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 559111F421E2;
+        Wed, 20 Oct 2021 08:30:10 +0100 (BST)
+Date:   Wed, 20 Oct 2021 09:30:07 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
+ suspend
+Message-ID: <20211020093007.0edb4ee4@collabora.com>
+In-Reply-To: <20211020071235.in3omswo2jqrahrd@skn-laptop>
+References: <20211011115253.38497-1-sean@geanix.com>
+        <20211011160546.707b737b@collabora.com>
+        <20211015082206.244a2316@xps13>
+        <20211019180800.3v7emokse6lkpjvk@skn-laptop>
+        <20211020085250.030ef244@collabora.com>
+        <20211020090058.58af1087@collabora.com>
+        <20211020071235.in3omswo2jqrahrd@skn-laptop>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211004120714.GD27373@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 20 Oct 2021 09:12:35 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
 
+> On Wed, Oct 20, 2021 at 09:00:58AM +0200, Boris Brezillon wrote:
+> > On Wed, 20 Oct 2021 08:52:50 +0200
+> > Boris Brezillon <boris.brezillon@collabora.com> wrote:
+> >   
+> 
+> [ ... ]
+> > > > 
+> > > > Hi Boris and Miquel,
+> > > > 
+> > > > gpmi-nand.c sets NAND_SKIP_BBTSCAN so we won't get there and populate
+> > > > suspend resume hooks :(
+> > > > Guess there is other drivers that does the same thing...    
+> > 
+> > Actually, this version is even cleaner:
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 3d6c6e880520..98c39b7f6279 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > @@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+> >         mtd->_sync = nand_sync;
+> >         mtd->_lock = nand_lock;
+> >         mtd->_unlock = nand_unlock;
+> > -       mtd->_suspend = nand_suspend;
+> > -       mtd->_resume = nand_resume;
+> >         mtd->_reboot = nand_shutdown;
+> >         mtd->_block_isreserved = nand_block_isreserved;
+> >         mtd->_block_isbad = nand_block_isbad;
+> > @@ -6261,14 +6259,20 @@ static int nand_scan_tail(struct nand_chip *chip)
+> >                 goto err_free_interface_config;
+> >  
+> >         /* Check, if we should skip the bad block table scan */
+> > -       if (chip->options & NAND_SKIP_BBTSCAN)
+> > -               return 0;
+> > -
+> > -       /* Build bad block table */
+> > -       ret = nand_create_bbt(chip);
+> > -       if (ret)
+> > -               goto err_free_secure_regions;
+> > +       if (chip->options & NAND_SKIP_BBTSCAN) {
+> > +               /* Build bad block table */
+> > +               ret = nand_create_bbt(chip);
+> > +               if (ret)
+> > +                       goto err_free_secure_regions;
+> > +       }
+> >  
+> > +       /*
+> > +        * Populate the suspend/resume hooks after the BBT has been scanned to
+> > +        * avoid using the suspend lock and resume waitqueue which are only
+> > +        * initialized when mtd_device_register() is called.
+> > +        */
+> > +       mtd->_suspend = nand_suspend;
+> > +       mtd->_resume = nand_resume;
+> >         return 0;
+> >  
+> >  err_free_secure_regions:  
+> 
+> Why is the gpmi-nand.c and other drivers set NAND_SKIP_BBTSCAN and then
+> call nand_create_bbt() directly?
 
-On 2021/10/4 20:07, Will Deacon wrote:
-> On Wed, Aug 18, 2021 at 04:04:52PM +0800, Zhen Lei wrote:
->> Although the parameter 'cmd' is always passed by a local array variable,
->> and only this function modifies it, the compiler does not know this. The
->> compiler almost always reads the value of cmd[i] from memory rather than
->> directly using the value cached in the register. This generates many
->> useless instruction operations and affects the performance to some extent.
->>
->> To guide the compiler for proper optimization, 'cmd' is defined as a local
->> array variable, marked as register, and copied to the output parameter at
->> a time when the function is returned.
->>
->> The optimization effect can be viewed by running the "size arm-smmu-v3.o"
->> command.
->>
->> Before:
->>    text    data     bss     dec     hex
->>   26954    1348      56   28358    6ec6
->>
->> After:
->>    text    data     bss     dec     hex
->>   26762    1348      56   28166    6e06
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 11 ++++++++---
->>  1 file changed, 8 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> index 01e95b56ffa07d1..7cec0c967f71d86 100644
->> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> @@ -234,10 +234,12 @@ static int queue_remove_raw(struct arm_smmu_queue *q, u64 *ent)
->>  }
->>  
->>  /* High-level queue accessors */
->> -static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
->> +static int arm_smmu_cmdq_build_cmd(u64 *out_cmd, struct arm_smmu_cmdq_ent *ent)
->>  {
->> -	memset(cmd, 0, 1 << CMDQ_ENT_SZ_SHIFT);
->> -	cmd[0] |= FIELD_PREP(CMDQ_0_OP, ent->opcode);
->> +	register u64 cmd[CMDQ_ENT_DWORDS];
-> 
-> 'register' is pretty badly specified outside of a handful of limited uses in
-> conjunction with inline asm, so I really don't think we should be using it
-> here.
-
-OK, I think I was overly aggressive in the beginning, and I just tried to
-remove the register modifier and get the same optimization.
+Dunno, but there's a nand_boot_init() call between the nand_scan() and
+nand_create_bbt() calls, so I guess it has to do with something done in
+this function...
 
 > 
->> +	cmd[0] = FIELD_PREP(CMDQ_0_OP, ent->opcode);
-> 
-> This generates a compiler warning about taking the address of a 'register'
-> variable.
-> 
-> Will
-> .
-> 
+> To me it looks like legacy leftover...
+
+If I were you, I wouldn't take the risk to change that in the same
+patch series. The suspend/resume changes are already quite invasive,
+so let's try to keep it as small/simple as possible.
