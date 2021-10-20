@@ -2,171 +2,608 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB6743517B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB1543517F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhJTRla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
+        id S230520AbhJTRm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbhJTRl3 (ORCPT
+        with ESMTP id S230411AbhJTRm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:41:29 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF15BC06161C;
-        Wed, 20 Oct 2021 10:39:14 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id z3so2519026qvl.9;
-        Wed, 20 Oct 2021 10:39:14 -0700 (PDT)
+        Wed, 20 Oct 2021 13:42:57 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F02AC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:40:42 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id y4so16699821plb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=3furhS+g28o/FlyVYnv8OctYtvS+EaHkG1XvHDmariI=;
-        b=Z+MjEeTDOWoIto4OQ994dhyr30PwwrRltgHjk6trkVCUpwgVe0dDe7HplgvQ1KvAxK
-         7iVBZK14YWuYqIpzruku7g+M4EgmqJ32HILYABKs5MfH3GXNDnUGJ+qJoLUpWQ8Q6oAN
-         HD+HcRn1YhFxYsj3HiEVYOBAP3ciIRf5CYoqfgvkgrPPHpQFVlj/zUlNbpXylxYy5ysV
-         B/ll72wlYmg8vPEmZ6ltPM/atWY8OjiQeFKE38OBt8/KfJDr2R8sGYX2ixk9PG2j69xX
-         uqnzj3J8MCkWo3peXfyqktdcfx9jag5jfZl5i/sxGROLmxzxfuTf/oBQU7zP5yqljM3x
-         DaxA==
+        bh=1vzaPwSXS9hEyHWAyMsCpPKCtQbcMEqVFpEyDIJKQ0s=;
+        b=JzpHbPNVtT3q+OcOvbM3EwblfzxQ/iQv3zlf4dx+Dii5WFS1VVORNkmxxA7jPJuw34
+         227eyTq+nq5cB1/vHMGRyA/Lwoveye0PULpNgFwbWdGgQaWglrCNjYH3bXEwA5qM9JGN
+         kdPx98uQZgPJnPCvGBnwkCczrTzrRTs/Xdit9hRTJXVmttf8g5CGHcI/73RM+0BdZuLz
+         XGnufwNmcXv/3wTy1IeqFZk8hbGNlpZb3rRrDn5XTzrl9qvPkdpY4rkC9jrLOligmMmw
+         3Wp5nORwEOH79c4Yge8YMa5bSE5dyCusq3xWhMqVac0nAONEFIeUvw9c9ZikCvQPXd/u
+         iqkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3furhS+g28o/FlyVYnv8OctYtvS+EaHkG1XvHDmariI=;
-        b=lULVd+DK5put5k6aMWi6+XEdHAWzBb9u/+5BBRX17/lTcTTKRcrUl5QUF0J101DoAK
-         A1cnJx2ptSX9NJQLAcXiS2A4wpiknrflcBhnbhTHfBSwm33SqrcWsfXILDW7Efu2h7mQ
-         jTPZMq4vDYGHpXDPQosLW4xIX5W7f13kEMrYNyNWSji0ooT52KD3jTCwY/o60DoUOr2R
-         id9bVC0gNZvygklC1aLPMsxJfxm+rveA0k/Nvntch+SnO1ulWe1/WbBwstXkjsDS4K+L
-         /twAPik/A8b9DDAsUUB3F/S+v4qu5zooVBU16XjUoPO8PCX+I6AFyuEUX9Bl/Bb8RKTL
-         8esg==
-X-Gm-Message-State: AOAM533PKzn1hyUoWinAaWAMFRUioMDuvullR4M3waXZWr6haz6bMoyl
-        sG9GuHEvAEQlygEbpBv90tPO8SXOKc2r
-X-Google-Smtp-Source: ABdhPJw+j7O2QsBTA8ZCg6i51bekZXHFwApQn11PTEJU2HW7ePOePlxmt9hcWc364zTiQio4yPe64Q==
-X-Received: by 2002:a05:6214:29eb:: with SMTP id jv11mr71517qvb.9.1634751553856;
-        Wed, 20 Oct 2021 10:39:13 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id b2sm1213931qtg.88.2021.10.20.10.39.12
+        bh=1vzaPwSXS9hEyHWAyMsCpPKCtQbcMEqVFpEyDIJKQ0s=;
+        b=2+4xdDe2hFY6H93JlN3oMpozX5tRtfjyKI71VlzPNQq00iSUEsPZfqSiL8G6/bI89i
+         42qPQrkofrrYIo3d3YI8dGzqI+gt72tciwlB/pxOVmL7tl/rmVi+viRRzr5VpODu+YwP
+         B6BTpdR4R3eNREdaBtQxUU3ceIOTlR62H/NjNkVQ8cN8RyR3N2S/jgQzqKsqF3aiUEQ5
+         ZHQrqnvTeRf3gw0ZxpAVy/b0jOZynMXr4boGUgDoLm2jCg1iwqftrfwfFq3FB6rUeS/y
+         1eaTAHkPMds+3KE81/BNpAyD7NqZv9gmajkcqd7PhPMw6OBkXYFc1/Q1TmPJlg5R6Xmg
+         hyMw==
+X-Gm-Message-State: AOAM532EXBDgT3fBu9J10lstqdk2UJs2mXiR9Vql3hcZ4xJk9xaHqVfF
+        VJs6KlxdpX+UzUzhq2pdl3nnQQ==
+X-Google-Smtp-Source: ABdhPJzX6BajPmI4uU2rM4UyCOyUQLdhWo0WidSQzhqUdMTGUlAANAxsQrXJ+zwMi61pfHt5SyWj2g==
+X-Received: by 2002:a17:90b:17cc:: with SMTP id me12mr278209pjb.147.1634751641618;
+        Wed, 20 Oct 2021 10:40:41 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z8sm2994721pgi.45.2021.10.20.10.40.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 10:39:12 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 13:39:10 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YXBUPguecSeSO6UD@moria.home.lan>
-References: <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW28vaoW7qNeX3GP@casper.infradead.org>
- <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org>
+        Wed, 20 Oct 2021 10:40:41 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 17:40:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, x86@kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v5 4/6] KVM: SVM: Add support to handle AP reset MSR
+ protocol
+Message-ID: <YXBUlYll8JDjH/Wd@google.com>
+References: <20211020124416.24523-1-joro@8bytes.org>
+ <20211020124416.24523-5-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="0SdBen1GVMUEx1O4"
 Content-Disposition: inline
-In-Reply-To: <YW7hQlny+Go1K3LT@cmpxchg.org>
+In-Reply-To: <20211020124416.24523-5-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 11:16:18AM -0400, Johannes Weiner wrote:
-> On Tue, Oct 19, 2021 at 02:16:27AM +0300, Kirill A. Shutemov wrote:
-> > On Mon, Oct 18, 2021 at 05:56:34PM -0400, Johannes Weiner wrote:
-> > > > I don't think there will ever be consensus as long as you don't take
-> > > > the concerns of other MM developers seriously.  On Friday's call, several
-> > > > people working on using large pages for anon memory told you that using
-> > > > folios for anon memory would make their lives easier, and you didn't care.
-> > > 
-> > > Nope, one person claimed that it would help, and I asked how. Not
-> > > because I'm against typesafety, but because I wanted to know if there
-> > > is an aspect in there that would specifically benefit from a shared
-> > > folio type. I don't remember there being one, and I'm not against type
-> > > safety for anon pages.
-> > > 
-> > > What several people *did* say at this meeting was whether you could
-> > > drop the anon stuff for now until we have consensus.
-> > 
-> > My read on the meeting was that most of people had nothing against anon
-> > stuff, but asked if Willy could drop anon parts to get past your
-> > objections to move forward.
-> > 
-> > You was the only person who was vocal against including anon pars. (Hugh
-> > nodded to some of your points, but I don't really know his position on
-> > folios in general and anon stuff in particular).
-> 
-> Nobody likes to be the crazy person on the soapbox, so I asked Hugh in
-> private a few weeks back. Quoting him, with permission:
-> 
-> : To the first and second order of approximation, you have been
-> : speaking for me: but in a much more informed and constructive and
-> : coherent and rational way than I would have managed myself.
-> 
-> It's a broad and open-ended proposal with far reaching consequences,
-> and not everybody has the time (or foolhardiness) to engage on that. I
-> wouldn't count silence as approval - just like I don't see approval as
-> a sign that a person took a hard look at all the implications.
-> 
-> My only effort from the start has been working out unanswered
-> questions in this proposal: Are compound pages the reliable, scalable,
-> and memory-efficient way to do bigger page sizes? What's the scope of
-> remaining tailpages where typesafety will continue to lack? How do we
-> implement code and properties shared by folios and non-folio types
-> (like mmap/fault code for folio and network and driver pages)?
-> 
-> There are no satisfying answers to any of these questions, but that
-> also isn't very surprising: it's a huge scope. Lack of answers isn't
-> failure, it's just a sign that the step size is too large and too
-> dependent on a speculative future. It would have been great to whittle
-> things down to a more incremental and concrete first step, which would
-> have allowed us to keep testing the project against reality as we go
-> through all the myriad of uses and cornercases of struct page that no
-> single person can keep straight in their head.
-> 
-> I'm grateful for the struct slab spinoff, I think it's exactly all of
-> the above. I'm in full support of it and have dedicated time, effort
-> and patches to help work out kinks that immediately and inevitably
-> surfaced around the slab<->page boundary.
 
-Thank you for at least (belatedly) voicing your appreciation of the struct slab
-patches, that much wasn't at all clear to me or Matthew during the initial
-discussion.
+--0SdBen1GVMUEx1O4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> I only hoped we could do the same for file pages first, learn from
-> that, and then do anon pages; if they come out looking the same in the
-> process, a unified folio would be a great trailing refactoring step.
+On Wed, Oct 20, 2021, Joerg Roedel wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
 > 
-> But alas here we are months later at the same impasse with the same
-> open questions, and still talking in circles about speculative code.
-> I don't have more time to invest into this, and I'm tired of the
-> vitriol and ad-hominems both in public and in private channels.
+> Add support for AP Reset Hold being invoked using the GHCB MSR protocol,
+> available in version 2 of the GHCB specification.
+
+The changelog needs to explain how this is actually supposed to work.  Doesn't
+need gory details, just a basic explanation of the sequence of events to wake a
+vCPU that requested a reset hold.
+
+I apologize in advance for the following rant(s).  There's some actionable feedback,
+but a lot of it is just me complaining about the reset hold nonsense.
+
+For the actual feedback, attached are two patches: patch 1 eliminates the
+"first_sipi_received" hack, patch 2 is a (hopefully) fixed version of this patch
+(but doesn't have an updated changelog).  Both are compile tested only.  There
+will be a benign conflict with patch 05 of this series.
+
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  1 -
+>  arch/x86/kvm/svm/sev.c          | 52 ++++++++++++++++++++++++++-------
+>  arch/x86/kvm/svm/svm.h          |  8 +++++
+>  3 files changed, 49 insertions(+), 12 deletions(-)
 > 
-> I'm not really sure how to exit this. The reasons for my NAK are still
-> there. But I will no longer argue or stand in the way of the patches.
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index b67f550616cf..5c6b1469cc3b 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -237,7 +237,6 @@ enum x86_intercept_stage;
+>  	KVM_GUESTDBG_INJECT_DB | \
+>  	KVM_GUESTDBG_BLOCKIRQ)
+>  
+> -
 
-Johannes, what I gathered from the meeting on Friday is that all you seem to
-care about at this point is whether or not file and anonymous pages are the same
-type. You got most of what you wanted regarding the direction of folios -
-they're no longer targeted at all compound pages! We're working on breaking
-struct page up into multiple types!
+Spurious whitespace change.
 
-But I'm frustrated by you disengaging like this, after I went to a lot of effort
-to bring you and your ideas into the discussion, but... if you're going to
-stubbornly cling to this point and refuse to hear other ideas the way you have
-been, I honestly don't know what to tell you.
+>  #define PFERR_PRESENT_BIT 0
+>  #define PFERR_WRITE_BIT 1
+>  #define PFERR_USER_BIT 2
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 9afa71cb36e6..10af4ac83971 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -2246,6 +2246,9 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
+>  
+>  void sev_es_unmap_ghcb(struct vcpu_svm *svm)
+>  {
+> +	/* Clear any indication that the vCPU is in a type of AP Reset Hold */
+> +	svm->reset_hold_type = AP_RESET_HOLD_NONE;
+> +
+>  	if (!svm->ghcb)
+>  		return;
+>  
+> @@ -2405,14 +2408,21 @@ static u64 ghcb_msr_version_info(void)
+>  	return msr;
+>  }
+>  
+> -static int sev_emulate_ap_reset_hold(struct vcpu_svm *svm)
+> +static int sev_emulate_ap_reset_hold(struct vcpu_svm *svm, enum ap_reset_hold_type type)
+>  {
+>  	int ret = kvm_skip_emulated_instruction(&svm->vcpu);
+>  
+> +	svm->reset_hold_type = type;
+> +
+>  	return __kvm_vcpu_halt(&svm->vcpu,
+>  			       KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
+>  }
+>  
+> +static u64 ghcb_msr_ap_rst_resp(u64 value)
+> +{
+> +	return (u64)GHCB_MSR_AP_RESET_HOLD_RESP | (value << GHCB_DATA_LOW);
+> +}
+> +
+>  static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+>  {
+>  	struct vmcb_control_area *control = &svm->vmcb->control;
+> @@ -2459,6 +2469,16 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+>  
+>  		break;
+>  	}
+> +	case GHCB_MSR_AP_RESET_HOLD_REQ:
+> +		ret = sev_emulate_ap_reset_hold(svm, AP_RESET_HOLD_MSR_PROTO);
+> +
+> +		/*
+> +		 * Preset the result to a non-SIPI return and then only set
+> +		 * the result to non-zero when delivering a SIPI.
+> +		 */
+> +		svm->vmcb->control.ghcb_gpa = ghcb_msr_ap_rst_resp(0);
 
-And after all this it's hard to see the wider issues with struct page actually
-getting tackled.
+This can race with the SIPI and effectively corrupt svm->vmcb->control.ghcb_gpa.
 
-Shame.
+        vCPU0                           vCPU1
+                                        #VMGEXIT(RESET_HOLD)
+                                        __kvm_vcpu_halt()
+        INIT
+        SIPI
+        sev_vcpu_deliver_sipi_vector()
+        ghcb_msr_ap_rst_resp(1);
+                                        ghcb_msr_ap_rst_resp(0);
+
+Note, the "INIT" above is mostly a guess.  I'm pretty sure it's necessary because
+I don't see how KVM can possibly be correct otherwise.  The SIPI handler (below)
+quite clearly expects the vCPU to have been in an AP reset hold, but the invocation
+of sev_vcpu_deliver_sipi_vector is gated by the vCPU being in
+KVM_MP_STATE_INIT_RECEIVED, not KVM_MP_STATE_AP_RESET_HOLD.  That implies the BSP
+must INIT the AP.
+
+                if (vcpu->arch.mp_state == KVM_MP_STATE_INIT_RECEIVED) {
+                        /* evaluate pending_events before reading the vector */ 
+                        smp_rmb();
+                        sipi_vector = apic->sipi_vector;
+                        kvm_x86_ops.vcpu_deliver_sipi_vector(vcpu, sipi_vector);
+                        vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+                }
+
+But the GHCB 2.0 spec doesn't actually say that; it instead implies that SIPI is
+supposed to be able to directly wake the AP.
+
+  * When a guest AP reaches its HLT loop (or similar method for parking the AP),
+    it instead can either:
+      1. Issue an AP Reset Hold NAE event.
+      2. Issue the AP Reset Hold Request MSR Protocol
+  * The hypervisor treats treats either request like the guest issued a HLT
+                   ^^^^^^^^^^^^^                                        ^^^
+                   spec typo                                            ???
+    instruction and marks the vCPU as halted.
+  * When the hypervisor receives a SIPI request for the vCPU, it will not update
+                                   ^^^^^^^^^^^^
+    any register values and, instead, it will either complete the AP Reset Hold
+    NAE event or complete the AP Reset Hold MSR protocol
+  * Mark the vCPU as active, allowing the VMGEXIT to complete.
+  * Upon return from the VMGEXIT, the AP must transition from its current execution
+    mode into real mode and begin executing at the reset vector supplied in the SIPI
+    request. 
+
+Piecing things together, my understanding is that the "hold request" really is
+intended to be a HLT, but with extra semantics where the host sets sw_exit_info_2
+to indicate that the vCPU was woken by INIT-SIPI. 
+
+It's probably too late to change the spec, but I'm going to complain anyways. 
+This is all ridiculously convoluted and completely unnecessary.  As pointed out
+in the SNP series regarding AP "creation", this can be fully handled in the guest
+via a simple mailbox between firmware and kernel.  What's really fubar is that
+the guest firmware and kernel already have a mailbox!  But it's defined by the
+GHCB spec instead of e.g. ACPI, and so instead of handling this fully within the
+guest, the hypervisor (and PSP to some extent on SNP because of the secrets page!!!)
+gets involved.
+
+The complications to support this in the guest firmware are hilarious, e.g. the
+guest hasto manually switch from 64-bit mode to Real Mode just so that the kernel
+can continue to use a horribly antiquated method for gaining control of APs.
+
+> +
+> +		break;
+>  	case GHCB_MSR_TERM_REQ: {
+>  		u64 reason_set, reason_code;
+>  
+> @@ -2544,7 +2564,7 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
+>  		ret = svm_invoke_exit_handler(vcpu, SVM_EXIT_IRET);
+>  		break;
+>  	case SVM_VMGEXIT_AP_HLT_LOOP:
+> -		ret = sev_emulate_ap_reset_hold(svm);
+> +		ret = sev_emulate_ap_reset_hold(svm, AP_RESET_HOLD_NAE_EVENT);
+>  		break;
+>  	case SVM_VMGEXIT_AP_JUMP_TABLE: {
+>  		struct kvm_sev_info *sev = &to_kvm_svm(vcpu->kvm)->sev_info;
+> @@ -2679,13 +2699,23 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+
+Tying into above, handling this in SIPI is flawed.  For example, if the guest
+does INIT-SIPI-SIPI without a reset hold, KVM would incorrect set sw_exit_info_2
+on the SIPI.  Because this mess requires an INIT, KVM has lost track of whether
+the guest was in KVM_MP_STATE_AP_RESET_HOLD and thus can't know if the SIPI
+arrived after a reset hold.  Looking at KVM, IIUC, this bug is why the hack
+"received_first_sipi" exists.
+
+Of course this all begs the question of why there's a "reset hold" concept in
+the first place.  It's literally HLT with a flag to say "you got INIT-SIPI".
+But the guest has to supply and fill a jump table!  Just put the flag in the
+jump table!!!!
+
+>  		return;
+>  	}
+>  
+> -	/*
+> -	 * Subsequent SIPI: Return from an AP Reset Hold VMGEXIT, where
+> -	 * the guest will set the CS and RIP. Set SW_EXIT_INFO_2 to a
+> -	 * non-zero value.
+> -	 */
+> -	if (!svm->ghcb)
+> -		return;
+> -
+> -	ghcb_set_sw_exit_info_2(svm->ghcb, 1);
+> +	/* Subsequent SIPI */
+> +	switch (svm->reset_hold_type) {
+> +	case AP_RESET_HOLD_NAE_EVENT:
+> +		/*
+> +		 * Return from an AP Reset Hold VMGEXIT, where the guest will
+> +		 * set the CS and RIP. Set SW_EXIT_INFO_2 to a non-zero value.
+> +		 */
+> +		ghcb_set_sw_exit_info_2(svm->ghcb, 1);
+
+Doesn't this need to check for a null svm->ghcb?
+
+I also suspect a boolean might make it easier to understand the implications
+and also make the whole thing less error prone, e.g.
+
+        if (svm->reset_hold_msr_protocol) {
+
+        } else if (svm->ghcb) {
+
+        }
+
+> +		break;
+> +	case AP_RESET_HOLD_MSR_PROTO:
+> +		/*
+> +		 * Return from an AP Reset Hold VMGEXIT, where the guest will
+> +		 * set the CS and RIP. Set GHCB data field to a non-zero value.
+> +		 */
+> +		svm->vmcb->control.ghcb_gpa = ghcb_msr_ap_rst_resp(1);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+>  }
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 68e5f16a0554..bf9379f1cfb8 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -69,6 +69,12 @@ enum {
+>  /* TPR and CR2 are always written before VMRUN */
+>  #define VMCB_ALWAYS_DIRTY_MASK	((1U << VMCB_INTR) | (1U << VMCB_CR2))
+>  
+> +enum ap_reset_hold_type {
+> +	AP_RESET_HOLD_NONE,
+> +	AP_RESET_HOLD_NAE_EVENT,
+> +	AP_RESET_HOLD_MSR_PROTO,
+> +};
+> +
+>  struct kvm_sev_info {
+>  	bool active;		/* SEV enabled guest */
+>  	bool es_active;		/* SEV-ES enabled guest */
+> @@ -199,6 +205,8 @@ struct vcpu_svm {
+>  	bool ghcb_sa_free;
+>  
+>  	bool guest_state_loaded;
+> +
+> +	enum ap_reset_hold_type reset_hold_type;
+>  };
+>  
+>  struct svm_cpu_data {
+> -- 
+> 2.33.1
+> 
+
+--0SdBen1GVMUEx1O4
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-KVM-SVM-Set-released-on-INIT-SIPI-iff-SEV-ES-vCPU-wa.patch"
+
+From deffc8d46fed51f9ec3e77e4a9f4c61a727eb174 Mon Sep 17 00:00:00 2001
+From: Sean Christopherson <seanjc@google.com>
+Date: Wed, 20 Oct 2021 09:46:16 -0700
+Subject: [PATCH 1/2] KVM: SVM: Set "released" on INIT-SIPI iff SEV-ES vCPU was
+ in AP reset hold
+
+Set ghcb->sw_exit_info_2 when releasing a vCPU from an AP reset hold if
+and only if the vCPU is actually in a reset hold.  Move the handling to
+INIT (was SIPI) so that KVM can check the current MP state; when SIPI is
+received, the vCPU will be in INIT_RECEIVED and will have lost track of
+whether or not the vCPU was in a reset hold.
+
+Drop the received_first_sipi flag, which was a hack to workaround the
+fact that KVM lost track of whether or not the vCPU was in a reset hold.
+
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/sev.c | 34 ++++++++++++----------------------
+ arch/x86/kvm/svm/svm.c | 13 ++++++++-----
+ arch/x86/kvm/svm/svm.h |  4 +---
+ 3 files changed, 21 insertions(+), 30 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 9afa71cb36e6..f8dfa88993b8 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -2637,8 +2637,19 @@ void sev_es_init_vmcb(struct vcpu_svm *svm)
+ 	set_msr_interception(vcpu, svm->msrpm, MSR_IA32_LASTINTTOIP, 1, 1);
+ }
+ 
+-void sev_es_vcpu_reset(struct vcpu_svm *svm)
++void sev_es_vcpu_reset(struct vcpu_svm *svm, bool init_event)
+ {
++	if (init_event) {
++		/*
++		 * If the vCPU is in a "reset" hold, signal via SW_EXIT_INFO_2
++		 * that, assuming it receives a SIPI, the vCPU was "released".
++		 */
++		if (svm->vcpu.arch.mp_state == KVM_MP_STATE_AP_RESET_HOLD &&
++		    svm->ghcb)
++			ghcb_set_sw_exit_info_2(svm->ghcb, 1);
++		return;
++	}
++
+ 	/*
+ 	 * Set the GHCB MSR value as per the GHCB specification when emulating
+ 	 * vCPU RESET for an SEV-ES guest.
+@@ -2668,24 +2679,3 @@ void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu)
+ 	/* MSR_IA32_XSS is restored on VMEXIT, save the currnet host value */
+ 	hostsa->xss = host_xss;
+ }
+-
+-void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+-{
+-	struct vcpu_svm *svm = to_svm(vcpu);
+-
+-	/* First SIPI: Use the values as initially set by the VMM */
+-	if (!svm->received_first_sipi) {
+-		svm->received_first_sipi = true;
+-		return;
+-	}
+-
+-	/*
+-	 * Subsequent SIPI: Return from an AP Reset Hold VMGEXIT, where
+-	 * the guest will set the CS and RIP. Set SW_EXIT_INFO_2 to a
+-	 * non-zero value.
+-	 */
+-	if (!svm->ghcb)
+-		return;
+-
+-	ghcb_set_sw_exit_info_2(svm->ghcb, 1);
+-}
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 89077160d463..0497066a91fb 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1372,9 +1372,6 @@ static void __svm_vcpu_reset(struct kvm_vcpu *vcpu)
+ 	svm_init_osvw(vcpu);
+ 	vcpu->arch.microcode_version = 0x01000065;
+ 	svm->tsc_ratio_msr = kvm_default_tsc_scaling_ratio;
+-
+-	if (sev_es_guest(vcpu->kvm))
+-		sev_es_vcpu_reset(svm);
+ }
+ 
+ static void svm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+@@ -1388,6 +1385,9 @@ static void svm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 
+ 	if (!init_event)
+ 		__svm_vcpu_reset(vcpu);
++
++	if (sev_es_guest(vcpu->kvm))
++		sev_es_vcpu_reset(svm, init_event);
+ }
+ 
+ void svm_switch_vmcb(struct vcpu_svm *svm, struct kvm_vmcb_info *target_vmcb)
+@@ -4553,10 +4553,13 @@ static bool svm_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
+ 
+ static void svm_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+ {
++	/*
++	 * SEV-ES (and later derivatives) use INIT-SIPI to bring up APs, but
++	 * the guest is responsible for transitioning to Real Mode and setting
++	 * CS:RIP, GPRs, etc...  KVM just needs to make the vCPU runnable.
++	 */
+ 	if (!sev_es_guest(vcpu->kvm))
+ 		return kvm_vcpu_deliver_sipi_vector(vcpu, vector);
+-
+-	sev_vcpu_deliver_sipi_vector(vcpu, vector);
+ }
+ 
+ static void svm_vm_destroy(struct kvm *kvm)
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 68e5f16a0554..c1f3685db2e1 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -190,7 +190,6 @@ struct vcpu_svm {
+ 	struct vmcb_save_area *vmsa;
+ 	struct ghcb *ghcb;
+ 	struct kvm_host_map ghcb_map;
+-	bool received_first_sipi;
+ 
+ 	/* SEV-ES scratch area support */
+ 	void *ghcb_sa;
+@@ -562,8 +561,7 @@ void sev_free_vcpu(struct kvm_vcpu *vcpu);
+ int sev_handle_vmgexit(struct kvm_vcpu *vcpu);
+ int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
+ void sev_es_init_vmcb(struct vcpu_svm *svm);
+-void sev_es_vcpu_reset(struct vcpu_svm *svm);
+-void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
++void sev_es_vcpu_reset(struct vcpu_svm *svm, bool init_event);
+ void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu);
+ void sev_es_unmap_ghcb(struct vcpu_svm *svm);
+ 
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
+
+--0SdBen1GVMUEx1O4
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0002-KVM-SVM-Add-support-to-handle-AP-reset-MSR-protocol.patch"
+
+From 7e41f58f1ce591bf5a40a94993957879a60103d6 Mon Sep 17 00:00:00 2001
+From: Sean Christopherson <seanjc@google.com>
+Date: Wed, 20 Oct 2021 14:44:14 +0200
+Subject: [PATCH 2/2] KVM: SVM: Add support to handle AP reset MSR protocol
+
+From: Tom Lendacky <thomas.lendacky@amd.com>
+
+Add support for AP Reset Hold being invoked using the GHCB MSR protocol,
+available in version 2 of the GHCB specification.
+
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/sev.c | 53 +++++++++++++++++++++++++++++++++++++-----
+ arch/x86/kvm/svm/svm.h |  1 +
+ 2 files changed, 48 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index f8dfa88993b8..1174270d18ee 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -2405,10 +2405,36 @@ static u64 ghcb_msr_version_info(void)
+ 	return msr;
+ }
+ 
+-static int sev_emulate_ap_reset_hold(struct vcpu_svm *svm)
++
++static u64 ghcb_msr_ap_rst_resp(u64 value)
++{
++	return (u64)GHCB_MSR_AP_RESET_HOLD_RESP | (value << GHCB_DATA_LOW);
++}
++
++static int sev_emulate_ap_reset_hold(struct vcpu_svm *svm, u64 hold_type)
+ {
+ 	int ret = kvm_skip_emulated_instruction(&svm->vcpu);
+ 
++	if (hold_type == GHCB_MSR_AP_RESET_HOLD_REQ) {
++		/*
++		 * Preset the result to a non-SIPI return and then only set
++		 * the result to non-zero when delivering a SIPI.
++		 */
++		svm->vmcb->control.ghcb_gpa = ghcb_msr_ap_rst_resp(0);
++		svm->reset_hold_msr_protocol = true;
++	} else {
++		WARN_ON_ONCE(hold_type != SVM_VMGEXIT_AP_HLT_LOOP);
++		svm->reset_hold_msr_protocol = false;
++	}
++
++	/*
++	 * Ensure the writes to ghcb_gpa and reset_hold_msr_protocol are visible
++	 * before the MP state change so that the INIT-SIPI doesn't misread
++	 * reset_hold_msr_protocol or write ghcb_gpa before this.  Pairs with
++	 * the smp_rmb() in sev_vcpu_reset().
++	 */
++	smp_wmb();
++
+ 	return __kvm_vcpu_halt(&svm->vcpu,
+ 			       KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
+ }
+@@ -2459,6 +2485,9 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+ 
+ 		break;
+ 	}
++	case GHCB_MSR_AP_RESET_HOLD_REQ:
++		ret = sev_emulate_ap_reset_hold(svm, GHCB_MSR_AP_RESET_HOLD_REQ);
++		break;
+ 	case GHCB_MSR_TERM_REQ: {
+ 		u64 reason_set, reason_code;
+ 
+@@ -2544,7 +2573,7 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
+ 		ret = svm_invoke_exit_handler(vcpu, SVM_EXIT_IRET);
+ 		break;
+ 	case SVM_VMGEXIT_AP_HLT_LOOP:
+-		ret = sev_emulate_ap_reset_hold(svm);
++		ret = sev_emulate_ap_reset_hold(svm, SVM_VMGEXIT_AP_HLT_LOOP);
+ 		break;
+ 	case SVM_VMGEXIT_AP_JUMP_TABLE: {
+ 		struct kvm_sev_info *sev = &to_kvm_svm(vcpu->kvm)->sev_info;
+@@ -2642,11 +2671,23 @@ void sev_es_vcpu_reset(struct vcpu_svm *svm, bool init_event)
+ 	if (init_event) {
+ 		/*
+ 		 * If the vCPU is in a "reset" hold, signal via SW_EXIT_INFO_2
+-		 * that, assuming it receives a SIPI, the vCPU was "released".
++		 * (or the GHCB_GPA for the MSR protocol) that, assuming it
++		 * receives a SIPI, the vCPU was "released".
+ 		 */
+-		if (svm->vcpu.arch.mp_state == KVM_MP_STATE_AP_RESET_HOLD &&
+-		    svm->ghcb)
+-			ghcb_set_sw_exit_info_2(svm->ghcb, 1);
++		if (svm->vcpu.arch.mp_state == KVM_MP_STATE_AP_RESET_HOLD) {
++			/*
++			 * Ensure mp_state is read before reset_hold_msr_protocol
++			 * and before writing ghcb_gpa to ensure KVM conumes the
++			 * correct protocol.  Pairs with the smp_wmb() in
++			 * sev_emulate_ap_reset_hold().
++			 */
++			smp_rmb();
++			if (svm->reset_hold_msr_protocol)
++				svm->vmcb->control.ghcb_gpa = ghcb_msr_ap_rst_resp(1);
++			else if (svm->ghcb)
++				ghcb_set_sw_exit_info_2(svm->ghcb, 1);
++			svm->reset_hold_msr_protocol = false;
++		}
+ 		return;
+ 	}
+ 
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index c1f3685db2e1..531d3258df58 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -198,6 +198,7 @@ struct vcpu_svm {
+ 	bool ghcb_sa_free;
+ 
+ 	bool guest_state_loaded;
++	bool reset_hold_msr_protocol;
+ };
+ 
+ struct svm_cpu_data {
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
+
+--0SdBen1GVMUEx1O4--
