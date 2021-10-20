@@ -2,134 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886F7434AFE
+	by mail.lfdr.de (Postfix) with ESMTP id D11BE434AFF
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhJTMRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:17:07 -0400
-Received: from relay.sw.ru ([185.231.240.75]:44326 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhJTMRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:17:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=vKfgRv2zJEAoAS/QMp8Ojy3ytr5x5Kwda6HCzY+o9dY=; b=piFq4YJOVCzthmB9i6b
-        NgU9AF9sxMXuXUshwNGUqc8UUt7jOsEyjWpz7crmMVUVecu7tMqQloOLCOHVflMvVpfVsy94enpjs
-        38aVbuXoEwvwIBMuS1SZMSPcfMeMLX5W7o9phEpjbW/bnnHEfFKouHYb3wZ6hDngTOJJSojLDVQ=;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mdAUa-006bCw-9o; Wed, 20 Oct 2021 15:14:48 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH memcg 3/3] memcg: handle memcg oom failures
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
- <cover.1634730787.git.vvs@virtuozzo.com>
-Message-ID: <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
-Date:   Wed, 20 Oct 2021 15:14:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230349AbhJTMRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:17:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54905 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230351AbhJTMRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:17:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634732092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KUWgVgfK8Di9WCoIIdZFXjsSmVJN9Z7sAMQZDyCO608=;
+        b=bMpL2B0H7SLeBCLMQF13kHU3vEInY6ZnoOIRNAGwtWg+l7gmBL82pROdsgvP0Qz7PRqJNO
+        rKUsm06x99m1FXSiLk93yAkEEU1qnBDHfvbIkbmd0xA7Bvv9IgXIXMQAGXq6IH0hKp87Of
+        GdZxsXSiAKkk3bhK40aVjjIBEIKIufE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-_Z5XSitdOUy205fqtM4LTA-1; Wed, 20 Oct 2021 08:14:50 -0400
+X-MC-Unique: _Z5XSitdOUy205fqtM4LTA-1
+Received: by mail-ed1-f69.google.com with SMTP id t18-20020a056402021200b003db9e6b0e57so20800719edv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:14:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KUWgVgfK8Di9WCoIIdZFXjsSmVJN9Z7sAMQZDyCO608=;
+        b=Eu8geQMchx1D5ejgS10Ck1m1REbZI+gc37bqA86IFfhkRuPry1O4i6dloOzFkP4m2N
+         5hTTZbXZ6ktu0+8h0/81HYiI7QfL2zK6D9/GllRF9bnaBDR2/+M+hq6zPMFIYoxdPaMQ
+         8GsyoZDAa4n+9eaJ27Sg7XFfS/Gt1BsgawdMYLWy8CAjOGSGs7ad4SDc6Qqay4cD7Dx8
+         a6/hsv2MBcL4rcfSEkI39TSaoGziZLWdKp2EvbD54eF9s6rv0DeQutD6hl0v2h19Nl1z
+         h0VDE/kyYxkQsY0krlvwufp+z0kWYNfcn0BxjP+vgaWEhKrERxzIeCATv4UNVQNPNzN7
+         0UtQ==
+X-Gm-Message-State: AOAM531J/28azKt62Bg120VZRJ9QbJfvc0gMEAtcIxV11Vajg3LqIAVf
+        0ApnqVV7+x20aFyLdSmzlIsSdKiJXmaU1Aq6DEcOBNAcnSw7+5GgP3iBIZVHcKfXMg/ORcSP4db
+        Xo/Xd9SoW8z6vMQEA9jemTbRL
+X-Received: by 2002:aa7:cd8b:: with SMTP id x11mr62823206edv.384.1634732089306;
+        Wed, 20 Oct 2021 05:14:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvGXDzBa499GtqgVkxT8EH3KVPcdg0tvHnSVuhV5qmQFMp2RDYEgel+o+xymXxNoFYIk8Ngg==
+X-Received: by 2002:aa7:cd8b:: with SMTP id x11mr62823162edv.384.1634732088990;
+        Wed, 20 Oct 2021 05:14:48 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id w15sm956515ejb.4.2021.10.20.05.14.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 05:14:48 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 14:14:46 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>, eranian@google.com
+Subject: Re: [PATCH v2 00/22] Start aligning perf test with kunit style
+Message-ID: <YXAINnEcHsy450zm@krava>
+References: <20211013174604.747276-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1634730787.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211013174604.747276-1-irogers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mem_cgroup_oom() can fail if current task was marked unkillable
-and oom killer cannot find any victim.
+On Wed, Oct 13, 2021 at 10:45:42AM -0700, Ian Rogers wrote:
+> Perf test uses its own structs and code layout that differs from kunit
+> that was more recently introduced to the kernel. Besides consistency,
+> it is hoped that moving in the direction of kunit style will enable
+> reuse of infrastructure like test output formatting for continuous
+> testing systems. For example:
+> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJx=
+qaJk+r-K1YJzPggFDQ@mail.gmail.com/
+>=20
+> The motivation for this restructuring comes from wanting to be able to
+> tag tests with a size:
+> https://lore.kernel.org/linux-perf-users/CAP-5=3DfWmGyuqFKc-EMP3rbmTkjZ3M=
+S+YSajGZfeRMc38HS82gw@mail.gmail.com/
+> To have more exhaustive and slower running tests.  This isn't
+> something kunit currently supports, nor is the execution of python and
+> shell tests, but it seems sensible to work on an approach with kunit
+> rather to invent a new wheel inside of perf.
+>=20
+> These initial patches are just refactoring the main test suite
+> definitions to be in a more kunit style. Kunit isn't depended upon, it
+> is hoped that this can be done in later patches for the sake of
+> consistency.
+>=20
+> v2. Gets to a point of the perf test test suite/case structs being
+>     close facsimiles of the kunit ones. It also addresses feedback on
+>     the v1 RFC, in particular from Jiri Olsa <jolsa@redhat.com>.
 
-Currently we force memcg charge for such allocations,
-however it allow memcg-limited userspace task in to overuse assigned limits
-and potentially trigger the global memory shortage.
+hi,
+when I compile with DEBUG=3D1 it's ok, but with just make:
 
-Let's fail the memory charge in such cases.
+[root@krava perf]# ./perf test
+Segmentation fault (core dumped)
+[root@krava perf]# gdb ./perf
+GNU gdb (GDB) Fedora 10.2-4.fc33
+Copyright (C) 2021 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.htm=
+l>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-redhat-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
 
-This failure should be somehow recognised in #PF context,
-so let's use current->memcg_in_oom == (struct mem_cgroup *)OOM_FAILED
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./perf...
+(gdb) r test
+Starting program: /home/jolsa/kernel/linux-perf/tools/perf/perf test
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib64/libthread_db.so.1".
 
-ToDo: what is the best way to notify pagefault_out_of_memory() about 
-    mem_cgroup_out_of_memory failure ?
+Program received signal SIGSEGV, Segmentation fault.
+__strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:96
+96              VPCMPEQ (%rdi), %ymm0, %ymm1
+Missing separate debuginfos, use: dnf debuginfo-install bzip2-libs-1.0.8-4.=
+fc33.x86_64 cyrus-sasl-lib-2.1.27-6.fc33.x86_64 elfutils-debuginfod-client-=
+0.185-2.fc33.x86_64 elfutils-libelf-0.185-2.fc33.x86_64 elfutils-libs-0.185=
+-2.fc33.x86_64 keyutils-libs-1.6.1-1.fc33.x86_64 krb5-libs-1.18.2-31.fc33.x=
+86_64 libbabeltrace-1.5.8-3.fc33.x86_64 libbrotli-1.0.9-3.fc33.x86_64 libca=
+p-2.48-2.fc33.x86_64 libcom_err-1.45.6-4.fc33.x86_64 libgcc-10.3.1-1.fc33.x=
+86_64 libidn2-2.3.2-1.fc33.x86_64 libnghttp2-1.43.0-1.fc33.x86_64 libpsl-0.=
+21.1-2.fc33.x86_64 libselinux-3.1-2.fc33.x86_64 libssh-0.9.6-1.fc33.x86_64 =
+libunistring-0.9.10-9.fc33.x86_64 libunwind-1.4.0-4.fc33.x86_64 libuuid-2.3=
+6.1-1.fc33.x86_64 libxcrypt-4.4.26-2.fc33.x86_64 numactl-libs-2.0.14-1.fc33=
+=2Ex86_64 openldap-2.4.50-5.fc33.x86_64 openssl-libs-1.1.1l-2.fc33.x86_64 p=
+cre-8.44-2.fc33.x86_64 perl-libs-5.32.1-471.fc33.x86_64 popt-1.18-2.fc33.x8=
+6_64 python2.7-2.7.18-15.fc33.x86_64 slang-2.3.2-8.fc33.x86_64 xz-libs-5.2.=
+5-4.fc33.x86_64 zlib-1.2.11-23.fc33.x86_64
+(gdb) bt
+#0  __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:96
+#1  0x00000000004a3848 in __cmd_test (skiplist=3D0x0, argv=3D0x7fffffffd6c0=
+, argc=3D0) at tests/builtin-test.c:150
+#2  cmd_test (argc=3D0, argv=3D0x7fffffffd6c0) at tests/builtin-test.c:628
+#3  0x00000000004cc47b in run_builtin (p=3Dp@entry=3D0xa7cda8 <commands+552=
+>, argc=3Dargc@entry=3D1, argv=3Dargv@entry=3D0x7fffffffd6c0) at perf.c:313
+#4  0x00000000004397ae in handle_internal_command (argv=3D0x7fffffffd6c0, a=
+rgc=3D1) at perf.c:365
+#5  run_argv (argv=3D<synthetic pointer>, argcp=3D<synthetic pointer>) at p=
+erf.c:409
+#6  main (argc=3D1, argv=3D0x7fffffffd6c0) at perf.c:539
+(gdb)=20
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- mm/memcontrol.c | 32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
+also during the metric test (in make DEBUG=3D1 build) it runs the
+perf bench synthesize and it takes forever ;-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 74a7379dbac1..b09d3c64f63f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1810,11 +1810,21 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
- 		mem_cgroup_oom_notify(memcg);
- 
- 	mem_cgroup_unmark_under_oom(memcg);
--	if (mem_cgroup_out_of_memory(memcg, mask, order))
-+	if (mem_cgroup_out_of_memory(memcg, mask, order)) {
- 		ret = OOM_SUCCESS;
--	else
-+	} else {
- 		ret = OOM_FAILED;
--
-+		/*
-+		 * In some rare cases mem_cgroup_out_of_memory() can return false.
-+		 * If it was called from #PF it forces handle_mm_fault()
-+		 * return VM_FAULT_OOM and executes pagefault_out_of_memory().
-+		 * memcg_in_oom is set here to notify pagefault_out_of_memory()
-+		 * that it was a memcg-related failure and not allow to run
-+		 * global OOM.
-+		 */
-+		if (current->in_user_fault)
-+			current->memcg_in_oom = (struct mem_cgroup *)ret;
-+	}
- 	if (locked)
- 		mem_cgroup_oom_unlock(memcg);
- 
-@@ -1848,6 +1858,15 @@ bool mem_cgroup_oom_synchronize(bool handle)
- 	if (!memcg)
- 		return false;
- 
-+	/* OOM is memcg, however out_of_memory() found no victim */
-+	if (memcg == (struct mem_cgroup *)OOM_FAILED) {
-+		/*
-+		 * Should be called from pagefault_out_of_memory() only,
-+		 * where it is used to prevent false global OOM.
-+		 */
-+		current->memcg_in_oom = NULL;
-+		return true;
-+	}
- 	if (!handle)
- 		goto cleanup;
- 
-@@ -2633,15 +2652,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 */
- 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
- 		       get_order(nr_pages * PAGE_SIZE));
--	switch (oom_status) {
--	case OOM_SUCCESS:
-+	if (oom_status == OOM_SUCCESS) {
- 		passed_oom = true;
- 		nr_retries = MAX_RECLAIM_RETRIES;
- 		goto retry;
--	case OOM_FAILED:
--		goto force;
--	default:
--		goto nomem;
- 	}
- nomem:
- 	if (!(gfp_mask & __GFP_NOFAIL))
--- 
-2.32.0
+  89: perf all metrics test=20
+
+that might be another patchset I haven't checked,
+but I thought we already agreed not to do that ;-)
+
+jirka
+
+>=20
+> v1. Built/tested on x86.
+>=20
+> Ian Rogers (22):
+>   perf test: Use macro for "suite" declarations
+>   perf test: Use macro for "suite" definitions
+>   perf test: Make each test/suite its own struct.
+>   perf test: Move each test suite struct to its test
+>   perf test: Rename struct test to test_suite
+>   perf test: Add helper functions for abstraction.
+>   perf test: Add test case struct.
+>   perf test: Add skip reason to test case.
+>   perf test: Convert pfm tests to use test cases.
+>   perf test: Convert pmu event tests to test cases.
+>   perf test: Convert watch point tests to test cases.
+>   perf test: Convert clang tests to test cases.
+>   perf test: Convert bpf tests to test cases.
+>   perf test: Convert llvm tests to test cases.
+>   perf test: Remove now unused subtest helpers
+>   perf test: bp tests use test case
+>   perf test: Convert time to tsc test to test case.
+>   perf test: Remove non test case style support.
+>   perf test: BP tests, remove is_supported use
+>   perf test: TSC test, remove is_supported use
+>   perf test: Remove is_supported function
+>   perf test: Remove skip_if_fail
+>=20
+>  tools/perf/arch/arm/include/arch-tests.h      |   2 +-
+>  tools/perf/arch/arm/tests/arch-tests.c        |  18 +-
+>  tools/perf/arch/arm/tests/vectors-page.c      |   2 +-
+>  tools/perf/arch/arm64/include/arch-tests.h    |   2 +-
+>  tools/perf/arch/arm64/tests/arch-tests.c      |  11 +-
+>  tools/perf/arch/powerpc/include/arch-tests.h  |   2 +-
+>  tools/perf/arch/powerpc/tests/arch-tests.c    |  12 +-
+>  tools/perf/arch/x86/include/arch-tests.h      |  14 +-
+>  tools/perf/arch/x86/tests/arch-tests.c        |  46 +-
+>  tools/perf/arch/x86/tests/bp-modify.c         |   2 +-
+>  tools/perf/arch/x86/tests/insn-x86.c          |   2 +-
+>  tools/perf/arch/x86/tests/intel-cqm.c         |   2 +-
+>  .../x86/tests/intel-pt-pkt-decoder-test.c     |   2 +-
+>  tools/perf/arch/x86/tests/rdpmc.c             |   2 +-
+>  tools/perf/arch/x86/tests/sample-parsing.c    |   2 +-
+>  tools/perf/tests/api-io.c                     |   6 +-
+>  tools/perf/tests/attr.c                       |   4 +-
+>  tools/perf/tests/backward-ring-buffer.c       |   4 +-
+>  tools/perf/tests/bitmap.c                     |   4 +-
+>  tools/perf/tests/bp_account.c                 |  36 +-
+>  tools/perf/tests/bp_signal.c                  |  34 +-
+>  tools/perf/tests/bp_signal_overflow.c         |   9 +-
+>  tools/perf/tests/bpf.c                        |  69 ++-
+>  tools/perf/tests/builtin-test.c               | 578 ++++++------------
+>  tools/perf/tests/clang.c                      |  54 +-
+>  tools/perf/tests/code-reading.c               |   4 +-
+>  tools/perf/tests/cpumap.c                     |  10 +-
+>  tools/perf/tests/demangle-java-test.c         |   4 +-
+>  tools/perf/tests/demangle-ocaml-test.c        |   4 +-
+>  tools/perf/tests/dlfilter-test.c              |   4 +-
+>  tools/perf/tests/dso-data.c                   |  10 +-
+>  tools/perf/tests/dwarf-unwind.c               |   5 +-
+>  tools/perf/tests/event-times.c                |   4 +-
+>  tools/perf/tests/event_update.c               |   4 +-
+>  tools/perf/tests/evsel-roundtrip-name.c       |   5 +-
+>  tools/perf/tests/evsel-tp-sched.c             |   5 +-
+>  tools/perf/tests/expand-cgroup.c              |   6 +-
+>  tools/perf/tests/expr.c                       |   4 +-
+>  tools/perf/tests/fdarray.c                    |   7 +-
+>  tools/perf/tests/genelf.c                     |   6 +-
+>  tools/perf/tests/hists_cumulate.c             |   4 +-
+>  tools/perf/tests/hists_filter.c               |   4 +-
+>  tools/perf/tests/hists_link.c                 |   4 +-
+>  tools/perf/tests/hists_output.c               |   4 +-
+>  tools/perf/tests/is_printable_array.c         |   4 +-
+>  tools/perf/tests/keep-tracking.c              |   4 +-
+>  tools/perf/tests/kmod-path.c                  |   4 +-
+>  tools/perf/tests/llvm.c                       |  74 ++-
+>  tools/perf/tests/maps.c                       |   4 +-
+>  tools/perf/tests/mem.c                        |   4 +-
+>  tools/perf/tests/mem2node.c                   |   4 +-
+>  tools/perf/tests/mmap-basic.c                 |   4 +-
+>  tools/perf/tests/mmap-thread-lookup.c         |   4 +-
+>  tools/perf/tests/openat-syscall-all-cpus.c    |   5 +-
+>  tools/perf/tests/openat-syscall-tp-fields.c   |   5 +-
+>  tools/perf/tests/openat-syscall.c             |   5 +-
+>  tools/perf/tests/parse-events.c               |   4 +-
+>  tools/perf/tests/parse-metric.c               |   4 +-
+>  tools/perf/tests/parse-no-sample-id-all.c     |   5 +-
+>  tools/perf/tests/pe-file-parsing.c            |   6 +-
+>  tools/perf/tests/perf-hooks.c                 |   4 +-
+>  tools/perf/tests/perf-record.c                |   4 +-
+>  tools/perf/tests/perf-time-to-tsc.c           |  30 +-
+>  tools/perf/tests/pfm.c                        |  63 +-
+>  tools/perf/tests/pmu-events.c                 |  73 +--
+>  tools/perf/tests/pmu.c                        |   4 +-
+>  tools/perf/tests/python-use.c                 |   4 +-
+>  tools/perf/tests/sample-parsing.c             |   4 +-
+>  tools/perf/tests/sdt.c                        |   6 +-
+>  tools/perf/tests/stat.c                       |  11 +-
+>  tools/perf/tests/sw-clock.c                   |   4 +-
+>  tools/perf/tests/switch-tracking.c            |   4 +-
+>  tools/perf/tests/task-exit.c                  |   4 +-
+>  tools/perf/tests/tests.h                      | 238 ++++----
+>  tools/perf/tests/thread-map.c                 |  10 +-
+>  tools/perf/tests/thread-maps-share.c          |   4 +-
+>  tools/perf/tests/time-utils-test.c            |   4 +-
+>  tools/perf/tests/topology.c                   |   4 +-
+>  tools/perf/tests/unit_number__scnprintf.c     |   4 +-
+>  tools/perf/tests/vmlinux-kallsyms.c           |   5 +-
+>  tools/perf/tests/wp.c                         | 122 +---
+>  tools/perf/util/c++/clang-c.h                 |   8 +-
+>  tools/perf/util/c++/clang-test.cpp            |   6 +-
+>  83 files changed, 811 insertions(+), 966 deletions(-)
+>=20
+> --=20
+> 2.33.0.882.g93a45727a2-goog
+>=20
 
