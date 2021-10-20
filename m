@@ -2,232 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E34434F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC73434F34
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhJTPib convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 11:38:31 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:47847 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhJTPia (ORCPT
+        id S230305AbhJTPkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:40:35 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:37874 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhJTPkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:38:30 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 41D75100013;
-        Wed, 20 Oct 2021 15:36:13 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 17:36:11 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Ryan Barnett <ryan.barnett@collins.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/48] TI AM437X ADC1
-Message-ID: <20211020173611.07980c1d@xps13>
-In-Reply-To: <20211015081506.933180-1-miquel.raynal@bootlin.com>
-References: <20211015081506.933180-1-miquel.raynal@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 20 Oct 2021 11:40:33 -0400
+Received: by mail-io1-f72.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso16099595iov.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:38:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=op9MbT3atFRk1mMIWPoA4/rkkY0cGk9as5oHsMvR6d8=;
+        b=0oHeoQscgm+wCZ6BMJ4kAD/6ThjG31PW408XGJi8yFAz7iqsgS1kRxprh424UYDNxo
+         EvuybwrTlty4dX8Z49VuRxAK6MuRS7ihYRDoWuSh2Io3IArND5de/0jjFJwnN2KkVrN0
+         v9AjtldtmH6oNeTrw9WCmIUd1vblXPM48OTYSEM/29Jzivc1COdMqEQveTwk0013GZ+w
+         VMGkDZ5yxaz42lhPtMYTXnTV/Qo3t+WWX6i0daUiux/h7iAqm5Nw0Yxdjf4Z4CtfqF78
+         8eHlPXjxS2aT9zVwx3r6trA6FOdu3oRuwXV++Qz6zff+FbTKG8SLKU8bNQTQVPFB4ddN
+         sIZA==
+X-Gm-Message-State: AOAM530DPPVeAXdNV7DAHEvSYxbd/9hZ3rhJaaevc5JArQYzPqaHNq0D
+        ctOTASOurXWgIbvbyoS4YRtjhqepW86/AkP7KJqHX1paxap+
+X-Google-Smtp-Source: ABdhPJz1+BVgVYWzVQHgg9r5K2xCenviEGLTT1ONr2O2JwUlKmJDvrma81u3XljGdanL/+J1gihFbq9PX9ve0JX9nHAJDPyeqJYd
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-Received: by 2002:a05:6602:1651:: with SMTP id y17mr379810iow.114.1634744298546;
+ Wed, 20 Oct 2021 08:38:18 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 08:38:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000036adc005ceca9175@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in snd_mixer_oss_get_volume1
+From:   syzbot <syzbot+9988f17cf72a1045a189@syzkaller.appspotmail.com>
+To:     alsa-devel@alsa-project.org, broonie@kernel.org, joe@perches.com,
+        lars@metafoo.de, linux-kernel@vger.kernel.org, perex@perex.cz,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+Hello,
 
-miquel.raynal@bootlin.com wrote on Fri, 15 Oct 2021 10:14:18 +0200:
+syzbot found the following issue on:
 
-> /*
->  * Reducing the Cc: list as this is just a rebase and all patches
->  * received reviews already. Only the DT patches have received no
->  * feedback, hence keeping the omap@ list in.
->  */
-> 
-> Hello,
-> 
-> This is a (fairly big) series bringing support of AM437X ADC1.
-> On TI AM33XX SoCs family there is an ADC that can also be connected to a
-> touchscreen. This hardware has been extended and is present on certain
-> SoCs from the AM437X family. In particular, the touchscreen has been
-> replaced by a magnetic card reader. In both cases, the representation is
-> an MFD device with two children:
-> * on AM33XX: the touchscreen controller and the ADC
-> * on AM437X: the magnetic stripe reader and the ADC
-> 
-> This series really targets small and atomic changes so that the overall
-> review is eased, even though it leads to a lot of rather small patches.
-> Here are the steps:
-> * Supporting the missing clock
-> * Translating a single text file containing the description for the
->   MFD, the touchscreen and the ADC into three independent yaml files.
-> * Cleaning/preparing the MFD driver.
-> * Supporting ADC1 in the MFD driver.
-> * Cleaning/preparing of the ADC driver.
-> * Supporting ADC1 in the ADC driver.
-> * Updating various device trees.
-> 
-> Here is the full series again, almost reviewed and acked entirely.
-> The clock patch has been acked, the ADC patches as well, so we expect
-> the series to go through the MFD tree if the maintainers agree with it.
+HEAD commit:    8fe31e0995f0 Merge tag 'gpio-fixes-for-v5.15-rc6' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a58d94b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bab9d35f204746a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=9988f17cf72a1045a189
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10251d58b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17039278b00000
 
-Sorry to ping you so early, but we already are at -rc6 and I was
-wondering if you could take the series as it has been on the mailing
-list for a while and received no real change since a couple of weeks
-already, possibly avoiding the need for yet another resend of 48
-patches :)
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-Cheers,
-Miquèl
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=167855f4b00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=157855f4b00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=117855f4b00000
 
-> 
-> Thanks,
-> Miquèl
-> 
-> Changes in v6:
-> * Rebased the entire series on top of
->   f38d3e404326 (linux-mfd/for-mfd-next) ("dt-bindings: mfd: Convert
->   X-Powers AXP binding to a schema") as requested by Lee.
-> 
-> Changes in v5:
-> * Let the 48 v4 patch series aside, while only resending this patch that
->   triggered a robot warning. Use the use_mag boolean instead of sticking
->   to tscmag_wires which was not optimal anyway, silencing the 'not used'
->   warning while keeping the code simple and clear.
-> 
-> Changes in v4:
-> * R-by/A-by tags added from Tony, Dmitry and Jonathan.
-> * Inverted the order of three patches following Jonathan's advice:
->   removing the ENB macro (and related definitions) should be done first,
->   in order to avoid further updates of these useless macros. This lead
->   to the addition of a new patch to first do the removal (which was part
->   of patch "Drop useless definitions from the header" in the first
->   place).
-> * Updated the naming of the MFD driver data structure as discussed with
->   Lee.
-> * Used the "magnetic stripe reader" wording when appropriate.
-> * Created a helper using the compatible to determine if there is a
->   touchscreen or a magnetic stripe reader in this version of the
->   hardware.
-> 
-> Changes in v3:
-> * Rebased on top of v5.15-rc1.
-> * R-by/A-by tags added.
-> * Light reordering to let the of_put_node() fix to be applied more easily
-> * Dropped a patch made useless because of the previous reordering
-> * Explained how the tscadc->ctrl variable was used.
-> * Fixed a couple of typos.
-> * Included the change for the HZ macro.
-> * Went further in the BIT()/FIELD_PREP() cleanup.
-> * Added maximum definitions for sample delay/open delay.
-> * Removed useless definitions.
-> * Fixed a couple of rebase conflicts (the series was not bisectable).
-> 
-> Changes in v2:
-> * Added various R-by/A-by tags.
-> * Various typos & style fixes.
-> [Bindings]
-> * Included the missing ti,am654-tscadc compatible.
-> * Reworded the compatible lines as requested by Jonathan.
-> * Reworded the bindings content a little bit as advised by Rob (subnodes
->   being objects, MFD descriptions provided once, status and unused
->   labels removed).
-> [SPDX changes]
-> * Mentioned that the license macro and the license text matched.
-> * Also added an SPDX tag in the MFD header.
-> [MFD header]
-> * Used the BIT(), GENMASK() and PREP_FIELD() macros when relevant.
-> [MFD driver]
-> * Did not reordered the variables declared on the probe stack as advised
->   by Jonathan.
-> * Added missing of_node_put() calls.
-> * Moved the patch changing the place where the main structure is
->   allocated to directly precede the patch using this change.
-> * Fixed the driver data wiring (bug happening between ex patches 16 and
->   28).
-> * Added a commit just to explain the reordering of the register writes
->   during initialization/resume.
-> * Explained the check about 'use_tsc' in the commit message.
-> * Added a link to the TRM in a commit message referencing it.
-> * Removed the use of the ti,tracks property, used a constant value
->   instead.
-> * Dropped the error check when retrieving the "wrong" DT property
->   (coordiante-readouts) which is unused.
-> 
-> Miquel Raynal (48):
->   clk: ti: am43xx: Add clkctrl data for am43xx ADC1
->   dt-bindings: mfd: ti,am3359-tscadc: Add a yaml description for this
->     MFD
->   dt-bindings: touchscreen: ti,am3359-tsc: New yaml description
->   dt-bindings: iio: adc: ti,am3359-adc: New yaml description
->   dt-bindings: touchscreen: ti,am3359-tsc: Remove deprecated text file
->   dt-bindings: mfd: ti,am3359-tscadc: Describe am4372 MFD compatible
->   dt-bindings: iio: adc: ti,am3359-adc: Describe am4372 ADC compatible
->   mfd: ti_am335x_tscadc: Ensure a balanced number of node get/put
->   mfd: ti_am335x_tscadc: Replace license text with SPDX tag
->   mfd: ti_am335x_tscadc: Fix style
->   mfd: ti_am335x_tscadc: Drop extra spacing when declaring stack
->     variables
->   mfd: ti_am335x_tscadc: Get rid of useless gotos
->   mfd: ti_am335x_tscadc: Reword the comment explaining the dividers
->   mfd: ti_am335x_tscadc: Don't search the tree for our clock
->   mfd: ti_am335x_tscadc: Simplify divisor calculation
->   mfd: ti_am335x_tscadc: Move the driver structure allocation earlier
->   mfd: ti_am335x_tscadc: Use driver data
->   mfd: ti_am335x_tscadc: Mimic the probe from resume()
->   mfd: ti_am335x_tscadc: Drop useless variables from the driver
->     structure
->   mfd: ti_am335x_tscadc: Always provide an idle configuration
->   mfd: ti_am335x_tscadc: Reorder the initialization steps
->   mfd: ti_am335x_tscadc: Gather the ctrl register logic in one place
->   mfd: ti_am335x_tscadc: Replace the header license text with SPDX tag
->   mfd: ti_am335x_tscadc: Fix header spacing
->   mfd: ti_am335x_tscadc: Use the new HZ_PER_MHZ macro
->   mfd: ti_am335x_tscadc: Drop unused definitions from the header
->   mfd: ti_am335x_tscadc: Use BIT(), GENMASK() and FIELD_PREP() when
->     relevant
->   mfd: ti_am335x_tscadc: Clarify the maximum values for DT entries
->   mfd: ti_am335x_tscadc: Drop useless definitions from the header
->   mfd: ti_am335x_tscadc: Rename the subsystem enable macro
->   mfd: ti_am335x_tscadc: Add TSC prefix in certain macros
->   mfd: ti_am335x_tscadc: Rename a variable
->   mfd: ti_am335x_tscadc: Fix an error message
->   mfd: ti_am335x_tscadc: Add a boolean to clarify the presence of a
->     touchscreen
->   mfd: ti_am335x_tscadc: Introduce a helper to deal with the type of
->     hardware
->   mfd: ti_am335x_tscadc: Add ADC1/magnetic reader support
->   mfd: ti_am335x_tscadc: Support the correctly spelled DT property
->   iio: adc: ti_am335x_adc: Wait the idle state to avoid stalls
->   iio: adc: ti_am335x_adc: Replace license text with SPDX tag
->   iio: adc: ti_am335x_adc: Fix style
->   iio: adc: ti_am335x_adc: Get rid of useless gotos
->   iio: adc: ti_am335x_adc: Gather the checks on the delays
->   iio: adc: ti_am335x_adc: Add a unit to the timeout delay
->   iio: adc: ti_am335x_adc: Add the scale information
->   iio: adc: ti_am335x_adc: Add the am437x compatible
->   ARM: dts: am437x-cm-t43: Use a correctly spelled DT property
->   ARM: dts: am43xx: Describe the magnetic reader/ADC1 hardware module
->   ARM: dts: am437x-gp-evm: enable ADC1
-> 
->  .../bindings/iio/adc/ti,am3359-adc.yaml       |  70 ++++++
->  .../input/touchscreen/ti,am3359-tsc.yaml      |  76 ++++++
->  .../bindings/input/touchscreen/ti-tsc-adc.txt |  91 -------
->  .../bindings/mfd/ti,am3359-tscadc.yaml        |  84 +++++++
->  arch/arm/boot/dts/am437x-cm-t43.dts           |   2 +-
->  arch/arm/boot/dts/am437x-gp-evm.dts           |   8 +
->  arch/arm/boot/dts/am437x-l4.dtsi              |  31 ++-
->  arch/arm/boot/dts/am43xx-clocks.dtsi          |   7 +
->  drivers/clk/ti/clk-43xx.c                     |   1 +
->  drivers/iio/adc/ti_am335x_adc.c               | 220 ++++++++++-------
->  drivers/mfd/ti_am335x_tscadc.c                | 233 ++++++++++--------
->  include/dt-bindings/clock/am4.h               |   1 +
->  include/linux/mfd/ti_am335x_tscadc.h          | 119 +++++----
->  13 files changed, 593 insertions(+), 350 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,am3359-adc.yaml
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/ti,am3359-tsc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/ti-tsc-adc.txt
->  create mode 100644 Documentation/devicetree/bindings/mfd/ti,am3359-tscadc.yaml
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9988f17cf72a1045a189@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in snd_mixer_oss_get_volume1+0x574/0x610 sound/core/oss/mixer_oss.c:600
+Read of size 4 at addr ffff888070afc984 by task syz-executor166/6533
+
+CPU: 0 PID: 6533 Comm: syz-executor166 Not tainted 5.15.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
+ snd_mixer_oss_get_volume1+0x574/0x610 sound/core/oss/mixer_oss.c:600
+ snd_mixer_oss_get_volume sound/core/oss/mixer_oss.c:258 [inline]
+ snd_mixer_oss_ioctl1+0x249/0x1880 sound/core/oss/mixer_oss.c:358
+ snd_mixer_oss_ioctl_compat+0x45/0x60 sound/core/oss/mixer_oss.c:391
+ __do_compat_sys_ioctl+0x1c7/0x290 fs/ioctl.c:972
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f42549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000ffa708bc EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000080254d18
+RDX: 0000000000000000 RSI: 0000000003700000 RDI: 0000000001000000
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 6526:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+ __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
+ kmalloc include/linux/slab.h:591 [inline]
+ snd_mixer_oss_build_input+0x656/0xe30 sound/core/oss/mixer_oss.c:1093
+ snd_mixer_oss_proc_write+0x384/0x5c0 sound/core/oss/mixer_oss.c:1233
+ snd_info_text_entry_release+0xfa/0x260 sound/core/info.c:408
+ close_pdeo.part.0+0xdc/0x2e0 fs/proc/inode.c:244
+ close_pdeo fs/proc/inode.c:563 [inline]
+ proc_reg_release+0x2e9/0x360 fs/proc/inode.c:562
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbae/0x2a30 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __ia32_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+
+Freed by task 6531:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:1700 [inline]
+ slab_free_freelist_hook+0x81/0x190 mm/slub.c:1725
+ slab_free mm/slub.c:3483 [inline]
+ kfree+0xe4/0x530 mm/slub.c:4543
+ snd_mixer_oss_slot_free+0xf3/0x130 sound/core/oss/mixer_oss.c:951
+ mixer_slot_clear+0x5a/0xb0 sound/core/oss/mixer_oss.c:959
+ snd_mixer_oss_build_input+0x7f0/0xe30 sound/core/oss/mixer_oss.c:1101
+ snd_mixer_oss_proc_write+0x384/0x5c0 sound/core/oss/mixer_oss.c:1233
+ snd_info_text_entry_release+0xfa/0x260 sound/core/info.c:408
+ close_pdeo.part.0+0xdc/0x2e0 fs/proc/inode.c:244
+ close_pdeo fs/proc/inode.c:563 [inline]
+ proc_reg_release+0x2e9/0x360 fs/proc/inode.c:562
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbae/0x2a30 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __ia32_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+
+The buggy address belongs to the object at ffff888070afc980
+ which belongs to the cache kmalloc-96 of size 96
+The buggy address is located 4 bytes inside of
+ 96-byte region [ffff888070afc980, ffff888070afc9e0)
+The buggy address belongs to the page:
+page:ffffea0001c2bf00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x70afc
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000200 ffffea0000725740 0000000700000007 ffff888010c41780
+raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY), pid 4486, ts 39889903663, free_ts 39887746705
+ prep_new_page mm/page_alloc.c:2424 [inline]
+ get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4153
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5375
+ alloc_pages+0x1a7/0x300 mm/mempolicy.c:2197
+ alloc_slab_page mm/slub.c:1763 [inline]
+ allocate_slab mm/slub.c:1900 [inline]
+ new_slab+0x319/0x490 mm/slub.c:1963
+ ___slab_alloc+0x921/0xfe0 mm/slub.c:2994
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3081
+ slab_alloc_node mm/slub.c:3172 [inline]
+ slab_alloc mm/slub.c:3214 [inline]
+ __kmalloc+0x305/0x320 mm/slub.c:4387
+ kmalloc include/linux/slab.h:596 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ tomoyo_encode2.part.0+0xe9/0x3a0 security/tomoyo/realpath.c:45
+ tomoyo_encode2 security/tomoyo/realpath.c:31 [inline]
+ tomoyo_encode+0x28/0x50 security/tomoyo/realpath.c:80
+ tomoyo_realpath_from_path+0x186/0x620 security/tomoyo/realpath.c:288
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x272/0x380 security/tomoyo/file.c:771
+ tomoyo_file_open security/tomoyo/tomoyo.c:311 [inline]
+ tomoyo_file_open+0xa3/0xd0 security/tomoyo/tomoyo.c:306
+ security_file_open+0x45/0xb0 security/security.c:1634
+ do_dentry_open+0x353/0x11d0 fs/open.c:809
+ do_open fs/namei.c:3428 [inline]
+ path_openat+0x1c9a/0x2740 fs/namei.c:3561
+ do_filp_open+0x1aa/0x400 fs/namei.c:3588
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1338 [inline]
+ free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1389
+ free_unref_page_prepare mm/page_alloc.c:3315 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3394
+ __vunmap+0x783/0xb70 mm/vmalloc.c:2621
+ free_work+0x58/0x70 mm/vmalloc.c:95
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Memory state around the buggy address:
+ ffff888070afc880: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+ ffff888070afc900: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+>ffff888070afc980: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+                   ^
+ ffff888070afca00: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+ ffff888070afca80: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+==================================================================
+----------------
+Code disassembly (best guess):
+   0:	03 74 c0 01          	add    0x1(%rax,%rax,8),%esi
+   4:	10 05 03 74 b8 01    	adc    %al,0x1b87403(%rip)        # 0x1b8740d
+   a:	10 06                	adc    %al,(%rsi)
+   c:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+  10:	10 07                	adc    %al,(%rdi)
+  12:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+  16:	10 08                	adc    %cl,(%rax)
+  18:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1c:	00 00                	add    %al,(%rax)
+  1e:	00 00                	add    %al,(%rax)
+  20:	00 51 52             	add    %dl,0x52(%rcx)
+  23:	55                   	push   %rbp
+  24:	89 e5                	mov    %esp,%ebp
+  26:	0f 34                	sysenter
+  28:	cd 80                	int    $0x80
+* 2a:	5d                   	pop    %rbp <-- trapping instruction
+  2b:	5a                   	pop    %rdx
+  2c:	59                   	pop    %rcx
+  2d:	c3                   	retq
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	90                   	nop
+  31:	90                   	nop
+  32:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  39:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
