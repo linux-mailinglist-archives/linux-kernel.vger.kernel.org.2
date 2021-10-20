@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FEB434E0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA07434E11
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhJTOk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhJTOk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:40:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C107861373;
-        Wed, 20 Oct 2021 14:38:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634740722;
-        bh=5oWI2erh0ZAmBp0IzLZD9p3MuwG9Ia9cKsMvUhdtp1M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O2HTK4jvNq5ojSBNp2Cvv9Oz1uGR8sMUXicsROBsx4JwVFuVmMGD4YJsUKrQl3tDN
-         JZroNVuuuCE2e5VWbDoc36FY5yinkc4ZIgu+R1WBcCerPXklMUNT8MybvImrSKeLll
-         GaVkv8MmfEKod+ZoiX08ocNpHDqIUWaZaEiEiqZKGH4B8AQaJES79Dge/uBBEisbbW
-         nnTmIoj38cOERMgkXhjtyFdyr92xJJprNBN3Dq4nEbLqUPrZJgE/IGnrX+OaB1XIuz
-         LTfN1NYvsC3OpCoLw5Iu2zU9pr1RH5wY816s18rhhPdVU1658PydjJ0eF2z6PG0idd
-         r/xA9YRmi+sUA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 325D3410A1; Wed, 20 Oct 2021 11:38:39 -0300 (-03)
-Date:   Wed, 20 Oct 2021 11:38:39 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        kajoljain <kjain@linux.ibm.com>
-Subject: Re: [PATCH] perf tools: Suppress 'rm dlfilter' build message
-Message-ID: <YXAp7yR41FVrN9f7@kernel.org>
-References: <20210930062849.110416-1-adrian.hunter@intel.com>
+        id S230313AbhJTOlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230264AbhJTOlS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 10:41:18 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EE5C06161C;
+        Wed, 20 Oct 2021 07:39:03 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0db30070b4efa7ef8aef1e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:b300:70b4:efa7:ef8a:ef1e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4B1C51EC056D;
+        Wed, 20 Oct 2021 16:39:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634740741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=qCfT/7b674bgNAf+bHSErWkrs72ArKBmR21b+UH3CZc=;
+        b=ZPw9/L3YBYugWmEQKF2tm8UQBW0pDlVVeVDGYg1FMpEgrGNsPVp4/4OQXCrj7uzvzVpO6y
+        y7n5Xa5zIfYJXJ0yY4Gonh94g5EjQX+T+uvejyD7qFFvMwoU2m2Shuhoxz3sKsqlxRvrAS
+        JaTgFAKDBrL+Fll4Pt10qc6EvwAGDks=
+Date:   Wed, 20 Oct 2021 16:39:00 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        x86@kernel.org, hpa@zytor.com, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, davem@davemloft.net,
+        kuba@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
+        jroedel@suse.de, brijesh.singh@amd.com, pgonda@google.com,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, tj@kernel.org, aneesh.kumar@linux.ibm.com,
+        saravanand@fb.com, hannes@cmpxchg.org, rientjes@google.com,
+        michael.h.kelley@microsoft.com, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com,
+        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
+        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com
+Subject: Re: [PATCH] x86/sev-es: Expose __sev_es_ghcb_hv_call() to call ghcb
+ hv call out of sev code
+Message-ID: <YXAqBOGdK91ieVIT@zn.tnic>
+References: <2772390d-09c1-80c1-082f-225f32eae4aa@gmail.com>
+ <20211020062321.3581158-1-ltykernel@gmail.com>
+ <YW/oaZ2GN15hQdyd@zn.tnic>
+ <c5b55d93-14c4-81cf-e999-71ad5d6a1b41@gmail.com>
+ <YXAcGtxe08XiHBFH@zn.tnic>
+ <62ffaeb4-1940-4934-2c39-b8283d402924@amd.com>
+ <32336f13-fa66-670d-0ea3-7822bd5b829b@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210930062849.110416-1-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <32336f13-fa66-670d-0ea3-7822bd5b829b@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Sep 30, 2021 at 09:28:49AM +0300, Adrian Hunter escreveu:
-> The following build message:
+On Wed, Oct 20, 2021 at 10:23:06PM +0800, Tianyu Lan wrote:
+> This follows Joreg's previous comment and I implemented similar version in
+> the V! patchset([PATCH 05/13] HV: Add Write/Read MSR registers via ghcb page
+> https://lkml.org/lkml/2021/7/28/668).
+> "Instead, factor out a helper function which contains what Hyper-V needs and
+> use that in sev_es_ghcb_hv_call() and Hyper-V code."
 > 
-> 	rm dlfilters/dlfilter-test-api-v0.o
-> 
-> is unwanted.
-> 
-> The object fle is being treated as an intermediate file and being
-> automatically removed. Mark the object file as .SECONDARY to prevent
-> removal and hence the message.
+> https://lkml.org/lkml/2021/8/2/375
 
-Thanks, applied. Sorry for the delay, fell thru the cracks :-\ Also I
-adjusted the fle typo reported by Kajol.
+If you wanna point to mails on a mailing list, you simply do
 
-- Arnaldo
+https://lore.kernel.org/r/<Message-id>
 
- 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/Makefile.perf | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index e04313c4d840..ab8cb17d9ec5 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -787,6 +787,8 @@ $(OUTPUT)dlfilters/%.o: dlfilters/%.c include/perf/perf_dlfilter.h
->  	$(Q)$(MKDIR) -p $(OUTPUT)dlfilters
->  	$(QUIET_CC)$(CC) -c -Iinclude $(EXTRA_CFLAGS) -o $@ -fpic $<
->  
-> +.SECONDARY: $(DLFILTERS:.so=.o)
-> +
->  $(OUTPUT)dlfilters/%.so: $(OUTPUT)dlfilters/%.o
->  	$(QUIET_LINK)$(CC) $(EXTRA_CFLAGS) -shared -o $@ $<
->  
-> -- 
-> 2.25.1
+No need to use some random, unreliable web pages.
+
+As to Joerg's suggestion, in the version I'm seeing, you're checking the
+*context* - and the one you sent today, avoids the __pa(ghcb) MSR write.
+
+So which is it?
+
+Because your current version will look at the context too, see
+
+	return verify_exception_info(ghcb, ctxt);
+
+at the end of the function.
+
+So is the issue what Tom said that "the paravisor uses the same GHCB MSR
+and GHCB protocol, it just can't use __pa() to get the address of the
+GHCB."?
+
+If that is the case and the only thing you want is to avoid the GHCB PA
+write, then, in the future, we might drop that MSR write altogether on
+the enlightened Linux guests too and then the same function will be used
+by your paravisor and the Linux guest.
+
+So please explain in detail what exactly you want to avoid from
+sev_es_ghcb_hv_call()'s current version and why.
+
+As I said before, I don't want to export any random details of the SEV
+implementation in the kernel without any justification for it.
+
+Thx.
 
 -- 
+Regards/Gruss,
+    Boris.
 
-- Arnaldo
+https://people.kernel.org/tglx/notes-about-netiquette
