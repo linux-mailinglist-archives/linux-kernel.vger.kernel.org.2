@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B4B4350D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CDE4350D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhJTRAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:00:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64542 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230049AbhJTRAB (ORCPT
+        id S230336AbhJTRAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:00:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24278 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230049AbhJTRAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:00:01 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KGpe2d026736;
-        Wed, 20 Oct 2021 12:57:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=trLzzqXQ74LpX5eCSDS2/sCA15hX4PPZwwXliX5rAYA=;
- b=lbzwgOunDHUq0I+y9yGzdHiSvzaLW6DFdIQw+Y9BE91X9nlg0WJWVELWMknKc10yecvW
- gjl1YA+RMA0zByaRogqh132LmJo7Fdl8hz5ErLF+snediK7tiPPM7F3LWBiqP+L1jny7
- 2Rq1yC8dQEvdAcF2rvgAi+7WMY+3n8KiGEGNYq39Tiap2IJ743OYtQJjTHueOKxpfti7
- ZdGhghCGzLeND7cqmdiCte2MSlYV6QVf/BFTDzdtNh2JJGuIlXc4Ik+F+ODk2g/fhq2k
- T01mG+wpoP5tMned8mq3SwJ1TbW8GRnCtBk0JGlaw0qee7B+QHUl86cyFTaSsQcTO9AO +g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3btpg70vn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 12:57:30 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19KGs652031779;
-        Wed, 20 Oct 2021 12:57:29 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3btpg70vmn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 12:57:29 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19KGvSDq000882;
-        Wed, 20 Oct 2021 16:57:28 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma04wdc.us.ibm.com with ESMTP id 3bqpcbspgp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 16:57:28 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19KGvQMq42336660
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Oct 2021 16:57:26 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A81F7C6073;
-        Wed, 20 Oct 2021 16:57:26 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC1A8C6062;
-        Wed, 20 Oct 2021 16:57:24 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.235.71])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 20 Oct 2021 16:57:24 +0000 (GMT)
-Subject: Re: [PATCH] PCI/hotplug: Remove unneeded of_node_put() in pnv_php
-To:     Nathan Lynch <nathanl@linux.ibm.com>,
-        Wan Jiabing <wanjiabing@vivo.com>
-Cc:     kael_w@yeah.net, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ajd@linux.ibm.com
-References: <20211020094604.2106-1-wanjiabing@vivo.com>
- <87tuhcx6v6.fsf@linux.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <0622b8ea-7587-2e6b-5558-fae1847b14b9@linux.ibm.com>
-Date:   Wed, 20 Oct 2021 09:57:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 13:00:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634749074;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XMrjtmMFCodzmOkKBCAts1KmNdWqk5crMuC4nhTRFUU=;
+        b=eXjbzMCfs52HvoNPkqrWRZWMvpjuYAMAg1Cl2F2T1ZZMvKRQdGCEwdthMETglXXJvnK9bJ
+        HNhEgfd78Zy+TmuzMoy/QlAfNNHgxxkMGq+Y+xwPuAEFIhB7eUjtf4rNnIWLMiCg/1k/ti
+        e6YxZojoXDYBxU6v1AuZe7ZoiQSMp84=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-277-EI69-RT2OPyqvL7vivH3tw-1; Wed, 20 Oct 2021 12:57:53 -0400
+X-MC-Unique: EI69-RT2OPyqvL7vivH3tw-1
+Received: by mail-wm1-f72.google.com with SMTP id l39-20020a05600c1d2700b0030dba1dc6eeso3559383wms.7
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:57:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XMrjtmMFCodzmOkKBCAts1KmNdWqk5crMuC4nhTRFUU=;
+        b=pF02w4Jsg7W2v7/NQRJnKjVAxPdzG3sKARXwYl4hbWZ9BWiuvIforxfUggXpdBMFZf
+         plZtr1IavCYiBnoTPJ6t90kxKBRIaFs7Yds2FVqVH5yZ9gH+I6y0RpTFThwx0tw6d5ev
+         3Hq635nmW2Bh1G4Eg7UY0FcIO8eVJdhp/TzGjpPT+HqMKm1TiB/Vmb/ZtF5tWO1VrPce
+         JXuvja3Y8osr4+r4Ec1D38MOsfyvR/gb3Wd/xH5hTEZHs+d+sSx3mOa4iTkLuGrQu6qT
+         1+YoaeGtvR//Li1mnQYuFuGsO+0N9RE0J5Ti9aTh8MBCLCGgbV6mF+ZTv+bZMoy6Z2ch
+         v28g==
+X-Gm-Message-State: AOAM530Imb0zJeJtQObk8FMSVeBqY2EFjfwD/RPk3S+0ghVy+hywV1my
+        ldb2WzUDTo8GwHFb94zhzqeGYQ2mUad0C16dGlK328TaiV5nK5b79R906Ek0EyWToJYzEx97lg1
+        Lt7xU7rmEw41dcngf+wFCoQrLpA7PF9zd4LRmsDg3MhABhjDSsvcfu6dM9OMTYOK/s4trDd8nTd
+        8=
+X-Received: by 2002:a05:600c:35d0:: with SMTP id r16mr14759734wmq.97.1634749071676;
+        Wed, 20 Oct 2021 09:57:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyzt4IdDIt4JK7oFknnDd0KYdkLwueKH68lcDLzxFYYyytVkRjTBJ2NloP8e5wzUs9Lm+OI5Q==
+X-Received: by 2002:a05:600c:35d0:: with SMTP id r16mr14759702wmq.97.1634749071403;
+        Wed, 20 Oct 2021 09:57:51 -0700 (PDT)
+Received: from minerva.home ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id z2sm2419999wrn.89.2021.10.20.09.57.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 09:57:50 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Johannes Stezenbach <js@sig21.net>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v2] Revert "drm/fb-helper: improve DRM fbdev emulation device names"
+Date:   Wed, 20 Oct 2021 18:57:40 +0200
+Message-Id: <20211020165740.3011927-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <87tuhcx6v6.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UQqsjwRes6ukURU9LcuVM2CbxBr-x2Cg
-X-Proofpoint-ORIG-GUID: mfaW1Nz8f-BHa00nn_2yLtUZbY8oSQtP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-20_05,2021-10-20_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- clxscore=1015 bulkscore=0 phishscore=0 priorityscore=1501 spamscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110200092
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 4:39 AM, Nathan Lynch wrote:
-> Wan Jiabing <wanjiabing@vivo.com> writes:
->> Fix following coccicheck warning:
->> ./drivers/pci/hotplug/pnv_php.c:161:2-13: ERROR: probable double put.
->>
->> Device node iterators put the previous value of the index variable, so
->> an explicit put causes a double put.
-> 
-> I suppose Coccinelle doesn't take into account that this code is
-> detaching and freeing the nodes.
-> 
-> 
->> diff --git a/drivers/pci/hotplug/pnv_php.c b/drivers/pci/hotplug/pnv_php.c
->> index f4c2e6e01be0..f3da4f95d73f 100644
->> --- a/drivers/pci/hotplug/pnv_php.c
->> +++ b/drivers/pci/hotplug/pnv_php.c
->> @@ -158,7 +158,6 @@ static void pnv_php_detach_device_nodes(struct device_node *parent)
->>  	for_each_child_of_node(parent, dn) {
->>  		pnv_php_detach_device_nodes(dn);
->>  
->> -		of_node_put(dn);
->>  		of_detach_node(dn);
->>  	}
-> 
-> The code might be improved by comments explaining how the bare
-> of_node_put() corresponds to a "get" somewhere else in the driver, and
-> how it doesn't render the ongoing traversal unsafe. It looks suspicious
-> on first review, but I believe it's intentional and probably correct as
-> written.
-> 
+This reverts commit b3484d2b03e4c940a9598aa841a52d69729c582a.
 
-This is a common usage pattern which if we put a comment about the pattern here
-we need to do it every where. I suppose a better solution is to wrap this put in
-a more descriptive function name like of_node_long_put() or something of the
-sort the makes it obvious we are dropping a long held global scope reference.
+That change attempted to improve the DRM drivers fbdev emulation device
+names to avoid having confusing names like "simpledrmdrmfb" in /proc/fb.
 
--Tyrel
+But unfortunately, there are user-space programs such as pm-utils that
+match against the fbdev names and so broke after the mentioned commit.
+
+Since the names in /proc/fb are used by tools that consider it an uAPI,
+let's restore the old names even when this lead to silly names like the
+one mentioned above.
+
+Fixes: b3484d2b03e4 ("drm/fb-helper: improve DRM fbdev emulation device names")
+Reported-by: Johannes Stezenbach <js@sig21.net>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+---
+
+Changes in v2:
+- Add a comment explaining that the current /proc/fb names are an uAPI.
+- Add a Fixes: tag so it can be cherry-picked by stable kernels.
+- Add Ville Syrjälä's Reviewed-by tag.
+
+ drivers/gpu/drm/drm_fb_helper.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+index 8e7a124d6c5a..22bf690910b2 100644
+--- a/drivers/gpu/drm/drm_fb_helper.c
++++ b/drivers/gpu/drm/drm_fb_helper.c
+@@ -1743,7 +1743,13 @@ void drm_fb_helper_fill_info(struct fb_info *info,
+ 			       sizes->fb_width, sizes->fb_height);
+ 
+ 	info->par = fb_helper;
+-	snprintf(info->fix.id, sizeof(info->fix.id), "%s",
++	/*
++	 * The DRM drivers fbdev emulation device name can be confusing if the
++	 * driver name also has a "drm" suffix on it. Leading to names such as
++	 * "simpledrmdrmfb" in /proc/fb. Unfortunately, it's an uAPI and can't
++	 * be changed due user-space tools (e.g: pm-utils) matching against it.
++	 */
++	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
+ 		 fb_helper->dev->driver->name);
+ 
+ }
+-- 
+2.31.1
+
