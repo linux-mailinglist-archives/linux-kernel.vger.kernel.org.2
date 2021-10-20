@@ -2,176 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE23435398
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771D94353BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhJTTRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhJTTRY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:17:24 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF976C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:15:09 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id q5so23385090pgr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i22CGOfMdCgEzNofkN2ujFXF/VRH37ibkrOAmDeTGJk=;
-        b=JpcmTmu47LLgTalrcwHRfbvnurUdEUIPsEFm+gDXyWzHYc7ndXQEKbhgm4vo91rqt1
-         TMNIN7Qa9dCpB6e3ViS2EZ+qPxoTjr6dHBkYXKic25otGOFt5rTop+eIp8mnFDNRwpGt
-         aje3upgjKjBAz6T1loijjMNJQqfNOXXET2wlA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i22CGOfMdCgEzNofkN2ujFXF/VRH37ibkrOAmDeTGJk=;
-        b=2ROanzmdo44e5/uQCBl36GU1povjA9uie39lgZytH9Du98tbhtVRvIdAEfft5adKLk
-         /FLR3Kcvx+XyH0gjZ4e8FF6PVnkNJUEzc7IldgOx3jiSYcIzot7F3RU/rnMHuDrHd1sD
-         mPLoUqQZzVUpEBlJA6h4WiNZ0Ljl1fMdFAAkRKvEqt9BIFrVyU8zIXKC+XrQciWLtOip
-         Dm/XJcJB2WDy19T9KYBw1e46MUy7CRACkN+cmn30LTgr4t0JMpr+4xGK80WnY64+kzyC
-         d1wPG54q7WyGNVoRtx8eDjbEdwMU46D8VPaQ/LxaCXF3MWEdFKvdym2byS4WZ98NLGWS
-         IvFQ==
-X-Gm-Message-State: AOAM530Ke9iavGWSxVhlOOpKIKTmH4u2M9+h8UotHgpcjxRL3zgumbo0
-        wWNZUw/Lyp2P1d05LoW1LduNYg==
-X-Google-Smtp-Source: ABdhPJwlN6e6EukdLBE/1sEfEDDBaNtAFd50dDayRvjCFtYq+pdfXTDmzg6uAqxABX6av/5tLtlX3w==
-X-Received: by 2002:aa7:94a8:0:b0:44c:f3e0:81fb with SMTP id a8-20020aa794a8000000b0044cf3e081fbmr797733pfl.6.1634757309155;
-        Wed, 20 Oct 2021 12:15:09 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p12sm3981100pfh.52.2021.10.20.12.15.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:15:08 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 12:15:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-security-module@vger.kernel.org,
-        llvm@lists.linux.dev, Dan Li <ashimida@linux.alibaba.com>,
-        ardb@kernel.org, ojeda@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] gcc-plugins: Explicitly document purpose and
- deprecation schedule
-Message-ID: <202110201212.43DC4A24@keescook>
-References: <20211020173554.38122-1-keescook@chromium.org>
- <20211020173554.38122-2-keescook@chromium.org>
- <YXBVx+0YjoMtQ27T@archlinux-ax161>
+        id S231544AbhJTTYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:24:23 -0400
+Received: from mail-mw2nam12on2077.outbound.protection.outlook.com ([40.107.244.77]:4737
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231485AbhJTTYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 15:24:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d7JfpW0KkyOt0WYDPAVGB1eC7tfHgTtTpMo1lQ6WP+EIPARBSV0w10KfIDXCOEFQVq8ow9utvr/TDpCAsUdrkGdrsrtpL5HP877cYN6Ck4AlaE20QqDpyL/t3Rxao+Br3br7+URh0BM0CspBgBqnU6DpvbbqUBUmqAIN9n6fFJwxVPTZE+bBWmpOIAP5Wg6T/6vJoMQ3b7z+fHN87j60o/EgevpWm0dmdg6H+BX+DFZvRE4GVY2LB51DGBlIPRgxLG7V1+5COIw60nwppzHEy49MMfdzGcVAtsJOJHXFuOpFh1LY/Td+b44bL7Bf0NcyylHFXs5xB5iKBCHnBS0HuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4eYB1Rs5VjFffnWOsXbzsKPRFc21/xRz075CdJI1A9A=;
+ b=cNgRnACDccUSqJz2WfCXi7KaSt/PFrKneM6aqXuWv7tNlPSp6n3i29bVs/TJLVxbOHmBxoEykvixGx3BYZg+Aw60iduIixv3izngIJO8tEaB2Mly/PzoiDOQBguXsiFZA0eI2uotslOMjF6ISfQIiAf9iyR/C5N5DXP9KnTpUUbfwwxQg+6uf5ozJbUIYXmRuDLXczf577PWgsSSjzWHONcIhyoEpuSbhR7ymGUgF5ZPtyCcmFLWttYxonVAFWiK6DG7dgSOJLPozI3DSKIu6c9d+toSTvIggP8Uf4a5p50tTv7PGKNgwsdehuxfkhlBdSsdxqA3dSvCcXvQESh/iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4eYB1Rs5VjFffnWOsXbzsKPRFc21/xRz075CdJI1A9A=;
+ b=qFcTz/TCdI6XVARHVBASyY2yS3rJP98Z5hoW8ZBU/sLmUd0xAK01TD1wujFa8xakTBEyKNHOJj7pfnVtoDXmi0Z66CFsFQyKV6YXM3IaAgiZUdkp6W/Ps5h/rwKXxbGgYcsjlPgsLoOVPBctUNkAZ79OFhEA6zyP/9hLeyb9yPU=
+Authentication-Results: fujitsu.com; dkim=none (message not signed)
+ header.d=none;fujitsu.com; dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4557.namprd12.prod.outlook.com (2603:10b6:806:9d::10)
+ by SN6PR12MB2781.namprd12.prod.outlook.com (2603:10b6:805:67::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Wed, 20 Oct
+ 2021 19:22:04 +0000
+Received: from SA0PR12MB4557.namprd12.prod.outlook.com
+ ([fe80::a118:1560:d5df:ba59]) by SA0PR12MB4557.namprd12.prod.outlook.com
+ ([fe80::a118:1560:d5df:ba59%8]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
+ 19:22:04 +0000
+Subject: Re: [PATCH v2 17/23] x86/resctrl: Abstract __rmid_read()
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        James Morse <james.morse@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com,
+        tan.shaopeng@fujitsu.com
+References: <20211001160302.31189-1-james.morse@arm.com>
+ <20211001160302.31189-18-james.morse@arm.com>
+ <887f8946-6d2b-27bf-a49b-f83af05cbc68@amd.com>
+ <dfe2f33c-6103-9699-42f9-73983fa62057@intel.com>
+From:   Babu Moger <babu.moger@amd.com>
+Message-ID: <81826a4f-c3de-787f-8059-4808815b4800@amd.com>
+Date:   Wed, 20 Oct 2021 14:22:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <dfe2f33c-6103-9699-42f9-73983fa62057@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: CH0PR07CA0001.namprd07.prod.outlook.com
+ (2603:10b6:610:32::6) To SA0PR12MB4557.namprd12.prod.outlook.com
+ (2603:10b6:806:9d::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXBVx+0YjoMtQ27T@archlinux-ax161>
+Received: from [10.236.30.47] (165.204.77.1) by CH0PR07CA0001.namprd07.prod.outlook.com (2603:10b6:610:32::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend Transport; Wed, 20 Oct 2021 19:22:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 47dc5857-397f-4310-2b8e-08d993fee61f
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2781:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2781A60EBAC723ABD4AE890695BE9@SN6PR12MB2781.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wf2Wuk0OlYPU86f9GBhgoALPaPQYuQocrB660DEtkCidB1jZXzftZ9DSbZ3vjgIKfxKElumgRzRdMO0zp4nf0lz1izwe8yzGHNgBgT9vXIq+TLuq0QaRZ4UrvcpYgxRf9M2wkYQpLC+ZUWEww6k4berFSmKEnda7gz5VdBi9HDGOdlmc1lG1KCPZa9lhRtiF6XuefxseACMGAnURP8QTh3cyDu0rj36N7CRWWI2rO4fgOlOWgI5dbSc7soNFWsTkuPXjX8Kh5T9YD0UdJY89B99+Nsft9tgb6AIFE8cXKk21MyfWG0lYS8wMfuhiB+6bxaXZGqLZE1VQeoruqqyQIj6yhsGYMSVhjp3K/cqk6/o3c94PNTqmdTIsX1WiPn/dABxADdB8SsL1V22aNdbrNsRcsAvyTl8Z0pJjSBCH1psww3H27QY+bVNQgp99UCsDjRJ4m74M3N0mwcv9elLLVw1CHZleSoCiT8L5xosxqdqphiM9dbSDw8vUNCPxfd0P3DpmKgFE+TVjwYorRJKF8Cl3q+Mb80iSFKhNleHeSatIkzUwh3Xqwo9LbJV8/2B5uEDqOuth6QzgTZa0MvhLYAamyt8EzOZqDDJpJFDFLsbsV0WEYD3KASpu10dRP0tWdZ4gHh0bjdTD812IdjdIoaOH4V8Z0Gcv6wl/OY+/7VF6OSQV5SlWMe9d9+kkKuJ6hACsrnl9jTM/CMr+pKfu/FojIrE+KeMUdz7VJhBGkKspWLP/Z5XeJItxb7Z1Hmrnm2pc78x1was6cUzub1t5HA36akVDEY2Hoqy4C41rIHw7l6JkfHrck9ArzwIGKxoX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(186003)(16576012)(316002)(6486002)(966005)(44832011)(45080400002)(66946007)(508600001)(66476007)(83380400001)(66556008)(4326008)(2906002)(8676002)(956004)(2616005)(7416002)(8936002)(31696002)(86362001)(110136005)(5660300002)(26005)(54906003)(31686004)(38100700002)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R2NwUktpSFdJNkNYUncyaTFvZ3pucTlrOWNDSXdFWk4wdWZxYnVNUUR4WmIz?=
+ =?utf-8?B?RFpNcVp4MzYxT3NwVGtWSC9yT1BBd3craFVKWXB2M3hQcHhlRGxOWWsrT1ZE?=
+ =?utf-8?B?QjhzKzZaWEVVMktXSXAxaDdnWGlCWEV1UHgreG4vRjl5UGNSK1paTlprUTd5?=
+ =?utf-8?B?L3MxTnZZR1BVSUtRWkZnbkVlUk9kU1JFNWlzTzVZdEk3ejE0UnE1RHBPb1V4?=
+ =?utf-8?B?ZVJ3WHJyb2VYcVNROGJaclVseDNROUZVTlJKTHNlSHBkdTM2cUFJVmlxZzV2?=
+ =?utf-8?B?MEZYRGc3STY2SDlaRzJsME4vV2grNVY2Nm10VDVFd3RkRnpHWU44akVUVmFL?=
+ =?utf-8?B?L2tUa3VhZnVUOVZLQnZiM0ZNazRuODJkYVhqQlE5VlBNQjVseDNyM1ZoblFp?=
+ =?utf-8?B?OUl6UXMzWXVmV20xRjFnTUVlSEN2ak9GVnhGSDJhY1hTYU1LVGFxOHFheXlx?=
+ =?utf-8?B?ak4vZ1lyMmxNMUhleUN3M1JoZU8zR0JFL05HdEtQd0NKVTY2eFRtZ05tRkZy?=
+ =?utf-8?B?NVNqbGxtOUQyZXQzTnhwVlNzNHcrTmk2amRpSXc5YlB0dGRNNzVJZjA1ZkUy?=
+ =?utf-8?B?VVhlVFRVeU1ob1ArUzBlS0pZTEFUcms1clFhdUlsMlgxMWpDUXBud05BOUJ5?=
+ =?utf-8?B?WHhzN3FHQ2xqbkpnNkFBRloyOFhEeXNRb29Rb3N5eDl4ZWIzd0JLTkZCMU9U?=
+ =?utf-8?B?NWRSMWRyamlEWkRZNjgwM3hCU2hjY0VtQ0hMYnVuRTM1WmZISmc4T1BVUEVV?=
+ =?utf-8?B?Y3RGY1h0YUFYenc1STJZRkE0eXExMGMzVDhrb2x5KzNuanJBUGdrbEkvN2lk?=
+ =?utf-8?B?WnNTandTeEE0dE9JYktuaDFLUnJ1QzdaNUlvRmI3WmNzNzZFNEtoTEQyajBr?=
+ =?utf-8?B?Z0hsWXQ0WlBZTFRZTklKb25sQjgxaXlsanUwVWpzN3dneW4zbE03RmdKdEMv?=
+ =?utf-8?B?d01Vb1JQaUQ2Qi9nZVppeGFRVERiemVnMGV3UHZ3MFlhd0QrbzFsYngyM0s3?=
+ =?utf-8?B?ZFk0ZzJCZllIRDQ2THZJeHEzVGRRYUhldFNFMjU3ZlBzemxDY3NlVHJUUSth?=
+ =?utf-8?B?aCsyRFN1bHRxVXZCSHVMYXFia1JuMndCbUhlSnB4OHJ6b2FxNzFBV00yVTE0?=
+ =?utf-8?B?UnFWZkpPRE9pRjJ0T0wrQnF4eElqakk5ZjlpY2g3R0QvQ3BRY2FGMUZoTFZI?=
+ =?utf-8?B?THgrMGVOTFk5WVgzQWh5TzhPanBjVytwajRoaVdobHNsQm1BbWJkTVBvYk9y?=
+ =?utf-8?B?ZWdXWHhPYkRHOEtlQXErMnFMMkVJYXY3b2hodThrSkZ4ZmIrTzJWR1htelVm?=
+ =?utf-8?B?K3ZUTUExZFliZ3VZRkFBTmdqZ2NBNk4rUmowa3BLTms3aW5NbUFQV2ZnVVF3?=
+ =?utf-8?B?cWwvVjliUXo0WTFUMlFuSHlWYTRVSk5UZTZKU1BqTGNYVjVWaEp4UnBkYUpX?=
+ =?utf-8?B?aWdTb2hpU1I2Z2Rud0s1cGx4QVN1SFFyQWVLcno4MzBZOXc5L1ZjZTdMdmVR?=
+ =?utf-8?B?RUQxZEJXNS9kY01NUW1wUjZRTkhKQ3dWMlRpNHY5MUIzTWo2RU9DUzhlSkJa?=
+ =?utf-8?B?enNwOGpNRHJDTThaZkxMcUdjZjFEeU5hdncwZVYyV3dxNUNOZDN2Q2tDajc2?=
+ =?utf-8?B?elVua3pOa0FzUTlhNEF3L3g0NU02NFptTEF2VStSNWVqY2xIdjFhbVRpRTVK?=
+ =?utf-8?B?dklIZTliV1RsNmJVQlFaRmllR1BpUk5jZjhQWUZvckhybTQvMmQ4UkkyVnBL?=
+ =?utf-8?Q?Zj7fi+07CvqF3v7l5MRMsIAngmFN8jlx5ArcVzm?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47dc5857-397f-4310-2b8e-08d993fee61f
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 19:22:04.3186
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bmoger@amd.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2781
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:45:43AM -0700, Nathan Chancellor wrote:
-> On Wed, Oct 20, 2021 at 10:35:53AM -0700, Kees Cook wrote:
-> > GCC plugins should only exist when some compiler feature needs to be
-> > proven but does not exist in either GCC nor Clang. For example, if a
-> > desired feature is already in Clang, it should be added to GCC upstream.
-> > Document this explicitly.
-> > 
-> > Additionally, mark the plugins with matching upstream GCC features as
-> > removable past their respective GCC versions.
-> > 
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: Michal Marek <michal.lkml@markovi.net>
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Cc: James Morris <jmorris@namei.org>
-> > Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> > Cc: Nathan Chancellor <nathan@kernel.org>
-> > Cc: linux-hardening@vger.kernel.org
-> > Cc: linux-kbuild@vger.kernel.org
-> > Cc: linux-doc@vger.kernel.org
-> > Cc: linux-security-module@vger.kernel.org
-> > Cc: llvm@lists.linux.dev
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Seems reasonable to me.
-> 
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Hi Reinette,
 
-Thanks!
-
+On 10/20/21 1:15 PM, Reinette Chatre wrote:
+> Hi Babu,
 > 
-> One comment below.
+> On 10/19/2021 4:20 PM, Babu Moger wrote:
+>> Hi James,
+>>
+>> On 10/1/21 11:02 AM, James Morse wrote:
+>>> __rmid_read() selects the specified eventid and returns the counter
+>>> value from the msr. The error handling is architecture specific, and
+>>> handled by the callers, rdtgroup_mondata_show() and __mon_event_count().
+>>>
+>>> Error handling should be handled by architecture specific code, as
+>>> a different architecture may have different requirements. MPAM's
+>>> counters can report that they are 'not ready', requiring a second
+>>> read after a short delay. This should be hidden from resctrl.
+>>>
+>>> Make __rmid_read() the architecture specific function for reading
+>>> a counter. Rename it resctrl_arch_rmid_read() and move the error
+>>> handling into it.
+>>>
+>>> Signed-off-by: James Morse <james.morse@arm.com>
+>>> ---
+>>> Changes since v1:
+>>>   * Return EINVAL from the impossible case in __mon_event_count() instead
+>>>     of an x86 hardware specific value.
+>>> ---
+>>>   arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  4 +--
+>>>   arch/x86/kernel/cpu/resctrl/internal.h    |  2 +-
+>>>   arch/x86/kernel/cpu/resctrl/monitor.c     | 42 +++++++++++++++--------
+>>>   include/linux/resctrl.h                   |  1 +
+>>>   4 files changed, 31 insertions(+), 18 deletions(-)
+>>>
+>>> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+>>> b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+>>> index 25baacd331e0..c8ca7184c6d9 100644
+>>> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+>>> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+>>> @@ -579,9 +579,9 @@ int rdtgroup_mondata_show(struct seq_file *m, void
+>>> *arg)
+>>>         mon_event_read(&rr, r, d, rdtgrp, evtid, false);
+>>>   -    if (rr.val & RMID_VAL_ERROR)
+>>> +    if (rr.err == -EIO)
+>>>           seq_puts(m, "Error\n");
+>>> -    else if (rr.val & RMID_VAL_UNAVAIL)
+>>> +    else if (rr.err == -EINVAL)
+>>>           seq_puts(m, "Unavailable\n");
+>>>       else
+>>>           seq_printf(m, "%llu\n", rr.val * hw_res->mon_scale);
+>>
+>> This patch breaks the earlier fix
+>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git%2Fcommit%2F%3Fh%3Dv5.15-rc6%26id%3D064855a69003c24bd6b473b367d364e418c57625&amp;data=04%7C01%7Cbabu.moger%40amd.com%7C85219a5827114935cdaa08d993f59fa0%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637703505420472920%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=yP8awDgGGZ%2BWj5ZItdTNJItTVuK828yGnibwq%2BrVaf0%3D&amp;reserved=0
+>>
+>>
+>> When the user reads the events on the default monitoring group with
+>> multiple subgroups, the events on all subgroups are consolidated
+>> together. In case if the last rmid read was resulted in error then whole
+>> group will be reported as error. The err field needs to be cleared.
+>>
+>> Please add this patch to clear the error.
+>>
+>> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> index 14bc843043da..0e4addf237ec 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> @@ -444,6 +444,8 @@ void mon_event_count(void *info)
+>>          /* Report error if none of rmid_reads are successful */
+>>          if (ret_val)
+>>                  rr->val = ret_val;
+>> +       else
+>> +               rr->err  = 0;
+>>   }
+>>
+>>   /*
+>>
 > 
-> > ---
-> >  Documentation/kbuild/gcc-plugins.rst | 26 ++++++++++++++++++++++++++
-> >  scripts/gcc-plugins/Kconfig          |  4 ++--
-> >  security/Kconfig.hardening           |  9 ++++++---
-> >  3 files changed, 34 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/Documentation/kbuild/gcc-plugins.rst b/Documentation/kbuild/gcc-plugins.rst
-> > index 3349966f213d..4b28c7a4032f 100644
-> > --- a/Documentation/kbuild/gcc-plugins.rst
-> > +++ b/Documentation/kbuild/gcc-plugins.rst
-> > @@ -32,6 +32,32 @@ This infrastructure was ported from grsecurity [6]_ and PaX [7]_.
-> >  .. [7] https://pax.grsecurity.net/
-> >  
-> >  
-> > +Purpose
-> > +=======
-> > +
-> > +GCC plugins are designed to provide a place to experiment with potential
-> > +compiler features that are neither in GCC nor Clang upstream. Once
-> > +their utility is proven, the goal is to upstream the feature into GCC
-> > +(and Clang), and then to finally remove them from the kernel once the
-> > +feature is available in all supported versions of GCC.
-> > +
-> > +Specifically, new plugins should implement only features that have no
-> > +upstream compiler support (in either GCC or Clang).
-> > +
-> > +When a feature exists in Clang but not GCC, effort should be made to
-> > +bring the feature to upstream GCC (rather than just as a kernel-specific
-> > +GCC plugin), so the entire ecosystem can benefit from it.
-> > +
-> > +Similarly, even if a feature provided by a GCC plugin does *not* exist
-> > +in Clang, but the feature is proven to be useful, effort should be spent
-> > +to upstream the feature to GCC (and Clang).
-> > +
-> > +After a feature is available in upstream GCC, the plugin will be made
-> > +unbuildable for the corresponding GCC version (and later). Once all
-> > +kernel-supported versions of GCC provide the feature, the plugin will
-> > +be removed from the kernel.
-> > +
-> > +
-> >  Files
-> >  =====
-> >  
-> > diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
-> > index ab9eb4cbe33a..3f5d3580ec06 100644
-> > --- a/scripts/gcc-plugins/Kconfig
-> > +++ b/scripts/gcc-plugins/Kconfig
-> > @@ -37,6 +37,8 @@ config GCC_PLUGIN_CYC_COMPLEXITY
-> >  
-> >  config GCC_PLUGIN_SANCOV
-> >  	bool
-> > +	# Plugin can be removed once the kernel only supports GCC 6.1.0+
-> > +	depends on !CC_HAS_SANCOV_TRACE_PC
+> Good catch, thank you.
 > 
-> This symbol is not user selectable and the one place that does select it
-> only does so when !CC_HAS_SANCOV_TRACE_PC so this seems pointless to me.
-> 
-> Keep the comment, ditch the depends?
+> Even so, I do not think mon_event_count()'s usage of __mon_event_count()
+> was taken into account by this patch and needs a bigger rework than the
+> above fixup. For example, if I understand correctly ret_val is the error
+> and rr->val no longer expected to contain the error after this patch. So
+> keeping that assignment to rr->val is not correct.
 
-I had a similar thought, and in the end, I decided I wanted to always
-enforce the GCC feature check through a depends, with a comment about
-the expected version. I want to make sure we don't use plugins if an
-upstream feature is already available. It happens that SANCOV was
-effectively the first to do this, but it did so on the other side and I
-wanted it repeated here so it was "self contained".
+Yes. You are right. rr->val is not expected to contain the error.
+Hopefully, this should help.
 
--Kees
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c
+b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 14bc843043da..105d972cc511 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -441,9 +441,9 @@ void mon_event_count(void *info)
+                }
+        }
 
--- 
-Kees Cook
+-       /* Report error if none of rmid_reads are successful */
+-       if (ret_val)
+-               rr->val = ret_val;
++       /* Clear the error if at least one of the rmid reads succeed */
++       if (ret_val == 0)
++               rr->err = 0;
+ }
+
+ /*
