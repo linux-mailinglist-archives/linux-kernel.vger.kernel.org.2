@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423554350FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87328435109
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhJTRMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:12:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:50638 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230336AbhJTRMR (ORCPT
+        id S230264AbhJTRPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhJTRPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:12:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634749802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EDDSu21c2DDtVcs1j05La3urw7/DHvQkavRYGt1gbjU=;
-        b=ecMqCDLwhDeCzrdRks0w62+G8jqPymlY7aTRfmJBGZkBMoFhkAZe820zQRLw4gHevlC0E9
-        8s6UK3tujLEJUOxpSQIGWfBMv9kaPnxP8bQ4MG+IBxgrBfNs0Yyun8jikXVLE5TXLNoL4W
-        sqb5lKEiJ7h1wszRthO07AQ6wtAMvEU=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-q3pCt02gOZ6_3WCFTysUdw-1; Wed, 20 Oct 2021 13:10:01 -0400
-X-MC-Unique: q3pCt02gOZ6_3WCFTysUdw-1
-Received: by mail-oo1-f70.google.com with SMTP id g11-20020a4a924b000000b002b76277c71bso3471924ooh.22
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:10:00 -0700 (PDT)
+        Wed, 20 Oct 2021 13:15:53 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46329C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:13:39 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id o4so10406698oia.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=boiVqlUXEbveUFmoz0TXWnqa/ZprtFQSlDyn3Tbir8A=;
+        b=a6oD6CiXAIjWC3NZeGrfcSrS0RkCyXVpagcBKnkc9CaLbTVcOfhvoynz7RVXDcAcR0
+         UdEWbdgALEi2GM3bbek8Dn/StoTUwVqBFuhussP4oW3/nHKOduNoxuVl66vPly93gKG2
+         bRN4OrihUgEFzWtGGwQBrqSx8/Y74aSHQvywOPjp4k2q16+uHt8QwgwLEKPh+Tix9ud6
+         WZkn9H3AAJ8IQWFpCRu1Qxxn0e9FE01hykyKfNsC4Uakw9ra4i10RI9uKzzcUeB6qJ/e
+         rnXqWzAhuOB3UU8LhOI/uBQyJZjxCwWokvcdA9sdyIPBCZoYLRuj1X2lGcO6AcDHrA24
+         +4Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EDDSu21c2DDtVcs1j05La3urw7/DHvQkavRYGt1gbjU=;
-        b=moEVhd+wXetI31EuS6besTzXDYz6sMBFJKVKDYtE2i8R1F1pL0Vp4iP0281VouNGEp
-         UwVuaU+2WAgKTs1ETjfIKsFHZUGqGmgT8oR+EozhAXkqzsKra+8bYFNZRslO1KAVUu19
-         Hy/ego6J1QAxGhDfJcNSWGGeo9T9bUZY8RNHG/7E2RWEKspI7z/P1rAWDNMS5nC0JIk6
-         7EE5YXf4y4jGVDWiq9DKNgaFEpLiAwliHq4+ZIdKfAy1S/vzVWz1jXeLfvOG8r0xn0RV
-         zMGBFnPRBNjXaHnwLFrCGmbDSKulKxVc2edWmTbt6bQdKt8x4qZPg2pxQ1B/Gxjtm4oj
-         J1Qg==
-X-Gm-Message-State: AOAM530XmVObHT/mCv70BL8/oRfLi4V5eBszCsziiLVlTvtOCwqe3Fj/
-        dxrCpc6ya06knESvV7c0Fpssv3WCX20f5aHnzbLtmwHmbXCm5CEmUhdtZVxT1VSCArvsAz4MYih
-        uEHqmBoWp0VarPhZj3wdKeoLd
-X-Received: by 2002:a05:6808:bc6:: with SMTP id o6mr528557oik.33.1634749800232;
-        Wed, 20 Oct 2021 10:10:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsOOoYTmsd+892eISaPosYjQR+k3T8Apr/pPX0C2UDd0FwJn17PQW63f9XvVXLsuEybA7bSQ==
-X-Received: by 2002:a05:6808:bc6:: with SMTP id o6mr528541oik.33.1634749800050;
-        Wed, 20 Oct 2021 10:10:00 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id 187sm535011oig.19.2021.10.20.10.09.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 10:09:59 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 10:09:56 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH v2 08/14] x86/retpoline: Create a retpoline thunk array
-Message-ID: <20211020170956.g67xcsvvdkuqg3qa@treble>
-References: <20211020104442.021802560@infradead.org>
- <20211020105842.981215247@infradead.org>
- <20211020155750.3u74bkcp66leeyed@treble>
- <f33b9c4e-08c1-f88d-4873-82050a944010@citrix.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=boiVqlUXEbveUFmoz0TXWnqa/ZprtFQSlDyn3Tbir8A=;
+        b=o4BUO3nHVwGGDyMnkJW+tu5Io2UfgQKE6pOsBUnOYO31GVrI2GUVqfh2ttenLYK6g/
+         BWMET0jQ13SohU52m+YjZf7N2Wp5S/Yj7jKdjfjpIwf6bR6nmFywLc7aK2s0afYtmT2q
+         ikteRgsvZ/LoF55RmFjoc8n85XiwjMoChx0RFB8ui+a/WajsnpGdjxwXO5U70lZIkMGg
+         APu/K5fj5ZvV9+6Peu+rntYR+bEwhv78vbNMDtjPzETKCG15c2Y1bbe8vHqhhJcD8LiX
+         jIyTabeGyBqgaT/1e2SjY9/I6VrLH/GD9MT3xJtxBITOYVMLODFqEM0K+PVpKtiHY6Fr
+         U0xw==
+X-Gm-Message-State: AOAM53243lQ3T8/e3yN1jR/c9dz3Uwg3gfVFkgETgKdNue+y/c40dtHy
+        MOhed2Iz8smfufSi/PwqdXdL7qDZWOha8A==
+X-Google-Smtp-Source: ABdhPJwQBA62BC1JDoKKjsnxzLxqta2h0Q67KXB3cckwVwqmI+n9lzcnQmGAufYFyAfGIj1agID3fw==
+X-Received: by 2002:aca:ad45:: with SMTP id w66mr179140oie.148.1634750018708;
+        Wed, 20 Oct 2021 10:13:38 -0700 (PDT)
+Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id l9sm544966oie.15.2021.10.20.10.13.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 10:13:38 -0700 (PDT)
+Message-ID: <19359125-16fa-f9e0-1450-b0e9181064e1@kali.org>
+Date:   Wed, 20 Oct 2021 12:13:37 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f33b9c4e-08c1-f88d-4873-82050a944010@citrix.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845-oneplus: enable second wifi
+ channel
+Content-Language: en-US
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20211020163557.291803-1-caleb@connolly.tech>
+From:   Steev Klimaszewski <steev@kali.org>
+In-Reply-To: <20211020163557.291803-1-caleb@connolly.tech>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 05:46:39PM +0100, Andrew Cooper wrote:
-> On 20/10/2021 16:57, Josh Poimboeuf wrote:
-> > On Wed, Oct 20, 2021 at 12:44:50PM +0200, Peter Zijlstra wrote:
-> >> Stick all the retpolines in a single symbol and have the individual
-> >> thunks as inner labels, this should guarantee thunk order and layout.
-> > How so?
-> >
-> > Just wondering what the purpose of the array is.  It doesn't seem to be
-> > referenced anywhere.
-> 
-> The array property is what makes:
-> 
-> > +	reg = (target - &__x86_indirect_thunk_rax) /
-> > +	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
-> 
-> safe in the next path.
+Hi Caleb,
 
-The thunks were already 32-byte aligned.  I don't see how slapping a few
-unused symbols around them does anything.
+On 10/20/21 11:36 AM, Caleb Connolly wrote:
+> Like the c630, the OnePlus 6 is also capable of using both antenna
+> channels for 2.4 and 5ghz wifi, however unlike the c630 only the first
+> channel is used for bluetooth.
+>
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+>   arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi | 7 +++++++
+>   1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+> index d4355522374a..8bf2430a3af7 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+> @@ -248,6 +248,12 @@ vreg_l20a_2p95: ldo20 {
+>   			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+>   		};
+>
+> +		vreg_l23a_3p3: ldo23 {
+> +			regulator-min-microvolt = <3300000>;
+> +			regulator-max-microvolt = <3312000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+> +
+>   		vdda_qusb_hs0_3p1:
+>   		vreg_l24a_3p075: ldo24 {
+>   			regulator-min-microvolt = <3088000>;
+> @@ -647,6 +653,7 @@ &wifi {
+>   	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+>   	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+>   	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+> +	vdd-3.3-ch1-supply = <&vreg_l23a_3p3>;
+>
+>   	qcom,snoc-host-cap-8bit-quirk;
+>   };
+> --
+> 2.33.1
+>
+>
+Just for the record, I added it for completeness, as far as I can tell, 
+the bluetooth driver itself won't use the second channel.
 
--- 
-Josh
+
+-- steev
 
