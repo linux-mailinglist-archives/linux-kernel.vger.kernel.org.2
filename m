@@ -2,171 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B667434795
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038834347A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhJTJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:07:49 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:64394 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTJHr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:07:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634720733; x=1666256733;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SPBHRwKBxvfeQCeCmvDTAwkvWtsrV8f0sXTIZMWaKDY=;
-  b=fClDs0tklzCV6T9cwNiwpE8J/vOsMJAzTlNp5j1KeyMMLx3B4+jGcIUK
-   OqzmpSNw/f7bePq2gM1xzXRyof34GC61du8WbT44RfQmTjqa+NcI46neJ
-   QuNawZ1doHyFAjSVNMAVT5dfA75C7MK7lIe618f/zgDv/7ATUddnzF6Za
-   ceSg7vGAXxifMBHuLcYQ8DCXv4xRupiP+pCVjskO753h1ftgjjKbN3WZy
-   09Zo2uUNq4lJSeXL83jRvW4tvIdhS3ya2nS6fuujnkVv7yYcPmz7fgqGH
-   VFbfsyn8QVo46iuKENj1U0f6pn/bOLhSR1jO4IiEv5q4JmFIsw/PLx7AQ
-   w==;
-IronPort-SDR: 1pFKrgr3bw/cD8VgF6LVGGpsUgQ4qlBePFX9+Pwksym38UqtHCVtAFSVTjF+FQ6lyZF2+m+NL6
- KwyHb7ZIShBdIxrbey0uQeKcUvgan2Lb7tdjekeE+Cv9tAlg5LjpdE+3XHCVJU7K6YKx+CwsZV
- ccZ0GpndddJh6ThIXmNIF63AeyJT7HZ3qyd3Bho4jWl5+SsLbti+C4seLq0930kGA/XI77z4Tw
- QBGaSQNRmdUKBB2Cd0eIPgAcSfqhi4m3PVvIeV7ItmNRC4EcmW02Nx0j64jECb7TXAY/BaBoDR
- dBzQRkBDsNo+miaFyxr+friS
-X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
-   d="scan'208";a="141010436"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Oct 2021 02:05:30 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 20 Oct 2021 02:05:30 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Wed, 20 Oct 2021 02:05:29 -0700
-Date:   Wed, 20 Oct 2021 11:07:03 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>, Vinod <vkoul@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] dt-bindings: phy: Add constants for lan966x serdes
-Message-ID: <20211020090703.sspta6qltdymylig@soft-dev3-1.localhost>
-References: <20211015123920.176782-1-horatiu.vultur@microchip.com>
- <20211015123920.176782-3-horatiu.vultur@microchip.com>
- <YW3K2GX+hmkwt3EE@robh.at.kernel.org>
- <20211019091258.3uet6lp3mxaoliqt@soft-dev3-1.localhost>
- <CAL_JsqLemN4jU32-5UvPBGUb7G6jxxKwD5oetJWkoBLANuyTsw@mail.gmail.com>
+        id S229919AbhJTJJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:09:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229555AbhJTJJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:09:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A3B660F25;
+        Wed, 20 Oct 2021 09:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634720853;
+        bh=jTUKR+Xf/qDYN96zbVV7NGYiZBynFhnV+TqkshXTLhw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hd8M+wEDqUgR0CDmyM92YxlmvueFDTMDwiT0YaLIvAHhTtxPgEDBBGLDbXZjDUDKg
+         oD/e/75nKCnvsciIXfDVJevR/f/Q5eZX1hd3Un5NU/pxr66J3qAFL8QVB23UYWpDFB
+         KfGQvcaaeyoYjiOFTE79RRJK/iwHIbo4mhVptaj9Ufkfl6qsTNNuq5uBJSwOZqzRI3
+         P0AQwUlT+erRG5goaAOlkpTSzVF8pRwuus+nvn1kNShlrxFD396pytvmot8YFlj2xl
+         qt3Z3XEId14UYRCzVurMbMXohZY5obdQndPzgVrDdKxa05QQD3ylbIrcmidoSJS/Po
+         OVaCdmotQCOuw==
+Date:   Wed, 20 Oct 2021 11:07:29 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     luo penghao <cgel.zte@gmail.com>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, penghao luo <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] xfrm: Remove redundant fields
+Message-ID: <20211020090729.GC3935@kernel.org>
+References: <20211018091758.858899-1-luo.penghao@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqLemN4jU32-5UvPBGUb7G6jxxKwD5oetJWkoBLANuyTsw@mail.gmail.com>
+In-Reply-To: <20211018091758.858899-1-luo.penghao@zte.com.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/19/2021 08:38, Rob Herring wrote:
+On Mon, Oct 18, 2021 at 09:17:58AM +0000, luo penghao wrote:
+> From: penghao luo <luo.penghao@zte.com.cn>
 > 
-> On Tue, Oct 19, 2021 at 4:11 AM Horatiu Vultur
-> <horatiu.vultur@microchip.com> wrote:
-> >
-> > The 10/18/2021 14:28, Rob Herring wrote:
-> > >
-> > > On Fri, Oct 15, 2021 at 02:39:19PM +0200, Horatiu Vultur wrote:
-> > > > Lan966x has: 2 integrated PHYs, 3 SerDes and 2 RGMII interfaces. Which
-> > > > requires to be muxed based on the HW representation.
-> > > >
-> > > > So add constants for each interface to be able to distinguish them.
-> > > >
-> > > > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > > > ---
-> > > >  include/dt-bindings/phy/phy-lan966x-serdes.h | 14 ++++++++++++++
-> > > >  1 file changed, 14 insertions(+)
-> > > >  create mode 100644 include/dt-bindings/phy/phy-lan966x-serdes.h
-> > > >
-> > > > diff --git a/include/dt-bindings/phy/phy-lan966x-serdes.h b/include/dt-bindings/phy/phy-lan966x-serdes.h
-> > > > new file mode 100644
-> > > > index 000000000000..8a05f93ecf41
-> > > > --- /dev/null
-> > > > +++ b/include/dt-bindings/phy/phy-lan966x-serdes.h
-> > > > @@ -0,0 +1,14 @@
-> > > > +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-> > > > +
-> > > > +#ifndef __PHY_LAN966X_SERDES_H__
-> > > > +#define __PHY_LAN966X_SERDES_H__
-> > > > +
-> > > > +#define PHY(x)               (x)
-> > > > +#define PHY_MAX              PHY(2)
-> > > > +#define SERDES6G(x)  (PHY_MAX + 1 + (x))
-> > > > +#define SERDES6G_MAX SERDES6G(3)
-> > > > +#define RGMII(x)     (SERDES6G_MAX + 1 + (x))
-> > > > +#define RGMII_MAX    RGMII(2)
-> > > > +#define SERDES_MAX   (RGMII_MAX + 1)
-> > >
-> > > I still don't understand. #phy-cells description says we have:
-> > >
-> > > <port idx> <serdes idx>
-> > >
-> > > But here it's 3 numbers. How are these defines used to fill in the 2
-> > > cells?
-> >
-> > Actually they are still only a number. Or maybe I am missing something.
+> the variable err is not necessary in such places. It should be revmoved
+> for the simplicity of the code.
 > 
-> So all the defines apply to the 2nd cell? That's what's missing.
+> The clang_analyzer complains as follows:
+> 
+> net/xfrm/xfrm_input.c:530: warning:
+> 
+> Although the value stored to 'err' is used in the enclosing expression,
+> the value is never actually read from 'err'.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: penghao luo <luo.penghao@zte.com.cn>
+> ---
+>  net/xfrm/xfrm_input.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/xfrm/xfrm_input.c b/net/xfrm/xfrm_input.c
+> index 3df0861..ff34667 100644
+> --- a/net/xfrm/xfrm_input.c
+> +++ b/net/xfrm/xfrm_input.c
+> @@ -530,7 +530,7 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
+>  				goto drop;
+>  			}
+>  
+> -			if ((err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
+> +			if ((xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
 
-Exactly.
+I agree that assigning the value to err is not needed.
+But you may also wish to consider:
 
-> The cell description needs to spell all this out. 3 different modes or
-> whatever. Explain what the h/w is comprised of in the top level
-> 'description'.
+1. Dropping the () around the call to xfrm_parse_spi, which seem out of
+   place now.
+2. Dropping the explicit check against zero
 
-I will add this description.
+Which would leave you with:
 
-> 
-> >
-> > Maybe an example will help:
-> >
-> > ---
-> > serdes: serdes@e2004010 {
-> >     compatible = "microchip,lan966x-serdes";
-> >     reg = <0xe202c000 0x9c>, <0xe2004010 0x4>;
-> >     #phy-cells = <2>;
-> > };
-> >
-> > &port0 {
-> >     ...
-> >     phys = <&serdes 0 SERDES6G(1)>;
-> >     ...
-> > };
-> >
-> > &port1 {
-> >     ...
-> >     phys = <&serdes 1 PHY(0)>;
-> 
-> I think CU was better, just needed some comments. PHY is pretty vague.
+			if (xfrm_parse_spi(skb, nexthdr, &spi, &seq)) {
 
-Same here, I will update it.
-
-> 
-> >     ...
-> > }
-> >
-> > ...
-> > ---
-> >
-> > Here are some existing examples based on which I have created this patch
-> > series:
-> > https://elixir.bootlin.com/linux/v5.15-rc6/source/arch/mips/boot/dts/mscc/ocelot_pcb120.dts#L99
-> 
-> None of which use PHY() or RGMII()...
+>  				XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
+>  				goto drop;
+>  			}
+> @@ -560,7 +560,7 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
+>  	}
+>  
+>  	seq = 0;
+> -	if (!spi && (err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
+> +	if (!spi && (xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
+>  		secpath_reset(skb);
+>  		XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
+>  		goto drop;
+> -- 
+> 2.15.2
 > 
 > 
-> > https://elixir.bootlin.com/linux/v5.15-rc6/source/arch/mips/boot/dts/mscc/ocelot.dtsi#L274
-> >
-> > >
-> > > Rob
-> >
-> > --
-> > /Horatiu
-
--- 
-/Horatiu
