@@ -2,120 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6BA4352AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981AC4352B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhJTS3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S230052AbhJTSbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhJTS3K (ORCPT
+        with ESMTP id S230447AbhJTSbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:29:10 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EBAC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:26:55 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id s136so20042222pgs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:26:55 -0700 (PDT)
+        Wed, 20 Oct 2021 14:31:43 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82B3C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:29:26 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id o184so13843590iof.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:29:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lpDirkOm6AQE71MS9HbrUBcKh1Z3g4/nVuMaV719kjw=;
-        b=pz1OLQGrbIRZPHfHHxlHFKNCOYGq/8nxJ1m/R/GZ1Ts1owYrrb/bTyQ5MjhyE0tmWw
-         R6TCahdqd6QNyHMeHQUDjNgkr4n+E4F1cgnQRyPC5GXhRj+pZ5vSNOa3RIa1jZ4XIw/h
-         NDQQdFeKkQvT4EfyG6hYCPFwFin5JTL1uAcv5PygteP3S308/OoVJLz7kUFmc5rqVJ3w
-         2sBEKHoHNQdWno80Up+szUha2PJu1deoG5WuJGgpr+RK1dPe9pzXqiKOE+E+dhLeacv4
-         CtWNnGcP3uLoAeTXhJ5OQdjbPEusNj6zgXbw9PniquWxn9DsCK3/oqfk+Lqc5inIqYMy
-         GMZQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q89oVyQBTUak6GonDhBQZ4EDfITIyfwn25FBB5afZ4A=;
+        b=PivA0O37xPWODAtgcpFLG2r/iqzG5FxY0Z1hpYBfW6VZg5VIOVXpfMnxgJvbGRxTMI
+         oD1HfkQFsFxt618Dy2o5t7Pmn99nl9ZFhg6kHos74iCwpoSWpazp9IlHtWEAu6qZMZHq
+         8tZGm/Jiz3KskWvoD3ZaJ3NODAa9KdLaa3wmG08Y6A6BslHnZza1nz0bs9hg1V1tASEN
+         d4gVv9Q6EvK4gJrwPtDXDVaNJTEQyDiI6x7k3wxcB3yKnMhs1tauwPjWlai9SZ5UaoB9
+         qrPMPMNaVWpm8lxt45Shm0bVBGupNiefNymH/IoHyGOMwHgYK9HzdiXhFZEssPCtXp9Y
+         74/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lpDirkOm6AQE71MS9HbrUBcKh1Z3g4/nVuMaV719kjw=;
-        b=xuprjpX/7lndGyi9MuVkVqeCArDmvQ7+SaSnne5X2BczdKJ7Mk8bP6yv8n94VM4cpa
-         wDdqGXsEO1GBMj2asIcqPfx2aMoD+bVhI06l3oxR/PsJt06rZhQyo6nmG3IOfL1jC6ST
-         wtoq1XqKV7qcvU6Dl92Pa9t6EqMNma6pGao5rAL7B+pLMLBqrGAWN2kRJ4I0sR0l2jO4
-         C3ZHy6Gg5OVceqXpg38yEE6MvPWsfxZepDcJlWMPz86pqmpeJHU/2sX2/wwJskjPGCRE
-         IOmc5ZoE024q5UJ/H+8ScCEoQDAaiYtyHWvdW0P9eDOgseqcQlodEFb47AP6/IkJwW4B
-         gk0Q==
-X-Gm-Message-State: AOAM530jQDkxsiJvf2gXD0su92iWH/zye47pto4Pc6NdeEM+bo/spheH
-        W1DoA9MTlG8J+CPbvwrwsMy7DQ==
-X-Google-Smtp-Source: ABdhPJxt36XSFVSdjeu9KOzBNBebEe71ZCBLzGOYaGh/OYfg2iPSJrtWhPzQiB1sC+8PhMaDZJGj7g==
-X-Received: by 2002:a05:6a00:1344:b0:44c:4cd7:4d4b with SMTP id k4-20020a056a00134400b0044c4cd74d4bmr548248pfu.50.1634754415150;
-        Wed, 20 Oct 2021 11:26:55 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id nn14sm3001749pjb.27.2021.10.20.11.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 11:26:54 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 18:26:50 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 1/4] KVM: X86: Fix tlb flush for tdp in
- kvm_invalidate_pcid()
-Message-ID: <YXBfaqenOhf+M3eA@google.com>
-References: <20211019110154.4091-1-jiangshanlai@gmail.com>
- <20211019110154.4091-2-jiangshanlai@gmail.com>
- <YW7jfIMduQti8Zqk@google.com>
- <da4dfc96-b1ad-024c-e769-29d3af289eee@linux.alibaba.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q89oVyQBTUak6GonDhBQZ4EDfITIyfwn25FBB5afZ4A=;
+        b=nSh46ZRJShxCgaEuQRf/gsXtAIdpd6Z2dA9p4nx7QLim6jtigt4syijSMXWj/dbBcu
+         fjSJjPVzwCrGH9/q4RRlEy/ZCT3OkrLNIpPwcrW79u/KCo9/3sQ0I8ooM71aQP5wJs1j
+         0yNwrnpgF66HlBjnkjxByT4MdbmzV9gHl3Qmq37IhRHeXNwwb8iXQj0x0kF5oLquWb6t
+         6rGGs8M0WI31VwZt1ZlRPmESGlGgEfIxiQz6t+VQs8j81mOoAc6EVYqeiv38oSTzSE2N
+         OBPJBM5j6F0D3RDD0dJHgPCPNxdR9jiNBtrKeyckGs93qVRT6zPlv5wItJ0o24CLG6pC
+         BXyA==
+X-Gm-Message-State: AOAM53109XYismD/um9TTwAdMTkLGbNGtFUjz7+up0gFQG9IRsNTHVnK
+        mTm9EX0rt0RlnxCWG25/kjmDsYEfx6UHeKZOe35g/g==
+X-Google-Smtp-Source: ABdhPJwkWpvxOxpujW3lsZJOksr9h84iP/TYpMsyjLLw3iXEacR6REvlDPfOHJXHv8y2tSgP93ld1vQs3EtYLRu3cFg=
+X-Received: by 2002:a6b:f614:: with SMTP id n20mr618747ioh.134.1634754565966;
+ Wed, 20 Oct 2021 11:29:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da4dfc96-b1ad-024c-e769-29d3af289eee@linux.alibaba.com>
+References: <20210930212309.4001967-1-axelrasmussen@google.com> <20210930212309.4001967-3-axelrasmussen@google.com>
+In-Reply-To: <20210930212309.4001967-3-axelrasmussen@google.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 20 Oct 2021 11:28:49 -0700
+Message-ID: <CAJHvVcj9FpJgC5EsB1_6yfgDA8p5-=Oakccg+TUrGUWZB5nHzA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] userfaultfd/selftests: fix feature support detection
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021, Lai Jiangshan wrote:
-> On 2021/10/19 23:25, Sean Christopherson wrote:
-> I just read some interception policy in vmx.c, if EPT=1 but vmx_need_pf_intercept()
-> return true for some reasons/configs, #PF is intercepted.  But CR3 write is not
-> intercepted, which means there will be an EPT fault _after_ (IIUC) the CR3 write if
-> the GPA of the new CR3 exceeds the guest maxphyaddr limit.  And kvm queues a fault to
-> the guest which is also _after_ the CR3 write, but the guest expects the fault before
-> the write.
-> 
-> IIUC, it can be fixed by intercepting CR3 write or reversing the CR3 write in EPT
-> violation handler.
+Just a friendly bump for review. :) Peter, any objections to this
+version? I think it fairly closely matches your suggestions from v1.
 
-KVM implicitly does the latter by emulating the faulting instruction.
-
-  static int handle_ept_violation(struct kvm_vcpu *vcpu)
-  {
-	...
-
-	/*
-	 * Check that the GPA doesn't exceed physical memory limits, as that is
-	 * a guest page fault.  We have to emulate the instruction here, because
-	 * if the illegal address is that of a paging structure, then
-	 * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
-	 * would also use advanced VM-exit information for EPT violations to
-	 * reconstruct the page fault error code.
-	 */
-	if (unlikely(allow_smaller_maxphyaddr && kvm_vcpu_is_illegal_gpa(vcpu, gpa)))
-		return kvm_emulate_instruction(vcpu, 0);
-
-	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
-  }
-
-and injecting a #GP when kvm_set_cr3() fails.
-
-  static int em_cr_write(struct x86_emulate_ctxt *ctxt)
-  {
-	if (ctxt->ops->set_cr(ctxt, ctxt->modrm_reg, ctxt->src.val))
-		return emulate_gp(ctxt, 0);
-
-	/* Disable writeback. */
-	ctxt->dst.type = OP_NONE;
-	return X86EMUL_CONTINUE;
-  }
+On Thu, Sep 30, 2021 at 2:23 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>
+> Before any tests are run, in set_test_type, we decide what feature(s) we
+> are going to be testing, based upon our command line arguments. However,
+> the supported features are not just a function of the memory type being
+> used, so this is broken.
+>
+> For instance, consider writeprotect support. It is "normally" supported
+> for anonymous memory, but furthermore it requires that the kernel has
+> CONFIG_HAVE_ARCH_USERFAULTFD_WP. So, it is *not* supported at all on
+> aarch64, for example.
+>
+> So, this commit fixes this by querying the kernel for the set of
+> features it supports in set_test_type, by opening a userfaultfd and
+> issuing a UFFDIO_API ioctl. Based upon the reported features, we toggle
+> what tests are enabled.
+>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  tools/testing/selftests/vm/userfaultfd.c | 54 ++++++++++++++----------
+>  1 file changed, 31 insertions(+), 23 deletions(-)
+>
+> diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+> index 2a71a91559a7..00d1b7555865 100644
+> --- a/tools/testing/selftests/vm/userfaultfd.c
+> +++ b/tools/testing/selftests/vm/userfaultfd.c
+> @@ -346,6 +346,16 @@ static struct uffd_test_ops hugetlb_uffd_test_ops = {
+>
+>  static struct uffd_test_ops *uffd_test_ops;
+>
+> +static inline uint64_t uffd_minor_feature(void)
+> +{
+> +       if (test_type == TEST_HUGETLB && map_shared)
+> +               return UFFD_FEATURE_MINOR_HUGETLBFS;
+> +       else if (test_type == TEST_SHMEM)
+> +               return UFFD_FEATURE_MINOR_SHMEM;
+> +       else
+> +               return 0;
+> +}
+> +
+>  static void userfaultfd_open(uint64_t *features)
+>  {
+>         struct uffdio_api uffdio_api;
+> @@ -406,7 +416,7 @@ static void uffd_test_ctx_clear(void)
+>         munmap_area((void **)&area_dst_alias);
+>  }
+>
+> -static void uffd_test_ctx_init_ext(uint64_t *features)
+> +static void uffd_test_ctx_init(uint64_t features)
+>  {
+>         unsigned long nr, cpu;
+>
+> @@ -418,7 +428,7 @@ static void uffd_test_ctx_init_ext(uint64_t *features)
+>         uffd_test_ops->release_pages(area_src);
+>         uffd_test_ops->release_pages(area_dst);
+>
+> -       userfaultfd_open(features);
+> +       userfaultfd_open(&features);
+>
+>         count_verify = malloc(nr_pages * sizeof(unsigned long long));
+>         if (!count_verify)
+> @@ -446,11 +456,6 @@ static void uffd_test_ctx_init_ext(uint64_t *features)
+>                         err("pipe");
+>  }
+>
+> -static inline void uffd_test_ctx_init(uint64_t features)
+> -{
+> -       uffd_test_ctx_init_ext(&features);
+> -}
+> -
+>  static int my_bcmp(char *str1, char *str2, size_t n)
+>  {
+>         unsigned long i;
+> @@ -1191,7 +1196,6 @@ static int userfaultfd_minor_test(void)
+>         void *expected_page;
+>         char c;
+>         struct uffd_stats stats = { 0 };
+> -       uint64_t req_features, features_out;
+>
+>         if (!test_uffdio_minor)
+>                 return 0;
+> @@ -1199,21 +1203,7 @@ static int userfaultfd_minor_test(void)
+>         printf("testing minor faults: ");
+>         fflush(stdout);
+>
+> -       if (test_type == TEST_HUGETLB)
+> -               req_features = UFFD_FEATURE_MINOR_HUGETLBFS;
+> -       else if (test_type == TEST_SHMEM)
+> -               req_features = UFFD_FEATURE_MINOR_SHMEM;
+> -       else
+> -               return 1;
+> -
+> -       features_out = req_features;
+> -       uffd_test_ctx_init_ext(&features_out);
+> -       /* If kernel reports required features aren't supported, skip test. */
+> -       if ((features_out & req_features) != req_features) {
+> -               printf("skipping test due to lack of feature support\n");
+> -               fflush(stdout);
+> -               return 0;
+> -       }
+> +       uffd_test_ctx_init(uffd_minor_feature());
+>
+>         uffdio_register.range.start = (unsigned long)area_dst_alias;
+>         uffdio_register.range.len = nr_pages * page_size;
+> @@ -1574,6 +1564,8 @@ unsigned long default_huge_page_size(void)
+>
+>  static void set_test_type(const char *type)
+>  {
+> +       uint64_t features = UFFD_API_FEATURES;
+> +
+>         if (!strcmp(type, "anon")) {
+>                 test_type = TEST_ANON;
+>                 uffd_test_ops = &anon_uffd_test_ops;
+> @@ -1607,6 +1599,22 @@ static void set_test_type(const char *type)
+>         if ((unsigned long) area_count(NULL, 0) + sizeof(unsigned long long) * 2
+>             > page_size)
+>                 err("Impossible to run this test");
+> +
+> +       /*
+> +        * Whether we can test certain features depends not just on test type,
+> +        * but also on whether or not this particular kernel supports the
+> +        * feature.
+> +        */
+> +
+> +       userfaultfd_open(&features);
+> +
+> +       test_uffdio_wp = test_uffdio_wp &&
+> +               (features & UFFD_FEATURE_PAGEFAULT_FLAG_WP);
+> +       test_uffdio_minor = test_uffdio_minor &&
+> +               (features & uffd_minor_feature());
+> +
+> +       close(uffd);
+> +       uffd = -1;
+>  }
+>
+>  static void sigalrm(int sig)
+> --
+> 2.33.0.800.g4c38ced690-goog
+>
