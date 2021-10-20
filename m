@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641044347C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF38C4347CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhJTJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:21:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35014 "EHLO mail.kernel.org"
+        id S229809AbhJTJVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:21:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhJTJVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:21:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5CD160F9E;
-        Wed, 20 Oct 2021 09:18:55 +0000 (UTC)
+        id S229555AbhJTJVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:21:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CDDF61074;
+        Wed, 20 Oct 2021 09:19:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634721537;
-        bh=SZkUpO9qIzjwLT/liQ99qcq9w70D9d2LQUSdkfGd2hc=;
+        s=k20201202; t=1634721571;
+        bh=lyuguw0XyKC7pblfSP/PKjf0tJ9Omz7vG2CSkCF9b/Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FXHRhtW/B1oof8UF1yc1OaigQiX5End8FkOjLmBTRq0Aha/RPZEyTgSgbfIv4Bz4b
-         4aJqReCwosaf2eKO01xcErvBljgCuFe2T7gBX/QBX5SUzXT4eDI7Ct8VYTSAJsCQ03
-         dfR8QdJZ1WGoBunS6UM75FYMl7fHKIW1hBJS6u/kdtsd5SvL1kbjTxa3axlvHfSlxQ
-         V5h84eMWDENMmWAzqxwI0lR28FaQibrIXZShW0p3yNCvbemsSHVtsYXjWJQZWzWdvP
-         MnG26NAyIoY2ZcixlmnplBWw2xg3nOamdf65do8NNjKgfVupTa61qHNUsXL2BQJzLj
-         f+BZHFzp1bTlw==
-Date:   Wed, 20 Oct 2021 11:18:53 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     luo penghao <cgel.zte@gmail.com>
-Cc:     Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, penghao luo <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] octeontx2-af: Remove redundant assignment
- operations
-Message-ID: <20211020091853.GD3935@kernel.org>
-References: <20211018091612.858462-1-luo.penghao@zte.com.cn>
+        b=GpfTbXlxvTLq3xEnQP+Mt5K79oLCsTz8gWGIsl0Bs3jXM1H0sbH/VBxXQmTdapqZJ
+         ss4z/dkeFrhUx+tpjQmDQvkkDQfYy0AbS/gYWN8knXneehPld6hyAW+uL5GH5gAYPR
+         ieVjo2Dz2AIa7UUy38tZOb0p8e/pLyFQ7TPcaHpkGL1NQQ2e2EHqWwZtrJNMDYZGvH
+         sabCabEJDrySLq7HUGodzbr6Mq64EC9kxPYSKTDHZp5q47eMp3pgE4IbFfuY1bkMkd
+         YuGbvZZJ9cuLbmC3ZvAHqTtddR4TDz97+VI2JqPx5+SLI4/w+jbW+fMtLRgoHrnp8B
+         pM42Dau48lQ2w==
+Date:   Wed, 20 Oct 2021 14:49:26 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v2 07/11] drm/msm/disp/dpu1: Add DSC support in hw_ctl
+Message-ID: <YW/fHkaTcCbezKMT@matsya>
+References: <20211007070900.456044-1-vkoul@kernel.org>
+ <20211007070900.456044-8-vkoul@kernel.org>
+ <f5f6162c-7ed0-2964-7cf9-0bb894c8b4f5@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018091612.858462-1-luo.penghao@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f5f6162c-7ed0-2964-7cf9-0bb894c8b4f5@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 09:16:12AM +0000, luo penghao wrote:
-> From: penghao luo <luo.penghao@zte.com.cn>
+On 14-10-21, 17:06, Dmitry Baryshkov wrote:
+> On 07/10/2021 10:08, Vinod Koul wrote:
+> > Later gens of hardware have DSC bits moved to hw_ctl, so configure these
+> > bits so that DSC would work there as well
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> > Changes since
+> > v1:
+> >   - Move this patch from 6 to 7 due to dependency on 6th one
+> >   - Use DSC indices for programming DSC registers and program only on non
+> >     null indices
+> > 
+> >   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 12 ++++++++++--
+> >   1 file changed, 10 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > index 3c79bd9c2fe5..8ea9d8dce3f7 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > @@ -25,6 +25,8 @@
+> >   #define   CTL_MERGE_3D_ACTIVE           0x0E4
+> >   #define   CTL_INTF_ACTIVE               0x0F4
+> >   #define   CTL_MERGE_3D_FLUSH            0x100
+> > +#define   CTL_DSC_ACTIVE                0x0E8
+> > +#define   CTL_DSC_FLUSH                0x104
+> >   #define   CTL_INTF_FLUSH                0x110
+> >   #define   CTL_INTF_MASTER               0x134
+> >   #define   CTL_FETCH_PIPE_ACTIVE         0x0FC
+> > @@ -34,6 +36,7 @@
+> >   #define DPU_REG_RESET_TIMEOUT_US        2000
+> >   #define  MERGE_3D_IDX   23
+> > +#define  DSC_IDX        22
+> >   #define  INTF_IDX       31
+> >   #define CTL_INVALID_BIT                 0xffff
+> > @@ -120,7 +123,6 @@ static u32 dpu_hw_ctl_get_pending_flush(struct dpu_hw_ctl *ctx)
+> >   static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+> >   {
+> > -
+> >   	if (ctx->pending_flush_mask & BIT(MERGE_3D_IDX))
+> >   		DPU_REG_WRITE(&ctx->hw, CTL_MERGE_3D_FLUSH,
+> >   				ctx->pending_merge_3d_flush_mask);
+> > @@ -128,7 +130,6 @@ static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+> >   		DPU_REG_WRITE(&ctx->hw, CTL_INTF_FLUSH,
+> >   				ctx->pending_intf_flush_mask);
+> > -	DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask);
+> 
+> This would break non-DSC case.
 
-I think the correct patch-prefix for this would be:
+This is a mistake, I have fixed it up now..
 
-[PATCH net-next] sky2:
+> >   }
+> >   static inline void dpu_hw_ctl_trigger_flush(struct dpu_hw_ctl *ctx)
+> > @@ -498,6 +499,9 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
+> >   	u32 intf_active = 0;
+> >   	u32 mode_sel = 0;
+> > +	if (cfg->dsc)
+> > +		DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, cfg->dsc);
+> > +
+> >   	if (cfg->intf_mode_sel == DPU_CTL_MODE_SEL_CMD)
+> >   		mode_sel |= BIT(17);
+> > @@ -509,6 +513,10 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
+> >   	if (cfg->merge_3d)
+> >   		DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
+> >   			      BIT(cfg->merge_3d - MERGE_3D_0));
+> > +	if (cfg->dsc) {
+> > +		DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask |  BIT(DSC_IDX));
+> 
+> Why?
 
-> 
-> the variable err will be reassigned on subsequent branches, and this
-> assignment does not perform related value operations.
-> 
-> clang_analyzer complains as follows:
-> 
-> drivers/net/ethernet/marvell/sky2.c:4988: warning:
-> 
-> Although the value stored to 'err' is used in the enclosing expression,
-> the value is never actually read from 'err'.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: penghao luo <luo.penghao@zte.com.cn>
-> ---
->  drivers/net/ethernet/marvell/sky2.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
-> index 3cb9c12..6428ae5 100644
-> --- a/drivers/net/ethernet/marvell/sky2.c
-> +++ b/drivers/net/ethernet/marvell/sky2.c
-> @@ -4907,7 +4907,7 @@ static int sky2_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	pci_set_master(pdev);
->  
->  	if (sizeof(dma_addr_t) > sizeof(u32) &&
-> -	    !(err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)))) {
-> +	    !(dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)))) {
+I have fixed it up to write only DSC_IDX
 
-I think you can drop the parentheses around the call to dma_set_mask()
-
->  		using_dac = 1;
->  		err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
->  		if (err < 0) {
-> -- 
-> 2.15.2
-> 
-> 
+-- 
+~Vinod
