@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3263943452E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B713B434532
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhJTGce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhJTGcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:32:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11EC36115A;
-        Wed, 20 Oct 2021 06:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634711419;
-        bh=tllcKVdOCf1880LUhvS7XrPGcwtfJQbGlrVjX9YMtt8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m3/sLdGDb5JoeBwHZroAOE5md4OeTg6ihclpVaa41kJVBjbUtQoMyz8gW9sQOCrw9
-         UU8KQu0G1XO0Picbov8U/nr5/ew7INb49eRccpuXbXbigiFoPmaqrtpclgUiF4y5ny
-         CN201CfNQKLxyi7kwel6rGGDZmoFR9z/iyIcuCf2Nx4PbsbbxS8VxNWrIWOBrs6lnH
-         4FnNoq+UySwnBnkVv9RiLdpi+L0NwY05wp6pigH3HpXpNyjrM+Vfu2eUexXo/ZebxA
-         52OMYFt0VoErTF9d1G7Bq7aDHIVVFDnKWDpxp0LWta3Br96tg2c/Q/OXG4QmdjlRCx
-         A8Fo4fmJpolqg==
-Date:   Wed, 20 Oct 2021 07:30:13 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v3 21/23] regulator: dt-bindings: update
- samsung,s2mpa01.yaml reference
-Message-ID: <20211020073013.6d144c0d@sal.lan>
-In-Reply-To: <YW60a8z0JNDnTLV/@sirena.org.uk>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
-        <9acc235dc4af794d18e1267371944a3955e1fb21.1634630486.git.mchehab+huawei@kernel.org>
-        <YW60a8z0JNDnTLV/@sirena.org.uk>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229820AbhJTGes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhJTGer (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 02:34:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278F5C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 23:32:33 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 08:32:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634711551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n2EzcaJsHoclkkFmC9co6PrDzTCp/HjVc2eV8xmo/iY=;
+        b=16opjXvsmp0cBuE8fy2YEPxnTZ4MCnsTx3EQ21GN0kpGG2EP6swrV/Rl9It/ANs0Bkfq0I
+        jgDucSkAHnwxSfwbVGzagPrdEeKz1t7B47YqMqE+B9ct27Z0NVj2RY764P84DPF//I+tAx
+        bDJNnMshblJTo0XqD68nUYPLSmIH/skDN+sL70w6+CIocGhBcGMYYJ+acgKIwEFlJbP8YF
+        kKgeT3/KzasmdcUB2OZ36DwZ5HNu5VpoMyPlBKst8bAOXQp8o2p7DShN0K8P6vFNm2KCdz
+        /vpkYI0CLCTL2NJ3vw065VDOjYIqVfzOCwzPk8P8QAPOuD5EfdmMyWp86mQVag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634711551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n2EzcaJsHoclkkFmC9co6PrDzTCp/HjVc2eV8xmo/iY=;
+        b=lcFZBaJ5B5xZjxVVFPqboacLDk5AF0mRERpaD/+SWV2+Mt60h71W6njcoFyadIlLfcpQpc
+        fK50/T74Z2rytLCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+d5b23b18d2f4feae8a67@syzkaller.appspotmail.com>,
+        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        gor@linux.ibm.com, jgross@suse.com, juri.lelli@redhat.com,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@kernel.org,
+        mingo@redhat.com, namit@vmware.com, rdunlap@infradead.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        vincent.guittot@linaro.org
+Subject: Re: [syzbot] possible deadlock in wake_up_all_idle_cpus
+Message-ID: <20211020063230.r3cm2ubpmps3lcgo@linutronix.de>
+References: <000000000000cf252605ce67014a@google.com>
+ <00000000000041567305ce80b8af@google.com>
+ <20211019190811.ubam63tfv33c7lmx@linutronix.de>
+ <20211019202741.GN174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211019202741.GN174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 19 Oct 2021 13:04:59 +0100
-Mark Brown <broonie@kernel.org> escreveu:
-
-> On Tue, Oct 19, 2021 at 09:04:20AM +0100, Mauro Carvalho Chehab wrote:
+On 2021-10-19 22:27:41 [+0200], Peter Zijlstra wrote:
+> On Tue, Oct 19, 2021 at 09:08:11PM +0200, Sebastian Andrzej Siewior wrote:
+> > Does this do anything useful?
 > 
-> > To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> > See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/  
+> I've got https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=sched/core&id=3dfddc2f0f76525218dd2d0c8725d9f21dd411e2
 > 
-> It'd be a bit easier to put a note in here about what the dependencies
-> are rather than forcing people to go out to a link to figure out what's
-> going on unless it's complicated. 
->
-> For a case like this where there's no
-> dependencies or real relationship between the patches it's probably
-> better to just not thread everything and send the patches separately to
-> everyone, the threading is just adding noise and confusion.
+> There's like 3 or 4 threads on this :/ I just got a tested-by on that.
 
-It is not that easy, unfortunately. On some cases (specially due to
-DT binding renames) some patches change the context of a hunk, affecting
-a subsequent patch.
+Yeah I saw a few emails and wanted to talk to the bot, assuming it would
+keep quiet then.
 
-I tried a couple of times in the past to send the patches individually,
-but that was messier, as there was harder for people to apply them,
-as, instead of running b4 just once to get everything, maintainers
-would need to apply each patch individually. Also, there were cases
-where the patch order would be relevant, due to context changes.
+for_each_possible_cpu looks big but is probably equal to online_cpu in
+most cases.
 
--
+Thanks ;)
 
-Btw, talking about what it would be easier, the best procedure to
-adopt is to run:
-
-	./scripts/documentation-file-ref-check 
-
-Before sending/applying patches touching documents.
-
-That would avoid the need of such fixup patches ;-)
-
-Unfortunately, in the specific case of dt-bindings, things are not
-that easy, as doc changes usually go via one tree, while references 
-to them come from other places.
-
-Regards,
-Mauro
+Sebastian
