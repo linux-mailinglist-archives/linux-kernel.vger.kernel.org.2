@@ -2,164 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94203434621
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E76434626
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhJTHtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:49:03 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:54338 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229544AbhJTHtC (ORCPT
+        id S229771AbhJTHuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhJTHuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:49:02 -0400
-X-UUID: 391e0a9f321e4572aaeb44daab13c9a6-20211020
-X-UUID: 391e0a9f321e4572aaeb44daab13c9a6-20211020
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2121538419; Wed, 20 Oct 2021 15:46:46 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Wed, 20 Oct 2021 15:46:41 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Oct
- 2021 15:46:40 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 20 Oct 2021 15:46:40 +0800
-Message-ID: <c0d7c2aa14cc569d5ad95dc750bb6cc1727a042c.camel@mediatek.com>
-Subject: Re: [PATCH v2] kasan: add kasan mode messages when kasan init
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Marco Elver <elver@google.com>
-CC:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chinwen Chang =?UTF-8?Q?=28=E5=BC=B5=E9=8C=A6=E6=96=87=29?= 
-        <chinwen.chang@mediatek.com>,
-        Yee Lee =?UTF-8?Q?=28=E6=9D=8E=E5=BB=BA=E8=AA=BC=29?= 
-        <Yee.Lee@mediatek.com>,
-        Nicholas Tang =?UTF-8?Q?=28=E9=84=AD=E7=A7=A6=E8=BC=9D=29?= 
-        <nicholas.tang@mediatek.com>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Wed, 20 Oct 2021 15:46:40 +0800
-In-Reply-To: <CANpmjNNxQRM5rSxcdxNOicpOvwQ=vsutQO3j1hUmGAfS9+pQDA@mail.gmail.com>
-References: <20211020061248.13270-1-Kuan-Ying.Lee@mediatek.com>
-         <CANpmjNNxQRM5rSxcdxNOicpOvwQ=vsutQO3j1hUmGAfS9+pQDA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Wed, 20 Oct 2021 03:50:05 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532C7C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:47:51 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 53C191F43EA3;
+        Wed, 20 Oct 2021 08:47:44 +0100 (BST)
+Date:   Wed, 20 Oct 2021 09:47:41 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
+ suspend
+Message-ID: <20211020094741.027a118d@collabora.com>
+In-Reply-To: <20211020072352.7fnano7wm5l4bfi6@skn-laptop>
+References: <20211011115253.38497-1-sean@geanix.com>
+        <20211011160546.707b737b@collabora.com>
+        <20211015082206.244a2316@xps13>
+        <20211019180800.3v7emokse6lkpjvk@skn-laptop>
+        <20211020085250.030ef244@collabora.com>
+        <20211020090058.58af1087@collabora.com>
+        <20211020091228.136fde6e@xps13>
+        <20211020072352.7fnano7wm5l4bfi6@skn-laptop>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-20 at 15:23 +0800, Marco Elver wrote:
-> On Wed, 20 Oct 2021 at 08:13, Kuan-Ying Lee <
-> Kuan-Ying.Lee@mediatek.com> wrote:
-> > 
-> > There are multiple kasan modes. It makes sense that we add some
-> > messages
-> > to know which kasan mode is when booting up. see [1].
-> > 
-> > Link: 
-> > https://urldefense.com/v3/__https://bugzilla.kernel.org/show_bug.cgi?id=212195__;!!CTRNKA9wMg0ARbw!yylpqk8mnd0N8w6pn4Mn4sIeu-GGlKXcA4I4yXlmstFsuqmpkhaM2V_uu2c6oPMFpZRqoQ$
-> > $  [1]
-> > Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-> > ---
-> > change since v2:
-> >  - Rebase to linux-next
-> >  - HW-tags based mode need to consider asymm mode
-> >  - Thanks for Marco's suggestion
-> > 
-> >  arch/arm64/mm/kasan_init.c |  2 +-
-> >  mm/kasan/hw_tags.c         |  4 +++-
-> >  mm/kasan/kasan.h           | 10 ++++++++++
-> >  mm/kasan/sw_tags.c         |  2 +-
-> >  4 files changed, 15 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/arm64/mm/kasan_init.c
-> > b/arch/arm64/mm/kasan_init.c
-> > index 5b996ca4d996..6f5a6fe8edd7 100644
-> > --- a/arch/arm64/mm/kasan_init.c
-> > +++ b/arch/arm64/mm/kasan_init.c
-> > @@ -309,7 +309,7 @@ void __init kasan_init(void)
-> >         kasan_init_depth();
-> >  #if defined(CONFIG_KASAN_GENERIC)
-> >         /* CONFIG_KASAN_SW_TAGS also requires kasan_init_sw_tags().
-> > */
-> > -       pr_info("KernelAddressSanitizer initialized\n");
-> > +       pr_info("KernelAddressSanitizer initialized (generic)\n");
-> >  #endif
-> >  }
-> > 
-> > diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> > index dc892119e88f..1d5c89c7cdfe 100644
-> > --- a/mm/kasan/hw_tags.c
-> > +++ b/mm/kasan/hw_tags.c
-> > @@ -177,7 +177,9 @@ void __init kasan_init_hw_tags(void)
-> >                 break;
-> >         }
-> > 
-> > -       pr_info("KernelAddressSanitizer initialized\n");
-> > +       pr_info("KernelAddressSanitizer initialized (hw-tags,
-> > mode=%s, stacktrace=%s)\n",
-> > +               kasan_mode_info(),
-> > +               kasan_stack_collection_enabled() ? "on" : "off");
-> >  }
-> > 
-> >  void kasan_alloc_pages(struct page *page, unsigned int order,
-> > gfp_t flags)
-> > diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> > index aebd8df86a1f..387ed7b6de37 100644
-> > --- a/mm/kasan/kasan.h
-> > +++ b/mm/kasan/kasan.h
-> > @@ -36,6 +36,16 @@ static inline bool
-> > kasan_sync_fault_possible(void)
-> >  {
-> >         return kasan_mode == KASAN_MODE_SYNC || kasan_mode ==
-> > KASAN_MODE_ASYMM;
-> >  }
-> > +
-> > +static inline const char *kasan_mode_info(void)
-> > +{
-> > +       if (kasan_mode == KASAN_MODE_ASYNC)
-> > +               return "async";
-> > +       else if (kasan_mode == KASAN_MODE_ASYMM)
-> > +               return "asymm";
-> > +       else
-> > +               return "sync";
-> > +}
-> 
-> This creates an inconsistency, because for
-> kasan_stack_collection_enabled(), kasan_async_fault_possible(), and
-> kasan_sync_fault_possible() there are !KASAN_HW_TAGS stubs.
-> 
-> A stub for kasan_mode_info() if !KASAN_HW_TAGS appears useless
-> though,
-> and I wouldn't know what its return value should be.
-> 
-> Do you expect this helper to be used outside hw_tags.c? If not,
-> perhaps just move it into hw_tags.c.
+On Wed, 20 Oct 2021 09:23:52 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
 
-The helper will be used only in hw_tags.c.
-I will move it into hw_tags.c in v3.
-
-Thanks.
-
+> On Wed, Oct 20, 2021 at 09:12:28AM +0200, Miquel Raynal wrote:
+> > > 
+> > > Actually, this version is even cleaner:
+> > > 
+> > > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > > index 3d6c6e880520..98c39b7f6279 100644
+> > > --- a/drivers/mtd/nand/raw/nand_base.c
+> > > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > > @@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+> > >         mtd->_sync = nand_sync;
+> > >         mtd->_lock = nand_lock;
+> > >         mtd->_unlock = nand_unlock;
+> > > -       mtd->_suspend = nand_suspend;
+> > > -       mtd->_resume = nand_resume;
+> > >         mtd->_reboot = nand_shutdown;
+> > >         mtd->_block_isreserved = nand_block_isreserved;
+> > >         mtd->_block_isbad = nand_block_isbad;
+> > > @@ -6261,14 +6259,20 @@ static int nand_scan_tail(struct nand_chip *chip)
+> > >                 goto err_free_interface_config;
+> > >  
+> > >         /* Check, if we should skip the bad block table scan */
+> > > -       if (chip->options & NAND_SKIP_BBTSCAN)
+> > > -               return 0;
+> > > -
+> > > -       /* Build bad block table */
+> > > -       ret = nand_create_bbt(chip);
+> > > -       if (ret)
+> > > -               goto err_free_secure_regions;
+> > > +       if (chip->options & NAND_SKIP_BBTSCAN) {
+> > > +               /* Build bad block table */
+> > > +               ret = nand_create_bbt(chip);
+> > > +               if (ret)
+> > > +                       goto err_free_secure_regions;
+> > > +       }  
+> > 
+> > Nice idea.
+> >   
+> > >  
+> > > +       /*
+> > > +        * Populate the suspend/resume hooks after the BBT has been scanned to
+> > > +        * avoid using the suspend lock and resume waitqueue which are only
+> > > +        * initialized when mtd_device_register() is called.
+> > > +        */
+> > > +       mtd->_suspend = nand_suspend;
+> > > +       mtd->_resume = nand_resume;
+> > >         return 0;
+> > >  
+> > >  err_free_secure_regions:  
 > 
-> Thanks,
-> -- Marco
+> Could be a nice idea, but it doesn't work...
+> gpmi-nand.c calls nand_create_bbt() after this have run ;)
 
+Er, indeed. Can you try with this instead:
+
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index b7ad030225f8..548647bd27a4 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
+  */
+ int nand_create_bbt(struct nand_chip *this)
+ {
++       struct mtd_info *mtd = nand_to_mtd(this)
++       int (*suspend) (struct mtd_info *) = mtd->_suspend;
++       int (*resume) (struct mtd_info *) = mtd->_resume;
+        int ret;
+ 
++       /*
++        * The BBT scan logic use the MTD helpers before the MTD layer had a
++        * chance to initialize the device, and that leads to issues when
++        * accessing the uninitialized suspend lock. Let's temporarily set the
++        * suspend/resume hooks to NULL to skip the lock acquire/release step.
++        *
++        * FIXME: This is an ugly hack, so please don't copy this pattern to
++        * other MTD implementations. The proper fix would be to implement a
++        * generic BBT scan logic at the NAND level that's not using any of the
++        * MTD helpers to access pages. We also might consider doing a two
++        * step initialization at the MTD level (mtd_device_init() +
++        * mtd_device_register()) so some of the fields are initialized
++        * early.
++        */
++       mtd->_suspend = NULL;
++       mtd->_resume = NULL;
++
+        /* Is a flash based bad block table requested? */
+        if (this->bbt_options & NAND_BBT_USE_FLASH) {
+                /* Use the default pattern descriptors */
+@@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
+                        return ret;
+        }
+ 
+-       return nand_scan_bbt(this, this->badblock_pattern);
++       ret = nand_scan_bbt(this, this->badblock_pattern);
++
++       /* Restore the suspend/resume hooks. */
++       mtd->_suspend = suspend;
++       mtd->_resume = resume;
++
++       return ret;
+ }
+ EXPORT_SYMBOL(nand_create_bbt);
+ 
