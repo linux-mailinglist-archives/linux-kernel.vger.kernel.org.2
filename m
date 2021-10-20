@@ -2,150 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4E743521C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1534435224
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhJTR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbhJTR7h (ORCPT
+        id S231153AbhJTSAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:00:24 -0400
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:36673 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhJTSAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:59:37 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA8FC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:57:23 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so11807459wmz.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:57:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:organization:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eUXnYsZJvnOAF9kzZYgcYvLxfHgvnwyAqbl51jXHyOk=;
-        b=5SRvDSnW9NALjwV2LaLE+zMHcgRRVEur9K+oWOkjkMa/ekGvFZUUWHhW9wUXIuQQFC
-         /a8o1NfWJf7n8u1WCsgJ6DZ9GzXI/vxRCErkva+u6IIt3Ftot2dLC5WyXE/qEkDejh1O
-         kVqvbLZLsY4DiTy7nVUI0vKMtRJFIRvZDD1t4btCIGXSU0hbMQMrdw0UCQ2wHqq9fBJR
-         XWDbyugS/eLkDqzecFcAtr+OSwjbVGG85VaokC0qIQ/n+uJRoJUbG37x3AckVjjiRCnA
-         lG8sEAiA+g4Ih121u9/zb9evJ+eGwkaeaJ5PL8bBFb99jNQJs00eYaRrjJiruivZ0pZW
-         5+mA==
+        Wed, 20 Oct 2021 14:00:12 -0400
+Received: by mail-ua1-f54.google.com with SMTP id e10so8270260uab.3;
+        Wed, 20 Oct 2021 10:57:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=eUXnYsZJvnOAF9kzZYgcYvLxfHgvnwyAqbl51jXHyOk=;
-        b=S7pD+c6UrmCK+Nva7h0PI9QCUxbPBvrDGVSS3Vc3Vcd14a8ikiG97EG9njpYEnVeAZ
-         6c6hacuFW6TpVcDKTGtYCNgnk+NUQnK3U+Ky6JJyd6L/vhs2YuMw3qJHji9cAcBe0o5r
-         AYLsGUnIlx8SnSMsJtx7aaDDXtQdtvMvpT2qRoNggVHRL9fWJnlS8iOr2OfYP7BE0UFt
-         A9hrUQZ8GujkcjBG+B3eYB7pXmfqiYR/81Mb6Z+I8cAJE+zwgcM6i31y5lV6+2CYs8kE
-         2U1vZDodFPrHIhpUeoYg9FcSEKDRZ3U0nhyl+WQk0Xl8mkVBsYOqSChd2pkiSAoZKV9P
-         pioQ==
-X-Gm-Message-State: AOAM533NwZF5lQh1PH9AaOSwljCKM+7Ectq2CwLkSXJ29/LUHfDhSPM+
-        48HNq/6e7g3vpp3sB1OK287SxdBqG4N9zA==
-X-Google-Smtp-Source: ABdhPJw5z4pbgVNM5h6MqZvS0r0oCzcOE1i7EGAQsH0+8u7iGi3dGj0Z2eWsGRLSNwQEx+5xxoBcfQ==
-X-Received: by 2002:a05:600c:892:: with SMTP id l18mr784909wmp.89.1634752641318;
-        Wed, 20 Oct 2021 10:57:21 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:d31f:1512:8915:e439? ([2001:861:44c0:66c0:d31f:1512:8915:e439])
-        by smtp.gmail.com with ESMTPSA id s186sm3164965wme.14.2021.10.20.10.57.20
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=axzAGlR/UxcLWT4CCwns5YXFS5liiGSF6fq491Emgd4=;
+        b=kHsW8TQWA+elOQQzJvLnuqYf5Lja1pevGk4ukfCYWUQ53qJfQGMl0oStIGGRgoHtFS
+         FTwmNNyx6tu4UwLXbdrZAW7rpJWL+CIFRj8S9XmrunJkH26ZK7IDGPkr9RoaqBmVEXxY
+         t513MRdsAqr+EngQ7GZptxPzEEFthqJ0NEwDEoAKJ/45cA1y9uXWUU2uMJxuE9KI+8uy
+         +HijjFQhk4mPt4TCfJDZoa2kcDKumFvb8d47SJ6HevRNSUKBBBXdgdP1ezfnk8Dk07is
+         jNbr3itvx4TkaYknsEayu4CFZkuTy6r//iCPsB3kPDXd3RM05hy4qmEv8yO9EvGIJKdn
+         jvkA==
+X-Gm-Message-State: AOAM533pVABMGLhXnkpmhuEbNjuflJmYKDwqI+4SXrQojWQNb9GcFFsj
+        3D4EEQvsSyxX/ZPuO5qf8L/yMl6uG9e8GA==
+X-Google-Smtp-Source: ABdhPJyEFjFASj/oL9deO3KOrHTMHiW8WtwT4gxtgFtg5LjKd3ARMmRAoIGI62IHGPusALw5dpAteA==
+X-Received: by 2002:a9f:3012:: with SMTP id h18mr934730uab.56.1634752676822;
+        Wed, 20 Oct 2021 10:57:56 -0700 (PDT)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id d4sm1836191vkq.54.2021.10.20.10.57.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 10:57:20 -0700 (PDT)
-Subject: Re: [PATCH] MAINTAINERS: Update email of Andrzej Hajda
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211018211353.586986-1-andrzej.hajda@intel.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <1425b43a-e5ce-b70e-3c9d-a8735860baa5@baylibre.com>
-Date:   Wed, 20 Oct 2021 19:57:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 10:57:56 -0700 (PDT)
+Received: by mail-ua1-f48.google.com with SMTP id r17so8233852uaf.8;
+        Wed, 20 Oct 2021 10:57:56 -0700 (PDT)
+X-Received: by 2002:a05:6102:290c:: with SMTP id cz12mr432414vsb.35.1634752675868;
+ Wed, 20 Oct 2021 10:57:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211018211353.586986-1-andrzej.hajda@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210913170436.243-1-alexander.helms.jy@renesas.com>
+ <20210913170436.243-2-alexander.helms.jy@renesas.com> <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
+ <CAMuHMdXq2NyBf539raFJSoWSGXnwxOAMWcVB_WV-=uf+kOs7rw@mail.gmail.com>
+ <4f2f81a8-9a79-3211-5ec3-fa679c3e7bb9@renesas.com> <CAMuHMdXHkeOK+Bg10BCLDvTztV6+y9+OomBUiTAoa1+GCHRnvw@mail.gmail.com>
+ <f77449f2-9299-44d6-b49c-b0be687ea20c@renesas.com>
+In-Reply-To: <f77449f2-9299-44d6-b49c-b0be687ea20c@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 20 Oct 2021 19:57:44 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV3uWwGFDe0CF0Y1mbDSyTb-uDMtCHCfLbOyOuKiFgD+Q@mail.gmail.com>
+Message-ID: <CAMuHMdV3uWwGFDe0CF0Y1mbDSyTb-uDMtCHCfLbOyOuKiFgD+Q@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: Add binding for Renesas 8T49N241
+To:     Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2021 23:13, Andrzej Hajda wrote:
-> Beside updating email, the patch updates maintainers
-> of Samsung drivers.
-> 
-> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
-> ---
->  .mailmap    |  1 +
->  MAINTAINERS | 13 ++++++++-----
->  2 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/.mailmap b/.mailmap
-> index 4f6e37da60589..4283a86f70d26 100644
-> --- a/.mailmap
-> +++ b/.mailmap
-> @@ -40,6 +40,7 @@ Andrew Vasquez <andrew.vasquez@qlogic.com>
->  Andrey Konovalov <andreyknvl@gmail.com> <andreyknvl@google.com>
->  Andrey Ryabinin <ryabinin.a.a@gmail.com> <a.ryabinin@samsung.com>
->  Andrey Ryabinin <ryabinin.a.a@gmail.com> <aryabinin@virtuozzo.com>
-> +Andrzej Hajda <andrzej.hajda@intel.com> <a.hajda@samsung.com>
->  Andy Adamson <andros@citi.umich.edu>
->  Antoine Tenart <atenart@kernel.org> <antoine.tenart@bootlin.com>
->  Antoine Tenart <atenart@kernel.org> <antoine.tenart@free-electrons.com>
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 54cd05d3aab65..e3fadb4ebced3 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2546,7 +2546,7 @@ N:	s3c64xx
->  N:	s5pv210
->  
->  ARM/SAMSUNG S5P SERIES 2D GRAPHICS ACCELERATION (G2D) SUPPORT
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Łukasz Stelmach <l.stelmach@samsung.com>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> @@ -2570,7 +2570,8 @@ S:	Maintained
->  F:	drivers/media/platform/s5p-jpeg/
->  
->  ARM/SAMSUNG S5P SERIES Multi Format Codec (MFC) SUPPORT
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Marek Szyprowski <m.szyprowski@samsung.com>
-> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> @@ -6254,7 +6255,7 @@ F:	Documentation/devicetree/bindings/display/atmel/
->  F:	drivers/gpu/drm/atmel-hlcdc/
->  
->  DRM DRIVERS FOR BRIDGE CHIPS
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
->  M:	Neil Armstrong <narmstrong@baylibre.com>
->  M:	Robert Foss <robert.foss@linaro.org>
->  R:	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> @@ -16748,13 +16749,15 @@ F:	Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
->  F:	drivers/nfc/s3fwrn5
+Hi Alex,
 
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+On Wed, Oct 20, 2021 at 6:57 PM Alex Helms
+<alexander.helms.jy@renesas.com> wrote:
+> On 10/20/2021 1:20 AM, Geert Uytterhoeven wrote:
+> > On Tue, Oct 19, 2021 at 11:53 PM Alex Helms
+> > <alexander.helms.jy@renesas.com> wrote:
+> >> On 10/14/2021 5:16 AM, Geert Uytterhoeven wrote:
+> >>> On Wed, Oct 13, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >>>> On Mon, Sep 13, 2021 at 7:05 PM Alex Helms
+> >>>> <alexander.helms.jy@renesas.com> wrote:
+> >>>>> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
+> >>>>> The 8T49N241 accepts up to two differential or single-ended input clocks
+> >>>>> and a fundamental-mode crystal input. The internal PLL can lock to either
+> >>>>> of the input reference clocks or to the crystal to behave as a frequency
+> >>>>> synthesizer.
+> >>>>>
+> >>>>> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
+> >>>>> Reviewed-by: Rob Herring <robh@kernel.org>
+> >>>>
+> >>>> Thanks for your patch!
+> >>>>
+> >>>>> --- /dev/null
+> >>>>> +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+> >>>
+> >>>> BTW, do you plan to add interrupt and/or GPIO support later?
+> >>>
+> >>> To clarify, and I really meant to add:
+> >>>
+> >>>   interrupts:
+> >>>     maxItems: 1
+> >>>
+> >>> to the bindings now, and GPIO-related properties and subnodes later.
+> >>
+> >> Any additional features such as interrupts and GPIO properties would only be added if there is customer demand for such features. Since there is no interrupt support, does the "interrupts" item still need to be added to the yaml?
+> >
+> > DT describes hardware, not software policy (or limitations of the driver).
+> >
+> > Arguably that applies to both interrupts and GPIOs, but the latter is
+> > more complex to describe, while the former is a simple "interrupts"
+> > property.  It's not uncommon for board components to have their
+> > interrupt line wired to an SoC, even if the driver doesn't use it.
+>
+> I understand what you are describing but I don't understand how it is
+> relevant for this device. The device is a clock generator on the i2c
+> bus. It has a few GPIOs that can be configured as outputs for specific
+> events like loss of lock or loss of signal, but I don't understand why
 
->  
->  SAMSUNG S5C73M3 CAMERA DRIVER
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
-> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
->  L:	linux-media@vger.kernel.org
->  S:	Supported
->  F:	drivers/media/i2c/s5c73m3/*
->  
->  SAMSUNG S5K5BAF CAMERA DRIVER
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
-> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
->  L:	linux-media@vger.kernel.org
->  S:	Supported
->  F:	drivers/media/i2c/s5k5baf.c
-> 
+According to the datasheet, the GPIOs can not only be used to indicate
+clock generator status, but also as real GPIOs, e.g. to control LEDs
+from software.
 
+> that matters. 8t49n241 is similar to the existing dt and driver
+> silabs,si5351 which does not define any interrupts. In fact it seems
+> their dt describes both hardware and software policy because it uses
+> custom dt keywords for changing driver behavior such as
+> "silabs,pll-source" or "silabs,drive-strength". So looking at other
+> examples of similar drivers, I don't understand why the 8t49n241
+> driver needs to define an interrupt.
+
+OK. So just ignore interrupts and GPIO for now.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
