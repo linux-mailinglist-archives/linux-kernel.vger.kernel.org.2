@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2AC4343A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA80B4343A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhJTC5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhJTC5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:57:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2CF26052B;
-        Wed, 20 Oct 2021 02:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634698525;
-        bh=lrE9AqvkgTJNc+6kPuxY92F7aQFAi4cPD8wMvZJl43w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=grldJGgsLlVYS7aLGpfyR7Ygw6HSU6aFXv6CyEXzFWNHWBT6YSTVZEfKEXhKT3Tgc
-         x5ghsTIWdMuSrF8sJ8yejQ9rXEn2RRbZ/+xd926GD039dhmDNWYydvuZRwoTWZ9RNh
-         wktP6SgK3VbxqetNOmK8Ghxep0ZZVATy9ZN6twpvMlcPenxJ77hRVIqQcRXtTdjdNn
-         w/Pg3k+nCuw0zSFstVFOYvcEewOdtoTdUqyMpPhiZF6Vol8dn4HhSZ3Mjkky1Jz9Hq
-         7fFFAc0pgfrrYJT5YtT+gYRIGhyj2WQlIbQSWP3oZdDKJAIjQAscd0so36f0cXvCFj
-         tsXHEtQxfpS4w==
-Date:   Wed, 20 Oct 2021 11:55:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, <mingo@redhat.com>,
-        <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] kselftests: ftrace: limit the executing time by reading
- from cached trace
-Message-Id: <20211020115522.75f3e25247c1d30726e9b130@kernel.org>
-In-Reply-To: <20211019223454.5da09d74@gandalf.local.home>
-References: <20211018132616.2234853-1-lizhijian@cn.fujitsu.com>
-        <20211018221636.47157e52@gandalf.local.home>
-        <20211020112027.b01762f2adcfac99e71dcf99@kernel.org>
-        <20211019223454.5da09d74@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S229843AbhJTC6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:58:22 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:58299 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229555AbhJTC6V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 22:58:21 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1BFCC5C017F;
+        Tue, 19 Oct 2021 22:56:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 19 Oct 2021 22:56:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=LihapO
+        JibDbKgLkQmgNkWazXnPD8ZgMdnaTNuIUHFRs=; b=frUlDL3DosxQwPSQ8/7ay8
+        WKCJEK0QPY99n9VH44MeU+p1SRwVXnT5A7sGYrwXjTpYD5zWMryZUkSFNTUt0d9t
+        VMoLthBqdNE/0FuqdZegbVZUDJAq4sBtBxknW5iiG0sZ8j9rQ+bRF+jxFqgX3+NA
+        gj/pxD8I8mhl9A5TWMb486LluQn5fscRS8A0Wx7m+i2JLjoJ9onI/ysFRfb75saV
+        ZbeEdSAXNw41lBQSH1kHuMEPaJPXxEAvojrTHiVKGJcrpQlUPNP+T5OxDPr268ks
+        cLTxLwpjfGc25heDthImrIgoRltI1XkQSH3ls8BcuhjnApJo2XuJD8hk5Wz1TAKQ
+        ==
+X-ME-Sender: <xms:RoVvYRsgcHjssvl02MUsub05kEv5OcMg0QemnC8H6li-j7DyLGt0Fg>
+    <xme:RoVvYacJcE91VUgmTkEQvZPUifylzNiK69B_9y7YqhYUwREGOa0JFDDT3y1jUJj1N
+    2hwgqhRyaGW-vS99yI>
+X-ME-Received: <xmr:RoVvYUx-tCqX0rhLfka6h3ztfoZGHO0hSY4oWTIQzvrmlKsPT8vhE-ehfCYuA1-WVzmg7vAuAhCKL4yN6mY6S3na91--Tos6hf8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvfedgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
+    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:RoVvYYN6RfOt3jLCxR1Gl2ybjuoAoFZDQw3AViAdqaFCfmUxunUipg>
+    <xmx:RoVvYR-grsflt_Eeg-1cJ70rOjDbWg82xcyxlf_2jpyjMkhXfEMc8g>
+    <xmx:RoVvYYWjsOgx8MDNWd4XCoGrD83UKwavBZjFB7bq33eHtgbLelrzcA>
+    <xmx:R4VvYRzCYcwzAZyCGVi68zz2BHWL2Wtik8W3r-tw-VSXdglVptYjiw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 19 Oct 2021 22:56:04 -0400 (EDT)
+Date:   Wed, 20 Oct 2021 13:56:11 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com,
+        martin.petersen@oracle.com, megaraidlinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: megaraid_mbox: return -ENOMEM on megaraid_init_mbox()
+ allocation failure
+In-Reply-To: <2482854e18365087266c2f0907c1bbfd42bd2731.camel@linux.ibm.com>
+Message-ID: <c1a6e7f3-d62f-5c5e-b3ef-2320339e142a@linux-m68k.org>
+References: <1634640800-22502-1-git-send-email-jiapeng.chong@linux.alibaba.com> <2482854e18365087266c2f0907c1bbfd42bd2731.camel@linux.ibm.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 22:34:54 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, 19 Oct 2021, James Bottomley wrote:
 
-> On Wed, 20 Oct 2021 11:20:27 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> On Tue, 2021-10-19 at 18:53 +0800, Jiapeng Chong wrote:
+> > From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+> > 
+> > Fixes the following smatch warning:
+> > 
+> > drivers/scsi/megaraid/megaraid_mbox.c:715 megaraid_init_mbox() warn:
+> > returning -1 instead of -ENOMEM is sloppy.
 > 
-> > Hmm, by the way, shouldn't we set this feature by default?
-> > There are many "cat trace | grep ..." style test code in ftracetest just for
-> > checking whether the event is recorded. At least for the ftracetest, it should
-> > be set unless the testcase is explicitly disable it.
+> Why is this a problem?  megaraid_init_mbox() is called using this
+> pattern:
 > 
-> For testing, sure.
+> 	// Start the mailbox based controller
+> 	if (megaraid_init_mbox(adapter) != 0) {
+> 		con_log(CL_ANN, (KERN_WARNING
+> 			"megaraid: mailbox adapter did not initialize\n"));
 > 
-> I was criticized by the BPF folks about tracing stopping when the trace
-> file was being read. So for normal operations, it doesn't pause, because
-> that "confuses" people (so I am told).
+> 		goto out_free_adapter;
+> 	}
+> 
+> So the only meaningful returns are 0 on success and anything else
+> (although megaraid uses -1 for this) on failure. 
 
-OK, I got it.
+I think you're arguing for a bool (?)
 
-Here is the patch to enable it by default for ftracetest :)
+Smatch apparently did not think of that -- probably needs a holiday.
 
-Thanks!
+> Since -1 is the conventional failure return, why alter that to something 
+> different that still won't be printed or acted on?  And worse still, if 
+> we make this change, it will likely excite other static checkers to 
+> complain we're losing error information ...
+> 
 
-From 61e641f494307d9942a8415bc6743e85dd95438e Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Wed, 20 Oct 2021 11:50:35 +0900
-Subject: [PATCH] selftests/ftrace: Stop tracing while reading the trace file
- by default
-
-Stop tracing while reading the trace file by default, to prevent
-the test results while checking it and to avoid taking a long time
-to check the result.
-If there is any testcase which wants to test the tracing while reading
-the trace file, please override this setting inside the test case.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/testing/selftests/ftrace/test.d/functions | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
-index 000fd05e84b1..8adc0140d03f 100644
---- a/tools/testing/selftests/ftrace/test.d/functions
-+++ b/tools/testing/selftests/ftrace/test.d/functions
-@@ -124,6 +124,12 @@ initialize_ftrace() { # Reset ftrace to initial-state
-     [ -f uprobe_events ] && echo > uprobe_events
-     [ -f synthetic_events ] && echo > synthetic_events
-     [ -f snapshot ] && echo 0 > snapshot
-+
-+# Stop tracing while reading the trace file by default, to prevent
-+# the test results while checking it and to avoid taking a long time
-+# to check the result.
-+    [ -f options/pause-on-trace ] && echo 1 > options/pause-on-trace
-+
-     clear_trace
-     enable_tracing
- }
--- 
-2.25.1
-
- 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+... and arguably they would be correct.
