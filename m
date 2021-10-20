@@ -2,81 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E60434F84
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A26434F87
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhJTQAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:00:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37974 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230494AbhJTQAM (ORCPT
+        id S230527AbhJTQBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhJTQBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:00:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634745476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jLto73EhLPS0L9ZkqSvlOYI3NN47XcPBB+0LgWwxrPs=;
-        b=KPQTiVdcpllPIFrsXNiJBj8IoggCclNKts1eTH1CrUbJX5EOmJRqULIAt3w5A2ttqb893O
-        np2YPRZqijQE4Pmo6k8ZPRu97ftxFl4Icuum/N1ZV+MT4GdigPDbNFOBSiJInIs973VS1J
-        MmlKaIsuGOT+cYT3xowxkFpCFbbENxo=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-oY8AaOaxMzmZ7bNsiufqxQ-1; Wed, 20 Oct 2021 11:57:54 -0400
-X-MC-Unique: oY8AaOaxMzmZ7bNsiufqxQ-1
-Received: by mail-qt1-f199.google.com with SMTP id w12-20020ac80ecc000000b002a7a4cd22faso2445870qti.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:57:54 -0700 (PDT)
+        Wed, 20 Oct 2021 12:01:14 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6B3C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:58:59 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id o24-20020a05600c511800b0030d9da600aeso11347345wms.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=H+gRH76GjJMcJJIvfbmq+wi06oWXJKKHW0RhCwTVPXc=;
+        b=acn3qGxC3Mo9OmYRVDxgMTw+Z+TBUD6x84AEdFNyPqLztx7gioUami8NTv0w9xjMFR
+         tJd/v+bQWD1p4VfsOkRrUcNgiFoCADs7snjxYBJo1h+w2mx6CS4R3eAJfFQaqzH23Vfu
+         HkUbNlCeAXFz4ISUkwMgkKzSgVJML3zY98LC7dd5sRg57p3w6kfYZb4J/QFrH4j6zqE5
+         XnVfCHI96R9CnA6EoxonGNuls2LZz0k6ZCKYZL85rt4XzkPKlMZ29ErC8Lc2ZmJG3vPT
+         WVsj58bFXRjxv2hNAX+i0DCL0713wr2R1IimFullnDf56M7szIdwtQTSEFevZsseLLv0
+         f1EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jLto73EhLPS0L9ZkqSvlOYI3NN47XcPBB+0LgWwxrPs=;
-        b=SJJ2iXTI3t3mcY318FrfEBNU6+SneOrkzpG254MPhXdH23JzTvBTOEJSgv81ZpLbSl
-         IS07JG8WATTU+u5xR4BqR7sSWDehbYlbKugg1bxP6k2Icdu2EYWpdRlRQlCB6581F7E7
-         YBzSBpJdcZTyJxDvfGTHQJ++QhMUdVL3gIHGRLzfUupDmzM+Atmb/O3dJEb55bnAZZxN
-         ydlYWxM1VZP+K8RjSHA2TX1VSVKGzQmCwxULrrQKWPRyrNA+4khOv8CPLmrkaJHpHgh1
-         89drDAgyXOaaFsJTgnMmGvFqmvHkhmg7zmbAO01RT0HmfIpNdJ+RycL124BGyboAL0wT
-         bzcQ==
-X-Gm-Message-State: AOAM530J16IW48tkdLnRUN97hjxZTZkuvr/tBNL5RffXQBakMG5y2+Ed
-        w3SdexqNbo8HaYaYrQ2oqd1sYm3CZkLD22xf/KpvQRti9sXjmul2eQzirI9IHaIIOQY2CwgM5JX
-        dWUtmPyTQB0TIk3IW6H1EXFZj
-X-Received: by 2002:a05:620a:1a05:: with SMTP id bk5mr316334qkb.195.1634745474180;
-        Wed, 20 Oct 2021 08:57:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZoTnZ0OHMmoxPxPmPFa3CNoA6uJD4lYCWnohOPWpdwlmRnW7hfck+i2GP/Eb2U69wer4+Dw==
-X-Received: by 2002:a05:620a:1a05:: with SMTP id bk5mr316311qkb.195.1634745473907;
-        Wed, 20 Oct 2021 08:57:53 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id bi26sm919806qkb.102.2021.10.20.08.57.52
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=H+gRH76GjJMcJJIvfbmq+wi06oWXJKKHW0RhCwTVPXc=;
+        b=iACTJmZeFq+2dWYjoP9XdE9NHXXdyIXXtgbYKA7Pd0E0S71SGBDkXfyN1Mx1pu3D52
+         oRTUr1slDwzJ/odOF6dvjzEv5p2+CQepSMuUscrbeF+WvyONtECgV0Wf4SPLTQz2EOO1
+         AbJ8949r/g2t7972KtKcsP5Bvy44B9l6jFGVSp6ID29XLC48j6vfjbivkm885o12xUi3
+         W1YfyaBx+4vvFyQnqrcQOlBZhN/VAaeOb2K8wwOG/xiEWrM99saM78QMibIXJYEeWdvg
+         QgA+IdjUrgm4gaCv2GGPh9+iW7mCRHdpD+cn34GhyYOqyOqyuen5sfRz5uOTT61ZItuA
+         0iFQ==
+X-Gm-Message-State: AOAM5313MEZOOF9AAmb9cUfBG1tIhGi1r4U8gh/9eG8NN/2PMED/wMpN
+        1nyPGuuK6UP9lhVlOxI2bYk7nIKRbIfvAw==
+X-Google-Smtp-Source: ABdhPJzu2kHxVdJL7wFokGtw+2Z4vFuRFipGsrFdgD1Ln0YPGyMZzRUU/Iy9xzrkN+HPUmSA6Nnt/g==
+X-Received: by 2002:adf:de0e:: with SMTP id b14mr15713wrm.271.1634745538412;
+        Wed, 20 Oct 2021 08:58:58 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id l2sm6038888wmi.1.2021.10.20.08.58.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 08:57:53 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 08:57:50 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH v2 08/14] x86/retpoline: Create a retpoline thunk array
-Message-ID: <20211020155750.3u74bkcp66leeyed@treble>
-References: <20211020104442.021802560@infradead.org>
- <20211020105842.981215247@infradead.org>
+        Wed, 20 Oct 2021 08:58:57 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 16:58:56 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
+ global registers
+Message-ID: <YXA8wBzhB/Dauu7v@google.com>
+References: <20210923064137.60722-1-zhang.lyra@gmail.com>
+ <20210923064137.60722-3-zhang.lyra@gmail.com>
+ <YV1XpL7ibF1y4LbV@google.com>
+ <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
+ <CAL_JsqLUkxKOMSWLzTK14h3EyBCsO2dfq3=MxOSvv1ZK0_H=ow@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211020105842.981215247@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqLUkxKOMSWLzTK14h3EyBCsO2dfq3=MxOSvv1ZK0_H=ow@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:44:50PM +0200, Peter Zijlstra wrote:
-> Stick all the retpolines in a single symbol and have the individual
-> thunks as inner labels, this should guarantee thunk order and layout.
+On Wed, 20 Oct 2021, Rob Herring wrote:
 
-How so?
+> On Mon, Oct 11, 2021 at 9:11 AM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Wed, Oct 6, 2021 at 3:00 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Thu, 23 Sep 2021, Chunyan Zhang wrote:
+> > >
+> > > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > > >
+> > > > Add bindings for Unisoc system global register which provide register map
+> > > > for clocks.
+> > > >
+> > > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > ---
+> > > >  .../bindings/mfd/sprd,ums512-glbreg.yaml      | 68 +++++++++++++++++++
+> > > >  1 file changed, 68 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
+> > >
+> > > Unapplied v3 and applied this (v4) instead, thanks.
+> >
+> > What about the clock binding this depends on:
+> >
+> > Unknown file referenced: [Errno 2] No such file or directory:
+> > '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
+> > xargs: dt-doc-validate: exited with status 255; aborting
+> > make[1]: *** Deleting file
+> > 'Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml'
+> > Unknown file referenced: [Errno 2] No such file or directory:
+> > '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
+> > make[1]: *** [scripts/Makefile.lib:385:
+> > Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml]
+> > Error 255
+> >
+> >
+> > Once again, all the components of MFD bindings need to be applied together.
+> 
+> It seems that Stephen still has comments and there's a new check that
+> causes the clock schema to fail, so this should be dropped or
+> reverted.
 
-Just wondering what the purpose of the array is.  It doesn't seem to be
-referenced anywhere.
+Dropped.
 
 -- 
-Josh
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
