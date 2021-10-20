@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F495434BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B621434BC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhJTNKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhJTNKL (ORCPT
+        id S230174AbhJTNEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:04:35 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46044 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhJTNEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:10:11 -0400
-X-Greylist: delayed 384 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Oct 2021 06:07:56 PDT
-Received: from danwin1210.me (danwin1210.me [IPv6:2a01:4f8:c010:d56::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C46DC06161C;
-        Wed, 20 Oct 2021 06:07:56 -0700 (PDT)
-Received: from danwin1210.me (unknown [10.9.0.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X448 server-signature ECDSA (P-384) server-digest SHA384
-         client-signature ED448)
-        (Client CN "danwin1210.me", Issuer "danwin1210.me" (verified OK))
-        by mail.danwin1210.me (Postfix) with ESMTPS id 22FFF1F43B;
-        Wed, 20 Oct 2021 13:01:27 +0000 (UTC)
-Received: from prine.. (unknown [10.9.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+        Wed, 20 Oct 2021 09:04:35 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E60D121A87;
+        Wed, 20 Oct 2021 13:02:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634734939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lHtiz45zVS7aEG3jw5dxC6PErBuqUS5lB4tXnXaQ6pg=;
+        b=Y/I+Ce5axakhGBIRNKOegdQVHdI4YzYHQEIpdgO0UXNG8VzJ/LYJYwmJOdM6opVpOjv+9L
+        FEfoascr1IWjpMCUhwxtd/BXj4wwJxLQ7Usqx/t/XNvQuA+jG11qL34rmbcJrfJoSQZlqL
+        aCmzO/x/CQnYKUqQcQQjTuPUiYqW6QY=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by danwin1210.me (Postfix) with ESMTPSA id 4CE635A644;
-        Wed, 20 Oct 2021 13:00:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danwin1210.me;
-        s=mail; t=1634734856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wvlKkaYQfmgd1AQPtmZAcpJC7xRHMNlCP4y6n6AzJL0=;
-        b=A42M3zm3idaqWTNZEkfWhmyNrLjK3eEm2rVVigtKnLytKIbGAA9tFb6l793sC/yTCg/Dse
-        Y1iuZ3oyAGgqXqqz9LUFjjgfouuoYZ9u0V1X+QcNHRqNUWya9zvIiO/Eaire0ErLG9md0j
-        8w3+fYkuB1wSGfmy2L8sYT3Oppt364JhQ8QoaEdqQ7NewTRlRInVeep03oPJSxoXOs3b0i
-        gKbTZOD1BTcNPZidfMB2qcn0Khxcer4pn0GDpc8WqTc0/NzWV1guwrsjH5cyxH4Ec0xQ/Q
-        fS9sgTCBMq0qKDnPUhwvSz1Xy6KsrdaneqU7xkg6TCkHfSCzx/pihukz3rtPX+8P6Q+SCD
-        +Heva/W/Mk/H978E3DzFo5sx3sYjMe8BUsI6P2XKos7VwNo8KYogc6PAXzLNnkTVdqd2N1
-        D7L2s5os1u7ooSmvhGJOGWCTSnaVc8qkV8YxfO4RqMxm/Mz81kKJBJXuBFVurXf3j5w3Ei
-        4pVzZAzcXFXGChpsqH369q+j98BO2hSX9zVExoSbjRZDVdX3wO3hNB7juLt+hQMVkD5XTw
-        oIo5J8cfJhyim8rJHWXy8AxgCsTXojr8SD3c1rkfYLLo4mjInndjBwrMkDeUDJEVps+Vxq
-        bXxHP62fWJgTcOx64bBJBNo2ChbtN7EIgcCYtWZK16A+9LX6OeHGU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=danwin1210.me;
-        s=ed25519; t=1634734856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wvlKkaYQfmgd1AQPtmZAcpJC7xRHMNlCP4y6n6AzJL0=;
-        b=O8J1B6BfYwKsfAF4l9yz6jR1z2rbSQ8qXrTbVJw0cc8NpkzyNa91JHvhmHKe6iNcEB7bvT
-        bfcyMKJYcXIiS4AQ==
-From:   Kyle Copperfield <kmcopper@danwin1210.me>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     Kyle Copperfield <kmcopper@danwin1210.me>,
-        Dragan Simic <dragan.simic@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: btsdio: Do not bind to non-removable BCM4345 and BCM43455
-Date:   Wed, 20 Oct 2021 13:00:22 +0000
-Message-Id: <20211020130023.196651-1-kmcopper@danwin1210.me>
+        by relay2.suse.de (Postfix) with ESMTPS id 96830A3B81;
+        Wed, 20 Oct 2021 13:02:19 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 15:02:19 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg 3/3] memcg: handle memcg oom failures
+Message-ID: <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
+References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+ <cover.1634730787.git.vvs@virtuozzo.com>
+ <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCM4345 and BCM43455 devices soldered onto the PCB (non-removable),
-use an UART connection for Bluetooth, such as in the Pinebook Pro,
-and the advertised btsdio support as an SDIO function is ignored.
+On Wed 20-10-21 15:14:27, Vasily Averin wrote:
+> mem_cgroup_oom() can fail if current task was marked unkillable
+> and oom killer cannot find any victim.
+> 
+> Currently we force memcg charge for such allocations,
+> however it allow memcg-limited userspace task in to overuse assigned limits
+> and potentially trigger the global memory shortage.
 
-Reviewed-by: Dragan Simic <dragan.simic@gmail.com>
-Signed-off-by: Kyle Copperfield <kmcopper@danwin1210.me>
----
- drivers/bluetooth/btsdio.c | 2 ++
- 1 file changed, 2 insertions(+)
+You should really go into more details whether that is a practical
+problem to handle. OOM_FAILED means that the memcg oom killer couldn't
+find any oom victim so it cannot help with a forward progress. There are
+not that many situations when that can happen. Naming that would be
+really useful.
+ 
+> Let's fail the memory charge in such cases.
+> 
+> This failure should be somehow recognised in #PF context,
 
-diff --git a/drivers/bluetooth/btsdio.c b/drivers/bluetooth/btsdio.c
-index 199e8f7d426d..795be33f2892 100644
---- a/drivers/bluetooth/btsdio.c
-+++ b/drivers/bluetooth/btsdio.c
-@@ -295,6 +295,8 @@ static int btsdio_probe(struct sdio_func *func,
- 		switch (func->device) {
- 		case SDIO_DEVICE_ID_BROADCOM_43341:
- 		case SDIO_DEVICE_ID_BROADCOM_43430:
-+		case SDIO_DEVICE_ID_BROADCOM_4345:
-+		case SDIO_DEVICE_ID_BROADCOM_43455:
- 		case SDIO_DEVICE_ID_BROADCOM_4356:
- 			return -ENODEV;
- 		}
+explain why
+
+> so let's use current->memcg_in_oom == (struct mem_cgroup *)OOM_FAILED
+> 
+> ToDo: what is the best way to notify pagefault_out_of_memory() about 
+>     mem_cgroup_out_of_memory failure ?
+
+why don't you simply remove out_of_memory from pagefault_out_of_memory
+and leave it only with the blocking memcg OOM handling? Wouldn't that be a
+more generic solution? Your first patch already goes that way partially.
+
+This change is more risky than the first one. If somebody returns
+VM_FAULT_OOM without invoking allocator then it can loop for ever but
+invoking OOM killer in such a situation is equally wrong as the oom
+killer cannot really help, right?
 -- 
-2.33.1
-
+Michal Hocko
+SUSE Labs
