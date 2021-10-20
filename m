@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB3A435379
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D1143537D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhJTTMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhJTTMM (ORCPT
+        id S231485AbhJTTMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:12:41 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:41968 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231346AbhJTTMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:12:12 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C499C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:09:58 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id z126so10801259oiz.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SPjaPEuX5A746s8v75X8g/60kgyy7clKTF8vv6uh878=;
-        b=nEW+1kTLBe+WKJ8vb62FpFIx30/UgCdlD9PmeJflDrYNJdal6VOp2hjIQTFb+mZdiE
-         kqKkRXyfWqqFfynwtwQeLLml3yGZi7DcIZnit4oOwgPsZ1yn+YocZDkdIFIFp/PuErsi
-         HZYUCoupIfRjtHKK/qb1c5FcFXW4f6kWJ7QeaT+PCMsImc9bfwrnooBTeflJ02fETpzf
-         x+oV6mktGsFqXfhPUZPI00Ouq60IqcsVHEjDEUDi8yVK7FUJTLmoIUiSNNy3Lqw0cEY2
-         NjKAqLKFtnbWh6uu5GzgmM0D0JZL4HTxnWGFTOqpFnflKWMyBPqabnz9PK2p6hVWp4hs
-         QMAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=SPjaPEuX5A746s8v75X8g/60kgyy7clKTF8vv6uh878=;
-        b=LEExDB3wn7jT3TBxWe2cmccNAkT5NzITGs8Vdni/lgPLfjL3YbI1EPDeqNvA0TRCyk
-         IIAP1+jA2rmhnVjMD51Yop5EzXj+HTpkoyeEVr/f4qugde4T+NyPpGsdoqBa7gIulAZi
-         g6kj1r7fOZg20pLGxqqh5s948BBqSoPKJ6TQXKeznuQg0rS6vT88vF79PP8fwAQarUrk
-         k4OaTMAzGCEuxXZ6WbvKpYt+rTzsesq4U14nUK9/JIoF+B94FerIeKsGNZe9vq94oKWo
-         gULz1Ylw1R0d8wmIm1ukVSSJPdog0OLKnuVjKm5wlBGBWcgM/pH9c+7fOM3CiQMQ4+uY
-         22zQ==
-X-Gm-Message-State: AOAM532Cr6E1Pea4nrMO2SsK3zMr6pu9FTitguFSkL2pKKw/q9+WyazT
-        5NPSzzMAAldS8g5paR8pRuNmWYVIxsU=
-X-Google-Smtp-Source: ABdhPJxTKb0fYbXRUxoS7eJF1UEyvr+8v8PxjLSIOUBDoZaU43J7TVaN67HXqjkwsPSp/7ZaDYfzTA==
-X-Received: by 2002:aca:5c5:: with SMTP id 188mr656599oif.154.1634756997460;
-        Wed, 20 Oct 2021 12:09:57 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c3sm639182otr.42.2021.10.20.12.09.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:09:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
-Date:   Wed, 20 Oct 2021 12:09:52 -0700
-Message-Id: <20211020190952.2473153-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        Wed, 20 Oct 2021 15:12:40 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 5bf667436b9baf14; Wed, 20 Oct 2021 21:10:24 +0200
+Received: from kreacher.localnet (unknown [213.134.162.32])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id C153166A919;
+        Wed, 20 Oct 2021 21:10:23 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: [PATCH] ACPI: PM: sleep: Do not set suspend_ops unnecessarily
+Date:   Wed, 20 Oct 2021 21:10:17 +0200
+Message-ID: <4698118.31r3eYUQgx@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.162.32
+X-CLIENT-HOSTNAME: 213.134.162.32
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvgedguddvlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppedvudefrddufeegrdduiedvrdefvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrdduiedvrdefvddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nios2:allmodconfig builds fail with
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
-which in turn enables NIOS2_DTB_SOURCE. This causes the build error
-because the default value for NIOS2_DTB_SOURCE is an empty string.
-Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
+If none of the S1 - S3 sleep states is supported, it is not necessary
+to register suspend_ops, so don't do that then.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- arch/nios2/platform/Kconfig.platform | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/sleep.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/nios2/platform/Kconfig.platform b/arch/nios2/platform/Kconfig.platform
-index 9e32fb7f3d4c..e849daff6fd1 100644
---- a/arch/nios2/platform/Kconfig.platform
-+++ b/arch/nios2/platform/Kconfig.platform
-@@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
+Index: linux-pm/drivers/acpi/sleep.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/sleep.c
++++ linux-pm/drivers/acpi/sleep.c
+@@ -815,14 +815,18 @@ void __weak acpi_s2idle_setup(void)
  
- config NIOS2_DTB_SOURCE_BOOL
- 	bool "Compile and link device tree into kernel image"
-+	depends on !COMPILE_TEST
- 	help
- 	  This allows you to specify a dts (device tree source) file
- 	  which will be compiled and linked into the kernel image.
--- 
-2.33.0
+ static void acpi_sleep_suspend_setup(void)
+ {
++	bool suspend_ops_needed = false;
+ 	int i;
+ 
+ 	for (i = ACPI_STATE_S1; i < ACPI_STATE_S4; i++)
+-		if (acpi_sleep_state_supported(i))
++		if (acpi_sleep_state_supported(i)) {
+ 			sleep_states[i] = 1;
++			suspend_ops_needed = true;
++		}
+ 
+-	suspend_set_ops(old_suspend_ordering ?
+-		&acpi_suspend_ops_old : &acpi_suspend_ops);
++	if (suspend_ops_needed)
++		suspend_set_ops(old_suspend_ordering ?
++				&acpi_suspend_ops_old : &acpi_suspend_ops);
+ 
+ 	acpi_s2idle_setup();
+ }
+
+
 
