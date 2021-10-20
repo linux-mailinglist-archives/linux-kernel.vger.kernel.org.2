@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958F7435462
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89819435465
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbhJTUN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
+        id S230324AbhJTUOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 16:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231629AbhJTUNz (ORCPT
+        with ESMTP id S230020AbhJTUOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:13:55 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8494DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:11:40 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 145so14597768ljj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:11:40 -0700 (PDT)
+        Wed, 20 Oct 2021 16:14:24 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CEFC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:12:09 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id i1so321215plr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:12:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2mjyTuiMt0G/NI9j2uGhr176LQ8tHUDaZsPCBpnXywo=;
-        b=JNYtSv2gblmlTKXiqtL4y6TtoOuGzc68cZHueN9cP+lj++0rs+VLST38HhlFDoPg2f
-         q/iXqIc7waXQwRes5r5w9NeAF++++Ur7bf/OJfMU2qanF+BgkZ215gZA/vba1jIbqtrg
-         YKY42GAegLHMretczDWyIsPvSaAr/LVgePt/0=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZiXG6npJQ40qHjEvArb6k7d15fp/E+O+F6q9OgsTVB0=;
+        b=Bs6oDxIB9/BvVAMg2OuQLkevbXtWhuULIQBz+tqDxlUSrd8RseBFIS63sD5AFUyNFA
+         y6rjUICcdFnVdlmsyhEg/SAVUrRIBjTHT1EPHCFeljsfY9tI0FlqVdePnDs6rspmVybg
+         JprEhH85z/yToGsmQwvLF1iCTVZAsvwJlEk6EXQ0y2k6N6MAHn3qDk2ZgNgQWXr51LTX
+         d9cXEFt49jshq0HZu8G67Bhu+aAKS3raIBigvZVnN1h4i8tMvjNF/rjs6KbJo+PvaCjg
+         yvtpQo6kI09UQQ9P5CuPPjpmXLbxwjO8vGXgr0FkQKwf34SZSsuvldUqskUsGfKS5LfE
+         Y6vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2mjyTuiMt0G/NI9j2uGhr176LQ8tHUDaZsPCBpnXywo=;
-        b=Py8wVtZ/LXtll8yQIoelnmMOHANjZmEZYF5WunnSgvT6KHej5ckUd9CzVauTZl0tMn
-         yjL4anDzN8+f2GSE67SKnBujDjT2dI91R/YhY9xqJAe8S1wrBXw/+cMQmSNhPs55RkuS
-         +PMFGqYOea+4jcNgtZvcK0O6RhHfIwsFt+jXDC+7BX1ZhuOKqSBSe26QQqf50f4TTOTw
-         cY51ucUTfzXs6VxKWMzsgXJsQfVsehACeHdqfQHwAxGm0dM5HdEfaGGF3pMVVaxNbI9d
-         UFD4yi+7YTWIG1250hL35e5pUeP+6xKxgZ09xGKgEJWO2no5nkmwVqVHzL2oi7SdK8Hs
-         FlsA==
-X-Gm-Message-State: AOAM530eL5NSrFxk5JQOEYLtZ/D5YqfUINgsLkzRvApf1htP7byWH35j
-        6xKDeur8IkUzEgGpYqcFxb7NQWBg3oPua6hd
-X-Google-Smtp-Source: ABdhPJyfl4a8aSSbcTWvyaocNxSXMDc1SGtwYsIApIZ843GPM7z1jQUUoNAPvM4t2oeNHEX/po1PUw==
-X-Received: by 2002:a2e:3608:: with SMTP id d8mr1171277lja.233.1634760698386;
-        Wed, 20 Oct 2021 13:11:38 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id r17sm269067lfe.107.2021.10.20.13.11.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 13:11:36 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id g8so218104ljn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:11:35 -0700 (PDT)
-X-Received: by 2002:a2e:9945:: with SMTP id r5mr1210626ljj.249.1634760695569;
- Wed, 20 Oct 2021 13:11:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZiXG6npJQ40qHjEvArb6k7d15fp/E+O+F6q9OgsTVB0=;
+        b=abOClz+afEAmB6D4xuEoyYpvegQLfAyCEd38uJ1SwyVm8vxX0cl5JsOVGp1bh2Alcx
+         NkiYUXSJpv5CWWL2sfQVneCD76BF+HHClTozFcOnZmtgNVpTsIZIjueNPG2Cmc1590Ze
+         u3aY/ZVRp4aLKf8fGLeL9n9fngbfj0dzeDoTxf1FzLNevFZw6zVJfDdoJMLNBPPKgGQs
+         8ZjemrN3+8HnySDyZgMb0K3xR7UKJtO3VfWY9zSXeePF0GQiM890gPoOUrrmnTfZv0GW
+         ttJIS3ZqmaaGI92EwWblBqy0d+7e4VPTOpP7hJbRb6EsF9eQt9/fsB5ICWe/WV17Jhii
+         gtxg==
+X-Gm-Message-State: AOAM531WPhMXD6iHCNEdhpiYt0/r5p4XXBiKzrV7q1Wz+A9jfs39hU7I
+        HpoOHqk7d6ggUAGaaTAvE9fmIA==
+X-Google-Smtp-Source: ABdhPJxyDHHysLeYQux6u2PjLueuQPGehtUGpIgOL8UuONJAF8k+vkIJxYxeVmC9UGFYJ5fS4AQuYA==
+X-Received: by 2002:a17:902:a9c3:b0:13f:c765:148d with SMTP id b3-20020a170902a9c300b0013fc765148dmr1191357plr.28.1634760728940;
+        Wed, 20 Oct 2021 13:12:08 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x6sm3827540pfh.77.2021.10.20.13.12.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 13:12:08 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 20:12:04 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     zhenwei pi <pizhenwei@bytedance.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] x86/kvm: Introduce boot parameter no-kvm-pvipi
+Message-ID: <YXB4FHfzh99707EH@google.com>
+References: <20211020120726.4022086-1-pizhenwei@bytedance.com>
+ <CANRm+CxAVA-L0wjm72eohXXWvh9fS7wVFzfKHuEjrsiRFuk9fg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
- <YXBFqD9WVuU8awIv@arm.com>
-In-Reply-To: <YXBFqD9WVuU8awIv@arm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 20 Oct 2021 10:11:19 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
-Message-ID: <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANRm+CxAVA-L0wjm72eohXXWvh9fS7wVFzfKHuEjrsiRFuk9fg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 6:37 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> The atomic "add zero" trick isn't that simple for MTE since the arm64
-> atomic or exclusive instructions run with kernel privileges and
-> therefore with the kernel tag checking mode.
+On Wed, Oct 20, 2021, Wanpeng Li wrote:
+> On Wed, 20 Oct 2021 at 20:08, zhenwei pi <pizhenwei@bytedance.com> wrote:
+> >
+> > Although host side exposes KVM PV SEND IPI feature to guest side,
+> > guest should still have a chance to disable it.
+> >
+> > A typicall case of this parameter:
+> > If the host AMD server enables AVIC feature, the flat mode of APIC
+> > get better performance in the guest.
+> 
+> Hmm, I didn't find enough valuable information in your posting. We
+> observe AMD a lot before.
+> https://lore.kernel.org/all/CANRm+Cx597FNRUCyVz1D=B6Vs2GX3Sw57X7Muk+yMpi_hb+v1w@mail.gmail.com/T/#u
 
-Are there any instructions that are useful for "probe_user_write()"
-kind of thing? We could always just add that as an arch function, with
-a fallback to using the futex "add zero" if the architecture doesn't
-need anything special.
-
-Although at least for MTE, I think the solution was to do a regular
-read, and that checks the tag, and then we could use the gup machinery
-for the writability checks.
-
-                Linus
+I too would like to see numbers.  I suspect the answer is going to be that
+AVIC performs poorly in CPU overcommit scenarios because of the cost of managing
+the tables and handling "failed delivery" exits, but that AVIC does quite well
+when vCPUs are pinned 1:1 and IPIs rarely require an exit to the host.
