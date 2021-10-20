@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8A3434FA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476AC434FA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhJTQGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:06:17 -0400
+        id S231199AbhJTQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:06:19 -0400
 Received: from mga14.intel.com ([192.55.52.115]:12447 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231163AbhJTQGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:06:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="229088031"
+        id S231175AbhJTQGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 12:06:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="229088060"
 X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
-   d="scan'208";a="229088031"
+   d="scan'208";a="229088060"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 08:59:12 -0700
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 08:59:16 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
-   d="scan'208";a="494685355"
+   d="scan'208";a="494685380"
 Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
-  by orsmga008.jf.intel.com with ESMTP; 20 Oct 2021 08:59:07 -0700
+  by orsmga008.jf.intel.com with ESMTP; 20 Oct 2021 08:59:11 -0700
 From:   Brent Lu <brent.lu@intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -46,59 +46,92 @@ Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
         Rander Wang <rander.wang@linux.intel.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v4 0/6] Multiple headphone codec driver support
-Date:   Wed, 20 Oct 2021 23:57:09 +0800
-Message-Id: <20211020155715.2045947-1-brent.lu@intel.com>
+Subject: [PATCH v4 1/6] ASoC: soc-acpi: add comp_ids field for machine driver matching
+Date:   Wed, 20 Oct 2021 23:57:10 +0800
+Message-Id: <20211020155715.2045947-2-brent.lu@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211020155715.2045947-1-brent.lu@intel.com>
+References: <20211020155715.2045947-1-brent.lu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support multiple headphone drivers in same machine driver. In this
-case, both rt5682 and rt5682s are supported and enumerated by different
-ACPI HID "10EC5682" and "RTL5682".
+A machine driver needs to be enumerated by more than one ACPI HID if
+it supports second headphone driver (i.e. rt5682 and rt5682s).
+However, the id field in snd_soc_acpi_mach structure could contain
+only one HID. By adding a 'comp_ids' field which can contain several
+HIDs, we can enumerate a machine driver by multiple ACPI HIDs.
 
-V2 Changes:
-- remove useless 'NULL', 'false' in if-condition
-- can use 'comp_ids' field alone to enumerate driver
-- add comma to the end of entry in structure initialization
-- keep the table of byt/cht/cml/icl untouched
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ include/sound/soc-acpi.h |  3 +++
+ sound/soc/soc-acpi.c     | 24 ++++++++++++++++++++++--
+ 2 files changed, 25 insertions(+), 2 deletions(-)
 
-V3 Changes:
-- upstreamd from SOF github, PR#3200
-- use new compatiable IDs to shrink the enumerate table of BYT and CHT
-- add 'const' to snd_soc_acpi_codecs structures
-
-V4 Changes:
-- add signoff to patch 4~6
-
-Brent Lu (3):
-  ASoC: soc-acpi: add comp_ids field for machine driver matching
-  ASoC: Intel: sof_rt5682: detect codec variant in probe function
-  ASoC: Intel: sof_rt5682: use comp_ids to enumerate rt5682s
-
-Pierre-Louis Bossart (3):
-  ASoC: Intel: soc-acpi-byt: shrink tables using compatible IDs
-  ASoC: Intel: soc-acpi-cht: shrink tables using compatible IDs
-  ASoC: Intel: soc-acpi: use const for all uses of snd_soc_acpi_codecs
-
- include/sound/soc-acpi.h                      |  3 +
- sound/soc/intel/boards/sof_rt5682.c           | 34 ++-------
- .../intel/common/soc-acpi-intel-adl-match.c   | 11 ++-
- .../intel/common/soc-acpi-intel-bxt-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-byt-match.c   | 68 +++++++-----------
- .../intel/common/soc-acpi-intel-cht-match.c   | 69 +++++++------------
- .../intel/common/soc-acpi-intel-cml-match.c   |  8 +--
- .../intel/common/soc-acpi-intel-glk-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-jsl-match.c   | 43 ++++--------
- .../intel/common/soc-acpi-intel-kbl-match.c   | 12 ++--
- .../intel/common/soc-acpi-intel-skl-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-tgl-match.c   | 11 ++-
- sound/soc/soc-acpi.c                          | 24 ++++++-
- 13 files changed, 119 insertions(+), 170 deletions(-)
-
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index 2f3fa385c092..31f4c4f9aeea 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -129,6 +129,8 @@ struct snd_soc_acpi_link_adr {
+  * all firmware/topology related fields.
+  *
+  * @id: ACPI ID (usually the codec's) used to find a matching machine driver.
++ * @comp_ids: list of compatible audio codecs using the same machine driver,
++ * firmware and topology
+  * @link_mask: describes required board layout, e.g. for SoundWire.
+  * @links: array of link _ADR descriptors, null terminated.
+  * @drv_name: machine driver name
+@@ -146,6 +148,7 @@ struct snd_soc_acpi_link_adr {
+ /* Descriptor for SST ASoC machine driver */
+ struct snd_soc_acpi_mach {
+ 	const u8 id[ACPI_ID_LEN];
++	const struct snd_soc_acpi_codecs *comp_ids;
+ 	const u32 link_mask;
+ 	const struct snd_soc_acpi_link_adr *links;
+ 	const char *drv_name;
+diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+index 395229bf5c51..2ae99b49d3f5 100644
+--- a/sound/soc/soc-acpi.c
++++ b/sound/soc/soc-acpi.c
+@@ -8,14 +8,34 @@
+ #include <linux/module.h>
+ #include <sound/soc-acpi.h>
+ 
++static bool snd_soc_acpi_id_present(struct snd_soc_acpi_mach *machine)
++{
++	const struct snd_soc_acpi_codecs *comp_ids = machine->comp_ids;
++	int i;
++
++	if (machine->id[0]) {
++		if (acpi_dev_present(machine->id, NULL, -1))
++			return true;
++	}
++
++	if (comp_ids) {
++		for (i = 0; i < comp_ids->num_codecs; i++) {
++			if (acpi_dev_present(comp_ids->codecs[i], NULL, -1))
++				return true;
++		}
++	}
++
++	return false;
++}
++
+ struct snd_soc_acpi_mach *
+ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+ {
+ 	struct snd_soc_acpi_mach *mach;
+ 	struct snd_soc_acpi_mach *mach_alt;
+ 
+-	for (mach = machines; mach->id[0]; mach++) {
+-		if (acpi_dev_present(mach->id, NULL, -1)) {
++	for (mach = machines; mach->id[0] || mach->comp_ids; mach++) {
++		if (snd_soc_acpi_id_present(mach)) {
+ 			if (mach->machine_quirk) {
+ 				mach_alt = mach->machine_quirk(mach);
+ 				if (!mach_alt)
 -- 
 2.25.1
 
