@@ -2,124 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800D2434F83
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E60434F84
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhJTQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhJTQAI (ORCPT
+        id S230474AbhJTQAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:00:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37974 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230494AbhJTQAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:00:08 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D2AC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:57:53 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id l38-20020a05600c1d2600b0030d80c3667aso11311237wms.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wg0KJqHRV08qX4QVL+ntQvH0cOPBhNXqn/SMEbf5V98=;
-        b=U2SOf9kJARwcP8IJA+zkKOcS7SDbUbqF69fwz8T/Dl5L/KGAwvVa6XaYgbOFa6OGWb
-         iVNnQCeiiJIBjw5DilysiOBw1H2TRBhOf4r2YG3uD7+GIYYrOmYegKX8h7hL/WnOg477
-         8aPagA9sFfs+/GxCHD7hf3hqz28Ug4cVglGNJFvRn/sUakywQ4E9wIBcdKZlY7h6LhCK
-         qgB6G7g0xFL7bNIplPvjfWgBNd9CF2GYWKbSvwG/Qn4oXRL3G70mr6+n9LPdbuTMzQoC
-         z7vgF5HqW4O1V8cYASUvpod05GZDaIWCdnTUA/rgdOte8wVnoEtSQGZU2Sbir7PqmXqn
-         Y85g==
+        Wed, 20 Oct 2021 12:00:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634745476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jLto73EhLPS0L9ZkqSvlOYI3NN47XcPBB+0LgWwxrPs=;
+        b=KPQTiVdcpllPIFrsXNiJBj8IoggCclNKts1eTH1CrUbJX5EOmJRqULIAt3w5A2ttqb893O
+        np2YPRZqijQE4Pmo6k8ZPRu97ftxFl4Icuum/N1ZV+MT4GdigPDbNFOBSiJInIs973VS1J
+        MmlKaIsuGOT+cYT3xowxkFpCFbbENxo=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-oY8AaOaxMzmZ7bNsiufqxQ-1; Wed, 20 Oct 2021 11:57:54 -0400
+X-MC-Unique: oY8AaOaxMzmZ7bNsiufqxQ-1
+Received: by mail-qt1-f199.google.com with SMTP id w12-20020ac80ecc000000b002a7a4cd22faso2445870qti.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:57:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wg0KJqHRV08qX4QVL+ntQvH0cOPBhNXqn/SMEbf5V98=;
-        b=iq010hSUYdq2UHDaXtbU0Q+eTZVTpXSfm5gSp9a0qVjcl3JT/ncj0vSJ+PNYa9LuOd
-         jW4pVzowfqTsGuO6Exu20jNHtOxgShhRzC671uorZHUemhJXHoIb5dpCP6pgNlHlFE6U
-         /AtDhsxaJJL02NKhScRT7VGP7WY6cVkOrTQ3CBcZn4bsuChKM8Acx2SFiWo7LF2G96Ji
-         PAigzTGuPYvFm9eUwJ0AfzLErY9YA5JZD29qgwrBIRZQ4PepbZISCjyXWCR0R0pgde/T
-         HaBIuw63gIugg12b+OgSKqou9AgjFl9RXXuOM4zx2qNaCRmWYQvl31fo1o+KRMPCWqHN
-         FCLQ==
-X-Gm-Message-State: AOAM530C4c3MWRRm45Dj5eHW3iT+bWkt0HCBq3Pfvhcplapf20MFm+DV
-        Agf2KQGo56G1E97eQgXGhngGJQ==
-X-Google-Smtp-Source: ABdhPJzInNCFCNWJ+mCj2v3d0N5Vo28HRFOV2AbllNKZOn9TvqF8m7fmuTpcxZWZHMzSi6OGjfbAbQ==
-X-Received: by 2002:adf:bb0a:: with SMTP id r10mr44197wrg.23.1634745472287;
-        Wed, 20 Oct 2021 08:57:52 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id q12sm2428423wrp.13.2021.10.20.08.57.51
+         :mime-version:content-disposition:in-reply-to;
+        bh=jLto73EhLPS0L9ZkqSvlOYI3NN47XcPBB+0LgWwxrPs=;
+        b=SJJ2iXTI3t3mcY318FrfEBNU6+SneOrkzpG254MPhXdH23JzTvBTOEJSgv81ZpLbSl
+         IS07JG8WATTU+u5xR4BqR7sSWDehbYlbKugg1bxP6k2Icdu2EYWpdRlRQlCB6581F7E7
+         YBzSBpJdcZTyJxDvfGTHQJ++QhMUdVL3gIHGRLzfUupDmzM+Atmb/O3dJEb55bnAZZxN
+         ydlYWxM1VZP+K8RjSHA2TX1VSVKGzQmCwxULrrQKWPRyrNA+4khOv8CPLmrkaJHpHgh1
+         89drDAgyXOaaFsJTgnMmGvFqmvHkhmg7zmbAO01RT0HmfIpNdJ+RycL124BGyboAL0wT
+         bzcQ==
+X-Gm-Message-State: AOAM530J16IW48tkdLnRUN97hjxZTZkuvr/tBNL5RffXQBakMG5y2+Ed
+        w3SdexqNbo8HaYaYrQ2oqd1sYm3CZkLD22xf/KpvQRti9sXjmul2eQzirI9IHaIIOQY2CwgM5JX
+        dWUtmPyTQB0TIk3IW6H1EXFZj
+X-Received: by 2002:a05:620a:1a05:: with SMTP id bk5mr316334qkb.195.1634745474180;
+        Wed, 20 Oct 2021 08:57:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZoTnZ0OHMmoxPxPmPFa3CNoA6uJD4lYCWnohOPWpdwlmRnW7hfck+i2GP/Eb2U69wer4+Dw==
+X-Received: by 2002:a05:620a:1a05:: with SMTP id bk5mr316311qkb.195.1634745473907;
+        Wed, 20 Oct 2021 08:57:53 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id bi26sm919806qkb.102.2021.10.20.08.57.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 08:57:51 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 16:57:49 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Ryan Barnett <ryan.barnett@collins.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/48] TI AM437X ADC1
-Message-ID: <YXA8fVh5Q7aWNFE2@google.com>
-References: <20211015081506.933180-1-miquel.raynal@bootlin.com>
- <20211020173611.07980c1d@xps13>
+        Wed, 20 Oct 2021 08:57:53 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 08:57:50 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH v2 08/14] x86/retpoline: Create a retpoline thunk array
+Message-ID: <20211020155750.3u74bkcp66leeyed@treble>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105842.981215247@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211020173611.07980c1d@xps13>
+In-Reply-To: <20211020105842.981215247@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021, Miquel Raynal wrote:
+On Wed, Oct 20, 2021 at 12:44:50PM +0200, Peter Zijlstra wrote:
+> Stick all the retpolines in a single symbol and have the individual
+> thunks as inner labels, this should guarantee thunk order and layout.
 
-> Hi Lee,
-> 
-> miquel.raynal@bootlin.com wrote on Fri, 15 Oct 2021 10:14:18 +0200:
-> 
-> > /*
-> >  * Reducing the Cc: list as this is just a rebase and all patches
-> >  * received reviews already. Only the DT patches have received no
-> >  * feedback, hence keeping the omap@ list in.
-> >  */
-> > 
-> > Hello,
-> > 
-> > This is a (fairly big) series bringing support of AM437X ADC1.
-> > On TI AM33XX SoCs family there is an ADC that can also be connected to a
-> > touchscreen. This hardware has been extended and is present on certain
-> > SoCs from the AM437X family. In particular, the touchscreen has been
-> > replaced by a magnetic card reader. In both cases, the representation is
-> > an MFD device with two children:
-> > * on AM33XX: the touchscreen controller and the ADC
-> > * on AM437X: the magnetic stripe reader and the ADC
-> > 
-> > This series really targets small and atomic changes so that the overall
-> > review is eased, even though it leads to a lot of rather small patches.
-> > Here are the steps:
-> > * Supporting the missing clock
-> > * Translating a single text file containing the description for the
-> >   MFD, the touchscreen and the ADC into three independent yaml files.
-> > * Cleaning/preparing the MFD driver.
-> > * Supporting ADC1 in the MFD driver.
-> > * Cleaning/preparing of the ADC driver.
-> > * Supporting ADC1 in the ADC driver.
-> > * Updating various device trees.
-> > 
-> > Here is the full series again, almost reviewed and acked entirely.
-> > The clock patch has been acked, the ADC patches as well, so we expect
-> > the series to go through the MFD tree if the maintainers agree with it.
-> 
-> Sorry to ping you so early, but we already are at -rc6 and I was
-> wondering if you could take the series as it has been on the mailing
-> list for a while and received no real change since a couple of weeks
-> already, possibly avoiding the need for yet another resend of 48
-> patches :)
+How so?
 
-Don't worry, it's email day tomorrow.  I have a bunch of high-priority
-patches/sets that I aim to handle, yours included.
+Just wondering what the purpose of the array is.  It doesn't seem to be
+referenced anywhere.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Josh
+
