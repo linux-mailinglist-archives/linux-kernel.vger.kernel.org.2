@@ -2,62 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA4C4347B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAB94347B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhJTJQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:16:37 -0400
-Received: from first.geanix.com ([116.203.34.67]:37396 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhJTJQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:16:36 -0400
-Received: from skn-laptop (unknown [185.233.254.173])
-        by first.geanix.com (Postfix) with ESMTPSA id BA31EC7EE1;
-        Wed, 20 Oct 2021 09:14:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1634721260; bh=ZabwtyWaVUk5ppsPWi4gApmZlTAIjycNIe5rm6VQtHs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=i4srVLdEtbJ23PO4E2matoE2PZy7M6NVHaT5kwgviXCeKwl/odiN0UwbhmxcL6Sex
-         9LzP9zgOKJNXRvJJArLCLHeul4oW8EfhjYPuaZKfFXrBrPtQHbQwYq03iQR7xnb5D7
-         lF/uXBTpFnV03kmsWsvZwhJjH4UKI+FbSIKBE1W/3yan9OKWyvI8SVmgwgqs3pVPwj
-         ar0FbtlIY/2ry4+by82gEmhYgtLt/0YUCSY1DpNp4vL3+9Tf2J+sDWQ78M9FssoDJe
-         /ymJ0WY9gIv9G0nM+CKkM2xkCE//osuIFZDM3LpAOaaoLmX2v3bRj3jDW331NIzvwy
-         EvOQUysYwZgKg==
-Date:   Wed, 20 Oct 2021 11:14:19 +0200
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] mtd: rawnand: remove suspended check
-Message-ID: <20211020091419.2ufd4modeopmpxsp@skn-laptop>
-References: <20211020084534.2472305-1-sean@geanix.com>
- <20211020084534.2472305-4-sean@geanix.com>
- <20211020105743.225d97f4@collabora.com>
+        id S229764AbhJTJSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhJTJSF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:18:05 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AED6C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:15:52 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id om14so2020615pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D5vDGEJ62Z4JO00lvuB1As23CBJwvLLqMQytnK/GbMk=;
+        b=I1gAJEUhFy6HEpHofSXh5hrUTtfKE4ATSMMvpgiSBOUjAKpHfgQXYNEJ17rPcIJETF
+         8jcur3sqnRU3/kfI3gK08Gfdp8lhgRjjrkClv6iwZDooFQz9GtOfO2gtWmslDWCr9gTW
+         F2CDB2b7tdHQTYjZ7hBEyJHHaITm0jMpPKzASj/zGfM+yZAOgPbnVt7Md3HmUdY3m4rY
+         ttJthOiC5kOwCS0drz5H0jnp+YCDCg5zqUlfzN7oeP0cROi9yXFMUki7dJW6ntj8EmKo
+         AOIK65Q0AAXtS4qqKq1TppjKtP+oM9dYZMXf/2IWRcqfBRmtTeXpenKirap63wu/Oo/g
+         7/eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D5vDGEJ62Z4JO00lvuB1As23CBJwvLLqMQytnK/GbMk=;
+        b=Dt2rvWa0b8EOS1R3CxUD6g1UUaL8tDjawkLIPKMEY0Y6TSSRrtXn5TX/qloF3Z99oI
+         j8VdEqlAAIt4VexXqyEiEAePUJb+e/eT+XalehYgiAMcfHbkgd6+jOn4vNOh24OcAVXz
+         nbZD95YVtU0BYVpQ0vOadqtOR7trG+PM0zZy2fb4rvL0KD3F6smEXh3QyUk6aykaiiwL
+         iI1N/DftFaAoNNYayopq9SjOYBXYaKCapYlhnowHlU9KZOVrk5UFpIL6+yp0qvpY5CFH
+         JBxPkrgZoq352NNtUY9Ej816H+Za8zf41vOnrpigFYmZtDBmPIdj+kOZ1M6Gp3ec9Tsy
+         xe9A==
+X-Gm-Message-State: AOAM532a4vHwRq5p6ByyQb56rC4jXSBSjQ8qpcDKhdkq5KtFouu01QmC
+        aJqvRzY1TdwqSGds+Xin1B8=
+X-Google-Smtp-Source: ABdhPJwR2FUZ3VSIscKOCNN9opoy8logxzG3gwloUyB/Vwzo3IUxfcO0+wPa/lwu7/vZQfirgMIxQw==
+X-Received: by 2002:a17:90a:414c:: with SMTP id m12mr6003410pjg.187.1634721351574;
+        Wed, 20 Oct 2021 02:15:51 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id i11sm1638459pgp.18.2021.10.20.02.15.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 02:15:51 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     longman@redhat.com
+Cc:     mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] locking/test-ww_mutex: use swap()
+Date:   Wed, 20 Oct 2021 09:15:45 +0000
+Message-Id: <20211020091545.1039063-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211020105743.225d97f4@collabora.com>
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:57:43AM +0200, Boris Brezillon wrote:
-> On Wed, 20 Oct 2021 10:45:33 +0200
-> Sean Nyekjaer <sean@geanix.com> wrote:
-> 
-> > Access is protected in upper MTD layer when MTD devices are suspended.
-> 
-> I think it deserves more explanation.
-> 
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Access is protected in upper MTD layer when MTD devices are suspended.
+Use swap() in order to make code cleaner. Issue found by coccinelle.
 
-Commit ("mtd: core: protect access to MTD devices while in suspend")
-introduces access protection, so it's safe to remove suspended checks.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ kernel/locking/test-ww_mutex.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+index 353004155d65..fa021b8a9edc 100644
+--- a/kernel/locking/test-ww_mutex.c
++++ b/kernel/locking/test-ww_mutex.c
+@@ -389,7 +389,7 @@ struct stress {
+ static int *get_random_order(int count)
+ {
+ 	int *order;
+-	int n, r, tmp;
++	int n, r;
+ 
+ 	order = kmalloc_array(count, sizeof(*order), GFP_KERNEL);
+ 	if (!order)
+@@ -400,11 +400,8 @@ static int *get_random_order(int count)
+ 
+ 	for (n = count - 1; n > 1; n--) {
+ 		r = get_random_int() % (n + 1);
+-		if (r != n) {
+-			tmp = order[n];
+-			order[n] = order[r];
+-			order[r] = tmp;
+-		}
++		if (r != n)
++			swap(order[n], order[r]);
+ 	}
+ 
+ 	return order;
+-- 
+2.25.1
+
