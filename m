@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1296434F1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69201434F3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhJTPfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhJTPfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:35:24 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F9AC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:33:09 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id bk18so1166631oib.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:33:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=Rh8sfF55xKFa3qLy2K2yALuwxTYLLjg26I0cnMrNZ5o=;
-        b=OpMQVcb83wpRjjVs0vAi4Zh2/qPV3FFg1L6JMT0JvOOUKp6hl431KjZL6AsBICII0W
-         n9KQD1JIuv0OXwHU+HvX0eXg4f54nH23lhBkPwGe0q0pdQNdeVPLWKN7j5bWf6oCcErw
-         AX3O7gfbeMZpfTgxWw5KJ2PTdsopt4HWUsgt0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=Rh8sfF55xKFa3qLy2K2yALuwxTYLLjg26I0cnMrNZ5o=;
-        b=i5QTQexHhk28g7JLIqL4AFND6aaYT/r7ZpeSKx7QP3ichTOAafwoEvO2QtB1Qtdf9V
-         xzMfqdkeYEmDQP4KXN4G+RkNR6PtBiNUZqBtiNKcVJa5V1bHxlsWxpC/G7LzZ9h8Edo2
-         72pCF7Fi0+Y8cz5w8bMmbKiNPTq4THXEsubRSEM7IM7JbyR7EsT6vbbtpDJLLKM8bQBi
-         0kOneXzC2Ye3nF5AZx0rfLnNdoHD86kOYBT3df41IQxKrW5oUCrdMbrO94ApEsczlJb7
-         gf5hlP6PN3fatp9sA1yXW+X81QJCO0BB52mPyb3OlpZjPeTDTH8N/rY88mIOZ9dC+ev4
-         lITw==
-X-Gm-Message-State: AOAM533W1jWLq7Xeov5ZjSYmhz/C0/j/Ju7dzt//cbkiBN5mEg2uc7vE
-        6Sbh1175zvnhjbgFWE4A7DM/mdtPo3/DcA==
-X-Google-Smtp-Source: ABdhPJwfyuTTWhMrEYmplu/hHIJdkZaYZf/+KcnQJ1WE/ytdx8UDyKyn1B5RGMrKU9svZVUuXujDUQ==
-X-Received: by 2002:a05:6808:f07:: with SMTP id m7mr20174oiw.150.1634743989250;
-        Wed, 20 Oct 2021 08:33:09 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id q185sm37501oib.26.2021.10.20.08.33.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 08:33:08 -0700 (PDT)
-To:     linux-kernel@vger.kernel.org
-Cc:     tech-board-discuss@lists.linuxfoundation.org, conduct@kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: Linux Kernel Code of Conduct Committee: September 30 2021
-Message-ID: <e81f0726-5f8f-f10f-d926-a9126941d38e@linuxfoundation.org>
-Date:   Wed, 20 Oct 2021 09:33:08 -0600
+        id S230397AbhJTPpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:45:39 -0400
+Received: from mga17.intel.com ([192.55.52.151]:10076 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhJTPph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:45:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="209603976"
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="209603976"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 08:33:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="491315850"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga007.fm.intel.com with ESMTP; 20 Oct 2021 08:33:12 -0700
+Subject: Re: [PATCH RESEND v2] scsi: ufs: clear doorbell for hibern8 errors
+ when using ah8
+To:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        cang@codeaurora.org, sc.suh@samsung.com, hy50.seo@samsung.com,
+        sh425.lee@samsung.com, bhoon95.kim@samsung.com,
+        vkumar.1997@samsung.com
+References: <CGME20211019051346epcas2p132d3b9c6a1c812f3132e913525235b83@epcas2p1.samsung.com>
+ <1634619427-171880-1-git-send-email-kwmad.kim@samsung.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <2e35d23b-babb-a617-d93e-ce9b522dafb3@intel.com>
+Date:   Wed, 20 Oct 2021 18:33:11 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1634619427-171880-1-git-send-email-kwmad.kim@samsung.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux Kernel Code of Conduct Committee: September 30 2021
+On 19/10/2021 07:57, Kiwoong Kim wrote:
+> Changes from v1:
+> * Change the time to requeue pended commands
+> 
+> When an scsi command is dispatched right after host complete
+> all the pended requests and ufs driver tries to ring a doorbell,
+> host might be still during entering into hibern8.
+> If the hibern8 error occurrs during that period, the doorbell
+> might not be zero and clearing it should have done.
+> But, current ufshcd_err_handler goes directly to reset
+> w/o clearing the doorbell when the driver's link state is broken.
 
-In the period of May 1, 2021 through September 30, 2021, the Code of
-Conduct Committee received the following reports:
+So you mean HCE 1->0 does not clear the doorbell register?
 
-Unacceptable behavior or comments in email: 1
+> This patch is to requeue pended commands after host reset.
 
-The result of the investigation:
-   - Education and coaching clarifying the Code of Conduct conduct
-     related to normal review process: 1
+So you mean HCE 0->1 does clear the doorbell register?
 
-We would like to thank the Linux kernel community members who have
-supported the adoption of the Code of Conduct and who continue to
-uphold the professional standards of our community. If you have
-questions about this report, please write to <conduct@kernel.org>.
+> 
+> Here's an actual symptom that I've faced. At the time, tag #17
+> is still pended even after host reset. And then the block timer
+> is expired.
+> 
+> exynos-ufs 11100000.ufs: ufshcd_check_errors: Auto Hibern8
+> Enter failed - status: 0x00000040, upmcrs: 0x00000001
+> ..
+> host_regs: 00000050: b8671000 00000008 00020000 00000000
+> ..
+> exynos-ufs 11100000.ufs: ufshcd_abort: Device abort task at tag 17
+> 
+> Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 9faf02c..e5d4ef7 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -7136,8 +7136,10 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+>  	err = ufshcd_hba_enable(hba);
+>  
+>  	/* Establish the link again and restore the device */
+> -	if (!err)
+> +	if (!err) {
+> +		ufshcd_retry_aborted_requests(hba);
+>  		err = ufshcd_probe_hba(hba, false);
+> +	}
+>  
+>  	if (err)
+>  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+> 
 
-------------------------------------------------------------------
-
-This report and the past Code Of Conduct Committee reports
-can be found on the Code of Conduct website at
-
-https://www.kernel.org/code-of-conduct.html
-
-thanks,
--- Shuah (On behalf of the Code of Conduct Committee)
