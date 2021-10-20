@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F81434F08
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD4F434F0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhJTPat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:30:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60264 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTPar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:30:47 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S230433AbhJTPbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:31:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230191AbhJTPa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:30:59 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 85C891FD33;
-        Wed, 20 Oct 2021 15:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634743712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u2G1JVJm+eqBNFDVpnzb/HgQDnZjQzD2Xue4wI5hvF0=;
-        b=EPbh9/ohfNUAHlQoeSzWZm4kyernpFobi8z09Fh4T/BLz+XhYRl2iG3Pm+6cl2gGFKrq/s
-        wZynLka6VpMINeBMwLTBt0bXi/Sp/hJ3L/j6s1SrTLyYyDkPE7M5+Wp0+WAzgRLOiTdz2a
-        E9I/ElPX2qbJXenE9Z3vqL2P439x69I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634743712;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u2G1JVJm+eqBNFDVpnzb/HgQDnZjQzD2Xue4wI5hvF0=;
-        b=TJ+mUaX12/k175PKOlfYTZgQhTFcRwfrEpvw3+ueRvLQREcYaON0ijNjTALmpJLfL5fJ97
-        lFnA4t+lxzCr62Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 868EF13BA1;
-        Wed, 20 Oct 2021 15:28:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id laeXCZ81cGEqOQAAMHmgww
-        (envelope-from <colyli@suse.de>); Wed, 20 Oct 2021 15:28:31 +0000
-Message-ID: <ae9f553a-ce85-4537-7038-3f16bdf69cab@suse.de>
-Date:   Wed, 20 Oct 2021 23:28:29 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH] bcache: use pr_err instead of pr_notice if we are really
- error
-Content-Language: en-US
-To:     Lin Feng <linf@wangsu.com>
-Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kent.overstreet@gmail.com
-References: <20211020021313.140414-1-linf@wangsu.com>
-From:   Coly Li <colyli@suse.de>
-In-Reply-To: <20211020021313.140414-1-linf@wangsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        by mail.kernel.org (Postfix) with ESMTPSA id 5924C61371;
+        Wed, 20 Oct 2021 15:28:45 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mdDWE-000T12-2P; Wed, 20 Oct 2021 16:28:43 +0100
+Date:   Wed, 20 Oct 2021 16:28:41 +0100
+Message-ID: <87zgr3btqu.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM SUB-ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v4 09/14] irqchip: Provide platform_device to of_irq_init_cb_t
+In-Reply-To: <ef9f4279-1820-3e90-482e-c4e710859af6@gmail.com>
+References: <20211009022023.3796472-1-f.fainelli@gmail.com>
+        <20211009022023.3796472-10-f.fainelli@gmail.com>
+        <871r4gvggb.wl-maz@kernel.org>
+        <CAL_Jsq+CWeFHsHHaAwbb940Zk1thU50gDGcqfO6NdgWQ2FPTWA@mail.gmail.com>
+        <87tuhcnlwt.wl-maz@kernel.org>
+        <ef9f4279-1820-3e90-482e-c4e710859af6@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: f.fainelli@gmail.com, robh@kernel.org, linux-kernel@vger.kernel.org, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, tsbogend@alpha.franken.de, tglx@linutronix.de, frowand.list@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 10:13 AM, Lin Feng wrote:
-> In bcache we have:
-> ./bset.c:			pr_notice("loop %u, %llu per us\n", size,
-> ./super.c:	pr_notice("error %s: %s\n", dc->backing_dev_name, err);
-> ./super.c:		pr_notice("invalidating existing data\n");
-> ./super.c:		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
-> ./super.c:		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
-> ./super.c:			pr_notice("Timeout waiting for devices to be closed\n");
->
-> and 3 sites with string 'error' are really error happening on device
-> register.
+On Wed, 20 Oct 2021 16:14:07 +0100,
+Florian Fainelli <f.fainelli@gmail.com> wrote:
+> 
+> 
+> 
+> On 10/20/2021 1:24 AM, Marc Zyngier wrote:
+> > On Tue, 19 Oct 2021 23:23:52 +0100,
+> > Rob Herring <robh@kernel.org> wrote:
+> >> 
+> >>   On Tue, Oct 19, 2021 at 4:43 PM Marc Zyngier <maz@kernel.org> wrote:
+> >>> 
+> >>> diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+> >>> index ccf32758ea85..146a9d80a6a2 100644
+> >>> --- a/include/linux/irqchip.h
+> >>> +++ b/include/linux/irqchip.h
+> >>> @@ -33,7 +33,15 @@ extern int platform_irqchip_probe(struct platform_device *pdev);
+> >>>   #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
+> >>>   static const struct of_device_id drv_name##_irqchip_match_table[] = {
+> >>> 
+> >>> -#define IRQCHIP_MATCH(compat, fn) { .compatible = compat, .data = fn },
+> >>> +/* Undefined on purpose */
+> >>> +int typecheck_irq_init_cb(struct device_node *, struct device_node *,
+> >>> +                         struct platform_device *);
+> >>> +
+> >>> +#define typecheck_irq_init_cb(fn)                                      \
+> >>> +       __typecheck(typecheck_irq_init_cb, fn) ? fn : fn
+> >> 
+> >> That's nice! Shouldn't it also be used for IRQCHIP_DECLARE?
+> > 
+> > Absolutely. And enabling this shows that changing of_irq_init_cb_t
+> > breaks *all users* of IRQCHIP_DECLARE(). Not an acceptable outcome
+> > when we're at -rc5. >
+> > Why can't the relevant drivers use of_find_device_by_node() instead?
+> > That would allow us to keep the status-quo on of_irq_init_cb_t.
+> 
+> Rob had suggested several solutions, including using
+> of_find_device_by_node(), however updating of_irq_init_cb_t was
+> indicated to be the better way. I had intentionally not updated
+> IRQCHIP_DECLARE() because it would ignore the 3rd argument we passed
+> to it (platform_device *) so I thought.
 
-It is fine to keep current dmesg level and message format.
+In general, conflicting prototype always lead to the compiler
+legitimately screwing something up, and you are left with a pile of
+steaming crap to debug.
 
-Thanks.
+So *no* to that sort of trick.
 
-Coly Li
+> If I am spinning a v6 using of_find_device_by_node() would that be
+> acceptable to you?
 
->
-> Signed-off-by: Lin Feng <linf@wangsu.com>
-> ---
->   drivers/md/bcache/super.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index f2874c77ff79..18a2e4bea9c2 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -1493,7 +1493,7 @@ static int register_bdev(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
->   
->   	return 0;
->   err:
-> -	pr_notice("error %s: %s\n", dc->backing_dev_name, err);
-> +	pr_err("%s: %s\n", dc->backing_dev_name, err);
->   	bcache_device_stop(&dc->disk);
->   	return ret;
->   }
-> @@ -2338,7 +2338,7 @@ static int cache_alloc(struct cache *ca)
->   err_free:
->   	module_put(THIS_MODULE);
->   	if (err)
-> -		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
-> +		pr_err("%s: %s\n", ca->cache_dev_name, err);
->   	return ret;
->   }
->   
-> @@ -2397,7 +2397,7 @@ static int register_cache(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
->   
->   err:
->   	if (err)
-> -		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
-> +		pr_err("%s: %s\n", ca->cache_dev_name, err);
->   
->   	return ret;
->   }
+That'd be much better.
 
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
