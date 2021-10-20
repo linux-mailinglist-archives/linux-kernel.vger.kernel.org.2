@@ -2,127 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B93E4346EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8D94346C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhJTIbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:31:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40668 "EHLO mail.kernel.org"
+        id S229764AbhJTIZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:25:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:17263 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229632AbhJTIbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:31:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E5CF61183;
-        Wed, 20 Oct 2021 08:28:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634718536;
-        bh=8nW1a1YxwhHLkokHLmbAPUvEy8Sro976Y9vnhAQOL7U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b5OhBK9vzw98Pra6K1wa2zJ0J5EzHVm1XCT+E1fH6mcqn/K9AU7vR477/yH5qRf2Y
-         SwAeIQb04+15xwtWK1Tt7kdQGvlEAp4HnJ10Ae/gbnnLHh9ON0GTMtaH9GB8htEXdC
-         PEBT4jNWWKAtQNxw7vujFQeR5PU+4RP0ONCEkVl4=
-Date:   Wed, 20 Oct 2021 10:28:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
-        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YW/TRkXth/mbTQ6b@kroah.com>
-References: <YWk9e957Hb+I7HvR@T590>
- <YWm68xUnAofop3PZ@bombadil.infradead.org>
- <YWq3Z++uoJ/kcp+3@T590>
- <YW3LuzaPhW96jSBK@bombadil.infradead.org>
- <YW4uwep3BCe9Vxq8@T590>
- <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
- <YW6OptglA6UykZg/@T590>
- <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
- <YW/KEsfWJMIPnz76@T590>
- <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
+        id S229603AbhJTIZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:25:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="208826719"
+X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
+   d="scan'208";a="208826719"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 01:23:01 -0700
+X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
+   d="scan'208";a="444269106"
+Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.176])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 01:22:59 -0700
+Date:   Wed, 20 Oct 2021 16:29:39 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-acpi@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>
+Subject: Re: [PATCH v4 3/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update Telemetry
+Message-ID: <20211020082939.GA44221@chenyu-desktop>
+References: <cover.1634310710.git.yu.c.chen@intel.com>
+ <838245e376c7e6fd0fe1ef55d004ed53763846a2.1634310710.git.yu.c.chen@intel.com>
+ <YWrrYWeW7uaiJ51u@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
+In-Reply-To: <YWrrYWeW7uaiJ51u@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:19:27AM +0200, Miroslav Benes wrote:
-> On Wed, 20 Oct 2021, Ming Lei wrote:
-> 
-> > On Wed, Oct 20, 2021 at 08:43:37AM +0200, Miroslav Benes wrote:
-> > > On Tue, 19 Oct 2021, Ming Lei wrote:
-> > > 
-> > > > On Tue, Oct 19, 2021 at 08:23:51AM +0200, Miroslav Benes wrote:
-> > > > > > > By you only addressing the deadlock as a requirement on approach a) you are
-> > > > > > > forgetting that there *may* already be present drivers which *do* implement
-> > > > > > > such patterns in the kernel. I worked on addressing the deadlock because
-> > > > > > > I was informed livepatching *did* have that issue as well and so very
-> > > > > > > likely a generic solution to the deadlock could be beneficial to other
-> > > > > > > random drivers.
-> > > > > > 
-> > > > > > In-tree zram doesn't have such deadlock, if livepatching has such AA deadlock,
-> > > > > > just fixed it, and seems it has been fixed by 3ec24776bfd0.
-> > > > > 
-> > > > > I would not call it a fix. It is a kind of ugly workaround because the 
-> > > > > generic infrastructure lacked (lacks) the proper support in my opinion. 
-> > > > > Luis is trying to fix that.
-> > > > 
-> > > > What is the proper support of the generic infrastructure? I am not
-> > > > familiar with livepatching's model(especially with module unload), you mean
-> > > > livepatching have to do the following way from sysfs:
-> > > > 
-> > > > 1) during module exit:
-> > > > 	
-> > > > 	mutex_lock(lp_lock);
-> > > > 	kobject_put(lp_kobj);
-> > > > 	mutex_unlock(lp_lock);
-> > > > 	
-> > > > 2) show()/store() method of attributes of lp_kobj
-> > > > 	
-> > > > 	mutex_lock(lp_lock)
-> > > > 	...
-> > > > 	mutex_unlock(lp_lock)
-> > > 
-> > > Yes, this was exactly the case. We then reworked it a lot (see 
-> > > 958ef1e39d24 ("livepatch: Simplify API by removing registration step"), so 
-> > > now the call sequence is different. kobject_put() is basically offloaded 
-> > > to a workqueue scheduled right from the store() method. Meaning that 
-> > > Luis's work would probably not help us currently, but on the other hand 
-> > > the issues with AA deadlock were one of the main drivers of the redesign 
-> > > (if I remember correctly). There were other reasons too as the changelog 
-> > > of the commit describes.
-> > > 
-> > > So, from my perspective, if there was a way to easily synchronize between 
-> > > a data cleanup from module_exit callback and sysfs/kernfs operations, it 
-> > > could spare people many headaches.
+On Sat, Oct 16, 2021 at 05:10:25PM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Oct 16, 2021 at 06:44:31PM +0800, Chen Yu wrote:
+> > Platform Firmware Runtime Update(PFRU) Telemetry Service is part of RoT
+> > (Root of Trust), which allows PFRU handler and other PFRU drivers to
+> > produce telemetry data to upper layer OS consumer at runtime.
 > > 
-> > kobject_del() is supposed to do so, but you can't hold a shared lock
-> > which is required in show()/store() method. Once kobject_del() returns,
-> > no pending show()/store() any more.
-> > 
-> > The question is that why one shared lock is required for livepatching to
-> > delete the kobject. What are you protecting when you delete one kobject?
+> > The linux provides interfaces for the user to query the parameters of
+> > telemetry data, and the user could read out the telemetry data
+> > accordingly.
 > 
-> I think it boils down to the fact that we embed kobject statically to 
-> structures which livepatch uses to maintain data. That is discouraged 
-> generally, but all the attempts to implement it correctly were utter 
-> failures.
-
-Sounds like this is the real problem that needs to be fixed.  kobjects
-should always control the lifespan of the structure they are embedded
-in.  If not, then that is a design flaw of the user of the kobject :(
-
-Where in the kernel is this happening?  And where have been the attempts
-to fix this up?
+> What type of interface is this?  How does userspace interact with it?
+> 
+> > 
+> > Also add the ABI documentation.
+> 
+> Add it where?
+>
+They are all ioctl interfaces, and was introduced in previous patch in
+Documentation/ABI/testing/pfru. The way userspace interace with it is
+introduced in next patch in the man page. I'll revise the commit log to
+better describe how user could use it.
+> > 
+> > Typical log looks like:
+> > [SmmRuntimeUpdateHandler.ProcessSmmRuntimeUpdate]
+> > ProcessSmmRuntimeUpdate = START, Action = 2
+> > [SmmRuntimeUpdateHandler.ProcessSmmRuntimeUpdate]
+> > FwVersion = 0, CodeInjectionVersion = 1
+> > [ShadowSmmRuntimeUpdateImage]
+> > Image = 0x74D9B000, ImageSize = 0x1172
+> > [ProcessSmmRuntimeUpdate]
+> > ShadowSmmRuntimeUpdateImage.Status = Success
+> > [ValidateSmmRuntimeUpdateImage]
+> > CapsuleHeader.CapsuleGuid = 6DCBD5ED-E82D-4C44-BDA1-7194199AD92A
+> > [ValidateSmmRuntimeUpdateImage]
+> > FmpCapHeader.Version = 1
+> > [ValidateSmmRuntimeUpdateImage]
+> > FmpCapImageHeader.UpdateImageTypeId = B2F84B79-7B6E-4E45-885F-3FB9BB185402
+> > [ValidateSmmRuntimeUpdateImage]
+> > SmmRuntimeUpdateVerifyImageWithDenylist.Status = Success
+> > [ValidateSmmRuntimeUpdateImage]
+> > SmmRuntimeUpdateVerifyImageWithAllowlist.Status = Success
+> > [SmmCodeInjectionVerifyPayloadHeader]
+> > PayloadHeader.Signature = 0x31494353
+> > [SmmCodeInjectionVerifyPayloadHeader]
+> > PayloadHeader.PlatformId = 63462139-A8B1-AA4E-9024-F2BB53EA4723
+> > [SmmCodeInjectionVerifyPayloadHeader]
+> > PayloadHeader.SupportedSmmFirmwareVersion = 0,
+> > PayloadHeader.SmmCodeInjectionRuntimeVersion = 1
+> > [ProcessSmmRuntimeUpdate]
+> > ValidateSmmRuntimeUpdateImage.Status = Success
+> > CPU CSR[0B102D28] Before = 7FBF830E
+> > CPU CSR[0B102D28] After = 7FBF8310
+> > [ProcessSmmRuntimeUpdate] ProcessSmmCodeInjection.Status = Success
+> > [SmmRuntimeUpdateHandler.ProcessSmmRuntimeUpdate]
+> > ProcessSmmRuntimeUpdate = End, Status = Success
+> 
+> This log does not make any sense to me, where is it from?  Why the odd
+> line-wrapping?
+>
+It is from the telemetry log generated by the BIOS. Since this content is
+platform specific, I'll remove the log in next version.
+> > +};
+> > +
+> > +
+[snip...]
+> > +ssize_t pfru_log_read(struct file *filp, char __user *ubuf,
+> > +		      size_t size, loff_t *off)
+> > +{
+> > +	struct pfru_log_data_info info;
+> > +	phys_addr_t base_addr;
+> > +	int buf_size, ret;
+> > +	char *buf_ptr;
+> > +
+> > +	if (!pfru_log_dev)
+> > +		return -ENODEV;
+> > +
+> > +	if (*off < 0)
+> > +		return -EINVAL;
+> > +
+> > +	ret = get_pfru_log_data_info(&info, pfru_log_dev->info.log_type);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	base_addr = (phys_addr_t)(info.chunk2_addr_lo | (info.chunk2_addr_hi << 32));
+> > +	/* pfru update has not been launched yet.*/
+> > +	if (!base_addr)
+> > +		return -EBUSY;
+> > +
+> > +	buf_size = info.max_data_size;
+> > +	if (*off >= buf_size)
+> > +		return 0;
+> > +
+> > +	buf_ptr = memremap(base_addr, buf_size, MEMREMAP_WB);
+> > +	if (IS_ERR(buf_ptr))
+> > +		return PTR_ERR(buf_ptr);
+> > +
+> > +	size = min_t(size_t, size, buf_size - *off);
+> > +	if (copy_to_user(ubuf, buf_ptr + *off, size))
+> > +		ret = -EFAULT;
+> > +	else
+> > +		ret = 0;
+> 
+> As all you are doing is mapping some memory and reading from it, why do
+> you need a read() file operation at all?  Why not just use mmap?
+> 
+In the beginning mmap() interface was provided to the user. Then it was
+realized that there is no guarantee in the spec that, the physical address
+provided by the BIOS would remain unchanged. So instead of asking the user
+to mmap the file each time before reading the log, the read() is leveraged
+here to always memremap() the latest address.
 
 thanks,
-
-greg k-h
+Chenyu
+> thanks,
+> 
+> greg k-h
