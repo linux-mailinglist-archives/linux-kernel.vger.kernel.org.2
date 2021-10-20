@@ -2,148 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106B7434697
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E15543469A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbhJTIOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:14:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229639AbhJTIOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:14:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2C2B60F46;
-        Wed, 20 Oct 2021 08:12:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634717556;
-        bh=RK6eiA3Ff133h/eqM6N0sgj9Q8kr6wnbFVmSUumeQMc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=qNecR+mfFmE26/nylO0Fu1aiROA68Uqz6uJ0blGytlE+ib5ghmLvgoar7MQ71R9kv
-         M5H0PmpJwtEIg6IQKGqNzvLbb12eL75ajLMbHju0GgSTDkhfwceGc5BYSt4+fWPD72
-         i0oNqbgy7yC7Er2Qb3BrBqCnxjBMh475M0sKlC7ttJrKQO8mZfRZ2InBjSnLkunEmG
-         uI67NlePP+suxEDaX+5HKsfe8R5c/khwTIfXzxt1WgE2X/NIm3yhrkK+BaN245f5WN
-         5A/qDy5M5FCwM9ZtOM2+m+vOW6uUcpCr8tna2Trv0h6QTxSaqWtoxDL0nm1KNncAF2
-         Igu6DqbiAdfAA==
-From:   SeongJae Park <sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     Xin Hao <xhao@linux.alibaba.com>, sjpark@amazon.de,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] mm/damon/dbgfs: Add adaptive_targets list check before enable monitor_on
-Date:   Wed, 20 Oct 2021 08:12:33 +0000
-Message-Id: <20211020081233.28363-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211020072121.17166-1-sj@kernel.org>
+        id S229764AbhJTIRL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 04:17:11 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:51874 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229548AbhJTIRB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:17:01 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-264-cXpa1CEUN6Sk8MILzfGu8g-1; Wed, 20 Oct 2021 09:14:44 +0100
+X-MC-Unique: cXpa1CEUN6Sk8MILzfGu8g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Wed, 20 Oct 2021 09:14:42 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Wed, 20 Oct 2021 09:14:42 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nathan Chancellor' <nathan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
+Subject: RE: [PATCH] staging: wlan-ng: Avoid bitwise vs logical OR warning in
+ hfa384x_usb_throttlefn()
+Thread-Topic: [PATCH] staging: wlan-ng: Avoid bitwise vs logical OR warning in
+ hfa384x_usb_throttlefn()
+Thread-Index: AQHXwUZ2FnqdAiWt8EaCTgFmgVgUJ6vbkYrw
+Date:   Wed, 20 Oct 2021 08:14:42 +0000
+Message-ID: <e1a8f7b746944ccaabe6b610e7922b54@AcuMS.aculab.com>
+References: <20211014215703.3705371-1-nathan@kernel.org>
+In-Reply-To: <20211014215703.3705371-1-nathan@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 07:21:21 +0000 SeongJae Park <sj@kernel.org> wrote:
+From: Nathan Chancellor
+> Sent: 14 October 2021 22:57
+> 
+> A new warning in clang points out a place in this file where a bitwise
+> OR is being used with boolean expressions:
+> 
+> In file included from drivers/staging/wlan-ng/prism2usb.c:2:
+> drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: warning: use of bitwise '|' with boolean operands [-
+> Wbitwise-instead-of-logical]
+>             ((test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+>             ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: note: cast one or both operands to int to silence this
+> warning
+> 1 warning generated.
+> 
+> The comment explains that short circuiting here is undesirable, as the
+> calls to test_and_{clear,set}_bit() need to happen for both sides of the
+> expression.
+> 
+> Clang's suggestion would work to silence the warning but the readability
+> of the expression would suffer even more. To clean up the warning and
+> make the block more readable, use a variable for each side of the
+> bitwise expression.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1478
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  drivers/staging/wlan-ng/hfa384x_usb.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/staging/wlan-ng/hfa384x_usb.c b/drivers/staging/wlan-ng/hfa384x_usb.c
+> index 59aa84d1837d..938e11a1a0b6 100644
+> --- a/drivers/staging/wlan-ng/hfa384x_usb.c
+> +++ b/drivers/staging/wlan-ng/hfa384x_usb.c
+> @@ -3778,18 +3778,18 @@ static void hfa384x_usb_throttlefn(struct timer_list *t)
+> 
+>  	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+> 
+> -	/*
+> -	 * We need to check BOTH the RX and the TX throttle controls,
+> -	 * so we use the bitwise OR instead of the logical OR.
+> -	 */
+>  	pr_debug("flags=0x%lx\n", hw->usb_flags);
+> -	if (!hw->wlandev->hwremoved &&
+> -	    ((test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+> -	      !test_and_set_bit(WORK_RX_RESUME, &hw->usb_flags)) |
+> -	     (test_and_clear_bit(THROTTLE_TX, &hw->usb_flags) &&
+> -	      !test_and_set_bit(WORK_TX_RESUME, &hw->usb_flags))
+> -	    )) {
+> -		schedule_work(&hw->usb_work);
+> +	if (!hw->wlandev->hwremoved) {
+> +		bool rx_throttle = test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+> +				   !test_and_set_bit(WORK_RX_RESUME, &hw->usb_flags);
+> +		bool tx_throttle = test_and_clear_bit(THROTTLE_TX, &hw->usb_flags) &&
+> +				   !test_and_set_bit(WORK_TX_RESUME, &hw->usb_flags);
+> +		/*
+> +		 * We need to check BOTH the RX and the TX throttle controls,
+> +		 * so we use the bitwise OR instead of the logical OR.
+> +		 */
+> +		if (rx_throttle | tx_throttle)
+> +			schedule_work(&hw->usb_work);
 
-> On Wed, 20 Oct 2021 09:42:33 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
-> 
-> > When the ctx->adaptive_targets list is empty,
-> > I did some test on monitor_on interface like this.
-> > 
-> >     # echo > /sys/kernel/debug/damon/target_ids
-> 
-> Thanks for the change, but you missed writing 'on' to 'monitor_on' in the above
-> example.
-> 
-> > 
-> > Though the ctx->adaptive_targets list is empty, but the
-> > kthread_run still be called, and the kdamond.x thread still
-> > be created, this is meaningless.
-> > 
-> > So there adds a judgment in 'dbgfs_monitor_on_write',
-> > if the ctx->adaptive_targets list is empty, return -EINVAL.
-> > 
-> > Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
-> 
-> Other parts looks good to me.  However, seems this commit conflicts with a
-> patch[1] which already merged in -mm tree.  Could you please rebase this on it?
-> FYI, all DAMON patches that merged in -mm tree are also applied on DAMON
-> development tree.  So, you could get the patch applied tree by:
-> 
->     $ git remote add sj git://git.kernel.org/pub/scm/linux/kernel/git/sj/linux.git
->     $ git fetch sj
->     $ git checkout 0fa378d04b12
-> 
-> [1] https://lore.kernel.org/linux-mm/20211014073014.35754-1-sj@kernel.org/
-> 
-> 
-> Thanks,
-> SJ
-> 
-> > ---
-> >  include/linux/damon.h |  1 +
-> >  mm/damon/core.c       |  5 +++++
-> >  mm/damon/dbgfs.c      | 13 ++++++++++---
-> >  3 files changed, 16 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/linux/damon.h b/include/linux/damon.h
-> > index 715dadd21f7c..4fce5f1f6dad 100644
-> > --- a/include/linux/damon.h
-> > +++ b/include/linux/damon.h
-> > @@ -316,6 +316,7 @@ void damon_destroy_scheme(struct damos *s);
-> > 
-> >  struct damon_target *damon_new_target(unsigned long id);
-> >  void damon_add_target(struct damon_ctx *ctx, struct damon_target *t);
-> > +bool damon_targets_empty(struct damon_ctx *ctx);
-> >  void damon_free_target(struct damon_target *t);
-> >  void damon_destroy_target(struct damon_target *t);
-> >  unsigned int damon_nr_regions(struct damon_target *t);
-> > diff --git a/mm/damon/core.c b/mm/damon/core.c
-> > index 2f6785737902..c3a1374dbe0b 100644
-> > --- a/mm/damon/core.c
-> > +++ b/mm/damon/core.c
-> > @@ -156,6 +156,11 @@ void damon_add_target(struct damon_ctx *ctx, struct damon_target *t)
-> >  	list_add_tail(&t->list, &ctx->adaptive_targets);
-> >  }
-> > 
-> > +bool damon_targets_empty(struct damon_ctx *ctx)
-> > +{
-> > +	return list_empty(&ctx->adaptive_targets);
-> > +}
-> > +
-> >  static void damon_del_target(struct damon_target *t)
-> >  {
-> >  	list_del(&t->list);
-> > diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-> > index 38188347d8ab..9dee29f7d103 100644
-> > --- a/mm/damon/dbgfs.c
-> > +++ b/mm/damon/dbgfs.c
-> > @@ -865,12 +865,19 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
-> >  		return -EINVAL;
-> >  	}
-> > 
-> > -	if (!strncmp(kbuf, "on", count))
-> > +	if (!strncmp(kbuf, "on", count)) {
-> > +		int i;
-> > +
-> > +		for (i = 0; i < dbgfs_nr_ctxs; i++) {
-> > +			if (damon_targets_empty(dbgfs_ctxs[i]))
-> > +				return -EINVAL;
+Why not the slightly simpler:
+		bool throttle = test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+				   !test_and_set_bit(WORK_RX_RESUME, &hw->usb_flags);
+		throttle |= test_and_clear_bit(THROTTLE_TX, &hw->usb_flags) &&
+				   !test_and_set_bit(WORK_TX_RESUME, &hw->usb_flags);
+		if (throttle)
+			schedule_work(&hw->usb_work);
+or with s/throttle/throttle_silly_compiler_warning/ :-)
 
-Oops, I forgot that you should 'kfree(kbuf)' before returning here.  Please do
-that.
+	David
 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Thanks,
-SJ
-
-> > +		}
-> >  		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
-> > -	else if (!strncmp(kbuf, "off", count))
-> > +	} else if (!strncmp(kbuf, "off", count)) {
-> >  		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
-> > -	else
-> > +	} else {
-> >  		err = -EINVAL;
-> > +	}
-> > 
-> >  	if (err)
-> >  		ret = err;
-> > --
-> > 2.31.0
-> 
-> 
