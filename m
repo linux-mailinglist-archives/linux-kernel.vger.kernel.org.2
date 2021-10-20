@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226F6434534
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4008A434538
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhJTGgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:36:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50300 "EHLO mail.kernel.org"
+        id S229820AbhJTGiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:38:10 -0400
+Received: from mga17.intel.com ([192.55.52.151]:28121 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhJTGgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:36:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62F3A6113D;
-        Wed, 20 Oct 2021 06:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634711626;
-        bh=TqEhTY9SGdNuwM4vGWlDt8DbKph99TsAe7fkBvXA1v8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iQ4yiaqktnvykMG8rwXM4txdGFqJ58FzWeiGvWIefvkH/Sa8C1LnsKH2F95KExfbh
-         bX0AFufQ5W14LHINEOs9heeG2x9JOdVieNoMLsc2Dwxim8Ep0EMTz3BYzbV/JX3KN4
-         gbFq6qb4A2+2Cf8KV1XuvWx8nvwnmMlT1HSlp9VQ=
-Date:   Wed, 20 Oct 2021 08:33:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     sesankm <sesank.mallikarjuna@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        sesankm <26676400+sesankm@users.noreply.github.com>
-Subject: Re: [PATCH] Staging: iio: adc: ad7280a: fixed coding style
-Message-ID: <YW+4SPoI9HZZg8x2@kroah.com>
-References: <20211020061027.34148-1-26676400+sesankm@users.noreply.github.com>
+        id S229591AbhJTGiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 02:38:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="209500249"
+X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
+   d="scan'208";a="209500249"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 23:35:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
+   d="scan'208";a="483596514"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.68]) ([10.239.154.68])
+  by orsmga007.jf.intel.com with ESMTP; 19 Oct 2021 23:35:50 -0700
+Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
+ <20211019074647.19061-2-vincent.whitchurch@axis.com>
+ <20211019080913.oajrvr2msz5enzvz@vireshk-i7> <YW6Rj/T6dWfMf7lU@kroah.com>
+ <20211019094203.3kjzch7ipbdv7peg@vireshk-i7> <YW6pHkXOPvtidtwS@kroah.com>
+ <20211019143748.wrpqopj2hmpvblh4@vireshk-i7> <YW8LFTcBuN1bB3PD@ninjato>
+ <94aa39ab-4ed6-daee-0402-f58bfed0cadd@intel.com> <YW+q1yQ8MuhHINAs@kroah.com>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <8e182ea8-5016-fa78-3d77-eefba7d58612@intel.com>
+Date:   Wed, 20 Oct 2021 14:35:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020061027.34148-1-26676400+sesankm@users.noreply.github.com>
+In-Reply-To: <YW+q1yQ8MuhHINAs@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 01:10:27AM -0500, sesankm wrote:
-> fixed issue with coding style
-> 
-> Signed-off-by: sesankm <26676400+sesankm@users.noreply.github.com>
-> ---
->  drivers/staging/iio/adc/ad7280a.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/iio/adc/ad7280a.c b/drivers/staging/iio/adc/ad7280a.c
-> index fef0055b8990..473f95118214 100644
-> --- a/drivers/staging/iio/adc/ad7280a.c
-> +++ b/drivers/staging/iio/adc/ad7280a.c
-> @@ -829,14 +829,14 @@ static irqreturn_t ad7280_event_handler(int irq, void *private)
->   * The function argument is stringified and doesn't need a fix
->   */
->  static IIO_DEVICE_ATTR_NAMED(in_thresh_low_value,
-> -			     in_voltage-voltage_thresh_low_value,
-> +			     in_voltage - voltage_thresh_low_value,
->  			     0644,
->  			     ad7280_read_channel_config,
->  			     ad7280_write_channel_config,
->  			     AD7280A_CELL_UNDERVOLTAGE);
->  
->  static IIO_DEVICE_ATTR_NAMED(in_thresh_high_value,
-> -			     in_voltage-voltage_thresh_high_value,
-> +			     in_voltage - voltage_thresh_high_value,
->  			     0644,
->  			     ad7280_read_channel_config,
->  			     ad7280_write_channel_config,
-> -- 
-> 2.33.1
-> 
-> 
+On 2021/10/20 13:36, Greg KH wrote:
 
-Hi,
+> On Wed, Oct 20, 2021 at 12:20:13PM +0800, Jie Deng wrote:
+>> On 2021/10/20 2:14, Wolfram Sang wrote:
+>>>> I think it is set to HZ currently, though I haven't tried big
+>>>> transfers but I still get into some issues with Qemu based stuff.
+>>>> Maybe we can bump it up to few seconds :)
+>>> If you use adapter->timeout, this can even be set at runtime using a
+>>> ioctl. So, it can adapt to use cases. Of course, the driver should
+>>> initialize it to a sane default if the automatic default (HZ) is not
+>>> suitable.
+>>
+>> I think a big value may solve most cases. but the driver never know how big
+>> is enough by static configuration.
+>>
+>> Can we make this value to be configurable, just let the other side provide
+>> this value ?
+> If an ioctl can change it, that would mean it is configurable, right?
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Yes, but we need to know what's the best value to be configured for a 
+specific "other side".
 
-- Your patch breaks the build.
+I think the "other side" should be more aware of what value is 
+reasonable to be used.
 
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
 
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
 
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file, Documentation/SubmittingPatches
-  for how to do this correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
