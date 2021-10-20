@@ -2,98 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B47434F65
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F36D434F7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhJTP5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S231214AbhJTP7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhJTP5t (ORCPT
+        with ESMTP id S231162AbhJTP6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:57:49 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC498C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:55:34 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso2775976pjw.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:55:34 -0700 (PDT)
+        Wed, 20 Oct 2021 11:58:46 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1632C061753
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:56:31 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id t9so16039866lfd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:56:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8/kHF6YsBF0VnFXO19L7hIupe8qJPMdaf854o+HCwfY=;
-        b=n3Sfk7DBuCbUQBAVU+XdZOeEDfYz0+/5PejRxjeF5kgf5dC2r5cMA+EjmkJK66yLPf
-         Ohe+vhlvv8njUtj+4NTNp3b4O8rDqAJv0TNkOJOToWwmLLNvMrG3D8B0GF4KfsAay1M8
-         SVYw7YiBso2iMLaEYVb94B3+5O2eFZGC38pYqxN/vPBwzYdy7FS9NEXizjLh+zrsV6ns
-         nU1oORRslCtBD+6Cz/Vi68/DPUpJFRUZw4fBJLVgruoDPvkkGM5mixxsNGicoqcx5M7D
-         sxmyJnFtkbsWlTJAkn2rLQlnlOhlKdCyqBBwQGpBW7MOziZh7vRo0qAmCGcWrjhRM3aX
-         XFpQ==
+        bh=Mk0Fw1d85Ctx+UYR5JvQoEBClZUQNjs0O369mrPqXFw=;
+        b=etuxTANyHHFxn/JCnCXn/cSvjX5oH38psGo9/gqj6vd7vZJbVfe7+loM4FsXy0OJs4
+         RKepimgEpd/dm6cQd9D9sqpKCTfqfBn8MmLzb9DMG6yhIMxd8DfvYC4FdWuNACDHadBA
+         r2RzpY0Zt7cFCdeSj5d64dJO2LM6Ye3crlfklWk4hnZorxP+bDG+yUzZjUY0TecrYQ7Q
+         6DgI8REXuAF9D29IwaHkRJHKkmp2eR5aUIUmN9Cc5Y1TVFkUmB5XQMX2me7n0oTz37wZ
+         weAgDMhHdki0gtWBxsU64jB2uwPAcsNI/SRlv5VUovG7suSqMFEb6W5mAQGo5JXcecro
+         4Cqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8/kHF6YsBF0VnFXO19L7hIupe8qJPMdaf854o+HCwfY=;
-        b=kSSD1Hn6LGyhpIO/l4Y7AT5SDA/HB15d1IJGk/Otsw6jIV5WYhgY5w/lUDmOKQvWPx
-         xjQ4A92CXQJlYvSx8uAqgE/iJWAHPv7yVv1XyrCV9DrNbvhBHwN3VFNddK5+zFInIBlh
-         99ZITjynUqCgPRxT/62imLNYR9fMeRQa26go58zq39TjOl4+8Gte5gX8rsswAJNk3xJJ
-         09dMZcvxBUNE6yCUIHJzuFXt2TKolb+SqwSZuOQ0OiKKeulWo2nw+yYfX7x67ZW14pRr
-         gbiuaKohZvd6vaeLvaeN5eHHfws/f+JmQzJ9k6XcGXIjCgIjz6dUUUdPNfYU3P0KZiGK
-         dhQA==
-X-Gm-Message-State: AOAM5331qkPg3AJjxz7WEolIZe4CrqyfXZ9argx4apzljy7ldHAI4FGK
-        nKhx4R1KM6ibq8mCjZsxjyevbYZzuZzUAmISoqLWoA==
-X-Google-Smtp-Source: ABdhPJzeAuq3bsrp4zGPtvJDaThlVFfE7hzvsZDkBB7AVCKsDdiOlQZSBJZzZpYrOV5jzm0t9MHyGJR16lYvshygQvw=
-X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr841396pjb.124.1634745333907;
- Wed, 20 Oct 2021 08:55:33 -0700 (PDT)
+        bh=Mk0Fw1d85Ctx+UYR5JvQoEBClZUQNjs0O369mrPqXFw=;
+        b=PAtARNhWeOjSqqlM0oZuwHuaHUvrQGa3gG3PFhlWD6M7sfzO/PAkrLNANgPk3dy/iU
+         hri41zZo2lxQmsWBUWb30WzPhHARF7/EZC7gB0ZbDY9kOf5Kxvbt7sa8w5Jck6ft1oUl
+         qzeEspnjkFocQ5+C2z4p62nEBTn0MWM21ZV3jj7VGq97CNXe1BeFyOAJLM/otRUOpe1v
+         lB2+vjDZqPWJ4SDuJC0IFoNSW70EhQwLsGlTcfAcK0sIs8SF63OMN/MeQ+H+kzqzj8h5
+         jQH2JohFTH8sJVzwMgh+P+D2rGSCm/L870G/V9540RUD9Syr4mQyafsYA7Yidu2CejiJ
+         ejGw==
+X-Gm-Message-State: AOAM533dRdUliiNPX6VS7iIMi7AZNCBafXVQQBiguf2/CHaaw1nZ+Ivl
+        oDsGZfyMVEfNhxkcrBTNYv/rYrn2cjc2XL3y1FvpMQ==
+X-Google-Smtp-Source: ABdhPJxpla/OfagpfrBP9uAdqwmY/Y3BFr6oF7A+pooBfrc94hkrkM2Q6g72R02A1g+FI3lf/EbcZFqkWjBGGzgmSYY=
+X-Received: by 2002:ac2:5fee:: with SMTP id s14mr81434lfg.537.1634745389914;
+ Wed, 20 Oct 2021 08:56:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211020013153.4106001-1-kaleshsingh@google.com>
- <20211020013153.4106001-2-kaleshsingh@google.com> <20211020113234.45657902@gandalf.local.home>
-In-Reply-To: <20211020113234.45657902@gandalf.local.home>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Wed, 20 Oct 2021 08:55:23 -0700
-Message-ID: <CAC_TJvdOx_=CY8u02hWzxkEpipPQTk2bvb1oOtN7uoURPffsDg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] tracing: Add support for creating hist trigger
- variables from literal
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+References: <20211019153214.109519-1-senozhatsky@chromium.org>
+ <20211019153214.109519-2-senozhatsky@chromium.org> <CALzav=cLXXZYBSH6iJifkqVijLAU5EvgVg2W4HKhqke2JBa+yg@mail.gmail.com>
+ <YW9vqgwU+/iVooXj@google.com>
+In-Reply-To: <YW9vqgwU+/iVooXj@google.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Wed, 20 Oct 2021 08:56:03 -0700
+Message-ID: <CALzav=c1LXXWSi-Z0_X35HCyQtv1rh0p2YmJ289J51SHy0DRxg@mail.gmail.com>
+Subject: Re: [PATCHV2 1/3] KVM: x86: introduce kvm_mmu_pte_prefetch structure
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 8:32 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Oct 19, 2021 at 6:24 PM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
 >
-> On Tue, 19 Oct 2021 18:31:38 -0700
-> Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> > @@ -89,6 +91,8 @@ typedef u64 (*hist_field_fn_t) (struct hist_field *field,
-> >  #define HIST_FIELD_OPERANDS_MAX      2
-> >  #define HIST_FIELDS_MAX              (TRACING_MAP_FIELDS_MAX + TRACING_MAP_VARS_MAX)
-> >  #define HIST_ACTIONS_MAX     8
-> > +#define HIST_CONST_MAX               4
->
-> BTW, why is there a limit to the number of constants?
-
-The motivation was to limit the number of hist_fields that can be
-created for constants. These are also indirectly limited by the max
-number of subexpressions (3) and the max number of vars/keys that can
-be defined, so I don't feel strongly about keeping it.
-
-Thanks,
-Kalesh
-
->
-> -- Steve
->
-> > +#define HIST_CONST_DIGITS_MAX        21
+> On (21/10/19 15:44), David Matlack wrote:
+> > On Tue, Oct 19, 2021 at 8:32 AM Sergey Senozhatsky
+> > <senozhatsky@chromium.org> wrote:
+> > >
+> > > kvm_mmu_pte_prefetch is a per-VCPU structure that holds a PTE
+> > > prefetch pages array, lock and the number of PTE to prefetch.
+> > >
+> > > This is needed to turn PTE_PREFETCH_NUM into a tunable VM
+> > > parameter.
+> > >
+> > > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > > ---
+> > >  arch/x86/include/asm/kvm_host.h | 12 +++++++
+> > >  arch/x86/kvm/mmu.h              |  4 +++
+> > >  arch/x86/kvm/mmu/mmu.c          | 57 ++++++++++++++++++++++++++++++---
+> > >  arch/x86/kvm/x86.c              |  9 +++++-
+> > >  4 files changed, 77 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > > index 5271fce6cd65..11400bc3c70d 100644
+> > > --- a/arch/x86/include/asm/kvm_host.h
+> > > +++ b/arch/x86/include/asm/kvm_host.h
+> > > @@ -607,6 +607,16 @@ struct kvm_vcpu_xen {
+> > >         u64 runstate_times[4];
+> > >  };
+> > >
+> > > +struct kvm_mmu_pte_prefetch {
+> > > +       /*
+> > > +        * This will be cast either to array of pointers to struct page,
+> > > +        * or array of u64, or array of u32
+> > > +        */
+> > > +       void *ents;
+> > > +       unsigned int num_ents;
+> > > +       spinlock_t lock;
 > >
+> > The spinlock is overkill. I'd suggest something like this:
+> > - When VM-ioctl is invoked to update prefetch count, store it in
+> > kvm_arch. No synchronization with vCPUs needed.
+> > - When a vCPU takes a fault: Read the prefetch count from kvm_arch. If
+> > different than count at last fault, re-allocate vCPU prefetch array.
+> > (So you'll need to add prefetch array and count to kvm_vcpu_arch as
+> > well.)
+> >
+> > No extra locks are needed. vCPUs that fault after the VM-ioctl will
+> > get the new prefetch count. We don't really care if a prefetch count
+> > update races with a vCPU fault as long as vCPUs are careful to only
+> > read the count once (i.e. use READ_ONCE(vcpu->kvm.prefetch_count)) and
+> > use that. Assuming prefetch count ioctls are rare, the re-allocation
+> > on the fault path will be rare as well.
+>
+> So reallocation from the faul-path should happen before vCPU takes the
+> mmu_lock?
+
+Yes. Take a look at mmu_topup_memory_caches for an example of
+allocating in the fault path prior to taking the mmu lock.
+
+> And READ_ONCE(prefetch_count) should also happen before vCPU
+> takes mmu_lock, I assume, so we need to pass it as a parameter to all
+> the functions that will access prefetch array.
+
+Store the value of READ_ONCE(prefetch_count) in struct kvm_vcpu_arch
+because you also need to know if it changes on the next fault. Then
+you also don't have to add a parameter to a bunch of functions in the
+fault path.
+
+>
+> > Note: You could apply this same approach to a module param, except
+> > vCPUs would be reading the module param rather than vcpu->kvm during
+> > each fault.
+> >
+> > And the other alternative, like you suggested in the other patch, is
+> > to use a vCPU ioctl. That would side-step the synchronization issue
+> > because vCPU ioctls require the vCPU mutex. So the reallocation could
+> > be done in the ioctl and not at fault time.
+>
+> One more idea, wonder what do you think:
+>
+> There is an upper limit on the number of PTEs we prefault, which is 128 as of
+> now, but I think 64 will be good enough, or maybe even 32. So we can always
+> allocate MAX_PTE_PREFETCH_NUM arrays in vcpu->arch and ioctl() will change
+> ->num_ents only, which is always in (0, MAX_PTE_PREFETCH_NUM - 1] range. This
+> way we never have to reallocate anything, we just adjust the "maximum index"
+> value.
+
+128 * 8 would be 1KB per vCPU. That is probably reasonable, but I
+don't think the re-allocation would be that complex.
+
+>
+> > Taking a step back, can you say a bit more about your usecase?
+>
+> We are looking at various ways of reducing the number of vm-exits. There
+> is only one VM running on the device (a pretty low-end laptop).
+
+When you say reduce the number of vm-exits, can you be more specific?
+Are you trying to reduce the time it takes for vCPUs to fault in
+memory during VM startup? I just mention because there are likely
+other techniques you can apply that would not require modifying KVM
+code (e.g. prefaulting the host memory before running the VM, using
+the TDP MMU instead of the legacy MMU to allow parallel faults, using
+hugepages to map in more memory per fault, etc.)
