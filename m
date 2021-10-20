@@ -2,82 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F4F434DD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B19434DD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhJTOc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S230321AbhJTOct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbhJTOcS (ORCPT
+        with ESMTP id S230481AbhJTOcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:32:18 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40390C0613E7
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:29:30 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id oa4so2629730pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:29:30 -0700 (PDT)
+        Wed, 20 Oct 2021 10:32:36 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB48C06176A
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:30:22 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id i24so15389627lfj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XgjWa6urh+2o4wqBD5gUfgDpjgp0SCvskomJgQmYY+0=;
-        b=ZSDO6CpOBnedFZe6DFUgjtyUK1MuJ5eE1NN4ZS0TVOkGRHpWKc2a4d/GJ5GoCygH4B
-         G19Wh+vwFfSvS/Dii+2/P7ebLqIlqTayyCTdyRcVKKqmuTYIM/1lJEcUIfhbrc4JMm6g
-         ZBEvoiE2wfWFJx8AM7EIqyLsFpjHUdsuo8VOjM4mUblUjA129GKFOSWt+3yXmjCBCOCv
-         ycPzv2wPbaTsvljugga8WJunvimLGcrD2+1SSxHQoaTJbs2FMtND4ZiyvczkY2SlipVT
-         Nra68u2y9R+snfbsjk2avm5dW4b6Xy/JS73pj+ibqtdqHmsgJHUrX5IIBMz/NlxiPQAZ
-         yYHw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=V8w9KrLOh1e4/GeU4pCFQml0fcDuxEzceReSFQbl/RY=;
+        b=Z4SbQud7ZO2doXmNbDxU8eh364WpB+CytVG+jjq/n2wOGTwGgEyHbkVSFNxfBA1v5K
+         Tez31O/2/krC7zuzCiFYCeyyVGeTTfK9iTRzgdFEKuYsrF0upefHM0JNNFfoFX++j9Yt
+         ygq/expCumks7h7y+U2H1zsz3Svs5/gzVwsAqw/ljPpbFiJOwuUOQHtHdJPY4gaDaTRo
+         o3Lx0zImErdtRXIBOe7xQwqWqo+KFQ0ow1EvsMXjlPl3H2ZDEyO6r45EEAjJFNOYj0+x
+         1UkBmJewQAMB1n8URyzu9DIcA2Xb4nzwxd9qfvX3rKedFfrNtErMbJnbJVQfYMGUeBw7
+         gbxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XgjWa6urh+2o4wqBD5gUfgDpjgp0SCvskomJgQmYY+0=;
-        b=aiseDB/4C4neu3rsrM9k41ai3tyA364LGzaQjHK3E+KeU7nKbP7zVJosLyVZJIEpKC
-         F9yGVlJXBl22uIW1QHuMlwS7Mz5p6qvJMrf9V5oHD1ZgASMU2w1t+Ve9YZGf5NiQpCOi
-         /o5TNDCnbtES9Jp1PMbvkpcZ9J7jCgxN9p4gAAJtN24jAFFaQPG84glN6eRyTDg8/3ut
-         dHNn/TB+iwqtRFw84NAkYERFESmMrzBB4zbi9PCXzDVvECiDP9YI482xMY3iTC5RG2JQ
-         zKg0r1ep03w9M7fBC+PwoWqf6V6PwMvOpMbbrxpjattcZFk8OQZIlvdJCRYgx4ZQzO8C
-         2Swg==
-X-Gm-Message-State: AOAM530BwBSOj/ExCJFaK0ZIJOuDKYpxINpdxwi/mtgWLTuMFjw3E0sP
-        SRhT/TQ5jdHWezgZUUyRmovn9Q==
-X-Google-Smtp-Source: ABdhPJydu28OpbVkEA/WfwFuZQ8SyRqvPuLD1RDzpFZLwQNLnS7QNg/iWP42bkocOYE/dddoEWSm2Q==
-X-Received: by 2002:a17:90a:2a0d:: with SMTP id i13mr284267pjd.166.1634740169636;
-        Wed, 20 Oct 2021 07:29:29 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i2sm2774356pjt.21.2021.10.20.07.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 07:29:29 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 14:29:25 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, x86@kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v5 3/6] KVM: SVM: Move kvm_emulate_ap_reset_hold() to AMD
- specific code
-Message-ID: <YXAnxXVxFrS41/ui@google.com>
-References: <20211020124416.24523-1-joro@8bytes.org>
- <20211020124416.24523-4-joro@8bytes.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=V8w9KrLOh1e4/GeU4pCFQml0fcDuxEzceReSFQbl/RY=;
+        b=gz+XvAAKxIgGj8s2CGk0/hWj5auVdJa5eMeze34jocQTp0rRGNWbjZnhLpGivEg9QI
+         Zp2Agoho3/oTo24Dybd4tMA1XA8v/RAaSnFK0i/Nc/tc9BrGq+GiXSyxz2rsh7R59JYs
+         REOqzzOkZcM0qoinrNZith2EyGqsQ7gSC6BspoVOrAya6YhNqkm5jZFupN6tM3Itjv3Q
+         IrFip78U4H16SrZMsPVfCT0Fk0JQXhYR/aghg8RAqsEoHaZ4CUh05pEdOFZAR8QqL0Dk
+         HbRTsLnR0qWxAyriSQcT/+TK4ktM7wgVSoPQW8cdPiwXezlPXeD7FAHBLkasXQ7F1LRO
+         i0Aw==
+X-Gm-Message-State: AOAM533QteFaKPCiOZQGyR8cfb9O4MWReKg6C4oyQ+//TPlMlgqu1x+3
+        g4UdkLuNp4ga2sjG7gjVKEWrH0H3/kXHNg85PVA9P3e4nVd/JA==
+X-Google-Smtp-Source: ABdhPJyiRYwjpNbimgCBc8Bb0ImqExuF52wcmQN7YkfkIuNEmX2BOdjiQfUP3MJSXgo9cLEPYL8sBG21S/UfXH7Bx/w=
+X-Received: by 2002:ac2:5e3c:: with SMTP id o28mr135613lfg.184.1634740220385;
+ Wed, 20 Oct 2021 07:30:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020124416.24523-4-joro@8bytes.org>
+References: <20211014143031.1313783-1-Jerome.Pouiller@silabs.com> <20211014143031.1313783-3-Jerome.Pouiller@silabs.com>
+In-Reply-To: <20211014143031.1313783-3-Jerome.Pouiller@silabs.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 20 Oct 2021 16:29:44 +0200
+Message-ID: <CAPDyKFpr0kpRXoUACNNSwe8pL1S9wJPjnX+GFGS1PNezKCDYzQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] mmc: allow to match the device tree to apply quirks
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> The function is only used by the kvm-amd module. Move it to the AMD
-> specific part of the code and name it sev_emulate_ap_reset_hold().
-> 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+On Thu, 14 Oct 2021 at 16:30, Jerome Pouiller
+<Jerome.Pouiller@silabs.com> wrote:
+>
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> MMC subsystem provides a way to apply quirks when a device match some
+> properties (VID, PID, etc...) Unfortunately, some SDIO devices does not
+> comply with the SDIO specification and does not provide reliable VID/PID
+> (eg. Silabs WF200).
+>
+> So, the drivers for these devices rely on device tree to identify the
+> device.
+>
+> This patch allows the MMC to also rely on the device tree to apply a
+> quirk.
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 > ---
+>  drivers/mmc/core/card.h   |  3 +++
+>  drivers/mmc/core/quirks.h | 18 ++++++++++++++++++
+>  2 files changed, 21 insertions(+)
+>
+> diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
+> index 7bd392d55cfa..2f73f8567e14 100644
+> --- a/drivers/mmc/core/card.h
+> +++ b/drivers/mmc/core/card.h
+> @@ -59,6 +59,9 @@ struct mmc_fixup {
+>         /* for MMC cards */
+>         unsigned int ext_csd_rev;
+>
+> +       /* Match against functions declared in device tree */
+> +       const char *const *of_compatible;
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+const char is probably sufficient.
+
+> +
+>         void (*vendor_fixup)(struct mmc_card *card, int data);
+>         int data;
+>  };
+> diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
+> index c7ef2d14b359..ef368386e711 100644
+> --- a/drivers/mmc/core/quirks.h
+> +++ b/drivers/mmc/core/quirks.h
+> @@ -10,6 +10,7 @@
+>   *
+>   */
+>
+> +#include <linux/of.h>
+>  #include <linux/mmc/sdio_ids.h>
+>
+>  #include "card.h"
+> @@ -145,6 +146,20 @@ static const struct mmc_fixup __maybe_unused sdio_fi=
+xup_methods[] =3D {
+>         END_FIXUP
+>  };
+>
+> +static inline bool mmc_fixup_of_compatible_match(struct mmc_card *card,
+> +                                                const char *const *compa=
+t_list)
+> +{
+> +       struct device_node *of_node;
+> +       int i;
+> +
+> +       for (i =3D 0; i < 7; i++) {
+
+We need to iterate up '8', to cover all functional devices.
+
+The function numbers are from 1->7, while we use '0' for the
+"mmc-card" compatible.
+
+> +               of_node =3D mmc_of_find_child_device(card->host, i);
+> +               if (of_node && of_device_compatible_match(of_node, compat=
+_list))
+> +                       return true;
+> +       }
+
+Another option, which would avoid doing the iteration over and over
+again in mmc_of_find_child_device(), would be to simply do the parsing
+of the compatible in the child nodes, right here. In other words, just
+use for_each_child_of_node().
+
+> +       return false;
+> +}
+> +
+>  static inline void mmc_fixup_device(struct mmc_card *card,
+>                                     const struct mmc_fixup *table)
+>  {
+> @@ -173,6 +188,9 @@ static inline void mmc_fixup_device(struct mmc_card *=
+card,
+>                         continue;
+>                 if (rev < f->rev_start || rev > f->rev_end)
+>                         continue;
+> +               if (f->of_compatible !=3D NULL &&
+> +                   !mmc_fixup_of_compatible_match(card, f->of_compatible=
+))
+> +                       continue;
+>
+>                 dev_dbg(&card->dev, "calling %ps\n", f->vendor_fixup);
+>                 f->vendor_fixup(card, f->data);
+
+Kind regards
+Uffe
