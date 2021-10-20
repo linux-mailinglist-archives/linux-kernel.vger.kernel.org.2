@@ -2,129 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003DA4347B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA4C4347B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhJTJQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:16:08 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57902 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTJQH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:16:07 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 498E71F43FBF;
-        Wed, 20 Oct 2021 10:13:52 +0100 (BST)
-Date:   Wed, 20 Oct 2021 11:13:47 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
+        id S229878AbhJTJQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:16:37 -0400
+Received: from first.geanix.com ([116.203.34.67]:37396 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhJTJQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:16:36 -0400
+Received: from skn-laptop (unknown [185.233.254.173])
+        by first.geanix.com (Postfix) with ESMTPSA id BA31EC7EE1;
+        Wed, 20 Oct 2021 09:14:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1634721260; bh=ZabwtyWaVUk5ppsPWi4gApmZlTAIjycNIe5rm6VQtHs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=i4srVLdEtbJ23PO4E2matoE2PZy7M6NVHaT5kwgviXCeKwl/odiN0UwbhmxcL6Sex
+         9LzP9zgOKJNXRvJJArLCLHeul4oW8EfhjYPuaZKfFXrBrPtQHbQwYq03iQR7xnb5D7
+         lF/uXBTpFnV03kmsWsvZwhJjH4UKI+FbSIKBE1W/3yan9OKWyvI8SVmgwgqs3pVPwj
+         ar0FbtlIY/2ry4+by82gEmhYgtLt/0YUCSY1DpNp4vL3+9Tf2J+sDWQ78M9FssoDJe
+         /ymJ0WY9gIv9G0nM+CKkM2xkCE//osuIFZDM3LpAOaaoLmX2v3bRj3jDW331NIzvwy
+         EvOQUysYwZgKg==
+Date:   Wed, 20 Oct 2021 11:14:19 +0200
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
 Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Boris Brezillon <bbrezillon@kernel.org>,
         linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] mtd: core: protect access to MTD devices while
- in suspend
-Message-ID: <20211020111347.627159a2@collabora.com>
-In-Reply-To: <20211020084534.2472305-3-sean@geanix.com>
+Subject: Re: [PATCH v2 3/4] mtd: rawnand: remove suspended check
+Message-ID: <20211020091419.2ufd4modeopmpxsp@skn-laptop>
 References: <20211020084534.2472305-1-sean@geanix.com>
-        <20211020084534.2472305-3-sean@geanix.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+ <20211020084534.2472305-4-sean@geanix.com>
+ <20211020105743.225d97f4@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211020105743.225d97f4@collabora.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 10:45:32 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+On Wed, Oct 20, 2021 at 10:57:43AM +0200, Boris Brezillon wrote:
+> On Wed, 20 Oct 2021 10:45:33 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
+> 
+> > Access is protected in upper MTD layer when MTD devices are suspended.
+> 
+> I think it deserves more explanation.
+> 
 
->  static ssize_t mtd_otp_size(struct mtd_info *mtd, bool is_user)
-> @@ -1257,6 +1259,8 @@ int mtd_erase(struct mtd_info *mtd, sruct erase_info *instr)
->  
->  	ledtrig_mtd_activity();
->  
-> +	mtd_start_access(master);
-> +
->  	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION) {
->  		adjinstr.addr = (loff_t)mtd_div_by_eb(instr->addr, mtd) *
->  				master->erasesize;
-> @@ -1278,6 +1282,8 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
->  		}
->  	}
->  
-> +	mtd_end_access(master);
-> +
+Access is protected in upper MTD layer when MTD devices are suspended.
 
-The section covered in mtd_erase() is too broad. Put the start/end
-calls around the ->_erase() call.
-
->  	return ret;
->  }
-
-
-
-> @@ -1576,7 +1604,6 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
->  		ret_code = mtd_read_oob_std(mtd, from, ops);
->  
->  	mtd_update_ecc_stats(mtd, master, &old_stats);
-> -
-
-Unrelated line removal. Please drop this change.
-
->  	/*
->  	 * In cases where ops->datbuf != NULL, mtd->_read_oob() has semantics
->  	 * similar to mtd->_read(), returning a non-negative integer
-> @@ -1615,7 +1642,9 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
->  	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
->  		return mtd_io_emulated_slc(mtd, to, false, ops);
->  
-> -	return mtd_write_oob_std(mtd, to, ops);
-> +	ret = mtd_write_oob_std(mtd, to, ops);
-> +
-> +	return ret;
-
-Ditto, you can keep the 'return mtd_write_oob_std(mtd, to, ops);' here.
-
->  }
->  EXPORT_SYMBOL_GPL(mtd_write_oob);
-
-
-> +static inline void mtd_start_access(struct mtd_info *master)
-> +{
-> +	WARN_ON_ONCE(master != mtd_get_master(master));
-> +
-> +	/*
-> +	 * Don't take the suspend_lock on devices that don't
-> +	 * implement the suspend hook. Otherwise, lockdep will
-> +	 * complain about nested locks when trying to suspend MTD
-> +	 * partitions or MTD devices created by gluebi which are
-> +	 * backed by real devices.
-> +	 */
-> +	if (!master->_suspend)
-> +		return;
-> +
-> +	/*
-> +	 * Wait until the device is resumed. Should we have a
-> +	 * non-blocking mode here?
-> +	 */
-> +	while (1) {
-> +		down_read(&master->master.suspend_lock);
-> +		if (!master->master.suspended)
-> +			return;
-> +
-> +		up_read(&master->master.suspend_lock);
-> +		wait_event(master->master.resume_wq, master->master.suspended == 0);
-
-Please keep the tests consistent:
-
-		wait_event(master->master.resume_wq, !master->master.suspended);
-
-> +	}
-> +}
-> +
+Commit ("mtd: core: protect access to MTD devices while in suspend")
+introduces access protection, so it's safe to remove suspended checks.
