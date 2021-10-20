@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2080A434C78
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CFB434C7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhJTNr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbhJTNqw (ORCPT
+        id S230393AbhJTNre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:47:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52982 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230313AbhJTNqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:46:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20DCC06174E;
-        Wed, 20 Oct 2021 06:44:37 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 13:44:35 -0000
+        Wed, 20 Oct 2021 09:46:53 -0400
+Date:   Wed, 20 Oct 2021 13:44:36 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634737476;
+        s=2020; t=1634737477;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=udohcrWfhH8/3hGHK1nVfVczNHLqT9+IwhJSptnREWA=;
-        b=RGgy7muxeFTi7iWXHJaeYQ8vY6COGCI+asi7R4zV+gExteJ6UbIn+qFHLLOGl19Yr8Zg17
-        oBCZJAmhIe1i6S1Ap8oTtCsCEwPzcclwsusA0AxQJanKbPCI/os0tdviGyKz7XuDNerpO3
-        35C1rTYHoRlJ+YRnJCMhYNVVicwECwkq1oiXr9Td0tIudLrA+CiIWzLwawv3W91BNGn3tt
-        dRwJnsm9uWolTWgeqj4toccuehGO9BN9gK8Oo4UmC9yfltezezH0l5OPcdiYkzyLUwvEhq
-        4vc9SGcOB09RK2y2rebUM9/1ASiKOVc95VoUzcd6UHjnV0pzPPtezC7NQDP+sw==
+        bh=bDbPnI8kBoDSSqPBYyW0gRtsMDXRGIoHSwEZ6XOwPH0=;
+        b=utDrMkxlC8E+JfhVmACur42H19/HeExvoBMUwSB4Zr+ZDVn11hOKcZkRyGp9/jx1jufBP7
+        mvt3/kr0jHWuuVbQ9cmSzmF7If1//Ve8oljbHs7y47PhymhMzJ0cGx3/Jdfd6Mdwy+Wo4v
+        wpS6nBLni0Z1BWVBoPwCWgWWMQxec6opK4C7xsZZn/JhSKWImzFJCl914bho8mrDwweDrR
+        L9X5ON718cYDnlg2Aohat4PYKbZmTZTT04H7IMvDxyW55atmuwYWMcGmhDV1Yo8GiDnyRr
+        CVbCWod1oZ0plmCtCQk2fPF7q/jhc8t9F+ObuPKw0TvXRigdRLG3tSA0RcljlQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634737476;
+        s=2020e; t=1634737477;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=udohcrWfhH8/3hGHK1nVfVczNHLqT9+IwhJSptnREWA=;
-        b=AKn6qsIgGunTbFMk/qDCaNC8Ww2UDeJN9I9pNngeO32qJnQU7bV7JLHGAbPQs5rfsZv39n
-        CaOsHuvDWdqYFuBQ==
+        bh=bDbPnI8kBoDSSqPBYyW0gRtsMDXRGIoHSwEZ6XOwPH0=;
+        b=7Y1edulM0CBL5jS4sZXj68sBiBP7Z0A42wlOfiM8HwMghSjwON+UuY97pecYfOjs/oRa3p
+        soMv/nrtHFlGIFAQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/fpu: Clean up CPU feature tests
+Subject: [tip: x86/fpu] x86/fpu: Mark fpu__init_prepare_fx_sw_frame() as __init
 Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211015011539.401510559@linutronix.de>
-References: <20211015011539.401510559@linutronix.de>
+In-Reply-To: <20211015011539.296435736@linutronix.de>
+References: <20211015011539.296435736@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163473747551.25758.3748133875700365209.tip-bot2@tip-bot2>
+Message-ID: <163473747688.25758.8190307736931364512.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,102 +57,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     d06241f52cfe4a0580856ef2cfac90dc7f752cae
-Gitweb:        https://git.kernel.org/tip/d06241f52cfe4a0580856ef2cfac90dc7f752cae
+Commit-ID:     9603445549dacd7688532a4076c377e43a3ecfce
+Gitweb:        https://git.kernel.org/tip/9603445549dacd7688532a4076c377e43a3ecfce
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 15 Oct 2021 03:16:21 +02:00
+AuthorDate:    Fri, 15 Oct 2021 03:16:18 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
 CommitterDate: Wed, 20 Oct 2021 15:27:27 +02:00
 
-x86/fpu: Clean up CPU feature tests
+x86/fpu: Mark fpu__init_prepare_fx_sw_frame() as __init
 
-Further disintegration of internal.h:
-
-Move the CPU feature tests to a core header and remove the unused one.
+No need to keep it around.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211015011539.401510559@linutronix.de
+Link: https://lkml.kernel.org/r/20211015011539.296435736@linutronix.de
 ---
- arch/x86/include/asm/fpu/internal.h | 18 ------------------
- arch/x86/kernel/fpu/core.c          |  1 +
- arch/x86/kernel/fpu/internal.h      | 11 +++++++++++
- arch/x86/kernel/fpu/regset.c        |  2 ++
- 4 files changed, 14 insertions(+), 18 deletions(-)
+ arch/x86/include/asm/fpu/signal.h | 2 --
+ arch/x86/kernel/fpu/internal.h    | 8 ++++++++
+ arch/x86/kernel/fpu/signal.c      | 4 +++-
+ arch/x86/kernel/fpu/xstate.c      | 1 +
+ 4 files changed, 12 insertions(+), 3 deletions(-)
+ create mode 100644 arch/x86/kernel/fpu/internal.h
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index 398c87c..5da7528 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -51,24 +51,6 @@ extern void fpu__resume_cpu(void);
- # define WARN_ON_FPU(x) ({ (void)(x); 0; })
- #endif
+diff --git a/arch/x86/include/asm/fpu/signal.h b/arch/x86/include/asm/fpu/signal.h
+index 8b6631d..04868a7 100644
+--- a/arch/x86/include/asm/fpu/signal.h
++++ b/arch/x86/include/asm/fpu/signal.h
+@@ -31,6 +31,4 @@ fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
  
--/*
-- * FPU related CPU feature flag helper routines:
-- */
--static __always_inline __pure bool use_xsaveopt(void)
--{
--	return static_cpu_has(X86_FEATURE_XSAVEOPT);
--}
--
--static __always_inline __pure bool use_xsave(void)
--{
--	return static_cpu_has(X86_FEATURE_XSAVE);
--}
--
--static __always_inline __pure bool use_fxsr(void)
--{
--	return static_cpu_has(X86_FEATURE_FXSR);
--}
--
- extern union fpregs_state init_fpstate;
- extern void fpstate_init_user(union fpregs_state *state);
+ unsigned long fpu__get_fpstate_size(void);
  
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index e6087a6..e9b51c7 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -17,6 +17,7 @@
- #include <linux/hardirq.h>
- #include <linux/pkeys.h>
+-extern void fpu__init_prepare_fx_sw_frame(void);
+-
+ #endif /* _ASM_X86_FPU_SIGNAL_H */
+diff --git a/arch/x86/kernel/fpu/internal.h b/arch/x86/kernel/fpu/internal.h
+new file mode 100644
+index 0000000..036f84c
+--- /dev/null
++++ b/arch/x86/kernel/fpu/internal.h
+@@ -0,0 +1,8 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __X86_KERNEL_FPU_INTERNAL_H
++#define __X86_KERNEL_FPU_INTERNAL_H
++
++/* Init functions */
++extern void fpu__init_prepare_fx_sw_frame(void);
++
++#endif
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index e257805..2a4d1d0 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -16,6 +16,8 @@
+ #include <asm/trapnr.h>
+ #include <asm/trace/fpu.h>
+ 
++#include "internal.h"
++
+ static struct _fpx_sw_bytes fx_sw_reserved __ro_after_init;
+ static struct _fpx_sw_bytes fx_sw_reserved_ia32 __ro_after_init;
+ 
+@@ -514,7 +516,7 @@ unsigned long fpu__get_fpstate_size(void)
+  * This will be saved when ever the FP and extended state context is
+  * saved on the user stack during the signal handler delivery to the user.
+  */
+-void fpu__init_prepare_fx_sw_frame(void)
++void __init fpu__init_prepare_fx_sw_frame(void)
+ {
+ 	int size = fpu_user_xstate_size + FP_XSTATE_MAGIC2_SIZE;
+ 
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index b2537a8..1f5a66a 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -19,6 +19,7 @@
+ 
+ #include <asm/tlbflush.h>
  
 +#include "internal.h"
  #include "xstate.h"
  
- #define CREATE_TRACE_POINTS
-diff --git a/arch/x86/kernel/fpu/internal.h b/arch/x86/kernel/fpu/internal.h
-index 036f84c..a8aac21 100644
---- a/arch/x86/kernel/fpu/internal.h
-+++ b/arch/x86/kernel/fpu/internal.h
-@@ -2,6 +2,17 @@
- #ifndef __X86_KERNEL_FPU_INTERNAL_H
- #define __X86_KERNEL_FPU_INTERNAL_H
- 
-+/* CPU feature check wrappers */
-+static __always_inline __pure bool use_xsave(void)
-+{
-+	return cpu_feature_enabled(X86_FEATURE_XSAVE);
-+}
-+
-+static __always_inline __pure bool use_fxsr(void)
-+{
-+	return cpu_feature_enabled(X86_FEATURE_FXSR);
-+}
-+
- /* Init functions */
- extern void fpu__init_prepare_fx_sw_frame(void);
- 
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index 66ed317..ccf0c59 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -10,6 +10,8 @@
- #include <asm/fpu/regset.h>
- #include <asm/fpu/xstate.h>
- 
-+#include "internal.h"
-+
- /*
-  * The xstateregs_active() routine is the same as the regset_fpregs_active() routine,
-  * as the "regset->n" for the xstate regset will be updated based on the feature
+ #define for_each_extended_xfeature(bit, mask)				\
