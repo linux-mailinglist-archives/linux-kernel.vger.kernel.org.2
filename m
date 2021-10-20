@@ -2,112 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3800B434724
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6813F434726
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhJTIot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:44:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhJTIos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A83A61004;
-        Wed, 20 Oct 2021 08:42:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634719354;
-        bh=MHBvccfg0JwTU+CXuSh0R6J6oYNHZE8t6dgpeztT6ac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LFZW0NNmwO3pGqS9Aj8Lr9v1SepIjAQQ4SoZ0vSRlepepkzuAiH0qRQeGu6xP/tdl
-         hiSUgcO5+mOqF1wvgyPIH7rtaXPdMygvwvtcsxhwaPCriOC83uOjEw76mwGJvPADwu
-         4XfWUZ5zq70jVYnlOCnRwhnS3dlLJG1fAnQE9aLqYBJJ0QygG5/7QT/16gq8CAGj6w
-         aUpfacbzDhd2jMGJGj3QmczB8daadDRUA8MvB2/8CQBv60QaMYEVaWmNU3jZfcQJu8
-         dsalOTLgMjaNNdIssNHihAO7nZMccwUMQL62GH9VOgT4xVAb0spRKMeVvBmxRoRcci
-         ofZgvHRSgsFdw==
-Date:   Wed, 20 Oct 2021 11:42:28 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>, linux-mm@kvack.org,
+        id S229881AbhJTIpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:45:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59336 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhJTIp2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:45:28 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5470D1FD9D;
+        Wed, 20 Oct 2021 08:43:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634719393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U9ANNFhF9o/o+ybyDXRcaxGyWu+m+P0WrCO6fsbyGfU=;
+        b=uY6Nxgcj9JvrEu906q2eodXCBQHjLtNTT6g2fU2aC1AVTPGmitU6Q5Wuj8Ke/poJn9cDfx
+        RgpiGjvRE05Q/17lHdQCAkfbUu3aNpsMOqiKGT7T7678VtAkJml8vKI0dWPTviJ9hhTLAU
+        Q5W6VT/MOGukER12jvgZSq9zCYd9JDM=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B765FA3B8A;
+        Wed, 20 Oct 2021 08:43:12 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 10:43:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
-Message-ID: <YW/WdAnUP32Dhclh@kernel.org>
-References: <20211013054756.12177-1-rppt@kernel.org>
- <c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com>
- <YW5bjV128Qk1foIv@kernel.org>
- <YW6t5tBe/IjSYWn3@arm.com>
- <089478ad-3755-b085-d9aa-c68e9792895c@quicinc.com>
- <YW7p3ARYbpxmeLCF@arm.com>
- <8da41896-dc11-8246-54cf-1174f617ac39@quicinc.com>
- <YW8PZ0Q5UeRH4W4R@kernel.org>
- <YW/Hb4sVWGOIxzUk@kernel.org>
- <YW/Q5kjvurcYVrow@arm.com>
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg v4] memcg: prohibit unconditional exceeding the
+ limit of dying tasks
+Message-ID: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+References: <3c76e2d7-e545-ef34-b2c3-a5f63b1eff51@virtuozzo.com>
+ <f40cd82c-f03a-4d36-e953-f89399cb8f58@virtuozzo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YW/Q5kjvurcYVrow@arm.com>
+In-Reply-To: <f40cd82c-f03a-4d36-e953-f89399cb8f58@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 09:18:46AM +0100, Catalin Marinas wrote:
-> On Wed, Oct 20, 2021 at 10:38:23AM +0300, Mike Rapoport wrote:
-> > On Tue, Oct 19, 2021 at 09:33:11PM +0300, Mike Rapoport wrote:
-> > > On Tue, Oct 19, 2021 at 01:59:22PM -0400, Qian Cai wrote:
-> > > > [	0.000000][	T0] Booting Linux on physical CPU 0x0000000000 [0x503f0002]
-> > > > [	0.000000][	T0] Linux version 5.15.0-rc6-next-20211019+ (root@admin5) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #104 SMP Tue Oct 19 17:36:17 UTC 2021
-> > > > [	0.000000][	T0] earlycon: pl11 at MMIO32 0x0000000012600000 (options '')
-> > > > [	0.000000][	T0] printk: bootconsole [pl11] enabled
-> > > > [	0.000000][	T0] efi: Getting UEFI parameters from /chosen in DT:
-> > > > [	0.000000][	T0] efi:   System Table     	: 0x0000009ff7de0018
-> > > > [	0.000000][	T0] efi:   MemMap Address   	: 0x0000009fe6dae018
-> > > > [	0.000000][	T0] efi:   MemMap Size      	: 0x0000000000000600
-> > > > [	0.000000][	T0] efi:   MemMap Desc. Size	: 0x0000000000000030
-> > > > [	0.000000][	T0] efi:   MemMap Desc. Version : 0x0000000000000001
-> > > > [	0.000000][	T0] efi: EFI v2.70 by American Megatrends
-> > > > [	0.000000][	T0] efi: ACPI 2.0=0x9ff5b40000 SMBIOS 3.0=0x9ff686fd98 ESRT=0x9ff1d18298 MEMRESERVE=0x9fe6dacd98  
-> > > > [	0.000000][	T0] efi: Processing EFI memory map:
-> > > > [	0.000000][	T0] efi:   0x000090000000-0x000091ffffff [Conventional|   |  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-> > > > [	0.000000][	T0] efi:   0x000092000000-0x0000928fffff [Runtime Data|RUN|  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-> > > > [	0.000000][	T0] ------------[ cut here ]------------
-> > > > [	0.000000][	T0] kernel BUG at mm/kmemleak.c:1140!
-> > > > [	0.000000][	T0] Internal error: Oops - BUG: 0 [#1] SMP
-> > > > 
-> > > > I did not quite figure out where this BUG() was triggered and I did not
-> > > 
-> > > This is from here:
-> > > arch/arm64/include/asm/memory.h:
-> > > 
-> > > #define PHYS_OFFSET         ({ VM_BUG_ON(memstart_addr & 1); memstart_addr; })
-> > > 
-> > > kmemleak_free_part_phys() does __va() which uses PHYS_OFFSET and all this
-> > > happens before memstart_addr is set.
-> > > 
-> > > I'll try to see how this can be untangled...
-> >  
-> > This late in the cycle I can only think of reverting kmemleak wavier from
-> > memblock_mark_nomap() and putting it in
-> > early_init_dt_alloc_reserved_memory_arch() being the only user setting
-> > MEMBLOCK_NOMAP to an allocated chunk rather than marking NOMAP "unusable"
-> > memory reported by firmware.
-> 
-> It makes sense, there aren't many places or nomap is called.
-> 
-> I think arch_reserve_mem_area() called from acpi_table_upgrade() also
-> follows a memblock allocation. But I'd call kmemleak in
-> acpi_table_upgrade() directly rather than in the arch back-end.
+On Wed 20-10-21 11:07:02, Vasily Averin wrote:
+[...]
+I haven't read through the changelog and only focused on the patch this
+time.
 
-Hmm, not sure this is correct for x86. I don't see why can't it track the
-memory allocated in acpi_table_upgrade().
- 
-> Regarding which callback, I think kmemleak_ignore_phys() is better
-> suited here since kmemleak still keeps track of the object but won't
-> scan it.
+[...]
+> @@ -1810,11 +1810,21 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
+>  		mem_cgroup_oom_notify(memcg);
+>  
+>  	mem_cgroup_unmark_under_oom(memcg);
+> -	if (mem_cgroup_out_of_memory(memcg, mask, order))
+> +	if (mem_cgroup_out_of_memory(memcg, mask, order)) {
+>  		ret = OOM_SUCCESS;
+> -	else
+> +	} else {
+>  		ret = OOM_FAILED;
+> -
+> +		/*
+> +		 * In some rare cases mem_cgroup_out_of_memory() can return false.
+> +		 * If it was called from #PF it forces handle_mm_fault()
+> +		 * return VM_FAULT_OOM and executes pagefault_out_of_memory().
+> +		 * memcg_in_oom is set here to notify pagefault_out_of_memory()
+> +		 * that it was a memcg-related failure and not allow to run
+> +		 * global OOM.
+> +		 */
+> +		if (current->in_user_fault)
+> +			current->memcg_in_oom = (struct mem_cgroup *)ret;
+> +	}
+>  	if (locked)
+>  		mem_cgroup_oom_unlock(memcg);
+>  
+> @@ -1848,6 +1858,15 @@ bool mem_cgroup_oom_synchronize(bool handle)
+>  	if (!memcg)
+>  		return false;
+>  
+> +	/* OOM is memcg, however out_of_memory() found no victim */
+> +	if (memcg == (struct mem_cgroup *)OOM_FAILED) {
+> +		/*
+> +		 * Should be called from pagefault_out_of_memory() only,
+> +		 * where it is used to prevent false global OOM.
+> +		 */
+> +		current->memcg_in_oom = NULL;
+> +		return true;
+> +	}
+>  	if (!handle)
+>  		goto cleanup;
 
-Ok.
+I have to say I am not a great fan of this but this belongs to a
+separate patch on top of all the previous ones.
 
+[...]
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 831340e7ad8b..1deef8c7a71b 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -1137,6 +1137,9 @@ void pagefault_out_of_memory(void)
+>  	if (mem_cgroup_oom_synchronize(true))
+>  		return;
+>  
+> +	if (fatal_signal_pending(current))
+> +		return;
+> +
+
+This belongs to its own patch as well.
+
+All that being said I would go with pagefault_out_of_memory as the first
+patch because it is necessary to handle charge failures. Then go with a
+patch to remove charge forcing when OOM killer succeeds but the retry
+still fails and finally go with one that tries to handle oom failures.
 -- 
-Sincerely yours,
-Mike.
+Michal Hocko
+SUSE Labs
