@@ -2,222 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6015F434F0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B802C434F0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhJTPbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        id S230411AbhJTPcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhJTPbs (ORCPT
+        with ESMTP id S230103AbhJTPcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:31:48 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB617C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:29:32 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id y26so15813287lfa.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:29:32 -0700 (PDT)
+        Wed, 20 Oct 2021 11:32:19 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468CCC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:30:05 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so2693800pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:30:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=UMdAoVFIhl3czaYgk2OotAFW/32miY21nGYq90E2yNk=;
-        b=EmM0TUp3LIwQNkWIMM3N3upt8Tyl2cRqFSM9RUGVXSqTBiEmLPPCB8pP04ANti3DLS
-         +RFzA+NmLhGf9BR/Y/oDFkvGrMbriLYobE1I8+LJl175qbJJa1VRXoiOXTSCa5v9zVCE
-         UlIp0OPXBGaAFHu/ozkxqJZ0+F2KBfkJmPNXJdlr6ur75srQiCaA7ZRNjlWPY2o73O0Q
-         rVIq2ZovJni79fY0ADa8EUao6AgaY84E3dsHczFB23VD6HJiAQVyTdIxIb4N5/vvxnGH
-         1r75hWNET1gRBGBierleWwIbLrioBpWVJzBmKddumYRrPImP21jvA3ItqXrk4XYyT7wY
-         Rosg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZePVF3V7BcESfRNnGF6GTdR3Cvza54d1sEiKXmmr/wc=;
+        b=ZflZqKw9g7+n7A5iR9n0w1lyAGwi2aijd2gYV/6Lt2NOjJV500Ztz3+XqHHIgLqN3d
+         tnh7meajXtVFv9TvVPvTG6uSdejxnABMIFiHaRerwlnPXxXjWyUTbev6k0N3jfGfJsy7
+         eUybpGEXb2ejp7Nmvak+9e63VAS21mUCBX+Ew=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to;
-        bh=UMdAoVFIhl3czaYgk2OotAFW/32miY21nGYq90E2yNk=;
-        b=yd0DpxpAw1zC0g8pleWJzm2dLg/dpny9x1UXrWAF/SFxD0mtsJwh/40hNBhtA3sqNq
-         wXj1heoXy8DN+vCf8HYGH34idFHmipWP9ydJDnxTmVywjmHUITKaj6SCF8l1KAgFPWRN
-         2qdFpJ41MYhXCVHmCN+68gE2zeo+LKpWeLHy8OoqKkAcE3dgWnm4w6SuX6QsJGe+/Grr
-         samlS/s4SFv9My1xXqIYr9haqeJ79tkbSA01BcMlvilH09dBFVIAbwHf1smfs6/qMvgS
-         rVYCbSqzAFNaf7U/pxaosO11+2lXvYv2Zoz4cS6OAkH3Faet1ZzXkknlrn34KIRMRm82
-         UFCw==
-X-Gm-Message-State: AOAM530SU+8WL4AenjZgHERqy7GznMNKmjJNWt6y96H+rtETQ4NnrC8C
-        xvSamNDs0IcTx6ecvCZwHM41TbUM2EG+Kz5NTg==
-X-Google-Smtp-Source: ABdhPJzNoWr+4RA8kPrclvviwP24rNG+gQqfK1Q/q3kIiWlqxGGy+iIIz1i7JFK2tqGlrazJKAW9C9IFHe1jnaNAdYI=
-X-Received: by 2002:a05:6512:3393:: with SMTP id h19mr88798lfg.363.1634743770855;
- Wed, 20 Oct 2021 08:29:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZePVF3V7BcESfRNnGF6GTdR3Cvza54d1sEiKXmmr/wc=;
+        b=b/SnjROQM1sqcZvokW/n+BA3te2n4vGq3elYnIH1ixhZ0fmiEIleFAFir2cT/OS5lj
+         agp4NN7ka9VHFJUcCntCs/dZoTDTvzHLQlB2kI0B+6fyF9WKB5qhT3zn6eSV5udhnkZ9
+         ULajNii4C9n2rBR/Huv5SH4RK1e+mIUXxA12oReCsKS0/wUZNo0Z/M32q5DCi2yzm0hy
+         ar/sjuhP4srdrGEtJYWSY9DSuh7vBGMny2ELr9GhpRZR4gR1p69v8kwVDfBYAs63U2d+
+         YiSWkiWXlWGNk8CR9OkTSG1iDL3mL+b4y/hJMISBJx3lJPzsuDfuc2lT+35yVOL8Zu67
+         2+Og==
+X-Gm-Message-State: AOAM531pby5q2H0JlcZl5kGkxQemhWqWUlc3EW85fArYYevx4HubcI67
+        Ytplb6VIrVnwGF/5l2oOLt8weg==
+X-Google-Smtp-Source: ABdhPJywAZ0vjVwOr64P3L5GvlqlYhw8Xzr5r0oGdvyzC00QTHlqQzksEQM/GUrbly31pMOCIvvD3g==
+X-Received: by 2002:a17:90b:2404:: with SMTP id nr4mr682253pjb.40.1634743804142;
+        Wed, 20 Oct 2021 08:30:04 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:d5fe:85e9:caf2:ec4e])
+        by smtp.gmail.com with UTF8SMTPSA id d137sm3162168pfd.72.2021.10.20.08.30.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 08:30:03 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 08:30:02 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     tjiang@codeaurora.org
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for variant WCN6855 by
+ using different nvm
+Message-ID: <YXA1+tEiCoY8yPRR@google.com>
+References: <81add00a4a038008e9f734c5f5e5b712@codeaurora.org>
+ <YW8csSr/I1IRgAaT@google.com>
+ <39ca0c9102265d6e14f3e0da94fec40d@codeaurora.org>
 MIME-Version: 1.0
-Received: by 2002:aa6:db8c:0:b0:146:fb71:7c3c with HTTP; Wed, 20 Oct 2021
- 08:29:29 -0700 (PDT)
-Reply-To: MalenganiMachel@hotmail.com
-In-Reply-To: <CAGkETbHZjw-YVsnpSyN8nw-w5PA-upWZFKn3ErQwVJa+dbCiTg@mail.gmail.com>
-References: <CAGkETbFi6VUai756VjyPKvu-=UWv9S2vTMpVqVF_oE6Wb37v4w@mail.gmail.com>
- <CAGkETbFOR3OVeXDk2B-BshxDoyouBxH02Oo7chMx9=3ksBYHDQ@mail.gmail.com>
- <CAGkETbGDBaS0PFcuaOLT8noG5b+p6L1YAFFa0eaqcgqczJct-g@mail.gmail.com>
- <CAGkETbHvON+aK=F8ZEewfrvq-jQzqxfDt9hAtB41aJGhG5eM1Q@mail.gmail.com>
- <CAGkETbG+31aUD8aapM=sfjQdkOh2hr38GusF2M+LKTTE0EkeuA@mail.gmail.com>
- <CAGkETbH0gD0iKHzxdeDfsj4-TdSKZTY-aGQ1nHjbnxODAyN4KA@mail.gmail.com>
- <CAGkETbF-1c6RzwTRZ+F1gVmMc4srPUMSjhRxbx7d=VxmbxJQ0w@mail.gmail.com>
- <CAGkETbHFdMKXmNDcgkE4dOd4agmv9MqiA4NB_7f3qjpYDXFArA@mail.gmail.com>
- <CAGkETbFRx0W+wqcu4p33v+v-tLvqfg5bkaqRkEZJ5AKLUWf_=w@mail.gmail.com> <CAGkETbHZjw-YVsnpSyN8nw-w5PA-upWZFKn3ErQwVJa+dbCiTg@mail.gmail.com>
-From:   MRS GRACA MACHEL <drmrsjessicamaximilian@gmail.com>
-Date:   Wed, 20 Oct 2021 08:29:29 -0700
-Message-ID: <CAGkETbE+-BkmA0Ec44+aDQ-HrYavNjcnDxW57EvOMW=ihiTHuQ@mail.gmail.com>
-Subject: PLEASE
-To:     undisclosed-recipients:;
-Content-Type: multipart/mixed; boundary="000000000000c2d46605ceca711d"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <39ca0c9102265d6e14f3e0da94fec40d@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000c2d46605ceca711d
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Oct 20, 2021 at 12:00:52PM +0800, tjiang@codeaurora.org wrote:
+> Thanks Matthias for the comments. please see my comments inline .
+> 
+> BTW: marcel , do you agree with Matthias comments ? if fine , I will align
+> Matthias comments and make the final version.
+> 
+> regards.
+> tim
+> On 2021-10-20 03:29, Matthias Kaehlcke wrote:
+> > On Tue, Oct 12, 2021 at 03:55:56PM +0800, tjiang@codeaurora.org wrote:
+> > > the RF performance of wcn6855 soc chip from different foundries will
+> > > be
+> > > difference, so we should use different nvm to configure them.
+> > > 
+> > > Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+> > > ---
+> > >  drivers/bluetooth/btusb.c | 56
+> > > +++++++++++++++++++++++++++++++++++------------
+> > >  1 file changed, 42 insertions(+), 14 deletions(-)
+> > > 
+> > > diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> > > index 75c83768c257..f352ff351b61 100644
+> > > --- a/drivers/bluetooth/btusb.c
+> > > +++ b/drivers/bluetooth/btusb.c
+> > > @@ -3190,6 +3190,9 @@ static int btusb_set_bdaddr_wcn6855(struct
+> > > hci_dev
+> > > *hdev,
+> > >  #define QCA_DFU_TIMEOUT		3000
+> > >  #define QCA_FLAG_MULTI_NVM      0x80
+> > > 
+> > > +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+> > > +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+> > > +
+> > >  struct qca_version {
+> > >  	__le32	rom_version;
+> > >  	__le32	patch_version;
+> > > @@ -3221,6 +3224,7 @@ static const struct qca_device_info
+> > > qca_devices_table[] = {
+> > >  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+> > >  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+> > >  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+> > > +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+> > >  };
+> > > 
+> > >  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8
+> > > request,
+> > > @@ -3375,6 +3379,43 @@ static int btusb_setup_qca_load_rampatch(struct
+> > > hci_dev *hdev,
+> > >  	return err;
+> > >  }
+> > > 
+> > > +static void btusb_generate_qca_nvm_name(char *fwname,
+> > > +					size_t max_size,
+> > > +					struct qca_version *ver)
+> > 
+> > => const struct qca_version *ver
+> > 
+> > > +{
+> > > +	u32 rom_version = le32_to_cpu(ver->rom_version);
+> > > +	u16 flag = le16_to_cpu(ver->flag);
+> > > +
+> > > +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> > > +		u16 board_id = le16_to_cpu(ver->board_id);
+> > > +		u32 ram_version = le32_to_cpu(ver->ram_version);
+> > > +		const char *variant;
+> > > +
+> > > +		switch (ram_version) {
+> > > +		case WCN6855_2_0_RAM_VERSION_GF:
+> > > +		case WCN6855_2_1_RAM_VERSION_GF:
+> > > +			variant = "_gf";
+> > > +			break;
+> > > +		default:
+> > > +			variant = "";
+> > 
+> > instead of the default branch you could assign a default to 'variant' at
+> > declaration time, but it's fine either way.
+> 
+> [Tim] this code style is recommend by marcel.
 
-Regards in Sincerity,
-Mrs Graca Machel
+Both are ok, if Marcel prefers the default branch let's keep it that way.
 
---000000000000c2d46605ceca711d
-Content-Type: application/pdf; name="PLEASE BE MY RELIABLE PARTNER.pdf"
-Content-Disposition: attachment; 
-	filename="PLEASE BE MY RELIABLE PARTNER.pdf"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: file0
+> > 
+> > > +			break;
+> > > +		}
+> > > +
+> > > +		/* if boardid equal 0, use default nvm without suffix */
+> > 
+> > delete the comment, it just states the obvious
+> > 
+> > > +		if (board_id == 0x0) {
+> > 
+> > nit: is there really any value in using a hex number here instead of a
+> > plain decimal 0?
+> 
+> [Tim] this line is inherit from last change , if you think I should change
+> 0x0 to 0 , I am fine.
 
-JVBERi0xLjUKJeLjz9MKMSAwIG9iago8PCAKICAgL1R5cGUgL0NhdGFsb2cKICAgL1BhZ2VzIDIg
-MCBSCiAgIC9QYWdlTGF5b3V0IC9PbmVDb2x1bW4KICAgL1BhZ2VNb2RlIC9Vc2VOb25lCj4+CmVu
-ZG9iagoyIDAgb2JqCjw8IAogICAvVHlwZSAvUGFnZXMKICAgL0tpZHMgWzMgMCBSIF0KICAgL0Nv
-dW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwgCiAgIC9UeXBlIC9QYWdlCiAgIC9QYXJlbnQgMiAw
-IFIKICAgL1Jlc291cmNlcyA8PCAKICAgL1Byb2NTZXQgWy9QREYgL1RleHQgXQogICAvRm9udCA8
-PCAKICAgL0YxIDYgMCBSCj4+Cj4+CiAgIC9NZWRpYUJveCBbMCAwIDU5NSA4NDJdCiAgIC9Db250
-ZW50cyA0IDAgUgo+PgplbmRvYmoKNCAwIG9iago8PCAKICAgL0ZpbHRlciAvRmxhdGVEZWNvZGUK
-ICAgL0xlbmd0aCA1Mjk4Cj4+CnN0cmVhbQp4XsUd2W4jx/FdX6EAMaABLO5Mz8VxXhIfiW3ESWyv
-kQfbSKQlV1K0y5F3Tcfrz/AXp6uqu46eoahpGgiCbETOsLruq6s7P5z9cPbh87Nnf67Oq3o1uPPn
-L8/Kc/jPm5uzcjUMwxo/+cfr87UbVv6N12ffXnxcXLqLbXHZXFzBP2+K9uK8uFxffFV8f/7887NP
-np99+WTI7XpVGuAI91XhLu6KaqAFrovLqvff+c/4FBf7R4HLuwrX/9G/0l7sCv/eNuL0fgY6VeNW
-bafxOc+B4inyr1SngeiHflU2BOLDoqqAMk8u8mFElvzE9G7eB54gY0QwL+CfW3gHH2yIXe/4C2Ia
-voDv/+i5jg8e8OPb4rKnf7b8ER9fIwhZ8bOoALTA66Lu9OeXhXMoEPqIct0EBNzFSLghPXcsYgFO
-wt/DigE/1wb9cAQ66oT//ga+FK5ElP2T11Z7drSscGgUBPDLo1gE7PH7SGxDGojL/peNhO1D8XtL
-KmFNoetWXWPEnqs5a/9NRyBesDoA01B5/sB8RK68I5kjJSKmd8aWFmmWB4yMFI0RQUdt86+LnIR/
-CpVXbP8iEHwMMt7JUp8WVcOoKbD+T3xrNdXTw0h4lF1zsX/p34y6FTwMmVmCKdkia4SYTfIeA8CH
-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
-yWEwVCKGuzkgoDRUQDZae73wlfo+6hJzFveeonc87XzYYD942gLTS9PwVhm1hLrbRW1JJUfk/PeP
-Hm5zF3/0EivDXq3XuNodDhL0+xhvNAWMMSFZ0uFSaCCus65gc60h9Ti75kDAhMGJQODaFL4nPxNA
-I9eMy8RLlBJFTE6ZJylgbLhN5mfnz7bl7ChUde1l1px8GbprVq72Uhfl5F0ZJCXnsnJoRmUg4wMa
-zO1ohDKJksvZm3SXG+atqeQMMuV8jwT5KVwVwmEBqzTxkwjhk0JVqbbizvGg0MFsNMpZNPf0f7nH
-QPLG991J8+jL0Yb52YO0f3n2P32354UKZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8IAogICAv
-UHJvZHVjZXIgPEZFRkYwMDY0MDA2RjAwNTAwMDQ0MDA0NjAwMjAwMDU2MDA2NTAwNzIwMDIwMDAz
-NzAwMkUwMDMzMDAyMDAwNDIwMDc1MDA2OTAwNkMwMDY0MDAyMDAwMzQwMDMwMDAzMDAwMjAwMDI4
-MDA1NzAwNjkwMDZFMDA2NDAwNkYwMDc3MDA3MzAwMjAwMDU4MDA1MDAwMjAwMDUwMDA3MjAwNkYw
-MDY2MDA2NTAwNzMwMDczMDA2OTAwNkYwMDZFMDA2MTAwNkMwMDIwMDA0NTAwNjQwMDY5MDA3NDAw
-NjkwMDZGMDA2RTAwMjAwMDIwMDAyODAwNTMwMDUwMDAyMDAwMzIwMDI5MDAyMDAwMkQwMDIwMDA1
-NjAwNjUwMDcyMDA3MzAwNjkwMDZGMDA2RTAwM0EwMDIwMDAzNTAwMkUwMDMxMDAyRTAwMzIwMDM2
-MDAzMDAwMzAwMDIwMDAyODAwNzgwMDM4MDAzNjAwMjkwMDI5PgogICAvQ3JlYXRpb25EYXRlIChE
-OjIwMjExMDIwMTcwMzQxLTA3JzAwJykKPj4KZW5kb2JqCjYgMCBvYmoKPDwgCiAgIC9UeXBlIC9G
-b250CiAgIC9TdWJ0eXBlIC9UcnVlVHlwZQogICAvRm9udERlc2NyaXB0b3IgNyAwIFIKICAgL0Jh
-c2VGb250IC9UaW1lc05ld1JvbWFuUFNNVAogICAvRmlyc3RDaGFyIDAKICAgL0xhc3RDaGFyIDI1
-NQogICAvV2lkdGhzIDggMCBSCiAgIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCj4+CmVuZG9i
-ago3IDAgb2JqCjw8IAogICAvVHlwZSAvRm9udERlc2NyaXB0b3IKICAgL0ZvbnROYW1lIC9UaW1l
-c05ld1JvbWFuUFNNVAogICAvQXNjZW50IDY5MwogICAvQ2FwSGVpZ2h0IDY5MwogICAvRGVzY2Vu
-dCAtMjE2CiAgIC9GbGFncyAzMgogICAvRm9udEJCb3ggWy01NjggLTMwNyAyMDAwIDEwMDddCiAg
-IC9JdGFsaWNBbmdsZSAwCiAgIC9TdGVtViA4NwogICAvWEhlaWdodCA0NTcKPj4KZW5kb2JqCjgg
-MCBvYmoKWzc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3
-OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4IDc3OCA3NzggNzc4
-IDc3OCA3NzggNzc4IDc3OCA3NzggMjUwIDMzMyA0MDggNTAwIDUwMCA4MzMgNzc4IDE4MCAzMzMg
-MzMzIDUwMCA1NjQgMjUwIDMzMyAyNTAgMjc4IDUwMCA1MDAgNTAwIDUwMCA1MDAgNTAwIDUwMCA1
-MDAgNTAwIDUwMCAyNzggMjc4IDU2NCA1NjQgNTY0IDQ0NCA5MjEgNzIyIDY2NyA2NjcgNzIyIDYx
-MSA1NTYgNzIyIDcyMiAzMzMgMzg5IDcyMiA2MTEgODg5IDcyMiA3MjIgNTU2IDcyMiA2NjcgNTU2
-IDYxMSA3MjIgNzIyIDk0NCA3MjIgNzIyIDYxMSAzMzMgMjc4IDMzMyA0NjkgNTAwIDMzMyA0NDQg
-NTAwIDQ0NCA1MDAgNDQ0IDMzMyA1MDAgNTAwIDI3OCAyNzggNTAwIDI3OCA3NzggNTAwIDUwMCA1
-MDAgNTAwIDMzMyAzODkgMjc4IDUwMCA1MDAgNzIyIDUwMCA1MDAgNDQ0IDQ4MCAyMDAgNDgwIDU0
-MSAzNTAgNTAwIDM1MCAzMzMgNTAwIDQ0NCAxMDAwIDUwMCA1MDAgMzMzIDEwMDAgNTU2IDMzMyA4
-ODkgMzUwIDYxMSAzNTAgMzUwIDMzMyAzMzMgNDQ0IDQ0NCAzNTAgNTAwIDEwMDAgMzMzIDk4MCAz
-ODkgMzMzIDcyMiAzNTAgNDQ0IDcyMiAyNTAgMzMzIDUwMCA1MDAgNTAwIDUwMCAyMDAgNTAwIDMz
-MyA3NjAgMjc2IDUwMCA1NjQgMzMzIDc2MCA1MDAgNDAwIDU0OSAzMDAgMzAwIDMzMyA1NzYgNDUz
-IDI1MCAzMzMgMzAwIDMxMCA1MDAgNzUwIDc1MCA3NTAgNDQ0IDcyMiA3MjIgNzIyIDcyMiA3MjIg
-NzIyIDg4OSA2NjcgNjExIDYxMSA2MTEgNjExIDMzMyAzMzMgMzMzIDMzMyA3MjIgNzIyIDcyMiA3
-MjIgNzIyIDcyMiA3MjIgNTY0IDcyMiA3MjIgNzIyIDcyMiA3MjIgNzIyIDU1NiA1MDAgNDQ0IDQ0
-NCA0NDQgNDQ0IDQ0NCA0NDQgNjY3IDQ0NCA0NDQgNDQ0IDQ0NCA0NDQgMjc4IDI3OCAyNzggMjc4
-IDUwMCA1MDAgNTAwIDUwMCA1MDAgNTAwIDUwMCA1NDkgNTAwIDUwMCA1MDAgNTAwIDUwMCA1MDAg
-NTAwIDUwMCBdCmVuZG9iagp4cmVmCjAgOSAKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDE1
-IDAwMDAwIG4gCjAwMDAwMDAxMTkgMDAwMDAgbiAKMDAwMDAwMDE4NyAwMDAwMCBuIAowMDAwMDAw
-MzYzIDAwMDAwIG4gCjAwMDAwMDU3NDEgMDAwMDAgbiAKMDAwMDAwNjE5MCAwMDAwMCBuIAowMDAw
-MDA2Mzg2IDAwMDAwIG4gCjAwMDAwMDY2MTAgMDAwMDAgbiAKdHJhaWxlcgo8PCAKICAgL1Jvb3Qg
-MSAwIFIKICAgL0luZm8gNSAwIFIKICAgL1NpemUgOQo+PgpzdGFydHhyZWYKNzY1NQolJUVPRgo=
---000000000000c2d46605ceca711d--
+Since this patch touches/moves this code it seems a good opportunity to clean
+things up a bit. It's also true that there are quite a few instances of this
+and comparisons with '0x00' in other parts of the kernel, so I guess it's
+also fine to leave it as is.
