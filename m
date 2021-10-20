@@ -2,132 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB4A435521
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8CE43552A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhJTVRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:17:05 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:45623 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbhJTVRE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:17:04 -0400
-Received: by mail-ot1-f54.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so9804655otq.12;
-        Wed, 20 Oct 2021 14:14:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=FqHQxiZxwpwoHOeUejJBI/puDRrvMLtd3ZP39nADFy4=;
-        b=HHGqxD4xPEGY/gTrMB4OMyE5Xmg6jSdD/3kEFeKLzhNEddKWTsLQZfGXYdv1BLh2le
-         ABpNUTgQevw6CVD+sfZ2ir8LvZ1b8VFJXaFl0ahrCTg3BWq73ZqvCDXfh8ZqsPp49xbS
-         bUOH1TiTi/L9ygDwgpVRZW77Q9iP9l6wJ2qPf65Htm/9sDcrvdmXZVVlfjyW2b848f80
-         gWi1PuBKtn83a+x3WsXxGJ8Ukl5X7V2qHaalTTpVxnVw5yRjfj3BW+KsAyblhCM2rs0N
-         dX0QNFt+K80Mcmr4cQBjctjbUbi1b3qTcMAvYT4ye/FrCw6alQr736/NWbv+MuMYWv2A
-         3iJg==
-X-Gm-Message-State: AOAM533Ag0IloWqFl33xq3FwLsuITad2m2lxjF3pjtr+0ikLBQgt3aBH
-        EKadf7tuIb6Vt4zGBoCWHqrV383qpw==
-X-Google-Smtp-Source: ABdhPJydY4OKhyFAzzRNT+vCw1CPPIY1+7r+oim4QB91AmD3aJAyBsk5LyoVHeAHr7EjFFgg3a4JKg==
-X-Received: by 2002:a9d:7283:: with SMTP id t3mr1383112otj.268.1634764489116;
-        Wed, 20 Oct 2021 14:14:49 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id h91sm658707otb.38.2021.10.20.14.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 14:14:48 -0700 (PDT)
-Received: (nullmailer pid 2962584 invoked by uid 1000);
-        Wed, 20 Oct 2021 21:14:47 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Julien Su <juliensu@mxic.com.tw>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Mark Brown <broonie@kernel.org>,
-        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
-        devicetree@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-In-Reply-To: <20211020142809.349347-4-miquel.raynal@bootlin.com>
-References: <20211020142809.349347-1-miquel.raynal@bootlin.com> <20211020142809.349347-4-miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 03/18] dt-bindings: mtd: nand-chip: Create a NAND chip description
-Date:   Wed, 20 Oct 2021 16:14:47 -0500
-Message-Id: <1634764487.024191.2962583.nullmailer@robh.at.kernel.org>
+        id S231328AbhJTVRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:17:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231445AbhJTVRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 17:17:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C3ED610EA;
+        Wed, 20 Oct 2021 21:14:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634764497;
+        bh=V/+W4v5tNf/2ivT8N+EbTjrcdmFRUPSG/ga808dBaC4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=R/f+9p4e76pt2xgbttYPaiEwLEWIMzADvFUB/0U6ij35Y3LB6ATEJpgLLGSSC4TOu
+         6Ry7EHkWcrNypsT0HXUmmcCVg56VN0sAxtFq21gVNO3yYCFXI7jqC0/WYC4I6l4uA+
+         sH9FC4JfzD1tcsK936Zox75YD3Jf+t2dMm7KLZb63x5K/HpjjROoNfF1vUwG8qgkBx
+         yN6xm0N/xngEqEFLgWXcDRrrexGvdr2b1jCdhexqeuKwlPnaz3nShceWS9Ey+7RDpE
+         ekXEHip7TDoZz1BYEkzETe2ooqkHYVtLh/VyQ4nsWxyDBm31z/6i9WUrfXo/Bla8X6
+         m9WA40qY89eMQ==
+Date:   Wed, 20 Oct 2021 16:14:55 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Benoit =?iso-8859-1?Q?Gr=E9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>, stable@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH v5 1/2] x86/PCI: Ignore E820 reservations for bridge
+ windows on newer systems
+Message-ID: <20211020211455.GA2641031@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bfbac749-7434-1497-039b-3b8bc4dc5499@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 16:27:54 +0200, Miquel Raynal wrote:
-> Move the NAND chip description out of the NAND controller file. Indeed,
-> a subsequent part of the properties supported by a raw NAND chip are
-> also supported by SPI-NAND chips. So let's create a generic NAND chip
-> description which will be pulled by nand-controller.yaml and later by
-> spi-nand.yaml as well.
+On Wed, Oct 20, 2021 at 12:23:26PM +0200, Hans de Goede wrote:
+> On 10/19/21 23:52, Bjorn Helgaas wrote:
+> > On Thu, Oct 14, 2021 at 08:39:42PM +0200, Hans de Goede wrote:
+> >> Some BIOS-es contain a bug where they add addresses which map to system
+> >> RAM in the PCI host bridge window returned by the ACPI _CRS method, see
+> >> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
+> >> space").
+> >>
+> >> To work around this bug Linux excludes E820 reserved addresses when
+> >> allocating addresses from the PCI host bridge window since 2010.
+> >> ...
+
+> > I haven't seen anybody else eager to merge this, so I guess I'll stick
+> > my neck out here.
+> > 
+> > I applied this to my for-linus branch for v5.15.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../devicetree/bindings/mtd/nand-chip.yaml    | 71 +++++++++++++++++++
->  .../bindings/mtd/nand-controller.yaml         | 53 ++------------
->  2 files changed, 75 insertions(+), 49 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/nand-chip.yaml
+> Thank you, and sorry about the build-errors which the lkp
+> kernel-test-robot found.
 > 
+> I've just send out a patch which fixes these build-errors
+> (verified with both .config-s from the lkp reports).
+> Feel free to squash this into the original patch (or keep
+> them separate, whatever works for you).
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Thanks, I squashed the fix in.
 
-yamllint warnings/errors:
+HOWEVER, I think it would be fairly risky to push this into v5.15.
+We would be relying on the assumption that current machines have all
+fixed the BIOS defect that 4dc2287c1805 addressed, and we have little
+evidence for that.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/brcm,brcmnand.example.dt.yaml: nand-controller@f0442800: nand@1: '#address-cells', '#size-cells', 'compatible', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/brcm,brcmnand.example.dt.yaml: nand-controller@f0442800: nand@1: '#address-cells', '#size-cells', 'compatible', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/brcm,brcmnand.example.dt.yaml: nand-controller@10000200: nand@0: '#address-cells', '#size-cells', 'compatible', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/brcm,brcmnand.example.dt.yaml: nand-controller@10000200: nand@0: '#address-cells', '#size-cells', 'compatible', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/ingenic,nand.example.dt.yaml: nand-controller@1: nand@1: 'nand-ecc-mode', 'nand-on-flash-bbt', 'partitions' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/ingenic,nand.example.dt.yaml: nand-controller@1: nand@1: 'nand-ecc-mode', 'nand-on-flash-bbt', 'partitions' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.example.dt.yaml: nand-controller@ff4b0000: nand@0: 'label', 'nand-bus-width', 'nand-ecc-mode', 'nand-is-boot-medium', 'rockchip,boot-blks', 'rockchip,boot-ecc-strength' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.example.dt.yaml: nand-controller@ff4b0000: nand@0: 'label', 'nand-bus-width', 'nand-ecc-mode', 'nand-is-boot-medium', 'rockchip,boot-blks', 'rockchip,boot-ecc-strength' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.example.dt.yaml: nand-controller@58002000: nand@0: '#address-cells', '#size-cells', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.example.dt.yaml: nand-controller@58002000: nand@0: '#address-cells', '#size-cells', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/intel,lgm-nand.example.dt.yaml: nand-controller@e0f00000: nand@0: 'nand-ecc-mode' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/intel,lgm-nand.example.dt.yaml: nand-controller@e0f00000: nand@0: 'nand-ecc-mode' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/qcom,nandc.example.dt.yaml: nand-controller@1ac00000: nand@0: 'nand-bus-width', 'partitions' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/qcom,nandc.example.dt.yaml: nand-controller@1ac00000: nand@0: 'nand-bus-width', 'partitions' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/qcom,nandc.example.dt.yaml: nand-controller@79b0000: nand@0: 'nand-bus-width', 'partitions' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/qcom,nandc.example.dt.yaml: nand-controller@79b0000: nand@0: 'nand-bus-width', 'partitions' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dt.yaml: nand-controller@4,0: nand@0: '#address-cells', '#size-cells', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dt.yaml: nand-controller@4,0: nand@0: '#address-cells', '#size-cells', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+I'm not sure there's significant benefit to having this in v5.15.
+Yes, the mainline v5.15 kernel would work on the affected machines,
+but I suspect most people with those machines are running distro
+kernels, not mainline kernels.
 
-doc reference errors (make refcheckdocs):
+This issue has been around a long time, so it's not like a regression
+that we just introduced.  If we fixed these machines and regressed
+*other* machines, we'd be worse off than we are now.
 
-See https://patchwork.ozlabs.org/patch/1543921
+Convince me otherwise if you see this differently :)
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+In the meantime, here's another possibility for working around this.
+What if we discarded remove_e820_regions() completely, but aligned the
+problem _CRS windows a little more?  The 4dc2287c1805 case was this:
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+  BIOS-e820: 00000000bfe4dc00 - 00000000c0000000 (reserved)
+  pci_root PNP0A03:00: host bridge window [mem 0xbff00000-0xdfffffff]
 
-pip3 install dtschema --upgrade
+where the _CRS window was of size 0x20100000, i.e., 512M + 1M.  At
+least in this particular case, we could avoid the problem by throwing
+away that first 1M and aligning the window to a nice 3G boundary.
+Maybe it would be worth giving up a small fraction (less than 0.2% in
+this case) of questionable windows like this?
 
-Please check and re-submit.
-
+Bjorn
