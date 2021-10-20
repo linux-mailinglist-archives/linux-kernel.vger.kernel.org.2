@@ -2,67 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F99E435083
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B9A43509C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhJTQro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:47:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230020AbhJTQrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:47:31 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 906E761355;
-        Wed, 20 Oct 2021 16:45:14 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 17:49:32 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Peter Rosin <peda@axentia.se>, kernel@axis.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-iio@vger.kernel.org,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        lars@metafoo.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/3] dt-bindings: iio: io-channel-mux: allow duplicate
- channel, labels
-Message-ID: <20211020174932.3d315769@jic23-huawei>
-In-Reply-To: <YW833Ty3IwyBrKD3@robh.at.kernel.org>
-References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
-        <20211007134641.13417-3-vincent.whitchurch@axis.com>
-        <815d858d-3c67-c184-2413-9d6b487a853e@axentia.se>
-        <YW833Ty3IwyBrKD3@robh.at.kernel.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230383AbhJTQwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhJTQwJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 12:52:09 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32187C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:49:54 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id r19so16254730lfe.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IOdWtSL7/26YG/E7X5+U7QmZ/wOmRVmoFWssnqUWGa4=;
+        b=j1GayWZ93xM5QWyR/JLKgf4xz7GB17Q6Gu8fl9WkGpkjjaReEZzAtdD3Qz9Fec5bF+
+         P9AhtNx9psecdAq+VTHHIIUpouXGQ1ju65OQ5jDJ/WBqBFsbykwWFUA0PMQfKAbfKWO6
+         gzlPQI1j3F3qhgQi42w+k2AoGY5e/tb7FN4EuRd92OjhLuIaKk5EypuGXxownY1uVOyl
+         D2BwFsTFG6zsgkqGh4a3Vmbs6uH4tn42sZL10judaFu0mb1j1v/NrKkLoXsxQFG090Cy
+         7NZs8Qf3stKa1SGFUtsHSb/8oLMIzeIuCViofVVRPXA89iNHUHITjjwNPLf6+RcU6xfd
+         tPWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IOdWtSL7/26YG/E7X5+U7QmZ/wOmRVmoFWssnqUWGa4=;
+        b=VyQ61wZH23GUHwVsdukSQ9hFu/IoasmBzD63yu5eoXrrPkXYMP4hlVTILDJ191BeX6
+         A8ZiVfdgPDq5QGBh0g+o4LYFxipbhHVkuEwINAIDGem0xQt+B8dDJK4d9mAPoprLdPrb
+         eBanVw01TFf20HQXbMIdieE3U6FpeP+YiSUYsaV5a3fdjcAYbZ0HLE5PDHjizltTiwX9
+         mgejQxbCXIx4MLxxJAHND5inLH2qmRFj1J/ltjrQIDS4FxuQZ0sfFk4yC4mthl4w3oPS
+         96MqHCqtN22czNh5ukyfVZojgUNrMm86MK2Ns6QJATgG/ukik4q33jwlzRvrfRGakEAQ
+         S8fg==
+X-Gm-Message-State: AOAM532CIEsx50bAtV8H0dtRrhOjttgztdLMgD6Na844pWiFpNFP8VAC
+        9YJrK04Fps+xDhHIFMKQTxEizlwIeFGLVlLTugPjkA==
+X-Google-Smtp-Source: ABdhPJx5BWtVC4EkQcBZclMK3+NammoVJz1rJxchsvvww/JtbQZtriy3kjoebjiJcrtsHGq/OTcswKQNxY9GneGCEgM=
+X-Received: by 2002:a05:6512:404:: with SMTP id u4mr381580lfk.21.1634748592290;
+ Wed, 20 Oct 2021 09:49:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211011012212.91357-1-osk@google.com> <YW2l5yTj2Adc+Kjz@robh.at.kernel.org>
+In-Reply-To: <YW2l5yTj2Adc+Kjz@robh.at.kernel.org>
+From:   Oskar Senft <osk@google.com>
+Date:   Wed, 20 Oct 2021 12:49:36 -0400
+Message-ID: <CABoTLcTgbSKVH5+RoBsUdTUMbm59ePCbHbuJiFDQ17yvU1azrw@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] dt-bindings: hwmon: Add nct7802 bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 16:25:49 -0500
-Rob Herring <robh@kernel.org> wrote:
+Hi Rob
 
-> On Sat, 09 Oct 2021 00:11:30 +0200, Peter Rosin wrote:
-> > This is needed since an empty channel label is used to indicate an
-> > unused channel, and there can be more that one of those.
-> > 
-> > Fixes the following problem reported by dtbs_check:
-> > envelope-detector-mux: channels: ['', '', 'sync-1', 'in', 'out', 'sync-2', 'sys-reg', 'ana-reg'] has non-unique elements
-> > 	arch/arm/boot/dts/at91-tse850-3.dt.yaml
-> > 
-> > Suggested-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Peter Rosin <peda@axentia.se>
-> > ---
-> >  .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml  | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >   
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
+Thanks for the review comments!
 
-4 + 5 applied to the togreg branch of iio.git and pushed out as
-testing for 0-day to give it a dry run.
+> > +patternProperties:
+> > +  "^channel@[0-3]$":
+> > +    type: object
+>
+> I would move the 'additionalProperties' here. I think that's a bit
+> easier to read.
 
-Thanks,
+Following the same thought, I also moved the 'additionalProperties' on
+the top level up to above its 'properties'.
 
-Jonathan
+> blank line
+
+Thanks, I added the missing blank lines. I'm not sure what I was thinking.
+
+> > +            channel@0 { /* LTD */
+> > +              reg = <0>;
+> > +              status = "okay";
+>
+> Don't show status in examples.
+
+Oh yes, you mentioned that before, I'm sorry. They're removed now.
+
+I sent a PATCH v8 with the changes.
+
+Oskar.
