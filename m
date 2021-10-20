@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C9B434FED
+	by mail.lfdr.de (Postfix) with ESMTP id BE074434FEE
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbhJTQSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:18:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51904 "EHLO mail.kernel.org"
+        id S231311AbhJTQSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:18:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231260AbhJTQSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:18:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 699496139F;
-        Wed, 20 Oct 2021 16:16:04 +0000 (UTC)
+        id S231283AbhJTQSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 12:18:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 497C06139F;
+        Wed, 20 Oct 2021 16:16:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634746564;
-        bh=5PkqLT4ECl0sRroCFaaKmjtCpChdCyyra8q5enB/9ew=;
+        s=k20201202; t=1634746566;
+        bh=YE7Jt7aUOYFau65HPHt8oTB/a5uGLFYVuneqwzHdIbc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Go/TXNB7ylKy4lH3ll85Y6aboKceIgSKn7juTViiYmoCwKsD84sXzIHmLNit9/EJy
-         sQKliZl6XxM54ngKKL1aIJ2l9Zyf2Z1YBRwBbdQgd2X3MakbZd7ggvstJQqIVqYBgu
-         uVfmkMHxhOhzKswAkKtH847H7qTNMY2q+6rA5zmxMW9XcWkMxYtrWqWoUET/hLFaLo
-         /bsXPyreS2IMcmcM3kEfcCHo1/KWSU3v8UNUxyop0ZJiN8OFpkPg+cxFrffGvWbROh
-         WRpMSCPXk6uLMe2tM4Xpz7h5I795iIJ7AqEoYsCVi2C2Iz7aS7FsPs0z0zOFGANrtI
-         w15BbeVu0nrUg==
+        b=V7j8L/qr6FoonWtWo2Y5LwO0DevgeLUaV2j3/LFr3vxfHCqmKgCXoDqYxHESCbEpd
+         E7rTRj/91L6I1Bzfz0yMRfXaZ9JDDz/Pjh9FGvYtQ6Cq65Pe4eFgeHDagzEm9oJ2UK
+         dQ4KBM4Omto+QtBJrrEoOlpU86l+PlWtRybokrLCsLuBqUxCXW5Rj/5KQIuynCMNzu
+         NyruK6nCbcZgZRVlhcPrXUNyCrlAXqenYFqQDzaa/AxqMt1SnOnR2K2QBVYlG3EfsM
+         gq2c44kUj3npBpYM8ItoecNywjEh2g5VXdAoCBrNOVmW3GCZYyWMws+R5IzRbHkdkw
+         XUuHPAnbKATSg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6365D609D7;
-        Wed, 20 Oct 2021 16:16:04 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM fixes for Linus 5.15-rc7, take 2
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 429E8609F7;
+        Wed, 20 Oct 2021 16:16:06 +0000 (UTC)
+Subject: Re: [GIT PULL] NIOS2: fix for v5.15, part 2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211018183355.588382-1-pbonzini@redhat.com>
-References: <20211018183355.588382-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211018183355.588382-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 9f1ee7b169afbd10c3ad254220d1b37beb5798aa
+In-Reply-To: <20211018195945.2462739-1-dinguyen@kernel.org>
+References: <20211018195945.2462739-1-dinguyen@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211018195945.2462739-1-dinguyen@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dinguyen/linux.git tags/nios2_fixes_for_v5.15_part2
+X-PR-Tracked-Commit-Id: 4cce60f15c04d69eff6ffc539ab09137dbe15070
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0afe64bebb13509ef9a4be9deb18286b4c052c93
-Message-Id: <163474656440.19537.18443353896727542007.pr-tracker-bot@kernel.org>
-Date:   Wed, 20 Oct 2021 16:16:04 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+X-PR-Merge-Commit-Id: 1e59977463e9894e3d579d4e1e2a1dc81f456633
+Message-Id: <163474656626.19537.10781489373933987513.pr-tracker-bot@kernel.org>
+Date:   Wed, 20 Oct 2021 16:16:06 +0000
+To:     Dinh Nguyen <dinguyen@kernel.org>
+Cc:     torvalds@linux-foundation.org, dinguyen@kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 18 Oct 2021 14:33:55 -0400:
+The pull request you sent on Mon, 18 Oct 2021 14:59:45 -0500:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/dinguyen/linux.git tags/nios2_fixes_for_v5.15_part2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0afe64bebb13509ef9a4be9deb18286b4c052c93
+https://git.kernel.org/torvalds/c/1e59977463e9894e3d579d4e1e2a1dc81f456633
 
 Thank you!
 
