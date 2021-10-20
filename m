@@ -2,100 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AA043454D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2C9434556
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhJTGnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhJTGnp (ORCPT
+        id S229864AbhJTGpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:45:54 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35098 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhJTGpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:43:45 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD53AC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 23:41:31 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id f21so15436227plb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 23:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=otIQhWkkiTUCK7A8zqj4dcMFSS7Btq7zBo70rVUTfH8=;
-        b=pWiezsUCqWZue+ySifqtIfn3GEltgU49NBeZJ+/Mv7Zujj8l7Hm2jNPzH1bwOCVyMz
-         D3Jv+BmNDsABGLssv1QgrbFUey1rHeejyYKgEe3hSaQXr5VVyOmfRyleS8xqu+tsa6ri
-         rSKJvS9KSGbUnl12IStEH9pKrF2nY4ABM+I7zdTF0lmYLCF897/7uTh1W9wnslSdAPY1
-         R1q37pYCFuF33Fig2IqlydmRz9Su1RpohkNZ1/bp8L0tuDdf61TjEIVJ8/epYfcYu7rN
-         5swcvM3pm3s1Ezx+L73ZOdOEm41/+lFGWGqcXeQAMSXOyzNNorHrOZWaruylo9qJ69AX
-         i6AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=otIQhWkkiTUCK7A8zqj4dcMFSS7Btq7zBo70rVUTfH8=;
-        b=Da0IF2eLLERWT2rw1TGfkIEiIqtUm+mOqto/76Tiqb1vq0+A0AbVzg1FluKqj12kWg
-         XA9NvUYlwsF4UHBJdCGS+HjVhn+fFvMuDmQUdQQIJvQ5A+ThKac32W1nj3FO168ZSKRb
-         TJF5eocvrDJJ7JGNKp+OJ2rMpDutrvriqJ/zgcVA9l8I9/Hqccw70dkl1+7xbePTbDM9
-         8Xda3Foz11Kzs6mOUOJYMz2vxqrqhOOKcLFTbj7s3wjSsIF3OMbDkjs3JVEHGXOdy7n2
-         V6gHF35MkSAD9Jqh2KDI8CZjIqC6WD6VqKCMSlHs9DRedwV5tCaF03RmbaRzKJrGvsH/
-         5Iqg==
-X-Gm-Message-State: AOAM5308n618uV6xnyNn86PKL02oT24HKnmIArok9ogjFySuSJdYcpBm
-        nb9lg6mGqAm7sUtUa3XgmAzNXw==
-X-Google-Smtp-Source: ABdhPJzoKP4oeBg3gPjvGCznKOoVE1EtsQzbyyfVfWYL0UiXmVZmMMyypeV17+qxmo+F/34/IEinCA==
-X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr5163946pjb.197.1634712091178;
-        Tue, 19 Oct 2021 23:41:31 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id l6sm4665309pjy.23.2021.10.19.23.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 23:41:30 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 12:11:28 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
-Message-ID: <20211020064128.y2bjsbdmpojn7pjo@vireshk-i7>
-References: <20211019074647.19061-2-vincent.whitchurch@axis.com>
- <20211019080913.oajrvr2msz5enzvz@vireshk-i7>
- <YW6Rj/T6dWfMf7lU@kroah.com>
- <20211019094203.3kjzch7ipbdv7peg@vireshk-i7>
- <YW6pHkXOPvtidtwS@kroah.com>
- <20211019143748.wrpqopj2hmpvblh4@vireshk-i7>
- <YW8LFTcBuN1bB3PD@ninjato>
- <94aa39ab-4ed6-daee-0402-f58bfed0cadd@intel.com>
- <YW+q1yQ8MuhHINAs@kroah.com>
- <8e182ea8-5016-fa78-3d77-eefba7d58612@intel.com>
+        Wed, 20 Oct 2021 02:45:53 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E871121A74;
+        Wed, 20 Oct 2021 06:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634712217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rNHGewS1yJSMHeXcGNkiPH4/vSqZ+kkloqucx8CrHpg=;
+        b=xaE2gnmQOesLnomNZFvJ0r1pNN1Ha5LABsYOH5p9EvC62iNKUw3U+HkW9BHEOSHWmVkg57
+        v3e5QjRkN0kJ1LMa4LOcTq7lEbgvtEmIM7xkdKx+sZpMeGZ9qNOEI0qF8Jua8wWo2GWSXy
+        k1c4uaE+0f7BF7q5mqJQHYQ2yrySS/g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634712217;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rNHGewS1yJSMHeXcGNkiPH4/vSqZ+kkloqucx8CrHpg=;
+        b=hQautgroTigJwzFHF1d+IXOU6BywnWwjsMxbnt810LVJ8uC7aXRTFWkw0nwWrh6mRaIT74
+        k14k8MQMA7a4pcDQ==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 25BA9A3B81;
+        Wed, 20 Oct 2021 06:43:37 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 08:43:37 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Ming Lei <ming.lei@redhat.com>
+cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+In-Reply-To: <YW6OptglA6UykZg/@T590>
+Message-ID: <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
+References: <YWeR4moCRh+ZHOmH@T590> <YWiSAN6xfYcUDJCb@bombadil.infradead.org> <YWjCpLUNPF3s4P2U@T590> <YWjJ0O7K+31Iz3ox@bombadil.infradead.org> <YWk9e957Hb+I7HvR@T590> <YWm68xUnAofop3PZ@bombadil.infradead.org> <YWq3Z++uoJ/kcp+3@T590> <YW3LuzaPhW96jSBK@bombadil.infradead.org>
+ <YW4uwep3BCe9Vxq8@T590> <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz> <YW6OptglA6UykZg/@T590>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e182ea8-5016-fa78-3d77-eefba7d58612@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-21, 14:35, Jie Deng wrote:
-> Yes, but we need to know what's the best value to be configured for a
-> specific "other side".
+On Tue, 19 Oct 2021, Ming Lei wrote:
+
+> On Tue, Oct 19, 2021 at 08:23:51AM +0200, Miroslav Benes wrote:
+> > > > By you only addressing the deadlock as a requirement on approach a) you are
+> > > > forgetting that there *may* already be present drivers which *do* implement
+> > > > such patterns in the kernel. I worked on addressing the deadlock because
+> > > > I was informed livepatching *did* have that issue as well and so very
+> > > > likely a generic solution to the deadlock could be beneficial to other
+> > > > random drivers.
+> > > 
+> > > In-tree zram doesn't have such deadlock, if livepatching has such AA deadlock,
+> > > just fixed it, and seems it has been fixed by 3ec24776bfd0.
+> > 
+> > I would not call it a fix. It is a kind of ugly workaround because the 
+> > generic infrastructure lacked (lacks) the proper support in my opinion. 
+> > Luis is trying to fix that.
 > 
-> I think the "other side" should be more aware of what value is reasonable to
-> be used.
+> What is the proper support of the generic infrastructure? I am not
+> familiar with livepatching's model(especially with module unload), you mean
+> livepatching have to do the following way from sysfs:
+> 
+> 1) during module exit:
+> 	
+> 	mutex_lock(lp_lock);
+> 	kobject_put(lp_kobj);
+> 	mutex_unlock(lp_lock);
+> 	
+> 2) show()/store() method of attributes of lp_kobj
+> 	
+> 	mutex_lock(lp_lock)
+> 	...
+> 	mutex_unlock(lp_lock)
 
-If we _really_ need that, then it would require an update to the
-specification first.
+Yes, this was exactly the case. We then reworked it a lot (see 
+958ef1e39d24 ("livepatch: Simplify API by removing registration step"), so 
+now the call sequence is different. kobject_put() is basically offloaded 
+to a workqueue scheduled right from the store() method. Meaning that 
+Luis's work would probably not help us currently, but on the other hand 
+the issues with AA deadlock were one of the main drivers of the redesign 
+(if I remember correctly). There were other reasons too as the changelog 
+of the commit describes.
 
-I am not sure if the other side is the only party in play here. It
-depends on the entire setup and not just the hardware device.
-Specially with virtualisation things become really slow because of
-context switches, etc. It may be better for the guest userspace to
-decide on the value.
+So, from my perspective, if there was a way to easily synchronize between 
+a data cleanup from module_exit callback and sysfs/kernfs operations, it 
+could spare people many headaches.
+ 
+> IMO, the above usage simply caused AA deadlock. Even in Luis's patch
+> 'zram: fix crashes with cpu hotplug multistate', new/same AA deadlock
+> (hot_remove_store() vs. disksize_store() or reset_store()) is added
+> because hot_remove_store() isn't called from module_exit().
+> 
+> Luis tries to delay unloading module until all show()/store() are done. But
+> that can be obtained by the following way simply during module_exit():
+> 
+> 	kobject_del(lp_kobj); //all pending store()/show() from lp_kobj are done,
+> 						  //no new store()/show() can come after
+> 						  //kobject_del() returns	
+> 	mutex_lock(lp_lock);
+> 	kobject_put(lp_kobj);
+> 	mutex_unlock(lp_lock);
 
-Since this is specially for virtualisation, the kernel may set the
-value to few HZ by default, lets say 10 (Yeah its really high) :).
+kobject_del() already calls kobject_put(). Did you mean __kobject_del(). 
+That one is internal though.
+ 
+> Or can you explain your requirement on kobject/module unload in a bit
+> details?
 
--- 
-viresh
+Does the above makes sense?
+
+Thanks
+
+Miroslav
