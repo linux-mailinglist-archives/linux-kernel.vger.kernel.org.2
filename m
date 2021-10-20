@@ -2,94 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5B6434E97
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE98A434E9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhJTPIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJTPIw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:08:52 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22ACC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:06:37 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 187so3206078pfc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:06:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tA5LDMLmQNAk4mwbdEDR73f2u+dlkeGRsK+VXTs6ThI=;
-        b=qw0BgtZf/0TzG5SWIZCjab5Al2kESh2kxIpGfkr6TDKXJZU6o/MsqgiR7dsR84o5CD
-         zNojPvHgJOdIPYTtXIczvYFyhqVQsH0cpLBzqOEa2AB+UeC2GyoYaabJ/xohhIendpuC
-         +diUEFPxJMiNRN+OZrTkpY0as7zQcor4Cz4dKD2hYCR1oUbUE5z5wKzNLgjbNLBSD9Qs
-         gLKdzvEwnevqbfqOReLyXugBaxsi3q4ie4OGwhOWF15zfHLaIOaeWaIk2cAMA89ju1Dr
-         2Gg+lu0sOyewXKe/TWhFIwBHcaSzsu4gLVqlLA2HUptThhmpgsMx3evpjdII3cW4jvu1
-         19Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tA5LDMLmQNAk4mwbdEDR73f2u+dlkeGRsK+VXTs6ThI=;
-        b=inLxrHcYSXFQ3e0LsNVXXUd3NsFaMVGtVs6qEur6JPuBZydZ6IRe66d/cIQUPTCJqv
-         SX4reF6hVZQ80mLHnC+r//lw2qkouUHOMP2bq/TDkPGOliNmKHTjO5PKYBc0uzoURLic
-         uWYfQoYP2VBIctHahKAV+b5zHxb2pAVM3+vCp3gD4tKQKY0kRbUUg96AtO/C2ia1JfMH
-         O5BGL2Q5kSDdaKusfSpO4kzKj8/wkc/5gGjyuKQ9jvMEAfUP0k0mQ8mgj17vdhXzXrTi
-         RnOwjnvt8qnmh+Jb6TR/3GXRPOewhvy/aYav8rnWOiN5DFYpbb5KJf92kkb3i0z9pCZS
-         AqLg==
-X-Gm-Message-State: AOAM533qW7uu/UbcXhpbSojmhGzOyfpkCBW7sD7/qK/l9s//whPmEgUq
-        JL1eTtCT2s+mDTw6AfPBKe5ueQbLVlioStORbigmjQ==
-X-Google-Smtp-Source: ABdhPJx2ufcue5ufHjxLV9BXDHmvvqB9AgktcirsLSNc4Zb83OhPq/SFmJcQhb4c46ewzF3bn9I+pN4OZXyqUA0BkcM=
-X-Received: by 2002:a05:6a00:17a6:b0:44d:df1f:5626 with SMTP id
- s38-20020a056a0017a600b0044ddf1f5626mr274186pfg.59.1634742396800; Wed, 20 Oct
- 2021 08:06:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211020013153.4106001-1-kaleshsingh@google.com>
- <20211020013153.4106001-4-kaleshsingh@google.com> <20211020102807.0b07bc81@gandalf.local.home>
-In-Reply-To: <20211020102807.0b07bc81@gandalf.local.home>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Wed, 20 Oct 2021 08:06:26 -0700
-Message-ID: <CAC_TJvfQCjZPS50-k2Pxo0jCcfxQ7oa1MZxQdADyjnwQ_TBzRA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] tracing: Fix operator precedence for hist triggers expression
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
+        id S230354AbhJTPJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:09:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:32924 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhJTPJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:09:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A911BED1;
+        Wed, 20 Oct 2021 08:06:55 -0700 (PDT)
+Received: from [10.1.37.134] (e127744.cambridge.arm.com [10.1.37.134])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 146473F73D;
+        Wed, 20 Oct 2021 08:06:52 -0700 (PDT)
+Subject: Re: [PATCH 5/5] perf arm-spe: Snapshot mode test
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-5-german.gomez@arm.com>
+ <20211020131339.GG49614@leoy-ThinkPad-X240s>
+From:   German Gomez <german.gomez@arm.com>
+Message-ID: <4f3c3964-3448-586b-4199-764236938536@arm.com>
+Date:   Wed, 20 Oct 2021 16:06:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211020131339.GG49614@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 7:28 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 19 Oct 2021 18:31:40 -0700
-> Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> > +     minus_op = strrchr(str, '-');
-> > +     if (minus_op) {
-> > +             /* Unfortunately, the modifier ".sym-offset" can confuse things. */
-> > +             if (minus_op - str >= 4 && !strncmp(minus_op - 4, ".sym-offset", 11))
-> > +                     goto out;
-> >
->
-> I was thinking about this, and perhaps we can add this later, but we could
-> just replace all ".sym-offset" with ".symXoffset" after receiving it from
-> the user. Then it won't be an issue during prasing.
+Hi Leo,
 
-That's a good idea. It would clean things up a bit and avoid bailing
-out if the user has a sym-offest in an expression string. I can send a
-separate patch for this.
+I'm unable to reproduce. I've tried on top of the most recent perf/core
+branch but I still get exit code 0 consistently:
 
+    $ git log
+    commit be8ecc57f180415e8a7c1cc5620c5236be2a7e56 (grafted, origin/perf/core)
+    Author: Tony Garnock-Jones <tonyg@leastfixedpoint.com>
+    Date:   Thu Sep 16 14:09:39 2021 +0200
+
+    $ ./perf test 88 -v
+    Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
+    88: Check Arm SPE trace data recording and synthesized samples      :
+    --- start ---
+    test child forked, pid 18700
+    Recording trace with snapshot mode /tmp/__perf_test.perf.data.xgsUt
+    Looking at perf.data file for dumping samples:
+    Looking at perf.data file for reporting samples:
+    SPE snapshot testing: PASS
+    test child finished with 0
+    ---- end ----
+    Check Arm SPE trace data recording and synthesized samples: Ok
+
+On 20/10/2021 14:13, Leo Yan wrote:
+> On Thu, Sep 16, 2021 at 04:46:35PM +0100, German Gomez wrote:
+>> Shell script test_arm_spe.sh has been added to test the recording of SPE
+>> tracing events in snapshot mode.
+>>
+>> Reviewed-by: James Clark <james.clark@arm.com>
+>> Signed-off-by: German Gomez <german.gomez@arm.com>
+>> ---
+>>  tools/perf/tests/shell/test_arm_spe.sh | 91 ++++++++++++++++++++++++++
+>>  1 file changed, 91 insertions(+)
+>>  create mode 100755 tools/perf/tests/shell/test_arm_spe.sh
+>>
+>> diff --git a/tools/perf/tests/shell/test_arm_spe.sh b/tools/perf/tests/shell/test_arm_spe.sh
+>> new file mode 100755
+>> index 000000000000..9ed817e76f95
+>> --- /dev/null
+>> +++ b/tools/perf/tests/shell/test_arm_spe.sh
+>> @@ -0,0 +1,91 @@
+>> +#!/bin/sh
+>> +# Check Arm SPE trace data recording and synthesized samples
+>> +
+>> +# Uses the 'perf record' to record trace data of Arm SPE events;
+>> +# then verify if any SPE event samples are generated by SPE with
+>> +# 'perf script' and 'perf report' commands.
+>> +
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# German Gomez <german.gomez@arm.com>, 2021
+>> +
+>> +skip_if_no_arm_spe_event() {
+>> +	perf list | egrep -q 'arm_spe_[0-9]+//' && return 0
+>> +
+>> +	# arm_spe event doesn't exist
+>> +	return 2
+>> +}
+>> +
+>> +skip_if_no_arm_spe_event || exit 2
+>> +
+>> +perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
+>> +glb_err=0
+>> +
+>> +cleanup_files()
+>> +{
+>> +	rm -f ${perfdata}
+>> +	trap - exit term int
+>> +	kill -2 $$ # Forward sigint to parent
+> I understand you copy this code from Arm cs-etm testing, but I found
+> the sentence 'kill -2 $$' will cause a failure at my side with the
+> command:
 >
-> -- Steve
+> root@ubuntu:/home/leoy/linux/tools/perf# ./perf test 85 -v
+> 85: Check Arm SPE trace data recording and synthesized samples      :
+> --- start ---
+> test child forked, pid 29053
+> Recording trace with snapshot mode /tmp/__perf_test.perf.data.uughb
+> Looking at perf.data file for dumping samples:
+> Looking at perf.data file for reporting samples:
+> SPE snapshot testing: PASS
+> test child finished with -1
+> ---- end ----
+> Check Arm SPE trace data recording and synthesized samples: FAILED!
+>
+> I changed to use below code and looks it works for me:
+>
+>         if [[ "$1" == "int" ]]; then
+>                 kill -SIGINT $$
+>         fi
+>         if [[ "$1" == "term" ]]; then
+>                 kill -SIGTERM $$
+>         fi
+>
+> Thanks,
+> Leo
+>
+>> +	exit $glb_err
+>> +}
+>> +
+>> +trap cleanup_files exit term int
+>> +
+>> +arm_spe_report() {
+>> +	if [ $2 != 0 ]; then
+>> +		echo "$1: FAIL"
+>> +		glb_err=$2
+>> +	else
+>> +		echo "$1: PASS"
+>> +	fi
+>> +}
+>> +
+>> +perf_script_samples() {
+>> +	echo "Looking at perf.data file for dumping samples:"
+>> +
+>> +	# from arm-spe.c/arm_spe_synth_events()
+>> +	events="(ld1-miss|ld1-access|llc-miss|lld-access|tlb-miss|tlb-access|branch-miss|remote-access|memory)"
+>> +
+>> +	# Below is an example of the samples dumping:
+>> +	#	dd  3048 [002]          1    l1d-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
+>> +	#	dd  3048 [002]          1    tlb-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
+>> +	#	dd  3048 [002]          1        memory:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
+>> +	perf script -F,-time -i ${perfdata} 2>&1 | \
+>> +		egrep " +$1 +[0-9]+ .* +${events}:(.*:)? +" > /dev/null 2>&1
+>> +}
+>> +
+>> +perf_report_samples() {
+>> +	echo "Looking at perf.data file for reporting samples:"
+>> +
+>> +	# Below is an example of the samples reporting:
+>> +	#   73.04%    73.04%  dd    libc-2.27.so      [.] _dl_addr
+>> +	#    7.71%     7.71%  dd    libc-2.27.so      [.] getenv
+>> +	#    2.59%     2.59%  dd    ld-2.27.so        [.] strcmp
+>> +	perf report --stdio -i ${perfdata} 2>&1 | \
+>> +		egrep " +[0-9]+\.[0-9]+% +[0-9]+\.[0-9]+% +$1 " > /dev/null 2>&1
+>> +}
+>> +
+>> +arm_spe_snapshot_test() {
+>> +	echo "Recording trace with snapshot mode $perfdata"
+>> +	perf record -o ${perfdata} -e arm_spe// -S \
+>> +		-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
+>> +	PERFPID=$!
+>> +
+>> +	# Wait for perf program
+>> +	sleep 1
+>> +
+>> +	# Send signal to snapshot trace data
+>> +	kill -USR2 $PERFPID
+>> +
+>> +	# Stop perf program
+>> +	kill $PERFPID
+>> +	wait $PERFPID
+>> +
+>> +	perf_script_samples dd &&
+>> +	perf_report_samples dd
+>> +
+>> +	err=$?
+>> +	arm_spe_report "SPE snapshot testing" $err
+>> +}
+>> +
+>> +arm_spe_snapshot_test
+>> +exit $glb_err
+>> \ No newline at end of file
+>> -- 
+>> 2.17.1
+>>
