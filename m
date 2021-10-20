@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFDF435635
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 00:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB88435637
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 00:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhJTW62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 18:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
+        id S231355AbhJTW7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 18:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhJTW61 (ORCPT
+        with ESMTP id S229842AbhJTW7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 18:58:27 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325E0C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 15:56:12 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id t184so4251346pfd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 15:56:12 -0700 (PDT)
+        Wed, 20 Oct 2021 18:59:06 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D790C06161C;
+        Wed, 20 Oct 2021 15:56:52 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id h193so8443773pgc.1;
+        Wed, 20 Oct 2021 15:56:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=auquH8aadeMeFk2cOQm3PXeVysXe/4pxPSsJvPgzUtM=;
-        b=L8Ies30D2Yzu308zJNAoks8R5bQl3xQGRZZlt1tbTCmOcIDIK2/ojqO2sO7DaOA+xW
-         vbEcI/oqfw8dHounLNbaS0OuCcpohNzj0vV7TtmSGtcn6s1jNbwb5AAj8FBPtPl0r2tr
-         Bd/Z3stzHp6fxDtLxDrGuLlf6gD4gMrXqk5pfW8qZYRG5ScyFvgRIHGS/f5VC6xfYABk
-         x4rFiyVnEg+P1jD8pVVo7R+IaSd5TrPnyOzy8PlVbZgh/9LChQGzsDU730b58BfzXHk3
-         RlAFWphMlFpLxThXiveYul1xMoQM+99xE80qRDl/+YXom32CltFTY5FcXeeKI/vQM3CE
-         EXsA==
+        bh=dbgMvfMFq+A+FFRO8X7opBMuf5LG95uPYdcTf+JJmCI=;
+        b=KawtoqSmnh4Pm9IT5us9MfFLOondHv8xnIF6HKGfedJTjGeSIR/8DHb7cVdZECMLAd
+         44gNuXBrHruuwifjd1PBleArPgrltw+I+Gx+FT8uM3d2MqGTxsS/lGHTxpxV5PgTFS5v
+         M1RlTCcUeYRIUZjbkqoNYhd0ZyTQCq3mGN2jLsKZ21toGh6ptI3d7r12aAz5+PqM7CWJ
+         lw1q88A4r6wY9AdWRpO5WYf4LjqRRrKN8GS+4+0OjL4yKHB7lP28eWJkTe+UKLF2DlKI
+         gWLZ/9E71/D+1CT1NItVG0TjyZnyT0Kx8tzQpXBYthGDVKk/EFY+3zNWXdvkJ4/dywDl
+         fTmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=auquH8aadeMeFk2cOQm3PXeVysXe/4pxPSsJvPgzUtM=;
-        b=2omM7kkkstvoUFBRvciMBXbpgf24PPiN9D33gIjWiD3k0OZ+X8bx0TNVqYLj85liGC
-         9De4ckiA2MhupfMQoFwFWYxtuCbd4/EqycllW0HvXM4WY+kNQhwSj4Mjd2Ms/iMc6Wpu
-         3wQtXSp6wC/3DYz4+1cmY2TqZLtKRlIHhvTc3e97xmIlSXVZmWA5X8z9ay/ee47Xj7B0
-         bRiSj1ZruhF4HVyRHH2K4WWyH6TuCunMEc9qNf2+chqg4G8mPP+J5OV8fOtNo+1fYIrV
-         bW6CfVFbqS0DWjKchE5yp9OZIRSEi6QEh2K3fkfDldDRW2MPShn6ghBSZ2Y7yTypL/78
-         eMIw==
-X-Gm-Message-State: AOAM531lnTZAG1tIUw5Fb6zKc4NnW0Ai0FFjFnUVlQpU7demD+RiS+9q
-        Akizl9rlyhkYyrd8BpeWiWDjbU8bpkI=
-X-Google-Smtp-Source: ABdhPJz1CX9DgO/7KLEfH8EhIgKn8/qPy4/h/VhladWn6mEWVE1c8mcFnSApklQQ4N9uMLeUWlM/MQ==
-X-Received: by 2002:aa7:8f28:0:b0:44c:f281:c261 with SMTP id y8-20020aa78f28000000b0044cf281c261mr2071553pfr.76.1634770571645;
-        Wed, 20 Oct 2021 15:56:11 -0700 (PDT)
+        bh=dbgMvfMFq+A+FFRO8X7opBMuf5LG95uPYdcTf+JJmCI=;
+        b=taxAUHIr8ArJO/PQGbjIVWnmaSA5AuOj2LPZ+fsXIRw9QdPfhBGK7IfyXqzS5Io67J
+         oFfc/vB5H1k377mvVbJwyvJH7Pm8DVesag3ZjH1w1C6bA3heNxI3OI7fsWI7tT2YgGPM
+         Sv9D0M69LscptlC/S6fCpBtAQORTBr61DCmlXEvGRmZaTCPJlzkgZxHmw0ZIFPZlRA/r
+         rvNlfnoRcg5WmN/Vca4Moo7Ma624nq07gYK9nIWEaEDJV62rllBuKgi4hhoW/Lder4lP
+         XrClKYNRCnzVVDyshE/sca/3UmTZhYov1UyAp+YzM2Fxi9FHF5SfrJ9ep1w17YZvvDEE
+         3Abw==
+X-Gm-Message-State: AOAM531QjCCh/owuQ7UtygrwngM98Ka/NtZnJK890h3dMNOoRC54EjmV
+        ixHWTzlq+SwPhRV3VcdOQ+Y=
+X-Google-Smtp-Source: ABdhPJz4NtSlLlIZHVG8uYbobX52wcOpdNy55Nsb9WeOzLYWHsJWHBbqRm2KD1YFNJFY936pwn8arg==
+X-Received: by 2002:a05:6a00:13a5:b0:44c:ae90:8603 with SMTP id t37-20020a056a0013a500b0044cae908603mr2095038pfg.17.1634770611619;
+        Wed, 20 Oct 2021 15:56:51 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id s62sm3333393pgc.5.2021.10.20.15.56.10
+        by smtp.gmail.com with ESMTPSA id x30sm3755071pfj.219.2021.10.20.15.56.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 15:56:10 -0700 (PDT)
+        Wed, 20 Oct 2021 15:56:51 -0700 (PDT)
 From:   Florian Fainelli <f.fainelli@gmail.com>
 To:     bcm-kernel-feedback-list@broadcom.com,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: Re: [PATCH] soc: bcm: brcmstb: Add of_node_put() in pm-mips
-Date:   Wed, 20 Oct 2021 15:56:09 -0700
-Message-Id: <20211020225609.3144238-1-f.fainelli@gmail.com>
+        Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: NSP: MX65: add qca8k falling-edge, PLL properties
+Date:   Wed, 20 Oct 2021 15:56:49 -0700
+Message-Id: <20211020225649.3144490-1-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211015064958.9826-1-wanjiabing@vivo.com>
-References: <20211015064958.9826-1-wanjiabing@vivo.com>
+In-Reply-To: <20211015225022.3828860-1-mnhagan88@gmail.com>
+References: <20211015225022.3828860-1-mnhagan88@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 02:49:23 -0400, Wan Jiabing <wanjiabing@vivo.com> wrote:
-> Fix following coccicheck warning:
-> ./drivers/soc/bcm/brcmstb/pm/pm-mips.c:404:1-23: WARNING: Function
-> for_each_matching_node should have of_node_put() before goto or break
+On Fri, 15 Oct 2021 23:50:22 +0100, Matthew Hagan <mnhagan88@gmail.com> wrote:
+> This patch enables two properties for the QCA8337 switches on the MX65.
 > 
-> Early exits from for_each_matching_node should decrement the
-> node reference counter.
+> Set the SGMII transmit clock to falling edge
+> "qca,sgmii-txclk-falling-edge" to conform to the OEM configuration [1].
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> The new explicit PLL enable option "qca,sgmii-enable-pll" is required
+> [2].
+> 
+> [1] https://git.kernel.org/netdev/net-next/c/6c43809bf1be
+> [2] https://git.kernel.org/netdev/net-next/c/bbc4799e8bb6
+> 
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 > ---
 
-Applied to https://github.com/Broadcom/stblinux/commits/drivers/next, thanks!
+Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
 --
 Florian
