@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394414346BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F253B4346CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhJTIWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:22:53 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:43732 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTIWp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:22:45 -0400
-Received: by mail-ua1-f46.google.com with SMTP id i22so5003393ual.10;
-        Wed, 20 Oct 2021 01:20:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G0aFIaG5DuBGUXCrNxzD6HsYeP6ck00oKaqW6SSo6UM=;
-        b=dU4M/j1lUkxtAdZUMiy7DM6DJsSqJxYq+CWer7vedooz19e4AV1cGSOdXONGpCkPM8
-         bHCdZoE1/2mUseqYPVkg1iHmj3m2INK1DgB+p/FHeQFWXlPgftPzVqZA/WISv2HKuMeH
-         HveHLbvybrhKsOFwIBEH8fNeAW9OYlwvZrs65m13xg6nYLm4ro40U1GU4rWPljW/tW1M
-         WptkBs45cnpdLk5NjNmg2W0TswBg1dPrRskp3XAkelMLj81dqwPieSTk/17fn2xmcg3A
-         AzyKSEpCKdClHWzK988OPIJLoGB/+68gqCROFmpxrAfUD6Lm5zJ7kazCzU4x7CoG2/MP
-         0JfQ==
-X-Gm-Message-State: AOAM532j0VVsAWDtMxtsPUe3zqunkUeuA53QuIyFkSFuLubhCZirNMYm
-        G8/95viENAGKBNQVnxHFJNh+rRHpBWNU0A==
-X-Google-Smtp-Source: ABdhPJykNfYZkk0MCjRAYMauZl8i7maJS3L+JJNrpUwPsMzHPi1QtQTjM5YTKgU11oQSngUA4t+SHg==
-X-Received: by 2002:a05:6102:3a0d:: with SMTP id b13mr21963342vsu.7.1634718030417;
-        Wed, 20 Oct 2021 01:20:30 -0700 (PDT)
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
-        by smtp.gmail.com with ESMTPSA id m11sm935964vkp.46.2021.10.20.01.20.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 01:20:29 -0700 (PDT)
-Received: by mail-vk1-f173.google.com with SMTP id x207so11682215vke.2;
-        Wed, 20 Oct 2021 01:20:29 -0700 (PDT)
-X-Received: by 2002:a05:6122:a20:: with SMTP id 32mr37163725vkn.15.1634718029542;
- Wed, 20 Oct 2021 01:20:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913170436.243-1-alexander.helms.jy@renesas.com>
- <20210913170436.243-2-alexander.helms.jy@renesas.com> <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
- <CAMuHMdXq2NyBf539raFJSoWSGXnwxOAMWcVB_WV-=uf+kOs7rw@mail.gmail.com> <4f2f81a8-9a79-3211-5ec3-fa679c3e7bb9@renesas.com>
-In-Reply-To: <4f2f81a8-9a79-3211-5ec3-fa679c3e7bb9@renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 20 Oct 2021 10:20:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXHkeOK+Bg10BCLDvTztV6+y9+OomBUiTAoa1+GCHRnvw@mail.gmail.com>
-Message-ID: <CAMuHMdXHkeOK+Bg10BCLDvTztV6+y9+OomBUiTAoa1+GCHRnvw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: Add binding for Renesas 8T49N241
-To:     Alex Helms <alexander.helms.jy@renesas.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229839AbhJTI1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:27:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhJTI1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:27:07 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0A3D611C6;
+        Wed, 20 Oct 2021 08:24:53 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1md6u3-000Nya-9Z; Wed, 20 Oct 2021 09:24:51 +0100
+Date:   Wed, 20 Oct 2021 09:24:50 +0100
+Message-ID: <87tuhcnlwt.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM SUB-ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v4 09/14] irqchip: Provide platform_device to of_irq_init_cb_t
+In-Reply-To: <CAL_Jsq+CWeFHsHHaAwbb940Zk1thU50gDGcqfO6NdgWQ2FPTWA@mail.gmail.com>
+References: <20211009022023.3796472-1-f.fainelli@gmail.com>
+        <20211009022023.3796472-10-f.fainelli@gmail.com>
+        <871r4gvggb.wl-maz@kernel.org>
+        <CAL_Jsq+CWeFHsHHaAwbb940Zk1thU50gDGcqfO6NdgWQ2FPTWA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: robh@kernel.org, f.fainelli@gmail.com, linux-kernel@vger.kernel.org, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, tsbogend@alpha.franken.de, tglx@linutronix.de, frowand.list@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-On Tue, Oct 19, 2021 at 11:53 PM Alex Helms
-<alexander.helms.jy@renesas.com> wrote:
-> On 10/14/2021 5:16 AM, Geert Uytterhoeven wrote:
-> > On Wed, Oct 13, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >> On Mon, Sep 13, 2021 at 7:05 PM Alex Helms
-> >> <alexander.helms.jy@renesas.com> wrote:
-> >>> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
-> >>> The 8T49N241 accepts up to two differential or single-ended input clocks
-> >>> and a fundamental-mode crystal input. The internal PLL can lock to either
-> >>> of the input reference clocks or to the crystal to behave as a frequency
-> >>> synthesizer.
-> >>>
-> >>> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
-> >>> Reviewed-by: Rob Herring <robh@kernel.org>
-> >>
-> >> Thanks for your patch!
-> >>
-> >>> --- /dev/null
-> >>> +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+On Tue, 19 Oct 2021 23:23:52 +0100,
+Rob Herring <robh@kernel.org> wrote:
+> 
+>  On Tue, Oct 19, 2021 at 4:43 PM Marc Zyngier <maz@kernel.org> wrote:
 > >
-> >> BTW, do you plan to add interrupt and/or GPIO support later?
+> > diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+> > index ccf32758ea85..146a9d80a6a2 100644
+> > --- a/include/linux/irqchip.h
+> > +++ b/include/linux/irqchip.h
+> > @@ -33,7 +33,15 @@ extern int platform_irqchip_probe(struct platform_device *pdev);
+> >  #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
+> >  static const struct of_device_id drv_name##_irqchip_match_table[] = {
 > >
-> > To clarify, and I really meant to add:
-> >
-> >   interrupts:
-> >     maxItems: 1
-> >
-> > to the bindings now, and GPIO-related properties and subnodes later.
->
-> Any additional features such as interrupts and GPIO properties would only be added if there is customer demand for such features. Since there is no interrupt support, does the "interrupts" item still need to be added to the yaml?
+> > -#define IRQCHIP_MATCH(compat, fn) { .compatible = compat, .data = fn },
+> > +/* Undefined on purpose */
+> > +int typecheck_irq_init_cb(struct device_node *, struct device_node *,
+> > +                         struct platform_device *);
+> > +
+> > +#define typecheck_irq_init_cb(fn)                                      \
+> > +       __typecheck(typecheck_irq_init_cb, fn) ? fn : fn
+> 
+> That's nice! Shouldn't it also be used for IRQCHIP_DECLARE?
 
-DT describes hardware, not software policy (or limitations of the driver).
+Absolutely. And enabling this shows that changing of_irq_init_cb_t
+breaks *all users* of IRQCHIP_DECLARE(). Not an acceptable outcome
+when we're at -rc5.
 
-Arguably that applies to both interrupts and GPIOs, but the latter is
-more complex to describe, while the former is a simple "interrupts"
-property.  It's not uncommon for board components to have their
-interrupt line wired to an SoC, even if the driver doesn't use it.
+Why can't the relevant drivers use of_find_device_by_node() instead?
+That would allow us to keep the status-quo on of_irq_init_cb_t.
 
-Gr{oetje,eeting}s,
+Thanks,
 
-                        Geert
+	M.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Without deviation from the norm, progress is not possible.
