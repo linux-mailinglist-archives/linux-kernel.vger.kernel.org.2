@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D6A434770
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4B3434771
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhJTI6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:58:07 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57742 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhJTI6F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:58:05 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 88FAC1F43D73;
-        Wed, 20 Oct 2021 09:55:50 +0100 (BST)
-Date:   Wed, 20 Oct 2021 10:55:47 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] mtd: mtdconcat: add suspend lock handling
-Message-ID: <20211020105547.23ed9324@collabora.com>
-In-Reply-To: <20211020084534.2472305-5-sean@geanix.com>
-References: <20211020084534.2472305-1-sean@geanix.com>
-        <20211020084534.2472305-5-sean@geanix.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230072AbhJTI6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:58:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229555AbhJTI6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:58:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ED0161004;
+        Wed, 20 Oct 2021 08:56:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634720168;
+        bh=Zb6cdSPaiuzX2LILzLYpQZahassfoYygri0Z+gn9Gz4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FicmaPqpkSATWNrLIg8kQtlJwJHkROycKClRvuxklISlxxuO30+tNoBPYHiBsCIBY
+         C6Ud01eugF8PkSmgVqo2XsImrPWY0z3qR/a/K0N43SLAWSUD0W9ULDN/+B15nFQJQs
+         i5RvQMtOvPKejoj1RYvlevNKvsQtmDmgDVSO0SRA=
+Date:   Wed, 20 Oct 2021 10:56:05 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     jirislaby@kernel.org, amit@kernel.org, arnd@arndb.de,
+        osandov@fb.com, shile.zhang@linux.alibaba.com,
+        linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 2/3] tty: hvc: pass DMA capable memory to put_chars()
+Message-ID: <YW/ZpdHa35kStzbt@kroah.com>
+References: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+ <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
+ <d56c2c23-3e99-417b-8144-cf1bb31b5f6d@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d56c2c23-3e99-417b-8144-cf1bb31b5f6d@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 10:45:34 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-> Use MTD hooks to control suspend/resume of MTD devices.
+A: No.
+Q: Should I include quotations after my reply?
 
-Please explain in great details why this is needed.
+http://daringfireball.net/2007/07/on_top
 
+On Wed, Oct 20, 2021 at 04:47:23PM +0800, Xianting Tian wrote:
+> hi Greg，
 > 
-> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> Could I get  your comments of this new version patches？ thanks
 
-This patch should be moved earlier (before 'mtd: core: protect access to
-MTD devices while in suspend') in the series.
+It has been less than 5 days.  Please relax, and only worry after 2
+weeks have gone by.  We have lots of patches to review.  To help
+maintainers out, why don't you review other patches on the mailing lists
+as well while you wait?
 
-> ---
->  drivers/mtd/mtdconcat.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-> index f685a581df48..1ec36890118f 100644
-> --- a/drivers/mtd/mtdconcat.c
-> +++ b/drivers/mtd/mtdconcat.c
-> @@ -566,9 +566,11 @@ static int concat_suspend(struct mtd_info *mtd)
->  
->  	for (i = 0; i < concat->num_subdev; i++) {
->  		struct mtd_info *subdev = concat->subdev[i];
-> -		if ((rc = mtd_suspend(subdev)) < 0)
-> +		rc = subdev->_suspend ? subdev->_suspend(subdev) : 0;
-> +		if (rc < 0)
->  			return rc;
+thanks,
 
-Same here, you need a fat comment explaining why mtd_suspend() is not
-used.
-
->  	}
-> +
->  	return rc;
->  }
->  
-> @@ -579,7 +581,8 @@ static void concat_resume(struct mtd_info *mtd)
->  
->  	for (i = 0; i < concat->num_subdev; i++) {
->  		struct mtd_info *subdev = concat->subdev[i];
-> -		mtd_resume(subdev);
-> +		if (subdev->_resume)
-> +			subdev->_resume(subdev);
-
-Ditto.
-
->  	}
->  }
->  
-
+greg k-h
