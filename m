@@ -2,86 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22770435313
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7BDF43532F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhJTSwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:52:54 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:49292 "EHLO vps0.lunn.ch"
+        id S231564AbhJTSxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:53:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231328AbhJTSwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:52:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=F34CO4kJ2wlEtjVzrikO0cx1FdgTWcUmymX9zm/E3dc=; b=5ngATRZbztJzzNL+dFEJjjk3JB
-        YmVvg796mdYlh7ep4ayNoCLyGGCchsBx9XZUjOeooNBzUYhts+VG1sUMzEHt8+wUdRVd0Fq71P29Y
-        rQXQr04skMBB70z1LToITrVa+zFx1wfvrwLgBSDkF2wcVMt3zbnnzX28P2oADYZ/IDEg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mdGfS-00BDIQ-4A; Wed, 20 Oct 2021 20:50:26 +0200
-Date:   Wed, 20 Oct 2021 20:50:26 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: fec: defer probe if PHY on external MDIO bus is not
- available
-Message-ID: <YXBk8gwuCqrxDbVY@lunn.ch>
-References: <20211014113043.3518-1-matthias.schiffer@ew.tq-group.com>
- <YW7SWKiUy8LfvSkl@lunn.ch>
- <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
+        id S231445AbhJTSw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 14:52:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2233361038;
+        Wed, 20 Oct 2021 18:50:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634755843;
+        bh=hRMhQmVzvcy2VqZfzkpwOpG4PzIzLQOlU6VeX6HDum4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HycT2SXMrifVfJ0YAP4Ki9zka+Lwyx9oXjOUi3xLmJphU85a08kmjEaWouQS6OOIc
+         VdFxluqsAfzCWsHkTWpM1IwLypw+I/L6T0uIBj3gUuBNje8m/UmuWt2j1/UhZ7qmKV
+         upEbU6uDZ52VhewDE5e5hmj/o6r11hICejhumu4Rh3BhxpBrIn50GWtiuwdO/NRqCY
+         xlVCfuIFzgC2clTcPW06kVdFH473eQjNYuQ6kHeWCp35vV7DNaXGQNQGORfu76GI5M
+         3Sv3tL4yJfkpi0nyahU1ouvjxZRskvwiaaey7/e76SAH547PdDQXfYILUTKPb/iR7a
+         ZKW/0Ib4CPXAw==
+Date:   Wed, 20 Oct 2021 13:50:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Xuesong Chen <xuesong.chen@linux.alibaba.com>
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
+        Chen@bhelgaas, Gong <gong.chen@linux.intel.com>
+Subject: Re: [PATCH v3 2/2] ACPI: APEI: Filter the PCI MCFG address with an
+ arch-agnostic method
+Message-ID: <20211020185041.GA2617548@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
+In-Reply-To: <997efa76-20b4-bf0e-2249-e5c850e52fbf@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I've not looked at the details yet, just back from vacation. But this
-> > seems wrong. I would of expected phylib to of returned -EPRODE_DEFER
-> > at some point, when asked for a PHY which does not exist yet. All the
-> > driver should need to do is make sure it returns the
-> > -EPRODE_DEFER.
+[+cc Gong, author of d91525eb8ee6]
+
+On Wed, Oct 20, 2021 at 11:16:38AM +0800, Xuesong Chen wrote:
+> On 20/10/2021 03:23, Bjorn Helgaas wrote:
+> > On Tue, Oct 19, 2021 at 12:50:33PM +0800, Xuesong Chen wrote:
+
+> > I wish we could also include the matching MCFG info For x86, we
+> > put something like this in the dmesg log, but I guess pci_mcfg.c
+> > doesn't do this:
+> > 
+> >   PCI: MMCONFIG for domain 0000 [bus 00-7f] at [mem 0xf0000000-0xf7ffffff] (base 0xf0000000)
+>
+> I can add the similar dmesg log in pci_mcfg.c to make it's
+> consistent between different arches
+
+I think that might be nice.  It should probably be a separate patch
+since it's not really related to the others.
+
+> >> This patch will try to handle this case in a more common way instead of the
+> >> original 'arch' specific solution, which will be beneficial to all the
+> >> APEI-dependent platforms after that.
+> > 
+> > This actually doesn't say anything about what the patch does or how it
+> > works.  It says "handles this case in a more common way" but with no
+> > details.
 > 
-> This is what I expected as well, however there are a few complications:
+> Good suggestion, I'll give more details about that...
+> > The EINJ table contains "injection instructions" that can read or
+> > write "register regions" described by generic address structures (see
+> > ACPI v6.3, sec 18.6.2 and 18.6.3), and __einj_error_trigger() requests
+> > those register regions with request_mem_region() or request_region()
+> > before executing the injections instructions.
+> > 
+> > IIUC, this patch basically says "if this region is part of the MCFG
+> > area, we don't need to reserve it." That leads to the questions of why
+> > we need to reserve *any* of the areas
 > 
-> - At the moment the first time the driver does anything with the PHY is
->   in fec_enet_open(), not in fec_probe() - way too late to defer
->   anything
+> AFAIK, the MCFG area is reserved since the ECAM module will provide
+> a generic Kernel Programming Interfaces(KPI), e.g,
+> pci_generic_config_read(...), so all the drivers are allowed to
+> access the pci config space only by those KPIs in a consistent and
+> safe way, direct raw access will break the rule.  Correct me if I am
+> missing sth.
+> 
+> > and why it's safe to simply skip reserving regions that are part
+> > of the MCFG area.
+> 
+> Actual there is a commit d91525eb8ee6("ACPI, EINJ: Enhance error
+> injection tolerance level") before to address this issue, the entire
+> commit log as below:
+> 
+>     Some BIOSes utilize PCI MMCFG space read/write opertion to trigger
+>     specific errors. EINJ will report errors as below when hitting such
+>     cases:
+>     
+>     APEI: Can not request [mem 0x83f990a0-0x83f990a3] for APEI EINJ Trigger registers
+>     
+>     It is because on x86 platform ACPI based PCI MMCFG logic has
+>     reserved all MMCFG spaces so that EINJ can't reserve it again.
+>     We already trust the ACPI/APEI code when using the EINJ interface
+>     so it is not a big leap to also trust it to access the right
+>     MMCFG addresses. Skip address checking to allow the access.
 
-O.K. Right. Are you using NFS root? For normal user space opening of
-the interface, this has all been sorted out by the time user space
-does anything. The NFS root changes the time in a big way.
+I'm not really convinced by that justification because I don't think
+the issue here is *trust*.  If all we care about is trust, and we
+trust the ACPI/APEI code, why do we need to reserve anything at all
+when executing EINJ actions?
 
-Anyway, i would say some bits of code need moving from open to probe
-so EPROBE_DEFER can be used.
+I think the resource reservation issue is about coordinating multiple
+users of the address space.  A driver reserves the MMIO address space
+of a device it controls so no other driver can reserve it at the same
+time and cause conflicts.
 
-We already have:
+I'm not really convinced by this mutual exclusion argument either,
+because I haven't yet seen a situation where we say "EINJ needs a
+resource that's already in use by somebody else, so we can't use
+EINJ."  When conflicts arise, the response is always "we'll just
+stop reserving this conflicting resource but use it anyway."
 
-        phy_node = of_parse_phandle(np, "phy-handle", 0);
-        if (!phy_node && of_phy_is_fixed_link(np)) {
-                ret = of_phy_register_fixed_link(np);
-                if (ret < 0) {
-                        dev_err(&pdev->dev,
-                                "broken fixed-link specification\n");
-                        goto failed_phy;
-                }
-                phy_node = of_node_get(np);
-        }
-        fep->phy_node = phy_node;
+I think the only real value in apei_resources_request() is a little
+bit of documentation in /proc/iomem.  For ERST and EINJ, even that
+only lasts for the tiny period when we're actually executing an
+action.
 
-Go one step further. If fep->phy_node is not NULL, we know there
-should be a PHY. So call of_phy_find_device(). If it returns NULL,
-then -EPROBE_DEFER. Otherwise store the phydev into fep, and use it in
-open.
+So convince me there's a reason why we shouldn't just remove
+apei_resources_request() completely :)
 
-You will need to move the call to fec_enet_mii_init(pdev) earlier, so
-the MDIO bus is available.
+> Except that the above explanation, IMO the EINJ is only a RAS debug
+> framework, in this code path, sometimes we need to acesss the
+> address within the MCFG space directly to trigger kind of HW error,
+> which behavior does not like the normal device driver's, in this
+> case some possible unsafe operations (bypass the ecam ops) can be
+> mitigated because the touched device will generate some HW errors
+> and the RAS handling part will preempt its corresponding drivers to
+> fix/log the HW error, that's my understanding about that.
 
-    Andrew
+> >> Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
+> >> Reported-by: kernel test robot <lkp@intel.com>
+> >> Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >> Cc: James Morse <james.morse@arm.com>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Cc: Rafael. J. Wysocki <rafael@kernel.org>
+> >> Cc: Tony Luck <tony.luck@intel.com>
+> >> Cc: Tomasz Nowicki <tn@semihalf.com>
+> >> ---
+> >>  arch/x86/pci/mmconfig-shared.c | 28 --------------------------
+> >>  drivers/acpi/apei/apei-base.c  | 45 ++++++++++++++++++++++++++++--------------
+> >>  2 files changed, 30 insertions(+), 43 deletions(-)
+> >>
+> >> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+> >> index 0b961fe6..12f7d96 100644
+> >> --- a/arch/x86/pci/mmconfig-shared.c
+> >> +++ b/arch/x86/pci/mmconfig-shared.c
+> >> @@ -605,32 +605,6 @@ static int __init pci_parse_mcfg(struct acpi_table_header *header)
+> >>  	return 0;
+> >>  }
+> >>  
+> >> -#ifdef CONFIG_ACPI_APEI
+> >> -extern int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
+> >> -				     void *data), void *data);
+> >> -
+> >> -static int pci_mmcfg_for_each_region(int (*func)(__u64 start, __u64 size,
+> >> -				     void *data), void *data)
+> >> -{
+> >> -	struct pci_mmcfg_region *cfg;
+> >> -	int rc;
+> >> -
+> >> -	if (list_empty(&pci_mmcfg_list))
+> >> -		return 0;
+> >> -
+> >> -	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+> >> -		rc = func(cfg->res.start, resource_size(&cfg->res), data);
+> >> -		if (rc)
+> >> -			return rc;
+> >> -	}
+> >> -
+> >> -	return 0;
+> >> -}
+> >> -#define set_apei_filter() (arch_apei_filter_addr = pci_mmcfg_for_each_region)
+> >> -#else
+> >> -#define set_apei_filter()
+> >> -#endif
+> >> -
+> >>  static void __init __pci_mmcfg_init(int early)
+> >>  {
+> >>  	pci_mmcfg_reject_broken(early);
+> >> @@ -665,8 +639,6 @@ void __init pci_mmcfg_early_init(void)
+> >>  		else
+> >>  			acpi_table_parse(ACPI_SIG_MCFG, pci_parse_mcfg);
+> >>  		__pci_mmcfg_init(1);
+> >> -
+> >> -		set_apei_filter();
+> >>  	}
+> >>  }
+> >>  
+> >> diff --git a/drivers/acpi/apei/apei-base.c b/drivers/acpi/apei/apei-base.c
+> >> index c7fdb12..daae75a 100644
+> >> --- a/drivers/acpi/apei/apei-base.c
+> >> +++ b/drivers/acpi/apei/apei-base.c
+> >> @@ -21,6 +21,7 @@
+> >>  #include <linux/kernel.h>
+> >>  #include <linux/module.h>
+> >>  #include <linux/init.h>
+> >> +#include <linux/pci.h>
+> >>  #include <linux/acpi.h>
+> >>  #include <linux/slab.h>
+> >>  #include <linux/io.h>
+> >> @@ -448,13 +449,34 @@ static int apei_get_nvs_resources(struct apei_resources *resources)
+> >>  	return acpi_nvs_for_each_region(apei_get_res_callback, resources);
+> >>  }
+> >>  
+> >> -int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
+> >> -				     void *data), void *data);
+> >> -static int apei_get_arch_resources(struct apei_resources *resources)
+> >> +#ifdef CONFIG_PCI
+> >> +extern struct list_head pci_mmcfg_list;
+> >> +static int apei_filter_mcfg_addr(struct apei_resources *res,
+> >> +			struct apei_resources *mcfg_res)
+> >> +{
+> >> +	int rc = 0;
+> >> +	struct pci_mmcfg_region *cfg;
+> >> +
+> >> +	if (list_empty(&pci_mmcfg_list))
+> >> +		return 0;
+> >> +
+> >> +	apei_resources_init(mcfg_res);
+> >> +	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+> >> +		rc = apei_res_add(&mcfg_res->iomem, cfg->res.start, resource_size(&cfg->res));
+> >> +		if (rc)
+> >> +			return rc;
+> >> +	}
+> >>  
+> >> +	/* filter the mcfg resource from current APEI's */
+> >> +	return apei_resources_sub(res, mcfg_res);
+> >> +}
+> >> +#else
+> >> +static inline int apei_filter_mcfg_addr(struct apei_resources *res,
+> >> +			struct apei_resources *mcfg_res)
+> >>  {
+> >> -	return arch_apei_filter_addr(apei_get_res_callback, resources);
+> >> +	return 0;
+> >>  }
+> >> +#endif
+> >>  
+> >>  /*
+> >>   * IO memory/port resource management mechanism is used to check
+> >> @@ -486,15 +508,9 @@ int apei_resources_request(struct apei_resources *resources,
+> >>  	if (rc)
+> >>  		goto nvs_res_fini;
+> >>  
+> >> -	if (arch_apei_filter_addr) {
+> >> -		apei_resources_init(&arch_res);
+> >> -		rc = apei_get_arch_resources(&arch_res);
+> >> -		if (rc)
+> >> -			goto arch_res_fini;
+> >> -		rc = apei_resources_sub(resources, &arch_res);
+> >> -		if (rc)
+> >> -			goto arch_res_fini;
+> >> -	}
+> >> +	rc = apei_filter_mcfg_addr(resources, &arch_res);
+> >> +	if (rc)
+> >> +		goto arch_res_fini;
+> >>  
+> >>  	rc = -EINVAL;
+> >>  	list_for_each_entry(res, &resources->iomem, list) {
+> >> @@ -544,8 +560,7 @@ int apei_resources_request(struct apei_resources *resources,
+> >>  		release_mem_region(res->start, res->end - res->start);
+> >>  	}
+> >>  arch_res_fini:
+> >> -	if (arch_apei_filter_addr)
+> >> -		apei_resources_fini(&arch_res);
+> >> +	apei_resources_fini(&arch_res);
+> >>  nvs_res_fini:
+> >>  	apei_resources_fini(&nvs_resources);
+> >>  	return rc;
+> >> -- 
+> >> 1.8.3.1
+> >>
