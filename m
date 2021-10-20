@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F8E43535D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26394435360
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhJTTEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhJTTEL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:04:11 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B14C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:01:57 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id oa4so3156583pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DANx3HO6cgPisAl+CHhBZy+n2kHgp44pkICwDmul91Y=;
-        b=T2NpTM70PleU3Fgawia08s/phmB4W9mNfejNL2ZIBKiqj1LnIfPkJ+ajkOUm4p8Y7R
-         yJg0aSR2qHZf4XvVVbHhpfkkoD/wL+gJv6TazBaQGH9k1P9sdh7Pl231jNNfXqq0ruDH
-         wZMWuKyi7HsMW1lnaT5GRWpsVhH2KQWmRxtNTe79CVhjYrTnfcdej/kOgHttUwopLFE3
-         f/XdT1INFEaMarLdmGz6fIQddAsdZo37xruTpsVsMwQhmW9Z6C4rkSQBfx2bKTBKEmYQ
-         sCjar7V528p8iltu4Z7FeKclr2dmHxuvQ3iXKTSvd3/w+Om0wfpCOQ4/noJJP+52FLO7
-         B4Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DANx3HO6cgPisAl+CHhBZy+n2kHgp44pkICwDmul91Y=;
-        b=Ibklo+9Jc6Nw9ryRSEPyPzOqAPyiS5niM2Ejt2yztr2k0DhcHRSHzUrfsusUbagS3M
-         9YoAUmTCez4D6AfuwXzcYL7zYHklASOckoIaaCPqbS5m5oyOkdWt0aWwG6V46/QR/VXN
-         7fCnvjezcXSvb84Hsz0wmqGVRC24WBFK5/4BXp9d6gRpUN6214aUXcpjoiRLeWXWbsO9
-         V/ZBWSamMFyUsFRg2BvtDJJR7hD05uxdPPl3F7C0ob+vuU509ahoD7N8pCu19KAQfwHm
-         en4T/CZPHnUIlKUfhTqUenaGcjjZ7zIjjhMt4bL34vwSkzn1ApIweEYRa9A0c5Y4b3PC
-         83Nw==
-X-Gm-Message-State: AOAM530wZ5Mg7q0lBDTSjcbkib6JbXtoiFPlCZr2nxZgAxDXvr1sdwT1
-        6sWDvHgEL7FXrL7RByZ9k22eqw==
-X-Google-Smtp-Source: ABdhPJxTtZlD3tik07e31gwxjRrXsiDg7LAunZboxgnl2JeTj/bjMYSpzdfqi37yk9rhQ+Oc4bfF5g==
-X-Received: by 2002:a17:903:230f:b0:13f:cca9:bf2f with SMTP id d15-20020a170903230f00b0013fcca9bf2fmr821720plh.51.1634756516653;
-        Wed, 20 Oct 2021 12:01:56 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j198sm3003802pgc.4.2021.10.20.12.01.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:01:55 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 19:01:51 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 01/13] KVM: x86: Cache total page count to avoid
- traversing the memslot array
-Message-ID: <YXBnn6ZaXbaqKvOo@google.com>
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
- <YW9Fi128rYxiF1v3@google.com>
- <e618edce-b310-6d9a-3860-d7f4d8c0d98f@maciej.szmigiero.name>
+        id S231478AbhJTTEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:04:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230290AbhJTTEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 15:04:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C3660EB1;
+        Wed, 20 Oct 2021 19:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634756536;
+        bh=LTS6MAYewrWPxmu6wu7tCAK1yc55sLMAEpDF0ug4y6Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=UwFUHl8PY/SmaU1BtR97o607/9KUmYn1Sx5CbM60V8xVBJov7Pjg8XWeeHNVaLCxc
+         hoKGlhshvXPYq9ecbbgRExre2T+oY0SZfVplM/pvpGW37IESWqHCXAlx261fESd+zN
+         +KDN9pR/jlFwu1gg22KbrLN29S0PGA+qWamcN/Zoo2gm+VTH8IbONOXYiQprBLMylm
+         pU5djHjgVF/Sh5gOc+6IHVaQYRuofSvzjQfBphtkjKd/02dxPM6AYRk6iOt9XTaTDd
+         PIsJKXUFjAPW1dOpbtp59oXXBe0eDNggzeMsbHI6sSFWhXu/NOJG7mYRjCiMFNyfV+
+         AF0kPrkylLYqA==
+Date:   Wed, 20 Oct 2021 14:02:14 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        "Songxiaowei (Kirin_DRV)" <songxiaowei@hisilicon.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh@kernel.org>, Simon Xue <xxm@rock-chips.com>,
+        Srikanth Thokala <srikanth.thokala@intel.com>,
+        Wesley Sheng <wesley.sheng@amd.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v14 00/11] Add support for Hikey 970 PCIe
+Message-ID: <20211020190214.GA2630871@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e618edce-b310-6d9a-3860-d7f4d8c0d98f@maciej.szmigiero.name>
+In-Reply-To: <20211020064142.0807ae70@sal.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021, Maciej S. Szmigiero wrote:
-> On 20.10.2021 00:24, Sean Christopherson wrote:
-> > E.g. the whole thing can be
-> > 
-> > 	if (!kvm->arch.n_requested_mmu_pages &&
-> > 	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
-> > 		unsigned long nr_mmu_pages;
-> > 
-> > 		if (change == KVM_MR_CREATE) {
-> > 			kvm->arch.n_memslots_pages += new->npages;
-> > 		} else {
-> > 			WARN_ON(kvm->arch.n_memslots_pages < old->npages);
-> > 			kvm->arch.n_memslots_pages -= old->npages;
-> > 		}
-> > 
-> > 		nr_mmu_pages = (unsigned long)kvm->arch.n_memslots_pages;
-> > 		nr_mmu_pages *= (KVM_PERMILLE_MMU_PAGES / 1000);
+On Wed, Oct 20, 2021 at 06:41:42AM +0100, Mauro Carvalho Chehab wrote:
+> Em Tue, 19 Oct 2021 14:27:58 -0500
+> Bjorn Helgaas <helgaas@kernel.org> escreveu:
 > 
-> The above line will set nr_mmu_pages to zero since KVM_PERMILLE_MMU_PAGES
-> is 20, so when integer-divided by 1000 will result in a multiplication
-> coefficient of zero.
+> > On Tue, Oct 19, 2021 at 07:06:37AM +0100, Mauro Carvalho Chehab wrote:
+> > 
+> > > Mauro Carvalho Chehab (11):
+> > >   PCI: kirin: Reorganize the PHY logic inside the driver
+> > >   PCI: kirin: Add support for a PHY layer
+> > >   PCI: kirin: Use regmap for APB registers
+> > >   PCI: kirin: Add support for bridge slot DT schema
+> > >   PCI: kirin: give more time for PERST# reset to finish
+> > >   PCI: kirin: Add Kirin 970 compatible
+> > >   PCI: kirin: Add MODULE_* macros
+> > >   PCI: kirin: Allow building it as a module
+> > >   PCI: kirin: Add power_off support for Kirin 960 PHY
+> > >   PCI: kirin: fix poweroff sequence
+> > >   PCI: kirin: Allow removing the driver  
+> > 
+> > Don't repost for this, but if you have occasion to repost for other
+> > reasons, two of these are not capitalized like the others:
+> > 
+> > >   PCI: kirin: give more time for PERST# reset to finish
+> > >   PCI: kirin: fix poweroff sequence  
+> > 
+> > These are write-once for you, but I'll be reading them many times in
+> > the future and they're minor distractions.
+> 
+> Ok, changed on my working repository. On media and on other subsystems
+> I contribute regularly, the practice is just the opposite: to use
+> lowercase after colons.
 
-Ugh, math.  And thus do_div() to avoid the whole 64-bit divide issue on 32-bit KVM.
-Bummer.
+Thanks.  I wouldn't mind a kernel-wide convention, but there isn't
+one.  I just try to pay attention to whatever convention there is for
+a given file or subsystem.
+
+Bjorn
