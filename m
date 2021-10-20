@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF7243475F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 694BF434762
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbhJTIz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:55:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229544AbhJTIz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:55:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A12A86103D;
-        Wed, 20 Oct 2021 08:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634719993;
-        bh=gsHQEAy2iXwhqCCwd80U1OyWDfuz5ks3Q6+JnbpUrTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iDLsTZFnej0t/d9a9GTCv08jcJfvXYUdigE8URPhvZaK8ykEgrfD7YwbjDPF5RcI2
-         I4zp6CY+9wVOJ9g+vFvtV5As4CeT+8WBJIRgS4PnWaP1YNC3IZQPShGE5eRwU+u3nN
-         ABuxDQ7aMmnR32vucRTDpgfI/VGteFcNKr4ykW38RiardLMNh4ETxRLocItjUnZ92S
-         T9EE5+XWEJQ/ieiTJBKQG0oDfOG1zVu6EKWjtkoiYv+VlbcgY+67SsZvvfzbsZdOTE
-         vy2q6KrT7eqYBizOcHPkYc40PcM+Hrhf0/aQnmYxiwTTmuPNDqWMx7kn9aSP6ZuxoG
-         OQx0ydAyVFwhg==
-Date:   Wed, 20 Oct 2021 11:53:05 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>, linux-acpi@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>
-Subject: Re: [PATCH v4 3/4] drivers/acpi: Introduce Platform Firmware Runtime
- Update Telemetry
-Message-ID: <YW/Y8bUkYnikpur3@kernel.org>
-References: <cover.1634310710.git.yu.c.chen@intel.com>
- <838245e376c7e6fd0fe1ef55d004ed53763846a2.1634310710.git.yu.c.chen@intel.com>
- <YWrrYWeW7uaiJ51u@kroah.com>
- <20211020082939.GA44221@chenyu-desktop>
- <YW/S8N9vR46/wSJY@kroah.com>
+        id S230117AbhJTIzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230070AbhJTIzo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:55:44 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2295C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:53:30 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 32EFD1F43F4A;
+        Wed, 20 Oct 2021 09:53:29 +0100 (BST)
+Date:   Wed, 20 Oct 2021 10:53:26 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] mtd: rawnand: nand_bbt: hide suspend/resume
+ hooks while scanning bbt
+Message-ID: <20211020105326.0dca864a@collabora.com>
+In-Reply-To: <20211020084534.2472305-2-sean@geanix.com>
+References: <20211020084534.2472305-1-sean@geanix.com>
+        <20211020084534.2472305-2-sean@geanix.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW/S8N9vR46/wSJY@kroah.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:27:28AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Oct 20, 2021 at 04:29:39PM +0800, Chen Yu wrote:
-> > > > +ssize_t pfru_log_read(struct file *filp, char __user *ubuf,
-> > > > +		      size_t size, loff_t *off)
-> > > > +{
-> > > > +	struct pfru_log_data_info info;
-> > > > +	phys_addr_t base_addr;
-> > > > +	int buf_size, ret;
-> > > > +	char *buf_ptr;
-> > > > +
-> > > > +	if (!pfru_log_dev)
-> > > > +		return -ENODEV;
-> > > > +
-> > > > +	if (*off < 0)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	ret = get_pfru_log_data_info(&info, pfru_log_dev->info.log_type);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	base_addr = (phys_addr_t)(info.chunk2_addr_lo | (info.chunk2_addr_hi << 32));
-> > > > +	/* pfru update has not been launched yet.*/
-> > > > +	if (!base_addr)
-> > > > +		return -EBUSY;
-> > > > +
-> > > > +	buf_size = info.max_data_size;
-> > > > +	if (*off >= buf_size)
-> > > > +		return 0;
-> > > > +
-> > > > +	buf_ptr = memremap(base_addr, buf_size, MEMREMAP_WB);
-> > > > +	if (IS_ERR(buf_ptr))
-> > > > +		return PTR_ERR(buf_ptr);
-> > > > +
-> > > > +	size = min_t(size_t, size, buf_size - *off);
-> > > > +	if (copy_to_user(ubuf, buf_ptr + *off, size))
-> > > > +		ret = -EFAULT;
-> > > > +	else
-> > > > +		ret = 0;
-> > > 
-> > > As all you are doing is mapping some memory and reading from it, why do
-> > > you need a read() file operation at all?  Why not just use mmap?
-> > > 
-> > In the beginning mmap() interface was provided to the user. Then it was
-> > realized that there is no guarantee in the spec that, the physical address
-> > provided by the BIOS would remain unchanged. So instead of asking the user
-> > to mmap the file each time before reading the log, the read() is leveraged
-> > here to always memremap() the latest address.
+On Wed, 20 Oct 2021 10:45:31 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
+
+> From: Boris Brezillon <boris.brezillon@collabora.com>
 > 
-> So you are forced to memremap on _EVERY_ read call because the BIOS can
-> change things underneath us without the kernel knowing about it?  How
-> does the chunk2_addr_lo and _hi values change while the system is
-> running?  Where does that happen, and isn't this going to be a very slow
-> and expensive read call all the time?
+> The BBT scan logic use the MTD helpers before the MTD layer had a
+> chance to initialize the device, and that leads to issues when
+> accessing the uninitialized suspend lock. Let's temporarily set the
+> suspend/resume hooks to NULL to skip the lock acquire/release step.
+> 
+> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+> Tested-by: Sean Nyekjaer <sean@geanix.com>
 
-And maybe it is something that can be fixed in the spec so that the address
-will remain constant?
+It's missing our Signed-off-by tags.
 
-(I realise it's wishful thinking, but sill...)
+> ---
+>  drivers/mtd/nand/raw/nand_bbt.c | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+> index b7ad030225f8..93d385703469 100644
+> --- a/drivers/mtd/nand/raw/nand_bbt.c
+> +++ b/drivers/mtd/nand/raw/nand_bbt.c
+> @@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
+>   */
+>  int nand_create_bbt(struct nand_chip *this)
+>  {
+> +	struct mtd_info *mtd = nand_to_mtd(this);
+> +	int (*suspend) (struct mtd_info *) = mtd->_suspend;
+> +	void (*resume) (struct mtd_info *) = mtd->_resume;
+>  	int ret;
+>  
+> +	/*
+> +	 * The BBT scan logic use the MTD helpers before the MTD layer had a
+> +	 * chance to initialize the device, and that leads to issues when
+> +	 * accessing the uninitialized suspend lock. Let's temporarily set the
+> +	 * suspend/resume hooks to NULL to skip the lock acquire/release step.
+> +	 *
+> +	 * FIXME: This is an ugly hack, so please don't copy this pattern to
+> +	 * other MTD implementations. The proper fix would be to implement a
+> +	 * generic BBT scan logic at the NAND level that's not using any of the
+> +	 * MTD helpers to access pages. We also might consider doing a two
+> +	 * step initialization at the MTD level (mtd_device_init() +
+> +	 * mtd_device_register()) so some of the fields are initialized
+> +	 * early.
+> +	 */
+> +	mtd->_suspend = NULL;
+> +	mtd->_resume = NULL;
+> +
+>  	/* Is a flash based bad block table requested? */
+>  	if (this->bbt_options & NAND_BBT_USE_FLASH) {
+>  		/* Use the default pattern descriptors */
+> @@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
+>  			return ret;
+>  	}
+>  
+> -	return nand_scan_bbt(this, this->badblock_pattern);
+> +	ret = nand_scan_bbt(this, this->badblock_pattern);
+> +
+> +	/* Restore the suspend/resume hooks. */
+> +	mtd->_suspend = suspend;
+> +	mtd->_resume = resume;
+> +
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL(nand_create_bbt);
+>  
 
--- 
-Sincerely yours,
-Mike.
