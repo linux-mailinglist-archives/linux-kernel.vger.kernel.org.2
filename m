@@ -2,152 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555454346CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1814346D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhJTI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:27:30 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57794 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhJTI1V (ORCPT
+        id S229503AbhJTI1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhJTI1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:27:21 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B10A61FD9D;
-        Wed, 20 Oct 2021 08:25:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634718306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X8kM5MPhqrfnEDHU7vUn3OWBK24lQfifgPAWKlJM6Fw=;
-        b=sY2/IOBwR+E08DVd4U1l0h6736ab9RIlZ26ejS+mfebDxHyqNsShLLL5GO3G8dHBe9CghW
-        hKWyNed18jTBDa8gkmDDUdaMJaZNsV60vG7gQZPSJ4noBV1yX1TWA6cMWD7yd0S0COIhUJ
-        MA36WcUHo7Kb01AXOxBAEIowOoDfXa8=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 83531A3B84;
-        Wed, 20 Oct 2021 08:25:06 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 10:25:06 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
-        Neil Brown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YW/SYl/ZKp7W60mg@dhcp22.suse.cz>
-References: <20211018114712.9802-1-mhocko@kernel.org>
- <20211018114712.9802-3-mhocko@kernel.org>
- <20211019110649.GA1933@pc638.lan>
- <YW6xZ7vi/7NVzRH5@dhcp22.suse.cz>
- <20211019194658.GA1787@pc638.lan>
+        Wed, 20 Oct 2021 04:27:31 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA594C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:25:16 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id n8so13398214lfk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=Vivsq86AQ/CLsPuXB4L/G859j6z2u+eKtIxWrc/VSoU=;
+        b=AkhmSEFbfTYIzt6aK4jNw6UvlcWx8vsiKiEOiZeVsxjbURqDlvBf6NCVoQM5TZv9Pg
+         bRwXrntx4YckcDv55byBN3WCqrAZRAcjfPw0YKVuGwjo8RUilAN6J1KFWZ9cOHpyA8e7
+         OuBTs2CoO9/6kS8rvVakGaXHGm/oo7ec8jir6SWOJ7SaJ+f1b3HF0VjtAE5l5t3zCLV7
+         BagTEr2n7Eh6/DKcnHX04/6UIEyCZUNDc2u9KAK4LcwM0EsgBkBx3MR4ffu3Ih96SiVZ
+         k5dSqpvApQi+RKtEbTvuDfWUd6oio6nEzcCjYpkhNLbNyOTws5h/9USwyKvcfCIbqfd1
+         3Pag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=Vivsq86AQ/CLsPuXB4L/G859j6z2u+eKtIxWrc/VSoU=;
+        b=OGcR5ce8ljU/NMXoNpv9y5zqAzxU1ujbZgNiq5bj46oBEtgqa8agxJG6PP+fgjpl3D
+         BSXWMsCXqvZkB2UVXPKCObV/usU7g681BtPd8xLjQ9Nk5QE3ImPFdub49iIUzx+EwYSc
+         C2HkcavN3T+d5DCKzvSk8B+cG4vY/5oh4a6LooE00e+CkAucQw6+kEf0+6qwVB3H9dq1
+         IiYjy3Ok22zpggZQL0RNwcid72BVIb1jc5ijPqE2/kXPl91zUTsm61BXjmT9dNGN61aN
+         pIcg9PTExEYOp1CWR7m+AMxzSixe6aa/XQ2n+n8GnVKAcoQ2d/LRUDRghBk2FtVzhtkK
+         BxiQ==
+X-Gm-Message-State: AOAM530wz80Jl9l/XfqmBiL3vHE2QmbzjckUrQ8Ot+fpfJKZs4M9O7CG
+        SP7SUej88AbUOvWnT6g8QBA=
+X-Google-Smtp-Source: ABdhPJz0JOlWICPnPtH+Q5H9AvWKxHU7eg1k9b6+sMv1vo+YKE++RoM+CFDQG8IoAJB79PyVsQoymg==
+X-Received: by 2002:a05:6512:3049:: with SMTP id b9mr10562256lfb.660.1634718314972;
+        Wed, 20 Oct 2021 01:25:14 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id q10sm133956lfe.294.2021.10.20.01.25.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 01:25:14 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 11:25:11 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] drm: vkms: Refactor the plane composer to accept
+ new formats
+Message-ID: <20211020112511.0b6b93ba@eldfell>
+In-Reply-To: <c623cfdd-1b0c-0e15-b36e-e74119c41031@gmail.com>
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+        <20211005201637.58563-7-igormtorrente@gmail.com>
+        <20211018113009.5519457c@eldfell>
+        <d5f92494-9c55-2b7d-6107-6048abb41759@gmail.com>
+        <20211019110535.18f56272@eldfell>
+        <c623cfdd-1b0c-0e15-b36e-e74119c41031@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019194658.GA1787@pc638.lan>
+Content-Type: multipart/signed; boundary="Sig_/NoW6hr+ZxT5QKTLil8YPtyD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 19-10-21 21:46:58, Uladzislau Rezki wrote:
-> On Tue, Oct 19, 2021 at 01:52:07PM +0200, Michal Hocko wrote:
-> > On Tue 19-10-21 13:06:49, Uladzislau Rezki wrote:
-> > > > From: Michal Hocko <mhocko@suse.com>
-> > > > 
-> > > > Dave Chinner has mentioned that some of the xfs code would benefit from
-> > > > kvmalloc support for __GFP_NOFAIL because they have allocations that
-> > > > cannot fail and they do not fit into a single page.
-> > > > 
-> > > > The larg part of the vmalloc implementation already complies with the
-> > > > given gfp flags so there is no work for those to be done. The area
-> > > > and page table allocations are an exception to that. Implement a retry
-> > > > loop for those.
-> > > > 
-> > > > Signed-off-by: Michal Hocko <mhocko@suse.com>
-> > > > ---
-> > > >  mm/vmalloc.c | 6 +++++-
-> > > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > > > index 7455c89598d3..3a5a178295d1 100644
-> > > > --- a/mm/vmalloc.c
-> > > > +++ b/mm/vmalloc.c
-> > > > @@ -2941,8 +2941,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
-> > > >  	else if (!(gfp_mask & (__GFP_FS | __GFP_IO)))
-> > > >  		flags = memalloc_noio_save();
-> > > >  
-> > > > -	ret = vmap_pages_range(addr, addr + size, prot, area->pages,
-> > > > +	do {
-> > > > +		ret = vmap_pages_range(addr, addr + size, prot, area->pages,
-> > > >  			page_shift);
-> > > > +	} while ((gfp_mask & __GFP_NOFAIL) && (ret < 0));
-> > > >  
-> > > >  	if ((gfp_mask & (__GFP_FS | __GFP_IO)) == __GFP_IO)
-> > > >  		memalloc_nofs_restore(flags);
-> > > > @@ -3032,6 +3034,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
-> > > >  		warn_alloc(gfp_mask, NULL,
-> > > >  			"vmalloc error: size %lu, vm_struct allocation failed",
-> > > >  			real_size);
-> > > > +		if (gfp_mask && __GFP_NOFAIL)
-> > > > +			goto again;
-> > > >  		goto fail;
-> > > >  	}
-> > > >  
-> > > > -- 
-> > > > 2.30.2
-> > > > 
-> > > I have checked the vmap code how it aligns with the __GFP_NOFAIL flag.
-> > > To me it looks correct from functional point of view.
-> > > 
-> > > There is one place though it is kasan_populate_vmalloc_pte(). It does
-> > > not use gfp_mask, instead it directly deals with GFP_KERNEL for its
-> > > internal purpose. If it fails the code will end up in loping in the
-> > > __vmalloc_node_range().
-> > > 
-> > > I am not sure how it is important to pass __GFP_NOFAIL into KASAN code.
-> > > 
-> > > Any thoughts about it?
-> > 
-> > The flag itself is not really necessary down there as long as we
-> > guarantee that the high level logic doesn't fail. In this case we keep
-> > retrying at __vmalloc_node_range level which should be possible to cover
-> > all callers that can control gfp mask. I was thinking to put it into
-> > __get_vm_area_node but that was slightly more hairy and we would be
-> > losing the warning which might turn out being helpful in cases where the
-> > failure is due to lack of vmalloc space or similar constrain. Btw. do we
-> > want some throttling on a retry?
-> > 
-> I think adding kind of schedule() will not make things worse and in corner
-> cases could prevent a power drain by CPU. It is important for mobile devices. 
+--Sig_/NoW6hr+ZxT5QKTLil8YPtyD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I suspect you mean schedule_timeout here? Or cond_resched? I went with a
-later for now, I do not have a good idea for how to long to sleep here.
-I am more than happy to change to to a sleep though.
+On Tue, 19 Oct 2021 18:10:57 -0300
+Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
 
-> As for vmap space, it can be that a user specifies a short range that does
-> not contain any free area. In that case we might never return back to a caller.
+> Hi Pekka,
+>=20
+> On 10/19/21 5:05 AM, Pekka Paalanen wrote:
+> > On Mon, 18 Oct 2021 16:26:06 -0300
+> > Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
+> >  =20
+> >> Hi Pekka,
+> >>
+> >> On 10/18/21 5:30 AM, Pekka Paalanen wrote: =20
+> >>> On Tue,  5 Oct 2021 17:16:37 -0300
+> >>> Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
+> >>>     =20
+> >>>> Currently the blend function only accepts XRGB_8888 and ARGB_8888
+> >>>> as a color input.
+> >>>>
+> >>>> This patch refactors all the functions related to the plane composit=
+ion
+> >>>> to overcome this limitation.
+> >>>>
+> >>>> Now the blend function receives a format handler to each plane and a
+> >>>> blend function pointer. It will take two ARGB_1616161616 pixels, one
+> >>>> for each handler, and will use the blend function to calculate and
+> >>>> store the final color in the output buffer.
+> >>>>
+> >>>> These format handlers will receive the `vkms_composer` and a pair of
+> >>>> coordinates. And they should return the respective pixel in the
+> >>>> ARGB_16161616 format.
+> >>>>
+> >>>> The blend function will receive two ARGB_16161616 pixels, x, y, and
+> >>>> the vkms_composer of the output buffer. The method should perform the
+> >>>> blend operation and store output to the format aforementioned
+> >>>> ARGB_16161616. =20
+> >>>
+> >>> Hi,
+> >>>
+> >>> here are some drive-by comments which you are free to take or leave.
+> >>>
+> >>> To find more efficient ways to do this, you might want research=20
+> >>> library. It's MIT licensed.
+> >>>
+> >>> IIRC, the elementary operations there operate on pixel lines (pointer=
+ +
+> >>> length), not individual pixels (image, x, y). Input conversion functi=
+on
+> >>> reads and converts a whole line a time. Blending function blends two
+> >>> lines and writes the output into back one of the lines. Output
+> >>> conversion function takes a line and converts it into destination
+> >>> buffer. That way the elementary operations do not need to take stride
+> >>> into account, and blending does not need to deal with varying memory
+> >>> alignment FWIW. The inner loops involve much less function calls and
+> >>> state, probably. =20
+> >>
+> >> I was doing some rudimentary profiling, and I noticed that the code
+> >> spends most of the time with the indirect system call overhead and not
+> >> the actual computation. This can definitively help with it. =20
+> >=20
+> > Hi,
+> >=20
+> > I suppose you mean function (pointer) call, not system call? =20
+>=20
+> Yes, I misspelled it.
+>=20
+> >=20
+> > Really good that you have already profiled things. All optimisations
+> > should be guided by profiling, otherwise they are just guesses (and I
+> > got lucky this time I guess).
+> >  =20
+> >>> Pixman may not do exactly this, but it does something very similar.
+> >>> Pixman also has multiple different levels of optimisations, which may
+> >>> not be necessary for VKMS.
+> >>>
+> >>> It's a trade-off between speed and temporary memory consumed. You need
+> >>> temporary buffers for two lines, but not more (not a whole image in
+> >>> full intermediate precision). Further optimisation could determine
+> >>> whether to process whole image rows as lines, or split a row into
+> >>> multiple lines to stay within CPU cache size.
+> >>>     =20
+> >>
+> >> Sorry, I didn't understand the idea of the last sentence. =20
+> >=20
+> > If an image is very wide, a single row could still be relatively large
+> > in size (bytes). If it is large enough that the working set falls out
+> > of a faster CPU cache into a slower CPU cache (or worse yet, into RAM
+> > accesses), performance may suffer and become memory bandwidth limited
+> > rather than ALU rate limited. Theoretically that can be worked around
+> > by limiting the maximum size of a line, and splitting an image row into
+> > multiple lines. =20
+>=20
+> Got it now, thanks.
+>=20
+> >=20
+> > However, this is an optimisation one probably should not do until there
+> > is performance profiling data showing that it actually is useful. The
+> > optimal line size limit depends on the CPU model as well. So it's a bit
+> > far out, but something you could keep in mind just in case. =20
+>=20
+> OK. For now I will not deal with this complexity, and if necessary I
+> will revisit it latter.
+>=20
+> >  =20
+> >>> Since it seems you are blending multiple planes into a single
+> >>> destination which is assumed to be opaque, you might also be able to =
+do
+> >>> the multiple blends without convert-writing and read-converting to/fr=
+om
+> >>> the destination between every plane. I think that might be possible to
+> >>> architect on top of the per-line operations still. =20
+> >>
+> >> I tried it. But I don't know how to do this without looking like a mes=
+s. =20
+>=20
+> I don't think it changes anything, but I forgot to mention that I tried
+> it with the blend per pixel and not a per line.
 
-This is to be expected. The caller cannot fail and if it would be
-looping around vmalloc it wouldn't return anyway.
+Hi,
 
-> Maybe add a good comment something like: think what you do when deal with the
-> __vmalloc_node_range() and __GFP_NOFAIL?
+I believe that can get messy per-pixel, yeah. You kind of want to keep
+the per-pixel (inner loop) operations as fast as possible, and that
+naturally tends to lead to contorted code as you try to optimise it
+(prematurely perhaps).
 
-We have a generic documentation for gfp flags and __GFP_NOFAIL is
-docuemented to "The allocation could block indefinitely but will never
-return with failure." We are discussing improvements for the generic
-documentation in another thread [1] and we will likely extend it so I
-suspect we do not have to repeat drawbacks here again.
+I would expect per-line code to be cleaner, because there is less state
+to be handled in the inner loop, and the outer loops spin rarely enough
+that you can afford to write more clear code.
 
-[1] http://lkml.kernel.org/r/163184741778.29351.16920832234899124642.stgit@noble.brown
+> > Dedicate one of the temporary line buffers for the destination, and
+> > instead of writing it out and loading it back for each input plane,
+> > leave it in place over all planes and write it out just once at the end.
+> >=20
+> > I do expect more state tracking needed. You need to iterate over the
+> > list of planes for each output row, extract only the used part of an
+> > input plane's buffer into the other temporary line buffer, and offset
+> > the destination line buffer and length to match when passing those into
+> > a blending function.+ =20
+>=20
+> It's exactly this state tracking that was a mess when I was trying to
+> implement something similar. But this is one more thing that probably
+> I will have to revisit later.
 
-Anyway the gfp mask description and constrains for vmalloc are not
-documented. I will add a new patch to fill that gap and send it as a
-reply to this one
--- 
-Michal Hocko
-SUSE Labs
+Mind the difference between state tracking in the inner loop vs. the
+outer loops. Per-line, inner loop becomes simpler while the outer loops
+become slightly more complicated, but it should be a net win, because
+the outer loops spin fewer times.
+
+When nesting gets too deep, code becomes a mess, or the number of local
+variables in a function grows too far, it usually helps to split things
+into more functions. The compiler will inline them for you
+automatically when that is beneficial.
+
+Function pointer calls cannot usually be inlined, hence they should be
+kept out of the innermost loop.
+
+> > It's not an obvious win but a trade-off, so profiling is again needed.
+> >=20
+> > Btw. the use of temporary line buffers should also help with
+> > implementing scaling. You could do the filtering during reading of the
+> > input buffer. If the filter is not nearest, meaning you need to access
+> > more than one input pixel per pixel-for-blending, there are a few ways
+> > to go about that. You could do the filtering during the input buffer
+> > reading, or you could load two input buffer rows into temporary line
+> > buffers and do filtering as a separate step into yet another line
+> > buffer. As the composition advances from top to bottom, only one of the
+> > input buffer rows will change at a time (during up-scaling) so you can
+> > avoid re-loading a row by swapping the line buffers.
+> >=20
+> > This is getting ahead of things, so don't worry about scaling or
+> > filtering yet. The first thing is to see if you can make the line
+> > buffer approach give you a significant speed-up.
+> >  =20
+> >> Does the pixman perform some similar? =20
+> >=20
+> > No, Pixman composition operation has only three images: source,
+> > mask, and destination. All those it can handle simultaneously, but
+> > since there is no "multi-blending" API, it doesn't need to take care of
+> > more.
+> >=20
+> > IIRC, Pixman also has a form of optimised operations that do blending
+> > and converting to destination in the same pass. The advantage of that
+> > is that blending can work with less precision when it knows what
+> > precision the output will be converted to and it saves some bandwidth
+> > by not needing to write-after-blending and read-for-conversion
+> > intermediate precision values. The disadvantage is that the number of
+> > needed specialised blending functions explodes by the number of
+> > possible destination formats. Pixman indeed makes those specialised
+> > functions optional, falling back to more generic C code. I would hope
+> > that VKMS does not need to go this far in optimisations though. =20
+>=20
+> This should be plenty fast indeed. Maybe worth for formats that are
+> extremely common.
+
+My feeling says that it would be better to not aim that far at first,
+and see how the per-line approach works with separate pluggable
+read-conversion, blending, and write-conversion functions.
+
+Besides, combined blend-write operations would probably conflict with
+the idea of blending all planes first and then writing destination once.
+
+There are KMS properties for different blending functions, so that's a
+reason to make the blending function pluggable as well. Not just for a
+potential optimisation to skip the X channel on input completely.
+
+If you want to support background color property, that might be handled
+with a special read-conversion function which just fills the temporary
+line buffer with the background color.
+
+It is always possible to get faster by writing more specialised
+functions that can take advantage of more invariants/assumptions, but
+you get a combinatorial explosion of specialisations.
+
+
+Thanks,
+pq
+
+--Sig_/NoW6hr+ZxT5QKTLil8YPtyD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmFv0mcACgkQI1/ltBGq
+qqcepw/8DT6qgPWBhP5DC7+NshQ7RI6qG7jRzl8z29WPF1uQ/0OcMKy1Oiv6gJg0
+ALgRgXNVV+sfDE4oRkBPNL4o6L7ge0rZ+Pi9Y/e+zl6iaOFoUJtpQHKajbFscp8c
+Gs/POk8fhx+ohUB1bQVPlgE0oN1ZgQtD0yR1pD1fuIU55KjdmCGd7vkhfDgJmyRE
+EG+8kQPeXmE2TwZtD8tTVbsYugEazQd+hRnYBi2U7ux6u300mjKFaq0X4gcAZbn3
++Y3dtoPM1oEclZnJ5k0m/kZU0n5SNdJ4QMQCH1n0kzWwRUUuVJyMAIHa5GilH0C3
+XBgV1B19YKOLCks1uA/68y0kJbcFbgoB/wKls5UiYZ/jDR1NCA6IZlzJ1VPTPUMA
+6Q9QoVNPqegzjzkYhtiXYZseaflHxxID03ODBalxMJNAL0eL5PtkxNHi0TALVJJb
+QB67+IKu8eUNRzKLwmiwuZv30hXHLsmMpR1ozFpujn/2i/Tax20yHQo4wqudtNPo
+0+labp1rIvFIqDJOGCAUZhOdGzqgHQLNii9ep+6mZqOnMSx8Oy1Q6/wcYnI+PBnj
+QFFFh+15HFBZ0TYmTuaH/yXTdLgyp91GJNpyGRy5tCZdO85pMt4XZ+DiBrQ2AJ8x
+2hiuObBX9wOR69R0NKcjrNm9Z5Y6mJMMCX1GwHuID45FlTUC+6k=
+=rQnj
+-----END PGP SIGNATURE-----
+
+--Sig_/NoW6hr+ZxT5QKTLil8YPtyD--
