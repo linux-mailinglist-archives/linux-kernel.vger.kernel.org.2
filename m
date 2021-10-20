@@ -2,118 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F277434687
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22B9434690
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhJTIMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:12:50 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:46872 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhJTIMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:12:45 -0400
-Received: from [213.208.157.36] (helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1md6g6-0002KZ-Qj; Wed, 20 Oct 2021 10:10:26 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: rockchip: rk3399: Hook up DMA for UARTs
-Date:   Wed, 20 Oct 2021 10:10:25 +0200
-Message-ID: <2163516.Xs4XyuuM7S@phil>
-In-Reply-To: <20210920175647.13008-2-wens@kernel.org>
-References: <20210920175647.13008-1-wens@kernel.org> <20210920175647.13008-2-wens@kernel.org>
+        id S229976AbhJTINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:13:44 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:47574 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhJTINm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:13:42 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 19K7mgAu029087;
+        Wed, 20 Oct 2021 15:48:42 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Oct
+ 2021 16:10:44 +0800
+Message-ID: <2608eec6-0007-e8f6-25d7-2e6db95d1230@aspeedtech.com>
+Date:   Wed, 20 Oct 2021 16:10:45 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 3/7] media: aspeed: add more debug log message
+Content-Language: en-US
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211018092207.13336-1-jammy_huang@aspeedtech.com>
+ <20211018092207.13336-4-jammy_huang@aspeedtech.com>
+ <8212f2f5-d661-b598-1490-0ad5266ff2ca@molgen.mpg.de>
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+In-Reply-To: <8212f2f5-d661-b598-1490-0ad5266ff2ca@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 19K7mgAu029087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Dear Paul,
 
-Am Montag, 20. September 2021, 19:56:47 CEST schrieb Chen-Yu Tsai:
-> From: Chen-Yu Tsai <wens@csie.org>
-> 
-> The RK3399 has two DMA controllers, one of which is wired up to work
-> with the SPI controllers and UARTs. The SPI controllers are already
-> hooked up, but the UARTs aren't.
-> 
-> Add the "dmas" and "dma-names" to the UART device nodes to hook up DMA.
-
-last time this came up, there was the issue of the pl330 driver in the
-kernel not being able to handle the case where the number of channels
-hooked up was larger than the number of possible channels handled
-at the same time (8 for dmac peri according to the TRM).
-
-Did this get solved meanwhile or are we then possibly starving the spi
-controllers from dma access when the uarts also get dma channels
-and are possibly probed earlier?
+Sure, thanks for your help.
 
 
-Heiko
+Best regards,
+
+Jammy
 
 
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> index 3871c7fd83b0..87d6e4eb1337 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> @@ -608,6 +608,8 @@ uart0: serial@ff180000 {
->  		reg = <0x0 0xff180000 0x0 0x100>;
->  		clocks = <&cru SCLK_UART0>, <&cru PCLK_UART0>;
->  		clock-names = "baudclk", "apb_pclk";
-> +		dmas = <&dmac_peri 0>, <&dmac_peri 1>;
-> +		dma-names = "tx", "rx";
->  		interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH 0>;
->  		reg-shift = <2>;
->  		reg-io-width = <4>;
-> @@ -621,6 +623,8 @@ uart1: serial@ff190000 {
->  		reg = <0x0 0xff190000 0x0 0x100>;
->  		clocks = <&cru SCLK_UART1>, <&cru PCLK_UART1>;
->  		clock-names = "baudclk", "apb_pclk";
-> +		dmas = <&dmac_peri 2>, <&dmac_peri 3>;
-> +		dma-names = "tx", "rx";
->  		interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH 0>;
->  		reg-shift = <2>;
->  		reg-io-width = <4>;
-> @@ -634,6 +638,8 @@ uart2: serial@ff1a0000 {
->  		reg = <0x0 0xff1a0000 0x0 0x100>;
->  		clocks = <&cru SCLK_UART2>, <&cru PCLK_UART2>;
->  		clock-names = "baudclk", "apb_pclk";
-> +		dmas = <&dmac_peri 4>, <&dmac_peri 5>;
-> +		dma-names = "tx", "rx";
->  		interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH 0>;
->  		reg-shift = <2>;
->  		reg-io-width = <4>;
-> @@ -647,6 +653,8 @@ uart3: serial@ff1b0000 {
->  		reg = <0x0 0xff1b0000 0x0 0x100>;
->  		clocks = <&cru SCLK_UART3>, <&cru PCLK_UART3>;
->  		clock-names = "baudclk", "apb_pclk";
-> +		dmas = <&dmac_peri 6>, <&dmac_peri 7>;
-> +		dma-names = "tx", "rx";
->  		interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH 0>;
->  		reg-shift = <2>;
->  		reg-io-width = <4>;
-> @@ -1142,6 +1150,8 @@ uart4: serial@ff370000 {
->  		reg = <0x0 0xff370000 0x0 0x100>;
->  		clocks = <&pmucru SCLK_UART4_PMU>, <&pmucru PCLK_UART4_PMU>;
->  		clock-names = "baudclk", "apb_pclk";
-> +		dmas = <&dmac_peri 8>, <&dmac_peri 9>;
-> +		dma-names = "tx", "rx";
->  		interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH 0>;
->  		reg-shift = <2>;
->  		reg-io-width = <4>;
-> 
-
-
-
-
+On 2021/10/18 下午 05:59, Paul Menzel wrote:
+> Dear Jammy:
+>
+>
+> Am 18.10.21 um 11:22 schrieb Jammy Huang:
+>
+> Nit (summary/suject:: message*s*
+>
+> Could you add an excerpt of the new log messages please?
+>
+>
+> Kind regards,
+>
+> Paul
+>
+>
+>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>> ---
+>>    drivers/media/platform/aspeed-video.c | 24 ++++++++++++++++++++++++
+>>    1 file changed, 24 insertions(+)
+>>
+>> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+>> index 642ca96c8c52..24ca07f40f14 100644
+>> --- a/drivers/media/platform/aspeed-video.c
+>> +++ b/drivers/media/platform/aspeed-video.c
+>> @@ -461,12 +461,17 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+>>    
+>>    static void update_perf(struct aspeed_video_perf *p)
+>>    {
+>> +	struct aspeed_video *v = container_of(p, struct aspeed_video,
+>> +					      perf);
+>> +
+>>    	p->duration =
+>>    		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
+>>    	p->totaltime += p->duration;
+>>    
+>>    	p->duration_max = max(p->duration, p->duration_max);
+>>    	p->duration_min = min(p->duration, p->duration_min);
+>> +	v4l2_dbg(2, debug, &v->v4l2_dev, "time consumed: %d ms\n",
+>> +		 p->duration);
+>>    }
+>>    
+>>    static int aspeed_video_start_frame(struct aspeed_video *video)
+>> @@ -593,6 +598,12 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+>>    	struct aspeed_video *video = arg;
+>>    	u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
+>>    
+>> +	v4l2_dbg(1, debug, &video->v4l2_dev, "irq sts=%#x %s%s%s%s\n", sts,
+>> +		 sts & VE_INTERRUPT_MODE_DETECT_WD ? ", unlock" : "",
+>> +		 sts & VE_INTERRUPT_MODE_DETECT ? ", lock" : "",
+>> +		 sts & VE_INTERRUPT_CAPTURE_COMPLETE ? ", capture-done" : "",
+>> +		 sts & VE_INTERRUPT_COMP_COMPLETE ? ", comp-done" : "");
+>> +
+>>    	/*
+>>    	 * Resolution changed or signal was lost; reset the engine and
+>>    	 * re-initialize
+>> @@ -910,6 +921,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>>    
+>>    	/* Don't use direct mode below 1024 x 768 (irqs don't fire) */
+>>    	if (size < DIRECT_FETCH_THRESHOLD) {
+>> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Sync Mode\n");
+>>    		aspeed_video_write(video, VE_TGS_0,
+>>    				   FIELD_PREP(VE_TGS_FIRST,
+>>    					      video->frame_left - 1) |
+>> @@ -921,6 +933,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>>    					      video->frame_bottom + 1));
+>>    		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_INT_DE);
+>>    	} else {
+>> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Direct Mode\n");
+>>    		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_DIRECT_FETCH);
+>>    	}
+>>    
+>> @@ -937,6 +950,10 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>>    		if (!aspeed_video_alloc_buf(video, &video->srcs[1], size))
+>>    			goto err_mem;
+>>    
+>> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf0 addr(%#x) size(%d)\n",
+>> +			 video->srcs[0].dma, video->srcs[0].size);
+>> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf1 addr(%#x) size(%d)\n",
+>> +			 video->srcs[1].dma, video->srcs[1].size);
+>>    		aspeed_video_write(video, VE_SRC0_ADDR, video->srcs[0].dma);
+>>    		aspeed_video_write(video, VE_SRC1_ADDR, video->srcs[1].dma);
+>>    	}
+>> @@ -1201,6 +1218,9 @@ static int aspeed_video_set_dv_timings(struct file *file, void *fh,
+>>    
+>>    	timings->type = V4L2_DV_BT_656_1120;
+>>    
+>> +	v4l2_dbg(1, debug, &video->v4l2_dev, "set new timings(%dx%d)\n",
+>> +		 timings->bt.width, timings->bt.height);
+>> +
+>>    	return 0;
+>>    }
+>>    
+>> @@ -1383,6 +1403,7 @@ static void aspeed_video_resolution_work(struct work_struct *work)
+>>    			.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
+>>    		};
+>>    
+>> +		v4l2_dbg(1, debug, &video->v4l2_dev, "fire source change event\n");
+>>    		v4l2_event_queue(&video->vdev, &ev);
+>>    	} else if (test_bit(VIDEO_STREAMING, &video->flags)) {
+>>    		/* No resolution change so just restart streaming */
+>> @@ -1718,6 +1739,7 @@ static int aspeed_video_init(struct aspeed_video *video)
+>>    		dev_err(dev, "Unable to request IRQ %d\n", irq);
+>>    		return rc;
+>>    	}
+>> +	dev_info(video->dev, "irq %d\n", irq);
+>>    
+>>    	video->eclk = devm_clk_get(dev, "eclk");
+>>    	if (IS_ERR(video->eclk)) {
+>> @@ -1754,6 +1776,8 @@ static int aspeed_video_init(struct aspeed_video *video)
+>>    		rc = -ENOMEM;
+>>    		goto err_release_reserved_mem;
+>>    	}
+>> +	dev_info(video->dev, "alloc mem size(%d) at %#x for jpeg header\n",
+>> +		 VE_JPEG_HEADER_SIZE, video->jpeg.dma);
+>>    
+>>    	aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
+>>    
+>>
