@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B0D4352F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492464352F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhJTStx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:49:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54636 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbhJTStb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:49:31 -0400
-Date:   Wed, 20 Oct 2021 18:47:15 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634755636;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dclZaAXFJJ9XqiYF9swNaJb9Rn5CR+3cLGoGFADflzU=;
-        b=aKVZVYgQvecs0hHZh0TmMhaxpok/CDt/kDh0s8Mv55NGvIgl4dZ9R/OPZNlmSri9KJKW6v
-        bu2h2aLN+2xiSQmhNFpCFAWbiPKKGeCoC07uwF7FHg12qU0M9JhNy4F+2oHbNLjgO1jbVe
-        XJ/6767HNjC0rNb6u0WHdh7yq29HZ/8aVf3Yn/otTgUGqoRwTjsCIAFRNJBoKTswA8L0cs
-        zXCUcnY9An1qtqL0MLdEl1aygeK6jQSbjfaiWoUqNySX2MDv8n8JASDMh7Nqd12fs/2V3b
-        JyVsBNA4nYCXGgyT+qVif/s6qdVJ8vu2XzLIqqKdTgweXrWXwAFqoa52vygyRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634755636;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dclZaAXFJJ9XqiYF9swNaJb9Rn5CR+3cLGoGFADflzU=;
-        b=wvM4ULYPr2syfnUuDWRCKjGe9gCE3POL2m7blfhM0e/SOD0I8tTbWWjouNvblYG4xzWfUH
-        V3X1I3K3xE1v2LAg==
-From:   "irqchip-bot for Cai Huoqing" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/irq-mvebu-icu: Make use of the
- helper function devm_platform_ioremap_resource()
-Cc:     Cai Huoqing <caihuoqing@baidu.com>, Andrew Lunn <andrew@lunn.ch>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20210908105653.1627-1-caihuoqing@baidu.com>
-References: <20210908105653.1627-1-caihuoqing@baidu.com>
+        id S231351AbhJTSuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:50:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230076AbhJTSuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 14:50:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A10E6103D;
+        Wed, 20 Oct 2021 18:48:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634755683;
+        bh=n8VrOe4I2yKWKENo2xOz+GrW26l+tosuZNQ1rYD5gKE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=X8tKojH7Z8fdPyVTk4z+AoVAS3a9h5oYDEVDa7uI3b3vQWDC0RDkopnsSuFW09wMx
+         S5ymoCHlxw+BZDcfi8a/SbXyaru92R/D/4JVacWcGVpk2lCHkMZKGKNpRCcpV4amQE
+         0SC95mBmBf+xrbZsPKYOZ3Tw+i6Awvb4CDoD4fADso7xeFCGtNQbQjFeERWiYt5J4a
+         XviC1MWcQkWkyhnJbBbb7MhB9KdUgixAetlN+ZjGulMI+TYlz6yOX8pi/IJu8QIrAm
+         DPTPSRiUO2vc4Q2/LyUL9rJoQfRdVbdcu/SicgghaP/nLNsd5aIhVOahGYlBk3gw4h
+         jokZEwKpwMQ/g==
+Received: by mail-lf1-f42.google.com with SMTP id g36so328184lfv.3;
+        Wed, 20 Oct 2021 11:48:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532bXNhmVLh6cfAOUxsJB+NDo+eiCLht4tPeKR4iEnlNWXGLeu4P
+        /I69BmJlS2QuRZe9tLV1khZkLcBv1KlsB4zS7g==
+X-Google-Smtp-Source: ABdhPJyDkQcU37hcsbyKe6namKZuEksRA+CPb1y/N+dx0XKOp77yba3905ZumF5lcfjyaXaZElnjUUGJ+2NqhJwXc9g=
+X-Received: by 2002:aa7:cd0a:: with SMTP id b10mr942298edw.164.1634755670808;
+ Wed, 20 Oct 2021 11:47:50 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <163475563540.25758.2588530833263075881.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20211006164332.1981454-1-robh@kernel.org>
+In-Reply-To: <20211006164332.1981454-1-robh@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 20 Oct 2021 13:47:39 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLg1=T52MqhsGgmAcRueC_nJdivGg4h+M2Bd8W3fyHCmg@mail.gmail.com>
+Message-ID: <CAL_JsqLg1=T52MqhsGgmAcRueC_nJdivGg4h+M2Bd8W3fyHCmg@mail.gmail.com>
+Subject: Re: [PATCH 00/12] DT: CPU h/w id parsing clean-ups and cacheinfo id support
+To:     Russell King <linux@armlinux.org.uk>,
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, X86 ML <x86@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        Openrisc <openrisc@lists.librecores.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        SH-Linux <linux-sh@vger.kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On Wed, Oct 6, 2021 at 11:43 AM Rob Herring <robh@kernel.org> wrote:
+>
+> The first 10 patches add a new function, of_get_cpu_hwid(), which parses
+> CPU DT node 'reg' property, and then use it to replace all the open
+> coded versions of parsing CPU node 'reg' properties.
+>
+> The last 2 patches add support for populating the cacheinfo 'id' on DT
+> platforms. The minimum associated CPU hwid is used for the id. The id is
+> optional, but necessary for resctrl which is being adapted for Arm MPAM.
+>
+> Tested on arm64. Compile tested on arm, x86 and powerpc.
+>
+> Rob
+>
+> Rob Herring (12):
+>   of: Add of_get_cpu_hwid() to read hardware ID from CPU nodes
+>   ARM: Use of_get_cpu_hwid()
+>   ARM: broadcom: Use of_get_cpu_hwid()
+>   arm64: Use of_get_cpu_hwid()
+>   csky: Use of_get_cpu_hwid()
+>   openrisc: Use of_get_cpu_hwid()
+>   powerpc: Use of_get_cpu_hwid()
+>   riscv: Use of_get_cpu_hwid()
+>   sh: Use of_get_cpu_hwid()
+>   x86: dt: Use of_get_cpu_hwid()
+>   cacheinfo: Allow for >32-bit cache 'id'
+>   cacheinfo: Set cache 'id' based on DT data
 
-Commit-ID:     0c1479a66359c6955cd973c9e225d7ee5d6c71aa
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/0c1479a66359c6955cd973c9e225d7ee5d6c71aa
-Author:        Cai Huoqing <caihuoqing@baidu.com>
-AuthorDate:    Wed, 08 Sep 2021 18:56:52 +08:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Tue, 19 Oct 2021 11:22:34 +01:00
+I've fixed up the openrisc error and applied 1-10 to the DT tree.
 
-irqchip/irq-mvebu-icu: Make use of the helper function devm_platform_ioremap_resource()
+The cacheinfo part is going to need some more work. I've found I will
+need the cache affinity (of possible cpus) as well, so I plan to also
+store the affinity instead of looping thru caches and cpus again.
 
-Use the devm_platform_ioremap_resource() helper instead of
-calling platform_get_resource() and devm_ioremap_resource()
-separately
-
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210908105653.1627-1-caihuoqing@baidu.com
----
- drivers/irqchip/irq-mvebu-icu.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/irqchip/irq-mvebu-icu.c b/drivers/irqchip/irq-mvebu-icu.c
-index 090bc3f..3e7297f 100644
---- a/drivers/irqchip/irq-mvebu-icu.c
-+++ b/drivers/irqchip/irq-mvebu-icu.c
-@@ -347,7 +347,6 @@ builtin_platform_driver(mvebu_icu_subset_driver);
- static int mvebu_icu_probe(struct platform_device *pdev)
- {
- 	struct mvebu_icu *icu;
--	struct resource *res;
- 	int i;
- 
- 	icu = devm_kzalloc(&pdev->dev, sizeof(struct mvebu_icu),
-@@ -357,8 +356,7 @@ static int mvebu_icu_probe(struct platform_device *pdev)
- 
- 	icu->dev = &pdev->dev;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	icu->base = devm_ioremap_resource(&pdev->dev, res);
-+	icu->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(icu->base))
- 		return PTR_ERR(icu->base);
- 
+Rob
