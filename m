@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312F1435015
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925A7435019
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhJTQ05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhJTQ0y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:26:54 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB95C06161C;
-        Wed, 20 Oct 2021 09:24:39 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0db300a91224c8ecca7928.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:b300:a912:24c8:ecca:7928])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 658D81EC056B;
-        Wed, 20 Oct 2021 18:24:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634747076;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=QSuLm6rInGsrmX9zknKDjGzfXToS1VdAeufrKh1kkIE=;
-        b=ZoQVVEqPuIU7jb4YrZHAavXdk03Vzpnzg8FMNDJMVe0vSh/Uj61RF6dOTh4zNCm7tBt7Iu
-        sMizpGIlLSze3uRWCZtDrgb/YmBuuQ/x2NGkXFRXRTTzd374DBirUYSVhxwazFjHntGPz+
-        aJewAQoYVp/7LQt6w4pT90CYd1hgioU=
-Date:   Wed, 20 Oct 2021 18:24:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        x86@kernel.org, hpa@zytor.com, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, davem@davemloft.net,
-        kuba@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
-        jroedel@suse.de, brijesh.singh@amd.com, pgonda@google.com,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        rppt@kernel.org, tj@kernel.org, aneesh.kumar@linux.ibm.com,
-        saravanand@fb.com, hannes@cmpxchg.org, rientjes@google.com,
-        michael.h.kelley@microsoft.com, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com,
-        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
-        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com
-Subject: Re: [PATCH] x86/sev-es: Expose __sev_es_ghcb_hv_call() to call ghcb
- hv call out of sev code
-Message-ID: <YXBCwXXlMurXgqd9@zn.tnic>
-References: <2772390d-09c1-80c1-082f-225f32eae4aa@gmail.com>
- <20211020062321.3581158-1-ltykernel@gmail.com>
- <YW/oaZ2GN15hQdyd@zn.tnic>
- <c5b55d93-14c4-81cf-e999-71ad5d6a1b41@gmail.com>
- <YXAcGtxe08XiHBFH@zn.tnic>
- <62ffaeb4-1940-4934-2c39-b8283d402924@amd.com>
- <32336f13-fa66-670d-0ea3-7822bd5b829b@gmail.com>
- <YXAqBOGdK91ieVIT@zn.tnic>
- <7bab8b73-e276-c23c-7a0a-2a6280e8a7d9@gmail.com>
+        id S231238AbhJTQ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:27:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229817AbhJTQ1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 12:27:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5849611F2;
+        Wed, 20 Oct 2021 16:25:27 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 17:25:24 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v8 05/17] iov_iter: Introduce fault_in_iov_iter_writeable
+Message-ID: <YXBC9LRwhgFCHqJA@arm.com>
+References: <20211019134204.3382645-1-agruenba@redhat.com>
+ <20211019134204.3382645-6-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7bab8b73-e276-c23c-7a0a-2a6280e8a7d9@gmail.com>
+In-Reply-To: <20211019134204.3382645-6-agruenba@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:09:03PM +0800, Tianyu Lan wrote:
-> Yes, this is the target of the patch. Can we put the change in the
-> Hyper-V patchset?
+On Tue, Oct 19, 2021 at 03:41:52PM +0200, Andreas Gruenbacher wrote:
+> diff --git a/mm/gup.c b/mm/gup.c
+> index a7efb027d6cf..614b8536b3b6 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1691,6 +1691,69 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
+>  }
+>  EXPORT_SYMBOL(fault_in_writeable);
+>  
+> +/*
+> + * fault_in_safe_writeable - fault in an address range for writing
+> + * @uaddr: start of address range
+> + * @size: length of address range
+> + *
+> + * Faults in an address range using get_user_pages, i.e., without triggering
+> + * hardware page faults.  This is primarily useful when we already know that
+> + * some or all of the pages in the address range aren't in memory.
+> + *
+> + * Other than fault_in_writeable(), this function is non-destructive.
+> + *
+> + * Note that we don't pin or otherwise hold the pages referenced that we fault
+> + * in.  There's no guarantee that they'll stay in memory for any duration of
+> + * time.
+> + *
+> + * Returns the number of bytes not faulted in, like copy_to_user() and
+> + * copy_from_user().
+> + */
+> +size_t fault_in_safe_writeable(const char __user *uaddr, size_t size)
+> +{
+> +	unsigned long start = (unsigned long)uaddr;
+> +	unsigned long end, nstart, nend;
+> +	struct mm_struct *mm = current->mm;
+> +	struct vm_area_struct *vma = NULL;
 
-If you're asking about this version:
+For arm64 tagged addresses we need the diff below, otherwise the
+subsequent find_vma() will fail:
 
-https://lore.kernel.org/r/20211020062321.3581158-1-ltykernel@gmail.com
-
-then, no. I'd prefer if you did this:
-
-https://lore.kernel.org/r/YXAcGtxe08XiHBFH@zn.tnic
-
-for reasons which I already explained.
-
-Thx.
+diff --git a/mm/gup.c b/mm/gup.c
+index f5f362cb4640..2c51e9748a6a 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1713,7 +1713,7 @@ EXPORT_SYMBOL(fault_in_writeable);
+  */
+ size_t fault_in_safe_writeable(const char __user *uaddr, size_t size)
+ {
+-	unsigned long start = (unsigned long)uaddr;
++	unsigned long start = (unsigned long)untagged_addr(uaddr);
+ 	unsigned long end, nstart, nend;
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma = NULL;
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Catalin
