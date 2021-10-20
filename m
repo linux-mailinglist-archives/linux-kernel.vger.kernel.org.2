@@ -2,169 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FF543546C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4EB43546D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhJTURG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S230526AbhJTUSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 16:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhJTURF (ORCPT
+        with ESMTP id S229910AbhJTUSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:17:05 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1A9C061749;
-        Wed, 20 Oct 2021 13:14:50 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso12150816wme.1;
-        Wed, 20 Oct 2021 13:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=TKTpnnnUpx+vD8sFIjPYUVjAFgwjxzS94IwIoEcy9XE=;
-        b=ZpJsnpmr/x3a0OTfxnf4RZ8VTobw3AJrfaj3EFN950XhYPiXwr/C6XHo89zBdhiCZY
-         FEERPulmFuvNJ0jTJdF1TD4LfOOrCmMi+7A2WYxeDwNuSDZpt2oCf4EP07fPkCo/7X4w
-         ACu9OpYBsZSTEAe/PVByb9f8NYONGbU0T3b6aq/RATPlWZ2XHDJUrAjndLHnRSWABixp
-         pCG/tDK0PwacGwKRMilYjAhLZzwnt796obyM4ZoTTKnhGbcBmH4X0/87rBrbSjPGTipC
-         dH4BC9b8sM8QRsZnoPOZ2nIdnNQnxk5Bo3hVUHZ1EKjDM++LL2AxdITpLaPfzoMJvzQp
-         9UDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=TKTpnnnUpx+vD8sFIjPYUVjAFgwjxzS94IwIoEcy9XE=;
-        b=Wfnvq7vV+z9s2eg1SXoM0nh6CttkR24HcE9CbATxHpNzSiRQKObzicNU4vYOn3m3Zi
-         pNboesnsR22voSRShRGCYQf+UUD609BAzB2Bukq+mxxiaDgi+PFHrOdKAXg6VAXg5CHU
-         ankkuXTaaauTsiwU+qDMPzK0xhbvo2hReJICxbiqNHXOecWuyxB96q0uH7E7P+F+mGPk
-         EWlqVepLq3JLIQwc2IlL92XGwJxXwbYYLrqCBXiu09ho7DKEPQtZymGmfJFNbXeOKTGl
-         9DuZahbuoxJdFaBtacQn24hvr0yaykVyXY5mCbgx4HQ7xiaY60jqpamOHOYQTFC9608F
-         g9ZA==
-X-Gm-Message-State: AOAM532bc9Ur051FRA9VvfBewV7ZQG+Rz49w4vuTc5WNKxf1eDSY384x
-        33YKlZcX4kQM3OFmpxw51LPNNsAlAIk=
-X-Google-Smtp-Source: ABdhPJy6tDIo254eUcAHKcO53ATzE0ea0MsNiclyGriseMbXQ6j6HJzda8gMIF57tM6sY5EtWs/Ckw==
-X-Received: by 2002:a05:600c:4ec8:: with SMTP id g8mr15911251wmq.153.1634760889182;
-        Wed, 20 Oct 2021 13:14:49 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p200300c78f4e0613a7e83c8384f9a2e9.dip0.t-ipconnect.de. [2003:c7:8f4e:613:a7e8:3c83:84f9:a2e9])
-        by smtp.gmail.com with ESMTPSA id f18sm2810499wrg.3.2021.10.20.13.14.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 13:14:48 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 22:14:46 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org
-Subject: [PATCH v2] Docs: usb: update struct usb_driver, __init and __exit
-Message-ID: <20211020201446.GA8482@matrix-ESPRIMO-P710>
+        Wed, 20 Oct 2021 16:18:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAB3C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Yw3jn3CYgr9CBgXf3ycDMXRpVL6MwJA2O+a8isTBzbE=; b=1s6k4BOTXFEgLTs62Oo7up9dzI
+        vsxZOrCMMFQYkt6pUGPMv+DnHJ3ns+R6vH7mCpM7X+jGLYgqgygmopxKSuy5MZXElFsh+wPyUf6xr
+        F1N2gwDd9x4GajU9hSAyX22Q0whyuJRmwHViICG5yO8ATcaPW+6tHHE9ABUI9sLEhGyGPgr1BOfLT
+        QSwmRr/WVSzteu/m68k0eGEhWaXmEmYiv1C0tHW+lhjQXmmdwKZ9cT0iSteQcxSHCOqa/5yriOrno
+        oufF0jY+ynPzfTUVL91hjHVj9ARUYzzzzYlRBQQqPxAYpQg3dugK2lBxC65ksVcKTH1f5d+cyMxHx
+        6DCpJayg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdI03-005kxt-8f; Wed, 20 Oct 2021 20:15:47 +0000
+Subject: Re: [PATCH v2] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on
+ !COMPILE_TEST
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20211020191116.2510450-1-linux@roeck-us.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4b747abf-73f1-fa97-cb2b-23d8c838426e@infradead.org>
+Date:   Wed, 20 Oct 2021 13:15:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20211020191116.2510450-1-linux@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update struct usb_driver from usb-skeleton.c.
-update __init and __exit functions that are moved from
-usb-skeleton.c to common used multi-stage macros.
+On 10/20/21 12:11 PM, Guenter Roeck wrote:
+> nios2:allmodconfig builds fail with
+> 
+> make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
+> 	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
+> make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
+> 
+> This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
+> which in turn enables NIOS2_DTB_SOURCE. This causes the build error
+> because the default value for NIOS2_DTB_SOURCE is an empty string.
+> Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
+> 
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
-V1 -> V2: changed :c:func:`usb_register` to usb_register()
-          changed the :c:func:`usb_deregister` to usb_deregister()
-          used literal blocks for makro module_usb_driver and added one more
-          stage of multi-stage macros.
+Thanks, I've seen this problem also.
 
- .../driver-api/usb/writing_usb_driver.rst     | 70 ++++++++++---------
- 1 file changed, 36 insertions(+), 34 deletions(-)
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
-index 2176297e5765..12e0481cceae 100644
---- a/Documentation/driver-api/usb/writing_usb_driver.rst
-+++ b/Documentation/driver-api/usb/writing_usb_driver.rst
-@@ -54,12 +54,15 @@ information is passed to the USB subsystem in the :c:type:`usb_driver`
- structure. The skeleton driver declares a :c:type:`usb_driver` as::
- 
-     static struct usb_driver skel_driver = {
--	    .name        = "skeleton",
--	    .probe       = skel_probe,
--	    .disconnect  = skel_disconnect,
--	    .fops        = &skel_fops,
--	    .minor       = USB_SKEL_MINOR_BASE,
--	    .id_table    = skel_table,
-+           .name        = "skeleton",
-+           .probe       = skel_probe,
-+           .disconnect  = skel_disconnect,
-+           .suspend     = skel_suspend,
-+           .resume      = skel_resume,
-+           .pre_reset   = skel_pre_reset,
-+           .post_reset  = skel_post_reset,
-+           .id_table    = skel_table,
-+           .supports_autosuspend = 1,
-     };
- 
- 
-@@ -81,36 +84,35 @@ this user-space interaction. The skeleton driver needs this kind of
- interface, so it provides a minor starting number and a pointer to its
- :c:type:`file_operations` functions.
- 
--The USB driver is then registered with a call to :c:func:`usb_register`,
--usually in the driver's init function, as shown here::
--
--    static int __init usb_skel_init(void)
--    {
--	    int result;
--
--	    /* register this driver with the USB subsystem */
--	    result = usb_register(&skel_driver);
--	    if (result < 0) {
--		    err("usb_register failed for the "__FILE__ "driver."
--			"Error number %d", result);
--		    return -1;
--	    }
--
--	    return 0;
--    }
--    module_init(usb_skel_init);
--
-+The USB driver is then registered with a call to usb_register()
-+which is usually in the driver's init function. Since this functionality
-+is usable with many USB drivers, it is hidden behind multi-stage macros.
-+While the first macros are USB specific the later macros are used in different
-+subsystems. This removes a lot of boilerplate code.
- 
- When the driver is unloaded from the system, it needs to deregister
--itself with the USB subsystem. This is done with the :c:func:`usb_deregister`
--function::
--
--    static void __exit usb_skel_exit(void)
--    {
--	    /* deregister this driver with the USB subsystem */
--	    usb_deregister(&skel_driver);
--    }
--    module_exit(usb_skel_exit);
-+itself with the USB subsystem. This is done with usb_deregister()
-+which is also hidden behind multi-stage macros.
-+
-+The init and exit functions are included in the macro module_usb_driver.
-+Find the first three stages of macros below::
-+
-+    module_usb_driver(skel_driver);
-+                         |
-+                         V
-+    module_driver(__usb_driver, usb_register, usb_deregister)
-+                         |               \               \
-+                         V                ----------      ----------
-+    static int __init __driver##_init(void) \      |               |
-+    { \                 v---------------------------               |
-+            return __register(&(__driver) , ##__VA_ARGS__); \      |
-+    } \                                                            |
-+    module_init(__driver##_init); \                                |
-+    static void __exit __driver##_exit(void) \                     |
-+    { \            v------------------------------------------------
-+            __unregister(&(__driver) , ##__VA_ARGS__); \
-+    } \
-+    module_exit(__driver##_exit);
- 
- 
- To enable the linux-hotplug system to load the driver automatically when
+> ---
+> v2: Include error message
+> 
+>   arch/nios2/platform/Kconfig.platform | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/nios2/platform/Kconfig.platform b/arch/nios2/platform/Kconfig.platform
+> index 9e32fb7f3d4c..e849daff6fd1 100644
+> --- a/arch/nios2/platform/Kconfig.platform
+> +++ b/arch/nios2/platform/Kconfig.platform
+> @@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
+>   
+>   config NIOS2_DTB_SOURCE_BOOL
+>   	bool "Compile and link device tree into kernel image"
+> +	depends on !COMPILE_TEST
+>   	help
+>   	  This allows you to specify a dts (device tree source) file
+>   	  which will be compiled and linked into the kernel image.
+> 
+
+
 -- 
-2.25.1
-
+~Randy
