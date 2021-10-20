@@ -2,100 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C80434B3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3514F434B40
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhJTMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:36:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:32988 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJTMgD (ORCPT
+        id S230217AbhJTMhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:37:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229702AbhJTMg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:36:03 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DEDB81F770;
-        Wed, 20 Oct 2021 12:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634733227; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 20 Oct 2021 08:36:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634733284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3UnTu9zwwf8NSgpDXIex/EQbixB3GG5nxeC27rFUoo4=;
-        b=hwW3FoF7Q9xQQ6c9C6pXKQVXDvbM5O97PBXyMbMq/0FtzqbRYEDMmNIeYhYMEUaH3bEmzm
-        e2K72qTnlyNHrXAyZr3ANBJ4k6blJ6/7Ec3Cat8TdGd6Dwmgwtco8FNx3KQ/ipePD4qRPB
-        QWwPiXvrmlfaVryc15mzcCx4y1j93vs=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 52F47A3C5F;
-        Wed, 20 Oct 2021 12:33:47 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 14:33:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg 1/3] mm: do not firce global OOM from inside dying
- tasks
-Message-ID: <YXAMpxjuV/h2awqG@dhcp22.suse.cz>
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
- <cover.1634730787.git.vvs@virtuozzo.com>
- <2c13c739-7282-e6f4-da0a-c0b69e68581e@virtuozzo.com>
+        bh=CWo7Mu1LgbVcoVhIHgDtxt4QkLrq2mjDYhM5i0I36Fc=;
+        b=e0gesUVfogu4tFKfpY/wY1LcTlGOOwj4MsrSrCtFZ27zwr2LY8Qe4pj59qHg5fg+CZ/PSd
+        kFWjYPeOYqjZOLh1P6HXsBOwckk3yFYlN+itOi/Iar1RYaJ5KAJSH1e6jaCyUGOrH927gc
+        XRZE8K1hBaDW8RHT9yYUTpSTxmsYaR4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-4oGB7FUkP9atzaJ-4UzPRA-1; Wed, 20 Oct 2021 08:34:42 -0400
+X-MC-Unique: 4oGB7FUkP9atzaJ-4UzPRA-1
+Received: by mail-ed1-f72.google.com with SMTP id x5-20020a50f185000000b003db0f796903so20843466edl.18
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:34:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CWo7Mu1LgbVcoVhIHgDtxt4QkLrq2mjDYhM5i0I36Fc=;
+        b=5+OEGlEq/q+8sCkjyo1fseZ45gdd2H527L2X8PjHOXbn/FJNk9fKawBycGGh3gHRzJ
+         E83E2JDO2NbrgOirQrTU1p3BDSKDytVDUV6xkX346/ya8MDI77XhCyQLw73mj33tqqoH
+         bxfGNi3h64ThCwRNC5iKEdpXwUSDhi/8XxIadvNclzf0w7HILsSMPZtodO0kTDNew2z4
+         maFdfntozF7WuAWyE+9vdJQeSZwFUqYojn7HjDmbUFj7wmi8JwklxstuRf7d6ECveXRy
+         PcO6rrKZxbycGojx8/Sq2PumgazFy7A3GpcOJLrOtzSMPFjOCx9aokDR1ZOGCzsr53er
+         ozjw==
+X-Gm-Message-State: AOAM533BReRuVCecdpogZgLdXqAHS8lL5RoWP0V0uCscNGebrIcd6fd/
+        ZmL7Bp7Zsm52XEeXKfA0SHLoNd8OvNlYY3f6heoPbFa/2YPKKI7A5YbsQHHNxmsvt+E2BIsAyEx
+        w3xbYxs2XTENqPeTXZhijCJ4P
+X-Received: by 2002:a17:907:c22:: with SMTP id ga34mr43230108ejc.380.1634733281429;
+        Wed, 20 Oct 2021 05:34:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpL7lpBsDFsNSZbROWL3gXO2SPB4mMKZakczxEZ7WBtzg0oR0ugQxn8GUdpy5+09Vh74R/Bg==
+X-Received: by 2002:a17:907:c22:: with SMTP id ga34mr43230087ejc.380.1634733281247;
+        Wed, 20 Oct 2021 05:34:41 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id e30sm987114ejl.117.2021.10.20.05.34.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 05:34:40 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 14:34:39 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>, eranian@google.com
+Subject: Re: [PATCH v2 06/22] perf test: Add helper functions for abstraction.
+Message-ID: <YXAM31HKzS4/qJw/@krava>
+References: <20211013174604.747276-1-irogers@google.com>
+ <20211013174604.747276-7-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2c13c739-7282-e6f4-da0a-c0b69e68581e@virtuozzo.com>
+In-Reply-To: <20211013174604.747276-7-irogers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s@firce@force@
+On Wed, Oct 13, 2021 at 10:45:48AM -0700, Ian Rogers wrote:
 
-On Wed 20-10-21 15:12:19, Vasily Averin wrote:
-> There is no sense to force global OOM if current task is dying.
+SNIP
 
-This really begs for much more information. Feel free to get an
-inspiration from my previous attempt to achieve something similar.
-In minimum it is important to mention that the OOM killer is already
-handled at the page allocator level for the global OOM and at the
-charging level for the memcg one. Both have much more information
-about the scope of allocation/charge request. This means that either the
-OOM killer has been invoked properly and didn't lead to the allocation
-success or it has been skipped because it couldn't have been invoked.
-In both cases triggering it from here is pointless and even harmful.
-
-Another argument is that it is more reasonable to let killed task die
-rather than hit the oom killer and retry the allocation.
-
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->  mm/oom_kill.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 831340e7ad8b..1deef8c7a71b 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -1137,6 +1137,9 @@ void pagefault_out_of_memory(void)
->  	if (mem_cgroup_oom_synchronize(true))
->  		return;
->  
-> +	if (fatal_signal_pending(current))
-> +		return;
+>  	else
+>  		pr_debug("%s subtest %d:", t->desc, subtest + 1);
+> @@ -218,11 +257,10 @@ static int test_and_print(struct test_suite *t, bool force_skip, int subtest)
+>  		pr_info(" Ok\n");
+>  		break;
+>  	case TEST_SKIP: {
+> -		const char *skip_reason = NULL;
+> -		if (t->subtest.skip_reason)
+> -			skip_reason = t->subtest.skip_reason(subtest);
+> -		if (skip_reason)
+> -			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (%s)\n", skip_reason);
+> +		const char *reason = skip_reason(t, subtest);
 > +
->  	if (!mutex_trylock(&oom_lock))
->  		return;
->  	out_of_memory(&oc);
-> -- 
-> 2.32.0
+> +		if (reason)
+> +			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (%s)\n", reason);
+>  		else
+>  			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip\n");
+>  	}
+> @@ -397,7 +435,7 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+>  	int width = shell_tests__max_desc_width();
+>  
+>  	for_each_test(j, k, t) {
+> -		int len = strlen(t->desc);
+> +		int len = strlen(test_description(t, -1));
+>  
+>  		if (width < len)
+>  			width = len;
+> @@ -407,17 +445,15 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+>  		int curr = i++, err;
+>  		int subi;
+>  
+> -		if (!perf_test__matches(t->desc, curr, argc, argv)) {
+> +		if (!perf_test__matches(test_description(t, -1), curr, argc, argv)) {
+>  			bool skip = true;
+>  			int subn;
+>  
+> -			if (!t->subtest.get_nr)
+> -				continue;
+> -
+> -			subn = t->subtest.get_nr();
+> +			subn = num_subtests(t);
 
--- 
-Michal Hocko
-SUSE Labs
+should you call continue on !subn ?
+
+jirka
+
+>  
+>  			for (subi = 0; subi < subn; subi++) {
+> -				if (perf_test__matches(t->subtest.get_desc(subi), curr, argc, argv))
+> +				if (perf_test__matches(test_description(t, subi),
+> +							curr, argc, argv))
+>  					skip = false;
+>  			}
+>  
+> @@ -425,22 +461,23 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+>  				continue;
+>  		}
+>  
+
+SNIP
+
