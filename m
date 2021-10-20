@@ -2,146 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549E3434372
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6ECD434348
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhJTCRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:17:31 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26171 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhJTCRI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:17:08 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HYvKt4p9Sz8tnS;
-        Wed, 20 Oct 2021 10:13:38 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 10:14:41 +0800
-Received: from thunder-town.china.huawei.com (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 10:14:40 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
-        <linux-kernel@vger.kernel.org>, Dave Young <dyoung@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        <kexec@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        <devicetree@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        <linux-doc@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Feng Zhou <zhoufeng.zf@bytedance.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v15 10/10] kdump: update Documentation about crashkernel
-Date:   Wed, 20 Oct 2021 10:03:17 +0800
-Message-ID: <20211020020317.1220-11-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20211020020317.1220-1-thunder.leizhen@huawei.com>
-References: <20211020020317.1220-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+        id S229785AbhJTCKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:10:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:55502 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhJTCKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 22:10:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC42B1FB;
+        Tue, 19 Oct 2021 19:07:48 -0700 (PDT)
+Received: from entos-thunderx2-desktop.shanghai.arm.com (entos-thunderx2-desktop.shanghai.arm.com [10.169.212.208])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6E6023F70D;
+        Tue, 19 Oct 2021 19:07:45 -0700 (PDT)
+From:   Jianyong Wu <jianyong.wu@arm.com>
+To:     akpm@linux-foundation.org, mhiramat@kernel.org,
+        peterz@infradead.org
+Cc:     rostedt@goodmis.org, vbabka@suse.cz, linux-kernel@vger.kernel.org,
+        david@redhat.com, anshuman.khandual@arm.com, justin.he@arm.com,
+        jianyong.wu@arm.com, nd@arm.com
+Subject: [PATCH v1] init: avoid race condition of update page table in kernel init
+Date:   Wed, 20 Oct 2021 10:07:12 +0800
+Message-Id: <20211020020712.90240-1-jianyong.wu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Zhou <chenzhou10@huawei.com>
+Race condition of page table update can happen in kernel_init as
+both of memory hotplug module init and the following mark_rodata_ro can
+update page table. The function excute flow chart is:
 
-For arm64, the behavior of crashkernel=X has been changed, which
-tries low allocation in DMA zone and fall back to high allocation
-if it fails.
+-------------------------
+kernel_init
+  kernel_init_freeable
+    ...
+      do_initcall
+        ...
+          module_init [A]
 
-We can also use "crashkernel=X,high" to select a high region above
-DMA zone, which also tries to allocate at least 256M low memory in
-DMA zone automatically and "crashkernel=Y,low" can be used to allocate
-specified size low memory.
+  ...
+  mark_readonly
+    mark_rodata_ro [B]
+-------------------------
+[A] can contains memory hotplug init therefore both [A] and [B] can
+update page table at the same time that may lead to race. Here we
+introduce memory hotplug lock to guard mark_rodata_ro to avoid the race
+condition.
 
-So update the Documentation.
+I catch the related error when test virtio-mem (a new memory hotplug
+driver) on arm64 and may be a potential bug for other arches.
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+How to reproduce on arm64:
+(1) prepare a kernel with virtio-mem enabled on arm64
+(2) start a VM using Cloud Hypervisor[1] using the kernel above
+(3) hotplug memory, 20G in my case, with virtio-mem
+(4) reboot or load new kernel using kexec
+
+Test for server times, you may find the error below:
+
+[    1.131039] Unable to handle kernel paging request at virtual address fffffbfffda3b140
+[    1.134504] Mem abort info:
+[    1.135722]   ESR = 0x96000007
+[    1.136991]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    1.139189]   SET = 0, FnV = 0
+[    1.140467]   EA = 0, S1PTW = 0
+[    1.141755]   FSC = 0x07: level 3 translation fault
+[    1.143787] Data abort info:
+[    1.144976]   ISV = 0, ISS = 0x00000007
+[    1.146554]   CM = 0, WnR = 0
+[    1.147817] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000426f2000
+[    1.150551] [fffffbfffda3b140] pgd=0000000042ffd003, p4d=0000000042ffd003, pud=0000000042ffe003, pmd=0000000042fff003, pte=0000000000000000
+[    1.155728] Internal error: Oops: 96000007 [#1] SMP
+[    1.157724] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G         C        5.15.0-rc3+ #100
+[    1.161002] Hardware name: linux,dummy-virt (DT)
+[    1.162939] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    1.165825] pc : alloc_init_pud+0x38c/0x550
+[    1.167610] lr : alloc_init_pud+0x394/0x550
+[    1.169358] sp : ffff80001001bd10
+......
+[    1.200527] Call trace:
+[    1.201583]  alloc_init_pud+0x38c/0x550
+[    1.203218]  __create_pgd_mapping+0x94/0xe0
+[    1.204983]  update_mapping_prot+0x50/0xd8
+[    1.206730]  mark_rodata_ro+0x50/0x58
+[    1.208281]  kernel_init+0x3c/0x120
+[    1.209760]  ret_from_fork+0x10/0x20
+[    1.211298] Code: eb15003f 54000061 d5033a9f d5033fdf (f94000a1)
+[    1.213856] ---[ end trace 59473413ffe3f52d ]---
+[    1.215850] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+[1] https://github.com/cloud-hypervisor/cloud-hypervisor
+
+Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
 ---
- Documentation/admin-guide/kdump/kdump.rst       | 11 +++++++++--
- Documentation/admin-guide/kernel-parameters.txt | 11 +++++++++--
- 2 files changed, 18 insertions(+), 4 deletions(-)
+ init/main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index cb30ca3df27c9b2..d4c287044be0c70 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -361,8 +361,15 @@ Boot into System Kernel
-    kernel will automatically locate the crash kernel image within the
-    first 512MB of RAM if X is not given.
- 
--   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
--   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
-+   On arm64, use "crashkernel=X" to try low allocation in DMA zone and
-+   fall back to high allocation if it fails.
-+   We can also use "crashkernel=X,high" to select a high region above
-+   DMA zone, which also tries to allocate at least 256M low memory in
-+   DMA zone automatically.
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
-+   Use "crashkernel=Y@X" if you really have to reserve memory from
-+   specified start address X. Note that the start address of the kernel,
-+   X if explicitly specified, must be aligned to 2MiB (0x200000).
- 
- Load the Dump-capture Kernel
- ============================
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 43dc35fe5bc038e..98b87e82321413b 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -783,6 +783,9 @@
- 			[KNL, X86-64] Select a region under 4G first, and
- 			fall back to reserve region above 4G when '@offset'
- 			hasn't been specified.
-+			[KNL, ARM64] Try low allocation in DMA zone and fall back
-+			to high allocation if it fails when '@offset' hasn't been
-+			specified.
- 			See Documentation/admin-guide/kdump/kdump.rst for further details.
- 
- 	crashkernel=range1:size1[,range2:size2,...][@offset]
-@@ -799,6 +802,8 @@
- 			Otherwise memory region will be allocated below 4G, if
- 			available.
- 			It will be ignored if crashkernel=X is specified.
-+			[KNL, ARM64] range in high memory.
-+			Allow kernel to allocate physical memory region from top.
- 	crashkernel=size[KMG],low
- 			[KNL, X86-64] range under 4G. When crashkernel=X,high
- 			is passed, kernel could allocate physical memory region
-@@ -807,13 +812,15 @@
- 			requires at least 64M+32K low memory, also enough extra
- 			low memory is needed to make sure DMA buffers for 32-bit
- 			devices won't run out. Kernel would try to allocate at
--			at least 256M below 4G automatically.
-+			least 256M below 4G automatically.
- 			This one let user to specify own low range under 4G
- 			for second kernel instead.
- 			0: to disable low allocation.
- 			It will be ignored when crashkernel=X,high is not used
- 			or memory reserved is below 4G.
--
-+			[KNL, ARM64] range in low memory.
-+			This one let user to specify a low range in DMA zone for
-+			crash dump kernel.
- 	cryptomgr.notests
- 			[KNL] Disable crypto self-tests
- 
+diff --git a/init/main.c b/init/main.c
+index 81a79a77db46..290c9882ba9e 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1471,7 +1471,9 @@ static void mark_readonly(void)
+ 		 * insecure pages which are W+X.
+ 		 */
+ 		rcu_barrier();
++		get_online_mems();
+ 		mark_rodata_ro();
++		put_online_mems();
+ 		rodata_test();
+ 	} else
+ 		pr_info("Kernel memory protection disabled.\n");
 -- 
-2.25.1
+2.17.1
 
