@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A9B43560F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 00:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD6B435626
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 00:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhJTWra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 18:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhJTWr3 (ORCPT
+        id S231279AbhJTWwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 18:52:39 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42995 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230123AbhJTWwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 18:47:29 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78B5C06161C;
-        Wed, 20 Oct 2021 15:45:13 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id h196so26673729iof.2;
-        Wed, 20 Oct 2021 15:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2vzxjST9VYYskOzjypmiYVHx0fvZtSsG8PABlYBv/lo=;
-        b=TpzToV6EG5NUMGvXt9S6KBsFTYzNG1TBuUj7D8E7KHRuTeoKxkz/1cLf9ok80ducUC
-         rLnxwzxNRLFR9u+OTJDabjXniDjDaNj1IPessl3Zx5KNjj/vmwL1+14E0DSVC0G74AQv
-         0l5l8723o4ZWIJp7ff+Ue7Dkli9FKp4w7K5PPsJbZHe2T083X5u6P6uPd1jsTsK3C779
-         Z+wWqFbfItnh06U0SzgLfTdHOsh+jSQGM6UhB1OWLhYCBoCcsINdbmfdfUR9rp0hpf1L
-         PxWAkqAyjM1iFZPjXlSnH3cCq+38EvDfdU34oX7/A/AF82ztBU72PQrOKv+k9grakUny
-         Rdyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2vzxjST9VYYskOzjypmiYVHx0fvZtSsG8PABlYBv/lo=;
-        b=iLptSO3cTDIWObKCfEclxBf/1XLFwx2BONJSzudUzxAztCe6g2kuBhXNPgU8OvJ0/Z
-         yvvzEJE8oKaZ/kFTbjslO01M5yeiug34UmZEGOReEhaumi9jyY7upb7vKNIFM7hd991l
-         KMQWc/VDocUA3bRkcbnM5tTOWuNzyufb6iWf5B63x4nXQjaqiNNJAj1uSM3mD+fCYk4r
-         ExaeeyAz83II5IcnAJw7jF0PcHDoz8QYyZPNVS4wBv9CxksWB7EKtUluPSi+KeddgXSz
-         +WkLoy1QOBq67hhP48y7pQjy8cWv4dzaVYFz/7DzNYqIr5BU/ziSE+kLNqYxqV7PKBDh
-         OWhg==
-X-Gm-Message-State: AOAM5300DKS1HKOdFFIhy+VO0cIrd72NUP6eqhOjFsQHmdZrEV17G7kD
-        IoTwbB/LyAtWytPQRuN2L+C5phhXCxirG3jTCqk=
-X-Google-Smtp-Source: ABdhPJzKe9Xa4H2Z7T3/fu3kurLNBai+i5fhrTTk8e89yITi5PcdWxHypOm7vYfTQCEx4PjAb85K5bGwKERsh6jHdrU=
-X-Received: by 2002:a5d:9d56:: with SMTP id k22mr1299385iok.177.1634769913268;
- Wed, 20 Oct 2021 15:45:13 -0700 (PDT)
+        Wed, 20 Oct 2021 18:52:37 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 722E55C0257;
+        Wed, 20 Oct 2021 18:50:20 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 20 Oct 2021 18:50:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=lSsjbO
+        QwefFnogmBYkQShNyvBodWyjPRyIlY4BZCdbY=; b=XTFPUQpIgFUb5/+zQnC3+q
+        E7iOxXZPkaMDV1LZeLMZHcNWaAPPNFYwJArhDaxHz04DhUA8SWNsm8dI1fjXUkgo
+        2soX9rJ7FjQLUmxi+xkJEsyrBs149cTEC9jikjMUNPsE8wF2gEZL8vJS7NftJADm
+        heU+kExqUoInTXCuSLkwVKw26Kyj8tbG/GZi0cPRCatdUq55KdlqrDzW6THS6+v2
+        6XBYAugsRB6Ko7srZzO5hi79sgj7nuzYlRwxtg7FzDrA2XFWqzDDmLcoPQSOEGqI
+        Ex8CTizCH4Y3S9yAXbSIGIvvhCM8LzL1gjBQyNZ/i7lAzj3T7VrD6A0OhkrwifNQ
+        ==
+X-ME-Sender: <xms:K51wYZFewfi-AL5pGcvaYooQnbQruG7uh8zSvvgNPnuo-76Eao6KPA>
+    <xme:K51wYeWl7djtgVf_Zr8AUhNqQugbl_XPOCON2FfCnXjxpGNWnWhJoUkwoH475B5WU
+    GCg6vKb3ssCAT-mN-k>
+X-ME-Received: <xmr:K51wYbK4t1wdd7x2RxraeXnIMIeJkaCJXKeqYyDIEOTvuXSg3oO8l_U9hO6mWri98jzRJOOc4caH977EWV0Rdgb42xGw51fIlms>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvhedguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
+    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:K51wYfH7JG_tsZcCvO-7-jwWBNyJ0m62pku7J5lc43Cxx9k0WAtGIA>
+    <xmx:K51wYfWPiQnbtJ1qik-osTUwE-1UkDVKdX4euCyH-p86CapKUl5jzg>
+    <xmx:K51wYaMFq1Mrf-siJAmOwrH52khfjKTXlKFUX8GGsfRej4SaJdM3Yw>
+    <xmx:LJ1wYRKK95A2MlNqsylBLp9qGuHy1TeVawjzntlTvweGVmAUAtc0ag>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 20 Oct 2021 18:50:18 -0400 (EDT)
+Date:   Thu, 21 Oct 2021 09:50:26 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com,
+        martin.petersen@oracle.com, megaraidlinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: megaraid_mbox: return -ENOMEM on megaraid_init_mbox()
+ allocation failure
+In-Reply-To: <670213ce9e6c3b625e9f8ed66b9fad8ea2843322.camel@linux.ibm.com>
+Message-ID: <cf8da58-de8b-e171-5a40-2b10983d447@linux-m68k.org>
+References: <1634640800-22502-1-git-send-email-jiapeng.chong@linux.alibaba.com>  <2482854e18365087266c2f0907c1bbfd42bd2731.camel@linux.ibm.com>  <c1a6e7f3-d62f-5c5e-b3ef-2320339e142a@linux-m68k.org>
+ <670213ce9e6c3b625e9f8ed66b9fad8ea2843322.camel@linux.ibm.com>
 MIME-Version: 1.0
-References: <20211020200039.170424-1-keescook@chromium.org>
-In-Reply-To: <20211020200039.170424-1-keescook@chromium.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 21 Oct 2021 00:45:02 +0200
-Message-ID: <CANiq72ncBda6WE6ZTF9WDssHkMmM+JC5q8vkdNwiXFXTsSrnwA@mail.gmail.com>
-Subject: Re: [PATCH] compiler-gcc.h: Define __SANITIZE_ADDRESS__ under
- hwaddress sanitizer
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:00 PM Kees Cook <keescook@chromium.org> wrote:
->
-> I'm intending to take this via my overflow series, since that is what introduces
-> the compile-test regression tests (which found this legitimate bug). :)
+On Wed, 20 Oct 2021, James Bottomley wrote:
 
-Not sure if there is a particular reason I was in the `To` field
-(please let me know if so), but the patch sounds good to me!
+> > 
+> > ... and arguably they would be correct.
+> 
+> Well, yes ... that's why I don't want one "fix" that generates a 
+> cascading sequence of further "fixes".
+> 
 
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
+OTOH, if you don't "fix" it, it generates a cascading sequence of 
+copy-and-paste antipatterns in new code, and poor training data for those 
+of us reading old code.
 
-Cheers,
-Miguel
+Anyway, I agree that the churn would be too risky. But it sure would be 
+nice if automatic tools were able to perform a program transformation of 
+this kind at the source level, being that the compiler will surely do it 
+anyway at a lower level.
+
+There's a lot to be said for source code that reflects the compiler's 
+understanding of the logic, rather than the human's.
