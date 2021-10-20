@@ -2,199 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63BE4350FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423554350FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhJTRLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:11:21 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40200 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhJTRLS (ORCPT
+        id S230363AbhJTRMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:12:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:50638 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230336AbhJTRMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:11:18 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CA3C01F770;
-        Wed, 20 Oct 2021 17:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634749742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 20 Oct 2021 13:12:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634749802;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Mq67sHKUJ+31hJu3iQ4ZQez73tAoaQf8LyFy7s28/DI=;
-        b=FalrpZB89I6eYukGXczCtmFVEKS/LKQRa3yHqVOk4ml/gfd6m5pU3gQCI6Q7jTPlhgxrtO
-        jIEBkPkMzSL3CB+0gYsLZaLzrEyLnNCgvs7qfnT/k61G2wKLJ7DSrnV4Alh0EWDyY5PN5R
-        wcSh8z4Xm3f/Nji4SCFkEJcU7i+OE+s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634749742;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mq67sHKUJ+31hJu3iQ4ZQez73tAoaQf8LyFy7s28/DI=;
-        b=E3Gd/niAZtGmzd7lBBOViLaWcsVV051298rPcFPx0CZjUjfJBFo+BjSSxpW+nuIQ0TSXuC
-        N7K4L2945nf4IJCQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 90AC5A3B83;
-        Wed, 20 Oct 2021 17:09:02 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 630371F2C7D; Wed, 20 Oct 2021 19:09:02 +0200 (CEST)
-Date:   Wed, 20 Oct 2021 19:09:02 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Qing Wang <wangqing@vivo.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: replace snprintf in show functions with sysfs_emit
-Message-ID: <20211020170902.GE16460@quack2.suse.cz>
-References: <1634095731-4528-1-git-send-email-wangqing@vivo.com>
+        bh=EDDSu21c2DDtVcs1j05La3urw7/DHvQkavRYGt1gbjU=;
+        b=ecMqCDLwhDeCzrdRks0w62+G8jqPymlY7aTRfmJBGZkBMoFhkAZe820zQRLw4gHevlC0E9
+        8s6UK3tujLEJUOxpSQIGWfBMv9kaPnxP8bQ4MG+IBxgrBfNs0Yyun8jikXVLE5TXLNoL4W
+        sqb5lKEiJ7h1wszRthO07AQ6wtAMvEU=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-q3pCt02gOZ6_3WCFTysUdw-1; Wed, 20 Oct 2021 13:10:01 -0400
+X-MC-Unique: q3pCt02gOZ6_3WCFTysUdw-1
+Received: by mail-oo1-f70.google.com with SMTP id g11-20020a4a924b000000b002b76277c71bso3471924ooh.22
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:10:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EDDSu21c2DDtVcs1j05La3urw7/DHvQkavRYGt1gbjU=;
+        b=moEVhd+wXetI31EuS6besTzXDYz6sMBFJKVKDYtE2i8R1F1pL0Vp4iP0281VouNGEp
+         UwVuaU+2WAgKTs1ETjfIKsFHZUGqGmgT8oR+EozhAXkqzsKra+8bYFNZRslO1KAVUu19
+         Hy/ego6J1QAxGhDfJcNSWGGeo9T9bUZY8RNHG/7E2RWEKspI7z/P1rAWDNMS5nC0JIk6
+         7EE5YXf4y4jGVDWiq9DKNgaFEpLiAwliHq4+ZIdKfAy1S/vzVWz1jXeLfvOG8r0xn0RV
+         zMGBFnPRBNjXaHnwLFrCGmbDSKulKxVc2edWmTbt6bQdKt8x4qZPg2pxQ1B/Gxjtm4oj
+         J1Qg==
+X-Gm-Message-State: AOAM530XmVObHT/mCv70BL8/oRfLi4V5eBszCsziiLVlTvtOCwqe3Fj/
+        dxrCpc6ya06knESvV7c0Fpssv3WCX20f5aHnzbLtmwHmbXCm5CEmUhdtZVxT1VSCArvsAz4MYih
+        uEHqmBoWp0VarPhZj3wdKeoLd
+X-Received: by 2002:a05:6808:bc6:: with SMTP id o6mr528557oik.33.1634749800232;
+        Wed, 20 Oct 2021 10:10:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsOOoYTmsd+892eISaPosYjQR+k3T8Apr/pPX0C2UDd0FwJn17PQW63f9XvVXLsuEybA7bSQ==
+X-Received: by 2002:a05:6808:bc6:: with SMTP id o6mr528541oik.33.1634749800050;
+        Wed, 20 Oct 2021 10:10:00 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id 187sm535011oig.19.2021.10.20.10.09.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 10:09:59 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 10:09:56 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH v2 08/14] x86/retpoline: Create a retpoline thunk array
+Message-ID: <20211020170956.g67xcsvvdkuqg3qa@treble>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105842.981215247@infradead.org>
+ <20211020155750.3u74bkcp66leeyed@treble>
+ <f33b9c4e-08c1-f88d-4873-82050a944010@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1634095731-4528-1-git-send-email-wangqing@vivo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f33b9c4e-08c1-f88d-4873-82050a944010@citrix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-10-21 20:28:51, Qing Wang wrote:
-> coccicheck complains about the use of snprintf() in sysfs show functions.
+On Wed, Oct 20, 2021 at 05:46:39PM +0100, Andrew Cooper wrote:
+> On 20/10/2021 16:57, Josh Poimboeuf wrote:
+> > On Wed, Oct 20, 2021 at 12:44:50PM +0200, Peter Zijlstra wrote:
+> >> Stick all the retpolines in a single symbol and have the individual
+> >> thunks as inner labels, this should guarantee thunk order and layout.
+> > How so?
+> >
+> > Just wondering what the purpose of the array is.  It doesn't seem to be
+> > referenced anywhere.
 > 
-> Fix the coccicheck warning:
-> WARNING: use scnprintf or sprintf.
+> The array property is what makes:
 > 
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+> > +	reg = (target - &__x86_indirect_thunk_rax) /
+> > +	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
 > 
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
+> safe in the next path.
 
-Makes sense. Feel free to add:
+The thunks were already 32-byte aligned.  I don't see how slapping a few
+unused symbols around them does anything.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-
-> ---
->  fs/ext4/sysfs.c | 34 +++++++++++++++++-----------------
->  1 file changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index 2314f74..2a4ae3d 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -63,7 +63,7 @@ static ssize_t session_write_kbytes_show(struct ext4_sb_info *sbi, char *buf)
->  {
->  	struct super_block *sb = sbi->s_buddy_cache->i_sb;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%lu\n",
-> +	return sysfs_emit(buf, "%lu\n",
->  			(part_stat_read(sb->s_bdev, sectors[STAT_WRITE]) -
->  			 sbi->s_sectors_written_start) >> 1);
->  }
-> @@ -72,7 +72,7 @@ static ssize_t lifetime_write_kbytes_show(struct ext4_sb_info *sbi, char *buf)
->  {
->  	struct super_block *sb = sbi->s_buddy_cache->i_sb;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%llu\n",
-> +	return sysfs_emit(buf, "%llu\n",
->  			(unsigned long long)(sbi->s_kbytes_written +
->  			((part_stat_read(sb->s_bdev, sectors[STAT_WRITE]) -
->  			  EXT4_SB(sb)->s_sectors_written_start) >> 1)));
-> @@ -130,8 +130,8 @@ static ssize_t trigger_test_error(struct ext4_sb_info *sbi,
->  static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
->  {
->  	if (!sbi->s_journal)
-> -		return snprintf(buf, PAGE_SIZE, "<none>\n");
-> -	return snprintf(buf, PAGE_SIZE, "%d\n",
-> +		return sysfs_emit(buf, "<none>\n");
-> +	return sysfs_emit(buf, "%d\n",
->  			task_pid_vnr(sbi->s_journal->j_task));
->  }
->  
-> @@ -357,7 +357,7 @@ static void *calc_ptr(struct ext4_attr *a, struct ext4_sb_info *sbi)
->  
->  static ssize_t __print_tstamp(char *buf, __le32 lo, __u8 hi)
->  {
-> -	return snprintf(buf, PAGE_SIZE, "%lld\n",
-> +	return sysfs_emit(buf, "%lld\n",
->  			((time64_t)hi << 32) + le32_to_cpu(lo));
->  }
->  
-> @@ -374,7 +374,7 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  
->  	switch (a->attr_id) {
->  	case attr_delayed_allocation_blocks:
-> -		return snprintf(buf, PAGE_SIZE, "%llu\n",
-> +		return sysfs_emit(buf, "%llu\n",
->  				(s64) EXT4_C2B(sbi,
->  		       percpu_counter_sum(&sbi->s_dirtyclusters_counter)));
->  	case attr_session_write_kbytes:
-> @@ -382,11 +382,11 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  	case attr_lifetime_write_kbytes:
->  		return lifetime_write_kbytes_show(sbi, buf);
->  	case attr_reserved_clusters:
-> -		return snprintf(buf, PAGE_SIZE, "%llu\n",
-> +		return sysfs_emit(buf, "%llu\n",
->  				(unsigned long long)
->  				atomic64_read(&sbi->s_resv_clusters));
->  	case attr_sra_exceeded_retry_limit:
-> -		return snprintf(buf, PAGE_SIZE, "%llu\n",
-> +		return sysfs_emit(buf, "%llu\n",
->  				(unsigned long long)
->  			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
->  	case attr_inode_readahead:
-> @@ -394,42 +394,42 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  		if (!ptr)
->  			return 0;
->  		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> -			return snprintf(buf, PAGE_SIZE, "%u\n",
-> +			return sysfs_emit(buf, "%u\n",
->  					le32_to_cpup(ptr));
->  		else
-> -			return snprintf(buf, PAGE_SIZE, "%u\n",
-> +			return sysfs_emit(buf, "%u\n",
->  					*((unsigned int *) ptr));
->  	case attr_pointer_ul:
->  		if (!ptr)
->  			return 0;
-> -		return snprintf(buf, PAGE_SIZE, "%lu\n",
-> +		return sysfs_emit(buf, "%lu\n",
->  				*((unsigned long *) ptr));
->  	case attr_pointer_u8:
->  		if (!ptr)
->  			return 0;
-> -		return snprintf(buf, PAGE_SIZE, "%u\n",
-> +		return sysfs_emit(buf, "%u\n",
->  				*((unsigned char *) ptr));
->  	case attr_pointer_u64:
->  		if (!ptr)
->  			return 0;
->  		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> -			return snprintf(buf, PAGE_SIZE, "%llu\n",
-> +			return sysfs_emit(buf, "%llu\n",
->  					le64_to_cpup(ptr));
->  		else
-> -			return snprintf(buf, PAGE_SIZE, "%llu\n",
-> +			return sysfs_emit(buf, "%llu\n",
->  					*((unsigned long long *) ptr));
->  	case attr_pointer_string:
->  		if (!ptr)
->  			return 0;
-> -		return snprintf(buf, PAGE_SIZE, "%.*s\n", a->attr_size,
-> +		return sysfs_emit(buf, "%.*s\n", a->attr_size,
->  				(char *) ptr);
->  	case attr_pointer_atomic:
->  		if (!ptr)
->  			return 0;
-> -		return snprintf(buf, PAGE_SIZE, "%d\n",
-> +		return sysfs_emit(buf, "%d\n",
->  				atomic_read((atomic_t *) ptr));
->  	case attr_feature:
-> -		return snprintf(buf, PAGE_SIZE, "supported\n");
-> +		return sysfs_emit(buf, "supported\n");
->  	case attr_first_error_time:
->  		return print_tstamp(buf, sbi->s_es, s_first_error_time);
->  	case attr_last_error_time:
-> -- 
-> 2.7.4
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Josh
+
