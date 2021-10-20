@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E1C434E33
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9362C434E36
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhJTOs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhJTOs5 (ORCPT
+        id S230235AbhJTOtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:49:14 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:40619 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhJTOtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:48:57 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAC1C06161C;
-        Wed, 20 Oct 2021 07:46:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=X6aJq3ku0lgivvKN6qKonS3kBeiMsbbUAytVO8qR+nc=; b=hc0niLH5rcvDgesscWFmDP+j/v
-        87c9a/qgVqc1CyU5WJjyBkUXs4I8ojrkWMQewIPxBLHwOhdBcmNxihuw5S1gLej0nH9rnsD1PADE+
-        waiRDV6eGXd6y9hWnzgR2l6sfl5ULO+7lqS2GviL0eJyWXev7cbfO20pbjgkkAyvqrgs93js3/Dtq
-        XvT5txSG2Wz498GpE4IRxtRmeRhxSAz2J8wsaUVwIEFEOV3gMTq4jhUgNQPR8P5+MeASfmhbtafrB
-        61HYE8I2WQEcTiClla+tmbFffoQ8InC9i49Pbr8f/OtvURB91F+C/kg3D6ckLXM8Q4COsqodTGgKd
-        ryQ6NLUA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdCrJ-004pGT-UQ; Wed, 20 Oct 2021 14:46:26 +0000
-Subject: Re: linux-next: Tree for Oct 18 ('make' error on ARCH=um)
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
-        Douglas Su <d0u9.su@outlook.com>, Yuki Okushi <jtitor@2k36.org>
-References: <20211018203023.036d8362@canb.auug.org.au>
- <a1b2bdda-d1cf-807b-6a84-73a3e347639c@infradead.org>
- <20211019085811.362b4304@canb.auug.org.au>
- <CANiq72=+5w7KzVKmN57ud5+GGEiuRbtgezfROGAuO=b-OYeWAA@mail.gmail.com>
- <20211020155627.7d6f6637@canb.auug.org.au>
- <81c2e5c6-7388-3d1d-87a9-1b000517661b@infradead.org>
-Message-ID: <b0eddd67-e62f-c6c3-37d1-8c69f27c51fb@infradead.org>
-Date:   Wed, 20 Oct 2021 07:46:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 10:49:12 -0400
+Received: by mail-ot1-f54.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so8512088otr.7;
+        Wed, 20 Oct 2021 07:46:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pasGqTuRZhubCpUnUf/TWc8G25S9HUibTcAJimgPxXA=;
+        b=dWHPhRapHMqjmn+L74FC/UA83ALdjbauDpVvCtHyhaG0rL5eOcWtkrz5Qwb6quGsnK
+         BO6DVomHH/+norClmAV7/Y1cKx+bCT+yAYcphSqaguxyFt0788E3orIeuWtUcqaQ+oMA
+         +dwJwhufJ/bod00hvZl+5gsoxWkfuJea2W9zkAvmboaIV2Zlpb7ArPlbCgJCj+MDINqj
+         FV3RrCapP2ySsfIUXlK41zaJrBR3oZoGbkQeiJaGv1sPsNeiPvZhiGdOsBo8S7l8y6xr
+         XEdcJNgLte898WczIoCS7s9ReJAJ9if/QbeGgiYgVZz304uDihPJnaoMQA91tZwkVBDN
+         Cp4A==
+X-Gm-Message-State: AOAM531EhvHpcz2/KN9IVGPq1FnuUmrjvxxhbsLtYZzIPhIfRVi03KbO
+        f/HHWTIERFWUuidkLEvM7Q==
+X-Google-Smtp-Source: ABdhPJzp6IUxvWJLdKtEe/ko4g5HhBARBdoKSrrQRhy4qCIw26mSvLZ75JSXyO0uu9OGEOozEEzsEg==
+X-Received: by 2002:a9d:6c4b:: with SMTP id g11mr281341otq.122.1634741217678;
+        Wed, 20 Oct 2021 07:46:57 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id q2sm434228ooe.12.2021.10.20.07.46.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 07:46:57 -0700 (PDT)
+Received: (nullmailer pid 2336346 invoked by uid 1000);
+        Wed, 20 Oct 2021 14:46:56 -0000
+Date:   Wed, 20 Oct 2021 09:46:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nishanth Menon <nm@ti.com>, David Heidelberg <david@ixit.cz>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
+Message-ID: <YXAr4OlhucAibMlH@robh.at.kernel.org>
+References: <20211019231905.2974-1-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <81c2e5c6-7388-3d1d-87a9-1b000517661b@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019231905.2974-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 7:23 AM, Randy Dunlap wrote:
-> On 10/19/21 9:56 PM, Stephen Rothwell wrote:
->> Hi Randy,
->>
->> On Tue, 19 Oct 2021 00:18:44 +0200 Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> wrote:
->>>
->>> On Mon, Oct 18, 2021 at 11:58 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>>>
->>>> In commit
->>>>
->>>>    c862c7fee526 ("Kbuild: add Rust support")
->>>>
->>>> from the rust tree, these bits should probably not be there:
->>>>
->>>> -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
->>>>   include $(srctree)/scripts/Makefile.clang
->>>> -endif
->>>
->>> So this was on purpose -- we need the Clang flags even in GCC builds
->>> for bindgen. But now there is that `$(error ...)` added there :(
->>>
->>>> Miguel, does that seem reasonable?
->>>
->>> Of course, for today please feel free to apply your fix (i.e. to put
->>> the conditional back to where it was). I will solve it on my side
->>> tomorrow.
->>
->> Can you please check that this is fixed for you after I do the release
->> today?
->>
+On Wed, Oct 20, 2021 at 02:19:05AM +0300, Dmitry Osipenko wrote:
+> Not all OPP table names and OPP entries consist of a single word. In
+> particular NVIDIA Tegra OPP tables use multi-word names. Allow OPP node
+> and OPP entry name to have multi-worded names to silence DT checker
+> warnings about the multi-word names separated by hyphen.
 > 
-> I will. It's part of my nightly cron job.
+> Reviewed-by: David Heidelberg <david@ixit.cz>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
+> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> index ae3ae4d39843..298cf24af270 100644
+> --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> @@ -22,7 +22,7 @@ select: false
+>  
+>  properties:
+>    $nodename:
+> -    pattern: '^opp-table(-[a-z0-9]+)?$'
+> +    pattern: '^opp-table(-[a-z0-9]+)*$'
 
-Stephen, Miguel,
+I don't see how this helps you. What I see needed upstream is a prefix:
 
-No problems like this in linux-next 2021-10-20.
+'-?opp-table(-[0-9]+)?$'
 
-thanks.
+Though really what I'd like to see is the OPP nodes moved into the 
+device nodes they belong to when appropriate (i.e. when not shared 
+between multiple devices).
 
--- 
-~Randy
+>  
+>    opp-shared:
+>      description:
+> @@ -33,7 +33,7 @@ properties:
+>      type: boolean
+>  
+>  patternProperties:
+> -  '^opp-?[0-9]+$':
+> +  '^opp(-[0-9]+)*$':
+>      type: object
+>      description:
+>        One or more OPP nodes describing voltage-current-frequency combinations.
+> -- 
+> 2.32.0
+> 
+> 
