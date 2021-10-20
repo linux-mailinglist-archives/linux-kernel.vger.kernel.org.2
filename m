@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FFC434A32
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F04434A36
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhJTLkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:40:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56401 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230135AbhJTLkN (ORCPT
+        id S230228AbhJTLk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:40:26 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49610
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230099AbhJTLkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:40:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634729879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WMFMpI2ywfhiF/WZQ2cVNkUkb9LeUHwe6nPMf/N51Uk=;
-        b=aQFDcANytmItAGaSf5tN7Vz/GZDXKPkQnoJ5sMNgHI0Va+YoKQgJxK3z92uWiYogPtJd/9
-        zvAftN4chdTrqUsMaPreCAtl7iTFob5t8vnNf8sEImf2FhzSCmDkb5ZYTAXhVWuztjK1Ci
-        XHvxbAtYnvHw0KyG4ABdLvnW2yAm0hM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-aBDm0ShZNL-6d9U21462sw-1; Wed, 20 Oct 2021 07:37:57 -0400
-X-MC-Unique: aBDm0ShZNL-6d9U21462sw-1
-Received: by mail-ed1-f72.google.com with SMTP id h19-20020aa7de13000000b003db6ad5245bso20795661edv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:37:57 -0700 (PDT)
+        Wed, 20 Oct 2021 07:40:25 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 342043FFFE
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:38:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634729889;
+        bh=1bxWxV6xahA2c9N9IIfRQwFpQ4gEUEegrCc5ZiAPUwg=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=NVWl9BTpCHq2QHQ20Dv01XymvPqXZ/cVcb6/41FC8s8eaz0tyyTB+sOs8jvGouc3i
+         4n7042tQr9ogd3hJTGn91bFyrUdSS6xRxdRNAhzC6dgXPuJZjxaejA0SudxUVWmr47
+         IrJVIc+LevmV4B5UgX8RuhDZ5eLDbMN9jUt7NadinjkPxZnwvd/h8/PajoZ/zJmHrR
+         jNulg0Q7CwehqkFp/RjwBthIhc2Buzjy9s1PBbNa7/bBpAMvPMYQdgPNVxAw5pjUkd
+         a8vdDt9i3Is+0Yy8LVk0OUcPZ81+ZCcRrNCsCXkKICIMDWaOYVEg5Pc9o1W0rbqIAV
+         u+D2RLf4hrZSg==
+Received: by mail-lf1-f71.google.com with SMTP id i1-20020a056512340100b003fdd5b951e0so2926454lfr.22
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:38:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=WMFMpI2ywfhiF/WZQ2cVNkUkb9LeUHwe6nPMf/N51Uk=;
-        b=ncja1cdFAOVbWTVgRvj7hQNMmvhtqt2f03wHU9fIteMfz+W019QAuHTmLXMpfsBhfi
-         DkNZaoiBE6YE0FMsOULr4vHnNqcx6+YTiuUHmULI9VQR9PxrvU1Ot0GuXs6Mts5MsdYv
-         IU9sx+W83KkdXDFsCfqT9z3Ty7FhhK/MbKKhuo9FqJNUF2W+yM9P7UaocuPTdzRTOjw2
-         oGBh6BbfAjnjkBnK37odGBmCtRlKXtzO3UXhh+zGEqduzIGdVp791pwZAbAXvO7YkY4K
-         DS3SAZGwppXJTwbADRb6H75UjKEkmc7SL4UH5zXBOd/9HOCm0uGa4T6muZ78S9t0qLLL
-         PzqQ==
-X-Gm-Message-State: AOAM532QO2X/Nno4ntCtBCvloQ5PMY5RhTCSueDexRs9ymk+qs/V48iF
-        3GwHQQ7K0vTHvx/IaVbAt9NOByWzu8wOXZHUELHgJn3N7HfojO+Jy5LGUA3/53x/TiM789+QwIc
-        HFNpZualO2jsfItWmRGegx7Ct
-X-Received: by 2002:a05:6402:90b:: with SMTP id g11mr62795971edz.32.1634729876486;
-        Wed, 20 Oct 2021 04:37:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/Kwn3SPasef1rECuTy0s1D3BJoVygPew/lcZ8vA2zu273zdL7RPPGrnK4RDV3fBbQVimbrg==
-X-Received: by 2002:a05:6402:90b:: with SMTP id g11mr62795932edz.32.1634729876202;
-        Wed, 20 Oct 2021 04:37:56 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id nb29sm1084687ejc.54.2021.10.20.04.37.55
+        bh=1bxWxV6xahA2c9N9IIfRQwFpQ4gEUEegrCc5ZiAPUwg=;
+        b=x7VnvoHIgW2Pzhy+Lz/O8MSchO5s0K3dpd+xi235tVKglYEIoKoLSuTqIkguEwMlpy
+         Tka1m9lv8fuwGibZLkchhFWiNiTEVIVDUhPz3ddwRoMziWEoGVh96EFUHtr3xhwy9Wxq
+         C4y5X1myrn3OJm/kFSEiQ0849Q53FJyYUWrK8IxLfC8tYP51KbIfY/Gpdm3otdPDXK+A
+         DJSvDg+u9Ug+ozrO467cCwToKSw/qnXYNEqrwgSaMWHhjqdhZDsIN+pCxj9xeh1h0NaK
+         VXSKu3x/h61luwJT4KD1alq0S7F5Zc+mYSzmUWN618REZapFP/0JxWAa7hQsgE4aDxTe
+         luxQ==
+X-Gm-Message-State: AOAM531KGol3e1jvBBgYYLPdOolvHFRj0gNQKZxeOhIFHAPomOPlq6dV
+        cdJDKG6pnfQ4Pt7zkYGAwZr5s+bW7PilbAcJ2tqz3Md0p2V+UBFli2hwl6XYSC8PqGfIMTdqS0G
+        8XgYdERBHBTI7t23LK8fd7F2Mb1QWmcaP7THKEsVPLQ==
+X-Received: by 2002:a05:6512:2117:: with SMTP id q23mr11447291lfr.657.1634729888638;
+        Wed, 20 Oct 2021 04:38:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxN5uO9eigZSlgvdW58qAxX9R47x6QiEM9Oi0qiFSPAgUh8dkl1qA3pzN/lXMiIs5LhqKNZHw==
+X-Received: by 2002:a05:6512:2117:: with SMTP id q23mr11447272lfr.657.1634729888424;
+        Wed, 20 Oct 2021 04:38:08 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id p8sm194267ljo.41.2021.10.20.04.38.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 04:37:55 -0700 (PDT)
-Message-ID: <659fbd82-7d18-0e76-6fe4-b311897b4ae0@redhat.com>
-Date:   Wed, 20 Oct 2021 13:37:54 +0200
+        Wed, 20 Oct 2021 04:38:07 -0700 (PDT)
+Subject: Re: [PATCH v2] crypto: s5p-sss - Add error handling in
+ s5p_aes_probe()
+To:     Tang Bin <tangbin@cmss.chinamobile.com>, vz@mleia.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20211020110624.47696-1-tangbin@cmss.chinamobile.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <ff261b7b-47a2-0cd8-8dcd-91f18998a482@canonical.com>
+Date:   Wed, 20 Oct 2021 13:38:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] rcuwait: do not enter RCU protection unless a wakeup is
- needed
+In-Reply-To: <20211020110624.47696-1-tangbin@cmss.chinamobile.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-References: <20211020110638.797389-1-pbonzini@redhat.com>
- <YW/61zpycsD8/z4g@hirez.programming.kicks-ass.net>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YW/61zpycsD8/z4g@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/21 13:17, Peter Zijlstra wrote:
-> AFAICT, rcu_read_lock() for PREEMPT_RCU is:
+On 20/10/2021 13:06, Tang Bin wrote:
+> The function s5p_aes_probe() does not perform sufficient error
+> checking after executing platform_get_resource(), thus fix it.
 > 
->    WRITE_ONCE(current->rcu_read_lock_nesting, READ_ONCE(current->rcu_read_lock_nesting) + 1);
->    barrier();
+> Fixes: c2afad6c6105 ("crypto: s5p-sss - Add HASH support for Exynos")
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+> Changes from v1
+>  - add fixed title
+> ---
+>  drivers/crypto/s5p-sss.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-rcu_read_unlock() is the expensive one if you need to go down 
-rcu_read_unlock_special().
+You still missed the cc-stable tag. I pasted it last time.
+Cc: <stable@vger.kernel.org>
 
-Paolo
-
-> Paul?
-
+Best regards,
+Krzysztof
