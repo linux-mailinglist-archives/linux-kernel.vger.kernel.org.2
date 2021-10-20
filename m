@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164AE43538E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32213435390
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhJTTPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhJTTPC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:15:02 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D679C061753
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:12:48 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id q5so23379839pgr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:12:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CFUDLBWdmnPV44bi7dVx5A56FXXnHIGNsm6BfJl0RsI=;
-        b=JtQFBqmyuqUGLOJirZEnfOGRzSjyJfk76syhW8olBgTsaSJ1WrRnDKlU8xrvFkJEbB
-         YZO0dY/VKA9+YDBXn7kwblGNLtajGRhaUcQJVIjGCA+DbxnLTaesnzOROD4lAa6oBXO3
-         ABy/6N42oUMuboWXbEo0EIYQPT+5a/NVcybC4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CFUDLBWdmnPV44bi7dVx5A56FXXnHIGNsm6BfJl0RsI=;
-        b=EiiGGSd7IpPJSxi31VSiJdXmIkWrCSb9R5/TgIXERCMKqBg5Ru+X+FbOBKTBbjYZZ2
-         I7iAfC0Gmv00KAMIGFM8f0IACpgHHj5NmZXhmSCx97Gl2b/Ef02J+9WyJpAbZcEow0La
-         Xcdoff7YS2uWvH003tSwn4gX8eV9EYGL202Wx0A7+SCr+HvdqvWprnWXT70EPCL/VMJF
-         Eq23Yb68aK9hhLG5P8LQ65Gj2qp5peUZ3WaPIX49Td5kXXuSPpF6yITKNX9aYH4DDVqV
-         6iTpBmUnoGTp2AFk8yqDPkXVA080ZJ1HU4BhPkaDwZ5aVoI+ZOBJfOxg0iTua6T4Qhpn
-         vutQ==
-X-Gm-Message-State: AOAM530cURmDyBlTRv3N6GY9+wyKu2aMFjMdCw19uv4MA8n+6SB6+O8Q
-        xamP4cqDlUd+S7eA+wy6t+Lwig==
-X-Google-Smtp-Source: ABdhPJzl2+SAfUh6NkJ+DhCKOWmzKsU6GNvGxGf2XT0aJXU9P6UbVjWdBAkeh+PuF3DGKEHMZ/Xdaw==
-X-Received: by 2002:a63:4622:: with SMTP id t34mr814413pga.293.1634757167736;
-        Wed, 20 Oct 2021 12:12:47 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e9sm3758333pfv.189.2021.10.20.12.12.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:12:47 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 12:12:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        llvm@lists.linux.dev, Dan Li <ashimida@linux.alibaba.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] gcc-plugins: Explicitly document purpose and
- deprecation schedule
-Message-ID: <202110201212.C155FE92@keescook>
-References: <20211020173554.38122-1-keescook@chromium.org>
- <20211020173554.38122-2-keescook@chromium.org>
- <CANiq72kCQa7_3JkUqO2=mdj+P2zcjPYJUai0oip5DN7Aaq_ySQ@mail.gmail.com>
+        id S231544AbhJTTPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:15:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231455AbhJTTPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 15:15:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED3D6611B0;
+        Wed, 20 Oct 2021 19:12:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634757175;
+        bh=HUeYEOubLIJowqLZcwwGkc9BEjtPIPaC7kQ8jsRtATU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=rmCjhlUA1OEDWQMapi13jzwRQnrM10QmCEHZvW7PQ9Sfhu15HDHr0xBKHkOFIIzHn
+         cdnxHLtWh79AlLgrey6P1h9GaysjiQSpdKyZgZnBvBsctbn/sNbwcpE1UqYEqhSeOP
+         HOhv52io1y6DiD1hGFdq6et4Ogsv+0hOpzVUcaSkJicg3lPbjzmizPAg4Z1rxr1uIr
+         HoUbTiTLYraopbPbKrb10f+mZgIY5ZIIeCPkGI+rGTQds7WivC/7TczHZbvECrqRlu
+         0iSTEFxMZEKEMGY74ax6qOrSaLsDalom12y9T4wTolRvFNL9AtlvDXv16AbruT9HlG
+         ipLe1wDpHNPTQ==
+Date:   Wed, 20 Oct 2021 14:12:53 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Li Chen <lchen@ambarella.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PCI: cadence: add missing return for plat probe
+Message-ID: <20211020191253.GA2631311@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANiq72kCQa7_3JkUqO2=mdj+P2zcjPYJUai0oip5DN7Aaq_ySQ@mail.gmail.com>
+In-Reply-To: <CH2PR19MB4024632D33EB6FACF54D3CCAA0BE9@CH2PR19MB4024.namprd19.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 07:44:19PM +0200, Miguel Ojeda wrote:
-> On Wed, Oct 20, 2021 at 7:35 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > +Purpose
-> > +=======
+On Wed, Oct 20, 2021 at 11:17:51AM +0000, Li Chen wrote:
+> Otherwise, the code will continue to error handle,
+> which is not excepted.
+
+In subject and commit log:
+
+  PCI: cadence: Add missing return in cdns_plat_pcie_probe()
+
+  When cdns_plat_pcie_probe() succeeds, return success instead of
+  falling into the error handling code.
+
+We should have a Fixes: tag here to show where this bug was
+introduced.  Look at previous git history to see the format.  Maybe
+also a stable tag so this will get backported to stable kernels.
+
+Interesting that nobody noticed such an obvious bug until now.
+
+> Signed-off-by: Li Chen <lchen@ambarella.com>
+> Signed-off-by: Xuliang Zhang <xlzhanga@ambarella.com>
+
+Since the patch was sent by Li, that signoff should be last, per
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v5.14#n365
+
+Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+
+Thanks for the patch!
+
+> ---
+>  drivers/pci/controller/cadence/pcie-cadence-plat.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Sounds good to me.
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-plat.c b/drivers/pci/controller/cadence/pcie-cadence-plat.c
+> index 5fee0f89ab59..a224afadbcc0 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-plat.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-plat.c
+> @@ -127,6 +127,8 @@ static int cdns_plat_pcie_probe(struct platform_device *pdev)
+>  			goto err_init;
+>  	}
+>  
+> +	return 0;
+> +
+>   err_init:
+>   err_get_sync:
+>  	pm_runtime_put_sync(dev);
+> -- 
+> 2.33.0
 > 
-> >  config GCC_PLUGIN_SANCOV
-> >         bool
-> > +       # Plugin can be removed once the kernel only supports GCC 6.1.0+
-> 
-> Since we are just giving the major in the other cases below, I would
-> just say GCC 6+ here (the numbering scheme changed in GCC 5 already).
-
-Sure; now updated.
-
-> Thanks for adding the versions, by the way -- this is useful long-term
-> and not always done for other things...
-
-Yeah, I always struggled to find when options were added to GCC, so I
-wanted this for my poor brain too. :)
-
-> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-
-Thanks!
-
--- 
-Kees Cook
+> **********************************************************************
+> This email and attachments contain Ambarella Proprietary and/or Confidential Information and is intended solely for the use of the individual(s) to whom it is addressed. Any unauthorized review, use, disclosure, distribute, copy, or print is prohibited. If you are not an intended recipient, please contact the sender by reply email and destroy all copies of the original message. Thank you.
