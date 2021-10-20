@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D8843569D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 01:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6252E435698
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 01:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbhJTXyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 19:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhJTXyC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 19:54:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722DBC06161C;
-        Wed, 20 Oct 2021 16:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+Eio57oEZSpnsX9I7fCKLL4P+h3R1RqCxuN4ifMdK4g=; b=k+v5i7ybYI/mDCEVENeKt+R9of
-        XGOJ0+COAA1DPOWD/P71NccqSGeWCnnsIqe5kGM+CMi1A1eBB1jmPS4tVee1kC9Ricl6Q8RVHbcdW
-        JAzP7f/SjR/y5PkwpokYP0q4PZyAlEaWuu/2ZTOruTzaVJ/9GETnUxxwgq0Vzu4KPnvcX6ce3yRse
-        Cvyym9DaATNrvIMzpWiB81zS2g+jQ9MUkw93KnvSg4hOV6tzQZanw2JwDtaBa3L+Ux84dNMogBuSv
-        aZcxkehAPS/jy95u/rZUEWWPeVruweGIT7tMcMaP269riU2JQv0j5m0bFRSnDDqnnmVETY+EmJFCy
-        3ZLNFdkA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdLLD-00CvF6-R8; Wed, 20 Oct 2021 23:50:11 +0000
-Date:   Thu, 21 Oct 2021 00:49:51 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Hugh Dickins <hughd@google.com>, Song Liu <song@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hao Sun <sunhao.th@gmail.com>, Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH] fs: buffer: check huge page size instead of single page
- for invalidatepage
-Message-ID: <YXCrHxMF3ADO0n2x@casper.infradead.org>
-References: <20210917205731.262693-1-shy828301@gmail.com>
- <CAHbLzkqmooOJ0A6JmGD+y5w_BcFtSAJtKBXpXxYNcYrzbpCrNQ@mail.gmail.com>
- <YUdL3lFLFHzC80Wt@casper.infradead.org>
- <CAHbLzkrPDDoOsPXQD3Y3Kbmex4ptYH+Ad_P1Ds_ateWb+65Rng@mail.gmail.com>
- <YUkCI2I085Sos/64@casper.infradead.org>
- <CAHbLzkoXrVJOfOrNhd8nQFRPHhRVYfVYSgLAO3DO7ZmvaZtDVw@mail.gmail.com>
- <CAHbLzkrdXQfcudeeDHx8uUD55Rr=Aogi0pnQbBbP8bEZca8-7w@mail.gmail.com>
- <CAHbLzkq2v+xpBweO-XG+uZiF3kvOFodKi4ioX=dzXpBYLtoZcw@mail.gmail.com>
+        id S231348AbhJTXtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 19:49:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230103AbhJTXtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 19:49:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04E6861004;
+        Wed, 20 Oct 2021 23:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634773654;
+        bh=9d545R9PWdQWgRdbw7W5tcMHp9oZBeg+DHAnlfPE+vU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KyPiwW446bj302JCDkfG8CtZMG4oK07102wrPx+eQKBBQ2PDQV+ylFJYdPL9OtRPn
+         IFuCrr8/h5BRVvP9Gf6leTiOAmalzBdAS5u+qb3UQ3WroX4GQpAvpQorfSPYN9m34J
+         YUR6gtb7wF/5Yj+OyBaufc2uyPxyMUpgQ2liiwY6s0JVHvPachAfuUYhz62yRVhIsW
+         eLU3jPlodt9HbDxx+u8g0012MIdtYSCJnQkeszpYQT7eDzti3V7Nj2rDQjIIPZfhET
+         ftM+Lexlzin2QZgOp7eanyTJSsNhB7LCIQBgV8TQ5c50UglTH26MmQ1nbI0qKuiuLd
+         GAOnbQnEhCU9Q==
+Date:   Wed, 20 Oct 2021 18:52:14 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] docs: deprecated.rst: Clarify open-coded arithmetic
+ with literals
+Message-ID: <20211020235214.GA1346969@embeddedor>
+References: <20210925143455.21221-1-len.baker@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHbLzkq2v+xpBweO-XG+uZiF3kvOFodKi4ioX=dzXpBYLtoZcw@mail.gmail.com>
+In-Reply-To: <20210925143455.21221-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 04:38:49PM -0700, Yang Shi wrote:
-> > However, it still doesn't make too much sense to have thp_size passed
-> > to do_invalidatepage(), then have PAGE_SIZE hardcoded in a BUG
-> > assertion IMHO. So it seems this patch is still useful because
-> > block_invalidatepage() is called by a few filesystems as well, for
-> > example, ext4. Or I'm wondering whether we should call
-> > do_invalidatepage() for each subpage of THP in truncate_cleanup_page()
-> > since private is for each subpage IIUC.
+On Sat, Sep 25, 2021 at 04:34:55PM +0200, Len Baker wrote:
+> Although using literals for size calculation in allocator arguments may
+> be harmless due to compiler warnings in case of overflows, it is better
+> to refactor the code to avoid the use of open-coded arithmetic.
 > 
-> Seems no interest?
+> So, clarify the preferred way in these cases.
+> 
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-No.  I have changes in this area as part of the folio patchset (where
-we end up converting this to invalidate_folio).  I'm not really
-interested in doing anything before that, since this shouldn't be
-reachable today.
+This looks good to me.
 
-> Anyway the more I was staring at the code the more I thought calling
-> do_invalidatepage() for each subpage made more sense. So, something
-> like the below makes sense?
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Definitely not.  We want to invalidate the entire folio at once.
+Thanks
+--
+Gustavo
+
+> ---
+> Changelog v1 -> v2
+>  - Clarify the sentence by changing "keep <foo> out" with "avoid <foo>"
+>    (Joe Perches).
+> 
+> Changelog v2 -> v3
+>  - Reword the sentence to comunicate better (Jonathan Corbet).
+> 
+> The previous version can be found here [1].
+> 
+> [1] https://lore.kernel.org/linux-hardening/20210829144716.2931-1-len.baker@gmx.com/
+> 
+>  Documentation/process/deprecated.rst | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+> index 8ced754a5a0f..388cb19f5dbb 100644
+> --- a/Documentation/process/deprecated.rst
+> +++ b/Documentation/process/deprecated.rst
+> @@ -59,8 +59,9 @@ risk of them overflowing. This could lead to values wrapping around and a
+>  smaller allocation being made than the caller was expecting. Using those
+>  allocations could lead to linear overflows of heap memory and other
+>  misbehaviors. (One exception to this is literal values where the compiler
+> -can warn if they might overflow. Though using literals for arguments as
+> -suggested below is also harmless.)
+> +can warn if they might overflow. However, the preferred way in these
+> +cases is to refactor the code as suggested below to avoid the open-coded
+> +arithmetic.)
+> 
+>  For example, do not use ``count * size`` as an argument, as in::
+> 
+> --
+> 2.25.1
+> 
