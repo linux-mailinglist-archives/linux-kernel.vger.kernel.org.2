@@ -2,70 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0980F4347ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C554347F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhJTJbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
+        id S230043AbhJTJcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhJTJbq (ORCPT
+        with ESMTP id S230039AbhJTJcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:31:46 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5B1C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:29:32 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id m42so17435185wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:29:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ykgdjxhAzVVgvIOev5ZjMvpn28ZknbgkcJ3ItmcQ13s=;
-        b=ccTcYnaTCZnvx+0dioCUfvzxTuT7PAiYz1X882B4WE2X/v27ojgcjsmDhjXpZBS5ot
-         ufyathg3MHNQJMd1scWM92QWQjBSsw24qE61/z8eHhkI5gLytEtkCppqZzbpLkk2es70
-         b2Mlil+m4TNz0PjqF7Y45I22ctCZtIXP4s98vL9wG6BhxlZE8on365XkR+4gwGWaHmqg
-         MtIqln8OX63Iz5YuWEEdFCD3hFyaXmS63Q6z67NNDsuaLNEzL52XXG+64r1wsZHcFsnJ
-         W49E8mTUAxs9T6AUrbM+YT61ancgPyynFXH/a9BtxYLP07GChUF3W/5N39rzUQO5/w39
-         5OUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ykgdjxhAzVVgvIOev5ZjMvpn28ZknbgkcJ3ItmcQ13s=;
-        b=HbIKeWy4GJNmE3gfbr7OKPwA4RwM2UfJlt3FNXc2HVAvJ7WyHXRE74WD+YErUVWaQk
-         9En05CArB6FKA+Qd0JwGrDh5WEzpH+ODXYDJVB9oG7AGPey2bOtnVNG85/PzC+ZTMEGv
-         Jt05O6SoFMt5yIe7pmW3Uy+HWfgMCjp92yGBW4XLXRU2cWOwyG7M2kjPtTFD1z0voFTX
-         /TvTKau1701sJuh95EAOGDBuJ36c9Hoo+AH0FGC3iJF0Ry3Vcnd9AN1AllIWWJyU2f92
-         2ABPpGkORU8ee1gJv9mjAGKLG07bv8VtrmAMc05vWbs00/dQCP63QH2GAPP96yb7inBx
-         jeVw==
-X-Gm-Message-State: AOAM533u5IJXLRZI/HhlMjGWdnIQGghTqBFZQriPN7R9Azgrx6Z0JJzx
-        LRlbmsJaz2+No0tZy9S1/aqtddpD7JDQwBNFYiQ=
-X-Google-Smtp-Source: ABdhPJz2pIbFJxrBXUS7QiS2zj+nr5m31skAto/hnzsK7k5shLcuv43Y4cMSbYJ+opQk1gzgcYk4mDZINR2JpUxp+Wc=
-X-Received: by 2002:a05:600c:19cd:: with SMTP id u13mr12080602wmq.148.1634722170892;
- Wed, 20 Oct 2021 02:29:30 -0700 (PDT)
+        Wed, 20 Oct 2021 05:32:07 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6ECC061749;
+        Wed, 20 Oct 2021 02:29:53 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id A711B1F43D72
+Subject: Re: [PATCH v2 2/9] soc: mediatek: mutex: expand parameter for mdp
+ mutex function
+To:     "roy-cw.yeh" <roy-cw.yeh@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Moudy Ho <moudy.ho@mediatek.com>,
+        "river . cheng" <river.cheng@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20211020071448.14187-1-roy-cw.yeh@mediatek.com>
+ <20211020071448.14187-3-roy-cw.yeh@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <0eaea2d4-1683-622a-e814-8b6c7c3eab2e@collabora.com>
+Date:   Wed, 20 Oct 2021 11:29:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a7b:c14c:0:0:0:0:0 with HTTP; Wed, 20 Oct 2021 02:29:30
- -0700 (PDT)
-Reply-To: mauhin11@gmail.com
-From:   Maureen Hinckley <joycenyamweya5@gmail.com>
-Date:   Wed, 20 Oct 2021 12:29:30 +0300
-Message-ID: <CAOT2_Cw+kuN=Utgs2W3b2sOHpBba3jEzmyVZj0GX3OH9Qa6Cdg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211020071448.14187-3-roy-cw.yeh@mediatek.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Hello,
+Il 20/10/21 09:14, roy-cw.yeh ha scritto:
+> From: "Roy-CW.Yeh" <roy-cw.yeh@mediatek.com>
+> 
+> Expand parameter for mdp mutex function
+> 
+> Signed-off-by: Roy-CW.Yeh <roy-cw.yeh@mediatek.com>
 
-I am Maureen Hinckley and my foundation is donating ($2.2 Million.
-Dollars) to you. Contact us via my email at (mauhin11@gmail.com) for
-further details.
+Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92021 The Maureen Hinckley Foundation All Rights Reserved.
+
+> ---
+>   drivers/soc/mediatek/mtk-mutex.c       | 26 ++++++++++++++++++--------
+>   include/linux/soc/mediatek/mtk-mutex.h |  2 +-
+>   2 files changed, 19 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
+> index 814f58f692cf..c100a5249016 100644
+> --- a/drivers/soc/mediatek/mtk-mutex.c
+> +++ b/drivers/soc/mediatek/mtk-mutex.c
+> @@ -25,8 +25,9 @@
+>   #define DISP_REG_MUTEX_EN(n)			(0x20 + 0x20 * (n))
+>   #define DISP_REG_MUTEX(n)			(0x24 + 0x20 * (n))
+>   #define DISP_REG_MUTEX_RST(n)			(0x28 + 0x20 * (n))
+> -#define DISP_REG_MUTEX_MOD(mutex_mod_reg, n)	(mutex_mod_reg + 0x20 * (n))
+> -#define DISP_REG_MUTEX_SOF(mutex_sof_reg, n)	(mutex_sof_reg + 0x20 * (n))
+> +#define DISP_REG_MUTEX_MOD(mutex_mod_reg, n)	((mutex_mod_reg) + 0x20 * (n))
+> +#define DISP_REG_MUTEX_MOD1(mutex_mod_reg, n)	((mutex_mod_reg) + 0x20 * (n) + 0x4)
+> +#define DISP_REG_MUTEX_SOF(mutex_sof_reg, n)	((mutex_sof_reg) + 0x20 * (n))
+>   #define DISP_REG_MUTEX_MOD2(n)			(0x34 + 0x20 * (n))
+>   
+>   #define INT_MUTEX				BIT(1)
+> @@ -116,6 +117,11 @@
+>   #define MT8183_MUTEX_MDP_MOD_MASK		0x07FFFFFF
+>   #define MT8183_MUTEX_MDP_SOF_MASK		0x00000007
+>   
+> +#define MT8183_MDP_PIPE_IMGI			MT8183_MUTEX_MDP_START
+> +#define MT8183_MDP_PIPE_RDMA0			(MT8183_MUTEX_MDP_START + 1)
+> +#define MT8183_MDP_PIPE_WPEI			(MT8183_MUTEX_MDP_START + 2)
+> +#define MT8183_MDP_PIPE_WPEI2			(MT8183_MUTEX_MDP_START + 3)
+> +
+>   struct mtk_mutex {
+>   	int id;
+>   	bool claimed;
+> @@ -254,10 +260,10 @@ static const unsigned int mt8183_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
+>   
+>   /* indicate which mutex is used by each pipepline */
+>   static const unsigned int mt8183_mutex_mdp_offset[MDP_PIPE_MAX] = {
+> -	[MDP_PIPE_IMGI] = MT8183_MUTEX_MDP_START,
+> -	[MDP_PIPE_RDMA0] = MT8183_MUTEX_MDP_START + 1,
+> -	[MDP_PIPE_WPEI] = MT8183_MUTEX_MDP_START + 2,
+> -	[MDP_PIPE_WPEI2] = MT8183_MUTEX_MDP_START + 3
+> +	[MDP_PIPE_IMGI] = MT8183_MDP_PIPE_IMGI,
+> +	[MDP_PIPE_RDMA0] = MT8183_MDP_PIPE_RDMA0,
+> +	[MDP_PIPE_WPEI] = MT8183_MDP_PIPE_WPEI,
+> +	[MDP_PIPE_WPEI2] = MT8183_MDP_PIPE_WPEI2,
+>   };
+>   
+>   static const struct mtk_mutex_data mt2701_mutex_driver_data = {
+> @@ -410,7 +416,7 @@ void mtk_mutex_add_comp(struct mtk_mutex *mutex,
+>   EXPORT_SYMBOL_GPL(mtk_mutex_add_comp);
+>   
+>   void mtk_mutex_add_mdp_mod(struct mtk_mutex *mutex, u32 mod,
+> -			   struct mmsys_cmdq_cmd *cmd)
+> +			   u32 mod1, u32 sof, struct mmsys_cmdq_cmd *cmd)
+>   {
+>   	struct mtk_mutex_ctx *mtx = container_of(mutex, struct mtk_mutex_ctx,
+>   						 mutex[mutex->id]);
+> @@ -422,9 +428,13 @@ void mtk_mutex_add_mdp_mod(struct mtk_mutex *mutex, u32 mod,
+>   	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id, mtx->addr + offset,
+>   			    mod, mtx->data->mutex_mdp_mod_mask);
+>   
+> +	offset = DISP_REG_MUTEX_MOD1(mtx->data->mutex_mod_reg, mutex->id);
+> +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id, mtx->addr + offset,
+> +			    mod1, mtx->data->mutex_mdp_mod_mask);
+> +
+>   	offset = DISP_REG_MUTEX_SOF(mtx->data->mutex_sof_reg, mutex->id);
+>   	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id, mtx->addr + offset,
+> -			    0, mtx->data->mutex_mdp_sof_mask);
+> +			    sof, mtx->data->mutex_mdp_sof_mask);
+>   }
+>   EXPORT_SYMBOL_GPL(mtk_mutex_add_mdp_mod);
+>   
+> diff --git a/include/linux/soc/mediatek/mtk-mutex.h b/include/linux/soc/mediatek/mtk-mutex.h
+> index d08b98419dd9..a2b81ce55b5d 100644
+> --- a/include/linux/soc/mediatek/mtk-mutex.h
+> +++ b/include/linux/soc/mediatek/mtk-mutex.h
+> @@ -17,7 +17,7 @@ int mtk_mutex_prepare(struct mtk_mutex *mutex);
+>   void mtk_mutex_add_comp(struct mtk_mutex *mutex,
+>   			enum mtk_ddp_comp_id id);
+>   void mtk_mutex_add_mdp_mod(struct mtk_mutex *mutex, u32 mod,
+> -			   struct mmsys_cmdq_cmd *cmd);
+> +			   u32 mod1, u32 sof, struct mmsys_cmdq_cmd *cmd);
+>   void mtk_mutex_enable(struct mtk_mutex *mutex);
+>   void mtk_mutex_enable_by_cmdq(struct mtk_mutex *mutex,
+>   			      struct mmsys_cmdq_cmd *cmd);
+> 
+
+
