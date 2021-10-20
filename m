@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49174349B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A9F4349B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhJTLGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:06:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59492 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230325AbhJTLG0 (ORCPT
+        id S230072AbhJTLHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:07:06 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:48380 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230029AbhJTLHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:06:26 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K9HpSd007966;
-        Wed, 20 Oct 2021 07:04:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=hRDhLCN8GBjSMHXWCixLpR0S32DdAhVOdT9o9uLMALM=;
- b=KD4r1eP8WYuqnEpoxRBSH4jqODTCC+BMf/ZP8hiW5TLfrj2olpx/O8hkezwH6N5mMDA+
- EkI4DoNN6ZmCLtTIr1aRt/ppQaqlXS73vdNPKo15Uiwbj3kFRrAoWzDOzY8rUKgfdhzy
- j7xfpCvZYb68vwBBMV5Fkzd8XIMlrWqBnYKEbZ7xl/b8aEulgU09bQWa3FQ0DE5l4BFZ
- ipUplf0ROKOpc89TwrL0skTg3/2ZE7m1zKVMp7VO9ZsmhztaQv8uw3p+0vpcVn2cB2Dk
- 8dLrCtDlisiQBbRWt4Q1kE9Z7TNs3jcp+KP8gRz9MZi5UFQnW0jbnSTY4yyYJLJIBB9J wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3btgbv20qu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 07:04:12 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19KAVDNc015210;
-        Wed, 20 Oct 2021 07:04:12 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3btgbv20q6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 07:04:11 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19KB3Xeh022514;
-        Wed, 20 Oct 2021 11:04:09 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 3bqpc9s56u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 11:04:09 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19KB46ll64946474
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Oct 2021 11:04:06 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E15752099;
-        Wed, 20 Oct 2021 11:04:06 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.54.36])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 8F3295206C;
-        Wed, 20 Oct 2021 11:04:05 +0000 (GMT)
-Subject: Re: [PATCH 0/3] fixes for __airqs_kick_single_vcpu()
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, farman@linux.ibm.com,
-        kvm@vger.kernel.org
-References: <20211019175401.3757927-1-pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <66c52e65-4e4c-253f-45bc-69c041e1230c@de.ibm.com>
-Date:   Wed, 20 Oct 2021 13:04:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 20 Oct 2021 07:07:04 -0400
+X-UUID: ce69122baba64e8dbf72e8e6e9dd1c21-20211020
+X-UUID: ce69122baba64e8dbf72e8e6e9dd1c21-20211020
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 719726207; Wed, 20 Oct 2021 19:04:47 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Wed, 20 Oct 2021 19:04:46 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 20 Oct 2021 19:04:44 +0800
+Message-ID: <b20bd855eb2ec7aab66dd0026fbda8e6625b30ef.camel@mediatek.com>
+Subject: Re: [PATCH] scsi: ufs: mediatek: avoid sched_clock() misuse
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "Avri Altman" <avri.altman@wdc.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Bean Huo" <beanhuo@micron.com>,
+        Peter Wang <peter.wang@mediatek.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        <linux-scsi@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Wed, 20 Oct 2021 19:04:44 +0800
+In-Reply-To: <20211018132022.2281589-1-arnd@kernel.org>
+References: <20211018132022.2281589-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-In-Reply-To: <20211019175401.3757927-1-pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QGq1slRpftlNyibFnYMdI4Hs06AjPEjw
-X-Proofpoint-ORIG-GUID: rhfZ2vi6s9g3nroV70qzwsAsngyZWCev
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-20_04,2021-10-20_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 adultscore=0 impostorscore=0
- mlxscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110200064
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnd,
 
-Am 19.10.21 um 19:53 schrieb Halil Pasic:
-> The three fixes aren't closely related. The first one is the
-> most imporant one. They can be picked separately. I deciced to send them
-> out together so that if reviewers see: hey there is more broken, they
-> can also see the fixes near by.
+On Mon, 2021-10-18 at 15:20 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Halil Pasic (3):
->    KVM: s390: clear kicked_mask before sleeping again
->    KVM: s390: preserve deliverable_mask in __airqs_kick_single_vcpu
->    KVM: s390: clear kicked_mask if not idle after set
+> sched_clock() is not meant to be used in portable driver code,
+> and assuming a particular clock frequency is not how this is
+> meant to be used. It also causes a build failure because of
+> a missing header inclusion:
 > 
->   arch/s390/kvm/interrupt.c | 12 +++++++++---
->   arch/s390/kvm/kvm-s390.c  |  3 +--
->   2 files changed, 10 insertions(+), 5 deletions(-)
+> drivers/scsi/ufs/ufs-mediatek.c:321:12: error: implicit declaration
+> of function 'sched_clock' [-Werror,-Wimplicit-function-declaration]
+>         timeout = sched_clock() + retry_ms * 1000000UL;
 > 
+> A better interface to use here ktime_get_mono_fast_ns(), which
+> works mostly like ktime_get() but is safe to use inside of a
+> suspend callback.
 > 
-> base-commit: 519d81956ee277b4419c723adfb154603c2565ba
+> Fixes: 9561f58442e4 ("scsi: ufs: mediatek: Support vops pre suspend
+> to disable auto-hibern8")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/scsi/ufs/ufs-mediatek.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-
+> mediatek.c
+> index d1696db70ce8..a47241ed0a57 100644
+> --- a/drivers/scsi/ufs/ufs-mediatek.c
+> +++ b/drivers/scsi/ufs/ufs-mediatek.c
+> @@ -318,15 +318,15 @@ static void ufs_mtk_wait_idle_state(struct
+> ufs_hba *hba,
+>  	u32 val, sm;
+>  	bool wait_idle;
+>  
+> -	timeout = sched_clock() + retry_ms * 1000000UL;
+> -
+> +	/* cannot use plain ktime_get() in suspend */
+> +	timeout = ktime_get_mono_fast_ns() + retry_ms * 1000000UL;
 
-I picked and queued patches 1 and 2. Thanks a lot for fixing.
-I will need some time to dig through the code to decide about patch3.
+Thanks for this fix.
+
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+
+>  
+>  	/* wait a specific time after check base */
+>  	udelay(10);
+>  	wait_idle = false;
+>  
+>  	do {
+> -		time_checked = sched_clock();
+> +		time_checked = ktime_get_mono_fast_ns();
+>  		ufs_mtk_dbg_sel(hba);
+>  		val = ufshcd_readl(hba, REG_UFS_PROBE);
+>  
+
