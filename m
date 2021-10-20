@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777F4434EAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80221434EB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhJTPLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:11:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTPLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:11:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56E0E6137C;
-        Wed, 20 Oct 2021 15:09:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634742565;
-        bh=V8dOGDI+8Esrzokm8M0yenicCab84JXeYlub3sJhK+o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YxGYAXE9zbZQX/iXvbXcaARd+gX5myi8BFCBo9z/IiVSOZUcyLzIpDHWIoeEEw9lq
-         ur5yChHfowLYRejboVz5EyCZ9gKtIvtnM7g7YWavWTNTYtXA5sfaLC1j/WDHSZpepT
-         bdIE+03FXIavtRSKAHs+zXVWjdWFhmWtvVthl1ydVZBHOXvScUy3e77JVpJWprHfw2
-         4kVUankFrG8DtmyFnMlk9L+iSCtwB5OyyZ0Q4EZmnSOB2/iIbKMpoNjduBbUYsX7Fo
-         n6vTaFDy0zNehwqGcpU57HId2M6dJ7GHOrD7YKuLypZxmXKyDPgk81sSSamZ7yMIGz
-         t5X4yYQ0pExvQ==
-Received: by mail-qk1-f176.google.com with SMTP id bp7so3350217qkb.12;
-        Wed, 20 Oct 2021 08:09:25 -0700 (PDT)
-X-Gm-Message-State: AOAM531bJ/YkFmuNL99g+4ux9jpOTVHrzmgY2kl1vcLsmt3i2r/ak/BZ
-        I05PyQiH0knl66xvuPn5wHVZLCUPPxlOm5Q+OA==
-X-Google-Smtp-Source: ABdhPJyGoWzG5JvS8XT67rDl5KsAoE+oAvmANea6yGKMy2Cxc0+sI6RuMRf9B7gkVo8hK4KsjNLCXx6U2Pzicu3/xZU=
-X-Received: by 2002:ae9:df01:: with SMTP id t1mr117844qkf.202.1634742564401;
- Wed, 20 Oct 2021 08:09:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-3-zhang.lyra@gmail.com>
- <YV1XpL7ibF1y4LbV@google.com> <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 20 Oct 2021 10:09:13 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLUkxKOMSWLzTK14h3EyBCsO2dfq3=MxOSvv1ZK0_H=ow@mail.gmail.com>
-Message-ID: <CAL_JsqLUkxKOMSWLzTK14h3EyBCsO2dfq3=MxOSvv1ZK0_H=ow@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
- global registers
-To:     Lee Jones <lee.jones@linaro.org>, Stephen Boyd <sboyd@kernel.org>
-Cc:     Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        id S230324AbhJTPNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:13:35 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41910 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230349AbhJTPNd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:13:33 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 62EA721940;
+        Wed, 20 Oct 2021 15:11:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634742675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4phKG3v7AhqVm7wB1hnWNwhQ3pm7190f563uVsyAUGU=;
+        b=XCs3VtZUJyt68k3+ZF1yH49d+mFBf7wGBPfvDt0szjmCz8LijBJGR4ZDBQ50t96D0bRPgV
+        1rZrUwv5M9sS6dUKny9EqtlX4dX8LkvxKBcLNCB/ANcLa2oOl2fQ86Mcbta9VuQNiMFR80
+        4VwKlvx9coxtqMG6rSk9AV74CvbX9wU=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 0456BA3B87;
+        Wed, 20 Oct 2021 15:11:10 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 17:11:02 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] mm: skip current when memcg reclaim
+Message-ID: <YXAxhp9tQPv9g0XJ@dhcp22.suse.cz>
+References: <YW0u67o8wl3CGikP@dhcp22.suse.cz>
+ <CAGWkznEO9SyNFEBqL8=JxewVTvaUhwFLPow69mi=R1MJ=XCpow@mail.gmail.com>
+ <YW1rcv4bN1WWhzLD@dhcp22.suse.cz>
+ <CAGWkznG65_FGx9jU7rjj5biEdyHZ=kcPwmXj6cGxxVmPy2rdKQ@mail.gmail.com>
+ <YW6LSVK+NTiZ05+X@dhcp22.suse.cz>
+ <CAGWkznHSPAu572BjoE510Sm+G9vGetKg-v2TkjwtcmZGo8MPVw@mail.gmail.com>
+ <YW7G7znfHxd52b/T@dhcp22.suse.cz>
+ <CAGWkznGb05Uykxz=9K+8uB6axS7LCo_7hMXAn7DFJXvAmkFy5Q@mail.gmail.com>
+ <YW/Zf/s/CtRFlJ87@dhcp22.suse.cz>
+ <CAGWkznHF8Q8VEiKmDHNXW7Lf2=37=YXC+oP0COxe7WhY4bPWiQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznHF8Q8VEiKmDHNXW7Lf2=37=YXC+oP0COxe7WhY4bPWiQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 9:11 AM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Wed, Oct 6, 2021 at 3:00 AM Lee Jones <lee.jones@linaro.org> wrote:
+On Wed 20-10-21 19:45:33, Zhaoyang Huang wrote:
+> On Wed, Oct 20, 2021 at 4:55 PM Michal Hocko <mhocko@suse.com> wrote:
 > >
-> > On Thu, 23 Sep 2021, Chunyan Zhang wrote:
+> > On Wed 20-10-21 15:33:39, Zhaoyang Huang wrote:
+> > [...]
+> > > Do you mean that direct reclaim should succeed for the first round
+> > > reclaim within which memcg get protected by memory.low and would NOT
+> > > retry by setting memcg_low_reclaim to true?
 > >
-> > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > >
-> > > Add bindings for Unisoc system global register which provide register map
-> > > for clocks.
-> > >
-> > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  .../bindings/mfd/sprd,ums512-glbreg.yaml      | 68 +++++++++++++++++++
-> > >  1 file changed, 68 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
+> > Yes, this is the semantic of low limit protection in the upstream
+> > kernel. Have a look at do_try_to_free_pages and how it sets
+> > memcg_low_reclaim only if there were no pages reclaimed.
 > >
-> > Unapplied v3 and applied this (v4) instead, thanks.
->
-> What about the clock binding this depends on:
->
-> Unknown file referenced: [Errno 2] No such file or directory:
-> '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
-> xargs: dt-doc-validate: exited with status 255; aborting
-> make[1]: *** Deleting file
-> 'Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml'
-> Unknown file referenced: [Errno 2] No such file or directory:
-> '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
-> make[1]: *** [scripts/Makefile.lib:385:
-> Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml]
-> Error 255
->
->
-> Once again, all the components of MFD bindings need to be applied together.
+> > > It is not true in android
+> > > like system, where reclaim always failed and introduce lmk and even
+> > > OOM.
+> >
+> > I am not familiar with android specific changes to the upstream reclaim
+> > logic. You should be investigating why the reclaim couldn't make a
+> > forward progress (aka reclaim pages) from non-protected memcgs. There
+> > are tracepoints you can use (generally vmscan prefix).
+> Ok, I am aware of why you get confused now. I think you are analysing
+> cgroup's behaviour according to a pre-defined workload and memory
+> pattern, which should work according to the design, such as processes
+> within root should provide memory before protected memcg get
+> reclaimed. You can refer [1] as the hierarchy, where effective
+> userspace workloads locate in protect groups and have rest of
+> processes be non-grouped. In fact, non-grouped ones can not provide
+> enough memory as they are kernel threads and the processes with few
+> pages on LRU(control logic inside). The practical scenario is groupA
+> launched a high-order kmalloc and introduce reclaiming(kswapd and
+> direct reclaim). As I said, non-grouped ones can not provide enough
+> contiguous memory blocks which let direct reclaim quickly fail for the
+> first round reclaiming. What I am trying to do is that let kswapd try
+> more for the target. It is also fair if groupA,B,C are trapping in
+> slow path concurrently.
+> 
+> [1]
+> root
+> |                                                       |
+> |              |
+> non-grouped processes             groupA    groupB  groupC
 
-It seems that Stephen still has comments and there's a new check that
-causes the clock schema to fail, so this should be dropped or
-reverted.
-
-Rob
+I am sorry but I still do not understand your setup. I have asked
+several times for more specifics. Without that I cannot really wrap my
+head around your (ever changing) statements. This is not really a
+productive use of time. I am sorry but I cannot really help you much
+without understanding the actual problem.
+-- 
+Michal Hocko
+SUSE Labs
