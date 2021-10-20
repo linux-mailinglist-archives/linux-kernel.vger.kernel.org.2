@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AC843436E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9CF434379
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhJTCR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhJTCRG (ORCPT
+        id S229741AbhJTCUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:20:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54115 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229637AbhJTCU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:17:06 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84385C061749;
-        Tue, 19 Oct 2021 19:14:51 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id h193so5728161pgc.1;
-        Tue, 19 Oct 2021 19:14:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BeLefvFYaaRNCXybpBNbetJ8KPidcgjmt2FIlG8JLGU=;
-        b=g2kvxFPQF0NKcFZdcxoOMWcur0VCSL5wdxGZLs3mlkcAkYUcSmvP9Af8ZAStymqLs0
-         tHAM0eeyBmCxRmMskpNA5XC/UuUkOL42EK7ejN4a2nK85+pGdX8bBQgBC+Y5C8aOuw9v
-         f2kPwbFVcmDHyCf38qj5zBBrhHvIulPdmtayqXLxfelVYJmAn9YRFpDeeh8bV14bX69W
-         HtjKu7YdKH5WFTSZgd94BqDCs/ESo+Gg7g1GAGOLdTtIoaY/jMiUknWIW9FYqClpfGb4
-         NKwnkkAlwzIDQ5+kLk6WDGqQdfXPssBhqpLl7KLAaWDeuTceVn7nl69zNgwSUqhQnv3p
-         +mtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BeLefvFYaaRNCXybpBNbetJ8KPidcgjmt2FIlG8JLGU=;
-        b=fh09+zwK+Zy93AfUTfw8yB056DtrnpMl6Ui0PVzoqAiMtXQ79xMN9QcA+CbqvNqvJm
-         7GQa+udbaoiGf9pHdK81WdU69+g/0Xen6D5KQobWp38GRyClFyNVpOlwK/NEFJkqIBv8
-         VKoizQaAHtRLq8wcj2+0MX84znZi/Tj1surfLAw7eIopPBMF8uB/UKo3Xr+XJcOWUcaH
-         0VjltdQFu+B6I7jslmRQ3v+9nWYdpuYzq2Y5GX5SwSvWqHnqeEtLNjFoHy2ufs4HfO/m
-         NQCowwrQsQ78iFcdnEjGwoKD5wdZchi/rrHwj0zxYzsDvXVI3RSAvb8Q9v6NFBYuYnfN
-         BqSQ==
-X-Gm-Message-State: AOAM533OIUBTdx622fpnQ+FvJHFoxrmBSQ4stL0a3BR1ZjH2n2amVPiV
-        8m3Kpg+3LpR3kAcNhMQzBMc=
-X-Google-Smtp-Source: ABdhPJyR9L42ItJdgeY8OFVEuB+bR+EEDRXjgA+Rvzo7tbV8YJlnkPhWyOmMetzWesvDsvBeGVKbUw==
-X-Received: by 2002:a05:6a00:88e:b0:44c:c40:9279 with SMTP id q14-20020a056a00088e00b0044c0c409279mr3335225pfj.85.1634696090862;
-        Tue, 19 Oct 2021 19:14:50 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:4814:8c29:ba96:983d])
-        by smtp.gmail.com with ESMTPSA id k14sm422679pji.45.2021.10.19.19.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 19:14:49 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 19:14:47 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     Ping Cheng <pinglinux@gmail.com>,
-        Alistair Francis <alistair@alistair23.me>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the
- data values
-Message-ID: <YW97lwsMrLHetJGy@google.com>
-References: <20211009114313.17967-1-alistair@alistair23.me>
- <CAF8JNh+OUzvAHA9tBrH2d_WxWPXRgiunhGO5KV4-fqVG+tUOyQ@mail.gmail.com>
- <YW4kgnI0DQHj4sw4@google.com>
- <CAKmqyKMrb=Uz0+-ycj0HkAKJYdRU11Dc+24+KJw_j3MHT=2+yw@mail.gmail.com>
- <YW9rRUsxPHTjeOGT@google.com>
- <CAKmqyKMpMCb4gLyp94rCgVBU3eccjafD8nF7y6o+oU6D-OHvTQ@mail.gmail.com>
+        Tue, 19 Oct 2021 22:20:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634696293;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D74GYl4Q75+oXj/aMCjO7YTPXeKQjd+IcbtXAGLf308=;
+        b=Bs2r5YFJXMOX61pXNAEqEnnG1ilWnSguIV8DwERM8Ui4u6QEm0fbH07Fk03l2H7QT7Nz/L
+        IwS8bh7OOFq4SF9eWN7qw3ae07Y1g4t35BUABs2g3RRgp1YRhz3dGLJCsb2x52krb6UV5l
+        b/s2yWCaciS625SLcSsN74CSkvj0kSg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-151-8Kxz5JYxMzONNvmCRHlvSQ-1; Tue, 19 Oct 2021 22:18:10 -0400
+X-MC-Unique: 8Kxz5JYxMzONNvmCRHlvSQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F264108088A;
+        Wed, 20 Oct 2021 02:18:07 +0000 (UTC)
+Received: from T590 (ovpn-8-20.pek2.redhat.com [10.72.8.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 22A5D103BAC7;
+        Wed, 20 Oct 2021 02:17:46 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 10:17:41 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Quanyang Wang <quanyang.wang@windriver.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
+ cgroup_bpf_offline
+Message-ID: <YW98RTBdzqin+9Ko@T590>
+References: <20211018075623.26884-1-quanyang.wang@windriver.com>
+ <YW04Gqqm3lDisRTc@T590>
+ <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
+ <YW1vuXh4C4tX9ZHP@T590>
+ <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
+ <YW78AohHqgqM9Cuw@blackbook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAKmqyKMpMCb4gLyp94rCgVBU3eccjafD8nF7y6o+oU6D-OHvTQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YW78AohHqgqM9Cuw@blackbook>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:44:50AM +1000, Alistair Francis wrote:
-> On Wed, Oct 20, 2021 at 11:05 AM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 09:33:13AM +1000, Alistair Francis wrote:
-> > > On Tue, Oct 19, 2021 at 11:51 AM Dmitry Torokhov
-> > > <dmitry.torokhov@gmail.com> wrote:
-> > > >
-> > > > We already have touchscreen-inverted-x/y defined in
-> > > > Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml,
-> > > > why are they not sufficient?
-> > >
-> > > The touchscreen-* properties aren't applied to HID devices though, at
-> > > least not that I can tell.
-> >
-> > No, they are not currently, but that does not mean we need to establish
-> > a new set of properties (property names) for HID case.
+On Tue, Oct 19, 2021 at 07:10:26PM +0200, Michal Koutný wrote:
+> Hi.
 > 
-> I can update the names to use the existing touchscreen ones.
+> On Tue, Oct 19, 2021 at 06:41:14PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
+> > So I add 2 "Fixes tags" here to indicate that 2 commits introduce two
+> > different issues.
 > 
-> Do you have a hint of where this should be implemented though?
+> AFAIU, both the changes are needed to cause the leak, a single patch
+> alone won't cause the issue. Is that correct? (Perhaps not as I realize,
+> see below.)
 > 
-> Right now (without "HID: wacom: Add support for the AG14 Wacom
-> device") the wacom touchscreen is just registered as a generic HID
-> device. I don't see any good place in hid-core, hid-input or
-> hid-generic to invert the input values for this.
+> But on second thought, the problem is the missing percpu_ref_exit() in
+> the (root) cgroup release path and percpu counter would allocate the
+> percpu_count_ptr anyway, so 4bfc0bb2c60e is only making the leak more
+> visible. Is this correct?
+> 
+> I agree the commit 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
+> percpu_ref in fast path") alone did nothing wrong.
 
-I think the transformation should happen in
-hid-multitouch.c::mt_process_slot() using helpers from
-include/linux/input/touchscreen.h
+If only precpu_ref data is leaked, it is fine to add "Fixes: 2b0d3d3e4fcf",
+I thought cgroup_bpf_release() needs to release more for root cgroup, but
+looks not true.
 
-I think the more challenging question is to how pass/attach struct
-touchscreen_properties * to the hid device (i expect the properties will
-be attached to i2c-hid device, but maybe we could create a sub-node of
-it and attach properties there.
 
-Thanks.
+Thanks,
+Ming
 
--- 
-Dmitry
