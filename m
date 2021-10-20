@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12C0434DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FF9434DE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhJTOeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:34:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229998AbhJTOeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:34:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21904611B0;
-        Wed, 20 Oct 2021 14:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634740322;
-        bh=pcxWEwcGQqT8BhQ5/6s7J9I6P9BEWrln+Wg0sC7KOTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gtocx8fWwXFLsm0lBnEsa/5VmGpYPyPqMOGpmH+XVaBTe1AJq3lq0RK0+ESIFIxIF
-         EJ0CKupgZaeFI2OvqvZmegDSIpqLFE5S2DHpTEY5ke49bqrUE7JQ7MRJtlGevkJuTF
-         mpmcKsmNZES9dvn5/CWiStxy4RsYxfWs3GSOt1KuT5GMR/psPdWWrDfc1FQ1r3VNXV
-         xzlzhRIFOEOizA9bF2jRRk5FlarYVQWZ2niToiOwc6C4EO9oU/ZGssxNZrMA5DRUVX
-         8dEkN3iwWTvQ5/MlqmYrPmZK4LXlb5Ldo46Y+fqnbjL+H6O0w7IeNmWIp6En5uqWr+
-         dzKre6M6cUxdA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A7A08410A1; Wed, 20 Oct 2021 11:31:59 -0300 (-03)
-Date:   Wed, 20 Oct 2021 11:31:59 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        ToastC <mrtoastcheng@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Denys Zagorui <dzagorui@cisco.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 00/21] perf metric: Fixes and allow modifiers
-Message-ID: <YXAoXxPtzYk+FhhM@kernel.org>
-References: <20211015172132.1162559-1-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015172132.1162559-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+        id S230233AbhJTOfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTOfc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 10:35:32 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F87C06161C;
+        Wed, 20 Oct 2021 07:33:17 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id 21so16254960plo.13;
+        Wed, 20 Oct 2021 07:33:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=u5DOSeHOTZkZZGLPLKG3YA5D+MxgiJ7IvT74eqMUdzw=;
+        b=HzuNKj/Mo6lAcoORCX1FT11zc2x+2AFTBDIOP1iv/agUSbtHcKhtP7H5k4Y+ErSPXO
+         COTzAd9fT0AEzLNM/AELcAZWfOq597E88L2Ohm9Asmy/IGsVsZT5Kvm1xc5eaWZ0nbWb
+         6YAiIABRtMvBDosZPcxUtpFY6g0R86HCkUL8y/JFN4vE0D2aAerboa0oeCukNQHpLuG7
+         tV2bn/vRPJSP6s3WQ7e6Naksyx11pbUe1gmhuVO7ttuG/TZMr8DFoNSSSbkLdbG4UIvC
+         aDkCZK4vC0Ma1ByjaZr4KaQmj1hAChZdGjzWQsjGVHM/Io06QS2axKhmoUIYtdrVVdGg
+         klHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=u5DOSeHOTZkZZGLPLKG3YA5D+MxgiJ7IvT74eqMUdzw=;
+        b=x4feP+91VS9e5pfrhPkyST4PzLWmKz9GvP1lff58a35qTqOP3R6HOIoeBRDJWihOuP
+         rN3H5ZgaXO14JVfYvIQS3J9pU8l6AOVc1IXT24fKPTaL3Pq24R79Z4IBZF0OmqNiPCCI
+         2GtLhlQnlzSIJM4uL8BFk1JwXdom4d7+DSlkWJKi8wVCS9Ek6F7+OCqGCzG9UB5r8DJ2
+         SQ7Jvh9mpID+rjqy0LPMdKNiI9/ttYumMLCYNNCuUpN/sG7u1ZOl/HimPYqBFnpPIvB2
+         oSDYTBbR/Vu2osXJTtTfq6bEYNz+eSMx02efsI6JGNXYXKmkZHlbKkBReKOWiiJWZ2Cw
+         +sVA==
+X-Gm-Message-State: AOAM531ygqFUCIJIe1RyGIj/UqzWRu468GiWY7qDvnKIRYUtVsX3mBrQ
+        usr+tNetycOVT6BDt4G8MA==
+X-Google-Smtp-Source: ABdhPJw/xwo1EfpCHxX+UNPaVbn1dkiEDSMWBET0zrkkMENfrZ7XpE3j5GRdx+H2HNI+rN5AwuG5hA==
+X-Received: by 2002:a17:90b:30d6:: with SMTP id hi22mr8001207pjb.4.1634740397380;
+        Wed, 20 Oct 2021 07:33:17 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id j9sm2512018pji.20.2021.10.20.07.33.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Oct 2021 07:33:16 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        skashyap@marvell.com, jhasan@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] scsi: qedf: Fix return values of the probe function
+Date:   Wed, 20 Oct 2021 14:33:08 +0000
+Message-Id: <1634740388-27238-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Oct 15, 2021 at 10:21:11AM -0700, Ian Rogers escreveu:
-> There are 4 main changes in this patch set:
->  - perf metric: Modify resolution and recursion check.
->  - perf parse-events: Add new "metric-id" term.
->  - perf metrics: Modify setup and deduplication
->  - perf metric: Allow modifiers on metrics.
+qedf_set_fcoe_pf_param() propagates the return value to the probe
+function __qedf_probe() and then hits local_pci_probe().
 
-Thanks, applied. Replaced the v1 with this one since it never hit the
-published perf/core branch.
+During the process of driver probing, the probe function should return < 0
+for failure, otherwise, the kernel will treat value > 0 as success.
 
-- Arnaldo
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ drivers/scsi/qedf/qedf_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index 42d0d941dba5..52f2a52bea2c 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -3161,14 +3161,14 @@ static int qedf_set_fcoe_pf_param(struct qedf_ctx *qedf)
+ 
+ 	if (!qedf->p_cpuq) {
+ 		QEDF_ERR(&(qedf->dbg_ctx), "dma_alloc_coherent failed.\n");
+-		return 1;
++		return -ENOMEM;
+ 	}
+ 
+ 	rval = qedf_alloc_global_queues(qedf);
+ 	if (rval) {
+ 		QEDF_ERR(&(qedf->dbg_ctx), "Global queue allocation "
+ 			  "failed.\n");
+-		return 1;
++		return rval;
+ 	}
+ 
+ 	/* Calculate SQ PBL size in the same manner as in qedf_sq_alloc() */
+-- 
+2.17.6
 
