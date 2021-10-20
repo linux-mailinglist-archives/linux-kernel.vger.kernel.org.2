@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF95B43474A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55B5434752
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhJTIwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhJTIwI (ORCPT
+        id S230052AbhJTIxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:53:03 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:25192 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhJTIxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:52:08 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D60C061746;
-        Wed, 20 Oct 2021 01:49:54 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id gn3so2033113pjb.0;
-        Wed, 20 Oct 2021 01:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jyt9s5cRU7FXF5oC4SgHHTIq0zq6TPvhyZdksmJ0x0M=;
-        b=aiEkOcBr9zG3Qmt6x4B2KUtMLQ8WThuO6GHvQFpa4sjoZuS61iPFnZhGUrMxz1ZzNj
-         +KuGZjqjhc92qxLxruS++xQfUhDE502eG7clHSUYELemi0Of8bW5wJS76TngIIseLRSj
-         qr3Qz+fDE5dttwy2Vu/szfe+/SrE784nKroh6TbtGO3DVHkwf6+LZJmSUp/XzoL0p9iO
-         kTVIUTatLbqIFgWKo/s2/bwTQQH+FIKNVugJ+mPus18RPJyARfX4h7cvBc4wdq+60fnD
-         +ZcU5x8zlEQsC+/zoQkjOygsl1Jt1gH2qFMJ4Y28fNEBu2/9bRZVDOMFxlchhx3E3Usr
-         PMWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jyt9s5cRU7FXF5oC4SgHHTIq0zq6TPvhyZdksmJ0x0M=;
-        b=VzFuSkc/lEZ3/wXSFmedI3Ly0E5k3/y+u1Pzm2VZtc8HzkCdXNVDX9a/Eq5dAERTFg
-         V4BniXWe0gKOeQLyB6vog+aBJirm/ErUo9dkFG2lNgC4qKIFtPIuR/NcP/f1W2ofXKCk
-         9yEsn4t4gNqGcceXy3C1M1cfV2OduSgAuV51xF+nww2uxWDVXHg8jG+fZSxox87O1sTS
-         pekDgVBrOXYIj2OgI58S0qyhWStO9FKPMK4yeJWN5m4sLYCQq/jGjKeb6nmZh6bt6+fM
-         jQIt432d2zmhSlvEizV7fhI9kdlJDk3pTHK1a0K/v7R0HCpWWh5kNvuIEgiyZaFIVlPz
-         I6sA==
-X-Gm-Message-State: AOAM533uJL3kVWW26ODvyqDN8bcJustdM0pKgxs/P9buxexrLGjqC7pM
-        t60KcIWNFXr8Qhd1flf7Vy8=
-X-Google-Smtp-Source: ABdhPJyg2bMkOl0G8V6eyvGnGr3MzchNpEvZX9+558Y8yf3981qv2OqrcvMVOgfl4HRtAj+1Mk/i0Q==
-X-Received: by 2002:a17:90b:1c02:: with SMTP id oc2mr5827402pjb.128.1634719793955;
-        Wed, 20 Oct 2021 01:49:53 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id x7sm1687874pfj.164.2021.10.20.01.49.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 01:49:53 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     axboe@kernel.dk
-Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] io_uring: Use ERR_CAST() instead of ERR_PTR(PTR_ERR())
-Date:   Wed, 20 Oct 2021 08:49:48 +0000
-Message-Id: <20211020084948.1038420-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 20 Oct 2021 04:53:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634719846; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=HBQ3L1Q9DP2ke7hrN55rY3sAmUH25FHoGf4Xq4g6QAY=;
+ b=M/utqfA80bMcMkZ69LLEfTvGVpQ1h9qrhYCKK4Qbo9oD0GZtIYQ27K/upTXICHEn+VYG5O3I
+ AVVzFOPi4SoNoU/q8W0TExOfG0LCvWTXQd0H+XURaBNPuvy0hvIp2iR+VY1Q+6hJlyrisXUx
+ 9hgjFg/NH+pd8b6jxh+UaBreLn0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 616fd8545ca800b6c137d954 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 08:50:28
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CA73DC43460; Wed, 20 Oct 2021 08:50:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 65786C4338F;
+        Wed, 20 Oct 2021 08:50:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 65786C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] rtw89: fix error function parameter
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211019035311.974706-1-lv.ruyi@zte.com.cn>
+References: <20211019035311.974706-1-lv.ruyi@zte.com.cn>
+To:     cgel.zte@gmail.com
+Cc:     davem@davemloft.net, kuba@kernel.org, pkshih@realtek.com,
+        lv.ruyi@zte.com.cn, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163471982441.1743.9901035714649893101.kvalo@codeaurora.org>
+Date:   Wed, 20 Oct 2021 08:50:28 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+cgel.zte@gmail.com wrote:
 
-Use ERR_CAST() instead of ERR_PTR(PTR_ERR()).
-This makes it more readable and also fix this warning detected by
-err_cast.cocci:
-./fs/io_uring.c: WARNING: 3208: 11-18: ERR_CAST can be used with buf
+> From: Lv Ruyi <lv.ruyi@zte.com.cn>
+> 
+> This patch fixes the following Coccinelle warning:
+> drivers/net/wireless/realtek/rtw89/rtw8852a.c:753:
+> WARNING  possible condition with no effect (if == else)
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Failed to apply, please rebase on top of wireless-drivers-next.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 695388aff926..e2d36607bf94 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -3205,7 +3205,7 @@ static struct iovec *__io_import_iovec(int rw, struct io_kiocb *req,
- 		if (req->flags & REQ_F_BUFFER_SELECT) {
- 			buf = io_rw_buffer_select(req, &sqe_len, issue_flags);
- 			if (IS_ERR(buf))
--				return ERR_PTR(PTR_ERR(buf));
-+				return ERR_CAST(buf);
- 			req->rw.len = sqe_len;
- 		}
- 
+error: patch failed: drivers/net/wireless/realtek/rtw89/rtw8852a.c:753
+error: drivers/net/wireless/realtek/rtw89/rtw8852a.c: patch does not apply
+error: Did you hand edit your patch?
+It does not apply to blobs recorded in its index.
+hint: Use 'git am --show-current-patch' to see the failed patch
+Applying: rtw89: fix error function parameter
+Using index info to reconstruct a base tree...
+Patch failed at 0001 rtw89: fix error function parameter
+
+Patch set to Changes Requested.
+
 -- 
-2.25.1
+https://patchwork.kernel.org/project/linux-wireless/patch/20211019035311.974706-1-lv.ruyi@zte.com.cn/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
