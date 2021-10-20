@@ -2,181 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32549434490
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45875434494
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhJTFQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 01:16:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63284 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229520AbhJTFQm (ORCPT
+        id S229977AbhJTFTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 01:19:07 -0400
+Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:50828 "EHLO
+        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229756AbhJTFTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 01:16:42 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K4tMv4001661;
-        Wed, 20 Oct 2021 01:14:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=3T+6eqNQOKYVvmw+7/AAGoGrfgGTgDgUhcLwRnBZxnE=;
- b=sSG/HUI8SdNVwJ1UTYTLJtYMc9u+bsqXfJkzspTRNqFo89GP8g7Ke6si/QHsGZSM+RMD
- o4Z1Z2UWqdtkzAW/XgplfJE+E+9Df2Oe6YB/gCuIGteislJWnJi4GvfeiyXGZJbpCd7R
- hlGbymx6Jgp/GhJw4Udde9Zr4Zm3ReZNGnFpC1ASUHlhnI0OhdfJUM848/ZijmS20rlN
- C9qS+yakr524OpFqmOBAm21Eq4SQMhSab5uNk1KZFe9Wtk86ap5i05JqOKvSBMMQJXcO
- 3gDMi4nHS6L8bdyruYf/PHOrxz7EiPD6G1rQWgcqLCGKEs/7dRJI+KY/g4h47qrBBhSJ xQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bt3an2x0r-1
+        Wed, 20 Oct 2021 01:19:06 -0400
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K5EmKp024881;
+        Tue, 19 Oct 2021 22:16:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=subject : to : cc
+ : references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=PPS06212021;
+ bh=pICHADg2kpfK+72cb3vjK2upNrD/fiz4CvSMBd0wers=;
+ b=Nxzcz2+LpuQROIFnS+Ph4cFe9aOHGsPXyFb3nru+waTsm+ROkifKEezy5D9waoSxMXmP
+ VMR1NENSvNkeur2Okr0y33Ei/LQUxIX/7r03XTC54pK+9Bw94Q/CKcilGqYFyM3hjWrK
+ zkcOJDf0bMsOepXBAkY69oKjrU4uxgE1iqIu62N9XyNR5QpERZ/xqd+Fgho+FXiFs330
+ mvHRoKOvFxLAweJz4Ohb7xRLUTyfcPMDdCe8vERZZUvnUqsNwZDuaheuZB6MzwOAvbuJ
+ sTw9BoFA1fLez7QroAFlEeyPTm1/DiJ4e+qmSdgssX3kI6YHaqpUT6MwMZIiwnIdHEzs VQ== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2044.outbound.protection.outlook.com [104.47.66.44])
+        by mx0a-0064b401.pphosted.com with ESMTP id 3bsmtb14nh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 01:14:28 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19K486Pg001432;
-        Wed, 20 Oct 2021 01:14:28 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bt3an2x07-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 01:14:27 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19K57XK7018166;
-        Wed, 20 Oct 2021 05:14:25 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 3bqpc9nyv6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 05:14:25 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19K5EMXr35324292
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Oct 2021 05:14:22 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CDCB11C050;
-        Wed, 20 Oct 2021 05:14:22 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 94D9E11C04A;
-        Wed, 20 Oct 2021 05:14:21 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.54.36])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 20 Oct 2021 05:14:21 +0000 (GMT)
-Subject: Re: [PATCH 3/3] KVM: s390: clear kicked_mask if not idle after set
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, farman@linux.ibm.com,
-        kvm@vger.kernel.org
-References: <20211019175401.3757927-1-pasic@linux.ibm.com>
- <20211019175401.3757927-4-pasic@linux.ibm.com>
- <c5c84a99-c56a-2232-7574-a6d207d7c11f@de.ibm.com>
-Message-ID: <03b33367-ccde-a121-0faf-c347f2c789e2@de.ibm.com>
-Date:   Wed, 20 Oct 2021 07:14:21 +0200
+        Tue, 19 Oct 2021 22:16:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f2JBUtYnE0ml8orh4F1cXWkxt1yZyFEqNgXCm44H1PuwQIXIOaYerwk+KTPkUdg8q2/1IXrBADcjhFXCREe3Jfr6Xpa1f1K0EpWjM8oYrsnGHFI77ZXNOT6W9gxtEmyanBI9ntvefP8VN+gyhJaQQsoPlRb1EAAl5qlf+h1q8n2T6YjDyDTc5Sf8jVpRLYTyMtfOwYZ7UR+f0k23aXZ9BhuY4tluulMvzpjVrUIvU3JTmqX4WC5ZUmjdvlY1DUEtGQGbUU0sYNkbRgVETgMLHDnu2FO/QhxYAGJIzOkwpja975QCWFniVXQiYvBerVXtiTsKgEyE4CSbHaZU0xU8zQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pICHADg2kpfK+72cb3vjK2upNrD/fiz4CvSMBd0wers=;
+ b=UV/6lI7PqnxVDscs+BqwJw52ydCEZ3GsN6/UOVnMx8qybIZyF8CG/sPmuG/3r9C45rDcQmuFRxZ5OV+E7JtxdRF+Z9vGdZdFFnWv3bPqCNUoqZlYXsgO5bH8faKocVKfkA+k1erZ6P1qPhoSiBnpwzHQBpkiO7dIhohp4oXYv8SdMC7x2ArB2r73XtCUVMJA5DF1zs848bdZlEAkx5vxFna2iLGJajqajQemHll1DEk7WyRiNIy1epIsKBTKKbv7kDHItHcZYCIlRorkaNjWTBEBE+KDdgKOurwAJfPXk1dnZRP7jsROFCfBobxYMfmTTEQgptnQfoTWGHKYNFACRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from PH7PR11MB5819.namprd11.prod.outlook.com (2603:10b6:510:13b::9)
+ by PH0PR11MB5062.namprd11.prod.outlook.com (2603:10b6:510:3e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Wed, 20 Oct
+ 2021 05:16:17 +0000
+Received: from PH7PR11MB5819.namprd11.prod.outlook.com
+ ([fe80::3508:ff4c:362d:579c]) by PH7PR11MB5819.namprd11.prod.outlook.com
+ ([fe80::3508:ff4c:362d:579c%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
+ 05:16:17 +0000
+Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
+ cgroup_bpf_offline
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20211018075623.26884-1-quanyang.wang@windriver.com>
+ <YW04Gqqm3lDisRTc@T590> <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
+ <YW1vuXh4C4tX9ZHP@T590> <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
+ <YW78AohHqgqM9Cuw@blackbook>
+From:   Quanyang Wang <quanyang.wang@windriver.com>
+Message-ID: <4644b5eb-8acf-45ef-e33e-84eee6394a57@windriver.com>
+Date:   Wed, 20 Oct 2021 13:16:01 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <c5c84a99-c56a-2232-7574-a6d207d7c11f@de.ibm.com>
+ Thunderbird/78.13.0
+In-Reply-To: <YW78AohHqgqM9Cuw@blackbook>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7HxqCtvYRHqgc9kufuJXjhn7rIEim9pl
-X-Proofpoint-ORIG-GUID: 5lV1u1_KiSb0MgT1q19gKu6VCMIkgiNB
+X-ClientProxiedBy: HKAPR03CA0033.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::20) To PH7PR11MB5819.namprd11.prod.outlook.com
+ (2603:10b6:510:13b::9)
+MIME-Version: 1.0
+Received: from [128.224.162.199] (60.247.85.82) by HKAPR03CA0033.apcprd03.prod.outlook.com (2603:1096:203:c9::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.13 via Frontend Transport; Wed, 20 Oct 2021 05:16:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ed7f08c2-66b6-4203-8d75-08d99388beb9
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5062:
+X-Microsoft-Antispam-PRVS: <PH0PR11MB5062B3896B18918454CAC7ECF0BE9@PH0PR11MB5062.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: j8wHavtDr4ly9Uevajwrex9QiPu6wt5h6ncS/zpaJqVITc1tCxFoiRbrLPLzq4AkX9W08JMVMp5Bqj6gnMn1DioCIKmPd0zws5XcRolTcQtt4F8IP2WmaApwGp4APUXPpUOQLzfnN4X9DcvIK2Ob9r1E0SdPv1A2AZNU3EliuTNBslCD9CDY1faw53rXxAT33MEXEf+jqbUWSor28WBWwh1blSW6vl02aLJjQAawcQjGMJXp7hnucTgx/rSwhDkaZIjcheQXreqghsFMZ/4/NGqPVGP4lwqIfkuqURRIyOIHIEQ0nRXTGDZfuVXceUbbzma4TGikRYsRfgyiJTdArJ+GFdKeHHG75lgwUW6ehG2c3UVaPx/jbToTPSk/+3gviNJPHUz5q9YtPmVtjnROmHL61WvmtDsPtvxuuk0dq4TA7/0t9JB++xqGPcV79rQp2LbCmapPSmnxrqY9Daqr9yRzP4Jmb/NDN4C3E4LQ4LES+8O/Si+CX5hh9c8EUkjckgCWwpo68VL6hcLlmOjwbM5fhz2enjAMf/GBXPjBojRBA1mmaN4R4loBEstRkPdd17IIuEfmnzVKGPq5a/XM5icfWkOz639XJWO1nVSZNoArJtljc2tLb/397DVVHzzN9hMWgLcrdOW9JgM8Gx3FAMvFs0kJ2kj9Q8+zOmPAY8Swy+Y8MfuOrFC8m0kB0dBQS4jTQ/39fwiD7Cr8zON/n57R0sP6M+fEUTSxSODdVRyKITzfdwVhhkkRL548PzzYZa348lcJqEF3nQSSVxkgFhx9vgRq8oXqJPvkXXg7n+s=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(8936002)(5660300002)(6486002)(16576012)(508600001)(66556008)(26005)(8676002)(316002)(86362001)(36756003)(44832011)(54906003)(31696002)(66476007)(38100700002)(2906002)(7416002)(52116002)(31686004)(6666004)(6706004)(6916009)(186003)(66946007)(956004)(2616005)(38350700002)(4326008)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NTBwc3d2d0grbDZFYjczdndydjRtdDVLMytxczZrQ2JQY2EzbXFCMzRndTB5?=
+ =?utf-8?B?ejFPOTJxSm1HZ1gxcjVHdURWRlc3ei80Qk1CeDNlbXFHaklWdDV2aHlIU0VS?=
+ =?utf-8?B?TmVuSnJkZE5reldLVFErMDBhWXJtZC95NUxkUTdQaFJqdWxUYVZLNldaNytQ?=
+ =?utf-8?B?NWhvMGdPSE1DaFQ0ZDM1SFBaTFpRR3Vja0d0ZVRBa2ZDNStpNjFsSXQxazAv?=
+ =?utf-8?B?aGZZMEZ3QlNFWUFTbUMzdUtLbTVxdEMxejRoRFY2b2FDUWVHWVRYZGl5TzZQ?=
+ =?utf-8?B?dDkxQnYxVUovclA2TTMyWDlsOUQ1SlRHdkJnNEozbVB6bkJkNkZkRlNCZ2Nt?=
+ =?utf-8?B?TzdYaEpocCs4Z211K1Z4Q0hqVU9jZWUwK2ZraWFhcXVPNE55ekM3VmxZQzBk?=
+ =?utf-8?B?RTgvaVA1dEtjblRnNTdZeGFGVDd4TnB2RjAwU2tCOE55a0htUHc5TUNvWlZR?=
+ =?utf-8?B?YXROMW5RNFRBM0MxU1dFdXN1M0NndFBVSDB6WkkzWklBcmZOalFPV1FVN0Z3?=
+ =?utf-8?B?M1lxS3p4WUxMZXo0OTgwWHZZZUYxWGh0SGZBNmlLMU1PK25iZHJOVDV1M2dh?=
+ =?utf-8?B?a2l0UnNXcDJvc0JsUUJvTS9EQ2tHNXltZnRGYkJBQ2xhSDNSb2F6b2JJVUxw?=
+ =?utf-8?B?a01HYWd5dHlUVXVjSk5IbHkyMTVvMFB2Y1ZVUGpaZGxYTkRFVENSbm9WMnAy?=
+ =?utf-8?B?VFpkVFVnU2JBVmJSeDJZV2N4Y05mMER1aHl2ZFBwWDV2alhXdHRtVjA0aFR0?=
+ =?utf-8?B?K2ZtbXBMS2wvRGttbkZFd1U3dU9xSDFvRUNrRzQwUTQ5cnRKZzlycGlldWpF?=
+ =?utf-8?B?NS96MUR3aFhsTTByQlpzMktZcmZtRXMvem55UWFJalljRTZHdGdXUkZHWEdJ?=
+ =?utf-8?B?UHlLamFISjgrMkNMNklXZ3BhL21LMGRLY3VCdEs5N1I2YXIyOE4wZTlHdEor?=
+ =?utf-8?B?cnZnMFRKbWplSWpJODd3QWJabWhRQnd1VVlWNjJ2M2F2enJrc2JXdkZJbGow?=
+ =?utf-8?B?U2FEbE4vQzk5aEdId2R1VEwrYVRqZmxUaFYwSjNVQ3JJeVhQdGFzQ2ltS0tl?=
+ =?utf-8?B?ZWNqRzlLUVJTT21TUHdLL3BMUmxCT1VKaUlxMHd1bWJFWEtZSmFLWW1qcHFl?=
+ =?utf-8?B?YkZHNk5xRGs0cnEvQkEyVlhLNXNyYXp1VCtrL2Q5ZWRRalBTaWM1ZzRHMnQy?=
+ =?utf-8?B?eHFRNkR6NTJmZkhsRytaRGNNdkdnTHkzMThhN0VmdEtxZDZsSk9zR2tQdFh2?=
+ =?utf-8?B?L0tabE83a29WWEdLYU50NlI0cWNyWWcyaXpJQ094UllsUXhpV3JwQTdEMEFt?=
+ =?utf-8?B?REFoUE1HOXdwc2Nrb0tXUHh4QlNGYmNJNTRmcVB2T085NWFzT3JORWZLamFr?=
+ =?utf-8?B?RWZKdm5zVmdvTklsclpBOVpkR0pMWWc4RzFqc3R0cnA5U21XK3dISFNySURS?=
+ =?utf-8?B?ZFNTcUs5L0g3VXhCN0l6blVTQXpIclNUVkp0T05ka09BeW5HL1hWQWxjL01Z?=
+ =?utf-8?B?RjhHdjlvRnBpN0NWWWdWdk5HQjREWWMybWtWM3BBaGtwZnpaR0JMYlo3dXc5?=
+ =?utf-8?B?RTRLbnphUGU4TXV0Y1g3VThxdytGZTJpYnRRb3NPbThZS2NPcThrS2o1Wmxt?=
+ =?utf-8?B?eXV6RE1Ia0dvOEZ6c0ttVWR3aGtadnVmWXRsWlJZT1VjUzh0dWhVUnRHMWRX?=
+ =?utf-8?B?SS94a200UVViYndhVDhDTnhhOG05S0MrL2Q4VFlIMDVKTTRwSnF1OXE4OTU3?=
+ =?utf-8?Q?ANLy2cr47QMB8uG/f3VNStRt2q/vVcml6gag/SB?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed7f08c2-66b6-4203-8d75-08d99388beb9
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 05:16:17.5865
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: quanyang.wang@windriver.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5062
+X-Proofpoint-ORIG-GUID: 3n8kghCID_sEZgJzgZDBtRIYXfLOryNn
+X-Proofpoint-GUID: 3n8kghCID_sEZgJzgZDBtRIYXfLOryNn
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-10-20_01,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- clxscore=1015 phishscore=0 lowpriorityscore=0 priorityscore=1501
- adultscore=0 suspectscore=0 impostorscore=0 malwarescore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110200025
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=720
+ impostorscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
+ adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110200027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Michal,
 
+On 10/20/21 1:10 AM, Michal Koutný wrote:
+> Hi.
+> 
+> On Tue, Oct 19, 2021 at 06:41:14PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
+>> So I add 2 "Fixes tags" here to indicate that 2 commits introduce two
+>> different issues.
+> 
+> AFAIU, both the changes are needed to cause the leak, a single patch
+> alone won't cause the issue. Is that correct? (Perhaps not as I realize,
+> see below.)
+Yes, I back to the earlier commit 4bfc0bb2c60e and no memory leak is 
+observed.
+> 
+> But on second thought, the problem is the missing percpu_ref_exit() in
+> the (root) cgroup release path and percpu counter would allocate the
+> percpu_count_ptr anyway, so 4bfc0bb2c60e is only making the leak more
+> visible. Is this correct?
+No, the earlier commit 4bfc0bb2c60e introduces a imbalance and the later
+commit 2b0d3d3e4fcf introduces a visible leak.
 
-Am 19.10.21 um 23:35 schrieb Christian Borntraeger:
+Thanks,
+Quanyang
 > 
+> I agree the commit 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
+> percpu_ref in fast path") alone did nothing wrong.
 > 
-> Am 19.10.21 um 19:54 schrieb Halil Pasic:
->> The idea behind kicked mask is that we should not re-kick a vcpu
->> from __airqs_kick_single_vcpu() that is already in the middle of
->> being kicked by the same function.
->>
->> If however the vcpu that was idle before when the idle_mask was
->> examined, is not idle any more after the kicked_mask is set, that
->> means that we don't need to kick, and that we need to clear the
->> bit we just set because we may be beyond the point where it would
->> get cleared in the wake-up process. Since the time window is short,
->> this is probably more a theoretical than a practical thing: the race
->> window is small.
->>
->> To get things harmonized let us also move the clear from vcpu_pre_run()
->> to __unset_cpu_idle().
+> [On a related (but independent) note, there seems to be an optimization
+> opportunity in not dealing with cgroup_bpf at all on the non-default
+> hierarchies.]
 > 
-> this part makes sense.
->>
->> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
->> Fixes: 9f30f6216378 ("KVM: s390: add gib_alert_irq_handler()")
->> ---
->>   arch/s390/kvm/interrupt.c | 7 ++++++-
->>   arch/s390/kvm/kvm-s390.c  | 2 --
->>   2 files changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
->> index 2245f4b8d362..3c80a2237ef5 100644
->> --- a/arch/s390/kvm/interrupt.c
->> +++ b/arch/s390/kvm/interrupt.c
->> @@ -426,6 +426,7 @@ static void __unset_cpu_idle(struct kvm_vcpu *vcpu)
->>   {
->>       kvm_s390_clear_cpuflags(vcpu, CPUSTAT_WAIT);
->>       clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.idle_mask);
->> +    clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.gisa_int.kicked_mask);
->>   }
->>   static void __reset_intercept_indicators(struct kvm_vcpu *vcpu)
->> @@ -3064,7 +3065,11 @@ static void __airqs_kick_single_vcpu(struct kvm *kvm, u8 deliverable_mask)
->>               /* lately kicked but not yet running */
->>               if (test_and_set_bit(vcpu_idx, gi->kicked_mask))
->>                   return;
->> -            kvm_s390_vcpu_wakeup(vcpu);
->> +            /* if meanwhile not idle: clear  and don't kick */
->> +            if (test_bit(vcpu_idx, kvm->arch.idle_mask))
->> +                kvm_s390_vcpu_wakeup(vcpu);
->> +            else
->> +                clear_bit(vcpu_idx, gi->kicked_mask);
+> Regards,
+> Michal
 > 
-> I think this is now a bug. We should not return but continue in that case, no?
-
-Thinking again about this, it might be ok. If we went from idle to non-idle we
-likely were in SIE and the interrupt should have been delivered. But I would rather
-wake up too often than too less.
-> 
-> I think it might be safer to also clear kicked_mask in __set_cpu_idle
->  From a CPUs perspective: We have been running and are on our way to become idle.
-> There is no way that someone kicked us for a wakeup. In other words as long as we
-> are running, there is no point in kicking us but when going idle we should get rid
-> of old kick_mask bit.
-> Doesnt this cover your scenario?
-> 
-> 
->>               return;
->>           }
->>       }
->> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->> index 1c97493d21e1..6b779ef9f5fb 100644
->> --- a/arch/s390/kvm/kvm-s390.c
->> +++ b/arch/s390/kvm/kvm-s390.c
->> @@ -4067,8 +4067,6 @@ static int vcpu_pre_run(struct kvm_vcpu *vcpu)
->>           kvm_s390_patch_guest_per_regs(vcpu);
->>       }
->> -    clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.gisa_int.kicked_mask);
->> -
->>       vcpu->arch.sie_block->icptcode = 0;
->>       cpuflags = atomic_read(&vcpu->arch.sie_block->cpuflags);
->>       VCPU_EVENT(vcpu, 6, "entering sie flags %x", cpuflags);
->>
