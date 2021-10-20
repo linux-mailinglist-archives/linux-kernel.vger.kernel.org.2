@@ -2,132 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001DA435285
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070784352A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhJTSUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:20:41 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:35381 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhJTSUh (ORCPT
+        id S231326AbhJTS05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231233AbhJTS0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:20:37 -0400
-Received: by mail-ot1-f41.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so7483295ott.2;
-        Wed, 20 Oct 2021 11:18:22 -0700 (PDT)
+        Wed, 20 Oct 2021 14:26:46 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9F1C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:24:31 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id w14so27907838edv.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:24:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=7wgOrtW4kNMgDGFBayDR7NepP+nkjDyN/nZep5skNo4=;
+        b=Y1JIeYON777wT0WBG7EWb1ZxJP6Nt5ZmXlRkfiHUgWgW0B2VSDPNgfkVcHFIhd49+e
+         wobk/cEW+ITkKFzZ5vOMSfu/sYOn341+9gqRf2b+HhFT00vBIZO0MoLt1cHStkygC5Ak
+         yyPmkzsnrgdCWinXUyIXdnKOVFyMif6IRXUIcwqHNDfo1MmzwdKtQGz4n+2bs6LITZQl
+         rz2MoFoqF6rFaZHgubHy0+OXLAjL3ERBw6YGkT+WNjCy4zzGeTR5AQEp1/gS+ZX4aDtp
+         KqPVzjaipUYBthoEc4PuNGs1gQbMhhk3+7V3Zyr3d8+JUOi/wOBuhSI/UKwf+/6WDJbk
+         gDOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3zhU/MVqCC7sjIUtnc0rm+RoLnJs5XqU57OiDxfr75o=;
-        b=oU7l580eqR5OexzEgBtjjI4OMwjpjMed+TkaXoH+d++ErXXSCIaImBlzfhIvm4IV9P
-         sUTPTHq0oXoD79GYvay6hziAN0G5D4CfTTVacgoNPUmc25LVyjZowPeCxwHnKel0EbBT
-         31UQOJEEvL4UUdhtIgGzL5/JToSVW008AdWifjHQ0gVVDMKmRtu9xEpZrv/X6JLfjPx3
-         yBz63S0v/L3O4CTN/eJBrhO/sFWOatUw0KNiisUAdTNgr50Oms6EiAjD4rmeL3DajXGG
-         OkVPGrE7Ar+Jhmc87jcXgzMXUcpi591bKl+OO4jsQMQ1V7f7tObwY8koShWUzCeVCgAv
-         OcHw==
-X-Gm-Message-State: AOAM530bQ2dTjy4pk5C53Osbs5WCRMW4ZvUCQIR2dYpwfIgwqB3ai67W
-        K5glK7Oj56HsGifpnjXpaTvpa/gHTGoI4/oHHFk=
-X-Google-Smtp-Source: ABdhPJzV8VLFk1Y0YSy+/q0IsBxl/pfuTalsdHErHCY3yeflTckxHWV8BtDVQYSa5tjcyJ17/wZC0umzUHxU7Ay9mog=
-X-Received: by 2002:a05:6830:90b:: with SMTP id v11mr711577ott.254.1634753902227;
- Wed, 20 Oct 2021 11:18:22 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=7wgOrtW4kNMgDGFBayDR7NepP+nkjDyN/nZep5skNo4=;
+        b=KXG1o42M7/WDBkxuqNuGCST71SQV+I55zhXIGGSANcCQ0B8Vsyr0GH1vMsSiRgaVgN
+         hwh1g8HuWuaG89LUL+DwuuMa17u38Kq6eNwkjgfJ2Mpijws3Sr4QwPCOWFZVWlu5THoz
+         aOjuifpyciL5xfwJuD0tJ6cwSb5II8TL+kg1Pvbs5TiMqygecR8wwDE1s5uP5MFnASql
+         vRWDYoO8EK0goQew25sNwAkIkCWTh9BBdkkL7LzorQ2QPYlIzJsNfdH3MpRDtKRlTpe+
+         LpfGF2OSsq/Si3N3kiYRllRWkdfv+r1h8kF+UZfK/mf5qqfqoPKhIz28r4TaMP5bB1Yo
+         vDlQ==
+X-Gm-Message-State: AOAM532A8KvAKs7Tb0ss3519HEOJt5VoD5xx7zSEVIA7ECRL8dXH8Jxb
+        e4yCDWNfUQEO3gmy2sMi62K2XEmfrvUB7g8oEJV+jvQaXTZUMg==
+X-Google-Smtp-Source: ABdhPJzERw9O+P2DfPqtK7BVQLjR7ZoMOPp/OnTZixSdN0JoFdPPAnVgHST4OnNfdsRK3rrXAMGS/mC9zwO5Bb25STY=
+X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr798259edz.198.1634754268561;
+ Wed, 20 Oct 2021 11:24:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929144451.113334-1-ulf.hansson@linaro.org> <20210929144451.113334-3-ulf.hansson@linaro.org>
-In-Reply-To: <20210929144451.113334-3-ulf.hansson@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 20 Oct 2021 20:18:11 +0200
-Message-ID: <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 20 Oct 2021 23:54:16 +0530
+Message-ID: <CA+G9fYv3jAjBKHM-CjrMzNgrptx-rpYVmGaD39OBiBeuz7osfg@mail.gmail.com>
+Subject: [next] [dragonboard 410c] Unable to handle kernel paging request at
+ virtual address 00000000007c4240
+To:     open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, dri-devel@lists.freedesktop.org
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Marco Elver <elver@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Oliver Glitta <glittao@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>,
+        lkft-triage@lists.linaro.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 4:44 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> In the cpuidle-psci case, runtime PM in combination with the generic PM
-> domain (genpd), may be used when entering/exiting an idlestate. More
-> precisely, genpd relies on runtime PM to be enabled for the attached device
-> (in this case it belongs to a CPU), to properly manage the reference
-> counting of its PM domain.
->
-> This works fine most of the time, but during system suspend in the
-> dpm_suspend_late() phase, the PM core disables runtime PM for all devices.
-> Beyond this point and until runtime PM becomes re-enabled in the
-> dpm_resume_early() phase, calls to pm_runtime_get|put*() will fail.
->
-> To make sure the reference counting in genpd becomes correct, we need to
-> prevent cpuidle-psci from using runtime PM when it has been disabled for
-> the device. Therefore, let's move the call to cpuidle_pause() from
-> dpm_suspend_noirq() to dpm_suspend_late() - and cpuidle_resume() from
-> dpm_resume_noirq() into dpm_resume_early().
->
-> Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
-> Suggested-by: Maulik Shah <mkshah@codeaurora.org>
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->  drivers/base/power/main.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> index cbea78e79f3d..1c753b651272 100644
-> --- a/drivers/base/power/main.c
-> +++ b/drivers/base/power/main.c
-> @@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state)
->
->         resume_device_irqs();
->         device_wakeup_disarm_wake_irqs();
-> -
-> -       cpuidle_resume();
->  }
->
->  /**
-> @@ -870,6 +868,7 @@ void dpm_resume_early(pm_message_t state)
->         }
->         mutex_unlock(&dpm_list_mtx);
->         async_synchronize_full();
-> +       cpuidle_resume();
->         dpm_show_time(starttime, state, 0, "early");
->         trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
->  }
-> @@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state)
->  {
->         int ret;
->
-> -       cpuidle_pause();
-> -
->         device_wakeup_arm_wake_irqs();
->         suspend_device_irqs();
->
-> @@ -1467,6 +1464,7 @@ int dpm_suspend_late(pm_message_t state)
->         int error = 0;
->
->         trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
-> +       cpuidle_pause();
->         mutex_lock(&dpm_list_mtx);
->         pm_transition = state;
->         async_error = 0;
-> --
+Following kernel crash noticed on linux next 20211020 tag.
+while booting on arm64 architecture dragonboard 410c device.
 
-Well, this is somewhat heavy-handed and it affects even the systems
-that don't really need to pause cpuidle at all in the suspend path.
+I see the following config is enabled in 20211020 tag builds.
+CONFIG_STACKDEPOT=y
 
-Also, IIUC you don't need to pause cpuidle completely, but make it
-temporarily avoid idle states potentially affected by this issue.  An
-additional CPUIDLE_STATE_DISABLED_ flag could be used for that I
-suppose and it could be set via cpuidle_suspend() called from the core
-next to cpufreq_suspend().
+Crash log,
+[   18.583097] Unable to handle kernel paging request at virtual
+address 00000000007c4240
+[   18.583521] Mem abort info:
+[   18.590286]   ESR = 0x96000004
+[   18.592920]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   18.596103]   SET = 0, FnV = 0
+[   18.601512]   EA = 0, S1PTW = 0
+[   18.604384]   FSC = 0x04: level 0 translation fault
+[   18.607447] Data abort info:
+[   18.612296]   ISV = 0, ISS = 0x00000004
+[   18.615451]   CM = 0, WnR = 0
+[   18.618990] user pgtable: 4k pages, 48-bit VAs, pgdp=000000008b4c7000
+[   18.622054] [00000000007c4240] pgd=0000000000000000, p4d=0000000000000000
+[   18.628974] Internal error: Oops: 96000004 [#1] SMP
+[   18.635073] Modules linked in: adv7511 cec snd_soc_lpass_apq8016
+snd_soc_lpass_cpu snd_soc_lpass_platform snd_soc_msm8916_digital
+qcom_camss qrtr snd_soc_apq8016_sbc videobuf2_dma_sg qcom_pon
+qcom_spmi_vadc snd_soc_qcom_common qcom_q6v5_mss qcom_vadc_common
+rtc_pm8xxx qcom_spmi_temp_alarm msm qcom_pil_info v4l2_fwnode
+qcom_q6v5 snd_soc_msm8916_analog qcom_sysmon qcom_common v4l2_async
+qnoc_msm8916 qcom_rng gpu_sched qcom_glink_smem venus_core
+videobuf2_memops icc_smd_rpm qmi_helpers drm_kms_helper v4l2_mem2mem
+mdt_loader display_connector i2c_qcom_cci videobuf2_v4l2 crct10dif_ce
+videobuf2_common socinfo drm rmtfs_mem fuse
+[   18.672948] CPU: 0 PID: 178 Comm: kworker/u8:3 Not tainted
+5.15.0-rc6-next-20211020 #1
+[   18.695000] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[   18.695012] Workqueue: events_unbound deferred_probe_work_func
+[   18.695033] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   18.715282] pc : __stack_depot_save+0x13c/0x4e0
+[   18.722130] lr : stack_depot_save+0x14/0x20
+[   18.726641] sp : ffff800014a23500
+[   18.730801] x29: ffff800014a23500 x28: 00000000000f8848 x27: ffff800013acdf68
+[   18.734294] x26: 0000000000000000 x25: 00000000007c4240 x24: ffff800014a23780
+[   18.741413] x23: 0000000000000008 x22: ffff800014a235b8 x21: 0000000000000008
+[   18.748530] x20: 00000000c32f8848 x19: ffff00001038cc18 x18: ffffffffffffffff
+[   18.755649] x17: ffff80002d9f8000 x16: ffff800010004000 x15: 000000000000c426
+[   18.762767] x14: 0000000000000000 x13: ffff800014a23780 x12: 0000000000000000
+[   18.769885] x11: ffff00001038cc80 x10: ffff8000136e9ba0 x9 : ffff800014a235f4
+[   18.777003] x8 : 0000000000000001 x7 : 00000000b664620b x6 : 0000000011a58b4a
+[   18.784121] x5 : 000000001aa43464 x4 : 000000009e7d8b67 x3 : 0000000000000001
+[   18.791239] x2 : 0000000000002800 x1 : ffff800013acd000 x0 : 00000000f2d429d8
+[   18.798358] Call trace:
+[   18.805451]  __stack_depot_save+0x13c/0x4e0
+[   18.807716]  stack_depot_save+0x14/0x20
+[   18.811881]  __drm_stack_depot_save+0x44/0x70 [drm]
+[   18.815710]  modeset_lock.part.0+0xe0/0x1a4 [drm]
+[   18.820571]  drm_modeset_lock_all_ctx+0x2d4/0x334 [drm]
+[   18.825435]  drm_client_firmware_config.constprop.0.isra.0+0xc0/0x5d0 [drm]
+[   18.830478]  drm_client_modeset_probe+0x328/0xbb0 [drm]
+[   18.837413]  __drm_fb_helper_initial_config_and_unlock+0x54/0x5b4
+[drm_kms_helper]
+[   18.842633]  drm_fb_helper_initial_config+0x5c/0x70 [drm_kms_helper]
+[   18.850266]  msm_fbdev_init+0x98/0x100 [msm]
+[   18.856767]  msm_drm_bind+0x650/0x720 [msm]
+[   18.861021]  try_to_bring_up_master+0x230/0x320
+[   18.864926]  __component_add+0xc8/0x1c4
+[   18.869435]  component_add+0x20/0x30
+[   18.873253]  mdp5_dev_probe+0xe0/0x11c [msm]
+[   18.877077]  platform_probe+0x74/0xf0
+[   18.881328]  really_probe+0xc4/0x470
+[   18.884883]  __driver_probe_device+0x11c/0x190
+[   18.888534]  driver_probe_device+0x48/0x110
+[   18.892786]  __device_attach_driver+0xa4/0x140
+[   18.896869]  bus_for_each_drv+0x84/0xe0
+[   18.901380]  __device_attach+0xe4/0x1c0
+[   18.905112]  device_initial_probe+0x20/0x30
+[   18.908932]  bus_probe_device+0xac/0xb4
+[   18.913098]  deferred_probe_work_func+0xc8/0x120
+[   18.916920]  process_one_work+0x280/0x6a0
+[   18.921780]  worker_thread+0x80/0x454
+[   18.925683]  kthread+0x178/0x184
+[   18.929326]  ret_from_fork+0x10/0x20
+[   18.932634] Code: d37d4e99 92404e9c f940077a 8b190359 (c8dfff33)
+[   18.936203] ---[ end trace 3e289b724840642d ]---
 
-The other guys who rely on the cpuidle pausing today could be switched
-over to this new mechanism later and it would be possible to get rid
-of the pausing from the system suspend path completely.
+Full log,
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20211020/testrun/6177937/suite/linux-log-parser/test/check-kernel-oops-3786583/log
+https://lkft.validation.linaro.org/scheduler/job/3786583#L2549
+
+Build config:
+https://builds.tuxbuild.com/1zlLlQrUyHVr1MQ1gcler3dKaE6/config
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+steps to reproduce:
+1) https://builds.tuxbuild.com/1zlLlQrUyHVr1MQ1gcler3dKaE6/tuxmake_reproducer.sh
+2) Boot db410c device
+
+--
+Linaro LKFT
+https://lkft.linaro.org
