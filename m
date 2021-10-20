@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991DF434563
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAABD434566
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhJTGtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:49:03 -0400
-Received: from regular1.263xmail.com ([211.150.70.205]:49512 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhJTGtC (ORCPT
+        id S229941AbhJTGte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:49:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22172 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229809AbhJTGtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:49:02 -0400
-Received: from localhost (unknown [192.168.167.32])
-        by regular1.263xmail.com (Postfix) with ESMTP id B56B9842;
-        Wed, 20 Oct 2021 14:46:25 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from [172.16.12.22] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P16835T140562797250304S1634712383778350_;
-        Wed, 20 Oct 2021 14:46:24 +0800 (CST)
-X-IP-DOMAINF: 1
-X-RL-SENDER: sugar.zhang@rock-chips.com
-X-SENDER: zxg@rock-chips.com
-X-LOGIN-NAME: sugar.zhang@rock-chips.com
-X-FST-TO: jay.xu@rock-chips.com
-X-RCPT-COUNT: 11
-X-LOCAL-RCPT-COUNT: 1
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-UNIQUE-TAG: <0e98d8f1b9ab8a8b4cd160bf98629cb4>
-X-System-Flag: 0
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_ASoC=3a_rockchip=3a_use_generic_DMA_eng?=
- =?UTF-8?B?aW5lIGNvbmZpZ3VyYXRpb27jgJDor7fms6jmhI/vvIzpgq7ku7bnlLFsaW51eC1y?=
- =?UTF-8?Q?ockchip-bounces+sugar=2ezhang=3drock-chips=2ecom=40lists=2einfrad?=
- =?UTF-8?B?ZWFkLm9yZ+S7o+WPkeOAkQ==?=
-To:     Mark Brown <broonie@kernel.org>
-Cc:     John Keeping <john@metanate.com>, alsa-devel@alsa-project.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-References: <20211018114844.1746351-1-john@metanate.com>
- <YW1svMVSgBJygfpV@sirena.org.uk>
- <a5eebd60-da6f-cc56-b1fe-221dc827e097@rock-chips.com>
- <YW63pduAGW01PUoj@sirena.org.uk>
-From:   sugar zhang <sugar.zhang@rock-chips.com>
-Message-ID: <cdd530bd-9d85-8edf-2151-00502bbbb4cf@rock-chips.com>
-Date:   Wed, 20 Oct 2021 14:46:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 20 Oct 2021 02:49:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634712439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zpOHrowC14jNMXm04zF+C/7tsopB9ZkqTu0bv9M163E=;
+        b=Xy4FpKVMmx6c6h838qQJMk82QXuaq7XeylrxQkl8QwO9V6D+ilqSglNc+nEMRhcy1Ir1Ru
+        FAmrs0A3b+bo6bvi2I9yU8QzqcL8yyi4WEoHKAVHWtXaqGi+PdcJzoOGNT1vI+cFij+ipF
+        6n49u728Fe775U1hXUBC4SrnAK+BWCs=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-30-IIb_uuQ3Ma6nMzmQmONhCw-1; Wed, 20 Oct 2021 02:47:18 -0400
+X-MC-Unique: IIb_uuQ3Ma6nMzmQmONhCw-1
+Received: by mail-ed1-f71.google.com with SMTP id p20-20020a50cd94000000b003db23619472so20051956edi.19
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 23:47:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=zpOHrowC14jNMXm04zF+C/7tsopB9ZkqTu0bv9M163E=;
+        b=8HwvUhsCcL3oX8KlRUomSw80KM5b4YUAjIPXjhqXAPx9UkXQ5yqsx6+YUCSmvFkaT/
+         kAdSrxmitT+GS+/BkSh4vEqEy8ZSpi27iHKNbhMjhC7vZJTn+hDQNNboW47DAIszDHT1
+         zeCeNpIRNQNNkY1v0tlhEzKTQoFd87RFuzcl/RntJP0hYG8+5E7tum+F3RLFN10JIq7f
+         fAbq4BgiUKHjinASUxSAJFf+4Xtid2Oj751Xulnu9ed9P8JteosPE6rTDHmA4HxIUDyi
+         xHXQscsHif/P+nT0qUxe+/7tsNxh4uSsjJysLkOf7QKTMljQhHxrlN5Z1o9Rnsa+Me9C
+         dinQ==
+X-Gm-Message-State: AOAM530cGo3D6bSDKRN4WHCJqDGT0TUS0fSl+NgNJn0AIZwU0cjczpZJ
+        UR19HGx+WXPB39sXuWuROzcELjiaY2p//VIwy6dqO2c9rBVVvIRsj4V5yHphgrxjcWfyeptM0+i
+        vREhhAwZYYRWfCrR6Fs9WJQ07
+X-Received: by 2002:a17:907:9694:: with SMTP id hd20mr44089853ejc.550.1634712436927;
+        Tue, 19 Oct 2021 23:47:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyy550E6eJ5oKImP0zF38zEk2QLC1XfY1OC8z/GQUXOlKzB6Aj88nUGOpCXToiit1gxihyeyg==
+X-Received: by 2002:a17:907:9694:: with SMTP id hd20mr44089826ejc.550.1634712436703;
+        Tue, 19 Oct 2021 23:47:16 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id o3sm518528ejg.52.2021.10.19.23.47.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 23:47:16 -0700 (PDT)
+Message-ID: <45fabf5a-96b5-49dc-0cba-55714ae3a4b5@redhat.com>
+Date:   Wed, 20 Oct 2021 08:47:11 +0200
 MIME-Version: 1.0
-In-Reply-To: <YW63pduAGW01PUoj@sirena.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v3 3/3] KVM: vCPU kick tax cut for running vCPU
+Content-Language: en-US
+To:     Wanpeng Li <kernellwp@gmail.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
+ <1634631160-67276-3-git-send-email-wanpengli@tencent.com>
+ <24e67e43-c50c-7e0f-305a-c7f6129f8d70@redhat.com>
+ <YW8BmRJHVvFscWTo@google.com>
+ <CANRm+CzuWnO8FZPTvvOtpxqc5h786o7THyebOFpVAp3BF1xQiw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CANRm+CzuWnO8FZPTvvOtpxqc5h786o7THyebOFpVAp3BF1xQiw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On 20/10/21 04:49, Wanpeng Li wrote:
+>> The intent of the extra check was to avoid the locked instruction that comes with
+>> disabling preemption via rcu_read_lock().  But thinking more, the extra op should
+>> be little more than a basic arithmetic operation in the grand scheme on modern x86
+>> since the cache line is going to be locked and written no matter what, either
+>> immediately before or immediately after.
+>
+> I observe the main overhead of rcuwait_wake_up() is from rcu
+> operations, especially rcu_read_lock/unlock().
 
-On 2021/10/19 20:18, Mark Brown wrote:
-> On Tue, Oct 19, 2021 at 10:11:27AM +0800, sugar zhang wrote:
->> Hi Mark, John,
->>
->> Actually, I have submit patch[1] to do the same thing a few weeks ago, and
->> explain the original purpose.
->>
->> [1] https://x-lore.kernel.org/linux-rockchip/1632792957-80428-1-git-send-email-sugar.zhang@rock-chips.com/
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
-ok.
-> Please don't top post, reply in line with needed context.  This allows
-> readers to readily follow the flow of conversation and understand what
-> you are talking about and also helps ensure that everything in the
-> discussion is being addressed.
-got it, thanks.
+Do you have CONFIG_PREEMPT_RCU set?  If so, maybe something like this would help:
 
--- 
-Best Regards!
-张学广/Sugar
-瑞芯微电子股份有限公司
-Rockchip Electronics Co., Ltd.
+diff --git a/kernel/exit.c b/kernel/exit.c
+index fd1c04193e18..ca1e60a1234d 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -235,8 +235,6 @@ int rcuwait_wake_up(struct rcuwait *w)
+  	int ret = 0;
+  	struct task_struct *task;
+  
+-	rcu_read_lock();
+-
+  	/*
+  	 * Order condition vs @task, such that everything prior to the load
+  	 * of @task is visible. This is the condition as to why the user called
+@@ -250,6 +248,14 @@ int rcuwait_wake_up(struct rcuwait *w)
+  	 */
+  	smp_mb(); /* (B) */
+  
++#ifdef CONFIG_PREEMPT_RCU
++	/* The cost of rcu_read_lock() is nontrivial for preemptable RCU.  */
++	if (!rcuwait_active(w))
++		return ret;
++#endif
++
++	rcu_read_lock();
++
+  	task = rcu_dereference(w->task);
+  	if (task)
+  		ret = wake_up_process(task);
 
+(If you don't, rcu_read_lock is essentially preempt_disable() and it
+should not have a large overhead).  You still need the memory barrier
+though, in order to avoid missed wakeups; shameless plug for my
+article at https://lwn.net/Articles/847481/.
 
+Paolo
+
+>> So with Paolo's other comment, maybe just this?  And if this doesn't provide the
+>> desired performance boost, changes to the rcuwait behavior should go in separate
+>> patch.
+> Ok.
 
