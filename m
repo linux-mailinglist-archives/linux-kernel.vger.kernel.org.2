@@ -2,102 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038834347A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBD84347A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhJTJJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:09:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55582 "EHLO mail.kernel.org"
+        id S229952AbhJTJKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:10:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:57806 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhJTJJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:09:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A3B660F25;
-        Wed, 20 Oct 2021 09:07:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634720853;
-        bh=jTUKR+Xf/qDYN96zbVV7NGYiZBynFhnV+TqkshXTLhw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hd8M+wEDqUgR0CDmyM92YxlmvueFDTMDwiT0YaLIvAHhTtxPgEDBBGLDbXZjDUDKg
-         oD/e/75nKCnvsciIXfDVJevR/f/Q5eZX1hd3Un5NU/pxr66J3qAFL8QVB23UYWpDFB
-         KfGQvcaaeyoYjiOFTE79RRJK/iwHIbo4mhVptaj9Ufkfl6qsTNNuq5uBJSwOZqzRI3
-         P0AQwUlT+erRG5goaAOlkpTSzVF8pRwuus+nvn1kNShlrxFD396pytvmot8YFlj2xl
-         qt3Z3XEId14UYRCzVurMbMXohZY5obdQndPzgVrDdKxa05QQD3ylbIrcmidoSJS/Po
-         OVaCdmotQCOuw==
-Date:   Wed, 20 Oct 2021 11:07:29 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     luo penghao <cgel.zte@gmail.com>
-Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, penghao luo <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] xfrm: Remove redundant fields
-Message-ID: <20211020090729.GC3935@kernel.org>
-References: <20211018091758.858899-1-luo.penghao@zte.com.cn>
+        id S229555AbhJTJKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:10:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 117F2ED1;
+        Wed, 20 Oct 2021 02:07:54 -0700 (PDT)
+Received: from [10.57.74.74] (unknown [10.57.74.74])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B83A23F70D;
+        Wed, 20 Oct 2021 02:07:51 -0700 (PDT)
+Subject: Re: [PATCH v2 4/4] arm64: vdso32: require CROSS_COMPILE_COMPAT for
+ gcc+bfd
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Nathan Chancellor <nathan@kernel.org>
+References: <20211019223646.1146945-1-ndesaulniers@google.com>
+ <20211019223646.1146945-5-ndesaulniers@google.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <94eccd0b-ea36-25af-8140-fa6209a0b222@arm.com>
+Date:   Wed, 20 Oct 2021 11:08:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018091758.858899-1-luo.penghao@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211019223646.1146945-5-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 09:17:58AM +0000, luo penghao wrote:
-> From: penghao luo <luo.penghao@zte.com.cn>
+
+
+On 10/20/21 12:36 AM, Nick Desaulniers wrote:
+> Similar to
+> commit 231ad7f409f1 ("Makefile: infer --target from ARCH for CC=clang")
+> There really is no point in setting --target based on
+> $CROSS_COMPILE_COMPAT for clang when the integrated assembler is being
+> used, since
+> commit ef94340583ee ("arm64: vdso32: drop -no-integrated-as flag").
 > 
-> the variable err is not necessary in such places. It should be revmoved
-> for the simplicity of the code.
+> Allows COMPAT_VDSO to be selected without setting $CROSS_COMPILE_COMPAT
+> when using clang and lld together.
 > 
-> The clang_analyzer complains as follows:
+> Before:
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make -j72 LLVM=1 defconfig
+> $ grep CONFIG_COMPAT_VDSO .config
+> CONFIG_COMPAT_VDSO=y
+> $ ARCH=arm64 make -j72 LLVM=1 defconfig
+> $ grep CONFIG_COMPAT_VDSO .config
+> $
 > 
-> net/xfrm/xfrm_input.c:530: warning:
+> After:
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make -j72 LLVM=1 defconfig
+> $ grep CONFIG_COMPAT_VDSO .config
+> CONFIG_COMPAT_VDSO=y
+> $ ARCH=arm64 make -j72 LLVM=1 defconfig
+> $ grep CONFIG_COMPAT_VDSO .config
+> CONFIG_COMPAT_VDSO=y
 > 
-> Although the value stored to 'err' is used in the enclosing expression,
-> the value is never actually read from 'err'.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: penghao luo <luo.penghao@zte.com.cn>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
 > ---
->  net/xfrm/xfrm_input.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Changes v1 -> v2:
+> * Cite ef94340583ee as per Nathan.
+> * Add parens to Kconfig expression as per Nathan.
+> * Pick up Nathan's RB, TB, and SB tags.
 > 
-> diff --git a/net/xfrm/xfrm_input.c b/net/xfrm/xfrm_input.c
-> index 3df0861..ff34667 100644
-> --- a/net/xfrm/xfrm_input.c
-> +++ b/net/xfrm/xfrm_input.c
-> @@ -530,7 +530,7 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
->  				goto drop;
->  			}
+>  arch/arm64/Kconfig                |  3 ++-
+>  arch/arm64/kernel/vdso32/Makefile | 17 +++++------------
+>  2 files changed, 7 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 5c7ae4c3954b..f0f2c95aa4c8 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1264,7 +1264,8 @@ config KUSER_HELPERS
 >  
-> -			if ((err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
-> +			if ((xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
-
-I agree that assigning the value to err is not needed.
-But you may also wish to consider:
-
-1. Dropping the () around the call to xfrm_parse_spi, which seem out of
-   place now.
-2. Dropping the explicit check against zero
-
-Which would leave you with:
-
-			if (xfrm_parse_spi(skb, nexthdr, &spi, &seq)) {
-
->  				XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
->  				goto drop;
->  			}
-> @@ -560,7 +560,7 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
->  	}
+>  config COMPAT_VDSO
+>  	bool "Enable vDSO for 32-bit applications"
+> -	depends on !CPU_BIG_ENDIAN && "$(CROSS_COMPILE_COMPAT)" != ""
+> +	depends on !CPU_BIG_ENDIAN
+> +	depends on (CC_IS_CLANG && LD_IS_LLD) || "$(CROSS_COMPILE_COMPAT)" != ""
+>  	select GENERIC_COMPAT_VDSO
+>  	default y
+>  	help
+> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+> index e478cebb9891..c8fec493a450 100644
+> --- a/arch/arm64/kernel/vdso32/Makefile
+> +++ b/arch/arm64/kernel/vdso32/Makefile
+> @@ -10,18 +10,15 @@ include $(srctree)/lib/vdso/Makefile
 >  
->  	seq = 0;
-> -	if (!spi && (err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
-> +	if (!spi && (xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
->  		secpath_reset(skb);
->  		XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
->  		goto drop;
-> -- 
-> 2.15.2
+>  # Same as cc-*option, but using CC_COMPAT instead of CC
+>  ifeq ($(CONFIG_CC_IS_CLANG), y)
+> -CC_COMPAT_CLANG_FLAGS := --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
+> -
+>  CC_COMPAT ?= $(CC)
+> -CC_COMPAT += $(CC_COMPAT_CLANG_FLAGS)
+> -
+> -ifneq ($(LLVM),)
+> -LD_COMPAT ?= $(LD)
+> +CC_COMPAT += --target=arm-linux-gnueabi
+>  else
+> -LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)ld
+> +CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
+>  endif
+> +
+> +ifeq ($(CONFIG_LD_IS_LLD), y)
+> +LD_COMPAT ?= $(LD)
+>  else
+> -CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
+>  LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)ld
+>  endif
+>  
+> @@ -45,10 +42,6 @@ VDSO_CPPFLAGS += $(LINUXINCLUDE)
+>  # Common C and assembly flags
+>  # From top-level Makefile
+>  VDSO_CAFLAGS := $(VDSO_CPPFLAGS)
+> -ifneq ($(shell $(CC_COMPAT) --version 2>&1 | head -n 1 | grep clang),)
+> -VDSO_CAFLAGS += --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
+> -endif
+> -
+>  VDSO_CAFLAGS += $(call cc32-option,-fno-PIE)
+>  ifdef CONFIG_DEBUG_INFO
+>  VDSO_CAFLAGS += -g
 > 
-> 
+
+-- 
+Regards,
+Vincenzo
