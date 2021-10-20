@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237514353F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0E14353F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhJTTnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:43:37 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:57201 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbhJTTng (ORCPT
+        id S231651AbhJTTo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231360AbhJTToZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:43:36 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MXpM2-1mBftU0cOK-00Y8F9; Wed, 20 Oct 2021 21:41:20 +0200
-Received: by mail-wm1-f49.google.com with SMTP id o24-20020a05600c511800b0030d9da600aeso12065212wms.4;
-        Wed, 20 Oct 2021 12:41:20 -0700 (PDT)
-X-Gm-Message-State: AOAM530FTeOJ8ZAgPKHMFMTHm58gy7HzXuRFIfRrAS8cZ0Zo+5d+AAXK
-        dnnz7Mr9QglvFMuAFdDwY5rgUMoCE42OFXnYotM=
-X-Google-Smtp-Source: ABdhPJw/qmZadw2YBjJXywRnlYqtqF/ls9kUuZUoyYESsWqynKCNMZR6iD7W0bJOVhnJGZsAaSWrE9XeP5KtPeTLRcQ=
-X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr1373091wmg.35.1634758879800;
- Wed, 20 Oct 2021 12:41:19 -0700 (PDT)
+        Wed, 20 Oct 2021 15:44:25 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F4AC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:42:11 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id y1so16860269plk.10
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:42:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wpm3Gl8wXKPGXafIgFGP0xD6h/zadXUfu6GUjVrj6ns=;
+        b=acg+FfyUS0RRG91XmDNK9hsP2+A1X4msHJW9htVgi4KwyGHvgm+Agooulgt0iLmMbz
+         rbct5fnAphkQ/y2uOT5Z1Q9GnwNbVkE/uiNp1fYDMAKUJw/SHsgT5zj0a5JWFz/JJXBv
+         6bg1M5hK/hvlZmBXZwwSVJGtuB4y2VY6BV/plwRqiyOgN/lDzgNm4i6dlgUSk//Xi3xW
+         rgkZvwYT63T8EXp1eph1nZn6F+uirjFGAM0ZEc7DPfJmlcehlpg54aY9wdo9PL/9+s4n
+         BRP4QYLigPWg91zIFhOyWBu1q5lhskwgHHNT5ZSAXglNTNXO2QKcS95IEm1M8xUkHlc5
+         OMgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wpm3Gl8wXKPGXafIgFGP0xD6h/zadXUfu6GUjVrj6ns=;
+        b=1DXU071EGQbd/ovSUiUx8aYjot+rt1itWMQokRC3A/EsT9bks77ZWD60Px/9at6Dvk
+         zLI8gRnKkwwPRplsmijc59ldi/Q8O2tQnYIzYN2NL80/IW3hW7J1bVIdFqzqw7No8WMA
+         fmhj/WQiIbLYK4etPcJwpPWzM7yS7d8A90/iGBoWSn2YVUq+jJKPAj9FOV65Aa5HRdqe
+         WMsZGjDZyDbmhJlgueaD9qTJ/WGVcp0BZ+zRXXZEqLdV+4U4hugsJTOltmZ4Z7Q3yByL
+         /ZmgacoYEQ2dTIaF91vrh1IRKutjKt14TB7cBWJjQgA10/QTrydmpzmpjOX16LgASLiQ
+         P+Ag==
+X-Gm-Message-State: AOAM533Gp7MrTb0d2qlxCaiNnMzf2RtUa8RUEAVJ1fnNY1aTcDroKUdW
+        h39hJg1UIQRnUt8fe535VqJycBpP/Pp/Sw==
+X-Google-Smtp-Source: ABdhPJxy4kapndcHpucNwp6t7qxDpD1XglobjefCoqmc4trIw1WxM5NQumPUzkOK+VHDnc46UWVtpw==
+X-Received: by 2002:a17:90b:33c3:: with SMTP id lk3mr943772pjb.237.1634758930294;
+        Wed, 20 Oct 2021 12:42:10 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id nv5sm3583377pjb.10.2021.10.20.12.42.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 12:42:09 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 19:42:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        wanpengli@tencent.com, stable@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: check for interrupts before deciding whether
+ to exit the fast path
+Message-ID: <YXBxDYJcrx/C9QDS@google.com>
+References: <20211020145231.871299-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20211020193807.40684-1-keescook@chromium.org>
-In-Reply-To: <20211020193807.40684-1-keescook@chromium.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 20 Oct 2021 21:41:03 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0jCxafw2mM8uDGXuZM7PsJa6mBpuHTc7+CkEDcDfeqSQ@mail.gmail.com>
-Message-ID: <CAK8P3a0jCxafw2mM8uDGXuZM7PsJa6mBpuHTc7+CkEDcDfeqSQ@mail.gmail.com>
-Subject: Re: [PATCH] kasan: test: Consolidate workarounds for unwanted
- __alloc_size() protection
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:a/0gRzeBqDxrmc92VX1Pk+pbaomoedaDSssKrZGF527DDRg8b+Y
- cPvnQ23ajhgL/NZoSJqq9Yhl6S9n0mm8WimVAAc62ha0E5Lwe/PhTLCjDCJ//qyKYzbzCdA
- Gw3sUAw5R/kFRH1KpsGJaEWXvlM8w1y0zbjDRsd/fItq6Yy++sK8P6jeJRl7wQs40BXiZwM
- f2SFF7xkwjz/ssWPhXefA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mXLtkdDt6C0=:6GpbDXhgPLBP9uLw+1ncu/
- P5er/GEHzJI40+DQ5lWdCJrBJ5gPPvAEKEHtFh/y/QtwJRhWNd2XnnVXg4fQd9IiTT0GzIKgS
- DqLUBPnaetsTNIoke/Y6Znaa6GSwPTMYl/OZWbdIuG6PH6Xu+TUYHW363l2gTR1yQeh3Yinxw
- Sev2o+W5hehV2mCuUwxKWbAChToNrDrhqDCYehpvdKKok05LEyiDoJn5Rxd9MNeJFSN0xU563
- mykNO9lZsF2PQzj4Iq0sTJvSaWvwbcB+1nCK0oT7n6rp2SYSbWFdQgPciKR4+PA4l9qxlxpXK
- yQbgek5XbzFcO+1U3PccQugK36cGhMqVEoazBa10vcO+vDNTNVI7y9LPKdAkuYsIDdnkFEIA/
- 1D3kGBhBH7GE8WWsuoXWZpPYHQl/Ysbe+gT7/uClU7JiVTxUZrRYlGPkpp1B6StKRym4YbhXr
- h12bSE6ZZXWZw6v570kQFKVTNeXZ0xtPXH7JZy7rVneKOkic7lgBzYI0HwTRB4rLoMuxKoWBG
- vVmvCW27SGEfJD5mhWY0lEkZrjNfihZ7sOaaBNV1p/vbuXFzJuLFpqSYzzCFCXHSfXguWrcMS
- EewQngLWhNlWSSSM+OCNX25WMDAX4Q5ShJotjjwD+rrOi48rDKJLQ6w7RM+rGwdzvT5r8vnor
- 8520iCot2nGyXDqNMH+dReV0X5aIdCcRgoSKUhdVsjG1cZ/zueZX7qfVXIujVKmp4sF8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020145231.871299-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 9:38 PM Kees Cook <keescook@chromium.org> wrote:
->
-> This fixes kasan-test-use-underlying-string-helpers.patch to avoid needing
-> new helpers. As done in kasan-test-bypass-__alloc_size-checks.patch,
-> just use OPTIMIZER_HIDE_VAR(). Additionally converts a use of
-> "volatile", which was trying to work around similar detection.
->
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: kasan-dev@googlegroups.com
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Wed, Oct 20, 2021, Paolo Bonzini wrote:
+> The kvm_x86_sync_pir_to_irr callback can sometimes set KVM_REQ_EVENT.
+> If that happens exactly at the time that an exit is handled as
+> EXIT_FASTPATH_REENTER_GUEST, vcpu_enter_guest will go incorrectly
+> through the loop that calls kvm_x86_run, instead of processing
+> the request promptly.
+> 
+> Fixes: 379a3c8ee444 ("KVM: VMX: Optimize posted-interrupt delivery for timer fastpath")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
 
-Yes, that's much better than my version
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+>  arch/x86/kvm/x86.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index fa48948b4934..b9b31e5f72b0 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9781,14 +9781,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  		if (likely(exit_fastpath != EXIT_FASTPATH_REENTER_GUEST))
+>  			break;
+>  
+> -                if (unlikely(kvm_vcpu_exit_request(vcpu))) {
+> +		if (vcpu->arch.apicv_active)
+> +			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
+> +
+> +		if (unlikely(kvm_vcpu_exit_request(vcpu))) {
+>  			exit_fastpath = EXIT_FASTPATH_EXIT_HANDLED;
+>  			break;
+>  		}
+> -
+> -		if (vcpu->arch.apicv_active)
+> -			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
+> -        }
+> +	}
+
+I think someone working on git has a meta-entry in the obfuscated C context.
+This is the most convoluted diff possible for a simple code move :-)
+
+>  	/*
+>  	 * Do this here before restoring debug registers on the host.  And
+> -- 
+> 2.27.0
+> 
