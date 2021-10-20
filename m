@@ -2,117 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CFF43563F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 01:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6078A435658
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 01:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhJTXDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 19:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJTXDq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 19:03:46 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0493C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 16:01:31 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gn3so3573065pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 16:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h+RFC7eotFhOqFJGWOoMWVQg50r4LBG0z2sivzZSrgk=;
-        b=pma9xTPAAozGlLfkB9sflNKGCaUTlYDPKd78LbYcHoBUpBRdiQpZNG/Cc1nZw9vI4s
-         VTSD/474dW5dlNqhL8p1TXmulQIJQRdwQd35Hq/TvTJHLS+D754q5dwalnSMpnNallp6
-         QEE6REP3UMdDQd9t5/eTDAwqCT3kSq7TIRlSMz5dG+F3C0cAQG5Of9T0co/dFDVodtCw
-         LDtGnlp14OoIc4w9aY2VNUN730bG1epxV1fC8y0RW9O5Yzg6agArEPev3CeYeo6QWUHe
-         cjwF0FLqkskp8GARImJVl4T0BDlhURPzNIkeGgRFvjb/C72VmjO4rjSXV0a8d2SsN1L+
-         DK7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h+RFC7eotFhOqFJGWOoMWVQg50r4LBG0z2sivzZSrgk=;
-        b=1VYfIaNoj+elDJSZXnSI7D0YpgrvtvIFw1nkUyD6teFc0OhSS3/TN9zKPlHKRxYv5Z
-         4Ku8vmSlkhaMV1w/AFXiR4i2c4jMgziQ7XHGCr8+sTERs3Ea5CPgG6rU33fdqngRCGBy
-         VSFSQQWzhPK7arNR31HYJGMFfy62rEQ5Rn15rzdfTr/3r5p4/jRovdZv3V9xndFI510n
-         YuULu+BKIJbw/T8RQSeQU2CXrnDikJBlCZlScJCDrRMHntrKUjRM9EV2Bg9QDNmIXscE
-         n44vy6+z6CPTqN5u1W17XYlYP3Aw4m3YohCddcPI06MF8/nnbA3FfQyFy5mhOil8rD3S
-         RcLw==
-X-Gm-Message-State: AOAM533VvgUTT7hGglL9bYM0kHGjEczkVzlvGYI7Ampc4tBfxxRNhb/B
-        6kVNwKzCVyZLs0/YbKT832sIgQ==
-X-Google-Smtp-Source: ABdhPJwAYmwtedqpowu2BAnkunIqrQX+jLSp7mbf/jJKomExPMM30rDS5HiPAzzKOhqXTZ7V/PFb/Q==
-X-Received: by 2002:a17:90a:b314:: with SMTP id d20mr2168217pjr.174.1634770891214;
-        Wed, 20 Oct 2021 16:01:31 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id k1sm3356698pjj.54.2021.10.20.16.01.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 16:01:30 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 23:01:27 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 44/45] KVM: SVM: Support SEV-SNP AP Creation NAE
- event
-Message-ID: <YXCfxyfQBix8+As+@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-45-brijesh.singh@amd.com>
- <YWnbfCet84Vup6q9@google.com>
- <a7944441-f279-a809-8817-2e4b38a0e309@amd.com>
+        id S231328AbhJTXTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 19:19:07 -0400
+Received: from ixit.cz ([94.230.151.217]:58346 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230331AbhJTXTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 19:19:04 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id BC22920064;
+        Thu, 21 Oct 2021 01:16:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1634771808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ndlHt9/bfNPkwzkrzBQxciwkyqLu306evA1T84tH/zU=;
+        b=PHA9z1lXxYmGfWGVJJnmj7Pn+sevK9RjhdwqjWSYh0PrbdsJYcwpk2LvF+DonTdP2xZjnz
+        0K+fy8xEj/5ap//QF+CTaS9d4k8s5avBLhanF5sXCFck5Rx6Rba0rbf3TOXwLMzsGBSL66
+        tPv3QlPZt9jtMyv6+OSElNdRMbCobMQ=
+From:   David Heidelberg <david@ixit.cz>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Satya Priya <skakit@codeaurora.org>
+Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: mfd: qcom: pm8xxx: add pm8018 compatible
+Date:   Thu, 21 Oct 2021 01:16:45 +0200
+Message-Id: <20211020231646.278706-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7944441-f279-a809-8817-2e4b38a0e309@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021, Brijesh Singh wrote:
-> 
-> On 10/15/21 2:50 PM, Sean Christopherson wrote:
-> > And digging through the guest patches, this gives the guest _full_ control over
-> > the VMSA contents.  That is bonkers.  At _best_ it gives the guest the ability to
-> > fuzz VMRUN ucode by stuffing garbage into the VMSA.
-> 
-> If guest puts garbage in VMSA then VMRUN will fail. I am sure ucode is
-> doing all kind of sanity checks to ensure that VMSA does not contain
-> invalid value before the run.
+Add missing compatible for the PM8018 model.
 
-Oh, I'm well aware of the number of sanity checks that are in VM-Enter ucode, and
-that's precisely why I'm of the opinion that letting the guest fuzz VMRUN is a
-non-trivial security risk for the host.  I know of at least at least two VMX bugs
-(one erratum that I could find, one that must have been fixed with a ucode patch?)
-where ucode failed to detect invalid state.  Those were "benign" in that they
-caused a missed VM-Fail but didn't corrupt CPU state, but it's not a stretch to
-imagine a ucode bug that leads to corruption of CPU state and a system crash.
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-The sheer number of checks involved, combined with the fact that there likely
-hasn't been much fuzzing of VM-Enter outside of the hardware vendor's own
-validation, means I'm not exactly brimming with confidence that VMRUN's ucode
-is perfect.
+diff --git a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+index 9065ec53e643..2568736701be 100644
+--- a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
++++ b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+@@ -16,6 +16,7 @@ description: |
+ properties:
+   compatible:
+     enum:
++      - qcom,pm8018
+       - qcom,pm8058
+       - qcom,pm8821
+       - qcom,pm8921
+-- 
+2.33.0
 
-I fully acknowledge that the host kernel obviously "trusts" CPU ucode to a great
-extent.  My point here is that the design exposes the host to unnecessary risk.
