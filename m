@@ -2,84 +2,12402 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309BE434B8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B108F434B91
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhJTMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJTMvV (ORCPT
+        id S229757AbhJTMwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:52:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45104 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhJTMwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:51:21 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C559BC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:49:06 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d9so2888948pfl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MW5XKMinfkic3DGxRVbSGJ7Lv3LsHXlWTeKEhPjWG0A=;
-        b=WAS9LYADJJxprsNJhUgU2leBPsNjhVj2U0f2idYZJZCFoe6pjmxyePWQaUW6uiYI9E
-         o7/2o48KMeQnDiiFQnmr7tTB/rI+iVNIazciNypQ4bE6abuDJEjMyXiGx7v1riLZHjNm
-         SGRBjpB3uoC0PuOQbiSZ+7OgPHTVONyen2Zdqt8Z/IB7j6iylnukXoDtHyb5xfGkLR2W
-         +zYzt/tyxiXWRkFrvZKYajOxIBFSD6laJ9p4SmfbpzHNAQ5HQzP6RXyGVDaJtKSFw21z
-         EI4rnQ15hXiWagaqCgPk7qSHVIbgLDRai1sz1uxIiA/K3XhL9pO3qNcd+RUHaFC8nDir
-         6Apg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MW5XKMinfkic3DGxRVbSGJ7Lv3LsHXlWTeKEhPjWG0A=;
-        b=12utWtlVXCpqYoAPiQeGgNMjjbY7SELv17n2Qm74uRUrbzz10kl9N5TReyK86KkDSv
-         jd+Crh4Nm3wTdpP+NTlWI59o69nuT1NBULCNAkuo9s9PAsTLTt5LURLqaSJ/WsUIVg4Y
-         DtV6eqL4JcCyPq+aR3n1VoVbnaTp/7KefYKF2MhmwkTSL/6c8135UuVQT+TFjybgob82
-         eYcOaYyxsQdJsir6bsGHg4Sq9jsShNZnY9quzZ2l73G1CAPAhR0ta0OEFE864B5HCteb
-         nc/kNpYdUAMM57LcSKMTupoTZ9WVcL5/VUpGziqMz3hHhyZkuA5n6aWi4QCY+jJK6uCa
-         pifg==
-X-Gm-Message-State: AOAM530r2wLFtt1viiG2SNgiIweWCtO3g/UoXAcjjjG8pEJNiR/XPbFM
-        9Fa8IFnvH3EGzJt29sf3S95cLA==
-X-Google-Smtp-Source: ABdhPJz/ojuR/19tWAPkVZPReLPgVZVffGrnzOj4hJq6C+s4AtggeMF/FwJA2837GyU+HSy3z7MI3Q==
-X-Received: by 2002:a63:2cca:: with SMTP id s193mr26427467pgs.240.1634734146295;
-        Wed, 20 Oct 2021 05:49:06 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id nn14sm2297124pjb.27.2021.10.20.05.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 05:49:05 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 20:48:55 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Wed, 20 Oct 2021 08:52:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E9F8821A87;
+        Wed, 20 Oct 2021 12:49:57 +0000 (UTC)
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id 6A189A3B81;
+        Wed, 20 Oct 2021 12:49:57 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Subject: Re: [PATCH 3/5] perf arm-spe: Add snapshot mode support
-Message-ID: <20211020124855.GF49614@leoy-ThinkPad-X240s>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-3-german.gomez@arm.com>
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: [PATCH] MIPS: Remove NETLOGIC support
+Date:   Wed, 20 Oct 2021 14:49:13 +0200
+Message-Id: <20211020124923.130298-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916154635.1525-3-german.gomez@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 04:46:33PM +0100, German Gomez wrote:
-> This patch enabled support for snapshot mode of arm_spe events,
-> including the implementation of the necessary callbacks (excluding
-> find_snapshot, which is to be included in a followup commit).
-> 
-> Reviewed-by: James Clark <james.clark@arm.com>
-> Signed-off-by: German Gomez <german.gomez@arm.com>
+No (active) developer owns this hardware, so let's remove Linux support.
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-Tested-by: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/Kbuild.platforms                    |   1 -
+ arch/mips/Kconfig                             |  91 +--
+ arch/mips/boot/compressed/uart-16550.c        |  12 -
+ arch/mips/boot/dts/Makefile                   |   1 -
+ arch/mips/boot/dts/netlogic/Makefile          |   8 -
+ arch/mips/boot/dts/netlogic/xlp_evp.dts       | 131 ----
+ arch/mips/boot/dts/netlogic/xlp_fvp.dts       | 131 ----
+ arch/mips/boot/dts/netlogic/xlp_gvp.dts       |  89 ---
+ arch/mips/boot/dts/netlogic/xlp_rvp.dts       |  89 ---
+ arch/mips/boot/dts/netlogic/xlp_svp.dts       | 131 ----
+ arch/mips/configs/nlm_xlp_defconfig           | 557 -----------------
+ arch/mips/configs/nlm_xlr_defconfig           | 508 ----------------
+ arch/mips/include/asm/cop2.h                  |  11 -
+ arch/mips/include/asm/cpu-type.h              |   8 -
+ arch/mips/include/asm/cpu.h                   |   2 +-
+ arch/mips/include/asm/hazards.h               |   2 +-
+ .../asm/mach-netlogic/cpu-feature-overrides.h |  57 --
+ arch/mips/include/asm/mach-netlogic/irq.h     |  17 -
+ .../include/asm/mach-netlogic/multi-node.h    |  74 ---
+ arch/mips/include/asm/netlogic/common.h       | 132 ----
+ arch/mips/include/asm/netlogic/haldefs.h      | 171 ------
+ arch/mips/include/asm/netlogic/interrupt.h    |  45 --
+ arch/mips/include/asm/netlogic/mips-extns.h   | 301 ---------
+ arch/mips/include/asm/netlogic/psb-bootinfo.h |  95 ---
+ .../include/asm/netlogic/xlp-hal/bridge.h     | 186 ------
+ .../include/asm/netlogic/xlp-hal/cpucontrol.h |  89 ---
+ .../mips/include/asm/netlogic/xlp-hal/iomap.h | 214 -------
+ .../include/asm/netlogic/xlp-hal/pcibus.h     | 113 ----
+ arch/mips/include/asm/netlogic/xlp-hal/pic.h  | 366 -----------
+ arch/mips/include/asm/netlogic/xlp-hal/sys.h  | 213 -------
+ arch/mips/include/asm/netlogic/xlp-hal/uart.h | 192 ------
+ arch/mips/include/asm/netlogic/xlp-hal/xlp.h  | 119 ----
+ arch/mips/include/asm/netlogic/xlr/bridge.h   | 104 ----
+ arch/mips/include/asm/netlogic/xlr/flash.h    |  55 --
+ arch/mips/include/asm/netlogic/xlr/fmn.h      | 365 -----------
+ arch/mips/include/asm/netlogic/xlr/gpio.h     |  74 ---
+ arch/mips/include/asm/netlogic/xlr/iomap.h    | 109 ----
+ arch/mips/include/asm/netlogic/xlr/msidef.h   |  84 ---
+ arch/mips/include/asm/netlogic/xlr/pic.h      | 306 ----------
+ arch/mips/include/asm/netlogic/xlr/xlr.h      |  59 --
+ arch/mips/include/asm/processor.h             |  13 -
+ arch/mips/include/asm/vermagic.h              |   4 -
+ arch/mips/kernel/cpu-probe.c                  |  84 ---
+ arch/mips/kernel/idle.c                       |   2 -
+ arch/mips/kernel/perf_event_mipsxx.c          |  86 ---
+ arch/mips/kvm/entry.c                         |   8 +-
+ arch/mips/mm/c-r4k.c                          |   2 -
+ arch/mips/mm/tlbex.c                          |   9 +-
+ arch/mips/netlogic/Kconfig                    |  86 ---
+ arch/mips/netlogic/Makefile                   |   4 -
+ arch/mips/netlogic/Platform                   |  16 -
+ arch/mips/netlogic/common/Makefile            |   5 -
+ arch/mips/netlogic/common/earlycons.c         |  63 --
+ arch/mips/netlogic/common/irq.c               | 350 -----------
+ arch/mips/netlogic/common/reset.S             | 299 ---------
+ arch/mips/netlogic/common/smp.c               | 285 ---------
+ arch/mips/netlogic/common/smpboot.S           | 141 -----
+ arch/mips/netlogic/common/time.c              | 110 ----
+ arch/mips/netlogic/xlp/Makefile               |  11 -
+ arch/mips/netlogic/xlp/ahci-init-xlp2.c       | 390 ------------
+ arch/mips/netlogic/xlp/ahci-init.c            | 209 -------
+ arch/mips/netlogic/xlp/cop2-ex.c              | 121 ----
+ arch/mips/netlogic/xlp/dt.c                   |  95 ---
+ arch/mips/netlogic/xlp/nlm_hal.c              | 508 ----------------
+ arch/mips/netlogic/xlp/setup.c                | 174 ------
+ arch/mips/netlogic/xlp/usb-init-xlp2.c        | 288 ---------
+ arch/mips/netlogic/xlp/usb-init.c             | 149 -----
+ arch/mips/netlogic/xlp/wakeup.c               | 212 -------
+ arch/mips/netlogic/xlr/Makefile               |   3 -
+ arch/mips/netlogic/xlr/fmn-config.c           | 296 ---------
+ arch/mips/netlogic/xlr/fmn.c                  | 199 ------
+ arch/mips/netlogic/xlr/platform-flash.c       | 216 -------
+ arch/mips/netlogic/xlr/platform.c             | 250 --------
+ arch/mips/netlogic/xlr/setup.c                | 206 -------
+ arch/mips/netlogic/xlr/wakeup.c               |  85 ---
+ arch/mips/pci/Makefile                        |   3 -
+ arch/mips/pci/msi-xlp.c                       | 571 ------------------
+ arch/mips/pci/pci-xlp.c                       | 332 ----------
+ arch/mips/pci/pci-xlr.c                       | 368 -----------
+ 79 files changed, 6 insertions(+), 11559 deletions(-)
+ delete mode 100644 arch/mips/boot/dts/netlogic/Makefile
+ delete mode 100644 arch/mips/boot/dts/netlogic/xlp_evp.dts
+ delete mode 100644 arch/mips/boot/dts/netlogic/xlp_fvp.dts
+ delete mode 100644 arch/mips/boot/dts/netlogic/xlp_gvp.dts
+ delete mode 100644 arch/mips/boot/dts/netlogic/xlp_rvp.dts
+ delete mode 100644 arch/mips/boot/dts/netlogic/xlp_svp.dts
+ delete mode 100644 arch/mips/configs/nlm_xlp_defconfig
+ delete mode 100644 arch/mips/configs/nlm_xlr_defconfig
+ delete mode 100644 arch/mips/include/asm/mach-netlogic/cpu-feature-overrides.h
+ delete mode 100644 arch/mips/include/asm/mach-netlogic/irq.h
+ delete mode 100644 arch/mips/include/asm/mach-netlogic/multi-node.h
+ delete mode 100644 arch/mips/include/asm/netlogic/common.h
+ delete mode 100644 arch/mips/include/asm/netlogic/haldefs.h
+ delete mode 100644 arch/mips/include/asm/netlogic/interrupt.h
+ delete mode 100644 arch/mips/include/asm/netlogic/mips-extns.h
+ delete mode 100644 arch/mips/include/asm/netlogic/psb-bootinfo.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlp-hal/bridge.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlp-hal/iomap.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlp-hal/pcibus.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlp-hal/pic.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlp-hal/sys.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlp-hal/uart.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlp-hal/xlp.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlr/bridge.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlr/flash.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlr/fmn.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlr/gpio.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlr/iomap.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlr/msidef.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlr/pic.h
+ delete mode 100644 arch/mips/include/asm/netlogic/xlr/xlr.h
+ delete mode 100644 arch/mips/netlogic/Kconfig
+ delete mode 100644 arch/mips/netlogic/Makefile
+ delete mode 100644 arch/mips/netlogic/Platform
+ delete mode 100644 arch/mips/netlogic/common/Makefile
+ delete mode 100644 arch/mips/netlogic/common/earlycons.c
+ delete mode 100644 arch/mips/netlogic/common/irq.c
+ delete mode 100644 arch/mips/netlogic/common/reset.S
+ delete mode 100644 arch/mips/netlogic/common/smp.c
+ delete mode 100644 arch/mips/netlogic/common/smpboot.S
+ delete mode 100644 arch/mips/netlogic/common/time.c
+ delete mode 100644 arch/mips/netlogic/xlp/Makefile
+ delete mode 100644 arch/mips/netlogic/xlp/ahci-init-xlp2.c
+ delete mode 100644 arch/mips/netlogic/xlp/ahci-init.c
+ delete mode 100644 arch/mips/netlogic/xlp/cop2-ex.c
+ delete mode 100644 arch/mips/netlogic/xlp/dt.c
+ delete mode 100644 arch/mips/netlogic/xlp/nlm_hal.c
+ delete mode 100644 arch/mips/netlogic/xlp/setup.c
+ delete mode 100644 arch/mips/netlogic/xlp/usb-init-xlp2.c
+ delete mode 100644 arch/mips/netlogic/xlp/usb-init.c
+ delete mode 100644 arch/mips/netlogic/xlp/wakeup.c
+ delete mode 100644 arch/mips/netlogic/xlr/Makefile
+ delete mode 100644 arch/mips/netlogic/xlr/fmn-config.c
+ delete mode 100644 arch/mips/netlogic/xlr/fmn.c
+ delete mode 100644 arch/mips/netlogic/xlr/platform-flash.c
+ delete mode 100644 arch/mips/netlogic/xlr/platform.c
+ delete mode 100644 arch/mips/netlogic/xlr/setup.c
+ delete mode 100644 arch/mips/netlogic/xlr/wakeup.c
+ delete mode 100644 arch/mips/pci/msi-xlp.c
+ delete mode 100644 arch/mips/pci/pci-xlp.c
+ delete mode 100644 arch/mips/pci/pci-xlr.c
+
+diff --git a/arch/mips/Kbuild.platforms b/arch/mips/Kbuild.platforms
+index 584081df89c2..2c57994b5217 100644
+--- a/arch/mips/Kbuild.platforms
++++ b/arch/mips/Kbuild.platforms
+@@ -19,7 +19,6 @@ platform-$(CONFIG_MACH_LOONGSON32)	+= loongson32/
+ platform-$(CONFIG_MACH_LOONGSON64)	+= loongson64/
+ platform-$(CONFIG_MIPS_MALTA)		+= mti-malta/
+ platform-$(CONFIG_MACH_NINTENDO64)	+= n64/
+-platform-$(CONFIG_NLM_COMMON)		+= netlogic/
+ platform-$(CONFIG_PIC32MZDA)		+= pic32/
+ platform-$(CONFIG_RALINK)		+= ralink/
+ platform-$(CONFIG_MIKROTIK_RB532)	+= rb532/
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 35aab081917f..0610a7bb8a7a 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -994,60 +994,6 @@ config CAVIUM_OCTEON_SOC
+ 		Hikari
+ 	  Say Y here for most Octeon reference boards.
+ 
+-config NLM_XLR_BOARD
+-	bool "Netlogic XLR/XLS based systems"
+-	select BOOT_ELF32
+-	select NLM_COMMON
+-	select SYS_HAS_CPU_XLR
+-	select SYS_SUPPORTS_SMP
+-	select HAVE_PCI
+-	select SWAP_IO_SPACE
+-	select SYS_SUPPORTS_32BIT_KERNEL
+-	select SYS_SUPPORTS_64BIT_KERNEL
+-	select PHYS_ADDR_T_64BIT
+-	select SYS_SUPPORTS_BIG_ENDIAN
+-	select SYS_SUPPORTS_HIGHMEM
+-	select NR_CPUS_DEFAULT_32
+-	select CEVT_R4K
+-	select CSRC_R4K
+-	select IRQ_MIPS_CPU
+-	select ZONE_DMA32 if 64BIT
+-	select SYNC_R4K
+-	select SYS_HAS_EARLY_PRINTK
+-	select SYS_SUPPORTS_ZBOOT
+-	select SYS_SUPPORTS_ZBOOT_UART16550
+-	help
+-	  Support for systems based on Netlogic XLR and XLS processors.
+-	  Say Y here if you have a XLR or XLS based board.
+-
+-config NLM_XLP_BOARD
+-	bool "Netlogic XLP based systems"
+-	select BOOT_ELF32
+-	select NLM_COMMON
+-	select SYS_HAS_CPU_XLP
+-	select SYS_SUPPORTS_SMP
+-	select HAVE_PCI
+-	select SYS_SUPPORTS_32BIT_KERNEL
+-	select SYS_SUPPORTS_64BIT_KERNEL
+-	select PHYS_ADDR_T_64BIT
+-	select GPIOLIB
+-	select SYS_SUPPORTS_BIG_ENDIAN
+-	select SYS_SUPPORTS_LITTLE_ENDIAN
+-	select SYS_SUPPORTS_HIGHMEM
+-	select NR_CPUS_DEFAULT_32
+-	select CEVT_R4K
+-	select CSRC_R4K
+-	select IRQ_MIPS_CPU
+-	select ZONE_DMA32 if 64BIT
+-	select SYNC_R4K
+-	select SYS_HAS_EARLY_PRINTK
+-	select USE_OF
+-	select SYS_SUPPORTS_ZBOOT
+-	select SYS_SUPPORTS_ZBOOT_UART16550
+-	help
+-	  This board is based on Netlogic XLP Processor.
+-	  Say Y here if you have a XLP based board.
+-
+ endchoice
+ 
+ source "arch/mips/alchemy/Kconfig"
+@@ -1070,7 +1016,6 @@ source "arch/mips/cavium-octeon/Kconfig"
+ source "arch/mips/loongson2ef/Kconfig"
+ source "arch/mips/loongson32/Kconfig"
+ source "arch/mips/loongson64/Kconfig"
+-source "arch/mips/netlogic/Kconfig"
+ 
+ endmenu
+ 
+@@ -1786,32 +1731,6 @@ config CPU_BMIPS
+ 	help
+ 	  Support for BMIPS32/3300/4350/4380 and BMIPS5000 processors.
+ 
+-config CPU_XLR
+-	bool "Netlogic XLR SoC"
+-	depends on SYS_HAS_CPU_XLR
+-	select CPU_SUPPORTS_32BIT_KERNEL
+-	select CPU_SUPPORTS_64BIT_KERNEL
+-	select CPU_SUPPORTS_HIGHMEM
+-	select CPU_SUPPORTS_HUGEPAGES
+-	select WEAK_ORDERING
+-	select WEAK_REORDERING_BEYOND_LLSC
+-	help
+-	  Netlogic Microsystems XLR/XLS processors.
+-
+-config CPU_XLP
+-	bool "Netlogic XLP SoC"
+-	depends on SYS_HAS_CPU_XLP
+-	select CPU_SUPPORTS_32BIT_KERNEL
+-	select CPU_SUPPORTS_64BIT_KERNEL
+-	select CPU_SUPPORTS_HIGHMEM
+-	select WEAK_ORDERING
+-	select WEAK_REORDERING_BEYOND_LLSC
+-	select CPU_HAS_PREFETCH
+-	select CPU_MIPSR2
+-	select CPU_SUPPORTS_HUGEPAGES
+-	select MIPS_ASID_BITS_VARIABLE
+-	help
+-	  Netlogic Microsystems XLP processors.
+ endchoice
+ 
+ config CPU_MIPS32_3_5_FEATURES
+@@ -2058,12 +1977,6 @@ config SYS_HAS_CPU_BMIPS5000
+ 	select SYS_HAS_CPU_BMIPS
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 
+-config SYS_HAS_CPU_XLR
+-	bool
+-
+-config SYS_HAS_CPU_XLP
+-	bool
+-
+ #
+ # CPU may reorder R->R, R->W, W->R, W->W
+ # Reordering beyond LL and SC is handled in WEAK_REORDERING_BEYOND_LLSC
+@@ -2158,7 +2071,7 @@ config CPU_SUPPORTS_HUGEPAGES
+ config MIPS_PGD_C0_CONTEXT
+ 	bool
+ 	depends on 64BIT
+-	default y if (CPU_MIPSR2 || CPU_MIPSR6) && !CPU_XLP
++	default y if (CPU_MIPSR2 || CPU_MIPSR6)
+ 
+ #
+ # Set to y for ptrace access to watch registers.
+@@ -2841,7 +2754,7 @@ config NODES_SHIFT
+ 
+ config HW_PERF_EVENTS
+ 	bool "Enable hardware performance counter support for perf events"
+-	depends on PERF_EVENTS && (CPU_MIPS32 || CPU_MIPS64 || CPU_R10000 || CPU_SB1 || CPU_CAVIUM_OCTEON || CPU_XLP || CPU_LOONGSON64)
++	depends on PERF_EVENTS && (CPU_MIPS32 || CPU_MIPS64 || CPU_R10000 || CPU_SB1 || CPU_CAVIUM_OCTEON || CPU_LOONGSON64)
+ 	default y
+ 	help
+ 	  Enable hardware performance counter support for perf events. If
+diff --git a/arch/mips/boot/compressed/uart-16550.c b/arch/mips/boot/compressed/uart-16550.c
+index c18d7f72d9d9..96d28f211121 100644
+--- a/arch/mips/boot/compressed/uart-16550.c
++++ b/arch/mips/boot/compressed/uart-16550.c
+@@ -23,18 +23,6 @@
+ #define PORT(offset) (CKSEG1ADDR(INGENIC_UART_BASE_ADDR) + (4 * offset))
+ #endif
+ 
+-#ifdef CONFIG_CPU_XLR
+-#define UART0_BASE  0x1EF14000
+-#define PORT(offset) (CKSEG1ADDR(UART0_BASE) + (4 * offset))
+-#define IOTYPE unsigned int
+-#endif
+-
+-#ifdef CONFIG_CPU_XLP
+-#define UART0_BASE  0x18030100
+-#define PORT(offset) (CKSEG1ADDR(UART0_BASE) + (4 * offset))
+-#define IOTYPE unsigned int
+-#endif
+-
+ #ifndef IOTYPE
+ #define IOTYPE char
+ #endif
+diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+index be96d35eb582..928f38a79dff 100644
+--- a/arch/mips/boot/dts/Makefile
++++ b/arch/mips/boot/dts/Makefile
+@@ -9,7 +9,6 @@ subdir-$(CONFIG_MACH_LOONGSON64)	+= loongson
+ subdir-$(CONFIG_SOC_VCOREIII)		+= mscc
+ subdir-$(CONFIG_MIPS_MALTA)		+= mti
+ subdir-$(CONFIG_LEGACY_BOARD_SEAD3)	+= mti
+-subdir-$(CONFIG_NLM_XLP_BOARD)		+= netlogic
+ subdir-$(CONFIG_FIT_IMAGE_FDT_NI169445)	+= ni
+ subdir-$(CONFIG_MACH_PIC32)		+= pic32
+ subdir-$(CONFIG_ATH79)			+= qca
+diff --git a/arch/mips/boot/dts/netlogic/Makefile b/arch/mips/boot/dts/netlogic/Makefile
+deleted file mode 100644
+index 45af4224494f..000000000000
+--- a/arch/mips/boot/dts/netlogic/Makefile
++++ /dev/null
+@@ -1,8 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-dtb-$(CONFIG_DT_XLP_EVP)	+= xlp_evp.dtb
+-dtb-$(CONFIG_DT_XLP_SVP)	+= xlp_svp.dtb
+-dtb-$(CONFIG_DT_XLP_FVP)	+= xlp_fvp.dtb
+-dtb-$(CONFIG_DT_XLP_GVP)	+= xlp_gvp.dtb
+-dtb-$(CONFIG_DT_XLP_RVP)	+= xlp_rvp.dtb
+-
+-obj-$(CONFIG_BUILTIN_DTB)	+= $(addsuffix .o, $(dtb-y))
+diff --git a/arch/mips/boot/dts/netlogic/xlp_evp.dts b/arch/mips/boot/dts/netlogic/xlp_evp.dts
+deleted file mode 100644
+index e63e55926e04..000000000000
+--- a/arch/mips/boot/dts/netlogic/xlp_evp.dts
++++ /dev/null
+@@ -1,131 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * XLP8XX Device Tree Source for EVP boards
+- */
+-
+-/dts-v1/;
+-/ {
+-	model = "netlogic,XLP-EVP";
+-	compatible = "netlogic,xlp";
+-	#address-cells = <2>;
+-	#size-cells = <2>;
+-
+-	soc {
+-		#address-cells = <2>;
+-		#size-cells = <1>;
+-		compatible = "simple-bus";
+-		ranges = <0 0  0 0x18000000  0x04000000   // PCIe CFG
+-			  1 0  0 0x16000000  0x02000000>; // GBU chipselects
+-
+-		serial0: serial@30000 {
+-			device_type = "serial";
+-			compatible = "ns16550";
+-			reg = <0 0x30100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <133333333>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <17>;
+-		};
+-		serial1: serial@31000 {
+-			device_type = "serial";
+-			compatible = "ns16550";
+-			reg = <0 0x31100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <133333333>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <18>;
+-		};
+-		i2c0: ocores@32000 {
+-			compatible = "opencores,i2c-ocores";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0x32100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <32000000>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <30>;
+-		};
+-		i2c1: ocores@33000 {
+-			compatible = "opencores,i2c-ocores";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0x33100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <32000000>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <31>;
+-
+-			rtc@68 {
+-				compatible = "dallas,ds1374";
+-				reg = <0x68>;
+-			};
+-
+-			dtt@4c {
+-				compatible = "national,lm90";
+-				reg = <0x4c>;
+-			};
+-		};
+-		pic: pic@4000 {
+-			compatible = "netlogic,xlp-pic";
+-			#address-cells = <0>;
+-			#interrupt-cells = <1>;
+-			reg = <0 0x4000 0x200>;
+-			interrupt-controller;
+-		};
+-
+-		nor_flash@1,0 {
+-			compatible = "cfi-flash";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			bank-width = <2>;
+-			reg = <1 0 0x1000000>;
+-
+-			partition@0 {
+-				label = "x-loader";
+-				reg = <0x0 0x100000>; /* 1M */
+-				read-only;
+-			};
+-
+-			partition@100000 {
+-				label = "u-boot";
+-				reg = <0x100000 0x100000>; /* 1M */
+-			};
+-
+-			partition@200000 {
+-				label = "kernel";
+-				reg = <0x200000 0x500000>; /* 5M */
+-			};
+-
+-			partition@700000 {
+-				label = "rootfs";
+-				reg = <0x700000 0x800000>; /* 8M */
+-			};
+-
+-			partition@f00000 {
+-				label = "env";
+-				reg = <0xf00000 0x100000>; /* 1M */
+-				read-only;
+-			};
+-		};
+-
+-		gpio: xlp_gpio@34100 {
+-			compatible = "netlogic,xlp832-gpio";
+-			reg = <0 0x34100 0x1000>;
+-			#gpio-cells = <2>;
+-			gpio-controller;
+-
+-			#interrupt-cells = <2>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <39>;
+-			interrupt-controller;
+-		};
+-	};
+-
+-	chosen {
+-		bootargs = "console=ttyS0,115200 rdinit=/sbin/init";
+-	};
+-};
+diff --git a/arch/mips/boot/dts/netlogic/xlp_fvp.dts b/arch/mips/boot/dts/netlogic/xlp_fvp.dts
+deleted file mode 100644
+index d05abf13fb7d..000000000000
+--- a/arch/mips/boot/dts/netlogic/xlp_fvp.dts
++++ /dev/null
+@@ -1,131 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * XLP2XX Device Tree Source for FVP boards
+- */
+-
+-/dts-v1/;
+-/ {
+-	model = "netlogic,XLP-FVP";
+-	compatible = "netlogic,xlp";
+-	#address-cells = <2>;
+-	#size-cells = <2>;
+-
+-	soc {
+-		#address-cells = <2>;
+-		#size-cells = <1>;
+-		compatible = "simple-bus";
+-		ranges = <0 0  0 0x18000000  0x04000000   // PCIe CFG
+-			  1 0  0 0x16000000  0x02000000>; // GBU chipselects
+-
+-		serial0: serial@30000 {
+-			device_type = "serial";
+-			compatible = "ns16550";
+-			reg = <0 0x30100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <133333333>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <17>;
+-		};
+-		serial1: serial@31000 {
+-			device_type = "serial";
+-			compatible = "ns16550";
+-			reg = <0 0x31100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <133333333>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <18>;
+-		};
+-		i2c0: ocores@37100 {
+-			compatible = "opencores,i2c-ocores";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0x37100 0x20>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <32000000>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <30>;
+-		};
+-		i2c1: ocores@37120 {
+-			compatible = "opencores,i2c-ocores";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0x37120 0x20>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <32000000>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <31>;
+-
+-			rtc@68 {
+-				compatible = "dallas,ds1374";
+-				reg = <0x68>;
+-			};
+-
+-			dtt@4c {
+-				compatible = "national,lm90";
+-				reg = <0x4c>;
+-			};
+-		};
+-		pic: pic@4000 {
+-			compatible = "netlogic,xlp-pic";
+-			#address-cells = <0>;
+-			#interrupt-cells = <1>;
+-			reg = <0 0x4000 0x200>;
+-			interrupt-controller;
+-		};
+-
+-		nor_flash@1,0 {
+-			compatible = "cfi-flash";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			bank-width = <2>;
+-			reg = <1 0 0x1000000>;
+-
+-			partition@0 {
+-				label = "x-loader";
+-				reg = <0x0 0x100000>; /* 1M */
+-				read-only;
+-			};
+-
+-			partition@100000 {
+-				label = "u-boot";
+-				reg = <0x100000 0x100000>; /* 1M */
+-			};
+-
+-			partition@200000 {
+-				label = "kernel";
+-				reg = <0x200000 0x500000>; /* 5M */
+-			};
+-
+-			partition@700000 {
+-				label = "rootfs";
+-				reg = <0x700000 0x800000>; /* 8M */
+-			};
+-
+-			partition@f00000 {
+-				label = "env";
+-				reg = <0xf00000 0x100000>; /* 1M */
+-				read-only;
+-			};
+-		};
+-
+-		gpio: xlp_gpio@34100 {
+-			compatible = "netlogic,xlp208-gpio";
+-			reg = <0 0x34100 0x1000>;
+-			#gpio-cells = <2>;
+-			gpio-controller;
+-
+-			#interrupt-cells = <2>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <39>;
+-			interrupt-controller;
+-		};
+-	};
+-
+-	chosen {
+-		bootargs = "console=ttyS0,115200 rdinit=/sbin/init";
+-	};
+-};
+diff --git a/arch/mips/boot/dts/netlogic/xlp_gvp.dts b/arch/mips/boot/dts/netlogic/xlp_gvp.dts
+deleted file mode 100644
+index d47de4851786..000000000000
+--- a/arch/mips/boot/dts/netlogic/xlp_gvp.dts
++++ /dev/null
+@@ -1,89 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * XLP9XX Device Tree Source for GVP boards
+- */
+-
+-/dts-v1/;
+-/ {
+-	model = "netlogic,XLP-GVP";
+-	compatible = "netlogic,xlp";
+-	#address-cells = <2>;
+-	#size-cells = <2>;
+-
+-	soc {
+-		#address-cells = <2>;
+-		#size-cells = <1>;
+-		compatible = "simple-bus";
+-		ranges = <0 0  0 0x18000000  0x04000000   // PCIe CFG
+-			  1 0  0 0x16000000  0x02000000>; // GBU chipselects
+-
+-		serial0: serial@30000 {
+-			device_type = "serial";
+-			compatible = "ns16550";
+-			reg = <0 0x112100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <125000000>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <17>;
+-		};
+-		pic: pic@110000 {
+-			compatible = "netlogic,xlp-pic";
+-			#address-cells = <0>;
+-			#interrupt-cells = <1>;
+-			reg = <0 0x110000 0x200>;
+-			interrupt-controller;
+-		};
+-
+-		nor_flash@1,0 {
+-			compatible = "cfi-flash";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			bank-width = <2>;
+-			reg = <1 0 0x1000000>;
+-
+-			partition@0 {
+-				label = "x-loader";
+-				reg = <0x0 0x100000>; /* 1M */
+-				read-only;
+-			};
+-
+-			partition@100000 {
+-				label = "u-boot";
+-				reg = <0x100000 0x100000>; /* 1M */
+-			};
+-
+-			partition@200000 {
+-				label = "kernel";
+-				reg = <0x200000 0x500000>; /* 5M */
+-			};
+-
+-			partition@700000 {
+-				label = "rootfs";
+-				reg = <0x700000 0x800000>; /* 8M */
+-			};
+-
+-			partition@f00000 {
+-				label = "env";
+-				reg = <0xf00000 0x100000>; /* 1M */
+-				read-only;
+-			};
+-		};
+-
+-		gpio: xlp_gpio@114100 {
+-			compatible = "netlogic,xlp980-gpio";
+-			reg = <0 0x114100 0x1000>;
+-			#gpio-cells = <2>;
+-			gpio-controller;
+-
+-			#interrupt-cells = <2>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <39>;
+-			interrupt-controller;
+-		};
+-	};
+-
+-	chosen {
+-		bootargs = "console=ttyS0,115200 rdinit=/sbin/init";
+-	};
+-};
+diff --git a/arch/mips/boot/dts/netlogic/xlp_rvp.dts b/arch/mips/boot/dts/netlogic/xlp_rvp.dts
+deleted file mode 100644
+index aa0faee194ec..000000000000
+--- a/arch/mips/boot/dts/netlogic/xlp_rvp.dts
++++ /dev/null
+@@ -1,89 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * XLP5XX Device Tree Source for RVP boards
+- */
+-
+-/dts-v1/;
+-/ {
+-	model = "netlogic,XLP-RVP";
+-	compatible = "netlogic,xlp";
+-	#address-cells = <2>;
+-	#size-cells = <2>;
+-
+-	soc {
+-		#address-cells = <2>;
+-		#size-cells = <1>;
+-		compatible = "simple-bus";
+-		ranges = <0 0  0 0x18000000  0x04000000   // PCIe CFG
+-			  1 0  0 0x16000000  0x02000000>; // GBU chipselects
+-
+-		serial0: serial@30000 {
+-			device_type = "serial";
+-			compatible = "ns16550";
+-			reg = <0 0x112100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <125000000>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <17>;
+-		};
+-		pic: pic@110000 {
+-			compatible = "netlogic,xlp-pic";
+-			#address-cells = <0>;
+-			#interrupt-cells = <1>;
+-			reg = <0 0x110000 0x200>;
+-			interrupt-controller;
+-		};
+-
+-		nor_flash@1,0 {
+-			compatible = "cfi-flash";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			bank-width = <2>;
+-			reg = <1 0 0x1000000>;
+-
+-			partition@0 {
+-				label = "x-loader";
+-				reg = <0x0 0x100000>; /* 1M */
+-				read-only;
+-			};
+-
+-			partition@100000 {
+-				label = "u-boot";
+-				reg = <0x100000 0x100000>; /* 1M */
+-			};
+-
+-			partition@200000 {
+-				label = "kernel";
+-				reg = <0x200000 0x500000>; /* 5M */
+-			};
+-
+-			partition@700000 {
+-				label = "rootfs";
+-				reg = <0x700000 0x800000>; /* 8M */
+-			};
+-
+-			partition@f00000 {
+-				label = "env";
+-				reg = <0xf00000 0x100000>; /* 1M */
+-				read-only;
+-			};
+-		};
+-
+-		gpio: xlp_gpio@114100 {
+-			compatible = "netlogic,xlp532-gpio";
+-			reg = <0 0x114100 0x1000>;
+-			#gpio-cells = <2>;
+-			gpio-controller;
+-
+-			#interrupt-cells = <2>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <39>;
+-			interrupt-controller;
+-		};
+-	};
+-
+-	chosen {
+-		bootargs = "console=ttyS0,115200 rdinit=/sbin/init";
+-	};
+-};
+diff --git a/arch/mips/boot/dts/netlogic/xlp_svp.dts b/arch/mips/boot/dts/netlogic/xlp_svp.dts
+deleted file mode 100644
+index 3bb0b2e08e4a..000000000000
+--- a/arch/mips/boot/dts/netlogic/xlp_svp.dts
++++ /dev/null
+@@ -1,131 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * XLP3XX Device Tree Source for SVP boards
+- */
+-
+-/dts-v1/;
+-/ {
+-	model = "netlogic,XLP-SVP";
+-	compatible = "netlogic,xlp";
+-	#address-cells = <2>;
+-	#size-cells = <2>;
+-
+-	soc {
+-		#address-cells = <2>;
+-		#size-cells = <1>;
+-		compatible = "simple-bus";
+-		ranges = <0 0  0 0x18000000  0x04000000   // PCIe CFG
+-			  1 0  0 0x16000000  0x02000000>; // GBU chipselects
+-
+-		serial0: serial@30000 {
+-			device_type = "serial";
+-			compatible = "ns16550";
+-			reg = <0 0x30100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <133333333>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <17>;
+-		};
+-		serial1: serial@31000 {
+-			device_type = "serial";
+-			compatible = "ns16550";
+-			reg = <0 0x31100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <133333333>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <18>;
+-		};
+-		i2c0: ocores@32000 {
+-			compatible = "opencores,i2c-ocores";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0x32100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <32000000>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <30>;
+-		};
+-		i2c1: ocores@33000 {
+-			compatible = "opencores,i2c-ocores";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0x33100 0xa00>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			clock-frequency = <32000000>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <31>;
+-
+-			rtc@68 {
+-				compatible = "dallas,ds1374";
+-				reg = <0x68>;
+-			};
+-
+-			dtt@4c {
+-				compatible = "national,lm90";
+-				reg = <0x4c>;
+-			};
+-		};
+-		pic: pic@4000 {
+-			compatible = "netlogic,xlp-pic";
+-			#address-cells = <0>;
+-			#interrupt-cells = <1>;
+-			reg = <0 0x4000 0x200>;
+-			interrupt-controller;
+-		};
+-
+-		nor_flash@1,0 {
+-			compatible = "cfi-flash";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			bank-width = <2>;
+-			reg = <1 0 0x1000000>;
+-
+-			partition@0 {
+-				label = "x-loader";
+-				reg = <0x0 0x100000>; /* 1M */
+-				read-only;
+-			};
+-
+-			partition@100000 {
+-				label = "u-boot";
+-				reg = <0x100000 0x100000>; /* 1M */
+-			};
+-
+-			partition@200000 {
+-				label = "kernel";
+-				reg = <0x200000 0x500000>; /* 5M */
+-			};
+-
+-			partition@700000 {
+-				label = "rootfs";
+-				reg = <0x700000 0x800000>; /* 8M */
+-			};
+-
+-			partition@f00000 {
+-				label = "env";
+-				reg = <0xf00000 0x100000>; /* 1M */
+-				read-only;
+-			};
+-		};
+-
+-		gpio: xlp_gpio@34100 {
+-			compatible = "netlogic,xlp316-gpio";
+-			reg = <0 0x34100 0x1000>;
+-			#gpio-cells = <2>;
+-			gpio-controller;
+-
+-			#interrupt-cells = <2>;
+-			interrupt-parent = <&pic>;
+-			interrupts = <39>;
+-			interrupt-controller;
+-		};
+-	};
+-
+-	chosen {
+-		bootargs = "console=ttyS0,115200 rdinit=/sbin/init";
+-	};
+-};
+diff --git a/arch/mips/configs/nlm_xlp_defconfig b/arch/mips/configs/nlm_xlp_defconfig
+deleted file mode 100644
+index 32c290611723..000000000000
+--- a/arch/mips/configs/nlm_xlp_defconfig
++++ /dev/null
+@@ -1,557 +0,0 @@
+-# CONFIG_LOCALVERSION_AUTO is not set
+-CONFIG_SYSVIPC=y
+-CONFIG_POSIX_MQUEUE=y
+-CONFIG_AUDIT=y
+-CONFIG_NO_HZ=y
+-CONFIG_HIGH_RES_TIMERS=y
+-CONFIG_BSD_PROCESS_ACCT=y
+-CONFIG_BSD_PROCESS_ACCT_V3=y
+-CONFIG_TASKSTATS=y
+-CONFIG_TASK_DELAY_ACCT=y
+-CONFIG_TASK_XACCT=y
+-CONFIG_TASK_IO_ACCOUNTING=y
+-CONFIG_CGROUPS=y
+-CONFIG_NAMESPACES=y
+-CONFIG_BLK_DEV_INITRD=y
+-CONFIG_KALLSYMS_ALL=y
+-CONFIG_EMBEDDED=y
+-# CONFIG_COMPAT_BRK is not set
+-CONFIG_PROFILING=y
+-CONFIG_NLM_XLP_BOARD=y
+-CONFIG_64BIT=y
+-CONFIG_PAGE_SIZE_16KB=y
+-# CONFIG_HW_PERF_EVENTS is not set
+-CONFIG_SMP=y
+-# CONFIG_SECCOMP is not set
+-CONFIG_PCI=y
+-CONFIG_PCI_DEBUG=y
+-CONFIG_PCI_STUB=y
+-CONFIG_MIPS32_O32=y
+-CONFIG_MIPS32_N32=y
+-CONFIG_PM=y
+-CONFIG_PM_DEBUG=y
+-CONFIG_MODULES=y
+-CONFIG_MODULE_UNLOAD=y
+-CONFIG_MODVERSIONS=y
+-CONFIG_MODULE_SRCVERSION_ALL=y
+-CONFIG_BLK_DEV_INTEGRITY=y
+-CONFIG_PARTITION_ADVANCED=y
+-CONFIG_ACORN_PARTITION=y
+-CONFIG_ACORN_PARTITION_ICS=y
+-CONFIG_ACORN_PARTITION_RISCIX=y
+-CONFIG_OSF_PARTITION=y
+-CONFIG_AMIGA_PARTITION=y
+-CONFIG_ATARI_PARTITION=y
+-CONFIG_MAC_PARTITION=y
+-CONFIG_BSD_DISKLABEL=y
+-CONFIG_MINIX_SUBPARTITION=y
+-CONFIG_SOLARIS_X86_PARTITION=y
+-CONFIG_UNIXWARE_DISKLABEL=y
+-CONFIG_LDM_PARTITION=y
+-CONFIG_SGI_PARTITION=y
+-CONFIG_ULTRIX_PARTITION=y
+-CONFIG_SUN_PARTITION=y
+-CONFIG_KARMA_PARTITION=y
+-CONFIG_SYSV68_PARTITION=y
+-# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
+-CONFIG_BINFMT_MISC=y
+-CONFIG_KSM=y
+-CONFIG_DEFAULT_MMAP_MIN_ADDR=65536
+-CONFIG_NET=y
+-CONFIG_PACKET=y
+-CONFIG_UNIX=y
+-CONFIG_XFRM_USER=m
+-CONFIG_NET_KEY=m
+-CONFIG_INET=y
+-CONFIG_IP_MULTICAST=y
+-CONFIG_IP_ADVANCED_ROUTER=y
+-CONFIG_IP_MULTIPLE_TABLES=y
+-CONFIG_IP_ROUTE_MULTIPATH=y
+-CONFIG_IP_ROUTE_VERBOSE=y
+-CONFIG_NET_IPIP=m
+-CONFIG_IP_MROUTE=y
+-CONFIG_IP_PIMSM_V1=y
+-CONFIG_IP_PIMSM_V2=y
+-CONFIG_SYN_COOKIES=y
+-CONFIG_INET_AH=m
+-CONFIG_INET_ESP=m
+-CONFIG_INET_IPCOMP=m
+-CONFIG_INET_XFRM_MODE_TRANSPORT=m
+-CONFIG_INET_XFRM_MODE_TUNNEL=m
+-CONFIG_INET_XFRM_MODE_BEET=m
+-CONFIG_TCP_CONG_ADVANCED=y
+-CONFIG_TCP_CONG_HSTCP=m
+-CONFIG_TCP_CONG_HYBLA=m
+-CONFIG_TCP_CONG_SCALABLE=m
+-CONFIG_TCP_CONG_LP=m
+-CONFIG_TCP_CONG_VENO=m
+-CONFIG_TCP_CONG_YEAH=m
+-CONFIG_TCP_CONG_ILLINOIS=m
+-CONFIG_TCP_MD5SIG=y
+-CONFIG_INET6_AH=m
+-CONFIG_INET6_ESP=m
+-CONFIG_INET6_IPCOMP=m
+-CONFIG_INET6_XFRM_MODE_TRANSPORT=m
+-CONFIG_INET6_XFRM_MODE_TUNNEL=m
+-CONFIG_INET6_XFRM_MODE_BEET=m
+-CONFIG_INET6_XFRM_MODE_ROUTEOPTIMIZATION=m
+-CONFIG_IPV6_SIT=m
+-CONFIG_IPV6_TUNNEL=m
+-CONFIG_IPV6_MULTIPLE_TABLES=y
+-CONFIG_NETFILTER=y
+-CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_CONNTRACK_SECMARK=y
+-CONFIG_NF_CONNTRACK_EVENTS=y
+-CONFIG_NF_CONNTRACK_AMANDA=m
+-CONFIG_NF_CONNTRACK_FTP=m
+-CONFIG_NF_CONNTRACK_H323=m
+-CONFIG_NF_CONNTRACK_IRC=m
+-CONFIG_NF_CONNTRACK_NETBIOS_NS=m
+-CONFIG_NF_CONNTRACK_PPTP=m
+-CONFIG_NF_CONNTRACK_SANE=m
+-CONFIG_NF_CONNTRACK_SIP=m
+-CONFIG_NF_CONNTRACK_TFTP=m
+-CONFIG_NF_CT_NETLINK=m
+-CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+-CONFIG_NETFILTER_XT_TARGET_CONNMARK=m
+-CONFIG_NETFILTER_XT_TARGET_CONNSECMARK=m
+-CONFIG_NETFILTER_XT_TARGET_DSCP=m
+-CONFIG_NETFILTER_XT_TARGET_MARK=m
+-CONFIG_NETFILTER_XT_TARGET_NFLOG=m
+-CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
+-CONFIG_NETFILTER_XT_TARGET_TPROXY=m
+-CONFIG_NETFILTER_XT_TARGET_TRACE=m
+-CONFIG_NETFILTER_XT_TARGET_SECMARK=m
+-CONFIG_NETFILTER_XT_TARGET_TCPMSS=m
+-CONFIG_NETFILTER_XT_MATCH_CLUSTER=m
+-CONFIG_NETFILTER_XT_MATCH_COMMENT=m
+-CONFIG_NETFILTER_XT_MATCH_CONNBYTES=m
+-CONFIG_NETFILTER_XT_MATCH_CONNLIMIT=m
+-CONFIG_NETFILTER_XT_MATCH_CONNMARK=m
+-CONFIG_NETFILTER_XT_MATCH_CONNTRACK=m
+-CONFIG_NETFILTER_XT_MATCH_DSCP=m
+-CONFIG_NETFILTER_XT_MATCH_ESP=m
+-CONFIG_NETFILTER_XT_MATCH_HASHLIMIT=m
+-CONFIG_NETFILTER_XT_MATCH_HELPER=m
+-CONFIG_NETFILTER_XT_MATCH_IPRANGE=m
+-CONFIG_NETFILTER_XT_MATCH_LENGTH=m
+-CONFIG_NETFILTER_XT_MATCH_LIMIT=m
+-CONFIG_NETFILTER_XT_MATCH_MAC=m
+-CONFIG_NETFILTER_XT_MATCH_MARK=m
+-CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
+-CONFIG_NETFILTER_XT_MATCH_OSF=m
+-CONFIG_NETFILTER_XT_MATCH_OWNER=m
+-CONFIG_NETFILTER_XT_MATCH_POLICY=m
+-CONFIG_NETFILTER_XT_MATCH_PHYSDEV=m
+-CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
+-CONFIG_NETFILTER_XT_MATCH_QUOTA=m
+-CONFIG_NETFILTER_XT_MATCH_RATEEST=m
+-CONFIG_NETFILTER_XT_MATCH_REALM=m
+-CONFIG_NETFILTER_XT_MATCH_RECENT=m
+-CONFIG_NETFILTER_XT_MATCH_SOCKET=m
+-CONFIG_NETFILTER_XT_MATCH_STATE=m
+-CONFIG_NETFILTER_XT_MATCH_STATISTIC=m
+-CONFIG_NETFILTER_XT_MATCH_STRING=m
+-CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
+-CONFIG_NETFILTER_XT_MATCH_TIME=m
+-CONFIG_NETFILTER_XT_MATCH_U32=m
+-CONFIG_IP_VS=m
+-CONFIG_IP_VS_IPV6=y
+-CONFIG_IP_VS_PROTO_TCP=y
+-CONFIG_IP_VS_PROTO_UDP=y
+-CONFIG_IP_VS_PROTO_ESP=y
+-CONFIG_IP_VS_PROTO_AH=y
+-CONFIG_IP_VS_RR=m
+-CONFIG_IP_VS_WRR=m
+-CONFIG_IP_VS_LC=m
+-CONFIG_IP_VS_WLC=m
+-CONFIG_IP_VS_LBLC=m
+-CONFIG_IP_VS_LBLCR=m
+-CONFIG_IP_VS_DH=m
+-CONFIG_IP_VS_SH=m
+-CONFIG_IP_VS_SED=m
+-CONFIG_IP_VS_NQ=m
+-CONFIG_IP_NF_IPTABLES=m
+-CONFIG_IP_NF_MATCH_AH=m
+-CONFIG_IP_NF_MATCH_ECN=m
+-CONFIG_IP_NF_MATCH_TTL=m
+-CONFIG_IP_NF_FILTER=m
+-CONFIG_IP_NF_TARGET_REJECT=m
+-CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+-CONFIG_IP_NF_TARGET_ECN=m
+-CONFIG_IP_NF_TARGET_TTL=m
+-CONFIG_IP_NF_RAW=m
+-CONFIG_IP_NF_SECURITY=m
+-CONFIG_IP_NF_ARPTABLES=m
+-CONFIG_IP_NF_ARPFILTER=m
+-CONFIG_IP_NF_ARP_MANGLE=m
+-CONFIG_IP6_NF_MATCH_AH=m
+-CONFIG_IP6_NF_MATCH_EUI64=m
+-CONFIG_IP6_NF_MATCH_FRAG=m
+-CONFIG_IP6_NF_MATCH_OPTS=m
+-CONFIG_IP6_NF_MATCH_HL=m
+-CONFIG_IP6_NF_MATCH_IPV6HEADER=m
+-CONFIG_IP6_NF_MATCH_MH=m
+-CONFIG_IP6_NF_MATCH_RT=m
+-CONFIG_IP6_NF_TARGET_HL=m
+-CONFIG_IP6_NF_FILTER=m
+-CONFIG_IP6_NF_TARGET_REJECT=m
+-CONFIG_IP6_NF_MANGLE=m
+-CONFIG_IP6_NF_RAW=m
+-CONFIG_IP6_NF_SECURITY=m
+-CONFIG_DECNET_NF_GRABULATOR=m
+-CONFIG_BRIDGE_NF_EBTABLES=m
+-CONFIG_BRIDGE_EBT_BROUTE=m
+-CONFIG_BRIDGE_EBT_T_FILTER=m
+-CONFIG_BRIDGE_EBT_T_NAT=m
+-CONFIG_BRIDGE_EBT_802_3=m
+-CONFIG_BRIDGE_EBT_AMONG=m
+-CONFIG_BRIDGE_EBT_ARP=m
+-CONFIG_BRIDGE_EBT_IP=m
+-CONFIG_BRIDGE_EBT_IP6=m
+-CONFIG_BRIDGE_EBT_LIMIT=m
+-CONFIG_BRIDGE_EBT_MARK=m
+-CONFIG_BRIDGE_EBT_PKTTYPE=m
+-CONFIG_BRIDGE_EBT_STP=m
+-CONFIG_BRIDGE_EBT_VLAN=m
+-CONFIG_BRIDGE_EBT_ARPREPLY=m
+-CONFIG_BRIDGE_EBT_DNAT=m
+-CONFIG_BRIDGE_EBT_MARK_T=m
+-CONFIG_BRIDGE_EBT_REDIRECT=m
+-CONFIG_BRIDGE_EBT_SNAT=m
+-CONFIG_BRIDGE_EBT_LOG=m
+-CONFIG_BRIDGE_EBT_NFLOG=m
+-CONFIG_IP_DCCP=m
+-CONFIG_RDS=m
+-CONFIG_RDS_TCP=m
+-CONFIG_TIPC=m
+-CONFIG_ATM=m
+-CONFIG_ATM_CLIP=m
+-CONFIG_ATM_LANE=m
+-CONFIG_ATM_MPOA=m
+-CONFIG_ATM_BR2684=m
+-CONFIG_BRIDGE=m
+-CONFIG_VLAN_8021Q=m
+-CONFIG_VLAN_8021Q_GVRP=y
+-CONFIG_DECNET=m
+-CONFIG_LLC2=m
+-CONFIG_ATALK=m
+-CONFIG_DEV_APPLETALK=m
+-CONFIG_IPDDP=m
+-CONFIG_IPDDP_ENCAP=y
+-CONFIG_X25=m
+-CONFIG_LAPB=m
+-CONFIG_PHONET=m
+-CONFIG_IEEE802154=m
+-CONFIG_NET_SCHED=y
+-CONFIG_NET_SCH_CBQ=m
+-CONFIG_NET_SCH_HTB=m
+-CONFIG_NET_SCH_HFSC=m
+-CONFIG_NET_SCH_ATM=m
+-CONFIG_NET_SCH_PRIO=m
+-CONFIG_NET_SCH_MULTIQ=m
+-CONFIG_NET_SCH_RED=m
+-CONFIG_NET_SCH_SFQ=m
+-CONFIG_NET_SCH_TEQL=m
+-CONFIG_NET_SCH_TBF=m
+-CONFIG_NET_SCH_GRED=m
+-CONFIG_NET_SCH_DSMARK=m
+-CONFIG_NET_SCH_NETEM=m
+-CONFIG_NET_SCH_DRR=m
+-CONFIG_NET_SCH_INGRESS=m
+-CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+-CONFIG_NET_CLS_ROUTE4=m
+-CONFIG_NET_CLS_FW=m
+-CONFIG_NET_CLS_U32=m
+-CONFIG_CLS_U32_MARK=y
+-CONFIG_NET_CLS_RSVP=m
+-CONFIG_NET_CLS_RSVP6=m
+-CONFIG_NET_CLS_FLOW=m
+-CONFIG_NET_EMATCH=y
+-CONFIG_NET_EMATCH_CMP=m
+-CONFIG_NET_EMATCH_NBYTE=m
+-CONFIG_NET_EMATCH_U32=m
+-CONFIG_NET_EMATCH_META=m
+-CONFIG_NET_EMATCH_TEXT=m
+-CONFIG_NET_CLS_ACT=y
+-CONFIG_NET_ACT_POLICE=m
+-CONFIG_NET_ACT_GACT=m
+-CONFIG_GACT_PROB=y
+-CONFIG_NET_ACT_MIRRED=m
+-CONFIG_NET_ACT_IPT=m
+-CONFIG_NET_ACT_NAT=m
+-CONFIG_NET_ACT_PEDIT=m
+-CONFIG_NET_ACT_SIMP=m
+-CONFIG_NET_ACT_SKBEDIT=m
+-CONFIG_DCB=y
+-CONFIG_NET_PKTGEN=m
+-CONFIG_DEVTMPFS=y
+-CONFIG_DEVTMPFS_MOUNT=y
+-# CONFIG_STANDALONE is not set
+-CONFIG_CONNECTOR=y
+-CONFIG_MTD=y
+-CONFIG_MTD_CMDLINE_PARTS=y
+-CONFIG_MTD_BLOCK=y
+-CONFIG_MTD_CFI=y
+-CONFIG_MTD_CFI_ADV_OPTIONS=y
+-CONFIG_MTD_CFI_LE_BYTE_SWAP=y
+-CONFIG_MTD_CFI_GEOMETRY=y
+-CONFIG_MTD_CFI_INTELEXT=y
+-CONFIG_MTD_PHYSMAP=y
+-CONFIG_MTD_PHYSMAP_OF=y
+-CONFIG_BLK_DEV_LOOP=y
+-CONFIG_BLK_DEV_CRYPTOLOOP=m
+-CONFIG_BLK_DEV_NBD=m
+-CONFIG_BLK_DEV_RAM=y
+-CONFIG_BLK_DEV_RAM_SIZE=65536
+-CONFIG_CDROM_PKTCDVD=y
+-CONFIG_RAID_ATTRS=m
+-CONFIG_BLK_DEV_SD=y
+-CONFIG_CHR_DEV_ST=m
+-CONFIG_CHR_DEV_OSST=m
+-CONFIG_BLK_DEV_SR=y
+-CONFIG_CHR_DEV_SG=y
+-CONFIG_CHR_DEV_SCH=m
+-CONFIG_SCSI_CONSTANTS=y
+-CONFIG_SCSI_LOGGING=y
+-CONFIG_SCSI_SCAN_ASYNC=y
+-CONFIG_SCSI_SPI_ATTRS=m
+-CONFIG_SCSI_SAS_LIBSAS=m
+-CONFIG_SCSI_SRP_ATTRS=m
+-CONFIG_ISCSI_TCP=m
+-CONFIG_SCSI_DEBUG=m
+-CONFIG_SCSI_DH=y
+-CONFIG_SCSI_DH_RDAC=m
+-CONFIG_SCSI_DH_HP_SW=m
+-CONFIG_SCSI_DH_EMC=m
+-CONFIG_SCSI_DH_ALUA=m
+-CONFIG_SCSI_OSD_INITIATOR=m
+-CONFIG_SCSI_OSD_ULD=m
+-CONFIG_ATA=y
+-CONFIG_SATA_AHCI=y
+-CONFIG_SATA_SIL24=y
+-# CONFIG_ATA_SFF is not set
+-CONFIG_NETDEVICES=y
+-# CONFIG_NET_VENDOR_3COM is not set
+-# CONFIG_NET_VENDOR_ADAPTEC is not set
+-# CONFIG_NET_VENDOR_ALTEON is not set
+-# CONFIG_NET_VENDOR_AMD is not set
+-# CONFIG_NET_VENDOR_ATHEROS is not set
+-# CONFIG_NET_VENDOR_BROADCOM is not set
+-# CONFIG_NET_VENDOR_BROCADE is not set
+-# CONFIG_NET_VENDOR_CHELSIO is not set
+-# CONFIG_NET_VENDOR_DEC is not set
+-# CONFIG_NET_VENDOR_DLINK is not set
+-# CONFIG_NET_VENDOR_EMULEX is not set
+-# CONFIG_NET_VENDOR_HP is not set
+-# CONFIG_NET_VENDOR_I825XX is not set
+-CONFIG_E1000E=y
+-CONFIG_SKY2=y
+-# CONFIG_NET_VENDOR_MELLANOX is not set
+-# CONFIG_NET_VENDOR_MICREL is not set
+-# CONFIG_NET_VENDOR_MYRI is not set
+-# CONFIG_NET_VENDOR_NATSEMI is not set
+-# CONFIG_NET_VENDOR_NVIDIA is not set
+-# CONFIG_NET_VENDOR_OKI is not set
+-# CONFIG_NET_VENDOR_QLOGIC is not set
+-# CONFIG_NET_VENDOR_RDC is not set
+-# CONFIG_NET_VENDOR_REALTEK is not set
+-# CONFIG_NET_VENDOR_SEEQ is not set
+-# CONFIG_NET_VENDOR_SILAN is not set
+-# CONFIG_NET_VENDOR_SIS is not set
+-# CONFIG_NET_VENDOR_SMSC is not set
+-# CONFIG_NET_VENDOR_STMICRO is not set
+-# CONFIG_NET_VENDOR_SUN is not set
+-# CONFIG_NET_VENDOR_TEHUTI is not set
+-# CONFIG_NET_VENDOR_TI is not set
+-# CONFIG_NET_VENDOR_TOSHIBA is not set
+-# CONFIG_NET_VENDOR_VIA is not set
+-# CONFIG_NET_VENDOR_WIZNET is not set
+-CONFIG_INPUT_EVDEV=y
+-CONFIG_INPUT_EVBUG=m
+-# CONFIG_INPUT_KEYBOARD is not set
+-# CONFIG_INPUT_MOUSE is not set
+-CONFIG_SERIO_SERPORT=m
+-CONFIG_SERIO_LIBPS2=y
+-CONFIG_SERIO_RAW=m
+-CONFIG_VT_HW_CONSOLE_BINDING=y
+-CONFIG_LEGACY_PTY_COUNT=0
+-CONFIG_SERIAL_NONSTANDARD=y
+-CONFIG_N_HDLC=m
+-CONFIG_SERIAL_8250=y
+-CONFIG_SERIAL_8250_CONSOLE=y
+-CONFIG_SERIAL_8250_NR_UARTS=48
+-CONFIG_SERIAL_8250_EXTENDED=y
+-CONFIG_SERIAL_8250_MANY_PORTS=y
+-CONFIG_SERIAL_8250_SHARE_IRQ=y
+-CONFIG_SERIAL_8250_RSA=y
+-CONFIG_SERIAL_OF_PLATFORM=y
+-CONFIG_HW_RANDOM=y
+-CONFIG_HW_RANDOM_TIMERIOMEM=m
+-CONFIG_RAW_DRIVER=m
+-CONFIG_I2C=y
+-CONFIG_I2C_CHARDEV=y
+-CONFIG_I2C_OCORES=y
+-CONFIG_SENSORS_LM90=y
+-CONFIG_THERMAL=y
+-# CONFIG_VGA_CONSOLE is not set
+-# CONFIG_USB_SUPPORT is not set
+-CONFIG_RTC_CLASS=y
+-CONFIG_RTC_DRV_DS1374=y
+-CONFIG_UIO=y
+-CONFIG_UIO_PDRV_GENIRQ=m
+-# CONFIG_IOMMU_SUPPORT is not set
+-CONFIG_EXT2_FS=y
+-CONFIG_EXT2_FS_XATTR=y
+-CONFIG_EXT2_FS_POSIX_ACL=y
+-CONFIG_EXT2_FS_SECURITY=y
+-CONFIG_EXT3_FS=y
+-CONFIG_EXT3_FS_POSIX_ACL=y
+-CONFIG_EXT3_FS_SECURITY=y
+-CONFIG_GFS2_FS=m
+-CONFIG_BTRFS_FS=m
+-CONFIG_BTRFS_FS_POSIX_ACL=y
+-CONFIG_NILFS2_FS=m
+-CONFIG_QUOTA_NETLINK_INTERFACE=y
+-CONFIG_AUTOFS4_FS=m
+-CONFIG_FUSE_FS=y
+-CONFIG_CUSE=m
+-CONFIG_FSCACHE=m
+-CONFIG_FSCACHE_STATS=y
+-CONFIG_FSCACHE_HISTOGRAM=y
+-CONFIG_CACHEFILES=m
+-CONFIG_ISO9660_FS=m
+-CONFIG_JOLIET=y
+-CONFIG_ZISOFS=y
+-CONFIG_UDF_FS=m
+-CONFIG_MSDOS_FS=m
+-CONFIG_VFAT_FS=m
+-CONFIG_NTFS_FS=m
+-CONFIG_PROC_KCORE=y
+-CONFIG_TMPFS=y
+-CONFIG_TMPFS_POSIX_ACL=y
+-CONFIG_ADFS_FS=m
+-CONFIG_AFFS_FS=m
+-CONFIG_ECRYPT_FS=y
+-CONFIG_HFS_FS=m
+-CONFIG_HFSPLUS_FS=m
+-CONFIG_BEFS_FS=m
+-CONFIG_BFS_FS=m
+-CONFIG_EFS_FS=m
+-CONFIG_JFFS2_FS=y
+-CONFIG_CRAMFS=m
+-CONFIG_SQUASHFS=m
+-CONFIG_VXFS_FS=m
+-CONFIG_MINIX_FS=m
+-CONFIG_OMFS_FS=m
+-CONFIG_HPFS_FS=m
+-CONFIG_QNX4FS_FS=m
+-CONFIG_ROMFS_FS=m
+-CONFIG_SYSV_FS=m
+-CONFIG_UFS_FS=m
+-CONFIG_EXOFS_FS=m
+-CONFIG_NFS_FS=m
+-CONFIG_NFS_V3_ACL=y
+-CONFIG_NFS_V4=m
+-CONFIG_NFS_FSCACHE=y
+-CONFIG_NFSD=m
+-CONFIG_NFSD_V3_ACL=y
+-CONFIG_NFSD_V4=y
+-CONFIG_CIFS=m
+-CONFIG_CIFS_WEAK_PW_HASH=y
+-CONFIG_CIFS_UPCALL=y
+-CONFIG_CIFS_XATTR=y
+-CONFIG_CIFS_POSIX=y
+-CONFIG_CIFS_DFS_UPCALL=y
+-CONFIG_CODA_FS=m
+-CONFIG_AFS_FS=m
+-CONFIG_NLS=y
+-CONFIG_NLS_DEFAULT="cp437"
+-CONFIG_NLS_CODEPAGE_437=m
+-CONFIG_NLS_CODEPAGE_737=m
+-CONFIG_NLS_CODEPAGE_775=m
+-CONFIG_NLS_CODEPAGE_850=m
+-CONFIG_NLS_CODEPAGE_852=m
+-CONFIG_NLS_CODEPAGE_855=m
+-CONFIG_NLS_CODEPAGE_857=m
+-CONFIG_NLS_CODEPAGE_860=m
+-CONFIG_NLS_CODEPAGE_861=m
+-CONFIG_NLS_CODEPAGE_862=m
+-CONFIG_NLS_CODEPAGE_863=m
+-CONFIG_NLS_CODEPAGE_864=m
+-CONFIG_NLS_CODEPAGE_865=m
+-CONFIG_NLS_CODEPAGE_866=m
+-CONFIG_NLS_CODEPAGE_869=m
+-CONFIG_NLS_CODEPAGE_936=m
+-CONFIG_NLS_CODEPAGE_950=m
+-CONFIG_NLS_CODEPAGE_932=m
+-CONFIG_NLS_CODEPAGE_949=m
+-CONFIG_NLS_CODEPAGE_874=m
+-CONFIG_NLS_ISO8859_8=m
+-CONFIG_NLS_CODEPAGE_1250=m
+-CONFIG_NLS_CODEPAGE_1251=m
+-CONFIG_NLS_ASCII=m
+-CONFIG_NLS_ISO8859_1=m
+-CONFIG_NLS_ISO8859_2=m
+-CONFIG_NLS_ISO8859_3=m
+-CONFIG_NLS_ISO8859_4=m
+-CONFIG_NLS_ISO8859_5=m
+-CONFIG_NLS_ISO8859_6=m
+-CONFIG_NLS_ISO8859_7=m
+-CONFIG_NLS_ISO8859_9=m
+-CONFIG_NLS_ISO8859_13=m
+-CONFIG_NLS_ISO8859_14=m
+-CONFIG_NLS_ISO8859_15=m
+-CONFIG_NLS_KOI8_R=m
+-CONFIG_NLS_KOI8_U=m
+-CONFIG_SECURITY=y
+-CONFIG_LSM_MMAP_MIN_ADDR=0
+-CONFIG_SECURITY_SELINUX=y
+-CONFIG_SECURITY_SELINUX_BOOTPARAM=y
+-CONFIG_SECURITY_SELINUX_BOOTPARAM_VALUE=0
+-CONFIG_SECURITY_SELINUX_DISABLE=y
+-CONFIG_SECURITY_SMACK=y
+-CONFIG_SECURITY_TOMOYO=y
+-CONFIG_CRYPTO_CRYPTD=m
+-CONFIG_CRYPTO_TEST=m
+-CONFIG_CRYPTO_GCM=m
+-CONFIG_CRYPTO_CTS=m
+-CONFIG_CRYPTO_LRW=m
+-CONFIG_CRYPTO_PCBC=m
+-CONFIG_CRYPTO_XTS=m
+-CONFIG_CRYPTO_HMAC=y
+-CONFIG_CRYPTO_XCBC=m
+-CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_MICHAEL_MIC=m
+-CONFIG_CRYPTO_RMD128=m
+-CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_RMD256=m
+-CONFIG_CRYPTO_RMD320=m
+-CONFIG_CRYPTO_TGR192=m
+-CONFIG_CRYPTO_WP512=m
+-CONFIG_CRYPTO_ANUBIS=m
+-CONFIG_CRYPTO_BLOWFISH=m
+-CONFIG_CRYPTO_CAMELLIA=m
+-CONFIG_CRYPTO_CAST5=m
+-CONFIG_CRYPTO_CAST6=m
+-CONFIG_CRYPTO_FCRYPT=m
+-CONFIG_CRYPTO_KHAZAD=m
+-CONFIG_CRYPTO_SALSA20=m
+-CONFIG_CRYPTO_SEED=m
+-CONFIG_CRYPTO_SERPENT=m
+-CONFIG_CRYPTO_TEA=m
+-CONFIG_CRYPTO_TWOFISH=m
+-CONFIG_CRYPTO_LZO=m
+-CONFIG_CRC7=m
+-CONFIG_PRINTK_TIME=y
+-CONFIG_DEBUG_INFO=y
+-# CONFIG_ENABLE_MUST_CHECK is not set
+-CONFIG_FRAME_WARN=1024
+-CONFIG_DEBUG_MEMORY_INIT=y
+-CONFIG_DETECT_HUNG_TASK=y
+-CONFIG_SCHEDSTATS=y
+-CONFIG_SCHED_TRACER=y
+-CONFIG_BLK_DEV_IO_TRACE=y
+-CONFIG_KGDB=y
+diff --git a/arch/mips/configs/nlm_xlr_defconfig b/arch/mips/configs/nlm_xlr_defconfig
+deleted file mode 100644
+index bf9b9244929e..000000000000
+--- a/arch/mips/configs/nlm_xlr_defconfig
++++ /dev/null
+@@ -1,508 +0,0 @@
+-# CONFIG_LOCALVERSION_AUTO is not set
+-CONFIG_SYSVIPC=y
+-CONFIG_POSIX_MQUEUE=y
+-CONFIG_AUDIT=y
+-CONFIG_NO_HZ=y
+-CONFIG_HIGH_RES_TIMERS=y
+-CONFIG_PREEMPT_VOLUNTARY=y
+-CONFIG_BSD_PROCESS_ACCT=y
+-CONFIG_BSD_PROCESS_ACCT_V3=y
+-CONFIG_TASKSTATS=y
+-CONFIG_TASK_DELAY_ACCT=y
+-CONFIG_TASK_XACCT=y
+-CONFIG_TASK_IO_ACCOUNTING=y
+-CONFIG_NAMESPACES=y
+-CONFIG_SCHED_AUTOGROUP=y
+-CONFIG_BLK_DEV_INITRD=y
+-CONFIG_EXPERT=y
+-# CONFIG_ELF_CORE is not set
+-CONFIG_KALLSYMS_ALL=y
+-# CONFIG_PERF_EVENTS is not set
+-# CONFIG_COMPAT_BRK is not set
+-CONFIG_PROFILING=y
+-CONFIG_NLM_XLR_BOARD=y
+-CONFIG_HIGHMEM=y
+-CONFIG_SMP=y
+-CONFIG_KEXEC=y
+-CONFIG_PCI=y
+-CONFIG_PCI_MSI=y
+-CONFIG_PCI_DEBUG=y
+-CONFIG_PM=y
+-CONFIG_PM_DEBUG=y
+-CONFIG_MODULES=y
+-CONFIG_MODULE_UNLOAD=y
+-CONFIG_MODVERSIONS=y
+-CONFIG_MODULE_SRCVERSION_ALL=y
+-CONFIG_BLK_DEV_INTEGRITY=y
+-CONFIG_PARTITION_ADVANCED=y
+-CONFIG_ACORN_PARTITION=y
+-CONFIG_ACORN_PARTITION_ICS=y
+-CONFIG_ACORN_PARTITION_RISCIX=y
+-CONFIG_OSF_PARTITION=y
+-CONFIG_AMIGA_PARTITION=y
+-CONFIG_ATARI_PARTITION=y
+-CONFIG_MAC_PARTITION=y
+-CONFIG_BSD_DISKLABEL=y
+-CONFIG_MINIX_SUBPARTITION=y
+-CONFIG_SOLARIS_X86_PARTITION=y
+-CONFIG_UNIXWARE_DISKLABEL=y
+-CONFIG_LDM_PARTITION=y
+-CONFIG_SGI_PARTITION=y
+-CONFIG_ULTRIX_PARTITION=y
+-CONFIG_SUN_PARTITION=y
+-CONFIG_KARMA_PARTITION=y
+-CONFIG_SYSV68_PARTITION=y
+-CONFIG_BINFMT_MISC=m
+-CONFIG_KSM=y
+-CONFIG_DEFAULT_MMAP_MIN_ADDR=65536
+-CONFIG_NET=y
+-CONFIG_PACKET=y
+-CONFIG_UNIX=y
+-CONFIG_XFRM_USER=m
+-CONFIG_NET_KEY=m
+-CONFIG_INET=y
+-CONFIG_IP_MULTICAST=y
+-CONFIG_IP_ADVANCED_ROUTER=y
+-CONFIG_IP_MULTIPLE_TABLES=y
+-CONFIG_IP_ROUTE_MULTIPATH=y
+-CONFIG_IP_ROUTE_VERBOSE=y
+-CONFIG_NET_IPIP=m
+-CONFIG_IP_MROUTE=y
+-CONFIG_IP_PIMSM_V1=y
+-CONFIG_IP_PIMSM_V2=y
+-CONFIG_SYN_COOKIES=y
+-CONFIG_INET_AH=m
+-CONFIG_INET_ESP=m
+-CONFIG_INET_IPCOMP=m
+-CONFIG_INET_XFRM_MODE_TRANSPORT=m
+-CONFIG_INET_XFRM_MODE_TUNNEL=m
+-CONFIG_INET_XFRM_MODE_BEET=m
+-CONFIG_TCP_CONG_ADVANCED=y
+-CONFIG_TCP_CONG_HSTCP=m
+-CONFIG_TCP_CONG_HYBLA=m
+-CONFIG_TCP_CONG_SCALABLE=m
+-CONFIG_TCP_CONG_LP=m
+-CONFIG_TCP_CONG_VENO=m
+-CONFIG_TCP_CONG_YEAH=m
+-CONFIG_TCP_CONG_ILLINOIS=m
+-CONFIG_TCP_MD5SIG=y
+-CONFIG_INET6_AH=m
+-CONFIG_INET6_ESP=m
+-CONFIG_INET6_IPCOMP=m
+-CONFIG_INET6_XFRM_MODE_TRANSPORT=m
+-CONFIG_INET6_XFRM_MODE_TUNNEL=m
+-CONFIG_INET6_XFRM_MODE_BEET=m
+-CONFIG_INET6_XFRM_MODE_ROUTEOPTIMIZATION=m
+-CONFIG_IPV6_SIT=m
+-CONFIG_IPV6_TUNNEL=m
+-CONFIG_IPV6_MULTIPLE_TABLES=y
+-CONFIG_NETFILTER=y
+-CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_CONNTRACK_SECMARK=y
+-CONFIG_NF_CONNTRACK_EVENTS=y
+-CONFIG_NF_CONNTRACK_AMANDA=m
+-CONFIG_NF_CONNTRACK_FTP=m
+-CONFIG_NF_CONNTRACK_H323=m
+-CONFIG_NF_CONNTRACK_IRC=m
+-CONFIG_NF_CONNTRACK_NETBIOS_NS=m
+-CONFIG_NF_CONNTRACK_PPTP=m
+-CONFIG_NF_CONNTRACK_SANE=m
+-CONFIG_NF_CONNTRACK_SIP=m
+-CONFIG_NF_CONNTRACK_TFTP=m
+-CONFIG_NF_CT_NETLINK=m
+-CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+-CONFIG_NETFILTER_XT_TARGET_CONNMARK=m
+-CONFIG_NETFILTER_XT_TARGET_CONNSECMARK=m
+-CONFIG_NETFILTER_XT_TARGET_DSCP=m
+-CONFIG_NETFILTER_XT_TARGET_MARK=m
+-CONFIG_NETFILTER_XT_TARGET_NFLOG=m
+-CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
+-CONFIG_NETFILTER_XT_TARGET_TPROXY=m
+-CONFIG_NETFILTER_XT_TARGET_TRACE=m
+-CONFIG_NETFILTER_XT_TARGET_SECMARK=m
+-CONFIG_NETFILTER_XT_TARGET_TCPMSS=m
+-CONFIG_NETFILTER_XT_MATCH_CLUSTER=m
+-CONFIG_NETFILTER_XT_MATCH_COMMENT=m
+-CONFIG_NETFILTER_XT_MATCH_CONNBYTES=m
+-CONFIG_NETFILTER_XT_MATCH_CONNLIMIT=m
+-CONFIG_NETFILTER_XT_MATCH_CONNMARK=m
+-CONFIG_NETFILTER_XT_MATCH_CONNTRACK=m
+-CONFIG_NETFILTER_XT_MATCH_DSCP=m
+-CONFIG_NETFILTER_XT_MATCH_ESP=m
+-CONFIG_NETFILTER_XT_MATCH_HASHLIMIT=m
+-CONFIG_NETFILTER_XT_MATCH_HELPER=m
+-CONFIG_NETFILTER_XT_MATCH_IPRANGE=m
+-CONFIG_NETFILTER_XT_MATCH_LENGTH=m
+-CONFIG_NETFILTER_XT_MATCH_LIMIT=m
+-CONFIG_NETFILTER_XT_MATCH_MAC=m
+-CONFIG_NETFILTER_XT_MATCH_MARK=m
+-CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
+-CONFIG_NETFILTER_XT_MATCH_OSF=m
+-CONFIG_NETFILTER_XT_MATCH_OWNER=m
+-CONFIG_NETFILTER_XT_MATCH_POLICY=m
+-CONFIG_NETFILTER_XT_MATCH_PHYSDEV=m
+-CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
+-CONFIG_NETFILTER_XT_MATCH_QUOTA=m
+-CONFIG_NETFILTER_XT_MATCH_RATEEST=m
+-CONFIG_NETFILTER_XT_MATCH_REALM=m
+-CONFIG_NETFILTER_XT_MATCH_RECENT=m
+-CONFIG_NETFILTER_XT_MATCH_SOCKET=m
+-CONFIG_NETFILTER_XT_MATCH_STATE=m
+-CONFIG_NETFILTER_XT_MATCH_STATISTIC=m
+-CONFIG_NETFILTER_XT_MATCH_STRING=m
+-CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
+-CONFIG_NETFILTER_XT_MATCH_TIME=m
+-CONFIG_NETFILTER_XT_MATCH_U32=m
+-CONFIG_IP_VS=m
+-CONFIG_IP_VS_IPV6=y
+-CONFIG_IP_VS_PROTO_TCP=y
+-CONFIG_IP_VS_PROTO_UDP=y
+-CONFIG_IP_VS_PROTO_ESP=y
+-CONFIG_IP_VS_PROTO_AH=y
+-CONFIG_IP_VS_RR=m
+-CONFIG_IP_VS_WRR=m
+-CONFIG_IP_VS_LC=m
+-CONFIG_IP_VS_WLC=m
+-CONFIG_IP_VS_LBLC=m
+-CONFIG_IP_VS_LBLCR=m
+-CONFIG_IP_VS_DH=m
+-CONFIG_IP_VS_SH=m
+-CONFIG_IP_VS_SED=m
+-CONFIG_IP_VS_NQ=m
+-CONFIG_IP_NF_IPTABLES=m
+-CONFIG_IP_NF_MATCH_AH=m
+-CONFIG_IP_NF_MATCH_ECN=m
+-CONFIG_IP_NF_MATCH_TTL=m
+-CONFIG_IP_NF_FILTER=m
+-CONFIG_IP_NF_TARGET_REJECT=m
+-CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+-CONFIG_IP_NF_TARGET_ECN=m
+-CONFIG_IP_NF_TARGET_TTL=m
+-CONFIG_IP_NF_RAW=m
+-CONFIG_IP_NF_SECURITY=m
+-CONFIG_IP_NF_ARPTABLES=m
+-CONFIG_IP_NF_ARPFILTER=m
+-CONFIG_IP_NF_ARP_MANGLE=m
+-CONFIG_IP6_NF_MATCH_AH=m
+-CONFIG_IP6_NF_MATCH_EUI64=m
+-CONFIG_IP6_NF_MATCH_FRAG=m
+-CONFIG_IP6_NF_MATCH_OPTS=m
+-CONFIG_IP6_NF_MATCH_HL=m
+-CONFIG_IP6_NF_MATCH_IPV6HEADER=m
+-CONFIG_IP6_NF_MATCH_MH=m
+-CONFIG_IP6_NF_MATCH_RT=m
+-CONFIG_IP6_NF_TARGET_HL=m
+-CONFIG_IP6_NF_FILTER=m
+-CONFIG_IP6_NF_TARGET_REJECT=m
+-CONFIG_IP6_NF_MANGLE=m
+-CONFIG_IP6_NF_RAW=m
+-CONFIG_IP6_NF_SECURITY=m
+-CONFIG_DECNET_NF_GRABULATOR=m
+-CONFIG_BRIDGE_NF_EBTABLES=m
+-CONFIG_BRIDGE_EBT_BROUTE=m
+-CONFIG_BRIDGE_EBT_T_FILTER=m
+-CONFIG_BRIDGE_EBT_T_NAT=m
+-CONFIG_BRIDGE_EBT_802_3=m
+-CONFIG_BRIDGE_EBT_AMONG=m
+-CONFIG_BRIDGE_EBT_ARP=m
+-CONFIG_BRIDGE_EBT_IP=m
+-CONFIG_BRIDGE_EBT_IP6=m
+-CONFIG_BRIDGE_EBT_LIMIT=m
+-CONFIG_BRIDGE_EBT_MARK=m
+-CONFIG_BRIDGE_EBT_PKTTYPE=m
+-CONFIG_BRIDGE_EBT_STP=m
+-CONFIG_BRIDGE_EBT_VLAN=m
+-CONFIG_BRIDGE_EBT_ARPREPLY=m
+-CONFIG_BRIDGE_EBT_DNAT=m
+-CONFIG_BRIDGE_EBT_MARK_T=m
+-CONFIG_BRIDGE_EBT_REDIRECT=m
+-CONFIG_BRIDGE_EBT_SNAT=m
+-CONFIG_BRIDGE_EBT_LOG=m
+-CONFIG_BRIDGE_EBT_NFLOG=m
+-CONFIG_IP_DCCP=m
+-CONFIG_RDS=m
+-CONFIG_RDS_TCP=m
+-CONFIG_TIPC=m
+-CONFIG_ATM=m
+-CONFIG_ATM_CLIP=m
+-CONFIG_ATM_LANE=m
+-CONFIG_ATM_MPOA=m
+-CONFIG_ATM_BR2684=m
+-CONFIG_BRIDGE=m
+-CONFIG_VLAN_8021Q=m
+-CONFIG_VLAN_8021Q_GVRP=y
+-CONFIG_DECNET=m
+-CONFIG_LLC2=m
+-CONFIG_ATALK=m
+-CONFIG_DEV_APPLETALK=m
+-CONFIG_IPDDP=m
+-CONFIG_IPDDP_ENCAP=y
+-CONFIG_X25=m
+-CONFIG_LAPB=m
+-CONFIG_PHONET=m
+-CONFIG_IEEE802154=m
+-CONFIG_NET_SCHED=y
+-CONFIG_NET_SCH_CBQ=m
+-CONFIG_NET_SCH_HTB=m
+-CONFIG_NET_SCH_HFSC=m
+-CONFIG_NET_SCH_ATM=m
+-CONFIG_NET_SCH_PRIO=m
+-CONFIG_NET_SCH_MULTIQ=m
+-CONFIG_NET_SCH_RED=m
+-CONFIG_NET_SCH_SFQ=m
+-CONFIG_NET_SCH_TEQL=m
+-CONFIG_NET_SCH_TBF=m
+-CONFIG_NET_SCH_GRED=m
+-CONFIG_NET_SCH_DSMARK=m
+-CONFIG_NET_SCH_NETEM=m
+-CONFIG_NET_SCH_DRR=m
+-CONFIG_NET_SCH_INGRESS=m
+-CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+-CONFIG_NET_CLS_ROUTE4=m
+-CONFIG_NET_CLS_FW=m
+-CONFIG_NET_CLS_U32=m
+-CONFIG_CLS_U32_MARK=y
+-CONFIG_NET_CLS_RSVP=m
+-CONFIG_NET_CLS_RSVP6=m
+-CONFIG_NET_CLS_FLOW=m
+-CONFIG_NET_EMATCH=y
+-CONFIG_NET_EMATCH_CMP=m
+-CONFIG_NET_EMATCH_NBYTE=m
+-CONFIG_NET_EMATCH_U32=m
+-CONFIG_NET_EMATCH_META=m
+-CONFIG_NET_EMATCH_TEXT=m
+-CONFIG_NET_CLS_ACT=y
+-CONFIG_NET_ACT_POLICE=m
+-CONFIG_NET_ACT_GACT=m
+-CONFIG_GACT_PROB=y
+-CONFIG_NET_ACT_MIRRED=m
+-CONFIG_NET_ACT_IPT=m
+-CONFIG_NET_ACT_NAT=m
+-CONFIG_NET_ACT_PEDIT=m
+-CONFIG_NET_ACT_SIMP=m
+-CONFIG_NET_ACT_SKBEDIT=m
+-CONFIG_DCB=y
+-CONFIG_NET_PKTGEN=m
+-CONFIG_DEVTMPFS=y
+-CONFIG_DEVTMPFS_MOUNT=y
+-# CONFIG_STANDALONE is not set
+-CONFIG_CONNECTOR=y
+-CONFIG_BLK_DEV_LOOP=y
+-CONFIG_BLK_DEV_CRYPTOLOOP=m
+-CONFIG_BLK_DEV_NBD=m
+-CONFIG_BLK_DEV_RAM=y
+-CONFIG_BLK_DEV_RAM_SIZE=65536
+-CONFIG_CDROM_PKTCDVD=y
+-CONFIG_RAID_ATTRS=m
+-CONFIG_SCSI=y
+-CONFIG_BLK_DEV_SD=y
+-CONFIG_CHR_DEV_ST=m
+-CONFIG_CHR_DEV_OSST=m
+-CONFIG_BLK_DEV_SR=y
+-CONFIG_CHR_DEV_SG=y
+-CONFIG_CHR_DEV_SCH=m
+-CONFIG_SCSI_CONSTANTS=y
+-CONFIG_SCSI_LOGGING=y
+-CONFIG_SCSI_SCAN_ASYNC=y
+-CONFIG_SCSI_SPI_ATTRS=m
+-CONFIG_SCSI_SAS_LIBSAS=m
+-CONFIG_SCSI_SRP_ATTRS=m
+-CONFIG_ISCSI_TCP=m
+-CONFIG_SCSI_DEBUG=m
+-CONFIG_SCSI_DH=y
+-CONFIG_SCSI_DH_RDAC=m
+-CONFIG_SCSI_DH_HP_SW=m
+-CONFIG_SCSI_DH_EMC=m
+-CONFIG_SCSI_DH_ALUA=m
+-CONFIG_SCSI_OSD_INITIATOR=m
+-CONFIG_SCSI_OSD_ULD=m
+-CONFIG_NETDEVICES=y
+-CONFIG_E1000E=y
+-CONFIG_SKY2=y
+-CONFIG_INPUT_EVDEV=y
+-CONFIG_INPUT_EVBUG=m
+-# CONFIG_INPUT_KEYBOARD is not set
+-# CONFIG_INPUT_MOUSE is not set
+-CONFIG_SERIO_SERPORT=m
+-CONFIG_SERIO_LIBPS2=y
+-CONFIG_SERIO_RAW=m
+-CONFIG_VT_HW_CONSOLE_BINDING=y
+-CONFIG_LEGACY_PTY_COUNT=0
+-CONFIG_SERIAL_NONSTANDARD=y
+-CONFIG_N_HDLC=m
+-CONFIG_SERIAL_8250=y
+-CONFIG_SERIAL_8250_CONSOLE=y
+-CONFIG_SERIAL_8250_NR_UARTS=48
+-CONFIG_SERIAL_8250_EXTENDED=y
+-CONFIG_SERIAL_8250_MANY_PORTS=y
+-CONFIG_SERIAL_8250_SHARE_IRQ=y
+-CONFIG_SERIAL_8250_RSA=y
+-CONFIG_HW_RANDOM=y
+-CONFIG_HW_RANDOM_TIMERIOMEM=m
+-CONFIG_RAW_DRIVER=m
+-CONFIG_I2C=y
+-CONFIG_I2C_XLR=y
+-# CONFIG_HWMON is not set
+-# CONFIG_VGA_CONSOLE is not set
+-# CONFIG_USB_SUPPORT is not set
+-CONFIG_RTC_CLASS=y
+-CONFIG_RTC_DRV_DS1374=y
+-CONFIG_UIO=y
+-CONFIG_UIO_PDRV_GENIRQ=m
+-CONFIG_EXT2_FS=y
+-CONFIG_EXT2_FS_XATTR=y
+-CONFIG_EXT2_FS_POSIX_ACL=y
+-CONFIG_EXT2_FS_SECURITY=y
+-CONFIG_EXT3_FS=y
+-CONFIG_EXT3_FS_POSIX_ACL=y
+-CONFIG_EXT3_FS_SECURITY=y
+-CONFIG_GFS2_FS=m
+-CONFIG_OCFS2_FS=m
+-CONFIG_BTRFS_FS=m
+-CONFIG_BTRFS_FS_POSIX_ACL=y
+-CONFIG_NILFS2_FS=m
+-CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+-CONFIG_QFMT_V1=m
+-CONFIG_QFMT_V2=m
+-CONFIG_AUTOFS4_FS=m
+-CONFIG_FUSE_FS=y
+-CONFIG_CUSE=m
+-CONFIG_FSCACHE=m
+-CONFIG_FSCACHE_STATS=y
+-CONFIG_FSCACHE_HISTOGRAM=y
+-CONFIG_CACHEFILES=m
+-CONFIG_ISO9660_FS=m
+-CONFIG_JOLIET=y
+-CONFIG_ZISOFS=y
+-CONFIG_UDF_FS=m
+-CONFIG_MSDOS_FS=m
+-CONFIG_VFAT_FS=m
+-CONFIG_NTFS_FS=m
+-CONFIG_PROC_KCORE=y
+-CONFIG_TMPFS=y
+-CONFIG_TMPFS_POSIX_ACL=y
+-CONFIG_CONFIGFS_FS=y
+-CONFIG_ADFS_FS=m
+-CONFIG_AFFS_FS=m
+-CONFIG_ECRYPT_FS=y
+-CONFIG_HFS_FS=m
+-CONFIG_HFSPLUS_FS=m
+-CONFIG_BEFS_FS=m
+-CONFIG_BFS_FS=m
+-CONFIG_EFS_FS=m
+-CONFIG_CRAMFS=m
+-CONFIG_SQUASHFS=m
+-CONFIG_VXFS_FS=m
+-CONFIG_MINIX_FS=m
+-CONFIG_OMFS_FS=m
+-CONFIG_HPFS_FS=m
+-CONFIG_QNX4FS_FS=m
+-CONFIG_ROMFS_FS=m
+-CONFIG_SYSV_FS=m
+-CONFIG_UFS_FS=m
+-CONFIG_EXOFS_FS=m
+-CONFIG_NFS_FS=m
+-CONFIG_NFS_V3_ACL=y
+-CONFIG_NFS_V4=m
+-CONFIG_NFS_FSCACHE=y
+-CONFIG_NFSD=m
+-CONFIG_NFSD_V3_ACL=y
+-CONFIG_NFSD_V4=y
+-CONFIG_CIFS=m
+-CONFIG_CIFS_WEAK_PW_HASH=y
+-CONFIG_CIFS_UPCALL=y
+-CONFIG_CIFS_XATTR=y
+-CONFIG_CIFS_POSIX=y
+-CONFIG_CIFS_DFS_UPCALL=y
+-CONFIG_CODA_FS=m
+-CONFIG_AFS_FS=m
+-CONFIG_NLS=y
+-CONFIG_NLS_DEFAULT="cp437"
+-CONFIG_NLS_CODEPAGE_437=m
+-CONFIG_NLS_CODEPAGE_737=m
+-CONFIG_NLS_CODEPAGE_775=m
+-CONFIG_NLS_CODEPAGE_850=m
+-CONFIG_NLS_CODEPAGE_852=m
+-CONFIG_NLS_CODEPAGE_855=m
+-CONFIG_NLS_CODEPAGE_857=m
+-CONFIG_NLS_CODEPAGE_860=m
+-CONFIG_NLS_CODEPAGE_861=m
+-CONFIG_NLS_CODEPAGE_862=m
+-CONFIG_NLS_CODEPAGE_863=m
+-CONFIG_NLS_CODEPAGE_864=m
+-CONFIG_NLS_CODEPAGE_865=m
+-CONFIG_NLS_CODEPAGE_866=m
+-CONFIG_NLS_CODEPAGE_869=m
+-CONFIG_NLS_CODEPAGE_936=m
+-CONFIG_NLS_CODEPAGE_950=m
+-CONFIG_NLS_CODEPAGE_932=m
+-CONFIG_NLS_CODEPAGE_949=m
+-CONFIG_NLS_CODEPAGE_874=m
+-CONFIG_NLS_ISO8859_8=m
+-CONFIG_NLS_CODEPAGE_1250=m
+-CONFIG_NLS_CODEPAGE_1251=m
+-CONFIG_NLS_ASCII=m
+-CONFIG_NLS_ISO8859_1=m
+-CONFIG_NLS_ISO8859_2=m
+-CONFIG_NLS_ISO8859_3=m
+-CONFIG_NLS_ISO8859_4=m
+-CONFIG_NLS_ISO8859_5=m
+-CONFIG_NLS_ISO8859_6=m
+-CONFIG_NLS_ISO8859_7=m
+-CONFIG_NLS_ISO8859_9=m
+-CONFIG_NLS_ISO8859_13=m
+-CONFIG_NLS_ISO8859_14=m
+-CONFIG_NLS_ISO8859_15=m
+-CONFIG_NLS_KOI8_R=m
+-CONFIG_NLS_KOI8_U=m
+-CONFIG_SECURITY=y
+-CONFIG_LSM_MMAP_MIN_ADDR=0
+-CONFIG_SECURITY_SELINUX=y
+-CONFIG_SECURITY_SELINUX_BOOTPARAM=y
+-CONFIG_SECURITY_SELINUX_BOOTPARAM_VALUE=0
+-CONFIG_SECURITY_SELINUX_DISABLE=y
+-CONFIG_SECURITY_SMACK=y
+-CONFIG_SECURITY_TOMOYO=y
+-CONFIG_CRYPTO_CRYPTD=m
+-CONFIG_CRYPTO_TEST=m
+-CONFIG_CRYPTO_GCM=m
+-CONFIG_CRYPTO_CTS=m
+-CONFIG_CRYPTO_LRW=m
+-CONFIG_CRYPTO_PCBC=m
+-CONFIG_CRYPTO_XTS=m
+-CONFIG_CRYPTO_HMAC=y
+-CONFIG_CRYPTO_XCBC=m
+-CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_MICHAEL_MIC=m
+-CONFIG_CRYPTO_RMD128=m
+-CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_RMD256=m
+-CONFIG_CRYPTO_RMD320=m
+-CONFIG_CRYPTO_TGR192=m
+-CONFIG_CRYPTO_WP512=m
+-CONFIG_CRYPTO_ANUBIS=m
+-CONFIG_CRYPTO_BLOWFISH=m
+-CONFIG_CRYPTO_CAMELLIA=m
+-CONFIG_CRYPTO_CAST5=m
+-CONFIG_CRYPTO_CAST6=m
+-CONFIG_CRYPTO_FCRYPT=m
+-CONFIG_CRYPTO_KHAZAD=m
+-CONFIG_CRYPTO_SALSA20=m
+-CONFIG_CRYPTO_SEED=m
+-CONFIG_CRYPTO_SERPENT=m
+-CONFIG_CRYPTO_TEA=m
+-CONFIG_CRYPTO_TWOFISH=m
+-CONFIG_CRYPTO_LZO=m
+-CONFIG_CRC7=m
+-CONFIG_PRINTK_TIME=y
+-CONFIG_DEBUG_INFO=y
+-# CONFIG_ENABLE_MUST_CHECK is not set
+-CONFIG_DEBUG_MEMORY_INIT=y
+-CONFIG_DETECT_HUNG_TASK=y
+-CONFIG_SCHEDSTATS=y
+-CONFIG_SCHED_TRACER=y
+-CONFIG_BLK_DEV_IO_TRACE=y
+-CONFIG_KGDB=y
+diff --git a/arch/mips/include/asm/cop2.h b/arch/mips/include/asm/cop2.h
+index 6b7396a6a115..01b05be23a5d 100644
+--- a/arch/mips/include/asm/cop2.h
++++ b/arch/mips/include/asm/cop2.h
+@@ -22,17 +22,6 @@ extern void octeon_cop2_restore(struct octeon_cop2_state *);
+ #define cop2_present		1
+ #define cop2_lazy_restore	1
+ 
+-#elif defined(CONFIG_CPU_XLP)
+-
+-extern void nlm_cop2_save(struct nlm_cop2_state *);
+-extern void nlm_cop2_restore(struct nlm_cop2_state *);
+-
+-#define cop2_save(r)		nlm_cop2_save(&(r)->thread.cp2)
+-#define cop2_restore(r)		nlm_cop2_restore(&(r)->thread.cp2)
+-
+-#define cop2_present		1
+-#define cop2_lazy_restore	0
+-
+ #elif defined(CONFIG_CPU_LOONGSON64)
+ 
+ #define cop2_present		1
+diff --git a/arch/mips/include/asm/cpu-type.h b/arch/mips/include/asm/cpu-type.h
+index 2be5d7b5de68..5efe8c8b854e 100644
+--- a/arch/mips/include/asm/cpu-type.h
++++ b/arch/mips/include/asm/cpu-type.h
+@@ -195,14 +195,6 @@ static inline int __pure __get_cpu_type(const int cpu_type)
+ #ifdef CONFIG_SYS_HAS_CPU_BMIPS5000
+ 	case CPU_BMIPS5000:
+ #endif
+-
+-#ifdef CONFIG_SYS_HAS_CPU_XLP
+-	case CPU_XLP:
+-#endif
+-
+-#ifdef CONFIG_SYS_HAS_CPU_XLR
+-	case CPU_XLR:
+-#endif
+ 		break;
+ 	default:
+ 		unreachable();
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index d45a52f65b7a..5c2f8d9cb7cf 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -328,7 +328,7 @@ enum cpu_type_enum {
+ 	 */
+ 	CPU_5KC, CPU_5KE, CPU_20KC, CPU_25KF, CPU_SB1, CPU_SB1A, CPU_LOONGSON2EF,
+ 	CPU_LOONGSON64, CPU_CAVIUM_OCTEON, CPU_CAVIUM_OCTEON_PLUS,
+-	CPU_CAVIUM_OCTEON2, CPU_CAVIUM_OCTEON3, CPU_XLR, CPU_XLP, CPU_I6500,
++	CPU_CAVIUM_OCTEON2, CPU_CAVIUM_OCTEON3, CPU_I6500,
+ 
+ 	CPU_QEMU_GENERIC,
+ 
+diff --git a/arch/mips/include/asm/hazards.h b/arch/mips/include/asm/hazards.h
+index f855478d12fa..cb16be93b048 100644
+--- a/arch/mips/include/asm/hazards.h
++++ b/arch/mips/include/asm/hazards.h
+@@ -160,7 +160,7 @@ do {									\
+ 
+ #elif defined(CONFIG_MIPS_ALCHEMY) || defined(CONFIG_CPU_CAVIUM_OCTEON) || \
+ 	defined(CONFIG_CPU_LOONGSON2EF) || defined(CONFIG_CPU_LOONGSON64) || \
+-	defined(CONFIG_CPU_R10000) || defined(CONFIG_CPU_R5500) || defined(CONFIG_CPU_XLR)
++	defined(CONFIG_CPU_R10000) || defined(CONFIG_CPU_R5500)
+ 
+ /*
+  * R10000 rocks - all hazards handled in hardware, so this becomes a nobrainer.
+diff --git a/arch/mips/include/asm/mach-netlogic/cpu-feature-overrides.h b/arch/mips/include/asm/mach-netlogic/cpu-feature-overrides.h
+deleted file mode 100644
+index 0c29ff820bb9..000000000000
+--- a/arch/mips/include/asm/mach-netlogic/cpu-feature-overrides.h
++++ /dev/null
+@@ -1,57 +0,0 @@
+-/*
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- *
+- * Copyright (C) 2011 Netlogic Microsystems
+- * Copyright (C) 2003 Ralf Baechle
+- */
+-#ifndef __ASM_MACH_NETLOGIC_CPU_FEATURE_OVERRIDES_H
+-#define __ASM_MACH_NETLOGIC_CPU_FEATURE_OVERRIDES_H
+-
+-#define cpu_has_4kex		1
+-#define cpu_has_4k_cache	1
+-#define cpu_has_watch		1
+-#define cpu_has_mips16		0
+-#define cpu_has_mips16e2	0
+-#define cpu_has_counter		1
+-#define cpu_has_divec		1
+-#define cpu_has_vce		0
+-#define cpu_has_cache_cdex_p	0
+-#define cpu_has_cache_cdex_s	0
+-#define cpu_has_prefetch	1
+-#define cpu_has_mcheck		1
+-#define cpu_has_ejtag		1
+-
+-#define cpu_has_llsc		1
+-#define cpu_has_vtag_icache	0
+-#define cpu_has_ic_fills_f_dc	1
+-#define cpu_has_dsp		0
+-#define cpu_has_dsp2		0
+-#define cpu_has_mipsmt		0
+-#define cpu_icache_snoops_remote_store	1
+-
+-#define cpu_has_64bits		1
+-
+-#define cpu_has_mips32r1	1
+-#define cpu_has_mips64r1	1
+-
+-#define cpu_has_inclusive_pcaches	0
+-
+-#define cpu_dcache_line_size()	32
+-#define cpu_icache_line_size()	32
+-
+-#if defined(CONFIG_CPU_XLR)
+-#define cpu_has_userlocal	0
+-#define cpu_has_dc_aliases	0
+-#define cpu_has_mips32r2	0
+-#define cpu_has_mips64r2	0
+-#elif defined(CONFIG_CPU_XLP)
+-#define cpu_has_userlocal	1
+-#define cpu_has_mips32r2	1
+-#define cpu_has_mips64r2	1
+-#else
+-#error "Unknown Netlogic CPU"
+-#endif
+-
+-#endif /* __ASM_MACH_NETLOGIC_CPU_FEATURE_OVERRIDES_H */
+diff --git a/arch/mips/include/asm/mach-netlogic/irq.h b/arch/mips/include/asm/mach-netlogic/irq.h
+deleted file mode 100644
+index c0dbd530cca6..000000000000
+--- a/arch/mips/include/asm/mach-netlogic/irq.h
++++ /dev/null
+@@ -1,17 +0,0 @@
+-/*
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- *
+- * Copyright (C) 2011 Netlogic Microsystems.
+- */
+-#ifndef __ASM_NETLOGIC_IRQ_H
+-#define __ASM_NETLOGIC_IRQ_H
+-
+-#include <asm/mach-netlogic/multi-node.h>
+-#define NLM_IRQS_PER_NODE	1024
+-#define NR_IRQS			(NLM_IRQS_PER_NODE * NLM_NR_NODES)
+-
+-#define MIPS_CPU_IRQ_BASE	0
+-
+-#endif /* __ASM_NETLOGIC_IRQ_H */
+diff --git a/arch/mips/include/asm/mach-netlogic/multi-node.h b/arch/mips/include/asm/mach-netlogic/multi-node.h
+deleted file mode 100644
+index 8bdf47e29145..000000000000
+--- a/arch/mips/include/asm/mach-netlogic/multi-node.h
++++ /dev/null
+@@ -1,74 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _NETLOGIC_MULTI_NODE_H_
+-#define _NETLOGIC_MULTI_NODE_H_
+-
+-#ifndef CONFIG_NLM_MULTINODE
+-#define NLM_NR_NODES		1
+-#else
+-#if defined(CONFIG_NLM_MULTINODE_2)
+-#define NLM_NR_NODES		2
+-#elif defined(CONFIG_NLM_MULTINODE_4)
+-#define NLM_NR_NODES		4
+-#else
+-#define NLM_NR_NODES		1
+-#endif
+-#endif
+-
+-#define NLM_THREADS_PER_CORE	4
+-
+-struct nlm_soc_info {
+-	unsigned long	coremask;	/* cores enabled on the soc */
+-	unsigned long	ebase;		/* not used now */
+-	uint64_t	irqmask;	/* EIMR for the node */
+-	uint64_t	sysbase;	/* only for XLP - sys block base */
+-	uint64_t	picbase;	/* PIC block base */
+-	spinlock_t	piclock;	/* lock for PIC access */
+-	cpumask_t	cpumask;	/* logical cpu mask for node */
+-	unsigned int	socbus;
+-};
+-
+-extern struct nlm_soc_info nlm_nodes[NLM_NR_NODES];
+-#define nlm_get_node(i)		(&nlm_nodes[i])
+-#define nlm_node_present(n)	((n) >= 0 && (n) < NLM_NR_NODES && \
+-					nlm_get_node(n)->coremask != 0)
+-#ifdef CONFIG_CPU_XLR
+-#define nlm_current_node()	(&nlm_nodes[0])
+-#else
+-#define nlm_current_node()	(&nlm_nodes[nlm_nodeid()])
+-#endif
+-void nlm_node_init(int node);
+-
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/common.h b/arch/mips/include/asm/netlogic/common.h
+deleted file mode 100644
+index 57616649b4f3..000000000000
+--- a/arch/mips/include/asm/netlogic/common.h
++++ /dev/null
+@@ -1,132 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _NETLOGIC_COMMON_H_
+-#define _NETLOGIC_COMMON_H_
+-
+-/*
+- * Common SMP definitions
+- */
+-#define RESET_VEC_PHYS		0x1fc00000
+-#define RESET_VEC_SIZE		8192		/* 8KB reset code and data */
+-#define RESET_DATA_PHYS		(RESET_VEC_PHYS + (1<<10))
+-
+-/* Offsets of parameters in the RESET_DATA_PHYS area */
+-#define BOOT_THREAD_MODE	0
+-#define BOOT_NMI_LOCK		4
+-#define BOOT_NMI_HANDLER	8
+-
+-/* CPU ready flags for each CPU */
+-#define BOOT_CPU_READY		2048
+-
+-#ifndef __ASSEMBLY__
+-#include <linux/cpumask.h>
+-#include <linux/spinlock.h>
+-#include <asm/irq.h>
+-#include <asm/mach-netlogic/multi-node.h>
+-
+-struct irq_desc;
+-void nlm_smp_function_ipi_handler(struct irq_desc *desc);
+-void nlm_smp_resched_ipi_handler(struct irq_desc *desc);
+-void nlm_smp_irq_init(int hwcpuid);
+-void nlm_boot_secondary_cpus(void);
+-int nlm_wakeup_secondary_cpus(void);
+-void nlm_rmiboot_preboot(void);
+-void nlm_percpu_init(int hwcpuid);
+-
+-static inline void *
+-nlm_get_boot_data(int offset)
+-{
+-	return (void *)(CKSEG1ADDR(RESET_DATA_PHYS) + offset);
+-}
+-
+-static inline void
+-nlm_set_nmi_handler(void *handler)
+-{
+-	void *nmih = nlm_get_boot_data(BOOT_NMI_HANDLER);
+-
+-	*(int64_t *)nmih = (long)handler;
+-}
+-
+-/*
+- * Misc.
+- */
+-void nlm_init_boot_cpu(void);
+-unsigned int nlm_get_cpu_frequency(void);
+-extern const struct plat_smp_ops nlm_smp_ops;
+-extern char nlm_reset_entry[], nlm_reset_entry_end[];
+-
+-extern unsigned int nlm_threads_per_core;
+-extern cpumask_t nlm_cpumask;
+-
+-struct irq_data;
+-uint64_t nlm_pci_irqmask(int node);
+-void nlm_setup_pic_irq(int node, int picirq, int irq, int irt);
+-void nlm_set_pic_extra_ack(int node, int irq,  void (*xack)(struct irq_data *));
+-
+-#ifdef CONFIG_PCI_MSI
+-void nlm_dispatch_msi(int node, int lirq);
+-void nlm_dispatch_msix(int node, int msixirq);
+-#endif
+-
+-/*
+- * The NR_IRQs is divided between nodes, each of them has a separate irq space
+- */
+-static inline int nlm_irq_to_xirq(int node, int irq)
+-{
+-	return node * NR_IRQS / NLM_NR_NODES + irq;
+-}
+-
+-#ifdef CONFIG_CPU_XLR
+-#define nlm_cores_per_node()	8
+-#else
+-static inline int nlm_cores_per_node(void)
+-{
+-	return ((read_c0_prid() & PRID_IMP_MASK)
+-				== PRID_IMP_NETLOGIC_XLP9XX) ? 32 : 8;
+-}
+-#endif
+-static inline int nlm_threads_per_node(void)
+-{
+-	return nlm_cores_per_node() * NLM_THREADS_PER_CORE;
+-}
+-
+-static inline int nlm_hwtid_to_node(int hwtid)
+-{
+-	return hwtid / nlm_threads_per_node();
+-}
+-
+-extern int nlm_cpu_ready[];
+-#endif /* __ASSEMBLY__ */
+-#endif /* _NETLOGIC_COMMON_H_ */
+diff --git a/arch/mips/include/asm/netlogic/haldefs.h b/arch/mips/include/asm/netlogic/haldefs.h
+deleted file mode 100644
+index 79c7cccdc22c..000000000000
+--- a/arch/mips/include/asm/netlogic/haldefs.h
++++ /dev/null
+@@ -1,171 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef __NLM_HAL_HALDEFS_H__
+-#define __NLM_HAL_HALDEFS_H__
+-
+-#include <linux/irqflags.h>	/* for local_irq_disable */
+-
+-/*
+- * This file contains platform specific memory mapped IO implementation
+- * and will provide a way to read 32/64 bit memory mapped registers in
+- * all ABIs
+- */
+-static inline uint32_t
+-nlm_read_reg(uint64_t base, uint32_t reg)
+-{
+-	volatile uint32_t *addr = (volatile uint32_t *)(long)base + reg;
+-
+-	return *addr;
+-}
+-
+-static inline void
+-nlm_write_reg(uint64_t base, uint32_t reg, uint32_t val)
+-{
+-	volatile uint32_t *addr = (volatile uint32_t *)(long)base + reg;
+-
+-	*addr = val;
+-}
+-
+-/*
+- * For o32 compilation, we have to disable interrupts to access 64 bit
+- * registers
+- *
+- * We need to disable interrupts because we save just the lower 32 bits of
+- * registers in  interrupt handling. So if we get hit by an interrupt while
+- * using the upper 32 bits of a register, we lose.
+- */
+-
+-static inline uint64_t
+-nlm_read_reg64(uint64_t base, uint32_t reg)
+-{
+-	uint64_t addr = base + (reg >> 1) * sizeof(uint64_t);
+-	volatile uint64_t *ptr = (volatile uint64_t *)(long)addr;
+-	uint64_t val;
+-
+-	if (sizeof(unsigned long) == 4) {
+-		unsigned long flags;
+-
+-		local_irq_save(flags);
+-		__asm__ __volatile__(
+-			".set	push"			"\n\t"
+-			".set	mips64"			"\n\t"
+-			"ld	%L0, %1"		"\n\t"
+-			"dsra32	%M0, %L0, 0"		"\n\t"
+-			"sll	%L0, %L0, 0"		"\n\t"
+-			".set	pop"			"\n"
+-			: "=r" (val)
+-			: "m" (*ptr));
+-		local_irq_restore(flags);
+-	} else
+-		val = *ptr;
+-
+-	return val;
+-}
+-
+-static inline void
+-nlm_write_reg64(uint64_t base, uint32_t reg, uint64_t val)
+-{
+-	uint64_t addr = base + (reg >> 1) * sizeof(uint64_t);
+-	volatile uint64_t *ptr = (volatile uint64_t *)(long)addr;
+-
+-	if (sizeof(unsigned long) == 4) {
+-		unsigned long flags;
+-		uint64_t tmp;
+-
+-		local_irq_save(flags);
+-		__asm__ __volatile__(
+-			".set	push"			"\n\t"
+-			".set	mips64"			"\n\t"
+-			"dsll32	%L0, %L0, 0"		"\n\t"
+-			"dsrl32	%L0, %L0, 0"		"\n\t"
+-			"dsll32	%M0, %M0, 0"		"\n\t"
+-			"or	%L0, %L0, %M0"		"\n\t"
+-			"sd	%L0, %2"		"\n\t"
+-			".set	pop"			"\n"
+-			: "=r" (tmp)
+-			: "0" (val), "m" (*ptr));
+-		local_irq_restore(flags);
+-	} else
+-		*ptr = val;
+-}
+-
+-/*
+- * Routines to store 32/64 bit values to 64 bit addresses,
+- * used when going thru XKPHYS to access registers
+- */
+-static inline uint32_t
+-nlm_read_reg_xkphys(uint64_t base, uint32_t reg)
+-{
+-	return nlm_read_reg(base, reg);
+-}
+-
+-static inline void
+-nlm_write_reg_xkphys(uint64_t base, uint32_t reg, uint32_t val)
+-{
+-	nlm_write_reg(base, reg, val);
+-}
+-
+-static inline uint64_t
+-nlm_read_reg64_xkphys(uint64_t base, uint32_t reg)
+-{
+-	return nlm_read_reg64(base, reg);
+-}
+-
+-static inline void
+-nlm_write_reg64_xkphys(uint64_t base, uint32_t reg, uint64_t val)
+-{
+-	nlm_write_reg64(base, reg, val);
+-}
+-
+-/* Location where IO base is mapped */
+-extern uint64_t nlm_io_base;
+-
+-#if defined(CONFIG_CPU_XLP)
+-static inline uint64_t
+-nlm_pcicfg_base(uint32_t devoffset)
+-{
+-	return nlm_io_base + devoffset;
+-}
+-
+-#elif defined(CONFIG_CPU_XLR)
+-
+-static inline uint64_t
+-nlm_mmio_base(uint32_t devoffset)
+-{
+-	return nlm_io_base + devoffset;
+-}
+-#endif
+-
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/interrupt.h b/arch/mips/include/asm/netlogic/interrupt.h
+deleted file mode 100644
+index ed5993d9b7b8..000000000000
+--- a/arch/mips/include/asm/netlogic/interrupt.h
++++ /dev/null
+@@ -1,45 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _ASM_NLM_INTERRUPT_H
+-#define _ASM_NLM_INTERRUPT_H
+-
+-/* Defines for the IRQ numbers */
+-
+-#define IRQ_IPI_SMP_FUNCTION	3
+-#define IRQ_IPI_SMP_RESCHEDULE	4
+-#define IRQ_FMN			5
+-#define IRQ_TIMER		7
+-
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/mips-extns.h b/arch/mips/include/asm/netlogic/mips-extns.h
+deleted file mode 100644
+index 788baf399e69..000000000000
+--- a/arch/mips/include/asm/netlogic/mips-extns.h
++++ /dev/null
+@@ -1,301 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _ASM_NLM_MIPS_EXTS_H
+-#define _ASM_NLM_MIPS_EXTS_H
+-
+-/*
+- * XLR and XLP interrupt request and interrupt mask registers
+- */
+-/*
+- * NOTE: Do not save/restore flags around write_c0_eimr().
+- * On non-R2 platforms the flags has part of EIMR that is shadowed in STATUS
+- * register. Restoring flags will overwrite the lower 8 bits of EIMR.
+- *
+- * Call with interrupts disabled.
+- */
+-#define write_c0_eimr(val)						\
+-do {									\
+-	if (sizeof(unsigned long) == 4) {				\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dsll\t%L0, %L0, 32\n\t"			\
+-			"dsrl\t%L0, %L0, 32\n\t"			\
+-			"dsll\t%M0, %M0, 32\n\t"			\
+-			"or\t%L0, %L0, %M0\n\t"				\
+-			"dmtc0\t%L0, $9, 7\n\t"				\
+-			".set\tmips0"					\
+-			: : "r" (val));					\
+-	} else								\
+-		__write_64bit_c0_register($9, 7, (val));		\
+-} while (0)
+-
+-/*
+- * Handling the 64 bit EIMR and EIRR registers in 32-bit mode with
+- * standard functions will be very inefficient. This provides
+- * optimized functions for the normal operations on the registers.
+- *
+- * Call with interrupts disabled.
+- */
+-static inline void ack_c0_eirr(int irq)
+-{
+-	__asm__ __volatile__(
+-		".set	push\n\t"
+-		".set	mips64\n\t"
+-		".set	noat\n\t"
+-		"li	$1, 1\n\t"
+-		"dsllv	$1, $1, %0\n\t"
+-		"dmtc0	$1, $9, 6\n\t"
+-		".set	pop"
+-		: : "r" (irq));
+-}
+-
+-static inline void set_c0_eimr(int irq)
+-{
+-	__asm__ __volatile__(
+-		".set	push\n\t"
+-		".set	mips64\n\t"
+-		".set	noat\n\t"
+-		"li	$1, 1\n\t"
+-		"dsllv	%0, $1, %0\n\t"
+-		"dmfc0	$1, $9, 7\n\t"
+-		"or	$1, %0\n\t"
+-		"dmtc0	$1, $9, 7\n\t"
+-		".set	pop"
+-		: "+r" (irq));
+-}
+-
+-static inline void clear_c0_eimr(int irq)
+-{
+-	__asm__ __volatile__(
+-		".set	push\n\t"
+-		".set	mips64\n\t"
+-		".set	noat\n\t"
+-		"li	$1, 1\n\t"
+-		"dsllv	%0, $1, %0\n\t"
+-		"dmfc0	$1, $9, 7\n\t"
+-		"or	$1, %0\n\t"
+-		"xor	$1, %0\n\t"
+-		"dmtc0	$1, $9, 7\n\t"
+-		".set	pop"
+-		: "+r" (irq));
+-}
+-
+-/*
+- * Read c0 eimr and c0 eirr, do AND of the two values, the result is
+- * the interrupts which are raised and are not masked.
+- */
+-static inline uint64_t read_c0_eirr_and_eimr(void)
+-{
+-	uint64_t val;
+-
+-#ifdef CONFIG_64BIT
+-	val = __read_64bit_c0_register($9, 6) & __read_64bit_c0_register($9, 7);
+-#else
+-	__asm__ __volatile__(
+-		".set	push\n\t"
+-		".set	mips64\n\t"
+-		".set	noat\n\t"
+-		"dmfc0	%M0, $9, 6\n\t"
+-		"dmfc0	%L0, $9, 7\n\t"
+-		"and	%M0, %L0\n\t"
+-		"dsll	%L0, %M0, 32\n\t"
+-		"dsra	%M0, %M0, 32\n\t"
+-		"dsra	%L0, %L0, 32\n\t"
+-		".set	pop"
+-		: "=r" (val));
+-#endif
+-	return val;
+-}
+-
+-static inline int hard_smp_processor_id(void)
+-{
+-	return __read_32bit_c0_register($15, 1) & 0x3ff;
+-}
+-
+-static inline int nlm_nodeid(void)
+-{
+-	uint32_t prid = read_c0_prid() & PRID_IMP_MASK;
+-
+-	if ((prid == PRID_IMP_NETLOGIC_XLP9XX) ||
+-			(prid == PRID_IMP_NETLOGIC_XLP5XX))
+-		return (__read_32bit_c0_register($15, 1) >> 7) & 0x7;
+-	else
+-		return (__read_32bit_c0_register($15, 1) >> 5) & 0x3;
+-}
+-
+-static inline unsigned int nlm_core_id(void)
+-{
+-	uint32_t prid = read_c0_prid() & PRID_IMP_MASK;
+-
+-	if ((prid == PRID_IMP_NETLOGIC_XLP9XX) ||
+-			(prid == PRID_IMP_NETLOGIC_XLP5XX))
+-		return (read_c0_ebase() & 0x7c) >> 2;
+-	else
+-		return (read_c0_ebase() & 0x1c) >> 2;
+-}
+-
+-static inline unsigned int nlm_thread_id(void)
+-{
+-	return read_c0_ebase() & 0x3;
+-}
+-
+-#define __read_64bit_c2_split(source, sel)				\
+-({									\
+-	unsigned long long __val;					\
+-	unsigned long __flags;						\
+-									\
+-	local_irq_save(__flags);					\
+-	if (sel == 0)							\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dmfc2\t%M0, " #source "\n\t"			\
+-			"dsll\t%L0, %M0, 32\n\t"			\
+-			"dsra\t%M0, %M0, 32\n\t"			\
+-			"dsra\t%L0, %L0, 32\n\t"			\
+-			".set\tmips0\n\t"				\
+-			: "=r" (__val));				\
+-	else								\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dmfc2\t%M0, " #source ", " #sel "\n\t"		\
+-			"dsll\t%L0, %M0, 32\n\t"			\
+-			"dsra\t%M0, %M0, 32\n\t"			\
+-			"dsra\t%L0, %L0, 32\n\t"			\
+-			".set\tmips0\n\t"				\
+-			: "=r" (__val));				\
+-	local_irq_restore(__flags);					\
+-									\
+-	__val;								\
+-})
+-
+-#define __write_64bit_c2_split(source, sel, val)			\
+-do {									\
+-	unsigned long __flags;						\
+-									\
+-	local_irq_save(__flags);					\
+-	if (sel == 0)							\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dsll\t%L0, %L0, 32\n\t"			\
+-			"dsrl\t%L0, %L0, 32\n\t"			\
+-			"dsll\t%M0, %M0, 32\n\t"			\
+-			"or\t%L0, %L0, %M0\n\t"				\
+-			"dmtc2\t%L0, " #source "\n\t"			\
+-			".set\tmips0\n\t"				\
+-			: : "r" (val));					\
+-	else								\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dsll\t%L0, %L0, 32\n\t"			\
+-			"dsrl\t%L0, %L0, 32\n\t"			\
+-			"dsll\t%M0, %M0, 32\n\t"			\
+-			"or\t%L0, %L0, %M0\n\t"				\
+-			"dmtc2\t%L0, " #source ", " #sel "\n\t"		\
+-			".set\tmips0\n\t"				\
+-			: : "r" (val));					\
+-	local_irq_restore(__flags);					\
+-} while (0)
+-
+-#define __read_32bit_c2_register(source, sel)				\
+-({ uint32_t __res;							\
+-	if (sel == 0)							\
+-		__asm__ __volatile__(					\
+-			".set\tmips32\n\t"				\
+-			"mfc2\t%0, " #source "\n\t"			\
+-			".set\tmips0\n\t"				\
+-			: "=r" (__res));				\
+-	else								\
+-		__asm__ __volatile__(					\
+-			".set\tmips32\n\t"				\
+-			"mfc2\t%0, " #source ", " #sel "\n\t"		\
+-			".set\tmips0\n\t"				\
+-			: "=r" (__res));				\
+-	__res;								\
+-})
+-
+-#define __read_64bit_c2_register(source, sel)				\
+-({ unsigned long long __res;						\
+-	if (sizeof(unsigned long) == 4)					\
+-		__res = __read_64bit_c2_split(source, sel);		\
+-	else if (sel == 0)						\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dmfc2\t%0, " #source "\n\t"			\
+-			".set\tmips0\n\t"				\
+-			: "=r" (__res));				\
+-	else								\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dmfc2\t%0, " #source ", " #sel "\n\t"		\
+-			".set\tmips0\n\t"				\
+-			: "=r" (__res));				\
+-	__res;								\
+-})
+-
+-#define __write_64bit_c2_register(register, sel, value)			\
+-do {									\
+-	if (sizeof(unsigned long) == 4)					\
+-		__write_64bit_c2_split(register, sel, value);		\
+-	else if (sel == 0)						\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dmtc2\t%z0, " #register "\n\t"			\
+-			".set\tmips0\n\t"				\
+-			: : "Jr" (value));				\
+-	else								\
+-		__asm__ __volatile__(					\
+-			".set\tmips64\n\t"				\
+-			"dmtc2\t%z0, " #register ", " #sel "\n\t"	\
+-			".set\tmips0\n\t"				\
+-			: : "Jr" (value));				\
+-} while (0)
+-
+-#define __write_32bit_c2_register(reg, sel, value)			\
+-({									\
+-	if (sel == 0)							\
+-		__asm__ __volatile__(					\
+-			".set\tmips32\n\t"				\
+-			"mtc2\t%z0, " #reg "\n\t"			\
+-			".set\tmips0\n\t"				\
+-			: : "Jr" (value));				\
+-	else								\
+-		__asm__ __volatile__(					\
+-			".set\tmips32\n\t"				\
+-			"mtc2\t%z0, " #reg ", " #sel "\n\t"		\
+-			".set\tmips0\n\t"				\
+-			: : "Jr" (value));				\
+-})
+-
+-#endif /*_ASM_NLM_MIPS_EXTS_H */
+diff --git a/arch/mips/include/asm/netlogic/psb-bootinfo.h b/arch/mips/include/asm/netlogic/psb-bootinfo.h
+deleted file mode 100644
+index c716e9397113..000000000000
+--- a/arch/mips/include/asm/netlogic/psb-bootinfo.h
++++ /dev/null
+@@ -1,95 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _ASM_NETLOGIC_BOOTINFO_H
+-#define _ASM_NETLOGIC_BOOTINFO_H
+-
+-struct psb_info {
+-	uint64_t boot_level;
+-	uint64_t io_base;
+-	uint64_t output_device;
+-	uint64_t uart_print;
+-	uint64_t led_output;
+-	uint64_t init;
+-	uint64_t exit;
+-	uint64_t warm_reset;
+-	uint64_t wakeup;
+-	uint64_t online_cpu_map;
+-	uint64_t master_reentry_sp;
+-	uint64_t master_reentry_gp;
+-	uint64_t master_reentry_fn;
+-	uint64_t slave_reentry_fn;
+-	uint64_t magic_dword;
+-	uint64_t uart_putchar;
+-	uint64_t size;
+-	uint64_t uart_getchar;
+-	uint64_t nmi_handler;
+-	uint64_t psb_version;
+-	uint64_t mac_addr;
+-	uint64_t cpu_frequency;
+-	uint64_t board_version;
+-	uint64_t malloc;
+-	uint64_t free;
+-	uint64_t global_shmem_addr;
+-	uint64_t global_shmem_size;
+-	uint64_t psb_os_cpu_map;
+-	uint64_t userapp_cpu_map;
+-	uint64_t wakeup_os;
+-	uint64_t psb_mem_map;
+-	uint64_t board_major_version;
+-	uint64_t board_minor_version;
+-	uint64_t board_manf_revision;
+-	uint64_t board_serial_number;
+-	uint64_t psb_physaddr_map;
+-	uint64_t xlr_loaderip_config;
+-	uint64_t bldr_envp;
+-	uint64_t avail_mem_map;
+-};
+-
+-/* This is what netlboot passes and linux boot_mem_map is subtly different */
+-#define NLM_BOOT_MEM_MAP_MAX	32
+-struct nlm_boot_mem_map {
+-	int nr_map;
+-	struct nlm_boot_mem_map_entry {
+-		uint64_t addr;		/* start of memory segment */
+-		uint64_t size;		/* size of memory segment */
+-		uint32_t type;		/* type of memory segment */
+-	} map[NLM_BOOT_MEM_MAP_MAX];
+-};
+-#define NLM_BOOT_MEM_RAM	1
+-
+-/* Pointer to saved boot loader info */
+-extern struct psb_info nlm_prom_info;
+-
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/xlp-hal/bridge.h b/arch/mips/include/asm/netlogic/xlp-hal/bridge.h
+deleted file mode 100644
+index 3067f983495d..000000000000
+--- a/arch/mips/include/asm/netlogic/xlp-hal/bridge.h
++++ /dev/null
+@@ -1,186 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef __NLM_HAL_BRIDGE_H__
+-#define __NLM_HAL_BRIDGE_H__
+-
+-/**
+-* @file_name mio.h
+-* @author Netlogic Microsystems
+-* @brief Basic definitions of XLP memory and io subsystem
+-*/
+-
+-/*
+- * BRIDGE specific registers
+- *
+- * These registers start after the PCIe header, which has 0x40
+- * standard entries
+- */
+-#define BRIDGE_MODE			0x00
+-#define BRIDGE_PCI_CFG_BASE		0x01
+-#define BRIDGE_PCI_CFG_LIMIT		0x02
+-#define BRIDGE_PCIE_CFG_BASE		0x03
+-#define BRIDGE_PCIE_CFG_LIMIT		0x04
+-#define BRIDGE_BUSNUM_BAR0		0x05
+-#define BRIDGE_BUSNUM_BAR1		0x06
+-#define BRIDGE_BUSNUM_BAR2		0x07
+-#define BRIDGE_BUSNUM_BAR3		0x08
+-#define BRIDGE_BUSNUM_BAR4		0x09
+-#define BRIDGE_BUSNUM_BAR5		0x0a
+-#define BRIDGE_BUSNUM_BAR6		0x0b
+-#define BRIDGE_FLASH_BAR0		0x0c
+-#define BRIDGE_FLASH_BAR1		0x0d
+-#define BRIDGE_FLASH_BAR2		0x0e
+-#define BRIDGE_FLASH_BAR3		0x0f
+-#define BRIDGE_FLASH_LIMIT0		0x10
+-#define BRIDGE_FLASH_LIMIT1		0x11
+-#define BRIDGE_FLASH_LIMIT2		0x12
+-#define BRIDGE_FLASH_LIMIT3		0x13
+-
+-#define BRIDGE_DRAM_BAR(i)		(0x14 + (i))
+-#define BRIDGE_DRAM_LIMIT(i)		(0x1c + (i))
+-#define BRIDGE_DRAM_NODE_TRANSLN(i)	(0x24 + (i))
+-#define BRIDGE_DRAM_CHNL_TRANSLN(i)	(0x2c + (i))
+-
+-#define BRIDGE_PCIEMEM_BASE0		0x34
+-#define BRIDGE_PCIEMEM_BASE1		0x35
+-#define BRIDGE_PCIEMEM_BASE2		0x36
+-#define BRIDGE_PCIEMEM_BASE3		0x37
+-#define BRIDGE_PCIEMEM_LIMIT0		0x38
+-#define BRIDGE_PCIEMEM_LIMIT1		0x39
+-#define BRIDGE_PCIEMEM_LIMIT2		0x3a
+-#define BRIDGE_PCIEMEM_LIMIT3		0x3b
+-#define BRIDGE_PCIEIO_BASE0		0x3c
+-#define BRIDGE_PCIEIO_BASE1		0x3d
+-#define BRIDGE_PCIEIO_BASE2		0x3e
+-#define BRIDGE_PCIEIO_BASE3		0x3f
+-#define BRIDGE_PCIEIO_LIMIT0		0x40
+-#define BRIDGE_PCIEIO_LIMIT1		0x41
+-#define BRIDGE_PCIEIO_LIMIT2		0x42
+-#define BRIDGE_PCIEIO_LIMIT3		0x43
+-#define BRIDGE_PCIEMEM_BASE4		0x44
+-#define BRIDGE_PCIEMEM_BASE5		0x45
+-#define BRIDGE_PCIEMEM_BASE6		0x46
+-#define BRIDGE_PCIEMEM_LIMIT4		0x47
+-#define BRIDGE_PCIEMEM_LIMIT5		0x48
+-#define BRIDGE_PCIEMEM_LIMIT6		0x49
+-#define BRIDGE_PCIEIO_BASE4		0x4a
+-#define BRIDGE_PCIEIO_BASE5		0x4b
+-#define BRIDGE_PCIEIO_BASE6		0x4c
+-#define BRIDGE_PCIEIO_LIMIT4		0x4d
+-#define BRIDGE_PCIEIO_LIMIT5		0x4e
+-#define BRIDGE_PCIEIO_LIMIT6		0x4f
+-#define BRIDGE_NBU_EVENT_CNT_CTL	0x50
+-#define BRIDGE_EVNTCTR1_LOW		0x51
+-#define BRIDGE_EVNTCTR1_HI		0x52
+-#define BRIDGE_EVNT_CNT_CTL2		0x53
+-#define BRIDGE_EVNTCTR2_LOW		0x54
+-#define BRIDGE_EVNTCTR2_HI		0x55
+-#define BRIDGE_TRACEBUF_MATCH0		0x56
+-#define BRIDGE_TRACEBUF_MATCH1		0x57
+-#define BRIDGE_TRACEBUF_MATCH_LOW	0x58
+-#define BRIDGE_TRACEBUF_MATCH_HI	0x59
+-#define BRIDGE_TRACEBUF_CTRL		0x5a
+-#define BRIDGE_TRACEBUF_INIT		0x5b
+-#define BRIDGE_TRACEBUF_ACCESS		0x5c
+-#define BRIDGE_TRACEBUF_READ_DATA0	0x5d
+-#define BRIDGE_TRACEBUF_READ_DATA1	0x5d
+-#define BRIDGE_TRACEBUF_READ_DATA2	0x5f
+-#define BRIDGE_TRACEBUF_READ_DATA3	0x60
+-#define BRIDGE_TRACEBUF_STATUS		0x61
+-#define BRIDGE_ADDRESS_ERROR0		0x62
+-#define BRIDGE_ADDRESS_ERROR1		0x63
+-#define BRIDGE_ADDRESS_ERROR2		0x64
+-#define BRIDGE_TAG_ECC_ADDR_ERROR0	0x65
+-#define BRIDGE_TAG_ECC_ADDR_ERROR1	0x66
+-#define BRIDGE_TAG_ECC_ADDR_ERROR2	0x67
+-#define BRIDGE_LINE_FLUSH0		0x68
+-#define BRIDGE_LINE_FLUSH1		0x69
+-#define BRIDGE_NODE_ID			0x6a
+-#define BRIDGE_ERROR_INTERRUPT_EN	0x6b
+-#define BRIDGE_PCIE0_WEIGHT		0x2c0
+-#define BRIDGE_PCIE1_WEIGHT		0x2c1
+-#define BRIDGE_PCIE2_WEIGHT		0x2c2
+-#define BRIDGE_PCIE3_WEIGHT		0x2c3
+-#define BRIDGE_USB_WEIGHT		0x2c4
+-#define BRIDGE_NET_WEIGHT		0x2c5
+-#define BRIDGE_POE_WEIGHT		0x2c6
+-#define BRIDGE_CMS_WEIGHT		0x2c7
+-#define BRIDGE_DMAENG_WEIGHT		0x2c8
+-#define BRIDGE_SEC_WEIGHT		0x2c9
+-#define BRIDGE_COMP_WEIGHT		0x2ca
+-#define BRIDGE_GIO_WEIGHT		0x2cb
+-#define BRIDGE_FLASH_WEIGHT		0x2cc
+-
+-/* FIXME verify */
+-#define BRIDGE_9XX_FLASH_BAR(i)		(0x11 + (i))
+-#define BRIDGE_9XX_FLASH_BAR_LIMIT(i)	(0x15 + (i))
+-
+-#define BRIDGE_9XX_DRAM_BAR(i)		(0x19 + (i))
+-#define BRIDGE_9XX_DRAM_LIMIT(i)	(0x29 + (i))
+-#define BRIDGE_9XX_DRAM_NODE_TRANSLN(i)	(0x39 + (i))
+-#define BRIDGE_9XX_DRAM_CHNL_TRANSLN(i)	(0x49 + (i))
+-
+-#define BRIDGE_9XX_ADDRESS_ERROR0	0x9d
+-#define BRIDGE_9XX_ADDRESS_ERROR1	0x9e
+-#define BRIDGE_9XX_ADDRESS_ERROR2	0x9f
+-
+-#define BRIDGE_9XX_PCIEMEM_BASE0	0x59
+-#define BRIDGE_9XX_PCIEMEM_BASE1	0x5a
+-#define BRIDGE_9XX_PCIEMEM_BASE2	0x5b
+-#define BRIDGE_9XX_PCIEMEM_BASE3	0x5c
+-#define BRIDGE_9XX_PCIEMEM_LIMIT0	0x5d
+-#define BRIDGE_9XX_PCIEMEM_LIMIT1	0x5e
+-#define BRIDGE_9XX_PCIEMEM_LIMIT2	0x5f
+-#define BRIDGE_9XX_PCIEMEM_LIMIT3	0x60
+-#define BRIDGE_9XX_PCIEIO_BASE0		0x61
+-#define BRIDGE_9XX_PCIEIO_BASE1		0x62
+-#define BRIDGE_9XX_PCIEIO_BASE2		0x63
+-#define BRIDGE_9XX_PCIEIO_BASE3		0x64
+-#define BRIDGE_9XX_PCIEIO_LIMIT0	0x65
+-#define BRIDGE_9XX_PCIEIO_LIMIT1	0x66
+-#define BRIDGE_9XX_PCIEIO_LIMIT2	0x67
+-#define BRIDGE_9XX_PCIEIO_LIMIT3	0x68
+-
+-#ifndef __ASSEMBLY__
+-
+-#define nlm_read_bridge_reg(b, r)	nlm_read_reg(b, r)
+-#define nlm_write_bridge_reg(b, r, v)	nlm_write_reg(b, r, v)
+-#define nlm_get_bridge_pcibase(node)	nlm_pcicfg_base(cpu_is_xlp9xx() ? \
+-		XLP9XX_IO_BRIDGE_OFFSET(node) : XLP_IO_BRIDGE_OFFSET(node))
+-#define nlm_get_bridge_regbase(node)	\
+-			(nlm_get_bridge_pcibase(node) + XLP_IO_PCI_HDRSZ)
+-
+-#endif /* __ASSEMBLY__ */
+-#endif /* __NLM_HAL_BRIDGE_H__ */
+diff --git a/arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h b/arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h
+deleted file mode 100644
+index a06b59292153..000000000000
+--- a/arch/mips/include/asm/netlogic/xlp-hal/cpucontrol.h
++++ /dev/null
+@@ -1,89 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef __NLM_HAL_CPUCONTROL_H__
+-#define __NLM_HAL_CPUCONTROL_H__
+-
+-#define CPU_BLOCKID_IFU		0
+-#define CPU_BLOCKID_ICU		1
+-#define CPU_BLOCKID_IEU		2
+-#define CPU_BLOCKID_LSU		3
+-#define CPU_BLOCKID_MMU		4
+-#define CPU_BLOCKID_PRF		5
+-#define CPU_BLOCKID_SCH		7
+-#define CPU_BLOCKID_SCU		8
+-#define CPU_BLOCKID_FPU		9
+-#define CPU_BLOCKID_MAP		10
+-
+-#define IFU_BRUB_RESERVE	0x007
+-
+-#define ICU_DEFEATURE		0x100
+-
+-#define LSU_DEFEATURE		0x304
+-#define LSU_DEBUG_ADDR		0x305
+-#define LSU_DEBUG_DATA0		0x306
+-#define LSU_CERRLOG_REGID	0x309
+-#define SCHED_DEFEATURE		0x700
+-
+-/* Offsets of interest from the 'MAP' Block */
+-#define MAP_THREADMODE			0x00
+-#define MAP_EXT_EBASE_ENABLE		0x04
+-#define MAP_CCDI_CONFIG			0x08
+-#define MAP_THRD0_CCDI_STATUS		0x0c
+-#define MAP_THRD1_CCDI_STATUS		0x10
+-#define MAP_THRD2_CCDI_STATUS		0x14
+-#define MAP_THRD3_CCDI_STATUS		0x18
+-#define MAP_THRD0_DEBUG_MODE		0x1c
+-#define MAP_THRD1_DEBUG_MODE		0x20
+-#define MAP_THRD2_DEBUG_MODE		0x24
+-#define MAP_THRD3_DEBUG_MODE		0x28
+-#define MAP_MISC_STATE			0x60
+-#define MAP_DEBUG_READ_CTL		0x64
+-#define MAP_DEBUG_READ_REG0		0x68
+-#define MAP_DEBUG_READ_REG1		0x6c
+-
+-#define MMU_SETUP		0x400
+-#define MMU_LFSRSEED		0x401
+-#define MMU_HPW_NUM_PAGE_LVL	0x410
+-#define MMU_PGWKR_PGDBASE	0x411
+-#define MMU_PGWKR_PGDSHFT	0x412
+-#define MMU_PGWKR_PGDMASK	0x413
+-#define MMU_PGWKR_PUDSHFT	0x414
+-#define MMU_PGWKR_PUDMASK	0x415
+-#define MMU_PGWKR_PMDSHFT	0x416
+-#define MMU_PGWKR_PMDMASK	0x417
+-#define MMU_PGWKR_PTESHFT	0x418
+-#define MMU_PGWKR_PTEMASK	0x419
+-
+-#endif /* __NLM_CPUCONTROL_H__ */
+diff --git a/arch/mips/include/asm/netlogic/xlp-hal/iomap.h b/arch/mips/include/asm/netlogic/xlp-hal/iomap.h
+deleted file mode 100644
+index 805bfd21f33e..000000000000
+--- a/arch/mips/include/asm/netlogic/xlp-hal/iomap.h
++++ /dev/null
+@@ -1,214 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef __NLM_HAL_IOMAP_H__
+-#define __NLM_HAL_IOMAP_H__
+-
+-#define XLP_DEFAULT_IO_BASE		0x18000000
+-#define XLP_DEFAULT_PCI_ECFG_BASE	XLP_DEFAULT_IO_BASE
+-#define XLP_DEFAULT_PCI_CFG_BASE	0x1c000000
+-
+-#define NMI_BASE			0xbfc00000
+-#define XLP_IO_CLK			133333333
+-
+-#define XLP_PCIE_CFG_SIZE		0x1000		/* 4K */
+-#define XLP_PCIE_DEV_BLK_SIZE		(8 * XLP_PCIE_CFG_SIZE)
+-#define XLP_PCIE_BUS_BLK_SIZE		(256 * XLP_PCIE_DEV_BLK_SIZE)
+-#define XLP_IO_SIZE			(64 << 20)	/* ECFG space size */
+-#define XLP_IO_PCI_HDRSZ		0x100
+-#define XLP_IO_DEV(node, dev)		((dev) + (node) * 8)
+-#define XLP_IO_PCI_OFFSET(b, d, f)	(((b) << 20) | ((d) << 15) | ((f) << 12))
+-
+-#define XLP_HDR_OFFSET(node, bus, dev, fn) \
+-		XLP_IO_PCI_OFFSET(bus, XLP_IO_DEV(node, dev), fn)
+-
+-#define XLP_IO_BRIDGE_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 0, 0)
+-/* coherent inter chip */
+-#define XLP_IO_CIC0_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 0, 1)
+-#define XLP_IO_CIC1_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 0, 2)
+-#define XLP_IO_CIC2_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 0, 3)
+-#define XLP_IO_PIC_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 0, 4)
+-
+-#define XLP_IO_PCIE_OFFSET(node, i)	XLP_HDR_OFFSET(node, 0, 1, i)
+-#define XLP_IO_PCIE0_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 1, 0)
+-#define XLP_IO_PCIE1_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 1, 1)
+-#define XLP_IO_PCIE2_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 1, 2)
+-#define XLP_IO_PCIE3_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 1, 3)
+-
+-#define XLP_IO_USB_OFFSET(node, i)	XLP_HDR_OFFSET(node, 0, 2, i)
+-#define XLP_IO_USB_EHCI0_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 2, 0)
+-#define XLP_IO_USB_OHCI0_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 2, 1)
+-#define XLP_IO_USB_OHCI1_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 2, 2)
+-#define XLP_IO_USB_EHCI1_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 2, 3)
+-#define XLP_IO_USB_OHCI2_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 2, 4)
+-#define XLP_IO_USB_OHCI3_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 2, 5)
+-
+-#define XLP_IO_SATA_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 3, 2)
+-
+-/* XLP2xx has an updated USB block */
+-#define XLP2XX_IO_USB_OFFSET(node, i)	XLP_HDR_OFFSET(node, 0, 4, i)
+-#define XLP2XX_IO_USB_XHCI0_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 4, 1)
+-#define XLP2XX_IO_USB_XHCI1_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 4, 2)
+-#define XLP2XX_IO_USB_XHCI2_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 4, 3)
+-
+-#define XLP_IO_NAE_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 3, 0)
+-#define XLP_IO_POE_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 3, 1)
+-
+-#define XLP_IO_CMS_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 4, 0)
+-
+-#define XLP_IO_DMA_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 5, 1)
+-#define XLP_IO_SEC_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 5, 2)
+-#define XLP_IO_CMP_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 5, 3)
+-
+-#define XLP_IO_UART_OFFSET(node, i)	XLP_HDR_OFFSET(node, 0, 6, i)
+-#define XLP_IO_UART0_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 6, 0)
+-#define XLP_IO_UART1_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 6, 1)
+-#define XLP_IO_I2C_OFFSET(node, i)	XLP_HDR_OFFSET(node, 0, 6, 2 + i)
+-#define XLP_IO_I2C0_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 6, 2)
+-#define XLP_IO_I2C1_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 6, 3)
+-#define XLP_IO_GPIO_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 6, 4)
+-/* on 2XX, all I2C busses are on the same block */
+-#define XLP2XX_IO_I2C_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 6, 7)
+-
+-/* system management */
+-#define XLP_IO_SYS_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 6, 5)
+-#define XLP_IO_JTAG_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 6, 6)
+-
+-/* Flash */
+-#define XLP_IO_NOR_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 7, 0)
+-#define XLP_IO_NAND_OFFSET(node)	XLP_HDR_OFFSET(node, 0, 7, 1)
+-#define XLP_IO_SPI_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 7, 2)
+-#define XLP_IO_MMC_OFFSET(node)		XLP_HDR_OFFSET(node, 0, 7, 3)
+-
+-/* Things have changed drastically in XLP 9XX */
+-#define XLP9XX_HDR_OFFSET(n, d, f)	\
+-			XLP_IO_PCI_OFFSET(xlp9xx_get_socbus(n), d, f)
+-
+-#define XLP9XX_IO_BRIDGE_OFFSET(node)	XLP_IO_PCI_OFFSET(0, 0, node)
+-#define XLP9XX_IO_PIC_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 2, 0)
+-#define XLP9XX_IO_UART_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 2, 2)
+-#define XLP9XX_IO_SYS_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 6, 0)
+-#define XLP9XX_IO_FUSE_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 6, 1)
+-#define XLP9XX_IO_CLOCK_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 6, 2)
+-#define XLP9XX_IO_POWER_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 6, 3)
+-#define XLP9XX_IO_JTAG_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 6, 4)
+-
+-#define XLP9XX_IO_PCIE_OFFSET(node, i)	XLP9XX_HDR_OFFSET(node, 1, i)
+-#define XLP9XX_IO_PCIE0_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 1, 0)
+-#define XLP9XX_IO_PCIE2_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 1, 2)
+-#define XLP9XX_IO_PCIE3_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 1, 3)
+-
+-/* XLP9xx USB block */
+-#define XLP9XX_IO_USB_OFFSET(node, i)		XLP9XX_HDR_OFFSET(node, 4, i)
+-#define XLP9XX_IO_USB_XHCI0_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 4, 1)
+-#define XLP9XX_IO_USB_XHCI1_OFFSET(node)	XLP9XX_HDR_OFFSET(node, 4, 2)
+-
+-/* XLP9XX on-chip SATA controller */
+-#define XLP9XX_IO_SATA_OFFSET(node)		XLP9XX_HDR_OFFSET(node, 3, 2)
+-
+-/* Flash */
+-#define XLP9XX_IO_NOR_OFFSET(node)		XLP9XX_HDR_OFFSET(node, 7, 0)
+-#define XLP9XX_IO_NAND_OFFSET(node)		XLP9XX_HDR_OFFSET(node, 7, 1)
+-#define XLP9XX_IO_SPI_OFFSET(node)		XLP9XX_HDR_OFFSET(node, 7, 2)
+-#define XLP9XX_IO_MMC_OFFSET(node)		XLP9XX_HDR_OFFSET(node, 7, 3)
+-
+-/* PCI config header register id's */
+-#define XLP_PCI_CFGREG0			0x00
+-#define XLP_PCI_CFGREG1			0x01
+-#define XLP_PCI_CFGREG2			0x02
+-#define XLP_PCI_CFGREG3			0x03
+-#define XLP_PCI_CFGREG4			0x04
+-#define XLP_PCI_CFGREG5			0x05
+-#define XLP_PCI_DEVINFO_REG0		0x30
+-#define XLP_PCI_DEVINFO_REG1		0x31
+-#define XLP_PCI_DEVINFO_REG2		0x32
+-#define XLP_PCI_DEVINFO_REG3		0x33
+-#define XLP_PCI_DEVINFO_REG4		0x34
+-#define XLP_PCI_DEVINFO_REG5		0x35
+-#define XLP_PCI_DEVINFO_REG6		0x36
+-#define XLP_PCI_DEVINFO_REG7		0x37
+-#define XLP_PCI_DEVSCRATCH_REG0		0x38
+-#define XLP_PCI_DEVSCRATCH_REG1		0x39
+-#define XLP_PCI_DEVSCRATCH_REG2		0x3a
+-#define XLP_PCI_DEVSCRATCH_REG3		0x3b
+-#define XLP_PCI_MSGSTN_REG		0x3c
+-#define XLP_PCI_IRTINFO_REG		0x3d
+-#define XLP_PCI_UCODEINFO_REG		0x3e
+-#define XLP_PCI_SBB_WT_REG		0x3f
+-
+-/* PCI IDs for SoC device */
+-#define PCI_VENDOR_NETLOGIC		0x184e
+-
+-#define PCI_DEVICE_ID_NLM_ROOT		0x1001
+-#define PCI_DEVICE_ID_NLM_ICI		0x1002
+-#define PCI_DEVICE_ID_NLM_PIC		0x1003
+-#define PCI_DEVICE_ID_NLM_PCIE		0x1004
+-#define PCI_DEVICE_ID_NLM_EHCI		0x1007
+-#define PCI_DEVICE_ID_NLM_OHCI		0x1008
+-#define PCI_DEVICE_ID_NLM_NAE		0x1009
+-#define PCI_DEVICE_ID_NLM_POE		0x100A
+-#define PCI_DEVICE_ID_NLM_FMN		0x100B
+-#define PCI_DEVICE_ID_NLM_RAID		0x100D
+-#define PCI_DEVICE_ID_NLM_SAE		0x100D
+-#define PCI_DEVICE_ID_NLM_RSA		0x100E
+-#define PCI_DEVICE_ID_NLM_CMP		0x100F
+-#define PCI_DEVICE_ID_NLM_UART		0x1010
+-#define PCI_DEVICE_ID_NLM_I2C		0x1011
+-#define PCI_DEVICE_ID_NLM_NOR		0x1015
+-#define PCI_DEVICE_ID_NLM_NAND		0x1016
+-#define PCI_DEVICE_ID_NLM_MMC		0x1018
+-#define PCI_DEVICE_ID_NLM_SATA		0x101A
+-#define PCI_DEVICE_ID_NLM_XHCI		0x101D
+-
+-#define PCI_DEVICE_ID_XLP9XX_MMC	0x9018
+-#define PCI_DEVICE_ID_XLP9XX_SATA	0x901A
+-#define PCI_DEVICE_ID_XLP9XX_XHCI	0x901D
+-
+-#ifndef __ASSEMBLY__
+-
+-#define nlm_read_pci_reg(b, r)		nlm_read_reg(b, r)
+-#define nlm_write_pci_reg(b, r, v)	nlm_write_reg(b, r, v)
+-
+-static inline int xlp9xx_get_socbus(int node)
+-{
+-	uint64_t socbridge;
+-
+-	if (node == 0)
+-		return 1;
+-	socbridge = nlm_pcicfg_base(XLP9XX_IO_BRIDGE_OFFSET(node));
+-	return (nlm_read_pci_reg(socbridge, 0x6) >> 8) & 0xff;
+-}
+-#endif /* !__ASSEMBLY */
+-
+-#endif /* __NLM_HAL_IOMAP_H__ */
+diff --git a/arch/mips/include/asm/netlogic/xlp-hal/pcibus.h b/arch/mips/include/asm/netlogic/xlp-hal/pcibus.h
+deleted file mode 100644
+index 91540f41e1e4..000000000000
+--- a/arch/mips/include/asm/netlogic/xlp-hal/pcibus.h
++++ /dev/null
+@@ -1,113 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef __NLM_HAL_PCIBUS_H__
+-#define __NLM_HAL_PCIBUS_H__
+-
+-/* PCIE Memory and IO regions */
+-#define PCIE_MEM_BASE			0xd0000000ULL
+-#define PCIE_MEM_LIMIT			0xdfffffffULL
+-#define PCIE_IO_BASE			0x14000000ULL
+-#define PCIE_IO_LIMIT			0x15ffffffULL
+-
+-#define PCIE_BRIDGE_CMD			0x1
+-#define PCIE_BRIDGE_MSI_CAP		0x14
+-#define PCIE_BRIDGE_MSI_ADDRL		0x15
+-#define PCIE_BRIDGE_MSI_ADDRH		0x16
+-#define PCIE_BRIDGE_MSI_DATA		0x17
+-
+-/* XLP Global PCIE configuration space registers */
+-#define PCIE_BYTE_SWAP_MEM_BASE		0x247
+-#define PCIE_BYTE_SWAP_MEM_LIM		0x248
+-#define PCIE_BYTE_SWAP_IO_BASE		0x249
+-#define PCIE_BYTE_SWAP_IO_LIM		0x24A
+-
+-#define PCIE_BRIDGE_MSIX_ADDR_BASE	0x24F
+-#define PCIE_BRIDGE_MSIX_ADDR_LIMIT	0x250
+-#define PCIE_MSI_STATUS			0x25A
+-#define PCIE_MSI_EN			0x25B
+-#define PCIE_MSIX_STATUS		0x25D
+-#define PCIE_INT_STATUS0		0x25F
+-#define PCIE_INT_STATUS1		0x260
+-#define PCIE_INT_EN0			0x261
+-#define PCIE_INT_EN1			0x262
+-
+-/* XLP9XX has basic changes */
+-#define PCIE_9XX_BYTE_SWAP_MEM_BASE	0x25c
+-#define PCIE_9XX_BYTE_SWAP_MEM_LIM	0x25d
+-#define PCIE_9XX_BYTE_SWAP_IO_BASE	0x25e
+-#define PCIE_9XX_BYTE_SWAP_IO_LIM	0x25f
+-
+-#define PCIE_9XX_BRIDGE_MSIX_ADDR_BASE	0x264
+-#define PCIE_9XX_BRIDGE_MSIX_ADDR_LIMIT	0x265
+-#define PCIE_9XX_MSI_STATUS		0x283
+-#define PCIE_9XX_MSI_EN			0x284
+-/* 128 MSIX vectors available in 9xx */
+-#define PCIE_9XX_MSIX_STATUS0		0x286
+-#define PCIE_9XX_MSIX_STATUSX(n)	(n + 0x286)
+-#define PCIE_9XX_MSIX_VEC		0x296
+-#define PCIE_9XX_MSIX_VECX(n)		(n + 0x296)
+-#define PCIE_9XX_INT_STATUS0		0x397
+-#define PCIE_9XX_INT_STATUS1		0x398
+-#define PCIE_9XX_INT_EN0		0x399
+-#define PCIE_9XX_INT_EN1		0x39a
+-
+-/* other */
+-#define PCIE_NLINKS			4
+-
+-/* MSI addresses */
+-#define MSI_ADDR_BASE			0xfffee00000ULL
+-#define MSI_ADDR_SZ			0x10000
+-#define MSI_LINK_ADDR(n, l)		(MSI_ADDR_BASE + \
+-				(PCIE_NLINKS * (n) + (l)) * MSI_ADDR_SZ)
+-#define MSIX_ADDR_BASE			0xfffef00000ULL
+-#define MSIX_LINK_ADDR(n, l)		(MSIX_ADDR_BASE + \
+-				(PCIE_NLINKS * (n) + (l)) * MSI_ADDR_SZ)
+-#ifndef __ASSEMBLY__
+-
+-#define nlm_read_pcie_reg(b, r)		nlm_read_reg(b, r)
+-#define nlm_write_pcie_reg(b, r, v)	nlm_write_reg(b, r, v)
+-#define nlm_get_pcie_base(node, inst)	nlm_pcicfg_base(cpu_is_xlp9xx() ? \
+-	XLP9XX_IO_PCIE_OFFSET(node, inst) : XLP_IO_PCIE_OFFSET(node, inst))
+-
+-#ifdef CONFIG_PCI_MSI
+-void xlp_init_node_msi_irqs(int node, int link);
+-#else
+-static inline void xlp_init_node_msi_irqs(int node, int link) {}
+-#endif
+-
+-struct pci_dev *xlp_get_pcie_link(const struct pci_dev *dev);
+-
+-#endif
+-#endif /* __NLM_HAL_PCIBUS_H__ */
+diff --git a/arch/mips/include/asm/netlogic/xlp-hal/pic.h b/arch/mips/include/asm/netlogic/xlp-hal/pic.h
+deleted file mode 100644
+index 41cefe94f0c9..000000000000
+--- a/arch/mips/include/asm/netlogic/xlp-hal/pic.h
++++ /dev/null
+@@ -1,366 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _NLM_HAL_PIC_H
+-#define _NLM_HAL_PIC_H
+-
+-/* PIC Specific registers */
+-#define PIC_CTRL		0x00
+-
+-/* PIC control register defines */
+-#define PIC_CTRL_ITV		32 /* interrupt timeout value */
+-#define PIC_CTRL_ICI		19 /* ICI interrupt timeout enable */
+-#define PIC_CTRL_ITE		18 /* interrupt timeout enable */
+-#define PIC_CTRL_STE		10 /* system timer interrupt enable */
+-#define PIC_CTRL_WWR1		8  /* watchdog 1 wraparound count for reset */
+-#define PIC_CTRL_WWR0		6  /* watchdog 0 wraparound count for reset */
+-#define PIC_CTRL_WWN1		4  /* watchdog 1 wraparound count for NMI */
+-#define PIC_CTRL_WWN0		2  /* watchdog 0 wraparound count for NMI */
+-#define PIC_CTRL_WTE		0  /* watchdog timer enable */
+-
+-/* PIC Status register defines */
+-#define PIC_ICI_STATUS		33 /* ICI interrupt timeout status */
+-#define PIC_ITE_STATUS		32 /* interrupt timeout status */
+-#define PIC_STS_STATUS		4  /* System timer interrupt status */
+-#define PIC_WNS_STATUS		2  /* NMI status for watchdog timers */
+-#define PIC_WIS_STATUS		0  /* Interrupt status for watchdog timers */
+-
+-/* PIC IPI control register offsets */
+-#define PIC_IPICTRL_NMI		32
+-#define PIC_IPICTRL_RIV		20 /* received interrupt vector */
+-#define PIC_IPICTRL_IDB		16 /* interrupt destination base */
+-#define PIC_IPICTRL_DTE		 0 /* interrupt destination thread enables */
+-
+-/* PIC IRT register offsets */
+-#define PIC_IRT_ENABLE		31
+-#define PIC_IRT_NMI		29
+-#define PIC_IRT_SCH		28 /* Scheduling scheme */
+-#define PIC_IRT_RVEC		20 /* Interrupt receive vectors */
+-#define PIC_IRT_DT		19 /* Destination type */
+-#define PIC_IRT_DB		16 /* Destination base */
+-#define PIC_IRT_DTE		0  /* Destination thread enables */
+-
+-#define PIC_BYTESWAP		0x02
+-#define PIC_STATUS		0x04
+-#define PIC_INTR_TIMEOUT	0x06
+-#define PIC_ICI0_INTR_TIMEOUT	0x08
+-#define PIC_ICI1_INTR_TIMEOUT	0x0a
+-#define PIC_ICI2_INTR_TIMEOUT	0x0c
+-#define PIC_IPI_CTL		0x0e
+-#define PIC_INT_ACK		0x10
+-#define PIC_INT_PENDING0	0x12
+-#define PIC_INT_PENDING1	0x14
+-#define PIC_INT_PENDING2	0x16
+-
+-#define PIC_WDOG0_MAXVAL	0x18
+-#define PIC_WDOG0_COUNT		0x1a
+-#define PIC_WDOG0_ENABLE0	0x1c
+-#define PIC_WDOG0_ENABLE1	0x1e
+-#define PIC_WDOG0_BEATCMD	0x20
+-#define PIC_WDOG0_BEAT0		0x22
+-#define PIC_WDOG0_BEAT1		0x24
+-
+-#define PIC_WDOG1_MAXVAL	0x26
+-#define PIC_WDOG1_COUNT		0x28
+-#define PIC_WDOG1_ENABLE0	0x2a
+-#define PIC_WDOG1_ENABLE1	0x2c
+-#define PIC_WDOG1_BEATCMD	0x2e
+-#define PIC_WDOG1_BEAT0		0x30
+-#define PIC_WDOG1_BEAT1		0x32
+-
+-#define PIC_WDOG_MAXVAL(i)	(PIC_WDOG0_MAXVAL + ((i) ? 7 : 0))
+-#define PIC_WDOG_COUNT(i)	(PIC_WDOG0_COUNT + ((i) ? 7 : 0))
+-#define PIC_WDOG_ENABLE0(i)	(PIC_WDOG0_ENABLE0 + ((i) ? 7 : 0))
+-#define PIC_WDOG_ENABLE1(i)	(PIC_WDOG0_ENABLE1 + ((i) ? 7 : 0))
+-#define PIC_WDOG_BEATCMD(i)	(PIC_WDOG0_BEATCMD + ((i) ? 7 : 0))
+-#define PIC_WDOG_BEAT0(i)	(PIC_WDOG0_BEAT0 + ((i) ? 7 : 0))
+-#define PIC_WDOG_BEAT1(i)	(PIC_WDOG0_BEAT1 + ((i) ? 7 : 0))
+-
+-#define PIC_TIMER0_MAXVAL    0x34
+-#define PIC_TIMER1_MAXVAL    0x36
+-#define PIC_TIMER2_MAXVAL    0x38
+-#define PIC_TIMER3_MAXVAL    0x3a
+-#define PIC_TIMER4_MAXVAL    0x3c
+-#define PIC_TIMER5_MAXVAL    0x3e
+-#define PIC_TIMER6_MAXVAL    0x40
+-#define PIC_TIMER7_MAXVAL    0x42
+-#define PIC_TIMER_MAXVAL(i)  (PIC_TIMER0_MAXVAL + ((i) * 2))
+-
+-#define PIC_TIMER0_COUNT     0x44
+-#define PIC_TIMER1_COUNT     0x46
+-#define PIC_TIMER2_COUNT     0x48
+-#define PIC_TIMER3_COUNT     0x4a
+-#define PIC_TIMER4_COUNT     0x4c
+-#define PIC_TIMER5_COUNT     0x4e
+-#define PIC_TIMER6_COUNT     0x50
+-#define PIC_TIMER7_COUNT     0x52
+-#define PIC_TIMER_COUNT(i)   (PIC_TIMER0_COUNT + ((i) * 2))
+-
+-#define PIC_ITE0_N0_N1		0x54
+-#define PIC_ITE1_N0_N1		0x58
+-#define PIC_ITE2_N0_N1		0x5c
+-#define PIC_ITE3_N0_N1		0x60
+-#define PIC_ITE4_N0_N1		0x64
+-#define PIC_ITE5_N0_N1		0x68
+-#define PIC_ITE6_N0_N1		0x6c
+-#define PIC_ITE7_N0_N1		0x70
+-#define PIC_ITE_N0_N1(i)	(PIC_ITE0_N0_N1 + ((i) * 4))
+-
+-#define PIC_ITE0_N2_N3		0x56
+-#define PIC_ITE1_N2_N3		0x5a
+-#define PIC_ITE2_N2_N3		0x5e
+-#define PIC_ITE3_N2_N3		0x62
+-#define PIC_ITE4_N2_N3		0x66
+-#define PIC_ITE5_N2_N3		0x6a
+-#define PIC_ITE6_N2_N3		0x6e
+-#define PIC_ITE7_N2_N3		0x72
+-#define PIC_ITE_N2_N3(i)	(PIC_ITE0_N2_N3 + ((i) * 4))
+-
+-#define PIC_IRT0		0x74
+-#define PIC_IRT(i)		(PIC_IRT0 + ((i) * 2))
+-
+-#define PIC_9XX_PENDING_0	0x6
+-#define PIC_9XX_PENDING_1	0x8
+-#define PIC_9XX_PENDING_2	0xa
+-#define PIC_9XX_PENDING_3	0xc
+-
+-#define PIC_9XX_IRT0		0x1c0
+-#define PIC_9XX_IRT(i)		(PIC_9XX_IRT0 + ((i) * 2))
+-
+-/*
+- *    IRT Map
+- */
+-#define PIC_NUM_IRTS		160
+-#define PIC_9XX_NUM_IRTS	256
+-
+-#define PIC_IRT_WD_0_INDEX	0
+-#define PIC_IRT_WD_1_INDEX	1
+-#define PIC_IRT_WD_NMI_0_INDEX	2
+-#define PIC_IRT_WD_NMI_1_INDEX	3
+-#define PIC_IRT_TIMER_0_INDEX	4
+-#define PIC_IRT_TIMER_1_INDEX	5
+-#define PIC_IRT_TIMER_2_INDEX	6
+-#define PIC_IRT_TIMER_3_INDEX	7
+-#define PIC_IRT_TIMER_4_INDEX	8
+-#define PIC_IRT_TIMER_5_INDEX	9
+-#define PIC_IRT_TIMER_6_INDEX	10
+-#define PIC_IRT_TIMER_7_INDEX	11
+-#define PIC_IRT_CLOCK_INDEX	PIC_IRT_TIMER_7_INDEX
+-#define PIC_IRT_TIMER_INDEX(num)	((num) + PIC_IRT_TIMER_0_INDEX)
+-
+-
+-/* 11 and 12 */
+-#define PIC_NUM_MSG_Q_IRTS	32
+-#define PIC_IRT_MSG_Q0_INDEX	12
+-#define PIC_IRT_MSG_Q_INDEX(qid)	((qid) + PIC_IRT_MSG_Q0_INDEX)
+-/* 12 to 43 */
+-#define PIC_IRT_MSG_0_INDEX	44
+-#define PIC_IRT_MSG_1_INDEX	45
+-/* 44 and 45 */
+-#define PIC_NUM_PCIE_MSIX_IRTS	32
+-#define PIC_IRT_PCIE_MSIX_0_INDEX	46
+-#define PIC_IRT_PCIE_MSIX_INDEX(num)	((num) + PIC_IRT_PCIE_MSIX_0_INDEX)
+-/* 46 to 77 */
+-#define PIC_NUM_PCIE_LINK_IRTS		4
+-#define PIC_IRT_PCIE_LINK_0_INDEX	78
+-#define PIC_IRT_PCIE_LINK_1_INDEX	79
+-#define PIC_IRT_PCIE_LINK_2_INDEX	80
+-#define PIC_IRT_PCIE_LINK_3_INDEX	81
+-#define PIC_IRT_PCIE_LINK_INDEX(num)	((num) + PIC_IRT_PCIE_LINK_0_INDEX)
+-
+-#define PIC_9XX_IRT_PCIE_LINK_0_INDEX	191
+-#define PIC_9XX_IRT_PCIE_LINK_INDEX(num) \
+-				((num) + PIC_9XX_IRT_PCIE_LINK_0_INDEX)
+-
+-#define PIC_CLOCK_TIMER			7
+-
+-#if !defined(LOCORE) && !defined(__ASSEMBLY__)
+-
+-/*
+- *   Misc
+- */
+-#define PIC_IRT_VALID			1
+-#define PIC_LOCAL_SCHEDULING		1
+-#define PIC_GLOBAL_SCHEDULING		0
+-
+-#define nlm_read_pic_reg(b, r)	nlm_read_reg64(b, r)
+-#define nlm_write_pic_reg(b, r, v) nlm_write_reg64(b, r, v)
+-#define nlm_get_pic_pcibase(node)	nlm_pcicfg_base(cpu_is_xlp9xx() ? \
+-		XLP9XX_IO_PIC_OFFSET(node) : XLP_IO_PIC_OFFSET(node))
+-#define nlm_get_pic_regbase(node) (nlm_get_pic_pcibase(node) + XLP_IO_PCI_HDRSZ)
+-
+-/* We use PIC on node 0 as a timer */
+-#define pic_timer_freq()		nlm_get_pic_frequency(0)
+-
+-/* IRT and h/w interrupt routines */
+-static inline void
+-nlm_9xx_pic_write_irt(uint64_t base, int irt_num, int en, int nmi,
+-	int sch, int vec, int dt, int db, int cpu)
+-{
+-	uint64_t val;
+-
+-	val = (((uint64_t)en & 0x1) << 22) | ((nmi & 0x1) << 23) |
+-			((0 /*mc*/) << 20) | ((vec & 0x3f) << 24) |
+-			((dt & 0x1) << 21) | (0 /*ptr*/ << 16) |
+-			(cpu & 0x3ff);
+-
+-	nlm_write_pic_reg(base, PIC_9XX_IRT(irt_num), val);
+-}
+-
+-static inline void
+-nlm_pic_write_irt(uint64_t base, int irt_num, int en, int nmi,
+-	int sch, int vec, int dt, int db, int dte)
+-{
+-	uint64_t val;
+-
+-	val = (((uint64_t)en & 0x1) << 31) | ((nmi & 0x1) << 29) |
+-			((sch & 0x1) << 28) | ((vec & 0x3f) << 20) |
+-			((dt & 0x1) << 19) | ((db & 0x7) << 16) |
+-			(dte & 0xffff);
+-
+-	nlm_write_pic_reg(base, PIC_IRT(irt_num), val);
+-}
+-
+-static inline void
+-nlm_pic_write_irt_direct(uint64_t base, int irt_num, int en, int nmi,
+-	int sch, int vec, int cpu)
+-{
+-	if (cpu_is_xlp9xx())
+-		nlm_9xx_pic_write_irt(base, irt_num, en, nmi, sch, vec,
+-							1, 0, cpu);
+-	else
+-		nlm_pic_write_irt(base, irt_num, en, nmi, sch, vec, 1,
+-			(cpu >> 4),		/* thread group */
+-			1 << (cpu & 0xf));	/* thread mask */
+-}
+-
+-static inline uint64_t
+-nlm_pic_read_timer(uint64_t base, int timer)
+-{
+-	return nlm_read_pic_reg(base, PIC_TIMER_COUNT(timer));
+-}
+-
+-static inline uint32_t
+-nlm_pic_read_timer32(uint64_t base, int timer)
+-{
+-	return (uint32_t)nlm_read_pic_reg(base, PIC_TIMER_COUNT(timer));
+-}
+-
+-static inline void
+-nlm_pic_write_timer(uint64_t base, int timer, uint64_t value)
+-{
+-	nlm_write_pic_reg(base, PIC_TIMER_COUNT(timer), value);
+-}
+-
+-static inline void
+-nlm_pic_set_timer(uint64_t base, int timer, uint64_t value, int irq, int cpu)
+-{
+-	uint64_t pic_ctrl = nlm_read_pic_reg(base, PIC_CTRL);
+-	int en;
+-
+-	en = (irq > 0);
+-	nlm_write_pic_reg(base, PIC_TIMER_MAXVAL(timer), value);
+-	nlm_pic_write_irt_direct(base, PIC_IRT_TIMER_INDEX(timer),
+-		en, 0, 0, irq, cpu);
+-
+-	/* enable the timer */
+-	pic_ctrl |= (1 << (PIC_CTRL_STE + timer));
+-	nlm_write_pic_reg(base, PIC_CTRL, pic_ctrl);
+-}
+-
+-static inline void
+-nlm_pic_enable_irt(uint64_t base, int irt)
+-{
+-	uint64_t reg;
+-
+-	if (cpu_is_xlp9xx()) {
+-		reg = nlm_read_pic_reg(base, PIC_9XX_IRT(irt));
+-		nlm_write_pic_reg(base, PIC_9XX_IRT(irt), reg | (1 << 22));
+-	} else {
+-		reg = nlm_read_pic_reg(base, PIC_IRT(irt));
+-		nlm_write_pic_reg(base, PIC_IRT(irt), reg | (1u << 31));
+-	}
+-}
+-
+-static inline void
+-nlm_pic_disable_irt(uint64_t base, int irt)
+-{
+-	uint64_t reg;
+-
+-	if (cpu_is_xlp9xx()) {
+-		reg = nlm_read_pic_reg(base, PIC_9XX_IRT(irt));
+-		reg &= ~((uint64_t)1 << 22);
+-		nlm_write_pic_reg(base, PIC_9XX_IRT(irt), reg);
+-	} else {
+-		reg = nlm_read_pic_reg(base, PIC_IRT(irt));
+-		reg &= ~((uint64_t)1 << 31);
+-		nlm_write_pic_reg(base, PIC_IRT(irt), reg);
+-	}
+-}
+-
+-static inline void
+-nlm_pic_send_ipi(uint64_t base, int hwt, int irq, int nmi)
+-{
+-	uint64_t ipi;
+-
+-	if (cpu_is_xlp9xx())
+-		ipi = (nmi << 23) | (irq << 24) |
+-			(0/*mcm*/ << 20) | (0/*ptr*/ << 16) | hwt;
+-	else
+-		ipi = ((uint64_t)nmi << 31) | (irq << 20) |
+-			((hwt >> 4) << 16) | (1 << (hwt & 0xf));
+-
+-	nlm_write_pic_reg(base, PIC_IPI_CTL, ipi);
+-}
+-
+-static inline void
+-nlm_pic_ack(uint64_t base, int irt_num)
+-{
+-	nlm_write_pic_reg(base, PIC_INT_ACK, irt_num);
+-
+-	/* Ack the Status register for Watchdog & System timers */
+-	if (irt_num < 12)
+-		nlm_write_pic_reg(base, PIC_STATUS, (1 << irt_num));
+-}
+-
+-static inline void
+-nlm_pic_init_irt(uint64_t base, int irt, int irq, int hwt, int en)
+-{
+-	nlm_pic_write_irt_direct(base, irt, en, 0, 0, irq, hwt);
+-}
+-
+-int nlm_irq_to_irt(int irq);
+-
+-#endif /* __ASSEMBLY__ */
+-#endif /* _NLM_HAL_PIC_H */
+diff --git a/arch/mips/include/asm/netlogic/xlp-hal/sys.h b/arch/mips/include/asm/netlogic/xlp-hal/sys.h
+deleted file mode 100644
+index 6bcf3952e556..000000000000
+--- a/arch/mips/include/asm/netlogic/xlp-hal/sys.h
++++ /dev/null
+@@ -1,213 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef __NLM_HAL_SYS_H__
+-#define __NLM_HAL_SYS_H__
+-
+-/**
+-* @file_name sys.h
+-* @author Netlogic Microsystems
+-* @brief HAL for System configuration registers
+-*/
+-#define SYS_CHIP_RESET				0x00
+-#define SYS_POWER_ON_RESET_CFG			0x01
+-#define SYS_EFUSE_DEVICE_CFG_STATUS0		0x02
+-#define SYS_EFUSE_DEVICE_CFG_STATUS1		0x03
+-#define SYS_EFUSE_DEVICE_CFG_STATUS2		0x04
+-#define SYS_EFUSE_DEVICE_CFG3			0x05
+-#define SYS_EFUSE_DEVICE_CFG4			0x06
+-#define SYS_EFUSE_DEVICE_CFG5			0x07
+-#define SYS_EFUSE_DEVICE_CFG6			0x08
+-#define SYS_EFUSE_DEVICE_CFG7			0x09
+-#define SYS_PLL_CTRL				0x0a
+-#define SYS_CPU_RESET				0x0b
+-#define SYS_CPU_NONCOHERENT_MODE		0x0d
+-#define SYS_CORE_DFS_DIS_CTRL			0x0e
+-#define SYS_CORE_DFS_RST_CTRL			0x0f
+-#define SYS_CORE_DFS_BYP_CTRL			0x10
+-#define SYS_CORE_DFS_PHA_CTRL			0x11
+-#define SYS_CORE_DFS_DIV_INC_CTRL		0x12
+-#define SYS_CORE_DFS_DIV_DEC_CTRL		0x13
+-#define SYS_CORE_DFS_DIV_VALUE			0x14
+-#define SYS_RESET				0x15
+-#define SYS_DFS_DIS_CTRL			0x16
+-#define SYS_DFS_RST_CTRL			0x17
+-#define SYS_DFS_BYP_CTRL			0x18
+-#define SYS_DFS_DIV_INC_CTRL			0x19
+-#define SYS_DFS_DIV_DEC_CTRL			0x1a
+-#define SYS_DFS_DIV_VALUE0			0x1b
+-#define SYS_DFS_DIV_VALUE1			0x1c
+-#define SYS_SENSE_AMP_DLY			0x1d
+-#define SYS_SOC_SENSE_AMP_DLY			0x1e
+-#define SYS_CTRL0				0x1f
+-#define SYS_CTRL1				0x20
+-#define SYS_TIMEOUT_BS1				0x21
+-#define SYS_BYTE_SWAP				0x22
+-#define SYS_VRM_VID				0x23
+-#define SYS_PWR_RAM_CMD				0x24
+-#define SYS_PWR_RAM_ADDR			0x25
+-#define SYS_PWR_RAM_DATA0			0x26
+-#define SYS_PWR_RAM_DATA1			0x27
+-#define SYS_PWR_RAM_DATA2			0x28
+-#define SYS_PWR_UCODE				0x29
+-#define SYS_CPU0_PWR_STATUS			0x2a
+-#define SYS_CPU1_PWR_STATUS			0x2b
+-#define SYS_CPU2_PWR_STATUS			0x2c
+-#define SYS_CPU3_PWR_STATUS			0x2d
+-#define SYS_CPU4_PWR_STATUS			0x2e
+-#define SYS_CPU5_PWR_STATUS			0x2f
+-#define SYS_CPU6_PWR_STATUS			0x30
+-#define SYS_CPU7_PWR_STATUS			0x31
+-#define SYS_STATUS				0x32
+-#define SYS_INT_POL				0x33
+-#define SYS_INT_TYPE				0x34
+-#define SYS_INT_STATUS				0x35
+-#define SYS_INT_MASK0				0x36
+-#define SYS_INT_MASK1				0x37
+-#define SYS_UCO_S_ECC				0x38
+-#define SYS_UCO_M_ECC				0x39
+-#define SYS_UCO_ADDR				0x3a
+-#define SYS_UCO_INSTR				0x3b
+-#define SYS_MEM_BIST0				0x3c
+-#define SYS_MEM_BIST1				0x3d
+-#define SYS_MEM_BIST2				0x3e
+-#define SYS_MEM_BIST3				0x3f
+-#define SYS_MEM_BIST4				0x40
+-#define SYS_MEM_BIST5				0x41
+-#define SYS_MEM_BIST6				0x42
+-#define SYS_MEM_BIST7				0x43
+-#define SYS_MEM_BIST8				0x44
+-#define SYS_MEM_BIST9				0x45
+-#define SYS_MEM_BIST10				0x46
+-#define SYS_MEM_BIST11				0x47
+-#define SYS_MEM_BIST12				0x48
+-#define SYS_SCRTCH0				0x49
+-#define SYS_SCRTCH1				0x4a
+-#define SYS_SCRTCH2				0x4b
+-#define SYS_SCRTCH3				0x4c
+-
+-/* PLL registers XLP2XX */
+-#define SYS_CPU_PLL_CTRL0(core)			(0x1c0 + (core * 4))
+-#define SYS_CPU_PLL_CTRL1(core)			(0x1c1 + (core * 4))
+-#define SYS_CPU_PLL_CTRL2(core)			(0x1c2 + (core * 4))
+-#define SYS_CPU_PLL_CTRL3(core)			(0x1c3 + (core * 4))
+-#define SYS_PLL_CTRL0				0x240
+-#define SYS_PLL_CTRL1				0x241
+-#define SYS_PLL_CTRL2				0x242
+-#define SYS_PLL_CTRL3				0x243
+-#define SYS_DMC_PLL_CTRL0			0x244
+-#define SYS_DMC_PLL_CTRL1			0x245
+-#define SYS_DMC_PLL_CTRL2			0x246
+-#define SYS_DMC_PLL_CTRL3			0x247
+-
+-#define SYS_PLL_CTRL0_DEVX(x)			(0x248 + (x) * 4)
+-#define SYS_PLL_CTRL1_DEVX(x)			(0x249 + (x) * 4)
+-#define SYS_PLL_CTRL2_DEVX(x)			(0x24a + (x) * 4)
+-#define SYS_PLL_CTRL3_DEVX(x)			(0x24b + (x) * 4)
+-
+-#define SYS_CPU_PLL_CHG_CTRL			0x288
+-#define SYS_PLL_CHG_CTRL			0x289
+-#define SYS_CLK_DEV_DIS				0x28a
+-#define SYS_CLK_DEV_SEL				0x28b
+-#define SYS_CLK_DEV_DIV				0x28c
+-#define SYS_CLK_DEV_CHG				0x28d
+-#define SYS_CLK_DEV_SEL_REG			0x28e
+-#define SYS_CLK_DEV_DIV_REG			0x28f
+-#define SYS_CPU_PLL_LOCK			0x29f
+-#define SYS_SYS_PLL_LOCK			0x2a0
+-#define SYS_PLL_MEM_CMD				0x2a1
+-#define SYS_CPU_PLL_MEM_REQ			0x2a2
+-#define SYS_SYS_PLL_MEM_REQ			0x2a3
+-#define SYS_PLL_MEM_STAT			0x2a4
+-
+-/* PLL registers XLP9XX */
+-#define SYS_9XX_CPU_PLL_CTRL0(core)		(0xc0 + (core * 4))
+-#define SYS_9XX_CPU_PLL_CTRL1(core)		(0xc1 + (core * 4))
+-#define SYS_9XX_CPU_PLL_CTRL2(core)		(0xc2 + (core * 4))
+-#define SYS_9XX_CPU_PLL_CTRL3(core)		(0xc3 + (core * 4))
+-#define SYS_9XX_DMC_PLL_CTRL0			0x140
+-#define SYS_9XX_DMC_PLL_CTRL1			0x141
+-#define SYS_9XX_DMC_PLL_CTRL2			0x142
+-#define SYS_9XX_DMC_PLL_CTRL3			0x143
+-#define SYS_9XX_PLL_CTRL0			0x144
+-#define SYS_9XX_PLL_CTRL1			0x145
+-#define SYS_9XX_PLL_CTRL2			0x146
+-#define SYS_9XX_PLL_CTRL3			0x147
+-
+-#define SYS_9XX_PLL_CTRL0_DEVX(x)		(0x148 + (x) * 4)
+-#define SYS_9XX_PLL_CTRL1_DEVX(x)		(0x149 + (x) * 4)
+-#define SYS_9XX_PLL_CTRL2_DEVX(x)		(0x14a + (x) * 4)
+-#define SYS_9XX_PLL_CTRL3_DEVX(x)		(0x14b + (x) * 4)
+-
+-#define SYS_9XX_CPU_PLL_CHG_CTRL		0x188
+-#define SYS_9XX_PLL_CHG_CTRL			0x189
+-#define SYS_9XX_CLK_DEV_DIS			0x18a
+-#define SYS_9XX_CLK_DEV_SEL			0x18b
+-#define SYS_9XX_CLK_DEV_DIV			0x18d
+-#define SYS_9XX_CLK_DEV_CHG			0x18f
+-
+-#define SYS_9XX_CLK_DEV_SEL_REG			0x1a4
+-#define SYS_9XX_CLK_DEV_DIV_REG			0x1a6
+-
+-/* Registers changed on 9XX */
+-#define SYS_9XX_POWER_ON_RESET_CFG		0x00
+-#define SYS_9XX_CHIP_RESET			0x01
+-#define SYS_9XX_CPU_RESET			0x02
+-#define SYS_9XX_CPU_NONCOHERENT_MODE		0x03
+-
+-/* XLP 9XX fuse block registers */
+-#define FUSE_9XX_DEVCFG6			0xc6
+-
+-#ifndef __ASSEMBLY__
+-
+-#define nlm_read_sys_reg(b, r)		nlm_read_reg(b, r)
+-#define nlm_write_sys_reg(b, r, v)	nlm_write_reg(b, r, v)
+-#define nlm_get_sys_pcibase(node)	nlm_pcicfg_base(cpu_is_xlp9xx() ? \
+-		XLP9XX_IO_SYS_OFFSET(node) : XLP_IO_SYS_OFFSET(node))
+-#define nlm_get_sys_regbase(node) (nlm_get_sys_pcibase(node) + XLP_IO_PCI_HDRSZ)
+-
+-/* XLP9XX fuse block */
+-#define nlm_get_fuse_pcibase(node)	\
+-			nlm_pcicfg_base(XLP9XX_IO_FUSE_OFFSET(node))
+-#define nlm_get_fuse_regbase(node)	\
+-			(nlm_get_fuse_pcibase(node) + XLP_IO_PCI_HDRSZ)
+-
+-#define nlm_get_clock_pcibase(node)	\
+-			nlm_pcicfg_base(XLP9XX_IO_CLOCK_OFFSET(node))
+-#define nlm_get_clock_regbase(node)	\
+-			(nlm_get_clock_pcibase(node) + XLP_IO_PCI_HDRSZ)
+-
+-unsigned int nlm_get_pic_frequency(int node);
+-#endif
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/xlp-hal/uart.h b/arch/mips/include/asm/netlogic/xlp-hal/uart.h
+deleted file mode 100644
+index a6c54424dd95..000000000000
+--- a/arch/mips/include/asm/netlogic/xlp-hal/uart.h
++++ /dev/null
+@@ -1,192 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef __XLP_HAL_UART_H__
+-#define __XLP_HAL_UART_H__
+-
+-/* UART Specific registers */
+-#define UART_RX_DATA		0x00
+-#define UART_TX_DATA		0x00
+-
+-#define UART_INT_EN		0x01
+-#define UART_INT_ID		0x02
+-#define UART_FIFO_CTL		0x02
+-#define UART_LINE_CTL		0x03
+-#define UART_MODEM_CTL		0x04
+-#define UART_LINE_STS		0x05
+-#define UART_MODEM_STS		0x06
+-
+-#define UART_DIVISOR0		0x00
+-#define UART_DIVISOR1		0x01
+-
+-#define BASE_BAUD		(XLP_IO_CLK/16)
+-#define BAUD_DIVISOR(baud)	(BASE_BAUD / baud)
+-
+-/* LCR mask values */
+-#define LCR_5BITS		0x00
+-#define LCR_6BITS		0x01
+-#define LCR_7BITS		0x02
+-#define LCR_8BITS		0x03
+-#define LCR_STOPB		0x04
+-#define LCR_PENAB		0x08
+-#define LCR_PODD		0x00
+-#define LCR_PEVEN		0x10
+-#define LCR_PONE		0x20
+-#define LCR_PZERO		0x30
+-#define LCR_SBREAK		0x40
+-#define LCR_EFR_ENABLE		0xbf
+-#define LCR_DLAB		0x80
+-
+-/* MCR mask values */
+-#define MCR_DTR			0x01
+-#define MCR_RTS			0x02
+-#define MCR_DRS			0x04
+-#define MCR_IE			0x08
+-#define MCR_LOOPBACK		0x10
+-
+-/* FCR mask values */
+-#define FCR_RCV_RST		0x02
+-#define FCR_XMT_RST		0x04
+-#define FCR_RX_LOW		0x00
+-#define FCR_RX_MEDL		0x40
+-#define FCR_RX_MEDH		0x80
+-#define FCR_RX_HIGH		0xc0
+-
+-/* IER mask values */
+-#define IER_ERXRDY		0x1
+-#define IER_ETXRDY		0x2
+-#define IER_ERLS		0x4
+-#define IER_EMSC		0x8
+-
+-#if !defined(LOCORE) && !defined(__ASSEMBLY__)
+-
+-#define nlm_read_uart_reg(b, r)		nlm_read_reg(b, r)
+-#define nlm_write_uart_reg(b, r, v)	nlm_write_reg(b, r, v)
+-#define nlm_get_uart_pcibase(node, inst)	\
+-	nlm_pcicfg_base(cpu_is_xlp9xx() ?  XLP9XX_IO_UART_OFFSET(node) : \
+-						XLP_IO_UART_OFFSET(node, inst))
+-#define nlm_get_uart_regbase(node, inst)	\
+-			(nlm_get_uart_pcibase(node, inst) + XLP_IO_PCI_HDRSZ)
+-
+-static inline void
+-nlm_uart_set_baudrate(uint64_t base, int baud)
+-{
+-	uint32_t lcr;
+-
+-	lcr = nlm_read_uart_reg(base, UART_LINE_CTL);
+-
+-	/* enable divisor register, and write baud values */
+-	nlm_write_uart_reg(base, UART_LINE_CTL, lcr | (1 << 7));
+-	nlm_write_uart_reg(base, UART_DIVISOR0,
+-			(BAUD_DIVISOR(baud) & 0xff));
+-	nlm_write_uart_reg(base, UART_DIVISOR1,
+-			((BAUD_DIVISOR(baud) >> 8) & 0xff));
+-
+-	/* restore default lcr */
+-	nlm_write_uart_reg(base, UART_LINE_CTL, lcr);
+-}
+-
+-static inline void
+-nlm_uart_outbyte(uint64_t base, char c)
+-{
+-	uint32_t lsr;
+-
+-	for (;;) {
+-		lsr = nlm_read_uart_reg(base, UART_LINE_STS);
+-		if (lsr & 0x20)
+-			break;
+-	}
+-
+-	nlm_write_uart_reg(base, UART_TX_DATA, (int)c);
+-}
+-
+-static inline char
+-nlm_uart_inbyte(uint64_t base)
+-{
+-	int data, lsr;
+-
+-	for (;;) {
+-		lsr = nlm_read_uart_reg(base, UART_LINE_STS);
+-		if (lsr & 0x80) { /* parity/frame/break-error - push a zero */
+-			data = 0;
+-			break;
+-		}
+-		if (lsr & 0x01) {	/* Rx data */
+-			data = nlm_read_uart_reg(base, UART_RX_DATA);
+-			break;
+-		}
+-	}
+-
+-	return (char)data;
+-}
+-
+-static inline int
+-nlm_uart_init(uint64_t base, int baud, int databits, int stopbits,
+-	int parity, int int_en, int loopback)
+-{
+-	uint32_t lcr;
+-
+-	lcr = 0;
+-	if (databits >= 8)
+-		lcr |= LCR_8BITS;
+-	else if (databits == 7)
+-		lcr |= LCR_7BITS;
+-	else if (databits == 6)
+-		lcr |= LCR_6BITS;
+-	else
+-		lcr |= LCR_5BITS;
+-
+-	if (stopbits > 1)
+-		lcr |= LCR_STOPB;
+-
+-	lcr |= parity << 3;
+-
+-	/* setup default lcr */
+-	nlm_write_uart_reg(base, UART_LINE_CTL, lcr);
+-
+-	/* Reset the FIFOs */
+-	nlm_write_uart_reg(base, UART_LINE_CTL, FCR_RCV_RST | FCR_XMT_RST);
+-
+-	nlm_uart_set_baudrate(base, baud);
+-
+-	if (loopback)
+-		nlm_write_uart_reg(base, UART_MODEM_CTL, 0x1f);
+-
+-	if (int_en)
+-		nlm_write_uart_reg(base, UART_INT_EN, IER_ERXRDY | IER_ETXRDY);
+-
+-	return 0;
+-}
+-#endif /* !LOCORE && !__ASSEMBLY__ */
+-#endif /* __XLP_HAL_UART_H__ */
+diff --git a/arch/mips/include/asm/netlogic/xlp-hal/xlp.h b/arch/mips/include/asm/netlogic/xlp-hal/xlp.h
+deleted file mode 100644
+index feb6ed807ec6..000000000000
+--- a/arch/mips/include/asm/netlogic/xlp-hal/xlp.h
++++ /dev/null
+@@ -1,119 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _NLM_HAL_XLP_H
+-#define _NLM_HAL_XLP_H
+-
+-#define PIC_UART_0_IRQ			17
+-#define PIC_UART_1_IRQ			18
+-
+-#define PIC_PCIE_LINK_LEGACY_IRQ_BASE	19
+-#define PIC_PCIE_LINK_LEGACY_IRQ(i)	(19 + (i))
+-
+-#define PIC_EHCI_0_IRQ			23
+-#define PIC_EHCI_1_IRQ			24
+-#define PIC_OHCI_0_IRQ			25
+-#define PIC_OHCI_1_IRQ			26
+-#define PIC_OHCI_2_IRQ			27
+-#define PIC_OHCI_3_IRQ			28
+-#define PIC_2XX_XHCI_0_IRQ		23
+-#define PIC_2XX_XHCI_1_IRQ		24
+-#define PIC_2XX_XHCI_2_IRQ		25
+-#define PIC_9XX_XHCI_0_IRQ		23
+-#define PIC_9XX_XHCI_1_IRQ		24
+-#define PIC_9XX_XHCI_2_IRQ		25
+-
+-#define PIC_MMC_IRQ			29
+-#define PIC_I2C_0_IRQ			30
+-#define PIC_I2C_1_IRQ			31
+-#define PIC_I2C_2_IRQ			32
+-#define PIC_I2C_3_IRQ			33
+-#define PIC_SPI_IRQ			34
+-#define PIC_NAND_IRQ			37
+-#define PIC_SATA_IRQ			38
+-#define PIC_GPIO_IRQ			39
+-
+-#define PIC_PCIE_LINK_MSI_IRQ_BASE	44	/* 44 - 47 MSI IRQ */
+-#define PIC_PCIE_LINK_MSI_IRQ(i)	(44 + (i))
+-
+-/* MSI-X with second link-level dispatch */
+-#define PIC_PCIE_MSIX_IRQ_BASE		48	/* 48 - 51 MSI-X IRQ */
+-#define PIC_PCIE_MSIX_IRQ(i)		(48 + (i))
+-
+-/* XLP9xx and XLP8xx has 128 and 32 MSIX vectors respectively */
+-#define NLM_MSIX_VEC_BASE		96	/* 96 - 223 - MSIX mapped */
+-#define NLM_MSI_VEC_BASE		224	/* 224 -351 - MSI mapped */
+-
+-#define NLM_PIC_INDIRECT_VEC_BASE	512
+-#define NLM_GPIO_VEC_BASE		768
+-
+-#define PIC_IRQ_BASE			8
+-#define PIC_IRT_FIRST_IRQ		PIC_IRQ_BASE
+-#define PIC_IRT_LAST_IRQ		63
+-
+-#ifndef __ASSEMBLY__
+-
+-/* SMP support functions */
+-void xlp_boot_core0_siblings(void);
+-void xlp_wakeup_secondary_cpus(void);
+-
+-void xlp_mmu_init(void);
+-void nlm_hal_init(void);
+-int nlm_get_dram_map(int node, uint64_t *dram_map, int nentries);
+-
+-struct pci_dev;
+-int xlp_socdev_to_node(const struct pci_dev *dev);
+-
+-/* Device tree related */
+-void xlp_early_init_devtree(void);
+-void *xlp_dt_init(void *fdtp);
+-
+-static inline int cpu_is_xlpii(void)
+-{
+-	int chip = read_c0_prid() & PRID_IMP_MASK;
+-
+-	return chip == PRID_IMP_NETLOGIC_XLP2XX ||
+-		chip == PRID_IMP_NETLOGIC_XLP9XX ||
+-		chip == PRID_IMP_NETLOGIC_XLP5XX;
+-}
+-
+-static inline int cpu_is_xlp9xx(void)
+-{
+-	int chip = read_c0_prid() & PRID_IMP_MASK;
+-
+-	return chip == PRID_IMP_NETLOGIC_XLP9XX ||
+-		chip == PRID_IMP_NETLOGIC_XLP5XX;
+-}
+-#endif /* !__ASSEMBLY__ */
+-#endif /* _ASM_NLM_XLP_H */
+diff --git a/arch/mips/include/asm/netlogic/xlr/bridge.h b/arch/mips/include/asm/netlogic/xlr/bridge.h
+deleted file mode 100644
+index 2d02428c4f1b..000000000000
+--- a/arch/mips/include/asm/netlogic/xlr/bridge.h
++++ /dev/null
+@@ -1,104 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-#ifndef _ASM_NLM_BRIDGE_H_
+-#define _ASM_NLM_BRIDGE_H_
+-
+-#define BRIDGE_DRAM_0_BAR		0
+-#define BRIDGE_DRAM_1_BAR		1
+-#define BRIDGE_DRAM_2_BAR		2
+-#define BRIDGE_DRAM_3_BAR		3
+-#define BRIDGE_DRAM_4_BAR		4
+-#define BRIDGE_DRAM_5_BAR		5
+-#define BRIDGE_DRAM_6_BAR		6
+-#define BRIDGE_DRAM_7_BAR		7
+-#define BRIDGE_DRAM_CHN_0_MTR_0_BAR	8
+-#define BRIDGE_DRAM_CHN_0_MTR_1_BAR	9
+-#define BRIDGE_DRAM_CHN_0_MTR_2_BAR	10
+-#define BRIDGE_DRAM_CHN_0_MTR_3_BAR	11
+-#define BRIDGE_DRAM_CHN_0_MTR_4_BAR	12
+-#define BRIDGE_DRAM_CHN_0_MTR_5_BAR	13
+-#define BRIDGE_DRAM_CHN_0_MTR_6_BAR	14
+-#define BRIDGE_DRAM_CHN_0_MTR_7_BAR	15
+-#define BRIDGE_DRAM_CHN_1_MTR_0_BAR	16
+-#define BRIDGE_DRAM_CHN_1_MTR_1_BAR	17
+-#define BRIDGE_DRAM_CHN_1_MTR_2_BAR	18
+-#define BRIDGE_DRAM_CHN_1_MTR_3_BAR	19
+-#define BRIDGE_DRAM_CHN_1_MTR_4_BAR	20
+-#define BRIDGE_DRAM_CHN_1_MTR_5_BAR	21
+-#define BRIDGE_DRAM_CHN_1_MTR_6_BAR	22
+-#define BRIDGE_DRAM_CHN_1_MTR_7_BAR	23
+-#define BRIDGE_CFG_BAR			24
+-#define BRIDGE_PHNX_IO_BAR		25
+-#define BRIDGE_FLASH_BAR		26
+-#define BRIDGE_SRAM_BAR			27
+-#define BRIDGE_HTMEM_BAR		28
+-#define BRIDGE_HTINT_BAR		29
+-#define BRIDGE_HTPIC_BAR		30
+-#define BRIDGE_HTSM_BAR			31
+-#define BRIDGE_HTIO_BAR			32
+-#define BRIDGE_HTCFG_BAR		33
+-#define BRIDGE_PCIXCFG_BAR		34
+-#define BRIDGE_PCIXMEM_BAR		35
+-#define BRIDGE_PCIXIO_BAR		36
+-#define BRIDGE_DEVICE_MASK		37
+-#define BRIDGE_AERR_INTR_LOG1		38
+-#define BRIDGE_AERR_INTR_LOG2		39
+-#define BRIDGE_AERR_INTR_LOG3		40
+-#define BRIDGE_AERR_DEV_STAT		41
+-#define BRIDGE_AERR1_LOG1		42
+-#define BRIDGE_AERR1_LOG2		43
+-#define BRIDGE_AERR1_LOG3		44
+-#define BRIDGE_AERR1_DEV_STAT		45
+-#define BRIDGE_AERR_INTR_EN		46
+-#define BRIDGE_AERR_UPG			47
+-#define BRIDGE_AERR_CLEAR		48
+-#define BRIDGE_AERR1_CLEAR		49
+-#define BRIDGE_SBE_COUNTS		50
+-#define BRIDGE_DBE_COUNTS		51
+-#define BRIDGE_BITERR_INT_EN		52
+-
+-#define BRIDGE_SYS2IO_CREDITS		53
+-#define BRIDGE_EVNT_CNT_CTRL1		54
+-#define BRIDGE_EVNT_COUNTER1		55
+-#define BRIDGE_EVNT_CNT_CTRL2		56
+-#define BRIDGE_EVNT_COUNTER2		57
+-#define BRIDGE_RESERVED1		58
+-
+-#define BRIDGE_DEFEATURE		59
+-#define BRIDGE_SCRATCH0			60
+-#define BRIDGE_SCRATCH1			61
+-#define BRIDGE_SCRATCH2			62
+-#define BRIDGE_SCRATCH3			63
+-
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/xlr/flash.h b/arch/mips/include/asm/netlogic/xlr/flash.h
+deleted file mode 100644
+index f8aca5472b6c..000000000000
+--- a/arch/mips/include/asm/netlogic/xlr/flash.h
++++ /dev/null
+@@ -1,55 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-#ifndef _ASM_NLM_FLASH_H_
+-#define _ASM_NLM_FLASH_H_
+-
+-#define FLASH_CSBASE_ADDR(cs)		(cs)
+-#define FLASH_CSADDR_MASK(cs)		(0x10 + (cs))
+-#define FLASH_CSDEV_PARM(cs)		(0x20 + (cs))
+-#define FLASH_CSTIME_PARMA(cs)		(0x30 + (cs))
+-#define FLASH_CSTIME_PARMB(cs)		(0x40 + (cs))
+-
+-#define FLASH_INT_MASK			0x50
+-#define FLASH_INT_STATUS		0x60
+-#define FLASH_ERROR_STATUS		0x70
+-#define FLASH_ERROR_ADDR		0x80
+-
+-#define FLASH_NAND_CLE(cs)		(0x90 + (cs))
+-#define FLASH_NAND_ALE(cs)		(0xa0 + (cs))
+-
+-#define FLASH_NAND_CSDEV_PARAM		0x000041e6
+-#define FLASH_NAND_CSTIME_PARAMA	0x4f400e22
+-#define FLASH_NAND_CSTIME_PARAMB	0x000083cf
+-
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/xlr/fmn.h b/arch/mips/include/asm/netlogic/xlr/fmn.h
+deleted file mode 100644
+index d79c68fa78d9..000000000000
+--- a/arch/mips/include/asm/netlogic/xlr/fmn.h
++++ /dev/null
+@@ -1,365 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _NLM_FMN_H_
+-#define _NLM_FMN_H_
+-
+-#include <asm/netlogic/mips-extns.h> /* for COP2 access */
+-
+-/* Station IDs */
+-#define FMN_STNID_CPU0			0x00
+-#define FMN_STNID_CPU1			0x08
+-#define FMN_STNID_CPU2			0x10
+-#define FMN_STNID_CPU3			0x18
+-#define FMN_STNID_CPU4			0x20
+-#define FMN_STNID_CPU5			0x28
+-#define FMN_STNID_CPU6			0x30
+-#define FMN_STNID_CPU7			0x38
+-
+-#define FMN_STNID_XGS0_TX		64
+-#define FMN_STNID_XMAC0_00_TX		64
+-#define FMN_STNID_XMAC0_01_TX		65
+-#define FMN_STNID_XMAC0_02_TX		66
+-#define FMN_STNID_XMAC0_03_TX		67
+-#define FMN_STNID_XMAC0_04_TX		68
+-#define FMN_STNID_XMAC0_05_TX		69
+-#define FMN_STNID_XMAC0_06_TX		70
+-#define FMN_STNID_XMAC0_07_TX		71
+-#define FMN_STNID_XMAC0_08_TX		72
+-#define FMN_STNID_XMAC0_09_TX		73
+-#define FMN_STNID_XMAC0_10_TX		74
+-#define FMN_STNID_XMAC0_11_TX		75
+-#define FMN_STNID_XMAC0_12_TX		76
+-#define FMN_STNID_XMAC0_13_TX		77
+-#define FMN_STNID_XMAC0_14_TX		78
+-#define FMN_STNID_XMAC0_15_TX		79
+-
+-#define FMN_STNID_XGS1_TX		80
+-#define FMN_STNID_XMAC1_00_TX		80
+-#define FMN_STNID_XMAC1_01_TX		81
+-#define FMN_STNID_XMAC1_02_TX		82
+-#define FMN_STNID_XMAC1_03_TX		83
+-#define FMN_STNID_XMAC1_04_TX		84
+-#define FMN_STNID_XMAC1_05_TX		85
+-#define FMN_STNID_XMAC1_06_TX		86
+-#define FMN_STNID_XMAC1_07_TX		87
+-#define FMN_STNID_XMAC1_08_TX		88
+-#define FMN_STNID_XMAC1_09_TX		89
+-#define FMN_STNID_XMAC1_10_TX		90
+-#define FMN_STNID_XMAC1_11_TX		91
+-#define FMN_STNID_XMAC1_12_TX		92
+-#define FMN_STNID_XMAC1_13_TX		93
+-#define FMN_STNID_XMAC1_14_TX		94
+-#define FMN_STNID_XMAC1_15_TX		95
+-
+-#define FMN_STNID_GMAC			96
+-#define FMN_STNID_GMACJFR_0		96
+-#define FMN_STNID_GMACRFR_0		97
+-#define FMN_STNID_GMACTX0		98
+-#define FMN_STNID_GMACTX1		99
+-#define FMN_STNID_GMACTX2		100
+-#define FMN_STNID_GMACTX3		101
+-#define FMN_STNID_GMACJFR_1		102
+-#define FMN_STNID_GMACRFR_1		103
+-
+-#define FMN_STNID_DMA			104
+-#define FMN_STNID_DMA_0			104
+-#define FMN_STNID_DMA_1			105
+-#define FMN_STNID_DMA_2			106
+-#define FMN_STNID_DMA_3			107
+-
+-#define FMN_STNID_XGS0FR		112
+-#define FMN_STNID_XMAC0JFR		112
+-#define FMN_STNID_XMAC0RFR		113
+-
+-#define FMN_STNID_XGS1FR		114
+-#define FMN_STNID_XMAC1JFR		114
+-#define FMN_STNID_XMAC1RFR		115
+-#define FMN_STNID_SEC			120
+-#define FMN_STNID_SEC0			120
+-#define FMN_STNID_SEC1			121
+-#define FMN_STNID_SEC2			122
+-#define FMN_STNID_SEC3			123
+-#define FMN_STNID_PK0			124
+-#define FMN_STNID_SEC_RSA		124
+-#define FMN_STNID_SEC_RSVD0		125
+-#define FMN_STNID_SEC_RSVD1		126
+-#define FMN_STNID_SEC_RSVD2		127
+-
+-#define FMN_STNID_GMAC1			80
+-#define FMN_STNID_GMAC1_FR_0		81
+-#define FMN_STNID_GMAC1_TX0		82
+-#define FMN_STNID_GMAC1_TX1		83
+-#define FMN_STNID_GMAC1_TX2		84
+-#define FMN_STNID_GMAC1_TX3		85
+-#define FMN_STNID_GMAC1_FR_1		87
+-#define FMN_STNID_GMAC0			96
+-#define FMN_STNID_GMAC0_FR_0		97
+-#define FMN_STNID_GMAC0_TX0		98
+-#define FMN_STNID_GMAC0_TX1		99
+-#define FMN_STNID_GMAC0_TX2		100
+-#define FMN_STNID_GMAC0_TX3		101
+-#define FMN_STNID_GMAC0_FR_1		103
+-#define FMN_STNID_CMP_0			108
+-#define FMN_STNID_CMP_1			109
+-#define FMN_STNID_CMP_2			110
+-#define FMN_STNID_CMP_3			111
+-#define FMN_STNID_PCIE_0		116
+-#define FMN_STNID_PCIE_1		117
+-#define FMN_STNID_PCIE_2		118
+-#define FMN_STNID_PCIE_3		119
+-#define FMN_STNID_XLS_PK0		121
+-
+-#define nlm_read_c2_cc0(s)		__read_32bit_c2_register($16, s)
+-#define nlm_read_c2_cc1(s)		__read_32bit_c2_register($17, s)
+-#define nlm_read_c2_cc2(s)		__read_32bit_c2_register($18, s)
+-#define nlm_read_c2_cc3(s)		__read_32bit_c2_register($19, s)
+-#define nlm_read_c2_cc4(s)		__read_32bit_c2_register($20, s)
+-#define nlm_read_c2_cc5(s)		__read_32bit_c2_register($21, s)
+-#define nlm_read_c2_cc6(s)		__read_32bit_c2_register($22, s)
+-#define nlm_read_c2_cc7(s)		__read_32bit_c2_register($23, s)
+-#define nlm_read_c2_cc8(s)		__read_32bit_c2_register($24, s)
+-#define nlm_read_c2_cc9(s)		__read_32bit_c2_register($25, s)
+-#define nlm_read_c2_cc10(s)		__read_32bit_c2_register($26, s)
+-#define nlm_read_c2_cc11(s)		__read_32bit_c2_register($27, s)
+-#define nlm_read_c2_cc12(s)		__read_32bit_c2_register($28, s)
+-#define nlm_read_c2_cc13(s)		__read_32bit_c2_register($29, s)
+-#define nlm_read_c2_cc14(s)		__read_32bit_c2_register($30, s)
+-#define nlm_read_c2_cc15(s)		__read_32bit_c2_register($31, s)
+-
+-#define nlm_write_c2_cc0(s, v)		__write_32bit_c2_register($16, s, v)
+-#define nlm_write_c2_cc1(s, v)		__write_32bit_c2_register($17, s, v)
+-#define nlm_write_c2_cc2(s, v)		__write_32bit_c2_register($18, s, v)
+-#define nlm_write_c2_cc3(s, v)		__write_32bit_c2_register($19, s, v)
+-#define nlm_write_c2_cc4(s, v)		__write_32bit_c2_register($20, s, v)
+-#define nlm_write_c2_cc5(s, v)		__write_32bit_c2_register($21, s, v)
+-#define nlm_write_c2_cc6(s, v)		__write_32bit_c2_register($22, s, v)
+-#define nlm_write_c2_cc7(s, v)		__write_32bit_c2_register($23, s, v)
+-#define nlm_write_c2_cc8(s, v)		__write_32bit_c2_register($24, s, v)
+-#define nlm_write_c2_cc9(s, v)		__write_32bit_c2_register($25, s, v)
+-#define nlm_write_c2_cc10(s, v)		__write_32bit_c2_register($26, s, v)
+-#define nlm_write_c2_cc11(s, v)		__write_32bit_c2_register($27, s, v)
+-#define nlm_write_c2_cc12(s, v)		__write_32bit_c2_register($28, s, v)
+-#define nlm_write_c2_cc13(s, v)		__write_32bit_c2_register($29, s, v)
+-#define nlm_write_c2_cc14(s, v)		__write_32bit_c2_register($30, s, v)
+-#define nlm_write_c2_cc15(s, v)		__write_32bit_c2_register($31, s, v)
+-
+-#define nlm_read_c2_status0()		__read_32bit_c2_register($2, 0)
+-#define nlm_write_c2_status0(v)		__write_32bit_c2_register($2, 0, v)
+-#define nlm_read_c2_status1()		__read_32bit_c2_register($2, 1)
+-#define nlm_write_c2_status1(v)		__write_32bit_c2_register($2, 1, v)
+-#define nlm_read_c2_status(sel)		__read_32bit_c2_register($2, 0)
+-#define nlm_read_c2_config()		__read_32bit_c2_register($3, 0)
+-#define nlm_write_c2_config(v)		__write_32bit_c2_register($3, 0, v)
+-#define nlm_read_c2_bucksize(b)		__read_32bit_c2_register($4, b)
+-#define nlm_write_c2_bucksize(b, v)	__write_32bit_c2_register($4, b, v)
+-
+-#define nlm_read_c2_rx_msg0()		__read_64bit_c2_register($1, 0)
+-#define nlm_read_c2_rx_msg1()		__read_64bit_c2_register($1, 1)
+-#define nlm_read_c2_rx_msg2()		__read_64bit_c2_register($1, 2)
+-#define nlm_read_c2_rx_msg3()		__read_64bit_c2_register($1, 3)
+-
+-#define nlm_write_c2_tx_msg0(v)		__write_64bit_c2_register($0, 0, v)
+-#define nlm_write_c2_tx_msg1(v)		__write_64bit_c2_register($0, 1, v)
+-#define nlm_write_c2_tx_msg2(v)		__write_64bit_c2_register($0, 2, v)
+-#define nlm_write_c2_tx_msg3(v)		__write_64bit_c2_register($0, 3, v)
+-
+-#define FMN_STN_RX_QSIZE		256
+-#define FMN_NSTATIONS			128
+-#define FMN_CORE_NBUCKETS		8
+-
+-static inline void nlm_msgsnd(unsigned int stid)
+-{
+-	__asm__ volatile (
+-	    ".set	push\n"
+-	    ".set	noreorder\n"
+-	    ".set	noat\n"
+-	    "move	$1, %0\n"
+-	    "c2		0x10001\n"	/* msgsnd $1 */
+-	    ".set	pop\n"
+-	    : : "r" (stid) : "$1"
+-	);
+-}
+-
+-static inline void nlm_msgld(unsigned int pri)
+-{
+-	__asm__ volatile (
+-	    ".set	push\n"
+-	    ".set	noreorder\n"
+-	    ".set	noat\n"
+-	    "move	$1, %0\n"
+-	    "c2		0x10002\n"    /* msgld $1 */
+-	    ".set	pop\n"
+-	    : : "r" (pri) : "$1"
+-	);
+-}
+-
+-static inline void nlm_msgwait(unsigned int mask)
+-{
+-	__asm__ volatile (
+-	    ".set	push\n"
+-	    ".set	noreorder\n"
+-	    ".set	noat\n"
+-	    "move	$8, %0\n"
+-	    "c2		0x10003\n"    /* msgwait $1 */
+-	    ".set	pop\n"
+-	    : : "r" (mask) : "$1"
+-	);
+-}
+-
+-/*
+- * Disable interrupts and enable COP2 access
+- */
+-static inline uint32_t nlm_cop2_enable_irqsave(void)
+-{
+-	uint32_t sr = read_c0_status();
+-
+-	write_c0_status((sr & ~ST0_IE) | ST0_CU2);
+-	return sr;
+-}
+-
+-static inline void nlm_cop2_disable_irqrestore(uint32_t sr)
+-{
+-	write_c0_status(sr);
+-}
+-
+-static inline void nlm_fmn_setup_intr(int irq, unsigned int tmask)
+-{
+-	uint32_t config;
+-
+-	config = (1 << 24)	/* interrupt water mark - 1 msg */
+-		| (irq << 16)	/* irq */
+-		| (tmask << 8)	/* thread mask */
+-		| 0x2;		/* enable watermark intr, disable empty intr */
+-	nlm_write_c2_config(config);
+-}
+-
+-struct nlm_fmn_msg {
+-	uint64_t msg0;
+-	uint64_t msg1;
+-	uint64_t msg2;
+-	uint64_t msg3;
+-};
+-
+-static inline int nlm_fmn_send(unsigned int size, unsigned int code,
+-		unsigned int stid, struct nlm_fmn_msg *msg)
+-{
+-	unsigned int dest;
+-	uint32_t status;
+-	int i;
+-
+-	/*
+-	 * Make sure that all the writes pending at the cpu are flushed.
+-	 * Any writes pending on CPU will not be see by devices. L1/L2
+-	 * caches are coherent with IO, so no cache flush needed.
+-	 */
+-	__asm __volatile("sync");
+-
+-	/* Load TX message buffers */
+-	nlm_write_c2_tx_msg0(msg->msg0);
+-	nlm_write_c2_tx_msg1(msg->msg1);
+-	nlm_write_c2_tx_msg2(msg->msg2);
+-	nlm_write_c2_tx_msg3(msg->msg3);
+-	dest = ((size - 1) << 16) | (code << 8) | stid;
+-
+-	/*
+-	 * Retry a few times on credit fail, this should be a
+-	 * transient condition, unless there is a configuration
+-	 * failure, or the receiver is stuck.
+-	 */
+-	for (i = 0; i < 8; i++) {
+-		nlm_msgsnd(dest);
+-		status = nlm_read_c2_status0();
+-		if ((status & 0x4) == 0)
+-			return 0;
+-	}
+-
+-	/* If there is a credit failure, return error */
+-	return status & 0x06;
+-}
+-
+-static inline int nlm_fmn_receive(int bucket, int *size, int *code, int *stid,
+-		struct nlm_fmn_msg *msg)
+-{
+-	uint32_t status, tmp;
+-
+-	nlm_msgld(bucket);
+-
+-	/* wait for load pending to clear */
+-	do {
+-		status = nlm_read_c2_status0();
+-	} while ((status & 0x08) != 0);
+-
+-	/* receive error bits */
+-	tmp = status & 0x30;
+-	if (tmp != 0)
+-		return tmp;
+-
+-	*size = ((status & 0xc0) >> 6) + 1;
+-	*code = (status & 0xff00) >> 8;
+-	*stid = (status & 0x7f0000) >> 16;
+-	msg->msg0 = nlm_read_c2_rx_msg0();
+-	msg->msg1 = nlm_read_c2_rx_msg1();
+-	msg->msg2 = nlm_read_c2_rx_msg2();
+-	msg->msg3 = nlm_read_c2_rx_msg3();
+-
+-	return 0;
+-}
+-
+-struct xlr_fmn_info {
+-	int num_buckets;
+-	int start_stn_id;
+-	int end_stn_id;
+-	int credit_config[128];
+-};
+-
+-struct xlr_board_fmn_config {
+-	int bucket_size[128];		/* size of buckets for all stations */
+-	struct xlr_fmn_info cpu[8];
+-	struct xlr_fmn_info gmac[2];
+-	struct xlr_fmn_info dma;
+-	struct xlr_fmn_info cmp;
+-	struct xlr_fmn_info sae;
+-	struct xlr_fmn_info xgmac[2];
+-};
+-
+-extern int nlm_register_fmn_handler(int start, int end,
+-	void (*fn)(int, int, int, int, struct nlm_fmn_msg *, void *),
+-	void *arg);
+-extern void xlr_percpu_fmn_init(void);
+-extern void nlm_setup_fmn_irq(void);
+-extern void xlr_board_info_setup(void);
+-
+-extern struct xlr_board_fmn_config xlr_board_fmn_config;
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/xlr/gpio.h b/arch/mips/include/asm/netlogic/xlr/gpio.h
+deleted file mode 100644
+index 8492e835b110..000000000000
+--- a/arch/mips/include/asm/netlogic/xlr/gpio.h
++++ /dev/null
+@@ -1,74 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _ASM_NLM_GPIO_H
+-#define _ASM_NLM_GPIO_H
+-
+-#define GPIO_INT_EN_REG			0
+-#define GPIO_INPUT_INVERSION_REG	1
+-#define GPIO_IO_DIR_REG			2
+-#define GPIO_IO_DATA_WR_REG		3
+-#define GPIO_IO_DATA_RD_REG		4
+-
+-#define GPIO_SWRESET_REG		8
+-#define GPIO_DRAM1_CNTRL_REG		9
+-#define GPIO_DRAM1_RATIO_REG		10
+-#define GPIO_DRAM1_RESET_REG		11
+-#define GPIO_DRAM1_STATUS_REG		12
+-#define GPIO_DRAM2_CNTRL_REG		13
+-#define GPIO_DRAM2_RATIO_REG		14
+-#define GPIO_DRAM2_RESET_REG		15
+-#define GPIO_DRAM2_STATUS_REG		16
+-
+-#define GPIO_PWRON_RESET_CFG_REG	21
+-#define GPIO_BIST_ALL_GO_STATUS_REG	24
+-#define GPIO_BIST_CPU_GO_STATUS_REG	25
+-#define GPIO_BIST_DEV_GO_STATUS_REG	26
+-
+-#define GPIO_FUSE_BANK_REG		35
+-#define GPIO_CPU_RESET_REG		40
+-#define GPIO_RNG_REG			43
+-
+-#define PWRON_RESET_PCMCIA_BOOT		17
+-
+-#define GPIO_LED_BITMAP			0x1700000
+-#define GPIO_LED_0_SHIFT		20
+-#define GPIO_LED_1_SHIFT		24
+-
+-#define GPIO_LED_OUTPUT_CODE_RESET	0x01
+-#define GPIO_LED_OUTPUT_CODE_HARD_RESET 0x02
+-#define GPIO_LED_OUTPUT_CODE_SOFT_RESET 0x03
+-#define GPIO_LED_OUTPUT_CODE_MAIN	0x04
+-
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/xlr/iomap.h b/arch/mips/include/asm/netlogic/xlr/iomap.h
+deleted file mode 100644
+index ff4533d6ee64..000000000000
+--- a/arch/mips/include/asm/netlogic/xlr/iomap.h
++++ /dev/null
+@@ -1,109 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _ASM_NLM_IOMAP_H
+-#define _ASM_NLM_IOMAP_H
+-
+-#define DEFAULT_NETLOGIC_IO_BASE	   CKSEG1ADDR(0x1ef00000)
+-#define NETLOGIC_IO_DDR2_CHN0_OFFSET	   0x01000
+-#define NETLOGIC_IO_DDR2_CHN1_OFFSET	   0x02000
+-#define NETLOGIC_IO_DDR2_CHN2_OFFSET	   0x03000
+-#define NETLOGIC_IO_DDR2_CHN3_OFFSET	   0x04000
+-#define NETLOGIC_IO_PIC_OFFSET		   0x08000
+-#define NETLOGIC_IO_UART_0_OFFSET	   0x14000
+-#define NETLOGIC_IO_UART_1_OFFSET	   0x15100
+-
+-#define NETLOGIC_IO_SIZE		   0x1000
+-
+-#define NETLOGIC_IO_BRIDGE_OFFSET	   0x00000
+-
+-#define NETLOGIC_IO_RLD2_CHN0_OFFSET	   0x05000
+-#define NETLOGIC_IO_RLD2_CHN1_OFFSET	   0x06000
+-
+-#define NETLOGIC_IO_SRAM_OFFSET		   0x07000
+-
+-#define NETLOGIC_IO_PCIX_OFFSET		   0x09000
+-#define NETLOGIC_IO_HT_OFFSET		   0x0A000
+-
+-#define NETLOGIC_IO_SECURITY_OFFSET	   0x0B000
+-
+-#define NETLOGIC_IO_GMAC_0_OFFSET	   0x0C000
+-#define NETLOGIC_IO_GMAC_1_OFFSET	   0x0D000
+-#define NETLOGIC_IO_GMAC_2_OFFSET	   0x0E000
+-#define NETLOGIC_IO_GMAC_3_OFFSET	   0x0F000
+-
+-/* XLS devices */
+-#define NETLOGIC_IO_GMAC_4_OFFSET	   0x20000
+-#define NETLOGIC_IO_GMAC_5_OFFSET	   0x21000
+-#define NETLOGIC_IO_GMAC_6_OFFSET	   0x22000
+-#define NETLOGIC_IO_GMAC_7_OFFSET	   0x23000
+-
+-#define NETLOGIC_IO_PCIE_0_OFFSET	   0x1E000
+-#define NETLOGIC_IO_PCIE_1_OFFSET	   0x1F000
+-#define NETLOGIC_IO_SRIO_0_OFFSET	   0x1E000
+-#define NETLOGIC_IO_SRIO_1_OFFSET	   0x1F000
+-
+-#define NETLOGIC_IO_USB_0_OFFSET	   0x24000
+-#define NETLOGIC_IO_USB_1_OFFSET	   0x25000
+-
+-#define NETLOGIC_IO_COMP_OFFSET		   0x1D000
+-/* end XLS devices */
+-
+-/* XLR devices */
+-#define NETLOGIC_IO_SPI4_0_OFFSET	   0x10000
+-#define NETLOGIC_IO_XGMAC_0_OFFSET	   0x11000
+-#define NETLOGIC_IO_SPI4_1_OFFSET	   0x12000
+-#define NETLOGIC_IO_XGMAC_1_OFFSET	   0x13000
+-/* end XLR devices */
+-
+-#define NETLOGIC_IO_I2C_0_OFFSET	   0x16000
+-#define NETLOGIC_IO_I2C_1_OFFSET	   0x17000
+-
+-#define NETLOGIC_IO_GPIO_OFFSET		   0x18000
+-#define NETLOGIC_IO_FLASH_OFFSET	   0x19000
+-#define NETLOGIC_IO_TB_OFFSET		   0x1C000
+-
+-#define NETLOGIC_CPLD_OFFSET		   KSEG1ADDR(0x1d840000)
+-
+-/*
+- * Base Address (Virtual) of the PCI Config address space
+- * For now, choose 256M phys in kseg1 = 0xA0000000 + (1<<28)
+- * Config space spans 256 (num of buses) * 256 (num functions) * 256 bytes
+- * ie 1<<24 = 16M
+- */
+-#define DEFAULT_PCI_CONFIG_BASE		0x18000000
+-#define DEFAULT_HT_TYPE0_CFG_BASE	0x16000000
+-#define DEFAULT_HT_TYPE1_CFG_BASE	0x17000000
+-
+-#endif
+diff --git a/arch/mips/include/asm/netlogic/xlr/msidef.h b/arch/mips/include/asm/netlogic/xlr/msidef.h
+deleted file mode 100644
+index c95d18edf12f..000000000000
+--- a/arch/mips/include/asm/netlogic/xlr/msidef.h
++++ /dev/null
+@@ -1,84 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef ASM_RMI_MSIDEF_H
+-#define ASM_RMI_MSIDEF_H
+-
+-/*
+- * Constants for Intel APIC based MSI messages.
+- * Adapted for the RMI XLR using identical defines
+- */
+-
+-/*
+- * Shifts for MSI data
+- */
+-
+-#define MSI_DATA_VECTOR_SHIFT		0
+-#define	 MSI_DATA_VECTOR_MASK		0x000000ff
+-#define	 MSI_DATA_VECTOR(v)		(((v) << MSI_DATA_VECTOR_SHIFT) & \
+-						MSI_DATA_VECTOR_MASK)
+-
+-#define MSI_DATA_DELIVERY_MODE_SHIFT	8
+-#define	 MSI_DATA_DELIVERY_FIXED	(0 << MSI_DATA_DELIVERY_MODE_SHIFT)
+-#define	 MSI_DATA_DELIVERY_LOWPRI	(1 << MSI_DATA_DELIVERY_MODE_SHIFT)
+-
+-#define MSI_DATA_LEVEL_SHIFT		14
+-#define	 MSI_DATA_LEVEL_DEASSERT	(0 << MSI_DATA_LEVEL_SHIFT)
+-#define	 MSI_DATA_LEVEL_ASSERT		(1 << MSI_DATA_LEVEL_SHIFT)
+-
+-#define MSI_DATA_TRIGGER_SHIFT		15
+-#define	 MSI_DATA_TRIGGER_EDGE		(0 << MSI_DATA_TRIGGER_SHIFT)
+-#define	 MSI_DATA_TRIGGER_LEVEL		(1 << MSI_DATA_TRIGGER_SHIFT)
+-
+-/*
+- * Shift/mask fields for msi address
+- */
+-
+-#define MSI_ADDR_BASE_HI		0
+-#define MSI_ADDR_BASE_LO		0xfee00000
+-
+-#define MSI_ADDR_DEST_MODE_SHIFT	2
+-#define	 MSI_ADDR_DEST_MODE_PHYSICAL	(0 << MSI_ADDR_DEST_MODE_SHIFT)
+-#define	 MSI_ADDR_DEST_MODE_LOGICAL	(1 << MSI_ADDR_DEST_MODE_SHIFT)
+-
+-#define MSI_ADDR_REDIRECTION_SHIFT	3
+-#define	 MSI_ADDR_REDIRECTION_CPU	(0 << MSI_ADDR_REDIRECTION_SHIFT)
+-#define	 MSI_ADDR_REDIRECTION_LOWPRI	(1 << MSI_ADDR_REDIRECTION_SHIFT)
+-
+-#define MSI_ADDR_DEST_ID_SHIFT		12
+-#define	 MSI_ADDR_DEST_ID_MASK		0x00ffff0
+-#define	 MSI_ADDR_DEST_ID(dest)		(((dest) << MSI_ADDR_DEST_ID_SHIFT) & \
+-						 MSI_ADDR_DEST_ID_MASK)
+-
+-#endif /* ASM_RMI_MSIDEF_H */
+diff --git a/arch/mips/include/asm/netlogic/xlr/pic.h b/arch/mips/include/asm/netlogic/xlr/pic.h
+deleted file mode 100644
+index 3c80a75233bd..000000000000
+--- a/arch/mips/include/asm/netlogic/xlr/pic.h
++++ /dev/null
+@@ -1,306 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _ASM_NLM_XLR_PIC_H
+-#define _ASM_NLM_XLR_PIC_H
+-
+-#define PIC_CLK_HZ			66666666
+-#define pic_timer_freq()		PIC_CLK_HZ
+-
+-/* PIC hardware interrupt numbers */
+-#define PIC_IRT_WD_INDEX		0
+-#define PIC_IRT_TIMER_0_INDEX		1
+-#define PIC_IRT_TIMER_INDEX(i)		((i) + PIC_IRT_TIMER_0_INDEX)
+-#define PIC_IRT_TIMER_1_INDEX		2
+-#define PIC_IRT_TIMER_2_INDEX		3
+-#define PIC_IRT_TIMER_3_INDEX		4
+-#define PIC_IRT_TIMER_4_INDEX		5
+-#define PIC_IRT_TIMER_5_INDEX		6
+-#define PIC_IRT_TIMER_6_INDEX		7
+-#define PIC_IRT_TIMER_7_INDEX		8
+-#define PIC_IRT_CLOCK_INDEX		PIC_IRT_TIMER_7_INDEX
+-#define PIC_IRT_UART_0_INDEX		9
+-#define PIC_IRT_UART_1_INDEX		10
+-#define PIC_IRT_I2C_0_INDEX		11
+-#define PIC_IRT_I2C_1_INDEX		12
+-#define PIC_IRT_PCMCIA_INDEX		13
+-#define PIC_IRT_GPIO_INDEX		14
+-#define PIC_IRT_HYPER_INDEX		15
+-#define PIC_IRT_PCIX_INDEX		16
+-/* XLS */
+-#define PIC_IRT_CDE_INDEX		15
+-#define PIC_IRT_BRIDGE_TB_XLS_INDEX	16
+-/* XLS */
+-#define PIC_IRT_GMAC0_INDEX		17
+-#define PIC_IRT_GMAC1_INDEX		18
+-#define PIC_IRT_GMAC2_INDEX		19
+-#define PIC_IRT_GMAC3_INDEX		20
+-#define PIC_IRT_XGS0_INDEX		21
+-#define PIC_IRT_XGS1_INDEX		22
+-#define PIC_IRT_HYPER_FATAL_INDEX	23
+-#define PIC_IRT_PCIX_FATAL_INDEX	24
+-#define PIC_IRT_BRIDGE_AERR_INDEX	25
+-#define PIC_IRT_BRIDGE_BERR_INDEX	26
+-#define PIC_IRT_BRIDGE_TB_XLR_INDEX	27
+-#define PIC_IRT_BRIDGE_AERR_NMI_INDEX	28
+-/* XLS */
+-#define PIC_IRT_GMAC4_INDEX		21
+-#define PIC_IRT_GMAC5_INDEX		22
+-#define PIC_IRT_GMAC6_INDEX		23
+-#define PIC_IRT_GMAC7_INDEX		24
+-#define PIC_IRT_BRIDGE_ERR_INDEX	25
+-#define PIC_IRT_PCIE_LINK0_INDEX	26
+-#define PIC_IRT_PCIE_LINK1_INDEX	27
+-#define PIC_IRT_PCIE_LINK2_INDEX	23
+-#define PIC_IRT_PCIE_LINK3_INDEX	24
+-#define PIC_IRT_PCIE_XLSB0_LINK2_INDEX	28
+-#define PIC_IRT_PCIE_XLSB0_LINK3_INDEX	29
+-#define PIC_IRT_SRIO_LINK0_INDEX	26
+-#define PIC_IRT_SRIO_LINK1_INDEX	27
+-#define PIC_IRT_SRIO_LINK2_INDEX	28
+-#define PIC_IRT_SRIO_LINK3_INDEX	29
+-#define PIC_IRT_PCIE_INT_INDEX		28
+-#define PIC_IRT_PCIE_FATAL_INDEX	29
+-#define PIC_IRT_GPIO_B_INDEX		30
+-#define PIC_IRT_USB_INDEX		31
+-/* XLS */
+-#define PIC_NUM_IRTS			32
+-
+-
+-#define PIC_CLOCK_TIMER			7
+-
+-/* PIC Registers */
+-#define PIC_CTRL			0x00
+-#define PIC_CTRL_STE			8	/* timer enable start bit */
+-#define PIC_IPI				0x04
+-#define PIC_INT_ACK			0x06
+-
+-#define WD_MAX_VAL_0			0x08
+-#define WD_MAX_VAL_1			0x09
+-#define WD_MASK_0			0x0a
+-#define WD_MASK_1			0x0b
+-#define WD_HEARBEAT_0			0x0c
+-#define WD_HEARBEAT_1			0x0d
+-
+-#define PIC_IRT_0_BASE			0x40
+-#define PIC_IRT_1_BASE			0x80
+-#define PIC_TIMER_MAXVAL_0_BASE		0x100
+-#define PIC_TIMER_MAXVAL_1_BASE		0x110
+-#define PIC_TIMER_COUNT_0_BASE		0x120
+-#define PIC_TIMER_COUNT_1_BASE		0x130
+-
+-#define PIC_IRT_0(picintr)	(PIC_IRT_0_BASE + (picintr))
+-#define PIC_IRT_1(picintr)	(PIC_IRT_1_BASE + (picintr))
+-
+-#define PIC_TIMER_MAXVAL_0(i)	(PIC_TIMER_MAXVAL_0_BASE + (i))
+-#define PIC_TIMER_MAXVAL_1(i)	(PIC_TIMER_MAXVAL_1_BASE + (i))
+-#define PIC_TIMER_COUNT_0(i)	(PIC_TIMER_COUNT_0_BASE + (i))
+-#define PIC_TIMER_COUNT_1(i)	(PIC_TIMER_COUNT_0_BASE + (i))
+-
+-/*
+- * Mapping between hardware interrupt numbers and IRQs on CPU
+- * we use a simple scheme to map PIC interrupts 0-31 to IRQs
+- * 8-39. This leaves the IRQ 0-7 for cpu interrupts like
+- * count/compare and FMN
+- */
+-#define PIC_IRQ_BASE		8
+-#define PIC_INTR_TO_IRQ(i)	(PIC_IRQ_BASE + (i))
+-#define PIC_IRQ_TO_INTR(i)	((i) - PIC_IRQ_BASE)
+-
+-#define PIC_IRT_FIRST_IRQ	PIC_IRQ_BASE
+-#define PIC_WD_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_WD_INDEX)
+-#define PIC_TIMER_0_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_TIMER_0_INDEX)
+-#define PIC_TIMER_1_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_TIMER_1_INDEX)
+-#define PIC_TIMER_2_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_TIMER_2_INDEX)
+-#define PIC_TIMER_3_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_TIMER_3_INDEX)
+-#define PIC_TIMER_4_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_TIMER_4_INDEX)
+-#define PIC_TIMER_5_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_TIMER_5_INDEX)
+-#define PIC_TIMER_6_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_TIMER_6_INDEX)
+-#define PIC_TIMER_7_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_TIMER_7_INDEX)
+-#define PIC_CLOCK_IRQ		(PIC_TIMER_7_IRQ)
+-#define PIC_UART_0_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_UART_0_INDEX)
+-#define PIC_UART_1_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_UART_1_INDEX)
+-#define PIC_I2C_0_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_I2C_0_INDEX)
+-#define PIC_I2C_1_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_I2C_1_INDEX)
+-#define PIC_PCMCIA_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_PCMCIA_INDEX)
+-#define PIC_GPIO_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GPIO_INDEX)
+-#define PIC_HYPER_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_HYPER_INDEX)
+-#define PIC_PCIX_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_PCIX_INDEX)
+-/* XLS */
+-#define PIC_CDE_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_CDE_INDEX)
+-#define PIC_BRIDGE_TB_XLS_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_BRIDGE_TB_XLS_INDEX)
+-/* end XLS */
+-#define PIC_GMAC_0_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GMAC0_INDEX)
+-#define PIC_GMAC_1_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GMAC1_INDEX)
+-#define PIC_GMAC_2_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GMAC2_INDEX)
+-#define PIC_GMAC_3_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GMAC3_INDEX)
+-#define PIC_XGS_0_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_XGS0_INDEX)
+-#define PIC_XGS_1_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_XGS1_INDEX)
+-#define PIC_HYPER_FATAL_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_HYPER_FATAL_INDEX)
+-#define PIC_PCIX_FATAL_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_PCIX_FATAL_INDEX)
+-#define PIC_BRIDGE_AERR_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_BRIDGE_AERR_INDEX)
+-#define PIC_BRIDGE_BERR_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_BRIDGE_BERR_INDEX)
+-#define PIC_BRIDGE_TB_XLR_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_BRIDGE_TB_XLR_INDEX)
+-#define PIC_BRIDGE_AERR_NMI_IRQ PIC_INTR_TO_IRQ(PIC_IRT_BRIDGE_AERR_NMI_INDEX)
+-/* XLS defines */
+-#define PIC_GMAC_4_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GMAC4_INDEX)
+-#define PIC_GMAC_5_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GMAC5_INDEX)
+-#define PIC_GMAC_6_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GMAC6_INDEX)
+-#define PIC_GMAC_7_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GMAC7_INDEX)
+-#define PIC_BRIDGE_ERR_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_BRIDGE_ERR_INDEX)
+-#define PIC_PCIE_LINK0_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_PCIE_LINK0_INDEX)
+-#define PIC_PCIE_LINK1_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_PCIE_LINK1_INDEX)
+-#define PIC_PCIE_LINK2_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_PCIE_LINK2_INDEX)
+-#define PIC_PCIE_LINK3_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_PCIE_LINK3_INDEX)
+-#define PIC_PCIE_XLSB0_LINK2_IRQ PIC_INTR_TO_IRQ(PIC_IRT_PCIE_XLSB0_LINK2_INDEX)
+-#define PIC_PCIE_XLSB0_LINK3_IRQ PIC_INTR_TO_IRQ(PIC_IRT_PCIE_XLSB0_LINK3_INDEX)
+-#define PIC_SRIO_LINK0_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_SRIO_LINK0_INDEX)
+-#define PIC_SRIO_LINK1_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_SRIO_LINK1_INDEX)
+-#define PIC_SRIO_LINK2_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_SRIO_LINK2_INDEX)
+-#define PIC_SRIO_LINK3_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_SRIO_LINK3_INDEX)
+-#define PIC_PCIE_INT_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_PCIE_INT__INDEX)
+-#define PIC_PCIE_FATAL_IRQ	PIC_INTR_TO_IRQ(PIC_IRT_PCIE_FATAL_INDEX)
+-#define PIC_GPIO_B_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_GPIO_B_INDEX)
+-#define PIC_USB_IRQ		PIC_INTR_TO_IRQ(PIC_IRT_USB_INDEX)
+-#define PIC_IRT_LAST_IRQ	PIC_USB_IRQ
+-/* end XLS */
+-
+-#ifndef __ASSEMBLY__
+-
+-#define PIC_IRQ_IS_EDGE_TRIGGERED(irq)	(((irq) >= PIC_TIMER_0_IRQ) && \
+-					((irq) <= PIC_TIMER_7_IRQ))
+-#define PIC_IRQ_IS_IRT(irq)		(((irq) >= PIC_IRT_FIRST_IRQ) && \
+-					((irq) <= PIC_IRT_LAST_IRQ))
+-
+-static inline int
+-nlm_irq_to_irt(int irq)
+-{
+-	if (PIC_IRQ_IS_IRT(irq) == 0)
+-		return -1;
+-
+-	return PIC_IRQ_TO_INTR(irq);
+-}
+-
+-static inline int
+-nlm_irt_to_irq(int irt)
+-{
+-
+-	return PIC_INTR_TO_IRQ(irt);
+-}
+-
+-static inline void
+-nlm_pic_enable_irt(uint64_t base, int irt)
+-{
+-	uint32_t reg;
+-
+-	reg = nlm_read_reg(base, PIC_IRT_1(irt));
+-	nlm_write_reg(base, PIC_IRT_1(irt), reg | (1u << 31));
+-}
+-
+-static inline void
+-nlm_pic_disable_irt(uint64_t base, int irt)
+-{
+-	uint32_t reg;
+-
+-	reg = nlm_read_reg(base, PIC_IRT_1(irt));
+-	nlm_write_reg(base, PIC_IRT_1(irt), reg & ~(1u << 31));
+-}
+-
+-static inline void
+-nlm_pic_send_ipi(uint64_t base, int hwt, int irq, int nmi)
+-{
+-	unsigned int tid, pid;
+-
+-	tid = hwt & 0x3;
+-	pid = (hwt >> 2) & 0x07;
+-	nlm_write_reg(base, PIC_IPI,
+-		(pid << 20) | (tid << 16) | (nmi << 8) | irq);
+-}
+-
+-static inline void
+-nlm_pic_ack(uint64_t base, int irt)
+-{
+-	nlm_write_reg(base, PIC_INT_ACK, 1u << irt);
+-}
+-
+-static inline void
+-nlm_pic_init_irt(uint64_t base, int irt, int irq, int hwt, int en)
+-{
+-	nlm_write_reg(base, PIC_IRT_0(irt), (1u << hwt));
+-	/* local scheduling, invalid, level by default */
+-	nlm_write_reg(base, PIC_IRT_1(irt),
+-		(en << 30) | (1 << 6) | irq);
+-}
+-
+-static inline uint64_t
+-nlm_pic_read_timer(uint64_t base, int timer)
+-{
+-	uint32_t up1, up2, low;
+-
+-	up1 = nlm_read_reg(base, PIC_TIMER_COUNT_1(timer));
+-	low = nlm_read_reg(base, PIC_TIMER_COUNT_0(timer));
+-	up2 = nlm_read_reg(base, PIC_TIMER_COUNT_1(timer));
+-
+-	if (up1 != up2) /* wrapped, get the new low */
+-		low = nlm_read_reg(base, PIC_TIMER_COUNT_0(timer));
+-	return ((uint64_t)up2 << 32) | low;
+-
+-}
+-
+-static inline uint32_t
+-nlm_pic_read_timer32(uint64_t base, int timer)
+-{
+-	return nlm_read_reg(base, PIC_TIMER_COUNT_0(timer));
+-}
+-
+-static inline void
+-nlm_pic_set_timer(uint64_t base, int timer, uint64_t value, int irq, int cpu)
+-{
+-	uint32_t up, low;
+-	uint64_t pic_ctrl = nlm_read_reg(base, PIC_CTRL);
+-	int en;
+-
+-	en = (irq > 0);
+-	up = value >> 32;
+-	low = value & 0xFFFFFFFF;
+-	nlm_write_reg(base, PIC_TIMER_MAXVAL_0(timer), low);
+-	nlm_write_reg(base, PIC_TIMER_MAXVAL_1(timer), up);
+-	nlm_pic_init_irt(base, PIC_IRT_TIMER_INDEX(timer), irq, cpu, 0);
+-
+-	/* enable the timer */
+-	pic_ctrl |= (1 << (PIC_CTRL_STE + timer));
+-	nlm_write_reg(base, PIC_CTRL, pic_ctrl);
+-}
+-#endif
+-#endif /* _ASM_NLM_XLR_PIC_H */
+diff --git a/arch/mips/include/asm/netlogic/xlr/xlr.h b/arch/mips/include/asm/netlogic/xlr/xlr.h
+deleted file mode 100644
+index ceb991ca8436..000000000000
+--- a/arch/mips/include/asm/netlogic/xlr/xlr.h
++++ /dev/null
+@@ -1,59 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef _ASM_NLM_XLR_H
+-#define _ASM_NLM_XLR_H
+-
+-/* SMP helpers */
+-void xlr_wakeup_secondary_cpus(void);
+-
+-/* XLS B silicon "Rook" */
+-static inline unsigned int nlm_chip_is_xls_b(void)
+-{
+-	uint32_t prid = read_c0_prid();
+-
+-	return ((prid & 0xf000) == 0x4000);
+-}
+-
+-/*  XLR chip types */
+-/* The XLS product line has chip versions 0x[48c]? */
+-static inline unsigned int nlm_chip_is_xls(void)
+-{
+-	uint32_t prid = read_c0_prid();
+-
+-	return ((prid & 0xf000) == 0x8000 || (prid & 0xf000) == 0x4000 ||
+-		(prid & 0xf000) == 0xc000);
+-}
+-
+-#endif /* _ASM_NLM_XLR_H */
+diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
+index 0c3550c82b72..3a19486af369 100644
+--- a/arch/mips/include/asm/processor.h
++++ b/arch/mips/include/asm/processor.h
+@@ -207,16 +207,6 @@ struct octeon_cvmseg_state {
+ 			    [cpu_dcache_line_size() / sizeof(unsigned long)];
+ };
+ 
+-#elif defined(CONFIG_CPU_XLP)
+-struct nlm_cop2_state {
+-	u64	rx[4];
+-	u64	tx[4];
+-	u32	tx_msg_status;
+-	u32	rx_msg_status;
+-};
+-
+-#define COP2_INIT						\
+-	.cp2			= {{0}, {0}, 0, 0},
+ #else
+ #define COP2_INIT
+ #endif
+@@ -274,9 +264,6 @@ struct thread_struct {
+ #ifdef CONFIG_CPU_CAVIUM_OCTEON
+ 	struct octeon_cop2_state cp2 __attribute__ ((__aligned__(128)));
+ 	struct octeon_cvmseg_state cvmseg __attribute__ ((__aligned__(128)));
+-#endif
+-#ifdef CONFIG_CPU_XLP
+-	struct nlm_cop2_state cp2;
+ #endif
+ 	struct mips_abi *abi;
+ };
+diff --git a/arch/mips/include/asm/vermagic.h b/arch/mips/include/asm/vermagic.h
+index 371c1873df0d..0904de0b5e09 100644
+--- a/arch/mips/include/asm/vermagic.h
++++ b/arch/mips/include/asm/vermagic.h
+@@ -54,10 +54,6 @@
+ #define MODULE_PROC_FAMILY "OCTEON "
+ #elif defined CONFIG_CPU_P5600
+ #define MODULE_PROC_FAMILY "P5600 "
+-#elif defined CONFIG_CPU_XLR
+-#define MODULE_PROC_FAMILY "XLR "
+-#elif defined CONFIG_CPU_XLP
+-#define MODULE_PROC_FAMILY "XLP "
+ #else
+ #error MODULE_PROC_FAMILY undefined for your processor configuration
+ #endif
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 630fcb4cb30e..ac0e2cfc6d57 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1886,87 +1886,6 @@ static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
+ 	}
+ }
+ 
+-static inline void cpu_probe_netlogic(struct cpuinfo_mips *c, int cpu)
+-{
+-	decode_configs(c);
+-
+-	if ((c->processor_id & PRID_IMP_MASK) == PRID_IMP_NETLOGIC_AU13XX) {
+-		c->cputype = CPU_ALCHEMY;
+-		__cpu_name[cpu] = "Au1300";
+-		/* following stuff is not for Alchemy */
+-		return;
+-	}
+-
+-	c->options = (MIPS_CPU_TLB	 |
+-			MIPS_CPU_4KEX	 |
+-			MIPS_CPU_COUNTER |
+-			MIPS_CPU_DIVEC	 |
+-			MIPS_CPU_WATCH	 |
+-			MIPS_CPU_EJTAG	 |
+-			MIPS_CPU_LLSC);
+-
+-	switch (c->processor_id & PRID_IMP_MASK) {
+-	case PRID_IMP_NETLOGIC_XLP2XX:
+-	case PRID_IMP_NETLOGIC_XLP9XX:
+-	case PRID_IMP_NETLOGIC_XLP5XX:
+-		c->cputype = CPU_XLP;
+-		__cpu_name[cpu] = "Broadcom XLPII";
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLP8XX:
+-	case PRID_IMP_NETLOGIC_XLP3XX:
+-		c->cputype = CPU_XLP;
+-		__cpu_name[cpu] = "Netlogic XLP";
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLR732:
+-	case PRID_IMP_NETLOGIC_XLR716:
+-	case PRID_IMP_NETLOGIC_XLR532:
+-	case PRID_IMP_NETLOGIC_XLR308:
+-	case PRID_IMP_NETLOGIC_XLR532C:
+-	case PRID_IMP_NETLOGIC_XLR516C:
+-	case PRID_IMP_NETLOGIC_XLR508C:
+-	case PRID_IMP_NETLOGIC_XLR308C:
+-		c->cputype = CPU_XLR;
+-		__cpu_name[cpu] = "Netlogic XLR";
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLS608:
+-	case PRID_IMP_NETLOGIC_XLS408:
+-	case PRID_IMP_NETLOGIC_XLS404:
+-	case PRID_IMP_NETLOGIC_XLS208:
+-	case PRID_IMP_NETLOGIC_XLS204:
+-	case PRID_IMP_NETLOGIC_XLS108:
+-	case PRID_IMP_NETLOGIC_XLS104:
+-	case PRID_IMP_NETLOGIC_XLS616B:
+-	case PRID_IMP_NETLOGIC_XLS608B:
+-	case PRID_IMP_NETLOGIC_XLS416B:
+-	case PRID_IMP_NETLOGIC_XLS412B:
+-	case PRID_IMP_NETLOGIC_XLS408B:
+-	case PRID_IMP_NETLOGIC_XLS404B:
+-		c->cputype = CPU_XLR;
+-		__cpu_name[cpu] = "Netlogic XLS";
+-		break;
+-
+-	default:
+-		pr_info("Unknown Netlogic chip id [%02x]!\n",
+-		       c->processor_id);
+-		c->cputype = CPU_XLR;
+-		break;
+-	}
+-
+-	if (c->cputype == CPU_XLP) {
+-		set_isa(c, MIPS_CPU_ISA_M64R2);
+-		c->options |= (MIPS_CPU_FPU | MIPS_CPU_ULRI | MIPS_CPU_MCHECK);
+-		/* This will be updated again after all threads are woken up */
+-		c->tlbsize = ((read_c0_config6() >> 16) & 0xffff) + 1;
+-	} else {
+-		set_isa(c, MIPS_CPU_ISA_M64R1);
+-		c->tlbsize = ((read_c0_config1() >> 25) & 0x3f) + 1;
+-	}
+-	c->kscratch_mask = 0xf;
+-}
+-
+ #ifdef CONFIG_64BIT
+ /* For use by uaccess.h */
+ u64 __ua_limit;
+@@ -2031,9 +1950,6 @@ void cpu_probe(void)
+ 	case PRID_COMP_INGENIC_E1:
+ 		cpu_probe_ingenic(c, cpu);
+ 		break;
+-	case PRID_COMP_NETLOGIC:
+-		cpu_probe_netlogic(c, cpu);
+-		break;
+ 	}
+ 
+ 	BUG_ON(!__cpu_name[cpu]);
+diff --git a/arch/mips/kernel/idle.c b/arch/mips/kernel/idle.c
+index 1aca3b4db904..c81b3a039470 100644
+--- a/arch/mips/kernel/idle.c
++++ b/arch/mips/kernel/idle.c
+@@ -175,8 +175,6 @@ void __init check_wait(void)
+ 	case CPU_CAVIUM_OCTEON3:
+ 	case CPU_XBURST:
+ 	case CPU_LOONGSON32:
+-	case CPU_XLR:
+-	case CPU_XLP:
+ 		cpu_wait = r4k_wait;
+ 		break;
+ 	case CPU_LOONGSON64:
+diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
+index 22e22c2de1c9..1641d274fe37 100644
+--- a/arch/mips/kernel/perf_event_mipsxx.c
++++ b/arch/mips/kernel/perf_event_mipsxx.c
+@@ -1002,15 +1002,6 @@ static const struct mips_perf_event bmips5000_event_map
+ 	[PERF_COUNT_HW_BRANCH_MISSES] = { 0x02, CNTR_ODD, T },
+ };
+ 
+-static const struct mips_perf_event xlp_event_map[PERF_COUNT_HW_MAX] = {
+-	[PERF_COUNT_HW_CPU_CYCLES] = { 0x01, CNTR_ALL },
+-	[PERF_COUNT_HW_INSTRUCTIONS] = { 0x18, CNTR_ALL }, /* PAPI_TOT_INS */
+-	[PERF_COUNT_HW_CACHE_REFERENCES] = { 0x04, CNTR_ALL }, /* PAPI_L1_ICA */
+-	[PERF_COUNT_HW_CACHE_MISSES] = { 0x07, CNTR_ALL }, /* PAPI_L1_ICM */
+-	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = { 0x1b, CNTR_ALL }, /* PAPI_BR_CN */
+-	[PERF_COUNT_HW_BRANCH_MISSES] = { 0x1c, CNTR_ALL }, /* PAPI_BR_MSP */
+-};
+-
+ /* 24K/34K/1004K/interAptiv/loongson1 cores share the same cache event map. */
+ static const struct mips_perf_event mipsxxcore_cache_map
+ 				[PERF_COUNT_HW_CACHE_MAX]
+@@ -1477,63 +1468,6 @@ static const struct mips_perf_event octeon_cache_map
+ },
+ };
+ 
+-static const struct mips_perf_event xlp_cache_map
+-				[PERF_COUNT_HW_CACHE_MAX]
+-				[PERF_COUNT_HW_CACHE_OP_MAX]
+-				[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
+-[C(L1D)] = {
+-	[C(OP_READ)] = {
+-		[C(RESULT_ACCESS)]	= { 0x31, CNTR_ALL }, /* PAPI_L1_DCR */
+-		[C(RESULT_MISS)]	= { 0x30, CNTR_ALL }, /* PAPI_L1_LDM */
+-	},
+-	[C(OP_WRITE)] = {
+-		[C(RESULT_ACCESS)]	= { 0x2f, CNTR_ALL }, /* PAPI_L1_DCW */
+-		[C(RESULT_MISS)]	= { 0x2e, CNTR_ALL }, /* PAPI_L1_STM */
+-	},
+-},
+-[C(L1I)] = {
+-	[C(OP_READ)] = {
+-		[C(RESULT_ACCESS)]	= { 0x04, CNTR_ALL }, /* PAPI_L1_ICA */
+-		[C(RESULT_MISS)]	= { 0x07, CNTR_ALL }, /* PAPI_L1_ICM */
+-	},
+-},
+-[C(LL)] = {
+-	[C(OP_READ)] = {
+-		[C(RESULT_ACCESS)]	= { 0x35, CNTR_ALL }, /* PAPI_L2_DCR */
+-		[C(RESULT_MISS)]	= { 0x37, CNTR_ALL }, /* PAPI_L2_LDM */
+-	},
+-	[C(OP_WRITE)] = {
+-		[C(RESULT_ACCESS)]	= { 0x34, CNTR_ALL }, /* PAPI_L2_DCA */
+-		[C(RESULT_MISS)]	= { 0x36, CNTR_ALL }, /* PAPI_L2_DCM */
+-	},
+-},
+-[C(DTLB)] = {
+-	/*
+-	 * Only general DTLB misses are counted use the same event for
+-	 * read and write.
+-	 */
+-	[C(OP_READ)] = {
+-		[C(RESULT_MISS)]	= { 0x2d, CNTR_ALL }, /* PAPI_TLB_DM */
+-	},
+-	[C(OP_WRITE)] = {
+-		[C(RESULT_MISS)]	= { 0x2d, CNTR_ALL }, /* PAPI_TLB_DM */
+-	},
+-},
+-[C(ITLB)] = {
+-	[C(OP_READ)] = {
+-		[C(RESULT_MISS)]	= { 0x08, CNTR_ALL }, /* PAPI_TLB_IM */
+-	},
+-	[C(OP_WRITE)] = {
+-		[C(RESULT_MISS)]	= { 0x08, CNTR_ALL }, /* PAPI_TLB_IM */
+-	},
+-},
+-[C(BPU)] = {
+-	[C(OP_READ)] = {
+-		[C(RESULT_MISS)]	= { 0x25, CNTR_ALL },
+-	},
+-},
+-};
+-
+ static int __hw_perf_event_init(struct perf_event *event)
+ {
+ 	struct perf_event_attr *attr = &event->attr;
+@@ -1953,20 +1887,6 @@ static const struct mips_perf_event *octeon_pmu_map_raw_event(u64 config)
+ 	return &raw_event;
+ }
+ 
+-static const struct mips_perf_event *xlp_pmu_map_raw_event(u64 config)
+-{
+-	unsigned int raw_id = config & 0xff;
+-
+-	/* Only 1-63 are defined */
+-	if ((raw_id < 0x01) || (raw_id > 0x3f))
+-		return ERR_PTR(-EOPNOTSUPP);
+-
+-	raw_event.cntr_mask = CNTR_ALL;
+-	raw_event.event_id = raw_id;
+-
+-	return &raw_event;
+-}
+-
+ static int __init
+ init_hw_perf_events(void)
+ {
+@@ -2091,12 +2011,6 @@ init_hw_perf_events(void)
+ 		mipspmu.general_event_map = &bmips5000_event_map;
+ 		mipspmu.cache_event_map = &bmips5000_cache_map;
+ 		break;
+-	case CPU_XLP:
+-		mipspmu.name = "xlp";
+-		mipspmu.general_event_map = &xlp_event_map;
+-		mipspmu.cache_event_map = &xlp_cache_map;
+-		mipspmu.map_raw_event = xlp_pmu_map_raw_event;
+-		break;
+ 	default:
+ 		pr_cont("Either hardware does not support performance "
+ 			"counters, or not yet implemented.\n");
+diff --git a/arch/mips/kvm/entry.c b/arch/mips/kvm/entry.c
+index 8131fb2bdf97..aceed14aa1f7 100644
+--- a/arch/mips/kvm/entry.c
++++ b/arch/mips/kvm/entry.c
+@@ -104,13 +104,7 @@ static void *kvm_mips_build_ret_to_host(void *addr);
+  */
+ static int c0_kscratch(void)
+ {
+-	switch (boot_cpu_type()) {
+-	case CPU_XLP:
+-	case CPU_XLR:
+-		return 22;
+-	default:
+-		return 31;
+-	}
++	return 31;
+ }
+ 
+ /**
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 74b09e801c3a..50261fd8eb21 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -1410,7 +1410,6 @@ static void probe_pcache(void)
+ 	case CPU_I6500:
+ 	case CPU_SB1:
+ 	case CPU_SB1A:
+-	case CPU_XLR:
+ 		c->dcache.flags |= MIPS_CACHE_PINDEX;
+ 		break;
+ 
+@@ -1699,7 +1698,6 @@ static void setup_scache(void)
+ 		return;
+ 
+ 	case CPU_CAVIUM_OCTEON3:
+-	case CPU_XLP:
+ 		/* don't need to worry about L2, fully coherent */
+ 		return;
+ 
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index 9adad24c2e65..b131e6a77383 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -325,13 +325,7 @@ static unsigned int kscratch_used_mask;
+ 
+ static inline int __maybe_unused c0_kscratch(void)
+ {
+-	switch (current_cpu_type()) {
+-	case CPU_XLP:
+-	case CPU_XLR:
+-		return 22;
+-	default:
+-		return 31;
+-	}
++	return 31;
+ }
+ 
+ static int allocate_kscratch(void)
+@@ -553,7 +547,6 @@ void build_tlb_write_entry(u32 **p, struct uasm_label **l,
+ 	case CPU_5KC:
+ 	case CPU_TX49XX:
+ 	case CPU_PR4450:
+-	case CPU_XLR:
+ 		uasm_i_nop(p);
+ 		tlbw(p);
+ 		break;
+diff --git a/arch/mips/netlogic/Kconfig b/arch/mips/netlogic/Kconfig
+deleted file mode 100644
+index 412351c5acc6..000000000000
+--- a/arch/mips/netlogic/Kconfig
++++ /dev/null
+@@ -1,86 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-if NLM_XLP_BOARD || NLM_XLR_BOARD
+-
+-if NLM_XLP_BOARD
+-config DT_XLP_EVP
+-	bool "Built-in device tree for XLP EVP boards"
+-	default y
+-	select BUILTIN_DTB
+-	help
+-	  Add an FDT blob for XLP EVP boards into the kernel.
+-	  This DTB will be used if the firmware does not pass in a DTB
+-	  pointer to the kernel.  The corresponding DTS file is at
+-	  arch/mips/netlogic/dts/xlp_evp.dts
+-
+-config DT_XLP_SVP
+-	bool "Built-in device tree for XLP SVP boards"
+-	default y
+-	select BUILTIN_DTB
+-	help
+-	  Add an FDT blob for XLP VP boards into the kernel.
+-	  This DTB will be used if the firmware does not pass in a DTB
+-	  pointer to the kernel.  The corresponding DTS file is at
+-	  arch/mips/netlogic/dts/xlp_svp.dts
+-
+-config DT_XLP_FVP
+-	bool "Built-in device tree for XLP FVP boards"
+-	default y
+-	select BUILTIN_DTB
+-	help
+-	  Add an FDT blob for XLP FVP board into the kernel.
+-	  This DTB will be used if the firmware does not pass in a DTB
+-	  pointer to the kernel.  The corresponding DTS file is at
+-	  arch/mips/netlogic/dts/xlp_fvp.dts
+-
+-config DT_XLP_GVP
+-	bool "Built-in device tree for XLP GVP boards"
+-	default y
+-	select BUILTIN_DTB
+-	help
+-	  Add an FDT blob for XLP GVP board into the kernel.
+-	  This DTB will be used if the firmware does not pass in a DTB
+-	  pointer to the kernel.  The corresponding DTS file is at
+-	  arch/mips/netlogic/dts/xlp_gvp.dts
+-
+-config DT_XLP_RVP
+-	bool "Built-in device tree for XLP RVP boards"
+-	default y
+-	help
+-	  Add an FDT blob for XLP RVP board into the kernel.
+-	  This DTB will be used if the firmware does not pass in a DTB
+-	  pointer to the kernel.  The corresponding DTS file is at
+-	  arch/mips/netlogic/dts/xlp_rvp.dts
+-
+-config NLM_MULTINODE
+-	bool "Support for multi-chip boards"
+-	depends on NLM_XLP_BOARD
+-	default n
+-	help
+-	  Add support for boards with 2 or 4 XLPs connected over ICI.
+-
+-if NLM_MULTINODE
+-choice
+-	prompt "Number of XLPs on the board"
+-	default NLM_MULTINODE_2
+-	help
+-	  In the multi-node case, specify the number of SoCs on the board.
+-
+-config NLM_MULTINODE_2
+-	bool "Dual-XLP board"
+-	help
+-	  Support boards with upto two XLPs connected over ICI.
+-
+-config NLM_MULTINODE_4
+-	bool "Quad-XLP board"
+-	help
+-	  Support boards with upto four XLPs connected over ICI.
+-
+-endchoice
+-
+-endif
+-endif
+-
+-config NLM_COMMON
+-	bool
+-
+-endif
+diff --git a/arch/mips/netlogic/Makefile b/arch/mips/netlogic/Makefile
+deleted file mode 100644
+index c53561589db9..000000000000
+--- a/arch/mips/netlogic/Makefile
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_NLM_COMMON)	+=	common/
+-obj-$(CONFIG_CPU_XLR)		+=	xlr/
+-obj-$(CONFIG_CPU_XLP)		+=	xlp/
+diff --git a/arch/mips/netlogic/Platform b/arch/mips/netlogic/Platform
+deleted file mode 100644
+index 4195a097f5f2..000000000000
+--- a/arch/mips/netlogic/Platform
++++ /dev/null
+@@ -1,16 +0,0 @@
+-#
+-# NETLOGIC includes
+-#
+-cflags-$(CONFIG_NLM_COMMON)	+= -I$(srctree)/arch/mips/include/asm/mach-netlogic
+-cflags-$(CONFIG_NLM_COMMON)	+= -I$(srctree)/arch/mips/include/asm/netlogic
+-
+-#
+-# use mips64 if xlr is not available
+-#
+-cflags-$(CONFIG_CPU_XLR)	+= $(call cc-option,-march=xlr,-march=mips64)
+-cflags-$(CONFIG_CPU_XLP)	+= $(call cc-option,-march=xlp,-march=mips64r2)
+-
+-#
+-# NETLOGIC processor support
+-#
+-load-$(CONFIG_NLM_COMMON)	+= 0xffffffff80100000
+diff --git a/arch/mips/netlogic/common/Makefile b/arch/mips/netlogic/common/Makefile
+deleted file mode 100644
+index 89f6e3f39fed..000000000000
+--- a/arch/mips/netlogic/common/Makefile
++++ /dev/null
+@@ -1,5 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-obj-y				+= irq.o time.o
+-obj-y				+= reset.o
+-obj-$(CONFIG_SMP)		+= smp.o smpboot.o
+-obj-$(CONFIG_EARLY_PRINTK)	+= earlycons.o
+diff --git a/arch/mips/netlogic/common/earlycons.c b/arch/mips/netlogic/common/earlycons.c
+deleted file mode 100644
+index 8f5bc1597550..000000000000
+--- a/arch/mips/netlogic/common/earlycons.c
++++ /dev/null
+@@ -1,63 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/types.h>
+-#include <linux/serial_reg.h>
+-
+-#include <asm/mipsregs.h>
+-#include <asm/setup.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-
+-#if defined(CONFIG_CPU_XLP)
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/uart.h>
+-#elif defined(CONFIG_CPU_XLR)
+-#include <asm/netlogic/xlr/iomap.h>
+-#endif
+-
+-void prom_putchar(char c)
+-{
+-	uint64_t uartbase;
+-
+-#if defined(CONFIG_CPU_XLP)
+-	uartbase = nlm_get_uart_regbase(0, 0);
+-#elif defined(CONFIG_CPU_XLR)
+-	uartbase = nlm_mmio_base(NETLOGIC_IO_UART_0_OFFSET);
+-#endif
+-	while ((nlm_read_reg(uartbase, UART_LSR) & UART_LSR_THRE) == 0)
+-		;
+-	nlm_write_reg(uartbase, UART_TX, c);
+-}
+diff --git a/arch/mips/netlogic/common/irq.c b/arch/mips/netlogic/common/irq.c
+deleted file mode 100644
+index c25a2ce5e29f..000000000000
+--- a/arch/mips/netlogic/common/irq.c
++++ /dev/null
+@@ -1,350 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/linkage.h>
+-#include <linux/interrupt.h>
+-#include <linux/mm.h>
+-#include <linux/slab.h>
+-#include <linux/irq.h>
+-
+-#include <linux/irqdomain.h>
+-#include <linux/of_address.h>
+-#include <linux/of_irq.h>
+-
+-#include <asm/errno.h>
+-#include <asm/signal.h>
+-#include <asm/ptrace.h>
+-#include <asm/mipsregs.h>
+-#include <asm/thread_info.h>
+-
+-#include <asm/netlogic/mips-extns.h>
+-#include <asm/netlogic/interrupt.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-
+-#if defined(CONFIG_CPU_XLP)
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/pic.h>
+-#elif defined(CONFIG_CPU_XLR)
+-#include <asm/netlogic/xlr/iomap.h>
+-#include <asm/netlogic/xlr/pic.h>
+-#include <asm/netlogic/xlr/fmn.h>
+-#else
+-#error "Unknown CPU"
+-#endif
+-
+-#ifdef CONFIG_SMP
+-#define SMP_IRQ_MASK	((1ULL << IRQ_IPI_SMP_FUNCTION) | \
+-				 (1ULL << IRQ_IPI_SMP_RESCHEDULE))
+-#else
+-#define SMP_IRQ_MASK	0
+-#endif
+-#define PERCPU_IRQ_MASK (SMP_IRQ_MASK | (1ull << IRQ_TIMER) | \
+-				(1ull << IRQ_FMN))
+-
+-struct nlm_pic_irq {
+-	void	(*extra_ack)(struct irq_data *);
+-	struct	nlm_soc_info *node;
+-	int	picirq;
+-	int	irt;
+-	int	flags;
+-};
+-
+-static void xlp_pic_enable(struct irq_data *d)
+-{
+-	unsigned long flags;
+-	struct nlm_pic_irq *pd = irq_data_get_irq_chip_data(d);
+-
+-	BUG_ON(!pd);
+-	spin_lock_irqsave(&pd->node->piclock, flags);
+-	nlm_pic_enable_irt(pd->node->picbase, pd->irt);
+-	spin_unlock_irqrestore(&pd->node->piclock, flags);
+-}
+-
+-static void xlp_pic_disable(struct irq_data *d)
+-{
+-	struct nlm_pic_irq *pd = irq_data_get_irq_chip_data(d);
+-	unsigned long flags;
+-
+-	BUG_ON(!pd);
+-	spin_lock_irqsave(&pd->node->piclock, flags);
+-	nlm_pic_disable_irt(pd->node->picbase, pd->irt);
+-	spin_unlock_irqrestore(&pd->node->piclock, flags);
+-}
+-
+-static void xlp_pic_mask_ack(struct irq_data *d)
+-{
+-	struct nlm_pic_irq *pd = irq_data_get_irq_chip_data(d);
+-
+-	clear_c0_eimr(pd->picirq);
+-	ack_c0_eirr(pd->picirq);
+-}
+-
+-static void xlp_pic_unmask(struct irq_data *d)
+-{
+-	struct nlm_pic_irq *pd = irq_data_get_irq_chip_data(d);
+-
+-	BUG_ON(!pd);
+-
+-	if (pd->extra_ack)
+-		pd->extra_ack(d);
+-
+-	/* re-enable the intr on this cpu */
+-	set_c0_eimr(pd->picirq);
+-
+-	/* Ack is a single write, no need to lock */
+-	nlm_pic_ack(pd->node->picbase, pd->irt);
+-}
+-
+-static struct irq_chip xlp_pic = {
+-	.name		= "XLP-PIC",
+-	.irq_enable	= xlp_pic_enable,
+-	.irq_disable	= xlp_pic_disable,
+-	.irq_mask_ack	= xlp_pic_mask_ack,
+-	.irq_unmask	= xlp_pic_unmask,
+-};
+-
+-static void cpuintr_disable(struct irq_data *d)
+-{
+-	clear_c0_eimr(d->irq);
+-}
+-
+-static void cpuintr_enable(struct irq_data *d)
+-{
+-	set_c0_eimr(d->irq);
+-}
+-
+-static void cpuintr_ack(struct irq_data *d)
+-{
+-	ack_c0_eirr(d->irq);
+-}
+-
+-/*
+- * Chip definition for CPU originated interrupts(timer, msg) and
+- * IPIs
+- */
+-struct irq_chip nlm_cpu_intr = {
+-	.name		= "XLP-CPU-INTR",
+-	.irq_enable	= cpuintr_enable,
+-	.irq_disable	= cpuintr_disable,
+-	.irq_mask	= cpuintr_disable,
+-	.irq_ack	= cpuintr_ack,
+-	.irq_eoi	= cpuintr_enable,
+-};
+-
+-static void __init nlm_init_percpu_irqs(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < PIC_IRT_FIRST_IRQ; i++)
+-		irq_set_chip_and_handler(i, &nlm_cpu_intr, handle_percpu_irq);
+-#ifdef CONFIG_SMP
+-	irq_set_chip_and_handler(IRQ_IPI_SMP_FUNCTION, &nlm_cpu_intr,
+-			 nlm_smp_function_ipi_handler);
+-	irq_set_chip_and_handler(IRQ_IPI_SMP_RESCHEDULE, &nlm_cpu_intr,
+-			 nlm_smp_resched_ipi_handler);
+-#endif
+-}
+-
+-
+-void nlm_setup_pic_irq(int node, int picirq, int irq, int irt)
+-{
+-	struct nlm_pic_irq *pic_data;
+-	int xirq;
+-
+-	xirq = nlm_irq_to_xirq(node, irq);
+-	pic_data = kzalloc(sizeof(*pic_data), GFP_KERNEL);
+-	BUG_ON(pic_data == NULL);
+-	pic_data->irt = irt;
+-	pic_data->picirq = picirq;
+-	pic_data->node = nlm_get_node(node);
+-	irq_set_chip_and_handler(xirq, &xlp_pic, handle_level_irq);
+-	irq_set_chip_data(xirq, pic_data);
+-}
+-
+-void nlm_set_pic_extra_ack(int node, int irq, void (*xack)(struct irq_data *))
+-{
+-	struct nlm_pic_irq *pic_data;
+-	int xirq;
+-
+-	xirq = nlm_irq_to_xirq(node, irq);
+-	pic_data = irq_get_chip_data(xirq);
+-	if (WARN_ON(!pic_data))
+-		return;
+-	pic_data->extra_ack = xack;
+-}
+-
+-static void nlm_init_node_irqs(int node)
+-{
+-	struct nlm_soc_info *nodep;
+-	int i, irt;
+-
+-	pr_info("Init IRQ for node %d\n", node);
+-	nodep = nlm_get_node(node);
+-	nodep->irqmask = PERCPU_IRQ_MASK;
+-	for (i = PIC_IRT_FIRST_IRQ; i <= PIC_IRT_LAST_IRQ; i++) {
+-		irt = nlm_irq_to_irt(i);
+-		if (irt == -1)		/* unused irq */
+-			continue;
+-		nodep->irqmask |= 1ull << i;
+-		if (irt == -2)		/* not a direct PIC irq */
+-			continue;
+-
+-		nlm_pic_init_irt(nodep->picbase, irt, i,
+-				node * nlm_threads_per_node(), 0);
+-		nlm_setup_pic_irq(node, i, i, irt);
+-	}
+-}
+-
+-void nlm_smp_irq_init(int hwtid)
+-{
+-	int cpu, node;
+-
+-	cpu = hwtid % nlm_threads_per_node();
+-	node = hwtid / nlm_threads_per_node();
+-
+-	if (cpu == 0 && node != 0)
+-		nlm_init_node_irqs(node);
+-	write_c0_eimr(nlm_get_node(node)->irqmask);
+-}
+-
+-asmlinkage void plat_irq_dispatch(void)
+-{
+-	uint64_t eirr;
+-	int i, node;
+-
+-	node = nlm_nodeid();
+-	eirr = read_c0_eirr_and_eimr();
+-	if (eirr == 0)
+-		return;
+-
+-	i = __ffs64(eirr);
+-	/* per-CPU IRQs don't need translation */
+-	if (i < PIC_IRQ_BASE) {
+-		do_IRQ(i);
+-		return;
+-	}
+-
+-#if defined(CONFIG_PCI_MSI) && defined(CONFIG_CPU_XLP)
+-	/* PCI interrupts need a second level dispatch for MSI bits */
+-	if (i >= PIC_PCIE_LINK_MSI_IRQ(0) && i <= PIC_PCIE_LINK_MSI_IRQ(3)) {
+-		nlm_dispatch_msi(node, i);
+-		return;
+-	}
+-	if (i >= PIC_PCIE_MSIX_IRQ(0) && i <= PIC_PCIE_MSIX_IRQ(3)) {
+-		nlm_dispatch_msix(node, i);
+-		return;
+-	}
+-
+-#endif
+-	/* top level irq handling */
+-	do_IRQ(nlm_irq_to_xirq(node, i));
+-}
+-
+-#ifdef CONFIG_CPU_XLP
+-static int __init xlp_of_pic_init(struct device_node *node,
+-					struct device_node *parent)
+-{
+-	const int n_picirqs = PIC_IRT_LAST_IRQ - PIC_IRQ_BASE + 1;
+-	struct irq_domain *xlp_pic_domain;
+-	struct resource res;
+-	int socid, ret, bus;
+-
+-	/* we need a hack to get the PIC's SoC chip id */
+-	ret = of_address_to_resource(node, 0, &res);
+-	if (ret < 0) {
+-		pr_err("PIC %pOFn: reg property not found!\n", node);
+-		return -EINVAL;
+-	}
+-
+-	if (cpu_is_xlp9xx()) {
+-		bus = (res.start >> 20) & 0xf;
+-		for (socid = 0; socid < NLM_NR_NODES; socid++) {
+-			if (!nlm_node_present(socid))
+-				continue;
+-			if (nlm_get_node(socid)->socbus == bus)
+-				break;
+-		}
+-		if (socid == NLM_NR_NODES) {
+-			pr_err("PIC %pOFn: Node mapping for bus %d not found!\n",
+-					node, bus);
+-			return -EINVAL;
+-		}
+-	} else {
+-		socid = (res.start >> 18) & 0x3;
+-		if (!nlm_node_present(socid)) {
+-			pr_err("PIC %pOFn: node %d does not exist!\n",
+-							node, socid);
+-			return -EINVAL;
+-		}
+-	}
+-
+-	if (!nlm_node_present(socid)) {
+-		pr_err("PIC %pOFn: node %d does not exist!\n", node, socid);
+-		return -EINVAL;
+-	}
+-
+-	xlp_pic_domain = irq_domain_add_legacy(node, n_picirqs,
+-		nlm_irq_to_xirq(socid, PIC_IRQ_BASE), PIC_IRQ_BASE,
+-		&irq_domain_simple_ops, NULL);
+-	if (xlp_pic_domain == NULL) {
+-		pr_err("PIC %pOFn: Creating legacy domain failed!\n", node);
+-		return -EINVAL;
+-	}
+-	pr_info("Node %d: IRQ domain created for PIC@%pR\n", socid, &res);
+-	return 0;
+-}
+-
+-static struct of_device_id __initdata xlp_pic_irq_ids[] = {
+-	{ .compatible = "netlogic,xlp-pic", .data = xlp_of_pic_init },
+-	{},
+-};
+-#endif
+-
+-void __init arch_init_irq(void)
+-{
+-	/* Initialize the irq descriptors */
+-	nlm_init_percpu_irqs();
+-	nlm_init_node_irqs(0);
+-	write_c0_eimr(nlm_current_node()->irqmask);
+-#if defined(CONFIG_CPU_XLR)
+-	nlm_setup_fmn_irq();
+-#endif
+-#ifdef CONFIG_CPU_XLP
+-	of_irq_init(xlp_pic_irq_ids);
+-#endif
+-}
+diff --git a/arch/mips/netlogic/common/reset.S b/arch/mips/netlogic/common/reset.S
+deleted file mode 100644
+index c474981a6c0d..000000000000
+--- a/arch/mips/netlogic/common/reset.S
++++ /dev/null
+@@ -1,299 +0,0 @@
+-/*
+- * Copyright 2003-2013 Broadcom Corporation.
+- * All Rights Reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-
+-#include <asm/asm.h>
+-#include <asm/asm-offsets.h>
+-#include <asm/cpu.h>
+-#include <asm/cacheops.h>
+-#include <asm/regdef.h>
+-#include <asm/mipsregs.h>
+-#include <asm/stackframe.h>
+-#include <asm/asmmacro.h>
+-#include <asm/addrspace.h>
+-
+-#include <asm/netlogic/common.h>
+-
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/sys.h>
+-#include <asm/netlogic/xlp-hal/cpucontrol.h>
+-
+-#define SYS_CPU_COHERENT_BASE	CKSEG1ADDR(XLP_DEFAULT_IO_BASE) + \
+-			XLP_IO_SYS_OFFSET(0) + XLP_IO_PCI_HDRSZ + \
+-			SYS_CPU_NONCOHERENT_MODE * 4
+-
+-/* Enable XLP features and workarounds in the LSU */
+-.macro xlp_config_lsu
+-	li	t0, LSU_DEFEATURE
+-	mfcr	t1, t0
+-
+-	lui	t2, 0x4080	/* Enable Unaligned Access, L2HPE */
+-	or	t1, t1, t2
+-	mtcr	t1, t0
+-
+-	li	t0, ICU_DEFEATURE
+-	mfcr	t1, t0
+-	ori	t1, 0x1000	/* Enable Icache partitioning */
+-	mtcr	t1, t0
+-
+-	li	t0, SCHED_DEFEATURE
+-	lui	t1, 0x0100	/* Disable BRU accepting ALU ops */
+-	mtcr	t1, t0
+-.endm
+-
+-/*
+- * Allow access to physical mem >64G by enabling ELPA in PAGEGRAIN
+- * register. This is needed before going to C code since the SP can
+- * in this region. Called from all HW threads.
+- */
+-.macro xlp_early_mmu_init
+-	mfc0	t0, CP0_PAGEMASK, 1
+-	li	t1, (1 << 29)		/* ELPA bit */
+-	or	t0, t1
+-	mtc0	t0, CP0_PAGEMASK, 1
+-.endm
+-
+-/*
+- * L1D cache has to be flushed before enabling threads in XLP.
+- * On XLP8xx/XLP3xx, we do a low level flush using processor control
+- * registers. On XLPII CPUs, usual cache instructions work.
+- */
+-.macro	xlp_flush_l1_dcache
+-	mfc0	t0, CP0_PRID
+-	andi	t0, t0, PRID_IMP_MASK
+-	slt	t1, t0, 0x1200
+-	beqz	t1, 15f
+-	nop
+-
+-	/* XLP8xx low level cache flush */
+-	li	t0, LSU_DEBUG_DATA0
+-	li	t1, LSU_DEBUG_ADDR
+-	li	t2, 0		/* index */
+-	li	t3, 0x1000	/* loop count */
+-11:
+-	sll	v0, t2, 5
+-	mtcr	zero, t0
+-	ori	v1, v0, 0x3	/* way0 | write_enable | write_active */
+-	mtcr	v1, t1
+-12:
+-	mfcr	v1, t1
+-	andi	v1, 0x1		/* wait for write_active == 0 */
+-	bnez	v1, 12b
+-	nop
+-	mtcr	zero, t0
+-	ori	v1, v0, 0x7	/* way1 | write_enable | write_active */
+-	mtcr	v1, t1
+-13:
+-	mfcr	v1, t1
+-	andi	v1, 0x1		/* wait for write_active == 0 */
+-	bnez	v1, 13b
+-	nop
+-	addi	t2, 1
+-	bne	t3, t2, 11b
+-	nop
+-	b	17f
+-	nop
+-
+-	/* XLPII CPUs, Invalidate all 64k of L1 D-cache */
+-15:
+-	li	t0, 0x80000000
+-	li	t1, 0x80010000
+-16:	cache	Index_Writeback_Inv_D, 0(t0)
+-	addiu	t0, t0, 32
+-	bne	t0, t1, 16b
+-	nop
+-17:
+-.endm
+-
+-/*
+- * nlm_reset_entry will be copied to the reset entry point for
+- * XLR and XLP. The XLP cores start here when they are woken up. This
+- * is also the NMI entry point.
+- *
+- * We use scratch reg 6/7 to save k0/k1 and check for NMI first.
+- *
+- * The data corresponding to reset/NMI is stored at RESET_DATA_PHYS
+- * location, this will have the thread mask (used when core is woken up)
+- * and the current NMI handler in case we reached here for an NMI.
+- *
+- * When a core or thread is newly woken up, it marks itself ready and
+- * loops in a 'wait'. When the CPU really needs waking up, we send an NMI
+- * IPI to it, with the NMI handler set to prom_boot_secondary_cpus
+- */
+-	.set	noreorder
+-	.set	noat
+-	.set	arch=xlr	/* for mfcr/mtcr, XLR is sufficient */
+-
+-FEXPORT(nlm_reset_entry)
+-	dmtc0	k0, $22, 6
+-	dmtc0	k1, $22, 7
+-	mfc0	k0, CP0_STATUS
+-	li	k1, 0x80000
+-	and	k1, k0, k1
+-	beqz	k1, 1f		/* go to real reset entry */
+-	nop
+-	li	k1, CKSEG1ADDR(RESET_DATA_PHYS) /* NMI */
+-	ld	k0, BOOT_NMI_HANDLER(k1)
+-	jr	k0
+-	nop
+-
+-1:	/* Entry point on core wakeup */
+-	mfc0	t0, CP0_PRID		/* processor ID */
+-	andi	t0, PRID_IMP_MASK
+-	li	t1, 0x1500		/* XLP 9xx */
+-	beq	t0, t1, 2f		/* does not need to set coherent */
+-	nop
+-
+-	li	t1, 0x1300		/* XLP 5xx */
+-	beq	t0, t1, 2f		/* does not need to set coherent */
+-	nop
+-
+-	/* set bit in SYS coherent register for the core */
+-	mfc0	t0, CP0_EBASE
+-	mfc0	t1, CP0_EBASE
+-	srl	t1, 5
+-	andi	t1, 0x3			/* t1 <- node */
+-	li	t2, 0x40000
+-	mul	t3, t2, t1		/* t3 = node * 0x40000 */
+-	srl	t0, t0, 2
+-	and	t0, t0, 0x7		/* t0 <- core */
+-	li	t1, 0x1
+-	sll	t0, t1, t0
+-	nor	t0, t0, zero		/* t0 <- ~(1 << core) */
+-	li	t2, SYS_CPU_COHERENT_BASE
+-	add	t2, t2, t3		/* t2 <- SYS offset for node */
+-	lw	t1, 0(t2)
+-	and	t1, t1, t0
+-	sw	t1, 0(t2)
+-
+-	/* read back to ensure complete */
+-	lw	t1, 0(t2)
+-	sync
+-
+-2:
+-	/* Configure LSU on Non-0 Cores. */
+-	xlp_config_lsu
+-	/* FALL THROUGH */
+-
+-/*
+- * Wake up sibling threads from the initial thread in a core.
+- */
+-EXPORT(nlm_boot_siblings)
+-	/* core L1D flush before enable threads */
+-	xlp_flush_l1_dcache
+-	/* save ra and sp, will be used later (only for boot cpu) */
+-	dmtc0	ra, $22, 6
+-	dmtc0	sp, $22, 7
+-	/* Enable hw threads by writing to MAP_THREADMODE of the core */
+-	li	t0, CKSEG1ADDR(RESET_DATA_PHYS)
+-	lw	t1, BOOT_THREAD_MODE(t0)	/* t1 <- thread mode */
+-	li	t0, ((CPU_BLOCKID_MAP << 8) | MAP_THREADMODE)
+-	mfcr	t2, t0
+-	or	t2, t2, t1
+-	mtcr	t2, t0
+-
+-	/*
+-	 * The new hardware thread starts at the next instruction
+-	 * For all the cases other than core 0 thread 0, we will
+-	 * jump to the secondary wait function.
+-
+-	 * NOTE: All GPR contents are lost after the mtcr above!
+-	 */
+-	mfc0	v0, CP0_EBASE
+-	andi	v0, 0x3ff		/* v0 <- node/core */
+-
+-	/*
+-	 * Errata: to avoid potential live lock, setup IFU_BRUB_RESERVE
+-	 * when running 4 threads per core
+-	 */
+-	andi	v1, v0, 0x3             /* v1 <- thread id */
+-	bnez	v1, 2f
+-	nop
+-
+-	/* thread 0 of each core. */
+-	li	t0, CKSEG1ADDR(RESET_DATA_PHYS)
+-	lw	t1, BOOT_THREAD_MODE(t0)        /* t1 <- thread mode */
+-	subu	t1, 0x3				/* 4-thread per core mode? */
+-	bnez	t1, 2f
+-	nop
+-
+-	li	t0, IFU_BRUB_RESERVE
+-	li	t1, 0x55
+-	mtcr	t1, t0
+-	_ehb
+-2:
+-	beqz	v0, 4f		/* boot cpu (cpuid == 0)? */
+-	nop
+-
+-	/* setup status reg */
+-	move	t1, zero
+-#ifdef CONFIG_64BIT
+-	ori	t1, ST0_KX
+-#endif
+-	mtc0	t1, CP0_STATUS
+-
+-	xlp_early_mmu_init
+-
+-	/* mark CPU ready */
+-	li	t3, CKSEG1ADDR(RESET_DATA_PHYS)
+-	ADDIU	t1, t3, BOOT_CPU_READY
+-	sll	v1, v0, 2
+-	PTR_ADDU t1, v1
+-	li	t2, 1
+-	sw	t2, 0(t1)
+-	/* Wait until NMI hits */
+-3:	wait
+-	b	3b
+-	nop
+-
+-	/*
+-	 * For the boot CPU, we have to restore ra and sp and return, rest
+-	 * of the registers will be restored by the caller
+-	 */
+-4:
+-	dmfc0	ra, $22, 6
+-	dmfc0	sp, $22, 7
+-	jr	ra
+-	nop
+-EXPORT(nlm_reset_entry_end)
+-
+-LEAF(nlm_init_boot_cpu)
+-#ifdef CONFIG_CPU_XLP
+-	xlp_config_lsu
+-	xlp_early_mmu_init
+-#endif
+-	jr	ra
+-	nop
+-END(nlm_init_boot_cpu)
+diff --git a/arch/mips/netlogic/common/smp.c b/arch/mips/netlogic/common/smp.c
+deleted file mode 100644
+index 39a300bd6cc2..000000000000
+--- a/arch/mips/netlogic/common/smp.c
++++ /dev/null
+@@ -1,285 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/delay.h>
+-#include <linux/init.h>
+-#include <linux/sched/task_stack.h>
+-#include <linux/smp.h>
+-#include <linux/irq.h>
+-
+-#include <asm/mmu_context.h>
+-
+-#include <asm/netlogic/interrupt.h>
+-#include <asm/netlogic/mips-extns.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-
+-#if defined(CONFIG_CPU_XLP)
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/pic.h>
+-#elif defined(CONFIG_CPU_XLR)
+-#include <asm/netlogic/xlr/iomap.h>
+-#include <asm/netlogic/xlr/pic.h>
+-#include <asm/netlogic/xlr/xlr.h>
+-#else
+-#error "Unknown CPU"
+-#endif
+-
+-void nlm_send_ipi_single(int logical_cpu, unsigned int action)
+-{
+-	unsigned int hwtid;
+-	uint64_t picbase;
+-
+-	/* node id is part of hwtid, and needed for send_ipi */
+-	hwtid = cpu_logical_map(logical_cpu);
+-	picbase = nlm_get_node(nlm_hwtid_to_node(hwtid))->picbase;
+-
+-	if (action & SMP_CALL_FUNCTION)
+-		nlm_pic_send_ipi(picbase, hwtid, IRQ_IPI_SMP_FUNCTION, 0);
+-	if (action & SMP_RESCHEDULE_YOURSELF)
+-		nlm_pic_send_ipi(picbase, hwtid, IRQ_IPI_SMP_RESCHEDULE, 0);
+-}
+-
+-void nlm_send_ipi_mask(const struct cpumask *mask, unsigned int action)
+-{
+-	int cpu;
+-
+-	for_each_cpu(cpu, mask) {
+-		nlm_send_ipi_single(cpu, action);
+-	}
+-}
+-
+-/* IRQ_IPI_SMP_FUNCTION Handler */
+-void nlm_smp_function_ipi_handler(struct irq_desc *desc)
+-{
+-	unsigned int irq = irq_desc_get_irq(desc);
+-	clear_c0_eimr(irq);
+-	ack_c0_eirr(irq);
+-	generic_smp_call_function_interrupt();
+-	set_c0_eimr(irq);
+-}
+-
+-/* IRQ_IPI_SMP_RESCHEDULE  handler */
+-void nlm_smp_resched_ipi_handler(struct irq_desc *desc)
+-{
+-	unsigned int irq = irq_desc_get_irq(desc);
+-	clear_c0_eimr(irq);
+-	ack_c0_eirr(irq);
+-	scheduler_ipi();
+-	set_c0_eimr(irq);
+-}
+-
+-/*
+- * Called before going into mips code, early cpu init
+- */
+-void nlm_early_init_secondary(int cpu)
+-{
+-	change_c0_config(CONF_CM_CMASK, 0x3);
+-#ifdef CONFIG_CPU_XLP
+-	xlp_mmu_init();
+-#endif
+-	write_c0_ebase(nlm_current_node()->ebase);
+-}
+-
+-/*
+- * Code to run on secondary just after probing the CPU
+- */
+-static void nlm_init_secondary(void)
+-{
+-	int hwtid;
+-
+-	hwtid = hard_smp_processor_id();
+-	cpu_set_core(&current_cpu_data, hwtid / NLM_THREADS_PER_CORE);
+-	current_cpu_data.package = nlm_nodeid();
+-	nlm_percpu_init(hwtid);
+-	nlm_smp_irq_init(hwtid);
+-}
+-
+-void nlm_prepare_cpus(unsigned int max_cpus)
+-{
+-	/* declare we are SMT capable */
+-	smp_num_siblings = nlm_threads_per_core;
+-}
+-
+-void nlm_smp_finish(void)
+-{
+-	local_irq_enable();
+-}
+-
+-/*
+- * Boot all other cpus in the system, initialize them, and bring them into
+- * the boot function
+- */
+-unsigned long nlm_next_gp;
+-unsigned long nlm_next_sp;
+-static cpumask_t phys_cpu_present_mask;
+-
+-int nlm_boot_secondary(int logical_cpu, struct task_struct *idle)
+-{
+-	uint64_t picbase;
+-	int hwtid;
+-
+-	hwtid = cpu_logical_map(logical_cpu);
+-	picbase = nlm_get_node(nlm_hwtid_to_node(hwtid))->picbase;
+-
+-	nlm_next_sp = (unsigned long)__KSTK_TOS(idle);
+-	nlm_next_gp = (unsigned long)task_thread_info(idle);
+-
+-	/* barrier for sp/gp store above */
+-	__sync();
+-	nlm_pic_send_ipi(picbase, hwtid, 1, 1);  /* NMI */
+-
+-	return 0;
+-}
+-
+-void __init nlm_smp_setup(void)
+-{
+-	unsigned int boot_cpu;
+-	int num_cpus, i, ncore, node;
+-	volatile u32 *cpu_ready = nlm_get_boot_data(BOOT_CPU_READY);
+-
+-	boot_cpu = hard_smp_processor_id();
+-	cpumask_clear(&phys_cpu_present_mask);
+-
+-	cpumask_set_cpu(boot_cpu, &phys_cpu_present_mask);
+-	__cpu_number_map[boot_cpu] = 0;
+-	__cpu_logical_map[0] = boot_cpu;
+-	set_cpu_possible(0, true);
+-
+-	num_cpus = 1;
+-	for (i = 0; i < NR_CPUS; i++) {
+-		/*
+-		 * cpu_ready array is not set for the boot_cpu,
+-		 * it is only set for ASPs (see smpboot.S)
+-		 */
+-		if (cpu_ready[i]) {
+-			cpumask_set_cpu(i, &phys_cpu_present_mask);
+-			__cpu_number_map[i] = num_cpus;
+-			__cpu_logical_map[num_cpus] = i;
+-			set_cpu_possible(num_cpus, true);
+-			node = nlm_hwtid_to_node(i);
+-			cpumask_set_cpu(num_cpus, &nlm_get_node(node)->cpumask);
+-			++num_cpus;
+-		}
+-	}
+-
+-	pr_info("Physical CPU mask: %*pb\n",
+-		cpumask_pr_args(&phys_cpu_present_mask));
+-	pr_info("Possible CPU mask: %*pb\n",
+-		cpumask_pr_args(cpu_possible_mask));
+-
+-	/* check with the cores we have woken up */
+-	for (ncore = 0, i = 0; i < NLM_NR_NODES; i++)
+-		ncore += hweight32(nlm_get_node(i)->coremask);
+-
+-	pr_info("Detected (%dc%dt) %d Slave CPU(s)\n", ncore,
+-		nlm_threads_per_core, num_cpus);
+-
+-	/* switch NMI handler to boot CPUs */
+-	nlm_set_nmi_handler(nlm_boot_secondary_cpus);
+-}
+-
+-static int nlm_parse_cpumask(cpumask_t *wakeup_mask)
+-{
+-	uint32_t core0_thr_mask, core_thr_mask;
+-	int threadmode, i, j;
+-
+-	core0_thr_mask = 0;
+-	for (i = 0; i < NLM_THREADS_PER_CORE; i++)
+-		if (cpumask_test_cpu(i, wakeup_mask))
+-			core0_thr_mask |= (1 << i);
+-	switch (core0_thr_mask) {
+-	case 1:
+-		nlm_threads_per_core = 1;
+-		threadmode = 0;
+-		break;
+-	case 3:
+-		nlm_threads_per_core = 2;
+-		threadmode = 2;
+-		break;
+-	case 0xf:
+-		nlm_threads_per_core = 4;
+-		threadmode = 3;
+-		break;
+-	default:
+-		goto unsupp;
+-	}
+-
+-	/* Verify other cores CPU masks */
+-	for (i = 0; i < NR_CPUS; i += NLM_THREADS_PER_CORE) {
+-		core_thr_mask = 0;
+-		for (j = 0; j < NLM_THREADS_PER_CORE; j++)
+-			if (cpumask_test_cpu(i + j, wakeup_mask))
+-				core_thr_mask |= (1 << j);
+-		if (core_thr_mask != 0 && core_thr_mask != core0_thr_mask)
+-				goto unsupp;
+-	}
+-	return threadmode;
+-
+-unsupp:
+-	panic("Unsupported CPU mask %*pb", cpumask_pr_args(wakeup_mask));
+-	return 0;
+-}
+-
+-int nlm_wakeup_secondary_cpus(void)
+-{
+-	u32 *reset_data;
+-	int threadmode;
+-
+-	/* verify the mask and setup core config variables */
+-	threadmode = nlm_parse_cpumask(&nlm_cpumask);
+-
+-	/* Setup CPU init parameters */
+-	reset_data = nlm_get_boot_data(BOOT_THREAD_MODE);
+-	*reset_data = threadmode;
+-
+-#ifdef CONFIG_CPU_XLP
+-	xlp_wakeup_secondary_cpus();
+-#else
+-	xlr_wakeup_secondary_cpus();
+-#endif
+-	return 0;
+-}
+-
+-const struct plat_smp_ops nlm_smp_ops = {
+-	.send_ipi_single	= nlm_send_ipi_single,
+-	.send_ipi_mask		= nlm_send_ipi_mask,
+-	.init_secondary		= nlm_init_secondary,
+-	.smp_finish		= nlm_smp_finish,
+-	.boot_secondary		= nlm_boot_secondary,
+-	.smp_setup		= nlm_smp_setup,
+-	.prepare_cpus		= nlm_prepare_cpus,
+-};
+diff --git a/arch/mips/netlogic/common/smpboot.S b/arch/mips/netlogic/common/smpboot.S
+deleted file mode 100644
+index 509c1a7e7c05..000000000000
+--- a/arch/mips/netlogic/common/smpboot.S
++++ /dev/null
+@@ -1,141 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-
+-#include <asm/asm.h>
+-#include <asm/asm-offsets.h>
+-#include <asm/regdef.h>
+-#include <asm/mipsregs.h>
+-#include <asm/stackframe.h>
+-#include <asm/asmmacro.h>
+-#include <asm/addrspace.h>
+-
+-#include <asm/netlogic/common.h>
+-
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/sys.h>
+-#include <asm/netlogic/xlp-hal/cpucontrol.h>
+-
+-	.set	noreorder
+-	.set	noat
+-	.set	arch=xlr		/* for mfcr/mtcr, XLR is sufficient */
+-
+-/* Called by the boot cpu to wake up its sibling threads */
+-NESTED(xlp_boot_core0_siblings, PT_SIZE, sp)
+-	/* CPU register contents lost when enabling threads, save them first */
+-	SAVE_ALL
+-	sync
+-	/* find the location to which nlm_boot_siblings was relocated */
+-	li	t0, CKSEG1ADDR(RESET_VEC_PHYS)
+-	PTR_LA	t1, nlm_reset_entry
+-	PTR_LA	t2, nlm_boot_siblings
+-	dsubu	t2, t1
+-	daddu	t2, t0
+-	/* call it */
+-	jalr	t2
+-	nop
+-	RESTORE_ALL
+-	jr	ra
+-	nop
+-END(xlp_boot_core0_siblings)
+-
+-NESTED(nlm_boot_secondary_cpus, 16, sp)
+-	/* Initialize CP0 Status */
+-	move	t1, zero
+-#ifdef CONFIG_64BIT
+-	ori	t1, ST0_KX
+-#endif
+-	mtc0	t1, CP0_STATUS
+-	PTR_LA	t1, nlm_next_sp
+-	PTR_L	sp, 0(t1)
+-	PTR_LA	t1, nlm_next_gp
+-	PTR_L	gp, 0(t1)
+-
+-	/* a0 has the processor id */
+-	mfc0	a0, CP0_EBASE
+-	andi	a0, 0x3ff		/* a0 <- node/core */
+-	PTR_LA	t0, nlm_early_init_secondary
+-	jalr	t0
+-	nop
+-
+-	PTR_LA	t0, smp_bootstrap
+-	jr	t0
+-	nop
+-END(nlm_boot_secondary_cpus)
+-
+-/*
+- * In case of RMIboot bootloader which is used on XLR boards, the CPUs
+- * be already woken up and waiting in bootloader code.
+- * This will get them out of the bootloader code and into linux. Needed
+- * because the bootloader area will be taken and initialized by linux.
+- */
+-NESTED(nlm_rmiboot_preboot, 16, sp)
+-	mfc0	t0, $15, 1	/* read ebase */
+-	andi	t0, 0x1f	/* t0 has the processor_id() */
+-	andi	t2, t0, 0x3	/* thread num */
+-	sll	t0, 2		/* offset in cpu array */
+-
+-	li	t3, CKSEG1ADDR(RESET_DATA_PHYS)
+-	ADDIU	t1, t3, BOOT_CPU_READY
+-	ADDU	t1, t0
+-	li	t3, 1
+-	sw	t3, 0(t1)
+-
+-	bnez	t2, 1f		/* skip thread programming */
+-	nop			/* for thread id != 0 */
+-
+-	/*
+-	 * XLR MMU setup only for first thread in core
+-	 */
+-	li	t0, 0x400
+-	mfcr	t1, t0
+-	li	t2, 6		/* XLR thread mode mask */
+-	nor	t3, t2, zero
+-	and	t2, t1, t2	/* t2 - current thread mode */
+-	li	v0, CKSEG1ADDR(RESET_DATA_PHYS)
+-	lw	v1, BOOT_THREAD_MODE(v0) /* v1 - new thread mode */
+-	sll	v1, 1
+-	beq	v1, t2, 1f	/* same as request value */
+-	nop			/* nothing to do */
+-
+-	and	t2, t1, t3	/* mask out old thread mode */
+-	or	t1, t2, v1	/* put in new value */
+-	mtcr	t1, t0		/* update core control */
+-
+-	/* wait for NMI to hit */
+-1:	wait
+-	b	1b
+-	nop
+-END(nlm_rmiboot_preboot)
+diff --git a/arch/mips/netlogic/common/time.c b/arch/mips/netlogic/common/time.c
+deleted file mode 100644
+index cbbf0d48216b..000000000000
+--- a/arch/mips/netlogic/common/time.c
++++ /dev/null
+@@ -1,110 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/init.h>
+-
+-#include <asm/time.h>
+-#include <asm/cpu-features.h>
+-
+-#include <asm/netlogic/interrupt.h>
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/haldefs.h>
+-
+-#if defined(CONFIG_CPU_XLP)
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/sys.h>
+-#include <asm/netlogic/xlp-hal/pic.h>
+-#elif defined(CONFIG_CPU_XLR)
+-#include <asm/netlogic/xlr/iomap.h>
+-#include <asm/netlogic/xlr/pic.h>
+-#include <asm/netlogic/xlr/xlr.h>
+-#else
+-#error "Unknown CPU"
+-#endif
+-
+-unsigned int get_c0_compare_int(void)
+-{
+-	return IRQ_TIMER;
+-}
+-
+-static u64 nlm_get_pic_timer(struct clocksource *cs)
+-{
+-	uint64_t picbase = nlm_get_node(0)->picbase;
+-
+-	return ~nlm_pic_read_timer(picbase, PIC_CLOCK_TIMER);
+-}
+-
+-static u64 nlm_get_pic_timer32(struct clocksource *cs)
+-{
+-	uint64_t picbase = nlm_get_node(0)->picbase;
+-
+-	return ~nlm_pic_read_timer32(picbase, PIC_CLOCK_TIMER);
+-}
+-
+-static struct clocksource csrc_pic = {
+-	.name		= "PIC",
+-	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+-};
+-
+-static void nlm_init_pic_timer(void)
+-{
+-	uint64_t picbase = nlm_get_node(0)->picbase;
+-	u32 picfreq;
+-
+-	nlm_pic_set_timer(picbase, PIC_CLOCK_TIMER, ~0ULL, 0, 0);
+-	if (current_cpu_data.cputype == CPU_XLR) {
+-		csrc_pic.mask	= CLOCKSOURCE_MASK(32);
+-		csrc_pic.read	= nlm_get_pic_timer32;
+-	} else {
+-		csrc_pic.mask	= CLOCKSOURCE_MASK(64);
+-		csrc_pic.read	= nlm_get_pic_timer;
+-	}
+-	csrc_pic.rating = 1000;
+-	picfreq = pic_timer_freq();
+-	clocksource_register_hz(&csrc_pic, picfreq);
+-	pr_info("PIC clock source added, frequency %d\n", picfreq);
+-}
+-
+-void __init plat_time_init(void)
+-{
+-	nlm_init_pic_timer();
+-	mips_hpt_frequency = nlm_get_cpu_frequency();
+-	if (current_cpu_type() == CPU_XLR)
+-		preset_lpj = mips_hpt_frequency / (3 * HZ);
+-	else
+-		preset_lpj = mips_hpt_frequency / (2 * HZ);
+-	pr_info("MIPS counter frequency [%ld]\n",
+-			(unsigned long)mips_hpt_frequency);
+-}
+diff --git a/arch/mips/netlogic/xlp/Makefile b/arch/mips/netlogic/xlp/Makefile
+deleted file mode 100644
+index d62465717393..000000000000
+--- a/arch/mips/netlogic/xlp/Makefile
++++ /dev/null
+@@ -1,11 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-obj-y				+= setup.o nlm_hal.o cop2-ex.o dt.o
+-obj-$(CONFIG_SMP)		+= wakeup.o
+-ifdef CONFIG_USB
+-obj-y				+= usb-init.o
+-obj-y				+= usb-init-xlp2.o
+-endif
+-ifdef CONFIG_SATA_AHCI
+-obj-y				+= ahci-init.o
+-obj-y				+= ahci-init-xlp2.o
+-endif
+diff --git a/arch/mips/netlogic/xlp/ahci-init-xlp2.c b/arch/mips/netlogic/xlp/ahci-init-xlp2.c
+deleted file mode 100644
+index c11b9c7dc7c8..000000000000
+--- a/arch/mips/netlogic/xlp/ahci-init-xlp2.c
++++ /dev/null
+@@ -1,390 +0,0 @@
+-/*
+- * Copyright (c) 2003-2014 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/dma-mapping.h>
+-#include <linux/kernel.h>
+-#include <linux/delay.h>
+-#include <linux/init.h>
+-#include <linux/pci.h>
+-#include <linux/irq.h>
+-#include <linux/bitops.h>
+-#include <linux/pci_ids.h>
+-#include <linux/nodemask.h>
+-
+-#include <asm/cpu.h>
+-#include <asm/mipsregs.h>
+-
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/mips-extns.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-
+-#define SATA_CTL		0x0
+-#define SATA_STATUS		0x1 /* Status Reg */
+-#define SATA_INT		0x2 /* Interrupt Reg */
+-#define SATA_INT_MASK		0x3 /* Interrupt Mask Reg */
+-#define SATA_BIU_TIMEOUT	0x4
+-#define AXIWRSPERRLOG		0x5
+-#define AXIRDSPERRLOG		0x6
+-#define BiuTimeoutLow		0x7
+-#define BiuTimeoutHi		0x8
+-#define BiuSlvErLow		0x9
+-#define BiuSlvErHi		0xa
+-#define IO_CONFIG_SWAP_DIS	0xb
+-#define CR_REG_TIMER		0xc
+-#define CORE_ID			0xd
+-#define AXI_SLAVE_OPT1		0xe
+-#define PHY_MEM_ACCESS		0xf
+-#define PHY0_CNTRL		0x10
+-#define PHY0_STAT		0x11
+-#define PHY0_RX_ALIGN		0x12
+-#define PHY0_RX_EQ_LO		0x13
+-#define PHY0_RX_EQ_HI		0x14
+-#define PHY0_BIST_LOOP		0x15
+-#define PHY1_CNTRL		0x16
+-#define PHY1_STAT		0x17
+-#define PHY1_RX_ALIGN		0x18
+-#define PHY1_RX_EQ_LO		0x19
+-#define PHY1_RX_EQ_HI		0x1a
+-#define PHY1_BIST_LOOP		0x1b
+-#define RdExBase		0x1c
+-#define RdExLimit		0x1d
+-#define CacheAllocBase		0x1e
+-#define CacheAllocLimit		0x1f
+-#define BiuSlaveCmdGstNum	0x20
+-
+-/*SATA_CTL Bits */
+-#define SATA_RST_N		BIT(0)  /* Active low reset sata_core phy */
+-#define SataCtlReserve0		BIT(1)
+-#define M_CSYSREQ		BIT(2)  /* AXI master low power, not used */
+-#define S_CSYSREQ		BIT(3)  /* AXI slave low power, not used */
+-#define P0_CP_DET		BIT(8)  /* Reserved, bring in from pad */
+-#define P0_MP_SW		BIT(9)  /* Mech Switch */
+-#define P0_DISABLE		BIT(10) /* disable p0 */
+-#define P0_ACT_LED_EN		BIT(11) /* Active LED enable */
+-#define P0_IRST_HARD_SYNTH	BIT(12) /* PHY hard synth reset */
+-#define P0_IRST_HARD_TXRX	BIT(13) /* PHY lane hard reset */
+-#define P0_IRST_POR		BIT(14) /* PHY power on reset*/
+-#define P0_IPDTXL		BIT(15) /* PHY Tx lane dis/power down */
+-#define P0_IPDRXL		BIT(16) /* PHY Rx lane dis/power down */
+-#define P0_IPDIPDMSYNTH		BIT(17) /* PHY synthesizer dis/porwer down */
+-#define P0_CP_POD_EN		BIT(18) /* CP_POD enable */
+-#define P0_AT_BYPASS		BIT(19) /* P0 address translation by pass */
+-#define P1_CP_DET		BIT(20) /* Reserved,Cold Detect */
+-#define P1_MP_SW		BIT(21) /* Mech Switch */
+-#define P1_DISABLE		BIT(22) /* disable p1 */
+-#define P1_ACT_LED_EN		BIT(23) /* Active LED enable */
+-#define P1_IRST_HARD_SYNTH	BIT(24) /* PHY hard synth reset */
+-#define P1_IRST_HARD_TXRX	BIT(25) /* PHY lane hard reset */
+-#define P1_IRST_POR		BIT(26) /* PHY power on reset*/
+-#define P1_IPDTXL		BIT(27) /* PHY Tx lane dis/porwer down */
+-#define P1_IPDRXL		BIT(28) /* PHY Rx lane dis/porwer down */
+-#define P1_IPDIPDMSYNTH		BIT(29) /* PHY synthesizer dis/porwer down */
+-#define P1_CP_POD_EN		BIT(30)
+-#define P1_AT_BYPASS		BIT(31) /* P1 address translation by pass */
+-
+-/* Status register */
+-#define M_CACTIVE		BIT(0)  /* m_cactive, not used */
+-#define S_CACTIVE		BIT(1)  /* s_cactive, not used */
+-#define P0_PHY_READY		BIT(8)  /* phy is ready */
+-#define P0_CP_POD		BIT(9)  /* Cold PowerOn */
+-#define P0_SLUMBER		BIT(10) /* power mode slumber */
+-#define P0_PATIAL		BIT(11) /* power mode patial */
+-#define P0_PHY_SIG_DET		BIT(12) /* phy dignal detect */
+-#define P0_PHY_CALI		BIT(13) /* phy calibration done */
+-#define P1_PHY_READY		BIT(16) /* phy is ready */
+-#define P1_CP_POD		BIT(17) /* Cold PowerOn */
+-#define P1_SLUMBER		BIT(18) /* power mode slumber */
+-#define P1_PATIAL		BIT(19) /* power mode patial */
+-#define P1_PHY_SIG_DET		BIT(20) /* phy dignal detect */
+-#define P1_PHY_CALI		BIT(21) /* phy calibration done */
+-
+-/* SATA CR_REG_TIMER bits */
+-#define CR_TIME_SCALE		(0x1000 << 0)
+-
+-/* SATA PHY specific registers start and end address */
+-#define RXCDRCALFOSC0		0x0065
+-#define CALDUTY			0x006e
+-#define RXDPIF			0x8065
+-#define PPMDRIFTMAX_HI		0x80A4
+-
+-#define nlm_read_sata_reg(b, r)		nlm_read_reg(b, r)
+-#define nlm_write_sata_reg(b, r, v)	nlm_write_reg(b, r, v)
+-#define nlm_get_sata_pcibase(node)	\
+-		nlm_pcicfg_base(XLP9XX_IO_SATA_OFFSET(node))
+-#define nlm_get_sata_regbase(node)	\
+-		(nlm_get_sata_pcibase(node) + 0x100)
+-
+-/* SATA PHY config for register block 1 0x0065 .. 0x006e */
+-static const u8 sata_phy_config1[]  = {
+-	0xC9, 0xC9, 0x07, 0x07, 0x18, 0x18, 0x01, 0x01, 0x22, 0x00
+-};
+-
+-/* SATA PHY config for register block 2 0x8065 .. 0x80A4 */
+-static const u8 sata_phy_config2[]  = {
+-	0xAA, 0x00, 0x4C, 0xC9, 0xC9, 0x07, 0x07, 0x18,
+-	0x18, 0x05, 0x0C, 0x10, 0x00, 0x10, 0x00, 0xFF,
+-	0xCF, 0xF7, 0xE1, 0xF5, 0xFD, 0xFD, 0xFF, 0xFF,
+-	0xFF, 0xFF, 0xE3, 0xE7, 0xDB, 0xF5, 0xFD, 0xFD,
+-	0xF5, 0xF5, 0xFF, 0xFF, 0xE3, 0xE7, 0xDB, 0xF5,
+-	0xFD, 0xFD, 0xF5, 0xF5, 0xFF, 0xFF, 0xFF, 0xF5,
+-	0x3F, 0x00, 0x32, 0x00, 0x03, 0x01, 0x05, 0x05,
+-	0x04, 0x00, 0x00, 0x08, 0x04, 0x00, 0x00, 0x04,
+-};
+-
+-const int sata_phy_debug = 0;	/* set to verify PHY writes */
+-
+-static void sata_clear_glue_reg(u64 regbase, u32 off, u32 bit)
+-{
+-	u32 reg_val;
+-
+-	reg_val = nlm_read_sata_reg(regbase, off);
+-	nlm_write_sata_reg(regbase, off, (reg_val & ~bit));
+-}
+-
+-static void sata_set_glue_reg(u64 regbase, u32 off, u32 bit)
+-{
+-	u32 reg_val;
+-
+-	reg_val = nlm_read_sata_reg(regbase, off);
+-	nlm_write_sata_reg(regbase, off, (reg_val | bit));
+-}
+-
+-static void write_phy_reg(u64 regbase, u32 addr, u32 physel, u8 data)
+-{
+-	nlm_write_sata_reg(regbase, PHY_MEM_ACCESS,
+-		(1u << 31) | (physel << 24) | (data << 16) | addr);
+-	udelay(850);
+-}
+-
+-static u8 read_phy_reg(u64 regbase, u32 addr, u32 physel)
+-{
+-	u32 val;
+-
+-	nlm_write_sata_reg(regbase, PHY_MEM_ACCESS,
+-		(0 << 31) | (physel << 24) | (0 << 16) | addr);
+-	udelay(850);
+-	val = nlm_read_sata_reg(regbase, PHY_MEM_ACCESS);
+-	return (val >> 16) & 0xff;
+-}
+-
+-static void config_sata_phy(u64 regbase)
+-{
+-	u32 port, i, reg;
+-	u8 val;
+-
+-	for (port = 0; port < 2; port++) {
+-		for (i = 0, reg = RXCDRCALFOSC0; reg <= CALDUTY; reg++, i++)
+-			write_phy_reg(regbase, reg, port, sata_phy_config1[i]);
+-
+-		for (i = 0, reg = RXDPIF; reg <= PPMDRIFTMAX_HI; reg++, i++)
+-			write_phy_reg(regbase, reg, port, sata_phy_config2[i]);
+-
+-		/* Fix for PHY link up failures at lower temperatures */
+-		write_phy_reg(regbase, 0x800F, port, 0x1f);
+-
+-		val = read_phy_reg(regbase, 0x0029, port);
+-		write_phy_reg(regbase, 0x0029, port, val | (0x7 << 1));
+-
+-		val = read_phy_reg(regbase, 0x0056, port);
+-		write_phy_reg(regbase, 0x0056, port, val & ~(1 << 3));
+-
+-		val = read_phy_reg(regbase, 0x0018, port);
+-		write_phy_reg(regbase, 0x0018, port, val & ~(0x7 << 0));
+-	}
+-}
+-
+-static void check_phy_register(u64 regbase, u32 addr, u32 physel, u8 xdata)
+-{
+-	u8 data;
+-
+-	data = read_phy_reg(regbase, addr, physel);
+-	pr_info("PHY read addr = 0x%x physel = %d data = 0x%x %s\n",
+-		addr, physel, data, data == xdata ? "TRUE" : "FALSE");
+-}
+-
+-static void verify_sata_phy_config(u64 regbase)
+-{
+-	u32 port, i, reg;
+-
+-	for (port = 0; port < 2; port++) {
+-		for (i = 0, reg = RXCDRCALFOSC0; reg <= CALDUTY; reg++, i++)
+-			check_phy_register(regbase, reg, port,
+-						sata_phy_config1[i]);
+-
+-		for (i = 0, reg = RXDPIF; reg <= PPMDRIFTMAX_HI; reg++, i++)
+-			check_phy_register(regbase, reg, port,
+-						sata_phy_config2[i]);
+-	}
+-}
+-
+-static void nlm_sata_firmware_init(int node)
+-{
+-	u32 reg_val;
+-	u64 regbase;
+-	int n;
+-
+-	pr_info("Initializing XLP9XX On-chip AHCI...\n");
+-	regbase = nlm_get_sata_regbase(node);
+-
+-	/* Reset port0 */
+-	sata_clear_glue_reg(regbase, SATA_CTL, P0_IRST_POR);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P0_IRST_HARD_TXRX);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P0_IRST_HARD_SYNTH);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P0_IPDTXL);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P0_IPDRXL);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P0_IPDIPDMSYNTH);
+-
+-	/* port1 */
+-	sata_clear_glue_reg(regbase, SATA_CTL, P1_IRST_POR);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P1_IRST_HARD_TXRX);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P1_IRST_HARD_SYNTH);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P1_IPDTXL);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P1_IPDRXL);
+-	sata_clear_glue_reg(regbase, SATA_CTL, P1_IPDIPDMSYNTH);
+-	udelay(300);
+-
+-	/* Set PHY */
+-	sata_set_glue_reg(regbase, SATA_CTL, P0_IPDTXL);
+-	sata_set_glue_reg(regbase, SATA_CTL, P0_IPDRXL);
+-	sata_set_glue_reg(regbase, SATA_CTL, P0_IPDIPDMSYNTH);
+-	sata_set_glue_reg(regbase, SATA_CTL, P1_IPDTXL);
+-	sata_set_glue_reg(regbase, SATA_CTL, P1_IPDRXL);
+-	sata_set_glue_reg(regbase, SATA_CTL, P1_IPDIPDMSYNTH);
+-
+-	udelay(1000);
+-	sata_set_glue_reg(regbase, SATA_CTL, P0_IRST_POR);
+-	udelay(1000);
+-	sata_set_glue_reg(regbase, SATA_CTL, P1_IRST_POR);
+-	udelay(1000);
+-
+-	/* setup PHY */
+-	config_sata_phy(regbase);
+-	if (sata_phy_debug)
+-		verify_sata_phy_config(regbase);
+-
+-	udelay(1000);
+-	sata_set_glue_reg(regbase, SATA_CTL, P0_IRST_HARD_TXRX);
+-	sata_set_glue_reg(regbase, SATA_CTL, P0_IRST_HARD_SYNTH);
+-	sata_set_glue_reg(regbase, SATA_CTL, P1_IRST_HARD_TXRX);
+-	sata_set_glue_reg(regbase, SATA_CTL, P1_IRST_HARD_SYNTH);
+-	udelay(300);
+-
+-	/* Override reset in serial PHY mode */
+-	sata_set_glue_reg(regbase, CR_REG_TIMER, CR_TIME_SCALE);
+-	/* Set reset SATA */
+-	sata_set_glue_reg(regbase, SATA_CTL, SATA_RST_N);
+-	sata_set_glue_reg(regbase, SATA_CTL, M_CSYSREQ);
+-	sata_set_glue_reg(regbase, SATA_CTL, S_CSYSREQ);
+-
+-	pr_debug("Waiting for PHYs to come up.\n");
+-	n = 10000;
+-	do {
+-		reg_val = nlm_read_sata_reg(regbase, SATA_STATUS);
+-		if ((reg_val & P1_PHY_READY) && (reg_val & P0_PHY_READY))
+-			break;
+-		udelay(10);
+-	} while (--n > 0);
+-
+-	if (reg_val  & P0_PHY_READY)
+-		pr_info("PHY0 is up.\n");
+-	else
+-		pr_info("PHY0 is down.\n");
+-	if (reg_val  & P1_PHY_READY)
+-		pr_info("PHY1 is up.\n");
+-	else
+-		pr_info("PHY1 is down.\n");
+-
+-	pr_info("XLP AHCI Init Done.\n");
+-}
+-
+-static int __init nlm_ahci_init(void)
+-{
+-	int node;
+-
+-	if (!cpu_is_xlp9xx())
+-		return 0;
+-	for (node = 0; node < NLM_NR_NODES; node++)
+-		if (nlm_node_present(node))
+-			nlm_sata_firmware_init(node);
+-	return 0;
+-}
+-
+-static void nlm_sata_intr_ack(struct irq_data *data)
+-{
+-	u64 regbase;
+-	u32 val;
+-	int node;
+-
+-	node = data->irq / NLM_IRQS_PER_NODE;
+-	regbase = nlm_get_sata_regbase(node);
+-	val = nlm_read_sata_reg(regbase, SATA_INT);
+-	sata_set_glue_reg(regbase, SATA_INT, val);
+-}
+-
+-static void nlm_sata_fixup_bar(struct pci_dev *dev)
+-{
+-	dev->resource[5] = dev->resource[0];
+-	memset(&dev->resource[0], 0, sizeof(dev->resource[0]));
+-}
+-
+-static void nlm_sata_fixup_final(struct pci_dev *dev)
+-{
+-	u32 val;
+-	u64 regbase;
+-	int node;
+-
+-	/* Find end bridge function to find node */
+-	node = xlp_socdev_to_node(dev);
+-	regbase = nlm_get_sata_regbase(node);
+-
+-	/* clear pending interrupts and then enable them */
+-	val = nlm_read_sata_reg(regbase, SATA_INT);
+-	sata_set_glue_reg(regbase, SATA_INT, val);
+-
+-	/* Enable only the core interrupt */
+-	sata_set_glue_reg(regbase, SATA_INT_MASK, 0x1);
+-
+-	dev->irq = nlm_irq_to_xirq(node, PIC_SATA_IRQ);
+-	nlm_set_pic_extra_ack(node, PIC_SATA_IRQ, nlm_sata_intr_ack);
+-}
+-
+-arch_initcall(nlm_ahci_init);
+-
+-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, PCI_DEVICE_ID_XLP9XX_SATA,
+-		nlm_sata_fixup_bar);
+-
+-DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_BROADCOM, PCI_DEVICE_ID_XLP9XX_SATA,
+-		nlm_sata_fixup_final);
+diff --git a/arch/mips/netlogic/xlp/ahci-init.c b/arch/mips/netlogic/xlp/ahci-init.c
+deleted file mode 100644
+index 92be1a3258b1..000000000000
+--- a/arch/mips/netlogic/xlp/ahci-init.c
++++ /dev/null
+@@ -1,209 +0,0 @@
+-/*
+- * Copyright (c) 2003-2014 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/dma-mapping.h>
+-#include <linux/kernel.h>
+-#include <linux/delay.h>
+-#include <linux/init.h>
+-#include <linux/pci.h>
+-#include <linux/irq.h>
+-#include <linux/bitops.h>
+-
+-#include <asm/cpu.h>
+-#include <asm/mipsregs.h>
+-
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/mips-extns.h>
+-
+-#define SATA_CTL		0x0
+-#define SATA_STATUS		0x1	/* Status Reg */
+-#define SATA_INT		0x2	/* Interrupt Reg */
+-#define SATA_INT_MASK		0x3	/* Interrupt Mask Reg */
+-#define SATA_CR_REG_TIMER	0x4	/* PHY Conrol Timer Reg */
+-#define SATA_CORE_ID		0x5	/* Core ID Reg */
+-#define SATA_AXI_SLAVE_OPT1	0x6	/* AXI Slave Options Reg */
+-#define SATA_PHY_LOS_LEV	0x7	/* PHY LOS Level Reg */
+-#define SATA_PHY_MULTI		0x8	/* PHY Multiplier Reg */
+-#define SATA_PHY_CLK_SEL	0x9	/* Clock Select Reg */
+-#define SATA_PHY_AMP1_GEN1	0xa	/* PHY Transmit Amplitude Reg 1 */
+-#define SATA_PHY_AMP1_GEN2	0xb	/* PHY Transmit Amplitude Reg 2 */
+-#define SATA_PHY_AMP1_GEN3	0xc	/* PHY Transmit Amplitude Reg 3 */
+-#define SATA_PHY_PRE1		0xd	/* PHY Transmit Preemphasis Reg 1 */
+-#define SATA_PHY_PRE2		0xe	/* PHY Transmit Preemphasis Reg 2 */
+-#define SATA_PHY_PRE3		0xf	/* PHY Transmit Preemphasis Reg 3 */
+-#define SATA_SPDMODE		0x10	/* Speed Mode Reg */
+-#define SATA_REFCLK		0x11	/* Reference Clock Control Reg */
+-#define SATA_BYTE_SWAP_DIS	0x12	/* byte swap disable */
+-
+-/*SATA_CTL Bits */
+-#define SATA_RST_N		BIT(0)
+-#define PHY0_RESET_N		BIT(16)
+-#define PHY1_RESET_N		BIT(17)
+-#define PHY2_RESET_N		BIT(18)
+-#define PHY3_RESET_N		BIT(19)
+-#define M_CSYSREQ		BIT(2)
+-#define S_CSYSREQ		BIT(3)
+-
+-/*SATA_STATUS Bits */
+-#define P0_PHY_READY		BIT(4)
+-#define P1_PHY_READY		BIT(5)
+-#define P2_PHY_READY		BIT(6)
+-#define P3_PHY_READY		BIT(7)
+-
+-#define nlm_read_sata_reg(b, r)		nlm_read_reg(b, r)
+-#define nlm_write_sata_reg(b, r, v)	nlm_write_reg(b, r, v)
+-#define nlm_get_sata_pcibase(node)	\
+-		nlm_pcicfg_base(XLP_IO_SATA_OFFSET(node))
+-/* SATA device specific configuration registers are starts at 0x900 offset */
+-#define nlm_get_sata_regbase(node)	\
+-		(nlm_get_sata_pcibase(node) + 0x900)
+-
+-static void sata_clear_glue_reg(uint64_t regbase, uint32_t off, uint32_t bit)
+-{
+-	uint32_t reg_val;
+-
+-	reg_val = nlm_read_sata_reg(regbase, off);
+-	nlm_write_sata_reg(regbase, off, (reg_val & ~bit));
+-}
+-
+-static void sata_set_glue_reg(uint64_t regbase, uint32_t off, uint32_t bit)
+-{
+-	uint32_t reg_val;
+-
+-	reg_val = nlm_read_sata_reg(regbase, off);
+-	nlm_write_sata_reg(regbase, off, (reg_val | bit));
+-}
+-
+-static void nlm_sata_firmware_init(int node)
+-{
+-	uint32_t reg_val;
+-	uint64_t regbase;
+-	int i;
+-
+-	pr_info("XLP AHCI Initialization started.\n");
+-	regbase = nlm_get_sata_regbase(node);
+-
+-	/* Reset SATA */
+-	sata_clear_glue_reg(regbase, SATA_CTL, SATA_RST_N);
+-	/* Reset PHY */
+-	sata_clear_glue_reg(regbase, SATA_CTL,
+-			(PHY3_RESET_N | PHY2_RESET_N
+-			 | PHY1_RESET_N | PHY0_RESET_N));
+-
+-	/* Set SATA */
+-	sata_set_glue_reg(regbase, SATA_CTL, SATA_RST_N);
+-	/* Set PHY */
+-	sata_set_glue_reg(regbase, SATA_CTL,
+-			(PHY3_RESET_N | PHY2_RESET_N
+-			 | PHY1_RESET_N | PHY0_RESET_N));
+-
+-	pr_debug("Waiting for PHYs to come up.\n");
+-	i = 0;
+-	do {
+-		reg_val = nlm_read_sata_reg(regbase, SATA_STATUS);
+-		i++;
+-	} while (((reg_val & 0xF0) != 0xF0) && (i < 10000));
+-
+-	for (i = 0; i < 4; i++) {
+-		if (reg_val  & (P0_PHY_READY << i))
+-			pr_info("PHY%d is up.\n", i);
+-		else
+-			pr_info("PHY%d is down.\n", i);
+-	}
+-
+-	pr_info("XLP AHCI init done.\n");
+-}
+-
+-static int __init nlm_ahci_init(void)
+-{
+-	int node = 0;
+-	int chip = read_c0_prid() & PRID_IMP_MASK;
+-
+-	if (chip == PRID_IMP_NETLOGIC_XLP3XX)
+-		nlm_sata_firmware_init(node);
+-	return 0;
+-}
+-
+-static void nlm_sata_intr_ack(struct irq_data *data)
+-{
+-	uint32_t val = 0;
+-	uint64_t regbase;
+-
+-	regbase = nlm_get_sata_regbase(nlm_nodeid());
+-	val = nlm_read_sata_reg(regbase, SATA_INT);
+-	sata_set_glue_reg(regbase, SATA_INT, val);
+-}
+-
+-static void nlm_sata_fixup_bar(struct pci_dev *dev)
+-{
+-	/*
+-	 * The AHCI resource is in BAR 0, move it to
+-	 * BAR 5, where it is expected
+-	 */
+-	dev->resource[5] = dev->resource[0];
+-	memset(&dev->resource[0], 0, sizeof(dev->resource[0]));
+-}
+-
+-static void nlm_sata_fixup_final(struct pci_dev *dev)
+-{
+-	uint32_t val;
+-	uint64_t regbase;
+-	int node = 0; /* XLP3XX does not support multi-node */
+-
+-	regbase = nlm_get_sata_regbase(node);
+-
+-	/* clear pending interrupts and then enable them */
+-	val = nlm_read_sata_reg(regbase, SATA_INT);
+-	sata_set_glue_reg(regbase, SATA_INT, val);
+-
+-	/* Mask the core interrupt. If all the interrupts
+-	 * are enabled there are spurious interrupt flow
+-	 * happening, to avoid only enable core interrupt
+-	 * mask.
+-	 */
+-	sata_set_glue_reg(regbase, SATA_INT_MASK, 0x1);
+-
+-	dev->irq = PIC_SATA_IRQ;
+-	nlm_set_pic_extra_ack(node, PIC_SATA_IRQ, nlm_sata_intr_ack);
+-}
+-
+-arch_initcall(nlm_ahci_init);
+-
+-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_NETLOGIC, PCI_DEVICE_ID_NLM_SATA,
+-		nlm_sata_fixup_bar);
+-DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_NETLOGIC, PCI_DEVICE_ID_NLM_SATA,
+-		nlm_sata_fixup_final);
+diff --git a/arch/mips/netlogic/xlp/cop2-ex.c b/arch/mips/netlogic/xlp/cop2-ex.c
+deleted file mode 100644
+index 21e439b3db70..000000000000
+--- a/arch/mips/netlogic/xlp/cop2-ex.c
++++ /dev/null
+@@ -1,121 +0,0 @@
+-/*
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- *
+- * Copyright (C) 2013 Broadcom Corporation.
+- *
+- * based on arch/mips/cavium-octeon/cpu.c
+- * Copyright (C) 2009 Wind River Systems,
+- *   written by Ralf Baechle <ralf@linux-mips.org>
+- */
+-#include <linux/capability.h>
+-#include <linux/init.h>
+-#include <linux/irqflags.h>
+-#include <linux/notifier.h>
+-#include <linux/prefetch.h>
+-#include <linux/ptrace.h>
+-#include <linux/sched.h>
+-#include <linux/sched/task_stack.h>
+-
+-#include <asm/cop2.h>
+-#include <asm/current.h>
+-#include <asm/mipsregs.h>
+-#include <asm/page.h>
+-
+-#include <asm/netlogic/mips-extns.h>
+-
+-/*
+- * 64 bit ops are done in inline assembly to support 32 bit
+- * compilation
+- */
+-void nlm_cop2_save(struct nlm_cop2_state *r)
+-{
+-	asm volatile(
+-		".set	push\n"
+-		".set	noat\n"
+-		"dmfc2	$1, $0, 0\n"
+-		"sd	$1, 0(%1)\n"
+-		"dmfc2	$1, $0, 1\n"
+-		"sd	$1, 8(%1)\n"
+-		"dmfc2	$1, $0, 2\n"
+-		"sd	$1, 16(%1)\n"
+-		"dmfc2	$1, $0, 3\n"
+-		"sd	$1, 24(%1)\n"
+-		"dmfc2	$1, $1, 0\n"
+-		"sd	$1, 0(%2)\n"
+-		"dmfc2	$1, $1, 1\n"
+-		"sd	$1, 8(%2)\n"
+-		"dmfc2	$1, $1, 2\n"
+-		"sd	$1, 16(%2)\n"
+-		"dmfc2	$1, $1, 3\n"
+-		"sd	$1, 24(%2)\n"
+-		".set	pop\n"
+-		: "=m"(*r)
+-		: "r"(r->tx), "r"(r->rx));
+-
+-	r->tx_msg_status = __read_32bit_c2_register($2, 0);
+-	r->rx_msg_status = __read_32bit_c2_register($3, 0) & 0x0fffffff;
+-}
+-
+-void nlm_cop2_restore(struct nlm_cop2_state *r)
+-{
+-	u32 rstat;
+-
+-	asm volatile(
+-		".set	push\n"
+-		".set	noat\n"
+-		"ld	$1, 0(%1)\n"
+-		"dmtc2	$1, $0, 0\n"
+-		"ld	$1, 8(%1)\n"
+-		"dmtc2	$1, $0, 1\n"
+-		"ld	$1, 16(%1)\n"
+-		"dmtc2	$1, $0, 2\n"
+-		"ld	$1, 24(%1)\n"
+-		"dmtc2	$1, $0, 3\n"
+-		"ld	$1, 0(%2)\n"
+-		"dmtc2	$1, $1, 0\n"
+-		"ld	$1, 8(%2)\n"
+-		"dmtc2	$1, $1, 1\n"
+-		"ld	$1, 16(%2)\n"
+-		"dmtc2	$1, $1, 2\n"
+-		"ld	$1, 24(%2)\n"
+-		"dmtc2	$1, $1, 3\n"
+-		".set	pop\n"
+-		: : "m"(*r), "r"(r->tx), "r"(r->rx));
+-
+-	__write_32bit_c2_register($2, 0, r->tx_msg_status);
+-	rstat = __read_32bit_c2_register($3, 0) & 0xf0000000u;
+-	__write_32bit_c2_register($3, 0, r->rx_msg_status | rstat);
+-}
+-
+-static int nlm_cu2_call(struct notifier_block *nfb, unsigned long action,
+-	void *data)
+-{
+-	unsigned long flags;
+-	unsigned int status;
+-
+-	switch (action) {
+-	case CU2_EXCEPTION:
+-		if (!capable(CAP_SYS_ADMIN) || !capable(CAP_SYS_RAWIO))
+-			break;
+-		local_irq_save(flags);
+-		KSTK_STATUS(current) |= ST0_CU2;
+-		status = read_c0_status();
+-		write_c0_status(status | ST0_CU2);
+-		nlm_cop2_restore(&(current->thread.cp2));
+-		write_c0_status(status & ~ST0_CU2);
+-		local_irq_restore(flags);
+-		pr_info("COP2 access enabled for pid %d (%s)\n",
+-					current->pid, current->comm);
+-		return NOTIFY_BAD;	/* Don't call default notifier */
+-	}
+-
+-	return NOTIFY_OK;		/* Let default notifier send signals */
+-}
+-
+-static int __init nlm_cu2_setup(void)
+-{
+-	return cu2_notifier(nlm_cu2_call, 0);
+-}
+-early_initcall(nlm_cu2_setup);
+diff --git a/arch/mips/netlogic/xlp/dt.c b/arch/mips/netlogic/xlp/dt.c
+deleted file mode 100644
+index c856f2a3ea42..000000000000
+--- a/arch/mips/netlogic/xlp/dt.c
++++ /dev/null
+@@ -1,95 +0,0 @@
+-/*
+- * Copyright 2003-2013 Broadcom Corporation.
+- * All Rights Reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/memblock.h>
+-
+-#include <linux/of_fdt.h>
+-#include <linux/of_platform.h>
+-#include <linux/of_device.h>
+-
+-#include <asm/prom.h>
+-
+-extern u32 __dtb_xlp_evp_begin[], __dtb_xlp_svp_begin[], __dtb_xlp_fvp_begin[],
+-	__dtb_xlp_gvp_begin[], __dtb_xlp_rvp_begin[];
+-static void *xlp_fdt_blob;
+-
+-void __init *xlp_dt_init(void *fdtp)
+-{
+-	if (!fdtp) {
+-		switch (current_cpu_data.processor_id & PRID_IMP_MASK) {
+-#ifdef CONFIG_DT_XLP_RVP
+-		case PRID_IMP_NETLOGIC_XLP5XX:
+-			fdtp = __dtb_xlp_rvp_begin;
+-			break;
+-#endif
+-#ifdef CONFIG_DT_XLP_GVP
+-		case PRID_IMP_NETLOGIC_XLP9XX:
+-			fdtp = __dtb_xlp_gvp_begin;
+-			break;
+-#endif
+-#ifdef CONFIG_DT_XLP_FVP
+-		case PRID_IMP_NETLOGIC_XLP2XX:
+-			fdtp = __dtb_xlp_fvp_begin;
+-			break;
+-#endif
+-#ifdef CONFIG_DT_XLP_SVP
+-		case PRID_IMP_NETLOGIC_XLP3XX:
+-			fdtp = __dtb_xlp_svp_begin;
+-			break;
+-#endif
+-#ifdef CONFIG_DT_XLP_EVP
+-		case PRID_IMP_NETLOGIC_XLP8XX:
+-			fdtp = __dtb_xlp_evp_begin;
+-			break;
+-#endif
+-		default:
+-			/* Pick a built-in if any, and hope for the best */
+-			fdtp = __dtb_start;
+-			break;
+-		}
+-	}
+-	xlp_fdt_blob = fdtp;
+-	return fdtp;
+-}
+-
+-void __init xlp_early_init_devtree(void)
+-{
+-	__dt_setup_arch(xlp_fdt_blob);
+-}
+-
+-void __init device_tree_init(void)
+-{
+-	unflatten_and_copy_device_tree();
+-}
+diff --git a/arch/mips/netlogic/xlp/nlm_hal.c b/arch/mips/netlogic/xlp/nlm_hal.c
+deleted file mode 100644
+index 25ee69489e5e..000000000000
+--- a/arch/mips/netlogic/xlp/nlm_hal.c
++++ /dev/null
+@@ -1,508 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/mm.h>
+-#include <linux/delay.h>
+-
+-#include <asm/mipsregs.h>
+-#include <asm/time.h>
+-
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/bridge.h>
+-#include <asm/netlogic/xlp-hal/pic.h>
+-#include <asm/netlogic/xlp-hal/sys.h>
+-
+-/* Main initialization */
+-void nlm_node_init(int node)
+-{
+-	struct nlm_soc_info *nodep;
+-
+-	nodep = nlm_get_node(node);
+-	if (node == 0)
+-		nodep->coremask = 1;	/* node 0, boot cpu */
+-	nodep->sysbase = nlm_get_sys_regbase(node);
+-	nodep->picbase = nlm_get_pic_regbase(node);
+-	nodep->ebase = read_c0_ebase() & MIPS_EBASE_BASE;
+-	if (cpu_is_xlp9xx())
+-		nodep->socbus = xlp9xx_get_socbus(node);
+-	else
+-		nodep->socbus = 0;
+-	spin_lock_init(&nodep->piclock);
+-}
+-
+-static int xlp9xx_irq_to_irt(int irq)
+-{
+-	switch (irq) {
+-	case PIC_GPIO_IRQ:
+-		return 12;
+-	case PIC_I2C_0_IRQ:
+-		return 125;
+-	case PIC_I2C_1_IRQ:
+-		return 126;
+-	case PIC_I2C_2_IRQ:
+-		return 127;
+-	case PIC_I2C_3_IRQ:
+-		return 128;
+-	case PIC_9XX_XHCI_0_IRQ:
+-		return 114;
+-	case PIC_9XX_XHCI_1_IRQ:
+-		return 115;
+-	case PIC_9XX_XHCI_2_IRQ:
+-		return 116;
+-	case PIC_UART_0_IRQ:
+-		return 133;
+-	case PIC_UART_1_IRQ:
+-		return 134;
+-	case PIC_SATA_IRQ:
+-		return 143;
+-	case PIC_NAND_IRQ:
+-		return 151;
+-	case PIC_SPI_IRQ:
+-		return 152;
+-	case PIC_MMC_IRQ:
+-		return 153;
+-	case PIC_PCIE_LINK_LEGACY_IRQ(0):
+-	case PIC_PCIE_LINK_LEGACY_IRQ(1):
+-	case PIC_PCIE_LINK_LEGACY_IRQ(2):
+-	case PIC_PCIE_LINK_LEGACY_IRQ(3):
+-		return 191 + irq - PIC_PCIE_LINK_LEGACY_IRQ_BASE;
+-	}
+-	return -1;
+-}
+-
+-static int xlp_irq_to_irt(int irq)
+-{
+-	uint64_t pcibase;
+-	int devoff, irt;
+-
+-	devoff = 0;
+-	switch (irq) {
+-	case PIC_UART_0_IRQ:
+-		devoff = XLP_IO_UART0_OFFSET(0);
+-		break;
+-	case PIC_UART_1_IRQ:
+-		devoff = XLP_IO_UART1_OFFSET(0);
+-		break;
+-	case PIC_MMC_IRQ:
+-		devoff = XLP_IO_MMC_OFFSET(0);
+-		break;
+-	case PIC_I2C_0_IRQ:	/* I2C will be fixed up */
+-	case PIC_I2C_1_IRQ:
+-	case PIC_I2C_2_IRQ:
+-	case PIC_I2C_3_IRQ:
+-		if (cpu_is_xlpii())
+-			devoff = XLP2XX_IO_I2C_OFFSET(0);
+-		else
+-			devoff = XLP_IO_I2C0_OFFSET(0);
+-		break;
+-	case PIC_SATA_IRQ:
+-		devoff = XLP_IO_SATA_OFFSET(0);
+-		break;
+-	case PIC_GPIO_IRQ:
+-		devoff = XLP_IO_GPIO_OFFSET(0);
+-		break;
+-	case PIC_NAND_IRQ:
+-		devoff = XLP_IO_NAND_OFFSET(0);
+-		break;
+-	case PIC_SPI_IRQ:
+-		devoff = XLP_IO_SPI_OFFSET(0);
+-		break;
+-	default:
+-		if (cpu_is_xlpii()) {
+-			switch (irq) {
+-				/* XLP2XX has three XHCI USB controller */
+-			case PIC_2XX_XHCI_0_IRQ:
+-				devoff = XLP2XX_IO_USB_XHCI0_OFFSET(0);
+-				break;
+-			case PIC_2XX_XHCI_1_IRQ:
+-				devoff = XLP2XX_IO_USB_XHCI1_OFFSET(0);
+-				break;
+-			case PIC_2XX_XHCI_2_IRQ:
+-				devoff = XLP2XX_IO_USB_XHCI2_OFFSET(0);
+-				break;
+-			}
+-		} else {
+-			switch (irq) {
+-			case PIC_EHCI_0_IRQ:
+-				devoff = XLP_IO_USB_EHCI0_OFFSET(0);
+-				break;
+-			case PIC_EHCI_1_IRQ:
+-				devoff = XLP_IO_USB_EHCI1_OFFSET(0);
+-				break;
+-			case PIC_OHCI_0_IRQ:
+-				devoff = XLP_IO_USB_OHCI0_OFFSET(0);
+-				break;
+-			case PIC_OHCI_1_IRQ:
+-				devoff = XLP_IO_USB_OHCI1_OFFSET(0);
+-				break;
+-			case PIC_OHCI_2_IRQ:
+-				devoff = XLP_IO_USB_OHCI2_OFFSET(0);
+-				break;
+-			case PIC_OHCI_3_IRQ:
+-				devoff = XLP_IO_USB_OHCI3_OFFSET(0);
+-				break;
+-			}
+-		}
+-	}
+-
+-	if (devoff != 0) {
+-		uint32_t val;
+-
+-		pcibase = nlm_pcicfg_base(devoff);
+-		val = nlm_read_reg(pcibase, XLP_PCI_IRTINFO_REG);
+-		if (val == 0xffffffff) {
+-			irt = -1;
+-		} else {
+-			irt = val & 0xffff;
+-			/* HW weirdness, I2C IRT entry has to be fixed up */
+-			switch (irq) {
+-			case PIC_I2C_1_IRQ:
+-				irt = irt + 1; break;
+-			case PIC_I2C_2_IRQ:
+-				irt = irt + 2; break;
+-			case PIC_I2C_3_IRQ:
+-				irt = irt + 3; break;
+-			}
+-		}
+-	} else if (irq >= PIC_PCIE_LINK_LEGACY_IRQ(0) &&
+-			irq <= PIC_PCIE_LINK_LEGACY_IRQ(3)) {
+-		/* HW bug, PCI IRT entries are bad on early silicon, fix */
+-		irt = PIC_IRT_PCIE_LINK_INDEX(irq -
+-					PIC_PCIE_LINK_LEGACY_IRQ_BASE);
+-	} else {
+-		irt = -1;
+-	}
+-	return irt;
+-}
+-
+-int nlm_irq_to_irt(int irq)
+-{
+-	/* return -2 for irqs without 1-1 mapping */
+-	if (irq >= PIC_PCIE_LINK_MSI_IRQ(0) && irq <= PIC_PCIE_LINK_MSI_IRQ(3))
+-		return -2;
+-	if (irq >= PIC_PCIE_MSIX_IRQ(0) && irq <= PIC_PCIE_MSIX_IRQ(3))
+-		return -2;
+-
+-	if (cpu_is_xlp9xx())
+-		return xlp9xx_irq_to_irt(irq);
+-	else
+-		return xlp_irq_to_irt(irq);
+-}
+-
+-static unsigned int nlm_xlp2_get_core_frequency(int node, int core)
+-{
+-	unsigned int pll_post_div, ctrl_val0, ctrl_val1, denom;
+-	uint64_t num, sysbase, clockbase;
+-
+-	if (cpu_is_xlp9xx()) {
+-		clockbase = nlm_get_clock_regbase(node);
+-		ctrl_val0 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_CPU_PLL_CTRL0(core));
+-		ctrl_val1 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_CPU_PLL_CTRL1(core));
+-	} else {
+-		sysbase = nlm_get_node(node)->sysbase;
+-		ctrl_val0 = nlm_read_sys_reg(sysbase,
+-						SYS_CPU_PLL_CTRL0(core));
+-		ctrl_val1 = nlm_read_sys_reg(sysbase,
+-						SYS_CPU_PLL_CTRL1(core));
+-	}
+-
+-	/* Find PLL post divider value */
+-	switch ((ctrl_val0 >> 24) & 0x7) {
+-	case 1:
+-		pll_post_div = 2;
+-		break;
+-	case 3:
+-		pll_post_div = 4;
+-		break;
+-	case 7:
+-		pll_post_div = 8;
+-		break;
+-	case 6:
+-		pll_post_div = 16;
+-		break;
+-	case 0:
+-	default:
+-		pll_post_div = 1;
+-		break;
+-	}
+-
+-	num = 1000000ULL * (400 * 3 + 100 * (ctrl_val1 & 0x3f));
+-	denom = 3 * pll_post_div;
+-	do_div(num, denom);
+-
+-	return (unsigned int)num;
+-}
+-
+-static unsigned int nlm_xlp_get_core_frequency(int node, int core)
+-{
+-	unsigned int pll_divf, pll_divr, dfs_div, ext_div;
+-	unsigned int rstval, dfsval, denom;
+-	uint64_t num, sysbase;
+-
+-	sysbase = nlm_get_node(node)->sysbase;
+-	rstval = nlm_read_sys_reg(sysbase, SYS_POWER_ON_RESET_CFG);
+-	dfsval = nlm_read_sys_reg(sysbase, SYS_CORE_DFS_DIV_VALUE);
+-	pll_divf = ((rstval >> 10) & 0x7f) + 1;
+-	pll_divr = ((rstval >> 8)  & 0x3) + 1;
+-	ext_div  = ((rstval >> 30) & 0x3) + 1;
+-	dfs_div  = ((dfsval >> (core * 4)) & 0xf) + 1;
+-
+-	num = 800000000ULL * pll_divf;
+-	denom = 3 * pll_divr * ext_div * dfs_div;
+-	do_div(num, denom);
+-
+-	return (unsigned int)num;
+-}
+-
+-unsigned int nlm_get_core_frequency(int node, int core)
+-{
+-	if (cpu_is_xlpii())
+-		return nlm_xlp2_get_core_frequency(node, core);
+-	else
+-		return nlm_xlp_get_core_frequency(node, core);
+-}
+-
+-/*
+- * Calculate PIC frequency from PLL registers.
+- * freq_out = (ref_freq/2 * (6 + ctrl2[7:0]) + ctrl2[20:8]/2^13) /
+- * 		((2^ctrl0[7:5]) * Table(ctrl0[26:24]))
+- */
+-static unsigned int nlm_xlp2_get_pic_frequency(int node)
+-{
+-	u32 ctrl_val0, ctrl_val2, vco_post_div, pll_post_div, cpu_xlp9xx;
+-	u32 mdiv, fdiv, pll_out_freq_den, reg_select, ref_div, pic_div;
+-	u64 sysbase, pll_out_freq_num, ref_clk_select, clockbase, ref_clk;
+-
+-	sysbase = nlm_get_node(node)->sysbase;
+-	clockbase = nlm_get_clock_regbase(node);
+-	cpu_xlp9xx = cpu_is_xlp9xx();
+-
+-	/* Find ref_clk_base */
+-	if (cpu_xlp9xx)
+-		ref_clk_select = (nlm_read_sys_reg(sysbase,
+-				SYS_9XX_POWER_ON_RESET_CFG) >> 18) & 0x3;
+-	else
+-		ref_clk_select = (nlm_read_sys_reg(sysbase,
+-					SYS_POWER_ON_RESET_CFG) >> 18) & 0x3;
+-	switch (ref_clk_select) {
+-	case 0:
+-		ref_clk = 200000000ULL;
+-		ref_div = 3;
+-		break;
+-	case 1:
+-		ref_clk = 100000000ULL;
+-		ref_div = 1;
+-		break;
+-	case 2:
+-		ref_clk = 125000000ULL;
+-		ref_div = 1;
+-		break;
+-	case 3:
+-		ref_clk = 400000000ULL;
+-		ref_div = 3;
+-		break;
+-	}
+-
+-	/* Find the clock source PLL device for PIC */
+-	if (cpu_xlp9xx) {
+-		reg_select = nlm_read_sys_reg(clockbase,
+-				SYS_9XX_CLK_DEV_SEL_REG) & 0x3;
+-		switch (reg_select) {
+-		case 0:
+-			ctrl_val0 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_PLL_CTRL0);
+-			ctrl_val2 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_PLL_CTRL2);
+-			break;
+-		case 1:
+-			ctrl_val0 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_PLL_CTRL0_DEVX(0));
+-			ctrl_val2 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_PLL_CTRL2_DEVX(0));
+-			break;
+-		case 2:
+-			ctrl_val0 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_PLL_CTRL0_DEVX(1));
+-			ctrl_val2 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_PLL_CTRL2_DEVX(1));
+-			break;
+-		case 3:
+-			ctrl_val0 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_PLL_CTRL0_DEVX(2));
+-			ctrl_val2 = nlm_read_sys_reg(clockbase,
+-					SYS_9XX_PLL_CTRL2_DEVX(2));
+-			break;
+-		}
+-	} else {
+-		reg_select = (nlm_read_sys_reg(sysbase,
+-					SYS_CLK_DEV_SEL_REG) >> 22) & 0x3;
+-		switch (reg_select) {
+-		case 0:
+-			ctrl_val0 = nlm_read_sys_reg(sysbase,
+-					SYS_PLL_CTRL0);
+-			ctrl_val2 = nlm_read_sys_reg(sysbase,
+-					SYS_PLL_CTRL2);
+-			break;
+-		case 1:
+-			ctrl_val0 = nlm_read_sys_reg(sysbase,
+-					SYS_PLL_CTRL0_DEVX(0));
+-			ctrl_val2 = nlm_read_sys_reg(sysbase,
+-					SYS_PLL_CTRL2_DEVX(0));
+-			break;
+-		case 2:
+-			ctrl_val0 = nlm_read_sys_reg(sysbase,
+-					SYS_PLL_CTRL0_DEVX(1));
+-			ctrl_val2 = nlm_read_sys_reg(sysbase,
+-					SYS_PLL_CTRL2_DEVX(1));
+-			break;
+-		case 3:
+-			ctrl_val0 = nlm_read_sys_reg(sysbase,
+-					SYS_PLL_CTRL0_DEVX(2));
+-			ctrl_val2 = nlm_read_sys_reg(sysbase,
+-					SYS_PLL_CTRL2_DEVX(2));
+-			break;
+-		}
+-	}
+-
+-	vco_post_div = (ctrl_val0 >> 5) & 0x7;
+-	pll_post_div = (ctrl_val0 >> 24) & 0x7;
+-	mdiv = ctrl_val2 & 0xff;
+-	fdiv = (ctrl_val2 >> 8) & 0x1fff;
+-
+-	/* Find PLL post divider value */
+-	switch (pll_post_div) {
+-	case 1:
+-		pll_post_div = 2;
+-		break;
+-	case 3:
+-		pll_post_div = 4;
+-		break;
+-	case 7:
+-		pll_post_div = 8;
+-		break;
+-	case 6:
+-		pll_post_div = 16;
+-		break;
+-	case 0:
+-	default:
+-		pll_post_div = 1;
+-		break;
+-	}
+-
+-	fdiv = fdiv/(1 << 13);
+-	pll_out_freq_num = ((ref_clk >> 1) * (6 + mdiv)) + fdiv;
+-	pll_out_freq_den = (1 << vco_post_div) * pll_post_div * ref_div;
+-
+-	if (pll_out_freq_den > 0)
+-		do_div(pll_out_freq_num, pll_out_freq_den);
+-
+-	/* PIC post divider, which happens after PLL */
+-	if (cpu_xlp9xx)
+-		pic_div = nlm_read_sys_reg(clockbase,
+-				SYS_9XX_CLK_DEV_DIV_REG) & 0x3;
+-	else
+-		pic_div = (nlm_read_sys_reg(sysbase,
+-					SYS_CLK_DEV_DIV_REG) >> 22) & 0x3;
+-	do_div(pll_out_freq_num, 1 << pic_div);
+-
+-	return pll_out_freq_num;
+-}
+-
+-unsigned int nlm_get_pic_frequency(int node)
+-{
+-	if (cpu_is_xlpii())
+-		return nlm_xlp2_get_pic_frequency(node);
+-	else
+-		return 133333333;
+-}
+-
+-unsigned int nlm_get_cpu_frequency(void)
+-{
+-	return nlm_get_core_frequency(0, 0);
+-}
+-
+-/*
+- * Fills upto 8 pairs of entries containing the DRAM map of a node
+- * if node < 0, get dram map for all nodes
+- */
+-int nlm_get_dram_map(int node, uint64_t *dram_map, int nentries)
+-{
+-	uint64_t bridgebase, base, lim;
+-	uint32_t val;
+-	unsigned int barreg, limreg, xlatreg;
+-	int i, n, rv;
+-
+-	/* Look only at mapping on Node 0, we don't handle crazy configs */
+-	bridgebase = nlm_get_bridge_regbase(0);
+-	rv = 0;
+-	for (i = 0; i < 8; i++) {
+-		if (rv + 1 >= nentries)
+-			break;
+-		if (cpu_is_xlp9xx()) {
+-			barreg = BRIDGE_9XX_DRAM_BAR(i);
+-			limreg = BRIDGE_9XX_DRAM_LIMIT(i);
+-			xlatreg = BRIDGE_9XX_DRAM_NODE_TRANSLN(i);
+-		} else {
+-			barreg = BRIDGE_DRAM_BAR(i);
+-			limreg = BRIDGE_DRAM_LIMIT(i);
+-			xlatreg = BRIDGE_DRAM_NODE_TRANSLN(i);
+-		}
+-		if (node >= 0) {
+-			/* node specified, get node mapping of BAR */
+-			val = nlm_read_bridge_reg(bridgebase, xlatreg);
+-			n = (val >> 1) & 0x3;
+-			if (n != node)
+-				continue;
+-		}
+-		val = nlm_read_bridge_reg(bridgebase, barreg);
+-		val = (val >>  12) & 0xfffff;
+-		base = (uint64_t) val << 20;
+-		val = nlm_read_bridge_reg(bridgebase, limreg);
+-		val = (val >>  12) & 0xfffff;
+-		if (val == 0)   /* BAR not used */
+-			continue;
+-		lim = ((uint64_t)val + 1) << 20;
+-		dram_map[rv] = base;
+-		dram_map[rv + 1] = lim;
+-		rv += 2;
+-	}
+-	return rv;
+-}
+diff --git a/arch/mips/netlogic/xlp/setup.c b/arch/mips/netlogic/xlp/setup.c
+deleted file mode 100644
+index 9fbaa1e5b340..000000000000
+--- a/arch/mips/netlogic/xlp/setup.c
++++ /dev/null
+@@ -1,174 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/of_fdt.h>
+-#include <linux/memblock.h>
+-
+-#include <asm/idle.h>
+-#include <asm/reboot.h>
+-#include <asm/time.h>
+-#include <asm/bootinfo.h>
+-
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/sys.h>
+-
+-uint64_t nlm_io_base;
+-struct nlm_soc_info nlm_nodes[NLM_NR_NODES];
+-cpumask_t nlm_cpumask = CPU_MASK_CPU0;
+-unsigned int nlm_threads_per_core;
+-
+-static void nlm_linux_exit(void)
+-{
+-	uint64_t sysbase = nlm_get_node(0)->sysbase;
+-
+-	if (cpu_is_xlp9xx())
+-		nlm_write_sys_reg(sysbase, SYS_9XX_CHIP_RESET, 1);
+-	else
+-		nlm_write_sys_reg(sysbase, SYS_CHIP_RESET, 1);
+-	for ( ; ; )
+-		cpu_wait();
+-}
+-
+-static void nlm_fixup_mem(void)
+-{
+-	const int pref_backup = 512;
+-	struct memblock_region *mem;
+-
+-	for_each_mem_region(mem) {
+-		memblock_remove(mem->base + mem->size - pref_backup,
+-			pref_backup);
+-	}
+-}
+-
+-static void __init xlp_init_mem_from_bars(void)
+-{
+-	uint64_t map[16];
+-	int i, n;
+-
+-	n = nlm_get_dram_map(-1, map, ARRAY_SIZE(map));	/* -1 : all nodes */
+-	for (i = 0; i < n; i += 2) {
+-		/* exclude 0x1000_0000-0x2000_0000, u-boot device */
+-		if (map[i] <= 0x10000000 && map[i+1] > 0x10000000)
+-			map[i+1] = 0x10000000;
+-		if (map[i] > 0x10000000 && map[i] < 0x20000000)
+-			map[i] = 0x20000000;
+-
+-		memblock_add(map[i], map[i+1] - map[i]);
+-	}
+-}
+-
+-void __init plat_mem_setup(void)
+-{
+-#ifdef CONFIG_SMP
+-	nlm_wakeup_secondary_cpus();
+-
+-	/* update TLB size after waking up threads */
+-	current_cpu_data.tlbsize = ((read_c0_config6() >> 16) & 0xffff) + 1;
+-
+-	register_smp_ops(&nlm_smp_ops);
+-#endif
+-	_machine_restart = (void (*)(char *))nlm_linux_exit;
+-	_machine_halt	= nlm_linux_exit;
+-	pm_power_off	= nlm_linux_exit;
+-
+-	/* memory and bootargs from DT */
+-	xlp_early_init_devtree();
+-
+-	if (memblock_end_of_DRAM() == 0) {
+-		pr_info("Using DRAM BARs for memory map.\n");
+-		xlp_init_mem_from_bars();
+-	}
+-	/* Calculate and setup wired entries for mapped kernel */
+-	nlm_fixup_mem();
+-}
+-
+-const char *get_system_type(void)
+-{
+-	switch (read_c0_prid() & PRID_IMP_MASK) {
+-	case PRID_IMP_NETLOGIC_XLP9XX:
+-	case PRID_IMP_NETLOGIC_XLP5XX:
+-	case PRID_IMP_NETLOGIC_XLP2XX:
+-		return "Broadcom XLPII Series";
+-	default:
+-		return "Netlogic XLP Series";
+-	}
+-}
+-
+-void xlp_mmu_init(void)
+-{
+-	u32 conf4;
+-
+-	if (cpu_is_xlpii()) {
+-		/* XLPII series has extended pagesize in config 4 */
+-		conf4 = read_c0_config4() & ~0x1f00u;
+-		write_c0_config4(conf4 | ((PAGE_SHIFT - 10) / 2 << 8));
+-	} else {
+-		/* enable extended TLB and Large Fixed TLB */
+-		write_c0_config6(read_c0_config6() | 0x24);
+-
+-		/* set page mask of extended Fixed TLB in config7 */
+-		write_c0_config7(PM_DEFAULT_MASK >>
+-			(13 + (ffz(PM_DEFAULT_MASK >> 13) / 2)));
+-	}
+-}
+-
+-void nlm_percpu_init(int hwcpuid)
+-{
+-}
+-
+-void __init prom_init(void)
+-{
+-	void *reset_vec;
+-
+-	nlm_io_base = CKSEG1ADDR(XLP_DEFAULT_IO_BASE);
+-	nlm_init_boot_cpu();
+-	xlp_mmu_init();
+-	nlm_node_init(0);
+-	xlp_dt_init((void *)(long)fw_arg0);
+-
+-	/* Update reset entry point with CPU init code */
+-	reset_vec = (void *)CKSEG1ADDR(RESET_VEC_PHYS);
+-	memset(reset_vec, 0, RESET_VEC_SIZE);
+-	memcpy(reset_vec, (void *)nlm_reset_entry,
+-			(nlm_reset_entry_end - nlm_reset_entry));
+-
+-#ifdef CONFIG_SMP
+-	cpumask_setall(&nlm_cpumask);
+-#endif
+-}
+diff --git a/arch/mips/netlogic/xlp/usb-init-xlp2.c b/arch/mips/netlogic/xlp/usb-init-xlp2.c
+deleted file mode 100644
+index 2524939a5e3a..000000000000
+--- a/arch/mips/netlogic/xlp/usb-init-xlp2.c
++++ /dev/null
+@@ -1,288 +0,0 @@
+-/*
+- * Copyright (c) 2003-2013 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/dma-mapping.h>
+-#include <linux/kernel.h>
+-#include <linux/delay.h>
+-#include <linux/init.h>
+-#include <linux/pci.h>
+-#include <linux/pci_ids.h>
+-#include <linux/platform_device.h>
+-#include <linux/irq.h>
+-
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-
+-#define XLPII_USB3_CTL_0		0xc0
+-#define XLPII_VAUXRST			BIT(0)
+-#define XLPII_VCCRST			BIT(1)
+-#define XLPII_NUM2PORT			9
+-#define XLPII_NUM3PORT			13
+-#define XLPII_RTUNEREQ			BIT(20)
+-#define XLPII_MS_CSYSREQ		BIT(21)
+-#define XLPII_XS_CSYSREQ		BIT(22)
+-#define XLPII_RETENABLEN		BIT(23)
+-#define XLPII_TX2RX			BIT(24)
+-#define XLPII_XHCIREV			BIT(25)
+-#define XLPII_ECCDIS			BIT(26)
+-
+-#define XLPII_USB3_INT_REG		0xc2
+-#define XLPII_USB3_INT_MASK		0xc3
+-
+-#define XLPII_USB_PHY_TEST		0xc6
+-#define XLPII_PRESET			BIT(0)
+-#define XLPII_ATERESET			BIT(1)
+-#define XLPII_LOOPEN			BIT(2)
+-#define XLPII_TESTPDHSP			BIT(3)
+-#define XLPII_TESTPDSSP			BIT(4)
+-#define XLPII_TESTBURNIN		BIT(5)
+-
+-#define XLPII_USB_PHY_LOS_LV		0xc9
+-#define XLPII_LOSLEV			0
+-#define XLPII_LOSBIAS			5
+-#define XLPII_SQRXTX			8
+-#define XLPII_TXBOOST			11
+-#define XLPII_RSLKSEL			16
+-#define XLPII_FSEL			20
+-
+-#define XLPII_USB_RFCLK_REG		0xcc
+-#define XLPII_VVLD			30
+-
+-#define nlm_read_usb_reg(b, r)		nlm_read_reg(b, r)
+-#define nlm_write_usb_reg(b, r, v)	nlm_write_reg(b, r, v)
+-
+-#define nlm_xlpii_get_usb_pcibase(node, inst)			\
+-			nlm_pcicfg_base(cpu_is_xlp9xx() ?	\
+-			XLP9XX_IO_USB_OFFSET(node, inst) :	\
+-			XLP2XX_IO_USB_OFFSET(node, inst))
+-#define nlm_xlpii_get_usb_regbase(node, inst)		\
+-	(nlm_xlpii_get_usb_pcibase(node, inst) + XLP_IO_PCI_HDRSZ)
+-
+-static void xlp2xx_usb_ack(struct irq_data *data)
+-{
+-	u64 port_addr;
+-
+-	switch (data->irq) {
+-	case PIC_2XX_XHCI_0_IRQ:
+-		port_addr = nlm_xlpii_get_usb_regbase(0, 1);
+-		break;
+-	case PIC_2XX_XHCI_1_IRQ:
+-		port_addr = nlm_xlpii_get_usb_regbase(0, 2);
+-		break;
+-	case PIC_2XX_XHCI_2_IRQ:
+-		port_addr = nlm_xlpii_get_usb_regbase(0, 3);
+-		break;
+-	default:
+-		pr_err("No matching USB irq!\n");
+-		return;
+-	}
+-	nlm_write_usb_reg(port_addr, XLPII_USB3_INT_REG, 0xffffffff);
+-}
+-
+-static void xlp9xx_usb_ack(struct irq_data *data)
+-{
+-	u64 port_addr;
+-	int node, irq;
+-
+-	/* Find the node and irq on the node */
+-	irq = data->irq % NLM_IRQS_PER_NODE;
+-	node = data->irq / NLM_IRQS_PER_NODE;
+-
+-	switch (irq) {
+-	case PIC_9XX_XHCI_0_IRQ:
+-		port_addr = nlm_xlpii_get_usb_regbase(node, 1);
+-		break;
+-	case PIC_9XX_XHCI_1_IRQ:
+-		port_addr = nlm_xlpii_get_usb_regbase(node, 2);
+-		break;
+-	case PIC_9XX_XHCI_2_IRQ:
+-		port_addr = nlm_xlpii_get_usb_regbase(node, 3);
+-		break;
+-	default:
+-		pr_err("No matching USB irq %d node  %d!\n", irq, node);
+-		return;
+-	}
+-	nlm_write_usb_reg(port_addr, XLPII_USB3_INT_REG, 0xffffffff);
+-}
+-
+-static void nlm_xlpii_usb_hw_reset(int node, int port)
+-{
+-	u64 port_addr, xhci_base, pci_base;
+-	void __iomem *corebase;
+-	u32 val;
+-
+-	port_addr = nlm_xlpii_get_usb_regbase(node, port);
+-
+-	/* Set frequency */
+-	val = nlm_read_usb_reg(port_addr, XLPII_USB_PHY_LOS_LV);
+-	val &= ~(0x3f << XLPII_FSEL);
+-	val |= (0x27 << XLPII_FSEL);
+-	nlm_write_usb_reg(port_addr, XLPII_USB_PHY_LOS_LV, val);
+-
+-	val = nlm_read_usb_reg(port_addr, XLPII_USB_RFCLK_REG);
+-	val |= (1 << XLPII_VVLD);
+-	nlm_write_usb_reg(port_addr, XLPII_USB_RFCLK_REG, val);
+-
+-	/* PHY reset */
+-	val = nlm_read_usb_reg(port_addr, XLPII_USB_PHY_TEST);
+-	val &= (XLPII_ATERESET | XLPII_LOOPEN | XLPII_TESTPDHSP
+-		| XLPII_TESTPDSSP | XLPII_TESTBURNIN);
+-	nlm_write_usb_reg(port_addr, XLPII_USB_PHY_TEST, val);
+-
+-	/* Setup control register */
+-	val =  XLPII_VAUXRST | XLPII_VCCRST | (1 << XLPII_NUM2PORT)
+-		| (1 << XLPII_NUM3PORT) | XLPII_MS_CSYSREQ | XLPII_XS_CSYSREQ
+-		| XLPII_RETENABLEN | XLPII_XHCIREV;
+-	nlm_write_usb_reg(port_addr, XLPII_USB3_CTL_0, val);
+-
+-	/* Enable interrupts */
+-	nlm_write_usb_reg(port_addr, XLPII_USB3_INT_MASK, 0x00000001);
+-
+-	/* Clear all interrupts */
+-	nlm_write_usb_reg(port_addr, XLPII_USB3_INT_REG, 0xffffffff);
+-
+-	udelay(2000);
+-
+-	/* XHCI configuration at PCI mem */
+-	pci_base = nlm_xlpii_get_usb_pcibase(node, port);
+-	xhci_base = nlm_read_usb_reg(pci_base, 0x4) & ~0xf;
+-	corebase = ioremap(xhci_base, 0x10000);
+-	if (!corebase)
+-		return;
+-
+-	writel(0x240002, corebase + 0xc2c0);
+-	/* GCTL 0xc110 */
+-	val = readl(corebase + 0xc110);
+-	val &= ~(0x3 << 12);
+-	val |= (1 << 12);
+-	writel(val, corebase + 0xc110);
+-	udelay(100);
+-
+-	/* PHYCFG 0xc200 */
+-	val = readl(corebase + 0xc200);
+-	val &= ~(1 << 6);
+-	writel(val, corebase + 0xc200);
+-	udelay(100);
+-
+-	/* PIPECTL 0xc2c0 */
+-	val = readl(corebase + 0xc2c0);
+-	val &= ~(1 << 17);
+-	writel(val, corebase + 0xc2c0);
+-
+-	iounmap(corebase);
+-}
+-
+-static int __init nlm_platform_xlpii_usb_init(void)
+-{
+-	int node;
+-
+-	if (!cpu_is_xlpii())
+-		return 0;
+-
+-	if (!cpu_is_xlp9xx()) {
+-		/* XLP 2XX single node */
+-		pr_info("Initializing 2XX USB Interface\n");
+-		nlm_xlpii_usb_hw_reset(0, 1);
+-		nlm_xlpii_usb_hw_reset(0, 2);
+-		nlm_xlpii_usb_hw_reset(0, 3);
+-		nlm_set_pic_extra_ack(0, PIC_2XX_XHCI_0_IRQ, xlp2xx_usb_ack);
+-		nlm_set_pic_extra_ack(0, PIC_2XX_XHCI_1_IRQ, xlp2xx_usb_ack);
+-		nlm_set_pic_extra_ack(0, PIC_2XX_XHCI_2_IRQ, xlp2xx_usb_ack);
+-		return 0;
+-	}
+-
+-	/* XLP 9XX, multi-node */
+-	pr_info("Initializing 9XX/5XX USB Interface\n");
+-	for (node = 0; node < NLM_NR_NODES; node++) {
+-		if (!nlm_node_present(node))
+-			continue;
+-		nlm_xlpii_usb_hw_reset(node, 1);
+-		nlm_xlpii_usb_hw_reset(node, 2);
+-		nlm_xlpii_usb_hw_reset(node, 3);
+-		nlm_set_pic_extra_ack(node, PIC_9XX_XHCI_0_IRQ, xlp9xx_usb_ack);
+-		nlm_set_pic_extra_ack(node, PIC_9XX_XHCI_1_IRQ, xlp9xx_usb_ack);
+-		nlm_set_pic_extra_ack(node, PIC_9XX_XHCI_2_IRQ, xlp9xx_usb_ack);
+-	}
+-	return 0;
+-}
+-
+-arch_initcall(nlm_platform_xlpii_usb_init);
+-
+-static u64 xlp_usb_dmamask = ~(u32)0;
+-
+-/* Fixup the IRQ for USB devices which is exist on XLP9XX SOC PCIE bus */
+-static void nlm_xlp9xx_usb_fixup_final(struct pci_dev *dev)
+-{
+-	int node;
+-
+-	node = xlp_socdev_to_node(dev);
+-	dev->dev.dma_mask		= &xlp_usb_dmamask;
+-	dev->dev.coherent_dma_mask	= DMA_BIT_MASK(32);
+-	switch (dev->devfn) {
+-	case 0x21:
+-		dev->irq = nlm_irq_to_xirq(node, PIC_9XX_XHCI_0_IRQ);
+-		break;
+-	case 0x22:
+-		dev->irq = nlm_irq_to_xirq(node, PIC_9XX_XHCI_1_IRQ);
+-		break;
+-	case 0x23:
+-		dev->irq = nlm_irq_to_xirq(node, PIC_9XX_XHCI_2_IRQ);
+-		break;
+-	}
+-}
+-
+-/* Fixup the IRQ for USB devices which is exist on XLP2XX SOC PCIE bus */
+-static void nlm_xlp2xx_usb_fixup_final(struct pci_dev *dev)
+-{
+-	dev->dev.dma_mask		= &xlp_usb_dmamask;
+-	dev->dev.coherent_dma_mask	= DMA_BIT_MASK(32);
+-	switch (dev->devfn) {
+-	case 0x21:
+-		dev->irq = PIC_2XX_XHCI_0_IRQ;
+-		break;
+-	case 0x22:
+-		dev->irq = PIC_2XX_XHCI_1_IRQ;
+-		break;
+-	case 0x23:
+-		dev->irq = PIC_2XX_XHCI_2_IRQ;
+-		break;
+-	}
+-}
+-
+-DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_BROADCOM, PCI_DEVICE_ID_XLP9XX_XHCI,
+-		nlm_xlp9xx_usb_fixup_final);
+-DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_NETLOGIC, PCI_DEVICE_ID_NLM_XHCI,
+-		nlm_xlp2xx_usb_fixup_final);
+diff --git a/arch/mips/netlogic/xlp/usb-init.c b/arch/mips/netlogic/xlp/usb-init.c
+deleted file mode 100644
+index f8117985f0f8..000000000000
+--- a/arch/mips/netlogic/xlp/usb-init.c
++++ /dev/null
+@@ -1,149 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/dma-mapping.h>
+-#include <linux/kernel.h>
+-#include <linux/delay.h>
+-#include <linux/init.h>
+-#include <linux/pci.h>
+-#include <linux/platform_device.h>
+-
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-
+-/*
+- * USB glue logic registers, used only during initialization
+- */
+-#define USB_CTL_0			0x01
+-#define USB_PHY_0			0x0A
+-#define USB_PHY_RESET			0x01
+-#define USB_PHY_PORT_RESET_0		0x10
+-#define USB_PHY_PORT_RESET_1		0x20
+-#define USB_CONTROLLER_RESET		0x01
+-#define USB_INT_STATUS			0x0E
+-#define USB_INT_EN			0x0F
+-#define USB_PHY_INTERRUPT_EN		0x01
+-#define USB_OHCI_INTERRUPT_EN		0x02
+-#define USB_OHCI_INTERRUPT1_EN		0x04
+-#define USB_OHCI_INTERRUPT2_EN		0x08
+-#define USB_CTRL_INTERRUPT_EN		0x10
+-
+-#define nlm_read_usb_reg(b, r)			nlm_read_reg(b, r)
+-#define nlm_write_usb_reg(b, r, v)		nlm_write_reg(b, r, v)
+-#define nlm_get_usb_pcibase(node, inst)		\
+-	nlm_pcicfg_base(XLP_IO_USB_OFFSET(node, inst))
+-#define nlm_get_usb_regbase(node, inst)		\
+-	(nlm_get_usb_pcibase(node, inst) + XLP_IO_PCI_HDRSZ)
+-
+-static void nlm_usb_intr_en(int node, int port)
+-{
+-	uint32_t val;
+-	uint64_t port_addr;
+-
+-	port_addr = nlm_get_usb_regbase(node, port);
+-	val = nlm_read_usb_reg(port_addr, USB_INT_EN);
+-	val = USB_CTRL_INTERRUPT_EN  | USB_OHCI_INTERRUPT_EN |
+-		USB_OHCI_INTERRUPT1_EN | USB_OHCI_INTERRUPT2_EN;
+-	nlm_write_usb_reg(port_addr, USB_INT_EN, val);
+-}
+-
+-static void nlm_usb_hw_reset(int node, int port)
+-{
+-	uint64_t port_addr;
+-	uint32_t val;
+-
+-	/* reset USB phy */
+-	port_addr = nlm_get_usb_regbase(node, port);
+-	val = nlm_read_usb_reg(port_addr, USB_PHY_0);
+-	val &= ~(USB_PHY_RESET | USB_PHY_PORT_RESET_0 | USB_PHY_PORT_RESET_1);
+-	nlm_write_usb_reg(port_addr, USB_PHY_0, val);
+-
+-	mdelay(100);
+-	val = nlm_read_usb_reg(port_addr, USB_CTL_0);
+-	val &= ~(USB_CONTROLLER_RESET);
+-	val |= 0x4;
+-	nlm_write_usb_reg(port_addr, USB_CTL_0, val);
+-}
+-
+-static int __init nlm_platform_usb_init(void)
+-{
+-	if (cpu_is_xlpii())
+-		return 0;
+-
+-	pr_info("Initializing USB Interface\n");
+-	nlm_usb_hw_reset(0, 0);
+-	nlm_usb_hw_reset(0, 3);
+-
+-	/* Enable PHY interrupts */
+-	nlm_usb_intr_en(0, 0);
+-	nlm_usb_intr_en(0, 3);
+-
+-	return 0;
+-}
+-
+-arch_initcall(nlm_platform_usb_init);
+-
+-static u64 xlp_usb_dmamask = ~(u32)0;
+-
+-/* Fixup the IRQ for USB devices which is exist on XLP SOC PCIE bus */
+-static void nlm_usb_fixup_final(struct pci_dev *dev)
+-{
+-	dev->dev.dma_mask		= &xlp_usb_dmamask;
+-	dev->dev.coherent_dma_mask	= DMA_BIT_MASK(32);
+-	switch (dev->devfn) {
+-	case 0x10:
+-		dev->irq = PIC_EHCI_0_IRQ;
+-		break;
+-	case 0x11:
+-		dev->irq = PIC_OHCI_0_IRQ;
+-		break;
+-	case 0x12:
+-		dev->irq = PIC_OHCI_1_IRQ;
+-		break;
+-	case 0x13:
+-		dev->irq = PIC_EHCI_1_IRQ;
+-		break;
+-	case 0x14:
+-		dev->irq = PIC_OHCI_2_IRQ;
+-		break;
+-	case 0x15:
+-		dev->irq = PIC_OHCI_3_IRQ;
+-		break;
+-	}
+-}
+-DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_NETLOGIC, PCI_DEVICE_ID_NLM_EHCI,
+-		nlm_usb_fixup_final);
+-DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_NETLOGIC, PCI_DEVICE_ID_NLM_OHCI,
+-		nlm_usb_fixup_final);
+diff --git a/arch/mips/netlogic/xlp/wakeup.c b/arch/mips/netlogic/xlp/wakeup.c
+deleted file mode 100644
+index d61004dd71b4..000000000000
+--- a/arch/mips/netlogic/xlp/wakeup.c
++++ /dev/null
+@@ -1,212 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/threads.h>
+-
+-#include <asm/asm.h>
+-#include <asm/asm-offsets.h>
+-#include <asm/mipsregs.h>
+-#include <asm/addrspace.h>
+-#include <asm/string.h>
+-
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/mips-extns.h>
+-
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/pic.h>
+-#include <asm/netlogic/xlp-hal/sys.h>
+-
+-static int xlp_wakeup_core(uint64_t sysbase, int node, int core)
+-{
+-	uint32_t coremask, value;
+-	int count, resetreg;
+-
+-	coremask = (1 << core);
+-
+-	/* Enable CPU clock in case of 8xx/3xx */
+-	if (!cpu_is_xlpii()) {
+-		value = nlm_read_sys_reg(sysbase, SYS_CORE_DFS_DIS_CTRL);
+-		value &= ~coremask;
+-		nlm_write_sys_reg(sysbase, SYS_CORE_DFS_DIS_CTRL, value);
+-	}
+-
+-	/* On 9XX, mark coherent first */
+-	if (cpu_is_xlp9xx()) {
+-		value = nlm_read_sys_reg(sysbase, SYS_9XX_CPU_NONCOHERENT_MODE);
+-		value &= ~coremask;
+-		nlm_write_sys_reg(sysbase, SYS_9XX_CPU_NONCOHERENT_MODE, value);
+-	}
+-
+-	/* Remove CPU Reset */
+-	resetreg = cpu_is_xlp9xx() ? SYS_9XX_CPU_RESET : SYS_CPU_RESET;
+-	value = nlm_read_sys_reg(sysbase, resetreg);
+-	value &= ~coremask;
+-	nlm_write_sys_reg(sysbase, resetreg, value);
+-
+-	/* We are done on 9XX */
+-	if (cpu_is_xlp9xx())
+-		return 1;
+-
+-	/* Poll for CPU to mark itself coherent on other type of XLP */
+-	count = 100000;
+-	do {
+-		value = nlm_read_sys_reg(sysbase, SYS_CPU_NONCOHERENT_MODE);
+-	} while ((value & coremask) != 0 && --count > 0);
+-
+-	return count != 0;
+-}
+-
+-static int wait_for_cpus(int cpu, int bootcpu)
+-{
+-	volatile uint32_t *cpu_ready = nlm_get_boot_data(BOOT_CPU_READY);
+-	int i, count, notready;
+-
+-	count = 0x800000;
+-	do {
+-		notready = nlm_threads_per_core;
+-		for (i = 0; i < nlm_threads_per_core; i++)
+-			if (cpu_ready[cpu + i] || (cpu + i) == bootcpu)
+-				--notready;
+-	} while (notready != 0 && --count > 0);
+-
+-	return count != 0;
+-}
+-
+-static void xlp_enable_secondary_cores(const cpumask_t *wakeup_mask)
+-{
+-	struct nlm_soc_info *nodep;
+-	uint64_t syspcibase, fusebase;
+-	uint32_t syscoremask, mask, fusemask;
+-	int core, n, cpu, ncores;
+-
+-	for (n = 0; n < NLM_NR_NODES; n++) {
+-		if (n != 0) {
+-			/* check if node exists and is online */
+-			if (cpu_is_xlp9xx()) {
+-				int b = xlp9xx_get_socbus(n);
+-				pr_info("Node %d SoC PCI bus %d.\n", n, b);
+-				if (b == 0)
+-					break;
+-			} else {
+-				syspcibase = nlm_get_sys_pcibase(n);
+-				if (nlm_read_reg(syspcibase, 0) == 0xffffffff)
+-					break;
+-			}
+-			nlm_node_init(n);
+-		}
+-
+-		/* read cores in reset from SYS */
+-		nodep = nlm_get_node(n);
+-
+-		if (cpu_is_xlp9xx()) {
+-			fusebase = nlm_get_fuse_regbase(n);
+-			fusemask = nlm_read_reg(fusebase, FUSE_9XX_DEVCFG6);
+-			switch (read_c0_prid() & PRID_IMP_MASK) {
+-			case PRID_IMP_NETLOGIC_XLP5XX:
+-				mask = 0xff;
+-				break;
+-			case PRID_IMP_NETLOGIC_XLP9XX:
+-			default:
+-				mask = 0xfffff;
+-				break;
+-			}
+-		} else {
+-			fusemask = nlm_read_sys_reg(nodep->sysbase,
+-						SYS_EFUSE_DEVICE_CFG_STATUS0);
+-			switch (read_c0_prid() & PRID_IMP_MASK) {
+-			case PRID_IMP_NETLOGIC_XLP3XX:
+-				mask = 0xf;
+-				break;
+-			case PRID_IMP_NETLOGIC_XLP2XX:
+-				mask = 0x3;
+-				break;
+-			case PRID_IMP_NETLOGIC_XLP8XX:
+-			default:
+-				mask = 0xff;
+-				break;
+-			}
+-		}
+-
+-		/*
+-		 * Fused out cores are set in the fusemask, and the remaining
+-		 * cores are renumbered to range 0 .. nactive-1
+-		 */
+-		syscoremask = (1 << hweight32(~fusemask & mask)) - 1;
+-
+-		pr_info("Node %d - SYS/FUSE coremask %x\n", n, syscoremask);
+-		ncores = nlm_cores_per_node();
+-		for (core = 0; core < ncores; core++) {
+-			/* we will be on node 0 core 0 */
+-			if (n == 0 && core == 0)
+-				continue;
+-
+-			/* see if the core exists */
+-			if ((syscoremask & (1 << core)) == 0)
+-				continue;
+-
+-			/* see if at least the first hw thread is enabled */
+-			cpu = (n * ncores + core) * NLM_THREADS_PER_CORE;
+-			if (!cpumask_test_cpu(cpu, wakeup_mask))
+-				continue;
+-
+-			/* wake up the core */
+-			if (!xlp_wakeup_core(nodep->sysbase, n, core))
+-				continue;
+-
+-			/* core is up */
+-			nodep->coremask |= 1u << core;
+-
+-			/* spin until the hw threads sets their ready */
+-			if (!wait_for_cpus(cpu, 0))
+-				pr_err("Node %d : timeout core %d\n", n, core);
+-		}
+-	}
+-}
+-
+-void xlp_wakeup_secondary_cpus(void)
+-{
+-	/*
+-	 * In case of u-boot, the secondaries are in reset
+-	 * first wakeup core 0 threads
+-	 */
+-	xlp_boot_core0_siblings();
+-	if (!wait_for_cpus(0, 0))
+-		pr_err("Node 0 : timeout core 0\n");
+-
+-	/* now get other cores out of reset */
+-	xlp_enable_secondary_cores(&nlm_cpumask);
+-}
+diff --git a/arch/mips/netlogic/xlr/Makefile b/arch/mips/netlogic/xlr/Makefile
+deleted file mode 100644
+index 7c83100e5722..000000000000
+--- a/arch/mips/netlogic/xlr/Makefile
++++ /dev/null
+@@ -1,3 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-obj-y			+=  fmn.o fmn-config.o setup.o platform.o platform-flash.o
+-obj-$(CONFIG_SMP)	+= wakeup.o
+diff --git a/arch/mips/netlogic/xlr/fmn-config.c b/arch/mips/netlogic/xlr/fmn-config.c
+deleted file mode 100644
+index 15483537e8cf..000000000000
+--- a/arch/mips/netlogic/xlr/fmn-config.c
++++ /dev/null
+@@ -1,296 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <asm/cpu-info.h>
+-#include <linux/irq.h>
+-#include <linux/interrupt.h>
+-
+-#include <asm/cpu.h>
+-#include <asm/mipsregs.h>
+-#include <asm/netlogic/xlr/fmn.h>
+-#include <asm/netlogic/xlr/xlr.h>
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/haldefs.h>
+-
+-struct xlr_board_fmn_config xlr_board_fmn_config;
+-
+-static void __maybe_unused print_credit_config(struct xlr_fmn_info *fmn_info)
+-{
+-	int bkt;
+-
+-	pr_info("Bucket size :\n");
+-	pr_info("Station\t: Size\n");
+-	for (bkt = 0; bkt < 16; bkt++)
+-		pr_info(" %d  %d  %d  %d  %d  %d  %d %d\n",
+-			xlr_board_fmn_config.bucket_size[(bkt * 8) + 0],
+-			xlr_board_fmn_config.bucket_size[(bkt * 8) + 1],
+-			xlr_board_fmn_config.bucket_size[(bkt * 8) + 2],
+-			xlr_board_fmn_config.bucket_size[(bkt * 8) + 3],
+-			xlr_board_fmn_config.bucket_size[(bkt * 8) + 4],
+-			xlr_board_fmn_config.bucket_size[(bkt * 8) + 5],
+-			xlr_board_fmn_config.bucket_size[(bkt * 8) + 6],
+-			xlr_board_fmn_config.bucket_size[(bkt * 8) + 7]);
+-	pr_info("\n");
+-
+-	pr_info("Credits distribution :\n");
+-	pr_info("Station\t: Size\n");
+-	for (bkt = 0; bkt < 16; bkt++)
+-		pr_info(" %d  %d  %d  %d  %d  %d  %d %d\n",
+-			fmn_info->credit_config[(bkt * 8) + 0],
+-			fmn_info->credit_config[(bkt * 8) + 1],
+-			fmn_info->credit_config[(bkt * 8) + 2],
+-			fmn_info->credit_config[(bkt * 8) + 3],
+-			fmn_info->credit_config[(bkt * 8) + 4],
+-			fmn_info->credit_config[(bkt * 8) + 5],
+-			fmn_info->credit_config[(bkt * 8) + 6],
+-			fmn_info->credit_config[(bkt * 8) + 7]);
+-	pr_info("\n");
+-}
+-
+-static void check_credit_distribution(void)
+-{
+-	struct xlr_board_fmn_config *cfg = &xlr_board_fmn_config;
+-	int bkt, n, total_credits, ncores;
+-
+-	ncores = hweight32(nlm_current_node()->coremask);
+-	for (bkt = 0; bkt < 128; bkt++) {
+-		total_credits = 0;
+-		for (n = 0; n < ncores; n++)
+-			total_credits += cfg->cpu[n].credit_config[bkt];
+-		total_credits += cfg->gmac[0].credit_config[bkt];
+-		total_credits += cfg->gmac[1].credit_config[bkt];
+-		total_credits += cfg->dma.credit_config[bkt];
+-		total_credits += cfg->cmp.credit_config[bkt];
+-		total_credits += cfg->sae.credit_config[bkt];
+-		total_credits += cfg->xgmac[0].credit_config[bkt];
+-		total_credits += cfg->xgmac[1].credit_config[bkt];
+-		if (total_credits > cfg->bucket_size[bkt])
+-			pr_err("ERROR: Bucket %d: credits (%d) > size (%d)\n",
+-				bkt, total_credits, cfg->bucket_size[bkt]);
+-	}
+-	pr_info("Credit distribution complete.\n");
+-}
+-
+-/**
+- * setup_fmn_cc -  Configure bucket size and credits for a device.
+- * @dev_info: FMN information structure for each devices
+- * @start_stn_id: Starting station id of dev_info
+- * @end_stn_id: End station id of dev_info
+- * @num_buckets: Total number of buckets for den_info
+- * @cpu_credits: Allowed credits to cpu for each devices pointing by dev_info
+- * @size: Size of the each buckets in the device station
+- *
+- * 'size' is the size of the buckets for the device. This size is
+- * distributed among all the CPUs
+- * so that all of them can send messages to the device.
+- *
+- * The device is also given 'cpu_credits' to send messages to the CPUs
+- */
+-static void setup_fmn_cc(struct xlr_fmn_info *dev_info, int start_stn_id,
+-		int end_stn_id, int num_buckets, int cpu_credits, int size)
+-{
+-	int i, j, num_core, n, credits_per_cpu;
+-	struct xlr_fmn_info *cpu = xlr_board_fmn_config.cpu;
+-
+-	num_core = hweight32(nlm_current_node()->coremask);
+-	dev_info->num_buckets	= num_buckets;
+-	dev_info->start_stn_id	= start_stn_id;
+-	dev_info->end_stn_id	= end_stn_id;
+-
+-	n = num_core;
+-	if (num_core == 3)
+-		n = 4;
+-
+-	for (i = start_stn_id; i <= end_stn_id; i++) {
+-		xlr_board_fmn_config.bucket_size[i] = size;
+-
+-		/* Dividing device credits equally to cpus */
+-		credits_per_cpu = size / n;
+-		for (j = 0; j < num_core; j++)
+-			cpu[j].credit_config[i] = credits_per_cpu;
+-
+-		/* credits left to distribute */
+-		credits_per_cpu = size - (credits_per_cpu * num_core);
+-
+-		/* distribute the remaining credits (if any), among cores */
+-		for (j = 0; (j < num_core) && (credits_per_cpu >= 4); j++) {
+-			cpu[j].credit_config[i] += 4;
+-			credits_per_cpu -= 4;
+-		}
+-	}
+-
+-	/* Distributing cpu per bucket credits to devices */
+-	for (i = 0; i < num_core; i++) {
+-		for (j = 0; j < FMN_CORE_NBUCKETS; j++)
+-			dev_info->credit_config[(i * 8) + j] = cpu_credits;
+-	}
+-}
+-
+-/*
+- * Each core has 256 slots and 8 buckets,
+- * Configure the 8 buckets each with 32 slots
+- */
+-static void setup_cpu_fmninfo(struct xlr_fmn_info *cpu, int num_core)
+-{
+-	int i, j;
+-
+-	for (i = 0; i < num_core; i++) {
+-		cpu[i].start_stn_id	= (8 * i);
+-		cpu[i].end_stn_id	= (8 * i + 8);
+-
+-		for (j = cpu[i].start_stn_id; j < cpu[i].end_stn_id; j++)
+-			xlr_board_fmn_config.bucket_size[j] = 32;
+-	}
+-}
+-
+-/**
+- * xlr_board_info_setup - Setup FMN details
+- *
+- * Setup the FMN details for each devices according to the device available
+- * in each variant of XLR/XLS processor
+- */
+-void xlr_board_info_setup(void)
+-{
+-	struct xlr_fmn_info *cpu = xlr_board_fmn_config.cpu;
+-	struct xlr_fmn_info *gmac = xlr_board_fmn_config.gmac;
+-	struct xlr_fmn_info *xgmac = xlr_board_fmn_config.xgmac;
+-	struct xlr_fmn_info *dma = &xlr_board_fmn_config.dma;
+-	struct xlr_fmn_info *cmp = &xlr_board_fmn_config.cmp;
+-	struct xlr_fmn_info *sae = &xlr_board_fmn_config.sae;
+-	int processor_id, num_core;
+-
+-	num_core = hweight32(nlm_current_node()->coremask);
+-	processor_id = read_c0_prid() & PRID_IMP_MASK;
+-
+-	setup_cpu_fmninfo(cpu, num_core);
+-	switch (processor_id) {
+-	case PRID_IMP_NETLOGIC_XLS104:
+-	case PRID_IMP_NETLOGIC_XLS108:
+-		setup_fmn_cc(&gmac[0], FMN_STNID_GMAC0,
+-					FMN_STNID_GMAC0_TX3, 8, 16, 32);
+-		setup_fmn_cc(dma, FMN_STNID_DMA_0,
+-					FMN_STNID_DMA_3, 4, 8, 64);
+-		setup_fmn_cc(sae, FMN_STNID_SEC0,
+-					FMN_STNID_SEC1, 2, 8, 128);
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLS204:
+-	case PRID_IMP_NETLOGIC_XLS208:
+-		setup_fmn_cc(&gmac[0], FMN_STNID_GMAC0,
+-					FMN_STNID_GMAC0_TX3, 8, 16, 32);
+-		setup_fmn_cc(dma, FMN_STNID_DMA_0,
+-					FMN_STNID_DMA_3, 4, 8, 64);
+-		setup_fmn_cc(sae, FMN_STNID_SEC0,
+-					FMN_STNID_SEC1, 2, 8, 128);
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLS404:
+-	case PRID_IMP_NETLOGIC_XLS408:
+-	case PRID_IMP_NETLOGIC_XLS404B:
+-	case PRID_IMP_NETLOGIC_XLS408B:
+-	case PRID_IMP_NETLOGIC_XLS416B:
+-	case PRID_IMP_NETLOGIC_XLS608B:
+-	case PRID_IMP_NETLOGIC_XLS616B:
+-		setup_fmn_cc(&gmac[0], FMN_STNID_GMAC0,
+-					FMN_STNID_GMAC0_TX3, 8, 8, 32);
+-		setup_fmn_cc(&gmac[1], FMN_STNID_GMAC1_FR_0,
+-					FMN_STNID_GMAC1_TX3, 8, 8, 32);
+-		setup_fmn_cc(dma, FMN_STNID_DMA_0,
+-					FMN_STNID_DMA_3, 4, 4, 64);
+-		setup_fmn_cc(cmp, FMN_STNID_CMP_0,
+-					FMN_STNID_CMP_3, 4, 4, 64);
+-		setup_fmn_cc(sae, FMN_STNID_SEC0,
+-					FMN_STNID_SEC1, 2, 8, 128);
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLS412B:
+-		setup_fmn_cc(&gmac[0], FMN_STNID_GMAC0,
+-					FMN_STNID_GMAC0_TX3, 8, 8, 32);
+-		setup_fmn_cc(&gmac[1], FMN_STNID_GMAC1_FR_0,
+-					FMN_STNID_GMAC1_TX3, 8, 8, 32);
+-		setup_fmn_cc(dma, FMN_STNID_DMA_0,
+-					FMN_STNID_DMA_3, 4, 4, 64);
+-		setup_fmn_cc(cmp, FMN_STNID_CMP_0,
+-					FMN_STNID_CMP_3, 4, 4, 64);
+-		setup_fmn_cc(sae, FMN_STNID_SEC0,
+-					FMN_STNID_SEC1, 2, 8, 128);
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLR308:
+-	case PRID_IMP_NETLOGIC_XLR308C:
+-		setup_fmn_cc(&gmac[0], FMN_STNID_GMAC0,
+-					FMN_STNID_GMAC0_TX3, 8, 16, 32);
+-		setup_fmn_cc(dma, FMN_STNID_DMA_0,
+-					FMN_STNID_DMA_3, 4, 8, 64);
+-		setup_fmn_cc(sae, FMN_STNID_SEC0,
+-					FMN_STNID_SEC1, 2, 4, 128);
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLR532:
+-	case PRID_IMP_NETLOGIC_XLR532C:
+-	case PRID_IMP_NETLOGIC_XLR516C:
+-	case PRID_IMP_NETLOGIC_XLR508C:
+-		setup_fmn_cc(&gmac[0], FMN_STNID_GMAC0,
+-					FMN_STNID_GMAC0_TX3, 8, 16, 32);
+-		setup_fmn_cc(dma, FMN_STNID_DMA_0,
+-					FMN_STNID_DMA_3, 4, 8, 64);
+-		setup_fmn_cc(sae, FMN_STNID_SEC0,
+-					FMN_STNID_SEC1, 2, 4, 128);
+-		break;
+-
+-	case PRID_IMP_NETLOGIC_XLR732:
+-	case PRID_IMP_NETLOGIC_XLR716:
+-		setup_fmn_cc(&xgmac[0], FMN_STNID_XMAC0_00_TX,
+-					FMN_STNID_XMAC0_15_TX, 8, 0, 32);
+-		setup_fmn_cc(&xgmac[1], FMN_STNID_XMAC1_00_TX,
+-					FMN_STNID_XMAC1_15_TX, 8, 0, 32);
+-		setup_fmn_cc(&gmac[0], FMN_STNID_GMAC0,
+-					FMN_STNID_GMAC0_TX3, 8, 24, 32);
+-		setup_fmn_cc(dma, FMN_STNID_DMA_0,
+-					FMN_STNID_DMA_3, 4, 4, 64);
+-		setup_fmn_cc(sae, FMN_STNID_SEC0,
+-					FMN_STNID_SEC1, 2, 4, 128);
+-		break;
+-	default:
+-		pr_err("Unknown CPU with processor ID [%d]\n", processor_id);
+-		pr_err("Error: Cannot initialize FMN credits.\n");
+-	}
+-
+-	check_credit_distribution();
+-
+-#if 0 /* debug */
+-	print_credit_config(&cpu[0]);
+-	print_credit_config(&gmac[0]);
+-#endif
+-}
+diff --git a/arch/mips/netlogic/xlr/fmn.c b/arch/mips/netlogic/xlr/fmn.c
+deleted file mode 100644
+index f90303f31967..000000000000
+--- a/arch/mips/netlogic/xlr/fmn.c
++++ /dev/null
+@@ -1,199 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/irqreturn.h>
+-#include <linux/irq.h>
+-#include <linux/interrupt.h>
+-
+-#include <asm/mipsregs.h>
+-#include <asm/netlogic/interrupt.h>
+-#include <asm/netlogic/xlr/fmn.h>
+-#include <asm/netlogic/common.h>
+-
+-#define COP2_CC_INIT_CPU_DEST(dest, conf) \
+-do { \
+-	nlm_write_c2_cc##dest(0, conf[(dest * 8) + 0]); \
+-	nlm_write_c2_cc##dest(1, conf[(dest * 8) + 1]); \
+-	nlm_write_c2_cc##dest(2, conf[(dest * 8) + 2]); \
+-	nlm_write_c2_cc##dest(3, conf[(dest * 8) + 3]); \
+-	nlm_write_c2_cc##dest(4, conf[(dest * 8) + 4]); \
+-	nlm_write_c2_cc##dest(5, conf[(dest * 8) + 5]); \
+-	nlm_write_c2_cc##dest(6, conf[(dest * 8) + 6]); \
+-	nlm_write_c2_cc##dest(7, conf[(dest * 8) + 7]); \
+-} while (0)
+-
+-struct fmn_message_handler {
+-	void (*action)(int, int, int, int, struct nlm_fmn_msg *, void *);
+-	void *arg;
+-} msg_handlers[128];
+-
+-/*
+- * FMN interrupt handler. We configure the FMN so that any messages in
+- * any of the CPU buckets will trigger an interrupt on the CPU.
+- * The message can be from any device on the FMN (like NAE/SAE/DMA).
+- * The source station id is used to figure out which of the registered
+- * handlers have to be called.
+- */
+-static irqreturn_t fmn_message_handler(int irq, void *data)
+-{
+-	struct fmn_message_handler *hndlr;
+-	int bucket, rv;
+-	int size = 0, code = 0, src_stnid = 0;
+-	struct nlm_fmn_msg msg;
+-	uint32_t mflags, bkt_status;
+-
+-	mflags = nlm_cop2_enable_irqsave();
+-	/* Disable message ring interrupt */
+-	nlm_fmn_setup_intr(irq, 0);
+-	while (1) {
+-		/* 8 bkts per core, [24:31] each bit represents one bucket
+-		 * Bit is Zero if bucket is not empty */
+-		bkt_status = (nlm_read_c2_status0() >> 24) & 0xff;
+-		if (bkt_status == 0xff)
+-			break;
+-		for (bucket = 0; bucket < 8; bucket++) {
+-			/* Continue on empty bucket */
+-			if (bkt_status & (1 << bucket))
+-				continue;
+-			rv = nlm_fmn_receive(bucket, &size, &code, &src_stnid,
+-						&msg);
+-			if (rv != 0)
+-				continue;
+-
+-			hndlr = &msg_handlers[src_stnid];
+-			if (hndlr->action == NULL)
+-				pr_warn("No msgring handler for stnid %d\n",
+-						src_stnid);
+-			else {
+-				nlm_cop2_disable_irqrestore(mflags);
+-				hndlr->action(bucket, src_stnid, size, code,
+-					&msg, hndlr->arg);
+-				mflags = nlm_cop2_enable_irqsave();
+-			}
+-		}
+-	}
+-	/* Enable message ring intr, to any thread in core */
+-	nlm_fmn_setup_intr(irq, (1 << nlm_threads_per_core) - 1);
+-	nlm_cop2_disable_irqrestore(mflags);
+-	return IRQ_HANDLED;
+-}
+-
+-void xlr_percpu_fmn_init(void)
+-{
+-	struct xlr_fmn_info *cpu_fmn_info;
+-	int *bucket_sizes;
+-	uint32_t flags;
+-	int id;
+-
+-	BUG_ON(nlm_thread_id() != 0);
+-	id = nlm_core_id();
+-
+-	bucket_sizes = xlr_board_fmn_config.bucket_size;
+-	cpu_fmn_info = &xlr_board_fmn_config.cpu[id];
+-	flags = nlm_cop2_enable_irqsave();
+-
+-	/* Setup bucket sizes for the core. */
+-	nlm_write_c2_bucksize(0, bucket_sizes[id * 8 + 0]);
+-	nlm_write_c2_bucksize(1, bucket_sizes[id * 8 + 1]);
+-	nlm_write_c2_bucksize(2, bucket_sizes[id * 8 + 2]);
+-	nlm_write_c2_bucksize(3, bucket_sizes[id * 8 + 3]);
+-	nlm_write_c2_bucksize(4, bucket_sizes[id * 8 + 4]);
+-	nlm_write_c2_bucksize(5, bucket_sizes[id * 8 + 5]);
+-	nlm_write_c2_bucksize(6, bucket_sizes[id * 8 + 6]);
+-	nlm_write_c2_bucksize(7, bucket_sizes[id * 8 + 7]);
+-
+-	/*
+-	 * For sending FMN messages, we need credits on the destination
+-	 * bucket. Program the credits this core has on the 128 possible
+-	 * destination buckets.
+-	 * We cannot use a loop here, because the the first argument has
+-	 * to be a constant integer value.
+-	 */
+-	COP2_CC_INIT_CPU_DEST(0, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(1, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(2, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(3, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(4, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(5, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(6, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(7, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(8, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(9, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(10, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(11, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(12, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(13, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(14, cpu_fmn_info->credit_config);
+-	COP2_CC_INIT_CPU_DEST(15, cpu_fmn_info->credit_config);
+-
+-	/* enable FMN interrupts on this CPU */
+-	nlm_fmn_setup_intr(IRQ_FMN, (1 << nlm_threads_per_core) - 1);
+-	nlm_cop2_disable_irqrestore(flags);
+-}
+-
+-
+-/*
+- * Register a FMN message handler with respect to the source station id
+- * @stnid: source station id
+- * @action: Handler function pointer
+- */
+-int nlm_register_fmn_handler(int start_stnid, int end_stnid,
+-	void (*action)(int, int, int, int, struct nlm_fmn_msg *, void *),
+-	void *arg)
+-{
+-	int sstnid;
+-
+-	for (sstnid = start_stnid; sstnid <= end_stnid; sstnid++) {
+-		msg_handlers[sstnid].arg = arg;
+-		smp_wmb();
+-		msg_handlers[sstnid].action = action;
+-	}
+-	pr_debug("Registered FMN msg handler for stnid %d-%d\n",
+-			start_stnid, end_stnid);
+-	return 0;
+-}
+-
+-void nlm_setup_fmn_irq(void)
+-{
+-	uint32_t flags;
+-
+-	/* request irq only once */
+-	if (request_irq(IRQ_FMN, fmn_message_handler, IRQF_PERCPU, "fmn", NULL))
+-		pr_err("Failed to request irq %d (fmn)\n", IRQ_FMN);
+-
+-	flags = nlm_cop2_enable_irqsave();
+-	nlm_fmn_setup_intr(IRQ_FMN, (1 << nlm_threads_per_core) - 1);
+-	nlm_cop2_disable_irqrestore(flags);
+-}
+diff --git a/arch/mips/netlogic/xlr/platform-flash.c b/arch/mips/netlogic/xlr/platform-flash.c
+deleted file mode 100644
+index cf9162284b07..000000000000
+--- a/arch/mips/netlogic/xlr/platform-flash.c
++++ /dev/null
+@@ -1,216 +0,0 @@
+-/*
+- * Copyright 2011, Netlogic Microsystems.
+- * Copyright 2004, Matt Porter <mporter@kernel.crashing.org>
+- *
+- * This file is licensed under the terms of the GNU General Public
+- * License version 2.  This program is licensed "as is" without any
+- * warranty of any kind, whether express or implied.
+- */
+-
+-#include <linux/device.h>
+-#include <linux/platform_device.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <linux/delay.h>
+-#include <linux/ioport.h>
+-#include <linux/resource.h>
+-#include <linux/spi/flash.h>
+-
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/physmap.h>
+-#include <linux/mtd/platnand.h>
+-
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/xlr/iomap.h>
+-#include <asm/netlogic/xlr/flash.h>
+-#include <asm/netlogic/xlr/bridge.h>
+-#include <asm/netlogic/xlr/gpio.h>
+-#include <asm/netlogic/xlr/xlr.h>
+-
+-/*
+- * Default NOR partition layout
+- */
+-static struct mtd_partition xlr_nor_parts[] = {
+-	{
+-		.name = "User FS",
+-		.offset = 0x800000,
+-		.size	= MTDPART_SIZ_FULL,
+-	}
+-};
+-
+-/*
+- * Default NAND partition layout
+- */
+-static struct mtd_partition xlr_nand_parts[] = {
+-	{
+-		.name	= "Root Filesystem",
+-		.offset = 64 * 64 * 2048,
+-		.size	= 432 * 64 * 2048,
+-	},
+-	{
+-		.name	= "Home Filesystem",
+-		.offset = MTDPART_OFS_APPEND,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+-/* Use PHYSMAP flash for NOR */
+-struct physmap_flash_data xlr_nor_data = {
+-	.width		= 2,
+-	.parts		= xlr_nor_parts,
+-	.nr_parts	= ARRAY_SIZE(xlr_nor_parts),
+-};
+-
+-static struct resource xlr_nor_res[] = {
+-	{
+-		.flags	= IORESOURCE_MEM,
+-	},
+-};
+-
+-static struct platform_device xlr_nor_dev = {
+-	.name	= "physmap-flash",
+-	.dev	= {
+-		.platform_data	= &xlr_nor_data,
+-	},
+-	.num_resources	= ARRAY_SIZE(xlr_nor_res),
+-	.resource	= xlr_nor_res,
+-};
+-
+-/*
+- * Use "gen_nand" driver for NAND flash
+- *
+- * There seems to be no way to store a private pointer containing
+- * platform specific info in gen_nand drivier. We will use a global
+- * struct for now, since we currently have only one NAND chip per board.
+- */
+-struct xlr_nand_flash_priv {
+-	int cs;
+-	uint64_t flash_mmio;
+-};
+-
+-static struct xlr_nand_flash_priv nand_priv;
+-
+-static void xlr_nand_ctrl(struct nand_chip *chip, int cmd,
+-			  unsigned int ctrl)
+-{
+-	if (ctrl & NAND_CLE)
+-		nlm_write_reg(nand_priv.flash_mmio,
+-			FLASH_NAND_CLE(nand_priv.cs), cmd);
+-	else if (ctrl & NAND_ALE)
+-		nlm_write_reg(nand_priv.flash_mmio,
+-			FLASH_NAND_ALE(nand_priv.cs), cmd);
+-}
+-
+-struct platform_nand_data xlr_nand_data = {
+-	.chip = {
+-		.nr_chips	= 1,
+-		.nr_partitions	= ARRAY_SIZE(xlr_nand_parts),
+-		.chip_delay	= 50,
+-		.partitions	= xlr_nand_parts,
+-	},
+-	.ctrl = {
+-		.cmd_ctrl	= xlr_nand_ctrl,
+-	},
+-};
+-
+-static struct resource xlr_nand_res[] = {
+-	{
+-		.flags		= IORESOURCE_MEM,
+-	},
+-};
+-
+-static struct platform_device xlr_nand_dev = {
+-	.name		= "gen_nand",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(xlr_nand_res),
+-	.resource	= xlr_nand_res,
+-	.dev		= {
+-		.platform_data	= &xlr_nand_data,
+-	}
+-};
+-
+-/*
+- * XLR/XLS supports upto 8 devices on its FLASH interface. The value in
+- * FLASH_BAR (on the MEM/IO bridge) gives the base for mapping all the
+- * flash devices.
+- * Under this, each flash device has an offset and size given by the
+- * CSBASE_ADDR and CSBASE_MASK registers for the device.
+- *
+- * The CSBASE_ registers are expected to be setup by the bootloader.
+- */
+-static void setup_flash_resource(uint64_t flash_mmio,
+-	uint64_t flash_map_base, int cs, struct resource *res)
+-{
+-	u32 base, mask;
+-
+-	base = nlm_read_reg(flash_mmio, FLASH_CSBASE_ADDR(cs));
+-	mask = nlm_read_reg(flash_mmio, FLASH_CSADDR_MASK(cs));
+-
+-	res->start = flash_map_base + ((unsigned long)base << 16);
+-	res->end = res->start + (mask + 1) * 64 * 1024;
+-}
+-
+-static int __init xlr_flash_init(void)
+-{
+-	uint64_t gpio_mmio, flash_mmio, flash_map_base;
+-	u32 gpio_resetcfg, flash_bar;
+-	int cs, boot_nand, boot_nor;
+-
+-	/* Flash address bits 39:24 is in bridge flash BAR */
+-	flash_bar = nlm_read_reg(nlm_io_base, BRIDGE_FLASH_BAR);
+-	flash_map_base = (flash_bar & 0xffff0000) << 8;
+-
+-	gpio_mmio = nlm_mmio_base(NETLOGIC_IO_GPIO_OFFSET);
+-	flash_mmio = nlm_mmio_base(NETLOGIC_IO_FLASH_OFFSET);
+-
+-	/* Get the chip reset config */
+-	gpio_resetcfg = nlm_read_reg(gpio_mmio, GPIO_PWRON_RESET_CFG_REG);
+-
+-	/* Check for boot flash type */
+-	boot_nor = boot_nand = 0;
+-	if (nlm_chip_is_xls()) {
+-		/* On XLS, check boot from NAND bit (GPIO reset reg bit 16) */
+-		if (gpio_resetcfg & (1 << 16))
+-			boot_nand = 1;
+-
+-		/* check boot from PCMCIA, (GPIO reset reg bit 15 */
+-		if ((gpio_resetcfg & (1 << 15)) == 0)
+-			boot_nor = 1;	/* not set, booted from NOR */
+-	} else { /* XLR */
+-		/* check boot from PCMCIA (bit 16 in GPIO reset on XLR) */
+-		if ((gpio_resetcfg & (1 << 16)) == 0)
+-			boot_nor = 1;	/* not set, booted from NOR */
+-	}
+-
+-	/* boot flash at chip select 0 */
+-	cs = 0;
+-
+-	if (boot_nand) {
+-		nand_priv.cs = cs;
+-		nand_priv.flash_mmio = flash_mmio;
+-		setup_flash_resource(flash_mmio, flash_map_base, cs,
+-			 xlr_nand_res);
+-
+-		/* Initialize NAND flash at CS 0 */
+-		nlm_write_reg(flash_mmio, FLASH_CSDEV_PARM(cs),
+-				FLASH_NAND_CSDEV_PARAM);
+-		nlm_write_reg(flash_mmio, FLASH_CSTIME_PARMA(cs),
+-				FLASH_NAND_CSTIME_PARAMA);
+-		nlm_write_reg(flash_mmio, FLASH_CSTIME_PARMB(cs),
+-				FLASH_NAND_CSTIME_PARAMB);
+-
+-		pr_info("ChipSelect %d: NAND Flash %pR\n", cs, xlr_nand_res);
+-		return platform_device_register(&xlr_nand_dev);
+-	}
+-
+-	if (boot_nor) {
+-		setup_flash_resource(flash_mmio, flash_map_base, cs,
+-			xlr_nor_res);
+-		pr_info("ChipSelect %d: NOR Flash %pR\n", cs, xlr_nor_res);
+-		return platform_device_register(&xlr_nor_dev);
+-	}
+-	return 0;
+-}
+-
+-arch_initcall(xlr_flash_init);
+diff --git a/arch/mips/netlogic/xlr/platform.c b/arch/mips/netlogic/xlr/platform.c
+deleted file mode 100644
+index 4785932af248..000000000000
+--- a/arch/mips/netlogic/xlr/platform.c
++++ /dev/null
+@@ -1,250 +0,0 @@
+-/*
+- * Copyright 2011, Netlogic Microsystems.
+- * Copyright 2004, Matt Porter <mporter@kernel.crashing.org>
+- *
+- * This file is licensed under the terms of the GNU General Public
+- * License version 2.  This program is licensed "as is" without any
+- * warranty of any kind, whether express or implied.
+- */
+-
+-#include <linux/device.h>
+-#include <linux/platform_device.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/resource.h>
+-#include <linux/serial_8250.h>
+-#include <linux/serial_reg.h>
+-#include <linux/i2c.h>
+-#include <linux/usb/ehci_pdriver.h>
+-#include <linux/usb/ohci_pdriver.h>
+-
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/xlr/iomap.h>
+-#include <asm/netlogic/xlr/pic.h>
+-#include <asm/netlogic/xlr/xlr.h>
+-
+-static unsigned int nlm_xlr_uart_in(struct uart_port *p, int offset)
+-{
+-	uint64_t uartbase;
+-	unsigned int value;
+-
+-	/* sign extend to 64 bits, if needed */
+-	uartbase = (uint64_t)(long)p->membase;
+-	value = nlm_read_reg(uartbase, offset);
+-
+-	/* See XLR/XLS errata */
+-	if (offset == UART_MSR)
+-		value ^= 0xF0;
+-	else if (offset == UART_MCR)
+-		value ^= 0x3;
+-
+-	return value;
+-}
+-
+-static void nlm_xlr_uart_out(struct uart_port *p, int offset, int value)
+-{
+-	uint64_t uartbase;
+-
+-	/* sign extend to 64 bits, if needed */
+-	uartbase = (uint64_t)(long)p->membase;
+-
+-	/* See XLR/XLS errata */
+-	if (offset == UART_MSR)
+-		value ^= 0xF0;
+-	else if (offset == UART_MCR)
+-		value ^= 0x3;
+-
+-	nlm_write_reg(uartbase, offset, value);
+-}
+-
+-#define PORT(_irq)					\
+-	{						\
+-		.irq		= _irq,			\
+-		.regshift	= 2,			\
+-		.iotype		= UPIO_MEM32,		\
+-		.flags		= (UPF_SKIP_TEST |	\
+-			 UPF_FIXED_TYPE | UPF_BOOT_AUTOCONF),\
+-		.uartclk	= PIC_CLK_HZ,		\
+-		.type		= PORT_16550A,		\
+-		.serial_in	= nlm_xlr_uart_in,	\
+-		.serial_out	= nlm_xlr_uart_out,	\
+-	}
+-
+-static struct plat_serial8250_port xlr_uart_data[] = {
+-	PORT(PIC_UART_0_IRQ),
+-	PORT(PIC_UART_1_IRQ),
+-	{},
+-};
+-
+-static struct platform_device uart_device = {
+-	.name		= "serial8250",
+-	.id		= PLAT8250_DEV_PLATFORM,
+-	.dev = {
+-		.platform_data = xlr_uart_data,
+-	},
+-};
+-
+-static int __init nlm_uart_init(void)
+-{
+-	unsigned long uartbase;
+-
+-	uartbase = (unsigned long)nlm_mmio_base(NETLOGIC_IO_UART_0_OFFSET);
+-	xlr_uart_data[0].membase = (void __iomem *)uartbase;
+-	xlr_uart_data[0].mapbase = CPHYSADDR(uartbase);
+-
+-	uartbase = (unsigned long)nlm_mmio_base(NETLOGIC_IO_UART_1_OFFSET);
+-	xlr_uart_data[1].membase = (void __iomem *)uartbase;
+-	xlr_uart_data[1].mapbase = CPHYSADDR(uartbase);
+-
+-	return platform_device_register(&uart_device);
+-}
+-
+-arch_initcall(nlm_uart_init);
+-
+-#ifdef CONFIG_USB
+-/* Platform USB devices, only on XLS chips */
+-static u64 xls_usb_dmamask = ~(u32)0;
+-#define USB_PLATFORM_DEV(n, i, irq)					\
+-	{								\
+-		.name		= n,					\
+-		.id		= i,					\
+-		.num_resources	= 2,					\
+-		.dev		= {					\
+-			.dma_mask	= &xls_usb_dmamask,		\
+-			.coherent_dma_mask = 0xffffffff,		\
+-		},							\
+-		.resource	= (struct resource[]) {			\
+-			{						\
+-				.flags = IORESOURCE_MEM,		\
+-			},						\
+-			{						\
+-				.start	= irq,				\
+-				.end	= irq,				\
+-				.flags = IORESOURCE_IRQ,		\
+-			},						\
+-		},							\
+-	}
+-
+-static struct usb_ehci_pdata xls_usb_ehci_pdata = {
+-	.caps_offset	= 0,
+-};
+-
+-static struct usb_ohci_pdata xls_usb_ohci_pdata;
+-
+-static struct platform_device xls_usb_ehci_device =
+-			 USB_PLATFORM_DEV("ehci-platform", 0, PIC_USB_IRQ);
+-static struct platform_device xls_usb_ohci_device_0 =
+-			 USB_PLATFORM_DEV("ohci-platform", 1, PIC_USB_IRQ);
+-static struct platform_device xls_usb_ohci_device_1 =
+-			 USB_PLATFORM_DEV("ohci-platform", 2, PIC_USB_IRQ);
+-
+-static struct platform_device *xls_platform_devices[] = {
+-	&xls_usb_ehci_device,
+-	&xls_usb_ohci_device_0,
+-	&xls_usb_ohci_device_1,
+-};
+-
+-int xls_platform_usb_init(void)
+-{
+-	uint64_t usb_mmio, gpio_mmio;
+-	unsigned long memres;
+-	uint32_t val;
+-
+-	if (!nlm_chip_is_xls())
+-		return 0;
+-
+-	gpio_mmio = nlm_mmio_base(NETLOGIC_IO_GPIO_OFFSET);
+-	usb_mmio  = nlm_mmio_base(NETLOGIC_IO_USB_1_OFFSET);
+-
+-	/* Clear Rogue Phy INTs */
+-	nlm_write_reg(usb_mmio, 49, 0x10000000);
+-	/* Enable all interrupts */
+-	nlm_write_reg(usb_mmio, 50, 0x1f000000);
+-
+-	/* Enable ports */
+-	nlm_write_reg(usb_mmio,	 1, 0x07000500);
+-
+-	val = nlm_read_reg(gpio_mmio, 21);
+-	if (((val >> 22) & 0x01) == 0) {
+-		pr_info("Detected USB Device mode - Not supported!\n");
+-		nlm_write_reg(usb_mmio,	 0, 0x01000000);
+-		return 0;
+-	}
+-
+-	pr_info("Detected USB Host mode - Adding XLS USB devices.\n");
+-	/* Clear reset, host mode */
+-	nlm_write_reg(usb_mmio,	 0, 0x02000000);
+-
+-	/* Memory resource for various XLS usb ports */
+-	usb_mmio = nlm_mmio_base(NETLOGIC_IO_USB_0_OFFSET);
+-	memres = CPHYSADDR((unsigned long)usb_mmio);
+-	xls_usb_ehci_device.resource[0].start = memres;
+-	xls_usb_ehci_device.resource[0].end = memres + 0x400 - 1;
+-	xls_usb_ehci_device.dev.platform_data = &xls_usb_ehci_pdata;
+-
+-	memres += 0x400;
+-	xls_usb_ohci_device_0.resource[0].start = memres;
+-	xls_usb_ohci_device_0.resource[0].end = memres + 0x400 - 1;
+-	xls_usb_ohci_device_0.dev.platform_data = &xls_usb_ohci_pdata;
+-
+-	memres += 0x400;
+-	xls_usb_ohci_device_1.resource[0].start = memres;
+-	xls_usb_ohci_device_1.resource[0].end = memres + 0x400 - 1;
+-	xls_usb_ohci_device_1.dev.platform_data = &xls_usb_ohci_pdata;
+-
+-	return platform_add_devices(xls_platform_devices,
+-				ARRAY_SIZE(xls_platform_devices));
+-}
+-
+-arch_initcall(xls_platform_usb_init);
+-#endif
+-
+-#ifdef CONFIG_I2C
+-static struct i2c_board_info nlm_i2c_board_info1[] __initdata = {
+-	/* All XLR boards have this RTC and Max6657 Temp Chip */
+-	[0] = {
+-		.type	= "ds1374",
+-		.addr	= 0x68
+-	},
+-	[1] = {
+-		.type	= "lm90",
+-		.addr	= 0x4c
+-	},
+-};
+-
+-static struct resource i2c_resources[] = {
+-	[0] = {
+-		.start	= 0,	/* filled at init */
+-		.end	= 0,
+-		.flags	= IORESOURCE_MEM,
+-	},
+-};
+-
+-static struct platform_device nlm_xlr_i2c_1 = {
+-	.name		= "xlr-i2cbus",
+-	.id		= 1,
+-	.num_resources	= 1,
+-	.resource	= i2c_resources,
+-};
+-
+-static int __init nlm_i2c_init(void)
+-{
+-	int err = 0;
+-	unsigned int offset;
+-
+-	/* I2C bus 0 does not have any useful devices, configure only bus 1 */
+-	offset = NETLOGIC_IO_I2C_1_OFFSET;
+-	nlm_xlr_i2c_1.resource[0].start = CPHYSADDR(nlm_mmio_base(offset));
+-	nlm_xlr_i2c_1.resource[0].end = nlm_xlr_i2c_1.resource[0].start + 0xfff;
+-
+-	platform_device_register(&nlm_xlr_i2c_1);
+-
+-	err = i2c_register_board_info(1, nlm_i2c_board_info1,
+-				ARRAY_SIZE(nlm_i2c_board_info1));
+-	if (err < 0)
+-		pr_err("nlm-i2c: cannot register board I2C devices\n");
+-	return err;
+-}
+-
+-arch_initcall(nlm_i2c_init);
+-#endif
+diff --git a/arch/mips/netlogic/xlr/setup.c b/arch/mips/netlogic/xlr/setup.c
+deleted file mode 100644
+index aa83d691df0f..000000000000
+--- a/arch/mips/netlogic/xlr/setup.c
++++ /dev/null
+@@ -1,206 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/serial_8250.h>
+-#include <linux/memblock.h>
+-#include <linux/pm.h>
+-
+-#include <asm/idle.h>
+-#include <asm/reboot.h>
+-#include <asm/time.h>
+-#include <asm/bootinfo.h>
+-
+-#include <asm/netlogic/interrupt.h>
+-#include <asm/netlogic/psb-bootinfo.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-
+-#include <asm/netlogic/xlr/xlr.h>
+-#include <asm/netlogic/xlr/iomap.h>
+-#include <asm/netlogic/xlr/pic.h>
+-#include <asm/netlogic/xlr/gpio.h>
+-#include <asm/netlogic/xlr/fmn.h>
+-
+-uint64_t nlm_io_base = DEFAULT_NETLOGIC_IO_BASE;
+-struct psb_info nlm_prom_info;
+-
+-/* default to uniprocessor */
+-unsigned int  nlm_threads_per_core = 1;
+-struct nlm_soc_info nlm_nodes[NLM_NR_NODES];
+-cpumask_t nlm_cpumask = CPU_MASK_CPU0;
+-
+-static void nlm_linux_exit(void)
+-{
+-	uint64_t gpiobase;
+-
+-	gpiobase = nlm_mmio_base(NETLOGIC_IO_GPIO_OFFSET);
+-	/* trigger a chip reset by writing 1 to GPIO_SWRESET_REG */
+-	nlm_write_reg(gpiobase, GPIO_SWRESET_REG, 1);
+-	for ( ; ; )
+-		cpu_wait();
+-}
+-
+-void __init plat_mem_setup(void)
+-{
+-	_machine_restart = (void (*)(char *))nlm_linux_exit;
+-	_machine_halt	= nlm_linux_exit;
+-	pm_power_off	= nlm_linux_exit;
+-}
+-
+-const char *get_system_type(void)
+-{
+-	return "Netlogic XLR/XLS Series";
+-}
+-
+-unsigned int nlm_get_cpu_frequency(void)
+-{
+-	return (unsigned int)nlm_prom_info.cpu_frequency;
+-}
+-
+-void nlm_percpu_init(int hwcpuid)
+-{
+-	if (hwcpuid % 4 == 0)
+-		xlr_percpu_fmn_init();
+-}
+-
+-static void __init build_arcs_cmdline(int *argv)
+-{
+-	int i, remain, len;
+-	char *arg;
+-
+-	remain = sizeof(arcs_cmdline) - 1;
+-	arcs_cmdline[0] = '\0';
+-	for (i = 0; argv[i] != 0; i++) {
+-		arg = (char *)(long)argv[i];
+-		len = strlen(arg);
+-		if (len + 1 > remain)
+-			break;
+-		strcat(arcs_cmdline, arg);
+-		strcat(arcs_cmdline, " ");
+-		remain -=  len + 1;
+-	}
+-
+-	/* Add the default options here */
+-	if ((strstr(arcs_cmdline, "console=")) == NULL) {
+-		arg = "console=ttyS0,38400 ";
+-		len = strlen(arg);
+-		if (len > remain)
+-			goto fail;
+-		strcat(arcs_cmdline, arg);
+-		remain -= len;
+-	}
+-#ifdef CONFIG_BLK_DEV_INITRD
+-	if ((strstr(arcs_cmdline, "rdinit=")) == NULL) {
+-		arg = "rdinit=/sbin/init ";
+-		len = strlen(arg);
+-		if (len > remain)
+-			goto fail;
+-		strcat(arcs_cmdline, arg);
+-		remain -= len;
+-	}
+-#endif
+-	return;
+-fail:
+-	panic("Cannot add %s, command line too big!", arg);
+-}
+-
+-static void prom_add_memory(void)
+-{
+-	struct nlm_boot_mem_map *bootm;
+-	u64 start, size;
+-	u64 pref_backup = 512;	/* avoid pref walking beyond end */
+-	int i;
+-
+-	bootm = (void *)(long)nlm_prom_info.psb_mem_map;
+-	for (i = 0; i < bootm->nr_map; i++) {
+-		if (bootm->map[i].type != NLM_BOOT_MEM_RAM)
+-			continue;
+-		start = bootm->map[i].addr;
+-		size   = bootm->map[i].size;
+-
+-		/* Work around for using bootloader mem */
+-		if (i == 0 && start == 0 && size == 0x0c000000)
+-			size = 0x0ff00000;
+-
+-		memblock_add(start, size - pref_backup);
+-	}
+-}
+-
+-static void nlm_init_node(void)
+-{
+-	struct nlm_soc_info *nodep;
+-
+-	nodep = nlm_current_node();
+-	nodep->picbase = nlm_mmio_base(NETLOGIC_IO_PIC_OFFSET);
+-	nodep->ebase = read_c0_ebase() & MIPS_EBASE_BASE;
+-	spin_lock_init(&nodep->piclock);
+-}
+-
+-void __init prom_init(void)
+-{
+-	int *argv, *envp;		/* passed as 32 bit ptrs */
+-	struct psb_info *prom_infop;
+-	void *reset_vec;
+-#ifdef CONFIG_SMP
+-	int i;
+-#endif
+-
+-	/* truncate to 32 bit and sign extend all args */
+-	argv = (int *)(long)(int)fw_arg1;
+-	envp = (int *)(long)(int)fw_arg2;
+-	prom_infop = (struct psb_info *)(long)(int)fw_arg3;
+-
+-	nlm_prom_info = *prom_infop;
+-	nlm_init_node();
+-
+-	/* Update reset entry point with CPU init code */
+-	reset_vec = (void *)CKSEG1ADDR(RESET_VEC_PHYS);
+-	memset(reset_vec, 0, RESET_VEC_SIZE);
+-	memcpy(reset_vec, (void *)nlm_reset_entry,
+-			(nlm_reset_entry_end - nlm_reset_entry));
+-
+-	build_arcs_cmdline(argv);
+-	prom_add_memory();
+-
+-#ifdef CONFIG_SMP
+-	for (i = 0; i < 32; i++)
+-		if (nlm_prom_info.online_cpu_map & (1 << i))
+-			cpumask_set_cpu(i, &nlm_cpumask);
+-	nlm_wakeup_secondary_cpus();
+-	register_smp_ops(&nlm_smp_ops);
+-#endif
+-	xlr_board_info_setup();
+-	xlr_percpu_fmn_init();
+-}
+diff --git a/arch/mips/netlogic/xlr/wakeup.c b/arch/mips/netlogic/xlr/wakeup.c
+deleted file mode 100644
+index d61cba1e9c65..000000000000
+--- a/arch/mips/netlogic/xlr/wakeup.c
++++ /dev/null
+@@ -1,85 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/delay.h>
+-#include <linux/threads.h>
+-
+-#include <asm/asm.h>
+-#include <asm/asm-offsets.h>
+-#include <asm/mipsregs.h>
+-#include <asm/addrspace.h>
+-#include <asm/string.h>
+-
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/mips-extns.h>
+-
+-#include <asm/netlogic/xlr/iomap.h>
+-#include <asm/netlogic/xlr/pic.h>
+-
+-int xlr_wakeup_secondary_cpus(void)
+-{
+-	struct nlm_soc_info *nodep;
+-	unsigned int i, j, boot_cpu;
+-	volatile u32 *cpu_ready = nlm_get_boot_data(BOOT_CPU_READY);
+-
+-	/*
+-	 *  In case of RMI boot, hit with NMI to get the cores
+-	 *  from bootloader to linux code.
+-	 */
+-	nodep = nlm_get_node(0);
+-	boot_cpu = hard_smp_processor_id();
+-	nlm_set_nmi_handler(nlm_rmiboot_preboot);
+-	for (i = 0; i < NR_CPUS; i++) {
+-		if (i == boot_cpu || !cpumask_test_cpu(i, &nlm_cpumask))
+-			continue;
+-		nlm_pic_send_ipi(nodep->picbase, i, 1, 1); /* send NMI */
+-	}
+-
+-	/* Fill up the coremask early */
+-	nodep->coremask = 1;
+-	for (i = 1; i < nlm_cores_per_node(); i++) {
+-		for (j = 1000000; j > 0; j--) {
+-			if (cpu_ready[i * NLM_THREADS_PER_CORE])
+-				break;
+-			udelay(10);
+-		}
+-		if (j != 0)
+-			nodep->coremask |= (1u << i);
+-		else
+-			pr_err("Failed to wakeup core %d\n", i);
+-	}
+-
+-	return 0;
+-}
+diff --git a/arch/mips/pci/Makefile b/arch/mips/pci/Makefile
+index f3eecc065e5c..6ddefafd00cb 100644
+--- a/arch/mips/pci/Makefile
++++ b/arch/mips/pci/Makefile
+@@ -56,10 +56,7 @@ obj-$(CONFIG_VICTOR_MPC30X)	+= fixup-mpc30x.o
+ obj-$(CONFIG_ZAO_CAPCELLA)	+= fixup-capcella.o
+ obj-$(CONFIG_MIKROTIK_RB532)	+= pci-rc32434.o ops-rc32434.o fixup-rc32434.o
+ obj-$(CONFIG_CAVIUM_OCTEON_SOC) += pci-octeon.o pcie-octeon.o
+-obj-$(CONFIG_CPU_XLR)		+= pci-xlr.o
+-obj-$(CONFIG_CPU_XLP)		+= pci-xlp.o
+ 
+ ifdef CONFIG_PCI_MSI
+ obj-$(CONFIG_CAVIUM_OCTEON_SOC) += msi-octeon.o
+-obj-$(CONFIG_CPU_XLP)		+= msi-xlp.o
+ endif
+diff --git a/arch/mips/pci/msi-xlp.c b/arch/mips/pci/msi-xlp.c
+deleted file mode 100644
+index bb14335f804b..000000000000
+--- a/arch/mips/pci/msi-xlp.c
++++ /dev/null
+@@ -1,571 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/types.h>
+-#include <linux/pci.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/msi.h>
+-#include <linux/mm.h>
+-#include <linux/irq.h>
+-#include <linux/irqdesc.h>
+-#include <linux/console.h>
+-
+-#include <asm/io.h>
+-
+-#include <asm/netlogic/interrupt.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/mips-extns.h>
+-
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/pic.h>
+-#include <asm/netlogic/xlp-hal/pcibus.h>
+-#include <asm/netlogic/xlp-hal/bridge.h>
+-
+-#define XLP_MSIVEC_PER_LINK	32
+-#define XLP_MSIXVEC_TOTAL	(cpu_is_xlp9xx() ? 128 : 32)
+-#define XLP_MSIXVEC_PER_LINK	(cpu_is_xlp9xx() ? 32 : 8)
+-
+-/* 128 MSI irqs per node, mapped starting at NLM_MSI_VEC_BASE */
+-static inline int nlm_link_msiirq(int link, int msivec)
+-{
+-	return NLM_MSI_VEC_BASE + link * XLP_MSIVEC_PER_LINK + msivec;
+-}
+-
+-/* get the link MSI vector from irq number */
+-static inline int nlm_irq_msivec(int irq)
+-{
+-	return (irq - NLM_MSI_VEC_BASE) % XLP_MSIVEC_PER_LINK;
+-}
+-
+-/* get the link from the irq number */
+-static inline int nlm_irq_msilink(int irq)
+-{
+-	int total_msivec = XLP_MSIVEC_PER_LINK * PCIE_NLINKS;
+-
+-	return ((irq - NLM_MSI_VEC_BASE) % total_msivec) /
+-		XLP_MSIVEC_PER_LINK;
+-}
+-
+-/*
+- * For XLP 8xx/4xx/3xx/2xx, only 32 MSI-X vectors are possible because
+- * there are only 32 PIC interrupts for MSI. We split them statically
+- * and use 8 MSI-X vectors per link - this keeps the allocation and
+- * lookup simple.
+- * On XLP 9xx, there are 32 vectors per link, and the interrupts are
+- * not routed thru PIC, so we can use all 128 MSI-X vectors.
+- */
+-static inline int nlm_link_msixirq(int link, int bit)
+-{
+-	return NLM_MSIX_VEC_BASE + link * XLP_MSIXVEC_PER_LINK + bit;
+-}
+-
+-/* get the link MSI vector from irq number */
+-static inline int nlm_irq_msixvec(int irq)
+-{
+-	return (irq - NLM_MSIX_VEC_BASE) % XLP_MSIXVEC_TOTAL;
+-}
+-
+-/* get the link from MSIX vec */
+-static inline int nlm_irq_msixlink(int msixvec)
+-{
+-	return msixvec / XLP_MSIXVEC_PER_LINK;
+-}
+-
+-/*
+- * Per link MSI and MSI-X information, set as IRQ handler data for
+- * MSI and MSI-X interrupts.
+- */
+-struct xlp_msi_data {
+-	struct nlm_soc_info *node;
+-	uint64_t	lnkbase;
+-	uint32_t	msi_enabled_mask;
+-	uint32_t	msi_alloc_mask;
+-	uint32_t	msix_alloc_mask;
+-	spinlock_t	msi_lock;
+-};
+-
+-/*
+- * MSI Chip definitions
+- *
+- * On XLP, there is a PIC interrupt associated with each PCIe link on the
+- * chip (which appears as a PCI bridge to us). This gives us 32 MSI irqa
+- * per link and 128 overall.
+- *
+- * When a device connected to the link raises a MSI interrupt, we get a
+- * link interrupt and we then have to look at PCIE_MSI_STATUS register at
+- * the bridge to map it to the IRQ
+- */
+-static void xlp_msi_enable(struct irq_data *d)
+-{
+-	struct xlp_msi_data *md = irq_data_get_irq_chip_data(d);
+-	unsigned long flags;
+-	int vec;
+-
+-	vec = nlm_irq_msivec(d->irq);
+-	spin_lock_irqsave(&md->msi_lock, flags);
+-	md->msi_enabled_mask |= 1u << vec;
+-	if (cpu_is_xlp9xx())
+-		nlm_write_reg(md->lnkbase, PCIE_9XX_MSI_EN,
+-				md->msi_enabled_mask);
+-	else
+-		nlm_write_reg(md->lnkbase, PCIE_MSI_EN, md->msi_enabled_mask);
+-	spin_unlock_irqrestore(&md->msi_lock, flags);
+-}
+-
+-static void xlp_msi_disable(struct irq_data *d)
+-{
+-	struct xlp_msi_data *md = irq_data_get_irq_chip_data(d);
+-	unsigned long flags;
+-	int vec;
+-
+-	vec = nlm_irq_msivec(d->irq);
+-	spin_lock_irqsave(&md->msi_lock, flags);
+-	md->msi_enabled_mask &= ~(1u << vec);
+-	if (cpu_is_xlp9xx())
+-		nlm_write_reg(md->lnkbase, PCIE_9XX_MSI_EN,
+-				md->msi_enabled_mask);
+-	else
+-		nlm_write_reg(md->lnkbase, PCIE_MSI_EN, md->msi_enabled_mask);
+-	spin_unlock_irqrestore(&md->msi_lock, flags);
+-}
+-
+-static void xlp_msi_mask_ack(struct irq_data *d)
+-{
+-	struct xlp_msi_data *md = irq_data_get_irq_chip_data(d);
+-	int link, vec;
+-
+-	link = nlm_irq_msilink(d->irq);
+-	vec = nlm_irq_msivec(d->irq);
+-	xlp_msi_disable(d);
+-
+-	/* Ack MSI on bridge */
+-	if (cpu_is_xlp9xx())
+-		nlm_write_reg(md->lnkbase, PCIE_9XX_MSI_STATUS, 1u << vec);
+-	else
+-		nlm_write_reg(md->lnkbase, PCIE_MSI_STATUS, 1u << vec);
+-
+-}
+-
+-static struct irq_chip xlp_msi_chip = {
+-	.name		= "XLP-MSI",
+-	.irq_enable	= xlp_msi_enable,
+-	.irq_disable	= xlp_msi_disable,
+-	.irq_mask_ack	= xlp_msi_mask_ack,
+-	.irq_unmask	= xlp_msi_enable,
+-};
+-
+-/*
+- * XLP8XX/4XX/3XX/2XX:
+- * The MSI-X interrupt handling is different from MSI, there are 32 MSI-X
+- * interrupts generated by the PIC and each of these correspond to a MSI-X
+- * vector (0-31) that can be assigned.
+- *
+- * We divide the MSI-X vectors to 8 per link and do a per-link allocation
+- *
+- * XLP9XX:
+- * 32 MSI-X vectors are available per link, and the interrupts are not routed
+- * thru the PIC. PIC ack not needed.
+- *
+- * Enable and disable done using standard MSI functions.
+- */
+-static void xlp_msix_mask_ack(struct irq_data *d)
+-{
+-	struct xlp_msi_data *md;
+-	int link, msixvec;
+-	uint32_t status_reg, bit;
+-
+-	msixvec = nlm_irq_msixvec(d->irq);
+-	link = nlm_irq_msixlink(msixvec);
+-	pci_msi_mask_irq(d);
+-	md = irq_data_get_irq_chip_data(d);
+-
+-	/* Ack MSI on bridge */
+-	if (cpu_is_xlp9xx()) {
+-		status_reg = PCIE_9XX_MSIX_STATUSX(link);
+-		bit = msixvec % XLP_MSIXVEC_PER_LINK;
+-	} else {
+-		status_reg = PCIE_MSIX_STATUS;
+-		bit = msixvec;
+-	}
+-	nlm_write_reg(md->lnkbase, status_reg, 1u << bit);
+-
+-	if (!cpu_is_xlp9xx())
+-		nlm_pic_ack(md->node->picbase,
+-				PIC_IRT_PCIE_MSIX_INDEX(msixvec));
+-}
+-
+-static struct irq_chip xlp_msix_chip = {
+-	.name		= "XLP-MSIX",
+-	.irq_enable	= pci_msi_unmask_irq,
+-	.irq_disable	= pci_msi_mask_irq,
+-	.irq_mask_ack	= xlp_msix_mask_ack,
+-	.irq_unmask	= pci_msi_unmask_irq,
+-};
+-
+-void arch_teardown_msi_irq(unsigned int irq)
+-{
+-}
+-
+-/*
+- * Setup a PCIe link for MSI.  By default, the links are in
+- * legacy interrupt mode.  We will switch them to MSI mode
+- * at the first MSI request.
+- */
+-static void xlp_config_link_msi(uint64_t lnkbase, int lirq, uint64_t msiaddr)
+-{
+-	u32 val;
+-
+-	if (cpu_is_xlp9xx()) {
+-		val = nlm_read_reg(lnkbase, PCIE_9XX_INT_EN0);
+-		if ((val & 0x200) == 0) {
+-			val |= 0x200;		/* MSI Interrupt enable */
+-			nlm_write_reg(lnkbase, PCIE_9XX_INT_EN0, val);
+-		}
+-	} else {
+-		val = nlm_read_reg(lnkbase, PCIE_INT_EN0);
+-		if ((val & 0x200) == 0) {
+-			val |= 0x200;
+-			nlm_write_reg(lnkbase, PCIE_INT_EN0, val);
+-		}
+-	}
+-
+-	val = nlm_read_reg(lnkbase, 0x1);	/* CMD */
+-	if ((val & 0x0400) == 0) {
+-		val |= 0x0400;
+-		nlm_write_reg(lnkbase, 0x1, val);
+-	}
+-
+-	/* Update IRQ in the PCI irq reg */
+-	val = nlm_read_pci_reg(lnkbase, 0xf);
+-	val &= ~0x1fu;
+-	val |= (1 << 8) | lirq;
+-	nlm_write_pci_reg(lnkbase, 0xf, val);
+-
+-	/* MSI addr */
+-	nlm_write_reg(lnkbase, PCIE_BRIDGE_MSI_ADDRH, msiaddr >> 32);
+-	nlm_write_reg(lnkbase, PCIE_BRIDGE_MSI_ADDRL, msiaddr & 0xffffffff);
+-
+-	/* MSI cap for bridge */
+-	val = nlm_read_reg(lnkbase, PCIE_BRIDGE_MSI_CAP);
+-	if ((val & (1 << 16)) == 0) {
+-		val |= 0xb << 16;		/* mmc32, msi enable */
+-		nlm_write_reg(lnkbase, PCIE_BRIDGE_MSI_CAP, val);
+-	}
+-}
+-
+-/*
+- * Allocate a MSI vector on a link
+- */
+-static int xlp_setup_msi(uint64_t lnkbase, int node, int link,
+-	struct msi_desc *desc)
+-{
+-	struct xlp_msi_data *md;
+-	struct msi_msg msg;
+-	unsigned long flags;
+-	int msivec, irt, lirq, xirq, ret;
+-	uint64_t msiaddr;
+-
+-	/* Get MSI data for the link */
+-	lirq = PIC_PCIE_LINK_MSI_IRQ(link);
+-	xirq = nlm_irq_to_xirq(node, nlm_link_msiirq(link, 0));
+-	md = irq_get_chip_data(xirq);
+-	msiaddr = MSI_LINK_ADDR(node, link);
+-
+-	spin_lock_irqsave(&md->msi_lock, flags);
+-	if (md->msi_alloc_mask == 0) {
+-		xlp_config_link_msi(lnkbase, lirq, msiaddr);
+-		/* switch the link IRQ to MSI range */
+-		if (cpu_is_xlp9xx())
+-			irt = PIC_9XX_IRT_PCIE_LINK_INDEX(link);
+-		else
+-			irt = PIC_IRT_PCIE_LINK_INDEX(link);
+-		nlm_setup_pic_irq(node, lirq, lirq, irt);
+-		nlm_pic_init_irt(nlm_get_node(node)->picbase, irt, lirq,
+-				 node * nlm_threads_per_node(), 1 /*en */);
+-	}
+-
+-	/* allocate a MSI vec, and tell the bridge about it */
+-	msivec = fls(md->msi_alloc_mask);
+-	if (msivec == XLP_MSIVEC_PER_LINK) {
+-		spin_unlock_irqrestore(&md->msi_lock, flags);
+-		return -ENOMEM;
+-	}
+-	md->msi_alloc_mask |= (1u << msivec);
+-	spin_unlock_irqrestore(&md->msi_lock, flags);
+-
+-	msg.address_hi = msiaddr >> 32;
+-	msg.address_lo = msiaddr & 0xffffffff;
+-	msg.data = 0xc00 | msivec;
+-
+-	xirq = xirq + msivec;		/* msi mapped to global irq space */
+-	ret = irq_set_msi_desc(xirq, desc);
+-	if (ret < 0)
+-		return ret;
+-
+-	pci_write_msi_msg(xirq, &msg);
+-	return 0;
+-}
+-
+-/*
+- * Switch a link to MSI-X mode
+- */
+-static void xlp_config_link_msix(uint64_t lnkbase, int lirq, uint64_t msixaddr)
+-{
+-	u32 val;
+-
+-	val = nlm_read_reg(lnkbase, 0x2C);
+-	if ((val & 0x80000000U) == 0) {
+-		val |= 0x80000000U;
+-		nlm_write_reg(lnkbase, 0x2C, val);
+-	}
+-
+-	if (cpu_is_xlp9xx()) {
+-		val = nlm_read_reg(lnkbase, PCIE_9XX_INT_EN0);
+-		if ((val & 0x200) == 0) {
+-			val |= 0x200;		/* MSI Interrupt enable */
+-			nlm_write_reg(lnkbase, PCIE_9XX_INT_EN0, val);
+-		}
+-	} else {
+-		val = nlm_read_reg(lnkbase, PCIE_INT_EN0);
+-		if ((val & 0x200) == 0) {
+-			val |= 0x200;		/* MSI Interrupt enable */
+-			nlm_write_reg(lnkbase, PCIE_INT_EN0, val);
+-		}
+-	}
+-
+-	val = nlm_read_reg(lnkbase, 0x1);	/* CMD */
+-	if ((val & 0x0400) == 0) {
+-		val |= 0x0400;
+-		nlm_write_reg(lnkbase, 0x1, val);
+-	}
+-
+-	/* Update IRQ in the PCI irq reg */
+-	val = nlm_read_pci_reg(lnkbase, 0xf);
+-	val &= ~0x1fu;
+-	val |= (1 << 8) | lirq;
+-	nlm_write_pci_reg(lnkbase, 0xf, val);
+-
+-	if (cpu_is_xlp9xx()) {
+-		/* MSI-X addresses */
+-		nlm_write_reg(lnkbase, PCIE_9XX_BRIDGE_MSIX_ADDR_BASE,
+-				msixaddr >> 8);
+-		nlm_write_reg(lnkbase, PCIE_9XX_BRIDGE_MSIX_ADDR_LIMIT,
+-				(msixaddr + MSI_ADDR_SZ) >> 8);
+-	} else {
+-		/* MSI-X addresses */
+-		nlm_write_reg(lnkbase, PCIE_BRIDGE_MSIX_ADDR_BASE,
+-				msixaddr >> 8);
+-		nlm_write_reg(lnkbase, PCIE_BRIDGE_MSIX_ADDR_LIMIT,
+-				(msixaddr + MSI_ADDR_SZ) >> 8);
+-	}
+-}
+-
+-/*
+- *  Allocate a MSI-X vector
+- */
+-static int xlp_setup_msix(uint64_t lnkbase, int node, int link,
+-	struct msi_desc *desc)
+-{
+-	struct xlp_msi_data *md;
+-	struct msi_msg msg;
+-	unsigned long flags;
+-	int t, msixvec, lirq, xirq, ret;
+-	uint64_t msixaddr;
+-
+-	/* Get MSI data for the link */
+-	lirq = PIC_PCIE_MSIX_IRQ(link);
+-	xirq = nlm_irq_to_xirq(node, nlm_link_msixirq(link, 0));
+-	md = irq_get_chip_data(xirq);
+-	msixaddr = MSIX_LINK_ADDR(node, link);
+-
+-	spin_lock_irqsave(&md->msi_lock, flags);
+-	/* switch the PCIe link to MSI-X mode at the first alloc */
+-	if (md->msix_alloc_mask == 0)
+-		xlp_config_link_msix(lnkbase, lirq, msixaddr);
+-
+-	/* allocate a MSI-X vec, and tell the bridge about it */
+-	t = fls(md->msix_alloc_mask);
+-	if (t == XLP_MSIXVEC_PER_LINK) {
+-		spin_unlock_irqrestore(&md->msi_lock, flags);
+-		return -ENOMEM;
+-	}
+-	md->msix_alloc_mask |= (1u << t);
+-	spin_unlock_irqrestore(&md->msi_lock, flags);
+-
+-	xirq += t;
+-	msixvec = nlm_irq_msixvec(xirq);
+-
+-	msg.address_hi = msixaddr >> 32;
+-	msg.address_lo = msixaddr & 0xffffffff;
+-	msg.data = 0xc00 | msixvec;
+-
+-	ret = irq_set_msi_desc(xirq, desc);
+-	if (ret < 0)
+-		return ret;
+-
+-	pci_write_msi_msg(xirq, &msg);
+-	return 0;
+-}
+-
+-int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+-{
+-	struct pci_dev *lnkdev;
+-	uint64_t lnkbase;
+-	int node, link, slot;
+-
+-	lnkdev = xlp_get_pcie_link(dev);
+-	if (lnkdev == NULL) {
+-		dev_err(&dev->dev, "Could not find bridge\n");
+-		return 1;
+-	}
+-	slot = PCI_SLOT(lnkdev->devfn);
+-	link = PCI_FUNC(lnkdev->devfn);
+-	node = slot / 8;
+-	lnkbase = nlm_get_pcie_base(node, link);
+-
+-	if (desc->msi_attrib.is_msix)
+-		return xlp_setup_msix(lnkbase, node, link, desc);
+-	else
+-		return xlp_setup_msi(lnkbase, node, link, desc);
+-}
+-
+-void __init xlp_init_node_msi_irqs(int node, int link)
+-{
+-	struct nlm_soc_info *nodep;
+-	struct xlp_msi_data *md;
+-	int irq, i, irt, msixvec, val;
+-
+-	pr_info("[%d %d] Init node PCI IRT\n", node, link);
+-	nodep = nlm_get_node(node);
+-
+-	/* Alloc an MSI block for the link */
+-	md = kzalloc(sizeof(*md), GFP_KERNEL);
+-	spin_lock_init(&md->msi_lock);
+-	md->msi_enabled_mask = 0;
+-	md->msi_alloc_mask = 0;
+-	md->msix_alloc_mask = 0;
+-	md->node = nodep;
+-	md->lnkbase = nlm_get_pcie_base(node, link);
+-
+-	/* extended space for MSI interrupts */
+-	irq = nlm_irq_to_xirq(node, nlm_link_msiirq(link, 0));
+-	for (i = irq; i < irq + XLP_MSIVEC_PER_LINK; i++) {
+-		irq_set_chip_and_handler(i, &xlp_msi_chip, handle_level_irq);
+-		irq_set_chip_data(i, md);
+-	}
+-
+-	for (i = 0; i < XLP_MSIXVEC_PER_LINK ; i++) {
+-		if (cpu_is_xlp9xx()) {
+-			val = ((node * nlm_threads_per_node()) << 7 |
+-				PIC_PCIE_MSIX_IRQ(link) << 1 | 0 << 0);
+-			nlm_write_pcie_reg(md->lnkbase, PCIE_9XX_MSIX_VECX(i +
+-					(link * XLP_MSIXVEC_PER_LINK)), val);
+-		} else {
+-			/* Initialize MSI-X irts to generate one interrupt
+-			 * per link
+-			 */
+-			msixvec = link * XLP_MSIXVEC_PER_LINK + i;
+-			irt = PIC_IRT_PCIE_MSIX_INDEX(msixvec);
+-			nlm_pic_init_irt(nodep->picbase, irt,
+-					PIC_PCIE_MSIX_IRQ(link),
+-					node * nlm_threads_per_node(), 1);
+-		}
+-
+-		/* Initialize MSI-X extended irq space for the link  */
+-		irq = nlm_irq_to_xirq(node, nlm_link_msixirq(link, i));
+-		irq_set_chip_and_handler(irq, &xlp_msix_chip, handle_level_irq);
+-		irq_set_chip_data(irq, md);
+-	}
+-}
+-
+-void nlm_dispatch_msi(int node, int lirq)
+-{
+-	struct xlp_msi_data *md;
+-	int link, i, irqbase;
+-	u32 status;
+-
+-	link = lirq - PIC_PCIE_LINK_MSI_IRQ_BASE;
+-	irqbase = nlm_irq_to_xirq(node, nlm_link_msiirq(link, 0));
+-	md = irq_get_chip_data(irqbase);
+-	if (cpu_is_xlp9xx())
+-		status = nlm_read_reg(md->lnkbase, PCIE_9XX_MSI_STATUS) &
+-						md->msi_enabled_mask;
+-	else
+-		status = nlm_read_reg(md->lnkbase, PCIE_MSI_STATUS) &
+-						md->msi_enabled_mask;
+-	while (status) {
+-		i = __ffs(status);
+-		do_IRQ(irqbase + i);
+-		status &= status - 1;
+-	}
+-
+-	/* Ack at eirr and PIC */
+-	ack_c0_eirr(PIC_PCIE_LINK_MSI_IRQ(link));
+-	if (cpu_is_xlp9xx())
+-		nlm_pic_ack(md->node->picbase,
+-				PIC_9XX_IRT_PCIE_LINK_INDEX(link));
+-	else
+-		nlm_pic_ack(md->node->picbase, PIC_IRT_PCIE_LINK_INDEX(link));
+-}
+-
+-void nlm_dispatch_msix(int node, int lirq)
+-{
+-	struct xlp_msi_data *md;
+-	int link, i, irqbase;
+-	u32 status;
+-
+-	link = lirq - PIC_PCIE_MSIX_IRQ_BASE;
+-	irqbase = nlm_irq_to_xirq(node, nlm_link_msixirq(link, 0));
+-	md = irq_get_chip_data(irqbase);
+-	if (cpu_is_xlp9xx())
+-		status = nlm_read_reg(md->lnkbase, PCIE_9XX_MSIX_STATUSX(link));
+-	else
+-		status = nlm_read_reg(md->lnkbase, PCIE_MSIX_STATUS);
+-
+-	/* narrow it down to the MSI-x vectors for our link */
+-	if (!cpu_is_xlp9xx())
+-		status = (status >> (link * XLP_MSIXVEC_PER_LINK)) &
+-			((1 << XLP_MSIXVEC_PER_LINK) - 1);
+-
+-	while (status) {
+-		i = __ffs(status);
+-		do_IRQ(irqbase + i);
+-		status &= status - 1;
+-	}
+-	/* Ack at eirr and PIC */
+-	ack_c0_eirr(PIC_PCIE_MSIX_IRQ(link));
+-}
+diff --git a/arch/mips/pci/pci-xlp.c b/arch/mips/pci/pci-xlp.c
+deleted file mode 100644
+index 9eff9137f78e..000000000000
+--- a/arch/mips/pci/pci-xlp.c
++++ /dev/null
+@@ -1,332 +0,0 @@
+-/*
+- * Copyright (c) 2003-2012 Broadcom Corporation
+- * All Rights Reserved
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the Broadcom
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY BROADCOM ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL BROADCOM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/types.h>
+-#include <linux/pci.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/msi.h>
+-#include <linux/mm.h>
+-#include <linux/irq.h>
+-#include <linux/irqdesc.h>
+-#include <linux/console.h>
+-
+-#include <asm/io.h>
+-
+-#include <asm/netlogic/interrupt.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-#include <asm/netlogic/mips-extns.h>
+-
+-#include <asm/netlogic/xlp-hal/iomap.h>
+-#include <asm/netlogic/xlp-hal/xlp.h>
+-#include <asm/netlogic/xlp-hal/pic.h>
+-#include <asm/netlogic/xlp-hal/pcibus.h>
+-#include <asm/netlogic/xlp-hal/bridge.h>
+-
+-static void *pci_config_base;
+-
+-#define pci_cfg_addr(bus, devfn, off) (((bus) << 20) | ((devfn) << 12) | (off))
+-
+-/* PCI ops */
+-static inline u32 pci_cfg_read_32bit(struct pci_bus *bus, unsigned int devfn,
+-	int where)
+-{
+-	u32 data;
+-	u32 *cfgaddr;
+-
+-	where &= ~3;
+-	if (cpu_is_xlp9xx()) {
+-		/* be very careful on SoC buses */
+-		if (bus->number == 0) {
+-			/* Scan only existing nodes - uboot bug? */
+-			if (PCI_SLOT(devfn) != 0 ||
+-					   !nlm_node_present(PCI_FUNC(devfn)))
+-				return 0xffffffff;
+-		} else if (bus->parent->number == 0) {	/* SoC bus */
+-			if (PCI_SLOT(devfn) == 0)	/* b.0.0 hangs */
+-				return 0xffffffff;
+-			if (devfn == 44)		/* b.5.4 hangs */
+-				return 0xffffffff;
+-		}
+-	} else if (bus->number == 0 && PCI_SLOT(devfn) == 1 && where == 0x954) {
+-		return 0xffffffff;
+-	}
+-	cfgaddr = (u32 *)(pci_config_base +
+-			pci_cfg_addr(bus->number, devfn, where));
+-	data = *cfgaddr;
+-	return data;
+-}
+-
+-static inline void pci_cfg_write_32bit(struct pci_bus *bus, unsigned int devfn,
+-	int where, u32 data)
+-{
+-	u32 *cfgaddr;
+-
+-	cfgaddr = (u32 *)(pci_config_base +
+-			pci_cfg_addr(bus->number, devfn, where & ~3));
+-	*cfgaddr = data;
+-}
+-
+-static int nlm_pcibios_read(struct pci_bus *bus, unsigned int devfn,
+-	int where, int size, u32 *val)
+-{
+-	u32 data;
+-
+-	if ((size == 2) && (where & 1))
+-		return PCIBIOS_BAD_REGISTER_NUMBER;
+-	else if ((size == 4) && (where & 3))
+-		return PCIBIOS_BAD_REGISTER_NUMBER;
+-
+-	data = pci_cfg_read_32bit(bus, devfn, where);
+-
+-	if (size == 1)
+-		*val = (data >> ((where & 3) << 3)) & 0xff;
+-	else if (size == 2)
+-		*val = (data >> ((where & 3) << 3)) & 0xffff;
+-	else
+-		*val = data;
+-
+-	return PCIBIOS_SUCCESSFUL;
+-}
+-
+-
+-static int nlm_pcibios_write(struct pci_bus *bus, unsigned int devfn,
+-		int where, int size, u32 val)
+-{
+-	u32 data;
+-
+-	if ((size == 2) && (where & 1))
+-		return PCIBIOS_BAD_REGISTER_NUMBER;
+-	else if ((size == 4) && (where & 3))
+-		return PCIBIOS_BAD_REGISTER_NUMBER;
+-
+-	data = pci_cfg_read_32bit(bus, devfn, where);
+-
+-	if (size == 1)
+-		data = (data & ~(0xff << ((where & 3) << 3))) |
+-			(val << ((where & 3) << 3));
+-	else if (size == 2)
+-		data = (data & ~(0xffff << ((where & 3) << 3))) |
+-			(val << ((where & 3) << 3));
+-	else
+-		data = val;
+-
+-	pci_cfg_write_32bit(bus, devfn, where, data);
+-
+-	return PCIBIOS_SUCCESSFUL;
+-}
+-
+-struct pci_ops nlm_pci_ops = {
+-	.read  = nlm_pcibios_read,
+-	.write = nlm_pcibios_write
+-};
+-
+-static struct resource nlm_pci_mem_resource = {
+-	.name		= "XLP PCI MEM",
+-	.start		= 0xd0000000UL, /* 256MB PCI mem @ 0xd000_0000 */
+-	.end		= 0xdfffffffUL,
+-	.flags		= IORESOURCE_MEM,
+-};
+-
+-static struct resource nlm_pci_io_resource = {
+-	.name		= "XLP IO MEM",
+-	.start		= 0x14000000UL, /* 64MB PCI IO @ 0x1000_0000 */
+-	.end		= 0x17ffffffUL,
+-	.flags		= IORESOURCE_IO,
+-};
+-
+-struct pci_controller nlm_pci_controller = {
+-	.index		= 0,
+-	.pci_ops	= &nlm_pci_ops,
+-	.mem_resource	= &nlm_pci_mem_resource,
+-	.mem_offset	= 0x00000000UL,
+-	.io_resource	= &nlm_pci_io_resource,
+-	.io_offset	= 0x00000000UL,
+-};
+-
+-struct pci_dev *xlp_get_pcie_link(const struct pci_dev *dev)
+-{
+-	struct pci_bus *bus, *p;
+-
+-	bus = dev->bus;
+-
+-	if (cpu_is_xlp9xx()) {
+-		/* find bus with grand parent number == 0 */
+-		for (p = bus->parent; p && p->parent && p->parent->number != 0;
+-				p = p->parent)
+-			bus = p;
+-		return (p && p->parent) ? bus->self : NULL;
+-	} else {
+-		/* Find the bridge on bus 0 */
+-		for (p = bus->parent; p && p->number != 0; p = p->parent)
+-			bus = p;
+-
+-		return p ? bus->self : NULL;
+-	}
+-}
+-
+-int xlp_socdev_to_node(const struct pci_dev *lnkdev)
+-{
+-	if (cpu_is_xlp9xx())
+-		return PCI_FUNC(lnkdev->bus->self->devfn);
+-	else
+-		return PCI_SLOT(lnkdev->devfn) / 8;
+-}
+-
+-int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+-{
+-	struct pci_dev *lnkdev;
+-	int lnkfunc, node;
+-
+-	/*
+-	 * For XLP PCIe, there is an IRQ per Link, find out which
+-	 * link the device is on to assign interrupts
+-	*/
+-	lnkdev = xlp_get_pcie_link(dev);
+-	if (lnkdev == NULL)
+-		return 0;
+-
+-	lnkfunc = PCI_FUNC(lnkdev->devfn);
+-	node = xlp_socdev_to_node(lnkdev);
+-
+-	return nlm_irq_to_xirq(node, PIC_PCIE_LINK_LEGACY_IRQ(lnkfunc));
+-}
+-
+-/* Do platform specific device initialization at pci_enable_device() time */
+-int pcibios_plat_dev_init(struct pci_dev *dev)
+-{
+-	return 0;
+-}
+-
+-/*
+- * If big-endian, enable hardware byteswap on the PCIe bridges.
+- * This will make both the SoC and PCIe devices behave consistently with
+- * readl/writel.
+- */
+-#ifdef __BIG_ENDIAN
+-static void xlp_config_pci_bswap(int node, int link)
+-{
+-	uint64_t nbubase, lnkbase;
+-	u32 reg;
+-
+-	nbubase = nlm_get_bridge_regbase(node);
+-	lnkbase = nlm_get_pcie_base(node, link);
+-
+-	/*
+-	 *  Enable byte swap in hardware. Program each link's PCIe SWAP regions
+-	 * from the link's address ranges.
+-	 */
+-	if (cpu_is_xlp9xx()) {
+-		reg = nlm_read_bridge_reg(nbubase,
+-				BRIDGE_9XX_PCIEMEM_BASE0 + link);
+-		nlm_write_pci_reg(lnkbase, PCIE_9XX_BYTE_SWAP_MEM_BASE, reg);
+-
+-		reg = nlm_read_bridge_reg(nbubase,
+-				BRIDGE_9XX_PCIEMEM_LIMIT0 + link);
+-		nlm_write_pci_reg(lnkbase,
+-				PCIE_9XX_BYTE_SWAP_MEM_LIM, reg | 0xfff);
+-
+-		reg = nlm_read_bridge_reg(nbubase,
+-				BRIDGE_9XX_PCIEIO_BASE0 + link);
+-		nlm_write_pci_reg(lnkbase, PCIE_9XX_BYTE_SWAP_IO_BASE, reg);
+-
+-		reg = nlm_read_bridge_reg(nbubase,
+-				BRIDGE_9XX_PCIEIO_LIMIT0 + link);
+-		nlm_write_pci_reg(lnkbase,
+-				PCIE_9XX_BYTE_SWAP_IO_LIM, reg | 0xfff);
+-	} else {
+-		reg = nlm_read_bridge_reg(nbubase, BRIDGE_PCIEMEM_BASE0 + link);
+-		nlm_write_pci_reg(lnkbase, PCIE_BYTE_SWAP_MEM_BASE, reg);
+-
+-		reg = nlm_read_bridge_reg(nbubase,
+-					BRIDGE_PCIEMEM_LIMIT0 + link);
+-		nlm_write_pci_reg(lnkbase, PCIE_BYTE_SWAP_MEM_LIM, reg | 0xfff);
+-
+-		reg = nlm_read_bridge_reg(nbubase, BRIDGE_PCIEIO_BASE0 + link);
+-		nlm_write_pci_reg(lnkbase, PCIE_BYTE_SWAP_IO_BASE, reg);
+-
+-		reg = nlm_read_bridge_reg(nbubase, BRIDGE_PCIEIO_LIMIT0 + link);
+-		nlm_write_pci_reg(lnkbase, PCIE_BYTE_SWAP_IO_LIM, reg | 0xfff);
+-	}
+-}
+-#else
+-/* Swap configuration not needed in little-endian mode */
+-static inline void xlp_config_pci_bswap(int node, int link) {}
+-#endif /* __BIG_ENDIAN */
+-
+-static int __init pcibios_init(void)
+-{
+-	uint64_t pciebase;
+-	int link, n;
+-	u32 reg;
+-
+-	/* Firmware assigns PCI resources */
+-	pci_set_flags(PCI_PROBE_ONLY);
+-	pci_config_base = ioremap(XLP_DEFAULT_PCI_ECFG_BASE, 64 << 20);
+-
+-	/* Extend IO port for memory mapped io */
+-	ioport_resource.start =	 0;
+-	ioport_resource.end   = ~0;
+-
+-	for (n = 0; n < NLM_NR_NODES; n++) {
+-		if (!nlm_node_present(n))
+-			continue;
+-
+-		for (link = 0; link < PCIE_NLINKS; link++) {
+-			pciebase = nlm_get_pcie_base(n, link);
+-			if (nlm_read_pci_reg(pciebase, 0) == 0xffffffff)
+-				continue;
+-			xlp_config_pci_bswap(n, link);
+-			xlp_init_node_msi_irqs(n, link);
+-
+-			/* put in intpin and irq - u-boot does not */
+-			reg = nlm_read_pci_reg(pciebase, 0xf);
+-			reg &= ~0x1ffu;
+-			reg |= (1 << 8) | PIC_PCIE_LINK_LEGACY_IRQ(link);
+-			nlm_write_pci_reg(pciebase, 0xf, reg);
+-			pr_info("XLP PCIe: Link %d-%d initialized.\n", n, link);
+-		}
+-	}
+-
+-	set_io_port_base(CKSEG1);
+-	nlm_pci_controller.io_map_base = CKSEG1;
+-
+-	register_pci_controller(&nlm_pci_controller);
+-	pr_info("XLP PCIe Controller %pR%pR.\n", &nlm_pci_io_resource,
+-		&nlm_pci_mem_resource);
+-
+-	return 0;
+-}
+-arch_initcall(pcibios_init);
+diff --git a/arch/mips/pci/pci-xlr.c b/arch/mips/pci/pci-xlr.c
+deleted file mode 100644
+index 2a1c81a129ba..000000000000
+--- a/arch/mips/pci/pci-xlr.c
++++ /dev/null
+@@ -1,368 +0,0 @@
+-/*
+- * Copyright 2003-2011 NetLogic Microsystems, Inc. (NetLogic). All rights
+- * reserved.
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the NetLogic
+- * license below:
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in
+- *    the documentation and/or other materials provided with the
+- *    distribution.
+- *
+- * THIS SOFTWARE IS PROVIDED BY NETLOGIC ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL NETLOGIC OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include <linux/types.h>
+-#include <linux/pci.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/msi.h>
+-#include <linux/mm.h>
+-#include <linux/irq.h>
+-#include <linux/irqdesc.h>
+-#include <linux/console.h>
+-#include <linux/pci_regs.h>
+-
+-#include <asm/io.h>
+-
+-#include <asm/netlogic/interrupt.h>
+-#include <asm/netlogic/haldefs.h>
+-#include <asm/netlogic/common.h>
+-
+-#include <asm/netlogic/xlr/msidef.h>
+-#include <asm/netlogic/xlr/iomap.h>
+-#include <asm/netlogic/xlr/pic.h>
+-#include <asm/netlogic/xlr/xlr.h>
+-
+-static void *pci_config_base;
+-
+-#define pci_cfg_addr(bus, devfn, off) (((bus) << 16) | ((devfn) << 8) | (off))
+-
+-/* PCI ops */
+-static inline u32 pci_cfg_read_32bit(struct pci_bus *bus, unsigned int devfn,
+-	int where)
+-{
+-	u32 data;
+-	u32 *cfgaddr;
+-
+-	cfgaddr = (u32 *)(pci_config_base +
+-			pci_cfg_addr(bus->number, devfn, where & ~3));
+-	data = *cfgaddr;
+-	return cpu_to_le32(data);
+-}
+-
+-static inline void pci_cfg_write_32bit(struct pci_bus *bus, unsigned int devfn,
+-	int where, u32 data)
+-{
+-	u32 *cfgaddr;
+-
+-	cfgaddr = (u32 *)(pci_config_base +
+-			pci_cfg_addr(bus->number, devfn, where & ~3));
+-	*cfgaddr = cpu_to_le32(data);
+-}
+-
+-static int nlm_pcibios_read(struct pci_bus *bus, unsigned int devfn,
+-	int where, int size, u32 *val)
+-{
+-	u32 data;
+-
+-	if ((size == 2) && (where & 1))
+-		return PCIBIOS_BAD_REGISTER_NUMBER;
+-	else if ((size == 4) && (where & 3))
+-		return PCIBIOS_BAD_REGISTER_NUMBER;
+-
+-	data = pci_cfg_read_32bit(bus, devfn, where);
+-
+-	if (size == 1)
+-		*val = (data >> ((where & 3) << 3)) & 0xff;
+-	else if (size == 2)
+-		*val = (data >> ((where & 3) << 3)) & 0xffff;
+-	else
+-		*val = data;
+-
+-	return PCIBIOS_SUCCESSFUL;
+-}
+-
+-
+-static int nlm_pcibios_write(struct pci_bus *bus, unsigned int devfn,
+-		int where, int size, u32 val)
+-{
+-	u32 data;
+-
+-	if ((size == 2) && (where & 1))
+-		return PCIBIOS_BAD_REGISTER_NUMBER;
+-	else if ((size == 4) && (where & 3))
+-		return PCIBIOS_BAD_REGISTER_NUMBER;
+-
+-	data = pci_cfg_read_32bit(bus, devfn, where);
+-
+-	if (size == 1)
+-		data = (data & ~(0xff << ((where & 3) << 3))) |
+-			(val << ((where & 3) << 3));
+-	else if (size == 2)
+-		data = (data & ~(0xffff << ((where & 3) << 3))) |
+-			(val << ((where & 3) << 3));
+-	else
+-		data = val;
+-
+-	pci_cfg_write_32bit(bus, devfn, where, data);
+-
+-	return PCIBIOS_SUCCESSFUL;
+-}
+-
+-struct pci_ops nlm_pci_ops = {
+-	.read  = nlm_pcibios_read,
+-	.write = nlm_pcibios_write
+-};
+-
+-static struct resource nlm_pci_mem_resource = {
+-	.name		= "XLR PCI MEM",
+-	.start		= 0xd0000000UL, /* 256MB PCI mem @ 0xd000_0000 */
+-	.end		= 0xdfffffffUL,
+-	.flags		= IORESOURCE_MEM,
+-};
+-
+-static struct resource nlm_pci_io_resource = {
+-	.name		= "XLR IO MEM",
+-	.start		= 0x10000000UL, /* 16MB PCI IO @ 0x1000_0000 */
+-	.end		= 0x100fffffUL,
+-	.flags		= IORESOURCE_IO,
+-};
+-
+-struct pci_controller nlm_pci_controller = {
+-	.index		= 0,
+-	.pci_ops	= &nlm_pci_ops,
+-	.mem_resource	= &nlm_pci_mem_resource,
+-	.mem_offset	= 0x00000000UL,
+-	.io_resource	= &nlm_pci_io_resource,
+-	.io_offset	= 0x00000000UL,
+-};
+-
+-/*
+- * The top level PCIe links on the XLS PCIe controller appear as
+- * bridges. Given a device, this function finds which link it is
+- * on.
+- */
+-static struct pci_dev *xls_get_pcie_link(const struct pci_dev *dev)
+-{
+-	struct pci_bus *bus, *p;
+-
+-	/* Find the bridge on bus 0 */
+-	bus = dev->bus;
+-	for (p = bus->parent; p && p->number != 0; p = p->parent)
+-		bus = p;
+-
+-	return p ? bus->self : NULL;
+-}
+-
+-static int nlm_pci_link_to_irq(int link)
+-{
+-	switch	(link) {
+-	case 0:
+-		return PIC_PCIE_LINK0_IRQ;
+-	case 1:
+-		return PIC_PCIE_LINK1_IRQ;
+-	case 2:
+-		if (nlm_chip_is_xls_b())
+-			return PIC_PCIE_XLSB0_LINK2_IRQ;
+-		else
+-			return PIC_PCIE_LINK2_IRQ;
+-	case 3:
+-		if (nlm_chip_is_xls_b())
+-			return PIC_PCIE_XLSB0_LINK3_IRQ;
+-		else
+-			return PIC_PCIE_LINK3_IRQ;
+-	}
+-	WARN(1, "Unexpected link %d\n", link);
+-	return 0;
+-}
+-
+-static int get_irq_vector(const struct pci_dev *dev)
+-{
+-	struct pci_dev *lnk;
+-	int link;
+-
+-	if (!nlm_chip_is_xls())
+-		return	PIC_PCIX_IRQ;	/* for XLR just one IRQ */
+-
+-	lnk = xls_get_pcie_link(dev);
+-	if (lnk == NULL)
+-		return 0;
+-
+-	link = PCI_SLOT(lnk->devfn);
+-	return nlm_pci_link_to_irq(link);
+-}
+-
+-#ifdef CONFIG_PCI_MSI
+-void arch_teardown_msi_irq(unsigned int irq)
+-{
+-}
+-
+-int arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+-{
+-	struct msi_msg msg;
+-	struct pci_dev *lnk;
+-	int irq, ret;
+-	u16 val;
+-
+-	/* MSI not supported on XLR */
+-	if (!nlm_chip_is_xls())
+-		return 1;
+-
+-	/*
+-	 * Enable MSI on the XLS PCIe controller bridge which was disabled
+-	 * at enumeration, the bridge MSI capability is at 0x50
+-	 */
+-	lnk = xls_get_pcie_link(dev);
+-	if (lnk == NULL)
+-		return 1;
+-
+-	pci_read_config_word(lnk, 0x50 + PCI_MSI_FLAGS, &val);
+-	if ((val & PCI_MSI_FLAGS_ENABLE) == 0) {
+-		val |= PCI_MSI_FLAGS_ENABLE;
+-		pci_write_config_word(lnk, 0x50 + PCI_MSI_FLAGS, val);
+-	}
+-
+-	irq = get_irq_vector(dev);
+-	if (irq <= 0)
+-		return 1;
+-
+-	msg.address_hi = MSI_ADDR_BASE_HI;
+-	msg.address_lo = MSI_ADDR_BASE_LO   |
+-		MSI_ADDR_DEST_MODE_PHYSICAL |
+-		MSI_ADDR_REDIRECTION_CPU;
+-
+-	msg.data = MSI_DATA_TRIGGER_EDGE |
+-		MSI_DATA_LEVEL_ASSERT	 |
+-		MSI_DATA_DELIVERY_FIXED;
+-
+-	ret = irq_set_msi_desc(irq, desc);
+-	if (ret < 0)
+-		return ret;
+-
+-	pci_write_msi_msg(irq, &msg);
+-	return 0;
+-}
+-#endif
+-
+-/* Extra ACK needed for XLR on chip PCI controller */
+-static void xlr_pci_ack(struct irq_data *d)
+-{
+-	uint64_t pcibase = nlm_mmio_base(NETLOGIC_IO_PCIX_OFFSET);
+-
+-	nlm_read_reg(pcibase, (0x140 >> 2));
+-}
+-
+-/* Extra ACK needed for XLS on chip PCIe controller */
+-static void xls_pcie_ack(struct irq_data *d)
+-{
+-	uint64_t pciebase_le = nlm_mmio_base(NETLOGIC_IO_PCIE_1_OFFSET);
+-
+-	switch (d->irq) {
+-	case PIC_PCIE_LINK0_IRQ:
+-		nlm_write_reg(pciebase_le, (0x90 >> 2), 0xffffffff);
+-		break;
+-	case PIC_PCIE_LINK1_IRQ:
+-		nlm_write_reg(pciebase_le, (0x94 >> 2), 0xffffffff);
+-		break;
+-	case PIC_PCIE_LINK2_IRQ:
+-		nlm_write_reg(pciebase_le, (0x190 >> 2), 0xffffffff);
+-		break;
+-	case PIC_PCIE_LINK3_IRQ:
+-		nlm_write_reg(pciebase_le, (0x194 >> 2), 0xffffffff);
+-		break;
+-	}
+-}
+-
+-/* For XLS B silicon, the 3,4 PCI interrupts are different */
+-static void xls_pcie_ack_b(struct irq_data *d)
+-{
+-	uint64_t pciebase_le = nlm_mmio_base(NETLOGIC_IO_PCIE_1_OFFSET);
+-
+-	switch (d->irq) {
+-	case PIC_PCIE_LINK0_IRQ:
+-		nlm_write_reg(pciebase_le, (0x90 >> 2), 0xffffffff);
+-		break;
+-	case PIC_PCIE_LINK1_IRQ:
+-		nlm_write_reg(pciebase_le, (0x94 >> 2), 0xffffffff);
+-		break;
+-	case PIC_PCIE_XLSB0_LINK2_IRQ:
+-		nlm_write_reg(pciebase_le, (0x190 >> 2), 0xffffffff);
+-		break;
+-	case PIC_PCIE_XLSB0_LINK3_IRQ:
+-		nlm_write_reg(pciebase_le, (0x194 >> 2), 0xffffffff);
+-		break;
+-	}
+-}
+-
+-int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+-{
+-	return get_irq_vector(dev);
+-}
+-
+-/* Do platform specific device initialization at pci_enable_device() time */
+-int pcibios_plat_dev_init(struct pci_dev *dev)
+-{
+-	return 0;
+-}
+-
+-static int __init pcibios_init(void)
+-{
+-	void (*extra_ack)(struct irq_data *);
+-	int link, irq;
+-
+-	/* PSB assigns PCI resources */
+-	pci_set_flags(PCI_PROBE_ONLY);
+-	pci_config_base = ioremap(DEFAULT_PCI_CONFIG_BASE, 16 << 20);
+-
+-	/* Extend IO port for memory mapped io */
+-	ioport_resource.start =	 0;
+-	ioport_resource.end   = ~0;
+-
+-	set_io_port_base(CKSEG1);
+-	nlm_pci_controller.io_map_base = CKSEG1;
+-
+-	pr_info("Registering XLR/XLS PCIX/PCIE Controller.\n");
+-	register_pci_controller(&nlm_pci_controller);
+-
+-	/*
+-	 * For PCI interrupts, we need to ack the PCI controller too, overload
+-	 * irq handler data to do this
+-	 */
+-	if (!nlm_chip_is_xls()) {
+-		/* XLR PCI controller ACK */
+-		nlm_set_pic_extra_ack(0, PIC_PCIX_IRQ, xlr_pci_ack);
+-	} else {
+-		if  (nlm_chip_is_xls_b())
+-			extra_ack = xls_pcie_ack_b;
+-		else
+-			extra_ack = xls_pcie_ack;
+-		for (link = 0; link < 4; link++) {
+-			irq = nlm_pci_link_to_irq(link);
+-			nlm_set_pic_extra_ack(0, irq, extra_ack);
+-		}
+-	}
+-	return 0;
+-}
+-
+-arch_initcall(pcibios_init);
+-- 
+2.29.2
+
