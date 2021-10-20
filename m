@@ -2,83 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A22E43543A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4CB435437
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhJTUAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S231612AbhJTUAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 16:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbhJTUAd (ORCPT
+        with ESMTP id S230020AbhJTUAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:00:33 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CCAC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:58:18 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id e19so12865ljk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:58:18 -0700 (PDT)
+        Wed, 20 Oct 2021 16:00:24 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2391C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:58:09 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id gn3so3286360pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:58:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Sg0o6MwSr5cVKhIKZL14YkinrZh0wp6xkfDKA7tp+7w=;
-        b=FLcpWYGZhutnNkkuvkw53ygCMmmg9LwqTbT6ZB9EQ+0BzZdpzhVrWJpY+Ah74l6Fo3
-         fKf8k8NzXJylaUyv4Ra6xGmCX2vWkERwH8CUBgfCgiM8z7LawcVJNAlJdfqFLr3ydLCn
-         VVaz28NJzgchYxZ7U6J+aXnVc+mjIfIDWQ7Hw=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G6IfeeDqmFRv+VNtJlNo9DpC30gRRzFoDk1z7x5hNO8=;
+        b=UOA8a+4Np44D2xq735OqnRfuypdBh3qtBnA5O1r6TG2IBy5JLXCbbQBtXZaUGQAsz7
+         g60sVHTWjwXheRuKDOw5bijCe+c5QSBpzJoQXJ2czBe3d5nLOxE9HYjL2pFHzAhp7/1o
+         RHdYync3Q1JECBxEOSz6ss9YhVboo5Yewcv/VXao+WVtXlsKNPVRfIwBWA26FMD7uPMT
+         pfGdruTujugwtLyj5Zv9w+f+Vv5/JnGCf67andCr7j0MVoMgyDrOzcqi/wLjWxYNQwmc
+         yfC5I6Btv5zEsauEnoP/Q9jqL3ueKF1rrAcdSm82yO82LGtWEp0IL8GFm3RRwnLd0E1e
+         ICDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sg0o6MwSr5cVKhIKZL14YkinrZh0wp6xkfDKA7tp+7w=;
-        b=pGTuXscJqFwiwM4siu+QHaOUEYRHw+zGxqmFe9sFnZUyoFWqpacMY0isy2kJ1AqZMJ
-         JvYk7oC1Zq1DCrwhiban0HR2ZZt3HF8eDtEP/MVLaZa5bTUggRVsWL1O5e7q6wvlS3Hl
-         bcqXfJbW3tYrfFUbELLBn9OtAfAKB8K90BloWuU4qybj7l3BgbQQ2eS9ejmjeMmHj6rB
-         dXUjySmzlWHda3HVWle5XnF+I6BDm1Mqt1tjXbg9/06wsCDfiHOJDrSewTup4T+r6a53
-         yR0vb7KfQWljgzhrl+i9MlchiklGplG5K5qBrKDmb2SSSYUCRb01nsA9tDiJIajPTcN5
-         re2w==
-X-Gm-Message-State: AOAM530rrLE3Xm68U6zObS75n28sUw11wadXZufRDKlemx4BYZ0WhGQj
-        o8uuRQ0foqCIvsy88CJtuMei9h+Tvzc23sTR
-X-Google-Smtp-Source: ABdhPJzUToIWifU7FB7+D6YG5rAdXSKSuoe1gaUu6FH7UoNabijV6vUEoZnsRZd08u3espm1FYxsRw==
-X-Received: by 2002:a2e:5c04:: with SMTP id q4mr1154418ljb.250.1634759896851;
-        Wed, 20 Oct 2021 12:58:16 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id g18sm289862lfr.120.2021.10.20.12.58.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 12:58:15 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id 145so14539152ljj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:58:14 -0700 (PDT)
-X-Received: by 2002:a2e:934d:: with SMTP id m13mr1155978ljh.191.1634759894116;
- Wed, 20 Oct 2021 12:58:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G6IfeeDqmFRv+VNtJlNo9DpC30gRRzFoDk1z7x5hNO8=;
+        b=LUaAwfMdqHQsnfOccSLBD2f8FhjPxEjgH3SG/epdtzQtzSQ+GM15WVKEkZtSCwyJq2
+         B3RK8vGfqI1zRLYwXBhK+oTNsDEUh/vTxR+Slql0F5T2SBSjbh0hrT/SH2Js4TObY2hh
+         20sXN6QGrdehIX6cTWlIoE45R190kffahDCdflhFyzpHEPkuJ+Ryt/BoQThbo05OJv9w
+         klkgoDhkxXcVHVJ4TUhlL9gExvhY0Q49NdSc+MPmTBGdzHFtIoa6hwkQiSlXov9gMLSg
+         WO9aByFDpaUQc9tyAbbk2MaHNjQYJ8L6QOS+OPwIX89WpDIt5WgBVOEbzA56RR8IEgh4
+         afNA==
+X-Gm-Message-State: AOAM530XOQPEp1R/WVWZMgu7s8R0Nc2UThwlZlXbetIjqoFKlgFGskrk
+        6wHzhRXrZbwCaylJz/ug+tSZIw==
+X-Google-Smtp-Source: ABdhPJyN4i2sjcHHWfmZFOTg5QI2Q/wSRpwCD3REu1VHOvdghL0F/YPTj2wIJqRSXt2EhLRzrdBg9A==
+X-Received: by 2002:a17:903:234d:b0:13f:3180:626a with SMTP id c13-20020a170903234d00b0013f3180626amr1089626plh.49.1634759889029;
+        Wed, 20 Oct 2021 12:58:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id js18sm6855603pjb.3.2021.10.20.12.58.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 12:58:08 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 19:58:00 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 00/13] KVM: Scalable memslots implementation
+Message-ID: <YXB0yHIdyeZA1kIb@google.com>
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <YW9Bq1FzlZHCzIS2@google.com>
+ <23a68186-8154-0e9e-b27a-5df5ab1c6546@maciej.szmigiero.name>
 MIME-Version: 1.0
-References: <87y26nmwkb.fsf@disp2133> <20211020174406.17889-6-ebiederm@xmission.com>
-In-Reply-To: <20211020174406.17889-6-ebiederm@xmission.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 20 Oct 2021 09:57:58 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whjqWwo16jtLduxb+0nbNetp8jNAz+go01wB4HGKX=jEQ@mail.gmail.com>
-Message-ID: <CAHk-=whjqWwo16jtLduxb+0nbNetp8jNAz+go01wB4HGKX=jEQ@mail.gmail.com>
-Subject: Re: [PATCH 06/20] signal/sh: Use force_sig(SIGKILL) instead of do_group_exit(SIGKILL)
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23a68186-8154-0e9e-b27a-5df5ab1c6546@maciej.szmigiero.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 7:44 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> +                       force_sig(SIGKILL);
+On Wed, Oct 20, 2021, Maciej S. Szmigiero wrote:
+> On 20.10.2021 00:07, Sean Christopherson wrote:
+> I have always used the chronological order but your argument about
+> reviewers being able to quickly see the delta makes sense - will switch
+> to having the latest changes on the top in the next version.
+> 
+> By the way, looking at the current https://lore.kernel.org/lkml/ at the
+> time I am writing this, while most of v3+ submissions are indeed
+> using the "latest on the top" order, some aren't:
+> https://lore.kernel.org/lkml/20210813145302.3933-1-kevin3.tang@gmail.com/T/
+> https://lore.kernel.org/lkml/20211015024658.1353987-1-xianting.tian@linux.alibaba.com/T/
+> https://lore.kernel.org/lkml/YW%2Fq70dLyF+YudyF@T590/T/ (this one uses a
+> hybrid approach - current version changes on the top, remaining changeset
+> in chronological order).
 
-I wonder if SIGFPE would be a more intuitive thing.
-
-Doesn't really matter, this is a "doesn't happen" event anyway, but
-that was just my reaction to reading the patch.
-
-            Linus
+Some people are heathens that have yet to be enlightened.  Rest assured I'll do
+plenty of prosthelytizing should they ever post to arch/x86/kvm ;-)
