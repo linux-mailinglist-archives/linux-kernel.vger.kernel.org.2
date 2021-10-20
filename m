@@ -2,103 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0918E434F2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E34434F31
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhJTPiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:38:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTPiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:38:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C408861390;
-        Wed, 20 Oct 2021 15:35:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634744153;
-        bh=oIuL65+uPXKMdPAOUM5sdzWeR/pkE9Rf5eGtMDkAkEc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZJGsEEcbf3rFeDF4ZHq2C7GhNrjuJhVVDe7hKu8ZvWI1ogZu0tyjOnIJBKM1mnsnR
-         qJ33ECYV8bioahbpYzrCFGiAJa5iNj4doAgcSKrN4RmbkX4xwUhWDP45mOD0zSk3gr
-         OoM93fNLrIfIVBTIaq7tyZyps+QZfTam9VqNYsDMaokQgDs+9hCf/+j5nHx2DMMJ4R
-         Rq8StK+OMqk0Sk4oAN85bmB1cQnOXvEO5cZqbvNo7FfncnBnSBjmd21nyeRmGsdJM3
-         VlB153czKl3nUK/ygKbNNnbVYuZBDumW1N+4gPDkuWK/3Vti86K19dp6ZXixbgdsss
-         2TsYWd6kSFjtA==
-Date:   Wed, 20 Oct 2021 21:05:49 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     kishon@ti.com, robh+dt@kernel.org, andrew@lunn.ch,
-        alexandre.belloni@bootlin.com, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] phy: Add lan966x ethernet serdes PHY driver
-Message-ID: <YXA3VVUGEjUR4HDC@matsya>
-References: <20211015123920.176782-1-horatiu.vultur@microchip.com>
- <20211015123920.176782-4-horatiu.vultur@microchip.com>
- <YW8HIHTCVgB+URJ5@matsya>
- <20211020091733.fxph2pq3xa3byvry@soft-dev3-1.localhost>
+        id S230363AbhJTPib convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 11:38:31 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:47847 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhJTPia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:38:30 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 41D75100013;
+        Wed, 20 Oct 2021 15:36:13 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 17:36:11 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ryan Barnett <ryan.barnett@collins.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/48] TI AM437X ADC1
+Message-ID: <20211020173611.07980c1d@xps13>
+In-Reply-To: <20211015081506.933180-1-miquel.raynal@bootlin.com>
+References: <20211015081506.933180-1-miquel.raynal@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020091733.fxph2pq3xa3byvry@soft-dev3-1.localhost>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-21, 11:17, Horatiu Vultur wrote:
-> The 10/19/2021 23:27, Vinod Koul wrote:
-> > 
-> > On 15-10-21, 14:39, Horatiu Vultur wrote:
-> > > Add the Microchip lan966x ethernet serdes PHY driver for interfaces
-> > > available in the lan966x SoC.
-> > >
-> > > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > > ---
-> > >  drivers/phy/microchip/Kconfig               |   8 +
-> > >  drivers/phy/microchip/Makefile              |   1 +
-> > >  drivers/phy/microchip/lan966x_serdes.c      | 540 ++++++++++++++++++++
-> > >  drivers/phy/microchip/lan966x_serdes_regs.h | 482 +++++++++++++++++
-> > >  4 files changed, 1031 insertions(+)
-> > >  create mode 100644 drivers/phy/microchip/lan966x_serdes.c
-> > >  create mode 100644 drivers/phy/microchip/lan966x_serdes_regs.h
-> > >
-> > > diff --git a/drivers/phy/microchip/Kconfig b/drivers/phy/microchip/Kconfig
-> > > index 3728a284bf64..38039ed0754c 100644
-> > > --- a/drivers/phy/microchip/Kconfig
-> > > +++ b/drivers/phy/microchip/Kconfig
-> > > @@ -11,3 +11,11 @@ config PHY_SPARX5_SERDES
-> > >       depends on HAS_IOMEM
-> > >       help
-> > >         Enable this for support of the 10G/25G SerDes on Microchip Sparx5.
-> > > +
-> > > +config PHY_LAN966X_SERDES
-> > > +     tristate "SerDes PHY driver for Microchip LAN966X"
-> > > +     select GENERIC_PHY
-> > > +     depends on OF
-> > > +     depends on MFD_SYSCON
-> > > +     help
-> > > +       Enable this for supporting SerDes muxing with Microchip LAN966X
-> > > diff --git a/drivers/phy/microchip/Makefile b/drivers/phy/microchip/Makefile
-> > > index 7b98345712aa..fd73b87960a5 100644
-> > > --- a/drivers/phy/microchip/Makefile
-> > > +++ b/drivers/phy/microchip/Makefile
-> > > @@ -4,3 +4,4 @@
-> > >  #
-> > >
-> > >  obj-$(CONFIG_PHY_SPARX5_SERDES) := sparx5_serdes.o
-> > > +obj-$(CONFIG_PHY_LAN966X_SERDES) := lan966x_serdes.o
-> > > diff --git a/drivers/phy/microchip/lan966x_serdes.c b/drivers/phy/microchip/lan966x_serdes.c
-> > > new file mode 100644
-> > > index 000000000000..e663bb9186a8
-> > > --- /dev/null
-> > > +++ b/drivers/phy/microchip/lan966x_serdes.c
-> > > @@ -0,0 +1,540 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > 
-> > Any reason why this is dual licensed, why not GPL only?
+Hi Lee,
+
+miquel.raynal@bootlin.com wrote on Fri, 15 Oct 2021 10:14:18 +0200:
+
+> /*
+>  * Reducing the Cc: list as this is just a rebase and all patches
+>  * received reviews already. Only the DT patches have received no
+>  * feedback, hence keeping the omap@ list in.
+>  */
 > 
-> No reason, I think I copy this from a different file.
+> Hello,
+> 
+> This is a (fairly big) series bringing support of AM437X ADC1.
+> On TI AM33XX SoCs family there is an ADC that can also be connected to a
+> touchscreen. This hardware has been extended and is present on certain
+> SoCs from the AM437X family. In particular, the touchscreen has been
+> replaced by a magnetic card reader. In both cases, the representation is
+> an MFD device with two children:
+> * on AM33XX: the touchscreen controller and the ADC
+> * on AM437X: the magnetic stripe reader and the ADC
+> 
+> This series really targets small and atomic changes so that the overall
+> review is eased, even though it leads to a lot of rather small patches.
+> Here are the steps:
+> * Supporting the missing clock
+> * Translating a single text file containing the description for the
+>   MFD, the touchscreen and the ADC into three independent yaml files.
+> * Cleaning/preparing the MFD driver.
+> * Supporting ADC1 in the MFD driver.
+> * Cleaning/preparing of the ADC driver.
+> * Supporting ADC1 in the ADC driver.
+> * Updating various device trees.
+> 
+> Here is the full series again, almost reviewed and acked entirely.
+> The clock patch has been acked, the ADC patches as well, so we expect
+> the series to go through the MFD tree if the maintainers agree with it.
 
-Please have a chat with your lawyers on the correct license this should
-have!
+Sorry to ping you so early, but we already are at -rc6 and I was
+wondering if you could take the series as it has been on the mailing
+list for a while and received no real change since a couple of weeks
+already, possibly avoiding the need for yet another resend of 48
+patches :)
 
--- 
-~Vinod
+Cheers,
+Miquèl
+
+> 
+> Thanks,
+> Miquèl
+> 
+> Changes in v6:
+> * Rebased the entire series on top of
+>   f38d3e404326 (linux-mfd/for-mfd-next) ("dt-bindings: mfd: Convert
+>   X-Powers AXP binding to a schema") as requested by Lee.
+> 
+> Changes in v5:
+> * Let the 48 v4 patch series aside, while only resending this patch that
+>   triggered a robot warning. Use the use_mag boolean instead of sticking
+>   to tscmag_wires which was not optimal anyway, silencing the 'not used'
+>   warning while keeping the code simple and clear.
+> 
+> Changes in v4:
+> * R-by/A-by tags added from Tony, Dmitry and Jonathan.
+> * Inverted the order of three patches following Jonathan's advice:
+>   removing the ENB macro (and related definitions) should be done first,
+>   in order to avoid further updates of these useless macros. This lead
+>   to the addition of a new patch to first do the removal (which was part
+>   of patch "Drop useless definitions from the header" in the first
+>   place).
+> * Updated the naming of the MFD driver data structure as discussed with
+>   Lee.
+> * Used the "magnetic stripe reader" wording when appropriate.
+> * Created a helper using the compatible to determine if there is a
+>   touchscreen or a magnetic stripe reader in this version of the
+>   hardware.
+> 
+> Changes in v3:
+> * Rebased on top of v5.15-rc1.
+> * R-by/A-by tags added.
+> * Light reordering to let the of_put_node() fix to be applied more easily
+> * Dropped a patch made useless because of the previous reordering
+> * Explained how the tscadc->ctrl variable was used.
+> * Fixed a couple of typos.
+> * Included the change for the HZ macro.
+> * Went further in the BIT()/FIELD_PREP() cleanup.
+> * Added maximum definitions for sample delay/open delay.
+> * Removed useless definitions.
+> * Fixed a couple of rebase conflicts (the series was not bisectable).
+> 
+> Changes in v2:
+> * Added various R-by/A-by tags.
+> * Various typos & style fixes.
+> [Bindings]
+> * Included the missing ti,am654-tscadc compatible.
+> * Reworded the compatible lines as requested by Jonathan.
+> * Reworded the bindings content a little bit as advised by Rob (subnodes
+>   being objects, MFD descriptions provided once, status and unused
+>   labels removed).
+> [SPDX changes]
+> * Mentioned that the license macro and the license text matched.
+> * Also added an SPDX tag in the MFD header.
+> [MFD header]
+> * Used the BIT(), GENMASK() and PREP_FIELD() macros when relevant.
+> [MFD driver]
+> * Did not reordered the variables declared on the probe stack as advised
+>   by Jonathan.
+> * Added missing of_node_put() calls.
+> * Moved the patch changing the place where the main structure is
+>   allocated to directly precede the patch using this change.
+> * Fixed the driver data wiring (bug happening between ex patches 16 and
+>   28).
+> * Added a commit just to explain the reordering of the register writes
+>   during initialization/resume.
+> * Explained the check about 'use_tsc' in the commit message.
+> * Added a link to the TRM in a commit message referencing it.
+> * Removed the use of the ti,tracks property, used a constant value
+>   instead.
+> * Dropped the error check when retrieving the "wrong" DT property
+>   (coordiante-readouts) which is unused.
+> 
+> Miquel Raynal (48):
+>   clk: ti: am43xx: Add clkctrl data for am43xx ADC1
+>   dt-bindings: mfd: ti,am3359-tscadc: Add a yaml description for this
+>     MFD
+>   dt-bindings: touchscreen: ti,am3359-tsc: New yaml description
+>   dt-bindings: iio: adc: ti,am3359-adc: New yaml description
+>   dt-bindings: touchscreen: ti,am3359-tsc: Remove deprecated text file
+>   dt-bindings: mfd: ti,am3359-tscadc: Describe am4372 MFD compatible
+>   dt-bindings: iio: adc: ti,am3359-adc: Describe am4372 ADC compatible
+>   mfd: ti_am335x_tscadc: Ensure a balanced number of node get/put
+>   mfd: ti_am335x_tscadc: Replace license text with SPDX tag
+>   mfd: ti_am335x_tscadc: Fix style
+>   mfd: ti_am335x_tscadc: Drop extra spacing when declaring stack
+>     variables
+>   mfd: ti_am335x_tscadc: Get rid of useless gotos
+>   mfd: ti_am335x_tscadc: Reword the comment explaining the dividers
+>   mfd: ti_am335x_tscadc: Don't search the tree for our clock
+>   mfd: ti_am335x_tscadc: Simplify divisor calculation
+>   mfd: ti_am335x_tscadc: Move the driver structure allocation earlier
+>   mfd: ti_am335x_tscadc: Use driver data
+>   mfd: ti_am335x_tscadc: Mimic the probe from resume()
+>   mfd: ti_am335x_tscadc: Drop useless variables from the driver
+>     structure
+>   mfd: ti_am335x_tscadc: Always provide an idle configuration
+>   mfd: ti_am335x_tscadc: Reorder the initialization steps
+>   mfd: ti_am335x_tscadc: Gather the ctrl register logic in one place
+>   mfd: ti_am335x_tscadc: Replace the header license text with SPDX tag
+>   mfd: ti_am335x_tscadc: Fix header spacing
+>   mfd: ti_am335x_tscadc: Use the new HZ_PER_MHZ macro
+>   mfd: ti_am335x_tscadc: Drop unused definitions from the header
+>   mfd: ti_am335x_tscadc: Use BIT(), GENMASK() and FIELD_PREP() when
+>     relevant
+>   mfd: ti_am335x_tscadc: Clarify the maximum values for DT entries
+>   mfd: ti_am335x_tscadc: Drop useless definitions from the header
+>   mfd: ti_am335x_tscadc: Rename the subsystem enable macro
+>   mfd: ti_am335x_tscadc: Add TSC prefix in certain macros
+>   mfd: ti_am335x_tscadc: Rename a variable
+>   mfd: ti_am335x_tscadc: Fix an error message
+>   mfd: ti_am335x_tscadc: Add a boolean to clarify the presence of a
+>     touchscreen
+>   mfd: ti_am335x_tscadc: Introduce a helper to deal with the type of
+>     hardware
+>   mfd: ti_am335x_tscadc: Add ADC1/magnetic reader support
+>   mfd: ti_am335x_tscadc: Support the correctly spelled DT property
+>   iio: adc: ti_am335x_adc: Wait the idle state to avoid stalls
+>   iio: adc: ti_am335x_adc: Replace license text with SPDX tag
+>   iio: adc: ti_am335x_adc: Fix style
+>   iio: adc: ti_am335x_adc: Get rid of useless gotos
+>   iio: adc: ti_am335x_adc: Gather the checks on the delays
+>   iio: adc: ti_am335x_adc: Add a unit to the timeout delay
+>   iio: adc: ti_am335x_adc: Add the scale information
+>   iio: adc: ti_am335x_adc: Add the am437x compatible
+>   ARM: dts: am437x-cm-t43: Use a correctly spelled DT property
+>   ARM: dts: am43xx: Describe the magnetic reader/ADC1 hardware module
+>   ARM: dts: am437x-gp-evm: enable ADC1
+> 
+>  .../bindings/iio/adc/ti,am3359-adc.yaml       |  70 ++++++
+>  .../input/touchscreen/ti,am3359-tsc.yaml      |  76 ++++++
+>  .../bindings/input/touchscreen/ti-tsc-adc.txt |  91 -------
+>  .../bindings/mfd/ti,am3359-tscadc.yaml        |  84 +++++++
+>  arch/arm/boot/dts/am437x-cm-t43.dts           |   2 +-
+>  arch/arm/boot/dts/am437x-gp-evm.dts           |   8 +
+>  arch/arm/boot/dts/am437x-l4.dtsi              |  31 ++-
+>  arch/arm/boot/dts/am43xx-clocks.dtsi          |   7 +
+>  drivers/clk/ti/clk-43xx.c                     |   1 +
+>  drivers/iio/adc/ti_am335x_adc.c               | 220 ++++++++++-------
+>  drivers/mfd/ti_am335x_tscadc.c                | 233 ++++++++++--------
+>  include/dt-bindings/clock/am4.h               |   1 +
+>  include/linux/mfd/ti_am335x_tscadc.h          | 119 +++++----
+>  13 files changed, 593 insertions(+), 350 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,am3359-adc.yaml
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/ti,am3359-tsc.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/ti-tsc-adc.txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/ti,am3359-tscadc.yaml
+> 
