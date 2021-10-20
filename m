@@ -2,101 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA80B4343A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015224343A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhJTC6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:58:22 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:58299 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229555AbhJTC6V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:58:21 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1BFCC5C017F;
-        Tue, 19 Oct 2021 22:56:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 19 Oct 2021 22:56:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=LihapO
-        JibDbKgLkQmgNkWazXnPD8ZgMdnaTNuIUHFRs=; b=frUlDL3DosxQwPSQ8/7ay8
-        WKCJEK0QPY99n9VH44MeU+p1SRwVXnT5A7sGYrwXjTpYD5zWMryZUkSFNTUt0d9t
-        VMoLthBqdNE/0FuqdZegbVZUDJAq4sBtBxknW5iiG0sZ8j9rQ+bRF+jxFqgX3+NA
-        gj/pxD8I8mhl9A5TWMb486LluQn5fscRS8A0Wx7m+i2JLjoJ9onI/ysFRfb75saV
-        ZbeEdSAXNw41lBQSH1kHuMEPaJPXxEAvojrTHiVKGJcrpQlUPNP+T5OxDPr268ks
-        cLTxLwpjfGc25heDthImrIgoRltI1XkQSH3ls8BcuhjnApJo2XuJD8hk5Wz1TAKQ
-        ==
-X-ME-Sender: <xms:RoVvYRsgcHjssvl02MUsub05kEv5OcMg0QemnC8H6li-j7DyLGt0Fg>
-    <xme:RoVvYacJcE91VUgmTkEQvZPUifylzNiK69B_9y7YqhYUwREGOa0JFDDT3y1jUJj1N
-    2hwgqhRyaGW-vS99yI>
-X-ME-Received: <xmr:RoVvYUx-tCqX0rhLfka6h3ztfoZGHO0hSY4oWTIQzvrmlKsPT8vhE-ehfCYuA1-WVzmg7vAuAhCKL4yN6mY6S3na91--Tos6hf8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvfedgheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
-    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:RoVvYYN6RfOt3jLCxR1Gl2ybjuoAoFZDQw3AViAdqaFCfmUxunUipg>
-    <xmx:RoVvYR-grsflt_Eeg-1cJ70rOjDbWg82xcyxlf_2jpyjMkhXfEMc8g>
-    <xmx:RoVvYYWjsOgx8MDNWd4XCoGrD83UKwavBZjFB7bq33eHtgbLelrzcA>
-    <xmx:R4VvYRzCYcwzAZyCGVi68zz2BHWL2Wtik8W3r-tw-VSXdglVptYjiw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 19 Oct 2021 22:56:04 -0400 (EDT)
-Date:   Wed, 20 Oct 2021 13:56:11 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     James Bottomley <jejb@linux.ibm.com>
-cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
-        shivasharan.srikanteshwara@broadcom.com,
-        martin.petersen@oracle.com, megaraidlinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: megaraid_mbox: return -ENOMEM on megaraid_init_mbox()
- allocation failure
-In-Reply-To: <2482854e18365087266c2f0907c1bbfd42bd2731.camel@linux.ibm.com>
-Message-ID: <c1a6e7f3-d62f-5c5e-b3ef-2320339e142a@linux-m68k.org>
-References: <1634640800-22502-1-git-send-email-jiapeng.chong@linux.alibaba.com> <2482854e18365087266c2f0907c1bbfd42bd2731.camel@linux.ibm.com>
+        id S229771AbhJTC7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:59:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:2002 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhJTC7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 22:59:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="252156960"
+X-IronPort-AV: E=Sophos;i="5.87,165,1631602800"; 
+   d="scan'208";a="252156960"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 19:57:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,165,1631602800"; 
+   d="scan'208";a="494409653"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 19 Oct 2021 19:57:23 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1md1n8-000CvW-Hc; Wed, 20 Oct 2021 02:57:22 +0000
+Date:   Wed, 20 Oct 2021 10:57:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/sev] BUILD SUCCESS
+ e7d445ab26db833d6640d4c9a08bee176777cc82
+Message-ID: <616f8588.ANH4V0Uf8ms3XoAr%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021, James Bottomley wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sev
+branch HEAD: e7d445ab26db833d6640d4c9a08bee176777cc82  x86/sme: Use #define USE_EARLY_PGTABLE_L5 in mem_encrypt_identity.c
 
-> On Tue, 2021-10-19 at 18:53 +0800, Jiapeng Chong wrote:
-> > From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> > 
-> > Fixes the following smatch warning:
-> > 
-> > drivers/scsi/megaraid/megaraid_mbox.c:715 megaraid_init_mbox() warn:
-> > returning -1 instead of -ENOMEM is sloppy.
-> 
-> Why is this a problem?  megaraid_init_mbox() is called using this
-> pattern:
-> 
-> 	// Start the mailbox based controller
-> 	if (megaraid_init_mbox(adapter) != 0) {
-> 		con_log(CL_ANN, (KERN_WARNING
-> 			"megaraid: mailbox adapter did not initialize\n"));
-> 
-> 		goto out_free_adapter;
-> 	}
-> 
-> So the only meaningful returns are 0 on success and anything else
-> (although megaraid uses -1 for this) on failure. 
+elapsed time: 720m
 
-I think you're arguing for a bool (?)
+configs tested: 126
+configs skipped: 85
 
-Smatch apparently did not think of that -- probably needs a holiday.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Since -1 is the conventional failure return, why alter that to something 
-> different that still won't be printed or acted on?  And worse still, if 
-> we make this change, it will likely excite other static checkers to 
-> complain we're losing error information ...
-> 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211019
+i386                             alldefconfig
+arc                                 defconfig
+powerpc                      mgcoge_defconfig
+sh                          r7780mp_defconfig
+arm                         hackkit_defconfig
+mips                        omega2p_defconfig
+powerpc                      cm5200_defconfig
+mips                        qi_lb60_defconfig
+xtensa                          iss_defconfig
+arm                           viper_defconfig
+mips                           gcw0_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                           u8500_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                       maple_defconfig
+m68k                        m5407c3_defconfig
+arm                         lubbock_defconfig
+powerpc                          allmodconfig
+arm                       imx_v4_v5_defconfig
+um                           x86_64_defconfig
+powerpc                     skiroot_defconfig
+sh                   sh7724_generic_defconfig
+x86_64                           alldefconfig
+arc                          axs103_defconfig
+arc                     haps_hs_smp_defconfig
+openrisc                            defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                 mpc85xx_cds_defconfig
+parisc                generic-64bit_defconfig
+sh                              ul2_defconfig
+arc                     nsimosci_hs_defconfig
+sh                           se7722_defconfig
+powerpc                   bluestone_defconfig
+mips                     decstation_defconfig
+m68k                       m5275evb_defconfig
+arm                          ep93xx_defconfig
+powerpc                     pq2fads_defconfig
+m68k                        m5307c3_defconfig
+xtensa                  audio_kc705_defconfig
+sh                           se7780_defconfig
+arm                  randconfig-c002-20211019
+x86_64               randconfig-c001-20211019
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+i386                 randconfig-a004-20211020
+i386                 randconfig-a003-20211020
+i386                 randconfig-a002-20211020
+i386                 randconfig-a005-20211020
+i386                 randconfig-a006-20211020
+i386                 randconfig-a001-20211020
+x86_64               randconfig-a015-20211019
+x86_64               randconfig-a012-20211019
+x86_64               randconfig-a016-20211019
+x86_64               randconfig-a014-20211019
+x86_64               randconfig-a013-20211019
+x86_64               randconfig-a011-20211019
+i386                 randconfig-a014-20211019
+i386                 randconfig-a016-20211019
+i386                 randconfig-a011-20211019
+i386                 randconfig-a015-20211019
+i386                 randconfig-a012-20211019
+i386                 randconfig-a013-20211019
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-... and arguably they would be correct.
+clang tested configs:
+arm                  randconfig-c002-20211019
+mips                 randconfig-c004-20211019
+i386                 randconfig-c001-20211019
+s390                 randconfig-c005-20211019
+x86_64               randconfig-c007-20211019
+riscv                randconfig-c006-20211019
+powerpc              randconfig-c003-20211019
+x86_64               randconfig-a004-20211019
+x86_64               randconfig-a006-20211019
+x86_64               randconfig-a005-20211019
+x86_64               randconfig-a001-20211019
+x86_64               randconfig-a002-20211019
+x86_64               randconfig-a003-20211019
+i386                 randconfig-a001-20211019
+i386                 randconfig-a003-20211019
+i386                 randconfig-a004-20211019
+i386                 randconfig-a005-20211019
+i386                 randconfig-a002-20211019
+i386                 randconfig-a006-20211019
+hexagon              randconfig-r041-20211019
+hexagon              randconfig-r045-20211019
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
