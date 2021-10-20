@@ -2,161 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB7F434944
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9D4434942
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhJTKrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 06:47:43 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:51148 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230242AbhJTKrk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230265AbhJTKrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 20 Oct 2021 06:47:40 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KAOVfX018155;
-        Wed, 20 Oct 2021 12:45:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=MlxYuucZ3hZA3qvuKEJnxNhi1CYH/kqnrHAjiFr79Po=;
- b=Hs14Rn5RB7KO632z6fryOsvT+wyNnBwekph0ayCGJavFI4brgsuQ/2llb3Af1xqPod9m
- w9q74e18eoN60W8CH2UsOps2rZ3uyl8Q+sIwgJuM/vbDSq1dSyaO6LQ7kF1GmbYgQLe2
- 4DrBYgmIpYEXgikLK81erL5nuwDWObAWDLrf46lrVd+72X9rBEgGqWCMQRvbE5IhZQE7
- XEZ4Yqn4upavnnEK8kggCO443cnP5UZtu9E0ebURc9oXqiUMwICpQHLLlu4MZ7lvul4d
- 2M7YXGceErpGogWh3jKSq9Mbo/lyVdO4cqShCzkDvlFMa+h9fNuPYm7Tsl0vuLGI89xH FQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3btdkya26d-1
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65020 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230235AbhJTKrh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 06:47:37 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KABLpM009597;
+        Wed, 20 Oct 2021 06:45:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=EDYIhGku+KVMnQ5TfBBwBLRYd7vcScw0FLWf9FwaV40=;
+ b=fQSfR1AgKt+wHC8PFDXYy7BGN5Ju7cmFzag/T5W8/nhxDXed/6+zAZKgISo5rGmoSDQt
+ lsZDVChKd186UlFq8rUPLMeytkg4Pknq1QiL7pnZ8I7cfIW1KwjYNW6dHnhnDvSFSBlc
+ pjxUutKYubTZrSU5jXR+nFELra56VTqSxS7XqKqb5knfnlHxl66vI4sPcFxHzZJKugaa
+ tiLDAHRjR8/MWNlZ75MWEkwmr1XgPSI/OcyG8RtjmHTj5mNQ2clYnOZuImdKn1SPlSdw
+ 4cxbFh2+l9AJ1iHimow0ntvT554AVDFYeQgRhphr7+jqsT/Jt4FE+i9S9fjT+oG5ozL4 rg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bth4x0k1f-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 12:45:07 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7833710002A;
-        Wed, 20 Oct 2021 12:45:05 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6A46A21A230;
-        Wed, 20 Oct 2021 12:45:05 +0200 (CEST)
-Received: from lmecxl0995.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 20 Oct
- 2021 12:45:04 +0200
-Subject: Re: [PATCH] dmaengine: stm32-dma: avoid 64-bit division in
- stm32_dma_get_max_width
-To:     Arnd Bergmann <arnd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        <dmaengine@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211019153532.366429-1-arnd@kernel.org>
-From:   Amelie DELAUNAY <amelie.delaunay@foss.st.com>
-Message-ID: <da5ceaac-a123-06a9-c5a9-d0b16cb4d6e5@foss.st.com>
-Date:   Wed, 20 Oct 2021 12:45:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 06:45:23 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19KAjLSu017457;
+        Wed, 20 Oct 2021 06:45:23 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bth4x0k0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 06:45:22 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19KAhbam032610;
+        Wed, 20 Oct 2021 10:45:20 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3bqpca10qd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 10:45:20 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19KAdQsH52822276
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 10:39:26 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F37FD52078;
+        Wed, 20 Oct 2021 10:45:16 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.29.112])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 2CD9752076;
+        Wed, 20 Oct 2021 10:45:16 +0000 (GMT)
+Date:   Wed, 20 Oct 2021 12:45:13 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Michael Mueller <mimu@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>, farman@linux.ibm.com,
+        kvm@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH 3/3] KVM: s390: clear kicked_mask if not idle after set
+Message-ID: <20211020124513.6b90a15b.pasic@linux.ibm.com>
+In-Reply-To: <ae8b3b11-2eef-0712-faee-5e3467d3e985@de.ibm.com>
+References: <20211019175401.3757927-1-pasic@linux.ibm.com>
+        <20211019175401.3757927-4-pasic@linux.ibm.com>
+        <8cb919e7-e7ab-5ec1-591e-43f95f140d7b@linux.ibm.com>
+        <ae8b3b11-2eef-0712-faee-5e3467d3e985@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211019153532.366429-1-arnd@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
- (10.75.127.5)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TisAX4J2X2YFstPZcoy5UdTvGI97t3OS
+X-Proofpoint-ORIG-GUID: QmdZV23ZkjfTHeT84G7i_g7pzw63RGBG
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-10-20_04,2021-10-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=981 priorityscore=1501 impostorscore=0 lowpriorityscore=0
+ mlxscore=0 malwarescore=0 adultscore=0 clxscore=1015 phishscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110200060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed, 20 Oct 2021 12:31:19 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-Thanks for your patch.
-
-On 10/19/21 5:35 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+> > Before releasing something like this, where none of us is sure if
+> > it really saves cpu cost, I'd prefer to run some measurement with
+> > the whole kicked_mask logic removed and to compare the number of
+> > vcpu wake ups with the number of interrupts to be processed by
+> > the gib alert mechanism in a slightly over committed host while
+> > driving with Matthews test load.  
 > 
-> Using the % operator on a 64-bit variable is expensive and can
-> cause a link failure:
-> 
-> arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_get_max_width':
-> stm32-dma.c:(.text+0x170): undefined reference to `__aeabi_uldivmod'
-> arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_set_xfer_param':
-> stm32-dma.c:(.text+0x1cd4): undefined reference to `__aeabi_uldivmod'
-> 
-> As we know that we just want to check the alignment in
-> stm32_dma_get_max_width(), there is no need for a full division, and
-> using a simple mask is a faster replacement.
-> 
-> In stm32_dma_set_xfer_param(), it is possible to pass a non-power-of-two
-> length, so this does not work. I assume this would in fact be a mistake,
-> and the hardware does not work correctly with a burst of e.g. 5 bytes
-> on a five-byte aligned address. Change this to only allow burst
-> transfers if the address is a multiple of the length, and that length
-> is a power-of-two number.
-> 
-> Fixes: b20fd5fa310c ("dmaengine: stm32-dma: fix stm32_dma_get_max_width")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/dma/stm32-dma.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
-> index 2283c500f4ce..102278f7d13e 100644
-> --- a/drivers/dma/stm32-dma.c
-> +++ b/drivers/dma/stm32-dma.c
-> @@ -280,7 +280,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
->   	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
->   		max_width = max_width >> 1;
->   
-> -	if (buf_addr % max_width)
-> +	if (buf_addr & (max_width - 1))
->   		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
->   
->   	return max_width;
-> @@ -757,7 +757,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
->   		 * Set memory burst size - burst not possible if address is not aligned on
->   		 * the address boundary equal to the size of the transfer
->   		 */
-> -		if (buf_addr % buf_len)
-> +		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
+> But I think patch 1 and 2 can go immediately as they measurably or
+> testable fix things. Correct?
 
-No need to check !is_power_of_2(buf_len) here.
-Just after computing src_maxburst,
-	src_best_burst = stm32_dma_get_best_burst(buf_len,
-						  src_maxburst,
-						  fifoth,
-						  src_addr_width);
-The configured burst (src_best_best) already take buf_len into account.
-
-So I would remove !is_power_of_2(buf_len) from the if here and fix the 
-missing space:
-
-CHECK: spaces preferred around that '-' (ctx:WxV)
-#68: FILE: drivers/dma/stm32-dma.c:760:
-+		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
-  		                                                    ^
-
->   			src_maxburst = 1;
->   		else
->   			src_maxburst = STM32_DMA_MAX_BURST;
-> @@ -813,7 +813,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
->   		 * Set memory burst size - burst not possible if address is not aligned on
->   		 * the address boundary equal to the size of the transfer
->   		 */
-> -		if (buf_addr % buf_len)
-> +		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
-
-Ditto.
-
->   			dst_maxburst = 1;
->   		else
->   			dst_maxburst = STM32_DMA_MAX_BURST;
-> 
-
-With these fixes, you can add my
-Reviewed-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Tested-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+I think so as well. And if patch 3 is going to be dropped, I would
+really like to keep the unconditional clear in kvm_arch_vcpu_runnable(),
+as my analysis in the discussion points out: I think it can save us
+form trouble this patch is trying to address.
 
 Regards,
-Amelie
+Halil
