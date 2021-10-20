@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9CF434379
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5165C43437C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhJTCUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:20:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54115 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229637AbhJTCU1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:20:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634696293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D74GYl4Q75+oXj/aMCjO7YTPXeKQjd+IcbtXAGLf308=;
-        b=Bs2r5YFJXMOX61pXNAEqEnnG1ilWnSguIV8DwERM8Ui4u6QEm0fbH07Fk03l2H7QT7Nz/L
-        IwS8bh7OOFq4SF9eWN7qw3ae07Y1g4t35BUABs2g3RRgp1YRhz3dGLJCsb2x52krb6UV5l
-        b/s2yWCaciS625SLcSsN74CSkvj0kSg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-8Kxz5JYxMzONNvmCRHlvSQ-1; Tue, 19 Oct 2021 22:18:10 -0400
-X-MC-Unique: 8Kxz5JYxMzONNvmCRHlvSQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F264108088A;
-        Wed, 20 Oct 2021 02:18:07 +0000 (UTC)
-Received: from T590 (ovpn-8-20.pek2.redhat.com [10.72.8.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 22A5D103BAC7;
-        Wed, 20 Oct 2021 02:17:46 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 10:17:41 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Quanyang Wang <quanyang.wang@windriver.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
- cgroup_bpf_offline
-Message-ID: <YW98RTBdzqin+9Ko@T590>
-References: <20211018075623.26884-1-quanyang.wang@windriver.com>
- <YW04Gqqm3lDisRTc@T590>
- <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
- <YW1vuXh4C4tX9ZHP@T590>
- <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
- <YW78AohHqgqM9Cuw@blackbook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YW78AohHqgqM9Cuw@blackbook>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        id S229678AbhJTCWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:22:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229555AbhJTCWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 22:22:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2640611EF;
+        Wed, 20 Oct 2021 02:20:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634696430;
+        bh=JxsIowpKGVDra9B8vW+kfpr7Ls3YqwRYfU0D7J97Q7Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e9CTLuAykGzMv8YTLt2sQ1pW0/Og9sxYk/SPbIvXSlizzu3kJcyh+OuPmCrYUZv2V
+         6tsLB0wnEreN4Gg8HbHiP2OtrChZr3g0v281Uk/4IMHk2envvy0zBfjGTyfW0X9SXa
+         5X1KqCpg9ftE79IIE0NB/QIOK8QVythuzhocjY6g6V9qraRRuiisWWx0/XbC86whgp
+         vOziy913xOfnVKi5vhlwb/xFt8n1Stam8GvOhMzhISBTaXGPWaa70t4EtO8RgyaGNa
+         aEmu9etm7RLeU9xAXvdhFkvCxuG6V0fVUPNrKNjw9ze+FEUp0JKwHw7DmM1fnteGk1
+         PVfMOfEWnN89Q==
+Date:   Wed, 20 Oct 2021 11:20:27 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, <mingo@redhat.com>,
+        <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] kselftests: ftrace: limit the executing time by reading
+ from cached trace
+Message-Id: <20211020112027.b01762f2adcfac99e71dcf99@kernel.org>
+In-Reply-To: <20211018221636.47157e52@gandalf.local.home>
+References: <20211018132616.2234853-1-lizhijian@cn.fujitsu.com>
+        <20211018221636.47157e52@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 07:10:26PM +0200, Michal Koutný wrote:
-> Hi.
-> 
-> On Tue, Oct 19, 2021 at 06:41:14PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
-> > So I add 2 "Fixes tags" here to indicate that 2 commits introduce two
-> > different issues.
-> 
-> AFAIU, both the changes are needed to cause the leak, a single patch
-> alone won't cause the issue. Is that correct? (Perhaps not as I realize,
-> see below.)
-> 
-> But on second thought, the problem is the missing percpu_ref_exit() in
-> the (root) cgroup release path and percpu counter would allocate the
-> percpu_count_ptr anyway, so 4bfc0bb2c60e is only making the leak more
-> visible. Is this correct?
-> 
-> I agree the commit 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
-> percpu_ref in fast path") alone did nothing wrong.
+On Mon, 18 Oct 2021 22:16:36 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-If only precpu_ref data is leaked, it is fine to add "Fixes: 2b0d3d3e4fcf",
-I thought cgroup_bpf_release() needs to release more for root cgroup, but
-looks not true.
+> On Mon, 18 Oct 2021 21:26:16 +0800
+> Li Zhijian <lizhijian@cn.fujitsu.com> wrote:
+> 
+> > LKP/0day observed that kselftests/ftrace cannot finish within 1 hour on
+> > a 96 cpus platform where it hangs in the line like:
+> > 'cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l'
+> > subsystem-enable.tc
+> > 
+> > It seems that trace will keep growing during it's read by 'cat' command.
+> > Consequently, trace becomes too large to finish reading.
+> > 
+> > replace 'cat trace' by:
+> > $ sed -i 's/cat trace |/read_cached_trace |/g' $(find test.d -name "*.tc")
+> > 
+> 
+> Instead, what happens if you add this command to each test?
+> 
+> if [ -t options/pause-on-trace ]; then
+>    echo 1 > options/pause-on-trace
+> fi
+> 
+> We also need to add to the "initialize_ftrace" function in test.d/functions.
+> 
+> if [ -t options/pause-on-trace ]; then
+>    echo 0 > options/pause-on-trace
+> fi
+
+Hmm, by the way, shouldn't we set this feature by default?
+There are many "cat trace | grep ..." style test code in ftracetest just for
+checking whether the event is recorded. At least for the ftracetest, it should
+be set unless the testcase is explicitly disable it.
+
+Thank you.
+
+> 
+> -- Steve
+> 
+> > CC: Philip Li <philip.li@intel.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> > ---
 
 
-Thanks,
-Ming
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
