@@ -2,99 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578B44347EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C874347F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhJTJbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:31:47 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58044 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhJTJbp (ORCPT
+        id S230059AbhJTJbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229976AbhJTJbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:31:45 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 08B1E1F43FDB
-Subject: Re: [PATCH v2 3/9] media: platform: mtk-mdp3: add chip independence
- architecture
-To:     "roy-cw.yeh" <roy-cw.yeh@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        "river . cheng" <river.cheng@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20211020071448.14187-1-roy-cw.yeh@mediatek.com>
- <20211020071448.14187-4-roy-cw.yeh@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <89b3f65d-3ad1-5f81-7e16-0c00db74678b@collabora.com>
-Date:   Wed, 20 Oct 2021 11:29:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211020071448.14187-4-roy-cw.yeh@mediatek.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 20 Oct 2021 05:31:50 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E832C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:29:35 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id g10so23351375edj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:29:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=jZzGb3vO+QEI8hZOb8qtN4bmMEeRFebl3SxOzOsGTBo=;
+        b=vCY4A5zLiPNS7NQIDxE7CFM5Xt0fWjFflyEs+UBnxbs+QUYgu8g9OfftHfe++iUhVP
+         nIauw3XLlXGUiy8KoX5I8SNt3Q/cXPYMrtAQCmcxRXzgE4EfKY2DXg7ANlg1H6n81ZGY
+         EEDvWftLzcyy/87+IMEl6AFE+60RA4GioSMZnN3p5zKbgzFMGOkDMhzsg1ERar7cjLmy
+         zyI84pYaqGEewQ+zXeOun82AeUTs+mRPWuX8rwUz2lQvliaU3HdLyPlfb29cl0Lc4Uvn
+         Yp3pF6qtVGBcZ4euPJUUQnZ06u6PYkzx0z27DSNoc8eUBy57iE4xoYGauzrWRr3WfRuV
+         hgJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=jZzGb3vO+QEI8hZOb8qtN4bmMEeRFebl3SxOzOsGTBo=;
+        b=vc89b5eNk9+dLnD7fn4bDUjprf6hN5j/FoOcFjSREZ18efu61vUWrXtI4X/U+esQoX
+         F8OdB049G9x19vvZfl5ANuDq3ZlSNrgUkfFSjjlYz/W/FLaFXCar9BfvqKtQCp1AKQCA
+         zvVHqpr4CZoaUeS2AdjwFwbGi4dUmSlJonDTisE/is4E1YcNhA/JNovvrIA+5Xked8Zf
+         1IVdTkE1yrcLvZRc9zGzBQblZJxP5n+8O8UlVsj4AHW6iHIyUATQ824/HmW2QVdWXpdb
+         df9QEG8mRY6TjzOdPC/BsfkmeFF0WO+Z0h8AAL1KAMoGzPq+QEeFzUaiwKRHVGNma4ha
+         OXjA==
+X-Gm-Message-State: AOAM533+NG7US7NQhShRoV02DAFBvS7+XWt1SjmNFM0aLlD+7uXzP7sT
+        K3drhHZKMuiU6q4a8dIoanyJBZ5xkEQMaw==
+X-Google-Smtp-Source: ABdhPJxg1Mbljl7owGUbgbqHmwnL2TBA4zDVxkHFfKe4wKSkPtf/kc0yzFjqDaDJ94HMJ9op3UEPew==
+X-Received: by 2002:a17:907:7f24:: with SMTP id qf36mr27718174ejc.491.1634722171371;
+        Wed, 20 Oct 2021 02:29:31 -0700 (PDT)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id a13sm748381ejx.39.2021.10.20.02.29.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Oct 2021 02:29:30 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v4 1/2] block, bfq: counted root group into
+ 'num_groups_with_pending_reqs'
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <1f89cece-a123-6190-bb72-d59035dac266@huawei.com>
+Date:   Wed, 20 Oct 2021 11:29:29 +0200
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2E8712BB-5BFB-4647-AE9A-B06E199500D7@linaro.org>
+References: <20211014014556.3597008-1-yukuai3@huawei.com>
+ <20211014014556.3597008-2-yukuai3@huawei.com>
+ <0DD9CFF0-6110-497D-A352-9F37CADADC6B@linaro.org>
+ <1f89cece-a123-6190-bb72-d59035dac266@huawei.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 20/10/21 09:14, roy-cw.yeh ha scritto:
-> From: "Roy-CW.Yeh" <roy-cw.yeh@mediatek.com>
-> 
-> Add chip independence architecture
-> - Add hal architecture for mt8183
-> - Add driver data to adapt other soc
-> 
-> Signed-off-by: Roy-CW.Yeh <roy-cw.yeh@mediatek.com>
-> ---
->   .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.c   | 154 ++++---
->   .../media/platform/mtk-mdp3/mtk-mdp3-comp.c   | 181 ++++-----
->   .../media/platform/mtk-mdp3/mtk-mdp3-comp.h   | 193 ++++++++-
->   .../media/platform/mtk-mdp3/mtk-mdp3-core.c   | 383 +++++++++++++++++-
->   .../media/platform/mtk-mdp3/mtk-mdp3-core.h   |  19 +
->   .../media/platform/mtk-mdp3/mtk-mdp3-m2m.c    |  10 +-
->   .../media/platform/mtk-mdp3/mtk-mdp3-regs.c   | 259 +-----------
->   .../media/platform/mtk-mdp3/mtk-mdp3-regs.h   | 268 ++++++------
->   8 files changed, 925 insertions(+), 542 deletions(-)
-> 
 
-snip...
 
-> diff --git a/drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.c b/drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.c
-> index a6caefb097be..50fd5430a565 100644
-> --- a/drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.c
-> +++ b/drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.c
+> Il giorno 20 ott 2021, alle ore 11:20, yukuai (C) <yukuai3@huawei.com> =
+ha scritto:
+>=20
+> On 2021/10/20 16:51, Paolo Valente wrote:
+>=20
+>>> @@ -860,9 +870,25 @@ void bfq_weights_tree_remove(struct bfq_data =
+*bfqd,
+>>> 			     struct bfq_queue *bfqq)
+>>> {
+>>> 	struct bfq_entity *entity =3D bfqq->entity.parent;
+>>> +	struct bfq_sched_data *sd;
+>>> +
+>>> +	/*
+>>> +	 * If the bfq queue is in root group, the decrement of
+>>> +	 * num_groups_with_pending_reqs is performed immediately upon =
+the
+>>> +	 * deactivation of entity.
+>>> +	 */
+>>> +	if (!entity) {
+>>> +		entity =3D &bfqd->root_group->entity;
+>>> +		sd =3D entity->my_sched_data;
+>>> +
+>>> +		if (!sd->in_service_entity)
+>>> +			bfq_clear_group_with_pending_reqs(bfqd, entity);
+>>> +
+>>> +		return;
+>>> +	}
+>>>=20
+>>> 	for_each_entity(entity) {
+>>> -		struct bfq_sched_data *sd =3D entity->my_sched_data;
+>>> +		sd =3D entity->my_sched_data;
+>>>=20
+>>> 		if (sd->next_in_service || sd->in_service_entity) {
+>>> 			/*
+>>> @@ -880,7 +906,8 @@ void bfq_weights_tree_remove(struct bfq_data =
+*bfqd,
+>>> 		}
+>>>=20
+>>> 		/*
+>>> -		 * The decrement of num_groups_with_pending_reqs is
+>>> +		 * If the bfq queue is not in root group,
+>>> +		 * the decrement of num_groups_with_pending_reqs is
+>> I'm sorry if I didn't notice this before, but why do you postpone the
+>> decrement only for queues not in root group?  If I'm not missing
+>> anything, the active (i.e., with pending reqs) state of the root =
+group
+>> is to be computed as that of ay other group.
+>=20
+> Hi, Paolo
+>=20
+> I thought if queue is in root group, then bfqq->entity.parent is NULL,
+> and such case is handled above, which is separate from previous
+> implementation for queues that are not in root group.
+>=20
+> Is this the wrong way to handle root group?
+>=20
 
-snip..
+I think that, if we want to count also the root group among the active
+ones, then the logic for tagging the root group as active must be the
+same as the other groups. Or am I missing something?
 
-> @@ -732,7 +514,7 @@ int mdp_frameparam_init(struct mdp_frameparam *param)
->   	param->num_captures = 1;
->   	frame = &param->captures[0];
->   	frame->format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
-> -	frame->mdp_fmt = mdp_try_fmt_mplane(&frame->format, param, 0);
-> +	frame->mdp_fmt = mdp_try_fmt_mplane(mdp, &frame->format, param, 0);
->   	frame->ycbcr_prof =
->   		mdp_map_ycbcr_prof_mplane(&frame->format,
->   					  frame->mdp_fmt->mdp_color);
-> @@ -744,3 +526,4 @@ int mdp_frameparam_init(struct mdp_frameparam *param)
->   
->   	return 0;
->   }
-> +
+Thanks,
+Paolo
 
-Please remove this empty new line.
+> Thanks,
+> Kuai
 
-Apart from that,
-
-Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
