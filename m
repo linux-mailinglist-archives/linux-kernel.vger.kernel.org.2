@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE88143434E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AC843436E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhJTCQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:16:44 -0400
-Received: from mail-eopbgr1310094.outbound.protection.outlook.com ([40.107.131.94]:39072
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229555AbhJTCQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:16:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F2KqnrhOyQy41vBfxyFy7KKi1OaJQCcgcwY7yB30kwpLLVaCkj4nDR/rpkGfl3y4K018mxSNRNyX3zpUETbJIU5iqii6Yf6DZmVwIcIpvGu0EqI5uevT0UAxgtOWmDOg5sxEYUh7LPFZrdYoJVUvbWYHFQZ3jeQSdOrEiTlI9A7ZimGoZUxUYQVnA8CqycUCeJ+JCT2kha0ynzI47W5eFdi+rTN5uWwA0S7ZCuanwAvtFV9z3HxMUDpsuJAtM70erCU2luIuXK1QGOiRRNK67GOqZvNQS9D407lHAqRD0ZfAgMKX167JDpU/k9uTGZOwFfFY1htRgvuLiVjQfRfjzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OzApZZN0CDM9LWoGyqyTjvLOkCyDQxXEzJJ3sDa0sgA=;
- b=h4zgTZXTPLmWKkFyzxO6BzB0GiXuLEImiu0VojH5n4O3oW7VtLcVoNyEluK98WZgCWkRW9psklWpoirKNmI5AHZNmiZ43mj5oeKE3HYQwtpjyAl+br7Jjx1dVSAsto1gjPGZapWG3m0FurUZGm1+WFC5Am++7S7aOiMF67XqEBUoX6uCAyhfc6qhjb9BTYl3TeWozkqa0VsJI+oI4cEJZcAZpyKW6R2GNgcVCtqyztQ4FHTVQLno329guKoN3VOQqtx3c9iJ57KCQxu/G8npwWMxoqI2Scvz/GDE2KSGNHEYimpP7xDJD5/pYNpEeDqs/mgK+G/d2dsobHHZQEey2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OzApZZN0CDM9LWoGyqyTjvLOkCyDQxXEzJJ3sDa0sgA=;
- b=PXLIOjIxEOZG/XLDMmY2vjuniPEB08Vwbs6tzm4g5AH9REaR6B4M/otOGs4+HOC3qI4GsiN78+RLn2pmmv7JIxMUzukkwNCpm02NkfgwBMUO2xRGejqR4hxwbGIy9MkjsB43UyozPXpmlHBnqM7fs1m2DZcrjSnwcFTFk/cOFOU=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3244.apcprd06.prod.outlook.com (2603:1096:100:3b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Wed, 20 Oct
- 2021 02:14:22 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
- 02:14:22 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH V3] media: i2c: ccs: replace snprintf in show functions with sysfs_emit
-Date:   Tue, 19 Oct 2021 19:14:15 -0700
-Message-Id: <1634696055-55861-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HK0PR03CA0105.apcprd03.prod.outlook.com
- (2603:1096:203:b0::21) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+        id S230321AbhJTCR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhJTCRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 Oct 2021 22:17:06 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84385C061749;
+        Tue, 19 Oct 2021 19:14:51 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id h193so5728161pgc.1;
+        Tue, 19 Oct 2021 19:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BeLefvFYaaRNCXybpBNbetJ8KPidcgjmt2FIlG8JLGU=;
+        b=g2kvxFPQF0NKcFZdcxoOMWcur0VCSL5wdxGZLs3mlkcAkYUcSmvP9Af8ZAStymqLs0
+         tHAM0eeyBmCxRmMskpNA5XC/UuUkOL42EK7ejN4a2nK85+pGdX8bBQgBC+Y5C8aOuw9v
+         f2kPwbFVcmDHyCf38qj5zBBrhHvIulPdmtayqXLxfelVYJmAn9YRFpDeeh8bV14bX69W
+         HtjKu7YdKH5WFTSZgd94BqDCs/ESo+Gg7g1GAGOLdTtIoaY/jMiUknWIW9FYqClpfGb4
+         NKwnkkAlwzIDQ5+kLk6WDGqQdfXPssBhqpLl7KLAaWDeuTceVn7nl69zNgwSUqhQnv3p
+         +mtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BeLefvFYaaRNCXybpBNbetJ8KPidcgjmt2FIlG8JLGU=;
+        b=fh09+zwK+Zy93AfUTfw8yB056DtrnpMl6Ui0PVzoqAiMtXQ79xMN9QcA+CbqvNqvJm
+         7GQa+udbaoiGf9pHdK81WdU69+g/0Xen6D5KQobWp38GRyClFyNVpOlwK/NEFJkqIBv8
+         VKoizQaAHtRLq8wcj2+0MX84znZi/Tj1surfLAw7eIopPBMF8uB/UKo3Xr+XJcOWUcaH
+         0VjltdQFu+B6I7jslmRQ3v+9nWYdpuYzq2Y5GX5SwSvWqHnqeEtLNjFoHy2ufs4HfO/m
+         NQCowwrQsQ78iFcdnEjGwoKD5wdZchi/rrHwj0zxYzsDvXVI3RSAvb8Q9v6NFBYuYnfN
+         BqSQ==
+X-Gm-Message-State: AOAM533OIUBTdx622fpnQ+FvJHFoxrmBSQ4stL0a3BR1ZjH2n2amVPiV
+        8m3Kpg+3LpR3kAcNhMQzBMc=
+X-Google-Smtp-Source: ABdhPJyR9L42ItJdgeY8OFVEuB+bR+EEDRXjgA+Rvzo7tbV8YJlnkPhWyOmMetzWesvDsvBeGVKbUw==
+X-Received: by 2002:a05:6a00:88e:b0:44c:c40:9279 with SMTP id q14-20020a056a00088e00b0044c0c409279mr3335225pfj.85.1634696090862;
+        Tue, 19 Oct 2021 19:14:50 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4814:8c29:ba96:983d])
+        by smtp.gmail.com with ESMTPSA id k14sm422679pji.45.2021.10.19.19.14.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 19:14:49 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 19:14:47 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     Ping Cheng <pinglinux@gmail.com>,
+        Alistair Francis <alistair@alistair23.me>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the
+ data values
+Message-ID: <YW97lwsMrLHetJGy@google.com>
+References: <20211009114313.17967-1-alistair@alistair23.me>
+ <CAF8JNh+OUzvAHA9tBrH2d_WxWPXRgiunhGO5KV4-fqVG+tUOyQ@mail.gmail.com>
+ <YW4kgnI0DQHj4sw4@google.com>
+ <CAKmqyKMrb=Uz0+-ycj0HkAKJYdRU11Dc+24+KJw_j3MHT=2+yw@mail.gmail.com>
+ <YW9rRUsxPHTjeOGT@google.com>
+ <CAKmqyKMpMCb4gLyp94rCgVBU3eccjafD8nF7y6o+oU6D-OHvTQ@mail.gmail.com>
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (103.220.76.181) by HK0PR03CA0105.apcprd03.prod.outlook.com (2603:1096:203:b0::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.18 via Frontend Transport; Wed, 20 Oct 2021 02:14:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8322ae22-12ce-4005-dcb4-08d9936f54a7
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3244:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB324421D693DF09C8D0546E63BDBE9@SL2PR06MB3244.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oe1V5C53duXwZEvd06zw1Edwzu6aqWUvojoA9AHA5DkVKN0HxllZy3qifwkj9fR9UBML87GKBRD0ycgmWdRVDxozGh1v6l5dNSq0RrQcYWjHfr7yEdrV20vf0sOzz2RYuUQptgklWFm2Z6DpyvUfFGRCLjNOXs0W+6tQr8qMVrQCDxjeHQG7Wpi/GmJbRbIFxas9g5U6DhZsrZRi1+uz72Qq/vsgk8eptXohKg1bncp2PPpkk3f6Dc6MMWDJKLA2ty2Mr9b/JZicmfAnDivcZ3Ohkj7MFCXEVpLLrvc4GhfuEmSrAEiFCgL9PchL0+Ee15bg8E28Y9TjKTnPsjsdcNbwLWOcszkfkAXso4nvo9rD+YuRO1fPm2/fSLZK9f5IxaRx4uXnbk/pzZnwxY/m0gg5T7pgDZKSoKpjs3hRA1xLXTZbPgP4aEZX8pZ+pedakUYqh/K0mVkj2YRi8oMHLY+OH3cph9fClZ+rKq4HMcFGfnxMo6V/Zm7GctAqFeY2rIuFbdqTdu6+ACxZ2DulD2eRLQ5yhTJWm6g5Vnus89l5rK1NnLKgW57w8Y3APL3YJ8tGSEuiiAO7/o3j7ldGxKPCTyUi1XbXE9kXwVnm/sWd+tvA9eaYz1P13+hVH9xO0fLK5C9Gwwj2Xq06zcR/x6IN/JRzuWUF8cE7wbfM4KxbGtTMnSjq5XHumfcpRI/Jtoxn0CF7YNMecp4mHC84VQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(66946007)(5660300002)(66556008)(508600001)(66476007)(186003)(4326008)(110136005)(26005)(2906002)(8936002)(6512007)(38100700002)(38350700002)(956004)(6666004)(2616005)(107886003)(6506007)(52116002)(36756003)(86362001)(8676002)(83380400001)(6486002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Qpb/3L1+VMCYcvZ3vttF5cV1Harygq65xkYGp3tOLetzK4vqavMTS2nFM+xB?=
- =?us-ascii?Q?gxktNbFti8AA6AxUOUQVgNOPJqaaFluku5dG5sx2Xrrgnaq/Bqb2LR9g0mNv?=
- =?us-ascii?Q?8Boygqf9gE9Ku7pzgXFqETaJ63rEKeMKxqIn9aM/YKVEmvCuxxcPu/HaCw8i?=
- =?us-ascii?Q?wZ+VNSO7pyxopO20x2FWWCBcSLr+0PzpmLkbwNJId8i+WaPf2DP2iggU6SDe?=
- =?us-ascii?Q?pHVu5B1tyFHfXrjhDPiv02sX/kS/Lnj8d1JwJy+zLd1lPC9QGKA4fX1rNhJe?=
- =?us-ascii?Q?/bnLjG+r/bNJTbtKsUCFOSTq6wNvqPNPL1FZAFmz6n/u7TIkh26EE7pm/FZq?=
- =?us-ascii?Q?rW8mZIPRINu5nrn4QH+IyJIFiwYOMMnm1aS3b6Br89yF++uQ1BA381DhQhoa?=
- =?us-ascii?Q?Td1oPR9o47O/gWossRWUD+7IUzEahv49qSsA16IEcDvPwtirloGyUfptXBKn?=
- =?us-ascii?Q?yJl2gKLrCDg6zB+x3/X9pUXRa3K0dTEoYhDk/qDPzj+yu/lgOm0TSDSM+jNp?=
- =?us-ascii?Q?3jj1vDgLNktD0fwCp1zZQpOMrue1eu5flLN621/KGu4fOGNX4OYME8jZ3P6/?=
- =?us-ascii?Q?1H3HCm1j/+8lYDLItrPTEAVZjw0og9uB7h029Tt+PxwOxwizFTqcbJ0MKgwl?=
- =?us-ascii?Q?5UTwedfTKPCQfyCFg3dqzyF4KBUtPuc6wnKLJccXiMEqyZTRLQAlGuAsbg7c?=
- =?us-ascii?Q?hGxBxY/8odrOyO5JmPDCryMqKG1rxOZ4m/AG+gbdcqxXCDIA5xxAs3Xw15Zm?=
- =?us-ascii?Q?DAMWY87X1nC+uNzddQGVoeGVqfSHZxMvkmmGMCDm8yifKp9h0xccOyx/gx4r?=
- =?us-ascii?Q?A/0x2XSlyMMREAk60GNCOWHNOHUU1E/SPorr/QhKNomHjccgEvqO+kDPCXIN?=
- =?us-ascii?Q?JED/q5Z+d8VPJoIZvf3W3wx2fIcpBk25Xe6u5XEDnTji4CEKXiZ6uV+kNz+K?=
- =?us-ascii?Q?wL8t0JoJrkJKQ1PcYJXV5pAnMmQDij8YXQTQA1V6EHM3SrSd0Y+aWF9Wpngc?=
- =?us-ascii?Q?keLlqEJXiKW+sFdt1T4kcok7XVneDdOc64OfcS/f4D+bPQJpFaQ9fGalVPIV?=
- =?us-ascii?Q?PUiretSDBYuD4EpBkksS9+NHbe92GKcxiHeOEE9XCHYnkYEw65YT4p5S/vos?=
- =?us-ascii?Q?M+V4qF3LMS+zueWnWEXk1dXQ+/wVvhXOU0VIk3jpdlYR6kjGIBbEgeBsfsfN?=
- =?us-ascii?Q?hO3u2sePNCLbaXyxnbaHPWlVSF+3uMw85JRPNOWTNnjczWQ2qUUzVTO5+jfE?=
- =?us-ascii?Q?CxHpzcVeFHX+TUIMqOknYdrg3oo2K7en01AVNPv1tpVSMbV7TccXLHDXi6Ci?=
- =?us-ascii?Q?3ZCy9mubHnXLCG6TPmDgX0x+?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8322ae22-12ce-4005-dcb4-08d9936f54a7
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 02:14:22.3474
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7EjDzBqerZ4M6WQ824WlQfj66OBE34QOIUXlnLSBi/6dNuN1tE1Jzf90EPKbmegObzV8UEn+78ibniWzV95srg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3244
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKmqyKMpMCb4gLyp94rCgVBU3eccjafD8nF7y6o+oU6D-OHvTQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-show() should not use snprintf() when formatting the value to be
-returned to user space.
+On Wed, Oct 20, 2021 at 11:44:50AM +1000, Alistair Francis wrote:
+> On Wed, Oct 20, 2021 at 11:05 AM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+> >
+> > On Wed, Oct 20, 2021 at 09:33:13AM +1000, Alistair Francis wrote:
+> > > On Tue, Oct 19, 2021 at 11:51 AM Dmitry Torokhov
+> > > <dmitry.torokhov@gmail.com> wrote:
+> > > >
+> > > > We already have touchscreen-inverted-x/y defined in
+> > > > Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml,
+> > > > why are they not sufficient?
+> > >
+> > > The touchscreen-* properties aren't applied to HID devices though, at
+> > > least not that I can tell.
+> >
+> > No, they are not currently, but that does not mean we need to establish
+> > a new set of properties (property names) for HID case.
+> 
+> I can update the names to use the existing touchscreen ones.
+> 
+> Do you have a hint of where this should be implemented though?
+> 
+> Right now (without "HID: wacom: Add support for the AG14 Wacom
+> device") the wacom touchscreen is just registered as a generic HID
+> device. I don't see any good place in hid-core, hid-input or
+> hid-generic to invert the input values for this.
 
-Fix the following coccicheck warning:
-drivers/media/i2c/ccs/ccs-core.c:3761: WARNING: use scnprintf or sprintf.
+I think the transformation should happen in
+hid-multitouch.c::mt_process_slot() using helpers from
+include/linux/input/touchscreen.h
 
-V3:
-- Fix some formatting problems.
+I think the more challenging question is to how pass/attach struct
+touchscreen_properties * to the hid device (i expect the properties will
+be attached to i2c-hid device, but maybe we could create a sub-node of
+it and attach properties there.
 
-Signed-off-by: Qing Wang <wangqing@vivo.com>
----
- drivers/media/i2c/ccs/ccs-core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Thanks.
 
-diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-index 5363f3b..9158d3c
---- a/drivers/media/i2c/ccs/ccs-core.c
-+++ b/drivers/media/i2c/ccs/ccs-core.c
-@@ -2758,13 +2758,13 @@ ident_show(struct device *dev, struct device_attribute *attr, char *buf)
- 	struct ccs_module_info *minfo = &sensor->minfo;
- 
- 	if (minfo->mipi_manufacturer_id)
--		return snprintf(buf, PAGE_SIZE, "%4.4x%4.4x%2.2x\n",
--				minfo->mipi_manufacturer_id, minfo->model_id,
--				minfo->revision_number) + 1;
-+		return sysfs_emit(buf, "%4.4x%4.4x%2.2x\n",
-+				  minfo->mipi_manufacturer_id, minfo->model_id,
-+				  minfo->revision_number) + 1;
- 	else
--		return snprintf(buf, PAGE_SIZE, "%2.2x%4.4x%2.2x\n",
--				minfo->smia_manufacturer_id, minfo->model_id,
--				minfo->revision_number) + 1;
-+		return sysfs_emit(buf, "%2.2x%4.4x%2.2x\n",
-+				  minfo->smia_manufacturer_id, minfo->model_id,
-+				  minfo->revision_number) + 1;
- }
- static DEVICE_ATTR_RO(ident);
- 
 -- 
-2.7.4
-
+Dmitry
