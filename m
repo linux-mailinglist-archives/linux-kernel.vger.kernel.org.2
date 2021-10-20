@@ -2,137 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5445434DEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7ED434DF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhJTOiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhJTOiQ (ORCPT
+        id S230283AbhJTOjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:39:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54548 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTOjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:38:16 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3775DC06161C;
-        Wed, 20 Oct 2021 07:36:02 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id q19so3141932pfl.4;
-        Wed, 20 Oct 2021 07:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cfz1Zt+WpCxZx3WpWtEfu9axg9w9nrknlqeCT2LYqKg=;
-        b=TiEQgmCq8QCJKAkaZEhFfCgFqbbnx2CBXJ0ol7ukt12WSDD+37xEgSLYQE8k1s0slp
-         nG7M6JvQ0645JM3IExH47ak1cZuV2nrtbdZEJMRKkXxKd7RSoqkq7uBPIy4dvDqQ00Rp
-         BmOplSFhRgJwcBuBcoehFI/mpZuauYU8S1OIAOqo3ETMiOEjR+KVDJw22/qwyX/l0XjZ
-         /5xFjhDYYf0CTLklJE/qFvTMyxAwgjX2O3DXZNgQqdBzZLtf9Gje995xTp0ggug3LyQo
-         1hTpU0UgpRCWJVPmV0pWuUCjSO8Yo5Gf2/qAMEgZ+WfIijP5kOM8bdBRv0vgW64dbRH3
-         ZNPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cfz1Zt+WpCxZx3WpWtEfu9axg9w9nrknlqeCT2LYqKg=;
-        b=XtuGbPAkSas4z6mz5XmI7bBfs/aH0uUjAJhTMm+b1UuhSCVRpWcbVZz//V++astkGe
-         hFgWE9NHx1BK7ljOG8mRKohghDqAf4ypZmOjRBWBB0+OKN5H6FjQc0YDcoHy2o8v2pot
-         IG/nrMbiPFvUr1fjg4csBoHKeCNLOgZEEqVU0b1tLRDbT2m36f3lkvOIZ6xky54eV1Cp
-         ZZbmfpnQOTFhRxvSym4csHOfXBGWpJecdpelW7IumnxCR+x8A9Bhn25sy3v8h/+GEeiL
-         8AJ8kMwGwEvHeKugjrAym7W7EkXF4XNjw1Z/EMAPWMJiP3PxrhWCx/19n5gZpj8QcYyz
-         OJJQ==
-X-Gm-Message-State: AOAM531t96nw5U0OUbHw/ztvAbU3OKrtuh4A2hvXZQtUGoo7622HDs2S
-        KHHomadCjlH/FLUJ+uojAkI=
-X-Google-Smtp-Source: ABdhPJxizZIfK/O3NaQ3AaE+iZnmb6nb6E6g+tM9VSovTFxUPDq6wUHumX7CfgB+fD215PhCx2d74Q==
-X-Received: by 2002:a63:7e5c:: with SMTP id o28mr269142pgn.201.1634740561663;
-        Wed, 20 Oct 2021 07:36:01 -0700 (PDT)
-Received: from localhost.localdomain ([94.177.118.132])
-        by smtp.gmail.com with ESMTPSA id j6sm2508771pgf.60.2021.10.20.07.35.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 07:36:00 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: rcar-dmac: refactor the error handling code of rcar_dmac_probe
-Date:   Wed, 20 Oct 2021 22:35:33 +0800
-Message-Id: <20211020143546.3436205-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 20 Oct 2021 10:39:32 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F31A61FD39;
+        Wed, 20 Oct 2021 14:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634740637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9A5/odsFjxH56Gwb5bFX+qM0MdWrRBEmSqTq/22RS1c=;
+        b=gAxt3hZz61oH1cNHXnsShL9RP6eBBZhzEcvXEb5wzleUTdT0SWzyrlGQKY63frJdN3j9kN
+        zLFvgkQDDJ1dYNtl2xixE7zcucfuF+TEBnibghDfQs87tmbQB4jYdIxfjo0nEhfY7h682Z
+        iLQsR/rU6n3sDLTBFsHevjCGgPemtYE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634740637;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9A5/odsFjxH56Gwb5bFX+qM0MdWrRBEmSqTq/22RS1c=;
+        b=klDWENLHRvM7mFGgMoSVSzFqjMDjm81vlJ3ikMQdaia6ci3wb6rHsAe/bF9VsrpJ/YQ1/r
+        2Yohx/c7yJh57eCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7392613B55;
+        Wed, 20 Oct 2021 14:37:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GAT5GJwpcGFjIAAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Wed, 20 Oct 2021 14:37:16 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id c5fe2302;
+        Wed, 20 Oct 2021 14:37:15 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>, Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>,
+        Patrick Donnelly <pdonnell@redhat.com>
+Subject: [RFC PATCH] ceph: add remote object copy counter to fs client
+Date:   Wed, 20 Oct 2021 15:37:08 +0100
+Message-Id: <20211020143708.14728-1-lhenriques@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In rcar_dmac_probe, if pm_runtime_resume_and_get fails, it forgets to
-disable runtime PM. And of_dma_controller_free should only be invoked
-after the success of of_dma_controller_register.
+This counter will keep track of the number of remote object copies done on
+copy_file_range syscalls.  This counter will be filesystem per-client, and
+can be accessed from the client debugfs directory.
 
-Fix this by refactoring the error handling code.
-
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Cc: Patrick Donnelly <pdonnell@redhat.com>
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
 ---
- drivers/dma/sh/rcar-dmac.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+This is an RFC to reply to Patrick's request in [0].  Note that I'm not
+100% sure about the usefulness of this patch, or if this is the best way
+to provide the functionality Patrick requested.  Anyway, this is just to
+get some feedback, hence the RFC.
 
-diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
-index 6885b3dcd7a9..5c7716fd6bc5 100644
---- a/drivers/dma/sh/rcar-dmac.c
-+++ b/drivers/dma/sh/rcar-dmac.c
-@@ -1916,7 +1916,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "runtime PM get sync failed (%d)\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	ret = rcar_dmac_init(dmac);
-@@ -1924,7 +1924,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to reset device\n");
--		goto error;
-+		goto err_pm_disable;
- 	}
- 
- 	/* Initialize engine */
-@@ -1958,14 +1958,14 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 	for_each_rcar_dmac_chan(i, dmac, chan) {
- 		ret = rcar_dmac_chan_probe(dmac, chan);
- 		if (ret < 0)
--			goto error;
-+			goto err_pm_disable;
- 	}
- 
- 	/* Register the DMAC as a DMA provider for DT. */
- 	ret = of_dma_controller_register(pdev->dev.of_node, rcar_dmac_of_xlate,
- 					 NULL);
- 	if (ret < 0)
--		goto error;
-+		goto err_pm_disable;
- 
- 	/*
- 	 * Register the DMA engine device.
-@@ -1974,12 +1974,13 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 	 */
- 	ret = dma_async_device_register(engine);
- 	if (ret < 0)
--		goto error;
-+		goto err_dma_free;
- 
+Cheers,
+--
+Luís
+
+[0] https://github.com/ceph/ceph/pull/42720
+
+ fs/ceph/debugfs.c | 17 ++++++++++++++++-
+ fs/ceph/file.c    |  1 +
+ fs/ceph/super.c   |  1 +
+ fs/ceph/super.h   |  2 ++
+ 4 files changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
+index 38b78b45811f..09f4c04ade0e 100644
+--- a/fs/ceph/debugfs.c
++++ b/fs/ceph/debugfs.c
+@@ -346,13 +346,22 @@ static int status_show(struct seq_file *s, void *p)
  	return 0;
- 
--error:
-+err_dma_free:
- 	of_dma_controller_free(pdev->dev.of_node);
-+err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
- 	return ret;
  }
--- 
-2.25.1
-
+ 
++static int copyfrom_show(struct seq_file *s, void *p)
++{
++	struct ceph_fs_client *fsc = s->private;
++
++	seq_printf(s, "%llu\n", atomic64_read(&fsc->copyfrom_count));
++
++	return 0;
++}
++
+ DEFINE_SHOW_ATTRIBUTE(mdsmap);
+ DEFINE_SHOW_ATTRIBUTE(mdsc);
+ DEFINE_SHOW_ATTRIBUTE(caps);
+ DEFINE_SHOW_ATTRIBUTE(mds_sessions);
+ DEFINE_SHOW_ATTRIBUTE(metric);
+ DEFINE_SHOW_ATTRIBUTE(status);
+-
++DEFINE_SHOW_ATTRIBUTE(copyfrom);
+ 
+ /*
+  * debugfs
+@@ -387,6 +396,7 @@ void ceph_fs_debugfs_cleanup(struct ceph_fs_client *fsc)
+ 	debugfs_remove(fsc->debugfs_caps);
+ 	debugfs_remove(fsc->debugfs_metric);
+ 	debugfs_remove(fsc->debugfs_mdsc);
++	debugfs_remove(fsc->debugfs_copyfrom);
+ }
+ 
+ void ceph_fs_debugfs_init(struct ceph_fs_client *fsc)
+@@ -443,6 +453,11 @@ void ceph_fs_debugfs_init(struct ceph_fs_client *fsc)
+ 						  fsc->client->debugfs_dir,
+ 						  fsc,
+ 						  &status_fops);
++	fsc->debugfs_copyfrom = debugfs_create_file("copyfrom",
++						    0400,
++						    fsc->client->debugfs_dir,
++						    fsc,
++						    &copyfrom_fops);
+ }
+ 
+ 
+diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+index d16fd2d5fd42..bbeb437ca4bf 100644
+--- a/fs/ceph/file.c
++++ b/fs/ceph/file.c
+@@ -2254,6 +2254,7 @@ static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64 *src_off
+ 				bytes = ret;
+ 			goto out;
+ 		}
++		atomic64_inc(&fsc->copyfrom_count);
+ 		len -= object_size;
+ 		bytes += object_size;
+ 		*src_off += object_size;
+diff --git a/fs/ceph/super.c b/fs/ceph/super.c
+index 9b1b7f4cfdd4..4972554185e3 100644
+--- a/fs/ceph/super.c
++++ b/fs/ceph/super.c
+@@ -670,6 +670,7 @@ static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
+ 	fsc->have_copy_from2 = true;
+ 
+ 	atomic_long_set(&fsc->writeback_count, 0);
++	atomic64_set(&fsc->copyfrom_count, 0);
+ 
+ 	err = -ENOMEM;
+ 	/*
+diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+index a40eb14c282a..65846beca418 100644
+--- a/fs/ceph/super.h
++++ b/fs/ceph/super.h
+@@ -119,6 +119,7 @@ struct ceph_fs_client {
+ 	struct ceph_mds_client *mdsc;
+ 
+ 	atomic_long_t writeback_count;
++	atomic64_t copyfrom_count;
+ 
+ 	struct workqueue_struct *inode_wq;
+ 	struct workqueue_struct *cap_wq;
+@@ -131,6 +132,7 @@ struct ceph_fs_client {
+ 	struct dentry *debugfs_metric;
+ 	struct dentry *debugfs_status;
+ 	struct dentry *debugfs_mds_sessions;
++	struct dentry *debugfs_copyfrom;
+ #endif
+ 
+ #ifdef CONFIG_CEPH_FSCACHE
