@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7724354D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0F44354DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhJTVAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbhJTVAi (ORCPT
+        id S231248AbhJTVBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:01:41 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:58015 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhJTVBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:00:38 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB407C06161C;
-        Wed, 20 Oct 2021 13:58:23 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id w19so515857edd.2;
-        Wed, 20 Oct 2021 13:58:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=p82YL0D5HeYBv9P48l1ubMQJCPT1B3EyFPBHcWoPvPM=;
-        b=cNwcJVoCFZ7X0025fVWetlAmRER6U4CpeECs+r3BzxQpK6Lo4oovoSYc2l2t+LRRIC
-         aAHlpgn+bsVdrJzV+MdFNSsVb+lDbJmkKBmu2UfpoiL2IlST84vNzDC+yiDSgucnsjVA
-         7Rf9Qhv96YOB5E5ac/U+o3PEE0F8ifgcvISjUw67Z+lRdCLQQ06IBGiz89bwUQAVk1go
-         nD7nz3GD/R/7rrcIf1CIIBr0kYFU7R35rfC0FH11K6mRnL/qYLKI9cpPkFBFjm8owi98
-         +1TVov3yAXTJ9FZj7iaZPq3NWsrZQpys4mHvcqoiUna6UCEqNmI2TfieNJWcNXcaECyc
-         jRBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p82YL0D5HeYBv9P48l1ubMQJCPT1B3EyFPBHcWoPvPM=;
-        b=hdQ+cfU08ridE4P5hI70YvOnLSmqor7kp6oPNT8/5Rn2TtD16U1/RNnO58bd7l8UYz
-         fKne0c+avxG/WlBV1gG/Z2XwGhqBQ5lbwk1ViA0eM8vSo9antioWUC/L9do0RUieNrDj
-         16nnXOfW2HUzRBKk/PAPkRVqqKAl0TASr6R75scrbVMUZodaLusHYUPfP7wNePhSKycQ
-         7fZnHx3/RVTOeWyoDr+wDg5dUESsEF8PawUQG4iM3dxlCAid6L613bY4Fe/yYks4uJdb
-         UIoR7FOSXFVgumqQtg6c8ju/D/8eXS0+22VXjuGlek39OQpBUHmD3oBnFQ1kJ3gyNw0V
-         TIKw==
-X-Gm-Message-State: AOAM532iXPxhrQkKLuH1qzxZO4SMu1FMoVuYyisXHj609aQFYapp2qH9
-        dd7oP0m0jw9KD5S8r4Fe0q1h+uyA/dQ=
-X-Google-Smtp-Source: ABdhPJwqfJvimEIS2BOKN2FCENYqFv1j80aLjxbRsgh7c8AbCjxmJKnAw+fheMF42FL+GZDS+gMZEQ==
-X-Received: by 2002:a50:8ade:: with SMTP id k30mr1741326edk.162.1634763502346;
-        Wed, 20 Oct 2021 13:58:22 -0700 (PDT)
-Received: from ?IPv6:2001:981:6fec:1:3bbb:3574:7e12:f56f? ([2001:981:6fec:1:3bbb:3574:7e12:f56f])
-        by smtp.gmail.com with ESMTPSA id v8sm1735117edj.7.2021.10.20.13.58.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 13:58:22 -0700 (PDT)
-Subject: Re: [PATCH v3 0/5] mmc: sdhci-pci: Remove dead code and deduplicate
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Raul E Rangel <rrangel@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-References: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
-From:   Ferry Toth <fntoth@gmail.com>
-Message-ID: <27fbd7d6-3d44-39f4-9589-06dc6deed572@gmail.com>
-Date:   Wed, 20 Oct 2021 22:58:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 17:01:39 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZNJh0W9cz4xbY;
+        Thu, 21 Oct 2021 07:59:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634763559;
+        bh=C0b3hYLhUCLhY/QAW3vmGSj026zviXMrdnNfnNI5iyI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hgg9FxcYS7/jt5TDamrW4JA23UE+GPP1hTPO+Wf0r4SM+K/LaizGNrtNLOPtyqE3P
+         Hj1o53PUR6mt1t6Ke3/S7Zdbc/CsJVo7Lfh2bqR6R/YkHJ7WNMmIJsFSEcxJN1Kgx3
+         m2E6IidYGoI+8//iYEdy14to6F+7I62XZXP3dkR+JycdpUPZAHZdGglUZqiAnTTFau
+         SogK1rExymCByr99pM6jtS/d0xlSvr61hqeuSbzH3jmepA/h0aAWOoV6nS1OHCr4O2
+         Ade17mOSszvmOOTnl9JQAVgtDwvlCgkbpxpdD41qXdZtyYIAz37o9zOzhtETokkQH4
+         beByRtdX/PFiQ==
+Date:   Thu, 21 Oct 2021 07:59:13 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Douglas Su <d0u9.su@outlook.com>, Yuki Okushi <jtitor@2k36.org>
+Subject: Re: linux-next: Tree for Oct 18 ('make' error on ARCH=um)
+Message-ID: <20211021075913.3d6f8adb@canb.auug.org.au>
+In-Reply-To: <b0eddd67-e62f-c6c3-37d1-8c69f27c51fb@infradead.org>
+References: <20211018203023.036d8362@canb.auug.org.au>
+        <a1b2bdda-d1cf-807b-6a84-73a3e347639c@infradead.org>
+        <20211019085811.362b4304@canb.auug.org.au>
+        <CANiq72=+5w7KzVKmN57ud5+GGEiuRbtgezfROGAuO=b-OYeWAA@mail.gmail.com>
+        <20211020155627.7d6f6637@canb.auug.org.au>
+        <81c2e5c6-7388-3d1d-87a9-1b000517661b@infradead.org>
+        <b0eddd67-e62f-c6c3-37d1-8c69f27c51fb@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/YFuEnSKXicKp7XvjTGlhP4K";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Op 14-10-2021 om 15:26 schreef Andy Shevchenko:
-> It appears that one of the supported platform magically worked with
-> the custom IRQ handler (any hints how?) while having two PCB designs
-> with an opposite CD sense level. Quirking it out reveals the code
-> duplication and dead code.
-> 
-> Patch 1 is code deduplication to save few LOCs.
-> Patch 2-5 are dead code removals.
+--Sig_/YFuEnSKXicKp7XvjTGlhP4K
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Ferry Toth <ftoth@exalondelft.nl> @ Intel Edison-Arduino board
+Hi Randy,
 
-> In v3:
-> - dropped the fix as it has been applied (Ulf)
-> - added tag (Adrian)
-> - elaborated commit IDs with their short descriptions in patch 3 (Adrian)
-> - corrected dependency in patch 5 (Adrian)
-> 
-> In v2:
-> - redone fix to use ->get_cd() instead of quirks (Adrian)
-> - due to above transformed previous clean up to the current patch 2
-> - added a new patch, i.e. patch 3
-> - added commit IDs to patch 4 (Adrian)
-> - mentioned dependencies on previous patches in patch 5 and 6 (Adrian)
-> 
-> Andy Shevchenko (5):
->    mmc: sdhci: Deduplicate sdhci_get_cd_nogpio()
->    mmc: sdhci: Remove unused prototype declaration in the header
->    mmc: sdhci-pci: Remove dead code (struct sdhci_pci_data et al)
->    mmc: sdhci-pci: Remove dead code (cd_gpio, cd_irq et al)
->    mmc: sdhci-pci: Remove dead code (rst_n_gpio et al)
-> 
->   drivers/mmc/host/Makefile          |   1 -
->   drivers/mmc/host/sdhci-acpi.c      |  14 +--
->   drivers/mmc/host/sdhci-pci-core.c  | 152 +----------------------------
->   drivers/mmc/host/sdhci-pci-data.c  |   6 --
->   drivers/mmc/host/sdhci-pci.h       |   5 -
->   drivers/mmc/host/sdhci.c           |  19 ++++
->   drivers/mmc/host/sdhci.h           |   2 +-
->   include/linux/mmc/sdhci-pci-data.h |  18 ----
->   8 files changed, 26 insertions(+), 191 deletions(-)
->   delete mode 100644 drivers/mmc/host/sdhci-pci-data.c
->   delete mode 100644 include/linux/mmc/sdhci-pci-data.h
-> 
+On Wed, 20 Oct 2021 07:46:24 -0700 Randy Dunlap <rdunlap@infradead.org> wro=
+te:
+>
+> No problems like this in linux-next 2021-10-20.
 
+Excellent, thanks.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/YFuEnSKXicKp7XvjTGlhP4K
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFwgyEACgkQAVBC80lX
+0GwC2Qf7BxUbVTPtimV8VXVOL1I/Ahks5nPzI6tI5l7qGtsNVHLbtIF56EiIxLXk
+auT4QNSdysrlafV4dzRZPxA5DcXcYrpvfRcO75NuY+UB7aL45l0BU2T/xJrZk9Io
+vQ7QaHvn8Hw7hZzK0pXoaxRX2WQixCFJIVsuEMD1BrgNzHxLFa/5N7DYdZTkT1s9
+7yJXKH+DNiobOZXLXR7Zfm+DRfKUXHFOMAMdZLthngnTfd9LDlLqwOK4t3sl+4fj
+1APoIHirsD9alN45IVTS+o51JmcnF6X0fpmZJPptV81fu+q1sLgFbYRwDq5zYig+
+Evb2MxSTmucy16DUsqyCyvOhiqRYaQ==
+=47v7
+-----END PGP SIGNATURE-----
+
+--Sig_/YFuEnSKXicKp7XvjTGlhP4K--
