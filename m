@@ -2,51 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF5D43550E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211B643550F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbhJTVOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:14:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55522 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhJTVOc (ORCPT
+        id S230515AbhJTVOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231434AbhJTVOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:14:32 -0400
-Date:   Wed, 20 Oct 2021 21:12:16 -0000
+        Wed, 20 Oct 2021 17:14:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701B3C061753
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 14:12:19 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 21:12:17 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634764337;
+        s=2020; t=1634764338;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AobMEmM1lyRCp5biDQ0Kowy6E26P7Bt94DTOFuI6xt4=;
-        b=xR0vwdmgTabB7f+pq5KOh6C0mKvgPWYz/BkDyNwsKWh+zY99Yk3lsI6qcVgXXHvuF6B8di
-        dlBgsASCY3td7W7KzHEbDNxNGFj5fK/ImD6U0rqtX7muI+1mL+Z4evkrw1Hrf0SumxnwoC
-        ZXRRW8DdUAJRVH9664O0X8ceshhU7dQlWWdDdll2/gS5AJ4Ap0mlrtC8dh71R9tkfE9QgA
-        RkTJTGSLQlIk0mAe08uCHLHFY3LFeqTydO6zSIAENJn6uA0ycxysB0FOSuPA16wcdAy5LN
-        BqleAU1pm4gZyMpEOurei4GcrEZ5ocl/41SWYDcvIeFensAHBb/adVaLkGoWFA==
+        bh=H6caVkuqwwWciHfOl9DpRZO+wuNUkLX0w8VBeH6x4rk=;
+        b=0LJOhhxAIoy1RYW3/U2rE5WTPbv+782d1llBqjFz/pnw+lNgvTjFVVEpHn/MSMVE883awj
+        2VjUaxqHIo7A62o468jzYNGJu0skXJ0qoFbum+8FAZAP7GPYdcNBZ5EPU5wDP0S+cKAFfx
+        YfEVXbhr+Ufhie4mkzOyBzNfaG0NHQVjcoU42lH+dmT/2WMc3AfHu7UWZX35hSks/AOTew
+        Ufhi+GjaGLNJrOFFzSx+xUo1NR0g9bYKOVEUoUKZNB4IYhDHmhSvsb528rnp3lldGX4VmW
+        MlA9Cg8mzpc20Zc8oikoYla19DrvB27ROG3x23i50UxTn5ndKEXLOpOwH/O3fg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634764337;
+        s=2020e; t=1634764338;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AobMEmM1lyRCp5biDQ0Kowy6E26P7Bt94DTOFuI6xt4=;
-        b=rJXUy6Fz5b1zcUHeIxFCCSnDDzJubtSUUznAG/hbrspNPXf6/8zyIGXWYyEbZ4cOwMYhp4
-        RtPn8gOhiH/BeTCQ==
+        bh=H6caVkuqwwWciHfOl9DpRZO+wuNUkLX0w8VBeH6x4rk=;
+        b=tarHcMBkrWzUdSgnLIH6Zo2oGHUpaCIzmyqm0cQ7SCxKB6e8rlKfJBdKTBPAos3gFX7V25
+        M6urd3OQXKclT6Cw==
 From:   "irqchip-bot for Florian Fainelli" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/irq-bcm7038-l1: Remove .irq_cpu_offline()
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20211020184859.2705451-3-f.fainelli@gmail.com>
-References: <20211020184859.2705451-3-f.fainelli@gmail.com>
+Subject: [irqchip: irq/irqchip-next] MIPS: BMIPS: Remove use of irq_cpu_offline
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Marc Zyngier <maz@kernel.org>
+In-Reply-To: <20211020184859.2705451-2-f.fainelli@gmail.com>
+References: <20211020184859.2705451-2-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Message-ID: <163476433657.25758.9670573641442125357.tip-bot2@tip-bot2>
+Message-ID: <163476433725.25758.5984730935614392477.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,72 +62,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     57de689ce7829219db007dca5c88ae023a8be2d3
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/57de689ce7829219db007dca5c88ae023a8be2d3
+Commit-ID:     bf8bde41d296849fd5f9db8becd71ad4e84bc521
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/bf8bde41d296849fd5f9db8becd71ad4e84bc521
 Author:        Florian Fainelli <f.fainelli@gmail.com>
-AuthorDate:    Wed, 20 Oct 2021 11:48:48 -07:00
+AuthorDate:    Wed, 20 Oct 2021 11:48:47 -07:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Wed, 20 Oct 2021 20:06:32 +01:00
 
-irqchip/irq-bcm7038-l1: Remove .irq_cpu_offline()
+MIPS: BMIPS: Remove use of irq_cpu_offline
 
-With arch/mips/kernel/smp-bmips.c having been migrated away from
-irq_cpu_offline() and use irq_migrate_all_off_this_cpu() instead, we no
-longer need to implement an .irq_cpu_offline() callback. This is a
-necessary change to facilitate the building of this driver as a module.
+irq_cpu_offline() is only used by MIPS and we should instead use
+irq_migrate_all_off_this_cpu(). This will be helpful in order to remove
+drivers/irqchip/irq-bcm7038-l1.c irq_cpu_offline callback which would
+have got in the way of making this driver modular.
 
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211020184859.2705451-3-f.fainelli@gmail.com
+Link: https://lore.kernel.org/r/20211020184859.2705451-2-f.fainelli@gmail.com
 ---
- drivers/irqchip/irq-bcm7038-l1.c | 30 ------------------------------
- 1 file changed, 30 deletions(-)
+ arch/mips/Kconfig            | 1 +
+ arch/mips/kernel/smp-bmips.c | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
-index a035c38..7501562 100644
---- a/drivers/irqchip/irq-bcm7038-l1.c
-+++ b/drivers/irqchip/irq-bcm7038-l1.c
-@@ -221,33 +221,6 @@ static int bcm7038_l1_set_affinity(struct irq_data *d,
- 	return 0;
- }
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 771ca53..2c03b27 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1782,6 +1782,7 @@ config CPU_BMIPS
+ 	select CPU_HAS_PREFETCH
+ 	select CPU_SUPPORTS_CPUFREQ
+ 	select MIPS_EXTERNAL_TIMER
++	select GENERIC_IRQ_MIGRATION if HOTPLUG_CPU
+ 	help
+ 	  Support for BMIPS32/3300/4350/4380 and BMIPS5000 processors.
  
--#ifdef CONFIG_SMP
--static void bcm7038_l1_cpu_offline(struct irq_data *d)
--{
--	struct cpumask *mask = irq_data_get_affinity_mask(d);
--	int cpu = smp_processor_id();
--	cpumask_t new_affinity;
--
--	/* This CPU was not on the affinity mask */
--	if (!cpumask_test_cpu(cpu, mask))
--		return;
--
--	if (cpumask_weight(mask) > 1) {
--		/*
--		 * Multiple CPU affinity, remove this CPU from the affinity
--		 * mask
--		 */
--		cpumask_copy(&new_affinity, mask);
--		cpumask_clear_cpu(cpu, &new_affinity);
--	} else {
--		/* Only CPU, put on the lowest online CPU */
--		cpumask_clear(&new_affinity);
--		cpumask_set_cpu(cpumask_first(cpu_online_mask), &new_affinity);
--	}
--	irq_set_affinity_locked(d, &new_affinity, false);
--}
--#endif
--
- static int __init bcm7038_l1_init_one(struct device_node *dn,
- 				      unsigned int idx,
- 				      struct bcm7038_l1_chip *intc)
-@@ -396,9 +369,6 @@ static struct irq_chip bcm7038_l1_irq_chip = {
- 	.irq_mask		= bcm7038_l1_mask,
- 	.irq_unmask		= bcm7038_l1_unmask,
- 	.irq_set_affinity	= bcm7038_l1_set_affinity,
--#ifdef CONFIG_SMP
--	.irq_cpu_offline	= bcm7038_l1_cpu_offline,
--#endif
- #ifdef CONFIG_PM_SLEEP
- 	.irq_set_wake		= bcm7038_l1_set_wake,
- #endif
+diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
+index b6ef5f7..f5d7bfa 100644
+--- a/arch/mips/kernel/smp-bmips.c
++++ b/arch/mips/kernel/smp-bmips.c
+@@ -26,6 +26,7 @@
+ #include <linux/bug.h>
+ #include <linux/kernel.h>
+ #include <linux/kexec.h>
++#include <linux/irq.h>
+ 
+ #include <asm/time.h>
+ #include <asm/processor.h>
+@@ -373,7 +374,7 @@ static int bmips_cpu_disable(void)
+ 
+ 	set_cpu_online(cpu, false);
+ 	calculate_cpu_foreign_map();
+-	irq_cpu_offline();
++	irq_migrate_all_off_this_cpu();
+ 	clear_c0_status(IE_IRQ5);
+ 
+ 	local_flush_tlb_all();
