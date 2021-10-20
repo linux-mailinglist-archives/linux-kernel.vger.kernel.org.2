@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A1A434B67
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94653434B73
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhJTMoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:44:07 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44572 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhJTMoF (ORCPT
+        id S230232AbhJTMqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230174AbhJTMqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:44:05 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7765321A87;
-        Wed, 20 Oct 2021 12:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634733710; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sFOP+dXf4qmtNkZTV2k2qUHOsofKbRuJJn1maDYI9oM=;
-        b=UyA4wEqa/V+upXfbz6kZdRsrMWrhneLtYsx4sBI86AeeX2S3ehCZ4BDkFEnycu5zd2sJl3
-        LnV5NPVglpzp6+B09XkTkngMgzrn3L+mqavxH1k4wy/sMfEI197G2RHcdR3wlgqLZKwwMc
-        pcVa15Jctosy5pc5u8tsB+BMAhY3abU=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 20 Oct 2021 08:46:51 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEF5C06161C;
+        Wed, 20 Oct 2021 05:44:36 -0700 (PDT)
+Received: from cap.home.8bytes.org (p4ff2b5b0.dip0.t-ipconnect.de [79.242.181.176])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 343FEA3B8B;
-        Wed, 20 Oct 2021 12:41:50 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 14:41:49 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg 2/3] memcg: remove charge forcinig for dying tasks
-Message-ID: <YXAOjQO5r1g/WKmn@dhcp22.suse.cz>
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
- <cover.1634730787.git.vvs@virtuozzo.com>
- <56180e53-b705-b1be-9b60-75e141c8560c@virtuozzo.com>
+        by theia.8bytes.org (Postfix) with ESMTPSA id 78ED428B;
+        Wed, 20 Oct 2021 14:44:32 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v5 0/6] KVM: SVM: Add initial GHCB protocol version 2 support
+Date:   Wed, 20 Oct 2021 14:44:10 +0200
+Message-Id: <20211020124416.24523-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56180e53-b705-b1be-9b60-75e141c8560c@virtuozzo.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-10-21 15:13:46, Vasily Averin wrote:
-> ToDo: should we keep task_is_dying() in mem_cgroup_out_of_memory() ?
-> 
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->  mm/memcontrol.c | 20 +++++++-------------
->  1 file changed, 7 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6da5020a8656..74a7379dbac1 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -239,7 +239,7 @@ enum res_type {
->  	     iter != NULL;				\
->  	     iter = mem_cgroup_iter(NULL, iter, NULL))
->  
-> -static inline bool should_force_charge(void)
-> +static inline bool task_is_dying(void)
->  {
->  	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
->  		(current->flags & PF_EXITING);
-> @@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	 * A few threads which were not waiting at mutex_lock_killable() can
->  	 * fail to bail out. Therefore, check again after holding oom_lock.
->  	 */
-> -	ret = should_force_charge() || out_of_memory(&oc);
-> +	ret = task_is_dying() || out_of_memory(&oc);
+From: Joerg Roedel <jroedel@suse.de>
 
-Why are you keeping the task_is_dying check here? IIRC I have already
-pointed out that out_of_memory already has some means to do a bypass
-when needed.
+Hi,
+
+here is a small set of patches which I took from the pending SEV-SNP
+patch-sets to enable basic support for GHCB protocol version 2.
+
+When SEV-SNP is not supported, only two new MSR protocol VMGEXIT calls
+are required:
+
+	- MSR-based AP-reset-hold
+	- MSR-based HV-feature-request
+
+These calls are implemented here and then the protocol is lifted to
+version 2.
+
+This is submitted separately because the MSR-based AP-reset-hold call
+is required to support kexec/kdump in SEV-ES guests.
+
+The previous version can be found here:
+
+	https://lore.kernel.org/lkml/20210929155330.5597-1-joro@8bytes.org/
+
+Regards,
+
+	Joerg
+
+Changes v4->v5:
+
+	- Removed stable SoB from patch 1
+	- Moved kvm_emulate_ap_reset_hold() and all related code in
+	  later patches to SVM specific code, as suggested by Sean.
+
+Brijesh Singh (2):
+  KVM: SVM: Add support for Hypervisor Feature support MSR protocol
+  KVM: SVM: Increase supported GHCB protocol version
+
+Joerg Roedel (2):
+  KVM: SVM: Get rid of set_ghcb_msr() and *ghcb_msr_bits() functions
+  KVM: SVM: Move kvm_emulate_ap_reset_hold() to AMD specific code
+
+Sean Christopherson (1):
+  KVM: SVM: Add helper to generate GHCB MSR verson info, and drop macro
+
+Tom Lendacky (1):
+  KVM: SVM: Add support to handle AP reset MSR protocol
+
+ arch/x86/include/asm/kvm_host.h   |   3 +-
+ arch/x86/include/asm/sev-common.h |  14 +--
+ arch/x86/include/uapi/asm/svm.h   |   1 +
+ arch/x86/kvm/svm/sev.c            | 141 +++++++++++++++++++++---------
+ arch/x86/kvm/svm/svm.h            |  13 +--
+ arch/x86/kvm/x86.c                |  11 +--
+ 6 files changed, 120 insertions(+), 63 deletions(-)
+
+
+base-commit: 73f122c4f06f650ddf7f7410d8510db1a92a16a0
 -- 
-Michal Hocko
-SUSE Labs
+2.33.1
+
