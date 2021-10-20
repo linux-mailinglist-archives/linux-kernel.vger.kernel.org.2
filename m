@@ -2,195 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A0D434C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12277434C2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhJTNew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:34:52 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:41774 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhJTNev (ORCPT
+        id S230117AbhJTNfu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 09:35:50 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:51323 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhJTNft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:34:51 -0400
-Received: by mail-wm1-f52.google.com with SMTP id d198-20020a1c1dcf000000b00322f53b9b89so10331701wmd.0;
-        Wed, 20 Oct 2021 06:32:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jrb5cmSM9pAeOUv7OLv3lf3TqRyW680tvYdtVjs/dwc=;
-        b=4ItNZKlcjNWaMc6cvAZ7zIzhhraNQ3uba21sfJy53+oa9wSRAwPSKFB5cqkrNUfZxH
-         f0Spfk004He0qtFCvMsXE1CvsVxZ8z7iB/VbjqwldrLU8rAg2miVfwPK6udqxRl4Obys
-         uh7LthkA0+3kxdjWhzqFXY7gdlvcdW+sHDJN9KMXWg5/XSeLNhAygVrFM52rwJ0WQmmr
-         +bB9wtSxDoIVy6HkWJe4zAI9R2X2tOyOYHo8gFvBF3ZHcGZEOT9HlfsrBu+hDtv39ay0
-         MeBNKGHjC9AAvbM5VbYwV9F55DMhZmqE0AXUmJWnLvL39fRgsdVWFKvCeNO/sjxNFled
-         7+BA==
-X-Gm-Message-State: AOAM531iTpLYmJGWFezRpWTkTUF45v8C2wjuGQkAkO6v2ONMz2qpYuUH
-        +nMKa15/yRjlPGyKco4sANzdgw62lBK4D0YJSUqbBs12epU=
-X-Google-Smtp-Source: ABdhPJx4OezOx/SpW6qvC+aTeaSi/Wj2W3Pu9ZAVbVmhubqQhfEFmpv6TPaBtkplENFfupWQaSTzAf4hw+bqWQIndvk=
-X-Received: by 2002:a7b:c149:: with SMTP id z9mr13928439wmi.180.1634736755597;
- Wed, 20 Oct 2021 06:32:35 -0700 (PDT)
+        Wed, 20 Oct 2021 09:35:49 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MODeL-1mJhzw3XrN-00OUOY; Wed, 20 Oct 2021 15:33:33 +0200
+Received: by mail-wm1-f46.google.com with SMTP id g79-20020a1c2052000000b00323023159e1so1790315wmg.2;
+        Wed, 20 Oct 2021 06:33:33 -0700 (PDT)
+X-Gm-Message-State: AOAM5301XPz0H3iXI2bGvd+m9ERXfiawu/rDO5yrf9dHivxD5xN+wjUf
+        madVRj8iQ3ek+13uCHw7/5BzISHKEf9U/b33vAY=
+X-Google-Smtp-Source: ABdhPJxY/Ua7ZwYe4Z5WF5LhCFLVLILKFKBq3mgQsPNvFmW5mHTQv/qL3luMioBXbYeLCvcOb7xVR7smc7gDFtx2g/E=
+X-Received: by 2002:adf:b1c4:: with SMTP id r4mr51896376wra.428.1634736813387;
+ Wed, 20 Oct 2021 06:33:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210926090605.3556134-1-ray.huang@amd.com> <20210926090605.3556134-5-ray.huang@amd.com>
- <CAJZ5v0g58vrHNcOEoWUCKmTxraSTuCzVLffzEAgz7TPa8+TNyw@mail.gmail.com> <CY4PR1201MB0246A7ECA4E8143CC6E4933DECBE9@CY4PR1201MB0246.namprd12.prod.outlook.com>
-In-Reply-To: <CY4PR1201MB0246A7ECA4E8143CC6E4933DECBE9@CY4PR1201MB0246.namprd12.prod.outlook.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 20 Oct 2021 15:32:23 +0200
-Message-ID: <CAJZ5v0gaBzSCg_SvH1AEJfXf8xSdAy2wN0Wu-ot-k8hv7OVOyQ@mail.gmail.com>
-Subject: Re: [PATCH v2 04/21] ACPI: CPPC: add cppc enable register function
-To:     "Huang, Ray" <Ray.Huang@amd.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
-        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
-        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+References: <20211019141228.1271617-1-pan@semihalf.com> <20211019141228.1271617-2-pan@semihalf.com>
+In-Reply-To: <20211019141228.1271617-2-pan@semihalf.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 20 Oct 2021 15:33:17 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0g82DoivaADueeOcKOjNVDiutZLAAWAROzgvuYt83Z3w@mail.gmail.com>
+Message-ID: <CAK8P3a0g82DoivaADueeOcKOjNVDiutZLAAWAROzgvuYt83Z3w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] socfpga: dts: move arria10 aliases to socfpga_arria10.dtsi
+To:     =?UTF-8?Q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
+Cc:     Dinh Nguyen <dinguyen@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>, DTML <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        upstream@semihalf.com, Marcin Wojtas <mw@semihalf.com>,
+        Jacek Majkowski <jam@semihalf.com>,
+        Konrad Adamczyk <ka@semihalf.com>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        Alexandru Stan <amstan@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:9TIBTlutona7zBFgeBOsTKFN5IW8STXY0jlFzDV4LvCQCZhpaFX
+ 0GsPasrHE+pnFjq9Uf2Ep6TOI5flGmlesLn5Yph37398bCnAfssBxHgR3dBa5Hh6lgceYfL
+ mcDnHrMgkPV3eufRvafcfJjxv/oR3SEGqy7lgGBs/dPVBU7hGqjOJ0amr51P9Vs0h95FM6X
+ rKWKpRR05lxVOUMDHIPvw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YZdY5xPBj0c=:+SR+Wko6nNnxVLfq9AFIUH
+ hUeS5jwnsiNlPPN6zSjcOUXz/Z3vog2mDdxzqHsvSZPZZnR8ecA7gpmwToh4gCQMRbcaYsQIQ
+ 8sqX8Gu3Xwi7TH4yDBCRcoUKZq00tU2JtqFdBpNt64CaZaJAQGOU44yi6g5RD++Yi2MhpJEpK
+ J4x0svNo6SzVfFqI6vZpt2gSV0ZyIM9hmwWVRu6umPl6pHOESv8v6Wk8naTcJh+JsqA+x4/Te
+ aEo/XkVIWCsBPzeUb2xG/CGx0c49RSAO/MT2Ikk9KZ1eWbFvWDnMO8AkasVMKgb5gMldWCha8
+ nchFKDgvC7c4uhh9vOmdtsqa+BvJ0/9c2llMMkx9KtKwBGABvXEvXfbS+Jo2AI7shZQ0v6BLx
+ +W5jDrsmOUMfp5tkjAU4mA5LmeOmMJHzZ0dzBn9g1Yhd7KvUbQx6JGfIlmP8139xtxS8AfpMR
+ UZcH5vmDh6rpwW0Velre/g0bhdGs6DHUY8HqtWncyNeVoXPQR6h8KRZGQEQ6zbCsIHHSLoFsi
+ Y75n+FTz9XKLH83yByUvdDnUuxZ5S3K3JIIzD3kkbBPWApUG/46mMe4BTXvHjZXaIeHvmESV5
+ q5G7Z1GnXHDnwrg0aMuOW1l3uJJ8oDFiJrUzVaKmsdJ0Zv+DHIM6Rg+1cIjHaZswSYu11iOqM
+ VgIzhQuJ2xMiLmK3YkfeJ586J/UEGJLpNshwymjU145ajFHPsebtGq7BaNK/+eWAU5hWqNeDN
+ W3yS4U/fq6LD5xGRSFGg9/nZD6vcE503n1AaEAfrW3Zzo55sBHuQmUdpvK+2Misa3+sWzldoZ
+ Schd+D/pgyLXiWUg3quK2qUpCPCh7f9u+/qoGu7Lxi+tZDiCE0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 1:13 PM Huang, Ray <Ray.Huang@amd.com> wrote:
+On Tue, Oct 19, 2021 at 4:12 PM Paweł Anikiel <pan@semihalf.com> wrote:
 >
-> [AMD Official Use Only]
+> socfpga_arria10_socdk.dtsi declares aliases which will most likely
+> be used by other arria10 boards in the exact same way. move these
+> aliases to the parent file.
 >
-> > -----Original Message-----
-> > From: Rafael J. Wysocki <rafael@kernel.org>
-> > Sent: Wednesday, October 20, 2021 1:00 AM
-> > To: Huang, Ray <Ray.Huang@amd.com>
-> > Cc: Rafael J . Wysocki <rafael.j.wysocki@intel.com>; Viresh Kumar
-> > <viresh.kumar@linaro.org>; Shuah Khan <skhan@linuxfoundation.org>;
-> > Borislav Petkov <bp@suse.de>; Peter Zijlstra <peterz@infradead.org>; Ingo
-> > Molnar <mingo@kernel.org>; Linux PM <linux-pm@vger.kernel.org>;
-> > Sharma, Deepak <Deepak.Sharma@amd.com>; Deucher, Alexander
-> > <Alexander.Deucher@amd.com>; Limonciello, Mario
-> > <Mario.Limonciello@amd.com>; Fontenot, Nathan
-> > <Nathan.Fontenot@amd.com>; Su, Jinzhou (Joe) <Jinzhou.Su@amd.com>;
-> > Du, Xiaojian <Xiaojian.Du@amd.com>; Linux Kernel Mailing List <linux-
-> > kernel@vger.kernel.org>; the arch/x86 maintainers <x86@kernel.org>
-> > Subject: Re: [PATCH v2 04/21] ACPI: CPPC: add cppc enable register function
-> >
-> > On Sun, Sep 26, 2021 at 11:06 AM Huang Rui <ray.huang@amd.com> wrote:
-> > >
-> > > From: Jinzhou Su <Jinzhou.Su@amd.com>
-> > >
-> > > Add a new function to enable CPPC feature. This function will write
-> > > Continuous Performance Control package EnableRegister field on the
-> > > processor.
-> >
-> > And what is going to take place after this write?
-> >
-> > Also, it would be good to mention that the user of this function will be added
-> > subsequently.
->
-> After the enable flag is set, the processor hardware can accept the performance goals such as desired perf that programed by kernel and control the processor frequency according to the performance value.
+> Signed-off-by: Paweł Anikiel <pan@semihalf.com>
 
-Is this the CPPC EnableRegister register described in Section 8.4.7.1
-of ACPI 6.4?  If so, it would be good to provide this information in
-the changelog either.
+No, please move them into the .dts files instead for consistency.
 
-> I will mention this in the comment in V3.
->
-> >
-> > > Signed-off-by: Jinzhou Su <Jinzhou.Su@amd.com>
-> > > Signed-off-by: Huang Rui <ray.huang@amd.com>
-> > > ---
-> > >  drivers/acpi/cppc_acpi.c | 48
-> > > ++++++++++++++++++++++++++++++++++++++++
-> > >  include/acpi/cppc_acpi.h |  5 +++++
-> > >  2 files changed, 53 insertions(+)
-> > >
-> > > diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c index
-> > > 2efe2ba97d96..b285960c35e7 100644
-> > > --- a/drivers/acpi/cppc_acpi.c
-> > > +++ b/drivers/acpi/cppc_acpi.c
-> > > @@ -1220,6 +1220,54 @@ int cppc_get_perf_ctrs(int cpunum, struct
-> > > cppc_perf_fb_ctrs *perf_fb_ctrs)  }
-> > > EXPORT_SYMBOL_GPL(cppc_get_perf_ctrs);
-> > >
-> > > +/**
-> > > + * cppc_set_enable - Set to enable CPPC on the processor by writing
-> > > +the
-> > > + * Continuous Performance Control package EnableRegister feild.
-> > > + * @cpu: CPU for which to enable CPPC register.
-> > > + * @enable: 0 - disable, 1 - enable CPPC feature on the processor.
-> > > + *
-> > > + * Return: 0 for success, -ERRNO or -EIO otherwise.
-> > > + */
-> > > +int cppc_set_enable(int cpu, u32 enable) {
-> > > +       int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
-> > > +       struct cpc_register_resource *enable_reg;
-> > > +       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-> > > +       struct cppc_pcc_data *pcc_ss_data = NULL;
-> > > +       int ret = -1;
-> > > +
-> > > +       /* check the input value*/
-> > > +       if (cpu < 0 || cpu > num_possible_cpus() - 1 || enable > 1)
-> >
-> > Why not use cpu_possible()?  And why enable > 1 is a problem?
-> >
->
-> Yes, you're right, cpu_possible() is better here.
-> Will remove "enable > 1", and yes, we should support "disable" as well.
->
->
-> > > +               return -ENODEV;
-> >
-> > -EINVAL
-> >
->
-> Updated.
->
-> > > +
-> > > +       if (!cpc_desc) {
-> >
-> > if this is checked, the cpu_possible() check above is redundant.
->
-> Hmm, if acpi_cppc_processor_probe got failed, some one outside acpi driver would like to call this helper.
-> Is that possible we get a null cpc descriptor here? Or anything I missed.
+Each board may use a different subset of them, or have them
+numbered differently, so keep it out of the .dtsi file.
 
-if cpu_possible(cpu) is false, then cpc_desc for cpu will be NULL.  If
-you check the latter, there's no need to check the former.  Of course,
-cpc_desc may be NULL for other reasons, but you're checking it anyway.
-
-> >
-> > > +               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-> > > +               return -ENODEV;
-> > > +       }
-> > > +
-> > > +       enable_reg = &cpc_desc->cpc_regs[ENABLE];
-> > > +
-> > > +       if (CPC_IN_PCC(enable_reg)) {
-> > > +
-> > > +               if (pcc_ss_id < 0)
-> > > +                       return -EIO;
-> > > +
-> > > +               ret = cpc_write(cpu, enable_reg, enable);
-> > > +               if (ret)
-> > > +                       return ret;
-> > > +
-> > > +               pcc_ss_data = pcc_data[pcc_ss_id];
-> > > +
-> > > +               down_write(&pcc_ss_data->pcc_lock);
-> > > +               /* after writing CPC, transfer the ownership of PCC to platfrom */
-> > > +               ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
-> > > +               up_write(&pcc_ss_data->pcc_lock);
-> > > +       }
-> >
-> > Does it really need to do nothing if the register is not in PCC?  If so, then why?
-> >
->
-> Hmm, do you mean we should take care the cases for enabling behavior if register in other spaces such as SYSTEM_MEMORY or FIXED_HARDWARE on different kinds of SBIOS implementation?
-
-This is a generic interface and it should cover all of the valid use
-cases, so yes.
+     Arnd
