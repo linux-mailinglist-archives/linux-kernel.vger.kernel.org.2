@@ -2,224 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC78B434BCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A297434BCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhJTNJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
+        id S230232AbhJTNJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhJTNJT (ORCPT
+        with ESMTP id S230225AbhJTNJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:09:19 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9B0C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:07:04 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id f11so2899574pfc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=cLHt1Q5LZV5kZERGaF5WFeq4nFIY0B4p1p8uZPXEb/E=;
-        b=NeB1wz48puGnb+MMS/pk7h498WOtKopBnXwpEPOZuXpqFjYRxlsZppuF3Q3FbCRC+D
-         l70YhD/l5Ky35Zbkm1yzqOu6i+pC3Nbix/LZCCcHU/fOIiW+Sl+te+R4Gx/uYjd+EdDR
-         gJ+2Oe3yiTbxID5iiB/dQOf0wbguBfuL5KL/iPD/rDjzEMQetFH/B7U6JRKpVBIw+Rb/
-         MQ3MD1EB0/YcUCqZgvmGVrJnx+wE7di5wmI8dzSlU4JMSpnrX7CPnlYLpiVeDmLbu4yk
-         h5kD5D+gJ11Z8PcoeDpxzdMi/Oe3othHCYVZa8yEfkrVT3CJcgHwzSOrwWqHB4i3zUe8
-         DbRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=cLHt1Q5LZV5kZERGaF5WFeq4nFIY0B4p1p8uZPXEb/E=;
-        b=g2gaGjlLms/LexqpozRF/97V86wYBh5892eZ9TnG74XnXZc4janRtHVJ0xFqXMJJT2
-         /i2gbYX8J/9rp1PA4/TEI11pXOmuBSM0yT8qttSVY8w2ZBdqRrlUpWxLLk2UfGHoEqaX
-         iGXN0yZC2tRfYzi8UX/4xTDkye29D7dre6KHRBLyt+qWhWtGh0QvA9SSXKryfID/1eqO
-         5tMHIc6C0L387jGZV2mOUFF1O2LOfKhufjAyZQc5RGW3OL1qwg7wIYr4gKtoBqjpmJFo
-         MtzLEZbBwMRD2gPGRfh0h3x8UpPLjlC4Ml83yQpn+a3TugjeHEskWlZeX62+a7YYirkw
-         +/DA==
-X-Gm-Message-State: AOAM530yQDGz9wMYl/HWwIfetIx74MLc1/UikbRbJtkWiqhXWCXstC03
-        wlCrv1C/AO/nqO+rj6374j0ajg==
-X-Google-Smtp-Source: ABdhPJykFU+IX6bdVX4DIL0QI08lOvBOF+umL/jmYbqQ6yMOrhzIgmCJJ+HllyDZ4dvVqEx7ZJxmUA==
-X-Received: by 2002:a62:1d14:0:b0:44d:3b0b:d027 with SMTP id d20-20020a621d14000000b0044d3b0bd027mr6278328pfd.60.1634735224249;
-        Wed, 20 Oct 2021 06:07:04 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id q73sm2765784pfc.179.2021.10.20.06.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:07:03 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH RESEND 02/10] dt-bindings: phy: qcom,qmp: IPQ6018 and IPQ8074 PCIe PHY require no supply
-Date:   Wed, 20 Oct 2021 21:06:34 +0800
-Message-Id: <20211020130634.26194-1-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210929034253.24570-3-shawn.guo@linaro.org>
+        Wed, 20 Oct 2021 09:09:30 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A15C061746;
+        Wed, 20 Oct 2021 06:07:16 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 4645D1F43A1E
+Subject: Re: [PATCH v7 07/11] media: rkvdec: Add the VP9 backend
+To:     Alex Bee <knaerzche@gmail.com>, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>
+References: <20210929160439.6601-1-andrzej.p@collabora.com>
+ <20210929160439.6601-8-andrzej.p@collabora.com>
+ <966b04a7-421a-a592-2e17-ea5ecdb76b00@gmail.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <91ba5098-2528-1e63-3a1a-b908db8d6f2a@collabora.com>
+Date:   Wed, 20 Oct 2021 15:07:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <966b04a7-421a-a592-2e17-ea5ecdb76b00@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The qmp-phy driver suggests that 'vdda-phy-supply' and 'vdda-pll-supply'
-are not required for IPQ6018 and IPQ8074 QMP PCIe PHY.  Update the
-bindings to reflect it.
+Hi Alex,
 
-While at it, also correct the clock properies for IPQ8074 QMP PCIe PHY.
-And as the result, 'qcom,ipq8074-qmp-pcie-phy' and
-'qcom,ipq6018-qmp-pcie-phy' share the same clock, reset and supply
-bindings.
+W dniu 20.10.2021 o 01:24, Alex Bee pisze:
+> Hi Andrzej,
+> 
+> Am 29.09.21 um 18:04 schrieb Andrzej Pietrasiewicz:
+>> From: Boris Brezillon <boris.brezillon@collabora.com>
+>>
+>> The Rockchip VDEC supports VP9 profile 0 up to 4096x2304@30fps. Add
+>> a backend for this new format.
+>>
+>> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+>> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+>> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+>> Co-developed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+>> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+>> ---
+>>   drivers/staging/media/rkvdec/Kconfig      |    1 +
+>>   drivers/staging/media/rkvdec/Makefile     |    2 +-
+>>   drivers/staging/media/rkvdec/rkvdec-vp9.c | 1078 +++++++++++++++++++++
+>>   drivers/staging/media/rkvdec/rkvdec.c     |   52 +-
+>>   drivers/staging/media/rkvdec/rkvdec.h     |   12 +-
+>>   5 files changed, 1137 insertions(+), 8 deletions(-)
+>>   create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
-Rebase to resolve conflict during applying.
+<snip>
 
- .../devicetree/bindings/phy/qcom,qmp-phy.yaml | 55 +++++++++++--------
- 1 file changed, 31 insertions(+), 24 deletions(-)
+>> diff --git a/drivers/staging/media/rkvdec/rkvdec.c 
+>> b/drivers/staging/media/rkvdec/rkvdec.c
+>> index 7131156c1f2c..6aa8aca66547 100644
+>> --- a/drivers/staging/media/rkvdec/rkvdec.c
+>> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+>> @@ -99,10 +99,30 @@ static const struct rkvdec_ctrls rkvdec_h264_ctrls = {
+>>       .num_ctrls = ARRAY_SIZE(rkvdec_h264_ctrl_descs),
+>>   };
+>> -static const u32 rkvdec_h264_decoded_fmts[] = {
+>> +static const u32 rkvdec_h264_vp9_decoded_fmts[] = {
+>>       V4L2_PIX_FMT_NV12,
+> 
+> For H.264 rkvdec HW supports additional formats: V4L2_PIX_FMT_NV15, 
+> V4L2_PIX_FMT_NV16 and V4L2_PIX_FMT_NV20. Not all of those are upstreamed yet and 
+> thus not supported by rkvdec driver - but I think we should introduce a seperate 
+> rkvdec_vp9_decoded_fmts already a this point. (To avoid unnecessary diff 
+> afterwards)
 
-diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-index 99aa2d08dfcb..688a63ca1936 100644
---- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-@@ -113,8 +113,6 @@ required:
-   - clock-names
-   - resets
-   - reset-names
--  - vdda-phy-supply
--  - vdda-pll-supply
- 
- additionalProperties: false
- 
-@@ -147,6 +145,9 @@ allOf:
-           items:
-             - const: phy
-             - const: common
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-@@ -173,6 +174,9 @@ allOf:
-           items:
-             - const: phy
-             - const: common
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-@@ -201,6 +205,9 @@ allOf:
-             - const: phy
-             - const: common
-             - const: cfg
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-@@ -230,6 +237,9 @@ allOf:
-           items:
-             - const: phy
-             - const: common
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-@@ -250,6 +260,9 @@ allOf:
-         reset-names:
-           items:
-             - const: ufsphy
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-@@ -275,34 +288,16 @@ allOf:
-         reset-names:
-           items:
-             - const: ufsphy
--  - if:
--      properties:
--        compatible:
--          contains:
--            enum:
--              - qcom,ipq8074-qmp-pcie-phy
--    then:
--      properties:
--        clocks:
--          items:
--            - description: pipe clk.
--        clock-names:
--          items:
--            - const: pipe_clk
--        resets:
--          items:
--            - description: reset of phy block.
--            - description: phy common block reset.
--        reset-names:
--          items:
--            - const: phy
--            - const: common
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-           contains:
-             enum:
-               - qcom,ipq6018-qmp-pcie-phy
-+              - qcom,ipq8074-qmp-pcie-phy
-     then:
-       properties:
-         clocks:
-@@ -353,6 +348,9 @@ allOf:
-         reset-names:
-           items:
-             - const: phy
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-@@ -384,6 +382,9 @@ allOf:
-           items:
-             - const: phy
-             - const: common
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-@@ -411,6 +412,9 @@ allOf:
-           items:
-             - const: phy
-             - const: common
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
-   - if:
-       properties:
-         compatible:
-@@ -437,6 +441,9 @@ allOf:
-           items:
-             - const: phy_phy
-             - const: phy
-+      required:
-+        - vdda-phy-supply
-+        - vdda-pll-supply
- 
- examples:
-   - |
--- 
-2.17.1
+I will do it if I get to re-spinning the series for other reasons.
 
+> 
+>>   };
+>> +static const struct rkvdec_ctrl_desc rkvdec_vp9_ctrl_descs[] = {
+>> +    {
+>> +        .cfg.id = V4L2_CID_STATELESS_VP9_FRAME,
+>> +    },
+>> +    {
+>> +        .cfg.id = V4L2_CID_STATELESS_VP9_COMPRESSED_HDR,
+>> +    },
+>> +    {
+>> +        .cfg.id = V4L2_CID_MPEG_VIDEO_VP9_PROFILE,
+>> +        .cfg.min = V4L2_MPEG_VIDEO_VP9_PROFILE_0,
+>> +        .cfg.max = V4L2_MPEG_VIDEO_VP9_PROFILE_0,
+>> +        .cfg.def = V4L2_MPEG_VIDEO_VP9_PROFILE_0,
+>> +    },
+>> +};
+>> +
+>> +static const struct rkvdec_ctrls rkvdec_vp9_ctrls = {
+>> +    .ctrls = rkvdec_vp9_ctrl_descs,
+>> +    .num_ctrls = ARRAY_SIZE(rkvdec_vp9_ctrl_descs),
+>> +};
+>> +
+>>   static const struct rkvdec_coded_fmt_desc rkvdec_coded_fmts[] = {
+>>       {
+>>           .fourcc = V4L2_PIX_FMT_H264_SLICE,
+>> @@ -116,8 +136,23 @@ static const struct rkvdec_coded_fmt_desc 
+>> rkvdec_coded_fmts[] = {
+>>           },
+>>           .ctrls = &rkvdec_h264_ctrls,
+>>           .ops = &rkvdec_h264_fmt_ops,
+>> -        .num_decoded_fmts = ARRAY_SIZE(rkvdec_h264_decoded_fmts),
+>> -        .decoded_fmts = rkvdec_h264_decoded_fmts,
+>> +        .num_decoded_fmts = ARRAY_SIZE(rkvdec_h264_vp9_decoded_fmts),
+>> +        .decoded_fmts = rkvdec_h264_vp9_decoded_fmts,
+>> +    },
+>> +    {
+>> +        .fourcc = V4L2_PIX_FMT_VP9_FRAME,
+>> +        .frmsize = {
+>> +            .min_width = 64,
+>> +            .max_width = 4096,
+>> +            .step_width = 64,
+>> +            .min_height = 64,
+>> +            .max_height = 2304,
+>> +            .step_height = 64,
+>> +        },
+> I checked (available) documentation and couldn't find any hint to the 
+> .step_width and .step_height, but I'm not sure that's correct: taking
+> this values here neither framesize of 3840x2160 nor 1280x720 would be possible - 
+> but the HW seems to have no problem with those, i.e. decoding works fine.
+> Given the output format is the same as the (only) currently supported H.264 
+> output format (NV12) and those steps are usually for alignment purposes need by 
+> the HW , I strongly guess .step_height and .step_width are the same as 
+> V4L2_PIX_FMT_H264_SLICE has.
+> 
+
+Aren't these used primarily by v4l2_apply_frmsize_constraints()? Doesn't
+this merely mean that even though userspace requests, say, 48x48,
+it will get 64x64 instead?
+
+I tried decoding a 720p video with gstreamer and it worked fine
+(I got a properly sized 1280x720 output).
+
+Regards,
+
+Andrzej
