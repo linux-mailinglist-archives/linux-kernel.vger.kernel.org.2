@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C314543464B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039AC434646
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhJTH4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:56:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30316 "EHLO m43-7.mailgun.net"
+        id S229663AbhJTH4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:56:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:57112 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhJTH4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:56:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634716478; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=l1wCt2XwuXKYZBLiuE4Mb1G+nUelwSpcbnLazoCaWbw=;
- b=ZDWwht9UeL9gTPsAHE9RlLXccTE/1PFTZdEjmw13dtqc+1qs0lku3/Z1xsDSrV3wW0hg2Q7K
- BJ+9KIa0+DDQfhHCdK4J4lHZ9jpAtQjwt3bBR/CLH7zgwTueSE4IL6UgFIdpGZMrxQfw712u
- 6Y7rTOnS2oL9bqw/gZLQ1Y26OSY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 616fcb32b03398c06c89d62a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 07:54:26
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A0B87C4360D; Wed, 20 Oct 2021 07:54:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D33B8C4360C;
-        Wed, 20 Oct 2021 07:54:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D33B8C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S229503AbhJTH4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 03:56:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 218D0ED1;
+        Wed, 20 Oct 2021 00:54:01 -0700 (PDT)
+Received: from [192.168.1.131] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E64F3F70D;
+        Wed, 20 Oct 2021 00:53:58 -0700 (PDT)
+Subject: Re: [PATCH v2 3/4] arm64: vdso32: suppress error message for 'make
+ mrproper'
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Lucas Henneman <henneman@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <20211019223646.1146945-1-ndesaulniers@google.com>
+ <20211019223646.1146945-4-ndesaulniers@google.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <145cec53-b20b-bdf2-1209-eb457aa72f44@arm.com>
+Date:   Wed, 20 Oct 2021 09:54:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20211019223646.1146945-4-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210722193459.7474-1-ojab@ojab.ru>
-References: <20210722193459.7474-1-ojab@ojab.ru>
-To:     ojab <ojab@ojab.ru>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ojab <ojab@ojab.ru>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163471645955.23156.7506403648173685920.kvalo@codeaurora.org>
-Date:   Wed, 20 Oct 2021 07:54:25 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ojab <ojab@ojab.ru> wrote:
 
-> After reboot with kernel & firmware updates I found `failed to copy
-> target iram contents:` in dmesg and missing wlan interfaces for both
-> of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
-> it, so while I have no idea what's actually happening, I don't see why
-> we should fail in this case, looks like some optional firmware ability
-> that could be skipped.
+
+On 10/20/21 12:36 AM, Nick Desaulniers wrote:
+> When running the following command without arm-linux-gnueabi-gcc in
+> one's $PATH, the following warning is observed:
 > 
-> Also with additional logging there is
-> ```
-> [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
-> [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
-> [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
-> ```
-> so exact branch could be seen.
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make -j72 LLVM=1 mrproper
+> make[1]: arm-linux-gnueabi-gcc: No such file or directory
 > 
-> Signed-off-by: Slava Kardakov <ojab@ojab.ru>
-> Tested-by: Axel Rasmussen <axelrasmussen@google.com>
+> This is because KCONFIG is not run for mrproper, so CONFIG_CC_IS_CLANG
+> is not set, and we end up eagerly evaluating various variables that try
+> to invoke CC_COMPAT.
+> 
+> This is a similar problem to what was observed in
+> commit dc960bfeedb0 ("h8300: suppress error messages for 'make clean'")
+> 
+> Reported-by: Lucas Henneman <henneman@google.com>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-I'm planning to take this patch instead:
-
-https://patchwork.kernel.org/project/linux-wireless/patch/20211020075054.23061-1-kvalo@codeaurora.org/
-
-Patch set to Superseded.
+> ---
+> Changes v1 -> v2:
+> * Change to suppressing via redirecting stderr to /dev/null, as per
+>   Masahiro.
+> * Add Masahiro's SB tag.
+> * Cite dc960bfeedb0.
+> 
+>  arch/arm64/kernel/vdso32/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+> index 1407516e041e..e478cebb9891 100644
+> --- a/arch/arm64/kernel/vdso32/Makefile
+> +++ b/arch/arm64/kernel/vdso32/Makefile
+> @@ -38,7 +38,8 @@ cc32-disable-warning = $(call try-run,\
+>  # As a result we set our own flags here.
+>  
+>  # KBUILD_CPPFLAGS and NOSTDINC_FLAGS from top-level Makefile
+> -VDSO_CPPFLAGS := -DBUILD_VDSO -D__KERNEL__ -nostdinc -isystem $(shell $(CC_COMPAT) -print-file-name=include)
+> +VDSO_CPPFLAGS := -DBUILD_VDSO -D__KERNEL__ -nostdinc
+> +VDSO_CPPFLAGS += -isystem $(shell $(CC_COMPAT) -print-file-name=include 2>/dev/null)
+>  VDSO_CPPFLAGS += $(LINUXINCLUDE)
+>  
+>  # Common C and assembly flags
+> 
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210722193459.7474-1-ojab@ojab.ru/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Regards,
+Vincenzo
