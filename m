@@ -2,45 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C90434A07
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D0A434A09
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhJTLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53254 "EHLO mail.kernel.org"
+        id S230170AbhJTLbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:31:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230139AbhJTLbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:31:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B39FA61359;
-        Wed, 20 Oct 2021 11:28:48 +0000 (UTC)
+        id S230139AbhJTLbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 07:31:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 753266135E;
+        Wed, 20 Oct 2021 11:28:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634729329;
-        bh=Hc5cuk9glDaRbaSAq4FdX0qHDgJuvg1tQjkipEezNvM=;
+        s=k20201202; t=1634729332;
+        bh=wTQloiZs/BuLYX5Yg3LlKrHdopyQzbSJH5f/Y/+nJdU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LZF5Rfu3GUprtBYrB0BU2YZ4eiM3rLK3Jig8bOQm5cQ3FghfMbGuEB0HiI3mjDEL7
-         HcI92HqOvIYR+xyeSL+cWhNkp3RjFLDOowqPlkUO3yWnehhLcwcU9KykqucYUPLXm8
-         t37If7zQ/usbfxpBS+fK1PU2bjFJ9Dju4VQX6u0DnmtyiP/kzXYER6BTYInbKQCqWI
-         Kp6FzguBtH7sH/PW9v75AiutVwbLb4GQefEqmsUQ8NMVvICf+mOSRai/GDSxoCSB4A
-         4ixMHcXIa6D+V67GUnqNFJCeBCAooaizOZZUT6UXeokfbMx6+j6kBjbjDs7ZF6aVtT
-         pEXW/S7NDTcKw==
+        b=n3eSBergbHy5zgvxaAoAveP9Bi9qIaMsR9UsAb7OpUkOA5hNNoSinHCgLxT3M6j3x
+         isbmgUQZ9O0VU6enRGoJxUljlqlw0SjVggMHohwmveeRlkJ4ibOHJZQqQPLa60kFCZ
+         u1S+2++oPJFnW3vNsj7KjThnXZgvH4HPP2thzFxgGXzSZm9X4Z5DgMKedL2D7YE7cy
+         ZlCzUgzTlExFHjswmLq1BARGvnKnb7ktgC3HXLjqqOkS8UU75rDxmPdvcqDf9V6/+5
+         poapQeOXKQu8/5K5oAiVBjjqw99M7cebid3jn3Dc3IPXh3FjZnU7J3Ff0Zl/SM4k4U
+         JkqiFwVKKLXaQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-amlogic@lists.infradead.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, Matthias Reichl <hias@horus.com>
-Subject: Re: [PATCH] ASoC: meson: implement driver_name for snd_soc_card in meson-card-utils
-Date:   Wed, 20 Oct 2021 12:28:36 +0100
-Message-Id: <163472931364.2896549.2043578112545946668.b4-ty@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: rockchip: i2s-tdm: Fix refcount test
+Date:   Wed, 20 Oct 2021 12:28:37 +0100
+Message-Id: <163472931363.2896549.8558505612147911310.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211017160028.23318-1-christianshewitt@gmail.com>
-References: <20211017160028.23318-1-christianshewitt@gmail.com>
+In-Reply-To: <20211015210730.308946-1-frattaroli.nicolas@gmail.com>
+References: <20211015210730.308946-1-frattaroli.nicolas@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -48,11 +44,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Oct 2021 16:00:28 +0000, Christian Hewitt wrote:
-> Implement driver_name to provide an alternative to card_name for userspace
-> configuration of Amlogic audio cards.
+On Fri, 15 Oct 2021 23:07:29 +0200, Nicolas Frattaroli wrote:
+> During development of V5 of the i2s-tdm patch series, I replaced
+> the atomic refcount with a regular integer, as it was only ever
+> accessed within a spinlock.
 > 
+> Foolishly, I got the semantics of atomic_dec_and_test wrong, which
+> resulted in a test for 0 actually becoming a test for >0.
 > 
+> [...]
 
 Applied to
 
@@ -60,8 +60,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: meson: implement driver_name for snd_soc_card in meson-card-utils
-      commit: bc387887ae22d6ed6439e83968b5be3443a8e57d
+[1/1] ASoC: rockchip: i2s-tdm: Fix refcount test
+      commit: 0ea15e98cfbe56147e227360282ccd311e824b61
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
