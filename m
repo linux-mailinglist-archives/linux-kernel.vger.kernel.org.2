@@ -2,99 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E0A435039
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C1A43503C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhJTQgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhJTQgf (ORCPT
+        id S230243AbhJTQg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:36:57 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:41668 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhJTQg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:36:35 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB51C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:34:20 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id i189so25452552ioa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JBFsFhPpdaw12nk3cu5dcMUG+Fs6Dz9V44jZGeZjmDo=;
-        b=OqBB29lMojrufyh9kBCGnAFwOS8hjLJLfsf8n2Ba8h1f/5uZCOE05hS93+aJcabXGy
-         BVhAj4obJMShIGQwkkess0Xzu/4lMON7/uG5EC8n2hgiJilyphS92iJtbKB6GxqMMVj0
-         01b1sw68aEyHBh6l3BmLzPmgnWatWkddZtNqI=
+        Wed, 20 Oct 2021 12:36:56 -0400
+Received: by mail-oi1-f177.google.com with SMTP id bk18so1390970oib.8;
+        Wed, 20 Oct 2021 09:34:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JBFsFhPpdaw12nk3cu5dcMUG+Fs6Dz9V44jZGeZjmDo=;
-        b=C23tsqjD24Tgbq6nlQKK3uhHaLxPuwxd6Ge98NFeX9o7QofmNPWNufh0i1QCojQXrx
-         AFdv8PYJALirXPiA+B2X+WIlMXLSNlWggYYV1o9upMxi70ajXFDSyneIGFT5RPmXcRMD
-         62ww3ELTSTxwpBijaxGHWwk5q9HPFT+n9Z5CgmlUeWfH2r4aJr+D4siGtZv7/tcqi7zX
-         MTdc/ZaXFEsRN7E/9xEzBDv0AgYaTof7eeuCAVN75GBlK6Rmh/rUFjFYQdZra18MfkEU
-         Snvn5HEWzi9L1wR+ES+npsgWJumfxdZhP2U5zOqhOAx2hLay69p7yJy8tygCAuWkdj8t
-         v+Gw==
-X-Gm-Message-State: AOAM531ZI0rkT//Db1udSMXfvVGpzj/rr04cSRYFueWEeWjcnxNpZX0M
-        lWTGwzk9NeetSHIxo0kXQyMr/yNZLHR+AA==
-X-Google-Smtp-Source: ABdhPJyKtILTXAT9ygIy/vzt9aKqlp949wGCIExiKDHGKGyBz1wFz0eZYaOdqjDC/+gzjVc178Y3Aw==
-X-Received: by 2002:a05:6638:32a6:: with SMTP id f38mr241125jav.63.1634747660037;
-        Wed, 20 Oct 2021 09:34:20 -0700 (PDT)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id m7sm1346936iov.30.2021.10.20.09.34.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Oct 2021 09:34:19 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 16:34:18 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: Retrieving the network namespace of a socket
-Message-ID: <20211020163417.GA21040@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20211020095707.GA16295@ircssh-2.c.rugged-nimbus-611.internal>
- <CAHNKnsRFah6MRxECTLNwu+maN0o9jS9ENzSAiWS4v1247BqYdg@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=an5EVoSMMD3uE5hVl8845T3OpCZVxBk/sBf7jKjyc58=;
+        b=sgU32uICL4LTKhEz9gDUIuUr7D6pt+AroOSIMIARbfTiN+eyzy/XaI2NN2XPzOs7tT
+         iHoXn1okQpvM/dQ+Ga3yFpQ+eh/z95gVP3NkqrIWh9Ywtxvee71POlsEbXxMdrAiHYNM
+         CYmdW28cux7zMRjkjnezqpaLOVw5dM74HYbBoawDfKjkRvrm2rxUCDYWST/z9g3z9rtR
+         FAkeHE3a+kPuV/SvKdWUxfV8LWk/faZDjWNG63jPfDQI+HlhfmyX+Mw9JS76DzModlS4
+         bdTX8oRwGL1lbsukVbvZ4ATJkpjxT4y+ecLYrTG/cEnN7v3vBnm3igNfaC2Hda0GdF6j
+         7/cA==
+X-Gm-Message-State: AOAM533+AZNuMd0yv/SB88ZnEqpbzPIjH+WDAF7PDsGuR679nZxIACav
+        ObH8FjGIwei5PZP0cLo3ng==
+X-Google-Smtp-Source: ABdhPJxlA9sDn0qd1fNqM0Z3ug22LxrSlHptMcwkBWHTNFW5gmoU7SaLo40XxuOjufBiTs+Cp1fB2g==
+X-Received: by 2002:a05:6808:3c2:: with SMTP id o2mr1251oie.15.1634747681630;
+        Wed, 20 Oct 2021 09:34:41 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s10sm528029oib.58.2021.10.20.09.34.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 09:34:40 -0700 (PDT)
+Received: (nullmailer pid 2481665 invoked by uid 1000);
+        Wed, 20 Oct 2021 16:34:40 -0000
+Date:   Wed, 20 Oct 2021 11:34:40 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nathan Lynch <nathanl@linux.ibm.com>
+Cc:     frowand.list@gmail.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] of: make of_node_check_flag() device_node parameter const
+Message-ID: <YXBFINB1+4Foir9V@robh.at.kernel.org>
+References: <20211014173055.2117872-1-nathanl@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHNKnsRFah6MRxECTLNwu+maN0o9jS9ENzSAiWS4v1247BqYdg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211014173055.2117872-1-nathanl@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 05:03:56PM +0300, Sergey Ryazanov wrote:
-> Hello Sargun,
+On Thu, 14 Oct 2021 12:30:55 -0500, Nathan Lynch wrote:
+> The device_node argument isn't modified by of_node_check_flag(), so mark it
+> const.
 > 
-> On Wed, Oct 20, 2021 at 12:57 PM Sargun Dhillon <sargun@sargun.me> wrote:
-> > I'm working on a problem where I need to determine which network namespace a
-> > given socket is in. I can currently bruteforce this by using INET_DIAG, and
-> > enumerating namespaces and working backwards.
+> Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+> ---
+>  include/linux/of.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Namespace is not a per-socket, but a per-process attribute. So each
-> socket of a process belongs to the same namespace.
-> 
-> Could you elaborate what kind of problem you are trying to solve?
-> Maybe there is a more simple solution. for it.
-> 
-> -- 
-> Sergey
 
-That's not entirely true. See the folowing code:
-
-int main() {
-	int fd1, fd2;
-	fd1 = socket(AF_INET, SOCK_STREAM, 0);
-	assert(fd1 >= 0);
-	assert(unshare(CLONE_NEWNET) == 0);
-	fd2 = socket(AF_INET, SOCK_STREAM, 0);
-	assert(fd2 >= 0);
-}
-
-fd1 and fd2 have different sock_net.
-
-The context for this is:
-https://linuxplumbersconf.org/event/11/contributions/932/
-
-We need to figure out, for a given socket, if it has reachability to a given IP.
+Applied, thanks!
