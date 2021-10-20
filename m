@@ -2,66 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7222A434CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4962434CAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhJTNwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:52:46 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:34337 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbhJTNwn (ORCPT
+        id S230329AbhJTNwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:52:53 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:41644 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhJTNwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:52:43 -0400
-Received: by mail-oi1-f180.google.com with SMTP id v77so9730392oie.1;
-        Wed, 20 Oct 2021 06:50:28 -0700 (PDT)
+        Wed, 20 Oct 2021 09:52:40 -0400
+Received: by mail-ot1-f48.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so6150555ote.8;
+        Wed, 20 Oct 2021 06:50:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=jLTSb3KEYnCRlQ01oYFy7OkpNs2aWBBSeM7tBxCTpD8=;
-        b=g64d079oc9lbqRRJ7oi83yfyxrxyqlCQKwC3Kk4TqbNK9GePrr3hAsGZoXdu+s3dMg
-         Oc35EoPuqSJn4Bh4k8186/6p6es6UR2Y+JZT7YDF7qGOpFpptrunp6nqDKaR33/HftYN
-         RuHAJ9lsHqu4ieMBTetK08+FR/BLPrxi17jIPUOWrztgM557nPiuVTihoJ6xoR+Csjtg
-         Mk07SOl07dobALCeOrHMkpAd3bSNbk6fWtmUX2lT+nsyZEmidOY/3qoqzntq5WmNCpL0
-         2/umzAzycXVsqYWKC8g6APQONyOA4Mk57P9DlNWV3JrFe9nLmfZizKvNPkWWYiJY4K+q
-         yTOg==
-X-Gm-Message-State: AOAM531wzx4K7PWggM/fKVvGmbdjDIU3wwC3aniaPNnICegTiAu9NPbc
-        GLrxJyqRbhZRfvwdEs/TZA==
-X-Google-Smtp-Source: ABdhPJwS8b8/9bct2qZ/+hc4vStE7P565pOQsKf7sXcrPBm2vGWkW+CqezjlGdG+8JVNIlAgfkiBiA==
-X-Received: by 2002:aca:3741:: with SMTP id e62mr9560890oia.107.1634737827694;
-        Wed, 20 Oct 2021 06:50:27 -0700 (PDT)
+        bh=PEZXkD74SyZdIyV+d+cp0filvFd2Rp3gOD7po4nsWqk=;
+        b=E1QbG5V+O58rcE4dqtqqt2TxWHTlYeZwOWaGIBd2krIROaKms9/7ZpHfZFDwe2ovru
+         ZrD0UEf9JhizKPWjtjfsi+FpRtwg00eJ+u2NZfXXlPJnUwc40kpxxxYkhEnbL+8yDyaa
+         58Kstb+7EmdYy/o7maCatU/i94XMyoJWgVsyeqO+/gX/mKXCvM6FNNnEx2LFnzgo7B6V
+         hc9cwFwP7DVc/8l5fp2ccCnr8JpuE1EAUTqqTxr3UsSpLrURQidf3eWIyCaKae/RYbGc
+         2Xcve09qRcAl/Ww+Xka2u7JOmsoKJeVesS8dhoqqAsJtjUiNAWAePwR1CXIPYPTpebu/
+         5iuA==
+X-Gm-Message-State: AOAM531C9zrS1bwJ8dsIJtxmQrwd4+NNIEsZ0kCU24ecmT1Wts1PSwc4
+        d9DwhTW5P8lRHENOlgsXIg==
+X-Google-Smtp-Source: ABdhPJzdpE171vomgu71sUM77D67pYolOFhrMZHKHtjQ7wm0L0/GqcC4cBU6sXFt2kOXSyTrvHgcGg==
+X-Received: by 2002:a9d:715c:: with SMTP id y28mr11044070otj.362.1634737825626;
+        Wed, 20 Oct 2021 06:50:25 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v13sm488307otn.41.2021.10.20.06.50.26
+        by smtp.gmail.com with ESMTPSA id x12sm423235oot.6.2021.10.20.06.50.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:50:26 -0700 (PDT)
-Received: (nullmailer pid 2259920 invoked by uid 1000);
+        Wed, 20 Oct 2021 06:50:24 -0700 (PDT)
+Received: (nullmailer pid 2259917 invoked by uid 1000);
         Wed, 20 Oct 2021 13:50:23 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     YC Hung <yc.hung@mediatek.com>
-Cc:     linux-kernel@vger.kernel.org, broonie@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, daniel.baluta@nxp.com,
-        allen-kh.cheng@mediatek.com, trevor.wu@mediatek.com,
-        tiwai@suse.com, matthias.bgg@gmail.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-In-Reply-To: <20211020115155.9909-3-yc.hung@mediatek.com>
-References: <20211020115155.9909-1-yc.hung@mediatek.com> <20211020115155.9909-3-yc.hung@mediatek.com>
-Subject: Re: [PATCH 2/2] dt-bindings: dsp: mediatek: Add mt8195 DSP binding support
+To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Cc:     Guo Ren <guoren@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        devicetree@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        opensbi@lists.infradead.org, Bin Meng <bmeng.cn@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Xiang W <wxjstz@126.com>, linux-riscv@lists.infradead.org
+In-Reply-To: <20211020093603.28653-1-heinrich.schuchardt@canonical.com>
+References: <20211020093603.28653-1-heinrich.schuchardt@canonical.com>
+Subject: Re: [PATCH 1/1] dt-bindings: T-HEAD CLINT
 Date:   Wed, 20 Oct 2021 08:50:23 -0500
-Message-Id: <1634737823.680277.2259919.nullmailer@robh.at.kernel.org>
+Message-Id: <1634737823.662456.2259916.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 19:51:55 +0800, YC Hung wrote:
-> This describes the mt8195 DSP device tree node.
+On Wed, 20 Oct 2021 11:36:03 +0200, Heinrich Schuchardt wrote:
+> The CLINT in the T-HEAD 9xx CPUs is similar to the SiFive CLINT but does
+> not support 64bit mmio access to the MTIMER device.
 > 
-> Signed-off-by: YC Hung <yc.hung@mediatek.com>
+> OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indicate the
+> restriction and the "sifive,cling0" compatible string. An OpenSBI
+> patch suggested to use "reg-io-width = <4>;" as the reg-io-width property
+> is generally used in the devicetree schema for such a condition.
+> 
+> As the design is not SiFive based it is preferable to apply a compatible
+> string identifying T-HEAD instead.
+> 
+> Add a new yaml file describing the T-HEAD CLINT.
+> 
+> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
 > ---
->  .../bindings/dsp/mtk,mt8195-dsp.yaml          | 138 ++++++++++++++++++
->  1 file changed, 138 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+> @Palmer, @Anup
+> I copied you as maintainers from sifive,clint.yaml. Please, indicate if
+> this should be changed.
+> 
+> For the prior discussion see:
+> https://lore.kernel.org/all/20211015100941.17621-1-heinrich.schuchardt@canonical.com/
+> https://lore.kernel.org/all/20211015120735.27972-1-heinrich.schuchardt@canonical.com/
+> 
+> A release candidate of the ACLINT specification is available at
+> https://github.com/riscv/riscv-aclint/releases
+> ---
+>  .../bindings/timer/thead,clint.yaml           | 62 +++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/thead,clint.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -70,17 +96,19 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml: properties:sound: 'anyOf' conditional failed, one must be fixed:
-	'type' is a required property
-	'$ref' is a required property
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml: ignoring, error in schema: properties: sound
-warning: no schema found in file: ./Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.example.dt.yaml:0:0: /example-0/adsp@10803000: failed to match any schema with compatible: ['mediatek,mt8195-dsp']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/thead,clint.yaml: properties:compatible:items: 'oneOf' conditional failed, one must be fixed:
+	[{'const': ['allwinner,sun20i-d1-clint']}, {'const': ['thead,clint0']}] is not of type 'object'
+	['allwinner,sun20i-d1-clint'] is not of type 'string'
+	['thead,clint0'] is not of type 'string'
+	from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/thead,clint.yaml: ignoring, error in schema: properties: compatible: items
+warning: no schema found in file: ./Documentation/devicetree/bindings/timer/thead,clint.yaml
+Documentation/devicetree/bindings/timer/thead,clint.example.dt.yaml:0:0: /example-0/timer@2000000: failed to match any schema with compatible: ['allwinner,sun20i-d1-clint', 'thead,clint0']
+Documentation/devicetree/bindings/timer/thead,clint.example.dt.yaml:0:0: /example-0/timer@2000000: failed to match any schema with compatible: ['allwinner,sun20i-d1-clint', 'thead,clint0']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1543854
+See https://patchwork.ozlabs.org/patch/1543771
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
