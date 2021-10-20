@@ -2,73 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4EE434F05
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F81434F08
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhJTPaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:30:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTPaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:30:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D2FD6135F;
-        Wed, 20 Oct 2021 15:27:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634743678;
-        bh=DGupJCcngY6gud3AWyQVz0kudq1TLRwF5ZjDrAjKqYI=;
-        h=Subject:From:To:Date:From;
-        b=kH9CvPH0ebyVGNRD89vDi//W6Qi/08qTuMofP2qNpmLiix2xYJ0HUWlWHypRzDPD6
-         4cLwlOukYxMxfq/TSJlEsZL73/LGEsshF4vi0Xm+kM7dkYd/sTvOh/VN3QqbSJ++M5
-         wmo68d6dBgyR20nPtWGUR+wxGfZAaLVz/rPr/ahFtFhPRBOAEYCtF+fPTN/ngiC/I3
-         9UotsNpj7ZynWYvjYbe7il3d+pp0Brzha9dzAzqWRkELJIoXufq3aBlZxlcC46AWFl
-         8SBjhNrgdvbYNdN4I4aG7FZQjMtv9muxVghdVvxs+WG4Z/2uN2L8pn0FQCvegYe7dw
-         mitXhYKPuBBMQ==
-Message-ID: <1a2d8ac4f940ea8f6ac82cca384a17244062d7da.camel@kernel.org>
-Subject: [ANNOUNCE] 5.4.154-rt65
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>
-Date:   Wed, 20 Oct 2021 10:27:56 -0500
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S230396AbhJTPat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:30:49 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60264 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTPar (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:30:47 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 85C891FD33;
+        Wed, 20 Oct 2021 15:28:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634743712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u2G1JVJm+eqBNFDVpnzb/HgQDnZjQzD2Xue4wI5hvF0=;
+        b=EPbh9/ohfNUAHlQoeSzWZm4kyernpFobi8z09Fh4T/BLz+XhYRl2iG3Pm+6cl2gGFKrq/s
+        wZynLka6VpMINeBMwLTBt0bXi/Sp/hJ3L/j6s1SrTLyYyDkPE7M5+Wp0+WAzgRLOiTdz2a
+        E9I/ElPX2qbJXenE9Z3vqL2P439x69I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634743712;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u2G1JVJm+eqBNFDVpnzb/HgQDnZjQzD2Xue4wI5hvF0=;
+        b=TJ+mUaX12/k175PKOlfYTZgQhTFcRwfrEpvw3+ueRvLQREcYaON0ijNjTALmpJLfL5fJ97
+        lFnA4t+lxzCr62Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 868EF13BA1;
+        Wed, 20 Oct 2021 15:28:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id laeXCZ81cGEqOQAAMHmgww
+        (envelope-from <colyli@suse.de>); Wed, 20 Oct 2021 15:28:31 +0000
+Message-ID: <ae9f553a-ce85-4537-7038-3f16bdf69cab@suse.de>
+Date:   Wed, 20 Oct 2021 23:28:29 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH] bcache: use pr_err instead of pr_notice if we are really
+ error
+Content-Language: en-US
+To:     Lin Feng <linf@wangsu.com>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kent.overstreet@gmail.com
+References: <20211020021313.140414-1-linf@wangsu.com>
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <20211020021313.140414-1-linf@wangsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT Folks!
+On 10/20/21 10:13 AM, Lin Feng wrote:
+> In bcache we have:
+> ./bset.c:			pr_notice("loop %u, %llu per us\n", size,
+> ./super.c:	pr_notice("error %s: %s\n", dc->backing_dev_name, err);
+> ./super.c:		pr_notice("invalidating existing data\n");
+> ./super.c:		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
+> ./super.c:		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
+> ./super.c:			pr_notice("Timeout waiting for devices to be closed\n");
+>
+> and 3 sites with string 'error' are really error happening on device
+> register.
 
-I'm pleased to announce the 5.4.154-rt65 stable release.
+It is fine to keep current dmesg level and message format.
 
-This release is just an update to the new stable 5.4.154
-version and no RT specific changes have been made.
+Thanks.
 
-You can get this release via the git tree at:
+Coly Li
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.4-rt
-  Head SHA1: 2121f1ec675d1b776ad8595a64815cac975a5c26
-
-Or to build 5.4.154-rt65 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.154.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.154-rt65.patch.xz
-
-Enjoy!
-
-   Tom
+>
+> Signed-off-by: Lin Feng <linf@wangsu.com>
+> ---
+>   drivers/md/bcache/super.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index f2874c77ff79..18a2e4bea9c2 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -1493,7 +1493,7 @@ static int register_bdev(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
+>   
+>   	return 0;
+>   err:
+> -	pr_notice("error %s: %s\n", dc->backing_dev_name, err);
+> +	pr_err("%s: %s\n", dc->backing_dev_name, err);
+>   	bcache_device_stop(&dc->disk);
+>   	return ret;
+>   }
+> @@ -2338,7 +2338,7 @@ static int cache_alloc(struct cache *ca)
+>   err_free:
+>   	module_put(THIS_MODULE);
+>   	if (err)
+> -		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
+> +		pr_err("%s: %s\n", ca->cache_dev_name, err);
+>   	return ret;
+>   }
+>   
+> @@ -2397,7 +2397,7 @@ static int register_cache(struct cache_sb *sb, struct cache_sb_disk *sb_disk,
+>   
+>   err:
+>   	if (err)
+> -		pr_notice("error %s: %s\n", ca->cache_dev_name, err);
+> +		pr_err("%s: %s\n", ca->cache_dev_name, err);
+>   
+>   	return ret;
+>   }
 
