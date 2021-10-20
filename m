@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E494345EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619874345F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhJTHgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhJTHge (ORCPT
+        id S229570AbhJTHjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:39:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35254 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229491AbhJTHjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:36:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897B2C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rV/999ZEtrgBCMBWTD3S2hZ/USczg9s4hZgnBi5qnMo=; b=eQUuVrG9Xy0BCENc50NRrbRbVs
-        qCotjYFnVMuuWPyVAVvUW7lhHiPBg2TX3X7nSBEFILr2wVVsVjk1U4CC5nluBMQPTVPKlfDgIDQXo
-        n3b7+11xDRpNive6c67afH5CIlsBcxB8rxisKRpSCPoE/g7EnM+2HkpsA2QgPW2GjIka0BrnFdqsP
-        lY+AB6lH1LGNyG4YxU9AcGc4j+fpuQvhLvFJ3xctwrCnTIdpYuaGuy309A0lT41TPM+N90yI0QL03
-        xdkdBkvFMLOeeto967q0/xhpfMeoRHneQv4whWzVDgX+jErW8K05dt025YHlF0jWXCtf/SaJBJdTO
-        wqPTloJQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1md671-00AuSx-DG; Wed, 20 Oct 2021 07:34:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 682A3300221;
-        Wed, 20 Oct 2021 09:34:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1E9E02BC9DBBF; Wed, 20 Oct 2021 09:34:10 +0200 (CEST)
-Date:   Wed, 20 Oct 2021 09:34:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH 9/9] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <YW/GctbsXgvM+YsQ@hirez.programming.kicks-ass.net>
-References: <20211013122217.304265366@infradead.org>
- <20211013123645.706163435@infradead.org>
- <20211013210605.bz6l7o5xzik5ckga@treble>
- <YWdVq8UWpvMwnzht@hirez.programming.kicks-ass.net>
- <YWf8Yy2e9n+/veEe@hirez.programming.kicks-ass.net>
+        Wed, 20 Oct 2021 03:39:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634715458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mQZkGZkcMT/9X7rY2JQAT2AeWtRw1pbaqZYCol/GOQU=;
+        b=IzOgxOZ7bBcsSYiGWVWl+m9nwJMQ/nIi/CGhRez+KavTuJppxCeJaoSYT4L7FstwWhcSMz
+        Y/hML+vfAn8GhI2Qq1R/YHlspl/3qigd6U5UFzgqweEgesB68RncG415/iR1pQERacN46u
+        N/wlNdPTx60LoZE7c/A7Hp+k7e/x0VM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-Li-uowFhOYuTwuTItpCdGg-1; Wed, 20 Oct 2021 03:37:37 -0400
+X-MC-Unique: Li-uowFhOYuTwuTItpCdGg-1
+Received: by mail-ed1-f69.google.com with SMTP id u10-20020a50d94a000000b003dc51565894so13441686edj.21
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:37:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mQZkGZkcMT/9X7rY2JQAT2AeWtRw1pbaqZYCol/GOQU=;
+        b=feBI1wovwKhZ2IA8ckdCc3Nd/5357mKnFZXBmCLbBnszj+N24oauJD5yGEnyL2MOA9
+         c1FcCbzEE2sSEUv2vcoan5mHEbzY7Ho4qk/yJCGYJvjnVCL0oN+4nF9jai+psR1Nnsj5
+         /h7bjYoTOUneYJUSDYCN3pGFcVTSf5RekAoKdUCHnYnO9XUOzbpRkTxPY6jnlQidSgjF
+         5dPsTseMG3oqCdTvydhdYeWel5G8k6R+TJ3YGrQFW2kpuDlrYqN1FNU1cVkSPdt61VdK
+         sNjmH+BCa5wS3Sm1ObCdqHbyw0dEIhdoQuUNRnhArXturiMUgGmJE7pa6jbgMxZ8gDW0
+         v0JA==
+X-Gm-Message-State: AOAM532RHDwHFvNz+IswamP/tWPSFh7dMdb3GNsBD3arxgCBQPn2Tj/I
+        qtN2Ihi3C5BJIQN4O/UXWW+vDfLZOU4ZfXempYQ0tTo5YXaXJAh7PUiTOfrk3NMI7DpPR/W2Kdw
+        9uJNNqNkrAaSkQV8x4XWAj+0+
+X-Received: by 2002:a17:906:1381:: with SMTP id f1mr43248922ejc.547.1634715455984;
+        Wed, 20 Oct 2021 00:37:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwYP92GI73PEyOGZcTemC9Rxpc30vMRPxmbLU0eSsAdtYdXxiWNMDWTzMUSLLYSAn9LeHeIWA==
+X-Received: by 2002:a17:906:1381:: with SMTP id f1mr43248904ejc.547.1634715455815;
+        Wed, 20 Oct 2021 00:37:35 -0700 (PDT)
+Received: from redhat.com ([2.55.24.172])
+        by smtp.gmail.com with ESMTPSA id l25sm686190edc.31.2021.10.20.00.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 00:37:35 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 03:37:31 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
+        david.kaplan@amd.com, konrad.wilk@oracle.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [PATCH V3 01/10] virtio-blk: validate num_queues during probe
+Message-ID: <20211020032849-mutt-send-email-mst@kernel.org>
+References: <20211019070152.8236-1-jasowang@redhat.com>
+ <20211019070152.8236-2-jasowang@redhat.com>
+ <20211020071817.pzyfploxlryvdf3p@steredhat>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWf8Yy2e9n+/veEe@hirez.programming.kicks-ass.net>
+In-Reply-To: <20211020071817.pzyfploxlryvdf3p@steredhat>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 11:46:11AM +0200, Peter Zijlstra wrote:
-> On Wed, Oct 13, 2021 at 11:54:51PM +0200, Peter Zijlstra wrote:
+On Wed, Oct 20, 2021 at 09:18:17AM +0200, Stefano Garzarella wrote:
+> On Tue, Oct 19, 2021 at 03:01:43PM +0800, Jason Wang wrote:
+> > If an untrusted device neogitates BLK_F_MQ but advertises a zero
 > 
-> > > But the rest of eBPF JIT just emits retpolines unconditionally
-> > > regardless of feature, for example see RETPOLINE_RCX_BPF_JIT().  So I'm
-> > > thinking this should probably be consistent with that (or that with
-> > > this).
+> s/neogitates/negotiates
+> 
+> > num_queues, the driver may end up trying to allocating zero size
+> > buffers where ZERO_SIZE_PTR is returned which may pass the checking
+> > against the NULL. This will lead unexpected results.
 > > 
-> > Argh, I grepped for __x86_indirect_thunk, and missed they're writing
-> > retpolines themselves. Bah.
+> > Fixing this by failing the probe in this case.
 > > 
-> > Yes, that needs cleaning up. I'll go prod at that tomorrow.
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Stefan Hajnoczi <stefanha@redhat.com>
+> > Cc: Stefano Garzarella <sgarzare@redhat.com>
+> > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > ---
+> > drivers/block/virtio_blk.c | 4 ++++
+> > 1 file changed, 4 insertions(+)
 > 
-> Bah, i've too much of a head-ache to make sense of that bpf jit code :-(
+> Should we CC stable?
 > 
-> Alexei, emit_fallback_jump() uses emit_jump() and provides @prog as .ip
-> argument, but other sites do weird things like 'image + addrs[i]',
-> presumable because @prog points to an on-stack array instead of to the
-> actual text location.
-> 
-> Also @prog is confusingly sometimes a struct bpf_prog* and sometimes a
-> u8* which makes grepping really confusing.
-> 
-> I've ended up with the below.. which is known broken-crap for 32, but is
-> likely simlar for 64bit as well :-( Can you please have a look?
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-OK, I've got a working version (thanks to Josh for finding my
-brain-fart)! I'll go repost the series soon.
+No IMO - I don't think we can reasonably expect stable to become
+protected against attacks on encrypted guests. That's
+a new feature, not a bugfix.
+
+-- 
+MST
+
