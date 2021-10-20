@@ -2,176 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F113E4343B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 05:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2F24343CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 05:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhJTDHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 23:07:51 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14832 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbhJTDHp (ORCPT
+        id S229823AbhJTDXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 23:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhJTDXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 23:07:45 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HYwN20g05z905l;
-        Wed, 20 Oct 2021 11:00:34 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
- (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Wed, 20
- Oct 2021 11:05:29 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
-        Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next v5 3/3] ext4: simplify read_mmp_block fucntion
-Date:   Wed, 20 Oct 2021 11:18:02 +0800
-Message-ID: <20211020031802.2312022-4-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211020031802.2312022-1-yebin10@huawei.com>
-References: <20211020031802.2312022-1-yebin10@huawei.com>
+        Tue, 19 Oct 2021 23:23:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210B5C06161C;
+        Tue, 19 Oct 2021 20:21:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=b+qTJxNsHthexDLm6qY3jEJp4Sy4sxKMBU1dqyGdWI0=; b=RefDNgpJldhRgveeNjD/KqFwYa
+        2OTYXNNgh7YDgxaFWRaWfskXqejipz+nAe/tvmqNDO9vX48rL6iodwhqNQWK3JUb+TGlUPoMAoT+b
+        bQ5SG7AHMPKImbY0/tW2B/S7X3atqlaV2vaKSwLNuBoy93xXAVBOxR9Lk2dXphElKKuvXzOYd7k5a
+        +Ouizj7gA3hxSEz60Mb3I2C13WGjhjBR4nkrgY+tAMOirFZL0ryolBRgCd47JgInMYc3/YyT9y81s
+        FoMGX4NzCG8P2+wnqnhXnjfxIQEFWMopixCm+hTSOauJSwlfS55entvwdrR9JtpgK6pSgiaR3iq4n
+        8nlDtrpA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1md28Y-00CD8L-KF; Wed, 20 Oct 2021 03:19:42 +0000
+Date:   Wed, 20 Oct 2021 04:19:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YW+KwgzaIj+hG8d7@casper.infradead.org>
+References: <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+ <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW28vaoW7qNeX3GP@casper.infradead.org>
+ <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW7hQlny+Go1K3LT@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is according to Jan Kara's suggestion:
-I guess I would just get rid of sb_getblk() in read_mmp_block() and always
-expect valid bh passed. The only place that passes NULL bh after this
-patch is one case in ext4_multi_mount_protect() and that can call
-sb_getblk() on its own. That way we can also simplify read_mmp_block()
-prototype to:
+On Tue, Oct 19, 2021 at 11:16:18AM -0400, Johannes Weiner wrote:
+> My only effort from the start has been working out unanswered
+> questions in this proposal: Are compound pages the reliable, scalable,
+> and memory-efficient way to do bigger page sizes? What's the scope of
+> remaining tailpages where typesafety will continue to lack? How do we
+> implement code and properties shared by folios and non-folio types
+> (like mmap/fault code for folio and network and driver pages)?
 
-static int read_mmp_block(struct super_block *sb, struct buffer_head *bh);
+I don't think those questions need to be answered before proceeding
+with this patchset.  They're interesting questions, to be sure, but
+to a large extent they're orthogonal to the changes here.  I look
+forward to continuing to work on those problems while filesystems
+and the VFS continue to be converted to use folios.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/mmp.c | 46 +++++++++++++++++++---------------------------
- 1 file changed, 19 insertions(+), 27 deletions(-)
+> I'm not really sure how to exit this. The reasons for my NAK are still
+> there. But I will no longer argue or stand in the way of the patches.
 
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index 9788c617e593..d46239a0e36b 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -64,33 +64,26 @@ static int write_mmp_block(struct super_block *sb, struct buffer_head *bh)
- /*
-  * Read the MMP block. It _must_ be read from disk and hence we clear the
-  * uptodate flag on the buffer.
-+ * Caller must ensure pass valid 'bh'.
-  */
--static int read_mmp_block(struct super_block *sb, struct buffer_head **bh,
--			  ext4_fsblk_t mmp_block)
-+static int read_mmp_block(struct super_block *sb, struct buffer_head *bh)
- {
- 	struct mmp_struct *mmp;
- 	int ret;
- 
--	if (*bh)
--		clear_buffer_uptodate(*bh);
--
--	/* This would be sb_bread(sb, mmp_block), except we need to be sure
--	 * that the MD RAID device cache has been bypassed, and that the read
--	 * is not blocked in the elevator. */
--	if (!*bh) {
--		*bh = sb_getblk(sb, mmp_block);
--		if (!*bh) {
--			ret = -ENOMEM;
--			goto warn_exit;
--		}
-+	if (!bh) {
-+		ret = -EINVAL;
-+		goto warn_exit;
- 	}
- 
--	lock_buffer(*bh);
--	ret = ext4_read_bh(*bh, REQ_META | REQ_PRIO, NULL);
-+	clear_buffer_uptodate(bh);
-+
-+	lock_buffer(bh);
-+	ret = ext4_read_bh(bh, REQ_META | REQ_PRIO, NULL);
- 	if (ret)
- 		goto warn_exit;
- 
--	mmp = (struct mmp_struct *)((*bh)->b_data);
-+	mmp = (struct mmp_struct *)((bh)->b_data);
- 	if (le32_to_cpu(mmp->mmp_magic) != EXT4_MMP_MAGIC) {
- 		ret = -EFSCORRUPTED;
- 		goto warn_exit;
-@@ -101,10 +94,7 @@ static int read_mmp_block(struct super_block *sb, struct buffer_head **bh,
- 	}
- 	return 0;
- warn_exit:
--	brelse(*bh);
--	*bh = NULL;
--	ext4_warning(sb, "Error %d while reading MMP block %llu",
--		     ret, mmp_block);
-+	ext4_warning(sb, "Error %d while reading MMP block", ret);
- 	return ret;
- }
- 
-@@ -131,7 +121,6 @@ static int kmmpd(void *data)
- 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
- 	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
- 	struct mmp_struct *mmp;
--	ext4_fsblk_t mmp_block;
- 	u32 seq = 0;
- 	unsigned long failed_writes = 0;
- 	int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
-@@ -141,7 +130,6 @@ static int kmmpd(void *data)
- 	char nodename[EXT4_MMP_NODENAME_LEN];
- 	int retval = 0;
- 
--	mmp_block = le64_to_cpu(es->s_mmp_block);
- 	mmp = (struct mmp_struct *)(bh->b_data);
- 	mmp->mmp_time = cpu_to_le64(ktime_get_real_seconds());
- 	/*
-@@ -195,7 +183,7 @@ static int kmmpd(void *data)
- 		 */
- 		diff = jiffies - last_update_time;
- 		if (diff > mmp_check_interval * HZ) {
--			retval = read_mmp_block(sb, &bh, mmp_block);
-+			retval = read_mmp_block(sb, bh);
- 			if (retval) {
- 				ext4_error_err(sb, -retval,
- 					       "error reading MMP data: %d",
-@@ -289,7 +277,11 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 		goto failed;
- 	}
- 
--	retval = read_mmp_block(sb, &bh, mmp_block);
-+	bh = sb_getblk(sb, mmp_block);
-+	if (!bh)
-+		goto failed;
-+
-+	retval = read_mmp_block(sb, bh);
- 	if (retval)
- 		goto failed;
- 
-@@ -327,7 +319,7 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 		goto failed;
- 	}
- 
--	retval = read_mmp_block(sb, &bh, mmp_block);
-+	retval = read_mmp_block(sb, bh);
- 	if (retval)
- 		goto failed;
- 	mmp = (struct mmp_struct *)(bh->b_data);
-@@ -356,7 +348,7 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 		goto failed;
- 	}
- 
--	retval = read_mmp_block(sb, &bh, mmp_block);
-+	retval = read_mmp_block(sb, bh);
- 	if (retval)
- 		goto failed;
- 	mmp = (struct mmp_struct *)(bh->b_data);
--- 
-2.31.1
-
+Thank you.  I appreciate that.
