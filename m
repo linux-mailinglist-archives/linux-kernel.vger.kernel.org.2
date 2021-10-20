@@ -2,215 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3013434BDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3E6434BEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhJTNQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
+        id S230031AbhJTNUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhJTNQE (ORCPT
+        with ESMTP id S229570AbhJTNUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:16:04 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6F2C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:13:50 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y7so2928529pfg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:13:50 -0700 (PDT)
+        Wed, 20 Oct 2021 09:20:12 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF36C06161C;
+        Wed, 20 Oct 2021 06:17:57 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id e65so20085787pgc.5;
+        Wed, 20 Oct 2021 06:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RtJrSfwgtT8YF0UzABCy/bW/wKJYVo6+C+buqqv0qRM=;
-        b=q7xCqZuSLOyHPh4DSD5C5WeP2XY0+IKO9FUpBIuzlnqs/Pdrhi2E5FKTyNmLc0muw4
-         1f2tqi5sf9lEpGeSx3vNDXHHltXGj2W3/m8DWQf7SFV9OZmWTf/3+TKZ6BZqAbH/0OyC
-         xv067LrngqQ7LsK67NOCGqWimMdmcKIV7hS3WX+cIARG5Af1aD+ZwhYON1DC7de3XnYL
-         ZWArvmYmCj/Lpn0b4tWHCyR7U0lsdwTH8Dgksa+60rCZ8l5AO8uoH8oFjpjjDWViewiI
-         2dEiFaW7VXvniIU5hQnPZpVcx5NyRS6ZjetLVVAmz+jMIHMcstF1MThV6ZqC/whMjOW+
-         D6jA==
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=WYRpv8N66/W2Mu0ccRwKp1YVNKPZWgSDjisZQyVjEx8=;
+        b=W7d9Dw6Txw6qqYUs29sbgFaYzX9bi87F7VBdCMsJ7mqOOp1beirt0jPgR760Fsbo31
+         ARnz7IgGxXpmQkeYXMcC+J7APY+AY949Cy+jACf/xmVirGjFqmIl6XKIZMefr0xhk6jr
+         sIT/i/ItkQRC3aDS3xqVIqXWEH2ceL85jd7D/JiWdVjEhP6nHRZEDeYByF1t1glBKhzb
+         JV5lolicYYlivX3A1evtWUA+SDhjBluj98VeL2/pXV9SDwnjz7myfjfd80sfItG7uJox
+         Qkq1FBaSEBuOR6rWwNUcUUyy1EYSQf5cyG3+eLg+0IEyppyWvfkGb163lsHZ/wMS9KqP
+         /vUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RtJrSfwgtT8YF0UzABCy/bW/wKJYVo6+C+buqqv0qRM=;
-        b=nECHbyXVMj3J8lXM9ZH/gGmzKLjLGzIcXe0wbAu2ew04K5rSA0wzRfRN2QyDcXvzzh
-         Gjpy92OHuTls+TejafIQ28PnH94n8VXQl4+QBKe76ENt9N124Bi26EqZ4qOsPu+v369C
-         bVEJ1fzrcp0ai+630ehb+aERXHsilkfPu9mkIVOMMi9cs4cN62djTLTUhfELgyZlNzAN
-         a0p8eRwHRMQko0fyiC2+uFbrCOw/bNrsGy6CbravqCF4NwsYiGr7aK+uS/Fppff51FWw
-         mFatME+BNA4bM6XY9LzdQXm/JJnxg+w0d7sGkhPFFg92rWERfde+TgALd/ihetzRznsD
-         rt4g==
-X-Gm-Message-State: AOAM533T9ZEl1yEzFtDT5ljw+2QnW2EORI10TNl+esZdNekSSt6rdf/b
-        l7Al8V22e35RHgBNsTlI3MWgNw==
-X-Google-Smtp-Source: ABdhPJxM5HvKzicLfYl4WLcVTSmueL+mPJWwOC7F+YSKiR/HLNlWXOat5ZyZDw6U8uxZm+oLIPbG0g==
-X-Received: by 2002:a63:1266:: with SMTP id 38mr33378184pgs.219.1634735629999;
-        Wed, 20 Oct 2021 06:13:49 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id x27sm2486978pfr.181.2021.10.20.06.13.42
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=WYRpv8N66/W2Mu0ccRwKp1YVNKPZWgSDjisZQyVjEx8=;
+        b=bOy/R9E8cMpE557NklKlaxdIifS0Sh0kewv/T2h/XCp7AzxKe94J3LbMNvEBDqdN+C
+         UL9Bp4nu4reK7P9qO/ddh8sSkpC/dGRwYBBM4zRMuMCKpjW1w6LLJeDbHBIQVQwqow1L
+         HstHeUozbmskTiAIbmJ6Wa/1Z70+M8B13BHePxTQcD+VvoPcbVfAu489RLNK0bgT82In
+         jY00uMRrSH2HP8iCw7TejKb0GKVUxjJqfDzpDLebSeKck1Co5HwEi1JIJ2v+UydQqgVg
+         +I8HKgwDWEB2gseHGxADa90HoNGzm7mLkgrd/h85aoTQNuuwt8/GzmoVIBaMBNaFZRNe
+         fb/A==
+X-Gm-Message-State: AOAM533Ld9TjGwUv9ipLvnk6Glr59INs9Q9qaZGNhOP2Io6UIlyYAGE2
+        VQx2a6dX8mpIvwZdAKwCuac=
+X-Google-Smtp-Source: ABdhPJwe4OyYxZBBcTwn+Hoa8n9DNA0H7qO1dEf5kLqG6ddUb7u9Cp/PGSHNHAEg0gfmGXqe8ZgTYw==
+X-Received: by 2002:a63:b241:: with SMTP id t1mr33828806pgo.154.1634735876518;
+        Wed, 20 Oct 2021 06:17:56 -0700 (PDT)
+Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id b10sm2848145pfl.200.2021.10.20.06.17.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:13:49 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 21:13:39 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Subject: Re: [PATCH 5/5] perf arm-spe: Snapshot mode test
-Message-ID: <20211020131339.GG49614@leoy-ThinkPad-X240s>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-5-german.gomez@arm.com>
+        Wed, 20 Oct 2021 06:17:56 -0700 (PDT)
+Message-ID: <9459d5dd265675d20905f4a02687cc08c31ee2fe.camel@gmail.com>
+Subject: Re: [PATCH 00/17] various fixes for atomisp to make it work
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nable <nable.maininbox@googlemail.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>
+Date:   Wed, 20 Oct 2021 22:17:51 +0900
+In-Reply-To: <YW70KzXJ8q1ksEx5@smile.fi.intel.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+         <bc7f699d-d77d-83ad-ce5b-6082f30881c1@redhat.com>
+         <7550e3359471726cf14572dd4860c238f166dde8.camel@gmail.com>
+         <YW70KzXJ8q1ksEx5@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916154635.1525-5-german.gomez@arm.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 04:46:35PM +0100, German Gomez wrote:
-> Shell script test_arm_spe.sh has been added to test the recording of SPE
-> tracing events in snapshot mode.
+On Tue, 2021-10-19 at 19:36 +0300, Andy Shevchenko wrote:
+> On Tue, Oct 19, 2021 at 10:50:27PM +0900, Tsuchiya Yuto wrote:
+> > On Mon, 2021-10-18 at 09:48 +0200, Hans de Goede wrote:
+> > > On 10/17/21 18:19, Tsuchiya Yuto wrote:
 > 
-> Reviewed-by: James Clark <james.clark@arm.com>
-> Signed-off-by: German Gomez <german.gomez@arm.com>
-> ---
->  tools/perf/tests/shell/test_arm_spe.sh | 91 ++++++++++++++++++++++++++
->  1 file changed, 91 insertions(+)
->  create mode 100755 tools/perf/tests/shell/test_arm_spe.sh
+> ...
 > 
-> diff --git a/tools/perf/tests/shell/test_arm_spe.sh b/tools/perf/tests/shell/test_arm_spe.sh
-> new file mode 100755
-> index 000000000000..9ed817e76f95
-> --- /dev/null
-> +++ b/tools/perf/tests/shell/test_arm_spe.sh
-> @@ -0,0 +1,91 @@
-> +#!/bin/sh
-> +# Check Arm SPE trace data recording and synthesized samples
-> +
-> +# Uses the 'perf record' to record trace data of Arm SPE events;
-> +# then verify if any SPE event samples are generated by SPE with
-> +# 'perf script' and 'perf report' commands.
-> +
-> +# SPDX-License-Identifier: GPL-2.0
-> +# German Gomez <german.gomez@arm.com>, 2021
-> +
-> +skip_if_no_arm_spe_event() {
-> +	perf list | egrep -q 'arm_spe_[0-9]+//' && return 0
-> +
-> +	# arm_spe event doesn't exist
-> +	return 2
-> +}
-> +
-> +skip_if_no_arm_spe_event || exit 2
-> +
-> +perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
-> +glb_err=0
-> +
-> +cleanup_files()
-> +{
-> +	rm -f ${perfdata}
-> +	trap - exit term int
-> +	kill -2 $$ # Forward sigint to parent
-
-I understand you copy this code from Arm cs-etm testing, but I found
-the sentence 'kill -2 $$' will cause a failure at my side with the
-command:
-
-root@ubuntu:/home/leoy/linux/tools/perf# ./perf test 85 -v
-85: Check Arm SPE trace data recording and synthesized samples      :
---- start ---
-test child forked, pid 29053
-Recording trace with snapshot mode /tmp/__perf_test.perf.data.uughb
-Looking at perf.data file for dumping samples:
-Looking at perf.data file for reporting samples:
-SPE snapshot testing: PASS
-test child finished with -1
----- end ----
-Check Arm SPE trace data recording and synthesized samples: FAILED!
-
-I changed to use below code and looks it works for me:
-
-        if [[ "$1" == "int" ]]; then
-                kill -SIGINT $$
-        fi
-        if [[ "$1" == "term" ]]; then
-                kill -SIGTERM $$
-        fi
-
-Thanks,
-Leo
-
-> +	exit $glb_err
-> +}
-> +
-> +trap cleanup_files exit term int
-> +
-> +arm_spe_report() {
-> +	if [ $2 != 0 ]; then
-> +		echo "$1: FAIL"
-> +		glb_err=$2
-> +	else
-> +		echo "$1: PASS"
-> +	fi
-> +}
-> +
-> +perf_script_samples() {
-> +	echo "Looking at perf.data file for dumping samples:"
-> +
-> +	# from arm-spe.c/arm_spe_synth_events()
-> +	events="(ld1-miss|ld1-access|llc-miss|lld-access|tlb-miss|tlb-access|branch-miss|remote-access|memory)"
-> +
-> +	# Below is an example of the samples dumping:
-> +	#	dd  3048 [002]          1    l1d-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-> +	#	dd  3048 [002]          1    tlb-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-> +	#	dd  3048 [002]          1        memory:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
-> +	perf script -F,-time -i ${perfdata} 2>&1 | \
-> +		egrep " +$1 +[0-9]+ .* +${events}:(.*:)? +" > /dev/null 2>&1
-> +}
-> +
-> +perf_report_samples() {
-> +	echo "Looking at perf.data file for reporting samples:"
-> +
-> +	# Below is an example of the samples reporting:
-> +	#   73.04%    73.04%  dd    libc-2.27.so      [.] _dl_addr
-> +	#    7.71%     7.71%  dd    libc-2.27.so      [.] getenv
-> +	#    2.59%     2.59%  dd    ld-2.27.so        [.] strcmp
-> +	perf report --stdio -i ${perfdata} 2>&1 | \
-> +		egrep " +[0-9]+\.[0-9]+% +[0-9]+\.[0-9]+% +$1 " > /dev/null 2>&1
-> +}
-> +
-> +arm_spe_snapshot_test() {
-> +	echo "Recording trace with snapshot mode $perfdata"
-> +	perf record -o ${perfdata} -e arm_spe// -S \
-> +		-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
-> +	PERFPID=$!
-> +
-> +	# Wait for perf program
-> +	sleep 1
-> +
-> +	# Send signal to snapshot trace data
-> +	kill -USR2 $PERFPID
-> +
-> +	# Stop perf program
-> +	kill $PERFPID
-> +	wait $PERFPID
-> +
-> +	perf_script_samples dd &&
-> +	perf_report_samples dd
-> +
-> +	err=$?
-> +	arm_spe_report "SPE snapshot testing" $err
-> +}
-> +
-> +arm_spe_snapshot_test
-> +exit $glb_err
-> \ No newline at end of file
-> -- 
-> 2.17.1
+> > > >   ## for mipad2 (and whiskey cove pmic based devices)
+> > > > 
+> > > > For devices which equip whiskey cove PMIC, you need to add non-upstream
+> > > > regulator driver [1].
+> > > > 
+> > > > [1] work done by jekhor, which seems to be from intel-aero or old
+> > > >     Android kernel
+> > > >     https://github.com/jekhor/yogabook-linux-kernel/commit/11c05b365fb2eeb4fced5aa66b362c511be32a34
+> > > >     ("intel_soc_pmic_chtwc: Add regulator driver and definition for VPROG1B")
+> > > 
+> > > Interesting I recently bought a 2nd hand mipad2 myself too. I still need
+> > > to put Linux on there. I'm definitely motivated to do that now :)
+> > 
+> > I'm glad to hear that you also got a mipad2 :) It might be a interesting
+> > device to look into. It even won't boot without nomodeset, no battery
+> > charging/status on mainline kernel.
+> > 
+> > By the way, instead of adding whiskey cove regulator driver, we may also
+> > add a "hack" like the other PMIC in atomisp_gmin_platform to control
+> > regulators [1].
 > 
+> I looked briefly into the code and if we indeed need to turn off or on
+> the regulators it should be a driver.
+> 
+> I don't like having hacks outside of driver/staging to satisfy the one from
+> the staging.
+
+Yeah, if "reading" from the PMIC can't be achieved with the current
+mainline kernel, it does not make sense to add code for "reading" just
+for the hack inside atomisp. Rather, in this case, adding the regulator
+driver is a straightforward way.
+
+We can already write with intel_soc_pmic_exec_mipi_pmic_seq_element(),
+so what I wondered is, is there equivalent for "read"?
+
+But yes, we should eventually use regulator driver anyway.
+
+Regards,
+Tsuchiya Yuto
+
+> I.o.w. having a regulator driver is a right thing to do in my opinion.
+> 
+> > It seems that to do so, it needs to "read" value from the PMIC before
+> > writing. So, I'm not sure if this can be achieved easily with the current
+> > mainline kernel though.
+> > 
+> > [1] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/commit/6204d4b7aeefc4db622f8ac57b87bf2c76c6c8aa
+> >     ("atomisp_platform: add whiskey cove pmic support")
+> 
+
