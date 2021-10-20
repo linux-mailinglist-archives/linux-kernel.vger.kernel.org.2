@@ -2,203 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75334352DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56054352E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhJTSor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:44:47 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:40950 "EHLO vps-vb.mhejs.net"
+        id S231268AbhJTSqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:46:04 -0400
+Received: from meesny.iki.fi ([195.140.195.201]:36916 "EHLO meesny.iki.fi"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231271AbhJTSoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:44:46 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1mdGXl-0002gu-8u; Wed, 20 Oct 2021 20:42:29 +0200
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <555f58fdaec120aa7a6f6fbad06cca796a8c9168.1632171479.git.maciej.szmigiero@oracle.com>
- <YW9mKTRBEABjGPp7@google.com>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH v5 08/13] KVM: Resolve memslot ID via a hash table instead
- of via a static array
-Message-ID: <1729cda2-83f0-ed03-c6b4-4418de80f933@maciej.szmigiero.name>
-Date:   Wed, 20 Oct 2021 20:42:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230076AbhJTSqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 14:46:03 -0400
+Received: from hillosipuli.retiisi.eu (dkvn5pty0gzs3nltj987t-3.rev.dnainternet.fi [IPv6:2001:14ba:4457:9640:1e2d:1f75:a607:ef37])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by meesny.iki.fi (Postfix) with ESMTPSA id 69C4A200A4;
+        Wed, 20 Oct 2021 21:43:46 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+        t=1634755426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RoYvvqZQkhJSELmgjkpysEUTTnb/9wmmXf4FzNHpdn4=;
+        b=SYlYaDz8mPMtSzfo7f+2jzLc7AjFYqb7YHgf8eB9lpAa1cNOz5/V6kK6wZFif4yT2B2M/8
+        b36oIylv6ajzENnwxh9JbZ+OEk76HRB1AQFs6PlwVAoIPWV6RlRnSfKxae0hqChzAi4uuV
+        7WJRe8WXOuJ6xrlUw3NFKj86hPI3ULo=
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 3C6BA634C90;
+        Wed, 20 Oct 2021 21:43:44 +0300 (EEST)
+Date:   Wed, 20 Oct 2021 21:43:43 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Jacopo Mondi <jacopo@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>
+Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
+Message-ID: <YXBjX2vUwrKVOd78@valkosipuli.retiisi.eu>
+References: <m3fstfoexa.fsf@t19.piap.pl>
+ <20211009102446.jrvrdr7whtd2rv4z@uno.localdomain>
+ <m3mtnflpna.fsf@t19.piap.pl>
+ <20211011143420.vm6ncl5gdv44nsn3@uno.localdomain>
+ <m3a6jel9ce.fsf@t19.piap.pl>
+ <YWXwSAm3OO/WTkOL@valkosipuli.retiisi.eu>
+ <m335p5lc04.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <YW9mKTRBEABjGPp7@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <m335p5lc04.fsf@t19.piap.pl>
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1634755426; a=rsa-sha256; cv=none;
+        b=YVth3SL3n/8q/Y+6g18UnZ4TugSE/pDLHS49PElAlo8/NTiBl/xtwBer8I1rdSMz/L3N6Z
+        zXlrtmEnSM4NQLz2+2meyFb8Dxgcr+c266sAVKD37H4+FbdEIgUVwp9eLfGR/GiDb+VtwF
+        ColZdm/Zh3EeiEusBYosu2pR8ltSo2I=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=meesny; t=1634755426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RoYvvqZQkhJSELmgjkpysEUTTnb/9wmmXf4FzNHpdn4=;
+        b=w854VqFbZ0kTtLlb7l0UwUSVmDHmOQCY4Si79n2t+9kZx2Kj1Y8BxxwcWeQ7eKSimg7iZK
+        t3usWgnh/Ii+OhqqG3E+JAOJ1dxtxFJKh53yjHbVE/oFSP68GxjONoqqqKqQ1LtW5ccrh/
+        WdGJx1vUjsTs6N8+lZhxtag6PPPn/Cs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.10.2021 02:43, Sean Christopherson wrote:
-> On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
->> ---
->>   include/linux/kvm_host.h | 16 +++++------
->>   virt/kvm/kvm_main.c      | 61 +++++++++++++++++++++++++++++++---------
->>   2 files changed, 55 insertions(+), 22 deletions(-)
->>
->> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
->> index 8fd9644f40b2..d2acc00a6472 100644
->> --- a/include/linux/kvm_host.h
->> +++ b/include/linux/kvm_host.h
->> @@ -29,6 +29,7 @@
->>   #include <linux/refcount.h>
->>   #include <linux/nospec.h>
->>   #include <linux/notifier.h>
->> +#include <linux/hashtable.h>
->>   #include <asm/signal.h>
->>   
->>   #include <linux/kvm.h>
->> @@ -426,6 +427,7 @@ static inline int kvm_vcpu_exiting_guest_mode(struct kvm_vcpu *vcpu)
->>   #define KVM_MEM_MAX_NR_PAGES ((1UL << 31) - 1)
->>   
->>   struct kvm_memory_slot {
->> +	struct hlist_node id_node;
->>   	gfn_t base_gfn;
->>   	unsigned long npages;
->>   	unsigned long *dirty_bitmap;
->> @@ -528,7 +530,7 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
->>   struct kvm_memslots {
->>   	u64 generation;
->>   	/* The mapping table from slot id to the index in memslots[]. */
->> -	short id_to_index[KVM_MEM_SLOTS_NUM];
->> +	DECLARE_HASHTABLE(id_hash, 7);
+Hi Krzysztof,
+
+On Wed, Oct 13, 2021 at 07:39:07AM +0200, Krzysztof Hałasa wrote:
+> Hi Sakari,
 > 
-> Can you add a comment explaining the rationale for size "7"?  Not necessarily the
-> justification in choosing "7", more so the tradeoffs between performance, memory,
-> etc... so that all your work/investigation isn't lost and doesn't have to be repeated
-> if someone wants to tweak this in the future.
-
-Will add such comment.
-
->>   	atomic_t last_used_slot;
->>   	int used_slots;
->>   	struct kvm_memory_slot memslots[];
->> @@ -795,16 +797,14 @@ static inline struct kvm_memslots *kvm_vcpu_memslots(struct kvm_vcpu *vcpu)
->>   static inline
->>   struct kvm_memory_slot *id_to_memslot(struct kvm_memslots *slots, int id)
->>   {
->> -	int index = slots->id_to_index[id];
->>   	struct kvm_memory_slot *slot;
->>   
->> -	if (index < 0)
->> -		return NULL;
->> -
->> -	slot = &slots->memslots[index];
->> +	hash_for_each_possible(slots->id_hash, slot, id_node, id) {
->> +		if (slot->id == id)
->> +			return slot;
+> > 	https://hverkuil.home.xs4all.nl/spec/driver-api/camera-sensor.html
 > 
-> Hmm, related to the hash, it might be worth adding a stat here to count collisions.
-> Might be more pain than it's worth though since we don't have @kvm.
-
-It's a good idea if it turns out that it's worth optimizing the code
-further (by, for example, introducing a self-resizing hash table, which
-would bring a significant increase in complexity for rather uncertain
-gains).
-
->> @@ -1274,30 +1275,46 @@ static inline int kvm_memslot_insert_back(struct kvm_memslots *slots)
->>    * itself is not preserved in the array, i.e. not swapped at this time, only
->>    * its new index into the array is tracked.  Returns the changed memslot's
->>    * current index into the memslots array.
->> + * The memslot at the returned index will not be in @slots->id_hash by then.
->> + * @memslot is a detached struct with desired final data of the changed slot.
->>    */
->>   static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
->>   					    struct kvm_memory_slot *memslot)
->>   {
->>   	struct kvm_memory_slot *mslots = slots->memslots;
->> +	struct kvm_memory_slot *mmemslot = id_to_memslot(slots, memslot->id);
+> Ok:
+> "8.2.2. Devicetree
 > 
-> My comment from v3 about the danger of "mmemslot" still stands.  FWIW, I dislike
-> "mslots" as well, but that predates me, and all of this will go away in the end :-)
->
-> On Wed, May 19, 2021 at 3:31 PM Sean Christopherson <seanjc@google.com> wrote:
->> On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
->>>        struct kvm_memory_slot *mslots = slots->memslots;
->>> +     struct kvm_memory_slot *dmemslot = id_to_memslot(slots, memslot->id);
->>
->> I vote to call these local vars "old", or something along those lines.  dmemslot
->> isn't too bad, but mmemslot in the helpers below is far too similar to memslot,
->> and using the wrong will cause nasty explosions.
+> The currently preferred way to achieve this is using assigned-clocks,
+> assigned-clock-parents and assigned-clock-rates properties. See
+> Documentation/devicetree/bindings/clock/clock-bindings.txt for more
+> information. The driver then gets the frequency using clk_get_rate()."
 > 
-
-Will rename "mmemslot" to "oldslot" in kvm_memslot_move_backward(), too.
-  
->>   	int i;
->>   
->> -	if (slots->id_to_index[memslot->id] == -1 || !slots->used_slots)
->> +	if (!mmemslot || !slots->used_slots)
->>   		return -1;
->>   
->> +	/*
->> +	 * The loop below will (possibly) overwrite the target memslot with
->> +	 * data of the next memslot, or a similar loop in
->> +	 * kvm_memslot_move_forward() will overwrite it with data of the
->> +	 * previous memslot.
->> +	 * Then update_memslots() will unconditionally overwrite and re-add
->> +	 * it to the hash table.
->> +	 * That's why the memslot has to be first removed from the hash table
->> +	 * here.
->> +	 */
+> Let's see:
+> Documentation/devicetree/bindings/clock/clock-bindings.txt:
 > 
-> Is this reword accurate?
+> "==Assigned clock parents and rates==
 > 
-> 	/*
-> 	 * Delete the slot from the hash table before sorting the remaining
-> 	 * slots, the slot's data may be overwritten when copying slots as part
-> 	 * of the sorting proccess.  update_memslots() will unconditionally
-> 	 * rewrite the entire slot and re-add it to the hash table.
-> 	 */
-
-It's accurate, will replace the comment with the proposed one.
-
->> @@ -1369,6 +1391,9 @@ static inline int kvm_memslot_move_forward(struct kvm_memslots *slots,
->>    * most likely to be referenced, sorting it to the front of the array was
->>    * advantageous.  The current binary search starts from the middle of the array
->>    * and uses an LRU pointer to improve performance for all memslots and GFNs.
->> + *
->> + * @memslot is a detached struct, not a part of the current or new memslot
->> + * array.
->>    */
->>   static void update_memslots(struct kvm_memslots *slots,
->>   			    struct kvm_memory_slot *memslot,
->> @@ -1393,7 +1418,8 @@ static void update_memslots(struct kvm_memslots *slots,
->>   		 * its index accordingly.
->>   		 */
->>   		slots->memslots[i] = *memslot;
->> -		slots->id_to_index[memslot->id] = i;
->> +		hash_add(slots->id_hash, &slots->memslots[i].id_node,
->> +			 memslot->id);
+> Some platforms may require initial configuration of default parent clocks
+> and clock frequencies. Such a configuration can be specified in a device tree
+> node through assigned-clocks, assigned-clock-parents and assigned-clock-rates
+> properties. The assigned-clock-parents property should contain a list of parent
+> clocks in the form of a phandle and clock specifier pair and the
+> assigned-clock-rates property should contain a list of frequencies in Hz. Both
+> these properties should correspond to the clocks listed in the assigned-clocks
+> property."
 > 
-> Let this poke out past 80 chars, i.e. drop the newline.
+> So I'm after "assigned-clock-rates", right?
+> 
+> "Configuring a clock's parent and rate through the device node that consumes
+> the clock can be done only for clocks that have a single user. Specifying
+> conflicting parent or rate configuration in multiple consumer nodes for
+> a shared clock is forbidden."
+> 
+> This sounds a bit problematic, the clock I use is at least potentially
+> shared by multiple parts of the system, depending on current (run time)
+> configuration. I am/was getting different frequencies depending of the
+> particular system (all based on the same i.MX6* SoC, but with different
+> peripherals used/enabled). I think it's quite a common situation.
 
-Will do.
+This was discussed some time ago before I wrote the documentation. The
+conclusion back then was that it's just fine, and such cases would need to
+be addressed when they turn up. We haven't had any yet as far as I know.
 
-Thanks,
-Maciej
+> 
+> > Generally camera sensor drivers that set the clock in drivers themselves
+> > are (very) old.
+> 
+> Let's have a look... ov9282 is (one of) the newest drivers. It does:
+> #define OV9282_INCLK_RATE    24000000
+> 
+>         /* Get sensor input clock */
+>         ov9282->inclk = devm_clk_get(ov9282->dev, NULL);
+>         if (IS_ERR(ov9282->inclk)) {
+>                 dev_err(ov9282->dev, "could not get inclk");
+>                 return PTR_ERR(ov9282->inclk);
+>         }
+> 
+>         rate = clk_get_rate(ov9282->inclk);
+>         if (rate != OV9282_INCLK_RATE) {
+>                 dev_err(ov9282->dev, "inclk frequency mismatch");
+>                 return -EINVAL;
+>         }
+> 
+> $ git grep -l ov9282
+> Documentation/devicetree/bindings/media/i2c/ovti,ov9282.yaml
+> MAINTAINERS
+> drivers/media/i2c/Kconfig
+> drivers/media/i2c/Makefile
+> drivers/media/i2c/ov9282.c
+> 
+>   clocks:
+>     description: Clock frequency from 6 to 27MHz
+> 
+> No in-tree DTS exists, but the single frequency (both in the driver -
+> this one can be fixed - and in the DTS) is rather limiting. Maybe
+> another:
+> 
+> imx412, imx335, imx334, imx258 - same here.
+> imx208 is ACPI-based.
+> 
+> Which driver should I consult?
+
+The drivers you're looking at are based on register lists so they usually
+support just a single frequency. The sensors are not limited to this
+frequency however, which is why you see the frequency in DT bindings, too.
+
+-- 
+Regards,
+
+Sakari Ailus
