@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0E14353F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8144353F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhJTTo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbhJTToZ (ORCPT
+        id S231614AbhJTTqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:46:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20018 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231360AbhJTTqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:44:25 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F4AC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:42:11 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id y1so16860269plk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wpm3Gl8wXKPGXafIgFGP0xD6h/zadXUfu6GUjVrj6ns=;
-        b=acg+FfyUS0RRG91XmDNK9hsP2+A1X4msHJW9htVgi4KwyGHvgm+Agooulgt0iLmMbz
-         rbct5fnAphkQ/y2uOT5Z1Q9GnwNbVkE/uiNp1fYDMAKUJw/SHsgT5zj0a5JWFz/JJXBv
-         6bg1M5hK/hvlZmBXZwwSVJGtuB4y2VY6BV/plwRqiyOgN/lDzgNm4i6dlgUSk//Xi3xW
-         rgkZvwYT63T8EXp1eph1nZn6F+uirjFGAM0ZEc7DPfJmlcehlpg54aY9wdo9PL/9+s4n
-         BRP4QYLigPWg91zIFhOyWBu1q5lhskwgHHNT5ZSAXglNTNXO2QKcS95IEm1M8xUkHlc5
-         OMgw==
+        Wed, 20 Oct 2021 15:46:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634759038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lk2DJIwlIwjubwL7omTN8Cbj68q/qeG7nk2u/Kt/9zw=;
+        b=BhevXjC8o61Q/wLiNEfnwNtkopTrfRzZqJPw0bPNdKigB5jbRcrhGvLZCnMrhTAOCXh0Si
+        gT7Rl/04Bj35Wa23tvIY9ujkjMJ0nuoHwcR3vx48H3Tn7pvKAQugZZFvyyO3XZXK8i71rP
+        /wj4JaB0gym8DeNfMg+vGewPfO94okk=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-CRSVTddEP_-8f29XnjIKrA-1; Wed, 20 Oct 2021 15:43:56 -0400
+X-MC-Unique: CRSVTddEP_-8f29XnjIKrA-1
+Received: by mail-oo1-f71.google.com with SMTP id u1-20020a4a6141000000b002b6d25c0103so3755549ooe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:43:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=wpm3Gl8wXKPGXafIgFGP0xD6h/zadXUfu6GUjVrj6ns=;
-        b=1DXU071EGQbd/ovSUiUx8aYjot+rt1itWMQokRC3A/EsT9bks77ZWD60Px/9at6Dvk
-         zLI8gRnKkwwPRplsmijc59ldi/Q8O2tQnYIzYN2NL80/IW3hW7J1bVIdFqzqw7No8WMA
-         fmhj/WQiIbLYK4etPcJwpPWzM7yS7d8A90/iGBoWSn2YVUq+jJKPAj9FOV65Aa5HRdqe
-         WMsZGjDZyDbmhJlgueaD9qTJ/WGVcp0BZ+zRXXZEqLdV+4U4hugsJTOltmZ4Z7Q3yByL
-         /ZmgacoYEQ2dTIaF91vrh1IRKutjKt14TB7cBWJjQgA10/QTrydmpzmpjOX16LgASLiQ
-         P+Ag==
-X-Gm-Message-State: AOAM533Gp7MrTb0d2qlxCaiNnMzf2RtUa8RUEAVJ1fnNY1aTcDroKUdW
-        h39hJg1UIQRnUt8fe535VqJycBpP/Pp/Sw==
-X-Google-Smtp-Source: ABdhPJxy4kapndcHpucNwp6t7qxDpD1XglobjefCoqmc4trIw1WxM5NQumPUzkOK+VHDnc46UWVtpw==
-X-Received: by 2002:a17:90b:33c3:: with SMTP id lk3mr943772pjb.237.1634758930294;
-        Wed, 20 Oct 2021 12:42:10 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id nv5sm3583377pjb.10.2021.10.20.12.42.09
+        bh=lk2DJIwlIwjubwL7omTN8Cbj68q/qeG7nk2u/Kt/9zw=;
+        b=wIq3MJLK3QPYI2IWBj1FuH4iiiBSr7Flu0+pHrFPWIR8iZG4mpkkluR73IZNqBHqKE
+         i8Z/RIT5KYbRCTcah1MQIbVz801Xs0DvyzYEwfo8ya0/iUjf2m0IHYhTvesMQ2aJDmUR
+         PfRmclYJJ2g6zV7OKLCBuXtYoEROBjf7dF+BZPtwn4d0BVQYJCw0JAbIuoD62Ky56oPb
+         c/NRKC5BiQWFwByodf/fXJkmiajC7ByYd2OJgNIufAsKztac0h81KFLLALhP0QMscrtX
+         scy1MQ7hzu7EzaDVopm/t9TuOtb6IMgysJEFtdaxWmoEIGrEWmugSbKF1d7XJF2hZrOd
+         qp7w==
+X-Gm-Message-State: AOAM531/x4QZ0CbJyNWcTW5/gt8CPCnSyWikWj9q/r8CjPA1EB0irWOs
+        sNWPgH7AB7ZTbsdY67D/XCp15bLlR+Xp0eBwA3MyY/WCnZz14YSJkgnXR0zYerFB+yIE7d+p9zr
+        4JPAzH7eDfULBNmaBZuYxCnep
+X-Received: by 2002:a05:6808:1302:: with SMTP id y2mr1174541oiv.24.1634759035920;
+        Wed, 20 Oct 2021 12:43:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIrpYN9cTB9TC6WsVyKmSGG23X2bm1qKF+DFN41pM/W3tUAe3kxPe7gtECWW+vXwL4nZJN6Q==
+X-Received: by 2002:a05:6808:1302:: with SMTP id y2mr1174533oiv.24.1634759035762;
+        Wed, 20 Oct 2021 12:43:55 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id u21sm598415oiv.25.2021.10.20.12.43.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:42:09 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 19:42:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        wanpengli@tencent.com, stable@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: check for interrupts before deciding whether
- to exit the fast path
-Message-ID: <YXBxDYJcrx/C9QDS@google.com>
-References: <20211020145231.871299-1-pbonzini@redhat.com>
+        Wed, 20 Oct 2021 12:43:55 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 12:43:52 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH v2 08/14] x86/retpoline: Create a retpoline thunk array
+Message-ID: <20211020194352.7id6nkvtpenmt3p2@treble>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105842.981215247@infradead.org>
+ <20211020155750.3u74bkcp66leeyed@treble>
+ <f33b9c4e-08c1-f88d-4873-82050a944010@citrix.com>
+ <20211020170956.g67xcsvvdkuqg3qa@treble>
+ <20211020192229.GP174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211020145231.871299-1-pbonzini@redhat.com>
+In-Reply-To: <20211020192229.GP174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021, Paolo Bonzini wrote:
-> The kvm_x86_sync_pir_to_irr callback can sometimes set KVM_REQ_EVENT.
-> If that happens exactly at the time that an exit is handled as
-> EXIT_FASTPATH_REENTER_GUEST, vcpu_enter_guest will go incorrectly
-> through the loop that calls kvm_x86_run, instead of processing
-> the request promptly.
+On Wed, Oct 20, 2021 at 09:22:29PM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 20, 2021 at 10:09:56AM -0700, Josh Poimboeuf wrote:
+> > On Wed, Oct 20, 2021 at 05:46:39PM +0100, Andrew Cooper wrote:
+> > > On 20/10/2021 16:57, Josh Poimboeuf wrote:
+> > > > On Wed, Oct 20, 2021 at 12:44:50PM +0200, Peter Zijlstra wrote:
+> > > >> Stick all the retpolines in a single symbol and have the individual
+> > > >> thunks as inner labels, this should guarantee thunk order and layout.
+> > > > How so?
+> > > >
+> > > > Just wondering what the purpose of the array is.  It doesn't seem to be
+> > > > referenced anywhere.
+> > > 
+> > > The array property is what makes:
+> > > 
+> > > > +	reg = (target - &__x86_indirect_thunk_rax) /
+> > > > +	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
+> > > 
+> > > safe in the next path.
+> > 
+> > The thunks were already 32-byte aligned.  I don't see how slapping a few
+> > unused symbols around them does anything.
 > 
-> Fixes: 379a3c8ee444 ("KVM: VMX: Optimize posted-interrupt delivery for timer fastpath")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
-
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-
->  arch/x86/kvm/x86.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> Previously there were 16 (or rather 15 without rsp) separate symbols and
+> a toolchain might reasonably expect it could displace them however it
+> liked, with disregard for the relative position.
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index fa48948b4934..b9b31e5f72b0 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9781,14 +9781,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  		if (likely(exit_fastpath != EXIT_FASTPATH_REENTER_GUEST))
->  			break;
->  
-> -                if (unlikely(kvm_vcpu_exit_request(vcpu))) {
-> +		if (vcpu->arch.apicv_active)
-> +			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-> +
-> +		if (unlikely(kvm_vcpu_exit_request(vcpu))) {
->  			exit_fastpath = EXIT_FASTPATH_EXIT_HANDLED;
->  			break;
->  		}
-> -
-> -		if (vcpu->arch.apicv_active)
-> -			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-> -        }
-> +	}
-
-I think someone working on git has a meta-entry in the obfuscated C context.
-This is the most convoluted diff possible for a simple code move :-)
-
->  	/*
->  	 * Do this here before restoring debug registers on the host.  And
-> -- 
-> 2.27.0
+> However, now they're part of a larger symbol. Any change to their
+> relative position would disrupt this larger _array symbol and thus not
+> be sound.
 > 
+> This is I think the same reasoning used for data symbols. On their own
+> there is no guarantee about their relative position wrt to one aonther,
+> but we're still able to do arrays because an array as a whole is a
+> single larger symbol.
+
+Makes sense, I think (and good fodder for the commit log).
+
+-- 
+Josh
+
