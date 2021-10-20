@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA543434FFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66A9435000
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhJTQUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        id S231268AbhJTQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbhJTQUa (ORCPT
+        with ESMTP id S230372AbhJTQUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:20:30 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C84AC06161C;
-        Wed, 20 Oct 2021 09:18:15 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d9so3390367pfl.6;
-        Wed, 20 Oct 2021 09:18:15 -0700 (PDT)
+        Wed, 20 Oct 2021 12:20:35 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F304C06161C;
+        Wed, 20 Oct 2021 09:18:21 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id q5so22965631pgr.7;
+        Wed, 20 Oct 2021 09:18:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gy854QluB1gtuvRG+A8zZ+CiHHzyMfhwhgDp8iUZREA=;
-        b=qkSmSs4tV80qZGOw7QkuJxzsgqby53LmkOeTwLKdRMhVeGYJ1KZrXG4tF3Yv6aRYyx
-         NFDFtupeGBgfzD384KU4hahGGqc0ZeV0ojmElJfsyPaLJZS2s5RKmu35jQMzX7fWM4ev
-         ReTj9G7nGIhsNCZBj2MzwciIAKPF+C9fh/7FPVs6ZUxVmaMt8zr4wJagJp8YoVT4JBuA
-         6f4DPx0IJMwMEsB0BSk4Q2j86CKDrG+kMmvhz9ewQoPA03TP6a1pFjjmUqqSJU+b/Srh
-         HXC4kgUngtJsXEetWGLj2b0kYDea8sV9un+Ta9IWJ0VOhrxFLpcWEoB6xah3wi3M1cCG
-         jmpg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wRjN+fFhf5ZDRdsJW+ExfiLsDHvU4PP0qY8Z9DJXa+Y=;
+        b=ZlK8y7JXK8JJTN6O/RcMNvlIrPlXv+chFPhqJAay1KrY3xiOISTUyXjAhxOAnlvSRz
+         9+9jvS5BazdrB9s84Uq+GFrPbQSp2dgIJJ/vs4oKVWvMKnm5E9ByN9tMUNuqB/Qnm4x3
+         97hf+hO0tQcLzsTT+i4gj2C446ZvE8QnChtGN39L/L83WcufKn7475cFUVFnpsqudsaX
+         VlYq6dSEBCijyk/t2QOhyQED4EgxtyVes8eygyRJsEBbyzSx0K9cvSAqmSq/0ZZ/1WyO
+         FMeaN7MK/6TBC3Oa5mt3DRPnrem6jWrD77yEXZ6wXBozy/9bZP1MVgxH0fbz+uxmkBq1
+         TG/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gy854QluB1gtuvRG+A8zZ+CiHHzyMfhwhgDp8iUZREA=;
-        b=4QGNoF+Ie/XuB4sIuYVDTi3/XwM6VZJ4uqp0NQ7xEGZJOix05+6Nra5ZZ0Lvkk/BSD
-         akwJY4l9yChUDZ4aI6rzMwk8G5h54wMZmO4amMcikC9koFiq9jRsg4nShi3xj82HhBLA
-         bpsls+HCKvEJS4etIeKhKju5fPJLRzQAuiwlsc0sszEQIxWHf/f4GLxSONPT5Cf20fS+
-         RnM2wfXHIVxdcdcTyYpN2XycYOgAuG0fLbq3okkda7tqWhDZ0aW9JACicBpwgTCVecPL
-         CL4GRCq2hwyw5Fgu45El9DgvQmWljxH1PobGPX1AqBZzxZiMcZReYVhlIKc02rY63ESJ
-         Hp3w==
-X-Gm-Message-State: AOAM532f6TfytwXaaqUtNbFx3m0nYeHEFiaVLSjpoK7jDaE3SdG3paWP
-        gvvDcSrXTNuY36GU+TO1YWWXHAzGEsg=
-X-Google-Smtp-Source: ABdhPJzxJVHWSCpg04h+Z33QUNIhotY7fKemvsOTlQ9AU+N7031YIqaDZjmfxmga4Ue8rkuQZboGyQ==
-X-Received: by 2002:a62:e90d:0:b0:44d:35a1:e5a0 with SMTP id j13-20020a62e90d000000b0044d35a1e5a0mr244414pfh.54.1634746695130;
-        Wed, 20 Oct 2021 09:18:15 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id o10sm3051164pjo.31.2021.10.20.09.18.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 09:18:14 -0700 (PDT)
-Subject: Re: [PATCH net v9] skb_expand_head() adjust skb->truesize incorrectly
-To:     Vasily Averin <vvs@virtuozzo.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <45b3cb13-8c6e-25a3-f568-921ab6f1ca8f@virtuozzo.com>
- <2bd9c638-3038-5aba-1dae-ad939e13c0c4@virtuozzo.com>
- <a1b83e46-27d6-d8f0-2327-bb3466e2de13@gmail.com>
- <a7318420-0182-7e66-33e3-3368d4cc181f@virtuozzo.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <2721362c-462b-878f-9e09-9f6c4353c73d@gmail.com>
-Date:   Wed, 20 Oct 2021 09:18:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=wRjN+fFhf5ZDRdsJW+ExfiLsDHvU4PP0qY8Z9DJXa+Y=;
+        b=tq06y3vubjrg4vak6ZbGHU7GaL4WY1l8Q/XLw3/8HlEZoZa8CHYGlLmmnryDxjn0Xm
+         KDEZnVfVFOAGAXpLaYDzhI+bIh9poSmbkXbpj7tRaUwsBLFJfnvD6B0dHJuDpIMxDFz0
+         wXxI880bFCoxiSM+EoKkqPGXnez5308JOjOkBO6316rjK9KtymQvooT03jjJA0l5ywPH
+         NbXD9hu3hAPU/KnvcE/SLgBhZ4hYL9DQLUBgCuN8mUQcmR697ZO70jrNCg5pQ2+3zzjd
+         XhkmvYkJopyZ+lsjO7UeIrHC8BXOnMB7ZrT+Q3v3NBL1J0Bj7es6jJrhGwhcQX2wMQik
+         IjfQ==
+X-Gm-Message-State: AOAM5304u8nHwWDKMnbAhyGdPeShb5iNFXAZbRkjnFuFfd0+zgveMD23
+        zI33qmu7XC1D9xj1yemcbQU=
+X-Google-Smtp-Source: ABdhPJzYGYiaYqG6HBbNjSdlim7mfX7k/kJhbqPQ6/ns6u+6hM7MXCpC344AnJiLegWqFFKpxpm14A==
+X-Received: by 2002:a63:7b52:: with SMTP id k18mr138686pgn.345.1634746700451;
+        Wed, 20 Oct 2021 09:18:20 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id j9sm2730874pgn.24.2021.10.20.09.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 09:18:19 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 20 Oct 2021 06:18:18 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] workqueue: doc: Call out the non-reentrance conditions
+Message-ID: <YXBBSrlOmAU8+J5w@slm.duckdns.org>
+References: <20211018013117.256284-1-boqun.feng@gmail.com>
+ <YW8EzNmq/bde5VTa@slm.duckdns.org>
+ <YW+rxfMof4QcGSrq@boqun-archlinux>
 MIME-Version: 1.0
-In-Reply-To: <a7318420-0182-7e66-33e3-3368d4cc181f@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW+rxfMof4QcGSrq@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 20, 2021 at 01:40:21PM +0800, Boqun Feng wrote:
+> * A work item instance will not be processed by multiple workers at the
+>   same time, i.e. it's non-reentrant, so requeuing the same instance of
+>   a work item is safe and not racy.  Operations considered as changing
+>   the work item to a different instance are: 1) change the work
+>   function, 2) queue the work item to a different workqueue, or 3)
+>   reinitiate the work item.  The non-reentrance guarantee doesn't hold
+>   for different work item instances.
 
+Yeah, I prefer it to be described this way but it's not a strong opinion.
+Looks good to me either way.
 
-On 10/4/21 10:57 PM, Vasily Averin wrote:
-> On 10/4/21 10:26 PM, Eric Dumazet wrote:
+Thanks.
 
->>
->>     Why not re-using is_skb_wmem() here ?
->>     Testing != sock_edemux looks strange.
-> 
-> All non-wmem skbs was cloned and then was freed already.
-> After pskb_expand_head() call we can have:
-> (1) either original wmem skbs 
-> (2) or cloned skbs: 
->  (2a) either without sk at all,
->  (2b) or with sock_edemux destructor (that was set inside skb_set_owner_w() for !sk_fullsock(sk))
->  (2c) or with sock_wfree destructor (that was set inside skb_set_owner_w() for sk_fullsock(sk))
-> 
-> (2a) and (2b) do not require truesize/sk_wmem_alloc update, it was handled inside pskb_expand_head()
-> (1) and (2c) cases are processed here.
-> 
-> If required I can add this explanation either into patch description or as comment.
-> 
-
-sock_edemux is one of the current destructors.
-
-New ones will be added later. We can not expect that in two or three years,
-at least one reviewer will remember this special case.
-
-I would prefer you list the known destructors (allow-list, instead of disallow-list)
-
-
-
-> Btw I just noticed that we can avoid cloning for original skbs without sk.
-> How do you think should I do it?
-
-Lets wait a bit before new features...
-
+-- 
+tejun
