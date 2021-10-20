@@ -2,199 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254E5434800
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A78434808
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbhJTJhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhJTJhT (ORCPT
+        id S229846AbhJTJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:38:29 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:50928
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229555AbhJTJi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:37:19 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA92DC06161C;
-        Wed, 20 Oct 2021 02:35:05 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id m14so2424185pfc.9;
-        Wed, 20 Oct 2021 02:35:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=I0ZEoxf+qBRrE4EbV2DUTK2XydFaBZKQRHBZdtXWdAI=;
-        b=ZuTXYVNiTIfLkbMl6G+ZXFJwDD8iEeOO9ZL4ZcQyMqRWdw3D7oXfxTqhZu/j2em3IB
-         8XMj9jq6yg0zME0rR8hUAhM3GVP6qjMkBR/U0bWPyFxHPi4Bl3LjCwENvAE4tSlun/7s
-         wAswkg2Fb758WbOyD/QGu+6mmtOMB0rUYBQrIchpHr/xBPfFtW+cgFCNpVlNDm0Pc0/D
-         647q2HD2sssL8dBVZrR8mSrz7Ppp1aE2hvbseyVM1/CHzkcKI58Q+9MYdVfCXxlJF7tA
-         YcWLsyttuR6cOiJNaBX/B9Y5SMfzDcRSs6QnscagOXbbCHGHR/zmQZbaf2E8wrlJy6ep
-         jTGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=I0ZEoxf+qBRrE4EbV2DUTK2XydFaBZKQRHBZdtXWdAI=;
-        b=GnrpCVQ3Siw5AGiEhG9IKp7/BAf/d2+hf0B9ogyofRNRRhYBjUHr0MCXpalqqz7tqn
-         oodQW5Y2v5qwPyM9MDTogKqY0KJA/z65aBD5l47kNrSBNF9dx5yE8cl2OZVtwjT06kkR
-         ooOGKvuSelurBAdurLfWYQXNLghkeMuUiRGfP8T8cTD8Pp4K5HwNbMbomJBQJ6H51jWR
-         75t9Oqy4mD0+dj/GMjXpbKijb+z1HxWXzu8k1qRXS/IGyWqLSu1xxDatS08DpRJxMG5L
-         rExNDKf8FlhKY3bGFo3LHMZVDY9XD8umubybgr7/x92ZTr6jRR/UxDcsaaTCxVlY88bs
-         0qWA==
-X-Gm-Message-State: AOAM532mVY3Fta73LtLhGh40d1BpM5J+w6GNj1DxBt6x+wJDth24swHS
-        mLEVErC5rqNY+Eu7pcAhVuFd0iyc8HI=
-X-Google-Smtp-Source: ABdhPJxNP0G5kSvi88Ytp53fs3hL1SswaI+tfU2GpY8sqcprGF19p7VNXQeDBZIyuq+qhdAciF8y4Q==
-X-Received: by 2002:a05:6a00:9a2:b0:44c:b979:afe3 with SMTP id u34-20020a056a0009a200b0044cb979afe3mr5194704pfg.61.1634722505179;
-        Wed, 20 Oct 2021 02:35:05 -0700 (PDT)
-Received: from localhost (14-203-144-177.static.tpgi.com.au. [14.203.144.177])
-        by smtp.gmail.com with ESMTPSA id oc8sm1978993pjb.15.2021.10.20.02.35.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 02:35:04 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 19:35:00 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2] KVM: PPC: Defer vtime accounting 'til after IRQ
- handling
-To:     kvm-ppc@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Greg Kurz <groug@kaod.org>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@ozlabs.org>,
-        stable@vger.kernel.org
-References: <20211007142856.41205-1-lvivier@redhat.com>
-        <875yu17rxk.fsf@mpe.ellerman.id.au>
-        <d7f59d0e-eac2-7978-4067-9258c8b1aefe@redhat.com>
-        <1634263564.zfj0ajf8eh.astroid@bobo.none>
-        <2a13119c-ccec-1dd5-8cf6-da07a9d8fe6f@redhat.com>
-In-Reply-To: <2a13119c-ccec-1dd5-8cf6-da07a9d8fe6f@redhat.com>
+        Wed, 20 Oct 2021 05:38:27 -0400
+Received: from workstation5.fritz.box (ip-88-152-144-157.hsi03.unitymediagroup.de [88.152.144.157])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 2E7F03FFE4;
+        Wed, 20 Oct 2021 09:36:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634722572;
+        bh=bAoP1FRiCuy1+/FURCUdf01qjwFj5kNYA9taKaOAcu4=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=XnzyDxewYJGTGBxlg71DeHB66UWnfd82EVEm/zwRbcfvTQysIL70WtTnPhXBZzMwI
+         UDbN5qUjEbN4FRJymfUrT9bN4oNycc5qA+tbo1SAiQUaMYfMFYwesMXDilH33Sz0hA
+         nuTt07ydy5wJaXnTTyAFaVX6ftqtf2SqiUskyQuGKUHGk1zuP4V+g4FVQHLtfk+X5n
+         AJJm4UCK9LbC0oQwF8z0t3df34VGmCR4W/ezI1/xQNFkJR9+3q5SI7ZanUEOnkrS/K
+         7HoJ/ryvjMNmVjbjCv3SUMq2HKgdF6U1JBKYVX1VUuhLkqGY71Yc1yjhAnCSPh4EBG
+         Ci+JwbFxeRTCA==
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Guo Ren <guoren@linux.alibaba.com>, Bin Meng <bmeng.cn@gmail.com>,
+        Xiang W <wxjstz@126.com>, Samuel Holland <samuel@sholland.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup.patel@wdc.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        opensbi@lists.infradead.org,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: [PATCH 1/1] dt-bindings: T-HEAD CLINT
+Date:   Wed, 20 Oct 2021 11:36:03 +0200
+Message-Id: <20211020093603.28653-1-heinrich.schuchardt@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Message-Id: <1634722472.k7vwa86otu.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Laurent Vivier's message of October 20, 2021 4:29 pm:
-> On 15/10/2021 04:23, Nicholas Piggin wrote:
->> Excerpts from Laurent Vivier's message of October 13, 2021 7:30 pm:
->>> On 13/10/2021 01:18, Michael Ellerman wrote:
->>>> Laurent Vivier <lvivier@redhat.com> writes:
->>>>> Commit 112665286d08 moved guest_exit() in the interrupt protected
->>>>> area to avoid wrong context warning (or worse), but the tick counter
->>>>> cannot be updated and the guest time is accounted to the system time.
->>>>>
->>>>> To fix the problem port to POWER the x86 fix
->>>>> 160457140187 ("Defer vtime accounting 'til after IRQ handling"):
->>>>>
->>>>> "Defer the call to account guest time until after servicing any IRQ(s=
-)
->>>>>    that happened in the guest or immediately after VM-Exit.  Tick-bas=
-ed
->>>>>    accounting of vCPU time relies on PF_VCPU being set when the tick =
-IRQ
->>>>>    handler runs, and IRQs are blocked throughout the main sequence of
->>>>>    vcpu_enter_guest(), including the call into vendor code to actuall=
-y
->>>>>    enter and exit the guest."
->>>>>
->>>>> Fixes: 112665286d08 ("KVM: PPC: Book3S HV: Context tracking exit gues=
-t context before enabling irqs")
->>>>> Cc: npiggin@gmail.com
->>>>> Cc: <stable@vger.kernel.org> # 5.12
->>>>> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
->>>>> ---
->>>>>
->>>>> Notes:
->>>>>       v2: remove reference to commit 61bd0f66ff92
->>>>>           cc stable 5.12
->>>>>           add the same comment in the code as for x86
->>>>>
->>>>>    arch/powerpc/kvm/book3s_hv.c | 24 ++++++++++++++++++++----
->>>>>    1 file changed, 20 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_h=
-v.c
->>>>> index 2acb1c96cfaf..a694d1a8f6ce 100644
->>>>> --- a/arch/powerpc/kvm/book3s_hv.c
->>>>> +++ b/arch/powerpc/kvm/book3s_hv.c
->>>> ...
->>>>> @@ -4506,13 +4514,21 @@ int kvmhv_run_single_vcpu(struct kvm_vcpu *vc=
-pu, u64 time_limit,
->>>>>   =20
->>>>>    	srcu_read_unlock(&kvm->srcu, srcu_idx);
->>>>>   =20
->>>>> +	context_tracking_guest_exit();
->>>>> +
->>>>>    	set_irq_happened(trap);
->>>>>   =20
->>>>>    	kvmppc_set_host_core(pcpu);
->>>>>   =20
->>>>> -	guest_exit_irqoff();
->>>>> -
->>>>>    	local_irq_enable();
->>>>> +	/*
->>>>> +	 * Wait until after servicing IRQs to account guest time so that an=
-y
->>>>> +	 * ticks that occurred while running the guest are properly account=
-ed
->>>>> +	 * to the guest.  Waiting until IRQs are enabled degrades the accur=
-acy
->>>>> +	 * of accounting via context tracking, but the loss of accuracy is
->>>>> +	 * acceptable for all known use cases.
->>>>> +	 */
->>>>> +	vtime_account_guest_exit();
->>>>
->>>> This pops a warning for me, running guest(s) on Power8:
->>>>   =20
->>>>     [  270.745303][T16661] ------------[ cut here ]------------
->>>>     [  270.745374][T16661] WARNING: CPU: 72 PID: 16661 at arch/powerpc=
-/kernel/time.c:311 vtime_account_kernel+0xe0/0xf0
->>>
->>> Thank you, I missed that...
->>>
->>> My patch is wrong, I have to add vtime_account_guest_exit() before the =
-local_irq_enable().
->>=20
->> I thought so because if we take an interrupt after exiting the guest tha=
-t
->> should be accounted to kernel not guest.
->>=20
->>>
->>> arch/powerpc/kernel/time.c
->>>
->>>    305 static unsigned long vtime_delta(struct cpu_accounting_data *acc=
-t,
->>>    306                                  unsigned long *stime_scaled,
->>>    307                                  unsigned long *steal_time)
->>>    308 {
->>>    309         unsigned long now, stime;
->>>    310
->>>    311         WARN_ON_ONCE(!irqs_disabled());
->>> ...
->>>
->>> But I don't understand how ticks can be accounted now if irqs are still=
- disabled.
->>>
->>> Not sure it is as simple as expected...
->>=20
->> I don't know all the timer stuff too well. The
->> !CONFIG_VIRT_CPU_ACCOUNTING case is relying on PF_VCPU to be set when
->> the host timer interrupt runs irqtime_account_process_tick runs so it
->> can accumulate that tick to the guest?
->>=20
->> That probably makes sense then, but it seems like we need that in a
->> different place. Timer interrupts are not guaranteed to be the first one
->> to occur when interrupts are enabled.
->>=20
->> Maybe a new tick_account_guest_exit() and move PF_VCPU clearing to that
->> for tick based accounting. Call it after local_irq_enable and call the
->> vtime accounting before it. Would that work?
->=20
-> Hi Nick,
->=20
-> I think I will not have the time to have a look to fix that?
->=20
-> Could you try?
+The CLINT in the T-HEAD 9xx CPUs is similar to the SiFive CLINT but does
+not support 64bit mmio access to the MTIMER device.
 
-Hey Laurent, sure I can take a look at it.
+OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indicate the
+restriction and the "sifive,cling0" compatible string. An OpenSBI
+patch suggested to use "reg-io-width = <4>;" as the reg-io-width property
+is generally used in the devicetree schema for such a condition.
 
-Thanks,
-Nick
+As the design is not SiFive based it is preferable to apply a compatible
+string identifying T-HEAD instead.
+
+Add a new yaml file describing the T-HEAD CLINT.
+
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+@Palmer, @Anup
+I copied you as maintainers from sifive,clint.yaml. Please, indicate if
+this should be changed.
+
+For the prior discussion see:
+https://lore.kernel.org/all/20211015100941.17621-1-heinrich.schuchardt@canonical.com/
+https://lore.kernel.org/all/20211015120735.27972-1-heinrich.schuchardt@canonical.com/
+
+A release candidate of the ACLINT specification is available at
+https://github.com/riscv/riscv-aclint/releases
+---
+ .../bindings/timer/thead,clint.yaml           | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/thead,clint.yaml
+
+diff --git a/Documentation/devicetree/bindings/timer/thead,clint.yaml b/Documentation/devicetree/bindings/timer/thead,clint.yaml
+new file mode 100644
+index 000000000000..02463fb2043a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/thead,clint.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/thead,clint.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SiFive Core Local Interruptor
++
++maintainers:
++  - Palmer Dabbelt <palmer@dabbelt.com>
++  - Anup Patel <anup.patel@wdc.com>
++
++description:
++  T-HEAD (and other RISC-V) SOCs include an implementation of the T-HEAD
++  Core Local Interruptor (CLINT) for M-mode timer and M-mode inter-processor
++  interrupts. It directly connects to the timer and inter-processor interrupt
++  lines of various HARTs (or CPUs) so RISC-V per-HART (or per-CPU) local
++  interrupt controller is the parent interrupt controller for CLINT device.
++  The clock frequency of the CLINT is specified via "timebase-frequency" DT
++  property of "/cpus" DT node. The "timebase-frequency" DT property is
++  described in Documentation/devicetree/bindings/riscv/cpus.yaml
++
++properties:
++  compatible:
++    items:
++      - const:
++          - allwinner,sun20i-d1-clint
++      - const:
++          - thead,clint0
++
++    description:
++      Should be "<vendor>,<chip>-clint" and "thead,clint<version>" for
++      the T-HEAD derived CLINTs.
++      Supported compatible strings are -
++      "allwinner,sun20i-d1-clint" for the CLINT in the Allwinner D1 SoC
++      and "thead,clint0" for the T-HEAD IP block with no chip
++      integration tweaks.
++
++  reg:
++    maxItems: 1
++
++  interrupts-extended:
++    minItems: 1
++
++additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts-extended
++
++examples:
++  - |
++    timer@2000000 {
++      compatible = "allwinner,sun20i-d1-clint", "thead,clint0";
++      interrupts-extended = <&cpu1intc 3 &cpu1intc 7
++                             &cpu2intc 3 &cpu2intc 7
++                             &cpu3intc 3 &cpu3intc 7
++                             &cpu4intc 3 &cpu4intc 7>;
++       reg = <0x2000000 0x10000>;
++    };
++...
+-- 
+2.32.0
+
