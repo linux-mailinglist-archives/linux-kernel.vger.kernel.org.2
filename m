@@ -2,211 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE98A434E9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8053434E9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhJTPJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:09:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:32924 "EHLO foss.arm.com"
+        id S230384AbhJTPJP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 11:09:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:51232 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTPJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:09:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A911BED1;
-        Wed, 20 Oct 2021 08:06:55 -0700 (PDT)
-Received: from [10.1.37.134] (e127744.cambridge.arm.com [10.1.37.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 146473F73D;
-        Wed, 20 Oct 2021 08:06:52 -0700 (PDT)
-Subject: Re: [PATCH 5/5] perf arm-spe: Snapshot mode test
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-5-german.gomez@arm.com>
- <20211020131339.GG49614@leoy-ThinkPad-X240s>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <4f3c3964-3448-586b-4199-764236938536@arm.com>
-Date:   Wed, 20 Oct 2021 16:06:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211020131339.GG49614@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+        id S229570AbhJTPJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:09:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="208902821"
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="208902821"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 08:06:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="551674637"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Oct 2021 08:06:59 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 20 Oct 2021 08:06:58 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 20 Oct 2021 08:06:58 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
+ Wed, 20 Oct 2021 08:06:58 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "H . Peter Anvin" <hpa@zytor.com>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>
+Subject: RE: [PATCH v2 2/5] x86/mce/inject: Warn the user on a not set valid
+ bit in MCA_STATUS
+Thread-Topic: [PATCH v2 2/5] x86/mce/inject: Warn the user on a not set valid
+ bit in MCA_STATUS
+Thread-Index: AQHXxUI8p9AjIXdBe0GwapWxUk7Kj6vb/UKQ
+Date:   Wed, 20 Oct 2021 15:06:58 +0000
+Message-ID: <cd4be28ced3544f5b0eae397ccbe83c0@intel.com>
+References: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20211019233641.140275-3-Smita.KoralahalliChannabasappa@amd.com>
+In-Reply-To: <20211019233641.140275-3-Smita.KoralahalliChannabasappa@amd.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
++	if (!(i_mce.status & MCI_STATUS_VAL))
++		pr_warn("Handlers might ignore signatures with Val=0 in MCA_STATUS\n");
 
-I'm unable to reproduce. I've tried on top of the most recent perf/core
-branch but I still get exit code 0 consistently:
+I don't think there is any "might" about this. All code paths start by checking for MCI_STATUS_VAL
+and skipping if it isn't set.
 
-    $ git log
-    commit be8ecc57f180415e8a7c1cc5620c5236be2a7e56 (grafted, origin/perf/core)
-    Author: Tony Garnock-Jones <tonyg@leastfixedpoint.com>
-    Date:   Thu Sep 16 14:09:39 2021 +0200
+s/might/will/
 
-    $ ./perf test 88 -v
-    Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
-    88: Check Arm SPE trace data recording and synthesized samples      :
-    --- start ---
-    test child forked, pid 18700
-    Recording trace with snapshot mode /tmp/__perf_test.perf.data.xgsUt
-    Looking at perf.data file for dumping samples:
-    Looking at perf.data file for reporting samples:
-    SPE snapshot testing: PASS
-    test child finished with 0
-    ---- end ----
-    Check Arm SPE trace data recording and synthesized samples: Ok
-
-On 20/10/2021 14:13, Leo Yan wrote:
-> On Thu, Sep 16, 2021 at 04:46:35PM +0100, German Gomez wrote:
->> Shell script test_arm_spe.sh has been added to test the recording of SPE
->> tracing events in snapshot mode.
->>
->> Reviewed-by: James Clark <james.clark@arm.com>
->> Signed-off-by: German Gomez <german.gomez@arm.com>
->> ---
->>  tools/perf/tests/shell/test_arm_spe.sh | 91 ++++++++++++++++++++++++++
->>  1 file changed, 91 insertions(+)
->>  create mode 100755 tools/perf/tests/shell/test_arm_spe.sh
->>
->> diff --git a/tools/perf/tests/shell/test_arm_spe.sh b/tools/perf/tests/shell/test_arm_spe.sh
->> new file mode 100755
->> index 000000000000..9ed817e76f95
->> --- /dev/null
->> +++ b/tools/perf/tests/shell/test_arm_spe.sh
->> @@ -0,0 +1,91 @@
->> +#!/bin/sh
->> +# Check Arm SPE trace data recording and synthesized samples
->> +
->> +# Uses the 'perf record' to record trace data of Arm SPE events;
->> +# then verify if any SPE event samples are generated by SPE with
->> +# 'perf script' and 'perf report' commands.
->> +
->> +# SPDX-License-Identifier: GPL-2.0
->> +# German Gomez <german.gomez@arm.com>, 2021
->> +
->> +skip_if_no_arm_spe_event() {
->> +	perf list | egrep -q 'arm_spe_[0-9]+//' && return 0
->> +
->> +	# arm_spe event doesn't exist
->> +	return 2
->> +}
->> +
->> +skip_if_no_arm_spe_event || exit 2
->> +
->> +perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
->> +glb_err=0
->> +
->> +cleanup_files()
->> +{
->> +	rm -f ${perfdata}
->> +	trap - exit term int
->> +	kill -2 $$ # Forward sigint to parent
-> I understand you copy this code from Arm cs-etm testing, but I found
-> the sentence 'kill -2 $$' will cause a failure at my side with the
-> command:
->
-> root@ubuntu:/home/leoy/linux/tools/perf# ./perf test 85 -v
-> 85: Check Arm SPE trace data recording and synthesized samples      :
-> --- start ---
-> test child forked, pid 29053
-> Recording trace with snapshot mode /tmp/__perf_test.perf.data.uughb
-> Looking at perf.data file for dumping samples:
-> Looking at perf.data file for reporting samples:
-> SPE snapshot testing: PASS
-> test child finished with -1
-> ---- end ----
-> Check Arm SPE trace data recording and synthesized samples: FAILED!
->
-> I changed to use below code and looks it works for me:
->
->         if [[ "$1" == "int" ]]; then
->                 kill -SIGINT $$
->         fi
->         if [[ "$1" == "term" ]]; then
->                 kill -SIGTERM $$
->         fi
->
-> Thanks,
-> Leo
->
->> +	exit $glb_err
->> +}
->> +
->> +trap cleanup_files exit term int
->> +
->> +arm_spe_report() {
->> +	if [ $2 != 0 ]; then
->> +		echo "$1: FAIL"
->> +		glb_err=$2
->> +	else
->> +		echo "$1: PASS"
->> +	fi
->> +}
->> +
->> +perf_script_samples() {
->> +	echo "Looking at perf.data file for dumping samples:"
->> +
->> +	# from arm-spe.c/arm_spe_synth_events()
->> +	events="(ld1-miss|ld1-access|llc-miss|lld-access|tlb-miss|tlb-access|branch-miss|remote-access|memory)"
->> +
->> +	# Below is an example of the samples dumping:
->> +	#	dd  3048 [002]          1    l1d-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
->> +	#	dd  3048 [002]          1    tlb-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
->> +	#	dd  3048 [002]          1        memory:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
->> +	perf script -F,-time -i ${perfdata} 2>&1 | \
->> +		egrep " +$1 +[0-9]+ .* +${events}:(.*:)? +" > /dev/null 2>&1
->> +}
->> +
->> +perf_report_samples() {
->> +	echo "Looking at perf.data file for reporting samples:"
->> +
->> +	# Below is an example of the samples reporting:
->> +	#   73.04%    73.04%  dd    libc-2.27.so      [.] _dl_addr
->> +	#    7.71%     7.71%  dd    libc-2.27.so      [.] getenv
->> +	#    2.59%     2.59%  dd    ld-2.27.so        [.] strcmp
->> +	perf report --stdio -i ${perfdata} 2>&1 | \
->> +		egrep " +[0-9]+\.[0-9]+% +[0-9]+\.[0-9]+% +$1 " > /dev/null 2>&1
->> +}
->> +
->> +arm_spe_snapshot_test() {
->> +	echo "Recording trace with snapshot mode $perfdata"
->> +	perf record -o ${perfdata} -e arm_spe// -S \
->> +		-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
->> +	PERFPID=$!
->> +
->> +	# Wait for perf program
->> +	sleep 1
->> +
->> +	# Send signal to snapshot trace data
->> +	kill -USR2 $PERFPID
->> +
->> +	# Stop perf program
->> +	kill $PERFPID
->> +	wait $PERFPID
->> +
->> +	perf_script_samples dd &&
->> +	perf_report_samples dd
->> +
->> +	err=$?
->> +	arm_spe_report "SPE snapshot testing" $err
->> +}
->> +
->> +arm_spe_snapshot_test
->> +exit $glb_err
->> \ No newline at end of file
->> -- 
->> 2.17.1
->>
+-Tony
