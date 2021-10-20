@@ -2,172 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F36D434F7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B10434F68
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhJTP7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        id S230493AbhJTP6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhJTP6q (ORCPT
+        with ESMTP id S229817AbhJTP6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:58:46 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1632C061753
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:56:31 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id t9so16039866lfd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:56:31 -0700 (PDT)
+        Wed, 20 Oct 2021 11:58:36 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5946C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:56:21 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id g39so15914778wmp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:56:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mk0Fw1d85Ctx+UYR5JvQoEBClZUQNjs0O369mrPqXFw=;
-        b=etuxTANyHHFxn/JCnCXn/cSvjX5oH38psGo9/gqj6vd7vZJbVfe7+loM4FsXy0OJs4
-         RKepimgEpd/dm6cQd9D9sqpKCTfqfBn8MmLzb9DMG6yhIMxd8DfvYC4FdWuNACDHadBA
-         r2RzpY0Zt7cFCdeSj5d64dJO2LM6Ye3crlfklWk4hnZorxP+bDG+yUzZjUY0TecrYQ7Q
-         6DgI8REXuAF9D29IwaHkRJHKkmp2eR5aUIUmN9Cc5Y1TVFkUmB5XQMX2me7n0oTz37wZ
-         weAgDMhHdki0gtWBxsU64jB2uwPAcsNI/SRlv5VUovG7suSqMFEb6W5mAQGo5JXcecro
-         4Cqw==
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=uqT1+bpO5GtTAP8kk5EhhjPAS0dVX5h+L+bMjzTPiks=;
+        b=cEtB6xSBPm7ST6GkvnB078hot11IthI5rZs3+CQtixOEi4fr82nqsPAEVmThIQf5Ex
+         c3SpfkdSOkWM0kh1zVUOkre2FPT9SD+2oOSDTHrJDDg+WcfsvdoBQQ8Oa/WnRAIEaC+e
+         dHgBI/x+tc1/iL9lAiRc9V5lE/b44f+h40y4oifolKaBQ5B3y8YM2tX6vjFTuZRBfNQc
+         /FOMrr/GCT7E3Yn41vovi94RBCpbHbqAjBMS2kqoE87S31/hcJGsJTaO0Guk04uvFg+p
+         egz/MvfAZmI3/4lrBu4Nk7PD5tho6I/FhQzD1suV8GbbGrQNr+wddfF7t+fKa0tSvrCy
+         SLng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mk0Fw1d85Ctx+UYR5JvQoEBClZUQNjs0O369mrPqXFw=;
-        b=PAtARNhWeOjSqqlM0oZuwHuaHUvrQGa3gG3PFhlWD6M7sfzO/PAkrLNANgPk3dy/iU
-         hri41zZo2lxQmsWBUWb30WzPhHARF7/EZC7gB0ZbDY9kOf5Kxvbt7sa8w5Jck6ft1oUl
-         qzeEspnjkFocQ5+C2z4p62nEBTn0MWM21ZV3jj7VGq97CNXe1BeFyOAJLM/otRUOpe1v
-         lB2+vjDZqPWJ4SDuJC0IFoNSW70EhQwLsGlTcfAcK0sIs8SF63OMN/MeQ+H+kzqzj8h5
-         jQH2JohFTH8sJVzwMgh+P+D2rGSCm/L870G/V9540RUD9Syr4mQyafsYA7Yidu2CejiJ
-         ejGw==
-X-Gm-Message-State: AOAM533dRdUliiNPX6VS7iIMi7AZNCBafXVQQBiguf2/CHaaw1nZ+Ivl
-        oDsGZfyMVEfNhxkcrBTNYv/rYrn2cjc2XL3y1FvpMQ==
-X-Google-Smtp-Source: ABdhPJxpla/OfagpfrBP9uAdqwmY/Y3BFr6oF7A+pooBfrc94hkrkM2Q6g72R02A1g+FI3lf/EbcZFqkWjBGGzgmSYY=
-X-Received: by 2002:ac2:5fee:: with SMTP id s14mr81434lfg.537.1634745389914;
- Wed, 20 Oct 2021 08:56:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211019153214.109519-1-senozhatsky@chromium.org>
- <20211019153214.109519-2-senozhatsky@chromium.org> <CALzav=cLXXZYBSH6iJifkqVijLAU5EvgVg2W4HKhqke2JBa+yg@mail.gmail.com>
- <YW9vqgwU+/iVooXj@google.com>
-In-Reply-To: <YW9vqgwU+/iVooXj@google.com>
-From:   David Matlack <dmatlack@google.com>
-Date:   Wed, 20 Oct 2021 08:56:03 -0700
-Message-ID: <CALzav=c1LXXWSi-Z0_X35HCyQtv1rh0p2YmJ289J51SHy0DRxg@mail.gmail.com>
-Subject: Re: [PATCHV2 1/3] KVM: x86: introduce kvm_mmu_pte_prefetch structure
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=uqT1+bpO5GtTAP8kk5EhhjPAS0dVX5h+L+bMjzTPiks=;
+        b=keNsVDg9MRO+bOgMdH40w6+aQDHIGgSbR2P8+A8aakXvKHQ01t+tnN3AGwYpvI//Wl
+         em1SQSL3lqpSyfbe7Z4Nnz6RKcdQYrqMXzqC5tHJwc7vp2mwijVckQFeey0NoE+OCeOV
+         iDvTf4ksrWN/a//6Kc1+BOH6BslDveZPkZs7bwLBX3J6VAEQKYzpAgrH5/JsCEeDpy4y
+         /0LCG9zjG77coxD2SxHe4uX8iHhHk2XyzkkXK9dodr6Yr9rBPXRd/H+ptFIdiaM+5CEz
+         pazGRTcu/uH5hVo6NEHQxQ55hlJO1KA/T6nXw/yFZrX5MY68LLhJ17nTHeWARDqHLJTd
+         khrw==
+X-Gm-Message-State: AOAM5339OhAOl/GfDIHAW9pd/rESOPKI+drLN+PcrjSxCwha/81ZcOhO
+        PDWD1PmjYemkGUir5OXTzEPp9iq75BaQM6WxcsM=
+X-Google-Smtp-Source: ABdhPJyiUgOgF6jQnNnDfJUeWb7xBfoZngJJN4yGWDjKblUiSgU4uug1c8P5TV38NDu6qasoEcN0yg==
+X-Received: by 2002:a05:6000:1567:: with SMTP id 7mr42183wrz.408.1634745380064;
+        Wed, 20 Oct 2021 08:56:20 -0700 (PDT)
+Received: from ?IPv6:2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62? ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id g10sm2877383wmq.13.2021.10.20.08.56.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 08:56:19 -0700 (PDT)
+Message-ID: <596fba87187b73277fd5c1102baa1815ed8fe4f8.camel@gmail.com>
+Subject: Re: [Outreachy kernel] Re: [PATCH] staging: vt6655: Rename
+ `dwAL2230InitTable` array
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>, Joe Perches <joe@perches.com>
+Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
+        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 20 Oct 2021 16:56:18 +0100
+In-Reply-To: <alpine.DEB.2.22.394.2110201615590.2930@hadrien>
+References: <20211020132811.417341-1-karolinadrobnik@gmail.com>
+          <16db455b46f130300b5c346160aa434616e4f6b4.camel@perches.com>
+         <157ee66fd0e3304c238e7ad8123277892e0d1132.camel@perches.com>
+         <alpine.DEB.2.22.394.2110201615590.2930@hadrien>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 6:24 PM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> On (21/10/19 15:44), David Matlack wrote:
-> > On Tue, Oct 19, 2021 at 8:32 AM Sergey Senozhatsky
-> > <senozhatsky@chromium.org> wrote:
-> > >
-> > > kvm_mmu_pte_prefetch is a per-VCPU structure that holds a PTE
-> > > prefetch pages array, lock and the number of PTE to prefetch.
-> > >
-> > > This is needed to turn PTE_PREFETCH_NUM into a tunable VM
-> > > parameter.
-> > >
-> > > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > > ---
-> > >  arch/x86/include/asm/kvm_host.h | 12 +++++++
-> > >  arch/x86/kvm/mmu.h              |  4 +++
-> > >  arch/x86/kvm/mmu/mmu.c          | 57 ++++++++++++++++++++++++++++++---
-> > >  arch/x86/kvm/x86.c              |  9 +++++-
-> > >  4 files changed, 77 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > > index 5271fce6cd65..11400bc3c70d 100644
-> > > --- a/arch/x86/include/asm/kvm_host.h
-> > > +++ b/arch/x86/include/asm/kvm_host.h
-> > > @@ -607,6 +607,16 @@ struct kvm_vcpu_xen {
-> > >         u64 runstate_times[4];
-> > >  };
-> > >
-> > > +struct kvm_mmu_pte_prefetch {
-> > > +       /*
-> > > +        * This will be cast either to array of pointers to struct page,
-> > > +        * or array of u64, or array of u32
-> > > +        */
-> > > +       void *ents;
-> > > +       unsigned int num_ents;
-> > > +       spinlock_t lock;
-> >
-> > The spinlock is overkill. I'd suggest something like this:
-> > - When VM-ioctl is invoked to update prefetch count, store it in
-> > kvm_arch. No synchronization with vCPUs needed.
-> > - When a vCPU takes a fault: Read the prefetch count from kvm_arch. If
-> > different than count at last fault, re-allocate vCPU prefetch array.
-> > (So you'll need to add prefetch array and count to kvm_vcpu_arch as
-> > well.)
-> >
-> > No extra locks are needed. vCPUs that fault after the VM-ioctl will
-> > get the new prefetch count. We don't really care if a prefetch count
-> > update races with a vCPU fault as long as vCPUs are careful to only
-> > read the count once (i.e. use READ_ONCE(vcpu->kvm.prefetch_count)) and
-> > use that. Assuming prefetch count ioctls are rare, the re-allocation
-> > on the fault path will be rare as well.
->
-> So reallocation from the faul-path should happen before vCPU takes the
-> mmu_lock?
+On Wed, 2021-10-20 at 07:09 -0700, Joe Perches wrote:
+> On Wed, 2021-10-20 at 06:44 -0700, Joe Perches wrote:
+> > In this file there are more than 100 uses of
+> > 
+> >         (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW
+> > 
+> > Maybe add a define for it and substitute the uses for the define.
+> 
+> Look at the code too.
+> 
+> It looks as if every use of IFRFbWriteEmbedded() has this added to
+> the 2nd argument and that the 2nd argument isn't used anywhere else.
+> 
+> Maybe remove it altogether and add it to IFRFbWriteEmbedded().
+> 
+> And it looks as if the + uses for these should logically be |
 
-Yes. Take a look at mmu_topup_memory_caches for an example of
-allocating in the fault path prior to taking the mmu lock.
+Sounds like a very good idea. I'll add it to my to-do list, thanks :)
 
-> And READ_ONCE(prefetch_count) should also happen before vCPU
-> takes mmu_lock, I assume, so we need to pass it as a parameter to all
-> the functions that will access prefetch array.
+On Wed, 2021-10-20 at 16:16 +0200, Julia Lawall wrote:
+> Karolina,
+> 
+> If more than a hundred such changes are necessary, you may find
+> Coccinelle
+> useful:  https://coccinelle.gitlabpages.inria.fr/website/
 
-Store the value of READ_ONCE(prefetch_count) in struct kvm_vcpu_arch
-because you also need to know if it changes on the next fault. Then
-you also don't have to add a parameter to a bunch of functions in the
-fault path.
+Hmm, I'll check this out, it may come in handy.
 
->
-> > Note: You could apply this same approach to a module param, except
-> > vCPUs would be reading the module param rather than vcpu->kvm during
-> > each fault.
-> >
-> > And the other alternative, like you suggested in the other patch, is
-> > to use a vCPU ioctl. That would side-step the synchronization issue
-> > because vCPU ioctls require the vCPU mutex. So the reallocation could
-> > be done in the ioctl and not at fault time.
->
-> One more idea, wonder what do you think:
->
-> There is an upper limit on the number of PTEs we prefault, which is 128 as of
-> now, but I think 64 will be good enough, or maybe even 32. So we can always
-> allocate MAX_PTE_PREFETCH_NUM arrays in vcpu->arch and ioctl() will change
-> ->num_ents only, which is always in (0, MAX_PTE_PREFETCH_NUM - 1] range. This
-> way we never have to reallocate anything, we just adjust the "maximum index"
-> value.
 
-128 * 8 would be 1KB per vCPU. That is probably reasonable, but I
-don't think the re-allocation would be that complex.
+Thanks,
+Karolina
 
->
-> > Taking a step back, can you say a bit more about your usecase?
->
-> We are looking at various ways of reducing the number of vm-exits. There
-> is only one VM running on the device (a pretty low-end laptop).
-
-When you say reduce the number of vm-exits, can you be more specific?
-Are you trying to reduce the time it takes for vCPUs to fault in
-memory during VM startup? I just mention because there are likely
-other techniques you can apply that would not require modifying KVM
-code (e.g. prefaulting the host memory before running the VM, using
-the TDP MMU instead of the legacy MMU to allow parallel faults, using
-hugepages to map in more memory per fault, etc.)
