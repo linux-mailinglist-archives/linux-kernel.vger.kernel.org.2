@@ -2,120 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165534345E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515644345E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhJTHc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:32:26 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56824 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhJTHcZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:32:25 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 559111F421E2;
-        Wed, 20 Oct 2021 08:30:10 +0100 (BST)
-Date:   Wed, 20 Oct 2021 09:30:07 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
- suspend
-Message-ID: <20211020093007.0edb4ee4@collabora.com>
-In-Reply-To: <20211020071235.in3omswo2jqrahrd@skn-laptop>
-References: <20211011115253.38497-1-sean@geanix.com>
-        <20211011160546.707b737b@collabora.com>
-        <20211015082206.244a2316@xps13>
-        <20211019180800.3v7emokse6lkpjvk@skn-laptop>
-        <20211020085250.030ef244@collabora.com>
-        <20211020090058.58af1087@collabora.com>
-        <20211020071235.in3omswo2jqrahrd@skn-laptop>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230005AbhJTHcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229809AbhJTHci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 03:32:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EE6860FC3;
+        Wed, 20 Oct 2021 07:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634715024;
+        bh=nTtxR8RtHzmZkuJwB5xogwj67/lJSwYpi2PBZyRy1XI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kS4Bw6eonrmOxVd8H1KySUKUSRxh6hQvR6lZZGwrnPDK5h925kUt1sKm+qZXwhZuV
+         J5MhbkvLxHN3dshiU9gqF1NFsUQQaoGfPJ4Wjlpj3Rw6uIy+3VgDnEh7GlXGhFKTIV
+         nYvO/BxhR2xjoaRJ1WJmcCktguVmXPDpYiUj/rVk=
+Date:   Wed, 20 Oct 2021 09:30:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-input@vger.kernel.org, 282827961@qq.com
+Subject: Re: [[PATCH v3 10/20]] input&tty: Fix the keyboard led light display
+ problem
+Message-ID: <YW/FjXp2Xdwapy/8@kroah.com>
+References: <20211020064842.29573-1-changlianzhi@uniontech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020064842.29573-1-changlianzhi@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 09:12:35 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
-
-> On Wed, Oct 20, 2021 at 09:00:58AM +0200, Boris Brezillon wrote:
-> > On Wed, 20 Oct 2021 08:52:50 +0200
-> > Boris Brezillon <boris.brezillon@collabora.com> wrote:
-> >   
+On Wed, Oct 20, 2021 at 02:48:42PM +0800, lianzhi chang wrote:
+> Switching from the desktop environment to the tty environment,
+> the state of the keyboard led lights and the state of the keyboard
+> lock are inconsistent. This is because the attribute kb->kbdmode
+> of the tty bound in the desktop environment (xorg) is set to
+> VC_OFF, which causes the ledstate and kb->ledflagstate
+> values of the bound tty to always be 0, which causes the switch
+> from the desktop When to the tty environment, the LED light
+> status is inconsistent with the keyboard lock status.
 > 
-> [ ... ]
-> > > > 
-> > > > Hi Boris and Miquel,
-> > > > 
-> > > > gpmi-nand.c sets NAND_SKIP_BBTSCAN so we won't get there and populate
-> > > > suspend resume hooks :(
-> > > > Guess there is other drivers that does the same thing...    
-> > 
-> > Actually, this version is even cleaner:
-> > 
-> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> > index 3d6c6e880520..98c39b7f6279 100644
-> > --- a/drivers/mtd/nand/raw/nand_base.c
-> > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
-> >         mtd->_sync = nand_sync;
-> >         mtd->_lock = nand_lock;
-> >         mtd->_unlock = nand_unlock;
-> > -       mtd->_suspend = nand_suspend;
-> > -       mtd->_resume = nand_resume;
-> >         mtd->_reboot = nand_shutdown;
-> >         mtd->_block_isreserved = nand_block_isreserved;
-> >         mtd->_block_isbad = nand_block_isbad;
-> > @@ -6261,14 +6259,20 @@ static int nand_scan_tail(struct nand_chip *chip)
-> >                 goto err_free_interface_config;
-> >  
-> >         /* Check, if we should skip the bad block table scan */
-> > -       if (chip->options & NAND_SKIP_BBTSCAN)
-> > -               return 0;
-> > -
-> > -       /* Build bad block table */
-> > -       ret = nand_create_bbt(chip);
-> > -       if (ret)
-> > -               goto err_free_secure_regions;
-> > +       if (chip->options & NAND_SKIP_BBTSCAN) {
-> > +               /* Build bad block table */
-> > +               ret = nand_create_bbt(chip);
-> > +               if (ret)
-> > +                       goto err_free_secure_regions;
-> > +       }
-> >  
-> > +       /*
-> > +        * Populate the suspend/resume hooks after the BBT has been scanned to
-> > +        * avoid using the suspend lock and resume waitqueue which are only
-> > +        * initialized when mtd_device_register() is called.
-> > +        */
-> > +       mtd->_suspend = nand_suspend;
-> > +       mtd->_resume = nand_resume;
-> >         return 0;
-> >  
-> >  err_free_secure_regions:  
-> 
-> Why is the gpmi-nand.c and other drivers set NAND_SKIP_BBTSCAN and then
-> call nand_create_bbt() directly?
+> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
 
-Dunno, but there's a nand_boot_init() call between the nand_scan() and
-nand_create_bbt() calls, so I guess it has to do with something done in
-this function...
+This is patch 10 out of 20?  Where are the other 19 patches in this
+series?
 
-> 
-> To me it looks like legacy leftover...
+And your subject line should not have "input&" in it anymore, right?
 
-If I were you, I wouldn't take the risk to change that in the same
-patch series. The suspend/resume changes are already quite invasive,
-so let's try to keep it as small/simple as possible.
+thanks,
+
+greg k-h
