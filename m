@@ -2,110 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376D04345BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394014345CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhJTHQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:16:53 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:52040 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229823AbhJTHQv (ORCPT
+        id S229900AbhJTHUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhJTHUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:16:51 -0400
-X-UUID: fe353559b3734de9adfd1aa6414db846-20211020
-X-UUID: fe353559b3734de9adfd1aa6414db846-20211020
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1060229274; Wed, 20 Oct 2021 15:14:35 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 20 Oct 2021 15:14:34 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 20 Oct 2021 15:14:33 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <aaronyu@google.com>, <pierre-louis.bossart@linux.intel.com>
-Subject: [RESEND,v2 2/2] dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1011-rt5682 document
-Date:   Wed, 20 Oct 2021 15:14:28 +0800
-Message-ID: <20211020071428.14297-3-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211020071428.14297-1-trevor.wu@mediatek.com>
-References: <20211020071428.14297-1-trevor.wu@mediatek.com>
+        Wed, 20 Oct 2021 03:20:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9BCC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:17:58 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1md5rH-000749-7I; Wed, 20 Oct 2021 09:17:55 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1md5rG-0005GN-51; Wed, 20 Oct 2021 09:17:54 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1md5rG-0001ka-47; Wed, 20 Oct 2021 09:17:54 +0200
+Date:   Wed, 20 Oct 2021 09:17:53 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Guenter Roeck <groeck@google.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel@pengutronix.de
+Subject: [PATCH v2] platform/chrome: cros_ec: Make cros_ec_unregister()
+ return return void
+Message-ID: <20211020071753.wltjslmimb6wtlp5@pengutronix.de>
+References: <20211019203850.3833915-1-u.kleine-koenig@pengutronix.de>
+ <CABXOdTeOO=Yf37_p1c8HVigkqqRyR90RqRDaLk5qxxp3jAGgEA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xabgq57hwkh66s6w"
+Content-Disposition: inline
+In-Reply-To: <CABXOdTeOO=Yf37_p1c8HVigkqqRyR90RqRDaLk5qxxp3jAGgEA@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds document for mt8195 board with mt6359, rt1011 and rt5682
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+--xabgq57hwkh66s6w
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Up to now cros_ec_unregister() returns zero unconditionally. Make it
+return void instead which makes it easier to see in the callers that
+there is no error to handle.
+
+Also the return value of i2c, platform and spi remove callbacks is
+ignored anyway.
+
+Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 ---
- .../sound/mt8195-mt6359-rt1011-rt5682.yaml    | 47 +++++++++++++++++++
- 1 file changed, 47 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1011-rt5682.yaml
+On Tue, Oct 19, 2021 at 02:31:46PM -0700, Guenter Roeck wrote:
+> On Tue, Oct 19, 2021 at 1:39 PM Uwe Kleine-K=F6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> > -int cros_ec_unregister(struct cros_ec_device *ec_dev)
+> > +void cros_ec_unregister(struct cros_ec_device *ec_dev)
+> >  {
+> >         if (ec_dev->pd)
+> >                 platform_device_unregister(ec_dev->pd);
+>=20
+> Isn't there a "return 0;" hiding about here which would now result in
+> a compile error ?
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1011-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1011-rt5682.yaml
-new file mode 100644
-index 000000000000..d354c30d3377
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1011-rt5682.yaml
-@@ -0,0 +1,47 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt8195-mt6359-rt1011-rt5682.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek MT8195 with MT6359, RT1011 and RT5682 ASoC sound card driver
-+
-+maintainers:
-+  - Trevor Wu <trevor.wu@mediatek.com>
-+
-+description:
-+  This binding describes the MT8195 sound card with RT1011 and RT5682.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt8195_mt6359_rt1011_rt5682
-+
-+  mediatek,platform:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 ASoC platform.
-+
-+  mediatek,dptx-codec:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 Display Port Tx codec node.
-+
-+  mediatek,hdmi-codec:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 HDMI codec node.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - mediatek,platform
-+
-+examples:
-+  - |
-+
-+    sound: mt8195-sound {
-+        compatible = "mediatek,mt8195_mt6359_rt1011_rt5682";
-+        mediatek,platform = <&afe>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&aud_pins_default>;
-+    };
-+
-+...
--- 
-2.18.0
+Argh, you're right. I forgot to squash this in after my build test :-\
+Here's a v2.
 
+Thanks
+Uwe
+
+ drivers/platform/chrome/cros_ec.c     | 4 +---
+ drivers/platform/chrome/cros_ec.h     | 2 +-
+ drivers/platform/chrome/cros_ec_i2c.c | 4 +++-
+ drivers/platform/chrome/cros_ec_lpc.c | 4 +++-
+ drivers/platform/chrome/cros_ec_spi.c | 4 +++-
+ 5 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cr=
+os_ec.c
+index fc5aa1525d13..d49a4efe46c8 100644
+--- a/drivers/platform/chrome/cros_ec.c
++++ b/drivers/platform/chrome/cros_ec.c
+@@ -302,13 +302,11 @@ EXPORT_SYMBOL(cros_ec_register);
+  *
+  * Return: 0 on success or negative error code.
+  */
+-int cros_ec_unregister(struct cros_ec_device *ec_dev)
++void cros_ec_unregister(struct cros_ec_device *ec_dev)
+ {
+ 	if (ec_dev->pd)
+ 		platform_device_unregister(ec_dev->pd);
+ 	platform_device_unregister(ec_dev->ec);
+-
+-	return 0;
+ }
+ EXPORT_SYMBOL(cros_ec_unregister);
+=20
+diff --git a/drivers/platform/chrome/cros_ec.h b/drivers/platform/chrome/cr=
+os_ec.h
+index 78363dcfdf23..bbca0096868a 100644
+--- a/drivers/platform/chrome/cros_ec.h
++++ b/drivers/platform/chrome/cros_ec.h
+@@ -11,7 +11,7 @@
+ #include <linux/interrupt.h>
+=20
+ int cros_ec_register(struct cros_ec_device *ec_dev);
+-int cros_ec_unregister(struct cros_ec_device *ec_dev);
++void cros_ec_unregister(struct cros_ec_device *ec_dev);
+=20
+ int cros_ec_suspend(struct cros_ec_device *ec_dev);
+ int cros_ec_resume(struct cros_ec_device *ec_dev);
+diff --git a/drivers/platform/chrome/cros_ec_i2c.c b/drivers/platform/chrom=
+e/cros_ec_i2c.c
+index 30c8938c27d5..22feb0fd4ce7 100644
+--- a/drivers/platform/chrome/cros_ec_i2c.c
++++ b/drivers/platform/chrome/cros_ec_i2c.c
+@@ -313,7 +313,9 @@ static int cros_ec_i2c_remove(struct i2c_client *client)
+ {
+ 	struct cros_ec_device *ec_dev =3D i2c_get_clientdata(client);
+=20
+-	return cros_ec_unregister(ec_dev);
++	cros_ec_unregister(ec_dev);
++
++	return 0;
+ }
+=20
+ #ifdef CONFIG_PM_SLEEP
+diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chrom=
+e/cros_ec_lpc.c
+index 1f7861944044..8527a1bac765 100644
+--- a/drivers/platform/chrome/cros_ec_lpc.c
++++ b/drivers/platform/chrome/cros_ec_lpc.c
+@@ -439,7 +439,9 @@ static int cros_ec_lpc_remove(struct platform_device *p=
+dev)
+ 		acpi_remove_notify_handler(adev->handle, ACPI_ALL_NOTIFY,
+ 					   cros_ec_lpc_acpi_notify);
+=20
+-	return cros_ec_unregister(ec_dev);
++	cros_ec_unregister(ec_dev);
++
++	return 0;
+ }
+=20
+ static const struct acpi_device_id cros_ec_lpc_acpi_device_ids[] =3D {
+diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrom=
+e/cros_ec_spi.c
+index 14c4046fa04d..713c58687721 100644
+--- a/drivers/platform/chrome/cros_ec_spi.c
++++ b/drivers/platform/chrome/cros_ec_spi.c
+@@ -790,7 +790,9 @@ static int cros_ec_spi_remove(struct spi_device *spi)
+ {
+ 	struct cros_ec_device *ec_dev =3D spi_get_drvdata(spi);
+=20
+-	return cros_ec_unregister(ec_dev);
++	cros_ec_unregister(ec_dev);
++
++	return 0;
+ }
+=20
+ #ifdef CONFIG_PM_SLEEP
+--=20
+2.30.2
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xabgq57hwkh66s6w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFvwp4ACgkQwfwUeK3K
+7Anrewf/fWDClNhaUx4DF67d8fk1edtbLUy7Gm1pQ6mXEnaLRhWPmlUToh5TlZWg
+Tb7TaS5eEwX5SgCmn/WSp9nYWHtyXj63DyTgQXRbR9QjgCmDz3Ce1S6e8zhs+9cx
+tNoomN74bDyBhFLWeALUYWst+gAtOzrWJN+AiinXhie6pZzi3q4Z8q1HWVNkNqMh
+VT4OZI5a9Sw5BoZlmIogJxoJtjBaX+F/t5BFon04iVeGBSW38YDhnlflTTFGwohS
+vTx6J18hfJxCodA9iVeZv8Tq06KaBSLs34bJwMk5K+ByMoYw75WyUCk8nqBu26+m
+lZ2RzVzA3Adkcs1bLwXTSB/NskACfg==
+=lLJp
+-----END PGP SIGNATURE-----
+
+--xabgq57hwkh66s6w--
