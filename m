@@ -2,88 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986DF434CFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41718434D25
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhJTOFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        id S230205AbhJTOMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhJTOFF (ORCPT
+        with ESMTP id S229878AbhJTOMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:05:05 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA29C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:02:50 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id l24-20020a9d1c98000000b00552a5c6b23cso8322805ota.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:02:50 -0700 (PDT)
+        Wed, 20 Oct 2021 10:12:53 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97D8FC06161C;
+        Wed, 20 Oct 2021 07:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lDqH2jUk9gpO3lmRRDRBqbmD26jEPR69skrcQuuIqmk=;
-        b=t2djaRphM71qBUm91JfwhfeYSz+3Q+ablSn5dDN5v4PisUMlzowKx0xHYIYaWd2fRi
-         XNDXRDcH+Rg1KFeM1hcMS24utEtk0+gdUrt62iSzFIYbLuq/vEUb/GSUSFU5XAFafNng
-         ItcQxBMuY52cXB5k/7E/lNq6oT12vL2K/zNas791ZSzNzRA4dde0KYRHOiL19uyFze+Y
-         8KKJS9gt9up1i8tRZK7Ow+QM29FGmY5sz8skdm/+OpI3q0xLNtKkRG9WLmVFxSCrOt6v
-         QUynbYMrkUOEurm7BQ3D5obyEOuVTeLVfXjRBQNv/0A12X37qKgXSNCBb3qNPPwLmGOF
-         1MCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lDqH2jUk9gpO3lmRRDRBqbmD26jEPR69skrcQuuIqmk=;
-        b=UPSZAYShklk2V+YU1zb2qPP42IWzAQFivLj2uS/JxRUOrw7aJ6I9pswcz0/AGnGRms
-         je8YuxxnfS/BLVE7ccU1F1VFHC8L6fEcTDg1TSDlfRpX+5xA9cMUoqUJoT+2qzanw8fK
-         09YFeiuiVUYR88wL5juQa5gi58NVEg2z8GU9C/fEGIxdbuJSzpTIeyf4HL9b5rRs2Mjc
-         FZoh/kNn8oLt0yXjcnBEIg/XqBJyg0kMCfqtX+MZuFCGbxMkBlzoJ0hhZ51GSv+4Y6CO
-         bIH5j2VaNB/8mHntLI4+qNMto87o3BDRy4Jwn3inn0xG4VzIPCF9VvKTuoDXRwFyRG0n
-         h5Gg==
-X-Gm-Message-State: AOAM532U1SeWCE5bzc4a2L5hU42rnm3xgHvLgCjB2n6t+hSvj67O9EAM
-        RajBbRNP9zIUUTz9Fi+jBo5ALw==
-X-Google-Smtp-Source: ABdhPJx4cWu2P//XiYfbWLSIEMz8tbikXeNb2PRTVrKyCMlvUVQ4KtZk/remA8V88hHEJC+fQaTHrA==
-X-Received: by 2002:a05:6830:308c:: with SMTP id f12mr32432ots.15.1634738570136;
-        Wed, 20 Oct 2021 07:02:50 -0700 (PDT)
-Received: from p1.localdomain ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id e22sm489662otp.0.2021.10.20.07.02.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 07:02:49 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     cgel.zte@gmail.com
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        io-uring@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>,
-        asml.silence@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] io_uring: Use ERR_CAST() instead of ERR_PTR(PTR_ERR())
-Date:   Wed, 20 Oct 2021 08:02:46 -0600
-Message-Id: <163473856398.730876.13037999645192762534.b4-ty@kernel.dk>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211020084948.1038420-1-deng.changcheng@zte.com.cn>
-References: <20211020084948.1038420-1-deng.changcheng@zte.com.cn>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=RJ2zK4UbE9ZurSC5Jh9RSNIdHcuuXmTemL
+        ElGthoHDk=; b=Ro1Lo5Gq0UKtvLrFpUly5yyvlsfTDqk0aaaQRc1euRF+5oi3dO
+        l2HRx+2rKlXnzxU3O7oAPRXXd/rMJCEDO+BlA8+OsGXhM/rmVURnO8SFM+mGNxlD
+        VDfzcvKa7Q4LQKASDkiIj570PDYmhJ7TmfPHM5hPTiPru+h9DMGVhOQ9g=
+Received: from xhacker (unknown [101.86.20.138])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAXHwdAI3BhuIRUAA--.29650S2;
+        Wed, 20 Oct 2021 22:10:09 +0800 (CST)
+Date:   Wed, 20 Oct 2021 22:03:19 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 1/2] riscv: consolidate __ex_table construction
+Message-ID: <20211020220319.41ad167f@xhacker>
+In-Reply-To: <202110180820.HH9NB6vw-lkp@intel.com>
+References: <20211017000443.4275747d@xhacker>
+        <202110180820.HH9NB6vw-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygAXHwdAI3BhuIRUAA--.29650S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ww48tw1DCr13AFW7uryDKFg_yoW7tw1DpF
+        4Dury0q3yrXr4UCw4qk3ZFy34Utw45G342vry5Ww12v3W3tFy8Jw1DurZxKr1v9r4v9ay0
+        gr47JasYgryUXaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkvb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07beAp5UUUUU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 08:49:48 +0000, cgel.zte@gmail.com wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On Mon, 18 Oct 2021 08:14:28 +0800
+kernel test robot <lkp@intel.com> wrote:
+
+> Hi Jisheng,
 > 
-> Use ERR_CAST() instead of ERR_PTR(PTR_ERR()).
-> This makes it more readable and also fix this warning detected by
-> err_cast.cocci:
-> ./fs/io_uring.c: WARNING: 3208: 11-18: ERR_CAST can be used with buf
+> I love your patch! Yet something to improve:
 > 
-> [...]
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v5.15-rc5 next-20211015]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Jisheng-Zhang/riscv-switch-to-relative-extable/20211017-001318
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 8fe31e0995f048d16b378b90926793a0aa4af1e5
+> config: riscv-randconfig-r032-20211017 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 746dd6a700931988dd9021d3d04718f1929885a5)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install riscv cross compiling tool for clang build
+>         # apt-get install binutils-riscv64-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/23c273bf6ec4ca672a21dba701725087208dc784
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Jisheng-Zhang/riscv-switch-to-relative-extable/20211017-001318
+>         git checkout 23c273bf6ec4ca672a21dba701725087208dc784
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from kernel/futex.c:36:
+>    In file included from include/linux/pagemap.h:11:
+>    In file included from include/linux/highmem.h:10:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/riscv/include/asm/io.h:136:
+>    include/asm-generic/io.h:464:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val = __raw_readb(PCI_IOBASE + addr);
+>                              ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:477:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+>                                                            ~~~~~~~~~~ ^
+>    include/uapi/linux/byteorder/little_endian.h:36:51: note: expanded from macro '__le16_to_cpu'
+>    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+>                                                      ^
+>    In file included from kernel/futex.c:36:
+>    In file included from include/linux/pagemap.h:11:
+>    In file included from include/linux/highmem.h:10:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/riscv/include/asm/io.h:136:
+>    include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+>                                                            ~~~~~~~~~~ ^
+>    include/uapi/linux/byteorder/little_endian.h:34:51: note: expanded from macro '__le32_to_cpu'
+>    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+>                                                      ^
+>    In file included from kernel/futex.c:36:
+>    In file included from include/linux/pagemap.h:11:
+>    In file included from include/linux/highmem.h:10:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/riscv/include/asm/io.h:136:
+>    include/asm-generic/io.h:501:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writeb(value, PCI_IOBASE + addr);
+>                                ~~~~~~~~~~ ^
 
-Applied, thanks!
+The warnings like this are not caused by this patch, they existed for a long
+time since NOMMU is supported. But no good solution so far.
 
-[1/1] io_uring: Use ERR_CAST() instead of ERR_PTR(PTR_ERR())
-      commit: 898df2447b9ee8d759e85d33087505d3905bf2f0
+>    include/asm-generic/io.h:511:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+>                                                          ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:521:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+>                                                          ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:1024:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
+>                                                      ~~~~~~~~~~ ^
+>    In file included from kernel/futex.c:43:
+> >> arch/riscv/include/asm/futex.h:51:3: error: expected ')'  
+>                    __futex_atomic_op("amoswap.w.aqrl %[ov],%z[op],%[u]",
+>                    ^
+>    arch/riscv/include/asm/futex.h:33:3: note: expanded from macro '__futex_atomic_op'
+>                    _ASM_EXTABLE(1b, 3b)                            \
+>                    ^
 
-Best regards,
--- 
-Jens Axboe
+Errors like this are caused by my patch, I missed NOMMU. Fixed in V2.
 
+
+Thanks
 
