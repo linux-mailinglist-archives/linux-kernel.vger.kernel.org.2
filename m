@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5925434CA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7222A434CAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhJTNwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:52:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTNw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:52:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EC8A46128E;
-        Wed, 20 Oct 2021 13:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634737815;
-        bh=EbinZXx73KJ7AL6seHnWmg4Nw19yaI8pz4p0ozIq3IE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Qe8ErUKUTx7npJlnGQVvQW+iqyn8+qyXEQNCd9xZqtfOngyZNMb74mUB1RYsptS+h
-         6AzmW9jbk0jZr7dyV1BEa6RJi52eG6v8q0+ZFV8FyqJ/P0Rj9EMwjWOwUC+Dbp/lOn
-         pioaojfSjnU9rKg8JwuwcXf3rWuYiyPiMCAxAT+iWxUgFozfIjhNphr6E+DSefv/dE
-         InhZVNQHLgdhRhmk571mjOhMlS9Vk918v4kk79QqXx7Wk/hRcsn/4KGSBYToZTskUq
-         XBDx0wtZXA1rbSIrv4VSstB2IHDwH/fgJ+Y1TWVxPxMbzfA+95R5m4SjFTGuRXyBA+
-         j0wGCzglht15g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E700B609D1;
-        Wed, 20 Oct 2021 13:50:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ptp: Fix possible memory leak in ptp_clock_register()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163473781494.13902.12873542605821488682.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Oct 2021 13:50:14 +0000
-References: <20211020081834.2952888-1-yangyingliang@huawei.com>
-In-Reply-To: <20211020081834.2952888-1-yangyingliang@huawei.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        richardcochran@gmail.com
+        id S229570AbhJTNwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:52:46 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:34337 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230268AbhJTNwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:52:43 -0400
+Received: by mail-oi1-f180.google.com with SMTP id v77so9730392oie.1;
+        Wed, 20 Oct 2021 06:50:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=jLTSb3KEYnCRlQ01oYFy7OkpNs2aWBBSeM7tBxCTpD8=;
+        b=g64d079oc9lbqRRJ7oi83yfyxrxyqlCQKwC3Kk4TqbNK9GePrr3hAsGZoXdu+s3dMg
+         Oc35EoPuqSJn4Bh4k8186/6p6es6UR2Y+JZT7YDF7qGOpFpptrunp6nqDKaR33/HftYN
+         RuHAJ9lsHqu4ieMBTetK08+FR/BLPrxi17jIPUOWrztgM557nPiuVTihoJ6xoR+Csjtg
+         Mk07SOl07dobALCeOrHMkpAd3bSNbk6fWtmUX2lT+nsyZEmidOY/3qoqzntq5WmNCpL0
+         2/umzAzycXVsqYWKC8g6APQONyOA4Mk57P9DlNWV3JrFe9nLmfZizKvNPkWWYiJY4K+q
+         yTOg==
+X-Gm-Message-State: AOAM531wzx4K7PWggM/fKVvGmbdjDIU3wwC3aniaPNnICegTiAu9NPbc
+        GLrxJyqRbhZRfvwdEs/TZA==
+X-Google-Smtp-Source: ABdhPJwS8b8/9bct2qZ/+hc4vStE7P565pOQsKf7sXcrPBm2vGWkW+CqezjlGdG+8JVNIlAgfkiBiA==
+X-Received: by 2002:aca:3741:: with SMTP id e62mr9560890oia.107.1634737827694;
+        Wed, 20 Oct 2021 06:50:27 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v13sm488307otn.41.2021.10.20.06.50.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 06:50:26 -0700 (PDT)
+Received: (nullmailer pid 2259920 invoked by uid 1000);
+        Wed, 20 Oct 2021 13:50:23 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     YC Hung <yc.hung@mediatek.com>
+Cc:     linux-kernel@vger.kernel.org, broonie@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, daniel.baluta@nxp.com,
+        allen-kh.cheng@mediatek.com, trevor.wu@mediatek.com,
+        tiwai@suse.com, matthias.bgg@gmail.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+In-Reply-To: <20211020115155.9909-3-yc.hung@mediatek.com>
+References: <20211020115155.9909-1-yc.hung@mediatek.com> <20211020115155.9909-3-yc.hung@mediatek.com>
+Subject: Re: [PATCH 2/2] dt-bindings: dsp: mediatek: Add mt8195 DSP binding support
+Date:   Wed, 20 Oct 2021 08:50:23 -0500
+Message-Id: <1634737823.680277.2259919.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Wed, 20 Oct 2021 16:18:34 +0800 you wrote:
-> I got memory leak as follows when doing fault injection test:
+On Wed, 20 Oct 2021 19:51:55 +0800, YC Hung wrote:
+> This describes the mt8195 DSP device tree node.
 > 
-> unreferenced object 0xffff88800906c618 (size 8):
->   comm "i2c-idt82p33931", pid 4421, jiffies 4294948083 (age 13.188s)
->   hex dump (first 8 bytes):
->     70 74 70 30 00 00 00 00                          ptp0....
->   backtrace:
->     [<00000000312ed458>] __kmalloc_track_caller+0x19f/0x3a0
->     [<0000000079f6e2ff>] kvasprintf+0xb5/0x150
->     [<0000000026aae54f>] kvasprintf_const+0x60/0x190
->     [<00000000f323a5f7>] kobject_set_name_vargs+0x56/0x150
->     [<000000004e35abdd>] dev_set_name+0xc0/0x100
->     [<00000000f20cfe25>] ptp_clock_register+0x9f4/0xd30 [ptp]
->     [<000000008bb9f0de>] idt82p33_probe.cold+0x8b6/0x1561 [ptp_idt82p33]
+> Signed-off-by: YC Hung <yc.hung@mediatek.com>
+> ---
+>  .../bindings/dsp/mtk,mt8195-dsp.yaml          | 138 ++++++++++++++++++
+>  1 file changed, 138 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
 > 
-> [...]
 
-Here is the summary with links:
-  - ptp: Fix possible memory leak in ptp_clock_register()
-    https://git.kernel.org/netdev/net/c/4225fea1cb28
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+yamllint warnings/errors:
 
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml: properties:sound: 'anyOf' conditional failed, one must be fixed:
+	'type' is a required property
+	'$ref' is a required property
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml: ignoring, error in schema: properties: sound
+warning: no schema found in file: ./Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.example.dt.yaml:0:0: /example-0/adsp@10803000: failed to match any schema with compatible: ['mediatek,mt8195-dsp']
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1543854
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
