@@ -2,143 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CAC43543D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F85243543F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbhJTUC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
+        id S231658AbhJTUDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 16:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhJTUC5 (ORCPT
+        with ESMTP id S230020AbhJTUDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:02:57 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6396DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:00:42 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id e10so12006937plh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:00:42 -0700 (PDT)
+        Wed, 20 Oct 2021 16:03:40 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A99C06161C;
+        Wed, 20 Oct 2021 13:01:25 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id r17so8920644uaf.8;
+        Wed, 20 Oct 2021 13:01:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oC4xL40TX4gXKdUr3q9ajhThG3X3Mfmq07w1fzRH4Aw=;
-        b=OmdDlCItAcCb/kTnNchESefFDugeJRmqEOURb8x56zQo5I5kRPFFNpZ3AZHKV3RgdH
-         odz+moYgtrmUkutIShXd8I7cTi4l7Vl4MiDSTLbkBlPJpUzM/jnX15Bvbae1BrUGSwnr
-         BucewZViScIzDAeYr+Z6HUxqtNPww80bAlcw0=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l+6y9qtoGeZP6g8xchKzxYt0QVJGn7ItWZlIhS1UU1M=;
+        b=NaWfdLGfgtT0n7MATTZlYbABm6kNBnX3+ka6rHfCqCFjO0aXtb4bjPEhgyE3ISj1Zx
+         1b0mSSZ/deXDY9Y5n+W1ddWKn5i31LJtp3w5YYEUCO7FJur46afCOfGmuMuvqt2CUbsV
+         6IjZRc9on3rp23Zg2zR0vu1FHQ40dq+49dS84bgop8mAKUeUiw5cwey/YIAIhiij712N
+         W6BCuJjwPLWj3jD1SJfRWPOSJ8xSvnk1D734zxZAqgEKpHXWkd86JFJPaemmUCrGSq3w
+         sfl/Gqdl2GyMkZ47Z60yB7NkmzvciqYPLcVCIq3mlTa3kQqFtH2WFKcfsTNielpeAXKb
+         go/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oC4xL40TX4gXKdUr3q9ajhThG3X3Mfmq07w1fzRH4Aw=;
-        b=fIeISpv70yFhXuwErzbyYGgwBFDqELdSRd5S5IyE0oNsdbGocJyE1YWcqP9FeIlL+i
-         w/zG+CEZWPSQOF847DrHpnmGFmMdMHVg9LCq7W5QbxDPf7PEvRZd4nchM2npGCO06co8
-         HP55vWkNJaiOPZMLBfkOIvCaV2sGM2TUwSPsYbQkOtl5mYA0FzGPSPFllCg7YxEXaCJu
-         HKkcbuL2rPKQ3LMkYLjADCk01om4MuVyPML8GY9pQHRxAAiGeeNfxVJxXVyWEH7a5+EV
-         1H0dD8NJEZbX8VNcbnQknCGGlTOnENu+BIhVOudSXp5OV2P2P3t6ynVUfKJBIryKiXf4
-         GN3A==
-X-Gm-Message-State: AOAM531mZ1aggt/nW2asmsCSsbI8p99s/JoNsinWnVmnjE30wTvF5+CJ
-        r5eG2Y+RlFpYZ2glzumEQIbx8Q==
-X-Google-Smtp-Source: ABdhPJziP9LVUxU+YqB3uVIUzBuHVCmv8WTkmy2mskoXonbs2k9JCSeYUVdaD6Ey6BRqbGKTFtcAJg==
-X-Received: by 2002:a17:90a:ba94:: with SMTP id t20mr1252632pjr.138.1634760041858;
-        Wed, 20 Oct 2021 13:00:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c24sm3395267pgj.63.2021.10.20.13.00.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 13:00:41 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] compiler-gcc.h: Define __SANITIZE_ADDRESS__ under hwaddress sanitizer
-Date:   Wed, 20 Oct 2021 13:00:39 -0700
-Message-Id: <20211020200039.170424-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l+6y9qtoGeZP6g8xchKzxYt0QVJGn7ItWZlIhS1UU1M=;
+        b=eH0sgEUJKJVG8I6G7k1l2WjAGiDy8a41WrzgzhhVG0Pa/UU7k6umRdqWFufJs3OqXO
+         hhVXfRwh1wtQQVdoO0ZHLeeCsmLY+7dxaPAyVXVQJnvGpeez1KIpoXnOFZF+Hrb0+7A0
+         EWXmnyhy+q0LVnIziwaMgRT1u+tB2X712p6kyltFDu2MSKbKVNdbQJvE7QfayPuoXxh5
+         Ha2GXsf5SVB7C1Jez/f8YEoGdkm6VfjoyaTMRRUtaTnDhDuJBJ0X/9MsmQVd5DxUrQu8
+         1kzivlGg+7KPIaDjIvzpjwrcl1wGq5YAcdzeqwyflHs67FLvRAarlFJkaIfvapFjzdJ9
+         V5vw==
+X-Gm-Message-State: AOAM531mKbITPQZ4QvrSbl7NXH6ubdV79HPDJEvoMBJVfT7qNh3bkrPV
+        m1JprO3bveZNGCCkEbw5tuBytKd3tzWh3D6755Q=
+X-Google-Smtp-Source: ABdhPJyCenrjtedk7J3JZUqzVwGcUGWBB/3jA3XWholS0jfSnzQF7ZdoAuIyZ4ohc4focXM5PMINPr93W3VrZHp+4qs=
+X-Received: by 2002:a05:6102:3e81:: with SMTP id m1mr2167565vsv.44.1634760084832;
+ Wed, 20 Oct 2021 13:01:24 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2522; h=from:subject; bh=+AiIfOEWeU4E8zLDOWbiVHd+8UI+lXGPUfqkac57NL8=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhcHVme5xsJftDfqmCCSgSYRYO6v7mHerNYn5Qyc6C BdJDITyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYXB1ZgAKCRCJcvTf3G3AJn6rD/ 9CXjeQGLjf3oKlM6TefCvtpbxL4/ogO5zIGXingOCOmIkTeHY9aC1xQlWJlNU92OMNrNQJ9R6tU7mj hGSwd3u0IrZokg9OjaDGX1gYqrcxbtUlqp3yOgA6CR04920Ck1Ymg7gnv2p4DPSS5oMLZ6Fk5Z7aRp D0aKpCQlBUwvE8wp2/kQSdyJ5lKillOvaVBIK8Hud/yLPlHZi/LtNaC7DP6yT+OaCFBgE/o8T14fEC 7MfAhnUVNLkC5KCZtj3dA2zzUY1CvbzOHNyEdUorP8QcgiaWOR49E6gKrrxaPRheOIahz1qzOpfuyP GM3YbY4v6HIOQU72kDHavZfOo/bmiVXLwivVfKage1nJu6O1nSDiqkm9tfkLjDbzrdR7SR8cKYEdbj X2zBRXCQQq2yfaPIKVYIO8N5fPROW8WoQgdMqmfegeBjD/QQVSGVYPQMm1M30I1lV4K2N2H+gupzlm EhXmmU0Z7bBAKxTlPRJSIb7GtfLrjEC9NrOAKXiX09GOGJlmV6/I2Cm6KPo1WNNdU8tXHY8ClFvGzY rldZo6Bq35Ff3oXFAcWNeGDRDnGSRKkmFpj1Vv86OnQH7cnX9pmvnaAx+Qa/KuzYw0XvlFxTOMESdb OeV7Ic+Z33LM4bzofOue5WZCp3HcpGv7+Fy2SBnjzRMgzpsQGigkHLOl4QHQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20211020095707.GA16295@ircssh-2.c.rugged-nimbus-611.internal>
+ <CAHNKnsRFah6MRxECTLNwu+maN0o9jS9ENzSAiWS4v1247BqYdg@mail.gmail.com> <20211020163417.GA21040@ircssh-2.c.rugged-nimbus-611.internal>
+In-Reply-To: <20211020163417.GA21040@ircssh-2.c.rugged-nimbus-611.internal>
+From:   Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Date:   Wed, 20 Oct 2021 23:02:17 +0300
+Message-ID: <CAHNKnsSC3bfZQxpwqYfyw8bB06otaK8YWkgtZfFOnX9vMkOVgg@mail.gmail.com>
+Subject: Re: Retrieving the network namespace of a socket
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When Clang is using the hwaddress sanitizer, it sets __SANITIZE_ADDRESS__
-explicitly:
+On Wed, Oct 20, 2021 at 7:34 PM Sargun Dhillon <sargun@sargun.me> wrote:
+> On Wed, Oct 20, 2021 at 05:03:56PM +0300, Sergey Ryazanov wrote:
+>> On Wed, Oct 20, 2021 at 12:57 PM Sargun Dhillon <sargun@sargun.me> wrote:
+>>> I'm working on a problem where I need to determine which network namespace a
+>>> given socket is in. I can currently bruteforce this by using INET_DIAG, and
+>>> enumerating namespaces and working backwards.
+>>
+>> Namespace is not a per-socket, but a per-process attribute. So each
+>> socket of a process belongs to the same namespace.
+>>
+> > Could you elaborate what kind of problem you are trying to solve?
+>> Maybe there is a more simple solution. for it.
+>
+> That's not entirely true. See the folowing code:
+>
+> int main() {
+>         int fd1, fd2;
+>         fd1 = socket(AF_INET, SOCK_STREAM, 0);
+>         assert(fd1 >= 0);
+>         assert(unshare(CLONE_NEWNET) == 0);
+>         fd2 = socket(AF_INET, SOCK_STREAM, 0);
+>         assert(fd2 >= 0);
+> }
+>
+> fd1 and fd2 have different sock_net.
 
- #if __has_feature(address_sanitizer) || __has_feature(hwaddress_sanitizer)
- /* Emulate GCC's __SANITIZE_ADDRESS__ flag */
- #define __SANITIZE_ADDRESS__
- #endif
+Ouch, I totally missed this case. Thank you for reminding me.
 
-Once hwaddress sanitizer was added to GCC, however, a separate define
-was created, __SANITIZE_HWADDRESS__. The kernel is expecting to find
-__SANITIZE_ADDRESS__ in either case, though, and the existing string
-macros break on supported architectures:
-
- #if (defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)) && \
-          !defined(__SANITIZE_ADDRESS__)
-
-where as other architectures (like arm32) have no idea about hwaddress
-sanitizer and just check for __SANITIZE_ADDRESS__:
-
- #if defined(CONFIG_KASAN) && !defined(__SANITIZE_ADDRESS__)
-
-This would lead to compiler foritfy self-test warnings when building
-with CONFIG_KASAN_SW_TAGS=y:
-
-warning: unsafe memmove() usage lacked '__read_overflow2' symbol in lib/test_fortify/read_overflow2-memmove.c
-warning: unsafe memcpy() usage lacked '__write_overflow' symbol in lib/test_fortify/write_overflow-memcpy.c
-...
-
-Sort this out by also defining __SANITIZE_ADDRESS__ in GCC under the
-hwaddress sanitizer.
-
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Marco Elver <elver@google.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Arvind Sankar <nivedita@alum.mit.edu>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: llvm@lists.linux.dev
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-I'm intending to take this via my overflow series, since that is what introduces
-the compile-test regression tests (which found this legitimate bug). :)
-
--Kees
----
- include/linux/compiler-gcc.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 6f24eb8c5dda..ccbbd31b3aae 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -121,6 +121,14 @@
- #define __no_sanitize_coverage
- #endif
- 
-+/*
-+ * Treat __SANITIZE_HWADDRESS__ the same as __SANITIZE_ADDRESS__ in the kernel,
-+ * matching the defines used by Clang.
-+ */
-+#ifdef __SANITIZE_HWADDRESS__
-+#define __SANITIZE_ADDRESS__
-+#endif
-+
- /*
-  * Turn individual warnings and errors on and off locally, depending
-  * on version.
--- 
-2.30.2
-
+--
+Sergey
