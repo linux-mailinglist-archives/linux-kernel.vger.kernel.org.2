@@ -2,165 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8941434C9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5925434CA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhJTNvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:51:52 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:35563 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTNvv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:51:51 -0400
-Received: by mail-ot1-f41.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so6486061ott.2;
-        Wed, 20 Oct 2021 06:49:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O5SM7nz52G6r6F/j6nBMR15lNFGtJZYmywBZSEd7ZW0=;
-        b=Y9QJgbeqmCpoUpx21beuohv6QzLG/zhPpOUi48lcp3IfCi2m4b8yk7v1Mz7cdAvYij
-         uSOTQnQvPv6nep3uCQJDEmmnW6cRJFKvh2N8bsMwNHCqJ75l1e72CQAwI6S+T/NRytwS
-         eWLSZy9uPOR2yvqXJEl/xdXV5GBdL00akX0Mw5FbkOKtL3uFIpNagHXw/4ZcOcMV+g2E
-         pcKrjs8p/pA/JwvCc19zqYMpyGaxnw4aq0vsiDHGnjLsZhIZ1SCYD8kqcl7L2giBM963
-         7VntbogyAsYhAt+cpd6UNGwA5ZSfdPpSDWvdxGA4iXoQp4y+efBivBMit3mMd3KuqthJ
-         zg1Q==
-X-Gm-Message-State: AOAM533DzR82J7IGDM45NqSJ3T7llxEjMtp0EX+RSzDq8pi8ukJ65hyP
-        e9CAQjFD5RyCbY5KnyU6o8B4emRzznv5dXQZPV0=
-X-Google-Smtp-Source: ABdhPJxx30v2bkve5AFhgtcLtf7OOUE8C9Ixo4OpNz528FBnu5rYBtYHcgG71uEXup0SQ7FWIAm0MklwhCidkBGRyeE=
-X-Received: by 2002:a05:6830:1af0:: with SMTP id c16mr10268otd.16.1634737776720;
- Wed, 20 Oct 2021 06:49:36 -0700 (PDT)
+        id S230123AbhJTNwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:52:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhJTNw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:52:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id EC8A46128E;
+        Wed, 20 Oct 2021 13:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634737815;
+        bh=EbinZXx73KJ7AL6seHnWmg4Nw19yaI8pz4p0ozIq3IE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Qe8ErUKUTx7npJlnGQVvQW+iqyn8+qyXEQNCd9xZqtfOngyZNMb74mUB1RYsptS+h
+         6AzmW9jbk0jZr7dyV1BEa6RJi52eG6v8q0+ZFV8FyqJ/P0Rj9EMwjWOwUC+Dbp/lOn
+         pioaojfSjnU9rKg8JwuwcXf3rWuYiyPiMCAxAT+iWxUgFozfIjhNphr6E+DSefv/dE
+         InhZVNQHLgdhRhmk571mjOhMlS9Vk918v4kk79QqXx7Wk/hRcsn/4KGSBYToZTskUq
+         XBDx0wtZXA1rbSIrv4VSstB2IHDwH/fgJ+Y1TWVxPxMbzfA+95R5m4SjFTGuRXyBA+
+         j0wGCzglht15g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E700B609D1;
+        Wed, 20 Oct 2021 13:50:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211014075731.GB18719@xsang-OptiPlex-9020> <51c0a15f-1941-f161-dcec-a7a9acc726f2@gmail.com>
- <e526de16-5efd-6474-20e1-3f96a2e3c524@intel.com> <6755cf07-fa5a-cbb7-c076-57c162a08c99@gmail.com>
- <d3cf18f1-2af7-5e4d-abe4-c882f25bd5c3@intel.com> <20aedfba-14e3-3677-d21a-b87610095445@gmail.com>
- <d36f79b4-472c-4852-7370-a011f9f556ce@intel.com> <4300a3d4-76de-70c5-2a7b-c4d066ef5bc6@gmail.com>
-In-Reply-To: <4300a3d4-76de-70c5-2a7b-c4d066ef5bc6@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 20 Oct 2021 15:49:25 +0200
-Message-ID: <CAJZ5v0jmGWLfK7-7ULEVjzHtCr2wckK0TiY=59ud=hSM0x4hkA@mail.gmail.com>
-Subject: Re: [PM] bfcc1e67ff: kernel-selftests.breakpoints.step_after_suspend_test.fail
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, kbuild test robot <lkp@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ptp: Fix possible memory leak in ptp_clock_register()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163473781494.13902.12873542605821488682.git-patchwork-notify@kernel.org>
+Date:   Wed, 20 Oct 2021 13:50:14 +0000
+References: <20211020081834.2952888-1-yangyingliang@huawei.com>
+In-Reply-To: <20211020081834.2952888-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        richardcochran@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 9:04 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> On 10/19/21 11:53 AM, Rafael J. Wysocki wrote:
-> > On 10/15/2021 9:40 PM, Florian Fainelli wrote:
-> >> On 10/15/21 11:45 AM, Rafael J. Wysocki wrote:
-> >>> On 10/14/2021 11:55 PM, Florian Fainelli wrote:
-> >>>> On 10/14/21 12:23 PM, Rafael J. Wysocki wrote:
-> >>>>> On 10/14/2021 6:26 PM, Florian Fainelli wrote:
-> >>>>>> On 10/14/21 12:57 AM, kernel test robot wrote:
-> >>>>>>> Greeting,
-> >>>>>>>
-> >>>>>>> FYI, we noticed the following commit (built with gcc-9):
-> >>>>>>>
-> >>>>>>> commit: bfcc1e67ff1e4aa8bfe2ca57f99390fc284c799d ("PM: sleep: Do not
-> >>>>>>> assume that "mem" is always present")
-> >>>>>>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git
-> >>>>>>> master
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> in testcase: kernel-selftests
-> >>>>>>> version: kernel-selftests-x86_64-c8c9111a-1_20210929
-> >>>>>>> with following parameters:
-> >>>>>>>
-> >>>>>>>       group: group-00
-> >>>>>>>       ucode: 0x11
-> >>>>>>>
-> >>>>>>> test-description: The kernel contains a set of "self tests" under
-> >>>>>>> the
-> >>>>>>> tools/testing/selftests/ directory. These are intended to be small
-> >>>>>>> unit tests to exercise individual code paths in the kernel.
-> >>>>>>> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> on test machine: 288 threads 2 sockets Intel(R) Xeon Phi(TM) CPU
-> >>>>>>> 7295
-> >>>>>>> @ 1.50GHz with 80G memory
-> >>>>>>>
-> >>>>>>> caused below changes (please refer to attached dmesg/kmsg for entire
-> >>>>>>> log/backtrace):
-> >>>>>>>
-> >>>>>>>
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> If you fix the issue, kindly add following tag
-> >>>>>>> Reported-by: kernel test robot <oliver.sang@intel.com>
-> >>>>>> Thanks for your report. Assuming that the code responsible for
-> >>>>>> registering the suspend operations is drivers/acpi/sleep.c for your
-> >>>>>> platform, and that acpi_sleep_suspend_setup() iterated over all
-> >>>>>> possible
-> >>>>>> sleep states, your platform must somehow be returning that
-> >>>>>> ACPI_STATE_S3
-> >>>>>> is not a supported state somehow?
-> >>>>>>
-> >>>>>> Rafael have you ever encountered something like that?
-> >>>>> Yes, there are systems with ACPI that don't support S3.
-> >>>> OK and do you know what happens when we enter suspend with "mem" in
-> >>>> those cases? Do we immediately return because ultimately the firmware
-> >>>> does not support ACPI S3?
-> >>> "mem" should not be present in the list of available strings then, so it
-> >>> should be rejected right away.
-> >> Well yes, that was the purpose of the patch I submitted, but assuming
-> >> that we did provide "mem" as one of the possible standby modes even
-> >> though that was wrong (before patch), and the test was trying to enter
-> >> ACPI S3 standby, what would have happened, would the ACPI firmware honor
-> >> the request but return an error, or would it actually enter ACPI S3?
-> >>
-> >> In any case, I will change the test to check that this is a supported
-> >> standby mode before trying it.
-> >
-> > Unfortunately, I will need to revert bfcc1e67ff1e4aa8bfe2, because it
-> > breaks user space compatibility and that's got caught properly by the test.
->
-> Reverting my commit will break powerpc and other ARM/ARM64 platforms
-> where mem is not supported (via PSCI),
+Hello:
 
-It won't break anything, although the things that didn't work before
-will still not work after it.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-And "mem" is always supported even if there are no suspend_ops at all,
-in which case it becomes an alternative way to trigger s2idle.
+On Wed, 20 Oct 2021 16:18:34 +0800 you wrote:
+> I got memory leak as follows when doing fault injection test:
+> 
+> unreferenced object 0xffff88800906c618 (size 8):
+>   comm "i2c-idt82p33931", pid 4421, jiffies 4294948083 (age 13.188s)
+>   hex dump (first 8 bytes):
+>     70 74 70 30 00 00 00 00                          ptp0....
+>   backtrace:
+>     [<00000000312ed458>] __kmalloc_track_caller+0x19f/0x3a0
+>     [<0000000079f6e2ff>] kvasprintf+0xb5/0x150
+>     [<0000000026aae54f>] kvasprintf_const+0x60/0x190
+>     [<00000000f323a5f7>] kobject_set_name_vargs+0x56/0x150
+>     [<000000004e35abdd>] dev_set_name+0xc0/0x100
+>     [<00000000f20cfe25>] ptp_clock_register+0x9f4/0xd30 [ptp]
+>     [<000000008bb9f0de>] idt82p33_probe.cold+0x8b6/0x1561 [ptp_idt82p33]
+> 
+> [...]
 
-So, on the affected systems, what's there in /sys/power/?  Is
-mem_sleep present?  If so, what's in it?
+Here is the summary with links:
+  - ptp: Fix possible memory leak in ptp_clock_register()
+    https://git.kernel.org/netdev/net/c/4225fea1cb28
 
-> I have a change pending for PSCI
-> that will actually check that SYSTEM_SUSPEND is supported before
-> unconditionally making use of it.
->
-> >
-> > What happens is that "mem" is a "pointer" to a secondary list of
-> > possible states and that generally is "s2idle shallow deep" and if
-> > s2idle is the only available option, it will be just "s2idle".
-> >
-> > This list is there in /sys/power/mem_sleep.
-> >
-> > It was done this way, because some variants of user space expect "mem"
-> > to be always present and don't recognize "freeze" properly.
-> >
-> > Sorry for the confusion.
->
-> So how do we all get our cookie here? Should we just slap an #ifndef
-> CONFIG_ACPI in order to allow platforms that do not have "mem" to not
-> have it?
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Certainly not.
 
-I've just hacked my test-bed system with ACPI so it does not register
-any suspend_ops at all and I have "freeze mem disk" in
-/sys/power/state and "s2idle" in /sys/power/mem_sleep.  Writing "mem"
-to /sys/power/state causes s2idle to be carried out.
-
-Since this is the expected behavior, I'm not sure what the problem is.
