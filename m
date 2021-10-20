@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660EA434767
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA51F434769
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhJTI4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:56:38 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:14067 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229548AbhJTI4h (ORCPT
+        id S229993AbhJTI4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhJTI4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:56:37 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AG0BvIa2ZOUpDxLLfve4VbAqjBLEkLtp133Aq?=
- =?us-ascii?q?2lEZdPUzSL37qynOpoV56faQsl0ssR4b9OxoVJPufZq+z/5ICOsqXItKNTOO0A?=
- =?us-ascii?q?GVxepZg7cKrQeNJwTOssZAyKZtdLV/AtXsAVU/rcuS2njcL+od?=
-X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
-   d="scan'208";a="534925257"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 10:54:22 +0200
-Date:   Wed, 20 Oct 2021 10:54:21 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Karolina Drobnik <karolinadrobnik@gmail.com>
-cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
-        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] staging: vt6655: Rename `by_preamble_type`
- parameter
-In-Reply-To: <20211020084033.414994-1-karolinadrobnik@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2110201051300.2930@hadrien>
-References: <20211020084033.414994-1-karolinadrobnik@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Wed, 20 Oct 2021 04:56:52 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717AAC06161C;
+        Wed, 20 Oct 2021 01:54:38 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id g2so17262523wme.4;
+        Wed, 20 Oct 2021 01:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=3fuDONNec5tzGOX4KZHqWYkiAlQVkLWHCfrESSvMT1U=;
+        b=pnvp40nJGE4k1c4gSk1hHMKi8n+i5c7jXGm4npxFcu+It53+T35DTUJ4Wj2ghIkrC0
+         8ZGF4qlkwfbqk1a71cfkXHTrb8OEavmS3WQ7NClJ9Ogn1vQ36xNrD4oc1KluKGH30evM
+         9C/EHDalyyHM5ZPmGb/3ZWy4ftHstQE5WveqsednZXZ3Yf8MmXe2uLzWuwK1DqshuZ5z
+         mm4ZKBOGpB99spbxGc7HzClG32eY2nE10RInUkru//qrLK8T+MTQWs1lhYnMzevtSYJU
+         RxkJp/sJeZrhVMuNlgbJ3uhOwd297Tb775ZK0kys7cT8yHeJwjG5zBMHrslkmuTIg00C
+         7rhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=3fuDONNec5tzGOX4KZHqWYkiAlQVkLWHCfrESSvMT1U=;
+        b=jrCDI4i+tBvUba0Kahsbzd2DWgnxB0bmmWkOV3UBeLI0eW0Qvy6XFVMT9Et63ivUcg
+         aoD7QYAE2fjYb1ax3TWPiCZb+PrdDHydGe7kFT0/IG9MdNJZfZxP/cbqpxjia32FANZy
+         /0bns2LD8qlhlRXIU5RO0FOJ+WWDcrxTlMYlG4xzerio63YkECQo58dT90dSB1l/cqBP
+         bkM9CeIBM6WodsMhkRkAsOPvqyK/XBwm0WgNdtwefABoMT9mae7XhSHyp/CmYmTXBjmk
+         xoQa07YPhlbBaWeW1+3v0c/+X7lJQyiXsj6hNmKO8ZJSiHqQ2z8+E3u6gVwqGHnKvmJy
+         P71w==
+X-Gm-Message-State: AOAM533r1YD2ZJu52AgQ1DP4jdx8UdmAyZr8x1540seYsaxyyI9B6TzM
+        Hk+AKPFvWxwhTkrRYJcbTjg=
+X-Google-Smtp-Source: ABdhPJw86Di5diB+8BJpzuzyrlThes+1wBn4Cyq3xXuhYHLRSASc8kdhvUTd/rpwp4/IFZu1PSM5bg==
+X-Received: by 2002:a05:6000:552:: with SMTP id b18mr14057253wrf.112.1634720077103;
+        Wed, 20 Oct 2021 01:54:37 -0700 (PDT)
+Received: from [192.168.8.198] ([185.69.145.194])
+        by smtp.gmail.com with ESMTPSA id z6sm1492084wro.25.2021.10.20.01.54.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 01:54:36 -0700 (PDT)
+Message-ID: <3681f427-b661-b032-8e48-e598f208a15a@gmail.com>
+Date:   Wed, 20 Oct 2021 09:54:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] io_uring: Use ERR_CAST() instead of ERR_PTR(PTR_ERR())
+Content-Language: en-US
+To:     cgel.zte@gmail.com, axboe@kernel.dk
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20211020084948.1038420-1-deng.changcheng@zte.com.cn>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20211020084948.1038420-1-deng.changcheng@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/20/21 09:49, cgel.zte@gmail.com wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+> 
+> Use ERR_CAST() instead of ERR_PTR(PTR_ERR()).
 
+Makes more sense, looks good
 
-On Wed, 20 Oct 2021, Karolina Drobnik wrote:
+> This makes it more readable and also fix this warning detected by
+> err_cast.cocci:
+> ./fs/io_uring.c: WARNING: 3208: 11-18: ERR_CAST can be used with buf
+> 
 
-> Drop `by` prefix in the first parameter of `bb_get_frame_time` function.
-> As the original argument, `byPreambleType`, was renamed to `preamble_type`,
-> the parameter referring to it is now renamed to match the new naming
-> convention.
-> Update `bb_get_frame_time` comment to reflect that change.
->
-> This patch is a follow-up work to this commit:
->     Commit 548b6d7ebfa4 ("staging: vt6655: Rename byPreambleType field")
-
-This is not going to be practical.  If the previous patch is accepted,
-then this it not needed.  If the previous patch is not yet accepted, then
-there needs to be a vn+1 putting the patches together into a series.
-
-> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
-> ---
->  drivers/staging/vt6655/baseband.c | 6 +++---
->  drivers/staging/vt6655/baseband.h | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-> index 5efca92f1f18..8f9177db6663 100644
-> --- a/drivers/staging/vt6655/baseband.c
-> +++ b/drivers/staging/vt6655/baseband.c
-> @@ -1691,7 +1691,7 @@ static const unsigned short awc_frame_time[MAX_RATE] = {
->   *
->   * Parameters:
->   *  In:
-> - *      by_preamble_type  - Preamble Type
-> + *      preamble_type     - Preamble Type
->   *      by_pkt_type        - PK_TYPE_11A, PK_TYPE_11B, PK_TYPE_11GB, PK_TYPE_11GA
-
-In the realm of small cleanups to this driver, the extra space in front of
-the - above is a bit annoying.
-
->   *      cb_frame_length   - Baseband Type
->   *      tx_rate           - Tx Rate
-> @@ -1700,7 +1700,7 @@ static const unsigned short awc_frame_time[MAX_RATE] = {
->   * Return Value: FrameTime
->   *
->   */
-> -unsigned int bb_get_frame_time(unsigned char by_preamble_type,
-> +unsigned int bb_get_frame_time(unsigned char preamble_type,
->  			       unsigned char by_pkt_type,
->  			       unsigned int cb_frame_length,
->  			       unsigned short tx_rate)
-> @@ -1717,7 +1717,7 @@ unsigned int bb_get_frame_time(unsigned char by_preamble_type,
->  	rate = (unsigned int)awc_frame_time[rate_idx];
->
->  	if (rate_idx <= 3) {		    /* CCK mode */
-> -		if (by_preamble_type == 1) /* Short */
-> +		if (preamble_type == 1) /* Short */
-
-I hope you will get around to replacing the 1 by the appropriate constant
-and removing the "Short" comment.
-
-julia
-
->  			preamble = 96;
->  		else
->  			preamble = 192;
-> diff --git a/drivers/staging/vt6655/baseband.h b/drivers/staging/vt6655/baseband.h
-> index 0a30afaa7cc3..15b2802ed727 100644
-> --- a/drivers/staging/vt6655/baseband.h
-> +++ b/drivers/staging/vt6655/baseband.h
-> @@ -44,7 +44,7 @@
->  #define TOP_RATE_2M         0x00200000
->  #define TOP_RATE_1M         0x00100000
->
-> -unsigned int bb_get_frame_time(unsigned char by_preamble_type,
-> +unsigned int bb_get_frame_time(unsigned char preamble_type,
->  			       unsigned char by_pkt_type,
->  			       unsigned int cb_frame_length,
->  			       unsigned short w_rate);
-> --
-> 2.30.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20211020084033.414994-1-karolinadrobnik%40gmail.com.
->
+-- 
+Pavel Begunkov
