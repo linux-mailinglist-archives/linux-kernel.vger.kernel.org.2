@@ -2,74 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93325434696
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106B7434697
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhJTIOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:14:39 -0400
-Received: from mga17.intel.com ([192.55.52.151]:36720 "EHLO mga17.intel.com"
+        id S229503AbhJTIOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:14:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhJTIOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:14:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="209518978"
-X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
-   d="scan'208";a="209518978"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 01:12:13 -0700
-X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
-   d="scan'208";a="444856117"
-Received: from jbellfah-mobl.ger.corp.intel.com (HELO [10.252.29.183]) ([10.252.29.183])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 01:12:10 -0700
-Subject: Re: drm/i915: remove duplicate include in mock_region.c
-To:     Ran Jianping <cgel.zte@gmail.com>
-Cc:     airlied@linux.ie, chris@chris-wilson.co.uk, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        ran.jianping@zte.com.cn, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com, zealci@zte.com.cn
-References: <130dcbfd-ee6d-0d9a-602f-1aaca1229099@intel.com>
- <20211020080401.1037442-1-ran.jianping@zte.com.cn>
-From:   Matthew Auld <matthew.auld@intel.com>
-Message-ID: <269d8cad-1379-ec7c-21f3-d73b7be1ec70@intel.com>
-Date:   Wed, 20 Oct 2021 09:12:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20211020080401.1037442-1-ran.jianping@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S229639AbhJTIOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:14:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2C2B60F46;
+        Wed, 20 Oct 2021 08:12:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634717556;
+        bh=RK6eiA3Ff133h/eqM6N0sgj9Q8kr6wnbFVmSUumeQMc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=qNecR+mfFmE26/nylO0Fu1aiROA68Uqz6uJ0blGytlE+ib5ghmLvgoar7MQ71R9kv
+         M5H0PmpJwtEIg6IQKGqNzvLbb12eL75ajLMbHju0GgSTDkhfwceGc5BYSt4+fWPD72
+         i0oNqbgy7yC7Er2Qb3BrBqCnxjBMh475M0sKlC7ttJrKQO8mZfRZ2InBjSnLkunEmG
+         uI67NlePP+suxEDaX+5HKsfe8R5c/khwTIfXzxt1WgE2X/NIm3yhrkK+BaN245f5WN
+         5A/qDy5M5FCwM9ZtOM2+m+vOW6uUcpCr8tna2Trv0h6QTxSaqWtoxDL0nm1KNncAF2
+         Igu6DqbiAdfAA==
+From:   SeongJae Park <sj@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     Xin Hao <xhao@linux.alibaba.com>, sjpark@amazon.de,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm/damon/dbgfs: Add adaptive_targets list check before enable monitor_on
+Date:   Wed, 20 Oct 2021 08:12:33 +0000
+Message-Id: <20211020081233.28363-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211020072121.17166-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/2021 09:04, Ran Jianping wrote:
-> From: ran jianping <ran.jianping@zte.com.cn>
-> 
-> 'drm/ttm/ttm_placement.h' included in
-> 'drivers/gpu/drm/i915/selftests/mock_region.c' is duplicated.
-> It is also included on the 9 line.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
+On Wed, 20 Oct 2021 07:21:21 +0000 SeongJae Park <sj@kernel.org> wrote:
 
-Pushed to drm-intel-gt-next. Thanks.
-
-> ---
->   drivers/gpu/drm/i915/selftests/mock_region.c | 2 --
->   1 file changed, 2 deletion(-)
+> On Wed, 20 Oct 2021 09:42:33 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
 > 
-> diff --git a/drivers/gpu/drm/i915/selftests/mock_region.c b/drivers/gpu/drm/i915/selftests/mock_region.c
-> index efa86dffe3c6..b6747b3eeac5 100644
-> --- a/drivers/gpu/drm/i915/selftests/mock_region.c
-> +++ b/drivers/gpu/drm/i915/selftests/mock_region.c
-> @@ -6,7 +6,5 @@
->   #include <drm/ttm/ttm_placement.h>
->   #include <linux/scatterlist.h>
->   
-> -#include <drm/ttm/ttm_placement.h>
-> -
->   #include "gem/i915_gem_region.h"
->   #include "intel_memory_region.h"
+> > When the ctx->adaptive_targets list is empty,
+> > I did some test on monitor_on interface like this.
+> > 
+> >     # echo > /sys/kernel/debug/damon/target_ids
+> 
+> Thanks for the change, but you missed writing 'on' to 'monitor_on' in the above
+> example.
+> 
+> > 
+> > Though the ctx->adaptive_targets list is empty, but the
+> > kthread_run still be called, and the kdamond.x thread still
+> > be created, this is meaningless.
+> > 
+> > So there adds a judgment in 'dbgfs_monitor_on_write',
+> > if the ctx->adaptive_targets list is empty, return -EINVAL.
+> > 
+> > Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+> 
+> Other parts looks good to me.  However, seems this commit conflicts with a
+> patch[1] which already merged in -mm tree.  Could you please rebase this on it?
+> FYI, all DAMON patches that merged in -mm tree are also applied on DAMON
+> development tree.  So, you could get the patch applied tree by:
+> 
+>     $ git remote add sj git://git.kernel.org/pub/scm/linux/kernel/git/sj/linux.git
+>     $ git fetch sj
+>     $ git checkout 0fa378d04b12
+> 
+> [1] https://lore.kernel.org/linux-mm/20211014073014.35754-1-sj@kernel.org/
+> 
+> 
+> Thanks,
+> SJ
+> 
+> > ---
+> >  include/linux/damon.h |  1 +
+> >  mm/damon/core.c       |  5 +++++
+> >  mm/damon/dbgfs.c      | 13 ++++++++++---
+> >  3 files changed, 16 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/include/linux/damon.h b/include/linux/damon.h
+> > index 715dadd21f7c..4fce5f1f6dad 100644
+> > --- a/include/linux/damon.h
+> > +++ b/include/linux/damon.h
+> > @@ -316,6 +316,7 @@ void damon_destroy_scheme(struct damos *s);
+> > 
+> >  struct damon_target *damon_new_target(unsigned long id);
+> >  void damon_add_target(struct damon_ctx *ctx, struct damon_target *t);
+> > +bool damon_targets_empty(struct damon_ctx *ctx);
+> >  void damon_free_target(struct damon_target *t);
+> >  void damon_destroy_target(struct damon_target *t);
+> >  unsigned int damon_nr_regions(struct damon_target *t);
+> > diff --git a/mm/damon/core.c b/mm/damon/core.c
+> > index 2f6785737902..c3a1374dbe0b 100644
+> > --- a/mm/damon/core.c
+> > +++ b/mm/damon/core.c
+> > @@ -156,6 +156,11 @@ void damon_add_target(struct damon_ctx *ctx, struct damon_target *t)
+> >  	list_add_tail(&t->list, &ctx->adaptive_targets);
+> >  }
+> > 
+> > +bool damon_targets_empty(struct damon_ctx *ctx)
+> > +{
+> > +	return list_empty(&ctx->adaptive_targets);
+> > +}
+> > +
+> >  static void damon_del_target(struct damon_target *t)
+> >  {
+> >  	list_del(&t->list);
+> > diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+> > index 38188347d8ab..9dee29f7d103 100644
+> > --- a/mm/damon/dbgfs.c
+> > +++ b/mm/damon/dbgfs.c
+> > @@ -865,12 +865,19 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
+> >  		return -EINVAL;
+> >  	}
+> > 
+> > -	if (!strncmp(kbuf, "on", count))
+> > +	if (!strncmp(kbuf, "on", count)) {
+> > +		int i;
+> > +
+> > +		for (i = 0; i < dbgfs_nr_ctxs; i++) {
+> > +			if (damon_targets_empty(dbgfs_ctxs[i]))
+> > +				return -EINVAL;
+
+Oops, I forgot that you should 'kfree(kbuf)' before returning here.  Please do
+that.
+
+
+Thanks,
+SJ
+
+> > +		}
+> >  		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
+> > -	else if (!strncmp(kbuf, "off", count))
+> > +	} else if (!strncmp(kbuf, "off", count)) {
+> >  		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
+> > -	else
+> > +	} else {
+> >  		err = -EINVAL;
+> > +	}
+> > 
+> >  	if (err)
+> >  		ret = err;
+> > --
+> > 2.31.0
+> 
 > 
