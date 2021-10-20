@@ -2,389 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA210434ACF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46482434AD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhJTMHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhJTMHo (ORCPT
+        id S230135AbhJTMJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:09:11 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:54839 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhJTMJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:07:44 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3E6C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:05:29 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id m21so22277928pgu.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=daEoZ9rYJqo1FQMfaT8aFEhZ3akBhgJvK+CaM2KA7dQ=;
-        b=BuMErA/DuZ/0Gh1Uip5zDi4nhZy8bA5ENyyLMru7SulwHDqlPXRRu5eNimVwwXElC5
-         lq6qqAFosuH8kSRKMypo3mBPVPfFxgsCNvZm3K0A3h4isPdM1oj9JNELuPiXi0g495MS
-         1sTscOCX5xW9BG0Y+KVKAbxzfafNY9PQlv49k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=daEoZ9rYJqo1FQMfaT8aFEhZ3akBhgJvK+CaM2KA7dQ=;
-        b=Tnb7CGJc+PbFRxDmYfdhB92KKExvUeOIX4N40EetuUDkYDZeE0FZpx1cYHks5616sI
-         TvaFFeOt6M/yt+Lu+tn+o4sbdh3O8VY3WUcc47tGsJBH85ap8VmhLT68+4TpSqByWxg3
-         JYEVi7KWZX5d2VOY6/+yy1xh24sc3Qz9k6g16yitc8TbJjNtv0bhwjHqPoVgQwoY3ub+
-         5eMz3GKBMHCOrJLkN5Yfqh007axmc2RhI4anjc7HPrFQyd6i5e55OK5jj7qx4P3KKHpU
-         8hg7VkzRHBG2rvLKzuOhsShWGNVNLozd4f1SOTFmy9RWODLPPurmit1Y+HpCVAUUh2q0
-         P9Xg==
-X-Gm-Message-State: AOAM532MfeZW6cggWq1yzpW81Y+om3wSMwztylUPzOpg60gnmCPGMql1
-        f7VgwAnKWTvPN7VdMAgUtvZAvQYmv04FIQ==
-X-Google-Smtp-Source: ABdhPJx/Rvr3qcPZwTYCDZsWLdqpM8lN7/5ngKAA29ZJgCF1EtMVqY2etsqhKYaFyuZhxkUHOUFKeQ==
-X-Received: by 2002:a63:7888:: with SMTP id t130mr26794255pgc.279.1634731528796;
-        Wed, 20 Oct 2021 05:05:28 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:e516:d575:e6f:a526])
-        by smtp.gmail.com with UTF8SMTPSA id d137sm2573453pfd.72.2021.10.20.05.05.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 05:05:28 -0700 (PDT)
-From:   Hikaru Nishida <hikalium@chromium.org>
-To:     linux-kernel@vger.kernel.org, dme@dme.org, tglx@linutronix.de,
-        mlevitsk@redhat.com, linux@roeck-us.net, pbonzini@redhat.com,
-        vkuznets@redhat.com, maz@kernel.org, will@kernel.org
-Cc:     suleiman@google.com, senozhatsky@google.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Hikaru Nishida <hikalium@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        x86@kernel.org
-Subject: [RFC PATCH v3 5/5] kvm/x86: virtual suspend time injection: Implement guest side
-Date:   Wed, 20 Oct 2021 21:04:30 +0900
-Message-Id: <20211020210348.RFC.v3.5.I99f7da15fd68fc098709ea4bcf74525e0883ea92@changeid>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-In-Reply-To: <20211020120431.776494-1-hikalium@chromium.org>
-References: <20211020120431.776494-1-hikalium@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 20 Oct 2021 08:09:09 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20211020120654euoutp01c916ec37d70f24cd63dc82c368e2da18~vu7315DNG1578515785euoutp01a
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:06:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20211020120654euoutp01c916ec37d70f24cd63dc82c368e2da18~vu7315DNG1578515785euoutp01a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1634731614;
+        bh=8ssmdz378H2O6GPkTWYZCibFa9nC5r5ueHzA0hIFHVo=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=u/5Lxkg6fJ6AP96ZQSZe0pSxJX7Ut/idMVsgo7Hc/PwikEEY36Bso6YO7dtvwiUWX
+         X8JGng4vG4/oDa/zh+XHAiqvT3g4MJFwXtk6McrTmI4OtH7MKPDDCvCO5SgpprldUs
+         mlSnTSrZVcaPC0nytrnzB3J2ok2k1fHl8LTeQgHM=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20211020120653eucas1p18d0a90d20c1e55bd931a6cbdc19baa2d~vu73Xa5rI2464724647eucas1p1n;
+        Wed, 20 Oct 2021 12:06:53 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id ED.25.42068.D5600716; Wed, 20
+        Oct 2021 13:06:53 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20211020120653eucas1p176e7d48624cd773f2d96c06994e21856~vu72srT8A1153911539eucas1p1R;
+        Wed, 20 Oct 2021 12:06:53 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211020120653eusmtrp2dbbcef9489ba0e7510c901ea1d8d5709~vu72r4SZ21871218712eusmtrp2B;
+        Wed, 20 Oct 2021 12:06:53 +0000 (GMT)
+X-AuditID: cbfec7f4-c89ff7000002a454-5f-6170065d59f8
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id E8.7C.20981.D5600716; Wed, 20
+        Oct 2021 13:06:53 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211020120652eusmtip1f97a50283e9634607e59aeb8e70cb4f6~vu72LtMRP2013220132eusmtip1J;
+        Wed, 20 Oct 2021 12:06:52 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH] cpuidle: qcom_spm: make driver multi-arch friendly
+Date:   Wed, 20 Oct 2021 14:06:43 +0200
+Message-Id: <20211020120643.28231-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLIsWRmVeSWpSXmKPExsWy7djPc7qxbAWJBsf2yFuce/ybxWLmyVYm
+        i7+TjrFbnN7/jsVi3mdZi4n7z7JbXN41h83ic+8RRou1R+6yW8z9MpXZ4sZcEwduj9+/JjF6
+        tC2w99i0qpPN4861PWwefVtWMXp0nmX0+LxJLoA9issmJTUnsyy1SN8ugSvj4JtG9oL/3BXb
+        ptk3ME7m6mLk5JAQMJE4MPEVexcjF4eQwApGiY833kM5Xxgl1q66zQLhfGaUWPn8BQtMy5kb
+        35ghEssZJXqm32eCa9nxewIjSBWbgKFE19suNhBbRCBa4uvPq2BFzAKvmCQ2b3jFBJIQFnCW
+        WHf+LTuIzSKgKjHn6kKwBl4BW4kjPQeYIdbJS6zecABsnYTAUg6Jn7cvs0MkXCRudPQzQtjC
+        Eq+Ob4GKy0j83zmfCaKhmVHi4bm17BBOD6PE5aYZUB3WEnfO/QJaxwF0k6bE+l36EGFHiaYl
+        zewgYQkBPokbbwVBwsxA5qRt05khwrwSHW1CENVqErOOr4Nbe/DCJaibPSR+rzgP9ouQQKzE
+        7I3f2Ccwys1C2LWAkXEVo3hqaXFuemqxUV5quV5xYm5xaV66XnJ+7iZGYAo5/e/4lx2My199
+        1DvEyMTBeIhRgoNZSYR3d0V+ohBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHepC1r4oUE0hNLUrNT
+        UwtSi2CyTBycUg1MgQy8QXl8Pvu4trewfpPfrC4t+1iI/W/PopopniYC3X/SZcobHyZWnXB9
+        K3Ck/UratVPu2qVV7bYZqk+8/1mJn/eeke4c+rL+l4XXuQM9Ny6e22HvzKR9uDIlrWi/iele
+        TvF7r2/93eDEIv/J9fYqE93Hwf7qYaptuXUxZ0vfSa0R2Gs/68SNRwYXxKK9Ju3Jc9+3X2XX
+        wfY9iSsYN+lziH5c617/1UWnge1c8K/Dl5Z/mbMoifVJFL856/pk1owdclJqvsuY3nkkPtJX
+        CDvi1vJ196r2o0Zt69UyX7ytV5qsu8ix9Mb7B64bom6Jis+p/7OPX/WTkYvXG0PxbBH16pWF
+        DtmvT0/38uV211BiKc5INNRiLipOBADakz8CkAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrELMWRmVeSWpSXmKPExsVy+t/xu7qxbAWJBucfM1uce/ybxWLmyVYm
+        i7+TjrFbnN7/jsVi3mdZi4n7z7JbXN41h83ic+8RRou1R+6yW8z9MpXZ4sZcEwduj9+/JjF6
+        tC2w99i0qpPN4861PWwefVtWMXp0nmX0+LxJLoA9Ss+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLP
+        yMRSz9DYPNbKyFRJ384mJTUnsyy1SN8uQS/j4JtG9oL/3BXbptk3ME7m6mLk5JAQMJE4c+Mb
+        cxcjF4eQwFJGiTd3H7JBJGQkTk5rYIWwhSX+XOtigyj6xChx/8gCFpAEm4ChRNfbLrAGEYFY
+        ibsHD7KDFDELvGOSuL5qDVi3sICzxLrzb9lBbBYBVYk5VxeCNfAK2Eoc6TnADLFBXmL1hgPM
+        Exh5FjAyrGIUSS0tzk3PLTbSK07MLS7NS9dLzs/dxAgM3G3Hfm7Zwbjy1Ue9Q4xMHIyHGCU4
+        mJVEeHdX5CcK8aYkVlalFuXHF5XmpBYfYjQF2jeRWUo0OR8YO3kl8YZmBqaGJmaWBqaWZsZK
+        4rwmR9bECwmkJ5akZqemFqQWwfQxcXBKNTBJLImU+crPPPWm5HaLRy4u308F6mlEb5DYfss/
+        TMmCJ45tse+Kj93HQzr/vVhkuXKC0sdEliPms+XP1p+umRGbcv+y+8EvVew7trn9jVi1unDB
+        6xvLd9701nO6x9a1s2vTy+XLGDrnlwafXbNHJaVUOPXl7pcFP18pqrlzsW2V+PJv2wH2VWlK
+        PPzOzPXTlYxyIzgb3y/oe6L8vb0u0ea09vQ1a55sErgWK/2Ty3qS2oovQUsklbiz/zO9aun6
+        +/GpR69Y7U/zOn7GSweX7KgW3fUpbtkXp+suSz9XfZ+xo4xJgnNB6Obrx3bv+q4ud8I+Jf7A
+        5TLtm2qpco5PqnyOLd8Q1LLa5s2TOp2e3p8KSizFGYmGWsxFxYkActV4lOUCAAA=
+X-CMS-MailID: 20211020120653eucas1p176e7d48624cd773f2d96c06994e21856
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20211020120653eucas1p176e7d48624cd773f2d96c06994e21856
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20211020120653eucas1p176e7d48624cd773f2d96c06994e21856
+References: <CGME20211020120653eucas1p176e7d48624cd773f2d96c06994e21856@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add guest side implementation of KVM virtual suspend time injection.
+Avoid returning -EPROBE_DEFER from spm_cpuidle_drv_probe() on non-qcom
+based systems. This makes the driver multi-arch friendly again after
+commit 60f3692b5f0b ("cpuidle: qcom_spm: Detach state machine from main
+SPM handling").
 
-How it works from guest's view:
-- Guest will be paused without going through suspend/resume path in the
-  guest kernel
-- Before resuming the execution of the guest's vcpus, host will adjust
-  the hardware clock (and kvm_clock) to the time before the suspend.
-  - By this action, guest's CLOCK_MONOTONIC behaves as expected (stops
-    during the host's suspension.)
-- the guest will receive an IRQ from the guest that notifies about the
-  suspend which was invisible to the guest. In the handler, the guest
-  can adjust their CLOCK_BOOTTIME to reflect the suspension.
-  - Now, CLOCK_BOOTTIME includes the time passed during the host's
-    suspension.
-
-Signed-off-by: Hikaru Nishida <hikalium@chromium.org>
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 ---
+This fixes the issue I've reported some time ago:
+https://lore.kernel.org/all/86e3e09f-a8d7-3dff-3fc6-ddd7d30c5d78@samsung.com/
+---
+ drivers/cpuidle/cpuidle-qcom-spm.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-Changes in v3:
-- Reused HYPERVISOR_CALLBACK_VECTOR IRQ instead of adding a new one.
-- Extracted arch-independent parts.
-
- arch/x86/Kconfig                    | 13 ++++++++
- arch/x86/include/asm/idtentry.h     |  2 +-
- arch/x86/include/asm/kvmclock.h     |  9 ++++++
- arch/x86/kernel/kvm.c               | 14 ++++++---
- arch/x86/kernel/kvmclock.c          | 26 ++++++++++++++++
- arch/x86/mm/fault.c                 |  2 +-
- include/linux/timekeeper_internal.h |  5 ++++
- include/linux/timekeeping.h         |  4 +++
- kernel/time/timekeeping.c           | 46 +++++++++++++++++++++++++++++
- 9 files changed, 115 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index d9830e7e1060..1d4a529d1577 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -824,6 +824,19 @@ config KVM_GUEST
- 	  underlying device model, the host provides the guest with
- 	  timing infrastructure such as time of day, and system time
- 
-+config KVM_VIRT_SUSPEND_TIMING_GUEST
-+	bool "Guest support for virtual suspend time injection"
-+	depends on KVM_GUEST
-+	default n
-+	help
-+	 This option makes the host's suspension reflected on the guest's clocks.
-+	 In other words, guest's CLOCK_MONOTONIC will stop and
-+	 CLOCK_BOOTTIME keeps running during the host's suspension.
-+	 This feature will only be effective when both guest and host support
-+	 this feature. For the host side, see KVM_VIRT_SUSPEND_TIMING.
-+
-+	 If unsure, say N.
-+
- config ARCH_CPUIDLE_HALTPOLL
- 	def_bool n
- 	prompt "Disable host haltpoll when loading haltpoll driver"
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 1345088e9902..5e30f84ea07e 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -686,7 +686,7 @@ DECLARE_IDTENTRY_SYSVEC(HYPERVISOR_CALLBACK_VECTOR,	sysvec_xen_hvm_callback);
- #endif
- 
- #ifdef CONFIG_KVM_GUEST
--DECLARE_IDTENTRY_SYSVEC(HYPERVISOR_CALLBACK_VECTOR,	sysvec_kvm_asyncpf_interrupt);
-+DECLARE_IDTENTRY_SYSVEC(HYPERVISOR_CALLBACK_VECTOR,	sysvec_kvm_hv_callback);
- #endif
- 
- #undef X86_TRAP_OTHER
-diff --git a/arch/x86/include/asm/kvmclock.h b/arch/x86/include/asm/kvmclock.h
-index 9add14edc24d..2bf1a5c92319 100644
---- a/arch/x86/include/asm/kvmclock.h
-+++ b/arch/x86/include/asm/kvmclock.h
-@@ -20,4 +20,13 @@ static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
- 	return this_cpu_read(hv_clock_per_cpu);
+diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
+index 01e77913a414..1ee056fdfbb8 100644
+--- a/drivers/cpuidle/cpuidle-qcom-spm.c
++++ b/drivers/cpuidle/cpuidle-qcom-spm.c
+@@ -129,12 +129,26 @@ static int spm_cpuidle_register(struct device *cpuidle_dev, int cpu)
+ 	return cpuidle_register(&data->cpuidle_driver, NULL);
  }
  
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+u64 kvm_get_suspend_time(void);
-+#else
-+static inline u64 kvm_get_suspend_time(void)
++static int spm_dev_check(struct device_driver *drv, void *data)
 +{
-+	return 0;
-+}
-+#endif
++	if (strcmp(drv->name, "qcom_spm") == 0) {
++		struct device_node *np;
 +
- #endif /* _ASM_X86_KVM_CLOCK_H */
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index b656456c3a94..3d84ef6d9df2 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -40,6 +40,7 @@
- #include <asm/ptrace.h>
- #include <asm/reboot.h>
- #include <asm/svm.h>
-+#include <asm/kvmclock.h>
- 
- DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
- 
-@@ -270,7 +271,7 @@ noinstr bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token)
- 	return true;
- }
- 
--DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
-+DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_hv_callback)
- {
- 	struct pt_regs *old_regs = set_irq_regs(regs);
- 	u32 token;
-@@ -286,6 +287,8 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
- 		wrmsrl(MSR_KVM_ASYNC_PF_ACK, 1);
- 	}
- 
-+	timekeeping_inject_virtual_suspend_time(kvm_get_suspend_time());
-+
- 	set_irq_regs(old_regs);
- }
- 
-@@ -710,10 +713,13 @@ static void __init kvm_guest_init(void)
- 	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
- 		apic_set_eoi_write(kvm_guest_apic_eoi_write);
- 
--	if (kvm_para_has_feature(KVM_FEATURE_ASYNC_PF_INT) && kvmapf) {
-+	if (kvm_para_has_feature(KVM_FEATURE_ASYNC_PF_INT) && kvmapf)
- 		static_branch_enable(&kvm_async_pf_enabled);
--		alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, asm_sysvec_kvm_asyncpf_interrupt);
--	}
-+
-+	if ((kvm_para_has_feature(KVM_FEATURE_ASYNC_PF_INT) && kvmapf) ||
-+	    kvm_para_has_feature(KVM_FEATURE_HOST_SUSPEND_TIME))
-+		alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR,
-+				asm_sysvec_kvm_hv_callback);
- 
- #ifdef CONFIG_SMP
- 	if (pv_tlb_flush_supported()) {
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index 73c74b961d0f..3e16d0ab79f3 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -16,11 +16,15 @@
- #include <linux/mm.h>
- #include <linux/slab.h>
- #include <linux/set_memory.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
- 
- #include <asm/hypervisor.h>
- #include <asm/mem_encrypt.h>
- #include <asm/x86_init.h>
- #include <asm/kvmclock.h>
-+#include <asm/desc.h>
-+#include <asm/idtentry.h>
- 
- static int kvmclock __initdata = 1;
- static int kvmclock_vsyscall __initdata = 1;
-@@ -48,6 +52,9 @@ early_param("no-kvmclock-vsyscall", parse_no_kvmclock_vsyscall);
- 
- static struct pvclock_vsyscall_time_info
- 			hv_clock_boot[HVC_BOOT_ARRAY_SIZE] __bss_decrypted __aligned(PAGE_SIZE);
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+static struct kvm_suspend_time suspend_time __bss_decrypted;
-+#endif
- static struct pvclock_wall_clock wall_clock __bss_decrypted;
- static struct pvclock_vsyscall_time_info *hvclock_mem;
- DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
-@@ -281,6 +288,17 @@ static int kvmclock_setup_percpu(unsigned int cpu)
- 	return p ? 0 : -ENOMEM;
- }
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+/**
-+ * kvm_get_suspend_time - duration of host suspend.
-+ * Return: Cumulative duration of host suspend in nanoseconds.
-+ */
-+u64 kvm_get_suspend_time(void)
-+{
-+	return suspend_time.suspend_time_ns;
-+}
-+#endif
-+
- void __init kvmclock_init(void)
- {
- 	u8 flags;
-@@ -295,6 +313,14 @@ void __init kvmclock_init(void)
- 		return;
- 	}
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+	if (kvm_para_has_feature(KVM_FEATURE_HOST_SUSPEND_TIME)) {
-+		/* Register the suspend time structure */
-+		wrmsrl(MSR_KVM_HOST_SUSPEND_TIME,
-+		       slow_virt_to_phys(&suspend_time) | KVM_MSR_ENABLED);
++		np = of_find_matching_node(NULL, drv->of_match_table);
++		if (np) {
++			of_node_put(np);
++			return -EPROBE_DEFER;
++		}
 +	}
-+#endif
-+
- 	if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
- 			      kvmclock_setup_percpu, NULL) < 0) {
- 		return;
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 84a2c8c4af73..f36f49585d5d 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1509,7 +1509,7 @@ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
- 	 * memory is swapped out). Note, the corresponding "page ready" event
- 	 * which is injected when the memory becomes available, is delivered via
- 	 * an interrupt mechanism and not a #PF exception
--	 * (see arch/x86/kernel/kvm.c: sysvec_kvm_asyncpf_interrupt()).
-+	 * (see arch/x86/kernel/kvm.c: sysvec_kvm_hv_callback()).
- 	 *
- 	 * We are relying on the interrupted context being sane (valid RSP,
- 	 * relevant locks not held, etc.), which is fine as long as the
-diff --git a/include/linux/timekeeper_internal.h b/include/linux/timekeeper_internal.h
-index 84ff2844df2a..0d5b29122d40 100644
---- a/include/linux/timekeeper_internal.h
-+++ b/include/linux/timekeeper_internal.h
-@@ -68,6 +68,8 @@ struct tk_read_base {
-  *			shifted nano seconds.
-  * @ntp_error_shift:	Shift conversion between clock shifted nano seconds and
-  *			ntp shifted nano seconds.
-+ * @kvm_suspend_time:	The cumulative duration of suspend injected through KVM
-+ *			in nano seconds.
-  * @last_warning:	Warning ratelimiter (DEBUG_TIMEKEEPING)
-  * @underflow_seen:	Underflow warning flag (DEBUG_TIMEKEEPING)
-  * @overflow_seen:	Overflow warning flag (DEBUG_TIMEKEEPING)
-@@ -124,6 +126,9 @@ struct timekeeper {
- 	u32			ntp_err_mult;
- 	/* Flag used to avoid updating NTP twice with same second */
- 	u32			skip_second_overflow;
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+	u64			kvm_suspend_time;
-+#endif
- #ifdef CONFIG_DEBUG_TIMEKEEPING
- 	long			last_warning;
- 	/*
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index f7be69c81dab..a2228300c3f9 100644
---- a/include/linux/timekeeping.h
-+++ b/include/linux/timekeeping.h
-@@ -310,4 +310,8 @@ void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
- extern int update_persistent_clock64(struct timespec64 now);
- #endif
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+void timekeeping_inject_virtual_suspend_time(u64 total_duration_ns);
-+#endif
-+
- #endif
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index e77580d9f8c1..5f474cde0bae 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -2133,6 +2133,52 @@ static u64 logarithmic_accumulation(struct timekeeper *tk, u64 offset,
- 	return offset;
- }
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+/**
-+ * timekeeping_inject_virtual_suspend_time - Inject virtual suspend time
-+ * when requested by the kvm host.
-+ * @total_duration_ns:	Total suspend time to be injected in nanoseconds.
-+ */
-+void timekeeping_inject_virtual_suspend_time(u64 total_duration_ns)
-+{
-+	struct timekeeper *tk = &tk_core.timekeeper;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&timekeeper_lock, flags);
-+	if (total_duration_ns > tk->kvm_suspend_time) {
-+		/*
-+		 * Do injection only if the time is not injected yet.
-+		 * total_duration_ns and tk->kvm_suspend_time values are
-+		 * cumulative, so the delta between them will be an amount
-+		 * of adjustments. For example, if the host suspends 2 times
-+		 * during the guest is running and each suspend is 5 seconds,
-+		 * total_duration_ns will be 5 seconds at the first injection
-+		 * and tk->kvm_suspend_time was initialized to zero so the
-+		 * adjustment injected here will be 5 - 0 = 5 seconds and
-+		 * tk->kvm_suspend_time will be updated to 5 seconds.
-+		 * On the second injection after the second resume,
-+		 * total_duration_ns will be 10 seconds and
-+		 * tk->kvm_suspend_time will be 5 seconds so 10 - 5 = 5 seconds
-+		 * of the suspend time will be injected again.
-+		 */
-+		struct timespec64 delta =
-+			ns_to_timespec64(total_duration_ns -
-+					 tk->kvm_suspend_time);
-+		tk->kvm_suspend_time = total_duration_ns;
-+
-+		write_seqcount_begin(&tk_core.seq);
-+		timekeeping_forward_now(tk);
-+		__timekeeping_inject_sleeptime(tk, &delta);
-+		timekeeping_update(tk, TK_CLEAR_NTP | TK_MIRROR | TK_CLOCK_WAS_SET);
-+		write_seqcount_end(&tk_core.seq);
-+
-+		/* signal hrtimers about time change */
-+		clock_was_set_delayed();
-+	}
-+	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
++	return -ENODEV;
 +}
-+#endif
 +
- /*
-  * timekeeping_advance - Updates the timekeeper to the current time and
-  * current NTP tick length
+ static int spm_cpuidle_drv_probe(struct platform_device *pdev)
+ {
+ 	int cpu, ret;
+ 
+ 	if (!qcom_scm_is_available())
+-		return -EPROBE_DEFER;
++		return bus_for_each_drv(pdev->dev.bus, NULL, NULL, spm_dev_check);
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		ret = spm_cpuidle_register(&pdev->dev, cpu);
 -- 
-2.33.0.1079.g6e70778dc9-goog
+2.17.1
 
