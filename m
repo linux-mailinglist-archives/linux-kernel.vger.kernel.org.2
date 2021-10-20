@@ -2,134 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FCD435157
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2141435179
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhJTRfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:35:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38036 "EHLO mail.kernel.org"
+        id S230499AbhJTRka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:40:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhJTRfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:35:40 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5204D61038;
-        Wed, 20 Oct 2021 17:33:22 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 18:37:39 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-realtek-soc@lists.infradead.org,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Ping-Ke Shih <pkshih@realtek.com>, nic_swsd@realtek.com,
-        Derek Fang <derek.fang@realtek.com>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Kailang Yang <kailang@realtek.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        LKML <linux-kernel@vger.kernel.org>, info@ayaneo.com
-Subject: Re: BMI160 accelerometer on AyaNeo tablet
-Message-ID: <20211020183739.6a045ccc@jic23-huawei>
-In-Reply-To: <CAHp75VdCF_Fhso-uS_4JL7a9X90_nQ5JcyCwpeLM3b-YKVqjYw@mail.gmail.com>
-References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
-        <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
-        <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
-        <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
-        <YW3ErLKGtmyhSFd3@smile.fi.intel.com>
-        <CACAwPwYrxxFstQgYHhPOhMwUz_5RprSuoPNHL7m9ft1i-N2icQ@mail.gmail.com>
-        <CAHp75VdCF_Fhso-uS_4JL7a9X90_nQ5JcyCwpeLM3b-YKVqjYw@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230391AbhJTRk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:40:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBE64611C7;
+        Wed, 20 Oct 2021 17:38:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634751494;
+        bh=dlqZhTZMgkAacw0yTZYPf/PbPQrZV7HqKQMSqGYnVSI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nM8XnvUBCqd6vi/qIshaunTN6gwJvcSzmA4m5WmzUAS+TyVArbJXk3YR6pG5ba6p8
+         ec+k3aedURjgoz9gEQooSdj2oOX09N7pxPJ69g2nUjrYgjFsL6wZtdgOgm+fBh+lSE
+         1XaVv53jsE4EDAJMsREZAklfTDlOAZHewmQ2wcj8=
+Date:   Wed, 20 Oct 2021 19:38:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH v4 1/3] driver core: Provide device_match_acpi_handle()
+ helper
+Message-ID: <YXBUBGcb+kLvj7mj@kroah.com>
+References: <20211014134756.39092-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0jqXqhV1FSyuoVwbgwhte7Q4KUQMozggcxCHGPf+Mfw=A@mail.gmail.com>
+ <YW6ziqiIgioxDjq3@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW6ziqiIgioxDjq3@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 12:58:53 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-
-> On Mon, Oct 18, 2021 at 11:42 PM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
-> > On Mon, Oct 18, 2021 at 10:02 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:  
-> > > On Mon, Oct 18, 2021 at 09:02:40PM +0300, Maxim Levitsky wrote:  
-> 
-> ...
-> 
-> > > Thank you for sharing. Seems they indeed used (deliberately or not) the wrong
-> > > ID. So there are questions I have:
-> > > - Is the firmware available in the wild?  
-> >
-> > Likely so. It looks Aya team only released a single windows driver which
-> > works on all revisions of their device including the Founder Edition,
-> > which was released more that a year ago.
-> >
-> > It is likely that all 3 revisions that they sold carry this ACPI ID.
-> > (The founder edition, first batch of IndieGoGo orders which had a
-> > redesigned shell,
-> > and 2nd batch (which I have) which has a new wifi card, a bit better
-> > controller,
-> > among other changes).
-> >
-> >  
-> > > - Do they plan to update firmware to fix this?
-> > > - Can we make sure that guys got their mistake and will be more careful
-> > >   in the future?  
-> >
-> > I CCed them, hoping that they would hear us. I can also raise this on their
-> > discord when I find time to look there.  
-> 
-> I expect to have confirmation from them that they have got it and
-> promise to fix the firmware (ACPI tables) for supported and future
-> products.Can it be achieved? (Note, Hans already told what the HID
-> should be used there)
-> 
-> > > Realtek probably should make this ID marked somehow broken and not use
-> > > in their products in case the answer to the first of the above question
-> > > is "yes". (Of course in case the ID will be used for solely PCI enumerated
-> > > product there will be no conflict, I just propose to be on the safest side,
-> > > but remark should be made somewhere).  
-> 
-> Any comments from Realtek, please?
-> 
-> > > > BTW, I also notice a rotation matrix embedded in DSTD, but the linux's
-> > > > BMI160 driver doesn't recognize it.  
+On Tue, Oct 19, 2021 at 03:01:14PM +0300, Andy Shevchenko wrote:
+> On Fri, Oct 15, 2021 at 01:42:37PM +0200, Rafael J. Wysocki wrote:
+> > On Thu, Oct 14, 2021 at 3:48 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
 > > >
-> > > This is done by the commit 8a0672003421 ("iio: accel: bmc150: Get
-> > > mount-matrix from ACPI") which needs to be amended to take care about
-> > > more devices, somewhere in drivers/iio/industialio-acpi.c ? Jonathan,
-> > > Hans, what do you think?  
-> >
-> > If you like to, I can probably volunteer to prepare a patch for this myself next
-> > weekend, using this pointer as a reference.  
+> > > We have a couple of users of this helper, make it available for them.
+> > >
+> > > The prototype for the helper is specifically crafted in order to be
+> > > easily used with bus_find_device() call. That's why its location is
+> > > in the driver core rather than ACPI.
+> > >
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > 
+> > OK, please feel free to add
+> > 
+> > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > 
+> > to all of the patches in this series.
+> 
+> Thank you, Rafael!
+> 
+> Greg, can it be applied now?
 
-Hmm. This isn't part of the ACPI spec but seems to be a microsoft addition.
-The webpage google feeds me says this is windows 10 mobile specific...
-https://docs.microsoft.com/en-us/windows-hardware/drivers/sensors/sensors-acpi-entries
-	
-Whilst I haven't been paying particularly close attention, I haven't noticed
-any attempt to add this to a future ACPI spec. If anyone happens to have
-convenient Microsoft contacts to verify the status of this method that would
-be a good step before we in any way imply it is standard.  Until then my inclination
-is to keep this in the few drivers in which we know it is useful.
+Yes, will go do so now, thanks.
 
-Jonathan
-
-> 
-> The best is to cooperate with Hans as he is much more involved in the
-> topic of how these sensors are programmed and used in the Linux
-> kernel. My job here is to fix ACPI HID and
-> make every stakeholder be aware now and in the future.
-> 
-> ...
-> 
-> > I will prepare a patch with a better commit description this weekend.  
-> 
-> Thanks, but let's not be in such a hurry, I really want to hear from
-> both vendors. I guess a couple of weeks would be a reasonable time to
-> settle this down.
-> 
-
+greg k-h
