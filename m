@@ -2,72 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E55D434EE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2905434EE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhJTPUy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 11:20:54 -0400
-Received: from mga14.intel.com ([192.55.52.115]:7664 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhJTPUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:20:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="229075460"
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
-   d="scan'208";a="229075460"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 08:18:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
-   d="scan'208";a="463229200"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga002.jf.intel.com with ESMTP; 20 Oct 2021 08:18:36 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 20 Oct 2021 08:18:35 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 20 Oct 2021 08:18:35 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Wed, 20 Oct 2021 08:18:35 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "H . Peter Anvin" <hpa@zytor.com>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>
-Subject: RE: [PATCH v2 5/5] x86/mce/mce-inject: Return error code to userspace
- from mce-inject module
-Thread-Topic: [PATCH v2 5/5] x86/mce/mce-inject: Return error code to
- userspace from mce-inject module
-Thread-Index: AQHXxUI/YyOuX4p20E+A/RVSGS1pGqvcAE6A
-Date:   Wed, 20 Oct 2021 15:18:35 +0000
-Message-ID: <5c6d28154036475882466a4420c0d499@intel.com>
-References: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
- <20211019233641.140275-6-Smita.KoralahalliChannabasappa@amd.com>
-In-Reply-To: <20211019233641.140275-6-Smita.KoralahalliChannabasappa@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S230365AbhJTPVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhJTPVG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:21:06 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AFDC06161C;
+        Wed, 20 Oct 2021 08:18:51 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 308141F441DD
+Subject: Re: [PATCH v16 6/7] arm64: dts: mt8192: add svs device information
+To:     Roger Lu <roger.lu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210428065440.3704-1-roger.lu@mediatek.com>
+ <20210428065440.3704-7-roger.lu@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <dec2190e-ce5a-3192-73b4-f4aae772bf2d@collabora.com>
+Date:   Wed, 20 Oct 2021 17:18:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20210428065440.3704-7-roger.lu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+	if (!cpu_online(cpu)) {
-+		pr_err("No online CPUs available for error injection\n");
-+		mce_err.err = -ENODEV;
+Il 28/04/21 08:54, Roger Lu ha scritto:
+> add compitable/reg/irq/clock/efuse/reset setting in svs node
+> 
+> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8192.dtsi | 34 ++++++++++++++++++++++++
+>   1 file changed, 34 insertions(+)
+> 
 
-Maybe "Chosen CPU is not online\n"?
+Hello Roger,
 
--Tony
+thanks for this series! However, there is an issue with this patch:
+
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> index fe24cc66ff7a..e9816a56d87b 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> @@ -270,6 +270,14 @@
+>   			compatible = "mediatek,mt8192-infracfg", "syscon";
+>   			reg = <0 0x10001000 0 0x1000>;
+>   			#clock-cells = <1>;
+> +
+> +			infracfg_rst: reset-controller {
+> +				compatible = "mediatek,infra-reset", "ti,syscon-reset";
+> +				#reset-cells = <1>;
+> +				ti,reset-bits = <
+> +					0x150 5 0x154 5 0 0     (ASSERT_SET | DEASSERT_SET | STATUS_NONE) /* 0: svs */
+
+You are using macros here, which are defined in dt-bindings/reset/ti-syscon.h
+
+hovever, you are not including this header in this devicetree, so it's not
+
+compiling.
+
+
+
+Please fix it.
+
+> +				>;
+> +			};
+>   		};
+>   
+>   		pericfg: syscon@10003000 {
+> @@ -564,6 +572,20 @@
+>   			status = "disabled";
+>   		};
+>   
+> +		svs: svs@1100b000 {
+> +			compatible = "mediatek,mt8192-svs";
+> +			reg = <0 0x1100b000 0 0x1000>;
+> +			interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH 0>;
+> +			clocks = <&infracfg CLK_INFRA_THERM>;
+> +			clock-names = "main";
+> +			nvmem-cells = <&svs_calibration>,
+> +				      <&lvts_e_data1>;
+> +			nvmem-cell-names = "svs-calibration-data",
+> +					   "t-calibration-data";
+> +			resets = <&infracfg_rst 0>;
+> +			reset-names = "svs_rst";
+> +		};
+> +
+>   		spi1: spi@11010000 {
+>   			compatible = "mediatek,mt8192-spi",
+>   				     "mediatek,mt6765-spi";
+> @@ -681,6 +703,18 @@
+>   			#clock-cells = <1>;
+>   		};
+>   
+> +		efuse: efuse@11c10000 {
+> +			compatible = "mediatek,efuse";
+> +			reg = <0 0x11c10000 0 0x1000>;
+> +
+
+arch/arm64/boot/dts/mediatek/mt8192.dtsi:510.5-24: Warning (reg_format): 
+/soc/efuse@11c10000/data1:reg: property has invalid length (8 bytes) 
+(#address-cells == 2, #size-cells == 1)
+
+
+
+arch/arm64/boot/dts/mediatek/mt8192.dtsi:513.5-24: Warning (reg_format): 
+/soc/efuse@11c10000/calib@580:reg: property has invalid length (8 bytes) 
+(#address-cells == 2, #size-cells == 1)
+
+
+
+
+
+In short, you should add here:
+
+             #address-cells = <1>;
+
+             #size-cells = <1>;
+
+> +			lvts_e_data1: data1 {
+> +				reg = <0x1C0 0x58>;
+> +			};
+> +			svs_calibration: calib@580 {
+> +				reg = <0x580 0x68>;
+> +			};
+> +		};
+> +
+>   		i2c3: i2c3@11cb0000 {
+>   			compatible = "mediatek,mt8192-i2c";
+>   			reg = <0 0x11cb0000 0 0x1000>,
+> 
+
+P.S.: Sorry for the double email, the previous one got sent with the wrong
+       address.
+
+
+Regards,
+
+- Angelo
