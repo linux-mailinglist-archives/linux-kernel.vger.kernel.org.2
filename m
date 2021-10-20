@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D90435596
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB78B4355A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhJTVzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:55:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59741 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229842AbhJTVz3 (ORCPT
+        id S230466AbhJTV7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:59:55 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:40851 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229695AbhJTV7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:55:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634766794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U6rXNz3Z+PfqtejcB5UFQ+ZtQ0/yQs952Acpxd92MN0=;
-        b=IJnffwH6b39WktcDBVyg0dBSUAcESH8qRDSt8qdUAWHds5elGFqH0l+fIJiOcIQr4vNDFZ
-        h3D6//+riRIki6SiKPsIMlfQQ/o1M5Eg8LEBKFXmxFs7qgxVVP1nfPd5aK1W5rj4YuledT
-        BRaQfBwpwyqOj5Z5VxZrjwWUHlt3pR0=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-fzl6y43lNdycdRxc9ZuzKw-1; Wed, 20 Oct 2021 17:53:13 -0400
-X-MC-Unique: fzl6y43lNdycdRxc9ZuzKw-1
-Received: by mail-ed1-f72.google.com with SMTP id u23-20020a50a417000000b003db23c7e5e2so22339382edb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 14:53:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=U6rXNz3Z+PfqtejcB5UFQ+ZtQ0/yQs952Acpxd92MN0=;
-        b=l5CqyKZhr3gk8vJLfIYGhGaIDFosCCf2YV+Nb9zKGf5WqgYnbsH3aZbagiyOHiqL99
-         e7K2TcnnlSoUC2ge0ZPRWI1W23SNb6kOwIMDRKRd+5g7iY6vTQx2w1v/U1EsPoINffq3
-         Ev3q/Y4sHf+FYI2ACw0q6rxcLXEAyLbYZ11Bk/DTknkNOqjpQsbPfUAqBQwaolqfGYQk
-         BkYaCdMNMm7YE/plDuJGRrg2AiQxL5Mpm2Ff/ULa2GyQPxUyHv4zWbuGpMpiaJl1fFxh
-         jsjmwB105uoTLi1G2mI+PJQYkhY4Dlv4FwD6Ifv0/PBwAy2YjDqiGyAC1d1oWz1hQ+iS
-         khsQ==
-X-Gm-Message-State: AOAM530Ny6GeEEkvQc4783SkZ10lT0QpvbMhbspi/obYh7CxR/GrK0xM
-        jzTONdzF1Tx9AubH+FYqZVs9TjkQyPQi33XCxPErzVtShSqqb/P7wnxrviCRhUU/oNIlFn64UwP
-        5TYpUnCGtQIcEPy9uN+cg96l8
-X-Received: by 2002:a17:906:3947:: with SMTP id g7mr2363084eje.407.1634766792053;
-        Wed, 20 Oct 2021 14:53:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzv6J9Xym4EJh9Zs4yIfGXv7o5aqhc8Tu4ag+uUYOnXHogw0Sb2KCWiFg9yiSL18vtR6i3TvQ==
-X-Received: by 2002:a17:906:3947:: with SMTP id g7mr2363044eje.407.1634766791836;
-        Wed, 20 Oct 2021 14:53:11 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id m23sm1603818eja.6.2021.10.20.14.53.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 14:53:11 -0700 (PDT)
-Message-ID: <32fd9317-9d11-22b7-ff25-25220dd9029e@redhat.com>
-Date:   Wed, 20 Oct 2021 23:53:09 +0200
+        Wed, 20 Oct 2021 17:59:53 -0400
+Received: (qmail 1140230 invoked by uid 1000); 20 Oct 2021 17:57:38 -0400
+Date:   Wed, 20 Oct 2021 17:57:38 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+        Peter Chen <peter.chen@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Bastien Nocera <hadess@hadess.net>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v16 6/7] usb: host: xhci-plat: Create platform device for
+ onboard hubs in probe()
+Message-ID: <20211020215738.GA1140001@rowland.harvard.edu>
+References: <20210813195228.2003500-1-mka@chromium.org>
+ <20210813125146.v16.6.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
+ <dfac0025-b693-2431-04c8-1dba7ef32141@linux.intel.com>
+ <YXB7vIP6ifQS3T4o@google.com>
+ <20211020203720.GA1137200@rowland.harvard.edu>
+ <YXCDobJSuytwthoA@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 1/5 V10] KVM: SEV: Refactor out sev_es_state struct
-Content-Language: en-US
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org
-Cc:     Marc Orr <marcorr@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-References: <20211012204858.3614961-1-pgonda@google.com>
- <20211012204858.3614961-2-pgonda@google.com>
- <ee9cb472-75ba-2a1e-a88c-ecdb1f3de4d4@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <ee9cb472-75ba-2a1e-a88c-ecdb1f3de4d4@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXCDobJSuytwthoA@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/21 23:12, Tom Lendacky wrote:
-> On 10/12/21 3:48 PM, Peter Gonda wrote:
->> Move SEV-ES vCPU metadata into new sev_es_state struct from vcpu_svm.
->>
->> Signed-off-by: Peter Gonda <pgonda@google.com>
->> Suggested-by: Tom Lendacky <thomas.lendacky@amd.com>
->> Cc: Marc Orr <marcorr@google.com>
->> Cc: Paolo Bonzini <pbonzini@redhat.com>
->> Cc: Sean Christopherson <seanjc@google.com>
->> Cc: David Rientjes <rientjes@google.com>
->> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
->> Cc: Brijesh Singh <brijesh.singh@amd.com>
->> Cc: Tom Lendacky <thomas.lendacky@amd.com>
->> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
->> Cc: Wanpeng Li <wanpengli@tencent.com>
->> Cc: Jim Mattson <jmattson@google.com>
->> Cc: Joerg Roedel <joro@8bytes.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Borislav Petkov <bp@alien8.de>
->> Cc: "H. Peter Anvin" <hpa@zytor.com>
->> Cc: kvm@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
+On Wed, Oct 20, 2021 at 02:01:21PM -0700, Matthias Kaehlcke wrote:
+> On Wed, Oct 20, 2021 at 04:37:20PM -0400, Alan Stern wrote:
+> > On Wed, Oct 20, 2021 at 01:27:40PM -0700, Matthias Kaehlcke wrote:
+> > > Hi Mathias,
+> > > 
+> > > On Wed, Oct 20, 2021 at 04:05:37PM +0300, Mathias Nyman wrote:
+> > > > If separate devices for controlling onboard hub power is the right solution then
+> > > > how about creating the onboard hub device in usb_add_hcd() (hcd.c), and
+> > > > store it in struct usb_hcd.
+> > > > 
+> > > > A bit like how the roothub device is created, or PHYs are tuned.
+> > > 
+> > > Sure, that sounds feasible, even better if it's handled in a single place
+> > > and different types of controllers don't have to add support separately.
+> > 
+> > Bear in mind that this would prevent you from working with onboard
+> > non-root hubs.
 > 
-> Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+> My goal is to (architecturally) support nested hubs, but TBH I haven't
+> looked much into such a configuration since I don't have hardware for
+> testing. My assumption was that support for onboard hubs connected to
+> non-root hubs whould have to be added to the generic hub driver.
+> 
+> Could you elaborate in how far you think it would be different for
+> xhci_plat vs generic hcd?
 
-FWIW this series won't apply due to the string I/O fixes in 5.15, so 
-I've delayed it---but it's not lost.
+A lot of this material has slipped from my mind.  However, I don't see 
+much difference between those two approaches.
 
-Paolo
-
+Alan Stern
