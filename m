@@ -2,120 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65FE4343F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 05:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46468434405
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 06:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhJTDtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 23:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhJTDtN (ORCPT
+        id S229591AbhJTEDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 00:03:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:54156 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhJTEDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 23:49:13 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC07C06161C;
-        Tue, 19 Oct 2021 20:46:59 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 20 Oct 2021 00:03:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634702461; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=P3DYTaaiVLsvcsVBCW0eBADburMciZ8lW+laDg9RToQ=;
+ b=ppM8JCbdCB+w7tcbNfISjo8TB+MZ7yctVphwnNuR+KZfBeDy6DVhfLM15U2Bsd434lTWu8iE
+ 60lowX/7nvnDemWXHvNJUGA0asBB0IR60pGzNnSXBwJg47rsYY9OVb4gpbeIPjWf3ODBL37O
+ qnO/HXjWjuAEUp1LwH86YSbly9g=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 616f94753416c2cb701e6d8a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 04:00:53
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ECEF3C4360C; Wed, 20 Oct 2021 04:00:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HYxPV3XhJz4xbP;
-        Wed, 20 Oct 2021 14:46:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634701614;
-        bh=+6XVvFjmvWFB0HvEcmC4AvpYYcQ+MzQCAQGfdLcXNY4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GOyjEKoZLzWGTrmdLIJs1C+VmosFYqxHPngX37NSpTLlf/XOs7EtDjWQT25ttVg42
-         XS/vyMZXUnFKJaOws/sZbhcy48AWbN86TG+IcWFS8KGz+PklGOsvWLobnqfCwQ8Y13
-         25G5nakMGG4vGJF8EV9Wn+MPJNfpzQ7V4ars5vAEswhXesnSLprJ6CNQPTEdMSEUL6
-         mC8z8RQ3IboJDxTcW5PI+wEIFUoza5RwFLXAfmwBZncIxR4w10mUXQaqlwi1U8DqiL
-         ZA1mNAILfDoE6zcgpWRTJ/AAajyFXO984soDNWZkiLDJ9a0vKYsmenjoK2JmLRnQOG
-         2rg8wNO8ssHSA==
-Date:   Wed, 20 Oct 2021 14:46:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Alexey Gladkov <legion@kernel.org>
-Subject: linux-next: build failure after merge of the userns tree
-Message-ID: <20211020144651.10321529@canb.auug.org.au>
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1FFAFC4338F;
+        Wed, 20 Oct 2021 04:00:52 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jSgnN2rJ4ggzoDnXbXx5Ms_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 20 Oct 2021 12:00:52 +0800
+From:   tjiang@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for variant WCN6855 by
+ using different nvm
+In-Reply-To: <YW8csSr/I1IRgAaT@google.com>
+References: <81add00a4a038008e9f734c5f5e5b712@codeaurora.org>
+ <YW8csSr/I1IRgAaT@google.com>
+Message-ID: <39ca0c9102265d6e14f3e0da94fec40d@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jSgnN2rJ4ggzoDnXbXx5Ms_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Thanks Matthias for the comments. please see my comments inline .
 
-Hi all,
+BTW: marcel , do you agree with Matthias comments ? if fine , I will 
+align Matthias comments and make the final version.
 
-After merging the userns tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+regards.
+tim
+On 2021-10-20 03:29, Matthias Kaehlcke wrote:
+> On Tue, Oct 12, 2021 at 03:55:56PM +0800, tjiang@codeaurora.org wrote:
+>> the RF performance of wcn6855 soc chip from different foundries will 
+>> be
+>> difference, so we should use different nvm to configure them.
+>> 
+>> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+>> ---
+>>  drivers/bluetooth/btusb.c | 56
+>> +++++++++++++++++++++++++++++++++++------------
+>>  1 file changed, 42 insertions(+), 14 deletions(-)
+>> 
+>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+>> index 75c83768c257..f352ff351b61 100644
+>> --- a/drivers/bluetooth/btusb.c
+>> +++ b/drivers/bluetooth/btusb.c
+>> @@ -3190,6 +3190,9 @@ static int btusb_set_bdaddr_wcn6855(struct 
+>> hci_dev
+>> *hdev,
+>>  #define QCA_DFU_TIMEOUT		3000
+>>  #define QCA_FLAG_MULTI_NVM      0x80
+>> 
+>> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+>> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+>> +
+>>  struct qca_version {
+>>  	__le32	rom_version;
+>>  	__le32	patch_version;
+>> @@ -3221,6 +3224,7 @@ static const struct qca_device_info
+>> qca_devices_table[] = {
+>>  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+>>  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+>>  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+>> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+>>  };
+>> 
+>>  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
+>> request,
+>> @@ -3375,6 +3379,43 @@ static int btusb_setup_qca_load_rampatch(struct
+>> hci_dev *hdev,
+>>  	return err;
+>>  }
+>> 
+>> +static void btusb_generate_qca_nvm_name(char *fwname,
+>> +					size_t max_size,
+>> +					struct qca_version *ver)
+> 
+> => const struct qca_version *ver
+> 
+>> +{
+>> +	u32 rom_version = le32_to_cpu(ver->rom_version);
+>> +	u16 flag = le16_to_cpu(ver->flag);
+>> +
+>> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+>> +		u16 board_id = le16_to_cpu(ver->board_id);
+>> +		u32 ram_version = le32_to_cpu(ver->ram_version);
+>> +		const char *variant;
+>> +
+>> +		switch (ram_version) {
+>> +		case WCN6855_2_0_RAM_VERSION_GF:
+>> +		case WCN6855_2_1_RAM_VERSION_GF:
+>> +			variant = "_gf";
+>> +			break;
+>> +		default:
+>> +			variant = "";
+> 
+> instead of the default branch you could assign a default to 'variant' 
+> at
+> declaration time, but it's fine either way.
 
-In file included from arch/x86/include/asm/bug.h:84,
-                 from include/linux/bug.h:5,
-                 from arch/x86/include/asm/paravirt.h:15,
-                 from arch/x86/include/asm/irqflags.h:63,
-                 from include/linux/irqflags.h:16,
-                 from include/linux/rcupdate.h:26,
-                 from include/linux/rculist.h:11,
-                 from include/linux/pid.h:5,
-                 from include/linux/sched.h:14,
-                 from security/keys/process_keys.c:9:
-security/keys/process_keys.c: In function 'key_change_session_keyring':
-security/keys/process_keys.c:923:16: error: format '%s' expects a matching =
-'char *' argument [-Werror=3Dformat=3D]
-  923 |   WARN_ONCE(1, "In %s get_ucounts failed\n");
-      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:99:17: note: in definition of macro '__WARN_print=
-f'
-   99 |   __warn_printk(arg);     \
-      |                 ^~~
-include/linux/once_lite.h:19:4: note: in expansion of macro 'WARN'
-   19 |    func(__VA_ARGS__);    \
-      |    ^~~~
-include/asm-generic/bug.h:150:2: note: in expansion of macro 'DO_ONCE_LITE_=
-IF'
-  150 |  DO_ONCE_LITE_IF(condition, WARN, 1, format)
-      |  ^~~~~~~~~~~~~~~
-security/keys/process_keys.c:923:3: note: in expansion of macro 'WARN_ONCE'
-  923 |   WARN_ONCE(1, "In %s get_ucounts failed\n");
-      |   ^~~~~~~~~
-security/keys/process_keys.c:923:21: note: format string is defined here
-  923 |   WARN_ONCE(1, "In %s get_ucounts failed\n");
-      |                    ~^
-      |                     |
-      |                     char *
-cc1: all warnings being treated as errors
+[Tim] this code style is recommend by marcel.
 
-Caused by commit
+> 
+>> +			break;
+>> +		}
+>> +
+>> +		/* if boardid equal 0, use default nvm without suffix */
+> 
+> delete the comment, it just states the obvious
+> 
+>> +		if (board_id == 0x0) {
+> 
+> nit: is there really any value in using a hex number here instead of a
+> plain decimal 0?
 
-  346b5b4aa656 ("ucounts: Move get_ucounts from cred_alloc_blank to key_cha=
-nge_session_keyring")
+[Tim] this line is inherit from last change , if you think I should 
+change 0x0 to 0 , I am fine.
 
-I have used the userns tree from next-20211019 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/jSgnN2rJ4ggzoDnXbXx5Ms_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFvkSsACgkQAVBC80lX
-0GyGjQf/aB7AvAs0s61kzZXhYgZvokql29GS+S7nEs7auO2kIBfrGvJb5pCJ1jbO
-dK0LgR7vxlVwhbjO3PjgDytCeqRD3ePr+TeKRPaxoULMgMaj3Kg7pfiRi2i3ez4T
-bNBOUJ0w1WwUS94J+EX/kU+H1QDMFTqu9W6fQDXISwVETEtAFCFDG/cj2X8ubGzd
-dwl0YqoeOf8vyzG12ON4WCNHzoYb+IVFswsO5SCAe9mboi9EJR7BGpBUr6/Fg7y/
-1SzNJCLqGHKQZjltJSkTXLGPBz0xfwekQPM4ESI4MYn0ZA0lgOdWBXwuLswG5T7A
-QFglYQ5ifDBPerWBqC2mfmKe6H9X5g==
-=qzC9
------END PGP SIGNATURE-----
-
---Sig_/jSgnN2rJ4ggzoDnXbXx5Ms_--
+> 
+>> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
+>> +				rom_version, variant);
+>> +		} else {
+>> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
+>> +				rom_version, variant, board_id);
+>> +		}
+>> +	} else {
+>> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
+>> +			rom_version);
+>> +	}
+>> +
+>> +}
+>> +
+>>  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+>>  				    struct qca_version *ver,
+>>  				    const struct qca_device_info *info)
+>> @@ -3383,20 +3424,7 @@ static int btusb_setup_qca_load_nvm(struct 
+>> hci_dev
+>> *hdev,
+>>  	char fwname[64];
+>>  	int err;
+>> 
+>> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+>> -		/* if boardid equal 0, use default nvm without surfix */
+>> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+>> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+>> -				 le32_to_cpu(ver->rom_version));
+>> -		} else {
+>> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+>> -				le32_to_cpu(ver->rom_version),
+>> -				le16_to_cpu(ver->board_id));
+>> -		}
+>> -	} else {
+>> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+>> -			 le32_to_cpu(ver->rom_version));
+>> -	}
+>> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
+>> 
+>>  	err = request_firmware(&fw, fwname, &hdev->dev);
+>>  	if (err) {
