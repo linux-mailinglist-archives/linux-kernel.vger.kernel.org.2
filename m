@@ -2,103 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17914353C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076DA4353C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbhJTT0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        id S231604AbhJTT1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbhJTT0v (ORCPT
+        with ESMTP id S231522AbhJTT1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:26:51 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB8DC06161C;
-        Wed, 20 Oct 2021 12:24:36 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id u5so567321ljo.8;
-        Wed, 20 Oct 2021 12:24:36 -0700 (PDT)
+        Wed, 20 Oct 2021 15:27:14 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC61BC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:24:59 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id b188so21126283iof.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 12:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=zBVYuwbzU0MrjoGITQu9tBsWZ7nbrws+z0zkrHM73ZE=;
-        b=TWJxQV5pYR5GhzFo4ccC4tOo8Wfgvjfb2t4pbpy2+KtzAiCW5plYXo44STxngIpVBg
-         I2pO3atCIiMB0X5qiITyxrGa8nKQ14zhgMz+2uj3xT07LbOUKUc7L8cdJshp67Jvz2mx
-         E/Q9RzBO4s1JziAjRicKhfSphkeyAPRvn5yTibuokpMIRll6117L6OPPyz0L7nTkEKy1
-         dMNWl1WBd6z/rMRsj6kpU22KM1oFvILYESgm0xtQMvE3Y/icJopqJJ2dxlN0NNbu9Ios
-         zk6pVsUCYWftFXBIqUFI164dO6N+bA3uZQJ+d3qWROqcMeSNG3R6vk93nHrBGT/ky6IC
-         s2+w==
+        bh=j4BWqaRoOXX4hAkcrJT/f3tGF68yRFTv/w2sc+SKXvc=;
+        b=RN81ylp+B4t8iEpsk9tiQvrF24QGy5e9a5pZLGwVNNMKGg7b3HVBLX59XxW5NImwFP
+         791CDv6JKUIqiyv/vyHwBfX1MQufRqPh6ihcZ2CWBZkuBrVduB1AbRUKe7L0hJgMuNZC
+         wuemNqtS7LxxgAxfS68999eM5pD5/4GE3AaZ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zBVYuwbzU0MrjoGITQu9tBsWZ7nbrws+z0zkrHM73ZE=;
-        b=IvF02Peh+V93HZpapsoYQIU/S58RH/eWRqOpeCb90YdZfSfZQxU7ZOz6nIhKGsyR68
-         zdS1ZG6l50e+J/Cd0Rigmz7LoiAo0M37SmD39cdd5EZbhhSxU5C9pxYuqQ6wcXXoH8H+
-         0XC8VP/fRYst+B3SprxOtPOLCJtW9d6C8G6gh6SrjMHNB7oT9sp6EulpoCExPX445O0z
-         NmqRqLOjERFguH/pzH5NmtamErgnoa9qEZVJHj5tkOZTkAVDqLowliF8FwH0bzuE7ch0
-         HaDuzLKPufDQrPgXzrzp+3j7n1PWH89i/tapVCVDspIGbc9+bx70qVfOPog+PDuehFPR
-         PcjA==
-X-Gm-Message-State: AOAM533GjhRu4dbLp0lzj2VSRfPJdM6Ng9HMB/88qWTeYu2SuKti2hP7
-        uEUCzVesPnGyz9tiZda5Vbo=
-X-Google-Smtp-Source: ABdhPJyrm9VQo0GMaJxs62rwrDCG0Alik60ONtJwaI27umRlQFC625Te5ewPe0yeMXu+xQrVwJXh8A==
-X-Received: by 2002:a2e:8e72:: with SMTP id t18mr952563ljk.189.1634757874664;
-        Wed, 20 Oct 2021 12:24:34 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id bp25sm260772lfb.64.2021.10.20.12.24.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 12:24:33 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 20 Oct 2021 21:24:30 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <20211020192430.GA1861@pc638.lan>
-References: <20211018114712.9802-3-mhocko@kernel.org>
- <20211019110649.GA1933@pc638.lan>
- <YW6xZ7vi/7NVzRH5@dhcp22.suse.cz>
- <20211019194658.GA1787@pc638.lan>
- <YW/SYl/ZKp7W60mg@dhcp22.suse.cz>
- <CA+KHdyUopXQVTp2=X-7DYYFNiuTrh25opiUOd1CXED1UXY2Fhg@mail.gmail.com>
- <YXAiZdvk8CGvZCIM@dhcp22.suse.cz>
- <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
- <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
- <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
+        bh=j4BWqaRoOXX4hAkcrJT/f3tGF68yRFTv/w2sc+SKXvc=;
+        b=xvTngcH8QfCzVB/3lkhg3cr/ORvPneKZLXtl/HVshkES+a1pvPOd3FsavzGkg50PrN
+         a3SfXINb29cdKXYDiQt2r2DCQfeQ3Rt1f3/vLXuMgTeJU1BNMQE3AMCyU+dTPcyBZGHZ
+         YNQSKEXYRiBlCxiRavOan6Hqoif8wz4AgJh0ADmJfLPPJTekwD+lXRXL26HL1sRQ1sxG
+         Zs/+x91Ai8h5fXsY5EkwG2wxc4ozbjI4H1Icpfl4NzXTn8+1CQt+LHfEfQT4E5epr41v
+         NP6110GgDg4K/u7x8S5AyiWmK5RL+9bmG19ZG6/MhfaFwKcGUlAgFu9JsyR0JdagqP7+
+         B12A==
+X-Gm-Message-State: AOAM530cpQazbd1g6K3zEbEbYZc9RCmkj7imF4/X//7wrzZY4E/5z84Q
+        ZIjT7J1cQmB3oCEoxTYik5qTYg==
+X-Google-Smtp-Source: ABdhPJzPNmXj9qRz5w/z9fK91UgdGlWjPFSGN7oeQcyao7shhiGtU2yE/U6Xo7KpRncRXCvIs+rGlQ==
+X-Received: by 2002:a05:6602:1799:: with SMTP id y25mr776711iox.38.1634757899128;
+        Wed, 20 Oct 2021 12:24:59 -0700 (PDT)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id m7sm1559987iov.30.2021.10.20.12.24.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 20 Oct 2021 12:24:58 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 19:24:57 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: Retrieving the network namespace of a socket
+Message-ID: <20211020192456.GA23489@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20211020095707.GA16295@ircssh-2.c.rugged-nimbus-611.internal>
+ <CAHNKnsRFah6MRxECTLNwu+maN0o9jS9ENzSAiWS4v1247BqYdg@mail.gmail.com>
+ <20211020163417.GA21040@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211020163417.GA21040@ircssh-2.c.rugged-nimbus-611.internal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 05:00:28PM +0200, Uladzislau Rezki wrote:
-> >
-> > On Wed 20-10-21 16:29:14, Uladzislau Rezki wrote:
-> > > On Wed, Oct 20, 2021 at 4:06 PM Michal Hocko <mhocko@suse.com> wrote:
-> > [...]
-> > > > As I've said I am OK with either of the two. Do you or anybody have any
-> > > > preference? Without any explicit event to wake up for neither of the two
-> > > > is more than just an optimistic retry.
-> > > >
-> > > From power perspective it is better to have a delay, so i tend to say
-> > > that delay is better.
-> >
-> > I am a terrible random number generator. Can you give me a number
-> > please?
-> >
-> Well, we can start from one jiffy so it is one timer tick: schedule_timeout(1)
+On Wed, Oct 20, 2021 at 04:34:18PM +0000, Sargun Dhillon wrote:
+> On Wed, Oct 20, 2021 at 05:03:56PM +0300, Sergey Ryazanov wrote:
+> > Hello Sargun,
+> > 
+> > On Wed, Oct 20, 2021 at 12:57 PM Sargun Dhillon <sargun@sargun.me> wrote:
+> > > I'm working on a problem where I need to determine which network namespace a
+> > > given socket is in. I can currently bruteforce this by using INET_DIAG, and
+> > > enumerating namespaces and working backwards.
+> > 
+> > Namespace is not a per-socket, but a per-process attribute. So each
+> > socket of a process belongs to the same namespace.
+> > 
+> > Could you elaborate what kind of problem you are trying to solve?
+> > Maybe there is a more simple solution. for it.
+> > 
+> > -- 
+> > Sergey
 > 
-A small nit, it is better to replace it by the simple msleep() call: msleep(jiffies_to_msecs(1));
+> That's not entirely true. See the folowing code:
+> 
+> int main() {
+> 	int fd1, fd2;
+> 	fd1 = socket(AF_INET, SOCK_STREAM, 0);
+> 	assert(fd1 >= 0);
+> 	assert(unshare(CLONE_NEWNET) == 0);
+> 	fd2 = socket(AF_INET, SOCK_STREAM, 0);
+> 	assert(fd2 >= 0);
+> }
+> 
+> fd1 and fd2 have different sock_net.
+> 
+> The context for this is:
+> https://linuxplumbersconf.org/event/11/contributions/932/
+> 
+> We need to figure out, for a given socket, if it has reachability to a given IP.
 
---
-Vlad Rezki
+So, I was lazy / misread documentation. It turns out SIOCGSKNS does exactly
+what I need.
+
+Nonetheless, it's a little weird and awkward that it is exists. I was wondering
+if this functionality made sense as part of kcmp. I wrote up a quick patch
+to see if anyone was interested:
+
+diff --git a/include/uapi/linux/kcmp.h b/include/uapi/linux/kcmp.h
+index ef1305010925..d6b9c3923d20 100644
+--- a/include/uapi/linux/kcmp.h
++++ b/include/uapi/linux/kcmp.h
+@@ -14,6 +14,7 @@ enum kcmp_type {
+ 	KCMP_IO,
+ 	KCMP_SYSVSEM,
+ 	KCMP_EPOLL_TFD,
++	KCMP_NETNS,
+ 
+ 	KCMP_TYPES,
+ };
+diff --git a/kernel/kcmp.c b/kernel/kcmp.c
+index 5353edfad8e1..8fadae4b588f 100644
+--- a/kernel/kcmp.c
++++ b/kernel/kcmp.c
+@@ -18,6 +18,8 @@
+ #include <linux/file.h>
+ 
+ #include <asm/unistd.h>
++#include <net/net_namespace.h>
++#include <net/sock.h>
+ 
+ /*
+  * We don't expose the real in-memory order of objects for security reasons.
+@@ -132,6 +134,58 @@ static int kcmp_epoll_target(struct task_struct *task1,
+ }
+ #endif
+ 
++#ifdef CONFIG_NET
++static int __kcmp_netns_target(struct task_struct *task1,
++			       struct task_struct *task2,
++			       struct file *filp1,
++			       struct file *filp2)
++{
++	struct socket *sock1, *sock2;
++	struct net *net1, *net2;
++
++	sock1 = sock_from_file(filp1);
++	sock2 = sock_from_file(filp1);
++	if (!sock1 || !sock2)
++		return -ENOTSOCK;
++
++	net1 = sock_net(sock1->sk);
++	net2 = sock_net(sock2->sk);
++
++	return kcmp_ptr(net1, net2, KCMP_NETNS);
++}
++
++static int kcmp_netns_target(struct task_struct *task1,
++			     struct task_struct *task2,
++			     unsigned long idx1,
++			     unsigned long idx2)
++{
++	struct file *filp1, *filp2;
++
++	int ret = -EBADF;
++
++	filp1 = fget_task(task1, idx1);
++	if (filp1) {
++		filp2 = fget_task(task2, idx2);
++		if (filp2) {
++			ret = __kcmp_netns_target(task1, task2, filp1, filp2);
++			fput(filp2);
++		}
++
++		fput(filp1);
++	}
++
++	return ret;
++}
++#else
++static int kcmp_netns_target(struct task_struct *task1,
++			     struct task_struct *task2,
++			     unsigned long idx1,
++			     unsigned long idx2)
++{
++	return -EOPNOTSUPP;
++}
++#endif
++
+ SYSCALL_DEFINE5(kcmp, pid_t, pid1, pid_t, pid2, int, type,
+ 		unsigned long, idx1, unsigned long, idx2)
+ {
+@@ -206,6 +260,9 @@ SYSCALL_DEFINE5(kcmp, pid_t, pid1, pid_t, pid2, int, type,
+ 	case KCMP_EPOLL_TFD:
+ 		ret = kcmp_epoll_target(task1, task2, idx1, (void *)idx2);
+ 		break;
++	case KCMP_NETNS:
++		ret = kcmp_netns_target(task1, task2, idx1, idx2);
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+
