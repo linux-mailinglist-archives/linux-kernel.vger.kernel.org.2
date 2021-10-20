@@ -2,117 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99E04345A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DED04345A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhJTHDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:03:06 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:51098
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229789AbhJTHDF (ORCPT
+        id S229943AbhJTHDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:03:18 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56544 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhJTHDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:03:05 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 20 Oct 2021 03:03:17 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 64F2F40257
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:00:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634713250;
-        bh=9bjdXHVOrSvIBWOc34yHW9pLuEO40fxL7CkdiqqaGyY=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Ie9K8/jTBu0b+adN7P1Zup44PFfnjfZkf23OsL6OTF6FW5oebVdR7RXIWYPJaBAU6
-         Q3U7WDT5DiSHBEyZRE/pM8bmJmW08MehpD4jLERZIFl2Gicly3U6tq2PCVshSipPJX
-         Sfy1AaD5fK9BXWbRAz89wVbMMv4d4Mbbr4Hqn4ccHNeVRgaZ1pE1YlCXZRH4lEFhjB
-         N8Jq7Xcjj+wfRsMKwixzuI18u6wTC8Rm78g3z8vALsPJsjOkGLsMJiyuPG4WvSelcq
-         1y0F1aquFTO6EnbpcxSMwZC2d4EMevxsE/IBX2w2aV/4y9eNSwieveQREvWO2axCxt
-         d9AtMsEC7DIxQ==
-Received: by mail-lf1-f70.google.com with SMTP id h8-20020a056512220800b003fdf2283e82so2722088lfu.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:00:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9bjdXHVOrSvIBWOc34yHW9pLuEO40fxL7CkdiqqaGyY=;
-        b=GbJju9Jo7X+gRrsbCLBODb2buuWjiKWTQcik8J2guKvodvcK0v71d4ESXAW1m4Kq1A
-         upUHMhEVP4+qp4auJ3P6r1YiC3Y0nYCr3u/PiQsLVxKLt8D4jpXshtXf8JNHh5t7Yqtc
-         4buvzRSqpIVIKZgqR+0tQqkEaEPuLtvqUiEmNbe5Zrn53vDE1UKyl/fzVQZB+oO8tgH/
-         AIammifKbnUVv6+ufP0pUUWgjCaXtjLPjrp+6idnf8V6GliYiRfOyOrZ14uUbF4PDJNG
-         K140OV985F5t6+OgD2tMOlP5aihc83Gi/F9fiwEHL6PuqoAejxYRTdXdcgh5sgUXMkmM
-         FgAg==
-X-Gm-Message-State: AOAM532o7c/kI1FHPD9p0pO3SPqjeUmQiQzsk/3aL+oc2JBa4JvpeYji
-        cRw6qkTNfFlY7q52/q2HC41BT19Qk0ZJiNAu5kHRthXt5+XKbeX8yhL7vAbK0sAG94ozH98rq0x
-        IPszpide2DbYo6WQrwaR3BNmObqLhBuv9CfhOiq7x5A==
-X-Received: by 2002:a19:48c9:: with SMTP id v192mr10274536lfa.269.1634713249508;
-        Wed, 20 Oct 2021 00:00:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzFnuOeJrsLzrbx6D4CBtk/GXOJiTJ5G3/0lCJFHQczwnpGGx59K2hBW6Uu+m127SqlR7eGSw==
-X-Received: by 2002:a19:48c9:: with SMTP id v192mr10274504lfa.269.1634713249254;
-        Wed, 20 Oct 2021 00:00:49 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id q24sm117882lfr.138.2021.10.20.00.00.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 00:00:48 -0700 (PDT)
-Subject: Re: [PATCH v2 6/9] mfd: max77714: Add driver for Maxim MAX77714 PMIC
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20211019145919.7327-1-luca@lucaceresoli.net>
- <20211019145919.7327-7-luca@lucaceresoli.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <50ada6b7-44e6-6d4b-6784-405bb86aebbc@canonical.com>
-Date:   Wed, 20 Oct 2021 09:00:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 681251F43E4F;
+        Wed, 20 Oct 2021 08:01:02 +0100 (BST)
+Date:   Wed, 20 Oct 2021 09:00:58 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
+ suspend
+Message-ID: <20211020090058.58af1087@collabora.com>
+In-Reply-To: <20211020085250.030ef244@collabora.com>
+References: <20211011115253.38497-1-sean@geanix.com>
+        <20211011160546.707b737b@collabora.com>
+        <20211015082206.244a2316@xps13>
+        <20211019180800.3v7emokse6lkpjvk@skn-laptop>
+        <20211020085250.030ef244@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211019145919.7327-7-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2021 16:59, Luca Ceresoli wrote:
-> Add a simple driver for the Maxim MAX77714 PMIC, supporting RTC and
-> watchdog only.
-> 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> 
-> ---
-> 
-> Changes in v2:
->  - fix "watchdog" word in heading comment (Guenter Roeck)
->  - move struct max77714 to .c file (Krzysztof Kozlowski)
->  - change include guard format (Krzysztof Kozlowski)
->  - allow building as a module (Krzysztof Kozlowski)
->  - remove of_match_ptr usage (Krzysztof Kozlowski / lkp)
->    (Reported-by: kernel test robot <lkp@intel.com>)
-> ---
->  MAINTAINERS                  |   2 +
->  drivers/mfd/Kconfig          |  14 +++
->  drivers/mfd/Makefile         |   1 +
->  drivers/mfd/max77714.c       | 165 +++++++++++++++++++++++++++++++++++
->  include/linux/mfd/max77714.h |  60 +++++++++++++
->  5 files changed, 242 insertions(+)
->  create mode 100644 drivers/mfd/max77714.c
->  create mode 100644 include/linux/mfd/max77714.h
-> 
+On Wed, 20 Oct 2021 08:52:50 +0200
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
 
+> On Tue, 19 Oct 2021 20:08:00 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
+> 
+> > On Fri, Oct 15, 2021 at 08:22:06AM +0200, Miquel Raynal wrote:  
+> > > Hi Sean,
+> > > 
+> > > boris.brezillon@collabora.com wrote on Mon, 11 Oct 2021 16:05:46 +0200:
+> > >     
+> > > > On Mon, 11 Oct 2021 13:52:50 +0200    
+> > 
+> > [ ... ]
+> >   
+> > >     
+> > > > > One (small) issue still present. gpmi_nand.c uses the rwsem before it's
+> > > > > initialized. Seems cumbersome to have every mtd/nand driver to call
+> > > > > init_waitqueue_head() and init_rwsem(). Could we somehow move the call
+> > > > > to mtd_set_dev_defaults() before nand_create_bbt()?      
+> > > > 
+> > > > I have a nasty trick for that one, but I'm not sure Miquel will like it
+> > > > (actually, I don't like it either, but it's so simple compared to the
+> > > > other options we have that I'm tempted to go for this approach until
+> > > > someone has time to invest in a cleaner solution :-)):
+> > > > 
+> > > > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > > > index 3d6c6e880520..a9ac2d528a4d 100644
+> > > > --- a/drivers/mtd/nand/raw/nand_base.c
+> > > > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > > > @@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+> > > >         mtd->_sync = nand_sync;
+> > > >         mtd->_lock = nand_lock;
+> > > >         mtd->_unlock = nand_unlock;
+> > > > -       mtd->_suspend = nand_suspend;
+> > > > -       mtd->_resume = nand_resume;
+> > > >         mtd->_reboot = nand_shutdown;
+> > > >         mtd->_block_isreserved = nand_block_isreserved;
+> > > >         mtd->_block_isbad = nand_block_isbad;
+> > > > @@ -6269,6 +6267,13 @@ static int nand_scan_tail(struct nand_chip *chip)
+> > > >         if (ret)
+> > > >                 goto err_free_secure_regions;
+> > > >  
+> > > > +       /*
+> > > > +        * Populate the suspend/resume hooks after the BBT has been scanned to
+> > > > +        * avoid using the suspend lock and resume waitqueue which are only
+> > > > +        * initialized when mtd_device_register() is called.
+> > > > +        */
+> > > > +       mtd->_suspend = nand_suspend;
+> > > > +       mtd->_resume = nand_resume;
+> > > >         return 0;    
+> > > 
+> > > I'm fine with this as long as it is documented for now.
+> > >     
+> > 
+> > Hi Boris and Miquel,
+> > 
+> > gpmi-nand.c sets NAND_SKIP_BBTSCAN so we won't get there and populate
+> > suspend resume hooks :(
+> > Guess there is other drivers that does the same thing...  
+> 
+> This should fix the issue:
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 3d6c6e880520..c92b17f66994 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+>         mtd->_sync = nand_sync;
+>         mtd->_lock = nand_lock;
+>         mtd->_unlock = nand_unlock;
+> -       mtd->_suspend = nand_suspend;
+> -       mtd->_resume = nand_resume;
+>         mtd->_reboot = nand_shutdown;
+>         mtd->_block_isreserved = nand_block_isreserved;
+>         mtd->_block_isbad = nand_block_isbad;
+> @@ -6262,13 +6260,21 @@ static int nand_scan_tail(struct nand_chip *chip)
+>  
+>         /* Check, if we should skip the bad block table scan */
+>         if (chip->options & NAND_SKIP_BBTSCAN)
+> -               return 0;
+> +               goto out;
+>  
+>         /* Build bad block table */
+>         ret = nand_create_bbt(chip);
+>         if (ret)
+>                 goto err_free_secure_regions;
+>  
+> +out:
+> +       /*
+> +        * Populate the suspend/resume hooks after the BBT has been scanned to
+> +        * avoid using the suspend lock and resume waitqueue which are only
+> +        * initialized when mtd_device_register() is called.
+> +        */
+> +       mtd->_suspend = nand_suspend;
+> +       mtd->_resume = nand_resume;
+>         return 0;
+>  
+>  err_free_secure_regions:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Actually, this version is even cleaner:
 
-
-Best regards,
-Krzysztof
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 3d6c6e880520..98c39b7f6279 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+        mtd->_sync = nand_sync;
+        mtd->_lock = nand_lock;
+        mtd->_unlock = nand_unlock;
+-       mtd->_suspend = nand_suspend;
+-       mtd->_resume = nand_resume;
+        mtd->_reboot = nand_shutdown;
+        mtd->_block_isreserved = nand_block_isreserved;
+        mtd->_block_isbad = nand_block_isbad;
+@@ -6261,14 +6259,20 @@ static int nand_scan_tail(struct nand_chip *chip)
+                goto err_free_interface_config;
+ 
+        /* Check, if we should skip the bad block table scan */
+-       if (chip->options & NAND_SKIP_BBTSCAN)
+-               return 0;
+-
+-       /* Build bad block table */
+-       ret = nand_create_bbt(chip);
+-       if (ret)
+-               goto err_free_secure_regions;
++       if (chip->options & NAND_SKIP_BBTSCAN) {
++               /* Build bad block table */
++               ret = nand_create_bbt(chip);
++               if (ret)
++                       goto err_free_secure_regions;
++       }
+ 
++       /*
++        * Populate the suspend/resume hooks after the BBT has been scanned to
++        * avoid using the suspend lock and resume waitqueue which are only
++        * initialized when mtd_device_register() is called.
++        */
++       mtd->_suspend = nand_suspend;
++       mtd->_resume = nand_resume;
+        return 0;
+ 
+ err_free_secure_regions:
