@@ -2,109 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483DC434761
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF7243475F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhJTIzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhJTIzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:55:40 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC54EC06161C;
-        Wed, 20 Oct 2021 01:53:26 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d9so2356018pfl.6;
-        Wed, 20 Oct 2021 01:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=DstmdxqQBhlt++xah38eM3RnFp7UHOdrRmQoIgCg+34=;
-        b=nmcENzGLEY0g/VDHyHNb+r0gOnPcveOEu5q0HoJ0z+f5DWQuZrxHlIg/2ozA/BnBBE
-         SboQjj2YhJJ5eVsDX32b8fzleeBb3NlExDwID/JHs3Y7sjVnwh+BjLPeoeYKxl5PezRP
-         i0qwvlpnsaBuW7GkIHl0t3ZWsCeeYXyKsY/WZ3kbUIBXvhcnBzoflWIjdfn1S26uv8wN
-         MqU+XudN8v2CUIy7tiQxPSOiNAXJl3UetVdt48ZpbonlJ0fTIVNSEJ+4KUUaOpBAGrvn
-         zrMYoMU5C2x6XMJRO6ahTFokb99urpm3gUNU+V4gy/JALdEyH962Ad9pwbnFt5s7z7o/
-         WZng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=DstmdxqQBhlt++xah38eM3RnFp7UHOdrRmQoIgCg+34=;
-        b=gc4HuUOdNeRUpzkvEABoE2XjgfjFGYynBFtwt+zmRjZ2QRhbsAo9SbhA2XVg4O08cq
-         GEajX+4WzqgnVARKY9zRVLTt0c+RnzYHQtYFAmLmLsToTpCsv3kxcUI0WZuPMQ3bD2NS
-         eIAoP2CgOcyRIL2lIO6BNJ9nqBGHidOeVXwj+t3NAnHnf0CphF4ztsZdcMefhVmk7LKl
-         jrg00HFoCRjas0tqmNQC/DwAeZR6tmqm4+Y5HoercXkE4smWhn0T/bvSaZHxupVMsrNa
-         l5usF7uJ/KBu9lyKlWeGp1Uc8uLmp9kQe0UJH7tivUY3J1zFXMAC3Y1wv3TBoCU0u+pZ
-         o/Vg==
-X-Gm-Message-State: AOAM531lOLzmgcQ3OqYPyBPLG8ICl/j6bDUNBYIFzJrdANry738ZmvJb
-        1Mo9vN3wDwSWUZ7Jq5V4WmTF7EEseg99vw==
-X-Google-Smtp-Source: ABdhPJwH+YtWjzrqw1vko7XW92fdaOn1IzU7xP50eFZOJIPsoVkiSna56fjWz4mA1sfEJGkVdEOyKw==
-X-Received: by 2002:a05:6a00:15c9:b0:44c:a998:b50d with SMTP id o9-20020a056a0015c900b0044ca998b50dmr4976922pfu.49.1634720006101;
-        Wed, 20 Oct 2021 01:53:26 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.112])
-        by smtp.googlemail.com with ESMTPSA id x7sm5109552pjl.55.2021.10.20.01.53.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Oct 2021 01:53:25 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v4] KVM: emulate: Don't inject #GP when emulating RDMPC if CR0.PE=0
-Date:   Wed, 20 Oct 2021 01:52:31 -0700
-Message-Id: <1634719951-73285-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        id S229677AbhJTIz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:55:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhJTIz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:55:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A12A86103D;
+        Wed, 20 Oct 2021 08:53:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634719993;
+        bh=gsHQEAy2iXwhqCCwd80U1OyWDfuz5ks3Q6+JnbpUrTU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iDLsTZFnej0t/d9a9GTCv08jcJfvXYUdigE8URPhvZaK8ykEgrfD7YwbjDPF5RcI2
+         I4zp6CY+9wVOJ9g+vFvtV5As4CeT+8WBJIRgS4PnWaP1YNC3IZQPShGE5eRwU+u3nN
+         ABuxDQ7aMmnR32vucRTDpgfI/VGteFcNKr4ykW38RiardLMNh4ETxRLocItjUnZ92S
+         T9EE5+XWEJQ/ieiTJBKQG0oDfOG1zVu6EKWjtkoiYv+VlbcgY+67SsZvvfzbsZdOTE
+         vy2q6KrT7eqYBizOcHPkYc40PcM+Hrhf0/aQnmYxiwTTmuPNDqWMx7kn9aSP6ZuxoG
+         OQx0ydAyVFwhg==
+Date:   Wed, 20 Oct 2021 11:53:05 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Chen Yu <yu.c.chen@intel.com>, linux-acpi@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>
+Subject: Re: [PATCH v4 3/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update Telemetry
+Message-ID: <YW/Y8bUkYnikpur3@kernel.org>
+References: <cover.1634310710.git.yu.c.chen@intel.com>
+ <838245e376c7e6fd0fe1ef55d004ed53763846a2.1634310710.git.yu.c.chen@intel.com>
+ <YWrrYWeW7uaiJ51u@kroah.com>
+ <20211020082939.GA44221@chenyu-desktop>
+ <YW/S8N9vR46/wSJY@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW/S8N9vR46/wSJY@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Wed, Oct 20, 2021 at 10:27:28AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Oct 20, 2021 at 04:29:39PM +0800, Chen Yu wrote:
+> > > > +ssize_t pfru_log_read(struct file *filp, char __user *ubuf,
+> > > > +		      size_t size, loff_t *off)
+> > > > +{
+> > > > +	struct pfru_log_data_info info;
+> > > > +	phys_addr_t base_addr;
+> > > > +	int buf_size, ret;
+> > > > +	char *buf_ptr;
+> > > > +
+> > > > +	if (!pfru_log_dev)
+> > > > +		return -ENODEV;
+> > > > +
+> > > > +	if (*off < 0)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	ret = get_pfru_log_data_info(&info, pfru_log_dev->info.log_type);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	base_addr = (phys_addr_t)(info.chunk2_addr_lo | (info.chunk2_addr_hi << 32));
+> > > > +	/* pfru update has not been launched yet.*/
+> > > > +	if (!base_addr)
+> > > > +		return -EBUSY;
+> > > > +
+> > > > +	buf_size = info.max_data_size;
+> > > > +	if (*off >= buf_size)
+> > > > +		return 0;
+> > > > +
+> > > > +	buf_ptr = memremap(base_addr, buf_size, MEMREMAP_WB);
+> > > > +	if (IS_ERR(buf_ptr))
+> > > > +		return PTR_ERR(buf_ptr);
+> > > > +
+> > > > +	size = min_t(size_t, size, buf_size - *off);
+> > > > +	if (copy_to_user(ubuf, buf_ptr + *off, size))
+> > > > +		ret = -EFAULT;
+> > > > +	else
+> > > > +		ret = 0;
+> > > 
+> > > As all you are doing is mapping some memory and reading from it, why do
+> > > you need a read() file operation at all?  Why not just use mmap?
+> > > 
+> > In the beginning mmap() interface was provided to the user. Then it was
+> > realized that there is no guarantee in the spec that, the physical address
+> > provided by the BIOS would remain unchanged. So instead of asking the user
+> > to mmap the file each time before reading the log, the read() is leveraged
+> > here to always memremap() the latest address.
+> 
+> So you are forced to memremap on _EVERY_ read call because the BIOS can
+> change things underneath us without the kernel knowing about it?  How
+> does the chunk2_addr_lo and _hi values change while the system is
+> running?  Where does that happen, and isn't this going to be a very slow
+> and expensive read call all the time?
 
-SDM mentioned that we should #GP for rdpmc if ECX is not valid or 
-(CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1).
+And maybe it is something that can be fixed in the spec so that the address
+will remain constant?
 
-Let's add the CR0.PE is 1 checking to rdpmc emulate, though this isn't
-strictly necessary since it's impossible for CPL to be >0 if CR0.PE=0.
+(I realise it's wishful thinking, but sill...)
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
-v3 -> v4:
- * add comments instead of pseudocode
-v2 -> v3:
- * add the missing 'S'
-v1 -> v2:
- * update patch description
-
- arch/x86/kvm/emulate.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 9a144ca8e146..ab7ec569e8c9 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -4213,6 +4213,7 @@ static int check_rdtsc(struct x86_emulate_ctxt *ctxt)
- static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
- {
- 	u64 cr4 = ctxt->ops->get_cr(ctxt, 4);
-+	u64 cr0 = ctxt->ops->get_cr(ctxt, 0);
- 	u64 rcx = reg_read(ctxt, VCPU_REGS_RCX);
- 
- 	/*
-@@ -4222,7 +4223,7 @@ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
- 	if (enable_vmware_backdoor && is_vmware_backdoor_pmc(rcx))
- 		return X86EMUL_CONTINUE;
- 
--	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt)) ||
-+	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt) && (cr0 & X86_CR0_PE)) ||
- 	    ctxt->ops->check_pmc(ctxt, rcx))
- 		return emulate_gp(ctxt, 0);
- 
 -- 
-2.25.1
-
+Sincerely yours,
+Mike.
