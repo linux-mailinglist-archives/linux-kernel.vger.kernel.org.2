@@ -2,152 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F72D434F45
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6307C434F4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhJTPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
+        id S230369AbhJTPue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbhJTPuE (ORCPT
+        with ESMTP id S230460AbhJTPud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:50:04 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC126C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:47:49 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id l38-20020a05600c1d2600b0030d80c3667aso11248119wms.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V5dUc3E8xYRjRHxDa64Ps24H2rGkhTRP9vrTdU8yWzE=;
-        b=xwh+5HDl11axUbn19OofzzxEzk1oFCc11uAMTDUo4qVWkoZmsVZY1c37pZYXIopGgL
-         QwMAXvHTZkID+BJ9WC9HFJqfniPfPx3QJJk7hCQR8GwDhzxyJbSDILmRmpDYb13GsX3s
-         dR9RGHRbOZKb2WYuD6+teSL5PegfLkcqpP1RaNMHPKPXiD3TBaBqd+jemi4oFjvWJaFg
-         BoAyRw2No68vcC3DfdrS1QPD9BGFtCMglbjd2iTTDJukvwTvUvnbvTGneiStXfQV+ebG
-         weUmbkErwHQCUpLhl/xmhzMvktPxQ9ku4IIr965xzFVYLCHJ+8bKLxoxR62g07th7ifq
-         JjLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V5dUc3E8xYRjRHxDa64Ps24H2rGkhTRP9vrTdU8yWzE=;
-        b=QZYYh1xiP5iponq8mpaA8rr2p05I7Bf2a97NPuGiWAb0utWvsmydI48hf5c4tyjC5R
-         ap9qvDoh094C5QjqfFHbK9sU2J3WOcailzn9k8xzZ/2EszXnad93fhEn68vrsN3hljOP
-         /yPZkM6JvZackN8Q2NiYXITpwAMEvtZ4MP31YZBYk48xyhCmLInbXb4mu1QTHmJM8S52
-         fi7wfgKzPVjwT5jqSePGrPooB9DVwTX8MRz5CDLtoAxGhFldzcYhxGU2Mk9tpd42zwgj
-         OZIe5ARzqGvKfIdZa6hVuuVYh3Xow9sIHoe2KG6RtenOxbUcrqj/O6q6unXZWKViSUiW
-         WmxA==
-X-Gm-Message-State: AOAM530fcNNPe8BPkifBiNcqUQJBS8pRwCA56mVHK3z55DNT5oLjh5rx
-        Trk7adGhaTMU+tJDbvs8iOzaWA==
-X-Google-Smtp-Source: ABdhPJytV+zF2EuYHFhOYaHgVY4QzD+WkscPKbYnywhAcDkiX9dN9ETPFpqyMdt7bJyadTVVrtaJQQ==
-X-Received: by 2002:a5d:59ae:: with SMTP id p14mr40449wrr.76.1634744868502;
-        Wed, 20 Oct 2021 08:47:48 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id e8sm3543288wrg.48.2021.10.20.08.47.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 08:47:48 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: ufshcd-pltfrm: fix memory leak due to probe
- defer
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     draviv@codeaurora.org, sthumma@codeaurora.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org
-References: <20210914092214.6468-1-srinivas.kandagatla@linaro.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <48895dce-8c26-0763-419d-9b53d7f7281b@linaro.org>
-Date:   Wed, 20 Oct 2021 16:47:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 11:50:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEC4C06161C;
+        Wed, 20 Oct 2021 08:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HBm/Dqi3jW7uqk4DDOcgZCLMM+rxars2xSrNqJBELD4=; b=2Nfb8jhDT8Z/1YppkaaGzMBE5F
+        7DhHQ0SucI4gkSMWSPV7qRIfV71Fm6qrfDrJmlPqzT7KRfnj1yBiDyOvhgFH59z59TYTW1kELLAVg
+        mLk1u/MgB+DYSZ1pYh9quyEyxaf9eS7gY6oh1R2myWpq2f4ZN+t8O9pDmupq3jh8lU1/6coGTgRIG
+        C8k2APmUBWLR1sFqAAQXTM7S5Y5k25OWJXYSBl+d9lruqyMox+TX5UmnYt1ffUmBrwhJfbE6Q8mm2
+        r6X/+eHUQhd8s8zbcTZND5RIi0WiXLOOp5v6be+Wi35/qyZrcuIhl8AEJKo3MYxcs2OMjnbQngNMf
+        RACz1Adg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdDoy-0057WV-4E; Wed, 20 Oct 2021 15:48:04 +0000
+Date:   Wed, 20 Oct 2021 08:48:04 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YXA6NMhwoiIMeHji@bombadil.infradead.org>
+References: <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+ <YWk9e957Hb+I7HvR@T590>
+ <YWm68xUnAofop3PZ@bombadil.infradead.org>
+ <YWq3Z++uoJ/kcp+3@T590>
+ <YW3LuzaPhW96jSBK@bombadil.infradead.org>
+ <YW4uwep3BCe9Vxq8@T590>
+ <YW7kFXlzRrvwzARP@bombadil.infradead.org>
+ <YW7ygbLAwm2/LZFl@T590>
+ <YW8eSq2B+5FtOLZb@bombadil.infradead.org>
+ <YW9tqPunx5bssxIz@T590>
 MIME-Version: 1.0
-In-Reply-To: <20210914092214.6468-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW9tqPunx5bssxIz@T590>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14/09/2021 10:22, Srinivas Kandagatla wrote:
-> UFS drivers that probe defer will endup leaking memory allocated for
-> clk and regulator names via kstrdup because the structure that is
-> holding this memory is allocated via devm_* variants which will be
-> freed during probe defer but the names are never freed.
+On Wed, Oct 20, 2021 at 09:15:20AM +0800, Ming Lei wrote:
+> On Tue, Oct 19, 2021 at 12:36:42PM -0700, Luis Chamberlain wrote:
+> > On Wed, Oct 20, 2021 at 12:29:53AM +0800, Ming Lei wrote:
+> > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> > > index d0cae7a42f4d..a14ba3d350ea 100644
+> > > --- a/drivers/block/zram/zram_drv.c
+> > > +++ b/drivers/block/zram/zram_drv.c
+> > > @@ -1704,12 +1704,12 @@ static void zram_reset_device(struct zram *zram)
+> > >  	set_capacity_and_notify(zram->disk, 0);
+> > >  	part_stat_set_all(zram->disk->part0, 0);
+> > >  
+> > > -	up_write(&zram->init_lock);
+> > >  	/* I/O operation under all of CPU are done so let's free */
+> > >  	zram_meta_free(zram, disksize);
+> > >  	memset(&zram->stats, 0, sizeof(zram->stats));
+> > >  	zcomp_destroy(comp);
+> > >  	reset_bdev(zram);
+> > > +	up_write(&zram->init_lock);
+> > >  }
+> > >  
+> > >  static ssize_t disksize_store(struct device *dev,
+> > 
+> > With this, it still ends up in a state where we loop and can't get out of:
+> > 
+> > zram: Can't change algorithm for initialized device
 > 
-> Use same devm_* variant of kstrdup to free the memory allocated to
-> name when driver probe defers.
-> 
-> Kmemleak found around 11 leaks on Qualcomm Dragon Board RB5:
-> 
-> unreferenced object 0xffff66f243fb2c00 (size 128):
->    comm "kworker/u16:0", pid 7, jiffies 4294893319 (age 94.848s)
->    hex dump (first 32 bytes):
->      63 6f 72 65 5f 63 6c 6b 00 76 69 72 74 75 61 6c  core_clk.virtual
->      2f 77 6f 72 6b 71 75 65 75 65 2f 73 63 73 69 5f  /workqueue/scsi_
->    backtrace:
->      [<000000006f788cd1>] slab_post_alloc_hook+0x88/0x410
->      [<00000000cfd1372b>] __kmalloc_track_caller+0x138/0x230
->      [<00000000a92ab17b>] kstrdup+0xb0/0x110
->      [<0000000037263ab6>] ufshcd_pltfrm_init+0x1a8/0x500
->      [<00000000a20a5caa>] ufs_qcom_probe+0x20/0x58
->      [<00000000a5e43067>] platform_probe+0x6c/0x118
->      [<00000000ef686e3f>] really_probe+0xc4/0x330
->      [<000000005b18792c>] __driver_probe_device+0x88/0x118
->      [<00000000a5d295e8>] driver_probe_device+0x44/0x158
->      [<000000007e83f58d>] __device_attach_driver+0xb4/0x128
->      [<000000004bfa4470>] bus_for_each_drv+0x68/0xd0
->      [<00000000b89a83bc>] __device_attach+0xec/0x170
->      [<00000000ada2beea>] device_initial_probe+0x14/0x20
->      [<0000000079921612>] bus_probe_device+0x9c/0xa8
->      [<00000000d268bf7c>] deferred_probe_work_func+0x90/0xd0
->      [<000000009ef64bfa>] process_one_work+0x29c/0x788
-> unreferenced object 0xffff66f243fb2c80 (size 128):
->    comm "kworker/u16:0", pid 7, jiffies 4294893319 (age 94.848s)
->    hex dump (first 32 bytes):
->      62 75 73 5f 61 67 67 72 5f 63 6c 6b 00 00 00 00  bus_aggr_clk....
->      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-> 
-> with this patch no memory leaks are reported.
-> Fixes: aa4976130934 ("ufs: Add regulator enable support")
-> Fixes: c6e79dacd86f ("ufs: Add clock initialization support")
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
+> Again, you are running two zram02.sh[1] on /dev/zram0, that isn't unexpected
 
-Gentle Ping ?
+You mean that it is not expected? If so then yes, of course.
 
-This is not a critical issue, but it will be nice to get this fixed 
-atleast in 5.16 release.
+> behavior. Here the difference is just timing.
 
---srini
+Right, but that is what helped reproduce a difficutl to re-produce customer
+bug. Once you find an easy way to reproduce a reported issue you stick
+with it and try to make the situation worse to ensure no more bugs are
+present.
 
->   drivers/scsi/ufs/ufshcd-pltfrm.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> Also you did not answer my question about your test expected result when
+> running the following script from two terminal concurrently:
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> index 8859c13f4e09..eaeae83b999f 100644
-> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> @@ -91,7 +91,7 @@ static int ufshcd_parse_clock_info(struct ufs_hba *hba)
->   
->   		clki->min_freq = clkfreq[i];
->   		clki->max_freq = clkfreq[i+1];
-> -		clki->name = kstrdup(name, GFP_KERNEL);
-> +		clki->name = devm_kstrdup(dev, name, GFP_KERNEL);
->   		if (!strcmp(name, "ref_clk"))
->   			clki->keep_link_active = true;
->   		dev_dbg(dev, "%s: min %u max %u name %s\n", "freq-table-hz",
-> @@ -126,7 +126,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
->   	if (!vreg)
->   		return -ENOMEM;
->   
-> -	vreg->name = kstrdup(name, GFP_KERNEL);
-> +	vreg->name = devm_kstrdup(dev, name, GFP_KERNEL);
->   
->   	snprintf(prop_name, MAX_PROP_SIZE, "%s-max-microamp", name);
->   	if (of_property_read_u32(np, prop_name, &vreg->max_uA)) {
-> 
+> 	while true; do
+> 		PATH=$PATH:$PWD:$PWD/../../../lib/ ./zram02.sh;
+> 	done
+
+If you run this, you should see no failures.
+
+Once you start a second script that one should cause odd issues on both
+sides but never crash or stall the module.
+
+A second series of tests is hitting CTRL-C on either randonly and
+restarting testing once again randomly.
+
+Again, neither should crash the kernel or stall the module.
+
+In the end of these tests you should be able to run the script alone
+just once and not see issues.
+
+  Luis
