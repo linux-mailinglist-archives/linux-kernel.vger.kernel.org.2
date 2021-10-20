@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6000A434975
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B9443497A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhJTK6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 06:58:10 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:12944 "EHLO smtp2.axis.com"
+        id S230134AbhJTK62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 06:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhJTK6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 06:58:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1634727356;
-  x=1666263356;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nHNmZOTmEfWp7T9719d3q3afCE/4ZU54ct9XTonwH8g=;
-  b=Heqs72ulCUIHW8hM0VIW9sP5IXk88P7DSnKcWljdY99Ac9B268N/kpdy
-   kAVerwsh3VdnOLxohzpLZanZ1eSqdT6YiKDt65TZtnI42CKtuuIh3CwTv
-   fDTHbq2BpYAFFm+f3EJDdcYr9BNwSpf74yWRmLvcdG7gMkA5HKJLkNNsi
-   vB3So+yGq2qmCPBvdkD0n32D6bw9ZiUjKnLVPErx48RJ00ED07B3K9N1i
-   7lL7Jo2lVDfxM3z0SygfYrfhcrN028nLjjJRLAdMQha2VKOVpjt+3QTtQ
-   LQ1cFUwwsLKaVx/QYmDGIUThehudlpRf2UuY/to91t8t5O4mT1y4ciNvp
-   A==;
-Date:   Wed, 20 Oct 2021 12:55:54 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Jie Deng <jie.deng@intel.com>
-CC:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel <kernel@axis.com>
-Subject: Re: [PATCH 1/2] i2c: virtio: disable timeout handling
-Message-ID: <20211020105554.GB9985@axis.com>
-References: <YW6Rj/T6dWfMf7lU@kroah.com>
- <20211019094203.3kjzch7ipbdv7peg@vireshk-i7>
- <YW6pHkXOPvtidtwS@kroah.com>
- <20211019143748.wrpqopj2hmpvblh4@vireshk-i7>
- <YW8LFTcBuN1bB3PD@ninjato>
- <94aa39ab-4ed6-daee-0402-f58bfed0cadd@intel.com>
- <YW+q1yQ8MuhHINAs@kroah.com>
- <8e182ea8-5016-fa78-3d77-eefba7d58612@intel.com>
- <20211020064128.y2bjsbdmpojn7pjo@vireshk-i7>
- <01d9c992-28cc-6644-1e82-929fc46f91b4@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <01d9c992-28cc-6644-1e82-929fc46f91b4@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S229864AbhJTK61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 06:58:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D97696128B;
+        Wed, 20 Oct 2021 10:56:12 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1md9GU-000PbK-T5; Wed, 20 Oct 2021 11:56:10 +0100
+Date:   Wed, 20 Oct 2021 11:56:06 +0100
+Message-ID: <87a6j4c6d5.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
+        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM
+        SUB-ARCHITECTURES), linux-mips@vger.kernel.org (open list:MIPS),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE)
+Subject: Re: [PATCH v5 01/14] irqchip: Provide platform_device to of_irq_init_cb_t
+In-Reply-To: <20211019215855.1920099-2-f.fainelli@gmail.com>
+References: <20211019215855.1920099-1-f.fainelli@gmail.com>
+        <20211019215855.1920099-2-f.fainelli@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: f.fainelli@gmail.com, linux-kernel@vger.kernel.org, robh@kernel.org, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, tsbogend@alpha.franken.de, tglx@linutronix.de, robh+dt@kernel.org, frowand.list@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 09:04:45AM +0200, Jie Deng wrote:
-> On 2021/10/20 14:41, Viresh Kumar wrote:
-> > On 20-10-21, 14:35, Jie Deng wrote:
-> >> Yes, but we need to know what's the best value to be configured for a
-> >> specific "other side".
-> >>
-> >> I think the "other side" should be more aware of what value is reasonable to
-> >> be used.
-> > If we _really_ need that, then it would require an update to the
-> > specification first.
-> >
-> > I am not sure if the other side is the only party in play here. It
-> > depends on the entire setup and not just the hardware device.
-> > Specially with virtualisation things become really slow because of
-> > context switches, etc. It may be better for the guest userspace to
-> > decide on the value.
-> >
-> > Since this is specially for virtualisation, the kernel may set the
-> > value to few HZ by default, lets say 10 (Yeah its really high) :).
+AOn Tue, 19 Oct 2021 22:58:42 +0100,
+Florian Fainelli <f.fainelli@gmail.com> wrote:
 > 
-> I'm OK with this way for the simplicity.
+> Provide the platform device mapping to the interrupt controller node to
+> the of_irq_init_cb_t callback such that drivers can make use of it.
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/irqchip/irqchip.c  | 2 +-
+>  drivers/irqchip/qcom-pdc.c | 3 ++-
+>  drivers/of/irq.c           | 2 +-
+>  include/linux/of_irq.h     | 5 ++++-
+>  4 files changed, 8 insertions(+), 4 deletions(-)
+>
 
-That would not be safe.  Userspace can change this timeout and the end
-result with the current implementation of the driver is potentially
-kernel memory corruption, which is something userspace of course never
-should be able to trigger.
+[...]
 
-Even if the timeout were hardcoded in the driver and the driver made to
-ignore what userspace requests, it would need to be set to a
-ridiculously high value so that we can guarantee that the timeout never
-ever occurs (since the result is potentially random kernel memory
-corruption).  Which is basically equivalent to disabling the timeout
-entirely as my patch does.
+> diff --git a/include/linux/of_irq.h b/include/linux/of_irq.h
+> index aaf219bd0354..89acc8b089f0 100644
+> --- a/include/linux/of_irq.h
+> +++ b/include/linux/of_irq.h
+> @@ -9,7 +9,10 @@
+>  #include <linux/ioport.h>
+>  #include <linux/of.h>
+>  
+> -typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *);
+> +struct platform_device;
+> +
+> +typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *,
+> +				struct platform_device *);
+>  
+>  /*
+>   * Workarounds only applied to 32bit powermac machines
 
-If the timeout cannot be disabled, then the driver should be fixed to
-always copy buffers and hold on to them to avoid memory corruption in
-the case of timeout, as I mentioned in my commit message.  That would be
-quite a substantial change to the driver so it's not something I'm
-personally comfortable with doing, especially not this late in the -rc
-cycle, so I'd leave that to others.
+As pointed out in my reply to your v4 [1], this does break all users
+of IRQCHIP_DECLARE(). You can see that by applying [2].
+
+	M.
+
+[1] https://lore.kernel.org/r/87tuhcnlwt.wl-maz@kernel.org
+[2] https://lore.kernel.org/r/20211020104527.3066268-1-maz@kernel.org
+
+-- 
+Without deviation from the norm, progress is not possible.
