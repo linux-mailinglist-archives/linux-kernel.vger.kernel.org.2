@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BC8434940
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3218434945
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhJTKrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 06:47:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51272 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229864AbhJTKrg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 06:47:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634726721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8TU4HaAmyQ/Ik/9e81qaM8nooJ9cLvr8+ZGrMq2gdVQ=;
-        b=I4RmLdHbDDrg5Dk6hdnSkZ9WxZ03akG3VCR2xK5X4y5h9zYj2CbbCLcepd7nn2VJb9y9nb
-        0iQ2Y30Tg6ni+zQIy071w0rGGe2q4FPqExeVFkHi/Oz87AU3LRSEbepXRiszqDOb63xGZc
-        kYcSCK4p/a123Jadgt9Hl6cgMQjlGeY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-wZpNSMtKMhuCoY_2G5RkIg-1; Wed, 20 Oct 2021 06:45:20 -0400
-X-MC-Unique: wZpNSMtKMhuCoY_2G5RkIg-1
-Received: by mail-ed1-f72.google.com with SMTP id i7-20020a50d747000000b003db0225d219so15957654edj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 03:45:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=8TU4HaAmyQ/Ik/9e81qaM8nooJ9cLvr8+ZGrMq2gdVQ=;
-        b=OXqsRid+3xd7Fya5YUZ//R/P9CFxcBNJ559VLAQSFHNvRwytrd8kZp+8T88JH2mI00
-         o3iKh9glXs41fW+oumFuWJKdh8vqI2iG5GcOCDPkjI4udWjkngCMRBBXBrMHTZQTHrEX
-         sObCmZ6+rQn6WKncdyCnm/ceKmn2pSdw/YVXlmd6okbv4nGqIyaM5xR7JCVb6BY2NdJ8
-         W9SfFVV237Agg1EgKNijUdWaDHlwT0oDoqOl9I9Nv7A3tHln9wAGOxyztsrBHwZBTmW1
-         fXh2kW/9wzsn/gMZVdIElL1jnjJ/hV6+8s8AG9yzlicqmJRmAFGGfLO/X8CQls2xhM3P
-         nXdQ==
-X-Gm-Message-State: AOAM5307U1mcDpwZir5SRrk6gblBSuBn/i91pQV2Dd69F780ih8kX1du
-        Lfib9BKdyMKCVkYTKSXIR58SEmXgVhu2Cy6aWNyPQzV0xrrylLkLW/h0v31sTVRNffUcVheddpc
-        Rgjo0FDK1tvP6GO9rybT+qyXw
-X-Received: by 2002:a17:907:961e:: with SMTP id gb30mr5554991ejc.484.1634726717691;
-        Wed, 20 Oct 2021 03:45:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzJHOcVyawEdwH5VDpLjOZaVqrj0rofKVGiRhw/MoVTAD7k0YlN4HzsPQss6+DpGt3FYpUgWw==
-X-Received: by 2002:a17:907:961e:: with SMTP id gb30mr5554850ejc.484.1634726716376;
-        Wed, 20 Oct 2021 03:45:16 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b17sm954051edy.47.2021.10.20.03.45.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 03:45:15 -0700 (PDT)
-Message-ID: <18aed000-47f7-1fb7-d898-55a94bb1ec74@redhat.com>
-Date:   Wed, 20 Oct 2021 12:45:14 +0200
+        id S230136AbhJTKsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 06:48:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229998AbhJTKsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 06:48:04 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C992610EA;
+        Wed, 20 Oct 2021 10:45:50 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1md96S-000PUH-8O; Wed, 20 Oct 2021 11:45:48 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] irqchip: Provide stronger type checking for IRQCHIP_MATCH/IRQCHIP_DECLARE
+Date:   Wed, 20 Oct 2021 11:45:27 +0100
+Message-Id: <20211020104527.3066268-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v5] KVM: emulate: Don't inject #GP when emulating RDMPC if
- CR0.PE=0
-Content-Language: en-US
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1634724836-73721-1-git-send-email-wanpengli@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <1634724836-73721-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, kernel-team@android.com, f.fainelli@gmail.com, robh@kernel.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/21 12:13, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> SDM mentioned that, RDPMC:
-> 
->    IF (((CR4.PCE = 1) or (CPL = 0) or (CR0.PE = 0)) and (ECX indicates a supported counter))
->        THEN
->            EAX := counter[31:0];
->            EDX := ZeroExtend(counter[MSCB:32]);
->        ELSE (* ECX is not valid or CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1 *)
->            #GP(0);
->    FI;
-> 
-> Let's add a comment why CR0.PE isn't tested since it's impossible for CPL to be >0 if
-> CR0.PE=0.
-> 
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v4 -> v5:
->   * just comments
-> v3 -> v4:
->   * add comments instead of pseudocode
-> v2 -> v3:
->   * add the missing 'S'
-> v1 -> v2:
->   * update patch description
-> 
->   arch/x86/kvm/emulate.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> index 9a144ca8e146..c289809beea3 100644
-> --- a/arch/x86/kvm/emulate.c
-> +++ b/arch/x86/kvm/emulate.c
-> @@ -4222,6 +4222,9 @@ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
->   	if (enable_vmware_backdoor && is_vmware_backdoor_pmc(rcx))
->   		return X86EMUL_CONTINUE;
->   
-> +	/*
-> +	 * It's impossible for CPL to be >0 if CR0.PE=0.
-> +	 */
->   	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt)) ||
->   	    ctxt->ops->check_pmc(ctxt, rcx))
->   		return emulate_gp(ctxt, 0);
-> 
+Both IRQCHIP_DECLARE() and IRQCHIP_MATCH() use an underlying of_device_id()
+structure to encode the matching property and the init callback.
+However, this callback is stored in as a void * pointer, which obviously
+defeat any attempt at stronger type checking.
 
-Queued, thanks (with a slightly more verbose comment).
+Work around this by providing a new macro that builds on top of the
+__typecheck() primitive, and that can be used to warn when there is
+a discrepency between the drivers and core code.
 
-Paolo
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ include/linux/irqchip.h | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+index 67351aac65ef..5de0dfc5d64d 100644
+--- a/include/linux/irqchip.h
++++ b/include/linux/irqchip.h
+@@ -14,8 +14,15 @@
+ #include <linux/acpi.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
++#include <linux/of_irq.h>
+ #include <linux/platform_device.h>
+ 
++/* Undefined on purpose */
++extern of_irq_init_cb_t typecheck_irq_init_cb;
++
++#define typecheck_irq_init_cb(fn)					\
++	(__typecheck(typecheck_irq_init_cb, &fn) ? fn : fn)
++
+ /*
+  * This macro must be used by the different irqchip drivers to declare
+  * the association between their DT compatible string and their
+@@ -26,14 +33,16 @@
+  * @compstr: compatible string of the irqchip driver
+  * @fn: initialization function
+  */
+-#define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
++#define IRQCHIP_DECLARE(name, compat, fn)	\
++	OF_DECLARE_2(irqchip, name, compat, typecheck_irq_init_cb(fn))
+ 
+ extern int platform_irqchip_probe(struct platform_device *pdev);
+ 
+ #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
+ static const struct of_device_id drv_name##_irqchip_match_table[] = {
+ 
+-#define IRQCHIP_MATCH(compat, fn) { .compatible = compat, .data = fn },
++#define IRQCHIP_MATCH(compat, fn) { .compatible = compat,		\
++				    .data = typecheck_irq_init_cb(fn), },
+ 
+ #define IRQCHIP_PLATFORM_DRIVER_END(drv_name)				\
+ 	{},								\
+-- 
+2.30.2
 
