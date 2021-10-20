@@ -2,156 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F3F434ED4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BFA434EDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhJTPSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhJTPSU (ORCPT
+        id S230260AbhJTPTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:19:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21029 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229702AbhJTPTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:18:20 -0400
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25965C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:16:06 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id AA9903F36D;
-        Wed, 20 Oct 2021 17:16:00 +0200 (CEST)
-Subject: Re: [PATCH v16 6/7] arm64: dts: mt8192: add svs device information
-To:     Roger Lu <roger.lu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Fan Chen <fan.chen@mediatek.com>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        YT Lee <yt.lee@mediatek.com>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        Angus Lin <Angus.Lin@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20210428065440.3704-1-roger.lu@mediatek.com>
- <20210428065440.3704-7-roger.lu@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <855e004b-b128-70f7-b1d2-9fe957c94e08@somainline.org>
-Date:   Wed, 20 Oct 2021 17:16:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 11:19:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634743040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WVDnHFlJ2OJw3aNNq/iBi8HOeMjivlQd7nb/i1bB5F8=;
+        b=NazmM3D+nkVHeG7Meu4ZcYB34qged3IhORN/UQNsiLqVdBXjvfnLgTI2plFAhvtQNaTe4x
+        IGY6rsKui0bz7bF674atr11N0CMtDCAO9CwUdaUlGUNgSykiwEWmF+0NyHUK390NsyC/1j
+        lVi+365TkxCygdWOJN8P42PaYXrpj9w=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-NuWivmghMG-fQkPo-di0dw-1; Wed, 20 Oct 2021 11:17:19 -0400
+X-MC-Unique: NuWivmghMG-fQkPo-di0dw-1
+Received: by mail-qk1-f199.google.com with SMTP id z29-20020a05620a08dd00b0045fa369b83dso2399347qkz.9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:17:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WVDnHFlJ2OJw3aNNq/iBi8HOeMjivlQd7nb/i1bB5F8=;
+        b=1fKZS64wnehQV7l4fy3pSHZLxuA0yk5P3j7uSGj+vmSuAjUzqta2gZzCOPwFsftJB8
+         xnb9PmBu/KFTWLQMSth9aenxT2vy0C1zZe96+xPUr+UYITS5FTj2HgOElCKbC85Y1xQ6
+         flQAIk/mp/+jI3XehIPUZa2xvbUBHMpNEe4fIAnAkxY0xven8Bz8Sm0H4PuZLx/5QYbV
+         pXl3COHuhP8ZwahZtZjWWwuv0aDklBx/XScQvXfFaTEdQhRDeOyGki+PBNxOWFgcHYUW
+         G6RdIzy9x2NPoKwm3JbodQR6DJw2qeELyXmwrmyQwzv68mGzLb/PQ6Aie50duL1BHtvv
+         mvfg==
+X-Gm-Message-State: AOAM5329+qX/n4un4JFGQUtqrkf7RwB0tpb2Cx5h9dyk/aOPi6tABl1f
+        HxFqBI6c74YUjRKUaGJlFp/XfagHsVhaoc+gDtKEjNwY7Bv+pvJj2IBkIbNNz0ZGpdFnN0tXLMv
+        vBEWZ5g1GTgqygl4CuUUsKXR3
+X-Received: by 2002:a0c:f806:: with SMTP id r6mr219125qvn.49.1634743038545;
+        Wed, 20 Oct 2021 08:17:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymXUJtrjprkh5Udlt/BViwvnxtfBQ/fDo80Z3O7jVr0qw/ABwJz2IkE7oHjL4YspAzMzmQYA==
+X-Received: by 2002:a0c:f806:: with SMTP id r6mr219093qvn.49.1634743038289;
+        Wed, 20 Oct 2021 08:17:18 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id h125sm1123214qkc.29.2021.10.20.08.17.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 08:17:17 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 08:17:14 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH v2 01/14] objtool: Tag retpoline thunk symbols
+Message-ID: <20211020151714.sf3wq4d7wuya5jbj@treble>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105842.557458476@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210428065440.3704-7-roger.lu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211020105842.557458476@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 28/04/21 08:54, Roger Lu ha scritto:
-> add compitable/reg/irq/clock/efuse/reset setting in svs node
+On Wed, Oct 20, 2021 at 12:44:43PM +0200, Peter Zijlstra wrote:
+> In order to avoid calling arch_is_retpoline() (which does a strcmp)
+> over and over on symbols, tag them once upfront.
 > 
-> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
-> ---
->   arch/arm64/boot/dts/mediatek/mt8192.dtsi | 34 ++++++++++++++++++++++++
->   1 file changed, 34 insertions(+)
-> 
+> XXX do we also want to do __fentry__ ?
 
-Hello Roger,
-thanks for this series! However, there is an issue with this patch:
+Might as well.
 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> index fe24cc66ff7a..e9816a56d87b 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> @@ -270,6 +270,14 @@
->   			compatible = "mediatek,mt8192-infracfg", "syscon";
->   			reg = <0 0x10001000 0 0x1000>;
->   			#clock-cells = <1>;
-> +
-> +			infracfg_rst: reset-controller {
-> +				compatible = "mediatek,infra-reset", "ti,syscon-reset";
-> +				#reset-cells = <1>;
-> +				ti,reset-bits = <
-> +					0x150 5 0x154 5 0 0     (ASSERT_SET | DEASSERT_SET | STATUS_NONE) /* 0: svs */
+> XXX do we want an enum instead of a bunch of bools ?
 
-You are using macros here, which are defined in dt-bindings/reset/ti-syscon.h
-hovever, you are not including this header in this devicetree, so it's not
-compiling.
+Maybe, or convert the bools to bit fields.
 
-Please fix it.
+-- 
+Josh
 
-> +				>;
-> +			};
->   		};
->   
->   		pericfg: syscon@10003000 {
-> @@ -564,6 +572,20 @@
->   			status = "disabled";
->   		};
->   
-> +		svs: svs@1100b000 {
-> +			compatible = "mediatek,mt8192-svs";
-> +			reg = <0 0x1100b000 0 0x1000>;
-> +			interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH 0>;
-> +			clocks = <&infracfg CLK_INFRA_THERM>;
-> +			clock-names = "main";
-> +			nvmem-cells = <&svs_calibration>,
-> +				      <&lvts_e_data1>;
-> +			nvmem-cell-names = "svs-calibration-data",
-> +					   "t-calibration-data";
-> +			resets = <&infracfg_rst 0>;
-> +			reset-names = "svs_rst";
-> +		};
-> +
->   		spi1: spi@11010000 {
->   			compatible = "mediatek,mt8192-spi",
->   				     "mediatek,mt6765-spi";
-> @@ -681,6 +703,18 @@
->   			#clock-cells = <1>;
->   		};
->   
-> +		efuse: efuse@11c10000 {
-> +			compatible = "mediatek,efuse";
-> +			reg = <0 0x11c10000 0 0x1000>;
-> +
-
-arch/arm64/boot/dts/mediatek/mt8192.dtsi:510.5-24: Warning (reg_format): 
-/soc/efuse@11c10000/data1:reg: property has invalid length (8 bytes) 
-(#address-cells == 2, #size-cells == 1)
-
-arch/arm64/boot/dts/mediatek/mt8192.dtsi:513.5-24: Warning (reg_format): 
-/soc/efuse@11c10000/calib@580:reg: property has invalid length (8 bytes) 
-(#address-cells == 2, #size-cells == 1)
-
-
-In short, you should add here:
-			#address-cells = <1>;
-			#size-cells = <1>;
-
-> +			lvts_e_data1: data1 {
-> +				reg = <0x1C0 0x58>;
-> +			};
-> +			svs_calibration: calib@580 {
-> +				reg = <0x580 0x68>;
-> +			};
-> +		};
-> +
->   		i2c3: i2c3@11cb0000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11cb0000 0 0x1000>,
-> 
-
-Regards,
-- Angelo
