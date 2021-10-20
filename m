@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4A1434BFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368A7434BFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhJTN0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:26:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30988 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229639AbhJTN0k (ORCPT
+        id S230174AbhJTN0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:26:47 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:46735 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230179AbhJTN0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:26:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634736264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GcpzAnNHjm23kN2uqigubTKcRaFFegqSoAGf8LIkgeI=;
-        b=LYvq6Uo6SS2cSLT7123qDG9ir6RgNOIJbEOi5olTDINfWx+UF6cb70ZeA/IsiLGbS9ixuG
-        TlLix5tebL4iYo4rm7PJDhh9zViRignbAKZrkPCoFf+A2nhbQEngkLr4JsruNuY3PIba6N
-        dd5yQdo/zmKk8Lh1OpO5zpyjSluh4sU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-F9ig7TfCNdmY17ROuYYXqg-1; Wed, 20 Oct 2021 09:24:23 -0400
-X-MC-Unique: F9ig7TfCNdmY17ROuYYXqg-1
-Received: by mail-ed1-f72.google.com with SMTP id f4-20020a50e084000000b003db585bc274so20935000edl.17
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:24:23 -0700 (PDT)
+        Wed, 20 Oct 2021 09:26:46 -0400
+Received: by mail-ot1-f49.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so8158617ote.13;
+        Wed, 20 Oct 2021 06:24:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GcpzAnNHjm23kN2uqigubTKcRaFFegqSoAGf8LIkgeI=;
-        b=kZvvF6+uqZxC/iIxUJdzE/KynixRVVcnNw+QDfGNoApiH6k+cWzU6TZIX25LJ19mxT
-         /ox2zdEzlU8MN6S0nVxjkyyJ6jHCMR17yIY+J+mHjKaMEAsXCU2LDpvg6F3qp3hLkyAz
-         3elXSXi6TgjxW2bJadndZf3fojm9f19L79kVRaARlUOmvnrlydcDmrjNDHazroridU26
-         weVDuaXn8e4QE0OJsB0n6jlfGLbhLSTJxCULyQDoc8Nx+9kw2FUk0My5FR/7t0pkay17
-         FZNwtf8OlVy3KQinXMtKuERKyKPW5WDybxv8htulEhrkB7r7U8Wers3kBYAK3uh4Untv
-         1jwA==
-X-Gm-Message-State: AOAM530han5qnc7f1pI2/zp9B4o0geBJHjMOGA1cKA/PRi0QJ27joBXt
-        AfTj6a1R9FFSGNNahtuTTQgO7CKtn2PpD3tqS0Lr+3PGlZclA3v6t6d0dCP1Y02hhfUH3hxuTwy
-        ck1cDuhV1Ci7+avNHke2JrpMy
-X-Received: by 2002:a05:6402:2805:: with SMTP id h5mr62501158ede.169.1634736262078;
-        Wed, 20 Oct 2021 06:24:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVW+LAoHPzviyKRL0KsI2xrRCoci0hduDBTl5iwSEDG3IMqePK/Z2vDw19wC+rX4UbPj8O5w==
-X-Received: by 2002:a05:6402:2805:: with SMTP id h5mr62501139ede.169.1634736261861;
-        Wed, 20 Oct 2021 06:24:21 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id d4sm1205734edk.78.2021.10.20.06.24.21
+        bh=RNWWP9bTOkCgW0tcCeT8WC0sybKGetWwgWvpGMhElmI=;
+        b=zMkxnps66cebgIuaa1c8X5LCCkbzZeSCVswtvPshAC1FBrABfrZ9/zHrWFcrkYmelK
+         AunibEHExD85LM8ncPEEsN1Ex2CX4KEXgYp5slXP3eZOUOi3Y4K9gfSX1SiNMx+MzOgE
+         t+cbk+nuFNwt0yRwGCtB7x94+OzqfgqWejJZDKXWASDo1s/em4VT6i3VHQMinibUCz6j
+         0aSp9+9An7FQaFtYZqXK6XT8GgcmFdUQqS5tm766kvhUq8x19qv8eWX1SLpvwZ2Nrwrx
+         3HEXcm437ik2tCQVvWe1Kd1bqN0/LEGV3f5vALz4v68b3/cOvxhcYOjNJImjX0MOWxae
+         06fw==
+X-Gm-Message-State: AOAM532d7FkWB/Qv1WivOmSdlGQnDELSYoqZtPXlV0+ALhvA/5cg1iT5
+        ZRgiLGhReEFPHbhJqKuf/vTIy7l5Tg==
+X-Google-Smtp-Source: ABdhPJzLB3PDzuaVVTWKIo94MOknTyjcODSHeAoxM/rtWZy+oDjpMr99UBRFJbGqlHrtrpiwAtmyXA==
+X-Received: by 2002:a9d:3e5c:: with SMTP id h28mr10960461otg.50.1634736271605;
+        Wed, 20 Oct 2021 06:24:31 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id i13sm442681oig.35.2021.10.20.06.24.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:24:21 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 15:24:19 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Lexi Shao <shaolexi@huawei.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        acme@kernel.org, mark.rutland@arm.com, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, qiuxi1@huawei.com, nixiaoming@huawei.com,
-        wangbing6@huawei.com
-Subject: Re: [PATCH] perf script: Show binary offsets for userspace addr
-Message-ID: <YXAYg8N1vikCsOnU@krava>
-References: <20211019072417.122576-1-shaolexi@huawei.com>
+        Wed, 20 Oct 2021 06:24:30 -0700 (PDT)
+Received: (nullmailer pid 2224276 invoked by uid 1000);
+        Wed, 20 Oct 2021 13:24:30 -0000
+Date:   Wed, 20 Oct 2021 08:24:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     bhelgaas@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/24] PCI: Add PCI_ERROR_RESPONSE and it's related
+ definitions
+Message-ID: <YXAYjkLyS53Bod3j@robh.at.kernel.org>
+References: <cover.1634306198.git.naveennaidu479@gmail.com>
+ <4516b02d3c0fe3593a1a9f59bab47e99cdb65f02.1634306198.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019072417.122576-1-shaolexi@huawei.com>
+In-Reply-To: <4516b02d3c0fe3593a1a9f59bab47e99cdb65f02.1634306198.git.naveennaidu479@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 03:24:17PM +0800, Lexi Shao wrote:
-> Show binary offsets for userspace addr with map in perf script output
-> with callchain.
+On Fri, Oct 15, 2021 at 07:58:16PM +0530, Naveen Naidu wrote:
+> An MMIO read from a PCI device that doesn't exist or doesn't respond
+> causes a PCI error.  There's no real data to return to satisfy the
+> CPU read, so most hardware fabricates ~0 data.
 > 
-> In commit 19610184693c("perf script: Show virtual addresses instead of
-> offsets"), the addr shown in perf script output with callchain is changed
-> from binary offsets to virtual address to fix the incorrectness when
-> displaying symbol offset.
+> Add a PCI_ERROR_RESPONSE definition for that and use it where
+> appropriate to make these checks consistent and easier to find.
 > 
-> This is inconvenient in scenario that the binary is stripped and
-> symbol cannot be resolved. If someone wants to further resolve symbols for
-> specific binaries later, he would need an extra step to translate virtual
-> address to binary offset with mapping information recorded in perf.data,
-> which can be difficult for people not familiar with perf.
+> Also add helper definitions SET_PCI_ERROR_RESPONSE and
+> RESPONSE_IS_PCI_ERROR to make the code more readable.
 > 
-> This patch modifies function sample__fprintf_callchain to print binary
-> offset for userspace addr with dsos, and virtual address otherwise. It
-> does not affect symbol offset calculation so symoff remains correct.
-> 
-> Before applying this patch:
-> test  1512    78.711307:     533129 cycles:
-> 	aaaae0da07f4 [unknown] (/tmp/test)
-> 	aaaae0da0704 [unknown] (/tmp/test)
-> 	ffffbe9f7ef4 __libc_start_main+0xe4 (/lib64/libc-2.31.so)
-> 
-> After this patch:
-> test  1519   111.330127:     406953 cycles:
-> 	7f4 [unknown] (/tmp/test)
-> 	704 [unknown] (/tmp/test)
-> 	20ef4 __libc_start_main+0xe4 (/lib64/libc-2.31.so)
-> 
-> Fixes: 19610184693c("perf script: Show virtual addresses instead of offsets")
-> 
-> Signed-off-by: Lexi Shao <shaolexi@huawei.com>
-
-makes sense to me
-
-Acked-/Tested-by Jiri Olsa <jolsa@redhat.com>
-
-should we have a way to display these callchain detail in perf report output as well?
-
-thanks,
-jirka
-
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
 > ---
->  tools/perf/util/evsel_fprintf.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+>  include/linux/pci.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/tools/perf/util/evsel_fprintf.c b/tools/perf/util/evsel_fprintf.c
-> index bfedd7b23521..8c2ea8001329 100644
-> --- a/tools/perf/util/evsel_fprintf.c
-> +++ b/tools/perf/util/evsel_fprintf.c
-> @@ -11,6 +11,7 @@
->  #include "strlist.h"
->  #include "symbol.h"
->  #include "srcline.h"
-> +#include "dso.h"
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index cd8aa6fce204..928c589bb5c4 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -154,6 +154,15 @@ enum pci_interrupt_pin {
+>  /* The number of legacy PCI INTx interrupts */
+>  #define PCI_NUM_INTX	4
 >  
->  static int comma_fprintf(FILE *fp, bool *first, const char *fmt, ...)
->  {
-> @@ -144,12 +145,17 @@ int sample__fprintf_callchain(struct perf_sample *sample, int left_alignment,
->  			if (print_arrow && !first)
->  				printed += fprintf(fp, " <-");
->  
-> -			if (print_ip)
-> -				printed += fprintf(fp, "%c%16" PRIx64, s, node->ip);
-> -
->  			if (map)
->  				addr = map->map_ip(map, node->ip);
->  
-> +			if (print_ip) {
-> +				/* Show binary offset for userspace addr */
-> +				if (map && !map->dso->kernel)
-> +					printed += fprintf(fp, "%c%16" PRIx64, s, addr);
-> +				else
-> +					printed += fprintf(fp, "%c%16" PRIx64, s, node->ip);
-> +			}
-> +
->  			if (print_sym) {
->  				printed += fprintf(fp, " ");
->  				node_al.addr = addr;
-> -- 
-> 2.12.3
-> 
+> +/*
+> + * Reading from a device that doesn't respond typically returns ~0.  A
+> + * successful read from a device may also return ~0, so you need additional
+> + * information to reliably identify errors.
+> + */
+> +#define PCI_ERROR_RESPONSE			(~0ULL)
+> +#define SET_PCI_ERROR_RESPONSE(val)	(*val = ((typeof(*val)) PCI_ERROR_RESPONSE))
+> +#define RESPONSE_IS_PCI_ERROR(val)	(*val == ((typeof(*val)) PCI_ERROR_RESPONSE))
 
+No reason for val to be a pointer.
+
+Also, macro parameters need () around them. val could be an expression 
+like 'ptr + 1' which would blow up for example.
+
+> +
+>  /*
+>   * pci_power_t values must match the bits in the Capabilities PME_Support
+>   * and Control/Status PowerState fields in the Power Management capability.
+> -- 
+> 2.25.1
+> 
+> 
