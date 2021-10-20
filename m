@@ -2,101 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE6C434E4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97885434E51
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhJTOyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:54:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:55118 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230219AbhJTOyw (ORCPT
+        id S230346AbhJTOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:55:38 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57592 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhJTOzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:54:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634741558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cwjsUEQDwBbKmSYjigmTSvrLl88NO9zDN0d6nZvJV+s=;
-        b=agTnbqzwL74jjBnjA1Q/4Ald143PPzvbiEoxW+t5n9SCFgg2Xh8waUj1A74AgDCr1M5ywo
-        WlAoFE3pBsT1CiegHbwyRE2avTdBdKdM1l/GbVcH0oXPjBiqJK+Uh+eRbBIKLslFI+DFbB
-        Tkuniv9lJdWQ4YJH0IaUvOrfNg5Q5J4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-123-jP0cnAsHN023n2-9t0xI9A-1; Wed, 20 Oct 2021 10:52:34 -0400
-X-MC-Unique: jP0cnAsHN023n2-9t0xI9A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 20 Oct 2021 10:55:37 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E98501FD39;
+        Wed, 20 Oct 2021 14:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634741601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O8bh/JNAXl0EbyJbdZo/SNAN5DDfXJOs+3Sv4Zhg3O0=;
+        b=JNuzYGOdhvILbvr1KUKHON8SPNEtIYfQGJdkWNYg1JDgt0nR62uMVJsWzaoch0RR0SYaSI
+        +sne66bRJbe3TmoUNFJipcrvIo7neOd2/V1lwq+pX1HQMCUxHBM3oEG7zQwUiet9EvgJzo
+        ZYFX0rKorRDJlOGgEyXwlNpV98Smzj8=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 821E979EE4;
-        Wed, 20 Oct 2021 14:52:33 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2275F5C1D5;
-        Wed, 20 Oct 2021 14:52:33 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     wanpengli@tencent.com, seanjc@google.com
-Subject: [PATCH] KVM: Avoid atomic operations when kicking the running vCPU
-Date:   Wed, 20 Oct 2021 10:52:31 -0400
-Message-Id: <20211020145231.871299-3-pbonzini@redhat.com>
+        by relay2.suse.de (Postfix) with ESMTPS id 3E579A3B83;
+        Wed, 20 Oct 2021 14:53:21 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 16:53:20 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
+References: <20211018114712.9802-1-mhocko@kernel.org>
+ <20211018114712.9802-3-mhocko@kernel.org>
+ <20211019110649.GA1933@pc638.lan>
+ <YW6xZ7vi/7NVzRH5@dhcp22.suse.cz>
+ <20211019194658.GA1787@pc638.lan>
+ <YW/SYl/ZKp7W60mg@dhcp22.suse.cz>
+ <CA+KHdyUopXQVTp2=X-7DYYFNiuTrh25opiUOd1CXED1UXY2Fhg@mail.gmail.com>
+ <YXAiZdvk8CGvZCIM@dhcp22.suse.cz>
+ <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we do have the vcpu mutex, as is the case if kvm_running_vcpu is set
-to the target vcpu of the kick, changes to vcpu->mode do not need atomic
-operations; cmpxchg is only needed _outside_ the mutex to ensure that
-the IN_GUEST_MODE->EXITING_GUEST_MODE change does not race with the vcpu
-thread going OUTSIDE_GUEST_MODE.
+On Wed 20-10-21 16:29:14, Uladzislau Rezki wrote:
+> On Wed, Oct 20, 2021 at 4:06 PM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > As I've said I am OK with either of the two. Do you or anybody have any
+> > preference? Without any explicit event to wake up for neither of the two
+> > is more than just an optimistic retry.
+> >
+> From power perspective it is better to have a delay, so i tend to say
+> that delay is better.
 
-Use this to optimize the case of a vCPU sending an interrupt to itself.
-
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- virt/kvm/kvm_main.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 3f6d450355f0..9f45f26fce4f 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3325,6 +3325,19 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
- 	if (kvm_vcpu_wake_up(vcpu))
- 		return;
- 
-+	me = get_cpu();
-+	/*
-+	 * The only state change done outside the vcpu mutex is IN_GUEST_MODE
-+	 * to EXITING_GUEST_MODE.  Therefore the moderately expensive "should
-+	 * kick" check does not need atomic operations if kvm_vcpu_kick is used
-+	 * within the vCPU thread itself.
-+	 */
-+	if (vcpu == __this_cpu_read(kvm_running_vcpu)) {
-+		if (vcpu->mode == IN_GUEST_MODE)
-+			WRITE_ONCE(vcpu->mode, EXITING_GUEST_MODE);
-+		goto out;
-+	}
-+
- 	/*
- 	 * Note, the vCPU could get migrated to a different pCPU at any point
- 	 * after kvm_arch_vcpu_should_kick(), which could result in sending an
-@@ -3332,12 +3345,12 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
- 	 * IPI is to force the vCPU to leave IN_GUEST_MODE, and migrating the
- 	 * vCPU also requires it to leave IN_GUEST_MODE.
- 	 */
--	me = get_cpu();
- 	if (kvm_arch_vcpu_should_kick(vcpu)) {
- 		cpu = READ_ONCE(vcpu->cpu);
- 		if (cpu != me && (unsigned)cpu < nr_cpu_ids && cpu_online(cpu))
- 			smp_send_reschedule(cpu);
- 	}
-+out:
- 	put_cpu();
- }
- EXPORT_SYMBOL_GPL(kvm_vcpu_kick);
+I am a terrible random number generator. Can you give me a number
+please?
 -- 
-2.27.0
-
+Michal Hocko
+SUSE Labs
