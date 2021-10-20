@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0EC434E6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BEB434E72
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhJTPBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:01:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJTPBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:01:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8646D6135F;
-        Wed, 20 Oct 2021 14:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634741980;
-        bh=YrONzKcAhydCls+3APmmyxq1BG0aGp6PcLZnHTAcfDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EaG1j+7H/TUgyCZp3YkGj0cNrLC0dp5dAkO65rShX82aEdWUv2Ue/LGwv6zHvT3Kr
-         0CLjqEs19CQw4w6f+1pOLmRMLPnSql8KOzKBYECaNp1tHlBgAKAME1ybd/OrHb7W5m
-         p18pBHtIgwcWLZEB1Mc22M5T6TJRGI8CKr4SiA+Jgdj95leICAe2lNwUdBNT0aBjP/
-         gSPWnjy5s0kf891tS1oevjuwodS0pF1FU6YsHscqDABCgmyeX9t4oxKCcVpPj9moxx
-         PXwzJK/+x/a9KOrCnbIH/lrp89Nh6ZGSkBR/Y+0ktNbCPfKRwBy0TT51Ohbzo8R4sT
-         amrtQaAZnH65A==
-Date:   Wed, 20 Oct 2021 15:59:37 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 02/11] arm64: Make perf_callchain_kernel() use
- arch_stack_walk()
-Message-ID: <YXAu2aXqBU3rO5e+@sirena.org.uk>
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-3-madvenka@linux.microsoft.com>
+        id S230288AbhJTPCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTPCI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:02:08 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8688C06161C;
+        Wed, 20 Oct 2021 07:59:53 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id e19so13051579ljk.12;
+        Wed, 20 Oct 2021 07:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kK6UBOnqoF7OBIS0/DlDmrh5cokDG1xkwkc1sZI5FoY=;
+        b=pTS/D6PFbnnP2+dkBHrAW3PGTnf098d8L+crzq8TeamIJ0xrpTAT7IF1jQ2/BGNIKW
+         fbG+HHHiMecNZi/j7jJYWSTfNXQNQqyaB9wib4xa9SAYS2Fb0p913kBV9tFX6hwacGtz
+         L21P8FTT93366htsr0cOxP7HBkwwiNnklnHcxlKPw4jl9He+AWOkE8H4ZLeli2172ynA
+         SCoPFrE1h+e3cz5cI9NWLBMCRDtO/B/VGTzDRpNQpKvBYbdP+YDrLnkJsvNSk1/7Pj4a
+         Q/MEk5XHTdtj2AngQxt4/etQYm15F4puPED16pCz8J8R4RTKnYIBrrhFUhXXaJv/+eks
+         +yfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kK6UBOnqoF7OBIS0/DlDmrh5cokDG1xkwkc1sZI5FoY=;
+        b=OrKPLiiaHP5Vn1r11gI+yedBgD4+FltyYm0Fju4y5fk6zxezlTFNscrvEpr2hPxpeY
+         Ra/Cj69NekZ7fMYm9ZhMOkAOuV+WyT54rnVsEoO8u0Iu8FOpxeScHXp4OffaR8oc8YGv
+         mAC2Dkti/ggDKZ/wJaV6ScjkbmpL1dWtYsgX8cFKpBlAW6nYjuGyDoPABQJBhxN4jAIv
+         2xv/KiVl+OAR9IRB4atLHrdsMhWoNasLxcduwja3Xe2v6fwfOtdSOyOcigH+iJFnUBg0
+         OSRT/yD5GHBCDtXbb5baZnzZnHzchlJzKvdluCUJVJ61WAAqIML7vbuIddjVHsTq49ES
+         psRQ==
+X-Gm-Message-State: AOAM531DSV7sqV3s1Zb+qPIWMH5v88xBIvWVwU/xbrCtxwLEr+UArvOw
+        2riM06UmdIu/l0xqYlNOyUZK0hW8xCQ=
+X-Google-Smtp-Source: ABdhPJwX5ym1mw31vbP6LKcgrx0yysT/TRF0Pck1m6VvyJu/IqqP33SWuTojYYKOuFoAmL5RrME4Vg==
+X-Received: by 2002:a05:651c:111:: with SMTP id a17mr138106ljb.145.1634741991919;
+        Wed, 20 Oct 2021 07:59:51 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
+        by smtp.googlemail.com with ESMTPSA id z22sm249522ljh.73.2021.10.20.07.59.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 07:59:51 -0700 (PDT)
+Subject: Re: [PATCH v1] dt-bindings: opp: Allow multi-worded node names
+To:     Rob Herring <robh@kernel.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nishanth Menon <nm@ti.com>, David Heidelberg <david@ixit.cz>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20211019231905.2974-1-digetx@gmail.com>
+ <YXAr4OlhucAibMlH@robh.at.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <85f84713-1eff-4ebf-df25-adb967dcb440@gmail.com>
+Date:   Wed, 20 Oct 2021 17:59:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0OjbTQTv4ED8ZjVP"
-Content-Disposition: inline
-In-Reply-To: <20211015025847.17694-3-madvenka@linux.microsoft.com>
-X-Cookie: I program, therefore I am.
+In-Reply-To: <YXAr4OlhucAibMlH@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+20.10.2021 17:46, Rob Herring пишет:
+> On Wed, Oct 20, 2021 at 02:19:05AM +0300, Dmitry Osipenko wrote:
+>> Not all OPP table names and OPP entries consist of a single word. In
+>> particular NVIDIA Tegra OPP tables use multi-word names. Allow OPP node
+>> and OPP entry name to have multi-worded names to silence DT checker
+>> warnings about the multi-word names separated by hyphen.
+>>
+>> Reviewed-by: David Heidelberg <david@ixit.cz>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>> index ae3ae4d39843..298cf24af270 100644
+>> --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>> +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+>> @@ -22,7 +22,7 @@ select: false
+>>  
+>>  properties:
+>>    $nodename:
+>> -    pattern: '^opp-table(-[a-z0-9]+)?$'
+>> +    pattern: '^opp-table(-[a-z0-9]+)*$'
+> 
+> I don't see how this helps you. What I see needed upstream is a prefix:
+> 
+> '-?opp-table(-[0-9]+)?$'
+> 
+> Though really what I'd like to see is the OPP nodes moved into the 
+> device nodes they belong to when appropriate (i.e. when not shared 
+> between multiple devices).
 
---0OjbTQTv4ED8ZjVP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Oct 14, 2021 at 09:58:38PM -0500, madvenka@linux.microsoft.com wrot=
-e:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->=20
-> Currently, perf_callchain_kernel() in ARM64 code walks the stack using
-> start_backtrace() and walk_stackframe(). Make it use arch_stack_walk()
-> instead. This makes maintenance easier.
-
->  static bool callchain_trace(void *data, unsigned long pc)
->  {
->  	struct perf_callchain_entry_ctx *entry =3D data;
-> -	perf_callchain_store(entry, pc);
-> -	return true;
-> +	return perf_callchain_store(entry, pc) =3D=3D 0;
->  }
-
-This changes us from unconditionally doing the whole walk to returning
-an error if perf_callchain_store() returns an error so it's not quite a
-straight transform, though since that seems like a useful improvement
-which most likely  on't have any practical impact that's fine.
-
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---0OjbTQTv4ED8ZjVP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFwLtgACgkQJNaLcl1U
-h9DGlQf9EnRXgRKnKwL2lcj9Tf5P/zGR2UVLC51sGcsAxbyAbr51NzQfPKLAEylw
-FI+VRW0ibqzD2wpmn9kb7boz99gz99qrlLmBzP6OTEqODAT8CVGY9YeciG9BKHtq
-2Jrai3sp33jq3ox0bNtWeJ1YH1BJXlvDG+dUs7V8tytRqzOc06lVLnpmsI29g4So
-v5J8VVnx/UNF8jXguz16m2XPmH9C8rkgFVFAz5HxNa9gJBkCB3Gl0OeqE7cUBauz
-AhBkwX+T+t3IGwazfFl1LkbP1h+ikfCZ6gGLvcqsl13ZsmsfWxu3fJi6sOZobGwC
-VBSNqEWBYqpINLr+jp/J4mtG2929qQ==
-=wuCL
------END PGP SIGNATURE-----
-
---0OjbTQTv4ED8ZjVP--
+I already prepared patches to rename Tegra OPP tables in accordance to
+the new naming scheme where opp-table- is the prefix.
