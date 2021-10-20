@@ -2,237 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3511C43518C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DCB435199
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhJTRoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbhJTRnt (ORCPT
+        id S230376AbhJTRq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:46:58 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:40414 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhJTRq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:43:49 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9DAC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:41:34 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so1070174pjl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tLS8+kBpzekWeBdekKGTRJk0E4srTCOVGmq4Px1Q8VQ=;
-        b=gJbARJpG2w9XXkcZ6CSy2/THoVI0FcFNYFPuofYL8NVisjqdt0X0eq+HH+reaQpVXm
-         5MI+SplxtlxvZ1E0OLUyfIl/XiVcXduiwQnprTmO3DEStW4HT30c1IoDI1oVZxm+iOAV
-         3/XJwkPNgY1b56D39N24JZYm6H5qZHpfKUBzM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tLS8+kBpzekWeBdekKGTRJk0E4srTCOVGmq4Px1Q8VQ=;
-        b=l//1NjdSttySkMoEG6JxIlq/5Hpm18mqS+IZi2FfSoR4unVI7wy/cRs5sksSyIOqZI
-         eMH3iwUqBgzf3pCSHjcqqbbqO1tR6jSEQOZ5YGL8Og87gKdkD+1gozIvDKRSfxWEwY3s
-         Bqpq9XzhjNLHQReip3+CWgjuqc5EtyOJYz5TSdf0Lii14g+EaapyhC2QpJ1w6bHZsZVl
-         hnC6XNWqLCfJrkC6pzQI2LwZ41zNwpOJHGNKraf5jfdSGr30UDvTzDm6Cz0gzzADL67B
-         l5VoPGJwgwwdAvH/fjT8OXHS6va5n/z5YxDtS/xbVGj/W0xeWnOwdcDbUdYpRpchz4S1
-         IL+Q==
-X-Gm-Message-State: AOAM5333qR3a9AbN1tziN6ZK2dT3DkZm2RGdfHAPGEvztrHlw4xuSYbT
-        7TOnzHxKtVlL+FoIlrq0aaC6aw==
-X-Google-Smtp-Source: ABdhPJzlGMQDOJLoQZpO+D08HsHF1MsykzBHtuqJvEm206lRGp9Qb3pe7UydXadxkqIvENvT61l62w==
-X-Received: by 2002:a17:903:1ca:b0:13e:f367:9361 with SMTP id e10-20020a17090301ca00b0013ef3679361mr507344plh.3.1634751694235;
-        Wed, 20 Oct 2021 10:41:34 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:d5fe:85e9:caf2:ec4e])
-        by smtp.gmail.com with UTF8SMTPSA id i128sm3148602pfc.47.2021.10.20.10.41.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 10:41:33 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 10:41:31 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jens Axboe <axboe@kernel.dk>, Johan Hovold <johan@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Lionel DEBIEVE <lionel.debieve@st.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?utf-8?Q?J=C3=BCcker?= <martin.juecker@gmail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Olivier MOYSAN <olivier.moysan@st.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Robert Richter <rric@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Lindgren <tony@atomide.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        William Cohen <wcohen@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Subject: Re: [PATCH v16 0/7] usb: misc: Add onboard_usb_hub driver
-Message-ID: <YXBUywpxasyTtSCr@google.com>
-References: <20210813195228.2003500-1-mka@chromium.org>
- <YUoRq1RrOIoiBJ5+@google.com>
- <CAD=FV=WrddUhWT0wUVZD0gN_+8Zy1VGY77LYLYBvhaPQQ_SqZw@mail.gmail.com>
- <YWkiGGBKOVokBye9@kroah.com>
- <03f28680-35eb-25f4-5041-f3a56144da24@foss.st.com>
- <0739e563-c8e7-2a19-e440-4f32e7de3917@xilinx.com>
+        Wed, 20 Oct 2021 13:46:57 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:54948)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdFdp-00GCv6-SX; Wed, 20 Oct 2021 11:44:41 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:47894 helo=localhost.localdomain)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdFdo-001NdN-VK; Wed, 20 Oct 2021 11:44:41 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 20 Oct 2021 12:43:47 -0500
+Message-Id: <20211020174406.17889-1-ebiederm@xmission.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <87y26nmwkb.fsf@disp2133>
+References: <87y26nmwkb.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0739e563-c8e7-2a19-e440-4f32e7de3917@xilinx.com>
+Content-Transfer-Encoding: 8bit
+X-XM-SPF: eid=1mdFdo-001NdN-VK;;;mid=<20211020174406.17889-1-ebiederm@xmission.com>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/vH9BzxZMJil3hyUi3PHXKmsFqUHXgmG4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XMGappySubj_01,XMNoVowels,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5043]
+        *  0.7 XMSubLong Long Subject
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;linux-kernel@vger.kernel.org
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 321 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 11 (3.4%), b_tie_ro: 9 (2.9%), parse: 0.89 (0.3%),
+         extract_message_metadata: 12 (3.6%), get_uri_detail_list: 1.05 (0.3%),
+         tests_pri_-1000: 15 (4.7%), tests_pri_-950: 1.87 (0.6%),
+        tests_pri_-900: 1.51 (0.5%), tests_pri_-90: 85 (26.4%), check_bayes:
+        83 (25.8%), b_tokenize: 5 (1.7%), b_tok_get_all: 6 (1.9%),
+        b_comp_prob: 2.1 (0.7%), b_tok_touch_all: 66 (20.4%), b_finish: 0.86
+        (0.3%), tests_pri_0: 183 (56.9%), check_dkim_signature: 1.30 (0.4%),
+        check_dkim_adsp: 3.3 (1.0%), poll_dns_idle: 1.09 (0.3%), tests_pri_10:
+        2.1 (0.7%), tests_pri_500: 7 (2.1%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH 01/20] exit/doublefault: Remove apparently bogus comment about rewind_stack_do_exit
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 08:21:21AM +0200, Michal Simek wrote:
-> 
-> 
-> On 10/19/21 18:04, Fabrice Gasnier wrote:
-> > On 10/15/21 8:39 AM, Greg Kroah-Hartman wrote:
-> > > On Thu, Oct 14, 2021 at 02:38:55PM -0700, Doug Anderson wrote:
-> > > > Hi,
-> > > > 
-> > > > On Tue, Sep 21, 2021 at 10:09 AM Matthias Kaehlcke <mka@chromium.org> wrote:
-> > > > > 
-> > > > > Hi Greg,
-> > > > > 
-> > > > > are there any actions pending or can this land in usb-testing?
-> > > > > 
-> > > > > I confirmed that this series can be rebased on top of v5.15-rc2
-> > > > > without conflicts.
-> > > > 
-> > > > I'm quite interested to know what the next action items are, too. This
-> > > > is one of the very few patches we have for trogdor (excluding MIPI
-> > > > camera, which is a long story) that we're carrying downstream, so I'm
-> > > > keenly interested in making sure it's unblocked (if, indeed, it's
-> > > > blocked on anything).
-> > > > 
-> > > > If folks feel that this needs more review eyes before landing again
-> > > > then I'll try to find some time in the next week or two. If it's just
-> > > > waiting for the merge window to open/close so it can have maximal bake
-> > > > time, that's cool too. Please yell if there's something that I can do
-> > > > to help, though! :-)
-> > > 
-> > > I would love more review-eyes on this please.
-> > > 
-> > 
-> > Hi,
-> > 
-> > I noticed this series some time ago, and wanted to take a closer look.
-> > 
-> > The same issue this series address is seen on stm32 board for instance.
-> > (arch/arm/boot/dts/stm32mp15xx-dkx.dtsi). On board HUB (not described in
-> > the DT) is supplied by an always-on regulator.
-> > So it could could be interesting/useful to address the same case ,
-> > on stm32 boards, where USB2 (ehci-platform driver) is used currently.
-> > 
-> > I noticed a few things, especially on the dt-bindings. I've some
-> > questions here.
-> > 
-> > In this series, RTS5411 is used. The dt-bindings documents it as a child
-> > node of the USB controller. E.g.
-> > 
-> > &usb {
-> > 	usb_hub_2_0: hub@1 {
-> > 		...
-> > 	};
-> > 
-> > 	usb_hub_3_0: hub@2 {
-> > 	};
-> > }
-> > 
-> > I had a quick look at RTS5411 datasheet. It looks like there's an i2c
-> > interface too.
-> > - I guess the I2C interface isn't used in your case ?
-> >    (I haven't checked what it could be used for...)
-> > 
-> > In the stm32 boards (stm32mp15xx-dkx), there's an usb2514b chip
-> > - that also could be wired on I2C interface (0R mount option)
-> > - unused on stm32 boards by default
-> > 
-> > usb2514b chip already has a dt-bindings (with compatible), and a driver:
-> > - drivers/usb/misc/usb251xb.c
-> > - Documentation/devicetree/bindings/usb/usb251xb.txt
-> > 
-> > It is defined more as an i2c chip, so I'd expect it as an i2c child,
-> > e.g. like:
-> > 
-> > &i2c {
-> > 	usb2514b@2c {
-> > 		compatible = "microchip,usb2514b";
-> > 		...
-> > 	};
-> > };
-> > 
-> > 
-> > This way, I don't see how it could be used together with onboard_usb_hub
-> > driver ? (But I may have missed it)
-> > Is it possible to use a phandle, instead of a child node ?
-> > 
-> > However, in the stm32mp15xx-dkx case, i2c interface isn't wired/used by
-> > default. So obviously the i2c driver isn't used. In this case, could the
-> > "microchip,usb2514b" be listed in onboard_usb_hub driver ?
-> > (wouldn't it be redundant ?)
-> > 
-> > In this case it would be a child node of the usb DT node... Maybe that's
-> > more a question for Rob: would it be "legal" regarding existing
-> > dt-bindings ?
-> 
-> We wanted to upstream driver for microchip usb5744 and based on this thread
-> with Rob
-> 
-> https://lore.kernel.org/all/CAL_JsqJZBbu+UXqUNdZwg-uv0PAsNg55026PTwhKr5wQtxCjVQ@mail.gmail.com/
-> 
-> the recommendation was to use i2c-bus link. And in our usb5744 case where
-> usb hub has only one i2c address we just hardcoded it in the driver. I
-> should be pushing this driver to xilinx soc tree soon if you want to take a
-> look.
+I do not see panic calling rewind_stack_do_exit anywhere, nor can I
+find anywhere in the history where doublefault_shim has called
+rewind_stack_do_exit.  So I don't think this comment was ever actually
+correct.
 
-Interesting, with the 'i2c-bus' link it might be feasible to support the
-i2c functionality in the onboard_usb_hub driver if desired. Not sure how
-things would look when the hub can have different i2c addresses. Also in
-case of powering down the hub during system suspend any configuration
-through i2c would have to be done again on resume.
+Cc: Andy Lutomirski <luto@kernel.org>
+Fixes: 7d8d8cfdee9a ("x86/doublefault/32: Rewrite the x86_32 #DF handler and unify with 64-bit")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/x86/kernel/doublefault_32.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/arch/x86/kernel/doublefault_32.c b/arch/x86/kernel/doublefault_32.c
+index d1d49e3d536b..3b58d8703094 100644
+--- a/arch/x86/kernel/doublefault_32.c
++++ b/arch/x86/kernel/doublefault_32.c
+@@ -77,9 +77,6 @@ asmlinkage noinstr void __noreturn doublefault_shim(void)
+ 	 * some way to reconstruct CR3.  We could make a credible guess based
+ 	 * on cpu_tlbstate, but that would be racy and would not account for
+ 	 * PTI.
+-	 *
+-	 * Instead, don't bother.  We can return through
+-	 * rewind_stack_do_exit() instead.
+ 	 */
+ 	panic("cannot return from double fault\n");
+ }
+-- 
+2.20.1
+
