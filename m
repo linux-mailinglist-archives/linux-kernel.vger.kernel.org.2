@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D737B43438E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26815434398
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhJTChw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:37:52 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:48201 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229555AbhJTChr (ORCPT
+        id S229715AbhJTCoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhJTCoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:37:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Ut.30UJ_1634697329;
-Received: from 30.225.212.40(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Ut.30UJ_1634697329)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 20 Oct 2021 10:35:30 +0800
-Message-ID: <6f6c2933-b0a7-4fac-6342-3860f022229f@linux.alibaba.com>
-Date:   Wed, 20 Oct 2021 10:35:29 +0800
+        Tue, 19 Oct 2021 22:44:54 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC28BC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 19:42:40 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id t184so8192041pgd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 19:42:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AuHOCXn0MgJZ/GGgc1ig2esAfbCiX83Y6ea6Rt6Hegk=;
+        b=aAoDXDzKRcVkvN1E3W7LTxe9LlQ3WoA2DEFRNRZbNENkv8E3Nhlwj8M4EvjFGW6oz6
+         mRv0zUsK2c8Dn6po7AtlE1DshMUkdjO5uVMi0GdTT1qzFg0qC7W0f2UXihcRUqr2zzeV
+         nLQnnUvO25NmnWZo2wNoeKHtFRMfvaGyHWbdOk0rDAQc8JcoRHvr0mTRzY/Nm/Xr4lUu
+         A+85I55XpMWHADCObDJaj24nx6eypQqHhoeavVG4gvy1JfDl1jhVnWCSB4Yhs960x2I8
+         z7LQ3z8Cxy3R3W1qqWsEPe4HcAPPXowmiNCuWT8p6pYccEQvzdHoFKfzcYKuMVYPYbgN
+         bviA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AuHOCXn0MgJZ/GGgc1ig2esAfbCiX83Y6ea6Rt6Hegk=;
+        b=PJg68IqfX3h75JerBv+e6y/AqQgMuDn03QkRymBs50DhCr7++FHdFpsQp6pXzNWGp4
+         f4xdJrd+CMtFra1sJAILt322WWeXcQEgM5TE/W+S4EpDGk3vovt1v1nWK+n9aASsihLy
+         xYLdISBeQE7N5jORuMhCTytgo9exg3yAV6ThhmPoCNGNu/7M2jwKq6pkaqRBkpQLrJDU
+         Re/3j9gKJz/c2QsIeyd7BTsQYMrEUCnnU/ezLE50U1eKyUi9s1kQsI5Q8OjrZ9wf4Z87
+         Y6FO/HiSHxmrtYFhAlT+AYGIvfc6QnfaJubjnrQoHEdu7ArUUnFmSV6/mwJyhyFhLnkn
+         st4w==
+X-Gm-Message-State: AOAM532LAKdh2rO9d6ZsNA1rJ35LhoK0KJa94qWt0RB0nZJov9n8jd1s
+        iA8ClTtYlu2noEVKy4nPADU=
+X-Google-Smtp-Source: ABdhPJz2ewfIrL/jLwxd44PNvWxm1zNj4CBrjU3Ho9u/sbX0ocZwkTjDS201CaJbNemi6yJJMT1aEw==
+X-Received: by 2002:a63:701b:: with SMTP id l27mr17564692pgc.382.1634697760199;
+        Tue, 19 Oct 2021 19:42:40 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id m186sm532985pfb.165.2021.10.19.19.42.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 19:42:39 -0700 (PDT)
+From:   luo penghao <cgel.zte@gmail.com>
+X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] cdrom: Remove redundant variable and its assignment.
+Date:   Wed, 20 Oct 2021 02:42:29 +0000
+Message-Id: <20211020024229.1036219-1-luo.penghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH v3 2/2] ACPI: APEI: Filter the PCI MCFG address with an
- arch-agnostic method
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20211019150405.GA2338201@bhelgaas>
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-In-Reply-To: <20211019150405.GA2338201@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Variable is not used in functions, and its assignment is redundant too.
+So it should be deleted. Also the inner-most set of parentheses is no
+longer needed.
 
-On 19/10/2021 23:04, Bjorn Helgaas wrote:
-> On Tue, Oct 19, 2021 at 12:50:33PM +0800, Xuesong Chen wrote:
->> The commit d91525eb8ee6 ("ACPI, EINJ: Enhance error injection tolerance
->> level") fixes the issue that the ACPI/APEI can not access the PCI MCFG
->> address on x86 platform, but this issue can also happen on other
->> architectures, for instance, we got below error message on arm64 platform:
->> ...
->> APEI: Can not request [mem 0x50100000-0x50100003] for APEI EINJ Trigger registers
->> ...
->>
->> This patch will try to handle this case in a more common way instead of the
->> original 'arch' specific solution, which will be beneficial to all the
->> APEI-dependent platforms after that.
->>
->> Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
->> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> The purpose of this patch is not to fix a problem reported by the
-> kernel test robot, so remove this tag.
+The clang_analyzer complains as follows:
 
-Yes, will do
-> 
-> I know the robot found a problem with a previous version of this
-> patch, but we treat that the same as a code review comment.  We
-> normally don't explicitly credit reviewers unless it was something
-> major, and then it would go in the commit log, not a "Reported-by"
-> tag.
-> 
-> It makes sense to credit the kernel test robot for things found in
-> Linus' tree, but it's a little too aggressive about suggesting the tag
-> for problems with unmerged changes.
-> 
->> Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> 
-> This tag can only be added when Lorenzo explicitly supplies it
-> himself.  I do not see that on the mailing list, so please remove this
-> tag as well.  After Lorenzo supplies it, you can include it in future
-> postings as long as you don't make significant changes to the patch.
+drivers/cdrom/cdrom.c:877: warning:
 
-En, Lorenzo does have comments on the patch#2 and I also update that patch
-according to his feedback, so why the tag is here. OK, I'll add this tag
-if Lorenzo can supply it explicitly before I send the next version.
-> 
-> Bjorn
-> 
+Although the value stored to 'ret' is used in the enclosing expression,
+the value is never actually read from 'ret'.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+---
+ drivers/cdrom/cdrom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
+index feb827e..40970b8 100644
+--- a/drivers/cdrom/cdrom.c
++++ b/drivers/cdrom/cdrom.c
+@@ -864,7 +864,7 @@ static void cdrom_mmc3_profile(struct cdrom_device_info *cdi)
+ {
+ 	struct packet_command cgc;
+ 	char buffer[32];
+-	int ret, mmc3_profile;
++	int mmc3_profile;
+ 
+ 	init_cdrom_command(&cgc, buffer, sizeof(buffer), CGC_DATA_READ);
+ 
+@@ -874,7 +874,7 @@ static void cdrom_mmc3_profile(struct cdrom_device_info *cdi)
+ 	cgc.cmd[8] = sizeof(buffer);		/* Allocation Length */
+ 	cgc.quiet = 1;
+ 
+-	if ((ret = cdi->ops->generic_packet(cdi, &cgc)))
++	if (cdi->ops->generic_packet(cdi, &cgc))
+ 		mmc3_profile = 0xffff;
+ 	else
+ 		mmc3_profile = (buffer[6] << 8) | buffer[7];
+-- 
+2.15.2
+
+
