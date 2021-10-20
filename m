@@ -2,161 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4467343481B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C0043482A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhJTJpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbhJTJpj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:45:39 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83C9C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:43:25 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id a25so23569849edx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:43:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=v1VSTfmj+2omzHjhOYwuPhGVdz2EGeKwbUST3Yohfp8=;
-        b=b4aLpPEOdV/TIxwTKhJahMs87GTv74bw7jmVmHTZ7cs3ACizYGm48qQd6k+CAkSF6i
-         odDbyf6hymgVeDmxcBaYCqnY1n+6Ixee8rOqgqFcV/1qpLCkcY2b+zB94AsySvrDDKjL
-         9EHL1ODLW3Uo3pBF5utQR7L8NQSgxFXaMqaAOT2AKCTmAKcl0TOgBYfhIAwi5AzU2N8b
-         0C8gjkB6isP32/zSrc6I1TJanHRb8Sn+M9DRqr/sde5GaCiFs72TfAgxd4DptvlWNxQy
-         Xm06CtYANZWpTTdv7cIAKZLVxHhsBngflVsJDVkb55UAueFt2WbUfJ6KzzPAGD0idD0A
-         qCPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=v1VSTfmj+2omzHjhOYwuPhGVdz2EGeKwbUST3Yohfp8=;
-        b=oOML5haaDGWBwhhbHAmJKt13dLEzYIMWRQeIcq3fTQUY4nl76Dg37u/4LUsFse6ENV
-         VeyrcFzCNCpDqjJbiM+bLCldKdJYRFZoKBKhi9fbo0y921gg236f2ZRgaYVd0vvC628B
-         xkt9Occ4cF0hmJBl8NQbDPx5hyqsFBCaTt9rHPCm61YWjz2rZlAHJ9rtjC6KEL4norJV
-         0VtpgQsfV3HIkt4idqXewT5nyK4WmgOnhKvP++dG8VQ4WaiLdpbjF2d7ruFzsNydaU0i
-         pKaIG9FK6JrigiwlDNeY31ORBoUYM+Hk92Kp7hRZFXc0p98P+QGDDSQxP3v6uFIzjPyt
-         a8YQ==
-X-Gm-Message-State: AOAM530mdKiA296RKu4eBcgkMzmFuDDuDNmUtGAIeGeFa8/RS4tneRs2
-        6IAmO0QmE0LewEEvpwYTElz5Ww==
-X-Google-Smtp-Source: ABdhPJy+ZQccMneiNAm3ecn4imRuDdy7DOOhi+6IM973twATsLL7fRQpW0eUwpLeTBURbwkyEeyJCQ==
-X-Received: by 2002:a50:e14a:: with SMTP id i10mr61558844edl.73.1634723004215;
-        Wed, 20 Oct 2021 02:43:24 -0700 (PDT)
-Received: from [192.168.0.13] ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id s7sm857404edw.67.2021.10.20.02.43.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Oct 2021 02:43:23 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v4 1/2] block, bfq: counted root group into
- 'num_groups_with_pending_reqs'
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <8912e5ca-67bb-4a9a-a2ce-ba13e0fc86ed@huawei.com>
-Date:   Wed, 20 Oct 2021 11:43:22 +0200
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <AA986626-D3BF-43F3-81C2-FD7AA3C1ACD2@linaro.org>
-References: <20211014014556.3597008-1-yukuai3@huawei.com>
- <20211014014556.3597008-2-yukuai3@huawei.com>
- <0DD9CFF0-6110-497D-A352-9F37CADADC6B@linaro.org>
- <1f89cece-a123-6190-bb72-d59035dac266@huawei.com>
- <2E8712BB-5BFB-4647-AE9A-B06E199500D7@linaro.org>
- <8912e5ca-67bb-4a9a-a2ce-ba13e0fc86ed@huawei.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S230017AbhJTJtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:49:05 -0400
+Received: from mail-eopbgr1310115.outbound.protection.outlook.com ([40.107.131.115]:33766
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229632AbhJTJtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:49:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MYLYptUtaketm/58abn+E6HMDK5s3PvFuZ8wN2HNDqWagHj+pBYA0UpODYePuhC9sNLQ9sfw7JUx7F5ULZcNinJwUD4KnI/w9PlfwsKfk/x+nwLQjDZF1UrSydxjwFEjGXQhDe47gp2/vx1f75MoeBPq3IlcWFgTVM0K7jl9LxHqanjEu8v/Y18z++e2s56+H4Qh3FxAA/4LNJeQWrLHcFvPcSFyrQpy3YIMUS70fGABJgjA76dscb0Wt3BPGizRpmIZobVXEo91YOPZNMKv/CsxSYuO1PnzSLNkPdj+gu6Hh6D/nyuKzN90yoKk4FXDcJxExjRmIby0qjLFsSBDTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yp7+v1Z5fpq+28LU14WutBeNjTzq9AsbOmyoS6FDwVg=;
+ b=TKY7xwMDR77Fs7oVnGLwjamugfTKV27uJh3cvtIDwZN9qHMVuTgoS2CQe7btcqa5GQ5eQB4xsrhe3cL7CajyZKTYA4/yYInEuy8WO71o9lJlk0OStftlwA6tu2dGdxSooWC87nZTQmhS44wg/2VNd4Nn1RdxFXxSKVFXi8oepWnixlqoNoXZj6owXtJbem6z/J2NMpE3Fn0Sx1gAEjZdvjESXATwhn2CxewEAi1KIEYOiUho1FNcurrSxDpUGpXsEy4qBSmXdYZWzchc3kClTilmWsUydwUhwOhvcDdLM38cE832DyZ4vJO0HccUx/g6++R0doXPEKtn7rEV6YJtig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yp7+v1Z5fpq+28LU14WutBeNjTzq9AsbOmyoS6FDwVg=;
+ b=A/wQ6h5z8g2d/vdfIsyZd64rR1Hy30Ofuc14qUGOtiPg7/iBeALlUPBKejPJqhpNo91JTDjAOs2c8lH3DA50wZmkStkua5GMhluAuHXniFYlinyMDnUAq5uD/6W53PoWUDMVPSsVP18I8SeCTqytLVGGp+5paOm5D9u8A2x9BRs=
+Authentication-Results: ellerman.id.au; dkim=none (message not signed)
+ header.d=none;ellerman.id.au; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB2858.apcprd06.prod.outlook.com (2603:1096:4:1b::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.18; Wed, 20 Oct 2021 09:46:42 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4628.016; Wed, 20 Oct 2021
+ 09:46:42 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] PCI/hotplug: Remove unneeded of_node_put() in pnv_php
+Date:   Wed, 20 Oct 2021 05:46:04 -0400
+Message-Id: <20211020094604.2106-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0129.apcprd02.prod.outlook.com
+ (2603:1096:202:16::13) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
+MIME-Version: 1.0
+Received: from localhost.localdomain (203.90.234.87) by HK2PR02CA0129.apcprd02.prod.outlook.com (2603:1096:202:16::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Wed, 20 Oct 2021 09:46:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c7be830c-042f-4b98-45c2-08d993ae8570
+X-MS-TrafficTypeDiagnostic: SG2PR06MB2858:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR06MB2858897E79643157A0C00C1AABBE9@SG2PR06MB2858.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UVgfnhQ3SwNIXgQAjAqEMR+KaJ7jc9EEfbLOaREhYju9NwcEmpXo8rqjefdt8qS17H0VnMSJlqZDssZP5n8X++NBI6VUWy7lQVo83PGR7X/DpdYQkVp/PKgQonejdUBVFEhZDRXB0aj2MA+5HLOcZXCbGAOBDCzI7HWUqQ0ZVErMy8hlHfEWnQe/sVb2V7tcSl2q/eGBpuX6dPh6iMUCp0kbGsrSXE5KjhTNSrhHH6UjfLvf2xhbDOEdKds3EWv4jOpvP1YfTlZybD7YWVzASXwa1SaeVPE6D8ElXTMoyEWeOJWEJ+Z4wIfzJna7tKTMttt/y01RH/LoZjnGm9PPQgmUYMcL0fHCPo/pCz0vj6g0Tvypg40sJ8aoYyJXNUJ4bEznbW5qQ9vF62Y7npFusuBx40vCGo82JZI8FIkF8WwJ4Bn5msmJgtiUWEb4/78isYC8Ve3WrhCRuv7GNoMg1gCvrGkJUg6qKAUNtk6QnLgGC+ecvm3OBZDyvSb9Nh0+JNNRJXe8bqQ1Tn+3B5UrOtAn6gKS1gdzzbe7oG1NeHuNQe5iqG06WuSjKYNtAmYVizeyLshFYQuYD2XPPpgRE+my3CujnyLDQXxMwBDgMkbUT//uisK0PhONcjbstV4FUwJBfEvEZl7ehGz8J74cb7c9V2hYJJ6n0c+OS3aQvnpxfctbo8aWbbJYfnEoIWBcq5TlcaAD1kvrXzFbSoZDqQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38350700002)(38100700002)(66556008)(66476007)(36756003)(4326008)(26005)(8936002)(1076003)(107886003)(2616005)(508600001)(86362001)(956004)(6512007)(6506007)(83380400001)(52116002)(66946007)(6486002)(316002)(5660300002)(4744005)(6666004)(110136005)(2906002)(186003)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mGiPirVU+UFwHvLM4sKbk0KR1zxvLAHWCKR5LsahkpdVnusmJTiyV6lFu0y9?=
+ =?us-ascii?Q?ZgF+aS45xNdqtMutFahyFgxVEQTdr4y9Z2o8ub4Zdr9SoPiJLTFmw5WgYtfH?=
+ =?us-ascii?Q?ltDeV76c8m8dL2elWgVRKGnXAY39NUskTKzD9YI7YH3x/5NlBeIzu06heyAJ?=
+ =?us-ascii?Q?MlLr46xjb25KGqM2F/kHi2Qd9jSFkMz9odpg6qljA4/iUcingkQKiT4yjTx6?=
+ =?us-ascii?Q?uRY5RS4bV9KtMjsCUfEss/6l9jwv0uLNkDaoWB8gyIuGb1A5an7xdWhkQLrw?=
+ =?us-ascii?Q?/hT2c2eJVWKQbN2b+4sEnWRaK6+JH/uP7EvzHnb5pgccZbh9rPClCrftQGNf?=
+ =?us-ascii?Q?pmaH3SDFbrt1zTSGuLa2mGGpcGm5jQBRTHRyWvrzYi0x4DFFZhTrdIXv1D50?=
+ =?us-ascii?Q?VQl4OCGTgUcqEBo5vVhvTqe8rxJW3oxumSZFoqfw/I6ecMqzTjRPYxEvu8EN?=
+ =?us-ascii?Q?//GkkQ6RzCteqbhtZwEFHUGmyXhMC2XbkxG7eMOkwLzu/PIQxN7zTE6AZls2?=
+ =?us-ascii?Q?o54LDn0MJqIsGv3wFFJhEbR0CGAN97FLHHLv/kUH/J7jhv3WnJt+ElYoIKEi?=
+ =?us-ascii?Q?nsEesnxYQdcl/OZcDbWymZjzPi/9symTA8z5CBebMffsjBkccy5F8xn5SaH8?=
+ =?us-ascii?Q?aC+kj3jDUdiymR44EibT9P+o3iPP6KBnWKkuYPIrIytnABqdOw1yzrb331Y5?=
+ =?us-ascii?Q?yvpM3AkbXIxLYm9yxnUQU0ChyhVvInd+QBbbe3R3fB3Qz0QwM/txZNeOpBge?=
+ =?us-ascii?Q?FFx2uUqD8p+54T8/V17OhEEPULMRQCvUAL5WgZcvK2jW7ftqwXk0+N50Vu4C?=
+ =?us-ascii?Q?oLT3YS+j0YZuwBIlELPQm83KDReQZVoCtEWhJDW1V7m4dJ+tjPZEDrZzOTS4?=
+ =?us-ascii?Q?R0XcSwATlp2aK0IiEnB7W5hd3HSRfE/X9Y5uzM7TVSM4sKBF2g9/VLxRmJ+T?=
+ =?us-ascii?Q?dt2rTIm8tzxZiPMff1C7rTVHZcnO/xIwDFSucvQmaCNY0gWp2TKAqUgeD849?=
+ =?us-ascii?Q?VedK9sI2bD+BF1Qvtf/lSJgtlyeUyNn2aaRTIKFlo4/mBM1IQ6YGHQTT9Q5q?=
+ =?us-ascii?Q?aly3kVtn6IKeicPWi83OaSj6cGyz5qH+DG3kLt8NlTFUZAxyEOqYI98MMTFJ?=
+ =?us-ascii?Q?iuGMSx8QivHwI8FUkO+TyeoufwH7k0nKLLBo4N4COzZSR4GgSXQ0C6cMG/o4?=
+ =?us-ascii?Q?LfIC0FqaSKOOuIqkd2wy6c0+wRRPsghzZwl3V/NH4mBxIdAHTEPIqHdCeVPJ?=
+ =?us-ascii?Q?/dhqKDVgHf0DV4yx88UcQp3041lwDaoMdxbhvBdvuLN38bulBw0rDdPH1S93?=
+ =?us-ascii?Q?QYmGO/E617c+JNCV/EDgisWW?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7be830c-042f-4b98-45c2-08d993ae8570
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 09:46:42.5124
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 11126903@vivo.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2858
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix following coccicheck warning:
+./drivers/pci/hotplug/pnv_php.c:161:2-13: ERROR: probable double put.
 
+Device node iterators put the previous value of the index variable, so
+an explicit put causes a double put.
 
-> Il giorno 20 ott 2021, alle ore 11:38, yukuai (C) <yukuai3@huawei.com> =
-ha scritto:
->=20
-> On 2021/10/20 17:29, Paolo Valente wrote:
->>> Il giorno 20 ott 2021, alle ore 11:20, yukuai (C) =
-<yukuai3@huawei.com> ha scritto:
->>>=20
->>> On 2021/10/20 16:51, Paolo Valente wrote:
->>>=20
->>>>> @@ -860,9 +870,25 @@ void bfq_weights_tree_remove(struct bfq_data =
-*bfqd,
->>>>> 			     struct bfq_queue *bfqq)
->>>>> {
->>>>> 	struct bfq_entity *entity =3D bfqq->entity.parent;
->>>>> +	struct bfq_sched_data *sd;
->>>>> +
->>>>> +	/*
->>>>> +	 * If the bfq queue is in root group, the decrement of
->>>>> +	 * num_groups_with_pending_reqs is performed immediately upon =
-the
->>>>> +	 * deactivation of entity.
->>>>> +	 */
->>>>> +	if (!entity) {
->>>>> +		entity =3D &bfqd->root_group->entity;
->>>>> +		sd =3D entity->my_sched_data;
->>>>> +
->>>>> +		if (!sd->in_service_entity)
->>>>> +			bfq_clear_group_with_pending_reqs(bfqd, entity);
->>>>> +
->>>>> +		return;
->>>>> +	}
->>>>>=20
->>>>> 	for_each_entity(entity) {
->>>>> -		struct bfq_sched_data *sd =3D entity->my_sched_data;
->>>>> +		sd =3D entity->my_sched_data;
->>>>>=20
->>>>> 		if (sd->next_in_service || sd->in_service_entity) {
->>>>> 			/*
->>>>> @@ -880,7 +906,8 @@ void bfq_weights_tree_remove(struct bfq_data =
-*bfqd,
->>>>> 		}
->>>>>=20
->>>>> 		/*
->>>>> -		 * The decrement of num_groups_with_pending_reqs is
->>>>> +		 * If the bfq queue is not in root group,
->>>>> +		 * the decrement of num_groups_with_pending_reqs is
->>>> I'm sorry if I didn't notice this before, but why do you postpone =
-the
->>>> decrement only for queues not in root group?  If I'm not missing
->>>> anything, the active (i.e., with pending reqs) state of the root =
-group
->>>> is to be computed as that of ay other group.
->>>=20
->>> Hi, Paolo
->>>=20
->>> I thought if queue is in root group, then bfqq->entity.parent is =
-NULL,
->>> and such case is handled above, which is separate from previous
->>> implementation for queues that are not in root group.
->>>=20
->>> Is this the wrong way to handle root group?
->>>=20
->> I think that, if we want to count also the root group among the =
-active
->> ones, then the logic for tagging the root group as active must be the
->> same as the other groups. Or am I missing something?
->=20
-> Hi, Paolo
->=20
-> Currently, if queue is in root group, bfqq->entity.parent is NULL, and
-> this makes it hard to keep the same logic.
->=20
-> Can we store root_group->my_entity to bfqq->entity.parent if the queue
-> is in root group?
->=20
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/pci/hotplug/pnv_php.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Any sensible implementation is ok for me.  Usually, stuff for root
-group is in the bfqd.
-
-Thanks,
-Paolo
-
-> Thanks,
-> Kuai
+diff --git a/drivers/pci/hotplug/pnv_php.c b/drivers/pci/hotplug/pnv_php.c
+index f4c2e6e01be0..f3da4f95d73f 100644
+--- a/drivers/pci/hotplug/pnv_php.c
++++ b/drivers/pci/hotplug/pnv_php.c
+@@ -158,7 +158,6 @@ static void pnv_php_detach_device_nodes(struct device_node *parent)
+ 	for_each_child_of_node(parent, dn) {
+ 		pnv_php_detach_device_nodes(dn);
+ 
+-		of_node_put(dn);
+ 		of_detach_node(dn);
+ 	}
+ }
+-- 
+2.20.1
 
