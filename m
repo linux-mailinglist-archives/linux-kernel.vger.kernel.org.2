@@ -2,178 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CEC434EA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732FA434EA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhJTPK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:10:58 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4010 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTPK4 (ORCPT
+        id S230392AbhJTPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTPL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:10:56 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HZDRj3tffz67Xsj;
-        Wed, 20 Oct 2021 23:04:49 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 17:08:39 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.015;
- Wed, 20 Oct 2021 17:08:39 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-CC:     "corbet@lwn.net" <corbet@lwn.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "eparis@redhat.com" <eparis@redhat.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "jannh@google.com" <jannh@google.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-audit@redhat.com" <linux-audit@redhat.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: RE: [RFC PATCH v7 12/16] fsverity|security: add security hooks to
- fsverity digest and signature
-Thread-Topic: [RFC PATCH v7 12/16] fsverity|security: add security hooks to
- fsverity digest and signature
-Thread-Index: AQHXwGWUN6BqcPCg3Uma5jdt5usPz6vRLYAAgAMlHYCAAAy0gIAHoD6w
-Date:   Wed, 20 Oct 2021 15:08:39 +0000
-Message-ID: <5c1f800ba554485cb3659da689d2079a@huawei.com>
-References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
- <1634151995-16266-13-git-send-email-deven.desai@linux.microsoft.com>
- <YWcyYBuNppjrVOe2@gmail.com>
- <9089bdb0-b28a-9fa0-c510-00fa275af621@linux.microsoft.com>
- <YWngaVdvMyWBlITZ@gmail.com>
-In-Reply-To: <YWngaVdvMyWBlITZ@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 20 Oct 2021 11:11:29 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66909C06161C;
+        Wed, 20 Oct 2021 08:09:15 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id f21so16361756plb.3;
+        Wed, 20 Oct 2021 08:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=4uNWaRHMlXqdsk57g9klMRY2UiTW10bRdpFkdpi3veM=;
+        b=cukLpuMoyHVybbDBE/wFKzKYtBZovXI9IN2vPTTq8tXwOPJQ9hv0EJY2P0R4J/4ntC
+         PQwrbCvTFvGnPngpRUk9z5upZGGHXa9IhLi20i7R4vweKFQ/hfgC02+wNk8PxKKZpo9H
+         ji8f7YqN69ON1KH7uJxiyBAR4iwTtT+8Z1ylJwMhz7WHESu1btDvFkNl3Iqrni7bbxmr
+         kds1M3lwsloxN2bs3cABQCPQLlHrDvbCB8+ZUQb46m+LtSq3t1RpINTdyNdz+d0GqLo3
+         iRymbGAMMgcnuNd8keU8nIt2RiK8UiiFiawJ4FmL3+zx8Iy4y/bcbljSM9w7rmQpZbfo
+         saAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=4uNWaRHMlXqdsk57g9klMRY2UiTW10bRdpFkdpi3veM=;
+        b=RpUJ9eZB0jCnCQqXA+H78DlNFzEjIdXFqw2+Vv8MKnvF5tXHtvDXkMHL5DY3x85Eg6
+         XjI8m2TBsPxMqTPaRmVe4Gq0P82+4PyoVaKL7+QqzYM0kKdRG3eYt49pYGV5PuV8JXY9
+         2OVJwh+dpWwL/XjP4N33gcEimgtnjK3DH4qpz4SMeZ0ERMu6eRsW+lNnkxsuiwCUsG77
+         Qr/dZblSivCQvLeBBZgn63DS2jckqrRdjESiNggWQMWvkZ99zgTUjN2V6TRBgDv0vjY9
+         z9bWPMJJbN7aVeeVleU01BQFl8TWy9uOlC0MuxjyqBkpnaIrVXx3EwBcN54GJurjG27A
+         w3sw==
+X-Gm-Message-State: AOAM533qFTikoUg30tbYyKBmqlQxoYMS3GF8czvbvAH5wkkyASRHBsVS
+        AdisD3IfUGvXmP+LrsqK8pU=
+X-Google-Smtp-Source: ABdhPJx+osVdmcY4WzrIowC8Ed0OTbBfwj1di+wfvGAl8i8LmLnBVUR8cbSpCfhqCoim9OS7v6fgfg==
+X-Received: by 2002:a17:90b:33c7:: with SMTP id lk7mr533731pjb.172.1634742554921;
+        Wed, 20 Oct 2021 08:09:14 -0700 (PDT)
+Received: from ?IPV6:2404:f801:0:6:8000::a31c? ([2404:f801:9000:18:efed::a31c])
+        by smtp.gmail.com with ESMTPSA id o72sm2759176pjo.50.2021.10.20.08.09.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 08:09:14 -0700 (PDT)
+Message-ID: <7bab8b73-e276-c23c-7a0a-2a6280e8a7d9@gmail.com>
+Date:   Wed, 20 Oct 2021 23:09:03 +0800
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] x86/sev-es: Expose __sev_es_ghcb_hv_call() to call ghcb
+ hv call out of sev code
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        x86@kernel.org, hpa@zytor.com, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, davem@davemloft.net,
+        kuba@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
+        jroedel@suse.de, brijesh.singh@amd.com, pgonda@google.com,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, tj@kernel.org, aneesh.kumar@linux.ibm.com,
+        saravanand@fb.com, hannes@cmpxchg.org, rientjes@google.com,
+        michael.h.kelley@microsoft.com, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com,
+        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
+        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <2772390d-09c1-80c1-082f-225f32eae4aa@gmail.com>
+ <20211020062321.3581158-1-ltykernel@gmail.com> <YW/oaZ2GN15hQdyd@zn.tnic>
+ <c5b55d93-14c4-81cf-e999-71ad5d6a1b41@gmail.com> <YXAcGtxe08XiHBFH@zn.tnic>
+ <62ffaeb4-1940-4934-2c39-b8283d402924@amd.com>
+ <32336f13-fa66-670d-0ea3-7822bd5b829b@gmail.com> <YXAqBOGdK91ieVIT@zn.tnic>
+From:   Tianyu Lan <ltykernel@gmail.com>
+In-Reply-To: <YXAqBOGdK91ieVIT@zn.tnic>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBFcmljIEJpZ2dlcnMgW21haWx0bzplYmlnZ2Vyc0BrZXJuZWwub3JnXQ0KPiBTZW50
-OiBGcmlkYXksIE9jdG9iZXIgMTUsIDIwMjEgMTA6MTEgUE0NCj4gT24gRnJpLCBPY3QgMTUsIDIw
-MjEgYXQgMTI6MjU6NTNQTSAtMDcwMCwgRGV2ZW4gQm93ZXJzIHdyb3RlOg0KPiA+DQo+ID4gT24g
-MTAvMTMvMjAyMSAxMjoyNCBQTSwgRXJpYyBCaWdnZXJzIHdyb3RlOg0KPiA+ID4gT24gV2VkLCBP
-Y3QgMTMsIDIwMjEgYXQgMTI6MDY6MzFQTSAtMDcwMCwNCj4gZGV2ZW4uZGVzYWlAbGludXgubWlj
-cm9zb2Z0LmNvbSB3cm90ZToNCj4gPiA+ID4gRnJvbTogRmFuIFd1IDx3dWZhbkBsaW51eC5taWNy
-b3NvZnQuY29tPg0KPiA+ID4gPg0KPiA+ID4gPiBBZGQgc2VjdXJpdHlfaW5vZGVfc2V0c2VjdXJp
-dHkgdG8gZnN2ZXJpdHkgc2lnbmF0dXJlIHZlcmlmaWNhdGlvbi4NCj4gPiA+ID4gVGhpcyBjYW4g
-bGV0IExTTXMgc2F2ZSB0aGUgc2lnbmF0dXJlIGRhdGEgYW5kIGRpZ2VzdCBoYXNoZXMgcHJvdmlk
-ZWQNCj4gPiA+ID4gYnkgZnN2ZXJpdHkuDQo+ID4gPiBDYW4geW91IGVsYWJvcmF0ZSBvbiB3aHkg
-TFNNcyBuZWVkIHRoaXMgaW5mb3JtYXRpb24/DQo+ID4NCj4gPiBUaGUgcHJvcG9zZWQgTFNNIChJ
-UEUpIG9mIHRoaXMgc2VyaWVzIHdpbGwgYmUgdGhlIG9ubHkgb25lIHRvIG5lZWQNCj4gPiB0aGlz
-IGluZm9ybWF0aW9uIGF0IHRoZcKgIG1vbWVudC4gSVBF4oCZcyBnb2FsIGlzIHRvIGhhdmUgcHJv
-dmlkZQ0KPiA+IHRydXN0LWJhc2VkIGFjY2VzcyBjb250cm9sLiBUcnVzdCBhbmQgSW50ZWdyaXR5
-IGFyZSB0aWVkIHRvZ2V0aGVyLA0KPiA+IGFzIHlvdSBjYW5ub3QgcHJvdmUgdHJ1c3Qgd2l0aG91
-dCBwcm92aW5nIGludGVncml0eS4NCj4gDQo+IEkgdGhpbmsgeW91IG1lYW4gYXV0aGVudGljaXR5
-LCBub3QgaW50ZWdyaXR5Pw0KPiANCj4gQWxzbyBob3cgZG9lcyB0aGlzIGRpZmZlciBmcm9tIElN
-QT8gIEkga25vdyB0aGF0IElNQSBkb2Vzbid0IHN1cHBvcnQgZnMtdmVyaXR5DQo+IGZpbGUgaGFz
-aGVzLCBidXQgdGhhdCBjb3VsZCBiZSBjaGFuZ2VkLiAgV2h5IG5vdCBleHRlbmQgSU1BIHRvIGNv
-dmVyIHlvdXIgdXNlDQo+IGNhc2Uocyk/DQo+IA0KPiA+IElQRSBuZWVkcyB0aGUgZGlnZXN0IGlu
-Zm9ybWF0aW9uIHRvIGJlIGFibGUgdG8gY29tcGFyZSBhIGRpZ2VzdA0KPiA+IHByb3ZpZGVkIGJ5
-IHRoZSBwb2xpY3kgYXV0aG9yLCBhZ2FpbnN0IHRoZSBkaWdlc3QgY2FsY3VsYXRlZCBieQ0KPiA+
-IGZzdmVyaXR5IHRvIG1ha2UgYSBkZWNpc2lvbiBvbiB3aGV0aGVyIHRoYXQgc3BlY2lmaWMgZmls
-ZSwgcmVwcmVzZW50ZWQNCj4gPiBieSB0aGUgZGlnZXN0IGlzIGF1dGhvcml6ZWQgZm9yIHRoZSBh
-Y3Rpb25zIHNwZWNpZmllZCBpbiB0aGUgcG9saWN5Lg0KPiA+DQo+ID4gQSBtb3JlIGNvbmNyZXRl
-IGV4YW1wbGUsIGlmIGFuIElQRSBwb2xpY3kgYXV0aG9yIHdyaXRlczoNCj4gPg0KPiA+IMKgwqDC
-oCBvcD1FWEVDVVRFIGZzdmVyaXR5X2RpZ2VzdD08SGV4RGlnZXN0ID4gYWN0aW9uPURFTlkNCj4g
-Pg0KPiA+IElQRSB0YWtlcyB0aGUgZGlnZXN0IHByb3ZpZGVkIGJ5IHRoaXMgc2VjdXJpdHkgaG9v
-aywgc3RvcmVzIGl0DQo+ID4gaW4gSVBFJ3Mgc2VjdXJpdHkgYmxvYiBvbiB0aGUgaW5vZGUuIElm
-IHRoaXMgZmlsZSBpcyBsYXRlcg0KPiA+IGV4ZWN1dGVkLCBJUEUgY29tcGFyZXMgdGhlIGRpZ2Vz
-dCBzdG9yZWQgaW4gdGhlIExTTSBibG9iLA0KPiA+IHByb3ZpZGVkIGJ5IHRoaXMgaG9vaywgYWdh
-aW5zdCA8SGV4RGlnZXN0PiBpbiB0aGUgcG9saWN5LCBpZg0KPiA+IGl0IG1hdGNoZXMsIGl0IGRl
-bmllcyB0aGUgYWNjZXNzLCBwZXJmb3JtaW5nIGEgcmV2b2NhdGlvbg0KPiA+IG9mIHRoYXQgZmls
-ZS4NCj4gDQo+IERvIHlvdSBoYXZlIGEgYmV0dGVyIGV4YW1wbGU/ICBUaGlzIG9uZSBpcyBwcmV0
-dHkgdXNlbGVzcyBzaW5jZSBvbmUgY2FuIGdldA0KPiBhcm91bmQgaXQganVzdCBieSBleGVjdXRp
-bmcgYSBmaWxlIHRoYXQgZG9lc24ndCBoYXZlIGZzLXZlcml0eSBlbmFibGVkLg0KDQpJIHdhcyB3
-b25kZXJpbmcgaWYgdGhlIGZvbGxvd2luZyB1c2UgY2FzZSBjYW4gYmUgc3VwcG9ydGVkOg0KYWxs
-b3cgdGhlIGV4ZWN1dGlvbiBvZiBmaWxlcyBwcm90ZWN0ZWQgd2l0aCBmc3Zlcml0eSBpZiB0aGUg
-cm9vdA0KZGlnZXN0IGlzIGZvdW5kIGFtb25nIHJlZmVyZW5jZSB2YWx1ZXMgKGluc3RlYWQgb2Yg
-cHJvdmlkaW5nDQp0aGVtIG9uZSBieSBvbmUgaW4gdGhlIHBvbGljeSkuDQoNClNvbWV0aGluZyBs
-aWtlOg0KDQpvcD1FWEVDVVRFIGZzdmVyaXR5X2RpZ2VzdD1kaWdsaW0gYWN0aW9uPUFMTE9XDQoN
-CkRJR0xJTSBpcyBhIGNvbXBvbmVudCBJJ20gd29ya2luZyBvbiB0aGF0IGdlbmVyaWNhbGx5DQpz
-dG9yZXMgZGlnZXN0cy4gVGhlIGN1cnJlbnQgdXNlIGNhc2UgaXMgdG8gc3RvcmUgZmlsZSBkaWdl
-c3RzDQpmcm9tIFJQTVRBR19GSUxFRElHRVNUUyBhbmQgdXNlIHRoZW0gd2l0aCBJTUEsIGJ1dA0K
-dGhlIGZzdmVyaXR5IHVzZSBjYXNlIGNvdWxkIGJlIGVhc2lseSBzdXBwb3J0ZWQgKGlmIHRoZSBy
-b290DQpkaWdlc3QgaXMgc3RvcmVkIGluIHRoZSBSUE0gaGVhZGVyKS4NCg0KRElHTElNIGFsc28g
-dGVsbHMgd2hldGhlciBvciBub3QgdGhlIHNpZ25hdHVyZSBvZiB0aGUgc291cmNlDQpjb250YWlu
-aW5nIGZpbGUgZGlnZXN0cyAob3IgZnN2ZXJpdHkgZGlnZXN0cykgaXMgdmFsaWQgKHRoZSBzaWdu
-YXR1cmUNCm9mIHRoZSBSUE0gaGVhZGVyIGlzIHRha2VuIGZyb20gUlBNVEFHX1JTQUhFQURFUiku
-DQoNClRoZSBtZW1vcnkgb2NjdXBhdGlvbiBpcyByZWxhdGl2ZWx5IHNtYWxsIGZvciBleGVjdXRh
-Ymxlcw0KYW5kIHNoYXJlZCBsaWJyYXJpZXMuIEkgcHVibGlzaGVkIGEgZGVtbyBmb3IgRmVkb3Jh
-IGFuZA0Kb3BlblNVU0Ugc29tZSB0aW1lIGFnbzoNCg0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
-bGludXgtaW50ZWdyaXR5LzQ4Y2Q3MzdjNTA0ZDQ1MjA4Mzc3ZGFhMjdkNjI1NTMxQGh1YXdlaS5j
-b20vDQoNClRoYW5rcw0KDQpSb2JlcnRvDQoNCkhVQVdFSSBURUNITk9MT0dJRVMgRHVlc3NlbGRv
-cmYgR21iSCwgSFJCIDU2MDYzDQpNYW5hZ2luZyBEaXJlY3RvcjogTGkgUGVuZywgWmhvbmcgUm9u
-Z2h1YQ0KDQo+ID4gVGhpcyBicmluZ3MgbWUgdG8geW91ciBuZXh0IGNvbW1lbnQ6DQo+ID4NCj4g
-PiA+IFRoZSBkaWdlc3QgaXNuJ3QgbWVhbmluZ2Z1bCB3aXRob3V0IGtub3dpbmcgdGhlIGhhc2gg
-YWxnb3JpdGhtIGl0IHVzZXMuDQo+ID4gSXQncyBhdmFpbGFibGUgaGVyZSwgYnV0IHlvdSBhcmVu
-J3QgcGFzc2luZyBpdCB0byB0aGlzIGZ1bmN0aW9uLg0KPiA+DQo+ID4gVGhlIGRpZ2VzdCBpcyBt
-ZWFuaW5nZnVsIHdpdGhvdXQgdGhlIGFsZ29yaXRobSBpbiB0aGlzIGNhc2UuDQo+IA0KPiBObywg
-aXQncyBub3QuDQo+IA0KPiBEaWdlc3RzIGFyZSBtZWFuaW5nbGVzcyB3aXRob3V0IGtub3dpbmcg
-d2hhdCBhbGdvcml0aG0gdGhleSB3ZXJlIGNyZWF0ZWQNCj4gd2l0aC4NCj4gDQo+IElmIHlvdXIg
-c2VjdXJpdHkgcG9saWN5IGlzIHNvbWV0aGluZyBsaWtlICJUcnVzdCB0aGUgZmlsZSB3aXRoIGRp
-Z2VzdCAkZm9vIiBhbmQNCj4gbXVsdGlwbGUgaGFzaCBhbGdvcml0aG1zIGFyZSBwb3NzaWJsZSwg
-dGhlbiB0aGUgYWxvcml0aG0gaW50ZW5kZWQgdG8gYmUgdXNlZA0KPiBuZWVkcyB0byBiZSBleHBs
-aWNpdGx5IHNwZWNpZmllZC4gIE90aGVyd2lzZSBhbnkgYWxnb3JpdGhtIHdpdGggdGhlIHNhbWUg
-bGVuZ3RoDQo+IGRpZ2VzdCB3aWxsIGJlIGFjY2VwdGVkLiAgVGhhdCdzIGEgZmF0YWwgZmxhdyBp
-ZiBhbnkgb2YgdGhlc2UgYWxnb3JpdGhtcyBpcw0KPiBjcnlwdG9ncmFwaGljYWxseSBicm9rZW4g
-b3Igd2FzIG5ldmVyIGludGVuZGVkIHRvIGJlIGEgY3J5cHRvZ3JhcGhpYyBhbGdvcml0aG0NCj4g
-aW4gdGhlIGZpcnN0IHBsYWNlIChlLmcuLCBhIG5vbi1jcnlwdG9ncmFwaGljIGNoZWNrc3VtKS4N
-Cj4gDQo+IENyeXB0b3N5c3RlbXMgYWx3YXlzIG5lZWQgdG8gc3BlY2lmeSB0aGUgY3J5cHRvIGFs
-Z29yaXRobShzKSB1c2VkOyB0aGUNCj4gYWR2ZXJzYXJ5DQo+IG11c3Qgbm90IGJlIGFsbG93ZWQg
-dG8gY2hvb3NlIHRoZSBhbGdvcml0aG1zLg0KPiANCj4gSSdtIG5vdCBzdXJlIGhvdyB0aGVzZSBw
-YXRjaGVzIGNhbiBiZSB0YWtlbiBzZXJpb3VzbHkgd2hlbiB0aGV5J3JlIGdldHRpbmcgdGhpcw0K
-PiBzb3J0IG9mIHRoaW5nIHdyb25nLg0KPiANCj4gPiA+ID4gKwkJCQkJRlNfVkVSSVRZX1NJR05B
-VFVSRV9TRUNfTkFNRSwNCj4gPiA+ID4gKwkJCQkJc2lnbmF0dXJlLCBzaWdfc2l6ZSwgMCk7DQo+
-ID4gPiBUaGlzIGlzIG9ubHkgZm9yIGZzLXZlcml0eSBidWlsdC1pbiBzaWduYXR1cmVzIHdoaWNo
-IGFyZW4ndCB0aGUgb25seSB3YXkgdG8gZG8NCj4gPiA+IHNpZ25hdHVyZXMgd2l0aCBmcy12ZXJp
-dHkuICBBcmUgeW91IHN1cmUgdGhpcyBpcyB3aGF0IHlvdSdyZSBsb29raW5nIGZvcj8NCj4gPg0K
-PiA+IENvdWxkIHlvdSBlbGFib3JhdGUgb24gdGhlIG90aGVyIHNpZ25hdHVyZSB0eXBlcyB0aGF0
-IGNhbiBiZSB1c2VkDQo+ID4gd2l0aCBmcy12ZXJpdHk/IEnigJltIDk5JSBzdXJlIHRoaXMgaXMg
-d2hhdCBJ4oCZbSBsb29raW5nIGZvciBhcyB0aGlzDQo+ID4gaXMgYSBzaWduYXR1cmUgdmFsaWRh
-dGVkIGluIHRoZSBrZXJuZWwgYWdhaW5zdCB0aGUgZnMtdmVyaXR5IGtleXJpbmcNCj4gPiBhcyBw
-YXJ0IG9mIHRoZSDigJxmc3Zlcml0eSBlbmFibGXigJ0gdXRpbGl0eS4NCj4gPg0KPiA+IEl0J3Mg
-aW1wb3J0YW50IHRoYXQgdGhlIHNpZ25hdHVyZSBpcyB2YWxpZGF0ZWQgaW4gdGhlIGtlcm5lbCwg
-YXMNCj4gPiB1c2Vyc3BhY2UgaXMgY29uc2lkZXJlZCB1bnRydXN0ZWQgdW50aWwgdGhlIHNpZ25h
-dHVyZSBpcyB2YWxpZGF0ZWQNCj4gPiBmb3IgdGhpcyBjYXNlLg0KPiA+DQo+ID4gPiBDYW4geW91
-IGVsYWJvcmF0ZSBvbiB5b3VyIHVzZSBjYXNlIGZvciBmcy12ZXJpdHkgYnVpbHQtaW4gc2lnbmF0
-dXJlcywNCj4gPiBTdXJlLCBzaWduYXR1cmVzLCBsaWtlIGRpZ2VzdHMsIGFsc28gcHJvdmlkZSBh
-IHdheSB0byBwcm92ZSBpbnRlZ3JpdHksDQo+ID4gYW5kIHRoZSB0cnVzdCBjb21wb25lbnQgY29t
-ZXMgZnJvbSB0aGUgdmFsaWRhdGlvbiBhZ2FpbnN0IHRoZSBrZXlyaW5nLA0KPiA+IGFzIG9wcG9z
-ZWQgdG8gYSBmaXhlZCB2YWx1ZSBpbiBJUEXigJlzIHBvbGljeS4gVGhlIHVzZSBjYXNlIGZvciBm
-cy12ZXJpdHkNCj4gPiBidWlsdC1pbiBzaWduYXR1cmVzIGlzIHRoYXQgd2UgaGF2ZSBhIHJ3IGV4
-dDQgZmlsZXN5c3RlbSB0aGF0IGhhcyBzb21lDQo+ID4gZXhlY3V0YWJsZSBmaWxlcywgYW5kIHdl
-IHdhbnQgdG8gaGF2ZSBhIGV4ZWN1dGlvbiBwb2xpY3kgKHRocm91Z2ggSVBFKQ0KPiA+IHRoYXQg
-b25seSBfdHJ1c3RlZF8gZXhlY3V0YWJsZXMgY2FuIHJ1bi4gUGVyZiBpcyBpbXBvcnRhbnQgaGVy
-ZSwgaGVuY2UNCj4gPiBmcy12ZXJpdHkuDQo+IA0KPiBNb3N0IHVzZXJzIG9mIGZzLXZlcml0eSBi
-dWlsdC1pbiBzaWduYXR1cmVzIGhhdmUgYWN0dWFsbHkgYmVlbiBlbmZvcmNpbmcgdGhlaXINCj4g
-c2VjdXJpdHkgcG9saWN5IGluIHVzZXJzcGFjZSwgYnkgY2hlY2tpbmcgd2hldGhlciBzcGVjaWZp
-YyBmaWxlcyBoYXZlIHRoZQ0KPiBmcy12ZXJpdHkgYml0IHNldCBvciBub3QuICBTdWNoIHVzZXJz
-IGNvdWxkIGp1c3Qgc3RvcmUgYW5kIHZlcmlmeSBzaWduYXR1cmVzIGluDQo+IHVzZXJzcGFjZSBp
-bnN0ZWFkLCB3aXRob3V0IGFueSBrZXJuZWwgaW52b2x2ZW1lbnQuICBTbyB0aGF0J3Mgd2hhdCBJ
-J3ZlIGJlZW4NCj4gcmVjb21tZW5kaW5nICh3aXRoIGxpbWl0ZWQgc3VjY2VzcywgdW5mb3J0dW5h
-dGVseSkuDQo+IA0KPiBJZiB5b3UgcmVhbGx5IGRvIG5lZWQgaW4ta2VybmVsIHNpZ25hdHVyZSB2
-ZXJpZmljYXRpb24sIHRoZW4gdGhhdCBtYXkgYmUgYQ0KPiBsZWdpdGltYXRlIHVzZSBjYXNlIGZv
-ciB0aGUgZnMtdmVyaXR5IGJ1aWx0LWluIHNpZ25hdHVyZXMsIGFsdGhvdWdoIEkgZG8gd29uZGVy
-DQo+IHdoeSB5b3UgYXJlbid0IHVzaW5nIElNQSBhbmQgaXRzIHNpZ25hdHVyZSBtZWNoYW5pc20g
-aW5zdGVhZC4NCj4gDQo+IC0gRXJpYw0K
+On 10/20/2021 10:39 PM, Borislav Petkov wrote:
+> On Wed, Oct 20, 2021 at 10:23:06PM +0800, Tianyu Lan wrote:
+>> This follows Joreg's previous comment and I implemented similar version in
+>> the V! patchset([PATCH 05/13] HV: Add Write/Read MSR registers via ghcb page
+>> https://lkml.org/lkml/2021/7/28/668).
+>> "Instead, factor out a helper function which contains what Hyper-V needs and
+>> use that in sev_es_ghcb_hv_call() and Hyper-V code."
+>>
+>> https://lkml.org/lkml/2021/8/2/375
+> 
+> If you wanna point to mails on a mailing list, you simply do
+> 
+> https://lore.kernel.org/r/<Message-id>
+> 
+> No need to use some random, unreliable web pages.
+
+OK. Thanks for suggestion.
+
+> 
+> As to Joerg's suggestion, in the version I'm seeing, you're checking the
+> *context* - and the one you sent today, avoids the __pa(ghcb) MSR write.
+> 
+> So which is it?
+> 
+> Because your current version will look at the context too, see
+> 
+> 	return verify_exception_info(ghcb, ctxt);
+> 
+> at the end of the function.
+Both old and new patches are to avoid setting GHCB page address via MSR.
+Paravisor is in charge of doing that and un-enlightened guest should not 
+change it. The old one was in the patchset v1 "x86/Hyper-V: Add Hyper-V
+Isolation VM support". The patch I sent today is based on your clean up 
+patch and for review first. It should be in patchset "x86/Hyper-V: Add 
+Hyper-V Isolation VM support."
+
+> 
+> So is the issue what Tom said that "the paravisor uses the same GHCB MSR
+> and GHCB protocol, it just can't use __pa() to get the address of the
+> GHCB."?
+
+Yes, hyper-V enables vTOM in the CVM and GHCB page PA reported by 
+paravisor contains vTOM bit. We need to use memremap() to map ghcb page 
+before accessing GHCB page. __pa() doesn't work for PA with vTOM bit.
+Otherwise, guest should not set GHCB page address and avoid conflict 
+with paravisor.
+
+> 
+> If that is the case and the only thing you want is to avoid the GHCB PA
+> write, then, in the future, we might drop that MSR write altogether on
+> the enlightened Linux guests too and then the same function will be used
+> by your paravisor and the Linux guest.
+
+Yes, this is the target of the patch. Can we put the change in the 
+Hyper-V patchset? Other patch has been fully reviewed.
+
+Thanks.
