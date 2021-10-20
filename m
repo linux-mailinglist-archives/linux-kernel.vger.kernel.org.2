@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8EA4351F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70835435205
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhJTRwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhJTRwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:52:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8A4B9611C7;
-        Wed, 20 Oct 2021 17:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634752207;
-        bh=2Dzzo6jTqKBd7t+CAO2c1sp4Zw4SZDoIQxwCiTE9Y5k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=of4UImj3Oz9AZZ66Gm4PEvOxokqNUX1zcK5lEasmoSyg6hpt8CFvogS9YRNh/yCj8
-         KoBus6sIejY7HaJz9ZtL4hPBiO0VJE+sxmgBM4k/KJOMIM2nOLhYrz7m+qINsmjM+8
-         REABHxYt/bWlUJYbIjnmAysilAdfg3+c9Bhm2lQTNa/zlHY6C1O/WyRhxV92sF7KuO
-         goNuvbX+DJHAzQ4XC6JJPemQO+Nqubj9kbyorkQfXuxclKjsyS1X34rCBgdwYICR0e
-         kgQXZ011gj7MDy+7aa0ab7X9THv6yPkEpDY5WwQhEoSSTr4A6hRpelfoVB1A3PZ9Zk
-         EK+MAV6LEAyjQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7DD6B609E7;
-        Wed, 20 Oct 2021 17:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230343AbhJTRw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230351AbhJTRw5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:52:57 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB83C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:50:42 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i24so195007lfj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IFvyJDv7zWHNgpVy4rL7we9/QbUTjFwP2DzX3TA0tiQ=;
+        b=DxXrG20AfYyTWbuMUYzNfwR4ma6dWiFGO0KjGKjLqVUYkWc3DGlA7gExcJhltON98Q
+         iCOl7ShLDxT6gW3S/iaxj1F4KrUBb9e17xdURrxubqYpnaDf5fqI+klbo/6SpeMVbaxj
+         bVO5N1ypo4BJgVzIhZmV7S+lvG+ppRftQ74TP0w7xkCYNdCPabymX9EBoVJgU+AiJdnX
+         73rfLrfIuuMZZa7dbpcIoqZmbjgOPkSZh/tq0Pqn9LQQD0c50F18mXQtmzKwXTaIrbI4
+         VLerFWmUTLJfn1+7KKosGH7U2IvcsnC2m3gcHYqoEbu8bW+mpmpUd0FUhndHkvD2mYx+
+         E4OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IFvyJDv7zWHNgpVy4rL7we9/QbUTjFwP2DzX3TA0tiQ=;
+        b=xxxRIOUxttOQz3Z7fdAIyttF0KwYlYpMfh0JbWeCK868WDRsMxn5wxM0MsVGotVMWA
+         0eIRfS2HfYfckTYzJvVvstca8QsXfJqZsH1Tf5HfizOVByYdbdK5AHDmPb1MgIp3JR8N
+         LVygiZyyZK2IXL6BowHS3bAL/zR1BhZzUtESZHvddu/0mllqG1CfptC8O6fxfzHCdo2u
+         rBGZ6ShuDESaDyu5EMATbhRfTrmMPrbQB/PXaVybvUGeqGhIErkrJQPGK+LaNgkLvcMq
+         rNw1KYD3KyEkTS/+LsHwHqjS+o1+El/rW4hEesXvgiC0I0PyDao+NEL2XwuyzxU0hR+t
+         GtGA==
+X-Gm-Message-State: AOAM5304/ExBl7wQkuoirt3QAtPiTD2ajivLEgcft54q+0tm3IJghFwr
+        JPlDmWs1VtEvY0C4CRfKNqb2ViOa2VUn5Vr0p1FIfg==
+X-Google-Smtp-Source: ABdhPJwPFGMtZow5DrrM1QQEhKH4UgBAhO+q3OhbDbIA+NCFfvXVoE6xurM+6DQNbeaHKSEmyE1T/I8F3ayNnhS04hg=
+X-Received: by 2002:a05:6512:2284:: with SMTP id f4mr643276lfu.489.1634752240690;
+ Wed, 20 Oct 2021 10:50:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH selftests/bpf] selftests/bpf: remove duplicate include in
- cgroup_helpers.c.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163475220751.2338.1905298841088957803.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Oct 2021 17:50:07 +0000
-References: <20211019014549.970830-1-ran.jianping@zte.com.cn>
-In-Reply-To: <20211019014549.970830-1-ran.jianping@zte.com.cn>
-To:     Ran Jianping <cgel.zte@gmail.com>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ran.jianping@zte.com.cn, zealci@zte.com.cn
+References: <20211020173554.38122-1-keescook@chromium.org>
+In-Reply-To: <20211020173554.38122-1-keescook@chromium.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 20 Oct 2021 10:50:29 -0700
+Message-ID: <CAKwvOdnH4JG1Qt3scCVYGMT+iyfYKna4wyuODXZqURVfe+DZVg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] gcc-plugins: Explicitly document purpose and
+ deprecation schedule
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dan Li <ashimida@linux.alibaba.com>, ardb@kernel.org,
+        ojeda@kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-security-module@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Oct 20, 2021 at 10:35 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> Hi,
+>
+> GCC plugins should only exist when some compiler feature needs to be
+> proven but does not exist in either GCC nor Clang. For example, if a
+> desired feature is already in Clang, it should be added to GCC upstream.
+> Document this explicitly.
+>
+> I'll put this in -next unless there are objections. :)
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
-On Tue, 19 Oct 2021 01:45:49 +0000 you wrote:
-> From: Ran Jianping <ran.jianping@zte.com.cn>
-> 
-> unistd.h included in '/tools/testing/selftests/bpf/cgroup_helpers.c'
->  is duplicated.It is also included on the 14 line.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Ran Jianping <ran.jianping@zte.com.cn>
-> 
-> [...]
+>
+> Thanks!
+>
+> -Kees
+>
+>
+> Kees Cook (2):
+>   gcc-plugins: Explicitly document purpose and deprecation schedule
+>   gcc-plugins: Remove cyc_complexity
+>
+>  Documentation/kbuild/gcc-plugins.rst        | 28 ++++++++-
+>  scripts/Makefile.gcc-plugins                |  2 -
+>  scripts/gcc-plugins/Kconfig                 | 20 +-----
+>  scripts/gcc-plugins/cyc_complexity_plugin.c | 69 ---------------------
+>  security/Kconfig.hardening                  |  9 ++-
+>  5 files changed, 34 insertions(+), 94 deletions(-)
+>  delete mode 100644 scripts/gcc-plugins/cyc_complexity_plugin.c
+>
+> --
+> 2.30.2
+>
 
-Here is the summary with links:
-  - [selftests/bpf] selftests/bpf: remove duplicate include in cgroup_helpers.c.
-    https://git.kernel.org/bpf/bpf-next/c/b8f49dce799f
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-- 
+Thanks,
+~Nick Desaulniers
