@@ -2,77 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5702434AFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886F7434AFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhJTMQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:16:58 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:4402 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhJTMQ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:16:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634732082; x=1666268082;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=NDa9KEOle5Dvn0boViSDp3mupUuPQQnHaePh4Ug4R4E=;
-  b=b1Y8BuxepWhvlK5edrCtihec4nlli3naC7nnXvjDQWWBwBxT2dsMmYRS
-   XsvVcI9f8AqQwFFjWu4FTFYBLHYOi3rErKAWWZrVYZvu11sUzqZvdm9jj
-   zOEX/qktt2CX7guBWlasnKQ7Zs0KSCGUglyHV5UIdiBeekBktIHB/d9DW
-   E=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 20 Oct 2021 05:14:42 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 20 Oct 2021 05:14:41 -0700
-X-QCInternal: smtphost
-Received: from sbillaka-linux.qualcomm.com ([10.204.66.13])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 20 Oct 2021 17:44:27 +0530
-Received: by sbillaka-linux.qualcomm.com (Postfix, from userid 2305739)
-        id 5E91420E29; Wed, 20 Oct 2021 17:44:26 +0530 (IST)
-From:   Sankeerth Billakanti <quic_sbillaka@quicinc.com>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Sankeerth Billakanti <sbillaka@codeaurora.org>,
-        robdclark@gmail.com, seanpaul@chromium.org, swboyd@chromium.org,
-        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
-        dianders@chromium.org, khsieh@codeaurora.org,
-        mkrishn@codeaurora.org,
-        Sankeerth Billakanti <quic_sbillaka@quicinc.com>
-Subject: [PATCH v2 2/2] dt-bindings: Add SC7280 compatible string
-Date:   Wed, 20 Oct 2021 17:44:11 +0530
-Message-Id: <1634732051-31282-3-git-send-email-quic_sbillaka@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634732051-31282-1-git-send-email-quic_sbillaka@quicinc.com>
-References: <1634732051-31282-1-git-send-email-quic_sbillaka@quicinc.com>
+        id S230368AbhJTMRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:17:07 -0400
+Received: from relay.sw.ru ([185.231.240.75]:44326 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230361AbhJTMRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:17:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=vKfgRv2zJEAoAS/QMp8Ojy3ytr5x5Kwda6HCzY+o9dY=; b=piFq4YJOVCzthmB9i6b
+        NgU9AF9sxMXuXUshwNGUqc8UUt7jOsEyjWpz7crmMVUVecu7tMqQloOLCOHVflMvVpfVsy94enpjs
+        38aVbuXoEwvwIBMuS1SZMSPcfMeMLX5W7o9phEpjbW/bnnHEfFKouHYb3wZ6hDngTOJJSojLDVQ=;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mdAUa-006bCw-9o; Wed, 20 Oct 2021 15:14:48 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH memcg 3/3] memcg: handle memcg oom failures
+To:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+ <cover.1634730787.git.vvs@virtuozzo.com>
+Message-ID: <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
+Date:   Wed, 20 Oct 2021 15:14:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <cover.1634730787.git.vvs@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sankeerth Billakanti <sbillaka@codeaurora.org>
+mem_cgroup_oom() can fail if current task was marked unkillable
+and oom killer cannot find any victim.
 
-The Qualcomm SC7280 platform supports an eDP controller, add
-compatible string for it to dp-controller.
+Currently we force memcg charge for such allocations,
+however it allow memcg-limited userspace task in to overuse assigned limits
+and potentially trigger the global memory shortage.
 
-Signed-off-by: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
+Let's fail the memory charge in such cases.
+
+This failure should be somehow recognised in #PF context,
+so let's use current->memcg_in_oom == (struct mem_cgroup *)OOM_FAILED
+
+ToDo: what is the best way to notify pagefault_out_of_memory() about 
+    mem_cgroup_out_of_memory failure ?
+
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 ---
- Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ mm/memcontrol.c | 32 +++++++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-index 63e585f..ab2bb1b 100644
---- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-@@ -17,6 +17,7 @@ properties:
-   compatible:
-     enum:
-       - qcom,sc7180-dp
-+      - qcom,sc7280-edp
-       - qcom,sc8180x-dp
-       - qcom,sc8180x-edp
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 74a7379dbac1..b09d3c64f63f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1810,11 +1810,21 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
+ 		mem_cgroup_oom_notify(memcg);
  
+ 	mem_cgroup_unmark_under_oom(memcg);
+-	if (mem_cgroup_out_of_memory(memcg, mask, order))
++	if (mem_cgroup_out_of_memory(memcg, mask, order)) {
+ 		ret = OOM_SUCCESS;
+-	else
++	} else {
+ 		ret = OOM_FAILED;
+-
++		/*
++		 * In some rare cases mem_cgroup_out_of_memory() can return false.
++		 * If it was called from #PF it forces handle_mm_fault()
++		 * return VM_FAULT_OOM and executes pagefault_out_of_memory().
++		 * memcg_in_oom is set here to notify pagefault_out_of_memory()
++		 * that it was a memcg-related failure and not allow to run
++		 * global OOM.
++		 */
++		if (current->in_user_fault)
++			current->memcg_in_oom = (struct mem_cgroup *)ret;
++	}
+ 	if (locked)
+ 		mem_cgroup_oom_unlock(memcg);
+ 
+@@ -1848,6 +1858,15 @@ bool mem_cgroup_oom_synchronize(bool handle)
+ 	if (!memcg)
+ 		return false;
+ 
++	/* OOM is memcg, however out_of_memory() found no victim */
++	if (memcg == (struct mem_cgroup *)OOM_FAILED) {
++		/*
++		 * Should be called from pagefault_out_of_memory() only,
++		 * where it is used to prevent false global OOM.
++		 */
++		current->memcg_in_oom = NULL;
++		return true;
++	}
+ 	if (!handle)
+ 		goto cleanup;
+ 
+@@ -2633,15 +2652,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 */
+ 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+ 		       get_order(nr_pages * PAGE_SIZE));
+-	switch (oom_status) {
+-	case OOM_SUCCESS:
++	if (oom_status == OOM_SUCCESS) {
+ 		passed_oom = true;
+ 		nr_retries = MAX_RECLAIM_RETRIES;
+ 		goto retry;
+-	case OOM_FAILED:
+-		goto force;
+-	default:
+-		goto nomem;
+ 	}
+ nomem:
+ 	if (!(gfp_mask & __GFP_NOFAIL))
 -- 
-The Qualcomm Innovatin Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+2.32.0
 
