@@ -2,151 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D641A434BBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F495434BD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhJTNCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:02:12 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:44149
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229702AbhJTNCL (ORCPT
+        id S230234AbhJTNKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229911AbhJTNKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:02:11 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Aa/cxzankGqqFbF57j6JneJGJz3HpDfIr3DAb?=
- =?us-ascii?q?v31ZSRFFG/Fw9vre+MjzuiWetN98YhsdcJW7WZVoIkmskKKdg7NwAV7KZmCPhI?=
- =?us-ascii?q?LrFvAA0WKI+VPd8kPFmtK1mZ0QEZRWOZnASWJ3isv3+2CDfuoIytPvys+Vuds?=
- =?us-ascii?q?=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
-   d="scan'208";a="396505127"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 14:59:55 +0200
-Date:   Wed, 20 Oct 2021 14:59:55 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Karolina Drobnik <karolinadrobnik@gmail.com>
-cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
-        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] staging: vt6655: Rename `by_preamble_type`
- parameter
-In-Reply-To: <6089e564f89ceaa7303bf3a4b4c864bf1389ac25.camel@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2110201456190.2930@hadrien>
-References: <20211020084033.414994-1-karolinadrobnik@gmail.com>  <alpine.DEB.2.22.394.2110201051300.2930@hadrien> <6089e564f89ceaa7303bf3a4b4c864bf1389ac25.camel@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Wed, 20 Oct 2021 09:10:11 -0400
+X-Greylist: delayed 384 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Oct 2021 06:07:56 PDT
+Received: from danwin1210.me (danwin1210.me [IPv6:2a01:4f8:c010:d56::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C46DC06161C;
+        Wed, 20 Oct 2021 06:07:56 -0700 (PDT)
+Received: from danwin1210.me (unknown [10.9.0.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X448 server-signature ECDSA (P-384) server-digest SHA384
+         client-signature ED448)
+        (Client CN "danwin1210.me", Issuer "danwin1210.me" (verified OK))
+        by mail.danwin1210.me (Postfix) with ESMTPS id 22FFF1F43B;
+        Wed, 20 Oct 2021 13:01:27 +0000 (UTC)
+Received: from prine.. (unknown [10.9.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+        (No client certificate requested)
+        by danwin1210.me (Postfix) with ESMTPSA id 4CE635A644;
+        Wed, 20 Oct 2021 13:00:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danwin1210.me;
+        s=mail; t=1634734856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wvlKkaYQfmgd1AQPtmZAcpJC7xRHMNlCP4y6n6AzJL0=;
+        b=A42M3zm3idaqWTNZEkfWhmyNrLjK3eEm2rVVigtKnLytKIbGAA9tFb6l793sC/yTCg/Dse
+        Y1iuZ3oyAGgqXqqz9LUFjjgfouuoYZ9u0V1X+QcNHRqNUWya9zvIiO/Eaire0ErLG9md0j
+        8w3+fYkuB1wSGfmy2L8sYT3Oppt364JhQ8QoaEdqQ7NewTRlRInVeep03oPJSxoXOs3b0i
+        gKbTZOD1BTcNPZidfMB2qcn0Khxcer4pn0GDpc8WqTc0/NzWV1guwrsjH5cyxH4Ec0xQ/Q
+        fS9sgTCBMq0qKDnPUhwvSz1Xy6KsrdaneqU7xkg6TCkHfSCzx/pihukz3rtPX+8P6Q+SCD
+        +Heva/W/Mk/H978E3DzFo5sx3sYjMe8BUsI6P2XKos7VwNo8KYogc6PAXzLNnkTVdqd2N1
+        D7L2s5os1u7ooSmvhGJOGWCTSnaVc8qkV8YxfO4RqMxm/Mz81kKJBJXuBFVurXf3j5w3Ei
+        4pVzZAzcXFXGChpsqH369q+j98BO2hSX9zVExoSbjRZDVdX3wO3hNB7juLt+hQMVkD5XTw
+        oIo5J8cfJhyim8rJHWXy8AxgCsTXojr8SD3c1rkfYLLo4mjInndjBwrMkDeUDJEVps+Vxq
+        bXxHP62fWJgTcOx64bBJBNo2ChbtN7EIgcCYtWZK16A+9LX6OeHGU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=danwin1210.me;
+        s=ed25519; t=1634734856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wvlKkaYQfmgd1AQPtmZAcpJC7xRHMNlCP4y6n6AzJL0=;
+        b=O8J1B6BfYwKsfAF4l9yz6jR1z2rbSQ8qXrTbVJw0cc8NpkzyNa91JHvhmHKe6iNcEB7bvT
+        bfcyMKJYcXIiS4AQ==
+From:   Kyle Copperfield <kmcopper@danwin1210.me>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Kyle Copperfield <kmcopper@danwin1210.me>,
+        Dragan Simic <dragan.simic@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: btsdio: Do not bind to non-removable BCM4345 and BCM43455
+Date:   Wed, 20 Oct 2021 13:00:22 +0000
+Message-Id: <20211020130023.196651-1-kmcopper@danwin1210.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+BCM4345 and BCM43455 devices soldered onto the PCB (non-removable),
+use an UART connection for Bluetooth, such as in the Pinebook Pro,
+and the advertised btsdio support as an SDIO function is ignored.
 
+Reviewed-by: Dragan Simic <dragan.simic@gmail.com>
+Signed-off-by: Kyle Copperfield <kmcopper@danwin1210.me>
+---
+ drivers/bluetooth/btsdio.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Wed, 20 Oct 2021, Karolina Drobnik wrote:
+diff --git a/drivers/bluetooth/btsdio.c b/drivers/bluetooth/btsdio.c
+index 199e8f7d426d..795be33f2892 100644
+--- a/drivers/bluetooth/btsdio.c
++++ b/drivers/bluetooth/btsdio.c
+@@ -295,6 +295,8 @@ static int btsdio_probe(struct sdio_func *func,
+ 		switch (func->device) {
+ 		case SDIO_DEVICE_ID_BROADCOM_43341:
+ 		case SDIO_DEVICE_ID_BROADCOM_43430:
++		case SDIO_DEVICE_ID_BROADCOM_4345:
++		case SDIO_DEVICE_ID_BROADCOM_43455:
+ 		case SDIO_DEVICE_ID_BROADCOM_4356:
+ 			return -ENODEV;
+ 		}
+-- 
+2.33.1
 
-> On Wed, 2021-10-20 at 10:54 +0200, Julia Lawall wrote:
-> > On Wed, 20 Oct 2021, Karolina Drobnik wrote:
-> >
-> > > Drop `by` prefix in the first parameter of `bb_get_frame_time`
-> > > function.
-> > > As the original argument, `byPreambleType`, was renamed to
-> > > `preamble_type`,
-> > > the parameter referring to it is now renamed to match the new
-> > > naming
-> > > convention.
-> > > Update `bb_get_frame_time` comment to reflect that change.
-> > >
-> > > This patch is a follow-up work to this commit:
-> > >     Commit 548b6d7ebfa4 ("staging: vt6655: Rename byPreambleType
-> > > field")
-> >
-> > This is not going to be practical.  If the previous patch is
-> > accepted, then this it not needed.
->
-> This change was there before but Greg told me to do only one logical
-> change per patch (which was a struct member rename), so I reverted it.
-> I believe this is needed because this parameter still uses Hungarian
-> notation, which is against the LK coding style. Also, it makes sense to
-> update the name given my previous change.
-
-Sorry, I think I was not clear.  It's not practical to explain constraints
-on other patches in the log message.
-
->
-> > there needs to be a vn+1 putting the patches together into a series.
->
-> I didn't know that it should be send this way, especially given the
-> fact that Outreachy applicants should first get 3-5 patches out before
-> creating a patchset. Or has something changed in this regard?
-
-I think that the 3-5 rule is not that important.  The important thing is
-that if you want to make two different changes on the same file, either
-the first one has to be accepted before you submit the second one, or they
-have to be in a series.
-
-> > > @@ -1691,7 +1691,7 @@ static const unsigned short
-> > > awc_frame_time[MAX_RATE] = {
-> > >   *
-> > >   * Parameters:
-> > >   *  In:
-> > > - *      by_preamble_type  - Preamble Type
-> > > + *      preamble_type     - Preamble Type
-> > >   *      by_pkt_type        - PK_TYPE_11A, PK_TYPE_11B,
-> > > PK_TYPE_11GB, PK_TYPE_11GA
-> >
-> > In the realm of small cleanups to this driver, the extra space in
-> > front of the - above is a bit annoying.
->
-> I can add this in but will that still count as a one logical change?
-
-No.  It's a different change.  It's just a small whitespace issue, but
-it's not triggered by the other changes you have made.
-
-julia
-
-> I described the comment update, will that suffice?
->
-> > > @@ -1717,7 +1717,7 @@ unsigned int bb_get_frame_time(unsigned char
-> > > by_preamble_type,
-> > >         rate = (unsigned int)awc_frame_time[rate_idx];
-> > >
-> > >         if (rate_idx <= 3) {                /* CCK mode */
-> > > -               if (by_preamble_type == 1) /* Short */
-> > > +               if (preamble_type == 1) /* Short */
-> >
-> > I hope you will get around to replacing the 1 by the appropriate
-> > constant and removing the "Short" comment.
->
-> I plan to do so after correcting the name variable.
->
->
-> On Wed, 2021-10-20 at 10:55 +0200, Greg KH wrote:
-> > On Wed, Oct 20, 2021 at 09:40:33AM +0100, Karolina Drobnik wrote:
-> > > Drop `by` prefix in the first parameter of `bb_get_frame_time`
-> > > function.
-> > > As the original argument, `byPreambleType`, was renamed to
-> > > `preamble_type`,
-> > > the parameter referring to it is now renamed to match the new
-> > > naming
-> > > convention.
-> > > Update `bb_get_frame_time` comment to reflect that change.
-> > >
-> > > This patch is a follow-up work to this commit:
-> > >     Commit 548b6d7ebfa4 ("staging: vt6655: Rename byPreambleType
-> > > field")
-> >
-> > There is no need for these two lines in the changelog text.  They can
-> > go
-> > below --- if you want to have them.
->
-> Thank you for clarifying this. I've been following the Submitting
-> Patches docs[1] and thought this is needed.
->
->
-> Thanks,
-> Karolina
-> -------------------------------------------------------------------
-> [1]:
-> https://elixir.bootlin.com/linux/latest/source/Documentation/process/submitting-patches.rst#L106
->
->
->
