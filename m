@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368A7434BFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB559434C00
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhJTN0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:26:47 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:46735 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhJTN0q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:26:46 -0400
-Received: by mail-ot1-f49.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so8158617ote.13;
-        Wed, 20 Oct 2021 06:24:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RNWWP9bTOkCgW0tcCeT8WC0sybKGetWwgWvpGMhElmI=;
-        b=zMkxnps66cebgIuaa1c8X5LCCkbzZeSCVswtvPshAC1FBrABfrZ9/zHrWFcrkYmelK
-         AunibEHExD85LM8ncPEEsN1Ex2CX4KEXgYp5slXP3eZOUOi3Y4K9gfSX1SiNMx+MzOgE
-         t+cbk+nuFNwt0yRwGCtB7x94+OzqfgqWejJZDKXWASDo1s/em4VT6i3VHQMinibUCz6j
-         0aSp9+9An7FQaFtYZqXK6XT8GgcmFdUQqS5tm766kvhUq8x19qv8eWX1SLpvwZ2Nrwrx
-         3HEXcm437ik2tCQVvWe1Kd1bqN0/LEGV3f5vALz4v68b3/cOvxhcYOjNJImjX0MOWxae
-         06fw==
-X-Gm-Message-State: AOAM532d7FkWB/Qv1WivOmSdlGQnDELSYoqZtPXlV0+ALhvA/5cg1iT5
-        ZRgiLGhReEFPHbhJqKuf/vTIy7l5Tg==
-X-Google-Smtp-Source: ABdhPJzLB3PDzuaVVTWKIo94MOknTyjcODSHeAoxM/rtWZy+oDjpMr99UBRFJbGqlHrtrpiwAtmyXA==
-X-Received: by 2002:a9d:3e5c:: with SMTP id h28mr10960461otg.50.1634736271605;
-        Wed, 20 Oct 2021 06:24:31 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id i13sm442681oig.35.2021.10.20.06.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:24:30 -0700 (PDT)
-Received: (nullmailer pid 2224276 invoked by uid 1000);
-        Wed, 20 Oct 2021 13:24:30 -0000
-Date:   Wed, 20 Oct 2021 08:24:30 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/24] PCI: Add PCI_ERROR_RESPONSE and it's related
- definitions
-Message-ID: <YXAYjkLyS53Bod3j@robh.at.kernel.org>
-References: <cover.1634306198.git.naveennaidu479@gmail.com>
- <4516b02d3c0fe3593a1a9f59bab47e99cdb65f02.1634306198.git.naveennaidu479@gmail.com>
+        id S230216AbhJTN0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:26:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230217AbhJTN0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:26:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D62BC610A2;
+        Wed, 20 Oct 2021 13:24:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634736277;
+        bh=PqVSHH37BmGQsX1qezJH2oQnq5LUFYlr9s1QmVycycc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OvH53djgyaKC1oD0p/S0wBL2d8xSwXmPmpPJ9HdrP458IJuyhyZqZ4slDmPK2R12m
+         SxLLglsZmGJtRmUy2lHcZw5d5cTRiB9qwUfiv9dqmqi81jzJmZBXpzgc24suTSqjyK
+         CC61WgQJbb3mL1heH24V+76WfVlqPO+bVb99DgF8nrRxHs9JvlbWPaOsl8ykPgQ9SA
+         7q9UxlT+jIhIEaXq1eGSq2xjSTXbjnO74Q4AZGof8lr3PHDEauQW33OXFkEpCkZkg1
+         kqB2YbiTAuDq8CjxqvBVAKmTXhInOPSIKrcxynP0Nc0RBwQ89+uutVozzLzI6nOgPP
+         xh6Z4tAAJq9Zg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E2B04410A1; Wed, 20 Oct 2021 10:24:33 -0300 (-03)
+Date:   Wed, 20 Oct 2021 10:24:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Andrew Kilroy <andrew.kilroy@arm.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 04/21] perf pmu: Make pmu_event tables const.
+Message-ID: <YXAYkecMsW+Zj8W9@kernel.org>
+References: <20211015172132.1162559-1-irogers@google.com>
+ <20211015172132.1162559-5-irogers@google.com>
+ <d9566a3a-179e-ab3c-6a63-256ea23778b9@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4516b02d3c0fe3593a1a9f59bab47e99cdb65f02.1634306198.git.naveennaidu479@gmail.com>
+In-Reply-To: <d9566a3a-179e-ab3c-6a63-256ea23778b9@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 07:58:16PM +0530, Naveen Naidu wrote:
-> An MMIO read from a PCI device that doesn't exist or doesn't respond
-> causes a PCI error.  There's no real data to return to satisfy the
-> CPU read, so most hardware fabricates ~0 data.
-> 
-> Add a PCI_ERROR_RESPONSE definition for that and use it where
-> appropriate to make these checks consistent and easier to find.
-> 
-> Also add helper definitions SET_PCI_ERROR_RESPONSE and
-> RESPONSE_IS_PCI_ERROR to make the code more readable.
-> 
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> ---
->  include/linux/pci.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index cd8aa6fce204..928c589bb5c4 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -154,6 +154,15 @@ enum pci_interrupt_pin {
->  /* The number of legacy PCI INTx interrupts */
->  #define PCI_NUM_INTX	4
->  
-> +/*
-> + * Reading from a device that doesn't respond typically returns ~0.  A
-> + * successful read from a device may also return ~0, so you need additional
-> + * information to reliably identify errors.
-> + */
-> +#define PCI_ERROR_RESPONSE			(~0ULL)
-> +#define SET_PCI_ERROR_RESPONSE(val)	(*val = ((typeof(*val)) PCI_ERROR_RESPONSE))
-> +#define RESPONSE_IS_PCI_ERROR(val)	(*val == ((typeof(*val)) PCI_ERROR_RESPONSE))
+Em Tue, Oct 19, 2021 at 12:19:24PM +0100, John Garry escreveu:
+> On 15/10/2021 18:21, Ian Rogers wrote:
 
-No reason for val to be a pointer.
+> - bouncing Changbin Du <changbin.du@intel.com> and Jin Yao
+> <yao.jin@linux.intel.com>
+ 
+> > Make lookup nature of data structures clearer through their type. Reduce
+> > scope of architecture specific pmu_event tables by making them static.
 
-Also, macro parameters need () around them. val could be an expression 
-like 'ptr + 1' which would blow up for example.
+> > Suggested-by: John Garry<john.garry@huawei.com>
+> > Acked-by: Andi Kleen<ak@linux.intel.com>
+> > Signed-off-by: Ian Rogers<irogers@google.com>
+ 
+> Reviewed-by: John Garry <john.garry@huawei.com>
+ 
+> BTW, We seem to be using > 80 char per line now. Well in metricgroup.h
+> anyway, from a brief check. I know checkpatch.pl is ok with this now, but
+> some maintainers aren't. Just saying.
 
-> +
->  /*
->   * pci_power_t values must match the bits in the Capabilities PME_Support
->   * and Control/Status PowerState fields in the Power Management capability.
-> -- 
-> 2.25.1
-> 
-> 
+I don't have a problem with that:
+
+[acme@quaco ~]$ echo $COLUMNS
+273
+[acme@quaco ~]$
+
+:-)
+
+- Arnaldo
