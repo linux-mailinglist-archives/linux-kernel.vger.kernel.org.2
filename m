@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49C94344F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B164344F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhJTGM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbhJTGMz (ORCPT
+        id S229846AbhJTGNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:13:39 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36422
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229591AbhJTGNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:12:55 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B14FC06161C;
-        Tue, 19 Oct 2021 23:10:41 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so4601327otk.3;
-        Tue, 19 Oct 2021 23:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xKg9EjzdwjkynYiQFahq3nQ5iPSpRZ4rXkfIYG32xcw=;
-        b=TsuadMfgh/GFJNDD+k45aJlv52+kHcCKwEXHJoS/wOkW24o3bmT4AnuEqdjINH0iqG
-         yxAzJIG63NN5uIwszW4PrJmXXDQ+5nJKzwoEPWGe2g3mvfglPZD9PwDHFQki0L7lvXgK
-         MdSpCf6RGy7ynFQMbVGGfxlSNI01l7SpS8AZ3AFny4208jr56lO+aDetEI8UWQayzF8C
-         A9dd+aen++mEe8DILo1Ca1HA8uOiz7TyhQrBKvdi94ocup16AcYLEcXzacMxHQQvAkUx
-         WEVgMMmhMa0oWOogwkMZhQXP5xTku3XOWBt7hMGG7P4W5IInXO+Z5cs312MyJQS9Hvv+
-         y+hA==
+        Wed, 20 Oct 2021 02:13:38 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 2A300406E1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634710283;
+        bh=1Pwbto3xzDOuj9AdmGAawkkhjI3NOhcoDznc6EjuA4E=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=TV6/5zrABAxI7gQxS83/Nk+2lL1HQB7BRGC0eYminhVl5tQW0jxNHw6arMvHACJJ4
+         WwSArGpnJRO2pZrlgCSLdBduPnLd1U6ow6wPZ/2I0WudKeLykajGMq9sFnZ3SC1j1W
+         IafoLvBZO0yLXZxe1dp5rNkqFlc520kZHt9iT8VSWwx30Mo4iDTsL0Fmj9KyhkvslU
+         s8qCdKDwoQIrQw9Tz98FC8k+8D46f0nJlKZlfMhtgnH4sgjNG/pcALydwsxsPuskwr
+         K5fuCYUlHruHLAIAnTqx/aKUqllnmtvIH1BH97GE3n9UNdm48BflTQlmE/9gOfbVIT
+         2Oh7chBAoJFzQ==
+Received: by mail-ed1-f69.google.com with SMTP id t18-20020a056402021200b003db9e6b0e57so19924673edv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 23:11:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xKg9EjzdwjkynYiQFahq3nQ5iPSpRZ4rXkfIYG32xcw=;
-        b=20LsNfV+z7XPBY7pCjVFrLdI45SYrX7FtsuSTbH5/31KiQqcSTWdL6ik40xBmiwe6h
-         nj8OWtx3zXAWY8Ep47f4FVSu6aCtCTiaUwHVqgIJI4VHyJjEyh0P0XEw8XG+MaIQ2mff
-         kkaeO4yCaqX0ibcUe+0N2xEEuHapvkgv1mhjol/0Iz6xRnhSQqnPZCdWF3dtYhdFZJAw
-         pk9Re5aeWhWrl0Sieg+cgWwCKvxyqFaE1OX0cuJ1c2BTS+hDq/TxtnH3X93rgvQtB9g1
-         n8Wu6AR3jF/z6VDDrAlJMVZpapaxWOlZYK9L7+OX8VrwLYq0ITtOzfk2vfoknoYccUZU
-         QLtg==
-X-Gm-Message-State: AOAM531cxWbk5mPpJTSABPID36oQRQpUv8oVXlRVR8bGhRE6sHiTQYOz
-        Q2E+Sa5V4TgZ9zT+lmZXGYI=
-X-Google-Smtp-Source: ABdhPJwAs2Mu3y2pfrcfs4Vpe07BG3d7WnB1Nn1kNYu1Uo1TTQKAzUkY80nETMmR50KRsypXYO5OFA==
-X-Received: by 2002:a05:6830:23ac:: with SMTP id m12mr9518853ots.357.1634710240717;
-        Tue, 19 Oct 2021 23:10:40 -0700 (PDT)
-Received: from localhost.localdomain (c-76-30-1-35.hsd1.tx.comcast.net. [76.30.1.35])
-        by smtp.gmail.com with ESMTPSA id c21sm288182oiy.18.2021.10.19.23.10.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Pwbto3xzDOuj9AdmGAawkkhjI3NOhcoDznc6EjuA4E=;
+        b=HrTmgMJH9amkklOz173jA2uB+T9X9xTDTEwtPMOKbPc7E2kS4rKoC0sxNS38iDQrcO
+         7VTxxUCry3GPwmJOZ9klFZmmgn1ZwO0uXjU50PDC5VplcDfwA2qAdHyflBWOhL419Yo1
+         hQiYjXZEVmSwc/RhS3jeSJAJr1JZ74eGlD0zQtYssYtdudbcJXVOQcMY4RtoBEqbgwbY
+         +9ePkG1U/k73PYCCFKhmM2LXKBK9T7QpeA+Sfp1qbWuf+chcbBjuXefcD7Ji0OnhF7G7
+         lcCo3b52N8HSsdRCJOL64uzb0vITWCA5+agzkoBseOrOCbHzfRT36MiFFESjTWdvrOkl
+         WrHA==
+X-Gm-Message-State: AOAM532HO9byOYzL7SoQ6JBmUuTwaRc095gmhN6kfsaaBO6RCBvz3Fgr
+        zKg2bKLt8oKCik5ZtWJFnPY/jM6hcMCBwmzcnxrZA6Dq0LsYdPyupvMI2ZC+tFQ9Si3Er8uAfQg
+        PAxm79KlZJjvwcKGEy/upBpAqVYNLuWGFXe+B+LvI1g==
+X-Received: by 2002:a50:9d49:: with SMTP id j9mr59027132edk.39.1634710282865;
+        Tue, 19 Oct 2021 23:11:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzy3CpnuvgbkTXuc9O1L/YV9fI7tJfyLLF6gi248jNNmlGukEUPfWeAFLRbyb7gPAFDmncXDQ==
+X-Received: by 2002:a50:9d49:: with SMTP id j9mr59027121edk.39.1634710282707;
+        Tue, 19 Oct 2021 23:11:22 -0700 (PDT)
+Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id e7sm573903edz.95.2021.10.19.23.11.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 23:10:40 -0700 (PDT)
-From:   sesankm <sesank.mallikarjuna@gmail.com>
-X-Google-Original-From: sesankm <26676400+sesankm@users.noreply.github.com>
-To:     lars@metafoo.de
-Cc:     Michael.Hennerich@analog.com, jic23@kernel.org,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        sesankm <26676400+sesankm@users.noreply.github.com>
-Subject: [PATCH] Staging: iio: adc: ad7280a: fixed coding style
-Date:   Wed, 20 Oct 2021 01:10:27 -0500
-Message-Id: <20211020061027.34148-1-26676400+sesankm@users.noreply.github.com>
-X-Mailer: git-send-email 2.33.1
+        Tue, 19 Oct 2021 23:11:22 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 08:11:21 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
+Message-ID: <YW+zCbaf1Xb8lBMo@arighi-desktop>
+References: <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
+ <YWPaZSX4WyOwilW+@arighi-desktop>
+ <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
+ <YWPjZv7ClDOE66iI@arighi-desktop>
+ <CACT4Y+b4Xmev7uLhASpHnELcteadhaXCBkkD5hO2YNP5M2451g@mail.gmail.com>
+ <YWQCknwPcGlOBfUi@arighi-desktop>
+ <YWQJe1ccZ72FZkLB@arighi-desktop>
+ <CANpmjNNtCf+q21_5Dj49c4D__jznwFbBFrWE0LG5UnC__B+fKA@mail.gmail.com>
+ <YWRNVTk9N8K0RMst@arighi-desktop>
+ <CANpmjNMXNZX5QyLhXtT87ycnAhEe1upU_cL9D3+NOGKEn-gtCw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMXNZX5QyLhXtT87ycnAhEe1upU_cL9D3+NOGKEn-gtCw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed issue with coding style
+On Wed, Oct 20, 2021 at 08:00:00AM +0200, Marco Elver wrote:
+> On Mon, 11 Oct 2021 at 16:42, Andrea Righi <andrea.righi@canonical.com> wrote:
+> > On Mon, Oct 11, 2021 at 12:03:52PM +0200, Marco Elver wrote:
+> > > On Mon, 11 Oct 2021 at 11:53, Andrea Righi <andrea.righi@canonical.com> wrote:
+> > > > On Mon, Oct 11, 2021 at 11:23:32AM +0200, Andrea Righi wrote:
+> > > > ...
+> > > > > > You seem to use the default 20s stall timeout. FWIW syzbot uses 160
+> > > > > > secs timeout for TCG emulation to avoid false positive warnings:
+> > > > > > https://github.com/google/syzkaller/blob/838e7e2cd9228583ca33c49a39aea4d863d3e36d/dashboard/config/linux/upstream-arm64-kasan.config#L509
+> > > > > > There are a number of other timeouts raised as well, some as high as
+> > > > > > 420 seconds.
+> > > > >
+> > > > > I see, I'll try with these settings and see if I can still hit the soft
+> > > > > lockup messages.
+> > > >
+> > > > Still getting soft lockup messages even with the new timeout settings:
+> > > >
+> > > > [  462.663766] watchdog: BUG: soft lockup - CPU#2 stuck for 430s! [systemd-udevd:168]
+> > > > [  462.755758] watchdog: BUG: soft lockup - CPU#3 stuck for 430s! [systemd-udevd:171]
+> > > > [  924.663765] watchdog: BUG: soft lockup - CPU#2 stuck for 861s! [systemd-udevd:168]
+> > > > [  924.755767] watchdog: BUG: soft lockup - CPU#3 stuck for 861s! [systemd-udevd:171]
+> > >
+> > > The lockups are expected if you're hitting the TCG bug I linked. Try
+> > > to pass '-enable-kvm' to the inner qemu instance (my bad if you
+> > > already have), assuming that's somehow easy to do.
+> >
+> > If I add '-enable-kvm' I can triggering other random panics (almost
+> > immediately), like this one for example:
+> 
+> Just FYI: https://lkml.kernel.org/r/20211019102524.2807208-2-elver@google.com
+> 
+> But you can already flip that switch in your config
+> (CONFIG_KFENCE_STATIC_KEYS=n), which we recommend as a default now.
+> 
+> As a side-effect it'd also make your QEMU TCG tests pass.
 
-Signed-off-by: sesankm <26676400+sesankm@users.noreply.github.com>
----
- drivers/staging/iio/adc/ad7280a.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Cool! Thanks for the update!
 
-diff --git a/drivers/staging/iio/adc/ad7280a.c b/drivers/staging/iio/adc/ad7280a.c
-index fef0055b8990..473f95118214 100644
---- a/drivers/staging/iio/adc/ad7280a.c
-+++ b/drivers/staging/iio/adc/ad7280a.c
-@@ -829,14 +829,14 @@ static irqreturn_t ad7280_event_handler(int irq, void *private)
-  * The function argument is stringified and doesn't need a fix
-  */
- static IIO_DEVICE_ATTR_NAMED(in_thresh_low_value,
--			     in_voltage-voltage_thresh_low_value,
-+			     in_voltage - voltage_thresh_low_value,
- 			     0644,
- 			     ad7280_read_channel_config,
- 			     ad7280_write_channel_config,
- 			     AD7280A_CELL_UNDERVOLTAGE);
- 
- static IIO_DEVICE_ATTR_NAMED(in_thresh_high_value,
--			     in_voltage-voltage_thresh_high_value,
-+			     in_voltage - voltage_thresh_high_value,
- 			     0644,
- 			     ad7280_read_channel_config,
- 			     ad7280_write_channel_config,
--- 
-2.33.1
+And about the other panic that I was getting it seems to be fixed by
+this one:
+https://lore.kernel.org/lkml/YW6N2qXpBU3oc50q@arighi-desktop/T/#u
 
+-Andrea
