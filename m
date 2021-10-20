@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A774F43525A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B255843525F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhJTSKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhJTSKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:10:37 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA365C06161C;
-        Wed, 20 Oct 2021 11:08:22 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so7479292otl.11;
-        Wed, 20 Oct 2021 11:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wP/mB1qZJe5g+pwoorAaeFOblwRY0oDwaSr3e3eVqxA=;
-        b=AvmhQIc5Yr/COM8fDecgdx5pQypgoZ1Mq09JQL+C2SlHP9Ejd8yv80hM6oFKVL9chD
-         yt5CP0w0ENdaAr9E677iAOci+MeDvjBO5k231FGjjKQGA8yxFwerM9duNnocmWR041zG
-         Bv9cMYXxtHTXE5kga1scyYT9T7km8LM6ES+4qgXfAkmFNL/FHGY4MO6GhGcR1+r1aP3T
-         NmzHjRiYwzJ3OhYbIDeOeiwKHAkE89FV5dyhUqoXpUXEzw0/TtnPzhI3i7wb3SGRScQs
-         Uss5NpbK14bk+rFTZnzMA7CNPvDBKLHRss2fkHWqbRFItD1UvkZNO0ADMYA/a3Puw7ip
-         dVPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wP/mB1qZJe5g+pwoorAaeFOblwRY0oDwaSr3e3eVqxA=;
-        b=56DWoeLCN4oCUphCqCiuhOWIaxLO5tRVdQe4Srk52/01/YXAqzOInUl6si1x+hfzBR
-         0Eyj1QF+jwLGuo6Re/EwEs8iitnf2XVF7f4mqKeeL2cWmEWfHXGPOpJ1pP73heFmNqX/
-         TjOz0NzNDApmIxCDZQ/Zrxh3lc+WY18NYdEBu2FpcO9DTp/mH4hyIutPmv4AR/ipWAvG
-         lbw37zOFoWtfKDvD+ERxdTfGdemwq/uX1N7MN07R/1M433FPvEg/CRE1K83Kgo3l3NTK
-         O12bYf7Rb+TaCGnQM3uupbFR58cI9SoEa0h9ASv8u7tjA7DI0fre4ouzO+9sP+aDYpHF
-         AOYQ==
-X-Gm-Message-State: AOAM533PP4bA3ehRa3tJpBCrAdHY4k6txJWLIgMByPzJ/P0oCOUx3pkn
-        I6bAcyV8esJMKIbFo1Om2inSBmWMs5DxdT4FntU=
-X-Google-Smtp-Source: ABdhPJz/PySPsO38rUxwoenDSbW9EMnPquIoJnT6awfWd0tx4IOccSLTpi7kPtfbpCVK8PQPfjZ+Jmg0T6MQ3VQchyY=
-X-Received: by 2002:a9d:734d:: with SMTP id l13mr688223otk.238.1634753302001;
- Wed, 20 Oct 2021 11:08:22 -0700 (PDT)
+        id S230493AbhJTSKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:10:55 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:47284 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230416AbhJTSKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 14:10:53 -0400
+Received: from zn.tnic (p200300ec2f0db300f8abf0ed14d647a3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:b300:f8ab:f0ed:14d6:47a3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1A9E31EC036B;
+        Wed, 20 Oct 2021 20:08:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634753316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=jC3IIcX0cpZuqY0H2u9GhNd5u8aIp5yIQPOEtcJKGGo=;
+        b=Fv/bEf23sip2dsKp0aTcrrQ8e95rLhknRPX8YOBcNb//Di/45TckOpf89nFJgzyT9QQW0g
+        CtrSP7psUhdJ3naFMgZ3cTRYiE7rzVXMbnPa+0jja/L3J+CeCkXPKS8HqcJogo7nNq2X6D
+        +PvCzKzMXVmjjgAuNAIrWRZRmfySjKc=
+Date:   Wed, 20 Oct 2021 20:08:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <YXBbJwd2M03Ssq6I@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
 MIME-Version: 1.0
-References: <20211018085305.853996-1-luo.penghao@zte.com.cn> <20211020092537.GF3935@kernel.org>
-In-Reply-To: <20211020092537.GF3935@kernel.org>
-From:   Jesse Brandeburg <jesse.brandeburg@gmail.com>
-Date:   Wed, 20 Oct 2021 11:08:11 -0700
-Message-ID: <CAEuXFEzXSU-Ws6T_8TBVfgskh4VA14LmirFYSjdQpwtndfeeww@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH linux-next] e1000: Remove redundant statement
-To:     Simon Horman <horms@kernel.org>
-Cc:     luo penghao <cgel.zte@gmail.com>,
-        NetDEV list <netdev@vger.kernel.org>,
-        Zeal Robot <zealci@zte.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
-        luo penghao <luo.penghao@zte.com.cn>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211020161023.hzbj53ehmzjrt4xd@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apologies for the duplicates, mail from my intel account going out
-through outlook.com is not being delivered.
+On Wed, Oct 20, 2021 at 11:10:23AM -0500, Michael Roth wrote:
+> > 1. Code checks SME/SEV support leaf. HV lies and says there's none. So
+> > guest doesn't boot encrypted. Oh well, not a big deal, the cloud vendor
+> > won't be able to give confidentiality to its users => users go away or
+> > do unencrypted like now.
+> > 
+> > Problem is solved by political and economical pressure.
+> > 
+> > 2. Check SEV and SME bit. HV lies here. Oh well, same as the above.
+> 
+> I'd be worried about the possibility that, through some additional exploits
+> or failures in the attestation flow,
 
-On Wed, Oct 20, 2021 at 7:00 AM Simon Horman <horms@kernel.org> wrote:
+Well, that puts forward an important question: how do you verify
+*reliably* that this is an SNP guest?
 
-> > Value stored to 'ctrl_reg' is never read.
->
-> I agree this does seem to be the case.
->
-> > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> > Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
->
-> Reviewed-by: Simon Horman <horms@kernel.org>
+- attestation?
 
-Thanks for the review, but (davem/kuba) please do not apply.
+- CPUID?
 
-> > @@ -1215,8 +1215,6 @@ static int e1000_integrated_phy_loopback(struct e1000_adapter *adapter)
-> >               e1000_write_phy_reg(hw, PHY_CTRL, 0x8140);
-> >       }
-> >
-> > -     ctrl_reg = er32(CTRL);
+- anything else?
 
-Thanks for your patch, but this change is not safe. you're removing a
-read that could do two things. The first is that the read "flushes"
-the write just above to PCI (it's a PCI barrier), and the second is
-that the read can have some side effects.
+I don't see this written down anywhere. Because this assumption will
+guide the design in the kernel.
 
-If this change must be done, the code should be to remove the
-assignment to ctrl_reg, but leave the read, so the line would just
-look like:
-        er32(CTRL);
+> a guest owner was tricked into booting unencrypted on a compromised
+> host and exposing their secrets. Their attestation process might even
+> do some additional CPUID sanity checks, which would at the point
+> be via the SNP CPUID table and look legitimate, unaware that the
+> kernel didn't actually use the SNP CPUID table until after 0x8000001F
+> was parsed (if we were to only initialize it after/as-part-of
+> sme_enable()).
 
-This will get rid of the warning and not change the flow from the
-hardware perspective.
+So what happens with that guest owner later?
 
-> > -
-> >       /* force 1000, set loopback */
-> >       e1000_write_phy_reg(hw, PHY_CTRL, 0x4140);
-> >
+How is she to notice that she booted unencrypted?
 
-Please do not apply this.
+> Fortunately in this scenario I think the guest kernel actually would fail to
+> boot due to the SNP hardware unconditionally treating code/page tables as
+> encrypted pages. I tested some of these scenarios just to check, but not
+> all, and I still don't feel confident enough about it to say that there's
+> not some way to exploit this by someone who is more clever/persistant than
+> me.
+
+All this design needs to be preceded with: "We protect against cases A,
+B and C and not against D, E, etc."
+
+So that it is clear to all parties involved what we're working with and
+what we're protecting against and what we're *not* protecting against.
+
+End of mail 2, more later.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
