@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3FF4352EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCF14352F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhJTSth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        id S231376AbhJTStl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbhJTSt3 (ORCPT
+        with ESMTP id S231327AbhJTSta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:49:29 -0400
+        Wed, 20 Oct 2021 14:49:30 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BBEC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:47:14 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 18:47:12 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFF2C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:47:15 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 18:47:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634755633;
+        s=2020; t=1634755634;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h2ITyiP7sDrKaOQa2zA98QKpdJHuPfGzl5uc2AeW150=;
-        b=2pmeVu6sFDhTTcJGyCv9dyvG8ybOto3BVM1PNsJ40yoPUtdSQgVloGXmVX2F2mSGLM5fS2
-        sbM2ReUTcliecQKJZvRJ19gkJtYfOmrDl+wMNMsscZcfG3YmDDh8HC17E92Q8sm4F7oqiE
-        Lj/qqPkZmMoe5K5EeTXhdGIsjdSdnm0dSd/ZXYRBRMrdjt+w4dXAdc88xespswKBMfwGeL
-        6CPzEWM+ojLMc/frAQf6nlYZoZbEthxyJWbpCFtBAIxrLzjObnrIPf+AEqc+SccAfvamk7
-        M3aK6OO+nPfysGzjsagXoJGq9GBIuaxmLJ+pLlrfkFqi8D4hB+7qA+EfiyL0Sg==
+        bh=D+/ynjbOXkKK0NOkSimbbR3uZypj6yT0hmFj0ch18s8=;
+        b=n68gGDqi7AQxtgdBmdePOuY/oVMyAcn4pTTWeXX+d2g73KCLGuPLxYwWrK3W78SpdSlZkA
+        FFmdoOn7WG6TTbrIQirKvbbie8ybi4mwE2JRHTCv3gW43WQ8pDgbs+an+LhYIkn9kwc5y5
+        2mkDOQxigoIYNpKOnSnN48DI+SJCuqv8Jy/CW3P6twUgTrdFKoipxWgzVldFhSbpISKMZ8
+        NEEE1vAmxKe1zvXAPDeHM0Z9rKei0OhtjpfrujiFNp9qDw6ktDJN6b3vMFwW8jK432TiHV
+        g44TVWFHOo276TjDnRwHQUgOjGVnItBpPK1NBeUAb56S6qbQOsq1HVgOh+xjnQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634755633;
+        s=2020e; t=1634755634;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h2ITyiP7sDrKaOQa2zA98QKpdJHuPfGzl5uc2AeW150=;
-        b=uTwgb+85x4MMKnP2tI+1PbtK0WdPmIvLQChR+YD/k86sOF386id+cyH053mui5EnKFDHQj
-        d2CnM+u8OUHt2TBQ==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+        bh=D+/ynjbOXkKK0NOkSimbbR3uZypj6yT0hmFj0ch18s8=;
+        b=ZBMF5nj6Rggk43HKxK3T21ByznRXqlLH+fvsLVqNZmzRHlc22tHMZc/7u/chQfsQK/O97R
+        9Q1IwcS/o6lS+vDA==
+From:   "irqchip-bot for Cai Huoqing" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip: Provide stronger type checking
- for IRQCHIP_MATCH/IRQCHIP_DECLARE
-Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20211020104527.3066268-1-maz@kernel.org>
-References: <20211020104527.3066268-1-maz@kernel.org>
+Subject: [irqchip: irq/irqchip-next] irqchip/stm32: Make use of the helper
+ function devm_platform_ioremap_resource()
+Cc:     Cai Huoqing <caihuoqing@baidu.com>, Marc Zyngier <maz@kernel.org>,
+        tglx@linutronix.de
+In-Reply-To: <20210908105715.1780-1-caihuoqing@baidu.com>
+References: <20210908105715.1780-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Message-ID: <163475563206.25758.2271119876482116679.tip-bot2@tip-bot2>
+Message-ID: <163475563339.25758.12009901571159968164.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,66 +61,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     f1985002839af80d6c84e9537834a81fb1364d6e
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/f1985002839af80d6c84e9537834a81fb1364d6e
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Wed, 20 Oct 2021 09:33:21 +01:00
+Commit-ID:     fd9ac236c2536863800a7c9ecc73d2ea1bdfc128
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/fd9ac236c2536863800a7c9ecc73d2ea1bdfc128
+Author:        Cai Huoqing <caihuoqing@baidu.com>
+AuthorDate:    Wed, 08 Sep 2021 18:57:15 +08:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Wed, 20 Oct 2021 19:33:53 +01:00
+CommitterDate: Tue, 19 Oct 2021 11:24:05 +01:00
 
-irqchip: Provide stronger type checking for IRQCHIP_MATCH/IRQCHIP_DECLARE
+irqchip/stm32: Make use of the helper function devm_platform_ioremap_resource()
 
-Both IRQCHIP_DECLARE() and IRQCHIP_MATCH() use an underlying of_device_id()
-structure to encode the matching property and the init callback.
-However, this callback is stored in as a void * pointer, which obviously
-defeat any attempt at stronger type checking.
+Use the devm_platform_ioremap_resource() helper instead of
+calling platform_get_resource() and devm_ioremap_resource()
+separately
 
-Work around this by providing a new macro that builds on top of the
-__typecheck() primitive, and that can be used to warn when there is
-a discrepency between the drivers and core code.
-
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211020104527.3066268-1-maz@kernel.org
+Link: https://lore.kernel.org/r/20210908105715.1780-1-caihuoqing@baidu.com
 ---
- include/linux/irqchip.h | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/irqchip/irq-stm32-exti.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
-index 67351aa..5de0dfc 100644
---- a/include/linux/irqchip.h
-+++ b/include/linux/irqchip.h
-@@ -14,8 +14,15 @@
- #include <linux/acpi.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_irq.h>
- #include <linux/platform_device.h>
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 33c7671..b7cb2da 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -850,7 +850,6 @@ static int stm32_exti_probe(struct platform_device *pdev)
+ 	struct irq_domain *parent_domain, *domain;
+ 	struct stm32_exti_host_data *host_data;
+ 	const struct stm32_exti_drv_data *drv_data;
+-	struct resource *res;
  
-+/* Undefined on purpose */
-+extern of_irq_init_cb_t typecheck_irq_init_cb;
-+
-+#define typecheck_irq_init_cb(fn)					\
-+	(__typecheck(typecheck_irq_init_cb, &fn) ? fn : fn)
-+
- /*
-  * This macro must be used by the different irqchip drivers to declare
-  * the association between their DT compatible string and their
-@@ -26,14 +33,16 @@
-  * @compstr: compatible string of the irqchip driver
-  * @fn: initialization function
-  */
--#define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
-+#define IRQCHIP_DECLARE(name, compat, fn)	\
-+	OF_DECLARE_2(irqchip, name, compat, typecheck_irq_init_cb(fn))
+ 	host_data = devm_kzalloc(dev, sizeof(*host_data), GFP_KERNEL);
+ 	if (!host_data)
+@@ -888,8 +887,7 @@ static int stm32_exti_probe(struct platform_device *pdev)
+ 	if (!host_data->chips_data)
+ 		return -ENOMEM;
  
- extern int platform_irqchip_probe(struct platform_device *pdev);
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	host_data->base = devm_ioremap_resource(dev, res);
++	host_data->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(host_data->base))
+ 		return PTR_ERR(host_data->base);
  
- #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
- static const struct of_device_id drv_name##_irqchip_match_table[] = {
- 
--#define IRQCHIP_MATCH(compat, fn) { .compatible = compat, .data = fn },
-+#define IRQCHIP_MATCH(compat, fn) { .compatible = compat,		\
-+				    .data = typecheck_irq_init_cb(fn), },
- 
- #define IRQCHIP_PLATFORM_DRIVER_END(drv_name)				\
- 	{},								\
