@@ -2,148 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2D04345DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CA14345DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhJTH0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbhJTH0C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:26:02 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5378C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:23:47 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so5110243otb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kU2IPRL8ftmwSTb+WFMJqCEa8tDzkDYqWbLRrE2BrPc=;
-        b=Z9H2n0S4Jqv5TODlbAm7IEoBWEjHonzCDw5KhMOcpgcNdwafYI5hl846Do/Y9Ou8J4
-         Nh9OI+lYpQzGZMNfGRO5QbZ3+xMSih4c4Sek/fz3wq3jfaA/UhQ2PmJWPIEmt6QuquOL
-         TP0BXd6qyBb1af+2OwX6ri4+SwH+99imu7LTzy8zZbi5ghPzIVwiN653Ye0nq5o+rrrC
-         E4zVgo7S5oKkaq+dyNLBBqBDm+vGVzYTAXQ3mV25+maP2TZbNC3ej7WdCTsqIr+v6DVp
-         6eWasHRDjPiSmADHQhTkCVqLTX0SCxJjzT13WM6fvlfGRBPkhyjzxRa1lZ2XjHzTBFeA
-         w0zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kU2IPRL8ftmwSTb+WFMJqCEa8tDzkDYqWbLRrE2BrPc=;
-        b=LLtegN4k4Pzw72ZPtrRasSdrvMc0twzq3F6qfqamkSmq8NdCkcOKlRLoXBUQYlRIYG
-         M1BcchUWE3fF/kR8zakDXK/HB+zjnC8RxNmrGwXUuTUqA3YMDDdPridM2lns1vLkiGKK
-         3GP9FrG/HiPbASxx3Mcn2k7qLY2ODcTZ61es0htE1dMTPUDdDphVMoVlmCIbJS9Cospg
-         QcJ2n2N4SYfgzE8FZdcpQrsb8j5e0GBH9ZU2oMhHcvpCSMLAOU3Or0noyIePfNXHmnKZ
-         afQVThuqibdek/uYFfKDGQMpvmIh76TO16KWgzZ41PkTzd5xYYcCj5hTtODuAyuU4qN+
-         db+g==
-X-Gm-Message-State: AOAM531vSOZD/gNmKkHMJbA8kYhCFDi89rzMHizgk5/1slUkxFZbupeH
-        svTVh11zJfCq7OxWz/zkaSqrzmw+X3rtbZnfNeSPLg==
-X-Google-Smtp-Source: ABdhPJxYaB/xUITs/EEyisEF1CX0Q9AbBpoCaL8yuO7fy/xV4PTxIosNxyf5PIF+8caN552qxFShQqzctqUgQlFvyzY=
-X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr1361127otb.92.1634714627015;
- Wed, 20 Oct 2021 00:23:47 -0700 (PDT)
+        id S230052AbhJTH0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:26:10 -0400
+Received: from mail-eopbgr1300124.outbound.protection.outlook.com ([40.107.130.124]:17856
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230061AbhJTH0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 03:26:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XPAZZkCxv7JRugQZ8kHdZko8vdQ9x5+YWh0JbPZQ8mh943dRUaJT5UXrIMYPlC1HDradvHsJygMc+grzFJwUfRzqXxVjGVorhp+ZcwNBrmDcVoS+N/YMGByazSr/4K75f0li0TVOvNGMrcmtN1BRubEXFiDXUQ12aZdib2TZHIBsUFwagVyJsNwIE7lFcJXMX149n5DfWPPTQquK6fXQwfo1eWbR4OUzTkiv1TsLzWU1RulFnRKA5lcMsygSzp2XbTW6Aze0iP98PDU/dKUhBi2ThKhCh1KUyEJsHBsd6Nyr8wkJAWz4pjgsYw47YF2RtfkzjmkNtVYQWr1Yoa9Whg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f4xan3PItXj5j22TJ6rbNfBxfqENKBYRh7FyHGlfOjk=;
+ b=KGFlakcpWL6N61Pvd/5WB916/fDQvmAA7FHXApLYY5ro9lwo2awa+lyBR3FdXS9xTLC8dJtedo8dXbhU25+LzexePaTM3EENpoBw+lxH7z976s/rG3pzyYLlpgvtPrDss2pKCNMNRcJUt+WlHHd5GyiUjme/HI0oUqimfca1or/NJMBaUVjLu6RZ4gTM50IqUg3u0gATBG3ybIDwl+ZFDBB5+Mf7IQAYbU48iW9YGChA5nE7PXiZnWEzRe1L4h2agDuEsbovnfUpa45MGVAPUTm19Y62zT7KKbhox8Ve9f6YipsXuPEE/zSiEUC0r4KrV0NG3V3paKTuX1uYU1d5dw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f4xan3PItXj5j22TJ6rbNfBxfqENKBYRh7FyHGlfOjk=;
+ b=eJfKfQ9xGoePGgxhFmCmo390B3SCubZT/yQf/gmtCn/WZCsGnd4beLWPe90Df0hfXKcL1pDA+nojRJjGJAlcHIPV+PP76osfDDyBxLYrBWGZvG39s1Vt5G7LPYC8jrDifwMtbhJu33Ssu2zAovxmbrDmPT/XTw/ElK78TbLXsCg=
+Authentication-Results: fb.com; dkim=none (message not signed)
+ header.d=none;fb.com; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB3114.apcprd06.prod.outlook.com (2603:1096:100:34::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Wed, 20 Oct
+ 2021 07:23:52 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
+ 07:23:52 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] btrfs: simplify redundant logic judgment
+Date:   Wed, 20 Oct 2021 00:23:41 -0700
+Message-Id: <1634714621-58190-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR0302CA0008.apcprd03.prod.outlook.com
+ (2603:1096:202::18) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-References: <20211020061248.13270-1-Kuan-Ying.Lee@mediatek.com>
-In-Reply-To: <20211020061248.13270-1-Kuan-Ying.Lee@mediatek.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 20 Oct 2021 09:23:35 +0200
-Message-ID: <CANpmjNNxQRM5rSxcdxNOicpOvwQ=vsutQO3j1hUmGAfS9+pQDA@mail.gmail.com>
-Subject: Re: [PATCH v2] kasan: add kasan mode messages when kasan init
-To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        chinwen.chang@mediatek.com, yee.lee@mediatek.com,
-        nicholas.tang@mediatek.com, kasan-dev@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Received: from ubuntu.localdomain (218.213.202.189) by HK2PR0302CA0008.apcprd03.prod.outlook.com (2603:1096:202::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4628.9 via Frontend Transport; Wed, 20 Oct 2021 07:23:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e89bea51-a947-40d5-2136-08d9939a9108
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3114:
+X-Microsoft-Antispam-PRVS: <SL2PR06MB311409F01128A375E95B6E75BDBE9@SL2PR06MB3114.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:962;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d33TSrXoteSGE20p9LPznCN1N/Vb0jmeD8l3SuX8eHkUkwvJbC33Xxj/du9SdVNbsnx5LYFktjmjqMMMeOano8bJlDp4RquUPfu1KonhGnSGNuyScKSbWV2VJkA8Qf2fz7QEy5XkiuAHw0t1eMZ2LbZy7zm1KJtGo4poZRFfBD4M13P0aLY6G8GXsIr5wWq9HuJYIQMLdycTUMRZ5NDEnt4Pmk0u2s9LUlwc4zmQX6XTd503jcf4+R+2+iCDbf1B/gITjMCDh5fILv7isyA3Y9Fjwb/4fTP+CyKKYfI2BevG1BafeT3TaDAXPtQR0mI9FZwrC58WNPY/kz7R/Mo2efkqfs3Wk7dIWG7jPG7VG5zij71GrvCgK4Wfb70I0a6dBl0MSh4YfWqmDW3qxJrucqOkIapS/vR49JOBveI7JSDynotp9m5rE3QBzDqosrGrm8fYgHVSYVxIkdoGgbWTV6s3bBEl5CvC26cUabsUOdQTtrGzyTOcr6xCkpmF9HkoDooXLmqh/s3HaiS2TZrvu1CwvhFnp2NXd+Do78q9NqgJU522HEOVJVFWXaQP/ltZGazSZvA0TAgu+Ttk6Sf2adH77eUCbGnvZ+BzMvUMbbNDqOY20YTrKft+FK1gViUmW2u1KYmAXjrGuD5cFX2svUdT0vh7yZBfX6c3I2lI51sbo4viLJsXuj+3uJt4LORZXh+qi0Be+O9wACN0iIaPTw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(4744005)(110136005)(26005)(316002)(66476007)(52116002)(5660300002)(6506007)(66556008)(83380400001)(6666004)(38350700002)(6486002)(38100700002)(86362001)(6512007)(956004)(66946007)(36756003)(4326008)(8676002)(8936002)(2616005)(107886003)(2906002)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?h4JaGBNT2gdb9xghWCNf5ZZdhqB5oeUzx3gmae5rL0y4t6lSltbkS7eypLFD?=
+ =?us-ascii?Q?D4igt4iWe48CCXv4pSbZNNT9c60NBrJoTHtdWOdAuNxIPocCVlti+lqmUPei?=
+ =?us-ascii?Q?B2EOCZ27TLEAYB0SUWyEp3bL+t6kitvHQb55PkLZeQXBidrUdX57+oju0uAF?=
+ =?us-ascii?Q?kwnrkcLCdh8v5XsQDwYgh+4rQt/GCOT2lK6WQ9nyaaK9BVzzGDPmtniJGO1+?=
+ =?us-ascii?Q?lmKyzEMtj9YBYDmMLGsy1NrPBVl9cASQ7b/YEN/3Asdmaz+k+jy3Q88NJ6fK?=
+ =?us-ascii?Q?W7xzOQm4ALWhMtnlILdxXKp3QGxqCbZmKY9iDZULq639KSCzsxUyWYCkFflz?=
+ =?us-ascii?Q?nuXWk5gjiomFE5rpXFCyVbNtAwHcvjZpLdjvVfipPGEMgk1bN4YijVMYtF9A?=
+ =?us-ascii?Q?isrQW6IriFZQlU/TEFV7d+TgIOOu9ZMWpPED8ovglwwWUkMj0CvJFUbr8kZG?=
+ =?us-ascii?Q?YUO+YyC1EYcK4Bk4TAQ7MRTEiEi/aIy1vb+Q3HrKIBWWEPnLthQFtkDet4Ec?=
+ =?us-ascii?Q?1MYu0u7a5kSerCg6iTeMGsgxnR5mKqrOmWQ/KpFxfhnwON6TBERizhWdmTls?=
+ =?us-ascii?Q?PFIgxHHG27aqymDsI7RF8wFIoOojnG+K43qZvBCmMCHqQtcKFJEW9N5nkfqx?=
+ =?us-ascii?Q?5EwL5LJi/ngRDN6vyMOR9sGg49fJHjS9SBLtQLfg9jjwxE6RO0pB3pDI4U0l?=
+ =?us-ascii?Q?oeOhsB2Hvg9jLnf1FOrBjhZscVeMo7pCv9dYeQn9h9LfZ8K1liINCbq6BaHv?=
+ =?us-ascii?Q?OwO2eMVuaP1e913j/fCGZhqs9cTqWvPeqpubfZMQ8Nyy5OxN4NytiI5EQ1iw?=
+ =?us-ascii?Q?AM+dAXhUh/tCIyPcC+VkGr/5YUYIoQfPG1+QpevIPND8lSvudBDwpGcLKTHG?=
+ =?us-ascii?Q?ALlYi5t0pDjMznLyB99Qg3lJYIHVuhe0kLgp9qqmN+RMSu0J64GMSj/BXaBN?=
+ =?us-ascii?Q?/2w0wDA+G2I7iHpDtRTg9ELUXDIsZb78yAhNqMFG39M5ZWgag/Ia7emtofdR?=
+ =?us-ascii?Q?L0SQtoPwXRy/TCPMc0O64ZQN5FQKB0Jffj86Mo8v+tAWMFu9L6BSd7BGq//A?=
+ =?us-ascii?Q?BCXEusz8xmHSKCpKSs1/VK28Huk46HrEned0CeVv21Nwz7EO+9PADPxs1gzo?=
+ =?us-ascii?Q?AHAUSgdLsYLqc6JE+mNVWdpYj0biFq7cxnTtrd+5t36jVh/v5xi1BaZ+svsb?=
+ =?us-ascii?Q?tXViffS3MJCbkdPMBch95s9P8qAAqoV37k0fQvzCD2bcXmJBNWI3aT/SmN1T?=
+ =?us-ascii?Q?L6aBKjG7joys1xUdTzPG4qfG2EgPGPZIfWiIOSIqGosHHYXtaueqOc88cIiC?=
+ =?us-ascii?Q?ZUnJf/WBP8j+WAxRcbbCRGI1giQ3/fNvsw1/0CovFx6U7joLfLbr7zAcU+TM?=
+ =?us-ascii?Q?cwJ46sCVZshi0pTsbo0LwVjswWbbPbdvtNRgXkVRNqZMMQqXN4qVfQLSbtGO?=
+ =?us-ascii?Q?x4qqPckHqrQuA1nUt96XjfI1hbzs7Dep6v14gy8Fkfb5HzrBVQSW/BI1/xog?=
+ =?us-ascii?Q?dnxouZZZg1rTmW1CSzdQIXAjyGrQPrYcTYgBYOWlOtFPetXJsI+sv4AQBF3J?=
+ =?us-ascii?Q?EyhhCQ0Whs7FY02SG3/4xwxXhufC3arxt7Y7ss0eBHcWEIGBVnWdwc6ewApg?=
+ =?us-ascii?Q?NnBHnqJKWEShpla4ceKyB0E=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e89bea51-a947-40d5-2136-08d9939a9108
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 07:23:51.8810
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: g0TpprEO6n0E78Hz+sO1yXGD5l+l/+4WPYA/YsAwuYKhKEyWPX6nogaCPphgNZSlgU3aYK6ye8+Owy7iQFQsow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 at 08:13, Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com> wrote:
->
-> There are multiple kasan modes. It makes sense that we add some messages
-> to know which kasan mode is when booting up. see [1].
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=212195 [1]
-> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-> ---
-> change since v2:
->  - Rebase to linux-next
->  - HW-tags based mode need to consider asymm mode
->  - Thanks for Marco's suggestion
->
->  arch/arm64/mm/kasan_init.c |  2 +-
->  mm/kasan/hw_tags.c         |  4 +++-
->  mm/kasan/kasan.h           | 10 ++++++++++
->  mm/kasan/sw_tags.c         |  2 +-
->  4 files changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> index 5b996ca4d996..6f5a6fe8edd7 100644
-> --- a/arch/arm64/mm/kasan_init.c
-> +++ b/arch/arm64/mm/kasan_init.c
-> @@ -309,7 +309,7 @@ void __init kasan_init(void)
->         kasan_init_depth();
->  #if defined(CONFIG_KASAN_GENERIC)
->         /* CONFIG_KASAN_SW_TAGS also requires kasan_init_sw_tags(). */
-> -       pr_info("KernelAddressSanitizer initialized\n");
-> +       pr_info("KernelAddressSanitizer initialized (generic)\n");
->  #endif
->  }
->
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index dc892119e88f..1d5c89c7cdfe 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -177,7 +177,9 @@ void __init kasan_init_hw_tags(void)
->                 break;
->         }
->
-> -       pr_info("KernelAddressSanitizer initialized\n");
-> +       pr_info("KernelAddressSanitizer initialized (hw-tags, mode=%s, stacktrace=%s)\n",
-> +               kasan_mode_info(),
-> +               kasan_stack_collection_enabled() ? "on" : "off");
->  }
->
->  void kasan_alloc_pages(struct page *page, unsigned int order, gfp_t flags)
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index aebd8df86a1f..387ed7b6de37 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -36,6 +36,16 @@ static inline bool kasan_sync_fault_possible(void)
->  {
->         return kasan_mode == KASAN_MODE_SYNC || kasan_mode == KASAN_MODE_ASYMM;
->  }
-> +
-> +static inline const char *kasan_mode_info(void)
-> +{
-> +       if (kasan_mode == KASAN_MODE_ASYNC)
-> +               return "async";
-> +       else if (kasan_mode == KASAN_MODE_ASYMM)
-> +               return "asymm";
-> +       else
-> +               return "sync";
-> +}
+From: Wang Qing <wangqing@vivo.com>
 
-This creates an inconsistency, because for
-kasan_stack_collection_enabled(), kasan_async_fault_possible(), and
-kasan_sync_fault_possible() there are !KASAN_HW_TAGS stubs.
+A || (!A && B) is equal to A || B
 
-A stub for kasan_mode_info() if !KASAN_HW_TAGS appears useless though,
-and I wouldn't know what its return value should be.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ fs/btrfs/inode.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Do you expect this helper to be used outside hw_tags.c? If not,
-perhaps just move it into hw_tags.c.
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 07ba22dd..e0d2660
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2011,8 +2011,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+ 		 * to use run_delalloc_nocow() here, like for  regular
+ 		 * preallocated inodes.
+ 		 */
+-		ASSERT(!zoned ||
+-		       (zoned && btrfs_is_data_reloc_root(inode->root)));
++		ASSERT(!zoned || btrfs_is_data_reloc_root(inode->root));
+ 		ret = run_delalloc_nocow(inode, locked_page, start, end,
+ 					 page_started, nr_written);
+ 	} else if (!inode_can_compress(inode) ||
+-- 
+2.7.4
 
-Thanks,
--- Marco
