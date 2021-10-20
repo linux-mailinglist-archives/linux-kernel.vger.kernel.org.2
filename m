@@ -2,336 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87CF4349AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB7F434944
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhJTLGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhJTLGU (ORCPT
+        id S230285AbhJTKrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 06:47:43 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:51148 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230242AbhJTKrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:06:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3738C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 04:04:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=ak40Xd4ZmHeQMvWeIvej+mnGHnjjInsl3RcmtLpo0Os=; b=ZoyEgnWP/J6sXP4BAloOWCvOyP
-        i0oGeElSkJ/E8ssEyzwoli6MIfGuggj+x4UgXjK7RmtP79n0maAzhL3056xkJbo4xZA97AMWuVXBO
-        D2YYfZb534+Ec4VSRb3P9Gc8LHv8L8SGZh2z1fqgPfwPxS378cm9amtmwZanf6vWeh6vjZckqmLuY
-        n5AnMqJekYBmjC5Js932Y2HYMp2/Y+CiACVtIAdroohzNo80V/L620+48Hj/rSlxt62Cb7qwRvRSy
-        YG63qFA7ROVK6AAlxtSpeTY67xTAxGvNdyH+lGXkQhVsUE7B9qusM7LhdDnldv96XIjPtn7IEIygR
-        qzmLX8Ig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1md9L1-00CR1E-Jh; Wed, 20 Oct 2021 11:01:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 38D0E301995;
-        Wed, 20 Oct 2021 13:00:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 27FC7201BB3C8; Wed, 20 Oct 2021 13:00:50 +0200 (CEST)
-Message-ID: <20211020105843.345016338@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 20 Oct 2021 12:44:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        alexei.starovoitov@gmail.com, ndesaulniers@google.com
-Subject: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-References: <20211020104442.021802560@infradead.org>
+        Wed, 20 Oct 2021 06:47:40 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KAOVfX018155;
+        Wed, 20 Oct 2021 12:45:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=MlxYuucZ3hZA3qvuKEJnxNhi1CYH/kqnrHAjiFr79Po=;
+ b=Hs14Rn5RB7KO632z6fryOsvT+wyNnBwekph0ayCGJavFI4brgsuQ/2llb3Af1xqPod9m
+ w9q74e18eoN60W8CH2UsOps2rZ3uyl8Q+sIwgJuM/vbDSq1dSyaO6LQ7kF1GmbYgQLe2
+ 4DrBYgmIpYEXgikLK81erL5nuwDWObAWDLrf46lrVd+72X9rBEgGqWCMQRvbE5IhZQE7
+ XEZ4Yqn4upavnnEK8kggCO443cnP5UZtu9E0ebURc9oXqiUMwICpQHLLlu4MZ7lvul4d
+ 2M7YXGceErpGogWh3jKSq9Mbo/lyVdO4cqShCzkDvlFMa+h9fNuPYm7Tsl0vuLGI89xH FQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3btdkya26d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 12:45:07 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7833710002A;
+        Wed, 20 Oct 2021 12:45:05 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6A46A21A230;
+        Wed, 20 Oct 2021 12:45:05 +0200 (CEST)
+Received: from lmecxl0995.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 20 Oct
+ 2021 12:45:04 +0200
+Subject: Re: [PATCH] dmaengine: stm32-dma: avoid 64-bit division in
+ stm32_dma_get_max_width
+To:     Arnd Bergmann <arnd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        <dmaengine@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211019153532.366429-1-arnd@kernel.org>
+From:   Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Message-ID: <da5ceaac-a123-06a9-c5a9-d0b16cb4d6e5@foss.st.com>
+Date:   Wed, 20 Oct 2021 12:45:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20211019153532.366429-1-arnd@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_04,2021-10-20_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current BPF codegen doesn't respect X86_FEATURE_RETPOLINE* flags and
-unconditionally emits a thunk call, this is sub-optimal and doesn't
-match the regular, compiler generated, code.
+Hi Arnd,
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/nospec-branch.h |   59 -----------------------------
- arch/x86/net/bpf_jit_comp.c          |   71 ++++++++++++++++++++---------------
- arch/x86/net/bpf_jit_comp32.c        |   22 ++++++++--
- 3 files changed, 59 insertions(+), 93 deletions(-)
+Thanks for your patch.
 
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -303,63 +303,4 @@ static inline void mds_idle_clear_cpu_bu
- 
- #endif /* __ASSEMBLY__ */
- 
--/*
-- * Below is used in the eBPF JIT compiler and emits the byte sequence
-- * for the following assembly:
-- *
-- * With retpolines configured:
-- *
-- *    callq do_rop
-- *  spec_trap:
-- *    pause
-- *    lfence
-- *    jmp spec_trap
-- *  do_rop:
-- *    mov %rcx,(%rsp) for x86_64
-- *    mov %edx,(%esp) for x86_32
-- *    retq
-- *
-- * Without retpolines configured:
-- *
-- *    jmp *%rcx for x86_64
-- *    jmp *%edx for x86_32
-- */
--#ifdef CONFIG_RETPOLINE
--# ifdef CONFIG_X86_64
--#  define RETPOLINE_RCX_BPF_JIT_SIZE	17
--#  define RETPOLINE_RCX_BPF_JIT()				\
--do {								\
--	EMIT1_off32(0xE8, 7);	 /* callq do_rop */		\
--	/* spec_trap: */					\
--	EMIT2(0xF3, 0x90);       /* pause */			\
--	EMIT3(0x0F, 0xAE, 0xE8); /* lfence */			\
--	EMIT2(0xEB, 0xF9);       /* jmp spec_trap */		\
--	/* do_rop: */						\
--	EMIT4(0x48, 0x89, 0x0C, 0x24); /* mov %rcx,(%rsp) */	\
--	EMIT1(0xC3);             /* retq */			\
--} while (0)
--# else /* !CONFIG_X86_64 */
--#  define RETPOLINE_EDX_BPF_JIT()				\
--do {								\
--	EMIT1_off32(0xE8, 7);	 /* call do_rop */		\
--	/* spec_trap: */					\
--	EMIT2(0xF3, 0x90);       /* pause */			\
--	EMIT3(0x0F, 0xAE, 0xE8); /* lfence */			\
--	EMIT2(0xEB, 0xF9);       /* jmp spec_trap */		\
--	/* do_rop: */						\
--	EMIT3(0x89, 0x14, 0x24); /* mov %edx,(%esp) */		\
--	EMIT1(0xC3);             /* ret */			\
--} while (0)
--# endif
--#else /* !CONFIG_RETPOLINE */
--# ifdef CONFIG_X86_64
--#  define RETPOLINE_RCX_BPF_JIT_SIZE	2
--#  define RETPOLINE_RCX_BPF_JIT()				\
--	EMIT2(0xFF, 0xE1);       /* jmp *%rcx */
--# else /* !CONFIG_X86_64 */
--#  define RETPOLINE_EDX_BPF_JIT()				\
--	EMIT2(0xFF, 0xE2)        /* jmp *%edx */
--# endif
--#endif
--
- #endif /* _ASM_X86_NOSPEC_BRANCH_H_ */
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -396,6 +396,37 @@ static int get_pop_bytes(bool *callee_re
- 	return bytes;
- }
- 
-+#define EMIT_LFENCE()	EMIT3(0x0F, 0xAE, 0xE8)
-+
-+#ifdef CONFIG_RETPOLINE
-+#define INDIRECT_SIZE (2 + 3*cpu_feature_enabled(X86_FEATURE_RETPOLINE))
-+#else
-+#define INDIRECT_SIZE (2)
-+#endif
-+
-+static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
-+{
-+	u8 *prog = *pprog;
-+
-+#ifdef CONFIG_RETPOLINE
-+	static void * const reg_thunk[] = {
-+#define GEN(reg) __x86_indirect_thunk_ ## reg,
-+#include <asm/GEN-for-each-reg.h>
-+#undef GEN
-+	};
-+
-+	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE_AMD)) {
-+		EMIT_LFENCE();
-+		EMIT2(0xFF, 0xE0 + reg);
-+	} else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
-+		emit_jump(&prog, reg_thunk[reg], ip);
-+	} else
-+#endif
-+	EMIT2(0xFF, 0xE0 + reg);
-+
-+	*pprog = prog;
-+}
-+
- /*
-  * Generate the following code:
-  *
-@@ -411,10 +442,10 @@ static int get_pop_bytes(bool *callee_re
-  * out:
-  */
- static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
--					u32 stack_depth)
-+					u32 stack_depth, u8 *ip)
- {
- 	int tcc_off = -4 - round_up(stack_depth, 8);
--	u8 *prog = *pprog;
-+	u8 *prog = *pprog, *start = *pprog;
- 	int pop_bytes = 0;
- 	int off1 = 42;
- 	int off2 = 31;
-@@ -448,7 +479,7 @@ static void emit_bpf_tail_call_indirect(
- 	EMIT2(0x89, 0xD2);                        /* mov edx, edx */
- 	EMIT3(0x39, 0x56,                         /* cmp dword ptr [rsi + 16], edx */
- 	      offsetof(struct bpf_array, map.max_entries));
--#define OFFSET1 (off1 + RETPOLINE_RCX_BPF_JIT_SIZE) /* Number of bytes to jump */
-+#define OFFSET1 (off1 + INDIRECT_SIZE) /* Number of bytes to jump */
- 	EMIT2(X86_JBE, OFFSET1);                  /* jbe out */
- 
- 	/*
-@@ -457,7 +488,7 @@ static void emit_bpf_tail_call_indirect(
- 	 */
- 	EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
- 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
--#define OFFSET2 (off2 + RETPOLINE_RCX_BPF_JIT_SIZE)
-+#define OFFSET2 (off2 + INDIRECT_SIZE)
- 	EMIT2(X86_JA, OFFSET2);                   /* ja out */
- 	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
- 	EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
-@@ -471,7 +502,7 @@ static void emit_bpf_tail_call_indirect(
- 	 *	goto out;
- 	 */
- 	EMIT3(0x48, 0x85, 0xC9);                  /* test rcx,rcx */
--#define OFFSET3 (off3 + RETPOLINE_RCX_BPF_JIT_SIZE)
-+#define OFFSET3 (off3 + INDIRECT_SIZE)
- 	EMIT2(X86_JE, OFFSET3);                   /* je out */
- 
- 	*pprog = prog;
-@@ -493,7 +524,7 @@ static void emit_bpf_tail_call_indirect(
- 	 * rdi == ctx (1st arg)
- 	 * rcx == prog->bpf_func + X86_TAIL_CALL_OFFSET
- 	 */
--	RETPOLINE_RCX_BPF_JIT();
-+	emit_indirect_jump(&prog, 1 /* rcx */, ip + (prog - start));
- 
- 	/* out: */
- 	*pprog = prog;
-@@ -1220,8 +1251,7 @@ static int do_jit(struct bpf_prog *bpf_p
- 			/* speculation barrier */
- 		case BPF_ST | BPF_NOSPEC:
- 			if (boot_cpu_has(X86_FEATURE_XMM2))
--				/* Emit 'lfence' */
--				EMIT3(0x0F, 0xAE, 0xE8);
-+				EMIT_LFENCE();
- 			break;
- 
- 			/* ST: *(u8*)(dst_reg + off) = imm */
-@@ -1411,7 +1441,8 @@ st:			if (is_imm8(insn->off))
- 			else
- 				emit_bpf_tail_call_indirect(&prog,
- 							    callee_regs_used,
--							    bpf_prog->aux->stack_depth);
-+							    bpf_prog->aux->stack_depth,
-+							    image + addrs[i - 1]);
- 			break;
- 
- 			/* cond jump */
-@@ -2117,24 +2148,6 @@ int arch_prepare_bpf_trampoline(struct b
- 	return ret;
- }
- 
--static int emit_fallback_jump(u8 **pprog)
--{
--	u8 *prog = *pprog;
--	int err = 0;
--
--#ifdef CONFIG_RETPOLINE
--	/* Note that this assumes the the compiler uses external
--	 * thunks for indirect calls. Both clang and GCC use the same
--	 * naming convention for external thunks.
--	 */
--	err = emit_jump(&prog, __x86_indirect_thunk_rdx, prog);
--#else
--	EMIT2(0xFF, 0xE2);	/* jmp rdx */
--#endif
--	*pprog = prog;
--	return err;
--}
--
- static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs)
- {
- 	u8 *jg_reloc, *prog = *pprog;
-@@ -2156,9 +2169,7 @@ static int emit_bpf_dispatcher(u8 **ppro
- 		if (err)
- 			return err;
- 
--		err = emit_fallback_jump(&prog);	/* jmp thunk/indirect */
--		if (err)
--			return err;
-+		emit_indirect_jump(&prog, 2 /* rdx */, prog);
- 
- 		*pprog = prog;
- 		return 0;
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -15,6 +15,7 @@
- #include <asm/cacheflush.h>
- #include <asm/set_memory.h>
- #include <asm/nospec-branch.h>
-+#include <asm/asm-prototypes.h>
- #include <linux/bpf.h>
- 
- /*
-@@ -1267,6 +1268,19 @@ static void emit_epilogue(u8 **pprog, u3
- 	*pprog = prog;
- }
- 
-+static void emit_jmp_edx(u8 **pprog, u8 *ip)
-+{
-+	u8 *prog = *pprog;
-+	int cnt = 0;
-+
-+#ifdef CONFIG_RETPOLINE
-+	EMIT1_off32(0xE9, (u8 *)__x86_indirect_thunk_edx - (ip + 5));
-+#else
-+	EMIT2(0xFF, 0xE2);
-+#endif
-+	*pprog = prog;
-+}
-+
- /*
-  * Generate the following code:
-  * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) ...
-@@ -1280,9 +1294,9 @@ static void emit_epilogue(u8 **pprog, u3
-  *   goto *(prog->bpf_func + prologue_size);
-  * out:
-  */
--static void emit_bpf_tail_call(u8 **pprog)
-+static void emit_bpf_tail_call(u8 **pprog, u8 *ip)
- {
--	u8 *prog = *pprog;
-+	u8 *prog = *pprog, *start = *pprog;
- 	int cnt = 0;
- 	const u8 *r1 = bpf2ia32[BPF_REG_1];
- 	const u8 *r2 = bpf2ia32[BPF_REG_2];
-@@ -1362,7 +1376,7 @@ static void emit_bpf_tail_call(u8 **ppro
- 	 * eax == ctx (1st arg)
- 	 * edx == prog->bpf_func + prologue_size
- 	 */
--	RETPOLINE_EDX_BPF_JIT();
-+	emit_jmp_edx(&prog, ip + (prog - start));
- 
- 	if (jmp_label1 == -1)
- 		jmp_label1 = cnt;
-@@ -2122,7 +2136,7 @@ static int do_jit(struct bpf_prog *bpf_p
- 			break;
- 		}
- 		case BPF_JMP | BPF_TAIL_CALL:
--			emit_bpf_tail_call(&prog);
-+			emit_bpf_tail_call(&prog, image + addrs[i - 1]);
- 			break;
- 
- 		/* cond jump */
+On 10/19/21 5:35 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Using the % operator on a 64-bit variable is expensive and can
+> cause a link failure:
+> 
+> arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_get_max_width':
+> stm32-dma.c:(.text+0x170): undefined reference to `__aeabi_uldivmod'
+> arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_set_xfer_param':
+> stm32-dma.c:(.text+0x1cd4): undefined reference to `__aeabi_uldivmod'
+> 
+> As we know that we just want to check the alignment in
+> stm32_dma_get_max_width(), there is no need for a full division, and
+> using a simple mask is a faster replacement.
+> 
+> In stm32_dma_set_xfer_param(), it is possible to pass a non-power-of-two
+> length, so this does not work. I assume this would in fact be a mistake,
+> and the hardware does not work correctly with a burst of e.g. 5 bytes
+> on a five-byte aligned address. Change this to only allow burst
+> transfers if the address is a multiple of the length, and that length
+> is a power-of-two number.
+> 
+> Fixes: b20fd5fa310c ("dmaengine: stm32-dma: fix stm32_dma_get_max_width")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/dma/stm32-dma.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
+> index 2283c500f4ce..102278f7d13e 100644
+> --- a/drivers/dma/stm32-dma.c
+> +++ b/drivers/dma/stm32-dma.c
+> @@ -280,7 +280,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
+>   	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
+>   		max_width = max_width >> 1;
+>   
+> -	if (buf_addr % max_width)
+> +	if (buf_addr & (max_width - 1))
+>   		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
+>   
+>   	return max_width;
+> @@ -757,7 +757,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+>   		 * Set memory burst size - burst not possible if address is not aligned on
+>   		 * the address boundary equal to the size of the transfer
+>   		 */
+> -		if (buf_addr % buf_len)
+> +		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
 
+No need to check !is_power_of_2(buf_len) here.
+Just after computing src_maxburst,
+	src_best_burst = stm32_dma_get_best_burst(buf_len,
+						  src_maxburst,
+						  fifoth,
+						  src_addr_width);
+The configured burst (src_best_best) already take buf_len into account.
 
+So I would remove !is_power_of_2(buf_len) from the if here and fix the 
+missing space:
+
+CHECK: spaces preferred around that '-' (ctx:WxV)
+#68: FILE: drivers/dma/stm32-dma.c:760:
++		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
+  		                                                    ^
+
+>   			src_maxburst = 1;
+>   		else
+>   			src_maxburst = STM32_DMA_MAX_BURST;
+> @@ -813,7 +813,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+>   		 * Set memory burst size - burst not possible if address is not aligned on
+>   		 * the address boundary equal to the size of the transfer
+>   		 */
+> -		if (buf_addr % buf_len)
+> +		if (!is_power_of_2(buf_len) || (buf_addr & (buf_len -1)))
+
+Ditto.
+
+>   			dst_maxburst = 1;
+>   		else
+>   			dst_maxburst = STM32_DMA_MAX_BURST;
+> 
+
+With these fixes, you can add my
+Reviewed-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Tested-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+
+Regards,
+Amelie
