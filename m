@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89564352A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6BA4352AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhJTS1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 14:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        id S231220AbhJTS3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 14:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhJTS1w (ORCPT
+        with ESMTP id S230174AbhJTS3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:27:52 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A00C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:25:37 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id f11so3653456pfc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:25:37 -0700 (PDT)
+        Wed, 20 Oct 2021 14:29:10 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EBAC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:26:55 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id s136so20042222pgs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 11:26:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=xV+lLzyHVxIjvZzd/hg4IldWQ3x8L8qi3sbsTagkSSs=;
-        b=Fps+FWweiAhdayAWJ3/8vERgnVSDMt8sI1DOq5LEaDp5fLqtRt2z6x79JeWOpKn5kr
-         Q3SbbBNL6dIyD/T4PnxWFd/aiFgxk9fy9r6yLE+sGMKh2SV4MdW4TdmEra/n7w7vMnfM
-         6VX26yqezXP9JNOPRVkyjgBMoRvS3ELkvYaULNf+oDM3vfJuElwnYpx8RMdFwswYb9Ns
-         gW1kF73fTyUdGBZCiLTj+I+484nauWYn4iWZvzDCqI1H9eGVWivK4FO280CTZ8HnNEaD
-         PxRUCN6ko0mCf0Fi/LCLORQq13jcrQOZRdVAP3l5EvuCU7ebV6TsKrZZb/tzI/EMdGhp
-         WzrA==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lpDirkOm6AQE71MS9HbrUBcKh1Z3g4/nVuMaV719kjw=;
+        b=pz1OLQGrbIRZPHfHHxlHFKNCOYGq/8nxJ1m/R/GZ1Ts1owYrrb/bTyQ5MjhyE0tmWw
+         R6TCahdqd6QNyHMeHQUDjNgkr4n+E4F1cgnQRyPC5GXhRj+pZ5vSNOa3RIa1jZ4XIw/h
+         NDQQdFeKkQvT4EfyG6hYCPFwFin5JTL1uAcv5PygteP3S308/OoVJLz7kUFmc5rqVJ3w
+         2sBEKHoHNQdWno80Up+szUha2PJu1deoG5WuJGgpr+RK1dPe9pzXqiKOE+E+dhLeacv4
+         CtWNnGcP3uLoAeTXhJ5OQdjbPEusNj6zgXbw9PniquWxn9DsCK3/oqfk+Lqc5inIqYMy
+         GMZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=xV+lLzyHVxIjvZzd/hg4IldWQ3x8L8qi3sbsTagkSSs=;
-        b=Rhw/utbLvfqv1OBOdb1dOnWufhrC6B1M5f6CXgP6tO6accWtuPvFA/wO3bfHtjb55t
-         nANjsffUFUXvFUOA55u8ygzL/jKrrqVXD09VJ/8hONA9jaD+ynMeUaScszfkP9URG9/O
-         rXh5conCwaHoLFtN8KP2SToYY/ZYoOrXMzJAO5sI7Q8oQcLhDnj2aKnDM3DHVJyDtpg/
-         Zu8A2LvNxd5H6xLQHsXAH4rjzDJN2eGGXC7ogNN3ujRlY6jIIqGoUbKhl0ahU69eP9EE
-         sgARF5DAYzt2S7YNNZglh7RvK8MxwaHSOE+xzst7I8L3Txf5GkMVRnG9rjD+prirvLz0
-         Y5Lg==
-X-Gm-Message-State: AOAM533w66NPKyhATLlMcPcd7gHyYuut86BOqU0UbUN4GnhSljOEbsrx
-        5zgC1O4zIHOUvOkEtx9WRMf1CpVk8hX7EnQ2V6s=
-X-Google-Smtp-Source: ABdhPJzLPQtyN9DN87V1VpXVZ/E5cTU3r4N4KeZ1PU3orBFqOkM/VPCscDLPW+daHbKsRc09bOGsBMeQq1RlkUPIMps=
-X-Received: by 2002:a62:5209:0:b0:44c:68a7:3a61 with SMTP id
- g9-20020a625209000000b0044c68a73a61mr356397pfb.83.1634754337350; Wed, 20 Oct
- 2021 11:25:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lpDirkOm6AQE71MS9HbrUBcKh1Z3g4/nVuMaV719kjw=;
+        b=xuprjpX/7lndGyi9MuVkVqeCArDmvQ7+SaSnne5X2BczdKJ7Mk8bP6yv8n94VM4cpa
+         wDdqGXsEO1GBMj2asIcqPfx2aMoD+bVhI06l3oxR/PsJt06rZhQyo6nmG3IOfL1jC6ST
+         wtoq1XqKV7qcvU6Dl92Pa9t6EqMNma6pGao5rAL7B+pLMLBqrGAWN2kRJ4I0sR0l2jO4
+         C3ZHy6Gg5OVceqXpg38yEE6MvPWsfxZepDcJlWMPz86pqmpeJHU/2sX2/wwJskjPGCRE
+         IOmc5ZoE024q5UJ/H+8ScCEoQDAaiYtyHWvdW0P9eDOgseqcQlodEFb47AP6/IkJwW4B
+         gk0Q==
+X-Gm-Message-State: AOAM530jQDkxsiJvf2gXD0su92iWH/zye47pto4Pc6NdeEM+bo/spheH
+        W1DoA9MTlG8J+CPbvwrwsMy7DQ==
+X-Google-Smtp-Source: ABdhPJxt36XSFVSdjeu9KOzBNBebEe71ZCBLzGOYaGh/OYfg2iPSJrtWhPzQiB1sC+8PhMaDZJGj7g==
+X-Received: by 2002:a05:6a00:1344:b0:44c:4cd7:4d4b with SMTP id k4-20020a056a00134400b0044c4cd74d4bmr548248pfu.50.1634754415150;
+        Wed, 20 Oct 2021 11:26:55 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id nn14sm3001749pjb.27.2021.10.20.11.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 11:26:54 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 18:26:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 1/4] KVM: X86: Fix tlb flush for tdp in
+ kvm_invalidate_pcid()
+Message-ID: <YXBfaqenOhf+M3eA@google.com>
+References: <20211019110154.4091-1-jiangshanlai@gmail.com>
+ <20211019110154.4091-2-jiangshanlai@gmail.com>
+ <YW7jfIMduQti8Zqk@google.com>
+ <da4dfc96-b1ad-024c-e769-29d3af289eee@linux.alibaba.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:bb0b:0:0:0:0 with HTTP; Wed, 20 Oct 2021 11:25:36
- -0700 (PDT)
-Reply-To: uchennailobi@gmail.com
-From:   uchenna <ohehehe3055@gmail.com>
-Date:   Wed, 20 Oct 2021 11:25:36 -0700
-Message-ID: <CADYWKHyyibRhSwvtcdKTHwqZ3r4=aKyiBOrs=C9WmkG7gGD6cQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da4dfc96-b1ad-024c-e769-29d3af289eee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0JTQvtGA0L7Qs9C+0Lkg0LTRgNGD0LMsDQoNCtCa0LDQuiDQv9C+0LbQuNCy0LDQtdGI0Yw/INCv
-INC00YPQvNCw0Y4sINGH0YLQviDQstGLINCyINC/0L7RgNGP0LTQutC1INC4INC30LTQvtGA0L7Q
-stGLLiDQrdGC0L4g0YHQvtC+0LHRidC40YLRjA0K0YfRgtC+INGPINGD0YHQv9C10YjQvdC+INC3
-0LDQutC70Y7Rh9C40Lsg0YHQtNC10LvQutGDLiDQrdGC0L4g0LHRi9C70L4g0LTQsNCy0L3Qvg0K
-0LLRgNC10LzRjyDRgSDQvNC+0LzQtdC90YLQsCDQvdCw0YjQtdCz0L4g0L/QvtGB0LvQtdC00L3Q
-tdCz0L4g0L7QsdGJ0LXQvdC40Y8uINCaINGB0L7QttCw0LvQtdC90LjRjiwg0LLQsNGI0LUg0L/Q
-sNGA0YLQvdC10YDRgdGC0LLQvg0K0YHQviDQvNC90L7QuSDQvdC1INGD0LTQsNC70L7RgdGMINC3
-0LDQstC10YDRiNC40YLRjCDQv9C10YDQtdCy0L7QtCDRgdGA0LXQtNGB0YLQsi4g0K8g0LTRg9C8
-0LDRjiwg0L3QsNGB0YLQsNC70L4g0LLRgNC10LzRjw0K0LrQvtCz0LTQsCDQsdGL0LvQviDRgtCw
-0Log0LzQvdC+0LPQviDQtNCw0LLQu9C10L3QuNGPINC4INC30LDQvNC10YjQsNGC0LXQu9GM0YHR
-gtCy0LAsINGH0YLQviDQstGLINGB0YLQsNC70Lgg0LzQtdC90YzRiNC1DQrQt9Cw0LjQvdGC0LXR
-gNC10YHQvtCy0LDQvSDQsiDRgdC00LXQu9C60LUuDQoNCg0K0JIg0LvRjtCx0L7QvCDRgdC70YPR
-h9Cw0LUg0Y8g0YDQsNC0INGB0L7QvtCx0YnQuNGC0Ywg0LLQsNC8INC+INC80L7QtdC8INGD0YHQ
-v9C10YXQtSDQsiDQv9C+0LvRg9GH0LXQvdC40Lgg0YTQvtC90LTQsA0K0L/QtdGA0LXQtNCw0L3R
-iyDQv9GA0Lgg0YHQvtGC0YDRg9C00L3QuNGH0LXRgdGC0LLQtSDQvdC+0LLQvtCz0L4g0L/QsNGA
-0YLQvdC10YDQsC4g0K8g0YHQtdC50YfQsNGBINCyDQrQktC10L3QtdGB0YPRjdC70LAg0L7QsSDQ
-uNC90LLQtdGB0YLQuNGG0LjRj9GFLiDQntC00L3QsNC60L47INGPINC90LUg0LfQsNCx0YvQuyDR
-gtCy0L7QuCDQv9GA0L7RiNC70YvQtSDRg9GB0LjQu9C40Y8g0LgNCtC/0YvRgtCw0LXRgtGB0Y8g
-0L/QvtC80L7Rh9GMINC80L3QtSDQsiDQv9C10YDQtdCy0L7QtNC1INGB0YDQtdC00YHRgtCyLCDQ
-vdC10YHQvNC+0YLRgNGPINC90LAg0YLQviwg0YfRgtC+INC80YsNCtC90LUg0YHQvNC+0LMg0L/R
-gNC40LnRgtC4INC6INC60L7QvdC60YDQtdGC0L3QvtC80YMg0LLRi9Cy0L7QtNGDLg0KDQrQkiDQ
-t9C90LDQuiDQv9GA0LjQt9C90LDRgtC10LvRjNC90L7RgdGC0Lgg0LfQsCDQstCw0YjRgyDQv9C+
-0L/Ri9GC0LrRgyDQv9C+0LzQvtGH0YwsINGPINC4INC80L7QuSDQvdC+0LLRi9C5INC/0LDRgNGC
-0L3QtdGAINC00L7RgdGC0LjQs9C70LgNCtGA0LXRiNC10L3QuNC1INC+INGC0L7QvCwg0YfRgtC+
-INCy0Ysg0LfQsNGB0LvRg9C20LjQstCw0LXRgtC1INC60L7QvNC/0LXQvdGB0LDRhtC40LgsINC/
-0L7RjdGC0L7QvNGDINGN0YLQviDQv9C40YHRjNC80L4NCtGB0L7QvtCx0YnQsNGOINCy0LDQvCwg
-0YfRgtC+INGPINC+0YHRgtCw0LLQuNC7INC60L7QvNC/0LXQvdGB0LDRhtC40Y4g0LIg0YDQsNC3
-0LzQtdGA0LUgMzUwIDAwMCDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkA0K0L3QsCDQstCw0YjQtSDQ
-uNC80Y8sINGH0YLQvtCx0YsNCtCS0Ysg0L/QvtC00LXQu9C40YLQtdGB0Ywg0YHQviDQvNC90L7Q
-uSDRgNCw0LTQvtGB0YLRjNGOLiDQodC+0LLQtdGC0YPRjiDQvtCx0YDQsNGC0LjRgtGM0YHRjyDQ
-siDQsdCw0L3QuiBCVENJINC00LvRjyDQv9C+0LvRg9GH0LXQvdC40Y8NCtC/0LXRgNC10LLQvtC0
-ICQgMzUwLDAwMC4wMC4g0KfRgtC+0LHRiyDQuNC30LHQtdC20LDRgtGMINC00L7Qu9Cz0L7QuSDQ
-t9Cw0LTQtdGA0LbQutC4INCy0YvQv9C70LDRgtGLDQrQutC+0LzQv9C10L3RgdCw0YbQuNC+0L3Q
-vdC+0LPQviDRhNC+0L3QtNCwDQrQv9C10YDQtdCy0L7QtCwg0Y8g0L/QvtGA0YPRh9C40Lsg0LHQ
-sNC90LrRgyBCVENJINCy0YvQv9GD0YHRgtC40YLRjCDQvNC10LbQtNGD0L3QsNGA0L7QtNC90YPR
-jiDQsdCw0L3QutC+0LzQsNGC0L3Rg9GOINC60LDRgNGC0YMgdmlzYQ0K0Lgg0L7RgtC/0YDQsNCy
-0YzRgtC1INC10LPQviDQvdCwINC00L7QvNCw0YjQvdC40Lkg0LDQtNGA0LXRgSDQutGD0YDRjNC1
-0YDRgdC60L7QuSDRgdC70YPQttCx0L7QuS4NCg0K0JrQvtC90YLQsNC60YLQvdCw0Y8g0LjQvdGE
-0L7RgNC80LDRhtC40Y8g0LHQsNC90LrQsCDRg9C60LDQt9Cw0L3QsCDQvdC40LbQtToNCg0K0J3Q
-sNC30LLQsNC90LjQtSDQsdCw0L3QutCwOiBCVENJIEJhbmsNCtCt0LvQtdC60YLRgNC+0L3QvdGL
-0Lkg0LDQtNGA0LXRgTogYnRjYmFua3RnNDc4QGdtYWlsLmNvbQ0K0JDQtNGA0LXRgTogMTY5LCBC
-b3VsZXZhcmQgZHUgMTMgamFudmllciBCUCAzNjMgTG9tw6ksINCi0L7Qs9C+Lg0K0JrQvtC90YLQ
-sNC60YLQvdC+0LUg0LvQuNGG0L46INCzLdC9INCb0LXQvtC90LDRgNC0INCc0LDRgtC40LDRgQ0K
-DQrQodC+0L7QsdGJ0LjRgtC1INC80L3QtSwg0LrQsNC6INGC0L7Qu9GM0LrQviDQv9C+0LvRg9GH
-0LjRgtC1INC60LDRgNGC0YMgVmlzYSDQtNC70Y8g0LHQsNC90LrQvtC80LDRgtC+0LIg0L7RgiDQ
-sdCw0L3QutCwDQpCVENJLiDRhdC+0YLQtdC7INCx0Ysg0Y8NCtCS0LDQvCDRg9GB0L/QtdGF0L7Q
-siDQstC+INCy0YHQtdGFINC90LDRh9C40L3QsNC90LjRj9GFLg0KDQrQoSDRg9Cy0LDQttC10L3Q
-uNC10LwNCtCR0LDRgNGA0LjRgdGC0LXRgCDRg9GH0LXQvdC90LAg0LjQu9C+0LHQuA0K
+On Wed, Oct 20, 2021, Lai Jiangshan wrote:
+> On 2021/10/19 23:25, Sean Christopherson wrote:
+> I just read some interception policy in vmx.c, if EPT=1 but vmx_need_pf_intercept()
+> return true for some reasons/configs, #PF is intercepted.  But CR3 write is not
+> intercepted, which means there will be an EPT fault _after_ (IIUC) the CR3 write if
+> the GPA of the new CR3 exceeds the guest maxphyaddr limit.  And kvm queues a fault to
+> the guest which is also _after_ the CR3 write, but the guest expects the fault before
+> the write.
+> 
+> IIUC, it can be fixed by intercepting CR3 write or reversing the CR3 write in EPT
+> violation handler.
+
+KVM implicitly does the latter by emulating the faulting instruction.
+
+  static int handle_ept_violation(struct kvm_vcpu *vcpu)
+  {
+	...
+
+	/*
+	 * Check that the GPA doesn't exceed physical memory limits, as that is
+	 * a guest page fault.  We have to emulate the instruction here, because
+	 * if the illegal address is that of a paging structure, then
+	 * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
+	 * would also use advanced VM-exit information for EPT violations to
+	 * reconstruct the page fault error code.
+	 */
+	if (unlikely(allow_smaller_maxphyaddr && kvm_vcpu_is_illegal_gpa(vcpu, gpa)))
+		return kvm_emulate_instruction(vcpu, 0);
+
+	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
+  }
+
+and injecting a #GP when kvm_set_cr3() fails.
+
+  static int em_cr_write(struct x86_emulate_ctxt *ctxt)
+  {
+	if (ctxt->ops->set_cr(ctxt, ctxt->modrm_reg, ctxt->src.val))
+		return emulate_gp(ctxt, 0);
+
+	/* Disable writeback. */
+	ctxt->dst.type = OP_NONE;
+	return X86EMUL_CONTINUE;
+  }
