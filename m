@@ -2,73 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97885434E51
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CD3434E5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhJTOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:55:38 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57592 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhJTOzh (ORCPT
+        id S230190AbhJTO5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230072AbhJTO5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:55:37 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E98501FD39;
-        Wed, 20 Oct 2021 14:53:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634741601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O8bh/JNAXl0EbyJbdZo/SNAN5DDfXJOs+3Sv4Zhg3O0=;
-        b=JNuzYGOdhvILbvr1KUKHON8SPNEtIYfQGJdkWNYg1JDgt0nR62uMVJsWzaoch0RR0SYaSI
-        +sne66bRJbe3TmoUNFJipcrvIo7neOd2/V1lwq+pX1HQMCUxHBM3oEG7zQwUiet9EvgJzo
-        ZYFX0rKorRDJlOGgEyXwlNpV98Smzj8=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 3E579A3B83;
-        Wed, 20 Oct 2021 14:53:21 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 16:53:20 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
-References: <20211018114712.9802-1-mhocko@kernel.org>
- <20211018114712.9802-3-mhocko@kernel.org>
- <20211019110649.GA1933@pc638.lan>
- <YW6xZ7vi/7NVzRH5@dhcp22.suse.cz>
- <20211019194658.GA1787@pc638.lan>
- <YW/SYl/ZKp7W60mg@dhcp22.suse.cz>
- <CA+KHdyUopXQVTp2=X-7DYYFNiuTrh25opiUOd1CXED1UXY2Fhg@mail.gmail.com>
- <YXAiZdvk8CGvZCIM@dhcp22.suse.cz>
- <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
+        Wed, 20 Oct 2021 10:57:25 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A08C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:55:10 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id s61-20020a17090a69c300b0019f663cfcd1so711636pjj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2NT+VI0Pymfgi6KrPfEOh2aqPixHFbwmQSZYnbq0Cs8=;
+        b=VgKpw9rBhIl9RgSTHOjvXPIBuB/3bKcIuicn3KbBJkWLJC9PScz/RQOUPKGAs2+Wf8
+         Lmtc88UjoeFw2ZjzncYMNMq62hYATOHb9LamR82sNaVY6GWzAy4lCsslUBQWmONdEIp/
+         um/E6qs9qGGSa55H8O5DjF4uSrQO8aGK4bxZOAqzO/QjnezVR0TDwKJ5qWq+CwSyFnuo
+         qkg5qkl1ezQ0tW/XgDQnlouKgBz+uMIKnk4nNV6uMrA6AdMKI321FUFlufT4R5IU0LED
+         xu2e61fNfS0wc6F0mGrAgYrISF4LHyvQmIbpAqIjNBo9gaxwPSnXpYXH9oqzKHyg+eJ4
+         mEjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2NT+VI0Pymfgi6KrPfEOh2aqPixHFbwmQSZYnbq0Cs8=;
+        b=4pBUz3rqG/0McipT0jtCjJ8cHFukQn1lYPGjSxwPtrP3zMRi1csno1UmribocdF5Fl
+         kFndYrXAqZK0jh6iev0BRYSXKLtoOXoyWsF7Fta2RV95ilhHn6b4UZp6IPHzhYaCzbW7
+         KGmUEH6UfFQ7fQQUvFT/jQxrNZBq9adX1vbz2qlOLM5hGOiGv2RHyziumNDhkuT7pJ7y
+         4xPwtUIp+/CEC28ActPOJzanVlDdzMVp0BB4IGq2y9HEMlQm7ZdR0xo7CXqxKBdi/ILm
+         50M30XQxvc+AZavuQNpV48Kw6EBpQiU9b7X212C/cYLJVdv9FT7hVJ2+24qk7pkjK2ed
+         JO+A==
+X-Gm-Message-State: AOAM533Eofuh6XNsXQrVE7+zz9ehMG8VpxaEHels0oFP/KThliihChw8
+        lYVu25KOsAZAKjLaqHJ4VufA43Z9XEcRDjRrivz7lg==
+X-Google-Smtp-Source: ABdhPJy+/In60vXj7hn1ZIyupFzyRXUdajqsjYN/iP/ZUU37ATuNxBenskG9v8CQW0z7L7jYp7uAxxFe1aq9arYtWs8=
+X-Received: by 2002:a17:903:18d:b0:13f:ada:9df4 with SMTP id
+ z13-20020a170903018d00b0013f0ada9df4mr39582515plg.69.1634741710041; Wed, 20
+ Oct 2021 07:55:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
+References: <20211020013153.4106001-1-kaleshsingh@google.com>
+ <20211020013153.4106001-3-kaleshsingh@google.com> <20211019222756.1fde436b@gandalf.local.home>
+In-Reply-To: <20211019222756.1fde436b@gandalf.local.home>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Wed, 20 Oct 2021 07:54:59 -0700
+Message-ID: <CAC_TJvcZ4ndpQpsj4ANj9LpzSu6GfPSdxpVc0XShbi9u_bSUyw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] tracing: Add division and multiplication support
+ for hist triggers
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-10-21 16:29:14, Uladzislau Rezki wrote:
-> On Wed, Oct 20, 2021 at 4:06 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > As I've said I am OK with either of the two. Do you or anybody have any
-> > preference? Without any explicit event to wake up for neither of the two
-> > is more than just an optimistic retry.
-> >
-> From power perspective it is better to have a delay, so i tend to say
-> that delay is better.
+On Tue, Oct 19, 2021 at 7:28 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue, 19 Oct 2021 18:31:39 -0700
+> Kalesh Singh <kaleshsingh@google.com> wrote:
+>
+> > +static u64 hist_field_div(struct hist_field *hist_field,
+> > +                        struct tracing_map_elt *elt,
+> > +                        struct trace_buffer *buffer,
+> > +                        struct ring_buffer_event *rbe,
+> > +                        void *event)
+> > +{
+> > +     struct hist_field *operand1 = hist_field->operands[0];
+> > +     struct hist_field *operand2 = hist_field->operands[1];
+> > +
+> > +     u64 val1 = operand1->fn(operand1, elt, buffer, rbe, event);
+> > +     u64 val2 = operand2->fn(operand2, elt, buffer, rbe, event);
+> > +
+> > +     /* Return -1 for the undefined case */
+> > +     if (!val2)
+> > +             return -1;
+> > +
+> > +     return div64_u64(val1, val2);
+> > +}
+> > +
+>
+> I wonder if you should add a shift operator as well?
+>
+> I mean, if for some reason you want to divide by a power of two, then why
+> us the division. Especially if this is on a 32 bit machine.
+>
+> Of course, the parsing could detect that. If the divisor is a constant. Or
+> we could even optimize the above with:
+>
+>         if (!val2)
+>                 return -1;
+>
+>         if (!(val2 & (val2 - 1))
+>                 return val1 >> __ffs64(val2);
+>
+> Which should be faster than a divide, and even if it isn't a power of two,
+> the subtract and & should be in the noise compared to the divide.
+>
+> Note, the above can be added to this. I'm not suggesting changing this
+> patch.
 
-I am a terrible random number generator. Can you give me a number
-please?
--- 
-Michal Hocko
-SUSE Labs
+Is it worth adding something like this for the multiplication case as well?
+
+- Kalesh
+
+>
+> -- Steve
