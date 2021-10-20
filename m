@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DFB435037
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E0A435039
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhJTQgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
+        id S230213AbhJTQgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhJTQgb (ORCPT
+        with ESMTP id S230192AbhJTQgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:36:31 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A0CC06161C;
-        Wed, 20 Oct 2021 09:34:16 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id o12so3544081qtq.7;
-        Wed, 20 Oct 2021 09:34:16 -0700 (PDT)
+        Wed, 20 Oct 2021 12:36:35 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB51C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:34:20 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id i189so25452552ioa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=g0oIpasJUwiZArD8DikauE4FXsqD3MlkEjrf0K6eLn4=;
-        b=lhyELlFUPc4TlP6E7DoYx5iUdBf4V4Xy0LCpOB7CaD8VDZcSfzouU1TdzcPQ9Vyu04
-         cICDL7teiMgIs0NgHlaq2qP0d4GzEcNHyQ/aKmwKgYCcXbptTP4GBjUyEQadrIC23/Pe
-         cj3J1PVvOLb44M8BYHwbz6mCSGtAcyXty0/KvHg0HA8CCd6Jsa2Y8jOXYl7WWVf96typ
-         HPNYwS9Cdll/9mCn/LQCbk0HPPVjUT8F1ttvhBNSAK7e34ANCtvzlgXscFN0dkW4M8Yr
-         tCZgn+bDpRgDLJBtny5S1X59/5kQU0bsTPFbWB1xBV2aZ5y16XMxSdLfPeZl8xS1nl2c
-         h4OQ==
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JBFsFhPpdaw12nk3cu5dcMUG+Fs6Dz9V44jZGeZjmDo=;
+        b=OqBB29lMojrufyh9kBCGnAFwOS8hjLJLfsf8n2Ba8h1f/5uZCOE05hS93+aJcabXGy
+         BVhAj4obJMShIGQwkkess0Xzu/4lMON7/uG5EC8n2hgiJilyphS92iJtbKB6GxqMMVj0
+         01b1sw68aEyHBh6l3BmLzPmgnWatWkddZtNqI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=g0oIpasJUwiZArD8DikauE4FXsqD3MlkEjrf0K6eLn4=;
-        b=7+1KzPj1mWmyfMYqmqNUer6nlyfmUcF5S30ZVtCs7USb6VFdfQaWnvppuJL7MoSec5
-         qgXBjFpWd0rd0NZsseG9ZEsA2i7RmHF1BuzGqycpZ8c3KLSU36JPsw3Pqfloq7rIALNQ
-         1INjy/9hZasZoAO3Rf3JizfGhwVZMrgcHdHMQrrltAtwkNATpye5qc/68RF/XSNfdyuU
-         IsaMsDcRz+6uNvTRjCw24+9qA7SZ4tTOoydQCZLeRZVkuPGCXyXKAWHpMCkh+9ZYdp9S
-         pwKT9Pldyn0Eo/U98XUJO1k9IZJsZl6pZuZVgnHkRxsw66VveI/mOYoaRvP3yRgDNZlF
-         eqIg==
-X-Gm-Message-State: AOAM5339mgFZDtjU12TJV8bH097uZ5pnjrLZDKNafeWDfmkc7J0rcsR/
-        deFHieKxO8QrqeurBfNaSEbzW4jk3+NS6g==
-X-Google-Smtp-Source: ABdhPJzvxc11RJlS0z5B0+As3NfzUiau0BP85PP4NiflGqwBp+LFUptKCxvXUjalZflM8FWT048MwA==
-X-Received: by 2002:ac8:6619:: with SMTP id c25mr175994qtp.91.1634747655554;
-        Wed, 20 Oct 2021 09:34:15 -0700 (PDT)
-Received: from [127.0.0.1] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id c7sm1177672qke.78.2021.10.20.09.34.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 09:34:14 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 13:34:09 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     John Garry <john.garry@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     peterz@infradead.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, mingo@redhat.com, irogers@google.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        James Clark <James.Clark@arm.com>
-Subject: Re: [PATCH 0/2] perf jevents: Enable build warnings
-User-Agent: K-9 Mail for Android
-In-Reply-To: <744e6d05-eaec-49d9-1e3d-2f96d4e01e1a@huawei.com>
-References: <1634316507-227751-1-git-send-email-john.garry@huawei.com> <YXAoOgRVfkzr5vcS@kernel.org> <744e6d05-eaec-49d9-1e3d-2f96d4e01e1a@huawei.com>
-Message-ID: <16E39CDA-56B0-4A88-AD66-E2197E4E1C3B@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JBFsFhPpdaw12nk3cu5dcMUG+Fs6Dz9V44jZGeZjmDo=;
+        b=C23tsqjD24Tgbq6nlQKK3uhHaLxPuwxd6Ge98NFeX9o7QofmNPWNufh0i1QCojQXrx
+         AFdv8PYJALirXPiA+B2X+WIlMXLSNlWggYYV1o9upMxi70ajXFDSyneIGFT5RPmXcRMD
+         62ww3ELTSTxwpBijaxGHWwk5q9HPFT+n9Z5CgmlUeWfH2r4aJr+D4siGtZv7/tcqi7zX
+         MTdc/ZaXFEsRN7E/9xEzBDv0AgYaTof7eeuCAVN75GBlK6Rmh/rUFjFYQdZra18MfkEU
+         Snvn5HEWzi9L1wR+ES+npsgWJumfxdZhP2U5zOqhOAx2hLay69p7yJy8tygCAuWkdj8t
+         v+Gw==
+X-Gm-Message-State: AOAM531ZI0rkT//Db1udSMXfvVGpzj/rr04cSRYFueWEeWjcnxNpZX0M
+        lWTGwzk9NeetSHIxo0kXQyMr/yNZLHR+AA==
+X-Google-Smtp-Source: ABdhPJyKtILTXAT9ygIy/vzt9aKqlp949wGCIExiKDHGKGyBz1wFz0eZYaOdqjDC/+gzjVc178Y3Aw==
+X-Received: by 2002:a05:6638:32a6:: with SMTP id f38mr241125jav.63.1634747660037;
+        Wed, 20 Oct 2021 09:34:20 -0700 (PDT)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id m7sm1346936iov.30.2021.10.20.09.34.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 20 Oct 2021 09:34:19 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 16:34:18 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: Retrieving the network namespace of a socket
+Message-ID: <20211020163417.GA21040@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20211020095707.GA16295@ircssh-2.c.rugged-nimbus-611.internal>
+ <CAHNKnsRFah6MRxECTLNwu+maN0o9jS9ENzSAiWS4v1247BqYdg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHNKnsRFah6MRxECTLNwu+maN0o9jS9ENzSAiWS4v1247BqYdg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 20, 2021 at 05:03:56PM +0300, Sergey Ryazanov wrote:
+> Hello Sargun,
+> 
+> On Wed, Oct 20, 2021 at 12:57 PM Sargun Dhillon <sargun@sargun.me> wrote:
+> > I'm working on a problem where I need to determine which network namespace a
+> > given socket is in. I can currently bruteforce this by using INET_DIAG, and
+> > enumerating namespaces and working backwards.
+> 
+> Namespace is not a per-socket, but a per-process attribute. So each
+> socket of a process belongs to the same namespace.
+> 
+> Could you elaborate what kind of problem you are trying to solve?
+> Maybe there is a more simple solution. for it.
+> 
+> -- 
+> Sergey
 
+That's not entirely true. See the folowing code:
 
-On October 20, 2021 11:41:01 AM GMT-03:00, John Garry <john=2Egarry@huawei=
-=2Ecom> wrote:
->On 20/10/2021 15:31, Arnaldo Carvalho de Melo wrote:
->> Em Sat, Oct 16, 2021 at 12:48:25AM +0800, John Garry escreveu:
->>> Currently jevents builds without any complier warning flags enabled=2E=
- So
->>> use newly-defined HOSTCFLAGS, which comes from EXTRA_WARNINGS=2E I am =
-not
->>> 100% confident that this is the best way, but sending out for review=
-=2E
->>>
->>> Baseline is be8ecc57f180 (HEAD, acme/perf/core) perf srcline: Use
->>> long-running addr2line per DSO
->>=20
->> Thanks, applied=2E
->>=20
->
->Hi Arnaldo,
->
->I was going to send a v2, with changes according to James Clark's review=
-=20
->  - that was to add -Wall & -Werror, but they caused a problem on your=20
->perf/core branch as they triggered the warn fixed in commit b94729919db2=
-=2E
->
->I suppose the best thing now is to send a patch on top once perf/core=20
->contains that commit=2E Let me know otherwise=2E
+int main() {
+	int fd1, fd2;
+	fd1 = socket(AF_INET, SOCK_STREAM, 0);
+	assert(fd1 >= 0);
+	assert(unshare(CLONE_NEWNET) == 0);
+	fd2 = socket(AF_INET, SOCK_STREAM, 0);
+	assert(fd2 >= 0);
+}
 
+fd1 and fd2 have different sock_net.
 
-Tests are running, if something fails, then I'll have to fix it and will n=
-ot make my perf/core public, so I can replace what I have with a v2, otherw=
-ise you please send a patch on top after l make it public=2E
+The context for this is:
+https://linuxplumbersconf.org/event/11/contributions/932/
 
-- Arnaldo
->
->Thanks
+We need to figure out, for a given socket, if it has reachability to a given IP.
