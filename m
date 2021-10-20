@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0CB434B19
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BDB434B2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhJTMZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhJTMZT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:25:19 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E0EC06161C;
-        Wed, 20 Oct 2021 05:23:04 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id r4-20020a4aa2c4000000b002b6f374cac9so1952134ool.6;
-        Wed, 20 Oct 2021 05:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KnpSTKaVxWeLwjg6JGO5JCxJHBUSE+8ki8bjGqS/oL8=;
-        b=M5OAz7D3STdY5Eqg6qqLhbe94UPlkuJP16z1PvrH0eg7gGN73m4BUVPD1LEmD0QCGI
-         sFCx5+aLAfHx1a9ivYk2Q83QJCG7gQIyf8Ga1yWdJrk7pJs7ZQlMCyUl4k7O3zaJ137w
-         GgRCFgalWPmorsJmNOV02gkdHI/ILvFuQvaPMMwY0iZCEQIAkgnK4vkun4zD7nqoRtdu
-         v6XxV951i7bMR/OoLkEbQ1Mvq4mREZAmpxBnSyqWyv/V0EJOQbWwX48iUsG5qYxxlyMQ
-         5Y3pO0F2EJ+MhKH3QAcJsYO/rjMvh/I7bT6up2YcMmlvdOUA0OpBvaB0kN27B9kV4NjD
-         Dp8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KnpSTKaVxWeLwjg6JGO5JCxJHBUSE+8ki8bjGqS/oL8=;
-        b=oN/+CHAH5elso2jSBRfABMYyUKzr6tOlQdpa7OflLhoGd8lvem2omsSucdB1zeIkjY
-         0ni4Nk/acjBzHvxkWJMuNswl2Fu3V+HeEGkkzU8z58YEzn6jxM+n1Lru0slFKfE+0JKD
-         1stHYju1upAYwBAaB8y5Mm1CegY/pD1uWg2vuDL+A2rrAUV4VltJt7v4dyQFltFvow5c
-         K46KiZlquCR8YGExaCqPJh1z1dwhd9KhhIcLPR7nlrXqNAoHEo7HTYOy62mvAimHox0W
-         aqkUUQNGyMQ7H8thVNgwv4+uKAQRr0YpuRZLdeJUfvhuPvuC6xXZFCCeML/wjbr3ku3p
-         /9qw==
-X-Gm-Message-State: AOAM532ozf78tQgYRdWAAtPwCvhXJQgoA6CgDOF0/PPDRRThliFUYykc
-        kG8shNUjvpN79CCQxwr+fX6kde0+aJt08hC3kEQ=
-X-Google-Smtp-Source: ABdhPJwi60I+gGronRWQVJkldYpoSJJehKfYgLhGeop7ohHFjqVK2o+mX0tEzOhu1WuDUia0D4B2s7boTyNF/pLmjkQ=
-X-Received: by 2002:a4a:52ce:: with SMTP id d197mr9487161oob.83.1634732584377;
- Wed, 20 Oct 2021 05:23:04 -0700 (PDT)
+        id S230205AbhJTMc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:32:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229702AbhJTMcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:32:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F4366135E;
+        Wed, 20 Oct 2021 12:30:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634733039;
+        bh=JT2SkvtAggztd5vBpXOy3KiUBY0PoFlXIX09DB3XnHs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZnIUPEIq+hvzCl00QYwDpobI4iFUDxYE/SkDXuEed4ZxhuhfToaA8W8535LPjTRTY
+         4W7zXSOZRKO7ExURf/LBK31wWDQOsDIIQammx1x/wgABht7VUahDLfta3lxOXRPzZR
+         2RhU5xPdjYWSra4E0GiEO92nr76GHsp78fNqFyAGz247M8mPITA+6u64wn/7aG7r7r
+         2/8HgafaK3ZzaWpVOzC/jmrVZEUpe0rpCJw6Yje7Kx8V9HLKY97UnB744PlD+7nxCY
+         SDk9MZX+hq5fxOapESfk4jEQ2tqLQP+6g7o+e3EXjov0ma1NF3sgnHaNCIquEdkL3G
+         lz+XCHRQJROww==
+Date:   Wed, 20 Oct 2021 13:30:36 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+        Len Brown <lenb@kernel.org>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/3] sound: cs35l41: Allow HDA systems to use
+ CS35l41 ASoC driver
+Message-ID: <YXAL7Gc/wGR0Ce3g@sirena.org.uk>
+References: <20211020085944.17577-1-tanureal@opensource.cirrus.com>
+ <20211020085944.17577-2-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <20211020120726.4022086-1-pizhenwei@bytedance.com>
-In-Reply-To: <20211020120726.4022086-1-pizhenwei@bytedance.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 20 Oct 2021 20:22:53 +0800
-Message-ID: <CANRm+CxAVA-L0wjm72eohXXWvh9fS7wVFzfKHuEjrsiRFuk9fg@mail.gmail.com>
-Subject: Re: [PATCH] x86/kvm: Introduce boot parameter no-kvm-pvipi
-To:     zhenwei pi <pizhenwei@bytedance.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="105KrfQZCqU/K4pU"
+Content-Disposition: inline
+In-Reply-To: <20211020085944.17577-2-tanureal@opensource.cirrus.com>
+X-Cookie: I program, therefore I am.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 at 20:08, zhenwei pi <pizhenwei@bytedance.com> wrote:
->
-> Although host side exposes KVM PV SEND IPI feature to guest side,
-> guest should still have a chance to disable it.
->
-> A typicall case of this parameter:
-> If the host AMD server enables AVIC feature, the flat mode of APIC
-> get better performance in the guest.
 
-Hmm, I didn't find enough valuable information in your posting. We
-observe AMD a lot before.
-https://lore.kernel.org/all/CANRm+Cx597FNRUCyVz1D=B6Vs2GX3Sw57X7Muk+yMpi_hb+v1w@mail.gmail.com/T/#u
+--105KrfQZCqU/K4pU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-    Wanpeng
+On Wed, Oct 20, 2021 at 09:59:42AM +0100, Lucas Tanure wrote:
+
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+
+> Re-use ASoC driver for supporting for Legion 7 16ACHg6
+> laptop.
+> HDA machine driver will find the registered dais for the
+> Amp and use snd_soc_dai_ops to configure it.
+
+It will find the registered DAIs in what way exactly?
+
+This patch is doing a whole bunch of stuff which isn't described at all
+in the changelog which makes it very hard to review, I can't tell what
+it's supposed to do.
+
+--105KrfQZCqU/K4pU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFwC+sACgkQJNaLcl1U
+h9BpGgf8C7Znyvqsj/ydwkf+M2pPLh07ukHK6c4VRUmxiuxT4/WUeecjcnTvo4El
+J+dqhOnejW1i0PiJ8C/j2sz9Z/W0+asGY4+UcGy9VWUMQ0mUNt46UbEJPYR573ae
+1WJVSy3Gzrx0FC/U/kRFlFplxPnq1VHITlm2oviYhrlqsvHP+9Xd+lBNmZB4H4Bx
+JeEc7rfpHd7uiftVfhrVVNtgKjb+kvPiB4f1NTnwr4ZkDsF9ydULy5Ytq5qvEx7Q
+AQ7MgwVpvdj14Jbmg1Abz4SNNVwwte9M9nc99X+aajfW9Shg77XxjUb90qoTb3iZ
+nOkeqR9aXbE2RBNQZW3HIDaPLkwkEg==
+=WUeG
+-----END PGP SIGNATURE-----
+
+--105KrfQZCqU/K4pU--
