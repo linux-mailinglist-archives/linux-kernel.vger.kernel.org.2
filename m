@@ -2,165 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33321434C08
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6812F434C0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhJTN2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhJTN2D (ORCPT
+        id S230020AbhJTNaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:30:03 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:50344 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTNaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:28:03 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA38BC06161C;
-        Wed, 20 Oct 2021 06:25:49 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id q2-20020a17090a2e0200b001a0fd4efd49so3807242pjd.1;
-        Wed, 20 Oct 2021 06:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=KD04hsmi0lgerCpXrek0NWCbVNI3Lu/Nr105uWRTo8c=;
-        b=JXX65j3hX2NvMlynDH+nRMiKJKnN5UveBhRRhING9zBMpxapQoY7K6lmkEsfwoXcNE
-         +1wr5fwA2lmJPifFvCPcxsWfmUqdIp41SkQn/KQzajtgqpm4++tkOjjyv8VCgnWd8xqk
-         mVBv6xtmXQCdigbe32XYl/NPu30bCMIAOuewuQntcuhLQvJHb8l3F+WoLWF4woZGpN2o
-         kK3+B4EdBIr8tb9tj6k1yPO/DC3fsBU62T6Z0KTsODb+oGjfLl+P5ouwsUuCAWfTYHUj
-         KHpzg3DrrdGFNlVZ8m0EDYQhumuN49+1D7drhPy2NcIbmVmDX4J6rtBhyTwb/b3601s+
-         BBhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=KD04hsmi0lgerCpXrek0NWCbVNI3Lu/Nr105uWRTo8c=;
-        b=Jo4EaH4RWqszXiTjH05ZuBy2vOLj8G93CWB4lVX4KKeHm+naje5bVnuF5NHP62nyuZ
-         HQef2YrP+aDZ37aotLP20Ble5eJGu3q4CGcJDCPcsq3q1MSjh9ECq+DwF8S56fLTkDwL
-         aV/qQNoQgi5GhnkxE+BSJLnaveBKn5F79DakDRFwNIkGg8CW1wKrAQE5MsgH7zLdPAg1
-         7B0mhvOUQ4NA0XCIMacs13LcM+BC6EqpxCn4et1Cz1ui2mLe1it+DQYdHzMblplBRIhv
-         FTzgjqZZVT9dzCBvfeCEdOusnDvUkqkz775yrSkx33Iwl4TwNku5PzHZ2gKY8xtHho2d
-         nrcg==
-X-Gm-Message-State: AOAM533XluDNE/vdMDR+UmxPCizlLQlfvT5qgejIpHhDMKTfFbfUzbP0
-        pJMNSazes9CLoXJo28Zh4Ag=
-X-Google-Smtp-Source: ABdhPJzEi+qF735DLvHgQoE5spz6cr2+SraesD/tRcTWc4xIQmSNH+/QZzgW1zjdcZjiyfzfw4Npew==
-X-Received: by 2002:a17:90b:4ad2:: with SMTP id mh18mr45250pjb.18.1634736349097;
-        Wed, 20 Oct 2021 06:25:49 -0700 (PDT)
-Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
-        by smtp.gmail.com with ESMTPSA id v9sm2556719pjc.55.2021.10.20.06.25.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:25:48 -0700 (PDT)
-Message-ID: <721eda4c6b65a0c0da4b85e1b24bada769890816.camel@gmail.com>
-Subject: Re: [PATCH 02/17] media: atomisp: pci: fix punit_ddr_dvfs_enable()
- argument for mrfld_power up case
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Alan <alan@linux.intel.com>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Wed, 20 Oct 2021 22:25:43 +0900
-In-Reply-To: <YW1Vj5jGybs8gXWr@smile.fi.intel.com>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-         <20211017161958.44351-3-kitakar@gmail.com>
-         <YW1Vj5jGybs8gXWr@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        Wed, 20 Oct 2021 09:30:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634736468; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=c5i1CMhYy4g8vaYaKlzxS5Vj9oYBF5BrdPZbK42iW3Y=; b=iLEN6J1VCnQh9vHBzfYVOvr4HR2GwupEKLjKcp5W6xjIMPaIONjUZ2tu/pf0cEQ5pcCyMT5R
+ VAmcV46wKbyT2dH56+zaazI217SPDAL1fcFZxVhRRE1OLWFuT7DLEJdH9W3cVQIeBiVMvtIb
+ TLlCN7+HBqMpI0vabgygW9qD9T4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 617019535ca800b6c18e95d5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 13:27:47
+ GMT
+Sender: quic_luoj=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 39526C43617; Wed, 20 Oct 2021 13:27:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [10.92.1.38] (unknown [180.166.53.36])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 41A57C4338F;
+        Wed, 20 Oct 2021 13:27:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 41A57C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+Subject: Re: [PATCH v3 12/13] net: phy: adjust qca8081 master/slave seed value
+ if link down
+To:     Andrew Lunn <andrew@lunn.ch>, Luo Jie <luoj@codeaurora.org>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+References: <20211018033333.17677-1-luoj@codeaurora.org>
+ <20211018033333.17677-13-luoj@codeaurora.org> <YW3vVt99i7TNCzaC@lunn.ch>
+From:   Jie Luo <quic_luoj@quicinc.com>
+Message-ID: <087c328d-2909-6750-8711-71abb8d5e301@quicinc.com>
+Date:   Wed, 20 Oct 2021 21:27:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <YW3vVt99i7TNCzaC@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-18 at 14:07 +0300, Andy Shevchenko wrote:
-> On Mon, Oct 18, 2021 at 01:19:42AM +0900, Tsuchiya Yuto wrote:
-> > When comparing with intel-aero atomisp [1], it looks like
-> > punit_ddr_dvfs_enable() should take `false` as an argument on mrfld_power
-> > up case.
-> > 
-> > Code from the intel-aero kernel [1]:
-> > 
-> >         int atomisp_mrfld_power_down(struct atomisp_device *isp)
-> >         {
-> >         [...]
-> >         	/*WA:Enable DVFS*/
-> >         	if (IS_CHT)
-> >         		punit_ddr_dvfs_enable(true);
-> > 
-> >         int atomisp_mrfld_power_up(struct atomisp_device *isp)
-> >         {
-> >         [...]
-> >         	/*WA for PUNIT, if DVFS enabled, ISP timeout observed*/
-> >         	if (IS_CHT)
-> >         		punit_ddr_dvfs_enable(false);
-> > 
-> > This patch fixes the inverted argument as per the intel-aero code, as
-> > well as its comment. While here, fix space issues for comments in
-> > atomisp_mrfld_power().
-> > 
-> > Note that it does not seem to be possible to unify the up/down cases for
-> > punit_ddr_dvfs_enable(), i.e., we can't do something like the following:
-> > 
-> >         if (IS_CHT)
-> >         	punit_ddr_dvfs_enable(!enable);
-> > 
-> > because according to the intel-aero code [1], the DVFS is disabled
-> > before "writing 0x0 to ISPSSPM0 bit[1:0]" and the DVFS is enabled after
-> > "writing 0x3 to ISPSSPM0 bit[1:0]".
-> > 
-> > [1] https://github.com/intel-aero/linux-kernel/blob/a1b673258feb915268377275130c5c5df0eafc82/drivers/media/pci/atomisp/atomisp_driver/atomisp_v4l2.c#L431-L514
-> > 
-> > Fixes: 0f441fd70b1e ("media: atomisp: simplify the power down/up code")
-> > Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
-> > ---
-> >  drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> > index 0511c454e769..f5362554638e 100644
-> > --- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> > +++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> > @@ -711,15 +711,15 @@ static int atomisp_mrfld_power(struct atomisp_device *isp, bool enable)
-> >  
-> >  	dev_dbg(isp->dev, "IUNIT power-%s.\n", enable ? "on" : "off");
-> >  
-> > -	/*WA:Enable DVFS*/
-> > +	/* WA for PUNIT, if DVFS enabled, ISP timeout observed */
-> 
-> P-Unit
 
-Thanks, I'll fix this next time I send.
+On 10/19/2021 6:04 AM, Andrew Lunn wrote:
+> On Mon, Oct 18, 2021 at 11:33:32AM +0800, Luo Jie wrote:
+>> 1. The master/slave seed needs to be updated when the link can't
+>> be created.
+>>
+>> 2. The case where two qca8081 PHYs are connected each other and
+>> master/slave seed is generated as the same value also needs
+>> to be considered, so adding this code change into read_status
+>> instead of link_change_notify.
+>>
+>> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+>> ---
+>>   drivers/net/phy/at803x.c | 16 ++++++++++++++++
+>>   1 file changed, 16 insertions(+)
+>>
+>> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+>> index 5d007f89e9d3..77aaf9e72781 100644
+>> --- a/drivers/net/phy/at803x.c
+>> +++ b/drivers/net/phy/at803x.c
+>> @@ -1556,6 +1556,22 @@ static int qca808x_read_status(struct phy_device *phydev)
+>>   	else
+>>   		phydev->interface = PHY_INTERFACE_MODE_SMII;
+>>   
+>> +	/* generate seed as a lower random value to make PHY linked as SLAVE easily,
+>> +	 * except for master/slave configuration fault detected.
+>> +	 * the reason for not putting this code into the function link_change_notify is
+>> +	 * the corner case where the link partner is also the qca8081 PHY and the seed
+>> +	 * value is configured as the same value, the link can't be up and no link change
+>> +	 * occurs.
+>> +	 */
+>> +	if (!phydev->link) {
+>> +		if (phydev->master_slave_state == MASTER_SLAVE_STATE_ERR) {
+>> +			qca808x_phy_ms_seed_enable(phydev, false);
+>> +		} else {
+>> +			qca808x_phy_ms_random_seed_set(phydev);
+>> +			qca808x_phy_ms_seed_enable(phydev, true);
+>> +		}
+>> +	}
+> Are you assuming here that the status is polled once a second, and
+> each poll you choose a new seed and see if it succeeds? What happens
+> when interrupts are used, not polling?
+>
+>       Andrew
 
-> >  	if (IS_CHT && enable)
-> > -		punit_ddr_dvfs_enable(true);
-> > +		punit_ddr_dvfs_enable(false);
-> >  
-> >  	/*
-> >  	 * FIXME:WA for ECS28A, with this sleep, CTS
-> >  	 * android.hardware.camera2.cts.CameraDeviceTest#testCameraDeviceAbort
-> >  	 * PASS, no impact on other platforms
-> > -	*/
-> > +	 */
-> >  	if (IS_BYT && enable)
-> >  		msleep(10);
-> >  
-> > @@ -727,7 +727,7 @@ static int atomisp_mrfld_power(struct atomisp_device *isp, bool enable)
-> >  	iosf_mbi_modify(BT_MBI_UNIT_PMC, MBI_REG_READ, MRFLD_ISPSSPM0,
-> >  			val, MRFLD_ISPSSPM0_ISPSSC_MASK);
-> >  
-> > -	/*WA:Enable DVFS*/
-> > +	/* WA:Enable DVFS */
-> >  	if (IS_CHT && !enable)
-> >  		punit_ddr_dvfs_enable(true);
-> >  
-> > -- 
-> > 2.33.1
-> > 
-> > 
-> 
+Hi Andrew,
+
+yes, this code assumes that the PHY POLL is used, and choose a new 
+random seed value
+
+on each poll if no link is created.
+
+when the interrupts is used, this corner case seems can't be covered 
+since there is
+
+no related interrupt occurs when the seed is configured as same value.
 
