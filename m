@@ -2,122 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60AB43480B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A53434816
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhJTJlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:41:07 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26173 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhJTJlG (ORCPT
+        id S229809AbhJTJpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:45:38 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:58344 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhJTJph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:41:06 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HZ5B84b6Lz8tlv;
-        Wed, 20 Oct 2021 17:37:36 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 17:38:50 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Wed, 20 Oct 2021 17:38:50 +0800
-Subject: Re: [PATCH v4 1/2] block, bfq: counted root group into
- 'num_groups_with_pending_reqs'
-To:     Paolo Valente <paolo.valente@linaro.org>
-CC:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20211014014556.3597008-1-yukuai3@huawei.com>
- <20211014014556.3597008-2-yukuai3@huawei.com>
- <0DD9CFF0-6110-497D-A352-9F37CADADC6B@linaro.org>
- <1f89cece-a123-6190-bb72-d59035dac266@huawei.com>
- <2E8712BB-5BFB-4647-AE9A-B06E199500D7@linaro.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <8912e5ca-67bb-4a9a-a2ce-ba13e0fc86ed@huawei.com>
-Date:   Wed, 20 Oct 2021 17:38:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 20 Oct 2021 05:45:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634723003; x=1666259003;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Z47sps6aiduYq9zxghfDWy+i1+XjGukGY3TIg6+nO8E=;
+  b=BGExX2/j/d1JO9sYylnG9uLsnsh11A0gdY0Hf2iLdMpp2OWujV5Bx/qA
+   cy1kOAF6q7XDgrHdQ8OLndpU8by1EpchM5akDm6cfYwwbnbUsocL5gxcG
+   H70V7ffWf6U1kIF/eCu3+hKC0UOR5o+RIZQCe2nrf1Y0iejJgcNEFsIUG
+   zOqmdfOoA77J12uePzXjEQZcpWb/nGZ8vZ3k2OEKhQ2pOmdt7UH/P4vQQ
+   8YlUF2O4MJm/Uc5eYrpO4lMeETB55IIoijU8nYOwqL4TlNpNCocljIGjS
+   XsnPgntwS99a6JBom4y/8//hfonqBaWVCzCW3YiFZoM/ZljhSEBt5d48n
+   A==;
+IronPort-SDR: QQSo92EB/7JhmETOogVnU7TUkxzNwqKjrgWO9W8yEum2fMjDr8XJkMf8D1coAjiztkfJckzHRl
+ oybA6kAVxn3gklJySDUT0OCpoSlLpzM72xSx9m63XYUqRm7cXZraEpugaamhoxq9e6wH2cIv8z
+ Jre7MHFWlhF5HAfbGbxoKRthDNJ4gsLbSm/lKhKODWqYaUPKnY2y6dnHFxKRqyoVudqykCADpn
+ vwIljsjfH3GLLhYVyAJ/ks843zblzbbyl2rEmChIvPgsY2vs31NmejolQa8v2nnHBZihqW/US2
+ 0URVBz8bOXvhtPgkUXTlAV4U
+X-IronPort-AV: E=Sophos;i="5.87,166,1631602800"; 
+   d="scan'208";a="133739400"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Oct 2021 02:43:22 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 20 Oct 2021 02:43:22 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Wed, 20 Oct 2021 02:43:20 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <kishon@ti.com>, <vkoul@kernel.org>, <robh+dt@kernel.org>,
+        <andrew@lunn.ch>, <alexandre.belloni@bootlin.com>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH v4 0/3] phy: Add driver for lan966x Serdes driver
+Date:   Wed, 20 Oct 2021 11:42:26 +0200
+Message-ID: <20211020094229.1760793-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <2E8712BB-5BFB-4647-AE9A-B06E199500D7@linaro.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/20 17:29, Paolo Valente wrote:
-> 
-> 
->> Il giorno 20 ott 2021, alle ore 11:20, yukuai (C) <yukuai3@huawei.com> ha scritto:
->>
->> On 2021/10/20 16:51, Paolo Valente wrote:
->>
->>>> @@ -860,9 +870,25 @@ void bfq_weights_tree_remove(struct bfq_data *bfqd,
->>>> 			     struct bfq_queue *bfqq)
->>>> {
->>>> 	struct bfq_entity *entity = bfqq->entity.parent;
->>>> +	struct bfq_sched_data *sd;
->>>> +
->>>> +	/*
->>>> +	 * If the bfq queue is in root group, the decrement of
->>>> +	 * num_groups_with_pending_reqs is performed immediately upon the
->>>> +	 * deactivation of entity.
->>>> +	 */
->>>> +	if (!entity) {
->>>> +		entity = &bfqd->root_group->entity;
->>>> +		sd = entity->my_sched_data;
->>>> +
->>>> +		if (!sd->in_service_entity)
->>>> +			bfq_clear_group_with_pending_reqs(bfqd, entity);
->>>> +
->>>> +		return;
->>>> +	}
->>>>
->>>> 	for_each_entity(entity) {
->>>> -		struct bfq_sched_data *sd = entity->my_sched_data;
->>>> +		sd = entity->my_sched_data;
->>>>
->>>> 		if (sd->next_in_service || sd->in_service_entity) {
->>>> 			/*
->>>> @@ -880,7 +906,8 @@ void bfq_weights_tree_remove(struct bfq_data *bfqd,
->>>> 		}
->>>>
->>>> 		/*
->>>> -		 * The decrement of num_groups_with_pending_reqs is
->>>> +		 * If the bfq queue is not in root group,
->>>> +		 * the decrement of num_groups_with_pending_reqs is
->>> I'm sorry if I didn't notice this before, but why do you postpone the
->>> decrement only for queues not in root group?  If I'm not missing
->>> anything, the active (i.e., with pending reqs) state of the root group
->>> is to be computed as that of ay other group.
->>
->> Hi, Paolo
->>
->> I thought if queue is in root group, then bfqq->entity.parent is NULL,
->> and such case is handled above, which is separate from previous
->> implementation for queues that are not in root group.
->>
->> Is this the wrong way to handle root group?
->>
-> 
-> I think that, if we want to count also the root group among the active
-> ones, then the logic for tagging the root group as active must be the
-> same as the other groups. Or am I missing something?
+This patch serie adds support for Microchip lan966x serdes. The lan966x
+device contains has 7 interfaces, consisting of 2 copper transceivers,
+3 Serdes and 2 RGMII interfaces. Two of the Serdes support QSGMII.
+The driver also adds the functionality of "muxing" the interfaces to
+different logical ports.
 
-Hi, Paolo
+The following table shows which interfaces can be supported by the port.
 
-Currently, if queue is in root group, bfqq->entity.parent is NULL, and
-this makes it hard to keep the same logic.
+PortNumber    Max Speed    Ethernet interface options
+    0            1Gbps       CuPHY, 1G SGMII or QSGMII
+    1            1Gbps       CuPHY, 1G SGMII or QSGMII
+    2          2.5Gbps       2.5G SGMII, QSGMII, RGMII
+    3          2.5Gbps       2.5G SGMII, QSGMII, RGMII
+    4          2.5Gbps       2.5G SGMII, QSGMII
+    5            1Gbps       QSGMII, RGMII
+    6            1Gbps       QSGMII, RGMII
+    7            1Gbps       QSGMII
 
-Can we store root_group->my_entity to bfqq->entity.parent if the queue
-is in root group?
+v3->v4:
+- update description of the driver
+- removed unused registers
+- use bitfield operations in the registers
+- add macros for PLL configuration
+- move macros and structs at the top of the file
 
-Thanks,
-Kuai
+v2->v3:
+- remove unused includes
+- add missing '...' in microchip,lan966x-serdes.yaml
+- rename lan966x-serdes.h to phy-lan966x-serdes.h
+- Rename CU->PHY and RG->RGMII
+- update commit message for PATCH 2
+
+v1->v2:
+- replace the regmap with iomem
+- update DT bindings
+
+
+Horatiu Vultur (3):
+  dt-bindings: phy: Add lan966x-serdes binding
+  dt-bindings: phy: Add constants for lan966x serdes
+  phy: Add lan966x ethernet serdes PHY driver
+
+ .../phy/microchip,lan966x-serdes.yaml         |  59 ++
+ drivers/phy/microchip/Kconfig                 |   8 +
+ drivers/phy/microchip/Makefile                |   1 +
+ drivers/phy/microchip/lan966x_serdes.c        | 548 ++++++++++++++++++
+ drivers/phy/microchip/lan966x_serdes_regs.h   | 209 +++++++
+ include/dt-bindings/phy/phy-lan966x-serdes.h  |  14 +
+ 6 files changed, 839 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/microchip,lan966x-serdes.yaml
+ create mode 100644 drivers/phy/microchip/lan966x_serdes.c
+ create mode 100644 drivers/phy/microchip/lan966x_serdes_regs.h
+ create mode 100644 include/dt-bindings/phy/phy-lan966x-serdes.h
+
+-- 
+2.33.0
 
