@@ -2,240 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458BC435585
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95091435591
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhJTVvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:51:21 -0400
-Received: from mail-mw2nam10on2065.outbound.protection.outlook.com ([40.107.94.65]:5089
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231354AbhJTVvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:51:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KBaGSzfeFWR8vJFq7JX+iYt1bGGrknAxUVi5jgq6e2W85kxw4l+Yf5BUMszbpHjZwWvzp2ZPmLyRm8J0ODyJjubTKJD5oRjgEyO/Q7VzhCpDp/xLvf/9B0bV9C08tJNTYYzBjYRBMQZcM5WUazW17G9O7GF8ahTTZB1A0qysxI6WjYZ2+tAqBmL7AFTfYmd9Hc1VBXOxneriKVP2NQT11t9llCMw86RkYkjCNfB6rhgifDkDniDU47zNZkiqeWGNUymCMbCk4cLXO/LdNZd2sFAi+y1Qbj1kYgP4ZYOG50hecfuWUb/ko6jwEXzTfj9s+oH4VbwybkMnImaN1BoQuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MrqbrQPf/O4zKrgbzMvp8b/ZfjKNBPy8oCDAeyMNTOU=;
- b=Hc6zFmEhe0h87FZehz3Ldygqi6ReQYzc96Qoiuax0chTYWFXJOgzr70GXfJOSRBm3ps/Wb1PtbhQ1F33LiJrgeJGWJzwdMFcwPo7PKOYtmBJvG8zAGK/SXuUmAa//T0MKsSwNG5rudHsBUmnbNhfp2jLN/NZpzONSECIQZCaDPRNwkArdesMwAlw+MU/WBL4P5+4YCFwFLxQlyw6VnB+8xNQcg/kmyul/RwgtQHdkbaY2XG0w/2oH1PgRckuZJIrce8FVvmREtdv0AgN+FeJet2Kd/Dp/k/b/EBMJIU9eQ8EEMqzdTSos1BDMPU/NdmqbasUGHQifVrLGruMlV2rgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MrqbrQPf/O4zKrgbzMvp8b/ZfjKNBPy8oCDAeyMNTOU=;
- b=YdC89QQ+BcAI+eJbKnV2VhGmbCuVpMGQl8kF92OVIbDvcB4GwyKhcFMJsv9ecuk+dLuBngyJTmQWVRtojtpVjWW6lrvRLeWvfLHz9rx7c2RLYtADzW9/UYQnhBaHWUtvF6RIEyU6+TOXEoR0D97DgGbScKXCLrOuwq2FJoJelBc=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB2688.namprd12.prod.outlook.com (2603:10b6:805:6f::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Wed, 20 Oct
- 2021 21:48:52 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::e4da:b3ea:a3ec:761c]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::e4da:b3ea:a3ec:761c%7]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
- 21:48:52 +0000
-Message-ID: <a7944441-f279-a809-8817-2e4b38a0e309@amd.com>
-Date:   Wed, 20 Oct 2021 16:48:43 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Cc:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
+        id S231176AbhJTVy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:54:27 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:51492 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhJTVy0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 17:54:26 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:40000)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdJVD-00FiWe-CQ; Wed, 20 Oct 2021 15:52:03 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:59328 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdJVA-002PXD-JP; Wed, 20 Oct 2021 15:52:02 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-kernel@vger.kernel.org>
+Cc:     <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 44/45] KVM: SVM: Support SEV-SNP AP Creation NAE
- event
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-45-brijesh.singh@amd.com> <YWnbfCet84Vup6q9@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-In-Reply-To: <YWnbfCet84Vup6q9@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0PR08CA0023.namprd08.prod.outlook.com
- (2603:10b6:610:33::28) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        openrisc@lists.librecores.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        David Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Maciej Rozycki <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <87y26nmwkb.fsf@disp2133>
+Date:   Wed, 20 Oct 2021 16:51:52 -0500
+In-Reply-To: <87y26nmwkb.fsf@disp2133> (Eric W. Biederman's message of "Wed,
+        20 Oct 2021 12:32:20 -0500")
+Message-ID: <877de7jrev.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Received: from [172.31.128.40] (165.204.78.25) by CH0PR08CA0023.namprd08.prod.outlook.com (2603:10b6:610:33::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Wed, 20 Oct 2021 21:48:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 74b8e84f-f1bd-4fb7-b4e7-08d994136830
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2688:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB26887A6E7E731F1417BF2A5EE5BE9@SN6PR12MB2688.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nvN18djk+WzNPPPRc0Z0lXOYLxPWczL88QVaEm41LT36oCa/89C76V6RhhgY+uXesa70EIOV8NUG0syi6uaW8WJ3+WQcAqbAH/Mx1zfNwVkmNYHSjX4Gu5XOxoMG5BQD/RbN1Ww4UExUMedB6jtHtFpeHdGmHz4NAkdPWMtcHhtXhMykbpK7xJH5wTuov9i5He6ONw4+XcFnMi3FivZarikPTyTPCK0imD4Zyp00HFStp/5cMjpDpyOkPjsr/t5xNclqIYRqYLHDPYsPhfn/WlceeIzwOBRByo6SQQucoQDvibJa6hgmPlxVGOJ/oJEQ6LQzOGf59vi7ht0iUv15Ck+ZZtPzBUE80FdAY+qQogUZTIPBva/X6l/yYcWzliZe3EKW12uVMUWxq3NxH6DtRIWPVMmCT/s0Nr015kWKNR63pspw4upbfOUQ7uSRfjVOSlfEhP0HYHxNXYtDa1c6/jBcAUlzIpBYzkPsp/YRR1L76T97/DJAxJilzEzEyZuBP22Nt+Vj/9s4GLd6/3Kcyc1LVCxU+Tbjnwo/wAoPhDTCr2rq3hS1L6cUciJGsdAlq7UgPnEuLZsx+rJFae0H/0hy+7TYRWJ3Ob8HRGZNudInaiZm36TCNLSPCD6JB+1N5GBxxQE0mHJ4wcvMbw9euJRdAPbwRuzFOCgIvORK9k1P4vT8FxufATZ8PGzp4nZD36/TPRQwcfLdmrMKHnGuTwa2W2BMA0aDjSqWvN5Y86IHJwMJc6NU/QCvVzOapVwq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66556008)(8676002)(7406005)(7416002)(6916009)(6666004)(66946007)(186003)(4326008)(316002)(5660300002)(8936002)(26005)(83380400001)(508600001)(36756003)(956004)(54906003)(31696002)(31686004)(44832011)(2906002)(86362001)(38100700002)(6486002)(2616005)(53546011)(16576012)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bnFTMUswS1JYSkNzQkRGNnJaR3ZMQ1pjVHY2cURlalMyMWJNQUgvUmxoN0N0?=
- =?utf-8?B?aTMvajdwZllJU2JNMmgrNE0xdTA5L0RBU3N1UC9DRU9IWjFxZzFsQ2xFRDJn?=
- =?utf-8?B?aEN2cW5YUUdSUy9PTERRaUtvZmlvM21tREpEVjVYZEl4cHdUS0dRcHFaU2o4?=
- =?utf-8?B?NXBCTFdCQ2x6THBDUi9NbVRNZ1FoNjh4TlZFVUJJN1dDaFZzOG10dC9yS2Zr?=
- =?utf-8?B?VUZLVGJXeHBQQnFmMXcycEFiRjUrR1oyUVJJNmVFY3hQekw0a05vOGNtSzNV?=
- =?utf-8?B?TDAyZVVhRm82cFloUjF0UTZGZTB6eVJ3U3B4UWxobnFFOEcrTkd0VC9sdjJV?=
- =?utf-8?B?c1dCU3VSQlhhL3N2Q1YyaFQ3aUpLVFpnRTZGRDV3bkJ0Vnk1TjdTYmRjMnJ4?=
- =?utf-8?B?Tkk3a2pRMmROclgwbDdxRUFveitKdnFuZ1M2WWw0K1FsOUphbEl0MkJmK2x3?=
- =?utf-8?B?KzdSMjNZR1JReWtiUzN4bjQvclhQQWU2dk1rOW5mYkY3Q1RrdHkzR3EycXJh?=
- =?utf-8?B?ZlQ5bDgzdjdtUmpJV053dTEveEVmempnZUpyMlpnNktnMGV3cGNwUzd5a1o4?=
- =?utf-8?B?NmxObWQ4Z2JDcDd0Y25TMXhCWWdsVGxyN0YzamNuL3MyNCsrbG4zNXgvTGJv?=
- =?utf-8?B?VVkveUUxQXVoT3JocVB2RDlLWXJySmxsQzdMTU9mSVFoR1VSeTEwYStXZlVI?=
- =?utf-8?B?RHJzOHljdkczQ3dLaGpTVE81NTM3NnR0M0ZkTFpFVjkvQkZmU1ZXNis5NGE4?=
- =?utf-8?B?amVub2hObUR1bEtvd1NNRmV3NWpOMUFBVDJjYmZwSEpSVmJld01qM0Q4N0Iy?=
- =?utf-8?B?SEVaeE1USnFqSXBZMEZhZWFXR3NacDJCdjBqT3NHeUp0Y2M2NitCY21DQUEr?=
- =?utf-8?B?OHlyYjlGcFJCcGRKeGhFWVF5M3JOWEhGSStjRFpHMTNpQWVxanNjT2NXbEhQ?=
- =?utf-8?B?aTRTOHIzRFZNWFBwMThGYm9DQ05meHYxZkMvU1FNYU53Wk5PS2JCdDVFb2g4?=
- =?utf-8?B?a25kN2o4K1Q4dkt4RHJnRGZpM3E1ZkRGVmxDU1dRZkhZRHBWbDgvRjh1UGlL?=
- =?utf-8?B?VTlGQW1kb2FrU0wrNzM0RDFqN2xaUmNUT2VVbkU2RThMZnZMUWhpTHg2bkZB?=
- =?utf-8?B?K2VHcnF6dTdMWnpJM2NiQ2lvK3VWSVlDREdSZzFZbDE0M1o2WjhCUkNPanhO?=
- =?utf-8?B?Q2Irdkg0NjRVWGVOWUVqbi9wMjM0THQvQTZxSjNrQVNueHdLVldpNXVxYVB6?=
- =?utf-8?B?Z3VmcCt6QTlYcWhBaEUzb3R2T2k5Uk9NZWtGRW0rZ1hsaXVzUHdEa1gxVWc2?=
- =?utf-8?B?a3FERmhJOENrUk5QSWR2RFY4Rkl1Y0VTajJYVUJpcEUreFlOb3NvNUdnMTRL?=
- =?utf-8?B?bFRSOUduNDdLZ2p1bHZhZ1lJUk5Xc21SbFk1by90dkV1UHR4QitDRmpRZ0FC?=
- =?utf-8?B?M01FOG9qREt5c2h5ekNVQkdJdFRHckpLblZENTh0M2g5WHZxb05LWUZHUnBk?=
- =?utf-8?B?OFlOamFsRnY2Q3F0SHp4TWlyQkJGdlBRd1BCSjNjWEY0aDBWa2UxZ3YzN1VX?=
- =?utf-8?B?eUxkM0VLdnBsVXhRNWU3MVc1OURpQ1EvMkdWajhBOExQZHNMdWpIak5zdS9S?=
- =?utf-8?B?MXNUV05sOW1xVEhLR1JDcHJPeUtPM3JqU3NXQkNpMlBtR0tpUlVUMHYwalBM?=
- =?utf-8?B?U0V0WllMTnljR1R0MW5hQUh5WnhOU001a0t5TUxNWFdMYUJlUTd0N3JHL0ZI?=
- =?utf-8?Q?HqIvM321rcLirmsCRbvJumAggT5mh/oNWtuII9y?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74b8e84f-f1bd-4fb7-b4e7-08d994136830
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 21:48:52.5286
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sbrijesh@amd.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2688
+Content-Type: text/plain
+X-XM-SPF: eid=1mdJVA-002PXD-JP;;;mid=<877de7jrev.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18ePEKUK1liVK4VGBQcsP6jPz9QJs+YQsA=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.9 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,TR_Symld_Words,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,XMNoVowels,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;<linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1553 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 11 (0.7%), b_tie_ro: 10 (0.6%), parse: 1.12
+        (0.1%), extract_message_metadata: 13 (0.8%), get_uri_detail_list: 2.4
+        (0.2%), tests_pri_-1000: 17 (1.1%), tests_pri_-950: 1.59 (0.1%),
+        tests_pri_-900: 1.24 (0.1%), tests_pri_-90: 85 (5.5%), check_bayes: 83
+        (5.4%), b_tokenize: 16 (1.1%), b_tok_get_all: 10 (0.7%), b_comp_prob:
+        3.1 (0.2%), b_tok_touch_all: 49 (3.2%), b_finish: 0.85 (0.1%),
+        tests_pri_0: 1408 (90.7%), check_dkim_signature: 0.63 (0.0%),
+        check_dkim_adsp: 2.3 (0.2%), poll_dns_idle: 0.55 (0.0%), tests_pri_10:
+        3.1 (0.2%), tests_pri_500: 9 (0.6%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH 21/20] signal: Replace force_sigsegv(SIGSEGV) with force_fatal_sig(SIGSEGV)
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 10/15/21 2:50 PM, Sean Christopherson wrote:
-> On Fri, Aug 20, 2021, Brijesh Singh wrote:
->> From: Tom Lendacky <thomas.lendacky@amd.com>
->>
->> Add support for the SEV-SNP AP Creation NAE event. This allows SEV-SNP
->> guests to alter the register state of the APs on their own. This allows
->> the guest a way of simulating INIT-SIPI.
->>
->> A new event, KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, is created and used
->> so as to avoid updating the VMSA pointer while the vCPU is running.
->>
->> For CREATE
->>   The guest supplies the GPA of the VMSA to be used for the vCPU with the
->>   specified APIC ID. The GPA is saved in the svm struct of the target
->>   vCPU, the KVM_REQ_UPDATE_PROTECTED_GUEST_STATE event is added to the
->>   vCPU and then the vCPU is kicked.
->>
->> For CREATE_ON_INIT:
->>   The guest supplies the GPA of the VMSA to be used for the vCPU with the
->>   specified APIC ID the next time an INIT is performed. The GPA is saved
->>   in the svm struct of the target vCPU.
->>
->> For DESTROY:
->>   The guest indicates it wishes to stop the vCPU. The GPA is cleared from
->>   the svm struct, the KVM_REQ_UPDATE_PROTECTED_GUEST_STATE event is added
->>   to vCPU and then the vCPU is kicked.
->>
->>
->> The KVM_REQ_UPDATE_PROTECTED_GUEST_STATE event handler will be invoked as
->> a result of the event or as a result of an INIT. The handler sets the vCPU
->> to the KVM_MP_STATE_UNINITIALIZED state, so that any errors will leave the
->> vCPU as not runnable. Any previous VMSA pages that were installed as
->> part of an SEV-SNP AP Creation NAE event are un-pinned. If a new VMSA is
->> to be installed, the VMSA guest page is pinned and set as the VMSA in the
->> vCPU VMCB and the vCPU state is set to KVM_MP_STATE_RUNNABLE. If a new
->> VMSA is not to be installed, the VMSA is cleared in the vCPU VMCB and the
->> vCPU state is left as KVM_MP_STATE_UNINITIALIZED to prevent it from being
->> run.
-> LOL, this part of the GHCB is debatable, though I guess it does say "may"...
->
->   Using VMGEXIT SW_EXITCODE 0x8000_0013, an SEV-SNP guest can create or update the
->   vCPU state of an AP, which may allow for a simpler and more secure method of
->                                              ^^^^^^^
->   booting an AP.
->
->> +	if (VALID_PAGE(svm->snp_vmsa_pfn)) {
-> KVM's VMSA page should be freed on a successful "switch", because AFAICT it's
-> incorrect for KVM to ever go back to the original VMSA.
->
->> +		/*
->> +		 * The snp_vmsa_pfn fields holds the hypervisor physical address
->> +		 * of the about to be replaced VMSA which will no longer be used
->> +		 * or referenced, so un-pin it.
->> +		 */
->> +		kvm_release_pfn_dirty(svm->snp_vmsa_pfn);
->> +		svm->snp_vmsa_pfn = INVALID_PAGE;
->> +	}
->> +
->> +	if (VALID_PAGE(svm->snp_vmsa_gpa)) {
->> +		/*
->> +		 * The VMSA is referenced by the hypervisor physical address,
->> +		 * so retrieve the PFN and pin it.
->> +		 */
->> +		pfn = gfn_to_pfn(vcpu->kvm, gpa_to_gfn(svm->snp_vmsa_gpa));
-> Oh yay, a gfn.  That means that the page is subject to memslot movement.  I don't
-> think the code will break per se, but it's a wrinkle that's not handled.
->
-> I'm also pretty sure the page will effectively be leaked, I don't see a
->
-> 	kvm_release_pfn_dirty(svm->snp_vmsa_pfn);
->
-> in vCPU teardown.
->
-> Furthermore, letting the guest specify the page would open up to exploits of the
-> erratum where a spurious RMP violation is signaled if an in-use page, a.k.a. VMSA
-> page, is 2mb aligned.  That also means the _guest_ needs to be somehow be aware
-> of the erratum.
+Now that force_fatal_sig exists it is unnecessary and a bit confusing
+to use force_sigsegv in cases where the simpler force_fatal_sig is
+wanted.  So change every instance we can to make the code clearer.
 
-Good point Sean, a guest could exploit the IN_USE erratum in this case.
-We need to somehow communicate this to guest so that it does not
-allocate the VMSA at 2MB boundary. It would be nice if GHCB spec can add
-a requirement that VMSA should not be a 2MB aligned. I will see what we
-can do to address this.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/arc/kernel/process.c       | 2 +-
+ arch/m68k/kernel/traps.c        | 2 +-
+ arch/powerpc/kernel/signal_32.c | 2 +-
+ arch/powerpc/kernel/signal_64.c | 4 ++--
+ arch/s390/kernel/traps.c        | 2 +-
+ arch/um/kernel/trap.c           | 2 +-
+ arch/x86/kernel/vm86_32.c       | 2 +-
+ fs/exec.c                       | 2 +-
+ 8 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/arch/arc/kernel/process.c b/arch/arc/kernel/process.c
+index 3793876f42d9..8e90052f6f05 100644
+--- a/arch/arc/kernel/process.c
++++ b/arch/arc/kernel/process.c
+@@ -294,7 +294,7 @@ int elf_check_arch(const struct elf32_hdr *x)
+ 	eflags = x->e_flags;
+ 	if ((eflags & EF_ARC_OSABI_MSK) != EF_ARC_OSABI_CURRENT) {
+ 		pr_err("ABI mismatch - you need newer toolchain\n");
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 		return 0;
+ 	}
+ 
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index 5b19fcdcd69e..74045d164ddb 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -1150,7 +1150,7 @@ asmlinkage void set_esp0(unsigned long ssp)
+  */
+ asmlinkage void fpsp040_die(void)
+ {
+-	force_sigsegv(SIGSEGV);
++	force_fatal_sig(SIGSEGV);
+ }
+ 
+ #ifdef CONFIG_M68KFPU_EMU
+diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
+index 666f3da41232..933ab95805a6 100644
+--- a/arch/powerpc/kernel/signal_32.c
++++ b/arch/powerpc/kernel/signal_32.c
+@@ -1063,7 +1063,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
+ 	 * We kill the task with a SIGSEGV in this situation.
+ 	 */
+ 	if (do_setcontext(new_ctx, regs, 0)) {
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 		return -EFAULT;
+ 	}
+ 
+diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
+index d8de622c9e4a..8ead9b3f47c6 100644
+--- a/arch/powerpc/kernel/signal_64.c
++++ b/arch/powerpc/kernel/signal_64.c
+@@ -704,7 +704,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
+ 	 */
+ 
+ 	if (__get_user_sigset(&set, &new_ctx->uc_sigmask)) {
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 		return -EFAULT;
+ 	}
+ 	set_current_blocked(&set);
+@@ -713,7 +713,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
+ 		return -EFAULT;
+ 	if (__unsafe_restore_sigcontext(current, NULL, 0, &new_ctx->uc_mcontext)) {
+ 		user_read_access_end();
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 		return -EFAULT;
+ 	}
+ 	user_read_access_end();
+diff --git a/arch/s390/kernel/traps.c b/arch/s390/kernel/traps.c
+index 51729ea2cf8e..01a7c68dcfb6 100644
+--- a/arch/s390/kernel/traps.c
++++ b/arch/s390/kernel/traps.c
+@@ -84,7 +84,7 @@ static void default_trap_handler(struct pt_regs *regs)
+ {
+ 	if (user_mode(regs)) {
+ 		report_user_fault(regs, SIGSEGV, 0);
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 	} else
+ 		die(regs, "Unknown program exception");
+ }
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index 3198c4767387..c32efb09db21 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -158,7 +158,7 @@ static void bad_segv(struct faultinfo fi, unsigned long ip)
+ 
+ void fatal_sigsegv(void)
+ {
+-	force_sigsegv(SIGSEGV);
++	force_fatal_sig(SIGSEGV);
+ 	do_signal(&current->thread.regs);
+ 	/*
+ 	 * This is to tell gcc that we're not returning - do_signal
+diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
+index 040fd01be8b3..7ff0f622abd4 100644
+--- a/arch/x86/kernel/vm86_32.c
++++ b/arch/x86/kernel/vm86_32.c
+@@ -159,7 +159,7 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
+ 	user_access_end();
+ Efault:
+ 	pr_alert("could not access userspace vm86 info\n");
+-	force_sigsegv(SIGSEGV);
++	force_fatal_sig(SIGSEGV);
+ }
+ 
+ static int do_vm86_irq_handling(int subfunction, int irqnumber);
+diff --git a/fs/exec.c b/fs/exec.c
+index a098c133d8d7..ac7b51b51f38 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1852,7 +1852,7 @@ static int bprm_execve(struct linux_binprm *bprm,
+ 	 * SIGSEGV.
+ 	 */
+ 	if (bprm->point_of_no_return && !fatal_signal_pending(current))
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 
+ out_unmark:
+ 	current->fs->in_exec = 0;
+-- 
+2.20.1
 
-> And digging through the guest patches, this gives the guest _full_ control over
-> the VMSA contents.  That is bonkers.  At _best_ it gives the guest the ability to
-> fuzz VMRUN ucode by stuffing garbage into the VMSA.
-
-If guest puts garbage in VMSA then VMRUN will fail. I am sure ucode is
-doing all kind of sanity checks to ensure that VMSA does not contain
-invalid value before the run.
-
-
-> Honestly, why should KVM even support guest-provided VMSAs?  It's far, far simpler
-> to handle this fully in the guest with a BIOS<=>kernel mailbox; see the MP wakeup
-> protocol being added for TDX.  That would allow improving the security for SEV-ES
-> as well, though I'm guessing no one actually cares about that in practice.
-> IIUC, the use case for VMPLs is that VMPL0 would be fully trusted by both the host
-> and guest, i.e. attacks via the VMSA are out-of-scope.  That is very much not the
-> case here.
