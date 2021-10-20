@@ -2,190 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C23E434D57
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB7E434D66
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhJTOWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:22:05 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:39495 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhJTOWD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:22:03 -0400
-Received: by mail-oi1-f172.google.com with SMTP id s9so7473161oiw.6;
-        Wed, 20 Oct 2021 07:19:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CQR8bA2DDw1T775UVo7jNnRB7J3D07XKlU/rQiyQQnM=;
-        b=hw8kjlnFP5HelJJ0iGdWviTMjYxDek3O9gWM+etcHTVK6sIdJCnzoSM//v4h96jdl5
-         lGrSX0dfwcleypjLHAJRcKfQI7t0Om/sDzTe7jNTFMKp+cWVw5Jy7EiYC9EbT3czYOtM
-         auFIWs8OYd/l4K+SVXuR2S/rhZlRiEO1J0ITVLbZpOWAzBZGh/FHinGbMkB0IWLQ0v7n
-         T+Vu5TWqHX79htd5Lxgt1T6CZmMapBwQ0cY5KE+/0mPxBeW28KnoDQqMB/PV8fJeSEu1
-         I8famPAcUyGM8W7e1aYmkdqgjCZ5VOlm8j+jmB6g3PmT9GM15TS9+TJ9Jni/dZjy7rJv
-         NbUA==
-X-Gm-Message-State: AOAM533hkB3ulSDEb2UbKCzxO6MMsFaaNBjbmtiPQ28fcJc/R+KjX1cg
-        4aaY5ewThK9DRC/Bgoxbkg==
-X-Google-Smtp-Source: ABdhPJxW9P/PudtVYOU9cQ6l4rME3ClU1cNhDdvCc/Xw17GiN25AzsXlt7wEgblNZKsgXYjVar84Rw==
-X-Received: by 2002:a05:6808:199d:: with SMTP id bj29mr7759915oib.165.1634739588807;
-        Wed, 20 Oct 2021 07:19:48 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id x10sm424722ooa.16.2021.10.20.07.19.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 07:19:47 -0700 (PDT)
-Received: (nullmailer pid 2299344 invoked by uid 1000);
-        Wed, 20 Oct 2021 14:19:45 -0000
-Date:   Wed, 20 Oct 2021 09:19:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, Dave Young <dyoung@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        kexec@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Feng Zhou <zhoufeng.zf@bytedance.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH v15 09/10] of: fdt: Add memory for devices by DT property
- "linux,usable-memory-range"
-Message-ID: <YXAlgdZ5q7CdBXw4@robh.at.kernel.org>
-References: <20211020020317.1220-1-thunder.leizhen@huawei.com>
- <20211020020317.1220-10-thunder.leizhen@huawei.com>
+        id S230020AbhJTOYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:24:17 -0400
+Received: from relay.sw.ru ([185.231.240.75]:34038 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230123AbhJTOYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 10:24:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=ggO+FpcKH1wkkXlq2EYHdQ27UcwvObsXNymYB1kX5vo=; b=qICVdC1lEfiKYzFU0
+        8K47Lgduio85XZ6eCdSooKhVX2NtJObrUJsfhOgPRI1/7qkO7qepJK0z71tuX3axsSQsNHaPSDFiO
+        YQxBeX7rWzBQlrSjhah3Y+4HBc3kWbSLYmtHP5nEt0pcUMUyUUPdH3GRLUO+mhlIXrBHEJUdf0+X8
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mdCTb-006bzD-13; Wed, 20 Oct 2021 17:21:55 +0300
+Subject: Re: [PATCH memcg 2/3] memcg: remove charge forcinig for dying tasks
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+ <cover.1634730787.git.vvs@virtuozzo.com>
+ <56180e53-b705-b1be-9b60-75e141c8560c@virtuozzo.com>
+ <YXAOjQO5r1g/WKmn@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <cbda9b6b-3ee5-06ab-9a3b-debf361b55bb@virtuozzo.com>
+Date:   Wed, 20 Oct 2021 17:21:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020020317.1220-10-thunder.leizhen@huawei.com>
+In-Reply-To: <YXAOjQO5r1g/WKmn@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:03:16AM +0800, Zhen Lei wrote:
-> From: Chen Zhou <chenzhou10@huawei.com>
+On 20.10.2021 15:41, Michal Hocko wrote:
+> On Wed 20-10-21 15:13:46, Vasily Averin wrote:
+>> ToDo: should we keep task_is_dying() in mem_cgroup_out_of_memory() ?
+>>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>>  mm/memcontrol.c | 20 +++++++-------------
+>>  1 file changed, 7 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 6da5020a8656..74a7379dbac1 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -239,7 +239,7 @@ enum res_type {
+>>  	     iter != NULL;				\
+>>  	     iter = mem_cgroup_iter(NULL, iter, NULL))
+>>  
+>> -static inline bool should_force_charge(void)
+>> +static inline bool task_is_dying(void)
+>>  {
+>>  	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
+>>  		(current->flags & PF_EXITING);
+>> @@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>>  	 * A few threads which were not waiting at mutex_lock_killable() can
+>>  	 * fail to bail out. Therefore, check again after holding oom_lock.
+>>  	 */
+>> -	ret = should_force_charge() || out_of_memory(&oc);
+>> +	ret = task_is_dying() || out_of_memory(&oc);
 > 
-> When reserving crashkernel in high memory, some low memory is reserved
-> for crash dump kernel devices and never mapped by the first kernel.
-> This memory range is advertised to crash dump kernel via DT property
-> under /chosen,
->         linux,usable-memory-range = <BASE1 SIZE1 [BASE2 SIZE2]>
-> 
-> We reused the DT property linux,usable-memory-range and made the low
-> memory region as the second range "BASE2 SIZE2", which keeps compatibility
-> with existing user-space and older kdump kernels.
-> 
-> Crash dump kernel reads this property at boot time and call memblock_add()
-> to add the low memory region after memblock_cap_memory_range() has been
-> called.
-> 
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  drivers/of/fdt.c | 47 ++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 36 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index 4546572af24bbf1..cf59c847b2c28a5 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -969,8 +969,16 @@ static void __init early_init_dt_check_for_elfcorehdr(unsigned long node)
->  		 elfcorehdr_addr, elfcorehdr_size);
->  }
->  
-> -static phys_addr_t cap_mem_addr;
-> -static phys_addr_t cap_mem_size;
-> +/*
-> + * The main usage of linux,usable-memory-range is for crash dump kernel.
-> + * Originally, the number of usable-memory regions is one. Now there may
-> + * be two regions, low region and high region.
-> + * To make compatibility with existing user-space and older kdump, the low
-> + * region is always the last range of linux,usable-memory-range if exist.
-> + */
-> +#define MAX_USABLE_RANGES		2
-> +
-> +static struct memblock_region cap_mem_regions[MAX_USABLE_RANGES];
->  
->  /**
->   * early_init_dt_check_for_usable_mem_range - Decode usable memory range
-> @@ -979,20 +987,30 @@ static phys_addr_t cap_mem_size;
->   */
->  static void __init early_init_dt_check_for_usable_mem_range(unsigned long node)
->  {
-> -	const __be32 *prop;
-> -	int len;
-> +	const __be32 *prop, *endp;
-> +	int len, nr = 0;
-> +	struct memblock_region *rgn = &cap_mem_regions[0];
->  
->  	pr_debug("Looking for usable-memory-range property... ");
->  
->  	prop = of_get_flat_dt_prop(node, "linux,usable-memory-range", &len);
-> -	if (!prop || (len < (dt_root_addr_cells + dt_root_size_cells)))
-> +	if (!prop)
->  		return;
->  
-> -	cap_mem_addr = dt_mem_next_cell(dt_root_addr_cells, &prop);
-> -	cap_mem_size = dt_mem_next_cell(dt_root_size_cells, &prop);
-> +	endp = prop + (len / sizeof(__be32));
-> +	while ((endp - prop) >= (dt_root_addr_cells + dt_root_size_cells)) {
-> +		rgn->base = dt_mem_next_cell(dt_root_addr_cells, &prop);
-> +		rgn->size = dt_mem_next_cell(dt_root_size_cells, &prop);
-> +
-> +		pr_debug("cap_mem_regions[%d]: base=%pa, size=%pa\n",
-> +			 nr, &rgn->base, &rgn->size);
-> +
-> +		if (++nr >= MAX_USABLE_RANGES)
-> +			break;
-> +
-> +		rgn++;
-> +	}
->  
-> -	pr_debug("cap_mem_start=%pa cap_mem_size=%pa\n", &cap_mem_addr,
-> -		 &cap_mem_size);
->  }
->  
->  #ifdef CONFIG_SERIAL_EARLYCON
-> @@ -1265,7 +1283,8 @@ bool __init early_init_dt_verify(void *params)
->  
->  void __init early_init_dt_scan_nodes(void)
->  {
-> -	int rc = 0;
-> +	int i, rc = 0;
-> +	struct memblock_region *rgn = &cap_mem_regions[0];
->  
->  	/* Initialize {size,address}-cells info */
->  	of_scan_flat_dt(early_init_dt_scan_root, NULL);
-> @@ -1279,7 +1298,13 @@ void __init early_init_dt_scan_nodes(void)
->  	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
->  
->  	/* Handle linux,usable-memory-range property */
-> -	memblock_cap_memory_range(cap_mem_addr, cap_mem_size);
-> +	memblock_cap_memory_range(rgn->base, rgn->size);
-> +	for (i = 1; i < MAX_USABLE_RANGES; i++) {
-> +		rgn++;
+> Why are you keeping the task_is_dying check here? IIRC I have already
+> pointed out that out_of_memory already has some means to do a bypass
+> when needed.
 
-Just use rgn[i].
+It was a misunderstanding.
+I've been waiting for your final decision.
 
-> +
-> +		if (rgn->size)
+I have no good arguments "pro" or strong objection "contra". 
+However, I prefer to keep task_is_dying() so as not to touch other tasks unnecessarily.
 
-This check can be in the 'for' conditions check.
+I can't justify why its removal is necessary,
+but on the other hand, it shouldn't break anything.
 
-> +			memblock_add(rgn->base, rgn->size);
-> +	}
+I can drop it if you think it's necessary.
 
+Thank you,
+	Vasily Averin
 
-There's not really any point in doing all this in 2 steps. I'm 
-assuming this needs to be handled after scanning the memory nodes, so 
-can you refactor this moving early_init_dt_check_for_usable_mem_range 
-out of early_init_dt_scan_chosen() and call it here. You'll have to get 
-the offset for /chosen twice or save the offset.
-
-Rob
