@@ -2,94 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCBE434EF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B48434EF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhJTP0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTPZ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:25:57 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21063C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:23:43 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id v8so3228634pfu.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9G/tgOu2U++uQPjqj0kkd4nYpGihFaCQehhixgnnnLM=;
-        b=FdohNWF0lePfGiRKbumHGZsAGaLjjDCPzFQFJ5ok+qZV3MvXQXsTce3m8nzuOrUnOr
-         HttiXl3VBBlg2SEnXtxSdhhz7nt7n32i+kurO9oz+oBp7/JUPLTfrw8bVeIzI8il5S7y
-         +Su1eI0BuwtFDay0O0erLFi3b/nM3KpBQZVvhdsPE7Gp/4mGxEFqpqGmj9rBVgryz6BN
-         SaPNpOoiKt0kp6fO0TlMNeoK0ocPWI1b1P11Y8XNcreX1k1KK3F385FOV+dWpZEiNGVx
-         5/jrgrsNrsP+j27vJioi2jBsc8BHASyJCxdF9Sg4ljAVZm8zss22Mwm4hbaf1v0w9NTN
-         w+JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9G/tgOu2U++uQPjqj0kkd4nYpGihFaCQehhixgnnnLM=;
-        b=lZqrUTa3u9SY8nuC9s3rt/uHTQvnfIy+959jSlqeK0y5v9MasVkWGSJ+PXZEmnmjt2
-         DEQeFhqpj+kpQbF4qpBbVZvxyZfxiInErrZ/n/RrPK+nlyjlWd8gdaPTFyGQj9F+QZTZ
-         bx40JwbpeCLC+H3cgExC/sPwKXovhL8YnoRNJt7xDd6ojBRcwO0/wDmFDVbhyw+/cOaH
-         M3M44tOMKmno5OAXQzKp7kQXtipH/beMmtt74m0p7auUh2hi4U6Z5/CM7aN2rI2u7IgW
-         1W3UbJUmCQWNUO4om39hB3G9dEzpUDk+Ldsfx1CWpWMjJc/onZ2KoMVUyqUspvtO3FIY
-         0D8A==
-X-Gm-Message-State: AOAM531jWwMxteCUS8VrjVAlr0KPrZdJfknCS+LDdmfXMbqfX2vq9SM4
-        s8wRxuazTfh/kf0Mx20CXTsgKi79l2yx7Re4ZA8hxA==
-X-Google-Smtp-Source: ABdhPJxMcqpB7sT6+TEBLZlfW/zH2N29UinV40wClq1lYF1N0TvyDt6Cn320FsJLqNSwctbV9rFqwmrYd7zmA3a7PEk=
-X-Received: by 2002:a65:6499:: with SMTP id e25mr91668pgv.146.1634743422326;
- Wed, 20 Oct 2021 08:23:42 -0700 (PDT)
+        id S230383AbhJTP0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:26:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhJTP0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:26:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D6C561359;
+        Wed, 20 Oct 2021 15:24:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634743459;
+        bh=AOrEQwh34odxrVdGxLcZw5Q/dM4ELKaoGa+EpDOkYOE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jL2FLachzm67lr6dxj9OWerbp5bmJW7FMsLMsn7pXERMPhOVjqkuzcQjKxcESGGVH
+         LVRf5YlF7F2M5gYXGVYqWZnli9Bf3XI0snkhWDwKN6Mbuui2g4tG6Q9Df6ZDyKZhTf
+         o2iISKn4ziIe5MT/I9JjUcUFRjQJxyWI4coVzoTM4gqHKgNamzSoI5ulqmFrb8TIH7
+         qmm0jRbEDLi/LQr5IydPIvaZhFg4ohSiWvnpvvUZYRu3SiqPBBuJ3WVyNOYE2eBLHV
+         QXXI+p+Gg44PtCIoS8k3YZY65kRNTucmakRtjCK9/MkDHTwXpv7RZXUyYu1EabFw5b
+         GXuZlfEHCvMFw==
+Date:   Wed, 20 Oct 2021 20:54:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        guennadi.liakhovetski@linux.intel.com, rander.wang@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soundwire: bus: stop dereferencing invalid slave pointer
+Message-ID: <YXA0nyvwuC+qWu+C@matsya>
+References: <20211012101521.32087-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-References: <20211020013153.4106001-1-kaleshsingh@google.com>
- <20211020013153.4106001-3-kaleshsingh@google.com> <20211019222756.1fde436b@gandalf.local.home>
- <CAC_TJvcZ4ndpQpsj4ANj9LpzSu6GfPSdxpVc0XShbi9u_bSUyw@mail.gmail.com> <20211020111301.0032a43d@gandalf.local.home>
-In-Reply-To: <20211020111301.0032a43d@gandalf.local.home>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Wed, 20 Oct 2021 08:23:31 -0700
-Message-ID: <CAC_TJve8pEHSvPAWecX9Lx04q7_bWd2izv=5FJLc=3vSKiDnZA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] tracing: Add division and multiplication support
- for hist triggers
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012101521.32087-1-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 8:13 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 20 Oct 2021 07:54:59 -0700
-> Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> > Is it worth adding something like this for the multiplication case as well?
->
-> No, multiplication is a pretty fast operation, and the added branches to
-> test would cause more overhead than what you would save. But, division is a
-> very slow operation, and I believe that even with the extra branches it
-> would still help.
->
-> If we do this, it should be a separate patch anyway, where we can actual do
-> measurements to see if there was an improvement, and revert if not.
+On 12-10-21, 11:15, Srinivas Kandagatla wrote:
+> Slave pointer is invalid after end of list iteration, using this
+> would result in below Memory abort.
 
-Sounds good. Thanks for the clarification Steve.
+Applied, thanks
 
-- Kalesh
-
->
-> -- Steve
+-- 
+~Vinod
