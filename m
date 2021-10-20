@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4C24347FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881734347FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhJTJfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:35:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229639AbhJTJfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:35:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62E5E61359;
-        Wed, 20 Oct 2021 09:33:32 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 10:33:29 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
-Message-ID: <YW/iaS1AhKqIIgN+@arm.com>
-References: <c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com>
- <YW5bjV128Qk1foIv@kernel.org>
- <YW6t5tBe/IjSYWn3@arm.com>
- <089478ad-3755-b085-d9aa-c68e9792895c@quicinc.com>
- <YW7p3ARYbpxmeLCF@arm.com>
- <8da41896-dc11-8246-54cf-1174f617ac39@quicinc.com>
- <YW8PZ0Q5UeRH4W4R@kernel.org>
- <YW/Hb4sVWGOIxzUk@kernel.org>
- <YW/Q5kjvurcYVrow@arm.com>
- <YW/WdAnUP32Dhclh@kernel.org>
+        id S229771AbhJTJgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhJTJgS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:36:18 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A352C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:34:04 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id s136so18757817pgs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J16SUnC8hd6uyoXWMtzPvcEXzxrgy6IJEv77BM4lW4Y=;
+        b=K0pSwbK2aNy2xVGgfyfP4UuZqZ2zoftn8vcZgJfXKSQ2bLpHInrKVF5qrLII3wcU35
+         3jDrf7mGhjqlpnfxChI0rG2Ny9PQHgI3NycLJ9BcIy2ZovrKfnay4BDUKsXimkxoQHBT
+         ehU7dAsMqj18ztVlAprlQiUdR8U1HMz4XBF5mI8IEuLLlUZSIoRG4qhhJtEIohxYq/0K
+         006EYwCb56Ny8C/9CmNQimL6UkReDfTUM6y7T6PQRZZyFj3yWvGDO7X2nQ3vMDkmtIHG
+         itpnCNYfRFUnGcDPYVDP8cJvqukUWxiWWgf0l2cqqX7m/9okKGAdThlc1ebyEAIxcNaH
+         KgGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J16SUnC8hd6uyoXWMtzPvcEXzxrgy6IJEv77BM4lW4Y=;
+        b=aEhYGDDBkiWS/5IfqZbjGgmXG1gVQah6QIf0T89oz0myckV7ML3C/qkc6b24VmSS84
+         CxlZweW0xTYk2MsunseA9WS+PmkhIkmGOBRBlRVxU9KNSrchejirNwqttdvmLRI71IM5
+         4R0yLB5AXQ79KjB8R/3NvPZmEWk0klfEtAIfVg4LfwPpM7nXbK+e5Bp71vE2DOTPaXq+
+         2qm9sSS90TOfhocAkpLA8+MBv6pRjRc9cODKpaVXcj6FemNbVJKRSL01c/RJka/ezXCs
+         kGJ1WaTQkmlaH95hWVHZ8+KuoUrqRTkSTyKhaSkd6MG8z+qgAIlbWumsmiw7OdFpDY6T
+         q7FA==
+X-Gm-Message-State: AOAM531mAZS+pMSsnnzvS2UvmSHUQWhRXqEIf7cMLl2/mst6ewhlAnbZ
+        XdZIXX4oc66jmGOEStYXvRqUzP9gijI=
+X-Google-Smtp-Source: ABdhPJyQzWNbdfJKQxtDT0gNAM513SFShTRXVmmaucqq2i/nhDaPb8jgFel7weL1pfnNR1CbfA1KgQ==
+X-Received: by 2002:a63:6f0e:: with SMTP id k14mr24182083pgc.351.1634722443688;
+        Wed, 20 Oct 2021 02:34:03 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id oc8sm1974513pjb.15.2021.10.20.02.34.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 02:34:03 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ran.jianping@zte.com.cn
+To:     linux-kernel@vger.kernel.org
+Cc:     ran.jianping@zte.com.cn, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH bus] bus: remove duplicate include in bt1-apb.c
+Date:   Wed, 20 Oct 2021 09:33:57 +0000
+Message-Id: <20211020093357.1039575-1-ran.jianping@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW/WdAnUP32Dhclh@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:42:28AM +0300, Mike Rapoport wrote:
-> On Wed, Oct 20, 2021 at 09:18:46AM +0100, Catalin Marinas wrote:
-> > On Wed, Oct 20, 2021 at 10:38:23AM +0300, Mike Rapoport wrote:
-> > > On Tue, Oct 19, 2021 at 09:33:11PM +0300, Mike Rapoport wrote:
-> > > > On Tue, Oct 19, 2021 at 01:59:22PM -0400, Qian Cai wrote:
-> > > > > [	0.000000][	T0] Booting Linux on physical CPU 0x0000000000 [0x503f0002]
-> > > > > [	0.000000][	T0] Linux version 5.15.0-rc6-next-20211019+ (root@admin5) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #104 SMP Tue Oct 19 17:36:17 UTC 2021
-> > > > > [	0.000000][	T0] earlycon: pl11 at MMIO32 0x0000000012600000 (options '')
-> > > > > [	0.000000][	T0] printk: bootconsole [pl11] enabled
-> > > > > [	0.000000][	T0] efi: Getting UEFI parameters from /chosen in DT:
-> > > > > [	0.000000][	T0] efi:   System Table     	: 0x0000009ff7de0018
-> > > > > [	0.000000][	T0] efi:   MemMap Address   	: 0x0000009fe6dae018
-> > > > > [	0.000000][	T0] efi:   MemMap Size      	: 0x0000000000000600
-> > > > > [	0.000000][	T0] efi:   MemMap Desc. Size	: 0x0000000000000030
-> > > > > [	0.000000][	T0] efi:   MemMap Desc. Version : 0x0000000000000001
-> > > > > [	0.000000][	T0] efi: EFI v2.70 by American Megatrends
-> > > > > [	0.000000][	T0] efi: ACPI 2.0=0x9ff5b40000 SMBIOS 3.0=0x9ff686fd98 ESRT=0x9ff1d18298 MEMRESERVE=0x9fe6dacd98  
-> > > > > [	0.000000][	T0] efi: Processing EFI memory map:
-> > > > > [	0.000000][	T0] efi:   0x000090000000-0x000091ffffff [Conventional|   |  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-> > > > > [	0.000000][	T0] efi:   0x000092000000-0x0000928fffff [Runtime Data|RUN|  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-> > > > > [	0.000000][	T0] ------------[ cut here ]------------
-> > > > > [	0.000000][	T0] kernel BUG at mm/kmemleak.c:1140!
-> > > > > [	0.000000][	T0] Internal error: Oops - BUG: 0 [#1] SMP
-> > > > > 
-> > > > > I did not quite figure out where this BUG() was triggered and I did not
-> > > > 
-> > > > This is from here:
-> > > > arch/arm64/include/asm/memory.h:
-> > > > 
-> > > > #define PHYS_OFFSET         ({ VM_BUG_ON(memstart_addr & 1); memstart_addr; })
-> > > > 
-> > > > kmemleak_free_part_phys() does __va() which uses PHYS_OFFSET and all this
-> > > > happens before memstart_addr is set.
-> > > > 
-> > > > I'll try to see how this can be untangled...
-> > >  
-> > > This late in the cycle I can only think of reverting kmemleak wavier from
-> > > memblock_mark_nomap() and putting it in
-> > > early_init_dt_alloc_reserved_memory_arch() being the only user setting
-> > > MEMBLOCK_NOMAP to an allocated chunk rather than marking NOMAP "unusable"
-> > > memory reported by firmware.
-> > 
-> > It makes sense, there aren't many places or nomap is called.
-> > 
-> > I think arch_reserve_mem_area() called from acpi_table_upgrade() also
-> > follows a memblock allocation. But I'd call kmemleak in
-> > acpi_table_upgrade() directly rather than in the arch back-end.
-> 
-> Hmm, not sure this is correct for x86. I don't see why can't it track the
-> memory allocated in acpi_table_upgrade().
+From: Ran Jianping <ran.jianping@zte.com.cn>
 
-Kmemleak still tracks it after an ignore but it won't be scanned. I
-don't think this memory contains pointers to virtual addresses.
+'linux/clk.h' included in 'drivers/bus/bt1-apb.c'
+ is duplicated.It is also included on the 25 line.
 
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ran Jianping <ran.jianping@zte.com.cn>
+---
+ drivers/bus/bt1-apb.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/bus/bt1-apb.c b/drivers/bus/bt1-apb.c
+index b25ff941e7c7..74b1b712ef3a 100644
+--- a/drivers/bus/bt1-apb.c
++++ b/drivers/bus/bt1-apb.c
+@@ -22,7 +22,6 @@
+ #include <linux/clk.h>
+ #include <linux/reset.h>
+ #include <linux/time64.h>
+-#include <linux/clk.h>
+ #include <linux/sysfs.h>
+ 
+ #define APB_EHB_ISR			0x00
 -- 
-Catalin
+2.25.1
+
