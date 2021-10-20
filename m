@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6508543512D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E239435149
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhJTR2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:28:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230031AbhJTR2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:28:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27322610EA;
-        Wed, 20 Oct 2021 17:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634750746;
-        bh=Tp2E/SX36NEBnGlGkwTmUzxzFZ6Uw/WEGsaN9+HAuBY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=plPO8L2LITVZQkN/oAUYv25QG0Hm30zDbRNUnPDNuOhdNG4JcRVssV3VkyZSJcHK5
-         FQdJlW+BB5k0v+fArmAbvIUchSjcQXk4tGqbY5fh/e1hC0MXXAoCDWBlUNoZ9KtjbS
-         zKcFffIlqyPEXt058iTZSJVvu57feSj97cq+oDTvZwoexundV3A6GMogD8wRGIJ8VT
-         T0t6aNUCwq2HjYm8Xqyany40G0XhoVS0bHi03k04iI28empwS0eqnnIAVRR3c86wFS
-         TbriS98/uOySj6bQzQccf/j1y8PHr007uPT7PJpV0yBBEzeUDV7K5D2mA4ugpdJdIJ
-         jxP7MO67pYukA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 08EFF410A1; Wed, 20 Oct 2021 14:25:44 -0300 (-03)
-Date:   Wed, 20 Oct 2021 14:25:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     peterz@infradead.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, mingo@redhat.com, irogers@google.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        James Clark <James.Clark@arm.com>
-Subject: Re: [PATCH 0/2] perf jevents: Enable build warnings
-Message-ID: <YXBRF0vM8sEwherG@kernel.org>
-References: <1634316507-227751-1-git-send-email-john.garry@huawei.com>
- <YXAoOgRVfkzr5vcS@kernel.org>
- <744e6d05-eaec-49d9-1e3d-2f96d4e01e1a@huawei.com>
+        id S230391AbhJTRbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhJTRbY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:31:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6780AC06161C;
+        Wed, 20 Oct 2021 10:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2j0OkvRwF5BVDtZ9M6bIK+b+BCFxIxg1XmoiRh7ewBA=; b=ua/XQ9oU8XbbXQIXxSprskj1uQ
+        gyN/V4q80GLHf6RXs3osc2ii3oplGC5gcj7/CNFCrbVc65tKzQ7lC5vRwnxBlVgfxZBC2Q7adlTqp
+        9k/YlzgpjoR2obS6HeHNz2F4osZIBhx3hlEo7g7aKMcD2q5GChO6O0z9hVsR+1LdEe5G+HIkUjCMZ
+        5d9twredgZVF2pwB5Rj9hprVgBUkTaCd8ZzMFSZENLmWD4UXBO8Nk0uVYqbpHq/Ro+cQLirvUQ9Ev
+        /43jtLS1vXu0/ZVbxwsTup/iYlYCVK+QMi6+sN9zmQL2boAttS69mNgq3bfiiP8v1me3ZTv8mIG+r
+        CRt2nnLQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdFM6-00Cj4B-04; Wed, 20 Oct 2021 17:26:49 +0000
+Date:   Wed, 20 Oct 2021 18:26:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXBRPSjPUYnoQU+M@casper.infradead.org>
+References: <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org>
+ <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW28vaoW7qNeX3GP@casper.infradead.org>
+ <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <744e6d05-eaec-49d9-1e3d-2f96d4e01e1a@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 20, 2021 at 03:41:01PM +0100, John Garry escreveu:
-> On 20/10/2021 15:31, Arnaldo Carvalho de Melo wrote:
-> > Em Sat, Oct 16, 2021 at 12:48:25AM +0800, John Garry escreveu:
-> > > Currently jevents builds without any complier warning flags enabled. So
-> > > use newly-defined HOSTCFLAGS, which comes from EXTRA_WARNINGS. I am not
-> > > 100% confident that this is the best way, but sending out for review.
-> > > 
-> > > Baseline is be8ecc57f180 (HEAD, acme/perf/core) perf srcline: Use
-> > > long-running addr2line per DSO
-> > 
-> > Thanks, applied.
- 
-> I was going to send a v2, with changes according to James Clark's review  -
-> that was to add -Wall & -Werror, but they caused a problem on your perf/core
-> branch as they triggered the warn fixed in commit b94729919db2.
- 
-> I suppose the best thing now is to send a patch on top once perf/core
-> contains that commit. Let me know otherwise.
+On Wed, Oct 20, 2021 at 09:50:58AM +0200, David Hildenbrand wrote:
+> For the records: I was happy to see the slab refactoring, although I
+> raised some points regarding how to access properties that belong into
+> the "struct page".
 
-You can send a v2, as:
+I thought the slab discussion was quite productive.  Unfortunately,
+none of our six (!) slab maintainers had anything to say about it.  So I
+think it's pointless to proceed unless one of them weighs in and says
+"I'd be interested in merging something along these lines once these
+problems are addressed".
 
-  29     8.60 debian:experimental-x-mipsel  : FAIL gcc version 11.2.0 (Debian 11.2.0-9)
-    util/intel-pt.c: In function 'intel_pt_synth_pebs_sample':
-    util/intel-pt.c:2146:33: error: passing argument 1 of 'find_first_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     2146 |         for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
-    /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:37:38: note: in definition of macro 'for_each_set_bit'
-       37 |         for ((bit) = find_first_bit((addr), (size));            \
-          |                                      ^~~~
-    In file included from /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops.h:21,
-                     from /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:34,
-                     from /git/perf-5.15.0-rc4/tools/include/linux/bitmap.h:6,
-                     from util/header.h:10,
-                     from util/session.h:7,
-                     from util/intel-pt.c:16:
-    /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops/find.h:109:51: note: expected 'const long unsigned int *' but argument is of type 'const uint64_t *' {aka 'const long long unsigned int *'}
+> As raised elsewhere, I'd also be more comfortable
+> seeing small incremental changes/cleanups that are consistent even
+> without having decided on an ultimate end-goal -- this includes folios.
+> I'd be happy to see file-backed THP gaining their own, dedicated type
+> first ("struct $whatever"), before generalizing it to folios.
 
- Adrian, this is on:
+I am genuinely confused by this.
 
- commit 803a3c9233990e1adac8ea2421e3759c2d380cf8
-Author: Adrian Hunter <adrian.hunter@intel.com>
-Date:   Tue Sep 7 19:39:03 2021 +0300
+Folios are non-tail pages.  That's all.  There's no "ultimate end-goal".
+It's just a new type that lets the compiler (and humans!) know that this
+isn't a tail page.
 
-    perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+Some people want to take this further, and split off special types from
+struct page.  I think that's a great idea.  I'm even willing to help.
+But there are all kinds of places in the kernel where we handle generic
+pages of almost any type, and so regardless of how much we end up
+splitting off from struct page, we're still going to want the concept
+of folio.
 
-    Originally, software only supported redirecting at most one PEBS event to
-    Intel PT (PEBS-via-PT) because it was not able to differentiate one event
-    from another. To overcome that, add support for the
-    PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
+I get that in some parts of the MM, we can just assume that any struct
+page is a non-tail page.  But that's not the case in the filemap APIs;
+they're pretty much all defined to return the precise page which contains
+the specific byte.  I think that's a mistake, and I'm working to fix it.
+But until it is all fixed [1], having a type which says "this is not a
+tail page" is, frankly, essential.
 
-    Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-    Reviewed-by: Andi Kleen <ak@linux.intel.com>
-
-
-That is still just on tmp.perf/core, so we can fix it, probably its just
-making that uint64_t into a unsigned long, will check later if you don't
-beat me to it.
-
-- Arnaldo
+[1] which is a gargantuan job because I'm not just dealing with
+mm/filemap.c, but also with ~90 filesystems and things sufficiently like
+filesystems to have an address_space_operations of their own, including
+graphics drivers.
