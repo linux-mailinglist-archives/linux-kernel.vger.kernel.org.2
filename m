@@ -2,171 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809D0435024
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FD3435027
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhJTQ3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:29:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229952AbhJTQ3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:29:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6A8E60FDA;
-        Wed, 20 Oct 2021 16:27:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634747243;
-        bh=YBeL0lPAbkXQhqQ3xEo0ywMPIIlxzOAvkCGj1zR1GzM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Izrt9YlLLg+90sOgux3lBuAjF8KS289ei33d/O5VyLAePpkOf/fPRiF8tHK146vZA
-         I2zqegVF1BFcFt6pv3r4YhfoSW+Fi9OPs+3lHisba/lX8pQlaPmlLSwc6OqDm9CdBb
-         Vqvw/22YspwiMMu96zzF6e0nYMN94kYfXlW0A8D53nw2mtBaYLukD7fFtdyDis0nKB
-         qRgL8wkZql9U1C0s2KnyE2stQxx85Is1WOrA5TdcrCn7TP60qhrJSfHrsguaONIcjN
-         LBrol0RzsrjBJ69eHoC4p/cXSsGY9jdHRseucMB4aORSjldVMX7UpA6m4i4vH31BPc
-         FvBNAMfNHsu2Q==
-Message-ID: <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
-Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
-From:   Jeff Layton <jlayton@kernel.org>
-To:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Patrick Donnelly <pdonnell@redhat.com>
-Date:   Wed, 20 Oct 2021 12:27:21 -0400
-In-Reply-To: <20211020143708.14728-1-lhenriques@suse.de>
-References: <20211020143708.14728-1-lhenriques@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        id S230192AbhJTQbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:31:47 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:41483 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhJTQbn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 12:31:43 -0400
+Received: by mail-oi1-f174.google.com with SMTP id bk18so1373359oib.8;
+        Wed, 20 Oct 2021 09:29:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SgZ2SGAw4NuGbgZRap5S1n26mVnUxowbhP1sRsZrx/0=;
+        b=fNCA4rRYb3hDo4vDLpwNQ4bA0IZDGnyRhmPSH1/Fa2PXyF06Xl+he7YxiXSnxXRDia
+         JX4UFA5D8EMBSyrYJdtDLlh2fJrMX00ML3vF17os9/NxI+mAwtD7PFTjxw6opmHm7l9W
+         CaADkM99Sy+c05wv7j2YM7iQdMK3YoK0U8txN+BWXLLb7TxoNp5zWTHBxq+HHTx8AWtb
+         6BE83piOofNzbEPIcLh8wwk8C71aKU842A6UZdTcMcZVJ1VgnUyVxwy8sCpkW23N+pzZ
+         R+0LFyAgg0Aubi3Urexot8wEt1h8Uz+/eApMSk2i5/ELEMt7HIUf4aP4FGL++vabyqO2
+         8OZg==
+X-Gm-Message-State: AOAM531ToLtplpoeZFKAXAwxzqeKGU4JAMihogReQfV23b/t30MxwCSC
+        glxdKMz2+gzTS1kK4g/YmQ==
+X-Google-Smtp-Source: ABdhPJyoI3KGHPdhMchrMdoXPRlPbbT6Lb2uOlhJs1AYwd3SvLDfFlKnL2oVsvu2bSt/UB40dX9ENA==
+X-Received: by 2002:aca:3bd7:: with SMTP id i206mr71470oia.166.1634747368281;
+        Wed, 20 Oct 2021 09:29:28 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id z83sm531301oiz.41.2021.10.20.09.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 09:29:26 -0700 (PDT)
+Received: (nullmailer pid 2474290 invoked by uid 1000);
+        Wed, 20 Oct 2021 16:29:25 -0000
+Date:   Wed, 20 Oct 2021 11:29:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nathan Lynch <nathanl@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, frowand.list@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] of: kobj: make of_node_is_(initialized|attached)
+ parameters const
+Message-ID: <YXBD5fM43e2PLY2E@robh.at.kernel.org>
+References: <20211014173023.2117799-1-nathanl@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014173023.2117799-1-nathanl@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
-> This counter will keep track of the number of remote object copies done on
-> copy_file_range syscalls.  This counter will be filesystem per-client, and
-> can be accessed from the client debugfs directory.
+On Thu, 14 Oct 2021 12:30:23 -0500, Nathan Lynch wrote:
+> of_node_is_initialized() and of_node_is_attached() don't modify the node
+> objects passed to them, so those parameters should be const.
 > 
-> Cc: Patrick Donnelly <pdonnell@redhat.com>
-> Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
 > ---
-> This is an RFC to reply to Patrick's request in [0].  Note that I'm not
-> 100% sure about the usefulness of this patch, or if this is the best way
-> to provide the functionality Patrick requested.  Anyway, this is just to
-> get some feedback, hence the RFC.
-> 
-> Cheers,
-> --
-> Luís
-> 
-> [0] https://github.com/ceph/ceph/pull/42720
+>  drivers/of/kobj.c       | 4 ++--
+>  drivers/of/of_private.h | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
 > 
 
-I think this would be better integrated into the stats infrastructure.
-
-Maybe you could add a new set of "copy" stats to struct
-ceph_client_metric that tracks the total copy operations done, their
-size and latency (similar to read and write ops)?
-
-
->  fs/ceph/debugfs.c | 17 ++++++++++++++++-
->  fs/ceph/file.c    |  1 +
->  fs/ceph/super.c   |  1 +
->  fs/ceph/super.h   |  2 ++
->  4 files changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-> index 38b78b45811f..09f4c04ade0e 100644
-> --- a/fs/ceph/debugfs.c
-> +++ b/fs/ceph/debugfs.c
-> @@ -346,13 +346,22 @@ static int status_show(struct seq_file *s, void *p)
->  	return 0;
->  }
->  
-> +static int copyfrom_show(struct seq_file *s, void *p)
-> +{
-> +	struct ceph_fs_client *fsc = s->private;
-> +
-> +	seq_printf(s, "%llu\n", atomic64_read(&fsc->copyfrom_count));
-> +
-> +	return 0;
-> +}
-> +
->  DEFINE_SHOW_ATTRIBUTE(mdsmap);
->  DEFINE_SHOW_ATTRIBUTE(mdsc);
->  DEFINE_SHOW_ATTRIBUTE(caps);
->  DEFINE_SHOW_ATTRIBUTE(mds_sessions);
->  DEFINE_SHOW_ATTRIBUTE(metric);
->  DEFINE_SHOW_ATTRIBUTE(status);
-> -
-> +DEFINE_SHOW_ATTRIBUTE(copyfrom);
->  
->  /*
->   * debugfs
-> @@ -387,6 +396,7 @@ void ceph_fs_debugfs_cleanup(struct ceph_fs_client *fsc)
->  	debugfs_remove(fsc->debugfs_caps);
->  	debugfs_remove(fsc->debugfs_metric);
->  	debugfs_remove(fsc->debugfs_mdsc);
-> +	debugfs_remove(fsc->debugfs_copyfrom);
->  }
->  
->  void ceph_fs_debugfs_init(struct ceph_fs_client *fsc)
-> @@ -443,6 +453,11 @@ void ceph_fs_debugfs_init(struct ceph_fs_client *fsc)
->  						  fsc->client->debugfs_dir,
->  						  fsc,
->  						  &status_fops);
-> +	fsc->debugfs_copyfrom = debugfs_create_file("copyfrom",
-> +						    0400,
-> +						    fsc->client->debugfs_dir,
-> +						    fsc,
-> +						    &copyfrom_fops);
->  }
->  
->  
-> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-> index d16fd2d5fd42..bbeb437ca4bf 100644
-> --- a/fs/ceph/file.c
-> +++ b/fs/ceph/file.c
-> @@ -2254,6 +2254,7 @@ static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64 *src_off
->  				bytes = ret;
->  			goto out;
->  		}
-> +		atomic64_inc(&fsc->copyfrom_count);
->  		len -= object_size;
->  		bytes += object_size;
->  		*src_off += object_size;
-> diff --git a/fs/ceph/super.c b/fs/ceph/super.c
-> index 9b1b7f4cfdd4..4972554185e3 100644
-> --- a/fs/ceph/super.c
-> +++ b/fs/ceph/super.c
-> @@ -670,6 +670,7 @@ static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
->  	fsc->have_copy_from2 = true;
->  
->  	atomic_long_set(&fsc->writeback_count, 0);
-> +	atomic64_set(&fsc->copyfrom_count, 0);
->  
->  	err = -ENOMEM;
->  	/*
-> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-> index a40eb14c282a..65846beca418 100644
-> --- a/fs/ceph/super.h
-> +++ b/fs/ceph/super.h
-> @@ -119,6 +119,7 @@ struct ceph_fs_client {
->  	struct ceph_mds_client *mdsc;
->  
->  	atomic_long_t writeback_count;
-> +	atomic64_t copyfrom_count;
->  
->  	struct workqueue_struct *inode_wq;
->  	struct workqueue_struct *cap_wq;
-> @@ -131,6 +132,7 @@ struct ceph_fs_client {
->  	struct dentry *debugfs_metric;
->  	struct dentry *debugfs_status;
->  	struct dentry *debugfs_mds_sessions;
-> +	struct dentry *debugfs_copyfrom;
->  #endif
->  
->  #ifdef CONFIG_CEPH_FSCACHE
-
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Applied, thanks!
