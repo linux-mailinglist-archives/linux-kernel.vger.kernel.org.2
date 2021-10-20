@@ -2,138 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB4A43553F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94420435546
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhJTV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:28:55 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:46566 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhJTV2v (ORCPT
+        id S230434AbhJTVcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:32:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229695AbhJTVco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:28:51 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:60824)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdJ6Z-00FfLB-Mm; Wed, 20 Oct 2021 15:26:35 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:58166 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdJ6X-002MC1-L9; Wed, 20 Oct 2021 15:26:35 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-13-ebiederm@xmission.com>
-        <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
-Date:   Wed, 20 Oct 2021 16:25:46 -0500
-In-Reply-To: <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
-        (Linus Torvalds's message of "Wed, 20 Oct 2021 10:05:21 -1000")
-Message-ID: <87ee8fjsmd.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 20 Oct 2021 17:32:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634765429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RV1rIRTbOsjZSGuHadXECmZG9Ht5wqarQfGNXPGidus=;
+        b=PeSrrZD4SVDnDVTm2L61a4Bkz5eB7ML/1pFIHgASxRoWgtOshChTe18w5W7uhwIM8TFkdL
+        1vuuBPz+CR0iYIImqXztikuVCUb2k33sF68omxKNjbpbbxzV9b+iknyoCn8gB5TzMYtEFv
+        gEjnb5lZWKCQDG4csJmNTTSppiw4W4k=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-122-LA015_R7MpWvSK7Fnq8xGQ-1; Wed, 20 Oct 2021 17:30:27 -0400
+X-MC-Unique: LA015_R7MpWvSK7Fnq8xGQ-1
+Received: by mail-qk1-f198.google.com with SMTP id j17-20020a05620a0a5100b0045f8ed4f72fso3149945qka.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 14:30:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=RV1rIRTbOsjZSGuHadXECmZG9Ht5wqarQfGNXPGidus=;
+        b=an3zhXdPjTnV01+nYHtTdDSYGhzoyoET9fyJv9bXy7wxZ6efOXZ9aKDhnizruyw8x3
+         Ln237KjWAd0ty4p/lAnw5v79J9fO3jPXGPGP2rCHu97KaoRtSp2WC4/rHl7dVI7wAGGQ
+         b7ebXg3/oU7Pu6FOrvVxF3M0tukig6hrwsXJ7ax/TUElDyqytXeOyXvY02XuhtRSETNx
+         8klT6YRrHF9DZ7mQnRxAzC7rocy07loS5RMHczc6C0BKDxTf1oUXnumCUcl0YwCN+9rS
+         39qg6BaKikNKzkQRqSFVxM680CpHJ2m1+YU1kgk/l4n6Zmv86q0ppN0g+y+Sesi1mt5M
+         nebg==
+X-Gm-Message-State: AOAM532/8c9RZo9eEWWaJdlc4+BW/fWhbVO8y/tJTylqveYtlhkfwbnj
+        S9NtpDaNetKevrngdBEdjqWDDhtL5q54FOF1Ri6MteDnMarSXG2sf2azs5sW28MN5y2MBLip86b
+        StpdTgnZpupa+BEsc336PFx7P
+X-Received: by 2002:a05:622a:1441:: with SMTP id v1mr1867634qtx.45.1634765427157;
+        Wed, 20 Oct 2021 14:30:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxttYgyOhoBD/hfsiaamAqXyKnPdFWlhkE27NB7JaYHoHjqQJXVxg+Z5QWhx0ZQmTuKEZOxbQ==
+X-Received: by 2002:a05:622a:1441:: with SMTP id v1mr1867618qtx.45.1634765426912;
+        Wed, 20 Oct 2021 14:30:26 -0700 (PDT)
+Received: from [192.168.8.138] (pool-96-230-249-157.bstnma.fios.verizon.net. [96.230.249.157])
+        by smtp.gmail.com with ESMTPSA id g1sm1534825qkd.89.2021.10.20.14.30.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 14:30:26 -0700 (PDT)
+Message-ID: <44f678228c1654af51f2781304b96bb1885b14f2.camel@redhat.com>
+Subject: Re: [PATCH v3 1/5] drm/i915: Add support for panels with VESA
+ backlights with PWM enable/disable
+From:   Lyude Paul <lyude@redhat.com>
+To:     Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, stable@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <seanpaul@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 20 Oct 2021 17:30:25 -0400
+In-Reply-To: <YW8J8Nc7UJnISaVg@intel.com>
+References: <20211006024018.320394-1-lyude@redhat.com>
+         <20211006024018.320394-2-lyude@redhat.com> <YW8J8Nc7UJnISaVg@intel.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdJ6X-002MC1-L9;;;mid=<87ee8fjsmd.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/oJDrU/gVCaEKr9KS4ffLmwCs3xVr7FP4=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1481 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 13 (0.9%), b_tie_ro: 11 (0.7%), parse: 1.45
-        (0.1%), extract_message_metadata: 21 (1.4%), get_uri_detail_list: 2.5
-        (0.2%), tests_pri_-1000: 30 (2.1%), tests_pri_-950: 1.54 (0.1%),
-        tests_pri_-900: 1.16 (0.1%), tests_pri_-90: 115 (7.7%), check_bayes:
-        112 (7.6%), b_tokenize: 8 (0.5%), b_tok_get_all: 8 (0.6%),
-        b_comp_prob: 2.8 (0.2%), b_tok_touch_all: 90 (6.1%), b_finish: 1.18
-        (0.1%), tests_pri_0: 1275 (86.1%), check_dkim_signature: 0.81 (0.1%),
-        check_dkim_adsp: 3.4 (0.2%), poll_dns_idle: 0.88 (0.1%), tests_pri_10:
-        4.2 (0.3%), tests_pri_500: 14 (1.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 13/20] signal: Implement force_fatal_sig
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Tue, 2021-10-19 at 21:09 +0300, Ville Syrjälä wrote:
+> On Tue, Oct 05, 2021 at 10:40:14PM -0400, Lyude Paul wrote:
+> > This simply adds proper support for panel backlights that can be
+> > controlled
+> > via VESA's backlight control protocol, but which also require that we
+> > enable and disable the backlight via PWM instead of via the DPCD
+> > interface.
+> > We also enable this by default, in order to fix some people's backlights
+> > that were broken by not having this enabled.
+> > 
+> > For reference, backlights that require this and use VESA's backlight
+> > interface tend to be laptops with hybrid GPUs, but this very well may
+> > change in the future.
+> > 
+> > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > Link: https://gitlab.freedesktop.org/drm/intel/-/issues/3680
+> > Fixes: fe7d52bccab6 ("drm/i915/dp: Don't use DPCD backlights that need PWM
+> > enable/disable")
+> > Cc: <stable@vger.kernel.org> # v5.12+
+> > ---
+> >  .../drm/i915/display/intel_dp_aux_backlight.c | 24 ++++++++++++++-----
+> >  1 file changed, 18 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > index 569d17b4d00f..594fdc7453ca 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > @@ -293,6 +293,10 @@ intel_dp_aux_vesa_enable_backlight(const struct
+> > intel_crtc_state *crtc_state,
+> >         struct intel_panel *panel = &connector->panel;
+> >         struct intel_dp *intel_dp = enc_to_intel_dp(connector->encoder);
+> >  
+> > +       if (!panel->backlight.edp.vesa.info.aux_enable)
+> > +               panel->backlight.pwm_funcs->enable(crtc_state, conn_state,
+> > +                                                  panel-
+> > >backlight.pwm_level_max);
+> 
+> What't the story here with the non-inverted max vs. pontetially inverted
+> 0 in the counterpart?
 
-> On Wed, Oct 20, 2021 at 7:45 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> Add a simple helper force_fatal_sig that causes a signal to be
->> delivered to a process as if the signal handler was set to SIG_DFL.
->>
->> Reimplement force_sigsegv based upon this new helper.
->
-> Can you just make the old force_sigsegv() go away? The odd special
-> casing of SIGSEGV was odd to begin with, I think everybody really just
-> wanted this new "force_fatal_sig()" and allow any signal - not making
-> SIGSEGV special.
+OH! Nice catch,  I wonder if this explains some of the weirdness with samus-
+fi-bdw…
 
-There remains the original case that is signal_set up_done
-deals with generically.  When sending a signal fails the code
-attempts send SIGSEGV and if sending SIGSEGV fails the signal
-delivery code terminates the process with SIGSEGV.
+Anyway-unfortunately I don't know the precise answer to if we're supposed to
+be inverting the panel backlight level or not, so I'd say we should probably
+just go with whatever the Intel HDR AUX interface is currently doing - which
+is inverting the panel PWM level when needed. Will fix this in a respin
+shortly
 
-To keep dependencies to a minimum and to allow for the possibility of
-backports I used "force_sigsegv(SIGSEGV)" instead of
-"force_fatal_sig(SIGSEGV)".  I will be happy to add an additional
-patch that converts all of those case to force_fatal_sig.
+> 
+> > +
+> >         drm_edp_backlight_enable(&intel_dp->aux, &panel-
+> > >backlight.edp.vesa.info, level);
+> >  }
+> >  
+> > @@ -304,6 +308,10 @@ static void intel_dp_aux_vesa_disable_backlight(const
+> > struct drm_connector_state
+> >         struct intel_dp *intel_dp = enc_to_intel_dp(connector->encoder);
+> >  
+> >         drm_edp_backlight_disable(&intel_dp->aux, &panel-
+> > >backlight.edp.vesa.info);
+> > +
+> > +       if (!panel->backlight.edp.vesa.info.aux_enable)
+> > +               panel->backlight.pwm_funcs->disable(old_conn_state,
+> > +                                                  
+> > intel_backlight_invert_pwm_level(connector, 0));
+> >  }
+> >  
+> >  static int intel_dp_aux_vesa_setup_backlight(struct intel_connector
+> > *connector, enum pipe pipe)
+> > @@ -321,6 +329,15 @@ static int intel_dp_aux_vesa_setup_backlight(struct
+> > intel_connector *connector,
+> >         if (ret < 0)
+> >                 return ret;
+> >  
+> > +       if (!panel->backlight.edp.vesa.info.aux_enable) {
+> > +               ret = panel->backlight.pwm_funcs->setup(connector, pipe);
+> > +               if (ret < 0) {
+> > +                       drm_err(&i915->drm,
+> > +                               "Failed to setup PWM backlight controls
+> > for eDP backlight: %d\n",
+> > +                               ret);
+> > +                       return ret;
+> > +               }
+> > +       }
+> >         panel->backlight.max = panel->backlight.edp.vesa.info.max;
+> >         panel->backlight.min = 0;
+> >         if (current_mode == DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD) {
+> > @@ -340,12 +357,7 @@ intel_dp_aux_supports_vesa_backlight(struct
+> > intel_connector *connector)
+> >         struct intel_dp *intel_dp = intel_attached_dp(connector);
+> >         struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> >  
+> > -       /* TODO: We currently only support AUX only backlight
+> > configurations, not backlights which
+> > -        * require a mix of PWM and AUX controls to work. In the mean
+> > time, these machines typically
+> > -        * work just fine using normal PWM controls anyway.
+> > -        */
+> > -       if ((intel_dp->edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP) &&
+> > -           drm_edp_backlight_supported(intel_dp->edp_dpcd)) {
+> > +       if (drm_edp_backlight_supported(intel_dp->edp_dpcd)) {
+> >                 drm_dbg_kms(&i915->drm, "AUX Backlight Control
+> > Supported!\n");
+> >                 return true;
+> >         }
+> > -- 
+> > 2.31.1
+> 
 
-> Also, I think it should set SIGKILL in p->pending.signal or something
-> like that - because we want this to trigger fatal_signal_pending(),
-> don't we?
->
-> Right now fatal_signal_pending() is only true for SIGKILL, I think.
-
-In general when a fatal signal is delivered the function complete_signal
-individually delivers SIGKILL to the threads, making
-fatal_signal_pending true.
-
-For signals like SIGSYS that generate a coredump that is not currently
-true, but in the cases I looked at signal_pending() was enough to
-get the code to get_signal(), which dequeues the signals and starts
-processing them.
-
-I have a branch queued up for the next merge window that implements per
-signal_struct coredumps.  Assuming that does not trigger any user space
-regressions I can remove the coredump special case in complete_signal.
-That will in turn mean that force_siginfo_to_task does not need to
-change sa_handler, blocked or clear SIGNAL_UNKILLABLE, as all of the
-cases where that matters today will just wind up with complete_signal
-setting a per_thread SIGKILL.
-
-
-
-I keep playing with the idea of having fatal_signal_pending depend on a
-different flag than the per thread bit for SIGKILL in the per thread
-signal set.  That might make it clearer that complete_signal has started
-killing the process and it is a start of the killing the process that
-triggers fatal_signal_pending.
-
-So far the way fatal_signal_pending works hasn't really been a problem
-so I keep putting away ideas of cleaner implementations.
-
-Eric
-
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
