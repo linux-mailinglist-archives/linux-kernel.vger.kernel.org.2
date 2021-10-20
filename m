@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E0D4347CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25A14347D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhJTJWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:22:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52304 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229702AbhJTJWK (ORCPT
+        id S229911AbhJTJWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:22:49 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25173 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhJTJWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:22:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634721596;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OHr8I1ADCNyh3IkqXu+kSFGMzNh00bfIZFxOebGZQ0I=;
-        b=FtZJ3zLN1OSA49q8dV0he8svyEzuJ+vKXkCCooOmTZuyBg0HuApU/5/ottspFCVUVQkO5m
-        XMx52ujXoKjXzsex4OChSx5ZvUQp+WTZMJ3gS8rzew4fy1JGfdmLcLlnggtW2hLAm3/b75
-        cQGVRFBbQAfLrA/C9T1/D/cZbVNj3ZI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-I2GTK6rbMQar0Uf2RJ50uQ-1; Wed, 20 Oct 2021 05:19:54 -0400
-X-MC-Unique: I2GTK6rbMQar0Uf2RJ50uQ-1
-Received: by mail-wm1-f69.google.com with SMTP id a20-20020a1c9814000000b0032311c7fc54so1817868wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:19:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=OHr8I1ADCNyh3IkqXu+kSFGMzNh00bfIZFxOebGZQ0I=;
-        b=h3/o6SGgiGCCFc552rfWCfPIbTWGpYAu3QjeC+usd+eUG3/mzxi826Eswkiuh6IBgW
-         fFpABr/M6qLALr1RDNWrpYbXoZXv+dP5T4nX2jQc+gcjrJoiy0Lu6jV6YRt72bEt18kX
-         3mHwxGoxOeoIlTPa+ZJTltr1LQO9tH1jcA/M2nh44YqMQWTZ/ioxcSakMAk1zA4QCYEp
-         bJTNf6uyrTV6J9b3n7xbrRK442U4hJQbQX5y/zufQZFKkRkKLxmbcswxgNl0apzosh1/
-         AMTKa3ClGPqtiIQYivjBNQkVjFmX+MlmPDGZSfjMTnfoeI3awcGxmq4RxBwX8iQB2ORg
-         tW8w==
-X-Gm-Message-State: AOAM530rsx+llVTDgKh8AMxE4YQLF8maay+99xkkmJeVIbX9xBwkKMhF
-        +HYA35P0rm/Ry0E7AcV8F/0KFlrPyvdnjA227xWXrN/Pr8slUBXSumILp0jTx8BkiU+41WibGFl
-        e4KgTs7NnqVQfxKJnFeoduF+I
-X-Received: by 2002:a7b:c4c2:: with SMTP id g2mr6607226wmk.195.1634721593625;
-        Wed, 20 Oct 2021 02:19:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyiiYUod6TjDrGOf5rSFm4jDSLEbRAQsvLs/anVGCjrige706yEvHKXxis2/c7BWvlw2Ap7NQ==
-X-Received: by 2002:a7b:c4c2:: with SMTP id g2mr6607205wmk.195.1634721593406;
-        Wed, 20 Oct 2021 02:19:53 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id p18sm1575475wmq.4.2021.10.20.02.19.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 02:19:52 -0700 (PDT)
-Message-ID: <1088c582-8afe-e5f2-8db8-0f0b05a5f7d3@redhat.com>
-Date:   Wed, 20 Oct 2021 11:19:48 +0200
+        Wed, 20 Oct 2021 05:22:48 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HZ4mQ34zDz1DHl0;
+        Wed, 20 Oct 2021 17:18:46 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Wed, 20 Oct 2021 17:20:32 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Wed, 20 Oct 2021 17:20:32 +0800
+Subject: Re: [PATCH v4 1/2] block, bfq: counted root group into
+ 'num_groups_with_pending_reqs'
+To:     Paolo Valente <paolo.valente@linaro.org>
+CC:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20211014014556.3597008-1-yukuai3@huawei.com>
+ <20211014014556.3597008-2-yukuai3@huawei.com>
+ <0DD9CFF0-6110-497D-A352-9F37CADADC6B@linaro.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <1f89cece-a123-6190-bb72-d59035dac266@huawei.com>
+Date:   Wed, 20 Oct 2021 17:20:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 0/4] x86/fpu/kvm: Sanitize the FPU guest/user handling
-Content-Language: en-US
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-References: <20211017151447.829495362@linutronix.de>
- <841ACA86-CE97-4707-BF6E-AC932F1E056D@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <841ACA86-CE97-4707-BF6E-AC932F1E056D@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <0DD9CFF0-6110-497D-A352-9F37CADADC6B@linaro.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/21 21:43, Bae, Chang Seok wrote:
-> On Oct 17, 2021, at 10:03, Thomas Gleixner <tglx@linutronix.de> wrote:
+On 2021/10/20 16:51, Paolo Valente wrote:
+
+>> @@ -860,9 +870,25 @@ void bfq_weights_tree_remove(struct bfq_data *bfqd,
+>> 			     struct bfq_queue *bfqq)
+>> {
+>> 	struct bfq_entity *entity = bfqq->entity.parent;
+>> +	struct bfq_sched_data *sd;
+>> +
+>> +	/*
+>> +	 * If the bfq queue is in root group, the decrement of
+>> +	 * num_groups_with_pending_reqs is performed immediately upon the
+>> +	 * deactivation of entity.
+>> +	 */
+>> +	if (!entity) {
+>> +		entity = &bfqd->root_group->entity;
+>> +		sd = entity->my_sched_data;
+>> +
+>> +		if (!sd->in_service_entity)
+>> +			bfq_clear_group_with_pending_reqs(bfqd, entity);
+>> +
+>> +		return;
+>> +	}
 >>
->> The latter builds, boots and runs KVM guests, but that reallocation
->> functionality is obviously completely untested.
+>> 	for_each_entity(entity) {
+>> -		struct bfq_sched_data *sd = entity->my_sched_data;
+>> +		sd = entity->my_sched_data;
+>>
+>> 		if (sd->next_in_service || sd->in_service_entity) {
+>> 			/*
+>> @@ -880,7 +906,8 @@ void bfq_weights_tree_remove(struct bfq_data *bfqd,
+>> 		}
+>>
+>> 		/*
+>> -		 * The decrement of num_groups_with_pending_reqs is
+>> +		 * If the bfq queue is not in root group,
+>> +		 * the decrement of num_groups_with_pending_reqs is
 > 
-> Compiled and booted on bare-metal and KVM (guest with the same kernel).
-> No dmesg regression. No selftest regression.
 > 
-> Tested-by Chang S. Bae <chang.seok.bae@intel.com>
+> I'm sorry if I didn't notice this before, but why do you postpone the
+> decrement only for queues not in root group?  If I'm not missing
+> anything, the active (i.e., with pending reqs) state of the root group
+> is to be computed as that of ay other group.
 
-Same here.  Thanks, Chang Seok!
+Hi, Paolo
 
-Paolo
+I thought if queue is in root group, then bfqq->entity.parent is NULL,
+and such case is handled above, which is separate from previous
+implementation for queues that are not in root group.
 
+Is this the wrong way to handle root group?
+
+Thanks,
+Kuai
