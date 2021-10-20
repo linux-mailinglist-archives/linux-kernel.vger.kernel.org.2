@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F4A434D23
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A48434D28
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhJTOM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
+        id S230260AbhJTONA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhJTOM2 (ORCPT
+        with ESMTP id S230235AbhJTOM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:12:28 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5764C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:10:13 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id l24-20020a9d1c98000000b00552a5c6b23cso8349929ota.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:10:13 -0700 (PDT)
+        Wed, 20 Oct 2021 10:12:56 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71F0C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:10:41 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id t16so3103570qto.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eAir1TZHj8ej8jRm3+Abv46htwdqCGDBjtrmMkKXab0=;
-        b=c5ZEUNl4zRWqSLWEpSMlcrYnUC87+RhEw5iBGeBar1ZCKT+3uZaYTFXYWaxm79Q6BB
-         27xJyy20J0wrjB06FkT13/lhH2u7ctbY0q6+2HVQ0xP3uqHrL9D+3wHtF6cazZH8Ch7i
-         CSwpuPoZO4uIgIv3A7ZS3pIgqmk5Ip4LRzaZ/syhX9WGe9No+rcg+ETC7f094cMy+Djh
-         UZJmRT+lsRa7NAdzeHVSGeicw/ia+o/Km7KAhXiys/axPpJSBlYjoOKa82OttYOdLEu1
-         8vEDc14JIFndIoBwFhGw75UMiWF/f1fdrfdfvW13glT9XUxgs4q+fWDKXUl5lvgdRZsZ
-         /NIQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A+7/tYuokduAraYDaM/MNqe/qPgiHwjLTlChysTQILI=;
+        b=Fd6AaurLzQDPJogWpED/+njhBQ3CRKq0XqHJwDRFZWQ6++ZyhNIOta2z/xbkRQWN73
+         Dt/hkKIQHIsJIZlgJaOzu6TtOwOphlh4L0nL0a5Rjkj71JRtxOzu2MgCELlSWZia5B4G
+         ZY/dv+KrrG/F4NX21qGOVdjQBY6LhhwK/4gfO/geSIG0dpF4HSanqLU3H+NEoqCe8z5K
+         iGi/bVr+7ikhfTxSVXfaYkH0N3v6AZn8ODXM2R9A1hdySqkTflzY5xIHG7zSc6wQhXuc
+         JiKJPtF9GbXSBhYis/cLGOHAasts6knNp+ZGoFjrZgBtG0W8ZIUveGsZ320+8GkiU53u
+         xFEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eAir1TZHj8ej8jRm3+Abv46htwdqCGDBjtrmMkKXab0=;
-        b=vBS4jVA3GDnnuafFjQ5fQ8Lt2JqGoM6euWHECiomlygHAmA/5I/IfC+9cYtLmba4DZ
-         CfoucC9waex96oDMaPEtLELAi7ezI6jX4WlUcm7Sb8hi6GCvb0RIue4vanQoB93EyrmO
-         vX4tz76d0LVOR5m9+ZEMLBBLvnar2MYaaKLC0qPa24cEzDE4VmYdD5E5FQoCgGwyL1iI
-         GOMwjzmXrsJ5z5XgxK1iC9XwD3PUiXb2ysG6JmeAl5+Y/uKiZK80LvkUrJX5mdmSoB6/
-         TsuKakD0OqoYyLoShN4083AUjnF1rjAbZSTKvVHjnLPFCGHYlq23qPElauQfigR+qX3Q
-         /Riw==
-X-Gm-Message-State: AOAM532xpPoVThM4zMVwcrSgMrxcNryGDI5yoXMYAdR5LQE3d0ykhqbg
-        x3P6luqHRtpJTcOlKedjtD64OA==
-X-Google-Smtp-Source: ABdhPJyAHK4/39pU4/Go6dsstvNmAydij4wEGbmfDM+OWDXqESXQa/OP1CnzWR7oBc1Q7Fnw62hNJQ==
-X-Received: by 2002:a9d:19e8:: with SMTP id k95mr88305otk.284.1634739013089;
-        Wed, 20 Oct 2021 07:10:13 -0700 (PDT)
-Received: from p1.localdomain ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id 103sm486002otj.44.2021.10.20.07.10.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 07:10:12 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     josef@toxicpanda.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, Ye Bin <yebin10@huawei.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] nbd: Fix use-after-free in pid_show
-Date:   Wed, 20 Oct 2021 08:10:09 -0600
-Message-Id: <163473900612.733071.518425291980291734.b4-ty@kernel.dk>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211020073959.2679255-1-yebin10@huawei.com>
-References: <20211020073959.2679255-1-yebin10@huawei.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A+7/tYuokduAraYDaM/MNqe/qPgiHwjLTlChysTQILI=;
+        b=cAVL+A0o1E6jJfAmFnoLn86f5RGSKk1tt6VOoezQi68EzUo2eKbV6B7Fd9+SSv8UoS
+         vcmV1sSkKIarMOpgTGxXAG6glftBRmhcZXRoqrVQIYi1ZfPZLka0Is49Q18vL7vDWBYv
+         nCwEAw3ugJdsLcz4rVR44VRE8Pq/97EI30qVNt+yY9YVVtA5IYHvYhOvXXmcfRkrVcoc
+         3VPiX5IExDfbNGlw8cVCzPSYvUwCNSGRDr21WFD6qy0BitL75Yc41dREVz+E+QtlDApN
+         Fd9Nuiv29IbGWAIfB/0pD1rFWrIJwnP6tn/n7a5qhNFkFkyMMXWMpLXQVy7/Kk/KQTcz
+         HfQw==
+X-Gm-Message-State: AOAM530/YchwVQ/1Mfl5A6RfZBsA1EeDwO3cvZGciHZL5XJtjmFWe2vL
+        tTRvs73itzz36CBWttoUDQCoLg==
+X-Google-Smtp-Source: ABdhPJx7I22ooxQS73u+v3KsAR5e7TFQY8Rkzqi72g9Uw/1EzI7OgcXfSVXv9rzTTxjKU8fevvIqNQ==
+X-Received: by 2002:ac8:5903:: with SMTP id 3mr195093qty.74.1634739040791;
+        Wed, 20 Oct 2021 07:10:40 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id m16sm1119634qkn.15.2021.10.20.07.10.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 07:10:40 -0700 (PDT)
+Subject: Re: [PATCH v4 18/20] crypto: qce: Defer probing if BAM dma channel is
+ not yet initialized
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+ <20211013105541.68045-19-bhupesh.sharma@linaro.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <c6df4da4-3d50-5592-1036-b9a8cebb79d9@linaro.org>
+Date:   Wed, 20 Oct 2021 10:10:39 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211013105541.68045-19-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 15:39:59 +0800, Ye Bin wrote:
-> I got issue as follows:
-> [  263.886511] BUG: KASAN: use-after-free in pid_show+0x11f/0x13f
-> [  263.888359] Read of size 4 at addr ffff8880bf0648c0 by task cat/746
-> [  263.890479] CPU: 0 PID: 746 Comm: cat Not tainted 4.19.90-dirty #140
-> [  263.893162] Call Trace:
-> [  263.893509]  dump_stack+0x108/0x15f
-> [  263.893999]  print_address_description+0xa5/0x372
-> [  263.894641]  kasan_report.cold+0x236/0x2a8
-> [  263.895696]  __asan_report_load4_noabort+0x25/0x30
-> [  263.896365]  pid_show+0x11f/0x13f
-> [  263.897422]  dev_attr_show+0x48/0x90
-> [  263.898361]  sysfs_kf_seq_show+0x24d/0x4b0
-> [  263.899479]  kernfs_seq_show+0x14e/0x1b0
-> [  263.900029]  seq_read+0x43f/0x1150
-> [  263.900499]  kernfs_fop_read+0xc7/0x5a0
-> [  263.903764]  vfs_read+0x113/0x350
-> [  263.904231]  ksys_read+0x103/0x270
-> [  263.905230]  __x64_sys_read+0x77/0xc0
-> [  263.906284]  do_syscall_64+0x106/0x360
-> [  263.906797]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+On 10/13/21 6:55 AM, Bhupesh Sharma wrote:
+> Since the Qualcomm qce crypto driver needs the BAM dma driver to be
+> setup first (to allow crypto operations), it makes sense to defer
+> the qce crypto driver probing in case the BAM dma driver is not yet
+> probed.
 > 
-> [...]
+> Move the code leg requesting dma channels earlier in the
+> probe() flow. This fixes the qce probe failure issues when both qce
+> and BMA dma are compiled as static part of the kernel.
 
-Applied, thanks!
+Hi Bhupesh,
 
-[1/1] nbd: Fix use-after-free in pid_show
-      commit: 0c98057be9efa32de78dbc4685fc73da9d71faa1
+I am quite curious to know the nature of probe failure you are seeing 
+with the current sequence.  I am not against changing the sequence but 
+for me when a driver is enabled, it is clocks first, interconnect next 
+and then dma. Also I have tested the current sequence on sm8150 with 
+both the modules built in as static and I have not seen the failure.
 
-Best regards,
 -- 
-Jens Axboe
+Warm Regards
+Thara (She/Her/Hers)
+> 
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>   drivers/crypto/qce/core.c | 20 ++++++++++++--------
+>   1 file changed, 12 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> index cb8c77709e1e..c6f686126fc9 100644
+> --- a/drivers/crypto/qce/core.c
+> +++ b/drivers/crypto/qce/core.c
+> @@ -209,9 +209,19 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>   	if (ret < 0)
+>   		return ret;
+>   
+> +	/* qce driver requires BAM dma driver to be setup first.
+> +	 * In case the dma channel are not set yet, this check
+> +	 * helps use to return -EPROBE_DEFER earlier.
+> +	 */
+> +	ret = qce_dma_request(qce->dev, &qce->dma);
+> +	if (ret)
+> +		return ret;
+> +
+>   	qce->mem_path = of_icc_get(qce->dev, "memory");
+> -	if (IS_ERR(qce->mem_path))
+> +	if (IS_ERR(qce->mem_path)) {
+> +		qce_dma_release(&qce->dma);
+>   		return PTR_ERR(qce->mem_path);
+> +	}
+>   
+>   	qce->core = devm_clk_get_optional(qce->dev, "core");
+>   	if (IS_ERR(qce->core)) {
+> @@ -247,10 +257,6 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>   	if (ret)
+>   		goto err_clks_iface;
+>   
+> -	ret = qce_dma_request(qce->dev, &qce->dma);
+> -	if (ret)
+> -		goto err_clks;
+> -
+>   	ret = qce_check_version(qce);
+>   	if (ret)
+>   		goto err_clks;
+> @@ -265,12 +271,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>   
+>   	ret = qce_register_algs(qce);
+>   	if (ret)
+> -		goto err_dma;
+> +		goto err_clks;
+>   
+>   	return 0;
+>   
+> -err_dma:
+> -	qce_dma_release(&qce->dma);
+>   err_clks:
+>   	clk_disable_unprepare(qce->bus);
+>   err_clks_iface:
+> 
 
 
