@@ -2,115 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40F5434D52
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C23E434D57
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhJTOVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:21:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229639AbhJTOVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:21:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D79061373
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 14:19:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634739558;
-        bh=fmi+0bD2m3tiuIJS1w2in+x3YNM1wstFL0HPNrVRe8w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nM3r90b+dwpLL60m0jQscBK0+9Dy10kOWm8uy3/ZKXvif0JDmcnttvbMSqaGcQdLD
-         2pHlz2QbN3JzW7UNHBX4lhtaqgzf4U+qF4SQVX3zDuZ8+rVuUlWEqHDf9CPhyrNgBQ
-         Xx0AId1V0cQVBKlDBQo3+/XzyWBC71teBm/ATWEkXVDIvs6Ll5RwJUtvSP/mxugprK
-         82HFFUsNi7APytpsZdVE8PQH20BU/jU8siZjU7+ozj15+Z6RWZNh7Se5vYoDj/HPzY
-         ebPRveXrldpuKIXDineCR7swtCwqJSh7qhdme95Q+y+qweD8vRoWoZzrN099ojeNxO
-         WucXNcR8pUNpQ==
-Received: by mail-ua1-f54.google.com with SMTP id q13so6958548uaq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 07:19:18 -0700 (PDT)
-X-Gm-Message-State: AOAM530XzF5k61WQ5ZJ0fuONqR1lw2jDkK9+pMzZFZDnvgoMGlioOKSe
-        FG2OyKnfjtkha2rPVqrEsYl7NQpa/zNLIC3uJA8=
-X-Google-Smtp-Source: ABdhPJxZX28p4AF2/Hb9dreu2KHUeZrpaHIutQS8IPPcSp3vbwrlkYw+gqn6YZxqPEz2uCrP8JhM/gweaUQ8SVFl0Lc=
-X-Received: by 2002:ab0:5b59:: with SMTP id v25mr7354848uae.57.1634739556855;
- Wed, 20 Oct 2021 07:19:16 -0700 (PDT)
+        id S230119AbhJTOWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:22:05 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:39495 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhJTOWD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 10:22:03 -0400
+Received: by mail-oi1-f172.google.com with SMTP id s9so7473161oiw.6;
+        Wed, 20 Oct 2021 07:19:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CQR8bA2DDw1T775UVo7jNnRB7J3D07XKlU/rQiyQQnM=;
+        b=hw8kjlnFP5HelJJ0iGdWviTMjYxDek3O9gWM+etcHTVK6sIdJCnzoSM//v4h96jdl5
+         lGrSX0dfwcleypjLHAJRcKfQI7t0Om/sDzTe7jNTFMKp+cWVw5Jy7EiYC9EbT3czYOtM
+         auFIWs8OYd/l4K+SVXuR2S/rhZlRiEO1J0ITVLbZpOWAzBZGh/FHinGbMkB0IWLQ0v7n
+         T+Vu5TWqHX79htd5Lxgt1T6CZmMapBwQ0cY5KE+/0mPxBeW28KnoDQqMB/PV8fJeSEu1
+         I8famPAcUyGM8W7e1aYmkdqgjCZ5VOlm8j+jmB6g3PmT9GM15TS9+TJ9Jni/dZjy7rJv
+         NbUA==
+X-Gm-Message-State: AOAM533hkB3ulSDEb2UbKCzxO6MMsFaaNBjbmtiPQ28fcJc/R+KjX1cg
+        4aaY5ewThK9DRC/Bgoxbkg==
+X-Google-Smtp-Source: ABdhPJxW9P/PudtVYOU9cQ6l4rME3ClU1cNhDdvCc/Xw17GiN25AzsXlt7wEgblNZKsgXYjVar84Rw==
+X-Received: by 2002:a05:6808:199d:: with SMTP id bj29mr7759915oib.165.1634739588807;
+        Wed, 20 Oct 2021 07:19:48 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id x10sm424722ooa.16.2021.10.20.07.19.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 07:19:47 -0700 (PDT)
+Received: (nullmailer pid 2299344 invoked by uid 1000);
+        Wed, 20 Oct 2021 14:19:45 -0000
+Date:   Wed, 20 Oct 2021 09:19:45 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, Dave Young <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        kexec@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Feng Zhou <zhoufeng.zf@bytedance.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v15 09/10] of: fdt: Add memory for devices by DT property
+ "linux,usable-memory-range"
+Message-ID: <YXAlgdZ5q7CdBXw4@robh.at.kernel.org>
+References: <20211020020317.1220-1-thunder.leizhen@huawei.com>
+ <20211020020317.1220-10-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-2-guoren@kernel.org>
- <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org> <f850af365f2ac77af79ec59f92e6434a@kernel.org>
- <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
- <8735oxuxlq.wl-maz@kernel.org> <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
- <875ytrddma.wl-maz@kernel.org>
-In-Reply-To: <875ytrddma.wl-maz@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 20 Oct 2021 22:19:06 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRfBxXnG57Y+9z0O+GfwgoB9POmb=HL=CMCpu=uwfYY3w@mail.gmail.com>
-Message-ID: <CAJF2gTRfBxXnG57Y+9z0O+GfwgoB9POmb=HL=CMCpu=uwfYY3w@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Samuel Holland <samuel@sholland.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020020317.1220-10-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 9:34 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Tue, 19 Oct 2021 14:27:02 +0100,
-> Guo Ren <guoren@kernel.org> wrote:
-> >
-> > On Tue, Oct 19, 2021 at 6:18 PM Marc Zyngier <maz@kernel.org> wrote:
-> > >
-> > > On Tue, 19 Oct 2021 10:33:49 +0100,
-> > > Guo Ren <guoren@kernel.org> wrote:
-> > >
-> > > > > If you have an 'automask' behavior and yet the HW doesn't record this
-> > > > > in a separate bit, then you need to track this by yourself in the
-> > > > > irq_eoi() callback instead. I guess that you would skip the write to
-> > > > > the CLAIM register in this case, though I have no idea whether this
-> > > > > breaks
-> > > > > the HW interrupt state or not.
-> > > > The problem is when enable bit is 0 for that irq_number,
-> > > > "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
-> > > > the hw state machine. Then this irq would enter in ack state and no
-> > > > continues irqs could come in.
-> > >
-> > > Really? This means that you cannot mask an interrupt while it is being
-> > > handled? How great...
-> > If the completion ID does not match an interrupt source that is
-> > currently enabled for the target, the completion is silently ignored.
-> > So, C9xx completion depends on enable-bit.
->
-> Is that what the PLIC spec says? Or what your implementation does? I
-> can understand that one implementation would be broken, but if the
-> PLIC architecture itself is broken, that's far more concerning.
+On Wed, Oct 20, 2021 at 10:03:16AM +0800, Zhen Lei wrote:
+> From: Chen Zhou <chenzhou10@huawei.com>
+> 
+> When reserving crashkernel in high memory, some low memory is reserved
+> for crash dump kernel devices and never mapped by the first kernel.
+> This memory range is advertised to crash dump kernel via DT property
+> under /chosen,
+>         linux,usable-memory-range = <BASE1 SIZE1 [BASE2 SIZE2]>
+> 
+> We reused the DT property linux,usable-memory-range and made the low
+> memory region as the second range "BASE2 SIZE2", which keeps compatibility
+> with existing user-space and older kdump kernels.
+> 
+> Crash dump kernel reads this property at boot time and call memblock_add()
+> to add the low memory region after memblock_cap_memory_range() has been
+> called.
+> 
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  drivers/of/fdt.c | 47 ++++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 36 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index 4546572af24bbf1..cf59c847b2c28a5 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -969,8 +969,16 @@ static void __init early_init_dt_check_for_elfcorehdr(unsigned long node)
+>  		 elfcorehdr_addr, elfcorehdr_size);
+>  }
+>  
+> -static phys_addr_t cap_mem_addr;
+> -static phys_addr_t cap_mem_size;
+> +/*
+> + * The main usage of linux,usable-memory-range is for crash dump kernel.
+> + * Originally, the number of usable-memory regions is one. Now there may
+> + * be two regions, low region and high region.
+> + * To make compatibility with existing user-space and older kdump, the low
+> + * region is always the last range of linux,usable-memory-range if exist.
+> + */
+> +#define MAX_USABLE_RANGES		2
+> +
+> +static struct memblock_region cap_mem_regions[MAX_USABLE_RANGES];
+>  
+>  /**
+>   * early_init_dt_check_for_usable_mem_range - Decode usable memory range
+> @@ -979,20 +987,30 @@ static phys_addr_t cap_mem_size;
+>   */
+>  static void __init early_init_dt_check_for_usable_mem_range(unsigned long node)
+>  {
+> -	const __be32 *prop;
+> -	int len;
+> +	const __be32 *prop, *endp;
+> +	int len, nr = 0;
+> +	struct memblock_region *rgn = &cap_mem_regions[0];
+>  
+>  	pr_debug("Looking for usable-memory-range property... ");
+>  
+>  	prop = of_get_flat_dt_prop(node, "linux,usable-memory-range", &len);
+> -	if (!prop || (len < (dt_root_addr_cells + dt_root_size_cells)))
+> +	if (!prop)
+>  		return;
+>  
+> -	cap_mem_addr = dt_mem_next_cell(dt_root_addr_cells, &prop);
+> -	cap_mem_size = dt_mem_next_cell(dt_root_size_cells, &prop);
+> +	endp = prop + (len / sizeof(__be32));
+> +	while ((endp - prop) >= (dt_root_addr_cells + dt_root_size_cells)) {
+> +		rgn->base = dt_mem_next_cell(dt_root_addr_cells, &prop);
+> +		rgn->size = dt_mem_next_cell(dt_root_size_cells, &prop);
+> +
+> +		pr_debug("cap_mem_regions[%d]: base=%pa, size=%pa\n",
+> +			 nr, &rgn->base, &rgn->size);
+> +
+> +		if (++nr >= MAX_USABLE_RANGES)
+> +			break;
+> +
+> +		rgn++;
+> +	}
+>  
+> -	pr_debug("cap_mem_start=%pa cap_mem_size=%pa\n", &cap_mem_addr,
+> -		 &cap_mem_size);
+>  }
+>  
+>  #ifdef CONFIG_SERIAL_EARLYCON
+> @@ -1265,7 +1283,8 @@ bool __init early_init_dt_verify(void *params)
+>  
+>  void __init early_init_dt_scan_nodes(void)
+>  {
+> -	int rc = 0;
+> +	int i, rc = 0;
+> +	struct memblock_region *rgn = &cap_mem_regions[0];
+>  
+>  	/* Initialize {size,address}-cells info */
+>  	of_scan_flat_dt(early_init_dt_scan_root, NULL);
+> @@ -1279,7 +1298,13 @@ void __init early_init_dt_scan_nodes(void)
+>  	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
+>  
+>  	/* Handle linux,usable-memory-range property */
+> -	memblock_cap_memory_range(cap_mem_addr, cap_mem_size);
+> +	memblock_cap_memory_range(rgn->base, rgn->size);
+> +	for (i = 1; i < MAX_USABLE_RANGES; i++) {
+> +		rgn++;
 
-Here is the description of Interrupt Completion in PLIC spec [1]:
+Just use rgn[i].
 
-The PLIC signals it has completed executing an interrupt handler by
-writing the interrupt ID it received from the claim to the claim/complete
-register. The PLIC does not check whether the completion ID is the same
-as the last claim ID for that target. If the completion ID does not match
-an interrupt source that is currently enabled for the target, the
-                                      ^^ ^^^^^^^^^ ^^^^^^^
-completion is silently ignored.
+> +
+> +		if (rgn->size)
 
-[1] https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc
+This check can be in the 'for' conditions check.
 
-Did we misunderstand the PLIC spec?
+> +			memblock_add(rgn->base, rgn->size);
+> +	}
 
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
 
---
-Best Regards
- Guo Ren
+There's not really any point in doing all this in 2 steps. I'm 
+assuming this needs to be handled after scanning the memory nodes, so 
+can you refactor this moving early_init_dt_check_for_usable_mem_range 
+out of early_init_dt_scan_chosen() and call it here. You'll have to get 
+the offset for /chosen twice or save the offset.
 
-ML: https://lore.kernel.org/linux-csky/
+Rob
