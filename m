@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9BA4346DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B93E4346EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhJTIaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:30:04 -0400
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:40570 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTIaD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:30:03 -0400
-Received: by mail-ua1-f54.google.com with SMTP id e2so5076779uax.7;
-        Wed, 20 Oct 2021 01:27:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9qbWNnmOS9ewt1IIN1OcfZDAH5iLC7O1G6fIHR9IJTY=;
-        b=iGd8AOd6yqH7CxN0z30wbM00KE2Ct61RRd1cMwWWWX3X7ytwglAHYk5I5qp7lcqM4c
-         u4OPiRDa7B0fNXd0TqWXHtjPNuC9S1ABJM3nTuCSZACSx7DzNwxcbCbXFFu2rFe6jeMc
-         iRrSou94JiBhnmWrnMI6kr0UZ1MzEHRYwiSRDZcVSdUrMcWO11wBSqtPEHYMpOIzl/uC
-         cxo/2vGqkk1+xqGqL83Hra+QxRh9M7CTG8kAummNpDllg73SHcPwRyYiUflsBPS4w6Ie
-         mHBGvOimHiSqzEGtrnkO0kS8DxexYP+gTsmhhEzq28/OwVshXPkoclEBeIE66qrDlTyk
-         tJpA==
-X-Gm-Message-State: AOAM532Nsov9hanSp6EyDtPArR/D1DFaqVdQmvj0FUyqgO0+9etJx74A
-        c+Kou3S19TqxR/oUvu/usXDojQqt1f+ZDw==
-X-Google-Smtp-Source: ABdhPJy8g1dB3Ql2G4/bvKkNwONBJg74ugTyzZLorLFUJtXp6Ad71m7wZdNaKHaYv0+G6ZhqoBs/Cg==
-X-Received: by 2002:a67:3244:: with SMTP id y65mr40825101vsy.10.1634718468245;
-        Wed, 20 Oct 2021 01:27:48 -0700 (PDT)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id t69sm910738vkc.32.2021.10.20.01.27.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 01:27:47 -0700 (PDT)
-Received: by mail-ua1-f42.google.com with SMTP id a17so5013756uax.12;
-        Wed, 20 Oct 2021 01:27:47 -0700 (PDT)
-X-Received: by 2002:ab0:3d9a:: with SMTP id l26mr5914512uac.114.1634718467216;
- Wed, 20 Oct 2021 01:27:47 -0700 (PDT)
+        id S229976AbhJTIbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:31:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229632AbhJTIbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:31:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E5CF61183;
+        Wed, 20 Oct 2021 08:28:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634718536;
+        bh=8nW1a1YxwhHLkokHLmbAPUvEy8Sro976Y9vnhAQOL7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b5OhBK9vzw98Pra6K1wa2zJ0J5EzHVm1XCT+E1fH6mcqn/K9AU7vR477/yH5qRf2Y
+         SwAeIQb04+15xwtWK1Tt7kdQGvlEAp4HnJ10Ae/gbnnLHh9ON0GTMtaH9GB8htEXdC
+         PEBT4jNWWKAtQNxw7vujFQeR5PU+4RP0ONCEkVl4=
+Date:   Wed, 20 Oct 2021 10:28:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YW/TRkXth/mbTQ6b@kroah.com>
+References: <YWk9e957Hb+I7HvR@T590>
+ <YWm68xUnAofop3PZ@bombadil.infradead.org>
+ <YWq3Z++uoJ/kcp+3@T590>
+ <YW3LuzaPhW96jSBK@bombadil.infradead.org>
+ <YW4uwep3BCe9Vxq8@T590>
+ <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
+ <YW6OptglA6UykZg/@T590>
+ <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
+ <YW/KEsfWJMIPnz76@T590>
+ <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
 MIME-Version: 1.0
-References: <20211019144520.3613926-1-geert@linux-m68k.org>
- <20211019144520.3613926-4-geert@linux-m68k.org> <CANiq72nJS_rxwB7BQJ30iEeFcX8_7VznkF0DvueM_Ym+Wqd94A@mail.gmail.com>
- <CANiq72nGPzDEeiQccTQ6QCeionfkfp01EDjp4btBfYKabXzGrg@mail.gmail.com>
-In-Reply-To: <CANiq72nGPzDEeiQccTQ6QCeionfkfp01EDjp4btBfYKabXzGrg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 20 Oct 2021 10:27:36 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWBhBs3dpLFHo8VmUr22DkbXpPqMSwqkCVzpYYNA-5g4A@mail.gmail.com>
-Message-ID: <CAMuHMdWBhBs3dpLFHo8VmUr22DkbXpPqMSwqkCVzpYYNA-5g4A@mail.gmail.com>
-Subject: Re: [PATCH v8 03/21] auxdisplay: img-ascii-lcd: Fix lock-up when
- displaying empty string
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miguel,
+On Wed, Oct 20, 2021 at 10:19:27AM +0200, Miroslav Benes wrote:
+> On Wed, 20 Oct 2021, Ming Lei wrote:
+> 
+> > On Wed, Oct 20, 2021 at 08:43:37AM +0200, Miroslav Benes wrote:
+> > > On Tue, 19 Oct 2021, Ming Lei wrote:
+> > > 
+> > > > On Tue, Oct 19, 2021 at 08:23:51AM +0200, Miroslav Benes wrote:
+> > > > > > > By you only addressing the deadlock as a requirement on approach a) you are
+> > > > > > > forgetting that there *may* already be present drivers which *do* implement
+> > > > > > > such patterns in the kernel. I worked on addressing the deadlock because
+> > > > > > > I was informed livepatching *did* have that issue as well and so very
+> > > > > > > likely a generic solution to the deadlock could be beneficial to other
+> > > > > > > random drivers.
+> > > > > > 
+> > > > > > In-tree zram doesn't have such deadlock, if livepatching has such AA deadlock,
+> > > > > > just fixed it, and seems it has been fixed by 3ec24776bfd0.
+> > > > > 
+> > > > > I would not call it a fix. It is a kind of ugly workaround because the 
+> > > > > generic infrastructure lacked (lacks) the proper support in my opinion. 
+> > > > > Luis is trying to fix that.
+> > > > 
+> > > > What is the proper support of the generic infrastructure? I am not
+> > > > familiar with livepatching's model(especially with module unload), you mean
+> > > > livepatching have to do the following way from sysfs:
+> > > > 
+> > > > 1) during module exit:
+> > > > 	
+> > > > 	mutex_lock(lp_lock);
+> > > > 	kobject_put(lp_kobj);
+> > > > 	mutex_unlock(lp_lock);
+> > > > 	
+> > > > 2) show()/store() method of attributes of lp_kobj
+> > > > 	
+> > > > 	mutex_lock(lp_lock)
+> > > > 	...
+> > > > 	mutex_unlock(lp_lock)
+> > > 
+> > > Yes, this was exactly the case. We then reworked it a lot (see 
+> > > 958ef1e39d24 ("livepatch: Simplify API by removing registration step"), so 
+> > > now the call sequence is different. kobject_put() is basically offloaded 
+> > > to a workqueue scheduled right from the store() method. Meaning that 
+> > > Luis's work would probably not help us currently, but on the other hand 
+> > > the issues with AA deadlock were one of the main drivers of the redesign 
+> > > (if I remember correctly). There were other reasons too as the changelog 
+> > > of the commit describes.
+> > > 
+> > > So, from my perspective, if there was a way to easily synchronize between 
+> > > a data cleanup from module_exit callback and sysfs/kernfs operations, it 
+> > > could spare people many headaches.
+> > 
+> > kobject_del() is supposed to do so, but you can't hold a shared lock
+> > which is required in show()/store() method. Once kobject_del() returns,
+> > no pending show()/store() any more.
+> > 
+> > The question is that why one shared lock is required for livepatching to
+> > delete the kobject. What are you protecting when you delete one kobject?
+> 
+> I think it boils down to the fact that we embed kobject statically to 
+> structures which livepatch uses to maintain data. That is discouraged 
+> generally, but all the attempts to implement it correctly were utter 
+> failures.
 
-On Tue, Oct 19, 2021 at 11:09 PM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
-> On Tue, Oct 19, 2021 at 10:50 PM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
-> >
-> > Unrelated to this patch (and no need to change it), but we could
-> > remove the conditional guarding the devm_kfree below to match this
-> > one.
->
-> Yeah, you did it when moving the code later on -- I guess we could
-> have done it before too, to match, like the sysfs_emit change does it
-> before, but it is not that important.
+Sounds like this is the real problem that needs to be fixed.  kobjects
+should always control the lifespan of the structure they are embedded
+in.  If not, then that is a design flaw of the user of the kobject :(
 
-As this patch fixes a DoS that can be triggered from userspace,
-I wanted it to be a fix as small and concise as possible.
+Where in the kernel is this happening?  And where have been the attempts
+to fix this up?
 
-Gr{oetje,eeting}s,
+thanks,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
