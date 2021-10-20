@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E239435149
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CDC435136
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhJTRbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhJTRbY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:31:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6780AC06161C;
-        Wed, 20 Oct 2021 10:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2j0OkvRwF5BVDtZ9M6bIK+b+BCFxIxg1XmoiRh7ewBA=; b=ua/XQ9oU8XbbXQIXxSprskj1uQ
-        gyN/V4q80GLHf6RXs3osc2ii3oplGC5gcj7/CNFCrbVc65tKzQ7lC5vRwnxBlVgfxZBC2Q7adlTqp
-        9k/YlzgpjoR2obS6HeHNz2F4osZIBhx3hlEo7g7aKMcD2q5GChO6O0z9hVsR+1LdEe5G+HIkUjCMZ
-        5d9twredgZVF2pwB5Rj9hprVgBUkTaCd8ZzMFSZENLmWD4UXBO8Nk0uVYqbpHq/Ro+cQLirvUQ9Ev
-        /43jtLS1vXu0/ZVbxwsTup/iYlYCVK+QMi6+sN9zmQL2boAttS69mNgq3bfiiP8v1me3ZTv8mIG+r
-        CRt2nnLQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdFM6-00Cj4B-04; Wed, 20 Oct 2021 17:26:49 +0000
-Date:   Wed, 20 Oct 2021 18:26:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YXBRPSjPUYnoQU+M@casper.infradead.org>
-References: <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW28vaoW7qNeX3GP@casper.infradead.org>
- <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org>
- <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
+        id S230376AbhJTR2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:28:48 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27405 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230031AbhJTR2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:28:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="215763495"
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="215763495"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 10:26:32 -0700
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="720499302"
+Received: from yakasaka-mobl1.gar.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.9.165])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 10:26:29 -0700
+Subject: Re: [PATCH v5 06/16] x86/tdx: Make DMA pages shared
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <654455db-a605-5069-d652-fe822ae066b0@amd.com>
+ <66acafb6-7659-7d76-0f52-d002cfae9cc8@linux.intel.com>
+ <0b06e686-b0d8-9485-ae00-b23f805916d9@amd.com>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <930ec8e0-669d-8501-af66-38e4cab60a1f@linux.intel.com>
+Date:   Wed, 20 Oct 2021 10:26:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
+In-Reply-To: <0b06e686-b0d8-9485-ae00-b23f805916d9@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 09:50:58AM +0200, David Hildenbrand wrote:
-> For the records: I was happy to see the slab refactoring, although I
-> raised some points regarding how to access properties that belong into
-> the "struct page".
 
-I thought the slab discussion was quite productive.  Unfortunately,
-none of our six (!) slab maintainers had anything to say about it.  So I
-think it's pointless to proceed unless one of them weighs in and says
-"I'd be interested in merging something along these lines once these
-problems are addressed".
 
-> As raised elsewhere, I'd also be more comfortable
-> seeing small incremental changes/cleanups that are consistent even
-> without having decided on an ultimate end-goal -- this includes folios.
-> I'd be happy to see file-backed THP gaining their own, dedicated type
-> first ("struct $whatever"), before generalizing it to folios.
+On 10/20/21 10:22 AM, Tom Lendacky wrote:
+>>
+>> For non TDX case, in CC_ATTR_HOST_MEM_ENCRYPT, we should still call
+>> amd_force_dma_unencrypted() right?
+> 
+> What I'm saying is that you wouldn't have amd_force_dma_unencrypted(). I 
+> think the whole force_dma_unencrypted() can exist as-is in a different 
+> file, whether that's cc_platform.c or mem_encrypt_common.c.
+> 
+> It will return true for an SEV or TDX guest, true for an SME host based 
+> on the DMA mask or else false. That should work just fine for TDX.
 
-I am genuinely confused by this.
+Got it. Thanks for clarifying it.
 
-Folios are non-tail pages.  That's all.  There's no "ultimate end-goal".
-It's just a new type that lets the compiler (and humans!) know that this
-isn't a tail page.
-
-Some people want to take this further, and split off special types from
-struct page.  I think that's a great idea.  I'm even willing to help.
-But there are all kinds of places in the kernel where we handle generic
-pages of almost any type, and so regardless of how much we end up
-splitting off from struct page, we're still going to want the concept
-of folio.
-
-I get that in some parts of the MM, we can just assume that any struct
-page is a non-tail page.  But that's not the case in the filemap APIs;
-they're pretty much all defined to return the precise page which contains
-the specific byte.  I think that's a mistake, and I'm working to fix it.
-But until it is all fixed [1], having a type which says "this is not a
-tail page" is, frankly, essential.
-
-[1] which is a gargantuan job because I'm not just dealing with
-mm/filemap.c, but also with ~90 filesystems and things sufficiently like
-filesystems to have an address_space_operations of their own, including
-graphics drivers.
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
