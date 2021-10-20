@@ -2,106 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C6C434913
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0658D434916
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhJTKjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 06:39:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229864AbhJTKjw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 06:39:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634726258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4yrUw21h+zQ2wXbMw73pU6qHpDvhPbFCoQi4iYgtHLM=;
-        b=anKef6g46t2Vl5EU6d+mR8ma3AZQHiWAGAfvmpT13bE0dRDkByleNSMlWeve7OTDS/Kh4g
-        /akgzy7dbefDEwJLiq2vxLBPW5uStymFnIN+/g8A1OdECxrNwB8dT4DVPStuo7PSVjXMtx
-        264f8WixVRbVCLcBAJDQGYz0CpVzWtc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-bMAMkTsHN3CNVwUKl3-rug-1; Wed, 20 Oct 2021 06:37:36 -0400
-X-MC-Unique: bMAMkTsHN3CNVwUKl3-rug-1
-Received: by mail-ed1-f70.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso2871140edj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 03:37:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=4yrUw21h+zQ2wXbMw73pU6qHpDvhPbFCoQi4iYgtHLM=;
-        b=5FuLujhG40GWluvQIFBV11pUPuJ8FXqGZAhDr2NRg1wwytkxh7zfLtLL2sOs0IxcNk
-         RJN4rM2ddsF3KVN0TdId6kRQwSwX49KiwXuf/ykH/yGz2TRcwHdu5UOh1F5RH4J/zay5
-         bB/Fc0e21nkQj2+nJlx+VBBSatkvng3DHfEAzsaNBYLFtbSolBydvoTbmaeN4FoC1KZD
-         pWv2KbHu4ILlJF674kWo/I6kBGAwsjSDqoxZIwlAV7Q8KRsQbZ0Ga8j7ac1cRVK3ijrQ
-         p1e2fntxq5QyIjiZoB/IFCevgGrFRJjbjMp3fY6Wo1WxzY9SSOb2kMfxJ086gyN1UZEA
-         2rpw==
-X-Gm-Message-State: AOAM530kiJhPeNWhiD5R2eh52L8QkKh1SDDQh/3oId8d4TNSzCWGwIzO
-        ilZ9rjHBXwKbLlUkP233kiUbLnTYwjHMb3bKtyZgbugs+8H2TS6+/+bhME2HLsoGZT2YMtysgtD
-        xzbuTgIckcysgxXmaMHOxE3SZ
-X-Received: by 2002:a17:907:7fa8:: with SMTP id qk40mr43860947ejc.445.1634726255672;
-        Wed, 20 Oct 2021 03:37:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyMWzsiJlUJ6VMXTDtVVr8gloUIzhLnBOqnnnGEXhwBkD3QwRLZPFhQxW/DrRYmOHfEnPhoVw==
-X-Received: by 2002:a17:907:7fa8:: with SMTP id qk40mr43860927ejc.445.1634726255459;
-        Wed, 20 Oct 2021 03:37:35 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id e7sm1053267edk.3.2021.10.20.03.37.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 03:37:34 -0700 (PDT)
-Message-ID: <e0f336e9-d167-18a8-0af8-0d5517bae9a5@redhat.com>
-Date:   Wed, 20 Oct 2021 12:37:32 +0200
+        id S230102AbhJTKlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 06:41:06 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:30648 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229900AbhJTKlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 06:41:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1634726329;
+  x=1666262329;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Y2adYmK2ohxodX6Ld8DWVNGEgFwqUg/XOlnsfsiGzbk=;
+  b=ectoQxVdoaGRerX4Xzig43ilnTIu8VxI+oh/kh7uQcfQYHOKEYluW1lQ
+   L66YeUvM5qf6h96uNKLCmhlG6Vpe0H3IX6XmtBsXksMFX9XXjfYso/6cd
+   3POd50avsT3F2I9nRlDxBPxKphy7BnOc4qdxHuFRYCQ7KIX7WDUAq2wag
+   8UMR7xwj8Jc+tmJxTDalZ4Lh0GhlN+YUo9ZOsdXunk6S6XENU7wCLjNbB
+   78JtHdi5DykMehsbIwLpdsFiz2KSesz514NiOYZimB2SmvCQZMHdk+oXb
+   tNgXGIQTbSCHZEAiUFO5qcuz0DleMAdZ5NPi83uP4yQ1DBqZMBSoLxuxr
+   Q==;
+Date:   Wed, 20 Oct 2021 12:38:49 +0200
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     Jie Deng <jie.deng@intel.com>, "wsa@kernel.org" <wsa@kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel <kernel@axis.com>
+Subject: Re: [PATCH 2/2] i2c: virtio: fix completion handling
+Message-ID: <20211020103849.GA9985@axis.com>
+References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
+ <20211019074647.19061-3-vincent.whitchurch@axis.com>
+ <20211019082211.ngkkkxlfcrsvfaxg@vireshk-i7>
+ <81ea2661-20f8-8836-5311-7f2ed4a1781f@intel.com>
+ <20211020091721.7kcihpevzf7h4d62@vireshk-i7>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v3 3/3] KVM: vCPU kick tax cut for running vCPU
-Content-Language: en-US
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
- <1634631160-67276-3-git-send-email-wanpengli@tencent.com>
- <24e67e43-c50c-7e0f-305a-c7f6129f8d70@redhat.com>
- <YW8BmRJHVvFscWTo@google.com>
- <CANRm+CzuWnO8FZPTvvOtpxqc5h786o7THyebOFpVAp3BF1xQiw@mail.gmail.com>
- <45fabf5a-96b5-49dc-0cba-55714ae3a4b5@redhat.com>
- <CANRm+CyPznw0O2qwnhhc=YEq+zSD3C7dqqG8-8XE6sLdhL7aXQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <CANRm+CyPznw0O2qwnhhc=YEq+zSD3C7dqqG8-8XE6sLdhL7aXQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211020091721.7kcihpevzf7h4d62@vireshk-i7>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/21 12:02, Wanpeng Li wrote:
->> +#ifdef CONFIG_PREEMPT_RCU
->> +       /* The cost of rcu_read_lock() is nontrivial for preemptable RCU.  */
->> +       if (!rcuwait_active(w))
->> +               return ret;
->> +#endif
->> +
->> +       rcu_read_lock();
->> +
->>          task = rcu_dereference(w->task);
->>          if (task)
->>                  ret = wake_up_process(task);
->>
->> (If you don't, rcu_read_lock is essentially preempt_disable() and it
->> should not have a large overhead).  You still need the memory barrier
->> though, in order to avoid missed wakeups; shameless plug for my
->> article athttps://lwn.net/Articles/847481/.
-> You are right, the cost of rcu_read_lock() for preemptable RCU
-> introduces too much overhead, do you want to send a separate patch?
+On Wed, Oct 20, 2021 at 11:17:21AM +0200, Viresh Kumar wrote:
+> On 20-10-21, 16:54, Jie Deng wrote:
+> > 
+> > On 2021/10/19 16:22, Viresh Kumar wrote:
+> > > On 19-10-21, 09:46, Vincent Whitchurch wrote:
+> > > >   static void virtio_i2c_msg_done(struct virtqueue *vq)
+> > > >   {
+> > > > -	struct virtio_i2c *vi = vq->vdev->priv;
+> > > > +	struct virtio_i2c_req *req;
+> > > > +	unsigned int len;
+> > > > -	complete(&vi->completion);
+> > > > +	while ((req = virtqueue_get_buf(vq, &len)))
+> > > > +		complete(&req->completion);
+> > > Instead of adding a completion for each request and using only the
+> > > last one, maybe we can do this instead here:
+> > > 
+> > > 	while ((req = virtqueue_get_buf(vq, &len))) {
+> > >                  if (req->out_hdr.flags == cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT))
+> > 
+> > 
+> > Is this for the last one check ? For the last one, this bit should be
+> > cleared, right ?
+> 
+> Oops, you are right. This should be `!=` instead. Thanks.
 
-Yes, I'll take care of this.  Thanks!
-
-Paolo
-
+I don't quite understand how that would be safe since
+virtqueue_add_sgs() can fail after a few iterations and all queued
+request buffers can have FAIL_NEXT set.  In such a case, we would end up
+waiting forever with your proposed change, wouldn't we?
