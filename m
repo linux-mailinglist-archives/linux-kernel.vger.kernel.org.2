@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CF1434E63
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3E5434E67
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhJTO6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhJTO63 (ORCPT
+        id S230205AbhJTPAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:00:08 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57952 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhJTPAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:58:29 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2F3C06161C;
-        Wed, 20 Oct 2021 07:56:15 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id f4so7181523uad.4;
-        Wed, 20 Oct 2021 07:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LVRZfCbUcEWqq8bS7PaOVjbhTh/WMCv3Aoqx5RAxI1Y=;
-        b=M3jZcojyY6KwbydrAH9WjnewEr0XFq3PdzkMUEsUbrFx8wTTQXqGLT5+Sec2jPy3AG
-         hfumzblW+g6VWHX9JfOrVqa9RC5FGzhf9e1eCBzSw9wTccgog9GsS+iwwm9kpsRxXWLA
-         alXC1g16Bh5LGu8GLxP4Qm3zXCb6UcwtoIcOPjbOcujtgx3+z3Z4euOFsOTaRKAAr92d
-         ZzErZg9YruuNDYylZZ74fJyWY3jjwNCRojRreE/zm6npnzfFsRBGaxPxpeUWUOJbTxmo
-         r4rq+9Na4it873j4LlwH8wPWhf9nzKrExExfZhfV3xqFedVVG7dUy5Ho/YiO3mcJyuyK
-         +qJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LVRZfCbUcEWqq8bS7PaOVjbhTh/WMCv3Aoqx5RAxI1Y=;
-        b=Uf+LGljQqrQcFeeRTqc3hPoweVuWqVssxQF1atR/BpNF1YBl0cc6UYMt58K+6uxX26
-         YHsI1+eSubU4Fs9at4+bDxdgvfxbyNW+/CkmPNFzmDObkY3rMYESmZ4FwVrFtDGMEwUF
-         PkmGjlzV0c1gDosAygNx6zjQeexy2+UxDi83atntZE3MpN40KFYE6+JvOnXZG/hKSSEm
-         D+RtZic06VrbWMusZq+qWFwaFndribJu0UzZcqMOiroyKkU3XrgTH8unfLZrPHI00YwD
-         57t7ndbtkfuDYfBClsrPQKFu3+Tbn0G/SmVvqTBHyMxXTWVOjUvsbzuaPjNQYF2NFc/W
-         AAKQ==
-X-Gm-Message-State: AOAM532Yyn/aPeLrY8gtlMCwikk0XpE7vd64zkA40upqfZEoTE/ELAyT
-        zgpm3h624MH83NTwTJgShAkEOvIyoKJyy49oykc=
-X-Google-Smtp-Source: ABdhPJy/0HLpH4lEXBGS1niveWyVKjjV+ypKgVhS4pvrspXd+LAcOALfGNoz8yvyLuDFEkbc7WSHTclIrYcmad0Hvdg=
-X-Received: by 2002:a67:42c2:: with SMTP id p185mr641748vsa.41.1634741774522;
- Wed, 20 Oct 2021 07:56:14 -0700 (PDT)
+        Wed, 20 Oct 2021 11:00:07 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E2DC31F770;
+        Wed, 20 Oct 2021 14:57:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634741871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=INWX6iRMgRgAeyFdp/SkdRvXgxqnNTdg9wvYzeiWaBA=;
+        b=iTmcOtZYuIOlWrscgR3H2hvlT6MI5R92DnWgHIy7wONcN+PKYWUyK570QvFDSk1qih5g3d
+        lBlmdgglQ/UhLnEdjefJXfInoHJwAijYNaUwZHjo5JQwFqSQfIlciUH0AC2Nx52pKVqGt2
+        m56/Jk90dWeSYs1B62hBbsy3Xqw+q3A=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4BDC7A3B85;
+        Wed, 20 Oct 2021 14:57:51 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 16:57:50 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg 2/3] memcg: remove charge forcinig for dying tasks
+Message-ID: <YXAubuMMgNDeguNx@dhcp22.suse.cz>
+References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+ <cover.1634730787.git.vvs@virtuozzo.com>
+ <56180e53-b705-b1be-9b60-75e141c8560c@virtuozzo.com>
+ <YXAOjQO5r1g/WKmn@dhcp22.suse.cz>
+ <cbda9b6b-3ee5-06ab-9a3b-debf361b55bb@virtuozzo.com>
 MIME-Version: 1.0
-References: <20210922050035.18162-1-sergio.paracuellos@gmail.com> <163473978253.23166.3894301849923362863.b4-ty@arm.com>
-In-Reply-To: <163473978253.23166.3894301849923362863.b4-ty@arm.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 20 Oct 2021 16:56:03 +0200
-Message-ID: <CAMhs-H99H_Ojtdwyj3_9K6FdZfNgD42cHfjrVJ-+6_RiU4OG7g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
- controller driver
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>, NeilBrown <neil@brown.name>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cbda9b6b-3ee5-06ab-9a3b-debf361b55bb@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 4:23 PM Lorenzo Pieralisi
-<lorenzo.pieralisi@arm.com> wrote:
->
-> On Wed, 22 Sep 2021 07:00:32 +0200, Sergio Paracuellos wrote:
-> > MediaTek MT7621 PCIe subsys supports single Root complex (RC)
-> > with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link.
-> > Topology is as follows:
-> >
-> >
-> >                           MT7621 PCIe HOST Topology
-> >
-> > [...]
->
-> Applied to pci/mt7621, thanks!
->
-> [1/3] dt-bindings: mt7621-pci: PCIe binding documentation for MT7621 SoCs
->       https://git.kernel.org/lpieralisi/pci/c/e5bc5605e7
-> [2/3] PCI: mt7621: Add MediaTek MT7621 PCIe host controller driver
->       https://git.kernel.org/lpieralisi/pci/c/5797a2b2bc
-> [3/3] MAINTAINERS: add myself as maintainer of the MT7621 PCI controller driver
->       https://git.kernel.org/lpieralisi/pci/c/eb1d7d438c
->
-> Thanks,
-> Lorenzo
+On Wed 20-10-21 17:21:33, Vasily Averin wrote:
+> On 20.10.2021 15:41, Michal Hocko wrote:
+> > On Wed 20-10-21 15:13:46, Vasily Averin wrote:
+> >> ToDo: should we keep task_is_dying() in mem_cgroup_out_of_memory() ?
+> >>
+> >> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> >> ---
+> >>  mm/memcontrol.c | 20 +++++++-------------
+> >>  1 file changed, 7 insertions(+), 13 deletions(-)
+> >>
+> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >> index 6da5020a8656..74a7379dbac1 100644
+> >> --- a/mm/memcontrol.c
+> >> +++ b/mm/memcontrol.c
+> >> @@ -239,7 +239,7 @@ enum res_type {
+> >>  	     iter != NULL;				\
+> >>  	     iter = mem_cgroup_iter(NULL, iter, NULL))
+> >>  
+> >> -static inline bool should_force_charge(void)
+> >> +static inline bool task_is_dying(void)
+> >>  {
+> >>  	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
+> >>  		(current->flags & PF_EXITING);
+> >> @@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> >>  	 * A few threads which were not waiting at mutex_lock_killable() can
+> >>  	 * fail to bail out. Therefore, check again after holding oom_lock.
+> >>  	 */
+> >> -	ret = should_force_charge() || out_of_memory(&oc);
+> >> +	ret = task_is_dying() || out_of_memory(&oc);
+> > 
+> > Why are you keeping the task_is_dying check here? IIRC I have already
+> > pointed out that out_of_memory already has some means to do a bypass
+> > when needed.
+> 
+> It was a misunderstanding.
 
-Thanks, Lorenzo.
+Sorry if I made you confused.
 
-Best regards,
-     Sergio Paracuellos
+> I've been waiting for your final decision.
+> 
+> I have no good arguments "pro" or strong objection "contra". 
+> However, I prefer to keep task_is_dying() so as not to touch other tasks unnecessarily.
+
+One argument for removing it from here is the maintainability. Now you
+have a memcg specific check which is not in sync with the oom. E.g.
+out_of_memory does task_will_free_mem as the very first thing. You are
+also automatically excluding oom killer for cases where that might make
+a sense.
+-- 
+Michal Hocko
+SUSE Labs
