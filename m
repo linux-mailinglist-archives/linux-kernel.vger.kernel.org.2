@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB4F43510D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384F143510F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhJTRQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S230369AbhJTRRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbhJTRQw (ORCPT
+        with ESMTP id S230049AbhJTRRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:16:52 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D835C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:14:38 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id q10-20020a17090a1b0a00b001a076a59640so4173612pjq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:14:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YUffwqw7TyZ+nq+dSJh/YbaKQTy1hvlfSgjnuROyIOY=;
-        b=jvessDKfgDNvIBa1Ww83XnWrWtkrnjrB7f47r8pXZ4iW8WkNc3ls20EuXb7qZSPrwv
-         UcUgsWfy9GZygh3dBhyQxMskFvVOoECdLkZe1kYzrCJhTFsyBxe43pOFvtiRMCVSc6UO
-         VMCjuKE/EPYcOsmj8kSQAFHhVl8SodYXSBfQU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YUffwqw7TyZ+nq+dSJh/YbaKQTy1hvlfSgjnuROyIOY=;
-        b=5glC3hnq3XdOSh784DNYmDc9LXzCkgsBNgNDPPXq0BM8WtO5Oqm3y1XCsWJXbEXid3
-         IxvQuVzdyBUi3tlvUPqZWkeArebDxWAsIx84f7DLDNUxAqoM81N3X1BdRbg3qi5Tn/ay
-         JcdQbaJZFuTw6hLH/5M94DEYY80h4f34z4Gxre/IGLJlI50/g6uDL6PE2fA7CsazhIMA
-         z3QaCETTBXG8O+GU9uLVA4a4tOEdCjn6XEjdnpv0mzDD9T7SiupOTFIue7eJIo5gv7cZ
-         yGuW92KXjwds0GZxyCXjE9cEttZ6gC7cd4ZxvCvhCRFTSOTaKtsXZ8ZHXBdUh+TSWaIc
-         OBtg==
-X-Gm-Message-State: AOAM5314Fgz2m/uCMXXBpE8YWMmExB2pBY/WUtBkRfeo42kNgdkpuIfR
-        zhGYv1yV/WY3QQf7jKnDcxNjWg==
-X-Google-Smtp-Source: ABdhPJz6Lb8i9XfQ+ZaOzqCSrJ4aau7V9H411Ar5EcXAieXZwYegz99ehafx9jKjUjO/l7dfc48jeA==
-X-Received: by 2002:a17:90b:3a88:: with SMTP id om8mr153373pjb.164.1634750077917;
-        Wed, 20 Oct 2021 10:14:37 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:ee8c:e73a:3f5e:717a])
-        by smtp.gmail.com with UTF8SMTPSA id u16sm3378795pfi.73.2021.10.20.10.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 10:14:37 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Brian Norris <briannorris@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>
-Subject: [PATCH v2] MAINTAINERS: Fixup drm-misc website link
-Date:   Wed, 20 Oct 2021 10:14:18 -0700
-Message-Id: <20211020101233.v2.1.I96669f75475cbb0ae1749940217876aa8991b703@changeid>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+        Wed, 20 Oct 2021 13:17:10 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E315FC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 10:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=dlA2zg6fiC2H+IJzS881hgO1rZ9WRlHQjA0SQx8l/68=; b=n7cUPV57gIINXpdjNb7An9Eso+
+        SdAG4G8HgYNzVQhGwaQDR8g3FFNs1y9VYZv6t1zrrmi7dC/pVtETiabJJmbNod4l5KOUuHCgXncaa
+        Qn37iQxzKV8KdgXhlNQH8xDaXirhN5rXxZR+1mVQjot6e6LwFCUdsXqXMyvSPHWr70R356rzig1S1
+        eQX12I+TEbLbPQfR/vF4hTxscTosIocHd6HLpXykRl2jNQdumGAmllZzYIigyqvAqf9eXfXuyU72F
+        HmFwFU/uG2Br1meu2TRpXRIe2N1FSWT0O/i9ul3eekOt+LqLIjDPzGpgPkcYjIDQnUenZu+/GWPw/
+        haKXc7+Q==;
+Received: from [2001:4bb8:180:8777:a130:d02a:a9b5:7d80] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdFB0-005IqL-6f; Wed, 20 Oct 2021 17:14:54 +0000
+Date:   Wed, 20 Oct 2021 19:14:51 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] dma-mapping fixes for Linux 5.15
+Message-ID: <YXBOiy+yS4pwwHeQ@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-https://01.org/linuxgraphics/gfx-docs/maintainer-tools/drm-misc.html
-gives HTTP 404, and
-https://01.org/linuxgraphics/gfx-docs/maintainer-tools/ redirects to
-freedesktop.org now.
+The following changes since commit 59583f747664046aaae5588d56d5954fab66cce8:
 
-Let's save people the pain of figuring that out.
+  sparc32: page align size in arch_dma_alloc (2021-09-14 14:35:17 +0200)
 
-Signed-off-by: Brian Norris <briannorris@chromium.org>
-Reviewed-by: Sean Paul <seanpaul@chromium.org>
----
+are available in the Git repository at:
 
-Changes in v2:
- - Correct the patch description text
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.15-2
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+for you to fetch changes up to c2bbf9d1e9ac7d4fdd503b190bc1ba8a6302bc49:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 100d7f93a15b..811d8d3e35fb 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6158,7 +6158,7 @@ M:	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
- M:	Maxime Ripard <mripard@kernel.org>
- M:	Thomas Zimmermann <tzimmermann@suse.de>
- S:	Maintained
--W:	https://01.org/linuxgraphics/gfx-docs/maintainer-tools/drm-misc.html
-+W:	https://drm.pages.freedesktop.org/maintainer-tools/drm-misc.html
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/gpu/
- F:	drivers/gpu/drm/*
--- 
-2.33.0.1079.g6e70778dc9-goog
+  dma-debug: teach add_dma_entry() about DMA_ATTR_SKIP_CPU_SYNC (2021-10-18 12:46:45 +0200)
 
+----------------------------------------------------------------
+dma-mapping fixes for Linux 5.15
+
+ - fix more dma-debug fallout (Gerald Schaefer, Hamza Mahfooz)
+ - fix a kerneldoc warning (Logan Gunthorpe)
+
+----------------------------------------------------------------
+Gerald Schaefer (1):
+      dma-debug: fix sg checks in debug_dma_map_sg()
+
+Hamza Mahfooz (1):
+      dma-debug: teach add_dma_entry() about DMA_ATTR_SKIP_CPU_SYNC
+
+Logan Gunthorpe (1):
+      dma-mapping: fix the kerneldoc for dma_map_sgtable()
+
+ kernel/dma/debug.c   | 36 ++++++++++++++++++++----------------
+ kernel/dma/debug.h   | 24 ++++++++++++++++--------
+ kernel/dma/mapping.c | 24 ++++++++++++------------
+ 3 files changed, 48 insertions(+), 36 deletions(-)
