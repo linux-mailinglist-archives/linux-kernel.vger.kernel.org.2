@@ -2,211 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AECA4351E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AC6435210
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhJTRtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:49:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230411AbhJTRti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:49:38 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05C2F611C7;
-        Wed, 20 Oct 2021 17:47:21 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 18:51:40 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com
-Subject: Re: [PATCH v6 1/1] iio/scmi: Add reading "raw" attribute.
-Message-ID: <20211020185118.7a02cbf8@jic23-huawei>
-In-Reply-To: <20211019075949.17644-2-andriy.tryshnivskyy@opensynergy.com>
-References: <20211019075949.17644-1-andriy.tryshnivskyy@opensynergy.com>
-        <20211019075949.17644-2-andriy.tryshnivskyy@opensynergy.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230395AbhJTR5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230073AbhJTR5x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:57:53 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3374C06161C;
+        Wed, 20 Oct 2021 10:55:38 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id l201so3315670ybl.9;
+        Wed, 20 Oct 2021 10:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V8u86eLA4+HU/aIaOe6FGTXKOIQPSQcBtCZ7dRIOqJ4=;
+        b=Ymtz7D3u8DujOdY7kLaXMRY3YJFFp/myUA06VyXitafGFeU23JUimNyGSyV/9APBS7
+         xRiYq2A6L9reVBhlhN8pXW6Y+owBKR8kWfiKYPSyfBceXbalzlyDOvGvLfKEwn/LMVII
+         732R6+YH/jVgOrrAe7lvq+002jUjQxF4WwlJlADtizvgzKh1LpoVtfH74cqlCnrot3O9
+         UrzWMqnhCb4DMZfD/g9mb5l58pL8ET5Zd5HhWo2OFkTSUCG4zxSMivklVRmDllfF3ZDE
+         GSxX7HrpQBCllEJFEE+XAfWF5zPXIZLS/BUknAyw7RpZPbmsQ6W9TVEGWzI+ABtGpev8
+         n8EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V8u86eLA4+HU/aIaOe6FGTXKOIQPSQcBtCZ7dRIOqJ4=;
+        b=JUmMuPVIbuLpAcL/vmuwze8PGrR7XEaeHwX3fogesuwJhq71OscjDyQRONL5XC7aRm
+         l2qnj/AwYWqXz6G4CB9MbRw96oQBi7U3ZU41jPJfgDQHJLvL80yYR9BvDSXkPmchNrxt
+         juL6o52cBzCZ3i9XgKFHyKc4iSob7WfIzSLDo2ewaASStYjUvkTDp6SKUJI8TFsK18fK
+         2/B8wWXk5IUJRNDJ06YFcxwXjT4grnffaZBzlcG5cWtyEV35JDcUpzdGUJAtmP605xGU
+         4G9XYJweMK0pBxFbYv6F1kU7exa1SQkyV1LqKC8Vh/I1lnJJ5WkEUqdnnvkNzDsJYJXd
+         DIBA==
+X-Gm-Message-State: AOAM533n6UEdx2HLbv/eun9NSnExRvwE/chJ1Wx5rmI/UgoCCeQqnoho
+        i+GorUTjr9LViw32NpApl+U5BY3ecuUo48VarSE=
+X-Google-Smtp-Source: ABdhPJwl4dexMHx25AHVV4O1CY1kJDihzhI+4Wa5+WDaHdsrMGIiry4wfSnp7RoCOKPP2A72YHLFvT76XCiA1BBprGU=
+X-Received: by 2002:a05:6902:154d:: with SMTP id r13mr671224ybu.114.1634752538215;
+ Wed, 20 Oct 2021 10:55:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211012111649.983253-1-davidcomponentone@gmail.com>
+In-Reply-To: <20211012111649.983253-1-davidcomponentone@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Oct 2021 10:55:27 -0700
+Message-ID: <CAEf4BzYTNZ=TNqMiGNg_Nj03K9fMM_xnoc=yaEYn8zbyE1rVjg@mail.gmail.com>
+Subject: Re: [PATCH] Fix application of sizeof to pointer
+To:     davidcomponentone@gmail.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Zeal Robot <zealci@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 10:59:49 +0300
-Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
-
-> Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
-> reading "raw" attribute in scmi_iio_read_raw.
-> Introduce new type IIO_VAL_INT_64 to read 64-bit value
-> for "raw" attribute.
-> 
-Change log needs to be below the --- otherwise we'll store it forever
-in git.  A linked tag (which will be generated when I apply)
-is sufficient for this sort of historical info.
-
-> Changes comparing v5 -> v6:
-> * revert v5 changes since with scmi_iio_read_raw() the channel
->   can't be used by in kernel users (iio-hwmon)
-> * returned to v3 with direct mode
-> * introduce new type IIO_VAL_INT_64 to read 64-bit value
-> 
-> Changes comparing v4 -> v5:
-> * call iio_device_release_direct_mode() on error
-> * code cleanup, fix typo
-> 
-> Changes comparing v3 -> v4:
-> * do not use scmi_iio_get_raw() for reading raw attribute due to 32-bit
->   return value limitation (actually I reverted the previous v3)
-> * introduce scmi_iio_read_raw to scmi_iio_ext_info[] which can return
->   64-bit value
-> * enabling/disabling and reading raw attribute is done in direct mode
-> 
-> Changes comparing v2 -> v3:
-> * adaptation for changes in structure scmi_iio_priv (no member
->   named 'handle')
-> 
-> Changes comparing v0 -> v2:
-> * added an error return when the error happened during config_set
-> * removed redundant cast for "readings"
-> * added check if raw value fits 32 bits
-> 
-> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+On Tue, Oct 12, 2021 at 4:17 AM <davidcomponentone@gmail.com> wrote:
+>
+> From: David Yang <davidcomponentone@gmail.com>
+>
+> The coccinelle check report:
+> "./samples/bpf/xdp_redirect_cpu_user.c:397:32-38:
+> ERROR: application of sizeof to pointer"
+> Using the "strlen" to fix it.
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: David Yang <davidcomponentone@gmail.com>
 > ---
->  drivers/iio/common/scmi_sensors/scmi_iio.c | 57 +++++++++++++++++++++-
->  drivers/iio/industrialio-core.c            |  3 ++
->  include/linux/iio/types.h                  |  1 +
 
-Two patches needed.  One to introduce the new core functionality then
-a second to use it in the driver.
+For future submissions, please use [PATCH bpf-next] subject prefix.
+For changes that are targeted against BPF samples, please use
+samples/bpf: prefix as well. So in this case the patch subject should
+have been something like:
 
-Actual code looks good to me though I think I'd like a comment next to
-the #define as not obvious which way around the two parts will go.
+[PATCH bpf-next] samples/bpf: Fix application of sizeof to pointer
 
-There are some other places we will probably need to ultimately handle this
-to allow for in kernel consumers but those can come when someone needs them.
+I've fixed it up and applied to bpf-next, thanks.
 
-Will need an ack from Jyoti on this one though as driver author.
-Thanks,
-
-Jonathan
-
-
->  3 files changed, 60 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> index 7cf2bf282cef..2c1aec0fd5ff 100644
-> --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> @@ -279,6 +279,52 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
->  	return 0;
->  }
->  
-> +static int scmi_iio_read_channel_data(struct iio_dev *iio_dev,
-> +			     struct iio_chan_spec const *ch, int *val, int *val2)
-> +{
-> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> +	u32 sensor_config;
-> +	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
-> +	int err;
-> +
-> +	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> +					SCMI_SENS_CFG_SENSOR_ENABLE);
-> +	err = sensor->sensor_ops->config_set(
-> +		sensor->ph, sensor->sensor_info->id, sensor_config);
-> +	if (err) {
-> +		dev_err(&iio_dev->dev,
-> +			"Error in enabling sensor %s err %d",
-> +			sensor->sensor_info->name, err);
-> +		return err;
-> +	}
-> +
-> +	err = sensor->sensor_ops->reading_get_timestamped(
-> +		sensor->ph, sensor->sensor_info->id,
-> +		sensor->sensor_info->num_axis, readings);
-> +	if (err) {
-> +		dev_err(&iio_dev->dev,
-> +			"Error in reading raw attribute for sensor %s err %d",
-> +			sensor->sensor_info->name, err);
-> +		return err;
-> +	}
-> +
-> +	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> +					SCMI_SENS_CFG_SENSOR_DISABLE);
-> +	err = sensor->sensor_ops->config_set(
-> +		sensor->ph, sensor->sensor_info->id, sensor_config);
-> +	if (err) {
-> +		dev_err(&iio_dev->dev,
-> +			"Error in disabling sensor %s err %d",
-> +			sensor->sensor_info->name, err);
-> +		return err;
-> +	}
-> +
-> +	*val = (u32)readings[ch->scan_index].value;
-> +	*val2 = (u32)(readings[ch->scan_index].value >> 32)
-> +
-> +	return IIO_VAL_INT_64;
-> +}
-> +
->  static int scmi_iio_read_raw(struct iio_dev *iio_dev,
->  			     struct iio_chan_spec const *ch, int *val,
->  			     int *val2, long mask)
-> @@ -300,6 +346,14 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
->  	case IIO_CHAN_INFO_SAMP_FREQ:
->  		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
->  		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-> +	case IIO_CHAN_INFO_RAW:
-> +		ret = iio_device_claim_direct_mode(iio_dev);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = scmi_iio_read_channel_data(iio_dev, ch, val, val2);
-> +		iio_device_release_direct_mode(iio_dev);
-> +		return ret;
->  	default:
->  		return -EINVAL;
->  	}
-> @@ -381,7 +435,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
->  	iio_chan->type = type;
->  	iio_chan->modified = 1;
->  	iio_chan->channel2 = mod;
-> -	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
-> +	iio_chan->info_mask_separate =
-> +		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
->  	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
->  	iio_chan->info_mask_shared_by_type_available =
->  		BIT(IIO_CHAN_INFO_SAMP_FREQ);
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 6d2175eb7af2..49e42d04ea16 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -702,6 +702,9 @@ static ssize_t __iio_format_value(char *buf, size_t offset, unsigned int type,
->  	}
->  	case IIO_VAL_CHAR:
->  		return sysfs_emit_at(buf, offset, "%c", (char)vals[0]);
-> +	case IIO_VAL_INT_64:
-> +		tmp2 = (s64)((((u64)vals[1]) << 32) | (u32)vals[0]);
-> +		return sysfs_emit_at(buf, offset, "%lld", tmp2);
->  	default:
->  		return 0;
->  	}
-> diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
-> index 84b3f8175cc6..e148fe11a3dc 100644
-> --- a/include/linux/iio/types.h
-> +++ b/include/linux/iio/types.h
-> @@ -24,6 +24,7 @@ enum iio_event_info {
->  #define IIO_VAL_INT_PLUS_NANO 3
->  #define IIO_VAL_INT_PLUS_MICRO_DB 4
->  #define IIO_VAL_INT_MULTIPLE 5
-> +#define IIO_VAL_INT_64 6
-
-Possibly worth a descriptive comment. The other
-types tend to make it easy to assume the role
-of val and that of val2, in this case, val being
-the lower 32 bits isn't obvious...
-
->  #define IIO_VAL_FRACTIONAL 10
->  #define IIO_VAL_FRACTIONAL_LOG2 11
->  #define IIO_VAL_CHAR 12
-
+>  samples/bpf/xdp_redirect_cpu_user.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
+> index 6e25fba64c72..d84e6949007c 100644
+> --- a/samples/bpf/xdp_redirect_cpu_user.c
+> +++ b/samples/bpf/xdp_redirect_cpu_user.c
+> @@ -325,7 +325,6 @@ int main(int argc, char **argv)
+>         int add_cpu = -1;
+>         int ifindex = -1;
+>         int *cpu, i, opt;
+> -       char *ifname;
+>         __u32 qsize;
+>         int n_cpus;
+>
+> @@ -393,9 +392,8 @@ int main(int argc, char **argv)
+>                                 fprintf(stderr, "-d/--dev name too long\n");
+>                                 goto end_cpu;
+>                         }
+> -                       ifname = (char *)&ifname_buf;
+> -                       safe_strncpy(ifname, optarg, sizeof(ifname));
+> -                       ifindex = if_nametoindex(ifname);
+> +                       safe_strncpy(ifname_buf, optarg, strlen(ifname_buf));
+> +                       ifindex = if_nametoindex(ifname_buf);
+>                         if (!ifindex)
+>                                 ifindex = strtoul(optarg, NULL, 0);
+>                         if (!ifindex) {
+> --
+> 2.30.2
+>
