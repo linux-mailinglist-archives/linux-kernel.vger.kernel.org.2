@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85981434606
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F144434607
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbhJTHpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhJTHpo (ORCPT
+        id S229702AbhJTHqU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 03:46:20 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:35724 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhJTHqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:45:44 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6D1C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:43:29 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id g10so22347350edj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=h2snvaC4Y9bc2MDd6BmKsHEK8z2VUGUMTYhIavmImEI=;
-        b=dmEQU/S45AkOqhL7ZS5SgdsR7QuVxjmfmn9lBs/h8IYzLT1c60wwRU/rsXWNDPAHc1
-         ZbeXokMqi1TWz3iBYsBBYtTu4qwsL8osxEy3PHIJSEi/hs2gsf3tgKD6kHehYqPZQAqC
-         dsfCekTVxRVCMZ5CxSRBQzY6F+d924MpuJcq4X3yXWqTX7q/TgTTwjaEjPb1A1ix7EgU
-         s9ci5iAxtp5+PByjkolnuHGQzYzUN25DGcKmLLuwRoUu6P3VtQdhZeRx++U46tqemrgP
-         sg/pYtGQ66G5T9ZSDakWlS9DeFTi3RnlHBLECthVYnNiwzW1O+JH1FzbEAIAQPqFZUjn
-         5MOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=h2snvaC4Y9bc2MDd6BmKsHEK8z2VUGUMTYhIavmImEI=;
-        b=cC7VodlQtnMT5fMvtXiRYjpvAJ5faNl42K/9/1THto0UTbQOm3Q3Goo4EffLAKfkT4
-         dnlz115GSXlTKLm4vPmLESpFbPc5Qy2or4N/CDHMyq8XAlxlBV+x4+O8qLIXbfREUYMW
-         ptr21KJ5/MF6i8/OZL7EMwZiZFRoyC93HokQoJs3r/gVGGuQ0nLUNP8WNeEfCTgW7os2
-         m7wHbFR70vZEM3liCXV2HQrXWJe8CJq0tXhp9jnaR/TZyDZCFv4xa9Jg0smskdUyIJtG
-         QLzxrZDM9/++9ETw/hikQdJSPYsokcqKCaM8YBBsSBIa/E59BYL8C3Mow6/cA4/LKWIq
-         eY+A==
-X-Gm-Message-State: AOAM5306EHKoyHnMlkmHVqB2YlGFMTFFiB7NlIR31wXSzcvxoWrY9fRk
-        idRjHr/PyvDag4X1xAkG9aCais5mH5jcEeh1piA=
-X-Google-Smtp-Source: ABdhPJzmNG6HP8n0ypXcojD4EF9oU63qXFF+L/l2NTMNbo6Z3onUyQKJ5Fy4yK89bThEagJZiEm7/gLMnehOlA4q3EQ=
-X-Received: by 2002:a17:906:c015:: with SMTP id e21mr43882782ejz.113.1634715806296;
- Wed, 20 Oct 2021 00:43:26 -0700 (PDT)
+        Wed, 20 Oct 2021 03:46:19 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id A451960F6B67;
+        Wed, 20 Oct 2021 09:44:03 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 4QEm0mEuHRPv; Wed, 20 Oct 2021 09:44:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id F41D860F6B6A;
+        Wed, 20 Oct 2021 09:44:01 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id dXwyZmJQ0YJk; Wed, 20 Oct 2021 09:44:01 +0200 (CEST)
+Received: from blindfold.corp.sigma-star.at (unknown [82.150.214.1])
+        by lithops.sigma-star.at (Postfix) with ESMTPSA id 81A7360F6B67;
+        Wed, 20 Oct 2021 09:44:01 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     linux-mtd@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        hch@lst.de
+Subject: [PATCH] MAINTAINERS: Remove joern@lazybastard.org
+Date:   Wed, 20 Oct 2021 09:43:28 +0200
+Message-Id: <20211020074328.20072-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Sender: djmacdon5@gmail.com
-Received: by 2002:a50:3183:0:0:0:0:0 with HTTP; Wed, 20 Oct 2021 00:43:25
- -0700 (PDT)
-From:   DINA MCKENNA <dinamckennahowley@gmail.com>
-Date:   Wed, 20 Oct 2021 07:43:25 +0000
-X-Google-Sender-Auth: 503TBgiUTU5N4XnYDHSNOumzimI
-Message-ID: <CAKGPEqhKLX4td+Khu8ARhT5nVvDmFEg2n8gmzGtNkyU7+kWnOQ@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Joern's mail bounces and nobody knows where to find thim
+these days.
+So remove him from MAINTAINERS.
 
+Cc: hch@lst.de
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ MAINTAINERS | 12 ------------
+ 1 file changed, 12 deletions(-)
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0590fe14b3bc..08e005468b11 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3318,12 +3318,6 @@ F:	include/linux/blk*
+ F:	kernel/trace/blktrace.c
+ F:	lib/sbitmap.c
+ 
+-BLOCK2MTD DRIVER
+-M:	Joern Engel <joern@lazybastard.org>
+-L:	linux-mtd@lists.infradead.org
+-S:	Maintained
+-F:	drivers/mtd/devices/block2mtd.c
+-
+ BLUETOOTH DRIVERS
+ M:	Marcel Holtmann <marcel@holtmann.org>
+ M:	Johan Hedberg <johan.hedberg@gmail.com>
+@@ -14734,12 +14728,6 @@ F:	include/net/phonet/
+ F:	include/uapi/linux/phonet.h
+ F:	net/phonet/
+ 
+-PHRAM MTD DRIVER
+-M:	Joern Engel <joern@lazybastard.org>
+-L:	linux-mtd@lists.infradead.org
+-S:	Maintained
+-F:	drivers/mtd/devices/phram.c
+-
+ PICOLCD HID DRIVER
+ M:	Bruno Prémont <bonbons@linux-vserver.org>
+ L:	linux-input@vger.kernel.org
+-- 
+2.26.2
 
-I am glad to know you, but God knows you better and he knows why he
-has directed me to you at this point in time so do not be surprise at
-all. My names are Mrs. Dina Mckenna Howley a widow, i have been
-suffering from ovarian cancer disease. At this moment i am about to
-end the race like this because the illness has gotten to a very bad
-stage, without any family members and no child. I hoped that you will
-not expose or betray this trust and confident that I am about to
-entrust on you for the mutual benefit of the orphans and the less
-privileges ones. I have some funds I inherited from my late husband,
-the sum of ($11.000.000 Eleven million dollars.) deposited in the
-Bank. =C2=A0Having known my present health status, I decided to entrust
-this fund to you believing that you will utilize it the way i am going
-to instruct herein.
-
-Therefore I need you to assist me and reclaim this money and use it
-for Charity works, for orphanages and gives justice and help to the
-poor, needy and to promote the words of God and the effort that the
-house of God will be maintained says The Lord." Jeremiah 22:15-16.=E2=80=9C
-It will be my great pleasure to compensate you with 35 % percent of
-the total money for your personal use, 5 % percent for any expenses
-that may occur during the international transfer process while 60% of
-the money will go to the charity project.
-
-
-
-All I require from you is sincerity and ability to complete God task
-without any failure. It will be my pleasure to see that the bank has
-finally release and transfer the fund into your bank account therein
-your country even before I die here in the hospital, because of my
-present health status everything need to be process rapidly as soon as
-possible. I am waiting for your immediate reply, if only you are
-interested for further details of the transaction and execution of
-this charitable project.
-
-
-
-Best Regards your friend
-Mrs.
-Dina Mckenna Howley..
