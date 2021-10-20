@@ -2,233 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1024354D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7724354D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhJTU7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:59:02 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:56244
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230049AbhJTU7B (ORCPT
+        id S231214AbhJTVAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhJTVAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:59:01 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B42B33F320
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 20:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634763404;
-        bh=ej3tolcgPxSkmZKxTFzlEV+yeFLAQSjDBgYwepQ5Y2A=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=E4jWBuQcHPNGhupYX3qlsuIbG9SCZpbb5knizIWG+id5bnvEy/123OF9WSWAAVv/3
-         4Na9dTUvQlpdyI7lJ3p9gkURDJVtXTlIqchgm0SUGRKSHqo89L54kYs/YYm1yHOUH+
-         iwW1mpwuum5mmLSq85vdVfD/twAQHnrBdvpw3sDV0F2E/rRBw+AlcrVbN/jJdFjDMt
-         pN4OiSdw/3iPVDOVuyrmFqka35TQ91IoIJD4JbqlrVzGUEFAbwYesKPx8iJKef+tsK
-         7sEEwBBGEAQ4bgBOL/OrR3/sdhCAhxzK+usK/k8+jZF7YB/PN3zmx0FYCe5HfhtobU
-         tNECw/uCHZRiQ==
-Received: by mail-lf1-f70.google.com with SMTP id k8-20020a0565123d8800b003fd6e160c77so3533019lfv.17
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:56:44 -0700 (PDT)
+        Wed, 20 Oct 2021 17:00:38 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB407C06161C;
+        Wed, 20 Oct 2021 13:58:23 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id w19so515857edd.2;
+        Wed, 20 Oct 2021 13:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=p82YL0D5HeYBv9P48l1ubMQJCPT1B3EyFPBHcWoPvPM=;
+        b=cNwcJVoCFZ7X0025fVWetlAmRER6U4CpeECs+r3BzxQpK6Lo4oovoSYc2l2t+LRRIC
+         aAHlpgn+bsVdrJzV+MdFNSsVb+lDbJmkKBmu2UfpoiL2IlST84vNzDC+yiDSgucnsjVA
+         7Rf9Qhv96YOB5E5ac/U+o3PEE0F8ifgcvISjUw67Z+lRdCLQQ06IBGiz89bwUQAVk1go
+         nD7nz3GD/R/7rrcIf1CIIBr0kYFU7R35rfC0FH11K6mRnL/qYLKI9cpPkFBFjm8owi98
+         +1TVov3yAXTJ9FZj7iaZPq3NWsrZQpys4mHvcqoiUna6UCEqNmI2TfieNJWcNXcaECyc
+         jRBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ej3tolcgPxSkmZKxTFzlEV+yeFLAQSjDBgYwepQ5Y2A=;
-        b=hKpyBO7sM5HEHOx/aIHBx9yOdtG2aUhHhMUdJ+0W+DnUo7Gmmiwzme+HxhjZBaz/oM
-         mBG4YwIkol9GrvP2qd9e0EAThYWypWs/J9s0zkVuYqLIcb38XAMFiAwCbQGwhr/ZBCVR
-         4mCWku1gIhhgjX++6Py98HVCcZ/C8OoKPaAjA480HUlzcLf8P7uDqT7wJ+Kw8jiHJU7U
-         5hStixBb0f52jM9iMZF4bO38gS+8KInTBDTdqdwl6ZBdAqsqku0eIC4BIo0OteEZrjuM
-         SiQgcmHSPrVKDLcTdACdoviCnn6f2ERY++CJIQoX0eL24x0SScJyGrmtWScGFsxcbNpD
-         F0cw==
-X-Gm-Message-State: AOAM531PWg51Qyl/F7H5UpHKiac/7gtikO4zBohAxNzEYA9ENLJbcwpi
-        WsvIlcTjEub6WLYgU/1ZfI1WhM1Zt1tZuJf5URZ7/Xf7eM2f4mJwb+Un33R5NzXJ+OU/Hh8HNKq
-        P7zklY4pCMUf7inpaVZ4IDxaU6hVG2uUviR8XGSuLLg==
-X-Received: by 2002:a05:6512:398d:: with SMTP id j13mr1475184lfu.292.1634763404025;
-        Wed, 20 Oct 2021 13:56:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2tKOF/ci/DGkUHWFKDCZAXymlCX1AGqtT/RSExx/aAtmHW/6GJnmDVixSy1cftLmb9dc03A==
-X-Received: by 2002:a05:6512:398d:: with SMTP id j13mr1475160lfu.292.1634763403744;
-        Wed, 20 Oct 2021 13:56:43 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id a11sm276538lfl.157.2021.10.20.13.56.42
+        bh=p82YL0D5HeYBv9P48l1ubMQJCPT1B3EyFPBHcWoPvPM=;
+        b=hdQ+cfU08ridE4P5hI70YvOnLSmqor7kp6oPNT8/5Rn2TtD16U1/RNnO58bd7l8UYz
+         fKne0c+avxG/WlBV1gG/Z2XwGhqBQ5lbwk1ViA0eM8vSo9antioWUC/L9do0RUieNrDj
+         16nnXOfW2HUzRBKk/PAPkRVqqKAl0TASr6R75scrbVMUZodaLusHYUPfP7wNePhSKycQ
+         7fZnHx3/RVTOeWyoDr+wDg5dUESsEF8PawUQG4iM3dxlCAid6L613bY4Fe/yYks4uJdb
+         UIoR7FOSXFVgumqQtg6c8ju/D/8eXS0+22VXjuGlek39OQpBUHmD3oBnFQ1kJ3gyNw0V
+         TIKw==
+X-Gm-Message-State: AOAM532iXPxhrQkKLuH1qzxZO4SMu1FMoVuYyisXHj609aQFYapp2qH9
+        dd7oP0m0jw9KD5S8r4Fe0q1h+uyA/dQ=
+X-Google-Smtp-Source: ABdhPJwqfJvimEIS2BOKN2FCENYqFv1j80aLjxbRsgh7c8AbCjxmJKnAw+fheMF42FL+GZDS+gMZEQ==
+X-Received: by 2002:a50:8ade:: with SMTP id k30mr1741326edk.162.1634763502346;
+        Wed, 20 Oct 2021 13:58:22 -0700 (PDT)
+Received: from ?IPv6:2001:981:6fec:1:3bbb:3574:7e12:f56f? ([2001:981:6fec:1:3bbb:3574:7e12:f56f])
+        by smtp.gmail.com with ESMTPSA id v8sm1735117edj.7.2021.10.20.13.58.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 13:56:43 -0700 (PDT)
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     syzbot <syzbot+abd2e0dafb481b621869@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Thierry Escande <thierry.escande@collabora.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>
-References: <000000000000c644cd05c55ca652@google.com>
- <9e06e977-9a06-f411-ab76-7a44116e883b@canonical.com>
- <20210722144721.GA6592@rowland.harvard.edu>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [syzbot] INFO: task hung in port100_probe
-Message-ID: <b9695fc8-51b5-c61e-0a2f-fec9c2f0bae0@canonical.com>
-Date:   Wed, 20 Oct 2021 22:56:42 +0200
+        Wed, 20 Oct 2021 13:58:22 -0700 (PDT)
+Subject: Re: [PATCH v3 0/5] mmc: sdhci-pci: Remove dead code and deduplicate
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Raul E Rangel <rrangel@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
+From:   Ferry Toth <fntoth@gmail.com>
+Message-ID: <27fbd7d6-3d44-39f4-9589-06dc6deed572@gmail.com>
+Date:   Wed, 20 Oct 2021 22:58:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210722144721.GA6592@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/07/2021 16:47, Alan Stern wrote:
-> On Thu, Jul 22, 2021 at 04:20:10PM +0200, Krzysztof Kozlowski wrote:
->> On 22/06/2021 17:43, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    fd0aa1a4 Merge tag 'for-linus' of git://git.kernel.org/pub..
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=13e1500c300000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=7ca96a2d153c74b0
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=abd2e0dafb481b621869
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1792e284300000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ad9d48300000
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+abd2e0dafb481b621869@syzkaller.appspotmail.com
->>>
->>> INFO: task kworker/0:1:7 blocked for more than 143 seconds.
->>>       Not tainted 5.13.0-rc6-syzkaller #0
->>> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->>> task:kworker/0:1     state:D stack:25584 pid:    7 ppid:     2 flags:0x00004000
->>> Workqueue: usb_hub_wq hub_event
->>> Call Trace:
->>>  context_switch kernel/sched/core.c:4339 [inline]
->>>  __schedule+0x916/0x23e0 kernel/sched/core.c:5147
->>>  schedule+0xcf/0x270 kernel/sched/core.c:5226
->>>  schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
->>>  do_wait_for_common kernel/sched/completion.c:85 [inline]
->>>  __wait_for_common kernel/sched/completion.c:106 [inline]
->>>  wait_for_common kernel/sched/completion.c:117 [inline]
->>>  wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
->>>  port100_send_cmd_sync drivers/nfc/port100.c:923 [inline]
->>>  port100_get_command_type_mask drivers/nfc/port100.c:1008 [inline]
->>>  port100_probe+0x9e4/0x1340 drivers/nfc/port100.c:1554
->>>  usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
-> ...
+Hi,
+Op 14-10-2021 om 15:26 schreef Andy Shevchenko:
+> It appears that one of the supported platform magically worked with
+> the custom IRQ handler (any hints how?) while having two PCB designs
+> with an opposite CD sense level. Quirking it out reveals the code
+> duplication and dead code.
 > 
->> Cc: Thierry, Alan, Andrey,
->>
->> The issue is reproducible immediately on QEMU instance with
->> USB_DUMMY_HCD and USB_RAW_GADGET. I don't know about real port100 NFC
->> device.
->>
->> I spent some time looking into this and have no clue, except that it
->> looks like an effect of a race condition.
->>
->> 1. When using syskaller reproducer against one USB device (In the C
->> reproducer change the loop in main() to use procid=0) - issue does not
->> happen.
->>
->> 2. With two threads or more talking to separate Dummy USB devices, the
->> issue appears. The more of them, the better...
->>
->> 3. The reported problem is in missing complete. The correct flow is like:
->> port100_probe()
->> port100_get_command_type_mask()
->> port100_send_cmd_sync()
->> port100_send_cmd_async()
->> port100_submit_urb_for_ack()
->> port100_send_complete()
->> [   63.363863] port100 2-1:0.0: NFC: Urb failure (status -71)
->> port100_recv_ack()
->> [   63.369942] port100 2-1:0.0: NFC: Urb failure (status -71)
->>
->> and schedule_work() which completes and unblocks port100_send_cmd_sync
->>
->> However in the failing case (hung task) the port100_recv_ack() is never
->> called. It looks like USB core / HCD / gadget does not send the Ack/URB
->> complete.
->>
->> I don't know why. The port100 NFC driver code looks OK, except it is not
->> prepared for missing ack/urb so it waits indefinitely. I could try to
->> convert it to wait_for_completion_timeout() but it won't be trivial and
->> more important - I am not sure if this is the problem. Somehow the ACK
->> with Urb failure is not sent back to the port100 device. Therefore I am
->> guessing that the race condition is somwhere in USB stack, not in
->> port100 driver.
->>
->> The lockdep and other testing tools did not find anything here.
->>
->> Anyone hints where the issue could be?
+> Patch 1 is code deduplication to save few LOCs.
+> Patch 2-5 are dead code removals.
+
+Tested-by: Ferry Toth <ftoth@exalondelft.nl> @ Intel Edison-Arduino board
+
+> In v3:
+> - dropped the fix as it has been applied (Ulf)
+> - added tag (Adrian)
+> - elaborated commit IDs with their short descriptions in patch 3 (Adrian)
+> - corrected dependency in patch 5 (Adrian)
 > 
-> Here's what I wrote earlier: "It looks like the problem stems from the fact 
-> that port100_send_frame_async() submits two URBs, but 
-> port100_send_cmd_sync() only waits for one of them to complete.  The other 
-> URB may then still be active when the driver tries to reuse it."
+> In v2:
+> - redone fix to use ->get_cd() instead of quirks (Adrian)
+> - due to above transformed previous clean up to the current patch 2
+> - added a new patch, i.e. patch 3
+> - added commit IDs to patch 4 (Adrian)
+> - mentioned dependencies on previous patches in patch 5 and 6 (Adrian)
 > 
-> Of course, there may be more than one problem, so we may not be talking 
-> about the same thing.
+> Andy Shevchenko (5):
+>    mmc: sdhci: Deduplicate sdhci_get_cd_nogpio()
+>    mmc: sdhci: Remove unused prototype declaration in the header
+>    mmc: sdhci-pci: Remove dead code (struct sdhci_pci_data et al)
+>    mmc: sdhci-pci: Remove dead code (cd_gpio, cd_irq et al)
+>    mmc: sdhci-pci: Remove dead code (rst_n_gpio et al)
+> 
+>   drivers/mmc/host/Makefile          |   1 -
+>   drivers/mmc/host/sdhci-acpi.c      |  14 +--
+>   drivers/mmc/host/sdhci-pci-core.c  | 152 +----------------------------
+>   drivers/mmc/host/sdhci-pci-data.c  |   6 --
+>   drivers/mmc/host/sdhci-pci.h       |   5 -
+>   drivers/mmc/host/sdhci.c           |  19 ++++
+>   drivers/mmc/host/sdhci.h           |   2 +-
+>   include/linux/mmc/sdhci-pci-data.h |  18 ----
+>   8 files changed, 26 insertions(+), 191 deletions(-)
+>   delete mode 100644 drivers/mmc/host/sdhci-pci-data.c
+>   delete mode 100644 include/linux/mmc/sdhci-pci-data.h
+> 
 
-Hi Alan, Felipe, Greg and others,
-
-This is an old issue reported by syzkaller for NFC port100 driver [1].
-There is something similar for pn533 [2].
-
-I was looking at it some time ago, took a break and now I am trying to
-fix it again. Without success.
-
-The issue is reproducible via USB gadget on QEMU, not on real HW. I
-looked and debugged the code and I think previously mentioned
-double-URB-submit is not the reason here. Or I miss how the USB works
-(which is quite probable...).
-
-1. The port100 driver calls port100_send_cmd_sync() which eventually
-goes to port100_send_frame_async(). After it, it waits for "sync"
-completion.
-
-2. In port100_send_frame_async(), driver indeed first submits "out_urb"
-which quite fast is being processed by dummy_hcd with "no ep configured"
-and -EPROTO.
-
-3. Then (or sometimes before -EPROTO response from (2) above) the
-port100_send_frame_async() submits "in_urb" via
-port100_submit_urb_for_ack() and waits for its completion. Completion of
-"in_urb" (or the "ack") in port100_recv_ack() would schedule work to
-complete the (1) above - the sync completion.
-
-4. Usually, when reproducer works fine (does not trigger issue), the
-dummy_timer() from gadget responds with the same "no ep configured for
-urb" for this "in_urb" (3). This completes "in_urb", which eventually
-completes (1) and probe finishes with error. Error is expected, because
-it's random junk-gadget...
-
-The syzkaller reproducer fails if >1 of threads are running these usb
-gadgets.  When this happens, no "in_urb" completion happens. No this
-"ack" port100_recv_ack().
-
-I added some debugs and simply dummy_hcd dummy_timer() is woken up on
-enqueuing in_urb and then is looping crazy on a previous URB (some older
-URB, coming from before port100 driver probe started). The dummy_timer()
-loop never reaches the second "in_urb" to process it, I think.
-
-The pn533 NFC driver has similar design, but I have now really doubts it
-is a NFC driver issue. Instead an issue in dummy gadget HCD is somehow
-triggered by the reproducer.
-
-Reproduction - just follow [1] or [2]. Eventually I slightly tweaked the
-code and put here:
-https://github.com/krzk/tools/tree/master/tests-var/nfc/port100_probe
-$ make
-$ sudo ./port100_probe
-
-
-[1] https://syzkaller.appspot.com/bug?extid=abd2e0dafb481b621869
-[2] https://syzkaller.appspot.com/bug?extid=1dc8b460d6d48d7ef9ca
-
-
-Best regards,
-Krzysztof
