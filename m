@@ -2,237 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9492434FA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963E4434F9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhJTQGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:06:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:1633 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229817AbhJTQF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:05:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="215982065"
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
-   d="scan'208";a="215982065"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 09:02:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
-   d="scan'208";a="527126027"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga001.jf.intel.com with ESMTP; 20 Oct 2021 09:02:23 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 20 Oct 2021 09:02:22 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Wed, 20 Oct 2021 09:02:22 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Wed, 20 Oct 2021 09:02:22 -0700
+        id S231157AbhJTQFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:05:34 -0400
+Received: from mail-mw2nam10on2055.outbound.protection.outlook.com ([40.107.94.55]:51296
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229817AbhJTQFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 12:05:31 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YFv3p+3LHNEHtOh6y5rL9rG2JDKQpnXJEtN4LFTJ1orF36jFwZiUo5yUtgRUarJENzCBKKfgZO9JpwoSR311NtZiEXVtnxWuExdfn8TJ0AYDp4OniOB+466tVrCJRcn9NwBLYFNQLHXI8QiCDK6Sd3yxAb03fS9nCFBmbDaO5PeIZ0v9mqucyquDqSIWuEwcN0CYxspcBSPISWblm52+1ZENomFwmpoZgdDR+lD1yp+g6AbiyasjwLnJKZHPEAeHls/a8r2HOMDeTMnRruh32vkZUWpTYzlz/Pb6TShpkpuvhdlhOuwdH3BQ7F/aAiL82OXzkGZH3KOkLnfQ9V3tUA==
+ b=Pfqx6ns9LbeXBH7ek8M3C2dSZnQLWzaWxS9YymrjUtKpCEB1oHlh//YPewQ4cLDmWaZYduwI0IIc9gp+LYYktx6LUjR6hGbFUgNYVfVVI/FNi0/qtFBF229HKvQmE4LTzSAxG16ldvUyIJfSio9MNwFpfG50S0UfzZ/Srbq1spAXK4bEAXepxSgOhOmAQV6gyyjK98tczdB0kV9bWHa1ZQToRBA5GbSr16h2XrWLHWYBNpfPOI0C6XgORY0q2ibke6VJQt20kOsrpgebPzmBdUS6Tf6EPBwVG8IHCWObkd91HVdv1gZek6xCZVokvY3c6cVSygurCXs37lt8tO1Qbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KuFDFR7RMceDD6URuK/a4/ynL7yCYR90hgWd45jrY9c=;
- b=NzoHBxwR2vr3kH5AISI+kjasgfq+GjK0js/TuLHdbz5aOOgqpoJiwZZ/QJEiO3eXUSkjvJUZ7E1jcIFN6RH8yUlDcgeo201CLWmGu3nxt1XzR5HP6sy6E1FvOUMzceL/Y8HYZ8X/RqyDAVYWqoFg/SFjqmugZW3Wo67NJhuTu9dzYobh2phmOo/Qq+D9TtnjFTJTH1U4LdwriMKm4Z1yx4mMj4fTiOrmnxOzkGgmLOHsvSbxjgVH7VNFbYHPLKtjlr0uNM3yxUQowjPeCHrETFwMsguu30lG3Kpt5n7X5bOfsVB1v0Hk6zaX24GY1kS0SRWsgaQvir8E5adsvL/2PQ==
+ bh=SUtCmAXJnjPw+60UgGY4uROjWBTe4BgjhJ9QXCIV9rE=;
+ b=P2kvW+Ie1YcGtdfCQ4lk+8bQJFYpo1TWymAx9K695HBeyQC0B2+ZtSKE3Edhfq7f4iVsrMdpMdM2Dwi1LO0Az2J5A24UR/kTLeD4SIvn29dBuDI2xTm/mwo45NPd3crE28FIfc0iSbnJOnITP56rRlkA9E1q7CwY8kG8A+tshPjWGLexVFkKXau6Sknp7ZFpLTcTQdx7d/a36vPXKVBGTTbQ6wlEuA/Pt5OssuDWPP/Tck2Fh9Ystn3Ny2Fy2+Vi2IK2xN8Yvh1u/HlRCFwVqcnqkXxkxbO6W/1rGzDcJ7B558wvFzrtdwL7PM1A3t52lMYeY0mr1mUHUG7/tiEXXw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KuFDFR7RMceDD6URuK/a4/ynL7yCYR90hgWd45jrY9c=;
- b=IzkYgdX/5B34gw48ZytrsozqTGj3S3gW604PwczQkut8inkLVXr5tPqKrpoWx9w2HvhNGO/PlJJEOTdVlqu4DqVzYj8lEnP+IRtNuFPm04p2Wctqlw73kC8ELIimAvFOVl5WRy8K6wI5wDgIoMmyJ/Qb/jG9HLfYgWUVPx5w6SI=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-Received: from SA2PR11MB5163.namprd11.prod.outlook.com (2603:10b6:806:113::20)
- by SN6PR11MB3501.namprd11.prod.outlook.com (2603:10b6:805:d4::27) with
+ bh=SUtCmAXJnjPw+60UgGY4uROjWBTe4BgjhJ9QXCIV9rE=;
+ b=HcntIX1iZOk3VMd85HXB9B+cA54CQNXaf56eZG8gsPfRIKwx5qav4+flJeKSkCujdhwtwetE0IDHNgyHpw+q7YnP5h4/MX+pDQgMskoH9nov0zviSrml6GrtNxbHybJlV7He79QjR33BTctfJQ0VnS9cpDep9P3Ip872DGd2KH8=
+Authentication-Results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM4PR12MB5085.namprd12.prod.outlook.com (2603:10b6:5:388::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Wed, 20 Oct
- 2021 16:02:19 +0000
-Received: from SA2PR11MB5163.namprd11.prod.outlook.com
- ([fe80::a039:c121:4dce:5def]) by SA2PR11MB5163.namprd11.prod.outlook.com
- ([fe80::a039:c121:4dce:5def%7]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
- 16:02:19 +0000
-Subject: Re: [PATCH v1 1/2] fpga: dfl: afu: Clear port errors in afu init
-To:     Tom Rix <trix@redhat.com>, <mdf@kernel.org>,
-        <linux-fpga@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lgoncalv@redhat.com>, <yilun.xu@intel.com>, <hao.wu@intel.com>,
-        <matthew.gerlach@intel.com>
-References: <20211019231545.47118-1-russell.h.weight@intel.com>
- <20211019231545.47118-2-russell.h.weight@intel.com>
- <e03a0a0a-74c3-9791-2603-523c2796a71d@redhat.com>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <cfcd0e62-aa51-3fdf-a6ce-75d8dad76b3f@intel.com>
-Date:   Wed, 20 Oct 2021 09:02:29 -0700
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Wed, 20 Oct
+ 2021 16:03:12 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9%7]) with mapi id 15.20.4628.016; Wed, 20 Oct 2021
+ 16:03:12 +0000
+Subject: Re: [PATCH v5 04/16] x86/tdx: Make pages shared in ioremap()
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <8c5074f7-5456-e628-5a09-a3a4b4f381fb@amd.com>
+Date:   Wed, 20 Oct 2021 11:03:07 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-In-Reply-To: <e03a0a0a-74c3-9791-2603-523c2796a71d@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ Thunderbird/78.13.0
+In-Reply-To: <20211009003711.1390019-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-ClientProxiedBy: MWHPR20CA0015.namprd20.prod.outlook.com
- (2603:10b6:300:13d::25) To SA2PR11MB5163.namprd11.prod.outlook.com
- (2603:10b6:806:113::20)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL1P222CA0005.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c7::10) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
 MIME-Version: 1.0
-Received: from [10.0.2.4] (50.43.42.212) by MWHPR20CA0015.namprd20.prod.outlook.com (2603:10b6:300:13d::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Wed, 20 Oct 2021 16:02:18 +0000
+Received: from [10.236.30.241] (165.204.77.1) by BL1P222CA0005.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Wed, 20 Oct 2021 16:03:09 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b4376b66-53c8-4f52-c00d-08d993e2fe6e
-X-MS-TrafficTypeDiagnostic: SN6PR11MB3501:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR11MB3501A5789914C658DCC1AAC5C5BE9@SN6PR11MB3501.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Office365-Filtering-Correlation-Id: 5ea36c98-d478-4428-cb26-08d993e31e12
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5085:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5085943AF6162327962A458FECBE9@DM4PR12MB5085.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W9A5lFClf5c72T6DKCTYvZ92W1JZYx7LSrh91i43OANp74MyrhFErA2ytpG6dhh9JiG3SI5/Kr8+tLIo+4WUmfT8Q8MLHkY13BO0v5UPf70ETOytW5hiwn/X59mkY5wHblhbh7IrJAoketgZkETboZSnqdDXCWH9l6zfOmpLho0TCm2LzC0Zq3WbtoMYWSnddkb5mpyC9jkNxP4h7TKLYJ3jY4MS8C6q8eo269PA8VsuIHlYIXwzs3tCjqiUlPme1+KnSBkEmiAcjMdCIQxtNVlLnlBcv0MEIMFkQgGe8g7vEMzZrrpkZ/6TuotBDEeP6+QIGSn5iTHuMyGmdtlj3nFQz+H8vzMt8aFaKDYDKGlMcWMbKf6KCYjKh/EdsrRhKcb0qAtAq7CCoPFkwZIKGoNS4CXCTPjEof3OOlcVF8g+khGKvmXo8kcxAh4Ue6b/ke2EYiUIKY50WkB7qA4KVbk52Y96uK1UY+pjlNuDCtfXQar68kRNbqP2BD7ZS5P+aJGE3aUp9SCMiJ8RUPHjCcb81JYZxa2N9GxapJxnDDHmHoj2H4HIZfb1Ak6fB2/qKkxYLiFQyV35b0pKa675ppj2JGG2G8vBBQ0u567G6wZKTzy+KN3FKikHvj0lL5lZjAioRaXGgn7qcFNgiZ2feNiFvVG9UJEhWNABTMGBRWgoZTTPBlzOthBJ+znoexGCi77DivHHl+EGlybTmFUvM5BUeYC+24EDp/4ZZ7bLD8U=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB5163.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(186003)(26005)(83380400001)(2906002)(5660300002)(316002)(16576012)(6666004)(8676002)(4326008)(53546011)(8936002)(31686004)(508600001)(86362001)(107886003)(36756003)(956004)(6486002)(66946007)(31696002)(2616005)(38100700002)(66556008)(66476007)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 0dy27w33vcRk5GnAGDYv02bwTsUGVHO4YmCd458EbMe+Up5GEDuGSNUw4pWo1X2SQwijgT9xk9z/tO+0qK4p7mNQbbv4hdf+FrNBv6ntDI7SGIqdbn0l3QQkKs6fXUuRuASth+0WlhgR9OfuorvIcOA4hN25+U6Ej/U1TLnEpYiaFTVgYUOKCBWXCPR04K4cPxLH9bSp5xpj6fwur8vEtrdOYVH+BsqH6B15hdymUNUJoknG8GGTLXD6nBN15m/Vt/AcjpQuD6PH5jKwda9XWJtajBKwTMAvFcPjDyjfQzMYwzr4Ize60KHdldx626/YjgNfDexgnh0eG+4QMBHRmFLR8TwbtH6wW+31R9nzmEb/MPWtMxUwHKgJ6gE08Icm/E7QK0jeVwX4RnTkVlPtjMSJiFzoXOTc3C1hFcmNiVAShay6eMma5qSoFWF7klrW1CtoMvuIt8NaNaeRrURbGl9kEXG3xluW7qmVIf0KoCKISujEMAwywo/i+jyupJJ7li6tbN5O06YfoJCktP3cm5vPuhY6bt8ym7srXNHafIBZD+9y0jxDK006Xg2shd8wuR7kAYQQQnnS3Bs1mF8N9V5kr3m8YtugRrTdHZ/PA4Q6Ju6hhnYc2siJXCvRqbqBgF4A98LSWZyzQdyEscVtOxl1b8LoDxLrkCT5dmeWJazhM89+C5q9+v+i/sm7vsA8JEu/uYTMgsANNQiqkYYDwQ7OdS6iNcJ5m107zy4MpaSvnDD/xIoVCxPDPqK6VVW+krhcTiCZhvB6VYuYAY42UaBQviCIBdup0sCwUSszByIrhXfJjrr02pFfrCuWChtVXRkxhdnzShwXvpRPUtBPo1NhcjU7ANFXl04odXKsntY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(66946007)(4326008)(921005)(53546011)(7416002)(26005)(7406005)(2906002)(66476007)(36756003)(508600001)(83380400001)(16576012)(5660300002)(316002)(8676002)(2616005)(31686004)(38100700002)(186003)(86362001)(6486002)(110136005)(54906003)(31696002)(8936002)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QmZTVWUyMmtmU1ZCYXkvQjJRazBGU3JqZGRqTUxWamhucDd4ZDBwSmxTKzBs?=
- =?utf-8?B?NjRhN2pndWdnYTlHYzcrb1RINGFzRVhmZXB1d0hWMnY3NlI5MXdmbXdiM2JI?=
- =?utf-8?B?WWN4dG5RZUthZ3BlRkdFVE1qd3hlbFRqRXVjYStIZWVRMlUwZFZkenJIZWd0?=
- =?utf-8?B?TDRZOGtTek8zQnd3VDZsRi9zVXNrbVJpa20zSTdQalBhZHZwMVVHMmM5OUZ2?=
- =?utf-8?B?alpocUtOMDhVZGxoekFkaUR3aUlqUnNhQlIvd0c2dnk5ZzNzV045dVE0RG5Y?=
- =?utf-8?B?cDEzbmFwMDM1UWJONE5TT3czSm5Jdjh5citkdlhtU2VCeHdvZDRtSFdpRml5?=
- =?utf-8?B?R2thdzlqQkdPTjZlQnBqV1UvTnJJZzN5M0pZaXhsQldxT2hjb2Nnbi9lQllR?=
- =?utf-8?B?MGJxdVhJQWFmN1RnYmhPYmwzb2dVWGxZMmcvQUxBNEE5ODB0b0hOdTdzY0Qv?=
- =?utf-8?B?SktQTmdIZHZVbG4rUzl4NFNjckx0ZkwvV3hVUHB5Qndwak0ydm1yOU1SVWRk?=
- =?utf-8?B?Qkc3cHZiY2FOTE8xVnB6YW8vd1UvWVZ3S2grZXI1cDU3eTVKVUNoQzlXTDEx?=
- =?utf-8?B?VjdWUWdha2lJblVEMmJSekF1aVNCWkQ3dFNvUHBZRFU0V29sS3hEeUFnTmoz?=
- =?utf-8?B?TXBYUWhZNExLOW1BeU1NcDgwOUJzMDZWeUpYNHo0UFpubEtVZjNkV09adTlE?=
- =?utf-8?B?b0ZtMkdlTmMySGpncTloK1RGais1c3JjVkN1UnJMOHYyeHloczBKL0duM0sw?=
- =?utf-8?B?VDQwSit6bDlGV3plczh2VlNtTCtEQTFTdXBuVnArNmdvYnBxZ3czSEtCVkNh?=
- =?utf-8?B?bWU3SG0vU3Urd3lWSTZCaEhGbzUrS3BYZVZRUjkzYW9VTFhJN2U1cW9FNDFG?=
- =?utf-8?B?QlJCODhUWGJoNzN5cExGR25WdTd0dkcvTVZCZXc0clRkSDFjTjlBazIxakkz?=
- =?utf-8?B?QzlXR25USHhHMXFuMkxmM1BKVGRvMGtLMkxIdnBIK0ZqT2k0Rk84bER4SGoy?=
- =?utf-8?B?WnhJQTA4VFF6a2hxdFEyN1Y4d1A3SE1KaVlIRWZ0bnVlVjJzY2VLUm93T1hD?=
- =?utf-8?B?VENFenVqejRnTDdMem9MOTlOU3ZBN1M0WVI4L2hONHMrY2duSkxVQW1GQkJa?=
- =?utf-8?B?Y3lFZERMbitpa1h5VWIzY3RDbTRLY0lROFg3ZWVxN1l6MUh0UTJHeTUxdG1k?=
- =?utf-8?B?SFpuRHZyemg3b1VWakxiaGs3Q1ZleUhpQ28zb3BhWEFnSWp0c2lJdmU5aFlF?=
- =?utf-8?B?QWFUSFRKbUZjSVdHU2NiNFEvZllxeXFZL3FYNlFBMDZobUFQQzFOMzlmMnlZ?=
- =?utf-8?B?b2h1VjNiUXczOFQyZWR3dG9sRGtoQjhmUUxRcE5EUkFhd1RxejZjeHNoSEtU?=
- =?utf-8?B?dFNrUXFPTHJrbDNJWVVuZVhXcmpZc08rTW1CQmx6V3hMTk1KdFJobVJKWk5h?=
- =?utf-8?B?aGtJV3VsTkg4Qlp2K3pLQThFTHNydy9RRHkxN1VPU3IrazFvUHFVclFQajZZ?=
- =?utf-8?B?dEJZOWQ1U3IvS3Y5b3VDQnZzREZHQkwzb3VqcGluR29PRUhxd2pLZ1REZ1JP?=
- =?utf-8?B?MjRON0Fma00wOTlSK0xwTjBTN2lITGpld1ZVMnJYcW00RFNwM2txZnZmWGNI?=
- =?utf-8?B?cnVPakIxZE5jQ014dnAwYkxLdUFibzVBQ1dQRHp0NGphdkt4dksvT1hOd2Uv?=
- =?utf-8?B?UnR4eEY5Y3FGM0s0WUJUTVplTFZSSDZDWkJwbGRUV0lwKzUwWi8rYWVqTjEv?=
- =?utf-8?Q?yV0SUDnmn2pJH0LXaVYIBwt13AdBFdcoKdexDeR?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4376b66-53c8-4f52-c00d-08d993e2fe6e
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB5163.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UTMrT24yUGJwb0FDSXI0RjhwVjhMc3JQTm1PaUgyS3Z1bkNzSXREMi8yaUgv?=
+ =?utf-8?B?UmZiT0xpNStNUWtSSUZQb0pQTTBvakphWDJqQXRidVl3MWlNdkpFeVo3Rjhy?=
+ =?utf-8?B?SjlYQTNOU0FSL0dVN3l4VW5XN3ZNL3NLWVhKUElFL2FSMlR6UnVEME9lb1Vu?=
+ =?utf-8?B?enRET2k1MDBDZnU5cml2Mk9SdzFyNVFsbnl6aEw1YWhxVTJ6WnViQmlxOUlY?=
+ =?utf-8?B?VmFadU05d3dEYlNNYmljdmxwamdFTHZyTzZVMlV1NGdCeHRPRHNScDNoNlZL?=
+ =?utf-8?B?YmN0TEUwZjVyQWRNNEUwSisrMmdpZmVaUWJhditNTGd5dGdiQnFJVEROTmha?=
+ =?utf-8?B?dUIvL2IxeGs2cTlISEFMSStZZ2RaWmI2bEZKbWwxTDdPaThLeXlvTnF4ZG5p?=
+ =?utf-8?B?RklVa0pCbU5vMk54SmRvU3V2VHJCV2tEYytiNjhmaXFJYm1xMEFsUlVCMmNi?=
+ =?utf-8?B?V3RSTUJja2NUSnoyem9aYUJ1bDJoai9pYmlOejQySmRjZ0MvQUdtRmw0anc3?=
+ =?utf-8?B?OCtWRVcvWGNFQmcvTFdjdElPSk9ScEhZS0lCOHJLd0d2ZG1Vd0g1bzc4ZGRE?=
+ =?utf-8?B?ckxUbFg3TC8vVzlsZnJLdE4wSlZTYXlGVHRDM0Eyb2RVeHFmQitQazJoeFlI?=
+ =?utf-8?B?OVh0RFc1Y3ZiM3g1cGg0bDgvMjZJNDdPaEFiWk9uYmV1WkpyakYrTlBxdjlP?=
+ =?utf-8?B?THRQd21yOHBZdzhTL1N0dHRubnZQZWhFcFBRZGZROE9IQ2tNNzgzNzJZZzgr?=
+ =?utf-8?B?eWdNRTE2bEw0V2VWcnVoeDZHR1BVQWI5am5lcjQyR2FEQzRXeG41cHJQZ1V6?=
+ =?utf-8?B?NzlaaERvQTZLWGU5aE5Sc0h3VGY4Q0dQZStaVkl2MVYwS25tR0pGR3NCQnN6?=
+ =?utf-8?B?ZlIvRFdyMmRwcFdiZURjVXBFclZPdkVNVUFobmpqNjZ5M2FIN0F4Q2trbUs1?=
+ =?utf-8?B?elBwQUJ2dzJYSDdTdnJRZHA0UHcrWGhybGNtOG5ZZ0VPMUFzcy8xcU85YzNY?=
+ =?utf-8?B?NEZydXRUMzlUWlhPNStnbC96dDc1T2dwL2p3UFJram53cDlXSXZoUExZNVZM?=
+ =?utf-8?B?MENtaTFYelJZOFNiLzErZ2xZbkpnelJYNlVRZkhQNGdkbmRJSUxIVTVKZFRQ?=
+ =?utf-8?B?bHQzVGNmZEZnTWNyWHZEZHVwV2NGV3BNYjR5d0hDQlVXQW93Kzl6ZkJRSUxa?=
+ =?utf-8?B?UmZMV3RwSDVUaHFJSlBPR1lZY3hEK3ZhUVMybVBMQVJ6T3NpdlhPM2hCelJL?=
+ =?utf-8?B?cENDMVhvMERrSk9kQVRmSVU2M1hmeXAyWklOaFVOekFpOHI4VHJzRDdKV2ll?=
+ =?utf-8?B?UVcySFhtWnRuWGRTRGFsek9ZZTNGSkZNUG5yV0IyRnBRTWYvVzFtZDhWNElM?=
+ =?utf-8?B?WVkxOTR2NUtIVnkzUnVvYW5qZUQ4OTdWN2FZbWNiMm4wZUNhcmlra3ZDbUVQ?=
+ =?utf-8?B?eDJOVFgrSmtURmc0bE1UUHdoakt6Q0ZrT0I3TFZHQ0NPaXVBdFFjdXUzbnZB?=
+ =?utf-8?B?ZkFQNDFhVmZRN3duY0Y1MWYvbGU3dVRVOVljTFQwRGVHWU9uME9RVUFBL1hu?=
+ =?utf-8?B?L08rMFVxdE0yRW9OR09QcExCeWF0V1JQOU9ySjJjeVhxT0NTVmhqcEtJOFNR?=
+ =?utf-8?B?K2tvRVd6TUI1UXEzSmNNMWo2cUd2dGJMZHF6TFlBTk5KSnZ1RWpvcHdzdjB2?=
+ =?utf-8?B?S2hMb1g4cWZaaVdEeitoSDVoRjFMS0htT2xiUUpEUmYvYTFWZ0lWZnNxdHpj?=
+ =?utf-8?Q?NE7R8of7e+QKEoP2ByfT1wNgNMeHHODqzKL5iMv?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ea36c98-d478-4428-cb26-08d993e31e12
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 16:02:19.2249
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 16:03:12.7723
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: russell.h.weight@intel.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3501
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: tlendack@amd.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/8/21 7:36 PM, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> 
+> All ioremap()ed pages that are not backed by normal memory (NONE or
+> RESERVED) have to be mapped as shared.
+> 
+> Reuse the infrastructure from AMD SEV code.
+> 
+> Note that DMA code doesn't use ioremap() to convert memory to shared as
+> DMA buffers backed by normal memory. DMA code make buffer shared with
+> set_memory_decrypted().
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+> 
+> Changes since v4:
+>   * Renamed "protected_guest" to "cc_guest".
+>   * Replaced use of prot_guest_has() with cc_guest_has()
+>   * Modified the patch to adapt to latest version cc_guest_has()
+>     changes.
+> 
+> Changes since v3:
+>   * Rebased on top of Tom Lendacky's protected guest
+>     changes (https://lore.kernel.org/patchwork/cover/1468760/)
+> 
+> Changes since v1:
+>   * Fixed format issues in commit log.
+> 
+>   arch/x86/include/asm/pgtable.h |  4 ++++
+>   arch/x86/mm/ioremap.c          |  8 ++++++--
+>   include/linux/cc_platform.h    | 13 +++++++++++++
+>   3 files changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+> index 448cd01eb3ec..ecefccbdf2e3 100644
+> --- a/arch/x86/include/asm/pgtable.h
+> +++ b/arch/x86/include/asm/pgtable.h
+> @@ -21,6 +21,10 @@
+>   #define pgprot_encrypted(prot)	__pgprot(__sme_set(pgprot_val(prot)))
+>   #define pgprot_decrypted(prot)	__pgprot(__sme_clr(pgprot_val(prot)))
+>   
+> +/* Make the page accesable by VMM for confidential guests */
+> +#define pgprot_cc_guest(prot) __pgprot(pgprot_val(prot) |	\
+> +					      tdx_shared_mask())
 
+So this is only for TDX guests, so maybe a name that is less generic.
 
-On 10/20/21 5:18 AM, Tom Rix wrote:
->
-> On 10/19/21 4:15 PM, Russ Weight wrote:
->> When the AFU driver initializes, log any pre-existing errors and clear them.
->>
->> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->> ---
->>   drivers/fpga/dfl-afu-error.c | 26 ++++++++++++++++----------
->>   1 file changed, 16 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
->> index ab7be6217368..0dc60bf49902 100644
->> --- a/drivers/fpga/dfl-afu-error.c
->> +++ b/drivers/fpga/dfl-afu-error.c
->> @@ -47,13 +47,13 @@ static void afu_port_err_mask(struct device *dev, bool mask)
->>   }
->>     /* clear port errors. */
->> -static int afu_port_err_clear(struct device *dev, u64 err)
->> +static int afu_port_err_clear(struct device *dev, u64 err, bool clear_all)
->>   {
->>       struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
->>       struct platform_device *pdev = to_platform_device(dev);
->> +    u64 v, port_error, port_first_error;
-> v is only used now by the read of PORT_HDR_STS, could v be changed to a more descriptive variable like hdr_sts ?
->>       void __iomem *base_err, *base_hdr;
->>       int enable_ret = 0, ret = -EBUSY;
->> -    u64 v;
->>         base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
->>       base_hdr = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_HEADER);
->> @@ -88,16 +88,21 @@ static int afu_port_err_clear(struct device *dev, u64 err)
->>       __afu_port_err_mask(dev, true);
->>         /* Clear errors if err input matches with current port errors.*/
->> -    v = readq(base_err + PORT_ERROR);
->> +    port_error = readq(base_err + PORT_ERROR);
->>   -    if (v == err) {
->> -        writeq(v, base_err + PORT_ERROR);
->> +    if (clear_all || port_error == err) {
->> +        port_first_error = readq(base_err + PORT_FIRST_ERROR);
->>   -        v = readq(base_err + PORT_FIRST_ERROR);
->> -        writeq(v, base_err + PORT_FIRST_ERROR);
->> +        if (clear_all && (port_error || port_first_error))
->
-> likely with clear_all that this dev_warn will over report.
->
-> how about removing clear_all && from if-check ?
-I think that would make it report more often? clear_all is only set
-at the time that the driver initializes. With the current condition,
-errors will only be logged when the driver loads, if and only if
-there are actually errors to report.
+Alternatively, you could create pgprot_private()/pgprot_shared() functions 
+that check for SME/SEV or TDX and do the proper thing.
 
+Then you can redefine pgprot_encrypted()/pgprot_decrypted() to the new 
+functions?
 
->
->> +            dev_warn(dev,
->> +                 "Port Error: 0x%llx, First Error 0x%llx\n",
->> +                 port_error, port_first_error);
->> +
->> +        writeq(port_error, base_err + PORT_ERROR);
->> +        writeq(port_first_error, base_err + PORT_FIRST_ERROR);
->>       } else {
->>           dev_warn(dev, "%s: received 0x%llx, expected 0x%llx\n",
->> -             __func__, v, err);
->> +             __func__, port_error, err);
->>           ret = -EINVAL;
->>       }
->>   @@ -137,7 +142,7 @@ static ssize_t errors_store(struct device *dev, struct device_attribute *attr,
->>       if (kstrtou64(buff, 0, &value))
->>           return -EINVAL;
->>   -    ret = afu_port_err_clear(dev, value);
->> +    ret = afu_port_err_clear(dev, value, false);
->>         return ret ? ret : count;
->>   }
->> @@ -211,7 +216,8 @@ const struct attribute_group port_err_group = {
->>   static int port_err_init(struct platform_device *pdev,
->>                struct dfl_feature *feature)
->>   {
->> -    afu_port_err_mask(&pdev->dev, false);
->> +    if (afu_port_err_clear(&pdev->dev, 0, true))
->> +        afu_port_err_mask(&pdev->dev, false);
->
-> There is a __afu_port_err_mask at the end of afu_port_err_clear so this call isn't needed.
+> +
+>   #ifndef __ASSEMBLY__
+>   #include <asm/x86_init.h>
+>   #include <asm/pkru.h>
+> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+> index 026031b3b782..83daa3f8f39c 100644
+> --- a/arch/x86/mm/ioremap.c
+> +++ b/arch/x86/mm/ioremap.c
+> @@ -17,6 +17,7 @@
+>   #include <linux/cc_platform.h>
+>   #include <linux/efi.h>
+>   #include <linux/pgtable.h>
+> +#include <linux/cc_platform.h>
+>   
+>   #include <asm/set_memory.h>
+>   #include <asm/e820/api.h>
+> @@ -26,6 +27,7 @@
+>   #include <asm/pgalloc.h>
+>   #include <asm/memtype.h>
+>   #include <asm/setup.h>
+> +#include <asm/tdx.h>
+>   
+>   #include "physaddr.h"
+>   
+> @@ -87,8 +89,8 @@ static unsigned int __ioremap_check_ram(struct resource *res)
+>   }
+>   
+>   /*
+> - * In a SEV guest, NONE and RESERVED should not be mapped encrypted because
+> - * there the whole memory is already encrypted.
+> + * In a SEV or TDX guest, NONE and RESERVED should not be mapped encrypted (or
+> + * private in TDX case) because there the whole memory is already encrypted.
+>    */
+>   static unsigned int __ioremap_check_encrypted(struct resource *res)
+>   {
+> @@ -246,6 +248,8 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
+>   	prot = PAGE_KERNEL_IO;
+>   	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
+>   		prot = pgprot_encrypted(prot);
+> +	else if (cc_platform_has(CC_ATTR_GUEST_SHARED_MAPPING_INIT))
+> +		prot = pgprot_cc_guest(prot);
 
-The condition statements says to only clear the mask explicitly if afu_port_err_clear()
-fails. If it succeeds, then the explicit call will not happen, because as you have
-pointed out, afu_port_err_clear() clear the mask.
+And if you do the new functions this could be:
+
+	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
+		prot = pgprot_private(prot);
+	else
+		prot = pgprot_shared(prot);
 
 Thanks,
-- Russ
+Tom
 
->
-> Tom
->
->>         return 0;
->>   }
->
-
+>   
+>   	switch (pcm) {
+>   	case _PAGE_CACHE_MODE_UC:
+> diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+> index 7728574d7783..edb1d7a2f6af 100644
+> --- a/include/linux/cc_platform.h
+> +++ b/include/linux/cc_platform.h
+> @@ -81,6 +81,19 @@ enum cc_attr {
+>   	 * Examples include TDX Guest.
+>   	 */
+>   	CC_ATTR_GUEST_UNROLL_STRING_IO,
+> +
+> +	/**
+> +	 * @CC_ATTR_GUEST_SHARED_MAPPING_INIT: IO Remapped memory is marked
+> +	 *				       as shared.
+> +	 *
+> +	 * The platform/OS is running as a guest/virtual machine and
+> +	 * initializes all IO remapped memory as shared.
+> +	 *
+> +	 * Examples include TDX Guest (SEV marks all pages as shared by default
+> +	 * so this feature cannot be enabled for it).
+> +	 */
+> +	CC_ATTR_GUEST_SHARED_MAPPING_INIT,
+> +
+>   };
+>   
+>   #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+> 
