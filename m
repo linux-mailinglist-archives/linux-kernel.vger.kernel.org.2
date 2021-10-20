@@ -2,87 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA2C434735
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A7C43473C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhJTIsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:48:04 -0400
-Received: from first.geanix.com ([116.203.34.67]:37392 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229993AbhJTIr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:47:59 -0400
-Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 78DA5C7EC7;
-        Wed, 20 Oct 2021 08:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1634719543; bh=i/8+adCTB/1ZY8UzLuJ8XezBVVwGeL0INtp1R95tHKA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=NB3xri6B/AeZ8R2UuxkpLkaqp9aASu4mLmRDqZjFzNy2vR3adoreX2oMxtv/vFZa3
-         0NPVRfxL+8A5RWZMNmcNV2q/oORfUrYoPVbyEQdgbWQYIjyD/yDhTM+1ny5bj6kPd2
-         RDuRNp+UxHXBxWKeAZuM53uAzM36HtQhk1CWFTwjFU9TswGBtIhtnRTWvcmUqZsF+4
-         GgRvM8IHJdNX4lQtxZrI6yIVbcMNeWdIdDvB2YDoBK/4kFYufFde96afFKhmoetMQ0
-         SRISQw6B8ZTOe2vgX+aCzqcd55r2+pFdiFP2jOBlwOL2TKMsfTB4iCDTBk2iRoxjGE
-         dt3x86RIvf1jw==
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Sean Nyekjaer <sean@geanix.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] mtd: mtdconcat: add suspend lock handling
-Date:   Wed, 20 Oct 2021 10:45:34 +0200
-Message-Id: <20211020084534.2472305-5-sean@geanix.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211020084534.2472305-1-sean@geanix.com>
-References: <20211020084534.2472305-1-sean@geanix.com>
+        id S229881AbhJTItk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:49:40 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:58279 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229627AbhJTItk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:49:40 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Ut1R3Vx_1634719643;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Ut1R3Vx_1634719643)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Oct 2021 16:47:23 +0800
+Subject: Re: [PATCH v11 2/3] tty: hvc: pass DMA capable memory to put_chars()
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
+        arnd@arndb.de, osandov@fb.com
+Cc:     shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+ <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <d56c2c23-3e99-417b-8144-cf1bb31b5f6d@linux.alibaba.com>
+Date:   Wed, 20 Oct 2021 16:47:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use MTD hooks to control suspend/resume of MTD devices.
+hi Greg，
 
-Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
- drivers/mtd/mtdconcat.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Could I get  your comments of this new version patches？ thanks
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index f685a581df48..1ec36890118f 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -566,9 +566,11 @@ static int concat_suspend(struct mtd_info *mtd)
- 
- 	for (i = 0; i < concat->num_subdev; i++) {
- 		struct mtd_info *subdev = concat->subdev[i];
--		if ((rc = mtd_suspend(subdev)) < 0)
-+		rc = subdev->_suspend ? subdev->_suspend(subdev) : 0;
-+		if (rc < 0)
- 			return rc;
- 	}
-+
- 	return rc;
- }
- 
-@@ -579,7 +581,8 @@ static void concat_resume(struct mtd_info *mtd)
- 
- 	for (i = 0; i < concat->num_subdev; i++) {
- 		struct mtd_info *subdev = concat->subdev[i];
--		mtd_resume(subdev);
-+		if (subdev->_resume)
-+			subdev->_resume(subdev);
- 	}
- }
- 
--- 
-2.33.0
-
+在 2021/10/15 上午10:46, Xianting Tian 写道:
+> As well known, hvc backend can register its opertions to hvc backend.
+> the operations contain put_chars(), get_chars() and so on.
+>
+> Some hvc backend may do dma in its operations. eg, put_chars() of
+> virtio-console. But in the code of hvc framework, it may pass DMA
+> incapable memory to put_chars() under a specific configuration, which
+> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
+> 1, c[] is on stack,
+>     hvc_console_print():
+>          char c[N_OUTBUF] __ALIGNED__;
+>          cons_ops[index]->put_chars(vtermnos[index], c, i);
+> 2, ch is on stack,
+>     static void hvc_poll_put_char(,,char ch)
+>     {
+>          struct tty_struct *tty = driver->ttys[0];
+>          struct hvc_struct *hp = tty->driver_data;
+>          int n;
+>
+>          do {
+>                  n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+>          } while (n <= 0);
+>     }
+>
+> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
+> is passed to virtio-console by hvc framework in above code. But I think
+> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
+> from kmalloc area and do memcpy no matter the memory is in kmalloc area
+> or not. But most importantly, it should better be fixed in the hvc
+> framework, by changing it to never pass stack memory to the put_chars()
+> function in the first place. Otherwise, we still face the same issue if
+> a new hvc backend using dma added in the furture.
+>
+> In this patch, add 'char cons_outbuf[]' as part of 'struct hvc_struct',
+> so hp->cons_outbuf is no longer the stack memory, we can use it in above
+> cases safely. We also add lock to protect cons_outbuf instead of using
+> the global lock of hvc.
+>
+> Introduce another array(cons_hvcs[]) for hvc pointers next to the
+> cons_ops[] and vtermnos[] arrays. With the array, we can easily find
+> hvc's cons_outbuf and its lock.
+>
+> With the patch, we can revert the fix c4baad5029.
+>
+> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+> Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+> ---
+>   drivers/tty/hvc/hvc_console.c | 36 ++++++++++++++++++++---------------
+>   drivers/tty/hvc/hvc_console.h | 21 +++++++++++++++++++-
+>   2 files changed, 41 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
+> index 5957ab728..11f2463a1 100644
+> --- a/drivers/tty/hvc/hvc_console.c
+> +++ b/drivers/tty/hvc/hvc_console.c
+> @@ -41,16 +41,6 @@
+>    */
+>   #define HVC_CLOSE_WAIT (HZ/100) /* 1/10 of a second */
+>   
+> -/*
+> - * These sizes are most efficient for vio, because they are the
+> - * native transfer size. We could make them selectable in the
+> - * future to better deal with backends that want other buffer sizes.
+> - */
+> -#define N_OUTBUF	16
+> -#define N_INBUF		16
+> -
+> -#define __ALIGNED__ __attribute__((__aligned__(L1_CACHE_BYTES)))
+> -
+>   static struct tty_driver *hvc_driver;
+>   static struct task_struct *hvc_task;
+>   
+> @@ -142,6 +132,7 @@ static int hvc_flush(struct hvc_struct *hp)
+>   static const struct hv_ops *cons_ops[MAX_NR_HVC_CONSOLES];
+>   static uint32_t vtermnos[MAX_NR_HVC_CONSOLES] =
+>   	{[0 ... MAX_NR_HVC_CONSOLES - 1] = -1};
+> +static struct hvc_struct *cons_hvcs[MAX_NR_HVC_CONSOLES];
+>   
+>   /*
+>    * Console APIs, NOT TTY.  These APIs are available immediately when
+> @@ -151,9 +142,11 @@ static uint32_t vtermnos[MAX_NR_HVC_CONSOLES] =
+>   static void hvc_console_print(struct console *co, const char *b,
+>   			      unsigned count)
+>   {
+> -	char c[N_OUTBUF] __ALIGNED__;
+> +	char *c;
+>   	unsigned i = 0, n = 0;
+>   	int r, donecr = 0, index = co->index;
+> +	unsigned long flags;
+> +	struct hvc_struct *hp;
+>   
+>   	/* Console access attempt outside of acceptable console range. */
+>   	if (index >= MAX_NR_HVC_CONSOLES)
+> @@ -163,6 +156,13 @@ static void hvc_console_print(struct console *co, const char *b,
+>   	if (vtermnos[index] == -1)
+>   		return;
+>   
+> +	hp = cons_hvcs[index];
+> +	if (!hp)
+> +		return;
+> +
+> +	c = hp->cons_outbuf;
+> +
+> +	spin_lock_irqsave(&hp->cons_outbuf_lock, flags);
+>   	while (count > 0 || i > 0) {
+>   		if (count > 0 && i < sizeof(c)) {
+>   			if (b[n] == '\n' && !donecr) {
+> @@ -191,6 +191,7 @@ static void hvc_console_print(struct console *co, const char *b,
+>   			}
+>   		}
+>   	}
+> +	spin_unlock_irqrestore(&hp->cons_outbuf_lock, flags);
+>   	hvc_console_flush(cons_ops[index], vtermnos[index]);
+>   }
+>   
+> @@ -878,9 +879,13 @@ static void hvc_poll_put_char(struct tty_driver *driver, int line, char ch)
+>   	struct tty_struct *tty = driver->ttys[0];
+>   	struct hvc_struct *hp = tty->driver_data;
+>   	int n;
+> +	unsigned long flags;
+>   
+>   	do {
+> -		n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+> +		spin_lock_irqsave(&hp->cons_outbuf_lock, flags);
+> +		hp->cons_outbuf[0] = ch;
+> +		n = hp->ops->put_chars(hp->vtermno, &hp->cons_outbuf[0], 1);
+> +		spin_unlock_irqrestore(&hp->cons_outbuf_lock, flags);
+>   	} while (n <= 0);
+>   }
+>   #endif
+> @@ -922,8 +927,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
+>   			return ERR_PTR(err);
+>   	}
+>   
+> -	hp = kzalloc(ALIGN(sizeof(*hp), sizeof(long)) + outbuf_size,
+> -			GFP_KERNEL);
+> +	hp = kzalloc(struct_size(hp, outbuf, outbuf_size), GFP_KERNEL);
+>   	if (!hp)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> @@ -931,13 +935,13 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
+>   	hp->data = data;
+>   	hp->ops = ops;
+>   	hp->outbuf_size = outbuf_size;
+> -	hp->outbuf = &((char *)hp)[ALIGN(sizeof(*hp), sizeof(long))];
+>   
+>   	tty_port_init(&hp->port);
+>   	hp->port.ops = &hvc_port_ops;
+>   
+>   	INIT_WORK(&hp->tty_resize, hvc_set_winsz);
+>   	spin_lock_init(&hp->lock);
+> +	spin_lock_init(&hp->cons_outbuf_lock);
+>   	mutex_lock(&hvc_structs_mutex);
+>   
+>   	/*
+> @@ -964,6 +968,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
+>   	if (i < MAX_NR_HVC_CONSOLES) {
+>   		cons_ops[i] = ops;
+>   		vtermnos[i] = vtermno;
+> +		cons_hvcs[i] = hp;
+>   	}
+>   
+>   	list_add_tail(&(hp->next), &hvc_structs);
+> @@ -988,6 +993,7 @@ int hvc_remove(struct hvc_struct *hp)
+>   	if (hp->index < MAX_NR_HVC_CONSOLES) {
+>   		vtermnos[hp->index] = -1;
+>   		cons_ops[hp->index] = NULL;
+> +		cons_hvcs[hp->index] = NULL;
+>   	}
+>   
+>   	/* Don't whack hp->irq because tty_hangup() will need to free the irq. */
+> diff --git a/drivers/tty/hvc/hvc_console.h b/drivers/tty/hvc/hvc_console.h
+> index 18d005814..2c32ab67b 100644
+> --- a/drivers/tty/hvc/hvc_console.h
+> +++ b/drivers/tty/hvc/hvc_console.h
+> @@ -32,12 +32,21 @@
+>    */
+>   #define HVC_ALLOC_TTY_ADAPTERS	8
+>   
+> +/*
+> + * These sizes are most efficient for vio, because they are the
+> + * native transfer size. We could make them selectable in the
+> + * future to better deal with backends that want other buffer sizes.
+> + */
+> +#define N_OUTBUF	16
+> +#define N_INBUF		16
+> +
+> +#define __ALIGNED__ __attribute__((__aligned__(L1_CACHE_BYTES)))
+> +
+>   struct hvc_struct {
+>   	struct tty_port port;
+>   	spinlock_t lock;
+>   	int index;
+>   	int do_wakeup;
+> -	char *outbuf;
+>   	int outbuf_size;
+>   	int n_outbuf;
+>   	uint32_t vtermno;
+> @@ -48,6 +57,16 @@ struct hvc_struct {
+>   	struct work_struct tty_resize;
+>   	struct list_head next;
+>   	unsigned long flags;
+> +
+> +	/*
+> +	 * the buf and its lock are used in hvc console api for putting chars,
+> +	 * and also used in hvc_poll_put_char() for putting single char.
+> +	 */
+> +	spinlock_t cons_outbuf_lock;
+> +	char cons_outbuf[N_OUTBUF] __ALIGNED__;
+> +
+> +	/* the buf is used for putting chars to tty */
+> +	char outbuf[] __ALIGNED__;
+>   };
+>   
+>   /* implemented by a low level driver */
