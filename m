@@ -2,363 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECCC434479
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBB743447B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 07:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhJTFHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 01:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhJTFHc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 01:07:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBD1C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 22:05:18 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1md3mk-0002Ov-Ef; Wed, 20 Oct 2021 07:05:06 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1md3me-0007dE-0J; Wed, 20 Oct 2021 07:05:00 +0200
-Date:   Wed, 20 Oct 2021 07:04:59 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Amit Kucheria <amitk@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, David Jander <david@protonic.nl>,
-        Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>,
-        Petr Benes <petrben@gmail.com>
-Subject: Re: [PATCH v2] thermal: imx: implement runtime PM support
-Message-ID: <20211020050459.GE16320@pengutronix.de>
-References: <20211019130809.21281-1-o.rempel@pengutronix.de>
+        id S229963AbhJTFIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 01:08:35 -0400
+Received: from mail-bn8nam11on2128.outbound.protection.outlook.com ([40.107.236.128]:22689
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229492AbhJTFIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 01:08:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kxXamqWljq5NI5Ux0NTUs4XQDmXjoKUJFDHznCMhdyuV8mmttpSPsGBpkTEBR0heWn+i+AQqghvBnbVcBw7eLVd2DqhiXjtWCpftKEqbGH+s34h+SAfIauZJVaPy24fz0ZZY18CFFikuKhh52+s+cYNjifwa/vl2Hcl2j3c3/sh57+3jxlUP4NLup+srW6PARCn1CUTHfvR+IKZQ3kBTcKBv1V25oUUDnk3A7diSWQPeBkQV4z1DlIDJ5GrNyaQv0/JJxpol7RjqVPUXb2NWo6SiUfQRRkMW1njas0mWlATrPqQXNo88UySjVh/DtHU0ROtGns8TrCV8TOSn7NjC1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pyI1v6cIl0C0Tlw0tTyndqfb31EEyOPJHni4z5fbYAM=;
+ b=hWogQx+7PYVa24+iDBptkUYAkIraXJBuHtMBThAjNLNIHFwojtKjkk1FftlFLIkhsJZdsE97PSZvn4wB5+jUUHsty60GT8Dwq02IKqL0STxMhoY4YJq+B+ROAHWnfkW51NawgmlPdX+MDCJarPhCRi/NttgFRRUpSpIKoHk62DPG+1BM2OX/yBSeLl0SRBp3eCtbp3YvsZwOCOlUaX4JjbIfQUiiejBF7aiSO/+6c3+xBhgkglKm1Sxc0HibNd7SmosZSrhdUfQAXJP1cxLdivCwOd1/bHwO1rjD+c4WI5562bXsyApNTuAeoBYWN8pTHIyPsuM2C3eCAwD18tbXug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pyI1v6cIl0C0Tlw0tTyndqfb31EEyOPJHni4z5fbYAM=;
+ b=M3iYoo1We35NLd0qXsLuzqg221pvDFezXmZk0DZ4LT+pguqodUVI7wbjs4A0wJuHXMXeOIoANFAWWlx8eL1jDGQ5KPEfmz/l6F80jmeYOKucPqB15OKLfNNIqmhRhTRBHAE45MKshcuTLo6H/9euEryphZ5IFRqITzEBas50oaY=
+Received: from BYAPR11MB3671.namprd11.prod.outlook.com (2603:10b6:a03:b3::15)
+ by SJ0PR11MB4911.namprd11.prod.outlook.com (2603:10b6:a03:2ad::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Wed, 20 Oct
+ 2021 05:06:18 +0000
+Received: from BYAPR11MB3671.namprd11.prod.outlook.com
+ ([fe80::49d4:a1dd:5b55:4c94]) by BYAPR11MB3671.namprd11.prod.outlook.com
+ ([fe80::49d4:a1dd:5b55:4c94%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
+ 05:06:18 +0000
+From:   George Song <George.Song@maximintegrated.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "george.song@analog.com" <george.song@analog.com>,
+        Ryan Lee <RyanS.Lee@maximintegrated.com>,
+        Steve Lee <SteveS.Lee@maximintegrated.com>
+Subject: RE: [EXTERNAL] Re: [v3 2/2] ASoC: max98520: add max98520 audio
+ amplifier driver
+Thread-Topic: [EXTERNAL] Re: [v3 2/2] ASoC: max98520: add max98520 audio
+ amplifier driver
+Thread-Index: AQHXw/s2x3A5X1ZlPEurKpXCb3FgFavYshcAgAFD2bCAAEOuAIABHtdg
+Date:   Wed, 20 Oct 2021 05:06:17 +0000
+Message-ID: <BYAPR11MB367197EB4E103B53DBBAC6D0F4BE9@BYAPR11MB3671.namprd11.prod.outlook.com>
+References: <20211018083554.5360-1-george.song@maximintegrated.com>
+ <20211018083554.5360-2-george.song@maximintegrated.com>
+ <YW1quluaCzsUpET0@sirena.org.uk>
+ <BYAPR11MB367106FDD5394AA4F88A42D4F4BD9@BYAPR11MB3671.namprd11.prod.outlook.com>
+ <YW6zKsiWPE+xGWTy@sirena.org.uk>
+In-Reply-To: <YW6zKsiWPE+xGWTy@sirena.org.uk>
+Accept-Language: ko-KR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=maximintegrated.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7d263ffb-f48f-44e0-71fe-08d99387597e
+x-ms-traffictypediagnostic: SJ0PR11MB4911:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB49113FB65904698CA5A5567BF4BE9@SJ0PR11MB4911.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4ITkzLzBv97Cs2Trj4vsmEsJNnWTu67hDb+RagycKYaN+w5Txsb4c26R+c9NbE6b/0UN8Ejw6dShTgCdQi3nEPyo6g6t+h6pm4H9W8iiMmrTlsyrvNcXGKlRd/T3hNLzvTM6oaU8w3AOJhQL+Fg01fnd0otgmo0ofqOJ5xKTsfeFaS7igBbpScytTzKv9l0vWou1CNnHwIei+7EgYnJGqqDfGKcwYvJbx0eAqig79zkqaKNKtotXh74PsoJOidkHqzPMVWwH+xQqhj3FFdiF9Wpo3sgs8UJVmrWr7onrGici0GEqlyGnMBWvzf8h451Uin3Jv9Z9pZM97jwN5Cgr82q06FA6+zTC3IEZtU7nRnvbl1O99IYtTnGhu/TURDNydICyeDsc4Io7C3CTDEKTT4tDV6wPN3tYpDSBHOxHklCBMUSfiN7LUh86Cw50RJ+m4/itpBZxetEalJEQD7q+Lp0oYvH0Hg1Z75M1/P7rQ1qni6Q6ItvshwEdeT6G2b9/1FkVNydX4r7zjPuiUWi+GS6uhuwOP8ddrQwkFtUYXp48bbjxkIHdgJNHusXOWEif4A1DNWYgopV5uigDRBMqqMQU7zVXl5JcAgHgt3J5LSH/u/VsTtnQLvVe0RefnTAicHMCiDo3KgItte4YROBZAh7vE7b8Jw7Oy3O9LjcRybWQ35QWk32F6hrslFBLxqjpEI3ObfsRvvhx/Jjix/VDxg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3671.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(9686003)(6506007)(55016002)(122000001)(7696005)(38070700005)(316002)(6916009)(508600001)(54906003)(26005)(83380400001)(5660300002)(33656002)(4326008)(4744005)(76116006)(8936002)(2906002)(186003)(107886003)(66476007)(8676002)(66446008)(86362001)(64756008)(66556008)(66946007)(71200400001)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?D/xqK/WrXcvEzWQDlbwyoHt9aBHTjHmCHby/RhYn0i0/M6wGV8WEYVriKH9f?=
+ =?us-ascii?Q?hRsS8IDekp1or1SQd3WHVv1B4wJ1pn03KgXe2bBca+asfqvO+RZZbGV4xzsz?=
+ =?us-ascii?Q?qz5WpKsl03RdlLMLNawqZCkZeh/FMBnawBvu2MI4zp/+i0V741WaCRoeATsn?=
+ =?us-ascii?Q?j2ognmlPkGqYboL92ITiPjwKZAkTS65FWSROMgqC4qUIrPXesilovNNJMnRm?=
+ =?us-ascii?Q?XOQSPuxtBKMnNHq1MLmS8H/Z/pOCWNGHHeN1ALG1IuQ9n2YgATFfgXF7XXdR?=
+ =?us-ascii?Q?dDjW+a6I7e09C5ayfa1s1BT0rQGifIP7yEJXkdeQ0rZCbQifECE9ht8C3QbE?=
+ =?us-ascii?Q?GRVON0hcm99+l/cKxTLBQ0cge9j6TK4USTk2J3ZJYKN3eg1fsbI3tTu6t+zI?=
+ =?us-ascii?Q?fZfJwdAXsDU69d5+FMq1tievm3KZI2UKl9t7ryvWxRJBkYw71IR+nOjFLFt7?=
+ =?us-ascii?Q?bS0Hj225xk5yyNNuXMvMjJAp7io+tb8NzfxQKff6wYyWv2AQybDyFxlh7ZKG?=
+ =?us-ascii?Q?5VB/Zxef3YL1wtgTKbTgHGLLaGy7FaipFGpRENQKrs/vAKjqWXpKxZGhaF0I?=
+ =?us-ascii?Q?P9/16ZNEz4Sui2NNJFNx0PSZd1GkGU7WKM9cR44LTHJRAEpEJwF6Z+KuPBmq?=
+ =?us-ascii?Q?TvVLb5XfILRKFY6cG6t/FO1wXn5OjLRmRI4GfX3bgmQl15xsqqVh+MYSh7oz?=
+ =?us-ascii?Q?ZftSW57S9vBcv4QvoJmvGicvK7DnXNdTgdWmix6kmwuI82TMMlkC8tUHQZF8?=
+ =?us-ascii?Q?RCYtSgnSGzpt9zEWJMXbwJ4nYvFUgetwz0U8mWCrUyBnZyrj/CmlWus8+j95?=
+ =?us-ascii?Q?dVEI64ce2bjEZDDqPkjNhm7e7ZZQ92zq2bhSx4rRidUJLQixWRI+1o4dNzpd?=
+ =?us-ascii?Q?WC+/lYhBRkcAEc7vLIiw6NJshmBGxjYO7h7jJoONm+L4BWy0u9t6gt2QJ2EK?=
+ =?us-ascii?Q?hXF1ZFwf77qEaRFvU9FGH2kyYiFo/jgtGAGgEm9ArfsacSdBdibxqS3EJ7WI?=
+ =?us-ascii?Q?nlVeciYA5vurw8LlqYb3RuBmXLBzNvXiIZfeVn6aFolMiGpmaZfrp7F4S0jL?=
+ =?us-ascii?Q?l9GWGiG9ZLpI3N98ifwYuZu9RXaZvBM2C55uZTClscFXIxceqAwVdkx403wO?=
+ =?us-ascii?Q?L45HVt4yDv/BClfqTR1olUE2DDUEtdbx95OUmdoaYGknezfTPG/wd8l+qYqu?=
+ =?us-ascii?Q?s50F4JvfKgklS3cEPVy4urTKR4SL2rt2Ubm4US+QtcjRRzKb5gpUdtwEV2yD?=
+ =?us-ascii?Q?zKbBSknaTg7XT1Jk8xm7pHpGI3klqrIQhNQal23MoHI6BoYpgLGzT++UuE3K?=
+ =?us-ascii?Q?9r7zawrnMNQZJ20dEXF/oLAn?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211019130809.21281-1-o.rempel@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 07:02:10 up 244 days,  8:26, 108 users,  load average: 0.81, 0.41,
- 0.22
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3671.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d263ffb-f48f-44e0-71fe-08d99387597e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2021 05:06:17.9943
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: r9RkHXvFcvuElbbckbQ079Fmby2ZaVtVBWilmr4gn3luwSckaLeJM2WXgHyANCWODhmPqIY9bFbgkWn7TsHKtJ/BeNNsPJQkKFZJMHpmlwE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4911
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr and Michal,
-
-I forgot to add you for v2 in CC. Please test/review this version.
-
-On Tue, Oct 19, 2021 at 03:08:09PM +0200, Oleksij Rempel wrote:
-> Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's local
-> data to decide whether to run a measurement") this driver stared using
-> irq_enabled flag to make decision to power on/off the thermal core. This
-> triggered a regression, where after reaching critical temperature, alarm
-> IRQ handler set irq_enabled to false,  disabled thermal core and was not
-> able read temperature and disable cooling sequence.
-> 
-> In case the cooling device is "CPU/GPU freq", the system will run with
-> reduce performance until next reboot.
-> 
-> To solve this issue, we need to move all parts implementing hand made
-> runtime power management and let it handle actual runtime PM framework.
-> 
-> Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/thermal/imx_thermal.c | 143 +++++++++++++++++++++-------------
->  1 file changed, 89 insertions(+), 54 deletions(-)
-> 
-> diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
-> index 2c7473d86a59..cb5a4354fc75 100644
-> --- a/drivers/thermal/imx_thermal.c
-> +++ b/drivers/thermal/imx_thermal.c
-> @@ -15,6 +15,7 @@
->  #include <linux/regmap.h>
->  #include <linux/thermal.h>
->  #include <linux/nvmem-consumer.h>
-> +#include <linux/pm_runtime.h>
->  
->  #define REG_SET		0x4
->  #define REG_CLR		0x8
-> @@ -194,6 +195,7 @@ static struct thermal_soc_data thermal_imx7d_data = {
->  };
->  
->  struct imx_thermal_data {
-> +	struct device *dev;
->  	struct cpufreq_policy *policy;
->  	struct thermal_zone_device *tz;
->  	struct thermal_cooling_device *cdev;
-> @@ -252,44 +254,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
->  	const struct thermal_soc_data *soc_data = data->socdata;
->  	struct regmap *map = data->tempmon;
->  	unsigned int n_meas;
-> -	bool wait, run_measurement;
->  	u32 val;
-> +	int ret;
->  
-> -	run_measurement = !data->irq_enabled;
-> -	if (!run_measurement) {
-> -		/* Check if a measurement is currently in progress */
-> -		regmap_read(map, soc_data->temp_data, &val);
-> -		wait = !(val & soc_data->temp_valid_mask);
-> -	} else {
-> -		/*
-> -		 * Every time we measure the temperature, we will power on the
-> -		 * temperature sensor, enable measurements, take a reading,
-> -		 * disable measurements, power off the temperature sensor.
-> -		 */
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> -			    soc_data->power_down_mask);
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> -			    soc_data->measure_temp_mask);
-> -
-> -		wait = true;
-> -	}
-> -
-> -	/*
-> -	 * According to the temp sensor designers, it may require up to ~17us
-> -	 * to complete a measurement.
-> -	 */
-> -	if (wait)
-> -		usleep_range(20, 50);
-> +	ret = pm_runtime_resume_and_get(data->dev);
-> +	if (ret < 0)
-> +		return ret;
->  
->  	regmap_read(map, soc_data->temp_data, &val);
->  
-> -	if (run_measurement) {
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> -			     soc_data->measure_temp_mask);
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> -			     soc_data->power_down_mask);
-> -	}
-> -
->  	if ((val & soc_data->temp_valid_mask) == 0) {
->  		dev_dbg(&tz->device, "temp measurement never finished\n");
->  		return -EAGAIN;
-> @@ -328,6 +301,8 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
->  		enable_irq(data->irq);
->  	}
->  
-> +	pm_runtime_put(data->dev);
-> +
->  	return 0;
->  }
->  
-> @@ -335,24 +310,16 @@ static int imx_change_mode(struct thermal_zone_device *tz,
->  			   enum thermal_device_mode mode)
->  {
->  	struct imx_thermal_data *data = tz->devdata;
-> -	struct regmap *map = data->tempmon;
-> -	const struct thermal_soc_data *soc_data = data->socdata;
->  
->  	if (mode == THERMAL_DEVICE_ENABLED) {
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> -			     soc_data->power_down_mask);
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> -			     soc_data->measure_temp_mask);
-> +		pm_runtime_get(data->dev);
->  
->  		if (!data->irq_enabled) {
->  			data->irq_enabled = true;
->  			enable_irq(data->irq);
->  		}
->  	} else {
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
-> -			     soc_data->measure_temp_mask);
-> -		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
-> -			     soc_data->power_down_mask);
-> +		pm_runtime_put(data->dev);
->  
->  		if (data->irq_enabled) {
->  			disable_irq(data->irq);
-> @@ -393,6 +360,11 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
->  			     int temp)
->  {
->  	struct imx_thermal_data *data = tz->devdata;
-> +	int ret;
-> +
-> +	ret = pm_runtime_resume_and_get(data->dev);
-> +	if (ret < 0)
-> +		return ret;
->  
->  	/* do not allow changing critical threshold */
->  	if (trip == IMX_TRIP_CRITICAL)
-> @@ -406,6 +378,8 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
->  
->  	imx_set_alarm_temp(data, temp);
->  
-> +	pm_runtime_put(data->dev);
-> +
->  	return 0;
->  }
->  
-> @@ -681,6 +655,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  	if (!data)
->  		return -ENOMEM;
->  
-> +	data->dev = &pdev->dev;
-> +
->  	map = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "fsl,tempmon");
->  	if (IS_ERR(map)) {
->  		ret = PTR_ERR(map);
-> @@ -801,6 +777,14 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
->  		     data->socdata->measure_temp_mask);
->  
-> +	/* the core was configured and enabled just before */
-> +	pm_runtime_set_active(&pdev->dev);
-> +	pm_runtime_enable(data->dev);
-> +
-> +	ret = pm_runtime_resume_and_get(data->dev);
-> +	if (ret < 0)
-> +		goto disable_runtime_pm;
-> +
->  	data->irq_enabled = true;
->  	ret = thermal_zone_device_enable(data->tz);
->  	if (ret)
-> @@ -814,10 +798,15 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  		goto thermal_zone_unregister;
->  	}
->  
-> +	pm_runtime_put(data->dev);
-> +
->  	return 0;
->  
->  thermal_zone_unregister:
->  	thermal_zone_device_unregister(data->tz);
-> +disable_runtime_pm:
-> +	pm_runtime_put_noidle(data->dev);
-> +	pm_runtime_disable(data->dev);
->  clk_disable:
->  	clk_disable_unprepare(data->thermal_clk);
->  legacy_cleanup:
-> @@ -829,13 +818,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
->  static int imx_thermal_remove(struct platform_device *pdev)
->  {
->  	struct imx_thermal_data *data = platform_get_drvdata(pdev);
-> -	struct regmap *map = data->tempmon;
->  
-> -	/* Disable measurements */
-> -	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
-> -		     data->socdata->power_down_mask);
-> -	if (!IS_ERR(data->thermal_clk))
-> -		clk_disable_unprepare(data->thermal_clk);
-> +	pm_runtime_put_noidle(data->dev);
-> +	pm_runtime_disable(data->dev);
->  
->  	thermal_zone_device_unregister(data->tz);
->  	imx_thermal_unregister_legacy_cooling(data);
-> @@ -858,29 +843,79 @@ static int __maybe_unused imx_thermal_suspend(struct device *dev)
->  	ret = thermal_zone_device_disable(data->tz);
->  	if (ret)
->  		return ret;
-> +
-> +	return pm_runtime_force_suspend(data->dev);
-> +}
-> +
-> +static int __maybe_unused imx_thermal_resume(struct device *dev)
-> +{
-> +	struct imx_thermal_data *data = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = pm_runtime_force_resume(data->dev);
-> +	if (ret)
-> +		return ret;
-> +	/* Enabled thermal sensor after resume */
-> +	return thermal_zone_device_enable(data->tz);
-> +}
-> +
-> +static int __maybe_unused imx_thermal_runtime_suspend(struct device *dev)
-> +{
-> +	struct imx_thermal_data *data = dev_get_drvdata(dev);
-> +	const struct thermal_soc_data *socdata = data->socdata;
-> +	struct regmap *map = data->tempmon;
-> +	int ret;
-> +
-> +	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
-> +			   socdata->measure_temp_mask);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
-> +			   socdata->power_down_mask);
-> +	if (ret)
-> +		return ret;
-> +
->  	clk_disable_unprepare(data->thermal_clk);
->  
->  	return 0;
->  }
->  
-> -static int __maybe_unused imx_thermal_resume(struct device *dev)
-> +static int __maybe_unused imx_thermal_runtime_resume(struct device *dev)
->  {
->  	struct imx_thermal_data *data = dev_get_drvdata(dev);
-> +	const struct thermal_soc_data *socdata = data->socdata;
-> +	struct regmap *map = data->tempmon;
->  	int ret;
->  
->  	ret = clk_prepare_enable(data->thermal_clk);
->  	if (ret)
->  		return ret;
-> -	/* Enabled thermal sensor after resume */
-> -	ret = thermal_zone_device_enable(data->tz);
-> +
-> +	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
-> +			   socdata->power_down_mask);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
-> +			   socdata->measure_temp_mask);
->  	if (ret)
->  		return ret;
->  
-> +	/*
-> +	 * According to the temp sensor designers, it may require up to ~17us
-> +	 * to complete a measurement.
-> +	 */
-> +	usleep_range(20, 50);
-> +
->  	return 0;
->  }
->  
-> -static SIMPLE_DEV_PM_OPS(imx_thermal_pm_ops,
-> -			 imx_thermal_suspend, imx_thermal_resume);
-> +static const struct dev_pm_ops imx_thermal_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(imx_thermal_suspend, imx_thermal_resume)
-> +	SET_RUNTIME_PM_OPS(imx_thermal_runtime_suspend,
-> +			   imx_thermal_runtime_resume, NULL)
-> +};
->  
->  static struct platform_driver imx_thermal = {
->  	.driver = {
-> -- 
-> 2.30.2
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> On Tue, Oct 19, 2021 at 07:57:26AM +0000, George Song wrote:
+>=20
+> > > > +	/* L/R mix configuration */
+> > > > +	regmap_write(max98520->regmap,
+> MAX98520_R2043_PCM_RX_SRC1, 0x2);
+> > > > +
+> > > > +	regmap_write(max98520->regmap,
+> MAX98520_R2044_PCM_RX_SRC2,
+> > > > +0x10);
+> > >
+> > > These should be exposed to the user, not hard coded - different
+> > > systems may need different configurations.
+> > It`s already exposed for 2043 register which is regarding mono
+> mixer for "DAI Sel Mux"
+> > It will be exposed for 2044 register which is regarding pcm input
+> channel selection to dapm mixer.
+>=20
+> Then leave the values at the defaults and let the user select what's
+> sensible for their system.
+It will be left the default value in probe function and=20
+described mixer/widget comment
+>=20
+> Please fix your mail client to word wrap within paragraphs at
+> something substantially less than 80 columns.  Doing this makes your
+> messages much easier to read and reply to.
+OK I see.
