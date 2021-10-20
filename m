@@ -2,141 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73212434C06
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33321434C08
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhJTN1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        id S230049AbhJTN2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhJTN1q (ORCPT
+        with ESMTP id S229632AbhJTN2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:27:46 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F34C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:25:32 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id k26so2967528pfi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:25:31 -0700 (PDT)
+        Wed, 20 Oct 2021 09:28:03 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA38BC06161C;
+        Wed, 20 Oct 2021 06:25:49 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id q2-20020a17090a2e0200b001a0fd4efd49so3807242pjd.1;
+        Wed, 20 Oct 2021 06:25:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B33cnf023fQm3GVfpEJD0Q4Wbg7jf3ZnWq/afLUKi2A=;
-        b=wtq043pENV9t71jU6dkXGp3JuoV+Tmxr/Twpug4Ft3MPuTLvL3Bu7U3R+2Qq2NCzmN
-         C6pwIotvkI1FGaORnHRPRxp37eM/kjEt46WyTH/il93Xadfnf2hB1dCMDe8hDnl/VRH1
-         2dOnTQLlyGNikM3oncTi7YAs0RevhR9IfGJzlUQfPrwwHOp7XrRW+0VsmNuZjxsNhNiZ
-         lvc9DnNq9eggcoKmhE0fHaP2nGXYaHYB4Imufa+7/CJZw3rb73+NNDwZsaqCRtl0+Tw4
-         giSnZaU8kvv7mQebGHnud2d4nunRfckiwdzuh9a+Z5XUPOGIgqWjuTMcaJmVwXOQy9Ia
-         EkPw==
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=KD04hsmi0lgerCpXrek0NWCbVNI3Lu/Nr105uWRTo8c=;
+        b=JXX65j3hX2NvMlynDH+nRMiKJKnN5UveBhRRhING9zBMpxapQoY7K6lmkEsfwoXcNE
+         +1wr5fwA2lmJPifFvCPcxsWfmUqdIp41SkQn/KQzajtgqpm4++tkOjjyv8VCgnWd8xqk
+         mVBv6xtmXQCdigbe32XYl/NPu30bCMIAOuewuQntcuhLQvJHb8l3F+WoLWF4woZGpN2o
+         kK3+B4EdBIr8tb9tj6k1yPO/DC3fsBU62T6Z0KTsODb+oGjfLl+P5ouwsUuCAWfTYHUj
+         KHpzg3DrrdGFNlVZ8m0EDYQhumuN49+1D7drhPy2NcIbmVmDX4J6rtBhyTwb/b3601s+
+         BBhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B33cnf023fQm3GVfpEJD0Q4Wbg7jf3ZnWq/afLUKi2A=;
-        b=GTlEU4qCyk4uUuxejw70RJ7o1zZuOttQQWS0iamCCbaNr8bJjPd7KCgHLNkiGryGxP
-         mGc2YtlfoJb9yUb2PU/zvvzRcvVjYWLcK8mMbjI7y2lWYTBg1veZqRL5uxlrtD8TNFh9
-         anNtKwgsSFVAf/uOJVSx6zoCTndFJ6yWUJnNaHxYMYeWgFv7pYFAyOa2RsMiWKCcbS6u
-         gtzxIGO4DKxoO2qPXInBVh1Ov4Jr/vOV9ZJo5mqgfN9qPrS6RVgU5zyEhuuIHAHofZPG
-         PPyQslm64xH+z8wEKf3+x+VLmW5RsYzA0xL4J8pNIYlKmpNOXw6324EskbHW8DsXYFMc
-         hgVA==
-X-Gm-Message-State: AOAM532yJqlcdaT2Jih3mkBefMY6ucueMEl6mMESZB8GC30v4AugwICD
-        8rr9EEZgwi8Alx+2QC572XPt7A==
-X-Google-Smtp-Source: ABdhPJxoviIBSwiDcJEmG16PcZ8QdakQCFNojHcMiD05xwwnHTJx5SfEXyklwzSJ8KbWzjavaY4TPA==
-X-Received: by 2002:a05:6a00:1781:b0:44d:faef:f2c0 with SMTP id s1-20020a056a00178100b0044dfaeff2c0mr5651pfg.68.1634736331411;
-        Wed, 20 Oct 2021 06:25:31 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id oc8sm2718291pjb.15.2021.10.20.06.25.23
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=KD04hsmi0lgerCpXrek0NWCbVNI3Lu/Nr105uWRTo8c=;
+        b=Jo4EaH4RWqszXiTjH05ZuBy2vOLj8G93CWB4lVX4KKeHm+naje5bVnuF5NHP62nyuZ
+         HQef2YrP+aDZ37aotLP20Ble5eJGu3q4CGcJDCPcsq3q1MSjh9ECq+DwF8S56fLTkDwL
+         aV/qQNoQgi5GhnkxE+BSJLnaveBKn5F79DakDRFwNIkGg8CW1wKrAQE5MsgH7zLdPAg1
+         7B0mhvOUQ4NA0XCIMacs13LcM+BC6EqpxCn4et1Cz1ui2mLe1it+DQYdHzMblplBRIhv
+         FTzgjqZZVT9dzCBvfeCEdOusnDvUkqkz775yrSkx33Iwl4TwNku5PzHZ2gKY8xtHho2d
+         nrcg==
+X-Gm-Message-State: AOAM533XluDNE/vdMDR+UmxPCizlLQlfvT5qgejIpHhDMKTfFbfUzbP0
+        pJMNSazes9CLoXJo28Zh4Ag=
+X-Google-Smtp-Source: ABdhPJzEi+qF735DLvHgQoE5spz6cr2+SraesD/tRcTWc4xIQmSNH+/QZzgW1zjdcZjiyfzfw4Npew==
+X-Received: by 2002:a17:90b:4ad2:: with SMTP id mh18mr45250pjb.18.1634736349097;
+        Wed, 20 Oct 2021 06:25:49 -0700 (PDT)
+Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id v9sm2556719pjc.55.2021.10.20.06.25.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:25:30 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 21:25:20 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        James Clark <james.clark@arm.com>
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-Message-ID: <20211020132520.GH49614@leoy-ThinkPad-X240s>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-4-german.gomez@arm.com>
- <20211017120546.GB130233@leoy-ThinkPad-X240s>
- <0661828d-f7d9-fd8f-2a57-19364d2e5218@arm.com>
+        Wed, 20 Oct 2021 06:25:48 -0700 (PDT)
+Message-ID: <721eda4c6b65a0c0da4b85e1b24bada769890816.camel@gmail.com>
+Subject: Re: [PATCH 02/17] media: atomisp: pci: fix punit_ddr_dvfs_enable()
+ argument for mrfld_power up case
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Alan <alan@linux.intel.com>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Wed, 20 Oct 2021 22:25:43 +0900
+In-Reply-To: <YW1Vj5jGybs8gXWr@smile.fi.intel.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+         <20211017161958.44351-3-kitakar@gmail.com>
+         <YW1Vj5jGybs8gXWr@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0661828d-f7d9-fd8f-2a57-19364d2e5218@arm.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 06:34:24PM +0100, German Gomez wrote:
-> Hi Leo,
+On Mon, 2021-10-18 at 14:07 +0300, Andy Shevchenko wrote:
+> On Mon, Oct 18, 2021 at 01:19:42AM +0900, Tsuchiya Yuto wrote:
+> > When comparing with intel-aero atomisp [1], it looks like
+> > punit_ddr_dvfs_enable() should take `false` as an argument on mrfld_power
+> > up case.
+> > 
+> > Code from the intel-aero kernel [1]:
+> > 
+> >         int atomisp_mrfld_power_down(struct atomisp_device *isp)
+> >         {
+> >         [...]
+> >         	/*WA:Enable DVFS*/
+> >         	if (IS_CHT)
+> >         		punit_ddr_dvfs_enable(true);
+> > 
+> >         int atomisp_mrfld_power_up(struct atomisp_device *isp)
+> >         {
+> >         [...]
+> >         	/*WA for PUNIT, if DVFS enabled, ISP timeout observed*/
+> >         	if (IS_CHT)
+> >         		punit_ddr_dvfs_enable(false);
+> > 
+> > This patch fixes the inverted argument as per the intel-aero code, as
+> > well as its comment. While here, fix space issues for comments in
+> > atomisp_mrfld_power().
+> > 
+> > Note that it does not seem to be possible to unify the up/down cases for
+> > punit_ddr_dvfs_enable(), i.e., we can't do something like the following:
+> > 
+> >         if (IS_CHT)
+> >         	punit_ddr_dvfs_enable(!enable);
+> > 
+> > because according to the intel-aero code [1], the DVFS is disabled
+> > before "writing 0x0 to ISPSSPM0 bit[1:0]" and the DVFS is enabled after
+> > "writing 0x3 to ISPSSPM0 bit[1:0]".
+> > 
+> > [1] https://github.com/intel-aero/linux-kernel/blob/a1b673258feb915268377275130c5c5df0eafc82/drivers/media/pci/atomisp/atomisp_driver/atomisp_v4l2.c#L431-L514
+> > 
+> > Fixes: 0f441fd70b1e ("media: atomisp: simplify the power down/up code")
+> > Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+> > ---
+> >  drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> > index 0511c454e769..f5362554638e 100644
+> > --- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> > +++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> > @@ -711,15 +711,15 @@ static int atomisp_mrfld_power(struct atomisp_device *isp, bool enable)
+> >  
+> >  	dev_dbg(isp->dev, "IUNIT power-%s.\n", enable ? "on" : "off");
+> >  
+> > -	/*WA:Enable DVFS*/
+> > +	/* WA for PUNIT, if DVFS enabled, ISP timeout observed */
 > 
-> On 17/10/2021 13:05, Leo Yan wrote:
-> > On Thu, Sep 16, 2021 at 04:46:34PM +0100, German Gomez wrote:
-> >
-> > [...]
-> >
-> > If run a test case (the test is pasted at the end of the reply), I
-> > can get quite different AUX trace data with passing different wait
-> > period before sending the first USR2 signal.
-> >
-> >   # sh test_arm_spe_snapshot.sh 2
-> >   Couldn't synthesize bpf events.
-> >   stress: info: [5768] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-> >   [ perf record: Woken up 3 times to write data ]
-> >   [ perf record: Captured and wrote 2.833 MB perf.data ]
-> >
-> >   # sh test_arm_spe_snapshot.sh 10
-> >   Couldn't synthesize bpf events.
-> >   stress: info: [5776] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-> >   [ perf record: Woken up 3 times to write data ]
-> >   [ perf record: Captured and wrote 24.356 MB perf.data ]
-> >
-> > The first command passes argument '2' so the test will wait for 2
-> > seconds before send USR2 signal for snapshot, and the perf data file is
-> > 2.833 MB (so this means the Arm SPE trace data is about 2MB) for three
-> > snapshots.  In the second command, the argument '10' means it will wait
-> > for 10 seconds before sending the USR2 signals, and every time it records
-> > the trace data from the full AUX buffer (8MB), at the end it gets 24MB
-> > AUX trace data.
-> >
-> > The issue happens in the second command, waiting for 10 seconds leads
-> > to the *full* AUX ring buffer is filled by Arm SPE, so the function
-> > arm_spe_buffer_has_wrapped() always return back true for this case.
-> > Afterwards, arm_spe_find_snapshot() doesn't respect the passed old
-> > header (from '*old') and assumes the trace data size is 'mm->len'.
+> P-Unit
+
+Thanks, I'll fix this next time I send.
+
+> >  	if (IS_CHT && enable)
+> > -		punit_ddr_dvfs_enable(true);
+> > +		punit_ddr_dvfs_enable(false);
+> >  
+> >  	/*
+> >  	 * FIXME:WA for ECS28A, with this sleep, CTS
+> >  	 * android.hardware.camera2.cts.CameraDeviceTest#testCameraDeviceAbort
+> >  	 * PASS, no impact on other platforms
+> > -	*/
+> > +	 */
+> >  	if (IS_BYT && enable)
+> >  		msleep(10);
+> >  
+> > @@ -727,7 +727,7 @@ static int atomisp_mrfld_power(struct atomisp_device *isp, bool enable)
+> >  	iosf_mbi_modify(BT_MBI_UNIT_PMC, MBI_REG_READ, MRFLD_ISPSSPM0,
+> >  			val, MRFLD_ISPSSPM0_ISPSSC_MASK);
+> >  
+> > -	/*WA:Enable DVFS*/
+> > +	/* WA:Enable DVFS */
+> >  	if (IS_CHT && !enable)
+> >  		punit_ddr_dvfs_enable(true);
+> >  
+> > -- 
+> > 2.33.1
+> > 
+> > 
 > 
-> Returning the entire contents of the buffer once the first wrap-around
-> was detected was the intention of the patch, so I don't currently see it
-> as wrong. What were the values you were expecting to see in the test?
 
-I expect the second command takes three snapshots: the first time it
-should record AUX trace data with full buffer size (8MB) after waiting
-for 10 seconds, and later two times will take small AUX trace data since
-the interval (0.03s) is short and Arm SPE has not filled the full AUX
-buffer.
-
-> If the handling of snapshot mode by the perf tool can be improved after
-> upstreaming the changes to the driver, we could submit a followup patch
-> after that has been fixed.
-
-Okay, I understand now the main concern is for kernel driver changes,
-this patch for perf tool is fine for me:
-
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-Tested-by: Leo Yan <leo.yan@linaro.org>
-
-[...]
-
-> I will try these and the other driver changes and discuss them with the
-> team internally, thanks!
-
-Thanks a lot!
