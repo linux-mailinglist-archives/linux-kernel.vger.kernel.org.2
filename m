@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26815434398
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA9443439A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 04:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhJTCoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 22:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        id S229715AbhJTCvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 22:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhJTCoy (ORCPT
+        with ESMTP id S229555AbhJTCvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 22:44:54 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC28BC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 19:42:40 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id t184so8192041pgd.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Oct 2021 19:42:40 -0700 (PDT)
+        Tue, 19 Oct 2021 22:51:40 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86480C06161C;
+        Tue, 19 Oct 2021 19:49:26 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id v77so7891867oie.1;
+        Tue, 19 Oct 2021 19:49:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AuHOCXn0MgJZ/GGgc1ig2esAfbCiX83Y6ea6Rt6Hegk=;
-        b=aAoDXDzKRcVkvN1E3W7LTxe9LlQ3WoA2DEFRNRZbNENkv8E3Nhlwj8M4EvjFGW6oz6
-         mRv0zUsK2c8Dn6po7AtlE1DshMUkdjO5uVMi0GdTT1qzFg0qC7W0f2UXihcRUqr2zzeV
-         nLQnnUvO25NmnWZo2wNoeKHtFRMfvaGyHWbdOk0rDAQc8JcoRHvr0mTRzY/Nm/Xr4lUu
-         A+85I55XpMWHADCObDJaj24nx6eypQqHhoeavVG4gvy1JfDl1jhVnWCSB4Yhs960x2I8
-         z7LQ3z8Cxy3R3W1qqWsEPe4HcAPPXowmiNCuWT8p6pYccEQvzdHoFKfzcYKuMVYPYbgN
-         bviA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tZtjUsGVsJLS4CvCJymVm70tVuEVaZ7HK9v4ONvYgro=;
+        b=HYDe2nHsrKcit3rKbThWGTTOGMJf7R5JdSLMxBFEji2L0oT0iOyPxUAsP8ot90nFEX
+         rF+7KBxkXoEuL9A0xVvbSqbNHF8nRdurfv0rYCJWvOOhVRNJHlE6Ww+bASUqwuABrE9t
+         ICssh6v8x40A6p/a4WrCQ38XpqbO6X2TY9m8vK+FDTskA3pHn5+2cs+/Ll+t9l4XhBbj
+         JvYWePs9xn6pQAR68BhhRZ8NiizrXMt1AYRu3NwryaezMb5VyKRbVmnmmP5B1m1oO7fg
+         gYqvkt1VbWy9XSLuYysAwnrDPVEq7YGl/xflt3dAT4QgEO5lglpPhoFP5A0ZviZztRNB
+         Vatw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AuHOCXn0MgJZ/GGgc1ig2esAfbCiX83Y6ea6Rt6Hegk=;
-        b=PJg68IqfX3h75JerBv+e6y/AqQgMuDn03QkRymBs50DhCr7++FHdFpsQp6pXzNWGp4
-         f4xdJrd+CMtFra1sJAILt322WWeXcQEgM5TE/W+S4EpDGk3vovt1v1nWK+n9aASsihLy
-         xYLdISBeQE7N5jORuMhCTytgo9exg3yAV6ThhmPoCNGNu/7M2jwKq6pkaqRBkpQLrJDU
-         Re/3j9gKJz/c2QsIeyd7BTsQYMrEUCnnU/ezLE50U1eKyUi9s1kQsI5Q8OjrZ9wf4Z87
-         Y6FO/HiSHxmrtYFhAlT+AYGIvfc6QnfaJubjnrQoHEdu7ArUUnFmSV6/mwJyhyFhLnkn
-         st4w==
-X-Gm-Message-State: AOAM532LAKdh2rO9d6ZsNA1rJ35LhoK0KJa94qWt0RB0nZJov9n8jd1s
-        iA8ClTtYlu2noEVKy4nPADU=
-X-Google-Smtp-Source: ABdhPJz2ewfIrL/jLwxd44PNvWxm1zNj4CBrjU3Ho9u/sbX0ocZwkTjDS201CaJbNemi6yJJMT1aEw==
-X-Received: by 2002:a63:701b:: with SMTP id l27mr17564692pgc.382.1634697760199;
-        Tue, 19 Oct 2021 19:42:40 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id m186sm532985pfb.165.2021.10.19.19.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 19:42:39 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] cdrom: Remove redundant variable and its assignment.
-Date:   Wed, 20 Oct 2021 02:42:29 +0000
-Message-Id: <20211020024229.1036219-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tZtjUsGVsJLS4CvCJymVm70tVuEVaZ7HK9v4ONvYgro=;
+        b=ZP7coRAai3G+H/FpzSh0AJiDSedHMhngg88sh/W5xGxFXXAK0sE+vGXkHagao8tnIg
+         HVFlRNIyL0kHQ9xBs1QG+OoPbaZzQoWaOz4v/Jy+E+QqyNuh234mowkPyo6pEiVkY+V9
+         Iaqzk4KKVo20X92d56pLj8azduJz0Wy9asbKwUH1XQOG/VBntEO5f4m3bpBAHQgyKzMq
+         dATa3VLPoGDF6B+ST5igszkGfWfrBB9DK5QZdyAa5M84WG4dsQBZut7/WytaSGn3mFhE
+         8/TQ0+7FIprWdLmLx3eYB8U09WmfPEFDXxnxSlpuOW9KdGber/j8K9/CkN2e9/IZGou2
+         XMGQ==
+X-Gm-Message-State: AOAM530Tycs6DdVLu279pFjzVdNnNSK3UnlqjKAZRO0wMTpiTngMzz2y
+        f9CMJy9FUVLDvaQK0y5hBC9ewT/TvyGzF6+i594=
+X-Google-Smtp-Source: ABdhPJzttPSjDLjxxS0gL+1B5v44Q2oNpxWTf+tmUw99FoWBiGEmNJQ45p7McgbunGY3za6HcFsg0/NDL5bEEfhCTXM=
+X-Received: by 2002:aca:3f87:: with SMTP id m129mr6985212oia.5.1634698165919;
+ Tue, 19 Oct 2021 19:49:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1634631160-67276-1-git-send-email-wanpengli@tencent.com>
+ <1634631160-67276-3-git-send-email-wanpengli@tencent.com> <24e67e43-c50c-7e0f-305a-c7f6129f8d70@redhat.com>
+ <YW8BmRJHVvFscWTo@google.com>
+In-Reply-To: <YW8BmRJHVvFscWTo@google.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Wed, 20 Oct 2021 10:49:14 +0800
+Message-ID: <CANRm+CzuWnO8FZPTvvOtpxqc5h786o7THyebOFpVAp3BF1xQiw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] KVM: vCPU kick tax cut for running vCPU
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable is not used in functions, and its assignment is redundant too.
-So it should be deleted. Also the inner-most set of parentheses is no
-longer needed.
+On Wed, 20 Oct 2021 at 01:34, Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Oct 19, 2021, Paolo Bonzini wrote:
+> > On 19/10/21 10:12, Wanpeng Li wrote:
+> > > -   if (kvm_vcpu_wake_up(vcpu))
+> > > -           return;
+> > > +   me = get_cpu();
+> > > +
+> > > +   if (rcuwait_active(kvm_arch_vcpu_get_wait(vcpu)) && kvm_vcpu_wake_up(vcpu))
+> > > +           goto out;
+> >
+> > This is racy.  You are basically doing the same check that rcuwait_wake_up
+> > does, but without the memory barrier before.
+>
+> I was worried that was the case[*], but I didn't have the two hours it would have
+> taken me to verify there was indeed a problem :-)
+>
+> The intent of the extra check was to avoid the locked instruction that comes with
+> disabling preemption via rcu_read_lock().  But thinking more, the extra op should
+> be little more than a basic arithmetic operation in the grand scheme on modern x86
+> since the cache line is going to be locked and written no matter what, either
+> immediately before or immediately after.
 
-The clang_analyzer complains as follows:
+I observe the main overhead of rcuwait_wake_up() is from rcu
+operations, especially rcu_read_lock/unlock().
 
-drivers/cdrom/cdrom.c:877: warning:
+>
+> So with Paolo's other comment, maybe just this?  And if this doesn't provide the
+> desired performance boost, changes to the rcuwait behavior should go in separate
+> patch.
 
-Although the value stored to 'ret' is used in the enclosing expression,
-the value is never actually read from 'ret'.
+Ok.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- drivers/cdrom/cdrom.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-index feb827e..40970b8 100644
---- a/drivers/cdrom/cdrom.c
-+++ b/drivers/cdrom/cdrom.c
-@@ -864,7 +864,7 @@ static void cdrom_mmc3_profile(struct cdrom_device_info *cdi)
- {
- 	struct packet_command cgc;
- 	char buffer[32];
--	int ret, mmc3_profile;
-+	int mmc3_profile;
- 
- 	init_cdrom_command(&cgc, buffer, sizeof(buffer), CGC_DATA_READ);
- 
-@@ -874,7 +874,7 @@ static void cdrom_mmc3_profile(struct cdrom_device_info *cdi)
- 	cgc.cmd[8] = sizeof(buffer);		/* Allocation Length */
- 	cgc.quiet = 1;
- 
--	if ((ret = cdi->ops->generic_packet(cdi, &cgc)))
-+	if (cdi->ops->generic_packet(cdi, &cgc))
- 		mmc3_profile = 0xffff;
- 	else
- 		mmc3_profile = (buffer[6] << 8) | buffer[7];
--- 
-2.15.2
-
-
+    Wanpeng
