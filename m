@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6812F434C0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADF6434C13
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhJTNaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:30:03 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:50344 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTNaC (ORCPT
+        id S230202AbhJTNa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhJTNa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:30:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634736468; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=c5i1CMhYy4g8vaYaKlzxS5Vj9oYBF5BrdPZbK42iW3Y=; b=iLEN6J1VCnQh9vHBzfYVOvr4HR2GwupEKLjKcp5W6xjIMPaIONjUZ2tu/pf0cEQ5pcCyMT5R
- VAmcV46wKbyT2dH56+zaazI217SPDAL1fcFZxVhRRE1OLWFuT7DLEJdH9W3cVQIeBiVMvtIb
- TLlCN7+HBqMpI0vabgygW9qD9T4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 617019535ca800b6c18e95d5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 13:27:47
- GMT
-Sender: quic_luoj=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 39526C43617; Wed, 20 Oct 2021 13:27:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [10.92.1.38] (unknown [180.166.53.36])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 41A57C4338F;
-        Wed, 20 Oct 2021 13:27:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 41A57C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
-Subject: Re: [PATCH v3 12/13] net: phy: adjust qca8081 master/slave seed value
- if link down
-To:     Andrew Lunn <andrew@lunn.ch>, Luo Jie <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-References: <20211018033333.17677-1-luoj@codeaurora.org>
- <20211018033333.17677-13-luoj@codeaurora.org> <YW3vVt99i7TNCzaC@lunn.ch>
-From:   Jie Luo <quic_luoj@quicinc.com>
-Message-ID: <087c328d-2909-6750-8711-71abb8d5e301@quicinc.com>
-Date:   Wed, 20 Oct 2021 21:27:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 20 Oct 2021 09:30:58 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10BEC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:28:43 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so10265043wmz.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Bd0wj+p+9TRlN1ZXP/TSahnjo8YS2SPX8pyBePDyCc=;
+        b=F0ZS43EWDOllEFrcmG5QFNCOD6Xo2np6Nh2MDNP76gKqkXmn/cjijdlZAhmtSXOzHd
+         07ev4RT9ZJgGD7KhM2zVgUwrZvJSQLBXwv1qvOwErvRr3bSlXlrylvZtKSB4CaFL0MTs
+         UNxyHYTpwLS/AxALC//Kz6+G6u93fvqVmSi2eljeOhhyJUpsjIFjuOiFehxQnkd7ZYlj
+         tk1wAq3JVnUpPVyqMbHYmoT96BwsdQ2oFnIY0tXcvE92vDjSsmrGlT10bBMrTLuwiyDA
+         M2Bt8/Nu8j9UlrY/b9fGFzXHnEJizPAhCWoV9B2sLz6kK1V+t0+DrD0YGHZyC4YXc6wg
+         chuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Bd0wj+p+9TRlN1ZXP/TSahnjo8YS2SPX8pyBePDyCc=;
+        b=5Jyc7I02ygKy9Pw5mIPBN18RZ5+b7oYm+yQiCvTgRoab59+4jOXa4AVPKyQMXV7ajI
+         ZFBqY1JDAwNUt0R8SRIv9T0VdtVy+uYCvXnK4d06u3pIV6WsoP9hk+m6tw3imnyWxrwf
+         emOPO0EUCOtxHPI2gGU58jEpBfTRZEUHbvsTUicnfUc20t+6QzpmpwC+c4SSz2E9mfjx
+         S6TkOLw5+GNuUEdrhe7XJAqD+fCh/ZCHSrtVCfH/IJjD/Li3cxlQLK68lxRpMdzXvxMi
+         G2TGFn/Muuzu5YVkTZLRONXvP3cr9PsT48RSRzAsI0EbDXvYmch6UKeNpdtE8AvsBVea
+         lBZg==
+X-Gm-Message-State: AOAM531jwPG+Wmk7juPT6aBGAiH4SE4wgRyDQNT+hQWqZNPxQVmuGifD
+        dcD7WB3fRD0o/F23nfcRo6Y=
+X-Google-Smtp-Source: ABdhPJwBIundAVhXSa2XBj9FIMgfaHwj18HTzkFmuT+0+SI3LetT79OI4bq2J7OEBJpmhhd2pf1yGg==
+X-Received: by 2002:a7b:c007:: with SMTP id c7mr13816618wmb.101.1634736522212;
+        Wed, 20 Oct 2021 06:28:42 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id n26sm3323115wmi.16.2021.10.20.06.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 06:28:41 -0700 (PDT)
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Karolina Drobnik <karolinadrobnik@gmail.com>
+Subject: [PATCH] staging: vt6655: Rename `dwAL2230InitTable` array
+Date:   Wed, 20 Oct 2021 14:28:11 +0100
+Message-Id: <20211020132811.417341-1-karolinadrobnik@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YW3vVt99i7TNCzaC@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Drop Hungarian notation prefix in `dwAL2230InitTable` array.
+Change it to use snake case.
 
-On 10/19/2021 6:04 AM, Andrew Lunn wrote:
-> On Mon, Oct 18, 2021 at 11:33:32AM +0800, Luo Jie wrote:
->> 1. The master/slave seed needs to be updated when the link can't
->> be created.
->>
->> 2. The case where two qca8081 PHYs are connected each other and
->> master/slave seed is generated as the same value also needs
->> to be considered, so adding this code change into read_status
->> instead of link_change_notify.
->>
->> Signed-off-by: Luo Jie <luoj@codeaurora.org>
->> ---
->>   drivers/net/phy/at803x.c | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
->>
->> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
->> index 5d007f89e9d3..77aaf9e72781 100644
->> --- a/drivers/net/phy/at803x.c
->> +++ b/drivers/net/phy/at803x.c
->> @@ -1556,6 +1556,22 @@ static int qca808x_read_status(struct phy_device *phydev)
->>   	else
->>   		phydev->interface = PHY_INTERFACE_MODE_SMII;
->>   
->> +	/* generate seed as a lower random value to make PHY linked as SLAVE easily,
->> +	 * except for master/slave configuration fault detected.
->> +	 * the reason for not putting this code into the function link_change_notify is
->> +	 * the corner case where the link partner is also the qca8081 PHY and the seed
->> +	 * value is configured as the same value, the link can't be up and no link change
->> +	 * occurs.
->> +	 */
->> +	if (!phydev->link) {
->> +		if (phydev->master_slave_state == MASTER_SLAVE_STATE_ERR) {
->> +			qca808x_phy_ms_seed_enable(phydev, false);
->> +		} else {
->> +			qca808x_phy_ms_random_seed_set(phydev);
->> +			qca808x_phy_ms_seed_enable(phydev, true);
->> +		}
->> +	}
-> Are you assuming here that the status is polled once a second, and
-> each poll you choose a new seed and see if it succeeds? What happens
-> when interrupts are used, not polling?
->
->       Andrew
+Fix issue detected by checkpatch.pl:
+  CHECK: Avoid CamelCase: <dwAL2230InitTable>
 
-Hi Andrew,
+Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
+---
+ drivers/staging/vt6655/rf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-yes, this code assumes that the PHY POLL is used, and choose a new 
-random seed value
-
-on each poll if no link is created.
-
-when the interrupts is used, this corner case seems can't be covered 
-since there is
-
-no related interrupt occurs when the seed is configured as same value.
+diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+index a6f17162d017..6bdacf8fbc27 100644
+--- a/drivers/staging/vt6655/rf.c
++++ b/drivers/staging/vt6655/rf.c
+@@ -33,7 +33,7 @@
+ #define SWITCH_CHANNEL_DELAY_AL7230 200 /* us */
+ #define AL7230_PWR_IDX_LEN    64
+ 
+-static const unsigned long dwAL2230InitTable[CB_AL2230_INIT_SEQ] = {
++static const unsigned long al2230_init_table[CB_AL2230_INIT_SEQ] = {
+ 	0x03F79000 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW,
+ 	0x03333100 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW,
+ 	0x01A00200 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW,
+@@ -545,7 +545,7 @@ static bool RFbAL2230Init(struct vnt_private *priv)
+ 	IFRFbWriteEmbedded(priv, (0x07168700 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW));
+ 
+ 	for (ii = 0; ii < CB_AL2230_INIT_SEQ; ii++)
+-		ret &= IFRFbWriteEmbedded(priv, dwAL2230InitTable[ii]);
++		ret &= IFRFbWriteEmbedded(priv, al2230_init_table[ii]);
+ 	MACvTimer0MicroSDelay(priv, 30); /* delay 30 us */
+ 
+ 	/* PLL On */
+@@ -557,7 +557,7 @@ static bool RFbAL2230Init(struct vnt_private *priv)
+ 	ret &= IFRFbWriteEmbedded(priv, (0x00780f00 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW));
+ 	MACvTimer0MicroSDelay(priv, 30);/* 30us */
+ 	ret &= IFRFbWriteEmbedded(priv,
+-				  dwAL2230InitTable[CB_AL2230_INIT_SEQ - 1]);
++				  al2230_init_table[CB_AL2230_INIT_SEQ - 1]);
+ 
+ 	MACvWordRegBitsOn(iobase, MAC_REG_SOFTPWRCTL, (SOFTPWRCTL_SWPE3    |
+ 							 SOFTPWRCTL_SWPE2    |
+@@ -699,7 +699,7 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
+ 			return false;
+ 
+ 		for (ii = 0; ii < CB_AL2230_INIT_SEQ; ii++)
+-			MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230InitTable[ii]);
++			MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), al2230_init_table[ii]);
+ 
+ 		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230ChannelTable0[uChannel - 1]);
+ 		ii++;
+-- 
+2.30.2
 
