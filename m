@@ -2,192 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0DD434AB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE48D434AB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhJTMGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:06:11 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:16927 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhJTMGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:06:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1634731435; x=1666267435;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tJIhNGjamjphj7O59/7TRWCK3nfTGWmxe5ZyDBjSkEM=;
-  b=E5d2Fr5/HCOF9jf/1Rv97TszS5Trb1DukaqlBnJv/GcyeuUtCbbW6VA4
-   mnz72vhYi77HbA+xz8+lDErm7l4vSeijwMWoObMvb7CKS12uCuRak3oh2
-   c/H3ANKlk0DR4zftc7FefLkuUIEEn6X1hnonfUfIan2zwFvLbb7t649Sl
-   965DIwFjjxLNaZuPvgn+vp/s67XXhpXvDZVPXmRxFCMibkNUEttaOYpw+
-   uOwl7esVyoonaOrphtUlgc+SzdkHjEYBDtfMrN5yf2ThfL7k+9VWmcJTi
-   dnaN5k4vg/BP0AZQWefVhwf1xTK7z+hgpr7GWFq0ML9dQGpIx3EsjEX3b
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,166,1631570400"; 
-   d="scan'208";a="20155759"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 20 Oct 2021 14:03:52 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 20 Oct 2021 14:03:53 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 20 Oct 2021 14:03:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1634731433; x=1666267433;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tJIhNGjamjphj7O59/7TRWCK3nfTGWmxe5ZyDBjSkEM=;
-  b=jy1xSZt8f2lEbCA7OqFVCfaJDu49DcmknN2/ZmRU8k+CZaaa2LVDrlVU
-   ocFrY12VKE+3ZKpIKq/yA7g6KBPPYIW0n4ZTPxa58H2CsFVUQEzXNwYgr
-   +OQ70g68+N0jItYLn6IFWL5+T3xB/jaw32INMtm+Y4+x102VxL3eFKv1k
-   vmQsgJmfFELMM2ekHgdJb2iKsBg1vPh3sylftU9pntZZbBVyqiN9qpXJY
-   eowc2AnMVDgOLybZ/zTHMICaLkWHtvtIUq7eRan6dydTZ8gbrayqTBV3J
-   Px8VCXsIqw3yoIqPSmkmOUsB2zQpUM8I73zxlpUqjl2xidYNi6iywkP+w
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,166,1631570400"; 
-   d="scan'208";a="20155756"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 20 Oct 2021 14:03:52 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id D4A42280065;
-        Wed, 20 Oct 2021 14:03:51 +0200 (CEST)
-Message-ID: <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
-Subject: Re: [PATCH] net: fec: defer probe if PHY on external MDIO bus is
- not available
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 20 Oct 2021 14:03:49 +0200
-In-Reply-To: <YW7SWKiUy8LfvSkl@lunn.ch>
-References: <20211014113043.3518-1-matthias.schiffer@ew.tq-group.com>
-         <YW7SWKiUy8LfvSkl@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        id S230218AbhJTMGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:06:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25349 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230134AbhJTMGn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:06:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634731469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UE/l4uetJOxWMqc3F4JFjX4DgIjZidmlZiM6BKW1Wgs=;
+        b=X1O7AK1csLIoX3t+oSNx69w/PFb+PY9fpyHKJvJMGCJGJIuMRF5CMdXn7neaUdHWznP08+
+        CaAd5brTvBCJgBTwMpGGPa19fbkcoDmaLs7SHqXDWOtKgKGV+/k5w9frcsbrFbTrtJBkaN
+        GvVAVXsM3vV8XSTqfMfJ9qpBbyTuTHI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-nr-nrHyYMYePCvb1W5pabA-1; Wed, 20 Oct 2021 08:04:27 -0400
+X-MC-Unique: nr-nrHyYMYePCvb1W5pabA-1
+Received: by mail-ed1-f70.google.com with SMTP id f4-20020a50e084000000b003db585bc274so20719899edl.17
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:04:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=UE/l4uetJOxWMqc3F4JFjX4DgIjZidmlZiM6BKW1Wgs=;
+        b=Iw7naJP5WqP4WcKWDX7r1JydZXSbQrIfrmtHmOE9b5eVM6dx0luWBFsSYRwuYnIX6D
+         0aSYFDrTMAWrb1QGfV+meiFMl0nCjBQR0DPbPK8uqy5Z7Ybi8xQRGSjDtQ0guT8VeanA
+         WYMi+qriUWT6cL5GrugC67OP9Bc4bFpZd7wyiNS2EggOmupeCmoJr5O/toF/INMZBudC
+         BgWQjRJZA3g/PfmqZmwhvp+oovdnGSYpkF7HcCxgBNfiU3dpVCPlPxFH2kzP51rXBx/O
+         y0oqgoVqiW9B5YLHCD0Jmx3myF4r9+RMf3J5yVqlHj2VWEpum1aJ+l3Gn/1jwrU+Camb
+         XeQQ==
+X-Gm-Message-State: AOAM53281zYH0ojCyySMku161uQybNG8+Ql29fw3sHVwxChZaVluam4N
+        yQQDs/Yi9XWTqExLEKvdmVTpXkFkJRyh+K1Shmup0UMRh5Lu2LF4o4niIgvNN04sLAgkRTbfpzb
+        UoFUEVl62pDoreW8qs8UudPYP
+X-Received: by 2002:a50:e1c4:: with SMTP id m4mr61532593edl.307.1634731466549;
+        Wed, 20 Oct 2021 05:04:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZ5C06nGEqIWM/xJH71Ww90rK/u6cjEMP7r0VYOQvRtgXosZQm6GVJfl1z5ecQizV7PxnNyw==
+X-Received: by 2002:a50:e1c4:: with SMTP id m4mr61532568edl.307.1634731466289;
+        Wed, 20 Oct 2021 05:04:26 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id rk9sm955443ejb.31.2021.10.20.05.04.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 05:04:25 -0700 (PDT)
+Message-ID: <bd4e3b80-fefd-43e8-e96b-ea81f21569bd@redhat.com>
+Date:   Wed, 20 Oct 2021 14:04:23 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] rcuwait: do not enter RCU protection unless a wakeup is
+ needed
+Content-Language: en-US
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>,
+        Wanpeng Li <wanpengli@tencent.com>
+References: <20211020110638.797389-1-pbonzini@redhat.com>
+ <YW/61zpycsD8/z4g@hirez.programming.kicks-ass.net>
+ <98a72081-6a2b-b644-d029-edd03da84135@redhat.com>
+ <CANRm+CyX+ZZh+LbLPBXEfMoExkx78qHpP-=yFCop9gX+LQeWDQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CANRm+CyX+ZZh+LbLPBXEfMoExkx78qHpP-=yFCop9gX+LQeWDQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-19 at 16:12 +0200, Andrew Lunn wrote:
-> On Thu, Oct 14, 2021 at 01:30:43PM +0200, Matthias Schiffer wrote:
-> > On some SoCs like i.MX6UL it is common to use the same MDIO bus for PHYs
-> > on both Ethernet controllers. Currently device trees for such setups
-> > have to make assumptions regarding the probe order of the controllers:
-> > 
-> > For example in imx6ul-14x14-evk.dtsi, the MDIO bus of fec2 is used for
-> > the PHYs of both fec1 and fec2. The reason is that fec2 has a lower
-> > address than fec1 and is thus loaded first, so the bus is already
-> > available when fec1 is probed.
-> > 
-> > Besides being confusing, this limitation also makes it impossible to use
-> > the same device tree for variants of the i.MX6UL with one Ethernet
-> > controller (which have to use the MDIO of fec1, as fec2 does not exist)
-> > and variants with two controllers (which have to use fec2 because of the
-> > load order).
-> > 
-> > To fix this, defer the probe of the Ethernet controller when the PHY is
-> > not on our own MDIO bus and not available.
-> > 
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> > ---
-> >  drivers/net/ethernet/freescale/fec_main.c | 23 ++++++++++++++++++++++-
-> >  1 file changed, 22 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> > index 47a6fc702ac7..dc070dd216e8 100644
-> > --- a/drivers/net/ethernet/freescale/fec_main.c
-> > +++ b/drivers/net/ethernet/freescale/fec_main.c
-> > @@ -3820,7 +3820,28 @@ fec_probe(struct platform_device *pdev)
-> >  		goto failed_stop_mode;
-> >  
-> >  	phy_node = of_parse_phandle(np, "phy-handle", 0);
-> > -	if (!phy_node && of_phy_is_fixed_link(np)) {
-> > +	if (phy_node) {
-> > +		struct device_node *mdio_parent =
-> > +			of_get_next_parent(of_get_parent(phy_node));
-> > +
-> > +		ret = 0;
-> > +
-> > +		/* Skip PHY availability check for our own MDIO bus to avoid
-> > +		 * cyclic dependency
-> > +		 */
-> > +		if (mdio_parent != np) {
-> > +			struct phy_device *phy = of_phy_find_device(phy_node);
-> > +
-> > +			if (phy)
-> > +				put_device(&phy->mdio.dev);
-> > +			else
-> > +				ret = -EPROBE_DEFER;
-> > +		}
+On 20/10/21 14:01, Wanpeng Li wrote:
+> Yes, in the attachment.
 > 
-> I've not looked at the details yet, just back from vacation. But this
-> seems wrong. I would of expected phylib to of returned -EPRODE_DEFER
-> at some point, when asked for a PHY which does not exist yet. All the
-> driver should need to do is make sure it returns the
-> -EPRODE_DEFER.
+>      Wanpeng
 
-This is what I expected as well, however there are a few complications:
+This one does not have CONFIG_PREEMPT=y, let alone CONFIG_PREEMPT_RCU. 
+It's completely impossible that this patch has an effect without those 
+options.
 
-- At the moment the first time the driver does anything with the PHY is
-  in fec_enet_open(), not in fec_probe() - way too late to defer
-  anything
-
-- phylib doesn't know about EPROBE_DEFER, or error returns in general,
-  everything just returns NULL. There is a fairly long chain of
-  functions that just return NULL here (which might be okay, as they
-  don't have a way to distinguish different errors anyways AFAICT):
-  of_phy_find_device() -> fwnode_phy_find_device() ->
-  fwnode_phy_find_device() -> fwnode_mdio_find_device() ->
-  bus_find_device_by_fwnode() -> bus_find_device()
-
-- Even if we implement the EPROBE_DEFER return somewhere in phylib,
-  there needs to be special handling for the internal MDIO case, where
-  the MDIO device is provided by the same driver that uses it. We can't
-  wait with the check until we registered the MDIO bus, as it is not
-  allowed to return EPROBE_DEFER after any devices have been
-  registered. Splitting out the MDIO bus to be probed separately does
-  not seem feasible, but I might be wrong?
-
-
-So I have a few ideas, but I'm not sure which approach to pursue:
-
-1. Make of_phy_find_device() return -EPROBE_DEFER (with or without
-   touching more of the call chain). Doesn't seem too convincing to me,
-   as it will just replace every case where of_phy_find_device()
-   return NULL with -EPROBE_DEFER, making it more complicated to use
-   for no gain.
-
-2. Create a helper in phylib ("of_phy_device_available()") or something
-   that encapsulates some of the code of this patch in a reuseable way,
-   returning 0 or -EPROBE_DEFER.
-
- 2a. Move just the code in "if (mdio_parent != np) {"
- 2b. Also include the check for the MDIO parent for special handling of
-     the internal MDIO. Not sure if this is approach is too specific
-     to the node structure for a generic helper, or if the structure is
-     common enough across different drivers.
-
-3. Create a wrapper for of_parse_phandle() in phylib that does
-   everything from 2b. 
-  - Change the driver to hold a reference to a phy_device instead of
-    its device_node
-  - Might require further work for the fixed-link case
-  - Will allow for an API similar to regulator_get[_optional]()
-  - I have no idea how to solve the internal MDIO case with this
-    approach nicely, as we don't be able to get a phy_device before the
-    MDIO bus is registered
-
-
-Matthias
-
-
-
-> 
->        Andrew
+Paolo
 
