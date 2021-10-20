@@ -2,135 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2C9434556
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCAA434561
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhJTGpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:45:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35098 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhJTGpx (ORCPT
+        id S229910AbhJTGqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:46:38 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:34500 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhJTGqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:45:53 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E871121A74;
-        Wed, 20 Oct 2021 06:43:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634712217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rNHGewS1yJSMHeXcGNkiPH4/vSqZ+kkloqucx8CrHpg=;
-        b=xaE2gnmQOesLnomNZFvJ0r1pNN1Ha5LABsYOH5p9EvC62iNKUw3U+HkW9BHEOSHWmVkg57
-        v3e5QjRkN0kJ1LMa4LOcTq7lEbgvtEmIM7xkdKx+sZpMeGZ9qNOEI0qF8Jua8wWo2GWSXy
-        k1c4uaE+0f7BF7q5mqJQHYQ2yrySS/g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634712217;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rNHGewS1yJSMHeXcGNkiPH4/vSqZ+kkloqucx8CrHpg=;
-        b=hQautgroTigJwzFHF1d+IXOU6BywnWwjsMxbnt810LVJ8uC7aXRTFWkw0nwWrh6mRaIT74
-        k14k8MQMA7a4pcDQ==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 25BA9A3B81;
-        Wed, 20 Oct 2021 06:43:37 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 08:43:37 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Ming Lei <ming.lei@redhat.com>
-cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
-        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
-        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-In-Reply-To: <YW6OptglA6UykZg/@T590>
-Message-ID: <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
-References: <YWeR4moCRh+ZHOmH@T590> <YWiSAN6xfYcUDJCb@bombadil.infradead.org> <YWjCpLUNPF3s4P2U@T590> <YWjJ0O7K+31Iz3ox@bombadil.infradead.org> <YWk9e957Hb+I7HvR@T590> <YWm68xUnAofop3PZ@bombadil.infradead.org> <YWq3Z++uoJ/kcp+3@T590> <YW3LuzaPhW96jSBK@bombadil.infradead.org>
- <YW4uwep3BCe9Vxq8@T590> <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz> <YW6OptglA6UykZg/@T590>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Wed, 20 Oct 2021 02:46:37 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 19 Oct 2021 23:44:23 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 19 Oct 2021 23:44:22 -0700
+X-QCInternal: smtphost
+Received: from c-mansur-linux.qualcomm.com ([10.204.83.180])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 20 Oct 2021 12:14:12 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id 6307422929; Wed, 20 Oct 2021 12:14:11 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: [V5] venus: vdec: decoded picture buffer handling during reconfig sequence
+Date:   Wed, 20 Oct 2021 12:14:08 +0530
+Message-Id: <20211020064408.14853-1-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021, Ming Lei wrote:
+In existing implementation, driver is freeing and un-mapping all the
+decoded picture buffers(DPB) as part of dynamic resolution change(DRC)
+handling. As a result, when firmware try to access the DPB buffer, from
+previous sequence, SMMU context fault is seen due to the buffer being
+already unmapped.
 
-> On Tue, Oct 19, 2021 at 08:23:51AM +0200, Miroslav Benes wrote:
-> > > > By you only addressing the deadlock as a requirement on approach a) you are
-> > > > forgetting that there *may* already be present drivers which *do* implement
-> > > > such patterns in the kernel. I worked on addressing the deadlock because
-> > > > I was informed livepatching *did* have that issue as well and so very
-> > > > likely a generic solution to the deadlock could be beneficial to other
-> > > > random drivers.
-> > > 
-> > > In-tree zram doesn't have such deadlock, if livepatching has such AA deadlock,
-> > > just fixed it, and seems it has been fixed by 3ec24776bfd0.
-> > 
-> > I would not call it a fix. It is a kind of ugly workaround because the 
-> > generic infrastructure lacked (lacks) the proper support in my opinion. 
-> > Luis is trying to fix that.
-> 
-> What is the proper support of the generic infrastructure? I am not
-> familiar with livepatching's model(especially with module unload), you mean
-> livepatching have to do the following way from sysfs:
-> 
-> 1) during module exit:
-> 	
-> 	mutex_lock(lp_lock);
-> 	kobject_put(lp_kobj);
-> 	mutex_unlock(lp_lock);
-> 	
-> 2) show()/store() method of attributes of lp_kobj
-> 	
-> 	mutex_lock(lp_lock)
-> 	...
-> 	mutex_unlock(lp_lock)
+With this change, driver defines ownership of each DPB buffer. If a buffer
+is owned by firmware, driver would skip from un-mapping the same.
 
-Yes, this was exactly the case. We then reworked it a lot (see 
-958ef1e39d24 ("livepatch: Simplify API by removing registration step"), so 
-now the call sequence is different. kobject_put() is basically offloaded 
-to a workqueue scheduled right from the store() method. Meaning that 
-Luis's work would probably not help us currently, but on the other hand 
-the issues with AA deadlock were one of the main drivers of the redesign 
-(if I remember correctly). There were other reasons too as the changelog 
-of the commit describes.
+changes in V5:
+- Addressed kernel test robot reported warnings/errors
+changes in V4:
+- As per comments moved static global variable to venus_inst structure
+- Addressed other review comments
+Changes in V3:
+- Migrated id allocation using kernel API ida_alloc_min()
 
-So, from my perspective, if there was a way to easily synchronize between 
-a data cleanup from module_exit callback and sysfs/kernfs operations, it 
-could spare people many headaches.
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+---
+ drivers/media/platform/qcom/venus/core.h    |  1 +
+ drivers/media/platform/qcom/venus/helpers.c | 51 ++++++++++++++++++++-
+ drivers/media/platform/qcom/venus/helpers.h |  3 ++
+ drivers/media/platform/qcom/venus/vdec.c    |  7 ++-
+ 4 files changed, 60 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 5ec851115eca..6869f0d06b77 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -452,6 +452,7 @@ struct venus_inst {
+ 	bool next_buf_last;
+ 	bool drain_active;
+ 	enum venus_inst_modes flags;
++	struct ida dpb_ids;
+ };
  
-> IMO, the above usage simply caused AA deadlock. Even in Luis's patch
-> 'zram: fix crashes with cpu hotplug multistate', new/same AA deadlock
-> (hot_remove_store() vs. disksize_store() or reset_store()) is added
-> because hot_remove_store() isn't called from module_exit().
-> 
-> Luis tries to delay unloading module until all show()/store() are done. But
-> that can be obtained by the following way simply during module_exit():
-> 
-> 	kobject_del(lp_kobj); //all pending store()/show() from lp_kobj are done,
-> 						  //no new store()/show() can come after
-> 						  //kobject_del() returns	
-> 	mutex_lock(lp_lock);
-> 	kobject_put(lp_kobj);
-> 	mutex_unlock(lp_lock);
-
-kobject_del() already calls kobject_put(). Did you mean __kobject_del(). 
-That one is internal though.
+ #define IS_V1(core)	((core)->res->hfi_version == HFI_VERSION_1XX)
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+index 8012f5c7bf34..dceb77da8908 100644
+--- a/drivers/media/platform/qcom/venus/helpers.c
++++ b/drivers/media/platform/qcom/venus/helpers.c
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
+  * Copyright (C) 2017 Linaro Ltd.
+  */
++#include <linux/idr.h>
+ #include <linux/list.h>
+ #include <linux/mutex.h>
+ #include <linux/slab.h>
+@@ -21,6 +22,11 @@
+ #define NUM_MBS_720P	(((1280 + 15) >> 4) * ((720 + 15) >> 4))
+ #define NUM_MBS_4K	(((4096 + 15) >> 4) * ((2304 + 15) >> 4))
  
-> Or can you explain your requirement on kobject/module unload in a bit
-> details?
++enum dpb_buf_owner {
++	DRIVER,
++	FIRMWARE,
++};
++
+ struct intbuf {
+ 	struct list_head list;
+ 	u32 type;
+@@ -28,6 +34,8 @@ struct intbuf {
+ 	void *va;
+ 	dma_addr_t da;
+ 	unsigned long attrs;
++	enum dpb_buf_owner owned_by;
++	u32 dpb_out_tag;
+ };
+ 
+ bool venus_helper_check_codec(struct venus_inst *inst, u32 v4l2_pixfmt)
+@@ -95,9 +103,16 @@ int venus_helper_queue_dpb_bufs(struct venus_inst *inst)
+ 		fdata.device_addr = buf->da;
+ 		fdata.buffer_type = buf->type;
+ 
++		if (buf->owned_by == FIRMWARE)
++			continue;
++
++		fdata.clnt_data = buf->dpb_out_tag;
++
+ 		ret = hfi_session_process_buf(inst, &fdata);
+ 		if (ret)
+ 			goto fail;
++
++		buf->owned_by = FIRMWARE;
+ 	}
+ 
+ fail:
+@@ -110,13 +125,19 @@ int venus_helper_free_dpb_bufs(struct venus_inst *inst)
+ 	struct intbuf *buf, *n;
+ 
+ 	list_for_each_entry_safe(buf, n, &inst->dpbbufs, list) {
++		if (buf->owned_by == FIRMWARE)
++			continue;
++
++		ida_free(&inst->dpb_ids, buf->dpb_out_tag);
++
+ 		list_del_init(&buf->list);
+ 		dma_free_attrs(inst->core->dev, buf->size, buf->va, buf->da,
+ 			       buf->attrs);
+ 		kfree(buf);
+ 	}
+ 
+-	INIT_LIST_HEAD(&inst->dpbbufs);
++	if (list_empty(&inst->dpbbufs))
++		INIT_LIST_HEAD(&inst->dpbbufs);
+ 
+ 	return 0;
+ }
+@@ -134,6 +155,7 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
+ 	unsigned int i;
+ 	u32 count;
+ 	int ret;
++	int id;
+ 
+ 	/* no need to allocate dpb buffers */
+ 	if (!inst->dpb_fmt)
+@@ -171,6 +193,15 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
+ 			ret = -ENOMEM;
+ 			goto fail;
+ 		}
++		buf->owned_by = DRIVER;
++
++		id = ida_alloc_min(&inst->dpb_ids, VB2_MAX_FRAME, GFP_KERNEL);
++		if (id < 0) {
++			ret = id;
++			goto fail;
++		}
++
++		buf->dpb_out_tag = id;
+ 
+ 		list_add_tail(&buf->list, &inst->dpbbufs);
+ 	}
+@@ -1365,6 +1396,24 @@ venus_helper_find_buf(struct venus_inst *inst, unsigned int type, u32 idx)
+ }
+ EXPORT_SYMBOL_GPL(venus_helper_find_buf);
+ 
++void venus_helper_change_dpb_owner(struct venus_inst *inst,
++				   struct vb2_v4l2_buffer *vbuf, unsigned int type,
++				   unsigned int buf_type, u32 tag)
++{
++	struct intbuf *dpb_buf;
++
++	if (!V4L2_TYPE_IS_CAPTURE(type) ||
++	    buf_type != inst->dpb_buftype)
++		return;
++
++	list_for_each_entry(dpb_buf, &inst->dpbbufs, list)
++		if (dpb_buf->dpb_out_tag == tag) {
++			dpb_buf->owned_by = DRIVER;
++			break;
++		}
++}
++EXPORT_SYMBOL_GPL(venus_helper_change_dpb_owner);
++
+ int venus_helper_vb2_buf_init(struct vb2_buffer *vb)
+ {
+ 	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/venus/helpers.h
+index e6269b4be3af..ff8889795b43 100644
+--- a/drivers/media/platform/qcom/venus/helpers.h
++++ b/drivers/media/platform/qcom/venus/helpers.h
+@@ -14,6 +14,9 @@ struct venus_core;
+ bool venus_helper_check_codec(struct venus_inst *inst, u32 v4l2_pixfmt);
+ struct vb2_v4l2_buffer *venus_helper_find_buf(struct venus_inst *inst,
+ 					      unsigned int type, u32 idx);
++void venus_helper_change_dpb_owner(struct venus_inst *inst,
++				   struct vb2_v4l2_buffer *vbuf, unsigned int type,
++				   unsigned int buf_type, u32 idx);
+ void venus_helper_buffers_done(struct venus_inst *inst, unsigned int type,
+ 			       enum vb2_buffer_state state);
+ int venus_helper_vb2_buf_init(struct vb2_buffer *vb);
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 198e47eb63f4..6f918a423985 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1306,8 +1306,10 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+ 		type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+ 
+ 	vbuf = venus_helper_find_buf(inst, type, tag);
+-	if (!vbuf)
++	if (!vbuf) {
++		venus_helper_change_dpb_owner(inst, vbuf, type, buf_type, tag);
+ 		return;
++	}
+ 
+ 	vbuf->flags = flags;
+ 	vbuf->field = V4L2_FIELD_NONE;
+@@ -1580,6 +1582,8 @@ static int vdec_open(struct file *file)
+ 
+ 	vdec_inst_init(inst);
+ 
++	ida_init(&inst->dpb_ids);
++
+ 	/*
+ 	 * create m2m device for every instance, the m2m context scheduling
+ 	 * is made by firmware side so we do not need to care about.
+@@ -1625,6 +1629,7 @@ static int vdec_close(struct file *file)
+ 	v4l2_m2m_ctx_release(inst->m2m_ctx);
+ 	v4l2_m2m_release(inst->m2m_dev);
+ 	vdec_ctrl_deinit(inst);
++	ida_destroy(&inst->dpb_ids);
+ 	hfi_session_destroy(inst);
+ 	mutex_destroy(&inst->lock);
+ 	v4l2_fh_del(&inst->fh);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-Does the above makes sense?
-
-Thanks
-
-Miroslav
