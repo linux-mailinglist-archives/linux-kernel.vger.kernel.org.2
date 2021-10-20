@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C854349CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BB64349D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhJTLMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:12:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58194 "EHLO mail.kernel.org"
+        id S230229AbhJTLMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:12:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhJTLMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:12:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DAD83613DA;
-        Wed, 20 Oct 2021 11:10:08 +0000 (UTC)
+        id S230180AbhJTLM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 07:12:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E1B5761409;
+        Wed, 20 Oct 2021 11:10:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634728208;
-        bh=2ikCybl+SX3tc4V/4XkEaPPXo4CBWl30eoBMDR8u3zg=;
+        s=k20201202; t=1634728212;
+        bh=l1SO9g7J0R9qXSU4ykxOIJIFyZ31oiOl7zV4A6VDNJM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uur1Rut0PajUINEAh0dDphD42xLTHTTHBcWc+XsLcG9ZVt4wZyP8sGAa82qbJKoMK
-         7+TfjbuesbafsAeIpXqMyY9a8Si9px4Jya4POnE4Nq+VUA8XJ/R3mYb9LCxBPBcYAR
-         eJTr5ppuU3UKmhfHqn9hmr+MGJaLzKf4KwCyIJHrGj6SHhKciZ5CCrI4DU2yg7jvk7
-         XfSz9oO47YhQYRpfkmBjdbaQosndNEVJdJtGjBZ85HwXiXQ4hlttg2iHAh1LF5JM9P
-         pi+sNTDHDlsVzzaZguYmfWJkHLpfLkrJROfCfT8+/r0QfL+mRtYKb3S7zTNMWm42Kv
-         c6YlfACiPfBZQ==
+        b=bL5cDKjvGYfeW6uPXuVgWYj5PJK+HwPv7cXc8tbt7gVi820qssPhM9GlDTbMmEYXR
+         vGgMjEDBFin/5x1ce9ucEZ0XXarCc0hdCNbqolwgkfFOKF8qY6g7CeevOdFaRsUpXm
+         R2h2kluS2TQfu+vZFiZvDrHrVN20hCPnYyaRdlypiyJaitMYyB8xt32yzzr+n9W8/Y
+         B7ZIPulB+VETIWVb6TzHF49l3GLrwrLDBDwLcCRs7yTrERb6qpE2/nbtyWPTF+9UKf
+         EZNH/3vBk/aDDcViDnJxxi6RHxORnH5dp/ZytJ+HJDv9IYilRK28u5bD4QWCL/uINA
+         TPpUuPRta5Asw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CE27A60A47;
-        Wed, 20 Oct 2021 11:10:08 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D659560A47;
+        Wed, 20 Oct 2021 11:10:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/8] net: hns3: add some fixes for -net
+Subject: Re: [PATCH net-next 0/4] New RGMII delay DT bindings for the SJA1105 DSA
+ driver
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163472820883.2036.5031929864760580084.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Oct 2021 11:10:08 +0000
-References: <20211019141635.43695-1-huangguangbin2@huawei.com>
-In-Reply-To: <20211019141635.43695-1-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
+Message-Id: <163472821287.2036.7867829179866355496.git-patchwork-notify@kernel.org>
+Date:   Wed, 20 Oct 2021 11:10:12 +0000
+References: <20211018192952.2736913-1-vladimir.oltean@nxp.com>
+In-Reply-To: <20211018192952.2736913-1-vladimir.oltean@nxp.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
 Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lipeng321@huawei.com,
-        chenhao288@hisilicon.com
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, prasanna.vengateshan@microchip.com,
+        ansuelsmth@gmail.com, alsi@bang-olufsen.dk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net.git (master)
+This series was applied to netdev/net-next.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Tue, 19 Oct 2021 22:16:27 +0800 you wrote:
-> This series adds some fixes for the HNS3 ethernet driver.
+On Mon, 18 Oct 2021 22:29:48 +0300 you wrote:
+> During recent reviews I've been telling people that new MAC drivers
+> should adopt a certain DT binding format for RGMII delays in order to
+> avoid conflicting interpretations. Some suggestions were better received
+> than others, and it appears we are still far from a consensus.
 > 
-> Guangbin Huang (2):
->   net: hns3: reset DWRR of unused tc to zero
->   net: hns3: add limit ets dwrr bandwidth cannot be 0
-> 
-> Jiaran Zhang (1):
->   net: hns3: Add configuration of TM QCN error event
+> Part of the problem seems to be that there are still drivers that apply
+> RGMII delays based on an incorrect interpretation of the device tree,
+> and these serve as a bad example for others.
+> I happen to maintain one of those drivers and I am able to test it, so I
+> figure that one of the ways in which I can make a change is to stop
+> providing a bad example.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,1/8] net: hns3: Add configuration of TM QCN error event
-    https://git.kernel.org/netdev/net/c/60484103d5c3
-  - [net,2/8] net: hns3: reset DWRR of unused tc to zero
-    https://git.kernel.org/netdev/net/c/b63fcaab9598
-  - [net,3/8] net: hns3: add limit ets dwrr bandwidth cannot be 0
-    https://git.kernel.org/netdev/net/c/731797fdffa3
-  - [net,4/8] net: hns3: fix the max tx size according to user manual
-    https://git.kernel.org/netdev/net/c/adfb7b4966c0
-  - [net,5/8] net: hns3: fix for miscalculation of rx unused desc
-    https://git.kernel.org/netdev/net/c/9f9f0f19994b
-  - [net,6/8] net: hns3: schedule the polling again when allocation fails
-    https://git.kernel.org/netdev/net/c/68752b24f51a
-  - [net,7/8] net: hns3: fix vf reset workqueue cannot exit
-    https://git.kernel.org/netdev/net/c/1385cc81baeb
-  - [net,8/8] net: hns3: disable sriov before unload hclge layer
-    https://git.kernel.org/netdev/net/c/0dd8a25f355b
+  - [net-next,1/4] dt-bindings: net: dsa: sja1105: fix example so all ports have a phy-handle of fixed-link
+    https://git.kernel.org/netdev/net-next/c/7a414b6e1a1c
+  - [net-next,2/4] dt-bindings: net: dsa: inherit the ethernet-controller DT schema
+    https://git.kernel.org/netdev/net-next/c/e00eb643324c
+  - [net-next,3/4] dt-bindings: net: dsa: sja1105: add {rx,tx}-internal-delay-ps
+    https://git.kernel.org/netdev/net-next/c/ac41ac81e331
+  - [net-next,4/4] net: dsa: sja1105: parse {rx, tx}-internal-delay-ps properties for RGMII delays
+    https://git.kernel.org/netdev/net-next/c/9ca482a246f0
 
 You are awesome, thank you!
 --
