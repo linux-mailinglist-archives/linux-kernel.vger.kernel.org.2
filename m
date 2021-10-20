@@ -2,379 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050E6435469
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FF543546C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhJTURC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:17:02 -0400
-Received: from ixit.cz ([94.230.151.217]:57890 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229910AbhJTURB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:17:01 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 38C3820064;
-        Wed, 20 Oct 2021 22:14:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1634760884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3xm0DPHOl9yQRCEmN8ie1WfoCaoHVhNhOOGY6/WiZ+U=;
-        b=zssKQ5/ABu0ZdhEyxx0NaaTXMQf/9BA4ggeYiFMkPMkudu46R4x+8A5x/NpvSL8K0CCgFZ
-        bslcrbkgWNByYvft5xhez87Y7UvF8ttPOTY8x9N2/hnf9xcRG1v8gYdIiWkgrBu155lPUa
-        EZTu6DoU3wxybt7Esy3RR9ALOT1MF5E=
-From:   David Heidelberg <david@ixit.cz>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        id S230385AbhJTURG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 16:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhJTURF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 16:17:05 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1A9C061749;
+        Wed, 20 Oct 2021 13:14:50 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso12150816wme.1;
+        Wed, 20 Oct 2021 13:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=TKTpnnnUpx+vD8sFIjPYUVjAFgwjxzS94IwIoEcy9XE=;
+        b=ZpJsnpmr/x3a0OTfxnf4RZ8VTobw3AJrfaj3EFN950XhYPiXwr/C6XHo89zBdhiCZY
+         FEERPulmFuvNJ0jTJdF1TD4LfOOrCmMi+7A2WYxeDwNuSDZpt2oCf4EP07fPkCo/7X4w
+         ACu9OpYBsZSTEAe/PVByb9f8NYONGbU0T3b6aq/RATPlWZ2XHDJUrAjndLHnRSWABixp
+         pCG/tDK0PwacGwKRMilYjAhLZzwnt796obyM4ZoTTKnhGbcBmH4X0/87rBrbSjPGTipC
+         dH4BC9b8sM8QRsZnoPOZ2nIdnNQnxk5Bo3hVUHZ1EKjDM++LL2AxdITpLaPfzoMJvzQp
+         9UDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=TKTpnnnUpx+vD8sFIjPYUVjAFgwjxzS94IwIoEcy9XE=;
+        b=Wfnvq7vV+z9s2eg1SXoM0nh6CttkR24HcE9CbATxHpNzSiRQKObzicNU4vYOn3m3Zi
+         pNboesnsR22voSRShRGCYQf+UUD609BAzB2Bukq+mxxiaDgi+PFHrOdKAXg6VAXg5CHU
+         ankkuXTaaauTsiwU+qDMPzK0xhbvo2hReJICxbiqNHXOecWuyxB96q0uH7E7P+F+mGPk
+         EWlqVepLq3JLIQwc2IlL92XGwJxXwbYYLrqCBXiu09ho7DKEPQtZymGmfJFNbXeOKTGl
+         9DuZahbuoxJdFaBtacQn24hvr0yaykVyXY5mCbgx4HQ7xiaY60jqpamOHOYQTFC9608F
+         g9ZA==
+X-Gm-Message-State: AOAM532bc9Ur051FRA9VvfBewV7ZQG+Rz49w4vuTc5WNKxf1eDSY384x
+        33YKlZcX4kQM3OFmpxw51LPNNsAlAIk=
+X-Google-Smtp-Source: ABdhPJy6tDIo254eUcAHKcO53ATzE0ea0MsNiclyGriseMbXQ6j6HJzda8gMIF57tM6sY5EtWs/Ckw==
+X-Received: by 2002:a05:600c:4ec8:: with SMTP id g8mr15911251wmq.153.1634760889182;
+        Wed, 20 Oct 2021 13:14:49 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p200300c78f4e0613a7e83c8384f9a2e9.dip0.t-ipconnect.de. [2003:c7:8f4e:613:a7e8:3c83:84f9:a2e9])
+        by smtp.gmail.com with ESMTPSA id f18sm2810499wrg.3.2021.10.20.13.14.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 13:14:48 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 22:14:46 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     corbet@lwn.net, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: qcom: correct mmc node naming
-Date:   Wed, 20 Oct 2021 22:14:39 +0200
-Message-Id: <20211020201440.229196-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+Cc:     linux-usb@vger.kernel.org
+Subject: [PATCH v2] Docs: usb: update struct usb_driver, __init and __exit
+Message-ID: <20211020201446.GA8482@matrix-ESPRIMO-P710>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MMC nodes has to be named mmc@ to comply with dt-bindings.
+update struct usb_driver from usb-skeleton.c.
+update __init and __exit functions that are moved from
+usb-skeleton.c to common used multi-stage macros.
 
-Fix warnings as:
-arch/arm/boot/dts/qcom-msm8660-surf.dt.yaml: sdcc@12400000: $nodename:0: 'sdcc@12400000' does not match '^mmc(@.*)?$'
-	From schema: Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
-
-Signed-off-by: David Heidelberg <david@ixit.cz>
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- arch/arm/boot/dts/qcom-apq8060-dragonboard.dts      |  6 +++---
- arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts  |  2 +-
- arch/arm/boot/dts/qcom-apq8064-cm-qs600.dts         |  6 +++---
- arch/arm/boot/dts/qcom-apq8064-ifc6410.dts          |  6 +++---
- arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts |  4 ++--
- arch/arm/boot/dts/qcom-apq8064.dtsi                 |  6 +++---
- arch/arm/boot/dts/qcom-ipq8064.dtsi                 |  4 ++--
- arch/arm/boot/dts/qcom-mdm9615.dtsi                 |  4 ++--
- arch/arm/boot/dts/qcom-msm8660-surf.dts             |  4 ++--
- arch/arm/boot/dts/qcom-msm8660.dtsi                 | 10 +++++-----
- arch/arm/boot/dts/qcom-msm8960-cdp.dts              |  4 ++--
- arch/arm/boot/dts/qcom-msm8960.dtsi                 |  4 ++--
- 12 files changed, 30 insertions(+), 30 deletions(-)
+V1 -> V2: changed :c:func:`usb_register` to usb_register()
+          changed the :c:func:`usb_deregister` to usb_deregister()
+          used literal blocks for makro module_usb_driver and added one more
+          stage of multi-stage macros.
 
-diff --git a/arch/arm/boot/dts/qcom-apq8060-dragonboard.dts b/arch/arm/boot/dts/qcom-apq8060-dragonboard.dts
-index 5bedbb902ad5..d664ccd454c5 100644
---- a/arch/arm/boot/dts/qcom-apq8060-dragonboard.dts
-+++ b/arch/arm/boot/dts/qcom-apq8060-dragonboard.dts
-@@ -899,7 +899,7 @@ ncp {
- 		};
- 		amba {
- 			/* Internal 3.69 GiB eMMC */
--			sdcc@12400000 {
-+			mmc@12400000 {
- 				status = "okay";
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&dragon_sdcc1_pins>;
-@@ -908,7 +908,7 @@ sdcc@12400000 {
- 			};
+ .../driver-api/usb/writing_usb_driver.rst     | 70 ++++++++++---------
+ 1 file changed, 36 insertions(+), 34 deletions(-)
+
+diff --git a/Documentation/driver-api/usb/writing_usb_driver.rst b/Documentation/driver-api/usb/writing_usb_driver.rst
+index 2176297e5765..12e0481cceae 100644
+--- a/Documentation/driver-api/usb/writing_usb_driver.rst
++++ b/Documentation/driver-api/usb/writing_usb_driver.rst
+@@ -54,12 +54,15 @@ information is passed to the USB subsystem in the :c:type:`usb_driver`
+ structure. The skeleton driver declares a :c:type:`usb_driver` as::
  
- 			/* External micro SD card, directly connected, pulled up to 2.85 V */
--			sdcc@12180000 {
-+			mmc@12180000 {
- 				status = "okay";
- 				/* Enable SSBI GPIO 22 as input, use for card detect */
- 				pinctrl-names = "default";
-@@ -922,7 +922,7 @@ sdcc@12180000 {
- 			 * Second external micro SD card, using two TXB104RGYR levelshifters
- 			 * to lift from 1.8 V to 2.85 V
- 			 */
--			sdcc@12200000 {
-+			mmc@12200000 {
- 				status = "okay";
- 				/* Enable SSBI GPIO 26 as input, use for card detect */
- 				pinctrl-names = "default";
-diff --git a/arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts b/arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts
-index 197494ef887b..b2cd32f440e0 100644
---- a/arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts
-+++ b/arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dts
-@@ -367,7 +367,7 @@ phy {
+     static struct usb_driver skel_driver = {
+-	    .name        = "skeleton",
+-	    .probe       = skel_probe,
+-	    .disconnect  = skel_disconnect,
+-	    .fops        = &skel_fops,
+-	    .minor       = USB_SKEL_MINOR_BASE,
+-	    .id_table    = skel_table,
++           .name        = "skeleton",
++           .probe       = skel_probe,
++           .disconnect  = skel_disconnect,
++           .suspend     = skel_suspend,
++           .resume      = skel_resume,
++           .pre_reset   = skel_pre_reset,
++           .post_reset  = skel_post_reset,
++           .id_table    = skel_table,
++           .supports_autosuspend = 1,
+     };
  
- 		amba {
- 			/* eMMC */
--			sdcc@12400000 {
-+			mmc@12400000 {
- 				status = "okay";
- 				vmmc-supply = <&pm8921_l5>;
- 				vqmmc-supply = <&pm8921_s4>;
-diff --git a/arch/arm/boot/dts/qcom-apq8064-cm-qs600.dts b/arch/arm/boot/dts/qcom-apq8064-cm-qs600.dts
-index 0148148a8e0a..e068a8d0adf0 100644
---- a/arch/arm/boot/dts/qcom-apq8064-cm-qs600.dts
-+++ b/arch/arm/boot/dts/qcom-apq8064-cm-qs600.dts
-@@ -220,14 +220,14 @@ pci@1b500000 {
  
- 		amba {
- 			/* eMMC */
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status = "okay";
- 				vmmc-supply = <&pm8921_l5>;
- 				vqmmc-supply = <&pm8921_s4>;
- 			};
+@@ -81,36 +84,35 @@ this user-space interaction. The skeleton driver needs this kind of
+ interface, so it provides a minor starting number and a pointer to its
+ :c:type:`file_operations` functions.
  
- 			/* External micro SD card */
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				status = "okay";
- 				vmmc-supply = <&v3p3_fixed>;
- 				pinctrl-names	= "default";
-@@ -235,7 +235,7 @@ sdcc3: sdcc@12180000 {
- 				cd-gpios	= <&tlmm_pinmux 26 GPIO_ACTIVE_LOW>;
- 			};
- 			/* WLAN */
--			sdcc4: sdcc@121c0000 {
-+			sdcc4: mmc@121c0000 {
- 				status = "okay";
- 				vmmc-supply = <&v3p3_fixed>;
- 				vqmmc-supply = <&v3p3_fixed>;
-diff --git a/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts b/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts
-index d0a17b5a5fa3..2638b380be20 100644
---- a/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts
-+++ b/arch/arm/boot/dts/qcom-apq8064-ifc6410.dts
-@@ -314,14 +314,14 @@ pios {
+-The USB driver is then registered with a call to :c:func:`usb_register`,
+-usually in the driver's init function, as shown here::
+-
+-    static int __init usb_skel_init(void)
+-    {
+-	    int result;
+-
+-	    /* register this driver with the USB subsystem */
+-	    result = usb_register(&skel_driver);
+-	    if (result < 0) {
+-		    err("usb_register failed for the "__FILE__ "driver."
+-			"Error number %d", result);
+-		    return -1;
+-	    }
+-
+-	    return 0;
+-    }
+-    module_init(usb_skel_init);
+-
++The USB driver is then registered with a call to usb_register()
++which is usually in the driver's init function. Since this functionality
++is usable with many USB drivers, it is hidden behind multi-stage macros.
++While the first macros are USB specific the later macros are used in different
++subsystems. This removes a lot of boilerplate code.
  
- 		amba {
- 			/* eMMC */
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status = "okay";
- 				vmmc-supply = <&pm8921_l5>;
- 				vqmmc-supply = <&pm8921_s4>;
- 			};
+ When the driver is unloaded from the system, it needs to deregister
+-itself with the USB subsystem. This is done with the :c:func:`usb_deregister`
+-function::
+-
+-    static void __exit usb_skel_exit(void)
+-    {
+-	    /* deregister this driver with the USB subsystem */
+-	    usb_deregister(&skel_driver);
+-    }
+-    module_exit(usb_skel_exit);
++itself with the USB subsystem. This is done with usb_deregister()
++which is also hidden behind multi-stage macros.
++
++The init and exit functions are included in the macro module_usb_driver.
++Find the first three stages of macros below::
++
++    module_usb_driver(skel_driver);
++                         |
++                         V
++    module_driver(__usb_driver, usb_register, usb_deregister)
++                         |               \               \
++                         V                ----------      ----------
++    static int __init __driver##_init(void) \      |               |
++    { \                 v---------------------------               |
++            return __register(&(__driver) , ##__VA_ARGS__); \      |
++    } \                                                            |
++    module_init(__driver##_init); \                                |
++    static void __exit __driver##_exit(void) \                     |
++    { \            v------------------------------------------------
++            __unregister(&(__driver) , ##__VA_ARGS__); \
++    } \
++    module_exit(__driver##_exit);
  
- 			/* External micro SD card */
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				status = "okay";
- 				vmmc-supply = <&pm8921_l6>;
- 				pinctrl-names	= "default";
-@@ -329,7 +329,7 @@ sdcc3: sdcc@12180000 {
- 				cd-gpios	= <&tlmm_pinmux 26 GPIO_ACTIVE_LOW>;
- 			};
- 			/* WLAN */
--			sdcc4: sdcc@121c0000 {
-+			sdcc4: mmc@121c0000 {
- 				status = "okay";
- 				vmmc-supply = <&ext_3p3v>;
- 				vqmmc-supply = <&pm8921_lvs1>;
-diff --git a/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts b/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-index 72e47bdc5c12..f8c97efc61fc 100644
---- a/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-+++ b/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-@@ -374,14 +374,14 @@ serial@1a240000 {
- 		};
  
- 		amba {
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status = "okay";
- 
- 				vmmc-supply = <&pm8921_l5>;
- 				vqmmc-supply = <&pm8921_s4>;
- 			};
- 
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				status = "okay";
- 
- 				vmmc-supply = <&pm8921_l6>;
-diff --git a/arch/arm/boot/dts/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom-apq8064.dtsi
-index 8a389323a474..ed1cd2c529cc 100644
---- a/arch/arm/boot/dts/qcom-apq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom-apq8064.dtsi
-@@ -1073,7 +1073,7 @@ amba {
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges;
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status		= "disabled";
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				pinctrl-names	= "default";
-@@ -1093,7 +1093,7 @@ sdcc1: sdcc@12400000 {
- 				dma-names = "tx", "rx";
- 			};
- 
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
- 				status		= "disabled";
-@@ -1111,7 +1111,7 @@ sdcc3: sdcc@12180000 {
- 				dma-names = "tx", "rx";
- 			};
- 
--			sdcc4: sdcc@121c0000 {
-+			sdcc4: mmc@121c0000 {
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
- 				status		= "disabled";
-diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-index 110113f3b8e2..7f67b282da10 100644
---- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-@@ -1181,7 +1181,7 @@ amba: amba {
- 			#size-cells = <1>;
- 			ranges;
- 
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status          = "disabled";
- 				compatible      = "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
-@@ -1201,7 +1201,7 @@ sdcc1: sdcc@12400000 {
- 				dma-names = "tx", "rx";
- 			};
- 
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				compatible      = "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
- 				status          = "disabled";
-diff --git a/arch/arm/boot/dts/qcom-mdm9615.dtsi b/arch/arm/boot/dts/qcom-mdm9615.dtsi
-index 6e90c5d5a050..c32415f0e66d 100644
---- a/arch/arm/boot/dts/qcom-mdm9615.dtsi
-+++ b/arch/arm/boot/dts/qcom-mdm9615.dtsi
-@@ -354,7 +354,7 @@ amba {
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges;
--			sdcc1: sdcc@12180000 {
-+			sdcc1: mmc@12180000 {
- 				status = "disabled";
- 				compatible = "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
-@@ -374,7 +374,7 @@ sdcc1: sdcc@12180000 {
- 				assigned-clock-rates = <400000>;
- 			};
- 
--			sdcc2: sdcc@12140000 {
-+			sdcc2: mmc@12140000 {
- 				compatible = "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
- 				status = "disabled";
-diff --git a/arch/arm/boot/dts/qcom-msm8660-surf.dts b/arch/arm/boot/dts/qcom-msm8660-surf.dts
-index 6a321ccb0bd0..414280d9bdba 100644
---- a/arch/arm/boot/dts/qcom-msm8660-surf.dts
-+++ b/arch/arm/boot/dts/qcom-msm8660-surf.dts
-@@ -35,13 +35,13 @@ vsdcc_fixed: vsdcc-regulator {
- 
- 		amba {
- 			/* eMMC */
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status = "okay";
- 				vmmc-supply = <&vsdcc_fixed>;
- 			};
- 
- 			/* External micro SD card */
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				status = "okay";
- 				vmmc-supply = <&vsdcc_fixed>;
- 			};
-diff --git a/arch/arm/boot/dts/qcom-msm8660.dtsi b/arch/arm/boot/dts/qcom-msm8660.dtsi
-index 21cb58ab68ac..1e8aab357f9c 100644
---- a/arch/arm/boot/dts/qcom-msm8660.dtsi
-+++ b/arch/arm/boot/dts/qcom-msm8660.dtsi
-@@ -483,7 +483,7 @@ amba {
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges;
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status		= "disabled";
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
-@@ -499,7 +499,7 @@ sdcc1: sdcc@12400000 {
- 				cap-mmc-highspeed;
- 			};
- 
--			sdcc2: sdcc@12140000 {
-+			sdcc2: mmc@12140000 {
- 				status		= "disabled";
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
-@@ -514,7 +514,7 @@ sdcc2: sdcc@12140000 {
- 				cap-mmc-highspeed;
- 			};
- 
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
- 				status		= "disabled";
-@@ -530,7 +530,7 @@ sdcc3: sdcc@12180000 {
- 				no-1-8-v;
- 			};
- 
--			sdcc4: sdcc@121c0000 {
-+			sdcc4: mmc@121c0000 {
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
- 				status		= "disabled";
-@@ -545,7 +545,7 @@ sdcc4: sdcc@121c0000 {
- 				cap-mmc-highspeed;
- 			};
- 
--			sdcc5: sdcc@12200000 {
-+			sdcc5: mmc@12200000 {
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
- 				status		= "disabled";
-diff --git a/arch/arm/boot/dts/qcom-msm8960-cdp.dts b/arch/arm/boot/dts/qcom-msm8960-cdp.dts
-index e7d2e937ea4c..4af01039c3b2 100644
---- a/arch/arm/boot/dts/qcom-msm8960-cdp.dts
-+++ b/arch/arm/boot/dts/qcom-msm8960-cdp.dts
-@@ -26,12 +26,12 @@ serial@16440000 {
- 
- 		amba {
- 			/* eMMC */
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status = "okay";
- 			};
- 
- 			/* External micro SD card */
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				status = "okay";
- 			};
- 		};
-diff --git a/arch/arm/boot/dts/qcom-msm8960.dtsi b/arch/arm/boot/dts/qcom-msm8960.dtsi
-index 172ea3c70eac..2a0ec97a264f 100644
---- a/arch/arm/boot/dts/qcom-msm8960.dtsi
-+++ b/arch/arm/boot/dts/qcom-msm8960.dtsi
-@@ -263,7 +263,7 @@ amba {
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges;
--			sdcc1: sdcc@12400000 {
-+			sdcc1: mmc@12400000 {
- 				status		= "disabled";
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
-@@ -280,7 +280,7 @@ sdcc1: sdcc@12400000 {
- 				vmmc-supply = <&vsdcc_fixed>;
- 			};
- 
--			sdcc3: sdcc@12180000 {
-+			sdcc3: mmc@12180000 {
- 				compatible	= "arm,pl18x", "arm,primecell";
- 				arm,primecell-periphid = <0x00051180>;
- 				status		= "disabled";
+ To enable the linux-hotplug system to load the driver automatically when
 -- 
-2.33.0
+2.25.1
 
