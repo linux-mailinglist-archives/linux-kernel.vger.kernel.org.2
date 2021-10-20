@@ -2,184 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1690434F39
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0A6434F43
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhJTPo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTPo0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:44:26 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB95DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:42:11 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id c29so3306048pfp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 08:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c+xPgYkrWTMdjLrIsHan+BrpvJlj3eKlilQPqn/bZSY=;
-        b=RAzdANXkgkI+Gok9tMLYGIzwZ1/HQKiIDh199K0ieSqbROzxL43eoyRpHcQP0VHou2
-         dbSzFg/B28dqPTYQZ6p0rxyhXD6ypkyqnwcpNUZL7ON4RGi+4q0xDUJbBYs5hY2elxZy
-         uwbHGOdH7dtp8EtnURxI9aK/tpdUbzLZ2uWCl5sqKBmus2zHD5eP/Bl2w2yiQ0Mv0hwS
-         WmFwlG1p5n9RjQ1qweBEe+2Id5lIlqP0AiUU0EuoVkG8bWxIUB6LKdEbz2O45gb0NA4z
-         jln0Or9OAAI3uc5YMfH32ax7qGBsYtJM9iTT9B2VtzGULL7zHVerBP+VlZBXgTOgxfeq
-         A63g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c+xPgYkrWTMdjLrIsHan+BrpvJlj3eKlilQPqn/bZSY=;
-        b=eNEmfpD64xv/EngZkTiJIXL9nh8sy/nGGT8W9c6w2eelSFI5nA8vInO71A/l8U0TA2
-         1lkQJELRyGuemqFYpbk3d85n3IcIQjb5LxPYBZwnN26lULFke3K2jbsVtA9RGoH9LmFx
-         pHhjv9NAUjQ0K8Ue4XPXPqU4IyYTSNcJMTjiu/5I1SrRHyPwcs/KvoUEjqvCEVLXrTdB
-         m6r0yjPdTdEPipvOk5LExaPdKGmexgP/ia3JBTAGrBzmk9ptCYvUAP3ejNuaW59DV5DN
-         wn1cmUwwCAdsU101wgJvdGFKS90OndsNbvXEFPL7ytKlFH+0/lqYpi6OXkyzALRf5F6W
-         bJjA==
-X-Gm-Message-State: AOAM530SIKfl0LTpxZD7M1L0GDUmnl0bcU20fBKTbq9657Nem5nDQwK7
-        ZmLUzmiukhf2/+IzUmBmrB2YaQ==
-X-Google-Smtp-Source: ABdhPJzwfDWiZNvP0Rx+LYgr7dgiWMYUGS2WfEOnCVY9FBhQbJFG5NvOK3iQm4blGTKKzuyBN/2n3A==
-X-Received: by 2002:a05:6a00:1829:b0:44d:df1f:5624 with SMTP id y41-20020a056a00182900b0044ddf1f5624mr596231pfa.27.1634744531128;
-        Wed, 20 Oct 2021 08:42:11 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d21sm3242747pfl.135.2021.10.20.08.42.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 08:42:09 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 09:42:07 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/15] arm64: Self-hosted trace related errata
- workarounds
-Message-ID: <20211020154207.GA3456574@p14s>
-References: <20211019163153.3692640-1-suzuki.poulose@arm.com>
+        id S230345AbhJTPtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:49:41 -0400
+Received: from relay.sw.ru ([185.231.240.75]:36086 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhJTPth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:49:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=ttAK6Gqf/TyX+MT4z0DPfUPRY7KYPOn3puccc9GorZE=; b=rqfgh5Q5comYze+CV
+        u0HaVR5J9Mkytg6GHPvR91X3KbZesnUGemY2IC41F4dwNhVLm/NOsEkGzpwcriwMuNZ7lJejaVELX
+        b5i5NPD2PCdADzCdMFoT5B+yheZly9Hk9agPrNnFVoHi05+aHXdAtXu+to+93VWpX8rGNeY3SvlLI
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mdDoE-006cn0-HO; Wed, 20 Oct 2021 18:47:18 +0300
+Subject: Re: [PATCH memcg 3/3] memcg: handle memcg oom failures
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+ <cover.1634730787.git.vvs@virtuozzo.com>
+ <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
+ <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <d3b32c72-6375-f755-7599-ab804719e1f6@virtuozzo.com>
+Date:   Wed, 20 Oct 2021 18:46:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019163153.3692640-1-suzuki.poulose@arm.com>
+In-Reply-To: <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 05:31:38PM +0100, Suzuki K Poulose wrote:
+On 20.10.2021 16:02, Michal Hocko wrote:
+> On Wed 20-10-21 15:14:27, Vasily Averin wrote:
+>> mem_cgroup_oom() can fail if current task was marked unkillable
+>> and oom killer cannot find any victim.
+>>
+>> Currently we force memcg charge for such allocations,
+>> however it allow memcg-limited userspace task in to overuse assigned limits
+>> and potentially trigger the global memory shortage.
 > 
-> This series adds CPU erratum work arounds related to the self-hosted
-> tracing. The list of affected errata handled in this series are :
-> 
->  * TRBE may overwrite trace in FILL mode
->    - Arm Neoverse-N2	#2139208
->    - Cortex-A710	#211985
-> 
->  * A TSB instruction may not flush the trace completely when executed
->    in trace prohibited region.
-> 
->    - Arm Neoverse-N2	#2067961
->    - Cortex-A710	#2054223
-> 
->  * TRBE may write to out-of-range address
->    - Arm Neoverse-N2	#2253138
->    - Cortex-A710	#2224489
-> 
-> The series applies on coresight/next. The series has been reordered
-> to make it easier to merge the patches via arm64 tree and the coresight
-> tree.
-> 
-> Patches 1-4 are could be picked up via arm64 tree. The rest can go via
-> the coresight tree. The Kconfig items for the TRBE errata are initially
-> dropped in with dependency on COMPILE_TEST. These are dropped only after
-> the driver is equipped with the work around in later patches.
-> 
-> 
-> A tree is available here :
-> 
-> git@git.gitlab.arm.com:linux-arm/linux-skp.git  coresight/errata/trbe-tsb-n2-a710/v6
-> 
-> Changes since v5:
->  * https://lkml.kernel.org/r/20211014223125.2605031-1-suzuki.poulose@arm.com
->  - Fix typo in the Kconfig symbol usage in errata listing (Will)
->  - Fix typo in commit description for 
->    "arm64: errata: Add detection for TRBE overwrite in FILL mode"
->  - Fix commit description checkpatch warnings on column length for:
->     "arm64: errata: Add detection for TRBE write to out-of-range"
->  - Collected Reviews/Acks from Mathieu/Anshuman/Will
-> 
-> Changes since v4:
->  * https://lkml.kernel.org/r/20211012131743.2040596-1-suzuki.poulose@arm.com
-> 
->  - Fix WARN on trbe driver probe on a hotplugged CPU, by making
->    sure that the arm_trbe_probe_cpu() is called from non-premptible
->    context. this_cpu_has_cap() doesn't like to be called from a
->    preemptible() context.
-> 
->  - Fix Kconfig text issues pointed out by Randy
-> 
-> Changes since v3:
->  
->  - Fix missing Kconfig selection for TSB flush failure erratum (Will)
->    Merged the Kconfig changes to the core patch for TSB.
->  - Use COMPILE_TEST dependency for the TRBE work arounds instead of
->    delaying the Kconfig entries.
-> 
-> Changes since v2:
->  * https://lkml.kernel.org/r/20210921134121.2423546-1-suzuki.poulose@arm.com 
->  - Dropped patch adding a helper to reach cpudata from perf handle
->  - Split the TSB erratum work around patch to split the Kconfig/erratum
->    list update changes(pushed to the end of the series).
->  - Added wrappers to check the erratum :
->     trbe_has_erratum(cpudata, TRBE_ERRATUM_<TITLE>) -> trbe_may_<title>
->  - More ASCII art explanation on workaround.
-> 
-> Changes since v1:
->  * https://lkml.kernel.org/r/20210728135217.591173-1-suzuki.poulose@arm.com
->  - Added a fix to the TRBE driver handling of sink_specific data
->  - Added more description and ASCII art for overwrite in FILL mode
->    work around 
->  - Added another TRBE erratum to the list.
->   "TRBE may write to out-of-range address"
->   Patches from 12-17
->  - Added comment to list the expectations around TSB erratum workaround.
-> 
-> 
-> 
-> Suzuki K Poulose (15):
->   arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
->   arm64: errata: Add detection for TRBE overwrite in FILL mode
->   arm64: errata: Add workaround for TSB flush failures
->   arm64: errata: Add detection for TRBE write to out-of-range
->   coresight: trbe: Add a helper to calculate the trace generated
->   coresight: trbe: Add a helper to pad a given buffer area
->   coresight: trbe: Decouple buffer base from the hardware base
->   coresight: trbe: Allow driver to choose a different alignment
->   coresight: trbe: Add infrastructure for Errata handling
->   coresight: trbe: Workaround TRBE errata overwrite in FILL mode
->   coresight: trbe: Add a helper to determine the minimum buffer size
->   coresight: trbe: Make sure we have enough space
->   coresight: trbe: Work around write to out of range
->   arm64: errata: Enable workaround for TRBE overwrite in FILL mode
->   arm64: errata: Enable TRBE workaround for write to out-of-range
->     address
-> 
->  Documentation/arm64/silicon-errata.rst       |  12 +
->  arch/arm64/Kconfig                           | 111 ++++++
->  arch/arm64/include/asm/barrier.h             |  16 +-
->  arch/arm64/include/asm/cputype.h             |   4 +
->  arch/arm64/kernel/cpu_errata.c               |  64 +++
->  arch/arm64/tools/cpucaps                     |   3 +
->  drivers/hwtracing/coresight/coresight-trbe.c | 394 +++++++++++++++++--
->  7 files changed, 567 insertions(+), 37 deletions(-)
+> You should really go into more details whether that is a practical
+> problem to handle. OOM_FAILED means that the memcg oom killer couldn't
+> find any oom victim so it cannot help with a forward progress. There are
+> not that many situations when that can happen. Naming that would be
+> really useful.
 
-I have applied this set.
+I've pointed above: 
+"if current task was marked unkillable and oom killer cannot find any victim."
+This may happen when current task cannot be oom-killed because it was marked
+unkillable i.e. it have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
+and other processes in memcg are either dying, or are kernel threads or are marked unkillable 
+by the same way. Or when memcg have this process only.
 
-Thanks,
-Mathieu
+If we always approve such kind of allocation, it can be misused.
+Process can mmap a lot of memory,
+ant then touch it and generate page fault and make overcharged memory allocations.
+Finally it can consume all node memory and trigger global memory shortage on the host.
 
+>> Let's fail the memory charge in such cases.
+>>
+>> This failure should be somehow recognised in #PF context,
 > 
-> -- 
-> 2.25.4
+> explain why
+
+When #PF cannot allocate memory (due to reason described above), handle_mm_fault returns VM_FAULT_OOM,
+then its caller executes pagefault_out_of_memory(). If last one cannot recognize the real reason of this fail,
+it expect it was global memory shortage and executed global out_ouf_memory() that can kill random process 
+or just crash node if sysctl vm.panic_on_oom is set to 1.
+
+Currently pagefault_out_of_memory() knows about possible async memcg OOM and handles it correctly.
+However it is not aware that memcg can reject some other allocations, do not recognize the fault
+as memcg-related and allows to run global OOM.
+
+>> so let's use current->memcg_in_oom == (struct mem_cgroup *)OOM_FAILED
+>>
+>> ToDo: what is the best way to notify pagefault_out_of_memory() about 
+>>     mem_cgroup_out_of_memory failure ?
 > 
+> why don't you simply remove out_of_memory from pagefault_out_of_memory
+> and leave it only with the blocking memcg OOM handling? Wouldn't that be a
+> more generic solution? Your first patch already goes that way partially.
+
+I clearly understand that global out_of_memory should not be trggired by memcg restrictions.
+I clearly understand that dying task will release some memory soon and we can do not run global oom if current task is dying.
+
+However I'm not sure that I can remove out_of_memory at all. At least I do not have good arguments to do it.
+
+> This change is more risky than the first one. If somebody returns
+> VM_FAULT_OOM without invoking allocator then it can loop for ever but
+> invoking OOM killer in such a situation is equally wrong as the oom
+> killer cannot really help, right?
+
+I'm not ready to comment this right now and take time out to think about.
+
+Thank you,
+	Vasily Averin
