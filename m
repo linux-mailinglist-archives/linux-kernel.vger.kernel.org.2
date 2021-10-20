@@ -2,101 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E854354FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110B94354FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhJTVKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        id S231480AbhJTVKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbhJTVK0 (ORCPT
+        with ESMTP id S231515AbhJTVKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:10:26 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7691DC061769;
-        Wed, 20 Oct 2021 14:08:11 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id t184so4054267pfd.0;
-        Wed, 20 Oct 2021 14:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LPxj7lozeCH0kLnc2/lpe544PLDdIaniV+hAq9jcw3Y=;
-        b=aaoRyUUDHzIFQzxjETUplwQaxR1W3mqUn0GOKalk/y0EBM61QVOu8EKmRkgltZW3vM
-         BoeTTpuQvgdYas3IWbRYAABxsDMDMxC/BXdKsvuzhRHBTIqTQxrUP1Ri0qxhCihWAeBc
-         ypu7SxlFkJI2950Of9Dp2oDnTKlCDWPIK9V9tuox4tvKmpLaPnXn8ceg/rx6H2qY9I7P
-         X1rTheWtyz54X4mRRcB33yKDNrrxAuRdDJ3C3W9A2ymI9uzF7peyhDvMgfCscYcraBxY
-         /wRoXXLnefUy1RLK60ri7D1bkZ+mMXP/ps9TGn3fZaxjFPBLTnqvdzAnV8oLFHIEfehI
-         GmjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LPxj7lozeCH0kLnc2/lpe544PLDdIaniV+hAq9jcw3Y=;
-        b=1B510YasJIutODm9vEMlKFHyu6lWFDu2YZ5hw5ofiIdgLvF+z3yySRSP2R0lSk8iBn
-         KBY2V2B/ibVuWVT3wHSld858nVzIWgUBpQXRILIDpmhhuvn8ZRpNOjKxMTkvXyKGRZer
-         QkAMEoMOU7U9Jq/SeDsThqlqOmEHKRdXDHHPBzNsGg9eB1MNR+5kKevTpoaC9ZyTz367
-         PsDAOVkTd0JCmrKkKhc1FCyYkTXYi6+yfBm3RkItuYTDb/M+L7OSneZ4lElM6DyrEMWo
-         3AqpOIfEZoGUBrotg4wWUeRLrTkouHgVjHvl9NYa0Xm//oNa4tlHe9GsgM3ZfOrXu25+
-         wJ+A==
-X-Gm-Message-State: AOAM5303EQw0MjLlhUNA7NfDt95SNYiYh/1clC8hrhtAZxeSPX0Zqt6t
-        fDiYt3WZYjM25ylW18MeEbmUoBk0Fe4=
-X-Google-Smtp-Source: ABdhPJwJ1bfMEfa0N+uUR9T0CIwfVbfdxBvEBHjDdo9xVZtBYc3GO+RIreIvr1CvuOaFZ8Byfi/9ig==
-X-Received: by 2002:a63:340c:: with SMTP id b12mr1227283pga.241.1634764091084;
-        Wed, 20 Oct 2021 14:08:11 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id i8sm3403143pfo.117.2021.10.20.14.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 14:08:10 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        peterx@redhat.com, osalvador@suse.de, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v5 PATCH 6/6] mm: hwpoison: handle non-anonymous THP correctly
-Date:   Wed, 20 Oct 2021 14:07:55 -0700
-Message-Id: <20211020210755.23964-7-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20211020210755.23964-1-shy828301@gmail.com>
-References: <20211020210755.23964-1-shy828301@gmail.com>
+        Wed, 20 Oct 2021 17:10:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22F0C061768
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 14:08:19 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634764097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=bfPBeunwpru57X4GPQOgQ50jUxXH5PUnC8k+Hj7Dc/w=;
+        b=RtsURydA1FrpKgQyXgW0PIN2E2jbek14q2K5WMO0W0JmGaa3bcuXa4uOrOnkZHWLJD64nY
+        YKvpn4r/9PNQnk/oAoIt9UWJnzWAdUe2kj2EUkGF1wsx1G4Wxdn8l8KzvjD3PEzvsWs3/8
+        1gwyxj9zB3WmsJ5bGzUC5U46dTsKIUktVCWQdugGWA2fDs36mB7aRODWVgDwqV0E5aZA2V
+        7hiCYLeNBs6vtE6GfH82R4UlLeFwfZ/lxzJYt15Zj6pXWSxBjKg0nZceZhSUOEtOmGNyQg
+        mdoRLWFHQJ44D9NcRzQHBoAfJ/YxnaCXydEUInGeKlVrV/4VrxEIlD4PrwESHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634764097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=bfPBeunwpru57X4GPQOgQ50jUxXH5PUnC8k+Hj7Dc/w=;
+        b=da5yszb3wuWEq8ZgUrZME++t2a+ruP7AMro6d1iVgXiUYiMPOybobsCVKR8r7vvjEJRX9I
+        6p/FR+yTh2VLF7Aw==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Subject: MAINTAINERS: Add Dave Hansen to the x86 maintainer team
+Date:   Wed, 20 Oct 2021 23:08:16 +0200
+Message-ID: <87zgr3flq7.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently hwpoison doesn't handle non-anonymous THP, but since v4.8 THP
-support for tmpfs and read-only file cache has been added.  They could
-be offlined by split THP, just like anonymous THP.
+Dave is already listed as x86/mm maintainer, has a profund knowledge of
+the x86 architecture in general and a good taste in terms of kernel
+programming in general.
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Signed-off-by: Yang Shi <shy828301@gmail.com>
+Add him as a full x86 maintainer with all rights and duties.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- mm/memory-failure.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ MAINTAINERS |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 3603a3acf7b3..bd697c64e973 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1443,14 +1443,11 @@ static int identify_page_state(unsigned long pfn, struct page *p,
- static int try_to_split_thp_page(struct page *page, const char *msg)
- {
- 	lock_page(page);
--	if (!PageAnon(page) || unlikely(split_huge_page(page))) {
-+	if (unlikely(split_huge_page(page))) {
- 		unsigned long pfn = page_to_pfn(page);
- 
- 		unlock_page(page);
--		if (!PageAnon(page))
--			pr_info("%s: %#lx: non anonymous thp\n", msg, pfn);
--		else
--			pr_info("%s: %#lx: thp split failed\n", msg, pfn);
-+		pr_info("%s: %#lx: thp split failed\n", msg, pfn);
- 		put_page(page);
- 		return -EBUSY;
- 	}
--- 
-2.26.2
-
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20336,6 +20336,7 @@ X86 ARCHITECTURE (32-BIT AND 64-BIT)
+ M:	Thomas Gleixner <tglx@linutronix.de>
+ M:	Ingo Molnar <mingo@redhat.com>
+ M:	Borislav Petkov <bp@alien8.de>
++M:	Dave Hansen <dave.hansen@linux.intel.com>
+ M:	x86@kernel.org
+ R:	"H. Peter Anvin" <hpa@zytor.com>
+ L:	linux-kernel@vger.kernel.org
