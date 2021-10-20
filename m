@@ -2,428 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C214344F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49C94344F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 08:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhJTGMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 02:12:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhJTGMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 02:12:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48FFE6008E;
-        Wed, 20 Oct 2021 06:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634710207;
-        bh=gEj9/YwEGuSQnHWtdHI6ZwJVcQiSr8M5YRtoLg1Xbzo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=b9Uy5Fs/v7fhwYpHV8L66taaHDgXmCjaF6Sljh2cEGLjUgY65MbkZVofFBPTdp1k4
-         FtIYakimgPg/wfl9zzR5cRSN6reTY13QvBmAHKHjtDbRFTYyFH/FEEDADKINcjDl57
-         2LEwGGw1zKVvFngTqyY/e66V9XkQ3SO5nmjU4lKnvmccPDvussdoKwR40xjDYrKTAJ
-         E16jZ6cmg0GcBAtxsQzn+S5Z2LJ1EUWyvhe4QrvodVGrpZ/R0qHeYvcthhdZlwrYnd
-         oQSghyy2Vw5Jjw9LLKha/3gDIbw6TlXGUSwV/ETbh0baTjVopnFd/tSMMQwlZKcICj
-         /C3JCyDbHzSEQ==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5] spi: spi-geni-qcom: Add support for GPI dma
-Date:   Wed, 20 Oct 2021 11:39:54 +0530
-Message-Id: <20211020060954.1531783-1-vkoul@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S229809AbhJTGM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 02:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229836AbhJTGMz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 02:12:55 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B14FC06161C;
+        Tue, 19 Oct 2021 23:10:41 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so4601327otk.3;
+        Tue, 19 Oct 2021 23:10:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xKg9EjzdwjkynYiQFahq3nQ5iPSpRZ4rXkfIYG32xcw=;
+        b=TsuadMfgh/GFJNDD+k45aJlv52+kHcCKwEXHJoS/wOkW24o3bmT4AnuEqdjINH0iqG
+         yxAzJIG63NN5uIwszW4PrJmXXDQ+5nJKzwoEPWGe2g3mvfglPZD9PwDHFQki0L7lvXgK
+         MdSpCf6RGy7ynFQMbVGGfxlSNI01l7SpS8AZ3AFny4208jr56lO+aDetEI8UWQayzF8C
+         A9dd+aen++mEe8DILo1Ca1HA8uOiz7TyhQrBKvdi94ocup16AcYLEcXzacMxHQQvAkUx
+         WEVgMMmhMa0oWOogwkMZhQXP5xTku3XOWBt7hMGG7P4W5IInXO+Z5cs312MyJQS9Hvv+
+         y+hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xKg9EjzdwjkynYiQFahq3nQ5iPSpRZ4rXkfIYG32xcw=;
+        b=20LsNfV+z7XPBY7pCjVFrLdI45SYrX7FtsuSTbH5/31KiQqcSTWdL6ik40xBmiwe6h
+         nj8OWtx3zXAWY8Ep47f4FVSu6aCtCTiaUwHVqgIJI4VHyJjEyh0P0XEw8XG+MaIQ2mff
+         kkaeO4yCaqX0ibcUe+0N2xEEuHapvkgv1mhjol/0Iz6xRnhSQqnPZCdWF3dtYhdFZJAw
+         pk9Re5aeWhWrl0Sieg+cgWwCKvxyqFaE1OX0cuJ1c2BTS+hDq/TxtnH3X93rgvQtB9g1
+         n8Wu6AR3jF/z6VDDrAlJMVZpapaxWOlZYK9L7+OX8VrwLYq0ITtOzfk2vfoknoYccUZU
+         QLtg==
+X-Gm-Message-State: AOAM531cxWbk5mPpJTSABPID36oQRQpUv8oVXlRVR8bGhRE6sHiTQYOz
+        Q2E+Sa5V4TgZ9zT+lmZXGYI=
+X-Google-Smtp-Source: ABdhPJwAs2Mu3y2pfrcfs4Vpe07BG3d7WnB1Nn1kNYu1Uo1TTQKAzUkY80nETMmR50KRsypXYO5OFA==
+X-Received: by 2002:a05:6830:23ac:: with SMTP id m12mr9518853ots.357.1634710240717;
+        Tue, 19 Oct 2021 23:10:40 -0700 (PDT)
+Received: from localhost.localdomain (c-76-30-1-35.hsd1.tx.comcast.net. [76.30.1.35])
+        by smtp.gmail.com with ESMTPSA id c21sm288182oiy.18.2021.10.19.23.10.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 23:10:40 -0700 (PDT)
+From:   sesankm <sesank.mallikarjuna@gmail.com>
+X-Google-Original-From: sesankm <26676400+sesankm@users.noreply.github.com>
+To:     lars@metafoo.de
+Cc:     Michael.Hennerich@analog.com, jic23@kernel.org,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        sesankm <26676400+sesankm@users.noreply.github.com>
+Subject: [PATCH] Staging: iio: adc: ad7280a: fixed coding style
+Date:   Wed, 20 Oct 2021 01:10:27 -0500
+Message-Id: <20211020061027.34148-1-26676400+sesankm@users.noreply.github.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can use GPI DMA for devices where it is enabled by firmware. Add
-support for this mode
+fixed issue with coding style
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
---
--Changes since v4:
- - Fix the kbuild bot warning
+Signed-off-by: sesankm <26676400+sesankm@users.noreply.github.com>
+---
+ drivers/staging/iio/adc/ad7280a.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--Changes since v3:
- - Drop merged spi core, geni patches
- - Remove global structs and use local variables instead
- - modularize code more as suggested by Doug
- - fix kbuild bot warning
-
- drivers/spi/spi-geni-qcom.c | 254 +++++++++++++++++++++++++++++++++---
- 1 file changed, 239 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-index 2f51421e2a71..27a446faf143 100644
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -2,6 +2,9 @@
- // Copyright (c) 2017-2018, The Linux foundation. All rights reserved.
+diff --git a/drivers/staging/iio/adc/ad7280a.c b/drivers/staging/iio/adc/ad7280a.c
+index fef0055b8990..473f95118214 100644
+--- a/drivers/staging/iio/adc/ad7280a.c
++++ b/drivers/staging/iio/adc/ad7280a.c
+@@ -829,14 +829,14 @@ static irqreturn_t ad7280_event_handler(int irq, void *private)
+  * The function argument is stringified and doesn't need a fix
+  */
+ static IIO_DEVICE_ATTR_NAMED(in_thresh_low_value,
+-			     in_voltage-voltage_thresh_low_value,
++			     in_voltage - voltage_thresh_low_value,
+ 			     0644,
+ 			     ad7280_read_channel_config,
+ 			     ad7280_write_channel_config,
+ 			     AD7280A_CELL_UNDERVOLTAGE);
  
- #include <linux/clk.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/dma/qcom-gpi-dma.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/log2.h>
-@@ -63,6 +66,15 @@
- #define TIMESTAMP_AFTER		BIT(3)
- #define POST_CMD_DELAY		BIT(4)
- 
-+#define GSI_LOOPBACK_EN		BIT(0)
-+#define GSI_CS_TOGGLE		BIT(3)
-+#define GSI_CPHA		BIT(4)
-+#define GSI_CPOL		BIT(5)
-+
-+#define MAX_TX_SG		3
-+#define NUM_SPI_XFER		8
-+#define SPI_XFER_TIMEOUT_MS	250
-+
- struct spi_geni_master {
- 	struct geni_se se;
- 	struct device *dev;
-@@ -84,6 +96,9 @@ struct spi_geni_master {
- 	int irq;
- 	bool cs_flag;
- 	bool abort_failed;
-+	struct dma_chan *tx;
-+	struct dma_chan *rx;
-+	int cur_xfer_mode;
- };
- 
- static int get_spi_clk_cfg(unsigned int speed_hz,
-@@ -330,34 +345,197 @@ static int setup_fifo_params(struct spi_device *spi_slv,
- 	return geni_spi_set_clock_and_bw(mas, spi_slv->max_speed_hz);
- }
- 
-+static void
-+spi_gsi_callback_result(void *cb, const struct dmaengine_result *result)
-+{
-+	struct spi_master *spi = cb;
-+
-+	if (result->result != DMA_TRANS_NOERROR) {
-+		dev_err(&spi->dev, "DMA txn failed: %d\n", result->result);
-+		return;
-+	}
-+
-+	if (!result->residue) {
-+		dev_dbg(&spi->dev, "DMA txn completed\n");
-+		spi_finalize_current_transfer(spi);
-+	} else {
-+		dev_err(&spi->dev, "DMA xfer has pending: %d\n", result->residue);
-+	}
-+}
-+
-+static int setup_gsi_xfer(struct spi_transfer *xfer, struct spi_geni_master *mas,
-+			  struct spi_device *spi_slv, struct spi_master *spi)
-+{
-+	unsigned long flags = DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
-+	struct dma_slave_config config = {};
-+	struct gpi_spi_config peripheral = {};
-+	struct dma_async_tx_descriptor *tx_desc, *rx_desc;
-+	int ret;
-+
-+	config.peripheral_config = &peripheral;
-+	config.peripheral_size = sizeof(peripheral);
-+	peripheral.set_config = true;
-+
-+	if (xfer->bits_per_word != mas->cur_bits_per_word ||
-+	    xfer->speed_hz != mas->cur_speed_hz) {
-+		mas->cur_bits_per_word = xfer->bits_per_word;
-+		mas->cur_speed_hz = xfer->speed_hz;
-+	}
-+
-+	if (xfer->tx_buf && xfer->rx_buf) {
-+		peripheral.cmd = SPI_DUPLEX;
-+	} else if (xfer->tx_buf) {
-+		peripheral.cmd = SPI_TX;
-+		peripheral.rx_len = 0;
-+	} else if (xfer->rx_buf) {
-+		peripheral.cmd = SPI_RX;
-+		if (!(mas->cur_bits_per_word % MIN_WORD_LEN)) {
-+			peripheral.rx_len = ((xfer->len << 3) / mas->cur_bits_per_word);
-+		} else {
-+			int bytes_per_word = (mas->cur_bits_per_word / BITS_PER_BYTE) + 1;
-+
-+			peripheral.rx_len = (xfer->len / bytes_per_word);
-+		}
-+	}
-+
-+	peripheral.loopback_en = !!(spi_slv->mode & SPI_LOOP);
-+	peripheral.clock_pol_high = !!(spi_slv->mode & SPI_CPOL);
-+	peripheral.data_pol_high = !!(spi_slv->mode & SPI_CPHA);
-+	peripheral.cs = spi_slv->chip_select;
-+	peripheral.pack_en = true;
-+	peripheral.word_len = xfer->bits_per_word - MIN_WORD_LEN;
-+
-+	ret = get_spi_clk_cfg(mas->cur_speed_hz, mas,
-+			      &peripheral.clk_src, &peripheral.clk_div);
-+	if (ret) {
-+		dev_err(mas->dev, "Err in get_spi_clk_cfg() :%d\n", ret);
-+		return ret;
-+	}
-+
-+	if (!xfer->cs_change) {
-+		if (!list_is_last(&xfer->transfer_list, &spi->cur_msg->transfers))
-+			peripheral.fragmentation = FRAGMENTATION;
-+	}
-+
-+	if (peripheral.cmd & SPI_RX) {
-+		dmaengine_slave_config(mas->rx, &config);
-+		rx_desc = dmaengine_prep_slave_sg(mas->rx, xfer->rx_sg.sgl, xfer->rx_sg.nents,
-+						  DMA_DEV_TO_MEM, flags);
-+		if (!rx_desc) {
-+			dev_err(mas->dev, "Err setting up rx desc\n");
-+			return -EIO;
-+		}
-+	}
-+
-+	/*
-+	 * Prepare the TX always, even for RX or tx_buf being null, we would
-+	 * need TX to be prepared per GSI spec
-+	 */
-+	dmaengine_slave_config(mas->tx, &config);
-+	tx_desc = dmaengine_prep_slave_sg(mas->tx, xfer->tx_sg.sgl, xfer->tx_sg.nents,
-+					  DMA_MEM_TO_DEV, flags);
-+	if (!tx_desc) {
-+		dev_err(mas->dev, "Err setting up tx desc\n");
-+		return -EIO;
-+	}
-+
-+	tx_desc->callback_result = spi_gsi_callback_result;
-+	tx_desc->callback_param = spi;
-+
-+	if (peripheral.cmd & SPI_RX)
-+		dmaengine_submit(rx_desc);
-+	dmaengine_submit(tx_desc);
-+
-+	if (peripheral.cmd & SPI_RX)
-+		dma_async_issue_pending(mas->rx);
-+
-+	dma_async_issue_pending(mas->tx);
-+	return 1;
-+}
-+
-+static bool geni_can_dma(struct spi_controller *ctlr,
-+			 struct spi_device *slv, struct spi_transfer *xfer)
-+{
-+	struct spi_geni_master *mas = spi_master_get_devdata(slv->master);
-+
-+	/* check if dma is supported */
-+	return mas->cur_xfer_mode != GENI_SE_FIFO;
-+}
-+
- static int spi_geni_prepare_message(struct spi_master *spi,
- 					struct spi_message *spi_msg)
- {
--	int ret;
- 	struct spi_geni_master *mas = spi_master_get_devdata(spi);
-+	int ret;
- 
--	if (spi_geni_is_abort_still_pending(mas))
--		return -EBUSY;
-+	switch (mas->cur_xfer_mode) {
-+	case GENI_SE_FIFO:
-+		if (spi_geni_is_abort_still_pending(mas))
-+			return -EBUSY;
-+		ret = setup_fifo_params(spi_msg->spi, spi);
-+		if (ret)
-+			dev_err(mas->dev, "Couldn't select mode %d\n", ret);
-+		return ret;
- 
--	ret = setup_fifo_params(spi_msg->spi, spi);
--	if (ret)
--		dev_err(mas->dev, "Couldn't select mode %d\n", ret);
-+	case GENI_GPI_DMA:
-+		/* nothing to do for GPI DMA */
-+		return 0;
-+	}
-+
-+	dev_err(mas->dev, "Mode not supported %d", mas->cur_xfer_mode);
-+	return -EINVAL;
-+}
-+
-+static int spi_geni_grab_gpi_chan(struct spi_geni_master *mas)
-+{
-+	int ret;
-+
-+	mas->tx = dma_request_chan(mas->dev, "tx");
-+	ret = dev_err_probe(mas->dev, IS_ERR(mas->tx), "Failed to get tx DMA ch\n");
-+	if (ret < 0)
-+		goto err_tx;
-+
-+	mas->rx = dma_request_chan(mas->dev, "rx");
-+	ret = dev_err_probe(mas->dev, IS_ERR(mas->rx), "Failed to get rx DMA ch\n");
-+	if (ret < 0)
-+		goto err_rx;
-+
-+	return 0;
-+
-+err_rx:
-+	dma_release_channel(mas->tx);
-+	mas->tx = NULL;
-+err_tx:
-+	mas->rx = NULL;
- 	return ret;
- }
- 
-+static void spi_geni_release_dma_chan(struct spi_geni_master *mas)
-+{
-+	if (mas->rx) {
-+		dma_release_channel(mas->rx);
-+		mas->rx = NULL;
-+	}
-+
-+	if (mas->tx) {
-+		dma_release_channel(mas->tx);
-+		mas->tx = NULL;
-+	}
-+}
-+
- static int spi_geni_init(struct spi_geni_master *mas)
- {
- 	struct geni_se *se = &mas->se;
- 	unsigned int proto, major, minor, ver;
--	u32 spi_tx_cfg;
-+	u32 spi_tx_cfg, fifo_disable;
-+	int ret = -ENXIO;
- 
- 	pm_runtime_get_sync(mas->dev);
- 
- 	proto = geni_se_read_proto(se);
- 	if (proto != GENI_SE_SPI) {
- 		dev_err(mas->dev, "Invalid proto %d\n", proto);
--		pm_runtime_put(mas->dev);
--		return -ENXIO;
-+		goto out_pm;
- 	}
- 	mas->tx_fifo_depth = geni_se_get_tx_fifo_depth(se);
- 
-@@ -380,15 +558,38 @@ static int spi_geni_init(struct spi_geni_master *mas)
- 	else
- 		mas->oversampling = 1;
- 
--	geni_se_select_mode(se, GENI_SE_FIFO);
-+	fifo_disable = readl(se->base + GENI_IF_DISABLE_RO) & FIFO_IF_DISABLE;
-+	switch (fifo_disable) {
-+	case 1:
-+		ret = spi_geni_grab_gpi_chan(mas);
-+		if (!ret) { /* success case */
-+			mas->cur_xfer_mode = GENI_GPI_DMA;
-+			geni_se_select_mode(se, GENI_GPI_DMA);
-+			dev_dbg(mas->dev, "Using GPI DMA mode for SPI\n");
-+			break;
-+		}
-+		/*
-+		 * in case of failure to get dma channel, we can still do the
-+		 * FIFO mode, so fallthrough
-+		 */
-+		dev_warn(mas->dev, "FIFO mode disabled, but couldn't get DMA, fall back to FIFO mode\n");
-+		fallthrough;
-+
-+	case 0:
-+		mas->cur_xfer_mode = GENI_SE_FIFO;
-+		geni_se_select_mode(se, GENI_SE_FIFO);
-+		ret = 0;
-+		break;
-+	}
- 
- 	/* We always control CS manually */
- 	spi_tx_cfg = readl(se->base + SE_SPI_TRANS_CFG);
- 	spi_tx_cfg &= ~CS_TOGGLE;
- 	writel(spi_tx_cfg, se->base + SE_SPI_TRANS_CFG);
- 
-+out_pm:
- 	pm_runtime_put(mas->dev);
--	return 0;
-+	return ret;
- }
- 
- static unsigned int geni_byte_per_fifo_word(struct spi_geni_master *mas)
-@@ -569,8 +770,11 @@ static int spi_geni_transfer_one(struct spi_master *spi,
- 	if (!xfer->len)
- 		return 0;
- 
--	setup_fifo_xfer(xfer, mas, slv->mode, spi);
--	return 1;
-+	if (mas->cur_xfer_mode == GENI_SE_FIFO) {
-+		setup_fifo_xfer(xfer, mas, slv->mode, spi);
-+		return 1;
-+	}
-+	return setup_gsi_xfer(xfer, mas, slv, spi);
- }
- 
- static irqreturn_t geni_spi_isr(int irq, void *data)
-@@ -665,6 +869,13 @@ static int spi_geni_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return irq;
- 
-+	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-+	if (ret) {
-+		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
-+		if (ret)
-+			return dev_err_probe(dev, ret, "could not set DMA mask\n");
-+	}
-+
- 	base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
-@@ -704,9 +915,10 @@ static int spi_geni_probe(struct platform_device *pdev)
- 	spi->max_speed_hz = 50000000;
- 	spi->prepare_message = spi_geni_prepare_message;
- 	spi->transfer_one = spi_geni_transfer_one;
-+	spi->can_dma = geni_can_dma;
-+	spi->dma_map_dev = dev->parent;
- 	spi->auto_runtime_pm = true;
- 	spi->handle_err = handle_fifo_timeout;
--	spi->set_cs = spi_geni_set_cs;
- 	spi->use_gpio_descriptors = true;
- 
- 	init_completion(&mas->cs_done);
-@@ -732,9 +944,17 @@ static int spi_geni_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto spi_geni_probe_runtime_disable;
- 
-+	/*
-+	 * check the mode supported and set_cs for fifo mode only
-+	 * for dma (gsi) mode, the gsi will set cs based on params passed in
-+	 * TRE
-+	 */
-+	if (mas->cur_xfer_mode == GENI_SE_FIFO)
-+		spi->set_cs = spi_geni_set_cs;
-+
- 	ret = request_irq(mas->irq, geni_spi_isr, 0, dev_name(dev), spi);
- 	if (ret)
--		goto spi_geni_probe_runtime_disable;
-+		goto spi_geni_release_dma;
- 
- 	ret = spi_register_master(spi);
- 	if (ret)
-@@ -743,6 +963,8 @@ static int spi_geni_probe(struct platform_device *pdev)
- 	return 0;
- spi_geni_probe_free_irq:
- 	free_irq(mas->irq, spi);
-+spi_geni_release_dma:
-+	spi_geni_release_dma_chan(mas);
- spi_geni_probe_runtime_disable:
- 	pm_runtime_disable(dev);
- 	return ret;
-@@ -756,6 +978,8 @@ static int spi_geni_remove(struct platform_device *pdev)
- 	/* Unregister _before_ disabling pm_runtime() so we stop transfers */
- 	spi_unregister_master(spi);
- 
-+	spi_geni_release_dma_chan(mas);
-+
- 	free_irq(mas->irq, spi);
- 	pm_runtime_disable(&pdev->dev);
- 	return 0;
+ static IIO_DEVICE_ATTR_NAMED(in_thresh_high_value,
+-			     in_voltage-voltage_thresh_high_value,
++			     in_voltage - voltage_thresh_high_value,
+ 			     0644,
+ 			     ad7280_read_channel_config,
+ 			     ad7280_write_channel_config,
 -- 
-2.31.1
+2.33.1
 
