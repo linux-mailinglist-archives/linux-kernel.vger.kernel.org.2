@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2013434951
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879E7434955
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhJTKt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 06:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56430 "EHLO
+        id S230170AbhJTKuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 06:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJTKt0 (ORCPT
+        with ESMTP id S229998AbhJTKuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 06:49:26 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57431C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 03:47:12 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d9so2606721pfl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 03:47:12 -0700 (PDT)
+        Wed, 20 Oct 2021 06:50:03 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B233CC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 03:47:48 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id j129-20020a1c2387000000b00322f53b9bbfso536569wmj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 03:47:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1TSBvBQA8kI7/EQ8+8MISIe+X1LmR0R1M6KJhiZdbho=;
-        b=ct1uNESrIaobgUaR7vGp25KTJreEBOB3or6gUrv32EmtudAWNGnNpCb4FTr457gP2O
-         6NW5jYl8ajoHl2r9WIffV3WB4kNgE9w7yy83Y4Etx79vkkMs9phnY3bpm5ntzf/1sHw0
-         hPTfEUrdO86+9+sDzHBlat7nvIE94RdNVrJQAZOJC8UrZ8XfArqGbXZn7cmCyVSyM62Y
-         qFzFTQ4nhn1mD+2aq9obIxT5/IqRMzac8lpVSKmvle7HV2geTJbv76nF0MlGeJOpwKTk
-         d+kCV8vYmMGBnFo5lQeiH8DCQvdraZ9TOCWwsyyESMQR1BwiOw/mNNVrk528ZkHJyD4X
-         WS8Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HBEIclTEjZ+Fsaop4U62ko5K3nTvsTWng5hE0irsAw0=;
+        b=RBpO/a6sGSY2J1VvI5FhcfBtSnfyCm0GY9rZIzOjzkU0htqyud98bXUSHv3oYWTi3v
+         aLPIIc99Wv5CPKNpvnNGbAv9/gVbvt7azRiDwnuD6H078BoDNYjhk0b40CrSn39NDbCI
+         Ya/YzFzW/v7rCfnLCF7ogaDPJzFnW6UW//WLj9DXA4Fkj4SaAvhCugRgvIN2pYmZ4gkw
+         MaNbLQZLEfJzsccJxBFLcqebL8t2hO3txX8++PYR7HSjiSyN8tNiBbcmvkOCZz5EzrNR
+         A3fV2K7dnU6AlgkHZDBhhA5PpjdMozWgE9VURaEhRvPfI2tsObl2LgJ8XSkyWVmLjoAN
+         ITQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1TSBvBQA8kI7/EQ8+8MISIe+X1LmR0R1M6KJhiZdbho=;
-        b=eDLp+azJG4pQUOTRkFeomAbuGQ6PwnhIE2ZBpMPHzkJEXPAXuUgd29by2eqG9GZPAr
-         DopwCXG2wUqm7eAt9E5IGp8/+nGrkiinVP8jEXU/LmGiiouf7a8rNXaIz/P3BYr4cdlI
-         4NOljBads0NHm8JOX/zkNBoc391tIoLDWneBdGSk/6fCi93DwdpC+YCe4MANY6uZaS9I
-         3MfvROz34g1MmrMMeVsyv5D52nOtlqihVoE1YFtOjeqJxGEy7sk9+FU7LJ4SUJcOR2PX
-         8aCgx9+PofCteEH4T+YDmJISKnRiobREaXWB2+TIa+VgES+LJyhVo/1gmYJHlfPZPtuw
-         8knA==
-X-Gm-Message-State: AOAM5337qmYQ1FkwWUxGEAzkToYijhnIrA9Fa533KZlenN7PlhEhNago
-        v9hxLiKr9hQA8SlOGgBhw6KFGQ9MkJgKEQ==
-X-Google-Smtp-Source: ABdhPJxaLdJ/OxJPo3hbNu88Qkt7ECSU97PQAPCrbvcXEInQyh5N7LcufZL+eAND3ifiPqtz7Nl5yQ==
-X-Received: by 2002:aa7:9823:0:b0:44d:2428:3b62 with SMTP id q3-20020aa79823000000b0044d24283b62mr5507496pfl.77.1634726831843;
-        Wed, 20 Oct 2021 03:47:11 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id g10sm2366308pfc.213.2021.10.20.03.47.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 03:47:11 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 16:17:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Jie Deng <jie.deng@intel.com>, "wsa@kernel.org" <wsa@kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel <kernel@axis.com>
-Subject: Re: [PATCH 2/2] i2c: virtio: fix completion handling
-Message-ID: <20211020104709.k6oqo2gmegiwfre4@vireshk-i7>
-References: <20211019074647.19061-1-vincent.whitchurch@axis.com>
- <20211019074647.19061-3-vincent.whitchurch@axis.com>
- <20211019082211.ngkkkxlfcrsvfaxg@vireshk-i7>
- <81ea2661-20f8-8836-5311-7f2ed4a1781f@intel.com>
- <20211020091721.7kcihpevzf7h4d62@vireshk-i7>
- <20211020103849.GA9985@axis.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HBEIclTEjZ+Fsaop4U62ko5K3nTvsTWng5hE0irsAw0=;
+        b=DOrqppDTxPIv5JBFuPu3wQSRiQjTb24nvsD/e83LOKSBfhtUhlUwk2uhgRzalMrPkP
+         oQERcjYIpMb/pLBkWzwR4puQqXo4PJQt+hcmdsntCjoY5FvrP56sRHXM31Krw4YEouVn
+         b6HX9KkoCdCW9AtVFyLZh+p02TET7kWliYSwaDmMG4lNJGy0CyWvMvEDTBi0ISbhcnuM
+         I1Ya4oxY7VCEF0jcMvvWtYLyfJGEeacu/KY7DYUHAuIXFrtDBjGL/ba9ezOi37dpsotP
+         /mZ8DuCwCxjRJO5SscyqbvSyiYyf3qBgphxjv2eVrTX95aEqDbv8ssdIT/9BHQWizj8i
+         Bh+Q==
+X-Gm-Message-State: AOAM530gf3JJMyTnl394Vqy4e5mMyOXGMOxnK3K+kyUgIt0btiE4anti
+        fLEGZ8RjwczoOiNWttAHA5dENA==
+X-Google-Smtp-Source: ABdhPJwokBEKxFsaXV5dkgf4vZTaV5x0bv7t9JafMAynZ/t9lVcUjphhmp4ecJAtl2uGa8jDHDhS+w==
+X-Received: by 2002:adf:a154:: with SMTP id r20mr51583586wrr.326.1634726867105;
+        Wed, 20 Oct 2021 03:47:47 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:4799:198d:b6ef:8da7? ([2a01:e34:ed2f:f020:4799:198d:b6ef:8da7])
+        by smtp.googlemail.com with ESMTPSA id o11sm2183231wry.0.2021.10.20.03.47.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 03:47:46 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] thermal/core: Make the userspace governor
+ deprecated
+To:     lukasz.luba@arm.com
+Cc:     rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+References: <20211019163506.2831454-1-daniel.lezcano@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <6372f16d-7d2d-cb1e-be86-23b21b41816b@linaro.org>
+Date:   Wed, 20 Oct 2021 12:47:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020103849.GA9985@axis.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20211019163506.2831454-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-21, 12:38, Vincent Whitchurch wrote:
-> I don't quite understand how that would be safe since
-> virtqueue_add_sgs() can fail after a few iterations and all queued
-> request buffers can have FAIL_NEXT set.  In such a case, we would end up
-> waiting forever with your proposed change, wouldn't we?
 
-Good point. I didn't think of that earlier.
+Hi Lukasz,
 
-I think a good simple way of handling this is counting the number of
-buffers sent and received. Once they match, we are done. That
-shouldn't break anything else I believe.
+Do you agree with these changes ?
+
+On 19/10/2021 18:35, Daniel Lezcano wrote:
+> The userspace governor is sending temperature when polling is active
+> and trip point crossed events. Nothing else.
+> 
+> AFAICT, this governor is used with custom kernels making the userspace
+> governor co-existing with another governor on the same thermal zone
+> because there was no notification mechanism, implying a hack in the
+> framework to support this configuration.
+> 
+> The new netlink thermal notification is able to provide more
+> information than the userspace governor and give the opportunity to
+> the users of this governor to replace it by a dedicated notification
+> framework.
+> 
+> The userspace governor will be removed as its usage is no longer
+> needed.
+> 
+> Add a warning message to tell the userspace governor is deprecated.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>  drivers/thermal/gov_user_space.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/thermal/gov_user_space.c b/drivers/thermal/gov_user_space.c
+> index 82a7198bbe71..f4fe050e1cbc 100644
+> --- a/drivers/thermal/gov_user_space.c
+> +++ b/drivers/thermal/gov_user_space.c
+> @@ -15,6 +15,14 @@
+>  
+>  #include "thermal_core.h"
+>  
+> +static int user_space_bind(struct thermal_zone_device *tz)
+> +{
+> +	pr_warn("Userspace governor deprecated: use thermal netlink "	\
+> +		"notification instead\n");
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * notify_user_space - Notifies user space about thermal events
+>   * @tz: thermal_zone_device
+> @@ -43,5 +51,6 @@ static int notify_user_space(struct thermal_zone_device *tz, int trip)
+>  static struct thermal_governor thermal_gov_user_space = {
+>  	.name		= "user_space",
+>  	.throttle	= notify_user_space,
+> +	.bind_to_tz	= user_space_bind,
+>  };
+>  THERMAL_GOVERNOR_DECLARE(thermal_gov_user_space);
+> 
+
 
 -- 
-viresh
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
