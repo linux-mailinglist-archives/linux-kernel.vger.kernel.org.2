@@ -2,372 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A76435538
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB4A43553F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhJTVZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhJTVZE (ORCPT
+        id S231238AbhJTV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:28:55 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:46566 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230174AbhJTV2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:25:04 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D156FC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 14:22:49 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so3343556pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 14:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FCUhuGldTH9HYns0UAGDn312YQO4KkHAjojz27/KX6A=;
-        b=LKELgfBOe6K5oYBeaDm2XlYuwvkcweZk0ZrU6jzO9J3wh/IFhP+J9GTpnDmS/U6FuU
-         NcxjuIvtSHgf99hkuVlRqhlLCc4rVvKWAW880euPGqmIVl6jbLth5D2v0eLUEOz7s7Vc
-         fdgV6E+fK2eZwivCIDtpqenxUMfdNmkVYCG1nDCHakj5yNY+6I3rkY4ctZHWJdytCSSC
-         vkCN63FfJhXFcyTL6TfoEaUGiHOdCJLI0U1kclyNsGns7h2sOHvZn8uN1E7bR/mCLAjl
-         f96imnC7OawmCghjlouTRkq+/lnnWvZjLmRtsIHFvhyarbrG+32cth1SMCaOeTbimw/7
-         x7Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FCUhuGldTH9HYns0UAGDn312YQO4KkHAjojz27/KX6A=;
-        b=n22deL6zyXSiRNMUfqItmAKu1dQqnxQvBUmy6ScOLVjRBoBWNZSmu5ls1b3RohrFxx
-         TYDR5rkRC47mgIldcu7bF9s8wec8mBQ6ynpQ8am+J2xhqYppCF1gxGhWnx3QQClqmWJm
-         GFsqFSlBAM9w/O1Vr/kPbtyv+G7MJT/foc7G1IiKdHV9vjdrWKaNBlDNAr6/XKgnVJxw
-         T2N2ssHf9CaEMWMMaVlIhN7NoqO9fuHiMgxKm+7zJBnaeDB+abIAgUJ4RKnehPHmsy58
-         XM6aY975TksLHnEIrrG8fH3YdVkc+/KcDIwJaObJs3kNXtoRdfwPUjR01Ku8+9vJ1aO/
-         QO0A==
-X-Gm-Message-State: AOAM533M5f4cH8ko9KDUnWFVELhkWnRFS54WXPIJ6sdWCk9W80eVVzDR
-        25eTMo7pNFp+1Xx1yPvM0yz2tpAw3juSADGIQFf2cg==
-X-Google-Smtp-Source: ABdhPJy3qAt+hJCyN5WtPOtSwnbd1e/GVwxow9dY6ehjsTZm6d8z2V7kZ5tEtZN4NTBX3nJK2JqKC9I5+D4XWjzfj0M=
-X-Received: by 2002:a17:90a:d311:: with SMTP id p17mr1497224pju.155.1634764969062;
- Wed, 20 Oct 2021 14:22:49 -0700 (PDT)
+        Wed, 20 Oct 2021 17:28:51 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:60824)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdJ6Z-00FfLB-Mm; Wed, 20 Oct 2021 15:26:35 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:58166 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdJ6X-002MC1-L9; Wed, 20 Oct 2021 15:26:35 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+References: <87y26nmwkb.fsf@disp2133>
+        <20211020174406.17889-13-ebiederm@xmission.com>
+        <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
+Date:   Wed, 20 Oct 2021 16:25:46 -0500
+In-Reply-To: <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
+        (Linus Torvalds's message of "Wed, 20 Oct 2021 10:05:21 -1000")
+Message-ID: <87ee8fjsmd.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
- <CAJ+vNU2b-=T_gTsRBvdF7SRUZopEFOU_Np8mEJn8bOpn5b5FaA@mail.gmail.com>
- <AS8PR04MB8676B2AC24E2769D47A1ED478CBD9@AS8PR04MB8676.eurprd04.prod.outlook.com>
- <CAJ+vNU2AitmxCyam5FArmxAD41QUU=5CF_0JZhm+uzdkRbr7kw@mail.gmail.com> <AS8PR04MB8676840D7EDD56D10F9471288CBE9@AS8PR04MB8676.eurprd04.prod.outlook.com>
-In-Reply-To: <AS8PR04MB8676840D7EDD56D10F9471288CBE9@AS8PR04MB8676.eurprd04.prod.outlook.com>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Wed, 20 Oct 2021 14:22:37 -0700
-Message-ID: <CAJ+vNU2GU5=mM5+2Yg9gAuU0RSdJHWEU_+ykmz-qUWfsOnRJ8g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie support
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1mdJ6X-002MC1-L9;;;mid=<87ee8fjsmd.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/oJDrU/gVCaEKr9KS4ffLmwCs3xVr7FP4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1481 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 13 (0.9%), b_tie_ro: 11 (0.7%), parse: 1.45
+        (0.1%), extract_message_metadata: 21 (1.4%), get_uri_detail_list: 2.5
+        (0.2%), tests_pri_-1000: 30 (2.1%), tests_pri_-950: 1.54 (0.1%),
+        tests_pri_-900: 1.16 (0.1%), tests_pri_-90: 115 (7.7%), check_bayes:
+        112 (7.6%), b_tokenize: 8 (0.5%), b_tok_get_all: 8 (0.6%),
+        b_comp_prob: 2.8 (0.2%), b_tok_touch_all: 90 (6.1%), b_finish: 1.18
+        (0.1%), tests_pri_0: 1275 (86.1%), check_dkim_signature: 0.81 (0.1%),
+        check_dkim_adsp: 3.4 (0.2%), poll_dns_idle: 0.88 (0.1%), tests_pri_10:
+        4.2 (0.3%), tests_pri_500: 14 (1.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 13/20] signal: Implement force_fatal_sig
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 7:10 PM Richard Zhu <hongxing.zhu@nxp.com> wrote:
+Linus Torvalds <torvalds@linux-foundation.org> writes:
+
+> On Wed, Oct 20, 2021 at 7:45 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> Add a simple helper force_fatal_sig that causes a signal to be
+>> delivered to a process as if the signal handler was set to SIG_DFL.
+>>
+>> Reimplement force_sigsegv based upon this new helper.
 >
-> > -----Original Message-----
-> > From: Tim Harvey <tharvey@gateworks.com>
-> > Sent: Tuesday, October 19, 2021 11:53 PM
-> > To: Richard Zhu <hongxing.zhu@nxp.com>
-> > Cc: Lucas Stach <l.stach@pengutronix.de>; Kishon Vijay Abraham I
-> > <kishon@ti.com>; vkoul@kernel.org; Rob Herring <robh@kernel.org>;
-> > galak@kernel.crashing.org; Shawn Guo <shawnguo@kernel.org>;
-> > linux-phy@lists.infradead.org; Device Tree Mailing List
-> > <devicetree@vger.kernel.org>; Linux ARM Mailing List
-> > <linux-arm-kernel@lists.infradead.org>; open list
-> > <linux-kernel@vger.kernel.org>; Sascha Hauer <kernel@pengutronix.de>;
-> > dl-linux-imx <linux-imx@nxp.com>
-> > Subject: Re: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
-> > support
-> >
-> > On Mon, Oct 18, 2021 at 7:10 PM Richard Zhu <hongxing.zhu@nxp.com>
-> > wrote:
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Tim Harvey <tharvey@gateworks.com>
-> > > > Sent: Saturday, October 16, 2021 3:59 AM
-> > > > To: Richard Zhu <hongxing.zhu@nxp.com>; Lucas Stach
-> > > > <l.stach@pengutronix.de>
-> > > > Cc: Kishon Vijay Abraham I <kishon@ti.com>; vkoul@kernel.org; Rob
-> > > > Herring <robh@kernel.org>; galak@kernel.crashing.org; Shawn Guo
-> > > > <shawnguo@kernel.org>; linux-phy@lists.infradead.org; Device Tree
-> > > > Mailing List <devicetree@vger.kernel.org>; Linux ARM Mailing List
-> > > > <linux-arm-kernel@lists.infradead.org>; open list
-> > > > <linux-kernel@vger.kernel.org>; Sascha Hauer
-> > > > <kernel@pengutronix.de>; dl-linux-imx <linux-imx@nxp.com>
-> > > > Subject: Re: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm
-> > > > pcie support
-> > > >
-> > > > On Tue, Oct 12, 2021 at 2:06 AM Richard Zhu <hongxing.zhu@nxp.com>
-> > > > wrote:
-> > > > >
-> > > > > refer to the discussion [1] when try to enable i.MX8MM PCIe
-> > > > > support, one standalone PCIe PHY driver should be seperated from
-> > > > > i.MX PCIe driver when enable i.MX8MM PCIe support.
-> > > > >
-> > > > > This patch-set adds the standalone PCIe PHY driver suport[1-5],
-> > > > > and i.MX8MM PCIe support[6-9] to have whole view to review this
-> > patch-set.
-> > > > >
-> > > > > The PCIe works on i.MX8MM EVK board based the the blkctrl power
-> > > > > driver [2] and this PHY driver patch-set.
-> > > > >
-> > > > > [1]
-> > > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2F
-> > > > > patc
-> > > > >
-> > > >
-> > hwork.ozlabs.org%2Fproject%2Flinux-pci%2Fpatch%2F20210510141509.929
-> > > > 120
-> > > > >
-> > > >
-> > -3-l.stach%40pengutronix.de%2F&amp;data=04%7C01%7Chongxing.zhu%40
-> > > > nxp.c
-> > > > >
-> > > >
-> > om%7C4e3d8ee008d94327f99108d9901634be%7C686ea1d3bc2b4c6fa92cd
-> > > > 99c5c3016
-> > > > >
-> > > >
-> > 35%7C0%7C0%7C637699247319711209%7CUnknown%7CTWFpbGZsb3d8ey
-> > > > JWIjoiMC4wLj
-> > > > >
-> > > >
-> > AwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp
-> > > > ;sdata=
-> > > > >
-> > > >
-> > Z2TZCpdDUSoqrNB1X%2BXdoYNBe3dBDKUgkA4r%2F0TcdOg%3D&amp;reser
-> > > > ved=0
-> > > > > [2]
-> > > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2F
-> > > > > patc
-> > > > >
-> > > >
-> > hwork.kernel.org%2Fproject%2Flinux-arm-kernel%2Fcover%2F202109102026
-> > > > 40
-> > > > > .980366-1-l.stach%40pengutronix.de%2F&amp;data=04%7C01%7Chon
-> > gxin
-> > > > g.zhu%
-> > > > >
-> > > >
-> > 40nxp.com%7C4e3d8ee008d94327f99108d9901634be%7C686ea1d3bc2b4c6
-> > > > fa92cd99
-> > > > >
-> > > >
-> > c5c301635%7C0%7C0%7C637699247319711209%7CUnknown%7CTWFpbGZ
-> > > > sb3d8eyJWIjo
-> > > > >
-> > > >
-> > iMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C10
-> > > > 00&amp
-> > > > > ;sdata=5h%2By%2FcBW%2BjFkyplUuN1nB5%2BAFHuwCUJBqvRh1RiPY
-> > Mo
-> > > > %3D&amp;rese
-> > > > > rved=0
-> > > > >
-> > > > > Main changes v2 --> v3:
-> > > > > - Regarding Lucas' comments.
-> > > > >  - to have a whole view to review the patches, send out the
-> > > > > i.MX8MM PCIe
-> > > > support too.
-> > > > >  - move the PHY related bits manipulations of the GPR/SRC to
-> > > > > standalone
-> > > > PHY driver.
-> > > > >  - split the dts changes to SOC and board DT, and use the enum
-> > > > > instead of
-> > > > raw value.
-> > > > >  - update the license of the dt-binding header file.
-> > > > >
-> > > > > Changes v1 --> v2:
-> > > > > - Update the license of the dt-binding header file to make the license
-> > > > >   compatible with dts files.
-> > > > > - Fix the dt_binding_check errors.
-> > > > >
-> > > > > Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |   6
-> > +++
-> > > > > Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml |  79
-> > > > +++++++++++++++++++++++++++++
-> > > > > arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi                |
-> > 53
-> > > > ++++++++++++++++++++
-> > > > > arch/arm64/boot/dts/freescale/imx8mm.dtsi                    |
-> > > > 46 ++++++++++++++++-
-> > > > > drivers/pci/controller/dwc/pci-imx6.c                        |
-> > 63
-> > > > ++++++++++++++++++++++-
-> > > > > drivers/phy/freescale/Kconfig                                |
-> > 9
-> > > > ++++
-> > > > > drivers/phy/freescale/Makefile                               |
-> > 1
-> > > > +
-> > > > > drivers/phy/freescale/phy-fsl-imx8m-pcie.c                   |
-> > 218
-> > > >
-> > ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> > > > ++++++++++++++++++
-> > > > > include/dt-bindings/phy/phy-imx8-pcie.h                      |
-> > 14
-> > > > ++++++
-> > > > > 9 files changed, 486 insertions(+), 3 deletions(-)
-> > > > >
-> > > > > [PATCH v3 1/9] dt-bindings: phy: phy-imx8-pcie: Add binding for
-> > > > > the [PATCH v3 2/9] dt-bindings: phy: add imx8 pcie phy driver
-> > > > > support [PATCH v3 3/9] arm64: dts: imx8mm: add the pcie phy
-> > > > > support [PATCH v3 4/9] arm64: dts: imx8mm-evk: add the pcie phy
-> > > > > support [PATCH v3 5/9]
-> > > > > phy: freescale: pcie: initialize the imx8 pcie [PATCH v3 6/9]
-> > > > > dt-bindings: imx6q-pcie: Add PHY phandles and name [PATCH v3 7/9]
-> > > > > arm64: dts: imx8mm: add the pcie support [PATCH v3 8/9] arm64: dts:
-> > > > > imx8mm-evk: add the pcie support on imx8mm [PATCH v3 9/9] PCI: imx:
-> > > > > add the imx8mm pcie support
-> > > >
-> > > > Richard and Lucas,
-> > > >
-> > > > Thanks for your collective work on this series!
-> > > >
-> > > > I have imx8mm-venice boards to test this on both with and without
-> > > > PCIe bridges. I've tested this on top of Shawn's imx/for-next (as
-> > > > blk-ctl has been merged there) and end up hanging waiting for PHY ready
-> > timeout.
-> > > [Richard Zhu] Sorry to reply late. I run the tests based on pci/for-next
-> > applied the blk-ctl issue by Lucas [2] in commit.
-> > > Can you help to make a re-tests?
-> > > As I know that the blk-ctl is not merged yet.
-> > > Hi Lucas:
-> > > Am I right?
-> > >
-> >
-> > Richard,
-> >
-> > v5 of blk-ctl is merged into Shawn's for-next tree.
-> >
-> [Richard Zhu] Got that.
-> Thanks.
+> Can you just make the old force_sigsegv() go away? The odd special
+> casing of SIGSEGV was odd to begin with, I think everybody really just
+> wanted this new "force_fatal_sig()" and allow any signal - not making
+> SIGSEGV special.
+
+There remains the original case that is signal_set up_done
+deals with generically.  When sending a signal fails the code
+attempts send SIGSEGV and if sending SIGSEGV fails the signal
+delivery code terminates the process with SIGSEGV.
+
+To keep dependencies to a minimum and to allow for the possibility of
+backports I used "force_sigsegv(SIGSEGV)" instead of
+"force_fatal_sig(SIGSEGV)".  I will be happy to add an additional
+patch that converts all of those case to force_fatal_sig.
+
+> Also, I think it should set SIGKILL in p->pending.signal or something
+> like that - because we want this to trigger fatal_signal_pending(),
+> don't we?
 >
-> > > >
-> > > > [    1.454308] imx6q-pcie 33800000.pcie:       IO
-> > > > 0x001ff80000..0x001ff8ffff -> 0x0
-> > > > [    1.466538] imx6q-pcie 33800000.pcie:      MEM
-> > > > 0x0018000000..0x001fefffff -> 0x0
-> > > > [    1.476344] libphy: fec_enet_mii_bus: probed
-> > > > [    1.602631] phy phy-32f00000.pcie-phy.0: phy init failed --> -110
-> > > > [    1.608775] imx6q-pcie 33800000.pcie: Waiting for PHY ready
-> > timeout!
-> > > >
-> > > > I can verify that imx8_pcie_phy_probe returns successfully and the
-> > > > the phy node (imx6_pcie->phy) was found.
-> > > >
-> > > > Here is the dt change I made for the imx8mm-venice-gw71xx-0x board
-> > > > that has no bridge:
-> > > [Richard Zhu] Refer to the changes, the external OSC is used as PCIe REF
-> > clock(same to EVK board design), right?
-> >
-> > Correct, an ext osc is used like EVK.
-> >
-> > I applied v5 blk-ctl and your v3 series on top of pci/next and came up with the
-> > same issue. Do you have a git repo I could try to make sure I'm not missing
-> > anything?
-> >
-> > Also, as Lucas has requested some changes do you have a v4 coming soon that
-> > I should wait for to try? I believe this has something to do with the phy reset
-> > where some of his changes were requested.
-> [Richard Zhu] Unfortunately, I don't have personal git repo. But I think we stand on same base-line.
-> I tried on Shawn's next tree with my v3 series today.
-> PCIe NVME device works fine on my i.MX8MM EVK board, although there is git-am failure in the last patch when I apply the v3 series.
-> Part of the logs:
-> "
-> root@imx8_all:~# lspci
-> 00:00.0 PCI bridge: Synopsys, Inc. Device abcd (rev 01)
-> 01:00.0 Non-Volatile memory controller: Sandisk Corp Device 5002
-> root@imx8_all:~# uname -a
-> Linux imx8_all 5.15.0-rc1-00091-g8bd7cd1cc7f0-dirty #1 SMP PREEMPT Wed Oct 20 09:22:32 CST 2021 aarch64 aarch64 aarch64 GNU/Linux
-> ...
-> [    1.164144] imx6q-pcie 33800000.pcie: host bridge /soc@0/pcie@33800000 ranges:
-> [    1.172114] imx6q-pcie 33800000.pcie:       IO 0x001ff80000..0x001ff8ffff -> 0x0000000000
-> [    1.182447] imx6q-pcie 33800000.pcie:      MEM 0x0018000000..0x001fefffff -> 0x0018000000
-> [    1.304429] imx6q-pcie 33800000.pcie: invalid resource
+> Right now fatal_signal_pending() is only true for SIGKILL, I think.
 
-Richard,
+In general when a fatal signal is delivered the function complete_signal
+individually delivers SIGKILL to the threads, making
+fatal_signal_pending true.
 
-What is this 'invalid resource' about? I see that with my downstream
-IMX8MM PCIe driver as well and have been asked about it.
+For signals like SIGSYS that generate a coredump that is not currently
+true, but in the cases I looked at signal_pending() was enough to
+get the code to get_signal(), which dequeues the signals and starts
+processing them.
 
-> [    1.316305] imx6q-pcie 33800000.pcie: iATU unroll: enabled
-> [    1.321799] imx6q-pcie 33800000.pcie: Detected iATU regions: 4 outbound, 4 inbound
-> [    1.429803] imx6q-pcie 33800000.pcie: Link up
-> [    1.534497] imx6q-pcie 33800000.pcie: Link up
-> [    1.538870] imx6q-pcie 33800000.pcie: Link up, Gen2
-> [    1.550364] imx6q-pcie 33800000.pcie: Link up
-> [    1.550487] imx6q-pcie 33800000.pcie: PCI host bridge to bus 0000:00
-> [    1.565545] pci_bus 0000:00: root bus resource [bus 00-ff]
-> [    1.573834] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
-> [    1.580055] pci_bus 0000:00: root bus resource [mem 0x18000000-0x1fefffff]
-> [    1.586968] pci 0000:00:00.0: [16c3:abcd] type 01 class 0x060400
-> [    1.592997] pci 0000:00:00.0: reg 0x10: [mem 0x00000000-0x000fffff]
-> [    1.599282] pci 0000:00:00.0: reg 0x38: [mem 0x00000000-0x0000ffff pref]
-> [    1.606033] pci 0000:00:00.0: supports D1
-> [    1.610053] pci 0000:00:00.0: PME# supported from D0 D1 D3hot D3cold
-> [    1.618206] pci 0000:01:00.0: [15b7:5002] type 00 class 0x010802
-> [    1.624293] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
-> [    1.631177] pci 0000:01:00.0: reg 0x20: [mem 0x00000000-0x000000ff 64bit]
-> [    1.638409] pci 0000:01:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x1 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe x4 link)
-> [    1.664931] pci 0000:00:00.0: BAR 0: assigned [mem 0x18000000-0x180fffff]
-> [    1.671745] pci 0000:00:00.0: BAR 14: assigned [mem 0x18100000-0x181fffff]
-> [    1.678634] pci 0000:00:00.0: BAR 6: assigned [mem 0x18200000-0x1820ffff pref]
-> [    1.685873] pci 0000:01:00.0: BAR 0: assigned [mem 0x18100000-0x18103fff 64bit]
-> [    1.693222] pci 0000:01:00.0: BAR 4: assigned [mem 0x18104000-0x181040ff 64bit]
-> [    1.700577] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-> [    1.705814] pci 0000:00:00.0:   bridge window [mem 0x18100000-0x181fffff]
-> [    1.712972] pcieport 0000:00:00.0: PME: Signaling with IRQ 216
-> "
-> Regarding the log you pasted, it seems that the clock is not feed to PHY properly.
->
-> Anyway, let's waiting for the v4 series, then make a try. Thanks for your great help to make the double tests.
->
+I have a branch queued up for the next merge window that implements per
+signal_struct coredumps.  Assuming that does not trigger any user space
+regressions I can remove the coredump special case in complete_signal.
+That will in turn mean that force_siginfo_to_task does not need to
+change sa_handler, blocked or clear SIGNAL_UNKILLABLE, as all of the
+cases where that matters today will just wind up with complete_signal
+setting a per_thread SIGKILL.
 
-My boards do not use CLKREQ# so I do not have that defined in pinmux
-and I found that if I add MX8MM_IOMUXC_I2C4_SCL_PCIE1_CLKREQ_B PCIe
-works on my board but this isn't a solution just a work-around (I have
-boards that use the only two possible pins for CLKREQ as other
-features).
 
-Similarly you will find on the imx8mm-evk if you comment out the
-CLKREQ (which isn't required) the imx8mmevk will end up hanging like
-my boards:
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-index 5ce43daa0c8b..f0023b48f475 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-@@ -448,7 +448,9 @@
 
-        pinctrl_pcie0: pcie0grp {
-                fsl,pins = <
-+/*
-                        MX8MM_IOMUXC_I2C4_SCL_PCIE1_CLKREQ_B    0x61
-+*/
-                        MX8MM_IOMUXC_SAI2_RXFS_GPIO4_IO21       0x41
-                >;
-        };
+I keep playing with the idea of having fatal_signal_pending depend on a
+different flag than the per thread bit for SIGKILL in the per thread
+signal set.  That might make it clearer that complete_signal has started
+killing the process and it is a start of the killing the process that
+triggers fatal_signal_pending.
 
-I have PCIe working with a driver that I ported from NXP's kernel
-which differs from your driver in that the PCIe PHY is not abstracted
-to its own driver so I think this has something to do with the order
-in which the phy is reset or initialized? The configuration of gpr14
-bits looks correct to me.
+So far the way fatal_signal_pending works hasn't really been a problem
+so I keep putting away ideas of cleaner implementations.
 
-Best regards,
+Eric
 
-Tim
+
