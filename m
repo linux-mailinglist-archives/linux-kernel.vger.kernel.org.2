@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972ED4345D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4874345D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 09:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhJTHZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 03:25:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25699 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229771AbhJTHZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 03:25:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634714576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bBVyUUUV2qr6b1veT83eC89VUSUZjroodvAkLtziDVA=;
-        b=TmolDWuHItMlaBF6klwM3YYCtP6H+TbjCqIW8rHoTXO9GifgK3ooqmxFcdAExGl3Lj8OJo
-        /tsjP3CY/+lH7UZh89m2GBi37HOMY+CiPma0iF7JEB1kiRTZssh9h2yWQm3R0Gaa99lz9P
-        U246+qnoD+BCMr2fEh1oYNy54TtvWlk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-hSX6i_CLPA273J-8NNcl7A-1; Wed, 20 Oct 2021 03:22:54 -0400
-X-MC-Unique: hSX6i_CLPA273J-8NNcl7A-1
-Received: by mail-wm1-f72.google.com with SMTP id d16-20020a1c1d10000000b0030d738feddfso2610365wmd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 00:22:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=bBVyUUUV2qr6b1veT83eC89VUSUZjroodvAkLtziDVA=;
-        b=4MYZdBwn+SNggHjGZ2Qhj3C9BgXmht9Cl7P1mLVhwMdrnnKgmQDmIN3UI5mFzKMUus
-         wuoTFrNTdpIfXYHj+qok1qzI1eQoBc9KpLFTRwta4gApe4w47Us8N34mGDbp7pWzWD1J
-         NiFsw/Jpy0FqMBj8cyxo2qN7XE/81FqtTycgcY45TG3C6zViduRzhDAC9UtOoPNYWb4e
-         60UQU8M3bk3UH6dX2Wj2wB3ZbNGj8CXCQAJGw5JzNBctlkENpWW6vNFcRFVw6CP/6XVx
-         ZVj3j3Nh1mcOjKmxec1n5VU5hx4o+2AAh8/0hHtsvGD3O9PzSmYla5h0EzxQC1cbXfDO
-         QUEA==
-X-Gm-Message-State: AOAM533PTeTm9OgrJH0TK0rbnacBv0iNcuZSzE81UxhYEuSga7JS+tm7
-        78CaV8MTo3BFFnDoSPKXVe1OFaug/hFbNog03eqxHHjy+2q++9bU+fTj0WjS1fvVgJOECawuenO
-        FU/vGV0ONbcAliHF6wZvtsdy2
-X-Received: by 2002:a05:600c:4305:: with SMTP id p5mr11655069wme.185.1634714573611;
-        Wed, 20 Oct 2021 00:22:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzeECWzXPEd6kpPWo92LCpCrKx1bckrlG3iRkGHpqTIVNWqvjHwGgZjeXNONhoiuRwi8ryzQg==
-X-Received: by 2002:a05:600c:4305:: with SMTP id p5mr11655045wme.185.1634714573394;
-        Wed, 20 Oct 2021 00:22:53 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c63d4.dip0.t-ipconnect.de. [91.12.99.212])
-        by smtp.gmail.com with ESMTPSA id 3sm1257425wms.5.2021.10.20.00.22.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 00:22:52 -0700 (PDT)
-Message-ID: <99b496b7-c465-eac3-d7ad-18a615fe94a7@redhat.com>
-Date:   Wed, 20 Oct 2021 09:22:52 +0200
+        id S230029AbhJTHZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 03:25:52 -0400
+Received: from mail-eopbgr1300135.outbound.protection.outlook.com ([40.107.130.135]:33568
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229976AbhJTHZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 03:25:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jeFqpbM/vQcVZjh9R6P0hRjDIGqJdnvm3sB9d2W4KX9u0Zf3GwlXid1bP/QR8y//JFW6NcxcZJ7QSjOlpZ2MYWXNRDUKGqGtxOnZRpszUNlh420a49BEW2L3NEWTBzwZuFZqx12rJYQrUNTIQprUhJ/+0nBvn4jqn+eIZ6BPH7iN/gq3UUwtKr5Br76wQf9Z6mluQOqzYQbt2fQfTst/r7I3xCOf1TqeFiQ/Jyp7gd+7HYYq1IYo8vaXOkj2Q7UThnR2HXNvrOuq61uV+TwVk7JY1MGumkP1pK5HnUe93Zmsa+4ca/USzWTegrAXosN89582SJJedXTARzn4DITvbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/RXegQTdvCjm2jHzNXVrXQYIVEXDErjRkrkjCE/oL/Q=;
+ b=N2wui5Kj3z0Lq5VOQcnsxjQS6iorULaq52mOgacV8si6kFNvkx8W/JDCV5JEKFquiWhlrDEBQXEjTS/eeNrKdtGKcHGYjFp61cI0nEm0zNhfn7v4/tNLy1wK+ZKDWyLg6EGLt13zPv2E+szRrkF+4gnsTecZFi7VG8YMD6mWy9j8m9E5OL962gd7HOp0CuAfIZBPseAozlT6aOe1yKRuIkL+NXVPYx1xQyLyYFE53cUcaBHwZie/xpg4Dorf1hx4rJ23LkNXn7JrPwFL3FRs9ltWCY7uMJvQbE5UCMuVo9cDwTPq4ci1RX2J5P9utihAhx3cWs95JH6A8OzybGpZNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/RXegQTdvCjm2jHzNXVrXQYIVEXDErjRkrkjCE/oL/Q=;
+ b=ikHG7GbEKOdlwCqY+yzUX6Pt42cEwRC+NX9/KPBOiYgdMvfbpMfqcVZieLSZPRKm9ri6bi+lc+macGG/5x1sDKD+P7guGv7EKKdma4pQIxs3UGmI3fSopZbXolVcjBpQGNZ1L0FJkKN4kOSmPOgyfMmCJlZBo/+JhIhc08s8zRE=
+Authentication-Results: ioremap.net; dkim=none (message not signed)
+ header.d=none;ioremap.net; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB3114.apcprd06.prod.outlook.com (2603:1096:100:34::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Wed, 20 Oct
+ 2021 07:23:33 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
+ 07:23:33 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     Evgeniy Polyakov <zbr@ioremap.net>, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] w1: use kfree_sensitive() instead of kfree()
+Date:   Wed, 20 Oct 2021 00:23:21 -0700
+Message-Id: <1634714604-58144-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HKAPR03CA0029.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::16) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Content-Language: en-US
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        kernel test robot <oliver.sang@intel.com>
-Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-References: <20211019031407.GB7910@xsang-OptiPlex-9020>
- <87wnm9ovz2.fsf@disp2133>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [mm] 6128b3af2a: UBSAN:shift-out-of-bounds_in(null)
-In-Reply-To: <87wnm9ovz2.fsf@disp2133>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Received: from ubuntu.localdomain (103.220.76.181) by HKAPR03CA0029.apcprd03.prod.outlook.com (2603:1096:203:c9::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4628.16 via Frontend Transport; Wed, 20 Oct 2021 07:23:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ce52d1e4-657b-491a-802b-08d9939a8628
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3114:
+X-Microsoft-Antispam-PRVS: <SL2PR06MB31143D92D3D0AB062794641ABDBE9@SL2PR06MB3114.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:85;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Xnqw25braI77RgYT90rKk5qXuTg465FT2iHVI2gJ0QGkxGyA/Vl7Ejuy5aWsqSYt5IFWHEly+HgvwW9huWdKmh3d3YSwk5j8ZmauVNLuRfQbwvkT8e5rrDRCBB5iDJic4Ux6Y9NFkm/LqClvBcNjbJGzggDoNfGs9cboNyzSCnvLcKeRtwqWy62QCDeJLNZQgY2Vgvwcqjkr58sSNu+q59FR/B5Ys1m4hBfW9VEq7gcKo9zKYMvk/p21InOdp/0xnkrHyo1i8imw3uofq3rSvT7ImmBKJz4kvW1JOPBzTqggUEpLCLTHZWjvbfzJjGvOjFOnyFmq6j5uJrbuiRZjsFR6gEVgfrJrEZj45Doli8p052cfx43EPzXOAxTSej2yamdtDM1FB6OR3EyEkuHYU7g9FPoaOJS2u/rQC6ewywj5uFFpeMqJ1Vo2F3g0CGBU2FXBrHoVrUCYANzNSslZQxp2iChkLd7vOzFQLdVM5gKBUvtPPzCRnZrLT778me2WMa5hXz7TberreZzPi/llseq+f+w/qGe5L1QOx0qVCigmZtc3so40AydWhXTKnc3GmmDyHKQxyyMMz14CuOUXe9prJBsbvnMMyyBrirlQL93N3DDKY3+/WEiqNxyxrvxZzONiK64BGbS38gT9MnDD6aPSIvfliAPVlsEY4qzpYCRjQcDaHXK37ARaoAXsq839vWkLbuJDYEW++VnTCYcX8g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(4744005)(26005)(316002)(66476007)(52116002)(5660300002)(6506007)(66556008)(83380400001)(6666004)(38350700002)(6486002)(38100700002)(86362001)(6512007)(956004)(66946007)(36756003)(4326008)(8676002)(8936002)(2616005)(107886003)(2906002)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?As2qdWUeH9g/wO0568PcOzX1b2NE8PS9pJs0NAEIBIhmhOqrN1YByDhCfOsd?=
+ =?us-ascii?Q?fIwOgXJAC2kG6juHKugnqIhym15tyX6LKVpOUUfJcW9hoR0FnlnTDPuZ8tRm?=
+ =?us-ascii?Q?EzQYMe7r1yQG9ZaeNERTuLfkCsTM72w+QteKh2HlVckiFY2pVU4kLD4eY8hE?=
+ =?us-ascii?Q?Wym1ahgbEsGh6xPh0uZGPajxP5jkFkOMtcgRm/k4Z808ign1xTbU5jlc5Tdx?=
+ =?us-ascii?Q?WQS35Gq9Uif7uI06NOknPkECC2HpCyzqQxnShITMLFErJhdMZQRj43nrm+37?=
+ =?us-ascii?Q?f5o+/uR5iti3d4E4kIfrDdURMe2SV0jQyd6+QNgt/KvlFAILw0h+vqn+DinA?=
+ =?us-ascii?Q?4tlktEku6EX1MQrpcj0vclk4dooEJoGEvu7Ff3HijH/d9xF8yZUZSQRHs50y?=
+ =?us-ascii?Q?KHF5rNzO3TgLb9GIK1HtAzPsT8oD5MNJJh15TLv05XGjIAZoQzfcHMTbFjzC?=
+ =?us-ascii?Q?pSQ9OG7LiLHswjf7D5R4303z1K1zSEPOn0WBK9aeXE5VXvQHWxownIhbqNu5?=
+ =?us-ascii?Q?caxegZ6wtFjEy1cX2tqfm3rR5yo1FpkOPdu7cBiESB4HCOMfGiBF7OSCniSs?=
+ =?us-ascii?Q?ejaLjvH5HHXmfwJBDEYPmtHm2yjqnHv6ecK59kpdY2AXjQcdLG/+jux/8WQG?=
+ =?us-ascii?Q?2/Atwe+Y9ppTRoBwNKChSHP+sz7mnyc/WxzqEgO1Rm8bBSoq3XaSi/5ijYyI?=
+ =?us-ascii?Q?i/iCtgPFgtPPx/tagoctWLQ52Cr44yWr1ar/rpFM8rd1PSywM3BL+mlHXi10?=
+ =?us-ascii?Q?zMGvpUXKFqCmyKluyfWxJs5D7fK/4I9U3cirppX7SXcz7ttorjjJJeLLkO/+?=
+ =?us-ascii?Q?RHaYtkAzxZRtH6k+0Ih1OLfYtT7pivUqqex8FTKTgomMf++7ewAXZN25ec0+?=
+ =?us-ascii?Q?FwV9RfvghVFjxrWGTYayiVux3ZLUIDsEFiNXQgi5QOxrjoz3OG+24/i4xXmw?=
+ =?us-ascii?Q?lCbww5cYlQgk7joS9EI0RrVX8VnzFeipQ1VMlRfnPJOiknKTcNmf86at1tb1?=
+ =?us-ascii?Q?dVJB6O0ATJ+VZePYrOgwvp2Zr5FFzK+s3rXJi9rY3D+loiBThvJbLBnxThBr?=
+ =?us-ascii?Q?+JNsPSa1XyLmj/mEWeq6eimMBqB3/dAYLfRGcuef0EJNVEbN49hIjOfq9/I0?=
+ =?us-ascii?Q?WmG7302FLdDgn7j7ZxIbG7JsOnw2v66Q6oa41aNr9kW71rryI5Q9zpuAymZa?=
+ =?us-ascii?Q?ah15Ey1pXdG05Xa97VOKTGx5kEcUfiIQ23A+Is0JdNB/rhszsXa8FuqMKNgx?=
+ =?us-ascii?Q?f0EVQL+EZM6a6GPGmB09aJa0YAO9TNpT/iFnVb4vl19+ZRPfE7thlDABIG4W?=
+ =?us-ascii?Q?lrwLaArwin/UOwCbMQ+m/pJxC1Swua62mt0LTI4+OQIu4Mg2G3JGuWLAg0o8?=
+ =?us-ascii?Q?Gt1VFgv3QhcmkM8+JpnIMC36JSSKhHaw94xAUhlvCIgGa46OKgGm6b002N66?=
+ =?us-ascii?Q?SPq9jTF54dsTCIh4Ug0GJ2qbgq423RDx0OYR+Tg7UOKJU2rwbgjqwtxj7ktk?=
+ =?us-ascii?Q?pxCONWC9GeMg8szRRF5dsz92nt/K+8b1oblgRUS4UUR4c+yRk7iZr7OMicsI?=
+ =?us-ascii?Q?16ewInsQtAENX1xdokWtlwCLrH/WaZIek7JQ0MO0rvbbYVCzertQ8nuFTutU?=
+ =?us-ascii?Q?VoGGX7FNCn4PEycPHHfp6Zk=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce52d1e4-657b-491a-802b-08d9939a8628
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 07:23:33.6902
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bEOVwCF7TAFmnvMcz+eC98t+Ct4+7qLonNhrJnQVXDsg3tCE/NolN0fIdr3dEGrNriIDoc+Ut+lA9mUi2FfjEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.21 17:49, Eric W. Biederman wrote:
-> kernel test robot <oliver.sang@intel.com> writes:
-> 
->> Greeting,
->>
->> FYI, we noticed the following commit (built with clang-14):
->>
->> commit: 6128b3af2a5e42386aa7faf37609b57f39fb7d00 ("mm: ignore MAP_DENYWRITE in ksys_mmap_pgoff()")
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> I believe this failure is misattributed.  Perhaps your reproducer
-> only intermittently reproduces the problem?
-> 
-> The change in question only contains
-> 
-> 	flags &= ~MAP_DENYWRITE
-> 
-> After all of the other users of MAP_DENYWRITE had been removed from the
-> kernel.  So I don't see how it could possibly be responsible for the
-> reported shift out of bounds problem.
-> 
-> Eric
+From: Wang Qing <wangqing@vivo.com>
 
-Thanks for looking into this Eric while I spent the last couple of days
-in bed feeling miserable. :)
+use kfree_sensitive() derictly instead of memset zero and kfree().
 
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/w1/w1.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-So we get 9 new instances of "UBSAN:shift-out-of-bounds_in(null)" (NULL
-pointer dereference) on 6128b3af2a compared to 6128b3af2a^ (8d0920bde5),
-apparently inside ksys_mmap_pgoff() on 32bit.
-
-As we're dealing with a fuzzer, is there any reproducer as sometimes
-provided by syzkaller? The report itself is not very helpful when
-judging if that patch is actually responsible for what we're seeing.
-
-I agree with Eric that it's rather unlikely that when we stop masking
-off a bit that's ignored throughout the kernel, that we suddenly trigger
-a NULL pointer de-reference. But I learned that everything is possible ;)
-
+diff --git a/drivers/w1/w1.c b/drivers/w1/w1.c
+index f2ae2e5..a0a6c3c
+--- a/drivers/w1/w1.c
++++ b/drivers/w1/w1.c
+@@ -73,8 +73,7 @@ static void w1_master_release(struct device *dev)
+ 	struct w1_master *md = dev_to_w1_master(dev);
+ 
+ 	dev_dbg(dev, "%s: Releasing %s.\n", __func__, md->name);
+-	memset(md, 0, sizeof(struct w1_master) + sizeof(struct w1_bus_master));
+-	kfree(md);
++	kfree_sensitive(md);
+ }
+ 
+ static void w1_slave_release(struct device *dev)
 -- 
-Thanks,
-
-David / dhildenb
+2.7.4
 
