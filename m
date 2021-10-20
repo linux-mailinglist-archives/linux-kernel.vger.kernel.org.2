@@ -2,143 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B744346A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E6F4346A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhJTIRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:17:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61508 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229921AbhJTIRd (ORCPT
+        id S229998AbhJTIR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:17:56 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:35000 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229972AbhJTIRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:17:33 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K7qbRK032512;
-        Wed, 20 Oct 2021 04:15:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=4eINRPW2FxVxLhky8kXTcPwexrcajDLIOVdhX8RAjDg=;
- b=WCwY3dKEJabZPLyjlmB1pAiSgokoq3BQrfkhoHJ6caal2a0bn7JGFf1fZtuHCFZYnaOC
- 2O8qrbjGXLmJf5vudj6eGFMGfwiCeUweolRsvzFDLhO2645Ok7KHdZTvrJetfeiHDDUi
- 7tdH5F+pj7fE0XDgYigvLfe+MyO36aNNxfKXH9+w0yqx4M3UJWD1E4qACOtDA4E3nqST
- DPfp+qtt44Tua2E6TnboDD3IriOqYmSslRtC4gJLz2SWmge2I6TB14/MtOQIqOaAmFbF
- tTyEJ9YCxgTU/cP9AHfeo2ODR/vPsdxTOZ5lGaTJ2gaevBJ3l/8z2djC/8YxPzSvgkWS HA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3btf40reax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 04:15:19 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19K7tB4t013702;
-        Wed, 20 Oct 2021 04:15:19 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3btf40rea2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 04:15:19 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19K8ELvo031623;
-        Wed, 20 Oct 2021 08:15:16 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 3bqp0k7s1p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 08:15:16 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19K89MwP56426986
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Oct 2021 08:09:22 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 50AC711C04C;
-        Wed, 20 Oct 2021 08:15:13 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5C28611C054;
-        Wed, 20 Oct 2021 08:15:12 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.29.112])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 20 Oct 2021 08:15:12 +0000 (GMT)
-Date:   Wed, 20 Oct 2021 10:14:50 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, farman@linux.ibm.com,
-        kvm@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH 1/3] KVM: s390: clear kicked_mask before sleeping again
-Message-ID: <20211020101450.1edbbc1f.pasic@linux.ibm.com>
-In-Reply-To: <20211020080816.69d26708@p-imbrenda>
-References: <20211019175401.3757927-1-pasic@linux.ibm.com>
-        <20211019175401.3757927-2-pasic@linux.ibm.com>
-        <20211020073515.3ad4c377@p-imbrenda>
-        <1641267f-3a23-aba1-ab50-6f7c15e44528@de.ibm.com>
-        <20211020080816.69d26708@p-imbrenda>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 20 Oct 2021 04:17:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ut1BFcd_1634717731;
+Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0Ut1BFcd_1634717731)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Oct 2021 16:15:32 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+Reply-To: xhao@linux.alibaba.com
+Subject: Re: [PATCH v3 2/2] mm/damon/dbgfs: Add adaptive_targets list check
+ before enable monitor_on
+To:     SeongJae Park <sj@kernel.org>
+Cc:     sjpark@amazon.de, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20211020081233.28363-1-sj@kernel.org>
+Message-ID: <666ac057-8382-d671-124a-cf34b1dad417@linux.alibaba.com>
+Date:   Wed, 20 Oct 2021 16:15:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211020081233.28363-1-sj@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 1HCBY9C0weQYX-ZQlxk-H3EfEnhnYhIk
-X-Proofpoint-GUID: llTmUVaRFuqNgQvBMvp2vKj9RpdBWavK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-20_02,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110200045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 08:08:16 +0200
-Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
 
-> > >> +	clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.gisa_int.kicked_mask);    
-> > > 
-> > > so, you unconditionally clear the flag, before knowing if the vCPU is
-> > > runnable?
-
-Right. I talked about this with  Mimu. It would extend the section
-guarded by the bit, and than may be a good thing. Maybe we should
-measure that alternative as well.
-
-> > > 
-> > > from your description I would have expected to only clear the bit if
-> > > the vCPU is not runnable.
-> > > 
-> > > would things break if we were to try to kick the vCPU again after
-> > > clearing the bit, but before dispatching it?    
-> > 
-> > The whole logic is just an optimization to avoid unnecessary wakeups.
-> > When the bit is set a wakup might be omitted.
-> > I prefer to do an unneeded wakeup over not doing a wakeup so I think
-> > over-clearing is safer.
-> > In fact, getting rid of this micro-optimization would be a valid
-> > alternative.  
-> 
-> my only concern was if things would break in case we kick the vCPU
-> again after clearing the bit; it seems nothing breaks, so I'm ok with it
-
-I'm not sure about the exact impact of over-waking.
-kvm_s390_vcpu_wakeup() sets vcpu->valid_wakeup which is I believe used
-for some halt poll heuristics. We unset that in
-kvm_arch_vcpu_block_finish(). If we cleared only conditionally the
-protection would extend for that as well. Which would be a good thing.
-The statistics stuff in kvm_vcpu_wake_up() does account for already
-running, so I see no correctness issues there.
-
-Regards,
-Halil
-
-
-
+On 2021/10/20 下午4:12, SeongJae Park wrote:
+> On Wed, 20 Oct 2021 07:21:21 +0000 SeongJae Park <sj@kernel.org> wrote:
+>
+>> On Wed, 20 Oct 2021 09:42:33 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+>>
+>>> When the ctx->adaptive_targets list is empty,
+>>> I did some test on monitor_on interface like this.
+>>>
+>>>      # echo > /sys/kernel/debug/damon/target_ids
+>> Thanks for the change, but you missed writing 'on' to 'monitor_on' in the above
+>> example.
+Sorry.
+>>
+>>> Though the ctx->adaptive_targets list is empty, but the
+>>> kthread_run still be called, and the kdamond.x thread still
+>>> be created, this is meaningless.
+>>>
+>>> So there adds a judgment in 'dbgfs_monitor_on_write',
+>>> if the ctx->adaptive_targets list is empty, return -EINVAL.
+>>>
+>>> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+>> Other parts looks good to me.  However, seems this commit conflicts with a
+>> patch[1] which already merged in -mm tree.  Could you please rebase this on it?
+>> FYI, all DAMON patches that merged in -mm tree are also applied on DAMON
+>> development tree.  So, you could get the patch applied tree by:
+>>
+>>      $ git remote add sj git://git.kernel.org/pub/scm/linux/kernel/git/sj/linux.git
+>>      $ git fetch sj
+>>      $ git checkout 0fa378d04b12
+>>
+>> [1] https://lore.kernel.org/linux-mm/20211014073014.35754-1-sj@kernel.org/
+Ok, i will correct it.
+>>
+>>
+>> Thanks,
+>> SJ
+>>
+>>> ---
+>>>   include/linux/damon.h |  1 +
+>>>   mm/damon/core.c       |  5 +++++
+>>>   mm/damon/dbgfs.c      | 13 ++++++++++---
+>>>   3 files changed, 16 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/include/linux/damon.h b/include/linux/damon.h
+>>> index 715dadd21f7c..4fce5f1f6dad 100644
+>>> --- a/include/linux/damon.h
+>>> +++ b/include/linux/damon.h
+>>> @@ -316,6 +316,7 @@ void damon_destroy_scheme(struct damos *s);
+>>>
+>>>   struct damon_target *damon_new_target(unsigned long id);
+>>>   void damon_add_target(struct damon_ctx *ctx, struct damon_target *t);
+>>> +bool damon_targets_empty(struct damon_ctx *ctx);
+>>>   void damon_free_target(struct damon_target *t);
+>>>   void damon_destroy_target(struct damon_target *t);
+>>>   unsigned int damon_nr_regions(struct damon_target *t);
+>>> diff --git a/mm/damon/core.c b/mm/damon/core.c
+>>> index 2f6785737902..c3a1374dbe0b 100644
+>>> --- a/mm/damon/core.c
+>>> +++ b/mm/damon/core.c
+>>> @@ -156,6 +156,11 @@ void damon_add_target(struct damon_ctx *ctx, struct damon_target *t)
+>>>   	list_add_tail(&t->list, &ctx->adaptive_targets);
+>>>   }
+>>>
+>>> +bool damon_targets_empty(struct damon_ctx *ctx)
+>>> +{
+>>> +	return list_empty(&ctx->adaptive_targets);
+>>> +}
+>>> +
+>>>   static void damon_del_target(struct damon_target *t)
+>>>   {
+>>>   	list_del(&t->list);
+>>> diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+>>> index 38188347d8ab..9dee29f7d103 100644
+>>> --- a/mm/damon/dbgfs.c
+>>> +++ b/mm/damon/dbgfs.c
+>>> @@ -865,12 +865,19 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
+>>>   		return -EINVAL;
+>>>   	}
+>>>
+>>> -	if (!strncmp(kbuf, "on", count))
+>>> +	if (!strncmp(kbuf, "on", count)) {
+>>> +		int i;
+>>> +
+>>> +		for (i = 0; i < dbgfs_nr_ctxs; i++) {
+>>> +			if (damon_targets_empty(dbgfs_ctxs[i]))
+>>> +				return -EINVAL;
+> Oops, I forgot that you should 'kfree(kbuf)' before returning here.  Please do
+> that.
+Okay,  i will correct it, thank you.
+>
+> Thanks,
+> SJ
+>
+>>> +		}
+>>>   		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
+>>> -	else if (!strncmp(kbuf, "off", count))
+>>> +	} else if (!strncmp(kbuf, "off", count)) {
+>>>   		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
+>>> -	else
+>>> +	} else {
+>>>   		err = -EINVAL;
+>>> +	}
+>>>
+>>>   	if (err)
+>>>   		ret = err;
+>>> --
+>>> 2.31.0
+>>
+-- 
+Best Regards!
+Xin Hao
 
