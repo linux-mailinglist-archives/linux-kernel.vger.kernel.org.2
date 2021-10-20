@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3E5434E67
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80B3434E69
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhJTPAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:00:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57952 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhJTPAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:00:07 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E2DC31F770;
-        Wed, 20 Oct 2021 14:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634741871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=INWX6iRMgRgAeyFdp/SkdRvXgxqnNTdg9wvYzeiWaBA=;
-        b=iTmcOtZYuIOlWrscgR3H2hvlT6MI5R92DnWgHIy7wONcN+PKYWUyK570QvFDSk1qih5g3d
-        lBlmdgglQ/UhLnEdjefJXfInoHJwAijYNaUwZHjo5JQwFqSQfIlciUH0AC2Nx52pKVqGt2
-        m56/Jk90dWeSYs1B62hBbsy3Xqw+q3A=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4BDC7A3B85;
-        Wed, 20 Oct 2021 14:57:51 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 16:57:50 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg 2/3] memcg: remove charge forcinig for dying tasks
-Message-ID: <YXAubuMMgNDeguNx@dhcp22.suse.cz>
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
- <cover.1634730787.git.vvs@virtuozzo.com>
- <56180e53-b705-b1be-9b60-75e141c8560c@virtuozzo.com>
- <YXAOjQO5r1g/WKmn@dhcp22.suse.cz>
- <cbda9b6b-3ee5-06ab-9a3b-debf361b55bb@virtuozzo.com>
+        id S230244AbhJTPAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:00:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhJTPAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:00:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C3B2611EF;
+        Wed, 20 Oct 2021 14:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634741914;
+        bh=sp4qR7s1fV+iZP+uIu6mtMZe0a47ZjWyonweUvCQqtg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Z3mipcjJVlZSv3QT2R0Z2dfmtfo3zKUMp9cEr8u8j8uIuGEdeT0aolGBk4v/GeBV6
+         OLJTK9f0YI8Q5105e1hfv4Oy0FBVln2RsQnqTwq6b0UrZnIN9cUPQqmZ8VqdIdZvHo
+         4ZVCZiPpg4YXZGuZBrHdKmZxmEwxlsRq2ZnCYSGzyzhTfcZHcpT9WQdtJClVuj9iHK
+         nVNf45uc+dFh72hFfNDNntdJgwtgJFY7POkCvPrPau+uzbSAJMHtmmmtmQujOAX7Fw
+         Yx8vOabi926XFOH64WAuxBp3GsbOIgHrCrPdjU8ApQf8MO2/b2Ppg1FLFj9xeDxjs2
+         lbph4j8yk6H5Q==
+Date:   Wed, 20 Oct 2021 09:58:33 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
+Cc:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: imx6: Replace legacy gpio interface for gpiod
+ interface
+Message-ID: <20211020145833.GA2616210@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <cbda9b6b-3ee5-06ab-9a3b-debf361b55bb@virtuozzo.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YW9bPy5IHzuROhrl@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-10-21 17:21:33, Vasily Averin wrote:
-> On 20.10.2021 15:41, Michal Hocko wrote:
-> > On Wed 20-10-21 15:13:46, Vasily Averin wrote:
-> >> ToDo: should we keep task_is_dying() in mem_cgroup_out_of_memory() ?
-> >>
-> >> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> >> ---
-> >>  mm/memcontrol.c | 20 +++++++-------------
-> >>  1 file changed, 7 insertions(+), 13 deletions(-)
-> >>
-> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >> index 6da5020a8656..74a7379dbac1 100644
-> >> --- a/mm/memcontrol.c
-> >> +++ b/mm/memcontrol.c
-> >> @@ -239,7 +239,7 @@ enum res_type {
-> >>  	     iter != NULL;				\
-> >>  	     iter = mem_cgroup_iter(NULL, iter, NULL))
-> >>  
-> >> -static inline bool should_force_charge(void)
-> >> +static inline bool task_is_dying(void)
-> >>  {
-> >>  	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
-> >>  		(current->flags & PF_EXITING);
-> >> @@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> >>  	 * A few threads which were not waiting at mutex_lock_killable() can
-> >>  	 * fail to bail out. Therefore, check again after holding oom_lock.
-> >>  	 */
-> >> -	ret = should_force_charge() || out_of_memory(&oc);
-> >> +	ret = task_is_dying() || out_of_memory(&oc);
-> > 
-> > Why are you keeping the task_is_dying check here? IIRC I have already
-> > pointed out that out_of_memory already has some means to do a bypass
-> > when needed.
+On Tue, Oct 19, 2021 at 08:56:47PM -0300, Maíra Canal wrote:
+> Considering the current transition of the GPIO subsystem, remove all
+> dependencies of the legacy GPIO interface (linux/gpio.h and linux
+> /of_gpio.h) and replace it with the descriptor-based GPIO approach.
 > 
-> It was a misunderstanding.
+> Signed-off-by: Maíra Canal <maira.canal@usp.br>
+> ---
+> V1 -> V2: Rewrite commit log and subject line to match PCI subsystem standard
 
-Sorry if I made you confused.
+Thanks, I appreciate that! Lorenzo will take a look when it gets to
+the front of his queue.
 
-> I've been waiting for your final decision.
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 31 ++++++++++-----------------
+>  1 file changed, 11 insertions(+), 20 deletions(-)
 > 
-> I have no good arguments "pro" or strong objection "contra". 
-> However, I prefer to keep task_is_dying() so as not to touch other tasks unnecessarily.
-
-One argument for removing it from here is the maintainability. Now you
-have a memcg specific check which is not in sync with the oom. E.g.
-out_of_memory does task_will_free_mem as the very first thing. You are
-also automatically excluding oom killer for cases where that might make
-a sense.
--- 
-Michal Hocko
-SUSE Labs
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 80fc98acf097..e5ee54e37d05 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -11,13 +11,12 @@
+>  #include <linux/bitfield.h>
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> -#include <linux/gpio.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/kernel.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+>  #include <linux/mfd/syscon/imx7-iomuxc-gpr.h>
+>  #include <linux/module.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/of_device.h>
+>  #include <linux/of_address.h>
+>  #include <linux/pci.h>
+> @@ -63,7 +62,7 @@ struct imx6_pcie_drvdata {
+>  
+>  struct imx6_pcie {
+>  	struct dw_pcie		*pci;
+> -	int			reset_gpio;
+> +	struct gpio_desc    *reset_gpio;
+>  	bool			gpio_active_high;
+>  	struct clk		*pcie_bus;
+>  	struct clk		*pcie_phy;
+> @@ -526,11 +525,11 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  	usleep_range(200, 500);
+>  
+>  	/* Some boards don't have PCIe reset GPIO. */
+> -	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+> -		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> +	if (imx6_pcie->reset_gpio) {
+> +		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+>  					imx6_pcie->gpio_active_high);
+>  		msleep(100);
+> -		gpio_set_value_cansleep(imx6_pcie->reset_gpio,
+> +		gpiod_set_value_cansleep(imx6_pcie->reset_gpio,
+>  					!imx6_pcie->gpio_active_high);
+>  	}
+>  
+> @@ -1025,22 +1024,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  		return PTR_ERR(pci->dbi_base);
+>  
+>  	/* Fetch GPIOs */
+> -	imx6_pcie->reset_gpio = of_get_named_gpio(node, "reset-gpio", 0);
+>  	imx6_pcie->gpio_active_high = of_property_read_bool(node,
+>  						"reset-gpio-active-high");
+> -	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+> -		ret = devm_gpio_request_one(dev, imx6_pcie->reset_gpio,
+> -				imx6_pcie->gpio_active_high ?
+> -					GPIOF_OUT_INIT_HIGH :
+> -					GPIOF_OUT_INIT_LOW,
+> -				"PCIe reset");
+> -		if (ret) {
+> -			dev_err(dev, "unable to get reset gpio\n");
+> -			return ret;
+> -		}
+> -	} else if (imx6_pcie->reset_gpio == -EPROBE_DEFER) {
+> -		return imx6_pcie->reset_gpio;
+> -	}
+> +	imx6_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+> +			imx6_pcie->gpio_active_high ?  GPIOD_OUT_HIGH :
+> +				GPIOD_OUT_LOW);
+> +	if (IS_ERR(imx6_pcie->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(imx6_pcie->reset_gpio),
+> +					  "unable to get reset gpio\n");
+>  
+>  	/* Fetch clocks */
+>  	imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
+> -- 
+> 2.31.1
+> 
