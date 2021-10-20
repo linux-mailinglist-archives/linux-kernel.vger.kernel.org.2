@@ -2,128 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6813F434726
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F3843472B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhJTIpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:45:32 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59336 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTIp2 (ORCPT
+        id S229764AbhJTIqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:46:25 -0400
+Received: from outbound-smtp55.blacknight.com ([46.22.136.239]:36569 "EHLO
+        outbound-smtp55.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229503AbhJTIqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:45:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5470D1FD9D;
-        Wed, 20 Oct 2021 08:43:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634719393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U9ANNFhF9o/o+ybyDXRcaxGyWu+m+P0WrCO6fsbyGfU=;
-        b=uY6Nxgcj9JvrEu906q2eodXCBQHjLtNTT6g2fU2aC1AVTPGmitU6Q5Wuj8Ke/poJn9cDfx
-        RgpiGjvRE05Q/17lHdQCAkfbUu3aNpsMOqiKGT7T7678VtAkJml8vKI0dWPTviJ9hhTLAU
-        Q5W6VT/MOGukER12jvgZSq9zCYd9JDM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B765FA3B8A;
-        Wed, 20 Oct 2021 08:43:12 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 10:43:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
+        Wed, 20 Oct 2021 04:46:22 -0400
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp55.blacknight.com (Postfix) with ESMTPS id C4907FAD04
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:44:06 +0100 (IST)
+Received: (qmail 14541 invoked from network); 20 Oct 2021 08:44:06 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 20 Oct 2021 08:44:06 -0000
+Date:   Wed, 20 Oct 2021 09:44:03 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg v4] memcg: prohibit unconditional exceeding the
- limit of dying tasks
-Message-ID: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
-References: <3c76e2d7-e545-ef34-b2c3-a5f63b1eff51@virtuozzo.com>
- <f40cd82c-f03a-4d36-e953-f89399cb8f58@virtuozzo.com>
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/8] Remove dependency on congestion_wait in mm/
+Message-ID: <20211020084403.GE3959@techsingularity.net>
+References: <20211019090108.25501-1-mgorman@techsingularity.net>
+ <20211019150025.c62a0c72538d1f9fa20f1e81@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <f40cd82c-f03a-4d36-e953-f89399cb8f58@virtuozzo.com>
+In-Reply-To: <20211019150025.c62a0c72538d1f9fa20f1e81@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-10-21 11:07:02, Vasily Averin wrote:
-[...]
-I haven't read through the changelog and only focused on the patch this
-time.
+On Tue, Oct 19, 2021 at 03:00:25PM -0700, Andrew Morton wrote:
+> On Tue, 19 Oct 2021 10:01:00 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
+> 
+> > Changelog since v3
+> > o Count writeback completions for NR_THROTTLED_WRITTEN only
+> > o Use IRQ-safe inc_node_page_state
+> > o Remove redundant throttling
+> > 
+> > This series is also available at
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-reclaimcongest-v4r2
+> > 
+> > This series that removes all calls to congestion_wait
+> > in mm/ and deletes wait_iff_congested. It's not a clever
+> > implementation but congestion_wait has been broken for a long time
+> > (https://lore.kernel.org/linux-mm/45d8b7a6-8548-65f5-cccf-9f451d4ae3d4@kernel.dk/).
+> 
+> The block layer doesn't call clear_bdi_congested() at all.  I never
+> knew this until recent discussions :(
+> 
+> So this means that congestion_wait() will always time out, yes?
+> 
 
-[...]
-> @@ -1810,11 +1810,21 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
->  		mem_cgroup_oom_notify(memcg);
->  
->  	mem_cgroup_unmark_under_oom(memcg);
-> -	if (mem_cgroup_out_of_memory(memcg, mask, order))
-> +	if (mem_cgroup_out_of_memory(memcg, mask, order)) {
->  		ret = OOM_SUCCESS;
-> -	else
-> +	} else {
->  		ret = OOM_FAILED;
-> -
-> +		/*
-> +		 * In some rare cases mem_cgroup_out_of_memory() can return false.
-> +		 * If it was called from #PF it forces handle_mm_fault()
-> +		 * return VM_FAULT_OOM and executes pagefault_out_of_memory().
-> +		 * memcg_in_oom is set here to notify pagefault_out_of_memory()
-> +		 * that it was a memcg-related failure and not allow to run
-> +		 * global OOM.
-> +		 */
-> +		if (current->in_user_fault)
-> +			current->memcg_in_oom = (struct mem_cgroup *)ret;
-> +	}
->  	if (locked)
->  		mem_cgroup_oom_unlock(memcg);
->  
-> @@ -1848,6 +1858,15 @@ bool mem_cgroup_oom_synchronize(bool handle)
->  	if (!memcg)
->  		return false;
->  
-> +	/* OOM is memcg, however out_of_memory() found no victim */
-> +	if (memcg == (struct mem_cgroup *)OOM_FAILED) {
-> +		/*
-> +		 * Should be called from pagefault_out_of_memory() only,
-> +		 * where it is used to prevent false global OOM.
-> +		 */
-> +		current->memcg_in_oom = NULL;
-> +		return true;
-> +	}
->  	if (!handle)
->  		goto cleanup;
+Unfortunately, yes except for filesystems that call
+[set_clear]_bdi_congested. For the test case in the series leader,
+congestion_wait always hit the full timeout.
 
-I have to say I am not a great fan of this but this belongs to a
-separate patch on top of all the previous ones.
+> > Even if congestion throttling worked, it was never a great idea.
+> 
+> Well.  It was a good idea until things like isolation got added!
+> 
 
-[...]
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 831340e7ad8b..1deef8c7a71b 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -1137,6 +1137,9 @@ void pagefault_out_of_memory(void)
->  	if (mem_cgroup_oom_synchronize(true))
->  		return;
->  
-> +	if (fatal_signal_pending(current))
-> +		return;
-> +
+Well, true to an extent although it was always true that reclaim could fail
+to make progress for reasons other than pages under writeback.  But you're
+right, saying it was "never a great idea" is overkill.  congestion_wait
+used to work and I expect it was particularly helpful before IO-less write
+throttling, accurate dirty page tracking and immediate reclaim existed.
 
-This belongs to its own patch as well.
+> > While
+> > excessive dirty/writeback pages at the tail of the LRU is one possibility
+> > that reclaim may be slow, there is also the problem of too many pages
+> > being isolated and reclaim failing for other reasons (elevated references,
+> > too many pages isolated, excessive LRU contention etc).
+> > 
+> > This series replaces the "congestion" throttling with 3 different types.
+> > 
+> > o If there are too many dirty/writeback pages, sleep until a timeout
+> >   or enough pages get cleaned
+> > o If too many pages are isolated, sleep until enough isolated pages
+> >   are either reclaimed or put back on the LRU
+> > o If no progress is being made, direct reclaim tasks sleep until
+> >   another task makes progress with acceptable efficiency.
+> > 
+> > This was initially tested with a mix of workloads that used to trigger
+> > corner cases that no longer work.
+> 
+> Mix of workloads is nice, but a mix of devices is more important here. 
 
-All that being said I would go with pagefault_out_of_memory as the first
-patch because it is necessary to handle charge failures. Then go with a
-patch to remove charge forcing when OOM killer succeeds but the retry
-still fails and finally go with one that tries to handle oom failures.
+I tested as much as I could but as well as storage devices, different
+memory sizes are also relevant.
+
+> I trust some testing was done on plain old spinning disks?  And USB
+> storage, please!  And NFS plays with BDI congestion.  Ceph and FUSE also.
+> 
+
+Plain old spinning disk was tested. Basic USB testing didn't show many
+problems although given it was my desktop machine, it might have had too
+memory as no amount of IO to the USB key triggered a problem where reclaim
+failed to make progress and get throttled. There was basic NFS testing
+although I didn't try running stutterp over NFS. Given the original thread
+motivating this was NFS-related and they are cc'd, I'm hoping they'll
+give it a realistic kick.  I don't have a realistic setup for ceph and
+didn't try fuse.
+
+> We've had complaints about this stuff forever.  Usually of the form of
+> interactive tasks getting horridly stalled by writeout/swap activity.
+
+I know and there is no guarantee it won't happen again. The main problem
+I was trying to solve was that congestion-based throttling is not suitable
+for mm/.
+
+From reclaim context, there isn't a good way of detecting "interactive"
+tasks. At best, under reclaim pressure we could try tracking allocation
+rates and throttle heavy allocators more than light allocators but I
+didn't want to introduce complexity prematurely.
+
 -- 
-Michal Hocko
+Mel Gorman
 SUSE Labs
