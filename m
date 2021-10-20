@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D7A435351
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 20:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A206F435357
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 21:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhJTTBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 15:01:12 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:41490 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230076AbhJTTBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 15:01:11 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1mdGnX-0002lB-LZ; Wed, 20 Oct 2021 20:58:47 +0200
-Subject: Re: [PATCH v5 07/13] KVM: Just resync arch fields when
- slots_arch_lock gets reacquired
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <311810ebd1111bed50d931d424297384171afc36.1632171479.git.maciej.szmigiero@oracle.com>
- <YW9a2s8wHXzf8Xqw@google.com>
- <b9ffb6cf-d59b-3bb5-a9b0-71e32c81135a@maciej.szmigiero.name>
- <YXBmoP4Lf2o1OiHY@google.com>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Message-ID: <7e68e883-7431-72a3-82ef-306472de5ac4@maciej.szmigiero.name>
-Date:   Wed, 20 Oct 2021 20:58:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231452AbhJTTC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 15:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhJTTC0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 15:02:26 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80BFC06161C;
+        Wed, 20 Oct 2021 12:00:11 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id q189so14139660ybq.1;
+        Wed, 20 Oct 2021 12:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HNr9F6JvH0GbbDGqwID6DFFMzTyOKUSN9izQ49lsVLg=;
+        b=UR37eV4h50lhfSuqmWD0bz5mh4NK6Rw7V9Kg1lZn5CXxfPCcTon0I7BZx9wkLuIcGo
+         5vyeRRz3gcAGZLpxBnZF/K3T1EJ9ur7aOcFSjBr0foGMPrdI6EG8H0wM9lWTxtIl54/U
+         O9xM33pL4i8sVTUHJAB7XBQmItfsX7JNRbk+tnCkbJz4v4PBdTFrOlQiNuYw7U3JDHHx
+         JHmYWfGJvBGHxBy7AoWXh4rleRlQnj3ZdVS6Tbb6DDDIKX/GToUIGdv2cFVcTOHWettV
+         7CXtjXEaeY1TrKQVEWyoVu88NVHWNt6fsWVUmetep/o685iQH3ODjZXF+Dn51HGGPg7C
+         EbKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HNr9F6JvH0GbbDGqwID6DFFMzTyOKUSN9izQ49lsVLg=;
+        b=1pFSXLCYzQCuU4V535cDKwMow0NHoW5QZ5BnkHJ+zSiYUPlWBGkx6lhYGMVa8ivGtv
+         tjrorhZD+RX+KMJeTBzxJnWyg3x7oQhGaxv+/tAmnZ32+AiY5fS2E8CODhHwT2r5aeQP
+         2K7ynUNVEnCTX70V1szNzQRGmHyCjHGtpt8dUvpkaAnX+JGjOs3BfYkkUbZ+lL5fT9LE
+         LrI1BjKld98ZPJGW1BdUgzKugUaYNf55pb08ZBCHbT8jpejLqvQBe2qDdppdBAmym9pV
+         mHw5vEm0BKqAdolX9u5Znun3BbjyroKMlAS33ssxdG0TdplbvAyADY1dEi4c8BVGMBe4
+         cscQ==
+X-Gm-Message-State: AOAM532rS7kDYqBiHRCe1ghvEO/U9NJXJtjFNeN2HbfRaEO5d4R9Lkpq
+        6NGQn2L8dN6i8x939om5vupHs68Myxw8bkc0/6I=
+X-Google-Smtp-Source: ABdhPJxLwG3KXYpAMR7Z/nD1q21KaUOGOzi7O3gOgHkOFe72xfm1MSB1BdsIOHgS/h5jp9TIQZVhoEj35zKMYqaQTyU=
+X-Received: by 2002:a25:7415:: with SMTP id p21mr950727ybc.78.1634756410070;
+ Wed, 20 Oct 2021 12:00:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YXBmoP4Lf2o1OiHY@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211018073413.2029081-1-yangyingliang@huawei.com>
+In-Reply-To: <20211018073413.2029081-1-yangyingliang@huawei.com>
+From:   Kamal Dasu <kdasu.kdev@gmail.com>
+Date:   Wed, 20 Oct 2021 15:00:00 -0400
+Message-ID: <CAC=U0a2i5NXdWHYg5TevXZ24ujuLpx0-2631XViXHkBVhZAZzA@mail.gmail.com>
+Subject: Re: [PATCH -next] spi: bcm-qspi: Fix missing clk_disable_unprepare()
+ on error in bcm_qspi_probe()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.10.2021 20:57, Sean Christopherson wrote:
-> On Wed, Oct 20, 2021, Maciej S. Szmigiero wrote:
->> On 20.10.2021 01:55, Sean Christopherson wrote:
->>> On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
->>> This should probably be a memcpy(), I don't know what all shenanigans the compiler
->>> can throw at us if it gets to copy a struct by value.
->>
->> Normally, copy-assignment of a struct is a safe operation (this is purely
->> an internal kernel struct, so there are no worries about padding leakage
->> to the userspace), but can replace this with a memcpy().
-> 
-> I was more worried about the compiler using SIMD instructions.  I assume the kernel
-> build process has lots of guards in place to prevent such shenanigans, but on the
-> other hand I _know_ mempcy() is safe :-)
-> 
+On Mon, Oct 18, 2021 at 3:26 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
+>
+> Fix the missing clk_disable_unprepare() before return
+> from bcm_qspi_probe() in the error handling case.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-So we will play safe and use mempcy() then :)
+Reviewed-by: Kamal Dasu <kdasu.kdev@gmail.com>
 
-Thanks,
-Maciej
+
+> ---
+>  drivers/spi/spi-bcm-qspi.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+> index 6cf7cff5edee..f3de3305d0f5 100644
+> --- a/drivers/spi/spi-bcm-qspi.c
+> +++ b/drivers/spi/spi-bcm-qspi.c
+> @@ -1602,7 +1602,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
+>                                                &qspi->dev_ids[val]);
+>                         if (ret < 0) {
+>                                 dev_err(&pdev->dev, "IRQ %s not found\n", name);
+> -                               goto qspi_probe_err;
+> +                               goto qspi_unprepare_err;
+>                         }
+>
+>                         qspi->dev_ids[val].dev = qspi;
+> @@ -1617,7 +1617,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
+>         if (!num_ints) {
+>                 dev_err(&pdev->dev, "no IRQs registered, cannot init driver\n");
+>                 ret = -EINVAL;
+> -               goto qspi_probe_err;
+> +               goto qspi_unprepare_err;
+>         }
+>
+>         bcm_qspi_hw_init(qspi);
+> @@ -1641,6 +1641,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
+>
+>  qspi_reg_err:
+>         bcm_qspi_hw_uninit(qspi);
+> +qspi_unprepare_err:
+>         clk_disable_unprepare(qspi->clk);
+>  qspi_probe_err:
+>         kfree(qspi->dev_ids);
+> --
+> 2.25.1
+>
