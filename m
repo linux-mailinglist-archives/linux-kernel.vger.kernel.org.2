@@ -2,128 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9B34343BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 05:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C5D4343C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 05:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhJTDPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 Oct 2021 23:15:10 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25299 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhJTDPJ (ORCPT
+        id S229789AbhJTDS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 Oct 2021 23:18:56 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:36923 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229555AbhJTDSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 Oct 2021 23:15:09 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HYwY01kxYzbhBM;
-        Wed, 20 Oct 2021 11:08:20 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Wed, 20 Oct 2021 11:12:53 +0800
-Subject: Re: [PATCH -next] PM: hibernate: Get block device exclusively when do
- swsusp_check
-To:     <rafael@kernel.org>, <len.brown@intel.com>, <pavel@ucw.cz>,
-        <linux-pm@vger.kernel.org>
-References: <20211013121914.3146812-1-yebin10@huawei.com>
-CC:     <tytso@mit.edu>, <linux-kernel@vger.kernel.org>, <jack@suse.cz>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <616F8935.7070509@huawei.com>
-Date:   Wed, 20 Oct 2021 11:12:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Tue, 19 Oct 2021 23:18:54 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Ut.VXiu_1634699798;
+Received: from 30.225.212.40(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Ut.VXiu_1634699798)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 20 Oct 2021 11:16:39 +0800
+Message-ID: <997efa76-20b4-bf0e-2249-e5c850e52fbf@linux.alibaba.com>
+Date:   Wed, 20 Oct 2021 11:16:38 +0800
 MIME-Version: 1.0
-In-Reply-To: <20211013121914.3146812-1-yebin10@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH v3 2/2] ACPI: APEI: Filter the PCI MCFG address with an
+ arch-agnostic method
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>
+References: <20211019192332.GA2381550@bhelgaas>
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+In-Reply-To: <20211019192332.GA2381550@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 20/10/2021 03:23, Bjorn Helgaas wrote:
+> [+cc Huang in case I'm misinterpreting EINJ resource requests]
+> 
+> On Tue, Oct 19, 2021 at 12:50:33PM +0800, Xuesong Chen wrote:
+>> The commit d91525eb8ee6 ("ACPI, EINJ: Enhance error injection tolerance
+>> level") fixes the issue that the ACPI/APEI can not access the PCI MCFG
+>> address on x86 platform, but this issue can also happen on other
+>> architectures, for instance, we got below error message on arm64 platform:
+>> ...
+>> APEI: Can not request [mem 0x50100000-0x50100003] for APEI EINJ Trigger registers
+> 
+> I'm guessing this address is something in the MCFG area?  
 
-On 2021/10/13 20:19, Ye Bin wrote:
-> We got follow issue:
-> [   89.266592] ------------[ cut here ]------------
-> [   89.267427] kernel BUG at fs/buffer.c:3020!
-> [   89.268264] invalid opcode: 0000 [#1] SMP KASAN PTI
-> [   89.269116] CPU: 7 PID: 1750 Comm: kmmpd-loop0 Not tainted 5.10.0-862.14.0.6.x86_64-08610-gc932cda3cef4-dirty #20
-> [   89.273169] RIP: 0010:submit_bh_wbc.isra.0+0x538/0x6d0
-> [   89.277157] RSP: 0018:ffff888105ddfd08 EFLAGS: 00010246
-> [   89.278093] RAX: 0000000000000005 RBX: ffff888124231498 RCX: ffffffffb2772612
-> [   89.279332] RDX: 1ffff11024846293 RSI: 0000000000000008 RDI: ffff888124231498
-> [   89.280591] RBP: ffff8881248cc000 R08: 0000000000000001 R09: ffffed1024846294
-> [   89.281851] R10: ffff88812423149f R11: ffffed1024846293 R12: 0000000000003800
-> [   89.283095] R13: 0000000000000001 R14: 0000000000000000 R15: ffff8881161f7000
-> [   89.284342] FS:  0000000000000000(0000) GS:ffff88839b5c0000(0000) knlGS:0000000000000000
-> [   89.285711] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   89.286701] CR2: 00007f166ebc01a0 CR3: 0000000435c0e000 CR4: 00000000000006e0
-> [   89.287919] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   89.289138] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   89.290368] Call Trace:
-> [   89.290842]  write_mmp_block+0x2ca/0x510
-> [   89.292218]  kmmpd+0x433/0x9a0
-> [   89.294902]  kthread+0x2dd/0x3e0
-> [   89.296268]  ret_from_fork+0x22/0x30
-> [   89.296906] Modules linked in:
->
-> We can reproduce this issue as follow:
-> 1. mkfs.ext4 -O mmp  /dev/sda -b 1024
-> 2. mount /dev/sda /home/test
-> 3. echo "/dev/sda" > /sys/power/resume
-> 4. wait a moment we will get exception
->
-> The sequence of issue is as follows:
->         Thread1                       Thread2
-> mount /dev/sda /home/test
-> get s_mmp_bh  --> has mapped flag
-> start kmmpd thread
-> 				echo "/dev/sda" > /sys/power/resume
-> 				  resume_store
-> 				    software_resume
-> 				      swsusp_check
-> 				        set_blocksize
-> 					  truncate_inode_pages_range
-> 					    truncate_cleanup_page
-> 					      block_invalidatepage
-> 					        discard_buffer --> clean mapped flag
-> write_mmp_block
->    submit_bh
->      submit_bh_wbc
->        BUG_ON(!buffer_mapped(bh)) --> trigger bug_on
->
-> To solve this issue, get block device exclusively when do swsusp_check.
->
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->   kernel/power/swap.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-> index 9ec418955556..26c0bd2a50da 100644
-> --- a/kernel/power/swap.c
-> +++ b/kernel/power/swap.c
-> @@ -1521,9 +1521,10 @@ int swsusp_read(unsigned int *flags_p)
->   int swsusp_check(void)
->   {
->   	int error;
-> +	void *holder;
->   
->   	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
-> -					    FMODE_READ, NULL);
-> +					    FMODE_READ | FMODE_EXCL, &holder);
->   	if (!IS_ERR(hib_resume_bdev)) {
->   		set_blocksize(hib_resume_bdev, PAGE_SIZE);
->   		clear_page(swsusp_header);
-> @@ -1545,7 +1546,7 @@ int swsusp_check(void)
->   
->   put:
->   		if (error)
-> -			blkdev_put(hib_resume_bdev, FMODE_READ);
-> +			blkdev_put(hib_resume_bdev, FMODE_READ | FMODE_EXCL);
->   		else
->   			pr_debug("Image signature found, resuming\n");
->   	} else {
-ping...
+Right, correct! The address 0x50100000 is within the MCFG area.
+
+> I wish we
+> could also include the matching MCFG info For x86, we put something
+> like this in the dmesg log, but I guess pci_mcfg.c doesn't do this:
+> 
+>   PCI: MMCONFIG for domain 0000 [bus 00-7f] at [mem 0xf0000000-0xf7ffffff] (base 0xf0000000)
+> 
+I can add the similar dmesg log in pci_mcfg.c to make it's consistent between different arches
+
+>> This patch will try to handle this case in a more common way instead of the
+>> original 'arch' specific solution, which will be beneficial to all the
+>> APEI-dependent platforms after that.
+> 
+> This actually doesn't say anything about what the patch does or how it
+> works.  It says "handles this case in a more common way" but with no
+> details.
+
+Good suggestion, I'll give more details about that...
+> The EINJ table contains "injection instructions" that can read or
+> write "register regions" described by generic address structures (see
+> ACPI v6.3, sec 18.6.2 and 18.6.3), and __einj_error_trigger() requests
+> those register regions with request_mem_region() or request_region()
+> before executing the injections instructions.
+> 
+> IIUC, this patch basically says "if this region is part of the MCFG
+> area, we don't need to reserve it." That leads to the questions of why
+> we need to reserve *any* of the areas
+
+AFAIK, the MCFG area is reserved since the ECAM module will provide a
+generic Kernel Programming Interfaces(KPI), e.g, pci_generic_config_read(...),
+so all the drivers are allowed to access the pci config space only by those
+KPIs in a consistent and safe way, direct raw access will break the rule.
+Correct me if I am missing sth.
+
+> and why it's safe to simply skip
+> reserving regions that are part of the MCFG area.
+
+Actual there is a commit d91525eb8ee6("ACPI, EINJ: Enhance error injection tolerance
+level") before to address this issue, the entire commit log as below:
+
+    Some BIOSes utilize PCI MMCFG space read/write opertion to trigger
+    specific errors. EINJ will report errors as below when hitting such
+    cases:
+    
+    APEI: Can not request [mem 0x83f990a0-0x83f990a3] for APEI EINJ Trigger registers
+    
+    It is because on x86 platform ACPI based PCI MMCFG logic has
+    reserved all MMCFG spaces so that EINJ can't reserve it again.
+    We already trust the ACPI/APEI code when using the EINJ interface
+    so it is not a big leap to also trust it to access the right
+    MMCFG addresses. Skip address checking to allow the access.
+    
+    Signed-off-by: Chen, Gong <gong.chen@linux.intel.com>
+    Signed-off-by: Tony Luck <tony.luck@intel.com>
+
+Except that the above explanation, IMO the EINJ is only a RAS debug framework, 
+in this code path, sometimes we need to acesss the address within the MCFG space
+directly to trigger kind of HW error, which behavior does not like the normal
+device driver's, in this case some possible unsafe operations(bypass the ecam ops)
+can be mitigated because the touched device will generate some HW errors and the
+RAS handling part will preempt its corresponding drivers to fix/log the HW error, 
+that's my understanding about that.
+
+> 
+>> Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Rafael. J. Wysocki <rafael@kernel.org>
+>> Cc: Tony Luck <tony.luck@intel.com>
+>> Cc: Tomasz Nowicki <tn@semihalf.com>
+>> ---
+>>  arch/x86/pci/mmconfig-shared.c | 28 --------------------------
+>>  drivers/acpi/apei/apei-base.c  | 45 ++++++++++++++++++++++++++++--------------
+>>  2 files changed, 30 insertions(+), 43 deletions(-)
+>>
+>> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+>> index 0b961fe6..12f7d96 100644
+>> --- a/arch/x86/pci/mmconfig-shared.c
+>> +++ b/arch/x86/pci/mmconfig-shared.c
+>> @@ -605,32 +605,6 @@ static int __init pci_parse_mcfg(struct acpi_table_header *header)
+>>  	return 0;
+>>  }
+>>  
+>> -#ifdef CONFIG_ACPI_APEI
+>> -extern int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
+>> -				     void *data), void *data);
+>> -
+>> -static int pci_mmcfg_for_each_region(int (*func)(__u64 start, __u64 size,
+>> -				     void *data), void *data)
+>> -{
+>> -	struct pci_mmcfg_region *cfg;
+>> -	int rc;
+>> -
+>> -	if (list_empty(&pci_mmcfg_list))
+>> -		return 0;
+>> -
+>> -	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+>> -		rc = func(cfg->res.start, resource_size(&cfg->res), data);
+>> -		if (rc)
+>> -			return rc;
+>> -	}
+>> -
+>> -	return 0;
+>> -}
+>> -#define set_apei_filter() (arch_apei_filter_addr = pci_mmcfg_for_each_region)
+>> -#else
+>> -#define set_apei_filter()
+>> -#endif
+>> -
+>>  static void __init __pci_mmcfg_init(int early)
+>>  {
+>>  	pci_mmcfg_reject_broken(early);
+>> @@ -665,8 +639,6 @@ void __init pci_mmcfg_early_init(void)
+>>  		else
+>>  			acpi_table_parse(ACPI_SIG_MCFG, pci_parse_mcfg);
+>>  		__pci_mmcfg_init(1);
+>> -
+>> -		set_apei_filter();
+>>  	}
+>>  }
+>>  
+>> diff --git a/drivers/acpi/apei/apei-base.c b/drivers/acpi/apei/apei-base.c
+>> index c7fdb12..daae75a 100644
+>> --- a/drivers/acpi/apei/apei-base.c
+>> +++ b/drivers/acpi/apei/apei-base.c
+>> @@ -21,6 +21,7 @@
+>>  #include <linux/kernel.h>
+>>  #include <linux/module.h>
+>>  #include <linux/init.h>
+>> +#include <linux/pci.h>
+>>  #include <linux/acpi.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/io.h>
+>> @@ -448,13 +449,34 @@ static int apei_get_nvs_resources(struct apei_resources *resources)
+>>  	return acpi_nvs_for_each_region(apei_get_res_callback, resources);
+>>  }
+>>  
+>> -int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
+>> -				     void *data), void *data);
+>> -static int apei_get_arch_resources(struct apei_resources *resources)
+>> +#ifdef CONFIG_PCI
+>> +extern struct list_head pci_mmcfg_list;
+>> +static int apei_filter_mcfg_addr(struct apei_resources *res,
+>> +			struct apei_resources *mcfg_res)
+>> +{
+>> +	int rc = 0;
+>> +	struct pci_mmcfg_region *cfg;
+>> +
+>> +	if (list_empty(&pci_mmcfg_list))
+>> +		return 0;
+>> +
+>> +	apei_resources_init(mcfg_res);
+>> +	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+>> +		rc = apei_res_add(&mcfg_res->iomem, cfg->res.start, resource_size(&cfg->res));
+>> +		if (rc)
+>> +			return rc;
+>> +	}
+>>  
+>> +	/* filter the mcfg resource from current APEI's */
+>> +	return apei_resources_sub(res, mcfg_res);
+>> +}
+>> +#else
+>> +static inline int apei_filter_mcfg_addr(struct apei_resources *res,
+>> +			struct apei_resources *mcfg_res)
+>>  {
+>> -	return arch_apei_filter_addr(apei_get_res_callback, resources);
+>> +	return 0;
+>>  }
+>> +#endif
+>>  
+>>  /*
+>>   * IO memory/port resource management mechanism is used to check
+>> @@ -486,15 +508,9 @@ int apei_resources_request(struct apei_resources *resources,
+>>  	if (rc)
+>>  		goto nvs_res_fini;
+>>  
+>> -	if (arch_apei_filter_addr) {
+>> -		apei_resources_init(&arch_res);
+>> -		rc = apei_get_arch_resources(&arch_res);
+>> -		if (rc)
+>> -			goto arch_res_fini;
+>> -		rc = apei_resources_sub(resources, &arch_res);
+>> -		if (rc)
+>> -			goto arch_res_fini;
+>> -	}
+>> +	rc = apei_filter_mcfg_addr(resources, &arch_res);
+>> +	if (rc)
+>> +		goto arch_res_fini;
+>>  
+>>  	rc = -EINVAL;
+>>  	list_for_each_entry(res, &resources->iomem, list) {
+>> @@ -544,8 +560,7 @@ int apei_resources_request(struct apei_resources *resources,
+>>  		release_mem_region(res->start, res->end - res->start);
+>>  	}
+>>  arch_res_fini:
+>> -	if (arch_apei_filter_addr)
+>> -		apei_resources_fini(&arch_res);
+>> +	apei_resources_fini(&arch_res);
+>>  nvs_res_fini:
+>>  	apei_resources_fini(&nvs_resources);
+>>  	return rc;
+>> -- 
+>> 1.8.3.1
+>>
