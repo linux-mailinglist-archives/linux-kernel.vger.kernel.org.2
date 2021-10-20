@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3856643475B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483DC434761
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhJTIyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:54:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:47410 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229677AbhJTIyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:54:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634719927; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=ZYuf2JfwuSM+9+A5y3eGiMTK0+DdPpzjW4F8eq56Ksk=;
- b=fs/Fe4iwwvgFZ2fwLyOeIrOnn7S3WwvBbQpx/1BtjnQ6Iwzh/6DDgKotHOpkAu14WTzQbFEs
- 3sDdqGo8w3Iz3dZsof/xhRur1H8gGtCXEbrQAqTDefIt+n6EkzpznlY8++xAjV5QiQVVQzmC
- Fm/upjFIUWMjhN/zt9NYOF85qsM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 616fd8a514914866fa2d8d4e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 Oct 2021 08:51:49
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9848FC4361C; Wed, 20 Oct 2021 08:51:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66968C4338F;
-        Wed, 20 Oct 2021 08:51:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 66968C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 1/5] mwifiex: Don't log error on suspend if
- wake-on-wlan is
- disabled
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211016153244.24353-2-verdre@v0yd.nl>
-References: <20211016153244.24353-2-verdre@v0yd.nl>
-To:     =?utf-8?q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?utf-8?q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163471990247.1743.10996489794553301742.kvalo@codeaurora.org>
-Date:   Wed, 20 Oct 2021 08:51:48 +0000 (UTC)
+        id S230076AbhJTIzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhJTIzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:55:40 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC54EC06161C;
+        Wed, 20 Oct 2021 01:53:26 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d9so2356018pfl.6;
+        Wed, 20 Oct 2021 01:53:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=DstmdxqQBhlt++xah38eM3RnFp7UHOdrRmQoIgCg+34=;
+        b=nmcENzGLEY0g/VDHyHNb+r0gOnPcveOEu5q0HoJ0z+f5DWQuZrxHlIg/2ozA/BnBBE
+         SboQjj2YhJJ5eVsDX32b8fzleeBb3NlExDwID/JHs3Y7sjVnwh+BjLPeoeYKxl5PezRP
+         i0qwvlpnsaBuW7GkIHl0t3ZWsCeeYXyKsY/WZ3kbUIBXvhcnBzoflWIjdfn1S26uv8wN
+         MqU+XudN8v2CUIy7tiQxPSOiNAXJl3UetVdt48ZpbonlJ0fTIVNSEJ+4KUUaOpBAGrvn
+         zrMYoMU5C2x6XMJRO6ahTFokb99urpm3gUNU+V4gy/JALdEyH962Ad9pwbnFt5s7z7o/
+         WZng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DstmdxqQBhlt++xah38eM3RnFp7UHOdrRmQoIgCg+34=;
+        b=gc4HuUOdNeRUpzkvEABoE2XjgfjFGYynBFtwt+zmRjZ2QRhbsAo9SbhA2XVg4O08cq
+         GEajX+4WzqgnVARKY9zRVLTt0c+RnzYHQtYFAmLmLsToTpCsv3kxcUI0WZuPMQ3bD2NS
+         eIAoP2CgOcyRIL2lIO6BNJ9nqBGHidOeVXwj+t3NAnHnf0CphF4ztsZdcMefhVmk7LKl
+         jrg00HFoCRjas0tqmNQC/DwAeZR6tmqm4+Y5HoercXkE4smWhn0T/bvSaZHxupVMsrNa
+         l5usF7uJ/KBu9lyKlWeGp1Uc8uLmp9kQe0UJH7tivUY3J1zFXMAC3Y1wv3TBoCU0u+pZ
+         o/Vg==
+X-Gm-Message-State: AOAM531lOLzmgcQ3OqYPyBPLG8ICl/j6bDUNBYIFzJrdANry738ZmvJb
+        1Mo9vN3wDwSWUZ7Jq5V4WmTF7EEseg99vw==
+X-Google-Smtp-Source: ABdhPJwH+YtWjzrqw1vko7XW92fdaOn1IzU7xP50eFZOJIPsoVkiSna56fjWz4mA1sfEJGkVdEOyKw==
+X-Received: by 2002:a05:6a00:15c9:b0:44c:a998:b50d with SMTP id o9-20020a056a0015c900b0044ca998b50dmr4976922pfu.49.1634720006101;
+        Wed, 20 Oct 2021 01:53:26 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.112])
+        by smtp.googlemail.com with ESMTPSA id x7sm5109552pjl.55.2021.10.20.01.53.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Oct 2021 01:53:25 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH v4] KVM: emulate: Don't inject #GP when emulating RDMPC if CR0.PE=0
+Date:   Wed, 20 Oct 2021 01:52:31 -0700
+Message-Id: <1634719951-73285-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonas Dreßler <verdre@v0yd.nl> wrote:
+From: Wanpeng Li <wanpengli@tencent.com>
 
-> It's not an error if someone chooses to put their computer to sleep, not
-> wanting it to wake up because the person next door has just discovered
-> what a magic packet is. So change the loglevel of this annoying message
-> from ERROR to INFO.
-> 
-> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+SDM mentioned that we should #GP for rdpmc if ECX is not valid or 
+(CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1).
 
-5 patches applied to wireless-drivers-next.git, thanks.
+Let's add the CR0.PE is 1 checking to rdpmc emulate, though this isn't
+strictly necessary since it's impossible for CPL to be >0 if CR0.PE=0.
 
-03893e93aff8 mwifiex: Don't log error on suspend if wake-on-wlan is disabled
-fd7f8c321b78 mwifiex: Log an error on command failure during key-material upload
-a8a8fc7b2a71 mwifiex: Fix an incorrect comment
-cc8a8bc37466 mwifiex: Send DELBA requests according to spec
-5943a864fe84 mwifiex: Deactive host sleep using HSCFG after it was activated manually
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v3 -> v4:
+ * add comments instead of pseudocode
+v2 -> v3:
+ * add the missing 'S'
+v1 -> v2:
+ * update patch description
 
+ arch/x86/kvm/emulate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index 9a144ca8e146..ab7ec569e8c9 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -4213,6 +4213,7 @@ static int check_rdtsc(struct x86_emulate_ctxt *ctxt)
+ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
+ {
+ 	u64 cr4 = ctxt->ops->get_cr(ctxt, 4);
++	u64 cr0 = ctxt->ops->get_cr(ctxt, 0);
+ 	u64 rcx = reg_read(ctxt, VCPU_REGS_RCX);
+ 
+ 	/*
+@@ -4222,7 +4223,7 @@ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
+ 	if (enable_vmware_backdoor && is_vmware_backdoor_pmc(rcx))
+ 		return X86EMUL_CONTINUE;
+ 
+-	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt)) ||
++	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt) && (cr0 & X86_CR0_PE)) ||
+ 	    ctxt->ops->check_pmc(ctxt, rcx))
+ 		return emulate_gp(ctxt, 0);
+ 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211016153244.24353-2-verdre@v0yd.nl/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.25.1
 
