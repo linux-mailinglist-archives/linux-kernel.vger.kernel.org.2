@@ -2,244 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEDB434684
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F277434687
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhJTIMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:12:05 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:52955 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTIME (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:12:04 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 19K7krTu028983;
-        Wed, 20 Oct 2021 15:46:53 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 20 Oct
- 2021 16:08:55 +0800
-Message-ID: <62496b13-bd5b-6a4c-d426-bf332d0335c4@aspeedtech.com>
-Date:   Wed, 20 Oct 2021 16:08:56 +0800
+        id S229928AbhJTIMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:12:50 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:46872 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhJTIMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:12:45 -0400
+Received: from [213.208.157.36] (helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1md6g6-0002KZ-Qj; Wed, 20 Oct 2021 10:10:26 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Chen-Yu Tsai <wens@kernel.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: rockchip: rk3399: Hook up DMA for UARTs
+Date:   Wed, 20 Oct 2021 10:10:25 +0200
+Message-ID: <2163516.Xs4XyuuM7S@phil>
+In-Reply-To: <20210920175647.13008-2-wens@kernel.org>
+References: <20210920175647.13008-1-wens@kernel.org> <20210920175647.13008-2-wens@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 2/7] media: aspeed: use v4l2_info/v4l2_warn/v4l2_dbg
- for log
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211018092207.13336-1-jammy_huang@aspeedtech.com>
- <20211018092207.13336-3-jammy_huang@aspeedtech.com>
- <24ee2592-c62e-8108-58ff-56e648bdf445@molgen.mpg.de>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <24ee2592-c62e-8108-58ff-56e648bdf445@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 19K7krTu028983
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Paul,
+Hi,
 
-On 2021/10/18 下午 05:58, Paul Menzel wrote:
-> Dear Jammy,
->
->
-> Am 18.10.21 um 11:22 schrieb Jammy Huang:
->> The debug log level, 0~3, is controlled by module_param, debug.
->> Higher the value, more the information.
-> Nit: *The* higher …
->
-> Please mention your “conversion heuristic”? For example, level 3 is for
-> register operations (read, update, write)? Maybe that could also be
-> added to the module parameter description.
+Am Montag, 20. September 2021, 19:56:47 CEST schrieb Chen-Yu Tsai:
+> From: Chen-Yu Tsai <wens@csie.org>
+> 
+> The RK3399 has two DMA controllers, one of which is wired up to work
+> with the SPI controllers and UARTs. The SPI controllers are already
+> hooked up, but the UARTs aren't.
+> 
+> Add the "dmas" and "dma-names" to the UART device nodes to hook up DMA.
 
-OK, it will be updated as below:
+last time this came up, there was the issue of the pl330 driver in the
+kernel not being able to handle the case where the number of channels
+hooked up was larger than the number of possible channels handled
+at the same time (8 for dmac peri according to the TRM).
 
-     The debug log level, 0~3, is controlled by module_param, debug.
-     The higher the value, the more the information.
-       0: off
-       1: info
-       2: debug
-       3: register operations
+Did this get solved meanwhile or are we then possibly starving the spi
+controllers from dma access when the uarts also get dma channels
+and are possibly probed earlier?
 
->
->
-> Kind regards,
->
-> Paul
->
->
->> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->> ---
->>    drivers/media/platform/aspeed-video.c | 40 +++++++++++++++------------
->>    1 file changed, 23 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
->> index 6259cf17a7cc..642ca96c8c52 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -30,6 +30,7 @@
->>    #include <media/v4l2-event.h>
->>    #include <media/v4l2-ioctl.h>
->>    #include <media/videobuf2-dma-contig.h>
->> +#include <linux/videodev2.h>
->>    
->>    #define DEVICE_NAME			"aspeed-video"
->>    
->> @@ -390,6 +391,8 @@ static const struct v4l2_dv_timings_cap aspeed_video_timings_cap = {
->>    	},
->>    };
->>    
->> +static unsigned int debug;
->> +
->>    static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
->>    {
->>    	int i;
->> @@ -437,23 +440,23 @@ static void aspeed_video_update(struct aspeed_video *video, u32 reg, u32 clear,
->>    	t &= ~clear;
->>    	t |= bits;
->>    	writel(t, video->base + reg);
->> -	dev_dbg(video->dev, "update %03x[%08x -> %08x]\n", reg, before,
->> -		readl(video->base + reg));
->> +	v4l2_dbg(3, debug, &video->v4l2_dev, "update %03x[%08x -> %08x]\n",
->> +		 reg, before, readl(video->base + reg));
->>    }
->>    
->>    static u32 aspeed_video_read(struct aspeed_video *video, u32 reg)
->>    {
->>    	u32 t = readl(video->base + reg);
->>    
->> -	dev_dbg(video->dev, "read %03x[%08x]\n", reg, t);
->> +	v4l2_dbg(3, debug, &video->v4l2_dev, "read %03x[%08x]\n", reg, t);
->>    	return t;
->>    }
->>    
->>    static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
->>    {
->>    	writel(val, video->base + reg);
->> -	dev_dbg(video->dev, "write %03x[%08x]\n", reg,
->> -		readl(video->base + reg));
->> +	v4l2_dbg(3, debug, &video->v4l2_dev, "write %03x[%08x]\n", reg,
->> +		 readl(video->base + reg));
->>    }
->>    
->>    static void update_perf(struct aspeed_video_perf *p)
->> @@ -474,13 +477,13 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
->>    	u32 seq_ctrl = aspeed_video_read(video, VE_SEQ_CTRL);
->>    
->>    	if (video->v4l2_input_status) {
->> -		dev_dbg(video->dev, "No signal; don't start frame\n");
->> +		v4l2_warn(&video->v4l2_dev, "No signal; don't start frame\n");
->>    		return 0;
->>    	}
->>    
->>    	if (!(seq_ctrl & VE_SEQ_CTRL_COMP_BUSY) ||
->>    	    !(seq_ctrl & VE_SEQ_CTRL_CAP_BUSY)) {
->> -		dev_dbg(video->dev, "Engine busy; don't start frame\n");
->> +		v4l2_warn(&video->v4l2_dev, "Engine busy; don't start frame\n");
->>    		return -EBUSY;
->>    	}
->>    
->> @@ -489,7 +492,7 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
->>    				       struct aspeed_video_buffer, link);
->>    	if (!buf) {
->>    		spin_unlock_irqrestore(&video->lock, flags);
->> -		dev_dbg(video->dev, "No buffers; don't start frame\n");
->> +		v4l2_warn(&video->v4l2_dev, "No buffers; don't start frame\n");
->>    		return -EPROTO;
->>    	}
->>    
->> @@ -565,7 +568,7 @@ static void aspeed_video_bufs_done(struct aspeed_video *video,
->>    
->>    static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
->>    {
->> -	dev_dbg(video->dev, "Resolution changed; resetting\n");
->> +	v4l2_dbg(1, debug, &video->v4l2_dev, "Resolution changed; resetting\n");
->>    
->>    	set_bit(VIDEO_RES_CHANGE, &video->flags);
->>    	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
->> @@ -766,8 +769,8 @@ static void aspeed_video_calc_compressed_size(struct aspeed_video *video,
->>    	aspeed_video_write(video, VE_STREAM_BUF_SIZE,
->>    			   compression_buffer_size_reg);
->>    
->> -	dev_dbg(video->dev, "Max compressed size: %x\n",
->> -		video->max_compressed_size);
->> +	v4l2_dbg(1, debug, &video->v4l2_dev, "Max compressed size: %#x\n",
->> +		 video->max_compressed_size);
->>    }
->>    
->>    #define res_check(v) test_and_clear_bit(VIDEO_MODE_DETECT_DONE, &(v)->flags)
->> @@ -804,7 +807,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
->>    						      res_check(video),
->>    						      MODE_DETECT_TIMEOUT);
->>    		if (!rc) {
->> -			dev_dbg(video->dev, "Timed out; first mode detect\n");
->> +			v4l2_warn(&video->v4l2_dev, "Timed out; first mode detect\n");
->>    			clear_bit(VIDEO_RES_DETECT, &video->flags);
->>    			return;
->>    		}
->> @@ -822,7 +825,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
->>    						      MODE_DETECT_TIMEOUT);
->>    		clear_bit(VIDEO_RES_DETECT, &video->flags);
->>    		if (!rc) {
->> -			dev_dbg(video->dev, "Timed out; second mode detect\n");
->> +			v4l2_warn(&video->v4l2_dev, "Timed out; second mode detect\n");
->>    			return;
->>    		}
->>    
->> @@ -856,7 +859,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
->>    	} while (invalid_resolution && (tries++ < INVALID_RESOLUTION_RETRIES));
->>    
->>    	if (invalid_resolution) {
->> -		dev_dbg(video->dev, "Invalid resolution detected\n");
->> +		v4l2_warn(&video->v4l2_dev, "Invalid resolution detected\n");
->>    		return;
->>    	}
->>    
->> @@ -873,8 +876,8 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
->>    	aspeed_video_update(video, VE_SEQ_CTRL, 0,
->>    			    VE_SEQ_CTRL_AUTO_COMP | VE_SEQ_CTRL_EN_WATCHDOG);
->>    
->> -	dev_dbg(video->dev, "Got resolution: %dx%d\n", det->width,
->> -		det->height);
->> +	v4l2_dbg(1, debug, &video->v4l2_dev, "Got resolution: %dx%d\n",
->> +		 det->width, det->height);
->>    }
->>    
->>    static void aspeed_video_set_resolution(struct aspeed_video *video)
->> @@ -1501,7 +1504,7 @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
->>    				!test_bit(VIDEO_FRAME_INPRG, &video->flags),
->>    				STOP_TIMEOUT);
->>    	if (!rc) {
->> -		dev_dbg(video->dev, "Timed out when stopping streaming\n");
->> +		v4l2_warn(&video->v4l2_dev, "Timed out when stopping streaming\n");
->>    
->>    		/*
->>    		 * Need to force stop any DMA and try and get HW into a good
->> @@ -1856,6 +1859,9 @@ static struct platform_driver aspeed_video_driver = {
->>    
->>    module_platform_driver(aspeed_video_driver);
->>    
->> +module_param(debug, int, 0644);
->> +MODULE_PARM_DESC(debug, "Debug level (0-3)");
->> +
->>    MODULE_DESCRIPTION("ASPEED Video Engine Driver");
->>    MODULE_AUTHOR("Eddie James");
->>    MODULE_LICENSE("GPL v2");
->>
+
+Heiko
+
+
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> index 3871c7fd83b0..87d6e4eb1337 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> @@ -608,6 +608,8 @@ uart0: serial@ff180000 {
+>  		reg = <0x0 0xff180000 0x0 0x100>;
+>  		clocks = <&cru SCLK_UART0>, <&cru PCLK_UART0>;
+>  		clock-names = "baudclk", "apb_pclk";
+> +		dmas = <&dmac_peri 0>, <&dmac_peri 1>;
+> +		dma-names = "tx", "rx";
+>  		interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		reg-shift = <2>;
+>  		reg-io-width = <4>;
+> @@ -621,6 +623,8 @@ uart1: serial@ff190000 {
+>  		reg = <0x0 0xff190000 0x0 0x100>;
+>  		clocks = <&cru SCLK_UART1>, <&cru PCLK_UART1>;
+>  		clock-names = "baudclk", "apb_pclk";
+> +		dmas = <&dmac_peri 2>, <&dmac_peri 3>;
+> +		dma-names = "tx", "rx";
+>  		interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		reg-shift = <2>;
+>  		reg-io-width = <4>;
+> @@ -634,6 +638,8 @@ uart2: serial@ff1a0000 {
+>  		reg = <0x0 0xff1a0000 0x0 0x100>;
+>  		clocks = <&cru SCLK_UART2>, <&cru PCLK_UART2>;
+>  		clock-names = "baudclk", "apb_pclk";
+> +		dmas = <&dmac_peri 4>, <&dmac_peri 5>;
+> +		dma-names = "tx", "rx";
+>  		interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		reg-shift = <2>;
+>  		reg-io-width = <4>;
+> @@ -647,6 +653,8 @@ uart3: serial@ff1b0000 {
+>  		reg = <0x0 0xff1b0000 0x0 0x100>;
+>  		clocks = <&cru SCLK_UART3>, <&cru PCLK_UART3>;
+>  		clock-names = "baudclk", "apb_pclk";
+> +		dmas = <&dmac_peri 6>, <&dmac_peri 7>;
+> +		dma-names = "tx", "rx";
+>  		interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		reg-shift = <2>;
+>  		reg-io-width = <4>;
+> @@ -1142,6 +1150,8 @@ uart4: serial@ff370000 {
+>  		reg = <0x0 0xff370000 0x0 0x100>;
+>  		clocks = <&pmucru SCLK_UART4_PMU>, <&pmucru PCLK_UART4_PMU>;
+>  		clock-names = "baudclk", "apb_pclk";
+> +		dmas = <&dmac_peri 8>, <&dmac_peri 9>;
+> +		dma-names = "tx", "rx";
+>  		interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		reg-shift = <2>;
+>  		reg-io-width = <4>;
+> 
+
+
+
+
