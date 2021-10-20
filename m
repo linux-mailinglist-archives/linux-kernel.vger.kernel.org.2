@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7014351DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315A94351DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 19:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhJTRtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 13:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
+        id S230392AbhJTRtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbhJTRs5 (ORCPT
+        with ESMTP id S231392AbhJTRtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:48:57 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBB8C061770;
-        Wed, 20 Oct 2021 10:46:28 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id t16so3757467qto.5;
-        Wed, 20 Oct 2021 10:46:28 -0700 (PDT)
+        Wed, 20 Oct 2021 13:49:03 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA5AC061753;
+        Wed, 20 Oct 2021 10:46:38 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id v195so12636405ybb.0;
+        Wed, 20 Oct 2021 10:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0QHGLrhaXKpKpvs2TLQ73EmV4pXkj4boxSmu6rBcYBI=;
-        b=QC2enIqbJU5zyGxfY2qJ+RKsttNvVlJw5ESsHPsKytBXHbft+70CDnDsgh+ktV9nVS
-         Ts3CB7N1bU+AWe+OoT1iNM1fQ7/Qz03jgjrlfO6mTCuZabvAu2CTXBiv0diXxQVvVGVk
-         tDHB0EB6JbKCWxoyYxuB9QQyvD6xB1Qi2j7kE9xm7LZ17SgKzSbWEMakcDG4qMGJPnOv
-         hBD3LuP4H/LBxZUatwQPeZrFAdGd5Xptq6oi41LeQvkwpetKYmVpWDMnscZlq02PvGan
-         not7BsHZ+nPN45uw0swS3CzZwxDbqsaoG6TG8P7RztE2ss7m9HtkojuZWMZ1xdmpGkv7
-         Ii3g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sOKBPHMdWljkZNSIDrjUwmzeBvLMb2d21VbPwWacTgM=;
+        b=fuvYz9EiYxo+eAIB8lLKMZjoVGkpQhjptDXD7t+bH2LGHwLxNuORBHqD1+aGki/29m
+         i3EKQZOhqRpXiuRC2Zm4sQYgBCuMPwBm1dGN9n3MkQ0A6YJEq8sWqdKlhju3FghSEFGL
+         vTuPceVxHo5Lm2sX5h9jQYrUb9Kop382Wa5/dGGHRc5Hbc9Qvs7IiN8Hg3IAXjkuRijt
+         eWd5+ACFNktNe7+DxVYf7BPTXZLRLOfuWIzS3JTFiG8+PieISTfdQwSzv6n+nG57DE8x
+         uGo/A1znriTj0fcp2Mj2omTwSp+zw+BxxnpGAwxgkLwlfpvTYoRM0G/H3ZUNFpczG821
+         k45w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0QHGLrhaXKpKpvs2TLQ73EmV4pXkj4boxSmu6rBcYBI=;
-        b=ELs0JIGH2+W1KtTBmvQPCrF4rfWnz3nsHKeEn5X1Pvbd/lTwUpDKhIjEzEMfScxyvw
-         lYc9u7Bb93pSwZvnPgXhSEwLOBLN3Nai9RQrNmbOvaQpuQB1MLcATm0zIcuhg7XMoyuK
-         HyA2IZFSmV08Bu8fJOuZ4dDbSgA3+cLbWbmr6xsrmr24VLDl0wVofbtEZ+RdJfjtTKCr
-         c+NJfjge862wR+btatV/qgK0QZIgOqe37Sskc/kj+jcSkdSkopKREi8ldNOXo73K7RPd
-         O4tuqe8nMRU7CRpiIc+4V7VvL6+GVdB85ND+19HilOAYbspD3P2gypeDt4/6PCalzhxu
-         lkLw==
-X-Gm-Message-State: AOAM531Qwk/vxNTpA6jfKC5THviR4MVNlWhy+Y4FioF2gt9lYXQToQw1
-        td/hbYVirw6ytEcUSG22Hw==
-X-Google-Smtp-Source: ABdhPJxvVuQj4BfHA6bCmmzmmBWzVAvnlqxouqMH/WH0eCclkcW4pXMJyOWKO5jl7FEMLmODG9nAIQ==
-X-Received: by 2002:ac8:7458:: with SMTP id h24mr550357qtr.355.1634751987832;
-        Wed, 20 Oct 2021 10:46:27 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id j184sm1326545qkd.74.2021.10.20.10.46.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 10:46:27 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 13:46:25 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Splitting struct page into multiple types - Was: re: Folio
- discussion recap -
-Message-ID: <YXBV8cFDPTzneeGu@moria.home.lan>
-References: <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YWpG1xlPbm7Jpf2b@casper.infradead.org>
- <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW25EDqynlKU14hx@moria.home.lan>
- <YW3dByBWM0dSRw/X@cmpxchg.org>
- <YW7uN2p8CihCDsln@moria.home.lan>
- <20211019170603.GA15424@hsiangkao-HP-ZHAN-66-Pro-G1>
- <YW8Bm77gZgVG2ga4@casper.infradead.org>
- <20211019175419.GA22532@hsiangkao-HP-ZHAN-66-Pro-G1>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sOKBPHMdWljkZNSIDrjUwmzeBvLMb2d21VbPwWacTgM=;
+        b=LCXhYdW/BbswA7D2CBUMj0q71PSPQ4q5tl+fhj+STUnb5nBiB25crKtM9R68uE8t+6
+         chqHxav8kK7lqyGfFhDWW2t0Ueqd3XcQFve4ZYpMYIGXZE7g3SCQ8KLhWcmtyI8N8H+b
+         8FrsY7lCyNHTflthQeXdJn3/1NsQACX4OKIhCzggpG6VluhABjK52pzySomhc4ST8I4Q
+         aNNVv3xEXg/kb3M1kzPWO1thWnAxnBpL6rbwaQstnCNHQ77LqU3XuwlEWWcjmVag3ZtO
+         QAoGchDjNDrEcmmO0pAc0oUs/7uk6sA+5TELhyVxKqstkVc2ftgePdd3fTwaY2+p6hC+
+         KnRA==
+X-Gm-Message-State: AOAM530tVnpEtXYMSnovegjjgF+uzJaPmHwBA0SDi+SmV6wP9SfF83cJ
+        aZ395Lj5526hUs8500TtLvBOG1LPNXjTlRtKFZk=
+X-Google-Smtp-Source: ABdhPJy1/YWZivJtSDC696TGHVh7c8JDcR90h3/DoB2Lt5zT45YYfw4swcV8w8OngSAn2svPXmcGkpXF4IMshFTPFB0=
+X-Received: by 2002:a25:d3c8:: with SMTP id e191mr444609ybf.455.1634751998190;
+ Wed, 20 Oct 2021 10:46:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019175419.GA22532@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20211012023231.19911-1-wanjiabing@vivo.com> <616d9ba173075_1eb12088b@john-XPS-13-9370.notmuch>
+In-Reply-To: <616d9ba173075_1eb12088b@john-XPS-13-9370.notmuch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Oct 2021 10:46:27 -0700
+Message-ID: <CAEf4BzaAmvoT-n8pusycm_q1-Tp4B+KMxu3yw1BXkM3xHY2-HQ@mail.gmail.com>
+Subject: Re: [PATCH] [v2] selftests: bpf: Remove duplicated include in cgroup_helpers
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Wan Jiabing <wanjiabing@vivo.com>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, kael_w@yeah.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 01:54:20AM +0800, Gao Xiang wrote:
-> On Tue, Oct 19, 2021 at 06:34:19PM +0100, Matthew Wilcox wrote:
-> > It looks like this will be quite a large change to how erofs handles
-> > compressed blocks, but if you're open to taking this on, I'd be very happy.
-> 
-> For ->lru, it's quite small, but it sacrifices the performance. Yet I'm
-> very glad to do if some decision of this ->lru field is determined.
+On Mon, Oct 18, 2021 at 9:07 AM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Wan Jiabing wrote:
+> > Fix following checkincludes.pl warning:
+> > ./scripts/checkincludes.pl tools/testing/selftests/bpf/cgroup_helpers.c
+> > tools/testing/selftests/bpf/cgroup_helpers.c: unistd.h is included more
+> > than once.
+> >
+> > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> > ---
+> > Changelog:
+> > v2:
+> > - Fix the commit description.
+> > ---
+>
+> The Subject is a bit unusual. Typically it would be something like,
+>
+>  "[PATCH bpf-next] selftests, remove duplicated include in cgroup_helpers"
 
-I would be very appreciative if you were willing to do the work, and I know
-others would be too. These kinds of cleanups may seem small individually, but
-they make a _very_ real difference when we're looking kernel-wide at how
-possible these struct page changes may be - and even if they don't happen, it
-really helps understandability of the code if we can move towards a single
-struct field always being used for a single purpose in our core data types.
+Also for selftests we use "selftests/bpf: " prefix (at least we
+generally try, for consistency). Fixed up, applied to bpf-next.
+Thanks.
+
+>
+> For the actual patch though LGTM.
+>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
