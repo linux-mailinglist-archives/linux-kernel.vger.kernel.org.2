@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF38C4347CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E0D4347CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhJTJVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:21:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhJTJVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:21:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CDDF61074;
-        Wed, 20 Oct 2021 09:19:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634721571;
-        bh=lyuguw0XyKC7pblfSP/PKjf0tJ9Omz7vG2CSkCF9b/Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GpfTbXlxvTLq3xEnQP+Mt5K79oLCsTz8gWGIsl0Bs3jXM1H0sbH/VBxXQmTdapqZJ
-         ss4z/dkeFrhUx+tpjQmDQvkkDQfYy0AbS/gYWN8knXneehPld6hyAW+uL5GH5gAYPR
-         ieVjo2Dz2AIa7UUy38tZOb0p8e/pLyFQ7TPcaHpkGL1NQQ2e2EHqWwZtrJNMDYZGvH
-         sabCabEJDrySLq7HUGodzbr6Mq64EC9kxPYSKTDHZp5q47eMp3pgE4IbFfuY1bkMkd
-         YuGbvZZJ9cuLbmC3ZvAHqTtddR4TDz97+VI2JqPx5+SLI4/w+jbW+fMtLRgoHrnp8B
-         pM42Dau48lQ2w==
-Date:   Wed, 20 Oct 2021 14:49:26 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v2 07/11] drm/msm/disp/dpu1: Add DSC support in hw_ctl
-Message-ID: <YW/fHkaTcCbezKMT@matsya>
-References: <20211007070900.456044-1-vkoul@kernel.org>
- <20211007070900.456044-8-vkoul@kernel.org>
- <f5f6162c-7ed0-2964-7cf9-0bb894c8b4f5@linaro.org>
+        id S229704AbhJTJWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:22:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52304 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229702AbhJTJWK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:22:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634721596;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OHr8I1ADCNyh3IkqXu+kSFGMzNh00bfIZFxOebGZQ0I=;
+        b=FtZJ3zLN1OSA49q8dV0he8svyEzuJ+vKXkCCooOmTZuyBg0HuApU/5/ottspFCVUVQkO5m
+        XMx52ujXoKjXzsex4OChSx5ZvUQp+WTZMJ3gS8rzew4fy1JGfdmLcLlnggtW2hLAm3/b75
+        cQGVRFBbQAfLrA/C9T1/D/cZbVNj3ZI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-I2GTK6rbMQar0Uf2RJ50uQ-1; Wed, 20 Oct 2021 05:19:54 -0400
+X-MC-Unique: I2GTK6rbMQar0Uf2RJ50uQ-1
+Received: by mail-wm1-f69.google.com with SMTP id a20-20020a1c9814000000b0032311c7fc54so1817868wme.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 02:19:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=OHr8I1ADCNyh3IkqXu+kSFGMzNh00bfIZFxOebGZQ0I=;
+        b=h3/o6SGgiGCCFc552rfWCfPIbTWGpYAu3QjeC+usd+eUG3/mzxi826Eswkiuh6IBgW
+         fFpABr/M6qLALr1RDNWrpYbXoZXv+dP5T4nX2jQc+gcjrJoiy0Lu6jV6YRt72bEt18kX
+         3mHwxGoxOeoIlTPa+ZJTltr1LQO9tH1jcA/M2nh44YqMQWTZ/ioxcSakMAk1zA4QCYEp
+         bJTNf6uyrTV6J9b3n7xbrRK442U4hJQbQX5y/zufQZFKkRkKLxmbcswxgNl0apzosh1/
+         AMTKa3ClGPqtiIQYivjBNQkVjFmX+MlmPDGZSfjMTnfoeI3awcGxmq4RxBwX8iQB2ORg
+         tW8w==
+X-Gm-Message-State: AOAM530rsx+llVTDgKh8AMxE4YQLF8maay+99xkkmJeVIbX9xBwkKMhF
+        +HYA35P0rm/Ry0E7AcV8F/0KFlrPyvdnjA227xWXrN/Pr8slUBXSumILp0jTx8BkiU+41WibGFl
+        e4KgTs7NnqVQfxKJnFeoduF+I
+X-Received: by 2002:a7b:c4c2:: with SMTP id g2mr6607226wmk.195.1634721593625;
+        Wed, 20 Oct 2021 02:19:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyiiYUod6TjDrGOf5rSFm4jDSLEbRAQsvLs/anVGCjrige706yEvHKXxis2/c7BWvlw2Ap7NQ==
+X-Received: by 2002:a7b:c4c2:: with SMTP id g2mr6607205wmk.195.1634721593406;
+        Wed, 20 Oct 2021 02:19:53 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id p18sm1575475wmq.4.2021.10.20.02.19.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 02:19:52 -0700 (PDT)
+Message-ID: <1088c582-8afe-e5f2-8db8-0f0b05a5f7d3@redhat.com>
+Date:   Wed, 20 Oct 2021 11:19:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5f6162c-7ed0-2964-7cf9-0bb894c8b4f5@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 0/4] x86/fpu/kvm: Sanitize the FPU guest/user handling
+Content-Language: en-US
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <20211017151447.829495362@linutronix.de>
+ <841ACA86-CE97-4707-BF6E-AC932F1E056D@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <841ACA86-CE97-4707-BF6E-AC932F1E056D@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-10-21, 17:06, Dmitry Baryshkov wrote:
-> On 07/10/2021 10:08, Vinod Koul wrote:
-> > Later gens of hardware have DSC bits moved to hw_ctl, so configure these
-> > bits so that DSC would work there as well
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> > Changes since
-> > v1:
-> >   - Move this patch from 6 to 7 due to dependency on 6th one
-> >   - Use DSC indices for programming DSC registers and program only on non
-> >     null indices
-> > 
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 12 ++++++++++--
-> >   1 file changed, 10 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> > index 3c79bd9c2fe5..8ea9d8dce3f7 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> > @@ -25,6 +25,8 @@
-> >   #define   CTL_MERGE_3D_ACTIVE           0x0E4
-> >   #define   CTL_INTF_ACTIVE               0x0F4
-> >   #define   CTL_MERGE_3D_FLUSH            0x100
-> > +#define   CTL_DSC_ACTIVE                0x0E8
-> > +#define   CTL_DSC_FLUSH                0x104
-> >   #define   CTL_INTF_FLUSH                0x110
-> >   #define   CTL_INTF_MASTER               0x134
-> >   #define   CTL_FETCH_PIPE_ACTIVE         0x0FC
-> > @@ -34,6 +36,7 @@
-> >   #define DPU_REG_RESET_TIMEOUT_US        2000
-> >   #define  MERGE_3D_IDX   23
-> > +#define  DSC_IDX        22
-> >   #define  INTF_IDX       31
-> >   #define CTL_INVALID_BIT                 0xffff
-> > @@ -120,7 +123,6 @@ static u32 dpu_hw_ctl_get_pending_flush(struct dpu_hw_ctl *ctx)
-> >   static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
-> >   {
-> > -
-> >   	if (ctx->pending_flush_mask & BIT(MERGE_3D_IDX))
-> >   		DPU_REG_WRITE(&ctx->hw, CTL_MERGE_3D_FLUSH,
-> >   				ctx->pending_merge_3d_flush_mask);
-> > @@ -128,7 +130,6 @@ static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
-> >   		DPU_REG_WRITE(&ctx->hw, CTL_INTF_FLUSH,
-> >   				ctx->pending_intf_flush_mask);
-> > -	DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask);
+On 19/10/21 21:43, Bae, Chang Seok wrote:
+> On Oct 17, 2021, at 10:03, Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> The latter builds, boots and runs KVM guests, but that reallocation
+>> functionality is obviously completely untested.
 > 
-> This would break non-DSC case.
-
-This is a mistake, I have fixed it up now..
-
-> >   }
-> >   static inline void dpu_hw_ctl_trigger_flush(struct dpu_hw_ctl *ctx)
-> > @@ -498,6 +499,9 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
-> >   	u32 intf_active = 0;
-> >   	u32 mode_sel = 0;
-> > +	if (cfg->dsc)
-> > +		DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, cfg->dsc);
-> > +
-> >   	if (cfg->intf_mode_sel == DPU_CTL_MODE_SEL_CMD)
-> >   		mode_sel |= BIT(17);
-> > @@ -509,6 +513,10 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
-> >   	if (cfg->merge_3d)
-> >   		DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
-> >   			      BIT(cfg->merge_3d - MERGE_3D_0));
-> > +	if (cfg->dsc) {
-> > +		DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask |  BIT(DSC_IDX));
+> Compiled and booted on bare-metal and KVM (guest with the same kernel).
+> No dmesg regression. No selftest regression.
 > 
-> Why?
+> Tested-by Chang S. Bae <chang.seok.bae@intel.com>
 
-I have fixed it up to write only DSC_IDX
+Same here.  Thanks, Chang Seok!
 
--- 
-~Vinod
+Paolo
+
