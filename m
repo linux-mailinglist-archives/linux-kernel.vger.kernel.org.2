@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4EB43546D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF34435470
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhJTUSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
+        id S231148AbhJTUTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 16:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhJTUSC (ORCPT
+        with ESMTP id S229910AbhJTUTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:18:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAB3C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Yw3jn3CYgr9CBgXf3ycDMXRpVL6MwJA2O+a8isTBzbE=; b=1s6k4BOTXFEgLTs62Oo7up9dzI
-        vsxZOrCMMFQYkt6pUGPMv+DnHJ3ns+R6vH7mCpM7X+jGLYgqgygmopxKSuy5MZXElFsh+wPyUf6xr
-        F1N2gwDd9x4GajU9hSAyX22Q0whyuJRmwHViICG5yO8ATcaPW+6tHHE9ABUI9sLEhGyGPgr1BOfLT
-        QSwmRr/WVSzteu/m68k0eGEhWaXmEmYiv1C0tHW+lhjQXmmdwKZ9cT0iSteQcxSHCOqa/5yriOrno
-        oufF0jY+ynPzfTUVL91hjHVj9ARUYzzzzYlRBQQqPxAYpQg3dugK2lBxC65ksVcKTH1f5d+cyMxHx
-        6DCpJayg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdI03-005kxt-8f; Wed, 20 Oct 2021 20:15:47 +0000
-Subject: Re: [PATCH v2] nios2: Make NIOS2_DTB_SOURCE_BOOL depend on
- !COMPILE_TEST
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Dinh Nguyen <dinguyen@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20211020191116.2510450-1-linux@roeck-us.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4b747abf-73f1-fa97-cb2b-23d8c838426e@infradead.org>
-Date:   Wed, 20 Oct 2021 13:15:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 16:19:06 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1854CC06161C;
+        Wed, 20 Oct 2021 13:16:52 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id m21so23484125pgu.13;
+        Wed, 20 Oct 2021 13:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Qep4jU4rGfaGWhq0LfkXrPTSxqEwdeHLhOkIRnswTKw=;
+        b=gvAFXm+kUmrZgm9Zk5gQOuUiqZicVA7K56bWg91F2DMPu/miowM0kYQmu1nfvyKbEH
+         cKh+GC+Z+Eo5b4UtI7nRGtNIAKaSgeYqJHJLEpM6fj2l6CZQ3/td0r+N/IT9ZrNsRZYs
+         OgBx8IkWC6HHtxkDj7L2soV4u1GrRhKfMDZDfh3kXcvgYVZnykYSpZLYnlBhhiU8/r7E
+         kxuvSfKtkI7wT4HBWx8mblHL7s6t5J7wEc0+Ce7ehhzSyZggN6yjR0sgVBmLPVHawm49
+         R1+0+HVj7q5TKsRc5fm05Xw1/Rl/dWY0FJNe8znCv0Ib9q+rl7pNRyF1pmog91oMxLum
+         7Ziw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=Qep4jU4rGfaGWhq0LfkXrPTSxqEwdeHLhOkIRnswTKw=;
+        b=29JBKr+9fGXkfO/2K7Q1jIXbEv0OmXWZNc21tEV3NVSoPcCYACUa9a4znSUhxmTYfy
+         btemZNHDYYfyx/9fgfIMA98QwIIge4VAfhk2RnCUFPEPTXAmb/WUgOpUz1RGSAP7jKd8
+         8Pwubd6qQ5qy0DkGYXl57KUSOFbnEBrpeMlruWYbKGrTjOgVE18rzUQ8uo+ne2fpzU77
+         a53J0ZChAgrMN9JUrq7LDl3WbnxFrRQTa9aWSLK7wCZkP/kN1ll23jd7LnpyC7DAxGaJ
+         iWrDLEZcFXggM8xriK8Ms14hQgXtXQbEnQ+9V9e/LmUv8JRU3zY3bIUYZ1gmf3yRZrxa
+         GTig==
+X-Gm-Message-State: AOAM533VMEkiIHUagfTIgpz8cAoAb24CRGRFaLv4efFToh9xE9APOFBM
+        IQXQ1x1SPTTKavDzSWYaGJ8=
+X-Google-Smtp-Source: ABdhPJwu+k7qLEG3bLxdcPPPTjHAgxpsaA43HRqp6K1UyMfq1Ke+7YwzqDTs/8r3h5N41w2S1RURxA==
+X-Received: by 2002:a62:7b43:0:b0:44c:6d72:ac4d with SMTP id w64-20020a627b43000000b0044c6d72ac4dmr1095173pfc.73.1634761011423;
+        Wed, 20 Oct 2021 13:16:51 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id s7sm3496476pfu.139.2021.10.20.13.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 13:16:51 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 20 Oct 2021 10:16:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org
+Subject: [RFC] bpf: Implement prealloc for task_local_storage
+Message-ID: <YXB5Mec4ahxXRx8K@slm.duckdns.org>
 MIME-Version: 1.0
-In-Reply-To: <20211020191116.2510450-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 12:11 PM, Guenter Roeck wrote:
-> nios2:allmodconfig builds fail with
-> 
-> make[1]: *** No rule to make target 'arch/nios2/boot/dts/""',
-> 	needed by 'arch/nios2/boot/dts/built-in.a'.  Stop.
-> make: [Makefile:1868: arch/nios2/boot/dts] Error 2 (ignored)
-> 
-> This is seen with compile tests since those enable NIOS2_DTB_SOURCE_BOOL,
-> which in turn enables NIOS2_DTB_SOURCE. This causes the build error
-> because the default value for NIOS2_DTB_SOURCE is an empty string.
-> Disable NIOS2_DTB_SOURCE_BOOL for compile tests to avoid the error.
-> 
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+task_local_storage currently does not support pre-allocation and the memory
+is allocated on demand using the GFP_ATOMIC mask. While atomic allocations
+succeed most of the time and the occasional failures aren't a problem for
+many use-cases, there are some which can benefit from reliable allocations -
+e.g. tracking acquisitions and releases of specific resources to root cause
+long-term reference leaks.
 
-Thanks, I've seen this problem also.
+This patchset implements prealloc support for task_local_storage so that
+once a map is created, it's guaranteed that the storage area is always
+available for all tasks unless explicitly deleted.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+The only tricky part is syncronizing against the fork path. Fortunately,
+cgroup needs to do the same thing and is already using
+cgroup_threadgroup_rwsem and we can use the same mechanism without adding
+extra overhead. This patchset generalizes the rwsem and make cgroup and bpf
+select it.
 
-> ---
-> v2: Include error message
-> 
->   arch/nios2/platform/Kconfig.platform | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/nios2/platform/Kconfig.platform b/arch/nios2/platform/Kconfig.platform
-> index 9e32fb7f3d4c..e849daff6fd1 100644
-> --- a/arch/nios2/platform/Kconfig.platform
-> +++ b/arch/nios2/platform/Kconfig.platform
-> @@ -37,6 +37,7 @@ config NIOS2_DTB_PHYS_ADDR
->   
->   config NIOS2_DTB_SOURCE_BOOL
->   	bool "Compile and link device tree into kernel image"
-> +	depends on !COMPILE_TEST
->   	help
->   	  This allows you to specify a dts (device tree source) file
->   	  which will be compiled and linked into the kernel image.
-> 
+This patchset is on top of bpf-next 223f903e9c83 ("bpf: Rename BTF_KIND_TAG
+to BTF_KIND_DECL_TAG") and contains the following patches:
 
+ 0001-cgroup-Drop-cgroup_-prefix-from-cgroup_threadgroup_r.patch
+ 0002-sched-cgroup-Generalize-threadgroup_rwsem.patch
+ 0003-bpf-Implement-prealloc-for-task_local_storage.patch
 
--- 
-~Randy
+and also available in the following git branch:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tj/misc.git bpf-task-local-storage-prealloc
+
+diffstat follows. Thanks.
+
+ fs/exec.c                                                   |    7 +
+ include/linux/bpf.h                                         |    6 +
+ include/linux/bpf_local_storage.h                           |   12 +++
+ include/linux/cgroup-defs.h                                 |   33 ---------
+ include/linux/cgroup.h                                      |   11 +--
+ include/linux/sched/threadgroup_rwsem.h                     |   46 ++++++++++++
+ init/Kconfig                                                |    4 +
+ kernel/bpf/Kconfig                                          |    1 
+ kernel/bpf/bpf_local_storage.c                              |  112 ++++++++++++++++++++++--------
+ kernel/bpf/bpf_task_storage.c                               |  138 +++++++++++++++++++++++++++++++++++++-
+ kernel/cgroup/cgroup-internal.h                             |    4 -
+ kernel/cgroup/cgroup-v1.c                                   |    9 +-
+ kernel/cgroup/cgroup.c                                      |   74 ++++++++++++--------
+ kernel/cgroup/pids.c                                        |    2 
+ kernel/fork.c                                               |   16 ++++
+ kernel/sched/core.c                                         |    4 +
+ kernel/sched/sched.h                                        |    1 
+ kernel/signal.c                                             |    7 +
+ tools/testing/selftests/bpf/prog_tests/task_local_storage.c |  101 +++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/task_ls_prealloc.c        |   15 ++++
+ 20 files changed, 489 insertions(+), 114 deletions(-)
+
+--
+tejun
+
