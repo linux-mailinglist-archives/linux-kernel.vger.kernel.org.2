@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E4B435529
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061FA435525
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhJTVRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:17:13 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:40453 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbhJTVRJ (ORCPT
+        id S231430AbhJTVRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 17:17:11 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:33359 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231400AbhJTVRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:17:09 -0400
-Received: by mail-oi1-f179.google.com with SMTP id n63so11265853oif.7;
-        Wed, 20 Oct 2021 14:14:54 -0700 (PDT)
+        Wed, 20 Oct 2021 17:17:07 -0400
+Received: by mail-ot1-f51.google.com with SMTP id 34-20020a9d0325000000b00552cae0decbso8160063otv.0;
+        Wed, 20 Oct 2021 14:14:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=sHNOzVt1fx+Xjri5iyaSxr/RoKgaKK3mFHN46rZafN8=;
-        b=LfKTN+pYNTjjv1YjvTXBUvE/tzVNOHXm+FISP0UQv3bCyVzyswvGSAYAu3DG95VB46
-         xh65SCEsha5oLcrs4iGoyrxI8cJV/o17j/Qo2gxbRcC+2HRONr7lDxM8Gag8do6Mj9MD
-         oZcA1XNcDZiRTFV2GsZcAt3CGGkrmsxEv6EbAdQdZm6S5mGuCnt8BB4w0QYf3gHkSfEB
-         2EKWmLDXCpBAr5CFHuGz4gUPb6n9Js25vnh+CXgCtHkrEdLgz9kp/b+lO330nRBChIzk
-         gS2e/cTPl6/HGxqFInD2m8dcEZjertxyQiLFfXcg79uxrmbjjKKeeUKIdlT55oiZGgrW
-         ve3Q==
-X-Gm-Message-State: AOAM533c3ECih7ZtgX30a4c/CChF1AKYR9KyDHpdqqgUvL4iwacYeV/Z
-        UZfBYK3Hlw5A9R/57S1mDQ==
-X-Google-Smtp-Source: ABdhPJzY7Ei/WTDlj1Ici196zfQ21aVXJuLp7iksopkG+pytFgBR0cLu1QBEzvJPPg4Jk/Qej01C4w==
-X-Received: by 2002:a05:6808:1921:: with SMTP id bf33mr1116860oib.118.1634764494207;
-        Wed, 20 Oct 2021 14:14:54 -0700 (PDT)
+        bh=dmICp/48/qSEs70Ri+eIX62qUssRgZltzHF+47kbHhk=;
+        b=yxHc1va7a3v357yHBJaBHcAvuQTWXhhLafwiLIYRfRD+Z76JhORJFTG4HeQ4Ccg8x1
+         WoFHNMXy2beAjh6YoimU92gEY4x1yW4YrpJ6URH7W+X42lxn302lzzcS87ZRPv3Az91B
+         UTZqD/Wwu1mTZZ0HMv5xZ40u33RaMl/dL9JTvcuR1/U8OXIkqhGkOFOs9YA9uInPTye9
+         xTnFNEkS2lyk55J8xnFzRpedYjDDoYlsHJ3rpvSWV+Fx4k53s9O909sRJSgUA+XSoSzd
+         xJPYfgHx0uNnuk6Uq3tgxsImcQO8CdGEePTiPgAfxO62cunex5lUMsYlFeg0hVc4v5uf
+         /KSA==
+X-Gm-Message-State: AOAM531gpSBti1jYz24VBBN4WF0v/gty5odjY9GdLqVusrlFK7Ni2Li/
+        kIpS8Yrg+NA0mMmRgi79xg==
+X-Google-Smtp-Source: ABdhPJzFQpY139+LDDMM4EG73vjZiHXnA+KX2/jVPuaZ0J/OUKjeaw7YvzggrjVYGN3KqAOf2IVyhw==
+X-Received: by 2002:a05:6830:236b:: with SMTP id r11mr1333531oth.145.1634764492353;
+        Wed, 20 Oct 2021 14:14:52 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e14sm702110otl.22.2021.10.20.14.14.53
+        by smtp.gmail.com with ESMTPSA id n187sm639709oif.52.2021.10.20.14.14.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 14:14:53 -0700 (PDT)
-Received: (nullmailer pid 2962589 invoked by uid 1000);
+        Wed, 20 Oct 2021 14:14:51 -0700 (PDT)
+Received: (nullmailer pid 2962587 invoked by uid 1000);
         Wed, 20 Oct 2021 21:14:47 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        devicetree@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>
-In-Reply-To: <20211020175747.28449-1-etienne.carriere@linaro.org>
-References: <20211020175747.28449-1-etienne.carriere@linaro.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: arm: Add OP-TEE transport for SCMI
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, Julien Su <juliensu@mxic.com.tw>,
+        linux-spi@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20211020142809.349347-5-miquel.raynal@bootlin.com>
+References: <20211020142809.349347-1-miquel.raynal@bootlin.com> <20211020142809.349347-5-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand description file to yaml
 Date:   Wed, 20 Oct 2021 16:14:47 -0500
-Message-Id: <1634764487.047202.2962588.nullmailer@robh.at.kernel.org>
+Message-Id: <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 19:57:46 +0200, Etienne Carriere wrote:
-> Introduce compatible "linaro,scmi-optee" for SCMI transport channel
-> based on an OP-TEE service invocation. The compatible mandates a
-> channel ID defined with property "linaro,optee-channel-id".
+On Wed, 20 Oct 2021 16:27:55 +0200, Miquel Raynal wrote:
+> Let's get rid of spi-nand.txt by converting it to yaml schema. While at
+> converting this file, let's actually pull all the generic properties
+> from nand-chip.yaml which might apply to a SPI-NAND chip.
 > 
-> Cc: devicetree@vger.kernel.org
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
-> Changes since v3:
->  - Add description for linaro,optee-channel-id in patternProperties
->    specifying protocol can optionaly define a dedicated channel id.
->  - Fix DTS example (duplicated phandles issue, subnodes ordering)
->  - Fix typo in DTS example and description comments.
-> 
-> Changes since v2:
->  - Define mandatory property linaro,optee-channel-id
->  - Rebased on yaml description file
-> 
-> Changes since v1:
->  - Removed modification regarding mboxes property description.
-> ---
->  .../bindings/firmware/arm,scmi.yaml           | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
+>  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
+>  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
+>  2 files changed, 27 insertions(+), 5 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -85,12 +77,17 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/firmware/arm,scmi.example.dt.yaml: sram@51000000: 'optee-shm-section@0' does not match any of the regexes: '^([a-z]*-)?sram(-section)?@[a-f0-9]+$', 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sram/sram.yaml
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml] Error 255
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1544001
+See https://patchwork.ozlabs.org/patch/1543922
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
