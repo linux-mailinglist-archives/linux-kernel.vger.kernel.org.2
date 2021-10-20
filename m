@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9D9434BD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBF9434BD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhJTNKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S230244AbhJTNLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhJTNKf (ORCPT
+        with ESMTP id S230174AbhJTNLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:10:35 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB25DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:08:21 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id h193so7074725pgc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:08:21 -0700 (PDT)
+        Wed, 20 Oct 2021 09:11:05 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DE9C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:08:51 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id d198-20020a1c1dcf000000b00322f53b9b89so10151572wmd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 06:08:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IIgapTldr0u9gixvVV/tHeXt0CPLif8wkTF6Jw6YKQo=;
-        b=IBSg2WpWNnvyLUI70hiFZaUEiugtNf5oDnPVXlwELkbs5+DiCHoXc3yuawgakmWDN+
-         3VXTKlJq6rg01zjXHpch47IUTNMLtA74HQKeaBvLT7AP3vGu1sBzQjkBAqSYN2QkmXeS
-         xO5Pabn3fwClj+X60cFXw3tmdHVcug2K0j0wVVQV976fXDQGec0h7YUwLOmJYHOX/LHm
-         eaONE6ibASJfS6kqlMYo+BTg2kcfTSMLYVKkPDc4bjgX32oAPNNsC//LC7+ALLORExpH
-         VyoYa6ogZ2sBpXDhfkRa6fERGh8fYr2kqZM1ADcvYZxw3k12skwjwN4ZO577+FORjOc3
-         czCw==
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=4P4AVlRuS+D8nRRZwY7bESCy+/9tZLn5inc7/Sy4z+g=;
+        b=XyzvrgVNkV/afwxqMkX5uoSxL3qX4Hb0sTQfo44r6x/QtqVKaSBK/7OlAuOIAlRrjE
+         NbszUB0kB50R4XBwLdOENLmlQwexDnDhOIiN8oHs/7y5FuGrOP2Pw1Tv40oDTytAfNlj
+         UojVZ8UMguW/TueF7aeKl98cY0wfwMpOz68CfC9J2FaUNv4gLTvEiycezbR7+mwP7Ar5
+         L4+KJTZX12i7L+QMgyMMOlZX94fFMefhocAyip/fGcy5wK+T9hgV8G1mFITiq57Kx55+
+         Uc3wIW/aNMGxTIyxRNXhc89sMuKPJICdcNFWY0lu6WW9WjQQyGk9i7JUEMuyPxgLNuCy
+         RjgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IIgapTldr0u9gixvVV/tHeXt0CPLif8wkTF6Jw6YKQo=;
-        b=IBoZtqQI9AqhGYiyNebsIyxsfk/xYnuFfRPSFV0JXz7K8m1B+eA56KXE2a5br8cBFW
-         p63h/fEL0cWDBZy+0A8LvkJYfGLFLGMK9Au5XEz6ghzEZpHpelhb2JUVKIUpgPO1+ueH
-         Jm/z7JrFD59Kj5o2xGhtDI3gj7L7V7W3JyWjOAvWWFf6t7NTacxVeGwSYyPgN28RUPmT
-         Mv75dET2P/It3h9rIAxHBIKdI2uV7/8tsCD+5cL4ugzNOTgXLryfAF0ku8w7dkTbeSu2
-         U+Oj4sSsWf+Q8h7ktaPu4T4rSQwgdTcvRYuHRcXC6f021QUiD6WAW1O6ED6+tG41NplM
-         io/A==
-X-Gm-Message-State: AOAM531QoLvYLPaC3VCtmeiRmI1Sk+kFaB1YgRxd3gzV1LSdG/bUF110
-        SNzDsyFIfKa+B0jdwstqvxvzyg==
-X-Google-Smtp-Source: ABdhPJwMotWZBMWF1EiUTkbclLVG9IDrdNd7pUWTmadpqFWss6S/sPvOQY9PgdyWpxeJ4EaOe7ORJA==
-X-Received: by 2002:a63:470b:: with SMTP id u11mr33208625pga.441.1634735301302;
-        Wed, 20 Oct 2021 06:08:21 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id qe17sm2840762pjb.39.2021.10.20.06.08.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Oct 2021 06:08:21 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 21:08:14 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        rnayak@codeaurora.org, lsrao@codeaurora.org, stephan@gerhold.net
-Subject: Re: [PATCH] soc: qcom: qcom_stats: Fix client votes offset
-Message-ID: <20211020130813.GE7231@dragon>
-References: <1634719753-26064-1-git-send-email-mkshah@codeaurora.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=4P4AVlRuS+D8nRRZwY7bESCy+/9tZLn5inc7/Sy4z+g=;
+        b=JSpTUlk9OxDpzaYwBpCLiK2HYZ2nO0iIRhHS6b8bNnINoI8lf2Nido4tcO6W5RKulS
+         dSvU/bKAjWBkCzxva1TJ+qjcdrtFMjTtJy+8yoap9e49tJSDRq/+AH6VCkZEEZaARkSs
+         fMCNpsUvWhnsvileZVb+2WPn91rAaNduTZsDLx9T1gsak/D8dChYzWWiOx41B01A/CWI
+         UgyoJeCqFmjLpF34Up7MU1yuHNtocO8oi57YLRu794+tlkQYiB7ahVFlUjgeP7CKIcZi
+         m4LiBurnPBoyCQib4yxyPwaL0j+4pOAzTkiosCOg9ZuVE/YhZTTETiCHkKnwJuS4sDBX
+         yjSw==
+X-Gm-Message-State: AOAM533FB4lAeJ/3+UuluklLkJ5+Z0RKZqdyPBESiQaTO7Va7A5PM2x7
+        biYI4BuUqsZpNQYZXg1XEf4=
+X-Google-Smtp-Source: ABdhPJyBxaVbJZpais0T6mHisqa9q1uhVgD3hlebgRYc6WsQ0a5As2/UOlqoeZF29HBhlvSZhyQgHQ==
+X-Received: by 2002:adf:e7d0:: with SMTP id e16mr51195752wrn.283.1634735329623;
+        Wed, 20 Oct 2021 06:08:49 -0700 (PDT)
+Received: from ?IPv6:2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62? ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id g25sm2012944wrc.88.2021.10.20.06.08.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 06:08:49 -0700 (PDT)
+Message-ID: <c89758e11e9d159135b7bc0f16b76b99b34a3ba8.camel@gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH] staging: vt6655: Rename
+ `by_preamble_type` parameter
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
+        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 20 Oct 2021 14:08:47 +0100
+In-Reply-To: <alpine.DEB.2.22.394.2110201456190.2930@hadrien>
+References: <20211020084033.414994-1-karolinadrobnik@gmail.com>
+          <alpine.DEB.2.22.394.2110201051300.2930@hadrien>
+         <6089e564f89ceaa7303bf3a4b4c864bf1389ac25.camel@gmail.com>
+         <alpine.DEB.2.22.394.2110201456190.2930@hadrien>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634719753-26064-1-git-send-email-mkshah@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 02:19:13PM +0530, Maulik Shah wrote:
-> Client votes starts at 0x20 offset. Correct the offset.
+On Wed, 2021-10-20 at 14:59 +0200, Julia Lawall wrote:
+> On Wed, 20 Oct 2021, Karolina Drobnik wrote:
 > 
-> Reported-and-suggested-by: Shawn Guo <shawn.guo@linaro.org>
-> Fixes: 1d7724690344 ("soc: qcom: Add Sleep stats driver")
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> > On Wed, 2021-10-20 at 10:54 +0200, Julia Lawall wrote:
+> > > On Wed, 20 Oct 2021, Karolina Drobnik wrote:
+> > > 
+> > > > Drop `by` prefix in the first parameter of `bb_get_frame_time`
+> > > > function.
+> > > > As the original argument, `byPreambleType`, was renamed to
+> > > > `preamble_type`,
+> > > > the parameter referring to it is now renamed to match the new
+> > > > naming
+> > > > convention.
+> > > > Update `bb_get_frame_time` comment to reflect that change.
+> > > > 
+> > > > This patch is a follow-up work to this commit:
+> > > >     Commit 548b6d7ebfa4 ("staging: vt6655: Rename
+> > > > byPreambleType
+> > > > field")
+> > > 
+> > > This is not going to be practical.  If the previous patch is
+> > > accepted, then this it not needed.
+> > 
+> > This change was there before but Greg told me to do only one
+> > logical
+> > change per patch (which was a struct member rename), so I reverted
+> > it.
+> > I believe this is needed because this parameter still uses
+> > Hungarian
+> > notation, which is against the LK coding style. Also, it makes
+> > sense to
+> > update the name given my previous change.
+> 
+> Sorry, I think I was not clear.  It's not practical to explain
+> constraints
+> on other patches in the log message.
 
-Reviewed-by: Shawn Guo <shawn.guo@linaro.org>
+Oh, I see. I thought about this log message as "why" but now, when I
+come think of it, just saying it's about the Hungarian notation should
+be enough. I'll correct the log message, thank you.
 
-> ---
->  drivers/soc/qcom/qcom_stats.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/soc/qcom/qcom_stats.c b/drivers/soc/qcom/qcom_stats.c
-> index 817505b..131d24c 100644
-> --- a/drivers/soc/qcom/qcom_stats.c
-> +++ b/drivers/soc/qcom/qcom_stats.c
-> @@ -22,7 +22,7 @@
->  #define LAST_ENTERED_AT_OFFSET	0x8
->  #define LAST_EXITED_AT_OFFSET	0x10
->  #define ACCUMULATED_OFFSET	0x18
-> -#define CLIENT_VOTES_OFFSET	0x1c
-> +#define CLIENT_VOTES_OFFSET	0x20
->  
->  struct subsystem_data {
->  	const char *name;
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+> The important thing is
+> that if you want to make two different changes on the same file,
+> either
+> the first one has to be accepted before you submit the second one, or
+> they
+> have to be in a series.
+
+I see, thanks for clarification.
+
+> > > 
+> > I can add this in but will that still count as a one logical
+> > change?
 > 
+> No.  It's a different change.  It's just a small whitespace issue,
+> but
+> it's not triggered by the other changes you have made.
+
+Ok, I'll submit a separate patch for it later on.
+
+
+Thanks,
+Karolina
+
