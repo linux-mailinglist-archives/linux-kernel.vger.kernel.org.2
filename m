@@ -2,138 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3E6434BEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE25434BF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhJTNUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTNUM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:20:12 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF36C06161C;
-        Wed, 20 Oct 2021 06:17:57 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id e65so20085787pgc.5;
-        Wed, 20 Oct 2021 06:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=WYRpv8N66/W2Mu0ccRwKp1YVNKPZWgSDjisZQyVjEx8=;
-        b=W7d9Dw6Txw6qqYUs29sbgFaYzX9bi87F7VBdCMsJ7mqOOp1beirt0jPgR760Fsbo31
-         ARnz7IgGxXpmQkeYXMcC+J7APY+AY949Cy+jACf/xmVirGjFqmIl6XKIZMefr0xhk6jr
-         sIT/i/ItkQRC3aDS3xqVIqXWEH2ceL85jd7D/JiWdVjEhP6nHRZEDeYByF1t1glBKhzb
-         JV5lolicYYlivX3A1evtWUA+SDhjBluj98VeL2/pXV9SDwnjz7myfjfd80sfItG7uJox
-         Qkq1FBaSEBuOR6rWwNUcUUyy1EYSQf5cyG3+eLg+0IEyppyWvfkGb163lsHZ/wMS9KqP
-         /vUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=WYRpv8N66/W2Mu0ccRwKp1YVNKPZWgSDjisZQyVjEx8=;
-        b=bOy/R9E8cMpE557NklKlaxdIifS0Sh0kewv/T2h/XCp7AzxKe94J3LbMNvEBDqdN+C
-         UL9Bp4nu4reK7P9qO/ddh8sSkpC/dGRwYBBM4zRMuMCKpjW1w6LLJeDbHBIQVQwqow1L
-         HstHeUozbmskTiAIbmJ6Wa/1Z70+M8B13BHePxTQcD+VvoPcbVfAu489RLNK0bgT82In
-         jY00uMRrSH2HP8iCw7TejKb0GKVUxjJqfDzpDLebSeKck1Co5HwEi1JIJ2v+UydQqgVg
-         +I8HKgwDWEB2gseHGxADa90HoNGzm7mLkgrd/h85aoTQNuuwt8/GzmoVIBaMBNaFZRNe
-         fb/A==
-X-Gm-Message-State: AOAM533Ld9TjGwUv9ipLvnk6Glr59INs9Q9qaZGNhOP2Io6UIlyYAGE2
-        VQx2a6dX8mpIvwZdAKwCuac=
-X-Google-Smtp-Source: ABdhPJwe4OyYxZBBcTwn+Hoa8n9DNA0H7qO1dEf5kLqG6ddUb7u9Cp/PGSHNHAEg0gfmGXqe8ZgTYw==
-X-Received: by 2002:a63:b241:: with SMTP id t1mr33828806pgo.154.1634735876518;
-        Wed, 20 Oct 2021 06:17:56 -0700 (PDT)
-Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
-        by smtp.gmail.com with ESMTPSA id b10sm2848145pfl.200.2021.10.20.06.17.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 06:17:56 -0700 (PDT)
-Message-ID: <9459d5dd265675d20905f4a02687cc08c31ee2fe.camel@gmail.com>
-Subject: Re: [PATCH 00/17] various fixes for atomisp to make it work
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nable <nable.maininbox@googlemail.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>
-Date:   Wed, 20 Oct 2021 22:17:51 +0900
-In-Reply-To: <YW70KzXJ8q1ksEx5@smile.fi.intel.com>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-         <bc7f699d-d77d-83ad-ce5b-6082f30881c1@redhat.com>
-         <7550e3359471726cf14572dd4860c238f166dde8.camel@gmail.com>
-         <YW70KzXJ8q1ksEx5@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S229998AbhJTNZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:25:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:60606 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhJTNZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:25:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10142"; a="209571797"
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="209571797"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 06:22:45 -0700
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; 
+   d="scan'208";a="527061761"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 06:22:43 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mdBY0-000DOj-0j;
+        Wed, 20 Oct 2021 16:22:24 +0300
+Date:   Wed, 20 Oct 2021 16:22:24 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org, 282827961@qq.com
+Subject: Re: [PATCH v5] tty: Fix the keyboard led light display problem
+Message-ID: <YXAYENOfaRr7bfJ8@smile.fi.intel.com>
+References: <20211020125050.16446-1-changlianzhi@uniontech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020125050.16446-1-changlianzhi@uniontech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-19 at 19:36 +0300, Andy Shevchenko wrote:
-> On Tue, Oct 19, 2021 at 10:50:27PM +0900, Tsuchiya Yuto wrote:
-> > On Mon, 2021-10-18 at 09:48 +0200, Hans de Goede wrote:
-> > > On 10/17/21 18:19, Tsuchiya Yuto wrote:
-> 
-> ...
-> 
-> > > >   ## for mipad2 (and whiskey cove pmic based devices)
-> > > > 
-> > > > For devices which equip whiskey cove PMIC, you need to add non-upstream
-> > > > regulator driver [1].
-> > > > 
-> > > > [1] work done by jekhor, which seems to be from intel-aero or old
-> > > >     Android kernel
-> > > >     https://github.com/jekhor/yogabook-linux-kernel/commit/11c05b365fb2eeb4fced5aa66b362c511be32a34
-> > > >     ("intel_soc_pmic_chtwc: Add regulator driver and definition for VPROG1B")
-> > > 
-> > > Interesting I recently bought a 2nd hand mipad2 myself too. I still need
-> > > to put Linux on there. I'm definitely motivated to do that now :)
-> > 
-> > I'm glad to hear that you also got a mipad2 :) It might be a interesting
-> > device to look into. It even won't boot without nomodeset, no battery
-> > charging/status on mainline kernel.
-> > 
-> > By the way, instead of adding whiskey cove regulator driver, we may also
-> > add a "hack" like the other PMIC in atomisp_gmin_platform to control
-> > regulators [1].
-> 
-> I looked briefly into the code and if we indeed need to turn off or on
-> the regulators it should be a driver.
-> 
-> I don't like having hacks outside of driver/staging to satisfy the one from
-> the staging.
+On Wed, Oct 20, 2021 at 08:50:50PM +0800, lianzhi chang wrote:
+> Switching from the desktop environment to the tty environment,
+> the state of the keyboard led lights and the state of the keyboard
+> lock are inconsistent. This is because the attribute kb->kbdmode
+> of the tty bound in the desktop environment (xorg) is set to
+> VC_OFF, which causes the ledstate and kb->ledflagstate
+> values of the bound tty to always be 0, which causes the switch
+> from the desktop When to the tty environment, the LED light
+> status is inconsistent with the keyboard lock status.
 
-Yeah, if "reading" from the PMIC can't be achieved with the current
-mainline kernel, it does not make sense to add code for "reading" just
-for the hack inside atomisp. Rather, in this case, adding the regulator
-driver is a straightforward way.
+Thank you for an update! My comments below.
 
-We can already write with intel_soc_pmic_exec_mipi_pmic_seq_element(),
-so what I wondered is, is there equivalent for "read"?
+...
 
-But yes, we should eventually use regulator driver anyway.
+> +static void kbd_update_ledstate(struct input_dev *dev)
+> +{
+> +	unsigned long leds;
+> +
+> +	if (ledstate == -1U)
+> +		ledstate = 0;
 
-Regards,
-Tsuchiya Yuto
+> +	leds = (unsigned long)ledstate;
 
-> I.o.w. having a regulator driver is a right thing to do in my opinion.
-> 
-> > It seems that to do so, it needs to "read" value from the PMIC before
-> > writing. So, I'm not sure if this can be achieved easily with the current
-> > mainline kernel though.
-> > 
-> > [1] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/commit/6204d4b7aeefc4db622f8ac57b87bf2c76c6c8aa
-> >     ("atomisp_platform: add whiskey cove pmic support")
-> 
+It's still unclear why do you need casting here.
+
+> +	if (!!test_bit(LED_NUML, dev->led) != !!test_bit(VC_NUMLOCK, &leds))
+> +		ledstate ^= BIT(VC_NUMLOCK);
+> +	if (!!test_bit(LED_CAPSL, dev->led) != !!test_bit(VC_CAPSLOCK, &leds))
+> +		ledstate ^= BIT(VC_CAPSLOCK);
+> +	if (!!test_bit(LED_SCROLLL, dev->led) != !!test_bit(VC_SCROLLOCK, &leds))
+> +		ledstate ^= BIT(VC_SCROLLOCK);
+> +}
+
+...
+
+>  	unsigned int leds;
+>  	unsigned long flags;
+> +	struct kbd_struct *kb;
+
+Can we use reversed xmas tree ordering as I showed previously, please?
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
