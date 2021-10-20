@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369C943545E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958F7435462
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhJTUMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
+        id S231672AbhJTUN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 16:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhJTUMY (ORCPT
+        with ESMTP id S231629AbhJTUNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:12:24 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2CAC06161C;
-        Wed, 20 Oct 2021 13:10:10 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t11so16912186plq.11;
-        Wed, 20 Oct 2021 13:10:10 -0700 (PDT)
+        Wed, 20 Oct 2021 16:13:55 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8494DC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:11:40 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 145so14597768ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K05jLGVYT1OOWM9LHHmc8HLRdEchhFT9XiRJZyZVkUM=;
-        b=Ra0L6ar+M6OhF0xiUFZ/Ji9TADTNtKaeoKk+nFnNbn7yLclr75DgYOY+QlmUKB0OJ6
-         aSiPRvE7KiaCjCPZSQsb3joeq+UlPGd5LeIoHgu0ZgOiaqsu1YyAzOtvq9cOYEauuBJZ
-         pQNk3wEpDfSDO2ko/Qs4cH7ls81KdWungwWK4o32tnUwz3ThInbudxi0JM1j2hBmgm0s
-         AnuiEbGynXzew3/rnB50dtsKkzYls9P3caOaxJT3J70k+cjlWxMhOp+hc0a1lkDnMQCB
-         0hskEPan9zAon0a2IE31Z00CCgIf30GtCcXjRguzUBqw39HlOP90OfHjbzI4qzW5y5t2
-         RdxA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2mjyTuiMt0G/NI9j2uGhr176LQ8tHUDaZsPCBpnXywo=;
+        b=JNYtSv2gblmlTKXiqtL4y6TtoOuGzc68cZHueN9cP+lj++0rs+VLST38HhlFDoPg2f
+         q/iXqIc7waXQwRes5r5w9NeAF++++Ur7bf/OJfMU2qanF+BgkZ215gZA/vba1jIbqtrg
+         YKY42GAegLHMretczDWyIsPvSaAr/LVgePt/0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=K05jLGVYT1OOWM9LHHmc8HLRdEchhFT9XiRJZyZVkUM=;
-        b=XOo/TuUtyJAU/fIbUBMQolS2v6PMYEdQyA5YZRpeYUi1qzNRqahBCRgY14ZHEVFmnn
-         pswtM0cV25p+f+7GbyhVpXGda4rOcSb4w7bhQFqbMsQMy9/IG+Dg7UltczdhP5+HjSvh
-         YuRzSbCdZQYMQC0sIpENiobwlS461nxdjpXWMce/pbDuihjhUUFMrYoeXylW+S9MpDdi
-         /Hc12r3O8P5UOZ+P94JASk1LUcO3AmNupEDTXeVGTbAiL9cDlO7/MMijmRaGbJtMtes7
-         Hie+2Lt4kjIbMQhFEX5nEhzBjxLPAd9lT69tI1hzRa1bwJPHw/jI0Dv0fm4kE8KgVT6j
-         KJ7w==
-X-Gm-Message-State: AOAM531SaMSFs4lghpTLy0Cv/OFw5XwbCmWTj081kV1pPtc/DV2r3oHJ
-        KIazxnlFGxiw7khx2MNkibk=
-X-Google-Smtp-Source: ABdhPJzhssuFfJh1tqLMWgVA1PKfZZg9vQJ8ENfJfh2ZBtEh4x+sD/6rOJeuPMCybJNr97N6NqIHUQ==
-X-Received: by 2002:a17:902:d50f:b0:13f:ac51:29b4 with SMTP id b15-20020a170902d50f00b0013fac5129b4mr1025549plg.51.1634760609567;
-        Wed, 20 Oct 2021 13:10:09 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id q16sm4118338pfu.36.2021.10.20.13.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 13:10:09 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 20 Oct 2021 10:10:07 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Christoph Lameter <cl@linux.com>,
-        Dennis Zhou <dennis@kernel.org>
-Subject: Re: [PATCH 1/2] percpu_ref: percpu_ref_tryget_live() version holding
- RCU
-Message-ID: <YXB3n2pxiKYbd2Il@slm.duckdns.org>
-References: <cover.1634759754.git.asml.silence@gmail.com>
- <d65d6d60faf773293e5189bd2b95c7bbc034976b.1634759754.git.asml.silence@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2mjyTuiMt0G/NI9j2uGhr176LQ8tHUDaZsPCBpnXywo=;
+        b=Py8wVtZ/LXtll8yQIoelnmMOHANjZmEZYF5WunnSgvT6KHej5ckUd9CzVauTZl0tMn
+         yjL4anDzN8+f2GSE67SKnBujDjT2dI91R/YhY9xqJAe8S1wrBXw/+cMQmSNhPs55RkuS
+         +PMFGqYOea+4jcNgtZvcK0O6RhHfIwsFt+jXDC+7BX1ZhuOKqSBSe26QQqf50f4TTOTw
+         cY51ucUTfzXs6VxKWMzsgXJsQfVsehACeHdqfQHwAxGm0dM5HdEfaGGF3pMVVaxNbI9d
+         UFD4yi+7YTWIG1250hL35e5pUeP+6xKxgZ09xGKgEJWO2no5nkmwVqVHzL2oi7SdK8Hs
+         FlsA==
+X-Gm-Message-State: AOAM530eL5NSrFxk5JQOEYLtZ/D5YqfUINgsLkzRvApf1htP7byWH35j
+        6xKDeur8IkUzEgGpYqcFxb7NQWBg3oPua6hd
+X-Google-Smtp-Source: ABdhPJyfl4a8aSSbcTWvyaocNxSXMDc1SGtwYsIApIZ843GPM7z1jQUUoNAPvM4t2oeNHEX/po1PUw==
+X-Received: by 2002:a2e:3608:: with SMTP id d8mr1171277lja.233.1634760698386;
+        Wed, 20 Oct 2021 13:11:38 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id r17sm269067lfe.107.2021.10.20.13.11.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 13:11:36 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id g8so218104ljn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:11:35 -0700 (PDT)
+X-Received: by 2002:a2e:9945:: with SMTP id r5mr1210626ljj.249.1634760695569;
+ Wed, 20 Oct 2021 13:11:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d65d6d60faf773293e5189bd2b95c7bbc034976b.1634759754.git.asml.silence@gmail.com>
+References: <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com>
+In-Reply-To: <YXBFqD9WVuU8awIv@arm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 20 Oct 2021 10:11:19 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+Message-ID: <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 09:03:18PM +0100, Pavel Begunkov wrote:
-> +/**
-> + * percpu_ref_tryget_live_rcu - same as percpu_ref_tryget_live() but the
-> + * caller is responsible for taking RCU.
-> + *
-> + * This function is safe to call as long as @ref is between init and exit.
-> + */
-> +static inline bool percpu_ref_tryget_live_rcu(struct percpu_ref *ref)
-> +{
-> +	unsigned long __percpu *percpu_count;
-> +	bool ret = false;
-> +
-> +	if (likely(__ref_is_percpu(ref, &percpu_count))) {
-> +		this_cpu_inc(*percpu_count);
-> +		ret = true;
-> +	} else if (!(ref->percpu_count_ptr & __PERCPU_REF_DEAD)) {
-> +		ret = atomic_long_inc_not_zero(&ref->data->count);
-> +	}
-> +	return ret;
-> +}
+On Wed, Oct 20, 2021 at 6:37 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> The atomic "add zero" trick isn't that simple for MTE since the arm64
+> atomic or exclusive instructions run with kernel privileges and
+> therefore with the kernel tag checking mode.
 
-Can we please add rcu_read_lock_held() assertion? Other than that, looks
-fine to me.
+Are there any instructions that are useful for "probe_user_write()"
+kind of thing? We could always just add that as an arch function, with
+a fallback to using the futex "add zero" if the architecture doesn't
+need anything special.
 
-Thanks.
+Although at least for MTE, I think the solution was to do a regular
+read, and that checks the tag, and then we could use the gup machinery
+for the writability checks.
 
--- 
-tejun
+                Linus
