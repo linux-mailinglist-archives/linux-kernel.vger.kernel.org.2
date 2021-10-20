@@ -2,103 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7829A4346F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0654346FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhJTIdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhJTIdB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:33:01 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AF3C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3OLZ7qJ08nHHBM2qZTVu1EJSQMFk9MZ440U4M+413G4=; b=RGk1jGc8JOBaFeW4F07MM+J0W9
-        kq0fws2b1RIt1h60kYzTn4SBf2bSpGc6qk2s7+mVih9VllW+7Jd5Brth8UXAwaNTpl7iNTiyKnLI3
-        iunG+ayUMuZhBvAu9pP3MG9Mlxop1SL2C+Gk5eoSXVa370/sn8piAVYQWr13HFGYdJyhazfboiWTT
-        pkgH2ZyabI9d0aY0/RSi/tyRpFm7lHOVte7HjXkCn1LS4Sa4BRPiVimNaux1vcLLsUPQaq2BF7UcD
-        dh452jZWYp5ygNqHGJouW411Xx1gUari7A9ehMx+2kwZPV5Ob5lJbAjUEHiorOvFYw++WQrY/0vyH
-        wVm3o7Zg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1md6ze-00AutD-EU; Wed, 20 Oct 2021 08:30:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 16597300221;
-        Wed, 20 Oct 2021 10:30:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ECCA020F080E8; Wed, 20 Oct 2021 10:30:37 +0200 (CEST)
-Date:   Wed, 20 Oct 2021 10:30:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
-Message-ID: <YW/TrQ4MFjz8yTWC@hirez.programming.kicks-ass.net>
-References: <20211013122217.304265366@infradead.org>
- <20211013123645.002402102@infradead.org>
- <20211013205259.44cvvaxiexiff5w5@treble>
- <YW6t5catO1mx+eCZ@hirez.programming.kicks-ass.net>
- <20211019164659.dybir4wgfmdt4r47@treble>
- <20211019164913.2dsyyethdeblqjlq@treble>
+        id S229842AbhJTIdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:33:43 -0400
+Received: from mail-mw2nam12on2110.outbound.protection.outlook.com ([40.107.244.110]:45356
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229603AbhJTIdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:33:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kmt+jGt+w8qj421hOratwipREwo3MQqDW0TpyGQeU3tFNV3S7oMMgGrHC+ny8hOK6+/soMucLxNorBII5EPhSpO8+AGPfrRegR6qzOdA4jcny1prz8kR+oFFEvjcfVJQJ0RjHxyt3DfrJaT1PNW9tmp2FD96ZHTLAQXF8PUA86lLpE/HMELfxNEIyXOdEWi3zDlsuwjZEDpodGobOfxT9TtmDxyhg5pZhfn76Iovd4WoVDdQqKKEa/zbydnGp9UybFJ69nmO9EfPZnYS07gnSvFwBrCx1BrD+76GFiL5sY5MIGPDjyhCIRLRO37X+rToB4w1q62cAsxX5kobD+Gwag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u9Bou5HF8PJcNrcYgfz9ANonmw6Iqu0si8sUnlS2HN8=;
+ b=mPZ3X4/44pObUelyWtOin/FRqYuZGMpIkcgzGsYcO5Z6KkV+K9RoHulZN1CjpS/daOLw8j+wbbnqnGL2zjZeZ3PySxv2R3H2EJrGqy9e4HM00IsvA1en+lasNt+tekmL6N0hxIk4VwCeSj7WepBcItTMxrugdbmJ3P4T2jd/vqTbIP81N47PVPCwiciCAmUho0X5rKZQeoKdwEFiU3zAi3mDR+Nz/4v8gRmvG9AkR+U36brNHvNW7eRvrt/UWYw9F6VllnOb2th4TbGl7/DHs4vLZuxC4eoj7QP8yBCLaI5NKlnZEUYFcn6j8J3wiX9B6xwPMKvdoJRfMisImmGfTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u9Bou5HF8PJcNrcYgfz9ANonmw6Iqu0si8sUnlS2HN8=;
+ b=OWrmM4WSxD5PqAnqrConVD1PlMJt45yajfKvds5j7zrggVcqzuPx6jnfwkE2UD0gXn6ETlxwla5dSbiSbPLznBY0VrN8bjEvrxWR+LeRMhICTx6h+/bgvtFBm/4rkncWAB7Z5C7o1GTK6R43jvkD7DeErgHZXrS9yhg66JrKWSo=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=maximintegrated.com;
+Received: from BYAPR11MB3671.namprd11.prod.outlook.com (2603:10b6:a03:b3::15)
+ by BYAPR11MB3447.namprd11.prod.outlook.com (2603:10b6:a03:1d::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Wed, 20 Oct
+ 2021 08:31:22 +0000
+Received: from BYAPR11MB3671.namprd11.prod.outlook.com
+ ([fe80::49d4:a1dd:5b55:4c94]) by BYAPR11MB3671.namprd11.prod.outlook.com
+ ([fe80::49d4:a1dd:5b55:4c94%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
+ 08:31:22 +0000
+From:   George Song <george.song@maximintegrated.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, george.song@analog.com,
+        ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com,
+        George Song <george.song@maximintegrated.com>
+Subject: [v5 1/2] ASoC: dt-bindings: max98520: add initial bindings
+Date:   Wed, 20 Oct 2021 17:30:54 +0900
+Message-Id: <20211020083055.23625-1-george.song@maximintegrated.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SL2P216CA0002.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:100:18::12) To BYAPR11MB3671.namprd11.prod.outlook.com
+ (2603:10b6:a03:b3::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019164913.2dsyyethdeblqjlq@treble>
+Received: from SEL-LT-028891.maxim-ic.internal (223.62.204.189) by SL2P216CA0002.KORP216.PROD.OUTLOOK.COM (2603:1096:100:18::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend Transport; Wed, 20 Oct 2021 08:31:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1e395590-6a81-47f5-6031-08d993a3ff26
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3447:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR11MB344749FC53F51165F01BD4BCF4BE9@BYAPR11MB3447.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SUttz9FAN254Bpyb3uFYuW/axlAj0L++b91x80vpvnEjNrSLck+rlLlS+1YARluYTiBu/IJSwS+dAvqAXd7OZfEZTyqTpGz1B409MhTnE+Lz3PhEKgrkqX/+5d94RaF/XfN8KjLGv5Rr/KJAefUDBb695fM3gf6zrR5T8C2BsysLF2ks2021bPBQcyDdEN/AtWkPHQCkivPWIam1TRlwYDwlRHc+8H9HQcv2vTCSR9NbrTq1bFxEGDU1stq4hoscgdj0lsQ+vYDOc3bYAw46KibXG2Ob2qFqjkegqhFlfaTyOemPEs7cdYRx2/UBGlZ7eHh3vqtzoYi5WNxD5aefFZzuJwrGUSMOT1ulmdKudZ8mKiH0uliO5AD2Wq7TpD7WCGCsQZXs8C4I7K5HmeiF8uFIdLS0R1BPB0WpVzUdafKY6cdHZj3+uIo1wVoglG2Lk94PPsMMfRpWYBafQpUT/Slw+OJWo1SEBrKFCCm/IrjbL7Y4r6ja1JQpJ5tiiUyEd7MQtAZ5gShaB/qQVeKsY/ctIAKryiH9YOAziHZxsEyMEXQRVnnDYPXj+fikcrfaGJi2tIPdWFveglQ4KV8INZ5Vk3PeyWfsWVUG/BT1aj5x9zuXQOrbP3tMKflJkh1E4G3NY8Wm/0yffITIuxkRP5h9lLH5SEuIG9PWdAuST53xdDPqb6xKGn8rWF5npMqzt4LfcDfQVR+Vvur11woOqiczTZ2xAFi/sMoNhTOPVhvtyzeq3+0HtPRnggMbwGHAulgUqBcE+BXTl/c12hphMUc4EdpLWB+TDMuIxdUZusJe/IoSyBUFGMlkKdSm5xApcOVaMeumlrmEYsOMOlCMrw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3671.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(44832011)(1076003)(86362001)(6666004)(36756003)(66476007)(186003)(8676002)(5660300002)(6486002)(2616005)(956004)(2906002)(316002)(66946007)(508600001)(26005)(6506007)(966005)(6512007)(52116002)(4326008)(66556008)(8936002)(38100700002)(38350700002)(107886003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/Ch0YREnzVGlAxHHJfOWTnNCNXVEsUwUxRlCqC/wEqwVWALDxJNdWF4m3ZXk?=
+ =?us-ascii?Q?SNtim7mWErocDutU4hpkGesGWMC0vJjTuhfMprdRRgXW+Nlm2KBhZ1pW1779?=
+ =?us-ascii?Q?1uUn9l2vq6H50B4aPRZGrNVX2FyBYJcaXdaMFbgc7ZnDPZG6Or+GZsZ/XzOe?=
+ =?us-ascii?Q?euKqkEFlKZo1UJ4OkJklLf9Wz7li7tb1L60X5r7MslIm1fmpNUTwBVfFAZvO?=
+ =?us-ascii?Q?WgKK6nKhhWo94AkY6ZX352GZbf3Smbu6udN+eX/PhBWF4W7IVnuIQ4/1mOnY?=
+ =?us-ascii?Q?CLvy5ouZR1BkAyGE+QkuOOeOdaMuo0ieJMQtWuKinV5HQHThJP4WpBtl1IBG?=
+ =?us-ascii?Q?vDTIzGp2QM2RHr1URsrnYRXHvtbTr/6B2XTwJhRh0WJXrTcWapJxePA/czTJ?=
+ =?us-ascii?Q?xApZTScgXIgfgijg8XyZ/SQTMZKsn3u0KTbp79ZxK38DlUHlONKwxJbtkzmf?=
+ =?us-ascii?Q?aZYUfRtgc/OLagWVCo2iu39NZFVZJP2QD2q7N+TF3mZihtBh7FTj0zZKCl/i?=
+ =?us-ascii?Q?Kr+X49+yaJlWy3I4+rQ4ZWEmmsoCV6BevP4iVLYC5FO9nxIW0hqmekCvQkjG?=
+ =?us-ascii?Q?t6YmJfO3B9p+ESDAwChJhwAR3yaz67ThYi+w0fUjxubFs82IQlk4sgknB79P?=
+ =?us-ascii?Q?JF8MPZTN7OCJ9WXEWweSROXX/rK7/OC66t/hVefihq9a3kM8QF5EV/Bl+uLg?=
+ =?us-ascii?Q?dPF18GTdVxsHIxsSwMgcF0C9xV/S/Ig1OlPD+7dAB4RADmWkVRuZqThCU1iz?=
+ =?us-ascii?Q?l90e8WI7N+r1VZdJ4CjFLRZP0U9BuPLSJ9WAk+rWYjPpB6Ytb+6R4jOZk/qg?=
+ =?us-ascii?Q?2N8hgzB5B8OR/QImNWc0hQVAxL1r+MlgxVr5WNoVOyd3VzM/8+eVJl+Szc00?=
+ =?us-ascii?Q?6W9pIasCWsP4YB2LLXhDveumMR4zcHEPw6tnYMmCXhBpQ/++iFXffjsAQBS9?=
+ =?us-ascii?Q?mzxGEr8dv2Gccv9CxDJQLq7wbepLCtku/S80DAe3Z/LEL+C0b0btmVx42SES?=
+ =?us-ascii?Q?ew5+KWeUg+mtYr2nhStsuQd6bor+6pGLoHXsFEQBkHFZl6mq8cuPGvN8DyeO?=
+ =?us-ascii?Q?7mxlOGKkJnxmGK0IpCOPHhZePT9OZQBWcBjmjhZYjXQKI7YxpWyTX6piFXbT?=
+ =?us-ascii?Q?jj5tfThPtwSLyVgIt61f+HS4+UZ+W53jcc3mF4WAjPxQFpnWjK5+4OF4IHNd?=
+ =?us-ascii?Q?SCNXLLujodt4n4xK/0sZp7U1W3dIc/ZFjvNQLjJ/Cj/1cHq0J9j/sYdN5xGH?=
+ =?us-ascii?Q?VUoC/B26LZAq7Vde2qA9D0LC+wci0EIKe8A7wesc6KU8MAnkzNWAY2vpCNdp?=
+ =?us-ascii?Q?8g3aHIiL65GXk2WaH0e6BflW?=
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e395590-6a81-47f5-6031-08d993a3ff26
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3671.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 08:31:22.1931
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vGD47CqDnvaNHQ1aI6cK6rWoZ0uxkOa4ycjoCu3piq7QW50A3ep+9yoX9UWcQsZoSfZW8KZ3D0U/c8bobl1BDgPP/kCu9B85DxyJ7/eK+EU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3447
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 09:49:13AM -0700, Josh Poimboeuf wrote:
+add initial bindings for max98520 audio amplifier
 
-> @@ -1087,9 +1109,7 @@ static int add_jump_destinations(struct objtool_file *file)
->  			else
->  				insn->type = INSN_JUMP_DYNAMIC_CONDITIONAL;
->  
-> -			list_add_tail(&insn->call_node,
-> -				      &file->retpoline_call_list);
-> -
-> +			add_call_dest(file, insn, reloc->sym, true);
->  			insn->retpoline_safe = true;
->  			continue;
->  		} else if (insn->func) {
-> @@ -1218,20 +1238,14 @@ static int add_call_destinations(struct objtool_file *file)
->  
->  			add_call_dest(file, insn, dest, false);
->  
-> -		} else if (arch_is_retpoline(reloc->sym)) {
-> +		} else if (reloc->sym->retpoline) {
->  			/*
->  			 * Retpoline calls are really dynamic calls in
->  			 * disguise, so convert them accordingly.
->  			 */
->  			insn->type = INSN_CALL_DYNAMIC;
-> +			add_call_dest(file, insn, reloc->sym, false);
->  			insn->retpoline_safe = true;
-> -
-> -			list_add_tail(&insn->call_node,
-> -				      &file->retpoline_call_list);
-> -
-> -			remove_insn_ops(insn);
-> -			continue;
-> -
->  		} else
->  			add_call_dest(file, insn, reloc->sym, false);
->  	}
+Signed-off-by: George Song <george.song@maximintegrated.com>
+---
+ .../bindings/sound/maxim,max98520.yaml        | 36 +++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98520.yaml
 
-So the problem with add_call_dest() like this, is that the instructions
-now get to have ->call_dest set, which is really strange for
-INSN_CALL_DYNAMIC etc.. At the very least it makes call_dest_name()
-misbehave.
+diff --git a/Documentation/devicetree/bindings/sound/maxim,max98520.yaml b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+new file mode 100644
+index 000000000000..b6509cb2c8e0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/maxim,max98520.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Maxim Integrated MAX98520 Speaker Amplifier Driver
++
++maintainers:
++  - George Song <george.song@maximintegrated.com>
++
++properties:
++  compatible:
++    const: maxim,max98520
++
++  reg:
++    maxItems: 1
++    description: I2C address of the device.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      max98520: amplifier@38 {
++        compatible = "maxim,max98520";
++        reg = <0x38>;
++      };
++    };
++
+-- 
+2.25.1
 
-I've added add_retpoline_call() that also does the ->type frobbing and
-->retpoline_safe marking instead.
