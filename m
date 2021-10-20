@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9024346A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA9F4346B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhJTIVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:21:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhJTIVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:21:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 504C060FD9;
-        Wed, 20 Oct 2021 08:18:50 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 09:18:46 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
-Message-ID: <YW/Q5kjvurcYVrow@arm.com>
-References: <20211013054756.12177-1-rppt@kernel.org>
- <c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com>
- <YW5bjV128Qk1foIv@kernel.org>
- <YW6t5tBe/IjSYWn3@arm.com>
- <089478ad-3755-b085-d9aa-c68e9792895c@quicinc.com>
- <YW7p3ARYbpxmeLCF@arm.com>
- <8da41896-dc11-8246-54cf-1174f617ac39@quicinc.com>
- <YW8PZ0Q5UeRH4W4R@kernel.org>
- <YW/Hb4sVWGOIxzUk@kernel.org>
+        id S229929AbhJTIVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:21:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57584 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhJTIVo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:21:44 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 349451FD47;
+        Wed, 20 Oct 2021 08:19:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634717968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fF05nAEyjqTbx+MUMonWp9IUBJlR+Dw6z0QwyteEkTw=;
+        b=sQPHPToG2Fvjnup+4BPVwdAuh2cpg/MRibClRF00pE0aOFX5rilYheDOWuia/OCg/V/Zqr
+        6REGrweU2AtByO+aaYSQVXNMPeJju96CaKJFs3yacalq0i8KIy1xtdK+k6XVPL8SZYI+Qk
+        40JHGxGTsVeLpcQkwUsXUKfJpmik9zY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634717968;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fF05nAEyjqTbx+MUMonWp9IUBJlR+Dw6z0QwyteEkTw=;
+        b=pNe6tBQODotEc2aHu+V64wYMh/dMMgW2yUPDrkGUUEYB33K5zemch5GehR+z1c3tBJETQ5
+        z80x/CcyVZDgqDDQ==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 8E7F6A3B84;
+        Wed, 20 Oct 2021 08:19:27 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 10:19:27 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Ming Lei <ming.lei@redhat.com>
+cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+In-Reply-To: <YW/KEsfWJMIPnz76@T590>
+Message-ID: <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
+References: <YWjCpLUNPF3s4P2U@T590> <YWjJ0O7K+31Iz3ox@bombadil.infradead.org> <YWk9e957Hb+I7HvR@T590> <YWm68xUnAofop3PZ@bombadil.infradead.org> <YWq3Z++uoJ/kcp+3@T590> <YW3LuzaPhW96jSBK@bombadil.infradead.org> <YW4uwep3BCe9Vxq8@T590>
+ <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz> <YW6OptglA6UykZg/@T590> <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz> <YW/KEsfWJMIPnz76@T590>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YW/Hb4sVWGOIxzUk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:38:23AM +0300, Mike Rapoport wrote:
-> On Tue, Oct 19, 2021 at 09:33:11PM +0300, Mike Rapoport wrote:
-> > On Tue, Oct 19, 2021 at 01:59:22PM -0400, Qian Cai wrote:
-> > > [	0.000000][	T0] Booting Linux on physical CPU 0x0000000000 [0x503f0002]
-> > > [	0.000000][	T0] Linux version 5.15.0-rc6-next-20211019+ (root@admin5) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #104 SMP Tue Oct 19 17:36:17 UTC 2021
-> > > [	0.000000][	T0] earlycon: pl11 at MMIO32 0x0000000012600000 (options '')
-> > > [	0.000000][	T0] printk: bootconsole [pl11] enabled
-> > > [	0.000000][	T0] efi: Getting UEFI parameters from /chosen in DT:
-> > > [	0.000000][	T0] efi:   System Table     	: 0x0000009ff7de0018
-> > > [	0.000000][	T0] efi:   MemMap Address   	: 0x0000009fe6dae018
-> > > [	0.000000][	T0] efi:   MemMap Size      	: 0x0000000000000600
-> > > [	0.000000][	T0] efi:   MemMap Desc. Size	: 0x0000000000000030
-> > > [	0.000000][	T0] efi:   MemMap Desc. Version : 0x0000000000000001
-> > > [	0.000000][	T0] efi: EFI v2.70 by American Megatrends
-> > > [	0.000000][	T0] efi: ACPI 2.0=0x9ff5b40000 SMBIOS 3.0=0x9ff686fd98 ESRT=0x9ff1d18298 MEMRESERVE=0x9fe6dacd98  
-> > > [	0.000000][	T0] efi: Processing EFI memory map:
-> > > [	0.000000][	T0] efi:   0x000090000000-0x000091ffffff [Conventional|   |  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-> > > [	0.000000][	T0] efi:   0x000092000000-0x0000928fffff [Runtime Data|RUN|  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-> > > [	0.000000][	T0] ------------[ cut here ]------------
-> > > [	0.000000][	T0] kernel BUG at mm/kmemleak.c:1140!
-> > > [	0.000000][	T0] Internal error: Oops - BUG: 0 [#1] SMP
+On Wed, 20 Oct 2021, Ming Lei wrote:
+
+> On Wed, Oct 20, 2021 at 08:43:37AM +0200, Miroslav Benes wrote:
+> > On Tue, 19 Oct 2021, Ming Lei wrote:
+> > 
+> > > On Tue, Oct 19, 2021 at 08:23:51AM +0200, Miroslav Benes wrote:
+> > > > > > By you only addressing the deadlock as a requirement on approach a) you are
+> > > > > > forgetting that there *may* already be present drivers which *do* implement
+> > > > > > such patterns in the kernel. I worked on addressing the deadlock because
+> > > > > > I was informed livepatching *did* have that issue as well and so very
+> > > > > > likely a generic solution to the deadlock could be beneficial to other
+> > > > > > random drivers.
+> > > > > 
+> > > > > In-tree zram doesn't have such deadlock, if livepatching has such AA deadlock,
+> > > > > just fixed it, and seems it has been fixed by 3ec24776bfd0.
+> > > > 
+> > > > I would not call it a fix. It is a kind of ugly workaround because the 
+> > > > generic infrastructure lacked (lacks) the proper support in my opinion. 
+> > > > Luis is trying to fix that.
 > > > 
-> > > I did not quite figure out where this BUG() was triggered and I did not
+> > > What is the proper support of the generic infrastructure? I am not
+> > > familiar with livepatching's model(especially with module unload), you mean
+> > > livepatching have to do the following way from sysfs:
+> > > 
+> > > 1) during module exit:
+> > > 	
+> > > 	mutex_lock(lp_lock);
+> > > 	kobject_put(lp_kobj);
+> > > 	mutex_unlock(lp_lock);
+> > > 	
+> > > 2) show()/store() method of attributes of lp_kobj
+> > > 	
+> > > 	mutex_lock(lp_lock)
+> > > 	...
+> > > 	mutex_unlock(lp_lock)
 > > 
-> > This is from here:
-> > arch/arm64/include/asm/memory.h:
+> > Yes, this was exactly the case. We then reworked it a lot (see 
+> > 958ef1e39d24 ("livepatch: Simplify API by removing registration step"), so 
+> > now the call sequence is different. kobject_put() is basically offloaded 
+> > to a workqueue scheduled right from the store() method. Meaning that 
+> > Luis's work would probably not help us currently, but on the other hand 
+> > the issues with AA deadlock were one of the main drivers of the redesign 
+> > (if I remember correctly). There were other reasons too as the changelog 
+> > of the commit describes.
 > > 
-> > #define PHYS_OFFSET         ({ VM_BUG_ON(memstart_addr & 1); memstart_addr; })
-> > 
-> > kmemleak_free_part_phys() does __va() which uses PHYS_OFFSET and all this
-> > happens before memstart_addr is set.
-> > 
-> > I'll try to see how this can be untangled...
->  
-> This late in the cycle I can only think of reverting kmemleak wavier from
-> memblock_mark_nomap() and putting it in
-> early_init_dt_alloc_reserved_memory_arch() being the only user setting
-> MEMBLOCK_NOMAP to an allocated chunk rather than marking NOMAP "unusable"
-> memory reported by firmware.
+> > So, from my perspective, if there was a way to easily synchronize between 
+> > a data cleanup from module_exit callback and sysfs/kernfs operations, it 
+> > could spare people many headaches.
+> 
+> kobject_del() is supposed to do so, but you can't hold a shared lock
+> which is required in show()/store() method. Once kobject_del() returns,
+> no pending show()/store() any more.
+> 
+> The question is that why one shared lock is required for livepatching to
+> delete the kobject. What are you protecting when you delete one kobject?
 
-It makes sense, there aren't many places or nomap is called.
+I think it boils down to the fact that we embed kobject statically to 
+structures which livepatch uses to maintain data. That is discouraged 
+generally, but all the attempts to implement it correctly were utter 
+failures.
 
-I think arch_reserve_mem_area() called from acpi_table_upgrade() also
-follows a memblock allocation. But I'd call kmemleak in
-acpi_table_upgrade() directly rather than in the arch back-end.
-
-Regarding which callback, I think kmemleak_ignore_phys() is better
-suited here since kmemleak still keeps track of the object but won't
-scan it.
-
--- 
-Catalin
+Miroslav
