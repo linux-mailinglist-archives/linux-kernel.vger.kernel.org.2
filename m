@@ -2,166 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3F7434A99
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A29434A9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhJTLz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:55:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230272AbhJTLz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:55:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AD9C610FF;
-        Wed, 20 Oct 2021 11:53:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634730793;
-        bh=LPilRozXFzNZOz01IWQiBAPTdt+ygRCJKYug0spKdNQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jvhn22dibhmZuoveod285NcYtaYI65jhGHLy4kXrkuPF+lOrVtlQjNFtJ0VXEAKgd
-         4yHPAa05ane+E/hdIOrkMcEP9oZsc50AZXny5UjwlzM+gJf2HdmqB3qH4Yn7fg7hk6
-         lFhu+cOcz0rOiyijiAX3Uq2RK1nCaLHHT51hAHuT/PGz67DhHDUvF5pIyWHj9PjYJF
-         Jj+83ZGrrpbzJWOPHmCyyG8Bno0Yj0DvfyXxDtsMDzSSVvc/l+VFwEQJ+ohOzOhJnX
-         GEtYyyPldbZ+9r8a6DTPRe1cTjcF0vwJlGp/iaVVvBnkcGdqlt3GadBmBGmJM8Sbka
-         wd/mj3iWVR/0Q==
-Date:   Wed, 20 Oct 2021 17:23:10 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v2 10/11] drm/msm/dsi: Add support for DSC configuration
-Message-ID: <YXADJjJ1y9Xp2Zlj@matsya>
-References: <20211007070900.456044-1-vkoul@kernel.org>
- <20211007070900.456044-11-vkoul@kernel.org>
- <785fe3bf-71fa-aabd-dadf-828b91396fba@linaro.org>
+        id S230285AbhJTL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:56:07 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13958 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhJTL4G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 07:56:06 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HZ89H2ttlzZcLW;
+        Wed, 20 Oct 2021 19:52:03 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Wed, 20 Oct 2021 19:53:50 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Wed, 20 Oct 2021 19:53:49 +0800
+Subject: Re: [PATCH v4 1/2] block, bfq: counted root group into
+ 'num_groups_with_pending_reqs'
+To:     Paolo Valente <paolo.valente@linaro.org>
+CC:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20211014014556.3597008-1-yukuai3@huawei.com>
+ <20211014014556.3597008-2-yukuai3@huawei.com>
+ <0DD9CFF0-6110-497D-A352-9F37CADADC6B@linaro.org>
+ <1f89cece-a123-6190-bb72-d59035dac266@huawei.com>
+ <2E8712BB-5BFB-4647-AE9A-B06E199500D7@linaro.org>
+ <8912e5ca-67bb-4a9a-a2ce-ba13e0fc86ed@huawei.com>
+ <AA986626-D3BF-43F3-81C2-FD7AA3C1ACD2@linaro.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <c61ea2d2-91e7-249b-ac1c-e6e2240f88ae@huawei.com>
+Date:   Wed, 20 Oct 2021 19:53:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <785fe3bf-71fa-aabd-dadf-828b91396fba@linaro.org>
+In-Reply-To: <AA986626-D3BF-43F3-81C2-FD7AA3C1ACD2@linaro.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-10-21, 02:18, Dmitry Baryshkov wrote:
-> On 07/10/2021 10:08, Vinod Koul wrote:
-> > When DSC is enabled, we need to configure DSI registers accordingly and
-> > configure the respective stream compression registers.
-> > 
-> > Add support to calculate the register setting based on DSC params and
-> > timing information and configure these registers.
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >   drivers/gpu/drm/msm/dsi/dsi.xml.h  |  10 +++
-> >   drivers/gpu/drm/msm/dsi/dsi_host.c | 123 ++++++++++++++++++++++++++++-
-> >   2 files changed, 132 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> > index 49b551ad1bff..c1c85df58c4b 100644
-> > --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> > +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> > @@ -706,4 +706,14 @@ static inline uint32_t DSI_VERSION_MAJOR(uint32_t val)
-> >   #define REG_DSI_CPHY_MODE_CTRL					0x000002d4
-> > +#define REG_DSI_VIDEO_COMPRESSION_MODE_CTRL			0x0000029c
-> > +
-> > +#define REG_DSI_VIDEO_COMPRESSION_MODE_CTRL2			0x000002a0
-> > +
-> > +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL			0x000002a4
-> > +
-> > +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2			0x000002a8
-> > +
-> > +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL3			0x000002ac
-> > +
-> >   #endif /* DSI_XML */
-> > diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> > index ba24458c2e38..86e36a3e97b6 100644
-> > --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> > +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> > @@ -946,6 +946,26 @@ static void dsi_ctrl_config(struct msm_dsi_host *msm_host, bool enable,
-> >   		dsi_write(msm_host, REG_DSI_CPHY_MODE_CTRL, BIT(0));
-> >   }
-> > +static int dsi_dsc_update_pic_dim(struct msm_display_dsc_config *dsc,
-> > +				  int pic_width, int pic_height)
-> > +{
-> > +	if (!dsc || !pic_width || !pic_height) {
-> > +		pr_err("DSI: invalid input: pic_width: %d pic_height: %d\n", pic_width, pic_height);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	if ((pic_width % dsc->drm->slice_width) || (pic_height % dsc->drm->slice_height)) {
-> > +		pr_err("DSI: pic_dim %dx%d has to be multiple of slice %dx%d\n",
-> > +		       pic_width, pic_height, dsc->drm->slice_width, dsc->drm->slice_height);
-> > +		return -EINVAL;
-> > +	}
+On 2021/10/20 17:43, Paolo Valente wrote:
 > 
-> This should go to the mode_valid() callback for the dsi_bridge.
-
-Done added a new callback for dsi_bridge to check the mode valid if DSC
-is enabled
-
 > 
-> > +
-> > +	dsc->drm->pic_width = pic_width;
-> > +	dsc->drm->pic_height = pic_height;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >   static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
-> >   {
-> >   	struct drm_display_mode *mode = msm_host->mode;
-> > @@ -978,7 +998,72 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
-> >   		hdisplay /= 2;
-> >   	}
-> > +	if (msm_host->dsc) {
-> > +		struct msm_display_dsc_config *dsc = msm_host->dsc;
-> > +
-> > +		/* update dsc params with timing params */
-> > +		dsi_dsc_update_pic_dim(dsc, mode->hdisplay, mode->vdisplay);
-> > +		DBG("Mode Width- %d x Height %d\n", dsc->drm->pic_width, dsc->drm->pic_height);
-> > +
-> > +		/* we do the calculations for dsc parameters here so that
-> > +		 * panel can use these parameters
-> > +		 */
-> > +		dsi_populate_dsc_params(dsc);
-> > +
-> > +		/* Divide the display by 3 but keep back/font porch and
-> > +		 * pulse width same
-> > +		 */
-> > +		h_total -= hdisplay;
-> > +		hdisplay /= 3;
-> > +		h_total += hdisplay;
-> > +		ha_end = ha_start + hdisplay;
-> > +	}
-> > +
-> >   	if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO) {
-> > +		if (msm_host->dsc) {
-> > +			struct msm_display_dsc_config *dsc = msm_host->dsc;
-> > +			u32 reg, intf_width, slice_per_intf;
-> > +			u32 total_bytes_per_intf;
-> > +
-> > +			/* first calculate dsc parameters and then program
-> > +			 * compress mode registers
-> > +			 */
-> > +			intf_width = hdisplay;
-> > +			slice_per_intf = DIV_ROUND_UP(intf_width, dsc->drm->slice_width);
-> > +
-> > +			/* If slice_count > slice_per_intf, then use 1
-> > +			 * This can happen during partial update
-> > +			 */
-> > +				dsc->drm->slice_count = 1;
+>> Il giorno 20 ott 2021, alle ore 11:38, yukuai (C) <yukuai3@huawei.com> ha scritto:
+>>
+>> On 2021/10/20 17:29, Paolo Valente wrote:
+>>>> Il giorno 20 ott 2021, alle ore 11:20, yukuai (C) <yukuai3@huawei.com> ha scritto:
+>>>>
+>>>> On 2021/10/20 16:51, Paolo Valente wrote:
+>>>>
+>>>>>> @@ -860,9 +870,25 @@ void bfq_weights_tree_remove(struct bfq_data *bfqd,
+>>>>>> 			     struct bfq_queue *bfqq)
+>>>>>> {
+>>>>>> 	struct bfq_entity *entity = bfqq->entity.parent;
+>>>>>> +	struct bfq_sched_data *sd;
+>>>>>> +
+>>>>>> +	/*
+>>>>>> +	 * If the bfq queue is in root group, the decrement of
+>>>>>> +	 * num_groups_with_pending_reqs is performed immediately upon the
+>>>>>> +	 * deactivation of entity.
+>>>>>> +	 */
+>>>>>> +	if (!entity) {
+>>>>>> +		entity = &bfqd->root_group->entity;
+>>>>>> +		sd = entity->my_sched_data;
+>>>>>> +
+>>>>>> +		if (!sd->in_service_entity)
+>>>>>> +			bfq_clear_group_with_pending_reqs(bfqd, entity);
+>>>>>> +
+>>>>>> +		return;
+>>>>>> +	}
+>>>>>>
+>>>>>> 	for_each_entity(entity) {
+>>>>>> -		struct bfq_sched_data *sd = entity->my_sched_data;
+>>>>>> +		sd = entity->my_sched_data;
+>>>>>>
+>>>>>> 		if (sd->next_in_service || sd->in_service_entity) {
+>>>>>> 			/*
+>>>>>> @@ -880,7 +906,8 @@ void bfq_weights_tree_remove(struct bfq_data *bfqd,
+>>>>>> 		}
+>>>>>>
+>>>>>> 		/*
+>>>>>> -		 * The decrement of num_groups_with_pending_reqs is
+>>>>>> +		 * If the bfq queue is not in root group,
+>>>>>> +		 * the decrement of num_groups_with_pending_reqs is
+>>>>> I'm sorry if I didn't notice this before, but why do you postpone the
+>>>>> decrement only for queues not in root group?  If I'm not missing
+>>>>> anything, the active (i.e., with pending reqs) state of the root group
+>>>>> is to be computed as that of ay other group.
+>>>>
+>>>> Hi, Paolo
+>>>>
+>>>> I thought if queue is in root group, then bfqq->entity.parent is NULL,
+>>>> and such case is handled above, which is separate from previous
+>>>> implementation for queues that are not in root group.
+>>>>
+>>>> Is this the wrong way to handle root group?
+>>>>
+>>> I think that, if we want to count also the root group among the active
+>>> ones, then the logic for tagging the root group as active must be the
+>>> same as the other groups. Or am I missing something?
+>>
+>> Hi, Paolo
+>>
+>> Currently, if queue is in root group, bfqq->entity.parent is NULL, and
+>> this makes it hard to keep the same logic.
+>>
+>> Can we store root_group->my_entity to bfqq->entity.parent if the queue
+>> is in root group?
+>>
 > 
-> Is the if() missing here? The indentpation and the comment seems unclear
-> about that.
+> Any sensible implementation is ok for me.  Usually, stuff for root
+> group is in the bfqd.
+> 
 
-yes, fixed that
+I'll try to do implement that way,
 
--- 
-~Vinod
+Thanks,
+Kuai
+
+> Thanks,
+> Paolo
+> 
+>> Thanks,
+>> Kuai
+> 
+> .
+> 
