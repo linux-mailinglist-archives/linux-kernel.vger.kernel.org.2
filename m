@@ -2,220 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29894346B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394414346BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhJTIWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:22:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9298 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229544AbhJTIWQ (ORCPT
+        id S229993AbhJTIWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:22:53 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:43732 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhJTIWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:22:16 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K6lexe031316;
-        Wed, 20 Oct 2021 04:19:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=HVktBuFd6LmgPJY8KabqdBhgKyd1NA1KX8ewkk0v6yY=;
- b=m776LmI1MfhT1dzYlhcDcSEjIhiWDy8jgLvWs5TqO+zwuAswMz7uQiCbeOt5NwD8gbC+
- njVI2RlTlxQpgGqDmaB4ZJpCzryrKUswlC6EHttm4ayUeWtFwmS3KvYAirtP3wvqR66I
- bP09Nm4m8sR63v+3Djfex9Gjac/XwcwHElOOi58wks9zzP5r+uJXBL0oIQbCG1mJOxdu
- FgXp+mwLa6m87ZoTsJbLRIgccYu4YV/3EZ4+oVkkoTzodt5TJcQBZHfuKp0bXp2c/LjY
- R5OkD1lkf5Kfggn8ywgACK5QAsWf1XL+YTSzT5rxmoQupz7X4dGNQcPlFgKcsnFmFvU3 8A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bte5jhukg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 04:19:51 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19K707Mx012605;
-        Wed, 20 Oct 2021 04:19:51 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bte5jhuk2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 04:19:51 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19K8HSE0030041;
-        Wed, 20 Oct 2021 08:19:50 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma03dal.us.ibm.com with ESMTP id 3bqpcbsnse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 08:19:50 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19K8JmZQ31392080
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Oct 2021 08:19:48 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 360256A04F;
-        Wed, 20 Oct 2021 08:19:48 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 604C26A05A;
-        Wed, 20 Oct 2021 08:19:43 +0000 (GMT)
-Received: from [9.160.85.241] (unknown [9.160.85.241])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 20 Oct 2021 08:19:43 +0000 (GMT)
-Message-ID: <1d79190a-f023-a83c-b197-62b0514dc769@linux.ibm.com>
-Date:   Wed, 20 Oct 2021 11:19:42 +0300
+        Wed, 20 Oct 2021 04:22:45 -0400
+Received: by mail-ua1-f46.google.com with SMTP id i22so5003393ual.10;
+        Wed, 20 Oct 2021 01:20:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G0aFIaG5DuBGUXCrNxzD6HsYeP6ck00oKaqW6SSo6UM=;
+        b=dU4M/j1lUkxtAdZUMiy7DM6DJsSqJxYq+CWer7vedooz19e4AV1cGSOdXONGpCkPM8
+         bHCdZoE1/2mUseqYPVkg1iHmj3m2INK1DgB+p/FHeQFWXlPgftPzVqZA/WISv2HKuMeH
+         HveHLbvybrhKsOFwIBEH8fNeAW9OYlwvZrs65m13xg6nYLm4ro40U1GU4rWPljW/tW1M
+         WptkBs45cnpdLk5NjNmg2W0TswBg1dPrRskp3XAkelMLj81dqwPieSTk/17fn2xmcg3A
+         AzyKSEpCKdClHWzK988OPIJLoGB/+68gqCROFmpxrAfUD6Lm5zJ7kazCzU4x7CoG2/MP
+         0JfQ==
+X-Gm-Message-State: AOAM532j0VVsAWDtMxtsPUe3zqunkUeuA53QuIyFkSFuLubhCZirNMYm
+        G8/95viENAGKBNQVnxHFJNh+rRHpBWNU0A==
+X-Google-Smtp-Source: ABdhPJykNfYZkk0MCjRAYMauZl8i7maJS3L+JJNrpUwPsMzHPi1QtQTjM5YTKgU11oQSngUA4t+SHg==
+X-Received: by 2002:a05:6102:3a0d:: with SMTP id b13mr21963342vsu.7.1634718030417;
+        Wed, 20 Oct 2021 01:20:30 -0700 (PDT)
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
+        by smtp.gmail.com with ESMTPSA id m11sm935964vkp.46.2021.10.20.01.20.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 01:20:29 -0700 (PDT)
+Received: by mail-vk1-f173.google.com with SMTP id x207so11682215vke.2;
+        Wed, 20 Oct 2021 01:20:29 -0700 (PDT)
+X-Received: by 2002:a05:6122:a20:: with SMTP id 32mr37163725vkn.15.1634718029542;
+ Wed, 20 Oct 2021 01:20:29 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4 2/3] efi: Reserve confidential computing secret area
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-efi@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrew Scull <ascull@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>,
-        Daniele Buono <dbuono@linux.vnet.ibm.com>,
-        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dov Murik <dovmurik@linux.ibm.com>
-References: <20211020061408.3447533-1-dovmurik@linux.ibm.com>
- <20211020061408.3447533-3-dovmurik@linux.ibm.com>
- <YW+55YcXqUtrw4/T@kroah.com>
-From:   Dov Murik <dovmurik@linux.ibm.com>
-In-Reply-To: <YW+55YcXqUtrw4/T@kroah.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: HwgP4MJydJ3Xt9bMi3XEOAMRK3R-OR0v
-X-Proofpoint-GUID: 9Ocsk-Xs2XQvPnWn5epiZJjlFvWVL8d8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-20_04,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- phishscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110200045
+References: <20210913170436.243-1-alexander.helms.jy@renesas.com>
+ <20210913170436.243-2-alexander.helms.jy@renesas.com> <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
+ <CAMuHMdXq2NyBf539raFJSoWSGXnwxOAMWcVB_WV-=uf+kOs7rw@mail.gmail.com> <4f2f81a8-9a79-3211-5ec3-fa679c3e7bb9@renesas.com>
+In-Reply-To: <4f2f81a8-9a79-3211-5ec3-fa679c3e7bb9@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 20 Oct 2021 10:20:17 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXHkeOK+Bg10BCLDvTztV6+y9+OomBUiTAoa1+GCHRnvw@mail.gmail.com>
+Message-ID: <CAMuHMdXHkeOK+Bg10BCLDvTztV6+y9+OomBUiTAoa1+GCHRnvw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: Add binding for Renesas 8T49N241
+To:     Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alex,
 
+On Tue, Oct 19, 2021 at 11:53 PM Alex Helms
+<alexander.helms.jy@renesas.com> wrote:
+> On 10/14/2021 5:16 AM, Geert Uytterhoeven wrote:
+> > On Wed, Oct 13, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >> On Mon, Sep 13, 2021 at 7:05 PM Alex Helms
+> >> <alexander.helms.jy@renesas.com> wrote:
+> >>> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
+> >>> The 8T49N241 accepts up to two differential or single-ended input clocks
+> >>> and a fundamental-mode crystal input. The internal PLL can lock to either
+> >>> of the input reference clocks or to the crystal to behave as a frequency
+> >>> synthesizer.
+> >>>
+> >>> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
+> >>> Reviewed-by: Rob Herring <robh@kernel.org>
+> >>
+> >> Thanks for your patch!
+> >>
+> >>> --- /dev/null
+> >>> +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+> >
+> >> BTW, do you plan to add interrupt and/or GPIO support later?
+> >
+> > To clarify, and I really meant to add:
+> >
+> >   interrupts:
+> >     maxItems: 1
+> >
+> > to the bindings now, and GPIO-related properties and subnodes later.
+>
+> Any additional features such as interrupts and GPIO properties would only be added if there is customer demand for such features. Since there is no interrupt support, does the "interrupts" item still need to be added to the yaml?
 
-On 20/10/2021 9:40, Greg KH wrote:
-> On Wed, Oct 20, 2021 at 06:14:07AM +0000, Dov Murik wrote:
->> When efi-stub copies an EFI-provided confidential computing (coco)
->> secret area, reserve that memory block for future use within the kernel.
->>
->> Signed-off-by: Dov Murik <dovmurik@linux.ibm.com>
->> ---
->>  arch/x86/platform/efi/efi.c   |  3 +++
->>  drivers/firmware/efi/Makefile |  1 +
->>  drivers/firmware/efi/coco.c   | 41 +++++++++++++++++++++++++++++++++++
->>  drivers/firmware/efi/efi.c    |  8 +++++++
->>  include/linux/efi.h           | 10 +++++++++
->>  5 files changed, 63 insertions(+)
->>  create mode 100644 drivers/firmware/efi/coco.c
->>
->> diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
->> index 147c30a81f15..1591d67e0bcd 100644
->> --- a/arch/x86/platform/efi/efi.c
->> +++ b/arch/x86/platform/efi/efi.c
->> @@ -93,6 +93,9 @@ static const unsigned long * const efi_tables[] = {
->>  #ifdef CONFIG_LOAD_UEFI_KEYS
->>  	&efi.mokvar_table,
->>  #endif
->> +#ifdef CONFIG_EFI_COCO_SECRET
->> +	&efi.coco_secret,
->> +#endif
->>  };
->>  
->>  u64 efi_setup;		/* efi setup_data physical address */
->> diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
->> index c02ff25dd477..49c4a8c0bfc4 100644
->> --- a/drivers/firmware/efi/Makefile
->> +++ b/drivers/firmware/efi/Makefile
->> @@ -32,6 +32,7 @@ obj-$(CONFIG_APPLE_PROPERTIES)		+= apple-properties.o
->>  obj-$(CONFIG_EFI_RCI2_TABLE)		+= rci2-table.o
->>  obj-$(CONFIG_EFI_EMBEDDED_FIRMWARE)	+= embedded-firmware.o
->>  obj-$(CONFIG_LOAD_UEFI_KEYS)		+= mokvar-table.o
->> +obj-$(CONFIG_EFI_COCO_SECRET)		+= coco.o
->>  
->>  fake_map-y				+= fake_mem.o
->>  fake_map-$(CONFIG_X86)			+= x86_fake_mem.o
->> diff --git a/drivers/firmware/efi/coco.c b/drivers/firmware/efi/coco.c
->> new file mode 100644
->> index 000000000000..42f477d6188c
->> --- /dev/null
->> +++ b/drivers/firmware/efi/coco.c
->> @@ -0,0 +1,41 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Confidential computing (coco) secret area handling
->> + *
->> + * Copyright (C) 2021 IBM Corporation
->> + * Author: Dov Murik <dovmurik@linux.ibm.com>
->> + */
->> +
->> +#define pr_fmt(fmt) "efi: " fmt
->> +
->> +#include <linux/efi.h>
->> +#include <linux/init.h>
->> +#include <linux/memblock.h>
->> +#include <asm/early_ioremap.h>
->> +
->> +/*
->> + * Reserve the confidential computing secret area memory
->> + */
->> +int __init efi_coco_secret_area_reserve(void)
->> +{
->> +	struct linux_efi_coco_secret_area *secret_area;
->> +	unsigned long secret_area_size;
->> +
->> +	if (efi.coco_secret == EFI_INVALID_TABLE_ADDR)
->> +		return 0;
->> +
->> +	secret_area = early_memremap(efi.coco_secret, sizeof(*secret_area));
->> +	if (!secret_area) {
->> +		pr_err("Failed to map confidential computing secret area\n");
->> +		efi.coco_secret = EFI_INVALID_TABLE_ADDR;
->> +		return -ENOMEM;
->> +	}
->> +
->> +	secret_area_size = sizeof(*secret_area) + secret_area->size;
->> +	memblock_reserve(efi.coco_secret, secret_area_size);
->> +
->> +	pr_info("Reserved memory of EFI-provided confidential computing secret area");
-> 
-> When kernel code works properly, it is quiet.  Why do you need to print
-> this out at every boot?
-> 
+DT describes hardware, not software policy (or limitations of the driver).
 
-My kernel is not so quiet at the info loglevel; specifically from efi I 
-see these prints (third log line added by this patch):
+Arguably that applies to both interrupts and GPIOs, but the latter is
+more complex to describe, while the former is a simple "interrupts"
+property.  It's not uncommon for board components to have their
+interrupt line wired to an SoC, even if the driver doesn't use it.
 
-[    0.000000] efi: EFI v2.70 by EDK II
-[    0.000000] efi: SMBIOS=0x7f541000 ACPI=0x7f77e000 ACPI 2.0=0x7f77e014 MEMATTR=0x7ea0c018 CocoSecret=0x7ea0b018
-[    0.000000] efi: Reserved memory of EFI-provided confidential computing secret area
+Gr{oetje,eeting}s,
 
-This print is useful to understand that both OVMF (EFI) and kernel support
-the confidential computing secret area.
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
->> +
->> +	early_memunmap(secret_area, sizeof(*secret_area));
->> +	return 0;
->> +}
-> 
-> And again, when is this memory freed when shutting down?
-> 
-
-It is currently not freed.  I tried to look for such memory freeing of
-other EFI-provided memory areas (such as efi.tpm_final_log) and couldn't
-find them.  Can you please share pointers/examples of how to do that?
-
-Thanks,
--Dov
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
