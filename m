@@ -2,82 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB78B4355A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3CD4355A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 23:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhJTV7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 17:59:55 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:40851 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229695AbhJTV7x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:59:53 -0400
-Received: (qmail 1140230 invoked by uid 1000); 20 Oct 2021 17:57:38 -0400
-Date:   Wed, 20 Oct 2021 17:57:38 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
-        Peter Chen <peter.chen@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v16 6/7] usb: host: xhci-plat: Create platform device for
- onboard hubs in probe()
-Message-ID: <20211020215738.GA1140001@rowland.harvard.edu>
-References: <20210813195228.2003500-1-mka@chromium.org>
- <20210813125146.v16.6.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
- <dfac0025-b693-2431-04c8-1dba7ef32141@linux.intel.com>
- <YXB7vIP6ifQS3T4o@google.com>
- <20211020203720.GA1137200@rowland.harvard.edu>
- <YXCDobJSuytwthoA@google.com>
+        id S230453AbhJTWBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 18:01:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229695AbhJTWBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 18:01:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F030E611CB;
+        Wed, 20 Oct 2021 21:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634767172;
+        bh=p/FrOCkd3lRrm2AfwEqVbzWLSKdO/oVRmjDk7ncCiIo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mYND7Su80MFf6on5xybMBeQ3xq3iEPl3QFGuUPqq886JJm9kANRaq5nIg7JyfWyhj
+         IujPCDxkdoDXx9DQcX5UAPJAcLl0ufZJW/j6XvlYEdY5nXqTxepLwwq0XXNsMXkTLx
+         lnWr7zmXqnhNYPne9hBhBO+qSEkm9iHcv7mMm7RMaRsgcElkyLW3MdiAwxos0Oyxk1
+         DB86QqE6CDENE7xjacxOWji28VLhavIhqiiAZqVQVhCiJai3HwS+EZqiXJ9Yju5iYr
+         nPzzLq7pSSXxWOKC3DSheXU3bukzE6mJXQleTLgM6Fq62SzHDS5a0iW7Ol5pOSWtCW
+         Xqz3gVZeNkFcA==
+Date:   Wed, 20 Oct 2021 14:59:26 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] compiler-gcc.h: Define __SANITIZE_ADDRESS__ under
+ hwaddress sanitizer
+Message-ID: <YXCRPsNl2Vlgd7ct@archlinux-ax161>
+References: <20211020200039.170424-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXCDobJSuytwthoA@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211020200039.170424-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 02:01:21PM -0700, Matthias Kaehlcke wrote:
-> On Wed, Oct 20, 2021 at 04:37:20PM -0400, Alan Stern wrote:
-> > On Wed, Oct 20, 2021 at 01:27:40PM -0700, Matthias Kaehlcke wrote:
-> > > Hi Mathias,
-> > > 
-> > > On Wed, Oct 20, 2021 at 04:05:37PM +0300, Mathias Nyman wrote:
-> > > > If separate devices for controlling onboard hub power is the right solution then
-> > > > how about creating the onboard hub device in usb_add_hcd() (hcd.c), and
-> > > > store it in struct usb_hcd.
-> > > > 
-> > > > A bit like how the roothub device is created, or PHYs are tuned.
-> > > 
-> > > Sure, that sounds feasible, even better if it's handled in a single place
-> > > and different types of controllers don't have to add support separately.
-> > 
-> > Bear in mind that this would prevent you from working with onboard
-> > non-root hubs.
+On Wed, Oct 20, 2021 at 01:00:39PM -0700, Kees Cook wrote:
+> When Clang is using the hwaddress sanitizer, it sets __SANITIZE_ADDRESS__
+> explicitly:
 > 
-> My goal is to (architecturally) support nested hubs, but TBH I haven't
-> looked much into such a configuration since I don't have hardware for
-> testing. My assumption was that support for onboard hubs connected to
-> non-root hubs whould have to be added to the generic hub driver.
+>  #if __has_feature(address_sanitizer) || __has_feature(hwaddress_sanitizer)
+>  /* Emulate GCC's __SANITIZE_ADDRESS__ flag */
+>  #define __SANITIZE_ADDRESS__
+>  #endif
 > 
-> Could you elaborate in how far you think it would be different for
-> xhci_plat vs generic hcd?
+> Once hwaddress sanitizer was added to GCC, however, a separate define
+> was created, __SANITIZE_HWADDRESS__. The kernel is expecting to find
+> __SANITIZE_ADDRESS__ in either case, though, and the existing string
+> macros break on supported architectures:
+> 
+>  #if (defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)) && \
+>           !defined(__SANITIZE_ADDRESS__)
+> 
+> where as other architectures (like arm32) have no idea about hwaddress
+> sanitizer and just check for __SANITIZE_ADDRESS__:
+> 
+>  #if defined(CONFIG_KASAN) && !defined(__SANITIZE_ADDRESS__)
+> 
+> This would lead to compiler foritfy self-test warnings when building
+> with CONFIG_KASAN_SW_TAGS=y:
+> 
+> warning: unsafe memmove() usage lacked '__read_overflow2' symbol in lib/test_fortify/read_overflow2-memmove.c
+> warning: unsafe memcpy() usage lacked '__write_overflow' symbol in lib/test_fortify/write_overflow-memcpy.c
+> ...
+> 
+> Sort this out by also defining __SANITIZE_ADDRESS__ in GCC under the
+> hwaddress sanitizer.
+> 
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Miguel Ojeda <ojeda@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Arvind Sankar <nivedita@alum.mit.edu>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: llvm@lists.linux.dev
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-A lot of this material has slipped from my mind.  However, I don't see 
-much difference between those two approaches.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Alan Stern
+> ---
+> I'm intending to take this via my overflow series, since that is what introduces
+> the compile-test regression tests (which found this legitimate bug). :)
+> 
+> -Kees
+> ---
+>  include/linux/compiler-gcc.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> index 6f24eb8c5dda..ccbbd31b3aae 100644
+> --- a/include/linux/compiler-gcc.h
+> +++ b/include/linux/compiler-gcc.h
+> @@ -121,6 +121,14 @@
+>  #define __no_sanitize_coverage
+>  #endif
+>  
+> +/*
+> + * Treat __SANITIZE_HWADDRESS__ the same as __SANITIZE_ADDRESS__ in the kernel,
+> + * matching the defines used by Clang.
+> + */
+> +#ifdef __SANITIZE_HWADDRESS__
+> +#define __SANITIZE_ADDRESS__
+> +#endif
+> +
+>  /*
+>   * Turn individual warnings and errors on and off locally, depending
+>   * on version.
+> -- 
+> 2.30.2
+> 
