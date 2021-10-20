@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FF9434872
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5156043487A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 12:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhJTKBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 06:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
+        id S229952AbhJTKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 06:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhJTKBW (ORCPT
+        with ESMTP id S229555AbhJTKD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 06:01:22 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA156C06161C;
-        Wed, 20 Oct 2021 02:59:08 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0db300e25116189b6f3930.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:b300:e251:1618:9b6f:3930])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F41EA1EC0541;
-        Wed, 20 Oct 2021 11:59:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634723947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=yYD0zgbH5UOus3UngmRiFbvOTmQXCCS6PVOjejhkpfw=;
-        b=OXYIE6y7qReAd9h1BdwVEOL7La9YgctHRa9BrMJadKK64LFiu/kVaPAn7A6b3kUVbleuIb
-        KMjteEH5HMlu2HQSi72yCktE5uwGE0svHBa7bHCpCsezwsdpJRFArAqzpox83vRWOMfVY2
-        x3CaC672i4q/f67PE48XBg1wA8VFI0s=
-Date:   Wed, 20 Oct 2021 11:59:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        x86@kernel.org, hpa@zytor.com, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, davem@davemloft.net,
-        kuba@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
-        jroedel@suse.de, brijesh.singh@amd.com, thomas.lendacky@amd.com,
-        pgonda@google.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org, tj@kernel.org,
-        aneesh.kumar@linux.ibm.com, saravanand@fb.com, hannes@cmpxchg.org,
-        rientjes@google.com, michael.h.kelley@microsoft.com,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
-        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
-        dave.hansen@intel.com
-Subject: Re: [PATCH] x86/sev-es: Expose __sev_es_ghcb_hv_call() to call ghcb
- hv call out of sev code
-Message-ID: <YW/oaZ2GN15hQdyd@zn.tnic>
-References: <2772390d-09c1-80c1-082f-225f32eae4aa@gmail.com>
- <20211020062321.3581158-1-ltykernel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211020062321.3581158-1-ltykernel@gmail.com>
+        Wed, 20 Oct 2021 06:03:58 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E58FC06161C;
+        Wed, 20 Oct 2021 03:01:44 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so2122249pjb.0;
+        Wed, 20 Oct 2021 03:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=6kc/cN3ZuEGloIKQBOBsCOKny975VL/82QULHlwqbfs=;
+        b=NbSWq/oNPWWkRVOJbtosn48unWwHGDCRBANrCHcJGcxhCBgcMlJYowlheYyYqO57oO
+         Gn3yx7rEgDOmoUotHc26l9uoVKL++Xd8EtPS4/9hRDCgr8ilrFHLzG/VoQJYrXmx+PvU
+         3NuSL6SoqIXJx23NqTCKn4YTLUJnlX7hNtBkbhbdgaSuIHBSXQfBZIUTorM2l19Swtuj
+         kh2ii4Xm0NKW8KLf1U30r90WxxdJA7+ZuW4oyVIfrjlKBxlEcpSdNKRfjHJoZkl1ielf
+         83wKMNGUoniUW18kbePqyzXjEw5xkJ4lbsprvpay1516jjRMKDV0oamsOuRjeEK+9lVQ
+         z7Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6kc/cN3ZuEGloIKQBOBsCOKny975VL/82QULHlwqbfs=;
+        b=5oukIbray1CfyG/CscLypOVgcFQKNTz1ElMeD/EcnWw5P+8+P+Wc5IJRZYL6xVm+nE
+         QR6D4yYbyZc3lpqfDl6+VSKwgi3iqxfymaElJYZ/xXrL0C96PBEAknE6PW3oM8wD2Jgo
+         28/ojOUjJkuBHe882wIQiR/hwr8qHzLMDO+L6WSfeKG2nBdO8reH4sCfCJjM0JK4wSMG
+         XOnUjyLY6JfZ81MU8NSh29Ty/VLfAK86CfJdR3bhgTMi+e0SSzbS/ZDdVdQXPbAl9AXb
+         jdKRIISmDKvObcS6PoATLIS/flASWV92RsTucP8nllQ8ew52yN4JH4GrOwcGB4rHTpDl
+         Pyew==
+X-Gm-Message-State: AOAM531+8P6RsU75vQnxA9WzgpaK6OjkSGH77yrnG3DEsqbibZzUZW7G
+        TC5RFalfoygr2g9byb2M7lbcMb3Gkw6UbQ==
+X-Google-Smtp-Source: ABdhPJz3fq68DnUovXpQbEZOnr1UE1ptJqlAq3gkdrbEUTXglHNDN2LA4SEvlD8V0B6RHdJCiqcyJw==
+X-Received: by 2002:a17:90b:4c0d:: with SMTP id na13mr6120297pjb.232.1634724103566;
+        Wed, 20 Oct 2021 03:01:43 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.113])
+        by smtp.googlemail.com with ESMTPSA id bb12sm5127129pjb.0.2021.10.20.03.01.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Oct 2021 03:01:43 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH v4] KVM: Avoid expensive "should kick" operation for running vCPU
+Date:   Wed, 20 Oct 2021 03:00:53 -0700
+Message-Id: <1634724053-73627-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 02:23:16AM -0400, Tianyu Lan wrote:
-> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
-> 
-> 
-> Hyper-V also needs to call ghcb hv call to write/read MSR in Isolation VM.
-> So expose __sev_es_ghcb_hv_call() to call it in the Hyper-V code.
-> 
-> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-> ---
->  arch/x86/include/asm/sev.h   | 11 +++++++++++
->  arch/x86/kernel/sev-shared.c | 24 +++++++++++++++++++-----
->  2 files changed, 30 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> index fa5cd05d3b5b..295c847c3cd4 100644
-> --- a/arch/x86/include/asm/sev.h
-> +++ b/arch/x86/include/asm/sev.h
-> @@ -81,12 +81,23 @@ static __always_inline void sev_es_nmi_complete(void)
->  		__sev_es_nmi_complete();
->  }
->  extern int __init sev_es_efi_map_ghcbs(pgd_t *pgd);
-> +extern enum es_result __sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> +					    struct es_em_ctxt *ctxt,
-> +					    u64 exit_code, u64 exit_info_1,
-> +					    u64 exit_info_2);
+From: Wanpeng Li <wanpengli@tencent.com>
 
-You can do here:
+Avoid the moderately expensive "should kick" operation if this pCPU
+is currently running the target vCPU.
 
-static inline enum es_result
-__sev_es_ghcb_hv_call(struct ghcb *ghcb, u64 exit_code, u64 exit_info_1, u64 exit_info_2) { return ES_VMM_ERROR; }
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v3 -> v4:
+ * check running vCPU in a separate patch
+v2 -> v3:
+ * use kvm_arch_vcpu_get_wait()
+v1 -> v2:
+ * move checking running vCPU logic to kvm_vcpu_kick
+ * check rcuwait_active(&vcpu->wait) etc
 
-> @@ -137,12 +141,22 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
->  	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
->  	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
->  
-> -	sev_es_wr_ghcb_msr(__pa(ghcb));
->  	VMGEXIT();
->  
->  	return verify_exception_info(ghcb, ctxt);
->  }
->  
-> +static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> +					  struct es_em_ctxt *ctxt,
-> +					  u64 exit_code, u64 exit_info_1,
-> +					  u64 exit_info_2)
-> +{
-> +	sev_es_wr_ghcb_msr(__pa(ghcb));
-> +
-> +	return __sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, exit_info_1,
-> +				     exit_info_2);
-> +}
+ virt/kvm/kvm_main.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Well, why does Hyper-V need this thing a bit differently, without the
-setting of the GHCB's physical address?
-
-What if another hypervisor does yet another SEV implementation and yet
-another HV call needs to be defined?
-
-If stuff is going to be exported to other users, then stuff better be
-defined properly so that it is used by multiple hypervisors.
-
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 7851f3a1b5f7..4a4684e55ef5 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -3325,11 +3325,22 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
+ 	 * vCPU also requires it to leave IN_GUEST_MODE.
+ 	 */
+ 	me = get_cpu();
++
++	/*
++	 * avoid the moderately expensive "should kick" operation if this pCPU
++	 * is currently running the target vcpu, in which case it's a KVM bug
++	 * if the vCPU is in the inner run loop.
++	 */
++	if (vcpu == __this_cpu_read(kvm_running_vcpu) &&
++	    !WARN_ON_ONCE(vcpu->mode == IN_GUEST_MODE))
++		goto out;
++
+ 	if (kvm_arch_vcpu_should_kick(vcpu)) {
+ 		cpu = READ_ONCE(vcpu->cpu);
+ 		if (cpu != me && (unsigned)cpu < nr_cpu_ids && cpu_online(cpu))
+ 			smp_send_reschedule(cpu);
+ 	}
++out:
+ 	put_cpu();
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_kick);
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
