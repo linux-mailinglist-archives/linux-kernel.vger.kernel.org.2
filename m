@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11155435448
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7363043544C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 22:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhJTUGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 16:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
+        id S231707AbhJTUH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 16:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhJTUGw (ORCPT
+        with ESMTP id S231143AbhJTUH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:06:52 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C55C06161C;
-        Wed, 20 Oct 2021 13:04:37 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id g10so977103edj.1;
-        Wed, 20 Oct 2021 13:04:37 -0700 (PDT)
+        Wed, 20 Oct 2021 16:07:56 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267B6C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:05:41 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 145so14572626ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vctbSAw/IP0V1ejcWDqOoNVj610mv9Dqq5/zVucqksY=;
-        b=DDcmMsEBtK1/HIwB6EBvLSabR1qGCsrQz2NgoP8SPh4fl4YKB5GwN+ufGQiw9x+D++
-         wH2zX91p6PzByawote7YkWOtv7J91Mm1eiV0cXJkj8c5RPs15o3qUeagSIZ2JdxfBvUH
-         c1LN7TWTL68bvsvwl9cwR8Kg8TNCuzCk0R2n/f0tDOdMEGjXyLsna2yC6XPHyqukds4n
-         AU/Qxs4KKH8uVVckhug471/OKwRt+NIlYdgndsO6OJ5jGoBql77UAGCYsakwpGm56udA
-         xWU4fW5MWwN25Mi3rJ1CYiJZEzjpvhm5coLGPUu45jYu9j+u6Wst5nFkGVLF4kMCaD81
-         y3Ug==
+        bh=0++TUycna+bE6Avhciu0oSb+ZwvvTLsg8M+asM8i1ao=;
+        b=Ve/C0XG/xw8UyPAGxVwRPbpQH9RyAGe6NPgj4p4E7sLNs6ru46yKyU2Mo273jTGvAu
+         Ig7Avg3/BtfJKmUHIBielU5BzXWEcSOvdhLp9P7itwhTM7l8nMLuKAqf9Prw682q73aZ
+         2789HkXDUuVPBMBPyD6YLSKnDn2dksoJJlRsQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vctbSAw/IP0V1ejcWDqOoNVj610mv9Dqq5/zVucqksY=;
-        b=54SVcnJNX5CogXxUJcjsa78eJnv15Q7xz52ON/xHZEKbrwdRy4QPC6VKilCikcAbeY
-         UaYwxN1Iqx4KEUHMRVY2AlWhsuWt4Q+mXC5cQxkrVRFRub+buDgYoxT7SwzPQU0b+N+D
-         zWBJ7XJGGnV2Re0sJi/zqtV4AvCDzdMRbGIKIY0AldcPpoXeEVYc+dHIMB0yktcug77J
-         05MXYolEIPW+blTby8JvyOnHXAQpQf4ue+slC8vSEBXMfeaPNcIG1wt5AakOpXMdSQRG
-         wvJ0TfNxBwiMx1zVcCnq37TBr5/PjdKDh+kSLTok714SdMTGHhFIPu90nr+GvHJBbRoO
-         SGxA==
-X-Gm-Message-State: AOAM531Jj4jprJ9SyHpDdEEXXAge1J+0ElnXjygaGQuTRMLyGnJrNX17
-        hYpmcGci2FVqIfxPF+6U6ZE8hpbHTmEv4vfun/k=
-X-Google-Smtp-Source: ABdhPJw/vDpD2FXHCBSjCJE6xbA6bV33fdGQf8QNJ7w9sgh5O7nldolEscEdxA8MevZkR5Oe2f4Bn9nKmJ5y0j7+Qbw=
-X-Received: by 2002:a17:906:1707:: with SMTP id c7mr1654521eje.377.1634760275948;
- Wed, 20 Oct 2021 13:04:35 -0700 (PDT)
+        bh=0++TUycna+bE6Avhciu0oSb+ZwvvTLsg8M+asM8i1ao=;
+        b=dYJcpgF/eaUIgC2r99h9rpaywES6xpXqbbkzTNZ3OTU4Fp0ymtZWnK0WiYC/qK/Vwr
+         nP6rVgvUW6CeKrzghIJuf8Rb0fWBB+yXakRy3KnPB8NHF6oTu94Jd9hpiCbZ4YZMDWbb
+         tMrw3Bs47P0FiXpke8LJ1Kqzr8jqWXG4tlCGKjcZkHinZP5/6nT/dfYqfZ3vb0AtYXk1
+         TvCFyFkc3Ohp4L6CEt76Ycp5dxDHWVB8BO5kOn0o5+k3xVrRH6p57Ec5Rv/J2BZlEIyF
+         PulSeSD3YiMtJgoSoWH8pYYOQKj/9bT9pME1b1m4m6XD9FtmRSHE90QUGNCWDMOedCNm
+         fiyA==
+X-Gm-Message-State: AOAM530eK15ibTFzPSaPgCXh1JRt4x6NbupIILNn+XRGdQSzDKJ3roaj
+        ZUEL1lQ4c7uIcUz9lH+ijvoUM0ZbQQu7k9su
+X-Google-Smtp-Source: ABdhPJzkGPF8yLYsHdvtMWrQhnvik1fe4Iv0zn5s49kmDp+bOj3fiQsSh8nmCc87E9EhD+vb9gsg3w==
+X-Received: by 2002:a2e:9a56:: with SMTP id k22mr1263359ljj.32.1634760338111;
+        Wed, 20 Oct 2021 13:05:38 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id br39sm21527lfb.306.2021.10.20.13.05.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 13:05:37 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id u5so741113ljo.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 13:05:37 -0700 (PDT)
+X-Received: by 2002:a2e:a407:: with SMTP id p7mr1286007ljn.68.1634760337033;
+ Wed, 20 Oct 2021 13:05:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
- <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
- <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
- <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
- <YW3ErLKGtmyhSFd3@smile.fi.intel.com> <CACAwPwYrxxFstQgYHhPOhMwUz_5RprSuoPNHL7m9ft1i-N2icQ@mail.gmail.com>
- <CAHp75VdCF_Fhso-uS_4JL7a9X90_nQ5JcyCwpeLM3b-YKVqjYw@mail.gmail.com> <20211020183739.6a045ccc@jic23-huawei>
-In-Reply-To: <20211020183739.6a045ccc@jic23-huawei>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 20 Oct 2021 23:03:59 +0300
-Message-ID: <CAHp75Vf=tXsDd_mDDGtNF-TD3SAK0BycvZonoKq---Ucp79s=Q@mail.gmail.com>
-Subject: Re: BMI160 accelerometer on AyaNeo tablet
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-realtek-soc@lists.infradead.org,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        nic_swsd <nic_swsd@realtek.com>,
-        Derek Fang <derek.fang@realtek.com>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Kailang Yang <kailang@realtek.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        LKML <linux-kernel@vger.kernel.org>, info@ayaneo.com
+References: <87y26nmwkb.fsf@disp2133> <20211020174406.17889-13-ebiederm@xmission.com>
+In-Reply-To: <20211020174406.17889-13-ebiederm@xmission.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 20 Oct 2021 10:05:21 -1000
+X-Gmail-Original-Message-ID: <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
+Message-ID: <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
+Subject: Re: [PATCH 13/20] signal: Implement force_fatal_sig
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 8:33 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> On Tue, 19 Oct 2021 12:58:53 +0300
-> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Mon, Oct 18, 2021 at 11:42 PM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
-> > > On Mon, Oct 18, 2021 at 10:02 PM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:
-> > > > On Mon, Oct 18, 2021 at 09:02:40PM +0300, Maxim Levitsky wrote:
-
-...
-
-> > > > This is done by the commit 8a0672003421 ("iio: accel: bmc150: Get
-> > > > mount-matrix from ACPI") which needs to be amended to take care about
-> > > > more devices, somewhere in drivers/iio/industialio-acpi.c ? Jonathan,
-> > > > Hans, what do you think?
-> > >
-> > > If you like to, I can probably volunteer to prepare a patch for this myself next
-> > > weekend, using this pointer as a reference.
+On Wed, Oct 20, 2021 at 7:45 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> Hmm. This isn't part of the ACPI spec but seems to be a microsoft addition.
-> The webpage google feeds me says this is windows 10 mobile specific...
-> https://docs.microsoft.com/en-us/windows-hardware/drivers/sensors/sensors-acpi-entries
+> Add a simple helper force_fatal_sig that causes a signal to be
+> delivered to a process as if the signal handler was set to SIG_DFL.
+>
+> Reimplement force_sigsegv based upon this new helper.
 
-So, it means it is at least a standard de facto on Windows machines.
-We have to support it whether we want it or not. Same happened with
-USB (wired) devices and many other things (SPCR, DBG2, CSRT, ...).
+Can you just make the old force_sigsegv() go away? The odd special
+casing of SIGSEGV was odd to begin with, I think everybody really just
+wanted this new "force_fatal_sig()" and allow any signal - not making
+SIGSEGV special.
 
-> Whilst I haven't been paying particularly close attention, I haven't noticed
-> any attempt to add this to a future ACPI spec. If anyone happens to have
-> convenient Microsoft contacts to verify the status of this method that would
-> be a good step before we in any way imply it is standard.  Until then my inclination
-> is to keep this in the few drivers in which we know it is useful.
+Also, I think it should set SIGKILL in p->pending.signal or something
+like that - because we want this to trigger fatal_signal_pending(),
+don't we?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Right now fatal_signal_pending() is only true for SIGKILL, I think.
+
+               Linus
