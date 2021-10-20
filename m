@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D038434B03
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C1C434B07
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 14:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhJTMTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 08:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhJTMTG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:19:06 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867C4C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:16:52 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id m42so18490986wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 05:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=7l9tEWjt9gALSo8nOYC6O9qSCG4oZkj1aRklRrycs50=;
-        b=Fof2wvLGAKuIiW29+HHTWkLBFPW4iXCrhlQcaqttB6SQa3lgfpCzV2PUgY6BxqCGd/
-         81ZfSzgngwpaPkKKokZKksjkmp+YaR08flLXgEBJr+1PdDbgMxJjTMtbOYjxo29tKqN7
-         N26u9u4H9pi+homsuL4cFUTLkK/Guo4a2PSuHmGvj5XS/LAU8X1VOdfrvxPwO0R1TdMr
-         mr75QyGkejwiI9TdDBiRXCYB5zcDK2MZpxSg8ay2PJsxBkqW+9WsnL2ko4wwUYz6zPFv
-         oII9yKXIDMoC/MdwoMhnQt/0FLSKkU9hspm4+Z795VtB1kRWUJcglAhy9slVHH8hUziG
-         NHyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7l9tEWjt9gALSo8nOYC6O9qSCG4oZkj1aRklRrycs50=;
-        b=07OjJK6RqNS0FGpPAV4WLq8lDm1+4Xmp90i6Xna5tWkvmq2YnTEBU44zbU4aZd0chk
-         SGVMnPHfmSlppU0QZyIfC5HOE/BcENjQ5h1hLH2SZutQUyXekfaAo7p4BxUl7psUkLCb
-         x1S6vU7oudafWjOCQFppR/ka8IxIWFzVAkB5X1jYYdRgJeqU2NnVaai3kSVm9HLYZ4eU
-         jCfHXuWFNJ7VirYJzchxm/7DbD8D49cD9Y5BZvx+xCEyVMDqTvb05yzt/sQrhK4y2Ejx
-         P2JEUD6ukJrKKXOS8vvKWHQl27LGz9n9A+6w5TMRvBxWKzQUrSWPWPlFUpMPL6eEkb+g
-         c/nw==
-X-Gm-Message-State: AOAM530Z2TNZTbsaHG2iiw90ZuJGIIskdHilJi9KXA/z1RGQumnSaXvH
-        epHTHufwgjv/s+FWR/1daAvd3DWJKggKOGo1Blw=
-X-Google-Smtp-Source: ABdhPJwzjJQEVCqWc6084GfyiSimLpaX5n6bziJNORcmiw+BzY2n9QG9kfvkvwttu+N8oAfXjE4RtA==
-X-Received: by 2002:a7b:c214:: with SMTP id x20mr12745984wmi.103.1634732211178;
-        Wed, 20 Oct 2021 05:16:51 -0700 (PDT)
-Received: from localhost.localdomain ([5.35.48.193])
-        by smtp.gmail.com with ESMTPSA id g25sm1889491wrc.88.2021.10.20.05.16.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Oct 2021 05:16:50 -0700 (PDT)
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-To:     openrisc@lists.librecores.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] openrisc: signal: remove unused DEBUG_SIG macro
-Date:   Wed, 20 Oct 2021 15:16:37 +0300
-Message-Id: <20211020121637.6629-1-kda@linux-powerpc.org>
-X-Mailer: git-send-email 2.16.4
+        id S230221AbhJTMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 08:19:17 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:48550 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230205AbhJTMTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:19:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=32GYkFGawk1EHwubKe3VWlQKW04GyjW6olYclX1Tk34=; b=RtVOIeZ3PSCRdaK6EFw6Mufldc
+        FCR2wMQvAml1Qlq2OYjJgctYcQ5iMmh7GJmitlPzROfHxV7aBjd2hV9GNCMR/KxBQjSp8DlhClDvf
+        +zi4IBK2/Lm4fk0gkMzLfzztsOGGqA+xRx/ioUUkN7cB284Gh0EsuFEEADsUCUpI7oNM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mdAWd-00BBMp-US; Wed, 20 Oct 2021 14:16:55 +0200
+Date:   Wed, 20 Oct 2021 14:16:55 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Adam Ford <aford173@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH] net: renesas: Fix rgmii-id delays
+Message-ID: <YXAIt3TOaCiEuHSt@lunn.ch>
+References: <20211019145719.122751-1-kory.maincent@bootlin.com>
+ <CAMuHMdWghZ7HM5RRFRsZu8P_ikna0QWoRfCKeym61N-Lv-v4Xw@mail.gmail.com>
+ <20211019173520.0154a8cb@kmaincent-XPS-13-7390>
+ <YW7nPfzjstmeoMbf@lunn.ch>
+ <20211019175746.11b388ce@windsurf>
+ <CAMuHMdXiMhpU0vDV3KaOg4DY59cszAtoG1sDOgnTRY6C6cyitQ@mail.gmail.com>
+ <20211020105328.411a712f@kmaincent-XPS-13-7390>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020105328.411a712f@kmaincent-XPS-13-7390>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
----
- arch/openrisc/kernel/signal.c | 2 --
- 1 file changed, 2 deletions(-)
+> > BTW, it's still not clear to me why the inversion would be needed.
+> > Cfr. Andrew's comment:
+> > 
+> > | So with rgmii-rxid, what is actually passed to the PHY? Is your
+> > | problem you get twice the delay in one direction, and no delay in the
+> > | other?
+> 
+> Yes, it was the problem I got.
+> The PHY I use have RX delay enabled by default, currently the PHY driver does
+> not support delay configuration, therefore I let the MAC handle TX delay. I
+> have stumbling over that legacy/wrong DTS on the old Kernel.
 
-diff --git a/arch/openrisc/kernel/signal.c b/arch/openrisc/kernel/signal.c
-index 1ebcff271096..99516c9191c7 100644
---- a/arch/openrisc/kernel/signal.c
-+++ b/arch/openrisc/kernel/signal.c
-@@ -28,8 +28,6 @@
- #include <asm/ucontext.h>
- #include <linux/uaccess.h>
- 
--#define DEBUG_SIG 0
--
- struct rt_sigframe {
- 	struct siginfo info;
- 	struct ucontext uc;
--- 
-2.16.4
+This is where we get into the horrible mess of RGMII delays.
 
+The real solution is to fix the PHY driver. If it is asked to do
+rgmii, but is actually doing rgmii-id, the PHY driver is broken. It
+either should do what it is told, or return -EINVAL/-EOPNOTSUPP etc to
+indicate it does not support what it is asked to do.
+
+But fixing things like this often breaks working systems, because the
+DT says rgmii, the PHY actually does rgmii-id, the board works, until
+the PHY is fixed to do what it is told, and all the bugs in the DT
+suddenly come to light.
+
+Now, you said you are using an old kernel. So it could be we have
+already fixed this, and had the pain of fixing broken DT. Please look
+at the current kernel PHY driver, and see if all you need to do is
+back port some PHY fixes, or better still, throw away your old kernel
+and use a modern one.
+
+       Andrew
