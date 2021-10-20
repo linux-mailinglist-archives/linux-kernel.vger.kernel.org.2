@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B13E43468D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9024346A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhJTINZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:13:25 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25303 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTINU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:13:20 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HZ39355CZzbhFr;
-        Wed, 20 Oct 2021 16:06:31 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 20 Oct 2021 16:11:05 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 20 Oct
- 2021 16:11:04 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <richardcochran@gmail.com>
-Subject: [PATCH] ptp: Fix possible memory leak in ptp_clock_register()
-Date:   Wed, 20 Oct 2021 16:18:34 +0800
-Message-ID: <20211020081834.2952888-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S229764AbhJTIVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:21:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhJTIVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:21:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 504C060FD9;
+        Wed, 20 Oct 2021 08:18:50 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 09:18:46 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
+Message-ID: <YW/Q5kjvurcYVrow@arm.com>
+References: <20211013054756.12177-1-rppt@kernel.org>
+ <c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com>
+ <YW5bjV128Qk1foIv@kernel.org>
+ <YW6t5tBe/IjSYWn3@arm.com>
+ <089478ad-3755-b085-d9aa-c68e9792895c@quicinc.com>
+ <YW7p3ARYbpxmeLCF@arm.com>
+ <8da41896-dc11-8246-54cf-1174f617ac39@quicinc.com>
+ <YW8PZ0Q5UeRH4W4R@kernel.org>
+ <YW/Hb4sVWGOIxzUk@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW/Hb4sVWGOIxzUk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got memory leak as follows when doing fault injection test:
+On Wed, Oct 20, 2021 at 10:38:23AM +0300, Mike Rapoport wrote:
+> On Tue, Oct 19, 2021 at 09:33:11PM +0300, Mike Rapoport wrote:
+> > On Tue, Oct 19, 2021 at 01:59:22PM -0400, Qian Cai wrote:
+> > > [	0.000000][	T0] Booting Linux on physical CPU 0x0000000000 [0x503f0002]
+> > > [	0.000000][	T0] Linux version 5.15.0-rc6-next-20211019+ (root@admin5) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #104 SMP Tue Oct 19 17:36:17 UTC 2021
+> > > [	0.000000][	T0] earlycon: pl11 at MMIO32 0x0000000012600000 (options '')
+> > > [	0.000000][	T0] printk: bootconsole [pl11] enabled
+> > > [	0.000000][	T0] efi: Getting UEFI parameters from /chosen in DT:
+> > > [	0.000000][	T0] efi:   System Table     	: 0x0000009ff7de0018
+> > > [	0.000000][	T0] efi:   MemMap Address   	: 0x0000009fe6dae018
+> > > [	0.000000][	T0] efi:   MemMap Size      	: 0x0000000000000600
+> > > [	0.000000][	T0] efi:   MemMap Desc. Size	: 0x0000000000000030
+> > > [	0.000000][	T0] efi:   MemMap Desc. Version : 0x0000000000000001
+> > > [	0.000000][	T0] efi: EFI v2.70 by American Megatrends
+> > > [	0.000000][	T0] efi: ACPI 2.0=0x9ff5b40000 SMBIOS 3.0=0x9ff686fd98 ESRT=0x9ff1d18298 MEMRESERVE=0x9fe6dacd98  
+> > > [	0.000000][	T0] efi: Processing EFI memory map:
+> > > [	0.000000][	T0] efi:   0x000090000000-0x000091ffffff [Conventional|   |  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
+> > > [	0.000000][	T0] efi:   0x000092000000-0x0000928fffff [Runtime Data|RUN|  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
+> > > [	0.000000][	T0] ------------[ cut here ]------------
+> > > [	0.000000][	T0] kernel BUG at mm/kmemleak.c:1140!
+> > > [	0.000000][	T0] Internal error: Oops - BUG: 0 [#1] SMP
+> > > 
+> > > I did not quite figure out where this BUG() was triggered and I did not
+> > 
+> > This is from here:
+> > arch/arm64/include/asm/memory.h:
+> > 
+> > #define PHYS_OFFSET         ({ VM_BUG_ON(memstart_addr & 1); memstart_addr; })
+> > 
+> > kmemleak_free_part_phys() does __va() which uses PHYS_OFFSET and all this
+> > happens before memstart_addr is set.
+> > 
+> > I'll try to see how this can be untangled...
+>  
+> This late in the cycle I can only think of reverting kmemleak wavier from
+> memblock_mark_nomap() and putting it in
+> early_init_dt_alloc_reserved_memory_arch() being the only user setting
+> MEMBLOCK_NOMAP to an allocated chunk rather than marking NOMAP "unusable"
+> memory reported by firmware.
 
-unreferenced object 0xffff88800906c618 (size 8):
-  comm "i2c-idt82p33931", pid 4421, jiffies 4294948083 (age 13.188s)
-  hex dump (first 8 bytes):
-    70 74 70 30 00 00 00 00                          ptp0....
-  backtrace:
-    [<00000000312ed458>] __kmalloc_track_caller+0x19f/0x3a0
-    [<0000000079f6e2ff>] kvasprintf+0xb5/0x150
-    [<0000000026aae54f>] kvasprintf_const+0x60/0x190
-    [<00000000f323a5f7>] kobject_set_name_vargs+0x56/0x150
-    [<000000004e35abdd>] dev_set_name+0xc0/0x100
-    [<00000000f20cfe25>] ptp_clock_register+0x9f4/0xd30 [ptp]
-    [<000000008bb9f0de>] idt82p33_probe.cold+0x8b6/0x1561 [ptp_idt82p33]
+It makes sense, there aren't many places or nomap is called.
 
-When posix_clock_register() returns an error, the name allocated
-in dev_set_name() will be leaked, the put_device() should be used
-to give up the device reference, then the name will be freed in
-kobject_cleanup() and other memory will be freed in ptp_clock_release().
+I think arch_reserve_mem_area() called from acpi_table_upgrade() also
+follows a memblock allocation. But I'd call kmemleak in
+acpi_table_upgrade() directly rather than in the arch back-end.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: a33121e5487b ("ptp: fix the race between the release of ptp_clock and cdev")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/ptp/ptp_clock.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+Regarding which callback, I think kmemleak_ignore_phys() is better
+suited here since kmemleak still keeps track of the object but won't
+scan it.
 
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index 4dfc52e06704..7fd02aabd79a 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -283,15 +283,22 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	/* Create a posix clock and link it to the device. */
- 	err = posix_clock_register(&ptp->clock, &ptp->dev);
- 	if (err) {
-+	        if (ptp->pps_source)
-+	                pps_unregister_source(ptp->pps_source);
-+
-+		kfree(ptp->vclock_index);
-+
-+		if (ptp->kworker)
-+	                kthread_destroy_worker(ptp->kworker);
-+
-+		put_device(&ptp->dev);
-+
- 		pr_err("failed to create posix clock\n");
--		goto no_clock;
-+		return ERR_PTR(err);
- 	}
- 
- 	return ptp;
- 
--no_clock:
--	if (ptp->pps_source)
--		pps_unregister_source(ptp->pps_source);
- no_pps:
- 	ptp_cleanup_pin_groups(ptp);
- no_pin_groups:
 -- 
-2.25.1
-
+Catalin
