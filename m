@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48A0434C44
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FDA434C48
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 15:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhJTNmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 09:42:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229897AbhJTNmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:42:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 210F2610A2;
-        Wed, 20 Oct 2021 13:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634737207;
-        bh=v/Yz/RhgXKv6Z0VUCgcxaAFGuFt+Hi0Djcd53thZoSg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Z0wTzacpVgFilUT1LqbMKntJAGVcDDNGw9x7mWBJbeO9MftO3gv8Pt++6X2WZ5xJs
-         87y14KxwjQqiOaeGaJMv+etUbdpgMKQXkVb/ywDMRTy2lJmApQXQWCtcx7PkIRKNIT
-         zl9SHvOQ3PHGhB3RJzSquuTGoIPpbGHszwL34DiBAboKu4yr19K6bjmLrZXcDCbW/Y
-         rA1xLj33ZwaXgtXvvIh41t5eSNPdh1+ZJ+zJrt9FpCHx3LJD8DNn0NNIKypUO/cjX4
-         oBNEjaGBr3qa5sjFFm8lZz8IkGsGbJ8mBB/4pxhpL/N13A9DM7rwty1cj6NjuWvhSW
-         SIyfiHK24/6YQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0FCBA60A24;
-        Wed, 20 Oct 2021 13:40:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230082AbhJTNns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 09:43:48 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:46853 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhJTNnr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:43:47 -0400
+Received: by mail-oi1-f175.google.com with SMTP id o204so9630883oih.13;
+        Wed, 20 Oct 2021 06:41:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R+f9jX4gENJ9ZTepD8KkqshKnHoLg5Qaf4KS0HjJ+5g=;
+        b=hmDTM4imIOVluJqVeOEtsi2VHf2gmChp5WS+X3FGKhMMsKW4dGNf26BQFQK2YWLd8L
+         VFHFtzADPmTuRuiCFZCFaKrDzVXmqung9Mv5kgGi4/RZ9tL6UNx5AB+SXayL3Rh6Ee2A
+         Sw3hTGPk+8PHYDhXEy1zGuecJ7dhrEvMg9qdFTcDKDg4GNWledZJILSCEqW2uS6/CI4g
+         mUN6xIyq79Gwf9b2yW+12dF3WQ6UyQ5Pro+5DfI0oP0bZy6esE6QPVdaSJWnssWUp63W
+         c5C9eyICXOK8TeHfUfE5uhtW2JNjnLv6OQGGSU3nWvcbs3Ouq5I4CyexmkNFl79K2idh
+         qMTw==
+X-Gm-Message-State: AOAM532uWNrmy41njGBQOk6dihm7jdlMFGFeqBszyLVsyVOdVL7EIJ0X
+        s+ZgsdIZtTwFuRC8WISeTjvXu/aOBA==
+X-Google-Smtp-Source: ABdhPJwUOSFqTpPy8Y5D71BOVCigV0itLv+Rj8nhwBqumAIK22KTKiHdOIOhP6DCgvowuCfdDs2saw==
+X-Received: by 2002:a05:6808:2389:: with SMTP id bp9mr9574873oib.140.1634737292382;
+        Wed, 20 Oct 2021 06:41:32 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s18sm465022otd.55.2021.10.20.06.41.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 06:41:31 -0700 (PDT)
+Received: (nullmailer pid 2247038 invoked by uid 1000);
+        Wed, 20 Oct 2021 13:41:30 -0000
+Date:   Wed, 20 Oct 2021 08:41:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     bhelgaas@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Subject: Re: [PATCH v2 02/24] PCI: Set error response in config access
+ defines when ops->read() fails
+Message-ID: <YXAciic84q49qoZm@robh.at.kernel.org>
+References: <cover.1634306198.git.naveennaidu479@gmail.com>
+ <b913b4966938b7cad8c049dc34093e6c4b2fae68.1634306198.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] phy: micrel: ksz8041nl: do not use power down
- mode
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163473720705.8032.5657511877917396635.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Oct 2021 13:40:07 +0000
-References: <20211019191647.346361-1-francesco.dolcini@toradex.com>
-In-Reply-To: <20211019191647.346361-1-francesco.dolcini@toradex.com>
-To:     Francesco Dolcini <francesco.dolcini@toradex.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, nicolas.ferre@microchip.com,
-        bbrezillon@kernel.org, patrice.vilchez@atmel.com, stefan@agner.ch,
-        f.fainelli@gmail.com, christophe.leroy@csgroup.eu,
-        sergei.shtylyov@gmail.com, marcel.ziswiler@toradex.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b913b4966938b7cad8c049dc34093e6c4b2fae68.1634306198.git.naveennaidu479@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Tue, 19 Oct 2021 21:16:47 +0200 you wrote:
-> From: Stefan Agner <stefan@agner.ch>
+On Fri, Oct 15, 2021 at 07:58:17PM +0530, Naveen Naidu wrote:
+> Make PCI_OP_READ and PCI_USER_READ_CONFIG set the data value with error
+> response (~0), when the PCI device read by a host controller fails.
 > 
-> Some Micrel KSZ8041NL PHY chips exhibit continuous RX errors after using
-> the power down mode bit (0.11). If the PHY is taken out of power down
-> mode in a certain temperature range, the PHY enters a weird state which
-> leads to continuously reporting RX errors. In that state, the MAC is not
-> able to receive or send any Ethernet frames and the activity LED is
-> constantly blinking. Since Linux is using the suspend callback when the
-> interface is taken down, ending up in that state can easily happen
-> during a normal startup.
+> This ensures that the controller drivers no longer need to fabricate
+> (~0) value when they detect error. It also  gurantees that the error
+> response (~0) is always set when the controller drivers fails to read a
+> config register from a device.
 > 
-> [...]
+> This makes error response fabrication consistent and helps in removal of
+> a lot of repeated code.
+> 
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> ---
+>  drivers/pci/access.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 
-Here is the summary with links:
-  - [net-next,v2] phy: micrel: ksz8041nl: do not use power down mode
-    https://git.kernel.org/netdev/net-next/c/2641b62d2fab
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
