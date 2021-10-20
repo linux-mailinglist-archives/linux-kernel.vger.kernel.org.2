@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10DC4349C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E2D4349BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 13:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhJTLLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 07:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhJTLLs (ORCPT
+        id S230183AbhJTLIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 07:08:40 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:25964 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230105AbhJTLIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 07:11:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB94AC06161C;
-        Wed, 20 Oct 2021 04:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bkwCMh1L283zu+NfIJRFcbJeljr6wS5Wxo/xoHye8V0=; b=qs3LMa2vVLIf+lJ7FoOL5f1hPx
-        HEmWfTaYB8JoNXenwGFzUALEnFQKeMXjhKlAbc6DQX7/HBpz+oN6GiMSlzqIH6iuYmvJDzlX1JnAy
-        H0iymAL0ShIkDqkn7ybPkjNgO0tVIxvyyI2ZZ8jc2EM0NpT5VV0vzV6xzqrM06KnnewYwZcd4NGK7
-        7LZeYo8yWTzpvfbswfHOBnyYjn7VcVmacTAWAdLFLyOdeEvWzsxnSrtcaRKYXbVGfgThMyGCHUQZG
-        h0eRCRSxZhZGSSegjttcOVjVHLu1bDy1Af/5kTewfWFpdwftlbHeDqG/U9FEqPnw9FoB+U61eMw4K
-        xiyoHe2Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1md9QJ-00CRJI-I7; Wed, 20 Oct 2021 11:06:49 +0000
-Date:   Wed, 20 Oct 2021 12:06:19 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     kent.overstreet@gmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jeff Layton <jlayton@redhat.com>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: Stop filemap_read() from grabbing a superfluous
- page
-Message-ID: <YW/4K6Rm+WX5aKbf@casper.infradead.org>
-References: <163472463105.3126792.7056099385135786492.stgit@warthog.procyon.org.uk>
+        Wed, 20 Oct 2021 07:08:38 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee8616ff822b7d-09242; Wed, 20 Oct 2021 19:06:10 +0800 (CST)
+X-RM-TRANSID: 2ee8616ff822b7d-09242
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee5616ff81f86e-1d843;
+        Wed, 20 Oct 2021 19:06:10 +0800 (CST)
+X-RM-TRANSID: 2ee5616ff81f86e-1d843
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     krzysztof.kozlowski@canonical.com, vz@mleia.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH v2] crypto: s5p-sss - Add error handling in s5p_aes_probe()
+Date:   Wed, 20 Oct 2021 19:06:24 +0800
+Message-Id: <20211020110624.47696-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163472463105.3126792.7056099385135786492.stgit@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:10:31AM +0100, David Howells wrote:
-> Under some circumstances, filemap_read() will allocate sufficient pages to
-> read to the end of the file, call readahead/readpages on them and copy the
-> data over - and then it will allocate another page at the EOF and call
-> readpage on that and then ignore it.  This is unnecessary and a waste of
-> time and resources.
-> 
-> filemap_read() *does* check for this, but only after it has already done
-> the allocation and I/O.  Fix this by checking before calling
-> filemap_get_pages() also.
-> 
-> Changes:
->  v2) Break out of the loop immediately rather than going to put_pages (the
->      pvec is unoccupied).  Setting isize is then unnecessary.
-> 
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Kent Overstreet <kent.overstreet@gmail.com>
-> cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> cc: Andrew Morton <akpm@linux-foundation.org>
-> cc: Jeff Layton <jlayton@redhat.com>
-> cc: linux-mm@kvack.org
-> cc: linux-fsdevel@vger.kernel.org
-> Link: https://lore.kernel.org/r/160588481358.3465195.16552616179674485179.stgit@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/163456863216.2614702.6384850026368833133.stgit@warthog.procyon.org.uk/
+The function s5p_aes_probe() does not perform sufficient error
+checking after executing platform_get_resource(), thus fix it.
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fixes: c2afad6c6105 ("crypto: s5p-sss - Add HASH support for Exynos")
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+Changes from v1
+ - add fixed title
+---
+ drivers/crypto/s5p-sss.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
+index 55aa3a711..7717e9e59 100644
+--- a/drivers/crypto/s5p-sss.c
++++ b/drivers/crypto/s5p-sss.c
+@@ -2171,6 +2171,8 @@ static int s5p_aes_probe(struct platform_device *pdev)
+ 
+ 	variant = find_s5p_sss_version(pdev);
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -EINVAL;
+ 
+ 	/*
+ 	 * Note: HASH and PRNG uses the same registers in secss, avoid
+-- 
+2.20.1.windows.1
+
+
+
