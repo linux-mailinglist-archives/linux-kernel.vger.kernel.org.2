@@ -2,153 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A78434808
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EC0434824
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 11:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhJTJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 05:38:29 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:50928
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229555AbhJTJi1 (ORCPT
+        id S229952AbhJTJrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 05:47:18 -0400
+Received: from us-smtp-delivery-115.mimecast.com ([170.10.133.115]:22758 "EHLO
+        us-smtp-delivery-115.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229632AbhJTJrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:38:27 -0400
-Received: from workstation5.fritz.box (ip-88-152-144-157.hsi03.unitymediagroup.de [88.152.144.157])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 2E7F03FFE4;
-        Wed, 20 Oct 2021 09:36:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634722572;
-        bh=bAoP1FRiCuy1+/FURCUdf01qjwFj5kNYA9taKaOAcu4=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=XnzyDxewYJGTGBxlg71DeHB66UWnfd82EVEm/zwRbcfvTQysIL70WtTnPhXBZzMwI
-         UDbN5qUjEbN4FRJymfUrT9bN4oNycc5qA+tbo1SAiQUaMYfMFYwesMXDilH33Sz0hA
-         nuTt07ydy5wJaXnTTyAFaVX6ftqtf2SqiUskyQuGKUHGk1zuP4V+g4FVQHLtfk+X5n
-         AJJm4UCK9LbC0oQwF8z0t3df34VGmCR4W/ezI1/xQNFkJR9+3q5SI7ZanUEOnkrS/K
-         7HoJ/ryvjMNmVjbjCv3SUMq2HKgdF6U1JBKYVX1VUuhLkqGY71Yc1yjhAnCSPh4EBG
-         Ci+JwbFxeRTCA==
-From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Guo Ren <guoren@linux.alibaba.com>, Bin Meng <bmeng.cn@gmail.com>,
-        Xiang W <wxjstz@126.com>, Samuel Holland <samuel@sholland.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup.patel@wdc.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        opensbi@lists.infradead.org,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Subject: [PATCH 1/1] dt-bindings: T-HEAD CLINT
-Date:   Wed, 20 Oct 2021 11:36:03 +0200
-Message-Id: <20211020093603.28653-1-heinrich.schuchardt@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 20 Oct 2021 05:47:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxlinear.com;
+        s=selector; t=1634723103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MR9KnrWsF0oZDX3JfczAleTWEX1KdIIoGMWnVHCIFDE=;
+        b=pdcEdwwFVrWJHbS42EtSDCkF4jn0wwVpqx87qFqwgx/IqUgc8jNLdN484sMemYOJSAELz8
+        n21HgZgJckfN+dfz2R+pGZcNFiYEahxq+Let+c/EOB5gLvzv7Spv9FLNjccPWUHI9hLXbg
+        dLdNGFxFAp7ilKd34PZXQS5d9BtWPd4=
+Received: from mail.maxlinear.com (174-47-1-83.static.ctl.one [174.47.1.83])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-kuhp8M2dMJid1GWExeEh-g-1; Wed, 20 Oct 2021 05:38:20 -0400
+X-MC-Unique: kuhp8M2dMJid1GWExeEh-g-1
+Received: from sgsxdev005.isng.phoenix.local (10.226.81.173) by
+ mail.maxlinear.com (10.23.38.120) with Microsoft SMTP Server id 15.1.2242.4;
+ Wed, 20 Oct 2021 02:38:18 -0700
+From:   Rahul Tanwar <rtanwar@maxlinear.com>
+To:     <linus.walleij@linaro.org>
+CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rahul Tanwar <rtanwar@maxlinear.com>
+Subject: [PATCH] pinctrl: equilibrium: Fix function addition in multiple groups
+Date:   Wed, 20 Oct 2021 17:38:15 +0800
+Message-ID: <20211020093815.20870-1-rtanwar@maxlinear.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA115A51 smtp.mailfrom=rtanwar@maxlinear.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: maxlinear.com
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CLINT in the T-HEAD 9xx CPUs is similar to the SiFive CLINT but does
-not support 64bit mmio access to the MTIMER device.
+Ignore the same function with multiple groups.
+Fix a typo in error print.
 
-OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indicate the
-restriction and the "sifive,cling0" compatible string. An OpenSBI
-patch suggested to use "reg-io-width = <4>;" as the reg-io-width property
-is generally used in the devicetree schema for such a condition.
-
-As the design is not SiFive based it is preferable to apply a compatible
-string identifying T-HEAD instead.
-
-Add a new yaml file describing the T-HEAD CLINT.
-
-Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Fixes: 1948d5c51dba ("pinctrl: Add pinmux & GPIO controller driver for a ne=
+w SoC")
+Signed-off-by: Rahul Tanwar <rtanwar@maxlinear.com>
 ---
-@Palmer, @Anup
-I copied you as maintainers from sifive,clint.yaml. Please, indicate if
-this should be changed.
+ drivers/pinctrl/pinctrl-equilibrium.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-For the prior discussion see:
-https://lore.kernel.org/all/20211015100941.17621-1-heinrich.schuchardt@canonical.com/
-https://lore.kernel.org/all/20211015120735.27972-1-heinrich.schuchardt@canonical.com/
-
-A release candidate of the ACLINT specification is available at
-https://github.com/riscv/riscv-aclint/releases
----
- .../bindings/timer/thead,clint.yaml           | 62 +++++++++++++++++++
- 1 file changed, 62 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/timer/thead,clint.yaml
-
-diff --git a/Documentation/devicetree/bindings/timer/thead,clint.yaml b/Documentation/devicetree/bindings/timer/thead,clint.yaml
-new file mode 100644
-index 000000000000..02463fb2043a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/thead,clint.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/timer/thead,clint.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/pinctrl/pinctrl-equilibrium.c b/drivers/pinctrl/pinctr=
+l-equilibrium.c
+index fb713f9c53d0..3f0143087cc7 100644
+--- a/drivers/pinctrl/pinctrl-equilibrium.c
++++ b/drivers/pinctrl/pinctrl-equilibrium.c
+@@ -675,6 +675,11 @@ static int eqbr_build_functions(struct eqbr_pinctrl_dr=
+v_data *drvdata)
+ =09=09return ret;
+=20
+ =09for (i =3D 0; i < nr_funcs; i++) {
 +
-+title: SiFive Core Local Interruptor
++=09=09/* Ignore the same function with multiple groups */
++=09=09if (funcs[i].name =3D=3D NULL)
++=09=09=09continue;
 +
-+maintainers:
-+  - Palmer Dabbelt <palmer@dabbelt.com>
-+  - Anup Patel <anup.patel@wdc.com>
-+
-+description:
-+  T-HEAD (and other RISC-V) SOCs include an implementation of the T-HEAD
-+  Core Local Interruptor (CLINT) for M-mode timer and M-mode inter-processor
-+  interrupts. It directly connects to the timer and inter-processor interrupt
-+  lines of various HARTs (or CPUs) so RISC-V per-HART (or per-CPU) local
-+  interrupt controller is the parent interrupt controller for CLINT device.
-+  The clock frequency of the CLINT is specified via "timebase-frequency" DT
-+  property of "/cpus" DT node. The "timebase-frequency" DT property is
-+  described in Documentation/devicetree/bindings/riscv/cpus.yaml
-+
-+properties:
-+  compatible:
-+    items:
-+      - const:
-+          - allwinner,sun20i-d1-clint
-+      - const:
-+          - thead,clint0
-+
-+    description:
-+      Should be "<vendor>,<chip>-clint" and "thead,clint<version>" for
-+      the T-HEAD derived CLINTs.
-+      Supported compatible strings are -
-+      "allwinner,sun20i-d1-clint" for the CLINT in the Allwinner D1 SoC
-+      and "thead,clint0" for the T-HEAD IP block with no chip
-+      integration tweaks.
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts-extended:
-+    minItems: 1
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts-extended
-+
-+examples:
-+  - |
-+    timer@2000000 {
-+      compatible = "allwinner,sun20i-d1-clint", "thead,clint0";
-+      interrupts-extended = <&cpu1intc 3 &cpu1intc 7
-+                             &cpu2intc 3 &cpu2intc 7
-+                             &cpu3intc 3 &cpu3intc 7
-+                             &cpu4intc 3 &cpu4intc 7>;
-+       reg = <0x2000000 0x10000>;
-+    };
-+...
--- 
-2.32.0
+ =09=09ret =3D pinmux_generic_add_function(drvdata->pctl_dev,
+ =09=09=09=09=09=09  funcs[i].name,
+ =09=09=09=09=09=09  funcs[i].groups,
+@@ -815,7 +820,7 @@ static int pinctrl_reg(struct eqbr_pinctrl_drv_data *dr=
+vdata)
+=20
+ =09ret =3D eqbr_build_functions(drvdata);
+ =09if (ret) {
+-=09=09dev_err(dev, "Failed to build groups\n");
++=09=09dev_err(dev, "Failed to build functions\n");
+ =09=09return ret;
+ =09}
+=20
+--=20
+2.17.1
 
