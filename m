@@ -2,241 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EAE4355F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 00:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237E74355F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 00:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhJTWlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 18:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhJTWlf (ORCPT
+        id S231180AbhJTWmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 18:42:09 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:2900 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhJTWmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 18:41:35 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7E8C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 15:39:20 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id f21so17159758plb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 15:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eGCn0f41D4HpobJWo3fx2mTIugtvwU4VYQMdEwSg0U0=;
-        b=af2oC3k0qcnhiF7y6ar4o729lYsprHHjORYSkiipWKcFN7EujBzRwlS0tM4+QKpWJM
-         HqcOQkGTCWeDXiZlwA29Ae1wXUjBSOCCjbbdrOhFM47MmQe/YsRVnF2Lg/wS6Ug2mING
-         3zAoiE0ZQx+QTxKNfElvnO45sIaMMOfwpe/O+JqMBhVPrKt8bz7fmKQ5gg7OI+Q5A9Ru
-         mxFZrcimLWX+8JWmFs5hl7gLqPMJ4YtcCZLu5B+nkELZ653oUXVbG/cp+xOK4T9AR1ta
-         bqJw5XNRe+OFARm/ngy0aTudPN2oJn+vRz95YcyC8SZeZrJc4p42SvWiI3yQbY2juzX1
-         u0eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eGCn0f41D4HpobJWo3fx2mTIugtvwU4VYQMdEwSg0U0=;
-        b=Sm3Mtb/v7SboQuf3o7nNFIec0096EBdx1LiqDptkNTK9sFTfTG9/yLZljuCWos0SB0
-         6kVOkk7wdBKZwTYHlUNoV8n9PkbwU0yWhVHikC3I3yt2dDw4mrm6o53sdNs/HOOL8mCm
-         quzPCktJqGf6txvfhENfIDr9WK+yUZze8hbOfl/tOTNkt9I65iWaBbClw6rmiGrn/YaR
-         XtW5M78wo8sOSpuYkxdLHtbN64elgC47idaFfyphtw9cMeTAbCKUP81izl8ATwuj3Afl
-         6mvI5vV+hVbXv73T2Z6jTCvMDUwt2WtoaVHEVpULRioPGAhy3mtu+89L3m7V1UBxG2pi
-         tSbQ==
-X-Gm-Message-State: AOAM533DrUxxuBY4cotPkPsATFkC+Zrz7JVrFApoUn/sSrYNhKVC4htB
-        EIFZbDSp6DUAXD1zEBh/4B/r/w==
-X-Google-Smtp-Source: ABdhPJx+QU7ObcFGp4YAIapaqa4lFYaMZDXOPAfMUKLdl4uUX1J2w0lDXSx4ODnf4X0d4Enkf0E9Mg==
-X-Received: by 2002:a17:90a:73ce:: with SMTP id n14mr2074254pjk.215.1634769559470;
-        Wed, 20 Oct 2021 15:39:19 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id q8sm3956649pfu.167.2021.10.20.15.39.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 15:39:18 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 22:39:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 08/13] KVM: Resolve memslot ID via a hash table
- instead of via a static array
-Message-ID: <YXCak6WUfknV6qU5@google.com>
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <555f58fdaec120aa7a6f6fbad06cca796a8c9168.1632171479.git.maciej.szmigiero@oracle.com>
+        Wed, 20 Oct 2021 18:42:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1634769593; x=1666305593;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ANjv7oA9MTzC+HqX2lqEYQUduo9FaGOUFrImo55vutA=;
+  b=EJRv30ezf5CdbqE74gl2TFpOcFmYYlbIkgTL8MKaCPcAYheipK3a9QzX
+   jiD4y8Qv7UAjhaXMesctiKbEnqshC5QooDU6kF1EJsTqkMEygt8LQN+u/
+   32qDanRr5GJn65B9g4j38sGF6uATDQ8qEl3KrYj/rpHzNudyKi2FagHn1
+   AmOYYKVwHU6XESlGMYYNPfPeps/mxVvNWIKqL58jKV/h0ev+984C6nPVp
+   LHcXsRNpfME3QNlzJjNg4ByA0LVLi2pfbEsEjZZHUvUwvgtgVD4u9mF0X
+   ps5TqcuVujDdmWvifjKEEjLvThIcMoJ/vsRYiywpbTPNuE0QPbOjDVApF
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,168,1631548800"; 
+   d="scan'208";a="287328433"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Oct 2021 06:39:52 +0800
+IronPort-SDR: b6tIJeOIoN+8dw//KtjBy5HuZasD1chM2HZ9EU78h9opmoctac27GGxkSLQtjcawpvMhkh1M2M
+ A2WzVuxbw6YLBUMaKcwnfLUbxxj0r187g6+GavmehVGU91elmm2nyCLgfLS6BwBMYO4scJ64as
+ z3eT1SYWYFHwp38ERqteZHMV0SVwZa774ze2xPFknuYJPpOQfsEAdji3FI2xXiSiTChb3jZaVS
+ YYcHzGfQhB/vRhsVBpmt+hSLNU9N24UzHykFZ29XhLlkFyAtS/6IOlPM+b6vUK4Z9zCminm+WT
+ +5T/ek8rWyrxXH1OitQAK/YE
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 15:13:56 -0700
+IronPort-SDR: 4QWFJHpPMqjA/lxIckyZyoicOMvSjvvVZ+vxaOVznykZTubXzxRHkX1zRKkTwVjhFWNWTlmkpx
+ 4XJS9WJrf3zgCvBTD+siSMTUPlTpxRQcspIC1odEV9kzvNyyaY3hFO6XIv8ShnvT8c0+SJgjJ3
+ vSouB7jJB12L+MgRzrxZpC7gfZR55COZApRkqawlI8CZP2J89aYZvAusvrITcCGgRjdex5dEhs
+ JViMI5DwaCfowG58utvtJadq26x+2QESjlhqs2oMAu4smARAbaUga3Iziz0lezH8EesqJSS9tm
+ hyQ=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2021 15:39:53 -0700
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HZQXm2T4Hz1Rwrr
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 15:39:52 -0700 (PDT)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:subject:to:from; s=dkim; t=1634769590;
+         x=1637361591; bh=ANjv7oA9MTzC+HqX2lqEYQUduo9FaGOUFrImo55vutA=; b=
+        ulcVS5l/sZ8+ndMGNDX3tauN+ZGWc3NLa+Ub9sJbs7GJTUK9BcoQY4D3d9iSCSFm
+        Hh2iRnBrWxiiMYEhO2EOTslHiUdG5zSsLpin14mVxyF4mVYKJaCCjHBgTJfVy+SR
+        WA/JA4i5amv5PZUh4DNbERv2vAHwdd6xi+xm9zLyf+BRGCKn2kppegl4/vmONvAi
+        51vHNoWuRQpYgcRmmUHzk9t+NAF1gjAvMUE+O87y1LcJ2JJFFxUcSCmJXWzs0rIw
+        M+hmqvB1km8Cs2fuHC0Hnyqak3D8MFoksxXK7TMsih6DAeYoevozft9+/vSu2xJ+
+        1ArIFP5Z9FPnCGiarM21Tg==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id VCrnSItlvkZD for <linux-kernel@vger.kernel.org>;
+        Wed, 20 Oct 2021 15:39:50 -0700 (PDT)
+Received: from toolbox.wdc.com (unknown [10.225.165.39])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HZQXV2XHlz1RvlZ;
+        Wed, 20 Oct 2021 15:39:37 -0700 (PDT)
+From:   Alistair Francis <alistair.francis@opensource.wdc.com>
+To:     linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        namhyung@kernel.org, jolsa@redhat.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
+        acme@kernel.org, dave@stgolabs.net, dvhart@infradead.org,
+        peterz@infradead.org, mingo@redhat.com, tglx@linutronix.de,
+        atish.patra@wdc.com, arnd@arndb.de,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH v4 1/4] perf bench futex: Call the futex syscall from a function
+Date:   Thu, 21 Oct 2021 08:39:17 +1000
+Message-Id: <20211020223920.2810727-1-alistair.francis@opensource.wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <555f58fdaec120aa7a6f6fbad06cca796a8c9168.1632171479.git.maciej.szmigiero@oracle.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
-> @@ -1251,12 +1251,13 @@ static inline void kvm_memslot_delete(struct kvm_memslots *slots,
->  	if (atomic_read(&slots->last_used_slot) >= slots->used_slots)
->  		atomic_set(&slots->last_used_slot, 0);
->  
-> -	for (i = slots->id_to_index[memslot->id]; i < slots->used_slots; i++) {
-> +	for (i = oldslot - mslots; i < slots->used_slots; i++) {
-> +		hash_del(&mslots[i].id_node);
->  		mslots[i] = mslots[i + 1];
-> -		slots->id_to_index[mslots[i].id] = i;
-> +		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
->  	}
-> +	hash_del(&mslots[i].id_node);
->  	mslots[i] = *memslot;
-> -	slots->id_to_index[memslot->id] = -1;
+From: Alistair Francis <alistair.francis@wdc.com>
 
-Aha!  This code has been bugging and I finally figured out why.  Fundamentally,
-this is identical to kvm_memslot_move_backward(), the only difference being that
-the _backward() variant has a second "stop" condition.
+In preparation for a more complex futex() function let's convert the
+current macro into two functions. We need two functions to avoid
+compiler failures as the macro is overloaded.
 
-But yet this is subtly different in the hash manipulations because performs the
-final node deletion (which is a random node, that may not be the target node!)
-outside of the loop, whereas _backward() deletes the target node before the loop.
+This will allow us to include pre-processor conditionals in the futex
+syscall functions.
 
-I like the _backward() variant a lot more.  And if this code is converted to that
-approach, i.e.
-
-	for (i = oldslot - mslots; i < slots->used_slots; i++) {
-		hash_del(&mslots[i + 1].id_node);
-		mslots[i] = mslots[i + 1];
-		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
-	}
-
-then all three loops fit a similar pattern and we can extract the node craziness
-into a helper.  I know this mostly goes away in the end, but I think/hope it will
-make the future patches easier to follow this there's only ever one "replace"
-helper.
-
-For convenience, with the s/mmemslot/oldslot and comment changes.
-
+Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
 ---
- virt/kvm/kvm_main.c | 63 ++++++++++++++++++++++++++-------------------
- 1 file changed, 37 insertions(+), 26 deletions(-)
+ tools/perf/bench/futex.h | 43 ++++++++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 50597608d085..6f5298bc7710 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1231,6 +1231,23 @@ static int kvm_alloc_dirty_bitmap(struct kvm_memory_slot *memslot)
- 	return 0;
- }
-
-+static void kvm_memslot_replace(struct kvm_memslots *slots, int dst, int src)
+diff --git a/tools/perf/bench/futex.h b/tools/perf/bench/futex.h
+index b3853aac3021c..b97a343e7ec66 100644
+--- a/tools/perf/bench/futex.h
++++ b/tools/perf/bench/futex.h
+@@ -28,7 +28,7 @@ struct bench_futex_parameters {
+ };
+=20
+ /**
+- * futex() - SYS_futex syscall wrapper
++ * futex_syscall() - SYS_futex syscall wrapper
+  * @uaddr:	address of first futex
+  * @op:		futex op code
+  * @val:	typically expected value of uaddr, but varies by op
+@@ -38,17 +38,26 @@ struct bench_futex_parameters {
+  * @val3:	varies by op
+  * @opflags:	flags to be bitwise OR'd with op, such as FUTEX_PRIVATE_FLA=
+G
+  *
+- * futex() is used by all the following futex op wrappers. It can also b=
+e
++ * futex_syscall() is used by all the following futex op wrappers. It ca=
+n also be
+  * used for misuse and abuse testing. Generally, the specific op wrapper=
+s
+- * should be used instead. It is a macro instead of an static inline fun=
+ction as
+- * some of the types over overloaded (timeout is used for nr_requeue for
+- * example).
++ * should be used instead.
+  *
+  * These argument descriptions are the defaults for all
+  * like-named arguments in the following wrappers except where noted bel=
+ow.
+  */
+-#define futex(uaddr, op, val, timeout, uaddr2, val3, opflags) \
+-	syscall(SYS_futex, uaddr, op | opflags, val, timeout, uaddr2, val3)
++static inline int
++futex_syscall(volatile u_int32_t *uaddr, int op, u_int32_t val, struct t=
+imespec *timeout,
++	      volatile u_int32_t *uaddr2, int val3, int opflags)
 +{
-+	struct kvm_memory_slot *mslots = slots->memslots;
-+
-+	/*
-+	 * Remove the source from the hash list, copying the hlist_node data
-+	 * would corrupt the list.
-+	 */
-+	hash_del(&mslots[src].id_node);
-+
-+	/* Copy the source *data*, not the pointer, to the destination. */
-+	mslots[dst] = mslots[src];
-+
-+	/* Re-add the memslot to the list using the destination's node. */
-+	hash_add(slots->id_hash, &mslots[dst].id_node, mslots[dst].id);
++	return syscall(SYS_futex, uaddr, op | opflags, val, ts32, uaddr2, val3)=
+;
 +}
 +
- /*
-  * Delete a memslot by decrementing the number of used slots and shifting all
-  * other entries in the array forward one spot.
-@@ -1251,12 +1268,16 @@ static inline void kvm_memslot_delete(struct kvm_memslots *slots,
- 	if (atomic_read(&slots->last_used_slot) >= slots->used_slots)
- 		atomic_set(&slots->last_used_slot, 0);
-
--	for (i = oldslot - mslots; i < slots->used_slots; i++) {
--		hash_del(&mslots[i].id_node);
--		mslots[i] = mslots[i + 1];
--		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
--	}
--	hash_del(&mslots[i].id_node);
-+	/*
-+	 * Remove the to-be-deleted memslot from the list _before_ shifting
-+	 * the trailing memslots forward, its data will be overwritten.
-+	 * Defer the (somewhat pointless) copying of the memslot until after
-+	 * the last slot has been shifted to avoid overwriting said last slot.
-+	 */
-+	hash_del(&oldslot->id_node);
-+
-+	for (i = oldslot - mslots; i < slots->used_slots; i++)
-+		kvm_memslot_replace(slots, i, i + 1);
- 	mslots[i] = *memslot;
- }
-
-@@ -1282,39 +1303,32 @@ static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
- 					    struct kvm_memory_slot *memslot)
++static inline int
++futex_syscall_nr_requeue(volatile u_int32_t *uaddr, int op, u_int32_t va=
+l, int nr_requeue,
++			 volatile u_int32_t *uaddr2, int val3, int opflags)
++{
++	return syscall(SYS_futex, uaddr, op | opflags, val, nr_requeue, uaddr2,=
+ val3);
++}
+=20
+ /**
+  * futex_wait() - block on uaddr with optional timeout
+@@ -57,7 +66,7 @@ struct bench_futex_parameters {
+ static inline int
+ futex_wait(u_int32_t *uaddr, u_int32_t val, struct timespec *timeout, in=
+t opflags)
  {
- 	struct kvm_memory_slot *mslots = slots->memslots;
--	struct kvm_memory_slot *mmemslot = id_to_memslot(slots, memslot->id);
-+	struct kvm_memory_slot *oldslot = id_to_memslot(slots, memslot->id);
- 	int i;
-
--	if (!mmemslot || !slots->used_slots)
-+	if (!oldslot || !slots->used_slots)
- 		return -1;
-
- 	/*
--	 * The loop below will (possibly) overwrite the target memslot with
--	 * data of the next memslot, or a similar loop in
--	 * kvm_memslot_move_forward() will overwrite it with data of the
--	 * previous memslot.
--	 * Then update_memslots() will unconditionally overwrite and re-add
--	 * it to the hash table.
--	 * That's why the memslot has to be first removed from the hash table
--	 * here.
-+         * Delete the slot from the hash table before sorting the remaining
-+         * slots, the slot's data may be overwritten when copying slots as part
-+         * of the sorting proccess.  update_memslots() will unconditionally
-+         * rewrite the entire slot and re-add it to the hash table.
- 	 */
--	hash_del(&mmemslot->id_node);
-+	hash_del(&oldslot->id_node);
-
- 	/*
- 	 * Move the target memslot backward in the array by shifting existing
- 	 * memslots with a higher GFN (than the target memslot) towards the
- 	 * front of the array.
- 	 */
--	for (i = mmemslot - mslots; i < slots->used_slots - 1; i++) {
-+	for (i = oldslot - mslots; i < slots->used_slots - 1; i++) {
- 		if (memslot->base_gfn > mslots[i + 1].base_gfn)
- 			break;
-
- 		WARN_ON_ONCE(memslot->base_gfn == mslots[i + 1].base_gfn);
-
--		/* Shift the next memslot forward one and update its index. */
--		hash_del(&mslots[i + 1].id_node);
--		mslots[i] = mslots[i + 1];
--		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
-+		kvm_memslot_replace(slots, i, i + 1);
- 	}
- 	return i;
+-	return futex(uaddr, FUTEX_WAIT, val, timeout, NULL, 0, opflags);
++	return futex_syscall(uaddr, FUTEX_WAIT, val, timeout, NULL, 0, opflags)=
+;
  }
-@@ -1343,10 +1357,7 @@ static inline int kvm_memslot_move_forward(struct kvm_memslots *slots,
-
- 		WARN_ON_ONCE(memslot->base_gfn == mslots[i - 1].base_gfn);
-
--		/* Shift the next memslot back one and update its index. */
--		hash_del(&mslots[i - 1].id_node);
--		mslots[i] = mslots[i - 1];
--		hash_add(slots->id_hash, &mslots[i].id_node, mslots[i].id);
-+		kvm_memslot_replace(slots, i, i - 1);
- 	}
- 	return i;
+=20
+ /**
+@@ -67,7 +76,7 @@ futex_wait(u_int32_t *uaddr, u_int32_t val, struct time=
+spec *timeout, int opflag
+ static inline int
+ futex_wake(u_int32_t *uaddr, int nr_wake, int opflags)
+ {
+-	return futex(uaddr, FUTEX_WAKE, nr_wake, NULL, NULL, 0, opflags);
++	return futex_syscall(uaddr, FUTEX_WAKE, nr_wake, NULL, NULL, 0, opflags=
+);
  }
---
+=20
+ /**
+@@ -76,7 +85,7 @@ futex_wake(u_int32_t *uaddr, int nr_wake, int opflags)
+ static inline int
+ futex_lock_pi(u_int32_t *uaddr, struct timespec *timeout, int opflags)
+ {
+-	return futex(uaddr, FUTEX_LOCK_PI, 0, timeout, NULL, 0, opflags);
++	return futex_syscall(uaddr, FUTEX_LOCK_PI, 0, timeout, NULL, 0, opflags=
+);
+ }
+=20
+ /**
+@@ -85,7 +94,7 @@ futex_lock_pi(u_int32_t *uaddr, struct timespec *timeou=
+t, int opflags)
+ static inline int
+ futex_unlock_pi(u_int32_t *uaddr, int opflags)
+ {
+-	return futex(uaddr, FUTEX_UNLOCK_PI, 0, NULL, NULL, 0, opflags);
++	return futex_syscall(uaddr, FUTEX_UNLOCK_PI, 0, NULL, NULL, 0, opflags)=
+;
+ }
+=20
+ /**
+@@ -97,8 +106,8 @@ static inline int
+ futex_cmp_requeue(u_int32_t *uaddr, u_int32_t val, u_int32_t *uaddr2, in=
+t nr_wake,
+ 		 int nr_requeue, int opflags)
+ {
+-	return futex(uaddr, FUTEX_CMP_REQUEUE, nr_wake, nr_requeue, uaddr2,
+-		 val, opflags);
++	return futex_syscall_nr_requeue(uaddr, FUTEX_CMP_REQUEUE, nr_wake, nr_r=
+equeue, uaddr2,
++					val, opflags);
+ }
+=20
+ /**
+@@ -113,8 +122,8 @@ static inline int
+ futex_wait_requeue_pi(u_int32_t *uaddr, u_int32_t val, u_int32_t *uaddr2=
+,
+ 		      struct timespec *timeout, int opflags)
+ {
+-	return futex(uaddr, FUTEX_WAIT_REQUEUE_PI, val, timeout, uaddr2, 0,
+-		     opflags);
++	return futex_syscall(uaddr, FUTEX_WAIT_REQUEUE_PI, val, timeout, uaddr2=
+, 0,
++			     opflags);
+ }
+=20
+ /**
+@@ -130,8 +139,8 @@ static inline int
+ futex_cmp_requeue_pi(u_int32_t *uaddr, u_int32_t val, u_int32_t *uaddr2,
+ 		     int nr_requeue, int opflags)
+ {
+-	return futex(uaddr, FUTEX_CMP_REQUEUE_PI, 1, nr_requeue, uaddr2,
+-		     val, opflags);
++	return futex_syscall_nr_requeue(uaddr, FUTEX_CMP_REQUEUE_PI, 1, nr_requ=
+eue, uaddr2,
++					val, opflags);
+ }
+=20
+ #endif /* _FUTEX_H */
+--=20
+2.31.1
+
