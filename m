@@ -2,316 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1814346D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482C04346D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbhJTI1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhJTI1b (ORCPT
+        id S229911AbhJTI2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:28:13 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:53229 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhJTI2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:27:31 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA594C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:25:16 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id n8so13398214lfk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:25:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=Vivsq86AQ/CLsPuXB4L/G859j6z2u+eKtIxWrc/VSoU=;
-        b=AkhmSEFbfTYIzt6aK4jNw6UvlcWx8vsiKiEOiZeVsxjbURqDlvBf6NCVoQM5TZv9Pg
-         bRwXrntx4YckcDv55byBN3WCqrAZRAcjfPw0YKVuGwjo8RUilAN6J1KFWZ9cOHpyA8e7
-         OuBTs2CoO9/6kS8rvVakGaXHGm/oo7ec8jir6SWOJ7SaJ+f1b3HF0VjtAE5l5t3zCLV7
-         BagTEr2n7Eh6/DKcnHX04/6UIEyCZUNDc2u9KAK4LcwM0EsgBkBx3MR4ffu3Ih96SiVZ
-         k5dSqpvApQi+RKtEbTvuDfWUd6oio6nEzcCjYpkhNLbNyOTws5h/9USwyKvcfCIbqfd1
-         3Pag==
+        Wed, 20 Oct 2021 04:28:09 -0400
+Received: by mail-wm1-f47.google.com with SMTP id m42so17060694wms.2;
+        Wed, 20 Oct 2021 01:25:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=Vivsq86AQ/CLsPuXB4L/G859j6z2u+eKtIxWrc/VSoU=;
-        b=OGcR5ce8ljU/NMXoNpv9y5zqAzxU1ujbZgNiq5bj46oBEtgqa8agxJG6PP+fgjpl3D
-         BSXWMsCXqvZkB2UVXPKCObV/usU7g681BtPd8xLjQ9Nk5QE3ImPFdub49iIUzx+EwYSc
-         C2HkcavN3T+d5DCKzvSk8B+cG4vY/5oh4a6LooE00e+CkAucQw6+kEf0+6qwVB3H9dq1
-         IiYjy3Ok22zpggZQL0RNwcid72BVIb1jc5ijPqE2/kXPl91zUTsm61BXjmT9dNGN61aN
-         pIcg9PTExEYOp1CWR7m+AMxzSixe6aa/XQ2n+n8GnVKAcoQ2d/LRUDRghBk2FtVzhtkK
-         BxiQ==
-X-Gm-Message-State: AOAM530wz80Jl9l/XfqmBiL3vHE2QmbzjckUrQ8Ot+fpfJKZs4M9O7CG
-        SP7SUej88AbUOvWnT6g8QBA=
-X-Google-Smtp-Source: ABdhPJz0JOlWICPnPtH+Q5H9AvWKxHU7eg1k9b6+sMv1vo+YKE++RoM+CFDQG8IoAJB79PyVsQoymg==
-X-Received: by 2002:a05:6512:3049:: with SMTP id b9mr10562256lfb.660.1634718314972;
-        Wed, 20 Oct 2021 01:25:14 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id q10sm133956lfe.294.2021.10.20.01.25.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pgSRS53yor4/W1ex9Z2HbXrLEzhX0+rUSDcCEksYWe4=;
+        b=ab0piIwAYH3jFHS9Pz+jFFY/gLaaGlcODscVoFh3F5cg1S1O/qYm4WZ+paWorhgzFA
+         zHgiCXqV0ui89twdVA2oabevd9eLMzg3KnOk0ut5MPRj50PPac4SUkK0bVAXD7Rja94t
+         gpBpJmWYwZLFruwN05CxE3EnzxihPWaTPCPU2x9BtCM8jQ4HWTlg+nRCucUVy6Wuc6NH
+         x0BjGSih+gWsZZWyvBpbdj6HgR4Aac4w8LZToIsKWbzGhxuhPpmNFgS3H+9djUtqdfjM
+         /qm7BVCKPAcT9JMrfdoDTsOHpAxVF1BeU6/cor7TICj5/R2rh2W1teBS9+3zD6wvLBv2
+         Kpxw==
+X-Gm-Message-State: AOAM533hInBkcR9eS+wYSrS/wjMypz3+w7PtYTZSloTIy5PIqWnDfvIs
+        4WJ+PUjjiUl4nTmjGa5r1Ts=
+X-Google-Smtp-Source: ABdhPJxl0jyUaqcSoVWh1W6m5L4Ui22r9rjXIiIIZ3g6VlfISOH+EXu59dakftSR4S7bCig4eGmg6g==
+X-Received: by 2002:a7b:c14b:: with SMTP id z11mr11968924wmi.67.1634718354848;
+        Wed, 20 Oct 2021 01:25:54 -0700 (PDT)
+Received: from localhost.localdomain (ip-85-160-35-99.eurotel.cz. [85.160.35.99])
+        by smtp.gmail.com with ESMTPSA id c3sm1317047wrw.66.2021.10.20.01.25.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 01:25:14 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 11:25:11 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        contact@emersion.fr, leandro.ribeiro@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] drm: vkms: Refactor the plane composer to accept
- new formats
-Message-ID: <20211020112511.0b6b93ba@eldfell>
-In-Reply-To: <c623cfdd-1b0c-0e15-b36e-e74119c41031@gmail.com>
-References: <20211005201637.58563-1-igormtorrente@gmail.com>
-        <20211005201637.58563-7-igormtorrente@gmail.com>
-        <20211018113009.5519457c@eldfell>
-        <d5f92494-9c55-2b7d-6107-6048abb41759@gmail.com>
-        <20211019110535.18f56272@eldfell>
-        <c623cfdd-1b0c-0e15-b36e-e74119c41031@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 20 Oct 2021 01:25:54 -0700 (PDT)
+From:   Michal Hocko <mhocko@kernel.org>
+To:     <linux-mm@kvack.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+Subject: [PATCH] mm/vmalloc: be more explicit about supported gfp flags.
+Date:   Wed, 20 Oct 2021 10:25:45 +0200
+Message-Id: <20211020082545.4830-1-mhocko@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211018114712.9802-3-mhocko@kernel.org>
+References: <20211018114712.9802-3-mhocko@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NoW6hr+ZxT5QKTLil8YPtyD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NoW6hr+ZxT5QKTLil8YPtyD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Michal Hocko <mhocko@suse.com>
 
-On Tue, 19 Oct 2021 18:10:57 -0300
-Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
+The core of the vmalloc allocator __vmalloc_area_node doesn't say
+anything about gfp mask argument. Not all gfp flags are supported
+though. Be more explicit about constrains.
 
-> Hi Pekka,
->=20
-> On 10/19/21 5:05 AM, Pekka Paalanen wrote:
-> > On Mon, 18 Oct 2021 16:26:06 -0300
-> > Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
-> >  =20
-> >> Hi Pekka,
-> >>
-> >> On 10/18/21 5:30 AM, Pekka Paalanen wrote: =20
-> >>> On Tue,  5 Oct 2021 17:16:37 -0300
-> >>> Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
-> >>>     =20
-> >>>> Currently the blend function only accepts XRGB_8888 and ARGB_8888
-> >>>> as a color input.
-> >>>>
-> >>>> This patch refactors all the functions related to the plane composit=
-ion
-> >>>> to overcome this limitation.
-> >>>>
-> >>>> Now the blend function receives a format handler to each plane and a
-> >>>> blend function pointer. It will take two ARGB_1616161616 pixels, one
-> >>>> for each handler, and will use the blend function to calculate and
-> >>>> store the final color in the output buffer.
-> >>>>
-> >>>> These format handlers will receive the `vkms_composer` and a pair of
-> >>>> coordinates. And they should return the respective pixel in the
-> >>>> ARGB_16161616 format.
-> >>>>
-> >>>> The blend function will receive two ARGB_16161616 pixels, x, y, and
-> >>>> the vkms_composer of the output buffer. The method should perform the
-> >>>> blend operation and store output to the format aforementioned
-> >>>> ARGB_16161616. =20
-> >>>
-> >>> Hi,
-> >>>
-> >>> here are some drive-by comments which you are free to take or leave.
-> >>>
-> >>> To find more efficient ways to do this, you might want research=20
-> >>> library. It's MIT licensed.
-> >>>
-> >>> IIRC, the elementary operations there operate on pixel lines (pointer=
- +
-> >>> length), not individual pixels (image, x, y). Input conversion functi=
-on
-> >>> reads and converts a whole line a time. Blending function blends two
-> >>> lines and writes the output into back one of the lines. Output
-> >>> conversion function takes a line and converts it into destination
-> >>> buffer. That way the elementary operations do not need to take stride
-> >>> into account, and blending does not need to deal with varying memory
-> >>> alignment FWIW. The inner loops involve much less function calls and
-> >>> state, probably. =20
-> >>
-> >> I was doing some rudimentary profiling, and I noticed that the code
-> >> spends most of the time with the indirect system call overhead and not
-> >> the actual computation. This can definitively help with it. =20
-> >=20
-> > Hi,
-> >=20
-> > I suppose you mean function (pointer) call, not system call? =20
->=20
-> Yes, I misspelled it.
->=20
-> >=20
-> > Really good that you have already profiled things. All optimisations
-> > should be guided by profiling, otherwise they are just guesses (and I
-> > got lucky this time I guess).
-> >  =20
-> >>> Pixman may not do exactly this, but it does something very similar.
-> >>> Pixman also has multiple different levels of optimisations, which may
-> >>> not be necessary for VKMS.
-> >>>
-> >>> It's a trade-off between speed and temporary memory consumed. You need
-> >>> temporary buffers for two lines, but not more (not a whole image in
-> >>> full intermediate precision). Further optimisation could determine
-> >>> whether to process whole image rows as lines, or split a row into
-> >>> multiple lines to stay within CPU cache size.
-> >>>     =20
-> >>
-> >> Sorry, I didn't understand the idea of the last sentence. =20
-> >=20
-> > If an image is very wide, a single row could still be relatively large
-> > in size (bytes). If it is large enough that the working set falls out
-> > of a faster CPU cache into a slower CPU cache (or worse yet, into RAM
-> > accesses), performance may suffer and become memory bandwidth limited
-> > rather than ALU rate limited. Theoretically that can be worked around
-> > by limiting the maximum size of a line, and splitting an image row into
-> > multiple lines. =20
->=20
-> Got it now, thanks.
->=20
-> >=20
-> > However, this is an optimisation one probably should not do until there
-> > is performance profiling data showing that it actually is useful. The
-> > optimal line size limit depends on the CPU model as well. So it's a bit
-> > far out, but something you could keep in mind just in case. =20
->=20
-> OK. For now I will not deal with this complexity, and if necessary I
-> will revisit it latter.
->=20
-> >  =20
-> >>> Since it seems you are blending multiple planes into a single
-> >>> destination which is assumed to be opaque, you might also be able to =
-do
-> >>> the multiple blends without convert-writing and read-converting to/fr=
-om
-> >>> the destination between every plane. I think that might be possible to
-> >>> architect on top of the per-line operations still. =20
-> >>
-> >> I tried it. But I don't know how to do this without looking like a mes=
-s. =20
->=20
-> I don't think it changes anything, but I forgot to mention that I tried
-> it with the blend per pixel and not a per line.
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+---
+ mm/vmalloc.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-Hi,
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index f7098e616883..f57c09e98977 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2979,8 +2979,16 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+  * @caller:		  caller's return address
+  *
+  * Allocate enough pages to cover @size from the page level
+- * allocator with @gfp_mask flags.  Map them into contiguous
+- * kernel virtual space, using a pagetable protection of @prot.
++ * allocator with @gfp_mask flags. Please note that the full set of gfp
++ * flags are not supported. GFP_KERNEL would be a preferred allocation mode
++ * but GFP_NOFS and GFP_NOIO are supported as well. Zone modifiers are not
++ * supported. From the reclaim modifiers__GFP_DIRECT_RECLAIM is required (aka
++ * GFP_NOWAIT is not supported) and only __GFP_NOFAIL is supported (aka
++ * __GFP_NORETRY and __GFP_RETRY_MAYFAIL are not supported).
++ * __GFP_NOWARN can be used to suppress error messages about failures.
++ * 
++ * Map them into contiguous kernel virtual space, using a pagetable
++ * protection of @prot.
+  *
+  * Return: the address of the area or %NULL on failure
+  */
+-- 
+2.30.2
 
-I believe that can get messy per-pixel, yeah. You kind of want to keep
-the per-pixel (inner loop) operations as fast as possible, and that
-naturally tends to lead to contorted code as you try to optimise it
-(prematurely perhaps).
-
-I would expect per-line code to be cleaner, because there is less state
-to be handled in the inner loop, and the outer loops spin rarely enough
-that you can afford to write more clear code.
-
-> > Dedicate one of the temporary line buffers for the destination, and
-> > instead of writing it out and loading it back for each input plane,
-> > leave it in place over all planes and write it out just once at the end.
-> >=20
-> > I do expect more state tracking needed. You need to iterate over the
-> > list of planes for each output row, extract only the used part of an
-> > input plane's buffer into the other temporary line buffer, and offset
-> > the destination line buffer and length to match when passing those into
-> > a blending function.+ =20
->=20
-> It's exactly this state tracking that was a mess when I was trying to
-> implement something similar. But this is one more thing that probably
-> I will have to revisit later.
-
-Mind the difference between state tracking in the inner loop vs. the
-outer loops. Per-line, inner loop becomes simpler while the outer loops
-become slightly more complicated, but it should be a net win, because
-the outer loops spin fewer times.
-
-When nesting gets too deep, code becomes a mess, or the number of local
-variables in a function grows too far, it usually helps to split things
-into more functions. The compiler will inline them for you
-automatically when that is beneficial.
-
-Function pointer calls cannot usually be inlined, hence they should be
-kept out of the innermost loop.
-
-> > It's not an obvious win but a trade-off, so profiling is again needed.
-> >=20
-> > Btw. the use of temporary line buffers should also help with
-> > implementing scaling. You could do the filtering during reading of the
-> > input buffer. If the filter is not nearest, meaning you need to access
-> > more than one input pixel per pixel-for-blending, there are a few ways
-> > to go about that. You could do the filtering during the input buffer
-> > reading, or you could load two input buffer rows into temporary line
-> > buffers and do filtering as a separate step into yet another line
-> > buffer. As the composition advances from top to bottom, only one of the
-> > input buffer rows will change at a time (during up-scaling) so you can
-> > avoid re-loading a row by swapping the line buffers.
-> >=20
-> > This is getting ahead of things, so don't worry about scaling or
-> > filtering yet. The first thing is to see if you can make the line
-> > buffer approach give you a significant speed-up.
-> >  =20
-> >> Does the pixman perform some similar? =20
-> >=20
-> > No, Pixman composition operation has only three images: source,
-> > mask, and destination. All those it can handle simultaneously, but
-> > since there is no "multi-blending" API, it doesn't need to take care of
-> > more.
-> >=20
-> > IIRC, Pixman also has a form of optimised operations that do blending
-> > and converting to destination in the same pass. The advantage of that
-> > is that blending can work with less precision when it knows what
-> > precision the output will be converted to and it saves some bandwidth
-> > by not needing to write-after-blending and read-for-conversion
-> > intermediate precision values. The disadvantage is that the number of
-> > needed specialised blending functions explodes by the number of
-> > possible destination formats. Pixman indeed makes those specialised
-> > functions optional, falling back to more generic C code. I would hope
-> > that VKMS does not need to go this far in optimisations though. =20
->=20
-> This should be plenty fast indeed. Maybe worth for formats that are
-> extremely common.
-
-My feeling says that it would be better to not aim that far at first,
-and see how the per-line approach works with separate pluggable
-read-conversion, blending, and write-conversion functions.
-
-Besides, combined blend-write operations would probably conflict with
-the idea of blending all planes first and then writing destination once.
-
-There are KMS properties for different blending functions, so that's a
-reason to make the blending function pluggable as well. Not just for a
-potential optimisation to skip the X channel on input completely.
-
-If you want to support background color property, that might be handled
-with a special read-conversion function which just fills the temporary
-line buffer with the background color.
-
-It is always possible to get faster by writing more specialised
-functions that can take advantage of more invariants/assumptions, but
-you get a combinatorial explosion of specialisations.
-
-
-Thanks,
-pq
-
---Sig_/NoW6hr+ZxT5QKTLil8YPtyD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmFv0mcACgkQI1/ltBGq
-qqcepw/8DT6qgPWBhP5DC7+NshQ7RI6qG7jRzl8z29WPF1uQ/0OcMKy1Oiv6gJg0
-ALgRgXNVV+sfDE4oRkBPNL4o6L7ge0rZ+Pi9Y/e+zl6iaOFoUJtpQHKajbFscp8c
-Gs/POk8fhx+ohUB1bQVPlgE0oN1ZgQtD0yR1pD1fuIU55KjdmCGd7vkhfDgJmyRE
-EG+8kQPeXmE2TwZtD8tTVbsYugEazQd+hRnYBi2U7ux6u300mjKFaq0X4gcAZbn3
-+Y3dtoPM1oEclZnJ5k0m/kZU0n5SNdJ4QMQCH1n0kzWwRUUuVJyMAIHa5GilH0C3
-XBgV1B19YKOLCks1uA/68y0kJbcFbgoB/wKls5UiYZ/jDR1NCA6IZlzJ1VPTPUMA
-6Q9QoVNPqegzjzkYhtiXYZseaflHxxID03ODBalxMJNAL0eL5PtkxNHi0TALVJJb
-QB67+IKu8eUNRzKLwmiwuZv30hXHLsmMpR1ozFpujn/2i/Tax20yHQo4wqudtNPo
-0+labp1rIvFIqDJOGCAUZhOdGzqgHQLNii9ep+6mZqOnMSx8Oy1Q6/wcYnI+PBnj
-QFFFh+15HFBZ0TYmTuaH/yXTdLgyp91GJNpyGRy5tCZdO85pMt4XZ+DiBrQ2AJ8x
-2hiuObBX9wOR69R0NKcjrNm9Z5Y6mJMMCX1GwHuID45FlTUC+6k=
-=rQnj
------END PGP SIGNATURE-----
-
---Sig_/NoW6hr+ZxT5QKTLil8YPtyD--
