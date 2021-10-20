@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDDA43472C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EF243472E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 10:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhJTIq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 04:46:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32388 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229686AbhJTIqZ (ORCPT
+        id S229897AbhJTIqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 04:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhJTIqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:46:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634719450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MvyTqgdf6ZEWMdPd4rQvCZfBzmf4LkWCdbjva2HVh0Y=;
-        b=b6hZu1I58SJgoQEURRBDPzgKwAdKRle/5CxAQDeJvRLi8yg0SEVTR9H2bbebR8QRMwpICu
-        7cGweLQJ0i1gSYHQdeS91Yh7QesRId5QazGl7az9LjkZQaXeQrki84BwwhsHbVakwCW+v4
-        2e1JqiyJzDLLD7HNNO9141ZStiA4p7g=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-hdXORYxfNGGYUM5W5oHdsg-1; Wed, 20 Oct 2021 04:44:09 -0400
-X-MC-Unique: hdXORYxfNGGYUM5W5oHdsg-1
-Received: by mail-ed1-f69.google.com with SMTP id u10-20020a50d94a000000b003dc51565894so13612182edj.21
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:44:09 -0700 (PDT)
+        Wed, 20 Oct 2021 04:46:36 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BE2C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:44:22 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id j190so15142666pgd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 01:44:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ldBwu3bHZGlvOZN+/H28E5tSq74U63ERarNGJKJY7E=;
+        b=Htg09zdPIQ3sGdFiVh/XEUMhJbHFofFtOYBKyhipsStuWCa4VClo30OGrzlC0nzniz
+         K9xoexX1ebXwXELyMZSnpv3u6FEIxzbYL78MPXYB+OwLaBr372a82CECxCgwD0C3sQ7T
+         FieRfUU2snqeI/UTs8croSWKkrh1OYpOFXxu/A9ZZTXP3I2EBb6ZcUKK4vFfhhNC5P11
+         eY9yuCea5D0pz4JCaiD6B65G2AwDGq6Wg85Tk6O7Sy9/7ZzgAMtBiMzln9Vc5kr5E/eG
+         a06I8fsr2tG+B+ew8i4a0vsgAyITSx082UhLnnV2YA8jgpNNC1gyHHvwz78yb9PQfdXD
+         wOxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MvyTqgdf6ZEWMdPd4rQvCZfBzmf4LkWCdbjva2HVh0Y=;
-        b=TkFENBz3CGGUYZbv/QRUn3+S/rThbCADXJXuRF9hj2owpfDHeTC+7tlDFdIMjIIpLr
-         XxSRjK+4qjSGZmx80Lwo0+8ZfhqNh6r6m7HnXJEhtBB2NYKQoXG53iCCT1cqzFPmDXN/
-         ql2VHa+1iecmKO1Og/p0q4fz3igrSyWhHDz92jB7sV97o+qV3dk3uTB+JJECcNUAn7bt
-         6IuHuhtfDCqg0r00bELhrr9I0fFiqKVHU5Q7U1TtVSbA6Al6/k2ZKpA69npCA5LCrWTQ
-         V/EGxaFlkAd6fLHUqVI6IVgxXZc18imE4YTGhL8wqgc7+sX342+tCDEr3yD37rid13+C
-         NV+w==
-X-Gm-Message-State: AOAM531+xMi2qH+AsENSpGIR94wy+uN1fJRnYjOfBjYMIqGuOrmWWliT
-        vfuIyzBT+LfTkvWbT6bG2ZPZFid0duYMSpwn2mFwT+CP+UMcV8eXAVA714jJ9CcvmzyBBpRU3mJ
-        H8PcqelRsdNlgOT020CJn3jHm
-X-Received: by 2002:a50:becf:: with SMTP id e15mr62263629edk.114.1634719448249;
-        Wed, 20 Oct 2021 01:44:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJziLPARPu3vpcjg9vV2//vlu9Wj1zslEGWBXZoVzlVWTah1TQHfmixIcHaGl8kIhAPyzr0PsA==
-X-Received: by 2002:a50:becf:: with SMTP id e15mr62263605edk.114.1634719448084;
-        Wed, 20 Oct 2021 01:44:08 -0700 (PDT)
-Received: from steredhat (host-79-34-250-211.business.telecomitalia.it. [79.34.250.211])
-        by smtp.gmail.com with ESMTPSA id b2sm802439edv.73.2021.10.20.01.44.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ldBwu3bHZGlvOZN+/H28E5tSq74U63ERarNGJKJY7E=;
+        b=dyT3lJM3kB0/IKVHuUX5q6zFVHdDVKeh9d8J2rC+m4oFc41Njdpnp2AdALaclulxQa
+         90T/ytMzz8zauvt+YVTURONn8+vfZXw4aH7d+xfCgQhfXsoyUI2BkCraHmnOVaYUUukF
+         VMSe4/uw0lcxWT8gLnnMn1CgA4tXUjJ+UIL1B3k4y44447YGuEtQMxU9i0WprD0TOib2
+         26TUa02VO7Sm4+bUErC/Tq7fRCP43Zdd0PlFVHmFDriK8lWx03MUi3Lwf3Nl6l4PzdUO
+         5/uXVI0wnohqPpNhVi4KSN/nEEps6MxVmu2q35k9FXnNv+H7X2yF9sn/RsmmPj2Vx+wL
+         JwBw==
+X-Gm-Message-State: AOAM5338Dus/KDgcGjbSha72jMJvNslUOrGy9jsl1zF96/5sIdQDdPOc
+        oceKGRya0sopCoMBFYNRQaQ=
+X-Google-Smtp-Source: ABdhPJyPzNor8QOprCSY6YIJc61rgoKYUjPy00aGT8mi/nIORq8vjSkFKHZkm+vFwoc6twOywVdToQ==
+X-Received: by 2002:a63:1266:: with SMTP id 38mr32452957pgs.219.1634719461880;
+        Wed, 20 Oct 2021 01:44:21 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id x27sm1610632pfr.181.2021.10.20.01.44.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 01:44:07 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 10:44:05 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: Re: [PATCH V3 01/10] virtio-blk: validate num_queues during probe
-Message-ID: <20211020084405.yrnbouwljqkoopsk@steredhat>
-References: <20211019070152.8236-1-jasowang@redhat.com>
- <20211019070152.8236-2-jasowang@redhat.com>
- <20211020071817.pzyfploxlryvdf3p@steredhat>
- <20211020032849-mutt-send-email-mst@kernel.org>
+        Wed, 20 Oct 2021 01:44:21 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     mingo@redhat.com
+Cc:     will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] locking/rwbase: fix boolreturn.cocci warning
+Date:   Wed, 20 Oct 2021 08:44:07 +0000
+Message-Id: <20211020084407.1038176-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20211020032849-mutt-send-email-mst@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 03:37:31AM -0400, Michael S. Tsirkin wrote:
->On Wed, Oct 20, 2021 at 09:18:17AM +0200, Stefano Garzarella wrote:
->> On Tue, Oct 19, 2021 at 03:01:43PM +0800, Jason Wang wrote:
->> > If an untrusted device neogitates BLK_F_MQ but advertises a zero
->>
->> s/neogitates/negotiates
->>
->> > num_queues, the driver may end up trying to allocating zero size
->> > buffers where ZERO_SIZE_PTR is returned which may pass the checking
->> > against the NULL. This will lead unexpected results.
->> >
->> > Fixing this by failing the probe in this case.
->> >
->> > Cc: Paolo Bonzini <pbonzini@redhat.com>
->> > Cc: Stefan Hajnoczi <stefanha@redhat.com>
->> > Cc: Stefano Garzarella <sgarzare@redhat.com>
->> > Signed-off-by: Jason Wang <jasowang@redhat.com>
->> > ---
->> > drivers/block/virtio_blk.c | 4 ++++
->> > 1 file changed, 4 insertions(+)
->>
->> Should we CC stable?
->>
->> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
->
->No IMO - I don't think we can reasonably expect stable to become
->protected against attacks on encrypted guests. That's
->a new feature, not a bugfix.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Yep, make sense.
-I had only seen the single patch, not the entire series, and it seemed 
-like a fix.
+./kernel/locking/rwbase_rt.c: 226: 9-10: WARNING: return of 0/1 in
+function '__rwbase_write_trylock' with return type bool
 
-Viewed as a whole, it makes sense to consider it a new feature to 
-improve audits in the guest.
+Return statements in functions returning bool should use true/false
+instead of 1/0.
 
-Thanks,
-Stefano
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ kernel/locking/rwbase_rt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+index 6fd3162e4098..e3dd458ee0c9 100644
+--- a/kernel/locking/rwbase_rt.c
++++ b/kernel/locking/rwbase_rt.c
+@@ -223,10 +223,10 @@ static inline bool __rwbase_write_trylock(struct rwbase_rt *rwb)
+ 	 */
+ 	if (!atomic_read_acquire(&rwb->readers)) {
+ 		atomic_set(&rwb->readers, WRITER_BIAS);
+-		return 1;
++		return true;
+ 	}
+ 
+-	return 0;
++	return false;
+ }
+ 
+ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+-- 
+2.25.1
 
