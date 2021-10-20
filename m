@@ -2,161 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BE0434FBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B50B434FC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhJTQLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhJTQLE (ORCPT
+        id S229952AbhJTQMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 12:12:08 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:47086
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229817AbhJTQL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:11:04 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC40C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:08:49 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id g79-20020a1c2052000000b00323023159e1so2987424wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jU6so7/xmOAFW/5s5ePQjgzisbppTQiQVv9ulVydV04=;
-        b=iNttK7oYUXsKvaJ8rzn//EimD6P+6OHcX+mwgg0gJuTPMnGd7PnIyjAhZLvN/vEpWh
-         W6YleLtRhL/OoHrY/X/jDl2zkirtDaTHhjrbPzUlyTfX/5dwLrMvBUpxdT29XfuAU580
-         xwvDyj7K9KwQ29+7iiRltTXU8r01rWEaCib8cAOOpwvTRPqMamVpub9TfySxzKwlL1m4
-         bxUWaAbd6WEt1VRrBhTRezlPY3k1Y2s9FtLvEmdQcP/n5riV5qhpb4JkaX0RArtt8Krf
-         rqyeV11RlV9pOUWdPXpsFuOsmPNzyEFtnasEY/EX9VKO/Ve75P20cdW555lN02yeDlX5
-         HoJQ==
+        Wed, 20 Oct 2021 12:11:58 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D98183F4BA
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 16:09:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634746182;
+        bh=dEGTee63Vt3tDZyGtNIP9fQ3+XWx6xlZ5vv4wE+jbuM=;
+        h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=wd11wC3Ng0Z1qptZXdfOQ4Li9Q3EHwjewwP2CLSVOkIR8J/CMGDWfTWzYwgrS6vR3
+         mS4qTjJhc62n5gipJ3jnXIZH4gG8hcaQzv8VjD00aTnrKv/jkM+cmgWAgsLJGyIgmP
+         N36F2J3/yDpe5wov1jcOlgw/8EARfh8MPoE8gX0BvCVb/wf0e0jNhtS84YHE4iMKgI
+         35DIaV3qztBzNa+ugwiiQaA2TJXeYtVypx+//aCeC7L1IX1BwzcrFF8ybf0I9xehnO
+         Wcx+LdtX6B5W1XZ+E8Qky3r8JGl/mmH+iG2DPJ+lVn2FOTPHLS3VRgUbCMrT/9ZCz7
+         hbSob62Lr+1Fw==
+Received: by mail-lj1-f197.google.com with SMTP id t7-20020a2e7807000000b00210dad8b167so2080594ljc.22
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:09:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jU6so7/xmOAFW/5s5ePQjgzisbppTQiQVv9ulVydV04=;
-        b=QxZ7l+CJIde3sZWwY5Ma3pPpbi+ARlg7yB+8LZWhVJv5saTOH2bbSkbXEI/9gTMi3d
-         jhCTeDdDo+Ud5tpSjLTdLiCyTl4UcJkeEeT4ym64Pt3qqHyZMRVot08bUtlk6iiQagE3
-         KcVVJOZiZ7ceoOY6q+lOeofCtsghjMY7GwO28rRE9bLDXGtVUSkkLstPp8+owOC3LVrt
-         UAmdoClCq7GXROCYPnWxvVN4VJlJLReKg63e9ORUPGRIKCgtg2gWgu6DPp4YSEBdEd+K
-         VS2hSVeXOUH+PEvskHrzmun2c1s8vcM3kYgI+YO3NKc+d4l37dxYyH7Rm699mqhZ6uV8
-         Dw/Q==
-X-Gm-Message-State: AOAM533gyAka7iYPcRfEwOevjzN3QhSJo6Uwo27OF4N76kDwlNHHBHNv
-        wFIZhtyyx2ADki7Si/DjhzZVsLSVY5gIRjcSQLGcgQ==
-X-Google-Smtp-Source: ABdhPJw0lgiD+qkfnFE0ywDfuTzMV+8e+bVIm3cOn/bK21wlW0F0sSuD8murJaR508c7NLifiZ3ei8uq1COTmdDPJSE=
-X-Received: by 2002:a05:600c:354c:: with SMTP id i12mr133300wmq.59.1634746127808;
- Wed, 20 Oct 2021 09:08:47 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dEGTee63Vt3tDZyGtNIP9fQ3+XWx6xlZ5vv4wE+jbuM=;
+        b=Y3QIKRD+Z6nywsjcBpyq7riVJLNOexI9MziFsoLKS78DPO9FijUeBKrL4FfkBnvtts
+         BWp7jX2wPTf5BDVHsab+KEGD14zyrnb4jhltt95E7fp9mvvvHqDhXa6I3xtB3UBIHf2S
+         3EEN9OB4SXjz42lueZAD4eKY1ccJ7b52yXk61gKHJsZKLdbJzLhzkucccAS3NVEfQ55v
+         h8RNPPig2B+Z55wyRtE1jfrUt1I/2R37aE/AH7PXc23X8IGO/8FQD5ir5qwqN+itqKhK
+         FPpr2/1SQvdlKpAJzO5HrLoKDJSfxr1+al3r6pu8TRzdRPJSRUumcw059QWXXAuXN27h
+         7raQ==
+X-Gm-Message-State: AOAM531a735gyUfkDUub1/CvtWfGNFrHf9S0jLtWNJLaWCa6BEFnp13Q
+        56FEDGmm+cforLNgGKBNXp+Y+LBcYfy07aicUocZxav0kMVUmObwh4Tb0YuGToVTZZGAfCJ/SZj
+        FCUuAMfNrkRDom2IXC9TO0ZABnnzcFqtzTtNiLRnUOA==
+X-Received: by 2002:a2e:a274:: with SMTP id k20mr291912ljm.479.1634746182213;
+        Wed, 20 Oct 2021 09:09:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhSsiNPupR343NvBFDsjHtdlto8F9qOd/sYEX1p4Qfw8NGJ+G9g4C5wNtD9Rm2Vc5GFwE12w==
+X-Received: by 2002:a2e:a274:: with SMTP id k20mr291883ljm.479.1634746182014;
+        Wed, 20 Oct 2021 09:09:42 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id m29sm223633lfo.104.2021.10.20.09.09.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 09:09:41 -0700 (PDT)
+Subject: Re: [PATCH v3 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
+ and S5M to dtschema
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211006132324.76008-1-krzysztof.kozlowski@canonical.com>
+ <YXA+GoTf6u/Y4qLX@google.com>
+ <16c79986-03b2-b74b-0de8-4118e2c4419f@canonical.com>
+Message-ID: <b98bd487-6c55-d058-8073-689b9396b527@canonical.com>
+Date:   Wed, 20 Oct 2021 18:09:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-2-guoren@kernel.org>
- <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org> <f850af365f2ac77af79ec59f92e6434a@kernel.org>
- <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
- <8735oxuxlq.wl-maz@kernel.org> <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
- <875ytrddma.wl-maz@kernel.org> <CAAhSdy0TwOjv_RDMRsKqcqTE8PSO_A_EttMGBiDbb-0PTRizZg@mail.gmail.com>
- <871r4fd996.wl-maz@kernel.org>
-In-Reply-To: <871r4fd996.wl-maz@kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 20 Oct 2021 21:38:36 +0530
-Message-ID: <CAAhSdy24WRZP70C0HUA1y0nVf0yWdj4SYY8HhGSfxQzDdafYnQ@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Guo Ren <guoren@kernel.org>, Samuel Holland <samuel@sholland.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <16c79986-03b2-b74b-0de8-4118e2c4419f@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 8:38 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Wed, 20 Oct 2021 15:33:49 +0100,
-> Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 7:04 PM Marc Zyngier <maz@kernel.org> wrote:
-> > >
-> > > On Tue, 19 Oct 2021 14:27:02 +0100,
-> > > Guo Ren <guoren@kernel.org> wrote:
-> > > >
-> > > > On Tue, Oct 19, 2021 at 6:18 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, 19 Oct 2021 10:33:49 +0100,
-> > > > > Guo Ren <guoren@kernel.org> wrote:
-> > > > >
-> > > > > > > If you have an 'automask' behavior and yet the HW doesn't record this
-> > > > > > > in a separate bit, then you need to track this by yourself in the
-> > > > > > > irq_eoi() callback instead. I guess that you would skip the write to
-> > > > > > > the CLAIM register in this case, though I have no idea whether this
-> > > > > > > breaks
-> > > > > > > the HW interrupt state or not.
-> > > > > > The problem is when enable bit is 0 for that irq_number,
-> > > > > > "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
-> > > > > > the hw state machine. Then this irq would enter in ack state and no
-> > > > > > continues irqs could come in.
-> > > > >
-> > > > > Really? This means that you cannot mask an interrupt while it is being
-> > > > > handled? How great...
-> > > > If the completion ID does not match an interrupt source that is
-> > > > currently enabled for the target, the completion is silently ignored.
-> > > > So, C9xx completion depends on enable-bit.
-> > >
-> > > Is that what the PLIC spec says? Or what your implementation does? I
-> > > can understand that one implementation would be broken, but if the
-> > > PLIC architecture itself is broken, that's far more concerning.
-> >
-> > Yes, we are dealing with a broken/non-compliant PLIC
-> > implementation.
-> >
-> > The RISC-V PLIC spec defines a very different behaviour for the
-> > interrupt claim (i.e. readl(claim)) and interrupt completion (i.e.
-> > writel(claim)). The T-HEAD PLIC implementation does things
-> > different from what the RISC-V PLIC spec says because it will
-> > mask an interrupt upon interrupt claim whereas PLIC spec says
-> > it should only clear the interrupt pending bit (not mask the interrupt).
-> >
-> > Quoting interrupt claim process (chapter 9) from PLIC spec:
-> > "The PLIC can perform an interrupt claim by reading the claim/complete
-> > register, which returns the ID of the highest priority pending interrupt or
-> > zero if there is no pending interrupt. A successful claim will also atomically
-> > clear the corresponding pending bit on the interrupt source."
-> >
-> > Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc
->
-> That's not the point I'm making. According to Guo, the PLIC (any
-> implementation of it) will ignore a write to claim on a masked
-> interrupt.
+On 20/10/2021 18:08, Krzysztof Kozlowski wrote:
+> On 20/10/2021 18:04, Lee Jones wrote:
+>> On Wed, 06 Oct 2021, Krzysztof Kozlowski wrote:
+>>
+>>> Hi All,
+>>>
+>>> Changes since v2
+>>> ================
+>>> 1. Add Rob's tags.
+>>> 2. Remove "regulator-name" from properties (all regulator dtschema).
+>>> 3. Move "unevaluatedProperties" higher to make code easier to read (all regulator dtschema).
+>>> 4. Add ref-type to op-mode property (patch 6: s5m8767 regulators).
+>>>
+>>> Changes since v1
+>>> ================
+>>> 1. Drop DTS patches - applied.
+>>> 2. Fully remove bindings/regulator/samsung,s5m8767.txt .
+>>> 3. Minor subject reformatting and few typos in text.
+>>>
+>>>
+>>> Intro
+>>> =====
+>>> This patchset converts all devicetree bindings of Samsung S2M and S5M
+>>> PMIC devices from txt to dtschema.
+>>>
+>>> It includes also two fixes because later conversion depends on it
+>>> (contextually).
+>>>
+>>>
+>>> Merging/dependencies
+>>> ====================
+>>> 1. Regulator related binding changes depend on first two commits (the
+>>>    fixes), because of context.
+>>> 2. The mfd bindings depend on clock and regulator bindings.
+>>>
+>>> The fixes and bindings changes (patches 1-10) should go via the same
+>>> tree.  For example regulator or mfd tree.
+>>>
+>>> Another alternative is that regulator patches (1-2, 4-6) go via Mark who
+>>> later gives MFD a stable branch/tag to pull. Then the clock and MFD
+>>> bindings would go on top via MFD tree. Or any other setup you would like
+>>> to have. :)
+>>>
+>>>
+>>> Overview of devices
+>>> ===================
+>>> Essentially all Samsung S2M and S5M PMICs are very similar devices. They
+>>> provide the same functionality: regulators, RTC, 2 or 3 clocks and main
+>>> power management (e.g. power cut to SoC).
+>>>
+>>> The differences are mostly in registers layout and number of regulators.
+>>>
+>>> The drivers are built around one common part, mfd/sec-core.c, and share
+>>> some drivers between devices:
+>>> 1. MFD sec-core for all devices,
+>>> 1. one clock driver for most of devices,
+>>> 2. one RTC driver for all devices,
+>>> 3. three regulator drivers.
+>>>
+>>> The regulator drivers were implementing slightly different features,
+>>> therefore one regulator binding for all devices does not make much
+>>> sense.  However the clock device binding can be shared.
+>>>
+>>> The final dtschema bindings try to implement this - share only the clock
+>>> bindings.
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>>> Krzysztof Kozlowski (10):
+>>>   regulator: s5m8767: do not use reset value as DVS voltage if GPIO DVS
+>>>     is disabled
+>>>   regulator: dt-bindings: samsung,s5m8767: correct
+>>>     s5m8767,pmic-buck-default-dvs-idx property
+>>>   dt-bindings: clock: samsung,s2mps11: convert to dtschema
+>>>   regulator: dt-bindings: samsung,s2m: convert to dtschema
+>>>   regulator: dt-bindings: samsung,s2mpa01: convert to dtschema
+>>>   regulator: dt-bindings: samsung,s5m8767: convert to dtschema
+>>>   dt-bindings: mfd: samsung,s2mps11: convert to dtschema
+>>>   dt-bindings: mfd: samsung,s2mpa01: convert to dtschema
+>>>   dt-bindings: mfd: samsung,s5m8767: convert to dtschema
+>>>   dt-bindings: mfd: samsung,s5m8767: document buck and LDO supplies
+>>
+>> Looks like these are ready to be pushed.
+>>
+>> However, I am not in receipt of patches 1-2.
+>>
+>> Am I okay to merge 3-10 right now?
+> 
+> No. This is v3, but we need v4. Please:
+> 1. Merge tag from Mark:
+> https://lore.kernel.org/lkml/YWCT+YL%2F9qHbF9f0@sirena.org.uk/
+> 
+> 2. Then apply patches 7-10 (MFD bindings).
 
-Yes, write to claim on a masked interrupt is certainly ignored but
-read to claim does not automatically mask the interrupt.
+... patches 7-10 from that v4 of course. They start here:
+https://lore.kernel.org/lkml/20211008113931.134847-4-krzysztof.kozlowski@canonical.com/
 
->
-> If that's indeed correct, then a sequence such as:
->
-> (1) irq = read(claim)
-
-This will return highest priority pending interrupt and clear the
-pending bit as-per RISC-V PLIC spec.
-
-> (2) mask from the interrupt handler with the right flags so that it
-> isn't done lazily
-> (3) write(irq, claim)
->
-> will result in an interrupt blocked in ack state (and probably no more
-> interrupt for this CPU at this priority). That would be an interesting
-> bug in the current code, but also a pretty bad architectural choice.
-
-The interrupt claim/completion is for each interrupt and not at CPU
-level so if an interrupt is masked then only that interrupt is blocked
-for all CPUs but other interrupts can still be raised.
-
-Regards,
-Anup
-
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+Best regards,
+Krzysztof
