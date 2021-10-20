@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FA24350CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B4B4350D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 18:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhJTQ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 12:59:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50903 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229771AbhJTQ7P (ORCPT
+        id S230282AbhJTRAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 13:00:02 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64542 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230049AbhJTRAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 12:59:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634749021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4wSvmizuMO2m4fT0eDjoslMhMT4OHvvAsI38HO+Btc8=;
-        b=GRfVsFo40gTsTcmJ4o/7fOVLMhLi1vZpC5iu5rvAvneOWjOX+440WGA5h/3vIvkg2VZbJ3
-        YCUsOK30w98OGjERNuz5VqVlqpVwfdN8wVRxngCOWNxHdHGOfiM4vhmV0+tyOFQamW8n3y
-        E9FDw/loTC/g/SoXUB/FHgEc2j0n1Fw=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-9jFM-v80OVSEvlA5Jv-m_A-1; Wed, 20 Oct 2021 12:56:59 -0400
-X-MC-Unique: 9jFM-v80OVSEvlA5Jv-m_A-1
-Received: by mail-qv1-f71.google.com with SMTP id q9-20020ad45749000000b00382b7c83aa1so3276009qvx.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 09:56:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4wSvmizuMO2m4fT0eDjoslMhMT4OHvvAsI38HO+Btc8=;
-        b=e5Lsedl5wyAPdKL7cdNLptuc07PnTjwEMQvvp9skw8wJh8CHPf5gQ6ef0wIZfBQfz4
-         /WHWmC0fNo6+b85zBlpCt8MtT15Vs6jvCnrqt+6MlfLaEJfo7IDQG3IGEccc6dUd4WBl
-         qSIyOEyJFAtxR5b76cnskk/RofAcegE+qFx9M2JNcpCwAn3GzwTUrXmsGuQ7PAMvCtme
-         F9LfaJcT1zd0LEbVXIEyw7y3wF2vbpvR7AKhQuugGI4zunaATP1CY8IOI8kKonxqy23K
-         sr1N1ighxRMjLPUa83JA2JjH+KAY9FS6g+oBzjiLAJIt6R4V8fgQ9SmwSTpGijw+nbpp
-         71bg==
-X-Gm-Message-State: AOAM532KCMjc2Xwnv16ncWN2qk7ENGuKhu1ErJ4WI/Q+7BQ45bWtD2gC
-        3OAUWx/JZs8X/mjIqRFqKKYsQWgk1USGRzFzcDqo3xQzdC9gBGUPiGqUl9tz9pkUYXSDDMTeIi2
-        KXC7ggTU7phUt0xTTgqzM0pQA
-X-Received: by 2002:a37:94c1:: with SMTP id w184mr189648qkd.103.1634749019196;
-        Wed, 20 Oct 2021 09:56:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxuB7ZB29rEUhk1IGJJz1Cdh16+W0LK1O6KQNrcOCufE4DPH1nlHKLmJk+ZSquOxDFpnwQInQ==
-X-Received: by 2002:a37:94c1:: with SMTP id w184mr189627qkd.103.1634749018955;
-        Wed, 20 Oct 2021 09:56:58 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id 101sm1179629qta.17.2021.10.20.09.56.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 09:56:58 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 09:56:55 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <20211020165655.632slp4ujsajis4j@treble>
-References: <20211020104442.021802560@infradead.org>
- <20211020105843.345016338@infradead.org>
- <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
+        Wed, 20 Oct 2021 13:00:01 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KGpe2d026736;
+        Wed, 20 Oct 2021 12:57:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=trLzzqXQ74LpX5eCSDS2/sCA15hX4PPZwwXliX5rAYA=;
+ b=lbzwgOunDHUq0I+y9yGzdHiSvzaLW6DFdIQw+Y9BE91X9nlg0WJWVELWMknKc10yecvW
+ gjl1YA+RMA0zByaRogqh132LmJo7Fdl8hz5ErLF+snediK7tiPPM7F3LWBiqP+L1jny7
+ 2Rq1yC8dQEvdAcF2rvgAi+7WMY+3n8KiGEGNYq39Tiap2IJ743OYtQJjTHueOKxpfti7
+ ZdGhghCGzLeND7cqmdiCte2MSlYV6QVf/BFTDzdtNh2JJGuIlXc4Ik+F+ODk2g/fhq2k
+ T01mG+wpoP5tMned8mq3SwJ1TbW8GRnCtBk0JGlaw0qee7B+QHUl86cyFTaSsQcTO9AO +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btpg70vn8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 12:57:30 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19KGs652031779;
+        Wed, 20 Oct 2021 12:57:29 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btpg70vmn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 12:57:29 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19KGvSDq000882;
+        Wed, 20 Oct 2021 16:57:28 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04wdc.us.ibm.com with ESMTP id 3bqpcbspgp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 16:57:28 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19KGvQMq42336660
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 16:57:26 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A81F7C6073;
+        Wed, 20 Oct 2021 16:57:26 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC1A8C6062;
+        Wed, 20 Oct 2021 16:57:24 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.235.71])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Oct 2021 16:57:24 +0000 (GMT)
+Subject: Re: [PATCH] PCI/hotplug: Remove unneeded of_node_put() in pnv_php
+To:     Nathan Lynch <nathanl@linux.ibm.com>,
+        Wan Jiabing <wanjiabing@vivo.com>
+Cc:     kael_w@yeah.net, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ajd@linux.ibm.com
+References: <20211020094604.2106-1-wanjiabing@vivo.com>
+ <87tuhcx6v6.fsf@linux.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <0622b8ea-7587-2e6b-5558-fae1847b14b9@linux.ibm.com>
+Date:   Wed, 20 Oct 2021 09:57:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <87tuhcx6v6.fsf@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: UQqsjwRes6ukURU9LcuVM2CbxBr-x2Cg
+X-Proofpoint-ORIG-GUID: mfaW1Nz8f-BHa00nn_2yLtUZbY8oSQtP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_05,2021-10-20_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ clxscore=1015 bulkscore=0 phishscore=0 priorityscore=1501 spamscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110200092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 01:09:51PM +0200, Peter Zijlstra wrote:
-> Alexei; could the above not be further improved with something like the
-> below?
+On 10/20/21 4:39 AM, Nathan Lynch wrote:
+> Wan Jiabing <wanjiabing@vivo.com> writes:
+>> Fix following coccicheck warning:
+>> ./drivers/pci/hotplug/pnv_php.c:161:2-13: ERROR: probable double put.
+>>
+>> Device node iterators put the previous value of the index variable, so
+>> an explicit put causes a double put.
 > 
-> Despite several hours trying and Song helping, I can't seem to run
-> anything bpf, that stuff is cursed. So I've no idea if the below
-> actually works, but it seems reasonable.
+> I suppose Coccinelle doesn't take into account that this code is
+> detaching and freeing the nodes.
+> 
+> 
+>> diff --git a/drivers/pci/hotplug/pnv_php.c b/drivers/pci/hotplug/pnv_php.c
+>> index f4c2e6e01be0..f3da4f95d73f 100644
+>> --- a/drivers/pci/hotplug/pnv_php.c
+>> +++ b/drivers/pci/hotplug/pnv_php.c
+>> @@ -158,7 +158,6 @@ static void pnv_php_detach_device_nodes(struct device_node *parent)
+>>  	for_each_child_of_node(parent, dn) {
+>>  		pnv_php_detach_device_nodes(dn);
+>>  
+>> -		of_node_put(dn);
+>>  		of_detach_node(dn);
+>>  	}
+> 
+> The code might be improved by comments explaining how the bare
+> of_node_put() corresponds to a "get" somewhere else in the driver, and
+> how it doesn't render the ongoing traversal unsafe. It looks suspicious
+> on first review, but I believe it's intentional and probably correct as
+> written.
+> 
 
-The below fix gets it to run with test_verififer.
+This is a common usage pattern which if we put a comment about the pattern here
+we need to do it every where. I suppose a better solution is to wrap this put in
+a more descriptive function name like of_node_long_put() or something of the
+sort the makes it obvious we are dropping a long held global scope reference.
 
-I do like it, it does seem less fiddly and more robust against future
-changes, though it probably needs a comment for 'out_label' clarifying
-it only works because this function is always called at least twice for
-a given bpf_tail_call emission.
-
----
-
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 08f32c9fceaa..c9230c5bbca5 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -457,7 +457,7 @@ static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
- 	EMIT3(0x39, 0x56,                         /* cmp dword ptr [rsi + 16], edx */
- 	      offsetof(struct bpf_array, map.max_entries));
- 
--	offset = out_label - (prog - start) + 2;
-+	offset = out_label - (prog - start + 2);
- 	EMIT2(X86_JBE, offset);                  /* jbe out */
- 
- 	/*
-@@ -467,7 +467,7 @@ static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
- 	EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
- 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
- 
--	offset = out_label - (prog - start) + 2;
-+	offset = out_label - (prog - start + 2);
- 	EMIT2(X86_JA, offset);                   /* ja out */
- 	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
- 	EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
-@@ -482,7 +482,7 @@ static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
- 	 */
- 	EMIT3(0x48, 0x85, 0xC9);                  /* test rcx,rcx */
- 
--	offset = out_label - (prog - start) + 2;
-+	offset = out_label - (prog - start + 2);
- 	EMIT2(X86_JE, offset);                   /* je out */
- 
- 	*pprog = prog;
-
+-Tyrel
