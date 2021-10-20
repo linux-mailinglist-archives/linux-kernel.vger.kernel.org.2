@@ -2,131 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33540434ECC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C695E434ED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 17:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhJTPQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 11:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33996 "EHLO
+        id S230264AbhJTPSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 11:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhJTPQd (ORCPT
+        with ESMTP id S229570AbhJTPSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:16:33 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554B1C06161C;
-        Wed, 20 Oct 2021 08:14:19 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id 187so3223723pfc.10;
-        Wed, 20 Oct 2021 08:14:19 -0700 (PDT)
+        Wed, 20 Oct 2021 11:18:17 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083C9C06161C;
+        Wed, 20 Oct 2021 08:16:03 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id a15-20020a17090a688f00b001a132a1679bso764919pjd.0;
+        Wed, 20 Oct 2021 08:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=TDLzKkefiW2qBcvhl9Mh1B9EpLxuIPGwsH2zNljPvVs=;
-        b=DOen5TCfJtA35vSF3dAtiaJkpldhQRHm/jmvb9QBl5DBXxRYX+iQ6/fBeR3GVBMoya
-         elnoAqS4D2bVR0BFIpEW+l2RvR/fbtMUaAyEr4vyFLpZnYVfw2OaDzLKqOp4Xfcu+Y5O
-         2zjSL4Nz9JUW/GnqjGbiHFXgClpiaGXjulr+jw8wiLrU79DBipcQFXiIXn2szNFZZ94o
-         TOEhEOFCBmHjbj/x6Q9g/nIq3Et8Hj1zQagSK+pYlxxOOeQfd2dC8KyIZvjaUAmZfTyP
-         mLgoO7IL71dOPbSlkuPj7mFEgl5jZVmwQprG49+aX1NTDdvtoVS6RLaxqr89LxJ04xXR
-         mTbA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qujnYD+rLkj+9g54TdtVOcj/8gkq3w+B28YjXt9K1II=;
+        b=ba3u1RjC7hi3s88Z6bQBlnlILlK6xxeLTntjfPO9o2PRP3bWxtBrsykTIwA0FLiq4q
+         +aPIp4LAtTb6R4FcsK3ZzZZrkjrsBCPl6JQcbwqJFUIxjJ9H195GopRl0NIi8RkSGuKn
+         l3Bzk8nLcO/cw8EQSu11WIwKaAGdW4XtBJb4jxacifgL5vaTpKozRnidcGjPVLzQKNPM
+         3E/DzwEU2sdxz2PdbLObuWJgWdHkCjcbJcHQ/IzAlswSIlUuOTr0BmqfE4hc3XpVMkbx
+         QwhUjpZN5Xk4oqH6i684JYrtsFnriJyjL8Ok4RApstA7nQLQiiP/e6W56fmI5ulz5zxH
+         T30Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=TDLzKkefiW2qBcvhl9Mh1B9EpLxuIPGwsH2zNljPvVs=;
-        b=A6inxs7luaqi7KqXYzBfZMQFsZ4I1hELFFOcpSuOPj+nX4+PDl0IAVsjcQwBDjLY5J
-         WKwt9bXfdLKFRHKQUw25i1+sDlqgRMXZuonBYAwSDx+Y6LUDzNZC8QtynY/dBuYiK00h
-         XzbmRgGm0P1fk5OhHKcYfa/Zal7sZ6Qrr7DghlUbD9J90yJ628dvGmVHJdwAZ5qlPNAb
-         aHzWgz8Fdrr+xwecX901gNV4aVh/g3uYOHv+PslR3d7JeWSNZ8DopsI3V03D1zAmTjiI
-         +JXEWm7rJsylNqJFws9yVygDO3IFwLyMSuUCftVvo8fc2NKhjsmvmC4/SVz5RYIJngBB
-         0WjA==
-X-Gm-Message-State: AOAM530nIgpjW6oqey3cIk33jsNToPO2F9G5HkWWFGwSupHlemQ3T81x
-        X48cHBz4yKlBqZqdupAo+Os=
-X-Google-Smtp-Source: ABdhPJzxgXnhqhph34eLaK9uCGeTajw1218Blaf9Oo5OFWjJ/dESKTgwUNGYgmRsel5mrhk1ihQmWA==
-X-Received: by 2002:a05:6a00:2181:b0:44d:c18d:7af9 with SMTP id h1-20020a056a00218100b0044dc18d7af9mr25513pfi.16.1634742858719;
-        Wed, 20 Oct 2021 08:14:18 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id x6sm3301886pfh.77.2021.10.20.08.14.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 08:14:18 -0700 (PDT)
-Message-ID: <ef9f4279-1820-3e90-482e-c4e710859af6@gmail.com>
-Date:   Wed, 20 Oct 2021 08:14:07 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qujnYD+rLkj+9g54TdtVOcj/8gkq3w+B28YjXt9K1II=;
+        b=IW6iKUbmoQLZZ01poNTLChtalGUmQxL4Klv2kzYWnK+WPlGoX2V9PRuQDw4bCJ5H9r
+         IKT1SNCuUG2kaKBFOtNPjVKfV4RKFEkiQzoHCUzGcQtDlJK/lERhDqx+Rh/42eSNwOrs
+         Svr+GjzMWPeRGX+rjnuwgt8qQ2mJ8AHUrSuUxsEeDyNFRELH5JyVMV7wGsWMUuZSlTGJ
+         zVCiA0+qIhfSwx8gf8X4NoV8PrN0CUWQ+Q2XQUhfCmlN26hHi82cnJN/qlkNLYBf6gf+
+         T1CGpQWYB90lOzdnv6cJEkYbidOI1JA3vJ5IoycgvmsqqdSLszC4X9IfYMJkKTu+NlAc
+         jksA==
+X-Gm-Message-State: AOAM532LMzPRnUcxsRmN3h3doG8PjuFzM1JR70sjxyShUtzKsA8RyEL2
+        i9TVUmyXOrLM50OJNhnqBvA=
+X-Google-Smtp-Source: ABdhPJxMAuvyCWcSo+MFcFg8rTFeQqiVAVJiHhQX9Ni7BFVFrJmsTRJ4fAbQ1JXsU1nW5giYZhcIEQ==
+X-Received: by 2002:a17:903:246:b0:13f:75bb:cabd with SMTP id j6-20020a170903024600b0013f75bbcabdmr27628plh.30.1634742962312;
+        Wed, 20 Oct 2021 08:16:02 -0700 (PDT)
+Received: from theprophet ([2406:7400:63:46e9:439a:b490:ed63:26a1])
+        by smtp.gmail.com with ESMTPSA id lb9sm320108pjb.25.2021.10.20.08.15.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 08:16:01 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 20:45:53 +0530
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     bhelgaas@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/24] PCI: Unify PCI error response checking
+Message-ID: <20211020151553.4pu7ib6uo6pk6sr4@theprophet>
+References: <cover.1634306198.git.naveennaidu479@gmail.com>
+ <da939a6cdb2dea96d16392ae152e1232212877d1.1634306198.git.naveennaidu479@gmail.com>
+ <YXAV4bGehjAKK8XO@robh.at.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4 09/14] irqchip: Provide platform_device to
- of_irq_init_cb_t
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM SUB-ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-References: <20211009022023.3796472-1-f.fainelli@gmail.com>
- <20211009022023.3796472-10-f.fainelli@gmail.com>
- <871r4gvggb.wl-maz@kernel.org>
- <CAL_Jsq+CWeFHsHHaAwbb940Zk1thU50gDGcqfO6NdgWQ2FPTWA@mail.gmail.com>
- <87tuhcnlwt.wl-maz@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <87tuhcnlwt.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXAV4bGehjAKK8XO@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/20/2021 1:24 AM, Marc Zyngier wrote:
-> On Tue, 19 Oct 2021 23:23:52 +0100,
-> Rob Herring <robh@kernel.org> wrote:
->>
->>   On Tue, Oct 19, 2021 at 4:43 PM Marc Zyngier <maz@kernel.org> wrote:
->>>
->>> diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
->>> index ccf32758ea85..146a9d80a6a2 100644
->>> --- a/include/linux/irqchip.h
->>> +++ b/include/linux/irqchip.h
->>> @@ -33,7 +33,15 @@ extern int platform_irqchip_probe(struct platform_device *pdev);
->>>   #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
->>>   static const struct of_device_id drv_name##_irqchip_match_table[] = {
->>>
->>> -#define IRQCHIP_MATCH(compat, fn) { .compatible = compat, .data = fn },
->>> +/* Undefined on purpose */
->>> +int typecheck_irq_init_cb(struct device_node *, struct device_node *,
->>> +                         struct platform_device *);
->>> +
->>> +#define typecheck_irq_init_cb(fn)                                      \
->>> +       __typecheck(typecheck_irq_init_cb, fn) ? fn : fn
->>
->> That's nice! Shouldn't it also be used for IRQCHIP_DECLARE?
+On 20/10, Rob Herring wrote:
+> On Fri, Oct 15, 2021 at 08:08:44PM +0530, Naveen Naidu wrote:
+> > An MMIO read from a PCI device that doesn't exist or doesn't respond
+> > causes a PCI error.  There's no real data to return to satisfy the
+> > CPU read, so most hardware fabricates ~0 data.
+> > 
+> > Use SET_PCI_ERROR_RESPONSE() to set the error response and
+> > RESPONSE_IS_PCI_ERROR() to check the error response during hardware
+> > read.
+> > 
+> > These definitions make error checks consistent and easier to find.
+> > 
+> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> > ---
+> >  drivers/pci/access.c | 18 +++++++++---------
+> >  1 file changed, 9 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+> > index b3b2006ed1d2..03712866c818 100644
+> > --- a/drivers/pci/access.c
+> > +++ b/drivers/pci/access.c
+> > @@ -417,10 +417,10 @@ int pcie_capability_read_word(struct pci_dev *dev, int pos, u16 *val)
+> >  		ret = pci_read_config_word(dev, pci_pcie_cap(dev) + pos, val);
+> >  		/*
+> >  		 * Reset *val to 0 if pci_read_config_word() fails, it may
+> > -		 * have been written as 0xFFFF if hardware error happens
+> > -		 * during pci_read_config_word().
+> > +		 * have been written as 0xFFFF (PCI_ERROR_RESPONSE) if hardware error
+> > +		 * happens during pci_read_config_word().
+> >  		 */
+> > -		if (ret)
+> > +		if (RESPONSE_IS_PCI_ERROR(val))
 > 
-> Absolutely. And enabling this shows that changing of_irq_init_cb_t
-> breaks *all users* of IRQCHIP_DECLARE(). Not an acceptable outcome
-> when we're at -rc5. >
-> Why can't the relevant drivers use of_find_device_by_node() instead?
-> That would allow us to keep the status-quo on of_irq_init_cb_t.
+> What if there is no error (in ret) and the register value was actually 
+> ~0? We'd be corrupting the value.
+> 
+> In general, I think we should rely more on the error codes and less on 
+> the ~0 value.
+> 
 
-Rob had suggested several solutions, including using 
-of_find_device_by_node(), however updating of_irq_init_cb_t was 
-indicated to be the better way. I had intentionally not updated 
-IRQCHIP_DECLARE() because it would ignore the 3rd argument we passed to 
-it (platform_device *) so I thought.
+Thank you for the review. I'll fix this up when I send v3 for this patch
+series.
 
-If I am spinning a v6 using of_find_device_by_node() would that be 
-acceptable to you?
--- 
-Florian
+> >  			*val = 0;
+> >  		return ret;
+> >  	}
+> > @@ -452,10 +452,10 @@ int pcie_capability_read_dword(struct pci_dev *dev, int pos, u32 *val)
+> >  		ret = pci_read_config_dword(dev, pci_pcie_cap(dev) + pos, val);
+> >  		/*
+> >  		 * Reset *val to 0 if pci_read_config_dword() fails, it may
+> > -		 * have been written as 0xFFFFFFFF if hardware error happens
+> > -		 * during pci_read_config_dword().
+> > +		 * have been written as 0xFFFFFFFF (PCI_ERROR_RESPONSE) if hardware
+> > +		 * error happens during pci_read_config_dword().
+> >  		 */
+> > -		if (ret)
+> > +		if (RESPONSE_IS_PCI_ERROR(val))
+> >  			*val = 0;
+> >  		return ret;
+> >  	}
+> > @@ -529,7 +529,7 @@ EXPORT_SYMBOL(pcie_capability_clear_and_set_dword);
+> >  int pci_read_config_byte(const struct pci_dev *dev, int where, u8 *val)
+> >  {
+> >  	if (pci_dev_is_disconnected(dev)) {
+> > -		*val = ~0;
+> > +		SET_PCI_ERROR_RESPONSE(val);
+> >  		return PCIBIOS_DEVICE_NOT_FOUND;
+> >  	}
+> >  	return pci_bus_read_config_byte(dev->bus, dev->devfn, where, val);
+> > @@ -539,7 +539,7 @@ EXPORT_SYMBOL(pci_read_config_byte);
+> >  int pci_read_config_word(const struct pci_dev *dev, int where, u16 *val)
+> >  {
+> >  	if (pci_dev_is_disconnected(dev)) {
+> > -		*val = ~0;
+> > +		SET_PCI_ERROR_RESPONSE(val);
+> >  		return PCIBIOS_DEVICE_NOT_FOUND;
+> >  	}
+> >  	return pci_bus_read_config_word(dev->bus, dev->devfn, where, val);
+> > @@ -550,7 +550,7 @@ int pci_read_config_dword(const struct pci_dev *dev, int where,
+> >  					u32 *val)
+> >  {
+> >  	if (pci_dev_is_disconnected(dev)) {
+> > -		*val = ~0;
+> > +		SET_PCI_ERROR_RESPONSE(val);
+> >  		return PCIBIOS_DEVICE_NOT_FOUND;
+> >  	}
+> >  	return pci_bus_read_config_dword(dev->bus, dev->devfn, where, val);
+> > -- 
+> > 2.25.1
+> > 
+> > 
