@@ -2,131 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FC1434E19
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A2D434E1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Oct 2021 16:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhJTOnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 10:43:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37586 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhJTOnA (ORCPT
+        id S230181AbhJTOnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 10:43:23 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4009 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhJTOnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 10:43:00 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D21AF21981;
-        Wed, 20 Oct 2021 14:40:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634740844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+hJgAW2xx50BzR2rX4mlcXSbU5B0LhOwVBhbeQTEvos=;
-        b=FSv56sui4dMt+PIBRwErbnSw2qPzY7Fqq1ki+ygBydcD9KS5/JAMtyoD4CpDNIsjS+ryBd
-        xxqrsT1LouofpWogfbE6lOiA1Srro8kCcVVmGCf1cOQS0Czf/Oy+9SIKmUBOP10pk5IHkM
-        i8uIpwhY0CKQESuGkXTTaxwRROomvAs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634740844;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+hJgAW2xx50BzR2rX4mlcXSbU5B0LhOwVBhbeQTEvos=;
-        b=t0EXJ90f+im6X7Onw6DiZwwZPTtFX0Xkd+yRryz6sNYUFEoabRjgRaRZt1yuSubVID1pXV
-        zJxLuSllka0hICDQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id AE8D7A3B84;
-        Wed, 20 Oct 2021 14:40:44 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 998151F2C7D; Wed, 20 Oct 2021 16:40:44 +0200 (CEST)
-Date:   Wed, 20 Oct 2021 16:40:44 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] writeback: prefer struct_size over open coded
- arithmetic
-Message-ID: <20211020144044.GB16460@quack2.suse.cz>
-References: <20210925114308.11455-1-len.baker@gmx.com>
+        Wed, 20 Oct 2021 10:43:22 -0400
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HZCrn313Rz67YrM;
+        Wed, 20 Oct 2021 22:38:01 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 20 Oct 2021 16:41:05 +0200
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 20 Oct 2021 15:41:05 +0100
+Subject: Re: [PATCH 0/2] perf jevents: Enable build warnings
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     <peterz@infradead.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <mingo@redhat.com>, <irogers@google.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "James Clark" <James.Clark@arm.com>
+References: <1634316507-227751-1-git-send-email-john.garry@huawei.com>
+ <YXAoOgRVfkzr5vcS@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <744e6d05-eaec-49d9-1e3d-2f96d4e01e1a@huawei.com>
+Date:   Wed, 20 Oct 2021 15:41:01 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210925114308.11455-1-len.baker@gmx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YXAoOgRVfkzr5vcS@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 25-09-21 13:43:08, Len Baker wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
+On 20/10/2021 15:31, Arnaldo Carvalho de Melo wrote:
+> Em Sat, Oct 16, 2021 at 12:48:25AM +0800, John Garry escreveu:
+>> Currently jevents builds without any complier warning flags enabled. So
+>> use newly-defined HOSTCFLAGS, which comes from EXTRA_WARNINGS. I am not
+>> 100% confident that this is the best way, but sending out for review.
+>>
+>> Baseline is be8ecc57f180 (HEAD, acme/perf/core) perf srcline: Use
+>> long-running addr2line per DSO
 > 
-> In this case these are not actually dynamic sizes: all the operands
-> involved in the calculation are constant values. However it is better to
-> refactor them anyway, just to keep the open-coded math idiom out of
-> code.
+> Thanks, applied.
 > 
-> So, use the struct_size() helper to do the arithmetic instead of the
-> argument "size + count * size" in the kzalloc() functions.
-> 
-> This code was detected with the help of Coccinelle and audited and fixed
-> manually.
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> 
-> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-Looks good. Feel free to add:
+Hi Arnaldo,
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+I was going to send a v2, with changes according to James Clark's review 
+  - that was to add -Wall & -Werror, but they caused a problem on your 
+perf/core branch as they triggered the warn fixed in commit b94729919db2.
 
-BTW, writeback patches are usually merged by Andrew Morton so probably send
-it to him. Thanks!
+I suppose the best thing now is to send a patch on top once perf/core 
+contains that commit. Let me know otherwise.
 
-								Honza
-
-> ---
-> Changelog v1 -> v2
-> - Rebase against v5.15-rc2
-> - Refactor another instance in the same file (Gustavo A. R. Silva).
-> - Update the commit changelog to inform that this code was detected
->   using a Coccinelle script (Gustavo A. R. Silva).
-> 
->  fs/fs-writeback.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 81ec192ce067..5eb0ada7468c 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -566,7 +566,7 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
->  	if (atomic_read(&isw_nr_in_flight) > WB_FRN_MAX_IN_FLIGHT)
->  		return;
-> 
-> -	isw = kzalloc(sizeof(*isw) + 2 * sizeof(struct inode *), GFP_ATOMIC);
-> +	isw = kzalloc(struct_size(isw, inodes, 2), GFP_ATOMIC);
->  	if (!isw)
->  		return;
-> 
-> @@ -624,8 +624,8 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
->  	int nr;
->  	bool restart = false;
-> 
-> -	isw = kzalloc(sizeof(*isw) + WB_MAX_INODES_PER_ISW *
-> -		      sizeof(struct inode *), GFP_KERNEL);
-> +	isw = kzalloc(struct_size(isw, inodes, WB_MAX_INODES_PER_ISW),
-> +		      GFP_KERNEL);
->  	if (!isw)
->  		return restart;
-> 
-> --
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks
