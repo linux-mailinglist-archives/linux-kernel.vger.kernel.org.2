@@ -2,89 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB964364C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09174364BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhJUOxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:53:22 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:58694 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230390AbhJUOxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:53:20 -0400
-Received: from zn.tnic (p200300ec2f1912003b8abe7004197216.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:1200:3b8a:be70:419:7216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7B24D1EC0445;
-        Thu, 21 Oct 2021 16:51:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634827863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mKv+mW+eWPilpLli84rOJtENzeDW72xonp+g0aJny1g=;
-        b=EKa2uK43z8y8RLS1v6/4QDWWFpx+8GluX9zI+Lg880TYbNrjZym5GPV5qbh3949HE1GpNN
-        ty/fQ5oOEQe56ViPLe7zFfZ+h4nLKlbpo2orS3Ze2tkOHmU6vLmR9KeGplW8T9xeJYMCDs
-        7vdI1K0/Jr0WOUGX9rsaiCwk8vY7Qj8=
-Date:   Thu, 21 Oct 2021 16:51:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
- within #VC handler
-Message-ID: <YXF+WjMHW/dd0Wb6@zn.tnic>
-References: <20211008180453.462291-1-brijesh.singh@amd.com>
- <20211008180453.462291-9-brijesh.singh@amd.com>
- <YW2EsxcqBucuyoal@zn.tnic>
- <20211018184003.3ob2uxcpd2rpee3s@amd.com>
- <YW3IdfMs61191qnU@zn.tnic>
- <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+        id S231624AbhJUOvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231567AbhJUOvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 10:51:46 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DE1C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:49:30 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id r6so1175792oiw.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kMERyPmOcWXzgvq2qA9UPJ8hmaCYbxO5TYPP3bQCa7w=;
+        b=MiKHpAAvOXWZVet2m4e+gw7ARFUVky/boatQib7dqM+urndcHhx8bkTpTkrDf5Lg+9
+         27OFK2Hmazzlns4RcSSxuRE/O2D60E+4/6o39vl6FtPA7yqK6eInwQz3Z516ZtW4gQ4O
+         Dpv0DhhNtE6FMsGB9q9+vA5CSMPoQdqvvOJc+KXghiB4RDd2z1a2eoyuvBk/5xWeVuQV
+         srHjO+VdNk1xemgINIyaMjMkhSNMv8gX2rSXM8458PtHBxrrsfFGf+mNaILbyp2kYB8v
+         WGkG+/i2omimT/PgX7Mc3tbtBV5Ldj5H6x4A5Eo1seK5dzOwVX36aon7dj8mCmfiUM38
+         STJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kMERyPmOcWXzgvq2qA9UPJ8hmaCYbxO5TYPP3bQCa7w=;
+        b=Oof8M79kuDsVxfsnWYLnfbO5TccSfy+2SP06/Ux7MvOL7+0TX8MGiVnnvYouBUjBDC
+         R/4U9mcGn2NPOC8IzcZOekA/9PCf+IJRY9cUIJ/scHDzySzCYDx65MG/ia2iCUiU19mV
+         XIl6VikRnoZOCN7MjYAa0srDi0tQF0S6llmxQ+kar8ilwTA6nimJBC+v0kAso0wxjgQ7
+         ReC4W/hVK5W/yjQxDCoVbLCkniR6WOMoCRQxMWCfqtgepoZI2t9++8C5yXOGflsUiegp
+         7k61WgiyfD7t1gM8GWZ801Ig8mp8YgRgYCOwbcKsrzxlDlN1CKGJPiYiCQUy9ySgIZ4K
+         dvhg==
+X-Gm-Message-State: AOAM531rc3+tfaimQ9j4M816XPOghi0gXXBtWYgBmPPWJ1TPNJUOKcuw
+        VXNfuMb/MGfaIcirPy8uOzneOQ==
+X-Google-Smtp-Source: ABdhPJxVBOoZntHPKwDJDY5kiIJMBaWqLeQlrGVdtmaXG890YNpOxGQY6JUwlGvprhgsiRGSco4xyQ==
+X-Received: by 2002:a05:6808:221e:: with SMTP id bd30mr5444472oib.174.1634827769499;
+        Thu, 21 Oct 2021 07:49:29 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id l10sm1091096otj.9.2021.10.21.07.49.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 07:49:29 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 07:51:12 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        abhinavk@codeaurora.org, Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: phy: Introduce Qualcomm eDP/DP PHY
+ binding
+Message-ID: <YXF+YELFaQk+ouyH@ripper>
+References: <20211016232128.2341395-1-bjorn.andersson@linaro.org>
+ <YW3PqhQHauDYRlwN@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+In-Reply-To: <YW3PqhQHauDYRlwN@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:10:23AM -0500, Michael Roth wrote:
-> The CPUID calls in snp_cpuid_init() weren't added specifically to induce
-> the #VC-based SEV MSR read, they were added only because I thought the
-> gist of your earlier suggestions were to do more validation against the
-> CPUID table advertised by EFI
+On Mon 18 Oct 12:48 PDT 2021, Rob Herring wrote:
 
-Well, if EFI is providing us with the CPUID table, who verified it? The
-attestation process? Is it signed with the AMD platform key?
+> On Sat, Oct 16, 2021 at 04:21:27PM -0700, Bjorn Andersson wrote:
+> > Introduce a binding for the eDP/DP PHY hardware block found in several
+> > different Qualcomm platforms.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> > 
+> > Changes since v2:
+> > - None
+> > 
+> >  .../devicetree/bindings/phy/qcom,edp-phy.yaml | 69 +++++++++++++++++++
+> >  1 file changed, 69 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/phy/qcom,edp-phy.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/phy/qcom,edp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,edp-phy.yaml
+> > new file mode 100644
+> > index 000000000000..c258e4f7e332
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/phy/qcom,edp-phy.yaml
+> > @@ -0,0 +1,69 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/phy/qcom,edp-phy.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Qualcomm DP/eDP PHY
+> > +
+> > +maintainers:
+> > +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> > +
+> > +description:
+> > +  The Qualcomm DP/eDP PHY is found in a number of Qualcomm platform and
+> > +  provides the physical interface for DisplayPort and Embedded Display Port.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - qcom,sc8180x-dp-phy
+> > +      - qcom,sc8180x-edp-phy
+> 
+> Is there a difference between DP and eDP?
+> 
 
-Because if we can verify the firmware is ok, then we can trust the CPUID
-page, right?
+It's the same hardware block, with the same inputs, but the two modes
+requires different programming sequences. So I need some way to describe
+which one this is.
 
--- 
-Regards/Gruss,
-    Boris.
+> Perhaps note what that is if so.
+> 
 
-https://people.kernel.org/tglx/notes-about-netiquette
+What are you suggesting?
+
+Regards,
+Bjorn
+
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: PHY base register block
+> > +      - description: tx0 register block
+> > +      - description: tx1 register block
+> > +      - description: PLL register block
+> > +
+> > +  clocks:
+> > +    maxItems: 2
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: aux
+> > +      - const: cfg_ahb
+> > +
+> > +  "#clock-cells":
+> > +    const: 1
+> > +
+> > +  "#phy-cells":
+> > +    const: 0
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - "#clock-cells"
+> > +  - "#phy-cells"
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    phy@aec2a00 {
+> > +      compatible = "qcom,sc8180x-edp-phy";
+> > +      reg = <0x0aec2a00 0x1c0>,
+> > +            <0x0aec2200 0xa0>,
+> > +            <0x0aec2600 0xa0>,
+> > +            <0x0aec2000 0x19c>;
+> > +
+> > +      clocks = <&dispcc 0>, <&dispcc 1>;
+> > +      clock-names = "aux", "cfg_ahb";
+> > +
+> > +      #clock-cells = <1>;
+> > +      #phy-cells = <0>;
+> > +    };
+> > +...
+> > -- 
+> > 2.29.2
+> > 
+> > 
