@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FE0435FA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD7B435FAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhJUKuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhJUKuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:50:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FD7461208;
-        Thu, 21 Oct 2021 10:48:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634813282;
-        bh=ftmKtS2bsq2zSure2HQbHHqjeIyXSqI4u6snY7qmG/4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VCHpdxkvA1/+5+357oswtsudvSUqLPsULdFQQccD97VP64Q8kr/JGLt79yFNkUSCD
-         H8rfHpw3UoLkvhW5kF/adIyvpyiR4et6KJz36Xti3S8OeyQ1usZ3Sj4IbmS6Vs+6vt
-         Xs1ZY94Gb1SIvHGwaG+iwjKYJDp4WslkI7vRgIwInUBJANAi90GA56IkXV8tDUICrg
-         48Jc2znswYAfVYKrdmZHD30MDdvehqHczhcmY1ONzm46G0F4prWoI5JDidUon6DkZS
-         kK0i6ij25GpvR/P7rwlBlvtRTFfAaV4ueGDvCn57JCvNNLjqjZLIAiV+9YwJMBtufP
-         ddd+EFTu9DX2Q==
-Received: by mail-wm1-f47.google.com with SMTP id m42so217070wms.2;
-        Thu, 21 Oct 2021 03:48:02 -0700 (PDT)
-X-Gm-Message-State: AOAM532u/WxEPNk57lepOO/iPcHtDO4n/OCyqr3AO5hPL8Cm0yX6NrUr
-        c5Z3TJiviKKLlukxtbAERxPljBg4SkENjRkEJVU=
-X-Google-Smtp-Source: ABdhPJx4otVK1NBMU1BYDaKjledezy1hEl+jDxxDEuoXvKjJPlwHlu+YaT25QspQPcVeGwmaw4DT84NrjKxUV7j5nms=
-X-Received: by 2002:a05:600c:208:: with SMTP id 8mr19520872wmi.173.1634813280768;
- Thu, 21 Oct 2021 03:48:00 -0700 (PDT)
+        id S230260AbhJUKvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:51:35 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:34530 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJUKve (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 06:51:34 -0400
+Received: by mail-oi1-f171.google.com with SMTP id v77so366548oie.1;
+        Thu, 21 Oct 2021 03:49:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nP2vFNPxI37N8uLOpzFpF7dKWuNYgW2/FE/Tat39R0Q=;
+        b=QpPzAI9kHcato9eV8oye5+iRrSm6Ji0ZQJT0CZarhNgBJR8qVBkgndyJhLroLdo1Dp
+         9QbX12YuTwu12BuHJA1zy3k5SK+kvum6kzJlcxlYtgX13HaPn2/0no86GnpHzr24jNQx
+         LbeBB+HwTomfPH2z+S/OiH+/Rv2BMZ7Wq/FVIaFCh873swrcmzxB7+uisSw/6r1D+uYT
+         kisXtoNbKGxoP3QMC4j4+8bX+Jay5KF9URNdoYRZ2+Ko+GI33JorKhM22V/sXKXiT2AX
+         ycozBg6UdgrkQBHkAmdxfaovG+JbFA0foc3LuyXIKqI9nou8Y8b1JdwlQpOJe6O63D+7
+         DsiQ==
+X-Gm-Message-State: AOAM532szNTnewlRYpxSC/3TdK2y25CI2KC0c48if+4VJWBj68JWKgha
+        1f6Kaspn07bT6Y6L5hGH5tInvR1IqHdwtuYvRYwaTOel
+X-Google-Smtp-Source: ABdhPJw8q3JuoPKjv5MTm9qAw0p16wHNn/zGVn84Q18EczAeLiPhmFlKo3UQ5njvrzeUENKc84wbLk79fKo+MUjtITQ=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr3673122oif.154.1634813358761;
+ Thu, 21 Oct 2021 03:49:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <8ca87330fd348fc5199ad08904ec90cc6a91a1bf.1634723848.git.viresh.kumar@linaro.org>
- <CAHp75Vctj-v8W+LgdVpYgRVL3fLdcFnOFRFg74LeCc=xLD+w4w@mail.gmail.com>
- <20211021043443.snhqpac5ofmxfb7k@vireshk-i7> <CAHp75VdKn7Sze9HxN0gBgbuQS2K6oB+SQsufw576Rkfg4-osOw@mail.gmail.com>
- <20211021095229.lqeb7dtxv4ix2vc5@vireshk-i7> <CAHp75VcBowxFoseXKwU2VjNcu75ttvHW_sno9MihHL88+oP1ew@mail.gmail.com>
-In-Reply-To: <CAHp75VcBowxFoseXKwU2VjNcu75ttvHW_sno9MihHL88+oP1ew@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 21 Oct 2021 12:47:44 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3nH-ixVhyfjRHyj=GHsJ0HYmRYGhTDGMnmy01sKhSJeQ@mail.gmail.com>
-Message-ID: <CAK8P3a3nH-ixVhyfjRHyj=GHsJ0HYmRYGhTDGMnmy01sKhSJeQ@mail.gmail.com>
-Subject: Re: [PATCH V6] gpio: virtio: Add IRQ support
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "stratos-dev@op-lists.linaro.org" <stratos-dev@op-lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
+References: <20211007191337.540058-1-anders.roxell@linaro.org>
+In-Reply-To: <20211007191337.540058-1-anders.roxell@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 21 Oct 2021 12:49:07 +0200
+Message-ID: <CAJZ5v0gTK79W5RK3v+4GPN+EN68EHoDhbQjxi7t-bHASTxcFhw@mail.gmail.com>
+Subject: Re: [PATCH] kernel: power: swap: fix sparse warnings
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:58 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Thu, Oct 21, 2021 at 12:52 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > On 21-10-21, 12:42, Andy Shevchenko wrote:
-> > > On Thu, Oct 21, 2021 at 7:34 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > > On 20-10-21, 18:10, Andy Shevchenko wrote:
-> >
-> > > If there is a possibility to have 32-bit to 64-bit or vice versa
-> > > communication you have a problem.
-> >
-> > This should work as well.
-> >
-> > The structure will get aligned to the size of largest element and each
-> > element will be aligned to itself. I don't see how this will break
-> > even in case of 32/64 bit communication.
+On Thu, Oct 7, 2021 at 9:13 PM Anders Roxell <anders.roxell@linaro.org> wrote:
 >
-> I admit I haven't looked into the specification, but in the past we
-> had had quite an issue exactly in GPIO on kernel side because of this
-> kind of design mistake. The problem here if in the future one wants to
-> supply more than one item at a time, it will be not possible with this
-> interface. Yes, I understand that in current design it's rather missed
-> scalability, but hey, I believe in the future we may need
-> performance-wise calls.
+> When building the kernel with sparse enabled 'C=1' the following
+> warnings shows up:
+>
+> kernel/power/swap.c:390:29: warning: incorrect type in assignment (different base types)
+> kernel/power/swap.c:390:29:    expected int ret
+> kernel/power/swap.c:390:29:    got restricted blk_status_t
+>
+> This is due to function hib_wait_io() returns a 'blk_status_t' which is
+> a bitwise u8. Commit 5416da01ff6e ("PM: hibernate: Remove
+> blk_status_to_errno in hib_wait_io") seemed to have mixed up the return
+> type. However, the 4e4cbee93d56 ("block: switch bios to blk_status_t")
+> actually broke the behaviour by returning the wrong type.
+>
+> Rework so function hib_wait_io() returns a 'int' instead of
+> 'blk_status_t' and make sure to call function
+> blk_status_to_errno(hb->error)' when returning from function
+> hib_wait_io() a int gets returned.
+>
+> Fixes: 4e4cbee93d56 ("block: switch bios to blk_status_t")
+> Fixes: 5416da01ff6e ("PM: hibernate: Remove blk_status_to_errno in hib_wait_io")
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> ---
+>  kernel/power/swap.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+> index 9ec418955556..47107f9cd14c 100644
+> --- a/kernel/power/swap.c
+> +++ b/kernel/power/swap.c
+> @@ -299,14 +299,14 @@ static int hib_submit_io(int op, int op_flags, pgoff_t page_off, void *addr,
+>         return error;
+>  }
+>
+> -static blk_status_t hib_wait_io(struct hib_bio_batch *hb)
+> +static int hib_wait_io(struct hib_bio_batch *hb)
+>  {
+>         /*
+>          * We are relying on the behavior of blk_plug that a thread with
+>          * a plug will flush the plug list before sleeping.
+>          */
+>         wait_event(hb->wait, atomic_read(&hb->count) == 0);
+> -       return hb->error;
+> +       return blk_status_to_errno(hb->error);
+>  }
+>
+>  /*
+> --
 
-In my experience, adding __packed to structures causes more problems
-than it solves, please don't do that.
-
-The rules for the virtio structures should be roughly the same that I
-documented in Documentation/driver-api/ioctl.rst, and the layout that
-Viresh has picked does not suffer from any of the common issues
-that are listed there.
-
-       Arnd
+Applied as 5.16 material, thanks!
