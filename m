@@ -2,83 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AC44366D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F56C4366DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhJUPzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:55:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231640AbhJUPzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:55:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D28C61056;
-        Thu, 21 Oct 2021 15:52:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634831578;
-        bh=bT4Y6jm4eIIAGAvmhjb7MfpQRPLShEcQjaUMMUiTuf8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=aUbk1Gij1itRQH9rLJK4kyHFzM17SFGhAGV6izTPivsaOUWRzCJt4p5nhbJ1z50w3
-         D9ZtjjVHHGpKnXJJ6bwkt1/nHxnD3aMCs6NdFTUws5mxwTifJaQ1cAn5RHdBPYq7EI
-         RNh5/oIikuAwTvJ54laZ4fijzcxCFsSuDQsS1Z5laYiSOIvIXgW3MERENqt/dxjO46
-         StkYc+7JwVSqWWpAdXz/P5Rmlg1KuwKmvGwZMg3NkWruQ+cdGXjDwXjBH+uFWzXkvU
-         lpTlch8hLGv93VX90yl+9RgdxYzVst8Lpeb7RFzGUynOoH9rKHTDleHWBm13pF//rE
-         wncyqmFWICb2Q==
-Date:   Thu, 21 Oct 2021 10:52:56 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linux-pci@vger.kernel.org,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        john@phrozen.org, neil@brown.name, gregkh@linuxfoundation.org,
-        linux-staging@lists.linux.dev, matthias.bgg@gmail.com,
-        tsbogend@alpha.franken.de, devicetree@vger.kernel.org,
-        bhelgaas@google.com
-Subject: Re: [PATCH v3 0/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
- controller driver
-Message-ID: <20211021155256.GA2689055@bhelgaas>
+        id S231520AbhJUP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231464AbhJUP4K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 11:56:10 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A8FC061243
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:53:53 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id z11-20020a1c7e0b000000b0030db7b70b6bso198866wmc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=RiUvh0ktpqCA7fZqTGI1aV30cE3yIMDtrq4XdFWDz3c=;
+        b=nxj/lswM3BP8tKL+rxtxFVguaNRMLh/Hjxrj5bltEa6eCcDJl12Ha/csvdw8STAA5t
+         jnbuCfkdwo11Hx3ctxt+jRCXDWDw473brc53wDYCah3M2OfH4v2GWfSZcwuPD85T1HPl
+         hWKnWcdZ+mHgfHJl+TlL+tePN56EN+xf580Y5sOaylG0M85HywFn5fHnb67cJo0nCtIa
+         un7to2Z0IuBebbI9xQgF3V1C4vZXLt+0gfUYZOgo4n97bZTTkDO6USGQ7EZN3zabiiKa
+         VtClWI0F0OjUZaPsZF/jHMpCc6hO2MKNM1pjLT0rIdNUdR75woY7SkTeNgZ0YYbkrCZG
+         ZG+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=RiUvh0ktpqCA7fZqTGI1aV30cE3yIMDtrq4XdFWDz3c=;
+        b=tFz4jx+MZkl3g5ZVIhqjMZjqHymv5+AAz/vwIYe/NcuNHM6NyTvwYt/YgcoIQhnyg5
+         LH5KwwqBX79uhiMuGpUe623GYB4w1PyNBZzz7jp35FFFa+bOupxG5cvtFmTxpLOD9H6l
+         6pfGSiyp0tF5huMcAWlqNWaMtK3nBW4gubAMKLXpaJ1d4b0lcTFe+YnTiwv1SUWS/QOR
+         rdZJMu6GDfLZI+462zzyVReRLW7x39bb7oX3cS7M45ufSwEoWAmIBieiVlhQCrNlb9um
+         c+lvpv/w7i3Gfj/mzT8qYC5evCvl4b2WJjwYOX1D16ppgMfjTJTIY/3yBVwbhp57RBNX
+         hxgQ==
+X-Gm-Message-State: AOAM533FAa28IYwgwYtLwm929v17rweW0tSEKLhvk90rTsaq7A6usYQ+
+        7OsljjwTUzhxHhAZRWZ66N5XTQ==
+X-Google-Smtp-Source: ABdhPJyoyHKkVFQ93CGd5H00pN/2DftHR/6cPv38ILBCxFjUmjec2Asvge3c71IyKbmo65Vu90PmbQ==
+X-Received: by 2002:a7b:cb10:: with SMTP id u16mr21967132wmj.65.1634831632452;
+        Thu, 21 Oct 2021 08:53:52 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id n11sm5217954wrw.43.2021.10.21.08.53.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:53:51 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 16:53:49 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 1/9] mfd: max77686: Correct tab-based alignment of
+ register addresses
+Message-ID: <YXGNDZCMHYjr2B9s@google.com>
+References: <20211019145919.7327-1-luca@lucaceresoli.net>
+ <20211019145919.7327-2-luca@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <163473978253.23166.3894301849923362863.b4-ty@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211019145919.7327-2-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 03:23:45PM +0100, Lorenzo Pieralisi wrote:
-> On Wed, 22 Sep 2021 07:00:32 +0200, Sergio Paracuellos wrote:
-> > MediaTek MT7621 PCIe subsys supports single Root complex (RC)
-> > with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link.
-> > Topology is as follows:
-> > 
-> > 
-> >                           MT7621 PCIe HOST Topology
-> > 
-> > [...]
+On Tue, 19 Oct 2021, Luca Ceresoli wrote:
+
+> Some lines have an extra tab, remove them for proper visual alignment as
+> present on the rest of this file.
 > 
-> Applied to pci/mt7621, thanks!
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > 
-> [1/3] dt-bindings: mt7621-pci: PCIe binding documentation for MT7621 SoCs
->       https://git.kernel.org/lpieralisi/pci/c/e5bc5605e7
-> [2/3] PCI: mt7621: Add MediaTek MT7621 PCIe host controller driver
->       https://git.kernel.org/lpieralisi/pci/c/5797a2b2bc
-> [3/3] MAINTAINERS: add myself as maintainer of the MT7621 PCI controller driver
->       https://git.kernel.org/lpieralisi/pci/c/eb1d7d438c
+> ---
+> 
+> Changes in v2: none
+> ---
+>  include/linux/mfd/max77686-private.h | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 
-Since this is a PCIe (not conventional PCI) controller, I vote for
-renaming these from:
+Applied, thanks.
 
-  PCI_MT7621
-  Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-  drivers/pci/controller/pci-mt7621.c
-
-to:
-
-  PCIE_MT7621
-  Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-  drivers/pci/controller/pcie-mt7621.c
-
-We have a mix of these, with many of the early PCIe drivers being
-named "pci", but I think that was my mistake and there's no reason to
-continue it.
-
-I can do this locally unless somebody objects.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
