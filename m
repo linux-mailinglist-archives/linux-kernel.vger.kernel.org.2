@@ -2,140 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21F3435CF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D609E435CFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhJUIh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:37:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55378 "EHLO mail.kernel.org"
+        id S231443AbhJUIiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:38:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231315AbhJUIh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:37:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B029E61056;
-        Thu, 21 Oct 2021 08:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634805311;
-        bh=o3tW0iefZ6vlMLLc4RHDUV7tkmTYHx0jXWdwLQLUb2E=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qjddEYRRqpHNrO8tAyjy1wm9sehv/oPArfmEAVS9WYbm/HHgZxtIZhA6voaV01c4N
-         kwzlGwYpl4a0tMWN0NSQ3wADYaSN/BhPFs5rIjz7LCDaNkXC4swkp42ZN2vtfD6wq0
-         ug04d6GEwAjnpLDm84IElUu+IF/ulCDZuhCnahGMK0F0JXuICX06YCNiYDAlevXHTL
-         4qu/9Cet5t8uhoognvTPB3rwgpbkEih9MQB8XRBu4jV5tb13irLwpzIkndB63mP0li
-         IWpVJh1IxO1g4MuTO3zJjstaTYWGBpJygGU1LEn0ow2wW8jVMfMfSy/xfp6/DSwSWG
-         4HujS8xBRtVKQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mdTXO-0005Ec-3w; Thu, 21 Oct 2021 10:34:58 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Peter Chen <peter.chen@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH] USB: chipidea: fix interrupt deadlock
-Date:   Thu, 21 Oct 2021 10:34:47 +0200
-Message-Id: <20211021083447.20078-1-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S231441AbhJUIh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:37:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78D1860FC0;
+        Thu, 21 Oct 2021 08:35:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634805342;
+        bh=zYc8BgeDcX1s9EwG1PG1svkNJLRcwRDOiYfOT1psu/w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sBm0ahUKom/4sjWMN7UsVVmSTYE5go6xo+vqXtemDB4h4gsXgmsXCYlgBWEfBOn4b
+         cEoqlrRFNrEuhVJasvYjvjr9TSEia2qhT25QGckTskYY07TePSyyP9DfRmaKkvlyJu
+         /gn7FMJwlwl+kb/Pn9IN0OkXo7rKFMU7fqImyMA4=
+Date:   Thu, 21 Oct 2021 10:35:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     jirislaby@kernel.org, amit@kernel.org, arnd@arndb.de,
+        osandov@fb.com, shile.zhang@linux.alibaba.com,
+        linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 0/3] make hvc pass dma capable memory to its backend
+Message-ID: <YXEmW071C+GlmXqw@kroah.com>
+References: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chipidea core was calling the interrupt handler from non-IRQ context
-with interrupts enabled, something which can lead to a deadlock if
-there's an actual interrupt trying to take a lock that's already held
-(e.g. the controller lock in udc_irq()).
+On Fri, Oct 15, 2021 at 10:46:55AM +0800, Xianting Tian wrote:
+> Dear all,
+> 
+> This patch series make hvc framework pass DMA capable memory to
+> put_chars() of hvc backend(eg, virtio-console), and revert commit
+> c4baad5029 ("virtio-console: avoid DMA from stack”)
 
-Add a wrapper that can be used to fake interrupts instead of calling the
-handler directly.
+Thanks for sticking with this, looks much better now, all now queued up.
 
-Fixes: 3ecb3e09b042 ("usb: chipidea: Use extcon framework for VBUS and ID detect")
-Fixes: 876d4e1e8298 ("usb: chipidea: core: add wakeup support for extcon")
-Cc: stable@vger.kernel.org      # 4.4
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/chipidea/core.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
-index 2b18f5088ae4..a56f06368d14 100644
---- a/drivers/usb/chipidea/core.c
-+++ b/drivers/usb/chipidea/core.c
-@@ -514,7 +514,7 @@ int hw_device_reset(struct ci_hdrc *ci)
- 	return 0;
- }
- 
--static irqreturn_t ci_irq(int irq, void *data)
-+static irqreturn_t ci_irq_handler(int irq, void *data)
- {
- 	struct ci_hdrc *ci = data;
- 	irqreturn_t ret = IRQ_NONE;
-@@ -567,6 +567,15 @@ static irqreturn_t ci_irq(int irq, void *data)
- 	return ret;
- }
- 
-+static void ci_irq(struct ci_hdrc *ci)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	ci_irq_handler(ci->irq, ci);
-+	local_irq_restore(flags);
-+}
-+
- static int ci_cable_notifier(struct notifier_block *nb, unsigned long event,
- 			     void *ptr)
- {
-@@ -576,7 +585,7 @@ static int ci_cable_notifier(struct notifier_block *nb, unsigned long event,
- 	cbl->connected = event;
- 	cbl->changed = true;
- 
--	ci_irq(ci->irq, ci);
-+	ci_irq(ci);
- 	return NOTIFY_DONE;
- }
- 
-@@ -617,7 +626,7 @@ static int ci_usb_role_switch_set(struct usb_role_switch *sw,
- 	if (cable) {
- 		cable->changed = true;
- 		cable->connected = false;
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- 		spin_unlock_irqrestore(&ci->lock, flags);
- 		if (ci->wq && role != USB_ROLE_NONE)
- 			flush_workqueue(ci->wq);
-@@ -635,7 +644,7 @@ static int ci_usb_role_switch_set(struct usb_role_switch *sw,
- 	if (cable) {
- 		cable->changed = true;
- 		cable->connected = true;
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- 	}
- 	spin_unlock_irqrestore(&ci->lock, flags);
- 	pm_runtime_put_sync(ci->dev);
-@@ -1174,7 +1183,7 @@ static int ci_hdrc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	ret = devm_request_irq(dev, ci->irq, ci_irq, IRQF_SHARED,
-+	ret = devm_request_irq(dev, ci->irq, ci_irq_handler, IRQF_SHARED,
- 			ci->platdata->name, ci);
- 	if (ret)
- 		goto stop;
-@@ -1295,11 +1304,11 @@ static void ci_extcon_wakeup_int(struct ci_hdrc *ci)
- 
- 	if (!IS_ERR(cable_id->edev) && ci->is_otg &&
- 		(otgsc & OTGSC_IDIE) && (otgsc & OTGSC_IDIS))
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- 
- 	if (!IS_ERR(cable_vbus->edev) && ci->is_otg &&
- 		(otgsc & OTGSC_BSVIE) && (otgsc & OTGSC_BSVIS))
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- }
- 
- static int ci_controller_resume(struct device *dev)
--- 
-2.32.0
-
+greg k-h
