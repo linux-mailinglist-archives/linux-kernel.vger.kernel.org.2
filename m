@@ -2,127 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC79436178
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617CD436153
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhJUMWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbhJUMWL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:22:11 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE639C061749
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:19:55 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id e12so803100wra.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=1MAcWNR4eIJHPkpF0pYcakZ/CD1b8OAEZ6esT1QDubc=;
-        b=hBCnOWpAXWArLg0uH9UGShDwvTdqrT6J/fDuC7xhthw0qa2wBVNACShsI7AISgfR+d
-         YJIVZHIJPWeNFDiq2VIA+I///w1zDmM5lO2OWmh9154MduFB2OM8IhFLstq+rvPCmTTj
-         AecQMUgLfL7ChrRfMLg/mNhdLPy1a4IxlgTb33oc6uytvUdukI63bZhtEYHVnEXLbWkD
-         OE9r4iwGFvJIRzMDWVfad0JxcBuig+jD6hK518WZWIHfAicg0CstlGMEM5jHiD8E3pSE
-         pFiZx0isZAP5kHfk+EPvELt6K0hFc+4j3i7TBbr9LAffw8aCWZIjAequzLZy9FP46rPy
-         V1AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=1MAcWNR4eIJHPkpF0pYcakZ/CD1b8OAEZ6esT1QDubc=;
-        b=mA/LaS1qmBU3bx0CuYTd11BD3ObPXQwaQxW09ePm93pmfy+EBweFLkD81pmCCqLCeH
-         sKqIpO733s4KivKtpVOHfYiu1eGA0jRTZPMPpeDrzKwXpEQNVi+Up1a2Ye9p12tD2hT0
-         HCgZT76Q0+YnIMlqKNv7N5vbYz9NTatRkEw1NSD5yOi6tJZtDStaz9i4cDsK23e3sBEv
-         2lSXJZtUGjkpBgdyBD/bbPCxf55//KqY7eHCSn0FjLZ8H/bJuLleHj80JeYBeoIejKIj
-         jDrXwpkp++pAGgcVUlJR0mMRcfhQsv71Qm2sR7uPi40iy4W0eQoXZx5+3zusFfjv3Vok
-         Lxdg==
-X-Gm-Message-State: AOAM5307ius19uyPBbIMGSKCaS67EXmvfAmckAQ3KhFIDpP+bvzxSh7K
-        LKqxC6LCeNTgip5jINtaTO+lQ6xL2/AEUoF5Xpc=
-X-Google-Smtp-Source: ABdhPJzJvoUSpjaqHzOXELw1I39FiK/03T2TYTk/qaJuwZGyqBujn5meTTPNaXiPnO9TLEbK6mN7ZQ==
-X-Received: by 2002:adf:ff91:: with SMTP id j17mr6555798wrr.132.1634818794258;
-        Thu, 21 Oct 2021 05:19:54 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id 133sm7971860wmb.24.2021.10.21.05.19.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 05:19:53 -0700 (PDT)
-References: <20211016145939.15643-1-martin.blumenstingl@googlemail.com>
- <1j5ytuvdmw.fsf@starbuckisacylon.baylibre.com>
- <CAFBinCBGZi3MRqTRshyCkq8AAaqHi2NkZVV80ppZr4Lx=xWOWA@mail.gmail.com>
- <1jmtn6tu99.fsf@starbuckisacylon.baylibre.com>
- <CAFBinCCRWS6j=6hDo_sOBmQZw5X8L4GYP=rHQVqHd04keCrbuQ@mail.gmail.com>
-User-agent: mu4e 1.6.7; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Christian Hewitt <christianshewitt@gmail.com>
-Subject: Re: [PATCH] clk: meson: gxbb: Add the spread spectrum bit for MPLL0
- on GXBB
-Date:   Thu, 21 Oct 2021 14:18:01 +0200
-In-reply-to: <CAFBinCCRWS6j=6hDo_sOBmQZw5X8L4GYP=rHQVqHd04keCrbuQ@mail.gmail.com>
-Message-ID: <1jfssumuxi.fsf@starbuckisacylon.baylibre.com>
-MIME-Version: 1.0
+        id S231731AbhJUMVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:21:16 -0400
+Received: from mail-eopbgr1320131.outbound.protection.outlook.com ([40.107.132.131]:21091
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231503AbhJUMVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:21:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PibFH96BpkHsLXtC5jSmukuefQiFdaN84pVHYjbDwnhpEUFGLJMXObw4e7qDrkXUQcVhI8f8nMdVX0TW6cquscETBGJFVGdsDm1534X091bnydUOXXcfyrKGJU/TbQMknxrQVc4OJvVHBz5/ogrf9nKZjNobrA91te0SmUt32PDwt86+S2DEF84yS1YojUXkr175qUQU4YOqNZJcIaRbUtUlpdBIYBte9VKTt//xQM+ElreQnZ4/8f5k5HOYVPw25uaxec7iIaXtjKRdiS1I+1wRMK2C8otjY3DwC3Kjs7XfVepxTOl3p4VsY6nz3+LeKHUNxPsQFfviOPS0iYRTVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Gg1DKBKbx6Dp6ZpamFMafV2FR4uocIao9rF73lqP7n4=;
+ b=Bu23FDKObkM8JLp2TcwUC3YKZsB55uyMdMS/t+kDmmpoh2rl+X4PAOeXY1dYiRJqNlJnQOaz5VEUMOptAmM04QngX6+zL+OKq0Acld0nu8IsI6bOG16cYkPijR6P0vtnea2NqV2W0AhrxP8m0CAVLFzcTUJ+er4Oze3ez+GL5Oao8OLpkkiYaDqtPGk/HjICmIXXqeNilzJqzdc6HnCl4eubTHfShWPvwj++6WOKD55VChonWLvqGUTjhLOQRpRXseF6n5Cw0lbo86fJ23JR10erTgWXsLWkNtPaiX4NfZQvn85JSBafobnd3ftEWZoBOQruEdfFh70zrpA3CjatIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gg1DKBKbx6Dp6ZpamFMafV2FR4uocIao9rF73lqP7n4=;
+ b=ov21w0Q/lFxiFGV/iUx2q3eWchMMh9mWvFOEH6CDzv8Ek2We2b4ua2Ve2tdeDk8q9ViIeAj/4SZy+UKVPrA0NvzbtpmJ9Ji4ZUO5yNEN+Sedd6iAv22g3xOXog3NM8L9BIB2KwrgT7ExCMKtuDPxuWFm/2BC3KWBlmvWjZ+Tg3c=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB3727.apcprd06.prod.outlook.com (2603:1096:4:d9::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4628.16; Thu, 21 Oct 2021 12:18:43 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
+ 12:18:42 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Xu Wang <vulab@iscas.ac.cn>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Wan Jiabing <wanjiabing@vivo.com>, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH v2] iio: adc: stm32-adc: Fix of_node_put() issue in stm32-adc
+Date:   Thu, 21 Oct 2021 08:18:23 -0400
+Message-Id: <20211021121826.6339-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0191.apcprd02.prod.outlook.com
+ (2603:1096:201:21::27) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
+MIME-Version: 1.0
+Received: from localhost.localdomain (218.213.202.190) by HK2PR02CA0191.apcprd02.prod.outlook.com (2603:1096:201:21::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend Transport; Thu, 21 Oct 2021 12:18:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f69f6b86-b303-4a05-6543-08d9948cebec
+X-MS-TrafficTypeDiagnostic: SG2PR06MB3727:
+X-Microsoft-Antispam-PRVS: <SG2PR06MB3727760402A1A46D2A845EC3ABBF9@SG2PR06MB3727.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0XUnmcxkwa15Nga4HHOttigCQjd+GPjg/GtPWwx+o5CP368DS+Rz1aILn9lOJcnZVLwCcv4S7XFEqnPKK3gE8ghLllb3HS3BsTQMYw5r5wpKRtRBaD3V+rAqiJ3WP8RAhbn1jfil/IvG7d6N58qf68rJzNkDxWXtpDxPQdzldRdWISWe1WM91d01naukz4H4PQxfjmnRsA6gJt/vl+c5wyD2wi2xkwHQ37Y8BXlVpi90qsSltdo8kFvTzr948QAaAicvtbJ/ODdrKbwHb7yi/WBRnxmkcTHhdh26II6RxoRkd37vN1YubdlMeM0lvOCbUVmsAJdvUwpBTDNsocqtxczxNFtXiMzeZNX2v9gwDza+IHpM64lbnW7b58I6vGoIqasFxKDd9FFMqaXail+EI6jyT/dccELSo1Y9hgaq9cRH254u0OeGAjdNwzee3dFxwkjWwIP3CAjlt8UIjr61pw5tC3RRYjq2/hbdVitfJk02WJLAddjc+MpjpPuIZN1thbBvwR/Rq/pLVKuTVZCYRiSOa7qyyaj3p4iU8zGtXdQ4IUBiiy0xyvb2/fKoCIfZ6JD+qirR9nwPrDcp+zNhZJR5YFY5ytSbpA2w+91UyWIUeB1ZhzaaSmeBhi7xgg3w91iJTXct6kaytKswETXLFs8mkqHTMaS74HmEcUfqtB19BdF5dL2TSIjCdu9HaUTrg/HF5RmmC+n1Tnvz7hnVgJst8OggJMEWkioEqRICg/8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(110136005)(2906002)(36756003)(316002)(26005)(2616005)(186003)(66946007)(66476007)(6486002)(66556008)(83380400001)(52116002)(956004)(508600001)(38350700002)(38100700002)(1076003)(6512007)(6506007)(8936002)(5660300002)(4326008)(7416002)(86362001)(6666004)(921005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DB1Jy4r89lc9BJkZ5o3vqXjc/9HIBXo/ZzKYtXH0YHmZm1QqvBlqt4m+J27Z?=
+ =?us-ascii?Q?2canYFQ8Tc2x/v657MuUgbGSbcoIEyRJPofamwoaC0g64xMcBcoZoXF6xnxN?=
+ =?us-ascii?Q?mp1MLxD+80fCSVCeBl+qcjs+KQs8AIAvDHgz+dPLCVMFM1mnyIjGO116qVUa?=
+ =?us-ascii?Q?YVGlyd0clAOACl7sARlBGSiIkiNqBQZlgOIF3UdfSXkhriWttU4aUPgUbdip?=
+ =?us-ascii?Q?5LAg2CBSaZQVPd1AGjmigqOGsCsyJHRg+xm+evShhbZkhg3e6mHvocuLESQL?=
+ =?us-ascii?Q?JoMXZFVhptXjsYZQmmESfHc5F7sEYmozSjFgR7Z17kGjOxsbDxVdg0nCIF5J?=
+ =?us-ascii?Q?gBM7JaQgGUN7KktJKINhHpHJM6BdJXyHlVbmycOk5ZGEPASVbGAdUgbyyvOX?=
+ =?us-ascii?Q?nZ6uYf846QwUAYNaYktv2g1QOehybHjgEAH0g+/oJFwQVTKCpGIWAoOqXHZW?=
+ =?us-ascii?Q?fwCrwbT9whddp7V7u7/GWTfSI8hDNK7qwhSt3Gfp2jheKAhVfgHUd30PBJ/N?=
+ =?us-ascii?Q?9vn77vV2Byre8N1fYIJZEAmAaRsBckt3FGZNaAlQzMOFyhT22uXd01Cadt96?=
+ =?us-ascii?Q?WgZIt/b8lejSxE2mR9X0NFACqj8VPkhw9x0oX1km6bToRhAFThWi2bGWncgi?=
+ =?us-ascii?Q?S0W3KO2g2ED30s9/fNXY3+1HgLzbHvsQCHrqQhr1g7Ds1gSv1Ik4pAF5kSDr?=
+ =?us-ascii?Q?7z/VYJqQE6X+X3nJc/5P2mZNO3piO7ocjaBXgSNgGJYzPAwM4acVeu703Uc0?=
+ =?us-ascii?Q?IOroTd9vjBug4rv416PfvA1qr+/hXWStIYgtVJeqwxE5C6tMFt/5j2Y/7ABP?=
+ =?us-ascii?Q?8nDecqegwfZsRzxCrvkGd0/C0dBUoCj94lBkXVhNALmhMNkEKBJcpz6Dt0AU?=
+ =?us-ascii?Q?1yw5oXaJbafds5mqZuDsBR8Kpuosrn0Ywt/+7YvMPbTOeWrQ9nG0E/r7lb7N?=
+ =?us-ascii?Q?TMSe9g7KDDUQXJpwMJ43ud8X4oQOfjsM5yQmVZjTOUQ6uA5oLXK4VgiB8oZm?=
+ =?us-ascii?Q?UrAgdHQuH4fM8nn3mCr1rTaMAnNMq6hv3u3vey4u88LSsXLOkWAMLknVI3uG?=
+ =?us-ascii?Q?Yr+s0JkwYWD6IAZIjFTmrTlVZNQXcwT0qy/tZt0rRRtaFHYl6+YDW2uIjTmT?=
+ =?us-ascii?Q?2jOxuDco/nTdVhsgNex9M4MoJWt6DjB/ftxjFP/JvAWr573EgwqADYzRqDL0?=
+ =?us-ascii?Q?gMOJP2w0uZlRMtbXLM5BhxvUp4Y/gzxldNU0+rprDh3O/BP9N8sQBO2xOpMF?=
+ =?us-ascii?Q?XvGMwtBeSWtwalzzY4mdueW1C85nNd43vEwFIlCyWtDqGoRutENtzKEVNN2t?=
+ =?us-ascii?Q?JBJoELVAlSHyiWFTBgKqp0Pkki25wuOwZvuT3QFyN4TcWsJeN9nWyjYyvgk3?=
+ =?us-ascii?Q?qkwO1arUASsE3Nfe42fLRr19JzEzGnbYu/d8PeLoqoQgNFxb+KTWoU0DAOyl?=
+ =?us-ascii?Q?LepFVVxO4ts=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f69f6b86-b303-4a05-6543-08d9948cebec
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 12:18:42.6275
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 11126903@vivo.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3727
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix following coccicheck warning:
+./drivers/iio/adc/stm32-adc.c:2014:1-33: WARNING: Function
+for_each_available_child_of_node should have of_node_put() before return.
 
-On Wed 20 Oct 2021 at 20:16, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+Early exits from for_each_available_child_of_node should decrement the
+node reference counter. Repalce return by goto here.
 
-> Hi Jerome,
->
-> On Mon, Oct 18, 2021 at 2:03 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
-> [...]
->> > The difference here is BIT(14). un-setting BIT(14) (documented as
->> > EN_DDS0) did not change anything according to Christian's test.
->> > That also means that SDM, SDM_EN and N2 have the expected values.
->> > I manually did the maths:
->> > (2000000000Hz * 16384) / ((16384 * 6) + 12808) = 294909640.7Hz
->> > which matches what clk_summary sees:
->> > 294909641Hz
->>
->>  ... and (2000000000Hz * 16384) / ((16384 * 6) = 333MHz which is fairly close
->>  to what you get w/o flipping the bit
-> This is actually a great hint. So far MPLL clocks have "just worked"
-> for me and I didn't have to work with this.
-> With your explanation it makes sense that SDM_EN makes the hardware
-> use or ignore the SDM value.
->
-> [...]
->> For example yes. I am asking check a bit more what this bit does and
->> what it does not:
->>  - I need confirmation whether or not it does spread spectrum. Yes this
->>  needs to be observed on a SoC pin, like MCLK with a fairly low divider
->>  to the averaging effect which could partially mask spread spectrum.
-> I did some more tests with Christian. It turns out that on GXBB
-> HHI_MPLL_CNTL7[15] has no impact on the rate seen by meson-clk-msr.
-> On the other hand, HHI_MPLL_CNTL[25] makes MPLL0 use or ignore the SDM
-> value (again, verified through meson-clk-msr).
->
->>  - Get an idea what it actually does. The 2 calculations above are an
->>  hint. (Spread spectrum does not change the rate mean value)
-> Indeed!
-> My conclusion is that on GXBB:
-> 1) HHI_MPLL_CNTL[25] doesn't control the spread spectrum setting of
-> MPLL0 - just like you thought
-> 2) HHI_MPLL_CNTL[25] is actually SDM_EN (and HHI_MPLL_CNTL7[15]
-> doesn't seem to have any impact on MPLL0's output rate)
->
-> Please let me know if there's anything else we can test.
-> Else I'll send a patch for making HHI_MPLL_CNTL[25] the SDM_EN bit of
-> MPLL0 on GXBB.
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+Changelog:
+v2:
+- Fix typo and add reviewed-by.
+---
+ drivers/iio/adc/stm32-adc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Fine by me if you are confident that HHI_MPLL_CNTL7[15] has indeed no
-effect. Maybe add a comment about this oddity.
-
->
->
-> Best regards,
-> Martin
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index 6245434f8377..7f1fb36c747c 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -2024,7 +2024,8 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+ 			if (strlen(name) >= STM32_ADC_CH_SZ) {
+ 				dev_err(&indio_dev->dev, "Label %s exceeds %d characters\n",
+ 					name, STM32_ADC_CH_SZ);
+-				return -EINVAL;
++				ret = -EINVAL;
++				goto err;
+ 			}
+ 			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
+ 			ret = stm32_adc_populate_int_ch(indio_dev, name, val);
+-- 
+2.20.1
 
