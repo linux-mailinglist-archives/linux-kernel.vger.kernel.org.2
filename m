@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FFA4356AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3594356AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhJUAKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 20:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
+        id S231417AbhJUAL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 20:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhJUAKL (ORCPT
+        with ESMTP id S230103AbhJUALz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:10:11 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C4AC06161C;
-        Wed, 20 Oct 2021 17:07:56 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id a15-20020a17090a688f00b001a132a1679bso1805364pjd.0;
-        Wed, 20 Oct 2021 17:07:56 -0700 (PDT)
+        Wed, 20 Oct 2021 20:11:55 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF436C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 17:09:39 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id l5so848079lja.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 17:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JyQgagoQZSzTZxL2J4mkxpxPInrkdzrDivEAkUlihtQ=;
-        b=p3pX7gihCX4twMBURgUKiz7Xe7Z8LQ1enaFG3QZahZhMU1ylIrxztbdqeUBQ9IaQwM
-         I98Sz8Ikx9/qNv39F0M6AphOOFV0tZyBHsb7Q2mnO8EFa1MavBo2gcJ59pheeHj3xRf/
-         y/hOTOnIPLu4WLBVyen+25AzMfuRHq93vGwEWWx+kGfBqTUVUQdhkazACUudPcG1Tehc
-         w8P9T8u+2TTBXibAV96vp1PFPHcr/CoLxV4QbdOhTwGQh6pnjAEXPCVDwWxXZIVLfrOu
-         LzF95xr81LhOY7HbNRnh/2+BnD+e04SwDrF3/N9IQjGlstkT1Rh1hbsOpkXLIWoTvUcS
-         6pVw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=W1cURRt8rEK14w254ImClMUra/BaVHxRoCV/R7sMvuY=;
+        b=OlMOD1eY14sFHF63IFiXJcfbNJH/UpLz5NF/rm1VYwTwjyqw9e32DVWuIGKVRl6XGO
+         6Q4CbfHi9EQXKR3zn0vmrOinAh40GeQZvL6KpOQZ0rYHixONEJU75lByXN4SopJw2ZaE
+         LOPMVLDXky65b8fV58sMgu9E4I0PCLqBmkC5fKEuVxXYTaTJ1efvJ6eFlRqD7A+pTxg0
+         o2L4+LEjV+DqOB0kNzrF+0oCSLQTjLoGsS8cw1jdfzNkcepZzC86iuuHQQs74/tpz8uU
+         5ynk2lccUmD2Q9BnQEmoUoqcq2QbXZB+PPcMFaPVmde7q+CFomHnZa2KHcoZnANV85Gj
+         91jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JyQgagoQZSzTZxL2J4mkxpxPInrkdzrDivEAkUlihtQ=;
-        b=XJ8m038rlZ50hEQd04jI0nAk5JJYAApc2nuyJPHaW/vI4WYud1k1YyCSXc9bxoDSkA
-         iUJDcIOtBfKeShheuSQHgZ7lJD6B8CrrUm2EIETNuuzcDb5It5x0lgvUZH2E6SHSw6Wl
-         YaIG9gNk7vO6BSP/xyvPS3YRqOasDi4gCLe14cSNaw6V72V23lXlFjcMTmx1diIa33ZH
-         a61YeRtw1Yu4SSRQfYxD+jN/6Af1IkyIHAbKl1Wz5JUUcQP2mIN4huMhqIn2CQOiKrur
-         poA3sUeppwRgIpN0vOqcn35huQSYFNMi4WHMoO5d8OH67GlTw82ttzqokzpAnFYsUEov
-         0YQw==
-X-Gm-Message-State: AOAM530Zn+lZdm/BLpQ7IwVw9p4pClfJEiGfOqkQxB+GlLTUr/zFBQbX
-        vaAwBPQSs8LINx9pvd1B3JM=
-X-Google-Smtp-Source: ABdhPJzBOT3rH5abeYVx7V2uFjlr74oQpHyMu5N8o/dH34j4QraK8a7aH/qnXruA7Q2ruFF7SWYe4g==
-X-Received: by 2002:a17:902:d2c4:b0:13e:1272:884a with SMTP id n4-20020a170902d2c400b0013e1272884amr2085278plc.34.1634774875693;
-        Wed, 20 Oct 2021 17:07:55 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8c95])
-        by smtp.gmail.com with ESMTPSA id e2sm3637285pfd.137.2021.10.20.17.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 17:07:55 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 17:07:53 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <20211021000753.kdxtjl3nzre2zshb@ast-mbp.dhcp.thefacebook.com>
-References: <20211020104442.021802560@infradead.org>
- <20211020105843.345016338@infradead.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=W1cURRt8rEK14w254ImClMUra/BaVHxRoCV/R7sMvuY=;
+        b=mh11YKpst9rfRQzBanzNSlD2zUVS4StrT2e3TVDJZpIEZiSpgTHMEY1D0y2r3Sr/Qq
+         OsgkPhyBcRujNt7gN76ckiTfEvSNH6tMXfTA+/6upuwlBZH/aV4fap4wLVIVMgEXSC83
+         cDna5+T7LvMAHFJLrBtTVaTTpVjm+SPKD0SpLNiOVe7xsBT9uXfiuj4ntQMgF4c10egF
+         v5/8X++qjTgPjlu0GhK/tmxI2MZhKUK/oOm7K6gXBEoUjCQgVRIW/1dOH5A6M3GjpeHo
+         pLYDLvVpwo47Obw+R5sOR3awNvAcqBXZVy1OD8YSnj269IOqcgHQ75VobwgWdsnRPRcU
+         UzpQ==
+X-Gm-Message-State: AOAM533ZBj6TvJVq7KQLIC2bR02/wj6xuw5Mdhm82hgdDggEWfET0xAb
+        kAcykgcRbIRQHNMjfitIu13D/4qTzrQAO9YY6sE=
+X-Google-Smtp-Source: ABdhPJxMBcR6sD+iYj9v2mYFuc8OUVCSAAcI8DkdFbbgVN+8aCaDSv0/TMqpHfRrB5YXcqULwsZlld2QgRQllHiWT94=
+X-Received: by 2002:a2e:b88b:: with SMTP id r11mr2259428ljp.330.1634774978250;
+ Wed, 20 Oct 2021 17:09:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020105843.345016338@infradead.org>
+Received: by 2002:a05:6512:128b:0:0:0:0 with HTTP; Wed, 20 Oct 2021 17:09:37
+ -0700 (PDT)
+Reply-To: mrssabah51b@gmail.com
+From:   MRS SABAH IBRAHIM <mrs1sarah01@gmail.com>
+Date:   Wed, 20 Oct 2021 17:09:37 -0700
+Message-ID: <CANiYxBm4kKmkMby6Y8BhrvmM0yLKwXum30D-NA5B6jxfMv=-PA@mail.gmail.com>
+Subject: Dear Beloved,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:44:56PM +0200, Peter Zijlstra wrote:
-> +
-> +	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE_AMD)) {
-> +		EMIT_LFENCE();
-> +		EMIT2(0xFF, 0xE0 + reg);
-> +	} else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
-> +		emit_jump(&prog, reg_thunk[reg], ip);
-> +	} else
-
-One more question.
-What's a deal with AMD? I thought the retpoline is effective on it as well.
-lfence is an optimization or retpoline turned out to be not enough
-in some cases?
+Peace Be Upon You
+I am Mrs Sabah Ibrahim.I want to transfer US$2.2Million into your bank
+account. because of cancer problem I want you to take 30 Percent of
+the total money for your personal use While 70% of the money will go
+to charity" people and helping the orphanage.If you are interested,
+Contact me for full details.Reply in my alternative email address
+(mrs2018sabahibrahim@gmail.com ) for confidential
+Regards,
+Mrs. Sabah  Ibrahim
+written from Hospital
