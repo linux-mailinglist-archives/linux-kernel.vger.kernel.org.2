@@ -2,141 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72910436318
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B5F436326
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhJUNgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:36:45 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:54244 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJUNgo (ORCPT
+        id S230390AbhJUNhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231130AbhJUNhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:36:44 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:40512)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdYD5-005DQ9-NZ; Thu, 21 Oct 2021 07:34:19 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:46380 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdYD4-003epC-7e; Thu, 21 Oct 2021 07:34:19 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rich Felker <dalias@libc.org>,
-        "open list\:TENSILICA XTENSA PORT \(xtensa\)" 
-        <linux-xtensa@linux-xtensa.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "open list\:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        H Peter Anvin <hpa@zytor.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Openrisc <openrisc@lists.librecores.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Greentime Hu <green.hu@gmail.com>
-References: <87y26nmwkb.fsf@disp2133> <877de7jrev.fsf@disp2133>
-        <CAMuHMdURxrdjsXq7+q-AWTwxVUdmddOj2vvNHv6M=WtsU5nRvg@mail.gmail.com>
-Date:   Thu, 21 Oct 2021 08:33:51 -0500
-In-Reply-To: <CAMuHMdURxrdjsXq7+q-AWTwxVUdmddOj2vvNHv6M=WtsU5nRvg@mail.gmail.com>
-        (Geert Uytterhoeven's message of "Thu, 21 Oct 2021 10:09:46 +0200")
-Message-ID: <87tuhaijsw.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 21 Oct 2021 09:37:12 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B42C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:34:56 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i24so1935625lfj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rpcuephe1rYIE9OBdAoi+7xiCTGAdmvwrb5c8NWeIjg=;
+        b=ueaBt+9Qh3HeXK+S0kUYZX5r/01LLSms3O2sBibPN5ufY9JTnG0JjqmbPt43D2NzN/
+         siLlnk6S33yv4RP5868l+KaoK1FPZdGbg6P6XZCORNjyiWANGp3zns1Lw+x6xYQiBvpd
+         P5up2hCMFnGk7VMl55ukgGeIOo0JdqR4cDbAlmAKxuh/w4eVayk8e2QupSn7W2VHpKGA
+         zpJhX9t90P+Dff3uKBaLwMwFaFrQHtmR+LwryumvAJNpQC+xPfmoBvxbhQ8RSIMge/mY
+         SUwGqQeszaxk0z1g4mpyAkfwGyZUN5/LqL3DDI26t5jn7qDkOxr555TduTYWwx+J882E
+         U70w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rpcuephe1rYIE9OBdAoi+7xiCTGAdmvwrb5c8NWeIjg=;
+        b=aphs/q6lYTKWsFSQKf6BB+/M/uhYgyNEaWyDPIMfQbaJB4Z7p50ajJx0BZ0xo6bj1q
+         agunZYDzz5KDgDW5r5dsRRPtr8Lo8Lmtg3wyDgp4rAzPJvw7KFC6BEw7lnb8QWLGoFyC
+         0twO4oNMdPmIMol7jjQBg+0d5kKLYq1U/46yU96cSTMqRUWAHz8y9c1D+LupxJMOPrqb
+         APhHqQHoFToS6jfy6qlWkIiCSPs0mWe8krLTTs66OHieJKoPaUWOMzKGybc3bx2sTDp8
+         vQapjU2BIKT6nzwrEyutEILeipDmupDNO89TqWprT2FhC594dHMrPeU3GZD3bhUsPQAr
+         Wdaw==
+X-Gm-Message-State: AOAM531Yik3FmPlmi+aYlxP9HIZII2Km6jzrdlDn6bJ0OPczUEixiSGa
+        uX6mOW/2rdeuYxCo+VEtoZPf6BUpHy4EZdNpFaP75g==
+X-Google-Smtp-Source: ABdhPJyiFSUezbmllolnow65oLFnOePe0c4843Lv23V+bi0WDJ1VTXDqhOInmSbIc/HFvJ0IV5aJ7yj80epBbDjPtyo=
+X-Received: by 2002:a05:6512:3254:: with SMTP id c20mr4528796lfr.254.1634823294390;
+ Thu, 21 Oct 2021 06:34:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdYD4-003epC-7e;;;mid=<87tuhaijsw.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+Mpe2HbWR2YDGhZ3vVJNTbKaHiNpeOXoM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01,T_TooManySym_02,T_TooManySym_03,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4995]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Geert Uytterhoeven <geert@linux-m68k.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 897 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 12 (1.4%), b_tie_ro: 10 (1.2%), parse: 1.14
-        (0.1%), extract_message_metadata: 14 (1.6%), get_uri_detail_list: 1.00
-        (0.1%), tests_pri_-1000: 27 (3.0%), tests_pri_-950: 1.31 (0.1%),
-        tests_pri_-900: 1.10 (0.1%), tests_pri_-90: 286 (31.9%), check_bayes:
-        285 (31.7%), b_tokenize: 12 (1.3%), b_tok_get_all: 8 (0.9%),
-        b_comp_prob: 2.2 (0.3%), b_tok_touch_all: 260 (28.9%), b_finish: 0.94
-        (0.1%), tests_pri_0: 537 (59.9%), check_dkim_signature: 0.61 (0.1%),
-        check_dkim_adsp: 3.0 (0.3%), poll_dns_idle: 1.00 (0.1%), tests_pri_10:
-        3.2 (0.4%), tests_pri_500: 10 (1.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 21/20] signal: Replace force_sigsegv(SIGSEGV) with force_fatal_sig(SIGSEGV)
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20210517155458.1016707-1-sudeep.holla@arm.com>
+ <CAPDyKFr=pf-0JbkiD6rkzeWwPZmDxEE_R=ovhzRUHfVjO9S0tw@mail.gmail.com>
+ <20211014145555.uoi2hyoonrptrd5m@bogus> <CAPDyKFppiogQ5GLQJCqvYGfDQ80HrLLiv43o4H4WBW0PqyONNg@mail.gmail.com>
+ <20211020102521.ag2w3fns5bmgb7zd@bogus>
+In-Reply-To: <20211020102521.ag2w3fns5bmgb7zd@bogus>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 21 Oct 2021 15:34:17 +0200
+Message-ID: <CAPDyKFrunb7sjhZnWVDPRYD_p0Dqr+NZyzX-OUrE00nCa2PmNA@mail.gmail.com>
+Subject: Re: [PATCH v4] dt-bindings: dvfs: Add support for generic performance domains
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
-
-> Hi Eric,
+On Wed, 20 Oct 2021 at 12:25, Sudeep Holla <sudeep.holla@arm.com> wrote:
 >
-> Patch 21/20?
-
-In reviewing another part of the patchset Linus asked if force_sigsegv
-could go away.  It can't completely but I can get this far.
-
-Given that it is just a cleanup it makes most sense to me as an
-additional patch on top of what is already here.
-
-
-> On Wed, Oct 20, 2021 at 11:52 PM Eric W. Biederman
-> <ebiederm@xmission.com> wrote:
->> Now that force_fatal_sig exists it is unnecessary and a bit confusing
->> to use force_sigsegv in cases where the simpler force_fatal_sig is
->> wanted.  So change every instance we can to make the code clearer.
->>
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> On Fri, Oct 15, 2021 at 11:17:18AM +0200, Ulf Hansson wrote:
+> > On Thu, 14 Oct 2021 at 16:56, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > >
+> > > On Thu, Oct 14, 2021 at 12:56:46PM +0200, Ulf Hansson wrote:
+> > > > On Mon, 17 May 2021 at 18:14, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > > > >
+> > > > > The CLKSCREW attack [0] exposed security vulnerabilities in energy management
+> > > > > implementations where untrusted software had direct access to clock and
+> > > > > voltage hardware controls. In this attack, the malicious software was able to
+> > > > > place the platform into unsafe overclocked or undervolted configurations. Such
+> > > > > configurations then enabled the injection of predictable faults to reveal
+> > > > > secrets.
+> > > > >
+> > > > > Many Arm-based systems used to or still use voltage regulator and clock
+> > > > > frameworks in the kernel. These frameworks allow callers to independently
+> > > > > manipulate frequency and voltage settings. Such implementations can render
+> > > > > systems susceptible to this form of attack.
+> > > > >
+> > > > > Attacks such as CLKSCREW are now being mitigated by not having direct and
+> > > > > independent control of clock and voltage in the kernel and moving that
+> > > > > control to a trusted entity, such as the SCP firmware or secure world
+> > > > > firmware/software which are to perform sanity checking on the requested
+> > > > > performance levels, thereby preventing any attempted malicious programming.
+> > > > >
+> > > > > With the advent of such an abstraction, there is a need to replace the
+> > > > > generic clock and regulator bindings used by such devices with a generic
+> > > > > performance domains bindings.
+> > > > >
+> > > > > [0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
+> > > > >
+> > > > > Link: https://lore.kernel.org/r/20201116181356.804590-1-sudeep.holla@arm.com
+> > > > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > > > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > > > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > > >
+> > > > Hi Sudeep/Viresh/Rob,
+> > > >
+> > > > I noticed this binding recently got accepted, so I guess I have missed
+> > > > the opportunity to provide you with a few comments.
+> > > >
+> > >
+> > > Sorry for not cc-ing you, wasn't aware of the below mentioned intersection,
+> > > so assumed you are not one of the interested parties.
+> > >
+> > > > In any case, I would like to ask a few questions. In particular, am I
+> > > > trying to understand why the power-domains bindings [1] can't be used
+> > > > for this?
+> > > >
+> > >
+> > > One reason I can think of is on some platforms, the power domains are
+> > > completely controlled by the firmware and not exposed to the OSPM.
+> > > This is mostly applicable for CPU devices(Platform co-ordinated PSCI)
+> >
+> > See below.
+> >
+> > >
+> > > > The power-domains are capable of dealing with "performance" through
+> > > > the "operating-points-v2" DT property, which maps to the generic OPP
+> > > > bindings [2]. I wonder why that isn't sufficient here? Can you please
+> > > > elaborate?
+> > > >
+> > >
+> > > Even if the power domains are exposed to the OSPM, the OPPs can be
+> > > firmware enumerated rather than DT. Not sure if it is possible to
+> > > represent such systems in the above mentioned bindings. IIUC, the genpd
+> > > uses clock and regulator apis to drive the performance, but these
+> > > platforms have f/w interface to drive the OPPs(abstracted).
+> >
+> > Genpd doesn't operate on clock rates or voltage levels. Instead
+> > "performance" is just an integer value for genpd. What a performance
+> > index means, is genpd provider specific.
+> >
 >
->>  arch/m68k/kernel/traps.c        | 2 +-
+> Understood.
 >
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > In other words, it becomes the responsibility for the genpd provider
+> > to map a performance state index to an OPP, for example. So far,
+> > providers have used the generic OPP DT bindings to do this, but for
+> > sure, we don't have to limit ourselves to this. So, if OPP tables can
+> > be enumerated by FW, rather than specified in DT, that should
+> > certainly be possible to support.
+> >
+> > BTW, these are genpd provider callbacks, that needs to be implemented
+> > to let it control performance. Perhaps that helps to understand
+> > things.
+> >
+> > int (*set_performance_state)(struct generic_pm_domain *genpd, unsigned
+> > int state);
+> > unsigned int (*opp_to_performance_state)(struct generic_pm_domain
+> > *genpd, struct dev_pm_opp *opp);
+> >
+>
+> Looks like this can be used for devices but what about CPUs ?
 
-Thank you.
+Yes, that should work. dev_pm_genpd_set_performance_state() takes a
+struct device* as an in-parameter.
 
-Eric
+The struct device to use would typically be the one that you receive
+from dev_pm_domain_attach_by_name(). We already do this for some other
+cpufreq drivers, so this works fine.
+
+>
+> > >
+> > > I am happy to know if there are ways to support such systems with the
+> > > options you have mentioned above.
+> >
+> > As far as I understand, the "performance domains" DT bindings that
+> > $subject patch introduces, allows us to group devices into domains, to
+> > let them be "performance controlled" together. Right?
+> >
+>
+> Or independently. It doesn't matter.
+>
+> > Unless I am missing something, it looks like power domains DT bindings
+> > already offer this for us. Yes, certainly, the DT doc [1] needs an
+> > updated description to better explain this, but other than that we
+> > should be fine, don't you think?
+> >
+>
+> As I mentioned about, the main question is what if firmware doesn't
+> want to expose power domain details to OSPM like PC co-ordinated PSCI
+> idle states while it wants to either group CPUs or leave them as
+> individual in order to get per-CPU DVFS requests and aggregate them
+> in the firmware. It does something similar for idle states already.
+
+Yes, that can be modeled too.
+
+Just let each CPU node point to its own separate power-domain and also
+*don't* model the parent power-domain, instead leave this to be
+managed by the FW.
+
+Kind regards
+Uffe
