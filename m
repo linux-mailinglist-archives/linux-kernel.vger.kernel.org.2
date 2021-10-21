@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DF7436472
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C40436475
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhJUOjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
+        id S231530AbhJUOj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJUOju (ORCPT
+        with ESMTP id S230484AbhJUOj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:39:50 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56034C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:37:34 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id f11so798671pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:37:34 -0700 (PDT)
+        Thu, 21 Oct 2021 10:39:57 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58B7C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:37:41 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so606030ote.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:37:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hWMulavHguDBRCrVKyFBVx7gMZcaLDBqhj8CvP80Q7E=;
-        b=iAmCvh52C6lmCYBo5ZiN5hHCAu2fAkWo/EasINRykyHBmAETWy8beZzvcus5tEkwRm
-         7Ljfn0XrTNszaIj6pRrjgqoTow7+xQL2Qqd2li6ADiIk1ZH+53YX4Rrje9ReuzejsKQt
-         WZ5qd6woEpPksRm5JkUKkrpCIpuTDlAtVAIgjBOlULlq2ksuCSswqzryjON+C7/l44Pl
-         ABVgQ0AwVNxXh9ZFicLf4H+a8gTtvOaMIxXM7UFNKbFngZl3mfE/eHHeeRYRFraAgP3k
-         w7fIedfNV4u5amqVkV8ZPpz8vHcKblaYRrLiZENkAqVHEy5qLh5a2/a/L6R9sBdWYWcF
-         j++Q==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=dDWiDipIHK5HS6MeBxjwAzx3AX6EeZz5LXZckVi1/bo=;
+        b=GK5V02ISlYBHzpOBLF1zpta1GjhfAs9dy2MvUVgN5TUFpyOInmeAsVfJP+6ah1rZVv
+         bNIlx97VDxD5ozhsnrZZdE3Yn1O3JsA5IdMmdE6ZkcdhXHQFcVyTXcjjAMTie4cXf+0U
+         WM8isIKKkZJEZffuGxvnr5jfzL6xGo6TW6NawGLgOIgbYFVPAFy7PeKfOXv8/SZx2kFp
+         ljkEVIabkyc9VzhlUyVw2hH0o4ouYSc0MspRk+qCO98md3YCz7CxX0GlMRcHmHdfrtBb
+         OBxSugbTXw0jsGomAnItJKwo1ZJplwg0mTw/1ARmCBWIfNuOQRepNV7ep24Dwe5pv7yz
+         J3rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hWMulavHguDBRCrVKyFBVx7gMZcaLDBqhj8CvP80Q7E=;
-        b=zMaW8MbwFAimxkqiToG/sQ7E6soSyMQIVg0Ss3A3LS8Cz5cWSHn8u6JvvEAv9yx2qJ
-         0FOKbGLsDoFLWv0QbtUCOekwZmxDLMKeb4Mk+Ttv+8KiW/KqivN6NtfFtlOHXj2NCTSY
-         kZaov2ZBj8+IrQ8IM+ky3t4qTnkn8rkqyt9m0onMI/EzEXiN4BNDoFA3xL81/Vl6XZ54
-         7v4aXwPIWItpm42PFD1QpX4HG1zU38P+q2RmHFch8lafG6Fxihmx9yecxTcchUFL3jBA
-         L2MidyGeTDqltQ6KXvgLah0Q/nMKy7uoBUtphkuxSeJW6FhWQjojmXeIAUf+F+N8Pxc3
-         A0xg==
-X-Gm-Message-State: AOAM533G0KcamIw+1NXOLejmuiOL8k/sZoZEKUaT/yh30xiz1DK0/h4C
-        EO2fGYXoroLb5tHDRbMpLWir6Q==
-X-Google-Smtp-Source: ABdhPJyjDdV/DmdDuhG8h5Y8UWuU/WoJYOGcrVrT73FmJenSSbHocJoQBYDDbyDIZYNHHR5dMzTsOA==
-X-Received: by 2002:a62:6543:0:b0:44c:61a0:555a with SMTP id z64-20020a626543000000b0044c61a0555amr5748532pfb.14.1634827053748;
-        Thu, 21 Oct 2021 07:37:33 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([148.163.172.147])
-        by smtp.gmail.com with ESMTPSA id z19sm6182867pfj.156.2021.10.21.07.37.28
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=dDWiDipIHK5HS6MeBxjwAzx3AX6EeZz5LXZckVi1/bo=;
+        b=AokHzq460z0neBvsUX4Ioq2IAXoaaNQOVt+qVpiNuEKr17rnNh+BEMHG8vBKZCbcbR
+         x8ITXu2jllBdT8negKQXYy+T9CatDKgbXqkaZYS0bnqB7e2eiEp2DHsv7v9ZFu3PxIaq
+         yteMywzahutOXx9YdgTgKS2bJlOA6ao7k9KPPoNCuLQtsA9JSYUwwP/xRj+dnLusHRzR
+         uQUmRDbjAo6E1/ttM31M5dgVecU23w4VwVLPqSYfY2i13wJOOS6tPUg12x9gxXv9JvnR
+         JYAHUrq5s3V94d9DB282TG28ysEjbLc7PEcKX86FYMqdlRbtEBMQv6QYDi3a7m4YR3R0
+         wNJg==
+X-Gm-Message-State: AOAM532cUYL+Q/ioZwbFkTk/JyWGLVlxa1FBO0Vd50GXinEeE2ooBjmE
+        jcUxwELfTCIXGw8Y7NgN+OyDhg==
+X-Google-Smtp-Source: ABdhPJxNL5QPcUrTS8+siBt4FYmfmiwU2xtnsVC3wrzxIslvK3bC3TMz4siO5gWkpAxAhnVJjJ67WQ==
+X-Received: by 2002:a9d:20a3:: with SMTP id x32mr4783922ota.91.1634827061206;
+        Thu, 21 Oct 2021 07:37:41 -0700 (PDT)
+Received: from [127.0.1.1] ([2600:380:783a:c43c:af64:c142:4db7:63ac])
+        by smtp.gmail.com with ESMTPSA id bk8sm1131310oib.57.2021.10.21.07.37.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 07:37:33 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 22:37:26 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFCv1 1/4] arm64: Use static key for tracing PID in CONTEXTIDR
-Message-ID: <20211021143726.GA213960@leoy-ThinkPad-X240s>
-References: <20211021134530.206216-1-leo.yan@linaro.org>
- <20211021134530.206216-2-leo.yan@linaro.org>
- <53962765-53b9-dfdc-a5b2-a3133a924c12@arm.com>
+        Thu, 21 Oct 2021 07:37:40 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        linux-block@vger.kernel.org
+Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>
+In-Reply-To: <cover.1634822969.git.asml.silence@gmail.com>
+References: <cover.1634822969.git.asml.silence@gmail.com>
+Subject: Re: [PATCH v2 0/2] optimise blk_try_enter_queue()
+Message-Id: <163482705916.41758.93518625125015139.b4-ty@kernel.dk>
+Date:   Thu, 21 Oct 2021 08:37:39 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53962765-53b9-dfdc-a5b2-a3133a924c12@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
-
-On Thu, Oct 21, 2021 at 03:33:01PM +0100, James Clark wrote:
-
-[...]
-
-> > +static int __init contextidr_init(void)
-> > +{
-> > +	if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
-> > +		static_branch_inc(&contextidr_in_use);
-> > +	return 0;
-> > +}
-> > +early_initcall(contextidr_init);
+On Thu, 21 Oct 2021 14:30:50 +0100, Pavel Begunkov wrote:
+> Kill extra rcu_read_lock/unlock() pair in blk_try_enter_queue().
+> Testing with io_uring (high batching) with nullblk:
 > 
-> Hi Leo,
+> Before:
+> 3.20%  io_uring  [kernel.vmlinux]  [k] __rcu_read_unlock
+> 3.05%  io_uring  [kernel.vmlinux]  [k] __rcu_read_lock
 > 
-> Can you skip this early_initcall() part if you do something like this:
-> 
->     DECLARE_STATIC_KEY_MAYBE(CONFIG_PID_IN_CONTEXTIDR, contextidr_in_use)
-> 
-> It seems like there is a way to conditionally initialise it to true.
+> [...]
 
-Thanks for good point!  Will test this way in next spin.
+Applied, thanks!
 
-Leo
+[1/2] percpu_ref: percpu_ref_tryget_live() version holding RCU
+      commit: 3b13c168186c115501ee7d194460ba2f8c825155
+[2/2] block: kill extra rcu lock/unlock in queue enter
+      commit: e94f68527a35271131cdf9d3fb4eb3c2513dc3d0
+
+Best regards,
+-- 
+Jens Axboe
+
+
