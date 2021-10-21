@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A36435EA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CD2435EA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhJUKJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
+        id S231691AbhJUKKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231499AbhJUKJV (ORCPT
+        with ESMTP id S231371AbhJUKKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:09:21 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378E8C06161C;
-        Thu, 21 Oct 2021 03:07:05 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id i12so179664wrb.7;
-        Thu, 21 Oct 2021 03:07:05 -0700 (PDT)
+        Thu, 21 Oct 2021 06:10:09 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE78C06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 03:07:53 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id d13so129001wrf.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 03:07:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lJ5VWnCKzJUxsEb5WXqBp1tX6Jd2/Goa19ZNuDx2zbY=;
-        b=I2vBIlEDPcFsZ05k3kMzo4kRJ2geEppMpkr4CtWNblQGP1wotFk7UZ53i7zlPGyNkm
-         AHMoMtovSifZeMEDcWuEO+6KGUuco02L8Z/8eytzKuZZvj0UB6LfLMLU6solL4Rbh77V
-         iOYeuIovCNftFtjEVmqBGMU2SV0JvD53/cZuj3cQOTWJPt+DBtYAluGuEog0qkC3YCcl
-         Xr90bcxBjotlEmQ3PoGCZVFZtpn9uh13ayewG1xs/SqtkudRjAvgBq1ZMFGhYau5s/2w
-         iwnyBXoSSxRHQ/jOiDW3xyLMOfjpWxmbL+db2CssWJtQZO2z7GULYy9Hu9HKk7KF5KCh
-         9kQw==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F1oNJbu4pHa0grSs6d/Ns7GwUCGiFMszmkl6//VgeII=;
+        b=CngsNRHpP3xh6N7S6PHF34+fDeYjB5qMaxxKiYNqOUXnACoEzVHxqk0VkPKPnKHdvg
+         hd4xZGhEWkmGTe3+vQq37jqfz+2B9jgU1f/k29IhjSEbTzNY7VEqfRaS4czCiwcWWGQH
+         hXOGa460Fr6GCQuBFg4AjhGLfykL+N3ebKY/x9cgLPB6Ped+HppYo7wg08pEjqSiwrGp
+         rn445z1qcoCtgA/5Sga/yWZjrpnftJ6gvgdJ62aFqCndEfK2v4R7Lp14sVp98mjJLlrY
+         FFldqfowPeNnj06Bs88tiUuL2Aub10yszfkjfJtC0IAk+/dtVc1HWqv5Nos5Cep8XPMq
+         FepQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=lJ5VWnCKzJUxsEb5WXqBp1tX6Jd2/Goa19ZNuDx2zbY=;
-        b=gHOxrAgW7nHMOBwDE7Z9zCsJ/3sR8qS2VDEoxfDsxRndyUDfQFkjj3vDzO85cAURK4
-         SUcmH714Aay2514e7KlN+AMSVC6MOAwGbwlYABF5qjQfq3kiOwtSHRWINfwFY98d1LvJ
-         ga4noF9N8g4W2eQhFjDq2AXBi+eVeUQcyr66h4VTMXSBHwGFGyZegqmSMCila9psBuSr
-         Ko8WKiezbqEzB3IYuSQBN5XL2R+XhfE+9zdTsT7AGjGG+9b4gAfP7yOqnVYu6HBpBICr
-         TJADGrBLEMYaAC/LH5L+qZQv+9BkCkaHfoK9t1mul4eUDyEGhq7v3T3+YWkA1bIgmAdB
-         4ASA==
-X-Gm-Message-State: AOAM533yFVH0w3Ardkbpyp+tm62RXFo43Cv9m+UqU6WvVio0uuDUfvau
-        UHAzj+RVCmB/N5xxOl8KbeE=
-X-Google-Smtp-Source: ABdhPJw0tUsP8ixLPHkHh+UEbMjxXwVBkTvlEio6NRSbwje8NNxCZob12fvKRAYETMIN1zGC9ZuEYQ==
-X-Received: by 2002:a05:6000:8a:: with SMTP id m10mr1854481wrx.115.1634810823861;
-        Thu, 21 Oct 2021 03:07:03 -0700 (PDT)
-Received: from gmail.com ([81.168.73.77])
-        by smtp.gmail.com with ESMTPSA id v185sm7573709wme.35.2021.10.21.03.07.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 21 Oct 2021 03:07:03 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 11:07:01 +0100
-From:   Martin Habets <habetsm.xilinx@gmail.com>
-To:     Erik Ekman <erik@kryo.se>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sfc: Don't use netif_info before net_device setup
-Message-ID: <20211021100701.k2dzn7mn5exyofkm@gmail.com>
-Mail-Followup-To: Erik Ekman <erik@kryo.se>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211019224016.26530-1-erik@kryo.se>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F1oNJbu4pHa0grSs6d/Ns7GwUCGiFMszmkl6//VgeII=;
+        b=WX9krUYJ72AMLnOtr+0X2pEfGea3XskSPNJwsPYoMS/OvAUvKApgCCWObUXF0xdGAG
+         7OvQcMZTp6bZARxsmjsS25KGTDJrpbVlwYdzdoRcJCFXfCuEcl8IOAVeaQ6gLjdDi9Vs
+         8Y3N0R9prj8KQQRvknGoZ2gnuQ+w0oPxYMBuurPUQ7wPnUNBd2AzsLWwGHsiZFYNi4L3
+         5CT2CC10xWO+C1fWI/nLTIsCgzL/pCDbw1eVmOuKjLQoZyri/C/HA1PMBYxPtBX4U/Dc
+         PiRW+2EsF7CCK7GPSiiIb81qiSIQn+ITvYhDgKAcjrJR6ecs8nfPkmE+AmFTdj22gJAv
+         Gv5Q==
+X-Gm-Message-State: AOAM532bovSe7AY+uXmgJykjEy6LhFtUd5aTGDSwm9syS0bwrSElokDW
+        EJeFfiflorGZJm+bZYy6pbW8mg==
+X-Google-Smtp-Source: ABdhPJx0Ugn18uahMeYKsgvnxSDyUIvip8FsoCCPzC5FJhL12HE7Bbu4dUtEydRB1ms/fxFX8qmiVQ==
+X-Received: by 2002:adf:a10f:: with SMTP id o15mr6411916wro.286.1634810872098;
+        Thu, 21 Oct 2021 03:07:52 -0700 (PDT)
+Received: from google.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id n12sm5422554wri.22.2021.10.21.03.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 03:07:51 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 10:07:47 +0000
+From:   David Brazdil <dbrazdil@google.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        Andrew Walbran <qwandor@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 07/15] KVM: arm64: Introduce kvm_share_hyp()
+Message-ID: <YXE7842op3n8+JXv@google.com>
+References: <20211019121304.2732332-1-qperret@google.com>
+ <20211019121304.2732332-8-qperret@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019224016.26530-1-erik@kryo.se>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20211019121304.2732332-8-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:40:16AM +0200, Erik Ekman wrote:
-> Use pci_info instead to avoid unnamed/uninitialized noise:
-> 
-> [197088.688729] sfc 0000:01:00.0: Solarflare NIC detected
-> [197088.690333] sfc 0000:01:00.0: Part Number : SFN5122F
-> [197088.729061] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no SR-IOV VFs probed
-> [197088.729071] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no PTP support
-> 
-> Inspired by fa44821a4ddd ("sfc: don't use netif_info et al before
-> net_device is registered") from Heiner Kallweit.
-> 
-> Signed-off-by: Erik Ekman <erik@kryo.se>
+Hi Quentin,
 
-Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
-
-> ---
->  drivers/net/ethernet/sfc/ptp.c         | 4 ++--
->  drivers/net/ethernet/sfc/siena_sriov.c | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
-> index a39c5143b386..797e51802ccb 100644
-> --- a/drivers/net/ethernet/sfc/ptp.c
-> +++ b/drivers/net/ethernet/sfc/ptp.c
-> @@ -648,7 +648,7 @@ static int efx_ptp_get_attributes(struct efx_nic *efx)
->  	} else if (rc == -EINVAL) {
->  		fmt = MC_CMD_PTP_OUT_GET_ATTRIBUTES_SECONDS_NANOSECONDS;
->  	} else if (rc == -EPERM) {
-> -		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
-> +		pci_info(efx->pci_dev, "no PTP support\n");
->  		return rc;
->  	} else {
->  		efx_mcdi_display_error(efx, MC_CMD_PTP, sizeof(inbuf),
-> @@ -824,7 +824,7 @@ static int efx_ptp_disable(struct efx_nic *efx)
->  	 * should only have been called during probe.
->  	 */
->  	if (rc == -ENOSYS || rc == -EPERM)
-> -		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
-> +		pci_info(efx->pci_dev, "no PTP support\n");
->  	else if (rc)
->  		efx_mcdi_display_error(efx, MC_CMD_PTP,
->  				       MC_CMD_PTP_IN_DISABLE_LEN,
-> diff --git a/drivers/net/ethernet/sfc/siena_sriov.c b/drivers/net/ethernet/sfc/siena_sriov.c
-> index 83dcfcae3d4b..441e7f3e5375 100644
-> --- a/drivers/net/ethernet/sfc/siena_sriov.c
-> +++ b/drivers/net/ethernet/sfc/siena_sriov.c
-> @@ -1057,7 +1057,7 @@ void efx_siena_sriov_probe(struct efx_nic *efx)
->  		return;
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 0019b2309f70..0cc4b295e525 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -299,6 +299,17 @@ static int pkvm_share_hyp(phys_addr_t start, phys_addr_t end)
+>  	return 0;
+>  }
 >  
->  	if (efx_siena_sriov_cmd(efx, false, &efx->vi_scale, &count)) {
-> -		netif_info(efx, probe, efx->net_dev, "no SR-IOV VFs probed\n");
-> +		pci_info(efx->pci_dev, "no SR-IOV VFs probed\n");
->  		return;
->  	}
->  	if (count > 0 && count > max_vfs)
-> -- 
-> 2.31.1
+> +int kvm_share_hyp(void *from, void *to)
+> +{
+> +	if (is_kernel_in_hyp_mode())
+> +		return 0;
+> +
+> +	if (kvm_host_owns_hyp_mappings())
+> +		return create_hyp_mappings(from, to, PAGE_HYP);
+> +
+> +	return pkvm_share_hyp(kvm_kaddr_to_phys(from), kvm_kaddr_to_phys(to));
+
+We should be careful about vmalloc memory here. kvm_kaddr_to_phys will
+happily return the physical address but the range is not guaranteed to
+be physically contiguous. It doesn't look like this series ever shares
+vmalloc memory, but we should make it harder for users of this function
+to shoot themselves in the foot.
+
+One option would be to turn this into a loop and call pkvm_share_hyp on
+each physical page. But since the hypervisor has no means of making
+those pages virtually contigous anyway, probably not the right approach.
+
+We could make it possible to share vmalloc buffer that fit into a page
+and reject others. There we still need to be careful about the upper
+bound because the way it's written now, 'to' can be treated as
+exclusive and 'kvm_kaddr_to_phys(to)' would not always return the page
+after 'kvm_kaddr_to_phys(from)'.
+
+-David
