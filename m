@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F56C4366DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11974366E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhJUP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59650 "EHLO
+        id S231728AbhJUP5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhJUP4K (ORCPT
+        with ESMTP id S229597AbhJUP5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:56:10 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A8FC061243
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:53:53 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id z11-20020a1c7e0b000000b0030db7b70b6bso198866wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:53:53 -0700 (PDT)
+        Thu, 21 Oct 2021 11:57:36 -0400
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583D2C061764;
+        Thu, 21 Oct 2021 08:55:20 -0700 (PDT)
+Received: by mail-ua1-x92b.google.com with SMTP id q13so2148443uaq.2;
+        Thu, 21 Oct 2021 08:55:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=RiUvh0ktpqCA7fZqTGI1aV30cE3yIMDtrq4XdFWDz3c=;
-        b=nxj/lswM3BP8tKL+rxtxFVguaNRMLh/Hjxrj5bltEa6eCcDJl12Ha/csvdw8STAA5t
-         jnbuCfkdwo11Hx3ctxt+jRCXDWDw473brc53wDYCah3M2OfH4v2GWfSZcwuPD85T1HPl
-         hWKnWcdZ+mHgfHJl+TlL+tePN56EN+xf580Y5sOaylG0M85HywFn5fHnb67cJo0nCtIa
-         un7to2Z0IuBebbI9xQgF3V1C4vZXLt+0gfUYZOgo4n97bZTTkDO6USGQ7EZN3zabiiKa
-         VtClWI0F0OjUZaPsZF/jHMpCc6hO2MKNM1pjLT0rIdNUdR75woY7SkTeNgZ0YYbkrCZG
-         ZG+Q==
+         :content-disposition:in-reply-to;
+        bh=HRHfFhz4fMPUx9YOtOao9Bpb9t5tjPxJMHEqRqglFwM=;
+        b=D/HrhN/0LrDrsGRfgdFeR48W6kC4c+X4yDSCCgDvMY9Yfj+9RBHFpF8xdRSQNWWeFd
+         ChlvcCLRdG6+AHyAxGQk/4Urb67IFT4Mqo/xOJvEW0jBCqbV8mGubGjEcpdQkw5saWMX
+         0RyxJqfrpZwZWb0NxtD/1tSR8chgREekcK+cL82ldGb/Mn0wIKA3a2fVgATgIlPSTMvl
+         Yk7N3lAB1FA0x0BMeeGeqI4X3gntqERs/5yqCE/uDddwEZ+rXA0fUZDjq+DAzSPRNX/f
+         HoTskTjC3uh6iF00W5+CFFV9COkir+vZWCptrM3qPB43dWNhSw/9GD5loHcfHhbhKGZx
+         KPfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=RiUvh0ktpqCA7fZqTGI1aV30cE3yIMDtrq4XdFWDz3c=;
-        b=tFz4jx+MZkl3g5ZVIhqjMZjqHymv5+AAz/vwIYe/NcuNHM6NyTvwYt/YgcoIQhnyg5
-         LH5KwwqBX79uhiMuGpUe623GYB4w1PyNBZzz7jp35FFFa+bOupxG5cvtFmTxpLOD9H6l
-         6pfGSiyp0tF5huMcAWlqNWaMtK3nBW4gubAMKLXpaJ1d4b0lcTFe+YnTiwv1SUWS/QOR
-         rdZJMu6GDfLZI+462zzyVReRLW7x39bb7oX3cS7M45ufSwEoWAmIBieiVlhQCrNlb9um
-         c+lvpv/w7i3Gfj/mzT8qYC5evCvl4b2WJjwYOX1D16ppgMfjTJTIY/3yBVwbhp57RBNX
-         hxgQ==
-X-Gm-Message-State: AOAM533FAa28IYwgwYtLwm929v17rweW0tSEKLhvk90rTsaq7A6usYQ+
-        7OsljjwTUzhxHhAZRWZ66N5XTQ==
-X-Google-Smtp-Source: ABdhPJyoyHKkVFQ93CGd5H00pN/2DftHR/6cPv38ILBCxFjUmjec2Asvge3c71IyKbmo65Vu90PmbQ==
-X-Received: by 2002:a7b:cb10:: with SMTP id u16mr21967132wmj.65.1634831632452;
-        Thu, 21 Oct 2021 08:53:52 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id n11sm5217954wrw.43.2021.10.21.08.53.51
+         :mime-version:content-disposition:in-reply-to;
+        bh=HRHfFhz4fMPUx9YOtOao9Bpb9t5tjPxJMHEqRqglFwM=;
+        b=Ffk4YTdIrTwD1d76vlR/87Wi2w7tLJjAqRGjMtsSFeXzPgiZCOjyI+h9MDkl3ZFSWL
+         CkaaUtbmm1ndJVB/9Y6hwL3pQArNGMR8wr3GOsxBAMvwYGTftZwXtUSO/QBRAz6jWTbU
+         22xxYob6fyBLRXwjDWJsSAsrNqzCAHvJTFh0hgYK188h5KGHfxXuJiG356/cPJOoDNVI
+         gcTmlLCbyJQFk7iw+8wo+ikfbxwUR9hhbDxKrBfZeyfKNYGuD5OvC5qBGkOyqobDqy6r
+         3l7dS4sUhmeiB/jlga4vDYtAXXOQx9+Ip/QlxNNZv2A/wh4Oz/gEeSfBIMz0Vchs+NDM
+         Rmbw==
+X-Gm-Message-State: AOAM531282/kYwYqzMlePJX7nLjIWVOg6VkIkdeXXg0E2d8o/MoqEf/P
+        KQfeQ0PVX4dGwK/zNJ6OIbM=
+X-Google-Smtp-Source: ABdhPJwyivgybU33oIRvY5+h4YNrbl1bvQ3Lb+fx0N0Gk+ezb51O3awZYpxI7qSBJLWqMSS11HA4Kg==
+X-Received: by 2002:a05:6102:a4f:: with SMTP id i15mr6981375vss.49.1634831719443;
+        Thu, 21 Oct 2021 08:55:19 -0700 (PDT)
+Received: from t14s.localdomain ([2001:1284:f013:eca9:86b:fb8c:36a9:6a8f])
+        by smtp.gmail.com with ESMTPSA id m184sm3296920vsc.6.2021.10.21.08.55.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:53:51 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 16:53:49 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v2 1/9] mfd: max77686: Correct tab-based alignment of
- register addresses
-Message-ID: <YXGNDZCMHYjr2B9s@google.com>
-References: <20211019145919.7327-1-luca@lucaceresoli.net>
- <20211019145919.7327-2-luca@lucaceresoli.net>
+        Thu, 21 Oct 2021 08:55:18 -0700 (PDT)
+Received: by t14s.localdomain (Postfix, from userid 1000)
+        id 1AB9E91D02; Thu, 21 Oct 2021 12:55:17 -0300 (-03)
+Date:   Thu, 21 Oct 2021 12:55:17 -0300
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Richard Haines <richard_c_haines@btinternet.com>,
+        Xin Long <lucien.xin@gmail.com>
+Subject: Re: [PATCH] sctp: initialize endpoint LSM labels also on the client
+ side
+Message-ID: <YXGNZTJPxL9Q/GHt@t14s.localdomain>
+References: <20211021153846.745289-1-omosnace@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211019145919.7327-2-luca@lucaceresoli.net>
+In-Reply-To: <20211021153846.745289-1-omosnace@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021, Luca Ceresoli wrote:
+On Thu, Oct 21, 2021 at 05:38:46PM +0200, Ondrej Mosnacek wrote:
+> The secid* fields in struct sctp_endpoint are used to initialize the
+> labels of a peeloff socket created from the given association. Currently
+> they are initialized properly when a new association is created on the
+> server side (upon receiving an INIT packet), but not on the client side.
 
-> Some lines have an extra tab, remove them for proper visual alignment as
-> present on the rest of this file.
-> 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> 
-> ---
-> 
-> Changes in v2: none
-> ---
->  include/linux/mfd/max77686-private.h | 26 +++++++++++++-------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
-
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
++Cc Xin
