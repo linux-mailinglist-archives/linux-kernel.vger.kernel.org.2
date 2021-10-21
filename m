@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236F543674B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9426D43674E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhJUQK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:10:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhJUQK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:10:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AEFD611CB;
-        Thu, 21 Oct 2021 16:08:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634832521;
-        bh=3wcwNbtDNknQedZoy24cZfK1CiOqshIYIk3e2c4B9Rw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XWhJ08GGIqTZw+TvT/nMCDAy7quf2FJv33jj0Ily06vxkI8rUxTQELDkeHb0u+NFl
-         MD0Lx9+x7lhMM3GIAZfA1T2u0eNmQAG1bqpXTvz67evSI6p28cRymuvwfzx0MmCdPZ
-         Eu9kyx0IRx+BQHrjfg6pUkXIBKHVfUT3rJ6PyHjkKsGXSiMQ2s0MWrlq5f/6WPUXfA
-         12KC4ZTUvETH0cKn32kcKsPv7RGUIftWATLF8XYn+cHxWi3nvl7PC2jb98L+8EJMFN
-         xtCzC0AmpDoL2r37xWXDC3EUt/EyyEmL8iLEASXb2kkCdjx5XS/xqqOzJAGW3sGtIs
-         FzUF2rqmMe78Q==
-Received: by pali.im (Postfix)
-        id D8DB085E; Thu, 21 Oct 2021 18:08:38 +0200 (CEST)
-Date:   Thu, 21 Oct 2021 18:08:38 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        skhan@linuxfoundation.org, Robert Richter <rric@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Joyce Ooi <joyce.ooi@intel.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Toan Le <toan@os.amperecomputing.com>
-Subject: Re: [PATCH v3 01/25] PCI: Add PCI_ERROR_RESPONSE and it's related
- definitions
-Message-ID: <20211021160838.r7t7fmmeseaecfac@pali>
-References: <cover.1634825082.git.naveennaidu479@gmail.com>
- <f7960a4dee0e417eedd7d2e031d04ac9016c6686.1634825082.git.naveennaidu479@gmail.com>
+        id S231838AbhJUQLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhJUQLL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 12:11:11 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220DBC061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:08:55 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id w17so739139plg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gdc/lGkpR61OHyRBqYEJcDW/apWS1Be/eKAz+upJlxI=;
+        b=LonpLY3i1mcr5QH9xueFci4gVBhS4w4hZeP9OccoTe+okgVH16P2bdB7i6Ci0R5PI5
+         m8nFWAVndkNdANKs/qI5gVj/CIkTu69zyscVm3CA9HzZj7LIK4o7RzwTpBLbX44Ffo49
+         EX2qo1Mg9MWz90Ihs+Lb1UXAuTMRxN3FOAzb4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gdc/lGkpR61OHyRBqYEJcDW/apWS1Be/eKAz+upJlxI=;
+        b=rGVSYoARgP9vHOzkwBecBWqx1+lVn0sLWel4CU789w5qRA2N8YgszEOr5mLG4/nd31
+         0dNW0ph/xR2r5EsKqFj5KhTMl5GZirkgMD3uMf1zBK08CX6pm8QmAyk0R/cA1WpwtLt6
+         mUXsYRLoSBhkU8JanV9O2kJwiYE2BsTuk5jYuMTg5qOip6euPy5mZi4jAPF9zquITPIU
+         UsC1um62PCfyF97EQ9kuJFf0gKoFi69Xf4I0kUDGF/LHucfKEw0bo4tnOR55Z248cE3K
+         kKgHaY+m1GEahX2lkb0i5s/vZZr7KTvPtEm2H5OTCuVgXFavWKc8VUg47fadkabUQdOB
+         UAPw==
+X-Gm-Message-State: AOAM533GSNHtJot08Q+5AYrG7tED/uh7twwXlJ1Fx5F9fhM2Jpobu50F
+        O9hnbtRCfQUWASYGr7scCkdaety0XpU=
+X-Google-Smtp-Source: ABdhPJxNic93QUUUnNiH4nY5D0N9RVoxSTNlinHs1JSkR6W8jwHyvo6/dHFZ4veSckMo10M5iHcLug==
+X-Received: by 2002:a17:902:7b84:b0:13b:90a7:e270 with SMTP id w4-20020a1709027b8400b0013b90a7e270mr6009591pll.21.1634832534672;
+        Thu, 21 Oct 2021 09:08:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z10sm5668734pgv.81.2021.10.21.09.08.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 09:08:54 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 09:08:53 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org
+Subject: Re: [PATCH 06/20] signal/sh: Use force_sig(SIGKILL) instead of
+ do_group_exit(SIGKILL)
+Message-ID: <202110210907.F89199BB2@keescook>
+References: <87y26nmwkb.fsf@disp2133>
+ <20211020174406.17889-6-ebiederm@xmission.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f7960a4dee0e417eedd7d2e031d04ac9016c6686.1634825082.git.naveennaidu479@gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20211020174406.17889-6-ebiederm@xmission.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 21 October 2021 20:37:26 Naveen Naidu wrote:
-> An MMIO read from a PCI device that doesn't exist or doesn't respond
-> causes a PCI error.  There's no real data to return to satisfy the
-> CPU read, so most hardware fabricates ~0 data.
+On Wed, Oct 20, 2021 at 12:43:52PM -0500, Eric W. Biederman wrote:
+> Today the sh code allocates memory the first time a process uses
+> the fpu.  If that memory allocation fails, kill the affected task
+> with force_sig(SIGKILL) rather than do_group_exit(SIGKILL).
 > 
-> Add a PCI_ERROR_RESPONSE definition for that and use it where
-> appropriate to make these checks consistent and easier to find.
+> Calling do_group_exit from an exception handler can potentially lead
+> to dead locks as do_group_exit is not designed to be called from
+> interrupt context.  Instead use force_sig(SIGKILL) to kill the
+> userspace process.  Sending signals in general and force_sig in
+> particular has been tested from interrupt context so there should be
+> no problems.
 > 
-> Also add helper definitions SET_PCI_ERROR_RESPONSE and
-> RESPONSE_IS_PCI_ERROR to make the code more readable.
-> 
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: linux-sh@vger.kernel.org
+> Fixes: 0ea820cf9bf5 ("sh: Move over to dynamically allocated FPU context.")
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Reviewed-by: Pali Rohár <pali@kernel.org>
+Looks sane; there should be no observable changes.
 
-> ---
->  include/linux/pci.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index cd8aa6fce204..689c8277c584 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -154,6 +154,15 @@ enum pci_interrupt_pin {
->  /* The number of legacy PCI INTx interrupts */
->  #define PCI_NUM_INTX	4
->  
-> +/*
-> + * Reading from a device that doesn't respond typically returns ~0.  A
-> + * successful read from a device may also return ~0, so you need additional
-> + * information to reliably identify errors.
-> + */
-> +#define PCI_ERROR_RESPONSE     (~0ULL)
-> +#define SET_PCI_ERROR_RESPONSE(val)    (*(val) = ((typeof(*(val))) PCI_ERROR_RESPONSE))
-> +#define RESPONSE_IS_PCI_ERROR(val) ((val) == ((typeof(val)) PCI_ERROR_RESPONSE))
-> +
->  /*
->   * pci_power_t values must match the bits in the Capabilities PME_Support
->   * and Control/Status PowerState fields in the Power Management capability.
-> -- 
-> 2.25.1
-> 
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
