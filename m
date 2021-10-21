@@ -2,135 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4864F436C74
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE189436C79
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhJUVMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 17:12:47 -0400
-Received: from ms.lwn.net ([45.79.88.28]:53294 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232158AbhJUVMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 17:12:46 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 9578B97D;
-        Thu, 21 Oct 2021 21:10:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 9578B97D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1634850629; bh=/5PqWLE4FcBhImTJA9XMH2rm/C/TLG5+zjc1qYZQyFg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=lPVFQP7lLogTE0no1qOXHEdfSoBuq2YKavzjGD4P+t0Sp7YFZJlY4iyAIA2q+40AC
-         Lt9mih0Ta4F82gBMnS1hRNUZT/od3nkl7L92gpIuxwMSRRL/IPt+UwtV3GCSqTHGRn
-         SP9oy4QDk4LjiNPqVeNEPPZdxeMmiX6HrhFN5SOGxerGiXiQ5bBBU4DLyLK1uIDVmN
-         lGZTI2x+rfyjk5DcbM2nnOnj9urzUD8h4YFhtZ28DodZY2IODRUHgaZApI93Dh9ilC
-         vr0H/DTzzOpk+Q47k+QjzKlvevt9jH/IGLP2huS8a8F/5WZVfLMDqYgsPHsiMMk8Pq
-         hcvE0tILiobTw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vadim Pasternak <vadimp@nvidia.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: linux-next: build warnings after merge of the drivers-x86 tree
-In-Reply-To: <20211022070452.28924855@canb.auug.org.au>
-References: <20211021184735.794b22a7@canb.auug.org.au>
- <BN9PR12MB53814D3DCD5BD5E9441DE3F3AFBF9@BN9PR12MB5381.namprd12.prod.outlook.com>
- <20211022070452.28924855@canb.auug.org.au>
-Date:   Thu, 21 Oct 2021 15:10:28 -0600
-Message-ID: <87lf2mjd8b.fsf@meer.lwn.net>
+        id S232184AbhJUVNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 17:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhJUVNr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 17:13:47 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C8CC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 14:11:30 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id v7so2455023ybq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 14:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sSqNmBmwNnZiz7NUUt6h5WqgJhP/Ov1sKBBTlbjHzNY=;
+        b=XRsGY/xy50TtHIKbHoxMdCj0ZTTbuI00ENgALELUtUY5fWYRIggNJL5E9D5BcumiGv
+         Ei4UdmBQiheCtzLfGJlbaFYE5i12T1IQTwLpPvfigWcSqRkugP1/kX/Pjq2XsNGTSP44
+         PFr1T8N2/vslAGg9WT7uTPZ59vePFQjJmmHNA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sSqNmBmwNnZiz7NUUt6h5WqgJhP/Ov1sKBBTlbjHzNY=;
+        b=4hNt6FlrqHLpWWt8nQvfABhGENivvVg7dN2i3xcnOsO0rwybO2M0HU0V+3JNSM84Fx
+         KBFOViJ+rLWLSkYSQcvSoRniLcbjG13QVdQPU6PJK97EUYLd6XWvcWI4aR3QMPK1vP+N
+         j3ahEDR14M8lNDDn9ou627Ik/ei92BBfHENyd7wXSf0Jh9g1wkg3SBppHWZDK0mio4Bi
+         hEIV8oYFtqFg3oTXP1feloJlaqKTeWeOzLHv0eb0E6kIOZ8hYLRfJwSUt0IB12Mmxgk0
+         IxnMKmBo5/Ej/bQpSJla7nbK5mWcCO1fKb2kHgeIRUP6HHac+6z7zG8OYgmwVeWkdaQF
+         SagQ==
+X-Gm-Message-State: AOAM532nwrYyXemr5NZlzXB1L87E6vi10KmNyBqh+Bemqkz/qZiZbQSa
+        0TjJxbYrXp4AdjkDxnINuaG7AMSH5e5MCCzZShbolA==
+X-Google-Smtp-Source: ABdhPJw0QcM0HApDBgJuV+OEUNHeWA+ga7NCtmdlz6dOcp04yOURrxn6vryKN9YFFkgXuaysz4ZPOkJdVmJ3cN8N41g=
+X-Received: by 2002:a25:5044:: with SMTP id e65mr8298612ybb.57.1634850689972;
+ Thu, 21 Oct 2021 14:11:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211016095644.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
+ <20211016095644.2.I44ee57ef73528243acf8f29af8d2416b810e1a9d@changeid> <CAD=FV=XXOY_Rded_j6oysDkZ=e7_Gc1SPKPbkLK2DBdoKHWuKA@mail.gmail.com>
+In-Reply-To: <CAD=FV=XXOY_Rded_j6oysDkZ=e7_Gc1SPKPbkLK2DBdoKHWuKA@mail.gmail.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Thu, 21 Oct 2021 14:11:19 -0700
+Message-ID: <CA+cxXh=R3U2uz2x0Mef3LZ-mta-+F9TXD0F+RGd5mDTWQOgZvQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/bridge: parade-ps8640: Populate devices on aux-bus
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[CC += Mauro]
+Hi Doug,
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-
-> On Thu, 21 Oct 2021 09:07:03 +0000 Vadim Pasternak <vadimp@nvidia.com> wrote:
->>
->> What is wrong with the syntax at line 230 and where blank line is expected?
->> 
->> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_active_image
->> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_auth_fail
->> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_upgrade_fail
->> Date:		October 2021	<--- this is line 230
->> KernelVersion:	5.16
+On Mon, Oct 18, 2021 at 1:43 PM Doug Anderson <dianders@chromium.org> wrote:
 >
-> I am sorry, I don't know.  Added Jon to cc for advice.
+> Hi,
+>
+> On Sat, Oct 16, 2021 at 9:57 AM Philip Chen <philipchen@chromium.org> wrote:
+> >
+> > Conventionally, panel is listed under the root in the device tree.
+> > When userland asks for display mode, ps8640 bridge is responsible
+> > for returning EDID when ps8640_bridge_get_edid() is called.
+> >
+> > Now enable a new option of listing the panel under "aux-bus" of ps8640
+> > bridge node in the device tree. In this case, panel driver can retrieve
+> > EDID by triggering AUX transactions, without ps8640_bridge_get_edid()
+> > calls at all.
+> >
+> > To prevent the "old" and "new" options from interfering with each
+> > other's logic flow, disable DRM_BRIDGE_OP_EDID when the new option
+> > is taken.
+> >
+> > Signed-off-by: Philip Chen <philipchen@chromium.org>
+> > ---
+> >
+> >  drivers/gpu/drm/bridge/parade-ps8640.c | 52 ++++++++++++++++++++------
+> >  1 file changed, 40 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > index acfe1bf0f936..98884f799ea8 100644
+> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > @@ -14,6 +14,7 @@
+> >  #include <linux/regulator/consumer.h>
+> >
+> >  #include <drm/drm_bridge.h>
+> > +#include <drm/drm_dp_aux_bus.h>
+>
+> You need a `select DRM_DP_AUX_BUS` in the Kconfig to avoid the errors
+> that the build robot found for you.
+Thanks for the tip!
+I also found "select REGMAP_I2C" seems to be missing for ps8640.
+although the build robot didn't complain.
+Should I post a fix-up?
 
-The problem isn't that line at all, it's the use of a bulleted list a
-few lines further down; that doesn't work in ABI files.
+>
+>
+> >  #include <drm/drm_dp_helper.h>
+> >  #include <drm/drm_mipi_dsi.h>
+> >  #include <drm/drm_of.h>
+> > @@ -149,6 +150,24 @@ static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
+> >         return container_of(aux, struct ps8640, aux);
+> >  }
+> >
+> > +static bool ps8640_of_panel_on_aux_bus(struct device *dev)
+> > +{
+> > +       struct device_node *bus, *panel;
+> > +
+> > +       if (!dev->of_node)
+> > +               return false;
+>
+> You probably don't need the above check. I think things would be
+> pretty broken if we didn't have an "of_node".
+Removed in v2.
+PTAL.
+>
+>
+> > +       bus = of_get_child_by_name(dev->of_node, "aux-bus");
+> > +       if (!bus)
+> > +               return false;
+> > +
+> > +       panel = of_get_child_by_name(bus, "panel");
+>
+> of_node_put(bus);
+Added in v2.
+PTAL.
 
-Mauro, this ABI stuff is fragile, and this kind of problem occurs fairly
-often.  How hard would it be to (1) make it a bit more robust, (2) make
-it issue useful warnings where it can't be robust, and (3) properly
-document the restrictions for ABI files?
-
-Meanwhile, the attached patch fixes it; feel free to use it or to just
-fold the change into your work.
-
-Thanks,
-
-jon
-
------------------------------
-From 97371e6afda75eef71b7d5d1794645e5cfaf1811 Mon Sep 17 00:00:00 2001
-From: Jonathan Corbet <corbet@lwn.net>
-Date: Thu, 21 Oct 2021 15:02:43 -0600
-Subject: [PATCH] docs: ABI: fix documentation warning in sysfs-driver-mlxreg-io
-
-The use of a Sphinx list within this ABI file caused the following warning:
-
-  Documentation/ABI/stable/sysfs-driver-mlxreg-io:230: WARNING: Unexpected indentation.
-  Documentation/ABI/stable/sysfs-driver-mlxreg-io:230: WARNING: Block quote ends without a blank line; unexpected unindent.
-
-Remove the bullets to make the warning go away and get proper formatting.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
- .../ABI/stable/sysfs-driver-mlxreg-io         | 23 +++++++++++--------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
-diff --git a/Documentation/ABI/stable/sysfs-driver-mlxreg-io b/Documentation/ABI/stable/sysfs-driver-mlxreg-io
-index c84795ccecad..12c3f895cd2f 100644
---- a/Documentation/ABI/stable/sysfs-driver-mlxreg-io
-+++ b/Documentation/ABI/stable/sysfs-driver-mlxreg-io
-@@ -231,16 +231,19 @@ Date:		October 2021
- KernelVersion:	5.16
- Contact:	Vadim Pasternak <vadimp@nvidia.com>
- Description:	The files represent BIOS statuses:
--		- bios_active_image: location of current active BIOS image:
--		  0: Top, 1: Bottom.
--		  The reported value should correspond to value expected by OS
--		  in case of BIOS safe mode is 0. This bit is related to Intel
--		  top-swap feature of DualBios on the same flash.
--		- bios_auth_fail: BIOS upgrade is failed because provided BIOS
--		  image is not signed correctly.
--		- bios_upgrade_fail: BIOS upgrade is failed by some other
--		  reason not because authentication. For example due to
--		  physical SPI flash problem.
-+
-+		bios_active_image: location of current active BIOS image:
-+		0: Top, 1: Bottom.
-+		The reported value should correspond to value expected by OS
-+		in case of BIOS safe mode is 0. This bit is related to Intel
-+		top-swap feature of DualBios on the same flash.
-+
-+		bios_auth_fail: BIOS upgrade is failed because provided BIOS
-+		image is not signed correctly.
-+
-+		bios_upgrade_fail: BIOS upgrade is failed by some other
-+		reason not because authentication. For example due to
-+		physical SPI flash problem.
- 
- 		The files are read only.
- 
--- 
-2.31.1
-
+>
+>
+> > +       if (!panel)
+> > +               return false;
+>
+> of_node_put(panel);
+Added in v2.
+PTAL.
+>
+>
+> Other than the above, this looks reasonable to me.
+>
+> -Doug
