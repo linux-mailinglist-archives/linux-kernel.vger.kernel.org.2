@@ -2,92 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A507F435C75
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294BE435C83
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhJUHzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:55:55 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:40217 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230385AbhJUHzx (ORCPT
+        id S231281AbhJUH6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231158AbhJUH6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:55:53 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id A99D1320100E;
-        Thu, 21 Oct 2021 03:53:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 21 Oct 2021 03:53:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        O+ihxC6+a8hsyBFVP4aRMPlZa6WIr1zpcOAhP1S05Fk=; b=FXRT0gobhGitctju
-        frTegO8Ty1EQaLy9ZgsxWmNtIcBKQtRG24osioU1pCXL5V3TvWcE48frOaZ3HGul
-        K3vLM5UnD5Z0g3BbpkMKUTHQnKosMXQ9D3Lf6eDMWCzTA6SB4d2SR09bU2GaTCNr
-        uMFQepNXvScgOzzqU+DeQaRUKG5t35kFq1A2r/7FsF7W33IfLFVI3zrgeuWi7lyH
-        XCt/5TXCvdscraJQzeRrTOKCnDKbaEwzM9qD6wzBKF88EMNFHdU8ABJEkT2pUdgd
-        Xa3yBHllcRFa07JJ6Hjl6L8/rKZ85+FWabGeHHmTgSbOS5stTn7QhFhe8EEm/5eP
-        7OcnFQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=O+ihxC6+a8hsyBFVP4aRMPlZa6WIr1zpcOAhP1S05
-        Fk=; b=G+nHXRGq3ox3v57XAVnyl6/K0PuuRJ+h+iK2DOTvoUkcJJLAX4NXY/Wdc
-        +B5zSf/YZdfUYgLePcw+ii/JDVv5seziTAIbNr6803I6n7PrlPFVQ9Ro2CguQ9hF
-        ITrC97/rqnh4SmVnm/+B1G42hDkmoGytZTpA5enf2SuecT95SnW+0mHNA2i80+4G
-        Xgk3vdg/JFZfcW7dRosDKJNojdvM688y1+wT3RaGiuLgnHaJANXTCBvYXRvD1+gV
-        jBrxwAnlKtpk1w2OqZT4STd6+HvuHK3x12lt+XaDrsB75W15cP1t9VriMKro8JCA
-        kvsCTZd7o8tb8EI8Pr8M0mgaDjcOw==
-X-ME-Sender: <xms:gRxxYUGziBSzLvNfhVenJI-64ZVg6wV8oxDa87yU6jbfiEPAC49k4w>
-    <xme:gRxxYdXUInV0jo22_hVC-Yn_Q00zWKncVWdq-KrV9X3OP9jk9QAmnR2rDIIKEJsL2
-    b76KevDUlAZaX0Uvpc>
-X-ME-Received: <xmr:gRxxYeJUyAwYUFVsy1cQdtsNYey6DTSeJFZYQM7p-Sm70MaEuM_DYZWQSVkwjf-XIomOGCVtX9p_p-JpsD9GAxiiYrw-EbMFxbyW6QwX>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvhedguddulecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgig
-    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
-    grthhtvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfef
-    geeikeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:gRxxYWGcyu6KJQ_mzrytbEox8WJAjcnlPpdxGZTNIHdmZJwdVSqU_Q>
-    <xmx:gRxxYaV_czh9aXvq2AbfMGAWy_gGJSW4nNq7Bdfi4jb1wBKyKo9tFA>
-    <xmx:gRxxYZMz3hDbhZ8aPofbSI91LxDEcGSVEQzuSNqp-4GmRsci6W5ztw>
-    <xmx:gRxxYeo5nj0qHCAAHjbVhPUWQVZGkXDn7FZtrcI3QdQrt9G-Cn5-NA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 21 Oct 2021 03:53:36 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>, mripard@kernel.org,
-        wens@csie.org
-Cc:     Maxime Ripard <maxime@cerno.tech>, linux-sunxi@lists.linux.dev,
-        airlied@linux.ie, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-        linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH] drm/sun4i: virtual CMA addresses are not needed
-Date:   Thu, 21 Oct 2021 09:53:34 +0200
-Message-Id: <163480280299.501699.809157203649061929.b4-ty@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211019181028.4190737-1-jernej.skrabec@gmail.com>
-References: <20211019181028.4190737-1-jernej.skrabec@gmail.com>
+        Thu, 21 Oct 2021 03:58:34 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72571C061749
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 00:56:18 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id o24so14571649wms.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 00:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mpBk3CGGBQxOjdLo0meuYKa3n7EnDSifXrr7ewVJe00=;
+        b=x2dsJWU0DmewCEoW4HMlYFcsU1ENwqA1YmdVjuHsflJ6a4qeIdyB9v10R8IgpLhvfj
+         zcGA3WMue61oYUGVvl63bF+d6HOLXZt4zwPc4qx+BC3ospWCTypf3o83PbzgU800Zvj4
+         +ke6hur0RkUzRAKzTACpteO9pC3H9baH91enXLkXpl14qXi0DE6wBXEiiAC2FX8uxk2O
+         coIz2OzWXqJg0OSOhxtX2lzGc3giqRcio6w+kh7/kPCIdgVTv+lZbkz4hQ4aVyt9JDBw
+         /xvuHhDxECyPH2lqBlYg5i/FEx2l+yUs4PA9csb3FCjgcZ/wOFrFbrLEBJaA+Bm9YZ8Y
+         y1BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mpBk3CGGBQxOjdLo0meuYKa3n7EnDSifXrr7ewVJe00=;
+        b=kptvpEZ17qsUVYI/+WUJkxd3ZDoAmlFGhjOUyVnPdUwFKqWscJ2+9pewdzkUDS0y0R
+         u90/9bdnXVbNz8xpUtSYsg7bTfoyfiKrIk8LtJh3CpR0uqwvJoEI3iHfxUVe/bJvD2/c
+         8G6t/K1bmBKQvNnb9xY7eYUqJ/85IcOsG81lsiM9/5G9XfLmoHTaaErgqeLSLv/q4cP9
+         J8B43kHPsf+3GKr0c/9Tm0ynZgRL8ihcd9hdR8xlgHestSUqPEuD3dAuRvFnO+Wl9FMT
+         bTL4EIhe3f7S3S0JFc+YVbA6dclYCG+5D+BzT1wQhP39ZbzXMK3IhATfUX/Z1UefSvDb
+         uttw==
+X-Gm-Message-State: AOAM53222wRO/g4ucqsihNq+6rgrdF4G0jVlSu2PCRqNWe4oJafelHHb
+        EA7HpNolAmyw2k3DFI6G269azw==
+X-Google-Smtp-Source: ABdhPJybY3RyTkP6/YfSmrtS1StO8NtbG2l9wr76SmhR1UpvBCLux8RfZvaXwwoAjojfFJeSIWITnA==
+X-Received: by 2002:a1c:d1:: with SMTP id 200mr4721550wma.86.1634802976877;
+        Thu, 21 Oct 2021 00:56:16 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:2a2c:7ed:66a0:d637? ([2a01:e34:ed2f:f020:2a2c:7ed:66a0:d637])
+        by smtp.googlemail.com with ESMTPSA id x24sm7738157wmk.31.2021.10.21.00.56.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 00:56:16 -0700 (PDT)
+Subject: Re: [PATCH v2] thermal: imx: implement runtime PM support
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Petr Benes <petrben@gmail.com>,
+        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
+        linux-pm@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20211019130809.21281-1-o.rempel@pengutronix.de>
+ <20211020050459.GE16320@pengutronix.de>
+ <CAPwXO5b=z1nhQCo55A_XuK-Es2o7TrL2Vj6AkRSXa3Wxh0s8sA@mail.gmail.com>
+ <20211021072000.GC2298@pengutronix.de>
+ <afeea08b-6130-3c7c-be03-52691d00be57@linaro.org>
+ <20211021074456.GD2298@pengutronix.de>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <dace17c6-a31a-9b52-3659-5b36e23f530e@linaro.org>
+Date:   Thu, 21 Oct 2021 09:56:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20211021074456.GD2298@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 20:10:28 +0200, Jernej Skrabec wrote:
-> Driver never uses virtual address of DRM CMA buffers. Switch to CMA
-> helpers which don't deal with virtual mapping.
+On 21/10/2021 09:44, Oleksij Rempel wrote:
+> On Thu, Oct 21, 2021 at 09:41:35AM +0200, Daniel Lezcano wrote:
+>> On 21/10/2021 09:20, Oleksij Rempel wrote:
+>>> Hi Petr,
+>>>
+>>> On Wed, Oct 20, 2021 at 05:53:03PM +0200, Petr Benes wrote:
+>>>> On Wed, 20 Oct 2021 at 07:05, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+>>>>>
+>>>>> Hi Petr and Michal,
+>>>>>
+>>>>> I forgot to add you for v2 in CC. Please test/review this version.
+>>>>
+>>>> Hi Oleksij,
+>>>>
+>>>> It works good. with PM as well as without PM. The only minor issue I found is,
+>>>> that the first temperature reading (when the driver probes) fails. That is
+>>>> (val & soc_data->temp_valid_mask) == 0) holds true. How does
+>>>> pm_runtime_resume_and_get() behave in imx_thermal_probe()?
+>>>> Does it go through imx_thermal_runtime_resume() with usleep_range()?
+>>>
+>>> On the first temperature reading, the PM and part of HW is not
+>>> initialized. Current probe sequence is racy and has at least following
+>>> issues:
+>>> - thermal_zone_device_register is executed before HW init was completed.
+>>>   It kind of worked before my patch, becaus part of reinit was done by
+>>>   temperature init. It  worked, since the irq_enabled flag was not set,
+>>>   but potentially would run enable_irq() two times if device is
+>>>   overheated on probe.
+>>> - the imx_thermal core is potentially disable after first race
+>>>   condition:
+>>>   CPU0					CPU1
+>>>   thermal_zone_device_register()
+>>> 					imx_get_temp()
+>>>   					irq_enabled == false
+>>> 						power_up
+>>> 						read_temp
+>>>   power_up
+>>>   						power_down
+>>>   irq_enabled = true;
+>>>
+>>>   ... at this point imx_thermal is powered down for some amount of time,
+>>>   over temperature IRQ will not be triggered for some amount of time.
+>>>
+>>> - if some part after thermal_zone_device_register() would fail or
+>>>   deferred, the worker polling temperature will run in to NULL pointer.
+>>>   This issue already happened...
+>>>
+>>> After migrating to runtime PM, one of issues started to be visible even
+>>> on normal conditions.
+>>> I'll send one more patch with reworking probe sequence.
+>>
+>> Are you planning to send a v3 with this patch? Or a separate patch?
 > 
-> This was actually already the case before commit ad408c766cef
-> ("drm/sun4i: Use DRM_GEM_CMA_VMAP_DRIVER_OPS for GEM operations"),
-> but only convenient macro at the time used helpers with virtual
-> mapping.
+> I'm OK with both variants. What do you prefer?
 > 
-> [...]
+> I'll do i on top of PM patch to reduce refactoring overhead, if you OK
+> about it.
 
-Applied to drm/drm-misc (drm-misc-next).
+I prefer you resend a couple of patches but change the subject of this
+patch to something like "thermal/drivers/imx: Fix disabled sensor after
+handling trip temperature" in order to reflect the problem, not the
+solution.
 
-Thanks!
-Maxime
+btw: nice fix
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
