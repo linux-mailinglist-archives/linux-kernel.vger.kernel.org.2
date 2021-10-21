@@ -2,225 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B784367C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0974367C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhJUQbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbhJUQbt (ORCPT
+        id S231960AbhJUQbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:31:20 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:52490 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231788AbhJUQbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:31:49 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485E0C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:29:33 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id w23so863325lje.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:29:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K0XMSCW4PJfqgy5xuR5tYu4lQjQEVh+6j+EzWLXQKoM=;
-        b=HpS1VmHK4Z+mJXCOqPDXVxVggN8ickgTs7tYxswzjYu5O1B99oUajaKO+YjXVppv2u
-         HPilm7++yMOo29RMWBUJSKelJzwkTSC1Qdn6ihbtWJxaQn7YIH5YvPKUAIcc3ZeT9LGI
-         6B1nd3B74jmHlApM00NrsAIyYDuGq167TLhNRWDdxJSXvYLKO3oaVx57cIWYO4quWbvX
-         qkzpUSGSQ7hFYKRXziNUk7xHoKBh2HXBTwizx+aSYaJ7GU3HanMvEkMWnihW0xvh3W3a
-         iPQZTKm6+nZc1h92XmgmO2f7JhnAAFsebcir151Hi0HVPwS9xbW7ek44sHqU8ss1uV1p
-         iEhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K0XMSCW4PJfqgy5xuR5tYu4lQjQEVh+6j+EzWLXQKoM=;
-        b=vQMmLN6ES+h5dFPXsl4EFYg8MM0F4N+nFZSI7KVMUbiS8977IdB0uP+MOOvr/+29O4
-         qyfD6OPXCG8rY/eOmGvHKT7wpGfzHcFjRbE0euJVp4blJQq8xcrv/swI9oF1TcNeXrWU
-         tJs6JMUiRs/zHq6qvn2kZtTIpPcO9D95z0gDxePpna87gRZPM2DtV3FclvM4dOm2ri9C
-         8kQy2AA+V7NBfYIUri4Nzcu9Q7zdSh9x4ZtoWYHDItP48JffXMG6mX6tARx4aC5G9+JU
-         deLlFDGV9x+1EJIj5b/PtH1dTfyyBjjxb6T3KewB8tNVocW6dUS2TY7nHX9hN9w8akSb
-         d5tA==
-X-Gm-Message-State: AOAM532MP17Wj4ESVvxy6pHHPRXf/i/KWgWmTcOM+mywob5O92sX3n4y
-        /W2fwl65F6xaEU/d8Wk+H9+uTM4ZNhkekL1dYggjeg==
-X-Google-Smtp-Source: ABdhPJy693mlj6RTHYbPcLZkpeHq1I4lV0Y708D3AB65aJbLWipC8htRMMbjNN8fWZK49urFQJ5D1D3nonHSka9bDGU=
-X-Received: by 2002:a05:651c:907:: with SMTP id e7mr3714592ljq.300.1634833771594;
- Thu, 21 Oct 2021 09:29:31 -0700 (PDT)
+        Thu, 21 Oct 2021 12:31:19 -0400
+Received: from [77.244.183.192] (port=65154 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mdaw9-000ZT9-2O; Thu, 21 Oct 2021 18:29:01 +0200
+Subject: Re: [PATCH v2 7/9] watchdog: Kconfig: fix help text indentation
+To:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20211019145919.7327-1-luca@lucaceresoli.net>
+ <20211019145919.7327-8-luca@lucaceresoli.net>
+ <62fb371c-81d3-a338-624b-0e3fbade23db@roeck-us.net>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <8129ae8a-0978-426f-649d-feab1292e15d@lucaceresoli.net>
+Date:   Thu, 21 Oct 2021 18:28:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
- <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
- <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
- <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
- <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com> <CAJZ5v0jQM3VDy_U8TiC3601ivSYVXyT5jJVjLt8qyMWE49zOeg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jQM3VDy_U8TiC3601ivSYVXyT5jJVjLt8qyMWE49zOeg@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Oct 2021 18:28:54 +0200
-Message-ID: <CAPDyKFouHn95Lwgx+PbK9itQP13U70ZiZbDr3jQd41KsvXMtqQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <62fb371c-81d3-a338-624b-0e3fbade23db@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 at 17:46, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Oct 21, 2021 at 5:09 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Thu, Oct 21, 2021 at 4:05 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > On Thu, 21 Oct 2021 at 15:45, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > >
-> > > > On Thu, Oct 21, 2021 at 1:49 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > >
-> > > > > On Wed, 20 Oct 2021 at 20:18, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > > > >
-> > > > > > On Wed, Sep 29, 2021 at 4:44 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > > > >
-> > > > > > > In the cpuidle-psci case, runtime PM in combination with the generic PM
-> > > > > > > domain (genpd), may be used when entering/exiting an idlestate. More
-> > > > > > > precisely, genpd relies on runtime PM to be enabled for the attached device
-> > > > > > > (in this case it belongs to a CPU), to properly manage the reference
-> > > > > > > counting of its PM domain.
-> > > > > > >
-> > > > > > > This works fine most of the time, but during system suspend in the
-> > > > > > > dpm_suspend_late() phase, the PM core disables runtime PM for all devices.
-> > > > > > > Beyond this point and until runtime PM becomes re-enabled in the
-> > > > > > > dpm_resume_early() phase, calls to pm_runtime_get|put*() will fail.
-> > > > > > >
-> > > > > > > To make sure the reference counting in genpd becomes correct, we need to
-> > > > > > > prevent cpuidle-psci from using runtime PM when it has been disabled for
-> > > > > > > the device. Therefore, let's move the call to cpuidle_pause() from
-> > > > > > > dpm_suspend_noirq() to dpm_suspend_late() - and cpuidle_resume() from
-> > > > > > > dpm_resume_noirq() into dpm_resume_early().
-> > > > > > >
-> > > > > > > Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
-> > > > > > > Suggested-by: Maulik Shah <mkshah@codeaurora.org>
-> > > > > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > > > > ---
-> > > > > > >  drivers/base/power/main.c | 6 ++----
-> > > > > > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> > > > > > > index cbea78e79f3d..1c753b651272 100644
-> > > > > > > --- a/drivers/base/power/main.c
-> > > > > > > +++ b/drivers/base/power/main.c
-> > > > > > > @@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state)
-> > > > > > >
-> > > > > > >         resume_device_irqs();
-> > > > > > >         device_wakeup_disarm_wake_irqs();
-> > > > > > > -
-> > > > > > > -       cpuidle_resume();
-> > > > > > >  }
-> > > > > > >
-> > > > > > >  /**
-> > > > > > > @@ -870,6 +868,7 @@ void dpm_resume_early(pm_message_t state)
-> > > > > > >         }
-> > > > > > >         mutex_unlock(&dpm_list_mtx);
-> > > > > > >         async_synchronize_full();
-> > > > > > > +       cpuidle_resume();
-> > > > > > >         dpm_show_time(starttime, state, 0, "early");
-> > > > > > >         trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
-> > > > > > >  }
-> > > > > > > @@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state)
-> > > > > > >  {
-> > > > > > >         int ret;
-> > > > > > >
-> > > > > > > -       cpuidle_pause();
-> > > > > > > -
-> > > > > > >         device_wakeup_arm_wake_irqs();
-> > > > > > >         suspend_device_irqs();
-> > > > > > >
-> > > > > > > @@ -1467,6 +1464,7 @@ int dpm_suspend_late(pm_message_t state)
-> > > > > > >         int error = 0;
-> > > > > > >
-> > > > > > >         trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
-> > > > > > > +       cpuidle_pause();
-> > > > > > >         mutex_lock(&dpm_list_mtx);
-> > > > > > >         pm_transition = state;
-> > > > > > >         async_error = 0;
-> > > > > > > --
-> > > > > >
-> > > > > > Well, this is somewhat heavy-handed and it affects even the systems
-> > > > > > that don't really need to pause cpuidle at all in the suspend path.
-> > > > >
-> > > > > Yes, I agree.
-> > > > >
-> > > > > Although, I am not really changing the behaviour in regards to this.
-> > > > > cpuidle_pause() is already being called in dpm_suspend_noirq(), for
-> > > > > everybody today.
-> > > >
-> > > > Yes, it is, but pausing it earlier will cause more energy to be spent,
-> > > > potentially.
-> > > >
-> > > > That said, there are not too many users of suspend_late callbacks in
-> > > > the tree, so it may not matter too much.
-> > > >
-> > > > > >
-> > > > > > Also, IIUC you don't need to pause cpuidle completely, but make it
-> > > > > > temporarily avoid idle states potentially affected by this issue.  An
-> > > > > > additional CPUIDLE_STATE_DISABLED_ flag could be used for that I
-> > > > > > suppose and it could be set via cpuidle_suspend() called from the core
-> > > > > > next to cpufreq_suspend().
-> > > > >
-> > > > > cpuidle_suspend() would then need to go and fetch the cpuidle driver
-> > > > > instance, which in some cases is one driver per CPU. Doesn't that get
-> > > > > rather messy?
-> > > >
-> > > > Per-CPU variables are used for that, so it is quite straightforward.
-> > > >
-> > > > > Additionally, since find_deepest_state() is being called for
-> > > > > cpuidle_enter_s2idle() too, we would need to treat the new
-> > > > > CPUIDLE_STATE_DISABLED_ flag in a special way, right?
-> > > >
-> > > > No, it already checks "disabled".
-> > >
-> > > Yes, but that would be wrong.
-> >
-> > Hmmm.
-> >
-> > > The use case I want to support, for cpuidle-psci, is to allow all idle
-> > > states in suspend-to-idle,
-> >
-> > So does PM-runtime work in suspend-to-idle?  How?
-> >
-> > > but prevent those that rely on runtime PM
-> > > (after it has been disabled) for the regular idle path.
-> >
-> > Do you have a special suspend-to-idle handling of those states that
-> > doesn't require PM-runtime?
->
-> Regardless, pausing cpuidle in the suspend-to-idle path simply doesn't
-> make sense at all, so this needs to be taken care of in the first
-> place.
+Hi Guenter,
 
-Right, I do agree, don't get me wrong. But, do we really want to treat
-s2-to-idle differently, compared to s2-to-ram in regards to this?
+On 19/10/21 17:06, Guenter Roeck wrote:
+> On 10/19/21 7:59 AM, Luca Ceresoli wrote:
+>> Some entries indent their help text with 1 tab + 1 space or 1 tab only
+>> instead of 1 tab + 2 spaces. Add the missing spaces.
+>>
+>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> 
+> FWIW, this patch should probably be handled separately, not as part
+> of this series.
 
-Wouldn't it be a lot easier to let cpuidle drivers to opt-out for
-cpuidle_pause|resume(), no matter whether it's for s2-to-idle or
-s2-to-ram?
+That was the initial idea. But this patch patch and patch 8 touch nearby
+lines, so adding the patch to this series looked like a good idea to
+avoid wasting maintainer time. It looks like I got the opposite effect... :(
 
->
-> The problem with PM-runtime being unavailable after dpm_suspend()
-> needs to be addressed in a different way IMO, because it only affects
-> one specific use case.
+> Anyway,
+> 
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-It's one specific case so far, but we have the riscv driver on its
-way, which would suffer from the same problem.
+Thanks.
 
-Anyway, an option is to figure out what platforms and cpuidle drivers,
-that really needs cpuidle_pause|resume() at this point and make an
-opt-in solution instead. This could then be used by runtime PM based
-cpuidle drivers as well. Would that be a way forward?
-
-Kind regards
-Uffe
+-- 
+Luca
