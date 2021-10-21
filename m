@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA64435CCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BB6435CD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhJUIXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        id S231397AbhJUIZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhJUIXr (ORCPT
+        with ESMTP id S231153AbhJUIZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:23:47 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0807C06161C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:21:31 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id w19so2177923edd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:21:31 -0700 (PDT)
+        Thu, 21 Oct 2021 04:25:34 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67075C06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:23:18 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id y4so18032983plb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:23:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/hiUEvAk0D+Wzqjvqk+6FpLdxlRGHN8XahFm7bhkPck=;
-        b=UsGpUysSmE0IX+iOcdYqPhwYRsS5qwrxwZb/H0tqdrKEiUZ/VuZ9GKWGaSrFHItYFG
-         OYGP2LK9FUnAViP2sDpbmmEZFHg2JqHU+mAOIlnafuwSSK+RyRgCKG6m+mu6jpsS4nyZ
-         E8ubjdLbqhGqmqqlZzLqA+WZjGmWQLRrtFRc8=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=bhVPp8wZkFflzsOYrs4ZmR9mph7dV4qhoVW0vkuPclQ=;
+        b=al/lRetaj7Ezklfil8AU/I948Wl2fypE7KOugYFcwao3cNvV+bvilcrEEsgPbOhW06
+         fo5TimxrYTb6I9/BLLY1mS7e1vAF+RAjH6xVdh2+xFICvgZj5ZetX3KyX7Z+cLz9cgS8
+         kONWT3DgHwg98nXdBjBXNkBXARWWpz0wBCCa9uyPi9ArsARC9Pxlb5u3wxcYITddsFJV
+         TGjusMLKud5tObeBj4x39KWZAPmqJueh4k2nWwQfZAAwJ89qAn3RaG6qD6JpGR0HBxWm
+         0q29h9iR6giYFzgiH+28c0+fV/URWv+F2TvcYqnkLTSchsOo6ZGGiI3TC7zY6Qgpo3PJ
+         HBkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/hiUEvAk0D+Wzqjvqk+6FpLdxlRGHN8XahFm7bhkPck=;
-        b=M1fKIVqz99BCubHuy1C/wfZ1yZ+RAIvUZr1snBkgwsCf+YmbXE/iDVqEdJ1TD0Uvu6
-         436iZKtlzOkpnmaL7078AF6N58nwt68rD0Mb4nYVR0Ek91CHCHfAahcEdA8Vczp8kQlD
-         q8RQ3cr/WBj26soBQ9ozA0qxzV19dm7Ulvp3j1i1hh+AkbWOBZbb6YxVAm8TqfePrnR5
-         kz6O43MTUXWsbBZLFeOHVhedDBdPFO0nEnz2JX/HCIefKf9sGaYC0GZvfrcf1Ea03BP7
-         ZokircyFvQpSvriHVfzf3dUfTpfD3UJaU15RmdgdNgoEXHUIqZKYeM2jeSTqwsCkEQV3
-         4HpA==
-X-Gm-Message-State: AOAM530RZ1nj/aWtulMat+/aENOv9FfJgHFC+EBsXsOaJVDazZ1qGFjX
-        r6pYVTFjP84xUD+SaO0f+tiFOnV0QxeD/A==
-X-Google-Smtp-Source: ABdhPJxd8Grg1pg3or3V6o/vQ259VGn+6L6AQDLTWPmXfzZhNN0PylaEY/KIJHC800w22uMM45UP5g==
-X-Received: by 2002:aa7:c394:: with SMTP id k20mr5996417edq.286.1634804489910;
-        Thu, 21 Oct 2021 01:21:29 -0700 (PDT)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com. [209.85.221.44])
-        by smtp.gmail.com with ESMTPSA id k23sm2377743edv.22.2021.10.21.01.21.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 01:21:29 -0700 (PDT)
-Received: by mail-wr1-f44.google.com with SMTP id g25so508007wrb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:21:28 -0700 (PDT)
-X-Received: by 2002:adf:a51e:: with SMTP id i30mr5620040wrb.206.1634804488220;
- Thu, 21 Oct 2021 01:21:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211018091427.88468-1-acourbot@chromium.org>
-In-Reply-To: <20211018091427.88468-1-acourbot@chromium.org>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Thu, 21 Oct 2021 17:21:16 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5A_yoZPUw26Cza8KLh9VdgtbxWK9rezSbj4keJZt249NQ@mail.gmail.com>
-Message-ID: <CAAFQd5A_yoZPUw26Cza8KLh9VdgtbxWK9rezSbj4keJZt249NQ@mail.gmail.com>
-Subject: Re: [PATCH] media: docs: dev-decoder: add restrictions about CAPTURE buffers
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bhVPp8wZkFflzsOYrs4ZmR9mph7dV4qhoVW0vkuPclQ=;
+        b=dxUj5707eBzojZRf6N1ZPY7tqTN5Gq298KdWebvwsbRSWOGrlHXKk5iC+jBA8CGCqB
+         yZ0b+Z/9/CA4VyJr424fB/h9o9tAjkmz7kdzpVLMstoIjifOhxQPriUUBjKZeIDuDHoZ
+         gU5RwFa665nyt9oSjCIUtvaiZ53opNVhf2MeVID+EJT1ucIjhkT36USmrPBULd3l0uVx
+         EeNV0J8JkL6QMZZnvm6I17LHlwPFS0PML+e7LWUnZF/xWEzsFJZFkSZLUe2R4/kxZb8I
+         7ttWpPW9kylRtd1rgYBtTtek1SLCTaBjuSSaohdHJvanbReROWVIzngHMQL+ObVq+3Jf
+         UjIQ==
+X-Gm-Message-State: AOAM533fQ2szrmHFWBGmeSEmARUjfthHOX6jRK8YdGUVCY3mRcLdoxr8
+        m0MIsmZAOqZX1CyQ4quJj8M=
+X-Google-Smtp-Source: ABdhPJxLRle/VeqymgwdGz2gu5ywHmyk81psg0eH+K4IW0Zq3huoKRCMsxYBZBeVr6JKQs1Ybv22pw==
+X-Received: by 2002:a17:90b:3a85:: with SMTP id om5mr5036758pjb.115.1634804597934;
+        Thu, 21 Oct 2021 01:23:17 -0700 (PDT)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id l11sm8376075pjg.22.2021.10.21.01.23.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Oct 2021 01:23:17 -0700 (PDT)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] sched/fair: use max_spare_cap_cpu if it is more energy efficient
+Date:   Thu, 21 Oct 2021 16:23:14 +0800
+Message-Id: <1634804594-4163-1-git-send-email-brookxu.cn@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 6:14 PM Alexandre Courbot <acourbot@chromium.org> wrote:
->
-> CAPTURE buffers might be read by the hardware after they are dequeued,
-> which goes against the general idea that userspace has full control over
-> dequeued buffers. Explain why and document the restrictions that this
-> implies for userspace.
->
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> ---
->  .../userspace-api/media/v4l/dev-decoder.rst     | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/Documentation/userspace-api/media/v4l/dev-decoder.rst b/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> index 5b9b83feeceb..3cf2b496f2d0 100644
-> --- a/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> +++ b/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> @@ -752,6 +752,23 @@ available to dequeue. Specifically:
->       buffers are out-of-order compared to the ``OUTPUT`` buffers): ``CAPTURE``
->       timestamps will not retain the order of ``OUTPUT`` timestamps.
->
-> +.. note::
-> +
-> +   The backing memory of ``CAPTURE`` buffers that are used as reference frames
-> +   by the stream may be read by the hardware even after they are dequeued.
-> +   Consequently, the client should avoid writing into this memory while the
-> +   ``CAPTURE`` queue is streaming. Failure to observe this may result in
-> +   corruption of decoded frames.
-> +
-> +   Similarly, when using a memory type other than ``V4L2_MEMORY_MMAP``, the
-> +   client should make sure that each ``CAPTURE`` buffer is always queued with
-> +   the same backing memory for as long as the ``CAPTURE`` queue is streaming.
-> +   The reason for this is that V4L2 buffer indices can be used by drivers to
-> +   identify frames. Thus, if the backing memory of a reference frame is
-> +   submitted under a different buffer ID, the driver may misidentify it and
-> +   decode a new frame into it while it is still in use, resulting in corruption
-> +   of the following frames.
-> +
->  During the decoding, the decoder may initiate one of the special sequences, as
->  listed below. The sequences will result in the decoder returning all the
->  ``CAPTURE`` buffers that originated from all the ``OUTPUT`` buffers processed
-> --
-> 2.33.0.1079.g6e70778dc9-goog
->
+From: Chunguang Xu <brookxu@tencent.com>
 
-Acked-by: Tomasz Figa <tfiga@chromium.org>
+When debugging EAS, I found that if the task is migrated to
+max_spare_cap_cpu, even if the power consumption of pd is lower,
+we still put the task on prev_cpu. Maybe we should fix it.
 
-Best regards,
-Tomasz
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ kernel/sched/fair.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ff69f245b939..2ae7e03de6d2 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6867,8 +6867,10 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 		/* Evaluate the energy impact of using max_spare_cap_cpu. */
+ 		if (max_spare_cap_cpu >= 0) {
+ 			cur_delta = compute_energy(p, max_spare_cap_cpu, pd);
+-			if (cur_delta < base_energy_pd)
++			if (cur_delta < base_energy_pd) {
++				target = max_spare_cap_cpu;
+ 				goto unlock;
++			}
+ 			cur_delta -= base_energy_pd;
+ 			if (cur_delta < best_delta) {
+ 				best_delta = cur_delta;
+-- 
+2.30.0
+
