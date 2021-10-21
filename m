@@ -2,99 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FC7435E3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02D2435E3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhJUJtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
+        id S231611AbhJUJuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbhJUJtp (ORCPT
+        with ESMTP id S231485AbhJUJuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:49:45 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11654C06161C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:47:30 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id l38-20020a05600c1d2600b0030d80c3667aso159152wms.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:47:29 -0700 (PDT)
+        Thu, 21 Oct 2021 05:50:09 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0638CC06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:47:54 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id t21so16954plr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:47:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6vVJRSnblUbQ2imtnLEeh9ljQMRmUi3sR1VGF1u+LtI=;
-        b=K4xdbgjr7ue/GdFsbMYMA1VKnd5a9tUbyPR29vrKp/vGg31zkH9j1VG4YybEMjIWVf
-         77UB38gO4iFC8/Nm2jX8QryhiBtp4+V1HoO6Gi+Bql5Kq5P5U5cTj2yncXY/OXpPRJoY
-         xSynuB4UoSB5/NZ+A61JrdLB33Fg4N3obeCphqKfM9YYMy6ebPgV+I2Fm/uhUpa4FkT2
-         p/tVgRhOhnsrDpdLUPbdBx3vt8drkW3CEaNv7frQRTPCT5yBEO73zM50vqf6CM7isqNn
-         2OTCbS7Mf6OxA0xLQQScFzjVNANUOjy6pKNwUO+CFTZXXvygpwjFYmG/iy8DdYWsryWr
-         WGUg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sd5Y+VXeLt/FwNc/kQF5A+l+7MoB453D2YckJ5POEAk=;
+        b=Mg7MAO9RbrYTNzaZd0RPXaZLUXYte3Dqkll6oIYZjUo/xY1EEh7BfMvYeT2hQCiCdr
+         ygjX09T1dztEst8zd4ft+Zng4XwB4IHsXbbg6rmjkejjYZAKTVfvzHePqJ5s1XaliIIy
+         pzxYky1sJHEBR+TYqhqnOJ4gvDtnf0Q5lqDaNaQ0ZqHaJX0Upee/PIPGpGRUoy3RFtwo
+         tuinVL15Rabsre1CcS3tccq5BiJY9Gmw0guDdvTxhxdD08G58wJ3X1M/JirsuCG/+4Nu
+         pw0Dp2RGVISWjzdMjwaEXoBJqi/9M/eYqlPxxdMPl1ql+cYpBUcj/NuuN3mPN8Pqd9hy
+         3aCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6vVJRSnblUbQ2imtnLEeh9ljQMRmUi3sR1VGF1u+LtI=;
-        b=GoBsKRKoQrv+z2dNouqasyY+t6+6O27Rq889S2H9zctEafnvPLYFz7A2NuLaipbBT0
-         g01NciZsJvrLURqok/KtM3Wu7izAUCG8UwYyGPKGguFBDJku63W1huksCA+u3XBnGg99
-         uFAYLKtQUEXdIUYcfSlnWrzMvxcRuNdOtbUgfNriIEHyDgv5ie07ZL/jWeM8IodYp+tO
-         yiUojPWyFrX0ieIVyI2LS4/PZ7UhxZRZvf+gK1cQi4Rc7VmUNHBh0Lp3F98b5bFK8Trk
-         IKYBwwC6h/aTqoC9Mjk8CJfUUfTzdin7VGOEzieIUNt5aAp9p1HX6HuBJ4qypS2dRa6z
-         Vn9w==
-X-Gm-Message-State: AOAM533m4q9a7aYGrVX8jJ/fu7x8BxP3cZ562H/QAdFVzerW2f/wSmr9
-        17+UhazAZfBpaYt1frlRr6mj2Q==
-X-Google-Smtp-Source: ABdhPJyds3mHcQ/inxySrJcprz27XOv+rBknkfwGDU233VKcd9uYCYgRXyvDTnGjfyCiqlxzY/QdAw==
-X-Received: by 2002:a7b:c249:: with SMTP id b9mr5343544wmj.194.1634809648648;
-        Thu, 21 Oct 2021 02:47:28 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id c17sm4521103wrq.4.2021.10.21.02.47.27
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sd5Y+VXeLt/FwNc/kQF5A+l+7MoB453D2YckJ5POEAk=;
+        b=axqYASqNFVGQQlCQI1IT98F+CMQMsdkjguNzy5+eTbIuMFN7gv+fBrwSgoihWA2y0U
+         VcTBrqxf1K9+yKahmFaxy4AtGxriIYqL2dFQPIKos7lEVEwQq+0Kj+GAGg5sz9GWjeFV
+         sR0ulcKz4by8Tla2fEUgdFu2IAJd+ITtbAfg8caE0B7ewRtTr6lUpdi+J24U0XBhcY+3
+         3t86pibCNeehO0sX1Ov4SNosnv6QzAplYa69n3Q6VFxgRva4p90JW0KxUs+j/VnTxr3a
+         GcreyizqGTXCXtTQHX6Z31lT87fSekOx3G5orMIWl5vrFkEFefw8zCl6jQ/tZtuChiYp
+         Mwxw==
+X-Gm-Message-State: AOAM533fu310vJi13r8kJTIErjBKcaFNjv7K7yHGcHwMmMMDWF+i+6rt
+        MPlC//0LLe9YMKxMxl3+T8/PZZchxiorEw==
+X-Google-Smtp-Source: ABdhPJxc9xBoO9xQmdAhtcq9YKRyV6thPeqr+m8xLu2ELG8bCOYYVGw4LiWcUKdO7d3W/DlLOSOpAw==
+X-Received: by 2002:a17:90b:3ec8:: with SMTP id rm8mr5658064pjb.100.1634809673507;
+        Thu, 21 Oct 2021 02:47:53 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id s25sm5259382pfm.138.2021.10.21.02.47.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 02:47:28 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 10:47:26 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Sam Protsenko <semen.protsenko@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 08/10] dt-bindings: mfd: samsung,s2mpa01: convert to
- dtschema
-Message-ID: <YXE3Ls5Cgk3vC+19@google.com>
-References: <20211008113723.134648-1-krzysztof.kozlowski@canonical.com>
- <20211008113931.134847-5-krzysztof.kozlowski@canonical.com>
+        Thu, 21 Oct 2021 02:47:52 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        stratos-dev@op-lists.linaro.org,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        cohuck@redhat.com,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] i2c: virtio: Add support for zero-length requests
+Date:   Thu, 21 Oct 2021 15:17:49 +0530
+Message-Id: <7c58868cd26d2fc4bd82d0d8b0dfb55636380110.1634808714.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211008113931.134847-5-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Oct 2021, Krzysztof Kozlowski wrote:
+The virtio specification received a new mandatory feature
+(VIRTIO_I2C_F_ZERO_LENGTH_REQUEST) for zero length requests. Fail if the
+feature isn't offered by the device.
 
-> Convert the MFD part of Samsung S2MPA01 PMIC to DT schema format.
-> Previously the bindings were mostly in mfd/samsung,sec-core.txt.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/mfd/samsung,s2mpa01.yaml         | 91 +++++++++++++++++++
->  1 file changed, 91 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s2mpa01.yaml
+For each read-request, set the VIRTIO_I2C_FLAGS_M_RD flag, as required
+by the VIRTIO_I2C_F_ZERO_LENGTH_REQUEST feature.
 
-Applied, thanks.
+This allows us to support zero length requests, like SMBUS Quick, where
+the buffer need not be sent anymore.
 
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+Hi Wolfram,
+
+Please do not apply this until the spec changes [1] are merged, sending it early
+to get review done. I will ping you later once the spec is merged.
+
+[1] https://lists.oasis-open.org/archives/virtio-dev/202110/msg00109.html
+
+ drivers/i2c/busses/i2c-virtio.c | 56 ++++++++++++++++++---------------
+ include/uapi/linux/virtio_i2c.h |  6 ++++
+ 2 files changed, 36 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+index f10a603b13fb..1ed4daa918a0 100644
+--- a/drivers/i2c/busses/i2c-virtio.c
++++ b/drivers/i2c/busses/i2c-virtio.c
+@@ -62,35 +62,33 @@ static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
+ 	for (i = 0; i < num; i++) {
+ 		int outcnt = 0, incnt = 0;
+ 
+-		/*
+-		 * We don't support 0 length messages and so filter out
+-		 * 0 length transfers by using i2c_adapter_quirks.
+-		 */
+-		if (!msgs[i].len)
+-			break;
+-
+ 		/*
+ 		 * Only 7-bit mode supported for this moment. For the address
+ 		 * format, Please check the Virtio I2C Specification.
+ 		 */
+ 		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+ 
++		if (msgs[i].flags & I2C_M_RD)
++			reqs[i].out_hdr.flags |= cpu_to_le32(VIRTIO_I2C_FLAGS_M_RD);
++
+ 		if (i != num - 1)
+-			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
++			reqs[i].out_hdr.flags |= cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
+ 
+ 		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
+ 		sgs[outcnt++] = &out_hdr;
+ 
+-		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
+-		if (!reqs[i].buf)
+-			break;
++		if (msgs[i].len) {
++			reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
++			if (!reqs[i].buf)
++				break;
+ 
+-		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
++			sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
+ 
+-		if (msgs[i].flags & I2C_M_RD)
+-			sgs[outcnt + incnt++] = &msg_buf;
+-		else
+-			sgs[outcnt++] = &msg_buf;
++			if (msgs[i].flags & I2C_M_RD)
++				sgs[outcnt + incnt++] = &msg_buf;
++			else
++				sgs[outcnt++] = &msg_buf;
++		}
+ 
+ 		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
+ 		sgs[outcnt + incnt++] = &in_hdr;
+@@ -191,7 +189,7 @@ static int virtio_i2c_setup_vqs(struct virtio_i2c *vi)
+ 
+ static u32 virtio_i2c_func(struct i2c_adapter *adap)
+ {
+-	return I2C_FUNC_I2C | (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK);
++	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+ }
+ 
+ static struct i2c_algorithm virtio_algorithm = {
+@@ -199,15 +197,16 @@ static struct i2c_algorithm virtio_algorithm = {
+ 	.functionality = virtio_i2c_func,
+ };
+ 
+-static const struct i2c_adapter_quirks virtio_i2c_quirks = {
+-	.flags = I2C_AQ_NO_ZERO_LEN,
+-};
+-
+ static int virtio_i2c_probe(struct virtio_device *vdev)
+ {
+ 	struct virtio_i2c *vi;
+ 	int ret;
+ 
++	if (!virtio_has_feature(vdev, VIRTIO_I2C_F_ZERO_LENGTH_REQUEST)) {
++		dev_err(&vdev->dev, "Zero-length request feature is mandatory\n");
++		return -EINVAL;
++	}
++
+ 	vi = devm_kzalloc(&vdev->dev, sizeof(*vi), GFP_KERNEL);
+ 	if (!vi)
+ 		return -ENOMEM;
+@@ -225,7 +224,6 @@ static int virtio_i2c_probe(struct virtio_device *vdev)
+ 	snprintf(vi->adap.name, sizeof(vi->adap.name),
+ 		 "i2c_virtio at virtio bus %d", vdev->index);
+ 	vi->adap.algo = &virtio_algorithm;
+-	vi->adap.quirks = &virtio_i2c_quirks;
+ 	vi->adap.dev.parent = &vdev->dev;
+ 	vi->adap.dev.of_node = vdev->dev.of_node;
+ 	i2c_set_adapdata(&vi->adap, vi);
+@@ -270,11 +268,17 @@ static int virtio_i2c_restore(struct virtio_device *vdev)
+ }
+ #endif
+ 
++static const unsigned int features[] = {
++	VIRTIO_I2C_F_ZERO_LENGTH_REQUEST,
++};
++
+ static struct virtio_driver virtio_i2c_driver = {
+-	.id_table	= id_table,
+-	.probe		= virtio_i2c_probe,
+-	.remove		= virtio_i2c_remove,
+-	.driver	= {
++	.feature_table		= features,
++	.feature_table_size	= ARRAY_SIZE(features),
++	.id_table		= id_table,
++	.probe			= virtio_i2c_probe,
++	.remove			= virtio_i2c_remove,
++	.driver			= {
+ 		.name	= "i2c_virtio",
+ 	},
+ #ifdef CONFIG_PM_SLEEP
+diff --git a/include/uapi/linux/virtio_i2c.h b/include/uapi/linux/virtio_i2c.h
+index 7c6a6fc01ad6..acf3b6069136 100644
+--- a/include/uapi/linux/virtio_i2c.h
++++ b/include/uapi/linux/virtio_i2c.h
+@@ -11,9 +11,15 @@
+ #include <linux/const.h>
+ #include <linux/types.h>
+ 
++/* Virtio I2C Feature bits */
++#define VIRTIO_I2C_F_ZERO_LENGTH_REQUEST	0
++
+ /* The bit 0 of the @virtio_i2c_out_hdr.@flags, used to group the requests */
+ #define VIRTIO_I2C_FLAGS_FAIL_NEXT	_BITUL(0)
+ 
++/* The bit 1 of the @virtio_i2c_out_hdr.@flags, used to mark a buffer as read */
++#define VIRTIO_I2C_FLAGS_M_RD		_BITUL(1)
++
+ /**
+  * struct virtio_i2c_out_hdr - the virtio I2C message OUT header
+  * @addr: the controlled device address
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.31.1.272.g89b43f80a514
+
