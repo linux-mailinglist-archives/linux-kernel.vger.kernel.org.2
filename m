@@ -2,75 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB7743620E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BB94361FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhJUMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
+        id S230483AbhJUMod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhJUMrh (ORCPT
+        with ESMTP id S230372AbhJUMob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:47:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9E7C06161C;
-        Thu, 21 Oct 2021 05:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MhYSZk7FAb+xEHuiCzqmgFseK1YofUw99Jp2bva3xY8=; b=wVbv7NUbTjE8dMe69LJ3KyJhcb
-        65x7KsMVnnOpwDx2m5nASW/7LO2m9m+V1QKkFSqW//U1b1RijQxuQlUD4PrsbfPRP6RDx/wdevlOk
-        3T8UwJSjKBVgfKaiDNrCbShQAcmagdvdObG0SVx9XlDZd4fNSD3LGTEytVpaeiKdMF6Y5z1hzz8so
-        Z513j9bejFZRpj1FG1m5QySDRgw23NQi0vNt13lbT8UgVLuqlBz2hyp6hKQ07pkTh3zRx/nyAAsXD
-        k3wZ1SHfCI8//EYUi6XCQJr5G0mxUKylt8S3s+/ky0BTdnO3Tu6gWpvIqOZKk3nbr/D46Gxk92xkR
-        NSjXSV9g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdXON-00DGl6-Rc; Thu, 21 Oct 2021 12:42:41 +0000
-Date:   Thu, 21 Oct 2021 13:41:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YXFgEzZw/AOJ7AnW@casper.infradead.org>
-References: <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org>
- <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
- <YXBRPSjPUYnoQU+M@casper.infradead.org>
- <436a9f9c-d5af-7d12-b7d2-568e45ffe0a0@redhat.com>
- <YXEOCIWKEcUOvVtv@infradead.org>
- <f31af20e-245d-a8f1-49fa-e368de9fa95c@redhat.com>
- <YXFXGeYlGFsuHz/T@moria.home.lan>
- <2fc2c5da-c0e9-b954-ba48-e258b88e3271@redhat.com>
+        Thu, 21 Oct 2021 08:44:31 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD51C06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:42:15 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id y10so1050256qkp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BiQuOAgT8bf0Gqc3SNvxUfomKy6p8NVPFxxm4Pd9on4=;
+        b=fHIDggIX6AoIzwFryDzDFpdpk6ZM6gEKJ0WjsCdKKXFXm0b9XZRjEUibd19RuNDtiQ
+         YoghFveEtWMRIbcBHMkZs4sRPxTLngeHpGzB1gO1eRs/mAHvIQcPPYwZdf2gIEXuV/ap
+         RTcnLNBHrhMBxOilJX8Usvzja0PCLIt1YoaktLCDRviJi2dorm25/e6AzbIVhx81jzC8
+         hRuN2lNjhBhPX7xt4fp/kzb+27UO9pmRT6HmrMiAz8J1v0H/pRfsrFtBh9f55wogrlr4
+         Oie1MXwZLWzZ57JNOf6Mk3a+kodz3BDCZnMaOTDNcQeJB9yYM0ohtC2uOy7qgYhbtrNq
+         A6uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BiQuOAgT8bf0Gqc3SNvxUfomKy6p8NVPFxxm4Pd9on4=;
+        b=xPLOritUZnmxmyN0Ut8etQpwu8vx7uLgRVn1gGbA04Lf9PQ0F4wCBH6jaGlF3F7B2J
+         e1vh6i2buwb5yfoStqKIaFmrcRCVk7Zs08VECzj5V9nd55Ib5mCSYXUHGl9oRNx2f2Zx
+         cHRMFCwchi91lrgEKc1o3oQaFzZoBWash35dltPacQKERSWX+xL6NP+qWWUsO3dXzWAp
+         hmtv1F7zMhg7JU/nD6wvbzKMpZ9RRCCFOk6PCApQkPRhGPoyXQM3ia/lDbeHvGdutUbi
+         zwGUefzza7Qcmfe4ZmNHk3U7b1U2AZysnEqL8A37M/tLSF0/Ug8MHa1RgsZf5me9WXkq
+         z46A==
+X-Gm-Message-State: AOAM533eOG8AeS8ll/ZhfzJ3LBF9W/q3nE3V5ay7YNi7SWQCLNhxwLqP
+        5eZctcFeGLuAcjxBiHVJU9pIW+xvy04tKJQTZV0iNhOvmfY=
+X-Google-Smtp-Source: ABdhPJybXXEDfTU/yQ7WoXn8fXgWo8ZU2WpVitExz9LlBRi+hW0lh5lG1EsC755vFgrALvQkoLYDoY3wze+qY0RI46s=
+X-Received: by 2002:a25:73c5:: with SMTP id o188mr5845471ybc.61.1634820135059;
+ Thu, 21 Oct 2021 05:42:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2fc2c5da-c0e9-b954-ba48-e258b88e3271@redhat.com>
+References: <20211019123537.17146-1-vincent.guittot@linaro.org> <20211021095219.GG3891@suse.de>
+In-Reply-To: <20211021095219.GG3891@suse.de>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 21 Oct 2021 14:42:03 +0200
+Message-ID: <CAKfTPtAHoC6DLP1b4=Xc9=RO6m83uYFhNtCsa_Bp8x4a266DCA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] Improve newidle lb cost tracking and early abort
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 02:35:32PM +0200, David Hildenbrand wrote:
-> My opinion after all the discussions: use a dedicate type with a clear
-> name to solve the immediate filemap API issue. Leave the remainder alone
-> for now. Less code to touch, less subsystems to involve (well, still a
-> lot), less people to upset, less discussions to have, faster review,
-> faster upstream, faster progress. A small but reasonable step.
+On Thu, 21 Oct 2021 at 11:52, Mel Gorman <mgorman@suse.de> wrote:
+>
+> On Tue, Oct 19, 2021 at 02:35:32PM +0200, Vincent Guittot wrote:
+> > This patchset updates newidle lb cost tracking and early abort:
+> >
+> > The time spent running update_blocked_averages is now accounted in the 1st
+> > sched_domain level. This time can be significant and move the cost of
+> > newidle lb above the avg_idle time.
+> >
+> > The decay of max_newidle_lb_cost is modified to start only when the field
+> > has not been updated for a while. Recent update will not be decayed
+> > immediatlybut only after a while.
+> >
+> > The condition of an avg_idle lower than sysctl_sched_migration_cost has
+> > been removed as the 500us value is quite large and prevent opportunity to
+> > pull task on the newly idle CPU for at least 1st domain levels.
+> >
+> > Monitoring sd->max_newidle_lb_cost on cpu0 of a Arm64 system
+> > THX2 (2 nodes * 28 cores * 4 cpus) during the benchmarks gives the
+> > following results:
+> >        min    avg   max
+> > SMT:   1us   33us  273us - this one includes the update of blocked load
+> > MC:    7us   49us  398us
+> > NUMA: 10us   45us  158us
+> >
+> >
+> > Some results for hackbench -l $LOOPS -g $group :
+> > group      tip/sched/core     + this patchset
+> > 1           15.189(+/- 2%)       14.987(+/- 2%)  +1%
+> > 4            4.336(+/- 3%)        4.322(+/- 5%)  +0%
+> > 16           3.654(+/- 1%)        2.922(+/- 3%) +20%
+> > 32           3.209(+/- 1%)        2.919(+/- 3%)  +9%
+> > 64           2.965(+/- 1%)        2.826(+/- 1%)  +4%
+> > 128          2.954(+/- 1%)        2.993(+/- 8%)  -1%
+> > 256          2.951(+/- 1%)        2.894(+/- 1%)  +2%
+> >
+>
+> I read the patches earlier but had queued tests and waiting on the results
+> before Acking. The hackbench results were not bad, not a universal win,
+> but wins more than it loses with small decreaseds in system CPU usage.
 
-I didn't change anything I didn't need to.  File pages go onto the
-LRU list, so I need to change the LRU code to handle arbitrary-sized
-folios instead of pages which are either order-0 or order-9.  Every
-function that I convert in this patchset is either used by another
-function in this patchset, or by the fs/iomap conversion that I have
-staged for the next merge window after folios goes in.
+Thanks for running tests
+
+>
+> Most other results showed small gains or losses, nothing overly dramatic
+> and mostly within the noise.
+>
+> --
+> Mel Gorman
+> SUSE Labs
