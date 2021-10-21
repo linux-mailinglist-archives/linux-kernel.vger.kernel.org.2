@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCC3436763
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B922E436764
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhJUQRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S231894AbhJUQRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhJUQRH (ORCPT
+        with ESMTP id S231819AbhJUQRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:17:07 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F871C061764;
-        Thu, 21 Oct 2021 09:14:51 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id z126so1442810oiz.12;
-        Thu, 21 Oct 2021 09:14:51 -0700 (PDT)
+        Thu, 21 Oct 2021 12:17:10 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E8BC061764;
+        Thu, 21 Oct 2021 09:14:53 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id n15-20020a4ad12f000000b002b6e3e5fd5dso291649oor.1;
+        Thu, 21 Oct 2021 09:14:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=88bO+rRoidhXyrO2Csn2W7v7IjR4W0OvBh5VSm4oxVY=;
-        b=I5BsrFJutrkmk4oe+/Mp1H/DG3CqK32hU+aQXgKmvcGXbCdqey43R4BhOTznENwMFS
-         T/etc54nKqfvopWBEntzwpSM6YyP52yJRbl072fdecdLGGbEwlDcYCQZfzrQA1t73b/o
-         tUYH2bc3KM1uSaINBBRgi0hm7f64OEdh/a785K7/WIKhhnBwGAEgElIB5bGNQPR0JEl9
-         g0Aldzuwa9UfucdZC4WIsDf+ZnADcCXaet/vhZ5+FSJbqWP7m+SDaiDSmUusOUqVLxS9
-         MpGvTMZl1QaJW+Q6FJHo9X5PLM34VqJ7+s9e8w9h0bXiqy2WjbdwRtx4XkTLEI3m3LJA
-         p+bA==
+        bh=DIh//B5cX1tKK5aGoOXZngVHy7BzhIgL1SIq8cnhHfY=;
+        b=o37UJBQDncXEBd5vrXBj0UWO6ciPDAi55NQalChRiuYPhsjZCn3mXvT1/OX1CFhQv2
+         msXajTRYAB/qK8JjzNopTH6rTCi+lWRpe+KJaw0+6+CDpJepZhV/klp8lcS4YOQLIsf3
+         SoMm4jmhQYEcc2ZShrtC6uETjWaBIVybWiqiYzSuw/VTIoEmRc1i4wDqkU9+40tz+F0V
+         vRlGHBe6sLOp04+xLUJ1cZacNkLcXG2wIzShJYoyUua23SZtN9qDuJzS5UetqGdeVwUL
+         VMX8OsLrFlRZwFL8cZOLiLIT+fmKe9sI3vpHNAAvnUvL4LiWGsBsxOKGJ/4rYxqJoKFc
+         GR4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=88bO+rRoidhXyrO2Csn2W7v7IjR4W0OvBh5VSm4oxVY=;
-        b=SIyaFN60Nk2ybiW19J3wiCe2K4TUUQ1gO1Q34zaQkBW+/Aj4CKDwuhmsfdtQFUJXC0
-         89MnpVJd0tQPd4VGoI6LAbgrwtRDdir20l8X5EkZDBvengKQ+28tZaUNmEr0Y4m4puSw
-         s/+cogSbE3ev5294A9BdV2fjBpFJLHqD8GXZjyfB555Rtw0PBlP58geINpYTExy3F9dl
-         7eabA5JqLTbNP5vHZkvQK0FJ+Qdz3guLC6bmuolORgGIh2fWTP+bu/cYae97sJGAP6Vg
-         G1vsl70gYGN3fESTOKyY6opJ5UkoNKgyX/ygGQzqbLAEWja0QMI1y4azuuKtpGY60/RH
-         xxNg==
-X-Gm-Message-State: AOAM533UpvKj/182d2yyMMEz0xf3eDWkv39rUxozz+5ZXa2FSw2PabWy
-        aKFnar/15/U+fYIBB2kdkws=
-X-Google-Smtp-Source: ABdhPJyKaRw5jn0baL2w7t20q/b3G7W68CjrDp3U6AbjwDw17PwHY5sh8k1i1UWIaah+f/YngTsT1Q==
-X-Received: by 2002:aca:acd4:: with SMTP id v203mr5294573oie.170.1634832890728;
-        Thu, 21 Oct 2021 09:14:50 -0700 (PDT)
+        bh=DIh//B5cX1tKK5aGoOXZngVHy7BzhIgL1SIq8cnhHfY=;
+        b=GNiRmpN3jtmq7X70VDUWcgk8yaGUqrkONGw3rhIjxOQMGms1IJEQboUKZu+8nv2oBy
+         y5ZLe2KdUnXGBbV5RrZAVh1sy0DLqOSPqMkSWsNDczCj4qLCSCTDdVAb1kU9hkhUSZjX
+         d1a282FT30J/HK9iaqAM2iFnBjLsIYS5x07PgIYx2cSfMoeOtDsB5HsqSsSxra6tqcth
+         6e9Ilp/x/AmcoHmd/IGDjFLbj0Q5HofrC6eoBfvlWfhB4M0KLN4N3UhbN5T4+TXfmIg+
+         7a5KRsqoYAj0GcS7vipNgW8ahax8k9c6ocZblpU0Ssi++RTPY+v6Rz6F93yi/yLnk2V7
+         hmfQ==
+X-Gm-Message-State: AOAM533MpzZCBdoTzJ/6pFa1Ss2Yiq9oy3OMKcuz34syWiWMzN9O5mhB
+        4iwtGCSqvt4wkKFqicV8DkcRqS03K1I=
+X-Google-Smtp-Source: ABdhPJwiJfToecHrUR/4VzYhdwb2JS4vKPmBtooc9KwB892AJwrl16almOzMukN+moe4HLFv5vO/Tw==
+X-Received: by 2002:a4a:de10:: with SMTP id y16mr5184275oot.4.1634832892837;
+        Thu, 21 Oct 2021 09:14:52 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w17sm1173334otm.50.2021.10.21.09.14.49
+        by smtp.gmail.com with ESMTPSA id x28sm1217625ote.24.2021.10.21.09.14.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 09:14:49 -0700 (PDT)
+        Thu, 21 Oct 2021 09:14:52 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Jean Delvare <jdelvare@suse.com>
 Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
         Guenter Roeck <linux@roeck-us.net>,
         "David T . Wilson" <david.wilson@nasa.gov>
-Subject: [PATCH v2 2/3] hwmon: (lm90) Add basic support for TI TMP461
-Date:   Thu, 21 Oct 2021 09:14:43 -0700
-Message-Id: <20211021161444.3145112-2-linux@roeck-us.net>
+Subject: [PATCH v2 3/3] hwmon: (tmp401) Drop support for TMP461
+Date:   Thu, 21 Oct 2021 09:14:44 -0700
+Message-Id: <20211021161444.3145112-3-linux@roeck-us.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211021161444.3145112-1-linux@roeck-us.net>
 References: <20211021161444.3145112-1-linux@roeck-us.net>
@@ -66,184 +66,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TMP461 is almost identical to TMP451 and was actually detected as TMP451
-with the existing lm90 driver if its I2C address is 0x4c. Add support
-for it to the lm90 driver. At the same time, improve the chip detection
-function to at least try to distinguish between TMP451 and TMP461.
-
-As a side effect, this fixes commit 24333ac26d01 ("hwmon: (tmp401) use
-smb word operations instead of 2 smb byte operations"). TMP461 does not
-support word operations on temperature registers, which causes bad
-temperature readings with the tmp401 driver. The lm90 driver does not
-perform word operations on temperature registers and thus does not have
-this problem.
-
-Support is listed as basic because TMP461 supports a sensor resolution
-of 0.0625 degrees C, while the lm90 driver assumes a resolution of 0.125
-degrees C. Also, the TMP461 supports negative temperatures with its
-default temperature range, which is not the case for similar chips
-supported by the lm90 and the tmp401 drivers. Those limitations will be
-addressed with follow-up patches.
+TMP461 is almost identical to TMP451, which is already supported by the
+lm90 driver. At the same time, unlike other sensors from the TMP401
+compatible series, it only supports 8-bit temperature read operations,
+it supports negative temperatures when configured for its default
+temperature range, and it supports a temperature offset register.
+Supporting this chip in the tmp401 driver adds unnecessary complexity.
+Remove its support from this driver and support the chip with the lm90
+driver instead.
 
 Fixes: 24333ac26d01 ("hwmon: (tmp401) use smb word operations instead of 2 smb byte operations")
 Reported-by: David T. Wilson <david.wilson@nasa.gov>
 Cc: David T. Wilson <david.wilson@nasa.gov>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
-v2: Fixed DFC register address
-    Describe support as basic, and explain reason
-    Split introduction of LM90_HAVE_EXTENDED_TEMP into seperate patch
+v2: Explain additional limitations of tmp401 driver which are affecting
+    TMP461
 
- Documentation/hwmon/lm90.rst | 10 +++++++
- drivers/hwmon/Kconfig        |  2 +-
- drivers/hwmon/lm90.c         | 54 ++++++++++++++++++++++++++----------
- 3 files changed, 50 insertions(+), 16 deletions(-)
+ Documentation/hwmon/tmp401.rst | 15 +--------------
+ drivers/hwmon/Kconfig          |  2 +-
+ drivers/hwmon/tmp401.c         | 25 ++-----------------------
+ 3 files changed, 4 insertions(+), 38 deletions(-)
 
-diff --git a/Documentation/hwmon/lm90.rst b/Documentation/hwmon/lm90.rst
-index 3da8c6e06a36..05391fb4042d 100644
---- a/Documentation/hwmon/lm90.rst
-+++ b/Documentation/hwmon/lm90.rst
-@@ -265,6 +265,16 @@ Supported chips:
+diff --git a/Documentation/hwmon/tmp401.rst b/Documentation/hwmon/tmp401.rst
+index 14bf1fbf4493..3aacf3d3bdf3 100644
+--- a/Documentation/hwmon/tmp401.rst
++++ b/Documentation/hwmon/tmp401.rst
+@@ -43,12 +43,6 @@ Supported chips:
  
- 	       https://www.ti.com/litv/pdf/sbos686
+     Datasheet: http://focus.ti.com/docs/prod/folders/print/tmp435.html
  
-+  * Texas Instruments TMP461
-+
-+    Prefix: 'tmp461'
-+
-+    Addresses scanned: I2C 0x48 through 0x4F
-+
-+    Datasheet: Publicly available at TI website
-+
-+	       https://www.ti.com/lit/gpn/tmp461
-+
- Author: Jean Delvare <jdelvare@suse.de>
+-  * Texas Instruments TMP461
+-
+-    Prefix: 'tmp461'
+-
+-    Datasheet: https://www.ti.com/product/tmp461
+-
  
  
+ Authors:
+@@ -60,7 +54,7 @@ Description
+ -----------
+ 
+ This driver implements support for Texas Instruments TMP401, TMP411,
+-TMP431, TMP432, TMP435, and TMP461 chips. These chips implement one or two
++TMP431, TMP432, and TMP435 chips. These chips implement one or two
+ remote and one local temperature sensors. Temperature is measured in degrees
+ Celsius. Resolution of the remote sensor is 0.0625 degree. Local
+ sensor resolution can be set to 0.5, 0.25, 0.125 or 0.0625 degree (not
+@@ -84,10 +78,3 @@ some additional features.
+ 
+ TMP432 is compatible with TMP401 and TMP431. It supports two external
+ temperature sensors.
+-
+-TMP461 is compatible with TMP401. It supports offset correction
+-that is applied to the remote sensor.
+-
+-* Sensor offset values are temperature values
+-
+-  Exported via sysfs attribute tempX_offset
 diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index c4578e8f34bb..ccdaeafed0bb 100644
+index ccdaeafed0bb..feff41444f05 100644
 --- a/drivers/hwmon/Kconfig
 +++ b/drivers/hwmon/Kconfig
-@@ -1317,7 +1317,7 @@ config SENSORS_LM90
- 	  Maxim MAX6646, MAX6647, MAX6648, MAX6649, MAX6654, MAX6657, MAX6658,
- 	  MAX6659, MAX6680, MAX6681, MAX6692, MAX6695, MAX6696,
- 	  ON Semiconductor NCT1008, Winbond/Nuvoton W83L771W/G/AWG/ASG,
--	  Philips SA56004, GMT G781, and Texas Instruments TMP451
-+	  Philips SA56004, GMT G781, Texas Instruments TMP451 and TMP461
- 	  sensor chips.
+@@ -1930,7 +1930,7 @@ config SENSORS_TMP401
+ 	depends on I2C
+ 	help
+ 	  If you say yes here you get support for Texas Instruments TMP401,
+-	  TMP411, TMP431, TMP432, TMP435, and TMP461 temperature sensor chips.
++	  TMP411, TMP431, TMP432, and TMP435 temperature sensor chips.
  
  	  This driver can also be built as a module. If so, the module
-diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
-index 1a1d7bfcb30b..618052c6cdb6 100644
---- a/drivers/hwmon/lm90.c
-+++ b/drivers/hwmon/lm90.c
-@@ -69,10 +69,10 @@
-  * This driver also supports the G781 from GMT. This device is compatible
-  * with the ADM1032.
-  *
-- * This driver also supports TMP451 from Texas Instruments. This device is
-- * supported in both compatibility and extended mode. It's mostly compatible
-- * with ADT7461 except for local temperature low byte register and max
-- * conversion rate.
-+ * This driver also supports TMP451 and TMP461 from Texas Instruments.
-+ * Those devices are supported in both compatibility and extended mode.
-+ * They are mostly compatible with ADT7461 except for local temperature
-+ * low byte register and max conversion rate.
-  *
-  * Since the LM90 was the first chipset supported by this driver, most
-  * comments will refer to this chipset, but are actually general and
-@@ -112,7 +112,7 @@ static const unsigned short normal_i2c[] = {
- 	0x4d, 0x4e, 0x4f, I2C_CLIENT_END };
+ 	  will be called tmp401.
+diff --git a/drivers/hwmon/tmp401.c b/drivers/hwmon/tmp401.c
+index 9dc210b55e69..cd72755ec8f7 100644
+--- a/drivers/hwmon/tmp401.c
++++ b/drivers/hwmon/tmp401.c
+@@ -34,7 +34,7 @@
+ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4c, 0x4d,
+ 	0x4e, 0x4f, I2C_CLIENT_END };
  
- enum chips { lm90, adm1032, lm99, lm86, max6657, max6659, adt7461, max6680,
--	max6646, w83l771, max6696, sa56004, g781, tmp451, max6654 };
-+	max6646, w83l771, max6696, sa56004, g781, tmp451, tmp461, max6654 };
+-enum chips { tmp401, tmp411, tmp431, tmp432, tmp435, tmp461 };
++enum chips { tmp401, tmp411, tmp431, tmp432, tmp435 };
  
  /*
-  * The LM90 registers
-@@ -168,8 +168,12 @@ enum chips { lm90, adm1032, lm99, lm86, max6657, max6659, adt7461, max6680,
+  * The TMP401 registers, note some registers have different addresses for
+@@ -56,7 +56,6 @@ static const u8 TMP401_TEMP_MSB_READ[7][2] = {
+ 	{ 0x20, 0x19 },	/* therm (crit) limit */
+ 	{ 0x30, 0x34 },	/* lowest */
+ 	{ 0x32, 0x36 },	/* highest */
+-	{ 0, 0x11 },	/* offset */
+ };
  
- #define LM90_MAX_CONVRATE_MS	16000	/* Maximum conversion rate in ms */
+ static const u8 TMP401_TEMP_MSB_WRITE[7][2] = {
+@@ -66,7 +65,6 @@ static const u8 TMP401_TEMP_MSB_WRITE[7][2] = {
+ 	{ 0x20, 0x19 },	/* therm (crit) limit */
+ 	{ 0x30, 0x34 },	/* lowest */
+ 	{ 0x32, 0x36 },	/* highest */
+-	{ 0, 0x11 },	/* offset */
+ };
  
--/* TMP451 registers */
-+/* TMP451/TMP461 registers */
- #define TMP451_REG_R_LOCAL_TEMPL	0x15
-+#define TMP451_REG_CONALERT		0x22
-+
-+#define TMP461_REG_CHEN			0x16
-+#define TMP461_REG_DFC			0x24
- 
- /*
-  * Device flags
-@@ -230,6 +234,7 @@ static const struct i2c_device_id lm90_id[] = {
- 	{ "w83l771", w83l771 },
- 	{ "sa56004", sa56004 },
- 	{ "tmp451", tmp451 },
-+	{ "tmp461", tmp461 },
+ static const u8 TMP432_TEMP_MSB_READ[4][3] = {
+@@ -123,7 +121,6 @@ static const struct i2c_device_id tmp401_id[] = {
+ 	{ "tmp431", tmp431 },
+ 	{ "tmp432", tmp432 },
+ 	{ "tmp435", tmp435 },
+-	{ "tmp461", tmp461 },
  	{ }
  };
- MODULE_DEVICE_TABLE(i2c, lm90_id);
-@@ -327,6 +332,10 @@ static const struct of_device_id __maybe_unused lm90_of_match[] = {
- 		.compatible = "ti,tmp451",
- 		.data = (void *)tmp451
- 	},
-+	{
-+		.compatible = "ti,tmp461",
-+		.data = (void *)tmp461
-+	},
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, lm90_of_match);
-@@ -428,6 +437,13 @@ static const struct lm90_params lm90_params[] = {
- 		.max_convrate = 9,
- 		.reg_local_ext = TMP451_REG_R_LOCAL_TEMPL,
- 	},
-+	[tmp461] = {
-+		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT
-+		  | LM90_HAVE_BROKEN_ALERT | LM90_HAVE_EXTENDED_TEMP,
-+		.alert_alarms = 0x7c,
-+		.max_convrate = 9,
-+		.reg_local_ext = TMP451_REG_R_LOCAL_TEMPL,
-+	},
+ MODULE_DEVICE_TABLE(i2c, tmp401_id);
+@@ -570,21 +567,6 @@ static const struct attribute_group tmp432_group = {
+ 	.attrs = tmp432_attributes,
  };
  
- /*
-@@ -1628,18 +1644,26 @@ static int lm90_detect(struct i2c_client *client,
- 		 && convrate <= 0x08)
- 			name = "g781";
- 	} else
--	if (address == 0x4C
--	 && man_id == 0x55) { /* Texas Instruments */
--		int local_ext;
-+	if (man_id == 0x55 && chip_id == 0x00 &&
-+	    (config1 & 0x1B) == 0x00 && convrate <= 0x09) {
-+		int local_ext, conalert, chen, dfc;
- 
- 		local_ext = i2c_smbus_read_byte_data(client,
- 						     TMP451_REG_R_LOCAL_TEMPL);
+-/*
+- * Additional features of the TMP461 chip.
+- * The TMP461 temperature offset for the remote channel.
+- */
+-static SENSOR_DEVICE_ATTR_2_RW(temp2_offset, temp, 6, 1);
 -
--		if (chip_id == 0x00 /* TMP451 */
--		 && (config1 & 0x1B) == 0x00
--		 && convrate <= 0x09
--		 && (local_ext & 0x0F) == 0x00)
--			name = "tmp451";
-+		conalert = i2c_smbus_read_byte_data(client,
-+						    TMP451_REG_CONALERT);
-+		chen = i2c_smbus_read_byte_data(client, TMP461_REG_CHEN);
-+		dfc = i2c_smbus_read_byte_data(client, TMP461_REG_DFC);
-+
-+		if ((local_ext & 0x0F) == 0x00 &&
-+		    (conalert & 0xf1) == 0x01 &&
-+		    (chen & 0xfc) == 0x00 &&
-+		    (dfc & 0xfc) == 0x00) {
-+			if (address == 0x4c && !(chen & 0x03))
-+				name = "tmp451";
-+			else if (address >= 0x48 && address <= 0x4f)
-+				name = "tmp461";
-+		}
- 	}
+-static struct attribute *tmp461_attributes[] = {
+-	&sensor_dev_attr_temp2_offset.dev_attr.attr,
+-	NULL
+-};
+-
+-static const struct attribute_group tmp461_group = {
+-	.attrs = tmp461_attributes,
+-};
+-
+ /*
+  * Begin non sysfs callback code (aka Real code)
+  */
+@@ -686,7 +668,7 @@ static int tmp401_detect(struct i2c_client *client,
+ static int tmp401_probe(struct i2c_client *client)
+ {
+ 	static const char * const names[] = {
+-		"TMP401", "TMP411", "TMP431", "TMP432", "TMP435", "TMP461"
++		"TMP401", "TMP411", "TMP431", "TMP432", "TMP435"
+ 	};
+ 	struct device *dev = &client->dev;
+ 	struct device *hwmon_dev;
+@@ -717,9 +699,6 @@ static int tmp401_probe(struct i2c_client *client)
+ 	if (data->kind == tmp432)
+ 		data->groups[groups++] = &tmp432_group;
  
- 	if (!name) { /* identification failed */
+-	if (data->kind == tmp461)
+-		data->groups[groups++] = &tmp461_group;
+-
+ 	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
+ 							   data, data->groups);
+ 	if (IS_ERR(hwmon_dev))
 -- 
 2.33.0
 
