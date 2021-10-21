@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481C3435821
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F70043582D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhJUBXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 21:23:22 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8461 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhJUBXV (ORCPT
+        id S231444AbhJUB31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 21:29:27 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:33927 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhJUB30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:23:21 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee56170c072adc-0f24a; Thu, 21 Oct 2021 09:20:51 +0800 (CST)
-X-RM-TRANSID: 2ee56170c072adc-0f24a
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.26.114] (unknown[10.42.68.12])
-        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee26170c072c15-3fcf0;
-        Thu, 21 Oct 2021 09:20:51 +0800 (CST)
-X-RM-TRANSID: 2ee26170c072c15-3fcf0
-Subject: Re: [PATCH v2] crypto: s5p-sss - Add error handling ins5p_aes_probe()
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        vz@mleia.com, herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20211020110624.47696-1-tangbin@cmss.chinamobile.com>
- <ff261b7b-47a2-0cd8-8dcd-91f18998a482@canonical.com>
-From:   tangbin <tangbin@cmss.chinamobile.com>
-Message-ID: <f2c152bd-edc5-25ea-816f-092f18549658@cmss.chinamobile.com>
-Date:   Thu, 21 Oct 2021 09:20:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 20 Oct 2021 21:29:26 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZVFm2b3Rz4xbL;
+        Thu, 21 Oct 2021 12:27:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634779629;
+        bh=/P3sXv3gg+XWwVuNNFzsys4NuZ1Yv/74orig70uJzH4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=o6UOh8UKYL9dHZPIkbY5Goqo8g0WDASq0S9rVYBWjy/R+yUoe8yVCxCCoEsjY4kyH
+         6yr3lTwN3LP8Zy924fHKfJUSsROszJ2rCjaQPv2LS7Re0DGPQX7ELnYBnKuOlJU0l9
+         cxyqGrYDtaar8WEeaGbO9d513ytVaJ4kXlFvLycWSyUwQxBmOe2PILlM1bfD8eG3Nc
+         +ym7tJ/OQzC6vZijFNxGEjPBF2Ygycfh0lINu4JVkLxywqL7fKvfcZtLXE3aiCVX5h
+         DAPX2Dhyv/zz0Un78T6V1U4O2mglL+33HHqqP1LldqnwQZr9IJR4YCQ8rofXzKqEW+
+         H5zuuiHwlgrag==
+Date:   Thu, 21 Oct 2021 12:27:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm-misc tree
+Message-ID: <20211021122705.2282c49b@canb.auug.org.au>
+In-Reply-To: <f9b1b7e6-94ab-50f8-d16c-a3581096687d@amd.com>
+References: <20211005185940.382720e7@canb.auug.org.au>
+        <f9b1b7e6-94ab-50f8-d16c-a3581096687d@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <ff261b7b-47a2-0cd8-8dcd-91f18998a482@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/gnfe75AE3eq1OYO7JPRDy2e";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Krzysztof：
+--Sig_/gnfe75AE3eq1OYO7JPRDy2e
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/10/20 19:38, Krzysztof Kozlowski wrote:
-> On 20/10/2021 13:06, Tang Bin wrote:
->> The function s5p_aes_probe() does not perform sufficient error
->> checking after executing platform_get_resource(), thus fix it.
->>
->> Fixes: c2afad6c6105 ("crypto: s5p-sss - Add HASH support for Exynos")
->> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->> Changes from v1
->>   - add fixed title
->> ---
->>   drivers/crypto/s5p-sss.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
-> You still missed the cc-stable tag. I pasted it last time.
-> Cc: <stable@vger.kernel.org>
+Hi all,
 
-I am deeply sorry for my patch v2，I thought it to cc when use git to 
-send-email.
+On Tue, 5 Oct 2021 10:23:23 +0200 Christian K=C3=B6nig <christian.koenig@am=
+d.com> wrote:
+>
+> Am 05.10.21 um 09:59 schrieb Stephen Rothwell:
+> >
+> > After merging the drm-misc tree, today's linux-next build (htmldocs)
+> > produced this warning:
+> >
+> > include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_=
+in' not described in 'dma_buf'
+> > include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_=
+out' not described in 'dma_buf'
+> >
+> > Introduced by commit
+> >
+> >    6b51b02a3a0a ("dma-buf: fix and rework dma_buf_poll v7")
+>
+> Thanks for the notice, going to fix this.
 
-I am sorry to waste your precious time. I will correct it immediately.
+I am still seeing these warnings.
 
-Thanks
+--=20
+Cheers,
+Stephen Rothwell
 
-Tang Bin
+--Sig_/gnfe75AE3eq1OYO7JPRDy2e
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFwwekACgkQAVBC80lX
+0GyV5gf/S+g93X5+pnzfg+sMV1u6Z81Eki3YB95pwwcQpaGQFYtBBKi+wrp+NlJg
+9Z8HSyE7JDD5Fzv13vC6fEQsufrBn8haG7GNDcI9SVOCtaPMsvtzbtYg3sktR9al
+TjISf3cac7B7pqjEmx3DfcUhP2DvD9vMyiHsPd9beJU8PAFW991ChMz0iDEiaOQ9
+IGg1SzAUohuIet+IyFhgUd9OKr4dyYUF5TDtXMO+UmRQhnqoGf4h7FOnmc2+GVYO
+JeNwoVgPHq1jSH5rXm5SBPWFF7T+8BOmo874yFDaKwMsieiGnylwjuzWkYg/n8i9
+fAuXp5RwIGCD9pnvMH9oZ9Z6y76ttA==
+=AusU
+-----END PGP SIGNATURE-----
 
-> Best regards,
-> Krzysztof
-
-
+--Sig_/gnfe75AE3eq1OYO7JPRDy2e--
