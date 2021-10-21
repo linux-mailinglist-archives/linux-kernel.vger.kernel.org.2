@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F70043582D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A96435831
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbhJUB31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 21:29:27 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:33927 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhJUB30 (ORCPT
+        id S231509AbhJUB3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 21:29:40 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:59538 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231342AbhJUB3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:29:26 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZVFm2b3Rz4xbL;
-        Thu, 21 Oct 2021 12:27:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634779629;
-        bh=/P3sXv3gg+XWwVuNNFzsys4NuZ1Yv/74orig70uJzH4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=o6UOh8UKYL9dHZPIkbY5Goqo8g0WDASq0S9rVYBWjy/R+yUoe8yVCxCCoEsjY4kyH
-         6yr3lTwN3LP8Zy924fHKfJUSsROszJ2rCjaQPv2LS7Re0DGPQX7ELnYBnKuOlJU0l9
-         cxyqGrYDtaar8WEeaGbO9d513ytVaJ4kXlFvLycWSyUwQxBmOe2PILlM1bfD8eG3Nc
-         +ym7tJ/OQzC6vZijFNxGEjPBF2Ygycfh0lINu4JVkLxywqL7fKvfcZtLXE3aiCVX5h
-         DAPX2Dhyv/zz0Un78T6V1U4O2mglL+33HHqqP1LldqnwQZr9IJR4YCQ8rofXzKqEW+
-         H5zuuiHwlgrag==
-Date:   Thu, 21 Oct 2021 12:27:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20211021122705.2282c49b@canb.auug.org.au>
-In-Reply-To: <f9b1b7e6-94ab-50f8-d16c-a3581096687d@amd.com>
-References: <20211005185940.382720e7@canb.auug.org.au>
-        <f9b1b7e6-94ab-50f8-d16c-a3581096687d@amd.com>
+        Wed, 20 Oct 2021 21:29:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Ut5Vdx0_1634779640;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Ut5Vdx0_1634779640)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 21 Oct 2021 09:27:21 +0800
+Subject: Re: [PATCH 1/4] KVM: X86: Fix tlb flush for tdp in
+ kvm_invalidate_pcid()
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20211019110154.4091-1-jiangshanlai@gmail.com>
+ <20211019110154.4091-2-jiangshanlai@gmail.com> <YW7jfIMduQti8Zqk@google.com>
+ <da4dfc96-b1ad-024c-e769-29d3af289eee@linux.alibaba.com>
+ <YXBfaqenOhf+M3eA@google.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <55abc519-b528-ddaa-120d-8d157b520623@linux.alibaba.com>
+Date:   Thu, 21 Oct 2021 09:27:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gnfe75AE3eq1OYO7JPRDy2e";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YXBfaqenOhf+M3eA@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gnfe75AE3eq1OYO7JPRDy2e
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Tue, 5 Oct 2021 10:23:23 +0200 Christian K=C3=B6nig <christian.koenig@am=
-d.com> wrote:
->
-> Am 05.10.21 um 09:59 schrieb Stephen Rothwell:
-> >
-> > After merging the drm-misc tree, today's linux-next build (htmldocs)
-> > produced this warning:
-> >
-> > include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_=
-in' not described in 'dma_buf'
-> > include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_=
-out' not described in 'dma_buf'
-> >
-> > Introduced by commit
-> >
-> >    6b51b02a3a0a ("dma-buf: fix and rework dma_buf_poll v7")
->
-> Thanks for the notice, going to fix this.
+On 2021/10/21 02:26, Sean Christopherson wrote:
+> On Wed, Oct 20, 2021, Lai Jiangshan wrote:
+>> On 2021/10/19 23:25, Sean Christopherson wrote:
+>> I just read some interception policy in vmx.c, if EPT=1 but vmx_need_pf_intercept()
+>> return true for some reasons/configs, #PF is intercepted.  But CR3 write is not
+>> intercepted, which means there will be an EPT fault _after_ (IIUC) the CR3 write if
+>> the GPA of the new CR3 exceeds the guest maxphyaddr limit.  And kvm queues a fault to
+>> the guest which is also _after_ the CR3 write, but the guest expects the fault before
+>> the write.
+>>
+>> IIUC, it can be fixed by intercepting CR3 write or reversing the CR3 write in EPT
+>> violation handler.
+> 
+> KVM implicitly does the latter by emulating the faulting instruction.
+> 
+>    static int handle_ept_violation(struct kvm_vcpu *vcpu)
+>    {
+> 	...
+> 
+> 	/*
+> 	 * Check that the GPA doesn't exceed physical memory limits, as that is
+> 	 * a guest page fault.  We have to emulate the instruction here, because
+> 	 * if the illegal address is that of a paging structure, then
+> 	 * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
+> 	 * would also use advanced VM-exit information for EPT violations to
+> 	 * reconstruct the page fault error code.
+> 	 */
+> 	if (unlikely(allow_smaller_maxphyaddr && kvm_vcpu_is_illegal_gpa(vcpu, gpa)))
+> 		return kvm_emulate_instruction(vcpu, 0);
+> 
+> 	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
+>    }
+> 
+> and injecting a #GP when kvm_set_cr3() fails.
 
-I am still seeing these warnings.
+I think the EPT violation happens *after* the cr3 write.  So the instruction to be
+emulated is not "cr3 write".  The emulation will queue fault into guest though,
+recursive EPT violation happens since the cr3 exceeds maxphyaddr limit.
 
---=20
-Cheers,
-Stephen Rothwell
+In this case, the guest is malicious/broken and gets to keep the pieces too.
 
---Sig_/gnfe75AE3eq1OYO7JPRDy2e
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFwwekACgkQAVBC80lX
-0GyV5gf/S+g93X5+pnzfg+sMV1u6Z81Eki3YB95pwwcQpaGQFYtBBKi+wrp+NlJg
-9Z8HSyE7JDD5Fzv13vC6fEQsufrBn8haG7GNDcI9SVOCtaPMsvtzbtYg3sktR9al
-TjISf3cac7B7pqjEmx3DfcUhP2DvD9vMyiHsPd9beJU8PAFW991ChMz0iDEiaOQ9
-IGg1SzAUohuIet+IyFhgUd9OKr4dyYUF5TDtXMO+UmRQhnqoGf4h7FOnmc2+GVYO
-JeNwoVgPHq1jSH5rXm5SBPWFF7T+8BOmo874yFDaKwMsieiGnylwjuzWkYg/n8i9
-fAuXp5RwIGCD9pnvMH9oZ9Z6y76ttA==
-=AusU
------END PGP SIGNATURE-----
-
---Sig_/gnfe75AE3eq1OYO7JPRDy2e--
+> 
+>    static int em_cr_write(struct x86_emulate_ctxt *ctxt)
+>    {
+> 	if (ctxt->ops->set_cr(ctxt, ctxt->modrm_reg, ctxt->src.val))
+> 		return emulate_gp(ctxt, 0);
+> 
+> 	/* Disable writeback. */
+> 	ctxt->dst.type = OP_NONE;
+> 	return X86EMUL_CONTINUE;
+>    }
+> 
