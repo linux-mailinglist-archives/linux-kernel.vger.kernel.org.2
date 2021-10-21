@@ -2,110 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3884364ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49584364FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhJUPDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        id S231352AbhJUPHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbhJUPDZ (ORCPT
+        with ESMTP id S230072AbhJUPHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:03:25 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE97C061220
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:01:09 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id o83so1208704oif.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:01:09 -0700 (PDT)
+        Thu, 21 Oct 2021 11:07:00 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05A0C0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:04:44 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id i1so581789plr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:04:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=6jnVZbBkLbnw6pFZpxUldRg4FuFfEZElhVVQao3Uy20=;
-        b=ZGFMo833ta2HUfgqVLXUNHJV5pTUNb23BosrQDRrArzz1VYW1rZvujqd1q9AvwL/2L
-         I3qasTS/LaOX+rTG38fA1WkYeozE1AIG6Y1LWW3KJy++pLKzaue+ysn5BR5qqBazSL3X
-         IVR4Fjt0Mg/h6j4Zo8LPwJHvk9rRXi+EODiN4CZjW0a3nWKAwsxdaWUyN0Iinpv2NO0m
-         dB+Q+OGRW5ZAtyv3ynB4fi22vLxF+kmJ+bRRxyM9NM8BrnQaDlNccb6EwaqBPSB/5dXE
-         w0UzuwJbGrVM1iqd9niPDqAPfBdtIGPYSTrtcyZITTG5mzlvKTmg+/w7FrEp4Vj/y3G+
-         Cdig==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+7ZZ5NEQvmKMVpumrFViPwChqWqhssGnPZ02YAN9YdY=;
+        b=i95t92b2Q4lUhdSuI0qG+4TT7Epm7Ya6L8Xna+yyPox+5giXcQhMxkdGkR9A2OutPL
+         unj/zai0nOc2rvGY6EbfoKm8gi3TlJlWlavzPmCOQNpaHC2M95jsEr1GoVyi7kF/8MIw
+         lJtQURZT+tjTUadZUWf/310mY0iCpk8OJbUZk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=6jnVZbBkLbnw6pFZpxUldRg4FuFfEZElhVVQao3Uy20=;
-        b=jWB3Y0+gzYdjRnns/ors44dLocgKsISMEvuHTT4bVM8jFepPK/hpY9yYQgCcXlNyEq
-         +HZN4pKBH8p70oZpmKjTacM9mbpYTUFEmFf6DYN8O/R10OMT61OEopAWrqrm7w2GzUGx
-         0ymEyrORKui14+o0I4UqYicU9I17Q1VuKuMfiHvTRNnhixPNBUnW2Cdz3wRdAwdBFaV5
-         d1IbqqS/2wRfLqyglFPLH3e3tCJXPEdbqhtHyEOeWEAkJPnjILICkAP1gqUDv0eiZstX
-         LghsCcc8sPtvRFyRJfpxd6u0N7KaaDO72aFAYs5qTYwN7/EapUu9UaAtI4GOK+9f028S
-         c0oQ==
-X-Gm-Message-State: AOAM532i2RQ2+Nmhdx+c+NQPEJo+GpHqSvDjyv/cxKSJkPKdsf2Srz9B
-        cjLbjIQOs373bsWZVlc6pnJZ1A==
-X-Google-Smtp-Source: ABdhPJxcqYzZpw8hjWvx8wtyMAFaG+Ip962yojdp/B4kEz2Pn9lx52Qn4eX8lgw7zW26Sgpyf8s+nQ==
-X-Received: by 2002:a05:6808:3c9:: with SMTP id o9mr4905862oie.20.1634828468846;
-        Thu, 21 Oct 2021 08:01:08 -0700 (PDT)
-Received: from [127.0.1.1] ([2600:380:783a:c43c:af64:c142:4db7:63ac])
-        by smtp.gmail.com with ESMTPSA id w18sm1173833ott.29.2021.10.21.08.01.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+7ZZ5NEQvmKMVpumrFViPwChqWqhssGnPZ02YAN9YdY=;
+        b=IHtOXCFtGrRNUt5IoFEzd72EjbsojdjpL+uruQwRsZVJ3RXQS8Mo8wiWdZ5R354f8+
+         P7o00VOznhRv34UhAvlR4vzuk4XFGBbF2AHHKT0HGv8cm8vFm/4T48Ywgvz1Vk/PF0DZ
+         ch1UwHEaZqMujKUotjgykeKqwJETRe/gFYe9PqxyLOUcGuAtcmdXA7xrfg3NvpHs/Cxv
+         SIYaLmfCsOUOl6z0j/14x2GldmaxtQtEy54a0COa5fofDiYyd/jxBB8BMBKG6/R8583y
+         uueu3yZiR3c7tWdEPaF7aR1SY6spAHtbUXSiMb/umBrzS57Hqtgyjnou5y9Ej3inlWaF
+         ZQPw==
+X-Gm-Message-State: AOAM532yvxPzVDNmoGlUz6jxL0GBXdZkNXvGKjIP86YxBYenEJGzeY8J
+        PINcZ9rRgxiw3vx1Erz7xYP73w==
+X-Google-Smtp-Source: ABdhPJz3ggWax17jrJJfhyp5cR5clwL26aLQhXGER64HejHwJ01ao3uMXFtcT3GQqQrbnDZnso4sLQ==
+X-Received: by 2002:a17:903:234a:b0:13e:f01a:24f with SMTP id c10-20020a170903234a00b0013ef01a024fmr5673861plh.43.1634828684485;
+        Thu, 21 Oct 2021 08:04:44 -0700 (PDT)
+Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:10:acf2:287:fa53:43f4])
+        by smtp.gmail.com with ESMTPSA id 21sm9546045pjg.57.2021.10.21.08.04.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:01:08 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com,
-        johannes.berg@intel.com, roger.pau@citrix.com,
-        miquel.raynal@bootlin.com, jdike@addtoit.com,
-        anton.ivanov@cambridgegreys.com, geert@linux-m68k.org,
-        krisman@collabora.com, vigneshr@ti.com, richard@nod.at,
-        hare@suse.de, jinpu.wang@ionos.com, jgross@suse.com,
-        sstabellini@kernel.org, ulf.hansson@linaro.org, agk@redhat.com,
-        linux-mtd@lists.infradead.org,
-        Luis Chamberlain <mcgrof@kernel.org>, tj@kernel.org,
-        colyli@suse.de, jejb@linux.ibm.com, chris.obbard@collabora.com,
-        snitzer@redhat.com, boris.ostrovsky@oracle.com,
-        kent.overstreet@gmail.com, martin.petersen@oracle.com
-Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com,
-        xen-devel@lists.xenproject.org, linux-um@lists.infradead.org,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-scsi@vger.kernel.org
-In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
-Subject: Re: (subset) [PATCH 0/9] block: reviewed add_disk() error handling set
-Message-Id: <163482846658.50565.12530170761457767964.b4-ty@kernel.dk>
-Date:   Thu, 21 Oct 2021 09:01:06 -0600
+        Thu, 21 Oct 2021 08:04:43 -0700 (PDT)
+From:   Joseph Hwang <josephsih@chromium.org>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com, pali@kernel.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org, josephsih@google.com,
+        Joseph Hwang <josephsih@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v6 1/3] Bluetooth: Add struct of reading AOSP vendor capabilities
+Date:   Thu, 21 Oct 2021 23:04:23 +0800
+Message-Id: <20211021230356.v6.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 16:30:19 -0700, Luis Chamberlain wrote:
-> Jens,
-> 
-> I had last split up patches into 7 groups, but at this point now
-> most changes are merged except a few more drivers. Instead of creating
-> a new patch set for each of the 7 groups I'm creating 3 new groups of
-> patches now:
-> 
-> [...]
+This patch adds the struct of reading AOSP vendor capabilities.
+New capabilities are added incrementally. Note that the
+version_supported octets will be used to determine whether a
+capability has been defined for the version.
 
-Applied, thanks!
+Signed-off-by: Joseph Hwang <josephsih@chromium.org>
 
-[3/9] dm: add add_disk() error handling
-      commit: e7089f65dd51afeda5eb760506b5950d95f9ec29
-[4/9] bcache: add error handling support for add_disk()
-      commit: 2961c3bbcaec0ed7fb7b9a465b3796f37f2294e5
-[5/9] xen-blkfront: add error handling support for add_disk()
-      commit: 293a7c528803321479593d42d0898bb5a9769db1
-[6/9] m68k/emu/nfblock: add error handling support for add_disk()
-      commit: 21fd880d3da7564bab68979417cab7408e4f9642
-[7/9] um/drivers/ubd_kern: add error handling support for add_disk()
-      commit: 66638f163a2b5c5b462ca38525129b14a20117eb
-[8/9] rnbd: add error handling support for add_disk()
-      commit: 2e9e31bea01997450397d64da43b6675e0adb9e3
-[9/9] mtd: add add_disk() error handling
-      commit: 83b863f4a3f0de4ece7802d9121fed0c3e64145f
+---
 
-Best regards,
+Changes in v6:
+- Add historical versions of struct aosp_rp_le_get_vendor_capabilities.
+- Perform the basic check about the struct length.
+- Through the version, bluetooth_quality_report_support can be checked.
+
+Changes in v5:
+- This is a new patch.
+- Add struct aosp_rp_le_get_vendor_capabilities so that next patch
+  can determine whether a particular capability is supported or not.
+
+ include/net/bluetooth/hci_core.h |   1 +
+ net/bluetooth/aosp.c             | 116 ++++++++++++++++++++++++++++++-
+ 2 files changed, 116 insertions(+), 1 deletion(-)
+
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index dd8840e70e25..32b3774227f2 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -603,6 +603,7 @@ struct hci_dev {
+ 
+ #if IS_ENABLED(CONFIG_BT_AOSPEXT)
+ 	bool			aosp_capable;
++	bool			aosp_quality_report;
+ #endif
+ 
+ 	int (*open)(struct hci_dev *hdev);
+diff --git a/net/bluetooth/aosp.c b/net/bluetooth/aosp.c
+index a1b7762335a5..64684b2bf79b 100644
+--- a/net/bluetooth/aosp.c
++++ b/net/bluetooth/aosp.c
+@@ -8,9 +8,53 @@
+ 
+ #include "aosp.h"
+ 
++/* Command complete parameters of LE_Get_Vendor_Capabilities_Command
++ * The parameters grow over time. The first version that declares the
++ * version_supported field is v0.95. Refer to
++ * https://cs.android.com/android/platform/superproject/+/master:system/
++ *         bt/gd/hci/controller.cc;l=452?q=le_get_vendor_capabilities_handler
++ */
++
++/* the base capabilities struct with the version_supported field */
++struct aosp_rp_le_get_vendor_capa_v95 {
++	__u8	status;
++	__u8	max_advt_instances;
++	__u8	offloaded_resolution_of_private_address;
++	__u16	total_scan_results_storage;
++	__u8	max_irk_list_sz;
++	__u8	filtering_support;
++	__u8	max_filter;
++	__u8	activity_energy_info_support;
++	__u16	version_supported;
++	__u16	total_num_of_advt_tracked;
++	__u8	extended_scan_support;
++	__u8	debug_logging_supported;
++} __packed;
++
++struct aosp_rp_le_get_vendor_capa_v96 {
++	struct aosp_rp_le_get_vendor_capa_v95 v95;
++	/* v96 */
++	__u8	le_address_generation_offloading_support;
++} __packed;
++
++struct aosp_rp_le_get_vendor_capa_v98 {
++	struct aosp_rp_le_get_vendor_capa_v96 v96;
++	/* v98 */
++	__u32	a2dp_source_offload_capability_mask;
++	__u8	bluetooth_quality_report_support;
++} __packed;
++
++struct aosp_rp_le_get_vendor_capa_v100 {
++	struct aosp_rp_le_get_vendor_capa_v98 v98;
++	/* v100 */
++	__u32	dynamic_audio_buffer_support;
++} __packed;
++
+ void aosp_do_open(struct hci_dev *hdev)
+ {
+ 	struct sk_buff *skb;
++	struct aosp_rp_le_get_vendor_capa_v95 *base_rp;
++	u16 version_supported;
+ 
+ 	if (!hdev->aosp_capable)
+ 		return;
+@@ -20,9 +64,79 @@ void aosp_do_open(struct hci_dev *hdev)
+ 	/* LE Get Vendor Capabilities Command */
+ 	skb = __hci_cmd_sync(hdev, hci_opcode_pack(0x3f, 0x153), 0, NULL,
+ 			     HCI_CMD_TIMEOUT);
+-	if (IS_ERR(skb))
++	if (IS_ERR(skb)) {
++		bt_dev_warn(hdev, "AOSP get vendor capabilities (%ld)",
++			    PTR_ERR(skb));
+ 		return;
++	}
++
++	bt_dev_dbg(hdev, "aosp le vendor capabilities length %d", skb->len);
++
++	base_rp = (struct aosp_rp_le_get_vendor_capa_v95 *)skb->data;
++
++	if (base_rp->status) {
++		bt_dev_err(hdev, "AOSP LE Get Vendor Capabilities status %d",
++			   base_rp->status);
++		goto done;
++	}
++
++	version_supported = le16_to_cpu(base_rp->version_supported);
++	bt_dev_info(hdev, "AOSP version %u", version_supported);
++
++	/* Do not support very old versions. */
++	if (version_supported < 95) {
++		bt_dev_err(hdev, "capabilities version %u too old",
++			   version_supported);
++		goto done;
++	}
++
++	if (version_supported >= 95) {
++		struct aosp_rp_le_get_vendor_capa_v95 *rp;
++
++		rp = (struct aosp_rp_le_get_vendor_capa_v95 *)skb->data;
++		if (skb->len < sizeof(*rp))
++			goto length_error;
++	}
++
++	if (version_supported >= 96) {
++		struct aosp_rp_le_get_vendor_capa_v96 *rp;
++
++		rp = (struct aosp_rp_le_get_vendor_capa_v96 *)skb->data;
++		if (skb->len < sizeof(*rp))
++			goto length_error;
++	}
++
++	if (version_supported >= 98) {
++		struct aosp_rp_le_get_vendor_capa_v98 *rp;
++
++		rp = (struct aosp_rp_le_get_vendor_capa_v98 *)skb->data;
++		if (skb->len < sizeof(*rp))
++			goto length_error;
++
++		/* The bluetooth_quality_report_support is defined at version v0.98.
++		 * Refer to https://cs.android.com/android/platform/superproject/+/
++		 *                  master:system/bt/gd/hci/controller.cc;l=477
++		 */
++		if (rp->bluetooth_quality_report_support) {
++			hdev->aosp_quality_report = true;
++			bt_dev_info(hdev, "bluetooth quality report is supported");
++		}
++	}
++
++	if (version_supported >= 100) {
++		struct aosp_rp_le_get_vendor_capa_v100 *rp;
++
++		rp = (struct aosp_rp_le_get_vendor_capa_v100 *)skb->data;
++		if (skb->len < sizeof(*rp))
++			goto length_error;
++	}
++
++	goto done;
++
++length_error:
++	bt_dev_err(hdev, "AOSP capabilities length %d too short", skb->len);
+ 
++done:
+ 	kfree_skb(skb);
+ }
+ 
 -- 
-Jens Axboe
-
+2.33.0.1079.g6e70778dc9-goog
 
