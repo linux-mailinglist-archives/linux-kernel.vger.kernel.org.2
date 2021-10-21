@@ -2,130 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE9B4361BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8B04361AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhJUMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:37:47 -0400
-Received: from mail-eopbgr1310094.outbound.protection.outlook.com ([40.107.131.94]:37758
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        id S231452AbhJUMc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:32:57 -0400
+Received: from mail-bn8nam12on2047.outbound.protection.outlook.com ([40.107.237.47]:65238
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230190AbhJUMhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:37:45 -0400
+        id S230231AbhJUMcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:32:48 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c+lgdYpcL61s4wlV+dWOmbSaGvhQGakLa2sGEYUAZPiH5PgYRGb6sXBRRpMlhD4Vf0S5y7uUqXKxP3CnIq5J7CLDJ1ySM31KGFRr+4l8E6QEVb6k1zdbi7zW8swx/lfq6DeIjNfX2yZv3BbQsn7L3iCCeICGBOGxJymQt6u2xY2qHhku97BBvrQwcl+IplHVbjNrngN7iomx1cXh4Bms1dRg1RtdybATv2S3Y9l3pKyUPNMYtej6aYC60pW/VSiGSeYuGChE8ZO/WtDhoQO2vE/PUw3h1JVviOKPCs3as9Qu9C1rCvp1JmnbNDkYLRt8q7HPcYKvx21iE6tsmlpPrA==
+ b=RvnDfXZdTJdPwygMyg84D5JBuI5WrxHtnEf1uCPfAVzGKTDbTuGq/H/mvDzfeCxeFoHbSiKJK5vR7Cjom6ENBwLp55RKmmTHZuGLuPYDktO5zm2dWTtPiT7Sfb9TxSSX0+9QGWfmRevBG1G8IxTqrBXxm0/FX1VjrJ2FFtZM2R0+uIMM69E642qRckkecVWL+/c24eVArTmzMa5l1O9nuud6FcI2BdeqAYpj/kOCALCEfZZwovbY7JnZI6UU4azh/EndMHN5sZjy4Wr5WMpfdVpm1CH9XXz3wZvm/rPAzlXa4Iy6udqZPi460pnvnilgNyJWueE2hbnqOIm73ky+gA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8Hqe39zCCZywYr8XLxF6+Tbp1aTmzVX0iqo1z3vYufk=;
- b=bpfApcawhL9hZu6PvxPrdDhmVbDQ08+YQutbw584pExAQIDPjSJKYH7nubzFLZN8xIxZtZuAKXlVpenaXd+AFCtCSksIOpbSW6AUR1j/GzI8E3Od8n2rLWAIlzaOje5ZhOdo4kbSZF+h83NViT3hYDA+nPsudZ7tcTZvlbg16ZEAfBop9lTsyOBReI6lS8l63VBoKROzNM+Nufiq6AcpHZSvRNCwW069s6ovaAlnP7o4UfQjwBOXSW86+pvDqj8c929biyZp5JoW0dGP55DrVHbmmcsNo3VvuM68/0FHy5EF5RvrcaL7jhD6e02poVuX65izqeeAM0QKkCnv621EzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
+ bh=7VVd9I5MzFSB5L6x/zPzgdk+ZRUlZH43zbMdpegbcyc=;
+ b=BrdvjwDIr7LRy+otqVPiF9Gj1dgl1bUf8c2cXLLXxHYWiuV2F+wlgEQkksbbxQOLw8RztEjv5ZDzYfwwcrxu6ghwY7pI/2Gn4wOb0yrJX10BmF3yjVfCiNWd1CbJ0ZAqQM4YCFsQlXuvOh4dv2qVxCWzmlyBMBp9D+PorH8f8dWt9J6RI9ldZ1t7jmPBuYPOiPxu5aN5GeBQ+/i9CC/PACSDUv2tw24ob0SERmX4pnNMoL+xrWvk6VmIdyChpvKsNNP0XU9vqWcOj2JAFNXS7ZfxpjpzoaPENhptmIPooRUhtTPSn+cREGsCdWp+CTLHt4oubejK0DLoNnifMjOK0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=baylibre.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Hqe39zCCZywYr8XLxF6+Tbp1aTmzVX0iqo1z3vYufk=;
- b=J7PxOduijybYM8LzXQmKPVyUWnLuCfw0eON5/aWIeylq05BFh5RAjzcC9i1aRMenqIakoUMJTRRtxK9x0pQc0HcvpIHcNsKsexesbb8w5GK3pPtqroyX3a38UvEDgK6/5JXzQN9osLQaJaCzkiuOK/FhnoUuFxzd9GXTQzJpKMg=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB3046.apcprd06.prod.outlook.com (2603:1096:4:6d::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.15; Thu, 21 Oct 2021 12:35:26 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
- 12:35:26 +0000
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] selftests: vm: Remove duplicated include in hugepage-mremap
-Date:   Thu, 21 Oct 2021 08:29:44 -0400
-Message-Id: <20211021122944.8857-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HKAPR04CA0005.apcprd04.prod.outlook.com
- (2603:1096:203:d0::15) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+ bh=7VVd9I5MzFSB5L6x/zPzgdk+ZRUlZH43zbMdpegbcyc=;
+ b=udiACvuE7agtg/RTrP5r7aP/5u1C1mBv3pGhyacTUwDtGsr4RozvG+ocZbqTnWpjcPg1/GyVJ0AoP40iK2PyhRYLsQFBB4HlN1oruG4FIyVlFcxNJBdt+UDi60hBLAbLGG893xRQeP59tyndc5Th6MFNnqeOBA+AU/GHymmrdsSSEPI2GYHVTa+DgGjJTPBlEuJ7swPoi/ifB5wfd7xoflkMn5nhWSkC4j/IByqWLSsZINexKc39+vGvVOmHndXZ0bRbtOAww1dXkb+cnVlxtREjWd03DRj2WEF7dMirWL+lEhU/PBWKoGKl75HKehkNN5jKzHdGJN7vAo9H3G4mDw==
+Received: from BN6PR12CA0029.namprd12.prod.outlook.com (2603:10b6:405:70::15)
+ by CH2PR12MB3975.namprd12.prod.outlook.com (2603:10b6:610:2f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Thu, 21 Oct
+ 2021 12:30:30 +0000
+Received: from BN8NAM11FT003.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:405:70:cafe::c0) by BN6PR12CA0029.outlook.office365.com
+ (2603:10b6:405:70::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15 via Frontend
+ Transport; Thu, 21 Oct 2021 12:30:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT003.mail.protection.outlook.com (10.13.177.90) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 12:30:29 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 21 Oct
+ 2021 12:30:27 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 21 Oct
+ 2021 12:30:26 +0000
+Received: from pshete-ubuntu.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Thu, 21 Oct 2021 05:30:24 -0700
+From:   Prathamesh Shete <pshete@nvidia.com>
+To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-gpio@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <smangipudi@nvidia.com>, <pshete@nvidia.com>
+Subject: [PATCH 1/2] dt-bindings: tegra186-gpio: Add Tegra234 ports
+Date:   Thu, 21 Oct 2021 18:00:20 +0530
+Message-ID: <20211021123021.9602-1-pshete@nvidia.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: from localhost.localdomain (203.90.234.87) by HKAPR04CA0005.apcprd04.prod.outlook.com (2603:1096:203:d0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend Transport; Thu, 21 Oct 2021 12:35:25 +0000
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 749b3e10-8708-43c8-02d0-08d9948f4209
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3046:
-X-Microsoft-Antispam-PRVS: <SG2PR06MB304688F172FBDB5A73EB5A26ABBF9@SG2PR06MB3046.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:324;
+X-MS-Office365-Filtering-Correlation-Id: 6b530077-9d41-408b-0389-08d9948e91be
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3975:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB3975C64F9A423E227369168FB7BF9@CH2PR12MB3975.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WFhqd8dTArR8BlbWdzPoiMjANjT3Gz6WQZMAOwgYbWLOyXHv6iqySHaAOY+F9gxsySP7ce66N8O4UP9J58TEl1U72bXvKVKrKLILwtHdY3KdZI+tvPypcwLP3w27U3PZfSsHMmCih/L1mhFGKhUvVmnhN+jveIGiKYBxnHu6uq8WkMCX8Y9L/eX6vhD8h/yCiJGph59u+pKvBwnr5ANHsgi+sPbn/PcS67Z4Ume8rpkuAXfl+oqFQbeg6FHuyZgkSBTvdxJD2C3ZMGuI0B5pBAUSUtiWXrntBNzgVpVRSp+AVtS6gU/hf2QQiHDeDmd1h88jVtjF6Zkm2BVed5Y0Dsd+eeUfNTxoHJYEbaleGvnn2gzo2SYSNdWQzQIJWVWiPD0u33KWH/U1gpzYxk2RchrvhuiByDUcaEhdFNCLtkwofJI/GXZk5dBhiGlZoC8ygQPkDeiay6JEquZF5U39FZ1lHqdP2K4+Sfg+/6/qu7EKycbp6yISiccndxCr7PMDmUCcMQ7zUVfcJqbhBcz+CDym3mXZmfOEU2AE98KJG0FKEjmD53wQy9t7wr9PdzKgocDzTkkgEWp9slPLP1Sk3Om+7czizA7hK2UVBEHjGx4Ir0LQcCAxXWaIrcZovFY0jrwwtQAigNug/Yu0CDuzy7P9uj5Snfquc/LwT+rmeqSWTTHH44pWeyBvfX3TbG1kdqsuBZyVs6JHlsChqrcYfQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(2906002)(66556008)(66476007)(6512007)(508600001)(66946007)(107886003)(38100700002)(2616005)(4326008)(38350700002)(6666004)(1076003)(6506007)(6486002)(26005)(110136005)(52116002)(186003)(86362001)(4744005)(956004)(36756003)(8676002)(316002)(83380400001)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?30WA/ywxCAOj5bB+rRBls+mZ3Hw9ZdruvWZJ9Bs/p9fLiehVa4LueXzEvyQw?=
- =?us-ascii?Q?q+2ZHvadYHb2rLVRfc4mn2rugc0rVwF76qqI3zZwL6PeGXqK35GeiOBPbgGK?=
- =?us-ascii?Q?iDaLyqYV/oQq8S22MR4rnDPgpm1IIbImrSy5xb6elziWOkE1IkxNp9AkyVKo?=
- =?us-ascii?Q?WVrgeXRvXs59fsGlmreh6tpjPpTVnsv2YR8z6gIUAeuWHkMjFLj2hHUDoArx?=
- =?us-ascii?Q?bjz8ypyzGpAdzxFIIi5o6JbXjUUc/lAYi+SaStrvXLVjDVh4oNqU2O+knEY4?=
- =?us-ascii?Q?PzDoQ3LmoTz7LzwgE64OiEC7pM1GkJg7BkM1kvK3JIZ0t9zQe3F97C/KjfeC?=
- =?us-ascii?Q?dikvZ1sgn6WpwB5Plx68+VM3k7oIQ0/bRUOldic7iBnkb4QqoA9vutEXCTFU?=
- =?us-ascii?Q?0oKtfNHGges51LyurjJ7FS6MmS/DpDjCqe1E4StE/GB2VLE9LJx7ej+XVmTJ?=
- =?us-ascii?Q?C7sPb7IgXG3BgTEiJR0NnWvUW52KcnvDQApPmVXo0qNeLJjhiI7rqHgjEV6X?=
- =?us-ascii?Q?5K5+HUVoM7lzT9AtHlpz5rzYkR6RnYccoeJQNKA1TwTYZ1KLrkxrF87ZvZVq?=
- =?us-ascii?Q?NxQOGHx0mxxaGEOqOG6rrbo4ayFqpWSb5A80u7aZfcHbFhJhIy6uAytQg/KP?=
- =?us-ascii?Q?uoDW7XgbOS2rYvXEmyMAMVy5wOq6KZNb4axNay1rpZwfT+WOYk5iRX/E/agE?=
- =?us-ascii?Q?XoXiVIG9uj0MFThwywgpY/q0KnW7s3vY5+1pYdSEjG5qsY6A1jL84dThGhVY?=
- =?us-ascii?Q?Ct78gu2a0aISna/aE0pgD93ddaU5F2TCrnpubYKuF05xTN6AyBnxI8K2lmiy?=
- =?us-ascii?Q?ZoYp1dtC0SnDHZE51r/sQ0Co0T6p4EQYEDQ2TWHFJgq2DVrBGw7Itf0OWVWw?=
- =?us-ascii?Q?EEDk4ViFaW//10InMm6KQF+uELLHxpHfvXb4aKkDn7UWdO5BoB6g5hmROsuP?=
- =?us-ascii?Q?lHFmZ1AEjyiQm5YYlBZBIWLd2zPe/Mwb8h0MFMiOwfVv3r8CF03MfAb4fNrC?=
- =?us-ascii?Q?Sm0aPmKDroyWnGLXluqF5+wdZ596cjAboxhQkTXqLJLgyShvXoDASkj17yOu?=
- =?us-ascii?Q?I5xKf7FIrKUivBJ2HWkS1HISY9917xh82g4hvg2vm3M0JJy8f9ugONjO91Uq?=
- =?us-ascii?Q?3D0YwqN8+xL4wZzrA0W2FcdNBWuFPhw0zCtQPp8hy0JmRX5KhRSRykcyfgxL?=
- =?us-ascii?Q?Mtnig/uSZRzN9V3RohcImxMHVhsUvqrVLR0RsuXXYZ8yxUjr4Pulj8GZUNXP?=
- =?us-ascii?Q?lDEn32LWvD5DnPsmCVah+RyAp6lsHkpEuCRXmMf7IfRau/3YmgM+IwFhBO6x?=
- =?us-ascii?Q?K7Ib/fLeeZy403XEbITRZiG9zG4p/JAYZ/PaCVM5rqnKpM5LlpQufDu5wpLa?=
- =?us-ascii?Q?nuACrKjKt4N3Zdq6gdq8bQtGNBYUB5ECMGdzpKqiz16giQaF3TUCHMcOUFaK?=
- =?us-ascii?Q?zPhc5g6rkwQ=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 749b3e10-8708-43c8-02d0-08d9948f4209
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 12:35:26.1765
+X-Microsoft-Antispam-Message-Info: LnsnnbyZBrOp/oWGNn3ShgEQlaFLFC0Ybw4SkxDr79r64B0eKzbfdQ29hYWcHdvW5/GDgkfD8PGj6YJNwE9mq1HmgAjOTmgJ4p9UqxcUC4fubls4eDuLEIKsYOt6GGjBRJ3kxsMQ1i9ax+PP2/o/uQH2d16yh1+Ji7Yvjafiur3n8+b/xTJQbumG1rv4NNYA86FfAeeuGBb7gKZRCsDPKowqF8Na1P3f1WyRxYwvwdTw4DRVHzdNJTDpKthCbMuxwbHcAyUWX15nhb0jGUyZ9bNHIO1cDTkHX+eUQccTq92NrpgWZTOQ7kCHLEoXwLyI5f+uVRpIrO+yofsDNJXOyEpBOzZQOVnNr+NTB5VWCoV6hYiZeVxnL16566NgU26LHDPzjAPJ4BJ2NqU0LRGC619uAIkWvN1JOncPWeQfSwNtFWrUm2iUZJX6wea5EHhmZ90S2xsu5af7w/KFxIpz5F8EYhrNTp8OCZo8F89nMBSCSjMJDMR3w00hKY6S1EIbF+fcU9rS3nBdy6+T6zTZCzTOcG8v906aj946hyz77BJmYgETezCa/BSisDWbeOUL8DmyPHutiJJ4G+rXEO6PEC4VzPcF8HFhE0oIYJli/Te3c0i4OfidVha8YVRe/7rAlu0em2hk6/nbvzAaDeJk33AlJO6miA+L8A0U5VumAJj2RwOgW7IOPyM/fcxKtioJA4agyvc8wiV/GrNhVmvtdg==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(5660300002)(316002)(8676002)(356005)(7696005)(70206006)(47076005)(336012)(186003)(36860700001)(26005)(4326008)(110136005)(86362001)(6666004)(2906002)(107886003)(8936002)(70586007)(36756003)(82310400003)(54906003)(426003)(508600001)(2616005)(7636003)(1076003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 12:30:29.9362
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 11126903@vivo.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3046
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b530077-9d41-408b-0389-08d9948e91be
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT003.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3975
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following checkinclude.pl warning:
-./tools/testing/selftests/vm/hugepage-mremap.c: fcntl.h is included
-more than once.
+Add Tegra234 GPIO ports in dt-bindings.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Signed-off-by: Prathamesh Shete <pshete@nvidia.com>
 ---
- tools/testing/selftests/vm/hugepage-mremap.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/dt-bindings/gpio/tegra234-gpio.h | 59 ++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+ create mode 100644 include/dt-bindings/gpio/tegra234-gpio.h
 
-diff --git a/tools/testing/selftests/vm/hugepage-mremap.c b/tools/testing/selftests/vm/hugepage-mremap.c
-index 8bc117b12f78..257df94697a5 100644
---- a/tools/testing/selftests/vm/hugepage-mremap.c
-+++ b/tools/testing/selftests/vm/hugepage-mremap.c
-@@ -12,7 +12,6 @@
- #include <stdio.h>
- #include <unistd.h>
- #include <sys/mman.h>
--#include <fcntl.h>
- #include <errno.h>
- #include <fcntl.h> /* Definition of O_* constants */
- #include <sys/syscall.h> /* Definition of SYS_* constants */
+diff --git a/include/dt-bindings/gpio/tegra234-gpio.h b/include/dt-bindings/gpio/tegra234-gpio.h
+new file mode 100644
+index 000000000000..0f59afabfe80
+--- /dev/null
++++ b/include/dt-bindings/gpio/tegra234-gpio.h
+@@ -0,0 +1,59 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved. */
++
++/*
++ * This header provides constants for binding nvidia,tegra234-gpio*.
++ *
++ * The first cell in Tegra's GPIO specifier is the GPIO ID. The macros below
++ * provide names for this.
++ *
++ * The second cell contains standard flag values specified in gpio.h.
++ */
++
++#ifndef _DT_BINDINGS_GPIO_TEGRA234_GPIO_H
++#define _DT_BINDINGS_GPIO_TEGRA234_GPIO_H
++
++#include <dt-bindings/gpio/gpio.h>
++
++/* GPIOs implemented by main GPIO controller */
++#define TEGRA234_MAIN_GPIO_PORT_A 0
++#define TEGRA234_MAIN_GPIO_PORT_B 1
++#define TEGRA234_MAIN_GPIO_PORT_C 2
++#define TEGRA234_MAIN_GPIO_PORT_D 3
++#define TEGRA234_MAIN_GPIO_PORT_E 4
++#define TEGRA234_MAIN_GPIO_PORT_F 5
++#define TEGRA234_MAIN_GPIO_PORT_G 6
++#define TEGRA234_MAIN_GPIO_PORT_H 7
++#define TEGRA234_MAIN_GPIO_PORT_I 8
++#define TEGRA234_MAIN_GPIO_PORT_J 9
++#define TEGRA234_MAIN_GPIO_PORT_K 10
++#define TEGRA234_MAIN_GPIO_PORT_L 11
++#define TEGRA234_MAIN_GPIO_PORT_M 12
++#define TEGRA234_MAIN_GPIO_PORT_N 13
++#define TEGRA234_MAIN_GPIO_PORT_P 14
++#define TEGRA234_MAIN_GPIO_PORT_Q 15
++#define TEGRA234_MAIN_GPIO_PORT_R 16
++#define TEGRA234_MAIN_GPIO_PORT_X 17
++#define TEGRA234_MAIN_GPIO_PORT_Y 18
++#define TEGRA234_MAIN_GPIO_PORT_Z 19
++#define TEGRA234_MAIN_GPIO_PORT_AC 20
++#define TEGRA234_MAIN_GPIO_PORT_AD 21
++#define TEGRA234_MAIN_GPIO_PORT_AE 22
++#define TEGRA234_MAIN_GPIO_PORT_AF 23
++#define TEGRA234_MAIN_GPIO_PORT_AG 24
++
++#define TEGRA234_MAIN_GPIO(port, offset) \
++	((TEGRA234_MAIN_GPIO_PORT_##port * 8) + offset)
++
++/* GPIOs implemented by AON GPIO controller */
++#define TEGRA234_AON_GPIO_PORT_AA 0
++#define TEGRA234_AON_GPIO_PORT_BB 1
++#define TEGRA234_AON_GPIO_PORT_CC 2
++#define TEGRA234_AON_GPIO_PORT_DD 3
++#define TEGRA234_AON_GPIO_PORT_EE 4
++#define TEGRA234_AON_GPIO_PORT_GG 5
++
++#define TEGRA234_AON_GPIO(port, offset) \
++	((TEGRA234_AON_GPIO_PORT_##port * 8) + offset)
++
++#endif
 -- 
-2.20.1
+2.17.1
 
