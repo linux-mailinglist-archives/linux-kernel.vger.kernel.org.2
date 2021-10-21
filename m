@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23736435F03
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F703435F0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhJUK3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:29:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60850 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbhJUK3r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:29:47 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6F68E1FDAC;
-        Thu, 21 Oct 2021 10:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634812050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l4CmcbGiUE6TXiVFsiIAM6k/VKLp51ANmkDrpUZ63zM=;
-        b=Oiz0jiaU6hvj8nGCH0fSGOeSVxcZ3yhiH1vQ50E9ah7NBk++5F4jTXDNyIw8OjY0obZlse
-        kmOn2cth6FQ+neI9GqDJlBE0h9K0ld/iMeT3SYYlfCewsN2ZLvBfQ+V7aE0sq/h4eEetKc
-        qEwk9rRZPvOi2K54lSywbbjGw4QbhWY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 3C8AEA3B85;
-        Thu, 21 Oct 2021 10:27:30 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 12:27:28 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>
-References: <YW6xZ7vi/7NVzRH5@dhcp22.suse.cz>
- <20211019194658.GA1787@pc638.lan>
- <YW/SYl/ZKp7W60mg@dhcp22.suse.cz>
- <CA+KHdyUopXQVTp2=X-7DYYFNiuTrh25opiUOd1CXED1UXY2Fhg@mail.gmail.com>
- <YXAiZdvk8CGvZCIM@dhcp22.suse.cz>
- <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
- <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
- <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
- <20211020192430.GA1861@pc638.lan>
- <163481121586.17149.4002493290882319236@noble.neil.brown.name>
+        id S230361AbhJUKas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:30:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230077AbhJUKah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 06:30:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 874596120C;
+        Thu, 21 Oct 2021 10:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634812101;
+        bh=XZqwcRi8eGbcHfTa8FsBo0CyV+VMmanZEXSL34v2xNA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LSIZboXeBiM2XeY8Wt+EdS5vzOT0y1ZBbT9bRqQsj3JP7BP/yWGDJFdQJDSckB09B
+         7uqGgy/9ZJHs5HkWP1mzK+b4YDPzJqFGxOwtsNXcSuJd++RJzuPnbSBghUV5uvPrQr
+         48FXQ0hb3XPEUFdAkHZ8go/OfpfNzL7Oi+qwtMWOwsIoe54SPCBCf3WNrap+GInr0V
+         yGABj0eWy+Oy4uHPhX+84IqzwjRnnFriSooLwDn9DdP3ldmXSfRxTG8Sqpob+snAai
+         xloBuBSX8vt6kna/4iXumpsepFj39VfqjUz5ICYwwc7ll2r4XouRi6EbQQOqDpLgmh
+         FssfdAsIY4+8g==
+Received: by mail-oi1-f170.google.com with SMTP id o83so295125oif.4;
+        Thu, 21 Oct 2021 03:28:21 -0700 (PDT)
+X-Gm-Message-State: AOAM532DDyVNWD56Lze+VMe2j0wrKXyHFoz1vzJF7HGTawJ3pxUd+IoB
+        fsnsREcnrxDYexSext4MlwHcM8cep6MuXn6B43k=
+X-Google-Smtp-Source: ABdhPJwJS57ISbZcVKqBAD81WN0NdiqSiFCaDg4V8so9PFGuh1YHfNT+etwlr7CUC37Bkxt5mEwG0tXwsqwrLAT+eTk=
+X-Received: by 2002:aca:4bc4:: with SMTP id y187mr3602617oia.174.1634812100804;
+ Thu, 21 Oct 2021 03:28:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163481121586.17149.4002493290882319236@noble.neil.brown.name>
+References: <20211020173554.38122-1-keescook@chromium.org>
+In-Reply-To: <20211020173554.38122-1-keescook@chromium.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 21 Oct 2021 12:28:09 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEw2P+Q2Nd-+vf6U5apx+v5Q4TTW6y0m-MFaB1O2OAehQ@mail.gmail.com>
+Message-ID: <CAMj1kXEw2P+Q2Nd-+vf6U5apx+v5Q4TTW6y0m-MFaB1O2OAehQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] gcc-plugins: Explicitly document purpose and
+ deprecation schedule
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dan Li <ashimida@linux.alibaba.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-security-module@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21-10-21 21:13:35, Neil Brown wrote:
-> On Thu, 21 Oct 2021, Uladzislau Rezki wrote:
-> > On Wed, Oct 20, 2021 at 05:00:28PM +0200, Uladzislau Rezki wrote:
-> > > >
-> > > > On Wed 20-10-21 16:29:14, Uladzislau Rezki wrote:
-> > > > > On Wed, Oct 20, 2021 at 4:06 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > [...]
-> > > > > > As I've said I am OK with either of the two. Do you or anybody have any
-> > > > > > preference? Without any explicit event to wake up for neither of the two
-> > > > > > is more than just an optimistic retry.
-> > > > > >
-> > > > > From power perspective it is better to have a delay, so i tend to say
-> > > > > that delay is better.
-> > > >
-> > > > I am a terrible random number generator. Can you give me a number
-> > > > please?
-> > > >
-> > > Well, we can start from one jiffy so it is one timer tick: schedule_timeout(1)
-> > > 
-> > A small nit, it is better to replace it by the simple msleep() call: msleep(jiffies_to_msecs(1));
-> 
-> I disagree.  I think schedule_timeout_uninterruptible(1) is the best
-> wait to sleep for 1 ticl
-> 
-> msleep() contains
->   timeout = msecs_to_jiffies(msecs) + 1;
-> and both jiffies_to_msecs and msecs_to_jiffies might round up too.
-> So you will sleep for at least twice as long as you asked for, possible
-> more.
+On Wed, 20 Oct 2021 at 19:35, Kees Cook <keescook@chromium.org> wrote:
+>
+> Hi,
+>
+> GCC plugins should only exist when some compiler feature needs to be
+> proven but does not exist in either GCC nor Clang. For example, if a
+> desired feature is already in Clang, it should be added to GCC upstream.
+> Document this explicitly.
+>
+> I'll put this in -next unless there are objections. :)
+>
+> Thanks!
+>
+> -Kees
+>
+>
+> Kees Cook (2):
+>   gcc-plugins: Explicitly document purpose and deprecation schedule
+>   gcc-plugins: Remove cyc_complexity
+>
 
-That was my thinking as well. Not to mention jiffies_to_msecs just to do
-msecs_to_jiffies right after which seems like a pointless wasting of
-cpu cycle. But maybe I was missing some other reasons why msleep would
-be superior.
--- 
-Michal Hocko
-SUSE Labs
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+>  Documentation/kbuild/gcc-plugins.rst        | 28 ++++++++-
+>  scripts/Makefile.gcc-plugins                |  2 -
+>  scripts/gcc-plugins/Kconfig                 | 20 +-----
+>  scripts/gcc-plugins/cyc_complexity_plugin.c | 69 ---------------------
+>  security/Kconfig.hardening                  |  9 ++-
+>  5 files changed, 34 insertions(+), 94 deletions(-)
+>  delete mode 100644 scripts/gcc-plugins/cyc_complexity_plugin.c
+>
+> --
+> 2.30.2
+>
