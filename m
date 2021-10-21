@@ -2,216 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8A3436BD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECB5436BD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhJUUOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 16:14:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23845 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231909AbhJUUOV (ORCPT
+        id S232118AbhJUUOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 16:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232072AbhJUUOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 16:14:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634847123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S60uGtgxit/VJWguL+H3Xuz1OPLpZM+msoN/Jy4XnuM=;
-        b=VZYMgIwZDl/mXmRDAP6aQAU1+QyL7fyvQeTZ42oeuf+66BWzChqBNDc+MXc9Cy1xazMLcI
-        66XhCFMIVuz0y7y8sI7Ocjl01hTuJE3rA03N/CHz1sMjSqArVD0gFpN/rHtn7croqdv7FS
-        wxylbVD07hOpbg7Gotzo6HaN58Mxc7E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-6hwY7brDN86jS62Bqs-Wgw-1; Thu, 21 Oct 2021 16:12:00 -0400
-X-MC-Unique: 6hwY7brDN86jS62Bqs-Wgw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78FC110A8E00;
-        Thu, 21 Oct 2021 20:11:58 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D29F517DBA;
-        Thu, 21 Oct 2021 20:11:57 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     bp@suse.de, seanjc@google.com, dave.hansen@linux.intel.com,
-        jarkko@kernel.org, yang.zhong@intel.com, x86@kernel.org
-Subject: [PATCH v4 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
-Date:   Thu, 21 Oct 2021 16:11:55 -0400
-Message-Id: <20211021201155.1523989-3-pbonzini@redhat.com>
-In-Reply-To: <20211021201155.1523989-1-pbonzini@redhat.com>
-References: <20211021201155.1523989-1-pbonzini@redhat.com>
+        Thu, 21 Oct 2021 16:14:47 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3596DC061243
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:12:31 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id s1so1172037plg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0Ek7RgOwQo6oJqpx6aSl8YI4w/pI0VmvGrf1HSIb4ek=;
+        b=BEnza5xUZ93dogoSka391+0wAiJJYs7DOiH9ZvJxE1u+ayGaphHREY8GNQQxw0s0Eo
+         x1XUuYeagK0f7K7X3kixjzOmzucZbivYTd/n4qxF5/h7qr831kDXBZ3lKlXPBQvFiUFh
+         MsmUPi3fl10giw3oyPPj5r7fVWTmI+vKy73TE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0Ek7RgOwQo6oJqpx6aSl8YI4w/pI0VmvGrf1HSIb4ek=;
+        b=aXsBQLmnWdPClMuJvwH5tEwMSwTwAfHA9J2YgeUYJ1YYPnEMfAx/yNXY5+oGt+UHJ8
+         dVmING0REqWKjq75BXHiLFplFqfqfxF29W2W2azf+QTN0NzF0Mb6twnN5f63uSuD1/ML
+         jT/yrCOm08TM4kfMJw1i3gsidnZhoNIfnh5PzE0kc2Lr1JhaHOk0yNDgD0+AJt69Vmda
+         pFwkKLjBl/7r5oDcaD2jBog/baEo38/SdQ7KD1I/SKL8Esi8ot8kA3CHeCUplsIkJHcx
+         xG3iAL13whTnLK5PUMDhviD8ChJt8/WKc1iydG96MTB9Nox8FPludGYMZcrWIW+kkEmW
+         Q54Q==
+X-Gm-Message-State: AOAM5318t6b3peegZyb+hDPoZkKYsU6SWxSES3YsPELu1DMhdm8eacrn
+        tp8Scp2W+muFiR6Trfq8f0f8LQ==
+X-Google-Smtp-Source: ABdhPJw9SrHBTtasS3Bfmsb5CfE2diIVE50no/cuh2ZoFTd2ifa2y4aRKorwhx2paF9Otm/4I696tQ==
+X-Received: by 2002:a17:902:ba85:b0:13e:c846:c92e with SMTP id k5-20020a170902ba8500b0013ec846c92emr7110023pls.57.1634847150794;
+        Thu, 21 Oct 2021 13:12:30 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z15sm7192276pfr.92.2021.10.21.13.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 13:12:30 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 13:12:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kselftest@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Ingo Molnar <mingo@redhat.com>, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, mgorman@suse.de,
+        bristot@redhat.com,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, Michal Hocko <mhocko@suse.com>,
+        deller@gmx.de, Qi Zheng <zhengqi.arch@bytedance.com>, me@tobin.cc,
+        tycho@tycho.pizza, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        metze@samba.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>, guoren@kernel.org,
+        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        nickhu@andestech.com, jonas@southpole.se,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>, hca@linux.ibm.com,
+        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] selftests: proc: Make sure wchan works when it exists
+Message-ID: <202110211310.634B74A@keescook>
+References: <20211008235504.2957528-1-keescook@chromium.org>
+ <f4b83c21-4e73-45b6-ae3a-17659be512c0@www.fastmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4b83c21-4e73-45b6-ae3a-17659be512c0@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For bare-metal SGX on real hardware, the hardware provides guarantees
-SGX state at reboot.  For instance, all pages start out uninitialized.
-The vepc driver provides a similar guarantee today for freshly-opened
-vepc instances, but guests such as Windows expect all pages to be in
-uninitialized state on startup, including after every guest reboot.
+On Thu, Oct 21, 2021 at 01:03:33PM -0700, Andy Lutomirski wrote:
+> 
+> 
+> On Fri, Oct 8, 2021, at 4:55 PM, Kees Cook wrote:
+> > This makes sure that wchan contains a sensible symbol when a process is
+> > blocked. Specifically this calls the sleep() syscall, and expects the
+> > architecture to have called schedule() from a function that has "sleep"
+> > somewhere in its name. For example, on the architectures I tested
+> > (x86_64, arm64, arm, mips, and powerpc) this is "hrtimer_nanosleep":
+> 
+> Is this really better than admitting that the whole mechanism is nonsense and disabling it?
+> 
+> We could have a fixed string for each task state and call it a day.
 
-Some userspace implementations of virtual SGX would rather avoid having
-to close and reopen the /dev/sgx_vepc file descriptor and re-mmap the
-virtual EPC.  For example, they could sandbox themselves after the guest
-starts and forbid further calls to open(), in order to mitigate exploits
-from untrusted guests.
+I consider this to be "future work". In earlier discussions it came up,
+but there wasn't an obvious clean cost-free way to do this, so instead
+we're just fixing the broken corner and keeping the mostly working rest
+of it while cleaning up the weird edges. :)
 
-Therefore, add a ioctl that does this with EREMOVE.  Userspace can
-invoke the ioctl to bring its vEPC pages back to uninitialized state.
-There is a possibility that some pages fail to be removed if they are
-SECS pages, and the child and SECS pages could be in separate vEPC
-regions.  Therefore, the ioctl returns the number of EREMOVE failures,
-telling userspace to try the ioctl again after it's done with all
-vEPC regions.  A more verbose description of the correct usage and
-the possible error conditions is documented in sgx.rst.
-
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
-	v3->v4: warn for an exception that is not a #GP
-
- Documentation/x86/sgx.rst       | 35 +++++++++++++++++++++
- arch/x86/include/uapi/asm/sgx.h |  2 ++
- arch/x86/kernel/cpu/sgx/virt.c  | 51 +++++++++++++++++++++++++++++++++
- 3 files changed, 88 insertions(+)
-
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index dd0ac96ff9ef..7bc9c3b297d6 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -250,3 +250,38 @@ user wants to deploy SGX applications both on the host and in guests
- on the same machine, the user should reserve enough EPC (by taking out
- total virtual EPC size of all SGX VMs from the physical EPC size) for
- host SGX applications so they can run with acceptable performance.
-+
-+Architectural behavior is to restore all EPC pages to an uninitialized
-+state also after a guest reboot.  Because this state can be reached only
-+through the privileged ``ENCLS[EREMOVE]`` instruction, ``/dev/sgx_vepc``
-+provides the ``SGX_IOC_VEPC_REMOVE_ALL`` ioctl to execute the instruction
-+on all pages in the virtual EPC.
-+
-+``EREMOVE`` can fail for three reasons.  Userspace must pay attention
-+to expected failures and handle them as follows:
-+
-+1. Page removal will always fail when any thread is running in the
-+   enclave to which the page belongs.  In this case the ioctl will
-+   return ``EBUSY`` independent of whether it has successfully removed
-+   some pages; userspace can avoid these failures by preventing execution
-+   of any vcpu which maps the virtual EPC.
-+
-+2. Page removal will cause a general protection fault if two calls to
-+   ``EREMOVE`` happen concurrently for pages that refer to the same
-+   "SECS" metadata pages.  This can happen if there are concurrent
-+   invocations to ``SGX_IOC_VEPC_REMOVE_ALL``, or if a ``/dev/sgx_vepc``
-+   file descriptor in the guest is closed at the same time as
-+   ``SGX_IOC_VEPC_REMOVE_ALL``; it will also be reported as ``EBUSY``.
-+   This can be avoided in userspace by serializing calls to the ioctl()
-+   and to close(), but in general it should not be a problem.
-+
-+3. Finally, page removal will fail for SECS metadata pages which still
-+   have child pages.  Child pages can be removed by executing
-+   ``SGX_IOC_VEPC_REMOVE_ALL`` on all ``/dev/sgx_vepc`` file descriptors
-+   mapped into the guest.  This means that the ioctl() must be called
-+   twice: an initial set of calls to remove child pages and a subsequent
-+   set of calls to remove SECS pages.  The second set of calls is only
-+   required for those mappings that returned a nonzero value from the
-+   first call.  It indicates a bug in the kernel or the userspace client
-+   if any of the second round of ``SGX_IOC_VEPC_REMOVE_ALL`` calls has
-+   a return code other than 0.
-diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-index 9690d6899ad9..f4b81587e90b 100644
---- a/arch/x86/include/uapi/asm/sgx.h
-+++ b/arch/x86/include/uapi/asm/sgx.h
-@@ -27,6 +27,8 @@ enum sgx_page_flags {
- 	_IOW(SGX_MAGIC, 0x02, struct sgx_enclave_init)
- #define SGX_IOC_ENCLAVE_PROVISION \
- 	_IOW(SGX_MAGIC, 0x03, struct sgx_enclave_provision)
-+#define SGX_IOC_VEPC_REMOVE_ALL \
-+	_IO(SGX_MAGIC, 0x04)
- 
- /**
-  * struct sgx_enclave_create - parameter structure for the
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 59cdf3f742ac..e8469bf68fd6 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -150,6 +150,41 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
- 	return 0;
- }
- 
-+static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
-+{
-+	struct sgx_epc_page *entry;
-+	unsigned long index;
-+	long failures = 0;
-+
-+	xa_for_each(&vepc->page_array, index, entry) {
-+		int ret = sgx_vepc_remove_page(entry);
-+		if (ret) {
-+			if (ret == SGX_CHILD_PRESENT) {
-+				/* The page is a SECS, userspace will retry.  */
-+				failures++;
-+			} else {
-+				/*
-+				 * Report errors due to #GP or SGX_ENCLAVE_ACT; do not
-+				 * WARN, as userspace can induce said failures by
-+				 * calling the ioctl concurrently on multiple vEPCs or
-+				 * while one or more CPUs is running the enclave.  Only
-+				 * a #PF on EREMOVE indicates a kernel/hardware issue.
-+				 */
-+				WARN_ON_ONCE(encls_faulted(ret) &&
-+					     ENCLS_TRAPNR(ret) != X86_TRAP_GP);
-+				return -EBUSY;
-+			}
-+		}
-+		cond_resched();
-+	}
-+
-+	/*
-+	 * Return the number of SECS pages that failed to be removed, so
-+	 * userspace knows that it has to retry.
-+	 */
-+	return failures;
-+}
-+
- static int sgx_vepc_release(struct inode *inode, struct file *file)
- {
- 	struct sgx_vepc *vepc = file->private_data;
-@@ -235,9 +268,27 @@ static int sgx_vepc_open(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static long sgx_vepc_ioctl(struct file *file,
-+			   unsigned int cmd, unsigned long arg)
-+{
-+	struct sgx_vepc *vepc = file->private_data;
-+
-+	switch (cmd) {
-+	case SGX_IOC_VEPC_REMOVE_ALL:
-+		if (arg)
-+			return -EINVAL;
-+		return sgx_vepc_remove_all(vepc);
-+
-+	default:
-+		return -ENOTTY;
-+	}
-+}
-+
- static const struct file_operations sgx_vepc_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= sgx_vepc_open,
-+	.unlocked_ioctl	= sgx_vepc_ioctl,
-+	.compat_ioctl	= sgx_vepc_ioctl,
- 	.release	= sgx_vepc_release,
- 	.mmap		= sgx_vepc_mmap,
- };
 -- 
-2.27.0
-
+Kees Cook
