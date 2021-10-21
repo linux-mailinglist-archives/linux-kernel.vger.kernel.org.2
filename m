@@ -2,125 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833434358C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F69D4358CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhJUDGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 23:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
+        id S231222AbhJUDIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 23:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJUDGA (ORCPT
+        with ESMTP id S230272AbhJUDIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 23:06:00 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C201C06161C;
-        Wed, 20 Oct 2021 20:03:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZXP93j7Kz4xbP;
-        Thu, 21 Oct 2021 14:03:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634785423;
-        bh=dc66k0dF4z0ZXASyBO1m1mvqt3iGvOAXX1j0VuG87XI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WK/sZdqkN5vYcJkruddisnKTo6MGL8QBu6bIm8xyuaxNG3bqhZ6HemIgKMtMmgiIC
-         bNtBv+N/F7qv4mYq4N7Oq0GSo5Fd5BqxrhemE/WtimXmT4u+QjSMlnmDh5t+YVkXaA
-         SRWqVet3LJgP+QTBCYY7n0pOLMUQdw5Feh6rCjoftYQQc6dzSVDOrYHJaFGydRmcre
-         ebzDGzwFftdVxY0DN6IEOmeo37KkkbOeltS6xFZ9nVnTXhnKzIGMO09tb6/WiLPGu4
-         2aTul6pyg5dFpz0cPymQs4PWZ7xHjt7xWFKbVGs5xd10w7zWeHYEq/fUXMBrf726im
-         glUSo+zvP+jqA==
-Date:   Thu, 21 Oct 2021 14:03:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the tip tree
-Message-ID: <20211021140340.139eab65@canb.auug.org.au>
-In-Reply-To: <20210920113809.18b9b70c@canb.auug.org.au>
-References: <20210917115859.6cfc64a5@canb.auug.org.au>
-        <20210920113809.18b9b70c@canb.auug.org.au>
+        Wed, 20 Oct 2021 23:08:07 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BD1C06161C;
+        Wed, 20 Oct 2021 20:05:52 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id v20so17499423plo.7;
+        Wed, 20 Oct 2021 20:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=77PLCsBG69VADmqLf54LQVmoEL+WpNpUv4oaIXYbQ6c=;
+        b=CdsMYfqWAigFK4bOxHnjsuV4Tyb59vn0FO/5v9hYO8xXI1+twQMwF+3tdLmINEZvD8
+         apJeFERMfXusaiGxKIylXMmhDCIYG0i1GF+Sktz92rEdLOMpTQE+945bLB0lVC772WW/
+         y0K3tTzDwUYtzykgA1siwLgZWgAt/kjPzP9U/v6T4hNrCEJxBqxEhWBkXGELvE78SgHd
+         3hFafz6cJ1zkHdP6EF9GWCsQ5EojXse2ee7uXuEH4LkmrDltw7WlAzfZIgXpnnVa3wQ5
+         B3bqQvu3w5a2HzgyZOgu+y7eXcwjlOjayvTjTY4rAcTaSWnmYImmMr5qtUPnrbX6jBKd
+         x4qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=77PLCsBG69VADmqLf54LQVmoEL+WpNpUv4oaIXYbQ6c=;
+        b=x7O7h5bh6b3rrCra46eaXmlO0RFep9mrmSK115kz3bkvKA4GM3SESqTlj0qHqAiK0N
+         vbqP7szJpkFwYekL5HgawPPs8BDbQ3ljb3wC/bO6PKRqKA0EVxZswmTbCSSHGK6UY99r
+         EJgtsYVbY3qMmHbP6CE9eJ/psaGKUi0IJuOG8Vv4eMYq14/PelL24589fA+zigVVkPN3
+         35ks3NZs6Rb0JOylMjHKXMjR91dWME/G+E0T5EkhSXsXnlc72MTm+qcclMkRVhNh3Vt8
+         3oEdLDoxfxTV4K9dwS3IFONOlsxPIoEJ2N0LzQiFZYVK0TAyZPMLKAL8s7+yqHcRUaqQ
+         Z0rg==
+X-Gm-Message-State: AOAM531XIpsnvFS8Ff7WRHkhHJMqu6QYh7bWTGl7v5TdybOe46iRR3I5
+        GQGXHdzmgsl7m9UdQpKi1y/qWOLcWvcKk/Ryu3M=
+X-Google-Smtp-Source: ABdhPJw5tbFa4AA42NrCt6ypTK8ftp/9GURHUnOFG8P8MSW8jdY19c87EJ9Ln30zdzCRGyGjg9pR6A==
+X-Received: by 2002:a17:90b:4b03:: with SMTP id lx3mr3271466pjb.162.1634785551798;
+        Wed, 20 Oct 2021 20:05:51 -0700 (PDT)
+Received: from localhost.localdomain ([94.177.118.132])
+        by smtp.gmail.com with ESMTPSA id s21sm4274412pfg.70.2021.10.20.20.05.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 20:05:51 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: tegra210-adma: fix pm runtime unbalance
+Date:   Thu, 21 Oct 2021 11:05:38 +0800
+Message-Id: <20211021030538.3465287-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5A65ZPteqLRstCVN1y.t1LF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5A65ZPteqLRstCVN1y.t1LF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The previous commit 059e969c2a7d ("dmaengine: tegra210-adma: Using
+pm_runtime_resume_and_get to replace open coding") forgets to replace
+the pm_runtime_get_sync in the tegra_adma_probe, but removes the
+pm_runtime_put_noidle.
 
-Hi all,
+Fix this by continuing to replace pm_runtime_get_sync with
+pm_runtime_resume_and_get in tegra_adma_probe.
 
-On Mon, 20 Sep 2021 11:38:09 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Fri, 17 Sep 2021 11:58:59 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the tip tree, today's linux-next build (x86_64 allmodconf=
-ig)
-> > produced this warning:
-> >=20
-> > vmlinux.o: warning: objtool: mce_setup()+0x22: call to memset() leaves =
-.noinstr.text section
-> > vmlinux.o: warning: objtool: do_machine_check()+0x51: call to mce_gathe=
-r_info() leaves .noinstr.text section
-> > vmlinux.o: warning: objtool: rcu_dynticks_eqs_enter()+0x0: call to rcu_=
-dynticks_task_trace_enter() leaves .noinstr.text section
-> > vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0xe: call to rcu_d=
-ynticks_task_trace_exit() leaves .noinstr.text section
-> > vmlinux.o: warning: objtool: rcu_nmi_enter()+0x36: call to __kasan_chec=
-k_read() leaves .noinstr.text section =20
->=20
-> Today, we added these:
->=20
-> vmlinux.o: warning: objtool: xen_irq_disable()+0xa: call to preempt_count=
-_add() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: xen_irq_enable()+0xb: call to preempt_count_=
-add() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: check_preemption_disabled()+0x81: call to is=
-_percpu_thread() leaves .noinstr.text section
->=20
-> and the rcu_nmi_enter one changed to:
->=20
-> vmlinux.o: warning: objtool: rcu_nmi_enter()+0x5d: call to __kasan_check_=
-read() leaves .noinstr.text section
+Fixes: 059e969c2a7d ("dmaengine: tegra210-adma: Using pm_runtime_resume_and_get to replace open coding")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/dma/tegra210-adma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Currently, I am getting these:
+diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
+index b1115a6d1935..d1dff3a29db5 100644
+--- a/drivers/dma/tegra210-adma.c
++++ b/drivers/dma/tegra210-adma.c
+@@ -867,7 +867,7 @@ static int tegra_adma_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (ret < 0)
+ 		goto rpm_disable;
+ 
+-- 
+2.25.1
 
-vmlinux.o: warning: objtool: xen_irq_disable()+0xa: call to preempt_count_a=
-dd() leaves .noinstr.text section
-vmlinux.o: warning: objtool: xen_irq_enable()+0xb: call to preempt_count_ad=
-d() leaves .noinstr.text section
-vmlinux.o: warning: objtool: mce_setup()+0x22: call to memset() leaves .noi=
-nstr.text section
-vmlinux.o: warning: objtool: do_machine_check()+0x99: call to mce_gather_in=
-fo() leaves .noinstr.text section
-
-(the rcu ones are gone once I merge the rcu tree)
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5A65ZPteqLRstCVN1y.t1LF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFw2IwACgkQAVBC80lX
-0GyeAAf8CTQW1u+V7fkxqlJpIpcoklJq0DDh0M3NLko4/AqoXl/Sg6jWOp6KsWrd
-DzSaNPuSp5Lz0Gi99In/lpe6m232Gl8MstZg9e1GzDRJDdKmhwOTaogSjr/otZHI
-544AMC8duXZuNmOU2slkSXE0nskRpszgULyTh5IQMV/SXdxh8Atppsg6H4ZRQzJ7
-jfsC4UIoQrY9+bb9/+90ml/2dczmsoYC4Z3+fgcOrcdfSqoPsSC/Tz319K1988LC
-yC3gOx+mwzzoglHjeKI/N7bs5lbFU2QvcNibdOZ3Q9n+A+QWfdjinXsA7Zvp/M/g
-pByMu9lM4StxgzVQOlWdvMUpFPZCYA==
-=xttI
------END PGP SIGNATURE-----
-
---Sig_/5A65ZPteqLRstCVN1y.t1LF--
