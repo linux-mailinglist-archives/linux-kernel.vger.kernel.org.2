@@ -2,182 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47074360E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2064360E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhJUL7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhJUL7s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:59:48 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AA3C06161C;
-        Thu, 21 Oct 2021 04:57:32 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id h193so89919pgc.1;
-        Thu, 21 Oct 2021 04:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=idIj9x5Y1snEOdYM83+I6n7R4t6XnyFXPq7fZJooAt0=;
-        b=QvnqmUW3vkYQDIvz4c0DkDquBfz0UXqjZUC0PwY4U8mXRpvcJ+SrK+3ui+5qMXR5nS
-         T88lojXXUAUuEtM2XKgqmwuKaPsSjqDf/OxyM+NZgN9M2pa9d8LlQ4qe6KlA1PB2oWTU
-         gEMfvIdPYfSzcBLsrxntIAPlht7kvi1XxsXuy6ks/zvRjrdk+BHTtE9uC7zhq6PCRgia
-         Y77EkhCkAPPCN1ptuF6l+zorCgwqHKs5KV6FLRDTvufFCWTt0EaGxf21EzB+fuAB70Jx
-         t+hHzP5Qd1TjFeRtbQBEPMHBikZemHsfLoL787dBzW4sWlwEhBJowuzcLmXcPu9qeaWo
-         +uXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=idIj9x5Y1snEOdYM83+I6n7R4t6XnyFXPq7fZJooAt0=;
-        b=ut/NSaQ0bhz2vzVRbhX3ZVs1C4qgX5dilPfNPmuWkrO3jpCpdOQ7CU/6tel9PzgyBj
-         Syd2Z9aBxB5hW6FNd3RI57echUHKgh1v5TULjl0PSvq9vThSKM/YV3xyIrd0P5sd3rwr
-         8eepTJVSkRpuSG6DYLQ/LDiIOR+XgH0ZZf7d5CSlEUrHybTl5UGS1+y+/Q2K7tCfpMHI
-         65+N3GcUgDHmIHYuHuvOL11L4gzHNR/BHmVIffNBxUE3MXg/vWeLodw62PuQiEnlP/JV
-         39pBisxiavaOYSvZ0iqY7RIztOl/8guwO5Y/6OpfTWtOmmy7BP+Z+TXv/70ErufjuQBm
-         MkpA==
-X-Gm-Message-State: AOAM533+wjrPb48xOB6dttp1R//0PExVFS8a8PcShYmdK5xvInSChQ5C
-        2MmyzVceNeT9YPMQL/gvoDY=
-X-Google-Smtp-Source: ABdhPJwu17uilS+pRVvSk89iNu6lAdgJwU8YwJMCdjTqkpEZIwNjHy9NHuJ4Lw3z8EjgYKkXVJnT1A==
-X-Received: by 2002:a63:7406:: with SMTP id p6mr4044865pgc.246.1634817451815;
-        Thu, 21 Oct 2021 04:57:31 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id t3sm5082314pgo.51.2021.10.21.04.57.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 04:57:31 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     anup@brainfault.org
-Cc:     anup.patel@wdc.com, aou@eecs.berkeley.edu, atish.patra@wdc.com,
-        cgel.zte@gmail.com, kvm-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, ran.jianping@zte.com.cn,
-        zealci@zte.com.cn
-Subject: [PATCH] RISC-V:KVM: remove unneeded semicolon
-Date:   Thu, 21 Oct 2021 11:57:06 +0000
-Message-Id: <20211021115706.1060778-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAAhSdy3DWOux6HiDU6fPazZUq=FOor8_ZEoqh6FBZru07NyxLQ@mail.gmail.com>
-References: <CAAhSdy3DWOux6HiDU6fPazZUq=FOor8_ZEoqh6FBZru07NyxLQ@mail.gmail.com>
+        id S231207AbhJUMAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:00:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230283AbhJUMAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:00:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC94660F22;
+        Thu, 21 Oct 2021 11:57:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634817476;
+        bh=FI5zjAvgpFtbujHaLjIRZZ9miEtCJgOm98z+ZpAbpFA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=koZ1TPZkogsxfLWQk7gj3QhKrMYcXgUes2yIutoCFQlcql72aGSZhEjSghWftLmKR
+         hWLNyiaveBy4Eyej59LpdDqtLHqU8KHvmYrIuvaMZR0oxssLak0jxuTy91f514c9XF
+         +vVtR3IetaUiEmicD8D/pUkko0PGJrmHmf+2DMB78KV7BAx9JPARWWqNjI2rmqA9rU
+         vTvNgDrLRP96RIn/BehzqvGRVzuc8WStUL/CnVM8pg4DB79n6BjOz7DTd/0TdmwE5X
+         5Gk9gLPK4ixoWrB/fc8Wi009cXwSPXgQbM/SgKZRh6oo+jl5U+XrUADXhkVVacM+Z8
+         M+md8O2GeXTaQ==
+Message-ID: <02abeeba-c359-cae3-4759-ee2087f21cc9@kernel.org>
+Date:   Thu, 21 Oct 2021 19:57:52 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [f2fs-dev] [PATCH] f2fs: include non-compressed blocks in
+ compr_written_block
+Content-Language: en-US
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+References: <20211006174910.2964885-1-daeho43@gmail.com>
+ <5743eeca-a6e8-87d4-5799-c622fbada429@kernel.org>
+ <CACOAw_zfDZMB4pLEuHWU5YcKnAtfBBTSuXwXy+L2rNJxXC3ysg@mail.gmail.com>
+ <16840026-35ba-cce6-4e0b-3332b0902d2a@kernel.org>
+ <CACOAw_xW7MZi8BVi-2Zo-=LruZr6k7fC7huYiYuWyaDDDti6WA@mail.gmail.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <CACOAw_xW7MZi8BVi-2Zo-=LruZr6k7fC7huYiYuWyaDDDti6WA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ran jianping <ran.jianping@zte.com.cn>
+On 2021/10/14 1:52, Daeho Jeong wrote:
+> Sorry, many parts of userspace already rely on these names.
+> I wrote that compr_written_blocks shows the block count written after
+> compression since mount.
+> So, the count of blocks written as original data after compression
+> because of no gain would not be an exception.
 
- Elimate the following coccinelle check warning:
- ./arch/riscv/kvm/vcpu_sbi.c:169:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu_exit.c:397:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu_exit.c:687:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu_exit.c:645:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu.c:247:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu.c:284:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu_timer.c:123:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu_timer.c:170:2-3: Unneeded semicolon
+Okay, shouldn't we Cc stable mailing list for this patch? otherwise
+userspace tool may get different stat number with the same compressed
+file in different kernel?
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
----
- arch/riscv/kvm/vcpu.c       | 4 ++--
- arch/riscv/kvm/vcpu_exit.c  | 6 +++---
- arch/riscv/kvm/vcpu_sbi.c   | 2 +-
- arch/riscv/kvm/vcpu_timer.c | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+Thanks,
 
-diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-index c44cabce7dd8..912928586df9 100644
---- a/arch/riscv/kvm/vcpu.c
-+++ b/arch/riscv/kvm/vcpu.c
-@@ -244,7 +244,7 @@ static int kvm_riscv_vcpu_get_reg_config(struct kvm_vcpu *vcpu,
- 		break;
- 	default:
- 		return -EINVAL;
--	};
-+	}
- 
- 	if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
- 		return -EFAULT;
-@@ -281,7 +281,7 @@ static int kvm_riscv_vcpu_set_reg_config(struct kvm_vcpu *vcpu,
- 		break;
- 	default:
- 		return -EINVAL;
--	};
-+	}
- 
- 	return 0;
- }
-diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
-index 13bbc3f73713..7f2d742ae4c6 100644
---- a/arch/riscv/kvm/vcpu_exit.c
-+++ b/arch/riscv/kvm/vcpu_exit.c
-@@ -394,7 +394,7 @@ static int emulate_store(struct kvm_vcpu *vcpu, struct kvm_run *run,
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
--	};
-+	}
- 
- 	/* Update MMIO details in kvm_run struct */
- 	run->mmio.is_write = true;
-@@ -642,7 +642,7 @@ int kvm_riscv_vcpu_mmio_return(struct kvm_vcpu *vcpu, struct kvm_run *run)
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
--	};
-+	}
- 
- done:
- 	/* Move to next instruction */
-@@ -684,7 +684,7 @@ int kvm_riscv_vcpu_exit(struct kvm_vcpu *vcpu, struct kvm_run *run,
- 		break;
- 	default:
- 		break;
--	};
-+	}
- 
- 	/* Print details in-case of error */
- 	if (ret < 0) {
-diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
-index ebdcdbade9c6..eb3c045edf11 100644
---- a/arch/riscv/kvm/vcpu_sbi.c
-+++ b/arch/riscv/kvm/vcpu_sbi.c
-@@ -166,7 +166,7 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
- 		/* Return error for unsupported SBI calls */
- 		cp->a0 = SBI_ERR_NOT_SUPPORTED;
- 		break;
--	};
-+	}
- 
- 	if (next_sepc)
- 		cp->sepc += 4;
-diff --git a/arch/riscv/kvm/vcpu_timer.c b/arch/riscv/kvm/vcpu_timer.c
-index ddd0ce727b83..5c4c37ff2d48 100644
---- a/arch/riscv/kvm/vcpu_timer.c
-+++ b/arch/riscv/kvm/vcpu_timer.c
-@@ -120,7 +120,7 @@ int kvm_riscv_vcpu_get_reg_timer(struct kvm_vcpu *vcpu,
- 		break;
- 	default:
- 		return -EINVAL;
--	};
-+	}
- 
- 	if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
- 		return -EFAULT;
-@@ -167,7 +167,7 @@ int kvm_riscv_vcpu_set_reg_timer(struct kvm_vcpu *vcpu,
- 	default:
- 		ret = -EINVAL;
- 		break;
--	};
-+	}
- 
- 	return ret;
- }
--- 
-2.25.1
-
+> 
+> Thanks,
+> 
+> 
+> On Wed, Oct 13, 2021 at 7:17 AM Chao Yu <chao@kernel.org> wrote:
+>>
+>> On 2021/10/12 0:02, Daeho Jeong wrote:
+>>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>>>> index c1bf9ad4c220..9b663eaf4805 100644
+>>>>> --- a/fs/f2fs/compress.c
+>>>>> +++ b/fs/f2fs/compress.c
+>>>>> @@ -1530,6 +1530,7 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
+>>>>>         if (cluster_may_compress(cc)) {
+>>>>>                 err = f2fs_compress_pages(cc);
+>>>>>                 if (err == -EAGAIN) {
+>>>>> +                     add_compr_block_stat(cc->inode, cc->cluster_size);
+>>>>
+>>>> Shouldn't we relocate this after 'write' label?
+>>>>
+>>>> One more concern, it looks we've changed what compr_block stat indicated,
+>>>> literally, the block we account should be compressed..., how about accounting
+>>>> it by introducing .presist_blocks, used_blocks or occupied_blocks.... thoughts?
+>>>>
+>>>
+>>> What I wanted to add here is just one case in which compression was
+>>> tried, but couldn't save any block, so gave up.
+>>> If we put this below the "write" label, we will count blocks, even if
+>>> the file is turned off for compression in "user-controlled
+>>> compression" mode.
+>>> Like the commit comment says, I want to estimate the overall compression rate.
+>>> But, if we include every other compression disabled condition, it
+>>> won't work like that.
+>>
+>> Got it, thanks for the explanation.
+>>
+>> Any thoughts about renaming compr_block? since some blocks accounted in
+>> .compr_block weren't compressed blocks.
+>>
+>> Thanks,
+>>
+>>>
+>>> Thanks,
+>>>
