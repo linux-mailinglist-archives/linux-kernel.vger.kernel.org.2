@@ -2,94 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347AB4360B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64FD4360B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhJULti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:49:38 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:35080 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhJULth (ORCPT
+        id S230383AbhJULuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230327AbhJULuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:49:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634816841; x=1666352841;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=p+VO7ithOuP0XnGZg+W3xd0diUiv+mQ77fVNQVDV3jU=;
-  b=L9vcPFUupbWsX4J12U9EA5lbp82nbb4BeeUfQ23qQ5HEEVepSZBC33DI
-   eEsgPEJ9O+SlBTtgYNsGaSNJW93zAJIbq5iert5xRMKCce6QtajnL+RXZ
-   3i9UdjApp1bAPjWltMh5yKqQ0oR0Auuni4Rw7cRJBPvLL5rr/fHfyGHd5
-   nmx7qepf7GhdzKdSd8fB808t1ss11Sg6E+g0P8i9rbbdhiHRFS55AZLzf
-   AmXyfQKHY2xxdt/dqGiYkhj3+DiIyrablu1/WaudxOqqJLpo+qNv6KiSi
-   ckFXoPL+hPvEvMuUh/Fi7YvjOZ0UrfjJ+gX6cZtuHMlCHCgIq/QefHjgV
-   Q==;
-IronPort-SDR: RgqHskO2oQGEMsN1uyJsqOgybAkMqhCKZWAJItUnpXIiuFMVOetI/aD6rNhvP+snoPvJ/7gCTT
- cEsbk/Na8kYgaI7YbN1tuUTkivBq5y75dClVD56x3Vi+z1D2UQyp8GOa0D+6oQ7FGAe4Bg9mnx
- SoZ0JIxZhqUTN7TK3RrXTuR4REc/EWNhLoPHv1x0GY9qGatUpMPfEtC12/gsMDLkLtssd67l3F
- +rTpaP0btExGsnkXPj39AUPv8h8bc5Ym+tnPYg1NCO9/Ny9/gGVwda9Hj0RlLGlj9gReQH7rtZ
- Dcex0BENudHRXBPboLsz1feL
-X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
-   d="scan'208";a="140598015"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Oct 2021 04:47:21 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 21 Oct 2021 04:47:21 -0700
-Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 21 Oct 2021 04:47:19 -0700
-Subject: Re: [PATCH 0/3] ARM: dts: at91: enable leftover IPs
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20211020094656.3343242-1-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <3e0c9bdb-f224-3c0b-cb11-c089185824d1@microchip.com>
-Date:   Thu, 21 Oct 2021 13:47:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 21 Oct 2021 07:50:11 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD921C061749
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:47:55 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id r7so580939wrc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yBNHXGhEhbZK9RhqGx3nsWnlm7UlQUKLFmDxMWFI5UY=;
+        b=bl2uLbPQUpuHGv4zy6LiqDvLjNFQBkpIMepHiGg3sWKGkaWY8LQO9hvtLlZZnrzc3I
+         VIRckpn3xAw1bexg1E/DB/5fe/eAEIjAlDFvXq6InHqWhhcWuEOR7NJXIcTamWT/Zj4C
+         5hd6ATD2R1rkcjdmoCEqkWGGz1doci9FtZxdPWPtU1jg1/R3CFN3w9BrJ1jM5HT+ROeC
+         F7tQ8VuGpgCBfQCOZlErx1GFMxiE7I4Rpe7FkOEwx9VXZr6OQeTjlPlEq4UeysT3GsEz
+         9eze1geDEfXw4/FjpG92oZvFes01FTKH2tD+Bz1gxVbuqa2qBb1/CBbQfBkeoRg0WkFL
+         Fe3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yBNHXGhEhbZK9RhqGx3nsWnlm7UlQUKLFmDxMWFI5UY=;
+        b=vtRUFLPfFEaoR1jkAUE8U1TlpXnCL1NY2eG0SVFlNup8nneXdU6I7J80uUpkAkPl3e
+         gZVJAOJgxLVi2H3TpSr2S/xY4M18tgkTLAmuBFc0YYGwAHWdjmuZCSpmPRZYfSHRX0Br
+         nMpgw3GX/8jB+jzDgGGQ7EmgEqmV9F4K+WtUtO8EEvp/DY4S6Oy0cvd8wyMjrm4xzA1i
+         nKIbadl3hfblwRt9v9eIWJsUt+i4oHQSfTYe4Cz1F9o++biIh2VLSu0Fbz9ek8Vm9Alt
+         DnyfALqkYzTFBQDW9EsW2J/T6Xykq11KlRPELH5di/fcs03sDZ+Of8wgI938h1oURoO/
+         EPjw==
+X-Gm-Message-State: AOAM530goi1c225lFHALQLXkzjOIccLIszrsLCHK1Is5+bEHR3/pXEha
+        9qImfmzm2NkoK3afYlrk71WRSg==
+X-Google-Smtp-Source: ABdhPJxx0R+vs47hNv6vdLE3QmnjXyaLLPKRDSZGc9IS45STqa4yVBgZtFkZS2v0DcZyNcYqTW41RA==
+X-Received: by 2002:adf:d222:: with SMTP id k2mr6975449wrh.54.1634816874266;
+        Thu, 21 Oct 2021 04:47:54 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id z1sm4579839wrt.94.2021.10.21.04.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 04:47:53 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 12:47:52 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] mfd/regulator: dt-bindings: max77686: convert to
+ dtschema
+Message-ID: <YXFTaCETelkSOeu+@google.com>
+References: <20211008123552.191384-1-krzysztof.kozlowski@canonical.com>
+ <YXE65SBhGFHP54L6@google.com>
+ <85c56cfb-64d9-a840-c2e4-eea47461188d@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20211020094656.3343242-1-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <85c56cfb-64d9-a840-c2e4-eea47461188d@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/2021 at 11:46, Claudiu Beznea wrote:
-> Hi,
-> 
-> The following series add DT nodes for TCB and RTC blocks on SAMA7G5.
-> 
-> Thank you,
-> Claudiu Beznea
+On Thu, 21 Oct 2021, Krzysztof Kozlowski wrote:
 
-For whole series:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Queued in at91-dt for 5.16. I plan to send a PR tomorrow.
-
-Best regards,
-   Nicolas
-
-> Claudiu Beznea (2):
->    ARM: dts: at91: sama7g5: add tcb nodes
->    ARM: dts: at91: sama7g5-ek: use blocks 0 and 1 of TCB0 as cs and ce
+> On 21/10/2021 12:03, Lee Jones wrote:
+> > On Fri, 08 Oct 2021, Krzysztof Kozlowski wrote:
+> > 
+> >> Hi,
+> >>
+> >> Convert Maxim MAX77686 bindings to dtschema.  The MFD patch (2/2)
+> >> depends on regulator, so this should go via one tree, for example MFD or DT.
+> >>
+> >> Changes since v1:
+> >> =================
+> >> See individual patches.
+> >>
+> >> Clock bindings
+> >> ==============
+> >> Existing Documentation/devicetree/bindings/clock/maxim,max77686.txt are
+> >> left untouched. The file is still used/referenced by other Maxim
+> >> devices: MAX77620 and MAX77802.
+> >>
+> >> Best regards,
+> >> Krzysztof
+> >>
+> >> Krzysztof Kozlowski (2):
+> >>   regulator: dt-bindings: maxim,max77686: convert to dtschema
+> >>   dt-bindings: mfd: maxim,max77686: convert to dtschema
+> >>
+> >>  .../devicetree/bindings/mfd/max77686.txt      |  26 ----
+> >>  .../bindings/mfd/maxim,max77686.yaml          | 132 ++++++++++++++++++
+> >>  .../bindings/regulator/max77686.txt           |  71 ----------
+> >>  .../bindings/regulator/maxim,max77686.yaml    |  83 +++++++++++
+> >>  MAINTAINERS                                   |   2 +-
+> >>  5 files changed, 216 insertions(+), 98 deletions(-)
+> >>  delete mode 100644 Documentation/devicetree/bindings/mfd/max77686.txt
+> >>  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
+> >>  delete mode 100644 Documentation/devicetree/bindings/regulator/max77686.txt
+> >>  create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
+> > 
+> > Does this need a PR too?
 > 
-> Eugen Hristev (1):
->    ARM: dts: at91: sama7g5: add rtc node
-> 
->   arch/arm/boot/dts/at91-sama7g5ek.dts | 12 ++++++++++++
->   arch/arm/boot/dts/sama7g5.dtsi       | 27 +++++++++++++++++++++++++++
->   2 files changed, 39 insertions(+)
-> 
+> No, I hope not. The regulator patch was acked by Mark and Rob, so you
+> can freely take both of these. I am not aware of any conflicts or other
+> dependencies.
 
+Acks do sometimes need PRs to be reciprocated.  Just need to make sure.
+
+Mark, do you need a PR if I take this in via MFD?
 
 -- 
-Nicolas Ferre
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
