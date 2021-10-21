@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62044360E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8E04360EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhJUMC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:02:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229765AbhJUMC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:02:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5E93960F9E;
-        Thu, 21 Oct 2021 12:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634817610;
-        bh=LjxLzV+RTYqFwMPpNZnK9drf+mkPKeYj+QbsRTfqVYI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=H39bujwJBUQilS2VrG7D73SiYKNX3GmfpqquakJYZWrm5ZSR3C4FvgBch+owao9De
-         RJaco7hcR9Fz5dr1cukhhiWTgR1g88UpbwYbWh1Ix73ELhlMGKiFRoMyYYhIRjYwdk
-         U57hXBvYepX9ZfF2/Memi/IIpi6b0+Jtt1NZeRQhdLFNCN6dCfWfEJss2tXppEUSDH
-         BWRebkS+1rKHlVP67JrQCqVzJw7cK7fqE/ckjmmflEERBYLNHXQig2WPTlnh9sfiVm
-         sOKzomUV3q8VMp1yMebPHjewyCku6j2rQcTJO1plNgzxpqti6lCGMVb141DOkZ8E0I
-         7pX9GE3ch/zZw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 54B0060A22;
-        Thu, 21 Oct 2021 12:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231130AbhJUMEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:04:09 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:42234 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230231AbhJUMEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:04:07 -0400
+Received: from BC-Mail-Ex14.internal.baidu.com (unknown [172.31.51.54])
+        by Forcepoint Email with ESMTPS id 2F5A7EB1F769EEB57D21;
+        Thu, 21 Oct 2021 20:01:42 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex14.internal.baidu.com (172.31.51.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Thu, 21 Oct 2021 20:01:42 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Thu, 21 Oct 2021 20:01:40 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <rcu@vger.kernel.org>
+Subject: [PATCH 0/6] kthread: Add the helper macro kthread_run_on_cpu()
+Date:   Thu, 21 Oct 2021 20:01:29 +0800
+Message-ID: <20211021120135.3003-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -net] ptp: free 'vclock_index' in ptp_clock_release()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163481761034.21729.18037093655482212990.git-patchwork-notify@kernel.org>
-Date:   Thu, 21 Oct 2021 12:00:10 +0000
-References: <20211021091353.457508-1-yangyingliang@huawei.com>
-In-Reply-To: <20211021091353.457508-1-yangyingliang@huawei.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        richardcochran@gmail.com, kuba@kernel.org
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-EX04.internal.baidu.com (172.31.51.44) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+the helper macro kthread_run_on_cpu() inculdes
+kthread_create_on_cpu/wake_up_process().
+In some cases, use kthread_run_on_cpu() directly instead of
+kthread_create_on_node/kthread_bind/wake_up_process() or
+kthread_create_on_cpu/wake_up_process() or
+kthreadd_create/kthread_bind/wake_up_process() to simplify the code.
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+Cai Huoqing (6):
+  kthread: Add the helper macro kthread_run_on_cpu()
+  RDMA/siw: Make use of the helper macro kthread_run_on_cpu()
+  ring-buffer: Make use of the helper macro kthread_run_on_cpu()
+  rcutorture: Make use of the helper macro kthread_run_on_cpu()
+  trace/osnoise: Make use of the helper macro kthread_run_on_cpu()
+  trace/hwlat: Make use of the helper macro kthread_run_on_cpu()
 
-On Thu, 21 Oct 2021 17:13:53 +0800 you wrote:
-> 'vclock_index' is accessed from sysfs, it shouled be freed
-> in release function, so move it from ptp_clock_unregister()
-> to ptp_clock_release().
-> 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/ptp/ptp_clock.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/infiniband/sw/siw/siw_main.c |  7 +++----
+ include/linux/kthread.h              | 22 ++++++++++++++++++++++
+ kernel/rcu/rcutorture.c              |  7 ++-----
+ kernel/trace/ring_buffer.c           |  7 ++-----
+ kernel/trace/trace_hwlat.c           |  6 +-----
+ kernel/trace/trace_osnoise.c         |  3 +--
+ 6 files changed, 31 insertions(+), 21 deletions(-)
 
-Here is the summary with links:
-  - [-net] ptp: free 'vclock_index' in ptp_clock_release()
-    https://git.kernel.org/netdev/net/c/b6b19a71c8bb
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
