@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DA0436D2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F158436D3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 00:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbhJUWAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 18:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        id S231952AbhJUWLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 18:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhJUV76 (ORCPT
+        with ESMTP id S230233AbhJUWLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 17:59:58 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C20DC061764;
-        Thu, 21 Oct 2021 14:57:42 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id e144so2877565iof.3;
-        Thu, 21 Oct 2021 14:57:42 -0700 (PDT)
+        Thu, 21 Oct 2021 18:11:14 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41625C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 15:08:55 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id p142so2978560iod.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 15:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FSABqEeJqnZ+jHsFyMQarpYG+7kfHP3vDYD7ydi62K4=;
-        b=NXdJQknP22vd1IbihARiP2NGsuaMMJox6H+pm2qDtVHqiFFKhuUC5rAtBlWDposUm5
-         rhrGqRvxFRLR4o3uiZfjzkIq2d7t7UwwDw1GZNTu592VQ9/ChonuVp03Kp/i0/SJabam
-         hR62AVH5Svo1EM6E9XNzFSlhYnm2kyB3QCGRs633qMbfLhuZ8mLLvZal4R/GE1/v8mKB
-         N4vlzerklsRdBxNF8IjbChvfcdkNJZWsAHPWKxOQQZOiTy3QVRnxPIlcP4xHAZ4qjNic
-         XlkGXDfbS2QacNcXjP/IUoZ9dd/HqIzPX6mJuiCpJjEqavY6HbG95nTBdhJMl97Od2aN
-         YXKw==
+        bh=kqZxwkNZdtY+AmxpVqiu8oRyIKMc8nkoF7xX0TxdGMM=;
+        b=DxFzh8izuSj3f21gBDsqxezhCxiQf2U+q6Pbj/jhaDZp3Ih77PRJt7BG75TY9Uqv2X
+         BaeIGKTYfqWI408L03PxnDyKeLBAAxIbfsqlFdr5Z4A1pyKeops5RRWFjCUs238zJT6D
+         xBpC34/bXBAIbFymWUHdkqDSkBds16cpCuge4HOgfCXG4fCcHFu+ta/a6rtY65b2hiQr
+         EWLSB8zjQx8vIJVqdjMAHB7gG4bvF4RHxK2jwJaQ/bc8UhHQs85BkOdBZx9J0VhkFmqT
+         1NzAsZ8LjHImIkNNK+6wMdchyn0qa7HFEtdF6RHzz3Ij0TffhM2osLhIqeUwKVE8zPiq
+         YNGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FSABqEeJqnZ+jHsFyMQarpYG+7kfHP3vDYD7ydi62K4=;
-        b=Bq9fhv+5jr+3CuxxLYJHMxxx4r9fV/9itrNwVBnOFJNwGwRsM+UikQ+0/Yt9z/xgV3
-         Yhsmlqo2M+5UETS8IeP1NvhVzIY/l8RoSKksoqIGBrZ1pW9EJNogaTFITj9blB3Og1Rq
-         fwokuSp4kop1zYCec3rGYsPzxqPS/JqWpz9Kxso1Nl+H3gudjDm+tyXhCMMGWLesqH04
-         6mef2eE3UfPJM5CTiDotLX0wInVgerhS5xmHNhehcZ/UyalpT0C+L08pSQJGaJeQbApk
-         tX52TE0k87/pezYPDmLF+4Ccxl7/a2BtDm1bL1lcVHCHbnjicDrSrOLOrqM5PqQLKOGH
-         X4ZA==
-X-Gm-Message-State: AOAM532yHLU69oAgHy84Mez5kut43FFZT33XLha1GbNmZZM3mUSXD5HU
-        FJqfoix4RFjgWdXGRWa8OhSE7vb2dDFDa72BmdhTybl8
-X-Google-Smtp-Source: ABdhPJwMzz89zWyFY2+2O3HyK/5QOB5o5Wjo/F1dBspXx9rinoZSz9SFMAKPHnY5g15Sl37ZbOoHntsWTcG49ZVFhW4=
-X-Received: by 2002:a6b:8e52:: with SMTP id q79mr5859794iod.64.1634853461875;
- Thu, 21 Oct 2021 14:57:41 -0700 (PDT)
+        bh=kqZxwkNZdtY+AmxpVqiu8oRyIKMc8nkoF7xX0TxdGMM=;
+        b=YuG282VgI4bWnbrXnI8nSU98FigjwKKVkk5RGhKv06A9EhblamHXKvIcJiZ5B25ssv
+         Kuh8ZNwZwHhw8uGCpcfN4euoRhU7spWYhnwb3jv34Tq3ewL5kCzGj/8Vrcg+GUhWhIJR
+         BhUI5wE0IBh6sifO42MV8idztN0aufAhPKpNldjdJUJliD/eWevsUjvhYuFS0NeD7mhw
+         D6YAaIt59S8QL4+s52KcNrc7QEH8KzwNfn19NjPJea6OZuapsZu2GNxqc9aL8oN1SxAr
+         VtZzm1gV/jS/gZEQNr6MG/bepPamvxrn/rJFUw1PusrdVZFwvZ6wQHJ6wLk7HY4hfp6E
+         xk3A==
+X-Gm-Message-State: AOAM531mv2safnWdU8Pfj93yxqDKWGlDohwgoOpXESj62qd9zj0XPV3N
+        2p9tGVBbYc+H9OFVu0kSv39CEcpiRMnLNE5xvyM=
+X-Google-Smtp-Source: ABdhPJwZ8jj5XE75N5yrFDIEos5z5ScIi5UtNdZ9p7O4xUVmk492fZvp2YCotY+Tas53zTlY19ZRzlW3cXfN+3i4N7I=
+X-Received: by 2002:a6b:8e52:: with SMTP id q79mr5901579iod.64.1634854134639;
+ Thu, 21 Oct 2021 15:08:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211019144520.3613926-1-geert@linux-m68k.org> <CANiq72=wnrwGbWygt2R_rsyKf3hq6vJUad4NDJwR4FeNFHZ55Q@mail.gmail.com>
-In-Reply-To: <CANiq72=wnrwGbWygt2R_rsyKf3hq6vJUad4NDJwR4FeNFHZ55Q@mail.gmail.com>
+References: <20210928191509.3806-1-liumh1@shanghaitech.edu.cn>
+In-Reply-To: <20210928191509.3806-1-liumh1@shanghaitech.edu.cn>
 From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 21 Oct 2021 23:57:31 +0200
-Message-ID: <CANiq72mtsuiKmFFm37fuykrm7rqRTNgGBypiqp-+NUM99qx8GA@mail.gmail.com>
-Subject: Re: [PATCH v8 00/21] auxdisplay: ht16k33: Add character display support
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org,
+Date:   Fri, 22 Oct 2021 00:08:43 +0200
+Message-ID: <CANiq72nf6gH0mvrBxe8bGRH4AmGMFt_EDO2s=LbHYajWJ1RoZg@mail.gmail.com>
+Subject: Re: [PATCH -next] drivers/auxdisplay/ht16k33.c: remove superfluous
+ header files from ht16k33.c
+To:     Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda <ojeda@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 6:44 PM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
+On Tue, Sep 28, 2021 at 9:15 PM Mianhan Liu <liumh1@shanghaitech.edu.cn> wrote:
 >
-> Thanks for all your work on this. Unless somebody is against this, I
-> will pick it up.
+> ht16k33.c hasn't use any macro or function declared in linux/slab.h.
+> Thus, these files can be removed from ht16k33.c safely without
+> affecting the compilation of the drivers/auxdisplay/ module
 
 Applied, thanks!
 
