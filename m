@@ -2,85 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC6A435CA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6EE435CA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhJUIKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:10:46 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4011 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhJUIKp (ORCPT
+        id S231453AbhJUIK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:10:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41000 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231475AbhJUIKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:10:45 -0400
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HZg3t30tdz686th;
-        Thu, 21 Oct 2021 16:04:10 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 10:08:26 +0200
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 09:08:26 +0100
-Subject: Re: [PATCH v2] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-To:     Kashyap Desai <kashyap.desai@broadcom.com>, <axboe@kernel.dk>
-CC:     <ming.lei@redhat.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hare@suse.de>
-References: <1634550083-202815-1-git-send-email-john.garry@huawei.com>
- <2f09315210261e82c42a1353cab48dcd@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <afdde2fe-21b3-2509-72fa-7f705338d8c7@huawei.com>
-Date:   Thu, 21 Oct 2021 09:08:25 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Thu, 21 Oct 2021 04:10:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634803716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IxdPLnDhVM2NRlBbE67cvgUXyH2+5Z7DhAGYZcnVmKY=;
+        b=FZV6FZ1yiLJq4JEmygEvFjRQQB+pN0vXKe77Psq/Z9KJq7LaUjGhvlXwazFjaFSy1WMYNz
+        3aZnHxvP+1z8EAf1+WRwJMJc4aEQmpNBTlLY5T53Xo1jMnr7wEZZ67L22QnJ9kT9pUxErr
+        hAHE7j1T92S4MISC0F+y2XAI6U+pCTI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-eIeV1WOmNpuuHHiyBKAyTg-1; Thu, 21 Oct 2021 04:08:34 -0400
+X-MC-Unique: eIeV1WOmNpuuHHiyBKAyTg-1
+Received: by mail-wm1-f71.google.com with SMTP id s25-20020a7bc399000000b0030da0f36afeso4100483wmj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:08:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=IxdPLnDhVM2NRlBbE67cvgUXyH2+5Z7DhAGYZcnVmKY=;
+        b=j1GA9yIJ3Yn1IQ4xd34dX7ZGyx6qACbvvGySaIjKnH3WETnzj9wJYxQ2AI0nWXrpRQ
+         U0fH7owgXYOvP/XZnTUcZK4F3EM2jApNibxzXklmtMFjZR7UjgDeub6IWgp0+ZWBDy6/
+         N5FqUZ3CbBKoM3UsQknPv49UXPzCNcE/HjOLwHtdVaZNt6mJ0F89SQikL081Z2fOa+g2
+         qYrOHasVefpwQJRo7spT7DhrYLNHlXLccPqD/Xesmxv47e3tWd9jqB4OpgVncgC3gW4g
+         vxXLMYPGxyBgrGPqJMIlEdyGJTLrtFiOONFJAT7ySk1sdOyjd7mrRkbnBhTM2bDdmDVs
+         KrQQ==
+X-Gm-Message-State: AOAM530Q30idnmd4Hha1IJsZ0S9stIvgH6irorvams+xKDvf/dvLA6Kv
+        lN3MFPE4pl8jkZ3LRDxmQ8n55JKRCWxN/O08s2oxvXXWpOL1EdMGoJlDzcsiHsG8Vuh1lWrGRg1
+        bfzk182A4l4Zk1/ACxq9kMmxB
+X-Received: by 2002:adf:e10a:: with SMTP id t10mr5400089wrz.384.1634803713461;
+        Thu, 21 Oct 2021 01:08:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwiuNF4xkkilzqVwocd6UV8p1JW7uWD8TQqcxyg1c53RE+iRtV5HLzuLeJn64jISdSlghiMZA==
+X-Received: by 2002:adf:e10a:: with SMTP id t10mr5400060wrz.384.1634803713191;
+        Thu, 21 Oct 2021 01:08:33 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u16sm6367134wmc.21.2021.10.21.01.08.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 01:08:32 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Maciej S . Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 1/2] KVM: x86: Add vendor name to kvm_x86_ops, use it
+ for error messages
+In-Reply-To: <20211018183929.897461-2-seanjc@google.com>
+References: <20211018183929.897461-1-seanjc@google.com>
+ <20211018183929.897461-2-seanjc@google.com>
+Date:   Thu, 21 Oct 2021 10:08:31 +0200
+Message-ID: <87k0i6x0jk.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <2f09315210261e82c42a1353cab48dcd@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2021 19:49, Kashyap Desai wrote:
->> -----Original Message-----
->> From: John Garry [mailto:john.garry@huawei.com]
->> Sent: Monday, October 18, 2021 3:11 PM
->> To:axboe@kernel.dk
->> Cc:ming.lei@redhat.com;linux-block@vger.kernel.org; linux-
->> kernel@vger.kernel.org;kashyap.desai@broadcom.com;hare@suse.de; John
->> Garry<john.garry@huawei.com>
->> Subject: [PATCH v2] blk-mq: Fix blk_mq_tagset_busy_iter() for shared
-> tags
->> Since it is now possible for a tagset to share a single set of tags, the
-> iter
->> function should not re-iter the tags for the count of #hw queues in that
-> case.
->> Rather it should just iter once.
->>
->> Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap
-> support")
->> Reported-by: Kashyap Desai<kashyap.desai@broadcom.com>
->> Signed-off-by: John Garry<john.garry@huawei.com>
->> Reviewed-by: Ming Lei<ming.lei@redhat.com>
->> ---
->> Diff to v1:
->> - Add Ming's RB tag
-> Now I noticed proper host_busy in my test. Still CPU hogging is not
-> resolved, but issue addressed by this patch is resolved.
-> 
-> Tested-by: Kashyap Desai<kashyap.desai@broadcom.com>
+Sean Christopherson <seanjc@google.com> writes:
 
-Hi Jens,
+> Paul pointed out the error messages when KVM fails to load are unhelpful
+> in understanding exactly what went wrong if userspace probes the "wrong"
+> module.
+>
+> Add a mandatory kvm_x86_ops field to track vendor module names, kvm_intel
+> and kvm_amd, and use the name for relevant error message when KVM fails
+> to load so that the user knows which module failed to load.
+>
+> Opportunistically tweak the "disabled by bios" error message to clarify
+> that _support_ was disabled, not that the module itself was magically
+> disabled by BIOS.
+>
 
-Can you kindly consider picking up this patch?
+...
 
-I'm still waiting for feedback from Kashyap on whether we should 
-optimize the other iter functions for shared tags, but this one is a fix.
+> Suggested-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 2 ++
+>  arch/x86/kvm/svm/svm.c          | 2 ++
+>  arch/x86/kvm/vmx/vmx.c          | 2 ++
+>  arch/x86/kvm/x86.c              | 8 +++++---
+>  4 files changed, 11 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 80f4b8a9233c..b05bfcc72042 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1302,6 +1302,8 @@ static inline u16 kvm_lapic_irq_dest_mode(bool dest_mode_logical)
+>  }
+>  
+>  struct kvm_x86_ops {
+> +	const char *name;
+> +
+>  	int (*hardware_enable)(void);
+>  	void (*hardware_disable)(void);
+>  	void (*hardware_unsetup)(void);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 89077160d463..cee4915d2ce3 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -4580,6 +4580,8 @@ static int svm_vm_init(struct kvm *kvm)
+>  }
+>  
+>  static struct kvm_x86_ops svm_x86_ops __initdata = {
+> +	.name = "kvm_amd",
+> +
+>  	.hardware_unsetup = svm_hardware_teardown,
+>  	.hardware_enable = svm_hardware_enable,
+>  	.hardware_disable = svm_hardware_disable,
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 1c8b2b6e7ed9..c147438eaafc 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7568,6 +7568,8 @@ static bool vmx_check_apicv_inhibit_reasons(ulong bit)
+>  }
+>  
+>  static struct kvm_x86_ops vmx_x86_ops __initdata = {
+> +	.name = "kvm_intel",
+> +
+>  	.hardware_unsetup = hardware_unsetup,
+>  
+>  	.hardware_enable = hardware_enable,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index c59b63c56af9..e966e9cdd805 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -8539,18 +8539,20 @@ int kvm_arch_init(void *opaque)
+>  	int r;
+>  
+>  	if (kvm_x86_ops.hardware_enable) {
+> -		printk(KERN_ERR "kvm: already loaded the other module\n");
+> +		pr_err("kvm: already loaded vendor module '%s'\n", kvm_x86_ops.name);
+>  		r = -EEXIST;
+>  		goto out;
+>  	}
+>  
+>  	if (!ops->cpu_has_kvm_support()) {
+> -		pr_err_ratelimited("kvm: no hardware support\n");
+> +		pr_err_ratelimited("kvm: no hardware support for '%s'\n",
+> +				   ops->runtime_ops->name);
+>  		r = -EOPNOTSUPP;
+>  		goto out;
+>  	}
+>  	if (ops->disabled_by_bios()) {
+> -		pr_err_ratelimited("kvm: disabled by bios\n");
+> +		pr_err_ratelimited("kvm: support for '%s' disabled by bios\n",
+> +				   ops->runtime_ops->name);
 
-Thanks!
+
+I'd suggest we change this to 
+
+		pr_err_ratelimited("kvm: %s: virtualization disabled in BIOS\n",
+				   ops->runtime_ops->name);
+
+or something like that as generally, it makes little sense to search for
+'KVM' in BIOS settings. You need too look for either 'Virtualization' or
+VT-x/AMD-v.
+
+>  		r = -EOPNOTSUPP;
+>  		goto out;
+>  	}
+
+-- 
+Vitaly
+
