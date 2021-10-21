@@ -2,163 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5F6435B5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0678F435B5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhJUHKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:10:25 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:42437 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhJUHKX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:10:23 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZdqB5T9xz4xbZ;
-        Thu, 21 Oct 2021 18:08:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634800087;
-        bh=eTLqwREw6sl0U0jZ/4nQbCKAYx/Y3ATjV+xwhXOlsq4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Myz4De16LDwmkqaBe249HAVCyxOPdOJuoT6BqWy8eGqlzyR/H6PiKYJrIljrbn+53
-         o0hM9p6Aiicx6jhiwCZd/4EFDTxj4C/pi4CUuhL4oYNqm6hCJSeP/2M/V5XtbGSxgF
-         UHvBhlpAKGauouk3otR+1Ghh2zV7sNa2kS5ArS3t2L4gg1bUjdZsDrdfLB1XLMKXkh
-         v3frnPtWwJO09pRbO4bE6X7vKAXAHw1qTHFhSuGpJ488kZgRLh+dM26mlZZVaedt1x
-         EvvSS1Xs5zMkVGePs3nPY2JY/fLuOBHC4VQ1m0oYZDCjEYi4cV/gnsNQKPFnR6f/RD
-         K1bUJwBskVkHA==
-Date:   Thu, 21 Oct 2021 18:08:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Yang Shi <shy828301@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20211021180805.137314f0@canb.auug.org.au>
-In-Reply-To: <20211021174303.3710b295@canb.auug.org.au>
-References: <20211021174303.3710b295@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DmbGPuq6yIOXCw7v0NakPbK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S231334AbhJUHKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:10:40 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:44971 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230220AbhJUHKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 03:10:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1634800103; x=1666336103;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=66rOrQeN+xfmoNg6r4UCYTzu2221zyQ3mTB2Kq6ryGo=;
+  b=J8BnNJy8oY3SWvpR0cNl2qxbXC2kznt79KyT+cLrqjOYmp7lQJdTFGQc
+   /fyiAG57Askr2V+zNrLxmu2UxQtdoPIVHzWnmduXa6GuDyK1USKRU1/4H
+   8ZnNJa6aQCi9eHRHBURQrY73Vc1+r/VmgwW7Psw/tdbS+gkJXzAzSUdDf
+   p/R01TRF1xvLYQVc/dku3/B+RPKSo+JV2oYiIeFaiSpNVYOA/Gjhkpqvz
+   2pVuzQxWlImcCsatAlfffg+Tv0tjjAq6SeMF6DUJMFFRl9iVBF7Rm37RG
+   Rb3AsuclgPSljvayIH6j8qtLBsk1F7QALwFh7aV6cCtcwswp5deeicw4r
+   A==;
+X-IronPort-AV: E=Sophos;i="5.87,169,1631570400"; 
+   d="scan'208";a="20167327"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 21 Oct 2021 09:08:21 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Thu, 21 Oct 2021 09:08:21 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Thu, 21 Oct 2021 09:08:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1634800101; x=1666336101;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=66rOrQeN+xfmoNg6r4UCYTzu2221zyQ3mTB2Kq6ryGo=;
+  b=B9PypCYcjmdUhu5qgr7SLyUp01H2zjkuDZgHO5ltgyytlEMlCH9dDiJU
+   fOvPDfCpchG1uiBz6aNFkheuGtcbJMUFTricIS3mnNCYeDvdLZA3GsFnW
+   S2HmhpLv+mzOwXFRHj8Arrroh6IdDw5Lw0lvc/pe+Xh8DnHkOe8eypwl2
+   /aq2hP5OUuOIQgqC54E62KIZfCv0m1gAgzM/v9Fa9KFZ+43Gjb/CYBvWm
+   7emYiPE0mXJenELbwwRp/nGEGI6JugX40byql4+BhRmkGpwLZ5PrSi1BM
+   6wG1FhaaK3qZTOseeCw7LXyH+q/48Nd+dRLbsOFfPoGSUQ3OqyoBCVTBR
+   w==;
+X-IronPort-AV: E=Sophos;i="5.87,169,1631570400"; 
+   d="scan'208";a="20167326"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 21 Oct 2021 09:08:21 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 6B230280065;
+        Thu, 21 Oct 2021 09:08:21 +0200 (CEST)
+Message-ID: <c286107376a99ca2201db058e1973e2b2264e9fb.camel@ew.tq-group.com>
+Subject: Re: (EXT) Re: [PATCH] net: fec: defer probe if PHY on external MDIO
+ bus is not available
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 21 Oct 2021 09:08:19 +0200
+In-Reply-To: <YXBk8gwuCqrxDbVY@lunn.ch>
+References: <20211014113043.3518-1-matthias.schiffer@ew.tq-group.com>
+         <YW7SWKiUy8LfvSkl@lunn.ch>
+         <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
+         <YXBk8gwuCqrxDbVY@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DmbGPuq6yIOXCw7v0NakPbK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 2021-10-20 at 20:50 +0200, Andrew Lunn wrote:
+> > > I've not looked at the details yet, just back from vacation. But this
+> > > seems wrong. I would of expected phylib to of returned -EPRODE_DEFER
+> > > at some point, when asked for a PHY which does not exist yet. All the
+> > > driver should need to do is make sure it returns the
+> > > -EPRODE_DEFER.
+> > 
+> > This is what I expected as well, however there are a few complications:
+> > 
+> > - At the moment the first time the driver does anything with the PHY is
+> >   in fec_enet_open(), not in fec_probe() - way too late to defer
+> >   anything
+> 
+> O.K. Right. Are you using NFS root? For normal user space opening of
+> the interface, this has all been sorted out by the time user space
+> does anything. The NFS root changes the time in a big way.
 
-Hi all,
+NFS root is one of our usecases.
 
-On Thu, 21 Oct 2021 17:43:03 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the akpm-current tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
->=20
-> In file included from include/linux/mmzone.h:22,
->                  from include/linux/gfp.h:6,
->                  from include/linux/xarray.h:14,
->                  from include/linux/radix-tree.h:19,
->                  from include/linux/fs.h:15,
->                  from include/linux/compat.h:17,
->                  from arch/powerpc/kernel/asm-offsets.c:12:
-> include/linux/page-flags.h:806:29: error: macro "PAGEFLAG_FALSE" requires=
- 2 arguments, but only 1 given
->   806 | PAGEFLAG_FALSE(HasHWPoisoned)
->       |                             ^
-> include/linux/page-flags.h:411: note: macro "PAGEFLAG_FALSE" defined here
->   411 | #define PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname, ln=
-ame) \
->       |=20
-> include/linux/page-flags.h:807:32: error: macro "TESTSCFLAG_FALSE" requir=
-es 2 arguments, but only 1 given
->   807 |  TESTSCFLAG_FALSE(HasHWPoisoned)
->       |                                ^
-> include/linux/page-flags.h:414: note: macro "TESTSCFLAG_FALSE" defined he=
-re
->   414 | #define TESTSCFLAG_FALSE(uname, lname)     \
->       |=20
-> include/linux/page-flags.h:806:1: error: unknown type name 'PAGEFLAG_FALS=
-E'
->   806 | PAGEFLAG_FALSE(HasHWPoisoned)
->       | ^~~~~~~~~~~~~~
-> include/linux/page-flags.h:807:18: error: expected ';' before 'static'
->   807 |  TESTSCFLAG_FALSE(HasHWPoisoned)
->       |                  ^
->       |                  ;
-> ......
->   815 | static inline bool is_page_hwpoison(struct page *page)
->       | ~~~~~~           =20
->=20
-> Caused by commit
->=20
->   e95de3e8d811 ("mm: filemap: check if THP has hwpoisoned subpage for PMD=
- page fault")
->=20
-> interacting with commit
->=20
->   d389a4a81155 ("mm: Add folio flag manipulation functions")
->=20
-> from the folio tree.
->=20
-> I have applied the following merge fix patch for today.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Thu, 21 Oct 2021 17:32:36 +1100
-> Subject: [PATCH] fix up for "mm: Add folio flag manipulation functions"
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  include/linux/page-flags.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index 867b4bb3c336..80b33404ad1f 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -803,8 +803,8 @@ PAGEFLAG_FALSE(DoubleMap, double_map)
->  PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
->  	TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
->  #else
-> -PAGEFLAG_FALSE(HasHWPoisoned)
-> -	TESTSCFLAG_FALSE(HasHWPoisoned)
-> +PAGEFLAG_FALSE(HasHWPoisoned, hashwpoisoned)
-> +	TESTSCFLAG_FALSE(HasHWPoisoned, hashwpoisoned)
->  #endif
-> =20
->  /*
-> --=20
-> 2.33.0
+> 
+> Anyway, i would say some bits of code need moving from open to probe
+> so EPROBE_DEFER can be used.
+> 
+> We already have:
+> 
+>         phy_node = of_parse_phandle(np, "phy-handle", 0);
+>         if (!phy_node && of_phy_is_fixed_link(np)) {
+>                 ret = of_phy_register_fixed_link(np);
+>                 if (ret < 0) {
+>                         dev_err(&pdev->dev,
+>                                 "broken fixed-link specification\n");
+>                         goto failed_phy;
+>                 }
+>                 phy_node = of_node_get(np);
+>         }
+>         fep->phy_node = phy_node;
+> 
+> Go one step further. If fep->phy_node is not NULL, we know there
+> should be a PHY. So call of_phy_find_device(). If it returns NULL,
+> then -EPROBE_DEFER. Otherwise store the phydev into fep, and use it in
+> open.
+> 
+> You will need to move the call to fec_enet_mii_init(pdev) earlier, so
+> the MDIO bus is available.
 
-So, I then discovered patch
+I would love to do this, but driver-api/driver-model/driver.rst
+contains the following warning:
 
-mm-filemap-check-if-thp-has-hwpoisoned-subpage-for-pmd-page-fault-vs-folios=
-.patch
+      -EPROBE_DEFER must not be returned if probe() has already created
+      child devices, even if those child devices are removed again
+      in a cleanup path. If -EPROBE_DEFER is returned after a child
+      device has been registered, it may result in an infinite loop of
+      .probe() calls to the same driver.
 
-which conflicted with my merge resolution.  I will use that tomorrow instea=
-d.
+My understanding of this is that there is simply no way to return
+-EPROBE_DEFER after fec_enet_mii_init(pdev).
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/DmbGPuq6yIOXCw7v0NakPbK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+> 
+>     Andrew
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFxEdUACgkQAVBC80lX
-0Gw3gAf/aaryGY+XIJzKKrw+4QVZbkB4vG8O+4oBxxJ6Rxe26z6ejRKUqxcPG78e
-CEWY9gsZN7Kcec1oo3r2sp41MbGQDys7dlY6dIZrZ7WN3v0OqIdVYnpfyb76qdXx
-SYUPlB25mzKeHM9ncbTGor6mSZWnO4CQM7Fo+eoijgDI0HAV44U1Sx7jrtaJduKA
-jPDAHDKOmYZm/RKySpra5grWEbbrnmfo2MIS+wD3rJYsNfxUVHkLGQ4lzq6xuwa1
-VW3vtX9cH1ovrEwABuQYZ3YCpvQEfMFNclanrjbb6XIpXhxsT/jLuOYsqPtaXGQD
-qpROQPy52ad9w4doZoPHw40jEhZdiw==
-=S3Ef
------END PGP SIGNATURE-----
-
---Sig_/DmbGPuq6yIOXCw7v0NakPbK--
