@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D272D436B7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8572436B7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhJUTvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        id S231732AbhJUTvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJUTvp (ORCPT
+        with ESMTP id S230272AbhJUTvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:51:45 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6C0C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:49:28 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id e19so1623111ljk.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:49:28 -0700 (PDT)
+        Thu, 21 Oct 2021 15:51:20 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B537C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:49:04 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id h19so3421207uax.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:49:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Opei2my2zsRhGEYmSTuquQHbuG/tOHt/W/ohA+sBkZU=;
-        b=J56pn8v/zCspqN41ZGEwIT56+31lMkBdJrZdcQLtgO9PhvQz6MeiFi7kH1eEiMGXjo
-         4b51gujd75zM4NgVtCt8cJ5xgwsmTIE/6D2iUJM9MNVLTr8A4FyqbCglFi5RlvB8sZ+x
-         fGEo7bkxnv35B1qsE7FtZhmIUvXlDBjZmQqr3qrzG9yitRfUjRivRSX90/W5FksMs6FE
-         dLjygk54GGFjoHNzPqjObnxCZCGCL1Ftj6shrlmL8I8gZ69aBFmdWuoC/n6QrJZVcOmT
-         G36icUoXHyNCMLJN97Vkgz0JoMq5ITrHeTJWng356HwZHZqyw9dyhgtVoHJGSrWg5PTn
-         XddQ==
+         :cc;
+        bh=506SnosJu2/k7veB5Auol9VGHyPyzo6ab/OrxVZJdFc=;
+        b=JZeRQvhOimryHQTO0F1yK8ihzbC/IVWHgTOcrfhaJ1QgKmHtIb9FPtaoXxJXzLCepk
+         0pc0gLbmtclOHyfWODXsmlN0T/zcv+5Bid66yCjZR28gKB4+ecuHtN+zZYfLpiQuJypb
+         9snbIJAmr2/89bUHVp+jINBxclOHw0uCjGV8hXoYu/MEazJ7bOsVUAMnALH5OlFviYEx
+         EOgXtMlWXrRf4q/CdZB4mSS9IOTXNfbvKgn4RNtkCrTX8r0IIt9fPmtZ49UhMB5w6LZj
+         wo2Nh0mBp0rHAznuCL6fMlVRUFPWy3vlVYZHk5I9FPTPwZKWbwjYfB5VzZTdfTfXiEi9
+         X1bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Opei2my2zsRhGEYmSTuquQHbuG/tOHt/W/ohA+sBkZU=;
-        b=DasRJVLhTsq/C61vtNV34jL6l68HbmncFHaU72UvNqMmYBTK+ZYfID0HxV1oLWxzRJ
-         mFQizXv/QYb0Nsk50E3aZkUymzcIWRA/xh4RtaFgVub9T8G6gct3egDDHGsLRbQBJ8hW
-         krYrFsxD6P3CvVmqzNURSqFj4cZZP0IxT96kwuXlKlUY7q2qhwwCFN9XC79ZACLOS8In
-         1PVsWJX0FPlpe1Nam40CM2EhaHY8/+bFabniYpnQBizB0knH6MxKbZZXr0s79uOykLZg
-         WifD6yF+4/Nmj++VApi4Bs43D8XEugdEK6A103SzezYXlYQH6+XCbrAzp6/Ldvc0ANIx
-         LK+w==
-X-Gm-Message-State: AOAM530xhu4RMtsxVhenMqLeqJIF8HVLX8Xph3eKYXTRCjz1lmhfO7FK
-        RxNWGzxrek0K2mpB4+t71tFJNKFygpg+J9DJTlTbbQ==
-X-Google-Smtp-Source: ABdhPJzsohCOTx1G/FZllZ3uAchcRkiXF3/8ioX8Pv2kx2U1CnAV7vzxiVyXFXeanMWMJgtKKvvkklbYWWpHXH5LLpw=
-X-Received: by 2002:a2e:85c4:: with SMTP id h4mr8206076ljj.4.1634845767028;
- Thu, 21 Oct 2021 12:49:27 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=506SnosJu2/k7veB5Auol9VGHyPyzo6ab/OrxVZJdFc=;
+        b=WqGKGTRi9xsqFg8GAdQVhQ/G31Q0kfUiyR20epZMy8NCHBlZxE/5vAw/t8SQxcimZU
+         IRoJ4kUOrIW3+Nm3P/KcdxTtKw6D3S+ht2v8YIfXKfM3S0lpEZ2W7n1CPxb54VV031ue
+         TDiZVuVf7pIcH6zsGO1+Oa1HyQaHIu8YSv+tvw9EudLWd8NKYe5wQtskAFtsllrN3o0m
+         6aMdAMpkxdRoAKnfI0xlELnKyJToFM6byJOIWyEwZn7ziYIS2xXVRxUvf41w3MB9fvdE
+         dUtw0W9hxinmEInZxAUcxFzuBmwzvgMDB/dqnFvSJNftq7LVjBdyXJ9MLxhemNpId2eK
+         7ACg==
+X-Gm-Message-State: AOAM532/CJ3JMDHXpsnNIo0HfLWBEOiA3XW/rnsAMcfx39ISmwFbjJyI
+        VVnjXuGeZ2MuYTghP6/YClo4BdR0MMCvNgfslwaDUsGjNxxOvR0r
+X-Google-Smtp-Source: ABdhPJz4I5Z/WBFSBkX6/q4/uVeYKIfIu9yEzNWeEn5ErrVs1m/Y7PwD0YcrX1Lkqqjdhm5YITQcRIqFFsa0Oxa4pTw=
+X-Received: by 2002:a67:d91b:: with SMTP id t27mr9275555vsj.55.1634845743358;
+ Thu, 21 Oct 2021 12:49:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211020083902.3669769-1-geert@linux-m68k.org>
-In-Reply-To: <20211020083902.3669769-1-geert@linux-m68k.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Oct 2021 21:48:50 +0200
-Message-ID: <CAPDyKFouV9C2VrGwB1u5iQ5g5m2i9nmKBZMQg1z5m6t9QY5wAQ@mail.gmail.com>
-Subject: Re: [PATCH -next] mmc: sdhci-omap: Remove forward declaration of sdhci_omap_context_save()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
+References: <20211019131724.3109-1-semen.protsenko@linaro.org>
+ <20211019131724.3109-3-semen.protsenko@linaro.org> <6dbd4812-bac3-55dc-108e-c322e8a493de@canonical.com>
+ <6ce55971-bee5-1bc9-c3a2-28e6ede37401@canonical.com> <CAPLW+4mE09AOSco+X9qE=1sjXvNVkOxtJqur+HoBJExxiw0J=g@mail.gmail.com>
+ <YW8E6oeIoRdpmPL8@piout.net> <CAPLW+4k26qZDug4JkuPaM_gZMgz8LPg7GHe-5C7zKzEGtzdp=g@mail.gmail.com>
+ <effeb83b-7923-7086-5b4f-36266015e137@canonical.com>
+In-Reply-To: <effeb83b-7923-7086-5b4f-36266015e137@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 21 Oct 2021 22:48:51 +0300
+Message-ID: <CAPLW+4=RuoT016zHotKvrNNxB_bZt4VXhZRWkGuJs22XeOpcpA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] rtc: s3c: Add time range
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 at 11:05, Geert Uytterhoeven <geert@linux-m68k.org> wro=
-te:
+On Wed, 20 Oct 2021 at 09:29, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> If CONFIG_PM_SLEEP=3Dn:
+> On 19/10/2021 21:12, Sam Protsenko wrote:
+> > Krzysztof, do you have by chance the doc for different SoCs supported
+> > by S3C RTC driver? I can implement proper values for min/max range for
+> > each SoC, as Alexandre asked, by adding those to driver data. But I
+> > need max year register value (100, 1000, etc) for each of those chips:
+> >
+> >   - "samsung,s3c2410-rtc"
+> >   - "samsung,s3c2416-rtc"
+> >   - "samsung,s3c2443-rtc"
+> >   - "samsung,s3c6410-rtc"
+> >   - "samsung,exynos3250-rtc"
+> >
+> > For example Exynos850 TRM states that BCDYEAR register has [11:0] bits
+> > for holding the year value in BCD format, so it's 10^(12/4)=1000 years
+> > max.
+> >
 >
->     drivers/mmc/host/sdhci-omap.c:1213:13: error: =E2=80=98sdhci_omap_con=
-text_save=E2=80=99 declared =E2=80=98static=E2=80=99 but never defined [-We=
-rror=3Dunused-function]
->      1213 | static void sdhci_omap_context_save(struct sdhci_omap_host *o=
-map_host);
->           |             ^~~~~~~~~~~~~~~~~~~~~~~
+> I think all S3C chips have only 8-bit wide year, so 2000-2099, while
+> S5Pv210 and Exynos has 12-bit (1000 years). However I doubt there is big
+> benefit of supporting more than 2100. :) If you still want, you would
+> need to create the patch carefully because not many people can test it...
 >
-> The referenced commit added an unrelated forward declaration of
-> sdhci_omap_context_save(), which is unneeded in general, and unused when
-> CONFIG_PM_SLEEP=3Dn.
->
-> Fixes: f433e8aac6b94218 ("mmc: sdhci-omap: Implement PM runtime functions=
-")
-> Reported-by: noreply@ellerman.id.au
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Applied for next, thanks!
+Guys,
 
-Kind regards
-Uffe
+After testing thoroughly, I can confirm that Alexandre is right about
+leap years (Exynos850 RTC treats both 2000 and 2100 as leap years).
+And it also overflows internally on 2159 year, limiting the actual
+time range at 160 years. So I'll keep that range at 100 years for all
+RTCs. As Krzysztof said, there is no practical reasons in trying to
+increase it anyway. Will send v2 soon.
 
+What I'm curious about is RTC testing. I've found this test suite:
 
-> ---
->  drivers/mmc/host/sdhci-omap.c | 2 --
->  1 file changed, 2 deletions(-)
+    tools/testing/selftests/rtc/rtctest.c
+
+But it doesn't seem to cover corner cases (like checking leap years,
+which was discussed here). Just a thought: maybe it should be added
+there, so everyone can benefit from that? For example, I know that in
+Linaro we are running LKFT tests for different boards, so that might
+theoretically reveal some bugs. Though I understand possible
+implications: we probably don't know which ranges are supported in
+driver that's being tested. Anyway, just saying.
+
 >
-> diff --git a/drivers/mmc/host/sdhci-omap.c b/drivers/mmc/host/sdhci-omap.=
-c
-> index 0dec2f849b81e242..a4a1734dcb84e9cf 100644
-> --- a/drivers/mmc/host/sdhci-omap.c
-> +++ b/drivers/mmc/host/sdhci-omap.c
-> @@ -1210,8 +1210,6 @@ static const struct soc_device_attribute sdhci_omap=
-_soc_devices[] =3D {
->         }
->  };
->
-> -static void sdhci_omap_context_save(struct sdhci_omap_host *omap_host);
-> -
->  static int sdhci_omap_probe(struct platform_device *pdev)
->  {
->         int ret;
-> --
-> 2.25.1
->
+> Best regards,
+> Krzysztof
