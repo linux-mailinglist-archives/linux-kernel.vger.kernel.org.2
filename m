@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BC0436923
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C0F436928
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhJURiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:38:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45912 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhJURio (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:38:44 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S232122AbhJURjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:39:24 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:57572 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231567AbhJURjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:39:21 -0400
+Received: from zn.tnic (p200300ec2f1912009d2c3fdc96041a10.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:1200:9d2c:3fdc:9604:1a10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 369CD1FD58;
-        Thu, 21 Oct 2021 17:36:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634837787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0eDU1SMK968q7PGozinR0fnwI8mivFPo6U/lEqiI1KE=;
-        b=EXSUjDjvJKvCHYCYvA/99sVcJcLUtm3FL4wOtYSW8HUOVugMSAqhUAT9ZXS3QpnBwtNdCO
-        rFH+2yz+YnVmZVEWDxkb35Q7KNPQVdBPfBOvkAq0OTFORyIYR0vJzZEzzLARRcrKNe15jU
-        eruSQXsILzo1NMb8xklETsDrnvhWpck=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634837787;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0eDU1SMK968q7PGozinR0fnwI8mivFPo6U/lEqiI1KE=;
-        b=xBtjlDQHd1PcjVvO88qnT341ih2Rz1pw4+QhsF2S3QaCcZ/GQ2B+4lNS9w2ypo+TyL+4lX
-        GiF5TZBjH5CEXYDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6C8413AE4;
-        Thu, 21 Oct 2021 17:36:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id q7w4MxqlcWEkEQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 21 Oct 2021 17:36:26 +0000
-Message-ID: <1dfb7a79-3e66-a9fe-ee7c-1277d7ff5950@suse.cz>
-Date:   Thu, 21 Oct 2021 19:36:26 +0200
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8838A1EC0298;
+        Thu, 21 Oct 2021 19:37:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634837823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=00cbYgpw2dYSkF28MjWjljWuNsD4cmUAI68U4oIyQGk=;
+        b=D7PSMCkJQL+v+1ot4TxJ+1kfVS4aSDOp1t/3Qw7drrEY4xHhy8cXgf4p4PWGAEFQUcfMEM
+        BrHQk3X/xxlgVn8o+Ho9se8qQoRiD84RfQDQQ3aUXdbtb0MXUbHVtEBXogaegim8IH3/U+
+        eYTYjhcKwS9RFw0qUW7F9IQPdqpiYlM=
+Date:   Thu, 21 Oct 2021 19:37:01 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     Michael Roth <michael.roth@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <YXGlPf5OTPzp09qr@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+ <YXF9sCbPDsLwlm42@zn.tnic>
+ <YXGNmeR/C33HvaBi@work-vm>
+ <YXGbcqN2IRh9YJk9@zn.tnic>
+ <YXGflXdrAXH5fE5H@work-vm>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] slob: add size header to all allocations
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        djwong@kernel.org, david@fromorbit.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        gregkh@linuxfoundation.org, viro@zeniv.linux.org.uk,
-        dvyukov@google.com
-References: <20211015005729.GD24333@magnolia>
- <20211018033841.3027515-1-rkovhaev@gmail.com>
- <20211020114638.GA378758@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20211020114638.GA378758@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YXGflXdrAXH5fE5H@work-vm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 13:46, Hyeonggon Yoo wrote:
-> On Sun, Oct 17, 2021 at 08:38:41PM -0700, Rustam Kovhaev wrote:
->> Let's prepend all  allocations of (PAGE_SIZE - align_offset) and less
->> with the size header. This way kmem_cache_alloc() memory can be freed
->> with kfree() and the other way around, as long as they are less than
->> (PAGE_SIZE - align_offset).
+On Thu, Oct 21, 2021 at 06:12:53PM +0100, Dr. David Alan Gilbert wrote:
+> OK, so that bit is 8...21 Eax ext2eax bit 6 page 1-109
 > 
-> Hello Rustam, I measured its impact on memory usage on
-> tiny kernel configuration as SLOB is used in very small machine.
+> then 2.1.5.3 CPUID policy enforcement shows 8...21 EAX as
+> 'bitmask'
+> 'bits set in the GuestVal must also be set in HostVal.
+> This is often applied to feature fields where each bit indicates
+> support for a feature'
 > 
-> on x86 32 bit + tinyconfig:
->     Before:
->     Slab:                668 kB
-> 
->     After:
->     Slab:                688~692 kB
-> 
-> it adds 20~24kB.
+> So that's right isn't it?
 
-Thanks for the measurement. That's 3.5% increase.
+Yap, AFAIRC, it would fail the check if:
 
-> 
->> 
->> The main reason for this change is to simplify SLOB a little bit, make
->> it a bit easier to debug whenever something goes wrong.
->>
-> 
-> It seems acceptable But I wonder it is worth to increase memory usage
-> to allow freeing kmem_cache_alloc-ed objects by kfree()?
+(GuestVal & HostVal) != GuestVal
 
-Not for the reason above, but for providing a useful API guarantee
-regardless of selected slab allocator IMHO yes.
+and GuestVal is "the CPUID result value created by the hypervisor that
+it wants to give to the guest". Let's say it clears bit 6 there.
 
-> Thanks,
-> Hyeonggon
-> 
->> meminfo right after the system boot, without the patch:
->> Slab:              35500 kB
->> 
->> the same, with the patch:
->> Slab:              36396 kB
->> 
-> 
+Then HostVal comes in which is "the actual CPUID result value specified
+in this PPR" and there the guest catches the HV lying its *ss off.
 
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
