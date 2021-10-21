@@ -2,59 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A09435C9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D14435C9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhJUIJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbhJUIJW (ORCPT
+        id S231447AbhJUIJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:09:47 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:41324
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231452AbhJUIJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:09:22 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74630C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:07:06 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id f3so11592935uap.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:07:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=no9cEcbIs5Y7LX0bbr/2ARsL8owG5qfnj1gxm7bjNJ8=;
-        b=YH4Rd8xGVzs1lojatFcKEfHwJ1oeB3KZizRZEHvPbyvW40Nn/dS7lYtcfoMICAFvy1
-         JjAvEFL7kHwo5ljQ/s1ogrloht++yqpAwtNTs1Jcmn2Rja83Jo+VMY5x6BT4e9qY6UwP
-         mmmu6g3v7vdCi+eSOUfGi+P+JQb6ujkkNMrl4=
+        Thu, 21 Oct 2021 04:09:45 -0400
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5275A40004
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:07:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634803648;
+        bh=sDS7GEvXSQom9VFLoatpvyQsvf0nO+8HlK0Txu0PTXQ=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=PADkPpd8mm9qlWsShd1/4Xd9MV8Vtkdyza6jqhuYVXB0CUWbqskRwFzekY7cmKIdZ
+         c05k/gph4IFaJeVJxG+VtODPiA5267V01ZMFOzaw88zOsm0+QE0SzQ1MHRlq9nhQDp
+         jnAbsKoc40EbsTSr/23jNyaG6Dup/Tbnx3+l7F8lVSG2xnVwQy4RwW9ue4v2lzh1Dy
+         eItPgGeIi+Cw5Y+Iex/p7L8qTzto8DRdtKm8xctThwc+2mCypQcj7h95OF5YCFSa29
+         cENwmwjSuRCYOn1t5wQgvv2N8ZgRBZ32FuT/KN2Nm40Qf8HOh5XGUBNJEGyp6vJ/12
+         lb0PJ0/mRV7TA==
+Received: by mail-lj1-f199.google.com with SMTP id e26-20020a2e985a000000b00211109b97e6so2549365ljj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:07:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=no9cEcbIs5Y7LX0bbr/2ARsL8owG5qfnj1gxm7bjNJ8=;
-        b=r7r3YM3f/V8KJj45t6RS/civC9ZZHVfWxaXJN3pd3+otzpz9Jb3sTaIejMbxKUo+qf
-         CgBQbX11KdansLIpTT4WCMPdZ/utiuHaLYudbvga8SZrJVgS/hH8C8c1P3YjfLrK9O3Y
-         rgn7qSRsSC4X6qNR7JZei3etKv8COOksJWsFCfMtuR/7uFMxen7V9PlWQATGDY0XqB49
-         Ur3F3HrRXqeNbSmVOJDzOswlJ5J8oi6cULJUhImeE1Owg/AaLvRHm6t/hQAvLXpvbnYG
-         Ftp3RA7uAMMUmtHD7rHAtaeqGXJ+Uzy6pxwLMdRf/GDZ4DTgJhlT6jtDfSdw3fk03AUO
-         f3OQ==
-X-Gm-Message-State: AOAM530zWGrsMsMiOKu6QbaMOUYcPnNA4MRUS3Ph/oVlWNvRUPmRcr3I
-        X4MR/L4AihUnL4GyerKf5sBqPtbZDucHZ6R1AkrSNQ==
-X-Google-Smtp-Source: ABdhPJwOzrU1ve1DcUpTmbtyQFG/OPWr0caKKjsjHToUIfpZYxivocWHmeVwGTZ2iJudsXl2h0Vl+86kFC73/E7MV+Q=
-X-Received: by 2002:ab0:5741:: with SMTP id t1mr4545300uac.72.1634803625576;
- Thu, 21 Oct 2021 01:07:05 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sDS7GEvXSQom9VFLoatpvyQsvf0nO+8HlK0Txu0PTXQ=;
+        b=GlSw7roE0fIIaaDOWSnHmZWBr02TmJB3tdbdHnlvXmLYd2hwTsy3KHf0mHou9TVazw
+         Axi76q83zN6L4WB+/d1FADx7dH5W8rz1javfzzsNP4QCtdCdRAPqmQuHHiPJ7ZH9eqiR
+         OoTBGhcvBBnV5e+cyB8gNkNuKra9fgvG2K/hvkWhmB+tVEfh20kSuMStfyIztOAWjLXb
+         nPljh15nYoIrbjKt0YouswyI7Ve6Wl0DHE1lwUZxnBDHevHttMuFLHOghkssOcBNwBfX
+         M+RVYw5GVrd7oGyfj7orja5eX3CxY0oqVm1K2CYuAr6i6b65wFT34B0Pt/XZNIX/+VXQ
+         /8GA==
+X-Gm-Message-State: AOAM531/IZItngvdKCIV4Yd3eSzwESEWFY3LxTXtoPnUPVy1ieUGErZZ
+        YTjJlPnbGD88UXywKOLYoytPZU/at/FpOOuDMsqZV6n7+j8Ydzv+JnJsFvtOqaJ38P0eVtSt55z
+        0BL+wKFekZaJ8WEr9TzMsNXa+Or4bzaby0dqZ04fGlQ==
+X-Received: by 2002:a05:6512:6c8:: with SMTP id u8mr4148817lff.453.1634803647448;
+        Thu, 21 Oct 2021 01:07:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwCtWxEEyx0fBceTd9UNL5kCdwBY0brNh3ylEHk3SSt0t9e/oUHzQ848C4wSrj0JPM+f588aQ==
+X-Received: by 2002:a05:6512:6c8:: with SMTP id u8mr4148795lff.453.1634803647253;
+        Thu, 21 Oct 2021 01:07:27 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id m29sm397146lfo.104.2021.10.21.01.07.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 01:07:26 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] clocksource/drivers/exynos_mct_v2: introduce
+ Exynos MCT version 2 driver for next Exynos SoC
+To:     Youngmin Nam <youngmin.nam@samsung.com>
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com
+References: <20211021061804.39118-1-youngmin.nam@samsung.com>
+ <CGME20211021055112epcas2p278145beb21cd6cc4217813a41c1e1407@epcas2p2.samsung.com>
+ <20211021061804.39118-2-youngmin.nam@samsung.com>
+ <0c5dcdab-7aa3-a98f-e615-acbe98489935@canonical.com>
+ <20211021082650.GA30741@perf>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <1b93aaf3-ed64-b105-dec4-07b6f27b385b@canonical.com>
+Date:   Thu, 21 Oct 2021 10:07:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <000000000000354def05cc0185ab@google.com>
-In-Reply-To: <000000000000354def05cc0185ab@google.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 21 Oct 2021 10:06:54 +0200
-Message-ID: <CAJfpegskcCEZAX+EbnBZyva2NDyhJ9k97ZM_E9OBeXRjDsC_BQ@mail.gmail.com>
-Subject: Re: [syzbot] general protection fault in fuse_test_super
-To:     syzbot <syzbot+74a15f02ccb51f398601@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211021082650.GA30741@perf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git
-80019f1138324b6f35ae728b4f25eeb08899b452
+On 21/10/2021 10:26, Youngmin Nam wrote:
+> On Thu, Oct 21, 2021 at 08:18:36AM +0200, Krzysztof Kozlowski wrote:
+>> On 21/10/2021 08:18, Youngmin Nam wrote:
+>>> Exynos MCT version 2 is composed of 1 FRC and 12 comparators.
+>>> The 12 comparators can produces interrupts independently,
+>>> so they can be used as local timer of each CPU.
+>>>
+>>> Signed-off-by: Youngmin Nam <youngmin.nam@samsung.com>
+>>> ---
+>>>  drivers/clocksource/Kconfig         |   6 +
+>>>  drivers/clocksource/Makefile        |   1 +
+>>>  drivers/clocksource/exynos_mct_v2.c | 336 ++++++++++++++++++++++++++++
+>>>  drivers/clocksource/exynos_mct_v2.h |  74 ++++++
+>>>  4 files changed, 417 insertions(+)
+>>>  create mode 100644 drivers/clocksource/exynos_mct_v2.c
+>>>  create mode 100644 drivers/clocksource/exynos_mct_v2.h
+>>>
+>>> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+>>> index 0f5e3983951a..8ac04dd7f713 100644
+>>> --- a/drivers/clocksource/Kconfig
+>>> +++ b/drivers/clocksource/Kconfig
+>>> @@ -421,6 +421,12 @@ config CLKSRC_EXYNOS_MCT
+>>>  	help
+>>>  	  Support for Multi Core Timer controller on Exynos SoCs.
+>>>  
+>>> +config CLKSRC_EXYNOS_MCT_V2
+>>> +	bool "Exynos multi core timer (ver 2) driver" if COMPILE_TEST
+>>> +	depends on ARM64
+>>
+>> depends on ARCH_EXYNOS.
+>>
+> Okay
+>>> +	help
+>>> +	  Support for Multi Core Timer controller on Exynos SoCs.
+>>> +
+>>>  config CLKSRC_SAMSUNG_PWM
+>>>  	bool "PWM timer driver for Samsung S3C, S5P" if COMPILE_TEST
+>>>  	depends on HAS_IOMEM
+>>> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+>>> index c17ee32a7151..dc7d5cf27516 100644
+>>> --- a/drivers/clocksource/Makefile
+>>> +++ b/drivers/clocksource/Makefile
+>>> @@ -43,6 +43,7 @@ obj-$(CONFIG_CADENCE_TTC_TIMER)	+= timer-cadence-ttc.o
+>>>  obj-$(CONFIG_CLKSRC_STM32)	+= timer-stm32.o
+>>>  obj-$(CONFIG_CLKSRC_STM32_LP)	+= timer-stm32-lp.o
+>>>  obj-$(CONFIG_CLKSRC_EXYNOS_MCT)	+= exynos_mct.o
+>>> +obj-$(CONFIG_CLKSRC_EXYNOS_MCT_V2)	+= exynos_mct_v2.o
+>>>  obj-$(CONFIG_CLKSRC_LPC32XX)	+= timer-lpc32xx.o
+>>>  obj-$(CONFIG_CLKSRC_MPS2)	+= mps2-timer.o
+>>>  obj-$(CONFIG_CLKSRC_SAMSUNG_PWM)	+= samsung_pwm_timer.o
+>>> diff --git a/drivers/clocksource/exynos_mct_v2.c b/drivers/clocksource/exynos_mct_v2.c
+>>> new file mode 100644
+>>> index 000000000000..2da6d5401629
+>>> --- /dev/null
+>>> +++ b/drivers/clocksource/exynos_mct_v2.c
+>>> @@ -0,0 +1,336 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +/*
+>>> + * Copyright (c) 2022 Samsung Electronics Co., Ltd.
+>>> + *		http://www.samsung.com
+>>> + *
+>>> + * Exynos MCT(Multi-Core Timer) version 2 support
+>>> + */
+>>> +
+>>> +#include <linux/interrupt.h>
+>>> +#include <linux/irq.h>
+>>> +#include <linux/err.h>
+>>> +#include <linux/clk.h>
+>>> +#include <linux/clockchips.h>
+>>> +#include <linux/cpu.h>
+>>> +#include <linux/delay.h>
+>>> +#include <linux/percpu.h>
+>>> +#include <linux/of.h>
+>>> +#include <linux/of_irq.h>
+>>> +#include <linux/of_address.h>
+>>> +#include <linux/clocksource.h>
+>>> +#include "exynos_mct_v2.h"
+>>> +
+>>> +static void __iomem *reg_base;
+>>> +static unsigned long osc_clk_rate;
+>>> +static int mct_irqs[MCT_NR_COMPS];
+>>> +
+>>> +static void exynos_mct_set_compensation(unsigned long osc, unsigned long rtc)
+>>> +{
+>>> +	unsigned int osc_rtc;
+>>> +	unsigned int incr_rtcclk;
+>>> +	unsigned int compen_val;
+>>> +
+>>> +	osc_rtc = (unsigned int)(osc * 1000 / rtc);
+>>> +
+>>> +	/* MCT_INCR_RTCCLK is integer part of (OSCCLK frequency/RTCCLK frequency). */
+>>> +	incr_rtcclk = (osc / rtc) + ((osc % rtc) ? 1 : 0);
+>>> +
+>>> +	/* MCT_COMPENSATE_VALUE is decimal part of (OSCCLK frequency/RTCCLK frequency). */
+>>> +	compen_val = ((osc_rtc + 5) / 10) % 100;
+>>> +	if (compen_val)
+>>> +		compen_val = 100 - compen_val;
+>>> +
+>>> +	pr_info("MCT: osc-%lu rtc-%lu incr_rtcclk:0x%08x compen_val:0x%08x\n",
+>>> +		osc, rtc, incr_rtcclk, compen_val);
+>>> +
+>>> +	writel_relaxed(incr_rtcclk, reg_base + EXYNOS_MCT_MCT_INCR_RTCCLK);
+>>> +	writel_relaxed(compen_val, reg_base + EXYNOS_MCT_COMPENSATE_VALUE);
+>>> +}
+>>> +
+>>> +/* Clocksource handling */
+>>> +static void exynos_mct_frc_start(void)
+>>> +{
+>>> +	writel_relaxed(MCT_FRC_ENABLE, reg_base + EXYNOS_MCT_MCT_FRC_ENABLE);
+>>> +}
+>>> +
+>>> +/**
+>>> + * exynos_read_count_32 - Read the lower 32-bits of the global counter
+>>> + *
+>>> + * This will read just the lower 32-bits of the global counter.
+>>> + *
+>>> + * Returns the number of cycles in the global counter (lower 32 bits).
+>>> + */
+>>
+>> All this looks like a modification of Exynos MCT driver, so you should
+>> extend that one instead. It does not look like we need two drivers.
+>> Please integrate it into existing driver instead of sending a new piece
+>> of code copied from vendor tree.
+>>
+> MCT version 2 is a completely different HW IP compared to previous MCT.
+> The new MCT has a lot of different resister sets and there are many changes on programming guide.
+> So we cannot share the previous code. At first, I also considered that way you mentioned,
+> but it would be better to implement the driver seperately to maintain the new driver cleanly.
+
+We have several drivers supporting different devices and we avoid mostly
+duplicating new ones. The different register layout is not the valid
+reason - we support differences in several places. Just take a look at
+Samsung PMIC drivers where register layout is quite different between
+designs. Still one clock driver, one RTC driver and 2-3 regulator
+drivers (for ~7 devices).
+
+Similarly to SoC clock, pinctrl, PMU and other drivers - we re-use
+instead of duplicating entire driver.
+
+I am sorry but the argument that block is different is not enough. What
+is exactly not compatible with current driver which could not be modeled
+by different driver data (or structure with ops)?
+
+Best regards,
+Krzysztof
