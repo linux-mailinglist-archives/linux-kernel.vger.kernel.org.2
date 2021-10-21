@@ -2,76 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9D94367D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F40B4367D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhJUQde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:33:34 -0400
-Received: from mail-pj1-f53.google.com ([209.85.216.53]:35746 "EHLO
-        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJUQda (ORCPT
+        id S232006AbhJUQd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhJUQd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:33:30 -0400
-Received: by mail-pj1-f53.google.com with SMTP id a15-20020a17090a688f00b001a132a1679bso3577815pjd.0;
-        Thu, 21 Oct 2021 09:31:14 -0700 (PDT)
+        Thu, 21 Oct 2021 12:33:56 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DB8C0613B9;
+        Thu, 21 Oct 2021 09:31:39 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso950388pjw.2;
+        Thu, 21 Oct 2021 09:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IQdbcLoiSTUVND1y3yU1tj63RV90osj4TBuWtLbjx9w=;
+        b=YQjnOjoxdmAAAhECuj0KPEKt27H/wOxmKMev/Jh3JFVzpa0cOV5dXDMot1AjIrEG5o
+         wOgYSn95J/UqizuILvkc6+g5OAsT+ytgws2SQSx86fqrfx1zMQ8ub37GSDr+YFHAQWu7
+         AiWqL+msiWD7SYSJShRzFd0h2Q5F/ABIdful5MVcYO6wioowEDKbPy6e7Sm+06weThUK
+         Xui6felse6F+NGA1x77OkV/oukWj2d4a0wErt7nwUKfhe9DAWWStrAp+/vnrkZACqZG9
+         zRSQApaprEZtWr6+t2qcRju9au7ZSuNDzMcfd3rLEbaYobAayt/iGBCC+2VoAJJnu/RG
+         t0NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7q6vzNxfbvYKvr+skK0udmjoYoQnE4oH6D4ZVnH1FZ4=;
-        b=TWW9vURnCOwhlWzba1aofI6NQq6KAU+i3bp576Ywcm4yX090DORTTdEn0Qb0rnzvFC
-         eUtUlTypufeMvK5XvUP8Q/vBuj/WBkG/ea2mXqh+sYkSdzjO/62iKfMbwxFTgUeBr2jn
-         u5VEAyN1PW7LcWsuqvGA4MdhiK3K1GLYTjcG+0IjAyBT1P1ZH2z7GoTpd6VubyR+E5zK
-         DQXDmrOBvUpTVzB9QiqAX7+VwLISBPzCcSM7dxyZkZdP1QsE2CZE32JXvz7S55MeYjB1
-         ooYu5Fwh080O7I3iALgaWmNOykgeFgsRiClHtlniy6rZukVIwDPvB+271Qfust/zx5hE
-         fluQ==
-X-Gm-Message-State: AOAM532DTaPcN4P2St/D+3l1qTYgE9tbykVk43tEw2TA7ApqYyQZHcHN
-        d3j5Hc6huQonKP74iC7raWs3hUfTFQQ=
-X-Google-Smtp-Source: ABdhPJzAsVfKsg0f6FiCdPf1f4WeSRQiymq+aFkY/xYpHKJYMpz+xbtEmtli9yVVwHBYBRTQbFaAMg==
-X-Received: by 2002:a17:90b:2382:: with SMTP id mr2mr7961105pjb.186.1634833873331;
-        Thu, 21 Oct 2021 09:31:13 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:452c:8e0d:d8a1:4d6])
-        by smtp.gmail.com with ESMTPSA id me12sm11035926pjb.27.2021.10.21.09.31.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 09:31:12 -0700 (PDT)
-Subject: Re: [PATCH v2 0/6] kthread: Add the helper macro kthread_run_on_cpu()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-References: <20211021122758.3092-1-caihuoqing@baidu.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <52540892-ced9-5d7a-5046-917526c84381@acm.org>
-Date:   Thu, 21 Oct 2021 09:31:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IQdbcLoiSTUVND1y3yU1tj63RV90osj4TBuWtLbjx9w=;
+        b=DuBO0ru+JFtRft70Awie4GLk7iauwOlujXQGh6b0m5kRSfgxgDk3PbJk/G/yI0e0zV
+         fbVlAUs3uGiTFu9H+2KQRgw/yJLGLWOwEcLZvPVPvKYL0yoFGLCasMThMwMkJVzwSQYr
+         1SuT6k+wk2+BmLuIstuUiH1taMAG5NpXDdK+HsoTQNz3ly27Rg2v38bTTavLYTnYWFGu
+         NX0KLPhZINCUi7qbQuNPyrBa4J7/wtgPLficNmelVU3EZG/TjalkDtyWvW8ztXu0o42z
+         cmnJJmKXItEmBMhS8IXXTPuHXk+fmvLdtYjR0O3Ly+1YHCB3Kp3kQTS94QmM7VAyjXOh
+         QlEg==
+X-Gm-Message-State: AOAM533686LGdN1PdBD4Zz4jgckRHZv4N9yrAeC/72d6hZopKLxWlHF9
+        +V4NuTtOgusBwOad4ooIEfE=
+X-Google-Smtp-Source: ABdhPJy79KDoQD2rK1TbZ1HD9yKVRke6nSbvrV7cMQ1pA2KVnMKpIrwtRe7TAmT4oeznWwGCwsdqBw==
+X-Received: by 2002:a17:90b:4a47:: with SMTP id lb7mr7615497pjb.192.1634833899480;
+        Thu, 21 Oct 2021 09:31:39 -0700 (PDT)
+Received: from theprophet ([2406:7400:63:29a4:d874:a949:6890:f95f])
+        by smtp.gmail.com with ESMTPSA id c9sm5669933pgq.58.2021.10.21.09.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 09:31:39 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 22:01:28 +0530
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, ruscur@russell.cc, oohall@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v4 3/8] PCI/DPC: Initialize info->id in
+ dpc_process_error()
+Message-ID: <20211021163128.rud3fv3jtnbi3ifp@theprophet>
+References: <5ebe87f18339d7567c1d91203e7c5d31f4e65c52.1633453452.git.naveennaidu479@gmail.com>
+ <20211021012800.GA2656128@bhelgaas>
 MIME-Version: 1.0
-In-Reply-To: <20211021122758.3092-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021012800.GA2656128@bhelgaas>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/21 5:27 AM, Cai Huoqing wrote:
-> the helper macro kthread_run_on_cpu() inculdes
+On 20/10, Bjorn Helgaas wrote:
+> On Tue, Oct 05, 2021 at 10:48:10PM +0530, Naveen Naidu wrote:
+> > In the dpc_process_error() path, info->id isn't initialized before being
+> > passed to aer_print_error(). In the corresponding AER path, it is
+> > initialized in aer_isr_one_error().
+> > 
+> > The error message shown during Coverity Scan is:
+> > 
+> >   Coverity #1461602
+> >   CID 1461602 (#1 of 1): Uninitialized scalar variable (UNINIT)
+> >   8. uninit_use_in_call: Using uninitialized value info.id when calling aer_print_error.
+> > 
+> > Initialize the "info->id" before passing it to aer_print_error()
+> > 
+> > Fixes: 8aefa9b0d910 ("PCI/DPC: Print AER status in DPC event handling")
+> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> > ---
+> >  drivers/pci/pcie/dpc.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> > index c556e7beafe3..df3f3a10f8bc 100644
+> > --- a/drivers/pci/pcie/dpc.c
+> > +++ b/drivers/pci/pcie/dpc.c
+> > @@ -262,14 +262,14 @@ static int dpc_get_aer_uncorrect_severity(struct pci_dev *dev,
+> >  
+> >  void dpc_process_error(struct pci_dev *pdev)
+> >  {
+> > -	u16 cap = pdev->dpc_cap, status, source, reason, ext_reason;
+> > +	u16 cap = pdev->dpc_cap, status, reason, ext_reason;
+> >  	struct aer_err_info info;
+> >  
+> >  	pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
+> > -	pci_read_config_word(pdev, cap + PCI_EXP_DPC_SOURCE_ID, &source);
+> > +	pci_read_config_word(pdev, cap + PCI_EXP_DPC_SOURCE_ID, &info.id);
+> >  
+> >  	pci_info(pdev, "containment event, status:%#06x source:%#06x\n",
+> > -		 status, source);
+> > +		 status, info.id);
+> >  
+> >  	reason = (status & PCI_EXP_DPC_STATUS_TRIGGER_RSN) >> 1;
+> 
+> Per PCIe r5.0, sec 7.9.15.5, the Source ID is defined only when the
+> Trigger Reason indicates ERR_NONFATAL or ERR_FATAL.  So I think we
+> need to extract this reason before reading PCI_EXP_DPC_SOURCE_ID,
+> e.g.,
+> 
+>   reason = (status & PCI_EXP_DPC_STATUS_TRIGGER_RSN) >> 1;
+>   if (reason == 1 || reason == 2)
+>     pci_read_config_word(pdev, cap + PCI_EXP_DPC_SOURCE_ID, &info.id);
+>   else
+>     info.id = 0;
+>
 
-Consider using a spelling checker (inculdes -> includes).
+Thank you for the review, I'll make this change when I send a v5 for the
+patch series.
 
-
-Thanks,
-
-Bart.
+> >  	ext_reason = (status & PCI_EXP_DPC_STATUS_TRIGGER_RSN_EXT) >> 5;
+> > -- 
+> > 2.25.1
+> > 
+> > _______________________________________________
+> > Linux-kernel-mentees mailing list
+> > Linux-kernel-mentees@lists.linuxfoundation.org
+> > https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
