@@ -2,214 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0308436E1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E506436E23
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232381AbhJUXRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:17:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231379AbhJUXRt (ORCPT
+        id S232396AbhJUXSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232410AbhJUXST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:17:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634858133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IOA+s/1Nf+8zWpX+cZKkzgCkT8RQvyoggZtI9lV9zOI=;
-        b=RENcTzaGXcc1GIi58H/gADyFqQaRjuYX+L1VgMzYhWWMEP92qzgsraFxqos3eMq7gvsnDZ
-        XYtoLWytZRtCpgdF0QqRnR8ymzqFjAcWDLB4bP7YfdKc6nid1LkZIQzNIrT1kTmFVgSqlf
-        YdmRWQ8jipJFOlTv201h+EHKdVk8WAM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-98inMFoGNmi5J-u9SqC73A-1; Thu, 21 Oct 2021 19:15:31 -0400
-X-MC-Unique: 98inMFoGNmi5J-u9SqC73A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CE5C10A8E02;
-        Thu, 21 Oct 2021 23:15:30 +0000 (UTC)
-Received: from starship (unknown [10.40.192.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2442618428;
-        Thu, 21 Oct 2021 23:15:27 +0000 (UTC)
-Message-ID: <1179443c92488afee6ee462f43a80ca959924a9a.camel@redhat.com>
-Subject: Re: [PATCH 8/8] KVM: SEV-ES: go over the sev_pio_data buffer in
- multiple passes if needed
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     fwilhelm@google.com, seanjc@google.com, oupton@google.com,
-        stable@vger.kernel.org
-Date:   Fri, 22 Oct 2021 02:15:26 +0300
-In-Reply-To: <20211013165616.19846-9-pbonzini@redhat.com>
-References: <20211013165616.19846-1-pbonzini@redhat.com>
-         <20211013165616.19846-9-pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 21 Oct 2021 19:18:19 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D14C061764;
+        Thu, 21 Oct 2021 16:16:02 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id j21so5466173lfe.0;
+        Thu, 21 Oct 2021 16:16:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NGd3ZBTVw8WerW8TiXkapULoiLMOJ6XxJFj9gFvuuSU=;
+        b=b2s6FHWu+usXqQrC6G5oR1QXzV421vmzu616cj0TNoasagpoWnKOEKbYxv6lwcqPeI
+         3rORErL7fa/RFd0y2Vi9iFsS945DYpKaBv5nii1hrDWFRTJAvwghzmPtEJj+WMAEM17L
+         /O3Sh1kCF4mjJgVQs5ZVXMKHMXWjelDAnQuriR3P4qbXBgow863UHNut4GWOwsAcq3R8
+         LkWsfmC9oiosn2tFEKgiUpbhG4Nj1FZGqH8d5l/mF+MDgVDszmLDzMmBdqz5dfZydR6W
+         CwiG1vdp59S9FmUIPQ76gL5GOhXou9LfjHasOMDZ9f3WorvSSWSHDMjI2c/fnqLqoXEM
+         8naQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NGd3ZBTVw8WerW8TiXkapULoiLMOJ6XxJFj9gFvuuSU=;
+        b=q6clXKjd+1N1hCp8jdTnitbz4y6OqwHd6HBKO1twKQBtkPyjOj5d1VWB8jMvbF24QV
+         NUERDdfV4FL47Onz74r81zk7KzHRUgJ/JfkAiqisboBIQQcyt9CSrpzIpfaLppUSm+25
+         9sM0TeTbuJew5BJt4UTA15PvAk8i1hWnDGX6K36IuM0PSnmJQlwNmew9sQtJgj1PUGaz
+         CQidLadGxjEBFfWU/Y9Qi3f0UBAWBnzSMF4/0Y94JCFSYik+Vgl3wjvdeaKu2nVMv6O3
+         es0YZbqgp91IDh9PEoPGJEJs4C8R1C2K70RYiVjLYe3TqY0qNCq8ss1+HOcS4MMRA3WU
+         geMA==
+X-Gm-Message-State: AOAM531bVULI7mss9ONV7EPTcclTb9W3rcDJ4YTb2l29PwsBvtMCfS/y
+        7K6X4gT59lmlL79znnwMxGZHK2GIbPb/2wMF72A=
+X-Google-Smtp-Source: ABdhPJwZpcQ1KdeVcaHk764w6WspHm/7cDejlBv/A5lS6M8tifVYkMndPvZos9ePSqOr5Sy9U5NwiVeDSIz4sIygGiM=
+X-Received: by 2002:a05:6512:3763:: with SMTP id z3mr8185733lft.601.1634858160588;
+ Thu, 21 Oct 2021 16:16:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
+ <YXHntB2O0ACr0pbz@relinquished.localdomain>
+In-Reply-To: <YXHntB2O0ACr0pbz@relinquished.localdomain>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 21 Oct 2021 18:15:49 -0500
+Message-ID: <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com>
+Subject: Re: [PATCH 00/67] fscache: Rewrite index API and management system
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-afs@lists.infradead.org,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        v9fs-developer@lists.sourceforge.net,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-13 at 12:56 -0400, Paolo Bonzini wrote:
-> The PIO scratch buffer is larger than a single page, and therefore
-> it is not possible to copy it in a single step to vcpu->arch/pio_data.
-> Bound each call to emulator_pio_in/out to a single page; keep
-> track of how many I/O operations are left in vcpu->arch.sev_pio_count,
-> so that the operation can be restarted in the complete_userspace_io
-> callback.
-> 
-> For OUT, this means that the previous kvm_sev_es_outs implementation
-> becomes an iterator of the loop, and we can consume the sev_pio_data
-> buffer before leaving to userspace.
-> 
-> For IN, instead, consuming the buffer and decreasing sev_pio_count
-> is always done in the complete_userspace_io callback, because that
-> is when the memcpy is done into sev_pio_data.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
-> Reported-by: Felix Wilhelm <fwilhelm@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/x86.c              | 73 +++++++++++++++++++++++++--------
->  2 files changed, 57 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 6bed6c416c6c..5a0298aa56ba 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -703,6 +703,7 @@ struct kvm_vcpu_arch {
->  	struct kvm_pio_request pio;
->  	void *pio_data;
->  	void *sev_pio_data;
-> +	unsigned sev_pio_count;
->  
->  	u8 event_exit_inst_len;
->  
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a485e185ad00..09c1e64495d3 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12378,38 +12378,76 @@ int kvm_sev_es_mmio_read(struct kvm_vcpu *vcpu, gpa_t gpa, unsigned int bytes,
->  EXPORT_SYMBOL_GPL(kvm_sev_es_mmio_read);
->  
->  static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
-> -			   unsigned int port, unsigned int count)
-> +			   unsigned int port);
-> +
-> +static int complete_sev_es_emulated_outs(struct kvm_vcpu *vcpu)
->  {
-> -	int ret = emulator_pio_out(vcpu, size, port,
-> -				   vcpu->arch.sev_pio_data, count);
-> +	vcpu->arch.pio.count = 0;
-> +	if (vcpu->arch.sev_pio_count)
-> +		return kvm_sev_es_outs(vcpu,
-> +				       vcpu->arch.pio.size,
-> +				       vcpu->arch.pio.port);
-> +	return 1;
-> +}
-> +
-> +static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
-> +			   unsigned int port)
-> +{
-> +	for (;;) {
-> +		unsigned int count =
-> +			min_t(unsigned int, PAGE_SIZE / size, vcpu->arch.sev_pio_count);
-> +		int ret = emulator_pio_out(vcpu, size, port, vcpu->arch.sev_pio_data, count);
-> +
-> +		/* memcpy done already by emulator_pio_out.  */
-> +		vcpu->arch.sev_pio_count -= count;
-> +		vcpu->arch.sev_pio_data += count * vcpu->arch.pio.size;
-> +		if (!ret)
-> +			break;
->  
-> -	if (ret) {
->  		/* Emulation done by the kernel.  */
-> -		return ret;
-> +		vcpu->arch.pio.count = 0;
-> +		if (!vcpu->arch.sev_pio_count)
-> +			return 1;
->  	}
->  
-> -	vcpu->arch.pio.count = 0;
-> +	vcpu->arch.complete_userspace_io = complete_sev_es_emulated_outs;
->  	return 0;
->  }
->  
-> -static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
-> +static int kvm_sev_es_ins(struct kvm_vcpu *vcpu, unsigned int size,
-> +			  unsigned int port);
-> +
-> +static void __complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
->  {
-> -	memcpy(vcpu->arch.sev_pio_data, vcpu->arch.pio_data,
-> -	       vcpu->arch.pio.count * vcpu->arch.pio.size);
-> -	vcpu->arch.pio.count = 0;
-> +	unsigned count = vcpu->arch.pio.count;
-> +	complete_emulator_pio_in(vcpu, vcpu->arch.sev_pio_data);
-> +	vcpu->arch.sev_pio_count -= count;
-> +	vcpu->arch.sev_pio_data += count * vcpu->arch.pio.size;
-> +}
->  
-> +static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
-> +{
-> +	__complete_sev_es_emulated_ins(vcpu);
-> +	if (vcpu->arch.sev_pio_count)
-> +		return kvm_sev_es_ins(vcpu,
-> +				      vcpu->arch.pio.size,
-> +				      vcpu->arch.pio.port);
->  	return 1;
->  }
->  
->  static int kvm_sev_es_ins(struct kvm_vcpu *vcpu, unsigned int size,
-> -			  unsigned int port, unsigned int count)
-> +			  unsigned int port)
->  {
-> -	int ret = emulator_pio_in(vcpu, size, port,
-> -				  vcpu->arch.sev_pio_data, count);
-> +	for (;;) {
-> +		unsigned int count =
-> +			min_t(unsigned int, PAGE_SIZE / size, vcpu->arch.sev_pio_count);
-> +		if (!__emulator_pio_in(vcpu, size, port, count))
-> +			break;
->  
-> -	if (ret) {
->  		/* Emulation done by the kernel.  */
-> -		return ret;
-> +		__complete_sev_es_emulated_ins(vcpu);
-> +		if (!vcpu->arch.sev_pio_count)
-> +			return 1;
->  	}
->  
->  	vcpu->arch.complete_userspace_io = complete_sev_es_emulated_ins;
-> @@ -12421,8 +12459,9 @@ int kvm_sev_es_string_io(struct kvm_vcpu *vcpu, unsigned int size,
->  			 int in)
->  {
->  	vcpu->arch.sev_pio_data = data;
-> -	return in ? kvm_sev_es_ins(vcpu, size, port, count)
-> -		  : kvm_sev_es_outs(vcpu, size, port, count);
-> +	vcpu->arch.sev_pio_count = count;
-> +	return in ? kvm_sev_es_ins(vcpu, size, port)
-> +		  : kvm_sev_es_outs(vcpu, size, port);
->  }
->  EXPORT_SYMBOL_GPL(kvm_sev_es_string_io);
->  
+On Thu, Oct 21, 2021 at 5:21 PM Omar Sandoval <osandov@osandov.com> wrote:
+>
+> On Mon, Oct 18, 2021 at 03:50:15PM +0100, David Howells wrote:
+> However, with the advent of the tmpfile capacity in the VFS, an opportunity
+> arises to do invalidation much more easily, without having to wait for I/O
+> that's actually in progress: Cachefiles can simply cut over its file
+> pointer for the backing object attached to a cookie and abandon the
+> in-progress I/O, dismissing it upon completion.
 
-I might have missed something, but it looks OK to me.
-i mostly checked how the code looks after applying this patch.
+Have changes been made to O_TMPFILE?  It is problematic for network filesystems
+because it is not an atomic operation, and would be great if it were possible
+to create a tmpfile and open it atomically (at the file system level).
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Note that I haven't run tested the patches as I don't currently test SEV-ES.
-
-Best regards,
-	Maxim Levitsky
+Currently it results in creating a tmpfile (which results in
+opencreate then close)
+immediately followed by reopening the tmpfile which is somewhat counter to
+the whole idea of a tmpfile (ie that it is deleted when closed) since
+the syscall results
+in two opens ie open(create)/close/open/close
 
 
+-- 
+Thanks,
 
+Steve
