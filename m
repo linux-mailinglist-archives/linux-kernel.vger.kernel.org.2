@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED234365B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE3F43651A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhJUPSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
+        id S231624AbhJUPLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232160AbhJUPRk (ORCPT
+        with ESMTP id S230072AbhJUPLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:17:40 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FADC079787;
-        Thu, 21 Oct 2021 08:15:21 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id np13so726990pjb.4;
-        Thu, 21 Oct 2021 08:15:21 -0700 (PDT)
+        Thu, 21 Oct 2021 11:11:00 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6D8C0613B9;
+        Thu, 21 Oct 2021 08:08:44 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id x192so915708lff.12;
+        Thu, 21 Oct 2021 08:08:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CD7r2JlbysI9wliPfrkuC0MHY1rENRMFz+j1vzlStHM=;
-        b=oDFCNSD9eXmglDMVHyAk5MQTQay51LCLoU0OKnLVLIJ7VZjwfRS43u720yBteKnac1
-         p/lwD3xlqwhz6jgJCIyEpcwG0woAnh4SPlq3ehA2Dp6roi1MizNQvP9UmKO5XmzgzXHh
-         Yo8hCUXDbYf/vLOy2UTggbqD86Qs6k+rvdXbbW3GQfeNrWG8QOThYpWh1j/EefuDhdpi
-         GYRjhfePIpEwov/eAxotQJb+gVbAmx0u3U/6QuWyGHc0mWmlXKvy0suP20VFDVbzyuvO
-         8JtlUB+qUtIMOvvnBRXJARMpbYmbSTgNllBbT2hj5UdRBE7T3jLTou7IG+zlJdFAJ+xS
-         Kx6w==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LtOlMe2BJBUKpJxzc4iXO/flZXymfvUzSpBIinKoT5E=;
+        b=S4PLppJgBV0lJcFpyaVZ2r6oUSDg8Nce0NKMB6IrUJZpRiI0opmsA3Hv9B/t5LAh/k
+         2F0TYiutEaZ3zP8uvzFE/LIjBYRFaYFB7uXZpOhKlvDyZA4REVMq8sVsGbrh7YgLzZ+K
+         4r8gs7ziomcw532uudc0xHjhHoCV+qWDyMrbODmRQ/GMBlnUTCwV/m7yb9DNuIZBqYaE
+         dWYzWTq6jogdNXwGv71Nd2tmFgN/pNx709fvm6OMRmahSIQgCPPqo15Zx680jiJl4IdH
+         5bEemwAxI0MW75gI+wVfN371+d02uASbZym7W0mpMDDiKIEDPqvugahJ89Rn2hPfxR30
+         C17Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CD7r2JlbysI9wliPfrkuC0MHY1rENRMFz+j1vzlStHM=;
-        b=M+3u73zx2G8UWAr1L3WyaXdt1GT5xd9lZsd4tq0rmgJPLQ64PnyjvzdjIJwulxY9G2
-         xUuel64SCDmJ1dqH9b9bT0sPazh0Fp/OgsHCYrJrF6+S86ta/MUoQQ+w8pxkhNdjoqz+
-         lALWoruFLci7D5uv7dsT5vBu8sBfhYbCAwqWEVZGM2skYCWHp9xBg7HThwL1MZlTWc1C
-         KwZzPIhxsm/86exfDlxzlYTVf/Lr36OfSpTqLideBmrVLlpqC4eebO9+92d7/BDeTyom
-         jgzHEk9a16nsYJOXXwMR19TB8iZytqvS2Ma5j+i+FZfPtwdoRvIFNCw5C3te2wXcRHgS
-         FvbA==
-X-Gm-Message-State: AOAM530Pden5Z0jZQPkE6WXqg3qr0w46E6n1/zNgFsw8xGgBbKylhxf5
-        3fJoaIodI7xufeZVGeZFjeU=
-X-Google-Smtp-Source: ABdhPJxDplYpiJvMYFKBibWwNfI1+QoLMtVL4HB+4mcg+FH8MsrUv331eHciak5L7Kjd2dDJhW/DZw==
-X-Received: by 2002:a17:90b:3809:: with SMTP id mq9mr7333076pjb.7.1634829320924;
-        Thu, 21 Oct 2021 08:15:20 -0700 (PDT)
-Received: from localhost.localdomain ([2406:7400:63:29a4:d874:a949:6890:f95f])
-        by smtp.gmail.com with ESMTPSA id c9sm5508027pgq.58.2021.10.21.08.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:15:20 -0700 (PDT)
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     bhelgaas@google.com
-Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, Toan Le <toan@os.amperecomputing.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:PCI DRIVER FOR
-        APPLIEDMICRO XGENE)
-Subject: [PATCH v3 25/25] PCI: xgene: Use PCI_ERROR_RESPONSE to specify hardware error
-Date:   Thu, 21 Oct 2021 20:37:50 +0530
-Message-Id: <4a5e5a4625a3259e20e70f73ce9c294b695cfdde.1634825082.git.naveennaidu479@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1634825082.git.naveennaidu479@gmail.com>
-References: <cover.1634825082.git.naveennaidu479@gmail.com>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LtOlMe2BJBUKpJxzc4iXO/flZXymfvUzSpBIinKoT5E=;
+        b=Jss040FHuL26kKwuxf8lumdJTJVDIgwnFXulSKdPF+wkEda98TfYYgwFjGzWfDVxIg
+         DESKlITMbAzajDpqTliUJdmR1VGC6Jk/1p4xGwEUWVFW6X0pEcEOY/Nwzbnv5csW3MpX
+         tLdaEY4vXA/LRmYfsV8L+V+0fZMDun4gYEVbYUm9HbCZwkhuBzItE9TnBqAZQpybrcVw
+         dEua2+OmcQuthgbKwSKqeUJMh8ztADZ5E8QtZKVoPlT/q1ERrMuCZLtRMmAbaMv8FsOp
+         JxzcDWjF6FAGAQ3OBb1xXMtt4L5fVXABWu6IApupHPfwKNXWcyQasTsxNntCI70wD7tB
+         Uc0w==
+X-Gm-Message-State: AOAM531tZrZyaCDuNnaFpCZEzFQ1u+KQA4z1rKt8PmUnCtRXUeihHuRf
+        BMU6NxnZ2VwI8CtEG9u1GdKf4a4n7/Q=
+X-Google-Smtp-Source: ABdhPJx/qJNALzgwzRSkqgnYakmhhye4juv0fFcf+HjKFWeFMlgPCNae1cRhXDQBAPaKspYYPn9rNw==
+X-Received: by 2002:a05:6512:3254:: with SMTP id c20mr4976988lfr.254.1634828922826;
+        Thu, 21 Oct 2021 08:08:42 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
+        by smtp.googlemail.com with ESMTPSA id y32sm482726lfa.171.2021.10.21.08.08.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 08:08:42 -0700 (PDT)
+Subject: Re: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in
+ device tree
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211021115501.14932-1-digetx@gmail.com>
+ <YXFyu+Q5ifG8Au9w@orome.fritz.box>
+ <5f122caa-c810-534d-b2a1-53edef313ff0@gmail.com>
+Message-ID: <32694811-8768-8e77-f188-4ed1a1fb93da@gmail.com>
+Date:   Thu, 21 Oct 2021 18:08:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <5f122caa-c810-534d-b2a1-53edef313ff0@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include PCI_ERROR_RESPONSE along with 0xffffffff in the comment to
-specify a hardware error. This makes MMIO read errors easier to find.
+21.10.2021 17:57, Dmitry Osipenko пишет:
+> It might be wrong to disable device_may_wakeup() because it will change
+> the system suspend-resume behaviour, i.e. you won't be able to resume by
+> USB event, see [1].
+> 
+> [1]
+> https://elixir.bootlin.com/linux/v5.15-rc6/source/drivers/usb/host/xhci-tegra.c#L1962
+> 
+> Although, I'm not sure whether this is a correct behaviour to start
+> with. Previously, before the offending commit, device_wakeup was never
+> enabled for tegra-xusb. Commit message doesn't explain why wakeup is now
+> enabled unconditionally, wakeup checks aren't needed at all then. This
+> makes no sense, please check it with JC Kuo.
 
-Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
----
- drivers/pci/controller/pci-xgene.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
-index e64536047b65..4b10794e1ba1 100644
---- a/drivers/pci/controller/pci-xgene.c
-+++ b/drivers/pci/controller/pci-xgene.c
-@@ -176,10 +176,10 @@ static int xgene_pcie_config_read32(struct pci_bus *bus, unsigned int devfn,
- 	 * Retry Status (CRS) logic: when CRS Software Visibility is
- 	 * enabled and we read the Vendor and Device ID of a non-existent
- 	 * device, the controller fabricates return data of 0xFFFF0001
--	 * ("device exists but is not ready") instead of 0xFFFFFFFF
--	 * ("device does not exist").  This causes the PCI core to retry
--	 * the read until it times out.  Avoid this by not claiming to
--	 * support CRS SV.
-+	 * ("device exists but is not ready") instead of
-+	 * 0xFFFFFFFF (PCI_ERROR_RESPONSE) ("device does not exist"). This causes
-+	 * the PCI core to retry the read until it times out.
-+	 * Avoid this by not claiming to support CRS SV.
- 	 */
- 	if (pci_is_root_bus(bus) && (port->version == XGENE_PCIE_IP_VER_1) &&
- 	    ((where & ~0x3) == XGENE_V1_PCI_EXP_CAP + PCI_EXP_RTCTL))
--- 
-2.25.1
+Although, wakeup could be disabled via sysfs, so it makes sense. Still
+it's not clear whether it's a correct behaviour to enable wakeup during
+system suspend by default. If it wakes machine from suspend when USB
+device is plugged/unplugged, then it's a wrong behaviour.
 
