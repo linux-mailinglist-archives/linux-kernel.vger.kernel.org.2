@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73E4436766
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F00C436769
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhJUQR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36494 "EHLO
+        id S231861AbhJUQSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbhJUQRY (ORCPT
+        with ESMTP id S231220AbhJUQST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:17:24 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A43C061348
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:15:08 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id y4so801610plb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:15:08 -0700 (PDT)
+        Thu, 21 Oct 2021 12:18:19 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA16C0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:16:03 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id f5so736715pgc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=BnP3QIjaR7JnabL4Ln7V26GIHfumLzivJQweHaSc0TY=;
-        b=UBKO7odzSPY8clMHdQmGPBJ+ZxoNV2g6Yb6uDXVIZfwmaI1U55bkabRNRsh+BmuTzy
-         Q/cP/XunCz/WKkEz6QDvY1kE8YqvVgF0YBumI3W/ovL+ELAwUf5lida08f566HsMG4GF
-         Ftg7LzdrVIvFSmkqKjhWVGXItAnkAA07iJIbc=
+        bh=vP39j9ADitfQOHN+zI1j9ZwqqZWQBsDUBPCRK2KL/kw=;
+        b=BxznGOQ/wzmBK7sBg1f0kltBGxiqMcUJY96yfRg5sDBfwda0Au3MEYhLIQYXBrAh29
+         w8M8sjJCfbHisxxMGjvz0gTJArsePF8uLuWr80z78Ls2wpZtyTrzCUlOiB//HsTEHfGh
+         Ji05YrCVxt9dwaOXBMkJofvsNIs4FxFgTspLU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=BnP3QIjaR7JnabL4Ln7V26GIHfumLzivJQweHaSc0TY=;
-        b=fQ1r3a7dQC5YEI/Mu98/EVXSxEqOE8ox/mbAc2tBvmHnjCDvWH9WAD7UFLHyW+my4P
-         je8VTuF9VUxrjB9SV+Hi62DJ1HsYgKlS+yDmuHya3gnro8XBCZyPxog4i9Yp3jxnmU+b
-         8/EgHmCfmtoS6NsCbFb4xvCNR0Ff+wx0V3jMZNS+Yv+Zw+/47SrjIx6scVclTtmhZnpJ
-         zyHFSj+Z8oJQ/MwCvkcVzZ2TOz48r7CSThGZDGvMRR2cmCEelq/WTHRmUpldF6EAIPRE
-         aUmt4eap5Qhu4gl+c7nYoCQ6+Hu9KHNqkzCKGzcyFQJ46smbKIzZFBULFzQRA5YUvTq8
-         3Ghw==
-X-Gm-Message-State: AOAM533wOmSlX7dAgHOCeIojettau/UvONEZXEaydFshVrHavVpuDLCk
-        jkYvEAlZy509UilYOL+lGhGMMu9F7t01yg==
-X-Google-Smtp-Source: ABdhPJykgSiYSFIaI8VWViajINK0UvEIyr8C/qc98WFBSnIZbY7yo5tECp223FmUgtnvEXPDO6U6rg==
-X-Received: by 2002:a17:902:8a97:b0:13e:6e77:af59 with SMTP id p23-20020a1709028a9700b0013e6e77af59mr6092858plo.4.1634832907872;
-        Thu, 21 Oct 2021 09:15:07 -0700 (PDT)
+        bh=vP39j9ADitfQOHN+zI1j9ZwqqZWQBsDUBPCRK2KL/kw=;
+        b=3iX68S21a0HEFMyfoZKEwzPGA+VGCMSN6k+LohKTrLdnjFzhj3V9ZoNmoiP+9Df1nZ
+         uUWYvizOFvnUad1IcOFkO1/opg7Vw4gHWcbvZhLZRfL3oK9ua/Iaj5lSDn9wWWNRreQp
+         Jrpy6eXiFkTt/tpPVvv41Y0Q/SkEqb+gdm4H4RBMlHEZ8djyUTqZnLyFI9A5wWzi5aag
+         /tkCPXhn9HH4FFuA4z1Jz9Q2n5dbmfcyaEz88Ql8g53C8zrqvJyCk7+DVd6PNciri2IK
+         Ou2DAHJJm4wSKYp+EEP+y6FFUYXEeH4Rtd1XNHwIP4S2R7KgsxhrVOL1FYLNMw5xkYa+
+         BLmw==
+X-Gm-Message-State: AOAM530F7uoWtcIq33Z1Qnd27II6z+KPpQryX4oRbRYjTR2sNCgUCGpl
+        7q/GjAAgBDObQNyKKIgusF/TjA==
+X-Google-Smtp-Source: ABdhPJy70NkI/iYHxiXKXmeWuvWywNZofk1XVFZpw6KXyv0Q/EsYUPnI6CkUR0hARZPpFGr3tLAeRA==
+X-Received: by 2002:a62:188c:0:b0:44d:6660:212b with SMTP id 134-20020a62188c000000b0044d6660212bmr6691706pfy.8.1634832963309;
+        Thu, 21 Oct 2021 09:16:03 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u24sm5865109pgo.73.2021.10.21.09.15.07
+        by smtp.gmail.com with ESMTPSA id s62sm6005310pgc.5.2021.10.21.09.16.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 09:15:07 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 09:15:06 -0700
+        Thu, 21 Oct 2021 09:16:03 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 09:16:02 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
@@ -55,31 +55,35 @@ Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org, H Peter Anvin <hpa@zytor.com>
-Subject: Re: [PATCH 09/20] signal/vm86_32: Replace open coded BUG_ON with an
- actual BUG_ON
-Message-ID: <202110210914.59245E29CF@keescook>
+Subject: Re: [PATCH 10/20] signal/vm86_32: Properly send SIGSEGV when the
+ vm86 state cannot be saved.
+Message-ID: <202110210915.BF17C14980@keescook>
 References: <87y26nmwkb.fsf@disp2133>
- <20211020174406.17889-9-ebiederm@xmission.com>
+ <20211020174406.17889-10-ebiederm@xmission.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020174406.17889-9-ebiederm@xmission.com>
+In-Reply-To: <20211020174406.17889-10-ebiederm@xmission.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:43:55PM -0500, Eric W. Biederman wrote:
-> The function save_v86_state is only called when userspace was
-> operating in vm86 mode before entering the kernel.  Not having vm86
-> state in the task_struct should never happen.  So transform the hand
-> rolled BUG_ON into an actual BUG_ON to make it clear what is
-> happening.
+On Wed, Oct 20, 2021 at 12:43:56PM -0500, Eric W. Biederman wrote:
+> Instead of pretending to send SIGSEGV by calling do_exit(SIGSEGV)
+> call force_sigsegv(SIGSEGV) to force the process to take a SIGSEGV
+> and terminate.
+> 
+> Update handle_signal to return immediately when save_v86_state fails
+> and kills the process.  Returning immediately without doing anything
+> except killing the process with SIGSEGV is also what signal_setup_done
+> does when setup_rt_frame fails.  Plus it is always ok to return
+> immediately without delivering a signal to a userspace handler when a
+> fatal signal has killed the current process.
 
-If this is actually not a state userspace can put itself into:
+Do the tools/testing/selftests/x86 tests all pass after these changes? I
+know Andy has a bunch of weird corner cases in there.
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
-
-Otherwise, this should be a WARN+kill.
 
 > 
 > Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -89,26 +93,41 @@ Otherwise, this should be a WARN+kill.
 > Cc: H Peter Anvin <hpa@zytor.com>
 > Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 > ---
->  arch/x86/kernel/vm86_32.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+>  arch/x86/kernel/signal.c  | 6 +++++-
+>  arch/x86/kernel/vm86_32.c | 2 +-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
 > 
+> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+> index f4d21e470083..25a230f705c1 100644
+> --- a/arch/x86/kernel/signal.c
+> +++ b/arch/x86/kernel/signal.c
+> @@ -785,8 +785,12 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+>  	bool stepping, failed;
+>  	struct fpu *fpu = &current->thread.fpu;
+>  
+> -	if (v8086_mode(regs))
+> +	if (v8086_mode(regs)) {
+>  		save_v86_state((struct kernel_vm86_regs *) regs, VM86_SIGNAL);
+> +		/* Has save_v86_state failed and killed the process? */
+> +		if (fatal_signal_pending(current))
+> +			return;
+> +	}
+>  
+>  	/* Are we from a system call? */
+>  	if (syscall_get_nr(current, regs) != -1) {
 > diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
-> index e5a7a10a0164..63486da77272 100644
+> index 63486da77272..040fd01be8b3 100644
 > --- a/arch/x86/kernel/vm86_32.c
 > +++ b/arch/x86/kernel/vm86_32.c
-> @@ -106,10 +106,8 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
->  	 */
->  	local_irq_enable();
+> @@ -159,7 +159,7 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
+>  	user_access_end();
+>  Efault:
+>  	pr_alert("could not access userspace vm86 info\n");
+> -	do_exit(SIGSEGV);
+> +	force_sigsegv(SIGSEGV);
+>  }
 >  
-> -	if (!vm86 || !vm86->user_vm86) {
-> -		pr_alert("no user_vm86: BAD\n");
-> -		do_exit(SIGSEGV);
-> -	}
-> +	BUG_ON(!vm86 || !vm86->user_vm86);
-> +
->  	set_flags(regs->pt.flags, VEFLAGS, X86_EFLAGS_VIF | vm86->veflags_mask);
->  	user = vm86->user_vm86;
->  
+>  static int do_vm86_irq_handling(int subfunction, int irqnumber);
 > -- 
 > 2.20.1
 > 
