@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C4F4368B6
+	by mail.lfdr.de (Postfix) with ESMTP id CD6524368B9
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbhJURIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
+        id S232248AbhJURI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbhJURIT (ORCPT
+        with ESMTP id S231921AbhJURIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:08:19 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC96C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:06:03 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id w17so853661plg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:06:03 -0700 (PDT)
+        Thu, 21 Oct 2021 13:08:24 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7BBC061764;
+        Thu, 21 Oct 2021 10:06:08 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso1505230pjf.3;
+        Thu, 21 Oct 2021 10:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=AA/Vk7i32hp+TW57K1Sm4eATQ0xdRmx7/VZFp+nxsoc=;
-        b=V0HizoaTjOwJiGRph9Oi6djZcOz/i0VafvXBQGVd3nbW7n+UWtdBAcbMQM86+BVj2V
-         x7mqTnWZJ2jMLVTg7+fwy+eVheb/w13T3iegOI+X8JmyVbJMZK+i4zhAr6kUdWq5K8jz
-         I078wMPwn9yw2UzOUPKkq1M/rhlvGrAjSRkgj9KMtkcLNmNfsoenu+HIk9mtsS9HSrWx
-         3ijJ2rrmrVzX/s7YPew1HBZNxgxTTL2weoaSymXgRkCHyUEWY9R5qUsODNwIz9guzolv
-         Uy8z5M2KnAjU/A4GDSsKI69TFRE5xevM8x8Jv+EIY6000YOmYTh28eY1Uk2/inQEygb0
-         i5KQ==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jrhIGZEqu0h/B8SeVSRWWn+zXKY1Hb4XraNoMEue39w=;
+        b=OA705iIhr1YeBmH3LY1wuCrgfL3CUIvPxUFSRUYOFLixDWJ9TtX9x0pjMdukts/TdN
+         aqXY23DJC+n0Mhx1JwFCNmnb0QvKL+AkBtOPdksPbpodAsZGKpKUp/R3Pr6QRt0IuSzr
+         KS/WNb+Mvv5CVTVbuIdcK/5ZHYS6cN/etcx16Rc1NzHhH0IZGcAECTbnQfbgk3UY9FEG
+         HnsSFWAfHrLCWehkpvqtY8RYoCWngNQoyPpeHfkAEHxTnNraxY2i52QEePbjkdpoglgM
+         +cveexLYdYNMeRr61ZopCZ1boXOX6XShZbQEOJSZRz/3xBePCVgxaMhNi+E8oUdgznBY
+         JOvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=AA/Vk7i32hp+TW57K1Sm4eATQ0xdRmx7/VZFp+nxsoc=;
-        b=eNrAcY9N3sXWg2ly/KKgP4isxLZrtBb4q70sS91Sz/4JW7LDnZkMgAN0RJ4LRobpyD
-         oiIBvz0qEShMN2dLgB1F1t+NvfF1W5q4C/tVk4yilAgf7nS0maoTXGkDimbwK++vRuyb
-         c8JNpjd5WDnAHUOrPY+AJ7TjAiCW9Oyp6a9V43NTehr4btHcsRhS2m9GRk16UzMtHqWT
-         EkfO8TCNKABgEqaE/B2sQJRRhgbbIZP/yrGaMWlLYpdeTt8o94odgECES3cG9uq6vE6a
-         C7EHkZH28e89Iq1HdfUtVCOOdmPF8WNaK3yRrzCvIgVWSATIviPhWi1yiTQT9m29kiQD
-         qs1w==
-X-Gm-Message-State: AOAM530KS5+3AGWoqJ/s7yk09+B1OkEctm/XDdkdChxxwg182nndQfb9
-        rD60Pi09/EBGYWR+DGdl/GHbNQ==
-X-Google-Smtp-Source: ABdhPJxWGl58swwpDoI1+zivKSJ+lOtRSNZDKQxqvTYLkUgMT2GfURhRhxv+daFc8nXZRRUJZH3pfw==
-X-Received: by 2002:a17:90a:bd04:: with SMTP id y4mr7938487pjr.99.1634835962783;
-        Thu, 21 Oct 2021 10:06:02 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:503e:d6fd:1031:9e1d])
-        by smtp.gmail.com with ESMTPSA id qe17sm7714602pjb.39.2021.10.21.10.05.44
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jrhIGZEqu0h/B8SeVSRWWn+zXKY1Hb4XraNoMEue39w=;
+        b=0zP4ijNBDQZz0WBlLTD4B0hP6uIjha53X97I9MbaYGszKnhG0VSHwJanfrImBbDNkH
+         SoLau7ZayX+TQYb2amEVy/h4N+NAl9Vxt+i6H58uoDNXzdLNPbhkIhQ0Lj5RFcxKbi1G
+         uOqLhc8oj4cjTf982J2eIXK4pgeYIXVJHNkhaW2DujW8ff4voh6y+jcN3vmFnUxAa1n2
+         S3Tvs15fRrtrKPwW7iTGy3ueWccGcsJ4vFstuY4OSbGbZpRBRoGIbKMx55/cS8Rme36C
+         KNPxx62V5nq+WbHma3CknGNMQhO9V9McaTQxbH+u5oQIuf4gm7XMdhIy7n0GCLvTqkn8
+         IYiw==
+X-Gm-Message-State: AOAM530kQfhz2t7kObYsdwteWpcwtIgRGOwdo/F5DaeP+Qdfq9pjjXa4
+        jjaosoT81UI9pPWb2pKy3Zo=
+X-Google-Smtp-Source: ABdhPJxNnBJ3A4oS8et0paTH4JI99DT0N0T5gYetTWhMgLWDBcJGMtkZJiafBFFyVFt1ubfsfcrmAw==
+X-Received: by 2002:a17:90a:c913:: with SMTP id v19mr3805112pjt.117.1634835967957;
+        Thu, 21 Oct 2021 10:06:07 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id z24sm6310084pgu.54.2021.10.21.10.06.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 10:05:58 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 10:05:38 -0700
-From:   Benson Leung <bleung@google.com>
-To:     Cheng-Yi Chiang <cychiang@chromium.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Guenter Roeck <groeck@chromium.org>
-Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Chrome: Drop Enric Balletbo i Serra
-Message-ID: <163483586450.864918.7076572503984591478.b4-ty@chromium.org>
+        Thu, 21 Oct 2021 10:06:07 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 21 Oct 2021 07:06:05 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Pratik Sampat <psampat@linux.ibm.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@kernel.org,
+        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        containers@lists.linux.dev, containers@lists.linux-foundation.org,
+        pratik.r.sampat@gmail.com
+Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
+Message-ID: <YXGd/T0YHG/xEAkw@slm.duckdns.org>
+References: <20211009151243.8825-1-psampat@linux.ibm.com>
+ <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
+ <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
+ <YWirxCjschoRJQ14@slm.duckdns.org>
+ <b5f8505c-38d5-af6f-0de7-4f9df7ae9b9b@linux.ibm.com>
+ <YW2g73Lwmrhjg/sv@slm.duckdns.org>
+ <77854748-081f-46c7-df51-357ca78b83b3@linux.ibm.com>
+ <YXBFVCc61nCG5rto@slm.duckdns.org>
+ <bd1811cc-0e04-9e44-0b46-02689ff9a238@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="knFqIAD4SNA+zxIj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211021063210.52503-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <bd1811cc-0e04-9e44-0b46-02689ff9a238@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---knFqIAD4SNA+zxIj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 21, 2021 at 01:14:10PM +0530, Pratik Sampat wrote:
+> I'm speculating, and please correct correct me if I'm wrong; suggesting
+> an optimal number of threads to spawn to saturate the available
+> resources can get convoluted right?
+> 
+> In the nginx example illustrated in the cover patch, it worked best
+> when the thread count was N+1 (N worker threads 1 master thread),
+> however different applications can work better with a different
+> configuration of threads spawned based on its usecase and
+> multi-threading requirements.
 
-On Thu, 21 Oct 2021 08:32:10 +0200, Uwe Kleine-K=F6nig wrote:
-> Sending a patch to the chrome people resulted in a message by
-> Collabora's mailer daemon:
->=20
-> 	550 5.1.1 <enric.balletbo@collabora.com>: Recipient address rejected: Us=
-er unknown in local recipient table (in reply to RCPT TO command)
->=20
-> So remove Eric from all maintainer entries.
+Yeah, I mean, the number would have to be based an ideal conditions - ie.
+the cgroup needs N always-runnable threads to saturate all the available
+CPUs and then applications can do what they need to do based on that
+information. Note that this is equivalent to making these decisions based on
+number of CPUs.
 
-Applied, thanks!
+> Eventually looking at the load we maybe able to suggest more/less
+> threads to spawn, but initially we may have to have to suggest threads
+> to spawn as direct function of N CPUs available or N CPUs worth of
+> runtime available?
 
-[1/1] MAINTAINERS: Chrome: Drop Enric Balletbo i Serra
-      commit: 3119c28634ddc6ee3813778d9d17741baceef19d
+That kind of dynamic tuning is best done with PSI which can reliably
+indicate saturation and the degree of contention.
 
-Best regards,
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
+> > The other
+> > metric would be the maximum available fractions of CPUs available to the
+> > cgroup subtree if the cgroup stays saturating. This number is trickier as it
+> > has to consider how much others are using but would be determined by the
+> > smaller of what would be available through cpu.weight and cpu.max.
+> 
+> I agree, this would be a very useful metric to have. Having the
+> knowledge for how much further we can scale when we're saturating our
+> limits keeping in mind of the other running applications can possibly
+> be really useful not just for the applications itself but also for the
+> container orchestrators as well.
 
---knFqIAD4SNA+zxIj
-Content-Type: application/pgp-signature; name="signature.asc"
+Similarly, availability metrics would be useful in ballpark sizing so that
+applications don't have to dynamically tune across the entire range, the
+actual adustments to stay saturated is likely best done through PSI, which
+is the direct metric indicating resource saturation.
 
------BEGIN PGP SIGNATURE-----
+Thanks.
 
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYXGd4gAKCRBzbaomhzOw
-woJlAP4wGZ66WvIbIFezMoI/eYRTFVNIn47bcHQrphUoin9OdgD/Ud6edW6vrg9u
-U26iiJUf1uwQBXY9uwn5iTiAao7gYA4=
-=nTsD
------END PGP SIGNATURE-----
-
---knFqIAD4SNA+zxIj--
+-- 
+tejun
