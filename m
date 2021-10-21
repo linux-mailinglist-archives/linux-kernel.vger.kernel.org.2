@@ -2,173 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AFE43587B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 04:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B36435880
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 04:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhJUCDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 22:03:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230192AbhJUCDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 22:03:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51170611F2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634781656;
-        bh=CaHFHM1Qm0GitdpBwfDVW+bc24uJpevrPTy9GbSYzAs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oWRYmURS3Cw/BVj63vuUOrQ+2FAt3jPF5bPLbzfrSFUEtPq6hzlCe1JLrVGmsVSA+
-         PTwUodWMmvglPiJLGZqhA/UC1w0mZ9uKzejYTfGDOOrwiHE2N3ChijXLxIFBEVmkTY
-         +SzeGHD6PpZsXS+PV3O647h8tF2FdgKfKe7N2BYumsbASDE9y8IwSTOyQn4V4XC5W/
-         F8RoWciFuPpplNvd11b81K1kZfso40ZuIJSumxU742D8NFzIyvgdYdb4XzIdyh2sqg
-         FgEpXg/ofgdNaoVwSQTPSGskCt36lUoYJENEotJM8MBWJProE1trAoyB6pb+UnmWAB
-         92stk3HbBvItA==
-Received: by mail-lf1-f44.google.com with SMTP id d42so772585lfv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 19:00:56 -0700 (PDT)
-X-Gm-Message-State: AOAM532c5kKHkb+goa9AiGZWGCDUrgX7WDnEQ5cP7NivfzK7OlPvVn8C
-        U04isWXua5r59M8U6oXJFC8jfiiX3aRNCCc6FWQ=
-X-Google-Smtp-Source: ABdhPJz+1T8AvkCO2dMtlMoL1VDONGi4JxVBo6oPWp6Zz2Uc/xtHSams6U3dfsy/UToUy5rLXUQEHksU5OkFxOlgdFs=
-X-Received: by 2002:a19:48c9:: with SMTP id v192mr2599625lfa.269.1634781654407;
- Wed, 20 Oct 2021 19:00:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-2-guoren@kernel.org>
- <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org> <f850af365f2ac77af79ec59f92e6434a@kernel.org>
- <CAJF2gTShT8Tvk0z6B52zKEi0vq_toc-7mAKWFKj3j-zg=OhpYQ@mail.gmail.com>
- <8735oxuxlq.wl-maz@kernel.org> <CAJF2gTSmyu9nA5M3QLeR1LdGMkeGb7jE93Z9zjixcpb_freLMw@mail.gmail.com>
- <875ytrddma.wl-maz@kernel.org> <CAAhSdy0TwOjv_RDMRsKqcqTE8PSO_A_EttMGBiDbb-0PTRizZg@mail.gmail.com>
- <871r4fd996.wl-maz@kernel.org>
-In-Reply-To: <871r4fd996.wl-maz@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 21 Oct 2021 10:00:43 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQEx9BJ6bmgrNOc9--CL3DRKBBN=1Fv_waWWmTTGj150A@mail.gmail.com>
-Message-ID: <CAJF2gTQEx9BJ6bmgrNOc9--CL3DRKBBN=1Fv_waWWmTTGj150A@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Atish Patra <atish.patra@wdc.com>,
+        id S230526AbhJUCKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 22:10:44 -0400
+Received: from mail-bn8nam08on2061.outbound.protection.outlook.com ([40.107.100.61]:8801
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230363AbhJUCKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 22:10:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AqlP9gJx5CG+tNku7+cXJQlAi+DpiOaP0l4DHhMJ+5MkjZozGKiPt8kvXCtvhdwAap7BK80aQ7VsymLNgGo8DSvUcf3yPv9JY5zHzYClENQAxToUQQq/9L1WqZbx/XfkUL51ARmcITUqlKnmK5v7Digcs4GxBG9aXXKYZ8rl2QzWF+3oPEbvONsd3t6zl5ddw25mFwNqNLc3UImeNXLmdvGyd66oWcwBc4vx4stbju3bpL98d7uXbFkeIgA6tKUxEAfAW7w3TxBvIEHRp3hvbJ1le4nDxFa4Hz3K+w9HqwTnGBU7g7xeAsG5Vwc3xEqEZ31w69bB6hJPMdgYu0C5Sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8Ux9BOYNEyMVH0JGeaQSURCQ2XHuVTURqkZqfAJbqPY=;
+ b=mbDwWpRfI295Ls9yIYbwkYmS9qZVPTbmfddtowV/ODjZbqkT0W86Yog0lQk+uNccc2fNXD/7O7CnkRcj3yhV42ay2OKYmMlPtxECNrFpErcAZ6CDWzEBvfxoMcg/tnzg+muMwdgWDJydb/6W7PfF9ldgkRcqez/zLKkjcpIClFvFK+sFJToQ9kMh8OOSxBINy6yTwdjqVMSIvXWY3tS+uUDKQOGMYm2zl7NC22gZXL0LvFMRpgl43b6/7EZ+sXjC8kh5b8Oijkkid2Q1DhVw6hhYNfel7BwoO8/419cBXZA4iHn2vg1zzX1TArqDLt7/xtUmsOudWXPvEnpepnXF8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Ux9BOYNEyMVH0JGeaQSURCQ2XHuVTURqkZqfAJbqPY=;
+ b=V/ywVRJHTysu9LvTmR7OwhlyJcdNoczRZBw5Gu/TKzWW1MQ7j9m34/yuo+TlvtArUdbjOPBuLVtqPEB/0hbDtvejheAHVrl6aLZmpwqOaSdlF6phut05Y95AD5yfx+hFJSKiYSSFpM/Ond70UcTubhreB0xKzj8uzsIsBTIF30E=
+Received: from BN9PR03CA0345.namprd03.prod.outlook.com (2603:10b6:408:f6::20)
+ by BY5PR12MB3825.namprd12.prod.outlook.com (2603:10b6:a03:1a2::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Thu, 21 Oct
+ 2021 02:08:11 +0000
+Received: from BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:f6:cafe::52) by BN9PR03CA0345.outlook.office365.com
+ (2603:10b6:408:f6::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend
+ Transport; Thu, 21 Oct 2021 02:08:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT048.mail.protection.outlook.com (10.13.177.117) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 02:08:11 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 20 Oct
+ 2021 21:08:10 -0500
+Date:   Wed, 20 Oct 2021 19:35:35 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Brijesh Singh <brijesh.singh@amd.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>,
+        <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        <tony.luck@intel.com>, <marcorr@google.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <20211021003535.ic35p6nnxdmavw35@amd.com>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+ <YXBZYws8NnxiQJD7@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YXBZYws8NnxiQJD7@zn.tnic>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e343eeaa-339e-4e51-a57e-08d99437a208
+X-MS-TrafficTypeDiagnostic: BY5PR12MB3825:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB3825392BED027E5BF663FB9B95BF9@BY5PR12MB3825.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DN5uywu4hMsLx9JqZvOI1/D4Ep8BajYYcXxW3oRIdn1jJnZD+V/cNlaoV34gpF6pR5hRCznXXJokyduW36qPiF1p7cdKPXBRy4iThsrLZ041eUlcyKFejEqOsNgs0mjAKF7VnfMpxE3jEJNZvlAWDBtGp9zjWD6I5tj0t9jz02DQbjVQZfZIyW1ZLmedP5kF3EbCUgSzBG9bFIZPK5ShCCKOoKDHDvR2kfp/ez1AhTLHLwAx0HXB4WLvuNBf+c/c9L8YrGnUpuwS6bQ+39oyk12EhmOXXWaJt3cPSVYC1rEMj4tmqDDr6XTJ2xeFdYmJ2ZIUAiK1rnKBnDighOLDyp3P3PjRp3OD43nlayJhFQN8ak5JQgI+r3OVeUbMwatR+gINtnSr1qI4fjyW73X3IHysypIvRmvn/HjuYZ4+IdIjA+U1xIBiVo4Yn2lpe03JVIk+wijN0yiODAMEM1b4MmBNc0zn0lZRcS8F36k6FfKMEsgjqEU6/48JFtCdFTxFtU4YdjlifdwlLqnwJAJFNXO7MUFlCeQYD6ADvFM6yrC6hbjVmszSRMp5zqsa7HXl0M5QRf4AeCgBqZLSXO4GasbdN+NFcPL1a+uqHxDOZwHRu6Uxr3Y2loPhllh3fLn9l/3HmcsFO5AEPzrTfn8CPT9FJD8OZyPNyVXCrfwqKHqAF8Gumf8dRwucr1wR7WIhdIi+sCpaSHx7cR9CH7Xvh3UKiW51p1b3OLwQ9GNzIjJq9JTS+E5Yhto+mkoozn+TS7fB2WvZl2mOG53XOyC07oDAkIWThxJDT/ToRJFo+NwuSf7fPo2P9FGDX0Mwohwh
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(356005)(44832011)(186003)(7416002)(16526019)(2616005)(6916009)(70586007)(70206006)(426003)(2906002)(1076003)(6666004)(5660300002)(36860700001)(83380400001)(47076005)(4326008)(316002)(336012)(8936002)(45080400002)(7406005)(54906003)(81166007)(966005)(8676002)(86362001)(36756003)(508600001)(82310400003)(26005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 02:08:11.1144
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e343eeaa-339e-4e51-a57e-08d99437a208
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3825
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:08 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Wed, 20 Oct 2021 15:33:49 +0100,
-> Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 7:04 PM Marc Zyngier <maz@kernel.org> wrote:
-> > >
-> > > On Tue, 19 Oct 2021 14:27:02 +0100,
-> > > Guo Ren <guoren@kernel.org> wrote:
-> > > >
-> > > > On Tue, Oct 19, 2021 at 6:18 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, 19 Oct 2021 10:33:49 +0100,
-> > > > > Guo Ren <guoren@kernel.org> wrote:
-> > > > >
-> > > > > > > If you have an 'automask' behavior and yet the HW doesn't record this
-> > > > > > > in a separate bit, then you need to track this by yourself in the
-> > > > > > > irq_eoi() callback instead. I guess that you would skip the write to
-> > > > > > > the CLAIM register in this case, though I have no idea whether this
-> > > > > > > breaks
-> > > > > > > the HW interrupt state or not.
-> > > > > > The problem is when enable bit is 0 for that irq_number,
-> > > > > > "writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM)" wouldn't affect
-> > > > > > the hw state machine. Then this irq would enter in ack state and no
-> > > > > > continues irqs could come in.
-> > > > >
-> > > > > Really? This means that you cannot mask an interrupt while it is being
-> > > > > handled? How great...
-> > > > If the completion ID does not match an interrupt source that is
-> > > > currently enabled for the target, the completion is silently ignored.
-> > > > So, C9xx completion depends on enable-bit.
-> > >
-> > > Is that what the PLIC spec says? Or what your implementation does? I
-> > > can understand that one implementation would be broken, but if the
-> > > PLIC architecture itself is broken, that's far more concerning.
-> >
-> > Yes, we are dealing with a broken/non-compliant PLIC
-> > implementation.
-> >
-> > The RISC-V PLIC spec defines a very different behaviour for the
-> > interrupt claim (i.e. readl(claim)) and interrupt completion (i.e.
-> > writel(claim)). The T-HEAD PLIC implementation does things
-> > different from what the RISC-V PLIC spec says because it will
-> > mask an interrupt upon interrupt claim whereas PLIC spec says
-> > it should only clear the interrupt pending bit (not mask the interrupt).
-> >
-> > Quoting interrupt claim process (chapter 9) from PLIC spec:
-> > "The PLIC can perform an interrupt claim by reading the claim/complete
-> > register, which returns the ID of the highest priority pending interrupt or
-> > zero if there is no pending interrupt. A successful claim will also atomically
-> > clear the corresponding pending bit on the interrupt source."
-> >
-> > Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc
->
-> That's not the point I'm making. According to Guo, the PLIC (any
-> implementation of it) will ignore a write to claim on a masked
-> interrupt.
->
-> If that's indeed correct, then a sequence such as:
->
-> (1) irq = read(claim)
-> (2) mask from the interrupt handler with the right flags so that it
-> isn't done lazily
-> (3) write(irq, claim)
+On Wed, Oct 20, 2021 at 08:01:07PM +0200, Borislav Petkov wrote:
+> On Wed, Oct 20, 2021 at 11:10:23AM -0500, Michael Roth wrote:
+> > [Sorry for the wall of text, just trying to work through everything.]
+> 
+> And I'm going to respond in a couple of mails just for my own sanity.
+> 
+> > I'm not sure if this is pertaining to using the CPUID table prior to
+> > sme_enable(), or just the #VC-based SEV MSR read. The following comments
+> > assume the former. If that assumption is wrong you can basically ignore
+> > the rest of this email :)
+> 
+> This is pertaining to me wanting to show you that the design of this SNP
+> support needs to be sane and maintainable and every function needs to
+> make sense not only now but in the future.
 
-How about letting the IRQ chip change?
+Absolutely.
 
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index a98bcfc4be7b..ed6ace1058ac 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -444,10 +444,10 @@ void unmask_threaded_irq(struct irq_desc *desc)
- {
-        struct irq_chip *chip = desc->irq_data.chip;
+> 
+> In this particular example, we should set sev_status *once*, *before*
+> anything accesses it so that it is prepared when something needs it. Not
+> do a #VC and go, "oh, btw, is sev_status set? No? Ok, lemme set it."
+> which basically means our design is seriously lacking.
 
-+       unmask_irq(desc);
-+
-        if (chip->flags & IRQCHIP_EOI_THREADED)
-                chip->irq_eoi(&desc->irq_data);
--
--       unmask_irq(desc);
- }
+Yes, taking a step back there are some things that could probably be
+improved upon there.
 
- /*
-@@ -673,8 +673,8 @@ static void cond_unmask_eoi_irq(struct irq_desc
-*desc, struct irq_chip *chip)
-         */
-        if (!irqd_irq_disabled(&desc->irq_data) &&
-            irqd_irq_masked(&desc->irq_data) && !desc->threads_oneshot) {
--               chip->irq_eoi(&desc->irq_data);
-                unmask_irq(desc);
-+               chip->irq_eoi(&desc->irq_data);
-        } else if (!(chip->flags & IRQCHIP_EOI_THREADED)) {
-                chip->irq_eoi(&desc->irq_data);
-        }
+currently:
 
->
-> will result in an interrupt blocked in ack state (and probably no more
-> interrupt for this CPU at this priority). That would be an interesting
-> bug in the current code, but also a pretty bad architectural choice.
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+  - boot kernel initializes sev_status in set_sev_encryption_mask()
+  - run-time kernel initializes sev_status in sme_enable()
 
+with this series the following are introduced:
 
+  - boot kernel initializes sev_status on-demand in sev_snp_enabled()
+    - initially used by snp_cpuid_init_boot(), which happens before
+      set_sev_encryption_mask()
+  - run-time kernel initializes sev_status on-demand via #VC handler
+    - initially used by snp_cpuid_init(), which happens before
+      sme_enable()
 
--- 
-Best Regards
- Guo Ren
+Fortunately, all the code makes use of sev_status to get at the SEV MSR
+bits, so breaking the appropriate bits out of sme_enable() into an earlier
+sev_init() routine that's the exclusive writer of sev_status sounds like a
+promising approach.
 
-ML: https://lore.kernel.org/linux-csky/
+It makes sense to do it immediately after the first #VC handler is set
+up, so CPUID is available, and since that's where SNP CPUID table
+initialization would need to happen if it's to be made available in
+#VC handler.
+
+It may even be similar enough between boot/compressed and run-time kernel
+that it could be a shared routine in sev-shared.c. But then again it also
+sounds like the appropriate place to move the snp_cpuid_init*() calls,
+and locating the cc_blob, and since there's differences there it might make
+sense to keep the boot/compressed and kernel proper sev_init() routines
+separate to avoid #ifdeffery).
+
+Not to get ahead of myself though. Just seems like a good starting point
+for how to consolidate the various users.
+
+> 
+> And I had suggested a similar thing for TDX and tglx was 100% right in
+> shooting it down because we do properly designed things - not, get stuff
+> in so that vendor is happy and then, once the vendor programmers have
+> disappeared to do their next enablement task, the maintainers get to mop
+> up and maintain it forever.
+> 
+> Because this mopping up doesn't scale - trust me.
+
+Got it, and my apologies if I've given you that impression as it's
+certainly not my intent. (though I'm sure you've heard that before.)
+
+> 
+> > [The #VC-based SEV MSR read is not necessary for anything in sme_enable(),
+> > it's simply a way to determine whether the guest is an SNP guest, without
+> > any reliance on CPUID, which seemed useful in the context of doing some
+> > additional sanity checks against the SNP CPUID table and determining that
+> > it's appropriate to use it early on (rather than just trust that this is an
+> > SNP guest by virtue of the CC blob being present, and then failing later
+> > once sme_enable() checks for the SNP feature bits through the normal
+> > mechanism, as was done in v5).]
+> 
+> So you need to make up your mind here design-wise, what you wanna do.
+> 
+> The proper thing to do would be, to detect *everything*, detect whether
+> this is an SNP guest, yadda yadda, everything your code is going to need
+> later on, and then be done with it.
+> 
+> Then you continue with the boot and now your other code queries
+> everything that has been detected up til now and uses it.
+
+Agreed, if we need to check SEV MSR early for the purposes of SNP it makes
+sense to move the overall SEV feature detection code earlier as well. I
+should have looked into that aspect more closely before introducing the
+changes.
+
+> 
+> End of mail 1.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7Cmichael.roth%40amd.com%7C1f46689b40da4a700a6308d993f3993a%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637703496776826912%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Kdi9h%2FTzuzoLn64BRsRMLWHkew14BxZHR28QsORsSxs%3D&amp;reserved=0
