@@ -2,373 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69399436722
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF29D43672B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbhJUQCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
+        id S231644AbhJUQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbhJUQCi (ORCPT
+        with ESMTP id S231566AbhJUQEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:02:38 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E128C06122C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:00:17 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e10so722492plh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:00:17 -0700 (PDT)
+        Thu, 21 Oct 2021 12:04:22 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249B7C061220
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:02:06 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id c4so706142pgv.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oXjjIT53pPSN6EbNLdcQYZ+Q8H1oQIkUaSTYH2ornZc=;
-        b=uplk04eI3vJAJyTTRkjGI0uENtNd9oA3K4w/OioRJi0KvjATmTtkaJ+x5DPcPyKjGZ
-         +oNZ083nEA7aYfv1y9S/8PBN5bLaRxnjT8486KOj3GvT0h3G5WyIRTo0iCi45nh2F9xL
-         aw9t/KovixYfZEdsAmaRVavfX+mxvPWfRrNvAUTYgav1ieVoFobHKMOKSLgf2Xf4ldNo
-         C6lKQGzxpoGfE+MWrT7xVijGnuPnUkjgO94HsioQqvpKtJ9s33S+T6KHzE2rono5ldtn
-         Svy7KX4shc+h7l+A82NB73pJWkt7T/yRSoQvIvsee3MJR5rl81OTkQDM4abWwRypWsDC
-         828w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aQXnGSvGwqVsJ8nP8kr+l4vStpxJv5nNjrJiBNRwZ+M=;
+        b=jhcXD7uXJAO9grkMAifc99WARslOnjDNWHarUyzrdB0UVxuWb42YrgWWVyzhkJtx6N
+         FU3tSvW3JDgvVfLXOyckE3uKTYO/9/PIzybZXNdE8CPK20RMM9jQWkTlCEogsh811zdS
+         B6u+g+Ze6cDw7Y18Te1VGsUkKIkZoT7CpHEhs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oXjjIT53pPSN6EbNLdcQYZ+Q8H1oQIkUaSTYH2ornZc=;
-        b=6AxBg1TYsXi8/NNg9VCogVRaZ7NWbLde+wYP7KSayxnT8IiQL/5n4ypRmSegsRLbUy
-         dEenKLZs0dtKBleEuiDrm1vMeM5IVSLMkyzXkLedAIQAckZW6rxcELRUVAVMzvaXEIQm
-         6yDKhcwO+Hhkt77y2Y1Y1OCGjtzOvn/aSxCZojy/uOQ5mqRUhEKDrNaJ5tqRzzF/6Vsw
-         NJyhBv9FicHUAjtRoWI+WXVmGO5NqzR9yYX+sjVKyXGclj/hLBGLlWS2Beco5YLsGzZP
-         2Ep5EvomXS5qPqa0MOsYP2LTuOLWdQkII+JOeDSJM3nQ86whqKqC1mDVb8VExRw0AWR4
-         d7Zw==
-X-Gm-Message-State: AOAM531aLtBxaKz2RzhpHU4G46QOjV6zVRpqJZmA5SQ8TE7lWiPbJzJX
-        35Y0ehB5KU2psrko1Pqgf9RHTA4HZjfiVxcthrOZyA==
-X-Google-Smtp-Source: ABdhPJzW4PtQ9QL75FFgjvDLZdyqwOcbpV/RHBL7qic1z9hHTdynl2LRTjI4DPbJoNo3+VvPg123BfpCN+0j9IBM0cg=
-X-Received: by 2002:a17:902:b907:b0:13f:ccaf:9ed8 with SMTP id
- bf7-20020a170902b90700b0013fccaf9ed8mr6057236plb.46.1634832016207; Thu, 21
- Oct 2021 09:00:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aQXnGSvGwqVsJ8nP8kr+l4vStpxJv5nNjrJiBNRwZ+M=;
+        b=Thj1XtJafHT6z/8Lk9/P7agSN4wOYdAodhhqGQqO9oK4TV7aaVRR83GVy/QUsiz/fn
+         r6Tq461gV3SmCnu3HwFD/zx1KfNY5MkT1rCD5nrGzMMRy9m99M1mUnSMsTol8ASYHtgX
+         hRTom2ZgNStBGeNviHoHvFrOb+1NGgVUIj8jg1REVY98hLMt4Hm9pJG6dn5NjLy+jjj5
+         hlLTh9HhYbImCIkQonMXYBgnVvVyV7dvzNstW2cDq+Deg3PmoWr85HXDaLzox6Z7uhIP
+         L7PQrKks0w3xSomKJn7wV5HxjjjLl+TqlLGmoNexOaNHrJ0O/NsM4elNDWNbll2IFPEP
+         g0Mg==
+X-Gm-Message-State: AOAM530eFXW0UE4whjH73lZmcADXQFKGWExmWED/xS5vlP2S3TOGUtdV
+        KOnTUrccHXh9dTDsjP8h4Shtbw==
+X-Google-Smtp-Source: ABdhPJx1yhwpe/xDEMSeojXmDAbO0TukzgYU8mc+AUTj9ZKyfVJv0GgYxvFuub4zNr1a2522ltR6+g==
+X-Received: by 2002:a63:731a:: with SMTP id o26mr5153446pgc.248.1634832125531;
+        Thu, 21 Oct 2021 09:02:05 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i2sm6595890pfa.34.2021.10.21.09.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 09:02:05 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 09:02:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        openrisc@lists.librecores.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: Re: [PATCH 02/20] exit: Remove calls of do_exit after noreturn
+ versions of die
+Message-ID: <202110210858.41719190D2@keescook>
+References: <87y26nmwkb.fsf@disp2133>
+ <20211020174406.17889-2-ebiederm@xmission.com>
 MIME-Version: 1.0
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com> <1634028078-2387-6-git-send-email-hongxing.zhu@nxp.com>
-In-Reply-To: <1634028078-2387-6-git-send-email-hongxing.zhu@nxp.com>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Thu, 21 Oct 2021 09:00:04 -0700
-Message-ID: <CAJ+vNU192BCiVQ=UwXgVCgCMA7tqcAQXQokyh5bO08a+SycOzQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/9] phy: freescale: pcie: initialize the imx8 pcie
- standalone phy driver
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>, vkoul@kernel.org,
-        Rob Herring <robh@kernel.org>, galak@kernel.crashing.org,
-        Shawn Guo <shawnguo@kernel.org>, linux-phy@lists.infradead.org,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020174406.17889-2-ebiederm@xmission.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 2:06 AM Richard Zhu <hongxing.zhu@nxp.com> wrote:
->
-> Add the standalone i.MX8 PCIe PHY driver.
-> Some reset bits should be manipulated between PHY configurations and
-> status check(internal PLL is locked or not).
-> So, do the PHY configuration in the phy_calibrate().
-> And check the PHY is ready or not in the phy_init().
->
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  drivers/phy/freescale/Kconfig              |   9 +
->  drivers/phy/freescale/Makefile             |   1 +
->  drivers/phy/freescale/phy-fsl-imx8m-pcie.c | 218 +++++++++++++++++++++
->  3 files changed, 228 insertions(+)
->  create mode 100644 drivers/phy/freescale/phy-fsl-imx8m-pcie.c
->
-> diff --git a/drivers/phy/freescale/Kconfig b/drivers/phy/freescale/Kconfig
-> index 320630ffe3cd..fb08e5242602 100644
-> --- a/drivers/phy/freescale/Kconfig
-> +++ b/drivers/phy/freescale/Kconfig
-> @@ -14,3 +14,12 @@ config PHY_MIXEL_MIPI_DPHY
->         help
->           Enable this to add support for the Mixel DSI PHY as found
->           on NXP's i.MX8 family of SOCs.
-> +
-> +config PHY_FSL_IMX8M_PCIE
-> +       tristate "Freescale i.MX8 PCIE PHY"
-> +       depends on OF && HAS_IOMEM
-> +       select GENERIC_PHY
-> +       default ARCH_MXC
-> +       help
-> +         Enable this to add support for the PCIE PHY as found on
-> +         i.MX8M family of SOCs.
-> diff --git a/drivers/phy/freescale/Makefile b/drivers/phy/freescale/Makefile
-> index 1d02e3869b45..55d07c742ab0 100644
-> --- a/drivers/phy/freescale/Makefile
-> +++ b/drivers/phy/freescale/Makefile
-> @@ -1,3 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-$(CONFIG_PHY_FSL_IMX8MQ_USB)       += phy-fsl-imx8mq-usb.o
->  obj-$(CONFIG_PHY_MIXEL_MIPI_DPHY)      += phy-fsl-imx8-mipi-dphy.o
-> +obj-$(CONFIG_PHY_FSL_IMX8M_PCIE)       += phy-fsl-imx8m-pcie.o
-> diff --git a/drivers/phy/freescale/phy-fsl-imx8m-pcie.c b/drivers/phy/freescale/phy-fsl-imx8m-pcie.c
-> new file mode 100644
-> index 000000000000..317cf61bff37
-> --- /dev/null
-> +++ b/drivers/phy/freescale/phy-fsl-imx8m-pcie.c
-> @@ -0,0 +1,218 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright 2021 NXP
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/delay.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/mfd/syscon/imx7-iomuxc-gpr.h>
-> +#include <linux/module.h>
-> +#include <linux/phy/phy.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reset.h>
-> +#include <dt-bindings/phy/phy-imx8-pcie.h>
-> +
-> +#define IMX8MM_PCIE_PHY_CMN_REG061     0x184
-> +#define  ANA_PLL_CLK_OUT_TO_EXT_IO_EN  BIT(0)
-> +#define IMX8MM_PCIE_PHY_CMN_REG062     0x188
-> +#define  ANA_PLL_CLK_OUT_TO_EXT_IO_SEL BIT(3)
-> +#define IMX8MM_PCIE_PHY_CMN_REG063     0x18C
-> +#define  AUX_PLL_REFCLK_SEL_SYS_PLL    GENMASK(7, 6)
-> +#define IMX8MM_PCIE_PHY_CMN_REG064     0x190
-> +#define  ANA_AUX_RX_TX_SEL_TX          BIT(7)
-> +#define  ANA_AUX_RX_TERM_GND_EN                BIT(3)
-> +#define  ANA_AUX_TX_TERM               BIT(2)
-> +#define IMX8MM_PCIE_PHY_CMN_REG065     0x194
-> +#define  ANA_AUX_RX_TERM               (BIT(7) | BIT(4))
-> +#define  ANA_AUX_TX_LVL                        GENMASK(3, 0)
-> +#define IMX8MM_PCIE_PHY_CMN_REG75      0x1D4
-> +#define  PCIE_PHY_CMN_REG75_PLL_DONE   0x3
-> +#define PCIE_PHY_TRSV_REG5             0x414
-> +#define  PCIE_PHY_TRSV_REG5_GEN1_DEEMP 0x2D
-> +#define PCIE_PHY_TRSV_REG6             0x418
-> +#define  PCIE_PHY_TRSV_REG6_GEN2_DEEMP 0xF
-> +
-> +#define IMX8MM_GPR_PCIE_REF_CLK_SEL    GENMASK(25, 24)
-> +#define IMX8MM_GPR_PCIE_REF_CLK_PLL    FIELD_PREP(IMX8MM_GPR_PCIE_REF_CLK_SEL, 0x3)
-> +#define IMX8MM_GPR_PCIE_REF_CLK_EXT    FIELD_PREP(IMX8MM_GPR_PCIE_REF_CLK_SEL, 0x2)
-> +#define IMX8MM_GPR_PCIE_AUX_EN         BIT(19)
-> +#define IMX8MM_GPR_PCIE_CMN_RST                BIT(18)
-> +#define IMX8MM_GPR_PCIE_POWER_OFF      BIT(17)
-> +#define IMX8MM_GPR_PCIE_SSC_EN         BIT(16)
-> +#define IMX8MM_GPR_PCIE_REF_USE_PAD    BIT(9)
-> +
-> +struct imx8_pcie_phy {
-> +       u32                     refclk_pad_mode;
-> +       void __iomem            *base;
-> +       struct clk              *clk;
-> +       struct phy              *phy;
-> +       struct regmap           *iomuxc_gpr;
-> +       struct reset_control    *reset;
-> +};
-> +
-> +static int imx8_pcie_phy_init(struct phy *phy)
-> +{
-> +       int ret;
-> +       u32 val, pad_mode;
-> +       struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-> +
-> +       reset_control_assert(imx8_phy->reset);
-> +
-> +       regmap_update_bits(imx8_phy->iomuxc_gpr, IOMUXC_GPR14,
-> +                          IMX8MM_GPR_PCIE_REF_USE_PAD,
-> +                          imx8_phy->refclk_pad_mode == 1 ?
+On Wed, Oct 20, 2021 at 12:43:48PM -0500, Eric W. Biederman wrote:
+> On nds32, openrisc, s390, sh, and xtensa the function die never
+> returns.  Mark die __noreturn so that no one expects die to return.
+> Remove the do_exit calls after die as they will never be reached.
 
-Hi Richard,
+Maybe note that the "bust_spinlocks" calls are also redundant, since
+they're in die(). I note that is a "mismatch" between the do_kill()
+in die() (SIGSEGV) and after die() (SIGKILL). This patch makes no
+behavioral change (the first caller would "win"), but I thought I'd note
+it in case some architecture would prefer a different signal.
 
-use the enumerated type for the comparison above for clarity:
-imx8_phy->refclk_pad_mode == IMX8_PCIE_REFCLK_PAD_INPUT
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Also, this is the configuration that makes my imx8mm-venice boards
-which do not use CLKREQ# hang while waiting for PHY. I am setting in
-my dt:
-&pcie_phy {
-        fsl,refclk-pad-mode = <IMX8_PCIE_REFCLK_PAD_INPUT>;
-        clocks = <&clk IMX8MM_CLK_DUMMY>;
-        status = "okay";
-};
+-Kees
 
-The NXP kernel woudl always set this bit to 0 which makes my board work.
-
-The IMX8MMRM documentation appears incorrect here:
-IOMUXC_GPR_GPR14 bit 9: GPR_PCIE1_ PHY_I_AUX_ EN_OVERRIDE_ EN:
-{GPR_PCIE1_PHY_I_AUX_EN_OVERRIDE_EN, GPR_PCIE1_PHY_FUNC_I_AUX_EN}
- 2'b00 External Reference Clock I/O (for PLL) Disable
- 2'b01 External Reference Clock I/O (for PLL) Enable
- 2'b10 External Reference Clock I/O (for PLL) Disable
- 2'b11 External Reference Clock I/O (for PLL) output is controlled by CLKREQ#
-
-How is it they define this as a single bit then give descriptions for
-2 bits? Something is wrong here.
-
-> +                          IMX8MM_GPR_PCIE_REF_USE_PAD : 0);
-> +       regmap_update_bits(imx8_phy->iomuxc_gpr, IOMUXC_GPR14,
-> +                          IMX8MM_GPR_PCIE_AUX_EN,
-> +                          IMX8MM_GPR_PCIE_AUX_EN);
-> +       regmap_update_bits(imx8_phy->iomuxc_gpr, IOMUXC_GPR14,
-> +                          IMX8MM_GPR_PCIE_POWER_OFF, 0);
-> +       regmap_update_bits(imx8_phy->iomuxc_gpr, IOMUXC_GPR14,
-> +                          IMX8MM_GPR_PCIE_SSC_EN, 0);
-> +
-> +       regmap_update_bits(imx8_phy->iomuxc_gpr, IOMUXC_GPR14,
-> +                          IMX8MM_GPR_PCIE_REF_CLK_SEL,
-> +                          imx8_phy->refclk_pad_mode == 1 ?
-
-imx8_phy->refclk_pad_mode == IMX8_PCIE_REFCLK_PAD_INPUT
-
-Best regards,
-
-Tim
-
-> +                          IMX8MM_GPR_PCIE_REF_CLK_EXT :
-> +                          IMX8MM_GPR_PCIE_REF_CLK_PLL);
-> +       usleep_range(100, 200);
-> +
-> +       /* Do the PHY common block reset */
-> +       regmap_update_bits(imx8_phy->iomuxc_gpr, IOMUXC_GPR14,
-> +                          IMX8MM_GPR_PCIE_CMN_RST,
-> +                          IMX8MM_GPR_PCIE_CMN_RST);
-> +       usleep_range(200, 500);
-> +
-> +
-> +       pad_mode = imx8_phy->refclk_pad_mode;
-> +       if (pad_mode == IMX8_PCIE_REFCLK_PAD_INPUT) {
-> +               /* Configure the pad as input */
-> +               val = readl(imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-> +               writel(val & ~ANA_PLL_CLK_OUT_TO_EXT_IO_EN,
-> +                      imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-> +       } else if (pad_mode == IMX8_PCIE_REFCLK_PAD_OUTPUT) {
-> +               /* Configure the PHY to output the refclock via pad */
-> +               writel(ANA_PLL_CLK_OUT_TO_EXT_IO_EN,
-> +                      imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-> +               writel(ANA_PLL_CLK_OUT_TO_EXT_IO_SEL,
-> +                      imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG062);
-> +               writel(AUX_PLL_REFCLK_SEL_SYS_PLL,
-> +                      imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG063);
-> +               val = ANA_AUX_RX_TX_SEL_TX | ANA_AUX_TX_TERM;
-> +               writel(val | ANA_AUX_RX_TERM_GND_EN,
-> +                      imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG064);
-> +               writel(ANA_AUX_RX_TERM | ANA_AUX_TX_LVL,
-> +                      imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG065);
-> +       }
-> +
-> +       /* Tune PHY de-emphasis setting to pass PCIe compliance. */
-> +       writel(PCIE_PHY_TRSV_REG5_GEN1_DEEMP,
-> +              imx8_phy->base + PCIE_PHY_TRSV_REG5);
-> +       writel(PCIE_PHY_TRSV_REG6_GEN2_DEEMP,
-> +              imx8_phy->base + PCIE_PHY_TRSV_REG6);
-> +
-> +       reset_control_deassert(imx8_phy->reset);
-> +
-> +       /* Polling to check the phy is ready or not. */
-> +       ret = readl_poll_timeout(imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG75,
-> +                                val, val == PCIE_PHY_CMN_REG75_PLL_DONE,
-> +                                10, 20000);
-> +       return ret;
-> +}
-> +
-> +static int imx8_pcie_phy_power_on(struct phy *phy)
-> +{
-> +       struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-> +
-> +       return clk_prepare_enable(imx8_phy->clk);
-> +}
-> +
-> +static int imx8_pcie_phy_power_off(struct phy *phy)
-> +{
-> +       struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-> +
-> +       clk_disable_unprepare(imx8_phy->clk);
-> +
-> +       return 0;
-> +}
-> +
-> +static const struct phy_ops imx8_pcie_phy_ops = {
-> +       .init           = imx8_pcie_phy_init,
-> +       .power_on       = imx8_pcie_phy_power_on,
-> +       .power_off      = imx8_pcie_phy_power_off,
-> +       .owner          = THIS_MODULE,
-> +};
-> +
-> +static int imx8_pcie_phy_probe(struct platform_device *pdev)
-> +{
-> +       struct phy_provider *phy_provider;
-> +       struct device *dev = &pdev->dev;
-> +       struct device_node *np = dev->of_node;
-> +       struct imx8_pcie_phy *imx8_phy;
-> +       struct resource *res;
-> +
-> +       imx8_phy = devm_kzalloc(dev, sizeof(*imx8_phy), GFP_KERNEL);
-> +       if (!imx8_phy)
-> +               return -ENOMEM;
-> +
-> +       /* get PHY refclk pad mode */
-> +       of_property_read_u32(np, "fsl,refclk-pad-mode",
-> +                            &imx8_phy->refclk_pad_mode);
-> +
-> +       imx8_phy->clk = devm_clk_get(dev, "phy");
-> +       if (IS_ERR(imx8_phy->clk)) {
-> +               dev_err(dev, "failed to get imx pcie phy clock\n");
-> +               return PTR_ERR(imx8_phy->clk);
-> +       }
-> +
-> +       /* Grab GPR config register range */
-> +       imx8_phy->iomuxc_gpr =
-> +                syscon_regmap_lookup_by_compatible("fsl,imx6q-iomuxc-gpr");
-> +       if (IS_ERR(imx8_phy->iomuxc_gpr)) {
-> +               dev_err(dev, "unable to find iomuxc registers\n");
-> +               return PTR_ERR(imx8_phy->iomuxc_gpr);
-> +       }
-> +
-> +       imx8_phy->reset = devm_reset_control_get_exclusive(dev, "pciephy");
-> +       if (IS_ERR(imx8_phy->reset)) {
-> +               dev_err(dev, "Failed to get PCIEPHY reset control\n");
-> +               return PTR_ERR(imx8_phy->reset);
-> +       }
-> +
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       imx8_phy->base = devm_ioremap_resource(dev, res);
-> +       if (IS_ERR(imx8_phy->base))
-> +               return PTR_ERR(imx8_phy->base);
-> +
-> +       imx8_phy->phy = devm_phy_create(dev, NULL, &imx8_pcie_phy_ops);
-> +       if (IS_ERR(imx8_phy->phy))
-> +               return PTR_ERR(imx8_phy->phy);
-> +
-> +       phy_set_drvdata(imx8_phy->phy, imx8_phy);
-> +
-> +       phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-> +
-> +       return PTR_ERR_OR_ZERO(phy_provider);
-> +}
-> +
-> +static const struct of_device_id imx8_pcie_phy_of_match[] = {
-> +       {.compatible = "fsl,imx8mm-pcie-phy",},
-> +       { },
-> +};
-> +MODULE_DEVICE_TABLE(of, imx8_pcie_phy_of_match);
-> +
-> +static struct platform_driver imx8_pcie_phy_driver = {
-> +       .probe  = imx8_pcie_phy_probe,
-> +       .driver = {
-> +               .name   = "imx8-pcie-phy",
-> +               .of_match_table = imx8_pcie_phy_of_match,
-> +       }
-> +};
-> +module_platform_driver(imx8_pcie_phy_driver);
-> +
-> +MODULE_DESCRIPTION("FSL IMX8 PCIE PHY driver");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.25.1
->
+-- 
+Kees Cook
