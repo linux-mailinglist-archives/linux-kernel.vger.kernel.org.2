@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CB94367E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10AF4367F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhJUQhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:37:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhJUQhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:37:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7C6B60E90;
-        Thu, 21 Oct 2021 16:35:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634834120;
-        bh=fC9Xv86+coJ2zuSO0iIEWX4DxbQQGwNHwTsttv+5aMk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=mxIE4yy26b2dfsh5mrHfv6/8I6zhSn5f961fO2XV9wL/jxfj+BQrcHScQ38SDSHoB
-         655Fgp9t0O/sDIWF97Jj4zU0as+NC1J3PH9hNMvfsE8dxXLA+3mry7yW5hIXPOnmzH
-         VOxxwBfGlAe8tEQNMNOlos41eRUdDL+tkV7GPHZsmOqYV3pXPkjLs5pp1enh5mkCg9
-         DHcChCDHhtJ9Cw/mCz9CtdAwaotssQI4JSt26uMHXTxdHdbfeAk01D08QxpaRY2Tzm
-         7IwAsYhm5sQGgOirGXybojNmJ9Ce4mrtkowB+ctXTrFMSwuotlAGmOqXvILURT4xQG
-         /okAqDNpVSRnA==
-Message-ID: <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
-Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Patrick Donnelly <pdonnell@redhat.com>
-Cc:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 21 Oct 2021 12:35:18 -0400
-In-Reply-To: <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
-References: <20211020143708.14728-1-lhenriques@suse.de>
-         <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
-         <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
-         <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
-         <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        id S231997AbhJUQiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231987AbhJUQhx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 12:37:53 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5511DC0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:35:37 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id np13so888517pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KHVIUdiTvtf2RCqle+9gmJBsdr1CMLvfLDk4aBN8mSU=;
+        b=tW/FLNEAZ1cRWdE3iHhF+ZzDgBWnH0MT6EHQFxV7YSXVOufMc7he7A6yT/H8rYbCUm
+         P5Kyw+dDeXz7OFKn0G3uSYpmPhEl/bOVmQR+eSH1IHmBs5uHcaxUBMpRpWkLeQb3kmVG
+         IavF5/pQDufQ2xIqjVHOGk8OIC8GCRSYssZo7kjfei9bdvUjLxgTm9MlomaMHKtbsssm
+         45NYh7uino0E7nPQRZ8GzH7HkBWzi1A2qotij8gkU1jGRej8VIrcrQWxRI5GnHSMPR73
+         XBH1qZ1qaEvPAbwLexSMdjGyz5w6F1TLgkKDwQsZ6YcrqUIm3uJjIdO3CVexQNcc7qUa
+         EQnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KHVIUdiTvtf2RCqle+9gmJBsdr1CMLvfLDk4aBN8mSU=;
+        b=hN+N6a389ncFxMJjz/QK6tKqnV51ryMxAitcKTVA7QP6aFonm1sJt8+GM0xV6Ou3D7
+         fgcSv4Cx70Lv5xuBNn7sKTI3ep29QzOMsz+UwS2/v/vVdyrz84WRZVJbUlBDYsPiRVNi
+         Vo4PGuDAAerAGTm25Lep1X+SEdcSIl8jyODznNR1vXO4dzmsnc9dKCYWsB/ul0w9O1Hf
+         NoDWh8w6N8YtIgPqdSkajQtHYqqxFoEc5BwCZFrbUg+tqaWos3dTPKEcjJywp3AWY9zQ
+         Kh/ZF9prvt6lPb6dvikmJ0tNMrcpI3VWOZcadXElsJ/lUhWjYK+5FvL0SJdx/jjclUab
+         AmxA==
+X-Gm-Message-State: AOAM533R1CSCzlU7vB4M25wMXv/AT1WBdjeHljj8bKVYkH149cadhkBc
+        8aycklpcU+Rwof+02lF8i1ChlA==
+X-Google-Smtp-Source: ABdhPJwHucTWcHJh15hHILbbn8zt3esDR8yX/30ZnNCOx6l7FZFvDq00oSu/ucc14PbMwhGoObF2YQ==
+X-Received: by 2002:a17:902:a9c3:b0:13f:c765:148d with SMTP id b3-20020a170902a9c300b0013fc765148dmr6232309plr.28.1634834136756;
+        Thu, 21 Oct 2021 09:35:36 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id b13sm10562729pjl.15.2021.10.21.09.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 09:35:34 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 10:35:31 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/15] arm64: Self-hosted trace related errata
+ workarounds
+Message-ID: <20211021163531.GA3561043@p14s>
+References: <20211019163153.3692640-1-suzuki.poulose@arm.com>
+ <20211020154207.GA3456574@p14s>
+ <20211021085313.GA15622@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021085313.GA15622@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
-> On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
-> > 
-> > On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
-> > > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
-> > > > 
-> > > > On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
-> > > > > This counter will keep track of the number of remote object copies done on
-> > > > > copy_file_range syscalls.  This counter will be filesystem per-client, and
-> > > > > can be accessed from the client debugfs directory.
-> > > > > 
-> > > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
-> > > > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
-> > > > > ---
-> > > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm not
-> > > > > 100% sure about the usefulness of this patch, or if this is the best way
-> > > > > to provide the functionality Patrick requested.  Anyway, this is just to
-> > > > > get some feedback, hence the RFC.
-> > > > > 
-> > > > > Cheers,
-> > > > > --
-> > > > > Luís
-> > > > > 
-> > > > > [0] https://github.com/ceph/ceph/pull/42720
-> > > > > 
-> > > > 
-> > > > I think this would be better integrated into the stats infrastructure.
-> > > > 
-> > > > Maybe you could add a new set of "copy" stats to struct
-> > > > ceph_client_metric that tracks the total copy operations done, their
-> > > > size and latency (similar to read and write ops)?
+On Thu, Oct 21, 2021 at 09:53:14AM +0100, Will Deacon wrote:
+> On Wed, Oct 20, 2021 at 09:42:07AM -0600, Mathieu Poirier wrote:
+> > On Tue, Oct 19, 2021 at 05:31:38PM +0100, Suzuki K Poulose wrote:
+> > > Suzuki K Poulose (15):
+> > >   arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
+> > >   arm64: errata: Add detection for TRBE overwrite in FILL mode
+> > >   arm64: errata: Add workaround for TSB flush failures
+> > >   arm64: errata: Add detection for TRBE write to out-of-range
+> > >   coresight: trbe: Add a helper to calculate the trace generated
+> > >   coresight: trbe: Add a helper to pad a given buffer area
+> > >   coresight: trbe: Decouple buffer base from the hardware base
+> > >   coresight: trbe: Allow driver to choose a different alignment
+> > >   coresight: trbe: Add infrastructure for Errata handling
+> > >   coresight: trbe: Workaround TRBE errata overwrite in FILL mode
+> > >   coresight: trbe: Add a helper to determine the minimum buffer size
+> > >   coresight: trbe: Make sure we have enough space
+> > >   coresight: trbe: Work around write to out of range
+> > >   arm64: errata: Enable workaround for TRBE overwrite in FILL mode
+> > >   arm64: errata: Enable TRBE workaround for write to out-of-range
+> > >     address
 > > > 
-> > > I think it's a good idea to integrate this into "stats" but I think a
-> > > local debugfs file for some counters is still useful. The "stats"
-> > > module is immature at this time and I'd rather not build any qa tests
-> > > (yet) that rely on it.
-> > > 
-> > > Can we generalize this patch-set to a file named "op_counters" or
-> > > similar and additionally add other OSD ops performed by the kclient?
-> > > 
+> > >  Documentation/arm64/silicon-errata.rst       |  12 +
+> > >  arch/arm64/Kconfig                           | 111 ++++++
+> > >  arch/arm64/include/asm/barrier.h             |  16 +-
+> > >  arch/arm64/include/asm/cputype.h             |   4 +
+> > >  arch/arm64/kernel/cpu_errata.c               |  64 +++
+> > >  arch/arm64/tools/cpucaps                     |   3 +
+> > >  drivers/hwtracing/coresight/coresight-trbe.c | 394 +++++++++++++++++--
+> > >  7 files changed, 567 insertions(+), 37 deletions(-)
 > > 
-> > 
-> > Tracking this sort of thing is the main purpose of the stats code. I'm
-> > really not keen on adding a whole separate set of files for reporting
-> > this.
+> > I have applied this set.
 > 
-> Maybe I'm confused. Is there some "file" which is already used for
-> this type of debugging information? Or do you mean the code for
-> sending stats to the MDS to support cephfs-top?
+> Mathieu -- the plan here (which we have discussed on the list [1]) is
+> for the first four patches to be shared with arm64. Since you've gone
+> ahead and applied the whole series, please can you provide me a stable
+> branch with the first four patches only so that I can include them in
+> the arm64 tree?
 > 
-> > What's the specific problem with relying on the data in debugfs
-> > "metrics" file?
+> Failing that, I can create a branch for you to pull and apply the remaining
+> patches on top.
 > 
-> Maybe no problem? I wasn't aware of a "metrics" file.
+> Please let me know.
+
+Coresight patches flow through Greg's tree and as such the coresight-next tree
+gets rebased anyway.  I will remove the first 4 patches and push again.  By the
+way do you also want to pick up patches 14 and 16 since they are concerned with
+"arch/arm64/Kconfig" or should I keep them?
+
+Thanks,
+Mathieu
+
 > 
-
-Yes. For instance:
-
-# cat /sys/kernel/debug/ceph/*/metrics
-item                               total
-------------------------------------------
-opened files  / total inodes       0 / 4
-pinned i_caps / total inodes       5 / 4
-opened inodes / total inodes       0 / 4
-
-item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
------------------------------------------------------------------------------------
-read          0           0               0               0               0
-write         5           914013          824797          1092343         103476
-metadata      79          12856           1572            114572          13262
-
-item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
-----------------------------------------------------------------------------------------
-read          0           0               0               0               0
-write         5           4194304         4194304         4194304         20971520
-
-item          total           miss            hit
--------------------------------------------------
-d_lease       11              0               29
-caps          5               68              10702
-
-
-I'm proposing that Luis add new lines for "copy" to go along with the
-"read" and "write" ones. The "total" counter should give you a count of
-the number of operations.
- 
--- 
-Jeff Layton <jlayton@kernel.org>
-
+> Thanks,
+> 
+> Will
+> 
+> [1] https://lore.kernel.org/all/20211008073229.GB32625@willie-the-truck/
