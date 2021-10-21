@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991EE436B8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C698436B8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 21:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbhJUTzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 15:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        id S231933AbhJUTzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 15:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbhJUTzE (ORCPT
+        with ESMTP id S231828AbhJUTzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:55:04 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD88C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:52:48 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id j190so1307309pgd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:52:48 -0700 (PDT)
+        Thu, 21 Oct 2021 15:55:06 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F6BC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:52:50 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id t11so1141343plq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 12:52:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2owe5n0pN7M447a4f5gtFpdAO84GGDezTjkbshsV/5A=;
-        b=NJDNLISDqCS6DWtuKe+YL6u25O9QPnbwfEMv6fi/FTzhN7VZCfvtRP1YGKBc0+XjMh
-         YCazBLUWtRkWc81D2XisUekNzNGZaZaRAzPypK2TOhTwjkA/YUpKCRlrLvtfrQM5Pna6
-         OryIRAJXIdg5dmnUvNdYU7M0QYPu9QFqpiRmNRY0U5mYE5NsJZOIMzM+a3ROsX7Vumyb
-         1M0zHT3yzYTM1R3GOd2RDmG99sGCnvZCnjZ1jWU7BEQssUH2pLHmL6SJ+O4x90sMvFGB
-         JO/Ut/ZDjB7YA0eUMqECF9o/RU7AsYnkSG+l2ESCEmCFZWO0AcsdEVfdHTAwybrMkUwG
-         bT5w==
+        bh=ppGy6AQbHnjCFGSfBBiNfJAwHFBC18I3Nums49Qp4rg=;
+        b=U0hlQgwsREzwNIA20fgl1YsScyiSJXb4rLjRg1wz3mBQYgMNQ+IjpEK7387xyH7JkV
+         qmVnulwbVyxw3rmj8vPQhyvOn/OqV4yJx4dK8k0Aako34Bs0jAtDvRxf10N9qF3mx0Rn
+         f0vS0Tg97kF6Lzv+2QVRKcL6JvSnckS2f5E/vsZiseRS0EKWEeF1NOmgwBtVe+6D3P6q
+         epYHqYopt5aj27JW2trNi91Und57gdcPk36/6uMqwJjCLK+5G5KcRPDfAiJB3ELOP20B
+         DRGcxiyIrfopGeWhsl8OcHAkpqOqLd5f4eoo/dlv87ItbXi0AOZbyOKwsFqwfH05Im7p
+         1b+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2owe5n0pN7M447a4f5gtFpdAO84GGDezTjkbshsV/5A=;
-        b=Mx31s+OTNxgb6Prgu80EMLgFzx5O9JEfDlyNSSvyrCitoA3qDz6aul/sWWs+b7ua+a
-         2VHNsg/5SjfIhCc/1SXGmX7fzHLkGmg9tZINB1l/nLGGnv6hJSWDxQ+UH416+O7PUmFm
-         bWONlUbUl1usK5JGBk/3KbsYLdosyu7CW/9S39a0fJfFSZntRrfiL0WRbWrHnjRIy83Q
-         aDCesH9hlfXFxCHkAExcYoqIkbJ9Om8x8ofc8ScKJRubcF/LLJHS/9Eh8NgExd7n+l7M
-         dJwpl+UOdYdiyDbKti3zhRuwKDfFwy9KnLdQ7lXbiI2XmPRkHiFj/j0WXoUAcMj/mQkq
-         qXyg==
-X-Gm-Message-State: AOAM530emFvz7MVBGE9RyTanGWyCIOKB9AlgZeAlq1oYANUIBSVguoAx
-        TTklEqeWQh/hEwZ+iPg3bDI=
-X-Google-Smtp-Source: ABdhPJwDn3L/Z/hX4WazYQ273fY7J6ervyUBeTkfMNwrqmDOEOlhO9clSXfesU4EUXHWpvcLXdAWhg==
-X-Received: by 2002:a63:9554:: with SMTP id t20mr5888260pgn.153.1634845968105;
-        Thu, 21 Oct 2021 12:52:48 -0700 (PDT)
+        bh=ppGy6AQbHnjCFGSfBBiNfJAwHFBC18I3Nums49Qp4rg=;
+        b=QWH/BbV0Fxic6/EeXVmcHKDpHVYWIczVMQK+aJ1boWPjkFsQTJILHkEuTayt0BxqTD
+         u2dETZU9w6V7g9rdXLyOcAhbiOOpOJ3kyUyzsi1sCG5oceNUdBjb0odpj6yF3c7PxsOs
+         0o3Wo26Shr/SA+zr9rSQMLDNP2nWgY7Z55NiLqRN2VPmKPdvLOjlvmo1zVz5PwD0DSfH
+         n/ni3mseGKQlAGBhc2Orbg3mxO8qs1JtudZ3BDcRUNrk1anpaoaaysNnE+WSOaV5cWPS
+         Dp/A2LaC+PwmkHFBJS4HaBoQM4vBjnNDjzrCLAQZC2QiKH/F/Tw2DoS5DKCrxCtOnEwe
+         5FxQ==
+X-Gm-Message-State: AOAM531agNSeq16jf7nTuxBDS2sJoBdKqsSlj7Los9IeR/CE7iHjN/7a
+        0Cwzxi8vSp0R+rAw41hGjb4=
+X-Google-Smtp-Source: ABdhPJy7zcJn3qNfuZ+x0jgYPf1goT6pv5RF7V4ijPVQm6pq9YaVEd3bqwUA39f2Bi9H+10rQIqXeA==
+X-Received: by 2002:a17:90b:4c03:: with SMTP id na3mr9087894pjb.14.1634845969760;
+        Thu, 21 Oct 2021 12:52:49 -0700 (PDT)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id n202sm7098078pfd.160.2021.10.21.12.52.46
+        by smtp.gmail.com with ESMTPSA id n202sm7098078pfd.160.2021.10.21.12.52.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 12:52:47 -0700 (PDT)
+        Thu, 21 Oct 2021 12:52:49 -0700 (PDT)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Andi Kleen <ak@linux.intel.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -63,9 +62,9 @@ Cc:     linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
         Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: [PATCH v2 1/5] x86: Detection of Knights Landing A/D leak
-Date:   Thu, 21 Oct 2021 05:21:08 -0700
-Message-Id: <20211021122112.592634-2-namit@vmware.com>
+Subject: [PATCH v2 2/5] mm: avoid unnecessary flush on change_huge_pmd()
+Date:   Thu, 21 Oct 2021 05:21:09 -0700
+Message-Id: <20211021122112.592634-3-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211021122112.592634-1-namit@vmware.com>
 References: <20211021122112.592634-1-namit@vmware.com>
@@ -77,25 +76,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-Knights Landing has a issue that a thread setting A or D bits may not do
-so atomically against checking the present bit.  A thread which is going
-to page fault may still set those bits, even though the present bit was
-already atomically cleared.
+Calls to change_protection_range() on THP can trigger, at least on x86,
+two TLB flushes for one page: one immediately, when pmdp_invalidate() is
+called by change_huge_pmd(), and then another one later (that can be
+batched) when change_protection_range() finishes.
 
-This implies that when the kernel clears present atomically, some time
-later the supposed to be zero entry could be corrupted with stray A or D
-bits.
+The first TLB flush is only necessary to prevent the dirty bit (and with
+a lesser importance the access bit) from changing while the PTE is
+modified. However, this is not necessary as the x86 CPUs set the
+dirty-bit atomically with an additional check that the PTE is (still)
+present. One caveat is Intel's Knights Landing that has a bug and does
+not do so.
 
-Since the PTE could be already used for storing a swap index, or a NUMA
-migration index, this cannot be tolerated. Most of the time the kernel
-detects the problem, but in some rare cases it may not.
+Leverage this behavior to eliminate the unnecessary TLB flush in
+change_huge_pmd(). Introduce a new arch specific pmdp_invalidate_ad()
+that only invalidates the access and dirty bit from further changes.
 
-This patch adds an interface to detect the bug, which will be used in
-the following patch.
-
-[ Based on a patch by Andi Kleen ]
-
-Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Andrew Cooper <andrew.cooper3@citrix.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -108,40 +104,87 @@ Cc: Will Deacon <will@kernel.org>
 Cc: Yu Zhao <yuzhao@google.com>
 Cc: Nick Piggin <npiggin@gmail.com>
 Cc: x86@kernel.org
-Link: https://lore.kernel.org/lkml/1465919919-2093-1-git-send-email-lukasz.anaczkowski@intel.com/
 Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
- arch/x86/include/asm/cpufeatures.h | 1 +
- arch/x86/kernel/cpu/intel.c        | 5 +++++
- 2 files changed, 6 insertions(+)
+ arch/x86/include/asm/pgtable.h | 8 ++++++++
+ include/linux/pgtable.h        | 5 +++++
+ mm/huge_memory.c               | 7 ++++---
+ mm/pgtable-generic.c           | 8 ++++++++
+ 4 files changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index d0ce5cfd3ac1..32d0aabd788d 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -436,5 +436,6 @@
- #define X86_BUG_TAA			X86_BUG(22) /* CPU is affected by TSX Async Abort(TAA) */
- #define X86_BUG_ITLB_MULTIHIT		X86_BUG(23) /* CPU may incur MCE during certain page attribute changes */
- #define X86_BUG_SRBDS			X86_BUG(24) /* CPU may leak RNG bits if not mitigated */
-+#define X86_BUG_PTE_LEAK		X86_BUG(25) /* PTE may leak A/D bits after clear */
- 
- #endif /* _ASM_X86_CPUFEATURES_H */
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 8321c43554a1..40bcba6e3641 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -296,6 +296,11 @@ static void early_init_intel(struct cpuinfo_x86 *c)
- 		}
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 448cd01eb3ec..18c3366f8f4d 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1146,6 +1146,14 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
  	}
- 
-+	if (c->x86_model == 87) {
-+		pr_info_once("Enabling PTE leaking workaround\n");
-+		set_cpu_bug(c, X86_BUG_PTE_LEAK);
-+	}
+ }
+ #endif
 +
- 	/*
- 	 * Intel Quark Core DevMan_001.pdf section 6.4.11
- 	 * "The operating system also is required to invalidate (i.e., flush)
++#define __HAVE_ARCH_PMDP_INVALIDATE_AD
++static inline pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma,
++				       unsigned long address, pmd_t *pmdp)
++{
++	return pmdp_establish(vma, address, pmdp, pmd_mkinvalid(*pmdp));
++}
++
+ /*
+  * Page table pages are page-aligned.  The lower half of the top
+  * level is used for userspace and the top half for the kernel.
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index e24d2c992b11..622efe0a9ef0 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -561,6 +561,11 @@ extern pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
+ 			    pmd_t *pmdp);
+ #endif
+ 
++#ifndef __HAVE_ARCH_PMDP_INVALIDATE_AD
++extern pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma,
++				unsigned long address, pmd_t *pmdp);
++#endif
++
+ #ifndef __HAVE_ARCH_PTE_SAME
+ static inline int pte_same(pte_t pte_a, pte_t pte_b)
+ {
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index e5ea5f775d5c..435da011b1a2 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1795,10 +1795,11 @@ int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
+ 	 * The race makes MADV_DONTNEED miss the huge pmd and don't clear it
+ 	 * which may break userspace.
+ 	 *
+-	 * pmdp_invalidate() is required to make sure we don't miss
+-	 * dirty/young flags set by hardware.
++	 * pmdp_invalidate_ad() is required to make sure we don't miss
++	 * dirty/young flags (which are also known as access/dirty) cannot be
++	 * further modifeid by the hardware.
+ 	 */
+-	entry = pmdp_invalidate(vma, addr, pmd);
++	entry = pmdp_invalidate_ad(vma, addr, pmd);
+ 
+ 	entry = pmd_modify(entry, newprot);
+ 	if (preserve_write)
+diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+index 4e640baf9794..b0ce6c7391bf 100644
+--- a/mm/pgtable-generic.c
++++ b/mm/pgtable-generic.c
+@@ -200,6 +200,14 @@ pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
+ }
+ #endif
+ 
++#ifndef __HAVE_ARCH_PMDP_INVALIDATE_AD
++pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma, unsigned long address,
++			 pmd_t *pmdp)
++{
++	return pmdp_invalidate(vma, address, pmdp);
++}
++#endif
++
+ #ifndef pmdp_collapse_flush
+ pmd_t pmdp_collapse_flush(struct vm_area_struct *vma, unsigned long address,
+ 			  pmd_t *pmdp)
 -- 
 2.25.1
 
