@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4C0436BBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A4D436BBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhJUUGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 16:06:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230020AbhJUUGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 16:06:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3980561251;
-        Thu, 21 Oct 2021 20:03:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634846635;
-        bh=6wcMAPIuLrajjhebGQXqdPC04sfh6LeM6s1G6IwbmDo=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=UF0Nep0XEdBF0LM9GoeKiRNKd/wpiEdDnvXUuZywx0P5uZ1fnDqYqdcYTQ0N5qeGJ
-         DHfkYAV/ch05bpxv5c+gmwzQqDLf0umodqdHJaXK4kmjFDGOau6dHF2dTS7jeUGKJb
-         5Txmj0ytHTJTJDLMqSmhhPskP/y6NI88ehRkLJdI7DG/NPfnqshhNnoEt/T4q3O+zh
-         mU5IX0kutJ0dQmTnys1NHJyp0Dy3EgWZOZa1kldziNr2ZmTapOWOQ30s4D8Odza2YY
-         0iotDf57X6QJHzwutdQS8As4whQZY3tg2dJWR8AN8E/LGZtceOFngpOc6FHn6Fwn7W
-         fQKtx9rDY0VgQ==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 4DC3E27C0054;
-        Thu, 21 Oct 2021 16:03:54 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Thu, 21 Oct 2021 16:03:54 -0400
-X-ME-Sender: <xms:qcdxYbiMTqQn4HSk6q_epceIccz0L_1UvyV87EFVaFIg785b2Z-LmQ>
-    <xme:qcdxYYBWdRlEyzGhHXXf8z9Cb1zFw42JqdF6muPVQewPJiCtAifTncLOH2BEbxueB
-    fepWttx6Wj_uhwf2TE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddviedgudegvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnheptdfhheettddvtedvtedugfeuuefhtddugedvleevleefvdetleff
-    gfefvdekgeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:qcdxYbEsDfgAjUDtMcxcGuoptY-lMRArMcBLC5kWtPoLYDEGlijgRQ>
-    <xmx:qcdxYYR50mlShwcXBJQJXp1adk2gxmrX8RbgfDnIRKyAlUajMw1-Qg>
-    <xmx:qcdxYYwZvuFcsCrbTdxHmayn3ov-cTMSTp_skfWC2EMQuAZbe0ErwA>
-    <xmx:qsdxYfmP2MMGkmr4dRhlEEwqeByj-8SOoeR3gSnxBw8_i69f_H64cQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D117521E006E; Thu, 21 Oct 2021 16:03:53 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
-Mime-Version: 1.0
-Message-Id: <f4b83c21-4e73-45b6-ae3a-17659be512c0@www.fastmail.com>
-In-Reply-To: <20211008235504.2957528-1-keescook@chromium.org>
-References: <20211008235504.2957528-1-keescook@chromium.org>
-Date:   Thu, 21 Oct 2021 13:03:33 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Kees Cook" <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc:     "Mark Rutland" <mark.rutland@arm.com>,
-        "Shuah Khan" <shuah@kernel.org>,
-        "Alexey Dobriyan" <adobriyan@gmail.com>,
-        linux-kselftest@vger.kernel.org,
-        "Josh Poimboeuf" <jpoimboe@redhat.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Alexey Gladkov" <gladkov.alexey@gmail.com>,
-        "Jann Horn" <jannh@google.com>,
-        "Vito Caputo" <vcaputo@pengaru.com>,
-        "Ingo Molnar" <mingo@redhat.com>, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Ben Segall" <bsegall@google.com>, mgorman@suse.de,
-        bristot@redhat.com,
-        "Christian Brauner" <christian.brauner@ubuntu.com>,
-        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de,
-        "Michal Hocko" <mhocko@suse.com>, deller@gmx.de,
-        "Qi Zheng" <zhengqi.arch@bytedance.com>, me@tobin.cc,
-        tycho@tycho.pizza, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Borislav Petkov" <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        "Jens Axboe" <axboe@kernel.dk>, metze@samba.org,
-        "Lai Jiangshan" <laijs@linux.alibaba.com>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        "Will Deacon" <will@kernel.org>, guoren@kernel.org,
-        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        nickhu@andestech.com, jonas@southpole.se,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>, hca@linux.ibm.com,
-        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] selftests: proc: Make sure wchan works when it exists
-Content-Type: text/plain
+        id S232023AbhJUUHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 16:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231912AbhJUUG7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 16:06:59 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DFFC0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:04:43 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id m26so1629965pff.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BJdYaoVntWzrTJu7xhe7fmZqFzNwWeTLt9gWbNrG0tI=;
+        b=DyZK5UjsLM2sesHrMIFKiCLvbwjjm6pRQYaHN6kh2bjdpBd+o7evkX3d9O/HB2gCVy
+         9HS0r8ymYKhTg12KN8I4CrhlEfdKv4Xk3ALOHQ4mXeLFdHKKF+mUYFzEPXic2/yH4KVi
+         GzZ0x5/cF9q2KuyWxEkNaSc070B2tZ9WFJBm2oolGEsbcrdTtb/fnQYFp+UQqugJPxij
+         Ov2JgMaSOXUiH81fVFEKMW7mQWqRLHkh6qm7U7+SkK1mPCgCd04d+lxPNvXVHHt2g2Zl
+         Uq8MNQ8zSwMpdqGt7Nn/BOQsbipMtnMmbuRW9zbbDQGiS12bvzZfiCd+zwc53SUEULGQ
+         aGtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BJdYaoVntWzrTJu7xhe7fmZqFzNwWeTLt9gWbNrG0tI=;
+        b=dAsawY0fSq6o2OXg/SzliS5VLHrowSX7U6XSdf7wd3qK1arSOrzphCv7iGLDn1aS4E
+         QuMJn2ODbXPLvMpkyI0Qc9zrGr4g1u1GntdDk8rLrH5fEES+l5y9AB02x7AdCvfT0OX6
+         8/vtSElWBLmaeFl755mg5HmRPJpb3gx9b/BhxtyYTHozLR6ehK7zJBMu5WwIef9UQV0G
+         OEuFC7BR7z6yCznPeWhBI5690+jGyUh6aF9n8JM5Rtn+9dQVwlnBAcJTJrOs4VCUFj0r
+         tSM96GpiI/FzpTqzVvgeBtAk1YFdtT0JPIX5DDLmr7ONs7u3/AUB+Th6frtd4YDuDzZE
+         RvFQ==
+X-Gm-Message-State: AOAM532VOSDtDHCXQq11etAwvx+Dskt+I4kXnx4wasjT2n8Nb/xV6y/T
+        lkPVEBENyGFVDk5A8rwD3I+xHg==
+X-Google-Smtp-Source: ABdhPJyB+o2LF+Q8z+muxQ99/9OkhcI4FKylH+wkYoTPlnXf+riWGqXzgHGVhrTsmBfPFL1UGvcRWg==
+X-Received: by 2002:a05:6a00:24c1:b0:457:a10e:a0e with SMTP id d1-20020a056a0024c100b00457a10e0a0emr7511096pfv.63.1634846682353;
+        Thu, 21 Oct 2021 13:04:42 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id f21sm7567450pfc.203.2021.10.21.13.04.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 13:04:41 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 20:04:38 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        fwilhelm@google.com, oupton@google.com
+Subject: Re: [PATCH 0/8] KVM: SEV-ES: fixes for string I/O emulation
+Message-ID: <YXHH1shFlGWyZqlw@google.com>
+References: <20211013165616.19846-1-pbonzini@redhat.com>
+ <435767c0-958d-f90f-d11a-cff42ab1205c@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <435767c0-958d-f90f-d11a-cff42ab1205c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 21, 2021, Paolo Bonzini wrote:
+> On 13/10/21 18:56, Paolo Bonzini wrote:
+> > This series, namely patches 1 and 8, fix two bugs in string I/O
+> > emulation for SEV-ES:
+> > 
+> > - first, the length is completely off for "rep ins" and "rep outs"
+> >    operation of size > 1.  After setup_vmgexit_scratch, svm->ghcb_sa_len
+> >    is in bytes, but kvm_sev_es_string_io expects the number of PIO
+> >    operations.
+> > 
+> > - second, the size of the GHCB buffer can exceed the size of
+> >    vcpu->arch.pio_data.  If that happens, we need to go over the GHCB
+> >    buffer in multiple passes.
+> > 
+> > The second bug was reported by Felix Wilhelm.  The first was found by
+> > me by code inspection; on one hand it seems *too* egregious so I'll be
+> > gladly proven wrong on this, on the other hand... I know I'm bad at code
+> > review, but not _that_ bad.
 
-
-On Fri, Oct 8, 2021, at 4:55 PM, Kees Cook wrote:
-> This makes sure that wchan contains a sensible symbol when a process is
-> blocked. Specifically this calls the sleep() syscall, and expects the
-> architecture to have called schedule() from a function that has "sleep"
-> somewhere in its name. For example, on the architectures I tested
-> (x86_64, arm64, arm, mips, and powerpc) this is "hrtimer_nanosleep":
-
-Is this really better than admitting that the whole mechanism is nonsense and disabling it?
-
-We could have a fixed string for each task state and call it a day.
+String I/O was completely busted on the Linux guest side as well, I wouldn't be
+the least bit surprised if KVM were completely broken as well (reviewing now...).
