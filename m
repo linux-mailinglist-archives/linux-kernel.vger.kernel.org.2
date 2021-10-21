@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACB843691F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BC0436923
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhJURiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhJURh4 (ORCPT
+        id S232071AbhJURiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:38:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45912 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhJURio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:37:56 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4479EC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:35:39 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so1250905ote.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=fbDFAc+mDq/fVlQikhm/5WQdU+2NWEk3ZHERoK3qaZA=;
-        b=VBX5aufNkoMTHFbOeGP+BrNRxy6MhOc+43NPA0e5hUPwm9iWg/SsllI1Hq9Jf1+q7p
-         3HcV/SKBuJnEHelkApbMambF9Q9KZQTRN/6BEeQVzVE1TOq6F2O6GHlAlLHtU4ow2K6P
-         nWnYDrKsVlcUsa1XWYewK+/SxVlnZH4fPyUWI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=fbDFAc+mDq/fVlQikhm/5WQdU+2NWEk3ZHERoK3qaZA=;
-        b=AzGwFTwFdIsrJjdsOqta7JlYbtrZJoKUSUQAt+31SMQ3wj9o8aGh8MdrMc8uiQfZ2o
-         r8ZeOc/qHvkZYbdiRFJRvzIEBjoelcdz819ep+oVYy8TG1lQHerr3B1zZjSi+9lV+AuD
-         oUcta6kjynldNHVuH/LmEyB7mPr7RUGR2On/R+ZuzVVOgWimY8oF7L/W14iULaJBneFa
-         9xTYtuMOlfP6+kMGL6E85wbhD9SkySiZQCeV2iPubIBmZdZ3pZajczIUpPS4yF8SlzhV
-         YiQC/REVjKe0rEVZCpqODjlpO7qsjh0A5LSuemzTd0qyHHWGj/AGyLXGXE3rSvyDsUbG
-         bY7Q==
-X-Gm-Message-State: AOAM530PQHbjlyZnV9omL6YV/+qMPvafkf7LOrNiDnJhGZVcfFgGXkhI
-        mEOFE2ea8UDkUyh/42kntosDX9Xr18zgkNk2cIdkvQ==
-X-Google-Smtp-Source: ABdhPJzjOv9nA1sQ7Cd9uU8D7zcDzSeZPBApL3N+RjvJrY2ioR8BM3fhxRdxBOH/LurEUUwnPniIQrdfx5D/FoBW03Q=
-X-Received: by 2002:a05:6830:4187:: with SMTP id r7mr5956450otu.126.1634837738629;
- Thu, 21 Oct 2021 10:35:38 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 21 Oct 2021 10:35:38 -0700
+        Thu, 21 Oct 2021 13:38:44 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 369CD1FD58;
+        Thu, 21 Oct 2021 17:36:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634837787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0eDU1SMK968q7PGozinR0fnwI8mivFPo6U/lEqiI1KE=;
+        b=EXSUjDjvJKvCHYCYvA/99sVcJcLUtm3FL4wOtYSW8HUOVugMSAqhUAT9ZXS3QpnBwtNdCO
+        rFH+2yz+YnVmZVEWDxkb35Q7KNPQVdBPfBOvkAq0OTFORyIYR0vJzZEzzLARRcrKNe15jU
+        eruSQXsILzo1NMb8xklETsDrnvhWpck=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634837787;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0eDU1SMK968q7PGozinR0fnwI8mivFPo6U/lEqiI1KE=;
+        b=xBtjlDQHd1PcjVvO88qnT341ih2Rz1pw4+QhsF2S3QaCcZ/GQ2B+4lNS9w2ypo+TyL+4lX
+        GiF5TZBjH5CEXYDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6C8413AE4;
+        Thu, 21 Oct 2021 17:36:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id q7w4MxqlcWEkEQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 21 Oct 2021 17:36:26 +0000
+Message-ID: <1dfb7a79-3e66-a9fe-ee7c-1277d7ff5950@suse.cz>
+Date:   Thu, 21 Oct 2021 19:36:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <1634711785-25351-1-git-send-email-quic_c_sanm@quicinc.com>
-References: <1634711785-25351-1-git-send-email-quic_c_sanm@quicinc.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 21 Oct 2021 10:35:38 -0700
-Message-ID: <CAE-0n51miQBAO2QBtHG75cB4TZnm9jiXFz3APBwrNbQcfjB-Eg@mail.gmail.com>
-Subject: Re: [PATCH] phy: qcom-snps: Correct the FSEL_MASK
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, quic_pkondeti@quicinc.com,
-        quic_ppratap@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] slob: add size header to all allocations
+Content-Language: en-US
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        djwong@kernel.org, david@fromorbit.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        gregkh@linuxfoundation.org, viro@zeniv.linux.org.uk,
+        dvyukov@google.com
+References: <20211015005729.GD24333@magnolia>
+ <20211018033841.3027515-1-rkovhaev@gmail.com>
+ <20211020114638.GA378758@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211020114638.GA378758@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sandeep Maheswaram (2021-10-19 23:36:25)
-> The FSEL_MASK which selects the refclock is defined incorrectly.
-> It should be [4:6] not [5:7]. Due to this incorrect definition, the BIT(7)
-> in USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1 is reset which keeps PHY analog
-> blocks ON during suspend.
-> Fix this issue by correctly defining the FSEL_MASK.
->
-> Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+On 10/20/21 13:46, Hyeonggon Yoo wrote:
+> On Sun, Oct 17, 2021 at 08:38:41PM -0700, Rustam Kovhaev wrote:
+>> Let's prepend all  allocations of (PAGE_SIZE - align_offset) and less
+>> with the size header. This way kmem_cache_alloc() memory can be freed
+>> with kfree() and the other way around, as long as they are less than
+>> (PAGE_SIZE - align_offset).
+> 
+> Hello Rustam, I measured its impact on memory usage on
+> tiny kernel configuration as SLOB is used in very small machine.
+> 
+> on x86 32 bit + tinyconfig:
+>     Before:
+>     Slab:                668 kB
+> 
+>     After:
+>     Slab:                688~692 kB
+> 
+> it adds 20~24kB.
 
-Any Fixes tag?
+Thanks for the measurement. That's 3.5% increase.
 
-> ---
->  drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> index ae4bac0..28459a1 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
+> 
+>> 
+>> The main reason for this change is to simplify SLOB a little bit, make
+>> it a bit easier to debug whenever something goes wrong.
+>>
+> 
+> It seems acceptable But I wonder it is worth to increase memory usage
+> to allow freeing kmem_cache_alloc-ed objects by kfree()?
 
-I never thought I'd see this again! :)
+Not for the reason above, but for providing a useful API guarantee
+regardless of selected slab allocator IMHO yes.
 
->   */
->
->  #include <linux/clk.h>
-> @@ -33,7 +34,7 @@
->
->  #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0   (0x54)
->  #define RETENABLEN                             BIT(3)
-> -#define FSEL_MASK                              GENMASK(7, 5)
-> +#define FSEL_MASK                              GENMASK(6, 4)
->  #define FSEL_DEFAULT                           (0x3 << 4)
->
->  #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1   (0x58)
+> Thanks,
+> Hyeonggon
+> 
+>> meminfo right after the system boot, without the patch:
+>> Slab:              35500 kB
+>> 
+>> the same, with the patch:
+>> Slab:              36396 kB
+>> 
+> 
+
