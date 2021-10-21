@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DE943650B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F5143650D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbhJUPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:08:54 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:55140 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhJUPIu (ORCPT
+        id S231730AbhJUPJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231207AbhJUPJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:08:50 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:47110)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdZeI-00HRzW-LT; Thu, 21 Oct 2021 09:06:30 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:50622 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdZeH-00CWxY-Hi; Thu, 21 Oct 2021 09:06:30 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-18-ebiederm@xmission.com>
-        <YXERhzKOVzGJoNMN@kroah.com>
-Date:   Thu, 21 Oct 2021 10:06:22 -0500
-In-Reply-To: <YXERhzKOVzGJoNMN@kroah.com> (Greg KH's message of "Thu, 21 Oct
-        2021 09:06:47 +0200")
-Message-ID: <875ytqifip.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdZeH-00CWxY-Hi;;;mid=<875ytqifip.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/afZzUN9FSzTK9R8sFXt+HdCBvLvrywHY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4997]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Greg KH <gregkh@linuxfoundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 433 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (2.6%), b_tie_ro: 10 (2.2%), parse: 0.82
-        (0.2%), extract_message_metadata: 14 (3.3%), get_uri_detail_list: 1.28
-        (0.3%), tests_pri_-1000: 23 (5.4%), tests_pri_-950: 1.30 (0.3%),
-        tests_pri_-900: 1.00 (0.2%), tests_pri_-90: 82 (18.8%), check_bayes:
-        79 (18.2%), b_tokenize: 7 (1.5%), b_tok_get_all: 7 (1.6%),
-        b_comp_prob: 2.4 (0.6%), b_tok_touch_all: 59 (13.7%), b_finish: 0.81
-        (0.2%), tests_pri_0: 287 (66.3%), check_dkim_signature: 0.78 (0.2%),
-        check_dkim_adsp: 3.7 (0.8%), poll_dns_idle: 1.09 (0.3%), tests_pri_10:
-        2.0 (0.5%), tests_pri_500: 7 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 18/20] exit/rtl8723bs: Replace the macro thread_exit with a simple return 0
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+        Thu, 21 Oct 2021 11:09:17 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A6EC0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:07:01 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 75so593773pga.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:07:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8J+7f2f4xuhNe3jNVdWk7a86I7pUDjUPQRras1jT8jA=;
+        b=j2xqGy2XNECrbul6qEKx9SST/rdB96W/R24/Vvcb8OqiQ/EHcxnhHYfq5uycgpIPfE
+         RcoveVySySpwpVV4tBCzFXMBjD2Nbo+r7Vouu3zvunyfI91UcGulu7Nf/Efg6vE0BHHv
+         /LkDq7xiH7ZfRV3m5sF462W0KJ3z1wKCyuvxatQAiZ0IhNp9AB4OJO5f48RqdrwxWEXV
+         mKN4COsAen3/I4rFmP2EK85hFYa8xqnSauu6h/p0/SzhsTzXY2mralghgKwja2Of6/fO
+         GfDWT4tqD+WyHwETcfuO7Mci1xa1bCHrSgDFMYZySCx/rxAhmzRhX68rxf6QbT/UQcIq
+         UsCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=8J+7f2f4xuhNe3jNVdWk7a86I7pUDjUPQRras1jT8jA=;
+        b=k2YCqwVk6pm1BbIMJiSDJX7SvojbkPTOAkYtZdP4jaZfmxusLB6pEoDjHiFbOdaw4J
+         fqrAkw5i2Uxl4N04zAT9whVo4jG5lgBYkjhOH8qlXx8TqxJWOxJjszOxRYcA0HwzEnCc
+         0hfspVFnoagmhkqFV9cqIZDZpttjwGodhHsM2eeIyBQCY/icZ4FpFDSsdfAsoIVJJ6y9
+         1yCIc+ayYyt/w507PpaDluIYxF0vU33mXjQXpOVe6Aj/IUvsVTVVNssP3cXsR1wcNEWl
+         QaoNxWIyywUzkj7q8k7jUWxhaHr0o11l7utScIORBhA4470OPDN88k5yHu8SL++OdAAk
+         n3og==
+X-Gm-Message-State: AOAM5326OLNp/jeeMuRO5+5sA9F8gpD/2Pk9WcL5q2SBLImeOIgZOh2D
+        rOii9corQx7j/Vpj6Avgw71Leg==
+X-Google-Smtp-Source: ABdhPJyz7GFpoPYi0O9X5+kNyiRMV3FyOoAIfXtYBZpu6m8G0bDaRlzBGocZrUEoxY+npHCfOUgOYA==
+X-Received: by 2002:a05:6a00:b48:b0:444:f9d4:d800 with SMTP id p8-20020a056a000b4800b00444f9d4d800mr6713446pfo.38.1634828820211;
+        Thu, 21 Oct 2021 08:07:00 -0700 (PDT)
+Received: from localhost ([2620:0:1000:5e10:459d:a8c7:78e4:f487])
+        by smtp.gmail.com with ESMTPSA id 60sm9545333pjz.11.2021.10.21.08.06.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:06:58 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 08:06:58 -0700 (PDT)
+X-Google-Original-Date: Thu, 21 Oct 2021 08:06:53 PDT (-0700)
+Subject:     Re: [GIT PULL] riscv: dts: few cleanups for v5.16
+In-Reply-To: <4a27b400-4fb1-bb7a-335a-ae1d084cdf73@canonical.com>
+CC:     Conor.Dooley@microchip.com, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>, arm@kernel.org,
+        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        krzk@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     krzysztof.kozlowski@canonical.com
+Message-ID: <mhng-743556e6-a149-4301-8c4b-c14b3bf4d3d8@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH <gregkh@linuxfoundation.org> writes:
-
-> On Wed, Oct 20, 2021 at 12:44:04PM -0500, Eric W. Biederman wrote:
->> Every place thread_exit is called is at the end of a function started
->> with kthread_run.  The code in kthread_run has arranged things so a
->> kernel thread can just return and do_exit will be called.
->> 
->> So just have the threads return instead of calling complete_and_exit.
->> 
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->> ---
->>  drivers/staging/rtl8723bs/core/rtw_cmd.c                | 2 +-
->>  drivers/staging/rtl8723bs/core/rtw_xmit.c               | 2 +-
->>  drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c          | 2 +-
->>  drivers/staging/rtl8723bs/include/osdep_service_linux.h | 2 --
->>  4 files changed, 3 insertions(+), 5 deletions(-)
+On Thu, 21 Oct 2021 06:09:50 PDT (-0700), krzysztof.kozlowski@canonical.com wrote:
+> On 21/10/2021 15:06, Conor.Dooley@microchip.com wrote:
+>> On 21/10/2021 13:23, Arnd Bergmann wrote:
+>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>>
+>>> On Thu, Oct 21, 2021 at 11:09 AM Krzysztof Kozlowski
+>>> <krzysztof.kozlowski@canonical.com> wrote:
+>>>> Hi Arnd and Olof,
+>>>>
+>>>> I have an old patchset for RISC-V dts cleanups which I sent to mailing lists in
+>>>> August 2021 (v1, v2), resent in September and pinged two times.  They got some
+>>>> review (from Alexandre Ghiti for SiFive, from Conor Dooley for Microchip) but
+>>>> unfortunately Palmer (RISC-V maintainer) did not respond here.
+>>
+>> Out of curiosity which series is this one? Is it the one with the
+>> plic/clint changes?
+>> Pretty sure that I have taken them in internally, but I am going to
+>> submit a bunch
+>> of changes to our device tree soon (tm) and want to make sure I have the
+>> right
+>> dependent series listed.
+>>
 >
-> You "forgot" to cc: the linux-staging and the staging driver maintainer
-> on these drivers/staging/ changes...
+> There is only one Microchip patch here (plic/clint). Others are for
+> SiFive. All the patches are described in the pull reqeust:
+> https://lore.kernel.org/lkml/20211021090955.115005-1-krzysztof.kozlowski@canonical.com/
+>
+> I had also second set of RISC-V patches for Microchip. These were picked
+> up by Palmer:
+> https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/log/?h=for-next
 
-Yes I did.  Sorry about that.
-
-> Anyway, they look fine to me, but you will get some conflicts with some
-> of these changes based on cleanups already in my staging-next tree (in
-> linux-next if you want to see them).  But feel free to take these all in
-> your tree if that makes it easier:
-
-I just did a test merge and there was one file that was completely
-removed and one file with had changes a line or two above where my code
-changed.  So nothing too difficult to result.
-
-I don't really mind either way.  But keeping them all in one tree makes
-them easier to keep track of, and allows me to do things like see if
-I can remove EXPORT_SYMBOL(do_exit) as Christoph suggested.
-
-Eric
-
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Sorry I missed this.  If you guys took this through the SOC tree that's 
+fine, otherwise LMK and I'll put it in the RISC-V tree.
