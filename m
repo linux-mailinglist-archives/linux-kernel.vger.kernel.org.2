@@ -2,69 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674F44363AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758324363AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhJUODP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:03:15 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:42370 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhJUODN (ORCPT
+        id S231379AbhJUODp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:03:45 -0400
+Received: from mail-qv1-f48.google.com ([209.85.219.48]:39481 "EHLO
+        mail-qv1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230283AbhJUODn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:03:13 -0400
-Received: from ert768.prtnl (ert768.prtnl [192.168.224.11])
-        by sparta.prtnl (Postfix) with ESMTP id 4D76F44A024E;
-        Thu, 21 Oct 2021 16:00:55 +0200 (CEST)
-From:   Roan van Dijk <roan@protonic.nl>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        david@protonic.nl, Lars-Peter Clausen <lars@metafoo.de>,
-        Roan van Dijk <roan@protonic.nl>
-Subject: [PATCH] iio: chemical: scd4x: Add a scale for the co2 concentration reading
-Date:   Thu, 21 Oct 2021 16:00:18 +0200
-Message-Id: <20211021140018.3051213-1-roan@protonic.nl>
-X-Mailer: git-send-email 2.30.2
+        Thu, 21 Oct 2021 10:03:43 -0400
+Received: by mail-qv1-f48.google.com with SMTP id k29so467518qve.6;
+        Thu, 21 Oct 2021 07:01:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0U+RWvmwzZQnDHkZFAiKquq3sy5BuzvtMKBzB6NsKtY=;
+        b=uvOs44I5jDuMW6MBc1YFhLUzrgiG8MKp6EXRzXiRbJaNhZzDPVzOq7yhTRmEPXR+6d
+         L0lFcDgRX1M8vOT5iP51dRdJTp7rs1mNZGdTUU4N9aop9C07WlhBjBSYpxlMjDeg4O8V
+         tCDAPRj86nxPHP4Ig2oBgXi1cC8L1vBf1VEjdY3yAAK5usv7loYaC2wkV0erpshhRAU/
+         GE/RJcZBv3bmfpc8eLezTjzRIcuK12vd7RHvu+7l5XlBxXusz+kD9YiVgqRaNM9RLRTY
+         awbBOTPXnSC4pt8XRCZBE7qDqNqzOQCeoy8+6UvaNppiAFJV8ARAgwD8wOyWsfT8gmhC
+         1boQ==
+X-Gm-Message-State: AOAM532/RGBBdTjT7oGWIjcaOVpCwKSUA1LlPFgQJ61lVS618Z2Xpk6h
+        6w6VG3aPlBcBR3BYYKUD9uL1ZMlRxh8=
+X-Google-Smtp-Source: ABdhPJw2uX2rarXlJXea4IjdYD5evpOPewmF56bfTV7aJEvMs0lg3dzF+7TzoFHZy8QqOXi5pg+JFw==
+X-Received: by 2002:a05:6214:144c:: with SMTP id b12mr5514294qvy.56.1634824887011;
+        Thu, 21 Oct 2021 07:01:27 -0700 (PDT)
+Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
+        by smtp.gmail.com with ESMTPSA id b2sm2446805qtg.88.2021.10.21.07.01.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 07:01:26 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 10:01:24 -0400
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Christoph Lameter <cl@linux.com>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 1/2] percpu_ref: percpu_ref_tryget_live() version
+ holding RCU
+Message-ID: <YXFytAdeF5RPRERf@fedora>
+References: <cover.1634822969.git.asml.silence@gmail.com>
+ <3066500d7a6eb3e03f10adf98b87fdb3b1c49db8.1634822969.git.asml.silence@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3066500d7a6eb3e03f10adf98b87fdb3b1c49db8.1634822969.git.asml.silence@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a scale for the co2 concentration reading. The reading is
-expressed in percent after applying the scale to the raw value.
+Hello,
 
-Signed-off-by: Roan van Dijk <roan@protonic.nl>
----
- drivers/iio/chemical/scd4x.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+On Thu, Oct 21, 2021 at 02:30:51PM +0100, Pavel Begunkov wrote:
+> Add percpu_ref_tryget_live_rcu(), which is a version of
+> percpu_ref_tryget_live() but the user is responsible for enclosing it in
+> a RCU read lock section.
+> 
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+>  include/linux/percpu-refcount.h | 33 +++++++++++++++++++++++----------
+>  1 file changed, 23 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
+> index ae16a9856305..b31d3f3312ce 100644
+> --- a/include/linux/percpu-refcount.h
+> +++ b/include/linux/percpu-refcount.h
+> @@ -266,6 +266,28 @@ static inline bool percpu_ref_tryget(struct percpu_ref *ref)
+>  	return percpu_ref_tryget_many(ref, 1);
+>  }
+>  
+> +/**
+> + * percpu_ref_tryget_live_rcu - same as percpu_ref_tryget_live() but the
+> + * caller is responsible for taking RCU.
+> + *
+> + * This function is safe to call as long as @ref is between init and exit.
+> + */
+> +static inline bool percpu_ref_tryget_live_rcu(struct percpu_ref *ref)
+> +{
+> +	unsigned long __percpu *percpu_count;
+> +	bool ret = false;
+> +
+> +	WARN_ON_ONCE(!rcu_read_lock_held());
+> +
+> +	if (likely(__ref_is_percpu(ref, &percpu_count))) {
+> +		this_cpu_inc(*percpu_count);
+> +		ret = true;
+> +	} else if (!(ref->percpu_count_ptr & __PERCPU_REF_DEAD)) {
+> +		ret = atomic_long_inc_not_zero(&ref->data->count);
+> +	}
+> +	return ret;
+> +}
+> +
+>  /**
+>   * percpu_ref_tryget_live - try to increment a live percpu refcount
+>   * @ref: percpu_ref to try-get
 
-diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
-index 09b34201c42b..b063b378c7d5 100644
---- a/drivers/iio/chemical/scd4x.c
-+++ b/drivers/iio/chemical/scd4x.c
-@@ -352,7 +352,11 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
- 		*val = ret;
- 		return IIO_VAL_INT;
- 	case IIO_CHAN_INFO_SCALE:
--		if (chan->type == IIO_TEMP) {
-+		if (chan->type == IIO_CONCENTRATION) {
-+			*val = 0;
-+			*val2 = 100;
-+			return IIO_VAL_INT_PLUS_MICRO;
-+		} else if (chan->type == IIO_TEMP) {
- 			*val = 175000;
- 			*val2 = 65536;
- 			return IIO_VAL_FRACTIONAL;
-@@ -501,7 +505,8 @@ static const struct iio_chan_spec scd4x_channels[] = {
- 		.type = IIO_CONCENTRATION,
- 		.channel2 = IIO_MOD_CO2,
- 		.modified = 1,
--		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-+					BIT(IIO_CHAN_INFO_SCALE),
- 		.address = SCD4X_CO2,
- 		.scan_index = SCD4X_CO2,
- 		.scan_type = {
--- 
-2.30.2
+Nit: it's dumb convention at this point, but do you mind copying this
+guy up. I like consistency.
+
+> @@ -283,20 +305,11 @@ static inline bool percpu_ref_tryget(struct percpu_ref *ref)
+>   */
+>  static inline bool percpu_ref_tryget_live(struct percpu_ref *ref)
+>  {
+> -	unsigned long __percpu *percpu_count;
+>  	bool ret = false;
+>  
+>  	rcu_read_lock();
+> -
+> -	if (__ref_is_percpu(ref, &percpu_count)) {
+> -		this_cpu_inc(*percpu_count);
+> -		ret = true;
+> -	} else if (!(ref->percpu_count_ptr & __PERCPU_REF_DEAD)) {
+> -		ret = atomic_long_inc_not_zero(&ref->data->count);
+> -	}
+> -
+> +	ret = percpu_ref_tryget_live_rcu(ref);
+>  	rcu_read_unlock();
+> -
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.33.1
+> 
+
+Currently I'm not carrying anything and I don't expect any percpu_ref
+work to come in. Jens, feel free to pick this up.
+
+Acked-by: Dennis Zhou <dennis@kernel.org>
+
+Thanks,
+Dennis
 
