@@ -2,73 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A2B435E20
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3294D435E26
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhJUJpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:45:32 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57596 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhJUJpb (ORCPT
+        id S231598AbhJUJp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:45:58 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:33745 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhJUJp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:45:31 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 078F11FDAC;
-        Thu, 21 Oct 2021 09:43:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634809395; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nAAXadDi6/fpR3j85eAznPcX2X6xtLyC6KlMM4QxiUk=;
-        b=cBABVvzxpF8ORKUey/ExhOz5MxVml6irudJDkpVxemF6I+QSFee4+oFwpYumXNmqy4B/ko
-        SWyPJGVa2TSvJBx/2xx54adgV9hgOiVlVKxUhtYWI5XMy5ZYYTgajGsl1SpcBNJSMLEaGc
-        2etR+/Zt59nF4GdmkZClhNsrO71CoIs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634809395;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nAAXadDi6/fpR3j85eAznPcX2X6xtLyC6KlMM4QxiUk=;
-        b=4LIcgOPAAnao4jUjWGoTVpQhWcoLlX6OTP+eKifnQ9A5b9F9vzRlbC1Q8u7v9vttKyGwvP
-        InlK4W4KwIVmxmBw==
-Received: from suse.de (unknown [10.163.32.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CEE49A3B91;
-        Thu, 21 Oct 2021 09:43:13 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 10:43:11 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        tim.c.chen@linux.intel.com
-Subject: Re: [PATCH v3 1/5] sched/fair: Account update_blocked_averages in
- newidle_balance cost
-Message-ID: <20211021094311.GB3891@suse.de>
-References: <20211019123537.17146-1-vincent.guittot@linaro.org>
- <20211019123537.17146-2-vincent.guittot@linaro.org>
+        Thu, 21 Oct 2021 05:45:57 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 23A02100007;
+        Thu, 21 Oct 2021 09:43:39 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 11:43:38 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 4/9] rtc: max77686: remove unused code to read in
+ 12-hour mode
+Message-ID: <YXE2Sr3BOj3EMDAm@piout.net>
+References: <20211019145919.7327-1-luca@lucaceresoli.net>
+ <20211019145919.7327-5-luca@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019123537.17146-2-vincent.guittot@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211019145919.7327-5-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 02:35:33PM +0200, Vincent Guittot wrote:
-> The time spent to update the blocked load can be significant depending of
-> the complexity fo the cgroup hierarchy. Take this time into account in
-> the cost of the 1st load balance of a newly idle cpu.
+On 19/10/2021 16:59:14+0200, Luca Ceresoli wrote:
+> The MAX77714 RTC chip is explicitly set to 24-hour mode in
+> max77686_rtc_probe() -> max77686_rtc_init_reg() and never changed back to
+> 12-hour mode. Accordingly info->rtc_24hr_mode is set to 1 in the same place
+> and never modified later, so it is de facto a constant. Yet there is code
+> to read 12-hour time, which is unreachable.
 > 
-> Also reduce the number of call to sched_clock_cpu() and track more actual
-> work.
+> Remove the unused variable, the unreachable code to manage 12-hour mode and
+> the defines that become unused due to the above changes.
 > 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+> 
+> ---
+> 
+> Changes in v2:
+>  - remove the now-unused defines too (Alexandre Belloni)
+>  - improve the commit message
+> ---
+>  drivers/rtc/rtc-max77686.c | 14 +-------------
+>  1 file changed, 1 insertion(+), 13 deletions(-)
+> 
+> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
+> index 7e765207f28e..5c64d08c0732 100644
+> --- a/drivers/rtc/rtc-max77686.c
+> +++ b/drivers/rtc/rtc-max77686.c
+> @@ -34,9 +34,6 @@
+>  #define RTC_UDR_MASK			BIT(RTC_UDR_SHIFT)
+>  #define RTC_RBUDR_SHIFT			4
+>  #define RTC_RBUDR_MASK			BIT(RTC_RBUDR_SHIFT)
+> -/* RTC Hour register */
+> -#define HOUR_PM_SHIFT			6
+> -#define HOUR_PM_MASK			BIT(HOUR_PM_SHIFT)
+>  /* RTC Alarm Enable */
+>  #define ALARM_ENABLE_SHIFT		7
+>  #define ALARM_ENABLE_MASK		BIT(ALARM_ENABLE_SHIFT)
+> @@ -99,7 +96,6 @@ struct max77686_rtc_info {
+>  
+>  	int rtc_irq;
+>  	int virq;
+> -	int rtc_24hr_mode;
+>  };
+>  
+>  enum MAX77686_RTC_OP {
+> @@ -278,13 +274,7 @@ static void max77686_rtc_data_to_tm(u8 *data, struct rtc_time *tm,
+>  
+>  	tm->tm_sec = data[RTC_SEC] & mask;
+>  	tm->tm_min = data[RTC_MIN] & mask;
+> -	if (info->rtc_24hr_mode) {
+> -		tm->tm_hour = data[RTC_HOUR] & 0x1f;
+> -	} else {
+> -		tm->tm_hour = data[RTC_HOUR] & 0x0f;
+> -		if (data[RTC_HOUR] & HOUR_PM_MASK)
+> -			tm->tm_hour += 12;
+> -	}
+> +	tm->tm_hour = data[RTC_HOUR] & 0x1f;
+>  
+>  	/* Only a single bit is set in data[], so fls() would be equivalent */
+>  	tm->tm_wday = ffs(data[RTC_WEEKDAY] & mask) - 1;
+> @@ -662,8 +652,6 @@ static int max77686_rtc_init_reg(struct max77686_rtc_info *info)
+>  	data[0] = (1 << BCD_EN_SHIFT) | (1 << MODEL24_SHIFT);
+>  	data[1] = (0 << BCD_EN_SHIFT) | (1 << MODEL24_SHIFT);
+>  
+> -	info->rtc_24hr_mode = 1;
+> -
+>  	ret = regmap_bulk_write(info->rtc_regmap,
+>  				info->drv_data->map[REG_RTC_CONTROLM],
+>  				data, ARRAY_SIZE(data));
+> -- 
+> 2.25.1
+> 
 
 -- 
-Mel Gorman
-SUSE Labs
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
