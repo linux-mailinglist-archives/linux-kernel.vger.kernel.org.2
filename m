@@ -2,173 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173674357E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C8F4357E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhJUAmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 20:42:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31531 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230478AbhJUAmF (ORCPT
+        id S231428AbhJUAmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 20:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231200AbhJUAmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634776789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nINcHNP1LunHuFgS+T7bSGFWStA5gFA7A821E6TM/8E=;
-        b=CbX4hham1ntphzzf2fngYUoCDjB9g0f5F7dzZutLUX2T2N81zOMzauIC7LZuKjXWgktulN
-        GZz+kuHKyprLzi4EAa7kBlTBHcy0XZxqm7EzOf2hiZud4eIcx60bJjG2wVywj1y9TpfNp8
-        yNfIzATb646+lOevZoiTEkv4cXoqmtY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-557-c3Q0yG6OP5e-tVuS9OPEsw-1; Wed, 20 Oct 2021 20:39:45 -0400
-X-MC-Unique: c3Q0yG6OP5e-tVuS9OPEsw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFD5A1006AA2;
-        Thu, 21 Oct 2021 00:39:42 +0000 (UTC)
-Received: from T590 (ovpn-8-19.pek2.redhat.com [10.72.8.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2231319D9B;
-        Thu, 21 Oct 2021 00:39:10 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 08:39:05 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
-        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
-        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YXC2qcx/RlLwjrKx@T590>
-References: <YWk9e957Hb+I7HvR@T590>
- <YWm68xUnAofop3PZ@bombadil.infradead.org>
- <YWq3Z++uoJ/kcp+3@T590>
- <YW3LuzaPhW96jSBK@bombadil.infradead.org>
- <YW4uwep3BCe9Vxq8@T590>
- <YW7kFXlzRrvwzARP@bombadil.infradead.org>
- <YW7ygbLAwm2/LZFl@T590>
- <YW8eSq2B+5FtOLZb@bombadil.infradead.org>
- <YW9tqPunx5bssxIz@T590>
- <YXA6NMhwoiIMeHji@bombadil.infradead.org>
+        Wed, 20 Oct 2021 20:42:50 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978B6C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 17:40:35 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id e65so21614376pgc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 17:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HTK3PmiJo/50QG/bL2QbEDQCgeZMhZl/YHX7oJsYtK8=;
+        b=EcP6GQ1xPAINy9hVWT13XDVT+iGLA2CiwM0gfssxx6+jr7oxx4bBntps1lG+QSHYs9
+         Ce+h4JGfzsOLKTpsiVMnzaJR9P1HXMgyj5LwIVeuDbAJdkYl5fe95rC50GKXD/PCJM/S
+         65nxPvjZ57gh17mxq4bBKcf3tIjD5DbN28GqidoUARevtwvFQJDB3ixq3ikLc+MOjCan
+         e4ulaHsCoh/s3JvfNS8YhoOtipSfL/Im6SgDN6OEUn3rqxwi6GSbhbg2ZWnWWaRa+HS9
+         qVSVRdySNtiKmusEYRLMCifi0OKXmPlXUUGhXNlq6SO49IraHT55yr6PzcG3vfCHdVY7
+         P8qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HTK3PmiJo/50QG/bL2QbEDQCgeZMhZl/YHX7oJsYtK8=;
+        b=XProrjoOC++RZfDruD+uyAseCrs7w3SgULjKuUGBWcuxbKkcstAWam9A+kfoGrsAeO
+         ZfrVIcZW9C+r04zP4t7DCtVFRjmysyvdjJamJ+4eeKCoxpW0W8Bvzpte5H2vPHnx7Wit
+         tXRfEPL+9FhRLeHniePa3W1xZ8QACFWbG4tpRjVXiFI59LAJarl3J9avp08uTQ4H841y
+         9VYM2l4KRanUNUsxVDhm7WzKunxZJKdY9HF+d8LMAcoKwiNkN17Ud2xXSUN32KtXkZ6r
+         SVUQiHGlBkLOL/Hw4UDcoYgULE7rPTICpAvJlZay+NSc23eprfP07cT/sxqD3ZyBKvS2
+         U2nw==
+X-Gm-Message-State: AOAM533ifuBAGmTPilo5RnsSH4USsk22c77BrAcxlYsSDij+3UZEEMLF
+        vcY7+z0QCgWn9eS/2DBhh/VHJExmRal7XXzhM2xamw==
+X-Google-Smtp-Source: ABdhPJzkIz/3AnBTYn5Q/44tdVdCx8+F4RmIvnvI9CRV57l+jPpZXfioRAY4OAfjIUi8ATILbu/10y3wXDCNHaM9zj4=
+X-Received: by 2002:a63:6888:: with SMTP id d130mr1949025pgc.234.1634776834570;
+ Wed, 20 Oct 2021 17:40:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXA6NMhwoiIMeHji@bombadil.infradead.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20211019075949.17644-1-andriy.tryshnivskyy@opensynergy.com>
+ <20211019075949.17644-2-andriy.tryshnivskyy@opensynergy.com>
+ <20211020185118.7a02cbf8@jic23-huawei> <4e73398f-126a-0e1a-6eed-88d2d37778c2@opensynergy.com>
+In-Reply-To: <4e73398f-126a-0e1a-6eed-88d2d37778c2@opensynergy.com>
+From:   Jyoti Bhayana <jbhayana@google.com>
+Date:   Wed, 20 Oct 2021 17:40:23 -0700
+Message-ID: <CA+=V6c1N8d6bB_2xKHjhygg_+45Grj9J2Z5UrdQAt6gDOtO=yw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/1] iio/scmi: Add reading "raw" attribute.
+To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vasyl Vavrychuk <Vasyl.Vavrychuk@opensynergy.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 08:48:04AM -0700, Luis Chamberlain wrote:
-> On Wed, Oct 20, 2021 at 09:15:20AM +0800, Ming Lei wrote:
-> > On Tue, Oct 19, 2021 at 12:36:42PM -0700, Luis Chamberlain wrote:
-> > > On Wed, Oct 20, 2021 at 12:29:53AM +0800, Ming Lei wrote:
-> > > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> > > > index d0cae7a42f4d..a14ba3d350ea 100644
-> > > > --- a/drivers/block/zram/zram_drv.c
-> > > > +++ b/drivers/block/zram/zram_drv.c
-> > > > @@ -1704,12 +1704,12 @@ static void zram_reset_device(struct zram *zram)
-> > > >  	set_capacity_and_notify(zram->disk, 0);
-> > > >  	part_stat_set_all(zram->disk->part0, 0);
-> > > >  
-> > > > -	up_write(&zram->init_lock);
-> > > >  	/* I/O operation under all of CPU are done so let's free */
-> > > >  	zram_meta_free(zram, disksize);
-> > > >  	memset(&zram->stats, 0, sizeof(zram->stats));
-> > > >  	zcomp_destroy(comp);
-> > > >  	reset_bdev(zram);
-> > > > +	up_write(&zram->init_lock);
-> > > >  }
-> > > >  
-> > > >  static ssize_t disksize_store(struct device *dev,
-> > > 
-> > > With this, it still ends up in a state where we loop and can't get out of:
-> > > 
-> > > zram: Can't change algorithm for initialized device
-> > 
-> > Again, you are running two zram02.sh[1] on /dev/zram0, that isn't unexpected
-> 
-> You mean that it is not expected? If so then yes, of course.
+Hi Andriy,
 
-My meaning is clear: it is not unexpected, so it is expected.
-
-> 
-> > behavior. Here the difference is just timing.
-> 
-> Right, but that is what helped reproduce a difficutl to re-produce customer
-> bug. Once you find an easy way to reproduce a reported issue you stick
-> with it and try to make the situation worse to ensure no more bugs are
-> present.
-> 
-> > Also you did not answer my question about your test expected result when
-> > running the following script from two terminal concurrently:
-> > 
-> > 	while true; do
-> > 		PATH=$PATH:$PWD:$PWD/../../../lib/ ./zram02.sh;
-> > 	done
-> 
-> If you run this, you should see no failures.
-
-OK, not see any failure when running single zram02.sh after applying my
-patch V2.
-
-> 
-> Once you start a second script that one should cause odd issues on both
-> sides but never crash or stall the module.
-
-crash can't be observed with my patch V2, what do you mean 'stall'
-the module? Is that 'zram' can't be unloaded after the test is
-terminated via multiple 'ctrl-c'?
-
-> 
-> A second series of tests is hitting CTRL-C on either randonly and
-> restarting testing once again randomly.
-
-ltp/zram02.sh has cleanup handler via trap to clean everything(swapoff/umount/reset/
-rmmod), ctrl-c will terminate current forground task and cause shell to run the
-cleanup handler first, but further 'ctrl-c' will terminate the cleanup handler,
-then the cleanup won't be done completely, such as zram disk is left as swap
-device and zram can't be unloaded. The idea can be observed via the following
-script:
-
-	#!/bin/bash
-	trap 'echo "enter trap"; sleep 20; echo "exit trap";' INT
-	sleep 30
-
-After the above script is run foreground, when 1st ctrl-c is pressed, 'sleep 30'
-is terminated, then the trap command is run, so you can see "enter trap"
-dumped. Then if you pressed 2nd ctrl-c, 'sleep 20' is terminated immediately.
-So 'swapoff' from zram02.sh's trap function can be terminated in this way.
-
-zram disk being left as swap disk can be observed with your patch too
-after terminating via multiple ctrl-c which has to be done this way because
-the test is dead loop.
-
-So it is hard to cleanup everything completely after multiple 'CTRL-C' is
-involved, and it should be impossible. It needs violent multiple ctrl-c to
-terminate the dealoop test.
-
-So it isn't reasonable to expect that zram can be always unloaded successfully
-after the test script is terminated via multiple ctrl-c.
-
-But zram can be unloaded after running swapoff manually, from driver
-viewpoint, nothing is wrong.
-
-> 
-> Again, neither should crash the kernel or stall the module.
-> 
-> In the end of these tests you should be able to run the script alone
-> just once and not see issues.
-
+Technically, the changes look good to me.
 
 Thanks,
-Ming
+Jyoti
 
+On Wed, Oct 20, 2021 at 11:57 AM Andriy Tryshnivskyy
+<andriy.tryshnivskyy@opensynergy.com> wrote:
+>
+>
+> On 20.10.21 20:51, Jonathan Cameron wrote:
+>
+> > CAUTION: This email originated from outside of the organization.
+> > Do not click links or open attachments unless you recognize the sender and know the content is safe.
+> >
+> >
+> > On Tue, 19 Oct 2021 10:59:49 +0300
+> > Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
+> >
+> >> Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
+> >> reading "raw" attribute in scmi_iio_read_raw.
+> >> Introduce new type IIO_VAL_INT_64 to read 64-bit value
+> >> for "raw" attribute.
+> >>
+> > Change log needs to be below the --- otherwise we'll store it forever
+> > in git.  A linked tag (which will be generated when I apply)
+> > is sufficient for this sort of historical info.
+> >
+> Sorry, this is my first patch, I was not aware of that.
+> Thanks for the explanation.
+> Quick question: since next version will include 2 patches,
+> I guess a change log should be moved back to the cover letter, right?
+>
+>
+> >> Changes comparing v5 -> v6:
+> >> * revert v5 changes since with scmi_iio_read_raw() the channel
+> >>    can't be used by in kernel users (iio-hwmon)
+> >> * returned to v3 with direct mode
+> >> * introduce new type IIO_VAL_INT_64 to read 64-bit value
+> >>
+> >> Changes comparing v4 -> v5:
+> >> * call iio_device_release_direct_mode() on error
+> >> * code cleanup, fix typo
+> >>
+> >> Changes comparing v3 -> v4:
+> >> * do not use scmi_iio_get_raw() for reading raw attribute due to 32-bit
+> >>    return value limitation (actually I reverted the previous v3)
+> >> * introduce scmi_iio_read_raw to scmi_iio_ext_info[] which can return
+> >>    64-bit value
+> >> * enabling/disabling and reading raw attribute is done in direct mode
+> >>
+> >> Changes comparing v2 -> v3:
+> >> * adaptation for changes in structure scmi_iio_priv (no member
+> >>    named 'handle')
+> >>
+> >> Changes comparing v0 -> v2:
+> >> * added an error return when the error happened during config_set
+> >> * removed redundant cast for "readings"
+> >> * added check if raw value fits 32 bits
+> >>
+> >> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+> >> ---
+> >>   drivers/iio/common/scmi_sensors/scmi_iio.c | 57 +++++++++++++++++++++-
+> >>   drivers/iio/industrialio-core.c            |  3 ++
+> >>   include/linux/iio/types.h                  |  1 +
+> > Two patches needed.  One to introduce the new core functionality then
+> > a second to use it in the driver.
+> >
+> > Actual code looks good to me though I think I'd like a comment next to
+> > the #define as not obvious which way around the two parts will go.
+> >
+> > There are some other places we will probably need to ultimately handle this
+> > to allow for in kernel consumers but those can come when someone needs them.
+> >
+> > Will need an ack from Jyoti on this one though as driver author.
+> > Thanks,
+> >
+> > Jonathan
+>
+> Sure, will split the current patch into two patches.
+>
+>
+> >>   3 files changed, 60 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> >> index 7cf2bf282cef..2c1aec0fd5ff 100644
+> >> --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
+> >> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> >> @@ -279,6 +279,52 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+> >>        return 0;
+> >>   }
+> >>
+> >> +static int scmi_iio_read_channel_data(struct iio_dev *iio_dev,
+> >> +                          struct iio_chan_spec const *ch, int *val, int *val2)
+> >> +{
+> >> +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> >> +     u32 sensor_config;
+> >> +     struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
+> >> +     int err;
+> >> +
+> >> +     sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> >> +                                     SCMI_SENS_CFG_SENSOR_ENABLE);
+> >> +     err = sensor->sensor_ops->config_set(
+> >> +             sensor->ph, sensor->sensor_info->id, sensor_config);
+> >> +     if (err) {
+> >> +             dev_err(&iio_dev->dev,
+> >> +                     "Error in enabling sensor %s err %d",
+> >> +                     sensor->sensor_info->name, err);
+> >> +             return err;
+> >> +     }
+> >> +
+> >> +     err = sensor->sensor_ops->reading_get_timestamped(
+> >> +             sensor->ph, sensor->sensor_info->id,
+> >> +             sensor->sensor_info->num_axis, readings);
+> >> +     if (err) {
+> >> +             dev_err(&iio_dev->dev,
+> >> +                     "Error in reading raw attribute for sensor %s err %d",
+> >> +                     sensor->sensor_info->name, err);
+> >> +             return err;
+> >> +     }
+> >> +
+> >> +     sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> >> +                                     SCMI_SENS_CFG_SENSOR_DISABLE);
+> >> +     err = sensor->sensor_ops->config_set(
+> >> +             sensor->ph, sensor->sensor_info->id, sensor_config);
+> >> +     if (err) {
+> >> +             dev_err(&iio_dev->dev,
+> >> +                     "Error in disabling sensor %s err %d",
+> >> +                     sensor->sensor_info->name, err);
+> >> +             return err;
+> >> +     }
+> >> +
+> >> +     *val = (u32)readings[ch->scan_index].value;
+> >> +     *val2 = (u32)(readings[ch->scan_index].value >> 32)
+> >> +
+> >> +     return IIO_VAL_INT_64;
+> >> +}
+> >> +
+> >>   static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+> >>                             struct iio_chan_spec const *ch, int *val,
+> >>                             int *val2, long mask)
+> >> @@ -300,6 +346,14 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+> >>        case IIO_CHAN_INFO_SAMP_FREQ:
+> >>                ret = scmi_iio_get_odr_val(iio_dev, val, val2);
+> >>                return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> >> +     case IIO_CHAN_INFO_RAW:
+> >> +             ret = iio_device_claim_direct_mode(iio_dev);
+> >> +             if (ret)
+> >> +                     return ret;
+> >> +
+> >> +             ret = scmi_iio_read_channel_data(iio_dev, ch, val, val2);
+> >> +             iio_device_release_direct_mode(iio_dev);
+> >> +             return ret;
+> >>        default:
+> >>                return -EINVAL;
+> >>        }
+> >> @@ -381,7 +435,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
+> >>        iio_chan->type = type;
+> >>        iio_chan->modified = 1;
+> >>        iio_chan->channel2 = mod;
+> >> -     iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
+> >> +     iio_chan->info_mask_separate =
+> >> +             BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
+> >>        iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+> >>        iio_chan->info_mask_shared_by_type_available =
+> >>                BIT(IIO_CHAN_INFO_SAMP_FREQ);
+> >> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> >> index 6d2175eb7af2..49e42d04ea16 100644
+> >> --- a/drivers/iio/industrialio-core.c
+> >> +++ b/drivers/iio/industrialio-core.c
+> >> @@ -702,6 +702,9 @@ static ssize_t __iio_format_value(char *buf, size_t offset, unsigned int type,
+> >>        }
+> >>        case IIO_VAL_CHAR:
+> >>                return sysfs_emit_at(buf, offset, "%c", (char)vals[0]);
+> >> +     case IIO_VAL_INT_64:
+> >> +             tmp2 = (s64)((((u64)vals[1]) << 32) | (u32)vals[0]);
+> >> +             return sysfs_emit_at(buf, offset, "%lld", tmp2);
+> >>        default:
+> >>                return 0;
+> >>        }
+> >> diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
+> >> index 84b3f8175cc6..e148fe11a3dc 100644
+> >> --- a/include/linux/iio/types.h
+> >> +++ b/include/linux/iio/types.h
+> >> @@ -24,6 +24,7 @@ enum iio_event_info {
+> >>   #define IIO_VAL_INT_PLUS_NANO 3
+> >>   #define IIO_VAL_INT_PLUS_MICRO_DB 4
+> >>   #define IIO_VAL_INT_MULTIPLE 5
+> >> +#define IIO_VAL_INT_64 6
+> > Possibly worth a descriptive comment. The other
+> > types tend to make it easy to assume the role
+> > of val and that of val2, in this case, val being
+> > the lower 32 bits isn't obvious...
+>
+> I will add a comment here.
+>
+> Thank you for your review!
+>
+> Best regard,
+> Andriy.
+>
+>
+> >>   #define IIO_VAL_FRACTIONAL 10
+> >>   #define IIO_VAL_FRACTIONAL_LOG2 11
+> >>   #define IIO_VAL_CHAR 12
+> >
