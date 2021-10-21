@@ -2,110 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B555E436671
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84055436676
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhJUPnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        id S231622AbhJUPnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbhJUPnP (ORCPT
+        with ESMTP id S229550AbhJUPnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:43:15 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EE8C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:40:59 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso1314340pjf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:40:59 -0700 (PDT)
+        Thu, 21 Oct 2021 11:43:31 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBD0C061764;
+        Thu, 21 Oct 2021 08:41:15 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d5so1022209pfu.1;
+        Thu, 21 Oct 2021 08:41:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bjoPyXkr6BV0dE+yUHbVGsg5Kch/RG6+gsn2Vg2w1gY=;
-        b=QRFnssmAHusAf4AsyE7xykM+jeNm9TVbcBZny5z+0bOEBkq+F8VjAWk5lEOfVtxJK/
-         n+L3vNRort1jo76UzuAQGb5iya4i1ZbsZjfSyR0zsdL5WZW4pic4D3G5AY1gFD5YxZvk
-         /7QYO+7SEOASn1Gu/e04XZ5/xRPpUQCFFrB1k=
+        bh=xJ5yoeTKpp381m0A0j9IUq569vsBu4FBDHNcj5QmsLg=;
+        b=CfUkG/TsPsceHAm1mJ0PYs6zdzBbfx1/hsejFdLBQF7VzBH9qalDL085f3fhk35Wev
+         STlPLtmOMdj4Hd39NOP6xSMQGmhQKfWCj13fRpkQGyVtJbNHzbR2L+MM1WLp5MJ3R5cJ
+         8EMFlG5ebdUjaEycvaFC9pCziXKHuije3xfqrFVBP80gIhHbL2CFKITNb41iE8XeFtoz
+         2LD/NXml/maWxiXtnnX7MPYdtbDMZJwHN7KNbffh/TouPhoSVThUtLb86begolczSkCP
+         CJgzpG77opyqRIEpUZWLygnXJTqcNZ65AmMpVgCPonyKVGBCarCZRURohuuWnje+Rrb0
+         EBGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bjoPyXkr6BV0dE+yUHbVGsg5Kch/RG6+gsn2Vg2w1gY=;
-        b=EcuqTUhypGjei4KSravt+AGUP4VQM/BIg2lChPNt2RQ4rRFPCZFaxOgypZ+v3zBu9b
-         85XJM9tmUKusBh4AxWe/74VxXvlIULtlI1kJvSFPxCg7cZQvRRptEXMymVqwZUVgMg/i
-         /ZffQ6pdR520HxlFwLewZ7spsK9YYVaVEDS32xuMFWP1cjqiYxOwR4PWkVmkE2D2c5gK
-         RnbzYetS7PrYgtZ/9I6FYsKrxx57noQzMgbmKu5919Msz3zuNsmvTMffrSvTcHGRfaPU
-         AgA3PoFKrtSH3FQWCd5o2abuQr4DvIe7aQ+LbavFkgfOtF1s9Vyas+Ze1zVo6tWgX9fb
-         I+jQ==
-X-Gm-Message-State: AOAM532L1M8sseMQXyq2LNhsApndvBuEXSVmYGM3Ga9Mt6dCFpf/DQrD
-        dDvlb3vkzBtnK7uQmuQ2m3TYag==
-X-Google-Smtp-Source: ABdhPJzOFte7SFD509WcWquMBljCqJbCjwmI95RIMLhDJ5FRtlRaMsLEHs4ZoY7vKNyHC63290orug==
-X-Received: by 2002:a17:90a:b314:: with SMTP id d20mr7490963pjr.174.1634830856276;
-        Thu, 21 Oct 2021 08:40:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d23sm6260334pjx.4.2021.10.21.08.40.55
+        bh=xJ5yoeTKpp381m0A0j9IUq569vsBu4FBDHNcj5QmsLg=;
+        b=zomDxSxEU850bi/x0NyIiWuzWT+M1tcExQGCTSTgesRU0e1hN40C4vS0T/ZgO8f/3U
+         Ff8mLo4KSBzv4YIxBd0OlaeWTV73kzTwTKBgiDu0weRY9pz+lD7+bJ60O4MG/AY6R5JQ
+         keTnxD2Wva746N5fZ1aSJJ1eYoZxVgXSlxmOS9i9QBq7nlkZSQMYhUcuVlD0lnLZyRUb
+         deQ4LC31FoQhUIl6uQd56Z5Oe4DNAYJjA7rSjLE4GsN7dnQWN4NvXBtp5X4rsP4EZYIZ
+         zdzyHUx/XOOQ6Q58TWUYEFWW0iWhFS0QJ/QdDjuOIfG/ArgZlCMTSjqNC9lsAhyD1C/l
+         P3JQ==
+X-Gm-Message-State: AOAM5332kt/gtAur+uRCPnq8l+hF99ps1PntmdHBy5P6rnmo12j+EC74
+        fbuRgMh0jCD72wDlUYX7d00=
+X-Google-Smtp-Source: ABdhPJyYqdGjN7InIibJbHOv2mrPTdC5jm5p912P0cZuzKrsAgF/qbCPJ4iQwqddY2kt29GcIT4Dsg==
+X-Received: by 2002:a65:6288:: with SMTP id f8mr4953308pgv.81.1634830875072;
+        Thu, 21 Oct 2021 08:41:15 -0700 (PDT)
+Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:f:a76d:53a5:b89f:c2a0])
+        by smtp.gmail.com with ESMTPSA id p9sm6384130pfn.7.2021.10.21.08.41.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:40:55 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, Mike Rapoport <rppt@kernel.org>,
-        Jordy Zomer <jordy@pwning.systems>, linux-mm@kvack.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] mm/secretmem: Avoid letting secretmem_users drop to zero
-Date:   Thu, 21 Oct 2021 08:40:46 -0700
-Message-Id: <20211021154046.880251-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 21 Oct 2021 08:41:14 -0700 (PDT)
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        arnd@arndb.de, brijesh.singh@amd.com, jroedel@suse.de,
+        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
+        rientjes@google.com, pgonda@google.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        saravanand@fb.com, aneesh.kumar@linux.ibm.com, hannes@cmpxchg.org,
+        tj@kernel.org, michael.h.kelley@microsoft.com
+Cc:     linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
+        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
+        dave.hansen@intel.com
+Subject: [PATCH V8 0/9] x86/Hyper-V: Add Hyper-V Isolation VM support(First part)
+Date:   Thu, 21 Oct 2021 11:41:00 -0400
+Message-Id: <20211021154110.3734294-1-ltykernel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1545; h=from:subject; bh=2je4tCGogJs5O0M1a6Owc8LlmksMf1YAds2mqYCwhPk=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhcYn+VjVqfZ1g4oxjbETXXpGe3Wzs/9s8ZXeqpwO1 lxxXjO+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYXGJ/gAKCRCJcvTf3G3AJi/wEA COl1Z2nPbM2KnDN3X3n3/Xxdip10rRV7AOHHMPthSbxZ/5I2fACRIb0D1OjsvkvC7LBj6GmL497HOw afsHGtdAO0GH6BOZWbjcdMCUQUOJny/JG78+aTE1aNnxRzBXkr+zuBhG7fL9evc/8y9W+9p8hcB1kf /NsK8T1B9LDWnMXLdkpkEpn0dVumR0cZPGwCmtHAAJqU1HkAZ45tdTplysKlsZ6zqIMqZr4qcVdllD YyRMYdWal6Z4mTFn0PI7DDgsUynCaISVHfQ7e/2J+YDYhvwrgnaAphPIzssE3lxSN4qhCXQtKYqBOt ekqfk3K1i73BaK5Y6irkW106FV/aPZeldUXza3hJILhdj7ekAl0RMvbN1WNMpjOKJB4rHGJAKI+LJK 4Qaz5ye43sDP4OJgYy79/jzE3HZqtt3rj9eApTaGmNNTTQsko45e7XZLEgv4XvpRpOi34PyJORqyIE Aot/QBbq/dld2vxDkWJ+XDKXp23PFRUTr74bgQXjhIiKZ+HC0/BLzpgy3w8V3Rme+4/UrXJlL2i3KA ZBLrYGGrACDoaZWY+rbJ0Cz9sEUJFP2MOldX5ev8zy+4u+dzMFRaq/BOJ0b+5TJo1yy4iOxhf7r3eX yfRPrjyHHAM/+sT5TeZcCFKsA6CtI1itMszhzVxZJTfSpil+YECIzXq0Xz7g==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry: "refcount_inc() needs to be done before fd_install().
-After fd_install() finishes, the fd can be used by userspace and we can
-have secret data in memory before the refcount_inc().
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-A straightforward mis-use where a user will predict the returned fd
-in another thread before the syscall returns and will use it to store
-secret data is somewhat dubious because such a user just shoots themself
-in the foot.
 
-But a more interesting mis-use would be to close the predicted fd and
-decrement the refcount before the corresponding refcount_inc, this way
-one can briefly drop the refcount to zero while there are other users
-of secretmem."
+Hyper-V provides two kinds of Isolation VMs. VBS(Virtualization-based
+security) and AMD SEV-SNP unenlightened Isolation VMs. This patchset
+is to add support for these Isolation VM support in Linux.
 
-Move fd_install() after refcount_inc().
+The memory of these vms are encrypted and host can't access guest
+memory directly. Hyper-V provides new host visibility hvcall and
+the guest needs to call new hvcall to mark memory visible to host
+before sharing memory with host. For security, all network/storage
+stack memory should not be shared with host and so there is bounce
+buffer requests.
 
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Jordy Zomer <jordy@pwning.systems>
-Cc: linux-mm@kvack.org
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Link: https://lore.kernel.org/lkml/CACT4Y+b1sW6-Hkn8HQYw_SsT7X3tp-CJNh2ci0wG3ZnQz9jjig@mail.gmail.com
-Fixes: 9a436f8ff631 ("PM: hibernate: disable when there are active secretmem users")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- mm/secretmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Vmbus channel ring buffer already plays bounce buffer role because
+all data from/to host needs to copy from/to between the ring buffer
+and IO stack memory. So mark vmbus channel ring buffer visible.
 
-diff --git a/mm/secretmem.c b/mm/secretmem.c
-index 1fea68b8d5a6..924d84ba481f 100644
---- a/mm/secretmem.c
-+++ b/mm/secretmem.c
-@@ -217,8 +217,8 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
- 
- 	file->f_flags |= O_LARGEFILE;
- 
--	fd_install(fd, file);
- 	refcount_inc(&secretmem_users);
-+	fd_install(fd, file);
- 	return fd;
- 
- err_put_fd:
+For SNP isolation VM, guest needs to access the shared memory via
+extra address space which is specified by Hyper-V CPUID HYPERV_CPUID_
+ISOLATION_CONFIG. The access physical address of the shared memory
+should be bounce buffer memory GPA plus with shared_gpa_boundary
+reported by CPUID.
+
+This patchset is rebased on the commit d9abdee of Linux mainline tree
+and plus clean up patch from Borislav Petkov(https://lore.kernel.org/r/
+YWRwxImd9Qcls/Yy@zn.tnic)
+
+Change since v7
+	- Rework sev_es_ghcb_hv_call() and export it for Hyper-V
+	  according to suggestion from Borislav Petkov.
+
+Change since v6
+	- Add hv_set_mem_host_visibility() when CONFIG_HYPERV is no.
+	  Fix compile error.
+	- Add comment to describe __set_memory_enc_pgtable().
+	- Split SEV change into patch "Expose __sev_es_ghcb_hv_call()
+	  to call ghcb hv call out of sev code"
+ 	- Add comment about calling memunmap() in the non-snp IVM.
+
+Change since v5
+	- Replace HVPFN_UP() with PFN_UP() in the __vmbus_establish_gpadl()
+	- Remove unused variable gpadl in the __vmbus_open() and vmbus_close_
+	  internal()
+	- Clean gpadl_handle in the vmbus_teardown_gpadl().
+	- Adjust change layout in the asm/mshyperv.h to make
+	  hv_is_synic_reg(), hv_get_register() and hv_set_register()
+	  ahead of the #include of asm-generic/mshyperv.h
+	- Change vmbus_connection.monitor_pages_pa type from unsigned
+	  long to phys_addr_t
+
+Change since v4:
+	- Hide hv_mark_gpa_visibility() and set memory visibility via
+	  set_memory_encrypted/decrypted() 
+	- Change gpadl handle in netvsc and uio driver from u32 to
+	  struct vmbus_gpadl.
+	- Change vmbus_establish_gpadl()'s gpadl_handle parameter
+	  to vmbus_gpadl data structure.
+	- Remove hv_get_simp(), hv_get_siefp()  hv_get_synint_*()
+	  helper function. Move the logic into hv_get/set_register().
+	- Use scsi_dma_map/unmap() instead of dma_map/unmap_sg() in storvsc driver.
+	- Allocate rx/tx ring buffer via alloc_pages() in Isolation VM  
+
+Change since V3:
+	- Initalize GHCB page in the cpu init callbac.
+	- Change vmbus_teardown_gpadl() parameter in order to
+	  mask the memory back to non-visible to host.
+	- Merge hv_ringbuffer_post_init() into hv_ringbuffer_init().
+	- Keep Hyper-V bounce buffer size as same as AMD SEV VM
+	- Use dma_map_sg() instead of dm_map_page() in the storvsc driver.
+
+Change since V2:
+       - Drop x86_set_memory_enc static call and use platform check
+         in the __set_memory_enc_dec() to run platform callback of
+	 set memory encrypted or decrypted.
+
+Change since V1:
+       - Introduce x86_set_memory_enc static call and so platforms can
+         override __set_memory_enc_dec() with their implementation
+       - Introduce sev_es_ghcb_hv_call_simple() and share code
+         between SEV and Hyper-V code.
+       - Not remap monitor pages in the non-SNP isolation VM
+       - Make swiotlb_init_io_tlb_mem() return error code and return
+         error when dma_map_decrypted() fails.
+
+Change since RFC V4:
+       - Introduce dma map decrypted function to remap bounce buffer
+          and provide dma map decrypted ops for platform to hook callback.        
+       - Split swiotlb and dma map decrypted change into two patches
+       - Replace vstart with vaddr in swiotlb changes.
+
+Change since RFC v3:
+       - Add interface set_memory_decrypted_map() to decrypt memory and
+         map bounce buffer in extra address space
+       - Remove swiotlb remap function and store the remap address
+         returned by set_memory_decrypted_map() in swiotlb mem data structure.
+       - Introduce hv_set_mem_enc() to make code more readable in the __set_memory_enc_dec().
+
+Change since RFC v2:
+       - Remove not UIO driver in Isolation VM patch
+       - Use vmap_pfn() to replace ioremap_page_range function in
+       order to avoid exposing symbol ioremap_page_range() and
+       ioremap_page_range()
+       - Call hv set mem host visibility hvcall in set_memory_encrypted/decrypted()
+       - Enable swiotlb force mode instead of adding Hyper-V dma map/unmap hook
+       - Fix code style
+
+Tianyu Lan (9):
+  x86/hyperv: Initialize GHCB page in Isolation VM
+  x86/hyperv: Initialize shared memory boundary in the Isolation VM.
+  x86/hyperv: Add new hvcall guest address host visibility  support
+  Drivers: hv: vmbus: Mark vmbus ring buffer visible to host in
+    Isolation VM
+  x86/sev-es: Expose sev_es_ghcb_hv_call() to call ghcb hv call out of
+    sev code
+  x86/hyperv: Add Write/Read MSR registers via ghcb page
+  x86/hyperv: Add ghcb hvcall support for SNP VM
+  Drivers: hv: vmbus: Add SNP support for VMbus channel initiate 
+    message
+  Drivers: hv : vmbus: Initialize VMbus ring buffer for Isolation VM
+
+ arch/x86/hyperv/Makefile           |   2 +-
+ arch/x86/hyperv/hv_init.c          |  78 ++++++--
+ arch/x86/hyperv/ivm.c              | 286 +++++++++++++++++++++++++++++
+ arch/x86/include/asm/hyperv-tlfs.h |  17 ++
+ arch/x86/include/asm/mshyperv.h    |  64 +++++--
+ arch/x86/include/asm/sev.h         |  12 ++
+ arch/x86/kernel/cpu/mshyperv.c     |   5 +
+ arch/x86/kernel/sev-shared.c       |  26 ++-
+ arch/x86/kernel/sev.c              |  13 +-
+ arch/x86/mm/pat/set_memory.c       |  23 ++-
+ drivers/hv/Kconfig                 |   1 +
+ drivers/hv/channel.c               |  72 +++++---
+ drivers/hv/connection.c            | 101 +++++++++-
+ drivers/hv/hv.c                    |  82 +++++++--
+ drivers/hv/hv_common.c             |  12 ++
+ drivers/hv/hyperv_vmbus.h          |   2 +
+ drivers/hv/ring_buffer.c           |  55 ++++--
+ drivers/net/hyperv/hyperv_net.h    |   5 +-
+ drivers/net/hyperv/netvsc.c        |  15 +-
+ drivers/uio/uio_hv_generic.c       |  18 +-
+ include/asm-generic/hyperv-tlfs.h  |   1 +
+ include/asm-generic/mshyperv.h     |  20 +-
+ include/linux/hyperv.h             |  12 +-
+ 23 files changed, 783 insertions(+), 139 deletions(-)
+ create mode 100644 arch/x86/hyperv/ivm.c
+
 -- 
-2.30.2
+2.25.1
 
