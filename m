@@ -2,186 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406964360F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAD3436107
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhJUMEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
+        id S230459AbhJUMGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhJUMEU (ORCPT
+        with ESMTP id S230360AbhJUMGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:04:20 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3497C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:02:04 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id z20so148200edc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=HRwjbuU4F9t/w7VvQB9InlKHr6G3/i3RVcXzzddDoX0=;
-        b=AEZfzyvSJXMQfMX4kNXI03kRzNZ8QJ4QMmS1rHd9h2CpdthNCAoaLU/BziWhfOGWdD
-         OCTiFsTy7LNyKUPqmpx0LzmjqUMHl/1QDwYd/kLrPi+ZFPUHgmuN7q7Q0f5YHQrtvuCO
-         PphZq/SFXGclXIi2ymScFa7Lpm2rVugAwuMbOidY98fM/8UayAxHE9CcHYPqah5c5OVm
-         kRqw/NYxjPgaFypYb/gtUsaaExBtDHEkjK4v6u11UIiVpIP8C+l67d3sBlT88Nl/dnTC
-         3btqCtqHj5kLMzBcKbFHDZpMF0pKNo/2JwoezIN+ltYPTgQOKWcKUdK3jkTUp9j0+pEd
-         cb6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=HRwjbuU4F9t/w7VvQB9InlKHr6G3/i3RVcXzzddDoX0=;
-        b=FkXymbDj02Ko+NvoTiN/pww7E1D8on4CWHtesP1LrV1YgQDpYIenOa1Qbs3Abu4wIE
-         4UllL+HGEQDHRGO+qMpH6RRYgdKgnIZmP4Pt6mutKoIC6kzZ89emZAz6+l8Tb40DsqYu
-         UKr1O8ym5zfGQ3yKUjheyMW7+8ip/iPQlr7mYGSAK5NmFg8+9aK+yMuGlnkXisw65Kle
-         bLljjH1theWwgSTjUbWqomiN/z4qMruuKzaC48u+rNBPNyYQV1toVeluAoAI1U+tfVBU
-         lRNIOXoY3Ptx5A8B44qCfAXMxE7l0XaSUoWIHuJlN5Nv3dFbLWxwxZG1C14H17izZKzF
-         5icg==
-X-Gm-Message-State: AOAM530rRS/LiZar66hZ3fkZvyOWCTk57Ac0vw67yVOmFYPQnYzCg+4M
-        gCmb8lGR2InxxJnMqrrVRgyEPE45yDxqm7K/FNaItA==
-X-Google-Smtp-Source: ABdhPJwa8I52SCr+oLebRmHM2gZIxxhWAGJnQC1NdjrPQolEbIa4vzkH2fpFmvgrLJfYB5RMFnu4SIXh1hVB1cZc8Jg=
-X-Received: by 2002:a17:906:c302:: with SMTP id s2mr6646969ejz.499.1634817722950;
- Thu, 21 Oct 2021 05:02:02 -0700 (PDT)
+        Thu, 21 Oct 2021 08:06:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EAAC06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hp2dNCx95JcsISYZ6Sb5wN1lWRmuob1doeRvoZZX2tA=; b=X96b/OUUwWMCB8kedTeH33H346
+        lPb6No4F1NGnCRNH86Cgi/Y0r5FxcGMpVYedGOHrUlCUpOxsKOg77CEdqOd7eW5Zc4sbQBeQ86Nzw
+        vEuh0yYLTOBbyojRruFQh9xIfCn5huHcsmmAzJokZZ5jBGUP8PB4ZRkqHspZRL+oRIJc4xStec0G8
+        Bi7/i6Y2M2wcDztjZP5x+y6wVMQI75lxEZm5CFVDhUk6FHGv0cVz80UEjqTtRhZZK8p3BY8rRf72a
+        yMBGxegEPSuYjtdpWrm1H9GWEHGkHVLfSJ51cAAoToGs+B+wmriX3oaHS2KTEvSr2iJ0+DTmcsKwI
+        aMwybIsQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdWlG-00DFKr-IN; Thu, 21 Oct 2021 12:02:08 +0000
+Date:   Thu, 21 Oct 2021 13:01:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Manjong Lee <mj0123.lee@samsung.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        nanich.lee@samsung.com, yt0928.kim@samsung.com,
+        junho89.kim@samsung.com, jisoo2146.oh@samsung.com
+Subject: Re: [PATCH 1/1] mm: bdi: Initialize bdi_min_ratio when bdi unregister
+Message-ID: <YXFWmo9v65kJWVWC@casper.infradead.org>
+References: <CGME20211021072307epcas1p4aa4388c13e71a66e3e1d5f7ee68b5a7f@epcas1p4.samsung.com>
+ <20211021161942.5983-1-mj0123.lee@samsung.com>
+ <YXFMJJ3u+x34iNy0@infradead.org>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 Oct 2021 17:31:50 +0530
-Message-ID: <CA+G9fYvv6YsRM2Qf7AGMo3nwqkuAt_D1i+6H_ApHk3kmScyDyg@mail.gmail.com>
-Subject: BUG: KASAN: use-after-free in blk_mq_sched_tags_teardown
-To:     linux-block <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org
-Cc:     kashyap.desai@broadcom.com, Hannes Reinecke <hare@suse.de>,
-        ming.lei@redhat.com, John Garry <john.garry@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>, lkft-triage@lists.linaro.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXFMJJ3u+x34iNy0@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following KASAN BUG noticed on linux next 20211021 while booting qemu-arm64
-with allmodconfig.
+On Thu, Oct 21, 2021 at 04:16:52AM -0700, Christoph Hellwig wrote:
+> On Fri, Oct 22, 2021 at 01:19:43AM +0900, Manjong Lee wrote:
+> > Because when sdcard is removed, bdi_min_ratio value will remain.
+> > Currently, the only way to reset bdi_ min_ratio is to reboot.
+> 
+> But bdis that are unregistered are never re-registered.  What is
+> the problem you're trying to solve?
 
-[   77.613151][    T5] BUG: KASAN: use-after-free in
-blk_mq_sched_tags_teardown+0x54/0x140
-[   77.616733][    T5] Read of size 4 at addr ffff000010d9b258 by task
-kworker/0:0/5
-[   77.620107][    T5]
-[   77.621306][    T5] CPU: 0 PID: 5 Comm: kworker/0:0 Tainted: G
-  W       T 5.15.0-rc6-next-20211021 #1
-4d661763b10b5f85042868a82a033ba2fc3e45c4
-[   77.626986][    T5] Hardware name: linux,dummy-virt (DT)
-[   77.629480][    T5] Workqueue: events kobject_delayed_cleanup
-[   77.632269][    T5] Call trace:
-[   77.633853][    T5]  dump_backtrace+0x0/0x340
-[   77.635938][    T5]  show_stack+0x34/0x80
-[   77.637934][    T5]  dump_stack_lvl+0x88/0xd8
-[   77.640070][    T5]  print_address_description.constprop.0+0x38/0x340
-[   77.643034][    T5]  __kasan_report+0x160/0x200
-[   77.645227][    T5]  kasan_report+0x5c/0x180
-[   77.647312][    T5]  __asan_load4+0xc8/0x100
-[   77.649391][    T5]  blk_mq_sched_tags_teardown+0x54/0x140
-[   77.651984][    T5]  blk_mq_exit_sched+0x128/0x180
-[   77.654299][    T5]  __elevator_exit+0x44/0x80
-[   77.656415][    T5]  blk_release_queue+0x138/0x200
-[   77.658710][    T5]  kobject_cleanup+0x144/0x200
-[   77.660971][    T5]  kobject_delayed_cleanup+0x1c/0x40
-[   77.663404][    T5]  process_one_work+0x50c/0x880
-[   77.665684][    T5]  worker_thread+0x3ec/0x740
-[   77.667838][    T5]  kthread+0x220/0x240
-[   77.669740][    T5]  ret_from_fork+0x10/0x20
-[   77.671778][    T5]
-[   77.672974][    T5] Allocated by task 1:
-[   77.674888][    T5]  kasan_save_stack+0x30/0x80
-[   77.677082][    T5]  __kasan_kmalloc+0x78/0x100
-[   77.679235][    T5]  kmem_cache_alloc_trace+0x360/0x400
-[   77.681707][    T5]  add_mtd_blktrans_dev+0x274/0x6c0
-[   77.684079][    T5]  mtdblock_add_mtd+0x110/0x180
-[   77.686333][    T5]  blktrans_notify_add+0x68/0xc0
-[   77.688521][    T5]  add_mtd_device+0x4e8/0x6c0
-[   77.690659][    T5]  mtd_device_parse_register+0x13c/0x3c0
-[   77.693258][    T5]  physmap_flash_probe+0x83c/0x8c0
-[   77.695630][    T5]  platform_probe+0x98/0x140
-[   77.697776][    T5]  really_probe+0x234/0x6c0
-[   77.699913][    T5]  __driver_probe_device+0x144/0x240
-[   77.702307][    T5]  driver_probe_device+0x68/0x140
-[   77.704502][    T5]  __driver_attach+0x1f0/0x280
-[   77.706598][    T5]  bus_for_each_dev+0xdc/0x1c0
-[   77.708669][    T5]  driver_attach+0x40/0x80
-[   77.710621][    T5]  bus_add_driver+0x1c0/0x300
-[   77.712660][    T5]  driver_register+0x170/0x200
-[   77.714749][    T5]  __platform_driver_register+0x50/0x80
-[   77.717148][    T5]  physmap_init+0x5c/0xfc
-[   77.719074][    T5]  do_one_initcall+0xb0/0x2c0
-[   77.721127][    T5]  do_initcalls+0x17c/0x244
-[   77.723109][    T5]  kernel_init_freeable+0x2d4/0x378
-[   77.725376][    T5]  kernel_init+0x34/0x180
-[   77.727304][    T5]  ret_from_fork+0x10/0x20
-[   77.729261][    T5]
-[   77.730367][    T5] Freed by task 1:
-[   77.732009][    T5]  kasan_save_stack+0x30/0x80
-[   77.734083][    T5]  kasan_set_track+0x30/0x80
-[   77.736085][    T5]  kasan_set_free_info+0x34/0x80
-[   77.738261][    T5]  ____kasan_slab_free+0xfc/0x1c0
-[   77.740433][    T5]  __kasan_slab_free+0x3c/0x80
-[   77.742518][    T5]  slab_free_freelist_hook+0x1d4/0x2c0
-[   77.744892][    T5]  kfree+0x160/0x300
-[   77.746618][    T5]  blktrans_dev_release+0x64/0x100
-[   77.748821][    T5]  del_mtd_blktrans_dev+0x1c0/0x240
-[   77.751079][    T5]  mtdblock_remove_dev+0x28/0x80
-[   77.753246][    T5]  blktrans_notify_remove+0xa4/0x140
-[   77.755507][    T5]  del_mtd_device+0x84/0x1c0
-[   77.757541][    T5]  mtd_device_unregister+0x90/0xc0
-[   77.759764][    T5]  physmap_flash_remove+0x58/0x180
-[   77.762012][    T5]  platform_remove+0x48/0xc0
-[   77.764032][    T5]  __device_release_driver+0x1dc/0x340
-[   77.766393][    T5]  driver_detach+0x138/0x200
-[   77.768396][    T5]  bus_remove_driver+0x100/0x180
-[   77.770554][    T5]  driver_unregister+0x64/0xc0
-[   77.772633][    T5]  platform_driver_unregister+0x28/0x80
-[   77.775042][    T5]  physmap_init+0xc4/0xfc
-[   77.776994][    T5]  do_one_initcall+0xb0/0x2c0
-[   77.779028][    T5]  do_initcalls+0x17c/0x244
-[   77.781023][    T5]  kernel_init_freeable+0x2d4/0x378
-[   77.783269][    T5]  kernel_init+0x34/0x180
-[   77.785196][    T5]  ret_from_fork+0x10/0x20
-[   77.787135][    T5]
-[   77.788230][    T5] The buggy address belongs to the object at
-ffff000010d9b200
-[   77.788230][    T5]  which belongs to the cache kmalloc-512 of size 512
-[   77.793866][    T5] The buggy address is located 88 bytes inside of
-[   77.793866][    T5]  512-byte region [ffff000010d9b200, ffff000010d9b400)
-[   77.799169][    T5] The buggy address belongs to the page:
-[   77.801555][    T5] page:fffffc0000436600 refcount:1 mapcount:0
-mapping:0000000000000000 index:0x0 pfn:0x50d98
-[   77.805683][    T5] head:fffffc0000436600 order:2
-compound_mapcount:0 compound_pincount:0
-[   77.809109][    T5] flags:
-0x1fffe0000010200(slab|head|node=0|zone=0|lastcpupid=0xffff)
-[   77.812496][    T5] raw: 01fffe0000010200 fffffc0000436408
-fffffc0000436908 ffff000006c03080
-[   77.816037][    T5] raw: 0000000000000000 00000000000a000a
-00000001ffffffff 0000000000000000
-[   77.819566][    T5] page dumped because: kasan: bad access detected
-[   77.822255][    T5]
-[   77.823357][    T5] Memory state around the buggy address:
-[   77.825747][    T5]  ffff000010d9b100: fc fc fc fc fc fc fc fc fc
-fc fc fc fc fc fc fc
-[   77.829081][    T5]  ffff000010d9b180: fc fc fc fc fc fc fc fc fc
-fc fc fc fc fc fc fc
-[   77.832393][    T5] >ffff000010d9b200: fa fb fb fb fb fb fb fb fb
-fb fb fb fb fb fb fb
-[   77.835714][    T5]                                                     ^
-[   77.838602][    T5]  ffff000010d9b280: fb fb fb fb fb fb fb fb fb
-fb fb fb fb fb fb fb
-[   77.841936][    T5]  ffff000010d9b300: fb fb fb fb fb fb fb fb fb
-fb fb fb fb fb fb fb
-
-full boot log link,
-https://pastebin.com/xL5MYSD6
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
---
-Linaro LKFT
-https://lkft.linaro.org
+The global bdi_min_ratio needs to be adjusted.  See
+bdi_set_min_ratio() in mm/page-writeback.c.
