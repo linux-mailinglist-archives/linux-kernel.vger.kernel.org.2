@@ -2,108 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F38443675B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31667436760
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhJUQPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
+        id S231702AbhJUQRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJUQPF (ORCPT
+        with ESMTP id S229702AbhJUQRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:15:05 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F5EC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:12:49 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so3517211pjl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:12:48 -0700 (PDT)
+        Thu, 21 Oct 2021 12:17:05 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3EAC061764;
+        Thu, 21 Oct 2021 09:14:48 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id n63so1484015oif.7;
+        Thu, 21 Oct 2021 09:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bVa0QlPsmk1S9582aT+D2KdhqOv4MmkayJnl6+1fImU=;
-        b=gvHs+h8DMR0QRBb8oh3QQwHgWfOrO5UCrxtOePcyiPBZKqHJrm5Z/7a83vkdagXqIV
-         CFuuVSDejwuj2p7SL6hMqv9tDwHI74DVztq2wtlB24DIPTAYPk0nBADf+OmdcZJGCMq5
-         nzxj3ujLkNSAVRjaFol9gJAib5ABohl1ARwms=
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WnpfHyH93J5Loag6VXxmRt8ePnyLozQcAJY/KLTa4lA=;
+        b=Tp3Qo1a/Hi08VKavO9uxHeliub1Iugu8/ZaSg4FJ/77Z3ZwojloPrUbVki/QEaqyoI
+         2PTmhIQcgXjF8KRrYCURBsmFQULA2SZtaYQ1XlB02js89jlTHyrUZe2J0nI+ddweaWSK
+         9RxX1yT7ZCmWb4G/H8u+kiIQCz0m+q/y9ensrJzJFQ91vknJEytfe7vtlhp7CrMcgiiV
+         k2+RwT3SGI42nUWxO3V/ic3mi5sgVjJ9GttejtWhvCkaVXB2M56baTAuW7jOr/4pyXeK
+         44FXUlniLijvwBZt6EPCSxUf4OxRWfm3UlqtG/yGtgWD31pqWfBHiob3V/LddTcPipGx
+         SIJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bVa0QlPsmk1S9582aT+D2KdhqOv4MmkayJnl6+1fImU=;
-        b=r7Ve7lXY0K5/Y8RJM7V4od7nFWCIaDWMYRRHTDX5l470hWtkwIrVm4x0AjYyTIMTij
-         JN9nI91upo7LeAueb9Op5TQsqrCOvt8C3A87Fogd2Nks/g35vOsfDq5HknzCtUBUmY2m
-         ICTp4Kfj0eCEqne1j7Z5CJ6+uCD8AENHB2XU5QZWemwPY72gbn70oSLoZoOvZTDIpocE
-         EfnMsuyLC3xg+LaQqLVOws9gEaFAvhschuL5K5+UW2uI9VtnLCMDVaz+zFHK4atRrRok
-         9XuB0CV2BDzQSW4Hxklr6Av38NT0c8d8BsQa8yKxYgO+Ax3oEIVMhUQB/VqhWVrjnDGY
-         Gsaw==
-X-Gm-Message-State: AOAM532EwhsB8XDwIYYcgEnmjajBNe9Aws0xSJYIieVs7fz9U8+/M7kx
-        yElK2pppbgKk4oXFdAVG64DqMQ==
-X-Google-Smtp-Source: ABdhPJzWO9ec41mfE8gVa7DoM1QkoyDBmwyjeVhaCmlSvxR4EETHixc4n+KE2dwyCxRE1rNUYITvSw==
-X-Received: by 2002:a17:902:db0a:b0:13e:e968:e144 with SMTP id m10-20020a170902db0a00b0013ee968e144mr6108237plx.43.1634832768420;
-        Thu, 21 Oct 2021 09:12:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d15sm7846927pfu.12.2021.10.21.09.12.48
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=WnpfHyH93J5Loag6VXxmRt8ePnyLozQcAJY/KLTa4lA=;
+        b=rizcRH7rBgZ0IddvMHo59nznT7bzkp80eozvC+diIFQGq4fUxmMpcR3dPL2BRSgswb
+         drwjmUxHWpTsYEN+2YNJMJsiEZRd1YozjFk//gX90Jnha46NS2hJOdrvwq/f1KrOdG6D
+         YgV1rUfcuJmBcb7vOmdUr6qqOVUwryplcEG3kR5GYyedkxt1nKWm0aqu8BK8bapITHVN
+         NAqtqhVIg5ChfoOuMVqe76SWEET8jzqVe12Xg1cARJWEkylvBycEigTyK+wMb6fTdURU
+         M418YpKqtUItZRB4xXCsS/u2oWrzP2lImAh3bw8BBdCuXtnFkqC1PmaOxAH4oc2MNU8h
+         NapQ==
+X-Gm-Message-State: AOAM53046W+6W0Kfh2siI7pc912itUKhP3hoVADUaFWNQ/MUmpMvGDw7
+        TWbGoim3bV+BFEX2pFUIi6o=
+X-Google-Smtp-Source: ABdhPJyHhWgMHKdAJqTRrtd50AmQRsgDUCW+a1v13OdHKAZ2iE3XRWT9QFD0+TAnFS3eLOE971nL2Q==
+X-Received: by 2002:a05:6808:bc5:: with SMTP id o5mr4975111oik.129.1634832888228;
+        Thu, 21 Oct 2021 09:14:48 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e59sm1177192ote.14.2021.10.21.09.14.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 09:12:48 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 09:12:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Miller <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: Re: [PATCH 08/20] signal/sparc: In setup_tsb_params convert open
- coded BUG into BUG
-Message-ID: <202110210910.7861F4041@keescook>
-References: <87y26nmwkb.fsf@disp2133>
- <20211020174406.17889-8-ebiederm@xmission.com>
+        Thu, 21 Oct 2021 09:14:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jean Delvare <jdelvare@suse.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        "David T . Wilson" <david.wilson@nasa.gov>
+Subject: [PATCH v2 1/3] hwmon: (lm90) Introduce flag indicating extended temperature support
+Date:   Thu, 21 Oct 2021 09:14:42 -0700
+Message-Id: <20211021161444.3145112-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020174406.17889-8-ebiederm@xmission.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:43:54PM -0500, Eric W. Biederman wrote:
-> The function setup_tsb_params has exactly one caller tsb_grow.  The
-> function tsb_grow passes in a tsb_bytes value that is between 8192 and
-> 1048576 inclusive, and is guaranteed to be a power of 2.  The function
-> setup_tsb_params verifies this property with a switch statement and
-> then prints an error and causes the task to exit if this is not true.
-> 
-> In practice that print statement can never be reached because tsb_grow
-> never passes in a bad tsb_size.  So if tsb_size ever gets a bad value
-> that is a kernel bug.
-> 
-> So replace the do_exit which is effectively an open coded version of
-> BUG() with an actuall call to BUG().  Making it clearer that this
-> is a case that can never, and should never happen.
-> 
-> Cc: David Miller <davem@davemloft.net>
-> Cc: sparclinux@vger.kernel.org
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->  arch/sparc/mm/tsb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/sparc/mm/tsb.c b/arch/sparc/mm/tsb.c
-> index 0dce4b7ff73e..912205787161 100644
-> --- a/arch/sparc/mm/tsb.c
-> +++ b/arch/sparc/mm/tsb.c
-> @@ -266,7 +266,7 @@ static void setup_tsb_params(struct mm_struct *mm, unsigned long tsb_idx, unsign
->  	default:
->  		printk(KERN_ERR "TSB[%s:%d]: Impossible TSB size %lu, killing process.\n",
->  		       current->comm, current->pid, tsb_bytes);
-> -		do_exit(SIGSEGV);
-> +		BUG();
->  	}
->  	tte |= pte_sz_bits(page_sz);
+A flag indicating extended temperature support makes it easier
+to add support for additional chips with this functionality.
 
-Given the other uses of BUG() here, this seems okay.
+Cc: David T. Wilson <david.wilson@nasa.gov>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v2: Added patch
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+ drivers/hwmon/lm90.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
+index 567b7c521f38..1a1d7bfcb30b 100644
+--- a/drivers/hwmon/lm90.c
++++ b/drivers/hwmon/lm90.c
+@@ -182,7 +182,8 @@ enum chips { lm90, adm1032, lm99, lm86, max6657, max6659, adt7461, max6680,
+ #define LM90_HAVE_EMERGENCY_ALARM (1 << 5)/* emergency alarm		*/
+ #define LM90_HAVE_TEMP3		(1 << 6) /* 3rd temperature sensor	*/
+ #define LM90_HAVE_BROKEN_ALERT	(1 << 7) /* Broken alert		*/
+-#define LM90_PAUSE_FOR_CONFIG	(1 << 8) /* Pause conversion for config	*/
++#define LM90_HAVE_EXTENDED_TEMP	(1 << 8) /* extended temperature support*/
++#define LM90_PAUSE_FOR_CONFIG	(1 << 9) /* Pause conversion for config	*/
+ 
+ /* LM90 status */
+ #define LM90_STATUS_LTHRM	(1 << 0) /* local THERM limit tripped */
+@@ -350,7 +351,7 @@ static const struct lm90_params lm90_params[] = {
+ 	},
+ 	[adt7461] = {
+ 		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT
+-		  | LM90_HAVE_BROKEN_ALERT,
++		  | LM90_HAVE_BROKEN_ALERT | LM90_HAVE_EXTENDED_TEMP,
+ 		.alert_alarms = 0x7c,
+ 		.max_convrate = 10,
+ 	},
+@@ -422,7 +423,7 @@ static const struct lm90_params lm90_params[] = {
+ 	},
+ 	[tmp451] = {
+ 		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT
+-		  | LM90_HAVE_BROKEN_ALERT,
++		  | LM90_HAVE_BROKEN_ALERT | LM90_HAVE_EXTENDED_TEMP,
+ 		.alert_alarms = 0x7c,
+ 		.max_convrate = 9,
+ 		.reg_local_ext = TMP451_REG_R_LOCAL_TEMPL,
+@@ -998,7 +999,7 @@ static int lm90_get_temp11(struct lm90_data *data, int index)
+ 	s16 temp11 = data->temp11[index];
+ 	int temp;
+ 
+-	if (data->kind == adt7461 || data->kind == tmp451)
++	if (data->flags & LM90_HAVE_EXTENDED_TEMP)
+ 		temp = temp_from_u16_adt7461(data, temp11);
+ 	else if (data->kind == max6646)
+ 		temp = temp_from_u16(temp11);
+@@ -1035,7 +1036,7 @@ static int lm90_set_temp11(struct lm90_data *data, int index, long val)
+ 		val -= 16000;
+ 	}
+ 
+-	if (data->kind == adt7461 || data->kind == tmp451)
++	if (data->flags & LM90_HAVE_EXTENDED_TEMP)
+ 		data->temp11[index] = temp_to_u16_adt7461(data, val);
+ 	else if (data->kind == max6646)
+ 		data->temp11[index] = temp_to_u8(val) << 8;
+@@ -1062,7 +1063,7 @@ static int lm90_get_temp8(struct lm90_data *data, int index)
+ 	s8 temp8 = data->temp8[index];
+ 	int temp;
+ 
+-	if (data->kind == adt7461 || data->kind == tmp451)
++	if (data->flags & LM90_HAVE_EXTENDED_TEMP)
+ 		temp = temp_from_u8_adt7461(data, temp8);
+ 	else if (data->kind == max6646)
+ 		temp = temp_from_u8(temp8);
+@@ -1098,7 +1099,7 @@ static int lm90_set_temp8(struct lm90_data *data, int index, long val)
+ 		val -= 16000;
+ 	}
+ 
+-	if (data->kind == adt7461 || data->kind == tmp451)
++	if (data->flags & LM90_HAVE_EXTENDED_TEMP)
+ 		data->temp8[index] = temp_to_u8_adt7461(data, val);
+ 	else if (data->kind == max6646)
+ 		data->temp8[index] = temp_to_u8(val);
+@@ -1116,7 +1117,7 @@ static int lm90_get_temphyst(struct lm90_data *data, int index)
+ {
+ 	int temp;
+ 
+-	if (data->kind == adt7461 || data->kind == tmp451)
++	if (data->flags & LM90_HAVE_EXTENDED_TEMP)
+ 		temp = temp_from_u8_adt7461(data, data->temp8[index]);
+ 	else if (data->kind == max6646)
+ 		temp = temp_from_u8(data->temp8[index]);
+@@ -1136,7 +1137,7 @@ static int lm90_set_temphyst(struct lm90_data *data, long val)
+ 	int temp;
+ 	int err;
+ 
+-	if (data->kind == adt7461 || data->kind == tmp451)
++	if (data->flags & LM90_HAVE_EXTENDED_TEMP)
+ 		temp = temp_from_u8_adt7461(data, data->temp8[LOCAL_CRIT]);
+ 	else if (data->kind == max6646)
+ 		temp = temp_from_u8(data->temp8[LOCAL_CRIT]);
+@@ -1685,7 +1686,7 @@ static int lm90_init_client(struct i2c_client *client, struct lm90_data *data)
+ 	lm90_set_convrate(client, data, 500); /* 500ms; 2Hz conversion rate */
+ 
+ 	/* Check Temperature Range Select */
+-	if (data->kind == adt7461 || data->kind == tmp451) {
++	if (data->flags & LM90_HAVE_EXTENDED_TEMP) {
+ 		if (config & 0x04)
+ 			data->flags |= LM90_FLAG_ADT7461_EXT;
+ 	}
 -- 
-Kees Cook
+2.33.0
+
