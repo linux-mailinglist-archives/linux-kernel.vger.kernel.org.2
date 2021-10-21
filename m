@@ -2,123 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF24435EBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B46E435EC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhJUKMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:12:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:40852 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhJUKMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:12:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8456CED1;
-        Thu, 21 Oct 2021 03:09:51 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4A143F694;
-        Thu, 21 Oct 2021 03:09:49 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 11:09:44 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v13 09/10] PCI: kirin: fix poweroff sequence
-Message-ID: <20211021100944.GA11904@lpieralisi>
-References: <cover.1634539769.git.mchehab+huawei@kernel.org>
- <8116a4ddaaeda8dd056e80fa0ee506c5c6f42ca7.1634539769.git.mchehab+huawei@kernel.org>
- <20211018102127.GD17152@lpieralisi>
- <20211018153716.0370a66c@sal.lan>
- <20211019094048.GA24481@lpieralisi>
+        id S230181AbhJUKOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:14:38 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33848
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229567AbhJUKOg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 06:14:36 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id AB9D740019
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:12:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634811139;
+        bh=21AS2FEP/OzKAvU7EfAR5y5AIciFZnKJqHdmh3txaKU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=kPS0ezkhCNCrdc8oLYG0hNVEqBfPkCZPzCxbdd2bv1zOxw1uklkMxmq8Jcnb3A8Ly
+         Fa4FOMlxdX8WCQiOARGSeFoGqLNQsye5RiD3lzUMTy6FKdoEoenV+Elf5RrjwR0bID
+         gJfDkjEWHoKZFPx680NAo0biO9zBWSHY6OvbEdSnuEd3QDsKMGVQYCEiC0N6/7g+Ie
+         TNhc6PtFY/lsuewqc9PXEkLMyNvXEQVoIszNhvqMmtgVUPVFtJkIh0cVg7fj6xE+HK
+         HwXwfJZHjJaO0dwk/RroDfyt42Zub31si0PdQwnyoMfLZis/IwKYAnqQ5WI1cIMQBN
+         bXiLK4ov5rNSQ==
+Received: by mail-lf1-f70.google.com with SMTP id bp4-20020a056512158400b003fd96a37f3bso29420lfb.21
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 03:12:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=21AS2FEP/OzKAvU7EfAR5y5AIciFZnKJqHdmh3txaKU=;
+        b=7xABYf7jA2q1HDHtUFwpLgGdfP3nYCVzLrdJxsoejHWwem7er92HX3WYr7xgWJEnCI
+         QZj2ZwLOMX8g0mQJ66MGDrOLdh9b6ewUm9YOn3leNUVaZ2l4l535qVxfs2iDMoAdJ74V
+         GRLud1+M6sSvVGb5XqcqpQPHIYMmSm0tcciho2y9zAZgTLN6Pliluj56+SUAXo362Tja
+         ky2+7mu6Tapf3HazkDV77rPbL5/EoUVMhYefX19eFyPuiSzJgTCS0ISs1+244g344Cm0
+         rNdNtuBxTr0sy0xQJB5U7EqzWmWemh4IhK5LyQUjrh/OF9mrc20ngpF1Aph87fAESMSp
+         9gPQ==
+X-Gm-Message-State: AOAM533KyW79Xt/W0SWGeHW/UOVzb7WO8JwgofneV3QnPFXlBycbx+4B
+        AQsbqDmH+Jr7S6vSjgW+rV3+hk6+tUe5rmgoLOUcHFCb8kN6usWG4aKHUcZou4BdUfpB3+DL9r/
+        IyQnaAqST0iKUU7cbItCqEUPhP3F3BBo1FKqTkS0fkQ==
+X-Received: by 2002:a2e:750e:: with SMTP id q14mr4978179ljc.338.1634811138964;
+        Thu, 21 Oct 2021 03:12:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy+SlIK6fBGyzlDr6pIF6Po5nSccW4yTx8qBknyO8d7i0iNeVBcnz0u/NSa8Zxr5Tqxq9gqXg==
+X-Received: by 2002:a2e:750e:: with SMTP id q14mr4978158ljc.338.1634811138705;
+        Thu, 21 Oct 2021 03:12:18 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id h1sm420052lfj.125.2021.10.21.03.12.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 03:12:18 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] mfd/regulator: dt-bindings: max77686: convert to
+ dtschema
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211008123552.191384-1-krzysztof.kozlowski@canonical.com>
+ <YXE65SBhGFHP54L6@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <85c56cfb-64d9-a840-c2e4-eea47461188d@canonical.com>
+Date:   Thu, 21 Oct 2021 12:12:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019094048.GA24481@lpieralisi>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YXE65SBhGFHP54L6@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 10:40:48AM +0100, Lorenzo Pieralisi wrote:
-> On Mon, Oct 18, 2021 at 03:37:16PM +0100, Mauro Carvalho Chehab wrote:
-> > Em Mon, 18 Oct 2021 11:21:27 +0100
-> > Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
-> > 
-> > > On Mon, Oct 18, 2021 at 08:07:34AM +0100, Mauro Carvalho Chehab wrote:
-> > > > This driver currently doesn't call dw_pcie_host_deinit()
-> > > > at the .remove() callback. This can cause an OOPS if the driver
-> > > > is unbound.  
-> > > 
-> > > This looks like a fix, it has to be marked as such.
-> > 
-> > Well, without patch 10/10, the .remove() ops won't be called,
-> > so, it is not really a fix, but I can surely add a c/c
-> > stable@vger.kernel.org and add a Fixes: tag here.
+On 21/10/2021 12:03, Lee Jones wrote:
+> On Fri, 08 Oct 2021, Krzysztof Kozlowski wrote:
 > 
-> You have a point - unless we send patch 10 to stable as well I
-> would not tag it then.
+>> Hi,
+>>
+>> Convert Maxim MAX77686 bindings to dtschema.  The MFD patch (2/2)
+>> depends on regulator, so this should go via one tree, for example MFD or DT.
+>>
+>> Changes since v1:
+>> =================
+>> See individual patches.
+>>
+>> Clock bindings
+>> ==============
+>> Existing Documentation/devicetree/bindings/clock/maxim,max77686.txt are
+>> left untouched. The file is still used/referenced by other Maxim
+>> devices: MAX77620 and MAX77802.
+>>
+>> Best regards,
+>> Krzysztof
+>>
+>> Krzysztof Kozlowski (2):
+>>   regulator: dt-bindings: maxim,max77686: convert to dtschema
+>>   dt-bindings: mfd: maxim,max77686: convert to dtschema
+>>
+>>  .../devicetree/bindings/mfd/max77686.txt      |  26 ----
+>>  .../bindings/mfd/maxim,max77686.yaml          | 132 ++++++++++++++++++
+>>  .../bindings/regulator/max77686.txt           |  71 ----------
+>>  .../bindings/regulator/maxim,max77686.yaml    |  83 +++++++++++
+>>  MAINTAINERS                                   |   2 +-
+>>  5 files changed, 216 insertions(+), 98 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/mfd/max77686.txt
+>>  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
+>>  delete mode 100644 Documentation/devicetree/bindings/regulator/max77686.txt
+>>  create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
 > 
-> > > > While here, add a poweroff function, in order to abstract
-> > > > between the internal and external PHY logic.
-> > > > 
-> > > > Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
-> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > > ---
-> > > > 
-> > > > See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
-> > > > 
-> > > >  drivers/pci/controller/dwc/pcie-kirin.c | 30 ++++++++++++++++---------
-> > > >  1 file changed, 20 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> > > > index b17a194cf78d..ffc63d12f8ed 100644
-> > > > --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> > > > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> > > > @@ -680,6 +680,23 @@ static const struct dw_pcie_host_ops kirin_pcie_host_ops = {
-> > > >  	.host_init = kirin_pcie_host_init,
-> > > >  };
-> > > >  
-> > > > +static int kirin_pcie_power_off(struct kirin_pcie *kirin_pcie)
-> > > > +{
-> > > > +	int i;
-> > > > +
-> > > > +	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
-> > > > +		return hi3660_pcie_phy_power_off(kirin_pcie);
-> > > > +
-> > > > +	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
-> > > > +		gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
-> > > > +	}  
-> > > 
-> > > It looks like you are adding functionality here (ie gpio), not
-> > > just wrapping common code in a function.
-> > 
-> > It is just reverting the power on logic there.
-> 
-> What I am saying is that executing:
-> 
-> for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++)
-> 	gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
-> 
-> is an addition to what current code does AFAICS (ie you are not just
-> moving code into a function - kirin_pcie_power_off(), you are adding
-> to it), it is a logical change that belongs in a separate patch.
-> 
-> There are two logical changes:
-> 
-> - Adding dw_pcie_host_deinit()
-> - Moving PHY power off code into kirin_pcie_power_off() (and adding
->   gpio handling in it)
-> 
-> That's what I read from the diffstat, please correct me if I am wrong.
+> Does this need a PR too?
 
-Hi Mauro,
+No, I hope not. The regulator patch was acked by Mark and Rob, so you
+can freely take both of these. I am not aware of any conflicts or other
+dependencies.
 
-any comment on the above ? It is the last question I have before
-merging the series, please let me know.
 
-Thanks,
-Lorenzo
+Best regards,
+Krzysztof
