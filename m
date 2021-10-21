@@ -2,124 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709C7436A9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1021436AA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhJUSgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:36:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38447 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232041AbhJUSgE (ORCPT
+        id S231502AbhJUSjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230020AbhJUSjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:36:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634841227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R8NRWj30fOIwdXURO/nuW9fLSSQ/mcQoafJ2KYOfKWQ=;
-        b=ZOgyUUau73mGj6K42kSY4lgpuM7t2tO71fufgxJ76KvV3tVme55YDN3fl246WL1hC6F+yG
-        2wKOqVqLGuuJ3oB/P98Wa7rB/9uG2VNtQiHTDsIi7Fd7lBILnHJJ//Ps5N2jaQXN/oRUzl
-        iElO1frac4CmdOPaYvU/OKe+nVC0r5Q=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-140-NP6zfdehN1yEQtEIzbyDww-1; Thu, 21 Oct 2021 14:33:46 -0400
-X-MC-Unique: NP6zfdehN1yEQtEIzbyDww-1
-Received: by mail-ed1-f70.google.com with SMTP id p20-20020a50cd94000000b003db23619472so1225891edi.19
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:33:46 -0700 (PDT)
+        Thu, 21 Oct 2021 14:39:04 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02ECC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:36:47 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id d13so1614604ljg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KFwenL5XcnRNpptcSA2cgOLSm+ikdKJzsWm5PgT8Ins=;
+        b=OJyAvfRJ5jZ79JXyHWkRZUCQ6cXZuVSfYnKgESe+bsyL3wQqD44nkm0/2lfr5lcyFf
+         VBb3ct4DjtXApDhsHmiFbZIHXzj9yPNKlyqvtrQP5QKGGBzf+zqOAtdOq7ld5PYn0Y1c
+         YsXdIBJEDq1Xo89E6wOO3IoCxmPrioKOp4gyOTLLNYSc/n2tmPwxilfBXEsL1/E9n9t1
+         7E9oP7oOqWi4oLQCtK3dS7vc/N4iJhAgISb6/VYI4OSFChBnOFPYVnRLhdIJUn9zPAGU
+         PWHJW6RifcIdWE2vOhl1qflAZ7Zt7nPeVLqK9gme/u+y2fp8GzTxELWCpxwEyaO1xdBv
+         lNxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=R8NRWj30fOIwdXURO/nuW9fLSSQ/mcQoafJ2KYOfKWQ=;
-        b=Qt3y6o46C3rgNmnWlW+9h+hUSvdI0QxRgMH0SMDXy86LJ4jkBgKG3yiAMbLEpVfHVe
-         WAO5kkFZjgVZ577h33vJ3+FWyOZ0cSx1OqmNpstv0CiFyYk5lFjeSyjUZjNnKeqFWppk
-         r5bIoMqfuHrF45CzdG6QU/6pTIrchxI4XhEeMvSXHwaIKM+VU/RbkyxNslM6Xx2L2ZV1
-         GuJi3DBkQTvJfi3b8BNlRNiVR26F7E+h4RGmVc+5iC40eNx12RpaUM8/A6GE+jb5uy78
-         km2NFrsm8U6MhOxXZlKWx9XLggQkGodRk9NoWIUpJhD0R8uv0X14+uHLIjoYC/xDrvfx
-         TvnQ==
-X-Gm-Message-State: AOAM533SmY1rm1U0FHl2FjJXKk3DJUGmOcpOI9O8e4kjb0KZJU7b35jv
-        gnKbk9jIuwsuewFOTBjIxodvxGbA8HJ9A4fFLnPGHEj6UrheZ8noRzWnplU0bhKHmIVDu+X7Pti
-        qMu7duquf2u61u165I1DQcSgy
-X-Received: by 2002:a17:906:68c2:: with SMTP id y2mr9391433ejr.18.1634841225098;
-        Thu, 21 Oct 2021 11:33:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyknNQQUbRgcsCMUK3RfAdm8Suvp8umEPd+1xlwOxyoSPUMx59PDqppM0w9G26bWiWym3jf2g==
-X-Received: by 2002:a17:906:68c2:: with SMTP id y2mr9391419ejr.18.1634841224958;
-        Thu, 21 Oct 2021 11:33:44 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id z4sm3756571edd.46.2021.10.21.11.33.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 11:33:44 -0700 (PDT)
-Message-ID: <1e99ab2b-c5c3-49c9-18c3-1f103c4dbe85@redhat.com>
-Date:   Thu, 21 Oct 2021 20:33:43 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KFwenL5XcnRNpptcSA2cgOLSm+ikdKJzsWm5PgT8Ins=;
+        b=GklxvQMxPtid7/BAxZ9uUrmDQWxn9f2CsLkOm7NR+XtZNZDYkimDl2Oj/IdVcUYQVv
+         AG0vQvlj1DmP4UlNzlC0HuKEy/4WPwtfa169I3eadrZzBvi8yMyL6IX5t1bQkgmGZiC8
+         YwXdz9icbmWZ9jzKdEIx2OQRBpv8NO+2k7vhZ9fVdNJ0x85VwFbFlDR6Jl1kLGz7uV4w
+         RloAmE+Amc//Q+gWgOHjil7JHW5YqnaLpVXR277jkiVf1tZyQuIkIJ+ptZl3qrErYWOi
+         HtFBOojo3OVYjkf69Gk0XRP0GhtGSJD2dBk521pdHq9gYH+nucyOmt/ZSaCebqnuS0zK
+         rPVA==
+X-Gm-Message-State: AOAM5302x0dnS3brBDgJnI1BpyzIkIcdkC3bYOkc2kdvrF5YJ4CR6lCI
+        8nZDjnHmuh4DEzHGINoGgA2/Cx/N8oKB6CSNT3lk0A==
+X-Google-Smtp-Source: ABdhPJwGOsMz5QFRlmpb6JZFAIgHv9elGXxwNYz7PZKIiQHm8PfGg/+RNbZ53CiJ/VwESknIgbQm0+6A0ALPFlGANwg=
+X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr7921763ljp.367.1634841406007;
+ Thu, 21 Oct 2021 11:36:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 0/3] platform/surface: aggregator: Add support for Surface
- Laptop Studio
-Content-Language: en-US
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Mark Gross <markgross@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        platform-driver-x86@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211021130904.862610-1-luzmaximilian@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211021130904.862610-1-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
+ <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
+ <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
+ <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
+ <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
+ <CAJZ5v0jQM3VDy_U8TiC3601ivSYVXyT5jJVjLt8qyMWE49zOeg@mail.gmail.com>
+ <CAPDyKFouHn95Lwgx+PbK9itQP13U70ZiZbDr3jQd41KsvXMtqQ@mail.gmail.com> <CAJZ5v0hjdpyFGF5zPUX8RUaVW7Tk+qr9RwbGt-7C0Wxyx03TLg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hjdpyFGF5zPUX8RUaVW7Tk+qr9RwbGt-7C0Wxyx03TLg@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 21 Oct 2021 20:36:08 +0200
+Message-ID: <CAPDyKFpts0t=dgNzktnv7vOjRepHnitKjgU=OJKxFkwr-q0c2Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+[...]
 
-On 10/21/21 15:09, Maximilian Luz wrote:
-> This series adds Surface Aggregator Module (SAM) support for the new
-> Surface Laptop Studio (SLS).
-> 
-> This is mostly straight-forward addition of devices to the Surface
-> Aggregator registry, but the Surface HID driver needs a couple of small
-> changes. Specifically, we need to allow it to probe against SAM devices
-> with target ID 1 and also need to use the corresponding registry for
-> those.
-> 
-> I hope it's okay that I've CCed stable to get these included in v5.14+
-> stable kernels. The changes are fairly small and enable keyboard and
-> touchpad on the SLS. Most other things (except touch) should already
-> work well on the latest stable kernels, so back-porting this series
-> would make the SLS a usable device on those.
+> > > > > >
+> > > > > > > Additionally, since find_deepest_state() is being called for
+> > > > > > > cpuidle_enter_s2idle() too, we would need to treat the new
+> > > > > > > CPUIDLE_STATE_DISABLED_ flag in a special way, right?
+> > > > > >
+> > > > > > No, it already checks "disabled".
+> > > > >
+> > > > > Yes, but that would be wrong.
+> > > >
+> > > > Hmmm.
+> > > >
+> > > > > The use case I want to support, for cpuidle-psci, is to allow all idle
+> > > > > states in suspend-to-idle,
+> > > >
+> > > > So does PM-runtime work in suspend-to-idle?  How?
+> > > >
+> > > > > but prevent those that rely on runtime PM
+> > > > > (after it has been disabled) for the regular idle path.
+> > > >
+> > > > Do you have a special suspend-to-idle handling of those states that
+> > > > doesn't require PM-runtime?
+> > >
+> > > Regardless, pausing cpuidle in the suspend-to-idle path simply doesn't
+> > > make sense at all, so this needs to be taken care of in the first
+> > > place.
+> >
+> > Right, I do agree, don't get me wrong. But, do we really want to treat
+> > s2-to-idle differently, compared to s2-to-ram in regards to this?
+> >
+> > Wouldn't it be a lot easier to let cpuidle drivers to opt-out for
+> > cpuidle_pause|resume(), no matter whether it's for s2-to-idle or
+> > s2-to-ram?
+>
+> I don't think so.
+>
+> Suspend-to-idle resume cpuidle after pausing it which is just plain
+> confusing and waste of energy and the fact that the system-wide
+> suspend flow interferes with using PM-runtime for implementing cpuidle
+> callbacks at the low level really is an orthogonal problem.
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+It's certainly an orthogonal problem, I agree. However, trying to
+solve it in two different ways, may not really be worth the effort, in
+my opinion.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+As I kind of pointed out in the earlier reply, I am not sure there are
+any other relatively easy solutions available, to fix the problem for
+runtime PM based cpuidle drivers. We probably need to call
+cpuidle_pause() (or similar) in some way.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+>
+> > >
+> > > The problem with PM-runtime being unavailable after dpm_suspend()
+> > > needs to be addressed in a different way IMO, because it only affects
+> > > one specific use case.
+> >
+> > It's one specific case so far, but we have the riscv driver on its
+> > way, which would suffer from the same problem.
+>
+> So perhaps they should be advised about this issue.
 
-Regards,
+Yes, I will let them know - and hopefully I will soon also be able to
+provide them with a fix. :-)
 
-Hans
+>
+> > Anyway, an option is to figure out what platforms and cpuidle drivers,
+> > that really needs cpuidle_pause|resume() at this point and make an
+> > opt-in solution instead.
+>
+> None of them need to pause cpuidle for suspend-to-idle AFAICS.
 
+I assume so too, otherwise things would have been broken when
+cpuidle_resume() is called in s2idle_enter(). But, it's still a bit
+unclear.
 
+>
+> Some may want it in the non-s2idle suspend path, but I'm not sure
+> about the exact point where cpuidle needs to be paused in this case.
+> Possibly before offlining the nonboot CPUs.
 
-> 
-> Maximilian Luz (3):
->   platform/surface: aggregator_registry: Add support for Surface Laptop
->     Studio
->   HID: surface-hid: Use correct event registry for managing HID events
->   HID: surface-hid: Allow driver matching for target ID 1 devices
-> 
->  drivers/hid/surface-hid/surface_hid.c         |  4 +-
->  .../surface/surface_aggregator_registry.c     | 54 +++++++++++++++++++
->  include/linux/surface_aggregator/controller.h |  4 +-
->  3 files changed, 58 insertions(+), 4 deletions(-)
-> 
+Okay.
 
+Note that, I assume it would be okay to also pause cpuidle a bit
+earlier in these cases, like in dpm_suspend() for example. The point
+is, it's really a limited short period of time for when cpuidle would
+be paused, so I doubt it would have any impact on the consumed energy.
+Right?
+
+>
+> > This could then be used by runtime PM based
+> > cpuidle drivers as well. Would that be a way forward?
+>
+> The PM-runtime case should be addressed directly IMO, we only need to
+> figure out how to do that.
+
+If you have any other suggestions, I am listening. :-)
+
+>
+> I'm wondering how you are dealing with the case when user space
+> prevents pd_dev from suspending via sysfs, for that matter.
+
+That should work fine during runtime - because runtime PM is enabled
+for the device.
+
+Kind regards
+Uffe
