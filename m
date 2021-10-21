@@ -2,197 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7374362BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBC74362C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhJUNXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:23:15 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4017 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhJUNXJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:23:09 -0400
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HZp0m2HLZz67wr1;
-        Thu, 21 Oct 2021 21:16:56 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 15:20:49 +0200
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 14:20:48 +0100
-Subject: Re: BUG: KASAN: use-after-free in blk_mq_sched_tags_teardown
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-CC:     linux-block <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
-        <lkft-triage@lists.linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh R <vigneshr@ti.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-References: <CA+G9fYvv6YsRM2Qf7AGMo3nwqkuAt_D1i+6H_ApHk3kmScyDyg@mail.gmail.com>
- <CAK8P3a21U0jzMOUWp1rhrNrD3szxxrwo59SBYG89xpYJGXteRA@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <aae28ac1-aa3f-3602-8732-9b3a87e9cdf0@huawei.com>
-Date:   Thu, 21 Oct 2021 14:20:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a21U0jzMOUWp1rhrNrD3szxxrwo59SBYG89xpYJGXteRA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S231408AbhJUNXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:23:41 -0400
+Received: from mail-co1nam11on2086.outbound.protection.outlook.com ([40.107.220.86]:16960
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230379AbhJUNXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:23:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b5NrDhimFxe2SRq1uxylyiCQOsetQBWaubu9eo6BNotvUvGvmMgcofrku+3qcYc9t0xPjqT3iSpJSrkvXoeAKyuCrXqfkafH6NsS3FBaXe9is4UWYEIlYIfpo4gP77ulVa4cH1b91XSi3OGQ907v3iyqD0MUqujytBtpGWfFZ321Dulqm9Arn5GCG/elboIDzgaQIx94E+1BSydOFoE7Pnzuo4uJZb3XkYXsmib5TEnygBRv5/kjZSardeMRx9CsfDh3HeUC3sQEtJJrFSYje9JDNfvPXo5zETMxqP2n5VQVFFJc3s751hEnzDA37qFH2k9dac9lNOqjQBzoqoqIvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6V57evmdGS8eiGYU3AIFpYLGt/qYelnmDajY2inyeew=;
+ b=BN+1prkPEGICPtMS0eJH7ZXNRGMSZ9j0k2KuiYoLLdgrLrPggHeLXSX2LJeLJbE3oYT+VTBSIjXj3iy6GgPxEibtfMKVWTrGeJtoT8thiuAtJ7C3CUD6KuHyzdYHpcInRTMszie3yYHF3qR2ZYOT7smx9py5UkQEPMRMPme9M7bQGDUORxl6ViE1Azd0oXAAax3bRpo7WxKkLZyCzMgmdL75jry5M+kfyraFqCodVsBrSCxZQ5GGNc85vIOGmHNhSBbWgdp+aD2yPDKkIl/PdA5E/70KJvHmFX6pm55KlRI54NA+CAf6GXxKF6zcvptP+9lzcgujLSu8/J2Q+ItV+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6V57evmdGS8eiGYU3AIFpYLGt/qYelnmDajY2inyeew=;
+ b=N5w0q76V2oF8TbwbEbx4jA+2bIYPhStalDJJEnfQVfHncpZvXH0RINZTTBWkPXIirxtJMK4RUDgdtBYzZXI3V9wK7Rsn32Kmhk0KMAS/eSb706kBbXE6p8D7/aM5P6iP22FJra6AxASE0ISEmPW09WxooceVlOagQfllTNGdIXc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM4PR12MB5072.namprd12.prod.outlook.com (2603:10b6:5:38b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Thu, 21 Oct
+ 2021 13:21:19 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9%7]) with mapi id 15.20.4628.016; Thu, 21 Oct 2021
+ 13:21:19 +0000
+Subject: Re: [PATCH] x86/sme: Explicitly map new EFI memmap table as encrypted
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>, stable@vger.kernel.org
+References: <ebf1eb2940405438a09d51d121ec0d02c8755558.1634752931.git.thomas.lendacky@amd.com>
+Message-ID: <9d9ca009-93c5-acc3-7445-d514c7878478@amd.com>
+Date:   Thu, 21 Oct 2021 08:21:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <ebf1eb2940405438a09d51d121ec0d02c8755558.1634752931.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-ClientProxiedBy: MN2PR17CA0022.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::35) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
+MIME-Version: 1.0
+Received: from [10.236.30.241] (165.204.77.1) by MN2PR17CA0022.namprd17.prod.outlook.com (2603:10b6:208:15e::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend Transport; Thu, 21 Oct 2021 13:21:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 840bea1c-df49-44a7-18dd-08d99495aaf1
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5072:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB50729B06C2B0434C36B39485ECBF9@DM4PR12MB5072.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YxfFw+uQE89Cuiew7BjDPayYoMCa3ctT0yIwankD8YABCn9tM4+A3Dhj6cBdPH8CrtPGLhBVoim9yCwnCJ/Ajs3kf/ADSVEt8CwEj2+y65QR12kokVrvUaoN5nqIGW9wjf6wfyrCHycPwPPAOBAYHaemZEd+EuYldNafY1NWO+ag2515UIue9IhppLNMCwfAvnIjbsjJ3R6O1pib+qVGQM1lqVqZYMgZ63PBWehlTtWDM58PGtpFC74aqulOJHECiqFmjZT4hWF8mVWFQIv3lHKQdMN5drkxw2fLJWEbBlOLYxqFRzbj+8uIxWVaUdoijOGPJCSQd8oqV3uukMhmVUalnOTnbBbCr1lddmYJF8uRQut3aIy6xeEXMURrShSKuP+npAXn09TNBX8tx6e43Vn8jmSqEjZkL9mThXmmVEejMeHxPdltZCyIalyARlC8cdm3hZigoeJPX0PuQXCVsvuK/Lffe3kXbWGlzvMt6gtceDIjFBH6ev/AVdveBPWmJVFIqvMxSl6mx7I7SGaT72i8obND+Sz8sfMsJMoUeDvho1L8HfWMR23ebIowNxHbH9RLniaPArqv5x5cPYEFICD69+Pvyawvi88Wg8lrUBEuzYnvkFZx7mtNlyY3mzGL26dw5qwXFTO2O2troIktuKUz8mIzmZ81tQOypaZ+U1FONhrSNRzUMbcEpcLnGyrUGsvHxpODn/ILPRLTw3hxwzBJAGWt/7Lj06wDOA+4Y3+aOWgJCe6NODSnAv8ZkED4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(53546011)(66476007)(66556008)(66946007)(186003)(5660300002)(38100700002)(54906003)(4326008)(6486002)(956004)(508600001)(2616005)(86362001)(7416002)(83380400001)(2906002)(316002)(36756003)(16576012)(8676002)(31696002)(31686004)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bndXOU52OUhlMGtOTGdvV01MeGlzTGt6bWUwM1pXbkxIRGptOVU4aFNqTFE4?=
+ =?utf-8?B?TnVBTFd5SG5ZWDdDQ001enU4VEdmU3RsZTJzeGErb2huMnlMcGYvRmRTbVZY?=
+ =?utf-8?B?OXFYTHpiQkxEeVBnN0JGeUNDVzlVN2lyM1YxNUxUUmwvc2Z1Zmp1TURlSVZj?=
+ =?utf-8?B?SWUzYmw4RGRkY2dMeHMycWtmZDdtN3lMYjhzc09XMGN1NnRSUVoyYmF4NXE4?=
+ =?utf-8?B?NXB6SERaOFJkTzRQNy94VmIrYThiTGJOZmg5SzhvV3NNbWNWK0w3Vk9WRXAr?=
+ =?utf-8?B?cCtMMkxhamsxcnJBVlZwOFFGUW0yMlRxR1RXeUVEUDB5eHY5WjJlMHREQzgv?=
+ =?utf-8?B?UzZzNjNHajZxOHhxeEFoSkZ0dFVBdHdncDdjNmVISHVTOWtQWi9KMDZlc3k4?=
+ =?utf-8?B?OU5haGRxNGp0VTA2Kzg4bnRGUi9scjM3dXFJTnNrbm1nV0tlMzVvSExPRTdZ?=
+ =?utf-8?B?eG1uRVpkd3FBdk10NHN4ZWpmOHhBZEhzQ21HZExFeXhrY1Q3VEwwaXEwYXNT?=
+ =?utf-8?B?MjRoYkVYZFNtdzZWY2xkSC91YU9EMGJjakcrWEIxWjVnOC9WNmZ1OHZaSjhl?=
+ =?utf-8?B?TC9BV1ErKzZEZHlLQitWakNrQjZ3YzBrakltUlV3T0hVaVpvVjBGQjlQS3FD?=
+ =?utf-8?B?LzUxcWYyaEpFQ09aZ1YzSjlsNWRWT1YvWWYrSXFldkZGZ3kvdFNFWmZKRWYy?=
+ =?utf-8?B?Q0FBb29KaVJmQU5yS0J3bDRTd3JKUlhZMjhYYlZ3QTA4ZEhqRU41cVhZL0E3?=
+ =?utf-8?B?Y3BuNU1NaW9LTUoxOWpPMDQwd3p6bEQyYVN0cDQ0b0crNWRTdkhpMVZmVXQy?=
+ =?utf-8?B?K25XMWI3amJqOEQ5RnJ1bVdPRndrcWV1ZUcvbVk1MDVXeXZQRnpOcXY4QjRp?=
+ =?utf-8?B?NW85Z2xKbFJSTm5iZFJISThtTk5XYVJLZitsYS84N2hVcHdlNnRQdWtzcGM5?=
+ =?utf-8?B?dWpHMzFNNHJGSVZJSFRQRW9UZE1aWHJEcnV6SW9GK0UvclpQczBqZE4va3ha?=
+ =?utf-8?B?ZGxQazFFWHllall2WlhFaE9ZRUdnZTl0U09yTHp5QS9QQlQzc0grVmlXeFBs?=
+ =?utf-8?B?a0ppc1NsaWJ6dklaT2xQbGlNakM1cmszcHY3L1BnTmFTTENiOWRHR3JpdWg3?=
+ =?utf-8?B?dGJ4NmQxOUt6MXE1QkIrUHJOdXpDS25XeHZCUjAyY1YwejgxODgzRFF3Z3B6?=
+ =?utf-8?B?RTdHaVNMellQUXEwRlVTTVY1cjBLODBPWlVhRGRtaU1VWXBYS3VodzdpQVVV?=
+ =?utf-8?B?WTJST2NkZGZ4S1M1SlRvMU0xa2FJYnBXSEZxcEpySGRWMU5EcE1jSHh2ZFJH?=
+ =?utf-8?B?aEpFWGtoTi8rdHl3QkJkTFUwZ2h2dk5hdzMwa01sVlZVUnZJbXlwZjMzTHBi?=
+ =?utf-8?B?NkZVelFWZnhZbHJGN0REbUZvVEVuY0lYdUU4WUM4cjlyVGVZT0l6R2Iyb0dR?=
+ =?utf-8?B?VmRJWVNKUVVOdFE3a2FjWmpkc3J1cU5Bb2dRVFpUV2dIWHViOUJSb3lxeDhm?=
+ =?utf-8?B?T2VCTmZVYVdnd1B6ZkRmRGNMNG5uMUtBZFJxVTVjNFlZNHE4eGhiSzV4eEF4?=
+ =?utf-8?B?ODc2ajA2OHR6UzdBTnF5U1p3b3ZCa2d5WlgvY0k1M3liMm56RGJISzZkaDVQ?=
+ =?utf-8?B?RUhpZ3dZQjY1RUFLdGFqQVFtOVFkOXFzRVZXTkhITGJFdFdyejdGT1EzNTR1?=
+ =?utf-8?B?OXFlSjUxaHZvOW40VWQwVWdJbzVGRFA0anRkY3Zaa0tTVWlXaWVTcWVuVmkz?=
+ =?utf-8?B?YmVmV0NSdE12OVY2VnFzdzlnblJOVEcyMVpHNHY5blMrYjF2TmJQSUtXR2p3?=
+ =?utf-8?B?cU50dE1aQmZCMG82UXZUT1V0THVnZ0hVN1FSRjN0N2s3bHptNUROeWJ4bnZ4?=
+ =?utf-8?B?VFJ2N3EyV2pEUGFFMTJrTm4wTzlBL2xobWo3YjBqZ21NS0JyRXhzREFXc2l1?=
+ =?utf-8?Q?guOBkgzITMU=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 840bea1c-df49-44a7-18dd-08d99495aaf1
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 13:21:19.3360
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tlendack@amd.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2021 13:20, Arnd Bergmann wrote:
-> On Thu, Oct 21, 2021 at 2:01 PM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
->>
->> Following KASAN BUG noticed on linux next 20211021 while booting qemu-arm64
->> with allmodconfig.
+On 10/20/21 1:02 PM, Tom Lendacky wrote:
+> Reserving memory using efi_mem_reserve() calls into the x86
+> efi_arch_mem_reserve() function. This function will insert a new EFI
+> memory descriptor into the EFI memory map representing the area of
+> memory to be reserved and marking it as EFI runtime memory. As part
+> of adding this new entry, a new EFI memory map is allocated and mapped.
+> The mapping is where a problem can occur. This new memory map is mapped
+> using early_memremap() and generally mapped encrypted, unless the new
+> memory for the mapping happens to come from an area of memory that is
+> marked as EFI_BOOT_SERVICES_DATA memory. In this case, the new memory will
+> be mapped unencrypted. However, during replacement of the old memory map,
+> efi_mem_type() is disabled, so the new memory map will now be long-term
+> mapped encrypted (in efi.memmap), resulting in the map containing invalid
+> data and causing the kernel boot to crash.
 > 
->> [   77.730367][    T5] Freed by task 1:
->> [   77.732009][    T5]  kasan_save_stack+0x30/0x80
->> [   77.734083][    T5]  kasan_set_track+0x30/0x80
->> [   77.736085][    T5]  kasan_set_free_info+0x34/0x80
->> [   77.738261][    T5]  ____kasan_slab_free+0xfc/0x1c0
->> [   77.740433][    T5]  __kasan_slab_free+0x3c/0x80
->> [   77.742518][    T5]  slab_free_freelist_hook+0x1d4/0x2c0
->> [   77.744892][    T5]  kfree+0x160/0x300
->> [   77.746618][    T5]  blktrans_dev_release+0x64/0x100
->> [   77.748821][    T5]  del_mtd_blktrans_dev+0x1c0/0x240
->> [   77.751079][    T5]  mtdblock_remove_dev+0x28/0x80
->> [   77.753246][    T5]  blktrans_notify_remove+0xa4/0x140
->> [   77.755507][    T5]  del_mtd_device+0x84/0x1c0
->> [   77.757541][    T5]  mtd_device_unregister+0x90/0xc0
->> [   77.759764][    T5]  physmap_flash_remove+0x58/0x180
->> [   77.762012][    T5]  platform_remove+0x48/0xc0
->> [   77.764032][    T5]  __device_release_driver+0x1dc/0x340
->> [   77.766393][    T5]  driver_detach+0x138/0x200
->> [   77.768396][    T5]  bus_remove_driver+0x100/0x180
->> [   77.770554][    T5]  driver_unregister+0x64/0xc0
->> [   77.772633][    T5]  platform_driver_unregister+0x28/0x80
->> [   77.775042][    T5]  physmap_init+0xc4/0xfc
->> [   77.776994][    T5]  do_one_initcall+0xb0/0x2c0
->> [   77.779028][    T5]  do_initcalls+0x17c/0x244
->> [   77.781023][    T5]  kernel_init_freeable+0x2d4/0x378
->> [   77.783269][    T5]  kernel_init+0x34/0x180
->> [   77.785196][    T5]  ret_from_fork+0x10/0x20
->> [   77.787135][    T5]
->> ...
->> full boot log link,
->> https://pastebin.com/xL5MYSD6
+> Since it is known that the area will be mapped encrypted going forward,
+> explicitly map the new memory map as encrypted using early_memremap_prot().
 > 
-> I think this is related to an earlier bug that Anders reported a while ago,
-> see [1]. I had looked at it originally, and found that this probably a
-> device that gets probed from CONFIG_MTD_PHYSMAP_COMPAT
-> and then freed again immediately after we find the device does not
-> exist, starting with commit dcb3e137ce9b ("[MTD] physmap: make
-> physmap compat explicit").
+> Cc: <stable@vger.kernel.org> # 4.14.x
+> Fixes: 8f716c9b5feb ("x86/mm: Add support to access boot related data in the clear")
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>   arch/x86/platform/efi/quirks.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> It's not really the fault of CONFIG_MTD_PHYSMAP_COMPAT
-> describing a nonexisting device, but instead it's something in the
-> cleanup path.
-> 
+> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+> index b15ebfe40a73..b0b848d6933a 100644
+> --- a/arch/x86/platform/efi/quirks.c
+> +++ b/arch/x86/platform/efi/quirks.c
+> @@ -277,7 +277,8 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
+>   		return;
+>   	}
+>   
+> -	new = early_memremap(data.phys_map, data.size);
+> +	new = early_memremap_prot(data.phys_map, data.size,
+> +				  pgprot_val(pgprot_encrypted(FIXMAP_PAGE_NORMAL)));
 
-Maybe there is more than one issue, but the fix I mentioned in my 
-earlier reply resolves a UAF which can I trigger on my system:
+I should really have a comment above this as to why this version of the 
+early_memremap is being used.
 
-[  674.333618] FAT-fs (sda1): unable to read boot sector to mark fs as dirty
-[  674.422877] 
-==================================================================
-[  674.430097] BUG: KASAN: use-after-free in 
-blk_mq_sched_tags_teardown+0xb4/0x12c
-[  674.437412] Read of size 4 at addr ffff001053f40100 by task umount/557
-[  674.443934]
-[  674.445418] CPU: 6 PID: 557 Comm: umount Not tainted 
-5.15.0-rc3-00045-g000f88ac8830 #420
-[  674.453502] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon 
-D05 IT21 Nemo 2.0 RC0 04/18/2018
-[  674.462626] Call trace:
-[  674.465063]  dump_backtrace+0x0/0x2b4
-[  674.468724]  show_stack+0x1c/0x30
-[  674.472036]  dump_stack_lvl+0x68/0x84
-[  674.475695]  print_address_description.constprop.0+0x74/0x2b8
-[  674.481438]  kasan_report+0x1e4/0x24c
-[  674.485096]  __asan_load4+0x98/0xd0
-[  674.488579]  blk_mq_sched_tags_teardown+0xb4/0x12c
-[  674.493366]  blk_mq_exit_sched+0x110/0x140
-[  674.497459]  __elevator_exit+0x38/0x60
-[  674.501203]  blk_release_queue+0x10c/0x1cc
-[  674.505295]  kobject_put+0xac/0x180
-[  674.508780]  blk_put_queue+0x18/0x24
-[  674.512350]  disk_release+0x64/0x90
-[  674.515836]  device_release+0x98/0x110
-[  674.519581]  kobject_put+0xac/0x180
-[  674.523065]  put_device+0x18/0x30
-[  674.526374]  put_disk+0x30/0x44
-[  674.529511]  part_release+0x28/0x4c
-[  674.532993]  device_release+0x98/0x110
-[  674.536737]  kobject_put+0xac/0x180
-[  674.540221]  put_device+0x18/0x30
-[  674.543531]  blkdev_put+0xe4/0x340
-[  674.546930]  kill_block_super+0x60/0xa0
-[  674.550762]  deactivate_locked_super+0x78/0x104
-[  674.555289]  deactivate_super+0x90/0xac
-[  674.559121]  cleanup_mnt+0x164/0x214
-[  674.562691]  __cleanup_mnt+0x18/0x24
-[  674.566260]  task_work_run+0xb8/0x1cc
-[  674.569918]  do_notify_resume+0x11a8/0x1abc
-[  674.574098]  el0_svc+0x6c/0x7c
-[  674.577148]  el0t_64_sync_handler+0x1a8/0x1b0
-[  674.581500]  el0t_64_sync+0x1a0/0x1a4
-[  674.585157]
-[  674.586639] The buggy address belongs to the page:
-[  674.591420] page:(____ptrval____) refcount:0 mapcount:-128 
-mapping:0000000000000000 index:0x0 pfn:0x1053f40
-[  674.601154] flags: 0xbfffc0000000000(node=0|zone=2|lastcpupid=0xffff)
-[  674.607594] raw: 0bfffc0000000000 fffffc00415ff008 ffff0017fbffebb0 
-0000000000000000
-[  674.615331] raw: 0000000000000000 0000000000000006 00000000ffffff7f 
-0000000000000000
-[  674.623065] page dumped because: kasan: bad access detected
-[  674.628628]
-[  674.630109] Memory state around the buggy address:
-[  674.634891]  ffff001053f40000: ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff
-[  674.642105]  ffff001053f40080: ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff
-[  674.649319] >ffff001053f40100: ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff
-[  674.656531]                    ^
-[  674.659751]  ffff001053f40180: ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff
-[  674.666964]  ffff001053f40200: ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff
-[  674.674177] 
-==================================================================
-[  674.681389] Disabling lock debugging due to kernel taint
-root@(none)$
-root@(none)$
-
-Note that my baseline includes recent block changes which would be on 
-next 20211021
+Let me add that (and maybe work on the commit message a bit) and submit a 
+v2. But I'll hold off for a bit in case any discussion comes about.
 
 Thanks,
-John
+Tom
 
->          Arnd
+>   	if (!new) {
+>   		pr_err("Failed to map new boot services memmap\n");
+>   		return;
 > 
-> [1] https://lore.kernel.org/linux-mtd/CADYN=9Kjw_3cDGAvh9=+nNwdYof1kUPKG-SUOP5FsQhZ+gz62Q@mail.gmail.com/
-> .
-> 
-
