@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A66435BF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A357B435BFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhJUHmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:42:36 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:17635 "EHLO
+        id S231503AbhJUHmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:42:49 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:48995 "EHLO
         alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbhJUHmV (ORCPT
+        with ESMTP id S231574AbhJUHmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:42:21 -0400
+        Thu, 21 Oct 2021 03:42:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634802006; x=1666338006;
+  t=1634802010; x=1666338010;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=1ZZXbQ+FWiwA09Fn9nqRYPRoqHEHvoOpaFwGxLMJ7nY=;
-  b=knaB5FQUOaYBM3dMx8ML8OeDQPP2m0sb86Ws6fFjSs8v3WM0uhojwm4l
-   L1vyHBvGSsWyZ95KzdOqXc80KGqQgCico2ZwHt/dBVSoJIuSPA8kjQxDm
-   zbb+bRFnHP2m+4Nsl6BReYaMMfBcbTtarAKyM0n7y79O04ugUU3Y11OLR
-   o=;
+  bh=XlHS7RkDidcejvawrIoMJMo619oA9BA/quUzgDc2BKw=;
+  b=jS6rtBcfMhn6/rhzBvYmKnsHA3H4yB/2me5oU9tOUzFGFTXY4BIcx91n
+   jethIiUfucpfkFGO5eazTEVtQ62jmZ3FKHZPzOYaLtTgqllBknEq9CyF4
+   nr/GZJ2XuAk9UkavY66oEni5lB7i1+O/nEmo8IcMTWdcFwkzdQFf9xGNT
+   A=;
 Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 21 Oct 2021 00:40:05 -0700
+  by alexa-out.qualcomm.com with ESMTP; 21 Oct 2021 00:40:10 -0700
 X-QCInternal: smtphost
 Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:40:06 -0700
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:40:10 -0700
 Received: from taozha-gv.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 21 Oct 2021 00:40:02 -0700
+ Thu, 21 Oct 2021 00:40:06 -0700
 From:   Tao Zhang <quic_taozha@quicinc.com>
 To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -46,9 +46,9 @@ CC:     Tao Zhang <quic_taozha@quicinc.com>,
         Mao Jinlong <quic_jinlmao@quicinc.com>,
         Yuanfang Zhang <quic_yuanfang@quicinc.com>,
         Trilok Soni <quic_tsoni@quicinc.com>
-Subject: [PATCH 08/10] Coresight: Enable CMB subunit for TPDM
-Date:   Thu, 21 Oct 2021 15:38:54 +0800
-Message-ID: <1634801936-15080-9-git-send-email-quic_taozha@quicinc.com>
+Subject: [PATCH 09/10] coresight: Add driver to support Coresight device TPDA
+Date:   Thu, 21 Oct 2021 15:38:55 +0800
+Message-ID: <1634801936-15080-10-git-send-email-quic_taozha@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
 References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
@@ -61,1007 +61,1078 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CMB subunit for TPDM. The CMB dataset elements flow out ATB
-while the BC/TC dataset elements are sent only on ATB flush
-requests from the TPDA.
-The CMB data set subunit is responsible for collection of CMB data
-sets. The CMB subunit data set interface must be a legal ATB width
-less than or equal to 64 bits.
+Add driver to support Coresight device TPDA. This driver provides
+support for configuring aggregator. This is primarily useful for
+pulling the data sets from one or more attached monitors and
+pushing the resultant data out. Multiple monitors are connected on
+different input ports of TPDA.
 
 Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
 ---
- drivers/hwtracing/coresight/coresight-tpdm.c | 931 +++++++++++++++++--
- 1 file changed, 861 insertions(+), 70 deletions(-)
+ .../bindings/arm/coresight-tpda.yaml          | 169 ++++
+ MAINTAINERS                                   |   3 +-
+ drivers/hwtracing/coresight/Kconfig           |   9 +
+ drivers/hwtracing/coresight/Makefile          |   1 +
+ drivers/hwtracing/coresight/coresight-tpda.c  | 828 ++++++++++++++++++
+ 5 files changed, 1009 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/coresight-tpda.yaml
+ create mode 100644 drivers/hwtracing/coresight/coresight-tpda.c
 
-diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-index 5f07363e4650..3e7f5b48150b 100644
---- a/drivers/hwtracing/coresight/coresight-tpdm.c
-+++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-@@ -320,6 +320,17 @@ static void __tpdm_config_dsb_msr(struct tpdm_drvdata *drvdata)
- 		tpdm_writel(drvdata, drvdata->dsb->msr[i], TPDM_DSB_MSR(i));
- }
+diff --git a/Documentation/devicetree/bindings/arm/coresight-tpda.yaml b/Documentation/devicetree/bindings/arm/coresight-tpda.yaml
+new file mode 100644
+index 000000000000..860e86d460b5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/coresight-tpda.yaml
+@@ -0,0 +1,169 @@
++# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
++# Copyright (c) 2021 Qualcomm Innovation Center, Inc. All rights reserved.
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/arm/coresigh-tpda.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: "Trace, Profiling and Diagnostics Aggregator - TPDA"
++
++maintainers:
++  - Tao Zhang <quic_taozha@quicinc.com>
++
++description:
++  TPDAs are responsible for:
++    Packetization and timestamping of data sets utilizing the MIPI STPv2 packet protocol
++    Pulling data sets from one or more attached TPDM and pushing the resultant (packetized) data out a master ATB interface
++    Performing an arbitrated ATB interleaving (funneling) task for free-flowing data from TPDM (i.e. CMB and DSB data set flows)
++
++properties:
++  $nodename:
++    pattern: "^tpda(@[0-9a-f]+)$"
++
++  compatible:
++    items:
++      const: arm,primecell
++
++  reg:
++    maxItems: 1
++
++  reg-names:
++    items:
++      const: tpda-base
++
++  qcom,tpda-atid:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    maxItems: 1
++    description:
++      Use the ATID field for trace source identification. This allows multiple TPDMs to be interleaved
++      and formatted via the Coresight trace formatter framing protocol and de-formatted/parsed on a host or debugger.
++
++  qcom,bc-elem-size:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    description:
++      Specifies the BC element size supported by each monitor connected to the aggregator on each port.
++
++  qcom,tc-elem-size:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    description:
++      Specifies the TC element size supported by each monitor connected to the aggregator on each port.
++
++  qcom,dsb-elem-size:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    description:
++      Specifies the DSB element size supported by each monitor connected to the aggregator on each port.
++
++  qcom,cmb-elem-size:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    description:
++      Specifies the CMB element size supported by each monitor connected to the aggregator on each port.
++
++  clocks:
++    description:
++      The clock node that QDSS components need to use.
++
++  clock-names:
++    items:
++      const: apb_pclk
++
++  in-ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    description:
++      Input connections from TPDM to TPDA
++  
++    properties:
++      "#size-cells":
++        const: 0
++
++      "#address-cells":
++        const: 1
++
++    patternProperties:
++      '^port@([0-9]+)$':
++      type: object
++      description:
++        Input connections from TPDM to TPDA
++
++      properties:
++        reg:
++          maxItems: 1
++
++      required:
++        reg
++
++
++  out-ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    description:
++      Output connections from the TPDA to legacy CoreSight trace bus.
++   
++    properties:
++     $ref: /schemas/graph.yaml#/properties/port
++     port:
++       description: 
++         Output connection from the TPDA to legacy CoreSight Trace bus.
++       
++
++required:
++    - compatible
++    - reg
++    - reg-names
++    - qcom,tpda-atid:
++    - clocks
++    - clock-names
++    - in-ports
++    - out-ports
++
++additionalProperties: false
++  
++examples:
++  # minimum tpda definition.
++  - |
++    tpda@10004000 {
++       compatible = "arm,primecell";
++    
++       reg = <0x10004000 0x1000>;
++       reg-names = "tpda-base";
++    
++       qcom,tpda-atid = <65>;
++    
++       clocks = <&aoss_qmp>;
++       clock-names = "apb_pclk";
++    
++       in-ports {
++    
++         #address-cells = <1>;
++         #size-cells = <0>;
++    
++         port@1 {
++           reg = <1>;
++           tpda_qdss_1_in_tpdm_spdm: endpoint {
++                 remote-endpoint =
++                    <&tpdm_spdm_out_tpda_qdss_1>;
++            };
++         };
++    
++         port@0 {
++                 reg = <0>;
++                 tpda_qdss_0_in_tpdm_dcc: endpoint {
++                    remote-endpoint =
++                    <&tpdm_dcc_out_tpda_qdss_0>;
++                 };
++              };
++        };
++    
++       out-ports {
++         port {
++                 tpda_qdss_out_funnel_in0: endpoint {
++                    remote-endpoint =
++                    <&funnel_in0_in_tpda_qdss>;
++                  };
++          };
++       };
++    };
++
++...
+\ No newline at end of file
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cabecf760488..71dd4178d4f8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15303,9 +15303,10 @@ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	drivers/net/ipa/
  
-+static void __tpdm_config_cmb_msr(struct tpdm_drvdata *drvdata)
-+{
-+	int i;
-+
-+	if (!drvdata->msr_support)
-+		return;
-+
-+	for (i = 0; i < TPDM_CMB_MAX_MSR; i++)
-+		tpdm_writel(drvdata, drvdata->cmb->msr[i], TPDM_CMB_MSR(i));
-+}
-+
- static void __tpdm_enable_bc(struct tpdm_drvdata *drvdata)
- {
- 	int i;
-@@ -525,6 +536,112 @@ static void __tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
- 		__tpdm_config_dsb_msr(drvdata);
- }
+-QCOM CORESIGHT TPDM DRIVER
++QCOM CORESIGHT COMPONENTS DRIVER
+ M:	Tao Zhang <quic_taozha@quicinc.com>
+ S:	Maintained
++F:	drivers/hwtracing/coresight/coresight-tpda.c
+ F:	drivers/hwtracing/coresight/coresight-tpdm.c
  
-+static void __tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
+ QEMU MACHINE EMULATOR AND VIRTUALIZER SUPPORT
+diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+index abe244a968f6..206a27325bd3 100644
+--- a/drivers/hwtracing/coresight/Kconfig
++++ b/drivers/hwtracing/coresight/Kconfig
+@@ -197,4 +197,13 @@ config CORESIGHT_TPDM
+ 	  primarily responsible for data set collection and support the
+ 	  ability to collect any permutation of data set types. Monitors are
+ 	  also responsible for interaction with system cross triggering.
++
++config CORESIGHT_TPDA
++	tristate "CoreSight Trace, Profiling & Diagnostics Aggregator driver"
++	select CORESIGHT_LINKS_AND_SINKS
++	help
++	  This driver provides support for configuring aggregator. This is
++	  primarily useful for pulling the data sets from one or more
++	  attached monitors and pushing the resultant data out. Multiple
++	  monitors are connected on different input ports of TPDA.
+ endif
+diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+index e7392a0dddeb..cd8079ec276d 100644
+--- a/drivers/hwtracing/coresight/Makefile
++++ b/drivers/hwtracing/coresight/Makefile
+@@ -26,5 +26,6 @@ obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
+ obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o
+ obj-$(CONFIG_CORESIGHT_TRBE) += coresight-trbe.o
+ obj-$(CONFIG_CORESIGHT_TPDM) += coresight-tpdm.o
++obj-$(CONFIG_CORESIGHT_TPDA) += coresight-tpda.o
+ coresight-cti-y := coresight-cti-core.o	coresight-cti-platform.o \
+ 		   coresight-cti-sysfs.o
+diff --git a/drivers/hwtracing/coresight/coresight-tpda.c b/drivers/hwtracing/coresight/coresight-tpda.c
+new file mode 100644
+index 000000000000..3dc46e173be4
+--- /dev/null
++++ b/drivers/hwtracing/coresight/coresight-tpda.c
+@@ -0,0 +1,828 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2021 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/amba/bus.h>
++#include <linux/io.h>
++#include <linux/err.h>
++#include <linux/fs.h>
++#include <linux/bitmap.h>
++#include <linux/of.h>
++#include <linux/coresight.h>
++
++#include "coresight-priv.h"
++
++#define tpda_writel(drvdata, val, off)	__raw_writel((val), drvdata->base + off)
++#define tpda_readl(drvdata, off)	__raw_readl(drvdata->base + off)
++
++#define TPDA_LOCK(drvdata)						\
++do {									\
++	mb(); /* ensure configuration take effect before we lock it */	\
++	tpda_writel(drvdata, 0x0, CORESIGHT_LAR);			\
++} while (0)
++#define TPDA_UNLOCK(drvdata)						\
++do {									\
++	tpda_writel(drvdata, CORESIGHT_UNLOCK, CORESIGHT_LAR);		\
++	mb(); /* ensure unlock take effect before we configure */	\
++} while (0)
++
++#define TPDA_CR			(0x000)
++#define TPDA_Pn_CR(n)		(0x004 + (n * 4))
++#define TPDA_FPID_CR		(0x084)
++#define TPDA_FREQREQ_VAL	(0x088)
++#define TPDA_SYNCR		(0x08C)
++#define TPDA_FLUSH_CR		(0x090)
++#define TPDA_FLUSH_SR		(0x094)
++#define TPDA_FLUSH_ERR		(0x098)
++
++#define TPDA_MAX_INPORTS	32
++
++DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
++
++struct tpda_drvdata {
++	void __iomem		*base;
++	struct device		*dev;
++	struct coresight_device	*csdev;
++	struct mutex		lock;
++	bool			enable;
++	uint32_t		atid;
++	uint32_t		bc_esize[TPDA_MAX_INPORTS];
++	uint32_t		tc_esize[TPDA_MAX_INPORTS];
++	uint32_t		dsb_esize[TPDA_MAX_INPORTS];
++	uint32_t		cmb_esize[TPDA_MAX_INPORTS];
++	bool			trig_async;
++	bool			trig_flag_ts;
++	bool			trig_freq;
++	bool			freq_ts;
++	uint32_t		freq_req_val;
++	bool			freq_req;
++	bool			cmbchan_mode;
++};
++
++static void __tpda_enable_pre_port(struct tpda_drvdata *drvdata)
 +{
 +	uint32_t val;
-+	int i;
 +
-+	for (i = 0; i < TPDM_CMB_PATT_CMP; i++) {
-+		tpdm_writel(drvdata, drvdata->cmb->patt_val[i],
-+			    TPDM_CMB_TPR(i));
-+		tpdm_writel(drvdata, drvdata->cmb->patt_mask[i],
-+			    TPDM_CMB_TPMR(i));
-+		tpdm_writel(drvdata, drvdata->cmb->trig_patt_val[i],
-+			    TPDM_CMB_XPR(i));
-+		tpdm_writel(drvdata, drvdata->cmb->trig_patt_mask[i],
-+			    TPDM_CMB_XPMR(i));
-+	}
-+
-+	val = tpdm_readl(drvdata, TPDM_CMB_TIER);
-+	if (drvdata->cmb->patt_ts)
-+		val = val | BIT(0);
++	val = tpda_readl(drvdata, TPDA_CR);
++	/* Set the master id */
++	val = val & ~(0x7F << 13);
++	val = val & ~(0x7F << 6);
++	val |= (drvdata->atid << 6);
++	if (drvdata->trig_async)
++		val = val | BIT(5);
 +	else
-+		val = val & ~BIT(0);
-+	if (drvdata->cmb->trig_ts)
-+		val = val | BIT(1);
++		val = val & ~BIT(5);
++	if (drvdata->trig_flag_ts)
++		val = val | BIT(4);
 +	else
-+		val = val & ~BIT(1);
-+	if (drvdata->cmb->ts_all)
++		val = val & ~BIT(4);
++	if (drvdata->trig_freq)
++		val = val | BIT(3);
++	else
++		val = val & ~BIT(3);
++	if (drvdata->freq_ts)
 +		val = val | BIT(2);
 +	else
 +		val = val & ~BIT(2);
-+
-+	tpdm_writel(drvdata, val, TPDM_CMB_TIER);
-+
-+	if (!drvdata->cmb_msr_skip)
-+		__tpdm_config_cmb_msr(drvdata);
-+
-+	val = tpdm_readl(drvdata, TPDM_CMB_CR);
-+	/* Set the flow control bit */
-+	val = val & ~BIT(2);
-+	if (drvdata->cmb->trace_mode)
-+		val = val | BIT(1);
++	if (drvdata->cmbchan_mode)
++		val = val | BIT(20);
 +	else
-+		val = val & ~BIT(1);
++		val = val & ~BIT(20);
++	tpda_writel(drvdata, val, TPDA_CR);
 +
-+	val = val & ~GENMASK(9, 8);
-+	val = val | BMVAL(drvdata->cmb->cycle_acc, 0, 1) << 8;
-+	tpdm_writel(drvdata, val, TPDM_CMB_CR);
-+	/* Set the enable bit */
-+	val = val | BIT(0);
-+	tpdm_writel(drvdata, val, TPDM_CMB_CR);
++	/*
++	 * If FLRIE bit is set, set the master and channel
++	 * id as zero
++	 */
++	if (BMVAL(tpda_readl(drvdata, TPDA_CR), 4, 4))
++		tpda_writel(drvdata, 0x0, TPDA_FPID_CR);
 +}
 +
-+static void __tpdm_enable_mcmb(struct tpdm_drvdata *drvdata)
++static void __tpda_enable_port(struct tpda_drvdata *drvdata, int port)
 +{
 +	uint32_t val;
-+	struct mcmb_dataset *mcmb = drvdata->cmb->mcmb;
-+	int i;
 +
-+	for (i = 0; i < TPDM_CMB_PATT_CMP; i++) {
-+		tpdm_writel(drvdata, drvdata->cmb->patt_val[i],
-+			    TPDM_CMB_TPR(i));
-+		tpdm_writel(drvdata, drvdata->cmb->patt_mask[i],
-+			    TPDM_CMB_TPMR(i));
-+		tpdm_writel(drvdata, drvdata->cmb->trig_patt_val[i],
-+			    TPDM_CMB_XPR(i));
-+		tpdm_writel(drvdata, drvdata->cmb->trig_patt_mask[i],
-+			    TPDM_CMB_XPMR(i));
-+	}
++	val = tpda_readl(drvdata, TPDA_Pn_CR(port));
++	if (drvdata->bc_esize[port] == 32)
++		val = val & ~BIT(4);
++	else if (drvdata->bc_esize[port] == 64)
++		val = val | BIT(4);
 +
-+	val = tpdm_readl(drvdata, TPDM_CMB_TIER);
-+	if (drvdata->cmb->patt_ts)
-+		val = val | BIT(0);
-+	else
-+		val = val & ~BIT(0);
-+	if (drvdata->cmb->trig_ts)
-+		val = val | BIT(1);
-+	else
-+		val = val & ~BIT(1);
-+	if (drvdata->cmb->ts_all)
-+		val = val | BIT(2);
-+	else
-+		val = val & ~BIT(2);
-+	tpdm_writel(drvdata, val, TPDM_CMB_TIER);
++	if (drvdata->tc_esize[port] == 32)
++		val = val & ~BIT(5);
++	else if (drvdata->tc_esize[port] == 64)
++		val = val | BIT(5);
 +
-+	__tpdm_config_cmb_msr(drvdata);
++	if (drvdata->dsb_esize[port] == 32)
++		val = val & ~BIT(8);
++	else if (drvdata->dsb_esize[port] == 64)
++		val = val | BIT(8);
 +
-+	val = tpdm_readl(drvdata, TPDM_CMB_CR);
-+	/* Set the flow control bit */
-+	val = val & ~BIT(2);
-+	if (drvdata->cmb->trace_mode)
-+		val = val | BIT(1);
-+	else
-+		val = val & ~BIT(1);
++	val = val & ~(0x3 << 6);
++	if (drvdata->cmb_esize[port] == 8)
++		val &= ~(0x3 << 6);
++	else if (drvdata->cmb_esize[port] == 32)
++		val |= (0x1 << 6);
++	else if (drvdata->cmb_esize[port] == 64)
++		val |= (0x2 << 6);
 +
-+	val = val & ~GENMASK(9, 8);
-+	val = val | BMVAL(drvdata->cmb->cycle_acc, 0, 1) << 8;
-+	val = val & ~GENMASK(20, 18);
-+	val = val | (BMVAL(mcmb->mcmb_trig_lane, 0, 2) << 18);
-+	val = val & ~GENMASK(17, 10);
-+	val = val | (BMVAL(mcmb->mcmb_lane_select, 0, 7) << 10);
-+
-+	tpdm_writel(drvdata, val, TPDM_CMB_CR);
-+	/* Set the enable bit */
++	/* Set the hold time */
++	val = val & ~(0x7 << 1);
++	val |= (0x5 << 1);
++	tpda_writel(drvdata, val, TPDA_Pn_CR(port));
++	/* Enable the port */
 +	val = val | BIT(0);
-+	tpdm_writel(drvdata, val, TPDM_CMB_CR);
++	tpda_writel(drvdata, val, TPDA_Pn_CR(port));
 +}
 +
- static void __tpdm_enable(struct tpdm_drvdata *drvdata)
- {
- 	TPDM_UNLOCK(drvdata);
-@@ -544,6 +661,11 @@ static void __tpdm_enable(struct tpdm_drvdata *drvdata)
- 	if (test_bit(TPDM_DS_DSB, drvdata->enable_ds))
- 		__tpdm_enable_dsb(drvdata);
- 
-+	if (test_bit(TPDM_DS_CMB, drvdata->enable_ds))
-+		__tpdm_enable_cmb(drvdata);
-+	else if (test_bit(TPDM_DS_MCMB, drvdata->enable_ds))
-+		__tpdm_enable_mcmb(drvdata);
-+
- 	TPDM_LOCK(drvdata);
- }
- 
-@@ -595,6 +717,15 @@ static void __tpdm_disable_dsb(struct tpdm_drvdata *drvdata)
- 	tpdm_writel(drvdata, config, TPDM_DSB_CR);
- }
- 
-+static void __tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
++static void __tpda_enable_post_port(struct tpda_drvdata *drvdata)
 +{
-+	uint32_t config;
++	uint32_t val;
 +
-+	config = tpdm_readl(drvdata, TPDM_CMB_CR);
-+	config = config & ~BIT(0);
-+	tpdm_writel(drvdata, config, TPDM_CMB_CR);
++	val = tpda_readl(drvdata, TPDA_SYNCR);
++	/* Clear the mode */
++	val = val & ~BIT(12);
++	/* Program the counter value */
++	val = val | 0xFFF;
++	tpda_writel(drvdata, val, TPDA_SYNCR);
++
++	if (drvdata->freq_req_val)
++		tpda_writel(drvdata, drvdata->freq_req_val, TPDA_FREQREQ_VAL);
++	else
++		tpda_writel(drvdata, 0x0, TPDA_FREQREQ_VAL);
++
++	val = tpda_readl(drvdata, TPDA_CR);
++	if (drvdata->freq_req)
++		val = val | BIT(1);
++	else
++		val = val & ~BIT(1);
++	tpda_writel(drvdata, val, TPDA_CR);
 +}
 +
- static void __tpdm_disable(struct tpdm_drvdata *drvdata)
- {
- 	TPDM_UNLOCK(drvdata);
-@@ -608,6 +739,10 @@ static void __tpdm_disable(struct tpdm_drvdata *drvdata)
- 	if (test_bit(TPDM_DS_DSB, drvdata->enable_ds))
- 		__tpdm_disable_dsb(drvdata);
- 
-+	if (test_bit(TPDM_DS_CMB, drvdata->enable_ds) ||
-+		test_bit(TPDM_DS_MCMB, drvdata->enable_ds))
-+		__tpdm_disable_cmb(drvdata);
++static void __tpda_enable(struct tpda_drvdata *drvdata, int port)
++{
++	TPDA_UNLOCK(drvdata);
 +
- 	if (drvdata->clk_enable)
- 		tpdm_writel(drvdata, 0x0, TPDM_CLK_CTRL);
- 
-@@ -3132,81 +3267,736 @@ static ssize_t dsb_msr_store(struct device *dev,
- }
- static DEVICE_ATTR_RW(dsb_msr);
- 
--static struct attribute *tpdm_bc_attrs[] = {
--	&dev_attr_bc_capture_mode.attr,
--	&dev_attr_bc_retrieval_mode.attr,
--	&dev_attr_bc_reset_counters.attr,
--	&dev_attr_bc_sat_mode.attr,
--	&dev_attr_bc_enable_counters.attr,
--	&dev_attr_bc_clear_counters.attr,
--	&dev_attr_bc_enable_irq.attr,
--	&dev_attr_bc_clear_irq.attr,
--	&dev_attr_bc_trig_val_lo.attr,
--	&dev_attr_bc_trig_val_hi.attr,
--	&dev_attr_bc_enable_ganging.attr,
--	&dev_attr_bc_overflow_val.attr,
--	&dev_attr_bc_ovsr.attr,
--	&dev_attr_bc_counter_sel.attr,
--	&dev_attr_bc_count_val_lo.attr,
--	&dev_attr_bc_count_val_hi.attr,
--	&dev_attr_bc_shadow_val_lo.attr,
--	&dev_attr_bc_shadow_val_hi.attr,
--	&dev_attr_bc_sw_inc.attr,
--	&dev_attr_bc_msr.attr,
--	NULL,
--};
-+static ssize_t cmb_available_modes_show(struct device *dev,
-+					     struct device_attribute *attr,
-+					     char *buf)
-+{
-+	return scnprintf(buf, PAGE_SIZE, "%s\n", "continuous trace_on_change");
-+}
-+static DEVICE_ATTR_RO(cmb_available_modes);
- 
--static struct attribute *tpdm_tc_attrs[] = {
--	&dev_attr_tc_capture_mode.attr,
--	&dev_attr_tc_retrieval_mode.attr,
--	&dev_attr_tc_reset_counters.attr,
--	&dev_attr_tc_sat_mode.attr,
--	&dev_attr_tc_enable_counters.attr,
--	&dev_attr_tc_clear_counters.attr,
--	&dev_attr_tc_enable_irq.attr,
--	&dev_attr_tc_clear_irq.attr,
--	&dev_attr_tc_trig_sel.attr,
--	&dev_attr_tc_trig_val_lo.attr,
--	&dev_attr_tc_trig_val_hi.attr,
--	&dev_attr_tc_ovsr_gp.attr,
--	&dev_attr_tc_ovsr_impl.attr,
--	&dev_attr_tc_counter_sel.attr,
--	&dev_attr_tc_count_val_lo.attr,
--	&dev_attr_tc_count_val_hi.attr,
--	&dev_attr_tc_shadow_val_lo.attr,
--	&dev_attr_tc_shadow_val_hi.attr,
--	&dev_attr_tc_sw_inc.attr,
--	&dev_attr_tc_msr.attr,
--	NULL,
--};
-+static ssize_t cmb_mode_show(struct device *dev,
-+				  struct device_attribute *attr,
-+				  char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
- 
--static struct attribute *tpdm_dsb_attrs[] = {
--	&dev_attr_dsb_mode.attr,
--	&dev_attr_dsb_edge_ctrl.attr,
--	&dev_attr_dsb_edge_ctrl_mask.attr,
--	&dev_attr_dsb_patt_val.attr,
--	&dev_attr_dsb_patt_mask.attr,
--	&dev_attr_dsb_patt_ts.attr,
--	&dev_attr_dsb_patt_type.attr,
--	&dev_attr_dsb_trig_patt_val.attr,
--	&dev_attr_dsb_trig_patt_mask.attr,
--	&dev_attr_dsb_trig_ts.attr,
--	&dev_attr_dsb_trig_type.attr,
--	&dev_attr_dsb_select_val.attr,
--	&dev_attr_dsb_msr.attr,
--	NULL,
--};
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
- 
--static struct attribute_group tpdm_bc_attr_grp = {
--	.attrs = tpdm_bc_attrs,
--};
-+	return scnprintf(buf, PAGE_SIZE, "trace_mode: %s cycle_acc: %d\n",
-+			 drvdata->cmb->trace_mode ?
-+			 "trace_on_change" : "continuous",
-+			 drvdata->cmb->cycle_acc);
-+}
- 
--static struct attribute_group tpdm_tc_attr_grp = {
--	.attrs = tpdm_tc_attrs,
--};
-+static ssize_t cmb_mode_store(struct device *dev,
-+				   struct device_attribute *attr,
-+				   const char *buf,
-+				   size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned int trace_mode, cycle_acc;
-+	int nval;
- 
--static struct attribute_group tpdm_dsb_attr_grp = {
--	.attrs = tpdm_dsb_attrs,
-+	nval = sscanf(buf, "%u %u", &trace_mode, &cycle_acc);
-+	if (nval != 2)
-+		return -EINVAL;
++	if (!drvdata->enable)
++		__tpda_enable_pre_port(drvdata);
 +
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
++	__tpda_enable_port(drvdata, port);
++
++	if (!drvdata->enable)
++		__tpda_enable_post_port(drvdata);
++
++	TPDA_LOCK(drvdata);
++}
++
++static int tpda_enable(struct coresight_device *csdev, int inport, int outport)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
 +
 +	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->trace_mode = trace_mode;
-+	drvdata->cmb->cycle_acc = cycle_acc;
++	__tpda_enable(drvdata, inport);
++	drvdata->enable = true;
 +	mutex_unlock(&drvdata->lock);
-+	return size;
++
++	dev_info(drvdata->dev, "TPDA inport %d enabled\n", inport);
++	return 0;
 +}
-+static DEVICE_ATTR_RW(cmb_mode);
 +
-+static ssize_t cmb_patt_val_show(struct device *dev,
-+					  struct device_attribute *attr,
-+					  char *buf)
++static void __tpda_disable(struct tpda_drvdata *drvdata, int port)
 +{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	ssize_t size = 0;
-+	int i;
++	uint32_t val;
 +
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
++	TPDA_UNLOCK(drvdata);
++
++	val = tpda_readl(drvdata, TPDA_Pn_CR(port));
++	val = val & ~BIT(0);
++	tpda_writel(drvdata, val, TPDA_Pn_CR(port));
++
++	TPDA_LOCK(drvdata);
++}
++
++static void tpda_disable(struct coresight_device *csdev, int inport,
++			   int outport)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
 +
 +	mutex_lock(&drvdata->lock);
-+	for (i = 0; i < TPDM_CMB_PATT_CMP; i++) {
-+		size += scnprintf(buf + size, PAGE_SIZE - size,
-+				  "Index: 0x%x Value: 0x%x\n", i,
-+				  drvdata->cmb->patt_val[i]);
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+
-+static ssize_t cmb_patt_val_store(struct device *dev,
-+					   struct device_attribute *attr,
-+					   const char *buf, size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long index, val;
-+
-+	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
-+		return -EINVAL;
-+	if (index >= TPDM_CMB_PATT_CMP)
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->patt_val[index] = val;
++	__tpda_disable(drvdata, inport);
++	drvdata->enable = false;
 +	mutex_unlock(&drvdata->lock);
 +
-+	return size;
++	dev_info(drvdata->dev, "TPDA inport %d disabled\n", inport);
 +}
-+static DEVICE_ATTR_RW(cmb_patt_val);
 +
-+static ssize_t cmb_patt_mask_show(struct device *dev,
++static const struct coresight_ops_link tpda_link_ops = {
++	.enable		= tpda_enable,
++	.disable	= tpda_disable,
++};
++
++static const struct coresight_ops tpda_cs_ops = {
++	.link_ops	= &tpda_link_ops,
++};
++
++static ssize_t trig_async_enable_show(struct device *dev,
 +					   struct device_attribute *attr,
 +					   char *buf)
 +{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	ssize_t size = 0;
-+	int i;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	for (i = 0; i < TPDM_CMB_PATT_CMP; i++) {
-+		size += scnprintf(buf + size, PAGE_SIZE - size,
-+				  "Index: 0x%x Value: 0x%x\n", i,
-+				  drvdata->cmb->patt_mask[i]);
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+
-+}
-+
-+static ssize_t cmb_patt_mask_store(struct device *dev,
-+					    struct device_attribute *attr,
-+					    const char *buf, size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long index, val;
-+
-+	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
-+		return -EINVAL;
-+	if (index >= TPDM_CMB_PATT_CMP)
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->patt_mask[index] = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_patt_mask);
-+
-+static ssize_t cmb_patt_ts_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +
 +	return scnprintf(buf, PAGE_SIZE, "%u\n",
-+			 (unsigned int)drvdata->cmb->patt_ts);
++			 (unsigned int)drvdata->trig_async);
 +}
 +
-+static ssize_t cmb_patt_ts_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf,
-+				      size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (val)
-+		drvdata->cmb->patt_ts = true;
-+	else
-+		drvdata->cmb->patt_ts = false;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_patt_ts);
-+
-+static ssize_t cmb_ts_all_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	return scnprintf(buf, PAGE_SIZE, "%u\n",
-+			 (unsigned int)drvdata->cmb->ts_all);
-+}
-+
-+static ssize_t cmb_ts_all_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf,
-+				      size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (val)
-+		drvdata->cmb->ts_all = true;
-+	else
-+		drvdata->cmb->ts_all = false;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_ts_all);
-+
-+static ssize_t cmb_trig_patt_val_lsb_show(struct device *dev,
-+					       struct device_attribute *attr,
-+					       char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	val = drvdata->cmb->trig_patt_val[TPDM_CMB_LSB];
-+
-+	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
-+}
-+
-+static ssize_t cmb_trig_patt_val_lsb_store(struct device *dev,
-+						struct device_attribute *attr,
-+						const char *buf, size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->trig_patt_val[TPDM_CMB_LSB] = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_trig_patt_val_lsb);
-+
-+static ssize_t cmb_trig_patt_mask_lsb_show(struct device *dev,
-+						struct device_attribute *attr,
-+						char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	val = drvdata->cmb->trig_patt_mask[TPDM_CMB_LSB];
-+
-+	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
-+}
-+
-+static ssize_t cmb_trig_patt_mask_lsb_store(struct device *dev,
-+						 struct device_attribute *attr,
-+						 const char *buf, size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->trig_patt_mask[TPDM_CMB_LSB] = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_trig_patt_mask_lsb);
-+
-+static ssize_t cmb_trig_patt_val_msb_show(struct device *dev,
-+					       struct device_attribute *attr,
-+					       char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	val = drvdata->cmb->trig_patt_val[TPDM_CMB_MSB];
-+
-+	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
-+}
-+
-+static ssize_t cmb_trig_patt_val_msb_store(struct device *dev,
-+						struct device_attribute *attr,
-+						const char *buf, size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->trig_patt_val[TPDM_CMB_MSB] = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_trig_patt_val_msb);
-+
-+static ssize_t cmb_trig_patt_mask_msb_show(struct device *dev,
-+						struct device_attribute *attr,
-+						char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	val = drvdata->cmb->trig_patt_mask[TPDM_CMB_MSB];
-+
-+	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
-+}
-+
-+static ssize_t cmb_trig_patt_mask_msb_store(struct device *dev,
-+						 struct device_attribute *attr,
-+						 const char *buf, size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->trig_patt_mask[TPDM_CMB_MSB] = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_trig_patt_mask_msb);
-+
-+static ssize_t cmb_trig_ts_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	return scnprintf(buf, PAGE_SIZE, "%u\n",
-+			 (unsigned int)drvdata->cmb->trig_ts);
-+}
-+
-+static ssize_t cmb_trig_ts_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf,
-+				      size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (val)
-+		drvdata->cmb->trig_ts = true;
-+	else
-+		drvdata->cmb->trig_ts = false;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_trig_ts);
-+
-+static ssize_t cmb_msr_show(struct device *dev,
-+				 struct device_attribute *attr,
-+				 char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned int i;
-+	ssize_t len = 0;
-+
-+	if (!drvdata->msr_support)
-+		return -EINVAL;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	for (i = 0; i < TPDM_CMB_MAX_MSR; i++)
-+		len += scnprintf(buf + len, PAGE_SIZE - len, "%u 0x%x\n",
-+				 i, drvdata->cmb->msr[i]);
-+
-+	return len;
-+}
-+
-+static ssize_t cmb_msr_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf,
-+				  size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned int num, val;
-+	int nval;
-+
-+	if (!drvdata->msr_support)
-+		return -EINVAL;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	nval = sscanf(buf, "%u %x", &num, &val);
-+	if (nval != 2)
-+		return -EINVAL;
-+
-+	if (num >= TPDM_CMB_MAX_MSR)
-+		return -EINVAL;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->msr[num] = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_msr);
-+
-+static ssize_t cmb_read_interface_state_show(struct device *dev,
-+						  struct device_attribute *attr,
-+						  char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+	TPDM_UNLOCK(drvdata);
-+	val = tpdm_readl(drvdata, TPDM_CMB_READVAL);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
-+}
-+static DEVICE_ATTR_RO(cmb_read_interface_state);
-+
-+static ssize_t cmb_read_ctl_reg_show(struct device *dev,
-+					  struct device_attribute *attr,
-+					  char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+	TPDM_UNLOCK(drvdata);
-+	val = tpdm_readl(drvdata, TPDM_CMB_READCTL);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+
-+	if (test_bit(TPDM_DS_CMB, drvdata->datasets))
-+		return scnprintf(buf, PAGE_SIZE, "SEL: %lx\n", val);
-+	else
-+		return scnprintf(buf, PAGE_SIZE, "Lane %u SEL: %lx\n",
-+				 (unsigned int)BMVAL(val, 1, 3), val & 0x1);
-+}
-+
-+static ssize_t cmb_read_ctl_reg_store(struct device *dev,
-+					   struct device_attribute *attr,
-+					   const char *buf,
-+					   size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+	TPDM_UNLOCK(drvdata);
-+	tpdm_writel(drvdata, val, TPDM_CMB_READCTL);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+
-+	return size;
-+}
-+static DEVICE_ATTR_RW(cmb_read_ctl_reg);
-+
-+static ssize_t mcmb_trig_lane_show(struct device *dev,
-+					struct device_attribute *attr,
-+					char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!test_bit(TPDM_DS_MCMB, drvdata->datasets))
-+		return -EPERM;
-+
-+	return scnprintf(buf, PAGE_SIZE, "%u\n",
-+			 (unsigned int)drvdata->cmb->mcmb->mcmb_trig_lane);
-+}
-+
-+static ssize_t mcmb_trig_lane_store(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf,
-+					 size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 10, &val))
-+		return -EINVAL;
-+	if (val >= TPDM_MCMB_MAX_LANES)
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_MCMB, drvdata->datasets))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->mcmb->mcmb_trig_lane = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(mcmb_trig_lane);
-+
-+static ssize_t mcmb_lanes_select_show(struct device *dev,
-+					   struct device_attribute *attr,
-+					   char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!test_bit(TPDM_DS_MCMB, drvdata->datasets))
-+		return -EPERM;
-+
-+	return scnprintf(buf, PAGE_SIZE, "%u\n",
-+			 (unsigned int)drvdata->cmb->mcmb->mcmb_lane_select);
-+}
-+
-+static ssize_t mcmb_lanes_select_store(struct device *dev,
++static ssize_t trig_async_enable_store(struct device *dev,
 +					    struct device_attribute *attr,
 +					    const char *buf,
 +					    size_t size)
 +{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +	unsigned long val;
 +
 +	if (kstrtoul(buf, 16, &val))
 +		return -EINVAL;
-+	if (!test_bit(TPDM_DS_MCMB, drvdata->datasets))
-+		return -EPERM;
-+
-+	val = BMVAL(val, 0, TPDM_MCMB_MAX_LANES - 1);
 +
 +	mutex_lock(&drvdata->lock);
-+	drvdata->cmb->mcmb->mcmb_lane_select = val;
++	if (val)
++		drvdata->trig_async = true;
++	else
++		drvdata->trig_async = false;
 +	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
-+static DEVICE_ATTR_RW(mcmb_lanes_select);
++static DEVICE_ATTR_RW(trig_async_enable);
 +
-+static ssize_t cmb_markr_store(struct device *dev,
-+				    struct device_attribute *attr,
-+				    const char *buf,
-+				    size_t size)
++static ssize_t trig_flag_ts_enable_show(struct device *dev,
++					     struct device_attribute *attr,
++					     char *buf)
 +{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->trig_flag_ts);
++}
++
++static ssize_t trig_flag_ts_enable_store(struct device *dev,
++					      struct device_attribute *attr,
++					      const char *buf,
++					      size_t size)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +	unsigned long val;
 +
 +	if (kstrtoul(buf, 16, &val))
 +		return -EINVAL;
 +
-+	if (!(test_bit(TPDM_DS_CMB, drvdata->datasets) ||
-+	      test_bit(TPDM_DS_MCMB, drvdata->datasets)))
-+		return -EPERM;
++	mutex_lock(&drvdata->lock);
++	if (val)
++		drvdata->trig_flag_ts = true;
++	else
++		drvdata->trig_flag_ts = false;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(trig_flag_ts_enable);
++
++static ssize_t trig_freq_enable_show(struct device *dev,
++					  struct device_attribute *attr,
++					  char *buf)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->trig_freq);
++}
++
++static ssize_t trig_freq_enable_store(struct device *dev,
++					   struct device_attribute *attr,
++					   const char *buf,
++					   size_t size)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	if (kstrtoul(buf, 16, &val))
++		return -EINVAL;
 +
 +	mutex_lock(&drvdata->lock);
++	if (val)
++		drvdata->trig_freq = true;
++	else
++		drvdata->trig_freq = false;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(trig_freq_enable);
++
++static ssize_t freq_ts_enable_show(struct device *dev,
++					struct device_attribute *attr,
++					char *buf)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->freq_ts);
++}
++
++static ssize_t freq_ts_enable_store(struct device *dev,
++					 struct device_attribute *attr,
++					 const char *buf,
++					 size_t size)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	if (kstrtoul(buf, 16, &val))
++		return -EINVAL;
++
++	mutex_lock(&drvdata->lock);
++	if (val)
++		drvdata->freq_ts = true;
++	else
++		drvdata->freq_ts = false;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(freq_ts_enable);
++
++static ssize_t freq_req_val_show(struct device *dev,
++				      struct device_attribute *attr,
++				      char *buf)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val = drvdata->freq_req_val;
++
++	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
++}
++
++static ssize_t freq_req_val_store(struct device *dev,
++				       struct device_attribute *attr,
++				       const char *buf,
++				       size_t size)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	if (kstrtoul(buf, 16, &val))
++		return -EINVAL;
++
++	mutex_lock(&drvdata->lock);
++	drvdata->freq_req_val = val;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(freq_req_val);
++
++static ssize_t freq_req_show(struct device *dev,
++				  struct device_attribute *attr,
++				  char *buf)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->freq_req);
++}
++
++static ssize_t freq_req_store(struct device *dev,
++				   struct device_attribute *attr,
++				   const char *buf,
++				   size_t size)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	if (kstrtoul(buf, 16, &val))
++		return -EINVAL;
++
++	mutex_lock(&drvdata->lock);
++	if (val)
++		drvdata->freq_req = true;
++	else
++		drvdata->freq_req = false;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(freq_req);
++
++static ssize_t global_flush_req_show(struct device *dev,
++					  struct device_attribute *attr,
++					  char *buf)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	mutex_lock(&drvdata->lock);
++
 +	if (!drvdata->enable) {
 +		mutex_unlock(&drvdata->lock);
 +		return -EPERM;
 +	}
-+	TPDM_UNLOCK(drvdata);
-+	tpdm_writel(drvdata, val, TPDM_CMB_MARKR);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
 +
++	TPDA_UNLOCK(drvdata);
++	val = tpda_readl(drvdata, TPDA_CR);
++	TPDA_LOCK(drvdata);
++
++	mutex_unlock(&drvdata->lock);
++	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
++}
++
++static ssize_t global_flush_req_store(struct device *dev,
++					   struct device_attribute *attr,
++					   const char *buf,
++					   size_t size)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	if (kstrtoul(buf, 16, &val))
++		return -EINVAL;
++
++	mutex_lock(&drvdata->lock);
++
++	if (!drvdata->enable) {
++		mutex_unlock(&drvdata->lock);
++		return -EPERM;
++	}
++
++	if (val) {
++		TPDA_UNLOCK(drvdata);
++		val = tpda_readl(drvdata, TPDA_CR);
++		val = val | BIT(0);
++		tpda_writel(drvdata, val, TPDA_CR);
++		TPDA_LOCK(drvdata);
++	}
++
++	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
-+static DEVICE_ATTR_WO(cmb_markr);
++static DEVICE_ATTR_RW(global_flush_req);
 +
-+static struct attribute *tpdm_bc_attrs[] = {
-+	&dev_attr_bc_capture_mode.attr,
-+	&dev_attr_bc_retrieval_mode.attr,
-+	&dev_attr_bc_reset_counters.attr,
-+	&dev_attr_bc_sat_mode.attr,
-+	&dev_attr_bc_enable_counters.attr,
-+	&dev_attr_bc_clear_counters.attr,
-+	&dev_attr_bc_enable_irq.attr,
-+	&dev_attr_bc_clear_irq.attr,
-+	&dev_attr_bc_trig_val_lo.attr,
-+	&dev_attr_bc_trig_val_hi.attr,
-+	&dev_attr_bc_enable_ganging.attr,
-+	&dev_attr_bc_overflow_val.attr,
-+	&dev_attr_bc_ovsr.attr,
-+	&dev_attr_bc_counter_sel.attr,
-+	&dev_attr_bc_count_val_lo.attr,
-+	&dev_attr_bc_count_val_hi.attr,
-+	&dev_attr_bc_shadow_val_lo.attr,
-+	&dev_attr_bc_shadow_val_hi.attr,
-+	&dev_attr_bc_sw_inc.attr,
-+	&dev_attr_bc_msr.attr,
++static ssize_t port_flush_req_show(struct device *dev,
++					struct device_attribute *attr,
++					char *buf)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	mutex_lock(&drvdata->lock);
++
++	if (!drvdata->enable) {
++		mutex_unlock(&drvdata->lock);
++		return -EPERM;
++	}
++
++	TPDA_UNLOCK(drvdata);
++	val = tpda_readl(drvdata, TPDA_FLUSH_CR);
++	TPDA_LOCK(drvdata);
++
++	mutex_unlock(&drvdata->lock);
++	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
++}
++
++static ssize_t port_flush_req_store(struct device *dev,
++					 struct device_attribute *attr,
++					 const char *buf,
++					 size_t size)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	if (kstrtoul(buf, 16, &val))
++		return -EINVAL;
++
++	mutex_lock(&drvdata->lock);
++
++	if (!drvdata->enable) {
++		mutex_unlock(&drvdata->lock);
++		return -EPERM;
++	}
++
++	if (val) {
++		TPDA_UNLOCK(drvdata);
++		tpda_writel(drvdata, val, TPDA_FLUSH_CR);
++		TPDA_LOCK(drvdata);
++	}
++
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(port_flush_req);
++
++static ssize_t cmbchan_mode_show(struct device *dev,
++					     struct device_attribute *attr,
++					     char *buf)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->cmbchan_mode);
++}
++
++static ssize_t cmbchan_mode_store(struct device *dev,
++					      struct device_attribute *attr,
++					      const char *buf,
++					      size_t size)
++{
++	struct tpda_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	bool val;
++
++	if (kstrtobool(buf, &val))
++		return -EINVAL;
++
++	mutex_lock(&drvdata->lock);
++	if (val)
++		drvdata->cmbchan_mode = true;
++	else
++		drvdata->cmbchan_mode = false;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(cmbchan_mode);
++
++static struct attribute *tpda_attrs[] = {
++	&dev_attr_trig_async_enable.attr,
++	&dev_attr_trig_flag_ts_enable.attr,
++	&dev_attr_trig_freq_enable.attr,
++	&dev_attr_freq_ts_enable.attr,
++	&dev_attr_freq_req_val.attr,
++	&dev_attr_freq_req.attr,
++	&dev_attr_global_flush_req.attr,
++	&dev_attr_port_flush_req.attr,
++	&dev_attr_cmbchan_mode.attr,
 +	NULL,
 +};
 +
-+static struct attribute *tpdm_tc_attrs[] = {
-+	&dev_attr_tc_capture_mode.attr,
-+	&dev_attr_tc_retrieval_mode.attr,
-+	&dev_attr_tc_reset_counters.attr,
-+	&dev_attr_tc_sat_mode.attr,
-+	&dev_attr_tc_enable_counters.attr,
-+	&dev_attr_tc_clear_counters.attr,
-+	&dev_attr_tc_enable_irq.attr,
-+	&dev_attr_tc_clear_irq.attr,
-+	&dev_attr_tc_trig_sel.attr,
-+	&dev_attr_tc_trig_val_lo.attr,
-+	&dev_attr_tc_trig_val_hi.attr,
-+	&dev_attr_tc_ovsr_gp.attr,
-+	&dev_attr_tc_ovsr_impl.attr,
-+	&dev_attr_tc_counter_sel.attr,
-+	&dev_attr_tc_count_val_lo.attr,
-+	&dev_attr_tc_count_val_hi.attr,
-+	&dev_attr_tc_shadow_val_lo.attr,
-+	&dev_attr_tc_shadow_val_hi.attr,
-+	&dev_attr_tc_sw_inc.attr,
-+	&dev_attr_tc_msr.attr,
++static struct attribute_group tpda_attr_grp = {
++	.attrs = tpda_attrs,
++};
++
++static const struct attribute_group *tpda_attr_grps[] = {
++	&tpda_attr_grp,
 +	NULL,
 +};
 +
-+static struct attribute *tpdm_dsb_attrs[] = {
-+	&dev_attr_dsb_mode.attr,
-+	&dev_attr_dsb_edge_ctrl.attr,
-+	&dev_attr_dsb_edge_ctrl_mask.attr,
-+	&dev_attr_dsb_patt_val.attr,
-+	&dev_attr_dsb_patt_mask.attr,
-+	&dev_attr_dsb_patt_ts.attr,
-+	&dev_attr_dsb_patt_type.attr,
-+	&dev_attr_dsb_trig_patt_val.attr,
-+	&dev_attr_dsb_trig_patt_mask.attr,
-+	&dev_attr_dsb_trig_ts.attr,
-+	&dev_attr_dsb_trig_type.attr,
-+	&dev_attr_dsb_select_val.attr,
-+	&dev_attr_dsb_msr.attr,
-+	NULL,
++static int tpda_parse_tc(struct tpda_drvdata *drvdata)
++{
++	int len, port, i;
++	const __be32 *prop;
++	struct device_node *node = drvdata->dev->of_node;
++
++	prop = of_get_property(node, "qcom,tc-elem-size", &len);
++	if (prop) {
++		len /= sizeof(__be32);
++		if (len < 2 || len > 63 || len % 2 != 0) {
++			dev_err(drvdata->dev,
++				"Dataset TC width entries are wrong\n");
++			return -EINVAL;
++		}
++
++		for (i = 0; i < len; i++) {
++			port = be32_to_cpu(prop[i++]);
++			if (port >= TPDA_MAX_INPORTS) {
++				dev_err(drvdata->dev,
++					"Wrong port specified for TC\n");
++				return -EINVAL;
++			}
++			drvdata->tc_esize[port] = be32_to_cpu(prop[i]);
++		}
++	}
++
++	return 0;
++}
++
++static int tpda_parse_bc(struct tpda_drvdata *drvdata)
++{
++	int len, port, i;
++	const __be32 *prop;
++	struct device_node *node = drvdata->dev->of_node;
++
++	prop = of_get_property(node, "qcom,bc-elem-size", &len);
++	if (prop) {
++		len /= sizeof(__be32);
++		if (len < 2 || len > 63 || len % 2 != 0) {
++			dev_err(drvdata->dev,
++				"Dataset BC width entries are wrong\n");
++			return -EINVAL;
++		}
++
++		for (i = 0; i < len; i++) {
++			port = be32_to_cpu(prop[i++]);
++			if (port >= TPDA_MAX_INPORTS) {
++				dev_err(drvdata->dev,
++					"Wrong port specified for BC\n");
++				return -EINVAL;
++			}
++			drvdata->bc_esize[port] = be32_to_cpu(prop[i]);
++		}
++	}
++
++	return 0;
++}
++
++static int tpda_parse_dsb(struct tpda_drvdata *drvdata)
++{
++	int len, port, i;
++	const __be32 *prop;
++	struct device_node *node = drvdata->dev->of_node;
++
++	prop = of_get_property(node, "qcom,dsb-elem-size", &len);
++	if (prop) {
++		len /= sizeof(__be32);
++		if (len < 2 || len > 63 || len % 2 != 0) {
++			dev_err(drvdata->dev,
++				"Dataset DSB width entries are wrong\n");
++			return -EINVAL;
++		}
++
++		for (i = 0; i < len; i++) {
++			port = be32_to_cpu(prop[i++]);
++			if (port >= TPDA_MAX_INPORTS) {
++				dev_err(drvdata->dev,
++					"Wrong port specified for DSB\n");
++				return -EINVAL;
++			}
++			drvdata->dsb_esize[port] = be32_to_cpu(prop[i]);
++		}
++	}
++
++	return 0;
++}
++
++static int tpda_parse_cmb(struct tpda_drvdata *drvdata)
++{
++	int len, port, i;
++	const __be32 *prop;
++	struct device_node *node = drvdata->dev->of_node;
++
++	prop = of_get_property(node, "qcom,cmb-elem-size", &len);
++	if (prop) {
++		len /= sizeof(__be32);
++		if (len < 2 || len > 63 || len % 2 != 0) {
++			dev_err(drvdata->dev,
++				"Dataset CMB width entries are wrong\n");
++			return -EINVAL;
++		}
++
++		for (i = 0; i < len; i++) {
++			port = be32_to_cpu(prop[i++]);
++			if (port >= TPDA_MAX_INPORTS) {
++				dev_err(drvdata->dev,
++					"Wrong port specified for CMB\n");
++				return -EINVAL;
++			}
++			drvdata->cmb_esize[port] = be32_to_cpu(prop[i]);
++		}
++	}
++
++	return 0;
++}
++
++static int tpda_parse_of_data(struct tpda_drvdata *drvdata)
++{
++	int ret;
++	struct device_node *node = drvdata->dev->of_node;
++
++	ret = of_property_read_u32(node, "qcom,tpda-atid", &drvdata->atid);
++	if (ret) {
++		dev_err(drvdata->dev, "TPDA ATID is not specified\n");
++		return -EINVAL;
++	}
++
++	ret = tpda_parse_tc(drvdata);
++	if (ret) {
++		dev_err(drvdata->dev, "Dataset TC width entries are wrong\n");
++		return -EINVAL;
++	}
++
++	ret = tpda_parse_bc(drvdata);
++	if (ret) {
++		dev_err(drvdata->dev, "Dataset BC width entries are wrong\n");
++		return -EINVAL;
++	}
++
++	ret = tpda_parse_dsb(drvdata);
++	if (ret) {
++		dev_err(drvdata->dev, "Dataset DSB width entries are wrong\n");
++		return -EINVAL;
++	}
++
++	ret = tpda_parse_cmb(drvdata);
++	if (ret) {
++		dev_err(drvdata->dev, "Dataset CMB width entries are wrong\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static void tpda_init_default_data(struct tpda_drvdata *drvdata)
++{
++	drvdata->freq_ts = true;
++}
++
++static bool coresight_authstatus_enabled(void __iomem *addr)
++{
++	int ret;
++	unsigned int auth_val;
++
++	if (!addr)
++		return false;
++
++	auth_val = readl_relaxed(addr + CORESIGHT_AUTHSTATUS);
++
++	if ((BMVAL(auth_val, 0, 1) == 0x2) ||
++		(BMVAL(auth_val, 2, 3) == 0x2) ||
++		(BMVAL(auth_val, 4, 5) == 0x2) ||
++		(BMVAL(auth_val, 6, 7) == 0x2))
++		ret = false;
++	else
++		ret = true;
++
++	return ret;
++}
++
++static int tpda_probe(struct amba_device *adev, const struct amba_id *id)
++{
++	int ret;
++	struct device *dev = &adev->dev;
++	struct coresight_platform_data *pdata;
++	struct tpda_drvdata *drvdata;
++	struct coresight_desc desc = { 0 };
++
++	desc.name = coresight_alloc_device_name(&tpda_devs, dev);
++	if (!desc.name)
++		return -ENOMEM;
++	pdata = coresight_get_platform_data(dev);
++	if (IS_ERR(pdata))
++		return PTR_ERR(pdata);
++	adev->dev.platform_data = pdata;
++
++	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
++	drvdata->dev = &adev->dev;
++	dev_set_drvdata(dev, drvdata);
++
++	drvdata->base = devm_ioremap_resource(dev, &adev->res);
++	if (!drvdata->base)
++		return -ENOMEM;
++
++	mutex_init(&drvdata->lock);
++
++	ret = tpda_parse_of_data(drvdata);
++	if (ret)
++		return ret;
++
++	if (!coresight_authstatus_enabled(drvdata->base))
++		goto err;
++
++	tpda_init_default_data(drvdata);
++
++	desc.type = CORESIGHT_DEV_TYPE_LINK;
++	desc.subtype.link_subtype = CORESIGHT_DEV_SUBTYPE_LINK_MERG;
++	desc.ops = &tpda_cs_ops;
++	desc.pdata = adev->dev.platform_data;
++	desc.dev = &adev->dev;
++	desc.groups = tpda_attr_grps;
++	drvdata->csdev = coresight_register(&desc);
++	if (IS_ERR(drvdata->csdev))
++		return PTR_ERR(drvdata->csdev);
++
++	pm_runtime_put(&adev->dev);
++
++	dev_dbg(drvdata->dev, "TPDA initialized\n");
++	return 0;
++err:
++	return -EPERM;
++}
++
++static struct amba_id tpda_ids[] = {
++	{
++		.id     = 0x000f0f00,
++		.mask   = 0x000fff00,
++		.data	= "TPDA",
++	},
++	{ 0, 0},
 +};
 +
-+static struct attribute *tpdm_cmb_attrs[] = {
-+	&dev_attr_cmb_available_modes.attr,
-+	&dev_attr_cmb_mode.attr,
-+	&dev_attr_cmb_patt_val.attr,
-+	&dev_attr_cmb_patt_mask.attr,
-+	&dev_attr_cmb_patt_ts.attr,
-+	&dev_attr_cmb_ts_all.attr,
-+	&dev_attr_cmb_trig_patt_val_lsb.attr,
-+	&dev_attr_cmb_trig_patt_mask_lsb.attr,
-+	&dev_attr_cmb_trig_patt_val_msb.attr,
-+	&dev_attr_cmb_trig_patt_mask_msb.attr,
-+	&dev_attr_cmb_trig_ts.attr,
-+	&dev_attr_cmb_msr.attr,
-+	&dev_attr_cmb_read_interface_state.attr,
-+	&dev_attr_cmb_read_ctl_reg.attr,
-+	&dev_attr_cmb_markr.attr,
-+	&dev_attr_mcmb_trig_lane.attr,
-+	&dev_attr_mcmb_lanes_select.attr,
-+	NULL,
++static struct amba_driver tpda_driver = {
++	.drv = {
++		.name   = "coresight-tpda",
++		.owner	= THIS_MODULE,
++		.suppress_bind_attrs = true,
++	},
++	.probe          = tpda_probe,
++	.id_table	= tpda_ids,
 +};
 +
-+static struct attribute_group tpdm_bc_attr_grp = {
-+	.attrs = tpdm_bc_attrs,
-+};
++module_amba_driver(tpda_driver);
 +
-+static struct attribute_group tpdm_tc_attr_grp = {
-+	.attrs = tpdm_tc_attrs,
-+};
-+
-+static struct attribute_group tpdm_dsb_attr_grp = {
-+	.attrs = tpdm_dsb_attrs,
-+};
-+
-+static struct attribute_group tpdm_cmb_attr_grp = {
-+	.attrs = tpdm_cmb_attrs,
- };
- 
- static struct attribute *tpdm_attrs[] = {
-@@ -3227,6 +4017,7 @@ static const struct attribute_group *tpdm_attr_grps[] = {
- 	&tpdm_bc_attr_grp,
- 	&tpdm_tc_attr_grp,
- 	&tpdm_dsb_attr_grp,
-+	&tpdm_cmb_attr_grp,
- 	NULL,
- };
- 
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Trace, Profiling & Diagnostic Aggregator driver");
 -- 
 2.17.1
 
