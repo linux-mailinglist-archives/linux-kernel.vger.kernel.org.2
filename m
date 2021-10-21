@@ -2,87 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14A7436919
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855CE43691B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbhJURfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhJURfS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:35:18 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADA3C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:33:02 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id y15-20020a9d460f000000b0055337e17a55so1274818ote.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:33:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7kvYcqlsDZVFRQNQI1c9X3eJYnsZcG9jtWbow6imt78=;
-        b=dw55ti12SIJyKmryST8ORpjtgrtUtfPsVXQw/pMBi9Fm8DUq9ffCXFX186IGeoWlh6
-         7XicZh+gfmBz22PNDamnVz1EssLHFmyFO767MD39932nJ2km/fRO0qBK/mpjXNW06A7R
-         /+4E7qQh4THnfGTGhtY7fxfEul4KSsfROoBUR4rNFN2J3beelDCl+jJuMyU/5n1oqh7z
-         NP2+dLVZQSyLH/eazkKuDpNUGQQxYDUq67OxoVcIOa3kTK51mupjQ1V+vrknN1jqcPUG
-         oqy8oPWbNKjAo2NcEt2ajXvzu5DuQwG0zgeVB/fWT2fg2bDFfA8PBfYQK1fDGrLLjN0m
-         y/MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7kvYcqlsDZVFRQNQI1c9X3eJYnsZcG9jtWbow6imt78=;
-        b=WOJ7YoqR3v8VX6BbJEWbGhqmFxEO4yuTH/U2vH8Y4dcF+DaeMLjCFms7acJwrMtreY
-         fsEmI2IF8jM1RJUWVjNvnhjYo2X/Teajmk08c1tK6qv1blPXlwslpXxk69IbYJyQnBNw
-         c9z1VcA62DvgSXNQ4EGQy7A/OItBZYd/4G3dIPmb3ZqrwNB3V/m6PJlYbshzHtyFi1Oc
-         w8Y3CTTcjy6MnKc6wUI+K3nZ5ftHcxDoOLzxXPqFrJcmb70zo/VAERQy0ww0w6B0igsX
-         7P9nkJ6ZbE7OvzEUaKvPwOpF9xdsGkEjakj4pjH5Nlj3cxx7KveRxSZfXqXi2nci5ndA
-         dSog==
-X-Gm-Message-State: AOAM533NLHDy07Y12wUP7WPjfh0uVO9kDFqSnXqdBEd8ZN91FSb6h/fA
-        MtpA22jWnK+gE50D6pajb7KulsFwOUVxBe+4O1qGaQ==
-X-Google-Smtp-Source: ABdhPJzZHKI75ndHkrEXROc31KdhFm/vBoEKnBqtqCRjj3lsn9ni2oAVIhgf5P4CJhxK1AwQgLJwO5nNejwA4egzLNk=
-X-Received: by 2002:a9d:458a:: with SMTP id x10mr5997128ote.267.1634837581215;
- Thu, 21 Oct 2021 10:33:01 -0700 (PDT)
+        id S231891AbhJURfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:35:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231441AbhJURfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:35:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96A18619E0;
+        Thu, 21 Oct 2021 17:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634837600;
+        bh=0mi5BRB2iEJx/azT/2b/IU0aHCxCgVOW4BkeyKDBK+4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ZKPXTwVYlFc7+FyUKZjxMWGxFgOzAt2/ZqjVl/OvBNsQEhfDukY5lxc24ij0dcFBh
+         6JLSOYJpr5jp3GQlLKUs5dSoethZEbInhrBEQLjhkqExwjD9XXPz8PR7Un58BH2rgp
+         5FYfpuZlVtAMnMJfrmoS/eg+qIrbT5aVKWdNg3xKWw5/aNkLScpP+sfcmlGB2uAlmr
+         y+JVaU4U4Y775/uu68NxdhunJ1jESEltY5a77kAAzslK+iEUpG4KdTeryZY3+Rv+Al
+         IfVGZmRmz9wiBn2v5tDlGB5ECj/OpvrAlJGJTDrh7DoGE9YLFNx5yR7+zZxyoG2tF+
+         pVtJaSFgBfsjw==
+Message-ID: <e49d6160752caf5855dfe5e122cb74cf30cd1b49.camel@kernel.org>
+Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Patrick Donnelly <pdonnell@redhat.com>
+Cc:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 21 Oct 2021 13:33:18 -0400
+In-Reply-To: <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
+References: <20211020143708.14728-1-lhenriques@suse.de>
+         <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
+         <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
+         <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+         <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
+         <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
+         <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-References: <20211019110154.4091-1-jiangshanlai@gmail.com> <20211019110154.4091-2-jiangshanlai@gmail.com>
- <YW7jfIMduQti8Zqk@google.com> <da4dfc96-b1ad-024c-e769-29d3af289eee@linux.alibaba.com>
- <YXBfaqenOhf+M3eA@google.com> <55abc519-b528-ddaa-120d-8d157b520623@linux.alibaba.com>
- <YXF+pG0yGA0TQZww@google.com> <945500f6-27e1-ed81-2b7d-c709cb1d4b33@redhat.com>
-In-Reply-To: <945500f6-27e1-ed81-2b7d-c709cb1d4b33@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 21 Oct 2021 10:32:49 -0700
-Message-ID: <CALMp9eSAYYL2T_H5b3Kv+OE2KgDz_iC32yQfpiqhwspRUezQ2w@mail.gmail.com>
-Subject: Re: [PATCH 1/4] KVM: X86: Fix tlb flush for tdp in kvm_invalidate_pcid()
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 10:13 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 21/10/21 16:52, Sean Christopherson wrote:
-> >> I think the EPT violation happens*after*  the cr3 write.  So the instruction to be
-> >> emulated is not "cr3 write".  The emulation will queue fault into guest though,
-> >> recursive EPT violation happens since the cr3 exceeds maxphyaddr limit.
-> > Doh, you're correct.  I think my mind wandered into thinking about what would
-> > happen with PDPTRs and forgot to get back to normal MOV CR3.
-> >
-> > So yeah, the only way to correctly handle this would be to intercept CR3 loads.
-> > I'm guessing that would have a noticeable impact on guest performance.
->
-> Ouch... yeah, allow_smaller_maxphyaddr already has bad performance, but
-> intercepting CR3 loads would be another kind of slow.
+On Thu, 2021-10-21 at 13:30 -0400, Patrick Donnelly wrote:
+> On Thu, Oct 21, 2021 at 12:35 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > 
+> > On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
+> > > On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > 
+> > > > On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
+> > > > > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > > > 
+> > > > > > On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
+> > > > > > > This counter will keep track of the number of remote object copies done on
+> > > > > > > copy_file_range syscalls.  This counter will be filesystem per-client, and
+> > > > > > > can be accessed from the client debugfs directory.
+> > > > > > > 
+> > > > > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
+> > > > > > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> > > > > > > ---
+> > > > > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm not
+> > > > > > > 100% sure about the usefulness of this patch, or if this is the best way
+> > > > > > > to provide the functionality Patrick requested.  Anyway, this is just to
+> > > > > > > get some feedback, hence the RFC.
+> > > > > > > 
+> > > > > > > Cheers,
+> > > > > > > --
+> > > > > > > Luís
+> > > > > > > 
+> > > > > > > [0] https://github.com/ceph/ceph/pull/42720
+> > > > > > > 
+> > > > > > 
+> > > > > > I think this would be better integrated into the stats infrastructure.
+> > > > > > 
+> > > > > > Maybe you could add a new set of "copy" stats to struct
+> > > > > > ceph_client_metric that tracks the total copy operations done, their
+> > > > > > size and latency (similar to read and write ops)?
+> > > > > 
+> > > > > I think it's a good idea to integrate this into "stats" but I think a
+> > > > > local debugfs file for some counters is still useful. The "stats"
+> > > > > module is immature at this time and I'd rather not build any qa tests
+> > > > > (yet) that rely on it.
+> > > > > 
+> > > > > Can we generalize this patch-set to a file named "op_counters" or
+> > > > > similar and additionally add other OSD ops performed by the kclient?
+> > > > > 
+> > > > 
+> > > > 
+> > > > Tracking this sort of thing is the main purpose of the stats code. I'm
+> > > > really not keen on adding a whole separate set of files for reporting
+> > > > this.
+> > > 
+> > > Maybe I'm confused. Is there some "file" which is already used for
+> > > this type of debugging information? Or do you mean the code for
+> > > sending stats to the MDS to support cephfs-top?
+> > > 
+> > > > What's the specific problem with relying on the data in debugfs
+> > > > "metrics" file?
+> > > 
+> > > Maybe no problem? I wasn't aware of a "metrics" file.
+> > > 
+> > 
+> > Yes. For instance:
+> > 
+> > # cat /sys/kernel/debug/ceph/*/metrics
+> > item                               total
+> > ------------------------------------------
+> > opened files  / total inodes       0 / 4
+> > pinned i_caps / total inodes       5 / 4
+> > opened inodes / total inodes       0 / 4
+> > 
+> > item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
+> > -----------------------------------------------------------------------------------
+> > read          0           0               0               0               0
+> > write         5           914013          824797          1092343         103476
+> > metadata      79          12856           1572            114572          13262
+> > 
+> > item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
+> > ----------------------------------------------------------------------------------------
+> > read          0           0               0               0               0
+> > write         5           4194304         4194304         4194304         20971520
+> > 
+> > item          total           miss            hit
+> > -------------------------------------------------
+> > d_lease       11              0               29
+> > caps          5               68              10702
+> > 
+> > 
+> > I'm proposing that Luis add new lines for "copy" to go along with the
+> > "read" and "write" ones. The "total" counter should give you a count of
+> > the number of operations.
+> 
+> Okay that makes more sense!
+> 
+> Side note: I am a bit horrified by how computer-unfriendly that
+> table-formatted data is.
+> 
 
-Can we kill it? It's only half-baked as it is. Or are we committed to it now?
+Not going to disagree with you there. I'm happy to consider patches to
+reformat that to be more machine-readable.
+-- 
+Jeff Layton <jlayton@kernel.org>
+
