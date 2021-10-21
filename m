@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB2A436508
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DE943650B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhJUPIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:08:13 -0400
-Received: from relay.sw.ru ([185.231.240.75]:42168 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230280AbhJUPIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:08:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=AYjhXpu3d6kOZxLRp2DlsnHvgXfNmVMqUthXj2mtzdE=; b=SW7BgefMYeIgcg9wr
-        tbO/vMTgWtXtJGnhebekO+7U9ELGuifOlYecO7GEMUO4C+EC71xqXSXzmfgl4CEXJ7bB4i9EiKsX5
-        ymCQGp9TN7AN3ra6WwRwJRkjbXQ4RQtWOgAC7WEayaqg6QpuvFQ71toI3mt2NHcnRbAjJPIHzi8Po
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mdZdd-006kE4-S3; Thu, 21 Oct 2021 18:05:49 +0300
-Subject: Re: [PATCH memcg 3/3] memcg: handle memcg oom failures
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
- <cover.1634730787.git.vvs@virtuozzo.com>
- <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
- <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
- <d3b32c72-6375-f755-7599-ab804719e1f6@virtuozzo.com>
- <YXFPSvGFV539OcEk@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <b618ac5c-e982-c4af-ecf3-564b8de52c8c@virtuozzo.com>
-Date:   Thu, 21 Oct 2021 18:05:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231724AbhJUPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:08:54 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:55140 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhJUPIu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 11:08:50 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:47110)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdZeI-00HRzW-LT; Thu, 21 Oct 2021 09:06:30 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:50622 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdZeH-00CWxY-Hi; Thu, 21 Oct 2021 09:06:30 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+References: <87y26nmwkb.fsf@disp2133>
+        <20211020174406.17889-18-ebiederm@xmission.com>
+        <YXERhzKOVzGJoNMN@kroah.com>
+Date:   Thu, 21 Oct 2021 10:06:22 -0500
+In-Reply-To: <YXERhzKOVzGJoNMN@kroah.com> (Greg KH's message of "Thu, 21 Oct
+        2021 09:06:47 +0200")
+Message-ID: <875ytqifip.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YXFPSvGFV539OcEk@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1mdZeH-00CWxY-Hi;;;mid=<875ytqifip.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/afZzUN9FSzTK9R8sFXt+HdCBvLvrywHY=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4997]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Greg KH <gregkh@linuxfoundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 433 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (2.6%), b_tie_ro: 10 (2.2%), parse: 0.82
+        (0.2%), extract_message_metadata: 14 (3.3%), get_uri_detail_list: 1.28
+        (0.3%), tests_pri_-1000: 23 (5.4%), tests_pri_-950: 1.30 (0.3%),
+        tests_pri_-900: 1.00 (0.2%), tests_pri_-90: 82 (18.8%), check_bayes:
+        79 (18.2%), b_tokenize: 7 (1.5%), b_tok_get_all: 7 (1.6%),
+        b_comp_prob: 2.4 (0.6%), b_tok_touch_all: 59 (13.7%), b_finish: 0.81
+        (0.2%), tests_pri_0: 287 (66.3%), check_dkim_signature: 0.78 (0.2%),
+        check_dkim_adsp: 3.7 (0.8%), poll_dns_idle: 1.09 (0.3%), tests_pri_10:
+        2.0 (0.5%), tests_pri_500: 7 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 18/20] exit/rtl8723bs: Replace the macro thread_exit with a simple return 0
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.10.2021 14:49, Michal Hocko wrote:
-> I do understand that handling a very specific case sounds easier but it
-> would be better to have a robust fix even if that requires some more
-> head scratching. So far we have collected several reasons why the it is
-> bad to trigger oom killer from the #PF path. There is no single argument
-> to keep it so it sounds like a viable path to pursue. Maybe there are
-> some very well hidden reasons but those should be documented and this is
-> a great opportunity to do either of the step.
-> 
-> Moreover if it turns out that there is a regression then this can be
-> easily reverted and a different, maybe memcg specific, solution can be
-> implemented.
+Greg KH <gregkh@linuxfoundation.org> writes:
 
-Now I'm agree,
-however I still have a few open questions.
+> On Wed, Oct 20, 2021 at 12:44:04PM -0500, Eric W. Biederman wrote:
+>> Every place thread_exit is called is at the end of a function started
+>> with kthread_run.  The code in kthread_run has arranged things so a
+>> kernel thread can just return and do_exit will be called.
+>> 
+>> So just have the threads return instead of calling complete_and_exit.
+>> 
+>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>> ---
+>>  drivers/staging/rtl8723bs/core/rtw_cmd.c                | 2 +-
+>>  drivers/staging/rtl8723bs/core/rtw_xmit.c               | 2 +-
+>>  drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c          | 2 +-
+>>  drivers/staging/rtl8723bs/include/osdep_service_linux.h | 2 --
+>>  4 files changed, 3 insertions(+), 5 deletions(-)
+>
+> You "forgot" to cc: the linux-staging and the staging driver maintainer
+> on these drivers/staging/ changes...
 
-1) VM_FAULT_OOM may be triggered w/o execution of out_of_memory()
-for exampel it can be caused by incorrect vm fault operations, 
-(a) which can return this error without calling allocator at all.
-(b) or which can provide incorrect gfp flags and allocator can fail without execution of out_of_memory.
-(c) This may happen on stable/LTS kernels when successful allocation was failed by hit into limit of legacy memcg-kmem contoller.
-We'll drop it in upstream kernels, however how to handle it in old kenrels?
+Yes I did.  Sorry about that.
 
-We can make sure that out_of_memory or alocator was called by set of some per-task flags.
+> Anyway, they look fine to me, but you will get some conflicts with some
+> of these changes based on cleanups already in my staging-next tree (in
+> linux-next if you want to see them).  But feel free to take these all in
+> your tree if that makes it easier:
 
-Can pagefault_out_of_memory() send itself a SIGKILL in all these cases?
+I just did a test merge and there was one file that was completely
+removed and one file with had changes a line or two above where my code
+changed.  So nothing too difficult to result.
 
-If not -- task will be looped. 
-It is much better than execution of global OOM, however it would be even better to avoid it somehow.
+I don't really mind either way.  But keeping them all in one tree makes
+them easier to keep track of, and allows me to do things like see if
+I can remove EXPORT_SYMBOL(do_exit) as Christoph suggested.
 
-You said: "We cannot really kill the task if we could we would have done it by the oom killer already".
-However what to do if we even not tried to use oom-killer? (see (b) and (c)) 
-or if we did not used the allocator at all (see (a))
+Eric
 
-2) in your patch we just exit from pagefault_out_of_memory(). and restart new #PF.
-We can call schedule_timeout() and wait some time before a new #PF restart.
-Additionally we can increase this delay in each new cycle. 
-It helps to save CPU time for other tasks.
-What do you think about?
-
-Thank you,
-	Vasily Averin
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
