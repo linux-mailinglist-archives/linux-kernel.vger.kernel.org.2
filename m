@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673B9435836
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9075B435838
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbhJUBaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 21:30:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231342AbhJUBaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:30:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10C33610D0;
-        Thu, 21 Oct 2021 01:28:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634779682;
-        bh=581D5arqTdICaxjPymvl/NeoZRuwRu4qgW9ioIvz0pA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HYfFdUOLbIbTRC5R74jDV06L85sng277gtjuYVk7lWQC/lhKvcWc2ipBS3m89EiBU
-         W94lNQM8jkuVIZee/uDff4yYuH1mbb5dNn5D7ldlusXiMy4BnXI11vJVXZb/y1+l+i
-         UabtyFWkDR4QnUPvVZQ+MVxfZm/Zlqu6koy7Af8/wb4EdnHS5lPDOoty8dZkQ3xrsZ
-         WHncjxH5nyVClzzGpBGIrUiEFQ626FpucYnLUuJMfvjy0rJ61B17bPkeDMc3+pfXdT
-         iGg7Jy1inIkQRUbadjB7uwMIyJ7dOGdyzo1ztoUqd7L0ItcoKNILWhu2a0LbSDB4Kt
-         w/klqSqaCmEZQ==
-Date:   Wed, 20 Oct 2021 20:28:00 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com, ruscur@russell.cc, oohall@gmail.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v4 3/8] PCI/DPC: Initialize info->id in
- dpc_process_error()
-Message-ID: <20211021012800.GA2656128@bhelgaas>
+        id S231570AbhJUBa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 21:30:29 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:54625 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231342AbhJUBa2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 21:30:28 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZVH02P4nz4xbT;
+        Thu, 21 Oct 2021 12:28:12 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634779692;
+        bh=vDWuEnZ5RpZM5FmpEAHbWhY2teRuUOgp7f/FO0fESKU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P2p/Q7i/GeP8r7PnkI8xJOyNUDudRxPsaHhEszzMKZ9VZsGcodcTUtk5vGADIFiZt
+         eFWCbPk23tNoPygGBY5KQpt9uSa78jCr4epCJ+Bs8O9vIgEvbeTWoYbNY1gUCx5OTg
+         UBTQIFzGDiZ7VRXtxvLpGDcRV92HDwcMcMh5owq27Zz4vOG0TjBqV6wkdLKNQX1pnc
+         X275FKMxbUycpyirxSj+vPG6BcD3KT/ugMzE/vduKSuEkCalm2CbGcPewTORmw68eG
+         bmfim1eYFanKr/M6cx6C27gAYSxx0r5HVyh3LZ6T6W5YGrudFf091Miw8HnAJKBcLx
+         lMMCFqmAu50DQ==
+Date:   Thu, 21 Oct 2021 12:28:11 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Fengnan Chang <changfengnan@vivo.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning in Linus' tree
+Message-ID: <20211021122811.1e7d96f4@canb.auug.org.au>
+In-Reply-To: <20211005202900.29285789@canb.auug.org.au>
+References: <20211005202900.29285789@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ebe87f18339d7567c1d91203e7c5d31f4e65c52.1633453452.git.naveennaidu479@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/=Cr5nnekvT=WQ44hVISRhKM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:48:10PM +0530, Naveen Naidu wrote:
-> In the dpc_process_error() path, info->id isn't initialized before being
-> passed to aer_print_error(). In the corresponding AER path, it is
-> initialized in aer_isr_one_error().
-> 
-> The error message shown during Coverity Scan is:
-> 
->   Coverity #1461602
->   CID 1461602 (#1 of 1): Uninitialized scalar variable (UNINIT)
->   8. uninit_use_in_call: Using uninitialized value info.id when calling aer_print_error.
-> 
-> Initialize the "info->id" before passing it to aer_print_error()
-> 
-> Fixes: 8aefa9b0d910 ("PCI/DPC: Print AER status in DPC event handling")
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> ---
->  drivers/pci/pcie/dpc.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-> index c556e7beafe3..df3f3a10f8bc 100644
-> --- a/drivers/pci/pcie/dpc.c
-> +++ b/drivers/pci/pcie/dpc.c
-> @@ -262,14 +262,14 @@ static int dpc_get_aer_uncorrect_severity(struct pci_dev *dev,
->  
->  void dpc_process_error(struct pci_dev *pdev)
->  {
-> -	u16 cap = pdev->dpc_cap, status, source, reason, ext_reason;
-> +	u16 cap = pdev->dpc_cap, status, reason, ext_reason;
->  	struct aer_err_info info;
->  
->  	pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
-> -	pci_read_config_word(pdev, cap + PCI_EXP_DPC_SOURCE_ID, &source);
-> +	pci_read_config_word(pdev, cap + PCI_EXP_DPC_SOURCE_ID, &info.id);
->  
->  	pci_info(pdev, "containment event, status:%#06x source:%#06x\n",
-> -		 status, source);
-> +		 status, info.id);
->  
->  	reason = (status & PCI_EXP_DPC_STATUS_TRIGGER_RSN) >> 1;
+--Sig_/=Cr5nnekvT=WQ44hVISRhKM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Per PCIe r5.0, sec 7.9.15.5, the Source ID is defined only when the
-Trigger Reason indicates ERR_NONFATAL or ERR_FATAL.  So I think we
-need to extract this reason before reading PCI_EXP_DPC_SOURCE_ID,
-e.g.,
+Hi all,
 
-  reason = (status & PCI_EXP_DPC_STATUS_TRIGGER_RSN) >> 1;
-  if (reason == 1 || reason == 2)
-    pci_read_config_word(pdev, cap + PCI_EXP_DPC_SOURCE_ID, &info.id);
-  else
-    info.id = 0;
+On Tue, 5 Oct 2021 20:29:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> In Linus' tree, today's linux-next build (htmldocs) produced this warning:
+>=20
+> Documentation/filesystems/f2fs.rst:288: WARNING: Block quote ends without=
+ a blank line; unexpected unindent.
+>=20
+> Introduced by commit
+>=20
+>   151b1982be5d ("f2fs: compress: add nocompress extensions support")
 
->  	ext_reason = (status & PCI_EXP_DPC_STATUS_TRIGGER_RSN_EXT) >> 5;
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> Linux-kernel-mentees mailing list
-> Linux-kernel-mentees@lists.linuxfoundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
+I ma still seeing this warning.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=Cr5nnekvT=WQ44hVISRhKM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFwwisACgkQAVBC80lX
+0GxuoQf+Lf90QkZGE8k3tuoFSg4U6fzibeRS8VvrkUIkxvZV6rgLYT4Xy2NjwzsE
+axx8hIr3Rk7bCh/Z7p7w9r8BaUMxoclGtkt4hDfjUBPDLQwp56vIq/Qe1lxmseND
+gewXme+1HTWlfLVa3I585ptuA7EmYivgdH76+ER0/M0czJ65EFpEnOf2eUo0PXAZ
+Wiw1lfapbbVlcsJw+cdHhLonBupcHSYkTmu85HiX4TD1z8rahpxqvIW/cR9sxP/5
+GbSNuxnptmQ5Mf3rmr4kLppICg5paI6S/lKp0npa93w5dNzFjalWDtNIuU/TUh2J
+14xpyRaxcRlGUmqHvOQGWkGitY4zIA==
+=aHB3
+-----END PGP SIGNATURE-----
+
+--Sig_/=Cr5nnekvT=WQ44hVISRhKM--
