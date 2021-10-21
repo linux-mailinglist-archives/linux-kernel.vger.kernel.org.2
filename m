@@ -2,56 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433CC436395
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194C04363A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhJUN6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhJUN6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:58:48 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFB7C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:56:29 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 7F2AB1F42230
-Message-ID: <3e0750da-bbd1-b8c6-1270-ef8fcd17e02a@collabora.com>
-Date:   Thu, 21 Oct 2021 10:56:21 -0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3] regmap: spi: Set regmap max raw r/w from
- max_transfer_size
+        id S231331AbhJUOBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:01:34 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:34436 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230072AbhJUOBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 10:01:33 -0400
+Received: from BC-Mail-Ex25.internal.baidu.com (unknown [172.31.51.19])
+        by Forcepoint Email with ESMTPS id E40531B02753C10474E3;
+        Thu, 21 Oct 2021 21:58:55 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex25.internal.baidu.com (172.31.51.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Thu, 21 Oct 2021 21:58:55 +0800
+Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
+ BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
+ 15.01.2308.014; Thu, 21 Oct 2021 21:58:55 +0800
+From:   "Cai,Huoqing" <caihuoqing@baidu.com>
+CC:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: RE: [PATCH 0/6] kthread: Add the helper macro kthread_run_on_cpu()
+Thread-Topic: [PATCH 0/6] kthread: Add the helper macro kthread_run_on_cpu()
+Thread-Index: AQHXxnNpfugAUqUbeEyqP9NX9k+uv6vdeeGQ
+Date:   Thu, 21 Oct 2021 13:58:55 +0000
+Message-ID: <e886ea99c2d44932a53f597191a6d54e@baidu.com>
+References: <20211021120135.3003-1-caihuoqing@baidu.com>
+In-Reply-To: <20211021120135.3003-1-caihuoqing@baidu.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Lucas Tanure <tanureal@opensource.cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-References: <20211021132721.13669-1-andrealmeid@collabora.com>
- <YXFxFc1C7QnCQZx9@sirena.org.uk>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-In-Reply-To: <YXFxFc1C7QnCQZx9@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.12.190.132]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 10:54 de 21/10/21, Mark Brown escreveu:
-> On Thu, Oct 21, 2021 at 10:27:21AM -0300, André Almeida wrote:
-> 
->> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
->> [André: fix build warning]
->> Signed-off-by: André Almeida <andrealmeid@collabora.com>
-> 
-> It wasn't just a warning, as I told Lucas it was a build error given
-> that allmodconfig now has -Werror.
-> 
-
-Ok, I didn't know that -Werror was around. Should I resend the patch
-with [André: fix build error]?
+SGksIGZvbGtzDQpWMiBpcyBoZXJlDQpodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzIwMjEx
+MDIxMTIyNzU4LjMwOTItMi1jYWlodW9xaW5nQGJhaWR1LmNvbS8NCg0KPiAtLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBDYWksSHVvcWluZyA8Y2FpaHVvcWluZ0BiYWlkdS5jb20+
+DQo+IFNlbnQ6IDIwMjHE6jEw1MIyMcjVIDIwOjAxDQo+IFRvOiBDYWksSHVvcWluZw0KPiBDYzog
+QmVybmFyZCBNZXR6bGVyOyBEb3VnIExlZGZvcmQ7IEphc29uIEd1bnRob3JwZTsgRGF2aWRsb2hy
+IEJ1ZXNvOyBQYXVsDQo+IEUuIE1jS2VubmV5OyBKb3NoIFRyaXBsZXR0OyBTdGV2ZW4gUm9zdGVk
+dDsgTWF0aGlldSBEZXNub3llcnM7IExhaQ0KPiBKaWFuZ3NoYW47IEpvZWwgRmVybmFuZGVzOyBJ
+bmdvIE1vbG5hcjsgRGFuaWVsIEJyaXN0b3QgZGUgT2xpdmVpcmE7IGxpbnV4LQ0KPiByZG1hQHZn
+ZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgcmN1QHZnZXIua2Vy
+bmVsLm9yZw0KPiBTdWJqZWN0OiBbUEFUQ0ggMC82XSBrdGhyZWFkOiBBZGQgdGhlIGhlbHBlciBt
+YWNybyBrdGhyZWFkX3J1bl9vbl9jcHUoKQ0KPiANCj4gdGhlIGhlbHBlciBtYWNybyBrdGhyZWFk
+X3J1bl9vbl9jcHUoKSBpbmN1bGRlcw0KPiBrdGhyZWFkX2NyZWF0ZV9vbl9jcHUvd2FrZV91cF9w
+cm9jZXNzKCkuDQo+IEluIHNvbWUgY2FzZXMsIHVzZSBrdGhyZWFkX3J1bl9vbl9jcHUoKSBkaXJl
+Y3RseSBpbnN0ZWFkIG9mDQo+IGt0aHJlYWRfY3JlYXRlX29uX25vZGUva3RocmVhZF9iaW5kL3dh
+a2VfdXBfcHJvY2VzcygpIG9yDQo+IGt0aHJlYWRfY3JlYXRlX29uX2NwdS93YWtlX3VwX3Byb2Nl
+c3MoKSBvcg0KPiBrdGhyZWFkZF9jcmVhdGUva3RocmVhZF9iaW5kL3dha2VfdXBfcHJvY2Vzcygp
+IHRvIHNpbXBsaWZ5IHRoZSBjb2RlLg0KPiANCj4gQ2FpIEh1b3FpbmcgKDYpOg0KPiAgIGt0aHJl
+YWQ6IEFkZCB0aGUgaGVscGVyIG1hY3JvIGt0aHJlYWRfcnVuX29uX2NwdSgpDQo+ICAgUkRNQS9z
+aXc6IE1ha2UgdXNlIG9mIHRoZSBoZWxwZXIgbWFjcm8ga3RocmVhZF9ydW5fb25fY3B1KCkNCj4g
+ICByaW5nLWJ1ZmZlcjogTWFrZSB1c2Ugb2YgdGhlIGhlbHBlciBtYWNybyBrdGhyZWFkX3J1bl9v
+bl9jcHUoKQ0KPiAgIHJjdXRvcnR1cmU6IE1ha2UgdXNlIG9mIHRoZSBoZWxwZXIgbWFjcm8ga3Ro
+cmVhZF9ydW5fb25fY3B1KCkNCj4gICB0cmFjZS9vc25vaXNlOiBNYWtlIHVzZSBvZiB0aGUgaGVs
+cGVyIG1hY3JvIGt0aHJlYWRfcnVuX29uX2NwdSgpDQo+ICAgdHJhY2UvaHdsYXQ6IE1ha2UgdXNl
+IG9mIHRoZSBoZWxwZXIgbWFjcm8ga3RocmVhZF9ydW5fb25fY3B1KCkNCj4gDQo+ICBkcml2ZXJz
+L2luZmluaWJhbmQvc3cvc2l3L3Npd19tYWluLmMgfCAgNyArKystLS0tDQo+ICBpbmNsdWRlL2xp
+bnV4L2t0aHJlYWQuaCAgICAgICAgICAgICAgfCAyMiArKysrKysrKysrKysrKysrKysrKysrDQo+
+ICBrZXJuZWwvcmN1L3JjdXRvcnR1cmUuYyAgICAgICAgICAgICAgfCAgNyArKy0tLS0tDQo+ICBr
+ZXJuZWwvdHJhY2UvcmluZ19idWZmZXIuYyAgICAgICAgICAgfCAgNyArKy0tLS0tDQo+ICBrZXJu
+ZWwvdHJhY2UvdHJhY2VfaHdsYXQuYyAgICAgICAgICAgfCAgNiArLS0tLS0NCj4gIGtlcm5lbC90
+cmFjZS90cmFjZV9vc25vaXNlLmMgICAgICAgICB8ICAzICstLQ0KPiAgNiBmaWxlcyBjaGFuZ2Vk
+LCAzMSBpbnNlcnRpb25zKCspLCAyMSBkZWxldGlvbnMoLSkNCj4gDQo+IC0tDQo+IDIuMjUuMQ0K
+DQo=
