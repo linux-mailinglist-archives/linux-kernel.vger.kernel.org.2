@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC90D4356D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECE84356D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhJUAUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 20:20:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25421 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230478AbhJUAU3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:20:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634775493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y9Y7hzxIeRjzddapp4B4sp40weziP9X+IKnwKSW55pQ=;
-        b=GlT5VaAvAnnvr96/6E9XyoVLltUHvXWxlAMu/HRce0vb5WiIQTZ4WOlh35fGRBpj9twKBq
-        P02VyI+c8YqvGlC7mudnElkv0XBz4bFT6IbQqum7OFsx+5h54CFDEHaSjub4GHGAZ6EP4V
-        rO8a4jejxm1P8X6+M4EFMqs+1mh6GlI=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-5IDR6AnCNwe7YG1DiYUsKA-1; Wed, 20 Oct 2021 20:18:12 -0400
-X-MC-Unique: 5IDR6AnCNwe7YG1DiYUsKA-1
-Received: by mail-qt1-f200.google.com with SMTP id 59-20020aed2041000000b002a78c85c668so3283308qta.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 17:18:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y9Y7hzxIeRjzddapp4B4sp40weziP9X+IKnwKSW55pQ=;
-        b=lIRJT9JGiHR/nsf46eDUtbbYuiynxcjRhcUY9cl0gZ1GJbrU8hrJ8WvQlElF7XYxs/
-         EpA6aUgSR77jMpKoQ3FSbI0PjB0QfEHJ7oayzFef2SiwbnRMpJpX6RZo7X/fIORqB6K1
-         DAQMStsx024C01v8qybFt0AXT+UgVNSbQNbkcjnIzKJh4b50Eb6diO/Ihlij+PdU730i
-         gpq7/VW9YI0e70TGWCAqOvX+TKHLSKZ7TRc7O4A3ATxudtkvXS1UosQr8IOUSfe3e1A6
-         lEdRtVvnUiqVTtWdI6/VXDliTSWJKaX+UOoU0bB0qfJhEs0Tx/PFwIiCaezZtsbHaNLC
-         FeCA==
-X-Gm-Message-State: AOAM531U0NuOX4UfpPn0LXVy1VC3oiCHJalIcPIFQ5c659Px9yhHN4Et
-        gS6A0lH45QYqxaI17SbFab6tMD2wq2ssvsAV0tVGYJogChWXRvr5u8RINryNCKky9SFhVrRM3DL
-        z89IFtkw6S5AM3qAMSnoWJxIG
-X-Received: by 2002:ac8:183:: with SMTP id x3mr2726878qtf.270.1634775492170;
-        Wed, 20 Oct 2021 17:18:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQH+mIBiVII1WLYqbEa5sUX+3H1BU4XLVzKDhQhE2Xyezhpp8g8l/1LyqVY4fTY3HsiriTTw==
-X-Received: by 2002:ac8:183:: with SMTP id x3mr2726864qtf.270.1634775491987;
-        Wed, 20 Oct 2021 17:18:11 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id o16sm1122070qkp.1.2021.10.20.17.18.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 17:18:11 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 17:18:08 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
-        ndesaulniers@google.com, bpf@vger.kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <20211021001808.3ng6qeggi5lfwx7k@treble>
-References: <20211020104442.021802560@infradead.org>
- <20211020105843.345016338@infradead.org>
- <20211021000753.kdxtjl3nzre2zshb@ast-mbp.dhcp.thefacebook.com>
+        id S230338AbhJUAWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 20:22:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230103AbhJUAWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 20:22:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80B0C611CC;
+        Thu, 21 Oct 2021 00:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634775626;
+        bh=OYEiy43p50mFVcpQF0Wr04GWdZWgFGozhCJvTMAK0Wk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ryxsZH8pi6g/YpE1eN//WwKaBk+9fPv8vLIuSBb/a8brsj5AlmNms3ma/TeyJuENd
+         dLje27PMtPP6rACUHwU98UGQARecdYcC5fJo6qLUniB/rL03SzZV/Xr0Y6sJo/uK0S
+         xo9S0eDNag+c3GCp7aXyqndKdfUI4eqKfU/JpFUUauZWlsCfjd2n2F66o8q0mNKSKp
+         sTkTenNERNxt8Y04+jxSxUh5pdWJnaRpIy1wh24hyEFZIO5HZU4gfms9xlDHYO+qhc
+         WOdNqf9IrQL5DbmQBVU+GltKRjS3oPAF6RNf2lrdvJVSG9OrNkF396A+DQZNyK1wB8
+         4BNdLO6rNXKXg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
+Subject: [PATCH AUTOSEL 5.14 01/26] kunit: fix reference count leak in kfree_at_end
+Date:   Wed, 20 Oct 2021 20:19:58 -0400
+Message-Id: <20211021002023.1128949-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211021000753.kdxtjl3nzre2zshb@ast-mbp.dhcp.thefacebook.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 05:07:53PM -0700, Alexei Starovoitov wrote:
-> On Wed, Oct 20, 2021 at 12:44:56PM +0200, Peter Zijlstra wrote:
-> > +
-> > +	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE_AMD)) {
-> > +		EMIT_LFENCE();
-> > +		EMIT2(0xFF, 0xE0 + reg);
-> > +	} else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
-> > +		emit_jump(&prog, reg_thunk[reg], ip);
-> > +	} else
-> 
-> One more question.
-> What's a deal with AMD? I thought the retpoline is effective on it as well.
-> lfence is an optimization or retpoline turned out to be not enough
-> in some cases?
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-Yes, it's basically an optimization.  AMD recommends it presumably
-because it's quite a bit faster than a retpoline.
+[ Upstream commit f62314b1ced25c58b86e044fc951cd6a1ea234cf ]
 
-According to AMD it shrinks the speculative execution window enough so
-that Spectre v2 isn't a threat.
+The reference counting issue happens in the normal path of
+kfree_at_end(). When kunit_alloc_and_get_resource() is invoked, the
+function forgets to handle the returned resource object, whose refcount
+increased inside, causing a refcount leak.
 
+Fix this issue by calling kunit_alloc_resource() instead of
+kunit_alloc_and_get_resource().
+
+Fixed the following when applying:
+Shuah Khan <skhan@linuxfoundation.org>
+
+CHECK: Alignment should match open parenthesis
++	kunit_alloc_resource(test, NULL, kfree_res_free, GFP_KERNEL,
+ 				     (void *)to_free);
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ lib/kunit/executor_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+index cdbe54b16501..e14a18af573d 100644
+--- a/lib/kunit/executor_test.c
++++ b/lib/kunit/executor_test.c
+@@ -116,8 +116,8 @@ static void kfree_at_end(struct kunit *test, const void *to_free)
+ 	/* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
+ 	if (IS_ERR_OR_NULL(to_free))
+ 		return;
+-	kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
+-				     (void *)to_free);
++	kunit_alloc_resource(test, NULL, kfree_res_free, GFP_KERNEL,
++			     (void *)to_free);
+ }
+ 
+ static struct kunit_suite *alloc_fake_suite(struct kunit *test,
 -- 
-Josh
+2.33.0
 
