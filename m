@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802D9435CF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCAC435CED
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhJUIeq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Oct 2021 04:34:46 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:45857 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbhJUIei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:34:38 -0400
-Received: by mail-oi1-f180.google.com with SMTP id z126so12801547oiz.12;
-        Thu, 21 Oct 2021 01:32:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ceLayuoY70owN3NNsnQH6S+jy2K/HGM8B6O2q8i1GAk=;
-        b=YCr0yE2FgiqGaAqFS2CQf6iIuzKjkgSChItshZahMB8bH09SCBbqVTEhxPR2nEbABI
-         J28+vLs7F423PE22/SRg5MvHV82v84xUJa/lRuWT5cdmE+68risR3FGVG6u2tLx7bPVY
-         ts7UkiXatY3svnoOZRLY0diRcQmRaGh7sl0YshBJAyRT8RvTBjoAlrPscfL1H99z1Ah/
-         VL3dSpfxThB0tnTcpsHxCxuIKnoV0Z6WCttKGuhuirz3WC1IEz31OeNoQhQAKc5dZdy9
-         uZrcf0QPbThf2OkjtRXpD1rqKQRQXgu07R/l2c0Gmh4o9NgoBTZh48TYjfgUa6dMw5Hz
-         c/mA==
-X-Gm-Message-State: AOAM530LpmidWPEL43GrLudI1V3XbiGyrv6qsIjOtNmBnkhH4dtFbyS/
-        w+s5sA+bujyeZVNVWk8+iBtj1wQolWlmttu59Vg=
-X-Google-Smtp-Source: ABdhPJxII4gwyuuwZSE0+97ar6I7zWp2Jlu7LoTmQcOVpBv5Lkm+3ns6lcPNpIqYwJ3CoMM3pxGAXl0ujDP3wS4Hl9w=
-X-Received: by 2002:aca:eb82:: with SMTP id j124mr3578574oih.46.1634805141944;
- Thu, 21 Oct 2021 01:32:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <87y26nmwkb.fsf@disp2133> <877de7jrev.fsf@disp2133>
-In-Reply-To: <877de7jrev.fsf@disp2133>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Date:   Thu, 21 Oct 2021 10:32:10 +0200
-Message-ID: <CAAdtpL5+bjpy93DY5gf1ZM4k3BtP+JNJAUSSmvt8cq3shsJR4A@mail.gmail.com>
-Subject: Re: [PATCH 21/20] signal: Replace force_sigsegv(SIGSEGV) with force_fatal_sig(SIGSEGV)
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
+        id S231421AbhJUIeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231268AbhJUIef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:34:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACE7960FC0;
+        Thu, 21 Oct 2021 08:32:18 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 09:32:15 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        openrisc@lists.librecores.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        David Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] memblock: exclude MEMBLOCK_NOMAP regions from
+ kmemleak
+Message-ID: <YXElj+W48PUf2kIY@arm.com>
+References: <20211021070929.23272-1-rppt@kernel.org>
+ <20211021070929.23272-3-rppt@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021070929.23272-3-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:52 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
->
-> Now that force_fatal_sig exists it is unnecessary and a bit confusing
-> to use force_sigsegv in cases where the simpler force_fatal_sig is
-> wanted.  So change every instance we can to make the code clearer.
->
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->  arch/arc/kernel/process.c       | 2 +-
->  arch/m68k/kernel/traps.c        | 2 +-
->  arch/powerpc/kernel/signal_32.c | 2 +-
->  arch/powerpc/kernel/signal_64.c | 4 ++--
->  arch/s390/kernel/traps.c        | 2 +-
->  arch/um/kernel/trap.c           | 2 +-
->  arch/x86/kernel/vm86_32.c       | 2 +-
->  fs/exec.c                       | 2 +-
->  8 files changed, 9 insertions(+), 9 deletions(-)
+On Thu, Oct 21, 2021 at 10:09:29AM +0300, Mike Rapoport wrote:
+> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+> index f9383736fa0f..71419eb16e09 100644
+> --- a/drivers/acpi/tables.c
+> +++ b/drivers/acpi/tables.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/earlycpio.h>
+>  #include <linux/initrd.h>
+>  #include <linux/security.h>
+> +#include <linux/kmemleak.h>
+>  #include "internal.h"
+>  
+>  #ifdef CONFIG_ACPI_CUSTOM_DSDT
+> @@ -601,6 +602,8 @@ void __init acpi_table_upgrade(void)
+>  	 */
+>  	arch_reserve_mem_area(acpi_tables_addr, all_tables_size);
+>  
+> +	kmemleak_ignore_phys(acpi_tables_addr);
+> +
+>  	/*
+>  	 * early_ioremap only can remap 256k one time. If we map all
+>  	 * tables one time, we will hit the limit. Need to map chunks
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> index 59c1390cdf42..9da8835ba5a5 100644
+> --- a/drivers/of/of_reserved_mem.c
+> +++ b/drivers/of/of_reserved_mem.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/sort.h>
+>  #include <linux/slab.h>
+>  #include <linux/memblock.h>
+> +#include <linux/kmemleak.h>
+>  
+>  #include "of_private.h"
+>  
+> @@ -46,6 +47,7 @@ static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
+>  		err = memblock_mark_nomap(base, size);
+>  		if (err)
+>  			memblock_free(base, size);
+> +		kmemleak_ignore_phys(base);
+>  	}
+>  
+>  	return err;
 
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+More of a nitpick as there's no kmemleak scanning to race with during
+early boot: I'd normally call kmemleak_ignore_phys() before marking it
+nomap. Either way:
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
