@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAB4436184
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C0D436187
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhJUMW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:22:59 -0400
-Received: from mail-eopbgr1320133.outbound.protection.outlook.com ([40.107.132.133]:28496
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231297AbhJUMW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:22:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JVmUT5sIjWpc36k0/FNVd36V37xYb9heXvr+MXMx3CjcXsz566+ZwUUHYQIiG6RvLXI9ZMlzuU47hbDj3cSav1yNmYtKWRhKUciVOfWBJY6QIF4zfvq9UGLwGwS6BX4jCtylLA8iMVdkbhYtrl0wzvBbk3y0PjfBP7qtfQneY2Y+uiiFho74cbDRjI3tbPGhs4fX3AyOvppkucdCsGqnQFPB9iInUSQXrjLs5KSxVdojbui5YuyyET9xIHwJg1KNXOKXQhd+wUdgpsmb58qVyrc2SUYhYz0hVpwK1sFA1YwSiBFg041IqcB/Yi3EtGcEBgGEY5tT9b89MQcDKmUStA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BwFH0p6VosQCWgK9zuDvf5FIYxjHiW90JksQCgyWgNY=;
- b=oLdZwVTyMuuAbAwehlbSshBADy1yY9UTfzBKKunawgXJ2SkzkGpuIhdHqiN2C4lUjClALnm5OgUdiXduosxsiozg8vmn3qkd+jIjaxqa+Xy3I+t3TEU2CZhRSBwwxyfEJ28Y29PBIslc61EARyCOlnk7LLkTe0D8yhn6y93kfEAQAglfsL5LBUCPTixkStC+6SGjoAhZFu5EndGj0nlXaC87OG4/KnT50cSfDj1A+fQbMqcOxbwOLSzVnzLKlczk+3F6j48SF98wz+xviDBdrbioShFQ2oiGNekCOvKij/57VPMN+/GaaAHibC+VFuW29QbB3I8AushZyFIjQmD8xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BwFH0p6VosQCWgK9zuDvf5FIYxjHiW90JksQCgyWgNY=;
- b=QhxTwzuGnzUW6yc/IRQrUj+Dzhe4bLWaJNF9fLCugOuuyyYKyLZjku/Eqh9aejg37NNtFVVgm7OA4DHMlStVCcCBN8i1JOqcKcsdxpjP3x0f5XYkBb7Nf8oZg/GuS2JwNWgIDhtZRLACBmajjEeH8w5sKXhxJUwspeMOhulgN+Y=
-Authentication-Results: lwfinger.net; dkim=none (message not signed)
- header.d=none;lwfinger.net; dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB3727.apcprd06.prod.outlook.com (2603:1096:4:d9::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.16; Thu, 21 Oct 2021 12:20:40 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
- 12:20:40 +0000
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] staging: r8188eu: Use memdup_user instead of kmalloc/copy_from_user
-Date:   Thu, 21 Oct 2021 08:20:02 -0400
-Message-Id: <20211021122015.6974-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR03CA0058.apcprd03.prod.outlook.com
- (2603:1096:202:17::28) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+        id S231770AbhJUMXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:23:18 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:50171 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230391AbhJUMXO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:23:14 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M5PVb-1meMPd2tc5-001TQ7; Thu, 21 Oct 2021 14:20:56 +0200
+Received: by mail-wr1-f51.google.com with SMTP id u18so300482wrg.5;
+        Thu, 21 Oct 2021 05:20:56 -0700 (PDT)
+X-Gm-Message-State: AOAM533JGOF6ns2ouO1yPdioCFzTLSGlc5OAAukSX7VsNLyiYcrd8Xv1
+        YvxqyKb7lE/niXbr5JLMi3e56u3ke/2oe6gpc5Q=
+X-Google-Smtp-Source: ABdhPJwJOYZEntHVSFnBcY3kJm3ICu3lH/OpB0pul2wHC3aZtyh/WLsgKixyQ1gvT07T8Fw6b7nCs2vLRylHfqhAxF8=
+X-Received: by 2002:adf:ab46:: with SMTP id r6mr6927135wrc.71.1634818856286;
+ Thu, 21 Oct 2021 05:20:56 -0700 (PDT)
 MIME-Version: 1.0
-Received: from localhost.localdomain (203.90.234.87) by HK2PR03CA0058.apcprd03.prod.outlook.com (2603:1096:202:17::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend Transport; Thu, 21 Oct 2021 12:20:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b95954ed-099b-42e2-10ae-08d9948d31bc
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3727:
-X-Microsoft-Antispam-PRVS: <SG2PR06MB3727DAF49FA6E9C97A46DC90ABBF9@SG2PR06MB3727.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: k4ACjoCvagGXvjT9R11ZFNLbrNZD2qYSL478JFDafKjp5y51v2d6WHGQcm/xRJaNobBqxrhSopk8PfLGZkqd9YQz4XH/cVIb6SpcUWmWVle6pM31FilUXmV2qMjFNLypukrKnStUJqTs6TVhA0lhbxXKZN9sfHnMNKKCn99Ek1t00hhkxILFKSucx4ijacm2lg59WrjpUeXTtJLvM7gEKr+r4+6UStxp2ypemZCZyqQZASH6UYHuj6bFpsuSorVVV1M0CDxe08IWw79/Hprv4dLR0WcRiErR4rRY5/mWKRErqlUqGyB7njMCxh8YcrgNn3IzPj6SwWk1NEKeTap8UL8eMDiJChwbnQhZ0DPnQmm+zloXqUiIpaF1+9gRY3mgP/i686NtjvaBRV2GgDHfrz3eEgWiVAZMwcq2fm6xCp2TYeVjZS0xFOamAOqwU6g5yyxb4Kf8Yf3CIkYqAsv+PuR3VK2EAm0h3KHMUgiL+9KJhs5vCSHjrX+cURpiAuLah+omgo7JNMQMAYEg9DcgXCqKAkr3a2LRLEPe6kq/j+3RyqHNTXpVjudLjSaAAIYhwwzYUl5hKabE4fZkMHu2auZXJofPF9m8ScQDjn7j1WDB/fioihpCMXgBou+y54ARH+I378vcT1qztUHjw5acyd5cV6e5Pdo6tKJl20AWGCdIIuQS/8hAzoT9rhSZkXvKh4nBfaAJjz4jfh544+F9hg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(110136005)(2906002)(36756003)(316002)(26005)(2616005)(186003)(66946007)(66476007)(6486002)(66556008)(83380400001)(52116002)(956004)(508600001)(38350700002)(38100700002)(1076003)(6512007)(6506007)(8936002)(5660300002)(4326008)(86362001)(107886003)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?o+6U2rpNdh2hf5k1QhVBOCDLSKGkPlv+mvFLULKAxzsk+q6jRaEsDoV/gYpW?=
- =?us-ascii?Q?shClID0T2w3SWqnvNmyvtKOtzIZneazA9YDnVgb/G2TEKfUKQ4ifO1d+4K55?=
- =?us-ascii?Q?cPDkqAjryoujiMU7Hnx0eUkJsPiLYIzuYrn6xEhdQgTidyia91CtdOW1f5VV?=
- =?us-ascii?Q?r0LT8BBpUS1i+NN4Ka85F8MlP3JMzDTA0Ju0nwBw1SrydSKx07TgYVFRXre2?=
- =?us-ascii?Q?60OX2KXqA7zZEAHbd3CL9MgrREeHpqZO7JOmkPrr5VjbwxIep3HUhZEL/cbR?=
- =?us-ascii?Q?PmK66+RmK7ykRYuvzBtCsh6/G09ZiNOr17VMX3zdOrmjDfEEIwaV+W4RP1sp?=
- =?us-ascii?Q?+pz9lqRy/L5hkdSLGyaju71U+lzKodPHVOGf86iLq9sbyaRDjT+jWTrt5O7Q?=
- =?us-ascii?Q?N6RM8IipA2iY7C7SGnnj+4Mj3ZfK9G1ewnsihUGpPoqLg3UpEPigNjlZKRvb?=
- =?us-ascii?Q?6k4I5LrticpU39gLulFG4NRlAahXXTFtDUJHSl9/kOyLVeR7A20d0z/4UPh9?=
- =?us-ascii?Q?v2BmXDVPQ2tV9ntCZ7ECZqHwL2R7tymrOafXvAVjmhUq60lIYN9R4KSvMh2N?=
- =?us-ascii?Q?abKWKMOxLpVK4CXWiuu8kcWLA5TIO9VJyK7Psmt2H9MiFBWDBFxRYk0SREbV?=
- =?us-ascii?Q?YN4EpY5+aQnxkGEilcZ9Jv/d5PhTnCGQ+6X6lI6C01Om2Sq8t1K1Yoj5CFpK?=
- =?us-ascii?Q?5MrjysHrm7hle8ZqAq28f8TxU5JWdUoKMIaXMdujxMIMk/CVY/9JhL2B7Zwk?=
- =?us-ascii?Q?G4Twfl1G1mOTg7lvBlVgvDS6t0asj/zFl6d6+0M1EnDXG4yFWgNFmKHmrdNR?=
- =?us-ascii?Q?GN7WPdcFZzLDGpZN2F2MDCcguRc8I7l6XK0XhSgAoQSMmkxBG0RIGMaa8ngZ?=
- =?us-ascii?Q?R4kqA5e6BYlC3UxVh7+MJiFViDYS4k7eVBDXPKzhbQ9OjgQ2sqU+KejVeUDL?=
- =?us-ascii?Q?3kOtptKJhHNwLYQtkP0qOiNCjGGJ1saT8sOCrIyaId0iQhKPO7dWsQvbpfYB?=
- =?us-ascii?Q?/T1JLvatJgANdxjPdPgw8AJqpoXOL+wWyQHNDbk5AbKrLCTeZQ5D0Erjr423?=
- =?us-ascii?Q?RRm9NEnSD61E7gGDSEQS0CAltvivtMMyMtJGz/OGkexJ4CBEQfvcXJ+MiOwf?=
- =?us-ascii?Q?dpjAgTOeSYdOgtDYtMeScUSozZZ85bdUkQqBw0vc/wlw++Y0tA2IMTzLaLbN?=
- =?us-ascii?Q?gSRGcod7/lO/Jq9T4YyTLUbALs9mcnP71oyDl9MldjzIWgDxfW2C3q/R5FaK?=
- =?us-ascii?Q?9ckqgMr1YiiwM2uu1OTj/L4FuoqKGT3a+EBWlMjWKCMYj4xySsl8ybSUX2iA?=
- =?us-ascii?Q?4abn0tZWvGRDeefR9brly+NhP1MM2NnTkZ+cS3Xf0xdslBYQCIVNhvUYHU1i?=
- =?us-ascii?Q?pk0h+WYez8DtZEbqoQtJl8C21wJsVvKcUXY7tohdhf/Ryh79mWkVXQDU+pOm?=
- =?us-ascii?Q?Laww/kAmf/Q=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b95954ed-099b-42e2-10ae-08d9948d31bc
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 12:20:39.7362
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 11126903@vivo.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3727
+References: <CA+G9fYvv6YsRM2Qf7AGMo3nwqkuAt_D1i+6H_ApHk3kmScyDyg@mail.gmail.com>
+In-Reply-To: <CA+G9fYvv6YsRM2Qf7AGMo3nwqkuAt_D1i+6H_ApHk3kmScyDyg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 21 Oct 2021 14:20:40 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a21U0jzMOUWp1rhrNrD3szxxrwo59SBYG89xpYJGXteRA@mail.gmail.com>
+Message-ID: <CAK8P3a21U0jzMOUWp1rhrNrD3szxxrwo59SBYG89xpYJGXteRA@mail.gmail.com>
+Subject: Re: BUG: KASAN: use-after-free in blk_mq_sched_tags_teardown
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>, lkft-triage@lists.linaro.org,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh R <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:66P/+ev02kmBlPErcfR57m0taCBfxBrGQQXFOoqIBzD7gd1Dw+m
+ 0wwh9n9wZtNiXbmKWPGRvbA2dItyIPyl8irzFB1OMy/iCeloP9ttl6kleKhvZlVBXQu2npb
+ jaT2Y7lgeCB46scqe3UraqgaiXDmK2JJRXHRQ6PxnM7uBMGE98ih63SenBzJPUqOmaUArLv
+ 9iSiOSlwsJb4E9SsBrIGw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PSTYbNgSsAk=:+oGugXyW1UMvelmOCL0YVp
+ C+uE0k86LJjmW8jb6oQOlKAUYdn5GXB+rL7ion09GbZhIxv7nZHJz0gSF3wbSTl8h/mA1XjIu
+ 9DvckaX4sjfiX4aiWzOocTYmHNCEHUe9pNFS3qfoejK6YgmQEAzDQS8VQ1zWOB6i9E9yJLbew
+ YD4UJDJ+mZ5MZpeDR9+9U1zTqv6+Pu2L9LvKJiq++5vQCiEC4TiiFKCMFa2rq95kGJLo+5j+d
+ iZf1x9Voll60g+jJrp/yalVPpdb6ALiUq8uD0EgQnoEXElHtjGxBwkxbLooWU3FbThlA3R6Qs
+ 1DW9ok//+KjwE0kwX244OvmZB9mtNzHzIxHJwy/3GFu/Uq5JUzk7wfqEW+64PwXeOaPZMgsAv
+ vOcbOhXE6SK2Z8NX/Pd3qgU3zXBBRwLt70bP9na2xLVrJJLwyz2lCQAcP5JrEEW0DrwoyNNHH
+ zc9ybhi0rMZ40Vdudt9LUxgntfFLqqEBuIddvMt2rJ9fF9uzO0RmcMFkRlohD8h3IyU1p6+Ej
+ 8hpA55FmQrz5VhrTSVAfvvU+C/tNpVTj5/ZnhfIPi3TC4nvtOoglPivDk18dNmAf4OJtGwGy/
+ 7vkQtAZkEpV+wAkE2nHoVnVdBz/f68RWLsx2Sp5FsfTBuMZBAHpy0piMmjgH3WtmbDY/2TH08
+ jh80rJUf9UhaVPDFw+g0XMVBA8/SAQi1W3DRTcg+s7kXslDUph0jTGv0LbFCT1PfXSCNW3IXH
+ r56X8IMUKGHU+TXndwmRhwYWz/lbewaDDnQ6b4cM+9iaXug4vsZEUS+g9Q+Hmx90LD2iPkUaw
+ lyQ/RXF5h6LyLqadYlyoH+0ez7in4Pg8bIQKwh6ngxbYyCWlcI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following coccicheck warning:
-./drivers/staging/r8188eu/os_dep/ioctl_linux.c:1986:8-15: WARNING
-opportunity for memdup_user.
+On Thu, Oct 21, 2021 at 2:01 PM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> Following KASAN BUG noticed on linux next 20211021 while booting qemu-arm64
+> with allmodconfig.
 
-Use memdup_user rather than duplicating its implementation, which
-makes code simple and easy to understand.
+> [   77.730367][    T5] Freed by task 1:
+> [   77.732009][    T5]  kasan_save_stack+0x30/0x80
+> [   77.734083][    T5]  kasan_set_track+0x30/0x80
+> [   77.736085][    T5]  kasan_set_free_info+0x34/0x80
+> [   77.738261][    T5]  ____kasan_slab_free+0xfc/0x1c0
+> [   77.740433][    T5]  __kasan_slab_free+0x3c/0x80
+> [   77.742518][    T5]  slab_free_freelist_hook+0x1d4/0x2c0
+> [   77.744892][    T5]  kfree+0x160/0x300
+> [   77.746618][    T5]  blktrans_dev_release+0x64/0x100
+> [   77.748821][    T5]  del_mtd_blktrans_dev+0x1c0/0x240
+> [   77.751079][    T5]  mtdblock_remove_dev+0x28/0x80
+> [   77.753246][    T5]  blktrans_notify_remove+0xa4/0x140
+> [   77.755507][    T5]  del_mtd_device+0x84/0x1c0
+> [   77.757541][    T5]  mtd_device_unregister+0x90/0xc0
+> [   77.759764][    T5]  physmap_flash_remove+0x58/0x180
+> [   77.762012][    T5]  platform_remove+0x48/0xc0
+> [   77.764032][    T5]  __device_release_driver+0x1dc/0x340
+> [   77.766393][    T5]  driver_detach+0x138/0x200
+> [   77.768396][    T5]  bus_remove_driver+0x100/0x180
+> [   77.770554][    T5]  driver_unregister+0x64/0xc0
+> [   77.772633][    T5]  platform_driver_unregister+0x28/0x80
+> [   77.775042][    T5]  physmap_init+0xc4/0xfc
+> [   77.776994][    T5]  do_one_initcall+0xb0/0x2c0
+> [   77.779028][    T5]  do_initcalls+0x17c/0x244
+> [   77.781023][    T5]  kernel_init_freeable+0x2d4/0x378
+> [   77.783269][    T5]  kernel_init+0x34/0x180
+> [   77.785196][    T5]  ret_from_fork+0x10/0x20
+> [   77.787135][    T5]
+> ...
+> full boot log link,
+> https://pastebin.com/xL5MYSD6
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+I think this is related to an earlier bug that Anders reported a while ago,
+see [1]. I had looked at it originally, and found that this probably a
+device that gets probed from CONFIG_MTD_PHYSMAP_COMPAT
+and then freed again immediately after we find the device does not
+exist, starting with commit dcb3e137ce9b ("[MTD] physmap: make
+physmap compat explicit").
 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 4f0ae821d193..301a29984fad 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -1983,14 +1983,9 @@ static int rtw_wx_read32(struct net_device *dev,
- 	padapter = (struct adapter *)rtw_netdev_priv(dev);
- 	p = &wrqu->data;
- 	len = p->length;
--	ptmp = kmalloc(len, GFP_KERNEL);
--	if (!ptmp)
--		return -ENOMEM;
--
--	if (copy_from_user(ptmp, p->pointer, len)) {
--		kfree(ptmp);
--		return -EFAULT;
--	}
-+	ptmp = memdup_user(p->pointer, len);
-+	if (IS_ERR(ptmp))
-+		return PTR_ERR(ptmp);
- 
- 	bytes = 0;
- 	addr = 0;
--- 
-2.20.1
+It's not really the fault of CONFIG_MTD_PHYSMAP_COMPAT
+describing a nonexisting device, but instead it's something in the
+cleanup path.
 
+        Arnd
+
+[1] https://lore.kernel.org/linux-mtd/CADYN=9Kjw_3cDGAvh9=+nNwdYof1kUPKG-SUOP5FsQhZ+gz62Q@mail.gmail.com/
