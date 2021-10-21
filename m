@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B275435939
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1638143599C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhJUDrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 23:47:20 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14836 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbhJUDrT (ORCPT
+        id S229687AbhJUEBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 00:01:10 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:36024 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229450AbhJUEBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 23:47:19 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HZYC941jLz90MY;
-        Thu, 21 Oct 2021 11:40:05 +0800 (CST)
-Received: from dggpemm500015.china.huawei.com (7.185.36.181) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 11:45:01 +0800
-Received: from huawei.com (10.175.103.91) by dggpemm500015.china.huawei.com
- (7.185.36.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 21 Oct
- 2021 11:45:01 +0800
-From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
-CC:     <weiyongjun1@huawei.com>, <huawei.libin@huawei.com>,
-        <rostedt@goodmis.org>, <bristot@kernel.org>, <mingo@redhat.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] trace/hwlat: Make internal symbol static
-Date:   Thu, 21 Oct 2021 11:52:25 +0800
-Message-ID: <20211021035225.1050685-1-bobo.shaobowang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 21 Oct 2021 00:01:09 -0400
+X-UUID: bac1888e3b3d40c59257dc7eb9aad423-20211021
+X-UUID: bac1888e3b3d40c59257dc7eb9aad423-20211021
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <yc.hung@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1747227135; Thu, 21 Oct 2021 11:58:46 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 21 Oct 2021 11:58:45 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 21 Oct
+ 2021 11:58:45 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 21 Oct 2021 11:58:45 +0800
+From:   YC Hung <yc.hung@mediatek.com>
+To:     <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <yc.hung@mediatek.com>, <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <daniel.baluta@nxp.com>, <trevor.wu@mediatek.com>,
+        <allen-kh.cheng@mediatek.com>
+Subject: [PATCH v2 0/2] Add code to manage DSP clocks and provide dts-binding document
+Date:   Thu, 21 Oct 2021 11:58:39 +0800
+Message-ID: <20211021035841.2365-1-yc.hung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500015.china.huawei.com (7.185.36.181)
-X-CFilter-Loop: Reflected
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sparse tool complains as follows:
+From: "yc.hung" <yc.hung@mediatek.com>
 
-kernel/trace/trace_hwlat.c:82:27: warning: symbol 'hwlat_single_cpu_data' was not declared. Should it be static?
-kernel/trace/trace_hwlat.c:83:1: warning: symbol '__pcpu_scope_hwlat_per_cpu_data' was not declared. Should it be static?
+This code is based on top of SOF topic/sof-dev branch and we want to have a review 
+with ALSA and device Tree communities the it will be merged to SOF tree and then
+merged into ALSA tree. It provides two patches, one is for mt8195 dsp clocks related.
+Another is for mt8195 dsp dts binding decription.
 
-This symbol is not used outside of trace_hwlat.c, so this commit
-marks it static.
+YC Hung (2):
+  ASoC: SOF: mediatek: Add mt8195 dsp clock support
+  dt-bindings: dsp: mediatek: Add mt8195 DSP binding support
 
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
----
- kernel/trace/trace_hwlat.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../bindings/dsp/mtk,mt8195-dsp.yaml          | 139 +++++++++++++++
+ sound/soc/sof/mediatek/mt8195/Makefile        |   2 +-
+ sound/soc/sof/mediatek/mt8195/mt8195-clk.c    | 164 ++++++++++++++++++
+ sound/soc/sof/mediatek/mt8195/mt8195-clk.h    |  29 ++++
+ sound/soc/sof/mediatek/mt8195/mt8195.c        |  23 ++-
+ 5 files changed, 354 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+ create mode 100644 sound/soc/sof/mediatek/mt8195/mt8195-clk.c
+ create mode 100644 sound/soc/sof/mediatek/mt8195/mt8195-clk.h
 
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 1b83d75eb103..263dde9016e4 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -79,8 +79,8 @@ struct hwlat_kthread_data {
- 	int			nmi_cpu;
- };
- 
--struct hwlat_kthread_data hwlat_single_cpu_data;
--DEFINE_PER_CPU(struct hwlat_kthread_data, hwlat_per_cpu_data);
-+static struct hwlat_kthread_data hwlat_single_cpu_data;
-+static DEFINE_PER_CPU(struct hwlat_kthread_data, hwlat_per_cpu_data);
- 
- /* Tells NMIs to call back to the hwlat tracer to record timestamps */
- bool trace_hwlat_callback_enabled;
 -- 
-2.25.1
+2.18.0
 
