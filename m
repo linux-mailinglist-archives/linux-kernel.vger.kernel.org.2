@@ -2,99 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF999436A0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF2F436A0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhJUSHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:07:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232698AbhJUSGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:06:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D20F1619EE;
-        Thu, 21 Oct 2021 18:04:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634839473;
-        bh=lGh0XeqSZNuW0fqplNWzUDedNwAXO4pvwLSl9pHgoZY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EEj3xxBawH/cZAnovGxNz2vMTaV3p3XTSa1IEaFTRbJMsCDVlO1XuCMHbnIlbmzuV
-         veDGmUuPOiqTCCiAld06Qt/6f4IEUK8GjEZdjGjrW7prpQv3bJ4pNi8ZeQFvPzl1/V
-         U66JnX8qMzz+MnefSv3dQVp/it/IMRivlzi1wx2mWNRKliC6FpgMz6iYVRQATKep48
-         nb8w3cc+R41alXXuncus9UpMV8kKBncmT9LLfMAZf+CbDpqv5sf8irj/7oUXlW8dzv
-         XUGNoJFj4R3BHfz8qOuzjvFIZXtrLDJHJAnSORRPVDE11HBbkyDWUF7RtY4G/Qfkq1
-         MSZ7Jq5oMC8bw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        "kernelci.org bot" <bot@kernelci.org>
-Subject: [PATCH] mm/memory_failure: Initialize extra_pins in me_pagecache_clean()
-Date:   Thu, 21 Oct 2021 11:03:37 -0700
-Message-Id: <20211021180336.2328086-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.1.637.gf443b226ca
+        id S232520AbhJUSHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:07:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23126 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232505AbhJUSHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 14:07:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634839504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c0lV1SQm+A/6nuLSjE1bEl9hT+k65LUuD9ohANoqFLs=;
+        b=hZDydXGcj58+c/pswMQ0b1cvibGPfi8WtzO8pIEepCgcaDdhFxzPF3afoqyZuYPj8C83xr
+        Zt6Cd43NgZ6xlZQGsFZYVWgx5n6Qd3yK8zV2BnNXxDxDVQeSHqKgQML+/jxvwhYvpJaDql
+        +pdWZstgnKbYvJ4GuN/wqf0XZBwFysY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-hZ17UqHQNxCGp75wNuNVrw-1; Thu, 21 Oct 2021 14:04:59 -0400
+X-MC-Unique: hZ17UqHQNxCGp75wNuNVrw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3846B80668D;
+        Thu, 21 Oct 2021 18:04:57 +0000 (UTC)
+Received: from llong.remote.csb (unknown [10.22.18.214])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9DD6119D9F;
+        Thu, 21 Oct 2021 18:04:55 +0000 (UTC)
+Subject: Re: [PATCH] locking: Generic ticket lock
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        =?UTF-8?Q?Christoph_M=c3=bcllner?= <christophm30@gmail.com>,
+        Stafford Horne <shorne@gmail.com>
+References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Message-ID: <4de96b16-a146-f82a-a7f2-706dba4f901f@redhat.com>
+Date:   Thu, 21 Oct 2021 14:04:55 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+On 10/21/21 9:05 AM, Peter Zijlstra wrote:
+> There's currently a number of architectures that want/have graduated
+> from test-and-set locks and are looking at qspinlock.
+>
+> *HOWEVER* qspinlock is very complicated and requires a lot of an
+> architecture to actually work correctly. Specifically it requires
+> forward progress between a fair number of atomic primitives, including
+> an xchg16 operation, which I've seen a fair number of fundamentally
+> broken implementations of in the tree (specifically for qspinlock no
+> less).
+>
+> The benefit of qspinlock over ticket lock is also non-obvious, esp.
+> at low contention (the vast majority of cases in the kernel), and it
+> takes a fairly large number of CPUs (typically also NUMA) to make
+> qspinlock beat ticket locks.
+>
+> Esp. things like ARM64's WFE can move the balance a lot in favour of
+> simpler locks by reducing the cacheline pressure due to waiters (see
+> their smp_cond_load_acquire() implementation for details).
+>
+> Unless you've audited qspinlock for your architecture and found it
+> sound *and* can show actual benefit, simpler is better.
+>
+> Therefore provide ticket locks, which depend on a single atomic
+> operation (fetch_add) while still providing fairness.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>   include/asm-generic/qspinlock.h         |   30 +++++++++
+>   include/asm-generic/ticket_lock_types.h |   11 +++
+>   include/asm-generic/ticket_lock.h       |   97 ++++++++++++++++++++++++++++++++
+>   3 files changed, 138 insertions(+)
+>
+> --- a/include/asm-generic/qspinlock.h
+> +++ b/include/asm-generic/qspinlock.h
+> @@ -2,6 +2,36 @@
+>   /*
+>    * Queued spinlock
+>    *
+> + * A 'generic' spinlock implementation that is based on MCS locks. An
+> + * architecture that's looking for a 'generic' spinlock, please first consider
+> + * ticket_lock.h and only come looking here when you've considered all the
+> + * constraints below and can show your hardware does actually perform better
+> + * with qspinlock.
+> + *
+> + *
+> + * It relies on smp_store_release() + atomic_*_acquire() to be RCsc (or no
+> + * weaker than RCtso if you're Power, also see smp_mb__after_unlock_lock()),
+> + *
+> + * It relies on a far greater (compared to ticket_lock.h) set of atomic
+> + * operations to behave well together, please audit them carefully to ensure
+> + * they all have forward progress. Many atomic operations may default to
+> + * cmpxchg() loops which will not have good forward progress properties on
+> + * LL/SC architectures.
+> + *
+> + * One notable example is atomic_fetch_or_acquire(), which x86 cannot (cheaply)
+> + * do. Carefully read the patches that introduced
+> + * queued_fetch_set_pending_acquire().
+> + *
+> + * It also heavily relies on mixed size atomic operations, in specific it
+> + * requires architectures to have xchg16; something which many LL/SC
+> + * architectures need to implement as a 32bit and+or in order to satisfy the
+> + * forward progress guarantees mentioned above.
+> + *
+> + * Further reading on mixed size atomics that might be relevant:
+> + *
+> + *   http://www.cl.cam.ac.uk/~pes20/popl17/mixed-size.pdf
+> + *
+> + *
+>    * (C) Copyright 2013-2015 Hewlett-Packard Development Company, L.P.
+>    * (C) Copyright 2015 Hewlett-Packard Enterprise Development LP
+>    *
+> --- /dev/null
+> +++ b/include/asm-generic/ticket_lock_types.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __ASM_GENERIC_TICKET_LOCK_TYPES_H
+> +#define __ASM_GENERIC_TICKET_LOCK_TYPES_H
+> +
+> +#include <linux/types.h>
+> +typedef atomic_t arch_spinlock_t;
+> +
+> +#define __ARCH_SPIN_LOCK_UNLOCKED	ATOMIC_INIT(0)
+> +
+> +#endif /* __ASM_GENERIC_TICKET_LOCK_TYPES_H */
+> --- /dev/null
+> +++ b/include/asm-generic/ticket_lock.h
+> @@ -0,0 +1,97 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +/*
+> + * 'Generic' ticket lock implementation.
+> + *
+> + * It relies on atomic_fetch_add() having well defined forward progress
+> + * guarantees under contention. If your architecture cannot provide this, stick
+> + * to a test-and-set lock.
+> + *
+> + * It also relies on atomic_fetch_add() being safe vs smp_store_release() on a
+> + * sub-word of the value. This is generally true for anything LL/SC although
+> + * you'd be hard pressed to find anything useful in architecture specifications
+> + * about this. If your architecture cannot do this you might be better off with
+> + * a test-and-set.
+> + *
+> + * It relies on smp_store_release() + atomic_*_acquire() to be RCsc (or no
+> + * weaker than RCtso if you're Power, also see smp_mb__after_unlock_lock()),
+> + *
+> + * The implementation uses smp_cond_load_acquire() to spin, so if the
+> + * architecture has WFE like instructions to sleep instead of poll for word
+> + * modifications be sure to implement that (see ARM64 for example).
+> + *
+> + */
+> +
+> +#ifndef __ASM_GENERIC_TICKET_LOCK_H
+> +#define __ASM_GENERIC_TICKET_LOCK_H
+> +
+> +#include <linux/atomic.h>
+> +#include <asm/ticket_lock_types.h>
+> +
+> +#define ONE_TICKET	(1 << 16)
+> +#define __ticket(val)	(u16)((val) >> 16)
+> +#define __owner(val)	(u16)((val) & 0xffff)
+> +
+> +static __always_inline bool __ticket_is_locked(u32 val)
+> +{
+> +	return __ticket(val) != __owner(val);
+> +}
+> +
+> +static __always_inline void ticket_lock(arch_spinlock_t *lock)
+> +{
+> +	u32 val = atomic_fetch_add_acquire(ONE_TICKET, lock);
+> +	u16 ticket = __ticket(val);
+> +
+> +	if (ticket == __owner(val))
+> +		return;
+> +
+> +	atomic_cond_read_acquire(lock, ticket == __owner(VAL));
+> +}
+> +
+> +static __always_inline bool ticket_trylock(arch_spinlock_t *lock)
+> +{
+> +	u32 old = atomic_read(lock);
+> +
+> +	if (__ticket_is_locked(old))
+> +		return false;
+> +
+> +	return atomic_try_cmpxchg_acquire(lock, &old, old + ONE_TICKET);
+> +}
+> +
+> +static __always_inline void ticket_unlock(arch_spinlock_t *lock)
+> +{
+> +	u16 *ptr = (u16 *)lock + __is_defined(__BIG_ENDIAN);
+> +	u32 val = atomic_read(lock);
+> +
+> +	smp_store_release(ptr, __owner(val) + 1);
+> +}
+> +
+> +static __always_inline int ticket_is_contended(arch_spinlock_t *lock)
+> +{
+> +	u32 val = atomic_read(lock);
+> +
+> +	return (__ticket(val) - __owner(val)) > 1;
+Nit: The left side is unsigned, but the right is signed. I think you are 
+relying on the implicit signed to unsigned conversion. It may be a bit 
+clearer if you use 1U instead.
+> +}
+> +
+> +static __always_inline int ticket_is_locked(arch_spinlock_t *lock)
+> +{
+> +	return __ticket_is_locked(atomic_read(lock));
+> +}
+> +
+> +static __always_inline int ticket_value_unlocked(arch_spinlock_t lock)
+> +{
+> +	return !__ticket_is_locked(lock.counter);
+> +}
+> +
+> +#undef __owner
+> +#undef __ticket
+> +#undef ONE_TICKET
+> +
+> +#define arch_spin_lock(l)		ticket_lock(l)
+> +#define arch_spin_trylock(l)		ticket_trylock(l)
+> +#define arch_spin_unlock(l)		ticket_unlock(l)
+> +#define arch_spin_is_locked(l)		ticket_is_locked(l)
+> +#define arch_spin_is_contended(l)	ticket_is_contended(l)
+> +#define arch_spin_value_unlocked(l)	ticket_value_unlocked(l)
+> +
+> +#endif /* __ASM_GENERIC_TICKET_LOCK_H */
 
-mm/memory-failure.c:892:6: error: variable 'extra_pins' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-        if (!mapping) {
-            ^~~~~~~~
-mm/memory-failure.c:915:32: note: uninitialized use occurs here
-        if (has_extra_refcount(ps, p, extra_pins))
-                                      ^~~~~~~~~~
-mm/memory-failure.c:892:2: note: remove the 'if' if its condition is always false
-        if (!mapping) {
-        ^~~~~~~~~~~~~~~
-mm/memory-failure.c:879:6: error: variable 'extra_pins' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-        if (PageAnon(p)) {
-            ^~~~~~~~~~~
-mm/memory-failure.c:915:32: note: uninitialized use occurs here
-        if (has_extra_refcount(ps, p, extra_pins))
-                                      ^~~~~~~~~~
-mm/memory-failure.c:879:2: note: remove the 'if' if its condition is always false
-        if (PageAnon(p)) {
-        ^~~~~~~~~~~~~~~~~~
-mm/memory-failure.c:871:17: note: initialize the variable 'extra_pins' to silence this warning
-        bool extra_pins;
-                       ^
-                        = 0
-2 errors generated.
+Other than the nit above, the patch looks good to me.
 
-Initialize extra_pins to false so that it is not used uninitialized.
-
-Fixes: d882a43a0011 ("mm: shmem: don't truncate page if memory failure happens")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1487
-Reported-by: "kernelci.org bot" <bot@kernelci.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
-
-I am aware the fixes tag is not stable. It is there to convey this
-should be squashed into mm-shmem-dont-truncate-page-if-memory-failure-happens.patch.
-
- mm/memory-failure.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 3b04f0361a58..dba5f0098165 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -868,7 +868,7 @@ static int me_pagecache_clean(struct page_state *ps, struct page *p)
- {
- 	int ret;
- 	struct address_space *mapping;
--	bool extra_pins;
-+	bool extra_pins = false;
- 
- 	delete_from_lru_cache(p);
- 
--- 
-2.33.1.637.gf443b226ca
+Reviewed-by: Waiman Long <longman@redhat.com>
 
