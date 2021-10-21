@@ -2,191 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233A8436ABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBE6436AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhJUSn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:43:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25525 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230381AbhJUSnY (ORCPT
+        id S230020AbhJUSqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231472AbhJUSqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:43:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634841668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MWY1FdmcMYWp+TWFMNf9eB2WE06zN3EgHR6gfHOm49I=;
-        b=Qe642QptpXqGleVr7HZzqetPq9sSRXcoPqc0JG2NumfDh7xdjMg8bx3hS6qMxOhItoVgpO
-        ClSHn6ZtiJrWBEUieRjVQeV2SAgxr3VYv1roTo0P5qHoQNewIaYsbyWZ+r4V+Fyr0QP9mQ
-        ycOmPiC7IJkitJxoDKMB/TNHFNwu50g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-toGDsN4ZPaqlIe-RlPs61g-1; Thu, 21 Oct 2021 14:41:02 -0400
-X-MC-Unique: toGDsN4ZPaqlIe-RlPs61g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72CAF87950C;
-        Thu, 21 Oct 2021 18:41:00 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 17F13100238C;
-        Thu, 21 Oct 2021 18:40:46 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 8D488416C8AE; Thu, 21 Oct 2021 15:40:42 -0300 (-03)
-Date:   Thu, 21 Oct 2021 15:40:42 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [RFC][PATCH v2 11/11] context_tracking,x86: Fix text_poke_sync()
- vs NOHZ_FULL
-Message-ID: <20211021184042.GA19307@fuller.cnet>
-References: <20210929151723.162004989@infradead.org>
- <20210929152429.186930629@infradead.org>
- <20211021183935.GA9071@fuller.cnet>
+        Thu, 21 Oct 2021 14:46:16 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24C9C0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:43:59 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id u18so963513wrg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:43:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=HihTUTo5ENo8UN8nKvwlPsUn6I35WIIfYFDtca0WDLg=;
+        b=MF6TtrKeIXQVnGFpexkUtQsMS4FaDX0GUNt5WICN5ot947ON4Uv9kge/syuSZMkzfI
+         CXPI665K5XXDAhIAMwOpeA/IZ7oMu/p8ZJrPDonTlPqwfX7pRslK9DGKzhBx6GfpHyi8
+         sr8T6y2wCenCNbufhEspHWLb6YAByuDxcth4rKbEBVY4KoaHhAVzWaG5Bbb27cU7FK1J
+         Id+DVNUDyjPz4E2oWKo2jZWzsR1AlWl/P9EbLbA8aEzx3o/d3czd6Q7AFSvBh7fw4C+o
+         ebsqc+EzNz73Tchq/QBC/RfNfl3mt5NZ6zTS421jAUnlpx2JzI9rWl90cWptrj4Xrs0s
+         hUKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=HihTUTo5ENo8UN8nKvwlPsUn6I35WIIfYFDtca0WDLg=;
+        b=Hosc6z2gcs2/vmoQDAYnqkrjrcNYvtiHs3TOXF9GkD13s71JKbvgNGAgvNHOob+t1I
+         bjZP2aoZMV2SDydMZP7/RXwC6JQ52WZ+BxiezQznQWhJD+1e6PFLlVh5DS78Tr6u5vv4
+         GRiRApQ2BgcEyZF1qM1rYmOdopxSx/LxEqiOJ3gTBWa9TfKRaYshszGo28kdJqzISSPS
+         FpCReOAhRiQypdSedrXONIsxE5I22UDhVC5524eGH7wQ83ajGj0EBDTB2+IpHlQHubqW
+         OtuYTbFhk99xevqTS8J7Lz5s63Yk6+VjuHByY+byUDjT6ujV3vLJqe2IKmMINMs0QUuA
+         bdMg==
+X-Gm-Message-State: AOAM530uKj0EtAlJymPwS5CIDGD/gNr0pZujKQT7xQ02uXysOGd1Fmvv
+        R3pt3qet2z0ewa7M+rkOWtMtCg==
+X-Google-Smtp-Source: ABdhPJydXCJ634sbgbf5qTw+Af+syeNJNNCAHEJOrEiLmygTS67QwFaTIff78u//isP1aCDWX0yO5g==
+X-Received: by 2002:adf:f902:: with SMTP id b2mr9532521wrr.265.1634841838272;
+        Thu, 21 Oct 2021 11:43:58 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id l124sm9421388wml.8.2021.10.21.11.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 11:43:57 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 19:43:55 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 6/9] mfd: max77714: Add driver for Maxim MAX77714 PMIC
+Message-ID: <YXG060evUw8rnR3O@google.com>
+References: <20211019145919.7327-1-luca@lucaceresoli.net>
+ <20211019145919.7327-7-luca@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211021183935.GA9071@fuller.cnet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211019145919.7327-7-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+CC Nicolas.
+On Tue, 19 Oct 2021, Luca Ceresoli wrote:
 
-On Thu, Oct 21, 2021 at 03:39:35PM -0300, Marcelo Tosatti wrote:
-> Peter,
+> Add a simple driver for the Maxim MAX77714 PMIC, supporting RTC and
+> watchdog only.
 > 
-> static __always_inline void arch_exit_to_user_mode(void)
-> {
->         mds_user_clear_cpu_buffers();
-> }
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 > 
-> /**
->  * mds_user_clear_cpu_buffers - Mitigation for MDS and TAA vulnerability
->  *
->  * Clear CPU buffers if the corresponding static key is enabled
->  */
-> static __always_inline void mds_user_clear_cpu_buffers(void)
-> {
->         if (static_branch_likely(&mds_user_clear))
->                 mds_clear_cpu_buffers();
-> }
+> ---
 > 
-> We were discussing how to perform objtool style validation 
-> that no code after the check for 
+> Changes in v2:
+>  - fix "watchdog" word in heading comment (Guenter Roeck)
+>  - move struct max77714 to .c file (Krzysztof Kozlowski)
+>  - change include guard format (Krzysztof Kozlowski)
+>  - allow building as a module (Krzysztof Kozlowski)
+>  - remove of_match_ptr usage (Krzysztof Kozlowski / lkp)
+>    (Reported-by: kernel test robot <lkp@intel.com>)
+> ---
+>  MAINTAINERS                  |   2 +
+>  drivers/mfd/Kconfig          |  14 +++
+>  drivers/mfd/Makefile         |   1 +
+>  drivers/mfd/max77714.c       | 165 +++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/max77714.h |  60 +++++++++++++
+>  5 files changed, 242 insertions(+)
+>  create mode 100644 drivers/mfd/max77714.c
+>  create mode 100644 include/linux/mfd/max77714.h
 > 
-> > +             /* NMI happens here and must still do/finish CT_WORK_n */
-> > +             sync_core();
-> 
-> But after the discussion with you, it seems doing the TLB checking 
-> and (also sync_core) checking very late/very early on exit/entry 
-> makes things easier to review.
-> 
-> Can then use a single atomic variable with USER/KERNEL state and cmpxchg
-> loops.
-> 
-> On Wed, Sep 29, 2021 at 05:17:34PM +0200, Peter Zijlstra wrote:
-> > Use the new context_tracking infrastructure to avoid disturbing
-> > userspace tasks when we rewrite kernel code.
-> > 
-> > XXX re-audit the entry code to make sure only the context_tracking
-> > static_branch is before hitting this code.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  arch/x86/include/asm/sync_core.h |    2 ++
-> >  arch/x86/kernel/alternative.c    |    8 +++++++-
-> >  include/linux/context_tracking.h |    1 +
-> >  kernel/context_tracking.c        |   12 ++++++++++++
-> >  4 files changed, 22 insertions(+), 1 deletion(-)
-> > 
-> > --- a/arch/x86/include/asm/sync_core.h
-> > +++ b/arch/x86/include/asm/sync_core.h
-> > @@ -87,6 +87,8 @@ static inline void sync_core(void)
-> >  	 */
-> >  	iret_to_self();
-> >  }
-> > +#define sync_core sync_core
-> > +
-> >  
-> >  /*
-> >   * Ensure that a core serializing instruction is issued before returning
-> > --- a/arch/x86/kernel/alternative.c
-> > +++ b/arch/x86/kernel/alternative.c
-> > @@ -18,6 +18,7 @@
-> >  #include <linux/mmu_context.h>
-> >  #include <linux/bsearch.h>
-> >  #include <linux/sync_core.h>
-> > +#include <linux/context_tracking.h>
-> >  #include <asm/text-patching.h>
-> >  #include <asm/alternative.h>
-> >  #include <asm/sections.h>
-> > @@ -924,9 +925,14 @@ static void do_sync_core(void *info)
-> >  	sync_core();
-> >  }
-> >  
-> > +static bool do_sync_core_cond(int cpu, void *info)
-> > +{
-> > +	return !context_tracking_set_cpu_work(cpu, CT_WORK_SYNC);
-> > +}
-> > +
-> >  void text_poke_sync(void)
-> >  {
-> > -	on_each_cpu(do_sync_core, NULL, 1);
-> > +	on_each_cpu_cond(do_sync_core_cond, do_sync_core, NULL, 1);
-> >  }
-> >  
-> >  struct text_poke_loc {
-> > --- a/include/linux/context_tracking.h
-> > +++ b/include/linux/context_tracking.h
-> > @@ -11,6 +11,7 @@
-> >  
-> >  enum ct_work {
-> >  	CT_WORK_KLP = 1,
-> > +	CT_WORK_SYNC = 2,
-> >  };
-> >  
-> >  /*
-> > --- a/kernel/context_tracking.c
-> > +++ b/kernel/context_tracking.c
-> > @@ -51,6 +51,10 @@ static __always_inline void context_trac
-> >  	__this_cpu_dec(context_tracking.recursion);
-> >  }
-> >  
-> > +#ifndef sync_core
-> > +static inline void sync_core(void) { }
-> > +#endif
-> > +
-> >  /* CT_WORK_n, must be noinstr, non-blocking, NMI safe and deal with spurious calls */
-> >  static noinstr void ct_exit_user_work(struct context_tracking *ct)
-> >  {
-> > @@ -64,6 +68,14 @@ static noinstr void ct_exit_user_work(struct
-> >  		arch_atomic_andnot(CT_WORK_KLP, &ct->work);
-> >  	}
-> >  
-> > +	if (work & CT_WORK_SYNC) {
-> > +		/* NMI happens here and must still do/finish CT_WORK_n */
-> > +		sync_core();
-> > +
-> > +		smp_mb__before_atomic();
-> > +		arch_atomic_andnot(CT_WORK_SYNC, &ct->work);
-> > +	}
-> > +
-> >  	smp_mb__before_atomic();
-> >  	arch_atomic_andnot(CT_SEQ_WORK, &ct->seq);
-> >  }
-> > 
-> > 
-> > 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 514ff4a735e5..abd9de8a9d99 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11390,6 +11390,8 @@ MAXIM MAX77714 PMIC MFD DRIVER
+>  M:	Luca Ceresoli <luca@lucaceresoli.net>
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
+> +F:	drivers/mfd/max77714.c
+> +F:	include/linux/mfd/max77714.h
+>  
+>  MAXIM MAX77802 PMIC REGULATOR DEVICE DRIVER
+>  M:	Javier Martinez Canillas <javier@dowhile0.org>
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index ca0edab91aeb..295a04b479c6 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -853,6 +853,20 @@ config MFD_MAX77693
+>  	  additional drivers must be enabled in order to use the functionality
+>  	  of the device.
+>  
+> +config MFD_MAX77714
+> +	tristate "Maxim Semiconductor MAX77714 PMIC Support"
+> +	depends on I2C
+> +	depends on OF || COMPILE_TEST
+> +	select MFD_CORE
+> +	select REGMAP_I2C
+> +	help
+> +	  Say yes here to add support for Maxim Semiconductor MAX77714.
+> +	  This is a Power Management IC with 4 buck regulators, 9
+> +	  low-dropout regulators, 8 GPIOs, RTC, watchdog etc. This driver
+> +	  provides common support for accessing the device; additional
+> +	  drivers must be enabled in order to use each functionality of the
+> +	  device.
+> +
+>  config MFD_MAX77843
+>  	bool "Maxim Semiconductor MAX77843 PMIC Support"
+>  	depends on I2C=y
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 2ba6646e874c..fe43f2fdd5cb 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -163,6 +163,7 @@ obj-$(CONFIG_MFD_MAX77620)	+= max77620.o
+>  obj-$(CONFIG_MFD_MAX77650)	+= max77650.o
+>  obj-$(CONFIG_MFD_MAX77686)	+= max77686.o
+>  obj-$(CONFIG_MFD_MAX77693)	+= max77693.o
+> +obj-$(CONFIG_MFD_MAX77714)	+= max77714.o
+>  obj-$(CONFIG_MFD_MAX77843)	+= max77843.o
+>  obj-$(CONFIG_MFD_MAX8907)	+= max8907.o
+>  max8925-objs			:= max8925-core.o max8925-i2c.o
+> diff --git a/drivers/mfd/max77714.c b/drivers/mfd/max77714.c
+> new file mode 100644
+> index 000000000000..4b49d16fe199
+> --- /dev/null
+> +++ b/drivers/mfd/max77714.c
+> @@ -0,0 +1,165 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Maxim MAX77714 MFD Driver
+> + *
+> + * Copyright (C) 2021 Luca Ceresoli
+> + * Author: Luca Ceresoli <luca@lucaceresoli.net>
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/mfd/core.h>
+> +#include <linux/mfd/max77714.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/regmap.h>
+> +
+> +struct max77714 {
+> +	struct device *dev;
+> +	struct regmap *regmap;
+> +	struct regmap_irq_chip_data *irq_data;
 
+Is this used outside of .probe()?
+
+> +	int irq;
+> +};
+> +
+> +static const struct regmap_range max77714_readable_ranges[] = {
+> +	regmap_reg_range(MAX77714_INT_TOP,     MAX77714_INT_TOP),
+> +	regmap_reg_range(MAX77714_INT_TOPM,    MAX77714_INT_TOPM),
+> +	regmap_reg_range(MAX77714_32K_STATUS,  MAX77714_32K_CONFIG),
+> +	regmap_reg_range(MAX77714_CNFG_GLBL2,  MAX77714_CNFG2_ONOFF),
+> +};
+> +
+> +static const struct regmap_range max77714_writable_ranges[] = {
+> +	regmap_reg_range(MAX77714_INT_TOPM,    MAX77714_INT_TOPM),
+> +	regmap_reg_range(MAX77714_32K_CONFIG,  MAX77714_32K_CONFIG),
+> +	regmap_reg_range(MAX77714_CNFG_GLBL2,  MAX77714_CNFG2_ONOFF),
+> +};
+> +
+> +static const struct regmap_access_table max77714_readable_table = {
+> +	.yes_ranges = max77714_readable_ranges,
+> +	.n_yes_ranges = ARRAY_SIZE(max77714_readable_ranges),
+> +};
+> +
+> +static const struct regmap_access_table max77714_writable_table = {
+> +	.yes_ranges = max77714_writable_ranges,
+> +	.n_yes_ranges = ARRAY_SIZE(max77714_writable_ranges),
+> +};
+> +
+> +static const struct regmap_config max77714_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.max_register = MAX77714_CNFG2_ONOFF,
+> +	.rd_table = &max77714_readable_table,
+> +	.wr_table = &max77714_writable_table,
+> +};
+> +
+> +static const struct regmap_irq max77714_top_irqs[] = {
+> +	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_ONOFF,   0, MAX77714_INT_TOP_ONOFF),
+> +	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_RTC,     0, MAX77714_INT_TOP_RTC),
+> +	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_GPIO,    0, MAX77714_INT_TOP_GPIO),
+> +	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_LDO,     0, MAX77714_INT_TOP_LDO),
+> +	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_SD,      0, MAX77714_INT_TOP_SD),
+> +	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_GLBL,    0, MAX77714_INT_TOP_GLBL),
+> +};
+> +
+> +static const struct regmap_irq_chip max77714_irq_chip = {
+> +	.name			= "max77714-pmic",
+> +	.status_base		= MAX77714_INT_TOP,
+> +	.mask_base		= MAX77714_INT_TOPM,
+> +	.num_regs		= 1,
+> +	.irqs			= max77714_top_irqs,
+> +	.num_irqs		= ARRAY_SIZE(max77714_top_irqs),
+> +};
+> +
+> +static const struct mfd_cell max77714_cells[] = {
+> +	{ .name = "max77714-watchdog" },
+> +	{ .name = "max77714-rtc" },
+> +};
+
+Please place this at the top of the file.
+
+> +/*
+> + * MAX77714 initially uses the internal, low precision oscillator. Enable
+> + * the external oscillator by setting the XOSC_RETRY bit. If the external
+> + * oscillator is not OK (probably not installed) this has no effect.
+> + */
+> +static int max77714_setup_xosc(struct max77714 *chip)
+
+May as well just pass 'dev' and 'regmap' to this function and do away
+with the superfluous struct along with all of it's memory management
+handling requirements.
+
+> +{
+> +	/* Internal Crystal Load Capacitance, indexed by value of 32KLOAD bits */
+> +	static const unsigned int load_cap[4] = {0, 10, 12, 22};
+
+Probably best to define these magic numbers.
+
+> +	unsigned int load_cap_idx;
+> +	unsigned int status;
+> +	int err;
+> +
+> +	err = regmap_update_bits(chip->regmap, MAX77714_32K_CONFIG,
+> +				 MAX77714_32K_CONFIG_XOSC_RETRY,
+> +				 MAX77714_32K_CONFIG_XOSC_RETRY);
+> +	if (err)
+> +		return dev_err_probe(chip->dev, err, "cannot configure XOSC\n");
+
+Error messages should be clear:
+
+  "Failed to configure the external oscillator"
+
+Same for the messages below.
+
+> +	err = regmap_read(chip->regmap, MAX77714_32K_STATUS, &status);
+> +	if (err)
+> +		return dev_err_probe(chip->dev, err, "cannot read XOSC status\n");
+> +
+> +	load_cap_idx = (status >> MAX77714_32K_STATUS_32KLOAD_SHF)
+> +		& MAX77714_32K_STATUS_32KLOAD_MSK;
+> +
+> +	dev_info(chip->dev, "Using %s oscillator, %d pF load cap\n",
+> +		 status & MAX77714_32K_STATUS_32KSOURCE ? "internal" : "external",
+> +		 load_cap[load_cap_idx]);
+> +
+> +	return 0;
+> +}
+> +
+> +static int max77714_probe(struct i2c_client *client)
+> +{
+> +	struct max77714 *chip;
+> +	int err;
+> +
+> +	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+> +	if (!chip)
+> +		return -ENOMEM;
+> +
+> +	i2c_set_clientdata(client, chip);
+
+Where else is this used?
+
+The definition appears to be local.
+
+> +	chip->dev = &client->dev;
+> +
+> +	chip->regmap = devm_regmap_init_i2c(client, &max77714_regmap_config);
+> +	if (IS_ERR(chip->regmap))
+> +		return dev_err_probe(chip->dev, PTR_ERR(chip->regmap),
+> +				     "failed to initialise regmap\n");
+> +
+> +	err = max77714_setup_xosc(chip);
+> +	if (err)
+> +		return err;
+> +
+> +	err = devm_regmap_add_irq_chip(chip->dev, chip->regmap, client->irq,
+> +				       IRQF_ONESHOT | IRQF_SHARED, 0,
+> +				       &max77714_irq_chip, &chip->irq_data);
+> +	if (err)
+> +		return dev_err_probe(chip->dev, err, "failed to add PMIC irq chip\n");
+
+IRQ
+
+> +	err =  devm_mfd_add_devices(chip->dev, PLATFORM_DEVID_NONE,
+> +				    max77714_cells, ARRAY_SIZE(max77714_cells),
+> +				    NULL, 0, NULL);
+> +	if (err)
+> +		return dev_err_probe(chip->dev, err, "failed adding MFD children\n");
+
+"Failed to register child devices"
+
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id max77714_dt_match[] = {
+> +	{ .compatible = "maxim,max77714" },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, max77714_dt_match);
+> +
+> +static struct i2c_driver max77714_driver = {
+> +	.driver = {
+> +		.name = "max77714",
+> +		.of_match_table = max77714_dt_match,
+> +	},
+> +	.probe_new = max77714_probe,
+> +};
+> +module_i2c_driver(max77714_driver);
+> +
+> +MODULE_DESCRIPTION("Maxim MAX77714 MFD core driver");
+> +MODULE_AUTHOR("Luca Ceresoli <luca@lucaceresoli.net>");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/linux/mfd/max77714.h b/include/linux/mfd/max77714.h
+> new file mode 100644
+> index 000000000000..4a274592d4f2
+> --- /dev/null
+> +++ b/include/linux/mfd/max77714.h
+> @@ -0,0 +1,60 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Maxim MAX77714 Register and data structures definition.
+> + *
+> + * Copyright (C) 2021 Luca Ceresoli
+> + * Author: Luca Ceresoli <luca@lucaceresoli.net>
+> + */
+> +
+> +#ifndef __LINUX_MFD_MAX77714_H_
+> +#define __LINUX_MFD_MAX77714_H_
+> +
+> +#include <linux/bits.h>
+> +
+> +#define MAX77714_INT_TOP	0x00
+> +#define MAX77714_INT_TOPM	0x07 /* Datasheet says "read only", but it is RW */
+> +
+> +#define MAX77714_INT_TOP_ONOFF		BIT(1)
+> +#define MAX77714_INT_TOP_RTC		BIT(3)
+> +#define MAX77714_INT_TOP_GPIO		BIT(4)
+> +#define MAX77714_INT_TOP_LDO		BIT(5)
+> +#define MAX77714_INT_TOP_SD		BIT(6)
+> +#define MAX77714_INT_TOP_GLBL		BIT(7)
+> +
+> +#define MAX77714_32K_STATUS	0x30
+> +#define MAX77714_32K_STATUS_SIOSCOK	BIT(5)
+> +#define MAX77714_32K_STATUS_XOSCOK	BIT(4)
+> +#define MAX77714_32K_STATUS_32KSOURCE	BIT(3)
+> +#define MAX77714_32K_STATUS_32KLOAD_MSK	0x3
+> +#define MAX77714_32K_STATUS_32KLOAD_SHF	1
+> +#define MAX77714_32K_STATUS_CRYSTAL_CFG	BIT(0)
+> +
+> +#define MAX77714_32K_CONFIG	0x31
+> +#define MAX77714_32K_CONFIG_XOSC_RETRY	BIT(4)
+> +
+> +#define MAX77714_CNFG_GLBL2	0x91
+> +#define MAX77714_WDTEN			BIT(2)
+> +#define MAX77714_WDTSLPC		BIT(3)
+> +#define MAX77714_TWD_MASK		0x3
+> +#define MAX77714_TWD_2s			0x0
+> +#define MAX77714_TWD_16s		0x1
+> +#define MAX77714_TWD_64s		0x2
+> +#define MAX77714_TWD_128s		0x3
+> +
+> +#define MAX77714_CNFG_GLBL3	0x92
+> +#define MAX77714_WDTC			BIT(0)
+> +
+> +#define MAX77714_CNFG2_ONOFF	0x94
+> +#define MAX77714_WD_RST_WK		BIT(5)
+> +
+> +/* Interrupts */
+> +enum {
+> +	MAX77714_IRQ_TOP_ONOFF,
+> +	MAX77714_IRQ_TOP_RTC,		/* Real-time clock */
+> +	MAX77714_IRQ_TOP_GPIO,		/* GPIOs */
+> +	MAX77714_IRQ_TOP_LDO,		/* Low-dropout regulators */
+> +	MAX77714_IRQ_TOP_SD,		/* Step-down regulators */
+> +	MAX77714_IRQ_TOP_GLBL,		/* "Global resources": Low-Battery, overtemp... */
+> +};
+> +
+> +#endif /* __LINUX_MFD_MAX77714_H_ */
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
