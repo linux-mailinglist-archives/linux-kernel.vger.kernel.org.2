@@ -2,63 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B10A436AAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7174A436AB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbhJUSkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231616AbhJUSka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:40:30 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232142AbhJUSmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:42:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48369 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232126AbhJUSmi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 14:42:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634841622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v7YMtiHuJ6+19vfcE6VhQdUpwJIjqUrdX0VN3I4105Q=;
+        b=VG+dkp5LJPhF3zfxQwEq9a2r7e49kcjzKzfCQ1f4uyQsnIPqYXn+cifGMhekh1A74GpgOg
+        QgBLKrjbWl2pr32HT1DUzT/LZSSu/iCI5qvMJioM2Vdg4HK/Ruy5iqj8dnJVqkRWgWj7Ah
+        eBnbB6fz78zE7VOScG02Okxfi4aO8Jw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-AshR42GxO_22j8IkiXF27g-1; Thu, 21 Oct 2021 14:40:18 -0400
+X-MC-Unique: AshR42GxO_22j8IkiXF27g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8210F611BD;
-        Thu, 21 Oct 2021 18:38:13 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 14:38:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 6/9] arm64: Recover kretprobe modified return address
- in stacktrace
-Message-ID: <20211021143811.6f42b942@gandalf.local.home>
-In-Reply-To: <20211021125943.11c10133@gandalf.local.home>
-References: <163477765570.264901.3851692300287671122.stgit@devnote2>
-        <163477770935.264901.1772964361191833681.stgit@devnote2>
-        <20211021101512.GA16485@willie-the-truck>
-        <20211021232630.94bea4540670cdab5a7a63c5@kernel.org>
-        <20211021104902.2600dd0a@gandalf.local.home>
-        <20211021165241.GB16889@willie-the-truck>
-        <20211021125943.11c10133@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C20D510247A6;
+        Thu, 21 Oct 2021 18:40:16 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B62DD19D9F;
+        Thu, 21 Oct 2021 18:40:09 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id BFF0C416D5C9; Thu, 21 Oct 2021 15:39:35 -0300 (-03)
+Date:   Thu, 21 Oct 2021 15:39:35 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 11/11] context_tracking,x86: Fix text_poke_sync()
+ vs NOHZ_FULL
+Message-ID: <20211021183935.GA9071@fuller.cnet>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.186930629@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929152429.186930629@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 12:59:43 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Peter,
 
-> > Happy debugging :)  
+static __always_inline void arch_exit_to_user_mode(void)
+{
+        mds_user_clear_cpu_buffers();
+}
+
+/**
+ * mds_user_clear_cpu_buffers - Mitigation for MDS and TAA vulnerability
+ *
+ * Clear CPU buffers if the corresponding static key is enabled
+ */
+static __always_inline void mds_user_clear_cpu_buffers(void)
+{
+        if (static_branch_likely(&mds_user_clear))
+                mds_clear_cpu_buffers();
+}
+
+We were discussing how to perform objtool style validation 
+that no code after the check for 
+
+> +             /* NMI happens here and must still do/finish CT_WORK_n */
+> +             sync_core();
+
+But after the discussion with you, it seems doing the TLB checking 
+and (also sync_core) checking very late/very early on exit/entry 
+makes things easier to review.
+
+Can then use a single atomic variable with USER/KERNEL state and cmpxchg
+loops.
+
+On Wed, Sep 29, 2021 at 05:17:34PM +0200, Peter Zijlstra wrote:
+> Use the new context_tracking infrastructure to avoid disturbing
+> userspace tasks when we rewrite kernel code.
 > 
-> Found the bug. I'll restart my tests (takes around 13 hours more or less to
-> complete) and when/if they succeed, I'll push it for inclusion in
-> linux-next.
+> XXX re-audit the entry code to make sure only the context_tracking
+> static_branch is before hitting this code.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/include/asm/sync_core.h |    2 ++
+>  arch/x86/kernel/alternative.c    |    8 +++++++-
+>  include/linux/context_tracking.h |    1 +
+>  kernel/context_tracking.c        |   12 ++++++++++++
+>  4 files changed, 22 insertions(+), 1 deletion(-)
+> 
+> --- a/arch/x86/include/asm/sync_core.h
+> +++ b/arch/x86/include/asm/sync_core.h
+> @@ -87,6 +87,8 @@ static inline void sync_core(void)
+>  	 */
+>  	iret_to_self();
+>  }
+> +#define sync_core sync_core
+> +
+>  
+>  /*
+>   * Ensure that a core serializing instruction is issued before returning
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/mmu_context.h>
+>  #include <linux/bsearch.h>
+>  #include <linux/sync_core.h>
+> +#include <linux/context_tracking.h>
+>  #include <asm/text-patching.h>
+>  #include <asm/alternative.h>
+>  #include <asm/sections.h>
+> @@ -924,9 +925,14 @@ static void do_sync_core(void *info)
+>  	sync_core();
+>  }
+>  
+> +static bool do_sync_core_cond(int cpu, void *info)
+> +{
+> +	return !context_tracking_set_cpu_work(cpu, CT_WORK_SYNC);
+> +}
+> +
+>  void text_poke_sync(void)
+>  {
+> -	on_each_cpu(do_sync_core, NULL, 1);
+> +	on_each_cpu_cond(do_sync_core_cond, do_sync_core, NULL, 1);
+>  }
+>  
+>  struct text_poke_loc {
+> --- a/include/linux/context_tracking.h
+> +++ b/include/linux/context_tracking.h
+> @@ -11,6 +11,7 @@
+>  
+>  enum ct_work {
+>  	CT_WORK_KLP = 1,
+> +	CT_WORK_SYNC = 2,
+>  };
+>  
+>  /*
+> --- a/kernel/context_tracking.c
+> +++ b/kernel/context_tracking.c
+> @@ -51,6 +51,10 @@ static __always_inline void context_trac
+>  	__this_cpu_dec(context_tracking.recursion);
+>  }
+>  
+> +#ifndef sync_core
+> +static inline void sync_core(void) { }
+> +#endif
+> +
+>  /* CT_WORK_n, must be noinstr, non-blocking, NMI safe and deal with spurious calls */
+>  static noinstr void ct_exit_user_work(struct context_tracking *ct)
+>  {
+> @@ -64,6 +68,14 @@ static noinstr void ct_exit_user_work(struct
+>  		arch_atomic_andnot(CT_WORK_KLP, &ct->work);
+>  	}
+>  
+> +	if (work & CT_WORK_SYNC) {
+> +		/* NMI happens here and must still do/finish CT_WORK_n */
+> +		sync_core();
+> +
+> +		smp_mb__before_atomic();
+> +		arch_atomic_andnot(CT_WORK_SYNC, &ct->work);
+> +	}
+> +
+>  	smp_mb__before_atomic();
+>  	arch_atomic_andnot(CT_SEQ_WORK, &ct->seq);
+>  }
+> 
+> 
+> 
 
-And of course, more bugs appear. Nothing (yet) to do with this patch
-series, but as I started running tests I haven't run yet, it's triggering
-bugs in other places that I need to go sort out :-p
-
--- Steve
