@@ -2,181 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1281D435DCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E347435DCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhJUJXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231320AbhJUJXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:23:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D9B0610CB;
-        Thu, 21 Oct 2021 09:20:47 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 11:20:44 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: Retrieving the network namespace of a socket
-Message-ID: <20211021092044.o7lmudkixlqu6vfq@wittgenstein>
-References: <20211020095707.GA16295@ircssh-2.c.rugged-nimbus-611.internal>
- <CAHNKnsRFah6MRxECTLNwu+maN0o9jS9ENzSAiWS4v1247BqYdg@mail.gmail.com>
- <20211020163417.GA21040@ircssh-2.c.rugged-nimbus-611.internal>
- <20211020192456.GA23489@ircssh-2.c.rugged-nimbus-611.internal>
+        id S231499AbhJUJXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:23:42 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:44312
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231153AbhJUJXl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 05:23:41 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 097333FFE2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634808085;
+        bh=1sNRxX5xVMTzDEASC0BUbYbJBe1HHP47v7+0z03lnfo=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=YneWpf1ep//udN5NfAwLI9N1f2xIdS8J2nOI0VTGtq9khVQ0vSxh5dGbMXV13A5Gx
+         9S8FehcKqacgTfUlXELIcWKgyA/caJsG8DPDxwG6kagfjEMXDuISHXO5eAFbyL+E4T
+         QJCGHBDSbG0aJPpRphHZzVAv0xTGdMA6Ai410Qdrd6BCH5gCjJ2xUXWPlOJg7MTkLk
+         Ktx46rglhSFeTbsGw5aG2+lEps9oMPvflnvDym8mjEQW0A5dQgM9kCuKei0xTX0gTn
+         Qs4Rk/8XXcf/XNFuUV9cJJRPwzvvS54j+HnBvoCZIyzZo/uS14qVECTRQV7+HkRM7q
+         rj/YLvgQ5bI+A==
+Received: by mail-lf1-f70.google.com with SMTP id m16-20020a056512115000b003fdb79f743fso4393707lfg.16
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:21:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1sNRxX5xVMTzDEASC0BUbYbJBe1HHP47v7+0z03lnfo=;
+        b=2edQfAbcIIz0impq8pWQpOJP8ANgRIbKj9I1fR3N6gXihuiH3/RC5bN1X/tQ7OVyUS
+         rTwgQdjf514VX1MLSTksRkZDoCktF7P3PJkVAmzuMWuTRPTcG9IfHISTO7KL4o5Ex9UW
+         598IEhph0ZVjOYFf3hC59zDw6Bdv6o1uSwuqKwstwuWFYjqRD9shhe6udAivNfsnHBxj
+         PxZr460erICj6arKCz/2bVR4HO/W2oMn/+AniaEAk5vIrfNS9Oyqn0ie6cxyu/aL3XKO
+         gI7Q1l/8jfCobkLlZ4I2zWyasI6OWMkEFO6BYoZ+I7qnmGJnDOBqTVSnD0PUSPyyu8/4
+         hd2Q==
+X-Gm-Message-State: AOAM5328eBeYYMUEU9BxL+Eu7L00GbPAY6fovJQPr4uoiuTzu2J/vy9V
+        AWR/rnHwRf4WS570UApVZ0KZtNSy8hiPmqDrOXQ1eQJVG9X9V4YQeOJeZXtQ2U1ayVpihwRc/H5
+        8z5LL2BsOL29BNwGtszBu9E5VUI4iXT4og9DCj9uIZA==
+X-Received: by 2002:a05:6512:3191:: with SMTP id i17mr4275619lfe.485.1634808084546;
+        Thu, 21 Oct 2021 02:21:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyTR7ZwqF7Ps9LYNUTgrRaJOZAqjlnwW/OzBDYFs9a7D6ppfeTaGTCufWcfkbF8WyTuRBmdmw==
+X-Received: by 2002:a05:6512:3191:: with SMTP id i17mr4275606lfe.485.1634808084404;
+        Thu, 21 Oct 2021 02:21:24 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id bq8sm413345lfb.32.2021.10.21.02.21.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 02:21:23 -0700 (PDT)
+Subject: Re: [PATCH] memory: mtk-smi: Use ARRAY_SIZE to define
+ MTK_SMI_CLK_NR_MAX
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     yong.wu@mediatek.com, matthias.bgg@gmail.com,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20211015151557.510726-1-angelogioacchino.delregno@collabora.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <b6090131-9098-4a9a-7dfa-ba7eae977558@canonical.com>
+Date:   Thu, 21 Oct 2021 11:21:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211015151557.510726-1-angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211020192456.GA23489@ircssh-2.c.rugged-nimbus-611.internal>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 07:24:57PM +0000, Sargun Dhillon wrote:
-> On Wed, Oct 20, 2021 at 04:34:18PM +0000, Sargun Dhillon wrote:
-> > On Wed, Oct 20, 2021 at 05:03:56PM +0300, Sergey Ryazanov wrote:
-> > > Hello Sargun,
-> > > 
-> > > On Wed, Oct 20, 2021 at 12:57 PM Sargun Dhillon <sargun@sargun.me> wrote:
-> > > > I'm working on a problem where I need to determine which network namespace a
-> > > > given socket is in. I can currently bruteforce this by using INET_DIAG, and
-> > > > enumerating namespaces and working backwards.
-> > > 
-> > > Namespace is not a per-socket, but a per-process attribute. So each
-> > > socket of a process belongs to the same namespace.
-> > > 
-> > > Could you elaborate what kind of problem you are trying to solve?
-> > > Maybe there is a more simple solution. for it.
-> > > 
-> > > -- 
-> > > Sergey
-> > 
-> > That's not entirely true. See the folowing code:
-> > 
-> > int main() {
-> > 	int fd1, fd2;
-> > 	fd1 = socket(AF_INET, SOCK_STREAM, 0);
-> > 	assert(fd1 >= 0);
-> > 	assert(unshare(CLONE_NEWNET) == 0);
-> > 	fd2 = socket(AF_INET, SOCK_STREAM, 0);
-> > 	assert(fd2 >= 0);
-> > }
-> > 
-> > fd1 and fd2 have different sock_net.
-> > 
-> > The context for this is:
-> > https://linuxplumbersconf.org/event/11/contributions/932/
-> > 
-> > We need to figure out, for a given socket, if it has reachability to a given IP.
+On 15/10/2021 17:15, AngeloGioacchino Del Regno wrote:
+> This definition is tied to the number of SMI common clocks (the array
+> mtk_smi_common_clks): improve the definition by using the ARRAY_SIZE
+> macro instead. That will also reduce room for mistakes when updating
+> the aforementioned array in the future.
 > 
-> So, I was lazy / misread documentation. It turns out SIOCGSKNS does exactly
-> what I need.
-
-I was about to reply with this. :) It's heavily used in CRIU and we use
-it in LXC/LXD as well.
-
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  drivers/memory/mtk-smi.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> Nonetheless, it's a little weird and awkward that it is exists. I was wondering
-> if this functionality made sense as part of kcmp. I wrote up a quick patch
-> to see if anyone was interested:
 
-Per se I don't see a reason why this shouldn't exist as an extension to
-kcmp(). It seems useful.
+Thanks for the patch. I sent mtk-smi pull request some time ago and it
+is late in the cycle, so this might need to wait for next cycle. I'll
+keep it in my queue.
 
-> 
-> diff --git a/include/uapi/linux/kcmp.h b/include/uapi/linux/kcmp.h
-> index ef1305010925..d6b9c3923d20 100644
-> --- a/include/uapi/linux/kcmp.h
-> +++ b/include/uapi/linux/kcmp.h
-> @@ -14,6 +14,7 @@ enum kcmp_type {
->  	KCMP_IO,
->  	KCMP_SYSVSEM,
->  	KCMP_EPOLL_TFD,
-> +	KCMP_NETNS,
->  
->  	KCMP_TYPES,
->  };
-> diff --git a/kernel/kcmp.c b/kernel/kcmp.c
-> index 5353edfad8e1..8fadae4b588f 100644
-> --- a/kernel/kcmp.c
-> +++ b/kernel/kcmp.c
-> @@ -18,6 +18,8 @@
->  #include <linux/file.h>
->  
->  #include <asm/unistd.h>
-> +#include <net/net_namespace.h>
-> +#include <net/sock.h>
->  
->  /*
->   * We don't expose the real in-memory order of objects for security reasons.
-> @@ -132,6 +134,58 @@ static int kcmp_epoll_target(struct task_struct *task1,
->  }
->  #endif
->  
-> +#ifdef CONFIG_NET
-> +static int __kcmp_netns_target(struct task_struct *task1,
-> +			       struct task_struct *task2,
-> +			       struct file *filp1,
-> +			       struct file *filp2)
-> +{
-> +	struct socket *sock1, *sock2;
-> +	struct net *net1, *net2;
-> +
-> +	sock1 = sock_from_file(filp1);
-> +	sock2 = sock_from_file(filp1);
-> +	if (!sock1 || !sock2)
-> +		return -ENOTSOCK;
-> +
-> +	net1 = sock_net(sock1->sk);
-> +	net2 = sock_net(sock2->sk);
-> +
-> +	return kcmp_ptr(net1, net2, KCMP_NETNS);
-> +}
-> +
-> +static int kcmp_netns_target(struct task_struct *task1,
-> +			     struct task_struct *task2,
-> +			     unsigned long idx1,
-> +			     unsigned long idx2)
-> +{
-> +	struct file *filp1, *filp2;
-> +
-> +	int ret = -EBADF;
-> +
-> +	filp1 = fget_task(task1, idx1);
-> +	if (filp1) {
-> +		filp2 = fget_task(task2, idx2);
-> +		if (filp2) {
-> +			ret = __kcmp_netns_target(task1, task2, filp1, filp2);
-> +			fput(filp2);
-> +		}
-> +
-> +		fput(filp1);
-> +	}
-> +
-> +	return ret;
-> +}
-> +#else
-> +static int kcmp_netns_target(struct task_struct *task1,
-> +			     struct task_struct *task2,
-> +			     unsigned long idx1,
-> +			     unsigned long idx2)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +#endif
-> +
->  SYSCALL_DEFINE5(kcmp, pid_t, pid1, pid_t, pid2, int, type,
->  		unsigned long, idx1, unsigned long, idx2)
->  {
-> @@ -206,6 +260,9 @@ SYSCALL_DEFINE5(kcmp, pid_t, pid1, pid_t, pid2, int, type,
->  	case KCMP_EPOLL_TFD:
->  		ret = kcmp_epoll_target(task1, task2, idx1, (void *)idx2);
->  		break;
-> +	case KCMP_NETNS:
-> +		ret = kcmp_netns_target(task1, task2, idx1, idx2);
-> +		break;
->  	default:
->  		ret = -EINVAL;
->  		break;
-> 
+Best regards,
+Krzysztof
