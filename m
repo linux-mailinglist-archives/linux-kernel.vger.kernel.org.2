@@ -2,259 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E1E435D5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5426B435D5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhJUIyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:54:17 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:54200 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbhJUIyG (ORCPT
+        id S231612AbhJUIyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:54:24 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:52466 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231336AbhJUIyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Oct 2021 04:54:06 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 59007315;
-        Thu, 21 Oct 2021 10:51:01 +0200 (CEST)
-Date:   Thu, 21 Oct 2021 10:51:01 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     robh@kernel.org, devicetree@vger.kernel.org, trini@konsulko.com,
-        u-boot@lists.denx.de, linux-kernel@vger.kernel.org
-In-Reply-To: <CAPnjgZ2r1qSDkJS_Z2v25=EsZj_9pt=qSTre3yTjqUnQrV7+ww@mail.gmail.com>
-        (message from Simon Glass on Wed, 20 Oct 2021 16:44:41 -0600)
-Subject: Re: [PATCH 2/2] dt-bindings: u-boot: Add an initial binding for config
-References: <20211003125134.2.I7733f5a849476e908cc51f0c71b8a594337fbbdf@changeid>
- <YVtWVZDzhwMPnKj0@robh.at.kernel.org>
- <CAPnjgZ3hUu6AUiMtC8tSQPeeG1aH1bQMcE8SQ_T8Nd-FjY_fGQ@mail.gmail.com>
- <CAL_JsqLT28Lp6pVYLxheZ=iK9QDOzXcezihR+sru4qLQLoUeWw@mail.gmail.com>
- <CAPnjgZ1accZg-G00xX7HPE8KAoh9NPAkfrb9BFrj3W5Bo_0pKg@mail.gmail.com>
- <CAL_JsqL5MP1efM_d5EF3x4M_qf3gee8Sc8TQFgxoVsdCWTY9uw@mail.gmail.com> <CAPnjgZ2r1qSDkJS_Z2v25=EsZj_9pt=qSTre3yTjqUnQrV7+ww@mail.gmail.com>
-Message-ID: <d3ca77bc4dfc5b70@bloch.sibelius.xs4all.nl>
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634806311; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=TsTUaUN6UAZjto/Yd/hWLc73ukdwtGkHFVUFsfzhjq4=;
+ b=G3oBkKyzKz9Q3AYU09qhW3P/aAxd+EJZLWqwV3PBgWZpAS3a7urKJ18P2i0YhoNSoqBee8bh
+ AEKQTEtdnFQreXXTUP1SIG/vJdLJYCIqmWofQrMW9y4CKeaOHzWbau61kWgwTE+ZbBCRYEG+
+ W1+5IoZvlEJt3DuY9Q0nTTkNHNE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 61712a0e308e0dd330b1e035 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Oct 2021 08:51:26
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E37D9C43617; Thu, 21 Oct 2021 08:51:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A2CAC4338F;
+        Thu, 21 Oct 2021 08:51:25 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 21 Oct 2021 14:21:25 +0530
+From:   skakit@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Das Srinagesh <gurus@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        collinsd@codeurora.org, subbaram@codeaurora.org,
+        kgunda@codeaurora.org
+Subject: Re: [PATCH V2 2/4] dt-bindings: mfd: pm8008: Add pm8008 regulator
+ node
+In-Reply-To: <CAE-0n51pCkrdOSJFf3V4HGB5PcUcRa2y6zRQbQ30i-hQVhjC=Q@mail.gmail.com>
+References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org>
+ <1633060859-22969-3-git-send-email-skakit@codeaurora.org>
+ <CAE-0n51pCkrdOSJFf3V4HGB5PcUcRa2y6zRQbQ30i-hQVhjC=Q@mail.gmail.com>
+Message-ID: <23abf3d093df63b1025e466f45ff16c6@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Simon Glass <sjg@chromium.org>
-> Date: Wed, 20 Oct 2021 16:44:41 -0600
+On 2021-10-05 23:40, Stephen Boyd wrote:
+> Quoting Satya Priya (2021-09-30 21:00:57)
+>> Add pm8008-regulator node and example.
+>> 
+>> Signed-off-by: Satya Priya <skakit@codeaurora.org>
+>> ---
+>> Changes in V2:
+>>  - As per Rob's comments changed "pm8008[a-z]?-regulator" to
+>>    "^pm8008[a-z]?-regulators".
+>> 
+>>  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 
+>> ++++++++++++++++++++++
+>>  1 file changed, 24 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml 
+>> b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+>> index ec3138c..0c9665e 100644
+>> --- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+>> +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+>> @@ -45,6 +45,10 @@ properties:
+>>      const: 0
+>> 
+>>  patternProperties:
+>> +  "^pm8008[a-z]?-regulators$":
 > 
-> Hi Rob,
+> Please just call it 'regulators'
 > 
-> On Mon, 18 Oct 2021 at 16:26, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Wed, Oct 13, 2021 at 11:33 AM Simon Glass <sjg@chromium.org> wrote:
-> > >
-> > > "
-> > > Hi Rob,
-> > >
-> > > On Tue, 12 Oct 2021 at 09:05, Rob Herring <robh@kernel.org> wrote:
-> > > >
-> > > >  On Tue, Oct 12, 2021 at 8:41 AM Simon Glass <sjg@chromium.org> wrote:
-> > > > >
-> > > > > Hi Rob,
-> > > > >
-> > > > > On Mon, 4 Oct 2021 at 13:30, Rob Herring <robh@kernel.org> wrote:
-> > > > > >
-> > > > > > On Sun, Oct 03, 2021 at 12:51:53PM -0600, Simon Glass wrote:
-> > > > > > > U-Boot makes use of the devicetree for its driver model. Devices are bound
-> > > > > > > based on the hardware description in the devicetree.
-> > > > > > >
-> > > > > > > Since U-Boot is not an operating system, it has no command line or user
-> > > > > > > space to provide configuration and policy information. This must be made
-> > > > > > > available in some other way.
-> > > > > > >
-> > > > > > > Therefore U-Boot uses devicetree for configuration and run-time control
-> > > > > > > and has done for approximately 9 years. This works extremely well in the
-> > > > > > > project and is very flexible. However the bindings have never been
-> > > > > > > incorporated in the devicetree bindings in the Linux tree. This could be
-> > > > > > > a good time to start this work as we try to create standard bindings for
-> > > > > > > communicating between firmware components.
-> > > > > > >
-> > > > > > > Add an initial binding for this node, covering just the config node, which
-> > > > > > > is the main requirement. It is similar in concept to the chosen node, but
-> > > > > > > used for passing information between firmware components, instead of from
-> > > > > > > firmware to operating system.
-> > > > > > >
-> > > > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > > > > > > ---
-> > > > > > > Please be kind in your review. Some words about why this is needed are
-> > > > > > > included in the description in config.yaml file.
-> > > > > > >
-> > > > > > > The last attempt to add just one property needed by U-Boot went into the
-> > > > > > > weeds 6 years ago, with what I see as confusion about the role of the
-> > > > > > > chosen node in devicetree[1].
-> > > > > > >
-> > > > > > > I am trying again in the hope of reaching resolution rather than just
-> > > > > > > going around in circles with the 'devicetree is a hardware description'
-> > > > > > > argument :-)
-> > > > > > >
-> > > > > > > Quoting from the introduction to latest devicetree spec[2]:
-> > > > > > >
-> > > > > > > >>>
-> > > > > > > To initialize and boot a computer system, various software components
-> > > > > > > interact. Firmware might perform low-level initialization of the system
-> > > > > > > hardware before passing control to software such as an operating system,
-> > > > > > > bootloader, or  hypervisor. Bootloaders and hypervisors can, in turn,
-> > > > > > > load and transfer control to operating systems. Standard, consistent
-> > > > > > > interfaces and conventions facilitate the interactions between these
-> > > > > > > software components. In this document the term boot program is used to
-> > > > > > > generically refer to a software component that initializes the system
-> > > > > > > state and executes another software component referred to as a client
-> > > > > > > program.
-> > > > > > > <<<
-> > > > > > >
-> > > > > > > This clearly envisages multiple software components in the firmware
-> > > > > > > domain and in fact that is the case today. They need some way to
-> > > > > > > communicate configuration data such as memory setup, runtime-feature
-> > > > > > > selection and developer conveniences. Devicetree seems ideal, at least for
-> > > > > > > components where the performance / memory requirements of devicetree are
-> > > > > > > affordable.
-> > > > > > >
-> > > > > > > I hope that the Linux community (which owns the devicetree bindings) finds
-> > > > > > > this initiative valuable and acceptable.
-> > > > > >
-> > > > > > Owns? I'm having a sale and can make you a good offer. Buy 1 binding,
-> > > > > > get 2000 free. :)
-> > > > >
-> > > > > Yes, it's the price of that first binding that surely puts everyone off.
-> > > > >
-> > > > > (sorry for sitting on this for a week, my spam filter doesn't like
-> > > > > some mailing lists and I'm working on it)
-> > > > >
-> > > > > >
-> > > > > > >
-> > > > > > > [1] https://lists.denx.de/pipermail/u-boot/2015-July/218585.html
-> > > > > > > [2] https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
-> > > > > > >
-> > > > > > >  .../devicetree/bindings/u-boot/config.yaml    | 137 ++++++++++++++++++
-> > > > > > >  1 file changed, 137 insertions(+)
-> > > > > > >  create mode 100644 Documentation/devicetree/bindings/u-boot/config.yaml
-> > > > > >
-> > > > > > Might as well put this into dt-schema rather than the kernel. But might
-> > > > > > get more review here first.
-> > > > >
-> > > > > OK, so does that mean a PR to https://github.com/robherring/dt-schema
-> > > >
-> > > > Wrong one: https://github.com/devicetree-org/dt-schema
-> > > >
-> > > > I need to update the readme there for the old one.
-> > >
-> > > OK thanks.
-> > >
-> > > >
-> > > > > or is there a mailing list for it? I think I am missing some
-> > > > > understanding here.
-> > > >
-> > > > You can send a PR or to a DT mailing list, but the mail list will get
-> > > > more reviews (hopefully). devicetree-spec is better than devicetree as
-> > > > it is not a firehose.
-> > >
-> > > OK.
-> > >
-> > > >
-> > > > > >
-> > > > > > > diff --git a/Documentation/devicetree/bindings/u-boot/config.yaml b/Documentation/devicetree/bindings/u-boot/config.yaml
-> > > > > > > new file mode 100644
-> > > > > > > index 00000000000000..336577a17fdf5a
-> > > > > > > --- /dev/null
-> > > > > > > +++ b/Documentation/devicetree/bindings/u-boot/config.yaml
-> > > > > > > @@ -0,0 +1,137 @@
-> > > > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > > > > > +%YAML 1.2
-> > > > > > > +---
-> > > > > > > +$id: http://devicetree.org/schemas/u-boot/config.yaml#
-> > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > > > +
-> > > > > > > +title: U-Boot configuration node
-> > > > > > > +
-> > > > > > > +maintainers:
-> > > > > > > +  - Simon Glass <sjg@chromium.org>
-> > > > > > > +
-> > > > > > > +description: |
-> > > > > > > +  The config node does not represent a real device, but serves as a place
-> > > > > > > +  for passing data between firmware elements, like memory maps. Data in the
-> > > > > > > +  config node does not represent the hardware. It is ignored by operating
-> > > > > > > +  systems.
-> > > > > > > +
-> > > > > > > +  Purpose of config node
-> > > > > > > +  ----------------------
-> > > > > > > +
-> > > > > > > +  A common problem with firmware is that many builds are needed to deal with the
-> > > > > > > +  slight variations between different, related models. For example, one model
-> > > > > > > +  may have a TPM and another may not. Devicetree provides an excellent solution
-> > > > > > > +  to this problem, in that the devicetree to actually use on a platform can be
-> > > > > > > +  injected in the factory based on which model is being manufactured at the time.
-> > > > > > > +
-> > > > > > > +  A related problem causing build proliferation is dealing with the differences
-> > > > > > > +  between development firmware, developer-friendly firmware (e.g. with all
-> > > > > > > +  security features present but with the ability to access the command line),
-> > > > > > > +  test firmware (which runs tests used in the factory), final production
-> > > > > > > +  firmware (before signing), signed firmware (where the signatures have been
-> > > > > > > +  inserted) and the like. Ideally all or most of these should use the same
-> > > > > > > +  U-Boot build, with just some options to determine the features available. For
-> > > > > > > +  example, being able to control whether the UART console or JTAG are available,
-> > > > > > > +  on any image, is a great debugging aid.
-> > > > > > > +
-> > > > > > > +  When the firmware consists of multiple parts (various U-Boot phases, TF-A,
-> > > > > > > +  OP-TEE), it is helpful that all operate the same way at runtime, regardless of
-> > > > > > > +  how they were built. This can be achieved by passing the runtime configuration
-> > > > > > > +  (e.g. 'enable UART console', 'here are your public keys') along the chain
-> > > > > > > +  through each firmware stage. It is frustrating to have to replicate a bug on
-> > > > > > > +  production firmware which does happen on developer firmware, because they are
-> > > > > > > +  completely different builds.
-> > > > > > > +
-> > > > > > > +  The config node provides useful functionality for this. It allows the different
-> > > > > > > +  controls to be 'factored out' of the U-Boot binary, so they can be controlled
-> > > > > > > +  separately from the initial source-code build. The node can be easily updated
-> > > > > > > +  by a build or factory tool and can control various features in U-Boot. It is
-> > > > > > > +  similar in concept to a Kconfig option, except that it can be changed after
-> > > > > > > +  U-Boot is built.
-> > > > > > > +
-> > > > > > > +  The config node is similar in concept to /chosen (see chosen.txt) except that
-> > > > > >
-> > > > > > chosen.yaml now (in dt-schema).
-> > > > >
-> > > > > OK
-> > > > >
-> > > > > >
-> > > > > > > +  it is for passing information *into* and *between) firmware components,
-> > > > > > > +  instead of from firmware to the Operating System. Also, while operating
-> > > > > > > +  systems typically have a (sometimes extremely long) command line, U-Boot does
-> > > > > > > +  not support this, except with sandbox. The devicetree provides a more
-> > > > > > > +  structured approach in any case.
-> > > > > >
-> > > > > > What about having a /chosen/u-boot/ node instead?
-> > > > >
-> > > > > What is your rationale for doing that?
-> > > >
-> > > > Simply that /chosen is where the s/w configuration for the next stage
-> > > > consuming the DT goes. Also, we already have bootcmd defined in chosen
-> > > > and don't need it in a whole other place.
-> > >
-> > > OK I see.
-> > >
-> > > The spec says "The /chosen node does not represent a real device in
-> > > the system but describes parameters chosen or specified by the system
-> > > firmware at run time. It shall be a child of the root node."
-> > >
-> > > To my reading, this is not the same thing. I would prefer something like:
-> > >
-> > > "The /xxx node does not represent a real device in the system but
-> > > describes parameters used by the system firmware at run time. It shall
-> > > be a child of the root node."
-> >
-> > The wording is from simpler times... We can reword it however we need.
+>> +    type: object
+>> +    $ref: "../regulator/qcom,pm8008-regulator.yaml#"
+>> +
+>>    "^gpio@[0-9a-f]+$":
+>>      type: object
+>> 
+>> @@ -122,6 +126,26 @@ examples:
+>>            interrupt-controller;
+>>            #interrupt-cells = <2>;
+>>          };
+>> +
+>> +        pm8008-regulators {
 > 
-> Yes, as is the /chosen node, I think. So perhaps we should be able to
-> expand to other nodes as needed!
+> Please just call it 'regulators'
+> 
 
-Maybe, but it we probably should follow existing practice.
+Okay
 
-The whole DT thing came out of OpenFirmware.  The OpenFirmware
-standard defines a /options node with various options that control how
-the firmware behaves.  It is defined in the IEEE 1275 standard:
-
-  https://www.openfirmware.info/data/docs/of1275.pdf
-
-The way this behaves on Sun and (PowerPC) machines is quite similar
-how environment variables work in U-Boot.
-
+>> +          compatible = "qcom,pm8008-regulator";
+>> +          #address-cells = <1>;
+>> +          #size-cells = <0>;
+>> +
+>> +          vdd_l1_l2-supply = <&vreg_s8b_1p2>;
+>> +          vdd_l3_l4-supply = <&vreg_s1b_1p8>;
+>> +          vdd_l5-supply = <&vreg_bob>;
+>> +          vdd_l6-supply = <&vreg_bob>;
+>> +          vdd_l7-supply = <&vreg_bob>;
+>> +
+>> +          pm8008_l1: regulator@4000 {
+>> +            reg = <0x4000>;
+>> +            regulator-name = "pm8008_l1";
+>> +            regulator-min-microvolt = <950000>;
+>> +            regulator-max-microvolt = <1300000>;
+>> +            qcom,min-dropout-voltage = <96000>;
+>> +          };
+>> +        };
