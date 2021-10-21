@@ -2,71 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4D1435F78
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784F2435F7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhJUKqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhJUKqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:46:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2DFF60F9E;
-        Thu, 21 Oct 2021 10:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634813061;
-        bh=vbuJpRdR1Y9ftvT+gumVNKtzmeeyTOR77o13lBPh1Zo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BIQdI5fSnmNm/oXtI/D634OJwCxEZy07aT7JOpjQeLdwYTQdC+CXKuRXuhQRRld0K
-         ILQTKYS4XaFkp6ENfDsK4NpvAbo94aopMN3z/SC0d8lPk86di5Ewkeshpq7SP+ksE3
-         WBl6yH1F3ZhRgJnW/5qX1PRH3nsu0pDj9/56WO9LJYp4HZy2mySVbLW1mH9otm8ZnQ
-         9mGcbU6ZyABFOrhire+dCcPu8ymC9bHXL9Yfapd+FUuXHwApsR0/sGtLdESIxWiMhM
-         SKoPr2E+FR7bX5v2cxujH3IGW62mVBmhvurYsWv07Q7V6abG/adPbQr/9W7aA2Rpvp
-         PKw1fmzwxEqiA==
-Date:   Thu, 21 Oct 2021 12:44:17 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     luo penghao <cgel.zte@gmail.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] net/core: Remove unused assignment operations
- and variable
-Message-ID: <20211021104412.GA26665@kernel.org>
-References: <20211021064020.1047324-1-luo.penghao@zte.com.cn>
+        id S230407AbhJUKrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 06:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230372AbhJUKq7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 06:46:59 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80C9C06161C;
+        Thu, 21 Oct 2021 03:44:43 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id E9B121F44896
+Subject: Re: [PATCH v1 4/4] media: platform: mtk-mdp3: Set rdma compression
+ reg in each frame
+To:     "roy-cw.yeh" <roy-cw.yeh@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Moudy Ho <moudy.ho@mediatek.com>,
+        "river . cheng" <river.cheng@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20211021063414.23663-1-roy-cw.yeh@mediatek.com>
+ <20211021063414.23663-5-roy-cw.yeh@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <4154479c-b0cc-dde4-eb73-bc6c65c9beca@collabora.com>
+Date:   Thu, 21 Oct 2021 12:44:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021064020.1047324-1-luo.penghao@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211021063414.23663-5-roy-cw.yeh@mediatek.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 06:40:20AM +0000, luo penghao wrote:
-
-I think the bracketed part of the subject of your emails should be:
-
-[PATCH v2 net-next]
-
-* IIRC this is v2 of the patch
-* The patch is targeted at the net-next tree
-
-> Although if_info_size is assigned, it has not been used. And the variable
-> should also be deleted.
+Il 21/10/21 08:34, roy-cw.yeh ha scritto:
+> From: "Roy-CW.Yeh" <roy-cw.yeh@mediatek.com>
 > 
-> The clang_analyzer complains as follows:
+> Set rdma compression reg in each frame
 > 
-> net/core/rtnetlink.c:3806: warning:
+> Signed-off-by: Roy-CW.Yeh <roy-cw.yeh@mediatek.com>
+> ---
+>   drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c | 10 ++++++----
+>   drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c |  2 +-
+>   2 files changed, 7 insertions(+), 5 deletions(-)
 > 
-> Although the value stored to 'if_info_size' is used in the enclosing
-> expression, the value is never actually read from 'if_info_size'.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+> diff --git a/drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c b/drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c
+> index 12d6c88c68d2..dc0d1b3ff218 100644
+> --- a/drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c
+> +++ b/drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c
+> @@ -178,15 +178,17 @@ static int config_rdma_frame(struct mdp_comp_ctx *ctx,
+>   			/* Setup Compression Control */
+>   			MM_REG_WRITE(cmd, subsys_id, base, MDP_RDMA_COMP_CON,
+>   				     rdma->comp_ctrl, write_mask);
+> -		}
+> -
+> -		if (mdp_cfg->rdma_support_afbc &&
+> -		    (MDP_COLOR_IS_COMPRESS(colorformat))) {
+> +		} else if (mdp_cfg->rdma_support_afbc &&
+> +			   (MDP_COLOR_IS_COMPRESS(colorformat))) {
 
-The above not withstanding, this patch looks correct to me.
+Looks like you're unconditionally writing to the compression control register,
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+so you can just...
+
+>   			MM_REG_WRITE(cmd, subsys_id, base, MDP_RDMA_MF_BKGD_SIZE_IN_PXL,
+>   				     ((width + 31) >> 5) << 5, 0x001FFFFF);
+>   			MM_REG_WRITE(cmd, subsys_id, base, MDP_RDMA_MF_BKGD_H_SIZE_IN_PXL,
+>   				     ((height + 7) >> 3) << 3, 0x001FFFFF);
+>   
+		}
+		/* Setup Compression Control */
+
+		MM_REG_WRITE(cmd, subsys_id, base, MDP_RDMA_COMP_CON,
+
+			     rdma->comp_ctrl, write_mask);	
+
+... and avoid repeating the same thing over and over in all of the conditionals.
+
+> +			/* Setup Compression Control */
+> +			MM_REG_WRITE(cmd, subsys_id, base, MDP_RDMA_COMP_CON,
+> +				     rdma->comp_ctrl, write_mask);
+> +		} else {
+>   			/* Setup Compression Control */
+>   			MM_REG_WRITE(cmd, subsys_id, base, MDP_RDMA_COMP_CON,
+>   				     rdma->comp_ctrl, write_mask);
+> diff --git a/drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c b/drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+> index 875326afb686..1a15490d45e7 100644
+> --- a/drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+> +++ b/drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+> @@ -34,7 +34,7 @@ static const struct mdp_platform_config mt8195_plat_cfg = {
+>   	.rdma_support_afbc              = true,
+>   	.rdma_esl_setting               = true,
+>   	.rdma_rsz1_sram_sharing         = false,
+> -	.rdma_upsample_repeat_only      = true,
+> +	.rdma_upsample_repeat_only      = false,
+>   	.rsz_disable_dcm_small_sample   = false,
+>   	.rsz_etc_control                = true,
+>   	.wrot_filter_constraint         = false,
+> 
+
