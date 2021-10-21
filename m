@@ -2,77 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07A5436D21
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8144E436D29
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhJUV5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 17:57:55 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:8121 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232021AbhJUV5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 17:57:53 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Hb1WD08yCz6R;
-        Thu, 21 Oct 2021 23:55:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1634853336; bh=6csxCuz1kr9C+uMndLSTwSrGXfiVLf7UG+RAN5kMi18=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZNLBtizdfizXmbnqRgyLuWVFJqh4sVO+KGwEmv64Cbgc4TuRtMyUuB4XffFLsKsNH
-         cAq/rgWguqUErt3+nlha6LSQnDI+8FmyuBwmNErt3L+GOCpOzqkk7YkQznZikVHV/d
-         DKDY09d2+kDgnDsCDYdCS0q6nGyJNielShyP05UZlnhfmQ8Omr0+alVbb1Kk0bnhwI
-         Z5+/i0rj+FHVGI56fDYO+P5FPRKP7DxSPZ06KNRgbADjTgayBATPE0OKdMzAdYWyyS
-         PzcSAPZs+aeB4Sub8MOTEAabVSxOAvq75jlyDYJbBWRB0soc4dpPem/c9bIVIDyyay
-         dX2usiqf37C4g==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Thu, 21 Oct 2021 23:55:34 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] soc/tegra: fuse: Fix bitwise vs. logical OR warning
-Message-ID: <YXHh1lVCzVnyTiZv@qmqm.qmqm.pl>
-References: <20211021214500.2388146-1-nathan@kernel.org>
+        id S232005AbhJUV7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 17:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231497AbhJUV7D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 17:59:03 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0F4C061764;
+        Thu, 21 Oct 2021 14:56:47 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hb1XW59Gtz4xbR;
+        Fri, 22 Oct 2021 08:56:43 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634853404;
+        bh=H6e4b3/p5YoETgNbuLANkR41zkWYRdfgvRyMAFGI1nk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZUEwWBEa69Qfm68aJ5R89hQDLgy41WHgu6BmFGyf9XvmlO+4QW/plMgO8/Opqxolb
+         VPN4aLSqMsQJc5jQpl6F2iLVm5Frik/m0zsB4FO/ZmoRXOAHliqYZU8GMjRHcuvyrS
+         okomA0a8TxM7eCkpjPVXuXhK+64vHAfuGcjiv4nxnxTe2pjTRpYWheHkUW6Sy1NiLE
+         ZUNAXp2Zq9Ggav6IBnm6AJullCTErQNNZXlZ8jVTpLIWWCCFJJx2+mU959r/nqICS5
+         BDpQhjGBeOmUxw9SsB3JnKaFV71qaAWtLDeCZLVf+zHvU/eu6I6Z+/XYXL3zvWluzU
+         RlWgDZLpnEqYw==
+Date:   Fri, 22 Oct 2021 08:56:41 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Nicolas Ferre <nicolas.ferre@atmel.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: linux-next: manual merge of the at91 tree with Linus' tree
+Message-ID: <20211022085641.57d666a4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211021214500.2388146-1-nathan@kernel.org>
+Content-Type: multipart/signed; boundary="Sig_/pYTgjusVyjoodS3OJoQRzem";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 02:45:00PM -0700, Nathan Chancellor wrote:
-[...]
-> --- a/drivers/soc/tegra/fuse/speedo-tegra20.c
-> +++ b/drivers/soc/tegra/fuse/speedo-tegra20.c
-> @@ -69,7 +69,7 @@ void __init tegra20_init_speedo_data(struct tegra_sku_info *sku_info)
->  
->  	val = 0;
->  	for (i = CPU_SPEEDO_MSBIT; i >= CPU_SPEEDO_LSBIT; i--) {
-> -		reg = tegra_fuse_read_spare(i) |
-> +		reg = tegra_fuse_read_spare(i) ||
->  			tegra_fuse_read_spare(i + CPU_SPEEDO_REDUND_OFFS);
->  		val = (val << 1) | (reg & 0x1);
->  	}
-> @@ -84,7 +84,7 @@ void __init tegra20_init_speedo_data(struct tegra_sku_info *sku_info)
->  
->  	val = 0;
->  	for (i = SOC_SPEEDO_MSBIT; i >= SOC_SPEEDO_LSBIT; i--) {
-> -		reg = tegra_fuse_read_spare(i) |
-> +		reg = tegra_fuse_read_spare(i) ||
->  			tegra_fuse_read_spare(i + SOC_SPEEDO_REDUND_OFFS);
->  		val = (val << 1) | (reg & 0x1);
->  	}
+--Sig_/pYTgjusVyjoodS3OJoQRzem
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It does seem correct, but nevertheless the code looks suspicious. reg is
-already masked with 0x1 as far as I can tell, and there are other places
-which depend on this (like speedo-tegra210.c). Guessing from the use of
-tegra_fuse_read_spare() I would recommend changing its return type as it
-is returing a bit value, not necessarily semantically a boolean.
+Hi all,
 
-Best Regards
-Micha³ Miros³aw
+Today's linux-next merge of the at91 tree got a conflict in:
+
+  arch/arm/boot/dts/sama7g5.dtsi
+
+between commit:
+
+  6f3466228451 ("ARM: dts: at91: sama7g5: add chipid")
+
+from Linus' tree and commit:
+
+  9430ff34385e ("ARM: dts: at91: sama7g5: add tcb nodes")
+
+from the at91 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm/boot/dts/sama7g5.dtsi
+index f98977f3980d,c75c7d7c2842..000000000000
+--- a/arch/arm/boot/dts/sama7g5.dtsi
++++ b/arch/arm/boot/dts/sama7g5.dtsi
+@@@ -159,11 -144,16 +166,21 @@@
+  			clocks =3D <&clk32k 0>;
+  		};
+ =20
+ +		chipid@e0020000 {
+ +			compatible =3D "microchip,sama7g5-chipid";
+ +			reg =3D <0xe0020000 0x8>;
+ +		};
+ +
++ 		tcb1: timer@e0800000 {
++ 			compatible =3D "atmel,sama5d2-tcb", "simple-mfd", "syscon";
++ 			#address-cells =3D <1>;
++ 			#size-cells =3D <0>;
++ 			reg =3D <0xe0800000 0x100>;
++ 			interrupts =3D <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>, <GIC_SPI 92 IRQ_TYPE_=
+LEVEL_HIGH>, <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>;
++ 			clocks =3D <&pmc PMC_TYPE_PERIPHERAL 91>, <&pmc PMC_TYPE_PERIPHERAL 92=
+>, <&pmc PMC_TYPE_PERIPHERAL 93>, <&clk32k 1>;
++ 			clock-names =3D "t0_clk", "t1_clk", "t2_clk", "slow_clk";
++ 		};
++=20
+  		adc: adc@e1000000 {
+  			compatible =3D "microchip,sama7g5-adc";
+  			reg =3D <0xe1000000 0x200>;
+
+--Sig_/pYTgjusVyjoodS3OJoQRzem
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFx4hkACgkQAVBC80lX
+0Gz4qgf+NMvTltOIJvY6CW2U0OuxIyQjM9drbkmOweIfnRYWzO+KZyPP1JkANKht
+DC1VqD7+MiXmCeWs6eg8gnFlG1RAbBbw8/CGGYC7F2RBf7noVNZYyjgEL1ReVChl
++P9eFhEpDN75ID6ScW2tPJTp9kfIRrkQYGC+pHdHnwlWx5a/vhMAyCsEhWcmU6k7
+u7/C0hZ1iE1dbbNcY9AicaQU0wMflbF2gyMqqX8WdbsGPUkhiLkTVx9g3707UcFx
+Aa7HtwsxG3iAigB2mRl5Pyh3zZX08JT7PMwsMEbO3QnXpKTlotoF8Srw31dvB0uI
+EohzMroAc5rKwhcZd3IKU7jdp0vdoA==
+=MqWD
+-----END PGP SIGNATURE-----
+
+--Sig_/pYTgjusVyjoodS3OJoQRzem--
