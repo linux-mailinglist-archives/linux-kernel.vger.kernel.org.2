@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EBE4357C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5254357D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhJUA2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 20:28:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46804 "EHLO mail.kernel.org"
+        id S231364AbhJUAdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 20:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232688AbhJUA1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:27:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ECA56138F;
-        Thu, 21 Oct 2021 00:24:48 +0000 (UTC)
+        id S232140AbhJUAdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 20:33:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 345A960FF2;
+        Thu, 21 Oct 2021 00:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634775889;
-        bh=IC7UlV2w1e4Ip96/SdkIQOlu48Mr5j18fgcS+51QB6I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SXcU4Zy1GdDP8plj8eAzNLNLR9m8t4W7NjyzvIw3Ksya0MZiNSNJ2PeyeH+C2mxJG
-         h5FJfOpeKH+4IXfiOFcl81aOcK7fJCMtfNFwI8eHVi7Q4/TCgewlDKshnP8QrWl5hv
-         FzjDY9/VbCCrxwLr2VwZ1PReNmK601V+MHoxzzHO1N5g9JGuxT5nDBco3VjxRIsige
-         mzB1OMcjt2WWB9FV21gFj2yuNyWi5xa2mTt2oUVjhVdsJW4fo/ojXVEhmPBHWj2h4h
-         Roo8aDzMK1MPHa4UUfQt0t/hh5OwHu8f1T1ldLEK9VaHpA4Vw2Z16r4pYxYT14UubY
-         V4RRIjCI60bgA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michael Cullen <michael@michaelcullen.name>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, benpicco@googlemail.com,
-        hadess@hadess.net, andrzej.p@collabora.com, lzye@google.com,
-        sanjay.govind9@gmail.com, mattreynolds@chromium.org,
-        lee.jones@linaro.org, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 7/7] Input: xpad - add support for another USB ID of Nacon GC-100
-Date:   Wed, 20 Oct 2021 20:24:26 -0400
-Message-Id: <20211021002427.1130044-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211021002427.1130044-1-sashal@kernel.org>
-References: <20211021002427.1130044-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1634776294;
+        bh=2N7TWg46Hjrz6h+njX57e9C+a3Xllj8D+pXkB0nOhz4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DqOuJlmNVVV5HSW89rPxf/94/+KqNr9ByEXkQV83sc6t7CrXMj4o7uszHHYySJpXy
+         Ooijt/dU7t4KtIRpuPYLiYukU1gcwf+2n96a9w40rDAosI6+j73wwzUGzvKR2yTlm4
+         w/nA55g/9IhFHEFyvCN1C6TGY+gdqCrEoyzlOe1nX39IjFQc4Cy+zE+RN13jA+MqaK
+         OT1JlG1GeHhlxI2ILL2sZQdSv/RnR2acf2STy4DqlsrLIP//8jJivyLn67OBFa3duS
+         gdy9bZMg2X7wX66487Ag6LvK1Ki4eLxnf5LdQZL4Nm4um8JPrUlp1X6CLJnh+DA2s7
+         sTp4giaVYnwJA==
+Date:   Thu, 21 Oct 2021 09:31:31 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, <mingo@redhat.com>,
+        <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] kselftests: ftrace: limit the executing time by reading
+ from cached trace
+Message-Id: <20211021093131.affc348280aba040f76f769e@kernel.org>
+In-Reply-To: <20211020101659.42360147@gandalf.local.home>
+References: <20211018132616.2234853-1-lizhijian@cn.fujitsu.com>
+        <20211018221636.47157e52@gandalf.local.home>
+        <20211020112027.b01762f2adcfac99e71dcf99@kernel.org>
+        <20211019223454.5da09d74@gandalf.local.home>
+        <20211020115522.75f3e25247c1d30726e9b130@kernel.org>
+        <20211020101659.42360147@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Cullen <michael@michaelcullen.name>
+On Wed, 20 Oct 2021 10:16:59 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-[ Upstream commit 3378a07daa6cdd11e042797454c706d1c69f9ca6 ]
+> On Wed, 20 Oct 2021 11:55:22 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > --- a/tools/testing/selftests/ftrace/test.d/functions
+> > +++ b/tools/testing/selftests/ftrace/test.d/functions
+> > @@ -124,6 +124,12 @@ initialize_ftrace() { # Reset ftrace to initial-state
+> >      [ -f uprobe_events ] && echo > uprobe_events
+> >      [ -f synthetic_events ] && echo > synthetic_events
+> >      [ -f snapshot ] && echo 0 > snapshot
+> > +
+> > +# Stop tracing while reading the trace file by default, to prevent
+> > +# the test results while checking it and to avoid taking a long time
+> > +# to check the result.
+> > +    [ -f options/pause-on-trace ] && echo 1 > options/pause-on-trace
+> > +
+> 
+> Is there a way we can save the previous setting and put it back on reset?
 
-The Nacon GX100XF is already mapped, but it seems there is a Nacon
-GC-100 (identified as NC5136Wht PCGC-100WHITE though I believe other
-colours exist) with a different USB ID when in XInput mode.
+No, since each testcase must be run under the clean state. Would we need to
+recover the settings?
 
-Signed-off-by: Michael Cullen <michael@michaelcullen.name>
-Link: https://lore.kernel.org/r/20211015192051.5196-1-michael@michaelcullen.name
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/input/joystick/xpad.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thank you,
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index 4168ed0ef187..f8f6bd92e314 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -348,6 +348,7 @@ static const struct xpad_device {
- 	{ 0x24c6, 0x5b03, "Thrustmaster Ferrari 458 Racing Wheel", 0, XTYPE_XBOX360 },
- 	{ 0x24c6, 0x5d04, "Razer Sabertooth", 0, XTYPE_XBOX360 },
- 	{ 0x24c6, 0xfafe, "Rock Candy Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
-+	{ 0x3285, 0x0607, "Nacon GC-100", 0, XTYPE_XBOX360 },
- 	{ 0x3767, 0x0101, "Fanatec Speedster 3 Forceshock Wheel", 0, XTYPE_XBOX },
- 	{ 0xffff, 0xffff, "Chinese-made Xbox Controller", 0, XTYPE_XBOX },
- 	{ 0x0000, 0x0000, "Generic X-Box pad", 0, XTYPE_UNKNOWN }
-@@ -464,6 +465,7 @@ static const struct usb_device_id xpad_table[] = {
- 	XPAD_XBOXONE_VENDOR(0x24c6),		/* PowerA Controllers */
- 	XPAD_XBOXONE_VENDOR(0x2e24),		/* Hyperkin Duke X-Box One pad */
- 	XPAD_XBOX360_VENDOR(0x2f24),		/* GameSir Controllers */
-+	XPAD_XBOX360_VENDOR(0x3285),		/* Nacon GC-100 */
- 	{ }
- };
- 
+> 
+> -- Steve
+
+
 -- 
-2.33.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
