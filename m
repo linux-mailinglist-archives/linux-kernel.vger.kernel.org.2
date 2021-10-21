@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C17436AE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6215E436AF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhJUSwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
+        id S231769AbhJUSzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhJUSwE (ORCPT
+        with ESMTP id S230103AbhJUSzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:52:04 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24DAC0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:49:47 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id d13so1673748ljg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:49:47 -0700 (PDT)
+        Thu, 21 Oct 2021 14:55:52 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D05C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:53:35 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id x27so3188108lfu.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:53:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/TtfFv+YJK+r0KiR4Q7jDkvUjTqglRl+YDTfrv8xxts=;
-        b=vZCfEv+leEgiq2uSITsk1Q+02XwaBs9iqHHpdbXsWgEA2/a6EX2zDGgIrQmVOOS8m1
-         811Em6eRDdc8/knnqhcu1muPymVjGWzY4HkHuAocuvV5G7EJnMevzYWYxOt2P21S1EEg
-         SvUpsYcF1kyoGnEjYVkUTqPHFo9lF4wCHBDTncb/y+AD8H5/c20NeH/0XggR+7WmVt+Q
-         09hmN32jSv02U6zbV0FKGHtsfMX1DpsoX+44fKlzdzWH4WDPECNcax1iMCNcC/3X5AiU
-         tC3/zVwmvkpl/iQk1I1HDeaD8KarQNg+ekYppqJFi61tmyI9hpyYWxVs+6MsaUf+PMWL
-         6Nxg==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=mO5anQzGXTxh2v2wYXdU6rU0TROIAFTKDYYEe0hmhSM=;
+        b=FFYXPZJcnXPuGpp/ZSB3wwIMJgRYVA5DfPknKpPhzU3edEVeidgNQQjVtvILLsP8Py
+         f6IUDDJ7S6nLRcAOWVduJ5d9y+J/FaTMsrVZgKiPEJMuMc4Soy4K30HT+M+ckvanbBZ4
+         GCo8tXJOfnq65fdy3Bgkrn1fwNgOFEYoDJsbQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/TtfFv+YJK+r0KiR4Q7jDkvUjTqglRl+YDTfrv8xxts=;
-        b=Eu4IQtgtD6jCyS5MwK4Ai38Bj4TQRmf14oZL3oFXo1GOnJTLwTHbmJGb6iNA62i7fl
-         6g+NCbtAhGNDrhvDeRddXGnPynOo31ycGA5Wl++4u8lpUFeM1hDfWLYXCIeY6UPwXPLV
-         yl1CMunrwT0vmQsPLb1L4f8VxIz+haQXmDvTIzonEJ8uIAASFhR6bXWhrYBWrzs5DilX
-         X249gMfY1Y5RTuziO3YPDkgF8pTX5Yi1IDQE3yfVEI5GOsG2N6y0ypd1e4mnFoXpL1jA
-         8ZzDZDdt1+iXQ+Ftf67psCvWaWjtTUh2xOAMqb3BDs+8CFpJZWE3UzdloOmBUHdMKxdQ
-         sOGw==
-X-Gm-Message-State: AOAM533XBxJH7whykpElNikZfB1uyWCzXQKWg07pyoeLONO7rCDuuXI3
-        JOUWN/MPcXhKHO27mp8r223IpCN9RisCIvVfLAuwaw==
-X-Google-Smtp-Source: ABdhPJwaN/7Wj+W48MDMN3pQ75XqWwMeL+aCCHzrNt4lw0cYdyMmzGTZVQDEtFEa9DXYRyhULOCZpXiL4NtOVgt/mxI=
-X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr7994342ljp.367.1634842186126;
- Thu, 21 Oct 2021 11:49:46 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=mO5anQzGXTxh2v2wYXdU6rU0TROIAFTKDYYEe0hmhSM=;
+        b=BHi582oll2VL0gslJOcweIs+Y8cC8peV16bKOWMXIjQb6iiqx9zbxdonyZ4PuCbCFr
+         q3rGDZNnpGIyC3+Z2RsIFlh4UtDMhetB0txE8p0OvVqgCrn/btDkOEXnFgdQXaL8coJ9
+         n29oC+HcpM/Hx7k1Kncd2WvSdD6rnAYo11jouPj+uJZcu4InBToBSoxp+w+nEi0Kyrfp
+         jBVwsRJtAK4jbSYg3yeX2vqdPHAI21dV3vB47YC0xsKNxB8923szlzEhw9X/9i77zoGD
+         6RPvZtyT/ykT0/O5KT/a32nqEt1UdCSfAv69/ZJvgq+VFCrmgboRx4Mfg+pmAVZIk+s3
+         kiDQ==
+X-Gm-Message-State: AOAM533qsFKbOWsE0rkV5zSmqSLnm2P8oIIDLBg2wRdXn/3RH5Ifsv67
+        PHgQY1G9OV8jQcyjcRnNvSWiTdARceODo7AUEgqqMQ==
+X-Google-Smtp-Source: ABdhPJys9VUKRoYmYMSGZ1MXhUxuDtqJg+cCKLhocitFkTrbjasOhV/035KFy9HQ0JHl5V8hksNICzzekRoQ6niNOmk=
+X-Received: by 2002:ac2:5c12:: with SMTP id r18mr6938328lfp.251.1634842414238;
+ Thu, 21 Oct 2021 11:53:34 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 21 Oct 2021 11:53:33 -0700
 MIME-Version: 1.0
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
- <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
- <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
- <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
- <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
- <CAJZ5v0jQM3VDy_U8TiC3601ivSYVXyT5jJVjLt8qyMWE49zOeg@mail.gmail.com>
- <CAPDyKFouHn95Lwgx+PbK9itQP13U70ZiZbDr3jQd41KsvXMtqQ@mail.gmail.com>
- <CAJZ5v0hjdpyFGF5zPUX8RUaVW7Tk+qr9RwbGt-7C0Wxyx03TLg@mail.gmail.com> <CAJZ5v0iWxiH686bkZ3-mhKK0+F7f+wMWp8Adnjuk7BvdMywTww@mail.gmail.com>
-In-Reply-To: <CAJZ5v0iWxiH686bkZ3-mhKK0+F7f+wMWp8Adnjuk7BvdMywTww@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Oct 2021 20:49:09 +0200
-Message-ID: <CAPDyKFqdF0DptpLvp21yzDOOAbFiiDwSmWZCWa1Vt9KO3fz44A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <20211007140854.1.I70615769f27bbaf7e480419d0f660f802b1fea43@changeid>
+References: <20211007140854.1.I70615769f27bbaf7e480419d0f660f802b1fea43@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 21 Oct 2021 11:53:33 -0700
+Message-ID: <CAE-0n53b2SPJh7NABca_XDTeO2z_5omF7TGPa6-idsRa3BNqJQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add Herobrine
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
-
-> > The PM-runtime case should be addressed directly IMO, we only need to
-> > figure out how to do that.
-> >
-> > I'm wondering how you are dealing with the case when user space
-> > prevents pd_dev from suspending via sysfs, for that matter.
+Quoting Matthias Kaehlcke (2021-10-07 14:09:11)
+> Herobrine is a Chrome OS board/platform based on the QCA SC7280.
+> Add a .dtsi for the platform parts and a .dts for the board
+> specific bits. Currently the .dtsi has everything except the
+> compatible strings, things will likely get shuffled around in the
+> future as we learn more about the differences between boards.
 >
-> Or what happens if rpm_suspend() returns -EAGAIN, because someone has
-> started to resume the device right after its reference counter went
-> down to 0.
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
 
-That would mean that the pm_runtime_put_sync() call fails to runtime
-suspend the device. In other words, the corresponding genpd stays
-powered on, which prevents idle states from being selected by the
-genpd governor.
-
-So, yes, this should work fine.
-
->
-> It looks to me like the problem is there regardless of the whole
-> interference with system suspend.
-
-I don't think so, but I may be overlooking some points.
-
-Kind regards
-Uffe
+Ping, can qcom maintainers pick this up?
