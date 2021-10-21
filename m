@@ -2,185 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A2C4366E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4A64366EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhJUP6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:58:19 -0400
-Received: from mail-dm6nam10on2073.outbound.protection.outlook.com ([40.107.93.73]:50428
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229597AbhJUP6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:58:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C6HmNztu/Lsk8gkFHQcbhLeQeL3WXpA3MZBdtA4/fudZWA7j15P5BOIj7oeXVkl3HiDJUZx8rOTumi4v2eQnEKQH/499vbah4W0xXmEMTFtgVwqikydg/jmLmOaXIyxVcrAaHZy7mLUIqYw3x1xHdZOeGf4hIxyFEnhQx9gsqqMfugCAC2H30hY4hhe/QUvHo1gmgPySw47RmTdljkfSRZJFVByY77E4EUmUJ4/6MCqrILGzGWkvcKrPuAagbcPruqSh0yZMU65uywyyaTbs/SsK74qdPCKUo5/ZpbxuwaPRbBfPK+F+pc19bLxFFC9Kj1dmj8Rhnqar9bnGjYNPDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=foiweXKig2XnjUS/iGDQP1IYMQqk7YqU0kTRCAaqZas=;
- b=N3eHZhqoAHgIvETd6EkkfGSfnvnJhrcrS/HcPBPJPyAY2W1P8Vry3KLVcpvQXaphPYZRYV7clxynTZEZiOqGqY81UhdbbkRmE+O4M5h5+eT62anAoQsSogGmpmuO9oSxjmKYN8rld4FmXkyj95B2qV4R7zMrdQE7SQvBd5wsF13AvDsKeKx2Kg3qL0i0vcrjzH7XA8F8xwX3+cnaUzqoDj+rgcQ0ZMJsfImjskVmOyZtEPZZIspXvr8UvO5WSFBPeGg7YLbkp5IqBTy1FmXKJqFEK816t0bJQx9ZCLYbpxeuKfOgNi9oWiv3ohsRuEpbl+poZ8BVEu0lYqMaw9qo3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=foiweXKig2XnjUS/iGDQP1IYMQqk7YqU0kTRCAaqZas=;
- b=D8M33dkHc+LglQ/t3OACCdOakEISPmY20X4VARBZLaFyl6kSUowEUQ0ANPuZ+UeY/3rinOuEYiZp6wmZNoJPbQpQh2dtNAyMuhRQquwn5UZwXkbMafX4IULVr9lVOBtJbZ+onAD013dyGECkCIjs32hsbeeG+ZvX3vnDCQQNPx8=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN6PR12MB1316.namprd12.prod.outlook.com (2603:10b6:404:1c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Thu, 21 Oct
- 2021 15:55:59 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::d075:22bc:12ee:e73e]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::d075:22bc:12ee:e73e%7]) with mapi id 15.20.4608.018; Thu, 21 Oct 2021
- 15:55:59 +0000
-Date:   Thu, 21 Oct 2021 15:55:51 +0000
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, bp@alien8.de, mingo@redhat.com,
-        mchehab@kernel.org, Muralidhara M K <muralimk@amd.com>
-Subject: Re: [PATCH v4 2/4] EDAC/mce_amd: Extract node id from MCA_IPID
-Message-ID: <YXGNh4gfWbZSJHkK@yaz-ubuntu>
-References: <20210823185437.94417-1-nchatrad@amd.com>
- <20211014185400.10451-1-nchatrad@amd.com>
- <20211014185400.10451-3-nchatrad@amd.com>
+        id S231659AbhJUP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:58:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40776 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231743AbhJUP6c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 11:58:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634831776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZmeI+xNFSQkhhEf0UgyyM+rZSNNUl4FvcDPA0Dfsy8Y=;
+        b=RHTa4+pTFfnEMLhniw/pM3jXjbAxoUGKLvRqME7TEWAvAIXL4WQznzV6/zZ3OTGowEnxfS
+        ecraO6rSPNkoVS1L31y3y5IfC/Kpqjmr/vJpm3KjU5CsI5ThpBXAXdo40FVWOoHZIGdiO/
+        JyvQDPzBTPsIOYYauCon7sm8YhLqviI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-474-8tJMuhBJOraD3HrF-F2SQA-1; Thu, 21 Oct 2021 11:56:14 -0400
+X-MC-Unique: 8tJMuhBJOraD3HrF-F2SQA-1
+Received: by mail-wm1-f69.google.com with SMTP id l187-20020a1c25c4000000b0030da46b76daso47596wml.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:56:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZmeI+xNFSQkhhEf0UgyyM+rZSNNUl4FvcDPA0Dfsy8Y=;
+        b=vdwdjR0yQIBna00snRnc2TTCFnptICJCuePYU1TqOftKR6seBPrJH7emQzuuZO2G2H
+         eB6JHFvjlWG2jjZ9BPmaGQzo0g/nm4y8zdRQGLSCqXKDv3IhoJF3mMyaz/O0sJJ17tjV
+         pAnwR65AuhG4DxM+HIvcSOIY/DJw1LnVqK6333pkcuWlYO+WnVhQebb78ztvQ6SFGmUj
+         JaHPLwEr2QcmAhJR3ouQJWIooLMds74+4+Z0mTIv2tlX+agxCfWy9m0s/PUvpVEt8sDo
+         eSY6U2cDzWsMqaDbI7hZrJiqsQMTGdKSR+PcRHdJLw2HqgOslU9UmFN3PZO3JBKJ8tcZ
+         HK1Q==
+X-Gm-Message-State: AOAM533J10+85tndooM0d6htbtRinxKtysZbnJQDFKESOCLHHVLtlwt2
+        be+4JIxeBocWhB9ty6sYbs7IoL7FGPONBU8sG/j7DP1xwk77TpiRBjPen6pRQlYisTFNlaOQQOD
+        oAu2VZcneavlK26mMcd5QxTvq
+X-Received: by 2002:adf:a38d:: with SMTP id l13mr8196962wrb.103.1634831772999;
+        Thu, 21 Oct 2021 08:56:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/BOxtIRR/HebL6q5wYCsAEIdtnhPXy/FgcPBKoCIKwTHe4AeOvR2zv4dj1RexyLHkS2L7QA==
+X-Received: by 2002:adf:a38d:: with SMTP id l13mr8196931wrb.103.1634831772775;
+        Thu, 21 Oct 2021 08:56:12 -0700 (PDT)
+Received: from work-vm (cpc109025-salf6-2-0-cust480.10-2.cable.virginm.net. [82.30.61.225])
+        by smtp.gmail.com with ESMTPSA id x8sm295768wrw.6.2021.10.21.08.56.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:56:12 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 16:56:09 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Michael Roth <michael.roth@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <YXGNmeR/C33HvaBi@work-vm>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+ <YXF9sCbPDsLwlm42@zn.tnic>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211014185400.10451-3-nchatrad@amd.com>
-X-ClientProxiedBy: BL1PR13CA0101.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::16) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
-MIME-Version: 1.0
-Received: from yaz-ubuntu (165.204.25.250) by BL1PR13CA0101.namprd13.prod.outlook.com (2603:10b6:208:2b9::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 15:55:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6199a100-4b09-4c7a-c5f2-08d994ab4685
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1316:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB13163A72C3BEDCBCBA2104D8F8BF9@BN6PR12MB1316.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:486;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q2Ni/cRdAZFCe0ygmTbbYYT6tb8osb8+yjkJGZi9Wr5miruEr8tEgfyYXDid8Woxz/78xH7IKn+WOBX9LcUGism1B6woSk9FNC6lyCtM7MjW3DnxbjjO+3RaY3YyAcjhkzzvPm/ygeHmujUm19MlUYIaamAwjAG8VoLhD/HseEmRoVY9LGuxGqTvZHFpyVP7NUqJM+EVTU2rpd9w6sUhvMALpijsk5fyUuQmXcvO7TD5R4y4ZlSqqckO1VgKAX6DQt/BH50RUL7cfopRRbk6326EXFpJl8SP3WCbEbfeFa8JmL3o0m4Oc9uUNclPirJhLOfcDFojECYUcxmP2usUEzU/Kkjwna2bKE6PMvqKIb/NGb/XQ2f/hnc+qN0I3b+CRoLJiCuQUHF+8yYh6wcZ7TufXsjiBZGSPby/uE/WWXhLKH4AILyU0Opg2qDftLLFlZ1zchXB3VZQ8yBz3T5VT/Ckkh15g8rK1wfS+90bDxSrjKdQaAwwMOoa609DCeZMKwMjt7qgVzar5wlHXOmzfakFXxqMKakF7nZHlwhlfP5o8x1SfDnqFhRo2mploVBd2nYnwK6gYmzFZ0srGiSOx8+tiQV7L7p/PI6Ov5yyvh3IwlokAeWciFJDs4owE7FxpHntJlR6G4RUQfcAHt5JRPohiql/FBr6cF+THaLINW3Y/x0O3iBoaepdIJS6TjVsrBvkSFCYzrydonz2KOqso48RDR+LwAjvRvrY2ipzf8A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(6496006)(6636002)(6666004)(66946007)(966005)(508600001)(8936002)(956004)(26005)(6862004)(38100700002)(8676002)(44832011)(9686003)(83380400001)(4326008)(5660300002)(55016002)(316002)(66476007)(33716001)(86362001)(66556008)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nGRDYpw1MCvCKzHMN9+3EbqZgRbzJo3t4m1ZbD8NtSmn1yp2ZUnmt968SKCK?=
- =?us-ascii?Q?AJqput9FXOVVA7lwoqoZgn91RjUDzHlBWj0gIbnmAd58oSzGmOK8jAujYITa?=
- =?us-ascii?Q?iG7xq45NdVxBqKJSs6T0qSPsEt2cHPMm6kysl2Q8QmUIsEc+jXVbcQC2zE7y?=
- =?us-ascii?Q?9onyslsPPZgx/88WzpB/arukGKE4yAkN7qs0fO9dGLLsRjwIgxfhRSidEt6g?=
- =?us-ascii?Q?kB5N82LvonQI5hr35vQ931KfSZdVmo2OqoRkg40lqmqx/vNDC+PV9/fLbJEz?=
- =?us-ascii?Q?LKTuRQ1MDWUeVUn5aU4j4kzzjxWEzDhHzEP9Hh9GfPqo0vBNWKJWJkFN2rZI?=
- =?us-ascii?Q?ncsszox/bU7mF4pLEju2LNiXbWtq5PcWGUl7NpJLGDYXQ7zHFmtCj1X8kreL?=
- =?us-ascii?Q?X8CUkUOGgItVIoSDT1R3QbRE/yG5Pj6GDdTH5XG/W6YJ48dxpwfMbrceYbAG?=
- =?us-ascii?Q?4U5DjynhDmllpUvOqlitWNA9RD/lkBnhevPCuBYOEgdyciN0dss5aXiqifwe?=
- =?us-ascii?Q?i2RK76kwVlxGLmN5ghL3eT3SWcjLXp/+931ZP3SasJVSbJnZtON5XgX6sela?=
- =?us-ascii?Q?LPF/oApREU5Eb/a7AcoJobAVv1pE232V6+oXewGprl0Y/43FOVeHdYp7Ifx0?=
- =?us-ascii?Q?PLcj15K5ft04xn1cf+rH25qmf0n4PUzhoGqPHS/NCZwigi+IufPSZSws+Wss?=
- =?us-ascii?Q?zYBSJiobVRh8fAM4c62jRRe6qFE/rce/fkDR5QlAbXeVRdPhGqfYR/QYv4GK?=
- =?us-ascii?Q?64mtSlL96t2yUDkqVa870LjlmKbcWcCk6GiNFHs66Q0RTNictCiiTBwJlf+K?=
- =?us-ascii?Q?zRqOzd7FJ7/UKewygxzeAOnjgfWV3cpogZDNLQVfGUgkvys/vHfVKFTDRbY0?=
- =?us-ascii?Q?JBv0K03pr/ETXU6H564HQfOiRXKfvQlrasKqgfcU15qp1lXuxAyrykjX+GFV?=
- =?us-ascii?Q?D4v7ZRDP+kUAVMSDiBSoaVE3WS4+ag8eGF8JFwAVi7/IxOsh4kwEAp0qD03N?=
- =?us-ascii?Q?6bjdarDm0ioUBSgR4z8tmI2R48RYBHfgDaiApLO7HCrppIY8zYkiAVytXWey?=
- =?us-ascii?Q?nVCceYerSl0TpdcTfhrWFc6CPd7BfLFW8ENao7iGJU7qk7r2vENOPKdEhz73?=
- =?us-ascii?Q?KqEp4lxghA7WJv0CaGhQi9khvpXgGNoouk/ltg9RwDip5Me5NipKybFwigtl?=
- =?us-ascii?Q?dyv+GudXWyP+AYJblx7sr8mya3R/rFHMrZvhy4RD1tJaJRQ6r+sOrH0cAZ5s?=
- =?us-ascii?Q?hiOxEw0cjdPK6D0pKFjxc6RuLgmVey6TqGWHVldG/bVEHjgyYOZtRGyOCSkb?=
- =?us-ascii?Q?5zmdL+rK9fyKPHbSsXajuF7mzrz98RMUk0OFzhLeW6Nw6uyalYYmUtRwYZDW?=
- =?us-ascii?Q?rGFlvdZHLhDWjigTRltEPeJk2W4d9RPvl8bKHvIAOyy3lJZ/neNqBEah4xwX?=
- =?us-ascii?Q?HwADrMghGX4=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6199a100-4b09-4c7a-c5f2-08d994ab4685
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 15:55:59.5684
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yghannam@amd.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1316
+In-Reply-To: <YXF9sCbPDsLwlm42@zn.tnic>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 12:23:58AM +0530, Naveen Krishna Chatradhi wrote:
-> On SMCA banks of the GPU nodes, the node id information is
-> available in register MCA_IPID[47:44](InstanceIdHi).
+* Borislav Petkov (bp@alien8.de) wrote:
+> On Wed, Oct 20, 2021 at 11:10:23AM -0500, Michael Roth wrote:
+> > At which point we then switch to using the CPUID table? But at that
+> > point all the previous CPUID checks, both SEV-related/non-SEV-related,
+> > are now possibly not consistent with what's in the CPUID table. Do we
+> > then revalidate?
 > 
-> Convert the hardware node ID to a value used by Linux
-> where GPU nodes are sequencially after the CPU nodes.
+> Well, that's a tough question. That's basically the same question as,
+> does Linux support heterogeneous cores and can it handle hardware
+> features which get enabled after boot. The perfect example is, late
+> microcode loading which changes CPUID bits and adds new functionality.
 > 
-> Co-developed-by: Muralidhara M K <muralimk@amd.com>
-> Signed-off-by: Muralidhara M K <muralimk@amd.com>
-> Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
-> Link: https://lkml.kernel.org/r/20210823185437.94417-3-nchatrad@amd.com
-> ---
-> Changes since v3:
-> 1. Use APIs from amd_nb to identify the gpu_node_start_id and cpu_node_count.
->    Which is required to map the hardware node id to node id enumerated by Linux.
+> And the answer to that is, well, hard. You need to decide this on a
+> case-by-case basis.
+
+I can imagine a malicious hypervisor trying to return different cpuid
+answers to different threads or even the same thread at different times.
+
+> But isn't it that the SNP CPUID page will be parsed early enough anyway
+> so that kernel proper will see only SNP CPUID info and init properly
+> using that?
 > 
-> Changes since v2:
-> 1. Modified subject and commit message
-> 2. Added Reviewed by Yazen Ghannam
+> > Even a non-malicious hypervisor might provide inconsistent values
+> > between the two sources due to bugs, or SNP validation suppressing
+> > certain feature bits that hypervisor otherwise exposes, etc.
 > 
-> Changes since v1:
-> 1. Modified the commit message
-> 2. rearranged the conditions before calling decode_dram_ecc()
+> There's also migration, lemme point to a very recent example:
 > 
->  drivers/edac/mce_amd.c | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
+> https://lore.kernel.org/r/20211021104744.24126-1-jane.malalane@citrix.com
+
+Ewww.
+
+> which is exactly what you say - a non-malicious HV taking care of its
+> migration pool. So how do you handle that?
+
+Well, the spec (AMD 56860 SEV spec) says:
+
+  'If firmware encounters a CPUID function that is in the standard or extended ranges, then the
+firmware performs a check to ensure that the provided output would not lead to an insecure guest
+state'
+
+so I take that 'firmware' to be the PSP; that wording doesn't say that
+it checks that the CPUID is identical, just that it 'would not lead to
+an insecure guest' - so a hypervisor could hide any 'no longer affected
+by' flag for all the CPUs in it's migration pool and the firmware
+shouldn't complain; so it should be OK to pessimise.
+
+Dave
+
+> > Now all the code after sme_enable() can potentially take unexpected
+> > execution paths, where post-sme_enable() code makes assumptions about
+> > pre-sme_enable() checks that may no longer hold true.
 > 
-> diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-> index 67dbf4c31271..af6caa76adc7 100644
-> --- a/drivers/edac/mce_amd.c
-> +++ b/drivers/edac/mce_amd.c
-> @@ -2,6 +2,7 @@
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  
-> +#include <asm/amd_nb.h>
->  #include <asm/cpu.h>
->  
->  #include "mce_amd.h"
-> @@ -1072,8 +1073,27 @@ static void decode_smca_error(struct mce *m)
->  	if (xec < smca_mce_descs[bank_type].num_descs)
->  		pr_cont(", %s.\n", smca_mce_descs[bank_type].descs[xec]);
->  
-> -	if (bank_type == SMCA_UMC && xec == 0 && decode_dram_ecc)
-> -		decode_dram_ecc(topology_die_id(m->extcpu), m);
-> +	if (xec == 0 && decode_dram_ecc) {
-> +		int node_id = 0;
-> +
-> +		if (bank_type == SMCA_UMC) {
-> +			node_id = topology_die_id(m->extcpu);
-> +		} else if (bank_type == SMCA_UMC_V2) {
-> +			/*
-> +			 * SMCA_UMC_V2 exists on GPU nodes, extract the node id
-> +			 * from register MCA_IPID[47:44](InstanceIdHi).
-> +			 * The InstanceIdHi field represents the instance ID of the GPU.
-> +			 * Which needs to be mapped to a value used by Linux,
-> +			 * where GPU nodes are simply numerically after the CPU nodes.
-> +			 */
-> +			node_id = ((m->ipid >> 44) & 0xF) -
-> +				   amd_gpu_node_start_id() + amd_cpu_node_count();
-> +		} else {
-> +			return;
-> +		}
-> +
-> +		decode_dram_ecc(node_id, m);
-> +	}
->  }
->  
->  static inline void amd_decode_err_code(u16 ec)
+> So as I said above, if you parse SNP CPUID page early enough, you don't
+> have to worry about feature rediscovery. Early enough means, before
+> identify_boot_cpu().
+> 
 > -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
-This looks good to me.
-
-Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
-
-Thanks,
-Yazen
