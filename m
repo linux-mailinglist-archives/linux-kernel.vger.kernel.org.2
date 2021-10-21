@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494D3435BED
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AF0435BF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhJUHmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:42:20 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:42703 "EHLO
+        id S231572AbhJUHmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:42:24 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:48995 "EHLO
         alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbhJUHmN (ORCPT
+        with ESMTP id S231499AbhJUHmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:42:13 -0400
+        Thu, 21 Oct 2021 03:42:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634801998; x=1666337998;
+  t=1634802002; x=1666338002;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=nQ1B/2pXcJg/+FgZI2xto8t+wrsmMgekSvc1/gqERXo=;
-  b=XLbAQO1vUbRoW6WpkXbuw9gzkWfNHoDc1Iv6OhORskbjUyEkZNHWFDur
-   4zC+O5ERnr8C8372CCsDJH6pPYngJmRJbw2y2/2epOVCcv+54z6HQJ1yl
-   jHZyl18yzTAaygRiGM2mzhXKv1f7UJRAUlwJ1DGDRgL2WfyLfqtAWxf41
-   8=;
+  bh=fGltqvKqGu4UMrUXclGB4ik6xX8IF8Fhe3wtc6ntjaY=;
+  b=JgBG7ECa89E0NQJGs0m+E+g1D8vvm51j2354c31NIT1S8j09CDAVO59S
+   hsDORqiCx7ELxwNVM6rccfpghHTccIG9eqToNxVG5LPRo+R31XSl4B1D6
+   MfimZ3t2/iYF4cIhvHGDxEoyuE7Q2k2fL7OmuefF5ps2Bxa0bICTwYoFu
+   4=;
 Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 21 Oct 2021 00:39:58 -0700
+  by alexa-out.qualcomm.com with ESMTP; 21 Oct 2021 00:40:02 -0700
 X-QCInternal: smtphost
 Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:39:58 -0700
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:40:02 -0700
 Received: from taozha-gv.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 21 Oct 2021 00:39:54 -0700
+ Thu, 21 Oct 2021 00:39:58 -0700
 From:   Tao Zhang <quic_taozha@quicinc.com>
 To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -46,9 +46,9 @@ CC:     Tao Zhang <quic_taozha@quicinc.com>,
         Mao Jinlong <quic_jinlmao@quicinc.com>,
         Yuanfang Zhang <quic_yuanfang@quicinc.com>,
         Trilok Soni <quic_tsoni@quicinc.com>
-Subject: [PATCH 06/10] Coresight: Enable and add interface for TPDM TC subunit
-Date:   Thu, 21 Oct 2021 15:38:52 +0800
-Message-ID: <1634801936-15080-7-git-send-email-quic_taozha@quicinc.com>
+Subject: [PATCH 07/10] Coresight: Enable DSB subunit for TPDM
+Date:   Thu, 21 Oct 2021 15:38:53 +0800
+Message-ID: <1634801936-15080-8-git-send-email-quic_taozha@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
 References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
@@ -61,1017 +61,673 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable dataset type Tenure Counts(TC) for TPDM. The TC interface
-has RW, WO and RO fields for controlling BC dataset elements
-transmitted on ATB flush.
-The TC data set subunit supports from 1-4 tenure counter instances
-where each tenure counter instance is charged with collecting or
-computing elements of an STVn data set(MIN, MAX, TAT and GP
-Counter 0-7). Computation of data set elements MIN, MAX, and TAT
-is performed by the TC subunit by monitoring a pool of 1 to 1024
-tenure scratchpad counters. Computation/decoding of increment
-enables for GP Counters 0-7 is accomplished via monitoring the
-state (TC subunit outputs) of the tenure scratchpad registers.
-This computation/decoding must be performed by the core
-instancing the TPDM to which the TC subunit belongs.
+Enable Discrete Single Bit(DSB) subunit for TPDM. The DSB dataset
+elements flow out ATB while the BC/TC dataset elements are sent
+only on ATB flush requests from the TPDA.
+The DSB data set subunit is responsible for collection of DSB data
+sets. The width of the DSB subunit interface must be between 8 and
+256 bits. A monitor may support either a 32 or 64 bit DSB data set
+element size (e.g. via a hardware parameter).
 
 Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
 ---
- drivers/hwtracing/coresight/coresight-tpdm.c | 1066 +++++++++++++++++-
- 1 file changed, 1029 insertions(+), 37 deletions(-)
+ drivers/hwtracing/coresight/coresight-tpdm.c | 680 +++++++++++++++++++
+ 1 file changed, 680 insertions(+)
 
 diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-index 0970c69ac8e2..635382be5de6 100644
+index 635382be5de6..5f07363e4650 100644
 --- a/drivers/hwtracing/coresight/coresight-tpdm.c
 +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-@@ -298,6 +298,17 @@ static void __tpdm_config_bc_msr(struct tpdm_drvdata *drvdata)
- 		tpdm_writel(drvdata, drvdata->bc->msr[i], TPDM_BC_MSR(i));
+@@ -309,6 +309,17 @@ static void __tpdm_config_tc_msr(struct tpdm_drvdata *drvdata)
+ 		tpdm_writel(drvdata, drvdata->tc->msr[i], TPDM_TC_MSR(i));
  }
  
-+static void __tpdm_config_tc_msr(struct tpdm_drvdata *drvdata)
++static void __tpdm_config_dsb_msr(struct tpdm_drvdata *drvdata)
 +{
 +	int i;
 +
 +	if (!drvdata->msr_support)
 +		return;
 +
-+	for (i = 0; i < TPDM_TC_MAX_MSR; i++)
-+		tpdm_writel(drvdata, drvdata->tc->msr[i], TPDM_TC_MSR(i));
++	for (i = 0; i < TPDM_DSB_MAX_MSR; i++)
++		tpdm_writel(drvdata, drvdata->dsb->msr[i], TPDM_DSB_MSR(i));
 +}
 +
  static void __tpdm_enable_bc(struct tpdm_drvdata *drvdata)
  {
  	int i;
-@@ -363,6 +374,66 @@ static void __tpdm_enable_bc(struct tpdm_drvdata *drvdata)
- 	tpdm_writel(drvdata, val, TPDM_BC_CR);
+@@ -434,6 +445,86 @@ static void __tpdm_enable_tc(struct tpdm_drvdata *drvdata)
+ 	tpdm_writel(drvdata, val, TPDM_TC_CR);
  }
  
-+static void __tpdm_enable_tc(struct tpdm_drvdata *drvdata)
++static void __tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
 +{
-+	int i;
-+	uint32_t val;
++	uint32_t val, mode, i;
 +
-+	if (drvdata->tc->enable_counters) {
-+		tpdm_writel(drvdata, 0xF, TPDM_TC_CNTENCLR);
-+		tpdm_writel(drvdata, drvdata->tc->enable_counters,
-+			    TPDM_TC_CNTENSET);
-+	}
-+	if (drvdata->tc->clear_counters)
-+		tpdm_writel(drvdata, drvdata->tc->clear_counters,
-+			    TPDM_TC_CNTENCLR);
++	for (i = 0; i < TPDM_DSB_MAX_EDCR; i++)
++		tpdm_writel(drvdata, drvdata->dsb->edge_ctrl[i],
++			    TPDM_DSB_EDCR(i));
++	for (i = 0; i < TPDM_DSB_MAX_EDCR / 2; i++)
++		tpdm_writel(drvdata, drvdata->dsb->edge_ctrl_mask[i],
++			    TPDM_DSB_EDCMR(i));
 +
-+	if (drvdata->tc->enable_irq) {
-+		tpdm_writel(drvdata, 0xF, TPDM_TC_INTENCLR);
-+		tpdm_writel(drvdata, drvdata->tc->enable_irq,
-+			    TPDM_TC_INTENSET);
-+	}
-+	if (drvdata->tc->clear_irq)
-+		tpdm_writel(drvdata, drvdata->tc->clear_irq,
-+			    TPDM_TC_INTENCLR);
-+
-+	if (drvdata->tc_trig_type == TPDM_SUPPORT_TYPE_FULL) {
-+		for (i = 0; i < TPDM_TC_MAX_TRIG; i++) {
-+			tpdm_writel(drvdata, drvdata->tc->trig_sel[i],
-+				    TPDM_TC_TRIG_SEL(i));
-+			tpdm_writel(drvdata, drvdata->tc->trig_val_lo[i],
-+				    TPDM_TC_TRIG_LO(i));
-+			tpdm_writel(drvdata, drvdata->tc->trig_val_hi[i],
-+				    TPDM_TC_TRIG_HI(i));
-+		}
-+	} else if (drvdata->tc_trig_type == TPDM_SUPPORT_TYPE_PARTIAL) {
-+		tpdm_writel(drvdata, drvdata->tc->trig_sel[0],
-+			    TPDM_TC_TRIG_SEL(0));
-+		tpdm_writel(drvdata, drvdata->tc->trig_val_lo[0],
-+			    TPDM_TC_TRIG_LO(0));
-+		tpdm_writel(drvdata, drvdata->tc->trig_val_hi[0],
-+			    TPDM_TC_TRIG_HI(0));
++	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
++		tpdm_writel(drvdata, drvdata->dsb->patt_val[i],
++			    TPDM_DSB_TPR(i));
++		tpdm_writel(drvdata, drvdata->dsb->patt_mask[i],
++			    TPDM_DSB_TPMR(i));
 +	}
 +
-+	__tpdm_config_tc_msr(drvdata);
++	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
++		tpdm_writel(drvdata, drvdata->dsb->trig_patt_val[i],
++			    TPDM_DSB_XPR(i));
++		tpdm_writel(drvdata, drvdata->dsb->trig_patt_mask[i],
++			    TPDM_DSB_XPMR(i));
++	}
 +
-+	val = tpdm_readl(drvdata, TPDM_TC_CR);
-+	if (drvdata->tc->sat_mode)
-+		val = val | BIT(4);
++	for (i = 0; i < TPDM_DSB_MAX_SELECT; i++)
++		tpdm_writel(drvdata, drvdata->dsb->select_val[i],
++			    TPDM_DSB_CA_SELECT(i));
++
++	val = tpdm_readl(drvdata, TPDM_DSB_TIER);
++	if (drvdata->dsb->patt_ts) {
++		val = val | BIT(0);
++		if (drvdata->dsb->patt_type)
++			val = val | BIT(2);
++		else
++			val = val & ~BIT(2);
++	} else {
++		val = val & ~BIT(0);
++	}
++	if (drvdata->dsb->trig_ts)
++		val = val | BIT(1);
 +	else
-+		val = val & ~BIT(4);
-+	if (drvdata->tc->retrieval_mode == TPDM_MODE_APB)
-+		val = val | BIT(2);
-+	else
-+		val = val & ~BIT(2);
-+	tpdm_writel(drvdata, val, TPDM_TC_CR);
++		val = val & ~BIT(1);
++	tpdm_writel(drvdata, val, TPDM_DSB_TIER);
 +
-+	val = tpdm_readl(drvdata, TPDM_TC_CR);
++	if (!drvdata->msr_fix_req)
++		__tpdm_config_dsb_msr(drvdata);
++
++	val = tpdm_readl(drvdata, TPDM_DSB_CR);
++	/* Set the cycle accurate mode */
++	mode = TPDM_DSB_MODE_CYCACC(drvdata->dsb->mode);
++	val = val & ~(0x7 << 9);
++	val = val | (mode << 9);
++	/* Set the byte lane for high-performance mode */
++	mode = TPDM_DSB_MODE_HPBYTESEL(drvdata->dsb->mode);
++	val = val & ~(0x1F << 2);
++	val = val | (mode << 2);
++	/* Set the performance mode */
++	if (drvdata->dsb->mode & TPDM_DSB_MODE_PERF)
++		val = val | BIT(1);
++	else
++		val = val & ~BIT(1);
++
++	/* Set trigger type */
++	if (drvdata->dsb->trig_type)
++		val = val | BIT(12);
++	else
++		val = val & ~BIT(12);
++
++	tpdm_writel(drvdata, val, TPDM_DSB_CR);
++
++	val = tpdm_readl(drvdata, TPDM_DSB_CR);
 +	/* Set the enable bit */
 +	val = val | BIT(0);
-+	tpdm_writel(drvdata, val, TPDM_TC_CR);
++	tpdm_writel(drvdata, val, TPDM_DSB_CR);
++
++	if (drvdata->msr_fix_req)
++		__tpdm_config_dsb_msr(drvdata);
 +}
 +
  static void __tpdm_enable(struct tpdm_drvdata *drvdata)
  {
  	TPDM_UNLOCK(drvdata);
-@@ -376,6 +447,9 @@ static void __tpdm_enable(struct tpdm_drvdata *drvdata)
- 	if (test_bit(TPDM_DS_BC, drvdata->enable_ds))
- 		__tpdm_enable_bc(drvdata);
+@@ -450,6 +541,9 @@ static void __tpdm_enable(struct tpdm_drvdata *drvdata)
+ 	if (test_bit(TPDM_DS_TC, drvdata->enable_ds))
+ 		__tpdm_enable_tc(drvdata);
  
-+	if (test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		__tpdm_enable_tc(drvdata);
++	if (test_bit(TPDM_DS_DSB, drvdata->enable_ds))
++		__tpdm_enable_dsb(drvdata);
 +
  	TPDM_LOCK(drvdata);
  }
  
-@@ -409,6 +483,15 @@ static void __tpdm_disable_bc(struct tpdm_drvdata *drvdata)
- 	tpdm_writel(drvdata, config, TPDM_BC_CR);
+@@ -492,6 +586,15 @@ static void __tpdm_disable_tc(struct tpdm_drvdata *drvdata)
+ 	tpdm_writel(drvdata, config, TPDM_TC_CR);
  }
  
-+static void __tpdm_disable_tc(struct tpdm_drvdata *drvdata)
++static void __tpdm_disable_dsb(struct tpdm_drvdata *drvdata)
 +{
 +	uint32_t config;
 +
-+	config = tpdm_readl(drvdata, TPDM_TC_CR);
++	config = tpdm_readl(drvdata, TPDM_DSB_CR);
 +	config = config & ~BIT(0);
-+	tpdm_writel(drvdata, config, TPDM_TC_CR);
++	tpdm_writel(drvdata, config, TPDM_DSB_CR);
 +}
 +
  static void __tpdm_disable(struct tpdm_drvdata *drvdata)
  {
  	TPDM_UNLOCK(drvdata);
-@@ -416,6 +499,9 @@ static void __tpdm_disable(struct tpdm_drvdata *drvdata)
- 	if (test_bit(TPDM_DS_BC, drvdata->enable_ds))
- 		__tpdm_disable_bc(drvdata);
+@@ -502,6 +605,9 @@ static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+ 	if (test_bit(TPDM_DS_TC, drvdata->enable_ds))
+ 		__tpdm_disable_tc(drvdata);
  
-+	if (test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		__tpdm_disable_tc(drvdata);
++	if (test_bit(TPDM_DS_DSB, drvdata->enable_ds))
++		__tpdm_disable_dsb(drvdata);
 +
  	if (drvdata->clk_enable)
  		tpdm_writel(drvdata, 0x0, TPDM_CLK_CTRL);
  
-@@ -1512,49 +1598,955 @@ static ssize_t bc_msr_store(struct device *dev,
+@@ -2474,6 +2580,558 @@ static ssize_t tc_msr_store(struct device *dev,
  }
- static DEVICE_ATTR_RW(bc_msr);
+ static DEVICE_ATTR_RW(tc_msr);
  
--static struct attribute *tpdm_bc_attrs[] = {
--	&dev_attr_bc_capture_mode.attr,
--	&dev_attr_bc_retrieval_mode.attr,
--	&dev_attr_bc_reset_counters.attr,
--	&dev_attr_bc_sat_mode.attr,
--	&dev_attr_bc_enable_counters.attr,
--	&dev_attr_bc_clear_counters.attr,
--	&dev_attr_bc_enable_irq.attr,
--	&dev_attr_bc_clear_irq.attr,
--	&dev_attr_bc_trig_val_lo.attr,
--	&dev_attr_bc_trig_val_hi.attr,
--	&dev_attr_bc_enable_ganging.attr,
--	&dev_attr_bc_overflow_val.attr,
--	&dev_attr_bc_ovsr.attr,
--	&dev_attr_bc_counter_sel.attr,
--	&dev_attr_bc_count_val_lo.attr,
--	&dev_attr_bc_count_val_hi.attr,
--	&dev_attr_bc_shadow_val_lo.attr,
--	&dev_attr_bc_shadow_val_hi.attr,
--	&dev_attr_bc_sw_inc.attr,
--	&dev_attr_bc_msr.attr,
--	NULL,
--};
-+static ssize_t tc_capture_mode_show(struct device *dev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
- 
--static struct attribute_group tpdm_bc_attr_grp = {
--	.attrs = tpdm_bc_attrs,
--};
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
- 
--static struct attribute *tpdm_attrs[] = {
--	&dev_attr_available_datasets.attr,
--	&dev_attr_enable_datasets.attr,
--	&dev_attr_reset.attr,
--	&dev_attr_integration_test.attr,
--	&dev_attr_gp_regs.attr,
--	NULL,
--};
-+	return scnprintf(buf, PAGE_SIZE, "%s\n",
-+			 drvdata->tc->capture_mode == TPDM_MODE_ATB ?
-+			 "ATB" : "APB");
-+}
-+
-+static ssize_t tc_capture_mode_store(struct device *dev,
-+					  struct device_attribute *attr,
-+					  const char *buf,
-+					  size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	char str[20] = "";
-+	uint32_t val;
-+
-+	if (size >= 20)
-+		return -EINVAL;
-+	if (sscanf(buf, "%s", str) != 1)
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	if (!strcmp(str, "ATB")) {
-+		drvdata->tc->capture_mode = TPDM_MODE_ATB;
-+	} else if (!strcmp(str, "APB") &&
-+		   drvdata->tc->retrieval_mode == TPDM_MODE_APB) {
-+
-+		TPDM_UNLOCK(drvdata);
-+		val = tpdm_readl(drvdata, TPDM_TC_CR);
-+		val = val | BIT(3);
-+		tpdm_writel(drvdata, val, TPDM_TC_CR);
-+		TPDM_LOCK(drvdata);
-+
-+		drvdata->tc->capture_mode = TPDM_MODE_APB;
-+	} else {
-+		mutex_unlock(&drvdata->lock);
-+		return -EINVAL;
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_capture_mode);
-+
-+static ssize_t tc_retrieval_mode_show(struct device *dev,
-+					   struct device_attribute *attr,
-+					   char *buf)
++static ssize_t dsb_mode_show(struct device *dev,
++				  struct device_attribute *attr,
++				  char *buf)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	return scnprintf(buf, PAGE_SIZE, "%s\n",
-+			 drvdata->tc->retrieval_mode == TPDM_MODE_ATB ?
-+			 "ATB" : "APB");
-+}
-+
-+static ssize_t tc_retrieval_mode_store(struct device *dev,
-+					    struct device_attribute *attr,
-+					    const char *buf,
-+					    size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	char str[20] = "";
-+
-+	if (size >= 20)
-+		return -EINVAL;
-+	if (sscanf(buf, "%s", str) != 1)
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	if (!strcmp(str, "ATB")) {
-+		drvdata->tc->retrieval_mode = TPDM_MODE_ATB;
-+	} else if (!strcmp(str, "APB")) {
-+		drvdata->tc->retrieval_mode = TPDM_MODE_APB;
-+	} else {
-+		mutex_unlock(&drvdata->lock);
-+		return -EINVAL;
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_retrieval_mode);
-+
-+static ssize_t tc_reset_counters_store(struct device *dev,
-+					    struct device_attribute *attr,
-+					    const char *buf,
-+					    size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	if (val) {
-+		TPDM_UNLOCK(drvdata);
-+		val = tpdm_readl(drvdata, TPDM_TC_CR);
-+		val = val | BIT(1);
-+		tpdm_writel(drvdata, val, TPDM_TC_CR);
-+		TPDM_LOCK(drvdata);
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_WO(tc_reset_counters);
-+
-+static ssize_t tc_sat_mode_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	return scnprintf(buf, PAGE_SIZE, "%u\n",
-+			 (unsigned int)drvdata->tc->sat_mode);
-+}
-+
-+static ssize_t tc_sat_mode_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf,
-+				      size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (val)
-+		drvdata->tc->sat_mode = true;
-+	else
-+		drvdata->tc->sat_mode = false;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_sat_mode);
-+
-+static ssize_t tc_enable_counters_show(struct device *dev,
-+					    struct device_attribute *attr,
-+					    char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
 +	return scnprintf(buf, PAGE_SIZE, "%lx\n",
-+			 (unsigned long)drvdata->tc->enable_counters);
++			 (unsigned long)drvdata->dsb->mode);
 +}
 +
-+static ssize_t tc_enable_counters_store(struct device *dev,
-+					     struct device_attribute *attr,
-+					     const char *buf,
-+					     size_t size)
++static ssize_t dsb_mode_store(struct device *dev,
++				   struct device_attribute *attr,
++				   const char *buf,
++				   size_t size)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +	unsigned long val;
 +
 +	if (kstrtoul(buf, 16, &val))
 +		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+	if (val >> drvdata->tc_counters_avail)
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
 +	mutex_lock(&drvdata->lock);
-+	drvdata->tc->enable_counters = val;
++	drvdata->dsb->mode = val & TPDM_MODE_ALL;
 +	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
-+static DEVICE_ATTR_RW(tc_enable_counters);
++static DEVICE_ATTR_RW(dsb_mode);
 +
-+static ssize_t tc_clear_counters_show(struct device *dev,
-+					   struct device_attribute *attr,
-+					   char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n",
-+			 (unsigned long)drvdata->tc->clear_counters);
-+}
-+
-+static ssize_t tc_clear_counters_store(struct device *dev,
-+					    struct device_attribute *attr,
-+					    const char *buf,
-+					    size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+	if (val >> drvdata->tc_counters_avail)
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->tc->clear_counters = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_clear_counters);
-+
-+static ssize_t tc_enable_irq_show(struct device *dev,
++static ssize_t dsb_edge_ctrl_show(struct device *dev,
 +				       struct device_attribute *attr,
 +				       char *buf)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	ssize_t size = 0;
++	int i;
 +
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n",
-+			 (unsigned long)drvdata->tc->enable_irq);
++	mutex_lock(&drvdata->lock);
++	for (i = 0; i < TPDM_DSB_MAX_EDCR; i++) {
++		size += scnprintf(buf + size, PAGE_SIZE - size,
++				  "Index:0x%x Val:0x%x\n", i,
++				  drvdata->dsb->edge_ctrl[i]);
++	}
++	mutex_unlock(&drvdata->lock);
++	return size;
 +}
 +
-+static ssize_t tc_enable_irq_store(struct device *dev,
++static ssize_t dsb_edge_ctrl_store(struct device *dev,
 +					struct device_attribute *attr,
 +					const char *buf,
 +					size_t size)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
++	unsigned long start, end, edge_ctrl;
++	uint32_t val;
++	int i, bit, reg;
 +
-+	if (kstrtoul(buf, 16, &val))
++	if (sscanf(buf, "%lx %lx %lx", &start, &end, &edge_ctrl) != 3)
 +		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets) ||
++	    (start >= TPDM_DSB_MAX_LINES) || (end >= TPDM_DSB_MAX_LINES) ||
++	    edge_ctrl > 0x2)
 +		return -EPERM;
 +
 +	mutex_lock(&drvdata->lock);
-+	drvdata->tc->enable_irq = val;
++	for (i = start; i <= end; i++) {
++		reg = i / (NUM_OF_BITS / 2);
++		bit = i % (NUM_OF_BITS / 2);
++		bit = bit * 2;
++
++		val = drvdata->dsb->edge_ctrl[reg];
++		val = val & ~GENMASK((bit + 1), bit);
++		val = val | (edge_ctrl << bit);
++		drvdata->dsb->edge_ctrl[reg] = val;
++	}
 +	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
-+static DEVICE_ATTR_RW(tc_enable_irq);
++static DEVICE_ATTR_RW(dsb_edge_ctrl);
 +
-+static ssize_t tc_clear_irq_show(struct device *dev,
-+				      struct device_attribute *attr,
-+				      char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n",
-+			 (unsigned long)drvdata->tc->clear_irq);
-+}
-+
-+static ssize_t tc_clear_irq_store(struct device *dev,
-+				       struct device_attribute *attr,
-+				       const char *buf,
-+				       size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->tc->clear_irq = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_clear_irq);
-+
-+static ssize_t tc_trig_sel_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
++static ssize_t dsb_edge_ctrl_mask_show(struct device *dev,
++					    struct device_attribute *attr,
++					    char *buf)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +	ssize_t size = 0;
-+	int i = 0;
++	int i;
 +
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
 +	mutex_lock(&drvdata->lock);
-+	for (i = 0; i < TPDM_TC_MAX_TRIG; i++) {
++	for (i = 0; i < TPDM_DSB_MAX_EDCR / 2; i++) {
 +		size += scnprintf(buf + size, PAGE_SIZE - size,
-+				  "Index: 0x%x Value: 0x%x\n", i,
-+				  drvdata->tc->trig_sel[i]);
++				  "Index:0x%x Val:0x%x\n", i,
++				  drvdata->dsb->edge_ctrl_mask[i]);
 +	}
 +	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
 +
-+static ssize_t tc_trig_sel_store(struct device *dev,
++static ssize_t dsb_edge_ctrl_mask_store(struct device *dev,
++					     struct device_attribute *attr,
++					     const char *buf,
++					     size_t size)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long start, end, val;
++	uint32_t set;
++	int i, bit, reg;
++
++	if (sscanf(buf, "%lx %lx %lx", &start, &end, &val) != 3)
++		return -EINVAL;
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets) ||
++	    (start >= TPDM_DSB_MAX_LINES) || (end >= TPDM_DSB_MAX_LINES))
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	for (i = start; i <= end; i++) {
++		reg = i / NUM_OF_BITS;
++		bit = (i % NUM_OF_BITS);
++
++		set = drvdata->dsb->edge_ctrl_mask[reg];
++		if (val)
++			set = set | BIT(bit);
++		else
++			set = set & ~BIT(bit);
++		drvdata->dsb->edge_ctrl_mask[reg] = set;
++	}
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(dsb_edge_ctrl_mask);
++
++static ssize_t dsb_patt_val_show(struct device *dev,
++				      struct device_attribute *attr,
++				      char *buf)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	ssize_t size = 0;
++	int i = 0;
++
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
++		size += scnprintf(buf + size, PAGE_SIZE - size,
++				  "Index: 0x%x Value: 0x%x\n", i,
++				  drvdata->dsb->patt_val[i]);
++	}
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++
++static ssize_t dsb_patt_val_store(struct device *dev,
++				       struct device_attribute *attr,
++				       const char *buf,
++				       size_t size)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long index, val;
++
++	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
++		return -EINVAL;
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets) ||
++	    index >= TPDM_DSB_MAX_PATT)
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	drvdata->dsb->patt_val[index] = val;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(dsb_patt_val);
++
++static ssize_t dsb_patt_mask_show(struct device *dev,
++				       struct device_attribute *attr,
++				       char *buf)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	ssize_t size = 0;
++	int i = 0;
++
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
++		size += scnprintf(buf + size, PAGE_SIZE - size,
++				  "Index: 0x%x Value: 0x%x\n", i,
++				  drvdata->dsb->patt_mask[i]);
++	}
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++
++static ssize_t dsb_patt_mask_store(struct device *dev,
++					struct device_attribute *attr,
++					const char *buf,
++					size_t size)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long index, val;
++
++	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
++		return -EINVAL;
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets) ||
++	    index >= TPDM_DSB_MAX_PATT)
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	drvdata->dsb->patt_mask[index] = val;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(dsb_patt_mask);
++
++static ssize_t dsb_patt_ts_show(struct device *dev,
++				     struct device_attribute *attr,
++				     char *buf)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
++		return -EPERM;
++
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->dsb->patt_ts);
++}
++
++static ssize_t dsb_patt_ts_store(struct device *dev,
 +				      struct device_attribute *attr,
 +				      const char *buf,
 +				      size_t size)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long index, val;
++	unsigned long val;
 +
-+	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
++	if (kstrtoul(buf, 16, &val))
 +		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets) ||
-+	    index >= TPDM_TC_MAX_TRIG ||
-+	    drvdata->tc_trig_type == TPDM_SUPPORT_TYPE_NO ||
-+	    (drvdata->tc_trig_type == TPDM_SUPPORT_TYPE_PARTIAL && index > 0))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
 +	mutex_lock(&drvdata->lock);
-+	drvdata->tc->trig_sel[index] = val;
++	if (val)
++		drvdata->dsb->patt_ts = true;
++	else
++		drvdata->dsb->patt_ts = false;
 +	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
-+static DEVICE_ATTR_RW(tc_trig_sel);
++static DEVICE_ATTR_RW(dsb_patt_ts);
 +
-+static ssize_t tc_trig_val_lo_show(struct device *dev,
++static ssize_t dsb_patt_type_show(struct device *dev,
++				       struct device_attribute *attr, char *buf)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
++		return -EPERM;
++
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->dsb->patt_type);
++}
++
++static ssize_t dsb_patt_type_store(struct device *dev,
 +					struct device_attribute *attr,
-+					char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	ssize_t size = 0;
-+	int i = 0;
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	for (i = 0; i < TPDM_TC_MAX_TRIG; i++) {
-+		size += scnprintf(buf + size, PAGE_SIZE - size,
-+				  "Index: 0x%x Value: 0x%x\n", i,
-+				  drvdata->tc->trig_val_lo[i]);
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+
-+static ssize_t tc_trig_val_lo_store(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf,
-+					 size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long index, val;
-+
-+	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets) ||
-+	    index >= TPDM_TC_MAX_TRIG ||
-+	    drvdata->tc_trig_type == TPDM_SUPPORT_TYPE_NO ||
-+	    (drvdata->tc_trig_type == TPDM_SUPPORT_TYPE_PARTIAL && index > 0))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->tc->trig_val_lo[index] = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_trig_val_lo);
-+
-+static ssize_t tc_trig_val_hi_show(struct device *dev,
-+					struct device_attribute *attr,
-+					char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	ssize_t size = 0;
-+	int i = 0;
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	for (i = 0; i < TPDM_TC_MAX_TRIG; i++) {
-+		size += scnprintf(buf + size, PAGE_SIZE - size,
-+				  "Index: 0x%x Value: 0x%x\n", i,
-+				  drvdata->tc->trig_val_hi[i]);
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+
-+static ssize_t tc_trig_val_hi_store(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf,
-+					 size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long index, val;
-+
-+	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets) ||
-+	    index >= TPDM_TC_MAX_TRIG ||
-+	    drvdata->tc_trig_type == TPDM_SUPPORT_TYPE_NO ||
-+	    (drvdata->tc_trig_type == TPDM_SUPPORT_TYPE_PARTIAL && index > 0))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	drvdata->tc->trig_val_hi[index] = val;
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_trig_val_hi);
-+
-+static ssize_t tc_ovsr_gp_show(struct device *dev,
-+				    struct device_attribute *attr,
-+				    char *buf)
++					const char *buf, size_t size)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +	unsigned long val;
 +
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
++	if (kstrtoul(buf, 16, &val))
++		return -EINVAL;
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
 +	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	TPDM_UNLOCK(drvdata);
-+	val = tpdm_readl(drvdata, TPDM_TC_OVSR_GP);
-+	TPDM_LOCK(drvdata);
++	if (val)
++		drvdata->dsb->patt_type = true;
++	else
++		drvdata->dsb->patt_type = false;
 +	mutex_unlock(&drvdata->lock);
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
++	return size;
++}
++static DEVICE_ATTR_RW(dsb_patt_type);
++
++static ssize_t dsb_trig_patt_val_show(struct device *dev,
++					   struct device_attribute *attr,
++					   char *buf)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	ssize_t size = 0;
++	int i = 0;
++
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
++		size += scnprintf(buf + size, PAGE_SIZE - size,
++				  "Index: 0x%x Value: 0x%x\n", i,
++				  drvdata->dsb->trig_patt_val[i]);
++	}
++	mutex_unlock(&drvdata->lock);
++	return size;
 +}
 +
-+static ssize_t tc_ovsr_gp_store(struct device *dev,
++static ssize_t dsb_trig_patt_val_store(struct device *dev,
++					    struct device_attribute *attr,
++					    const char *buf,
++					    size_t size)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long index, val;
++
++	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
++		return -EINVAL;
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets) ||
++	    index >= TPDM_DSB_MAX_PATT)
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	drvdata->dsb->trig_patt_val[index] = val;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(dsb_trig_patt_val);
++
++static ssize_t dsb_trig_patt_mask_show(struct device *dev,
++					    struct device_attribute *attr,
++					    char *buf)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	ssize_t size = 0;
++	int i = 0;
++
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
++		size += scnprintf(buf + size, PAGE_SIZE - size,
++				  "Index: 0x%x Value: 0x%x\n", i,
++				  drvdata->dsb->trig_patt_mask[i]);
++	}
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++
++static ssize_t dsb_trig_patt_mask_store(struct device *dev,
++					     struct device_attribute *attr,
++					     const char *buf,
++					     size_t size)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long index, val;
++
++	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
++		return -EINVAL;
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets) ||
++	    index >= TPDM_DSB_MAX_PATT)
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	drvdata->dsb->trig_patt_mask[index] = val;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(dsb_trig_patt_mask);
++
++static ssize_t dsb_trig_type_show(struct device *dev,
 +				     struct device_attribute *attr,
-+				     const char *buf,
-+				     size_t size)
++				     char *buf)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
 +
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	if (val) {
-+		TPDM_UNLOCK(drvdata);
-+		tpdm_writel(drvdata, val, TPDM_TC_OVSR_GP);
-+		TPDM_LOCK(drvdata);
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->dsb->trig_type);
 +}
-+static DEVICE_ATTR_RW(tc_ovsr_gp);
 +
-+static ssize_t tc_ovsr_impl_show(struct device *dev,
++static ssize_t dsb_trig_type_store(struct device *dev,
 +				      struct device_attribute *attr,
-+				      char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	TPDM_UNLOCK(drvdata);
-+	val = tpdm_readl(drvdata, TPDM_TC_OVSR_IMPL);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
-+}
-+
-+static ssize_t tc_ovsr_impl_store(struct device *dev,
-+				       struct device_attribute *attr,
-+				       const char *buf,
-+				       size_t size)
++				      const char *buf,
++				      size_t size)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +	unsigned long val;
 +
 +	if (kstrtoul(buf, 16, &val))
 +		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
 +	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	if (val) {
-+		TPDM_UNLOCK(drvdata);
-+		tpdm_writel(drvdata, val, TPDM_TC_OVSR_IMPL);
-+		TPDM_LOCK(drvdata);
-+	}
++	if (val)
++		drvdata->dsb->trig_type = true;
++	else
++		drvdata->dsb->trig_type = false;
 +	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
-+static DEVICE_ATTR_RW(tc_ovsr_impl);
++static DEVICE_ATTR_RW(dsb_trig_type);
 +
-+static ssize_t tc_counter_sel_show(struct device *dev,
++static ssize_t dsb_trig_ts_show(struct device *dev,
++				     struct device_attribute *attr,
++				     char *buf)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
++		return -EPERM;
++
++	return scnprintf(buf, PAGE_SIZE, "%u\n",
++			 (unsigned int)drvdata->dsb->trig_ts);
++}
++
++static ssize_t dsb_trig_ts_store(struct device *dev,
++				      struct device_attribute *attr,
++				      const char *buf,
++				      size_t size)
++{
++	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
++	unsigned long val;
++
++	if (kstrtoul(buf, 16, &val))
++		return -EINVAL;
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
++		return -EPERM;
++
++	mutex_lock(&drvdata->lock);
++	if (val)
++		drvdata->dsb->trig_ts = true;
++	else
++		drvdata->dsb->trig_ts = false;
++	mutex_unlock(&drvdata->lock);
++	return size;
++}
++static DEVICE_ATTR_RW(dsb_trig_ts);
++
++static ssize_t dsb_select_val_show(struct device *dev,
 +					struct device_attribute *attr,
 +					char *buf)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
++	ssize_t size = 0;
++	int i;
 +
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
 +	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
++	for (i = 0; i < TPDM_DSB_MAX_SELECT; i++) {
++		size += scnprintf(buf + size, PAGE_SIZE - size,
++				  "Index:0x%x Val:0x%x\n", i,
++				  drvdata->dsb->select_val[i]);
 +	}
-+
-+	TPDM_UNLOCK(drvdata);
-+	val = tpdm_readl(drvdata, TPDM_TC_SELR);
-+	TPDM_LOCK(drvdata);
 +	mutex_unlock(&drvdata->lock);
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
++	return size;
 +}
 +
-+static ssize_t tc_counter_sel_store(struct device *dev,
++static ssize_t dsb_select_val_store(struct device *dev,
 +					 struct device_attribute *attr,
 +					 const char *buf,
 +					 size_t size)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
++	unsigned long start, end;
++	uint32_t val;
++	int i, bit, reg;
 +
-+	if (kstrtoul(buf, 16, &val))
++	if (sscanf(buf, "%lx %lx", &start, &end) != 2)
 +		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets) ||
++	    (start >= TPDM_DSB_MAX_LINES) || (end >= TPDM_DSB_MAX_LINES))
 +		return -EPERM;
 +
 +	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
++	for (i = start; i <= end; i++) {
++		reg = i / NUM_OF_BITS;
++		bit = (i % NUM_OF_BITS);
 +
-+	TPDM_UNLOCK(drvdata);
-+	tpdm_writel(drvdata, val, TPDM_TC_SELR);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_counter_sel);
-+
-+static ssize_t tc_count_val_lo_show(struct device *dev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	TPDM_UNLOCK(drvdata);
-+	val = tpdm_readl(drvdata, TPDM_TC_CNTR_LO);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
-+}
-+
-+static ssize_t tc_count_val_lo_store(struct device *dev,
-+					  struct device_attribute *attr,
-+					  const char *buf,
-+					  size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val, select;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	if (val) {
-+		TPDM_UNLOCK(drvdata);
-+		select = tpdm_readl(drvdata, TPDM_TC_SELR);
-+		select = (select >> 11) & 0x3;
-+
-+		/* Check if selected counter is disabled */
-+		if (BMVAL(tpdm_readl(drvdata, TPDM_TC_CNTENSET), select, select)) {
-+			mutex_unlock(&drvdata->lock);
-+			return -EPERM;
-+		}
-+
-+		tpdm_writel(drvdata, val, TPDM_TC_CNTR_LO);
-+		TPDM_LOCK(drvdata);
++		val = drvdata->dsb->select_val[reg];
++		val = val | BIT(bit);
++		drvdata->dsb->select_val[reg] = val;
 +	}
 +	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
-+static DEVICE_ATTR_RW(tc_count_val_lo);
++static DEVICE_ATTR_RW(dsb_select_val);
 +
-+static ssize_t tc_count_val_hi_show(struct device *dev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	TPDM_UNLOCK(drvdata);
-+	val = tpdm_readl(drvdata, TPDM_TC_CNTR_HI);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
-+}
-+
-+static ssize_t tc_count_val_hi_store(struct device *dev,
-+					  struct device_attribute *attr,
-+					  const char *buf,
-+					  size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val, select;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	if (val) {
-+		TPDM_UNLOCK(drvdata);
-+		select = tpdm_readl(drvdata, TPDM_TC_SELR);
-+		select = (select >> 11) & 0x3;
-+
-+		/* Check if selected counter is disabled */
-+		if (BMVAL(tpdm_readl(drvdata, TPDM_TC_CNTENSET), select, select)) {
-+			mutex_unlock(&drvdata->lock);
-+			return -EPERM;
-+		}
-+
-+		tpdm_writel(drvdata, val, TPDM_TC_CNTR_HI);
-+		TPDM_LOCK(drvdata);
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_count_val_hi);
-+
-+static ssize_t tc_shadow_val_lo_show(struct device *dev,
-+					  struct device_attribute *attr,
-+					  char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	ssize_t size = 0;
-+	int i = 0;
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	TPDM_UNLOCK(drvdata);
-+	for (i = 0; i < TPDM_TC_MAX_COUNTERS; i++) {
-+		size += scnprintf(buf + size, PAGE_SIZE - size,
-+				  "Index: 0x%x Value: 0x%x\n", i,
-+				  tpdm_readl(drvdata, TPDM_TC_SHADOW_LO(i)));
-+	}
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RO(tc_shadow_val_lo);
-+
-+static ssize_t tc_shadow_val_hi_show(struct device *dev,
-+					  struct device_attribute *attr,
-+					  char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	ssize_t size = 0;
-+	int i = 0;
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	TPDM_UNLOCK(drvdata);
-+	for (i = 0; i < TPDM_TC_MAX_COUNTERS; i++) {
-+		size += scnprintf(buf + size, PAGE_SIZE - size,
-+				  "Index: 0x%x Value: 0x%x\n", i,
-+				  tpdm_readl(drvdata, TPDM_TC_SHADOW_HI(i)));
-+	}
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RO(tc_shadow_val_hi);
-+
-+static ssize_t tc_sw_inc_show(struct device *dev,
-+				   struct device_attribute *attr,
-+				   char *buf)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	TPDM_UNLOCK(drvdata);
-+	val = tpdm_readl(drvdata, TPDM_TC_SWINC);
-+	TPDM_LOCK(drvdata);
-+	mutex_unlock(&drvdata->lock);
-+	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
-+}
-+
-+static ssize_t tc_sw_inc_store(struct device *dev,
-+				    struct device_attribute *attr,
-+				    const char *buf,
-+				    size_t size)
-+{
-+	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+	unsigned long val;
-+
-+	if (kstrtoul(buf, 16, &val))
-+		return -EINVAL;
-+	if (!test_bit(TPDM_DS_TC, drvdata->enable_ds))
-+		return -EPERM;
-+
-+	mutex_lock(&drvdata->lock);
-+	if (!drvdata->enable) {
-+		mutex_unlock(&drvdata->lock);
-+		return -EPERM;
-+	}
-+
-+	if (val) {
-+		TPDM_UNLOCK(drvdata);
-+		tpdm_writel(drvdata, val, TPDM_TC_SWINC);
-+		TPDM_LOCK(drvdata);
-+	}
-+	mutex_unlock(&drvdata->lock);
-+	return size;
-+}
-+static DEVICE_ATTR_RW(tc_sw_inc);
-+
-+static ssize_t tc_msr_show(struct device *dev,
-+				struct device_attribute *attr,
-+				char *buf)
++static ssize_t dsb_msr_show(struct device *dev,
++				 struct device_attribute *attr,
++				 char *buf)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +	unsigned int i;
@@ -1080,20 +736,20 @@ index 0970c69ac8e2..635382be5de6 100644
 +	if (!drvdata->msr_support)
 +		return -EINVAL;
 +
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
-+	for (i = 0; i < TPDM_TC_MAX_MSR; i++)
++	for (i = 0; i < TPDM_DSB_MAX_MSR; i++)
 +		len += scnprintf(buf + len, PAGE_SIZE - len, "%u 0x%x\n",
-+				 i, drvdata->tc->msr[i]);
++				 i, drvdata->dsb->msr[i]);
 +
 +	return len;
 +}
 +
-+static ssize_t tc_msr_store(struct device *dev,
-+				 struct device_attribute *attr,
-+				 const char *buf,
-+				 size_t size)
++static ssize_t dsb_msr_store(struct device *dev,
++				  struct device_attribute *attr,
++				  const char *buf,
++				  size_t size)
 +{
 +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
 +	unsigned int num, val;
@@ -1102,99 +758,66 @@ index 0970c69ac8e2..635382be5de6 100644
 +	if (!drvdata->msr_support)
 +		return -EINVAL;
 +
-+	if (!test_bit(TPDM_DS_TC, drvdata->datasets))
++	if (!test_bit(TPDM_DS_DSB, drvdata->datasets))
 +		return -EPERM;
 +
 +	nval = sscanf(buf, "%u %x", &num, &val);
 +	if (nval != 2)
 +		return -EINVAL;
 +
-+	if (num >= TPDM_TC_MAX_MSR)
++	if (num >= TPDM_DSB_MAX_MSR)
 +		return -EINVAL;
 +
 +	mutex_lock(&drvdata->lock);
-+	drvdata->tc->msr[num] = val;
++	drvdata->dsb->msr[num] = val;
 +	mutex_unlock(&drvdata->lock);
 +	return size;
 +}
-+static DEVICE_ATTR_RW(tc_msr);
++static DEVICE_ATTR_RW(dsb_msr);
 +
-+static struct attribute *tpdm_bc_attrs[] = {
-+	&dev_attr_bc_capture_mode.attr,
-+	&dev_attr_bc_retrieval_mode.attr,
-+	&dev_attr_bc_reset_counters.attr,
-+	&dev_attr_bc_sat_mode.attr,
-+	&dev_attr_bc_enable_counters.attr,
-+	&dev_attr_bc_clear_counters.attr,
-+	&dev_attr_bc_enable_irq.attr,
-+	&dev_attr_bc_clear_irq.attr,
-+	&dev_attr_bc_trig_val_lo.attr,
-+	&dev_attr_bc_trig_val_hi.attr,
-+	&dev_attr_bc_enable_ganging.attr,
-+	&dev_attr_bc_overflow_val.attr,
-+	&dev_attr_bc_ovsr.attr,
-+	&dev_attr_bc_counter_sel.attr,
-+	&dev_attr_bc_count_val_lo.attr,
-+	&dev_attr_bc_count_val_hi.attr,
-+	&dev_attr_bc_shadow_val_lo.attr,
-+	&dev_attr_bc_shadow_val_hi.attr,
-+	&dev_attr_bc_sw_inc.attr,
-+	&dev_attr_bc_msr.attr,
-+	NULL,
-+};
-+
-+static struct attribute *tpdm_tc_attrs[] = {
-+	&dev_attr_tc_capture_mode.attr,
-+	&dev_attr_tc_retrieval_mode.attr,
-+	&dev_attr_tc_reset_counters.attr,
-+	&dev_attr_tc_sat_mode.attr,
-+	&dev_attr_tc_enable_counters.attr,
-+	&dev_attr_tc_clear_counters.attr,
-+	&dev_attr_tc_enable_irq.attr,
-+	&dev_attr_tc_clear_irq.attr,
-+	&dev_attr_tc_trig_sel.attr,
-+	&dev_attr_tc_trig_val_lo.attr,
-+	&dev_attr_tc_trig_val_hi.attr,
-+	&dev_attr_tc_ovsr_gp.attr,
-+	&dev_attr_tc_ovsr_impl.attr,
-+	&dev_attr_tc_counter_sel.attr,
-+	&dev_attr_tc_count_val_lo.attr,
-+	&dev_attr_tc_count_val_hi.attr,
-+	&dev_attr_tc_shadow_val_lo.attr,
-+	&dev_attr_tc_shadow_val_hi.attr,
-+	&dev_attr_tc_sw_inc.attr,
-+	&dev_attr_tc_msr.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group tpdm_bc_attr_grp = {
-+	.attrs = tpdm_bc_attrs,
-+};
-+
-+static struct attribute_group tpdm_tc_attr_grp = {
-+	.attrs = tpdm_tc_attrs,
-+};
-+
-+static struct attribute *tpdm_attrs[] = {
-+	&dev_attr_available_datasets.attr,
-+	&dev_attr_enable_datasets.attr,
-+	&dev_attr_reset.attr,
-+	&dev_attr_integration_test.attr,
-+	&dev_attr_gp_regs.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group tpdm_attr_grp = {
-+	.attrs = tpdm_attrs,
-+};
+ static struct attribute *tpdm_bc_attrs[] = {
+ 	&dev_attr_bc_capture_mode.attr,
+ 	&dev_attr_bc_retrieval_mode.attr,
+@@ -2522,6 +3180,23 @@ static struct attribute *tpdm_tc_attrs[] = {
+ 	NULL,
+ };
  
--static struct attribute_group tpdm_attr_grp = {
--	.attrs = tpdm_attrs,
--};
- static const struct attribute_group *tpdm_attr_grps[] = {
++static struct attribute *tpdm_dsb_attrs[] = {
++	&dev_attr_dsb_mode.attr,
++	&dev_attr_dsb_edge_ctrl.attr,
++	&dev_attr_dsb_edge_ctrl_mask.attr,
++	&dev_attr_dsb_patt_val.attr,
++	&dev_attr_dsb_patt_mask.attr,
++	&dev_attr_dsb_patt_ts.attr,
++	&dev_attr_dsb_patt_type.attr,
++	&dev_attr_dsb_trig_patt_val.attr,
++	&dev_attr_dsb_trig_patt_mask.attr,
++	&dev_attr_dsb_trig_ts.attr,
++	&dev_attr_dsb_trig_type.attr,
++	&dev_attr_dsb_select_val.attr,
++	&dev_attr_dsb_msr.attr,
++	NULL,
++};
++
+ static struct attribute_group tpdm_bc_attr_grp = {
+ 	.attrs = tpdm_bc_attrs,
+ };
+@@ -2530,6 +3205,10 @@ static struct attribute_group tpdm_tc_attr_grp = {
+ 	.attrs = tpdm_tc_attrs,
+ };
+ 
++static struct attribute_group tpdm_dsb_attr_grp = {
++	.attrs = tpdm_dsb_attrs,
++};
++
+ static struct attribute *tpdm_attrs[] = {
+ 	&dev_attr_available_datasets.attr,
+ 	&dev_attr_enable_datasets.attr,
+@@ -2547,6 +3226,7 @@ static const struct attribute_group *tpdm_attr_grps[] = {
  	&tpdm_attr_grp,
  	&tpdm_bc_attr_grp,
-+	&tpdm_tc_attr_grp,
+ 	&tpdm_tc_attr_grp,
++	&tpdm_dsb_attr_grp,
  	NULL,
  };
  
