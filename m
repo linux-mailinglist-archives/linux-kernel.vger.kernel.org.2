@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E4543626E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F35436271
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhJUNMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:12:10 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40396
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230508AbhJUNMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:12:09 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S230379AbhJUNMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:12:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231346AbhJUNMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:12:21 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7CBE0405F9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:09:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634821792;
-        bh=LsLSwWX/aooK7LR05wvQfGIlyo9Xtj71zHzTzlar0ms=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=riCC7N2MSJijx1PIF6W6itwzUVeQ0MgjKrWvDl085SnwFcTEuzkt2nKmduvMqcmNi
-         Cexiza3MFRCWBwtU8cptvoJzCzlK7Tw4ckJkfzyhQF6MxiEPuwT8racj37NDgmUKDW
-         ZCwByheydvb5J1FHFGhNgn3lsZg6Mj0j3cJJdN8sMoZiIUJYA8TpRN2gLPmjZ9aX4H
-         qaA3BF7xrpgQPxr3KsP5viUYpMv0jxpZd7dZ9o2oXIduhzAg+l7vkWrAE2kw6eGbsF
-         zQMpO4nQQGMsRetmGScETJZuQq4raroAd5rz4i0ESu9XYeMlpiYjhpM0Sy/vUdsM96
-         Vxc7Srfo8o9sQ==
-Received: by mail-lf1-f72.google.com with SMTP id f17-20020a0565123b1100b003fda40b659aso302391lfv.23
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 06:09:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LsLSwWX/aooK7LR05wvQfGIlyo9Xtj71zHzTzlar0ms=;
-        b=0pS/2lgMejSzUVst8VEY+MQdr/hoaL+lrNsOoOn9dplsGrMVV74HJCkImIzjb9RLOm
-         KW31cRso5f7zXL2fsZnZaYcR/tDNnqY+8ZYZ8HgHkzH1ZEuwczZR2lP2fjb9Gh/50iK8
-         fWylRSdXYCyNUfT+KSM7l0OWSM5Qh3EG/54WRiCIk8YBKMnVCcCoGtSXCcwmpCnyV0xP
-         AVrg0qphIbzPkVUw402iDPcW/M4DKqqvi7D6L/pzWizlE+QwRsUExaC6myjt1U+3mPxc
-         vK89A4FlNlXToCnJpS/rBKByHXZgRwFYiPefErzJYwqTywpEbYVSkwZPzuylUosHFRT6
-         CPyA==
-X-Gm-Message-State: AOAM533od8hfem60GE0k8jHjF1qE7zw7aAKsltQ19LvH6dr5nTo9jDdR
-        cvhZm5E0liyTsjaEY8M36pjo+eqybbe1OiKveSKm8Omk0HWgBBlKiqeLGeQ5YJg7rsnOo2VWMmH
-        DwQ0ILDWIwTvwVraHKYJIQINPB7RHohn6f5CJLj42Tg==
-X-Received: by 2002:a05:6512:20ce:: with SMTP id u14mr5618475lfr.548.1634821791885;
-        Thu, 21 Oct 2021 06:09:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw8Q8yU5QzJPLw3kvAdO+Jn8XVXoKvjIRiitatn+3XEGA9u7UY2LAfxyxt0u2Zf+taROiCpGQ==
-X-Received: by 2002:a05:6512:20ce:: with SMTP id u14mr5618453lfr.548.1634821791675;
-        Thu, 21 Oct 2021 06:09:51 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id r10sm539546ljp.56.2021.10.21.06.09.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 06:09:51 -0700 (PDT)
-Subject: Re: [GIT PULL] riscv: dts: few cleanups for v5.16
-To:     Conor.Dooley@microchip.com, arnd@arndb.de
-Cc:     olof@lixom.net, arm@kernel.org, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        krzk@kernel.org, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org
-References: <20211021090955.115005-1-krzysztof.kozlowski@canonical.com>
- <CAK8P3a08QiwA4+zPGLt3xA=01HLiBcLcC4gM1+8N6uo5KMTQLw@mail.gmail.com>
- <10f5244d-ba2a-33eb-72dc-77b2a7a0d101@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <4a27b400-4fb1-bb7a-335a-ae1d084cdf73@canonical.com>
-Date:   Thu, 21 Oct 2021 15:09:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 547BF60ED5;
+        Thu, 21 Oct 2021 13:10:04 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 09:10:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <rcu@vger.kernel.org>
+Subject: Re: [PATCH 1/6] kthread: Add the helper macro kthread_run_on_cpu()
+Message-ID: <20211021091001.26c24d5b@gandalf.local.home>
+In-Reply-To: <20211021120135.3003-2-caihuoqing@baidu.com>
+References: <20211021120135.3003-1-caihuoqing@baidu.com>
+        <20211021120135.3003-2-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <10f5244d-ba2a-33eb-72dc-77b2a7a0d101@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2021 15:06, Conor.Dooley@microchip.com wrote:
-> On 21/10/2021 13:23, Arnd Bergmann wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On Thu, Oct 21, 2021 at 11:09 AM Krzysztof Kozlowski
->> <krzysztof.kozlowski@canonical.com> wrote:
->>> Hi Arnd and Olof,
->>>
->>> I have an old patchset for RISC-V dts cleanups which I sent to mailing lists in
->>> August 2021 (v1, v2), resent in September and pinged two times.  They got some
->>> review (from Alexandre Ghiti for SiFive, from Conor Dooley for Microchip) but
->>> unfortunately Palmer (RISC-V maintainer) did not respond here.
+On Thu, 21 Oct 2021 20:01:30 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
+
+> the helper macro kthread_run_on_cpu() inculdes
+
+ "includes"
+
+> kthread_create_on_cpu/wake_up_process().
+> In some cases, use kthread_run_on_cpu() directly instead of
+> kthread_create_on_node/kthread_bind/wake_up_process() or
+> kthread_create_on_cpu/wake_up_process() or
+> kthreadd_create/kthread_bind/wake_up_process() to simplify the code.
 > 
-> Out of curiosity which series is this one? Is it the one with the 
-> plic/clint changes?
-> Pretty sure that I have taken them in internally, but I am going to 
-> submit a bunch
-> of changes to our device tree soon (tm) and want to make sure I have the 
-> right
-> dependent series listed.
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  include/linux/kthread.h | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 > 
+> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+> index 346b0f269161..dfd125523aa9 100644
+> --- a/include/linux/kthread.h
+> +++ b/include/linux/kthread.h
+> @@ -56,6 +56,28 @@ bool kthread_is_per_cpu(struct task_struct *k);
+>  	__k;								   \
+>  })
+>  
+> +/**
+> + * kthread_run_on_cpu - create and wake a cpu bound thread.
+> + * @threadfn: the function to run until signal_pending(current).
+> + * @data: data ptr for @threadfn.
+> + * @cpu: The cpu on which the thread should be bound,
+> + * @namefmt: printf-style name for the thread. Format is restricted
+> + *	     to "name.*%u". Code fills in cpu number.
+> + *
+> + * Description: Convenient wrapper for kthread_create_on_node()
+> + * followed by wake_up_process().  Returns the kthread or
+> + * ERR_PTR(-ENOMEM).
+> + */
+> +#define kthread_run_on_cpu(threadfn, data, cpu, namefmt)		  \
 
-There is only one Microchip patch here (plic/clint). Others are for
-SiFive. All the patches are described in the pull reqeust:
-https://lore.kernel.org/lkml/20211021090955.115005-1-krzysztof.kozlowski@canonical.com/
+Why is this a macro and not a static inline function?
 
-I had also second set of RISC-V patches for Microchip. These were picked
-up by Palmer:
-https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/log/?h=for-next
+-- Steve
 
+> +({									  \
+> +	struct task_struct *__k						  \
+> +		= kthread_create_on_cpu(threadfn, data, cpu_to_node(cpu), \
+> +					namefmt);			  \
+> +	if (!IS_ERR(__k))						  \
+> +		wake_up_process(__k);					  \
+> +	__k;								  \
+> +})
+> +
+>  void free_kthread_struct(struct task_struct *k);
+>  void kthread_bind(struct task_struct *k, unsigned int cpu);
+>  void kthread_bind_mask(struct task_struct *k, const struct cpumask *mask);
 
-Best regards,
-Krzysztof
