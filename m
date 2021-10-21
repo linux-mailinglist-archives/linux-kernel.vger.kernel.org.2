@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980B3436BC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DC9436BCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhJUUKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 16:10:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26734 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231396AbhJUUKr (ORCPT
+        id S231728AbhJUUMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 16:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231206AbhJUUMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 16:10:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634846910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mmsmJ/pPdiOUowj1+queJxhgagora/RkFzbUPsH0NgI=;
-        b=KF7xLlRfh0+1XiMicQskyfi8lPRjjmX3bc6Yxt71R7IwxpXkSYJR63wz5R3y4hGlS4dz8I
-        sKwcK7hPAbb8rj1h1gURqA/Ryd5QGMyzWhOSA6jqMpZug1S66TJHlxC/GX5ZmDxY5Zjt96
-        XuhI0Z1jShMVEa6ZsclaR3gxsSzZQz4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-KYCzyRILNKWCQCdpVZYc5A-1; Thu, 21 Oct 2021 16:08:29 -0400
-X-MC-Unique: KYCzyRILNKWCQCdpVZYc5A-1
-Received: by mail-ed1-f72.google.com with SMTP id i7-20020a50d747000000b003db0225d219so1570324edj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:08:28 -0700 (PDT)
+        Thu, 21 Oct 2021 16:12:37 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADBFC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:10:20 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id w17so1180740plg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:10:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=s1+yeGZaBzg+DezicZ/S6RHWxeVrK0TuafKlv+G0xjQ=;
+        b=EVANbVhuKeeWYQIcn7fQOXbd1T2PwQDfbVieAkktbi+BjSgOHLLzFKAPgw4SV4AHbN
+         mFbenZ0P/2cuckeJEs+U5N7XMQ6Th8ZYlWsvNijcJ6uthuX2rDJOE5u5YKi8XJW7IOV/
+         6eQFtmVgdxEToNtR0hrlXfpEANf+fgtYlACP8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=mmsmJ/pPdiOUowj1+queJxhgagora/RkFzbUPsH0NgI=;
-        b=g1AqMKPsSwPmPhEG+aJrHp4pGanLEkkcxu0V4l6Zt4c9dhq1OeBlODMn7C7xZxHL2K
-         CYkIVqClTMA702DwblRTH/6dbjo5wBIUtqsuInj9Sn3mQR/hcGA8c3/3d4osz/BW4Psk
-         U3XkIkr429vDsxRw1rBPtT6gY9IFzWvHgtSmQPRGctQiGBxgCWj3EJR5ApEAJG2nItkg
-         AfWL/6naQoJ0s94sUY3QqWFnF0xO0pqzQjR9D3SBZFU80v6BZDh8Bc9aZhEWfc5gQgv2
-         wJwcS0Swub/nArpv1VgFgpvwuz81S+slVbJP/McVhxDyrKz7lXCD0aUHkIvlv3Ppo5Rf
-         +Qdw==
-X-Gm-Message-State: AOAM530gyYqkj2oipdqFGxrnQhf+zj30+ZskVEf1/993EPY7TVR4Hy7a
-        R4dQz5DF2/5YovZW1ocqQZP54cw28apFmAbrBfmPIw7ISXonHtgRWLn01zQbaJCGNZbhc+ww8rU
-        2Hx6/bM0fJWJ9NVqTIHvd0wkp
-X-Received: by 2002:a50:d50c:: with SMTP id u12mr10692144edi.118.1634846907785;
-        Thu, 21 Oct 2021 13:08:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydAHgKEPzldAxYQV/5QMlR58Wpb8Rnei/FqgARVPGBX6aLZzp3TxpCGsa/Joy8+cm0SIrRxg==
-X-Received: by 2002:a50:d50c:: with SMTP id u12mr10692122edi.118.1634846907625;
-        Thu, 21 Oct 2021 13:08:27 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id p3sm2942149ejy.94.2021.10.21.13.08.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 13:08:27 -0700 (PDT)
-Message-ID: <9eb83cdd-9314-0d1f-0d4b-0cf4432e1e84@redhat.com>
-Date:   Thu, 21 Oct 2021 22:08:25 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s1+yeGZaBzg+DezicZ/S6RHWxeVrK0TuafKlv+G0xjQ=;
+        b=C7qXheFtkFwlNpRBmyPeyB7mV7YnVOmFs3XxTaFIIvTrCeuT3aVAyhM1KPcxQjtG9f
+         hxoNzZkLfLiXgGgEEvjTZdUfdphhlF3RV9oHKYiL2PLQs1YUtaUWYbqy0hx0UEzlH+xO
+         +pXxynzspLdQQnCaW9qDyKlIIuEaCJYj4ldaFsM3kXyHzj99GPSE8kJn3Sht4I/rmX1F
+         faBO0cDL2rMDvvLGR3pFjDNaJVhyrhbl2EEK8+DWRfpYn44j4mO/HTByh2nRsZF+V3Zf
+         aXSuk0kW7gVQFD77mQkb/F5Z9LBSmecxxb2BzisvhQknd/nIQBZWJ5nYCxbe5GQjexmo
+         tC0Q==
+X-Gm-Message-State: AOAM531vwolQfFpYxmYPFTBlGcJxLCx5khfI3cg545KnxS6xk8wuUQnt
+        g6Ay6OVMTYXSSFb5yv9QLAG+Kw==
+X-Google-Smtp-Source: ABdhPJxCvQAVXdM2Ce6Kgyx1ISIlaRS4sllWhsl1Vw4PA9wUov2YtR7y2YSEZwksZFFzJsN0YeLcrg==
+X-Received: by 2002:a17:903:1c6:b0:13f:2b8:afe8 with SMTP id e6-20020a17090301c600b0013f02b8afe8mr7205298plh.81.1634847020362;
+        Thu, 21 Oct 2021 13:10:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b130sm7124117pfb.9.2021.10.21.13.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 13:10:20 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 13:10:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Shuah Khan <shuah@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kselftest@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>, jannh@google.com,
+        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, christian.brauner@ubuntu.com,
+        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
+        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
+        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, nickhu@andestech.com,
+        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
+        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
+        chris@zankel.net, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] selftests: proc: Make sure wchan works when it exists
+Message-ID: <202110211309.A4DFAE27@keescook>
+References: <20211008235504.2957528-1-keescook@chromium.org>
+ <202110211008.CC8B26A@keescook>
+ <20211021193033.GW174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: There is a null-ptr-deref bug in kvm_dirty_ring_get in
- virt/kvm/dirty_ring.c
-Content-Language: en-US
-To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>
-Cc:     kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-References: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021193033.GW174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/21 19:14, butt3rflyh4ck wrote:
-> {
-> struct kvm_vcpu *vcpu = kvm_get_running_vcpu();  //-------> invoke
-> kvm_get_running_vcpu() to get a vcpu.
+On Thu, Oct 21, 2021 at 09:30:33PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 21, 2021 at 10:09:33AM -0700, Kees Cook wrote:
 > 
-> WARN_ON_ONCE(vcpu->kvm != kvm); [1]
+> > > Hi Peter,
+> > > 
+> > > Can you add this to the wchan series, please? This should help wchan from
+> > > regressing in the future, and allow us to notice if the depth accidentally
+> > > changes, like Mark saw.
+> > > ---
+> > 
+> > I'd like to make sure we have a regression test for this. Will you add
+> > this to the wchan series please?
 > 
-> return &vcpu->dirty_ring;
-> }
-> ```
-> but we had not called KVM_CREATE_VCPU ioctl to create a kvm_vcpu so
-> vcpu is NULL.
+> I have it there, but it's in the part that didn't make it in yet. I'm
+> currently in the progress of reworking that.
+> 
+> Do you want it it ahead of all that?
 
-It's not just because there was no call to KVM_CREATE_VCPU; in general 
-kvm->dirty_ring_size only works if all writes are associated to a 
-specific vCPU, which is not the case for the one of 
-kvm_xen_shared_info_init.
+Nah, that's fine. I'm not in any rush; I just wanted to make sure it
+didn't get lost. I didn't realize it was already there (I had only seen
+the -tip emails). Sorry for the noise; thanks!
 
-David, what do you think?  Making dirty-page ring buffer incompatible 
-with Xen is ugly and I'd rather avoid it; taking the mutex for vcpu 0 is 
-not an option because, as the reporter said, you might not have even 
-created a vCPU yet when you call KVM_XEN_HVM_SET_ATTR.  The remaining 
-option would be just "do not mark the page as dirty if the ring buffer 
-is active".  This is feasible because userspace itself has passed the 
-shared info gfn; but again, it's ugly...
+-Kees
 
-Paolo
-
+-- 
+Kees Cook
