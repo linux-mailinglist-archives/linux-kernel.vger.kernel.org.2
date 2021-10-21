@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D55E436E31
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FBC436E35
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhJUXVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:21:44 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55159 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhJUXVk (ORCPT
+        id S232345AbhJUXWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231183AbhJUXWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:21:40 -0400
-Received: by mail-io1-f72.google.com with SMTP id f3-20020a5d8603000000b005dbf6d911e4so1532044iol.21
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:19:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=zNqTu4uMRk0iWztvQl/HZN3iKjuv/LembImAnbSpcvo=;
-        b=8EfT96LpPOpksrs03TKNoySjV1KUd+nieI8jL4u3jCuL1Wg/3sGDwV+eKQ0TxOyX7u
-         rS5umL86deD9+lOIIsc2LH9sMp1eppWrFz55zmNYXNFhcXv39rOIdhuQtJNMkx2JnPEp
-         BE9gDHljp2PKFS3KBqwjgSiamFDppmZTPganwMkOgn5QLxvTBZnpa6I07if5GAloAroI
-         Eyh8zrrYa1YiGO2cgXr0KB1lBkBDIxVuf8sTRXNI5CoE70LcTly6n1+yDVT/dnO6R6nb
-         u+ayXSy18U3OxWueEGK2E9XqLjYhNtUzXkQhQ2TGN3sS+bI/xOjBK7Z6CjGFYrVw7ZXG
-         ygDQ==
-X-Gm-Message-State: AOAM533XX2m0OkAy2lATWbt6+LVqsdTnSL7BNbB8WAAa/PpRVAQDrQH2
-        FgHIoEHZ9lsOGMZJLgJ1C2he5+buOq+w5PKYJnVEV3rLY7HN
-X-Google-Smtp-Source: ABdhPJxIKlRscXg0XNrEGTrtfckSCo1BWrEoxIjkCUYyTAtO2DK6AsRsrdBBlCzVJD8rGcveL0GuPDKiGOXo+lycOJOiZQeXPKUi
+        Thu, 21 Oct 2021 19:22:00 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9C7C061764;
+        Thu, 21 Oct 2021 16:19:43 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hb3NF2cVqz4xdb;
+        Fri, 22 Oct 2021 10:19:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634858382;
+        bh=6/t6+f25dFPDKmlst0gpSR2W5GgVgdO7IRWg9l8R+R0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FBrnlLKZIaV9qsYE6qxeYvX6uNZUZHHGeCzkPjdrXK6t70wRQLSlgTfUC5aJwbP9H
+         0PuoTu9GeD7VV7TV74Q5pdxR7xXU13T7lrGTZ4kZtYP1NREdpOUGcOuJCMqqiEkNxc
+         WALSa/FHVL1sFaU6dPfOG2mUXCaH4UCNFmv2b5osQHtOcGBI368aX5kOdvYKR1vdRR
+         th4LgO3B5cnOHZyKlhPxQQvR/B3V5BJNXZ5JBCcpnb4rzQ/UD6U2EjWkl1lO/Cp3yd
+         y4wlQVKcKuote1liA7LB0uszR06baRi6CGfeDSoTIHvMiysrnQcDxZIMdRg82hZh/p
+         AqGc20mDIsuXw==
+Date:   Fri, 22 Oct 2021 10:19:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maciej Machnikowski <maciej.machnikowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20211022101939.3fb5beb2@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:164d:: with SMTP id v13mr5331311ilu.10.1634858364316;
- Thu, 21 Oct 2021 16:19:24 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 16:19:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000010317a05cee52016@google.com>
-Subject: [syzbot] WARNING in batadv_v_ogm_free
-From:   syzbot <syzbot+b6a62d5cb9fe05a0e3a3@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
-        sven@narfation.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/wVyx0QaeSkc_b51qrGoZ=4f";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/wVyx0QaeSkc_b51qrGoZ=4f
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-syzbot found the following issue on:
+Hi all,
 
-HEAD commit:    2f111a6fd5b5 Merge tag 'ceph-for-5.15-rc7' of git://github..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=121d909f300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d95853dad8472c91
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6a62d5cb9fe05a0e3a3
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+Today's linux-next merge of the net-next tree got a conflict in:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+  drivers/net/ethernet/intel/ice/ice_devids.h
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b6a62d5cb9fe05a0e3a3@syzkaller.appspotmail.com
+between commit:
 
-------------[ cut here ]------------
-ODEBUG: assert_init not available (active state 0) object type: timer_list hint: 0x0
-WARNING: CPU: 0 PID: 9723 at lib/debugobjects.c:508 debug_print_object lib/debugobjects.c:505 [inline]
-WARNING: CPU: 0 PID: 9723 at lib/debugobjects.c:508 debug_object_assert_init+0x1fa/0x250 lib/debugobjects.c:895
-Modules linked in:
-CPU: 0 PID: 9723 Comm: syz-executor.5 Not tainted 5.15.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:debug_print_object lib/debugobjects.c:505 [inline]
-RIP: 0010:debug_object_assert_init+0x1fa/0x250 lib/debugobjects.c:895
-Code: e8 4b 15 b8 fd 4c 8b 45 00 48 c7 c7 a0 31 b4 8a 48 c7 c6 00 2e b4 8a 48 c7 c2 e0 33 b4 8a 31 c9 49 89 d9 31 c0 e8 b6 c6 36 fd <0f> 0b ff 05 3a 5c c5 09 48 83 c5 38 48 89 e8 48 c1 e8 03 42 80 3c
-RSP: 0018:ffffc90015a06698 EFLAGS: 00010046
-RAX: ccc2ef1263c32100 RBX: 0000000000000000 RCX: 0000000000040000
-RDX: ffffc90015ff3000 RSI: 000000000003ffff RDI: 0000000000040000
-RBP: ffffffff8a512d00 R08: ffffffff81693402 R09: ffffed1017383f2c
-R10: ffffed1017383f2c R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff8880a4325898 R14: 0000000000000000 R15: ffffffff90bebb30
-FS:  00007fb87671b700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005573fb61a270 CR3: 000000009b076000 CR4: 00000000003506f0
-Call Trace:
- debug_timer_assert_init kernel/time/timer.c:739 [inline]
- debug_assert_init kernel/time/timer.c:784 [inline]
- del_timer+0xa5/0x3d0 kernel/time/timer.c:1204
- try_to_grab_pending+0x151/0xbb0 kernel/workqueue.c:1270
- __cancel_work_timer+0x14c/0x710 kernel/workqueue.c:3129
- batadv_v_ogm_free+0x2e/0xc0 net/batman-adv/bat_v_ogm.c:1076
- batadv_mesh_free+0x67/0x140 net/batman-adv/main.c:244
- batadv_mesh_init+0x4e5/0x550 net/batman-adv/main.c:226
- batadv_softif_init_late+0x8fe/0xd70 net/batman-adv/soft-interface.c:804
- register_netdevice+0x826/0x1c30 net/core/dev.c:10229
- __rtnl_newlink net/core/rtnetlink.c:3458 [inline]
- rtnl_newlink+0x14b3/0x1d10 net/core/rtnetlink.c:3506
- rtnetlink_rcv_msg+0x934/0xe60 net/core/rtnetlink.c:5572
- netlink_rcv_skb+0x200/0x470 net/netlink/af_netlink.c:2510
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x814/0x9f0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0xa29/0xe50 net/netlink/af_netlink.c:1935
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg net/socket.c:724 [inline]
- ____sys_sendmsg+0x5b9/0x910 net/socket.c:2409
- ___sys_sendmsg net/socket.c:2463 [inline]
- __sys_sendmsg+0x36f/0x450 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fb8791a5a39
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb87671b188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fb8792a8f60 RCX: 00007fb8791a5a39
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
-RBP: 00007fb87671b1d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007fffd6c2d8ef R14: 00007fb87671b300 R15: 0000000000022000
+  7dcf78b870be ("ice: Add missing E810 device ids")
 
+from the net tree and commit:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+  885fe6932a11 ("ice: Add support for SMA control multiplexer")
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/ethernet/intel/ice/ice_devids.h
+index ef4392e6e244,8d2c39ee775b..000000000000
+--- a/drivers/net/ethernet/intel/ice/ice_devids.h
++++ b/drivers/net/ethernet/intel/ice/ice_devids.h
+@@@ -21,10 -21,8 +21,12 @@@
+  #define ICE_DEV_ID_E810C_QSFP		0x1592
+  /* Intel(R) Ethernet Controller E810-C for SFP */
+  #define ICE_DEV_ID_E810C_SFP		0x1593
++ #define ICE_SUBDEV_ID_E810T		0x000E
++ #define ICE_SUBDEV_ID_E810T2		0x000F
+ +/* Intel(R) Ethernet Controller E810-XXV for backplane */
+ +#define ICE_DEV_ID_E810_XXV_BACKPLANE	0x1599
+ +/* Intel(R) Ethernet Controller E810-XXV for QSFP */
+ +#define ICE_DEV_ID_E810_XXV_QSFP	0x159A
+  /* Intel(R) Ethernet Controller E810-XXV for SFP */
+  #define ICE_DEV_ID_E810_XXV_SFP		0x159B
+  /* Intel(R) Ethernet Connection E823-C for backplane */
+
+--Sig_/wVyx0QaeSkc_b51qrGoZ=4f
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFx9YwACgkQAVBC80lX
+0GzODwf/SbgfhCK4YZohL9xD9TRMbuZpTf++S8zyaRRS8O5az5mtZ30nUp7hBLhj
+z+ilaAaloCasXkfPReCFC6Dr6LxaTNMRAap6q1XCiBtoii4/srVT0hMCww+l8Gby
+vHeEQVe25ZCinMuWYPkJ/F35TRrZHEoyo0B6H8Ws+30vp3VIFADg3sVDneAo34+a
+k4yJsRGOrBKLCm1MYoS2b1YDOg4ykEqGp+i0MBRlJZgQdUZtcRugcHNfqjnMljrP
+vR2M0I4kVJlWInsMEVQcv7gZynqrKUXVUcyaAFNNEuU7XSJ4HYhQNc8/PN3nnj7S
+IJQNrtzzZ4jN0NwHkz5afgrVpfeltA==
+=PIid
+-----END PGP SIGNATURE-----
+
+--Sig_/wVyx0QaeSkc_b51qrGoZ=4f--
