@@ -2,153 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7DC435B10
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 08:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB13435B1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 08:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhJUGso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 02:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S231228AbhJUGvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 02:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhJUGsk (ORCPT
+        with ESMTP id S229539AbhJUGvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 02:48:40 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A2FC06161C;
-        Wed, 20 Oct 2021 23:46:25 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so4195341pjb.3;
-        Wed, 20 Oct 2021 23:46:25 -0700 (PDT)
+        Thu, 21 Oct 2021 02:51:09 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F134BC06161C;
+        Wed, 20 Oct 2021 23:48:52 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id z24so5252011qtv.9;
+        Wed, 20 Oct 2021 23:48:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1M3kvLsbJ/ih3Eftrqw3DQFcvO6OMU9UEVLzGqMRyVU=;
-        b=DmSnDoPQUC4477skIZmU6dENmvchZn3rssc191wBgZZTrQQ/DOuxmpUI+Z/vX+opba
-         TCAFFf63hCgXPwlhDa6YGWUmIbnU7zPpKY4g4+giL0ZsWU8ITGXCQMa5SqvILgOZOR85
-         V8jIwD7e94+ypon+Dw+ETGMY5yazB2QRpIG8vdmrlQIr4yfnpxVYyr5pn5hT8LTUYPxB
-         mbO2EmdY0/VOGc9vmztsjdQdMcWQuJ65C3y2RZzR+67Y+jb/WsyDCxzaYwcXIyb6T1Oc
-         cgnsEF8WXohHlSOGGWPB44qBiKads61gZDXmGwzlB5wOdO1fkx25cXMeUmPagB9/J4/2
-         +5Xg==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mNvxWtckYIaJV931ioym14Q5jqNR1mKAgWlKsIbIzrY=;
+        b=NkQbrePiO+dBHQ9EvaNmEDupYsux/mvqQMa1GaCYmiycTjQJXAT1gAMc7VxaUVMeIl
+         xFKQN3r3sN/FQycbzp2XPHz1vjhUy5BBfP1pZvOrpvgMRtVPz8RTH9cFoG+CHJVB5RyG
+         XhxYmTcdIG7/Rt8AEgJrTlJTpgBAfwaL4kFII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1M3kvLsbJ/ih3Eftrqw3DQFcvO6OMU9UEVLzGqMRyVU=;
-        b=CyBO61S2AJwbeHTdUTbnEMmIbWziGsNgLaT7tTl5lz2ie6Qpqj+vqC0z42hJdSi1dG
-         P6nraBqdp6tcqI9z9bTR6FVeZZRmRQvBLLcO07+WcPgP0YDX/z7LZ0Ra+nFf8bT/NtFU
-         EGEdeiq4Z8ruXlLIsX/sfqw9IMY0CkhT4XwXiwFGXWL5uq31Aic7hUFSGVZutPRFQUqS
-         9uiIsQOTt7bRR+wDhccG5mQ0+ixQ5xXMHyVXXVPf94Nir3iisrKTExFTSr2KP87qoyw7
-         244+6HVLkjvVkzMlMYKrdU7QKEOuuHDtK98SATlCXnmfEUlOKJuoWlYCKByY6HlmYe62
-         81Mg==
-X-Gm-Message-State: AOAM533m4M+74/r6s6ELS5mWWrfgHq+ASI26ZBOHKUVbWY+EZ8iCt2kh
-        K/EbKn/fR851OMr/DhH6jXQ=
-X-Google-Smtp-Source: ABdhPJxZ4vZikdD069dZLSVdPUu3bfHoBofw2Xwa8MsjN/cGJCmt0I7uP+2EGPvNcB0u6kYFZo3JaA==
-X-Received: by 2002:a17:902:da8a:b0:13f:1a39:e02f with SMTP id j10-20020a170902da8a00b0013f1a39e02fmr3661792plx.82.1634798784557;
-        Wed, 20 Oct 2021 23:46:24 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d21sm5049720pfl.135.2021.10.20.23.46.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 23:46:24 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ye.guojin@zte.com.cn
-To:     mingo@redhat.com
-Cc:     peterz@infradead.org, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        x86@kernel.org, hpa@zytor.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] x86/events: fixup coccinelle warnings
-Date:   Thu, 21 Oct 2021 06:46:18 +0000
-Message-Id: <20211021064618.1047485-1-ye.guojin@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mNvxWtckYIaJV931ioym14Q5jqNR1mKAgWlKsIbIzrY=;
+        b=kwUULa7Fmal9WbgT8DDFTLbPuduh+5Q4y1mX6PEbfmnlHAFxtdEVnd+tPrPqx3uD42
+         18kR3vSS3UFRpnHw6jxNPGm16s69ArYSNR6T1Ll1omXef792tHhVwdp7qncdwg/Qvanq
+         K+z9NFckYp/Ns9EDr71P13SqPjJE4kkfLZ5t6ChwG9VUdfd3AY2PgsH9rVR97URgGrnN
+         MinaO24xTsVSlriqSKrrg0OThl29HUuFSGCpfq/hkOwC9+XDG/h0M3DFjUjoBtMG+LRX
+         o8TRfpb4A2FjZgOjvFYpckKv/Dvf8ESlV6viHjtxPcqpZEU1KVrPhvX54F10h2lMwq6G
+         zHjQ==
+X-Gm-Message-State: AOAM532/5Rbxtll97kGb1cofMBZIqToIpjyoSO8LpXmu6SBbrxDyeyAS
+        kUHG8oeQ+FCWfFgS99dCwYZuimjxyC0XF9lSLec=
+X-Google-Smtp-Source: ABdhPJzBXdMJj7nI0BKVHrtJsFRFYsv4NGS3cg0KW3U1+iTkclWXcGjaJNsdvv35wBUBca9PfSTZTpnV25AliumF8xI=
+X-Received: by 2002:a05:622a:1006:: with SMTP id d6mr3975310qte.259.1634798932006;
+ Wed, 20 Oct 2021 23:48:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210927023053.6728-1-chiawei_wang@aspeedtech.com>
+ <20210927023053.6728-2-chiawei_wang@aspeedtech.com> <CACPK8Xc+9yFJn_pO1sAVQJu_FWkA1U9XnbB+TLYgfdbHi1TyaQ@mail.gmail.com>
+ <CACPK8Xfj=wJBCX5ogyf02pLJsLrooVWBJ92GJ1E+jxQW5wiFEw@mail.gmail.com> <HK0PR06MB3779F430883E60E7E47849BE91BF9@HK0PR06MB3779.apcprd06.prod.outlook.com>
+In-Reply-To: <HK0PR06MB3779F430883E60E7E47849BE91BF9@HK0PR06MB3779.apcprd06.prod.outlook.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 21 Oct 2021 06:48:40 +0000
+Message-ID: <CACPK8Xc2wzx1dthFYC_0vm4mj9e1BbL+Kwkqc_PvPFj4sqjOJg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/5] ARM: dts: aspeed: Drop reg-io-width from LPC nodes
+To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Cc:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Oskar Senft <osk@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Guojin <ye.guojin@zte.com.cn>
+On Thu, 21 Oct 2021 at 06:37, ChiaWei Wang <chiawei_wang@aspeedtech.com> wrote:
+>
+> > From: Joel Stanley <joel@jms.id.au>
+> > Sent: Thursday, October 21, 2021 2:29 PM
+> >
+> > On Fri, 8 Oct 2021 at 04:35, Joel Stanley <joel@jms.id.au> wrote:
+> > >
+> > > On Mon, 27 Sept 2021 at 02:31, Chia-Wei Wang
+> > > <chiawei_wang@aspeedtech.com> wrote:
+> > > >
+> > > > The 'reg-io-width' properties are not used by LPC drivers nor
+> > > > documented as part of bindings. Therefore drop them.
+> > >
+> > > I assume they are there due to the lpc having a 'syscon' compatible.
+> > > THey are documented in the syscon bindings:
+> > >
+> > > Documentation/devicetree/bindings/mfd/syscon.yaml
+> > >
+> > > Andrew, do you have any comments?
+> >
+> > Andrew indicated to me that he agreed with my observation: the properties
+> > should be present as they are used by the regmap/syscon.
+>
+> Thanks. Shall we just drop this one and move on with the rest patches?
+> However, like Rob mentioned, when doing 'make dtbs_check', there is a warning:
+>
+> /builds/robherring/linux-dt-review/arch/arm/boot/dts/aspeed-ast2500-evb.dt.yaml:
+> lpc@1e789000: 'ibt@140', 'kcs@114', 'kcs@24', 'kcs@28', 'kcs@2c', 'lhc@a0', 'reg-io-width' do not match any of the regexes:
+> '^lpc-ctrl@[0-9a-f]+$', '^lpc-snoop@[0-9a-f]+$', '^reset-controller@[0-9a-f]+$', 'pinctrl-[0-9]+'
+> From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
+>
+> As part of this series has been applied, maybe we can fix this later?
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
-WARNING  use scnprintf or sprintf
+Yes, that's a good idea.
 
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+I will send a pull request with your driver to the soc maintainers.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
----
- arch/x86/events/core.c       | 4 ++--
- arch/x86/events/intel/core.c | 6 +++---
- arch/x86/events/intel/pt.c   | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+Cheers,
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 38b2c779146f..d7fb8a57b47f 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2555,7 +2555,7 @@ static ssize_t get_attr_rdpmc(struct device *cdev,
- 			      struct device_attribute *attr,
- 			      char *buf)
- {
--	return snprintf(buf, 40, "%d\n", x86_pmu.attr_rdpmc);
-+	return sysfs_emit(buf, "%d\n", x86_pmu.attr_rdpmc);
- }
- 
- static ssize_t set_attr_rdpmc(struct device *cdev,
-@@ -2613,7 +2613,7 @@ static ssize_t max_precise_show(struct device *cdev,
- 				  struct device_attribute *attr,
- 				  char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu_max_precise());
-+	return sysfs_emit(buf, "%d\n", x86_pmu_max_precise());
- }
- 
- static DEVICE_ATTR_RO(max_precise);
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 4d679b2d6024..ad87a48bfb41 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -5115,7 +5115,7 @@ static ssize_t show_sysctl_tfa(struct device *cdev,
- 			      struct device_attribute *attr,
- 			      char *buf)
- {
--	return snprintf(buf, 40, "%d\n", allow_tsx_force_abort);
-+	return sysfs_emit(buf, "%d\n", allow_tsx_force_abort);
- }
- 
- static ssize_t set_sysctl_tfa(struct device *cdev,
-@@ -5149,7 +5149,7 @@ static ssize_t branches_show(struct device *cdev,
- 			     struct device_attribute *attr,
- 			     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu.lbr_nr);
-+	return sysfs_emit(buf, "%d\n", x86_pmu.lbr_nr);
- }
- 
- static DEVICE_ATTR_RO(branches);
-@@ -5165,7 +5165,7 @@ static ssize_t pmu_name_show(struct device *cdev,
- 			     struct device_attribute *attr,
- 			     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%s\n", pmu_name_str);
-+	return sysfs_emit(buf, "%s\n", pmu_name_str);
- }
- 
- static DEVICE_ATTR_RO(pmu_name);
-diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
-index 7f406c14715f..d3038fc5e0db 100644
---- a/arch/x86/events/intel/pt.c
-+++ b/arch/x86/events/intel/pt.c
-@@ -92,7 +92,7 @@ static ssize_t pt_cap_show(struct device *cdev,
- 		container_of(attr, struct dev_ext_attribute, attr);
- 	enum pt_capabilities cap = (long)ea->var;
- 
--	return snprintf(buf, PAGE_SIZE, "%x\n", intel_pt_validate_hw_cap(cap));
-+	return sysfs_emit(buf, "%x\n", intel_pt_validate_hw_cap(cap));
- }
- 
- static struct attribute_group pt_cap_group __ro_after_init = {
--- 
-2.25.1
+Joel
 
+>
+> Regards,
+> Chiawei
+>
+> >
+> > >
+> > > >
+> > > > This is in preparation to move aspeed-lpc.txt to YAML schema.
+> > > >
+> > > > Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+> > > > ---
+> > > >  arch/arm/boot/dts/aspeed-g4.dtsi | 1 -
+> > > > arch/arm/boot/dts/aspeed-g5.dtsi | 1 -
+> > > > arch/arm/boot/dts/aspeed-g6.dtsi | 1 -
+> > > >  3 files changed, 3 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm/boot/dts/aspeed-g4.dtsi
+> > > > b/arch/arm/boot/dts/aspeed-g4.dtsi
+> > > > index c5aeb3cf3a09..45a25eb4baa4 100644
+> > > > --- a/arch/arm/boot/dts/aspeed-g4.dtsi
+> > > > +++ b/arch/arm/boot/dts/aspeed-g4.dtsi
+> > > > @@ -345,7 +345,6 @@
+> > > >                         lpc: lpc@1e789000 {
+> > > >                                 compatible =
+> > "aspeed,ast2400-lpc-v2", "simple-mfd", "syscon";
+> > > >                                 reg = <0x1e789000 0x1000>;
+> > > > -                               reg-io-width = <4>;
+> > > >
+> > > >                                 #address-cells = <1>;
+> > > >                                 #size-cells = <1>; diff --git
+> > > > a/arch/arm/boot/dts/aspeed-g5.dtsi
+> > > > b/arch/arm/boot/dts/aspeed-g5.dtsi
+> > > > index 73ca1ec6fc24..8e1d00d8445e 100644
+> > > > --- a/arch/arm/boot/dts/aspeed-g5.dtsi
+> > > > +++ b/arch/arm/boot/dts/aspeed-g5.dtsi
+> > > > @@ -436,7 +436,6 @@
+> > > >                         lpc: lpc@1e789000 {
+> > > >                                 compatible =
+> > "aspeed,ast2500-lpc-v2", "simple-mfd", "syscon";
+> > > >                                 reg = <0x1e789000 0x1000>;
+> > > > -                               reg-io-width = <4>;
+> > > >
+> > > >                                 #address-cells = <1>;
+> > > >                                 #size-cells = <1>; diff --git
+> > > > a/arch/arm/boot/dts/aspeed-g6.dtsi
+> > > > b/arch/arm/boot/dts/aspeed-g6.dtsi
+> > > > index 1b47be1704f8..0d1aae6887cd 100644
+> > > > --- a/arch/arm/boot/dts/aspeed-g6.dtsi
+> > > > +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+> > > > @@ -490,7 +490,6 @@
+> > > >                         lpc: lpc@1e789000 {
+> > > >                                 compatible =
+> > "aspeed,ast2600-lpc-v2", "simple-mfd", "syscon";
+> > > >                                 reg = <0x1e789000 0x1000>;
+> > > > -                               reg-io-width = <4>;
+> > > >
+> > > >                                 #address-cells = <1>;
+> > > >                                 #size-cells = <1>;
+> > > > --
+> > > > 2.17.1
+> > > >
