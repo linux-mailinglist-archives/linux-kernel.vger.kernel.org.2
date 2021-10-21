@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC29435DA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAF8435DAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhJUJLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhJUJLF (ORCPT
+        id S231485AbhJUJMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:12:31 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:43922
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231446AbhJUJMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:11:05 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D5EC06161C;
-        Thu, 21 Oct 2021 02:08:49 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2376A2BA;
-        Thu, 21 Oct 2021 11:08:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1634807326;
-        bh=1R6z7yIisJy0tgOfsaD+O62w7W2Ho8F1w+hStl7uzrg=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=YNAPTcfNR2J+82uNeXYvZHAGeNBD5FoZBGBv6M15A/fOyxo3LDkXjYu+PVSRgnTBk
-         vXxsqIyFCUIETwvthk5YPEPohRz+jIIXPb29K3d00N2TWb12Ikt8ajPClROhcKVBXV
-         4Iavf6AvkSWquBGCNhLVgYjOF+6ZxTEdRdB5sjQs=
-Content-Type: text/plain; charset="utf-8"
+        Thu, 21 Oct 2021 05:12:30 -0400
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 454013FFF8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634807411;
+        bh=bbSHRxsR73bGstaaNlqrnr2h4OekYl5/Y0NpOv9VPBw=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=GiU2ougumgmG6uUTccWbtxnuXlWgVr3da9PbCxCKBeDFG/r5nSGbd27f0fPQdp9Qk
+         zMpP8NuMd69UlfOcHqnQ2wZnV82hAZNalisRtj1eqeBRcX4D4uLIc8jwyzQhSEq/7W
+         oGoFINOMP3IKltFK04IK5U0dcuj+H8ta0hzy9ogjd5tnnHW7XNE8unhF6OeG4FHvNs
+         Dx1Cix6eB/TKFN6ovimHQqgNz7IoAiscFS9xU7rCyaP33b2fAFQAoAlMN2JYftnziW
+         kewhpBsjMhgQMIoumEls940J/I+TjLUzrGlioCZzxKr1NZw6MyS8/pZ6wTMgHxI5fP
+         lDYkka2ciCSOA==
+Received: by mail-lj1-f198.google.com with SMTP id t7-20020a2e7807000000b00210dad8b167so299156ljc.22
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 02:10:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bbSHRxsR73bGstaaNlqrnr2h4OekYl5/Y0NpOv9VPBw=;
+        b=2falXzkDxrk80NkncMpSHbAnh4/6eLD7VbakNRLBQLrE8irGAG9B4BO0q1SDUkRSq1
+         FsTNpDXoKo1XHfmJN6R6eoRpxySujcx78uE6uM7ZPgvXmtGtFV2HMxhPLCvrF3MpoMtg
+         Akj7T0ktaf6H6aQ5YgjaCLOBOEYGpDJpXCj4BtfirgkSUC8hXkY3y4RQfJ8jrmQhilXG
+         QviA00Hqb+q1buBMvHcVlb8+Fd37OwhgMhA8UTnzDyiKOoxFqV+8PltGs3Q2MhGhy5ca
+         Up51psFk4Z6gefyypAJ4a1+BZJ8cRFVsM3zCe5HV01U2KgWmqIEjdk0lnsOXp7SAoQF6
+         jw2g==
+X-Gm-Message-State: AOAM532aAPkeFH9A8/jFT5glC8hatfnho3TFH0raxhPaCwhFz1Di4A3K
+        cOy3BVoqTWqjRP7FIIHF2i+pD8h/POadr2dwUqx1bh9lEvvcgt8I0a0jDpszhNldTKDcsyG6ZQE
+        LL+Uk+/Jn+Z4mjA2zA8FwQnYU32JsnRM7UPafwGraHg==
+X-Received: by 2002:a2e:a171:: with SMTP id u17mr4669563ljl.371.1634807410715;
+        Thu, 21 Oct 2021 02:10:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJi51V3uLcQ6VQf22lZE+UEugXH6TyHQQH8xsi40Ilosw8EeaKsw6tjG5kUM2pWTCLIevk/g==
+X-Received: by 2002:a2e:a171:: with SMTP id u17mr4669547ljl.371.1634807410497;
+        Thu, 21 Oct 2021 02:10:10 -0700 (PDT)
+Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id v7sm523707lji.81.2021.10.21.02.10.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 02:10:10 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [GIT PULL] riscv: dts: few cleanups for v5.16
+Date:   Thu, 21 Oct 2021 11:09:55 +0200
+Message-Id: <20211021090955.115005-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAMuHMdWD+FXt-rUz6oiU9MNq3EiKExgic17kCnUjynidii470w@mail.gmail.com>
-References: <20211021030938.51884-1-tangbin@cmss.chinamobile.com> <CAMuHMdWD+FXt-rUz6oiU9MNq3EiKExgic17kCnUjynidii470w@mail.gmail.com>
-Subject: Re: [PATCH] media: rcar_fdp1: Fix the correct variable assignments
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Date:   Thu, 21 Oct 2021 10:08:43 +0100
-Message-ID: <163480732348.2663858.5189176300885425535@Monstersaurus>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tang,
+Hi Arnd and Olof,
 
-Quoting Geert Uytterhoeven (2021-10-21 08:59:18)
-> Hi Tang,
->=20
-> Thanks for your patch!
->=20
-> On Thu, Oct 21, 2021 at 5:10 AM Tang Bin <tangbin@cmss.chinamobile.com> w=
-rote:
-> > In the function fdp1_probe(), when get irq failed, the
-> > function platform_get_irq() log an error message, so
-> > remove redundant message here. And the variable type
-> > of "ret" is int, the "fdp1->irq" is unsigned int, when
-> > irq failed, this place maybe wrong, thus fix it.
->=20
-> The second issue is not actually present, as the error check
-> operates on ret, not fdp1->irq?
+I have an old patchset for RISC-V dts cleanups which I sent to mailing lists in
+August 2021 (v1, v2), resent in September and pinged two times.  They got some
+review (from Alexandre Ghiti for SiFive, from Conor Dooley for Microchip) but
+unfortunately Palmer (RISC-V maintainer) did not respond here.
 
-Agreed, the error print is redundant.=20
+The usual RISC-V patches go via Palmer to Linus and I am not planning to change
+that, but I want to get these fixed.
 
-In fact it would have erroneously print on ret=3D-EPROBE_DEFER cases too,
-so it's not just redundant, but inaccurate too.
+Could you grab these to soc tree?
 
-I don't think the assignment of fdp1->irq =3D ret at the same time is an
-issue, because if ret < 0, fdp1->irq wouldn't ever get read, as the call
-returns.
+Best regards,
+Krzysztof
 
-But .. I have no objection to setting it after instead.
 
-> > Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->=20
-> > --- a/drivers/media/platform/rcar_fdp1.c
-> > +++ b/drivers/media/platform/rcar_fdp1.c
-> > @@ -2289,11 +2289,10 @@ static int fdp1_probe(struct platform_device *p=
-dev)
-> >                 return PTR_ERR(fdp1->regs);
-> >
-> >         /* Interrupt service routine registration */
-> > -       fdp1->irq =3D ret =3D platform_get_irq(pdev, 0);
-> > -       if (ret < 0) {
-> > -               dev_err(&pdev->dev, "cannot find IRQ\n");
-> > +       ret =3D platform_get_irq(pdev, 0);
-> > +       if (ret < 0)
-> >                 return ret;
-> > -       }
-> > +       fdp1->irq =3D ret;
-> >
-> >         ret =3D devm_request_irq(&pdev->dev, fdp1->irq, fdp1_irq_handle=
-r, 0,
-> >                                dev_name(&pdev->dev), fdp1);
->=20
-> Anyway, the code is correct, so:
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Perhaps with the commit message updated/simplified, but either way:
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
->=20
-> Gr{oetje,eeting}s,
->=20
->                         Geert
->=20
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->=20
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/riscv-sifive-dt-5.16
+
+for you to fetch changes up to 9962a066f3c1d4588d0dd876ceac2c03ef87acf3:
+
+  riscv: dts: sifive: add missing compatible for plic (2021-10-19 10:59:57 +0200)
+
+----------------------------------------------------------------
+RISC-V DTS changes for v5.16
+
+Cleanups of RISC-V SiFive and Microchip DTSes with dtschema.  These are
+few minor fixes to make DTSes pass the dtschema, without actual
+functional effect.
+
+----------------------------------------------------------------
+Krzysztof Kozlowski (5):
+      riscv: dts: sifive: use only generic JEDEC SPI NOR flash compatible
+      riscv: dts: sifive: fix Unleashed board compatible
+      riscv: dts: sifive: drop duplicated nodes and properties in sifive
+      riscv: dts: microchip: add missing compatibles for clint and plic
+      riscv: dts: sifive: add missing compatible for plic
+
+ arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi   |  4 ++--
+ arch/riscv/boot/dts/sifive/fu540-c000.dtsi          |  2 +-
+ arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 10 +++-------
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts |  7 +------
+ 4 files changed, 7 insertions(+), 16 deletions(-)
