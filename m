@@ -2,176 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFD7436E3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BCC436E44
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbhJUXYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:24:48 -0400
-Received: from mail-dm6nam11on2045.outbound.protection.outlook.com ([40.107.223.45]:57376
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230280AbhJUXYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:24:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VP/PL3Z65NZQ8rAOvDjUBehkp/FusTA/I4BdeNClDftdooP21vSqYIEz9mJIU7rFVoacwePUw+LKRmUG3Ltgc/DdSMhh0dkwxrjBzmMf4Q2In+wBMQKc6uuqgOEhsDsYhsdzB2ha9/POyRrVP1MazCYgoZNQw4+lsol7s5hC9M3BW9af+vIlpuUunKAdEpEv1danIQqPNVQJus6PH4FD3VDDaD1B3fB4Qp9alRUHLDu4ijTw5UT1ZwPsjA0OO2UUYh1OshM9FmOWF0HsEqTBVTkbPLtRR7MjSy4t35SGWaoXscBER6/+7gBXgAUQSZbg3UL/I+vsW7jdb5h+mUod3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qtjxwK4z6yUHp7IrYPYJKoJWDJH0s1LqAnZhGGy7Rwc=;
- b=TN8Lr/LM/RXpuxb5CgPQ/AFb0AySfH6jdEpy1IYhBBrzfOttT4tOI+G/23QoNjAADKo/xZ4LaXcYkJOW1KwKOTajdko7oKS/KFTDPfC6ucTRNYnW5vWlcoMDRyssEtQjee5s+7HT/Rj3qi1WpmUSWv3G3jzne8OGYzE3pZSCJPFm0e/CQgXXhTUIQYmVXiV6h6VKLW7LRJoHyFtHrzK9rWWOc+ngi/NtstAoQ/CjFAVAWC7UVYrBhiLKs5+AeBa0xeMRGnD3/1/zeua55oJO07XgOr2ZIkgC/mYW/isiaE91w6YXvDRdtQvOsVvoOA49EtldX7Yvsn6CezqDwZLvDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qtjxwK4z6yUHp7IrYPYJKoJWDJH0s1LqAnZhGGy7Rwc=;
- b=qHJDWgNxMtAwBlDp7kajE2rMPb3y8fE8O6fvv+AEWvesOBvl0rXaBUBQzaMlXddO5LQnzzRgt4hZjcF30FjJjqCCHYCENC82V6jhj17q17kQBXMyOep5HpBMW97H46CM65c+0z8apYmZaw0JXuKk4obkcUz6brAkMgWEZDFAvhuptILSPBYd/1uL5Z7+5cOHiMba1e0xszRsIP2jJ3gIPkxtumXu94ljmqPGn+I1VfX5fuiHLvQDvLVulsM51HWwoSDIHxxbZL/9gk+33ZAYZtlYQcxVzgr0YbaAspvDXvmkFdHKG4YMViGYKSsi7pC8/9U4/J5kLGjwMF3ay029TA==
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5270.namprd12.prod.outlook.com (2603:10b6:208:31e::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15; Thu, 21 Oct
- 2021 23:22:24 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
- 23:22:24 +0000
-Date:   Thu, 21 Oct 2021 20:22:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
-Message-ID: <20211021232223.GM2744544@nvidia.com>
-References: <BN9PR11MB5433409DF766AAEF1BB2CF258CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
- <BN9PR11MB54333BDB1E58387FD9999DF18CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210923114219.GG964074@nvidia.com>
- <BN9PR11MB5433519229319BA951CA97638CAA9@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210930222355.GH964074@nvidia.com>
- <BN9PR11MB5433530032DC8400B71FCB788CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20211014154259.GT2744544@nvidia.com>
- <BN9PR11MB543327BB6D58AEF91AD2C9D18CB99@BN9PR11MB5433.namprd11.prod.outlook.com>
- <BL1PR11MB5429973588E4FBCEC8F519A88CBF9@BL1PR11MB5429.namprd11.prod.outlook.com>
- <YXF/+jxRtjnlXU7w@myrica>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXF/+jxRtjnlXU7w@myrica>
-X-ClientProxiedBy: BL1P223CA0028.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:2c4::33) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232282AbhJUX0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230280AbhJUX0D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 19:26:03 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738E1C061764;
+        Thu, 21 Oct 2021 16:23:46 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 3A054C025; Fri, 22 Oct 2021 01:23:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1634858624; bh=QI1jya4xqRMNt0nBwtRPZvmfVzkS65CSiephRu49A14=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fVWPBuMNPq+56y7BBbK8XcmZk8C7+A4uMvtdWGWNoua2vs5ycR8vKcY110GLtlfv2
+         NWVdnQVy+5aei8AuhFKQ1f5d+SWbkDSYe9bWwu+znHwMcurF8xMJHVw8qOzzg48J6U
+         yHpnW9Ji1L53Wpao3R+Y53txMcZ3WadMd+QZlxiW5CY2n6BDQrGYgvEinl5k+zxse+
+         699V/S04Hbq3RgwatQjKBuZeM8XD2tDFWjzpbVsMM6Beg+6/IFNhQ/P+IBXrtoEBOa
+         7Gc0j0T92mxC4CHXRApx6FIv6QM0jL6YFSVH3je9y6z3fXDbTMFCCt59sWjqW8/SXm
+         4dcVa8aQWj5qw==
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.2
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id A0916C009;
+        Fri, 22 Oct 2021 01:23:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1634858622; bh=QI1jya4xqRMNt0nBwtRPZvmfVzkS65CSiephRu49A14=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wCfvZldvxLZsSiHYUs6ZYL1OQASI/j2ET8hioD+e6sQHqCSTwKRfkAeKHvXSCHmfp
+         BrEuYvwxIsZPLPDB2c4Qb/gMaYrQ4kSblDU1VzimusdT5tlcACjqAXt6cFwh4CRHaM
+         F3LB7T+69GUFAlMluHLb4qsPxYGlI468GMEaKyEoJA/QjZB3VRD+/lgDH2vw/8zkks
+         RyAD8WMbiNRXri/ALt9JLYls+7h+NDluEJ4FsXHan691VrqwVahTEg6QE3hCi2m8wg
+         CA6g+FqIcNtJdAislVbATvjTVk9qNlCvMcol1akzoFNZTQR2oHIf19bMT1LuA7jgu1
+         +uvzvQ6xYO+dw==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id f1866e14;
+        Thu, 21 Oct 2021 23:23:30 +0000 (UTC)
+Date:   Fri, 22 Oct 2021 08:23:15 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Steve French <smfrench@gmail.com>
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-afs@lists.infradead.org,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        v9fs-developer@lists.sourceforge.net,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/67] fscache: Rewrite index API and management system
+Message-ID: <YXH2Y7+coD5sgEDG@codewreck.org>
+References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
+ <YXHntB2O0ACr0pbz@relinquished.localdomain>
+ <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1P223CA0028.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:2c4::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 23:22:24 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mdhOB-000SXY-DN; Thu, 21 Oct 2021 20:22:23 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d4130df2-3dfe-4c79-0008-08d994e9a3a8
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5270:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5270ABA70ACD0E1C636D7929C2BF9@BL1PR12MB5270.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l9X6k11BCqsLC50Pg9q8e72tLQllRkfWU2HZZRk1CtZ6mhzewptffe+RUr+KPsLEd+YNU9rsQwUnoTrHbXFWNFNpYF90J6i95j4bHSkf7qlhcR5tsjQaZEcM5+RLL8EV/+9r2BG/O7fPvpJYROHFLXxp1aI2hWh9Pt3cjkgU71jYR0COg80WprR1JpWDgwqpO9ICrofGmD21h/BHKTwvi3iqox8z4P62b/stTKAS49Z/uj5k4XWorhC1XA/ODBZzSdtRuj59ozOAqVX5T1mohtIxBxtI2SFdTlguUTg/iokbiC5puqmFCuR0inhqInR4Yp4VKV2epIhB1VPvFpacFywpsD8ixIetGw7gEmsSeFcXjNnZ12WxOT6EUsnqSX6uDEBBWqBhPbP5IVupzkSsXt85LVfjApDxCoCLngpTAUC40FwNsvMQKtox6rCzyQrLZGe6/FpFJGPxtoHnvnh+Rjx2JkxSOA+SRq9sCuq7ZHpEPOgZxghFKz3zNUSR86bLK/y2eKw89AvtpusTRN6Euye0IaRrUqvz7HU/gkyMennP1iSHoAqFisVY6BDktsPHeGxCVLXi0RjzN8bvFRGwhHs6agqC3ydO+YQQQIK5+2CDTcbl9qcOlhmhzma2VLjaLx7q/92SGZ/DuNs42ErE4w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(508600001)(54906003)(107886003)(86362001)(9786002)(66556008)(6916009)(66476007)(7416002)(83380400001)(66946007)(5660300002)(36756003)(38100700002)(4326008)(9746002)(26005)(2906002)(8936002)(1076003)(186003)(316002)(2616005)(426003)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9coxqaLZbZb5NuYeAI4Xrmv7sKPg/OW3E/gEphAfbFOYJiIWwXlFzfNRogVf?=
- =?us-ascii?Q?gSRjgmNY2FD9Qo28DhBGslgJuieOqi5sjdNCbrE99Y3yh8KZJ8wURqJRS7nO?=
- =?us-ascii?Q?xDbd3g24FBybUwpB5uv8reAc1nTRFVdfqqFL9sdnSdWXcpMDa+MooQE/qR4x?=
- =?us-ascii?Q?b6fUUeq+PWGWzHOr5BKvk5SfjSZZOv9Id6CEs1nfyMGPmtOvYRm9lPnw8OSu?=
- =?us-ascii?Q?TJcETbC/3qPQ+1R3blFRw4pmcjdnoa7KqpxkevxIwev1JSjUPo8bCedLE3gh?=
- =?us-ascii?Q?NicoZt1sqaFeS2Pw6JVdGhpvFmcKHA3vNrFg1kytEr9jSKVJFMoN5nVFs4bA?=
- =?us-ascii?Q?1iwAeEQiJR4NTt74z1k2ezpLDuuo4Yi6TX4sPQSgxYbvvJyEROfnPTbSDWQr?=
- =?us-ascii?Q?qmu3FldR+GkLYGl7L4xuSxaxzrPHdcTl60O6TkI1F76YXOxQMC3OKzxPiOQx?=
- =?us-ascii?Q?GzUCQWpTBMYnUUsLPKLPZXBZEgSrRnfqF6ApzymybBYno+fUziz8hz2qV6Ct?=
- =?us-ascii?Q?581Z29SDRb4b+TPuRCKsZ4MzYmrRjnANlwul3lMbzFrQokLfSe16EtxxNGHc?=
- =?us-ascii?Q?xzZuyWkV9gmiFYzruXrjxKix3RiXmr3YZ/PObpPFygalSqVFBQeeyrD4TcZ8?=
- =?us-ascii?Q?WbkSCe5zKlstrTccr/saz/syvpwqFafiXg/XklQAdC/INnV6icKMJBKVEI6d?=
- =?us-ascii?Q?wRDQOC6C66/KQXWzB2VnraAd9Vjm2XRDCQv2oPbqJoRNF0KF+005qh8Rxsb1?=
- =?us-ascii?Q?2OrEOAHQN3ERPFA1S94XDVL6RsQxcd8MC3kaTbPQysnhax6BAdqyzM4Zl9/H?=
- =?us-ascii?Q?I0cielrP55SydRNbxsLu3THDT+h43vUFUhA0uSLtGvpdF/0lC8niBep+cAId?=
- =?us-ascii?Q?7OSEn5PGhTttHgkXd0wL+H78b5JfpzWH1WUDiXYFUC18g32BksN8hcpFuU74?=
- =?us-ascii?Q?lD7iMNwXiG9+kPVpimRVlVHZQC5oUnJEYsnQzcxgCmet0+c3OdcPutgeXyNh?=
- =?us-ascii?Q?VoqqkGujEeuAU1yS9yWxJntIiwTRX/KJa1C6gfXSJ5nJmcd6JfDE//fed+91?=
- =?us-ascii?Q?cViaHhx/hhCQgofVsMLYD2AT9wwgOh7Hx38Vev7KQ7IYwy+D1sl7/NsKX9Kb?=
- =?us-ascii?Q?yqsA3XhS3a0ft3bgatjFUJwCtlvXe+/BOCFPuAmADGOZ8siNEKiZCsDKRhiE?=
- =?us-ascii?Q?y3IeQcy9kng/tORuNpapIjELe8smjFPgQFTsfhx67tVy/9o5UwJjhnS+//Ba?=
- =?us-ascii?Q?c8wuxButLNDYh/oet22J4cENxx4hVdZUFkK97BLuDMS0HHBaLtbhQXLOu2ad?=
- =?us-ascii?Q?jvhmkkgF0iHjDmohIUGncsQjIIP213ALdgVZC3K79Of/cDZ+EujNS0GJXF72?=
- =?us-ascii?Q?NAyekj2Z0h9ZHjt8BmO/n2mB0DA44s2Co7SAmlbnzoZLLOSgTP+0x0Rv9n8F?=
- =?us-ascii?Q?XeCpXOvz89A=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4130df2-3dfe-4c79-0008-08d994e9a3a8
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 23:22:24.7466
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jgg@nvidia.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5270
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 03:58:02PM +0100, Jean-Philippe Brucker wrote:
-> On Thu, Oct 21, 2021 at 02:26:00AM +0000, Tian, Kevin wrote:
-> > > I'll leave it to Jean to confirm. If only coherent DMA can be used in
-> > > the guest on other platforms, suppose VFIO should not blindly set
-> > > IOMMU_CACHE and in concept it should deny assigning a non-coherent
-> > > device since no co-ordination with guest exists today.
-> > 
-> > Jean, what's your opinion?
+Steve French wrote on Thu, Oct 21, 2021 at 06:15:49PM -0500:
+> Have changes been made to O_TMPFILE?  It is problematic for network filesystems
+> because it is not an atomic operation, and would be great if it were possible
+> to create a tmpfile and open it atomically (at the file system level).
 > 
-> Yes a sanity check to prevent assigning non-coherent devices would be
-> good, though I'm not particularly worried about non-coherent devices. PCIe
-> on Arm should be coherent (according to the Base System Architecture). So
-> vfio-pci devices should be coherent, but vfio-platform and mdev are
-> case-by-case (hopefully all coherent since it concerns newer platforms).
-> 
-> More worrying, I thought we disabled No-Snoop for VFIO but I was wrong,
-> it's left enabled. On Arm I don't think userspace can perform the right
-> cache maintenance operations to maintain coherency with a device that
-> issues No-Snoop writes. Userspace can issue clean+invalidate but not
-> invalidate alone, so there is no equivalent to
-> arch_sync_dma_for_cpu().
+> Currently it results in creating a tmpfile (which results in
+> opencreate then close)
+> immediately followed by reopening the tmpfile which is somewhat counter to
+> the whole idea of a tmpfile (ie that it is deleted when closed) since
+> the syscall results
+> in two opens ie open(create)/close/open/close
 
-So what happens in a VM? Does a VM know that arch_sync_dma_for_cpu()
-is not available?
+That depends on the filesystem, e.g. 9p open returns the opened fid so
+our semantic could be closer to that of a local filesystem (could
+because I didn't test recently and don't recall how it was handled, I
+think it was fixed as I remember it being a problem at some point...)
 
-And how does this work with the nested IOMMU translation? I thought I
-read in the SMMU spec that the io page table entries could control
-cachability including in nesting cases?
+The main problem with network filesystem and "open closed files" is:
+what should the server do if the client disconnects? Will the client
+come back and try to access that file again? Did the client crash
+completely and should the file be deleted? The server has no way of
+knowing.
+It's the same logic as unlinking an open file, leading to all sort of
+"silly renames" that are most famous for nfs (.nfsxxxx files that the
+servers have been taught to just delete if they haven't been accessed
+for long enough...)
 
-> I think the worse that can happen is the device owner shooting itself in
-> the foot by using No-Snoop, but would it hurt to disable it?
+I'm not sure we can have a generic solution for that unfortunately...
 
-No, the worst is the same as Intel - a driver running in the guest VM
-assumes it can use arch_sync_dma_for_cpu() and acts accordingly,
-resulting in a broken VM.
+(9P is "easy" enough in that the linux client does not attempt to
+reconnect ever if the connection has been lost, so we can just really
+unlink the file and the server will delete it when the client
+disconnects... But if we were to implement a reconnect eventually (I
+know of an existing port that does) then this solution is no longer
+acceptable)
 
-Jason
+-- 
+Dominique Martinet | Asmadeus
