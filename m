@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3014361B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D514361B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhJUMc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:32:59 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:50080 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJUMcq (ORCPT
+        id S231622AbhJUMdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhJUMdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:32:46 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8107020B7179;
-        Thu, 21 Oct 2021 05:30:29 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8107020B7179
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1634819430;
-        bh=wRzipucQUyVGORKzBSV+cC6ghm4C4V7AbKJUpxlcZEU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=NukQe+XcjzleY5DL6QhasbvKGYNgtpTDRM7oU48W0bR3dmTAyotVkE/6XObRyY73t
-         gbYaTv6zx3BE/2nR4YIOG4KUE7cmvAWxuQ6U54fzMMbRDQDOowkqqWOiBwMvtXsSZV
-         CDREQxgUirptxKHYe/0SxEJwCSi1gUq+o6fTU4AM=
-Subject: Re: [PATCH v10 03/11] arm64: Make get_wchan() use arch_stack_walk()
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-4-madvenka@linux.microsoft.com>
- <YXA/eepRCCzL+/jD@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <217ce31e-222b-cc10-f5e1-027e00a49cd4@linux.microsoft.com>
-Date:   Thu, 21 Oct 2021 07:30:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 21 Oct 2021 08:33:36 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4003CC061749
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:31:20 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id o20so592360wro.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Fs2PJjDKgsMQJ8qtJV2zrVSrhWwPpCTU3gFTDLBP/II=;
+        b=bm3moEPHlarZdxsYOTEU4kh7uk7CMz/Cw60+vQxFQfCN3GYecjoEjSw0PQ3lWhM1N7
+         sWV8hZKbYyt6gy/RwV44nFoL2vkSy/NxptTi7KZK+ldsvbq7Trk/C95J3dZR1nQ7a2vW
+         22bkVFz+UYv45SOQPEeyhHGaHG+kGdk36Z5aP5VXjj0n0IjrJV3flEY0nSV5puL0Uc8A
+         4Xcx8A0LMr9KgH/e1qWrb5c3uO0/UEU6Zyyyh6IxZIAscKSEHbgPF6mJqg9vnyetwTSS
+         ruWawcyvH7FllekHqDExvdb0Ckbsb3yffjqtqImw3HeXXdHjMGLx+hMu7APIjaQ7uEmD
+         yVUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Fs2PJjDKgsMQJ8qtJV2zrVSrhWwPpCTU3gFTDLBP/II=;
+        b=cxknj+9DjUqMIYGKrBFsDUsSEPalGp70Yj1KXqS3IyJX/PD95syRagvc3XME9ktRQ6
+         G+wICaqnetGDOok8/2zNwBZcLApk0w0z+cyWI/ET2xHU5nRYpN98HwvUx6zK86rijLd0
+         o4HTWMMWjxfLqxg9JkpYAgNjbUwJ8tRCN1x3eit63o0b+UZgNcLohU1jWLZMSVT+8CfI
+         BjBQEhsNPkn8tHiotZkGFxTMcMzGPfSJltziaqFUelkun1byyrqjrR9eC0CGvTQTDqIj
+         Mi4EhX+8Oh8yaPBU6TdfZ35pvjvfuIZdka2i/7pv+eHmE/JNldzBAMRKLB/XGSbhMNUf
+         JdBg==
+X-Gm-Message-State: AOAM5308M861lPGjt2D8F61zUclRSezuzJ9kd9x15mhX3C/di0vcq66V
+        oA0p4QtKXMk0LImaSW3ZwcqWvQ==
+X-Google-Smtp-Source: ABdhPJy3EUH0CXDxpVreN2cZrI15Tgj8igByykRiu1fKZfVkJVCZXJ0CBZSgwJtbA2nRABNCj/jcqA==
+X-Received: by 2002:a5d:6481:: with SMTP id o1mr6977467wri.60.1634819478750;
+        Thu, 21 Oct 2021 05:31:18 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id x21sm7741866wmc.14.2021.10.21.05.31.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 05:31:18 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 13:31:16 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ryan Barnett <ryan.barnett@collins.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Immutable branch between MFD, IIO, Input
+ (Touchscreen) and Clk due for the v5.16 merge window
+Message-ID: <YXFdlMLeWEuJwhdD@google.com>
+References: <20211015081506.933180-1-miquel.raynal@bootlin.com>
+ <YXFW5R8zK/g9Rqei@google.com>
+ <20211021141357.2f08898c@xps13>
 MIME-Version: 1.0
-In-Reply-To: <YXA/eepRCCzL+/jD@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211021141357.2f08898c@xps13>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will take a look at what Peter has done and will coordinate with him.
+On Thu, 21 Oct 2021, Miquel Raynal wrote:
 
-Thanks.
+> Hi Lee,
+> 
+> lee.jones@linaro.org wrote on Thu, 21 Oct 2021 13:02:45 +0100:
+> 
+> > Enjoy!
+> > 
+> > The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+> > 
+> >   Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-iio-touchscreen-clk-v5.16
+> > 
+> > for you to fetch changes up to e7c8a5fe82ff8ee100c65598187674eef4748bf2:
+> > 
+> >   iio: adc: ti_am335x_adc: Add the am437x compatible (2021-10-21 10:02:48 +0100)
+> > 
+> > ----------------------------------------------------------------
+> > Immutable branch between MFD, IIO, Input (Touchscreen) and Clk due for the v5.16 merge window
+> 
+> Thanks! Just to be sure, you will send a merge request to Linus
+> including this branch, right? Or do you expect someone else to do it?
 
-Madhavan
+I will do it *as well as* anyone else who wishes to.
 
-On 10/20/21 11:10 AM, Mark Brown wrote:
-> On Thu, Oct 14, 2021 at 09:58:39PM -0500, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>
->> Currently, get_wchan() in ARM64 code walks the stack using start_backtrace()
->> and unwind_frame(). Make it use arch_stack_walk() instead. This makes
->> maintenance easier.
-> 
-> This overlaps with some very similar updates that Peter Zijlstra is
-> working on which addresses some existing problems with wchan:
-> 
-> 	https://lore.kernel.org/all/20211008111527.438276127@infradead.org/
-> 
-> It probably makes sense for you to coordinate with Peter here, some of
-> that series is already merged up to his patch 6 which looks very
-> similar to what you've got here.  In that thread you'll see that Mark
-> Rutland spotted an issue with the handling of __switch_to() on arm64
-> which probably also applies to your change.
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
