@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27266435D71
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F13435D78
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhJUI6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:58:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52440 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhJUI6w (ORCPT
+        id S231513AbhJUI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:59:38 -0400
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:44657 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhJUI7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:58:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 413D71FD53;
-        Thu, 21 Oct 2021 08:56:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634806596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kpeGLRKbnlmOm6fEFAowHlW4B0c6o3WCsqPV+QnxPs8=;
-        b=lKNuU5yFt7bUcL3PD73O+nTClJA/6RYuQFrJ0DibDtDeDytMFilbotlF9CeMsJ13BP2OCS
-        WWsFb9iX0L3+qqhMYjh47s+6CYsDHeh9vD7kDtkYjXG30MVOJ8uNu88fyyHtrk09BIX/HJ
-        E9kzJTlYqTi9SSrVNAo57T4h25Hh9XA=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 0E64BA3B89;
-        Thu, 21 Oct 2021 08:56:36 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 10:56:34 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YXErQnjG7VPH28Ab@dhcp22.suse.cz>
-References: <20211019110649.GA1933@pc638.lan>
- <YW6xZ7vi/7NVzRH5@dhcp22.suse.cz>
- <20211019194658.GA1787@pc638.lan>
- <YW/SYl/ZKp7W60mg@dhcp22.suse.cz>
- <CA+KHdyUopXQVTp2=X-7DYYFNiuTrh25opiUOd1CXED1UXY2Fhg@mail.gmail.com>
- <YXAiZdvk8CGvZCIM@dhcp22.suse.cz>
- <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
- <YXAtYGLv/k+j6etV@dhcp22.suse.cz>
- <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
- <20211020192430.GA1861@pc638.lan>
+        Thu, 21 Oct 2021 04:59:37 -0400
+Received: by mail-ua1-f53.google.com with SMTP id r22so11716429uat.11;
+        Thu, 21 Oct 2021 01:57:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pt56pOI2593Bz4YaZuLEHtZbkcFcr6OkdM6Oq/1gjxs=;
+        b=HK1t06sngZD3xVfws8Btkq1s3InncsLnQ6kVA3fToSuRxSG3PklL5iKkO4RweSkaZE
+         p2rTOx/3SpYh5pxxy7V16RYMnYtQSqcxm1d18g37TYw5KSn2zb1qOA04zb+CWGd/6ez+
+         kgWpaHf4QSrz0npj/On+mSSckeyfF4BJ5eicDNpnSPWjvhmZ0vg0IdIIaKyKOlLSY8HY
+         ZqbUFoNZm1VCMeHBWd0CtZ2anJ2m3Xx/HYwhzLLl3f0eNdhNnlbDeNupHdcp1SMsSRDR
+         yMJcU760kMYTP5h8Qe+HB1KbZbPFqyhY8WADbWshsMeb1xziKSSfBIx4onZ3879j1Cqn
+         qHeg==
+X-Gm-Message-State: AOAM531MRNZ97BXfm60idFwzPMrMDQZ8fRANSTntmSAZRQZPJXz0NDfA
+        aKgUUhfytnb59MiW6IVqrkIx9uJTo3kvtQ==
+X-Google-Smtp-Source: ABdhPJwbf0N7Q3ubDcS+tYcDopM0eZvLPqmjh/LrsUMs1rW/X9wjPRBRmC53YOEpBGpFvPn2j9gEgQ==
+X-Received: by 2002:a9f:29a5:: with SMTP id s34mr4628138uas.122.1634806641535;
+        Thu, 21 Oct 2021 01:57:21 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id d4sm2917220vkq.54.2021.10.21.01.57.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 01:57:21 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id q13so11835045uaq.2;
+        Thu, 21 Oct 2021 01:57:20 -0700 (PDT)
+X-Received: by 2002:ab0:2bd2:: with SMTP id s18mr4562481uar.78.1634806640849;
+ Thu, 21 Oct 2021 01:57:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020192430.GA1861@pc638.lan>
+References: <20211020143546.3436205-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20211020143546.3436205-1-mudongliangabcd@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 21 Oct 2021 10:57:09 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWs73KeXSrVBXS-8b0S6AXyOki+Fc_ST1SuWUQ6DD_3FA@mail.gmail.com>
+Message-ID: <CAMuHMdWs73KeXSrVBXS-8b0S6AXyOki+Fc_ST1SuWUQ6DD_3FA@mail.gmail.com>
+Subject: Re: [PATCH] dmaengine: rcar-dmac: refactor the error handling code of rcar_dmac_probe
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-10-21 21:24:30, Uladzislau Rezki wrote:
-> On Wed, Oct 20, 2021 at 05:00:28PM +0200, Uladzislau Rezki wrote:
-> > >
-> > > On Wed 20-10-21 16:29:14, Uladzislau Rezki wrote:
-> > > > On Wed, Oct 20, 2021 at 4:06 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > [...]
-> > > > > As I've said I am OK with either of the two. Do you or anybody have any
-> > > > > preference? Without any explicit event to wake up for neither of the two
-> > > > > is more than just an optimistic retry.
-> > > > >
-> > > > From power perspective it is better to have a delay, so i tend to say
-> > > > that delay is better.
-> > >
-> > > I am a terrible random number generator. Can you give me a number
-> > > please?
-> > >
-> > Well, we can start from one jiffy so it is one timer tick: schedule_timeout(1)
+Hi Dongliang,
 
-OK, I will go with 1 jiffy.
+Thanks for your patch!
 
-> A small nit, it is better to replace it by the simple msleep() call: msleep(jiffies_to_msecs(1));
+On Wed, Oct 20, 2021 at 4:36 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> In rcar_dmac_probe, if pm_runtime_resume_and_get fails, it forgets to
+> disable runtime PM. And of_dma_controller_free should only be invoked
+> after the success of of_dma_controller_register.
 
-I have planned to use schedule_timeout_uninterruptible. Why do you think
-msleep is better?
--- 
-Michal Hocko
-SUSE Labs
+The second issue is actually harmless, as of_dma_controller_free()
+is a no-op if the DMA controller was never registered.
+Of course it doesn't hurt to improve symmetry.
+
+> Fix this by refactoring the error handling code.
+>
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
