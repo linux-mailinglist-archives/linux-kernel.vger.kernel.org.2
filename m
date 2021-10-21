@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B196043607D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00725436086
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhJULq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        id S230401AbhJULrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhJULq4 (ORCPT
+        with ESMTP id S230105AbhJULrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:46:56 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ED9C061749
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:44:40 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id z11-20020a1c7e0b000000b0030db7b70b6bso6605298wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:44:40 -0700 (PDT)
+        Thu, 21 Oct 2021 07:47:15 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08155C06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:45:00 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id y3so681686wrl.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:44:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BQghDj/yxu+BYKgp+pewmhnc8VbRAWzyyq3pG3ohJ1c=;
-        b=alOuexoeOEbr2u8pleBfmWODBwtFG2z91Gz8hmXndjHSCaea+xFC+IrALsOsA/0slB
-         TTDJdjFp8rx1Xgg9DbjskOOC8liEuGxs/9kUDJgnvPdAc4WfnkuUX8TVfIgCutB4u8IP
-         MMKl/KUsSmAQex8Rgvz71iUWPzpJAl0O8OhmfIJGik1X+VtT0PJiEA9Fkoo0BLC2YaLO
-         /JIeRhZ4htghC9+ZhNeeDv5tdB0t50F6sN5aIvxSHSCEZLlWivsPQfvApPHuIN6l0jm4
-         zegbvtVcjysF4fcEOhe/xRiQVbLxt4NtLQ/XqiDrbO/NgnMYiI8td/gzWHgrOGJJ4mT+
-         eSFA==
+        bh=dteX7Udky210C1uJN9TZjZHJ0r1DpwiGQbtPMzNRXJI=;
+        b=ouHEQbp00GcbkGEog7GOACdoNBTBcPaIhjoIQDg2CFd7YUfb1hRI739fvXSwWgIGJv
+         dBC/m7+bYDz3oaZXBHev59I1pTKvAP32THapLE2XlJ01vuMRVTezMqtD2kZae+VJOfHm
+         HQ9vuDP7/gT7/eNwd32XfINF8qcEAYl0PbbMEeJnAV1afIjRsBv8/EOF9DW/IvFXrKb/
+         cyYO/UJHs4q18vH2X1OR9jD39J1099HGiOrLGGCzFFG1tJMPk9bdNZhdGxQXRVptfB0W
+         DOt4QPvJ9fQSLHX3Z71NKFQJweeJ0RlbCwAi60jXncutDfC7HtpjXM+yAm2Ox3GIqHzG
+         jjLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=BQghDj/yxu+BYKgp+pewmhnc8VbRAWzyyq3pG3ohJ1c=;
-        b=Q1zVRhfahVkTa5N6bDvFzDs+mQsi0osujHapg2TYGxQBo7d2CvsPHhN1HW5aVT4dr7
-         aN7aXWOoT95nFuJfDpamfcCjdN/sP6CkLXIj7c7l1N2xYU/ivkSpdCAvWm2llSChsNmX
-         DBu9d6MX0IDMDCbfaVR7Xrf5lGhvO94QM8AKPAFCNxOe0UmBgNlf/rqIPLWnEn1ttjuM
-         AJ4948v3QxcilF7zoynVx8bci7SQAPZv9IG7pHFt9wA8cWzdPsoLFz7CM6LqABmwtXul
-         xqMpXlVALDhux+KtiNQp959pYBd/wnjny+YKZi3Ye8nIb4BNpzNdJGLNVogdI0Roq/VB
-         +piA==
-X-Gm-Message-State: AOAM532Z88bxElfYhVC9xfSVsDktnR/rZHjsKKyWc3F8H7fzkZEZQ/Qq
-        /sQK23TvTnQeUzkpVdTo99H2fQ==
-X-Google-Smtp-Source: ABdhPJw7ZyD5LBmoz3xrLWqdu8YqVeD4Omz4svKdSjfuWID+h+2qKj3oUHCPZYTIsfW60MV/5c7IZg==
-X-Received: by 2002:a1c:20cc:: with SMTP id g195mr6321718wmg.22.1634816678970;
-        Thu, 21 Oct 2021 04:44:38 -0700 (PDT)
+        bh=dteX7Udky210C1uJN9TZjZHJ0r1DpwiGQbtPMzNRXJI=;
+        b=C9ANWZV7AVwAWKYWL3bvDvYyUi4DtWSZ04lwlI3NB2lja/kajt/Cdq1kIfR24qAeOm
+         pmrzzKv46WhIAhZcn4FXxkvskjgBDKh+6uiyZkzgrNoxt2uh0dXYPGwAeLTkf7qQ+IBc
+         U4GkGaC70Hao0TndbMT1yaeuSuCXzx+dCUpxlBchpuzpu93Q+spzsWIo+YMDjqLw+fBY
+         I+uJVHsb866KJRulJdyHzkdH0FF9GpIqp7vGf+5+nBopoQl8b2aJHk4nElaZoLBPaef8
+         pxS1O8Z5X4SkloYf+3dTBdkUZ2SUxi+TEpzaLNSDJayvyxD1lIZIr9w6yWjv7ANJeC1Y
+         GJ0Q==
+X-Gm-Message-State: AOAM5314JLrQTbdD2tT0B3KTlCrNVAT8MA8tGCntf0bcEnk7HlytGYnq
+        3Do1qQMtcwC2RlXJ2Wbn0+ZYkA==
+X-Google-Smtp-Source: ABdhPJzEmsyL41Fb+BLSvJL3qnQZ80pF/anNTRh79zW7EWX9wEXCCHnm0e+1qquyUTiy2JcDm3ZEzw==
+X-Received: by 2002:a5d:47c6:: with SMTP id o6mr6713093wrc.416.1634816698668;
+        Thu, 21 Oct 2021 04:44:58 -0700 (PDT)
 Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id c17sm4619298wmk.23.2021.10.21.04.44.38
+        by smtp.gmail.com with ESMTPSA id j1sm5321059wrd.28.2021.10.21.04.44.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 04:44:38 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 12:44:36 +0100
+        Thu, 21 Oct 2021 04:44:58 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 12:44:56 +0100
 From:   Lee Jones <lee.jones@linaro.org>
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] mfd: qcom-spmi-pmic: Sort the compatibles in the
- binding
-Message-ID: <YXFSpGfOOF3pk/OY@google.com>
+Subject: Re: [PATCH v2 2/4] mfd: qcom-spmi-pmic: Sort compatibles in the
+ driver
+Message-ID: <YXFSuIaiVgPMj7FJ@google.com>
 References: <20211017161218.2378176-1-bjorn.andersson@linaro.org>
+ <20211017161218.2378176-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211017161218.2378176-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20211017161218.2378176-2-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sun, 17 Oct 2021, Bjorn Andersson wrote:
 
-> Create some order in the list of compatibles by sorting them.
+> Sort the compatibles in the driver, to make it easier to validate that
+> the DT binding and driver are in sync.
 > 
 > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
 > 
-> Changed since v1:
+> Changes since v1:
 > - New patch
 > 
->  .../bindings/mfd/qcom,spmi-pmic.txt           | 30 +++++++++----------
+>  drivers/mfd/qcom-spmi-pmic.c | 30 +++++++++++++++---------------
 >  1 file changed, 15 insertions(+), 15 deletions(-)
 
 Applied, thanks.
