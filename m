@@ -2,113 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF2A4362DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702564362C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 15:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbhJUN1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 09:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        id S231203AbhJUNZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 09:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbhJUN1f (ORCPT
+        with ESMTP id S230231AbhJUNZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:27:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB155C0613B9;
-        Thu, 21 Oct 2021 06:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VCSBvJopViXgomP7/W7z5lg3UYBTclWXRT5/tcZsdR4=; b=Pq+v1GrIVQ5NxxWN5sfQHE8VBy
-        sbHiCtLH7wwMSYIGTUo1jv72fRSZAJsSpjzmJsaPVoSjIRhgO+SoMsmxvKhLQelVneAciXj7N0jOd
-        l0gUfqcU7o0Btd8W7CfnKmDKtcwEZBYzaWG0v9noBanVAgA1gmsqn+IimbuZ7vTO5vIODQypS8THO
-        lEXfc2ftA8vDPmcfNXcUqUR1/+lPTvZR7N6PJRQMcJGYV47jTeXWgrN3pM7Lj82yEnm+n3SmmHGm2
-        /s1+pp2kt0EV33eOYgl+F3CSMWfktTFjKpO/zPYwQrF+UQFbci18nXj7kYrYGV6lcRRwnGixB93sK
-        xziM+Wfw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdY27-00DHzE-Am; Thu, 21 Oct 2021 13:23:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 24F5E300221;
-        Thu, 21 Oct 2021 15:22:58 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0974C2C0E0B95; Thu, 21 Oct 2021 15:22:58 +0200 (CEST)
-Date:   Thu, 21 Oct 2021 15:22:58 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>, x86 <x86@kernel.org>
-Subject: Re: [tip: sched/core] sched: Add cluster scheduler level for x86
-Message-ID: <YXFpsiw16OeQEtFQ@hirez.programming.kicks-ass.net>
-References: <20210924085104.44806-4-21cnbao@gmail.com>
- <163429109791.25758.3107620034958821511.tip-bot2@tip-bot2>
- <9e7b0c92-5a3b-8099-8c69-83a9d62aced4@amd.com>
- <20211020195131.GT174703@worktop.programming.kicks-ass.net>
- <df3f2127-47be-cfd6-9c19-5f0aacf014f4@amd.com>
- <20211020202542.GU174703@worktop.programming.kicks-ass.net>
- <20211020203619.GC174730@worktop.programming.kicks-ass.net>
- <20211020204056.GD174730@worktop.programming.kicks-ass.net>
- <CAGsJ_4xNYz8ZpLz_1Fyd-FzTWG9HuoONqCGApX+to5Zpw5P67g@mail.gmail.com>
+        Thu, 21 Oct 2021 09:25:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957CBC0613B9;
+        Thu, 21 Oct 2021 06:23:16 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 15:23:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634822594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=9rHdmQC6XkgQSam2feozxixRKu5fHntEqaFo4ZzArYk=;
+        b=1TfukFhHA8U3fzY+2BzZxBS2qjpf8o/23aCavyVzEgwTAEBUHyCQ3Vaq24oTk3BJpt0gWx
+        G52+6IpWy3Duy1i4voQxsQaUjjcvkvCe70u7cgiT3R10BiVHKKEGr7fvxIt4kMlPJL7MZP
+        kFVYAtcHvNpNEaQHbYujI6v85mxeoS6wofY77jU7E1NN0yliOCvCgF1j+O6HhL+DhxrO01
+        M99JCnO4QBOS12BSj1yTdOVrYjqjaV7hDyNsp7SZ+Gn1JnSxcbhDRbAmktYiCILKLVjNj1
+        nBHJ32uOnB8OPDIDHoMoez/luRMliJUDVjK1vsZyDYGG1GxNEK/UoQFJSpGNPg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634822594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=9rHdmQC6XkgQSam2feozxixRKu5fHntEqaFo4ZzArYk=;
+        b=l/wQjsbnTs+cwYHnZCvWokUOp9t3hSZY8qQ5mZ0aidpTyNvJkivIio7vjIxmXsfoM26umR
+        Gs5O7rWyrMDe9/Dg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.15-rc6-rt13
+Message-ID: <20211021132312.r3dxtyqbkie3mpb4@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAGsJ_4xNYz8ZpLz_1Fyd-FzTWG9HuoONqCGApX+to5Zpw5P67g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:32:36PM +1300, Barry Song wrote:
-> On Thu, Oct 21, 2021 at 9:43 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 10:36:19PM +0200, Peter Zijlstra wrote:
-> >
-> > > OK, I think I see what's happening.
-> > >
-> > > AFAICT cacheinfo.c does *NOT* set l2c_id on AMD/Hygon hardware, this
-> > > means it's set to BAD_APICID.
-> > >
-> > > This then results in match_l2c() to never match. And as a direct
-> > > consequence set_cpu_sibling_map() will generate cpu_l2c_shared_mask with
-> > > just the one CPU set.
-> > >
-> > > And we have the above result and things come unstuck if we assume:
-> > >   SMT <= L2 <= LLC
-> > >
-> > > Now, the big question, how to fix this... Does AMD have means of
-> > > actually setting l2c_id or should we fall back to using match_smt() for
-> > > l2c_id == BAD_APICID ?
-> >
-> > The latter looks something like the below and ought to make EPYC at
-> > least function as it did before.
-> >
-> >
-> > ---
-> >  arch/x86/kernel/smpboot.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> > index 849159797101..c2671b2333d1 100644
-> > --- a/arch/x86/kernel/smpboot.c
-> > +++ b/arch/x86/kernel/smpboot.c
-> > @@ -472,7 +472,7 @@ static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
-> >
-> >         /* Do not match if we do not have a valid APICID for cpu: */
-> >         if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
-> > -               return false;
-> > +               return match_smt(c, o); /* assume at least SMT shares L2 */
-> 
-> Rather than making a fake cluster_cpus and cluster_cpus_list which
-> will expose to userspace
-> through /sys/devices/cpus/cpux/topology, could we just fix the
-> sched_domain mask by the
-> below?
+Dear RT folks!
 
-I don't think it's fake; SMT fundamentally has to share all cache
-levels. And having the sched domains differ in setup from the reported
-(nonsensical) topology also isn't appealing.
+I'm pleased to announce the v5.15-rc6-rt13 patch set. 
+
+Changes since v5.15-rc6-rt12:
+
+  - The net series, which removes seqcount_t from Qdisc, has been updated
+    to the vesion which upstream applied plus a few fixes.
+
+Known issues
+     - netconsole triggers WARN.
+
+     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
+
+     - Valentin Schneider reported a few splats on ARM64, see
+          https://lkml.kernel.org/r/20210810134127.1394269-1-valentin.schneider@arm.com
+
+The delta patch against v5.15-rc6-rt12 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/incr/patch-5.15-rc6-rt12-rt13.patch.xz
+
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.15-rc6-rt13
+
+The RT patch against v5.15-rc6 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patch-5.15-rc6-rt13.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patches-5.15-rc6-rt13.tar.xz
+
+Sebastian
+
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index 21fd95665ca02..bb10190d726d2 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -38,10 +38,13 @@ enum qdisc_state_t {
+ 	__QDISC_STATE_DEACTIVATED,
+ 	__QDISC_STATE_MISSED,
+ 	__QDISC_STATE_DRAINING,
++};
++
++enum qdisc_state2_t {
+ 	/* Only for !TCQ_F_NOLOCK qdisc. Never access it directly.
+ 	 * Use qdisc_run_begin/end() or qdisc_is_running() instead.
+ 	 */
+-	__QDISC_STATE_RUNNING,
++	__QDISC_STATE2_RUNNING,
+ };
+ 
+ #define QDISC_STATE_MISSED	BIT(__QDISC_STATE_MISSED)
+@@ -114,6 +117,7 @@ struct Qdisc {
+ 	struct gnet_stats_basic_sync bstats;
+ 	struct gnet_stats_queue	qstats;
+ 	unsigned long		state;
++	unsigned long		state2; /* must be written under qdisc spinlock */
+ 	struct Qdisc            *next_sched;
+ 	struct sk_buff_head	skb_bad_txq;
+ 
+@@ -154,7 +158,7 @@ static inline bool qdisc_is_running(struct Qdisc *qdisc)
+ {
+ 	if (qdisc->flags & TCQ_F_NOLOCK)
+ 		return spin_is_locked(&qdisc->seqlock);
+-	return test_bit(__QDISC_STATE_RUNNING, &qdisc->state);
++	return test_bit(__QDISC_STATE2_RUNNING, &qdisc->state2);
+ }
+ 
+ static inline bool nolock_qdisc_is_empty(const struct Qdisc *qdisc)
+@@ -217,7 +221,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ 		 */
+ 		return spin_trylock(&qdisc->seqlock);
+ 	}
+-	return test_and_set_bit(__QDISC_STATE_RUNNING, &qdisc->state);
++	return !__test_and_set_bit(__QDISC_STATE2_RUNNING, &qdisc->state2);
+ }
+ 
+ static inline void qdisc_run_end(struct Qdisc *qdisc)
+@@ -229,7 +233,7 @@ static inline void qdisc_run_end(struct Qdisc *qdisc)
+ 				      &qdisc->state)))
+ 			__netif_schedule(qdisc);
+ 	} else {
+-		clear_bit(__QDISC_STATE_RUNNING, &qdisc->state);
++		__clear_bit(__QDISC_STATE2_RUNNING, &qdisc->state2);
+ 	}
+ }
+ 
+diff --git a/localversion-rt b/localversion-rt
+index 6e44e540b927b..9f7d0bdbffb18 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt12
++-rt13
+diff --git a/net/core/gen_stats.c b/net/core/gen_stats.c
+index 5516ea0d5da0b..a10335b4ba2d0 100644
+--- a/net/core/gen_stats.c
++++ b/net/core/gen_stats.c
+@@ -154,7 +154,7 @@ void gnet_stats_add_basic(struct gnet_stats_basic_sync *bstats,
+ 	u64 bytes = 0;
+ 	u64 packets = 0;
+ 
+-	WARN_ON_ONCE((cpu || running) && !in_task());
++	WARN_ON_ONCE((cpu || running) && in_hardirq());
+ 
+ 	if (cpu) {
+ 		gnet_stats_add_basic_cpu(bstats, cpu);
+@@ -171,20 +171,51 @@ void gnet_stats_add_basic(struct gnet_stats_basic_sync *bstats,
+ }
+ EXPORT_SYMBOL(gnet_stats_add_basic);
+ 
++static void gnet_stats_read_basic(u64 *ret_bytes, u64 *ret_packets,
++				  struct gnet_stats_basic_sync __percpu *cpu,
++				  struct gnet_stats_basic_sync *b, bool running)
++{
++	unsigned int start;
++
++	if (cpu) {
++		u64 t_bytes = 0, t_packets = 0;
++		int i;
++
++		for_each_possible_cpu(i) {
++			struct gnet_stats_basic_sync *bcpu = per_cpu_ptr(cpu, i);
++			unsigned int start;
++			u64 bytes, packets;
++
++			do {
++				start = u64_stats_fetch_begin_irq(&bcpu->syncp);
++				bytes = u64_stats_read(&bcpu->bytes);
++				packets = u64_stats_read(&bcpu->packets);
++			} while (u64_stats_fetch_retry_irq(&bcpu->syncp, start));
++
++			t_bytes += bytes;
++			t_packets += packets;
++		}
++		*ret_bytes = t_bytes;
++		*ret_packets = t_packets;
++		return;
++	}
++	do {
++		if (running)
++			start = u64_stats_fetch_begin_irq(&b->syncp);
++		*ret_bytes = u64_stats_read(&b->bytes);
++		*ret_packets = u64_stats_read(&b->packets);
++	} while (running && u64_stats_fetch_retry_irq(&b->syncp, start));
++}
++
+ static int
+ ___gnet_stats_copy_basic(struct gnet_dump *d,
+ 			 struct gnet_stats_basic_sync __percpu *cpu,
+ 			 struct gnet_stats_basic_sync *b,
+ 			 int type, bool running)
+ {
+-	struct gnet_stats_basic_sync bstats;
+ 	u64 bstats_bytes, bstats_packets;
+ 
+-	gnet_stats_basic_sync_init(&bstats);
+-	gnet_stats_add_basic(&bstats, cpu, b, running);
+-
+-	bstats_bytes = u64_stats_read(&bstats.bytes);
+-	bstats_packets = u64_stats_read(&bstats.packets);
++	gnet_stats_read_basic(&bstats_bytes, &bstats_packets, cpu, b, running);
+ 
+ 	if (d->compat_tc_stats && type == TCA_STATS_BASIC) {
+ 		d->tc_stats.bytes = bstats_bytes;
+diff --git a/net/sched/sch_ets.c b/net/sched/sch_ets.c
+index 52b9b0dcf88c6..0eae9ff5edf6f 100644
+--- a/net/sched/sch_ets.c
++++ b/net/sched/sch_ets.c
+@@ -660,8 +660,6 @@ static int ets_qdisc_change(struct Qdisc *sch, struct nlattr *opt,
+ 
+ 	q->nbands = nbands;
+ 	for (i = nstrict; i < q->nstrict; i++) {
+-		INIT_LIST_HEAD(&q->classes[i].alist);
+-		gnet_stats_basic_sync_init(&q->classes[i].bstats);
+ 		if (q->classes[i].qdisc->q.qlen) {
+ 			list_add_tail(&q->classes[i].alist, &q->active);
+ 			q->classes[i].deficit = quanta[i];
+@@ -687,7 +685,11 @@ static int ets_qdisc_change(struct Qdisc *sch, struct nlattr *opt,
+ 	ets_offload_change(sch);
+ 	for (i = q->nbands; i < oldbands; i++) {
+ 		qdisc_put(q->classes[i].qdisc);
+-		memset(&q->classes[i], 0, sizeof(q->classes[i]));
++		q->classes[i].qdisc = NULL;
++		q->classes[i].quantum = 0;
++		q->classes[i].deficit = 0;
++		gnet_stats_basic_sync_init(&q->classes[i].bstats);
++		memset(&q->classes[i].qstats, 0, sizeof(q->classes[i].qstats));
+ 	}
+ 	return 0;
+ }
+@@ -696,7 +698,7 @@ static int ets_qdisc_init(struct Qdisc *sch, struct nlattr *opt,
+ 			  struct netlink_ext_ack *extack)
+ {
+ 	struct ets_sched *q = qdisc_priv(sch);
+-	int err;
++	int err, i;
+ 
+ 	if (!opt)
+ 		return -EINVAL;
+@@ -706,6 +708,9 @@ static int ets_qdisc_init(struct Qdisc *sch, struct nlattr *opt,
+ 		return err;
+ 
+ 	INIT_LIST_HEAD(&q->active);
++	for (i = 0; i < TCQ_ETS_MAX_BANDS; i++)
++		INIT_LIST_HEAD(&q->classes[i].alist);
++
+ 	return ets_qdisc_change(sch, opt, extack);
+ }
+ 
