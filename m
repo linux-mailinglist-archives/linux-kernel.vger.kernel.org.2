@@ -2,51 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF10E436579
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3A443657B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhJUPPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:15:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60788 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhJUPOq (ORCPT
+        id S232047AbhJUPPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231891AbhJUPOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:14:46 -0400
-Date:   Thu, 21 Oct 2021 15:12:29 -0000
+        Thu, 21 Oct 2021 11:14:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25CEC061348;
+        Thu, 21 Oct 2021 08:12:32 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 15:12:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634829150;
+        s=2020; t=1634829151;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=biD6AN3t4iq1yWmfuTYmVcGuzbrNHHwHgg6DwTq9Gik=;
-        b=HI1EArdXcKJnivUJ5QY2W773iTtTEL0YZzRdw0yorc/1BUlYO+cqjkNBD3oO4KD3KGpmCR
-        IVYJjSXpK/yS/jg2DsQyYJswDXTMDiBb77M/iB15eQMmkifBz6VU48quoTgj6NEgzvoXJW
-        RdcAr82526ahLLJOLWNHhIVXp+EDjrDjqwJ94jK1Q9GDbmF/fZN0eVTZRQbzMYUpyil1Bb
-        RFwDZAvUeRcZEgkvoBnvimwDHX0zLOqVQHp2sMZgBD4Y0G2wkC27FSWaaQaH0f/GRPM5bh
-        dtfg6AIWhdfialg/wZheltWII5V5egPubmbkPXw/LMVKUi82v8/OguIZkRBxkA==
+        bh=qJMw53f+phiMRL6URP59CAjuawKMUXWtEKTAGr1dtRc=;
+        b=x3L0mXsFnY9wBopTqjmTTYsN7EkTMlbvUx6u0diI1tNPK7KhypwJ8fy53meruP3BRy5zJd
+        2cVaIXOOf4fkHIjwP4kRW7uW/AmVLNqylLiSA1p03EXaxUXYVOMa+5ZSSqyibTEMsET3SY
+        YvGIg1a0+LznaJJnVMaOvaOWZnBdOEYWY+5+JH/cbT+y4ZBQ19dl5IoAraPgKPyiaflSdV
+        +kkBsDwIR+/lMtwZdr2wa57cH5+TFPGxRmPJ3a0OXbWr1fWMLspFqIe8kS8HqbUeNNg7VB
+        1bqwJVzCDagJ9X9EU016ehknpD/qtpRmq5vXYTivkGU8vH5Qjufjtxx8PV2skQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634829150;
+        s=2020e; t=1634829151;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=biD6AN3t4iq1yWmfuTYmVcGuzbrNHHwHgg6DwTq9Gik=;
-        b=tM0Jtk8KPkNEzC0wwjTRK5NGs13bsEe5TGjZhsqcuKS65zDnkYN19PsVTF1XERI6kVjYQm
-        rmy+1qLh6DlSIGBA==
+        bh=qJMw53f+phiMRL6URP59CAjuawKMUXWtEKTAGr1dtRc=;
+        b=iO3Rn8JyZpZ5F2y3ejQ9S55z5xgGjvaLsas9mFCgHdNpQy+uD0PbMBf3DvyrSUoZ241Vct
+        r0ihWiTWNM16NDAg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/process: Move arch_thread_struct_whitelist() out of line
+Subject: [tip: x86/fpu] x86/fpu: Remove fpu::state
 Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211013145322.869001791@linutronix.de>
-References: <20211013145322.869001791@linutronix.de>
+In-Reply-To: <20211013145322.765063318@linutronix.de>
+References: <20211013145322.765063318@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163482914934.25758.14955770516847538749.tip-bot2@tip-bot2>
+Message-ID: <163482915071.25758.11992072412602139420.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,88 +60,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     2dd8eedc80b184bb16aad697ae60367c5bf07299
-Gitweb:        https://git.kernel.org/tip/2dd8eedc80b184bb16aad697ae60367c5bf07299
+Commit-ID:     2f27b5034244c4ebd70c90066defa771a99a5320
+Gitweb:        https://git.kernel.org/tip/2f27b5034244c4ebd70c90066defa771a99a5320
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 13 Oct 2021 16:55:45 +02:00
+AuthorDate:    Wed, 13 Oct 2021 16:55:42 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 21 Oct 2021 09:33:41 +02:00
+CommitterDate: Wed, 20 Oct 2021 23:58:29 +02:00
 
-x86/process: Move arch_thread_struct_whitelist() out of line
+x86/fpu: Remove fpu::state
 
-In preparation for dynamically enabled FPU features move the function
-out of line as the goal is to expose less and not more information.
+All users converted. Remove it along with the sanity checks.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211013145322.869001791@linutronix.de
+Link: https://lkml.kernel.org/r/20211013145322.765063318@linutronix.de
 ---
- arch/x86/include/asm/processor.h |  9 +++------
- arch/x86/kernel/fpu/core.c       | 10 ++++++++++
- arch/x86/kernel/fpu/internal.h   |  2 ++
- 3 files changed, 15 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/fpu/types.h | 18 +++++++-----------
+ arch/x86/kernel/fpu/init.c       |  4 ----
+ 2 files changed, 7 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 4519d33..1bd3e8d 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -461,9 +461,6 @@ DECLARE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
- DECLARE_PER_CPU(struct irq_stack *, softirq_stack_ptr);
- #endif	/* !X86_64 */
+diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
+index 3bb6277..297e3b4 100644
+--- a/arch/x86/include/asm/fpu/types.h
++++ b/arch/x86/include/asm/fpu/types.h
+@@ -352,20 +352,16 @@ struct fpu {
+ 	struct fpstate			*fpstate;
  
--extern unsigned int fpu_kernel_xstate_size;
--extern unsigned int fpu_user_xstate_size;
--
- struct perf_event;
- 
- struct thread_struct {
-@@ -537,12 +534,12 @@ struct thread_struct {
+ 	/*
+-	 * @state:
++	 * @__fpstate:
+ 	 *
+-	 * In-memory copy of all FPU registers that we save/restore
+-	 * over context switches. If the task is using the FPU then
+-	 * the registers in the FPU are more recent than this state
+-	 * copy. If the task context-switches away then they get
+-	 * saved here and represent the FPU state.
++	 * Initial in-memory storage for FPU registers which are saved in
++	 * context switch and when the kernel uses the FPU. The registers
++	 * are restored from this storage on return to user space if they
++	 * are not longer containing the tasks FPU register state.
+ 	 */
+-	union {
+-		struct fpstate			__fpstate;
+-		union fpregs_state		state;
+-	};
++	struct fpstate			__fpstate;
+ 	/*
+-	 * WARNING: 'state' is dynamically-sized.  Do not put
++	 * WARNING: '__fpstate' is dynamically-sized.  Do not put
+ 	 * anything after it here.
  	 */
  };
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index b524cd0..cffbaf4 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -184,10 +184,6 @@ static void __init fpu__init_task_struct_size(void)
+ 	CHECK_MEMBER_AT_END_OF(struct thread_struct, fpu);
+ 	CHECK_MEMBER_AT_END_OF(struct task_struct, thread);
  
--/* Whitelist the FPU register state from the task_struct for hardened usercopy. */
-+extern void fpu_thread_struct_whitelist(unsigned long *offset, unsigned long *size);
-+
- static inline void arch_thread_struct_whitelist(unsigned long *offset,
- 						unsigned long *size)
- {
--	*offset = offsetof(struct thread_struct, fpu.__fpstate.regs);
--	*size = fpu_kernel_xstate_size;
-+	fpu_thread_struct_whitelist(offset, size);
+-	BUILD_BUG_ON(sizeof(struct fpstate) != sizeof(union fpregs_state));
+-	BUILD_BUG_ON(offsetof(struct thread_struct, fpu.state) !=
+-		     offsetof(struct thread_struct, fpu.__fpstate));
+-
+ 	arch_task_struct_size = task_size;
  }
  
- static inline void
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 14560fd..c6df975 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -405,6 +405,16 @@ int fpu_clone(struct task_struct *dst)
- }
- 
- /*
-+ * Whitelist the FPU register state embedded into task_struct for hardened
-+ * usercopy.
-+ */
-+void fpu_thread_struct_whitelist(unsigned long *offset, unsigned long *size)
-+{
-+	*offset = offsetof(struct thread_struct, fpu.__fpstate.regs);
-+	*size = fpu_kernel_xstate_size;
-+}
-+
-+/*
-  * Drops current FPU state: deactivates the fpregs and
-  * the fpstate. NOTE: it still leaves previous contents
-  * in the fpregs in the eager-FPU case.
-diff --git a/arch/x86/kernel/fpu/internal.h b/arch/x86/kernel/fpu/internal.h
-index e1d8a35..5c4f71f 100644
---- a/arch/x86/kernel/fpu/internal.h
-+++ b/arch/x86/kernel/fpu/internal.h
-@@ -2,6 +2,8 @@
- #ifndef __X86_KERNEL_FPU_INTERNAL_H
- #define __X86_KERNEL_FPU_INTERNAL_H
- 
-+extern unsigned int fpu_kernel_xstate_size;
-+extern unsigned int fpu_user_xstate_size;
- extern struct fpstate init_fpstate;
- 
- /* CPU feature check wrappers */
