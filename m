@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F47A436102
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1A3436104
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhJUMFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        id S231574AbhJUMF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbhJUMFN (ORCPT
+        with ESMTP id S230231AbhJUMF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:05:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909F8C06161C;
-        Thu, 21 Oct 2021 05:02:57 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 12:02:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634817774;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PEzQQCW+N6KKP0/NFcGv8O9y0Yn/e09on+V1jdO5JWw=;
-        b=bMXdAY/4T3GdZRuWjQ+1xdMzwyRq4CEY8afh29pExzUQuqcEfy2H9nPSlCjRlfvjOFdwsj
-        DXJkkyOStS4m2xb3/2lvqWDvPA9zqjD4zCOhQEdMeuT8dJz29Vc1VppW/mg+3eVYHfT9sJ
-        PgcNiJwQRvY3LVoHGGPXmw//kM9h3jXn5CSu/IEBLQqu+FcG7L9YONG0fCB1R7UgXVaQV8
-        c6GTYYROoYGhHO+XKZcgv7BQq2VQ9NLd9zjZ+Uv/rF7KmhhwgMSC+3nAm8vXcMTZHenE5i
-        ydYHiKJWqTNTSTv5+jEWMRN2vIJze+wVVE0GEVPKmSG7oREuy6vR6RFpIUPOeg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634817774;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PEzQQCW+N6KKP0/NFcGv8O9y0Yn/e09on+V1jdO5JWw=;
-        b=fElGpu1vmQq8vdez3Wge1OmxJxORg6k9aImooltvujBf6ovH/RZgrcHd0oJ1jlODFkIiTB
-        TIj91SoS+lwDAtDQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] MAINTAINERS: Add Dave Hansen to the x86 maintainer team
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87zgr3flq7.ffs@tglx>
-References: <87zgr3flq7.ffs@tglx>
+        Thu, 21 Oct 2021 08:05:57 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5017CC06161C;
+        Thu, 21 Oct 2021 05:03:41 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id bl14so819770qkb.4;
+        Thu, 21 Oct 2021 05:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=luh0TIccmegXn8CJKJYKcwVKTjrSX33i0YnsKW7PqRo=;
+        b=qGD4VnPE++cf1r2/FKV86F0A1UAugCAyIHl5wNZ1vD6jCIWAMUT6Rwb653yetmU3Ns
+         w0ZJCx+yf0nvzehRE0j3tWpUfb2T1Oe1dc1ZcBtlB2Xj05XeWvCCffAID3/dyEVh73m0
+         hLUWc1vUsqc5fm5fLmyIU11Ht1P/+cxVUBvrbvwSWLw3TTGjonEQNQCATPY0G5mCYsf/
+         NoSDHyefyqDLnv6PiaDrkB4tlzLueZPa9b62UECl9lavceDHw4HQFcm91z9i/wEGdJFY
+         4yyd/9f3U21RxJGO88adsptB1gHxmpPqufPNYtAQXwRAql0yw+BZ/CggLOqHZYPHErmP
+         /UPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=luh0TIccmegXn8CJKJYKcwVKTjrSX33i0YnsKW7PqRo=;
+        b=7xmZ/vbxJKhFSsvyytf0IBW6BnUulEPgQMvn3kvIoCRb8pJCHxR7UwoKCx2nmU0TTl
+         Ikvkh+2vqjnKHfto3ElMeot2Rzj/jMUGAs/PO461FLgFXPpdrA4lwMrLQkcQyAY/3n4L
+         w3tW/mmppsPIp4ytIxpeNWPWJ0YDu7NObc2YVGzRgue3hEl7EaR7g+YWvW/FcLlyQHWT
+         lqEPHBHGErWdTnklzVLKqR6i60dThNk+3FOv0iVZ4CRkTzAt664AwRppj7HX3jBnRqU2
+         4VsV7URgtUg6HdbkNqW4V2HGhrknqrz9+TnCosPrNnG/VUqc1DWXerPyN4vNCUiBwYnG
+         +kDg==
+X-Gm-Message-State: AOAM5327ZRfvdDMun60uGbumat1UnLRbW4T5MOPbtTnMVeicsFvPF9v/
+        sqEqHcO9yzQYbFrey8O7PQ==
+X-Google-Smtp-Source: ABdhPJwd1ait2YAPoGPfPub3ytuA8mdp1mQxCnWuEJN0VmzllJMSSscBuA4UgH+C3yQkZAYHcnKxAQ==
+X-Received: by 2002:a37:b307:: with SMTP id c7mr4157659qkf.134.1634817820520;
+        Thu, 21 Oct 2021 05:03:40 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id l3sm2474608qkj.110.2021.10.21.05.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 05:03:39 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 08:03:37 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YXFXGeYlGFsuHz/T@moria.home.lan>
+References: <YW2lKcqwBZGDCz6T@cmpxchg.org>
+ <YW28vaoW7qNeX3GP@casper.infradead.org>
+ <YW3tkuCUPVICvMBX@cmpxchg.org>
+ <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
+ <YW7hQlny+Go1K3LT@cmpxchg.org>
+ <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
+ <YXBRPSjPUYnoQU+M@casper.infradead.org>
+ <436a9f9c-d5af-7d12-b7d2-568e45ffe0a0@redhat.com>
+ <YXEOCIWKEcUOvVtv@infradead.org>
+ <f31af20e-245d-a8f1-49fa-e368de9fa95c@redhat.com>
 MIME-Version: 1.0
-Message-ID: <163481777358.25758.14249180150465938987.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f31af20e-245d-a8f1-49fa-e368de9fa95c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Thu, Oct 21, 2021 at 09:21:17AM +0200, David Hildenbrand wrote:
+> On 21.10.21 08:51, Christoph Hellwig wrote:
+> > FYI, with my block and direct I/O developer hat on I really, really
+> > want to have the folio for both file and anon pages.  Because to make
+> > the get_user_pages path a _lot_ more efficient it should store folios.
+> > And to make that work I need them to work for file and anon pages
+> > because for get_user_pages and related code they are treated exactly
+> > the same.
 
-Commit-ID:     0a30896fc5025e71c350449760b240fba5581b42
-Gitweb:        https://git.kernel.org/tip/0a30896fc5025e71c350449760b240fba5581b42
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 20 Oct 2021 23:08:16 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 21 Oct 2021 13:55:42 +02:00
+++
 
-MAINTAINERS: Add Dave Hansen to the x86 maintainer team
+> Thanks, I can understand that. And IMHO that would be even possible with
+> split types; the function prototype will simply have to look a little
+> more fancy instead of replacing "struct page" by "struct folio". :)
 
-Dave is already listed as x86/mm maintainer, has a profund knowledge
-of the x86 architecture in general and a good taste in terms of kernel
-programming in general.
-
-Add him as a full x86 maintainer with all rights and duties.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Borislav Petkov <bp@suse.de>
-Acked-by: Andy Lutomirski <luto@kernel.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/87zgr3flq7.ffs@tglx
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d118d7..f26920f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20336,6 +20336,7 @@ X86 ARCHITECTURE (32-BIT AND 64-BIT)
- M:	Thomas Gleixner <tglx@linutronix.de>
- M:	Ingo Molnar <mingo@redhat.com>
- M:	Borislav Petkov <bp@alien8.de>
-+M:	Dave Hansen <dave.hansen@linux.intel.com>
- M:	x86@kernel.org
- R:	"H. Peter Anvin" <hpa@zytor.com>
- L:	linux-kernel@vger.kernel.org
+Possible yes, but might it be a little premature to split them?
