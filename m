@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22B64357CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69EE4357BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 02:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbhJUAbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 20:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhJUAa6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:30:58 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1543FC0612EB;
-        Wed, 20 Oct 2021 17:24:23 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id g8so767012edb.12;
-        Wed, 20 Oct 2021 17:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5eloQCKXWTUiSmbR1X0jGe1q/eCl2wqdQA20kDdwT2s=;
-        b=HriyKME2zazNoiZB+Rtlfps5OGDS+h+N7t3UADf3lQxb8AUY8f3zKkI8hr8iOHIA7q
-         3gCYNUKF8GYy9qYUjhvtgwkiYJ95UIJk2knGl+yYRnu+C6BAGWV7sizMOfbbCP75Mtcu
-         6ehgGtADVpi0zAE47LBah0SnJqlttdyF9UzNuVKVG+KPv1qJk1uaLe5YOEOI9RV+WIhX
-         uhz4YudgvdCLfEVT8CAtP0J1brGnKC4nFvbpx4h6DXuHoNkJHFMo71PA/wU0z/pExdSR
-         W8m8ltWRUW3Rb7sUxyPeBH8Ucf4WCBsAR9Zx3dI9PVdq/bWoR2Bni5zKJP5xpbqphCuj
-         2lbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5eloQCKXWTUiSmbR1X0jGe1q/eCl2wqdQA20kDdwT2s=;
-        b=McUIgGHDRRY+LNBJH6JudGGgWI3UPFOehENqaWftU6q+w8/51mYd0GjX75UqTeRBYL
-         BhPXysDkgxZaWk98wByAuyf578um/zeXkQpHcwW3NEVhBMaNWLD+aK5AuDOsBKnC0sp1
-         /CFWoKqgBiHCaGw0hSQKADIEPhDhGKgMfOqsFJSbb4uAfo9PaeYsfRom8veUYBJm1uSm
-         uCimYHKMVN4zKN03DzNQh+a6XE+I/zls11VJR9X9Ap8leOl+iEEYp8SIIpUYBrPXSk/z
-         u11uLM6CdLMy28rqDJ1XoaHeqeTDonOKWHFj9PuxjN2XnhFZf0JC7cGicsSH6UDd6xeb
-         PihQ==
-X-Gm-Message-State: AOAM531lAwE5dTRH/AOgpmJ36FuU0fQKg9Fo7t9jHIu2bgyblLh8tChU
-        Ied21Xud1wU41ebycY9FBpigxNKFs5G/pEr2gtc=
-X-Google-Smtp-Source: ABdhPJz4auadneCMTX46lZNSc9u6L0br4Hz0RPmrMr25TW9yJWn3zd+4jos22jkGtsn+dhh4tVpy00ywBQs5nFwbTmg=
-X-Received: by 2002:a05:6402:1e8c:: with SMTP id f12mr2919700edf.71.1634775861767;
- Wed, 20 Oct 2021 17:24:21 -0700 (PDT)
+        id S231854AbhJUA2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 20:28:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231857AbhJUA0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 Oct 2021 20:26:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9FA061354;
+        Thu, 21 Oct 2021 00:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634775869;
+        bh=JZvb5aZChvEeaRYi0gPN5KIejU8wmaPEpKHviKIR3Ho=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l1w1oVbh4UHg+yRGUKU9jd7J8ESKlRj3R248eHQdI99CIY9hSe5BEZJ5V4cdN7aSF
+         UfhFilJA6ChnSMWUPLx2+RLpthD586KrADsZRp2U8w3e+3B8BHIiX6lAqPKKZ1Jvhg
+         pZ0MamTrngwvXy+Fg5S5N1OcM1ED/8TeR/7XrYm0j8kMPm1mLipcgzzOqQreAMWHEm
+         N21qa8SCHsE8xrcbQDqw5QQ72MLQvT2It0L7hN6PviSHpgbrz55QqPVaFXd4b7jpVA
+         TVavexv6GOBz9XvAEL8se42gnzndsbHYt1fZNzcLSMPuEOWz6VOplEk/nbwtiCPogA
+         vk1kkf2kN1FHw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Herve Codina <herve.codina@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, vireshk@kernel.org,
+        shiraz.linux.kernel@gmail.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 1/7] ARM: dts: spear3xx: Fix gmac node
+Date:   Wed, 20 Oct 2021 20:24:20 -0400
+Message-Id: <20211021002427.1130044-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210917205731.262693-1-shy828301@gmail.com> <CAHbLzkqmooOJ0A6JmGD+y5w_BcFtSAJtKBXpXxYNcYrzbpCrNQ@mail.gmail.com>
- <YUdL3lFLFHzC80Wt@casper.infradead.org> <CAHbLzkrPDDoOsPXQD3Y3Kbmex4ptYH+Ad_P1Ds_ateWb+65Rng@mail.gmail.com>
- <YUkCI2I085Sos/64@casper.infradead.org> <CAHbLzkoXrVJOfOrNhd8nQFRPHhRVYfVYSgLAO3DO7ZmvaZtDVw@mail.gmail.com>
- <CAHbLzkrdXQfcudeeDHx8uUD55Rr=Aogi0pnQbBbP8bEZca8-7w@mail.gmail.com>
- <CAHbLzkq2v+xpBweO-XG+uZiF3kvOFodKi4ioX=dzXpBYLtoZcw@mail.gmail.com> <YXCrHxMF3ADO0n2x@casper.infradead.org>
-In-Reply-To: <YXCrHxMF3ADO0n2x@casper.infradead.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 20 Oct 2021 17:24:09 -0700
-Message-ID: <CAHbLzkqHx=RRXAEjOunVOiJobkvQg0p005-ggSpLgcAn75QkOA@mail.gmail.com>
-Subject: Re: [PATCH] fs: buffer: check huge page size instead of single page
- for invalidatepage
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>, Song Liu <song@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hao Sun <sunhao.th@gmail.com>, Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 4:51 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Oct 20, 2021 at 04:38:49PM -0700, Yang Shi wrote:
-> > > However, it still doesn't make too much sense to have thp_size passed
-> > > to do_invalidatepage(), then have PAGE_SIZE hardcoded in a BUG
-> > > assertion IMHO. So it seems this patch is still useful because
-> > > block_invalidatepage() is called by a few filesystems as well, for
-> > > example, ext4. Or I'm wondering whether we should call
-> > > do_invalidatepage() for each subpage of THP in truncate_cleanup_page()
-> > > since private is for each subpage IIUC.
-> >
-> > Seems no interest?
->
-> No.  I have changes in this area as part of the folio patchset (where
-> we end up converting this to invalidate_folio).  I'm not really
-> interested in doing anything before that, since this shouldn't be
-> reachable today.
+From: Herve Codina <herve.codina@bootlin.com>
 
-Understood. But this is definitely reachable unless Hugh's patch
-(skipping non-regular file) is applied.
+[ Upstream commit 6636fec29cdf6665bd219564609e8651f6ddc142 ]
 
->
-> > Anyway the more I was staring at the code the more I thought calling
-> > do_invalidatepage() for each subpage made more sense. So, something
-> > like the below makes sense?
->
-> Definitely not.  We want to invalidate the entire folio at once.
+On SPEAr3xx, ethernet driver is not compatible with the SPEAr600
+one.
+Indeed, SPEAr3xx uses an earlier version of this IP (v3.40) and
+needs some driver tuning compare to SPEAr600.
 
-I didn't look at the folio patch (on each individual patch level), but
-I'm supposed it still needs to invalidate buffer for each subpage,
-right?
+The v3.40 IP support was added to stmmac driver and this patch
+fixes this issue and use the correct compatible string for
+SPEAr3xx
+
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/boot/dts/spear3xx.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/spear3xx.dtsi b/arch/arm/boot/dts/spear3xx.dtsi
+index 118135d75899..4e4166d96b26 100644
+--- a/arch/arm/boot/dts/spear3xx.dtsi
++++ b/arch/arm/boot/dts/spear3xx.dtsi
+@@ -53,7 +53,7 @@ dma@fc400000 {
+ 		};
+ 
+ 		gmac: eth@e0800000 {
+-			compatible = "st,spear600-gmac";
++			compatible = "snps,dwmac-3.40a";
+ 			reg = <0xe0800000 0x8000>;
+ 			interrupts = <23 22>;
+ 			interrupt-names = "macirq", "eth_wake_irq";
+-- 
+2.33.0
+
