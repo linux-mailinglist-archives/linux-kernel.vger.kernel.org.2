@@ -2,127 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FB7435FC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 12:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1577435FD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhJUK6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 06:58:44 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:34598 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJUK6l (ORCPT
+        id S230213AbhJULDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:03:15 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:46969 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhJULDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 06:58:41 -0400
-Received: by mail-il1-f197.google.com with SMTP id e2-20020a92de42000000b00259b6803abfso31241ilr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 03:56:25 -0700 (PDT)
+        Thu, 21 Oct 2021 07:03:14 -0400
+Received: by mail-oi1-f177.google.com with SMTP id o204so326284oih.13;
+        Thu, 21 Oct 2021 04:00:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cIc8+j3oAPKWVDAb13EaaI+nMLJ+8MqmmZ141/mbwg0=;
-        b=P5FbB8Uy5kXMQOTGNicKafJsx2T7WE+Wm8p2BkhyRht6gKiUbnxhMvmhDqaBMOT9Mj
-         2l0nfHG5rrO37MIXvncVyIwoNDoG5qbpCejm41g+bKUhC+Y5k0wGmtZuLLje4bhxtrKk
-         UE8rJDPBVJs5VtD+EHsAns20ZoJorIH3dM8Tc7PTMs66o8KrNSGt+lePqK/EXcxTnJMy
-         AwTSlU4ARtRAkrfcNd0OpxUQ3pAy7XfD/+9AUaYx7zwRBVchL9+C5iNSbYZCt1dbVREg
-         kLtbSRQCtWlDbBnBq+AEXQzvc7Oqf8QmSldyWJP/cnbIQmc5W4J/nY2GvhQeZAQQk5Ce
-         5rpw==
-X-Gm-Message-State: AOAM5327UTg8i+XRnlrXi+pM/PcW7UAW34IG37EhMRwwn+2jtlXhcNFi
-        +NvS4icvz95VNdvb/rGwAKVFoaB7sFsEmq/yWSirrDbAscID
-X-Google-Smtp-Source: ABdhPJxslh1hVb4zXK1d2A/WLLg2PizAlgkQwwzTh7YfG5omaF6dwkVX4yLlNYpicB74Vf5hG7NqgncGi26qSfMUJM02wxn9Bjot
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nQB03aERhPb99oHnESpq/nq79NV5D0aQvL4LDkQ/zDk=;
+        b=Ux4b7WtGy1Pk99xxEopoRsT3SFOe2IF8XoGy25S6CQPjZ4DSKFR8QM8umbReE0qENg
+         VoIleiCcFQ87o2g1EVXzc6ZQqvmfMX+YQN1HoF7mzyn2qm6s+5Psg5WaiRM4csgx2rcU
+         AiC/y+f6hqV57uCeWnGSrKb+GWwPjYym0UH1EQEv0c5gfBbyvvLFQpRs0ECoBDlmpdSJ
+         BEEtHVHnG8Ec4reRJBMMMmppB7vJmAQ5aBmgc2sX5QIXztw0X3FNo1YssQasvbEte+rA
+         qu24xOm88rxyz69EFwTICIBeusZARAq4kBg3FutvWy9mOXq4VzdsHIFePel4cTeuK9GW
+         0tFw==
+X-Gm-Message-State: AOAM533NBDIuKG2b7JEDKVLhQ+KuYms7YNxUZV7SZRwuHcgVXm9FUBp1
+        KcJ3p9UR74G+y2/UFIYGxBv/lZ7i7fA3dhKuSwY=
+X-Google-Smtp-Source: ABdhPJyZH4OpYfocBo/c5qu/kBqqp236G5hTl6J5kVgpvKkN69j376xtOGkW2x2egefbBLRSKBlA7EFbT6na4GiIk70=
+X-Received: by 2002:a05:6808:1286:: with SMTP id a6mr130928oiw.51.1634814058579;
+ Thu, 21 Oct 2021 04:00:58 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:2c0d:: with SMTP id t13mr2995480ile.99.1634813785617;
- Thu, 21 Oct 2021 03:56:25 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 03:56:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f73ca505cedabe2b@google.com>
-Subject: [syzbot] KMSAN: uninit-value in hci_phy_link_complete_evt
-From:   syzbot <syzbot+6f0fd088eee9708bb4e9@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, johan.hedberg@gmail.com,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20211013121914.3146812-1-yebin10@huawei.com>
+In-Reply-To: <20211013121914.3146812-1-yebin10@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 21 Oct 2021 13:00:47 +0200
+Message-ID: <CAJZ5v0jX4N-mXYoVVeMB0XW9KcYq9DtE3-dvOoNEBmUa1xzEtw@mail.gmail.com>
+Subject: Re: [PATCH -next] PM: hibernate: Get block device exclusively when do swsusp_check
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Ted Ts'o" <tytso@mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 13, 2021 at 2:06 PM Ye Bin <yebin10@huawei.com> wrote:
+>
+> We got follow issue:
+> [   89.266592] ------------[ cut here ]------------
+> [   89.267427] kernel BUG at fs/buffer.c:3020!
+> [   89.268264] invalid opcode: 0000 [#1] SMP KASAN PTI
+> [   89.269116] CPU: 7 PID: 1750 Comm: kmmpd-loop0 Not tainted 5.10.0-862.14.0.6.x86_64-08610-gc932cda3cef4-dirty #20
+> [   89.273169] RIP: 0010:submit_bh_wbc.isra.0+0x538/0x6d0
+> [   89.277157] RSP: 0018:ffff888105ddfd08 EFLAGS: 00010246
+> [   89.278093] RAX: 0000000000000005 RBX: ffff888124231498 RCX: ffffffffb2772612
+> [   89.279332] RDX: 1ffff11024846293 RSI: 0000000000000008 RDI: ffff888124231498
+> [   89.280591] RBP: ffff8881248cc000 R08: 0000000000000001 R09: ffffed1024846294
+> [   89.281851] R10: ffff88812423149f R11: ffffed1024846293 R12: 0000000000003800
+> [   89.283095] R13: 0000000000000001 R14: 0000000000000000 R15: ffff8881161f7000
+> [   89.284342] FS:  0000000000000000(0000) GS:ffff88839b5c0000(0000) knlGS:0000000000000000
+> [   89.285711] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   89.286701] CR2: 00007f166ebc01a0 CR3: 0000000435c0e000 CR4: 00000000000006e0
+> [   89.287919] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   89.289138] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   89.290368] Call Trace:
+> [   89.290842]  write_mmp_block+0x2ca/0x510
+> [   89.292218]  kmmpd+0x433/0x9a0
+> [   89.294902]  kthread+0x2dd/0x3e0
+> [   89.296268]  ret_from_fork+0x22/0x30
+> [   89.296906] Modules linked in:
+>
+> We can reproduce this issue as follow:
+> 1. mkfs.ext4 -O mmp  /dev/sda -b 1024
+> 2. mount /dev/sda /home/test
+> 3. echo "/dev/sda" > /sys/power/resume
+> 4. wait a moment we will get exception
+>
+> The sequence of issue is as follows:
+>        Thread1                       Thread2
+> mount /dev/sda /home/test
+> get s_mmp_bh  --> has mapped flag
+> start kmmpd thread
+>                                 echo "/dev/sda" > /sys/power/resume
+>                                   resume_store
+>                                     software_resume
+>                                       swsusp_check
+>                                         set_blocksize
+>                                           truncate_inode_pages_range
+>                                             truncate_cleanup_page
+>                                               block_invalidatepage
+>                                                 discard_buffer --> clean mapped flag
+> write_mmp_block
+>   submit_bh
+>     submit_bh_wbc
+>       BUG_ON(!buffer_mapped(bh)) --> trigger bug_on
+>
+> To solve this issue, get block device exclusively when do swsusp_check.
 
-syzbot found the following issue on:
+And why exactly is this going to help?
 
-HEAD commit:    d6493d2046c4 kmsan: test: pick the first KMSAN report
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=161f4d42b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3d9607827325e244
-dashboard link: https://syzkaller.appspot.com/bug?extid=6f0fd088eee9708bb4e9
-compiler:       clang version 14.0.0 (git@github.com:llvm/llvm-project.git 0996585c8e3b3d409494eb5f1cad714b9e1f7fb5), GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12573768b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12756f68b00000
+>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  kernel/power/swap.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+> index 9ec418955556..26c0bd2a50da 100644
+> --- a/kernel/power/swap.c
+> +++ b/kernel/power/swap.c
+> @@ -1521,9 +1521,10 @@ int swsusp_read(unsigned int *flags_p)
+>  int swsusp_check(void)
+>  {
+>         int error;
+> +       void *holder;
+>
+>         hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
+> -                                           FMODE_READ, NULL);
+> +                                           FMODE_READ | FMODE_EXCL, &holder);
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6f0fd088eee9708bb4e9@syzkaller.appspotmail.com
+So you need to explain to me how this works.
 
-=====================================================
-BUG: KMSAN: uninit-value in hci_conn_hash_lookup_handle include/net/bluetooth/hci_core.h:988 [inline]
-BUG: KMSAN: uninit-value in hci_phy_link_complete_evt+0x1a9/0x8b0 net/bluetooth/hci_event.c:5047
- hci_conn_hash_lookup_handle include/net/bluetooth/hci_core.h:988 [inline]
- hci_phy_link_complete_evt+0x1a9/0x8b0 net/bluetooth/hci_event.c:5047
- hci_event_packet+0x893/0x22e0 net/bluetooth/hci_event.c:6458
- hci_rx_work+0x6ae/0xd10 net/bluetooth/hci_core.c:5136
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-Uninit was created at:
- slab_alloc_node mm/slub.c:3221 [inline]
- __kmalloc_node_track_caller+0x8d2/0x1340 mm/slub.c:4955
- kmalloc_reserve net/core/skbuff.c:355 [inline]
- __alloc_skb+0x4db/0xe40 net/core/skbuff.c:426
- alloc_skb include/linux/skbuff.h:1116 [inline]
- bt_skb_alloc include/net/bluetooth/bluetooth.h:389 [inline]
- vhci_get_user drivers/bluetooth/hci_vhci.c:165 [inline]
- vhci_write+0x182/0x8f0 drivers/bluetooth/hci_vhci.c:285
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write fs/read_write.c:507 [inline]
- vfs_write+0x1295/0x1f20 fs/read_write.c:594
- ksys_write+0x28c/0x520 fs/read_write.c:647
- __do_sys_write fs/read_write.c:659 [inline]
- __se_sys_write fs/read_write.c:656 [inline]
- __x64_sys_write+0xdb/0x120 fs/read_write.c:656
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-=====================================================
-Kernel panic - not syncing: panic_on_kmsan set ...
-CPU: 0 PID: 144 Comm: kworker/u5:0 Tainted: G    B             5.15.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: hci0 hci_rx_work
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1ff/0x28e lib/dump_stack.c:106
- dump_stack+0x25/0x28 lib/dump_stack.c:113
- panic+0x44f/0xdeb kernel/panic.c:232
- kmsan_report+0x2ee/0x300 mm/kmsan/report.c:168
- __msan_warning+0xa9/0xf0 mm/kmsan/instrumentation.c:199
- hci_conn_hash_lookup_handle include/net/bluetooth/hci_core.h:988 [inline]
- hci_phy_link_complete_evt+0x1a9/0x8b0 net/bluetooth/hci_event.c:5047
- hci_event_packet+0x893/0x22e0 net/bluetooth/hci_event.c:6458
- hci_rx_work+0x6ae/0xd10 net/bluetooth/hci_core.c:5136
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>         if (!IS_ERR(hib_resume_bdev)) {
+>                 set_blocksize(hib_resume_bdev, PAGE_SIZE);
+>                 clear_page(swsusp_header);
+> @@ -1545,7 +1546,7 @@ int swsusp_check(void)
+>
+>  put:
+>                 if (error)
+> -                       blkdev_put(hib_resume_bdev, FMODE_READ);
+> +                       blkdev_put(hib_resume_bdev, FMODE_READ | FMODE_EXCL);
+>                 else
+>                         pr_debug("Image signature found, resuming\n");
+>         } else {
+> --
