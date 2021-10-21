@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E06436E73
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6E3436E76
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhJUXom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
+        id S232065AbhJUXp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJUXok (ORCPT
+        with ESMTP id S229512AbhJUXp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:44:40 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531A3C061764;
-        Thu, 21 Oct 2021 16:42:24 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so654400pje.0;
-        Thu, 21 Oct 2021 16:42:24 -0700 (PDT)
+        Thu, 21 Oct 2021 19:45:28 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F28C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:43:11 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id o17so3031506ybq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:43:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vbHn1t4w6ii4qOpK6OASHe+IZF0/K00mQ93D+vSWtbo=;
-        b=lvGYdZSiEg4NpLU4xu1JfC695jBAeKaDJyQRvBLH7sXDxR1zs75zHAZO3eX6CtqDvi
-         8h0TPWtdf1wXybZ2M/sXA7d3uDPgamYDnTWPItuq+jnlhTzsmG5znGqndIZJfbd7bpPP
-         nDYBZdTtvQCvNB1+785SB9Y9lKDxklk28yPQd7DgLgmpCZLaZBxAM0fs4iRIQ6OFz+/n
-         1l6ppu9LBFTrVr/7/ApXbNRAEQ0/ESRpqEjIsGf1Qypbp4sNWze5gaom9bLMg991xqAQ
-         /wgc57su+aGZS/WT7xD8dpfLj0kaySi/d+1POyxclnbj75SNF/uyiudy1gk5RqMLIIOj
-         M0Uw==
+        bh=iItbf96vJqUXBAPNWl/S+u6NWGXbFnqP3nMjz13MqBo=;
+        b=TFl4VR+n/Tz2N//3hY0nsO9nfx6KQXwngK5dVh8zYiQrFuwtAtD1xgWfiNqrn4Shvw
+         1JUxPOVPbUcuwvhE1OI3HYqKqDLWxoQ1WSOGRdSJw1F8LhaxoEnmEA+oqoS/AmHvrH6z
+         UNtKwsU9qRjI38BVq4xkPUsYU/9KeW+o0BzqdsD8AQjEsK8O3Q2ywuMzIV1hvf2knjMr
+         V8uyr6rzS0w+sPLRG7eZhp3iBxqsIoVIi/FKzGhcpn9YgjJwPZbRNb3qsN7A3rgwBUnw
+         cIaAwWRZZyQIjjsE4+HrK93XFrVxGV0Jog7RENlVKKDwUQGYLm7/Ii/LdwTFhq4eO2X6
+         H7zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vbHn1t4w6ii4qOpK6OASHe+IZF0/K00mQ93D+vSWtbo=;
-        b=NhnljbeYtwQ5zeKjLGSbfuH+uC4dgz8GmQwUt8pU9rrS/oSmYfXBAGmfEwEUCjuT7m
-         EwLhBELkP/qVxbfQDwDzPE0+uLH+x2e4ct2jg4So4NnwTF4QGO04b9Z2O5VUqIufiP+G
-         ifYf1fqG6PujZSDWKw2zpHyPgyUs1lENsolaZDQrCj0r1bKtuOmLXokJfX8qorJwc+KS
-         S+sDhiWwF3BSBDuU2qhscbpTN7iF0QiuN3RAEXSdVvd9esEeeu5+T/W/MRojHbsfElEu
-         ifV36PCKMRqEZ47GoJb3WgzkRfZB/JRrDUTMbXeLbyjss6qpc9N5a6ZLJlN4xtMUcjYY
-         jvVg==
-X-Gm-Message-State: AOAM53148HGCFgB6YxynYrsRVB+jaNkXvfoZmMfv5CuON9ndMe9pRRrp
-        TTN6rbe0s/4po6E+nVxLNUOlosjDJ9hpE2U2p1E=
-X-Google-Smtp-Source: ABdhPJyN1hj8+a29/Eln8HV/7A9HIu2b2dNAOWP+8PY8PSa0FHgdibcOhjSMsnanb3r1CSC/5MNpSvbXo0JiT8/CLf4=
-X-Received: by 2002:a17:902:ea09:b0:13f:ac2:c5ae with SMTP id
- s9-20020a170902ea0900b0013f0ac2c5aemr8052334plg.3.1634859743484; Thu, 21 Oct
- 2021 16:42:23 -0700 (PDT)
+        bh=iItbf96vJqUXBAPNWl/S+u6NWGXbFnqP3nMjz13MqBo=;
+        b=u97jiLAjIzFX7mgZuTGOslEloDpkbqZii491AQZTfwsg4atx/ewyXr4y8mIiTRaUEM
+         HMZha0wWAcwo7Fa/WfErMmx539MWaJZVg4LtDWiD89wAoWePG+GEd5Rt8tvW8qPo0F6p
+         uA9J9PJ2LiRbZ+sQ4Q62XUrzxqmxnrVvUKIvbLO3yz6p66CGP0HdNDrSQPTdhWm8ndrj
+         IO1BBR44+v4JaPzG3EuarfR9MzczYTHu08Xahq8tphZcXxLp8Mk972+aXwrDB7NIZOUi
+         H37cYG+ivsUxFueJxuTvsuxM1xAQKrfw0l6VL1RztJF+Fdqa0Ii19yQJI6WKx3OMxQnK
+         GEzQ==
+X-Gm-Message-State: AOAM5330b/XdSmi0QJzza7kG26zgKC1sPqpOLeI+0SgDWPvpo1ut4KhQ
+        hzpgstWVNc2Q07oIRU8yA1v52C7rykfi/3ScFUFX2w==
+X-Google-Smtp-Source: ABdhPJzJ2cbj29jDZQ6TyMNq0vcXWUvo5fXcSmk7cGTR2WSWJkF3T2lRwKoKyVFtQHaqRmOMZh+qPbZkggFCxWwOuBw=
+X-Received: by 2002:a25:c696:: with SMTP id k144mr8911382ybf.296.1634859790611;
+ Thu, 21 Oct 2021 16:43:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211020104442.021802560@infradead.org> <20211020105843.345016338@infradead.org>
- <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net> <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net> <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
- <20211021223719.GY174703@worktop.programming.kicks-ass.net>
- <CAADnVQ+cJLYL-r6S8TixJxH1JEXXaNojVoewB3aKcsi7Y8XPdQ@mail.gmail.com> <20211021233852.gbkyl7wpunyyq4y5@treble>
-In-Reply-To: <20211021233852.gbkyl7wpunyyq4y5@treble>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 16:42:12 -0700
-Message-ID: <CAADnVQ+iMysKSKBGzx7Wa+ygpr9nTJbRo4eGYADLFDE4PmtjOQ@mail.gmail.com>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-3-saravanak@google.com>
+ <CAMi1Hd0HvPOT277mx8hNTU9NQH2ti7h5qc5+rxOkRWwbfrhyQQ@mail.gmail.com>
+In-Reply-To: <CAMi1Hd0HvPOT277mx8hNTU9NQH2ti7h5qc5+rxOkRWwbfrhyQQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 21 Oct 2021 16:42:34 -0700
+Message-ID: <CAGETcx_YZOd05Gg53ZR8mfVhFUzwQWo4MrrWF8JHF_DCwEtunw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] drivers: bus: Delete CONFIG_SIMPLE_PM_BUS
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-arm-kernel@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>, linux-oxnas@groups.io,
+        linux-renesas-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        John Stultz <john.stultz@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 4:38 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Thu, Oct 21, 2021 at 4:21 AM Amit Pundir <amit.pundir@linaro.org> wrote:
 >
-> On Thu, Oct 21, 2021 at 04:24:33PM -0700, Alexei Starovoitov wrote:
-> > On Thu, Oct 21, 2021 at 3:40 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Oct 21, 2021 at 11:03:33AM -0700, Alexei Starovoitov wrote:
-> > >
-> > > > > I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
-> > > > > lot more robust than the 64bit one and I couldn't figure out why the
-> > > > > difference.
-> > > >
-> > > > Interesting. Daniel will recognize that trick then :)
-> > >
-> > > > > Is there concurrency on the jit?
-> > > >
-> > > > The JIT of different progs can happen in parallel.
-> > >
-> > > In that case I don't think the patch is safe. I'll see if I can find a
-> > > variant that doesn't use static storage.
-> >
-> > The variable can only change from one fixed value to another fixed value.
-> > Different threads will compute the same value. So I think it's safe
-> > as-is. READ_ONCE/WRITE_ONCE won't hurt though.
+> Hi Saravana,
 >
-> But the size of the generated code differs based on the
-> emit_bpf_tail_call_indirect() args: 'callee_regs_used' and
-> 'stack_depth'.  So the fixed value can change.
+> This patch broke v5.15-rc6 on RB5 (sm8250 | qcom/qrb5165-rb5.dts).
+> I can't boot past this point https://www.irccloud.com/pastebin/raw/Nv6ZwHmW.
 
-Ahh. Right. It's potentially a different offset for every prog.
-Let's put it into struct jit_context then.
+Amit top posting? How did that happen? :)
+
+The fact you are seeing this issue is super strange though. The driver
+literally does nothing other than allowing some sync_state() callbacks
+to happen. I also grepped for the occurence of "simple-bus" in
+arch/arm64/boot/dts/qcom/ and the only instance for 8250 is for the
+soc node.
+
+The only thing I can think of is that without my patch some
+sync_state() callbacks weren't getting called and maybe it was masking
+some other issue.
+
+Can you try to boot with this log (see log patch below) and see if the
+device hangs right after a sync_state() callback? Also, looking at the
+different sync_state() implementations in upstream, I'm guessing one
+of the devices isn't voting for interconnect bandwidth when it should
+have.
+
+Another thing you could do is boot without the simple-bus changes and
+then look for all instances of "state_synced" in /sys/devices and then
+see if any of them has the value "0" after boot up is complete.
+
+-Saravana
+
+-- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -1099,6 +1099,7 @@ static void device_links_flush_sync_list(struct
+list_head *list,
+                if (dev != dont_lock_dev)
+                        device_lock(dev);
+
++               dev_info(dev, "Calling sync_state()\n");
+                if (dev->bus->sync_state)
+                        dev->bus->sync_state(dev);
+                else if (dev->driver && dev->driver->sync_state)
