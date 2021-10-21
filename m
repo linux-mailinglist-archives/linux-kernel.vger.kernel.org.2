@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBBC436802
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B91E4367FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhJUQjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        id S232017AbhJUQim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232070AbhJUQiO (ORCPT
+        with ESMTP id S230103AbhJUQij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:38:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DE9C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:35:58 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 16:35:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634834155;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R+L7Sx3lwopZcUErY2rkJDBJLskxZ/VypQrvz60eL6E=;
-        b=4puGJuCosLPagXWVGrIEYFrkkoxkqNjMI6L0rfJ0Rv3OOct/3N+xrZdebH6VfXLfRqta56
-        9Q0w3BJEgy2V+ZzwOzebeYNJ+nz84x6s0eN7RusE4sbXX6Ft8VlmorrUX/03ruQ1T+yn8s
-        k3bMy6xst4/S0BAsukpFUd9Z6p5WkT9UWAeWypNaqzkX2sp3T3D5iXwUc5MpN+C8vuLQCN
-        +3Q78kF91fk1D2HldeUgk0bj0Lrw0aaJXVhl2EfOu1FLk+sh656tehBMm+NG68ViN5Rpkt
-        Na1cEEf+EqTxFhu09jOhVMKG0QZIM9dlOq206ggUjzBLZ/auU+pxK9uZZh1aTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634834155;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R+L7Sx3lwopZcUErY2rkJDBJLskxZ/VypQrvz60eL6E=;
-        b=XpWUok/Tdn+NVD0DzFn7MyyRzKfYJVFjzlHvUHKFv7FznpjZvdZFg6a82+p1If4VDGFLrQ
-        CsmMchAyKKIBpqCg==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/mchp-eic: Drop build-breaking
- COMPILE_TEST
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <bfc6fc7b-2bc3-b2b6-d65b-04805fbeb59d@infradead.org>
-References: <bfc6fc7b-2bc3-b2b6-d65b-04805fbeb59d@infradead.org>
+        Thu, 21 Oct 2021 12:38:39 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF30FC061764;
+        Thu, 21 Oct 2021 09:36:23 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id v8so1104521pfu.11;
+        Thu, 21 Oct 2021 09:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XNFBhpllu7nc0pkg33R5r5Fh+arwoYW9tTFMhQ1Vz/c=;
+        b=eJoLRrDvU48OXdI618MEts9VQqMnTVB76rawrzqlvVDGPfrCSgIUDwEHOZ8QSxSWIv
+         EaszjXlmCqa2H6DXfha+r226SxX5gFyR4qsqJB2WbKTaWkgnInRYHF64yFqPI2MzbmEI
+         5W/n9GwIZmwg/eX2+cTXZCaCPtxIFHfxXxW9EDzgz9bWQ1EXXQK7TinoCr6eLWih3WPC
+         lCbeVXY+rpVEt05S2vw3tSradrUM2PvQ0HGno8RAktXq9EKUyJ2rY41VedAVdueoZNFC
+         9/a5Zlzv7pGcEYfJNEBoKGvGEyRyQ/briuUYMqUPB6glvIXjqzzKXbXAAJoNvmZm23no
+         y8yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XNFBhpllu7nc0pkg33R5r5Fh+arwoYW9tTFMhQ1Vz/c=;
+        b=EJobdkEKfGy3qIuRxGlZ7yTl7ksJYTNd5e3rdvU546iibBnts8Wm1jn7SwWc8soVXc
+         SAG3vgFBu2OZwgaMksebQ2v23EB8PTU0HAQx7O77MSNIPNLLNwMUxyAhBgzoQgCl5PMp
+         6nxRQHRsrXhxXOJW8WYv1Shv0IENkjymlHPQYirUAPRs8fUBrbjNvpRc+lNAcNLj8P1b
+         KJYaZtOclHKdoG/wv5tBJbXN5hvBLQv++y+9YcXpa6wY0qQaGDs+GPevWdmMFF3GeENS
+         oGMuOdx8RVsmbqBwugiGI1B3arydlsk8xV7cX+ysqtj48pmfNhxPDpOAIOe8w6cK6KWT
+         8hWA==
+X-Gm-Message-State: AOAM532AFrtjc7QmZ7HosvVRFOacV/Uu/Vn/X7PcFZrZ48nvy3v4uhq/
+        CQA4t26QAYnN+NZL9HXKq6o=
+X-Google-Smtp-Source: ABdhPJzfdFTwCbjg+oVZZtmNG4pN1rAlF1kcmD/+Gu6plGnZ8j/KLnhiiXFySrksPZ8TcD1MU9P6vg==
+X-Received: by 2002:aa7:8609:0:b0:44b:346a:7404 with SMTP id p9-20020aa78609000000b0044b346a7404mr6653842pfn.86.1634834183113;
+        Thu, 21 Oct 2021 09:36:23 -0700 (PDT)
+Received: from theprophet ([2406:7400:63:29a4:d874:a949:6890:f95f])
+        by smtp.gmail.com with ESMTPSA id m186sm6769249pfb.165.2021.10.21.09.36.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 09:36:22 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 22:06:11 +0530
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, ruscur@russell.cc, oohall@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v4 4/8] PCI/DPC: Use pci_aer_clear_status() in
+ dpc_process_error()
+Message-ID: <20211021163611.rsfmberxw6dqn5gx@theprophet>
+References: <f0d301cb1245a8e2fd9565426b87c22a97aa6de7.1633453452.git.naveennaidu479@gmail.com>
+ <20211021014029.GA2657684@bhelgaas>
 MIME-Version: 1.0
-Message-ID: <163483415498.25758.3306069467532191935.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021014029.GA2657684@bhelgaas>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On 20/10, Bjorn Helgaas wrote:
+> On Tue, Oct 05, 2021 at 10:48:11PM +0530, Naveen Naidu wrote:
+> > dpc_process_error() clears both AER fatal and non fatal status
+> > registers. Instead of clearing each status registers via a different
+> > function call use pci_aer_clear_status().
+> > 
+> > This helps clean up the code a bit.
+> > 
+> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> > ---
+> >  drivers/pci/pcie/dpc.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> > index df3f3a10f8bc..faf4a1e77fab 100644
+> > --- a/drivers/pci/pcie/dpc.c
+> > +++ b/drivers/pci/pcie/dpc.c
+> > @@ -288,8 +288,7 @@ void dpc_process_error(struct pci_dev *pdev)
+> >  		 dpc_get_aer_uncorrect_severity(pdev, &info) &&
+> >  		 aer_get_device_error_info(pdev, &info)) {
+> >  		aer_print_error(pdev, &info);
+> > -		pci_aer_clear_nonfatal_status(pdev);
+> > -		pci_aer_clear_fatal_status(pdev);
+> > +		pci_aer_clear_status(pdev);
+> 
+> The commit log suggests that this is a simple cleanup that doesn't
+> change any behavior, but that's not quite true:
+> 
+>   - The new code would clear PCI_ERR_ROOT_STATUS, but the old code
+>     does not.
+> 
+>   - The old code masks the status bits with the severity bits before
+>     clearing, but the new code does not.
+> 
+> The commit log needs to show why these changes are what we want.
+>
 
-Commit-ID:     2aee149dd9ba374b426b9dd6192bf2a8a715e63a
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/2aee149dd9ba374b426b9dd6192bf2a8a715e63a
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Thu, 21 Oct 2021 17:25:22 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 21 Oct 2021 17:25:22 +01:00
+Reading through the code again, I realize how wrong(stupid) I was when
+making this patch. I was thinking that:
 
-irqchip/mchp-eic: Drop build-breaking COMPILE_TEST
+  pci_aer_clear_status() = pci_aer_clear_fatal_status() + pci_aer_clear_nonfatal_status()
 
-This driver advertises COMPILE_TEST, and yet fails to link due
-to broken dependencies.
+Now I understand, that it is not at all the case. I apologize for the
+mistake. I'll make sure to be meticulous while reading functions and not
+just assume their behaviour just from their function names.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/bfc6fc7b-2bc3-b2b6-d65b-04805fbeb59d@infradead.org
----
- drivers/irqchip/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'll drop this patch in the next version of the patch series I make.
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 8df8ffb..6e58838 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -604,7 +604,7 @@ config APPLE_AIC
- 
- config MCHP_EIC
- 	bool "Microchip External Interrupt Controller"
--	depends on ARCH_AT91 || COMPILE_TEST
-+	depends on ARCH_AT91
- 	select IRQ_DOMAIN
- 	select IRQ_DOMAIN_HIERARCHY
- 	help
+Apologies again ^^'
+
+> >  	}
+> >  }
+> >  
+> > -- 
+> > 2.25.1
+> > 
+> > _______________________________________________
+> > Linux-kernel-mentees mailing list
+> > Linux-kernel-mentees@lists.linuxfoundation.org
+> > https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
