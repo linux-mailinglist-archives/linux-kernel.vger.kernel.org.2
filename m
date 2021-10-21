@@ -2,184 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65965436851
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B431243685A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhJUQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:50:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50647 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232042AbhJUQup (ORCPT
+        id S231750AbhJUQyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhJUQyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:50:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634834909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VCfninvKWV47Xsp5RP9uGNnQM9wSoQBnNs6aRe8wJDY=;
-        b=TNNv8OEAK0ywbmQsRdJ68Km2fOXoAcbFYdWDP49DWxkQiEaswkqChlFEDbU27qltVwH94R
-        ytdkCdFPrHiN98AL0DF2XtaQ2Pb//s4AvGDQmBjuhwmrnwR1VGjSLCXBIW1tXcTlAdQo0A
-        TDQKCqtWp52lEZKVFIj4U+DbVKdkje0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477-eNY4Z6XOPp6hwWyOyt_lhA-1; Thu, 21 Oct 2021 12:48:28 -0400
-X-MC-Unique: eNY4Z6XOPp6hwWyOyt_lhA-1
-Received: by mail-ed1-f70.google.com with SMTP id t28-20020a508d5c000000b003dad7fc5caeso965308edt.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:48:28 -0700 (PDT)
+        Thu, 21 Oct 2021 12:54:00 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E550CC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:51:44 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id g5so854572plg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=utoy+jQZzvRnzA1QWeuCmlU/QiIEQT6LKCT7U63qum8=;
+        b=x8/aeoXyTGmp//1afH0+pe+lHvlkIprY9l6+jEEMrD9x/aw8fI1lNPBwex0dW1q0hF
+         6GWTNfl5PefzN5QSEjiNqb/NkgWKFVXxiAY24Z2ttZN+NSPZ8ecr48c9Ep2zOFA85kDF
+         PRsXpmhyhbo4GsT2Xgf9iifyDaB7045MsUQlaKHDqb5ggq8eKo9iEjG1N+5wbU11GJgn
+         9DJz9SrYhm2cuzF7hXks8UUV1T26+6Ps4Qj8FNpsQdbnZzINWDMEhHcYWxNlggdJ2FqC
+         qnICeOn9KcXcf9NyUo9mGy93lBg6SKTWkmiLpn0uW95FYEWmEeFVT0ytkGNohN0BKFAy
+         NNgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VCfninvKWV47Xsp5RP9uGNnQM9wSoQBnNs6aRe8wJDY=;
-        b=bodTbtNLdCUAHf5JNiFmx5vcvxKjw7p4cq/vEmmur1Zm4E8KmxHm4b/DdytR6B376j
-         lmTkeisNymsByYi8uEd0YICYo+fTknaheMopyzjDi1N8qBVYXKycn4pqwiGv5vnvogvi
-         bpEZj/spSRcwdsu2YVnXSlUIdWsDCx8Hv9LiWlvkmmJS87xZ2/uJiOYXoCTTDoaHzXVL
-         pVJzdhuAuJt3kaqmZzxokMYKR+m4CTJoV42ylGw/z2lVfJdfR9HpUyb1X8WEFyFT+CNM
-         I+nVT0ACd2jH4SxvXltMm67Hgw/TcqZgCrL6GUGjj9Lzre16HsYuDxax9prBB6Z/f8a9
-         Yk/g==
-X-Gm-Message-State: AOAM530+gghcCFDA5k7vLij2qCgNLVJPaDtopll2JPC6l1D6bTQzZ0Ad
-        IqUyvue2A64Nupc6sJmz8MvuOpXKU3o7RXDF88uSsa5y34XnsP71M3Oo0aM9BkUjobh4huIuYu4
-        /KwXriJ+GYQvoz8kqmjsAAD5w
-X-Received: by 2002:a05:6402:1d49:: with SMTP id dz9mr8906096edb.55.1634834907148;
-        Thu, 21 Oct 2021 09:48:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfUh/gwLHsLAnloHareVcoBblGeHhzpVkYSFaPuXfPlmJE71AfB3siwZaeIXtqnPns26Vmdw==
-X-Received: by 2002:a05:6402:1d49:: with SMTP id dz9mr8906052edb.55.1634834906943;
-        Thu, 21 Oct 2021 09:48:26 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id b2sm3206364edv.73.2021.10.21.09.48.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 09:48:26 -0700 (PDT)
-Message-ID: <71547952-c3e7-6683-5eea-70d3003d5224@redhat.com>
-Date:   Thu, 21 Oct 2021 18:48:24 +0200
+        bh=utoy+jQZzvRnzA1QWeuCmlU/QiIEQT6LKCT7U63qum8=;
+        b=F8b6ADn+JC13LnGRl7HSJeqp76HNAweFginZCUyLHgp0nPVGiggy3pJyk2RGibMIvK
+         eATSewyAeB35n7pQJCstZxQA0mzdxkc16hZugZWRgJrsU9qcdmhYknVM0C0vnammar8L
+         sHAWacyx81AJ0mNkh251Wcb7Aj4tRiwiTwrOu4aifkb4M4UcK51qumsf/RFu+5iXIeZE
+         PnKe7fA0FUV0nxrrWd+rcsQWm1q7090nV+rSs8vYo57ahb95adDE/soewNGTAVXw3WnO
+         EQ8QB1tqY2+ghAcQlhQ823NwMqFaIGKOnx60TGaRLJxZa6DFUCyc06ivAdMO+34srA9w
+         yrNg==
+X-Gm-Message-State: AOAM532GB8aWlQwqWvqq9mfTLI7eFc978VhSw5R08RQbnv/X0iqq4blk
+        INyu3Vm8nQw+18GNFBdU9qUZNA==
+X-Google-Smtp-Source: ABdhPJzPn1WnhmqY3wp2dc+1Jtbo+21IiUrqDsvcEMwzsRnJLaf4nWK/njw4aSEB0eHoBWNnGsJMGw==
+X-Received: by 2002:a17:90a:2943:: with SMTP id x3mr7820076pjf.71.1634835104442;
+        Thu, 21 Oct 2021 09:51:44 -0700 (PDT)
+Received: from vineetg-ThinkPad-X1-Carbon-Gen-9.ba.rivosinc.com (c-24-4-73-83.hsd1.ca.comcast.net. [24.4.73.83])
+        by smtp.gmail.com with ESMTPSA id y4sm7553890pfa.90.2021.10.21.09.51.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 09:51:44 -0700 (PDT)
+From:   Vineet Gupta <vineetg@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vineet Gupta <vineetg@rivosinc.com>
+Subject: [PATCH] riscv: remove code for !CONFIG_FRAME_POINTER
+Date:   Thu, 21 Oct 2021 09:51:42 -0700
+Message-Id: <20211021165142.444236-1-vineetg@rivosinc.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC 00/16] KVM: selftests: Add tests for SEV, SEV-ES, and
- SEV-SNP guests
-Content-Language: en-US
-To:     Michael Roth <michael.roth@amd.com>,
-        linux-kselftest@vger.kernel.org
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Nathan Tempelman <natet@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-References: <20211005234459.430873-1-michael.roth@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211005234459.430873-1-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/21 01:44, Michael Roth wrote:
-> These patches and are also available at:
-> 
->    https://github.com/mdroth/linux/commits/sev-selftests-rfc1
-> 
-> They are based on top of v5 of Brijesh's SEV-SNP hypervisor patches[1]
-> to allow for SEV-SNP testing and provide some context for the overall
-> design, but the SEV/SEV-ES patches can be carved out into a separate
-> series as needed.
-> 
-> == OVERVIEW ==
-> 
-> This series introduces a set of memory encryption-related parameter/hooks
-> in the core kselftest library, then uses the hooks to implement a small
-> library for creating/managing SEV, SEV-ES, SEV-SNP guests. This library
-> is then used to implement a basic boot/memory test that's run for all
-> variants of SEV/SEV-ES/SEV-SNP guest types, as well as a set of SEV-SNP
-> tests that cover various permutations of pvalidate/page-state changes.
-> 
-> - Patches 1-7 implement SEV boot tests and should run against existing
->    kernels
-> - Patch 8 is a KVM changes that's required to allow SEV-ES/SEV-SNP
->    guests to boot with an externally generated page table, and is a
->    host kernel prequisite for the remaining patches in the series.
-> - Patches 9-12 extend the boot tests to cover SEV-ES
-> - Patches 13-16 extend the boot testst to cover SEV-SNP, and introduce
->    an additional test for page-state changes.
+while frame pointer generates horrible code it is a necessary evil on
+RISC-V as the only way to unwind stack.
 
-Hi Mike,
+In fact Kconfig unconditonally selects ARCH_WANT_FRAME_POINTERS, so
+any code for handling !FRAME_POINTER is essentially dead weight.
 
-this SEV/SEV-ES testing (both your series and kvm-unit-tests) is good 
-stuff. :)  If you fix up patches 1-12, I will commit them pretty much 
-straight away.  The only thing that possibly needs some thought is the 
-integration with ucall.
+And while here remove redundant setting of -fno-omit-frame-pointer as
+this is enabled by generic code for CONFIG_FRAME_POINTER
 
-Thanks,
+Signed-off-by: Vineet Gupta <vineetg@rivosinc.com>
+---
+ arch/riscv/Makefile            |  3 ---
+ arch/riscv/kernel/stacktrace.c | 37 ++--------------------------------
+ 2 files changed, 2 insertions(+), 38 deletions(-)
 
-Paolo
-
-> Any review/comments are greatly appreciated!
-> 
-> [1] https://lore.kernel.org/linux-mm/20210820155918.7518-1-brijesh.singh@amd.com/
-> 
-> ----------------------------------------------------------------
-> Michael Roth (16):
->        KVM: selftests: move vm_phy_pages_alloc() earlier in file
->        KVM: selftests: add hooks for managing encrypted guest memory
->        KVM: selftests: handle encryption bits in page tables
->        KVM: selftests: set CPUID before setting sregs in vcpu creation
->        KVM: selftests: add support for encrypted vm_vaddr_* allocations
->        KVM: selftests: add library for creating/interacting with SEV guests
->        KVM: selftests: add SEV boot tests
->        KVM: SVM: include CR3 in initial VMSA state for SEV-ES guests
->        KVM: selftests: account for error code in #VC exception frame
->        KVM: selftests: add support for creating SEV-ES guests
->        KVM: selftests: add library for handling SEV-ES-related exits
->        KVM: selftests: add SEV-ES boot tests
->        KVM: selftests: add support for creating SEV-SNP guests
->        KVM: selftests: add helpers for SEV-SNP-related instructions/exits
->        KVM: selftests: add SEV-SNP boot tests
->        KVM: selftests: add SEV-SNP tests for page-state changes
-> 
->   arch/x86/include/asm/kvm-x86-ops.h                 |   1 +
->   arch/x86/include/asm/kvm_host.h                    |   1 +
->   arch/x86/kvm/svm/svm.c                             |  22 ++
->   arch/x86/kvm/vmx/vmx.c                             |   8 +
->   arch/x86/kvm/x86.c                                 |   3 +-
->   tools/testing/selftests/kvm/.gitignore             |   2 +
->   tools/testing/selftests/kvm/Makefile               |   3 +
->   tools/testing/selftests/kvm/include/kvm_util.h     |   8 +
->   tools/testing/selftests/kvm/include/x86_64/sev.h   |  70 ++++
->   .../selftests/kvm/include/x86_64/sev_exitlib.h     |  20 ++
->   tools/testing/selftests/kvm/include/x86_64/svm.h   |  35 ++
->   .../selftests/kvm/include/x86_64/svm_util.h        |   2 +
->   tools/testing/selftests/kvm/lib/kvm_util.c         | 249 +++++++++-----
->   .../testing/selftests/kvm/lib/kvm_util_internal.h  |  10 +
->   tools/testing/selftests/kvm/lib/x86_64/handlers.S  |   4 +-
->   tools/testing/selftests/kvm/lib/x86_64/processor.c |  30 +-
->   tools/testing/selftests/kvm/lib/x86_64/sev.c       | 381 +++++++++++++++++++++
->   .../testing/selftests/kvm/lib/x86_64/sev_exitlib.c | 326 ++++++++++++++++++
->   .../selftests/kvm/x86_64/sev_all_boot_test.c       | 367 ++++++++++++++++++++
->   .../selftests/kvm/x86_64/sev_snp_psc_test.c        | 378 ++++++++++++++++++++
->   20 files changed, 1820 insertions(+), 100 deletions(-)
->   create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev.h
->   create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev_exitlib.h
->   create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev.c
->   create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev_exitlib.c
->   create mode 100644 tools/testing/selftests/kvm/x86_64/sev_all_boot_test.c
->   create mode 100644 tools/testing/selftests/kvm/x86_64/sev_snp_psc_test.c
-> 
-> 
-> 
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index a0b8259c7098..a4329035c341 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -65,9 +65,6 @@ endif
+ ifeq ($(CONFIG_CMODEL_MEDANY),y)
+ 	KBUILD_CFLAGS += -mcmodel=medany
+ endif
+-ifeq ($(CONFIG_PERF_EVENTS),y)
+-        KBUILD_CFLAGS += -fno-omit-frame-pointer
+-endif
+ 
+ KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-relax)
+ 
+diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+index 315db3d0229b..63f471278401 100644
+--- a/arch/riscv/kernel/stacktrace.c
++++ b/arch/riscv/kernel/stacktrace.c
+@@ -16,13 +16,13 @@
+ 
+ register unsigned long sp_in_global __asm__("sp");
+ 
+-#ifdef CONFIG_FRAME_POINTER
+-
+ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+ 			     bool (*fn)(void *, unsigned long), void *arg)
+ {
+ 	unsigned long fp, sp, pc;
+ 
++        BUILD_BUG_ON(!IS_ENABLED(CONFIG_FRAME_POINTER));
++
+ 	if (regs) {
+ 		fp = frame_pointer(regs);
+ 		sp = user_stack_pointer(regs);
+@@ -65,39 +65,6 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+ 	}
+ }
+ 
+-#else /* !CONFIG_FRAME_POINTER */
+-
+-void notrace walk_stackframe(struct task_struct *task,
+-	struct pt_regs *regs, bool (*fn)(void *, unsigned long), void *arg)
+-{
+-	unsigned long sp, pc;
+-	unsigned long *ksp;
+-
+-	if (regs) {
+-		sp = user_stack_pointer(regs);
+-		pc = instruction_pointer(regs);
+-	} else if (task == NULL || task == current) {
+-		sp = sp_in_global;
+-		pc = (unsigned long)walk_stackframe;
+-	} else {
+-		/* task blocked in __switch_to */
+-		sp = task->thread.sp;
+-		pc = task->thread.ra;
+-	}
+-
+-	if (unlikely(sp & 0x7))
+-		return;
+-
+-	ksp = (unsigned long *)sp;
+-	while (!kstack_end(ksp)) {
+-		if (__kernel_text_address(pc) && unlikely(!fn(arg, pc)))
+-			break;
+-		pc = (*ksp++) - 0x4;
+-	}
+-}
+-
+-#endif /* CONFIG_FRAME_POINTER */
+-
+ static bool print_trace_address(void *arg, unsigned long pc)
+ {
+ 	const char *loglvl = arg;
+-- 
+2.30.2
 
