@@ -2,67 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC514369C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0584369C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhJURxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:53:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:45716 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229968AbhJURxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:53:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E3B2D6E;
-        Thu, 21 Oct 2021 10:50:45 -0700 (PDT)
-Received: from [10.57.27.231] (unknown [10.57.27.231])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27F713F70D;
-        Thu, 21 Oct 2021 10:50:44 -0700 (PDT)
-Subject: Re: [PATCH][next] iommu/dma: Use kvcalloc() instead of kvzalloc()
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210928222229.GA280355@embeddedor>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <15e7ed54-2a4d-3e96-7181-d15b65ff5138@arm.com>
-Date:   Thu, 21 Oct 2021 18:50:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S232209AbhJURxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:53:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46878 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhJURxi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:53:38 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CBB4E1FD50;
+        Thu, 21 Oct 2021 17:51:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634838680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZsmryUSY+wyzBCewqKbucEe4Xr/mA/KtNiq91fwmf3A=;
+        b=PnEvVpjOdGRum8Yi1lPCAcQmRrFYxfVAJbY2HicvlwFJWrwZ8GbGv5BsKzHpUKzwBY/A0E
+        8XuWXQdNZw0SSsh1nw8d1g1nlqB/J6MYKPNnUGybjz2HiO7s5zzZMcX35ARmL6tiB5A10e
+        8NsmfW34eQJPebot5mY864hTaTCIFNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634838680;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZsmryUSY+wyzBCewqKbucEe4Xr/mA/KtNiq91fwmf3A=;
+        b=NmH9BRpdir7XsJGX76dVPoS6qCbZ/Z64AZzq2szzU/NvG2Pv95G7BE5H/BbNgZeqUl26uP
+        Jzts5ewqP+76XeCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 674FE13AE4;
+        Thu, 21 Oct 2021 17:51:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id p9V5GJiocWGLFgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 21 Oct 2021 17:51:20 +0000
+Message-ID: <2a692365-cfa1-64f2-34e0-8aa5674dce5e@suse.cz>
+Date:   Thu, 21 Oct 2021 19:51:20 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210928222229.GA280355@embeddedor>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Jani Nikula <jani.nikula@intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, dri-devel@lists.freedesktop.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Marco Elver <elver@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Oliver Glitta <glittao@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>,
+        lkft-triage@lists.linaro.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <CA+G9fYv3jAjBKHM-CjrMzNgrptx-rpYVmGaD39OBiBeuz7osfg@mail.gmail.com>
+ <80ab567d-74f3-e14b-3c30-e64bbd64b354@suse.cz> <87fssuojoc.fsf@intel.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [next] [dragonboard 410c] Unable to handle kernel paging request
+ at virtual address 00000000007c4240
+In-Reply-To: <87fssuojoc.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-28 23:22, Gustavo A. R. Silva wrote:
-> Use 2-factor argument form kvcalloc() instead of kvzalloc().
-
-If we have a thing for that now, then sure, why not. FWIW this can't 
-ever overflow due to where "count" comes from, but it has no reason to 
-be special.
-
-Acked-by: Robin Murphy <robin.murphy@arm.com>
-
-> Link: https://github.com/KSPP/linux/issues/162
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->   drivers/iommu/dma-iommu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On 10/21/21 10:40, Jani Nikula wrote:
+> On Thu, 21 Oct 2021, Vlastimil Babka <vbabka@suse.cz> wrote:
+>> This one seems a bit more tricky and I could really use some advice.
+>> cd06ab2fd48f adds stackdepot usage to drm_modeset_lock which itself has a
+>> number of different users and requiring those to call stack_depot_init()
+>> would be likely error prone. Would it be ok to add the call of
+>> stack_depot_init() (guarded by #ifdef CONFIG_DRM_DEBUG_MODESET_LOCK) to
+>> drm_modeset_lock_init()? It will do a mutex_lock()/unlock(), and kvmalloc()
+>> on first call.
+>> I don't know how much of hotpath this is, but hopefully should be acceptable
+>> in debug config. Or do you have better suggestion? Thanks.
 > 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 896bea04c347..18c6edbe5fbf 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -616,7 +616,7 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
->   	if (!order_mask)
->   		return NULL;
->   
-> -	pages = kvzalloc(count * sizeof(*pages), GFP_KERNEL);
-> +	pages = kvcalloc(count, sizeof(*pages), GFP_KERNEL);
->   	if (!pages)
->   		return NULL;
->   
+> I think that should be fine.
 > 
+> Maybe add __drm_stack_depot_init() in the existing #if
+> IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK), similar to the other
+> __drm_stack_depot_*() functions, with an empty stub for
+> CONFIG_DRM_DEBUG_MODESET_LOCK=n, and call it unconditionally in
+> drm_modeset_lock_init().
+
+Good idea.
+ 
+>> Then we have to figure out how to order a fix between DRM and mmotm...
+> 
+> That is the question! The problem exists only in the merge of the
+> two. On current DRM side stack_depot_init() exists but it's __init and
+> does not look safe to call multiple times. And obviously my changes
+> don't exist at all in mmotm.
+> 
+> I guess one (admittedly hackish) option is to first add a patch in
+> drm-next (or drm-misc-next) that makes it safe to call
+> stack_depot_init() multiple times in non-init context. It would be
+> dropped in favour of your changes once the trees get merged together.
+> 
+> Or is there some way for __drm_stack_depot_init() to detect whether it
+> should call stack_depot_init() or not, i.e. whether your changes are
+> there or not?
+
+Let's try the easiest approach first. AFAIK mmotm series is now split to
+pre-next and post-next part and moving my patch
+lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc.patch
+with the following fixup to the post-next part should solve this. Would that
+work, Andrew? Thanks.
+
+----8<----
+From 719e91df5571034b62fa992f6738b00f8d29020e Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Thu, 21 Oct 2021 19:43:33 +0200
+Subject: [PATCH] lib/stackdepot: allow optional init and stack_table
+ allocation by kvmalloc() - fixup3
+
+Due to cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks
+without backoff") landing recently to -next adding a new stack depot user in
+drivers/gpu/drm/drm_modeset_lock.c we need to add an appropriate call to
+stack_depot_init() there as well.
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ drivers/gpu/drm/drm_modeset_lock.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/drm_modeset_lock.c
+index c97323365675..918065982db4 100644
+--- a/drivers/gpu/drm/drm_modeset_lock.c
++++ b/drivers/gpu/drm/drm_modeset_lock.c
+@@ -107,6 +107,11 @@ static void __drm_stack_depot_print(depot_stack_handle_t stack_depot)
+ 
+ 	kfree(buf);
+ }
++
++static void __drm_stack_depot_init(void)
++{
++	stack_depot_init();
++}
+ #else /* CONFIG_DRM_DEBUG_MODESET_LOCK */
+ static depot_stack_handle_t __drm_stack_depot_save(void)
+ {
+@@ -115,6 +120,9 @@ static depot_stack_handle_t __drm_stack_depot_save(void)
+ static void __drm_stack_depot_print(depot_stack_handle_t stack_depot)
+ {
+ }
++static void __drm_stack_depot_init(void)
++{
++}
+ #endif /* CONFIG_DRM_DEBUG_MODESET_LOCK */
+ 
+ /**
+@@ -359,6 +367,7 @@ void drm_modeset_lock_init(struct drm_modeset_lock *lock)
+ {
+ 	ww_mutex_init(&lock->mutex, &crtc_ww_class);
+ 	INIT_LIST_HEAD(&lock->head);
++	__drm_stack_depot_init();
+ }
+ EXPORT_SYMBOL(drm_modeset_lock_init);
+ 
+-- 
+2.33.0
+
