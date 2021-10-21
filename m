@@ -2,103 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DF9436438
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740BF436445
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbhJUO3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:29:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49758 "EHLO mail.kernel.org"
+        id S231331AbhJUOa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:30:26 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55022 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231331AbhJUO2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:28:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78DDF6120F;
-        Thu, 21 Oct 2021 14:26:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634826394;
-        bh=jfdEw2NewFPjeRp4KTG29+/+u+3mkuWccUasLnsv9Ks=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aQz24XFq3Wy0Wc6sePt3mOOLSc1LtLZOhlrd0Hyj2e5DET1jicrrO4d7SVxRjx8RM
-         FDQiNoFuV9oGow5hg118avECfUIBUbYlBbmNvu1fHiY4lEXfqmI0t8jznxCuFsnC4u
-         xXqlPW7XUAe/M2B+dt4iGU1TZAScFbke4C5KnC+RFS4KSXtp9wBbnAV+KyhHl+7ZwG
-         822JAWeYe6mmShnlNe+3w9a9E6zM3uNUFl3UmOfQcu9iGoarOnZK7apI/XtfbETq+t
-         /CDQTwlqCjJFFU95yfPJmaMPAsbKfhQf7I/1N0C2wThamPXxadKR4cJ4TagwsYcwdh
-         FiOCN6flg/crQ==
-Date:   Thu, 21 Oct 2021 23:26:30 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 6/9] arm64: Recover kretprobe modified return address
- in stacktrace
-Message-Id: <20211021232630.94bea4540670cdab5a7a63c5@kernel.org>
-In-Reply-To: <20211021101512.GA16485@willie-the-truck>
-References: <163477765570.264901.3851692300287671122.stgit@devnote2>
-        <163477770935.264901.1772964361191833681.stgit@devnote2>
-        <20211021101512.GA16485@willie-the-truck>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229878AbhJUOaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 10:30:25 -0400
+Received: from zn.tnic (p200300ec2f1912003b8abe7004197216.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:1200:3b8a:be70:419:7216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CD0101EC0554;
+        Thu, 21 Oct 2021 16:28:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634826487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=rcU9vPUUzI5swHp7U/1X5pUaXTmEfV+1ihJzmOdAcOM=;
+        b=qMTa8TKwojdJWcWHU4iWnSB3q3yU5q61pMpG8GDVfyoMftwa8AJp8ju65Ond55BqBrHHZr
+        FaxndF/cbJqIyuqXkmPXxt8wD/vwcy/4fnPFK5VBwgfOiZMy6w8afPcPqpDhCVTNOfExBW
+        fnUfImp1INRySM74yPeOVphMoiw8cy0=
+Date:   Thu, 21 Oct 2021 16:28:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <YXF4914AczWoN8TK@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+ <YXBZYws8NnxiQJD7@zn.tnic>
+ <20211021003535.ic35p6nnxdmavw35@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211021003535.ic35p6nnxdmavw35@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 11:15:12 +0100
-Will Deacon <will@kernel.org> wrote:
+On Wed, Oct 20, 2021 at 07:35:35PM -0500, Michael Roth wrote:
+> Fortunately, all the code makes use of sev_status to get at the SEV MSR
+> bits, so breaking the appropriate bits out of sme_enable() into an earlier
+> sev_init() routine that's the exclusive writer of sev_status sounds like a
+> promising approach.
 
-> On Thu, Oct 21, 2021 at 09:55:09AM +0900, Masami Hiramatsu wrote:
-> > Since the kretprobe replaces the function return address with
-> > the kretprobe_trampoline on the stack, stack unwinder shows it
-> > instead of the correct return address.
-> > 
-> > This checks whether the next return address is the
-> > __kretprobe_trampoline(), and if so, try to find the correct
-> > return address from the kretprobe instance list. For this purpose
-> > this adds 'kr_cur' loop cursor to memorize the current kretprobe
-> > instance.
-> > 
-> > With this fix, now arm64 can enable
-> > CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE, and pass the
-> > kprobe self tests.
-> > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  Changes in v2:
-> >   - Add comment for kr_cur.
-> >   - Make the kretprobe related code depends on CONFIG_KRETPROBES.
-> >   - Initialize "kr_cur" directly in start_backtrace() instead
-> >     of clearing "frame" data structure by memset().
-> > ---
-> >  arch/arm64/Kconfig                  |    1 +
-> >  arch/arm64/include/asm/stacktrace.h |    4 ++++
-> >  arch/arm64/kernel/stacktrace.c      |    7 +++++++
-> >  3 files changed, 12 insertions(+)
-> 
-> Acked-by: Will Deacon <will@kernel.org>
+Ack.
 
-Thank you!
+> It makes sense to do it immediately after the first #VC handler is set
+> up, so CPUID is available, and since that's where SNP CPUID table
+> initialization would need to happen if it's to be made available in
+> #VC handler.
 
-> 
-> I'm not sure how you're planning to merge this, so please let me know if
-> you want me to queue any of the arm64 bits.
+Right, and you can do all your init/CPUID prep there.
 
-Ah, good question. Since this part depends on the first 3 patches and
-Steve's tracing tree, these should go through the tracing tree. Is that
-OK for you?
+> It may even be similar enough between boot/compressed and run-time kernel
+> that it could be a shared routine in sev-shared.c.
 
-(Or, wait for merging the current tracing tree and merge rest of them.
- but this will take a long time.)
+Uuh, bonus points! :-)
 
-Thank you,
+> But then again it also sounds like the appropriate place to move the
+> snp_cpuid_init*() calls, and locating the cc_blob, and since there's
+> differences there it might make sense to keep the boot/compressed and
+> kernel proper sev_init() routines separate to avoid #ifdeffery).
+>
+> Not to get ahead of myself though. Just seems like a good starting point
+> for how to consolidate the various users.
 
+I like how you're thinking. :)
+
+> Got it, and my apologies if I've given you that impression as it's
+> certainly not my intent. (though I'm sure you've heard that before.)
+
+Nothing to apologize - all good.
+
+> Agreed, if we need to check SEV MSR early for the purposes of SNP it makes
+> sense to move the overall SEV feature detection code earlier as well. I
+> should have looked into that aspect more closely before introducing the
+> changes.
+
+Thx.
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
