@@ -2,185 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB94436027
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B9343602A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 13:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhJUL1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 07:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhJUL07 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 07:26:59 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DA7C061749
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:24:44 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id d3so503743wrh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 04:24:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=823GhYmXbttbJwIVURhuPlV/kHfvN4T6Ehf+eMAd4qg=;
-        b=nfEfrSbCk1e42MxpttkQclQWIW+uGKdG0+QuvEJZcTOkz8qazuzf5znHkZAPhC2hU8
-         fsZmSzj21VYm0rLGPCAQsri62ycKeT1JWBOvqxD0LDbgmXKOJr9z3EdntJiRNDUdYrqH
-         4NFYkpq6ejFL8fDyiwRe932cdHINEFAe4B2BpWxcEFPZIb1T+VmZFn+vtnX1+h1PfFtC
-         Wt7h/3irpBfE4hMC6yezfWvv6EHZms1tONuiAwHoC7vpOXD4zyJ1ht7+5GXJ+Hcgco9S
-         cSOMGqXn6Sfr0iCGs+0KqHThxqQAjfZoix70tBXFaULNLMNWlETPB+BY7s6BBmDMFCjP
-         F8Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=823GhYmXbttbJwIVURhuPlV/kHfvN4T6Ehf+eMAd4qg=;
-        b=R35CxTToNzaQdRPuNH9g8c7/xKeL5XhyUFb0dePUNoyIr02QmBZLE1a6AR7oVWhWWV
-         Zdwd6NPFcmQT3sZOATmBW4j7i4VuXQVDT+5jZ2US8bZjmOUPHHWP6TFhf/hgVGree7Kq
-         UU5qIlIUxh7gKwilfj1pwr/DDl89nSwIRYwkHESuwCePXIj18AMQ+l+al+yUkt5DoJWZ
-         lVVFsRBhwkGGVJyQiawJOZXZKECVxe+B6UiEbJzXGwCW+CQQNyZ2xKkXyLxYHxIXBevD
-         jN9Dqvo61dRM0p/6ohtImEAnf3oiOI+mvcAk6/d3MO9hjlquPTlHlytCuAb5daByg/8I
-         w+4g==
-X-Gm-Message-State: AOAM533B5MYaHqJt+lr80bM4edHUkGALjlLxKKQzCPYf22VGdlpv0H/r
-        yENRkJnMC1Yvz+vlyQbirZAcLy2HL+oWhw1nbgwzHw==
-X-Google-Smtp-Source: ABdhPJw4/zb4/niggRe0zyZ/ENXV882FAHY78FWAaLNgfY/JPNI0A5fpTNtqBvIEMMQ4TnCeIIlENOKE9MKEK0amVZ4=
-X-Received: by 2002:adf:e60a:: with SMTP id p10mr6498325wrm.306.1634815482401;
- Thu, 21 Oct 2021 04:24:42 -0700 (PDT)
+        id S230354AbhJUL10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 07:27:26 -0400
+Received: from mail-eopbgr1310102.outbound.protection.outlook.com ([40.107.131.102]:31283
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230072AbhJUL1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 07:27:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZTrYnh3aVMTB7O29DKXgdd9QNNVg/YwYkYOlZ3XGyMzEDdxg6FQ+uqfYtp+d5Z8jqP4E4Qq6u7T4I8gJoyTNaAcGJns9+6kGMW3wbjmjEMVlg/kgVHrZ5vbG3d12y2Pysyk313tf6tqquUM6hr2ugLu5nU7m9LyJerBbrwM+bJp4ORiG8jZJ5hRemRjbFYGWSNu5enYSV269rJ6GSfHljt3G1BuV5DDGrbLPVlytdLhHj/+/ycPBCyzRXMJggntAW739Nqpi9DfF0QoaevoBP1wbs9iRM5S67Ho64R/Wg3gixDdyNncBX9PXrzc6QCrF6JrtV5db84dVYu3NNKXP2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wZXq6ygkNsrLJjXtGer1fvQZNjdjIaUbYKaj5NFk8RA=;
+ b=BhbGQILSHqANFiX2FEIorcg+y10zXYVj9+1Wh+VO4kLpmsuSHCzSSPiom3GyCEKy14vwp4giVGNIGj3hEa0a76onPyZHB5fgIXWLBCiMrIwH3S6zfCnljjvSsJcom2sS7U+oPGd4Y1r2A+DDTKGLY2zoiC2usz8VHiJHIuWGVthMdXNwOxd8GyEV411iFvMri46QlTEWpn96HaOvZOkC/MPmxyCPaGbrlluC1p/bx2GKWiFKhXaOgBx3JyxP1d5x5UHq91IZHj53pAHnKMX+kGmcFeOZCUQZOzHB7Ltf/tYbL4NU5ZYyddk9YqRr0MxGKj/Il7zYTnVFmhpfn9p7ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wZXq6ygkNsrLJjXtGer1fvQZNjdjIaUbYKaj5NFk8RA=;
+ b=mS6QBGHeS4tRRgx1AqqCYRlOaPO6wILTGUpZPspNTggt3ocqBzZhoVk6nzehaCf58akUefdqDq4yFnTXRo2tnY3JZQO5CQXhfYo/YnBeERZgtmnxpizKuDPv8xVU50ubW59hg6TeUlt5e8JcOHKW9KlDsbH9kfaDvIJ5M9OakAA=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB2779.apcprd06.prod.outlook.com (2603:1096:4:21::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.18; Thu, 21 Oct 2021 11:25:04 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
+ 11:25:04 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Xu Wang <vulab@iscas.ac.cn>, Wan Jiabing <wanjiabing@vivo.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] iio: adc: stm32-adc: Fix of_node_put() issue in stm32-adc
+Date:   Thu, 21 Oct 2021 07:24:49 -0400
+Message-Id: <20211021112452.9491-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR04CA0075.apcprd04.prod.outlook.com
+ (2603:1096:202:15::19) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
 MIME-Version: 1.0
-References: <20211021104536.1060107-1-ran.jianping@zte.com.cn>
-In-Reply-To: <20211021104536.1060107-1-ran.jianping@zte.com.cn>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 21 Oct 2021 16:54:29 +0530
-Message-ID: <CAAhSdy3DWOux6HiDU6fPazZUq=FOor8_ZEoqh6FBZru07NyxLQ@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V:KVM: remove unneeded semicolon Elimate the
- following coccinelle check warning: ./arch/riscv/kvm/vcpu_sbi.c:169:2-3:
- Unneeded semicolon ./arch/riscv/kvm/vcpu_exit.c:397:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu_exit.c:687:2-3: Unneeded semicolon ./arch/riscv/kvm/vcpu_exit.c:645:2-3:
- Unneeded semicolon ./arch/riscv/kvm/vcpu.c:247:2-3: Unneeded semicolon
- ./arch/riscv/kvm/vcpu.c:284:2-3: Unneeded semicolon ./arch/riscv/kvm/vcpu_timer.c:123:2-3:
- Unneeded semicolon ./arch/riscv/kvm/vcpu_timer.c:170:2-3: Unneeded semicolon
-To:     cgel.zte@gmail.com
-Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        ran jianping <ran.jianping@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Received: from localhost.localdomain (203.90.234.87) by HK2PR04CA0075.apcprd04.prod.outlook.com (2603:1096:202:15::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 11:25:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 985d6a5f-530d-4d35-109b-08d994856da9
+X-MS-TrafficTypeDiagnostic: SG2PR06MB2779:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR06MB27795CEE13D6FE6CC3CD2713ABBF9@SG2PR06MB2779.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: brLOAQMuP2YSwdPbhbCR6nqRyf/OaoGP7JkseL7PeTKhE5/fG9qlcaUUlBesOzSfam9NuWrFVp671HZhA41vPl0GNHZqPdUV1ERfLXD/+yhZ7bjOJGReSrPiGA5P0YH47ywoTaRathGfZ+fDzbJTsFDdUp8x37x+0HmO9blKj2pdXL4r/bbV3NvWTcbM/BV5IWmDaxmd3HxSsVvzJ3z2840cnsF9zEtT9hMmF/RJ04U2qD9DLAfBRy/W8AKA6J3Xa+A5w3HUgktxHmtz1mQih1cX3SpZr/cucNgGHqTbm1Hx8W/Lq6DIn9xo4N++Ee0Qde+gFN9857RVdvm3B2Fv2qx4PulvBhy2fRI6WYwj+XHi7bzdGZ0BTirmhomo4Ea8K6Toy09LyB67qMW/HTiK+QUFkIY6KdTRCT71zt3t/cLUuWzzNTn1cRX3B79ZeeavSOy4Biaj3MzvuzkKlZB7GIN75x/+AokJkSYsmC33LLqIjE6FA3SYw2DsXuzGfX/mHaE28XuUX5D5/PRjuK+8qYxJV2hoBtZRfmOgkDvO06f79SizTwTc6WWOlZDm+b6R1xhdMbosDwqEMqDi63DWWXaQj4blJYwSXDFlHlktJtHJCNavZ76YD9dbopQ1wtPeNz12a47cuBcxpM8QTNWERY7mjk/MpNYwGeaFmbX0TyWx1V7hbiHS8yAu7pCx2dm8neVmxmfXoQOG43OD8PksdJu3tlTed8KndmZhn4+E4fM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(316002)(38100700002)(186003)(38350700002)(66556008)(1076003)(66946007)(6512007)(110136005)(5660300002)(956004)(4744005)(4326008)(52116002)(7416002)(6666004)(6506007)(26005)(508600001)(2906002)(8676002)(66476007)(83380400001)(921005)(86362001)(8936002)(6486002)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aV8Ui46EVrgn+mcR/bBih+lnQ7+8cQOL5+cIrNhaGHt75DQVj5SYecLYKwYu?=
+ =?us-ascii?Q?TFwrtUIpBKo3TOg8s5pGpvxBB56lsuOOPg4lfZqBAt0Y/uwJQYklS2Jgui6j?=
+ =?us-ascii?Q?QmQ/2LDnxjZrCVqVMPpLy0iVa8SjuPOrPTtgLs+MKCaur7RSSP/i1PIOLfrN?=
+ =?us-ascii?Q?BVxNq951dsDI++k5yZ/m3Z3AfRiiyBE5K66QaKVmMK4KmiXy4r5tsZg4Vsho?=
+ =?us-ascii?Q?Qp5XR9qbsQHs66ouh7UUnXKgptepYi6VBjnHdVhCN+iUsxhV55QOQwL20Fts?=
+ =?us-ascii?Q?5fm+Oyjn4OZkkeEMXRqQEoMZ5fN0xtL2Zmg7lgNgXYI13HKb4KX1DnfDbyu4?=
+ =?us-ascii?Q?rZe0CfMvo5Q14v+b1YfR8ec+0E/ZGEkYZWoqRg3BQoBpdAppjhJ0Dg5KQrk+?=
+ =?us-ascii?Q?8D/Cr2Nn1rWTyAXCj3Uwa9r5DzRAC2Q6jjuY2qS28OFB4j+TJ/8h6s61SL1z?=
+ =?us-ascii?Q?uUfBybzvoaAtEumLimzGdDeFYoDgW1ceOh7ogmQXgx6nhbggS6e5Kx6SQMR6?=
+ =?us-ascii?Q?ke0DH4pu+XGtl4pdAo0298wfSqjZIYYsFVcf+Vhry4zkMPgaavhINEA/Alr+?=
+ =?us-ascii?Q?JxkjvNRyK7Nz0VtokEpG9/HCaXMD+0OgTwEMQP5SIDuGNARBxO3ikcN0vLu1?=
+ =?us-ascii?Q?NE3UoVa+ml6vtuNztQ8NAR7ZIdsD1EAy1WH+eT6UEZkthTHcHhFZm0Yh4Aue?=
+ =?us-ascii?Q?kc86nUD/PFWHc9gNSEy7+7dkeVv/TVcU4Eshr+t6v8bKFyrKe6X54WMxXqw1?=
+ =?us-ascii?Q?2pLb3e/wzMqy/PpJMenNjGqUnTw7073PYikXxl8rw17fTPuCgMn2S3KSCLqN?=
+ =?us-ascii?Q?xrK3GgUHSjk46yb3Df9Efhs4gg1kuY4STxjMX6ngbeEoECYKVzk4MI1Ue9fe?=
+ =?us-ascii?Q?QJg27xQbQEshvRI3teS79Baqe9OH42kS2sKSbOiOHqBm+zEu3WTV+KW8nsFc?=
+ =?us-ascii?Q?1Y9a2frb8xqvWy+WEl40RRZbKv+yUrouTXCqh/for1j7ZZU5NtBtDTXUCkaX?=
+ =?us-ascii?Q?/mhgh3AqGGMXKSYA5pnFF0DOgPeExUMjbem/5aFa66JbV6qqK31rK7Rnf/Rh?=
+ =?us-ascii?Q?jElufN5jZYfrvIOhIS4R0Z8GxY57o9eMxWq8ZbSLtyYVPIorIQT9A8p8DQ8/?=
+ =?us-ascii?Q?sBmcnOXH5Sa8FN01wR/ey4Gn5XES6SVLv5+p6SH7TdaOc+fu1kGd9KznZSPj?=
+ =?us-ascii?Q?hZZJy9RAH2HYBd25iIey869Xei1WkfwcuZ7mASFulbNqfG5o5iYery7AEiIM?=
+ =?us-ascii?Q?gwS1N/ZM2oQ8FpvL2PDlZkLYJqhWCLLCmUNo84JbdcRNigXmWarsdrhIlS7D?=
+ =?us-ascii?Q?Oj/shEI6WGQDp1kFVROWXPt7?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 985d6a5f-530d-4d35-109b-08d994856da9
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 11:25:04.3841
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 11126903@vivo.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2779
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 4:15 PM <cgel.zte@gmail.com> wrote:
->
-> From: ran jianping <ran.jianping@zte.com.cn>
+Fix following coccicheck warning:
+./drivers/iio/adc/stm32-adc.c:2014:1-33: WARNING: Function
+for_each_available_child_of_node should have of_node_put() before return.
 
-Reduce the length of patch subject (preferable around 70 characters)
-and move the rest of patch subject as patch description.
+Early exits from for_each_available_child_of_node should decrement the
+node reference counter. Replce return by goto here.
 
-Regards,
-Anup
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/iio/adc/stm32-adc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
-> ---
->  arch/riscv/kvm/vcpu.c       | 4 ++--
->  arch/riscv/kvm/vcpu_exit.c  | 6 +++---
->  arch/riscv/kvm/vcpu_sbi.c   | 2 +-
->  arch/riscv/kvm/vcpu_timer.c | 4 ++--
->  4 files changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-> index c44cabce7dd8..912928586df9 100644
-> --- a/arch/riscv/kvm/vcpu.c
-> +++ b/arch/riscv/kvm/vcpu.c
-> @@ -244,7 +244,7 @@ static int kvm_riscv_vcpu_get_reg_config(struct kvm_vcpu *vcpu,
->                 break;
->         default:
->                 return -EINVAL;
-> -       };
-> +       }
->
->         if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
->                 return -EFAULT;
-> @@ -281,7 +281,7 @@ static int kvm_riscv_vcpu_set_reg_config(struct kvm_vcpu *vcpu,
->                 break;
->         default:
->                 return -EINVAL;
-> -       };
-> +       }
->
->         return 0;
->  }
-> diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
-> index 13bbc3f73713..7f2d742ae4c6 100644
-> --- a/arch/riscv/kvm/vcpu_exit.c
-> +++ b/arch/riscv/kvm/vcpu_exit.c
-> @@ -394,7 +394,7 @@ static int emulate_store(struct kvm_vcpu *vcpu, struct kvm_run *run,
->                 break;
->         default:
->                 return -EOPNOTSUPP;
-> -       };
-> +       }
->
->         /* Update MMIO details in kvm_run struct */
->         run->mmio.is_write = true;
-> @@ -642,7 +642,7 @@ int kvm_riscv_vcpu_mmio_return(struct kvm_vcpu *vcpu, struct kvm_run *run)
->                 break;
->         default:
->                 return -EOPNOTSUPP;
-> -       };
-> +       }
->
->  done:
->         /* Move to next instruction */
-> @@ -684,7 +684,7 @@ int kvm_riscv_vcpu_exit(struct kvm_vcpu *vcpu, struct kvm_run *run,
->                 break;
->         default:
->                 break;
-> -       };
-> +       }
->
->         /* Print details in-case of error */
->         if (ret < 0) {
-> diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
-> index ebdcdbade9c6..eb3c045edf11 100644
-> --- a/arch/riscv/kvm/vcpu_sbi.c
-> +++ b/arch/riscv/kvm/vcpu_sbi.c
-> @@ -166,7 +166,7 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
->                 /* Return error for unsupported SBI calls */
->                 cp->a0 = SBI_ERR_NOT_SUPPORTED;
->                 break;
-> -       };
-> +       }
->
->         if (next_sepc)
->                 cp->sepc += 4;
-> diff --git a/arch/riscv/kvm/vcpu_timer.c b/arch/riscv/kvm/vcpu_timer.c
-> index ddd0ce727b83..5c4c37ff2d48 100644
-> --- a/arch/riscv/kvm/vcpu_timer.c
-> +++ b/arch/riscv/kvm/vcpu_timer.c
-> @@ -120,7 +120,7 @@ int kvm_riscv_vcpu_get_reg_timer(struct kvm_vcpu *vcpu,
->                 break;
->         default:
->                 return -EINVAL;
-> -       };
-> +       }
->
->         if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
->                 return -EFAULT;
-> @@ -167,7 +167,7 @@ int kvm_riscv_vcpu_set_reg_timer(struct kvm_vcpu *vcpu,
->         default:
->                 ret = -EINVAL;
->                 break;
-> -       };
-> +       }
->
->         return ret;
->  }
-> --
-> 2.25.1
->
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index 6245434f8377..7f1fb36c747c 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -2024,7 +2024,8 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+ 			if (strlen(name) >= STM32_ADC_CH_SZ) {
+ 				dev_err(&indio_dev->dev, "Label %s exceeds %d characters\n",
+ 					name, STM32_ADC_CH_SZ);
+-				return -EINVAL;
++				ret = -EINVAL;
++				goto err;
+ 			}
+ 			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
+ 			ret = stm32_adc_populate_int_ch(indio_dev, name, val);
+-- 
+2.20.1
+
