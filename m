@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B05436E30
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D55E436E31
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhJUXVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:21:42 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:36696 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbhJUXVk (ORCPT
+        id S232216AbhJUXVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:21:44 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:55159 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231183AbhJUXVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 Oct 2021 19:21:40 -0400
-Received: by mail-io1-f69.google.com with SMTP id x21-20020a0566022c5500b005ddd625f399so1565775iov.3
+Received: by mail-io1-f72.google.com with SMTP id f3-20020a5d8603000000b005dbf6d911e4so1532044iol.21
         for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:19:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7xis1CFt9o3RmZy4dt49zTPd9KTpfXh+qnwELqDjLco=;
-        b=vea25Q+/VktD0VWkFWdjDjcR7ykM6vGj/9OJEeLcAnvgAsqsl6X82cbGJOiI8em/Ky
-         nBDvkfAGg1NUvhaQITnFY0TYvDg4m+ljVqi/Kosew4uFFcYDnSVnOSPVqtckrWrnHh4y
-         xItmn4DnRL8po5sf16gY7C5jvivjzHrHV0J6pM8J1oyb2fzTtVZnJh5n8YRWz8ZLX2Fx
-         PavsPj8olrO9oFaVwYxZwzyfTGMJYZ5GwKVzOkKLTwa5JdyB6pV6W9nLTQ+skcuF9C4k
-         GZJUhLD/rPVF4aDkbd2ZgrB1P/0wUS37JEH5jqWHJYpFxJOsG9j6OpM+49Zkbg41kKC0
-         UO1w==
-X-Gm-Message-State: AOAM533fgjIbk05pj4AcaIKGQB+9O3HWNMiTT6Ci8I/QlnPoG9l8ZS8z
-        8o+YLY6dzXFdOA5N+So51MqJvwT6YF7nQKTC6fDBQQJun/7V
-X-Google-Smtp-Source: ABdhPJwnaBUwWj2OU1cPAblMDguTes/Mm8n6qwclplq/HNd/pOKxSRxZGyvk25OVD+R8Hu/flRfArCwGawOp9zMVlIMRdWsQMVew
+        bh=zNqTu4uMRk0iWztvQl/HZN3iKjuv/LembImAnbSpcvo=;
+        b=8EfT96LpPOpksrs03TKNoySjV1KUd+nieI8jL4u3jCuL1Wg/3sGDwV+eKQ0TxOyX7u
+         rS5umL86deD9+lOIIsc2LH9sMp1eppWrFz55zmNYXNFhcXv39rOIdhuQtJNMkx2JnPEp
+         BE9gDHljp2PKFS3KBqwjgSiamFDppmZTPganwMkOgn5QLxvTBZnpa6I07if5GAloAroI
+         Eyh8zrrYa1YiGO2cgXr0KB1lBkBDIxVuf8sTRXNI5CoE70LcTly6n1+yDVT/dnO6R6nb
+         u+ayXSy18U3OxWueEGK2E9XqLjYhNtUzXkQhQ2TGN3sS+bI/xOjBK7Z6CjGFYrVw7ZXG
+         ygDQ==
+X-Gm-Message-State: AOAM533XX2m0OkAy2lATWbt6+LVqsdTnSL7BNbB8WAAa/PpRVAQDrQH2
+        FgHIoEHZ9lsOGMZJLgJ1C2he5+buOq+w5PKYJnVEV3rLY7HN
+X-Google-Smtp-Source: ABdhPJxIKlRscXg0XNrEGTrtfckSCo1BWrEoxIjkCUYyTAtO2DK6AsRsrdBBlCzVJD8rGcveL0GuPDKiGOXo+lycOJOiZQeXPKUi
 MIME-Version: 1.0
-X-Received: by 2002:a6b:f614:: with SMTP id n20mr6198592ioh.134.1634858364062;
+X-Received: by 2002:a05:6e02:164d:: with SMTP id v13mr5331311ilu.10.1634858364316;
  Thu, 21 Oct 2021 16:19:24 -0700 (PDT)
 Date:   Thu, 21 Oct 2021 16:19:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000c522305cee520e6@google.com>
-Subject: [syzbot] WARNING in batadv_nc_mesh_free
-From:   syzbot <syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com>
+Message-ID: <00000000000010317a05cee52016@google.com>
+Subject: [syzbot] WARNING in batadv_v_ogm_free
+From:   syzbot <syzbot+b6a62d5cb9fe05a0e3a3@syzkaller.appspotmail.com>
 To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
         davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
         mareklindner@neomailbox.ch, netdev@vger.kernel.org,
@@ -52,48 +52,43 @@ syzbot found the following issue on:
 
 HEAD commit:    2f111a6fd5b5 Merge tag 'ceph-for-5.15-rc7' of git://github..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=115750acb00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=121d909f300000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=d95853dad8472c91
-dashboard link: https://syzkaller.appspot.com/bug?extid=28b0702ada0bf7381f58
+dashboard link: https://syzkaller.appspot.com/bug?extid=b6a62d5cb9fe05a0e3a3
 compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1026ef2cb00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c9c162b00000
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+28b0702ada0bf7381f58@syzkaller.appspotmail.com
+Reported-by: syzbot+b6a62d5cb9fe05a0e3a3@syzkaller.appspotmail.com
 
-RBP: 00007ffef262e230 R08: 0000000000000002 R09: 00007fddc8003531
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 ------------[ cut here ]------------
 ODEBUG: assert_init not available (active state 0) object type: timer_list hint: 0x0
-WARNING: CPU: 0 PID: 6517 at lib/debugobjects.c:508 debug_print_object lib/debugobjects.c:505 [inline]
-WARNING: CPU: 0 PID: 6517 at lib/debugobjects.c:508 debug_object_assert_init+0x1fa/0x250 lib/debugobjects.c:895
+WARNING: CPU: 0 PID: 9723 at lib/debugobjects.c:508 debug_print_object lib/debugobjects.c:505 [inline]
+WARNING: CPU: 0 PID: 9723 at lib/debugobjects.c:508 debug_object_assert_init+0x1fa/0x250 lib/debugobjects.c:895
 Modules linked in:
-CPU: 0 PID: 6517 Comm: syz-executor011 Not tainted 5.15.0-rc6-syzkaller #0
+CPU: 0 PID: 9723 Comm: syz-executor.5 Not tainted 5.15.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 RIP: 0010:debug_print_object lib/debugobjects.c:505 [inline]
 RIP: 0010:debug_object_assert_init+0x1fa/0x250 lib/debugobjects.c:895
 Code: e8 4b 15 b8 fd 4c 8b 45 00 48 c7 c7 a0 31 b4 8a 48 c7 c6 00 2e b4 8a 48 c7 c2 e0 33 b4 8a 31 c9 49 89 d9 31 c0 e8 b6 c6 36 fd <0f> 0b ff 05 3a 5c c5 09 48 83 c5 38 48 89 e8 48 c1 e8 03 42 80 3c
-RSP: 0018:ffffc90002c7e698 EFLAGS: 00010046
-RAX: cffa606352c78700 RBX: 0000000000000000 RCX: ffff888076ce9c80
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RSP: 0018:ffffc90015a06698 EFLAGS: 00010046
+RAX: ccc2ef1263c32100 RBX: 0000000000000000 RCX: 0000000000040000
+RDX: ffffc90015ff3000 RSI: 000000000003ffff RDI: 0000000000040000
 RBP: ffffffff8a512d00 R08: ffffffff81693402 R09: ffffed1017383f2c
 R10: ffffed1017383f2c R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88801bcd1720 R14: 0000000000000002 R15: ffffffff90ba5a20
-FS:  0000555557087300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+R13: ffff8880a4325898 R14: 0000000000000000 R15: ffffffff90bebb30
+FS:  00007fb87671b700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f5473f3c000 CR3: 0000000070ca6000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+CR2: 00005573fb61a270 CR3: 000000009b076000 CR4: 00000000003506f0
 Call Trace:
  debug_timer_assert_init kernel/time/timer.c:739 [inline]
  debug_assert_init kernel/time/timer.c:784 [inline]
  del_timer+0xa5/0x3d0 kernel/time/timer.c:1204
  try_to_grab_pending+0x151/0xbb0 kernel/workqueue.c:1270
  __cancel_work_timer+0x14c/0x710 kernel/workqueue.c:3129
- batadv_nc_mesh_free+0x4a/0xf0 net/batman-adv/network-coding.c:1869
- batadv_mesh_free+0x6f/0x140 net/batman-adv/main.c:245
+ batadv_v_ogm_free+0x2e/0xc0 net/batman-adv/bat_v_ogm.c:1076
+ batadv_mesh_free+0x67/0x140 net/batman-adv/main.c:244
  batadv_mesh_init+0x4e5/0x550 net/batman-adv/main.c:226
  batadv_softif_init_late+0x8fe/0xd70 net/batman-adv/soft-interface.c:804
  register_netdevice+0x826/0x1c30 net/core/dev.c:10229
@@ -112,14 +107,14 @@ Call Trace:
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fddc82bc7e9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffef262e228 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fddc82bc7e9
+RIP: 0033:0x7fb8791a5a39
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb87671b188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fb8792a8f60 RCX: 00007fb8791a5a39
 RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
-RBP: 00007ffef262e230 R08: 0000000000000002 R09: 00007fddc8003531
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+RBP: 00007fb87671b1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007fffd6c2d8ef R14: 00007fb87671b300 R15: 0000000000022000
 
 
 ---
@@ -129,5 +124,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
