@@ -2,157 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BA843672D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE7A436739
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbhJUQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbhJUQEe (ORCPT
+        id S231745AbhJUQGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:06:18 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:42126 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhJUQGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:04:34 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3597C061348
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:02:17 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id bq11so232353lfb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KoEd/tBzE8K8k0Q63eTfP8ygQVoQShnDO1n9okRZkWE=;
-        b=agyyWX7PReVwL1iLD3bEEH4KVzhAJe55KT609vtEt5ahGnRk+qzRs6FAPayp69pg1r
-         YZw32Mc6iMLC7tRIzt56LnhaOu3iO88Wo5D1K7ZdlwV9we3k01znAo4V95j1fr/TXHcs
-         dfpzwuUX7yX/iHGpEc6BBS/XMAd6OIwZiIBODicEaED5fLAaQeh8GyIrNjK3mDYaMFQP
-         r989zpttoIwTre7/osSdmxjUluvsqb/O7mGIzwM4nArk5j4mMRB/6VsMhQWl+L52Hnjq
-         A5fSG942hbn+7o2Cwx36gk5XPWk2elpCYD6Lr2yIM9tynRMhLZiPvSPYJVIq7DCJCSvG
-         mZbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KoEd/tBzE8K8k0Q63eTfP8ygQVoQShnDO1n9okRZkWE=;
-        b=ZgPLIQcS7ZMebFJuPdoc4hHGjRv5iNzgSRIkI/J/YWZbUpGtODWoniXH5EJJ80LsSa
-         thvxZ4Aa/KnPlNGdTRdWFTmpSPEmD4rs9sk41CBq9zfSFThGX1wEyy/0B8uZX9NwERTB
-         5loG1Yw/yYIvtp3VENM0Y6JacJQD49YyAD9w4wp4BL0B4cP1l8AmKI2M0SK5nCRZ6sxJ
-         vwsfgocHGCxqP2R+9xuJLBr2uQjA4yloBK6ly+wP2kjFf/8284BOY5rXL8votsyjGsbM
-         MlD9sgxSEUSqXZ/8Zm4QJ3Vnr55/zZMGdlSac/kNT/8qTz3IVwBSedY54hai7cxcN2z1
-         G3wA==
-X-Gm-Message-State: AOAM532rVarBJTXTb3vXJIFD7u1Ot+3ecFNdyXZhqrkxLdEweHSfF/xK
-        3BHd+OIgrlOmXiuOygnMFDlx6zfaqSSyw/W7d3TF6A==
-X-Google-Smtp-Source: ABdhPJz6J1itEiLJ3XJbjfN6YWYuCJknhwrspTZylJffYq4ne5/Ac6N05Fbr9QhNCsFddw3+E32DEE1WQpyP9ZJ+vzQ=
-X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr6297631lfb.71.1634832134320;
- Thu, 21 Oct 2021 09:02:14 -0700 (PDT)
+        Thu, 21 Oct 2021 12:06:17 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:35474)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdaXv-00HaQf-KY; Thu, 21 Oct 2021 10:04:00 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:53576 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mdaXu-0040hU-BR; Thu, 21 Oct 2021 10:03:59 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>, Alexey Gladkov <legion@kernel.org>,
+        Rune Kleveland <rune.kleveland@infomedia.dk>,
+        Yu Zhao <yuzhao@google.com>,
+        Jordan Glover <Golden_Miller83@protonmail.ch>,
+        Antoine Martin <antoine@nagafix.co.uk>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Date:   Thu, 21 Oct 2021 11:02:14 -0500
+Message-ID: <877de6e589.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210517155458.1016707-1-sudeep.holla@arm.com>
- <CAPDyKFr=pf-0JbkiD6rkzeWwPZmDxEE_R=ovhzRUHfVjO9S0tw@mail.gmail.com>
- <20211014145555.uoi2hyoonrptrd5m@bogus> <CAPDyKFppiogQ5GLQJCqvYGfDQ80HrLLiv43o4H4WBW0PqyONNg@mail.gmail.com>
- <CAL_Jsq+Xb-MX4dkebARFJ_qHyFUWyPJ1WDZLQkUKA5ALsSHsgg@mail.gmail.com>
- <CAPDyKFosEGWpCEGOEpym_COFNhUr7_Qa=rzst3ObUUqcgdSnqA@mail.gmail.com> <20211021133318.74f4tdwpishicefb@bogus>
-In-Reply-To: <20211021133318.74f4tdwpishicefb@bogus>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Oct 2021 18:01:37 +0200
-Message-ID: <CAPDyKFrf729xb92QXZw34wTYYQwEEtVKayvmSUAXtqWhPOBN4A@mail.gmail.com>
-Subject: Re: [PATCH v4] dt-bindings: dvfs: Add support for generic performance domains
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hector Yuan <hector.yuan@mediatek.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1mdaXu-0040hU-BR;;;mid=<877de6e589.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/uk6fZ9fKMIhVQwLtrU1ESPIYghum/oa8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMSubMetaSxObfu_03,XMSubMetaSx_00
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 630 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 12 (1.9%), b_tie_ro: 10 (1.6%), parse: 0.89
+        (0.1%), extract_message_metadata: 3.6 (0.6%), get_uri_detail_list:
+        1.48 (0.2%), tests_pri_-1000: 4.2 (0.7%), tests_pri_-950: 1.43 (0.2%),
+        tests_pri_-900: 1.10 (0.2%), tests_pri_-90: 179 (28.4%), check_bayes:
+        176 (28.0%), b_tokenize: 6 (1.0%), b_tok_get_all: 6 (0.9%),
+        b_comp_prob: 2.8 (0.4%), b_tok_touch_all: 157 (24.9%), b_finish: 1.01
+        (0.2%), tests_pri_0: 392 (62.2%), check_dkim_signature: 0.53 (0.1%),
+        check_dkim_adsp: 2.7 (0.4%), poll_dns_idle: 0.80 (0.1%), tests_pri_10:
+        3.6 (0.6%), tests_pri_500: 24 (3.7%), rewrite_mail: 0.00 (0.0%)
+Subject: [GIT PULL] ucount fixes for v5.15
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 at 15:33, Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Thu, Oct 21, 2021 at 03:13:30PM +0200, Ulf Hansson wrote:
-> > On Wed, 20 Oct 2021 at 14:11, Rob Herring <robh@kernel.org> wrote:
-> > >
->
-> [...]
->
-> > > 'power domains' in DT is supposed to mean physical power islands in
-> > > the h/w where as genpd can be whatever you want. Are power and
-> > > performance domains always 1:1?
-> >
-> > I wouldn't say that "power domains" *must* correspond to physical
-> > power islands. At least, that's not the way the bindings are being
-> > used. For example, if it makes better sense to keep some of the logic
-> > in FW, rather than describing a complete topology in DT, that should
-> > be perfectly fine.
-> >
->
-> I agree. The DT must either have h/w view or f/w view of the topology
-> and not both(that is inviting more trouble in terms of bindings as well
-> as handling it in the OSPM).
->
-> > Additionally, I am not suggesting that "performance domains" and
-> > "power domains" must map 1:1. A device can be performance managed
-> > through one domain and power managed by another, that would be
-> > perfectly fine to me.
->
-> I don't understand what you mean by that. Do you expect to create a genpd
-> with no power domain ops and just performance ops to deal with scenario
-> I have been presenting(i.e. power domains for a set of devices(CPUs in
-> particular) aren't exposed to OSPM while performance domains are).
 
-Yes, but only if that would make sense, of course.
+Linus,
 
-If it matters, the performance states and idle states in genpd are
-supported as two orthogonal states.
+Please pull the ucount-fixes-for-v5.15 branch from the git tree:
 
->
-> I really don't like to create psuedo/dummy power domains with no useful
-> info(as f/w hides or abstracts it) just to represent the performance
-> domains.
+  git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git ucount-fixes-for-v5.15
 
-I assume you mean creating dummy *genpds* - and yes that seems very
-silly, I agree.
+  HEAD: 5ebcbe342b1c12fae44b4f83cbeae1520e09857e ucounts: Move get_ucounts from cred_alloc_blank to key_change_session_keyring
 
-We shouldn't do that, unless we can make use of them in some clever
-way to avoid open coding, but that's an entirely different question,
-unrelated to DT.
+There has been one very hard to track down bug in the ucount code that
+we have been tracking since roughly v5.14 was released.  Alex managed to
+find a reliable reproducer a few days ago and then I was able to
+instrument the code and figure out what the issue was.
 
->
-> Also with CPUs you can imagine all sort of combinations like:
-> 1. cluster level perf domain + cpu level power domains
-> 3. cluster level perf domain + cluster level power domains
-> 2. cpu level perf domain + cpu level power domains
-> 4. cpu level perf domain + cluster level power domains
->
-> + power domains not available to OSPM in all the 4 combo.
->
-> So I am really struggling to visualise a way to represent these based
-> on your suggestion.
+It turns out the sigqueue_alloc single atomic operation optimization did
+not play nicely with ucounts multiple level rlimits.  It turned out that
+either sigqueue_alloc or sigqueue_free could be operating on multiple
+levels and trigger the conditions for the optimization on more than one
+level at the same time.
 
-For perf domains, we could model this in DT as one power domain for
-performance, per CPU, but without a cluster power domain for the
-performance, as that seems to be managed in FW. Note that, this
-doesn't mean we need to create genpds and hook up devices to them.
+To deal with that situation I have introduced inc_rlimit_get_ucounts
+and dec_rlimit_put_ucounts that just focuses on the optimization and
+the rlimit and ucount changes.
 
-I guess this would map 1:1 towards how the "performance-domains"
-binding is intended to be used, right?
+While looking into the big bug I found I couple of other little issues
+so I am including those fixes here as well.
 
-One thing though, for PSCI we distinguish the power domains, by
-specifying "power-domain-names = "psci" in DT. Similar to this, we
-would then need to come up with another power-domain-name, to map it
-to a "performance domain". Mostly to cover future compatibility
-issues.
 
-So, to summarize (thanks for a good discussion!), I will not insist on
-deprecating the recently introduced "performance domains" binding. I
-leave the call to you! However, to me, it still looks like the
-power-domains binding could be used to support "performance" as well.
-Especially, as we already have other cpufreq drivers [1] supporting
-them.
+When I have time I would very much like to dig into process ownership of
+the shared signal queue and see if we could pick a single owner for the
+entire queue so that all of the rlimits can count to that owner.  Which
+should entirely remove the need to call get_ucounts and put_ucounts
+in sigqueue_alloc and sigqueue_free.  It is difficult because Linux
+unlike POSIX supports setuid that works on a single thread.
 
-Kind regards
-Uffe
+Eric W. Biederman (4):
+      ucounts: Fix signal ucount refcounting
+      ucounts: Pair inc_rlimit_ucounts with dec_rlimit_ucoutns in commit_creds
+      ucounts: Proper error handling in set_cred_ucounts
+      ucounts: Move get_ucounts from cred_alloc_blank to key_change_session_keyring
 
-[1]
-Documentation/devicetree/bindings/opp/qcom-nvmem-cpufreq.txt
+ kernel/cred.c                | 9 ++++-----
+ security/keys/process_keys.c | 8 ++++++++
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
+Eric
