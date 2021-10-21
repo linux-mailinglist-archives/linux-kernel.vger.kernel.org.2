@@ -2,74 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40406436D56
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 00:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510BF436D5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 00:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhJUWTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 18:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        id S231515AbhJUWXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 18:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhJUWTy (ORCPT
+        with ESMTP id S231607AbhJUWW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 18:19:54 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FED1C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 15:17:38 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id j3so2299866ilr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 15:17:38 -0700 (PDT)
+        Thu, 21 Oct 2021 18:22:57 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205C5C061348
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 15:20:41 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id s1so1370575plg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 15:20:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8JFy7nFsjIZMNP55uGrDmjFd/aEPAClHyZ68A9qIzVE=;
-        b=VJwXc/ZVC5CUZLkHTjDIByqxk5osMjMN7h7aQ4J8h2tVLelV6+hHSg+C2fokH63IV0
-         6JjDH/+k5hm0Wa1zOJXr2CtT1rw9Lgx1csFLw3rv8uetX5qnOvKAbqoppOk/1X0LmjA9
-         LanSgLt48Y39s8M8eesZLBiMbRx19FJy59O8IPJUMsWnL2F2GFH6rtTTW/3nMhZi9W1e
-         4N7ux1NhoDX4WxiT0SAi/V0RVpLO3T+fYGet6HzBsQja/TGUMBu+LiBHSbFa/BgP2WAp
-         E4FYFyh7yYK5WrrEqW2W5acuqzjvt35tqac/WwS/8wKTwlHWDW97PHeBzVrOiQrh0mP3
-         PXQA==
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tSebnyNuofgB+vH+7uyEvZ4tUVxD1t6yZgP5DdCdt6U=;
+        b=F7yvuj7nSVzEl2W8Oqbp8atFxmQ6r9Dbqs8V0fbJgxGY00MyLd4k7jqKWORSw8mHY3
+         IxDvRVo4cDtbcTi+/kKA0Egwg6fwcXP4oiOtpnrGNLmO/C442vDZiAmDs7CTs8KbHnL0
+         kCfPRr95kbaIPqVIEMaFt3kyXUmXLF1FErwp9s/A5nE3+S3NMzLTtwdHdwqBgOjYLvX6
+         WYBTP6OervOJQWbY/Vx42YzjOvR/cqpxNWYc3dmwBm4LRWFBE/nHVqb6lPrrGCjmZ/nt
+         d5x2bQUiW2+vfgaGS/ipy/W+4F2BD7/kMrpChjIWchBsBRmebimx5o7b+OPOqd72o4oe
+         ThBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8JFy7nFsjIZMNP55uGrDmjFd/aEPAClHyZ68A9qIzVE=;
-        b=rVIKIm7Nnmw6D2WdSb/dwbV8vwPvGOycib0K5djj7tnaiaGnRp1hMovpKn7JQ93COw
-         l92GfT5n/SBTLrUVZd1h2/R3TY+Z+/ULdA2WY8FvtnhJzkbSuVo5gRYg7U+eXE3CZ6rY
-         BofGzJ6RPbNfOlrcznPRXbvaGLskTwN9KH0vNWOVHeDQeswF3mbMYYabcNYTMOG7Cbkw
-         NFwpHwTBvGS9gy7FVMeaNiXS05A2ZVNPL86vyZcnhxo99bqYurnVFFsz419cDn4OR8N+
-         LIGPyIbIeUi03z9x3oodHBXUisVrduyZL4NBVWS/plQtf0uGHsV58o/49U3GKHVkgxHk
-         RkuA==
-X-Gm-Message-State: AOAM530z7DN0+WZ2gDi7zOcvHIhfJWyFp1m06467RO6a6jWOOIaS3Kdl
-        x5djRhEbJCQSr24rQ+3tXQ6P/658MZqloRDJK0woFafb
-X-Google-Smtp-Source: ABdhPJx0mfzu48SPB409ri8FD8LFbjnP++KB5aUwmbGYPDe4M7XG//1LxRB/ZWhs2SmvBnpWShOtDJW+arZBbnD1TMY=
-X-Received: by 2002:a05:6e02:2141:: with SMTP id d1mr5461706ilv.5.1634854657619;
- Thu, 21 Oct 2021 15:17:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tSebnyNuofgB+vH+7uyEvZ4tUVxD1t6yZgP5DdCdt6U=;
+        b=XtsfJjdCy1oxTw8UTEA02ottI/miV5CvBSDqF+dw4f4Ii7pV6V3VUtE6rHbPqxoI8b
+         JZ/3AisqISSKgApG1i0cMGd9hg0lUgUgCVjVgk6RxwBXlwFsZbFgatXab7H91Yh2oiiP
+         /6dfEpVFlNY+SWBsdETSxcmfiOW+2rIm/TtfTb6O3tU1JJsD35yseabHMWSGGlGrcas+
+         Y6/DBHIyVNniq9Oic+JtrEuQ5/bfkqy/9xS9yUt0gOyO1UKMHydS+Gdm8TIxKeT4oKvl
+         FpMYFl3Cmzo0axE7g60boAPPSNUF8uDB1FuXaopmdKz1iO90DZxTKDO0yVkwtqHGRfg7
+         HjFg==
+X-Gm-Message-State: AOAM531X5XeIn6GubcVtAUeCZPfIpsOc78ZS+3muU+GBChvNHW35XU14
+        TQwXgzUh96Q9bU/56CucTbbSNQ==
+X-Google-Smtp-Source: ABdhPJwPCYMB5mXDn/964xDyH1fZwMCe0wUF+PkkOcGHAMNid1VUJ2pJtdpAOgiix5LMUW5jc9KZFg==
+X-Received: by 2002:a17:90b:1041:: with SMTP id gq1mr9693769pjb.31.1634854840491;
+        Thu, 21 Oct 2021 15:20:40 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:69a9])
+        by smtp.gmail.com with ESMTPSA id n22sm6962317pjv.22.2021.10.21.15.20.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 15:20:40 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 15:20:36 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-cachefs@redhat.com, ceph-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        v9fs-developer@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/67] fscache: Rewrite index API and management system
+Message-ID: <YXHntB2O0ACr0pbz@relinquished.localdomain>
+References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-References: <20210729072628.68838-1-denghuiquan@cdjrlc.com>
-In-Reply-To: <20210729072628.68838-1-denghuiquan@cdjrlc.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 22 Oct 2021 00:17:26 +0200
-Message-ID: <CANiq72=stJrc8iRTyFuPVc2_3tmDj-a78y=Nb0+fFYtqEqJ3MA@mail.gmail.com>
-Subject: Re: [PATCH] auxdisplay: code indent should use tabs where possible
-To:     Huiquan Deng <denghuiquan@cdjrlc.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 9:27 AM Huiquan Deng <denghuiquan@cdjrlc.com> wrote:
->
->  static int cfag12864bfb_probe(struct platform_device *device)
->  {
-> +       struct fb_info *info = framebuffer_alloc(0, &device->dev);
->         int ret = -EINVAL;
-> -       struct fb_info *info = framebuffer_alloc(0, &device->dev);
+On Mon, Oct 18, 2021 at 03:50:15PM +0100, David Howells wrote:
+> 
+> Here's a set of patches that rewrites and simplifies the fscache index API
+> to remove the complex operation scheduling and object state machine in
+> favour of something much smaller and simpler.  It is built on top of the
+> set of patches that removes the old API[1].
+> 
+> The operation scheduling API was intended to handle sequencing of cache
+> operations, which were all required (where possible) to run asynchronously
+> in parallel with the operations being done by the network filesystem, while
+> allowing the cache to be brought online and offline and interrupt service
+> with invalidation.
+> 
+> However, with the advent of the tmpfile capacity in the VFS, an opportunity
+> arises to do invalidation much more easily, without having to wait for I/O
+> that's actually in progress: Cachefiles can simply cut over its file
+> pointer for the backing object attached to a cookie and abandon the
+> in-progress I/O, dismissing it upon completion.
+> 
+> Future work there would involve using Omar Sandoval's vfs_link() with
+> AT_LINK_REPLACE[2] to allow an extant file to be displaced by a new hard
+> link from a tmpfile as currently I have to unlink the old file first.
 
-Applied, thanks!
+I had forgotten about that. It'd be great to finish that someday, but
+given the dead-end of the last discussion [1], we might need to hash it
+out the next time we can convene in person.
 
-Having said that, I fixed the patch to avoid moving the line above around `ret`.
-
-Cheers,
-Miguel
+1:https://lore.kernel.org/linux-fsdevel/364531.1579265357@warthog.procyon.org.uk/ 
