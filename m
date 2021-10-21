@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743D743688F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5987D436892
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhJURDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:03:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43269 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230288AbhJURDW (ORCPT
+        id S232118AbhJURDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232055AbhJURDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:03:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634835666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 21 Oct 2021 13:03:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFECC061764;
+        Thu, 21 Oct 2021 10:01:16 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 17:01:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634835674;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=C45rcZRW+kLqjdpIuOhUQvD5FAcBsxSwvOw5uYjICgo=;
-        b=XYUjqe38+vPZJ9NokFqSWpW7qWb27o1NKarW7suzJ9MfTudHjj0pT/tp8gdXQ/O9b6DtJV
-        F6ENg/hYkIodzHmTphqHrdAFwyRWV1hZTyYbbaX3lexKnGUBKURnZ4U6uS9GuKvv+mvYL0
-        S+5+QrxDeLU02VZ6n8+N7E8fnRIhWUI=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-RsWd4EZPOwm2k2zODq5ykQ-1; Thu, 21 Oct 2021 13:01:05 -0400
-X-MC-Unique: RsWd4EZPOwm2k2zODq5ykQ-1
-Received: by mail-ed1-f71.google.com with SMTP id f4-20020a50e084000000b003db585bc274so976728edl.17
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:01:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=C45rcZRW+kLqjdpIuOhUQvD5FAcBsxSwvOw5uYjICgo=;
-        b=0JkuTN5HaiVG3w6EHQwKs94k/5XRd7njhsjmryF6jkzmmKxCOI/Yf/FRCpkFmE2kl3
-         IJFwbzBEszKPKTcdmv3cHAVMS3G31gVJj7ERMWm+Gn4PT7VRa95OZatNd8HoebJ7wSn+
-         hW4fi9Kc93tjQxOsbj9Zoxzo18hLeP7/QRX9RiXPH8IwnL6n63KiZ6O/T9FLwMLyliHh
-         8QV9SjVbkLmAvUyvb89ogIBoznrDxROdUD3yhQLXCrrsWt3V9D06cKiuw6jJy3RFHRYP
-         0A80w3X+fm0VBCoT23fWbC/o8aL13sUDpEwe/4DOPCBIXUC8j5e/ifxFTEiJKBdfyEcR
-         b0gA==
-X-Gm-Message-State: AOAM532sRZ5j0QI7ToUyJ7aw6mXL8Xf0kvEp+nrbqbGf+uUPdbsXgjFV
-        eFeU/8O90wvp3rURjhV47cgynZoSTHofOgUAbpIaOrTlO5IaY50RjzaiVcng9XMu8p3qRq3pLNI
-        5qMk579Xv2elbdb8r4YNASE/g
-X-Received: by 2002:a05:6402:4256:: with SMTP id g22mr9128970edb.399.1634835663941;
-        Thu, 21 Oct 2021 10:01:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIDbn5BCIQe+EkVqvY9JP9XuhGRY7LsAzAyuI3Rha7kLn51b9yeCcCYREGW3hH7MObChkzhA==
-X-Received: by 2002:a05:6402:4256:: with SMTP id g22mr9128934edb.399.1634835663780;
-        Thu, 21 Oct 2021 10:01:03 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id f7sm3069873edl.33.2021.10.21.10.01.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 10:01:02 -0700 (PDT)
-Message-ID: <19578a3b-e624-4002-81b0-d0346abee2f7@redhat.com>
-Date:   Thu, 21 Oct 2021 19:01:01 +0200
+        bh=Y4KXP+7kFTsp1r9qgHCtI86+ZPr0zgBW2ptc8Svkzdo=;
+        b=HDFZ1Mg+hcenYEB3lpwCnWAEZH/uqnyvSbiqmjiDyVtiysNtQY/WiOkUnaR67Xq6fzwnMX
+        7avnUddrKLxJglYB9FZ63wX4r7MDflLd1F2XdiheQ84kqxApf7Sp8Wp3bThw2BvtHgw9ky
+        S9x8HxATzaoTH606eMbKGqEzSVdRdhB2lG3Q/VR1CvcQagIM4PnPoG1yKO6X+Xo7/ZRPX1
+        0EabjqAEc2/Z5pTPDGaE40AnbqEnK//dCn/Sfm8m4o06gytGbrAJkXkxsEEj4psmY2SrQD
+        n9FXkgxPt4Jko0FIeVuddczFiXHwKuBdRniTuLru92SE22FmHfD3jNSwl4mKDQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634835674;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y4KXP+7kFTsp1r9qgHCtI86+ZPr0zgBW2ptc8Svkzdo=;
+        b=dpdf9wT+xvVaQHUgZt45mRJBy03eHpdykf2IEMt+i+PMHk9DQfpiwn69DjZMOuXh9SLzor
+        jXQk1HtX4Am5/TDg==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/sev: Allow #VC exceptions on the VC2 stack
+Cc:     Xinyang Ge <xing@microsoft.com>, Joerg Roedel <jroedel@suse.de>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211021080833.30875-3-joro@8bytes.org>
+References: <20211021080833.30875-3-joro@8bytes.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 2/2] KVM: SEV: Flush cache on non-coherent systems before
- RECEIVE_UPDATE_DATA
-Content-Language: en-US
-To:     Ashish Kalra <Ashish.Kalra@amd.com>, seanjc@google.com
-Cc:     brijesh.singh@amd.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcorr@google.com, masa.koz@kozuka.jp, pgonda@google.com,
-        thomas.lendacky@amd.com, vkuznets@redhat.com, wanpengli@tencent.com
-References: <20210914210951.2994260-3-seanjc@google.com>
- <61709f42.1c69fb81.3b49.ecfeSMTPIN_ADDED_BROKEN@mx.google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <61709f42.1c69fb81.3b49.ecfeSMTPIN_ADDED_BROKEN@mx.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <163483567370.25758.13898594300411975356.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/21 00:58, Ashish Kalra wrote:
-> From: Sean Christopherson <seanjc@google.com>
-> 
-> Hello Paolo,
-> 
-> I am adding a SEV migration test as part of the KVM SEV selftests.
-> 
-> And while testing SEV migration with this selftest, i observed
-> cache coherency issues causing migration test failures, so really
-> need this patch to be added.
-> 
-> Tested-by: Ashish Kalra <ashish.kalra@amd.com>
-> 
+The following commit has been merged into the x86/sev branch of tip:
 
-Queued for 5.15, thanks.
+Commit-ID:     ce47d0c00ff5621ae5825c9d81722b23b0df395e
+Gitweb:        https://git.kernel.org/tip/ce47d0c00ff5621ae5825c9d81722b23b0df395e
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Thu, 21 Oct 2021 10:08:33 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 21 Oct 2021 18:29:36 +02:00
 
-Paolo
+x86/sev: Allow #VC exceptions on the VC2 stack
 
+When code running on the VC2 stack causes a nested VC exception, the
+handler will not handle it as expected but goes again into the error
+path.
+
+The result is that the panic() call happening when the VC exception
+was raised in an invalid context is called recursively. Fix this by
+checking the interrupted stack too and only call panic if it is not
+the VC2 stack.
+
+ [ bp: Fixup comment. ]
+
+Fixes: 0786138c78e79 ("x86/sev-es: Add a Runtime #VC Exception Handler")
+Reported-by: Xinyang Ge <xing@microsoft.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20211021080833.30875-3-joro@8bytes.org
+---
+ arch/x86/kernel/sev.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index a6895e4..2de1f36 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -1319,13 +1319,26 @@ static __always_inline void vc_forward_exception(struct es_em_ctxt *ctxt)
+ 	}
+ }
+ 
+-static __always_inline bool on_vc_fallback_stack(struct pt_regs *regs)
++static __always_inline bool is_vc2_stack(unsigned long sp)
+ {
+-	unsigned long sp = (unsigned long)regs;
+-
+ 	return (sp >= __this_cpu_ist_bottom_va(VC2) && sp < __this_cpu_ist_top_va(VC2));
+ }
+ 
++static __always_inline bool vc_from_invalid_context(struct pt_regs *regs)
++{
++	unsigned long sp, prev_sp;
++
++	sp      = (unsigned long)regs;
++	prev_sp = regs->sp;
++
++	/*
++	 * If the code was already executing on the VC2 stack when the #VC
++	 * happened, let it proceed to the normal handling routine. This way the
++	 * code executing on the VC2 stack can cause #VC exceptions to get handled.
++	 */
++	return is_vc2_stack(sp) && !is_vc2_stack(prev_sp);
++}
++
+ static bool vc_raw_handle_exception(struct pt_regs *regs, unsigned long error_code)
+ {
+ 	struct ghcb_state state;
+@@ -1406,7 +1419,7 @@ DEFINE_IDTENTRY_VC_KERNEL(exc_vmm_communication)
+ 	 * But keep this here in case the noinstr annotations are violated due
+ 	 * to bug elsewhere.
+ 	 */
+-	if (unlikely(on_vc_fallback_stack(regs))) {
++	if (unlikely(vc_from_invalid_context(regs))) {
+ 		instrumentation_begin();
+ 		panic("Can't handle #VC exception from unsupported context\n");
+ 		instrumentation_end();
