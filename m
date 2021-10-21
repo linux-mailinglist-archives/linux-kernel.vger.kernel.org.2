@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04C04369AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC304369AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhJURtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbhJURt3 (ORCPT
+        id S232464AbhJURuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:50:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60066 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232380AbhJURt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:49:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF08C061225;
-        Thu, 21 Oct 2021 10:46:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ar6Nln+iCTz4ULZ5bzZwdi/BNywgNiInR3KbeYJPJFk=; b=AEimvyF3sRUECrII1PM+N3udi6
-        28GlMX49irZ0MwupJsdmWUAxWVRy4DDOl8pwbTMvpmEi/hh/dz3dlkCTJwH8dJRvOx981O7pIREJc
-        MmWq8Hwe+cpNZg9q/zM8Y4dpt3iGgqJ5237scd62OU0D1e9NmnW9r9jp7mDh5G3Xc81+Ebsq4YkmC
-        pV5z/FAFKorXY+5BkFlRSDuvAyt/A6W8ZB2n8njjAqfeWmVur7XBaS2IfaZU2bdhr5s8wHP775wLy
-        WIJSglVVErcW/ERCpOeVEuK4VGoiTbQn/HalF0ZNtCLrFyQV/nlMbz/1L0kU3ijTCJeaungNq/72p
-        YGKa42eg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mdc9S-008YZ0-Fj; Thu, 21 Oct 2021 17:46:50 +0000
-Date:   Thu, 21 Oct 2021 10:46:50 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 0/4] zram: fix two races and one zram leak
-Message-ID: <YXGnijd+Ca+bWJZs@bombadil.infradead.org>
-References: <20211020015548.2374568-1-ming.lei@redhat.com>
- <YXCMtRVXrGOec6OR@google.com>
- <YXGl4v1cMJtCLg2d@bombadil.infradead.org>
+        Thu, 21 Oct 2021 13:49:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634838460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RBfAVrB74SlDq2h9NJPSX6K7Aqze9lO+g3JyEdnqq0o=;
+        b=RfpAMBhUP5ZeRyOZSbzd7ezoUO6kvRrYHjc6nPYNquZkBge7Z2/0ct8ho2FuTUxznApONN
+        QGekxR8m6Wh7OVNdEi5xtt7EqaOgWEpalWeAxF6me/7varl72tctx6paWl4kleD1p1B2oE
+        EYv6OkU5jY+yLSi/l6igR+fRwpeNxcs=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-51-qtzEXKVDPL2U7KWk4pQOyg-1; Thu, 21 Oct 2021 13:47:39 -0400
+X-MC-Unique: qtzEXKVDPL2U7KWk4pQOyg-1
+Received: by mail-ed1-f69.google.com with SMTP id r25-20020a05640216d900b003dca3501ab4so1114754edx.15
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:47:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=RBfAVrB74SlDq2h9NJPSX6K7Aqze9lO+g3JyEdnqq0o=;
+        b=KPq3V7IeS20uAWq1Yd8xVByKzynx3OzFynBO9kDv+vTQKzRIAj1oGY3wyntO87YZlq
+         MEnHJpV8FV/+prv6Ev2rA3OqpnBaZLMM1azC4lswZi84ljS3YSWg5CqsGlsyATPUfWu1
+         ZLulhyAfeVeHw+paRPEcyYQHtNfrYf7FTN0d2hBky1DdSE7HLCaYcjNF+1hHut5Y1dei
+         7EggSqKwFp7H+4B8xO2s1KGpK73ux1bPF96b34M4RBqhKglVWOQfTQ/CF24wgZRj1hd0
+         Ym5Rls6JdRWchP7DBsyPzYcT5Z+Od1/NAK4EffXs/PSnU3WuJlYW3IRoErGsy8Yif6lV
+         stKQ==
+X-Gm-Message-State: AOAM530HF2AlAwLQKxEvrtM2J4ZYnREQ1V7lbMp1pJPNmQ6FCaQ1FSoC
+        /dGyGJY9Mu783LED0t3rDbbs5rv23auA7HNI7JthYZrmQjdvn6kKZLKEI0QmCurOCPa0Nm3l3BA
+        q7qZ/F+wUNB1B427VqvWk1f0nXDR4pcGjrqlZr1GCj0cne76Y9X1SRs+pHuZ27o2IDoWtocH272
+        y5
+X-Received: by 2002:a05:6402:5209:: with SMTP id s9mr9387325edd.250.1634838458502;
+        Thu, 21 Oct 2021 10:47:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyozM7RYS3i1RxKK7/0nw1ZHM3yaMyHXPKQ7O7RuXaEgIeNvfeqoaeF55tmEtZS7kqr9HaGXA==
+X-Received: by 2002:a05:6402:5209:: with SMTP id s9mr9387290edd.250.1634838458241;
+        Thu, 21 Oct 2021 10:47:38 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id d18sm3286859ejo.80.2021.10.21.10.47.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 10:47:37 -0700 (PDT)
+Message-ID: <435767c0-958d-f90f-d11a-cff42ab1205c@redhat.com>
+Date:   Thu, 21 Oct 2021 19:47:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXGl4v1cMJtCLg2d@bombadil.infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 0/8] KVM: SEV-ES: fixes for string I/O emulation
+Content-Language: en-US
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     fwilhelm@google.com, seanjc@google.com, oupton@google.com
+References: <20211013165616.19846-1-pbonzini@redhat.com>
+In-Reply-To: <20211013165616.19846-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 10:39:46AM -0700, Luis Chamberlain wrote:
-> On Wed, Oct 20, 2021 at 02:40:05PM -0700, Minchan Kim wrote:
-> > On Wed, Oct 20, 2021 at 09:55:44AM +0800, Ming Lei wrote:
-> > > Hello,
-> > > 
-> > > Fixes three issues reported by Luis Chamberlain with one simpler approach:
-> > > 
-> > > - race between between zram_reset_device() and disksize_store() (1/4)
-> > > 
-> > > - zram leak during unloading module, which is one race between resetting
-> > > and removing device (2/4)
-> > > 
-> > > - race between zram_remove and disksize_store (3/4)
-> > > 
-> > > Also replace replace fsync_bdev with sync_blockdev since no one opens
-> > > it.(4/4)
-> > > 
-> > > V2:
-> > > 	- take another approach to avoid failing of zram_remove()
-> > > 	- add patch to address race between zram_reset_device() and
-> > > 	  disksize_store()
-> > > 
-> > 
-> > Thanks for breaking the problems down, Ming.
-> > 
-> > To me, the whole patchset looks good to me since each patch solves
-> > the problem step by step and finally fix.
-> > 
-> > Luis, do you have any concern of this patchset to solve the cpuhp
-> > problem? (Sorry in advance if I miss some concerns if you raised
-> > in different thread. I'm totally lost).
+On 13/10/21 18:56, Paolo Bonzini wrote:
+> This series, namely patches 1 and 8, fix two bugs in string I/O
+> emulation for SEV-ES:
 > 
-> Running tests against this now. Will report back!
+> - first, the length is completely off for "rep ins" and "rep outs"
+>    operation of size > 1.  After setup_vmgexit_scratch, svm->ghcb_sa_len
+>    is in bytes, but kvm_sev_es_string_io expects the number of PIO
+>    operations.
+> 
+> - second, the size of the GHCB buffer can exceed the size of
+>    vcpu->arch.pio_data.  If that happens, we need to go over the GHCB
+>    buffer in multiple passes.
+> 
+> The second bug was reported by Felix Wilhelm.  The first was found by
+> me by code inspection; on one hand it seems *too* egregious so I'll be
+> gladly proven wrong on this, on the other hand... I know I'm bad at code
+> review, but not _that_ bad.
 
-So indeed with these patches I end up in the situation where we if
-if spawn two ltp zram02.sh runs and cancel then randomly and start
-them again:
+Ping.
 
-zram: Can't change algorithm for initialized device
+Paolo
 
-And after that only if you do:
-
-swapoff /dev/zram0
-
-Only then can you restart the tests again.
-
-I had note seen that with my patch fix, but But Ming noted that he
-did see that, and I trust him, although I can't reproduce that issue.
-
-And from at lest a testing perspective then:
-
-Tested-by: Luis Chamberlain <mcgrof@kernel.org>
-
-I'll go and do the line-by-line code review now.
-
-  Luis
