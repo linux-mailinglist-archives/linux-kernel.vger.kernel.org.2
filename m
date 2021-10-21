@@ -2,164 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B826E435849
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1102543584B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhJUBg7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 Oct 2021 21:36:59 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:49759 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbhJUBg6 (ORCPT
+        id S231143AbhJUBhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 21:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhJUBhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:36:58 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 19L1YQX70030853, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 19L1YQX70030853
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 21 Oct 2021 09:34:27 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 21 Oct 2021 09:34:26 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 20 Oct 2021 18:34:25 -0700
-Received: from RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584]) by
- RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584%5]) with mapi id
- 15.01.2308.015; Thu, 21 Oct 2021 09:34:25 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-CC:     "cgel.zte@gmail.com" <cgel.zte@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "lv.ruyi@zte.com.cn" <lv.ruyi@zte.com.cn>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: RE: [PATCH] rtw89: fix error function parameter
-Thread-Topic: [PATCH] rtw89: fix error function parameter
-Thread-Index: AQHXxJzcl/L9Ey4To0qT1Twz/99G66vbD7qAgAAPjTCAAIsVYIABAw9g
-Date:   Thu, 21 Oct 2021 01:34:25 +0000
-Message-ID: <3e121f8f6dd4411eace22a7030824ce4@realtek.com>
-References: <20211019035311.974706-1-lv.ruyi@zte.com.cn>
-        <163471982441.1743.9901035714649893101.kvalo@codeaurora.org>
-        <3aa076f0e39a485ca090f8c14682b694@realtek.com>
- <878ryof1xc.fsf@codeaurora.org>
-In-Reply-To: <878ryof1xc.fsf@codeaurora.org>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.188]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/10/20_=3F=3F_11:54:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 20 Oct 2021 21:37:47 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD44AC06161C;
+        Wed, 20 Oct 2021 18:35:32 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZVRN1Dlrz4xbP;
+        Thu, 21 Oct 2021 12:35:27 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634780131;
+        bh=bxA+ZbCxZDlRX+pZUnVki3wGLQR5a67yqCQSR1sjUws=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JTGlgHMR2T8rnvs0edAPn+gNoQMarq0M2ZDsWR4FdbkLX2uKuR25cJaOL0hvIP9VR
+         dmCXedX/EFd1acGVSyh8sWtsB4O/7reukW17BK3VH5399HrtUttrRtXs5raCW1S9Br
+         ifleTP/F0kfMNrZ8eRUw34Itnfbqrg3Ss0drCd34xckDFynYuiB+A6uUtDIHdGSdsB
+         48LIB7+gwrdYPSqXtle7uTkax/vz8bRx0CV33vUxLewbjMVjXBqw0m4s9HjExtWNY2
+         3kp5lh89kH8V4rKCoCJgIRoU0Mqwu2w2X0QTLGugrbMfFdikmqlMpsxhvx3LG3RnDu
+         6OfSjW3zDFmAw==
+Date:   Thu, 21 Oct 2021 12:35:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Borislav Petkov <bp@suse.de>, Fenghua Yu <fenghua.yu@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: linux-next: manual merge of the tip tree with the iommu tree
+Message-ID: <20211021123527.29ec17c5@canb.auug.org.au>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 10/21/2021 01:02:29
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 166865 [Oct 20 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;wireless.wiki.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/21/2021 01:05:00
+Content-Type: multipart/signed; boundary="Sig_/DPwDUGoi_7GrsjQnfQU2hCY";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/DPwDUGoi_7GrsjQnfQU2hCY
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> -----Original Message-----
-> From: kvalo=codeaurora.org@mg.codeaurora.org <kvalo=codeaurora.org@mg.codeaurora.org> On Behalf Of Kalle
-> Valo
-> Sent: Wednesday, October 20, 2021 6:04 PM
-> To: Pkshih <pkshih@realtek.com>
-> Cc: cgel.zte@gmail.com; davem@davemloft.net; kuba@kernel.org; lv.ruyi@zte.com.cn;
-> linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Zeal Robot
-> <zealci@zte.com.cn>
-> Subject: Re: [PATCH] rtw89: fix error function parameter
-> 
-> Pkshih <pkshih@realtek.com> writes:
-> 
-> >> -----Original Message-----
-> >> From: kvalo=codeaurora.org@mg.codeaurora.org
-> >> <kvalo=codeaurora.org@mg.codeaurora.org> On Behalf Of Kalle
-> >> Valo
-> >> Sent: Wednesday, October 20, 2021 4:50 PM
-> >> To: cgel.zte@gmail.com
-> >> Cc: davem@davemloft.net; kuba@kernel.org; Pkshih
-> >> <pkshih@realtek.com>; lv.ruyi@zte.com.cn;
-> >> linux-wireless@vger.kernel.org; netdev@vger.kernel.org;
-> >> linux-kernel@vger.kernel.org; Zeal Robot
-> >> <zealci@zte.com.cn>
-> >> Subject: Re: [PATCH] rtw89: fix error function parameter
-> >>
-> >> cgel.zte@gmail.com wrote:
-> >>
-> >> > From: Lv Ruyi <lv.ruyi@zte.com.cn>
-> >> >
-> >> > This patch fixes the following Coccinelle warning:
-> >> > drivers/net/wireless/realtek/rtw89/rtw8852a.c:753:
-> >> > WARNING  possible condition with no effect (if == else)
-> >> >
-> >> > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> >> > Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
-> >> > Acked-by: Ping-Ke Shih <pkshih@realtek.com>
-> >>
-> >> Failed to apply, please rebase on top of wireless-drivers-next.
-> >>
-> >> error: patch failed: drivers/net/wireless/realtek/rtw89/rtw8852a.c:753
-> >> error: drivers/net/wireless/realtek/rtw89/rtw8852a.c: patch does not apply
-> >> error: Did you hand edit your patch?
-> >> It does not apply to blobs recorded in its index.
-> >> hint: Use 'git am --show-current-patch' to see the failed patch
-> >> Applying: rtw89: fix error function parameter
-> >> Using index info to reconstruct a base tree...
-> >> Patch failed at 0001 rtw89: fix error function parameter
-> >>
-> >> Patch set to Changes Requested.
-> >>
-> >
-> > I think this is because the patch is translated into spaces instead of tabs,
-> > in this and following statements.
-> > "                if (is_2g)"
-> 
-> Ah, I did wonder why it failed as I didn't see any similar patches. We
-> have an item about this in the wiki:
-> 
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#format_issues
-> 
+Hi all,
 
-I don't know why neither.
+Today's linux-next merge of the tip tree got a conflict in:
 
-I check the mail header of this patch, the mailer is
-"X-Mailer: git-send-email 2.25.1". It should work properly.
+  arch/x86/include/asm/fpu/api.h
 
-Lv Ruyi, could you help to check what happens?
+between commit:
 
---
-Ping-Ke
+  00ecd5401349 ("iommu/vt-d: Clean up unused PASID updating functions")
 
+from the iommu tree and commits:
+
+  a0ff0611c2fb ("x86/fpu: Move KVMs FPU swapping to FPU core")
+  ea4d6938d4c0 ("x86/fpu: Replace KVMs home brewed FPU copy from user")
+  90489f1dee8b ("x86/fpu: Move fpstate functions to api.h")
+  0ae67cc34f76 ("x86/fpu: Remove internal.h dependency from fpu/signal.h")
+  6415bb809263 ("x86/fpu: Mop up the internal.h leftovers")
+
+from the tip tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/include/asm/fpu/api.h
+index ca4d0dee1ecd,9263d708dff9..000000000000
+--- a/arch/x86/include/asm/fpu/api.h
++++ b/arch/x86/include/asm/fpu/api.h
+@@@ -106,4 -108,34 +108,32 @@@ extern int cpu_has_xfeatures(u64 xfeatu
+   */
+  #define PASID_DISABLED	0
+ =20
+ -static inline void update_pasid(void) { }
+ -
++ /* Trap handling */
++ extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
++ extern void fpu_sync_fpstate(struct fpu *fpu);
++ extern void fpu_reset_from_exception_fixup(void);
++=20
++ /* Boot, hotplug and resume */
++ extern void fpu__init_cpu(void);
++ extern void fpu__init_system(struct cpuinfo_x86 *c);
++ extern void fpu__init_check_bugs(void);
++ extern void fpu__resume_cpu(void);
++=20
++ #ifdef CONFIG_MATH_EMULATION
++ extern void fpstate_init_soft(struct swregs_state *soft);
++ #else
++ static inline void fpstate_init_soft(struct swregs_state *soft) {}
++ #endif
++=20
++ /* State tracking */
++ DECLARE_PER_CPU(struct fpu *, fpu_fpregs_owner_ctx);
++=20
++ /* fpstate-related functions which are exported to KVM */
++ extern void fpu_init_fpstate_user(struct fpu *fpu);
++=20
++ /* KVM specific functions */
++ extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 res=
+tore_mask);
++=20
++ extern int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf,=
+ u64 xcr0, u32 *pkru);
++=20
+  #endif /* _ASM_X86_FPU_API_H */
+
+--Sig_/DPwDUGoi_7GrsjQnfQU2hCY
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFww98ACgkQAVBC80lX
+0GyY0gf/TUfcRrwIzKqHEVG20+TotoEwaU+ott8RhjrAIZpGFpBt0sx7yfqejrn9
+hlEdEqey5yqyUWN+a4cxkRfQOTPHcVquusmafYKbEXgGmR7zJlR/cV1g4ZZhqjCt
+F0imqzYgVbKe1cLiWIL/w4toPqoo61SQ8bfu89czlc3op7qbAj2gjJGseUpY0SVf
+oZhPNtb1BZTA1jGEFLh1Rz28YlPxQ/TxLcXsRjxAhFVS0CoOOxhayKYkvjnbPKbF
+Juawh1Vto86MmjvEyakVAItSu6XvCPLhZlYZb5CFbjKeEFFLwYdjpL8CDu3CKJAH
+3HclltoY4l2rFMULqqVFuUBj5OE9RQ==
+=QxwD
+-----END PGP SIGNATURE-----
+
+--Sig_/DPwDUGoi_7GrsjQnfQU2hCY--
