@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D95435CAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02845435CAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 10:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbhJUILF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 04:11:05 -0400
-Received: from 8bytes.org ([81.169.241.247]:34400 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231474AbhJUIK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:10:58 -0400
-Received: from cap.home.8bytes.org (p4ff2b5b0.dip0.t-ipconnect.de [79.242.181.176])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 6768E29C;
-        Thu, 21 Oct 2021 10:08:38 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Xinyang Ge <xing@microsoft.com>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>, Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
+        id S231153AbhJUILw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 04:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhJUILu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:11:50 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC3CC061749
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:09:35 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 75so24902515pga.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 01:09:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CTMN7KPSN1O5qa7pBmYhGzxVKXXjGfCRzg5sewZUslM=;
+        b=GTV1F9mSqqd/MCvNFw2oK1SsYaOm61Qz+NoJqypSMtO0gw4i4JISREYIVYyl0FJl5U
+         D4o/Bz9hrmQLOjjmOGpVLec6cyB4q2lOdfgULri1oGcPxGdb23LP6CD9mLBZkgnzyNe+
+         jYr/pmH9tE6GbXU9o9majTgk5H4G8gyA4bonk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CTMN7KPSN1O5qa7pBmYhGzxVKXXjGfCRzg5sewZUslM=;
+        b=rqyiDDIgFVrHkoIKWNFxn6GU46WPcd6P4XISo//Qn7xfJgyZI7zEK2nf/EsOzrxma1
+         c8FZf11/8/d9iEDCH5Yml8CbSFSdYR9b6G42qJErifJW/OIsTXixyauLTqImMs8d7fB0
+         NHSwk9B7Rm+pLY3YpZvl5slMg+rx46kjuO8UO2oF/v6rBCqpfYsnz3Ms8dYjuQm5Fc5+
+         yucVAc08aFHGJJslB/+xHcHULDDBMd6mAXIqDIaXOY8ig3jFeDT+Bxsyh2MpRa/EtN0H
+         YAJfCzay31a9VA/PSGdQL+1gCzlIzKLemzSyPg2vL6T/k7YgImjQAuYc2FvRIbp47wAG
+         j1Vw==
+X-Gm-Message-State: AOAM5305qjWPKryKFUJmBkow/uEoLy+Lm5eb4xxldeeoVfJp9am4Mxme
+        SG4/2QIHa9Hh/z9DxBQu9bx2WA==
+X-Google-Smtp-Source: ABdhPJyRLhR6XUu5vQW3hgBB2kkNZC50u8lTO8rIcflWrlCdNJurgJv8/80QxF7Q/Wc0v3v8MUUI0g==
+X-Received: by 2002:a05:6a00:1a8e:b0:44c:f3cb:2a77 with SMTP id e14-20020a056a001a8e00b0044cf3cb2a77mr3798213pfv.53.1634803775131;
+        Thu, 21 Oct 2021 01:09:35 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:e48:6cef:6c37:c98e])
+        by smtp.gmail.com with ESMTPSA id s13sm5724536pfk.175.2021.10.21.01.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 01:09:34 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 17:09:29 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     David Matlack <dmatlack@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: [PATCH 2/2] x86/sev: Allow #VC exceptions on the VC2 stack
-Date:   Thu, 21 Oct 2021 10:08:33 +0200
-Message-Id: <20211021080833.30875-3-joro@8bytes.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211021080833.30875-1-joro@8bytes.org>
-References: <20211021080833.30875-1-joro@8bytes.org>
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCHV2 1/3] KVM: x86: introduce kvm_mmu_pte_prefetch structure
+Message-ID: <YXEgOf1JzTmdRP6u@google.com>
+References: <20211019153214.109519-1-senozhatsky@chromium.org>
+ <20211019153214.109519-2-senozhatsky@chromium.org>
+ <CALzav=cLXXZYBSH6iJifkqVijLAU5EvgVg2W4HKhqke2JBa+yg@mail.gmail.com>
+ <YW9vqgwU+/iVooXj@google.com>
+ <CALzav=c1LXXWSi-Z0_X35HCyQtv1rh0p2YmJ289J51SHy0DRxg@mail.gmail.com>
+ <YXDU/xXkWGuDJ/id@google.com>
+ <YXDeRej39voc7lJU@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXDeRej39voc7lJU@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On (21/10/21 12:28), Sergey Senozhatsky wrote:
+> > 
+> > We are using TDP. And somehow I never see (literally never) async PFs.
+> > It's always either hva_to_pfn_fast() or hva_to_pfn_slow() or
+> > __direct_map() from tdp_page_fault().
+> 
+> Hmm, and tdp_page_fault()->fast_page_fault() always fails on
+> !is_access_allowed(error_code, new_spte), it never handles the faults.
+> And I see some ->mmu_lock contention:
+> 
+> 	spin_lock(&vcpu->kvm->mmu_lock);
+> 	__direct_map();
+> 	spin_unlock(&vcpu->kvm->mmu_lock);
+> 
+> So it might be that we setup guest memory wrongly and never get
+> advantages of TPD and fast page faults?
 
-When code running on the VC2 stack causes a nested VC exception, the
-handler will not handle it as expected but goes again into the error
-path.
-
-The result is that the panic() call happening when the VC exception
-was raised in an invalid context is called recursively. Fix this by
-checking the interrupted stack too and only call panic if it is not
-the VC2 stack.
-
-Reported-by: Xinyang Ge <xing@microsoft.com>
-Fixes: 0786138c78e79 ("x86/sev-es: Add a Runtime #VC Exception Handler")
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/kernel/sev.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index a6895e440bc3..f39165b5fa34 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -1319,13 +1319,26 @@ static __always_inline void vc_forward_exception(struct es_em_ctxt *ctxt)
- 	}
- }
- 
--static __always_inline bool on_vc_fallback_stack(struct pt_regs *regs)
-+static __always_inline bool is_vc2_stack(unsigned long sp)
- {
--	unsigned long sp = (unsigned long)regs;
--
- 	return (sp >= __this_cpu_ist_bottom_va(VC2) && sp < __this_cpu_ist_top_va(VC2));
- }
- 
-+static __always_inline bool vc_from_invalid_context(struct pt_regs *regs)
-+{
-+	unsigned long sp, prev_sp;
-+
-+	sp      = (unsigned long)regs;
-+	prev_sp = regs->sp;
-+
-+	/*
-+	 * If the code was already executing on the VC2 stack when the #VC
-+	 * happened, let it proceed to the normal handling routine. This way the
-+	 * code executing on the VC2 stack can cause get #VC exceptions handled.
-+	 */
-+	return is_vc2_stack(sp) && !is_vc2_stack(prev_sp);
-+}
-+
- static bool vc_raw_handle_exception(struct pt_regs *regs, unsigned long error_code)
- {
- 	struct ghcb_state state;
-@@ -1406,7 +1419,7 @@ DEFINE_IDTENTRY_VC_KERNEL(exc_vmm_communication)
- 	 * But keep this here in case the noinstr annotations are violated due
- 	 * to bug elsewhere.
- 	 */
--	if (unlikely(on_vc_fallback_stack(regs))) {
-+	if (unlikely(vc_from_invalid_context(regs))) {
- 		instrumentation_begin();
- 		panic("Can't handle #VC exception from unsupported context\n");
- 		instrumentation_end();
--- 
-2.33.1
-
+No, never mind, that's probably expected and ->mmu_lock contention is not
+severe.
