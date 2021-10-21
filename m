@@ -2,67 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8404364B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342094364BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhJUOvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:51:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231424AbhJUOvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:51:21 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54E26611CE;
-        Thu, 21 Oct 2021 14:49:04 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 10:49:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 6/9] arm64: Recover kretprobe modified return address
- in stacktrace
-Message-ID: <20211021104902.2600dd0a@gandalf.local.home>
-In-Reply-To: <20211021232630.94bea4540670cdab5a7a63c5@kernel.org>
-References: <163477765570.264901.3851692300287671122.stgit@devnote2>
-        <163477770935.264901.1772964361191833681.stgit@devnote2>
-        <20211021101512.GA16485@willie-the-truck>
-        <20211021232630.94bea4540670cdab5a7a63c5@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231651AbhJUOvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:51:49 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48616 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231522AbhJUOvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 10:51:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=29;SR=0;TI=SMTPD_---0UtAB4.e_1634827764;
+Received: from ashimida.local(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0UtAB4.e_1634827764)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 21 Oct 2021 22:49:25 +0800
+Subject: Re: [PATCH] [PATCH V5]ARM64: SCS: Add gcc plugin to support Shadow
+ Call Stack
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Qing Zhao <qing.zhao@oracle.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>, masahiroy@kernel.org,
+        michal.lkml@markovi.net, catalin.marinas@arm.com, will@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com, tglx@linutronix.de,
+        akpm@linux-foundation.org, frederic@kernel.org, rppt@kernel.org,
+        mark.rutland@arm.com, yifeifz2@illinois.edu, rostedt@goodmis.org,
+        viresh.kumar@linaro.org, andreyknvl@gmail.com,
+        colin.king@canonical.com, ojeda@kernel.org,
+        luc.vanoostenryck@gmail.com, elver@google.com,
+        nivedita@alum.mit.edu, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <1634337180-92127-1-git-send-email-ashimida@linux.alibaba.com>
+ <202110191006.68BB660@keescook>
+From:   Dan Li <ashimida@linux.alibaba.com>
+Message-ID: <a8d3fbb8-916a-13db-fc60-4ed7881d2bdb@linux.alibaba.com>
+Date:   Thu, 21 Oct 2021 22:49:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <202110191006.68BB660@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 23:26:30 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> > 
-> > I'm not sure how you're planning to merge this, so please let me know if
-> > you want me to queue any of the arm64 bits.  
+
+On 10/20/21 5:40 AM, Kees Cook wrote:
+> On Sat, Oct 16, 2021 at 06:33:00AM +0800, Dan Li wrote:
+>> This patch supports gcc-based SCS protection on ARM64 by adding a plugin.
+>>
+>> For each function that x30 will be pushed onto the stack during execution,
+>> this plugin, similar to gcc's pac implementation, will normally:
+>> 1) insert "str x30, [x18], #8" at the beginning of function's prologue
+>> 2) insert "ldr x30, [x18, #-8]!" immediately before function's
+>> epilogue return/sibling calls
+>>
+>> If pac is enabled, scs push/pop will be inserted between paciasp/autiasp.
+>>
+>> At present, this patch has been successfully compiled in the following
+>> gcc versions based on defconfig with kernel 5.14 and startup normally
+>> with commands:
+>>
+>> make ARCH=arm64 defconfig
+>> ./scripts/config -e CONFIG_GCC_PLUGINS -e CONFIG_SHADOW_CALL_STACK \
+>> -e CONFIG_GCC_PLUGIN_SHADOW_CALL_STACK
+>> make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+>>
+>> Tested gcc version:
+>> * 6.3.1
+>> * 7.3.1
+>> * 7.5.0
+>> * 8.2.1
+>> * 9.2.0
+>> * 10.3.1
+>>
+>> A similar feature request has also been sent to gcc.
+>> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102768
+>>
+>> Signed-off-by: Dan Li <ashimida@linux.alibaba.com>
+>> Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 > 
-> Ah, good question. Since this part depends on the first 3 patches and
-> Steve's tracing tree, these should go through the tracing tree. Is that
-> OK for you?
+> This is very cool; thanks for working on this! I am, however, struggling
+> with a few overlapping issues that touch this area of functionality.
+> I'll try to give you some background on my thoughts here...
 > 
+> For a while now, it's been made clear that Linus isn't a fan[1] of the
+> gcc-plugins (and Masahiro hasn't been too happy either, as the plugins
+> complicate[2] things for the build infrastructure). However, it's been
+> pretty important for proving out various compiler-provided security
+> defenses. I view them as being in one of three states:
+> 
+> 1) stuff that isn't available in either compiler
+> 	- e.g. structure randomization
+> 	- e.g. per-task canaries on arm32
+> 2) stuff that is in Clang but stalled/unlikely in GCC
+> 	- e.g. stack initialization
+> 3) deprecated
+> 
+> State 1 hasn't changed much really, and serves as a good "try out this
+> idea and see if people want it", as a jumping-off point for actually
+> getting the feature into GCC and Clang proper.
+> 
+> State 2 is what happens with something from State 1 gets implemented in
+> Clang but not GCC. (i.e. Clang upstream has been convinced of the
+> utility of a given feature, which should help with upstreaming it to
+> GCC.)
+> 
+> State 3 is what happens when the feature exists in GCC, but not in all GCC
+> versions supported by the kernel. It makes a plugin follow the kernel's
+> GCC deprecation schedule.
+> 
+> Notably, since we don't have Clang plugins, there's no corresponding
+> "State 2" for where something is in GCC but not Clang, but we can still
+> enable it under Clang builds.
+> 
+> Anyway, this is a long way to say that I don't think I want to add
+> a new gcc-plugin when it is at "State 2" (i.e. Clang has support but
+> GCC doesn't.) There's no need to "prove" that the compiler feature is
+> generally desirable, so it's best to get this into GCC directly.
+> 
+Thank for your sharing kees,
 
-I'm OK with merging this.
+I learned the history of discussions about plugins, and also just saw
+your latest patch[1].
 
-> (Or, wait for merging the current tracing tree and merge rest of them.
->  but this will take a long time.)
+It sounds reasonable that the kernel should not rely on GCC plugins as
+much as possible, and it's better to submit such features to GCC first.
 
-And my linux-next is behind because my tests triggered a bug on one of my
-arcane configs, and I'm still debugging it. :-p
+But we often face the problem of low compiler version in practice. Those
+who really care about security should choose to switch to the appropriate
+version, but it may not always be easy for security guys to push compiler
+guys or customers to make changes. It's even more annoying when this
+happens frequently. Providing plugins for lower versions of GCC will make
+such things easier.
 
--- Steve
+At the same time, it sounds more reasonable to dynamically select pac/scs
+for SCS, but there are also gcc <7 versions that may need to be supported.
+Another case is forward edge KCFI, I'm not sure if there are other ways to
+support low version gcc besides plugins (please let me know if so)
+
+So what I want to say is, after both GCC and CLANG support a feature
+(in "State 3"), could it be allowed to support for this feature
+in lower versions of gcc through a plugin?
+
+[1]https://lore.kernel.org/all/20211020173554.38122-1-keescook@chromium.org/
+
+> On top of this, there is the interaction between SCS and PAC, in the
+> sense that the kernel will need to be able to dynamically select between
+> SCS and PAC (likely via the "alternatives" infrastructure), and that
+> needs work for Clang too, so it'd be a good time to coordinate this with
+> GCC. (Sami and Ard have been working[3] on this, though I realize I don't
+> think there was a specific bug for it, so I've opened one now[4]).
+>
+I'm not sure, maybe it's a stupid question ...
+
+Do SCS and PAC have to choose one or the other? Although the two are
+similar in theory, they can be implemented without conflict. If they are
+turned on at the same time, it may usually makes the attacker think about
+one more step.
+
+In the case that both can be supported at the same time, is it better to
+let the user decide whether to open at the same time?
+
+> So, I think the best way forward with this would be to implement this as
+> a feature in GCC directly, and to see if there's some way to coordinate
+> work with Sami, Ard, Qing, and other folks who look into this.
+> 
+> -Kees
+> 
+> [1] https://lore.kernel.org/lkml/202103031334.8D898CA@keescook/
+> [2] https://lore.kernel.org/lkml/20200729031537.37926-1-masahiroy@kernel.org/
+> [3] https://lore.kernel.org/all/20211013152243.2216899-1-ardb@kernel.org/
+> [4] https://github.com/KSPP/linux/issues/168
+> 
+>> 2.7.4
+>>
+>> -- 
+>> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+>> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/1634337180-92127-1-git-send-email-ashimida%40linux.alibaba.com.
+> 
