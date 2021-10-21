@@ -2,557 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC21D435C02
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D131B435BEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhJUHnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:43:01 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:27347 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhJUHm2 (ORCPT
+        id S231502AbhJUHmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:42:17 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:56439 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231452AbhJUHmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:42:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634802013; x=1666338013;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=9v4Qg1ARrtLQXojSgbU9s11IkaQWrSHzHUrMZaSRTSs=;
-  b=ofQkHhT8GsVBRzYWZdkDc1kyEhVvIAjDylSfMsSv71Tn0hSmPrX9e5vG
-   oPvQPd5TigrodRtkNeCeWfvaMJ42rpubvUQC0Xi2QuGh/QB0kysd0ru1G
-   yW0pHB2tWBKWYRyPX30bJnSM1DcwoWsSWzNUCcG+N3h9wBVZ9RV9aVNDf
-   w=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 21 Oct 2021 00:40:13 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:40:13 -0700
-Received: from taozha-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 21 Oct 2021 00:40:09 -0700
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-CC:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>
-Subject: [PATCH 10/10] ARM: dts: msm: Add TPDA and TPDM support to DTS for RB5
-Date:   Thu, 21 Oct 2021 15:38:56 +0800
-Message-ID: <1634801936-15080-11-git-send-email-quic_taozha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
-References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
+        Thu, 21 Oct 2021 03:42:11 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id D4BE92B012EA;
+        Thu, 21 Oct 2021 03:39:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 21 Oct 2021 03:39:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm1; bh=Ig1NvDgki9mc/elboNYuCt9K83
+        3bzrfrL+LUGb9uXpg=; b=OGSlvN/lnYQBUsMdggz3wEVvHYB2Bn31n4plOWWkxM
+        rWRzs1wBWRYd7IFuHbQwgQcfYhPvt+y/1LLMygK+mH6OI2hOmSXlydu93E30/sOR
+        1LEuTnj4CAURh857bNT9PxwAeookSU4Qmx5ZSPT8luTCwmMFrJIqUcepQ+S2sLV+
+        wZfpCdl/pmxVpn4B2hV+NWEO0N0dOVaMbk8TKXUHyRDpNJOiNbR7sGnXyBFg8gj4
+        uFryvZUXIfQV+tsNmzN6hLcyjtTkyQVMF88ds5Wz4YLjbdfBmitsrdaZgOaoOaJ/
+        3IJIt81jgj+jagQY1pdvabkc4GyyYuFTuzepPnSxS4sw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ig1NvD
+        gki9mc/elboNYuCt9K833bzrfrL+LUGb9uXpg=; b=jweG4n6R0zrCNasc0QxO8I
+        h+W74iVQQn0nFHhvtudyxSX/RSSRIzuJnzrTQGK/WDAai6DrVYIPSGF6QiP3uYMm
+        MnoBlnJH/8i9dQrJmS/H6ipPICqyVDGP+XSLcfPmKoia1TKijeFF4HQ9/rYzOa4W
+        g96ziizY0N1HpAwLiMDx/kHYZPX8arJcQdnsrotMLibbJSzUlsPZ4KdYgEerkyd8
+        8UvK51iSjHg0sT03VhFvNC/o85bmVpTgicfIzI9IXUZZOLyC8f0G6y9DdtZ/LrJ/
+        WOPyBQMVfvE34EztJ0fjgCkYSlQxzHkEEGA/TJHICwnEYBNYCAJi3mJOzNa0Z80A
+        ==
+X-ME-Sender: <xms:RRlxYcXFvwguWd3dmZWHRQ3WjV5Oy53_r1Rd7SDRjC12y_Qnw_kbPA>
+    <xme:RRlxYQlP6HTrl9SC6uWdf5yS6npjMLwFJrpbsmTCO6ea4fwIjkHHUu_qQhlopYjyj
+    AeEtdA1LQXnjsq487Q>
+X-ME-Received: <xmr:RRlxYQYVmB9ir25rs9tGYt71BZNF4VYBjbzD3NqGcuNuNIDY3bUoNbzfSWPmhmBInHcbd3THCu-dyRV5pB5iBAVV3HujMVBgWFkOG7Sg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvhedgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgtggfgsehtqhertdertdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepteeikefgffekgeekledtheduteetjefgkeeuvefhhfetgedugfektdeugeff
+    gfefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:RRlxYbXDD_GnPb0xAQgYrZ2-s_U5LgW5aB1f-iALx2cbvbwSAxuy9g>
+    <xmx:RRlxYWm2qmpQlplvdr0s0gxyTw91TUG3QLHX9wBqg5HzOD7jx8V8aQ>
+    <xmx:RRlxYQedRIIrJbFSpzTS_9N9pXBjGrxbeMkXe6D-vICqPbspx2rTJA>
+    <xmx:SBlxYU3ZFLlG9khXKHP-woEqyAQ5VoFfiOntNkv5kWRwQ1ocyNYdnUzHozY>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 21 Oct 2021 03:39:48 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tian Tao <tiantao6@hisilicon.com>,
+        freedreno@lists.freedesktop.org,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Sean Paul <sean@poorly.run>, Inki Dae <inki.dae@samsung.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v5 00/21] drm/bridge: Make panel and bridge probe order consistent
+Date:   Thu, 21 Oct 2021 09:39:26 +0200
+Message-Id: <20211021073947.499373-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add TPDA and TPDM support to DTS for RB5 board. This change is a
-sample for validating. After applying this patch, the new TPDM and
-TPDA nodes can be observed at the coresight devices path. TPDM and
-TPDA hardware can be operated by commands.
-
-List the commands for validating this series patches as below.
-echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-echo 1 > /sys/bus/coresight/devices/tpdm0/enable_source
-echo 1 > /sys/bus/coresight/devices/tpdm0/integration_test
-echo 2 > /sys/bus/coresight/devices/tpdm0/integration_test
-cat /dev/tmc_etf0 > /data/etf-tpdm0.bin
-echo 0 > /sys/bus/coresight/devices/tpdm0/enable_source
-echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-echo 1 > /sys/bus/coresight/devices/tpdm1/enable_source
-echo 1 > /sys/bus/coresight/devices/tpdm1/integration_test
-echo 2 > /sys/bus/coresight/devices/tpdm1/integration_test
-cat /dev/tmc_etf0 > /data/etf-tpdm1.bin
-echo 0 > /sys/bus/coresight/devices/tpdm1/enable_source
-echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-echo 1 > /sys/bus/coresight/devices/tpdm2/enable_source
-echo 1 > /sys/bus/coresight/devices/tpdm2/integration_test
-echo 2 > /sys/bus/coresight/devices/tpdm2/integration_test
-cat /dev/tmc_etf0 > /data/etf-tpdm2.bin
-echo 0 > /sys/bus/coresight/devices/tpdm2/enable_source
-echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-
-If the data from TPDMs can be obtained from the ETF, it means
-that the TPDMs verification is successful. At the same time,
-since TPDM0, TPDM1 and TPDM2 are all connected to the same
-funnel "funnel@6c2d000" and output via different output ports,
-it also means that the following patches verification is
-successful.
-coresight: add support to enable more coresight paths
-coresight: funnel: add support for multiple output ports
-
-Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
----
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 439 +++++++++++++++++++++++
- 1 file changed, 439 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index 8ac96f8e79d4..bcec8b181e11 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -222,6 +222,445 @@
- 		regulator-max-microvolt = <1800000>;
- 		regulator-always-on;
- 	};
-+
-+	stm@6002000 {
-+		compatible = "arm,coresight-stm", "arm,primecell";
-+		reg = <0 0x06002000 0 0x1000>,
-+		      <0 0x16280000 0 0x180000>;
-+		reg-names = "stm-base", "stm-stimulus-base";
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				stm_out: endpoint {
-+					remote-endpoint =
-+					  <&funnel0_in7>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6041000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06041000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				funnel0_out: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_in0>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@7 {
-+				reg = <7>;
-+				funnel0_in7: endpoint {
-+					remote-endpoint = <&stm_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6042000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06042000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				funnel2_out: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_in2>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@4 {
-+				reg = <4>;
-+				funnel2_in5: endpoint {
-+					remote-endpoint =
-+					  <&apss_merge_funnel_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6b04000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		arm,primecell-periphid = <0x000bb908>;
-+
-+		reg = <0 0x6b04000 0 0x1000>;
-+		reg-names = "funnel-base";
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				merge_funnel_out: endpoint {
-+					remote-endpoint =
-+						<&etf_in>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@7 {
-+				reg = <7>;
-+				swao_funnel_in7: endpoint {
-+					slave-mode;
-+					remote-endpoint=
-+						<&merg_funnel_out>;
-+				};
-+			};
-+		};
-+
-+	};
-+
-+	funnel@6045000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06045000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				merg_funnel_out: endpoint {
-+					remote-endpoint = <&swao_funnel_in7>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				merge_funnel_in0: endpoint {
-+					remote-endpoint =
-+					  <&funnel0_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				merge_funnel_in2: endpoint {
-+					remote-endpoint =
-+					  <&funnel2_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etf@6b05000 {
-+		compatible = "arm,coresight-tmc", "arm,primecell";
-+		reg = <0 0x06b05000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		in-ports {
-+			port {
-+				etf_in: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7040000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07040000 0 0x1000>;
-+
-+		cpu = <&CPU0>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm0_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in0>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7140000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07140000 0 0x1000>;
-+
-+		cpu = <&CPU1>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm1_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in1>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7240000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07240000 0 0x1000>;
-+
-+		cpu = <&CPU2>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm2_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in2>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7340000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07340000 0 0x1000>;
-+
-+		cpu = <&CPU3>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm3_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in3>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7440000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07440000 0 0x1000>;
-+
-+		cpu = <&CPU4>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm4_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in4>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7540000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07540000 0 0x1000>;
-+
-+		cpu = <&CPU5>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm5_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in5>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7640000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07640000 0 0x1000>;
-+
-+		cpu = <&CPU6>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm6_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in6>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7740000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07740000 0 0x1000>;
-+
-+		cpu = <&CPU7>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm7_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in7>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@7800000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x07800000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				apss_funnel_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_merge_funnel_in>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				apss_funnel_in0: endpoint {
-+					remote-endpoint =
-+					  <&etm0_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				apss_funnel_in1: endpoint {
-+					remote-endpoint =
-+					  <&etm1_out>;
-+				};
-+			};
-+
-+			port@2 {
-+				reg = <2>;
-+				apss_funnel_in2: endpoint {
-+					remote-endpoint =
-+					  <&etm2_out>;
-+				};
-+			};
-+
-+			port@3 {
-+				reg = <3>;
-+				apss_funnel_in3: endpoint {
-+					remote-endpoint =
-+					  <&etm3_out>;
-+				};
-+			};
-+
-+			port@4 {
-+				reg = <4>;
-+				apss_funnel_in4: endpoint {
-+					remote-endpoint =
-+					  <&etm4_out>;
-+				};
-+			};
-+
-+			port@5 {
-+				reg = <5>;
-+				apss_funnel_in5: endpoint {
-+					remote-endpoint =
-+					  <&etm5_out>;
-+				};
-+			};
-+
-+			port@6 {
-+				reg = <6>;
-+				apss_funnel_in6: endpoint {
-+					remote-endpoint =
-+					  <&etm6_out>;
-+				};
-+			};
-+
-+			port@7 {
-+				reg = <7>;
-+				apss_funnel_in7: endpoint {
-+					remote-endpoint =
-+					  <&etm7_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@7810000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x07810000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				apss_merge_funnel_out: endpoint {
-+					remote-endpoint =
-+					  <&funnel2_in5>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			port {
-+				apss_merge_funnel_in: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_out>;
-+				};
-+			};
-+		};
-+	};
- };
- 
- &adsp {
--- 
-2.17.1
-
+Hi,=0D
+=0D
+We've encountered an issue with the RaspberryPi DSI panel that prevented th=
+e=0D
+whole display driver from probing.=0D
+=0D
+The issue is described in detail in the commit 7213246a803f ("drm/vc4: dsi:=
+=0D
+Only register our component once a DSI device is attached"), but the basic =
+idea=0D
+is that since the panel is probed through i2c, there's no synchronization=0D
+between its probe and the registration of the MIPI-DSI host it's attached t=
+o.=0D
+=0D
+We initially moved the component framework registration to the MIPI-DSI Hos=
+t=0D
+attach hook to make sure we register our component only when we have a DSI=
+=0D
+device attached to our MIPI-DSI host, and then use lookup our DSI device in=
+ our=0D
+bind hook.=0D
+=0D
+However, all the DSI bridges controlled through i2c are only registering th=
+eir=0D
+associated DSI device in their bridge attach hook, meaning with our change=
+=0D
+above, we never got that far, and therefore ended up in the same situation =
+than=0D
+the one we were trying to fix for panels.=0D
+=0D
+The best practice to avoid those issues is to register its functions only a=
+fter=0D
+all its dependencies are live. We also shouldn't wait any longer than we sh=
+ould=0D
+to play nice with the other components that are waiting for us, so in our c=
+ase=0D
+that would mean moving the DSI device registration to the bridge probe.=0D
+=0D
+This has been tested on vc4 (with sn65dsi83 and ps8640), msm (sn65dsi86,=0D
+lt9611), kirin (adv7511) and exynos.=0D
+=0D
+Let me know what you think,=0D
+Maxime=0D
+=0D
+---=0D
+=0D
+Changes from v4:=0D
+  - Rebased on current drm-misc-next=0D
+  - Collected the various tags=0D
+  - Fix for Kirin=0D
+  - Added conversion patch for msm=0D
+=0D
+Changes from v3:=0D
+  - Converted exynos and kirin=0D
+  - Converted all the affected bridge drivers=0D
+  - Reworded the documentation a bit=0D
+=0D
+Changes from v2:=0D
+  - Changed the approach as suggested by Andrzej, and aligned the bridge on=
+ the=0D
+    panel this time.=0D
+  - Fixed some typos=0D
+=0D
+Changes from v1:=0D
+  - Change the name of drm_of_get_next function to drm_of_get_bridge=0D
+  - Mention the revert of 87154ff86bf6 and squash the two patches that were=
+=0D
+    reverting that commit=0D
+  - Add some documentation=0D
+  - Make drm_panel_attach and _detach succeed when no callback is there=0D
+=0D
+Maxime Ripard (20):=0D
+  drm/bridge: adv7533: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: adv7511: Register and attach our DSI device at probe=0D
+  drm/bridge: anx7625: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: anx7625: Register and attach our DSI device at probe=0D
+  drm/bridge: lt8912b: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: lt8912b: Register and attach our DSI device at probe=0D
+  drm/bridge: lt9611: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: lt9611: Register and attach our DSI device at probe=0D
+  drm/bridge: lt9611uxc: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: lt9611uxc: Register and attach our DSI device at probe=0D
+  drm/bridge: ps8640: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: ps8640: Register and attach our DSI device at probe=0D
+  drm/bridge: sn65dsi83: Fix bridge removal=0D
+  drm/bridge: sn65dsi83: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: sn65dsi83: Register and attach our DSI device at probe=0D
+  drm/bridge: sn65dsi86: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: sn65dsi86: Register and attach our DSI device at probe=0D
+  drm/bridge: tc358775: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: tc358775: Register and attach our DSI device at probe=0D
+  drm/kirin: dsi: Adjust probe order=0D
+=0D
+Rob Clark (1):=0D
+  drm/msm/dsi: Adjust probe order=0D
+=0D
+ drivers/gpu/drm/bridge/adv7511/adv7511.h     |   1 -=0D
+ drivers/gpu/drm/bridge/adv7511/adv7511_drv.c |  15 ++-=0D
+ drivers/gpu/drm/bridge/adv7511/adv7533.c     |  20 +---=0D
+ drivers/gpu/drm/bridge/analogix/anx7625.c    |  40 ++++---=0D
+ drivers/gpu/drm/bridge/lontium-lt8912b.c     |  31 ++----=0D
+ drivers/gpu/drm/bridge/lontium-lt9611.c      |  62 ++++-------=0D
+ drivers/gpu/drm/bridge/lontium-lt9611uxc.c   |  65 +++++------=0D
+ drivers/gpu/drm/bridge/parade-ps8640.c       | 107 ++++++++++---------=0D
+ drivers/gpu/drm/bridge/tc358775.c            |  50 +++++----=0D
+ drivers/gpu/drm/bridge/ti-sn65dsi83.c        |  88 ++++++++-------=0D
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c        | 101 +++++++++--------=0D
+ drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c |  52 +++++----=0D
+ drivers/gpu/drm/msm/dsi/dsi.c                |  50 +++++----=0D
+ drivers/gpu/drm/msm/dsi/dsi.h                |   2 +-=0D
+ drivers/gpu/drm/msm/dsi/dsi_host.c           |  22 ++--=0D
+ drivers/gpu/drm/msm/dsi/dsi_manager.c        |   6 +-=0D
+ drivers/gpu/drm/msm/msm_drv.h                |   2 +=0D
+ 17 files changed, 348 insertions(+), 366 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
