@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED5F4368C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC8E4368C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhJURL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbhJURLv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:11:51 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41787C061220
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:09:35 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso1512514pjf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/h3z+ZI1NEezvcalKf2dOAyWJ+jaOF20N5IW04VxMnA=;
-        b=EDjRl+XfT9L+B0/Ui2ATB7qVPuwaM4acCWeRrcT+9g5GbxL0WJjmTq5c1ovmol2FJ0
-         1fskzEINTfsYw8g8nAAbg2ogfzpc+mC2cO++Uro/3Z17oY0UGCsaxq0L4FpQ5hTR0B+i
-         4F82TStCNcJSBnVJ6HHpuKiPMrmrBZjNNQaQ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/h3z+ZI1NEezvcalKf2dOAyWJ+jaOF20N5IW04VxMnA=;
-        b=25kOG5talwZ7uD88sM8yTCmBO5VMU9YCVVs3Tv13ip0Oj/T7eHfv24O4AhVYJjI7dV
-         M6GBdvBQDf15QGoxnQmDKH+0RPB4T8JDa+pnBUGawIcSaszlfetp70k8HCe842kRUY25
-         Ws93vM2Rmw0BQcYwRtPkwkb1FcjGED2gR9YqFCLQ3o62fQ0aWAQrPG63VR6fUFO+/pfA
-         iV/H20Apfj1b6TrA3C5rUVGrFS4/9ajCihQxXXmMOhm7UGYaQ3NGV9iYOopF7mcQpbFS
-         KaUna3CK7A8An+Jq/kpIiLVLvWoqJQaEHwGheuFxCVw1VD2c4MdVBX8Mm/bGyRXoyTkU
-         KjMA==
-X-Gm-Message-State: AOAM531uxWjBmcr2t4o9JqEzizT/g/ElA8AJq8g7QDqEvmk/XJZN+obc
-        V8dCngzYVw9PTjxTQV16+XLdsQ==
-X-Google-Smtp-Source: ABdhPJx8xZPWUk8RdvIXPnnT/qf52D2k5QZILuisiCA7VHLuTMbbMXlu18CbRyoTtGgVOEZWXBbOqw==
-X-Received: by 2002:a17:90b:38c6:: with SMTP id nn6mr8039311pjb.246.1634836174380;
-        Thu, 21 Oct 2021 10:09:34 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y13sm6032193pgc.46.2021.10.21.10.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 10:09:34 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 10:09:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Shuah Khan <shuah@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kselftest@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>, jannh@google.com,
-        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, christian.brauner@ubuntu.com,
-        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
-        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
-        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
-        tsbogend@alpha.franken.de, nickhu@andestech.com,
-        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
-        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
-        chris@zankel.net, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] selftests: proc: Make sure wchan works when it exists
-Message-ID: <202110211008.CC8B26A@keescook>
-References: <20211008235504.2957528-1-keescook@chromium.org>
+        id S231865AbhJURNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:13:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231320AbhJURNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:13:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A39161A10;
+        Thu, 21 Oct 2021 17:11:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634836284;
+        bh=CSXxyTaQtIaxNFV2ImnHbTi91+q08can4AJfNYCT9ho=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fGAWt/RgExFThZd2f97kjgBZGtYmPC0ye38ulaiR+bzXd3L3hvP7xqoNWIi80VlEF
+         uxP8RHde9guqYWSaTRUu1yTq0qN+TvbeCwCDMVOSaHXSCsVwehuy4MOG+6w6cOhMAI
+         8UwL3iG+HomuPd5uqPakye8KrIl1+noUU7tlUOb5Z+PUNVCVk5IFfMviF+/dmNqL4Z
+         lAZlanTsDIWJlS/b+f2nishuBhLdiYK86NNUpt+7UbaOrxPW87dHb+p4XU7BoP3QAx
+         Crygnf5cnRmtgEJaDIQZ18InCOUP9KGHOWcKy2w23mH5l8vQPgo2DGxZYVJy5r9RgQ
+         2bobMAfvOVTEA==
+From:   Will Deacon <will@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        mathieu.poirier@linaro.org
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, maz@kernel.org,
+        leo.yan@linaro.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org
+Subject: Re: [PATCH v6 00/15] arm64: Self-hosted trace related errata workarounds
+Date:   Thu, 21 Oct 2021 18:11:17 +0100
+Message-Id: <163483495815.3806064.5821399518548380891.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211019163153.3692640-1-suzuki.poulose@arm.com>
+References: <20211019163153.3692640-1-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008235504.2957528-1-keescook@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 04:55:04PM -0700, Kees Cook wrote:
-> This makes sure that wchan contains a sensible symbol when a process is
-> blocked. Specifically this calls the sleep() syscall, and expects the
-> architecture to have called schedule() from a function that has "sleep"
-> somewhere in its name. For example, on the architectures I tested
-> (x86_64, arm64, arm, mips, and powerpc) this is "hrtimer_nanosleep":
+On Tue, 19 Oct 2021 17:31:38 +0100, Suzuki K Poulose wrote:
+> This series adds CPU erratum work arounds related to the self-hosted
+> tracing. The list of affected errata handled in this series are :
 > 
-> $ tools/testing/selftests/proc/proc-pid-wchan
-> ok: found 'sleep' in wchan 'hrtimer_nanosleep'
+>  * TRBE may overwrite trace in FILL mode
+>    - Arm Neoverse-N2	#2139208
+>    - Cortex-A710	#211985
 > 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Alexey Dobriyan <adobriyan@gmail.com>
-> Cc: linux-kselftest@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> [...]
 
-Friendly ping.
+Applied first four patches to arm64 (for-next/trbe-errata), thanks!
 
-> ---
-> Hi Peter,
-> 
-> Can you add this to the wchan series, please? This should help wchan from
-> regressing in the future, and allow us to notice if the depth accidentally
-> changes, like Mark saw.
-> ---
+[01/15] arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
+        https://git.kernel.org/arm64/c/2d0d656700d6
+[02/15] arm64: errata: Add detection for TRBE overwrite in FILL mode
+        https://git.kernel.org/arm64/c/b9d216fcef42
+[03/15] arm64: errata: Add workaround for TSB flush failures
+        https://git.kernel.org/arm64/c/fa82d0b4b833
+[04/15] arm64: errata: Add detection for TRBE write to out-of-range
+        https://git.kernel.org/arm64/c/8d81b2a38ddf
 
-I'd like to make sure we have a regression test for this. Will you add
-this to the wchan series please?
+Mathieu -- feel free to pull this into the coresight tree, as I won't be
+rebasing it.
 
--Kees
-
+Cheers,
 -- 
-Kees Cook
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
