@@ -2,168 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7B54365C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414534365CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhJUPSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
+        id S231683AbhJUPUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbhJUPST (ORCPT
+        with ESMTP id S230103AbhJUPUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:18:19 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B81C061229
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:16:03 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id o24-20020a05600c511800b0030d9da600aeso15127wms.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:16:03 -0700 (PDT)
+        Thu, 21 Oct 2021 11:20:00 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE11C0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:17:43 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id p16so2926272lfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wPEEI/42En9uKSJ0rR6svxJibQPpLgl3/xd+Q1CAzs4=;
-        b=ArwVTh3EaIjsFaD/Zbzk2v9QkwA3pWqH34r8L0lMMOpk5RFI4xI5zowgC5WNu3NqO5
-         1kyrUBKSFJi7H2zK6/4d5xiODpuHqkWpcmN4WOp0LS6RRGmtvOpZ9JCaxt8m2Cz714ai
-         QDV0et2cSifjt23YweKmZ8SMST9HKxMXkJCDk=
+        d=semihalf-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CtRyggFXcz/RI+RZSAJdFk1m/ZMHHugcxXkxvKPW+eg=;
+        b=1qG4vDyIEQ/GiHT9Dihtt0I48ay0Jq/+nt45F0YctIhvvhQufvUitJXaEKil5bU+Dt
+         7Lra4wO83C++jEi5A78olD8ZZWEmLxculPj35zh3t9gRGQiQNN51WIpZxZdKPSrFfVRE
+         DYAryz9Db4P400gNNKUVn/sT7rd9SjxeMEc9Ei0FR83t7jhS4TIh++4/lm9u0dEPbVne
+         rM/CR4Y/U9IcikiYTL4h8zYtkfDGS8MV2+E1DZ9EvZ/+rqR0fMgKLE0oFCWPq3MdPCog
+         4YiZf5G+tNkOaQRIUgcmF46M2/g7QthZFwyTSjgI4yfY9e3G4X0mUiTHiezYrRwMgTFA
+         xvhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wPEEI/42En9uKSJ0rR6svxJibQPpLgl3/xd+Q1CAzs4=;
-        b=XpETePFtQ4xytn/+AaoBGzHXKu1BQHRXZOyHfK7rLgmn4RG21FeTLGKfEOFJ8ImGf/
-         DePx7/M8+hK0HWbG5eYdfPE3CAmOPMqaxtbsL00rk5MTNcf9OjXAaVC2RIS7dwYXssBE
-         cztrYnnCS3msMIF8P5QsuNRAkmvgzaBvmQGVUE0w+Zy0vhy29Jp0RVKTjdt/t/27EPBX
-         cT79TAEh8NjDUrzkEKun5IOWdesaASZ/mWGcMf1Tlas97C1I9EbECs5cGdAPkAopG9D7
-         pvwl9fwbx22loD8fZo/NNMU8b7ZsfR0p5UE2Uq5WzAcyPNoRUapWKTmQ3jND+PZlQGKD
-         RPYg==
-X-Gm-Message-State: AOAM533u/DFILxVyLqQiQMnZFAqSfkpKyOWrbvQUkpp2wP63vB4BLgE2
-        J9b7gsmd60MFSsBsJ9MfTgMV4w==
-X-Google-Smtp-Source: ABdhPJydPjkzgQW2iWvviw52oqi+ooJKj874Q5kNQJaDXzYi3gfB4tnn05PuwBzIoPhuvzR9ZiHLVQ==
-X-Received: by 2002:a7b:c30c:: with SMTP id k12mr22015678wmj.38.1634829362115;
-        Thu, 21 Oct 2021 08:16:02 -0700 (PDT)
-Received: from altair.lan (7.2.6.0.8.8.2.4.4.c.c.f.b.1.5.4.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:451b:fcc4:4288:627])
-        by smtp.googlemail.com with ESMTPSA id z1sm5098562wrt.94.2021.10.21.08.16.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CtRyggFXcz/RI+RZSAJdFk1m/ZMHHugcxXkxvKPW+eg=;
+        b=tzBpnIyYjyLrYZH158B4AFUKjdNMiHlnZOSv0IpJm+4RU6xfO/hp7eBn3vHY/9q2Gr
+         K0BZU1yhsY+W0AeBuwCkgJetRRkfH+o/p+dCwPujiL2UHfD3e017RpS4K3nJcWsQioAa
+         cRRC5dmQGofiMjOoh7XixsBHSgegajQUkVzopIC+kIhCQVKgQpU6L4KOj68DoDoQ7ACG
+         eooTh3RviKPLQILIQ8LX4WNYi3CnX8mYsYOH9X2Lv6vlp2scQsdwcDkTgpMG4ThuecgD
+         oKh3jq5mkouV4bTTMMaw9N218A0QcwrcLq/Ij2m3AkiBAlJCJ6K/D+oY8SZL0EebDD/6
+         PoRA==
+X-Gm-Message-State: AOAM531apCA4b8UzWFUUOhZVinJG43DPcixoN/Jqnvc6yWiERf4ZCKkN
+        4m05UAKeOLOLDXnwvh8qTuohng==
+X-Google-Smtp-Source: ABdhPJzNgwkkDcYkQqDEOGkiFxn/k0IglKMB0mXc7n/fXSmfIuyjyAuuDnQe9l9k9iouk+8WSIha1w==
+X-Received: by 2002:a05:6512:3341:: with SMTP id y1mr5908152lfd.513.1634829462309;
+        Thu, 21 Oct 2021 08:17:42 -0700 (PDT)
+Received: from grasshopper.googchameleon.semihalf.net ([83.142.187.85])
+        by smtp.gmail.com with ESMTPSA id bt10sm91113lfb.193.2021.10.21.08.17.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:16:01 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] selftests: bpf: test RENAME_EXCHANGE and RENAME_NOREPLACE on bpffs
-Date:   Thu, 21 Oct 2021 16:15:28 +0100
-Message-Id: <20211021151528.116818-4-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211021151528.116818-1-lmb@cloudflare.com>
-References: <20211021151528.116818-1-lmb@cloudflare.com>
+        Thu, 21 Oct 2021 08:17:41 -0700 (PDT)
+From:   =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
+To:     arnd@arndb.de, olof@lixom.net, soc@kernel.org, robh+dt@kernel.org,
+        dinguyen@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, upstream@semihalf.com,
+        mw@semihalf.com, ka@semihalf.com, jam@semihalf.com,
+        tn@semihalf.com, amstan@google.com,
+        =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
+Subject: [PATCH v5 0/1] Add support for the Mercury+ AA1 module
+Date:   Thu, 21 Oct 2021 17:17:35 +0200
+Message-Id: <20211021151736.2096926-1-pan@semihalf.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tests to exercise the behaviour of RENAME_EXCHANGE and RENAME_NOREPLACE
-on bpffs. The former checks that after an exchange the inode of two
-directories has changed. The latter checks that the source still exists
-after a failed rename.
+The following patches add support for the Mercury+ AA1 with an
+Arria 10 SoCFPGA.
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../selftests/bpf/prog_tests/test_bpffs.c     | 65 ++++++++++++++++++-
- 1 file changed, 64 insertions(+), 1 deletion(-)
+This version is almost the same as v3, only difference is having
+devicetree Makefile entries for arria10_* sorted.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-index 533e3f3a459a..d29ebfeef9c5 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
- #define _GNU_SOURCE
-+#include <stdio.h>
- #include <sched.h>
- #include <sys/mount.h>
- #include <sys/stat.h>
-@@ -29,7 +30,8 @@ static int read_iter(char *file)
- 
- static int fn(void)
- {
--	int err;
-+	struct stat a, b, c;
-+	int err, map;
- 
- 	err = unshare(CLONE_NEWNS);
- 	if (!ASSERT_OK(err, "unshare"))
-@@ -67,6 +69,67 @@ static int fn(void)
- 	err = read_iter(TDIR "/fs2/progs.debug");
- 	if (!ASSERT_OK(err, "reading " TDIR "/fs2/progs.debug"))
- 		goto out;
-+
-+	err = mkdir(TDIR "/fs1/a", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/a"))
-+		goto out;
-+	err = mkdir(TDIR "/fs1/a/1", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/a/1"))
-+		goto out;
-+	err = mkdir(TDIR "/fs1/b", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/b"))
-+		goto out;
-+
-+	map = bpf_create_map(BPF_MAP_TYPE_ARRAY, 4, 4, 1, 0);
-+	if (!ASSERT_GT(map, 0, "create_map(ARRAY)"))
-+		goto out;
-+	err = bpf_obj_pin(map, TDIR "/fs1/c");
-+	if (!ASSERT_OK(err, "pin map"))
-+		goto out;
-+	close(map);
-+
-+	/* Check that RENAME_EXCHANGE works for directories. */
-+	err = stat(TDIR "/fs1/a", &a);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/a)"))
-+		goto out;
-+	err = renameat2(0, TDIR "/fs1/a", 0, TDIR "/fs1/b", RENAME_EXCHANGE);
-+	if (!ASSERT_OK(err, "renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE)"))
-+		goto out;
-+	err = stat(TDIR "/fs1/b", &b);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/b)"))
-+		goto out;
-+	if (!ASSERT_EQ(a.st_ino, b.st_ino, "b should have a's inode"))
-+		goto out;
-+	err = access(TDIR "/fs1/b/1", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/b/1)"))
-+		goto out;
-+
-+	/* Check that RENAME_EXCHANGE works for mixed file types. */
-+	err = stat(TDIR "/fs1/c", &c);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/map)"))
-+		goto out;
-+	err = renameat2(0, TDIR "/fs1/c", 0, TDIR "/fs1/b", RENAME_EXCHANGE);
-+	if (!ASSERT_OK(err, "renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE)"))
-+		goto out;
-+	err = stat(TDIR "/fs1/b", &b);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/b)"))
-+		goto out;
-+	if (!ASSERT_EQ(c.st_ino, b.st_ino, "b should have c's inode"))
-+		goto out;
-+	err = access(TDIR "/fs1/c/1", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/c/1)"))
-+		goto out;
-+
-+	/* Check that RENAME_NOREPLACE works. */
-+	err = renameat2(0, TDIR "/fs1/b", 0, TDIR "/fs1/a", RENAME_NOREPLACE);
-+	if (!ASSERT_ERR(err, "renameat2(RENAME_NOREPLACE)")) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+	err = access(TDIR "/fs1/b", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/b)"))
-+		goto out;
-+
- out:
- 	umount(TDIR "/fs1");
- 	umount(TDIR "/fs2");
+v5:
+* revert `move devicetree aliases to socfpga_arria10.dtsi`
+
+v4:
+* move devicetree aliases to socfpga_arria10.dtsi
+* sort arria10 entries in arch/arm/boot/dts/Makefile
+
+v3:
+* replace i2c busno property with devicetree aliases
+* reset controller patch added to Philipp Zabel's tree
+
+v2:
+* remove spi flash node
+* rename memory and mdio nodes
+* add gpio nodes
+* add busno property to designware i2c driver
+
+Paweł Anikiel (1):
+  dts: socfpga: Add Mercury+ AA1 devicetree
+
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/socfpga_arria10_mercury_aa1.dts  | 112 ++++++++++++++++++
+ 2 files changed, 113 insertions(+)
+ create mode 100644 arch/arm/boot/dts/socfpga_arria10_mercury_aa1.dts
+
 -- 
-2.32.0
+2.25.1
 
