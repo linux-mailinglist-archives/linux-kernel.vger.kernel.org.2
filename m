@@ -2,155 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44074358AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 04:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD634358B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 04:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhJUCfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 22:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJUCe7 (ORCPT
+        id S230389AbhJUClv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 22:41:51 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:44987 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhJUClv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 22:34:59 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A27CC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 19:32:44 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id t2so427911wrb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 19:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w5mE2x+hW5pUs3S3pcPG1uGiSDyc4WMJ3U35UkRsq+s=;
-        b=HgDmJOdjPt4QsbGwAloFChaUOnSeKyRpnqXxokF9l4WEPpLyC7btHMLS9ttFEbZlUf
-         6pJqFnUC4r0QMJ2lEknR87dQKLag/Zf+GxTBl8PCxnPNwGXN7+Ki5AzIkjI0tUDqAVtO
-         gY/vorVqzpdp7Ip8shJMHpq2kk6J61p1ttngKCC0uj3EUfGRB+3lp2t6YzdfLUiXwwWy
-         yB3ZHUGC3Xhd3lbqdeCnKXqXe7yFf3PSBPj8IoPiC4kZNPaBmAU78h4RysskHDN0DoD7
-         vQj3YNMihzDaUoJLbvwuZbeVGsOA9sjeBW8jXK+mF0yRNOVTYP0JfZ2ie9isHPejcNsV
-         4Klg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w5mE2x+hW5pUs3S3pcPG1uGiSDyc4WMJ3U35UkRsq+s=;
-        b=c6E6v/8tJK4hjR9KQX8Tb0Pl2th3MBgl3qAcKqKXJQmtOR0yiQjzF8HWbQw2vwTy64
-         NZzF/m8UZzq81CmOZyhtEI7qhCwqsC1GwDDV04Lo5I9YZNqdV49sg4jS1YAJSWqS7DcL
-         MRhfQu1/28jfn0XdQmpzaDjRuaiOdXb7cAZtY3VACXlQ5RgB1WYCynIHuxrC0pXFphEp
-         w7ly2GFyMhQgC3yY5IKorFXYs9qw3f/lYH5DVrs3YBUFWdsAVe6yGAyIMDKYludSUNuy
-         /NQF6FnZTZqAJX19M8RPmOf7pCLyT+BrBmLuc0q4A51rcdj27QFxDINRkfAn9CK/zdNF
-         a9AA==
-X-Gm-Message-State: AOAM530bs5xgQAAVZ9XX2SemwjrtEoapw/Vye0hA1GKB79AtoA91HAiN
-        Bm5Z0e0RDkDfBFsYRRINIgpi4ldo5zyTxchGRYcxAeYeAkmOHA==
-X-Google-Smtp-Source: ABdhPJy1TXM/ktn3Tx4CCtwfH6IOLLZIhWo2njTND6Dw9Vd4e5cFoe+AAs3IHzDMwFTS/wlFt/j3LFtUc5oddOJVR9U=
-X-Received: by 2002:adf:9c11:: with SMTP id f17mr3823144wrc.147.1634783562902;
- Wed, 20 Oct 2021 19:32:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211020232121.1748376-1-dlatypov@google.com>
-In-Reply-To: <20211020232121.1748376-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 21 Oct 2021 10:32:31 +0800
-Message-ID: <CABVgOS=KuRiw1D3_TS9pvQ420JLcvv-sN9Lg7BP+OMy-dhYqMg@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: tool: continue past invalid utf-8 output
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Wed, 20 Oct 2021 22:41:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZWsK2Q6yz4xbR;
+        Thu, 21 Oct 2021 13:39:33 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634783974;
+        bh=+YyK2gDFC5pqxheqkppYraxAoWcWTs5ApJx+siznQCA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aOu1rVLY8PczP6jaNaEL2OlgAf3P9/Ton1QIJrYym+HqdNHcZJLqvkf3G3lfpo9Rv
+         LKA/D/oSxAC263a/A5zrictSLAwftvYDxVTKiodOgC3IYdS1pD5+gwXA8BC4AoXQ7u
+         u+u9EyObG5DKEBoE6wBhD3tJCM2bLBVQGb3Vavr5E1qcieEQR0KLLfwIBQtfUaU8R6
+         VZU2hS6Rjf3rloxA+NRP1cqvc/4XVylgyp4YWQamDWjZhCbbJpmPuXRn4xoMxJ9Le9
+         2ODbyd5xFitKLygz61/1Pji3zVQaSGd65yhp0HJhCqic7CUEaM4C1yQUcaCZxHN2Du
+         HzB3O34vAbQwQ==
+Date:   Thu, 21 Oct 2021 13:39:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@suse.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Subject: linux-next: manual merge of the kvm tree with the tip tree
+Message-ID: <20211021133931.1a0e096b@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/c2ZN7YoM3op9KtXwdjXKaVS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 7:21 AM 'Daniel Latypov' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
->
-> kunit.py currently crashes and fails to parse kernel output if it's not
-> fully valid utf-8.
->
-> This can come from memory corruption or or just inadvertently printing
-> out binary data as strings.
->
-> E.g. adding this line into a kunit test
->   pr_info("\x80")
-> will cause this exception
->   UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 1961: invalid start byte
->
-> We can tell Python how to handle errors, see
-> https://docs.python.org/3/library/codecs.html#error-handlers
->
-> Unfortunately, it doesn't seem like there's a way to specify this in
-> just one location, so we need to repeat ourselves quite a bit.
->
-> Specify `errors='backslashreplace'` so we instead:
-> * print out the offending byte as '\x80'
-> * try and continue parsing the output.
->   * as long as the TAP lines themselves are valid, we're fine.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
-> v1 -> v2: add comment to silence erroneous pytype error
-> ---
+--Sig_/c2ZN7YoM3op9KtXwdjXKaVS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks. I've tested this, and it works well for me. I don't mind the
-pytype comment, even though I don't use pytype, so I'm glad it's
-there.
+Hi all,
 
-Tested-by: David Gow <davidgow@google.com>
+Today's linux-next merge of the kvm tree got a conflict in:
 
+  arch/x86/kvm/x86.c
+
+between commit:
+
+  126fe0401883 ("x86/fpu: Cleanup xstate xcomp_bv initialization")
+
+from the tip tree and commits:
+
+  5ebbc470d7f3 ("KVM: x86: Remove defunct setting of CR0.ET for guests duri=
+ng vCPU create")
+  e8f65b9bb483 ("KVM: x86: Remove defunct setting of XCR0 for guest during =
+vCPU create")
+  583d369b36a9 ("KVM: x86: Fold fx_init() into kvm_arch_vcpu_create()")
+
+from the kvm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
 Cheers,
--- David
+Stephen Rothwell
 
->  tools/testing/kunit/kunit.py        | 3 ++-
->  tools/testing/kunit/kunit_kernel.py | 4 ++--
->  2 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> index e1dd3180f0d1..68e6f461c758 100755
-> --- a/tools/testing/kunit/kunit.py
-> +++ b/tools/testing/kunit/kunit.py
-> @@ -477,9 +477,10 @@ def main(argv, linux=None):
->                         sys.exit(1)
->         elif cli_args.subcommand == 'parse':
->                 if cli_args.file == None:
-> +                       sys.stdin.reconfigure(errors='backslashreplace')  # pytype: disable=attribute-error
->                         kunit_output = sys.stdin
->                 else:
-> -                       with open(cli_args.file, 'r') as f:
-> +                       with open(cli_args.file, 'r', errors='backslashreplace') as f:
->                                 kunit_output = f.read().splitlines()
->                 request = KunitParseRequest(cli_args.raw_output,
->                                             None,
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index faa6320e900e..f08c6c36a947 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -135,7 +135,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
->                                            stdin=subprocess.PIPE,
->                                            stdout=subprocess.PIPE,
->                                            stderr=subprocess.STDOUT,
-> -                                          text=True, shell=True)
-> +                                          text=True, shell=True, errors='backslashreplace')
->
->  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
->         """An abstraction over command line operations performed on a source tree."""
-> @@ -172,7 +172,7 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
->                                            stdin=subprocess.PIPE,
->                                            stdout=subprocess.PIPE,
->                                            stderr=subprocess.STDOUT,
-> -                                          text=True)
-> +                                          text=True, errors='backslashreplace')
->
->  def get_kconfig_path(build_dir) -> str:
->         return get_file_path(build_dir, KCONFIG_PATH)
->
-> base-commit: 63b136c634a2bdffd78795bc33ac2d488152ffe8
-> --
-> 2.33.0.1079.g6e70778dc9-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20211020232121.1748376-1-dlatypov%40google.com.
+diff --cc arch/x86/kvm/x86.c
+index 04350680b649,3ea4f6ef2474..000000000000
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@@ -10615,10 -10687,10 +10590,9 @@@ int kvm_arch_vcpu_create(struct kvm_vcp
+  		pr_err("kvm: failed to allocate vcpu's fpu\n");
+  		goto free_user_fpu;
+  	}
+ -	fpstate_init(&vcpu->arch.guest_fpu->state);
+ -	if (boot_cpu_has(X86_FEATURE_XSAVES))
+ -		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =3D
+ -			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+ +
+ +	fpu_init_fpstate_user(vcpu->arch.user_fpu);
+ +	fpu_init_fpstate_user(vcpu->arch.guest_fpu);
+- 	fx_init(vcpu);
+ =20
+  	vcpu->arch.maxphyaddr =3D cpuid_query_maxphyaddr(vcpu);
+  	vcpu->arch.reserved_gpa_bits =3D kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+
+--Sig_/c2ZN7YoM3op9KtXwdjXKaVS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFw0uQACgkQAVBC80lX
+0GyBgwf+Pk2g4riGFW+HoU4haeM9uGsd7l5rHyG+ms6+/U0s0XCtyMNHeGYKX8x4
+6m7XJe7iDQaK0pawBEwxubEfEpbpCgIdu/sUArKVde+xiP8YxGfOr8U7U7sdkpF0
+l/d4E/KCVY35NdA4XmfZCqZ+/gHTUSCgf81zOI7WUYvsdxpgsN4j6jk2ZY5Ifa0w
+sN+iNi9afboUml3T1V3d5SHlgE1KBkaXu4lpsRX6nwa4FqEJKRyCqVsafQQL6qpp
+X4Pox2t4Gkj51GmQcJzWGP/H4QP/DEUIYHrXknjwe4eo1m2PBmVeYbqL+1CV/d1c
+b7MlYNhLH1LYm1Tka/gD+ZHnJGB43A==
+=keu7
+-----END PGP SIGNATURE-----
+
+--Sig_/c2ZN7YoM3op9KtXwdjXKaVS--
