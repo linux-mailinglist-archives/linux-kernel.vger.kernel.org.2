@@ -2,112 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A8343684D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65965436851
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbhJUQuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhJUQuM (ORCPT
+        id S232098AbhJUQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:50:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50647 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232042AbhJUQup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:50:12 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4D7C061764;
-        Thu, 21 Oct 2021 09:47:56 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id s19so45878ljj.11;
-        Thu, 21 Oct 2021 09:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=teoHzi6Hmm/OVFrA0e8JXtWu9N4wtV6Jv4Y9vx/yxR0=;
-        b=Ke7CiYkPNKFISeqO2ZhVh8+k0kvSAIk683PKPVHhtsHDtLhVwn2f+0hQSJJ7r6orGa
-         B7BfSVZoqpWcB5YqNDCuDGJER0BOzTnlUMKZa9tsTfEfZEHCcfLce7MCivrazcR5Tnd3
-         SMS4TH7DYlBA7ePK8tge9BjdQon1+5LLQHE17eN7i5JbEC9zfejp+6wbwSCyDBv2C43r
-         z7fYucPtrEa1/61dIb/hM86y0hhxKSbbpEsVuOT3+9gNpfGUIxkSyjANFOwaH2SIQwq0
-         DGdt/pm2SEMvQZJ7YthPL5Je99dXF8sOqm4+IMv+79hL6yaHt8Kmst0GGoPAlL+bA+AV
-         ouDg==
+        Thu, 21 Oct 2021 12:50:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634834909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VCfninvKWV47Xsp5RP9uGNnQM9wSoQBnNs6aRe8wJDY=;
+        b=TNNv8OEAK0ywbmQsRdJ68Km2fOXoAcbFYdWDP49DWxkQiEaswkqChlFEDbU27qltVwH94R
+        ytdkCdFPrHiN98AL0DF2XtaQ2Pb//s4AvGDQmBjuhwmrnwR1VGjSLCXBIW1tXcTlAdQo0A
+        TDQKCqtWp52lEZKVFIj4U+DbVKdkje0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-eNY4Z6XOPp6hwWyOyt_lhA-1; Thu, 21 Oct 2021 12:48:28 -0400
+X-MC-Unique: eNY4Z6XOPp6hwWyOyt_lhA-1
+Received: by mail-ed1-f70.google.com with SMTP id t28-20020a508d5c000000b003dad7fc5caeso965308edt.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:48:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=teoHzi6Hmm/OVFrA0e8JXtWu9N4wtV6Jv4Y9vx/yxR0=;
-        b=Cf3QPf+H3Q36dP/MoM0PZ3ASnHNOynNKt31whHxrSYLwTOCAXKJAcgE7WDiOqDtOtw
-         YfxFiIAhRyzNvoAztF8UMEvgMzum6ZnliPZq0sKIjI/dwHbO/T1rfXP1HXMs70yymEKo
-         oIjpdzDUO3EI1D9OhWHg/sfdhtXrKJ6pEb7Mh04N2NW9uO5YbVfU8Y96Qwd8Xlihg1TJ
-         i6vCvNQNxiCxNsulNCe7EWeoHkMfCS/Gb4bu9lyNQogv7GAGh8yXVP9qUCAc49s8D4cP
-         rDnOYDGaAS2gifRD2s71re03bhbQOnEkKJgpkW+ON1ZbHR1zQ1QySRC0sthaHI55osVC
-         i+5Q==
-X-Gm-Message-State: AOAM533kNVKYaEylmDK6Y8clXO0EMZE9hvilJGmwo64bV4Sx76xz0az8
-        TV/ClX7REP096QNYnO5Gfq0fetdTEYM=
-X-Google-Smtp-Source: ABdhPJxytDT9pDTb/bTC5dE5btSmvHObDmj7vUPhohHmYJletZw2VYtYZK0DWFzBUGXcNRT8AnkTrA==
-X-Received: by 2002:a05:651c:32f:: with SMTP id b15mr6862293ljp.318.1634834874386;
-        Thu, 21 Oct 2021 09:47:54 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.235.181])
-        by smtp.gmail.com with ESMTPSA id o6sm507091lfr.19.2021.10.21.09.47.53
+        bh=VCfninvKWV47Xsp5RP9uGNnQM9wSoQBnNs6aRe8wJDY=;
+        b=bodTbtNLdCUAHf5JNiFmx5vcvxKjw7p4cq/vEmmur1Zm4E8KmxHm4b/DdytR6B376j
+         lmTkeisNymsByYi8uEd0YICYo+fTknaheMopyzjDi1N8qBVYXKycn4pqwiGv5vnvogvi
+         bpEZj/spSRcwdsu2YVnXSlUIdWsDCx8Hv9LiWlvkmmJS87xZ2/uJiOYXoCTTDoaHzXVL
+         pVJzdhuAuJt3kaqmZzxokMYKR+m4CTJoV42ylGw/z2lVfJdfR9HpUyb1X8WEFyFT+CNM
+         I+nVT0ACd2jH4SxvXltMm67Hgw/TcqZgCrL6GUGjj9Lzre16HsYuDxax9prBB6Z/f8a9
+         Yk/g==
+X-Gm-Message-State: AOAM530+gghcCFDA5k7vLij2qCgNLVJPaDtopll2JPC6l1D6bTQzZ0Ad
+        IqUyvue2A64Nupc6sJmz8MvuOpXKU3o7RXDF88uSsa5y34XnsP71M3Oo0aM9BkUjobh4huIuYu4
+        /KwXriJ+GYQvoz8kqmjsAAD5w
+X-Received: by 2002:a05:6402:1d49:: with SMTP id dz9mr8906096edb.55.1634834907148;
+        Thu, 21 Oct 2021 09:48:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzfUh/gwLHsLAnloHareVcoBblGeHhzpVkYSFaPuXfPlmJE71AfB3siwZaeIXtqnPns26Vmdw==
+X-Received: by 2002:a05:6402:1d49:: with SMTP id dz9mr8906052edb.55.1634834906943;
+        Thu, 21 Oct 2021 09:48:26 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id b2sm3206364edv.73.2021.10.21.09.48.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 09:47:53 -0700 (PDT)
-Message-ID: <8f6f738b-2d74-1778-648a-dc62603319d0@gmail.com>
-Date:   Thu, 21 Oct 2021 19:47:51 +0300
+        Thu, 21 Oct 2021 09:48:26 -0700 (PDT)
+Message-ID: <71547952-c3e7-6683-5eea-70d3003d5224@redhat.com>
+Date:   Thu, 21 Oct 2021 18:48:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 0/2] nbd: fix sanity check for first_minor
+ Thunderbird/91.1.0
+Subject: Re: [RFC 00/16] KVM: selftests: Add tests for SEV, SEV-ES, and
+ SEV-SNP guests
 Content-Language: en-US
-To:     "yukuai (C)" <yukuai3@huawei.com>, josef@toxicpanda.com,
-        axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        luomeng12@huawei.com, Christoph Hellwig <hch@lst.de>
-References: <20211021122936.758221-1-yukuai3@huawei.com>
- <72fb140d-609b-c035-bdd6-d2b8639c116b@gmail.com>
- <17182476-e5bf-f493-9d9b-fedb2d9c8e1a@huawei.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <17182476-e5bf-f493-9d9b-fedb2d9c8e1a@huawei.com>
+To:     Michael Roth <michael.roth@amd.com>,
+        linux-kselftest@vger.kernel.org
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Nathan Tempelman <natet@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Ricardo Koller <ricarkol@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+References: <20211005234459.430873-1-michael.roth@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211005234459.430873-1-michael.roth@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/21 16:13, yukuai (C) wrote:
-> On 2021/10/21 20:35, Pavel Skripkin wrote:
->> On 10/21/21 15:29, Yu Kuai wrote:
->>> Yu Kuai (2):
->>>    nbd: fix max value for 'first_minor'
->>>    nbd: fix possible overflow for 'first_minor' in nbd_dev_add()
->>>
->>>   drivers/block/nbd.c | 6 +++---
->>>   1 file changed, 3 insertions(+), 3 deletions(-)
->>>
->> 
->> Hi, Yu!
->> 
->> Thank you for the fix, but this wrong check should be just removed, 
->> since root case of wrong sysfs file creation was fixed, as Christoph 
->> said [1]
+On 06/10/21 01:44, Michael Roth wrote:
+> These patches and are also available at:
 > 
-> Hi, Pavel
+>    https://github.com/mdroth/linux/commits/sev-selftests-rfc1
 > 
-> Thanks for your response, with the root cause fixed, patch 1 is not
-> needed anymore. However, the overflow case in patch 2 is still
-> possible.
+> They are based on top of v5 of Brijesh's SEV-SNP hypervisor patches[1]
+> to allow for SEV-SNP testing and provide some context for the overall
+> design, but the SEV/SEV-ES patches can be carved out into a separate
+> series as needed.
 > 
-> Does anyone plan to remove the checking?
+> == OVERVIEW ==
+> 
+> This series introduces a set of memory encryption-related parameter/hooks
+> in the core kselftest library, then uses the hooks to implement a small
+> library for creating/managing SEV, SEV-ES, SEV-SNP guests. This library
+> is then used to implement a basic boot/memory test that's run for all
+> variants of SEV/SEV-ES/SEV-SNP guest types, as well as a set of SEV-SNP
+> tests that cover various permutations of pvalidate/page-state changes.
+> 
+> - Patches 1-7 implement SEV boot tests and should run against existing
+>    kernels
+> - Patch 8 is a KVM changes that's required to allow SEV-ES/SEV-SNP
+>    guests to boot with an externally generated page table, and is a
+>    host kernel prequisite for the remaining patches in the series.
+> - Patches 9-12 extend the boot tests to cover SEV-ES
+> - Patches 13-16 extend the boot testst to cover SEV-SNP, and introduce
+>    an additional test for page-state changes.
+
+Hi Mike,
+
+this SEV/SEV-ES testing (both your series and kvm-unit-tests) is good 
+stuff. :)  If you fix up patches 1-12, I will commit them pretty much 
+straight away.  The only thing that possibly needs some thought is the 
+integration with ucall.
+
+Thanks,
+
+Paolo
+
+> Any review/comments are greatly appreciated!
+> 
+> [1] https://lore.kernel.org/linux-mm/20210820155918.7518-1-brijesh.singh@amd.com/
+> 
+> ----------------------------------------------------------------
+> Michael Roth (16):
+>        KVM: selftests: move vm_phy_pages_alloc() earlier in file
+>        KVM: selftests: add hooks for managing encrypted guest memory
+>        KVM: selftests: handle encryption bits in page tables
+>        KVM: selftests: set CPUID before setting sregs in vcpu creation
+>        KVM: selftests: add support for encrypted vm_vaddr_* allocations
+>        KVM: selftests: add library for creating/interacting with SEV guests
+>        KVM: selftests: add SEV boot tests
+>        KVM: SVM: include CR3 in initial VMSA state for SEV-ES guests
+>        KVM: selftests: account for error code in #VC exception frame
+>        KVM: selftests: add support for creating SEV-ES guests
+>        KVM: selftests: add library for handling SEV-ES-related exits
+>        KVM: selftests: add SEV-ES boot tests
+>        KVM: selftests: add support for creating SEV-SNP guests
+>        KVM: selftests: add helpers for SEV-SNP-related instructions/exits
+>        KVM: selftests: add SEV-SNP boot tests
+>        KVM: selftests: add SEV-SNP tests for page-state changes
+> 
+>   arch/x86/include/asm/kvm-x86-ops.h                 |   1 +
+>   arch/x86/include/asm/kvm_host.h                    |   1 +
+>   arch/x86/kvm/svm/svm.c                             |  22 ++
+>   arch/x86/kvm/vmx/vmx.c                             |   8 +
+>   arch/x86/kvm/x86.c                                 |   3 +-
+>   tools/testing/selftests/kvm/.gitignore             |   2 +
+>   tools/testing/selftests/kvm/Makefile               |   3 +
+>   tools/testing/selftests/kvm/include/kvm_util.h     |   8 +
+>   tools/testing/selftests/kvm/include/x86_64/sev.h   |  70 ++++
+>   .../selftests/kvm/include/x86_64/sev_exitlib.h     |  20 ++
+>   tools/testing/selftests/kvm/include/x86_64/svm.h   |  35 ++
+>   .../selftests/kvm/include/x86_64/svm_util.h        |   2 +
+>   tools/testing/selftests/kvm/lib/kvm_util.c         | 249 +++++++++-----
+>   .../testing/selftests/kvm/lib/kvm_util_internal.h  |  10 +
+>   tools/testing/selftests/kvm/lib/x86_64/handlers.S  |   4 +-
+>   tools/testing/selftests/kvm/lib/x86_64/processor.c |  30 +-
+>   tools/testing/selftests/kvm/lib/x86_64/sev.c       | 381 +++++++++++++++++++++
+>   .../testing/selftests/kvm/lib/x86_64/sev_exitlib.c | 326 ++++++++++++++++++
+>   .../selftests/kvm/x86_64/sev_all_boot_test.c       | 367 ++++++++++++++++++++
+>   .../selftests/kvm/x86_64/sev_snp_psc_test.c        | 378 ++++++++++++++++++++
+>   20 files changed, 1820 insertions(+), 100 deletions(-)
+>   create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev.h
+>   create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev_exitlib.h
+>   create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev.c
+>   create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev_exitlib.c
+>   create mode 100644 tools/testing/selftests/kvm/x86_64/sev_all_boot_test.c
+>   create mode 100644 tools/testing/selftests/kvm/x86_64/sev_snp_psc_test.c
+> 
+> 
 > 
 
-
-Hm, I thought it was already removed, but I was wrong, I guess. Let's 
-see what Christoph thinks about this check.
-
-Maybe add_disk() error handling is still not in Linus tree, I haven't 
-checked yet. Sysfs warnings _should_ be fixed by proper error handling, 
-but maybe there is another problem somewhere...
-
-
-
-
-With regards,
-Pavel Skripkin
