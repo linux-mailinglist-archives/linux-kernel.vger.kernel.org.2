@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A4D436BBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A39436BC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbhJUUHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 16:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
+        id S232041AbhJUUHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 16:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231912AbhJUUG7 (ORCPT
+        with ESMTP id S230020AbhJUUHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 16:06:59 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DFFC0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:04:43 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id m26so1629965pff.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BJdYaoVntWzrTJu7xhe7fmZqFzNwWeTLt9gWbNrG0tI=;
-        b=DyZK5UjsLM2sesHrMIFKiCLvbwjjm6pRQYaHN6kh2bjdpBd+o7evkX3d9O/HB2gCVy
-         9HS0r8ymYKhTg12KN8I4CrhlEfdKv4Xk3ALOHQ4mXeLFdHKKF+mUYFzEPXic2/yH4KVi
-         GzZ0x5/cF9q2KuyWxEkNaSc070B2tZ9WFJBm2oolGEsbcrdTtb/fnQYFp+UQqugJPxij
-         Ov2JgMaSOXUiH81fVFEKMW7mQWqRLHkh6qm7U7+SkK1mPCgCd04d+lxPNvXVHHt2g2Zl
-         Uq8MNQ8zSwMpdqGt7Nn/BOQsbipMtnMmbuRW9zbbDQGiS12bvzZfiCd+zwc53SUEULGQ
-         aGtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BJdYaoVntWzrTJu7xhe7fmZqFzNwWeTLt9gWbNrG0tI=;
-        b=dAsawY0fSq6o2OXg/SzliS5VLHrowSX7U6XSdf7wd3qK1arSOrzphCv7iGLDn1aS4E
-         QuMJn2ODbXPLvMpkyI0Qc9zrGr4g1u1GntdDk8rLrH5fEES+l5y9AB02x7AdCvfT0OX6
-         8/vtSElWBLmaeFl755mg5HmRPJpb3gx9b/BhxtyYTHozLR6ehK7zJBMu5WwIef9UQV0G
-         OEuFC7BR7z6yCznPeWhBI5690+jGyUh6aF9n8JM5Rtn+9dQVwlnBAcJTJrOs4VCUFj0r
-         tSM96GpiI/FzpTqzVvgeBtAk1YFdtT0JPIX5DDLmr7ONs7u3/AUB+Th6frtd4YDuDzZE
-         RvFQ==
-X-Gm-Message-State: AOAM532VOSDtDHCXQq11etAwvx+Dskt+I4kXnx4wasjT2n8Nb/xV6y/T
-        lkPVEBENyGFVDk5A8rwD3I+xHg==
-X-Google-Smtp-Source: ABdhPJyB+o2LF+Q8z+muxQ99/9OkhcI4FKylH+wkYoTPlnXf+riWGqXzgHGVhrTsmBfPFL1UGvcRWg==
-X-Received: by 2002:a05:6a00:24c1:b0:457:a10e:a0e with SMTP id d1-20020a056a0024c100b00457a10e0a0emr7511096pfv.63.1634846682353;
-        Thu, 21 Oct 2021 13:04:42 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f21sm7567450pfc.203.2021.10.21.13.04.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 13:04:41 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 20:04:38 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        fwilhelm@google.com, oupton@google.com
-Subject: Re: [PATCH 0/8] KVM: SEV-ES: fixes for string I/O emulation
-Message-ID: <YXHH1shFlGWyZqlw@google.com>
-References: <20211013165616.19846-1-pbonzini@redhat.com>
- <435767c0-958d-f90f-d11a-cff42ab1205c@redhat.com>
+        Thu, 21 Oct 2021 16:07:16 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB896C061764;
+        Thu, 21 Oct 2021 13:04:59 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZz3T52Tpz4xcb;
+        Fri, 22 Oct 2021 07:04:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634846694;
+        bh=HqHIHnG1rf3cb3NZafBhvLJVlKorWC20d6n/zKikG0I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kadgdumBstpaQ9k8FfUG6Ao+n66i1lN59z+t+b7obvCjVwrIiNcAQeRXDJEX6eaKI
+         Tl7liF4RX6B7FYdECjGYdokL26wwE9E0XImGYXGvsiZp8DIhCuij3fnLVtsEdGE7yL
+         7qxwhMjP03w09qnZXvxmLb5dEwb5udA/UkJ1A3+ul9EY+x2102r72gJajOb6hkEYUm
+         zDKJXwcvvSys4pwd672/2t3j6cOAxcgTFJPRSe+QsgQQTh3gk/SjrkQ7H8FMvgNbdF
+         Ep5QrLP3ynMVW64XSDsWLXGck91CWUM3VwaRWm2AlEr2aL9UjGfpda8i5bXAggwTyH
+         B/3TsFmhYvh/A==
+Date:   Fri, 22 Oct 2021 07:04:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vadim Pasternak <vadimp@nvidia.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: linux-next: build warnings after merge of the drivers-x86 tree
+Message-ID: <20211022070452.28924855@canb.auug.org.au>
+In-Reply-To: <BN9PR12MB53814D3DCD5BD5E9441DE3F3AFBF9@BN9PR12MB5381.namprd12.prod.outlook.com>
+References: <20211021184735.794b22a7@canb.auug.org.au>
+        <BN9PR12MB53814D3DCD5BD5E9441DE3F3AFBF9@BN9PR12MB5381.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <435767c0-958d-f90f-d11a-cff42ab1205c@redhat.com>
+Content-Type: multipart/signed; boundary="Sig_/Xc4ry4agoJfB20tgSuUNd2T";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021, Paolo Bonzini wrote:
-> On 13/10/21 18:56, Paolo Bonzini wrote:
-> > This series, namely patches 1 and 8, fix two bugs in string I/O
-> > emulation for SEV-ES:
-> > 
-> > - first, the length is completely off for "rep ins" and "rep outs"
-> >    operation of size > 1.  After setup_vmgexit_scratch, svm->ghcb_sa_len
-> >    is in bytes, but kvm_sev_es_string_io expects the number of PIO
-> >    operations.
-> > 
-> > - second, the size of the GHCB buffer can exceed the size of
-> >    vcpu->arch.pio_data.  If that happens, we need to go over the GHCB
-> >    buffer in multiple passes.
-> > 
-> > The second bug was reported by Felix Wilhelm.  The first was found by
-> > me by code inspection; on one hand it seems *too* egregious so I'll be
-> > gladly proven wrong on this, on the other hand... I know I'm bad at code
-> > review, but not _that_ bad.
+--Sig_/Xc4ry4agoJfB20tgSuUNd2T
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-String I/O was completely busted on the Linux guest side as well, I wouldn't be
-the least bit surprised if KVM were completely broken as well (reviewing now...).
+Hi Vadim,
+
+On Thu, 21 Oct 2021 09:07:03 +0000 Vadim Pasternak <vadimp@nvidia.com> wrot=
+e:
+>
+> > -----Original Message-----
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Sent: Thursday, October 21, 2021 10:48 AM
+> > To: Hans de Goede <hdegoede@redhat.com>; Mark Gross
+> > <markgross@kernel.org>
+> > Cc: Vadim Pasternak <vadimp@nvidia.com>; Linux Kernel Mailing List <lin=
+ux- =20
+> > kernel@vger.kernel.org>; Linux Next Mailing List <linux-
+> > next@vger.kernel.org> =20
+> > Subject: linux-next: build warnings after merge of the drivers-x86 tree
+> >=20
+> > Hi all,
+> >=20
+> > After merging the drivers-x86 tree, today's linux-next build (htmldocs)
+> > produced these warnings:
+> >=20
+> > Documentation/ABI/stable/sysfs-driver-mlxreg-io:230: WARNING:
+> > Unexpected indentation.
+> > Documentation/ABI/stable/sysfs-driver-mlxreg-io:230: WARNING: Block
+> > quote ends without a blank line; unexpected unindent. =20
+>=20
+> Hi,
+>=20
+> What is wrong with the syntax at line 230 and where blank line is expecte=
+d?
+>=20
+> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_active_i=
+mage
+> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_auth_fail
+> What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/bios_upgrade_=
+fail
+> Date:		October 2021	<--- this is line 230
+> KernelVersion:	5.16
+
+I am sorry, I don't know.  Added Jon to cc for advice.
+
+> > Introduced by commit
+> >=20
+> >   527cd54d49dd ("Documentation/ABI: Add new attributes for mlxreg-io sy=
+sfs
+> > interfaces")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Xc4ry4agoJfB20tgSuUNd2T
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFxx+QACgkQAVBC80lX
+0Gwf+gf7BLb+woF+pYMnQX/ZX8ojH/tQY4+b/09lMG//jWbeZ5S/o67hj8vchKCg
+oa71eTCwWQtgzMp4z/FexGyLFhjXK4BnDfw6wUczaL5GTS/JXk3hFBpqF1D1DvNP
+b+ZekE8+8fPLHQLNxjYVDy5+qOtrFEcKYnwwKp5Ev/Q5M6gv+Ukukma8W13vEq7A
+80xtutDEoOwVcjOQ21rugeDH72zVQ8w3McQW+QeblALsFDcpUFqoLvA+O++Bb4IG
+E3wn/iMdPoXRJJ+KWWIvVuGHvBf1HwaKN1ZoE4ngQ93l1+Tg2ooKdahhWHy4FrCo
+Vy5bIs8pA/D5yZIXUThCwgGs2pZnsQ==
+=YnIu
+-----END PGP SIGNATURE-----
+
+--Sig_/Xc4ry4agoJfB20tgSuUNd2T--
