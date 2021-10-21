@@ -2,137 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E9C435E1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D58435E1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 11:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhJUJpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 05:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhJUJpQ (ORCPT
+        id S231580AbhJUJpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 05:45:23 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:46605 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231391AbhJUJpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 05:45:16 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBC9C06161C;
-        Thu, 21 Oct 2021 02:43:01 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id y30so1107197edi.0;
-        Thu, 21 Oct 2021 02:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7d9A19lddRW8irMmh+Mt66ZHeRLI+KZdHS1ByPMNTZA=;
-        b=HeHRHIxxA8UavrLE5b8DPIXOG7Pxxaru8WIwBp2TIKbAw2VV2wvlI2Yy9XpqjeH129
-         rHtHfBemKPWFqyVaHvnGyJCNA2GIPUPHGc4YzMg31Gr3HvJ7ecHjxPqF4oTL/JgU1m/a
-         2iXbLL5grsqX+d3nM1wO+afmPTR/f0Mxy+q+JFaQWQCLbSu6JvQVsnzXiJCbI/MNNLPo
-         0gq9CR39u/GCgVgxpTP5YgQsZrLQFgrsHRw3wYwhQcIDPfFOoQjDgB6JPRANkGQsUoZ9
-         XxHti8bRkPTYkZDNHw8KtE8u2vH7FCMgoTx8Igk87tEJ+UG/C4AyHAeYDDC+jRfrXTUv
-         rkyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7d9A19lddRW8irMmh+Mt66ZHeRLI+KZdHS1ByPMNTZA=;
-        b=emzq1HLby3mRr+g38NoTWja8Y8bZr/H+1M32FHBuHMOjQDofBxZAqv1epwxtAv0JWc
-         4D8mmxeu4A1F9wLgDXnYKvdUew+zTo/GO8JCl62NzQuLDR0ZQdWIOeQukD+46t8KKh7E
-         ZNSXaDrXlLHOACT02iXGRBbP6r7jTgl6wzQJ1q7Q+tlJ50KMGXfZACHqDn6moEZ5iafm
-         +TVydyYi5gW55GjEoMDdmDPfvjadTfjculX5xQIkU4PTku5QU5yhIkzOt9QX1ZCtVFF2
-         cNbx8jFolVVqz11B0Lz+OxYAVGloKJwWNYln6AaWUGtb6ITE2rBJFXjG3D0WfvPItgIT
-         n/OA==
-X-Gm-Message-State: AOAM532HVxsB9KVORiwxnQGMfbYWDBt+f0W22cjtrP3R7ZqFE5Qr5wdw
-        PKrecQ6Pt1V+WSK7iyKtCsxq807IMDNGwTRsFqjXLBJdW7zh7w==
-X-Google-Smtp-Source: ABdhPJx00Jiy0O/uySthYcE3x9sIdkDX1n8r7Bnsji3a+Y4fd2EPOVRK3VPIF267F5EQ+BjxjNEsxoP0r30oQflszrs=
-X-Received: by 2002:a17:907:8a27:: with SMTP id sc39mr5961020ejc.567.1634809379628;
- Thu, 21 Oct 2021 02:42:59 -0700 (PDT)
+        Thu, 21 Oct 2021 05:45:18 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 4EEC820007;
+        Thu, 21 Oct 2021 09:42:59 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 11:42:59 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 3/9] rtc: max77686: rename day-of-month defines
+Message-ID: <YXE2I39qoA1REoVj@piout.net>
+References: <20211019145919.7327-1-luca@lucaceresoli.net>
+ <20211019145919.7327-4-luca@lucaceresoli.net>
 MIME-Version: 1.0
-References: <8ca87330fd348fc5199ad08904ec90cc6a91a1bf.1634723848.git.viresh.kumar@linaro.org>
- <CAHp75Vctj-v8W+LgdVpYgRVL3fLdcFnOFRFg74LeCc=xLD+w4w@mail.gmail.com> <20211021043443.snhqpac5ofmxfb7k@vireshk-i7>
-In-Reply-To: <20211021043443.snhqpac5ofmxfb7k@vireshk-i7>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 21 Oct 2021 12:42:05 +0300
-Message-ID: <CAHp75VdKn7Sze9HxN0gBgbuQS2K6oB+SQsufw576Rkfg4-osOw@mail.gmail.com>
-Subject: Re: [PATCH V6] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "stratos-dev@op-lists.linaro.org" <stratos-dev@op-lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019145919.7327-4-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 7:34 AM Viresh Kumar <viresh.kumar@linaro.org> wrot=
-e:
-> On 20-10-21, 18:10, Andy Shevchenko wrote:
-> > On Wednesday, October 20, 2021, Viresh Kumar <viresh.kumar@linaro.org>
-> > wrote:
+On 19/10/2021 16:59:13+0200, Luca Ceresoli wrote:
+> RTC_DATE and REG_RTC_DATE are used for the registers holding the day of
+> month. Rename these constants to mean what they mean.
+> 
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-...
+> 
+> ---
+> 
+> Changes in v2:
+>  - fix drivers/mfd/max77686.c build failure due to missing rename
+>    (Reported-by: kernel test robot <lkp@intel.com>)
+> ---
+>  drivers/mfd/max77686.c               |  2 +-
+>  drivers/rtc/rtc-max77686.c           | 16 ++++++++--------
+>  include/linux/mfd/max77686-private.h |  4 ++--
+>  3 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mfd/max77686.c b/drivers/mfd/max77686.c
+> index 2ad554b921d9..b1048ab25120 100644
+> --- a/drivers/mfd/max77686.c
+> +++ b/drivers/mfd/max77686.c
+> @@ -87,7 +87,7 @@ static bool max77802_rtc_is_volatile_reg(struct device *dev, unsigned int reg)
+>  		reg == MAX77802_RTC_WEEKDAY ||
+>  		reg == MAX77802_RTC_MONTH ||
+>  		reg == MAX77802_RTC_YEAR ||
+> -		reg == MAX77802_RTC_DATE);
+> +		reg == MAX77802_RTC_MONTHDAY);
+>  }
+>  
+>  static bool max77802_is_volatile_reg(struct device *dev, unsigned int reg)
+> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
+> index bac52cdea97d..7e765207f28e 100644
+> --- a/drivers/rtc/rtc-max77686.c
+> +++ b/drivers/rtc/rtc-max77686.c
+> @@ -57,7 +57,7 @@ enum {
+>  	RTC_WEEKDAY,
+>  	RTC_MONTH,
+>  	RTC_YEAR,
+> -	RTC_DATE,
+> +	RTC_MONTHDAY,
+>  	RTC_NR_TIME
+>  };
+>  
+> @@ -119,7 +119,7 @@ enum max77686_rtc_reg_offset {
+>  	REG_RTC_WEEKDAY,
+>  	REG_RTC_MONTH,
+>  	REG_RTC_YEAR,
+> -	REG_RTC_DATE,
+> +	REG_RTC_MONTHDAY,
+>  	REG_ALARM1_SEC,
+>  	REG_ALARM1_MIN,
+>  	REG_ALARM1_HOUR,
+> @@ -150,7 +150,7 @@ static const unsigned int max77686_map[REG_RTC_END] = {
+>  	[REG_RTC_WEEKDAY]    = MAX77686_RTC_WEEKDAY,
+>  	[REG_RTC_MONTH]      = MAX77686_RTC_MONTH,
+>  	[REG_RTC_YEAR]       = MAX77686_RTC_YEAR,
+> -	[REG_RTC_DATE]       = MAX77686_RTC_DATE,
+> +	[REG_RTC_MONTHDAY]   = MAX77686_RTC_MONTHDAY,
+>  	[REG_ALARM1_SEC]     = MAX77686_ALARM1_SEC,
+>  	[REG_ALARM1_MIN]     = MAX77686_ALARM1_MIN,
+>  	[REG_ALARM1_HOUR]    = MAX77686_ALARM1_HOUR,
+> @@ -233,7 +233,7 @@ static const unsigned int max77802_map[REG_RTC_END] = {
+>  	[REG_RTC_WEEKDAY]    = MAX77802_RTC_WEEKDAY,
+>  	[REG_RTC_MONTH]      = MAX77802_RTC_MONTH,
+>  	[REG_RTC_YEAR]       = MAX77802_RTC_YEAR,
+> -	[REG_RTC_DATE]       = MAX77802_RTC_DATE,
+> +	[REG_RTC_MONTHDAY]   = MAX77802_RTC_MONTHDAY,
+>  	[REG_ALARM1_SEC]     = MAX77802_ALARM1_SEC,
+>  	[REG_ALARM1_MIN]     = MAX77802_ALARM1_MIN,
+>  	[REG_ALARM1_HOUR]    = MAX77802_ALARM1_HOUR,
+> @@ -288,7 +288,7 @@ static void max77686_rtc_data_to_tm(u8 *data, struct rtc_time *tm,
+>  
+>  	/* Only a single bit is set in data[], so fls() would be equivalent */
+>  	tm->tm_wday = ffs(data[RTC_WEEKDAY] & mask) - 1;
+> -	tm->tm_mday = data[RTC_DATE] & 0x1f;
+> +	tm->tm_mday = data[RTC_MONTHDAY] & 0x1f;
+>  	tm->tm_mon = (data[RTC_MONTH] & 0x0f) - 1;
+>  	tm->tm_year = data[RTC_YEAR] & mask;
+>  	tm->tm_yday = 0;
+> @@ -309,7 +309,7 @@ static int max77686_rtc_tm_to_data(struct rtc_time *tm, u8 *data,
+>  	data[RTC_MIN] = tm->tm_min;
+>  	data[RTC_HOUR] = tm->tm_hour;
+>  	data[RTC_WEEKDAY] = 1 << tm->tm_wday;
+> -	data[RTC_DATE] = tm->tm_mday;
+> +	data[RTC_MONTHDAY] = tm->tm_mday;
+>  	data[RTC_MONTH] = tm->tm_mon + 1;
+>  
+>  	if (info->drv_data->alarm_enable_reg) {
+> @@ -565,8 +565,8 @@ static int max77686_rtc_start_alarm(struct max77686_rtc_info *info)
+>  			data[RTC_MONTH] |= (1 << ALARM_ENABLE_SHIFT);
+>  		if (data[RTC_YEAR] & info->drv_data->mask)
+>  			data[RTC_YEAR] |= (1 << ALARM_ENABLE_SHIFT);
+> -		if (data[RTC_DATE] & 0x1f)
+> -			data[RTC_DATE] |= (1 << ALARM_ENABLE_SHIFT);
+> +		if (data[RTC_MONTHDAY] & 0x1f)
+> +			data[RTC_MONTHDAY] |= (1 << ALARM_ENABLE_SHIFT);
+>  
+>  		ret = regmap_bulk_write(info->rtc_regmap, map[REG_ALARM1_SEC],
+>  					data, ARRAY_SIZE(data));
+> diff --git a/include/linux/mfd/max77686-private.h b/include/linux/mfd/max77686-private.h
+> index b1482b3cf353..3acceeedbaba 100644
+> --- a/include/linux/mfd/max77686-private.h
+> +++ b/include/linux/mfd/max77686-private.h
+> @@ -152,7 +152,7 @@ enum max77686_rtc_reg {
+>  	MAX77686_RTC_WEEKDAY		= 0x0A,
+>  	MAX77686_RTC_MONTH		= 0x0B,
+>  	MAX77686_RTC_YEAR		= 0x0C,
+> -	MAX77686_RTC_DATE		= 0x0D,
+> +	MAX77686_RTC_MONTHDAY		= 0x0D,
+>  	MAX77686_ALARM1_SEC		= 0x0E,
+>  	MAX77686_ALARM1_MIN		= 0x0F,
+>  	MAX77686_ALARM1_HOUR		= 0x10,
+> @@ -352,7 +352,7 @@ enum max77802_rtc_reg {
+>  	MAX77802_RTC_WEEKDAY		= 0xCA,
+>  	MAX77802_RTC_MONTH		= 0xCB,
+>  	MAX77802_RTC_YEAR		= 0xCC,
+> -	MAX77802_RTC_DATE		= 0xCD,
+> +	MAX77802_RTC_MONTHDAY		= 0xCD,
+>  	MAX77802_RTC_AE1		= 0xCE,
+>  	MAX77802_ALARM1_SEC		= 0xCF,
+>  	MAX77802_ALARM1_MIN		= 0xD0,
+> -- 
+> 2.25.1
+> 
 
-> > > +       case IRQ_TYPE_NONE:
-> > > +               type =3D VIRTIO_GPIO_IRQ_TYPE_NONE;
-> > > +               break;
-> >
-> > IIRC you add dead code. IRQ framework never calls this if type is not s=
-et.
->
-> Yes, but it is allowed to call
->
-> irq_set_irq_type(irq, IRQ_TYPE_NONE);
->
-> and the irq framework won't disallow it AFAICT.
-
-That's true, but how you may end up in this callback with a such?
-What the meaning of that call to the user?
-
-...
-
-> > >  struct virtio_gpio_config {
-> > >         __le16 ngpio;
-> > >         __u8 padding[2];
-> > > @@ -44,4 +56,17 @@ struct virtio_gpio_response_get_names {
-> > >         __u8 value[];
-> > >  };
-> > >
-> > > +/* Virtio GPIO IRQ Request / Response */
-> > > +struct virtio_gpio_irq_request {
-> > > +       __le16 gpio;
-> > > +};
-> > > +
-> > > +struct virtio_gpio_irq_response {
-> > > +       __u8 status;
-> > > +};
-> > >
-> > I=E2=80=99m wondering if those above should be packed.
->
-> You are talking about the newly added ones or the ones before ?
->
-> In any case, they are all already packed (i.e. they have explicit
-> padding wherever required) and properly aligned. Compiler won't add
-> any other padding to them.
-
-Is it only for 64-bit to 64-bit communications?
-If there is a possibility to have 32-bit to 64-bit or vice versa
-communication you have a problem.
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
