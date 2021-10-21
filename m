@@ -2,126 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BCC436E44
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77C0436E4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhJUX0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
+        id S232099AbhJUX1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbhJUX0D (ORCPT
+        with ESMTP id S229512AbhJUX1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:26:03 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738E1C061764;
-        Thu, 21 Oct 2021 16:23:46 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 3A054C025; Fri, 22 Oct 2021 01:23:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1634858624; bh=QI1jya4xqRMNt0nBwtRPZvmfVzkS65CSiephRu49A14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fVWPBuMNPq+56y7BBbK8XcmZk8C7+A4uMvtdWGWNoua2vs5ycR8vKcY110GLtlfv2
-         NWVdnQVy+5aei8AuhFKQ1f5d+SWbkDSYe9bWwu+znHwMcurF8xMJHVw8qOzzg48J6U
-         yHpnW9Ji1L53Wpao3R+Y53txMcZ3WadMd+QZlxiW5CY2n6BDQrGYgvEinl5k+zxse+
-         699V/S04Hbq3RgwatQjKBuZeM8XD2tDFWjzpbVsMM6Beg+6/IFNhQ/P+IBXrtoEBOa
-         7Gc0j0T92mxC4CHXRApx6FIv6QM0jL6YFSVH3je9y6z3fXDbTMFCCt59sWjqW8/SXm
-         4dcVa8aQWj5qw==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id A0916C009;
-        Fri, 22 Oct 2021 01:23:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1634858622; bh=QI1jya4xqRMNt0nBwtRPZvmfVzkS65CSiephRu49A14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wCfvZldvxLZsSiHYUs6ZYL1OQASI/j2ET8hioD+e6sQHqCSTwKRfkAeKHvXSCHmfp
-         BrEuYvwxIsZPLPDB2c4Qb/gMaYrQ4kSblDU1VzimusdT5tlcACjqAXt6cFwh4CRHaM
-         F3LB7T+69GUFAlMluHLb4qsPxYGlI468GMEaKyEoJA/QjZB3VRD+/lgDH2vw/8zkks
-         RyAD8WMbiNRXri/ALt9JLYls+7h+NDluEJ4FsXHan691VrqwVahTEg6QE3hCi2m8wg
-         CA6g+FqIcNtJdAislVbATvjTVk9qNlCvMcol1akzoFNZTQR2oHIf19bMT1LuA7jgu1
-         +uvzvQ6xYO+dw==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id f1866e14;
-        Thu, 21 Oct 2021 23:23:30 +0000 (UTC)
-Date:   Fri, 22 Oct 2021 08:23:15 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Steve French <smfrench@gmail.com>
-Cc:     Omar Sandoval <osandov@osandov.com>,
-        David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-afs@lists.infradead.org,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs <linux-nfs@vger.kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        v9fs-developer@lists.sourceforge.net,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/67] fscache: Rewrite index API and management system
-Message-ID: <YXH2Y7+coD5sgEDG@codewreck.org>
-References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
- <YXHntB2O0ACr0pbz@relinquished.localdomain>
- <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com>
+        Thu, 21 Oct 2021 19:27:01 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9F0C061764;
+        Thu, 21 Oct 2021 16:24:44 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso1714641pjw.2;
+        Thu, 21 Oct 2021 16:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9fY2hV8XRVOO2z6eSx2Sa3uH+I+pPPBEbHLcYZ/x3/M=;
+        b=KC+C/tSlTIUK8G8bDPyCVtQPfsEG2oni8sQ+e9CPl8yiAk1NQd/dtP8yibo2BygPd9
+         4WbDgVPBIaG5s9KSFacVVxTLUb31PHRGSde1XHUyr0EFvMpcEKXiN8daXLOGXO0qm6Se
+         A09LELqTjoKB2JsQnY/tjIJlsLItY75/jmLU73JCZy+a5E8aiLLoXeB8737xT8riyOhu
+         ga5STNGShJZpHZ0IsBVhUwJ1PzgupV9ZWtZLXqL8vMX0Nk8k7zJPIVPL23GM2tAp2S3Q
+         DAvwooFkWhE+czkzwKAxur3Vu5EaX6dDLVptTdkl0HrbUXxaMK5HD1bmcETTyvRfRRS/
+         5teg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9fY2hV8XRVOO2z6eSx2Sa3uH+I+pPPBEbHLcYZ/x3/M=;
+        b=iIKoa4O4snGw/dfLFDiyFmuD24J2PbWDsCIHSJSLnZ89wQLM2OLXtrsvq84nPIZnj9
+         EM7xlQh0oLlNjtUbvoIZ6n4cHbcX6CQ9jImK20yKb3AfXP0yy6gp2FsSir/aV96zfEgt
+         hm7d+EBpzNihFPnXKFhi9Nf05PnbW9qKtqoNq98aqRcf5lQlGurgPryRGhQFbwT7y4ES
+         HKRnXMofpohDe6KG262gVJXiVeiZTkfVwYCFSekuKY+9top/Fln/v/s0eJKih5agVDEJ
+         +36SRRLA+DyAjCa/kq2zubQ15y/LcpVuuef/2ax9V+TrKTlhHIP5msh3DhIgEagw7SEw
+         gBdw==
+X-Gm-Message-State: AOAM533SmDfqasYrX12nbYBZ06gMnBaddjC/tuA3THdon3laSsbtZU4e
+        9AyQzbyShDJBXfNQ2FF2XznPlyCiVKDzRRpKSy4=
+X-Google-Smtp-Source: ABdhPJzUOIu/reLJA0RsJ0HzkMLCAnvLuGWpjuidUuwEwHgFcQ9+E5YtyRmfG1HULCXpw+DmppaLUTVeLfe50KNFevg=
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr10054997pjj.138.1634858684224;
+ Thu, 21 Oct 2021 16:24:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com>
+References: <20211020104442.021802560@infradead.org> <20211020105843.345016338@infradead.org>
+ <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net> <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
+ <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net> <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
+ <20211021223719.GY174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211021223719.GY174703@worktop.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 21 Oct 2021 16:24:33 -0700
+Message-ID: <CAADnVQ+cJLYL-r6S8TixJxH1JEXXaNojVoewB3aKcsi7Y8XPdQ@mail.gmail.com>
+Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steve French wrote on Thu, Oct 21, 2021 at 06:15:49PM -0500:
-> Have changes been made to O_TMPFILE?  It is problematic for network filesystems
-> because it is not an atomic operation, and would be great if it were possible
-> to create a tmpfile and open it atomically (at the file system level).
-> 
-> Currently it results in creating a tmpfile (which results in
-> opencreate then close)
-> immediately followed by reopening the tmpfile which is somewhat counter to
-> the whole idea of a tmpfile (ie that it is deleted when closed) since
-> the syscall results
-> in two opens ie open(create)/close/open/close
+On Thu, Oct 21, 2021 at 3:40 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Oct 21, 2021 at 11:03:33AM -0700, Alexei Starovoitov wrote:
+>
+> > > I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
+> > > lot more robust than the 64bit one and I couldn't figure out why the
+> > > difference.
+> >
+> > Interesting. Daniel will recognize that trick then :)
+>
+> > > Is there concurrency on the jit?
+> >
+> > The JIT of different progs can happen in parallel.
+>
+> In that case I don't think the patch is safe. I'll see if I can find a
+> variant that doesn't use static storage.
 
-That depends on the filesystem, e.g. 9p open returns the opened fid so
-our semantic could be closer to that of a local filesystem (could
-because I didn't test recently and don't recall how it was handled, I
-think it was fixed as I remember it being a problem at some point...)
-
-The main problem with network filesystem and "open closed files" is:
-what should the server do if the client disconnects? Will the client
-come back and try to access that file again? Did the client crash
-completely and should the file be deleted? The server has no way of
-knowing.
-It's the same logic as unlinking an open file, leading to all sort of
-"silly renames" that are most famous for nfs (.nfsxxxx files that the
-servers have been taught to just delete if they haven't been accessed
-for long enough...)
-
-I'm not sure we can have a generic solution for that unfortunately...
-
-(9P is "easy" enough in that the linux client does not attempt to
-reconnect ever if the connection has been lost, so we can just really
-unlink the file and the server will delete it when the client
-disconnects... But if we were to implement a reconnect eventually (I
-know of an existing port that does) then this solution is no longer
-acceptable)
-
--- 
-Dominique Martinet | Asmadeus
+The variable can only change from one fixed value to another fixed value.
+Different threads will compute the same value. So I think it's safe
+as-is. READ_ONCE/WRITE_ONCE won't hurt though.
