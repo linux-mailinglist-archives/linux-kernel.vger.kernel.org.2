@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99DA436848
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C39436849
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhJUQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:49:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47372 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231784AbhJUQtv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:49:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634834855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eXbLpT0SAS1QlThf/5pxQ+oX4dtgbzPcG5S7giajofs=;
-        b=EsK9tMywlvk3oyrOL0nZhMLTTpEBza40ne8Abftm5zzP4GXvmYUC6trgvuD+zEfDNM1xyp
-        +QDchB5OzJjGmLFCG0A3+FxrcAMwOnAO8RHUGEgBM/F2kjiMMCbm9l4oxNaHHO0eUYFcn8
-        7Bc6hOBG1NNJpu8FW34+4HLla/V2+zs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-PDgomqu7O-2uabgLLQS9Og-1; Thu, 21 Oct 2021 12:47:33 -0400
-X-MC-Unique: PDgomqu7O-2uabgLLQS9Og-1
-Received: by mail-wm1-f72.google.com with SMTP id d73-20020a1c1d4c000000b00329d18a550fso129583wmd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 09:47:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eXbLpT0SAS1QlThf/5pxQ+oX4dtgbzPcG5S7giajofs=;
-        b=Lo9XAj3Ao37oDYmPXh7sC1k/3FeZRYYZUI0bzzcqwtaJ4tVnbQEpmzARUDAsMZVwk7
-         Akn6Qn6uaPsA99ggqmOOgSuDCqH5LmRx8uWOaU4n9AcC+/k+SPKqH3sK0zVF1AuLuSPx
-         AeQGhCC1F2bQ5rX+Hz3db74mnckUb2QGBh3E6RawG9nPc/NDd5jxLdGLt9QVu+e8DtG9
-         woiLfaX5D5lHULi+7NactdhjQK51l2IcJ8YabvI/GwtqYeDp9mew0dG63JbSGk2NU9U+
-         UpD1i8rNJr8IqmP41g8/M+BFI7gXtggZe414XKuMtb2BHfsJ4+UjVCZ41xxGxMP9w5BE
-         g8ZQ==
-X-Gm-Message-State: AOAM530AJjiGLd3guM4CH+S9Rh3PHs2zM/HmK8hOzkPMDFHztesPLQBa
-        54FUa7jXsBhNU4Z5joeYzZKrdu6sJdd/HlhLhDdemsqUMXPTDcoipete5rJLnvd1QLWRZILnaaR
-        eNnGhQ9HZj228N1vB6PGRFxOD
-X-Received: by 2002:a05:600c:3511:: with SMTP id h17mr22159661wmq.144.1634834852664;
-        Thu, 21 Oct 2021 09:47:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyD/Gb7060ZwsBHru8/J5tPFZwvI+9wy573hFBGrGlRjRqmroHBO5NMz9uRQAcA3dR73NweGg==
-X-Received: by 2002:a05:600c:3511:: with SMTP id h17mr22159643wmq.144.1634834852493;
-        Thu, 21 Oct 2021 09:47:32 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id 6sm1251197wma.48.2021.10.21.09.47.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 09:47:32 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 18:47:30 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] tracing: Fix selftest config check for function graph
- start up test
-Message-ID: <YXGZogzuH5cv1UnF@krava>
-References: <20211021123729.23be20c4@gandalf.local.home>
+        id S232070AbhJUQt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:49:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232003AbhJUQtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 12:49:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F17D4610FF;
+        Thu, 21 Oct 2021 16:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634834856;
+        bh=2FrlGWhPzbQdm3nWu5dT4nZdmTWgLzYZsWQnLrS6wpQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XHUeCjpKZjFljafYHogeGMUhC+p0v33kG/0Ao7tZdROcacMyp/dR5D03NIhPjpb+k
+         pLhD8ZLK3GCBn00lrJc0v3W5PEi5tM9oInAaLYWnCIjQh6GoWW4roibKKcQNoTiHPT
+         giOIy2bleqD08oaK3gciYJyHesI976Ik8bUfs4WUmTw3Fexwy2GEsy/VIRBgTuaZ7P
+         MEDLdwK30eMcFO5+FSS/YEB3g9G7DQYL2mdltkBbcbb9HBD3/MkfzGoErQLVubadoX
+         Hx8uiATcwnQj+K5dLzBqyX3H3L+E8cK0wrIpvRLYJj3br8ANfuTqq4mFO3KdnNu2vF
+         M8ALpXEqJFCtg==
+Date:   Thu, 21 Oct 2021 17:47:31 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v6 00/15] arm64: Self-hosted trace related errata
+ workarounds
+Message-ID: <20211021164730.GA16889@willie-the-truck>
+References: <20211019163153.3692640-1-suzuki.poulose@arm.com>
+ <20211020154207.GA3456574@p14s>
+ <20211021085313.GA15622@willie-the-truck>
+ <20211021163531.GA3561043@p14s>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211021123729.23be20c4@gandalf.local.home>
+In-Reply-To: <20211021163531.GA3561043@p14s>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 12:37:29PM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> There's a new test in trace_selftest_startup_function_graph() that
-> requires the use of ftrace args being supported as well does some tricks
-> with dynamic tracing. Although this code checks HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> it fails to check DYNAMIC_FTRACE, and the kernel fails to build due to
-> that dependency.
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Hi Mathieu,
 
-oops, I assumed id depended on CONFIG_DYNAMIC_FTRACE,
-but did not check..
+[CC Greg]
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
-> ---
-> Fixes this patch:
->    https://lore.kernel.org/all/20211008091336.33616-5-jolsa@kernel.org/
+On Thu, Oct 21, 2021 at 10:35:31AM -0600, Mathieu Poirier wrote:
+> On Thu, Oct 21, 2021 at 09:53:14AM +0100, Will Deacon wrote:
+> > On Wed, Oct 20, 2021 at 09:42:07AM -0600, Mathieu Poirier wrote:
+> > > On Tue, Oct 19, 2021 at 05:31:38PM +0100, Suzuki K Poulose wrote:
+> > > > Suzuki K Poulose (15):
+> > > >   arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
+> > > >   arm64: errata: Add detection for TRBE overwrite in FILL mode
+> > > >   arm64: errata: Add workaround for TSB flush failures
+> > > >   arm64: errata: Add detection for TRBE write to out-of-range
+> > > >   coresight: trbe: Add a helper to calculate the trace generated
+> > > >   coresight: trbe: Add a helper to pad a given buffer area
+> > > >   coresight: trbe: Decouple buffer base from the hardware base
+> > > >   coresight: trbe: Allow driver to choose a different alignment
+> > > >   coresight: trbe: Add infrastructure for Errata handling
+> > > >   coresight: trbe: Workaround TRBE errata overwrite in FILL mode
+> > > >   coresight: trbe: Add a helper to determine the minimum buffer size
+> > > >   coresight: trbe: Make sure we have enough space
+> > > >   coresight: trbe: Work around write to out of range
+> > > >   arm64: errata: Enable workaround for TRBE overwrite in FILL mode
+> > > >   arm64: errata: Enable TRBE workaround for write to out-of-range
+> > > >     address
+> > > > 
+> > > >  Documentation/arm64/silicon-errata.rst       |  12 +
+> > > >  arch/arm64/Kconfig                           | 111 ++++++
+> > > >  arch/arm64/include/asm/barrier.h             |  16 +-
+> > > >  arch/arm64/include/asm/cputype.h             |   4 +
+> > > >  arch/arm64/kernel/cpu_errata.c               |  64 +++
+> > > >  arch/arm64/tools/cpucaps                     |   3 +
+> > > >  drivers/hwtracing/coresight/coresight-trbe.c | 394 +++++++++++++++++--
+> > > >  7 files changed, 567 insertions(+), 37 deletions(-)
+> > > 
+> > > I have applied this set.
+> > 
+> > Mathieu -- the plan here (which we have discussed on the list [1]) is
+> > for the first four patches to be shared with arm64. Since you've gone
+> > ahead and applied the whole series, please can you provide me a stable
+> > branch with the first four patches only so that I can include them in
+> > the arm64 tree?
+> > 
+> > Failing that, I can create a branch for you to pull and apply the remaining
+> > patches on top.
+> > 
+> > Please let me know.
 > 
->  kernel/trace/trace_selftest.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-> index 3404a245417e..3db8b80fbdca 100644
-> --- a/kernel/trace/trace_selftest.c
-> +++ b/kernel/trace/trace_selftest.c
-> @@ -845,7 +845,8 @@ trace_selftest_startup_function_graph(struct tracer *trace,
->  		goto out;
->  	}
->  
-> -#ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> +#if defined(CONFIG_DYNAMIC_FTRACE) && \
-> +    defined(CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS)
->  	tracing_reset_online_cpus(&tr->array_buffer);
->  	set_graph_array(tr);
->  
-> -- 
-> 2.31.1
-> 
+> Coresight patches flow through Greg's tree and as such the coresight-next tree
+> gets rebased anyway.  I will remove the first 4 patches and push again.  By the
+> way do you also want to pick up patches 14 and 16 since they are concerned with
+> "arch/arm64/Kconfig" or should I keep them?
 
+I'll take the first 4 and put them on a stable branch, which you can choose
+to pull if you like (but please don't rebase it or we'll end up with
+duplicate commits). The rest of the patches, including the later Kconfig
+changes, are yours but I doubt they'll apply cleanly without the initial
+changes.
+
+Are you sure Greg rebases everything? That sounds a bit weird to me, as it
+means it's impossible to share branches with other trees. How do you usually
+handle this situation?
+
+Will
