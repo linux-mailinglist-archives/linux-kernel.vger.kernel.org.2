@@ -2,88 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCD5436460
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654AB436467
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhJUOh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:37:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43252 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230283AbhJUOhY (ORCPT
+        id S231424AbhJUOic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230072AbhJUOib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:37:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634826908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VugW9XKQqql+D4jW/MwnSaiqD5NSjAuo7rb/rILE+vA=;
-        b=cFz+b8GpgUJ8L3LhXQRA9WnqE7Jvqg5jM7sz9r+C+ytGV1Hvfopeao2XOL5gKQSxTUf+cD
-        wrKu497PVobeWv8kdTC1WxJmhVDo7YUuvJEWmIOmvAewluXlNutdJPZ4KWbrg06ThUh19t
-        wcaSjhs9Ko2Iaim7r1/xDgHbDMAnpNo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-AcWUkQ0bOXWQMGAyKhMZcw-1; Thu, 21 Oct 2021 10:35:06 -0400
-X-MC-Unique: AcWUkQ0bOXWQMGAyKhMZcw-1
-Received: by mail-ed1-f71.google.com with SMTP id u17-20020a50d511000000b003daa3828c13so543419edi.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:35:06 -0700 (PDT)
+        Thu, 21 Oct 2021 10:38:31 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6129DC0613B9;
+        Thu, 21 Oct 2021 07:36:15 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id f3so1607734uap.6;
+        Thu, 21 Oct 2021 07:36:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:user-agent:in-reply-to:references
+         :message-id:mime-version:content-transfer-encoding;
+        bh=ajoqDPP656VX5YEBu8I1q77ACKKc8Lf1fY/olzortAE=;
+        b=Ksty8m03gG131TGw1j2LHYW3Zz1euVw4MAxFJlvy2qBz+f6yYAdDVVmRgxYravk+7c
+         +bK7+cfHA6ic35LCl99nvibR/LuX7wugyZuxWFclwiWwyWOP1m1QpO9HEsWuU3BAYY1L
+         mUrPZtGfWWOPbGofXxF/CJ6zrBMz2nPIHfBeaoTSKmKLK4Dzsz3phMHTaqAWlDWEVOUz
+         lmgTBZ6QxXQ7/iiqo9k/aWp+Stc3HgGD0FgPAupGnH6CO8equjMzhr06ExcNCHtEY7yr
+         Iy5yhmXUFAh4rpgCpwsYn1+LA7HMil6t6bpvND0J4OzdCGvT4Yus3tMeBiavu7g2mR9B
+         SSQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VugW9XKQqql+D4jW/MwnSaiqD5NSjAuo7rb/rILE+vA=;
-        b=UEkdSZ2XWhwR/Mps4wpTl15GOPIZznc0/lt6RNw2Wi3yLqRyxNhDF35OhOAIUIS2Gt
-         87X3Wr3yzybz/q+9K/D6djXIyxOcW2CYsHUvmIAJNMdBQXi/r7cTAHu6bUDDg/xjFBuh
-         tXFFon0/l0dazzzexfSDiEI850sXXWIcmAFt/6WxIVSLCRSBdYrn7Ve6xFaeZ0fbcVPU
-         ukg62VBUUpNCB+sXE7nxu4ZEJWHJ4kcm4oL0v3UPCPybiIREmqRXyJjuX82mL+eSAeoV
-         RL6bYJSSYrn9MVa7qcO0PYHWBXJ8ECdYWpQiZ12oK8RI2QGZ6miFzrglBTmXHHM9Cdkm
-         DEwA==
-X-Gm-Message-State: AOAM530KCmYnWMIUp5YhwdZH0zKJs4+ZUBWMR4k8PWd3HxNWYyKKzKgy
-        yhSTgNT/tlFY49TN8Nnx170ugQtzwAzn6txO3+tVbOoc/FzxTKwhrsd26HdYWYYFeNXN/5mSCL4
-        FpXvBoBS20p8QZJrphBlH1xr3
-X-Received: by 2002:a17:907:961e:: with SMTP id gb30mr7883131ejc.484.1634826905599;
-        Thu, 21 Oct 2021 07:35:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxSRO0xBoE29HcFaVDTP+mg9VveZQjRkYIv8YWZhFjn3jIIO8pGIPgUQcl4cBQPn6cnJIg4Xw==
-X-Received: by 2002:a17:907:961e:: with SMTP id gb30mr7883111ejc.484.1634826905435;
-        Thu, 21 Oct 2021 07:35:05 -0700 (PDT)
-Received: from steredhat (host-79-30-88-77.retail.telecomitalia.it. [79.30.88.77])
-        by smtp.gmail.com with ESMTPSA id u18sm2900999eds.86.2021.10.21.07.35.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 07:35:05 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 16:35:03 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     cgel.zte@gmail.com
-Cc:     mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
-        stefanha@redhat.com, axboe@kernel.dk,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] virtio-blk: fixup coccinelle warnings
-Message-ID: <20211021143503.xp7u6qmypvhbl5th@steredhat>
-References: <20211021065111.1047824-1-ye.guojin@zte.com.cn>
+        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
+         :references:message-id:mime-version:content-transfer-encoding;
+        bh=ajoqDPP656VX5YEBu8I1q77ACKKc8Lf1fY/olzortAE=;
+        b=ny5eVMy3uIpLCOI+6lNFsAbt3Byxnd0dRNrsbZ2dkw6e9OUWGoBxL7jJGxPppxb1Ln
+         urrV8pyItf3oAAFpk7LGBok31ho6uKX2en1qntew01/nwb0YqWFRsj6CdVOrZdGWLFB1
+         KAwIz3TyuW//J05jKxNWjNDtK09mEFF+SLfNaaO9brgoVEUW9UV+lVKcJWpvEGt5um5G
+         shmAMWEZ7PBj3IsOZgEnwstBwhaE0VQq8U7bQg/tjxhkRIuxhDVMCukAR4rxIuZSoLEa
+         e5GpG8k+oZIZeq2gURDHgEAYTXUfdoaW4cGHY8kLH1x9xmuub8l9CFmmg8Thed14g9yQ
+         8ucQ==
+X-Gm-Message-State: AOAM532RluNbYv/OsJUD0kQmwpGYyaDQlbzJZVHSaV4IdqSS25CfXvVR
+        ABqeYx/buarfY/UBUREeWUw=
+X-Google-Smtp-Source: ABdhPJzs3fIDRsfWoXgUCGIUOec9z2VIIpcFKSpSfazaeuxbj6y7WC1joJGMkog/7P0aRTBHrdrSTw==
+X-Received: by 2002:a67:e1d2:: with SMTP id p18mr6418032vsl.30.1634826974436;
+        Thu, 21 Oct 2021 07:36:14 -0700 (PDT)
+Received: from [127.0.0.1] ([187.68.192.38])
+        by smtp.gmail.com with ESMTPSA id s8sm2986617vsk.18.2021.10.21.07.36.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 07:36:13 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 11:36:03 -0300
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+To:     John Garry <john.garry@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     peterz@infradead.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, mingo@redhat.com, irogers@google.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kjain@linux.ibm.com, james.clark@arm.com
+Subject: Re: [PATCH v2 0/2] perf jevents: Enable build warnings
+User-Agent: K-9 Mail for Android
+In-Reply-To: <9075dc5c-25a2-c977-a1c2-675e972115e7@huawei.com>
+References: <1634807805-40093-1-git-send-email-john.garry@huawei.com> <YXFjSR6ZRQbMjiG3@kernel.org> <9075dc5c-25a2-c977-a1c2-675e972115e7@huawei.com>
+Message-ID: <0B2C61AB-3F0D-4618-B0AD-7143C44B4A3A@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20211021065111.1047824-1-ye.guojin@zte.com.cn>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 06:51:11AM +0000, cgel.zte@gmail.com wrote:
->From: Ye Guojin <ye.guojin@zte.com.cn>
->
->coccicheck complains about the use of snprintf() in sysfs show
->functions:
->WARNING  use scnprintf or sprintf
->
->Use sysfs_emit instead of scnprintf or sprintf makes more sense.
->
->Reported-by: Zeal Robot <zealci@zte.com.cn>
->Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
->---
-> drivers/block/virtio_blk.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
+On October 21, 2021 10:02:41 AM GMT-03:00, John Garry <john=2Egarry@huawei=
+=2Ecom> wrote:
+>On 21/10/2021 13:55, Arnaldo Carvalho de Melo wrote:
+>> Em Thu, Oct 21, 2021 at 05:16:43PM +0800, John Garry escreveu:
+>>> Currently jevents builds without any complier warning flags enabled=2E=
+ So
+>>> use newly-defined HOSTCFLAGS, which comes from EXTRA_WARNINGS=2E
+>>>
+>>> Changes for v2:
+>>> - Add Werror, Wall, and Wextra (James Clark suggestion)
+>>=20
+>> Thanks, applied=2E
+>>=20
+>
+>Hi Arnaldo,
+>
+>Can you please wait until I check the review response from jirka?
+
+Sure, it's not published, and will not be until some fixes are made=2E Hav=
+ing it in my local tree gets it tested together with the whole shebang in l=
+ots of containers=2E
+
+I collect reviewed-by, etc as they appear=2E
+
+- Arnaldo
+
+>>=20
+>>  =20
+>>> Baseline is acme perf/core + mainline commit b94729919db2 ("perf jeven=
+ts:
+>>> Free the sys_event_tables list after processing entries"):
+>>>
+>>> 680453e63302 perf jevents: Free the sys_event_tables list after proces=
+sing entries
+>>> be8ecc57f180 (origin/perf/core) perf srcline: Use long-running addr2li=
+ne per DSO
+>>> 2b775152bbe8 perf tests vmlinux-kallsyms: Ignore hidden symbols
+>>>
+>>> John Garry (2):
+>>>    perf jevents: Fix some would-be warnings
+>>>    perf jevents: Enable warnings through HOSTCFLAGS
+>>>
+>>>   tools/perf/Makefile=2Econfig      |  5 +++++
+>>>   tools/perf/Makefile=2Eperf        |  2 +-
+>>>   tools/perf/pmu-events/Build     |  2 +-
+>>>   tools/perf/pmu-events/jevents=2Ec | 10 ++++------
+>>>   4 files changed, 11 insertions(+), 8 deletions(-)
+>>>
+>>> --=20
+>>> 2=2E17=2E1
+>>=20
+>
