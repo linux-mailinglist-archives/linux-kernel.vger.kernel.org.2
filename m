@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F53435AC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 08:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51020435AC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 08:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhJUGS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 02:18:59 -0400
-Received: from out28-3.mail.aliyun.com ([115.124.28.3]:39974 "EHLO
-        out28-3.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhJUGS4 (ORCPT
+        id S230519AbhJUGSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 02:18:55 -0400
+Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:47388 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229499AbhJUGSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 02:18:56 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1877204|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00836179-0.00118455-0.990454;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=huangshuosheng@allwinnertech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.LfKw.bc_1634796993;
-Received: from allwinnertech.com(mailfrom:huangshuosheng@allwinnertech.com fp:SMTPD_---.LfKw.bc_1634796993)
-          by smtp.aliyun-inc.com(10.147.40.7);
-          Thu, 21 Oct 2021 14:16:37 +0800
-From:   Shuosheng Huang <huangshuosheng@allwinnertech.com>
-To:     sumit.semwal@linaro.org, benjamin.gaignard@linaro.org,
-        lmark@codeaurora.org, labbott@redhat.com, Brian.Starkey@arm.com,
-        john.stultz@linaro.org, christian.koenig@amd.com
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>
-Subject: [PATCH] dma-buf: heaps: init heaps in subsys_initcall
-Date:   Thu, 21 Oct 2021 14:16:07 +0800
-Message-Id: <20211021061607.17618-1-huangshuosheng@allwinnertech.com>
-X-Mailer: git-send-email 2.29.0
+        Thu, 21 Oct 2021 02:18:54 -0400
+Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 90BB1181D337B;
+        Thu, 21 Oct 2021 06:16:38 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 6B3141E04D3;
+        Thu, 21 Oct 2021 06:16:37 +0000 (UTC)
+Message-ID: <6ce0c8301cadef76fd45f38ace1e20408f6e52e9.camel@perches.com>
+Subject: Re: [GIT PULL] tracing: Fix to recursion protection for 5.15
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Date:   Wed, 20 Oct 2021 23:16:36 -0700
+In-Reply-To: <CAHk-=wgBhyLhQLPem1vybKNt7BKP+=qF=veBgc7VirZaXn4FUw@mail.gmail.com>
+References: <20211019091344.65629198@gandalf.local.home>
+         <CAHk-=wjvGRtwMHDJ9VR8197+_rVveqE73Uv-MMFbvuUEbWKNtQ@mail.gmail.com>
+         <20211020121727.57f46a15@gandalf.local.home>
+         <CAHk-=whr2M-jzyv9B8Co0V0TMvCpnH24fWYwxXrN9YeGKicoVw@mail.gmail.com>
+         <20211020181241.0e6a2b47@gandalf.local.home>
+         <20211020184101.25b7e583@gandalf.local.home>
+         <CAHk-=wgBhyLhQLPem1vybKNt7BKP+=qF=veBgc7VirZaXn4FUw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 6B3141E04D3
+X-Spam-Status: No, score=-0.62
+X-Stat-Signature: abkgbifzbj47jmdoe1s5koiftr31cmsb
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/eGTB4DX0IVzSIqzGOwMOVoRFSmGtB9RY=
+X-HE-Tag: 1634796997-962913
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some built-in modules will failed to use dma-buf heap to allocate
-memory if the heap drivers is too late to be initialized.
-To fix this issue, move initialization of dma-buf heap drivers in
-subsys_initcall() which is more earlier to be called.
+On Wed, 2021-10-20 at 20:08 -1000, Linus Torvalds wrote:
+> it's probably better to have too many cc's listed in the commit
+> than too few - at least within reason.
+> 
+> Because if a commit turns out to cause problems, the list of email
+> addresses mentioned in the commit message should be seen as the
+> primary list of "hey people, this patch you were involved with has
+> issues"
 
-Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
----
- drivers/dma-buf/heaps/cma_heap.c    | 2 +-
- drivers/dma-buf/heaps/system_heap.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+IMO: cc's aren't all that valuable as part of a commit message.
 
-diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-index 0c05b79870f9..e051403a346d 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -400,6 +400,6 @@ static int add_default_cma_heap(void)
- 
- 	return ret;
- }
--module_init(add_default_cma_heap);
-+subsys_initcall(add_default_cma_heap);
- MODULE_DESCRIPTION("DMA-BUF CMA Heap");
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 23a7e74ef966..3d6927657ec9 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -435,5 +435,5 @@ static int system_heap_create(void)
- 
- 	return 0;
- }
--module_init(system_heap_create);
-+subsys_initcall(system_heap_create);
- MODULE_LICENSE("GPL v2");
--- 
-2.29.0
+Generally, a tool like b4 should be able to create a list of any
+email addresses in a thread linked commit.
+
 
