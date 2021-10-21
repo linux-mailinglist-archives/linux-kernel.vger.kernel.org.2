@@ -2,96 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE3F43651A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36132436525
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhJUPLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJUPLA (ORCPT
+        id S231721AbhJUPLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:11:41 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:45886 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231503AbhJUPLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:11:00 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6D8C0613B9;
-        Thu, 21 Oct 2021 08:08:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x192so915708lff.12;
-        Thu, 21 Oct 2021 08:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LtOlMe2BJBUKpJxzc4iXO/flZXymfvUzSpBIinKoT5E=;
-        b=S4PLppJgBV0lJcFpyaVZ2r6oUSDg8Nce0NKMB6IrUJZpRiI0opmsA3Hv9B/t5LAh/k
-         2F0TYiutEaZ3zP8uvzFE/LIjBYRFaYFB7uXZpOhKlvDyZA4REVMq8sVsGbrh7YgLzZ+K
-         4r8gs7ziomcw532uudc0xHjhHoCV+qWDyMrbODmRQ/GMBlnUTCwV/m7yb9DNuIZBqYaE
-         dWYzWTq6jogdNXwGv71Nd2tmFgN/pNx709fvm6OMRmahSIQgCPPqo15Zx680jiJl4IdH
-         5bEemwAxI0MW75gI+wVfN371+d02uASbZym7W0mpMDDiKIEDPqvugahJ89Rn2hPfxR30
-         C17Q==
+        Thu, 21 Oct 2021 11:11:38 -0400
+Received: by mail-oi1-f169.google.com with SMTP id z126so1190902oiz.12;
+        Thu, 21 Oct 2021 08:09:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LtOlMe2BJBUKpJxzc4iXO/flZXymfvUzSpBIinKoT5E=;
-        b=Jss040FHuL26kKwuxf8lumdJTJVDIgwnFXulSKdPF+wkEda98TfYYgwFjGzWfDVxIg
-         DESKlITMbAzajDpqTliUJdmR1VGC6Jk/1p4xGwEUWVFW6X0pEcEOY/Nwzbnv5csW3MpX
-         tLdaEY4vXA/LRmYfsV8L+V+0fZMDun4gYEVbYUm9HbCZwkhuBzItE9TnBqAZQpybrcVw
-         dEua2+OmcQuthgbKwSKqeUJMh8ztADZ5E8QtZKVoPlT/q1ERrMuCZLtRMmAbaMv8FsOp
-         JxzcDWjF6FAGAQ3OBb1xXMtt4L5fVXABWu6IApupHPfwKNXWcyQasTsxNntCI70wD7tB
-         Uc0w==
-X-Gm-Message-State: AOAM531tZrZyaCDuNnaFpCZEzFQ1u+KQA4z1rKt8PmUnCtRXUeihHuRf
-        BMU6NxnZ2VwI8CtEG9u1GdKf4a4n7/Q=
-X-Google-Smtp-Source: ABdhPJx/qJNALzgwzRSkqgnYakmhhye4juv0fFcf+HjKFWeFMlgPCNae1cRhXDQBAPaKspYYPn9rNw==
-X-Received: by 2002:a05:6512:3254:: with SMTP id c20mr4976988lfr.254.1634828922826;
-        Thu, 21 Oct 2021 08:08:42 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-39-10.dynamic.spd-mgts.ru. [94.29.39.10])
-        by smtp.googlemail.com with ESMTPSA id y32sm482726lfa.171.2021.10.21.08.08.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 08:08:42 -0700 (PDT)
-Subject: Re: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in
- device tree
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211021115501.14932-1-digetx@gmail.com>
- <YXFyu+Q5ifG8Au9w@orome.fritz.box>
- <5f122caa-c810-534d-b2a1-53edef313ff0@gmail.com>
-Message-ID: <32694811-8768-8e77-f188-4ed1a1fb93da@gmail.com>
-Date:   Thu, 21 Oct 2021 18:08:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RvOTN1WtkH5yz7qex2pCyDRZPmCtpaKD7ET9RQlXazU=;
+        b=4N6J6z6e8FjIjWW2HSyJm3jCb0DStZ/NjZNtewptRpJo9zftRstsVcusFWtCl8dp+F
+         5egSqkPUxrJf69NzpP5KsloLErxSAlXqM3fBI6+pn4Wh/CqWdkYvgf+S8/BTJ7V2WeS/
+         nfRhn6J4U3GPBCX1GwxJpr8OTjQ/rthagIoMSfMomJKC2NuHBua5Lq0sx3mJ3LcY+sZ6
+         TqMAQ8T7ZI3NybgRr1XodvlnFLJI+5qwK7eyCW7dYDrwtUd31tMIj9ZFNhF7Fyo0Kfdb
+         GJX5En9CAD4RLtlo8gTXUy09pHu0JeFj2ieAi2AkO5RtR3U5en2An/O2gzyCparJ5r8s
+         wJnw==
+X-Gm-Message-State: AOAM53355lSR2NtnpzdFh9HvhENs/wmLhhJqTn+Hz2OujPsBlCwri19W
+        E9dICo/ggoE97BW1xv1wN66MmlU+tREs5WuJyaU=
+X-Google-Smtp-Source: ABdhPJx4IibCDJVWqGUSTDyIxtZc+OmCntvLyjCjSTdtk67SM3wmZy3GH+bkZ7RIYrMttzv0qme1PB3f2EyZ/hsB5Tc=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr4802252oif.154.1634828962563;
+ Thu, 21 Oct 2021 08:09:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5f122caa-c810-534d-b2a1-53edef313ff0@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
+ <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
+ <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com> <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
+In-Reply-To: <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 21 Oct 2021 17:09:11 +0200
+Message-ID: <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.10.2021 17:57, Dmitry Osipenko пишет:
-> It might be wrong to disable device_may_wakeup() because it will change
-> the system suspend-resume behaviour, i.e. you won't be able to resume by
-> USB event, see [1].
-> 
-> [1]
-> https://elixir.bootlin.com/linux/v5.15-rc6/source/drivers/usb/host/xhci-tegra.c#L1962
-> 
-> Although, I'm not sure whether this is a correct behaviour to start
-> with. Previously, before the offending commit, device_wakeup was never
-> enabled for tegra-xusb. Commit message doesn't explain why wakeup is now
-> enabled unconditionally, wakeup checks aren't needed at all then. This
-> makes no sense, please check it with JC Kuo.
+On Thu, Oct 21, 2021 at 4:05 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Thu, 21 Oct 2021 at 15:45, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Thu, Oct 21, 2021 at 1:49 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > On Wed, 20 Oct 2021 at 20:18, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > >
+> > > > On Wed, Sep 29, 2021 at 4:44 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > >
+> > > > > In the cpuidle-psci case, runtime PM in combination with the generic PM
+> > > > > domain (genpd), may be used when entering/exiting an idlestate. More
+> > > > > precisely, genpd relies on runtime PM to be enabled for the attached device
+> > > > > (in this case it belongs to a CPU), to properly manage the reference
+> > > > > counting of its PM domain.
+> > > > >
+> > > > > This works fine most of the time, but during system suspend in the
+> > > > > dpm_suspend_late() phase, the PM core disables runtime PM for all devices.
+> > > > > Beyond this point and until runtime PM becomes re-enabled in the
+> > > > > dpm_resume_early() phase, calls to pm_runtime_get|put*() will fail.
+> > > > >
+> > > > > To make sure the reference counting in genpd becomes correct, we need to
+> > > > > prevent cpuidle-psci from using runtime PM when it has been disabled for
+> > > > > the device. Therefore, let's move the call to cpuidle_pause() from
+> > > > > dpm_suspend_noirq() to dpm_suspend_late() - and cpuidle_resume() from
+> > > > > dpm_resume_noirq() into dpm_resume_early().
+> > > > >
+> > > > > Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
+> > > > > Suggested-by: Maulik Shah <mkshah@codeaurora.org>
+> > > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > > ---
+> > > > >  drivers/base/power/main.c | 6 ++----
+> > > > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> > > > > index cbea78e79f3d..1c753b651272 100644
+> > > > > --- a/drivers/base/power/main.c
+> > > > > +++ b/drivers/base/power/main.c
+> > > > > @@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state)
+> > > > >
+> > > > >         resume_device_irqs();
+> > > > >         device_wakeup_disarm_wake_irqs();
+> > > > > -
+> > > > > -       cpuidle_resume();
+> > > > >  }
+> > > > >
+> > > > >  /**
+> > > > > @@ -870,6 +868,7 @@ void dpm_resume_early(pm_message_t state)
+> > > > >         }
+> > > > >         mutex_unlock(&dpm_list_mtx);
+> > > > >         async_synchronize_full();
+> > > > > +       cpuidle_resume();
+> > > > >         dpm_show_time(starttime, state, 0, "early");
+> > > > >         trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
+> > > > >  }
+> > > > > @@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state)
+> > > > >  {
+> > > > >         int ret;
+> > > > >
+> > > > > -       cpuidle_pause();
+> > > > > -
+> > > > >         device_wakeup_arm_wake_irqs();
+> > > > >         suspend_device_irqs();
+> > > > >
+> > > > > @@ -1467,6 +1464,7 @@ int dpm_suspend_late(pm_message_t state)
+> > > > >         int error = 0;
+> > > > >
+> > > > >         trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
+> > > > > +       cpuidle_pause();
+> > > > >         mutex_lock(&dpm_list_mtx);
+> > > > >         pm_transition = state;
+> > > > >         async_error = 0;
+> > > > > --
+> > > >
+> > > > Well, this is somewhat heavy-handed and it affects even the systems
+> > > > that don't really need to pause cpuidle at all in the suspend path.
+> > >
+> > > Yes, I agree.
+> > >
+> > > Although, I am not really changing the behaviour in regards to this.
+> > > cpuidle_pause() is already being called in dpm_suspend_noirq(), for
+> > > everybody today.
+> >
+> > Yes, it is, but pausing it earlier will cause more energy to be spent,
+> > potentially.
+> >
+> > That said, there are not too many users of suspend_late callbacks in
+> > the tree, so it may not matter too much.
+> >
+> > > >
+> > > > Also, IIUC you don't need to pause cpuidle completely, but make it
+> > > > temporarily avoid idle states potentially affected by this issue.  An
+> > > > additional CPUIDLE_STATE_DISABLED_ flag could be used for that I
+> > > > suppose and it could be set via cpuidle_suspend() called from the core
+> > > > next to cpufreq_suspend().
+> > >
+> > > cpuidle_suspend() would then need to go and fetch the cpuidle driver
+> > > instance, which in some cases is one driver per CPU. Doesn't that get
+> > > rather messy?
+> >
+> > Per-CPU variables are used for that, so it is quite straightforward.
+> >
+> > > Additionally, since find_deepest_state() is being called for
+> > > cpuidle_enter_s2idle() too, we would need to treat the new
+> > > CPUIDLE_STATE_DISABLED_ flag in a special way, right?
+> >
+> > No, it already checks "disabled".
+>
+> Yes, but that would be wrong.
 
-Although, wakeup could be disabled via sysfs, so it makes sense. Still
-it's not clear whether it's a correct behaviour to enable wakeup during
-system suspend by default. If it wakes machine from suspend when USB
-device is plugged/unplugged, then it's a wrong behaviour.
+Hmmm.
 
+> The use case I want to support, for cpuidle-psci, is to allow all idle
+> states in suspend-to-idle,
+
+So does PM-runtime work in suspend-to-idle?  How?
+
+> but prevent those that rely on runtime PM
+> (after it has been disabled) for the regular idle path.
+
+Do you have a special suspend-to-idle handling of those states that
+doesn't require PM-runtime?
+
+> >
+> > > Is this really what we want?
+> > >
+> > > >
+> > > > The other guys who rely on the cpuidle pausing today could be switched
+> > > > over to this new mechanism later and it would be possible to get rid
+> > > > of the pausing from the system suspend path completely.
+> > >
+> > > Avoiding to pause cpuidle when it's not needed makes perfect sense.
+> > > Although, it looks to me that we could also implement that on top of
+> > > $subject patch.
+> >
+> > Yes, it could.
+> >
+> > > Unless you insist on the CPUIDLE_STATE_DISABLED_ way, I would probably
+> > > explore an option to let a cpuidle driver to set a global cpuidle flag
+> > > during ->probe(). Depending if this flag is set, we can simply skip
+> > > calling cpuidle_pause() during system suspend.
+> > >
+> > > What do you think?
+> >
+> > Well, which driver in particular is in question here?
+>
+> Honestly, I don't know. It has not been my goal to entirely prevent
+> calling cpuidle_pause().
+>
+> In any case, it was introduced in the below commit, perhaps that can
+> give us a hint when this is still needed?
+>
+> commit 8651f97bd951d0bb1c10fa24e3fa3455193f3548
+> Author: Preeti U Murthy <preeti@linux.vnet.ibm.com>
+> Date:   Mon Jul 9 10:12:56 2012 +0200
+> PM / cpuidle: System resume hang fix with cpuidle
+
+Yes, I remember that.
