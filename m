@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F115B436120
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3559436122
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhJUMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhJUMOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:14:44 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDCFC061753
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:12:28 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id r10so485778wra.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0vIQqYKkVJx23x9coP48EXe0l28e0ZIhnZSwiowHwyg=;
-        b=fjDYojDfUIX7vpR8IADwpgpzztO0mBpWvU65QUoNAhI5h5l4jvmUm9miufICBJ5fu+
-         FxiTVlKpiDwYP9RvWlJVzgmCn3rKhVbPBFdp3eV8AhF2NEhLLUTgdfsXR6jOaKfV95yA
-         yKh8F+J7jnDhCPp43d4HMm/IFi5aPJNRVnbPhadYav0+2DUOEOyshcveJJlYbHUBBW89
-         Gsnd+/3PE0Y4U0MHiH5O9sI0rqUhz35zhF46IeFgbtyqZUXESpSdaHnQMpFL1oUoZCPz
-         VcOuC9wOfHlEiiYm1/30+n9HZsc9I3fqsfVUg3Hb9vpiPeZPD4gkJpKPjASc40Nw/YQx
-         Tr/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0vIQqYKkVJx23x9coP48EXe0l28e0ZIhnZSwiowHwyg=;
-        b=J3LGA9hh8A80fY0CkjP94vNbMcy1Eo5veS7g17UJjM+k03D/TEi4YxGuPRP2WqugFT
-         6QtrjPURQF2oKWVisp2WohCfboJ96p94wDKH3CkR7iqCF7urC+8zYxEBOYloEABJSGLq
-         eyn8TOR9a2JsSLRUAqZ5ZZBMKMcsTF/+DnnCNreZx/GkL4JEQrUvD0QRl90dmhxX+dv+
-         JnoD1pzuyugG056MmMii4gQHbQ2HTcFmCCZ4RUapvGlSTkf2BTbMT2/3l6kayo8uaLj+
-         3MlXxai/+Fz83rDkuJUoxQAxtrPGQalsC6nZRAGz5km7NJYs/9xVw/H6Dw4jz04/WsRF
-         f0Ig==
-X-Gm-Message-State: AOAM532QDZIAGwIwjN9aSyPTd6MtajjHxYEgDd1f/y0djyjfhxyQSsR4
-        FfUBI1OPpMmhw1n0AR+qt6IOlw==
-X-Google-Smtp-Source: ABdhPJzQay9dVlMqf3DY2Soi8sHXotsMVqIdyaXQBVCXgXq5JubAhzo8DeCcf5lcsyavZ1roeJjN1g==
-X-Received: by 2002:a05:6000:1683:: with SMTP id y3mr6576853wrd.314.1634818346988;
-        Thu, 21 Oct 2021 05:12:26 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id a2sm5200597wrq.9.2021.10.21.05.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 05:12:26 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 13:12:24 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 20/23] dt-bindings: mfd: update x-powers,axp152.yaml
- reference
-Message-ID: <YXFZKGfFTbjAVCb5@google.com>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
- <aedef820f4dc9af5d3a3fcce2ad733d75e1ad4f0.1634630486.git.mchehab+huawei@kernel.org>
+        id S231450AbhJUMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:15:16 -0400
+Received: from mout.gmx.net ([212.227.17.20]:59079 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230379AbhJUMPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:15:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634818367;
+        bh=wRQ5OoGNi6KY8iyRTE4gesxaok+9j0+I4ZgzhMwQplA=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=HHISPmIKtRNrjRfLMCJg2PwXQ6UeqSNhjpIIxm2aA4O21jTV1f0/Sl12fYF3cpEa/
+         JqclRBeoF7qmZ1qb46JRlhLi+dhLdV1uLqtU8MQw8H+lKbbgXQ07nX3kEPpCQuy8NB
+         vSqOBGiUqj2AJ8EYAkvXmOQdpOhCeESrmD/rnUBc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.156.15]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MybGX-1mtnjG2CRp-00z0Ne; Thu, 21
+ Oct 2021 14:12:47 +0200
+Message-ID: <24721f4b-56e5-7751-d4f1-7bd3d96be163@gmx.de>
+Date:   Thu, 21 Oct 2021 14:12:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aedef820f4dc9af5d3a3fcce2ad733d75e1ad4f0.1634630486.git.mchehab+huawei@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] parisc: Make use of the helper macro kthread_run()
+Content-Language: en-US
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211021084214.2289-1-caihuoqing@baidu.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20211021084214.2289-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ukz2kgys2BqrVMAY0zo1n4K7NabqEU2VOd58oderjO+vEhxXxn2
+ FLNV30RoHfvMWngmlN3MinsN59HlVcb6mW51ILKGTa2GWl13R4GJgzPKAgPixwLEuTa4N9h
+ Cn0YUcz/rMpaauW8joM6p2ue3gmFW2OX6uIKvtmh0lsBBDdwFxcJLtdoh4oY2i/gL1KCHvL
+ eMnTUWQ+gFswRD6SMw9YA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EDVFd37g4E8=:kpp6HKbpic0Qeq1ovwDShr
+ IVrG5FRGyaL+3UCiX9W4pLqdUMqdDA6869YMYsLknj+E+ca4M6VsbEQWzvYQ/BOTxXfyNbO0/
+ CRqzRxoJCUMdHZmDQiTzayJimFCrjSxyM/iYxVrQhpzxleUGJqFuEprvYwzfMQgigVC3vzRzr
+ DnCY5x8jBPud3WqCyhIwf7q2r7U5X1ZAOfIHw+0ECre2oqIE8dhJXlD2Mos/nihsFFmT1UTws
+ e1m5siEM5WoOUnZWPFVzqhIFjLeNIZzs+cx0wzcPetgt4q7R27r3bcQEo3fCklawX7OkTi220
+ /bQypGoKZQIPaR7SZi47+dk6kNqfk8keLGOSMEIbjmQPUaQuTSX1X/N/UKIIRM8VLr3yRkcLU
+ yhes32qHBxJeCPI4T4xF+CQnjZ1+Q5lcQ9FX6OTUw5vl4WZ+GwFE+asYYkJiqpOryXKVBquMe
+ sszNcCDV3Xvmt6R179x01rOC9tuZqg4x7MkZFNuIFYqvJEzEW87g8jc8bgqRLuE4MRaQYjvoF
+ ulrbiwX/OSfsaZ3zIVXCSxBp/x2IE7c4c9tD2miVb8EfoVvZGHJn4AdtMZLrgf/K6bHadhrBs
+ gKL/gdYE7l9A0K4sVavMTBkfnAHF3Mr5SxCweS+gB7gM1Rk1SdXEX90dHb7aZ5x0tRy40N4qd
+ hk4RquB2JgLDbctcPPi0lhvJeeOg/4jk1Pj0TUeyQGiwhTkZuB/xRe7z7pfNj5vLf/w35yCWX
+ 9Y8zN5cXtzVd198BVqUbjtqef7fu3jxR/zsN4OVvOWYTDc6dQSovkJQv2/ylfCm7JXDSMXo6R
+ vOYptGvexQObSJ284cqDllE7/5fsw+FE93Gr3Ap3HfDvm4V7hzntbBjo6ASbXIAI4lSPNJ1Qk
+ gE88JdhcfjLdcSAbrdbswe2xbMGs2IGHodckAzOdqfZhuO0TLNlBzoz2WJaCALOe5OAuOC5Hb
+ sUQboRxwBMlg55HIkc76xJULQPPvdlG2EJM5mplqE5TYFE0XhlYjmekKiIJd9zw83iXaHHsRg
+ XCtUW1W1SI0HUAByD19oTn85b6zglSLpzQx1/nDrh8qqDusVP+hvOJoIdixNucHZOw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021, Mauro Carvalho Chehab wrote:
+On 10/21/21 10:42, Cai Huoqing wrote:
+> Repalce kthread_create/wake_up_process() with kthread_run()
+> to simplify the code.
+>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-> Changeset f38d3e404326 ("dt-bindings: mfd: Convert X-Powers AXP binding to a schema")
-> renamed: Documentation/devicetree/bindings/mfd/axp20x.txt
-> to: Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: f38d3e404326 ("dt-bindings: mfd: Convert X-Powers AXP binding to a schema")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-> 
-> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
-> 
->  Documentation/devicetree/bindings/gpio/gpio-axp209.txt | 2 +-
+Thanks, applied.
 
-This file no longer exists.
+Helge
 
-If it's still relevant, please rebase onto Linux -next and resubmit.
 
-See this commit for details:
+>  arch/parisc/kernel/pdt.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/arch/parisc/kernel/pdt.c b/arch/parisc/kernel/pdt.c
+> index fcc761b0e11b..e391b175f5ec 100644
+> --- a/arch/parisc/kernel/pdt.c
+> +++ b/arch/parisc/kernel/pdt.c
+> @@ -352,12 +352,10 @@ static int __init pdt_initcall(void)
+>  	if (pdt_type =3D=3D PDT_NONE)
+>  		return -ENODEV;
+>
+> -	kpdtd_task =3D kthread_create(pdt_mainloop, NULL, "kpdtd");
+> +	kpdtd_task =3D kthread_run(pdt_mainloop, NULL, "kpdtd");
+>  	if (IS_ERR(kpdtd_task))
+>  		return PTR_ERR(kpdtd_task);
+>
+> -	wake_up_process(kpdtd_task);
+> -
+>  	return 0;
+>  }
+>
+>
 
-  dt-bindings: gpio: Convert X-Powers AXP209 GPIO binding to a schema
-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-axp209.txt b/Documentation/devicetree/bindings/gpio/gpio-axp209.txt
-> index fc42b2caa06d..538f04e60ff9 100644
-> --- a/Documentation/devicetree/bindings/gpio/gpio-axp209.txt
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-axp209.txt
-> @@ -17,7 +17,7 @@ Required properties:
->  - gpio-controller: Marks the device node as a GPIO controller.
->  
->  This node must be a subnode of the axp20x PMIC, documented in
-> -Documentation/devicetree/bindings/mfd/axp20x.txt
-> +Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
->  
->  Example:
->  
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
