@@ -2,156 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790F2436BC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980B3436BC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhJUUKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 16:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhJUUKt (ORCPT
+        id S231503AbhJUUKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 16:10:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26734 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231396AbhJUUKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 16:10:49 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194C6C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:08:33 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id t16so5440418eds.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=MDqUpbVsNviKYhdyjMdLAGXgGjoSgVSfH4fiu5hfdr4=;
-        b=LFEUapAo6IwWyTdh+DKxPkDife2XnFI/gRQOEkR3vftOBsruU+ey/SO9G/JUkKVsvK
-         N5Z3ANLcw27ePYAkePSlg6gtzHxN8fcEbhnBnX4Us50D38CfwUO3qavpWBtfFtgwR93Z
-         lyjYRaqKRkl/FnvHGVHPMswB5zX2rdELj38Q7AkPxrgLalYD/OkwHR9AWshFbR3B8Bg3
-         0SOrbOdjDcX0ss15WnHcKEqNAxEW/lE9LNk/eqkrQr6bpB4BdYA5lenBJBudwZoYm0VE
-         JlD1bl7AhLMS0ff1UaLvreZFZuly5uEwk3oIcDLL/jsfYl7KA/OspiPBAlcScOkTjZWW
-         kqxA==
+        Thu, 21 Oct 2021 16:10:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634846910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mmsmJ/pPdiOUowj1+queJxhgagora/RkFzbUPsH0NgI=;
+        b=KF7xLlRfh0+1XiMicQskyfi8lPRjjmX3bc6Yxt71R7IwxpXkSYJR63wz5R3y4hGlS4dz8I
+        sKwcK7hPAbb8rj1h1gURqA/Ryd5QGMyzWhOSA6jqMpZug1S66TJHlxC/GX5ZmDxY5Zjt96
+        XuhI0Z1jShMVEa6ZsclaR3gxsSzZQz4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-KYCzyRILNKWCQCdpVZYc5A-1; Thu, 21 Oct 2021 16:08:29 -0400
+X-MC-Unique: KYCzyRILNKWCQCdpVZYc5A-1
+Received: by mail-ed1-f72.google.com with SMTP id i7-20020a50d747000000b003db0225d219so1570324edj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:08:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=MDqUpbVsNviKYhdyjMdLAGXgGjoSgVSfH4fiu5hfdr4=;
-        b=0I63l+c0Yr/xLo5ZCGJfqMNH4GxkbkaGgfpuny4avsqtzXxqtzwOXXM6LvfXo2TPTl
-         c2Xy3OJhZpX7nYVyoqhHFV/XoZhX7TVj1jOG4mt+qbKNobQEGYB+Y4TMRGt9D0+JlIUk
-         xEWCm0mR3+neMPWA0mSExdCbnjL1CevNeCkGhX9O7gsJIIauGxjpOff/sSJwWO7A/RDz
-         4JIFKw2ptSBWa4futBrmhrlqcKjk7V1eOqJej07tWUAymCJFUGwGWW2raFfxVD8U71RL
-         96RrHeh/OauA8AVjOSUQ8ALVnoH2CuvBUNfqRjRMw+K/A7VojMdRA4oV1/oPFJDWgPjd
-         juQQ==
-X-Gm-Message-State: AOAM532SGFICDESpnpv3h/p20h/EIJdrcWeE7ZLBG8rKkthxUoEHd3Qq
-        F1GBHOdwwjEg/OTfSSuK+fTECa/Q6H5gTAzx9sI=
-X-Google-Smtp-Source: ABdhPJxN7Nh1YekIv0OrV1MCQmSwGGTQnwRNlkKCDE0GB7Uaknrka26ZhPkZvVq+ODfvuGABfI47+8Ldj/hcWmyZIx8=
-X-Received: by 2002:a05:6402:5c9:: with SMTP id n9mr10411503edx.90.1634846911658;
- Thu, 21 Oct 2021 13:08:31 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=mmsmJ/pPdiOUowj1+queJxhgagora/RkFzbUPsH0NgI=;
+        b=g1AqMKPsSwPmPhEG+aJrHp4pGanLEkkcxu0V4l6Zt4c9dhq1OeBlODMn7C7xZxHL2K
+         CYkIVqClTMA702DwblRTH/6dbjo5wBIUtqsuInj9Sn3mQR/hcGA8c3/3d4osz/BW4Psk
+         U3XkIkr429vDsxRw1rBPtT6gY9IFzWvHgtSmQPRGctQiGBxgCWj3EJR5ApEAJG2nItkg
+         AfWL/6naQoJ0s94sUY3QqWFnF0xO0pqzQjR9D3SBZFU80v6BZDh8Bc9aZhEWfc5gQgv2
+         wJwcS0Swub/nArpv1VgFgpvwuz81S+slVbJP/McVhxDyrKz7lXCD0aUHkIvlv3Ppo5Rf
+         +Qdw==
+X-Gm-Message-State: AOAM530gyYqkj2oipdqFGxrnQhf+zj30+ZskVEf1/993EPY7TVR4Hy7a
+        R4dQz5DF2/5YovZW1ocqQZP54cw28apFmAbrBfmPIw7ISXonHtgRWLn01zQbaJCGNZbhc+ww8rU
+        2Hx6/bM0fJWJ9NVqTIHvd0wkp
+X-Received: by 2002:a50:d50c:: with SMTP id u12mr10692144edi.118.1634846907785;
+        Thu, 21 Oct 2021 13:08:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydAHgKEPzldAxYQV/5QMlR58Wpb8Rnei/FqgARVPGBX6aLZzp3TxpCGsa/Joy8+cm0SIrRxg==
+X-Received: by 2002:a50:d50c:: with SMTP id u12mr10692122edi.118.1634846907625;
+        Thu, 21 Oct 2021 13:08:27 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id p3sm2942149ejy.94.2021.10.21.13.08.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 13:08:27 -0700 (PDT)
+Message-ID: <9eb83cdd-9314-0d1f-0d4b-0cf4432e1e84@redhat.com>
+Date:   Thu, 21 Oct 2021 22:08:25 +0200
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 22 Oct 2021 06:08:20 +1000
-Message-ID: <CAPM=9tzoEc2rNg9tObnmTnqhg_BEcKQiqgAgqAQOphJa1M760g@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.15-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: There is a null-ptr-deref bug in kvm_dirty_ring_get in
+ virt/kvm/dirty_ring.c
+Content-Language: en-US
+To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>
+Cc:     kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 18/10/21 19:14, butt3rflyh4ck wrote:
+> {
+> struct kvm_vcpu *vcpu = kvm_get_running_vcpu();  //-------> invoke
+> kvm_get_running_vcpu() to get a vcpu.
+> 
+> WARN_ON_ONCE(vcpu->kvm != kvm); [1]
+> 
+> return &vcpu->dirty_ring;
+> }
+> ```
+> but we had not called KVM_CREATE_VCPU ioctl to create a kvm_vcpu so
+> vcpu is NULL.
 
-Nothing too crazy at the end of the cycle, the kmb modesetting fixes
-are probably a bit large but it's not a major driver, and its fixing
-monitor doesn't turn on type problems. Otherwise it's just a few minor
-patches, one ast regression revert, an msm power stability fix.
+It's not just because there was no call to KVM_CREATE_VCPU; in general 
+kvm->dirty_ring_size only works if all writes are associated to a 
+specific vCPU, which is not the case for the one of 
+kvm_xen_shared_info_init.
 
-Dave.
+David, what do you think?  Making dirty-page ring buffer incompatible 
+with Xen is ugly and I'd rather avoid it; taking the mutex for vcpu 0 is 
+not an option because, as the reporter said, you might not have even 
+created a vCPU yet when you call KVM_XEN_HVM_SET_ATTR.  The remaining 
+option would be just "do not mark the page as dirty if the ring buffer 
+is active".  This is feasible because userspace itself has passed the 
+shared info gfn; but again, it's ugly...
 
-drm-fixes-2021-10-22:
-drm fixes for v5.15-rc7
+Paolo
 
-ast:
-- fix regression with connector detect
-
-msm:
-- fix power stability issue
-
-msxfb:
-- fix crash on unload
-
-panel:
-- sync fix
-
-kmb:
-- modesetting fixes
-The following changes since commit 519d81956ee277b4419c723adfb154603c2565ba:
-
-  Linux 5.15-rc6 (2021-10-17 20:00:13 -1000)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-10-22
-
-for you to fetch changes up to 595cb5e0b832a3e100cbbdefef797b0c27bf725a:
-
-  Revert "drm/ast: Add detect function support" (2021-10-22 05:52:12 +1000)
-
-----------------------------------------------------------------
-drm fixes for v5.15-rc7
-
-ast:
-- fix regression with connector detect
-
-msm:
-- fix power stability issue
-
-msxfb:
-- fix crash on unload
-
-panel:
-- sync fix
-
-kmb:
-- modesetting fixes
-
-----------------------------------------------------------------
-Anitha Chrisanthus (4):
-      drm/kmb: Work around for higher system clock
-      drm/kmb: Limit supported mode to 1080p
-      drm/kmb: Corrected typo in handle_lcd_irq
-      drm/kmb: Enable ADV bridge after modeset
-
-Dan Johansen (1):
-      drm/panel: ilitek-ili9881c: Fix sync for Feixin K101-IM2BYL02 panel
-
-Dave Airlie (2):
-      Merge tag 'drm-msm-fixes-2021-10-18' of
-https://gitlab.freedesktop.org/drm/msm into drm-fixes
-      Merge tag 'drm-misc-fixes-2021-10-21-1' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-
-Edmund Dea (2):
-      drm/kmb: Remove clearing DPHY regs
-      drm/kmb: Disable change of plane parameters
-
-Kim Phillips (1):
-      Revert "drm/ast: Add detect function support"
-
-Marek Vasut (1):
-      drm: mxsfb: Fix NULL pointer dereference crash on unload
-
-Rob Clark (1):
-      drm/msm/devfreq: Restrict idle clamping to a618 for now
-
- drivers/gpu/drm/ast/ast_mode.c                | 18 +----------
- drivers/gpu/drm/kmb/kmb_crtc.c                | 41 +++++++++++++++++++++++--
- drivers/gpu/drm/kmb/kmb_drv.c                 |  2 +-
- drivers/gpu/drm/kmb/kmb_drv.h                 | 10 ++++++-
- drivers/gpu/drm/kmb/kmb_dsi.c                 | 25 +++++++++-------
- drivers/gpu/drm/kmb/kmb_dsi.h                 |  2 +-
- drivers/gpu/drm/kmb/kmb_plane.c               | 43 ++++++++++++++++++++++++++-
- drivers/gpu/drm/kmb/kmb_plane.h               |  6 ++++
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c         |  7 +++++
- drivers/gpu/drm/msm/msm_gpu.h                 |  4 +++
- drivers/gpu/drm/msm/msm_gpu_devfreq.c         |  3 +-
- drivers/gpu/drm/mxsfb/mxsfb_drv.c             |  6 +++-
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 12 ++++----
- 13 files changed, 137 insertions(+), 42 deletions(-)
