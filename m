@@ -2,210 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F57435B5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D15A435B6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbhJUHKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:10:46 -0400
-Received: from smtprelay0103.hostedemail.com ([216.40.44.103]:54952 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231158AbhJUHKo (ORCPT
+        id S231321AbhJUHMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:12:42 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:34360 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229854AbhJUHMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:10:44 -0400
-Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 0533A180E07B8;
-        Thu, 21 Oct 2021 07:08:28 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 95407D1514;
-        Thu, 21 Oct 2021 07:08:24 +0000 (UTC)
-Message-ID: <b85fee5ff20d2b398948a6bccf1bcc5eb22b49ff.camel@perches.com>
-Subject: Re: [PATCH] virtio-blk: fixup coccinelle warnings
-From:   Joe Perches <joe@perches.com>
-To:     cgel.zte@gmail.com, mst@redhat.com,
-        Denis Efremov <efremov@linux.com>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>, cocci@inria.fr
-Cc:     jasowang@redhat.com, pbonzini@redhat.com, stefanha@redhat.com,
-        axboe@kernel.dk, virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Date:   Thu, 21 Oct 2021 00:08:23 -0700
-In-Reply-To: <20211021065111.1047824-1-ye.guojin@zte.com.cn>
-References: <20211021065111.1047824-1-ye.guojin@zte.com.cn>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Thu, 21 Oct 2021 03:12:41 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L5mlci032180;
+        Thu, 21 Oct 2021 03:10:13 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3btqxwaxkb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Oct 2021 03:10:13 -0400
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 19L7AB8O037058
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 Oct 2021 03:10:12 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Thu, 21 Oct 2021 00:10:10 -0700
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Thu, 21 Oct 2021 00:10:10 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Thu, 21 Oct 2021 00:10:10 -0700
+Received: from ubuntuservermchindri.ad.analog.com ([10.32.225.18])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 19L7A67k003171;
+        Thu, 21 Oct 2021 03:10:06 -0400
+From:   Mihail Chindris <mihail.chindris@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>, <alexandru.ardelean@analog.com>,
+        Mihail Chindris <mihail.chindris@analog.com>
+Subject: [PATCH v3 0/2] drivers:iio:dac: Add AD3552R driver support
+Date:   Thu, 21 Oct 2021 07:09:23 +0000
+Message-ID: <20211021070924.18626-1-mihail.chindris@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 95407D1514
-X-Spam-Status: No, score=-0.04
-X-Stat-Signature: w1k1cs1tg45sjhxa5ai68tet591rgwep
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18GuLItoKjGI2brebfiEvCynGxVYaDHZyo=
-X-HE-Tag: 1634800104-276374
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: jbx2UVI1ftO7ucrxufPJOlvK3RWXXwrj
+X-Proofpoint-GUID: jbx2UVI1ftO7ucrxufPJOlvK3RWXXwrj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-21_02,2021-10-20_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ phishscore=0 suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 impostorscore=0 clxscore=1015 mlxlogscore=904
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110210033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-21 at 06:51 +0000, cgel.zte@gmail.com wrote:
-> From: Ye Guojin <ye.guojin@zte.com.cn>
-> 
-> coccicheck complains about the use of snprintf() in sysfs show
-> functions:
-> WARNING  use scnprintf or sprintf
-> 
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-[]
-> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-[]
-> @@ -624,7 +624,7 @@ cache_type_show(struct device *dev, struct device_attribute *attr, char *buf)
-> -	return snprintf(buf, 40, "%s\n", virtblk_cache_types[writeback]);
-> +	return sysfs_emit(buf, "%s\n", virtblk_cache_types[writeback]);
+Changelog v1 -> v2:
+  - https://lore.kernel.org/all/20211008123909.1901-1-mihail.chindris@analog.com
+  - Order compatilbe in alphabetic order
+  - Fix comments in yaml
+  - Grup struct by types
+  - Drop usless "if (err)"
+  - Handle error in ad3552r_read_reg_wrapper
+  - ad3552r_find_range: u32 -> s32
+  - Add fwnode_handle_put(custom_gain_child); in good path too
+  - Vals[0] -> val
+  - Fix: fwnode_handle_put in ad3552r_configure_device
+  - Fix indio_dev->name
+  - Rename custom_gain_child -> gain_child
+  - Remove intermediary functions and write code inline where possible
+  - Add ad3552r_field_prep helper function
+  - Dev_err -> dev_warn for vref supply check
+  - Replace dev_err with dev_err_probe
+  - Remove channel for simultaneous update and do update mask register if both
+    channels values are the same.
 
-Perhaps scripts/coccinelle/api/device_attr_show.cocci should be updated
-to be more like the script used in commit 1c7fd72687d6
+Changelog v0 -> v1:
+  - Split https://lore.kernel.org/all/20210820165927.4524-1-mihail.chindris@analog.com
+    and move ad3552r driver to this serie.
+  - Remove precision_mode abi
+  - Remove adi,synch_channels dt property
+  - Use vref-supply instead of adi,vref-select
+  - Remove unimplemented spi modes
+  - Change output-range format and use enums
+  - Update description for custom-output-range-config to be more clear
+  - Add datasheet tag
+  - Use GENMASK for defines
+  - Remove tomicro define
+  - Use get_unaligned_be16 and put_unaligned_be16
+  - Remove unnecessary checks
+  - Add comment for AD3552R_CH_DAC_PAGE channel
+  - Fix indent
+  - Remove irq trigger
+  - Remove irelevant checks
+  - Rename ad3552r_read_reg_pool to ad3552r_read_reg_wrapper.
+  - Add support for ad3542r
 
-@@
-identifier d_show;
-identifier dev, attr, buf;
-@@
+V0:
+  * Add ad3552r example to https://lore.kernel.org/linux-iio/20210219124012.92897-1-alexandru.ardelean@analog.com
 
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	<...
-	return
--	sprintf(buf,
-+	sysfs_emit(buf,
-	...);
-	...>
-}
+Mihail Chindris (2):
+  dt-bindings: iio: dac: Add adi,ad3552r.yaml
+  drivers:iio:dac: Add AD3552R driver support
 
-@@
-identifier d_show;
-identifier dev, attr, buf;
-@@
+ .../bindings/iio/dac/adi,ad3552r.yaml         |  190 +++
+ drivers/iio/dac/Kconfig                       |   10 +
+ drivers/iio/dac/Makefile                      |    1 +
+ drivers/iio/dac/ad3552r.c                     | 1208 +++++++++++++++++
+ 4 files changed, 1409 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+ create mode 100644 drivers/iio/dac/ad3552r.c
 
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	<...
-	return
--	snprintf(buf, PAGE_SIZE,
-+	sysfs_emit(buf,
-	...);
-	...>
-}
 
-@@
-identifier d_show;
-identifier dev, attr, buf;
-@@
-
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	<...
-	return
--	scnprintf(buf, PAGE_SIZE,
-+	sysfs_emit(buf,
-	...);
-	...>
-}
-
-@@
-identifier d_show;
-identifier dev, attr, buf;
-expression chr;
-@@
-
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	<...
-	return
--	strcpy(buf, chr);
-+	sysfs_emit(buf, chr);
-	...>
-}
-
-@@
-identifier d_show;
-identifier dev, attr, buf;
-identifier len;
-@@
-
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	<...
-	len =
--	sprintf(buf,
-+	sysfs_emit(buf,
-	...);
-	...>
-	return len;
-}
-
-@@
-identifier d_show;
-identifier dev, attr, buf;
-identifier len;
-@@
-
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	<...
-	len =
--	snprintf(buf, PAGE_SIZE,
-+	sysfs_emit(buf,
-	...);
-	...>
-	return len;
-}
-
-@@
-identifier d_show;
-identifier dev, attr, buf;
-identifier len;
-@@
-
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	<...
-	len =
--	scnprintf(buf, PAGE_SIZE,
-+	sysfs_emit(buf,
-	...);
-	...>
-	return len;
-}
-
-@@
-identifier d_show;
-identifier dev, attr, buf;
-identifier len;
-@@
-
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	<...
--	len += scnprintf(buf + len, PAGE_SIZE - len,
-+	len += sysfs_emit_at(buf, len,
-	...);
-	...>
-	return len;
-}
-
-@@
-identifier d_show;
-identifier dev, attr, buf;
-expression chr;
-@@
-
-ssize_t d_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	...
--	strcpy(buf, chr);
--	return strlen(buf);
-+	return sysfs_emit(buf, chr);
-}
-
+base-commit: ef226dcf3d88697a06335fbc55c4263ab164b135
+-- 
+2.27.0
 
