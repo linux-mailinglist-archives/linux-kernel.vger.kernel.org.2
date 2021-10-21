@@ -2,93 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A724363CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6C94363D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhJUOLy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Oct 2021 10:11:54 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:56153 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhJUOLw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:11:52 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id E960C1C0012;
-        Thu, 21 Oct 2021 14:09:32 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 16:09:32 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        linux-mtd@lists.infradead.org, Julien Su <juliensu@mxic.com.tw>,
-        linux-spi@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
- description file to yaml
-Message-ID: <20211021160932.4169f66f@xps13>
-In-Reply-To: <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
-References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
-        <20211020142809.349347-5-miquel.raynal@bootlin.com>
-        <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231379AbhJUOPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:15:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230436AbhJUOPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 10:15:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBBDE61208;
+        Thu, 21 Oct 2021 14:12:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634825566;
+        bh=5XEccsfIAKur6QssRs1skdFyS9avliQQXeTAuJkdmZw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zjb5Vr8E/Px2rKoUqdT9wCPg586LLspkrRYlHNZlLieSndh9y8amg2spBJBLCeZEs
+         jXwrzBcL2v2wDme0R50Gh0/jxYVvh2LNcgAzqFAioXdSc4MeDPuJ1H5rBbmuGnzuip
+         uTanStszxoq24wp8nSls+nAvggyLdcvRen8NQgAc=
+Date:   Thu, 21 Oct 2021 16:12:43 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Abhyuday Godhasara <agodhasa@xilinx.com>
+Cc:     Michal Simek <michals@xilinx.com>, Rajan Vaja <RAJANV@xilinx.com>,
+        Manish Narani <MNARANI@xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+Message-ID: <YXF1W8a7NfvRWPTt@kroah.com>
+References: <20210915131615.16506-1-abhyuday.godhasara@xilinx.com>
+ <SA1PR02MB8592838B99062EFA6EAAE73DA1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbYKQXf8g8s55kG@kroah.com>
+ <YWbZoPHDzc4e5Nme@kroah.com>
+ <SA1PR02MB8592E68D021E12DCA45B70A2A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbo660XPKlwDZH0@kroah.com>
+ <SA1PR02MB8592EB312091543A1D564D70A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbtSiHWNOf2djee@kroah.com>
+ <f63e44a0-c187-8278-6c89-935b7006b64f@xilinx.com>
+ <SA1PR02MB85922CC2DCFCDC902BC37E68A1BF9@SA1PR02MB8592.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SA1PR02MB85922CC2DCFCDC902BC37E68A1BF9@SA1PR02MB8592.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-robh@kernel.org wrote on Wed, 20 Oct 2021 16:14:47 -0500:
-
-> On Wed, 20 Oct 2021 16:27:55 +0200, Miquel Raynal wrote:
-> > Let's get rid of spi-nand.txt by converting it to yaml schema. While at
-> > converting this file, let's actually pull all the generic properties
-> > from nand-chip.yaml which might apply to a SPI-NAND chip.
+On Thu, Oct 21, 2021 at 01:55:49PM +0000, Abhyuday Godhasara wrote:
+> Hi Greg,
+> 
+> > -----Original Message-----
+> > From: Michal Simek <michal.simek@xilinx.com>
+> > Sent: Wednesday, October 13, 2021 9:00 PM
+> > To: gregkh@linuxfoundation.org; Abhyuday Godhasara
+> > <agodhasa@xilinx.com>
+> > Cc: Rajan Vaja <RAJANV@xilinx.com>; Manish Narani <MNARANI@xilinx.com>;
+> > zou_wei@huawei.com; Sai Krishna Potthuri <lakshmis@xilinx.com>; Jiaying
+> > Liang <jliang@xilinx.com>; linux-kernel@vger.kernel.org; linux-arm-
+> > kernel@lists.infradead.org
+> > Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
 > > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
-> >  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
-> >  2 files changed, 27 insertions(+), 5 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> >   
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
-> xargs: dt-doc-validate: exited with status 255; aborting
-> make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml'
-> Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
-> make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml] Error 255
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1441: dt_binding_check] Error 2
+> > 
+> > 
+> > On 10/13/21 16:29, gregkh@linuxfoundation.org wrote:
+> > > On Wed, Oct 13, 2021 at 02:21:01PM +0000, Abhyuday Godhasara wrote:
+> > >> Hi Greg,
+> > >>
+> > >>
+> > >> Thanks,
+> > >> Abhyuday
+> > >>
+> > >>> -----Original Message-----
+> > >>> From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > >>> Sent: Wednesday, October 13, 2021 7:41 PM
+> > >>> To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> > >>> Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja
+> > >>> <RAJANV@xilinx.com>; Manish Narani <MNARANI@xilinx.com>;
+> > >>> zou_wei@huawei.com; Sai Krishna Potthuri <lakshmis@xilinx.com>;
+> > >>> Jiaying Liang <jliang@xilinx.com>; linux- kernel@vger.kernel.org;
+> > >>> linux-arm-kernel@lists.infradead.org
+> > >>> Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > >>>
+> > >>> On Wed, Oct 13, 2021 at 01:57:59PM +0000, Abhyuday Godhasara wrote:
+> > >>>> Hi Greg,
+> > >>>>
+> > >>>>> -----Original Message-----
+> > >>>>> From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > >>>>> Sent: Wednesday, October 13, 2021 6:36 PM
+> > >>>>> To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> > >>>>> Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja
+> > >>>>> <RAJANV@xilinx.com>; Manish Narani <MNARANI@xilinx.com>;
+> > >>>>> zou_wei@huawei.com; Sai Krishna Potthuri <lakshmis@xilinx.com>;
+> > >>>>> Jiaying Liang <jliang@xilinx.com>; linux- kernel@vger.kernel.org;
+> > >>>>> linux-arm-kernel@lists.infradead.org
+> > >>>>> Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > >>>>>
+> > >>>>> On Wed, Oct 13, 2021 at 02:59:21PM +0200,
+> > >>>>> gregkh@linuxfoundation.org
+> > >>>>> wrote:
+> > >>>>>> On Wed, Oct 13, 2021 at 12:27:58PM +0000, Abhyuday Godhasara
+> > wrote:
+> > >>>>>>> Hi Greg,
+> > >>>>>>>
+> > >>>>>>>> -----Original Message-----
+> > >>>>>>>> From: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+> > >>>>>>>> Sent: Wednesday, September 15, 2021 6:46 PM
+> > >>>>>>>> To: gregkh@linuxfoundation.org
+> > >>>>>>>> Cc: Michal Simek <michals@xilinx.com>; Abhyuday Godhasara
+> > >>>>>>>> <agodhasa@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>; Manish
+> > >>>>>>>> Narani <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> > >>>>>>>> Potthuri <lakshmis@xilinx.com>; Jiaying Liang
+> > >>>>>>>> <jliang@xilinx.com>; Jiaying Liang <jliang@xilinx.com>;
+> > >>>>>>>> linux-kernel@vger.kernel.org;
+> > >>>>>>>> linux-arm- kernel@lists.infradead.org
+> > >>>>>>>> Subject: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > >>>>>>>>
+> > >>>>>>>> This Linux driver provides support to subscribe error/event
+> > >>>>>>>> notification and receive notification from firmware for
+> > >>>>>>>> error/event and forward event notification to subscribed driver
+> > >>>>>>>> via
+> > >>>>> registered callback.
+> > >>>>>>>>
+> > >>>>>>>> All types of events like power and error will be handled from
+> > >>>>>>>> single place as part of event management driver.
+> > >>>>>>>>
+> > >>>>>>>> Changes in v4:
+> > >>>>>>>> - Rebase on latest tree
+> > >>>>>>>>
+> > >>>>>>>> Changes in v3:
+> > >>>>>>>> - Update the commit message.
+> > >>>>>>>>
+> > >>>>>>>> Changes in v2:
+> > >>>>>>>> - Removed updated copyright year from unchanged files.
+> > >>>>>>>> - make sgi_num as module parameter for event management driver.
+> > >>>>>>>> - Use same object for error detection and printing.
+> > >>>>>>>>
+> > >>>>>>>> Acked-by: Michal Simek <michal.simek@xilinx.com>
+> > >>>>>>> [Abhyuday] Michal suggested to merge this via your tree. Please
+> > >>>>>>> have a
+> > >>>>> look.
+> > >>>>>>> Please let me know if there is anything required from my side.
+> > >>>>>>
+> > >>>>>> Ok, I'll pick it up, thanks.
+> > >>>>>
+> > >>>>> Nope, I can not as for some reason it all did not show up on
+> > lore.kernel.org.
+> > >>>>>
+> > >>>>> Please resend this, with Michal's ack and I will be glad to pick it up.
+> > >>>> [Abhyuday] Sent v5 with Michal's ack.
+> > >>>
+> > >>> Sent where?  Do you have a lore.kernel.org link?  Did you cc: me?
+> > >> [Abhyuday] I added linux-kernel@vger.kernel.org and linux-arm-
+> > kernel@lists.infradead.org in CC. also  added you in "To" for v5.
+> > >> Please let me know if require anything else also.
+> > >
+> > > Again, I do not see them in my inbox, nor do I see them on
+> > > lore.kernel.org.
+> > >
+> > > Are you _sure_ you sent them?
+> > 
+> > I got it but I expect they are not sent out of xilinx.com domain and you are sort
+> > of blocked. You should talk to IT or just simply use any email out of xilinx
+> > domain to check that you got it.
+> > Also I am not able to see it in lore.
+> [Abhyuday] Now v5 are available in lore.kernel.org
 
-I am not able to reproduce this error and in general I don't understand
-it. There is no relationship between this change and
-snps,dw-apb-ssi.yaml. Also the fact that nand-chip-yaml do not exist,
-it was just created in the patch before so I wonder how much I should
-trust this error.
+Looks good, all now reviewed from my side.
 
-Also, maybe I am not using the tools properly, but it is very hard to
-send correct bindings at the first try. Running make dt_binding_check
-takes ages, any change in one yaml file will recheck the entire data
-base and filtering out on a single yaml file is generally too
-restrictive and still prints unrelated errors of syntax on other files.
-I don't know how much of this is actually expected and/or if someone is
-working on it.
-
-Thanks,
-Miquèl
+greg k-h
