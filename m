@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEC34361C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C3A4361C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbhJUMhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:37:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:58643 "EHLO
+        id S231493AbhJUMji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:39:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30373 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231572AbhJUMhw (ORCPT
+        by vger.kernel.org with ESMTP id S230190AbhJUMjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:37:52 -0400
+        Thu, 21 Oct 2021 08:39:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634819736;
+        s=mimecast20190719; t=1634819840;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pcCL6CdZH83Z0UE+ms2Bf+J5zETTW6d5Cs7+RZXJ0w4=;
-        b=AoeuQgYKUSMMUCs18ZoNEkrKxAnOakWV2eMCYfurdOesoi0oOs9YZGzAzfXWVYtTOYJTFX
-        GrD2WYJ4IqPgJydIYaqBqSRKb3FmIzYN054R0+yfMtSKGqi8T6lvyt0jUZt1N8iYkfyRhC
-        TthX23xXBEx/hHoLYcXUEreLaLD79i0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79--fRdbLHJPVODx_uVChRbBA-1; Thu, 21 Oct 2021 08:35:35 -0400
-X-MC-Unique: -fRdbLHJPVODx_uVChRbBA-1
-Received: by mail-wm1-f72.google.com with SMTP id k20-20020a7bc414000000b0030dcd454771so259109wmi.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 05:35:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=pcCL6CdZH83Z0UE+ms2Bf+J5zETTW6d5Cs7+RZXJ0w4=;
-        b=eMR/wPxbOnOAijRmLGv3abBtpu0132mygZXBFTra/97HKUHIr+6gJL6o869nw5KZu9
-         zvVSLDaQOkrdfANaEK7Tv63RM5/bCFTyxT4O7WzDS71QVi3U/JfTe6k+d8dkZpxaUOov
-         4lzovzqKS3kf+HsJvctvAPiBtXv9Nxi0+FVRlVGtVQrlAddyDu2gEPhPx1GTRHVYFUA5
-         LrW7/awaldl2TWaeFzzATqKOZ5Y6P3I29atN3/kdwdVXTaP1OEr5yC1s3dMTCeRM56K8
-         udHFyo8PZ/jFTWNcKQ+t0n4eSfWEUqdVyIaY30bXFRZpwkfiENpx/aTLEZoUrfzo8osh
-         Fekw==
-X-Gm-Message-State: AOAM533mnXwuE7KFKkTn8zw8wWiOJfLfc9L4OGPcoZVGAfGunq6fNYqR
-        OjbyiyjWYa5PnoPkF0jMu1OC/2lDBaqjkgs7LhGgMV2JhhJWJMY7LJmJ5wrao1IDI/w200yTTLg
-        gxb5FYq8SZlZOVNQg8L0V0hDN
-X-Received: by 2002:a5d:598a:: with SMTP id n10mr6855146wri.93.1634819734168;
-        Thu, 21 Oct 2021 05:35:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJygTB13YIzbisqOQrzKIUBIvuJx4J8sCISPd+GfQ3nZfE1HhayO8oEr5WMTr4X9Cpc4e9kMVQ==
-X-Received: by 2002:a5d:598a:: with SMTP id n10mr6855104wri.93.1634819733890;
-        Thu, 21 Oct 2021 05:35:33 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23aba.dip0.t-ipconnect.de. [79.242.58.186])
-        by smtp.gmail.com with ESMTPSA id x7sm4732213wrq.69.2021.10.21.05.35.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 05:35:33 -0700 (PDT)
-Message-ID: <2fc2c5da-c0e9-b954-ba48-e258b88e3271@redhat.com>
-Date:   Thu, 21 Oct 2021 14:35:32 +0200
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HWHcgiYDzaXrjPI7m9/Xp249PFRd3etzjepjjebnpmw=;
+        b=WbCBiEpOPwNjvgLYBt/RArRCTAGZqyAkGV5RtVo6m8w+ZnbY5fWsxL+yrg8vDqWuSlmvcD
+        9GTSg6OHy5qh2QJufcKFiIWEMjszzVk/IZNgzfQi7gelRwnoxyGZ2nMhlCbT+bZ7FDuIUr
+        gmq5bIlfYjLMvmiL+t/Up3CJzCzW/00=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-11-_h6xohpQMd2xpvBYc-s13A-1; Thu, 21 Oct 2021 08:37:19 -0400
+X-MC-Unique: _h6xohpQMd2xpvBYc-s13A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51B481018720;
+        Thu, 21 Oct 2021 12:37:18 +0000 (UTC)
+Received: from localhost (unknown [10.39.208.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F9F1100E12D;
+        Thu, 21 Oct 2021 12:37:16 +0000 (UTC)
+From:   =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sgarzare@redhat.com,
+        davem@davemloft.net, kuba@kernel.org,
+        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+Subject: [PATCH 00/10] RFC: SO_PEERCRED for AF_VSOCK
+Date:   Thu, 21 Oct 2021 16:37:04 +0400
+Message-Id: <20211021123714.1125384-1-marcandre.lureau@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Content-Language: en-US
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-References: <YW2lKcqwBZGDCz6T@cmpxchg.org>
- <YW28vaoW7qNeX3GP@casper.infradead.org> <YW3tkuCUPVICvMBX@cmpxchg.org>
- <20211018231627.kqrnalsi74bgpoxu@box.shutemov.name>
- <YW7hQlny+Go1K3LT@cmpxchg.org>
- <996b3ac4-1536-2152-f947-aad6074b046a@redhat.com>
- <YXBRPSjPUYnoQU+M@casper.infradead.org>
- <436a9f9c-d5af-7d12-b7d2-568e45ffe0a0@redhat.com>
- <YXEOCIWKEcUOvVtv@infradead.org>
- <f31af20e-245d-a8f1-49fa-e368de9fa95c@redhat.com>
- <YXFXGeYlGFsuHz/T@moria.home.lan>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-In-Reply-To: <YXFXGeYlGFsuHz/T@moria.home.lan>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.10.21 14:03, Kent Overstreet wrote:
-> On Thu, Oct 21, 2021 at 09:21:17AM +0200, David Hildenbrand wrote:
->> On 21.10.21 08:51, Christoph Hellwig wrote:
->>> FYI, with my block and direct I/O developer hat on I really, really
->>> want to have the folio for both file and anon pages.  Because to make
->>> the get_user_pages path a _lot_ more efficient it should store folios.
->>> And to make that work I need them to work for file and anon pages
->>> because for get_user_pages and related code they are treated exactly
->>> the same.
-> 
-> ++
-> 
->> Thanks, I can understand that. And IMHO that would be even possible with
->> split types; the function prototype will simply have to look a little
->> more fancy instead of replacing "struct page" by "struct folio". :)
-> 
-> Possible yes, but might it be a little premature to split them?
+Hi,
 
-Personally, I think it's the right thing to do to introduce something
-limited like "struct filemap" (again, bad name, i.e., folio restricted
-to the filemap API) first and avoid introducing a generic folio thingy.
+This RFC aims to implement some support for SO_PEERCRED with AF_VSOCK,
+so vsock servers & clients can lookup the basic peer credentials.
+(further support for SO_PEERSEC could also be useful)
 
-So I'd even consider going with folios all the way premature. But I
-assume what to consider premature and what not depends on the point of
-view already. And maybe that's the biggest point where we all disagree.
+This is pretty straightforward for loopback transport, where both ends
+are on the same host.
 
-Anyhow, what I don't quite understand is the following: as the first
-important goal, we want to improve the filemap API; that's a noble goal
-and I highly appreciate Willy's work. To improve the API, there is
-absolutely no need introduce generic folio. Yet we argue about whether
-generic folio vs. filemap specific folio seems to be the right thing to
-do as a first step.
+For vhost transport, the host will set the peer credentials associated with
+the process who called VHOST_SET_OWNER (ex QEMU).
 
-My opinion after all the discussions: use a dedicate type with a clear
-name to solve the immediate filemap API issue. Leave the remainder alone
-for now. Less code to touch, less subsystems to involve (well, still a
-lot), less people to upset, less discussions to have, faster review,
-faster upstream, faster progress. A small but reasonable step.
+For virtio transport, the credentials are cleared upon connect, as
+providing foreign credentials wouldn't make much sense.
 
-But maybe I'm just living in a dream world :)
+I haven't looked at other transports. What do you think of this approach?
 
+Note: I think it would be a better to set the peer credentials when we
+actually can provide them, rather than at creation time, but I haven't
+found a way yet. Help welcome!
+
+Marc-André Lureau (10):
+  sock: move sock_init_peercred() from af_unix
+  sock: move sock_copy_peercred() from af_unix
+  vsock: owner field is specific to VMCI
+  sock: add sock_swap_peercred
+  virtio/vsock: add copy_peercred() to virtio_transport
+  vsock: set socket peercred
+  vsock/loopback: implement copy_peercred()
+  vhost/vsock: save owner pid & creds
+  vhost/vsock: implement copy_peercred
+  vsock/virtio: clear peer creds on connect
+
+ drivers/vhost/vsock.c                   | 46 +++++++++++++++++
+ include/linux/virtio_vsock.h            |  2 +
+ include/net/af_vsock.h                  |  2 +
+ include/net/sock.h                      |  9 ++++
+ net/core/sock.c                         | 66 +++++++++++++++++++++++++
+ net/unix/af_unix.c                      | 50 ++-----------------
+ net/vmw_vsock/af_vsock.c                |  8 +++
+ net/vmw_vsock/virtio_transport.c        | 22 ++++++++-
+ net/vmw_vsock/virtio_transport_common.c |  9 ++++
+ net/vmw_vsock/vsock_loopback.c          |  7 +++
+ 10 files changed, 175 insertions(+), 46 deletions(-)
+
+
+base-commit: e0bfcf9c77d9b2c11d2767f0c747f7721ae0cc51
 -- 
-Thanks,
-
-David / dhildenb
+2.33.0.721.g106298f7f9
 
