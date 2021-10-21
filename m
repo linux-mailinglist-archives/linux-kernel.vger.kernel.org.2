@@ -2,132 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571FD435812
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB47F435814
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 03:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhJUBNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 21:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S231453AbhJUBOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 21:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJUBNX (ORCPT
+        with ESMTP id S229702AbhJUBOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:13:23 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D5AC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 18:11:06 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id b9so4292085ybc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 18:11:06 -0700 (PDT)
+        Wed, 20 Oct 2021 21:14:46 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BD5C06161C;
+        Wed, 20 Oct 2021 18:12:31 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id o133so4437028pfg.7;
+        Wed, 20 Oct 2021 18:12:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=59+7vYZvVeE11Od3F0Lfi0fRFVyktXzOm+nlhxMfCew=;
-        b=UYB4ksJC2CmvyFAuJCYud6lA9hfnrEV6XZHX0QgNcPhyM5FELde1LLAtnhak5w3aW+
-         1cyOIj1hA/EzOuaNHEYcA7BU6v7oP3BWfKwdWEJEDVxCPYR2LslnfUJEh0K++9UjFrWe
-         d585HpM1Zxmf5Ww012naPzNOkB5NvVOv9dmphh4e8hFnqCjVnf5UH2wY95QbSi7xgrL+
-         1M1ck4miCcnCml8A2s0HXVhaE5xDLqv38IVzEdT1m4YESSf7aKuZboeDj1en2ag0l0Cp
-         TFApW+hyLKxGt42UW3f9j8ptkFI53Bxssxk3aaNky5hb8R07Ovls+0agdWqwpjjPlQXV
-         tXOg==
+         :cc;
+        bh=LPzDsdX08NZmDx8Uzcz7akVMOz1kLBz7pqYyuIw+ZW4=;
+        b=RuvKXK5gQBkp+PCNywSjxIbKM3ItZD29IBCojEGxMfH+RWCq+Asjw4L+Dht3I8tJQD
+         4ffSWQu21rkk/ZX1fM70dGBvmT0TtuLwL/+FP7Iu0ddKgxF7KbT+3ZhO3TAYV1iQqHi4
+         +Xmj1+7OViUidvIKQxIB8TCv5Wl9wOo/BAE6wWCZyc6nQvG3Bli7z0ilCBndTG5+z9Tj
+         5XN4mm5WAWyquA3phwZ1Em69xYDRQYzEirqhXJ2ey0ZKXwTvpmM9juDOt9ijSGoCXI++
+         jiToyRxT3tW+FvXo+MLQfQ8GiLGKIPGYZaCZvVWFMw+BKBra2Cc/fB62NUM7UjnKy60M
+         qREA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=59+7vYZvVeE11Od3F0Lfi0fRFVyktXzOm+nlhxMfCew=;
-        b=vz2bqI5mVAuYvN8qK0EcG8ufhMHu6X8Ae/o+WcIr9l2SWpH5CVm+kFCPGJch1vfwwE
-         LsG/MmyJGeCYBDUB3gbjKRMqgKMkEyE5fGDkHefrvOd0ZgwlcLBL/acbLvd07EJ1sY09
-         Aw81boRnxvLMAv3aUcN+Tf4KHet0Xar7Arn6JiIL+fnjdpMzl3J4J7LIFNBQbLMdP/+T
-         2Wq9wMUWZpQj3bKPScohmSvjH0S0q9MO1QCdNAR5gZQTNipWAE+OL7/YB4lEXKXJUPpQ
-         vHyZze8z9SOhOPFjhK22JpC5VLO8DQZhHQeCFSIXeAP/Ck6hDQ000SxEYtVsF42Zz17L
-         0SQw==
-X-Gm-Message-State: AOAM5324PqMU3Z0mrSGOXkCKPjUh8/739+2cQiw5HUEI/UtS5aMUHbUz
-        u4eiMsAhwvnR11B5nYE7ak77cudwSye30OZFbenP4w==
-X-Google-Smtp-Source: ABdhPJzxDOO5cEKor5o0fjq7bAxEaFc4s3TFw7ViyTtVVA5SMg8u9so/4/TXuvCCZ9lJbTbbb6JOiygeOqeyjo+/+As=
-X-Received: by 2002:a25:918e:: with SMTP id w14mr2654210ybl.225.1634778665329;
- Wed, 20 Oct 2021 18:11:05 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=LPzDsdX08NZmDx8Uzcz7akVMOz1kLBz7pqYyuIw+ZW4=;
+        b=UIVg/QRf2alm91+Q1FG65B5ZxhmkmN+kbXvfHbmOOztHfpLLXh/88uyM2P2VjDMHwz
+         Pw2gzdLXNVxa5qK6hBwuBzGDz8UVzPb/BDGg6zaBTJ42o5p0sCUr1EMv7xCOsmk+3HKV
+         JqP7CYg9NQLZQXiEFPBN2c2Ujju7aN6THpFMnL4K2n35QevrG7so8VyVxVJZBOMHg9tS
+         vOiPvxhgVArMGo1EpBAxeWAu2alaF7Xf4drRxTxhQCoQ+h6tVQSlWwWy1VWOuGn00/ui
+         y6dHSQ1V5NwO47d00t8n7gTq+CGwL5CeCWyRht7FU1dhKa+CN6fvfwKMSUpUXhwdf4JH
+         NFNw==
+X-Gm-Message-State: AOAM5334+dY/Gp+71X8u1DGhi8j2kvGcy8c76vqy9GYi0/PE1Gm+i2kL
+        rFsEAdThEUc6gtKaj1wkOmx+qJkcEVsMLCgdmq6gCKfE
+X-Google-Smtp-Source: ABdhPJw3QWWPVYqMXzg8U0HaSTLX5wnUGNnR5b+CuFcas++LD/CZcnho1YhpkuhGKxaFAkLxAcCFpFm9T0Jol+Ebjiw=
+X-Received: by 2002:aa7:9f8f:0:b0:44c:cf63:ec7c with SMTP id
+ z15-20020aa79f8f000000b0044ccf63ec7cmr2146811pfr.77.1634778750690; Wed, 20
+ Oct 2021 18:12:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211020232447.9548-1-jmaxwell37@gmail.com>
-In-Reply-To: <20211020232447.9548-1-jmaxwell37@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 20 Oct 2021 18:10:54 -0700
-Message-ID: <CANn89i+e3n6RveyuOhdfnQdJESdFvjgkgMjXSHCyuTRDB-E8Bw@mail.gmail.com>
-Subject: Re: [net-next] tcp: don't free a FIN sk_buff in tcp_remove_empty_skb()
-To:     Jon Maxwell <jmaxwell37@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
+References: <20211015093318.1273686-1-jackmanb@google.com>
+In-Reply-To: <20211015093318.1273686-1-jackmanb@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 20 Oct 2021 18:12:19 -0700
+Message-ID: <CAADnVQ+VJbbAvEG8c++2K8WgPWOfnPbdHA414nGnqub+PRrhxw@mail.gmail.com>
+Subject: Re: [[PATCH bpf-next]] selftests/bpf: Some more atomic tests
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 4:25 PM Jon Maxwell <jmaxwell37@gmail.com> wrote:
+On Fri, Oct 15, 2021 at 2:33 AM Brendan Jackman <jackmanb@google.com> wrote:
 >
-> A customer reported sockets stuck in the CLOSING state. A Vmcore revealed=
- that
-> the write_queue was not empty as determined by tcp_write_queue_empty() bu=
-t the
-> sk_buff containing the FIN flag had been freed and the socket was zombied=
- in
-> that state. Corresponding pcaps show no FIN from the Linux kernel on the =
-wire.
+> Some new verifier tests that hit some important gaps in the parameter
+> space for atomic ops.
 >
-> Some instrumentation was added to the kernel and it was found that there =
-is a
-> timing window where tcp_sendmsg() can run after tcp_send_fin().
+> There are already exhaustive tests for the JIT part in
+> lib/test_bpf.c, but these exercise the verifier too.
 >
-> tcp_sendmsg() will hit an error, for example:
->
-> 1269 =E2=96=B9       if (sk->sk_err || (sk->sk_shutdown & SEND_SHUTDOWN))=
-=E2=86=A9
-> 1270 =E2=96=B9       =E2=96=B9       goto do_error;=E2=86=A9
->
-> tcp_remove_empty_skb() will then free the FIN sk_buff as "skb->len =3D=3D=
- 0". The
-> TCP socket is now wedged in the FIN-WAIT-1 state because the FIN is never=
- sent.
->
-> If the other side sends a FIN packet the socket will transition to CLOSIN=
-G and
-> remain that way until the system is rebooted.
->
-> Fix this by checking for the FIN flag in the sk_buff and don't free it if=
- that
-> is the case. Testing confirmed that fixed the issue.
->
-> Fixes: fdfc5c8594c2 ("tcp: remove empty skb from write queue in error cas=
-es")
-> Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
-> ---
->  net/ipv4/tcp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> index c2d9830136d2..d2b06d8f0c37 100644
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@ -938,7 +938,7 @@ int tcp_send_mss(struct sock *sk, int *size_goal, int=
- flags)
->   */
->  void tcp_remove_empty_skb(struct sock *sk, struct sk_buff *skb)
->  {
-> -       if (skb && !skb->len) {
-> +       if (skb && !skb->len && !TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)=
- {
->                 tcp_unlink_write_queue(skb, sk);
->                 if (tcp_write_queue_empty(sk))
->                         tcp_chrono_stop(sk, TCP_CHRONO_BUSY);
->
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
-Very nice catch !
-
-The FIN flag is a really special case here.
-
-What we need is to make sure the skb is 'empty' .
-
-What about using a single condition ?
-
-if (skb && TCP_SKB_CB(skb)->seq =3D=3D TCP_SKB_CB(skb)->end_seq)
+Applied and fixed subj.
