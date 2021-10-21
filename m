@@ -2,128 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A114366C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628FD4366C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhJUPwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:52:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33888 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230280AbhJUPwg (ORCPT
+        id S231388AbhJUPyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230000AbhJUPyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:52:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634831420;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wGNuVhi5Wfv6Y5HCVEAnOz4vrOFq78Ll27lC1Wx8arY=;
-        b=gAn1elUnWB0y2YXFk+ZQQZEmG0R1Jvb5GkAKkkXPBqDWlrtdHmmXk9wzPDXkAhJTt5yY2Q
-        DOofvb4nUk2jNK80ASi7FgTOkh5j41j4MXxK/uk7fVMsONSCp0n5W2I6MufmpVH+QgRzue
-        AbGo7B9hwJL2xiE+x26443PDQGc0+x8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-rM6t4gPKMfCqMzDSWlvLyA-1; Thu, 21 Oct 2021 11:50:19 -0400
-X-MC-Unique: rM6t4gPKMfCqMzDSWlvLyA-1
-Received: by mail-wm1-f69.google.com with SMTP id c5-20020a05600c0ac500b0030dba7cafc9so47290wmr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:50:18 -0700 (PDT)
+        Thu, 21 Oct 2021 11:54:23 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728F3C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:52:07 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id u5so659178ljo.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6BUvP8gOAW+gS53kPlxXdoNqtgg1DkSCa22z70BSxnQ=;
+        b=I+iTjOWqkYhJVtzXfdMre6FfEyLSuXDaBYozZfIYBSH3kMhaYGXWYtjtP1B7gapJQL
+         vSzII4lgrHaC51FeaRLzfkB40M/OPld6+xCnfZxzoxcuyKaBxVsn03kuLknslzaSV2nI
+         n+9I+zXONhFUpoSFeDxADY8QDCwla7TwhTZapL8AHuiV9HTCphiqdp2tBhcV6QICh/Jf
+         kvd6doqB/uH0pjdmQveYZcGR2rUK1FVDU2lGBw+DF3qrtZDhK7x0dd4+G9Kgl8TUm1px
+         RE66xJ04SNvoU2Ywy5mjN31sfOzlUIqMcNCeDaQW6jmW6Bu7Hs+LERiUmc4BYS05V6Wy
+         8ASw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=wGNuVhi5Wfv6Y5HCVEAnOz4vrOFq78Ll27lC1Wx8arY=;
-        b=rAo9HqpXUNEMjz8dWzZMwMSVb5CW6X5OoewPwMsKMHnMtk2aXxe/1ENT2WoQ3okXva
-         IjyIhZvNw/FiyL9Ht64S93xEw2lcUHANQH48HTL3COB6UTUE2/427i9qtpAXJc47t63N
-         i8hcpYBoHLlv+lg4C9SWY8Xg9owU97TVfOC9sGi1iQJBg2GWlYASVOmu9r2gwjDmPSGo
-         mLpwWlqKwiyy4XBzNYHIntlKl4jzbvDS23EY3PXBCFQnPVCEOAvBk1g8VAZ4FhLCyLVx
-         HCrdxFZazn3YVWgQ+SEEyErTqgKsewXdBRnwO2gqCZODCxH97J3y3th0Y82UZoPbR9hP
-         gFKg==
-X-Gm-Message-State: AOAM5314xqSE3inGUpOdIX+cbOyk83nEmB1p03FEYglPqZB5O/X72U9T
-        3doyGNohIc4ApF42u9ObE+DYJOd0nZhrn1LQOarM4V7EQigMMzm2qOhFGE/c7AIfUiDJ38/lm5q
-        pabor2MdULbVsqFoTuzYg4+b+
-X-Received: by 2002:adf:bb08:: with SMTP id r8mr8428735wrg.247.1634831417841;
-        Thu, 21 Oct 2021 08:50:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgRmpVw7GQoX5QS0ErkShGxQ4LBQKq9b//e8IAFwGPYgHiV4rJyKGUD+AIXN67lgBoTTfX1A==
-X-Received: by 2002:adf:bb08:: with SMTP id r8mr8428696wrg.247.1634831417574;
-        Thu, 21 Oct 2021 08:50:17 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23aba.dip0.t-ipconnect.de. [79.242.58.186])
-        by smtp.gmail.com with ESMTPSA id r17sm6082878wmq.47.2021.10.21.08.50.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 08:50:17 -0700 (PDT)
-Message-ID: <f0c1baad-b003-9a8e-48b4-14e7e5a1c4c6@redhat.com>
-Date:   Thu, 21 Oct 2021 17:50:15 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6BUvP8gOAW+gS53kPlxXdoNqtgg1DkSCa22z70BSxnQ=;
+        b=vHAQP2OgGGqNgovCBqdqzX/QLgIiLe+u0Inm++u01se83kmvoBOSY5SrZ41qD/D+NZ
+         lVHCIat172ZG2DDQNLlU3rGJTjSVIqnoFaM3uor50gXcEHDDiTn7RhXBZI4My7xWNk3N
+         KVvUEDddhGBCTLdQImAbTD6RK1RHXPXLEjicTmNgfDsi/xg5B5mW0URZ0J1/D8lv4aeo
+         0irFlLsYG8wMUmeO6bCACOHSN5HRkXjjaq4vfRONrrFjzSG2xUIrgLAhwyo/U67+zTSx
+         4JU5jW+NHmRd7Hy0mdbSQuoYUff1mUGdft61KwETwRq7gabSpuyYnjldTYqk62v0PoU9
+         TU9g==
+X-Gm-Message-State: AOAM5338/6uJWPxq69fqNClIX3co6nfka910N49wNO1MctpcVNPAH/LK
+        azvFR7LmnplGB0muU4APZ2LJBy0nLpClYnIJo7U=
+X-Google-Smtp-Source: ABdhPJyLor5rGZ8iutyKqzvNE2yY0NApkvP4xs4TvwXArYQ74T7MBfpak0JbbNDZfbpVAqD3HdcrvftDC3I1Kd1uXOw=
+X-Received: by 2002:a2e:9857:: with SMTP id e23mr6795532ljj.132.1634831525715;
+ Thu, 21 Oct 2021 08:52:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] mm/secretmem: Avoid letting secretmem_users drop to zero
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Jordy Zomer <jordy@pwning.systems>, linux-mm@kvack.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20211021154046.880251-1-keescook@chromium.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211021154046.880251-1-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211006174910.2964885-1-daeho43@gmail.com> <5743eeca-a6e8-87d4-5799-c622fbada429@kernel.org>
+ <CACOAw_zfDZMB4pLEuHWU5YcKnAtfBBTSuXwXy+L2rNJxXC3ysg@mail.gmail.com>
+ <16840026-35ba-cce6-4e0b-3332b0902d2a@kernel.org> <CACOAw_xW7MZi8BVi-2Zo-=LruZr6k7fC7huYiYuWyaDDDti6WA@mail.gmail.com>
+ <02abeeba-c359-cae3-4759-ee2087f21cc9@kernel.org>
+In-Reply-To: <02abeeba-c359-cae3-4759-ee2087f21cc9@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Thu, 21 Oct 2021 08:51:54 -0700
+Message-ID: <CACOAw_xh2HSQDjb_tGopvssipDJYnpi4O1X5_eJqSOLpLebqsw@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: include non-compressed blocks in compr_written_block
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.10.21 17:40, Kees Cook wrote:
-> Quoting Dmitry: "refcount_inc() needs to be done before fd_install().
-> After fd_install() finishes, the fd can be used by userspace and we can
-> have secret data in memory before the refcount_inc().
-> 
-> A straightforward mis-use where a user will predict the returned fd
-> in another thread before the syscall returns and will use it to store
-> secret data is somewhat dubious because such a user just shoots themself
-> in the foot.
-> 
-> But a more interesting mis-use would be to close the predicted fd and
-> decrement the refcount before the corresponding refcount_inc, this way
-> one can briefly drop the refcount to zero while there are other users
-> of secretmem."
-> 
-> Move fd_install() after refcount_inc().
-> 
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Jordy Zomer <jordy@pwning.systems>
-> Cc: linux-mm@kvack.org
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Link: https://lore.kernel.org/lkml/CACT4Y+b1sW6-Hkn8HQYw_SsT7X3tp-CJNh2ci0wG3ZnQz9jjig@mail.gmail.com
-> Fixes: 9a436f8ff631 ("PM: hibernate: disable when there are active secretmem users")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  mm/secretmem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index 1fea68b8d5a6..924d84ba481f 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -217,8 +217,8 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
->  
->  	file->f_flags |= O_LARGEFILE;
->  
-> -	fd_install(fd, file);
->  	refcount_inc(&secretmem_users);
-> +	fd_install(fd, file);
->  	return fd;
->  
->  err_put_fd:
-> 
+> Okay, shouldn't we Cc stable mailing list for this patch? otherwise
+> userspace tool may get different stat number with the same compressed
+> file in different kernel?
+>
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Oh, could you let me know what the address of the "stable" mailing list is?
 
--- 
 Thanks,
-
-David / dhildenb
-
