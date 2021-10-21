@@ -2,120 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DD1436C44
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 22:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2721436CC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 23:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbhJUUhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 16:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhJUUhc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 16:37:32 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDD8C061243
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:35:16 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id p142so2702643iod.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 13:35:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Wg0Jus9TL4rCInXKPmpU7yOccL+OmPZ9RnN1FPY/86c=;
-        b=akrkvWstL+3WOecYTO0PLNiiDc0WcMR8iMjDJN29uVq6E7oe5C07mh6zjJq8DsaaUh
-         7ysysm8AJ978/Upa9Ap1QP7OMZECXUUuffq4VEXB8nEOHpVx4cIOialsQo4mAiikBXyc
-         HpqxRb9EMBOT+q2fVDVEHkLwDk0qrrGI324DY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Wg0Jus9TL4rCInXKPmpU7yOccL+OmPZ9RnN1FPY/86c=;
-        b=pm1OKnsZThKqpRPhS/Os0zMfBl6rAsjCOVpRerqRrve50eXlmXBIKmgODMzpF5uZLj
-         xM1qpaagpDNydQAf9FC3uq0ucNZ840QWMPMDb4nA4S0IArLQtVLjtWlmfHzblTYxi003
-         v4gIBnnlcfoDzW9RUZyPa5ZtMaul6NlimORMik7x/tT3IOi/CzlZAfshkDgJ37fhgtMn
-         urE2hslafaSdwjhABglQ4cK7xQMu6SoTn+C0Ny5TDVHjuQcOK5O7pAl59kGSQZNOaLZk
-         qo6ovizW6QTvvfUIdqNnQfl6/ydStvW+yPVTWIU7mJqjNmNDI8fyy3mf3xN6jjZ61tdG
-         Le5w==
-X-Gm-Message-State: AOAM530C+RC/Ho6oZrl/uinUJNPkhFp2GegWm6TF/skfrXLEiKp6d7BP
-        84Fbzk2MiSpLkuDZGaSKHCQn7lZFaPXRQw==
-X-Google-Smtp-Source: ABdhPJxUpkvVKJYdnJ8nWqoBfp2mW3VqpjVlNca8iPS3DV7G82q7NyyNf02/PAqc1mnDNnnBbp4A5Q==
-X-Received: by 2002:a5d:9d82:: with SMTP id ay2mr5527961iob.128.1634848515695;
-        Thu, 21 Oct 2021 13:35:15 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id e11sm829754ils.34.2021.10.21.13.35.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 13:35:15 -0700 (PDT)
-Subject: Re: [PATCH 1/2] dt-bindings: net: qcom,ipa: describe IPA v4.5
- interconnects
-To:     David Heidelberg <david@ixit.cz>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Alex Elder <elder@kernel.org>
-Cc:     ~okias/devicetree@lists.sr.ht, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211020225435.274628-1-david@ixit.cz>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <05b2cc69-d8a4-750d-d98d-db8580546a15@ieee.org>
-Date:   Thu, 21 Oct 2021 15:35:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232187AbhJUVhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 17:37:15 -0400
+Received: from mail-dm6nam10on2086.outbound.protection.outlook.com ([40.107.93.86]:51329
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230340AbhJUVhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 17:37:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dfTqnm+TQkFYZubWykU4rNbJgmYMFZEc50F0mYBo245e4QjNt9q+W0AYMoyAzEjy25iGiw82c8XTFFcG2w39gL7DQsX4jx0mJuhKIPkTbGHSJplxEnQp3U33pZY3vx6ufyAF/cGVYxUgto0spuyBBEkX41G6OM+A0tDOeiAc6GjwdXviUaCOKzq7kJHvc++0p+ZXRxczseJSCxBu8Y7PbX6cZM51eTShrTsx2YdKIvYIhU0KlXPl221Rh5vtdUOAg4OYtRbA+0BDAVTEIHtxWzNF5DtZ5N6vYkeduNRsfBfxKjxqYGOmiCJfP+P/a8SZpengzLd1LTULdffeOwMBmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rQSWunhr+oMpucU0bq+d8M5GXwsurEZDvlo4o1xDboU=;
+ b=UmhsjGhh34c4aFurVstO9cQzDjVbt3TgMMDEAF+vu0iu1XQv6nUAeac5Nv+USu92DtWumeZsEzdA7k+tN7Vbjj/MbV2bW6n+AIw9MngFZk8ekMBzc1RJA3/s2DU2fIFz9SLfO/W++8Mb0bmZsah+72gutzorRfSPo8tmvXuRcjIM0JIq0YhNFqia4e+ccbZOXoWgjVz8tXxNDjsbmuQtjvxie7MQmerJ6K66MzegpXkCIraHZKv4mB70z2UtZA4VSv+EvtzAirezT9HrMYx5SQBhXTXFxAFCSoPPEkyXSD+gf7oA/5+HtjnCIHSuECU64jQvl62VohYmKyiXT0iJuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rQSWunhr+oMpucU0bq+d8M5GXwsurEZDvlo4o1xDboU=;
+ b=YiqAtn8KYP8/GGn+xAzo4rKSPO2hQeu6qg33uzD/KYlO4+DkGiAyfbI3KF+SDKnmRPzYvPdfQgSSyVb7SzWRU6/qcv+jl1JSMFS7zgxpDrV+zSsHec/vBEXH5fsL845nMXyGMVSRdrXWK96w5eg8o2Kid1v6ZqxIQgP9NS261xA=
+Received: from MW4PR03CA0257.namprd03.prod.outlook.com (2603:10b6:303:b4::22)
+ by BN6PR12MB1939.namprd12.prod.outlook.com (2603:10b6:404:107::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Thu, 21 Oct
+ 2021 21:34:51 +0000
+Received: from CO1NAM11FT022.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b4:cafe::41) by MW4PR03CA0257.outlook.office365.com
+ (2603:10b6:303:b4::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend
+ Transport; Thu, 21 Oct 2021 21:34:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT022.mail.protection.outlook.com (10.13.175.199) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 21:34:49 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 21 Oct
+ 2021 16:34:47 -0500
+Date:   Thu, 21 Oct 2021 15:41:49 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Brijesh Singh <brijesh.singh@amd.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>,
+        <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        <tony.luck@intel.com>, <marcorr@google.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <20211021204149.pof2exhwkzy2zqrg@amd.com>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+ <YXF+WjMHW/dd0Wb6@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20211020225435.274628-1-david@ixit.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YXF+WjMHW/dd0Wb6@zn.tnic>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b8b9ee77-f2f0-41d5-6b13-08d994da9c1c
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1939:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB193918634C445E8CCBC1DDC095BF9@BN6PR12MB1939.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gpMVGqPRcDJEHa2Okm7+Wc5EQr5Kf/j/SldppDnQ4UcTgxifNW/RavGo4wMz4JOhP0I+OWJMCp2TQgJgaydtPOc+0Ueb7XtugTawJ752sKlFckIzY0cHDa6FXbQ1RySJrTfQ7mpBkUJOSBIyp2G9QQORIs2r4wLa3qnA3gXtduzj1iNSDzhUNqsHzdTxazJUv1z3onTnot94iYHtyVeGaQW+fip34xuvhyCcPj2CzW1cJ5mo+7sPhVZSgU9QTyIT2TYUlxVOoCP9jvS7Njg4yGfggs1dyS+mrpwflK3Sgs4mooZdg7LDFD3Yybhcm1jzzRfw+1/SwjZDcJjr/PFFvD9lR63hneK+VHmYekuGQL+CjqswB3t2UnHBtbbhoho1gx+1y3dn2gCh5XBqFulZiBwV1kiNPzOwkNTTAwRx/HX40bKu1bAo5kjqrX8Z76Qmfw46qBjY/9QGD9mdVHSEBXclwA5ydoCvowxk7r64BlSH7FPIAtJ0TG13RxovtHj/cVcQGlWCNny6RfT4KS+HrZcRMtLLY4SZLhYmG2TaDfGnH+PLROd8PPXJfMBfmtUWTFATmSfRINuf5SW29VrumDZ3sn93QObfNN1Xh7cvnIjpFSTOyHU5kfhQRWJ3qy6y0Uf5dGR7JS79uMHIYnv9RVjVIocdDhXdPs1Js3HETok/ySNPQlf4WLP3Vl1Xr9V2O0v6PX77Ns25lf+6JQW3luLgztJG3YHpFEvRzpH1vfWO4ok2zccHEZkBXynvNRgk7h0LEaf8X9T/OlntXhJXqX+sEUtvGta6mn3sfRgIItjitNcLXV6LoA5qDsQQC368
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(70586007)(70206006)(16526019)(47076005)(82310400003)(508600001)(4326008)(186003)(8676002)(426003)(36860700001)(6916009)(1076003)(86362001)(356005)(26005)(44832011)(8936002)(336012)(54906003)(966005)(2906002)(83380400001)(36756003)(316002)(2616005)(7416002)(5660300002)(45080400002)(7406005)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 21:34:49.0886
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8b9ee77-f2f0-41d5-6b13-08d994da9c1c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT022.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1939
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/21 5:54 PM, David Heidelberg wrote:
-> IPA v4.5 interconnects was missing from dt-schema, which was trigering
-> warnings while validation.
+On Thu, Oct 21, 2021 at 04:51:06PM +0200, Borislav Petkov wrote:
+> On Wed, Oct 20, 2021 at 11:10:23AM -0500, Michael Roth wrote:
+> > The CPUID calls in snp_cpuid_init() weren't added specifically to induce
+> > the #VC-based SEV MSR read, they were added only because I thought the
+> > gist of your earlier suggestions were to do more validation against the
+> > CPUID table advertised by EFI
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
+> Well, if EFI is providing us with the CPUID table, who verified it? The
+> attestation process? Is it signed with the AMD platform key?
 
-Can you please tell me a command to use to trigger
-the warnings you are seeing?  I don't see an error
-when building "dtbs" or doing "dt_binding_check".
+For CPUID table pages, the only thing that's assured/attested to by firmware
+is that:
 
-Thanks.
+ 1) it is present at the expected guest physical address (that address
+    is generally baked into the EFI firmware, which *is* attested to)
+ 2) its contents have been validated by the PSP against the current host
+    CPUID capabilities as defined by the AMD PPR (Publication #55898),
+    Section 2.1.5.3, "CPUID Policy Enforcement"
+ 3) it is encrypted with the guest key
+ 4) it is in a validated state at launch
 
-					-Alex
+The actual contents of the CPUID table are *not* attested to, so in theory
+it can still be manipulated by a malicious hypervisor as part of the initial
+SNP_LAUNCH_UPDATE firmware commands that provides the initial plain-text
+encoding of the CPUID table that is provided to the PSP via
+SNP_LAUNCH_UPDATE. It's also not signed in any way (apparently there were
+some security reasons for that decision, though I don't know the full
+details).
 
-> ---
->   Documentation/devicetree/bindings/net/qcom,ipa.yaml | 10 ++++++++++
->   1 file changed, 10 insertions(+)
+[A guest owner can still validate their CPUID values against known good
+ones as part of their attestation flow, but that is not part of the
+attestation report as reported by SNP firmware. (So long as there is some
+care taken to ensure the source of the CPUID values visible to
+userspace/guest attestion process are the same as what was used by the boot
+stack: i.e. EFI/bootloader/kernel all use the CPUID page at that same
+initial address, or in cases where a copy is used, that copy is placed in
+encrypted/private/validated guest memory so it can't be tampered with during
+boot.]
+
+So, while it's more difficult to do, and the scope of influence is reduced,
+there are still some games that can be played to mess with boot via
+manipulation of the initial CPUID table values, so long as they are within
+the constraints set by the CPUID enforcement policy defined in the PPR.
+
+Unfortunately, the presence of the SEV/SEV-ES/SEV-SNP bits in 0x8000001F,
+EAX, are not enforced by PSP. The only thing enforced there is that the
+hypervisor cannot advertise bits that aren't supported by hardware. So
+no matter how much the boot stack is trusted, the CPUID table does not
+inherit that trust, and even values that we *know* should be true should be
+verified rather than assumed.
+
+But I think there are a couple approaches for verifying this is an SNP
+guest that are robust against this sort of scenario. You've touched on
+some of them in your other replies, so I'll respond there.
+
 > 
-> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> index b8a0b392b24e..a2835ed52076 100644
-> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> @@ -95,6 +95,11 @@ properties:
->             - description: Path leading to system memory
->             - description: Path leading to internal memory
->             - description: Path between the AP and IPA config space
-> +      - items: # IPA v4.5
-> +          - description: Path leading to system memory region A
-> +          - description: Path leading to system memory region B
-> +          - description: Path leading to internal memory
-> +          - description: Path between the AP and IPA config space
->   
->     interconnect-names:
->       oneOf:
-> @@ -105,6 +110,11 @@ properties:
->             - const: memory
->             - const: imem
->             - const: config
-> +      - items: # IPA v4.5
-> +          - const: memory-a
-> +          - const: memory-b
-> +          - const: imem
-> +          - const: config
->   
->     qcom,smem-states:
->       $ref: /schemas/types.yaml#/definitions/phandle-array
+> Because if we can verify the firmware is ok, then we can trust the CPUID
+> page, right?
 > 
-
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7CMichael.Roth%40amd.com%7C155dd6f54f3e4de017a908d994a236a5%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637704246794699901%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=U%2BS%2B%2F8%2BX8zLvPQGWvsOb7o6sKBz1MOZqU%2BVLKHiwugY%3D&amp;reserved=0
