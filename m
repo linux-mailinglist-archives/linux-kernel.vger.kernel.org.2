@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6E3436E76
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5DF436E7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhJUXp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJUXp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:45:28 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F28C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:43:11 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id o17so3031506ybq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 16:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iItbf96vJqUXBAPNWl/S+u6NWGXbFnqP3nMjz13MqBo=;
-        b=TFl4VR+n/Tz2N//3hY0nsO9nfx6KQXwngK5dVh8zYiQrFuwtAtD1xgWfiNqrn4Shvw
-         1JUxPOVPbUcuwvhE1OI3HYqKqDLWxoQ1WSOGRdSJw1F8LhaxoEnmEA+oqoS/AmHvrH6z
-         UNtKwsU9qRjI38BVq4xkPUsYU/9KeW+o0BzqdsD8AQjEsK8O3Q2ywuMzIV1hvf2knjMr
-         V8uyr6rzS0w+sPLRG7eZhp3iBxqsIoVIi/FKzGhcpn9YgjJwPZbRNb3qsN7A3rgwBUnw
-         cIaAwWRZZyQIjjsE4+HrK93XFrVxGV0Jog7RENlVKKDwUQGYLm7/Ii/LdwTFhq4eO2X6
-         H7zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iItbf96vJqUXBAPNWl/S+u6NWGXbFnqP3nMjz13MqBo=;
-        b=u97jiLAjIzFX7mgZuTGOslEloDpkbqZii491AQZTfwsg4atx/ewyXr4y8mIiTRaUEM
-         HMZha0wWAcwo7Fa/WfErMmx539MWaJZVg4LtDWiD89wAoWePG+GEd5Rt8tvW8qPo0F6p
-         uA9J9PJ2LiRbZ+sQ4Q62XUrzxqmxnrVvUKIvbLO3yz6p66CGP0HdNDrSQPTdhWm8ndrj
-         IO1BBR44+v4JaPzG3EuarfR9MzczYTHu08Xahq8tphZcXxLp8Mk972+aXwrDB7NIZOUi
-         H37cYG+ivsUxFueJxuTvsuxM1xAQKrfw0l6VL1RztJF+Fdqa0Ii19yQJI6WKx3OMxQnK
-         GEzQ==
-X-Gm-Message-State: AOAM5330b/XdSmi0QJzza7kG26zgKC1sPqpOLeI+0SgDWPvpo1ut4KhQ
-        hzpgstWVNc2Q07oIRU8yA1v52C7rykfi/3ScFUFX2w==
-X-Google-Smtp-Source: ABdhPJzJ2cbj29jDZQ6TyMNq0vcXWUvo5fXcSmk7cGTR2WSWJkF3T2lRwKoKyVFtQHaqRmOMZh+qPbZkggFCxWwOuBw=
-X-Received: by 2002:a25:c696:: with SMTP id k144mr8911382ybf.296.1634859790611;
- Thu, 21 Oct 2021 16:43:10 -0700 (PDT)
+        id S232290AbhJUXpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:45:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhJUXpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 19:45:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7B706120C;
+        Thu, 21 Oct 2021 23:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634859814;
+        bh=LE+sfzEXJlFl8jCsBBJvLQfsmo8JPatvzUNz5xSZVrk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=TgMVshk590paFQtbeK7zsyr4l/2uZp8+iGE+Is7GOaqOs2fjIWdb1db0zUOZCD1D/
+         qSIki3hnjNZxvH7hMUKP6OCN5hbiVGAv2XjSk4Vu4n2Brz1rBVrshn8bHukAQnfRRv
+         anWSmxVujkZB4+3Vgc3zvaFf1bGC7CzMWQKe6CW34pKn5QSZJPQUjgeysNPUEJswMd
+         t7htnv6dWAlApcY9+r9kUWKJKLIl3BAtQDDX9NUsRBx84qp+9TOpGx1yTzQZkj0kpU
+         RPr0UXaSlLtDfKfBNDv1hq7rgvpN1ibPs6YRxvIs06BNymtP6Gi5hn9pZzMvTMTSzN
+         l5WRtdh7ClJ1A==
+Message-ID: <d70b28fb4392ac1aafb1b21d1b8da061be16104c.camel@kernel.org>
+Subject: Re: [PATCH 00/67] fscache: Rewrite index API and management system
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Steve French <smfrench@gmail.com>,
+        Omar Sandoval <osandov@osandov.com>
+Cc:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-afs@lists.infradead.org,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        v9fs-developer@lists.sourceforge.net,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Steve French <sfrench@samba.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 21 Oct 2021 19:43:30 -0400
+In-Reply-To: <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com>
+References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
+         <YXHntB2O0ACr0pbz@relinquished.localdomain>
+         <CAH2r5msO7-QCXv6JQj2Tado9ZoWAHRkgq6-En18PeKSXFDdBLw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-3-saravanak@google.com>
- <CAMi1Hd0HvPOT277mx8hNTU9NQH2ti7h5qc5+rxOkRWwbfrhyQQ@mail.gmail.com>
-In-Reply-To: <CAMi1Hd0HvPOT277mx8hNTU9NQH2ti7h5qc5+rxOkRWwbfrhyQQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 21 Oct 2021 16:42:34 -0700
-Message-ID: <CAGETcx_YZOd05Gg53ZR8mfVhFUzwQWo4MrrWF8JHF_DCwEtunw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] drivers: bus: Delete CONFIG_SIMPLE_PM_BUS
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-arm-kernel@lists.infradead.org,
-        lkml <linux-kernel@vger.kernel.org>, linux-oxnas@groups.io,
-        linux-renesas-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        John Stultz <john.stultz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 4:21 AM Amit Pundir <amit.pundir@linaro.org> wrote:
->
-> Hi Saravana,
->
-> This patch broke v5.15-rc6 on RB5 (sm8250 | qcom/qrb5165-rb5.dts).
-> I can't boot past this point https://www.irccloud.com/pastebin/raw/Nv6ZwHmW.
+On Thu, 2021-10-21 at 18:15 -0500, Steve French wrote:
+> On Thu, Oct 21, 2021 at 5:21 PM Omar Sandoval <osandov@osandov.com> wrote:
+> > 
+> > On Mon, Oct 18, 2021 at 03:50:15PM +0100, David Howells wrote:
+> > However, with the advent of the tmpfile capacity in the VFS, an opportunity
+> > arises to do invalidation much more easily, without having to wait for I/O
+> > that's actually in progress: Cachefiles can simply cut over its file
+> > pointer for the backing object attached to a cookie and abandon the
+> > in-progress I/O, dismissing it upon completion.
+> 
+> Have changes been made to O_TMPFILE?  It is problematic for network filesystems
+> because it is not an atomic operation, and would be great if it were possible
+> to create a tmpfile and open it atomically (at the file system level).
+> 
+> Currently it results in creating a tmpfile (which results in
+> opencreate then close)
+> immediately followed by reopening the tmpfile which is somewhat counter to
+> the whole idea of a tmpfile (ie that it is deleted when closed) since
+> the syscall results
+> in two opens ie open(create)/close/open/close
+> 
+> 
 
-Amit top posting? How did that happen? :)
+In this case, O_TMPFILE is being used on the cachefiles backing store,
+and that usually isn't deployed on a netfs. That said, Steve does have a
+good point...
 
-The fact you are seeing this issue is super strange though. The driver
-literally does nothing other than allowing some sync_state() callbacks
-to happen. I also grepped for the occurence of "simple-bus" in
-arch/arm64/boot/dts/qcom/ and the only instance for 8250 is for the
-soc node.
+What happens if you do end up without O_TMPFILE support on the backing
+store? Probably just opting to not cache in that case is fine. Does
+cachefiles just shut down in that situation?
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-The only thing I can think of is that without my patch some
-sync_state() callbacks weren't getting called and maybe it was masking
-some other issue.
-
-Can you try to boot with this log (see log patch below) and see if the
-device hangs right after a sync_state() callback? Also, looking at the
-different sync_state() implementations in upstream, I'm guessing one
-of the devices isn't voting for interconnect bandwidth when it should
-have.
-
-Another thing you could do is boot without the simple-bus changes and
-then look for all instances of "state_synced" in /sys/devices and then
-see if any of them has the value "0" after boot up is complete.
-
--Saravana
-
--- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1099,6 +1099,7 @@ static void device_links_flush_sync_list(struct
-list_head *list,
-                if (dev != dont_lock_dev)
-                        device_lock(dev);
-
-+               dev_info(dev, "Calling sync_state()\n");
-                if (dev->bus->sync_state)
-                        dev->bus->sync_state(dev);
-                else if (dev->driver && dev->driver->sync_state)
