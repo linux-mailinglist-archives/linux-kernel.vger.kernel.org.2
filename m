@@ -2,113 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E525F4366BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BA14366BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhJUPv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
+        id S231596AbhJUPwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhJUPvX (ORCPT
+        with ESMTP id S230000AbhJUPwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:51:23 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60C9C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:49:07 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so973252ott.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:49:07 -0700 (PDT)
+        Thu, 21 Oct 2021 11:52:04 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC1FC061764
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:49:48 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id g184so695040pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:49:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g1iz+y2dgT4TyThdM3O09sVwf0lSDECVVm+U/8Y6eTE=;
-        b=jiZK/wFzK96ej7OXvoXKuDbR9LrNxtZ0F86w5NqUywmSjSFdxHqliBrYwFEWbvXvBR
-         OGk5w62oA27aoXI2675nUOy5DmnL2kvxzJOdDaWir0VN1IEBemEZED1hVfNZsK5wLOFC
-         nYGUlxGr6jmsH386aiQCvvvIXT3Zmm2elb29BuwHhPUBmg26tTuNGVW12yujTTci35IZ
-         XuywA4T9UEo3+Ng5N5gEgcdv6uT6KJcHMCD7yDsietoJK/GAc56utQssoQo4Oy5bDMUN
-         TjokMSHKrhs0wEO2zVNW7G2u9n8Z98J+HAM7mk7D3y1zrzvDZAO6cpssdE3VIabva/D3
-         r3Tw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B1/Vs59OV/rlWJ6WA3d6EaWlhOZ3vZvbO+vUp8p6+uU=;
+        b=ZbrLEWc8XCHfsf9wt1aDQHxFzTJ8rEsxaTYPDKBbrRupbVWpHtTCPlV/ZHjauRl9rY
+         qqkbRN9u2kl4MJlEwsbw0rYEHrGvH+9pp2aqwMMD7r6fnoNhZFk1foo8lO7382V3WVGC
+         0FbbFl888tBrxihLXPYLfXAufTVIgRjw+nugY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g1iz+y2dgT4TyThdM3O09sVwf0lSDECVVm+U/8Y6eTE=;
-        b=A2mD6SONfmnNqHyON0XatT2njlDTlNjU2SDr3rFaFoyDfeRui9kRi7a24k3NUhULQi
-         qOijIULFz7ZVbEVw9xHjF+gH+E/Ru3eRekrInMbwok3DRJevHR6d6KHjNL85XKkKdS3s
-         6u9XqPNaoeBMJbkaTqJwwKdO1sxOIvx6wMcb7Kkfs6eyWRBc4iqOTjNwI+7c5hOFsQ3I
-         nvBoDBLOO51rdOuxwuXRERJYiO1g54my6taAJT24h2ZT/Br35Pry6/A7htKX+ofjzTSz
-         P2RNtA6hG/LiUQnne/DBdy2xqiLvkXo6e8TdRnbOdxkQFDOHQ96rJ12CMX7xknjHVM6X
-         JdGw==
-X-Gm-Message-State: AOAM530F1JbA5NPPvMyLGvl9ve8A9k2S62pRo8jxILLpqqyig7ZiAjk3
-        Qb2EEMliJJst93Gli/ZLwjwX3gi4TKe3SFZ6qmk4kw==
-X-Google-Smtp-Source: ABdhPJzlHe8TmehB9EEpiwMyaSxAhGtHJlvCjHGlEUUQSwcnY0Ws2wHLbz53bzBtkpVStYOopOQfS/KLWNBMHCQQZ1I=
-X-Received: by 2002:a9d:3c3:: with SMTP id f61mr5244045otf.196.1634831347026;
- Thu, 21 Oct 2021 08:49:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B1/Vs59OV/rlWJ6WA3d6EaWlhOZ3vZvbO+vUp8p6+uU=;
+        b=Yy7YmGZsDHNaPaeHVMm+htn1qGeMtj0JErSubahoSyUk9FqqZHNe63aVRvhdPbGLck
+         hskJSO+ONknjMV0iGaIuSJ3LO4VaZJ8meNUAATmCHRQimEw9cb4fDUX/vd4mzqJcMqii
+         TWenSXmPaxS3aw3HtH7un4Lia2bpa/hZC5QvCJSXAxgzqPtaDRHhNVe+M/QHGT13Ik9+
+         XJ2uxvPfpA4MChjsPAs+tyL3NbE7d2uTmCMbCqsDx28Y49oD5D+s3wtd1/zas0sDXlJF
+         Llz7cutuaLhKwSz69hpnVhWpKj1jQtL3g3vFQ7Y/oBN5zvG239owOXCfmHh71eBdGeoF
+         +jRg==
+X-Gm-Message-State: AOAM530IBksFTkqqc6oC1aAvlkj/NGwZx5zs75AjdiiqHo2yeCZ2Rgpm
+        oGV5kgaZSlpyKCDUphd29+4P0g==
+X-Google-Smtp-Source: ABdhPJw+9J2A0sNBhnV+GqqNjnX5G4VuuTqU8s7+dkEe3eTfgQVYMCUKYcJCcnwHJb/H4t3RMrJRHQ==
+X-Received: by 2002:a62:1596:0:b0:44c:f7b3:df74 with SMTP id 144-20020a621596000000b0044cf7b3df74mr6803173pfv.60.1634831387812;
+        Thu, 21 Oct 2021 08:49:47 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z12sm9595637pjh.51.2021.10.21.08.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:49:47 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 08:49:46 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFCv1 4/4] perf: arm_spe: Dynamically switch PID tracing to
+ contextidr
+Message-ID: <202110210848.35971643C6@keescook>
+References: <20211021134530.206216-1-leo.yan@linaro.org>
+ <20211021134530.206216-5-leo.yan@linaro.org>
 MIME-Version: 1.0
-References: <20211021154046.880251-1-keescook@chromium.org>
-In-Reply-To: <20211021154046.880251-1-keescook@chromium.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 21 Oct 2021 17:48:55 +0200
-Message-ID: <CACT4Y+YxOynnn1DPUe_7HE_Dc+302YnhnO0a8awqG0rSV9-JMw@mail.gmail.com>
-Subject: Re: [PATCH] mm/secretmem: Avoid letting secretmem_users drop to zero
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Jordy Zomer <jordy@pwning.systems>, linux-mm@kvack.org,
-        James Bottomley <james.bottomley@hansenpartnership.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021134530.206216-5-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 at 17:40, Kees Cook <keescook@chromium.org> wrote:
->
-> Quoting Dmitry: "refcount_inc() needs to be done before fd_install().
-> After fd_install() finishes, the fd can be used by userspace and we can
-> have secret data in memory before the refcount_inc().
->
-> A straightforward mis-use where a user will predict the returned fd
-> in another thread before the syscall returns and will use it to store
-> secret data is somewhat dubious because such a user just shoots themself
-> in the foot.
->
-> But a more interesting mis-use would be to close the predicted fd and
-> decrement the refcount before the corresponding refcount_inc, this way
-> one can briefly drop the refcount to zero while there are other users
-> of secretmem."
->
-> Move fd_install() after refcount_inc().
->
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Jordy Zomer <jordy@pwning.systems>
-> Cc: linux-mm@kvack.org
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Link: https://lore.kernel.org/lkml/CACT4Y+b1sW6-Hkn8HQYw_SsT7X3tp-CJNh2ci0wG3ZnQz9jjig@mail.gmail.com
-> Fixes: 9a436f8ff631 ("PM: hibernate: disable when there are active secretmem users")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Thu, Oct 21, 2021 at 09:45:30PM +0800, Leo Yan wrote:
+> Now Arm64 provides API for enabling and disable PID tracing, Arm SPE
+> driver invokes these functions to dynamically enable it during
+> profiling when the program runs in root PID name space, and disable PID
+> tracing when the perf event is stopped.
+> 
+> Device drivers should not depend on CONFIG_PID_IN_CONTEXTIDR for PID
+> tracing, so this patch uses the consistent condition for setting bit
+> EL1_CX for PMSCR.
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+My own preference here would be to not bother with the new
+enable/disable helpers, but just open code it right here. (Save a patch
+and is the only user.) But I defer to the taste of arm64 maintainers. :)
 
+-Kees
+
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > ---
->  mm/secretmem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index 1fea68b8d5a6..924d84ba481f 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -217,8 +217,8 @@ SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
->
->         file->f_flags |= O_LARGEFILE;
->
-> -       fd_install(fd, file);
->         refcount_inc(&secretmem_users);
-> +       fd_install(fd, file);
->         return fd;
->
->  err_put_fd:
-> --
-> 2.30.2
->
+>  drivers/perf/arm_spe_pmu.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+> index d44bcc29d99c..935343cdcb39 100644
+> --- a/drivers/perf/arm_spe_pmu.c
+> +++ b/drivers/perf/arm_spe_pmu.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/irq.h>
+>  #include <linux/kernel.h>
+>  #include <linux/list.h>
+> +#include <linux/mmu_context.h>
+>  #include <linux/module.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_device.h>
+> @@ -272,7 +273,7 @@ static u64 arm_spe_event_to_pmscr(struct perf_event *event)
+>  	if (!attr->exclude_kernel)
+>  		reg |= BIT(SYS_PMSCR_EL1_E1SPE_SHIFT);
+>  
+> -	if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR) && perfmon_capable())
+> +	if (perfmon_capable() && (task_active_pid_ns(current) == &init_pid_ns))
+>  		reg |= BIT(SYS_PMSCR_EL1_CX_SHIFT);
+>  
+>  	return reg;
+> @@ -731,6 +732,13 @@ static void arm_spe_pmu_start(struct perf_event *event, int flags)
+>  	if (hwc->state)
+>  		return;
+>  
+> +	/*
+> +	 * Enable tracing PID to contextidr if profiling program runs in
+> +	 * root PID namespace.
+> +	 */
+> +	if (perfmon_capable() && (task_active_pid_ns(current) == &init_pid_ns))
+> +		contextidr_enable();
+> +
+>  	reg = arm_spe_event_to_pmsfcr(event);
+>  	write_sysreg_s(reg, SYS_PMSFCR_EL1);
+>  
+> @@ -792,6 +800,9 @@ static void arm_spe_pmu_stop(struct perf_event *event, int flags)
+>  	}
+>  
+>  	hwc->state |= PERF_HES_STOPPED;
+> +
+> +	if (perfmon_capable() && (task_active_pid_ns(current) == &init_pid_ns))
+> +		contextidr_disable();
+>  }
+>  
+>  static int arm_spe_pmu_add(struct perf_event *event, int flags)
+> -- 
+> 2.25.1
+> 
+
+-- 
+Kees Cook
