@@ -2,217 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4CF4363BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFD14363C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhJUOHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbhJUOHk (ORCPT
+        id S230520AbhJUOJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:09:47 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:36470 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhJUOJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:07:40 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F00C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:05:24 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id bq11so895605lfb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n+QuDto96pqCrtBLiaoDf3Z+Ll7pgl4WBT3oLxNXrjQ=;
-        b=AsUR3U3lJOTGVBqj+gwSD+sNu5nJcbpNcl+NeYtCw4osyjobU9uyBbMMWNLp3/xz3b
-         4DFbDehxEo3hB3oIMWdGi1NEBdJW+1p98GeOsSD/7t+VjNYZaHmqPRNH6gTsRqUBpGMv
-         sx3yNN9eKEvD2/GFT7U8M2dIpBEJ+eVc+EXxkP/exZJlIxeooxOyRag49+k6eOvbdSoA
-         E/goASzoirG9SQMGfRQIybiL/3OQ2eGgMo0HoWb91zYFzFjxEJH73ezKYQxXp2rXXEsq
-         8VmZBPwDUg2ExvRYhxL06xm0EFPKfH+czWdGc4uWm8AMsZYJn508lKPZfnlfgXaptMOH
-         vCDQ==
+        Thu, 21 Oct 2021 10:09:44 -0400
+Received: by mail-io1-f69.google.com with SMTP id x21-20020a0566022c5500b005ddd625f399so525813iov.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:07:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n+QuDto96pqCrtBLiaoDf3Z+Ll7pgl4WBT3oLxNXrjQ=;
-        b=xF3QekBLNwyYqs8J/ArUvhYuzqvGTbCSlsM7BCAmX7+Q+kFmyd44un0a4XlTaeDkW6
-         PFYC/3a8/TzL4tr+HITzCZGEtagpMcdLsqzb9mLlUgcWP2+zaZGUgpRRdw4yvw4nZEFw
-         8fhxYPXnNGiQEXrzgyjHx6Hdcz4fMp8ufV4DXmUxU5tugG8lK9rfl/pwwnTDrZYvuC0L
-         y46a/MeN/FrZA6MkTjNH32YSiUNiUExtXhGX+PeicDV9YTp5MWBlKCmZtCPse7wH9WNO
-         bqvznk3Ss9UdWKOBynV0RxRbt8kHD+XKJE//Ixe+Uf+NFR36GlRYBg3E7c+StnvpMsAZ
-         jbbw==
-X-Gm-Message-State: AOAM532QBWow2DDX4L4T2OpQOu/uCENoJcPCMKiriY24tG3o7wZ/Q8A/
-        OHhVwmXqQb/i0dXYFtWRUqdx+9RVExoxpf1PtOZVzQ==
-X-Google-Smtp-Source: ABdhPJykTf4zbfyHpHCGfsMzrR4t0jp/3YEjHPgBJyBI5y6c8PMq8ElcWWRcimP/PWLxMjkhJcZPaHVDN9nqSkVSW8s=
-X-Received: by 2002:ac2:5e3c:: with SMTP id o28mr5574501lfg.184.1634825122396;
- Thu, 21 Oct 2021 07:05:22 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=bqwHyCaF+l2/nM6oqc0LhXRxVB487IpS+ktDx04p6og=;
+        b=xnQNTkR7O47KxYQsLKHwrmoRMYxHWUX1g4CFCr3vvOGR5ACgcehOqIkUCrspqMkY7y
+         SANsodD2hCns5IEgcS7SW8CWV9UzAtBq69SW6a2LcGbBje7g1bl2Y4B3x2z7BBGLvNLn
+         yk0WeMR6G6TT38GXOFQcNwanIWB5T9QXPYQDTgTJlKJOxDVZFp8Sx5bxC9MqEpymJgUu
+         V4TE3fm2prOkDJAf2XGhuiejnNHDOPJ3LuOojz4TyuWev8nyFUOdJ+GNOhjGPsGnc3bs
+         YPtKqDQ3OMPPqSeOqswqHXQdcrbyodHkPxjPxo9ZzCxxozyMKU1qtnCb+9hqk//AJRi5
+         OGSA==
+X-Gm-Message-State: AOAM533Mg8WflIHVwi2a1R4qxAkd6v85IX4Ob0ZwqOIoUGtyv+4+Kxh4
+        IfaUomfvzJLhEMZR+z33A7o0qB8O0tbBe4k0XroSxds+Xbnj
+X-Google-Smtp-Source: ABdhPJzIIf08cG5e8R3F6tVMJdRt+kZU4KygpdIlCMrBxRIF01xqg71PE+3eQshcQEojFhhf6s4rFwdIAArFIGWkAK9cGItpnJiS
 MIME-Version: 1.0
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
- <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com> <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 21 Oct 2021 16:04:45 +0200
-Message-ID: <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6638:40d:: with SMTP id q13mr4125291jap.102.1634825248467;
+ Thu, 21 Oct 2021 07:07:28 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 07:07:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000034836805cedd6a97@google.com>
+Subject: [syzbot] general protection fault in start_motor
+From:   syzbot <syzbot+4e9b2677f1f8fba5cb18@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, efremov@linux.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 at 15:45, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Oct 21, 2021 at 1:49 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Wed, 20 Oct 2021 at 20:18, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > >
-> > > On Wed, Sep 29, 2021 at 4:44 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > >
-> > > > In the cpuidle-psci case, runtime PM in combination with the generic PM
-> > > > domain (genpd), may be used when entering/exiting an idlestate. More
-> > > > precisely, genpd relies on runtime PM to be enabled for the attached device
-> > > > (in this case it belongs to a CPU), to properly manage the reference
-> > > > counting of its PM domain.
-> > > >
-> > > > This works fine most of the time, but during system suspend in the
-> > > > dpm_suspend_late() phase, the PM core disables runtime PM for all devices.
-> > > > Beyond this point and until runtime PM becomes re-enabled in the
-> > > > dpm_resume_early() phase, calls to pm_runtime_get|put*() will fail.
-> > > >
-> > > > To make sure the reference counting in genpd becomes correct, we need to
-> > > > prevent cpuidle-psci from using runtime PM when it has been disabled for
-> > > > the device. Therefore, let's move the call to cpuidle_pause() from
-> > > > dpm_suspend_noirq() to dpm_suspend_late() - and cpuidle_resume() from
-> > > > dpm_resume_noirq() into dpm_resume_early().
-> > > >
-> > > > Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
-> > > > Suggested-by: Maulik Shah <mkshah@codeaurora.org>
-> > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > ---
-> > > >  drivers/base/power/main.c | 6 ++----
-> > > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> > > > index cbea78e79f3d..1c753b651272 100644
-> > > > --- a/drivers/base/power/main.c
-> > > > +++ b/drivers/base/power/main.c
-> > > > @@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state)
-> > > >
-> > > >         resume_device_irqs();
-> > > >         device_wakeup_disarm_wake_irqs();
-> > > > -
-> > > > -       cpuidle_resume();
-> > > >  }
-> > > >
-> > > >  /**
-> > > > @@ -870,6 +868,7 @@ void dpm_resume_early(pm_message_t state)
-> > > >         }
-> > > >         mutex_unlock(&dpm_list_mtx);
-> > > >         async_synchronize_full();
-> > > > +       cpuidle_resume();
-> > > >         dpm_show_time(starttime, state, 0, "early");
-> > > >         trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
-> > > >  }
-> > > > @@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state)
-> > > >  {
-> > > >         int ret;
-> > > >
-> > > > -       cpuidle_pause();
-> > > > -
-> > > >         device_wakeup_arm_wake_irqs();
-> > > >         suspend_device_irqs();
-> > > >
-> > > > @@ -1467,6 +1464,7 @@ int dpm_suspend_late(pm_message_t state)
-> > > >         int error = 0;
-> > > >
-> > > >         trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
-> > > > +       cpuidle_pause();
-> > > >         mutex_lock(&dpm_list_mtx);
-> > > >         pm_transition = state;
-> > > >         async_error = 0;
-> > > > --
-> > >
-> > > Well, this is somewhat heavy-handed and it affects even the systems
-> > > that don't really need to pause cpuidle at all in the suspend path.
-> >
-> > Yes, I agree.
-> >
-> > Although, I am not really changing the behaviour in regards to this.
-> > cpuidle_pause() is already being called in dpm_suspend_noirq(), for
-> > everybody today.
->
-> Yes, it is, but pausing it earlier will cause more energy to be spent,
-> potentially.
->
-> That said, there are not too many users of suspend_late callbacks in
-> the tree, so it may not matter too much.
->
-> > >
-> > > Also, IIUC you don't need to pause cpuidle completely, but make it
-> > > temporarily avoid idle states potentially affected by this issue.  An
-> > > additional CPUIDLE_STATE_DISABLED_ flag could be used for that I
-> > > suppose and it could be set via cpuidle_suspend() called from the core
-> > > next to cpufreq_suspend().
-> >
-> > cpuidle_suspend() would then need to go and fetch the cpuidle driver
-> > instance, which in some cases is one driver per CPU. Doesn't that get
-> > rather messy?
->
-> Per-CPU variables are used for that, so it is quite straightforward.
->
-> > Additionally, since find_deepest_state() is being called for
-> > cpuidle_enter_s2idle() too, we would need to treat the new
-> > CPUIDLE_STATE_DISABLED_ flag in a special way, right?
->
-> No, it already checks "disabled".
+Hello,
 
-Yes, but that would be wrong.
+syzbot found the following issue on:
 
-The use case I want to support, for cpuidle-psci, is to allow all idle
-states in suspend-to-idle, but prevent those that rely on runtime PM
-(after it has been disabled) for the regular idle path.
+HEAD commit:    d999ade1cc86 Merge tag 'perf-tools-fixes-for-v5.15-2021-10..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=146197f4b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bab9d35f204746a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=4e9b2677f1f8fba5cb18
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: i386
 
->
-> > Is this really what we want?
-> >
-> > >
-> > > The other guys who rely on the cpuidle pausing today could be switched
-> > > over to this new mechanism later and it would be possible to get rid
-> > > of the pausing from the system suspend path completely.
-> >
-> > Avoiding to pause cpuidle when it's not needed makes perfect sense.
-> > Although, it looks to me that we could also implement that on top of
-> > $subject patch.
->
-> Yes, it could.
->
-> > Unless you insist on the CPUIDLE_STATE_DISABLED_ way, I would probably
-> > explore an option to let a cpuidle driver to set a global cpuidle flag
-> > during ->probe(). Depending if this flag is set, we can simply skip
-> > calling cpuidle_pause() during system suspend.
-> >
-> > What do you think?
->
-> Well, which driver in particular is in question here?
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Honestly, I don't know. It has not been my goal to entirely prevent
-calling cpuidle_pause().
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4e9b2677f1f8fba5cb18@syzkaller.appspotmail.com
 
-In any case, it was introduced in the below commit, perhaps that can
-give us a hint when this is still needed?
+floppy1: FDC access conflict!
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 3 PID: 3980 Comm: kworker/u16:5 Not tainted 5.15.0-rc5-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Workqueue: floppy floppy_work_workfn
+RIP: 0010:start_motor+0x3a/0x3f0 drivers/block/floppy.c:1905
+Code: 08 e8 6a 52 05 fd 48 8b 1d 73 38 e1 0b 48 b8 00 00 00 00 00 fc ff df 0f b6 2d 82 22 e1 0b 48 89 da 48 c1 ea 03 89 e9 41 89 ed <0f> b6 04 02 83 e1 03 41 83 e5 03 84 c0 74 08 3c 03 0f 8e be 02 00
+RSP: 0018:ffffc90007e3fca8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: ffffffff847185a6 RDI: ffffffff8471c2e0
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8471c346 R11: 0000000000000000 R12: ffffffff8471c2e0
+R13: 0000000000000001 R14: ffff8880129da500 R15: ffff888010c71800
+FS:  0000000000000000(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000049291000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ floppy_ready+0x7f/0x1930 drivers/block/floppy.c:1932
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Modules linked in:
+---[ end trace 5ab26389b77b524a ]---
+RIP: 0010:start_motor+0x3a/0x3f0 drivers/block/floppy.c:1905
+Code: 08 e8 6a 52 05 fd 48 8b 1d 73 38 e1 0b 48 b8 00 00 00 00 00 fc ff df 0f b6 2d 82 22 e1 0b 48 89 da 48 c1 ea 03 89 e9 41 89 ed <0f> b6 04 02 83 e1 03 41 83 e5 03 84 c0 74 08 3c 03 0f 8e be 02 00
+RSP: 0018:ffffc90007e3fca8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: ffffffff847185a6 RDI: ffffffff8471c2e0
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8471c346 R11: 0000000000000000 R12: ffffffff8471c2e0
+R13: 0000000000000001 R14: ffff8880129da500 R15: ffff888010c71800
+FS:  0000000000000000(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002001d000 CR3: 000000000b68e000 CR4: 0000000000150ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	08 e8                	or     %ch,%al
+   2:	6a 52                	pushq  $0x52
+   4:	05 fd 48 8b 1d       	add    $0x1d8b48fd,%eax
+   9:	73 38                	jae    0x43
+   b:	e1 0b                	loope  0x18
+   d:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  14:	fc ff df
+  17:	0f b6 2d 82 22 e1 0b 	movzbl 0xbe12282(%rip),%ebp        # 0xbe122a0
+  1e:	48 89 da             	mov    %rbx,%rdx
+  21:	48 c1 ea 03          	shr    $0x3,%rdx
+  25:	89 e9                	mov    %ebp,%ecx
+  27:	41 89 ed             	mov    %ebp,%r13d
+* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	83 e1 03             	and    $0x3,%ecx
+  31:	41 83 e5 03          	and    $0x3,%r13d
+  35:	84 c0                	test   %al,%al
+  37:	74 08                	je     0x41
+  39:	3c 03                	cmp    $0x3,%al
+  3b:	0f                   	.byte 0xf
+  3c:	8e                   	.byte 0x8e
+  3d:	be                   	.byte 0xbe
+  3e:	02 00                	add    (%rax),%al
 
-commit 8651f97bd951d0bb1c10fa24e3fa3455193f3548
-Author: Preeti U Murthy <preeti@linux.vnet.ibm.com>
-Date:   Mon Jul 9 10:12:56 2012 +0200
-PM / cpuidle: System resume hang fix with cpuidle
 
-Kind regards
-Uffe
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
