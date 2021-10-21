@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A21C436503
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C44436505
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhJUPHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
+        id S231666AbhJUPH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJUPHF (ORCPT
+        with ESMTP id S231563AbhJUPHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:07:05 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF214C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:04:49 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id t11so595217plq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:04:49 -0700 (PDT)
+        Thu, 21 Oct 2021 11:07:24 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907B3C0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:05:08 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id y12so52425eda.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u00txehjehy8aZv0xc4xgHOSf2UDgmCGAxD+vpPtEOk=;
-        b=k2NqHK1MTNYoAqv6j+6mVuBokLsATlO1UNWnJLICuuAEnHY42mjOLqYqDP0V/T4ggJ
-         hMqIb588KxLLp+yn1aolNYPz6/g8FHzVW34r82tsUu1qyEm277niWsYHXq1UTrGSth83
-         ZoAy02fF1IZjEZMaqV3kqzEGb9co0lUg6Ju8w=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qUgdsQvKs/J/n4GClXSY/xHOp3sHP7aorbkL9o6rHvs=;
+        b=lImqozNFtHlYTR/oRgIfBiOTJ0lCA5oYHJboLhB7sS6kKvV/4ZWe5revZWtdd8guYo
+         5tUF46kjVknnqHQmtM7WkOI3ZqUCbrLg0Gu0sHMBGO67nWH8i4xRftgqPWUfXyOsjeww
+         NyyDG7xrOQ5F2CJgR6wzziDuEYq8NyleWKr6YxhVs/Qv3CxSeShYr52CfxxCZUO7/l4b
+         Kh86RP6yb1LWybPs/ERzUVyMGuJ0nozQo4XRBVONHqQwtYrbXEhAU130Jd7uk6RjLjgM
+         6suelOJv8mtJX7mnWVBOhmDSAOL3FQulIrkrpGWOHf9oQyADJw1Ws8tnukXtkzMlUooS
+         XjbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u00txehjehy8aZv0xc4xgHOSf2UDgmCGAxD+vpPtEOk=;
-        b=SKlG3CEzjsWHR4aWbfJ5/H65l4zl2F+EWoPCj08fEW0jnIr68te7ujkVH07wX/o9FJ
-         65sJunHBJSWkF7iClHeEeqZvGZ7uJBux6kDOFAxEAoPJ6I03sEK8yUbNa7/yFKRyMV7Y
-         Nnu8B/Um60xPmpSQQwJW1amH4rb0R8acwdG0iCX+ITqkkxCcshQ+rYAC9kpTX3/juhPt
-         oBqpMTcHwRkMjdDnO32MQAi/zzvZK4YO1xGJHQyKYWzP+CLcjbjgavhhqeD5CdseCL6w
-         skVlgH4nUTq3T8ZaUzt1M566FvHo6CYQUA3BptWw83uEltCwXLgHWeh+4S/kN/lK/vcU
-         zHGA==
-X-Gm-Message-State: AOAM533CqVFTMKErzlEBunchge+wrtNXewPVXhD6WchhReV5prsGVCKM
-        r7rOCYvBKT0AVQ4XbOCKQos1Dg==
-X-Google-Smtp-Source: ABdhPJxH9xkPNNnVgCRm8+YuKebqdOk/09jdqx1UHUqPwiBpdTvNGmo+PskYXeXUYKhNABlUhC5Nug==
-X-Received: by 2002:a17:90b:1041:: with SMTP id gq1mr7132055pjb.31.1634828689478;
-        Thu, 21 Oct 2021 08:04:49 -0700 (PDT)
-Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:10:acf2:287:fa53:43f4])
-        by smtp.gmail.com with ESMTPSA id 21sm9546045pjg.57.2021.10.21.08.04.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:04:49 -0700 (PDT)
-From:   Joseph Hwang <josephsih@chromium.org>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com, pali@kernel.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org, josephsih@google.com,
-        Joseph Hwang <josephsih@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 3/3] Bluetooth: btusb: enable Mediatek to support AOSP extension
-Date:   Thu, 21 Oct 2021 23:04:25 +0800
-Message-Id: <20211021230356.v6.3.I257ac5cfaf955d15670479efc311bbab702397f4@changeid>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-In-Reply-To: <20211021230356.v6.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
-References: <20211021230356.v6.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qUgdsQvKs/J/n4GClXSY/xHOp3sHP7aorbkL9o6rHvs=;
+        b=jMm5qmggnkSa2dpLv9MixKKe6UqipSmqehJIMgfWpG45rEJ08/OhmEzj4VXH/9VUit
+         Ws+bzqDwSTZQID96LSdr4LXoLj+GvOvuv0EuRoeGJ5JP1v3LCkRP5txRX7OcnfsGcqFa
+         rUfQz6yfSNdyt/lqATfBgrf4J5kESLQiuMHeEskeCpa/YUoiyJVy5sG2KPKbWfXsb+al
+         gBhZ2iNxW8fnX8YgsULUc0ffAlOExfvf7J46nLzn/YHSXf/70Dt2j6O4+juDP3jyH3Rr
+         o+c7YraIOg85AACoZ3T+hxgTXdZd00purkudQRHT/wSqCO5TVXeWrB/4AaxkM1gknWsa
+         wnoA==
+X-Gm-Message-State: AOAM531fogVKgkG6TbPxV/3+1I49d4Wvc9fy48qY4btW38s7BFcZoqtq
+        u1DsZQuZJ2G5nha+5LuW8QQYYAkvC/JLIBbDNInFcg==
+X-Google-Smtp-Source: ABdhPJxwU3X5NrZg5XDJgUXQnCleKcm1yCgswyQjrpLx62hGi4bKCMdqa2uEGum+WpUWT0czKZltvvZrt3/l9ey7kNE=
+X-Received: by 2002:aa7:c359:: with SMTP id j25mr8360708edr.348.1634828705043;
+ Thu, 21 Oct 2021 08:05:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211021063210.52503-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20211021063210.52503-1-u.kleine-koenig@pengutronix.de>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Thu, 21 Oct 2021 08:04:53 -0700
+Message-ID: <CABXOdTc_VqKtrbwWAsmkAADd2zz8N2Kqk3OcRUmGpuDvVApZ=A@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Chrome: Drop Enric Balletbo i Serra
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables Mediatek to support the AOSP extension.
+On Wed, Oct 20, 2021 at 11:32 PM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> Sending a patch to the chrome people resulted in a message by
+> Collabora's mailer daemon:
+>
+>         550 5.1.1 <enric.balletbo@collabora.com>: Recipient address rejec=
+ted: User unknown in local recipient table (in reply to RCPT TO command)
+>
+> So remove Eric from all maintainer entries.
+>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
 
----
-
-(no changes since v5)
-
-Changes in v5:
-- Let the vendor command in aosp_do_open() to determine what
-  capabilities are supported.
-
-Changes in v4:
-- Call hci_set_aosp_capable in the driver.
-- This patch is added in this Series-changes 4.
-
- drivers/bluetooth/btusb.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 87b71740fad8..00311ebd7823 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3876,6 +3876,8 @@ static int btusb_probe(struct usb_interface *intf,
- 		hdev->set_bdaddr = btusb_set_bdaddr_mtk;
- 		set_bit(HCI_QUIRK_NON_PERSISTENT_SETUP, &hdev->quirks);
- 		data->recv_acl = btusb_recv_acl_mtk;
-+
-+		hci_set_aosp_capable(hdev);
- 	}
- 
- 	if (id->driver_info & BTUSB_SWAVE) {
--- 
-2.33.0.1079.g6e70778dc9-goog
-
+> ---
+>  MAINTAINERS | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8d118d7957d2..b6ff67394b78 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4413,14 +4413,12 @@ F:      drivers/input/touchscreen/chipone_icn8505=
+.c
+>
+>  CHROME HARDWARE PLATFORM SUPPORT
+>  M:     Benson Leung <bleung@chromium.org>
+> -M:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>  S:     Maintained
+>  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform=
+/linux.git
+>  F:     drivers/platform/chrome/
+>
+>  CHROMEOS EC CODEC DRIVER
+>  M:     Cheng-Yi Chiang <cychiang@chromium.org>
+> -R:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>  R:     Guenter Roeck <groeck@chromium.org>
+>  S:     Maintained
+>  F:     Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
+> @@ -4428,7 +4426,6 @@ F:        sound/soc/codecs/cros_ec_codec.*
+>
+>  CHROMEOS EC SUBDRIVERS
+>  M:     Benson Leung <bleung@chromium.org>
+> -M:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>  R:     Guenter Roeck <groeck@chromium.org>
+>  S:     Maintained
+>  F:     drivers/power/supply/cros_usbpd-charger.c
+> --
+> 2.30.2
+>
