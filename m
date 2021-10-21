@@ -2,62 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47635436216
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F34043621B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhJUMwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:52:33 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50526 "EHLO vps0.lunn.ch"
+        id S231134AbhJUMxj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Oct 2021 08:53:39 -0400
+Received: from aposti.net ([89.234.176.197]:41610 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230231AbhJUMwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:52:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=oy6v5iVZJiolJ9FVtEYshkEVwEiT0r5Ra+Ipjg/HDbk=; b=PmR/RcgwEJVNtnk+3hE/VaFcvl
-        SHUY571C09KsfJSTzbO6avyBCe7XyZM9lUgV0PrYb0dc/KEljI4+zSccxATxqbEANncuEzrLXHDyu
-        QmFfZF/InF6N7kBX/3ZY73tG/Ld/TouoBqrpxwszNHAzVVfaj+ysbvBMZI8t4nMrhwpQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mdXWI-00BHp2-MK; Thu, 21 Oct 2021 14:50:06 +0200
-Date:   Thu, 21 Oct 2021 14:50:06 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: (EXT) Re: [PATCH] net: fec: defer probe if PHY on external MDIO
- bus is not available
-Message-ID: <YXFh/nLTqvCsLAXj@lunn.ch>
-References: <20211014113043.3518-1-matthias.schiffer@ew.tq-group.com>
- <YW7SWKiUy8LfvSkl@lunn.ch>
- <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
- <YXBk8gwuCqrxDbVY@lunn.ch>
- <c286107376a99ca2201db058e1973e2b2264e9fb.camel@ew.tq-group.com>
+        id S230231AbhJUMxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:53:36 -0400
+Date:   Thu, 21 Oct 2021 13:51:07 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 5/5] dmaengine: jz4780: Support bidirectional I/O on one
+ channel
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, list@opendingux.net,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Message-Id: <7PVB1R.D71JYJMQMRLC2@crapouillou.net>
+In-Reply-To: <YW0VRnFGcYFY0+XZ@matsya>
+References: <20211011143652.51976-1-paul@crapouillou.net>
+        <20211011143652.51976-6-paul@crapouillou.net> <YW0VRnFGcYFY0+XZ@matsya>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c286107376a99ca2201db058e1973e2b2264e9fb.camel@ew.tq-group.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I would love to do this, but driver-api/driver-model/driver.rst
-> contains the following warning:
-> 
->       -EPROBE_DEFER must not be returned if probe() has already created
->       child devices, even if those child devices are removed again
->       in a cleanup path. If -EPROBE_DEFER is returned after a child
->       device has been registered, it may result in an infinite loop of
->       .probe() calls to the same driver.
-> 
-> My understanding of this is that there is simply no way to return
-> -EPROBE_DEFER after fec_enet_mii_init(pdev).
+Hi Vinod,
 
-It might say that, but lots of network drivers actually do this. I've
-not seen an endless loop.
+Le lun., oct. 18 2021 at 12:03:42 +0530, Vinod Koul <vkoul@kernel.org> 
+a écrit :
+> On 11-10-21, 16:36, Paul Cercueil wrote:
+>>  For some devices with only half-duplex capabilities, it doesn't make
+>>  much sense to use one DMA channel per direction, as both channels 
+>> will
+>>  never be active at the same time.
+>> 
+>>  Add support for bidirectional I/O on DMA channels. The client 
+>> drivers
+>>  can then request a "tx-rx" DMA channel which will be used for both
+>>  directions.
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   drivers/dma/dma-jz4780.c | 48 
+>> ++++++++++++++++++++++++++--------------
+>>   1 file changed, 32 insertions(+), 16 deletions(-)
+>> 
+>>  diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+>>  index 4d62e24ebff9..ee1d50792c32 100644
+>>  --- a/drivers/dma/dma-jz4780.c
+>>  +++ b/drivers/dma/dma-jz4780.c
+>>  @@ -122,6 +122,7 @@ struct jz4780_dma_desc {
+>>   	dma_addr_t desc_phys;
+>>   	unsigned int count;
+>>   	enum dma_transaction_type type;
+>>  +	uint32_t transfer_type;
+> 
+> why not u32?
 
-    Andrew
+It should be u32 yes. The driver uses uint32_t everywhere so I didn't 
+think about it.
+
+> 
+>>   	uint32_t status;
+>>   };
+>> 
+>>  @@ -130,7 +131,7 @@ struct jz4780_dma_chan {
+>>   	unsigned int id;
+>>   	struct dma_pool *desc_pool;
+>> 
+>>  -	uint32_t transfer_type;
+>>  +	uint32_t transfer_type_tx, transfer_type_rx;
+>>   	uint32_t transfer_shift;
+>>   	struct dma_slave_config	config;
+>> 
+>>  @@ -157,7 +158,7 @@ struct jz4780_dma_dev {
+>>   };
+>> 
+>>   struct jz4780_dma_filter_data {
+>>  -	uint32_t transfer_type;
+>>  +	uint32_t transfer_type_tx, transfer_type_rx;
+>>   	int channel;
+>>   };
+>> 
+>>  @@ -226,9 +227,10 @@ static inline void 
+>> jz4780_dma_chan_disable(struct jz4780_dma_dev *jzdma,
+>>   		jz4780_dma_ctrl_writel(jzdma, JZ_DMA_REG_DCKEC, BIT(chn));
+>>   }
+>> 
+>>  -static struct jz4780_dma_desc *jz4780_dma_desc_alloc(
+>>  -	struct jz4780_dma_chan *jzchan, unsigned int count,
+>>  -	enum dma_transaction_type type)
+>>  +static struct jz4780_dma_desc *
+>>  +jz4780_dma_desc_alloc(struct jz4780_dma_chan *jzchan, unsigned int 
+>> count,
+>>  +		      enum dma_transaction_type type,
+>>  +		      enum dma_transfer_direction direction)
+>>   {
+>>   	struct jz4780_dma_desc *desc;
+>> 
+>>  @@ -248,6 +250,12 @@ static struct jz4780_dma_desc 
+>> *jz4780_dma_desc_alloc(
+>> 
+>>   	desc->count = count;
+>>   	desc->type = type;
+>>  +
+>>  +	if (direction == DMA_DEV_TO_MEM)
+>>  +		desc->transfer_type = jzchan->transfer_type_rx;
+>>  +	else
+>>  +		desc->transfer_type = jzchan->transfer_type_tx;
+>>  +
+>>   	return desc;
+>>   }
+>> 
+>>  @@ -361,7 +369,7 @@ static struct dma_async_tx_descriptor 
+>> *jz4780_dma_prep_slave_sg(
+>>   	unsigned int i;
+>>   	int err;
+>> 
+>>  -	desc = jz4780_dma_desc_alloc(jzchan, sg_len, DMA_SLAVE);
+>>  +	desc = jz4780_dma_desc_alloc(jzchan, sg_len, DMA_SLAVE, 
+>> direction);
+>>   	if (!desc)
+>>   		return NULL;
+>> 
+>>  @@ -410,7 +418,7 @@ static struct dma_async_tx_descriptor 
+>> *jz4780_dma_prep_dma_cyclic(
+>> 
+>>   	periods = buf_len / period_len;
+>> 
+>>  -	desc = jz4780_dma_desc_alloc(jzchan, periods, DMA_CYCLIC);
+>>  +	desc = jz4780_dma_desc_alloc(jzchan, periods, DMA_CYCLIC, 
+>> direction);
+>>   	if (!desc)
+>>   		return NULL;
+>> 
+>>  @@ -455,14 +463,14 @@ static struct dma_async_tx_descriptor 
+>> *jz4780_dma_prep_dma_memcpy(
+>>   	struct jz4780_dma_desc *desc;
+>>   	uint32_t tsz;
+>> 
+>>  -	desc = jz4780_dma_desc_alloc(jzchan, 1, DMA_MEMCPY);
+>>  +	desc = jz4780_dma_desc_alloc(jzchan, 1, DMA_MEMCPY, 0);
+>>   	if (!desc)
+>>   		return NULL;
+>> 
+>>   	tsz = jz4780_dma_transfer_size(jzchan, dest | src | len,
+>>   				       &jzchan->transfer_shift);
+>> 
+>>  -	jzchan->transfer_type = JZ_DMA_DRT_AUTO;
+>>  +	desc->transfer_type = JZ_DMA_DRT_AUTO;
+>> 
+>>   	desc->desc[0].dsa = src;
+>>   	desc->desc[0].dta = dest;
+>>  @@ -528,7 +536,7 @@ static void jz4780_dma_begin(struct 
+>> jz4780_dma_chan *jzchan)
+>> 
+>>   	/* Set transfer type. */
+>>   	jz4780_dma_chn_writel(jzdma, jzchan->id, JZ_DMA_REG_DRT,
+>>  -			      jzchan->transfer_type);
+>>  +			      jzchan->desc->transfer_type);
+>> 
+>>   	/*
+>>   	 * Set the transfer count. This is redundant for a 
+>> descriptor-driven
+>>  @@ -788,7 +796,8 @@ static bool jz4780_dma_filter_fn(struct 
+>> dma_chan *chan, void *param)
+>>   		return false;
+>>   	}
+>> 
+>>  -	jzchan->transfer_type = data->transfer_type;
+>>  +	jzchan->transfer_type_tx = data->transfer_type_tx;
+>>  +	jzchan->transfer_type_rx = data->transfer_type_rx;
+>> 
+>>   	return true;
+>>   }
+>>  @@ -800,11 +809,17 @@ static struct dma_chan 
+>> *jz4780_of_dma_xlate(struct of_phandle_args *dma_spec,
+>>   	dma_cap_mask_t mask = jzdma->dma_device.cap_mask;
+>>   	struct jz4780_dma_filter_data data;
+>> 
+>>  -	if (dma_spec->args_count != 2)
+>>  +	if (dma_spec->args_count == 2) {
+>>  +		data.transfer_type_tx = dma_spec->args[0];
+>>  +		data.transfer_type_rx = dma_spec->args[0];
+>>  +		data.channel = dma_spec->args[1];
+>>  +	} else if (dma_spec->args_count == 3) {
+>>  +		data.transfer_type_tx = dma_spec->args[0];
+>>  +		data.transfer_type_rx = dma_spec->args[1];
+> 
+> aha so you have a different values for tx and rx, that seems okay. 
+> Maybe
+> word a better in binding and also add examples in binding for this
+
+Alright.
+
+Cheers,
+-Paul
+
+> 
+>>  +		data.channel = dma_spec->args[2];
+>>  +	} else {
+>>   		return NULL;
+>>  -
+>>  -	data.transfer_type = dma_spec->args[0];
+>>  -	data.channel = dma_spec->args[1];
+>>  +	}
+>> 
+>>   	if (data.channel > -1) {
+>>   		if (data.channel >= jzdma->soc_data->nb_channels) {
+>>  @@ -822,7 +837,8 @@ static struct dma_chan 
+>> *jz4780_of_dma_xlate(struct of_phandle_args *dma_spec,
+>>   			return NULL;
+>>   		}
+>> 
+>>  -		jzdma->chan[data.channel].transfer_type = data.transfer_type;
+>>  +		jzdma->chan[data.channel].transfer_type_tx = 
+>> data.transfer_type_tx;
+>>  +		jzdma->chan[data.channel].transfer_type_rx = 
+>> data.transfer_type_rx;
+>> 
+>>   		return dma_get_slave_channel(
+>>   			&jzdma->chan[data.channel].vchan.chan);
+>>  --
+>>  2.33.0
+> 
+> --
+> ~Vinod
+
+
