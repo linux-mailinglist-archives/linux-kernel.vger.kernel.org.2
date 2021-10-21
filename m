@@ -2,69 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785B1435B4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810EE435B76
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhJUHII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:08:08 -0400
-Received: from mga03.intel.com ([134.134.136.65]:34561 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229499AbhJUHIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:08:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="228909601"
-X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
-   d="scan'208";a="228909601"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:05:50 -0700
-X-IronPort-AV: E=Sophos;i="5.87,169,1631602800"; 
-   d="scan'208";a="594983769"
-Received: from chenyi-pc.sh.intel.com ([10.239.159.60])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 00:05:48 -0700
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: MMU: Reset mmu->pkru_mask to avoid stale data
-Date:   Thu, 21 Oct 2021 15:10:22 +0800
-Message-Id: <20211021071022.1140-1-chenyi.qiang@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S231319AbhJUHQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:16:09 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:44109 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231248AbhJUHQH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 03:16:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1634800430;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=86TYZPidQ+mxVXRw8yttxkDIDJR+nLwhpLS5uD6oxUs=;
+        b=RXyvJqw0dd/PRvbpKAq+sSJjHE4z0ZihlXUdl9+h5A7m/EwggnV4uek+sZet14UvKJVy/q
+        0OXuEYewzGoDrdGDhw2VpCWQJJqDoNQkE+E+83c3EYpCZtGJ8sXa6GUvLOnriXMAc4OLkY
+        rr9r959THpswjujsyrSko5qeEJcARDE=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2112.outbound.protection.outlook.com [104.47.18.112])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-1-lEyEwUpoPXyN_vg_NF6iTw-1; Thu, 21 Oct 2021 09:13:49 +0200
+X-MC-Unique: lEyEwUpoPXyN_vg_NF6iTw-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X/bA2AiRwGYSO18LgpX94uhQEls11sLxtCVApK8TxpdUYj/THeaL/JUydxX8TF5MM/1ghH2Z6n7lqXNNgIdM3keosgogyDeqHRGdai6IOY1apPt3J0ouv1cMpE6LwLW5jSUZ2uqvKtmUkeZg8RF2ToaKtLxqXoYEmG+JkzSnexS2sILkRASXCIjI5gfqV6Vg+O1Gk7sIk+XhPJTiZNXbrT0pR7P17jbC4rpHV71kN0I5XrQfPZcihDMdr113emoZsRz/bUr8xzwB30QHpgLzENEKuIUK+AyCeQpprtJzsDfp7wDksnqMG8xbdFQnbANprYBKizbmwUagPUNf26O3jA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ac/j72FDz4rJJC0pYIN84Ut92XrdhN60oX9Th+y/m40=;
+ b=H5Y4k0lc31Fu80bI5cpY7HYjmrC7g9L+8vRwa85hevsL/U0DG89DCdBFPYU48ZOWH7bm4QheedOOb/s0UW8AidS9vaF6/QjO+xJ7f6PW433x7+3/h6O4U96y0TqZuK2R1uJuwQrWrDX+IOkHslw4K/QBhXEjBg25cEWEDkbM0GSrUUfSHbF5RxIV+BjBnFzvxy4dgrWVrUMcv0Gr+eF8/jP5CpPUEF2+OHRqewGxrKdjE2/P+C2j2QF2CGmhQcliz5N3oO25HT19GxYDXvVdausW64VOMR7WEWd0oljZqV/QnmS4NOUiU9rQ2fBQ0aeBwBoPz5XEbD59ADbJmBB6cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com (2603:10a6:803:4::13)
+ by VI1PR04MB4271.eurprd04.prod.outlook.com (2603:10a6:803:3f::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Thu, 21 Oct
+ 2021 07:13:48 +0000
+Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com
+ ([fe80::88cc:32fc:2cae:3fde]) by VI1PR0402MB3439.eurprd04.prod.outlook.com
+ ([fe80::88cc:32fc:2cae:3fde%7]) with mapi id 15.20.4608.018; Thu, 21 Oct 2021
+ 07:13:47 +0000
+From:   Chester Lin <clin@suse.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>, s32@nxp.com,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+CC:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Radu Nicolae Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        BOUGH CHEN <haibo.chen@nxp.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Matthias Brugger <mbrugger@suse.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>,
+        "Lee, Chun-Yi" <jlee@suse.com>, Chester Lin <clin@suse.com>
+Subject: [PATCH 0/3] Add SDHCI driver support for NXP S32G2
+Date:   Thu, 21 Oct 2021 15:13:30 +0800
+Message-ID: <20211021071333.32485-1-clin@suse.com>
+X-Mailer: git-send-email 2.30.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: AS8PR05CA0030.eurprd05.prod.outlook.com
+ (2603:10a6:20b:311::35) To VI1PR0402MB3439.eurprd04.prod.outlook.com
+ (2603:10a6:803:4::13)
+MIME-Version: 1.0
+Received: from localhost (118.166.56.207) by AS8PR05CA0030.eurprd05.prod.outlook.com (2603:10a6:20b:311::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 07:13:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: db574ffe-59f6-4ff5-6609-08d99462535b
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4271:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4271B2AD6FA5B88DCE96890EADBF9@VI1PR04MB4271.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iMnxrXXf4L6JTib9+KE2uLYIIN714J58hBcfjaHq3aSt2PA+aJbPXIGZ2IW6CWHlp00Y947DQsEjFUdwovBwgHqJZNriz6jGU1zqKah91YKy4ymQLGHUS9LWKYUJ/4dKWO2CSOpPvrPbLVivKD/heDr3eU4uWTJ1HR7ER/QZReIYk0gdzjshi0OdI9VN8bjX9MqF7stY2IgfSxNsZLzD+8uos+2ulw+zTOP5Ft7isRjyGDZxas69Q2666ooAcy1+03fIdobCgxfdXPB/btOE4kgXfsUzPTcrxD1AT0rt87hAS3x/oePofGjxtduUi+JM+S8PmiFWE0IeWSVhWX4kjJa1cr3P0X/vD3m4LheT1bbd7T1lziHjuHm4AAEEP1VZc5zttyvanyN+O+cVNFX3aSoA73/sFdx0DYOZ5w+Lsw6iaEElz5+8biadFxh3Pgruub3eLF4G8phBgQyUCFeqQTLgS9vu0kz4URGzX4qEYYb/ATjlcMPuOYTvwQ0+DvaU4l3Pri4QKG+E2IzabfPt3Iil2AS7ijgUS0RSmJ2SadBblMhvdHZd4NU7DPbgfbvmdvIDc0n3eeMQZ7n2cY/pcyHDAS/rHBBjTqnCi0WGTklAjTJU0emthUgwbTNYe49VhLjMZxTMG+c9D17IG9ntlPNYKPIlq3ou8Ebz181OBYJAjA80KOcFdWOdrY9izrec48Y5/rTPraH55mdHqO9vR6oNYYUM4dFoJudsUfMLoLc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3439.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8676002)(186003)(54906003)(66556008)(8936002)(2906002)(107886003)(5660300002)(86362001)(966005)(110136005)(7416002)(4326008)(1076003)(316002)(55236004)(66476007)(6666004)(83380400001)(66946007)(26005)(36756003)(6486002)(6496006)(508600001)(38100700002)(956004)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5RjvzSZuOS6zJtXeit0lUq88JRojGvpWw1oH2DakeGyaUj5+/QmAyuR+89Ju?=
+ =?us-ascii?Q?OG0cifRCC28dtr/3O7fJUykBm5pjrKDkgcjhZkpkaNUzWE42xIbtuHjsoMWJ?=
+ =?us-ascii?Q?pfIDyXasoP8xiwqEpxJfz9uZhpkupgWhmO1n6hhpZd/PI4SeBCG/k6EwOYSe?=
+ =?us-ascii?Q?fEirM+QqmHTvfq7GNW+dXCqXFm8wO4WXKEVsEMbYSFZ6dAaNrp1qa1UF8pc0?=
+ =?us-ascii?Q?VWKiRgBT7g1Uq0JiqkVdotaFuGZUSkHrc7k6p4AszDhvm1zU0YUCl1GJpm9E?=
+ =?us-ascii?Q?9l43mqzZz59DM16+BH8IM+RA99SbgbpXEIk+RNqBGIZKDSUv3BmKHNm5MQPX?=
+ =?us-ascii?Q?5ohdoEahEiVmNyt8UCj876yu3aMjs/8ddf/JaUjDEd++UXWyd0t+6VuF40af?=
+ =?us-ascii?Q?yxppa5Ln8AVA3mkFkpHazQzPmrLBPPAhUPsdEnFepFFxbrxszmwZuebTLpz9?=
+ =?us-ascii?Q?hqDTPIX7/t6K6bNXZ85h7ni37rIe3mOGjBriVCdzonMTWu9KBCSiGX2mcXvt?=
+ =?us-ascii?Q?QzssN0OmdzGQGhYYdXVOIBkc992q1dT+cRRifrzCHtAJ6b5FozRY+UMRTSZz?=
+ =?us-ascii?Q?3lm6sbbEQY6+MK3UjKjNV1L2dPd1v2ystMYPJft1+TVxWLC+AVz/n95YA6aT?=
+ =?us-ascii?Q?ZR78aAwOctXSSWfY7LndH75NBGEZ7HiT+FZaokZjc9Bud+K7RpaWAI6TfWj4?=
+ =?us-ascii?Q?sX5nJyHbdSgAs8X7SgOl0n1OzCG87H2y7pjICBuC6HfOvnykQ0RnM4gv/5lq?=
+ =?us-ascii?Q?nJZjQoGJO9vSeT8v8JqkCZcEpioS3z4N+iUV3Lup53VqgniiwTJJQyRxzqa1?=
+ =?us-ascii?Q?gMB1TI0bHAsDDqcsBCDROSNfmehKWLSuJ9lBswxQCNH5HlWkEWWabg8Cfuuo?=
+ =?us-ascii?Q?8yHfnrPO+an6J1Bx0KJwE/S5FIOiYpR0dvSLImEi0ncrWp3VniqTKxbYD4tL?=
+ =?us-ascii?Q?Y2RItVTVm+drs25lV+f8RkIiknxmNA4qEFJfTSoc8okHpPsiaU2ArYZ+YYFq?=
+ =?us-ascii?Q?cbw5pUk5pV4DpaaKJyNr9gI6ke3KCeBLEala5dSz1WZJfb8qhZECrIBFx2q7?=
+ =?us-ascii?Q?IaXHgIiXU9S1bTsmmWay0mF0DVWTYyuZeQAY/ba8T7RSuIsSprVQdQaQiaWQ?=
+ =?us-ascii?Q?HPk974DqER2U4U/lKYQMTT//To0StRge9JDleLxSF+zE8iQ3QXy0qEL+tmA6?=
+ =?us-ascii?Q?JXn1f95LiYqU5GSqZNzKj4KAWll+5zDDjNGGjv4lTJ6fR3iyLTS9qc0RZjvg?=
+ =?us-ascii?Q?yM09m3OfFLwVS8EykrmUFz5Hud07BI9AH/fbWEVIHFdmlhEkJ5mWZxdrErnq?=
+ =?us-ascii?Q?rIg+8B8dDmsPTocNMiZbwNX3?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db574ffe-59f6-4ff5-6609-08d99462535b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3439.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 07:13:47.7339
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: clin@suse.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4271
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When updating mmu->pkru_mask, the value can only be added but it isn't
-reset in advance. This will make mmu->pkru_mask keep the stale data.
-Fix this issue.
+Hello,
 
-Fixes: commit 2d344105f57c ("KVM, pkeys: introduce pkru_mask to cache conditions")
-Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
----
- arch/x86/kvm/mmu/mmu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This is a patch series for initial sdhci support on NXP S32G2 platforms.
+In the previous work[1], only basic DTs and serial ports are supported for
+minimum hardware booting. Here we want to add a mmc-host node and add
+support in the sdhci-esdhc-imx driver so that S32G2 can also mount file
+system from SDCard but not just ramdisk. As the first step, we choose fixed
+clocks to fulfill the requirements the mmc host driver needs, and they will
+be replaced by ARM SCMI clock protocol (0x14) once the SCMI feature are
+added into S32G2 DT later.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c6ddb042b281..fe73d7ee5492 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4556,10 +4556,10 @@ static void update_pkru_bitmask(struct kvm_mmu *mmu)
- 	unsigned bit;
- 	bool wp;
- 
--	if (!is_cr4_pke(mmu)) {
--		mmu->pkru_mask = 0;
-+	mmu->pkru_mask = 0;
-+
-+	if (!is_cr4_pke(mmu))
- 		return;
--	}
- 
- 	wp = is_cr0_wp(mmu);
- 
--- 
-2.17.1
+This patchset has been verified with NXP downstream firmware blobs [ver:
+bsp27/28/29/30], such as TF-A[2] and U-Boot[3] (BL33) on CodeAurora.
+
+Thanks,
+Chester
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tr=
+ee/arch/arm64/boot/dts/freescale/s32g2.dtsi
+[2]: https://source.codeaurora.org/external/autobsps32/arm-trusted-firmware=
+/
+[3]: https://source.codeaurora.org/external/autobsps32/u-boot/
+
+Chester Lin (3):
+  dt-bindings: mmc: fsl-imx-esdhc: add NXP S32G2 support
+  mmc: sdhci-esdhc-imx: add NXP S32G2 support
+  arm64: dts: s32g2: add USDHC support
+
+ .../bindings/mmc/fsl-imx-esdhc.yaml           |  1 +
+ arch/arm64/boot/dts/freescale/s32g2.dtsi      | 32 +++++++++++++++++++
+ .../arm64/boot/dts/freescale/s32g274a-evb.dts |  4 +++
+ .../boot/dts/freescale/s32g274a-rdb2.dts      |  4 +++
+ drivers/mmc/host/sdhci-esdhc-imx.c            | 17 ++++++++--
+ 5 files changed, 56 insertions(+), 2 deletions(-)
+
+--=20
+2.30.0
 
