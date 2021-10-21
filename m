@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9FB436195
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B83436197
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 14:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhJUM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 08:29:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:42006 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231297AbhJUM3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:29:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B7424ED1;
-        Thu, 21 Oct 2021 05:27:32 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 663083F73D;
-        Thu, 21 Oct 2021 05:27:31 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 13:27:29 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v14 05/11] PCI: kirin: give more time for PERST# reset to
- finish
-Message-ID: <20211021122728.GB12568@lpieralisi>
-References: <cover.1634622716.git.mchehab+huawei@kernel.org>
- <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
+        id S231573AbhJUMaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 08:30:21 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:41504 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231297AbhJUMaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:30:20 -0400
+Received: from BC-Mail-Ex29.internal.baidu.com (unknown [172.31.51.23])
+        by Forcepoint Email with ESMTPS id 6DA8A481ED7F1177F00A;
+        Thu, 21 Oct 2021 20:28:02 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex29.internal.baidu.com (172.31.51.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Thu, 21 Oct 2021 20:28:02 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Thu, 21 Oct 2021 20:28:01 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <rcu@vger.kernel.org>
+Subject: [PATCH v2 0/6] kthread: Add the helper macro kthread_run_on_cpu()
+Date:   Thu, 21 Oct 2021 20:27:51 +0800
+Message-ID: <20211021122758.3092-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex10.internal.baidu.com (172.31.51.50) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 07:06:42AM +0100, Mauro Carvalho Chehab wrote:
-> Before code refactor, the PERST# signals were sent at the
-> end of the power_on logic. Then, the PCI core would probe for
-> the buses and add them.
-> 
-> The new logic changed it to send PERST# signals during
-> add_bus operation. That altered the timings.
-> 
-> Also, HiKey 970 require a little more waiting time for
-> the PCI bridge - which is outside the SoC - to finish
-> the PERST# reset, and then initialize the eye diagram.
-> 
+the helper macro kthread_run_on_cpu() inculdes
+kthread_create_on_cpu/wake_up_process().
+In some cases, use kthread_run_on_cpu() directly instead of
+kthread_create_on_node/kthread_bind/wake_up_process() or
+kthread_create_on_cpu/wake_up_process() or
+kthreadd_create/kthread_bind/wake_up_process() to simplify the code.
 
-Ok, now you explained it and we should move this explanation
-in the commit log that this change is affecting (I mean we
-should squash this patch with the patch that actually requires it
-- I am not sure whether it is patch 6 or another one).
+v1->v2:
+        *[1/6]Remove cpu_to_node from kthread_create_on_cpu params.
+        *[1/6]Updated the macro description comment.
+	*[4,5/6]Update changelog
 
-I can do it for you; I thought it would be a standalone change
-but it actually isn't, because it is brought about by the
-changes you are making and therefore there it belongs.
+Cai Huoqing (6):
+  kthread: Add the helper macro kthread_run_on_cpu()
+  RDMA/siw: Make use of the helper macro kthread_run_on_cpu()
+  ring-buffer: Make use of the helper macro kthread_run_on_cpu()
+  rcutorture: Make use of the helper macro kthread_run_on_cpu()
+  trace/osnoise: Make use of the helper macro kthread_run_on_cpu()
+  trace/hwlat: Make use of the helper macro kthread_run_on_cpu()
 
-Thanks for explaining it and apologies for the churn.
+ drivers/infiniband/sw/siw/siw_main.c |  7 +++----
+ include/linux/kthread.h              | 21 +++++++++++++++++++++
+ kernel/rcu/rcutorture.c              |  7 ++-----
+ kernel/trace/ring_buffer.c           |  7 ++-----
+ kernel/trace/trace_hwlat.c           |  6 +-----
+ kernel/trace/trace_osnoise.c         |  3 +--
+ 6 files changed, 31 insertions(+), 21 deletions(-)
 
-Lorenzo
+-- 
+2.25.1
 
-> So, increase the waiting time for the PERST# signals to
-> what's required for it to also work with HiKey 970.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-> 
-> See [PATCH v14 00/11] at: https://lore.kernel.org/all/cover.1634622716.git.mchehab+huawei@kernel.org/
-> 
->  drivers/pci/controller/dwc/pcie-kirin.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> index de375795a3b8..bc329673632a 100644
-> --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> @@ -113,7 +113,7 @@ struct kirin_pcie {
->  #define CRGCTRL_PCIE_ASSERT_BIT		0x8c000000
->  
->  /* Time for delay */
-> -#define REF_2_PERST_MIN		20000
-> +#define REF_2_PERST_MIN		21000
->  #define REF_2_PERST_MAX		25000
->  #define PERST_2_ACCESS_MIN	10000
->  #define PERST_2_ACCESS_MAX	12000
-> -- 
-> 2.31.1
-> 
