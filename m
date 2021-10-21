@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654AB436467
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DF7436472
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 16:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhJUOic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 10:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
+        id S231220AbhJUOjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 10:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJUOib (ORCPT
+        with ESMTP id S230072AbhJUOju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 10:38:31 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6129DC0613B9;
-        Thu, 21 Oct 2021 07:36:15 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id f3so1607734uap.6;
-        Thu, 21 Oct 2021 07:36:15 -0700 (PDT)
+        Thu, 21 Oct 2021 10:39:50 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56034C0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:37:34 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id f11so798671pfc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 07:37:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=ajoqDPP656VX5YEBu8I1q77ACKKc8Lf1fY/olzortAE=;
-        b=Ksty8m03gG131TGw1j2LHYW3Zz1euVw4MAxFJlvy2qBz+f6yYAdDVVmRgxYravk+7c
-         +bK7+cfHA6ic35LCl99nvibR/LuX7wugyZuxWFclwiWwyWOP1m1QpO9HEsWuU3BAYY1L
-         mUrPZtGfWWOPbGofXxF/CJ6zrBMz2nPIHfBeaoTSKmKLK4Dzsz3phMHTaqAWlDWEVOUz
-         lmgTBZ6QxXQ7/iiqo9k/aWp+Stc3HgGD0FgPAupGnH6CO8equjMzhr06ExcNCHtEY7yr
-         Iy5yhmXUFAh4rpgCpwsYn1+LA7HMil6t6bpvND0J4OzdCGvT4Yus3tMeBiavu7g2mR9B
-         SSQQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hWMulavHguDBRCrVKyFBVx7gMZcaLDBqhj8CvP80Q7E=;
+        b=iAmCvh52C6lmCYBo5ZiN5hHCAu2fAkWo/EasINRykyHBmAETWy8beZzvcus5tEkwRm
+         7Ljfn0XrTNszaIj6pRrjgqoTow7+xQL2Qqd2li6ADiIk1ZH+53YX4Rrje9ReuzejsKQt
+         WZ5qd6woEpPksRm5JkUKkrpCIpuTDlAtVAIgjBOlULlq2ksuCSswqzryjON+C7/l44Pl
+         ABVgQ0AwVNxXh9ZFicLf4H+a8gTtvOaMIxXM7UFNKbFngZl3mfE/eHHeeRYRFraAgP3k
+         w7fIedfNV4u5amqVkV8ZPpz8vHcKblaYRrLiZENkAqVHEy5qLh5a2/a/L6R9sBdWYWcF
+         j++Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=ajoqDPP656VX5YEBu8I1q77ACKKc8Lf1fY/olzortAE=;
-        b=ny5eVMy3uIpLCOI+6lNFsAbt3Byxnd0dRNrsbZ2dkw6e9OUWGoBxL7jJGxPppxb1Ln
-         urrV8pyItf3oAAFpk7LGBok31ho6uKX2en1qntew01/nwb0YqWFRsj6CdVOrZdGWLFB1
-         KAwIz3TyuW//J05jKxNWjNDtK09mEFF+SLfNaaO9brgoVEUW9UV+lVKcJWpvEGt5um5G
-         shmAMWEZ7PBj3IsOZgEnwstBwhaE0VQq8U7bQg/tjxhkRIuxhDVMCukAR4rxIuZSoLEa
-         e5GpG8k+oZIZeq2gURDHgEAYTXUfdoaW4cGHY8kLH1x9xmuub8l9CFmmg8Thed14g9yQ
-         8ucQ==
-X-Gm-Message-State: AOAM532RluNbYv/OsJUD0kQmwpGYyaDQlbzJZVHSaV4IdqSS25CfXvVR
-        ABqeYx/buarfY/UBUREeWUw=
-X-Google-Smtp-Source: ABdhPJzs3fIDRsfWoXgUCGIUOec9z2VIIpcFKSpSfazaeuxbj6y7WC1joJGMkog/7P0aRTBHrdrSTw==
-X-Received: by 2002:a67:e1d2:: with SMTP id p18mr6418032vsl.30.1634826974436;
-        Thu, 21 Oct 2021 07:36:14 -0700 (PDT)
-Received: from [127.0.0.1] ([187.68.192.38])
-        by smtp.gmail.com with ESMTPSA id s8sm2986617vsk.18.2021.10.21.07.36.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 07:36:13 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 11:36:03 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     John Garry <john.garry@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     peterz@infradead.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, mingo@redhat.com, irogers@google.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kjain@linux.ibm.com, james.clark@arm.com
-Subject: Re: [PATCH v2 0/2] perf jevents: Enable build warnings
-User-Agent: K-9 Mail for Android
-In-Reply-To: <9075dc5c-25a2-c977-a1c2-675e972115e7@huawei.com>
-References: <1634807805-40093-1-git-send-email-john.garry@huawei.com> <YXFjSR6ZRQbMjiG3@kernel.org> <9075dc5c-25a2-c977-a1c2-675e972115e7@huawei.com>
-Message-ID: <0B2C61AB-3F0D-4618-B0AD-7143C44B4A3A@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hWMulavHguDBRCrVKyFBVx7gMZcaLDBqhj8CvP80Q7E=;
+        b=zMaW8MbwFAimxkqiToG/sQ7E6soSyMQIVg0Ss3A3LS8Cz5cWSHn8u6JvvEAv9yx2qJ
+         0FOKbGLsDoFLWv0QbtUCOekwZmxDLMKeb4Mk+Ttv+8KiW/KqivN6NtfFtlOHXj2NCTSY
+         kZaov2ZBj8+IrQ8IM+ky3t4qTnkn8rkqyt9m0onMI/EzEXiN4BNDoFA3xL81/Vl6XZ54
+         7v4aXwPIWItpm42PFD1QpX4HG1zU38P+q2RmHFch8lafG6Fxihmx9yecxTcchUFL3jBA
+         L2MidyGeTDqltQ6KXvgLah0Q/nMKy7uoBUtphkuxSeJW6FhWQjojmXeIAUf+F+N8Pxc3
+         A0xg==
+X-Gm-Message-State: AOAM533G0KcamIw+1NXOLejmuiOL8k/sZoZEKUaT/yh30xiz1DK0/h4C
+        EO2fGYXoroLb5tHDRbMpLWir6Q==
+X-Google-Smtp-Source: ABdhPJyjDdV/DmdDuhG8h5Y8UWuU/WoJYOGcrVrT73FmJenSSbHocJoQBYDDbyDIZYNHHR5dMzTsOA==
+X-Received: by 2002:a62:6543:0:b0:44c:61a0:555a with SMTP id z64-20020a626543000000b0044c61a0555amr5748532pfb.14.1634827053748;
+        Thu, 21 Oct 2021 07:37:33 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([148.163.172.147])
+        by smtp.gmail.com with ESMTPSA id z19sm6182867pfj.156.2021.10.21.07.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 07:37:33 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 22:37:26 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFCv1 1/4] arm64: Use static key for tracing PID in CONTEXTIDR
+Message-ID: <20211021143726.GA213960@leoy-ThinkPad-X240s>
+References: <20211021134530.206216-1-leo.yan@linaro.org>
+ <20211021134530.206216-2-leo.yan@linaro.org>
+ <53962765-53b9-dfdc-a5b2-a3133a924c12@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53962765-53b9-dfdc-a5b2-a3133a924c12@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi James,
 
+On Thu, Oct 21, 2021 at 03:33:01PM +0100, James Clark wrote:
 
-On October 21, 2021 10:02:41 AM GMT-03:00, John Garry <john=2Egarry@huawei=
-=2Ecom> wrote:
->On 21/10/2021 13:55, Arnaldo Carvalho de Melo wrote:
->> Em Thu, Oct 21, 2021 at 05:16:43PM +0800, John Garry escreveu:
->>> Currently jevents builds without any complier warning flags enabled=2E=
- So
->>> use newly-defined HOSTCFLAGS, which comes from EXTRA_WARNINGS=2E
->>>
->>> Changes for v2:
->>> - Add Werror, Wall, and Wextra (James Clark suggestion)
->>=20
->> Thanks, applied=2E
->>=20
->
->Hi Arnaldo,
->
->Can you please wait until I check the review response from jirka?
+[...]
 
-Sure, it's not published, and will not be until some fixes are made=2E Hav=
-ing it in my local tree gets it tested together with the whole shebang in l=
-ots of containers=2E
+> > +static int __init contextidr_init(void)
+> > +{
+> > +	if (IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
+> > +		static_branch_inc(&contextidr_in_use);
+> > +	return 0;
+> > +}
+> > +early_initcall(contextidr_init);
+> 
+> Hi Leo,
+> 
+> Can you skip this early_initcall() part if you do something like this:
+> 
+>     DECLARE_STATIC_KEY_MAYBE(CONFIG_PID_IN_CONTEXTIDR, contextidr_in_use)
+> 
+> It seems like there is a way to conditionally initialise it to true.
 
-I collect reviewed-by, etc as they appear=2E
+Thanks for good point!  Will test this way in next spin.
 
-- Arnaldo
-
->>=20
->>  =20
->>> Baseline is acme perf/core + mainline commit b94729919db2 ("perf jeven=
-ts:
->>> Free the sys_event_tables list after processing entries"):
->>>
->>> 680453e63302 perf jevents: Free the sys_event_tables list after proces=
-sing entries
->>> be8ecc57f180 (origin/perf/core) perf srcline: Use long-running addr2li=
-ne per DSO
->>> 2b775152bbe8 perf tests vmlinux-kallsyms: Ignore hidden symbols
->>>
->>> John Garry (2):
->>>    perf jevents: Fix some would-be warnings
->>>    perf jevents: Enable warnings through HOSTCFLAGS
->>>
->>>   tools/perf/Makefile=2Econfig      |  5 +++++
->>>   tools/perf/Makefile=2Eperf        |  2 +-
->>>   tools/perf/pmu-events/Build     |  2 +-
->>>   tools/perf/pmu-events/jevents=2Ec | 10 ++++------
->>>   4 files changed, 11 insertions(+), 8 deletions(-)
->>>
->>> --=20
->>> 2=2E17=2E1
->>=20
->
+Leo
