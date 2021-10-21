@@ -2,196 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFFA4367CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBED04367B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 18:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhJUQcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 12:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
+        id S231944AbhJUQ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 12:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhJUQct (ORCPT
+        with ESMTP id S231883AbhJUQ2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:32:49 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD1BC061764;
-        Thu, 21 Oct 2021 09:30:33 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id u6-20020a17090a3fc600b001a00250584aso3539654pjm.4;
-        Thu, 21 Oct 2021 09:30:33 -0700 (PDT)
+        Thu, 21 Oct 2021 12:28:18 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D55C061764;
+        Thu, 21 Oct 2021 09:26:02 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id z11-20020a1c7e0b000000b0030db7b70b6bso307906wmc.1;
+        Thu, 21 Oct 2021 09:26:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Lc2V8kW9DWjIh5PwTRqiTR+Qdm9DCZ56d3CfgkVtsAg=;
-        b=KuDBSYgshNz9/GCM1Jkbz7X3nsWyxLk7hvxcjDbgj2f+N3J2vjdaq7KVZsGcSNocHf
-         pMaNHrJ5ZwHL38XdgC6QleKmA2D81frhRfhI9iPcj9GYH78bb1Nlt2LXE6s4eakmlC1C
-         YY2KiZqTVXORECOLw0be0vs2dOsf2m1cyKFZB9E5TJvohcma/0P8dxtyYEikqf591vPp
-         X4fBU35cfhcGSzdmFwJnJgWcj03FLgViEoeTO3fzri7jaHSUdzlZtW6qkhhEmFtYWPcp
-         ApO6iqy1iDToJt+y0rvB5+29nVoGOieKLQJYFCO7E6YzBy5afnoHSPUxsk03JZHQSjIT
-         +2hA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MJX2i4HqBrM5vK2Tz/O1+2LEtyHzF3MISyrbDZ9H1L0=;
+        b=Ei/6JKliMFXsBAo5RU5GpOOPsS7XlFzAhvK8H56I9S/O8dxSN9/RULALxLfxuRbMuj
+         FLyXizJ3d75jhBhDABUjUAh3cIghGKGlS1MqR0SQQlhoBHiAx+eXzFdY+OpuKI+mr2g3
+         4Xm0/7J/FIE1xnZpo1dZUN8In7hgKaTV3xNLLuRgnc1Uh+ytshpF0U15u1Dxlup5aUz2
+         vUaxKT/nsqC8Q08oa3ZNyxO0cjW1oVVoiaoj3Fy3kptW2GdfJGMJgNACrO0OsfG4Jz4m
+         ucK9MQlVBQo81f8YudTvTZHNo+3bKMTNHpgm0MKAGMSXXhxMlVFo7PAU3MmjA8XJn5qD
+         O10w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Lc2V8kW9DWjIh5PwTRqiTR+Qdm9DCZ56d3CfgkVtsAg=;
-        b=uMc8ynu91NGAqwVK0h4gsHhm9C56KOTS9j/5wQCeU/e/chrne687ClL9x8Uu1pYTKs
-         GNfl3iyXHfFF/78OHPK/7Zn7Nm1DNuHlc72zyz8BzfcKF2cz86Q4Aws/zCwjMvEBOiB5
-         aeW1ho4eS5aZVvdtsPaSg7VvRniT1R0Pzw/2nldUkHLgTkLdu/YMPO5d21IPESCS9dsv
-         4ZyI5I+Pyv+F2HFRIJhq8VksutxZNXCDcAl7chEYaodS0O6f+dZF5JcYfVQVvrnCwKYe
-         PX1n+GbMk6u+XE0R6c4iE/D/VYVd+DXVgUm2/hGw8i/4pQxR22sG7KR5KdRcx3qxY+j9
-         i+cg==
-X-Gm-Message-State: AOAM530izInSzUL8Qs+mW8Cm3eE9agHr/QxnY68t/AAyhLCYl49xjtVq
-        doKm57klVSyZk661ELZjC+o=
-X-Google-Smtp-Source: ABdhPJxOnUbbOM9WGG3ZOvhQwiI9j78jVo97pCwncL8rKO/wgLLb9naCikt2yiq01L3UPck2/PDSEA==
-X-Received: by 2002:a17:90a:9bca:: with SMTP id b10mr7852273pjw.133.1634833832448;
-        Thu, 21 Oct 2021 09:30:32 -0700 (PDT)
-Received: from theprophet ([2406:7400:63:29a4:d874:a949:6890:f95f])
-        by smtp.gmail.com with ESMTPSA id d60sm9876076pjk.49.2021.10.21.09.30.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 09:30:31 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 22:00:21 +0530
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, ruscur@russell.cc, oohall@gmail.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v4 1/8] PCI/AER: Remove ID from aer_agent_string[]
-Message-ID: <20211021163021.r4ekhfol42ftw5zw@theprophet>
-References: <22b2dae2a6ac340d9d45c28481d746ec1064cd6c.1633453452.git.naveennaidu479@gmail.com>
- <20211021012826.GA2655655@bhelgaas>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MJX2i4HqBrM5vK2Tz/O1+2LEtyHzF3MISyrbDZ9H1L0=;
+        b=NxL1W44BDkjl89XHwLi8rhDurJWmpeBrgWAW6hxhHoD/o8bdeZ3gb774K30tmn7QZ/
+         vStAUhaZxytKUGPz9CBXsPQHi792AwL4q9gbl4Jb3KXlJiFMuoilFk31cDuGcYhJdY7I
+         +pX7ALasYUcICGMkGYb52pzXIq42Esr8L2kG8l/q/V26rUP4cVJC3kHIgZLT2QKqeCqP
+         Yz7KeP4Yhhhx/fNGPa6yFsyVNUg3IP0DfqGOsLsOE5IJWns58dL03jX1FJR0K4eA8oiJ
+         pER7/j3zqTBveUZ5G2ik7drL5oIvIVAFoyfvYOQSWPoJD6qHTX8b0y3DXB/v5ac7WsGe
+         AgNA==
+X-Gm-Message-State: AOAM532S+aLEM9W1Xb/k9+fYJ8NibhOnOtPOzb4/8UXacynWpnH6xQeY
+        vMT/8BEViZu3V5iddy0z6EFtUTLCbbxXRWtRIMQ=
+X-Google-Smtp-Source: ABdhPJxMMEpgJvFCUhkiPbr0GtGuVpBCjP3S4KkFi+sJX0HKzCpcukiyjXaKzSDNiLpZS2pS4vkln3p9WiZuTWqUWOs=
+X-Received: by 2002:a7b:c007:: with SMTP id c7mr22651421wmb.101.1634833560514;
+ Thu, 21 Oct 2021 09:26:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021012826.GA2655655@bhelgaas>
+References: <20211021073947.499373-1-maxime@cerno.tech> <20211021073947.499373-22-maxime@cerno.tech>
+In-Reply-To: <20211021073947.499373-22-maxime@cerno.tech>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 21 Oct 2021 09:30:39 -0700
+Message-ID: <CAF6AEGvQzyzNs57nCuR5ZRC14kB8CscykJ+4=gmZB6==OXCQEA@mail.gmail.com>
+Subject: Re: [PATCH v5 21/21] drm/msm/dsi: Adjust probe order
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        "moderated list:ARM/S5P EXYNOS AR..." 
+        <linux-samsung-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>, Inki Dae <inki.dae@samsung.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10, Bjorn Helgaas wrote:
-> On Tue, Oct 05, 2021 at 10:48:08PM +0530, Naveen Naidu wrote:
-> > Currently, we do not print the "id" field in the AER error logs. Yet the
-> > aer_agent_string[] has the word "id" in it. The AER error log looks
-> > like:
-> > 
-> >   pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver ID)
-> > 
-> > Without the "id" field in the error log, The aer_agent_string[]
-> > (eg: "Receiver ID") does not make sense. A user reading the
-> > aer_agent_string[] in the log, might inadvertently look for an "id"
-> > field and not finding it might lead to confusion.
-> > 
-> > Remove the "ID" from the aer_agent_string[].
-> > 
-> > The following are sample dummy errors inject via aer-inject.
-> 
-> I like this, and the problem it fixes was my fault because
-> these "ID" strings should have been removed by 010caed4ccb6.
-> 
-> If it's straightforward enough, it would be nice to have the
-> aer-inject command line here in the commit log to make it easier
-> for people to play with this.
+On Thu, Oct 21, 2021 at 12:41 AM Maxime Ripard <maxime@cerno.tech> wrote:
 >
+> From: Rob Clark <robdclark@chromium.org>
+>
+> Switch to the documented order dsi-host vs bridge probe.
+>
+> Tested-by: Amit Pundir <amit.pundir@linaro.org>
+> Tested-by: Caleb Connolly <caleb.connolly@linaro.org>
+> Tested-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Thank you for the review. Do you mean something like:
+I guess this should probably land together w/ the rest of the series,
+so a-b for merging thru drm-misc
 
-The following sample dummy errors are injected via aer-inject via the
-following steps:
+BR,
+-R
 
-  1. The steps to compile the aer-inject tool is mentioned in (Section
-     4. Software error inject) of the document [1]
-
-     [1]: https://www.kernel.org/doc/Documentation/PCI/pcieaer-howto.txt
-
-     Make sure to place the aer-inject executable at the home directory
-     of the qemu system or at any other place.
-
-  2. Emulate a PCIE architecture using qemu, A sample looks like
-     following:
-     
-		qemu-system-x86_64 -kernel ../linux/arch/x86_64/boot/bzImage \
-        -initrd  buildroot-build/images/rootfs.cpio.gz \
-        -append "console=ttyS0"  \
-        -enable-kvm -nographic \
-        -M q35 \
-        -device pcie-root-port,bus=pcie.0,id=rp1,slot=1 \
-        -device pcie-pci-bridge,id=br1,bus=rp1 \
-        -device e1000,bus=br1,addr=8
-       
-    Note that the PCIe features are available only when using the 
-    'q35' Machine [2]
-    [2]: https://github.com/qemu/qemu/blob/master/docs/pcie.txt
-
-  3. Once the qemu system starts up, create a sample aer-file or use any
-     example aer file from [3]
-
-     [3]:
-     https://git.kernel.org/pub/scm/linux/kernel/git/gong.chen/aer-inject.git/tree/examples
-
-  4. Inject any aer-error using
-      
-      ./aer-inject aer-file
-
-This does look a tad bit longer for a commit log so I am unsure if you
-would like to have it there. If you are okay with it, I would be happy
-to add it to that :)
-
-> > Before
-> > =======
-> > 
-> > In 010caed4ccb6 ("PCI/AER: Decode Error Source Requester ID"),
-> > the "id" field was removed from the AER error logs, so currently AER
-> > logs look like:
-> > 
-> >   pcieport 0000:00:03.0: AER: Corrected error received: 0000:00:03:0
-> >   pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver ID) <--- no id field
-> >   pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
-> >   pcieport 0000:00:03.0:    [ 6] BadTLP
-> > 
-> > After
-> > ======
-> > 
-> >   pcieport 0000:00:03.0: AER: Corrected error received: 0000:00:03.0
-> >   pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver)
-> >   pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
-> >   pcieport 0000:00:03.0:    [ 6] BadTLP
-> > 
-> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> > ---
-> >  drivers/pci/pcie/aer.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > index 9784fdcf3006..241ff361b43c 100644
-> > --- a/drivers/pci/pcie/aer.c
-> > +++ b/drivers/pci/pcie/aer.c
-> > @@ -516,10 +516,10 @@ static const char *aer_uncorrectable_error_string[] = {
-> >  };
-> >  
-> >  static const char *aer_agent_string[] = {
-> > -	"Receiver ID",
-> > -	"Requester ID",
-> > -	"Completer ID",
-> > -	"Transmitter ID"
-> > +	"Receiver",
-> > +	"Requester",
-> > +	"Completer",
-> > +	"Transmitter"
-> >  };
-> >  
-> >  #define aer_stats_dev_attr(name, stats_array, strings_array,		\
-> > @@ -703,7 +703,7 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
-> >  	const char *level;
-> >  
-> >  	if (!info->status) {
-> > -		pci_err(dev, "PCIe Bus Error: severity=%s, type=Inaccessible, (Unregistered Agent ID)\n",
-> > +		pci_err(dev, "PCIe Bus Error: severity=%s, type=Inaccessible, (Unregistered Agent)\n",
-> >  			aer_error_severity_string[info->severity]);
-> >  		goto out;
-> >  	}
-> > -- 
-> > 2.25.1
-> > 
-> > _______________________________________________
-> > Linux-kernel-mentees mailing list
-> > Linux-kernel-mentees@lists.linuxfoundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
+> ---
+>  drivers/gpu/drm/msm/dsi/dsi.c         | 50 ++++++++++++++++-----------
+>  drivers/gpu/drm/msm/dsi/dsi.h         |  2 +-
+>  drivers/gpu/drm/msm/dsi/dsi_host.c    | 22 ++++--------
+>  drivers/gpu/drm/msm/dsi/dsi_manager.c |  6 ++--
+>  drivers/gpu/drm/msm/msm_drv.h         |  2 ++
+>  5 files changed, 43 insertions(+), 39 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
+> index 614dc7f26f2c..ad73ebb84b2d 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi.c
+> @@ -112,18 +112,7 @@ static int dsi_bind(struct device *dev, struct device *master, void *data)
+>  {
+>         struct drm_device *drm = dev_get_drvdata(master);
+>         struct msm_drm_private *priv = drm->dev_private;
+> -       struct platform_device *pdev = to_platform_device(dev);
+> -       struct msm_dsi *msm_dsi;
+> -
+> -       DBG("");
+> -       msm_dsi = dsi_init(pdev);
+> -       if (IS_ERR(msm_dsi)) {
+> -               /* Don't fail the bind if the dsi port is not connected */
+> -               if (PTR_ERR(msm_dsi) == -ENODEV)
+> -                       return 0;
+> -               else
+> -                       return PTR_ERR(msm_dsi);
+> -       }
+> +       struct msm_dsi *msm_dsi = dev_get_drvdata(dev);
+>
+>         priv->dsi[msm_dsi->id] = msm_dsi;
+>
+> @@ -136,12 +125,8 @@ static void dsi_unbind(struct device *dev, struct device *master,
+>         struct drm_device *drm = dev_get_drvdata(master);
+>         struct msm_drm_private *priv = drm->dev_private;
+>         struct msm_dsi *msm_dsi = dev_get_drvdata(dev);
+> -       int id = msm_dsi->id;
+>
+> -       if (priv->dsi[id]) {
+> -               dsi_destroy(msm_dsi);
+> -               priv->dsi[id] = NULL;
+> -       }
+> +       priv->dsi[msm_dsi->id] = NULL;
+>  }
+>
+>  static const struct component_ops dsi_ops = {
+> @@ -149,15 +134,40 @@ static const struct component_ops dsi_ops = {
+>         .unbind = dsi_unbind,
+>  };
+>
+> -static int dsi_dev_probe(struct platform_device *pdev)
+> +int dsi_dev_attach(struct platform_device *pdev)
+>  {
+>         return component_add(&pdev->dev, &dsi_ops);
+>  }
+>
+> -static int dsi_dev_remove(struct platform_device *pdev)
+> +void dsi_dev_detach(struct platform_device *pdev)
+>  {
+> -       DBG("");
+>         component_del(&pdev->dev, &dsi_ops);
+> +}
+> +
+> +static int dsi_dev_probe(struct platform_device *pdev)
+> +{
+> +       struct msm_dsi *msm_dsi;
+> +
+> +       DBG("");
+> +       msm_dsi = dsi_init(pdev);
+> +       if (IS_ERR(msm_dsi)) {
+> +               /* Don't fail the bind if the dsi port is not connected */
+> +               if (PTR_ERR(msm_dsi) == -ENODEV)
+> +                       return 0;
+> +               else
+> +                       return PTR_ERR(msm_dsi);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int dsi_dev_remove(struct platform_device *pdev)
+> +{
+> +       struct msm_dsi *msm_dsi = platform_get_drvdata(pdev);
+> +
+> +       DBG("");
+> +       dsi_destroy(msm_dsi);
+> +
+>         return 0;
+>  }
+>
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h b/drivers/gpu/drm/msm/dsi/dsi.h
+> index b50db91cb8a7..83787cbee419 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi.h
+> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
+> @@ -116,7 +116,7 @@ int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
+>  struct drm_panel *msm_dsi_host_get_panel(struct mipi_dsi_host *host);
+>  unsigned long msm_dsi_host_get_mode_flags(struct mipi_dsi_host *host);
+>  struct drm_bridge *msm_dsi_host_get_bridge(struct mipi_dsi_host *host);
+> -int msm_dsi_host_register(struct mipi_dsi_host *host, bool check_defer);
+> +int msm_dsi_host_register(struct mipi_dsi_host *host);
+>  void msm_dsi_host_unregister(struct mipi_dsi_host *host);
+>  int msm_dsi_host_set_src_pll(struct mipi_dsi_host *host,
+>                         struct msm_dsi_phy *src_phy);
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> index e269df285136..f741494b1bf6 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> @@ -1624,6 +1624,10 @@ static int dsi_host_attach(struct mipi_dsi_host *host,
+>         if (ret)
+>                 return ret;
+>
+> +       ret = dsi_dev_attach(msm_host->pdev);
+> +       if (ret)
+> +               return ret;
+> +
+>         DBG("id=%d", msm_host->id);
+>         if (msm_host->dev)
+>                 queue_work(msm_host->workqueue, &msm_host->hpd_work);
+> @@ -1636,6 +1640,8 @@ static int dsi_host_detach(struct mipi_dsi_host *host,
+>  {
+>         struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
+>
+> +       dsi_dev_detach(msm_host->pdev);
+> +
+>         msm_host->device_node = NULL;
+>
+>         DBG("id=%d", msm_host->id);
+> @@ -1970,7 +1976,7 @@ int msm_dsi_host_modeset_init(struct mipi_dsi_host *host,
+>         return 0;
+>  }
+>
+> -int msm_dsi_host_register(struct mipi_dsi_host *host, bool check_defer)
+> +int msm_dsi_host_register(struct mipi_dsi_host *host)
+>  {
+>         struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
+>         int ret;
+> @@ -1984,20 +1990,6 @@ int msm_dsi_host_register(struct mipi_dsi_host *host, bool check_defer)
+>                         return ret;
+>
+>                 msm_host->registered = true;
+> -
+> -               /* If the panel driver has not been probed after host register,
+> -                * we should defer the host's probe.
+> -                * It makes sure panel is connected when fbcon detects
+> -                * connector status and gets the proper display mode to
+> -                * create framebuffer.
+> -                * Don't try to defer if there is nothing connected to the dsi
+> -                * output
+> -                */
+> -               if (check_defer && msm_host->device_node) {
+> -                       if (IS_ERR(of_drm_find_panel(msm_host->device_node)))
+> -                               if (!of_drm_find_bridge(msm_host->device_node))
+> -                                       return -EPROBE_DEFER;
+> -               }
+>         }
+>
+>         return 0;
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> index c41d39f5b7cf..fc949a84cef6 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> @@ -72,7 +72,7 @@ static int dsi_mgr_setup_components(int id)
+>         int ret;
+>
+>         if (!IS_BONDED_DSI()) {
+> -               ret = msm_dsi_host_register(msm_dsi->host, true);
+> +               ret = msm_dsi_host_register(msm_dsi->host);
+>                 if (ret)
+>                         return ret;
+>
+> @@ -92,10 +92,10 @@ static int dsi_mgr_setup_components(int id)
+>                  * because only master DSI device adds the panel to global
+>                  * panel list. The panel's device is the master DSI device.
+>                  */
+> -               ret = msm_dsi_host_register(slave_link_dsi->host, false);
+> +               ret = msm_dsi_host_register(slave_link_dsi->host);
+>                 if (ret)
+>                         return ret;
+> -               ret = msm_dsi_host_register(master_link_dsi->host, true);
+> +               ret = msm_dsi_host_register(master_link_dsi->host);
+>                 if (ret)
+>                         return ret;
+>
+> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> index 8b005d1ac899..31d50e98a723 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.h
+> +++ b/drivers/gpu/drm/msm/msm_drv.h
+> @@ -344,6 +344,8 @@ int msm_edp_modeset_init(struct msm_edp *edp, struct drm_device *dev,
+>
+>  struct msm_dsi;
+>  #ifdef CONFIG_DRM_MSM_DSI
+> +int dsi_dev_attach(struct platform_device *pdev);
+> +void dsi_dev_detach(struct platform_device *pdev);
+>  void __init msm_dsi_register(void);
+>  void __exit msm_dsi_unregister(void);
+>  int msm_dsi_modeset_init(struct msm_dsi *msm_dsi, struct drm_device *dev,
+> --
+> 2.31.1
+>
