@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B29F435C52
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78654435C5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbhJUHsV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 Oct 2021 03:48:21 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:37425 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhJUHsT (ORCPT
+        id S231313AbhJUHtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhJUHtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:48:19 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 9F7C020019;
-        Thu, 21 Oct 2021 07:45:56 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 09:45:55 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Ryan Barnett <ryan.barnett@collins.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/48] TI AM437X ADC1
-Message-ID: <20211021094555.0557d1a4@xps13>
-In-Reply-To: <YXA8fVh5Q7aWNFE2@google.com>
-References: <20211015081506.933180-1-miquel.raynal@bootlin.com>
-        <20211020173611.07980c1d@xps13>
-        <YXA8fVh5Q7aWNFE2@google.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 21 Oct 2021 03:49:53 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7639C06161C;
+        Thu, 21 Oct 2021 00:47:37 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZfhm0d1nz4xbT;
+        Thu, 21 Oct 2021 18:47:36 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634802456;
+        bh=nj+ACbbT1LJ427sB6DX+UKXrW2C0LTUz/vde4pj0udU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CivcbtTmSK93Ziz8nUykxeWwubU6cElyaxcMD3rY84dub2JlfQGtVggwiVDAKJXTe
+         oD1lideO2ZyGCIwJX5npVRTG0yRlQuCdgtEj2r9SrlBX0odhDrDa0/JS2m9SqDnrfX
+         /T/uPhyHwDzJ/6tDC7MC3GtR7hSM0WV5XjYjROLUcWZPlHAccUEhWZ5QN4Hs1Ph02/
+         cXADoAdV7gDB36lk4BPCeQ7JgmuUWsVmlCpgIvoQShIN/zVLBq8XJUf+hiHFeoQv2k
+         8nGdX/Sa78EJjy0aTE9jzjV87BWiek77dC0CwNnrNr61VwkHe53pFY9QNTpzHxYLUl
+         vhAVmcimTpdNw==
+Date:   Thu, 21 Oct 2021 18:47:35 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     Vadim Pasternak <vadimp@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the drivers-x86 tree
+Message-ID: <20211021184735.794b22a7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; boundary="Sig_/EOZ.hFPGv0HaPvO7O=ETNjg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+--Sig_/EOZ.hFPGv0HaPvO7O=ETNjg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-lee.jones@linaro.org wrote on Wed, 20 Oct 2021 16:57:49 +0100:
+Hi all,
 
-> On Wed, 20 Oct 2021, Miquel Raynal wrote:
-> 
-> > Hi Lee,
-> > 
-> > miquel.raynal@bootlin.com wrote on Fri, 15 Oct 2021 10:14:18 +0200:
-> >   
-> > > /*
-> > >  * Reducing the Cc: list as this is just a rebase and all patches
-> > >  * received reviews already. Only the DT patches have received no
-> > >  * feedback, hence keeping the omap@ list in.
-> > >  */
-> > > 
-> > > Hello,
-> > > 
-> > > This is a (fairly big) series bringing support of AM437X ADC1.
-> > > On TI AM33XX SoCs family there is an ADC that can also be connected to a
-> > > touchscreen. This hardware has been extended and is present on certain
-> > > SoCs from the AM437X family. In particular, the touchscreen has been
-> > > replaced by a magnetic card reader. In both cases, the representation is
-> > > an MFD device with two children:
-> > > * on AM33XX: the touchscreen controller and the ADC
-> > > * on AM437X: the magnetic stripe reader and the ADC
-> > > 
-> > > This series really targets small and atomic changes so that the overall
-> > > review is eased, even though it leads to a lot of rather small patches.
-> > > Here are the steps:
-> > > * Supporting the missing clock
-> > > * Translating a single text file containing the description for the
-> > >   MFD, the touchscreen and the ADC into three independent yaml files.
-> > > * Cleaning/preparing the MFD driver.
-> > > * Supporting ADC1 in the MFD driver.
-> > > * Cleaning/preparing of the ADC driver.
-> > > * Supporting ADC1 in the ADC driver.
-> > > * Updating various device trees.
-> > > 
-> > > Here is the full series again, almost reviewed and acked entirely.
-> > > The clock patch has been acked, the ADC patches as well, so we expect
-> > > the series to go through the MFD tree if the maintainers agree with it.  
-> > 
-> > Sorry to ping you so early, but we already are at -rc6 and I was
-> > wondering if you could take the series as it has been on the mailing
-> > list for a while and received no real change since a couple of weeks
-> > already, possibly avoiding the need for yet another resend of 48
-> > patches :)  
-> 
-> Don't worry, it's email day tomorrow.  I have a bunch of high-priority
-> patches/sets that I aim to handle, yours included.
+After merging the drivers-x86 tree, today's linux-next build (htmldocs)
+produced these warnings:
 
-Haha, ok, thanks for the quick feedback :)
+Documentation/ABI/stable/sysfs-driver-mlxreg-io:230: WARNING: Unexpected in=
+dentation.
+Documentation/ABI/stable/sysfs-driver-mlxreg-io:230: WARNING: Block quote e=
+nds without a blank line; unexpected unindent.
 
+Introduced by commit
+
+  527cd54d49dd ("Documentation/ABI: Add new attributes for mlxreg-io sysfs =
+interfaces")
+
+--=20
 Cheers,
-Miquèl
+Stephen Rothwell
+
+--Sig_/EOZ.hFPGv0HaPvO7O=ETNjg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFxGxcACgkQAVBC80lX
+0GyaoQgAoYWD86s7TRVpdRBcZdNzKkzWJLkhigSRq5twb5KCX2HsDzdImv8YXLpX
+FTHNtDOPYea0bUV1oJIHAsumVPI3t+soI2wp2GTz9ZQ3DuF5e0hc5lhw8nZS7Dx8
+3BYnhUtoq7em13njUaKwdkVq6h2r6JFVAZOxOiZA4iFMbnwq4ICDhwqK0HZlagbp
+Q7Md/wukyVxF+mY3SR8xeAdgumlHcKgk/b/ZfUeJrXybuZ50zCP+OZGep0wUaZ4r
+0XhxjNYhwOd9jCl6hkWjB8yKENbFydMIqhe6/DZNams0wYun6pSn7yoPX6vOn8Yz
+Tqgx2By0GsfucxFi/WbeKSDjwG3PrQ==
+=8N7m
+-----END PGP SIGNATURE-----
+
+--Sig_/EOZ.hFPGv0HaPvO7O=ETNjg--
