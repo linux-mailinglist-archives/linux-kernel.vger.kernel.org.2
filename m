@@ -2,111 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F344368D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88CA4368DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 19:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhJURRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 13:17:50 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:33636 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhJURRt (ORCPT
+        id S232203AbhJURSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 13:18:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35635 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229567AbhJURSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:17:49 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:37160)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdbf9-000AMa-Iy; Thu, 21 Oct 2021 11:15:31 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:57708 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdbf8-004CFX-64; Thu, 21 Oct 2021 11:15:31 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Pratik Sampat <psampat@linux.ibm.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        bristot@redhat.com, christian@brauner.io, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, mingo@kernel.org, juri.lelli@redhat.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org, containers@lists.linux.dev,
-        containers@lists.linux-foundation.org, pratik.r.sampat@gmail.com,
-        Alexey Gladkov <legion@kernel.org>
-References: <20211009151243.8825-1-psampat@linux.ibm.com>
-        <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
-        <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
-        <YWirxCjschoRJQ14@slm.duckdns.org>
-        <b5f8505c-38d5-af6f-0de7-4f9df7ae9b9b@linux.ibm.com>
-        <YW2g73Lwmrhjg/sv@slm.duckdns.org>
-        <77854748-081f-46c7-df51-357ca78b83b3@linux.ibm.com>
-Date:   Thu, 21 Oct 2021 12:15:22 -0500
-In-Reply-To: <77854748-081f-46c7-df51-357ca78b83b3@linux.ibm.com> (Pratik
-        Sampat's message of "Wed, 20 Oct 2021 16:14:25 +0530")
-Message-ID: <87tuha7105.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 21 Oct 2021 13:18:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634836562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PVbmNx2Q8EjJXm8nyHGx5Ousb89stVDtJGzhnXN95ec=;
+        b=RKmnSQsvCTEjTMAhdvAaihfVfvEB+HRm7l7oPg5ZCkFfp03qLakZp7t2Ywpv0fzyQEmS5f
+        CYCUEQQRcTgVyHsgOkTYoFbrcUrGKl5p9jrU+FyRLJRw9oC0//PSpw8tDwmo/5yHaDtQ5d
+        AlsAM/H7i6etIZIakZYhX55HVQCKDhk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-kgC03dvKOMSlCwLMrM6_iw-1; Thu, 21 Oct 2021 13:16:00 -0400
+X-MC-Unique: kgC03dvKOMSlCwLMrM6_iw-1
+Received: by mail-ed1-f69.google.com with SMTP id u10-20020a50d94a000000b003dc51565894so1007278edj.21
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 10:16:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=PVbmNx2Q8EjJXm8nyHGx5Ousb89stVDtJGzhnXN95ec=;
+        b=PyMEyiogE6ZO0Nu8Ubw54zro4IWeNmj2X0uE0liSmfRLRF4EcXdRwSMAtO2+48pG8y
+         KqV8Ghc8QAOyLRFhnk5N/SLwOXE8z+xj0h525p2zim8J99oHpQwtgi0HIpZwQc+pvOos
+         9ntSLDkpp1C7IIP3zTypAgorHjhe/6k4+kC6LSw7hwV1NmlWNLd8ap97FMmXfPSuKklv
+         bvuyoyMvmFkVeImnRcGpQ6aU8O0ii6Z5lKHURgs0LnDTf70ToMQtuBZUQ7Bnnt42JAEK
+         IISy1ERl8L1TOK2ExBsTctvYFmORPI22Iz+lhMk7LQ9dGuv8QM8GOr6gNHoWpH7qa8mM
+         fPZA==
+X-Gm-Message-State: AOAM533LmdkOcjWCrgZltVKS/BDFIB3pwa1W/Q3ADntjZMviUqLQilOq
+        WAqlFgfJpbBKVqPdVmDuca6zlhUziUofX/SJb1WqsLDC4KAH+MDRyHv/hXOyqc/NoBFR9U3s7ME
+        FrOwrXibT65DoLtcoRX+EIUeM
+X-Received: by 2002:a17:907:1c0e:: with SMTP id nc14mr8722274ejc.103.1634836559575;
+        Thu, 21 Oct 2021 10:15:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9Ddy1dmXjTr32jRFjXqDaqxR5La1DixwmbDJ79+PUHh5JU3yjOgvx/JD5tj/TOPgEtON1kg==
+X-Received: by 2002:a17:907:1c0e:: with SMTP id nc14mr8722245ejc.103.1634836559359;
+        Thu, 21 Oct 2021 10:15:59 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id z4sm3646641edd.46.2021.10.21.10.15.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 10:15:58 -0700 (PDT)
+Message-ID: <73aeec22-2ec7-ff21-5c89-c13f2e90a213@redhat.com>
+Date:   Thu, 21 Oct 2021 19:15:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdbf8-004CFX-64;;;mid=<87tuha7105.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+k81XzcFL3nUOkF05szMGteN8T3vDwHqg=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4940]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Pratik Sampat <psampat@linux.ibm.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 387 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 14 (3.5%), b_tie_ro: 12 (3.0%), parse: 1.39
-        (0.4%), extract_message_metadata: 4.4 (1.1%), get_uri_detail_list:
-        1.49 (0.4%), tests_pri_-1000: 6 (1.6%), tests_pri_-950: 1.85 (0.5%),
-        tests_pri_-900: 1.45 (0.4%), tests_pri_-90: 120 (31.0%), check_bayes:
-        118 (30.4%), b_tokenize: 8 (2.1%), b_tok_get_all: 7 (1.8%),
-        b_comp_prob: 2.6 (0.7%), b_tok_touch_all: 96 (24.9%), b_finish: 1.14
-        (0.3%), tests_pri_0: 211 (54.6%), check_dkim_signature: 0.71 (0.2%),
-        check_dkim_adsp: 3.1 (0.8%), poll_dns_idle: 0.58 (0.2%), tests_pri_10:
-        4.0 (1.0%), tests_pri_500: 11 (2.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 1/2] x86/PCI: Ignore E820 reservations for bridge
+ windows on newer systems
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Benoit_Gr=c3=a9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>, stable@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+References: <20211020211455.GA2641031@bhelgaas>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211020211455.GA2641031@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pratik Sampat <psampat@linux.ibm.com> writes:
+Hi Bjorn,
 
-> On 18/10/21 9:59 pm, Tejun Heo wrote:
->> (cc'ing Johannes for memory sizing part)
+On 10/20/21 23:14, Bjorn Helgaas wrote:
+> On Wed, Oct 20, 2021 at 12:23:26PM +0200, Hans de Goede wrote:
+>> On 10/19/21 23:52, Bjorn Helgaas wrote:
+>>> On Thu, Oct 14, 2021 at 08:39:42PM +0200, Hans de Goede wrote:
+>>>> Some BIOS-es contain a bug where they add addresses which map to system
+>>>> RAM in the PCI host bridge window returned by the ACPI _CRS method, see
+>>>> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
+>>>> space").
+>>>>
+>>>> To work around this bug Linux excludes E820 reserved addresses when
+>>>> allocating addresses from the PCI host bridge window since 2010.
+>>>> ...
+> 
+>>> I haven't seen anybody else eager to merge this, so I guess I'll stick
+>>> my neck out here.
+>>>
+>>> I applied this to my for-linus branch for v5.15.
 >>
->> For memory, it's even trickier because in a lot of cases it's impossible to
->> tell how much memory is actually available without trying to use them as
->> active workingset can only be learned by trying to reclaim memory.
->
-> Restrictions for memory are even more complicated to model as you have
-> pointed out as well.
+>> Thank you, and sorry about the build-errors which the lkp
+>> kernel-test-robot found.
+>>
+>> I've just send out a patch which fixes these build-errors
+>> (verified with both .config-s from the lkp reports).
+>> Feel free to squash this into the original patch (or keep
+>> them separate, whatever works for you).
+> 
+> Thanks, I squashed the fix in.
+> 
+> HOWEVER, I think it would be fairly risky to push this into v5.15.
+> We would be relying on the assumption that current machines have all
+> fixed the BIOS defect that 4dc2287c1805 addressed, and we have little
+> evidence for that.
 
-For memory sizing we currently have MemAvailable in /proc/meminfo which
-makes a global guess at that.
+It is a 10 year old BIOS defect, so hopefully anything from 2018
+or later will not have it.
 
-We still need roughly that same approximation from an applications
-perspective that takes cgroups into account.
+> I'm not sure there's significant benefit to having this in v5.15.
+> Yes, the mainline v5.15 kernel would work on the affected machines,
+> but I suspect most people with those machines are running distro
+> kernels, not mainline kernels.
 
-There was another conversation not too long ago and it was tenatively
-agreed that it could make sense to provide such a number.  However it
-was very much requested that an application that would actually use
-that number be found so it would be possible to tell what makes a
-difference in practice rather than what makes a difference in theory.
+Fedora and Arch do follow mainline pretty closely and a lot of
+users are affected by this (see the large number of BugLinks in
+the commit).
 
-Eric
+I completely understand why you are reluctant to push this out, but
+your argument about most distros not running mainline kernels also
+applies to chances of people where this may cause a regression
+running mainline kernels also being quite small.
+
+> This issue has been around a long time, so it's not like a regression
+> that we just introduced.  If we fixed these machines and regressed
+> *other* machines, we'd be worse off than we are now.
+
+If we break one machine model and fix a whole bunch of other machines
+then in my book that is a win. Ideally we would not break anything,
+but we can only find out if we actually break anything if we ship
+the change.
+
+> Convince me otherwise if you see this differently :)
+
+See above :)
+
+> In the meantime, here's another possibility for working around this.
+> What if we discarded remove_e820_regions() completely, but aligned the
+> problem _CRS windows a little more?  The 4dc2287c1805 case was this:
+> 
+>   BIOS-e820: 00000000bfe4dc00 - 00000000c0000000 (reserved)
+>   pci_root PNP0A03:00: host bridge window [mem 0xbff00000-0xdfffffff]
+> 
+> where the _CRS window was of size 0x20100000, i.e., 512M + 1M.  At
+> least in this particular case, we could avoid the problem by throwing
+> away that first 1M and aligning the window to a nice 3G boundary.
+> Maybe it would be worth giving up a small fraction (less than 0.2% in
+> this case) of questionable windows like this?
+
+The PCI BAR allocation code tries to fall back to the BIOS assigned
+resource if the allocation fails. That BIOS assigned resource might
+fall outside of the host bridge window after we round the address.
+
+My initial gut instinct here is that this has a bigger chance
+of breaking things then my change.
+
+In the beginning of the thread you said that ideally we would
+completely stop using the E820 reservations for PCI host bridge
+windows. Because in hindsight messing with the windows on all
+machines just to work around a clear BIOS bug in some was not a
+good idea.
+
+This address-rounding/-aligning you now suggest, is again
+messing with the windows on all machines just to work around
+a clear BIOS bug in some. At least that is how I see this.
+
+I can understand that you're not entirely happy with my patch,
+but it does get rid of the use of E820 reservations for
+any current and future machines, removing any messing with
+the _CRS returned windows which we are doing.
+
+I also understand that you're not entirely comfortable with
+my "fix" not causing regressions else where. If you want to
+delay my fix till 5.16-rc1 that is fine (1).
+
+Regards,
+
+Hans
 
 
+
+1) The stable series will likely pick it up soon after
+5.16-rc1 though, so not sure how much that actually helps
+with getting more testing time.
 
