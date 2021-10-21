@@ -2,257 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF2F436A0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E577F436A0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbhJUSHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:07:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23126 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232505AbhJUSHV (ORCPT
+        id S232494AbhJUSJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232442AbhJUSI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:07:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634839504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c0lV1SQm+A/6nuLSjE1bEl9hT+k65LUuD9ohANoqFLs=;
-        b=hZDydXGcj58+c/pswMQ0b1cvibGPfi8WtzO8pIEepCgcaDdhFxzPF3afoqyZuYPj8C83xr
-        Zt6Cd43NgZ6xlZQGsFZYVWgx5n6Qd3yK8zV2BnNXxDxDVQeSHqKgQML+/jxvwhYvpJaDql
-        +pdWZstgnKbYvJ4GuN/wqf0XZBwFysY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-hZ17UqHQNxCGp75wNuNVrw-1; Thu, 21 Oct 2021 14:04:59 -0400
-X-MC-Unique: hZ17UqHQNxCGp75wNuNVrw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3846B80668D;
-        Thu, 21 Oct 2021 18:04:57 +0000 (UTC)
-Received: from llong.remote.csb (unknown [10.22.18.214])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9DD6119D9F;
-        Thu, 21 Oct 2021 18:04:55 +0000 (UTC)
-Subject: Re: [PATCH] locking: Generic ticket lock
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        =?UTF-8?Q?Christoph_M=c3=bcllner?= <christophm30@gmail.com>,
-        Stafford Horne <shorne@gmail.com>
-References: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-Message-ID: <4de96b16-a146-f82a-a7f2-706dba4f901f@redhat.com>
-Date:   Thu, 21 Oct 2021 14:04:55 -0400
+        Thu, 21 Oct 2021 14:08:59 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D564BC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:06:42 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id g184so1036670pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8OWfmO1AeD6F2LGYa8iDuDtuPM78L2809BLnB7xB0UI=;
+        b=pLncGkH0BVHpvxocf0AiYFlXd3f5ppYoGN/CnnLMp5Ja7a8V+BgP9zQnchlhzBk9Wp
+         bnKTxuV6HejmxGJYTzwZ19ffQ0/iXmirfnubVSb0ozrvD3qA9UQ21Oh7bz316yHZ/85q
+         G6fmDEYJ2WhBA5OtVdbjVkuRnX9XRjrFTpXpM82iP8zaSpzNqxrcSjYMU35wlzoL7aEV
+         Z3xVDFo+6+T64kknB1TLxvPTqu/6FfJXXWoiRtWAc2cl7ysodGwrBqYasoJQKYTL0FHU
+         f0+UQZzy4OA90G1ouGcrmOYhp8VKZ10Gg+v0XO1me4qxVFcjkk1Lb1Yy0TdWeAbDh5WW
+         tYvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8OWfmO1AeD6F2LGYa8iDuDtuPM78L2809BLnB7xB0UI=;
+        b=5Km6l08QgtR5XCq6HrKmZ0CF3r0pRQ5kudQE5immH+ZGL/QaOpe/Xv2aK1IfV43c+A
+         +An/YdYoRWydswICaE0SxcDW8k2Q2JjlAGHiPSY+tlmNNY7PKGfDkP1yfXRfu90By2ol
+         qRXb1N8D38uVU1eTW/5LFQEc1n8o6pkcSFEhzj+chTI12/RcV+D3vv75v+4JN3KCiIDn
+         QpvwPXXcXlV2Jb6hXlynN1I/itiseA0AwshfIB58LuHza+OJs0tWkoNhBytsXtvY3wLB
+         KWuOMWHJQ7iZ0BV9OqrUH0Yzlxmkq9PsL9CfojDM/d4u2724ST6f+mplXlAE+RPuuwxP
+         7ADA==
+X-Gm-Message-State: AOAM533/CJMvpPsHWF+PJz2krYR8aYJvnzKGcWGp1ijRVOT4C0n3gzmf
+        C0geO7L9zsbb/U+MsRRAOoM=
+X-Google-Smtp-Source: ABdhPJz4lc7UxocThFFGPM+5fVzdUEMmiOeHCmCBGzeyRezfnbIeF99mr3eKuiRZr3tpNvvnB8y9Ng==
+X-Received: by 2002:a65:6554:: with SMTP id a20mr5593418pgw.107.1634839602239;
+        Thu, 21 Oct 2021 11:06:42 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id e6sm5976573pgf.59.2021.10.21.11.06.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 11:06:41 -0700 (PDT)
+Subject: Re: [PATCH] irqchip: Provide stronger type checking for
+ IRQCHIP_MATCH/IRQCHIP_DECLARE
+To:     Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Rob Herring <robh@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20211020104527.3066268-1-maz@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <866c3d7a-0cc9-0b49-6437-64443abfdfc4@gmail.com>
+Date:   Thu, 21 Oct 2021 11:06:39 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YXFli3mzMishRpEq@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20211020104527.3066268-1-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/21 9:05 AM, Peter Zijlstra wrote:
-> There's currently a number of architectures that want/have graduated
-> from test-and-set locks and are looking at qspinlock.
->
-> *HOWEVER* qspinlock is very complicated and requires a lot of an
-> architecture to actually work correctly. Specifically it requires
-> forward progress between a fair number of atomic primitives, including
-> an xchg16 operation, which I've seen a fair number of fundamentally
-> broken implementations of in the tree (specifically for qspinlock no
-> less).
->
-> The benefit of qspinlock over ticket lock is also non-obvious, esp.
-> at low contention (the vast majority of cases in the kernel), and it
-> takes a fairly large number of CPUs (typically also NUMA) to make
-> qspinlock beat ticket locks.
->
-> Esp. things like ARM64's WFE can move the balance a lot in favour of
-> simpler locks by reducing the cacheline pressure due to waiters (see
-> their smp_cond_load_acquire() implementation for details).
->
-> Unless you've audited qspinlock for your architecture and found it
-> sound *and* can show actual benefit, simpler is better.
->
-> Therefore provide ticket locks, which depend on a single atomic
-> operation (fetch_add) while still providing fairness.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->   include/asm-generic/qspinlock.h         |   30 +++++++++
->   include/asm-generic/ticket_lock_types.h |   11 +++
->   include/asm-generic/ticket_lock.h       |   97 ++++++++++++++++++++++++++++++++
->   3 files changed, 138 insertions(+)
->
-> --- a/include/asm-generic/qspinlock.h
-> +++ b/include/asm-generic/qspinlock.h
-> @@ -2,6 +2,36 @@
->   /*
->    * Queued spinlock
->    *
-> + * A 'generic' spinlock implementation that is based on MCS locks. An
-> + * architecture that's looking for a 'generic' spinlock, please first consider
-> + * ticket_lock.h and only come looking here when you've considered all the
-> + * constraints below and can show your hardware does actually perform better
-> + * with qspinlock.
-> + *
-> + *
-> + * It relies on smp_store_release() + atomic_*_acquire() to be RCsc (or no
-> + * weaker than RCtso if you're Power, also see smp_mb__after_unlock_lock()),
-> + *
-> + * It relies on a far greater (compared to ticket_lock.h) set of atomic
-> + * operations to behave well together, please audit them carefully to ensure
-> + * they all have forward progress. Many atomic operations may default to
-> + * cmpxchg() loops which will not have good forward progress properties on
-> + * LL/SC architectures.
-> + *
-> + * One notable example is atomic_fetch_or_acquire(), which x86 cannot (cheaply)
-> + * do. Carefully read the patches that introduced
-> + * queued_fetch_set_pending_acquire().
-> + *
-> + * It also heavily relies on mixed size atomic operations, in specific it
-> + * requires architectures to have xchg16; something which many LL/SC
-> + * architectures need to implement as a 32bit and+or in order to satisfy the
-> + * forward progress guarantees mentioned above.
-> + *
-> + * Further reading on mixed size atomics that might be relevant:
-> + *
-> + *   http://www.cl.cam.ac.uk/~pes20/popl17/mixed-size.pdf
-> + *
-> + *
->    * (C) Copyright 2013-2015 Hewlett-Packard Development Company, L.P.
->    * (C) Copyright 2015 Hewlett-Packard Enterprise Development LP
->    *
-> --- /dev/null
-> +++ b/include/asm-generic/ticket_lock_types.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef __ASM_GENERIC_TICKET_LOCK_TYPES_H
-> +#define __ASM_GENERIC_TICKET_LOCK_TYPES_H
-> +
-> +#include <linux/types.h>
-> +typedef atomic_t arch_spinlock_t;
-> +
-> +#define __ARCH_SPIN_LOCK_UNLOCKED	ATOMIC_INIT(0)
-> +
-> +#endif /* __ASM_GENERIC_TICKET_LOCK_TYPES_H */
-> --- /dev/null
-> +++ b/include/asm-generic/ticket_lock.h
-> @@ -0,0 +1,97 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +/*
-> + * 'Generic' ticket lock implementation.
-> + *
-> + * It relies on atomic_fetch_add() having well defined forward progress
-> + * guarantees under contention. If your architecture cannot provide this, stick
-> + * to a test-and-set lock.
-> + *
-> + * It also relies on atomic_fetch_add() being safe vs smp_store_release() on a
-> + * sub-word of the value. This is generally true for anything LL/SC although
-> + * you'd be hard pressed to find anything useful in architecture specifications
-> + * about this. If your architecture cannot do this you might be better off with
-> + * a test-and-set.
-> + *
-> + * It relies on smp_store_release() + atomic_*_acquire() to be RCsc (or no
-> + * weaker than RCtso if you're Power, also see smp_mb__after_unlock_lock()),
-> + *
-> + * The implementation uses smp_cond_load_acquire() to spin, so if the
-> + * architecture has WFE like instructions to sleep instead of poll for word
-> + * modifications be sure to implement that (see ARM64 for example).
-> + *
-> + */
-> +
-> +#ifndef __ASM_GENERIC_TICKET_LOCK_H
-> +#define __ASM_GENERIC_TICKET_LOCK_H
-> +
-> +#include <linux/atomic.h>
-> +#include <asm/ticket_lock_types.h>
-> +
-> +#define ONE_TICKET	(1 << 16)
-> +#define __ticket(val)	(u16)((val) >> 16)
-> +#define __owner(val)	(u16)((val) & 0xffff)
-> +
-> +static __always_inline bool __ticket_is_locked(u32 val)
-> +{
-> +	return __ticket(val) != __owner(val);
-> +}
-> +
-> +static __always_inline void ticket_lock(arch_spinlock_t *lock)
-> +{
-> +	u32 val = atomic_fetch_add_acquire(ONE_TICKET, lock);
-> +	u16 ticket = __ticket(val);
-> +
-> +	if (ticket == __owner(val))
-> +		return;
-> +
-> +	atomic_cond_read_acquire(lock, ticket == __owner(VAL));
-> +}
-> +
-> +static __always_inline bool ticket_trylock(arch_spinlock_t *lock)
-> +{
-> +	u32 old = atomic_read(lock);
-> +
-> +	if (__ticket_is_locked(old))
-> +		return false;
-> +
-> +	return atomic_try_cmpxchg_acquire(lock, &old, old + ONE_TICKET);
-> +}
-> +
-> +static __always_inline void ticket_unlock(arch_spinlock_t *lock)
-> +{
-> +	u16 *ptr = (u16 *)lock + __is_defined(__BIG_ENDIAN);
-> +	u32 val = atomic_read(lock);
-> +
-> +	smp_store_release(ptr, __owner(val) + 1);
-> +}
-> +
-> +static __always_inline int ticket_is_contended(arch_spinlock_t *lock)
-> +{
-> +	u32 val = atomic_read(lock);
-> +
-> +	return (__ticket(val) - __owner(val)) > 1;
-Nit: The left side is unsigned, but the right is signed. I think you are 
-relying on the implicit signed to unsigned conversion. It may be a bit 
-clearer if you use 1U instead.
-> +}
-> +
-> +static __always_inline int ticket_is_locked(arch_spinlock_t *lock)
-> +{
-> +	return __ticket_is_locked(atomic_read(lock));
-> +}
-> +
-> +static __always_inline int ticket_value_unlocked(arch_spinlock_t lock)
-> +{
-> +	return !__ticket_is_locked(lock.counter);
-> +}
-> +
-> +#undef __owner
-> +#undef __ticket
-> +#undef ONE_TICKET
-> +
-> +#define arch_spin_lock(l)		ticket_lock(l)
-> +#define arch_spin_trylock(l)		ticket_trylock(l)
-> +#define arch_spin_unlock(l)		ticket_unlock(l)
-> +#define arch_spin_is_locked(l)		ticket_is_locked(l)
-> +#define arch_spin_is_contended(l)	ticket_is_contended(l)
-> +#define arch_spin_value_unlocked(l)	ticket_value_unlocked(l)
-> +
-> +#endif /* __ASM_GENERIC_TICKET_LOCK_H */
+On 10/20/21 3:45 AM, Marc Zyngier wrote:
+> Both IRQCHIP_DECLARE() and IRQCHIP_MATCH() use an underlying of_device_id()
+> structure to encode the matching property and the init callback.
+> However, this callback is stored in as a void * pointer, which obviously
+> defeat any attempt at stronger type checking.
+> 
+> Work around this by providing a new macro that builds on top of the
+> __typecheck() primitive, and that can be used to warn when there is
+> a discrepency between the drivers and core code.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-Other than the nit above, the patch looks good to me.
-
-Reviewed-by: Waiman Long <longman@redhat.com>
-
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
