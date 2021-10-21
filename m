@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D96435B64
+	by mail.lfdr.de (Postfix) with ESMTP id C30C7435B65
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 09:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhJUHL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 03:11:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55888 "EHLO mail.kernel.org"
+        id S231336AbhJUHL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 03:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhJUHLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:11:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67F2360F9F;
-        Thu, 21 Oct 2021 07:09:36 +0000 (UTC)
+        id S231305AbhJUHL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 03:11:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D39611CB;
+        Thu, 21 Oct 2021 07:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634800178;
-        bh=0R52EtQYkWl3gHA3uTus8x6Dfi1oFrRGh4BrR/4R3bo=;
+        s=k20201202; t=1634800181;
+        bh=Cls98fn6dnG6uMjJS5huAWj6jeFgWd2LJ1jvMwPJpp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PKcYFA1ZDAK5v1JWie1gbd4HTka3VUeC9dGxc49sWVd/60IycIHF2oehZ6CbowOc2
-         OjxiCz/198CeJf2e3F8/PzWZZ3YVHvibLvdVLChz8HR1URLChzmMnH94FFdIsq8qbN
-         uIjQe+zC0QNRudSI/EmKePneDGzz6zptSwgUkdCritW+mZIephmE/uqgM/3cXe06OZ
-         8zV9CFJJh/E03DOITIIQVvXFsY3YMPCceboWGYtPheVtkwz+9UlRAwLnS+oOzMvip/
-         A6zGxoX8lQlYNglyeLeqWR71+CecOQYbBzMiXXb3+FFrb5GL7CMBVzlX6hgnVveF7r
-         xcSpRMW6Yh4CQ==
+        b=tdQEIKs3KRJXHrdv2eTw5bf9AOePGbn5Jjb/GvSpyj6WaMjj/5zh4te/yn+bGW4wa
+         o6oP2UomX/um/n0ZewnX+ikmjPke24AiiamX/7BiRFB1QPvLd7g4iJG33Up5lH9Nvu
+         CTV7wZaWyrbvW6/gw4OxuDKdO5sH+0B4anh3MTL8vI32ZmmYyh7EyLI5YqHYhc8VwO
+         zgNllZ/rFF9sEli7xe6wXcmkwPT9PbVSiQk6cdXkpkRyjv+b0f86NXsp3DEMFTdZft
+         i5FMayP1ic2VPKmXN5oKN/jQwAifMjP9jZGHaU7V8gBagfyZg3Z0gIjBOdQS39PbTV
+         xzcg65xNdqfZg==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -33,9 +33,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Qian Cai <quic_qiancai@quicinc.com>,
         Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] Revert "memblock: exclude NOMAP regions from kmemleak"
-Date:   Thu, 21 Oct 2021 10:09:28 +0300
-Message-Id: <20211021070929.23272-2-rppt@kernel.org>
+Subject: [PATCH v2 2/2] memblock: exclude MEMBLOCK_NOMAP regions from kmemleak
+Date:   Thu, 21 Oct 2021 10:09:29 +0300
+Message-Id: <20211021070929.23272-3-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20211021070929.23272-1-rppt@kernel.org>
 References: <20211021070929.23272-1-rppt@kernel.org>
@@ -47,74 +47,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-Commit 6e44bd6d34d6 ("memblock: exclude NOMAP regions from kmemleak")
-breaks boot on EFI systems with kmemleak and VM_DEBUG enabled:
+Vladimir Zapolskiy reports:
 
-efi: Processing EFI memory map:
-efi:   0x000090000000-0x000091ffffff [Conventional|   |  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-efi:   0x000092000000-0x0000928fffff [Runtime Data|RUN|  |  |  |  |  |  |  |  |   |WB|WT|WC|UC]
-------------[ cut here ]------------
-kernel BUG at mm/kmemleak.c:1140!
-Internal error: Oops - BUG: 0 [#1] SMP
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.15.0-rc6-next-20211019+ #104
-pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : kmemleak_free_part_phys+0x64/0x8c
-lr : kmemleak_free_part_phys+0x38/0x8c
-sp : ffff800011eafbc0
-x29: ffff800011eafbc0 x28: 1fffff7fffb41c0d x27: fffffbfffda0e068
-x26: 0000000092000000 x25: 1ffff000023d5f94 x24: ffff800011ed84d0
-x23: ffff800011ed84c0 x22: ffff800011ed83d8 x21: 0000000000900000
-x20: ffff800011782000 x19: 0000000092000000 x18: ffff800011ee0730
-x17: 0000000000000000 x16: 0000000000000000 x15: 1ffff0000233252c
-x14: ffff800019a905a0 x13: 0000000000000001 x12: ffff7000023d5ed7
-x11: 1ffff000023d5ed6 x10: ffff7000023d5ed6 x9 : dfff800000000000
-x8 : ffff800011eaf6b7 x7 : 0000000000000001 x6 : ffff800011eaf6b0
-x5 : 00008ffffdc2a12a x4 : ffff7000023d5ed7 x3 : 1ffff000023dbf99
-x2 : 1ffff000022f0463 x1 : 0000000000000000 x0 : ffffffffffffffff
-Call trace:
- kmemleak_free_part_phys+0x64/0x8c
- memblock_mark_nomap+0x5c/0x78
- reserve_regions+0x294/0x33c
- efi_init+0x2d0/0x490
- setup_arch+0x80/0x138
- start_kernel+0xa0/0x3ec
- __primary_switched+0xc0/0xc8
-Code: 34000041 97d526e7 f9418e80 36000040 (d4210000)
-random: get_random_bytes called from print_oops_end_marker+0x34/0x80 with crng_init=0
----[ end trace 0000000000000000 ]---
+commit a7259df76702 ("memblock: make memblock_find_in_range method private")
+invokes a kernel panic while running kmemleak on OF platforms with nomaped
+regions:
 
-The crash happens because kmemleak_free_part_phys() tries to use __va()
-before memstart_addr is initialized and this triggers a VM_BUG_ON() in
-arch/arm64/include/asm/memory.h:
+  Unable to handle kernel paging request at virtual address fff000021e00000
+  [...]
+    scan_block+0x64/0x170
+    scan_gray_list+0xe8/0x17c
+    kmemleak_scan+0x270/0x514
+    kmemleak_write+0x34c/0x4ac
 
-Revert 6e44bd6d34d6 ("memblock: exclude NOMAP regions from kmemleak"), the
-issue it is fixing will be fixed differently.
+The memory allocated from memblock is registered with kmemleak, but if it
+is marked MEMBLOCK_NOMAP it won't have linear map entries so an attempt to
+scan such areas will fault.
 
-Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Ideally, memblock_mark_nomap() would inform kmemleak to ignore
+MEMBLOCK_NOMAP memory, but it can be called before kmemleak interfaces
+operating on physical addresses can use __va() conversion.
+
+Make sure that functions that mark allocated memory as MEMBLOCK_NOMAP take
+care of informing kmemleak to ignore such memory.
+
+Link: https://lore.kernel.org/all/8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org
+Link: https://lore.kernel.org/all/c30ff0a2-d196-c50d-22f0-bd50696b1205@quicinc.com
+Fixes: a7259df76702 ("memblock: make memblock_find_in_range method private")
+Reported-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- mm/memblock.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/acpi/tables.c        | 3 +++
+ drivers/of/of_reserved_mem.c | 2 ++
+ mm/memblock.c                | 3 +++
+ 3 files changed, 8 insertions(+)
 
+diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+index f9383736fa0f..71419eb16e09 100644
+--- a/drivers/acpi/tables.c
++++ b/drivers/acpi/tables.c
+@@ -21,6 +21,7 @@
+ #include <linux/earlycpio.h>
+ #include <linux/initrd.h>
+ #include <linux/security.h>
++#include <linux/kmemleak.h>
+ #include "internal.h"
+ 
+ #ifdef CONFIG_ACPI_CUSTOM_DSDT
+@@ -601,6 +602,8 @@ void __init acpi_table_upgrade(void)
+ 	 */
+ 	arch_reserve_mem_area(acpi_tables_addr, all_tables_size);
+ 
++	kmemleak_ignore_phys(acpi_tables_addr);
++
+ 	/*
+ 	 * early_ioremap only can remap 256k one time. If we map all
+ 	 * tables one time, we will hit the limit. Need to map chunks
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index 59c1390cdf42..9da8835ba5a5 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -21,6 +21,7 @@
+ #include <linux/sort.h>
+ #include <linux/slab.h>
+ #include <linux/memblock.h>
++#include <linux/kmemleak.h>
+ 
+ #include "of_private.h"
+ 
+@@ -46,6 +47,7 @@ static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
+ 		err = memblock_mark_nomap(base, size);
+ 		if (err)
+ 			memblock_free(base, size);
++		kmemleak_ignore_phys(base);
+ 	}
+ 
+ 	return err;
 diff --git a/mm/memblock.c b/mm/memblock.c
-index 5c3503c98b2f..184dcd2e5d99 100644
+index 184dcd2e5d99..dab804b09d62 100644
 --- a/mm/memblock.c
 +++ b/mm/memblock.c
-@@ -936,12 +936,7 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
+@@ -932,6 +932,9 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
+  * covered by the memory map. The struct page representing NOMAP memory
+  * frames in the memory map will be PageReserved()
+  *
++ * Note: if the memory being marked %MEMBLOCK_NOMAP was allocated from
++ * memblock, the caller must inform kmemleak to ignore that memory
++ *
+  * Return: 0 on success, -errno on failure.
   */
  int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
- {
--	int ret = memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
--
--	if (!ret)
--		kmemleak_free_part_phys(base, size);
--
--	return ret;
-+	return memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
- }
- 
- /**
 -- 
 2.28.0
 
