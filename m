@@ -2,780 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFED2436510
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AB1436516
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhJUPJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
+        id S231605AbhJUPKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhJUPJk (ORCPT
+        with ESMTP id S230280AbhJUPKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:09:40 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F297BC0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:07:23 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id d3so1589079wrh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 08:07:23 -0700 (PDT)
+        Thu, 21 Oct 2021 11:10:41 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D897C0613B9;
+        Thu, 21 Oct 2021 08:08:25 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c29so934438pfp.2;
+        Thu, 21 Oct 2021 08:08:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LRQOjT3YUaYNvTRG88PyTbG3tm3TT09MpAI+OlZXCBY=;
-        b=nbD/yxcLEJ4Z6trIkNPVXx+FsSi78A6tpYhh6MNnv0P8C+8LNiseM0HW/lH6XIN0QE
-         lKIBczswySc+dFZbXgUiRdNDlqGXwWAwMdjW1k4veOs58fnT1jRiwiGZ7B/9r0IJ/vH6
-         7J29Aqt3GwJJzKxwgkrRvXAafpbKwYsFRVIVbctRWM+Ul5fiLV+abUvxi1gfiXFGvXTG
-         2WqD2JbkmKm5TyQYTL/CKWgtrK36qVqRDsTdLFq+v32exPEE4okIsc+jiIpP8l1SczGW
-         lu6oGaHCpUGuS2L78bWW6XaOrayvy/7G4KUJuQtQjKxMw1O/cv78GX1QUFhgfd0HRb12
-         3H8A==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l//N2yjQPwL5Ut6gR7Id3QDkJj4qUz5hOkWw1Y1cnLc=;
+        b=k+99nwmDy9pwVyDey675D/OeF6zbd73Y1s2uZR6WXZADWwNUhCQO+ZGEh+HLNI3lfV
+         M/Kf0rYS7sJJnHnoVY+B7/kE4zZAM0u36uLUB8v0pMU5V/7Eq5r/XGgyXWVr9eRBp8+F
+         NOuU/xIbPzXhWqSbhZlpR8RVr64q0dOVdXYf7D9ZekmEpGC4yCrQb7D9fboynvl+34+e
+         oqYUC+uV6q2gtmqvYVS7zWMtNH/zpjhCk9UMidN0n6fGCMYZQgpbMCJieEG3GSfGHVje
+         75vLEBhqJpaEZRiNRY6EyakC2UjUcSrrxI9rnYaJ3zp3htOuoo+MEH6hHFHnbwIYUxG4
+         48jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=LRQOjT3YUaYNvTRG88PyTbG3tm3TT09MpAI+OlZXCBY=;
-        b=1Th4qlDwSVDbcUFBAjOMLs9iGb3ehX/pEydMLJOrPJD9jJHLibhY4j69sP1rHKsBOx
-         +E6uLGQ5Ea6ybSilMQIFiNKbjpSKQUJQW0GKCMfqJQlL0TUsEu7rX+fz4thrl7Xtkr5J
-         G13wUDBCdcNTtH/xgV/t3uowD+w1FlqrfUx+0j94puaJcTNECrbH1rMMOYoNaKyi+tqj
-         mw82rQyrDf6xS3TbO3EenTK64hv8+1g9pSPmi9btNG7mG0DKXwqplh/6NLGAIfKtl8LD
-         zl7Dk0swRJH1HiJjzrTHeYQxl+OS2McQAy167m2faKLUxKQrceZMfPH/AvNahF8Lm8oW
-         e5KA==
-X-Gm-Message-State: AOAM533cixPdgKLiKm4u79AAXznt4k+BaX/KZ6DQDOE473Suo/lWouPi
-        Af+oUE5XocRmsoWofiMprPupuBbozOFVMw==
-X-Google-Smtp-Source: ABdhPJyflKSAweZNjoiWC0ORt6KluzZYf1d9pFu04vvQezmp1XektKsGM+PTJhFms5Ysru+fnZUA1A==
-X-Received: by 2002:a5d:6481:: with SMTP id o1mr8005934wri.60.1634828842038;
-        Thu, 21 Oct 2021 08:07:22 -0700 (PDT)
-Received: from lmecxl0524.lme.st.com ([2a04:cec0:10f3:5b93:f8bd:7b81:c866:9456])
-        by smtp.gmail.com with ESMTPSA id c15sm5106925wrs.19.2021.10.21.08.07.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l//N2yjQPwL5Ut6gR7Id3QDkJj4qUz5hOkWw1Y1cnLc=;
+        b=V+5cCXDL20COLaMh4eT88k81KzHTVhzOc0ODWXdXIUXAL0Er4e/3Z4g6cC8D3gOE9f
+         gjUkGSet0mJfyz2Twq3Fmt5Sbr7cg5jxTJamfLHbgu874goADZlj7O1OPPlGjRgytjc8
+         CK+BDEfgJ6rBYVhQHgF8SpABlB5GtZJflRRv7L5z7vTaqqLq4eaLGagSwGS6fPVgOmtK
+         RX4XGx3+g3hPu5f+sz2Rmo5D4THPw8N+2Ir0OoSmNbOHXyln3C+DSN5ThheCZiKsHqL2
+         CfitfQbLVfESZGDq4VGjiTdgN6zSnMYI1t5JRwec9O1J2swHSyu2E2Rt6vDf/mESIRZW
+         VfUg==
+X-Gm-Message-State: AOAM531+b46y1SoqBUq2CEGtjkxOA17HNI2PTzDMBQCZSfimh0zt2AeM
+        WnfxJFIGgATdDj/VJRdDU5g=
+X-Google-Smtp-Source: ABdhPJxzAt/sLs2vPoeeMO8ZPLkWPQjz3XF0ai/VhySWL3UT37B9wdYgmFaV/orMaolXHHmCu+HwcA==
+X-Received: by 2002:a63:af09:: with SMTP id w9mr4779992pge.323.1634828904829;
+        Thu, 21 Oct 2021 08:08:24 -0700 (PDT)
+Received: from localhost.localdomain ([2406:7400:63:29a4:d874:a949:6890:f95f])
+        by smtp.gmail.com with ESMTPSA id c9sm5508027pgq.58.2021.10.21.08.08.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:07:21 -0700 (PDT)
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>
-Subject: [PATCH v5 2/2] firmware: arm_scmi: Add optee transport
-Date:   Thu, 21 Oct 2021 17:07:17 +0200
-Message-Id: <20211021150717.2718-2-etienne.carriere@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211021150717.2718-1-etienne.carriere@linaro.org>
-References: <20211021150717.2718-1-etienne.carriere@linaro.org>
+        Thu, 21 Oct 2021 08:08:24 -0700 (PDT)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        skhan@linuxfoundation.org, Robert Richter <rric@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM IPROC ARM
+        ARCHITECTURE), Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Joyce Ooi <joyce.ooi@intel.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Toan Le <toan@os.amperecomputing.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [PATCH v3 00/25] Unify PCI error response checking
+Date:   Thu, 21 Oct 2021 20:37:25 +0530
+Message-Id: <cover.1634825082.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new transport channel to the SCMI firmware interface driver for
-SCMI message exchange based on optee transport channel. The optee
-transport is realized by connecting and invoking OP-TEE SCMI service
-interface PTA.
+An MMIO read from a PCI device that doesn't exist or doesn't respond
+causes a PCI error.  There's no real data to return to satisfy the 
+CPU read, so most hardware fabricates ~0 data.
 
-Optee transport support (CONFIG_ARM_SCMI_TRANSPORT_OPTEE) is default
-enabled when optee driver (CFG_OPTEE) is enabled. Effective optee
-transport is setup upon OP-TEE SCMI service discovery at optee
-device initialization. For this SCMI UUID is registered to the optee
-bus for probing. This is done from the link_supplier operator of the
-SCMI optee transport.
+This patch series adds PCI_ERROR_RESPONSE definition and other helper
+definition SET_PCI_ERROR_RESPONSE and RESPONSE_IS_PCI_ERROR and uses it
+where appropriate to make these checks consistent and easier to find.
 
-The optee transport can use a statically defined shared memory in
-which case SCMI device tree node defines it using an "arm,scmi-shmem"
-compatible phandle through property shmem. Alternatively, optee transport
-allocates the shared memory buffer from the optee driver when no shmem
-property is defined.
+This helps unify PCI error response checking and make error check
+consistent and easier to find.
 
-The protocol used to exchange SCMI message over that shared memory is
-negotiated between optee transport driver and the OP-TEE service through
-capabilities exchange.
+This series also ensures that the error response fabrication now happens
+in the PCI_OP_READ and PCI_USER_READ_CONFIG. This removes the
+responsibility from controller drivers to do the error response setting. 
 
-OP-TEE SCMI service is integrated in OP-TEE since its release tag 3.13.0.
-The service interface is published in [1].
+Patch 1:
+    - Adds the PCI_ERROR_RESPONSE and other related defintions
+    - All other patches are dependent on this patch. This patch needs to
+      be applied first, before the others
 
-Link: [1] https://github.com/OP-TEE/optee_os/blob/3.13.0/lib/libutee/include/pta_scmi_client.h
-Cc: Cristian Marussi <cristian.marussi@arm.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
----
-Changes since v4:
- - Fix commit log that was not updated to v4 changes.
- - Operator scmi_optee_chan_setup() don't need the defer probe
-   operation, it's already done from scmi_optee_link_supplier().
+Patch 2:
+    - Error fabrication happens in PCI_OP_READ and PCI_USER_READ_CONFIG
+      whenever the data read via the controller driver fails.
+    - This patch needs to be applied before, Patch 4/24 to Patch 15/24 are
+      applied.
 
-Changes since v3:
- - Fix use of configuration switches when CONFIG_OPTEE and
-   CONFIG_ARM_SCMI_PROTOCOL are enabled/modules/disabled.
-   Mimics scmi virtio integration.
- - Implement link_supplier operator for the scmi_optee transport
-   to possibly defer probing when optee bus has not yet enumerated
-   the SCMI OP-TEE service. The function ensures scmi_optee registers
-   to optee bus enumeration when probe is deferred.
- - Add memory barriers to protect global optee service reference
-   when it's updated at transport initialization and removal.
- - Replace enum pta_scmi_caps with macro definitions as enumerated
-   types do not really match bit flags definitions. The capabilities
-   data is now of type u32.
- - Use scmi_optee_ prefix for scmi transport operator handles
-   and few other resources.
- - Fix typo: s/optee_smci_pta_cmd/optee_scmi_pta_cmd/
- - Remove useless DRIVER_NAME.
- - Minor reordering in struct optee_channel.
- - Removed some useless empty lines.
+Patch 3:
+    - Uses SET_PCI_ERROR_RESPONSE() when device is not found 
 
-Changes since v2:
-- Rebase on for-next/scmi, based on Linux v5.15-rc1.
-- Implement support for dynamic and static shared memory.
-- Factorize some functions and simplify transport exit sequence.
-- Rename driver source file from optee_service.c to optee.c.
+Patch 4 - 15:
+    - Removes redundant error fabrication that happens in controller 
+      drivers when the read from a PCI device fails.
+    - These patches are dependent on Patch 2/24 of the series.
+    - These can be applied in any order.
 
-No change since v1
----
- drivers/firmware/arm_scmi/Kconfig  |  12 +
- drivers/firmware/arm_scmi/Makefile |   1 +
- drivers/firmware/arm_scmi/common.h |   3 +
- drivers/firmware/arm_scmi/driver.c |   3 +
- drivers/firmware/arm_scmi/optee.c  | 572 +++++++++++++++++++++++++++++
- 5 files changed, 591 insertions(+)
- create mode 100644 drivers/firmware/arm_scmi/optee.c
+Patch 16 - 22:
+    - Uses RESPONSE_IS_PCI_ERROR() to check the reads from hardware
+    - Patches can be applied in any order.
 
-diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-index 3d7081e84853..30746350349c 100644
---- a/drivers/firmware/arm_scmi/Kconfig
-+++ b/drivers/firmware/arm_scmi/Kconfig
-@@ -77,6 +77,18 @@ config ARM_SCMI_TRANSPORT_VIRTIO
- 	  If you want the ARM SCMI PROTOCOL stack to include support for a
- 	  transport based on VirtIO, answer Y.
- 
-+config ARM_SCMI_TRANSPORT_OPTEE
-+	bool "SCMI transport based on OP-TEE service"
-+	depends on OPTEE=y || OPTEE=ARM_SCMI_PROTOCOL
-+	select ARM_SCMI_HAVE_TRANSPORT
-+	select ARM_SCMI_HAVE_SHMEM
-+	default y
-+	help
-+	  This enables the OP-TEE service based transport for SCMI.
-+
-+	  If you want the ARM SCMI PROTOCOL stack to include support for a
-+	  transport based on OP-TEE SCMI service, answer Y.
-+
- endif #ARM_SCMI_PROTOCOL
- 
- config ARM_SCMI_POWER_DOMAIN
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index 1dcf123d64ab..ef66ec8ca917 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -6,6 +6,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_MAILBOX) += mailbox.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
- scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
-+scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) += optee.o
- scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
- scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
- 		    $(scmi-transport-y)
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index dea1bfbe1052..6438b5248c24 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -421,6 +421,9 @@ extern const struct scmi_desc scmi_smc_desc;
- #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
- extern const struct scmi_desc scmi_virtio_desc;
- #endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_OPTEE
-+extern const struct scmi_desc scmi_optee_desc;
-+#endif
- 
- void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv);
- void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id);
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index b406b3f78f46..e3f87e0c4936 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -1999,6 +1999,9 @@ static const struct of_device_id scmi_of_match[] = {
- #endif
- #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
- 	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
-+#endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_OPTEE
-+	{ .compatible = "linaro,scmi-optee", .data = &scmi_optee_desc },
- #endif
- 	{ /* Sentinel */ },
- };
-diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
-new file mode 100644
-index 000000000000..2b666c632800
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/optee.c
-@@ -0,0 +1,572 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019-2021 Linaro Ltd.
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
-+#include <linux/tee_drv.h>
-+#include <linux/uuid.h>
-+#include <uapi/linux/tee.h>
-+
-+#include "common.h"
-+
-+#define SCMI_OPTEE_MAX_MSG_SIZE		128
-+
-+enum scmi_optee_pta_cmd {
-+	/*
-+	 * PTA_SCMI_CMD_CAPABILITIES - Get channel capabilities
-+	 *
-+	 * [out]    value[0].a: Capability bit mask (enum pta_scmi_caps)
-+	 * [out]    value[0].b: Extended capabilities or 0
-+	 */
-+	PTA_SCMI_CMD_CAPABILITIES = 0,
-+
-+	/*
-+	 * PTA_SCMI_CMD_PROCESS_SMT_CHANNEL - Process SCMI message in SMT buffer
-+	 *
-+	 * [in]     value[0].a: Channel handle
-+	 *
-+	 * Shared memory used for SCMI message/response exhange is expected
-+	 * already identified and bound to channel handle in both SCMI agent
-+	 * and SCMI server (OP-TEE) parts.
-+	 * The memory uses SMT header to carry SCMI meta-data (protocol ID and
-+	 * protocol message ID).
-+	 */
-+	PTA_SCMI_CMD_PROCESS_SMT_CHANNEL = 1,
-+
-+	/*
-+	 * PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE - Process SMT/SCMI message
-+	 *
-+	 * [in]     value[0].a: Channel handle
-+	 * [in/out] memref[1]: Message/response buffer (SMT and SCMI payload)
-+	 *
-+	 * Shared memory used for SCMI message/response is a SMT buffer
-+	 * referenced by param[1]. It shall be 128 bytes large to fit response
-+	 * payload whatever message playload size.
-+	 * The memory uses SMT header to carry SCMI meta-data (protocol ID and
-+	 * protocol message ID).
-+	 */
-+	PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE = 2,
-+
-+	/*
-+	 * PTA_SCMI_CMD_GET_CHANNEL - Get channel handle
-+	 *
-+	 * SCMI shm information are 0 if agent expects to use OP-TEE regular SHM
-+	 *
-+	 * [in]     value[0].a: Channel identifier
-+	 * [out]    value[0].a: Returned channel handle
-+	 * [in]     value[0].b: Requested capabilities mask (enum pta_scmi_caps)
-+	 */
-+	PTA_SCMI_CMD_GET_CHANNEL = 3,
-+};
-+
-+/*
-+ * OP-TEE SCMI service capabilities bit flags (32bit)
-+ *
-+ * PTA_SCMI_CAPS_SMT_HEADER
-+ * When set, OP-TEE supports command using SMT header protocol (SCMI shmem) in
-+ * shared memory buffers to carry SCMI protocol synchronisation information.
-+ */
-+#define PTA_SCMI_CAPS_NONE		0
-+#define PTA_SCMI_CAPS_SMT_HEADER	BIT(0)
-+
-+/**
-+ * struct scmi_optee_channel - Description of an OP-TEE SCMI channel
-+ *
-+ * @channel_id: OP-TEE channel ID used for this transport
-+ * @tee_session: TEE session identifier
-+ * @caps: OP-TEE SCMI channel capabilities
-+ * @mu: Mutex protection on channel access
-+ * @cinfo: SCMI channel information
-+ * @shmem: Virtual base address of the shared memory
-+ * @tee_shm: Reference to TEE shared memory or NULL if using static shmem
-+ * @link: Reference in agent's channel list
-+ */
-+struct scmi_optee_channel {
-+	u32 channel_id;
-+	u32 tee_session;
-+	u32 caps;
-+	struct mutex mu;
-+	struct scmi_chan_info *cinfo;
-+	struct scmi_shared_mem __iomem *shmem;
-+	struct tee_shm *tee_shm;
-+	struct list_head link;
-+};
-+
-+/**
-+ * struct scmi_optee_agent - OP-TEE transport private data
-+ *
-+ * @dev: Device used for communication with TEE
-+ * @tee_ctx: TEE context used for communication
-+ * @caps: Supported channel capabilities
-+ * @mu: Mutex for protection of @channel_list
-+ * @channel_list: List of all created channels for the agent
-+ */
-+struct scmi_optee_agent {
-+	struct device *dev;
-+	struct tee_context *tee_ctx;
-+	u32 caps;
-+	struct mutex mu;
-+	struct list_head channel_list;
-+};
-+
-+/* There can be only 1 SCMI service in OP-TEE we connect to */
-+static struct scmi_optee_agent *scmi_optee_private;
-+
-+/* Forward reference to scmi_optee transport initialization */
-+static int scmi_optee_init(void);
-+
-+/* Open a session toward SCMI OP-TEE service with REE_KERNEL identity */
-+static int open_session(struct scmi_optee_agent *agent, u32 *tee_session)
-+{
-+	struct device *dev = agent->dev;
-+	struct tee_client_device *scmi_pta = to_tee_client_device(dev);
-+	struct tee_ioctl_open_session_arg arg = { };
-+	int ret;
-+
-+	memcpy(arg.uuid, scmi_pta->id.uuid.b, TEE_IOCTL_UUID_LEN);
-+	arg.clnt_login = TEE_IOCTL_LOGIN_REE_KERNEL;
-+
-+	ret = tee_client_open_session(agent->tee_ctx, &arg, NULL);
-+	if (ret < 0 || arg.ret) {
-+		dev_err(dev, "Can't open tee session: %d / %#x\n", ret, arg.ret);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	*tee_session = arg.session;
-+
-+	return 0;
-+}
-+
-+static void close_session(struct scmi_optee_agent *agent, u32 tee_session)
-+{
-+	tee_client_close_session(agent->tee_ctx, tee_session);
-+}
-+
-+static int get_capabilities(struct scmi_optee_agent *agent)
-+{
-+	struct tee_ioctl_invoke_arg arg = { };
-+	struct tee_param param[1] = { };
-+	u32 caps;
-+	u32 tee_session;
-+	int ret;
-+
-+	ret = open_session(agent, &tee_session);
-+	if (ret)
-+		return ret;
-+
-+	arg.func = PTA_SCMI_CMD_CAPABILITIES;
-+	arg.session = tee_session;
-+	arg.num_params = 1;
-+
-+	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
-+
-+	ret = tee_client_invoke_func(agent->tee_ctx, &arg, param);
-+
-+	close_session(agent, tee_session);
-+
-+	if (ret < 0 || arg.ret) {
-+		dev_err(agent->dev, "Can't get capabilities: %d / %#x\n", ret, arg.ret);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	caps = param[0].u.value.a;
-+
-+	if (!(caps & PTA_SCMI_CAPS_SMT_HEADER)) {
-+		dev_err(agent->dev, "OP-TEE SCMI PTA doesn't support SMT\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	agent->caps = caps;
-+
-+	return 0;
-+}
-+
-+static int get_channel(struct scmi_optee_channel *channel)
-+{
-+	struct device *dev = scmi_optee_private->dev;
-+	struct tee_ioctl_invoke_arg arg = { };
-+	struct tee_param param[1] = { };
-+	unsigned int caps = PTA_SCMI_CAPS_SMT_HEADER;
-+	int ret;
-+
-+	arg.func = PTA_SCMI_CMD_GET_CHANNEL;
-+	arg.session = channel->tee_session;
-+	arg.num_params = 1;
-+
-+	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INOUT;
-+	param[0].u.value.a = channel->channel_id;
-+	param[0].u.value.b = caps;
-+
-+	ret = tee_client_invoke_func(scmi_optee_private->tee_ctx, &arg, param);
-+
-+	if (ret || arg.ret) {
-+		dev_err(dev, "Can't get channel with caps %#x: %d / %#x\n", caps, ret, arg.ret);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	/* From now on use channel identifer provided by OP-TEE SCMI service */
-+	channel->channel_id = param[0].u.value.a;
-+	channel->caps = caps;
-+
-+	return 0;
-+}
-+
-+static int invoke_process_smt_channel(struct scmi_optee_channel *channel)
-+{
-+	struct tee_ioctl_invoke_arg arg = { };
-+	struct tee_param param[2] = { };
-+	int ret;
-+
-+	arg.session = channel->tee_session;
-+	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
-+	param[0].u.value.a = channel->channel_id;
-+
-+	if (channel->tee_shm) {
-+		param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT;
-+		param[1].u.memref.shm = channel->tee_shm;
-+		param[1].u.memref.size = SCMI_OPTEE_MAX_MSG_SIZE;
-+		arg.num_params = 2;
-+		arg.func = PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE;
-+	} else {
-+		arg.num_params = 1;
-+		arg.func = PTA_SCMI_CMD_PROCESS_SMT_CHANNEL;
-+	}
-+
-+	ret = tee_client_invoke_func(scmi_optee_private->tee_ctx, &arg, param);
-+	if (ret < 0 || arg.ret) {
-+		dev_err(scmi_optee_private->dev, "Can't invoke channel %u: %d / %#x\n",
-+			channel->channel_id, ret, arg.ret);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static int scmi_optee_link_supplier(struct device *dev)
-+{
-+	if (!scmi_optee_private || !scmi_optee_private->tee_ctx) {
-+		if (scmi_optee_init())
-+			dev_dbg(dev, "Optee bus not yet ready\n");
-+
-+		/* Wait for optee bus */
-+		return -EPROBE_DEFER;
-+	}
-+
-+	if (!device_link_add(dev, scmi_optee_private->dev, DL_FLAG_AUTOREMOVE_CONSUMER)) {
-+		dev_err(dev, "Adding link to supplier optee device failed\n");
-+		return -ECANCELED;
-+	}
-+
-+	return 0;
-+}
-+
-+static bool scmi_optee_chan_available(struct device *dev, int idx)
-+{
-+	u32 channel_id;
-+
-+	return !of_property_read_u32_index(dev->of_node, "linaro,optee-channel-id",
-+					   idx, &channel_id);
-+}
-+
-+static void scmi_optee_clear_channel(struct scmi_chan_info *cinfo)
-+{
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+
-+	shmem_clear_channel(channel->shmem);
-+}
-+
-+static int setup_dynamic_shmem(struct device *dev, struct scmi_optee_channel *channel)
-+{
-+	const size_t msg_size = SCMI_OPTEE_MAX_MSG_SIZE;
-+
-+	channel->tee_shm = tee_shm_alloc_kernel_buf(scmi_optee_private->tee_ctx, msg_size);
-+	if (IS_ERR(channel->tee_shm)) {
-+		dev_err(channel->cinfo->dev, "shmem allocation failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	channel->shmem = (void *)tee_shm_get_va(channel->tee_shm, 0);
-+	memset(channel->shmem, 0, msg_size);
-+	shmem_clear_channel(channel->shmem);
-+
-+	return 0;
-+}
-+
-+static int setup_static_shmem(struct device *dev, struct scmi_chan_info *cinfo,
-+			      struct scmi_optee_channel *channel)
-+{
-+	struct device_node *np;
-+	resource_size_t size;
-+	struct resource res;
-+	int ret;
-+
-+	np = of_parse_phandle(cinfo->dev->of_node, "shmem", 0);
-+	if (!of_device_is_compatible(np, "arm,scmi-shmem")) {
-+		ret = -ENXIO;
-+		goto out;
-+	}
-+
-+	ret = of_address_to_resource(np, 0, &res);
-+	if (ret) {
-+		dev_err(dev, "Failed to get SCMI Tx shared memory\n");
-+		goto out;
-+	}
-+
-+	size = resource_size(&res);
-+
-+	channel->shmem = devm_ioremap(dev, res.start, size);
-+	if (!channel->shmem) {
-+		dev_err(dev, "Failed to ioremap SCMI Tx shared memory\n");
-+		ret = -EADDRNOTAVAIL;
-+		goto out;
-+	}
-+
-+	ret = 0;
-+
-+out:
-+	of_node_put(np);
-+
-+	return ret;
-+}
-+
-+static int setup_shmem(struct device *dev, struct scmi_chan_info *cinfo,
-+		       struct scmi_optee_channel *channel)
-+{
-+	if (of_find_property(cinfo->dev->of_node, "shmem", NULL))
-+		return setup_static_shmem(dev, cinfo, channel);
-+	else
-+		return setup_dynamic_shmem(dev, channel);
-+}
-+
-+static int scmi_optee_chan_setup(struct scmi_chan_info *cinfo, struct device *dev, bool tx)
-+{
-+	struct scmi_optee_channel *channel;
-+	uint32_t channel_id;
-+	int ret;
-+
-+	if (!tx)
-+		return -ENODEV;
-+
-+	channel = devm_kzalloc(dev, sizeof(*channel), GFP_KERNEL);
-+	if (!channel)
-+		return -ENOMEM;
-+
-+	ret = of_property_read_u32_index(cinfo->dev->of_node, "linaro,optee-channel-id",
-+					 0, &channel_id);
-+	if (ret)
-+		return ret;
-+
-+	cinfo->transport_info = channel;
-+	channel->cinfo = cinfo;
-+	channel->channel_id = channel_id;
-+	mutex_init(&channel->mu);
-+
-+	ret = setup_shmem(dev, cinfo, channel);
-+	if (ret)
-+		return ret;
-+
-+	ret = open_session(scmi_optee_private, &channel->tee_session);
-+	if (ret)
-+		return ret;
-+
-+	ret = get_channel(channel);
-+	if (ret) {
-+		close_session(scmi_optee_private, channel->tee_session);
-+		return ret;
-+	}
-+
-+	mutex_lock(&scmi_optee_private->mu);
-+	list_add(&channel->link, &scmi_optee_private->channel_list);
-+	mutex_unlock(&scmi_optee_private->mu);
-+
-+	return 0;
-+}
-+
-+static int scmi_optee_chan_free(int id, void *p, void *data)
-+{
-+	struct scmi_chan_info *cinfo = p;
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+
-+	mutex_lock(&scmi_optee_private->mu);
-+	list_del(&channel->link);
-+	mutex_unlock(&scmi_optee_private->mu);
-+
-+	if (channel->tee_shm) {
-+		tee_shm_free(channel->tee_shm);
-+		channel->tee_shm = NULL;
-+	}
-+
-+	cinfo->transport_info = NULL;
-+	channel->cinfo = NULL;
-+
-+	scmi_free_channel(cinfo, data, id);
-+
-+	return 0;
-+}
-+
-+static struct scmi_shared_mem *get_channel_shm(struct scmi_optee_channel *chan,
-+					       struct scmi_xfer *xfer)
-+{
-+	if (!chan)
-+		return NULL;
-+
-+	return chan->shmem;
-+}
-+
-+
-+static int scmi_optee_send_message(struct scmi_chan_info *cinfo,
-+				   struct scmi_xfer *xfer)
-+{
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+	struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
-+	int ret;
-+
-+	mutex_lock(&channel->mu);
-+	shmem_tx_prepare(shmem, xfer);
-+
-+	ret = invoke_process_smt_channel(channel);
-+
-+	scmi_rx_callback(cinfo, shmem_read_header(shmem), NULL);
-+	mutex_unlock(&channel->mu);
-+
-+	return ret;
-+}
-+
-+static void scmi_optee_fetch_response(struct scmi_chan_info *cinfo,
-+				      struct scmi_xfer *xfer)
-+{
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+	struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
-+
-+	shmem_fetch_response(shmem, xfer);
-+}
-+
-+static bool scmi_optee_poll_done(struct scmi_chan_info *cinfo,
-+				 struct scmi_xfer *xfer)
-+{
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+	struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
-+
-+	return shmem_poll_done(shmem, xfer);
-+}
-+
-+static struct scmi_transport_ops scmi_optee_ops = {
-+	.link_supplier = scmi_optee_link_supplier,
-+	.chan_available = scmi_optee_chan_available,
-+	.chan_setup = scmi_optee_chan_setup,
-+	.chan_free = scmi_optee_chan_free,
-+	.send_message = scmi_optee_send_message,
-+	.fetch_response = scmi_optee_fetch_response,
-+	.clear_channel = scmi_optee_clear_channel,
-+	.poll_done = scmi_optee_poll_done,
-+};
-+
-+static int scmi_optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
-+{
-+	return ver->impl_id == TEE_IMPL_ID_OPTEE;
-+}
-+
-+static int scmi_optee_service_probe(struct device *dev)
-+{
-+	struct scmi_optee_agent *agent;
-+	struct tee_context *tee_ctx;
-+	int ret;
-+
-+	/* Only one SCMI OP-TEE device allowed */
-+	if (scmi_optee_private) {
-+		dev_err(dev, "An SCMI OP-TEE device was already initialized: only one allowed\n");
-+		return -EBUSY;
-+	}
-+
-+	tee_ctx = tee_client_open_context(NULL, scmi_optee_ctx_match, NULL, NULL);
-+	if (IS_ERR(tee_ctx))
-+		return -ENODEV;
-+
-+	agent = devm_kzalloc(dev, sizeof(*agent), GFP_KERNEL);
-+	if (!agent) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	agent->dev = dev;
-+	agent->tee_ctx = tee_ctx;
-+	INIT_LIST_HEAD(&agent->channel_list);
-+
-+	ret = get_capabilities(agent);
-+	if (ret)
-+		goto err;
-+
-+	/* Ensure agent resources are all visible before scmi_optee_private is */
-+	smp_mb();
-+	scmi_optee_private = agent;
-+
-+	return 0;
-+
-+err:
-+	tee_client_close_context(tee_ctx);
-+
-+	return ret;
-+}
-+
-+static int scmi_optee_service_remove(struct device *dev)
-+{
-+	struct scmi_optee_agent *agent = scmi_optee_private;
-+
-+	if (!scmi_optee_private)
-+		return -EINVAL;
-+
-+	if (!list_empty(&scmi_optee_private->channel_list))
-+		return -EBUSY;
-+
-+	/* Ensure cleared reference is visible before resources are released */
-+	smp_store_mb(scmi_optee_private, NULL);
-+
-+	tee_client_close_context(agent->tee_ctx);
-+
-+	return 0;
-+}
-+
-+static const struct tee_client_device_id scmi_optee_service_id[] = {
-+	{
-+		UUID_INIT(0xa8cfe406, 0xd4f5, 0x4a2e,
-+			  0x9f, 0x8d, 0xa2, 0x5d, 0xc7, 0x54, 0xc0, 0x99)
-+	},
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(tee, scmi_optee_service_id);
-+
-+static struct tee_client_driver scmi_optee_driver = {
-+	.id_table	= scmi_optee_service_id,
-+	.driver		= {
-+		.name = "scmi-optee",
-+		.bus = &tee_bus_type,
-+		.probe = scmi_optee_service_probe,
-+		.remove = scmi_optee_service_remove,
-+	},
-+};
-+
-+static int scmi_optee_init(void)
-+{
-+	return driver_register(&scmi_optee_driver.driver);
-+}
-+
-+static void scmi_optee_exit(void)
-+{
-+	driver_unregister(&scmi_optee_driver.driver);
-+}
-+
-+const struct scmi_desc scmi_optee_desc = {
-+	.transport_exit = scmi_optee_exit,
-+	.ops = &scmi_optee_ops,
-+	.max_rx_timeout_ms = 30,
-+	.max_msg = 20,
-+	.max_msg_size = 128,
-+};
+Patch 23 - 25:
+    - Edits the comments to include PCI_ERROR_RESPONSE alsong with
+      0xFFFFFFFF, so that it becomes easier to grep for faulty 
+      hardware reads.
+
+Changelog
+=========
+v3:
+   - Change RESPONSE_IS_PCI_ERROR macro definition
+   - Fix the macros, Add () around macro parameters
+   - Fix alignment issue in Patch 2/24
+   - Add proper receipients for all the patches
+
+v2:
+    - Instead of using SET_PCI_ERROR_RESPONSE in all controller drivers
+      to fabricate error response, only use them in PCI_OP_READ and
+      PCI_USER_READ_CONFIG
+
+Naveen Naidu (25):
+  [Patch 1/25] PCI: Add PCI_ERROR_RESPONSE and it's related definitions
+  [Patch 2/25] PCI: Set error response in config access defines when ops->read() fails
+  [Patch 3/25] PCI: Use SET_PCI_ERROR_RESPONSE() when device not found
+  [Patch 4/25] PCI: Remove redundant error fabrication when device read fails
+  [Patch 5/25] PCI: thunder: Remove redundant error fabrication when device read fails
+  [Patch 6/25] PCI: iproc: Remove redundant error fabrication when device read fails
+  [Patch 7/25] PCI: mediatek: Remove redundant error fabrication when device read fails
+  [Patch 8/25] PCI: exynos: Remove redundant error fabrication when device read fails
+  [Patch 9/25] PCI: histb: Remove redundant error fabrication when device read fails
+  [Patch 10/25] PCI: kirin: Remove redundant error fabrication when device read fails
+  [Patch 11/25] PCI: aardvark: Remove redundant error fabrication when device read fails
+  [Patch 12/25] PCI: mvebu: Remove redundant error fabrication when device read fails
+  [Patch 13/25] PCI: altera: Remove redundant error fabrication when device read fails
+  [Patch 14/25] PCI: rcar: Remove redundant error fabrication when device read fails
+  [Patch 15/25] PCI: rockchip: Remove redundant error fabrication when device read fails
+  [Patch 16/25] PCI/ERR: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
+  [Patch 17/25] PCI: vmd: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
+  [Patch 18/25] PCI: pciehp: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
+  [Patch 19/25] PCI/DPC: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
+  [Patch 20/25] PCI/PME: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
+  [Patch 21/25] PCI: cpqphp: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
+  [Patch 22/25] PCI: Use PCI_ERROR_RESPONSE to specify hardware error
+  [Patch 23/25] PCI: keystone: Use PCI_ERROR_RESPONSE to specify hardware error
+  [Patch 24/25] PCI: hv: Use PCI_ERROR_RESPONSE to specify hardware read error
+  [Patch 25/25] PCI: xgene: Use PCI_ERROR_RESPONSE to specify hardware error
+
+ drivers/pci/access.c                        | 32 +++++++-------
+ drivers/pci/controller/dwc/pci-exynos.c     |  4 +-
+ drivers/pci/controller/dwc/pci-keystone.c   |  4 +-
+ drivers/pci/controller/dwc/pcie-histb.c     |  4 +-
+ drivers/pci/controller/dwc/pcie-kirin.c     |  4 +-
+ drivers/pci/controller/pci-aardvark.c       | 10 +----
+ drivers/pci/controller/pci-hyperv.c         |  2 +-
+ drivers/pci/controller/pci-mvebu.c          |  8 +---
+ drivers/pci/controller/pci-thunder-ecam.c   | 46 +++++++--------------
+ drivers/pci/controller/pci-thunder-pem.c    |  4 +-
+ drivers/pci/controller/pci-xgene.c          |  8 ++--
+ drivers/pci/controller/pcie-altera.c        |  4 +-
+ drivers/pci/controller/pcie-iproc.c         |  4 +-
+ drivers/pci/controller/pcie-mediatek.c      | 11 +----
+ drivers/pci/controller/pcie-rcar-host.c     |  4 +-
+ drivers/pci/controller/pcie-rockchip-host.c |  4 +-
+ drivers/pci/controller/vmd.c                |  2 +-
+ drivers/pci/hotplug/cpqphp_ctrl.c           |  4 +-
+ drivers/pci/hotplug/pciehp_hpc.c            | 10 ++---
+ drivers/pci/pci.c                           | 10 ++---
+ drivers/pci/pcie/dpc.c                      |  4 +-
+ drivers/pci/pcie/pme.c                      |  4 +-
+ drivers/pci/probe.c                         | 10 ++---
+ include/linux/pci.h                         |  9 ++++
+ 24 files changed, 85 insertions(+), 121 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
