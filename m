@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4239F436E65
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C630436E68
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Oct 2021 01:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhJUXm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 19:42:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhJUXmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:42:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id CB0D861208;
-        Thu, 21 Oct 2021 23:40:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634859608;
-        bh=TRjAishGZW/mEXzyo6a17dS1h5NFtEhAgreGj7cD/MY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=T8SQPXfJP7vEXxhrov9+kLkKPRmnzAMqGNa7NJp9tVU08qobJl241ezro29id3PwI
-         lxh/9QxECcW/U1E+f+J+Pz1qLHUTF+iIJ4P+vPuYhKTFHKh0Z1Y8Pe6jBSMMvOsa5W
-         f5zIWi31KFIIozWRK/zimVQ9sXXWlgmHtvP3I65U48uob2LaeafMPNbE1aYbLtWQdf
-         lsxAVkraK53s9UurYNpRx8iW0m8bf2ul+/pUjaPpaTTXLastBWiPiVq4F+Pf1ubcYd
-         0VZUUPkeqSW5+FPMI7rNE19nZPV4sUUt/AXm8tC5v5vEyElTHK1K3/+ynk4FAe7xP3
-         8hLHIsqIjhpVg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BC4D460A24;
-        Thu, 21 Oct 2021 23:40:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232351AbhJUXmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 19:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhJUXmg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Oct 2021 19:42:36 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CC7C061764;
+        Thu, 21 Oct 2021 16:40:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=OEUJmZNnx6E69Y9a/rMQD8aPaxuy5E3qagoQ7/1dgv8=; b=LeAL3jxJzHoChU3dqDXfik7tW8
+        jLoixIxsIvwW7KwwtQwc94gxDhK9X3ZMU24/u5k95/rYGlirlRdI6ByV/OHN+At6d5155OBddVgdn
+        RzBuAfjPG5zSz+IHKIwKPigl8mpFEgmZNiN14HTlrXi505YbZ43/dsfwA/ACN83toh67amsUsojnX
+        UsEuD6KT1o1lK9JXhu8G1fIwT6mDyzTmPu+fHHdOhNvgpnYw513CSQ2lzwR/JSy2y0IKSvAY/yXQ6
+        6TQYC1y+oESTeOT/mLC+Ektx8+GE7F/SgTlOY/m8tHI8MPBj9FRap0sl8rSNLW0BbsmZGyLT5Pfs0
+        DWfJ7g+A==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdhfV-009Iqz-QT; Thu, 21 Oct 2021 23:40:17 +0000
+Subject: Re: linux-next: Tree for Oct 21
+ (drivers/net/wireless/mediatek/mt76/sdio.o)
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, linux-wireless@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+References: <20211021184300.30c77f51@canb.auug.org.au>
+ <88795dab-d8a9-856e-a938-8da6acc944ea@infradead.org>
+ <YXHtdI61S54Cm0S2@lore-desk>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <831cb7e7-dd85-0883-dfcb-52aad52f8322@infradead.org>
+Date:   Thu, 21 Oct 2021 16:40:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v17 0/3] AX88796C SPI Ethernet Adapter
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163485960876.25151.11012064455389480138.git-patchwork-notify@kernel.org>
-Date:   Thu, 21 Oct 2021 23:40:08 +0000
-References: <20211020182422.362647-1-l.stelmach@samsung.com>
-In-Reply-To: <20211020182422.362647-1-l.stelmach@samsung.com>
-To:     =?utf-8?q?=C5=81ukasz_Stelmach_=3Cl=2Estelmach=40samsung=2Ecom=3E?=@ci.codeaurora.org
-Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        jim.cromie@gmail.com, hkallweit1@gmail.com, robh+dt@kernel.org,
-        kgene@kernel.org, krzk@kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com,
-        m.szyprowski@samsung.com
+In-Reply-To: <YXHtdI61S54Cm0S2@lore-desk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 20 Oct 2021 20:24:19 +0200 you wrote:
-> This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
-> found on ARTIK5 evaluation board. The driver has been ported from a
-> v3.10.9 vendor kernel for ARTIK5 board.
+On 10/21/21 3:45 PM, Lorenzo Bianconi wrote:
+>> On 10/21/21 12:43 AM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Changes since 20211020:
 > 
-> Changes in v17:
->   - marked no_regs_list as const
->   - added myself as MODULE_AUTHOR()
->   - rearranged locking in ax88796c_close() to prevent race condition in
->     case ax88796c_work() wakes the queue after trasmission.
+> Hi Randy,
 > 
-> [...]
+> can you please the patch below?
+> 
+> Regards,
+> Lorenzo
+> 
+> diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/Kconfig b/drivers/net/wireless/mediatek/mt76/mt7921/Kconfig
+> index ce3a06227901..71154fc2a87c 100644
+> --- a/drivers/net/wireless/mediatek/mt76/mt7921/Kconfig
+> +++ b/drivers/net/wireless/mediatek/mt76/mt7921/Kconfig
+> @@ -19,6 +19,7 @@ config MT7921S
+>   	select MT76_SDIO
+>   	select MT7921_COMMON>   	depends on MAC80211
+> +	depends on MMC
+>   	help
+>   	  This adds support for MT7921S 802.11ax 2x2:2SS wireless devices.
 
-Here is the summary with links:
-  - [net-next,v17,1/3] dt-bindings: vendor-prefixes: Add asix prefix
-    https://git.kernel.org/netdev/net-next/c/4def0acb63ce
-  - [net-next,v17,2/3] dt-bindings: net: Add bindings for AX88796C SPI Ethernet Adapter
-    https://git.kernel.org/netdev/net-next/c/b13c7a88a7b6
-  - [net-next,v17,3/3] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
-    https://git.kernel.org/netdev/net-next/c/a97c69ba4f30
+Hi,
+Yes, that works. Thanks.
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+~Randy
