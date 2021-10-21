@@ -2,135 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242B74358CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833434358C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 05:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhJUDIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 Oct 2021 23:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
+        id S231199AbhJUDGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 Oct 2021 23:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhJUDIO (ORCPT
+        with ESMTP id S230272AbhJUDGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 Oct 2021 23:08:14 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED394C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 20:05:58 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so2052694pjl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Oct 2021 20:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GHlCsQKA6ANrCmV8EAVd8kSzy36VnW2q1AuqAqPG6C0=;
-        b=eeSEbPXnojW9ytHGkh3hy9RzO5u0Q0bchANyGqPTc4oajy1Ah9Jw3D3z2f7Ziv3INN
-         3BV1SIcQScjzE+ruRGgZGjMoEWUd/E1nYo1qwcgzdUSQEnzJwtvqop4bnLb3h+ECE8pV
-         uktoihN+C54gFvW2EH0/HDiO6355KKkE18mdsPgCMOrJait1mW6IvFJS+Dt7SofWqmD/
-         xb1huHZnlKoSTR5+pRcH6CBEIEkyOk4u2fXy2kOc6def57d+yWN/7Gx+m6Uhj+VJ3tD7
-         4irdoJBk91/7hFtyK5am7neKkV1VkNZrCSvd8KbQqG6rDeDFbdkUVnsQkRgSrifVczrf
-         kfjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GHlCsQKA6ANrCmV8EAVd8kSzy36VnW2q1AuqAqPG6C0=;
-        b=t7pBBR8Y/Hy9zFDerA5vjns1eRBpOeQ+7jwIcYKzLvO2Rl5aJbsLaKo/PjgP+Ea1zy
-         KI0uYIYMejO49CrmJdo/bxUQ0ekvnp0RlqrLnVmF3RMwa7Ni5nlkaUkqcQRtJueUihWx
-         mMfzxkPkF5wHXTMp5haU+z3ETN1Bn7fNdX2xPVIQ9vZhAcVtMKicL9Dx4LtiQXHm4GBu
-         6TwfGGsdyhvNahS8pbKo8PfJWQQ9nCAtezlBEajXO+uNiC8Jd/rF86ztWF5d1aF3mUxh
-         Z3kLXutRfJqUKknoNl3ko0fyCRVRRTgkDi1v0KTzEh/WyEerYyV13fPaVTX2E+P49tBD
-         q2Rg==
-X-Gm-Message-State: AOAM533//B/O71MQ1Xtx1KZLnGsDDntPqaFSIUVdJHe7HjPkQksHGU0X
-        k+KG5HealWgnq5GzGqRBAsfgoA==
-X-Google-Smtp-Source: ABdhPJxf82HF6CwlXS3DZSINuO3hhhyHQRWNXAxz2GBbAKJw8ZU5mZcbUJbc6rq9fX62zgROnXXL0w==
-X-Received: by 2002:a17:90b:17d2:: with SMTP id me18mr3249244pjb.98.1634785558244;
-        Wed, 20 Oct 2021 20:05:58 -0700 (PDT)
-Received: from [10.2.24.177] ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id l1sm3605910pgt.39.2021.10.20.20.05.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 20:05:57 -0700 (PDT)
-Subject: Re: Re: [PATCH] x86/kvm: Introduce boot parameter no-kvm-pvipi
-To:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <kernellwp@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
-References: <20211020120726.4022086-1-pizhenwei@bytedance.com>
- <CANRm+CxAVA-L0wjm72eohXXWvh9fS7wVFzfKHuEjrsiRFuk9fg@mail.gmail.com>
- <YXB4FHfzh99707EH@google.com>
-From:   zhenwei pi <pizhenwei@bytedance.com>
-Message-ID: <08757159-1673-5c7b-3efc-e5b54e82d6c3@bytedance.com>
-Date:   Thu, 21 Oct 2021 11:02:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 20 Oct 2021 23:06:00 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C201C06161C;
+        Wed, 20 Oct 2021 20:03:45 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HZXP93j7Kz4xbP;
+        Thu, 21 Oct 2021 14:03:41 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634785423;
+        bh=dc66k0dF4z0ZXASyBO1m1mvqt3iGvOAXX1j0VuG87XI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WK/sZdqkN5vYcJkruddisnKTo6MGL8QBu6bIm8xyuaxNG3bqhZ6HemIgKMtMmgiIC
+         bNtBv+N/F7qv4mYq4N7Oq0GSo5Fd5BqxrhemE/WtimXmT4u+QjSMlnmDh5t+YVkXaA
+         SRWqVet3LJgP+QTBCYY7n0pOLMUQdw5Feh6rCjoftYQQc6dzSVDOrYHJaFGydRmcre
+         ebzDGzwFftdVxY0DN6IEOmeo37KkkbOeltS6xFZ9nVnTXhnKzIGMO09tb6/WiLPGu4
+         2aTul6pyg5dFpz0cPymQs4PWZ7xHjt7xWFKbVGs5xd10w7zWeHYEq/fUXMBrf726im
+         glUSo+zvP+jqA==
+Date:   Thu, 21 Oct 2021 14:03:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the tip tree
+Message-ID: <20211021140340.139eab65@canb.auug.org.au>
+In-Reply-To: <20210920113809.18b9b70c@canb.auug.org.au>
+References: <20210917115859.6cfc64a5@canb.auug.org.au>
+        <20210920113809.18b9b70c@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YXB4FHfzh99707EH@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/5A65ZPteqLRstCVN1y.t1LF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/5A65ZPteqLRstCVN1y.t1LF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 10/21/21 4:12 AM, Sean Christopherson wrote:
-> On Wed, Oct 20, 2021, Wanpeng Li wrote:
->> On Wed, 20 Oct 2021 at 20:08, zhenwei pi <pizhenwei@bytedance.com> wrote:
->>>
->>> Although host side exposes KVM PV SEND IPI feature to guest side,
->>> guest should still have a chance to disable it.
->>>
->>> A typicall case of this parameter:
->>> If the host AMD server enables AVIC feature, the flat mode of APIC
->>> get better performance in the guest.
->>
->> Hmm, I didn't find enough valuable information in your posting. We
->> observe AMD a lot before.
->> https://lore.kernel.org/all/CANRm+Cx597FNRUCyVz1D=B6Vs2GX3Sw57X7Muk+yMpi_hb+v1w@mail.gmail.com/T/#u
-> 
-> I too would like to see numbers.  I suspect the answer is going to be that
-> AVIC performs poorly in CPU overcommit scenarios because of the cost of managing
-> the tables and handling "failed delivery" exits, but that AVIC does quite well
-> when vCPUs are pinned 1:1 and IPIs rarely require an exit to the host.
-> 
+Hi all,
 
-Test env:
-CPU: AMD EPYC 7642 48-Core Processor
+On Mon, 20 Sep 2021 11:38:09 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Fri, 17 Sep 2021 11:58:59 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > After merging the tip tree, today's linux-next build (x86_64 allmodconf=
+ig)
+> > produced this warning:
+> >=20
+> > vmlinux.o: warning: objtool: mce_setup()+0x22: call to memset() leaves =
+.noinstr.text section
+> > vmlinux.o: warning: objtool: do_machine_check()+0x51: call to mce_gathe=
+r_info() leaves .noinstr.text section
+> > vmlinux.o: warning: objtool: rcu_dynticks_eqs_enter()+0x0: call to rcu_=
+dynticks_task_trace_enter() leaves .noinstr.text section
+> > vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0xe: call to rcu_d=
+ynticks_task_trace_exit() leaves .noinstr.text section
+> > vmlinux.o: warning: objtool: rcu_nmi_enter()+0x36: call to __kasan_chec=
+k_read() leaves .noinstr.text section =20
+>=20
+> Today, we added these:
+>=20
+> vmlinux.o: warning: objtool: xen_irq_disable()+0xa: call to preempt_count=
+_add() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: xen_irq_enable()+0xb: call to preempt_count_=
+add() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: check_preemption_disabled()+0x81: call to is=
+_percpu_thread() leaves .noinstr.text section
+>=20
+> and the rcu_nmi_enter one changed to:
+>=20
+> vmlinux.o: warning: objtool: rcu_nmi_enter()+0x5d: call to __kasan_check_=
+read() leaves .noinstr.text section
 
-Kmod args(enable avic and disable nested):
-modprobe kvm-amd nested=0 avic=1 npt=1
+Currently, I am getting these:
 
-QEMU args(disable x2apic):
-... -cpu host,x2apic=off ...
+vmlinux.o: warning: objtool: xen_irq_disable()+0xa: call to preempt_count_a=
+dd() leaves .noinstr.text section
+vmlinux.o: warning: objtool: xen_irq_enable()+0xb: call to preempt_count_ad=
+d() leaves .noinstr.text section
+vmlinux.o: warning: objtool: mce_setup()+0x22: call to memset() leaves .noi=
+nstr.text section
+vmlinux.o: warning: objtool: do_machine_check()+0x99: call to mce_gather_in=
+fo() leaves .noinstr.text section
 
-Benchmark tool:
-https://github.com/bytedance/kvm-utils/tree/master/microbenchmark/apic-ipi
+(the rcu ones are gone once I merge the rcu tree)
+--=20
+Cheers,
+Stephen Rothwell
 
-~# insmod apic_ipi.ko options=5 && dmesg -c
+--Sig_/5A65ZPteqLRstCVN1y.t1LF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  apic_ipi: 1 NUMA node(s)
-  apic_ipi: apic [flat]
-  apic_ipi: apic->send_IPI[default_send_IPI_single+0x0/0x40]
-  apic_ipi: apic->send_IPI_mask[kvm_send_ipi_mask+0x0/0x10]
-  apic_ipi: 	IPI[kvm_send_ipi_mask] from CPU[0] to CPU[1]
-  apic_ipi:		total cycles 375671259, avg 3756
-  apic_ipi: 	IPI[flat_send_IPI_mask] from CPU[0] to CPU[1]
-  apic_ipi:		total cycles 221961822, avg 2219
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFw2IwACgkQAVBC80lX
+0GyeAAf8CTQW1u+V7fkxqlJpIpcoklJq0DDh0M3NLko4/AqoXl/Sg6jWOp6KsWrd
+DzSaNPuSp5Lz0Gi99In/lpe6m232Gl8MstZg9e1GzDRJDdKmhwOTaogSjr/otZHI
+544AMC8duXZuNmOU2slkSXE0nskRpszgULyTh5IQMV/SXdxh8Atppsg6H4ZRQzJ7
+jfsC4UIoQrY9+bb9/+90ml/2dczmsoYC4Z3+fgcOrcdfSqoPsSC/Tz319K1988LC
+yC3gOx+mwzzoglHjeKI/N7bs5lbFU2QvcNibdOZ3Q9n+A+QWfdjinXsA7Zvp/M/g
+pByMu9lM4StxgzVQOlWdvMUpFPZCYA==
+=xttI
+-----END PGP SIGNATURE-----
 
-apic->send_IPI_mask[kvm_send_ipi_mask+0x0/0x10]
-   -> This line show current send_IPI_mask is kvm_send_ipi_mask(because 
-of PV SEND IPI FEATURE)
-
-apic_ipi: 	IPI[kvm_send_ipi_mask] from CPU[0] to CPU[1]
-apic_ipi:		total cycles 375671259, avg 3756
-   -->These lines show the average cycles of each kvm_send_ipi_mask: 3756
-
-apic_ipi: 	IPI[flat_send_IPI_mask] from CPU[0] to CPU[1]
-apic_ipi:		total cycles 221961822, avg 2219
-   -->These lines show the average cycles of each flat_send_IPI_mask: 2219
-
-
--- 
-zhenwei pi
+--Sig_/5A65ZPteqLRstCVN1y.t1LF--
