@@ -2,205 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEA0436ADD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C17436AE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 20:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhJUSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 14:48:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40588 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232345AbhJUSsx (ORCPT
+        id S231626AbhJUSwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 14:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhJUSwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 14:48:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634841997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dwo9VIX6lsiT4Wv1KFdeEER1lG1DpM8l88ri6KFwDGU=;
-        b=KIwy2sQZzLeJOk9c356WbOuWq40T622lBuF6Ey5wDqVwhS6sTJVy6oQ9Z+Pqb/k3K4tzKr
-        LgjgnPSvKiug8nX2WYasTlWwrqNyQAdLOHS2VDLvwaWHnNzHityMmlrOFJ3D2uH+SLhi3T
-        9a03chZEImaHw7kfOoXDKJCD3jxZBeQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-mY_MiZKaOby3T82Z1Z7dqg-1; Thu, 21 Oct 2021 14:46:35 -0400
-X-MC-Unique: mY_MiZKaOby3T82Z1Z7dqg-1
-Received: by mail-ed1-f71.google.com with SMTP id h19-20020aa7de13000000b003db6ad5245bso1305996edv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:46:35 -0700 (PDT)
+        Thu, 21 Oct 2021 14:52:04 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24DAC0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:49:47 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id d13so1673748ljg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Oct 2021 11:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/TtfFv+YJK+r0KiR4Q7jDkvUjTqglRl+YDTfrv8xxts=;
+        b=vZCfEv+leEgiq2uSITsk1Q+02XwaBs9iqHHpdbXsWgEA2/a6EX2zDGgIrQmVOOS8m1
+         811Em6eRDdc8/knnqhcu1muPymVjGWzY4HkHuAocuvV5G7EJnMevzYWYxOt2P21S1EEg
+         SvUpsYcF1kyoGnEjYVkUTqPHFo9lF4wCHBDTncb/y+AD8H5/c20NeH/0XggR+7WmVt+Q
+         09hmN32jSv02U6zbV0FKGHtsfMX1DpsoX+44fKlzdzWH4WDPECNcax1iMCNcC/3X5AiU
+         tC3/zVwmvkpl/iQk1I1HDeaD8KarQNg+ekYppqJFi61tmyI9hpyYWxVs+6MsaUf+PMWL
+         6Nxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=dwo9VIX6lsiT4Wv1KFdeEER1lG1DpM8l88ri6KFwDGU=;
-        b=SAi9pKksHqaCVHocp8TapR+533SHQs4op/A8066Bd0ep6SP5Vio7n9X3iv0G4WVhI/
-         VAQhutEJYJ7lwXJpXwyjDkxllK5x1NxftroDUvw6XT3NOK30XsPXT6QZVqmhPfUNCANy
-         JizwZy30e6Ld38UPb8H28RVCKX+Qy7r3//RkxYq3fwA3gA//YdISifN7NJwaZg54oWJt
-         jLmFQ8vOv5LDbkC/43Xy5I8ZWoQ9s+348nomLVzzERZCaNmo5pH6Elb32jus/ubkHUbE
-         C3MTma8Xw09GTzAymX+LXa3dIg/3UUBcizjEjAd+8NeMgWhFuhoSc/JtbOfUSFReMNUB
-         29Dw==
-X-Gm-Message-State: AOAM533kv9LKQS26f16AGIgSLOmQ9ZEC0NmQrrFgYdAkUS9wJ/hoPhQO
-        TTRGdG5aactvKmEwonsgvtuXeLfvziugNOjWbDPfEMZHgf5+x5PS4GSN8AwSKj1pU+WEMK5uOuo
-        C2bUW92qFcLgVyPiBe3oJwR4U
-X-Received: by 2002:a17:907:3d9e:: with SMTP id he30mr9106395ejc.348.1634841994161;
-        Thu, 21 Oct 2021 11:46:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyTboahS2w3/VAWWqbsfGX7K2SRfYOLcs9i8Sc9rVRRFwLr9tDOPWnBjoOK41QqrMRAhs3NRQ==
-X-Received: by 2002:a17:907:3d9e:: with SMTP id he30mr9106364ejc.348.1634841993903;
-        Thu, 21 Oct 2021 11:46:33 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id v15sm3215225edi.89.2021.10.21.11.46.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 11:46:31 -0700 (PDT)
-Message-ID: <a2aa76c3-a8bb-99ef-9f5a-e62cc503a1e2@redhat.com>
-Date:   Thu, 21 Oct 2021 20:46:30 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/TtfFv+YJK+r0KiR4Q7jDkvUjTqglRl+YDTfrv8xxts=;
+        b=Eu4IQtgtD6jCyS5MwK4Ai38Bj4TQRmf14oZL3oFXo1GOnJTLwTHbmJGb6iNA62i7fl
+         6g+NCbtAhGNDrhvDeRddXGnPynOo31ycGA5Wl++4u8lpUFeM1hDfWLYXCIeY6UPwXPLV
+         yl1CMunrwT0vmQsPLb1L4f8VxIz+haQXmDvTIzonEJ8uIAASFhR6bXWhrYBWrzs5DilX
+         X249gMfY1Y5RTuziO3YPDkgF8pTX5Yi1IDQE3yfVEI5GOsG2N6y0ypd1e4mnFoXpL1jA
+         8ZzDZDdt1+iXQ+Ftf67psCvWaWjtTUh2xOAMqb3BDs+8CFpJZWE3UzdloOmBUHdMKxdQ
+         sOGw==
+X-Gm-Message-State: AOAM533XBxJH7whykpElNikZfB1uyWCzXQKWg07pyoeLONO7rCDuuXI3
+        JOUWN/MPcXhKHO27mp8r223IpCN9RisCIvVfLAuwaw==
+X-Google-Smtp-Source: ABdhPJwaN/7Wj+W48MDMN3pQ75XqWwMeL+aCCHzrNt4lw0cYdyMmzGTZVQDEtFEa9DXYRyhULOCZpXiL4NtOVgt/mxI=
+X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr7994342ljp.367.1634842186126;
+ Thu, 21 Oct 2021 11:49:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 16/17] [NOT-FOR-MERGE] media: atomsip: pci: add DMI match
- for Microsoft Surface 3 with broken DMI (OEMB)
-Content-Language: en-US
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aniket Bhattacharyea <aniketmail669@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alan <alan@linux.intel.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20211017161958.44351-1-kitakar@gmail.com>
- <20211017161958.44351-17-kitakar@gmail.com>
- <71b5b886-2ca1-27a9-6776-b3bcc430e5ed@redhat.com>
- <ace1264d7254f7159865602614d70caf7ff4b609.camel@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ace1264d7254f7159865602614d70caf7ff4b609.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-3-ulf.hansson@linaro.org> <CAJZ5v0hgdQeJ+6mLMLQcvnM_+EiyDBERj54aT2cL=HiTO9nMNQ@mail.gmail.com>
+ <CAPDyKFpep3aPmGGo=aA5dHZZjb-O51et47C9_hgVbZbXMJZX_g@mail.gmail.com>
+ <CAJZ5v0j=Fi5vOh45de-u7FwsCm4zsAsHepp16xQ3U5_WjrtWJw@mail.gmail.com>
+ <CAPDyKFqeAFhgCFSaFAWnp5xorxSVwAL=z2g6vHJ0PWjtt9GDNg@mail.gmail.com>
+ <CAJZ5v0iA4O=tx7qiLKCOze87dcUtwtDJqi2B+2O=oOyCSzgmtQ@mail.gmail.com>
+ <CAJZ5v0jQM3VDy_U8TiC3601ivSYVXyT5jJVjLt8qyMWE49zOeg@mail.gmail.com>
+ <CAPDyKFouHn95Lwgx+PbK9itQP13U70ZiZbDr3jQd41KsvXMtqQ@mail.gmail.com>
+ <CAJZ5v0hjdpyFGF5zPUX8RUaVW7Tk+qr9RwbGt-7C0Wxyx03TLg@mail.gmail.com> <CAJZ5v0iWxiH686bkZ3-mhKK0+F7f+wMWp8Adnjuk7BvdMywTww@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iWxiH686bkZ3-mhKK0+F7f+wMWp8Adnjuk7BvdMywTww@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 21 Oct 2021 20:49:09 +0200
+Message-ID: <CAPDyKFqdF0DptpLvp21yzDOOAbFiiDwSmWZCWa1Vt9KO3fz44A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+[...]
 
-On 10/21/21 11:46, Tsuchiya Yuto wrote:
-> On Mon, 2021-10-18 at 09:56 +0200, Hans de Goede wrote:
->> Hi,
->>
->> On 10/17/21 18:19, Tsuchiya Yuto wrote:
->>> This commit is added for Surface 3 with broken DMI table. HACK-ish.
->>> Not intended for upstreaming. Thus, NOT-FOR-MERGE. But, if someone
->>> knows a nicer way to address this, comments are welcome...
->>>
->>>> 8-----------------------------------------------------------------8<
->>>
->>> On some Microsoft Surface 3, the DMI table gets corrupted for unknown
->>> reasons and breaks existing DMI matching used for device-specific quirks.
->>>
->>> This commit adds the (broken) DMI data into dmi_system_id tables used
->>> for quirks so that the driver can enable quirks even on the affected
->>> systems.
->>>
->>> On affected systems, the DMI data will look like this:
->>>
->>>         $ grep . /sys/devices/virtual/dmi/id/{bios_vendor,board_name,board_vendor,\
->>>         chassis_vendor,product_name,sys_vendor}
->>>         /sys/devices/virtual/dmi/id/bios_vendor:American Megatrends Inc.
->>>         /sys/devices/virtual/dmi/id/board_name:OEMB
->>>         /sys/devices/virtual/dmi/id/board_vendor:OEMB
->>>         /sys/devices/virtual/dmi/id/chassis_vendor:OEMB
->>>         /sys/devices/virtual/dmi/id/product_name:OEMB
->>>         /sys/devices/virtual/dmi/id/sys_vendor:OEMB
->>
->> I wonder what the bios_date field contains ? Typically when the DMI strings
->> are no good (e.g. often they contain "Default String" or "To be filled by OEM")
->> we add a check on the bios-date, which together with the broken strings is
->> considered unique enough to still allow a match with broken strings in the
->> kernel.
-> 
-> Thank you so much for the comment :-)
-> 
-> Here is the full output of "/sys/devices/virtual/dmi/id/*" (not showing
-> files that need root permission to read):
-> 
->         $ grep . /sys/devices/virtual/dmi/id/*
->         /sys/devices/virtual/dmi/id/bios_date:03/09/2015
->         /sys/devices/virtual/dmi/id/bios_release:5.6
->         /sys/devices/virtual/dmi/id/bios_vendor:American Megatrends Inc.
->         /sys/devices/virtual/dmi/id/bios_version:1.51116.238
+> > The PM-runtime case should be addressed directly IMO, we only need to
+> > figure out how to do that.
+> >
+> > I'm wondering how you are dealing with the case when user space
+> > prevents pd_dev from suspending via sysfs, for that matter.
+>
+> Or what happens if rpm_suspend() returns -EAGAIN, because someone has
+> started to resume the device right after its reference counter went
+> down to 0.
 
-Interesting, this is the latest BIOS from july 2019 according to:
-https://support.microsoft.com/en-us/surface/surface-3-update-history-5d86a7bc-03f7-2d27-d858-e90ce637fb52
-yet the date is still set to 03/09/2015.
+That would mean that the pm_runtime_put_sync() call fails to runtime
+suspend the device. In other words, the corresponding genpd stays
+powered on, which prevents idle states from being selected by the
+genpd governor.
 
-I just checked and the BIOS with not corrupted DMI strings also keeps
-the date at 03/09/2015 in BIOS updates.
+So, yes, this should work fine.
 
-So the date is correct, and together with matching a coupleof the OEMB-s
-(which I've never seen anywhere else either) this should be plenty
-unique.
+>
+> It looks to me like the problem is there regardless of the whole
+> interference with system suspend.
 
-So this not only allows adding this mathc to atomisp, but also to fix
-sound + wmi on bad DMI data OEMB Surface 3-s, by updating this patch:
+I don't think so, but I may be overlooking some points.
 
-https://github.com/linux-surface/linux-surface/blob/2fb7e9ae91350098db9a280277f424272816a9ab/patches/5.5/0003-surface3-oemb.patch
-
-To include the BIOS-date match and then submitting this upstream
-(as 2 separate patches please).
-
-Tsuchiya, I take it that your Surface 3 has the OEMB issue, so you
-can actually test this ?
-
-If you can prepare 2 patches for the sound + wmi then; and submit
-them upstream that would be great. Please Cc me on both patches.
-
-Regards,
-
-Hans
-
-
-
-
-
-
->         /sys/devices/virtual/dmi/id/board_name:OEMB
->         grep: /sys/devices/virtual/dmi/id/board_serial: Permission denied
->         /sys/devices/virtual/dmi/id/board_vendor:OEMB
->         /sys/devices/virtual/dmi/id/board_version:00
->         grep: /sys/devices/virtual/dmi/id/chassis_serial: Permission denied
->         /sys/devices/virtual/dmi/id/chassis_type:9
->         /sys/devices/virtual/dmi/id/chassis_vendor:OEMB
->         /sys/devices/virtual/dmi/id/modalias:dmi:bvnAmericanMegatrendsInc.:bvr1.51116.238:bd03/09/2015:br5.6:svnOEMB:pnOEMB:pvrB16D0SM1C4G1X1:rvnOEMB:rnOEMB:rvr00:cvnOEMB:ct9:cvr:sku:
->         grep: /sys/devices/virtual/dmi/id/power: Is a directory
->         /sys/devices/virtual/dmi/id/product_name:OEMB
->         grep: /sys/devices/virtual/dmi/id/product_serial: Permission denied
->         grep: /sys/devices/virtual/dmi/id/product_uuid: Permission denied
->         /sys/devices/virtual/dmi/id/product_version:B16D0SM1C4G1X1
->         grep: /sys/devices/virtual/dmi/id/subsystem: Is a directory
->         /sys/devices/virtual/dmi/id/sys_vendor:OEMB
->         /sys/devices/virtual/dmi/id/uevent:MODALIAS=dmi:bvnAmericanMegatrendsInc.:bvr1.51116.238:bd03/09/2015:br5.6:svnOEMB:pnOEMB:pvrB16D0SM1C4G1X1:rvnOEMB:rnOEMB:rvr00:cvnOEMB:ct9:cvr:sku:
-> 
-> The "bios_date" ("03/09/2015") looks not broken.
-> 
-> I also noticed when writing this mail, regarding the ones that need root
-> permission to read, "board_serial" and "chassis_serial" are now empty.
-> "product_serial" now shows "OEM":
-> 
->         $ sudo cat /sys/devices/virtual/dmi/id/product_serial
->         OEM
-> 
-> "product_uuid" looks not broken.
-> 
->> Also have you tried doing something like "load bios/setup defaults" in
->> the BIOS setup ? Maybe that helps ?
-> 
-> Unfortunately, there is no option like this...
-> 
-> Regards,
-> Tsuchiya Yuto
-> 
-
+Kind regards
+Uffe
