@@ -2,78 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F1C4365E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBE24365EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Oct 2021 17:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbhJUPWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Oct 2021 11:22:47 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:57283 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231795AbhJUPWo (ORCPT
+        id S231143AbhJUPYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Oct 2021 11:24:15 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:40180 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230000AbhJUPYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:22:44 -0400
-Received: (qmail 1161764 invoked by uid 1000); 21 Oct 2021 11:20:28 -0400
-Date:   Thu, 21 Oct 2021 11:20:28 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1] usb: xhci: tegra: Check padctrl interrupt presence in
- device tree
-Message-ID: <20211021152028.GB1161262@rowland.harvard.edu>
-References: <20211021115501.14932-1-digetx@gmail.com>
- <YXFyu+Q5ifG8Au9w@orome.fritz.box>
- <5f122caa-c810-534d-b2a1-53edef313ff0@gmail.com>
- <32694811-8768-8e77-f188-4ed1a1fb93da@gmail.com>
+        Thu, 21 Oct 2021 11:24:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634829718; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=hFNY86HNWJlxxkl6jhM5IJFAs+sbpZ936meShRU6elQ=;
+ b=VFG9jig0+Dv/siCNDQ3X1zdgmi7rZM7SSCBvBWncUf83sCHZ+FNKm8vRV6H12j3oORexc6Lc
+ 4igfYzept2sgcyM+rnGIgcKgBFFbCupabLmV9jrNjPOUKtnu3ZnwGhOmZPB7dLW6G9DrRzA5
+ uVEAXM140Yf/bp2CouFGnHiqVQQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 61718589bc302969584722a9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Oct 2021 15:21:45
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 34E46C43638; Thu, 21 Oct 2021 15:21:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8DF53C4360D;
+        Thu, 21 Oct 2021 15:21:44 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <32694811-8768-8e77-f188-4ed1a1fb93da@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 21 Oct 2021 20:51:44 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     svarbanov@mm-sol.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, lorenzo.pieralisi@arm.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vbadigan@codeaurora.org,
+        kw@linux.com, bhelgaas@google.com
+Subject: Re: [PATCH v1] PCI: qcom: Fix incorrect register offset in pcie init
+In-Reply-To: <20211021073647.GA7580@workstation>
+References: <1634237929-25459-1-git-send-email-pmaliset@codeaurora.org>
+ <20211021073647.GA7580@workstation>
+Message-ID: <b70c914a581e6362fe340c499e87fed9@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 06:08:41PM +0300, Dmitry Osipenko wrote:
-> 21.10.2021 17:57, Dmitry Osipenko пишет:
-> > It might be wrong to disable device_may_wakeup() because it will change
-> > the system suspend-resume behaviour, i.e. you won't be able to resume by
-> > USB event, see [1].
-> > 
-> > [1]
-> > https://elixir.bootlin.com/linux/v5.15-rc6/source/drivers/usb/host/xhci-tegra.c#L1962
-> > 
-> > Although, I'm not sure whether this is a correct behaviour to start
-> > with. Previously, before the offending commit, device_wakeup was never
-> > enabled for tegra-xusb. Commit message doesn't explain why wakeup is now
-> > enabled unconditionally, wakeup checks aren't needed at all then. This
-> > makes no sense, please check it with JC Kuo.
+On 2021-10-21 13:06, Manivannan Sadhasivam wrote:
+> On Fri, Oct 15, 2021 at 12:28:49AM +0530, Prasad Malisetty wrote:
+>> In pcie_init_2_7_0 one of the register writes using incorrect offset
+>> as per the platform register definitions 
+>> (PCIE_PARF_AXI_MSTR_WR_ADDR_HALT
+>> offset value should be 0x1A8 instead 0x178).
+>> Update the correct offset value for SDM845 platform.
+>> 
+>> fixes: ed8cc3b1 ("PCI: qcom: Add support for SDM845 PCIe controller")
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
 > 
-> Although, wakeup could be disabled via sysfs, so it makes sense. Still
-> it's not clear whether it's a correct behaviour to enable wakeup during
-> system suspend by default. If it wakes machine from suspend when USB
-> device is plugged/unplugged, then it's a wrong behaviour.
+> After incorporating the reviews from Bjorn H,
+> 
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
+> Thanks,
+> Mani
+> 
 
-It depends on the details of how the device works.  In most cases we do 
-want to enable wakeup by default for host controller devices.  The 
-reason is simple enough: If some USB device attached to the HC is 
-enabled for wakeup and sends a wakeup request, we don't want the request 
-to get lost because the HC isn't allowed to forward the request on to 
-the CPU.
+Thanks Mani for the review. I will incorporate the changes as suggested 
+by Bjorn H in next patch version.
 
-But we do not want to enable wakeup for root hubs.  In particular, we 
-don't want to wake up a suspended system merely because a USB device has 
-been plugged or unplugged.
-
-Clearly this arrangement depends on the hardware making a distinction 
-between wakeup requests originating from the root hub and those simply 
-passing through the HC.
-
-Alan Stern
+-Prasad
+>> ---
+>>  drivers/pci/controller/dwc/pcie-qcom.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
+>> b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index 8a7a300..5bce152 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -1230,9 +1230,9 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie 
+>> *pcie)
+>>  	writel(val, pcie->parf + PCIE20_PARF_MHI_CLOCK_RESET_CTRL);
+>> 
+>>  	if (IS_ENABLED(CONFIG_PCI_MSI)) {
+>> -		val = readl(pcie->parf + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT);
+>> +		val = readl(pcie->parf + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT_V2);
+>>  		val |= BIT(31);
+>> -		writel(val, pcie->parf + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT);
+>> +		writel(val, pcie->parf + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT_V2);
+>>  	}
+>> 
+>>  	return 0;
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
